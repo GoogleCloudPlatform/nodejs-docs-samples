@@ -27,13 +27,14 @@ before_install:
                 printf '\ny\n\ny\ny\n' | ./google-cloud-sdk/install.sh &&
                 cd $TRAVIS_BUILD_DIR;
           fi
-        - printf 'y\n' | gcloud components update
+        - gcloud -q components update
         - if [ -a client_secrets.json ]; then
-                gcloud auth activate-service-account --key-file client_secrets.json;
+                gcloud -q auth activate-service-account --key-file client_secrets.json;
           fi
 
 install:
         #Add app specific setup here
+        #Use '-q' to disable interactive prompts
 
 script:
         #Test and/or deploy your app with gcloud commands here!

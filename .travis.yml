@@ -1,40 +1,43 @@
 sudo: false
-#add language, etc. here
+language: node_js
+node_js:
+- "stable"
+- "0.10"
 
 cache:
   directories:
-        - $HOME/gcloud/
+  - $HOME/gcloud/
 env:
-        - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/client_secrets.json #Other environment variables on same line
+- PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/nodejs-docs-samples.json TEST_BUCKET_NAME=cloud-samples-tests TEST_PROJECT_ID=cloud-samples-tests #Other environment variables on same line
 
 before_install:
-        #ENCRYPT YOUR PRIVATE KEY (If you need authentication)
-        # 1. Install and login to the Travis CLI:
-        #       $ gem install travis
-        #       $ travis login
-        # 2. Move your json private key to client_secrets.json
-        # 3. Run:
-        #       $ travis encrypt-file client_secrets.json --add
-        # 4. Commit changes:
-        #       $ git add client_secrets.json.enc
-        #       $ git commit client_secrets.json.enc .travis.yml
+#ENCRYPT YOUR PRIVATE KEY (If you need authentication)
+# 1. Install and login to the Travis CLI:
+#       $ gem install travis
+#       $ travis login
+# 2. Move your json private key to client_secrets.json
+# 3. Run:
+#       $ travis encrypt-file client_secrets.json --add
+# 4. Commit changes:
+#       $ git add client_secrets.json.enc
+#       $ git commit client_secrets.json.enc .travis.yml
 
-        - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
-                mkdir -p $HOME/gcloud &&
-                wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&
-                cd $HOME/gcloud &&
-                tar xzf google-cloud-sdk.tar.gz &&
-                printf '\ny\n\ny\ny\n' | ./google-cloud-sdk/install.sh &&
-                cd $TRAVIS_BUILD_DIR;
-          fi
-        - gcloud -q components update
-        - if [ -a client_secrets.json ]; then
-                gcloud -q auth activate-service-account --key-file client_secrets.json;
-          fi
+- if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
+        mkdir -p $HOME/gcloud &&
+        wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&
+        cd $HOME/gcloud &&
+        tar xzf google-cloud-sdk.tar.gz &&
+        printf '\ny\n\ny\ny\n' | ./google-cloud-sdk/install.sh &&
+        cd $TRAVIS_BUILD_DIR;
+  fi
+- openssl aes-256-cbc -K $encrypted_95e832a36b06_key -iv $encrypted_95e832a36b06_iv -in nodejs-docs-samples.json.enc -out nodejs-docs-samples.json -d
+- if [ -a nodejs-docs-samples.json ]; then
+        gcloud auth activate-service-account --key-file nodejs-docs-samples.json;
+  fi
 
 install:
-        #Add app specific setup here
-        #Use '-q' to disable interactive prompts
+#Add app specific setup here
+#Use '-q' to disable interactive prompts
 
 script:
-        #Test and/or deploy your app with gcloud commands here!
+#Test and/or deploy your app with gcloud commands here!

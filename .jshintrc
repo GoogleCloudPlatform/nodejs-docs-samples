@@ -1,0 +1,7 @@
+{
+    "camelcase"     : true,
+    "indent"        : 2,
+    "strict"        : true,
+    "globalstrict"  : true,
+    "node"          : true
+}

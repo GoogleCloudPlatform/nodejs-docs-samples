@@ -30,8 +30,8 @@ function listBuckets(projectId, callback) {
     }
 
     // Depending on the environment that provides the default credentials
-    // (eg Compute Engine, App Engine), the credentials may require us to
-    // specify the scopes we need explicitly.
+    // (e.g. Compute Engine, App Engine), the credentials retrieved may require
+    // you to specify the scopes you need explicitly.
     // Check for this case, and inject the Cloud Storage scope if required.
     if (authClient.createScopedRequired &&
         authClient.createScopedRequired()) {

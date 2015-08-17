@@ -40,4 +40,4 @@ install:
 #Use '-q' to disable interactive prompts
 
 script:
-#Test and/or deploy your app with gcloud commands here!
+  - jshint --exclude-path=.gitignore .

@@ -1,7 +1,15 @@
 {
-    "camelcase"     : true,
-    "indent"        : 2,
-    "strict"        : true,
-    "globalstrict"  : true,
-    "node"          : true
+  "camelcase" : true,
+  "curly": true,
+  "eqeqeq": true,
+  "globalstrict": true,
+  "indent": 2,
+  "newcap": true,
+  "maxlen": 80,
+  "node": true,
+  "quotmark": "single",
+  "strict": true,
+  "trailing": true,
+  "undef": true,
+  "unused": true
 }

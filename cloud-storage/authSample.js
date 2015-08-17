@@ -2,6 +2,7 @@
  * @fileoverview Sample code that grabs default credentials from the
  * environment, then uses it to make an api call.
  */
+'use strict';
 
 var google = require('googleapis');
 

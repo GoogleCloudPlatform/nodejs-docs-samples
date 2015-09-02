@@ -6,7 +6,7 @@
 var assert = require('assert');
 var _ = require('lodash');
 
-var authSample = require('../../cloud-storage/authSample');
+var authSample = require('../../storage/authSample');
 
 describe('listBuckets', function() {
   it('returns a list of buckets', function(done) {

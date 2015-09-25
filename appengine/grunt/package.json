@@ -1,0 +1,28 @@
+{
+  "name": "appengine-grunt",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./src/bin/www",
+    "postinstall": "./node_modules/grunt-cli/bin/grunt build",
+    "deploy": "gcloud preview app deploy app.yaml --set-default --project gruntjs-demo",
+    "browse": "open http://gruntjs-demo.appspot.com"
+  },
+  "dependencies": {
+    "body-parser": "~1.12.4",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "express": "~4.12.4",
+    "jade": "~1.9.2",
+    "morgan": "~1.5.3",
+    "serve-favicon": "~2.2.1"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-cssmin": "^0.13.0",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}

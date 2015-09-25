@@ -1,0 +1,43 @@
+{
+  "name": "appengine-kraken",
+  "version": "0.1.0",
+  "description": "An example of running krakenjs on Google App Engine. ",
+  "author": "Justin Beckwith",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/JustinBeckwith/appengine-nodejs-samples"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "build": "grunt build",
+    "all": "npm run build && npm run test",
+    "deploy": "gcloud preview app deploy app.yaml --set-default --project kraken-demo"
+  },
+  "dependencies": {
+    "construx": "^1.0.0",
+    "construx-copier": "^1.0.0",
+    "construx-dustjs": "^1.1.0",
+    "construx-less": "^1.0.0",
+    "dust-makara-helpers": "^4.1.2",
+    "express": "^4.12.2",
+    "kraken-js": "^1.0.3",
+    "makara": "^2.0.3",
+    "requirejs": "^2.1.20"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-config-dir": "^0.3.2",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-copy-to": "0.0.10",
+    "grunt-dustjs": "^1.2.1",
+    "grunt-makara-amdify": "^1.0.1",
+    "grunt-mocha-cli": "^1.14.0",
+    "mocha": "^1.18.0",
+    "supertest": "^0.9.0"
+  }
+}

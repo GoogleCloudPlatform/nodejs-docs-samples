@@ -1,0 +1,26 @@
+<%= partial('layout_header'); %>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="i-bar"><i class="icon-chevron-down icon-white"></i></span>
+          </a>
+          <%- linkTo('Geddy App', mainsPath, {class: 'brand'}) %>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><%- linkTo('Home', mainsPath) %></li>
+              <li><%- linkTo('Tutorial', 'http://geddyjs.org/tutorial') %></li>
+              <li><%- linkTo('Docs', 'http://geddyjs.org/documentation') %></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <%- displayFlash(flash); %>
+      <%- render(); %>
+    </div>
+  </body>
+<%= partial('layout_footer'); %>
+

@@ -13,10 +13,6 @@ This is a collection of samples and instructions to run common nodejs frameworks
 - [Restify](restify/)
 - [Geddy](geddy/)
 
-## Libraries
-
-- [socket.io](socketio/)
-
 ## Services
 
 - [Redis](redis/)

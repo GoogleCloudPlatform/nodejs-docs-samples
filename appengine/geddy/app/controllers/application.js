@@ -16,10 +16,9 @@
  *
 */
 
+'use strict';
+
 var Application = function () {
 };
 
 exports.Application = Application;
-
-
-

@@ -16,32 +16,34 @@
  *
 */
 
+'use strict';
+
 var config = {
-  appName: 'Geddy App (development)'
-, detailedErrors: true
-, debug: true
-, watch: {
+  appName: 'Geddy App (development)',
+  detailedErrors: true,
+  debug: true,
+  watch: {
     files : [
-      '/config'
-    , '/lib'
-    , '/app/controllers'
-    , '/app/models'
-    , '/app/views'
-    , '/app/helpers'
-    ]
-  , includePattern: '\\.(js|coffee|css|less|scss)$'
-  , excludePattern: '\\.git|node_modules'
-  }
-, hostname: null
-, port: 4000
-, model: {
+      '/config',
+      '/lib',
+      '/app/controllers',
+      '/app/models',
+      '/app/views',
+      '/app/helpers'
+    ],
+    includePattern: '\\.(js|coffee|css|less|scss)$',
+    excludePattern: '\\.git|node_modules'
+  },
+  hostname: null,
+  port: 4000,
+  model: {
     defaultAdapter: 'filesystem'
-  }
-, sessions: {
-    store: 'filesystem'
-  , filename: '_session_store.json'
-  , key: 'sid'
-  , expiry: 14 * 24 * 60 * 60
+  },
+  sessions: {
+    store: 'filesystem',
+    filename: '_session_store.json',
+    key: 'sid',
+    expiry: 14 * 24 * 60 * 60
   }
 };
 

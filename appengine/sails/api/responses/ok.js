@@ -11,6 +11,8 @@
  *          - pass string to render specified view
  */
 
+'use strict';
+
 module.exports = function sendOK (data, options) {
 
   // Get access to `req`, `res`, & `sails`
@@ -37,12 +39,11 @@ module.exports = function sendOK (data, options) {
   // work, just send JSON.
   if (options.view) {
     return res.view(options.view, { data: data });
+  } else {
+    // If no second argument provided, try to serve the implied view,
+    // but fall back to sending JSON(P) if no view can be inferred.
+    return res.guessView({ data: data }, function couldNotGuessView () {
+      return res.jsonx(data);
+    });
   }
-
-  // If no second argument provided, try to serve the implied view,
-  // but fall back to sending JSON(P) if no view can be inferred.
-  else return res.guessView({ data: data }, function couldNotGuessView () {
-    return res.jsonx(data);
-  });
-
 };

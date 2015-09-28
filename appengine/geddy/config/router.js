@@ -16,6 +16,7 @@
  *
 */
 
+'use strict';
 
 var router = new geddy.RegExpRouter();
 

@@ -1,3 +1,18 @@
+// Copyright 2015, Google, Inc.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
 /**
  * app.js
  *
@@ -28,12 +43,12 @@ process.chdir(__dirname);
   try {
     sails = require('sails');
   } catch (e) {
-    console.error('To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.');
+    console.error('To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.'); // jshint ignore:line
     console.error('To do that, run `npm install sails`');
     console.error('');
-    console.error('Alternatively, if you have sails installed globally (i.e. you did `npm install -g sails`), you can use `sails lift`.');
-    console.error('When you run `sails lift`, your app will still use a local `./node_modules/sails` dependency if it exists,');
-    console.error('but if it doesn\'t, the app will run with the global sails instead!');
+    console.error('Alternatively, if you have sails installed globally (i.e. you did `npm install -g sails`), you can use `sails lift`.'); // jshint ignore:line
+    console.error('When you run `sails lift`, your app will still use a local `./node_modules/sails` dependency if it exists,'); // jshint ignore:line
+    console.error('but if it doesn\'t, the app will run with the global sails instead!'); // jshint ignore:line
     return;
   }
 

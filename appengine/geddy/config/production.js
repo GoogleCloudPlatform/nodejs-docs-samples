@@ -16,22 +16,24 @@
  *
 */
 
+'use strict';
+
 var config = {
-  appName: 'Geddy App'
-, detailedErrors: false
-, hostname: null
-, port: 4000
-, model: {
+  appName: 'Geddy App',
+  detailedErrors: false,
+  hostname: null,
+  port: 4000,
+  model: {
     defaultAdapter: 'mongo'
-  }
-, db: {
+  },
+  db: {
     mongo: {
-      username: null
-    , dbname: 'production'
-    , prefix: null
-    , password: null
-    , host: 'localhost'
-    , port: 27017
+      username: null,
+      dbname: 'production',
+      prefix: null,
+      password: null,
+      host: 'localhost',
+      port: 27017
     }
   }
 

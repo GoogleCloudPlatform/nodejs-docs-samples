@@ -18,7 +18,7 @@ This is a simple guide to running [loopback](http://loopback.io/) on Google App 
 
 	```js
 	"scripts": {
-		"start": "node ."
+		"start": "node .",
 	    "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
 	  }
 	```

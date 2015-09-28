@@ -1,0 +1,29 @@
+{
+  "name": "koa-appengine",
+  "version": "1.0.0",
+  "description": "An example of deploying a koa app to Google App Engine",
+  "main": "app.js",
+  "dependencies": {
+    "koa": "^0.21.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node --harmony app.js",
+    "deploy": "gcloud preview app deploy app.yaml --set-default --project koa-demo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/JustinBeckwith/appengine-nodejs-samples"
+  },
+  "keywords": [
+    "nodejs",
+    "appengine",
+    "koa"
+  ],
+  "author": "Justin Beckwith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JustinBeckwith/appengine-nodejs-samples/issues"
+  },
+  "homepage": "https://github.com/JustinBeckwith/appengine-nodejs-samples"
+}

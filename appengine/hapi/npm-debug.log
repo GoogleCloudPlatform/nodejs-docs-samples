@@ -1,0 +1,36 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'run', 'deploy' ]
+2 info using npm@2.7.5
+3 info using node@v0.12.2
+4 verbose node symlink /usr/local/bin/node
+5 verbose run-script [ 'predeploy', 'deploy', 'postdeploy' ]
+6 info predeploy hapi-appengine@1.0.0
+7 info deploy hapi-appengine@1.0.0
+8 verbose unsafe-perm in lifecycle true
+9 info hapi-appengine@1.0.0 Failed to exec deploy script
+10 verbose stack Error: hapi-appengine@1.0.0 deploy: `gcloud preview app deploy app.yaml --set-default --project hapi-demo`
+10 verbose stack Exit status 1
+10 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:213:16)
+10 verbose stack     at EventEmitter.emit (events.js:110:17)
+10 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:14:12)
+10 verbose stack     at ChildProcess.emit (events.js:110:17)
+10 verbose stack     at maybeClose (child_process.js:1015:16)
+10 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+11 verbose pkgid hapi-appengine@1.0.0
+12 verbose cwd /Users/beckwith/Code/appengine-nodejs-samples/hapi
+13 error Darwin 14.5.0
+14 error argv "node" "/usr/local/bin/npm" "run" "deploy"
+15 error node v0.12.2
+16 error npm  v2.7.5
+17 error code ELIFECYCLE
+18 error hapi-appengine@1.0.0 deploy: `gcloud preview app deploy app.yaml --set-default --project hapi-demo`
+18 error Exit status 1
+19 error Failed at the hapi-appengine@1.0.0 deploy script 'gcloud preview app deploy app.yaml --set-default --project hapi-demo'.
+19 error This is most likely a problem with the hapi-appengine package,
+19 error not with npm itself.
+19 error Tell the author that this fails on your system:
+19 error     gcloud preview app deploy app.yaml --set-default --project hapi-demo
+19 error You can get their info via:
+19 error     npm owner ls hapi-appengine
+19 error There is likely additional logging output above.
+20 verbose exit [ 1, true ]

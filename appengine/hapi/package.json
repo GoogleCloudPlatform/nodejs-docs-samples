@@ -1,0 +1,21 @@
+{
+  "name": "hapi-appengine",
+  "version": "1.0.0",
+  "description": "An example of running hapijs apps on Google App Engine. ",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "gcloud preview app deploy app.yaml --set-default --project hapi-demo"
+  },
+  "keywords": [
+    "appengine",
+    "google",
+    "nodejs",
+    "hapi"
+  ],
+  "author": "Justin Beckwith",
+  "license": "MIT",
+  "dependencies": {
+    "hapi": "^8.8.1"
+  }
+}

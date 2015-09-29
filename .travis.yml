@@ -40,4 +40,4 @@ install:
 #Use '-q' to disable interactive prompts
 
 script:
-  - jshint --exclude-path=.gitignore .
+  - jshint --exclude-path=.jshintignore .

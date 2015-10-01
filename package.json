@@ -4,7 +4,8 @@
   "description": "Samples used in the nodejs documentation on cloud.google.com",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive"
+    "test": "mocha --recursive",
+    "jshint": "jshint --exclude-path=.jshintignore ."
   },
   "author": "jerjou@google.com",
   "license": "Apache 2",

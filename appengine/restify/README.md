@@ -1,12 +1,14 @@
-# Restify -> Google App Engine
+## Restify on Google App Engine
 
-This is a simple guide to running [restify](http://restify.com/) on Google App Engine.  
+> [Restify](http://mcavage.me/node-restify/) is a node.js module built specifically to enable you to build correct REST web services.
 
-1. Create a new directory for your code.
+##### Create a new  Restify app
 
-2. Run `npm init` and follow the prompts.
+Create a new directory for your code.
 
-3. Create a `server.js` with the following code:
+Run `npm init` and follow the prompts.
+
+Create a `server.js` with the following code:
 
 ```js
 var restify = require('restify');
@@ -34,9 +36,9 @@ server.listen(process.env.PORT || 8080, function () {
 });
 ```
 
-4. Run `npm install --save restify`
+Run `npm install --save restify`
 
-5. Create an `app.yaml` in the root of your application with the following contents:
+##### Configure Create an `app.yaml` in the root of your application with the following contents:
 
 ```yaml
 runtime: nodejs
@@ -46,12 +48,14 @@ env_variables:
   PORT: 8080
 ```
 
-6. Deploy! For convenience, you can modify your `package.json` to use an npm script for deployment:
+##### Deploy
 
-```js
+For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+
+```json
 "scripts": {
   "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
 }
 ```
 
-At the terminal you can now run `npm run deploy` to deploy your application. 
+At the terminal you can now run `npm run deploy` to deploy your application.

@@ -1,12 +1,14 @@
-# Redis -> Google App Engine
+## Redis on Google App Engine
 
-This is a simple guide building an application on Google App Engine that uses [redis](http://redis.io/).   
+> [Redis](http://redis.io/) is an open source (BSD licensed), in-memory data structure store, used as database, cache and message broker.
+
+##### Start a Redis server
 
 There are multiple options to creating a new redis server:
 - Create a GCE virtual machine with redis preinstalled
 - Use [Redis Labs](https://redislabs.com/signup-gce-lp1) to create a free Redis-as-a-Service account
 
-## Sign up for a redis labs account
+###### Sign up for a redis labs account
 
 To sign up for a new redis labs account:
 
@@ -15,9 +17,11 @@ To sign up for a new redis labs account:
 3. Choose the free tier
 4. Click `select` 
 5. Choose a resource name and password
-6. Place your host name, port, and key into a json file.  Here's an example of the json file I'm using:
+6. Place your host name, port, and key into a json file.
 
-```js
+Here's an example json file:
+
+```json
 {
   "redisHost": "pub-redis-*****.us-central1-1-1.gce.garantiadata.com",
   "redisPort": ******,
@@ -27,10 +31,9 @@ To sign up for a new redis labs account:
 
 Make sure to not check this file into source control by adding `keys.json` to your `.gitignore`. 
 
+##### Configure
 
-## Using redis from App Engine
-
-1. Create an `app.yaml` in the root of your application with the following contents:
+Create an `app.yaml` in the root of your application with the following contents:
 
 ```yaml
 runtime: nodejs
@@ -40,12 +43,15 @@ env_variables:
   PORT: 8080
 ```
 
-2. Deploy! For convenience, you can modify your `package.json` to use an npm script for deployment:
+##### Deploy
 
-```js
+For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+
+```json
 "scripts": {
+  "start": "node ./bin/www",
   "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
 }
 ```
 
-At the terminal you can now run `npm run deploy` to deploy your application. 
+At the terminal you can now run `npm run deploy` to deploy your application.

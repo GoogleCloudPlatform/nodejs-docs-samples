@@ -3,6 +3,7 @@
   "description": "An example of running geddy on Google App Engine. ",
   "author": "",
   "version": "0.0.1",
+  "license": "Apache Version 2.0",
   "dependencies": {
     "geddy": "^13.0.8"
   },

@@ -1,10 +1,14 @@
-# Loopback -> Google App Engine
+## Loopback on Google App Engine
 
-This is a simple guide to running [loopback](http://loopback.io/) on Google App Engine. 
+> [Loopback](http://loopback.io/) is a highly-extensible, open-source Node.js framework.
 
-1. [Create a new loopback app](http://loopback.io/getting-started/).  
+##### Create a new Loopback app
 
-2. Create an `app.yaml` in the root of your application with the following contents:
+[View the Loopback docs](http://loopback.io/getting-started/).
+
+##### Configure
+
+Create an `app.yaml` in the root of your application with the following contents:
 
 ```yaml
 runtime: nodejs
@@ -14,13 +18,15 @@ env_variables:
   PORT: 8080
 ```
 
-3. Create a `start` deploy script, and deploy! For convenience, you can modify your `package.json` to use an npm script for deployment:
+##### Deploy
 
-```js
+For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+
+```json
 "scripts": {
   "start": "node .",
   "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
 }
 ```
 
-At the terminal you can now run `npm run deploy` to deploy your application. 
+At the terminal you can now run `npm run deploy` to deploy your application.

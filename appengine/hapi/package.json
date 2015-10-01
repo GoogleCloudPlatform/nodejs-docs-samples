@@ -14,8 +14,8 @@
     "hapi"
   ],
   "author": "Justin Beckwith",
-  "license": "MIT",
+  "license": "Apache Version 2.0",
   "dependencies": {
-    "hapi": "^8.8.1"
+    "hapi": "^10.1.0"
   }
 }

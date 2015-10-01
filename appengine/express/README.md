@@ -1,21 +1,28 @@
-# Express -> Google App Engine
+## Express on Google App Engine
 
-This is a simple guide to running [expressjs](http://expressjs.com/) on Google App Engine.
+> [Express](http://expressjs.com) is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
 
-1. [Create a new Express app](http://expressjs.com/starter/generator.html)
+##### Create a new Express app
 
-2. Create an `app.yaml` in the root of your application with the following contents:
+View the [Express app generator guide](http://expressjs.com/starter/generator.html).
+
+##### Configure
+
+Create an `app.yaml` in the root of your application with the following contents:
 
 ```yaml
 runtime: nodejs
 vm: true
+api_version: 1
 env_variables:
   PORT: 8080
 ```
 
-3. Deploy your app. For convenience, you can use an npm script to run the command. Modify your `package.json` to include:
+##### Deploy
 
-```js
+For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+
+```json
 "scripts": {
   "start": "node ./bin/www",
   "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"

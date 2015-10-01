@@ -64,6 +64,6 @@ http.createServer(function (req, res) {
         res.end(iplist);
     });
 
-}).listen(process.env.PORT || 3000);
+}).listen(process.env.PORT || 8080);
 
 console.log('started web process');

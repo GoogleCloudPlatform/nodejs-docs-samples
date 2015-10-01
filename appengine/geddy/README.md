@@ -1,10 +1,14 @@
-# Geddy -> Google App Engine
+## Geddy on Google App Engine
 
-This is a simple guide to running [geddy](http://geddyjs.org/) on Google App Engine.  
+> [Geddy](http://geddyjs.org/) is a simple, structured web framework for Node.
 
-1. [Create a new geddy app](http://geddyjs.org/tutorial).
+##### Create a new Geddy app
 
-2. Create an `app.yaml` in the root of your application with the following contents:
+[View the Geddy tutorial](http://geddyjs.org/tutorial).
+
+##### Configure
+
+Create an `app.yaml` in the root of your application with the following contents:
 
 ```yaml
 runtime: nodejs
@@ -14,24 +18,28 @@ env_variables:
   PORT: 8080
 ```
 
-3. Create a `server.js` that contains the following code:
+##### Prepare the app
+
+Create a `server.js` that contains the following code:
 
 ```js
 var geddy = require('geddy');
 
 geddy.start({
-  port: process.env.PORT || '3000'
+  port: process.env.PORT || 8080
 });
 ```
 
-4. Run `npm install --save geddy`
+Run `npm install --save geddy`
 
-5. Deploy! For convenience, you can modify your `package.json` to use an npm script for deployment:
+##### Deploy
 
-```js
+For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+
+```json
 "scripts": {
   "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
 }
 ```
 
-At the terminal you can now run `npm run deploy` to deploy your application. 
+At the terminal you can now run `npm run deploy` to deploy your application.

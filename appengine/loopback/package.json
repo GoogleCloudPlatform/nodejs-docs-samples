@@ -26,5 +26,6 @@
     "type": "",
     "url": ""
   },
+  "license": "Apache Version 2.0",
   "description": "An example of running loopback on Google App Engine."
 }

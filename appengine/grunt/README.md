@@ -1,10 +1,14 @@
-# Grunt -> Google App Engine
+## Grunt on Google App Engine
 
-This is a simple guide to using [grunt](http://gruntjs.com/) with Google App Engine. 
+> [Grunt](http://gruntjs.com/): The JavaScript Task Runner.
 
-1. Follow the [grunt getting started guide](http://gruntjs.com/getting-started) to get up and runnning. 
+##### Create a new app
 
-2. Create an `app.yaml` in the root of your application with the following contents:
+[View the Grunt docs](http://gruntjs.com/getting-started).
+
+##### Configure
+
+Create an `app.yaml` in the root of your application with the following contents:
 
 ```yaml
 runtime: nodejs
@@ -14,17 +18,21 @@ env_variables:
   PORT: 8080
 ```
 
-3. Run `npm install --save-dev grunt-cli` to make the Grunt command line tools available locally during the build. 
+Run `npm install --save-dev grunt-cli` to make the Grunt command line tools available locally during the build. 
 
-4. Modify your `package.json` to include an npm `postinstall` script.  This will be run during your applications `npm install` phase. For convenience, you can use an npm script to deploy as well:
+##### Deploy
 
-```js
+Modify your `package.json` to include an npm `postinstall` script.  This will be run during your applications `npm install` phase.
+
+For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+
+```json
 "scripts": {
   "start": "node ./src/bin/www",
   "postinstall": "./node_modules/grunt-cli/bin/grunt build",
   "deploy": "gcloud preview app deploy app.yaml --set-default --project gruntjs-demo",
   "browse": "open http://gruntjs-demo.appspot.com"
-},
+}
 ```
 
-At the terminal you can now run `npm run deploy` to deploy your application. 
+At the terminal you can now run `npm run deploy` to deploy your application.

@@ -4,7 +4,7 @@
   "description": "An example of deploying a koa app to Google App Engine",
   "main": "app.js",
   "dependencies": {
-    "koa": "^0.21.0"
+    "koa": "^1.0.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -21,7 +21,7 @@
     "koa"
   ],
   "author": "Justin Beckwith",
-  "license": "MIT",
+  "license": "Apache Version 2.0",
   "bugs": {
     "url": "https://github.com/JustinBeckwith/appengine-nodejs-samples/issues"
   },

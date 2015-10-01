@@ -18,7 +18,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express |2|' });
+  res.render('index', { title: 'Express 4 on Google App Engine' });
 });
 
 module.exports = router;

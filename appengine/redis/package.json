@@ -17,13 +17,13 @@
     "google"
   ],
   "author": "Justin Beckwith",
-  "license": "MIT",
+  "license": "Apache Version 2.0",
   "bugs": {
     "url": "https://github.com/JustinBeckwith/appengine-nodejs-samples/issues"
   },
   "homepage": "https://github.com/JustinBeckwith/appengine-nodejs-samples",
   "dependencies": {
-    "nconf": "^0.7.2",
-    "redis": "^0.12.1"
+    "nconf": "^0.8.0",
+    "redis": "^2.0.1"
   }
 }

@@ -13,6 +13,7 @@
 
 'use strict';
 
+// [START server]
 var koa = require('koa');
 var app = koa();
 
@@ -21,3 +22,4 @@ app.use(function *(){
 });
 
 app.listen(process.env.PORT || 8080);
+// [END server]

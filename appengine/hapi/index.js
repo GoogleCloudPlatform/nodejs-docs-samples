@@ -13,6 +13,7 @@
 
 'use strict';
 
+// [START server]
 var Hapi = require('hapi');
 
 // Create a server with a host and port
@@ -21,8 +22,9 @@ server.connection({
   host: '127.0.0.1', 
   port: process.env.PORT || 8080
 });
+// [END server]
 
-// Add an index route
+// [START index]
 server.route({
   method: 'GET',
   path:'/', 
@@ -30,6 +32,7 @@ server.route({
     reply('hello world');
   }
 });
+// [END index]
 
 // Add another route
 server.route({
@@ -40,7 +43,8 @@ server.route({
   }
 });
 
-// Start the server
+// [START server_start]
 server.start(function () {
   console.log('Server running at:', server.info.uri);
 });
+// [END server_start]

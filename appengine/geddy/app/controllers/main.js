@@ -18,6 +18,7 @@
 
 'use strict';
 
+// [START main]
 var Main = function () {
   this.index = function (req, resp, params) {
     this.respond({params: params}, {
@@ -28,3 +29,4 @@ var Main = function () {
 };
 
 exports.Main = Main;
+// [END main]

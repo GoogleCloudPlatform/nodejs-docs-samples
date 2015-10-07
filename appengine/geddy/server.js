@@ -13,8 +13,10 @@
 
 'use strict';
 
+// [START server]
 var geddy = require('geddy');
 
 geddy.start({
   port: process.env.PORT || 8080
 });
+// [END server]

@@ -13,12 +13,14 @@
 
 'use strict';
 
+// [START server]
 var restify = require('restify');
 
 var server = restify.createServer({
   name: 'appengine-restify',
   version: '1.0.0'
 });
+// [END server]
 
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
@@ -29,10 +31,14 @@ server.get('/echo/:name', function (req, res, next) {
   return next();
 });
 
+// [START index]
 server.get('/', function (req, res) {
-	res.send('restify on appengine');
+  res.send('Hello World!');
 });
+// [END index]
 
+// [START server_start]
 server.listen(process.env.PORT || 8080, function () {
   console.log('%s listening at %s', server.name, server.url);
 });
+// [END server_start]

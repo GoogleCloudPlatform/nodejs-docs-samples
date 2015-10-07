@@ -16,9 +16,10 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+// [START hello_world]
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express 4 on Google App Engine' });
+  res.render('index', { title: 'Hello World!' });
 });
+// [END hello_world]
 
 module.exports = router;

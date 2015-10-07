@@ -16,6 +16,7 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
+    // [START config]
     jshint: {
       files: ['Gruntfile.js', 'src/**/*.js'],
       options: {
@@ -26,30 +27,34 @@ module.exports = function(grunt) {
       }
     },
     cssmin: {
-    	minify: {
-    		src: 'src/public/stylesheets/style.css',
-    		dest: 'src/public/stylesheets/style.min.css'
-  		}
+      minify: {
+        src: 'src/public/stylesheets/style.css',
+        dest: 'src/public/stylesheets/style.min.css'
+      }
     },
+    // [END config]
     clean: ['src/public/stylesheets/style.min.css'],
     watch: {
       js: {
-      	files: ['<%= jshint.files %>'],
-      	tasks: ['jshint']
+        files: ['<%= jshint.files %>'],
+        tasks: ['jshint']
       },
 
       css: {
-      	files: ['<%= cssmin.minify.src %>'],
-      	tasks: ['cssmin']
+        files: ['<%= cssmin.minify.src %>'],
+        tasks: ['cssmin']
       }
     }
   });
-
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
+  // [START tasks]
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+
   grunt.registerTask('build', ['jshint', 'cssmin']);
+  // [END tasks]
+
   grunt.registerTask('default', ['watch']);
 };

@@ -1,0 +1,15 @@
+{
+  "name": "express-memcached-session-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "gcloud preview app deploy app.yaml --set-default --project express-memcached-demo"
+  },
+  "dependencies": {
+    "connect-memcached": "^0.1.0",
+    "cookie-parser": "~1.3.5",
+    "express": "~4.12.4",
+    "express-session": "^1.11.3",
+    "public-ip": "^1.1.0"
+  }
+}

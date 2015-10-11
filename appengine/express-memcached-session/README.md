@@ -1,6 +1,6 @@
 # Express + Memcached Sessions -> Google App Engine
 
-This is a simple guide to using memcached for session state while running [expressjs](http://expressjs.com/) on Google App Engine.
+This is a simple guide to using memcached for session state while running [expressjs](http://expressjs.com/) on Google App Engine.  Each Google App Engine application comes with a memcached service instance, which can be reached with a standard memcached driver at `memcache:11211`.
 
 1. [Create a new Express app](http://expressjs.com/starter/generator.html)
 

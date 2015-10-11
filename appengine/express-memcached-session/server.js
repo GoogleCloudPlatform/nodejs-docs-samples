@@ -11,6 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 var express = require('express');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -32,7 +34,9 @@ app.use(session({
 
 app.get('/', function(req, res){
     publicIp.v4(function (err, ip) {
-        res.write("<div>" + ip + "</div>");
+
+        // This shows the IP for each 
+        res.write('<div>' + ip + '</div>');
    
         if(req.session.views) {
             ++req.session.views;
@@ -44,5 +48,5 @@ app.get('/', function(req, res){
 });
 
 http.createServer(app).listen(process.env.PORT || 8080, function() {
-    console.log("Listening on %d", this.address().port);
+    console.log('Listening on %d', this.address().port);
 });

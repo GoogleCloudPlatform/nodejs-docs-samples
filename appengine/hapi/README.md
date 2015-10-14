@@ -2,11 +2,11 @@
 
 > [Hapi](http://hapijs.com/) is a rich framework for building applications and services. Hapi enabled developers to focus on writing reusable application logic instead of spending time building infrastructure.
 
-##### Create a new Hapi app
+### Create a new Hapi app
 
 [View the Hapi docs](http://hapijs.com/).
 
-##### Configure
+### Configure
 
 Create an `app.yaml` in the root of your application with the following contents:
 
@@ -18,7 +18,7 @@ env_variables:
   PORT: 8080
 ```
 
-##### Prepare the app
+### Prepare the app
 
 Update `package.json` to add an `npm start` command:
 
@@ -37,7 +37,7 @@ server.connection({
 });
 ```
 
-##### Deploy
+### Deploy
 
 For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
 

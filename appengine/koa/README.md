@@ -2,7 +2,7 @@
 
 > [koa](http://koajs.com) is a next generation web framework for node.js
 
-##### Create a new Koa app
+### Create a new Koa app
 
 [View the Koa docs](http://koajs.com/).
 
@@ -19,7 +19,7 @@ app.use(function *(){
 app.listen(process.env.PORT || 8080);
 ```
 
-##### Configure
+### Configure
 
 Create an `app.yaml` in the root of your application with the following contents:
 
@@ -31,13 +31,13 @@ env_variables:
   PORT: 8080
 ```
 
-##### Prepare the app
+### Prepare the app
 
 Run `npm init` to initialize a `package.json`.
 
 Modify your `package.json`.  Add a `start` command - take care to include the `--harmony` flag, as koa requires generators.
 
-##### Deploy
+### Deploy
 
 For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
 

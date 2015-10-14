@@ -29,7 +29,7 @@ server.route({
   method: 'GET',
   path:'/', 
   handler: function (request, reply) {
-    reply('hello world');
+    reply('Hello World! Hapi.js on Google App Engine.');
   }
 });
 // [END index]
@@ -39,7 +39,7 @@ server.route({
   method: 'GET',
   path:'/hello', 
   handler: function (request, reply) {
-   reply('hello world');
+   reply('Hello World! Hapi.js on Google App Engine.');
   }
 });
 

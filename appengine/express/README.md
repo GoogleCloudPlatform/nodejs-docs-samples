@@ -2,11 +2,11 @@
 
 > [Express](http://expressjs.com) is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
 
-##### Create a new Express app
+### Create a new Express app
 
 View the [Express app generator guide](http://expressjs.com/starter/generator.html).
 
-##### Configure
+### Configure
 
 Create an `app.yaml` in the root of your application with the following contents:
 
@@ -18,7 +18,7 @@ env_variables:
   PORT: 8080
 ```
 
-##### Deploy
+### Deploy
 
 For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
 

@@ -2,11 +2,11 @@
 
 > [Kraken](http://krakenjs.com) is a secure and scalable layer that extends express by providing structure and convention.
 
-##### Create a new Kraken app
+### Create a new Kraken app
 
 [View the Kraken docs](http://krakenjs.com/index.html#getting-started).
 
-##### Configure
+### Configure
 
 Create an `app.yaml` in the root of your application with the following contents:
 
@@ -18,7 +18,7 @@ env_variables:
   PORT: 8080
 ```
 
-##### Deploy
+### Deploy
 
 For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
 

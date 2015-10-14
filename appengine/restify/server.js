@@ -33,7 +33,7 @@ server.get('/echo/:name', function (req, res, next) {
 
 // [START index]
 server.get('/', function (req, res) {
-  res.send('Hello World!');
+  res.send('Hello World! Restify.js on Google App Engine.');
 });
 // [END index]
 

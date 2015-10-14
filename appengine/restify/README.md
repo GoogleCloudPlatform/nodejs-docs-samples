@@ -2,7 +2,7 @@
 
 > [Restify](http://mcavage.me/node-restify/) is a node.js module built specifically to enable you to build correct REST web services.
 
-##### Create a new  Restify app
+### Create a new  Restify app
 
 Create a new directory for your code.
 
@@ -38,7 +38,7 @@ server.listen(process.env.PORT || 8080, function () {
 
 Run `npm install --save restify`
 
-##### Configure Create an `app.yaml` in the root of your application with the following contents:
+### Configure Create an `app.yaml` in the root of your application with the following contents:
 
 ```yaml
 runtime: nodejs
@@ -48,7 +48,7 @@ env_variables:
   PORT: 8080
 ```
 
-##### Deploy
+### Deploy
 
 For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
 

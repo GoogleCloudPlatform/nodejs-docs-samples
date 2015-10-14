@@ -2,11 +2,11 @@
 
 > [Geddy](http://geddyjs.org/) is a simple, structured web framework for Node.
 
-##### Create a new Geddy app
+### Create a new Geddy app
 
 [View the Geddy tutorial](http://geddyjs.org/tutorial).
 
-##### Configure
+### Configure
 
 Create an `app.yaml` in the root of your application with the following contents:
 
@@ -18,7 +18,7 @@ env_variables:
   PORT: 8080
 ```
 
-##### Prepare the app
+### Prepare the app
 
 Create a `server.js` that contains the following code:
 
@@ -32,7 +32,7 @@ geddy.start({
 
 Run `npm install --save geddy`
 
-##### Deploy
+### Deploy
 
 For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
 

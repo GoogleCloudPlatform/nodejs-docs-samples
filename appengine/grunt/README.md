@@ -2,11 +2,11 @@
 
 > [Grunt](http://gruntjs.com/): The JavaScript Task Runner.
 
-##### Create a new app
+### Create a new app
 
 [View the Grunt docs](http://gruntjs.com/getting-started).
 
-##### Configure
+### Configure
 
 Create an `app.yaml` in the root of your application with the following contents:
 
@@ -20,7 +20,7 @@ env_variables:
 
 Run `npm install --save-dev grunt-cli` to make the Grunt command line tools available locally during the build. 
 
-##### Deploy
+### Deploy
 
 Modify your `package.json` to include an npm `postinstall` script.  This will be run during your applications `npm install` phase.
 
@@ -36,3 +36,7 @@ For convenience, you can use an npm script to run the deploy command. Modify you
 ```
 
 At the terminal you can now run `npm run deploy` to deploy your application.
+
+The `postinstall` script causes the `grunt build` command to be executed after
+the `npm install` command succeeds. This allows you to execute the build after
+deployment.

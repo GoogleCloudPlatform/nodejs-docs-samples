@@ -18,7 +18,9 @@ var router = express.Router();
 
 // [START hello_world]
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Hello World!' });
+  res.render('index', {
+    title: 'Hello World! Express.js on Google App Engine.'
+  });
 });
 // [END hello_world]
 

@@ -2,11 +2,11 @@
 
 > [Loopback](http://loopback.io/) is a highly-extensible, open-source Node.js framework.
 
-##### Create a new Loopback app
+### Create a new Loopback app
 
 [View the Loopback docs](http://loopback.io/getting-started/).
 
-##### Configure
+### Configure
 
 Create an `app.yaml` in the root of your application with the following contents:
 
@@ -18,7 +18,7 @@ env_variables:
   PORT: 8080
 ```
 
-##### Deploy
+### Deploy
 
 For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
 

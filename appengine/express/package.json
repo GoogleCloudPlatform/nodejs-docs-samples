@@ -1,11 +1,15 @@
 {
-  "name": "express",
-  "version": "0.0.0",
+  "name": "appengine-express",
+  "description": "An example of running Express.js on Google App Engine.",
+  "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
+  "engines": {
+    "node": "~0.12.7"
+  },
   "scripts": {
     "start": "node ./bin/www",
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project express-demo"
+    "deploy": "gcloud preview app deploy app.yaml --promote --project express-demo"
   },
   "dependencies": {
     "body-parser": "^1.14.1",

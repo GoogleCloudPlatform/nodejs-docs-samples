@@ -1,27 +1,16 @@
 {
   "name": "appengine-restify",
-  "version": "1.0.0",
-  "description": "An example of running restify with node.js on Google App Engine. ",
-  "main": "server.js",
-  "scripts": {
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project restify-demo"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/JustinBeckwith/appengine-nodejs-samples"
-  },
-  "keywords": [
-    "restify",
-    "appengine",
-    "google",
-    "nodejs"
-  ],
-  "author": "Justin Beckwith",
+  "description": "An example of running Restify.js on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
   "license": "Apache Version 2.0",
-  "bugs": {
-    "url": "https://github.com/JustinBeckwith/appengine-nodejs-samples/issues"
+  "engines": {
+    "node": "~0.12.7"
   },
-  "homepage": "https://github.com/JustinBeckwith/appengine-nodejs-samples",
+  "scripts": {
+    "start": "node server.js",
+    "deploy": "gcloud preview app deploy app.yaml --promote --project restify-demo"
+  },
   "dependencies": {
     "restify": "^4.0.0"
   }

@@ -39,13 +39,19 @@ server.connection({
 
 ### Deploy
 
-For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+For convenience, you can use an npm script to run the `gcloud` command. Add
+these lines to your `package.json` file:
 
 ```json
 "scripts": {
   "start": "node index.js",
-  "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
+  "deploy": "gcloud preview app deploy app.yaml --promote --project <your-project-id>"
 }
 ```
 
-At the terminal you can now run `npm run deploy` to deploy your application.
+At the terminal you can now run the following command to deploy your
+application:
+
+```
+$ npm deploy
+```

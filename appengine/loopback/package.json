@@ -1,31 +1,26 @@
 {
   "name": "appengine-loopback",
-  "version": "1.0.0",
-  "main": "server/server.js",
+  "description": "An example of running Loopback.js on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "engines": {
+    "node": "~0.12.7"
+  },
   "scripts": {
     "pretest": "jshint .",
-    "start": "node .",
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project strongloop-demo"
+    "start": "node server/server.js",
+    "deploy": "gcloud preview app deploy app.yaml --promote --project strongloop-demo"
   },
   "dependencies": {
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "errorhandler": "^1.1.1",
+    "jshint": "^2.5.6",
     "loopback": "^2.14.0",
     "loopback-boot": "^2.6.5",
     "loopback-datasource-juggler": "^2.19.0",
+    "loopback-explorer": "^1.1.0",
     "serve-favicon": "^2.0.1"
-  },
-  "optionalDependencies": {
-    "loopback-explorer": "^1.1.0"
-  },
-  "devDependencies": {
-    "jshint": "^2.5.6"
-  },
-  "repository": {
-    "type": "",
-    "url": ""
-  },
-  "license": "Apache Version 2.0",
-  "description": "An example of running loopback on Google App Engine."
+  }
 }

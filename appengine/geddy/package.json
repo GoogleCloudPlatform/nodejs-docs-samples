@@ -1,17 +1,18 @@
 {
   "name": "appengine-geddy",
-  "description": "An example of running geddy on Google App Engine. ",
-  "author": "",
+  "description": "An example of running Geddy.js on Google App Engine.",
   "version": "0.0.1",
+  "private": true,
   "license": "Apache Version 2.0",
-  "dependencies": {
-    "geddy": "^13.0.8"
-  },
-  "devDependencies": {},
   "engines": {
-    "node": "0.12.x"
+    "node": "~0.12.7"
   },
   "scripts": {
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project geddy-demo"
+    "start": "node node_modules/geddy/bin/cli.js",
+    "debug": "node node_modules/geddy/bin/cli.js --debug",
+    "deploy": "gcloud preview app deploy app.yaml --promote --project geddy-demo"
+  },
+  "dependencies": {
+    "geddy": "^13.0.8"
   }
 }

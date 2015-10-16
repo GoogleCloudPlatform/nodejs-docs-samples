@@ -4,7 +4,7 @@
   "description": "An example of using redis with Google App Engine.",
   "main": "server.js",
   "scripts": {
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project node-redis-demo"
+    "deploy": "gcloud preview app deploy app.yaml --promote --project node-redis-demo"
   },
   "repository": {
     "type": "git",

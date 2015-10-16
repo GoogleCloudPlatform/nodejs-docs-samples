@@ -35,7 +35,7 @@ var config = {
     excludePattern: '\\.git|node_modules'
   },
   hostname: null,
-  port: 4000,
+  port: process.env.PORT || 8080,
   model: {
     defaultAdapter: 'filesystem'
   },

@@ -50,7 +50,7 @@ For convenience, you can use an npm script to run the deploy command. Modify you
 ```json
 "scripts": {
   "start": "node ./bin/www",
-  "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
+  "deploy": "gcloud preview app deploy app.yaml --promote --project <your-project-id>"
 }
 ```
 

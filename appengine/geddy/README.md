@@ -8,7 +8,8 @@
 
 ### Configure
 
-Create an `app.yaml` in the root of your application with the following contents:
+Create an `app.yaml` in the root of your application with the following
+contents:
 
 ```yaml
 runtime: nodejs
@@ -20,26 +21,40 @@ env_variables:
 
 ### Prepare the app
 
-Create a `server.js` that contains the following code:
+If you haven't already, install the Geddy CLI:
 
-```js
-var geddy = require('geddy');
-
-geddy.start({
-  port: process.env.PORT || 8080
-});
+```
+$ npm install -g geddy
 ```
 
-Run `npm install --save geddy`
+Create a `config/secrets.json` file:
+
+```
+$ echo "{}" > config/secrets.json
+```
+
+Generate an app secret:
+
+```
+$ geddy gen secret
+```
 
 ### Deploy
 
-For convenience, you can use an npm script to run the deploy command. Modify your `package.json` to include:
+For convenience, you can use an npm script to run the `gcloud` command. Add
+these lines to your `package.json` file:
 
 ```json
 "scripts": {
-  "deploy": "gcloud preview app deploy app.yaml --set-default --project [project id]"
+  "start": "node node_modules/geddy/bin/cli.js",
+  "debug": "node node_modules/geddy/bin/cli.js --debug",
+  "deploy": "gcloud preview app deploy app.yaml --promote --project <your-project-id>"
 }
 ```
 
-At the terminal you can now run `npm run deploy` to deploy your application.
+At the terminal you can now run the following command to deploy your
+application:
+
+```
+$ npm deploy
+```

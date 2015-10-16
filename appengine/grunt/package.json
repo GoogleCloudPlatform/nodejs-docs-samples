@@ -1,29 +1,30 @@
 {
-  "name": "appengine-grunt",
-  "version": "0.0.0",
+  "name": "appengine-gruntjs",
+  "description": "An example of running Grunt.js on Google App Engine.",
+  "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
+  "engines": {
+    "node": "~0.12.7"
+  },
   "scripts": {
     "start": "node ./src/bin/www",
     "postinstall": "./node_modules/grunt-cli/bin/grunt build",
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project gruntjs-demo",
-    "browse": "open http://gruntjs-demo.appspot.com"
+    "deploy": "gcloud preview app deploy app.yaml --promote --project gruntjs-demo"
   },
   "dependencies": {
     "body-parser": "^1.14.1",
     "cookie-parser": "^1.4.0",
     "debug": "^2.2.0",
     "express": "^4.13.3",
-    "jade": "^1.11.0",
-    "morgan": "^1.6.1",
-    "serve-favicon": "^2.3.0"
-  },
-  "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-jshint": "^0.11.2",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt-contrib-watch": "^0.6.1",
+    "jade": "^1.11.0",
+    "morgan": "^1.6.1",
+    "serve-favicon": "^2.3.0"
   }
 }

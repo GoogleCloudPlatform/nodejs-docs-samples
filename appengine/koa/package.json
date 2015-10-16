@@ -1,29 +1,17 @@
 {
-  "name": "koa-appengine",
-  "version": "1.0.0",
-  "description": "An example of deploying a koa app to Google App Engine",
-  "main": "app.js",
-  "dependencies": {
-    "koa": "^1.0.0"
+  "name": "appengine-koa",
+  "description": "An example of running Koa.js on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "engines": {
+    "node": "~0.12.7"
   },
-  "devDependencies": {},
   "scripts": {
     "start": "node --harmony app.js",
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project koa-demo"
+    "deploy": "gcloud preview app deploy app.yaml --promote --project koa-demo"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/JustinBeckwith/appengine-nodejs-samples"
-  },
-  "keywords": [
-    "nodejs",
-    "appengine",
-    "koa"
-  ],
-  "author": "Justin Beckwith",
-  "license": "Apache Version 2.0",
-  "bugs": {
-    "url": "https://github.com/JustinBeckwith/appengine-nodejs-samples/issues"
-  },
-  "homepage": "https://github.com/JustinBeckwith/appengine-nodejs-samples"
+  "dependencies": {
+    "koa": "^1.0.0"
+  }
 }

@@ -1,19 +1,18 @@
 {
   "name": "appengine-kraken",
-  "version": "0.1.0",
-  "description": "An example of running krakenjs on Google App Engine. ",
-  "author": "Justin Beckwith",
+  "description": "An example of running Kraken.js on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
   "license": "Apache Version 2.0",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/JustinBeckwith/appengine-nodejs-samples"
+  "engines": {
+    "node": "~0.12.7"
   },
   "scripts": {
-    "test": "grunt test",
-    "build": "grunt build",
+    "test": "node_modules/grunt-cli/bin/grunt test",
+    "build": "node_modules/grunt-cli/bin/grunt build",
     "all": "npm run build && npm run test",
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project kraken-demo"
+    "start": "node server.js",
+    "deploy": "gcloud preview app deploy app.yaml --promote --project kraken-demo"
   },
   "dependencies": {
     "construx": "^1.0.0",
@@ -22,11 +21,6 @@
     "construx-less": "^1.0.0",
     "dust-makara-helpers": "^4.1.2",
     "express": "^4.12.2",
-    "kraken-js": "^1.0.3",
-    "makara": "^2.0.3",
-    "requirejs": "^2.1.20"
-  },
-  "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-config-dir": "^0.3.2",
@@ -38,7 +32,10 @@
     "grunt-dustjs": "^1.2.1",
     "grunt-makara-amdify": "^1.0.1",
     "grunt-mocha-cli": "^1.14.0",
+    "kraken-js": "^1.0.3",
+    "makara": "^2.0.3",
     "mocha": "^2.3.3",
+    "requirejs": "^2.1.20",
     "supertest": "^1.1.0"
   }
 }

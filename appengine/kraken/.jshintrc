@@ -7,10 +7,6 @@
 
     // Predefined globals
 
-    "globals": {
-      "requirejs": true
-    },
-
     // Whether the standard browser globals should be predefined.
     "browser": false,
     // Whether the Node.js environment globals should be predefined.

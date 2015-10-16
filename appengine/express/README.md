@@ -4,6 +4,8 @@
 application framework that provides a robust set of features for web and mobile
 applications.
 
+You can view the deployed demo app [here](https://express-demo.appspot.com).
+
 ### Create a new Express app
 
 View the [Express app generator guide](http://expressjs.com/starter/generator.html).

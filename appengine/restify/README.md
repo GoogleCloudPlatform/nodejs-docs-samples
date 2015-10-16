@@ -2,6 +2,8 @@
 
 > [Restify](http://mcavage.me/node-restify/) is a node.js module built specifically to enable you to build correct REST web services.
 
+You can view the deployed demo app [here](https://restify-demo.appspot.com).
+
 ### Create a new  Restify app
 
 Create a new directory for your code.

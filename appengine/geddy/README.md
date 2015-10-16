@@ -2,6 +2,8 @@
 
 > [Geddy](http://geddyjs.org/) is a simple, structured web framework for Node.
 
+You can view the deployed demo app [here](https://geddy-demo.appspot.com).
+
 ### Create a new Geddy app
 
 [View the Geddy tutorial](http://geddyjs.org/tutorial).

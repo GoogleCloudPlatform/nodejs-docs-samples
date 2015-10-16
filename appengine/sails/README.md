@@ -2,6 +2,8 @@
 
 > [Sails](http://sailsjs.org/) makes it easy to build custom, enterprise-grade Node.js apps.
 
+You can view the deployed demo app [here](https://sails-demo.appspot.com).
+
 ### Create a new Sails app
 
 [View the Sails docs](http://sailsjs.org/get-started)

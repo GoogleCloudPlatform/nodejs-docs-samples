@@ -2,6 +2,8 @@
 
 > [Kraken](http://krakenjs.com) is a secure and scalable layer that extends express by providing structure and convention.
 
+You can view the deployed demo app [here](https://kraken-demo.appspot.com).
+
 ### Create a new Kraken app
 
 [View the Kraken docs](http://krakenjs.com/index.html#getting-started).

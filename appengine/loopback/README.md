@@ -2,6 +2,8 @@
 
 > [Loopback](http://loopback.io/) is a highly-extensible, open-source Node.js framework.
 
+You can view the deployed demo app [here](https://strongloop-demo.appspot.com).
+
 ### Create a new Loopback app
 
 [View the Loopback docs](http://loopback.io/getting-started/).

@@ -2,6 +2,8 @@
 
 > [koa](http://koajs.com) is a next generation web framework for node.js
 
+You can view the deployed demo app [here](https://koa-demo.appspot.com).
+
 ### Create a new Koa app
 
 [View the Koa docs](http://koajs.com/).

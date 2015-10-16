@@ -2,6 +2,8 @@
 
 > [Hapi](http://hapijs.com/) is a rich framework for building applications and services. Hapi enabled developers to focus on writing reusable application logic instead of spending time building infrastructure.
 
+You can view the deployed demo app [here](https://hapi-demo.appspot.com).
+
 ### Create a new Hapi app
 
 [View the Hapi docs](http://hapijs.com/).

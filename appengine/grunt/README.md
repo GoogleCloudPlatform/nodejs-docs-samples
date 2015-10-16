@@ -2,6 +2,8 @@
 
 > [Grunt](http://gruntjs.com/): The JavaScript Task Runner.
 
+You can view the deployed demo app [here](https://gruntjs-demo.appspot.com).
+
 ### Create a new app
 
 [View the Grunt docs](http://gruntjs.com/getting-started).

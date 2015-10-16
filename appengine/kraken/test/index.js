@@ -37,7 +37,7 @@ describe('index', function () {
             .expect(200)
             .expect('Content-Type', /html/)
             
-                .expect(/Hello, /)
+                .expect('Hello World! Kraken.js on Google App Engine.')
             
             .end(function (err, res) {
                 done(err);

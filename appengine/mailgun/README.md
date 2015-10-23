@@ -1,6 +1,8 @@
 ## Mailgun on Google App Engine with Node.js
 
 > [Mailgun](https://www.mailgun.com/): The Email Service For Developers
+>
+> – www.mailgun.com
 
 This sample application demonstrates how to use
 [Express.js](http://expressjs.com) and

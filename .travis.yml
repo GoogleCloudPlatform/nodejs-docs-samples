@@ -7,6 +7,20 @@ node_js:
 cache:
   directories:
   - $HOME/gcloud/
+  - appengine/express/node_modules/
+  - appengine/geddy/node_modules/
+  - appengine/grunt/node_modules/
+  - appengine/hapi/node_modules/
+  - appengine/kraken/node_modules/
+  - appengine/loopback/node_modules/
+  - appengine/mailgun/node_modules/
+  - appengine/redis/node_modules/
+  - appengine/restify/node_modules/
+  - appengine/sails/node_modules/
+
+services:
+  - redis-server
+
 env:
 - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/nodejs-docs-samples.json TEST_BUCKET_NAME=cloud-samples-tests TEST_PROJECT_ID=cloud-samples-tests #Other environment variables on same line
 
@@ -38,6 +52,3 @@ before_install:
 install:
 #Add app specific setup here
 #Use '-q' to disable interactive prompts
-
-script:
-  - jshint --exclude-path=.jshintignore .

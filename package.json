@@ -4,8 +4,9 @@
   "description": "Samples used in the nodejs documentation on cloud.google.com",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive",
-    "jshint": "jshint --exclude-path=.jshintignore ."
+    "jshint": "jshint --exclude-path=.jshintignore .",
+    "mocha": "mocha --timeout 10000 --recursive",
+    "test": "npm run jshint && npm run mocha"
   },
   "author": "jerjou@google.com",
   "license": "Apache 2",
@@ -14,9 +15,10 @@
     "googleapis": "~2.1.3"
   },
   "devDependencies": {
-    "mocha": "~2.2.5",
     "jshint": "~2.8.0",
-    "lodash": "~3.10.1"
+    "lodash": "~3.10.1",
+    "mocha": "^2.2.5",
+    "request": "^2.65.0"
   },
   "repository": {
     "type": "git",

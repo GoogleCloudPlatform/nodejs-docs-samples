@@ -1,27 +1,16 @@
 {
   "name": "appengine-redis",
-  "version": "1.0.0",
-  "description": "An example of using redis with Google App Engine.",
-  "main": "server.js",
+  "description": "An example of using Redis with Node.js on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "engines": {
+    "node": "~0.12.7"
+  },
   "scripts": {
+    "start": "node server.js",
     "deploy": "gcloud preview app deploy app.yaml --promote --project node-redis-demo"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/JustinBeckwith/appengine-nodejs-samples"
-  },
-  "keywords": [
-    "nodejs",
-    "redis",
-    "appengine",
-    "google"
-  ],
-  "author": "Justin Beckwith",
-  "license": "Apache Version 2.0",
-  "bugs": {
-    "url": "https://github.com/JustinBeckwith/appengine-nodejs-samples/issues"
-  },
-  "homepage": "https://github.com/JustinBeckwith/appengine-nodejs-samples",
   "dependencies": {
     "nconf": "^0.8.0",
     "redis": "^2.0.1"

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project express-demo"
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "body-parser": "^1.14.1",

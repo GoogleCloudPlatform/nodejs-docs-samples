@@ -1,3 +1,5 @@
 **/node_modules/**
 npm-debug.log
 coverage/
+
+test/encrypted/nodejs-docs-samples.json

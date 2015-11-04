@@ -1,41 +1,13 @@
-## Sails on Google App Engine
+## Sails.js on Google App Engine
 
-> [Sails](http://sailsjs.org/) makes it easy to build custom, enterprise-grade Node.js apps.
+> [Sails][1] makes it easy to build custom, enterprise-grade Node.js apps.
 
-You can view the deployed demo app [here](https://sails-demo.appspot.com).
+Read the [Sails.js on App Engine Tutorial][2] for how to run and deploy this
+sample app.
 
-### Create a new Sails app
+You can also view the [live demo][3] and read the [Sails.js documentation][4].
 
-[View the Sails docs](http://sailsjs.org/get-started)
-
-### Configure
-
-Create an `app.yaml` in the root of your application with the following contents:
-
-```yaml
-runtime: nodejs
-vm: true
-api_version: 1
-env_variables:
-  PORT: 8080
-```
-
-### Deploy
-
-For convenience, you can use an npm script to run the `gcloud` command. Add
-these lines to your `package.json` file:
-
-```json
-"scripts": {
-  "debug": "node debug app.js",
-  "start": "node app.js",
-  "deploy": "gcloud preview app deploy app.yaml --promote --project <your-project-id>"
-}
-```
-
-At the terminal you can now run the following command to deploy your
-application:
-
-```
-$ npm deploy
-```
+[1]: http://sailsjs.org/
+[2]: https://cloud.google.com/nodejs/resources/frameworks/sails
+[3]: http://sails-dot-nodejs-docs-samples.appspot.com
+[4]: http://sailsjs.org/get-started

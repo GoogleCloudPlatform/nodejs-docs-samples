@@ -1,59 +1,15 @@
-## Hapi on Google App Engine
+## Hapi.js on Google App Engine
 
-> [Hapi](http://hapijs.com/) is a rich framework for building applications and services. Hapi enabled developers to focus on writing reusable application logic instead of spending time building infrastructure.
+> [Hapi][1] is a rich framework for building applications and services. Hapi
+enabled developers to focus on writing reusable application logic instead of
+spending time building infrastructure.
 
-You can view the deployed demo app [here](https://hapi-demo.appspot.com).
+Read the [Hapi.js on App Engine Tutorial][2] for how to run and deploy this
+sample app.
 
-### Create a new Hapi app
+You can also view the [live demo][3] and read the [Hapi.js documentation][4].
 
-[View the Hapi docs](http://hapijs.com/).
-
-### Configure
-
-Create an `app.yaml` in the root of your application with the following contents:
-
-```yaml
-runtime: nodejs
-vm: true
-api_version: 1
-env_variables:
-  PORT: 8080
-```
-
-### Prepare the app
-
-Update `package.json` to add an `npm start` command:
-
-```json
-"scripts": {
-  "start": "node index.js",
-}
-```
-
-Update the port in `index.js` to use `process.env.PORT || 8080`, and `0.0.0.0`:
-
-```js
-server.connection({
-  host: '0.0.0.0',
-  port: process.env.PORT || 8080
-});
-```
-
-### Deploy
-
-For convenience, you can use an npm script to run the `gcloud` command. Add
-these lines to your `package.json` file:
-
-```json
-"scripts": {
-  "start": "node index.js",
-  "deploy": "gcloud preview app deploy app.yaml --promote --project <your-project-id>"
-}
-```
-
-At the terminal you can now run the following command to deploy your
-application:
-
-```
-$ npm deploy
-```
+[1]: http://hapijs.com/
+[2]: https://cloud.google.com/nodejs/resources/frameworks/hapi
+[3]: http://hapi-dot-nodejs-docs-samples.appspot.com
+[4]: http://hapijs.com/

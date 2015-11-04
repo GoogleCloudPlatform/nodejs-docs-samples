@@ -1,40 +1,13 @@
-## Loopback on Google App Engine
+## Loopback.js on Google App Engine
 
-> [Loopback](http://loopback.io/) is a highly-extensible, open-source Node.js framework.
+> [Loopback][1] is a highly-extensible, open-source Node.js framework.
 
-You can view the deployed demo app [here](https://strongloop-demo.appspot.com).
+Read the [Loopback.js on App Engine Tutorial][2] for how to run and deploy this
+sample app.
 
-### Create a new Loopback app
+You can also view the [live demo][3] and read the [Loopback.js documentation][4].
 
-[View the Loopback docs](http://loopback.io/getting-started/).
-
-### Configure
-
-Create an `app.yaml` in the root of your application with the following contents:
-
-```yaml
-runtime: nodejs
-vm: true
-api_version: 1
-env_variables:
-  PORT: 8080
-```
-
-### Deploy
-
-For convenience, you can use an npm script to run the `gcloud` command. Add
-these lines to your `package.json` file:
-
-```json
-"scripts": {
-  "start": "node server/server.js",
-  "deploy": "gcloud preview app deploy app.yaml --promote --project [project id]"
-}
-```
-
-At the terminal you can now run the following command to deploy your
-application:
-
-```
-$ npm deploy
-```
+[1]: http://loopback.io/
+[2]: https://cloud.google.com/nodejs/resources/frameworks/loopback
+[3]: http://loopback-dot-nodejs-docs-samples.appspot.com
+[4]: http://loopback.io/getting-started/

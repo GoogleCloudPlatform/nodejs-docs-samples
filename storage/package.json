@@ -1,0 +1,13 @@
+{
+  "name": "nodejs-docs-samples-storage",
+  "description": "Node.js samples for Google Cloud Storage.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "scripts": {
+    "authSample": "node authSample.js"
+  },
+  "dependencies": {
+    "googleapis": "^2.1.6"
+  }
+}

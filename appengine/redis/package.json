@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project node-redis-demo"
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "nconf": "^0.8.0",

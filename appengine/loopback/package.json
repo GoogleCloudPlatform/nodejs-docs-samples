@@ -10,7 +10,7 @@
   "scripts": {
     "pretest": "jshint .",
     "start": "node server/server.js",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project strongloop-demo"
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "compression": "^1.0.3",

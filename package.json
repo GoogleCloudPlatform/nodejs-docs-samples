@@ -1,14 +1,9 @@
 {
   "name": "nodejs-docs-samples",
+  "description": "Node.js samples found on https://cloud.google.com",
   "version": "0.0.1",
-  "description": "Samples used in the nodejs documentation on cloud.google.com",
-  "scripts": {
-    "jshint": "jshint --exclude-path=.jshintignore .",
-    "mocha": "mocha --timeout 10000 --recursive",
-    "cover": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- --timeout 10000 --recursive",
-    "coveralls": "cat ./coverage/lcov.info | node_modules/.bin/coveralls",
-    "test": "npm run jshint && npm run cover"
-  },
+  "private": true,
+  "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "contributors": [
     {
@@ -20,21 +15,28 @@
       "email": "jason.dobry@gmail.com"
     }
   ],
-  "license": "Apache Version 2.0",
-  "private": true,
-  "dependencies": {
-    "googleapis": "~2.1.3"
-  },
-  "devDependencies": {
-    "coveralls": "^2.11.4",
-    "istanbul": "^0.4.0",
-    "jshint": "~2.8.0",
-    "lodash": "~3.10.1",
-    "mocha": "^2.2.5",
-    "request": "^2.65.0"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/python-docs-samples.git"
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "scripts": {
+    "jshint": "jshint --exclude-path=.jshintignore .",
+    "mocha": "mocha --timeout 10000 --recursive",
+    "cover": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- --timeout 10000 --recursive",
+    "coveralls": "cat ./coverage/lcov.info | node_modules/.bin/coveralls",
+    "pretest_express": "cd appengine/express && npm install && cd ../..",
+    "pretest_geddy": "cd appengine/geddy && npm install geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
+    "pretest": "npm run pretest_express && npm run pretest_geddy",
+    "test": "npm run jshint && npm run cover"
+  },
+  "devDependencies": {
+    "async": "^1.5.0",
+    "coveralls": "^2.11.4",
+    "googleapis": "^2.1.6",
+    "istanbul": "^0.4.0",
+    "jshint": "~2.8.0",
+    "mocha": "^2.2.5",
+    "request": "^2.65.0",
+    "supertest": "^1.1.0"
   }
 }

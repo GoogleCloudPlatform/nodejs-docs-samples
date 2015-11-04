@@ -8,9 +8,10 @@
     "node": "~0.12.7"
   },
   "scripts": {
-    "start": "node node_modules/geddy/bin/cli.js",
-    "debug": "node node_modules/geddy/bin/cli.js --debug",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project geddy-demo"
+    "prestart": "GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && geddy gen secret",
+    "start": "geddy",
+    "debug": "geddy --debug",
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "geddy": "^13.0.8"

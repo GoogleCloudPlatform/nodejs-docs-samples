@@ -1,40 +1,14 @@
-## Kraken on Google App Engine
+## Kraken.js on Google App Engine
 
-> [Kraken](http://krakenjs.com) is a secure and scalable layer that extends express by providing structure and convention.
+> [Kraken][1] is a secure and scalable layer that extends express by providing
+structure and convention.
 
-You can view the deployed demo app [here](https://kraken-demo.appspot.com).
+Read the [Kraken.js on App Engine Tutorial][2] for how to run and deploy this
+sample app.
 
-### Create a new Kraken app
+You can also view the [live demo][3] and read the [Kraken.js documentation][4].
 
-[View the Kraken docs](http://krakenjs.com/index.html#getting-started).
-
-### Configure
-
-Create an `app.yaml` in the root of your application with the following contents:
-
-```yaml
-runtime: nodejs
-vm: true
-api_version: 1
-env_variables:
-  PORT: 8080
-```
-
-### Deploy
-
-For convenience, you can use an npm script to run the `gcloud` command. Add
-these lines to your `package.json` file:
-
-```json
-"scripts": {
-  "start": "server.js",
-  "deploy": "gcloud preview app deploy app.yaml --promote --project <your-project-id>"
-}
-```
-
-At the terminal you can now run the following command to deploy your
-application:
-
-```
-$ npm deploy
-```
+[1]: http://krakenjs.com
+[2]: https://cloud.google.com/nodejs/resources/frameworks/kraken
+[3]: http://kraken-dot-nodejs-docs-samples.appspot.com
+[4]: http://krakenjs.com/index.html#getting-started

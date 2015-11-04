@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project restify-demo"
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "restify": "^4.0.0"

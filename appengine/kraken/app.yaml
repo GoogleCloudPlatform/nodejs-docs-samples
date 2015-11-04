@@ -14,7 +14,6 @@
 # [START app_yaml]
 runtime: nodejs
 vm: true
-api_version: 1
 env_variables:
   PORT: 8080
 # [END app_yaml]

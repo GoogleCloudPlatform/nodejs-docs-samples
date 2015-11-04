@@ -2,19 +2,32 @@
   "name": "nodejs-docs-samples",
   "version": "0.0.1",
   "description": "Samples used in the nodejs documentation on cloud.google.com",
-  "main": "index.js",
   "scripts": {
     "jshint": "jshint --exclude-path=.jshintignore .",
     "mocha": "mocha --timeout 10000 --recursive",
-    "test": "npm run jshint && npm run mocha"
+    "cover": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- --timeout 10000 --recursive",
+    "coveralls": "cat ./coverage/lcov.info | node_modules/.bin/coveralls",
+    "test": "npm run jshint && npm run cover"
   },
-  "author": "jerjou@google.com",
-  "license": "Apache 2",
+  "author": "Google Inc.",
+  "contributors": [
+    {
+      "name": "Jerjou",
+      "email": "jerjou@google.com"
+    },
+    {
+      "name": "Jason Dobry",
+      "email": "jason.dobry@gmail.com"
+    }
+  ],
+  "license": "Apache Version 2.0",
   "private": true,
   "dependencies": {
     "googleapis": "~2.1.3"
   },
   "devDependencies": {
+    "coveralls": "^2.11.4",
+    "istanbul": "^0.4.0",
     "jshint": "~2.8.0",
     "lodash": "~3.10.1",
     "mocha": "^2.2.5",

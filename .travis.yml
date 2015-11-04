@@ -52,3 +52,6 @@ before_install:
 install:
 #Add app specific setup here
 #Use '-q' to disable interactive prompts
+
+after_success:
+  - npm run coveralls

@@ -3,3 +3,4 @@ appengine/sails/config/**
 appengine/sails/tasks/**
 appengine/sails/assets/**
 **/node_modules/**
+coverage/

@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "deploy": "gcloud preview app deploy app.yaml --set-default --project express-memcached-demo"
+    "deploy": "gcloud preview app deploy app.yaml --promote --project express-memcached-demo"
+  },
+  "engines": {
+    "node": "~0.12.7"
   },
   "dependencies": {
     "connect-memcached": "^0.1.0",

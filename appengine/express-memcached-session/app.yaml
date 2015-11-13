@@ -10,10 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
+# [START app_yaml]
 runtime: nodejs
-api_version: 1
 vm: true
 env_variables:
   PORT: 8080
   MEMCACHE_URL: localhost:11211
+# [END app_yaml]

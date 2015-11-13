@@ -1,14 +1,14 @@
 # Google Cloud Platform NodeJS Samples
 
 This repository holds the samples used in the nodejs documentation on
-[cloud.google.com/nodejs](https://cloud.google.com/nodejs).  
+[cloud.google.com/nodejs](https://cloud.google.com/nodejs).
 
 [![Build Status](https://travis-ci.org/GoogleCloudPlatform/nodejs-docs-samples.svg)](https://travis-ci.org/GoogleCloudPlatform/nodejs-docs-samples)
 
 ## Google App Engine
 
 This is a collection of samples and instructions to run common nodejs frameworks
-and applications on [Google App Engine](http://cloud.google.com/nodejs).  
+and applications on [Google App Engine](http://cloud.google.com/nodejs).
 
 ### Frameworks
 

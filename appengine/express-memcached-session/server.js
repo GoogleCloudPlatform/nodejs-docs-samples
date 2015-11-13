@@ -16,7 +16,6 @@
 var express = require('express');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
-var http = require('http');
 var MemcachedStore = require('connect-memcached')(session);
 var publicIp = require('public-ip');
 
@@ -24,29 +23,33 @@ var app = express();
 
 app.use(cookieParser());
 app.use(session({
-    secret: 'appengineFTW',
-    key: 'test',
-    proxy: 'true',
-    store: new MemcachedStore({
-        hosts: [process.env.MEMCACHE_URL || '127.0.0.1:11211']
-    })
+  secret: 'your-secret-here',
+  key: 'view:count',
+  proxy: 'true',
+  store: new MemcachedStore({
+    hosts: [process.env.MEMCACHE_URL || '127.0.0.1:11211']
+  })
 }));
 
 app.get('/', function(req, res){
-    publicIp.v4(function (err, ip) {
+  publicIp.v4(function (err, ip) {
 
-        // This shows the IP for each 
-        res.write('<div>' + ip + '</div>');
-   
-        if(req.session.views) {
-            ++req.session.views;
-        } else {
-            req.session.views = 1;
-        }
-        res.end('Viewed <strong>' + req.session.views + '</strong> times.');
-    });
+    // This shows the IP for each 
+    res.write('<div>' + ip + '</div>');
+
+    if(req.session.views) {
+      ++req.session.views;
+    } else {
+      req.session.views = 1;
+    }
+    res.end('Viewed <strong>' + req.session.views + '</strong> times.');
+  });
 });
 
-http.createServer(app).listen(process.env.PORT || 8080, function() {
+if (module === require.main) {
+  app.listen(process.env.PORT || 8080, function() {
     console.log('Listening on %d', this.address().port);
-});
+  });  
+}
+
+module.exports = app;

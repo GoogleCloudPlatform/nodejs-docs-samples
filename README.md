@@ -13,6 +13,7 @@ and applications on [Google App Engine](http://cloud.google.com/nodejs).
 ### Frameworks
 
 - Express.js - [Source code][express_1] | [App Engine Tutorial][express_2] | [Live demo][express_3] | [Documentation][express_4]
+  - Express.js + Memcached Sessions - [Source code][express_5] | [Documentation][express_6]
 - Geddy.js - [Source code][geddy_1] | [App Engine Tutorial][geddy_2] | [Live demo][geddy_3] | [Documentation][geddy_4]
 - Hapi.js - [Source code][hapi_1] | [App Engine Tutorial][hapi_2] | [Live demo][hapi_3] | [Documentation][hapi_4]
 - Loopback.js - [Source code][loopback_1] | [App Engine Tutorial][loopback_2] | [Live demo][loopback_3] | [Documentation][loopback_4]
@@ -68,6 +69,8 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [express_2]: https://cloud.google.com/nodejs/resources/frameworks/express
 [express_3]: http://express-dot-nodejs-docs-samples.appspot.com
 [express_4]: http://expressjs.com/
+[express_5]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/express-memcached-session
+[express_6]: https://github.com/balor/connect-memcached
 
 [geddy_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/geddy
 [geddy_2]: https://cloud.google.com/nodejs/resources/frameworks/geddy

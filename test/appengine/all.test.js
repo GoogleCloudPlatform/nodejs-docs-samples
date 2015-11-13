@@ -35,6 +35,13 @@ var sampleTests = [
     TRAVIS_NODE_VERSION: '0.10'
   },
   {
+    dir: 'express-memcached-session',
+    cmd: 'node',
+    args: ['server.js'],
+    msg: 'Viewed',
+    TRAVIS_NODE_VERSION: '0.10'
+  },
+  {
     dir: 'geddy',
     deploy: true,
     cmd: 'node',
@@ -82,12 +89,12 @@ var sampleTests = [
     args: ['app.js'],
     msg: 'Express.js + Mailgun on Google App Engine.'
   },
-  // {
-  //   dir: 'redis',
-  //   cmd: 'node',
-  //   args: ['server.js'],
-  //   msg: '127.0.0.1'
-  // },
+  {
+    dir: 'redis',
+    cmd: 'node',
+    args: ['server.js'],
+    msg: '127.0.0.1'
+  },
   {
     dir: 'restify',
     deploy: true,
@@ -112,7 +119,7 @@ if (process.env.TRAVIS_NODE_VERSION === '0.10') {
   });
 }
 
-//if (process.env.TRAVIS_NODE_VERSION === 'stable') {
+if (process.env.TRAVIS_NODE_VERSION === 'stable') {
   // For some reason the "npm install" step for the Sails sample doesn't work on
   // Travis when using Node.js stable. It works locally, however.
   sampleTests.push({
@@ -123,7 +130,7 @@ if (process.env.TRAVIS_NODE_VERSION === '0.10') {
     msg: 'Hello World! Koa.js on Google App Engine.',
     TRAVIS_NODE_VERSION: 'stable'
   });
-//}
+}
 
 // Send a request to the given url and test that the response body has the
 // expected value

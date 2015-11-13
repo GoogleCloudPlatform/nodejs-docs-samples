@@ -34,6 +34,7 @@ cache:
 
 services:
   - redis-server
+  - memcached
   - docker
 
 env:

@@ -12,7 +12,6 @@
 # limitations under the License.
 
 runtime: nodejs
-api_version: 1
 vm: true
 env_variables:
   PORT: 8080

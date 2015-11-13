@@ -1,53 +1,14 @@
-## Grunt on Google App Engine
+## Grunt.js on Google App Engine
 
-> [Grunt](http://gruntjs.com/): The JavaScript Task Runner.
+> [Grunt][1]: The JavaScript Task Runner.
 
-You can view the deployed demo app [here](https://gruntjs-demo.appspot.com).
+Read the [Grunt.js + Express.js on App Engine Tutorial][2] for how to run and
+deploy this sample app.
 
-### Create a new app
+You can also view the [live demo][3] and read the [Grunt.js documentation][4].
 
-[View the Grunt docs](http://gruntjs.com/getting-started).
 
-### Configure
-
-Create an `app.yaml` in the root of your application with the following
-contents:
-
-```yaml
-runtime: nodejs
-vm: true
-api_version: 1
-env_variables:
-  NPM_CONFIG_DEV: true
-  PORT: 8080
-```
-
-Run `npm install --save-dev grunt-cli` to make the Grunt command line tools
-available locally during the build.
-
-### Deploy
-
-Modify your `package.json` to include an npm `postinstall` script.  This will
-be run during your applications `npm install` phase.
-
-For convenience, you can use an npm script to run the deploy command. Modify
-your `package.json` to include:
-
-```json
-"scripts": {
-  "start": "node ./src/bin/www",
-  "postinstall": "./node_modules/grunt-cli/bin/grunt build",
-  "deploy": "gcloud preview app deploy app.yaml --promote --project <your-project-id>"
-}
-```
-
-At the terminal you can now run the following command to deploy your
-application:
-
-```
-$ npm deploy
-```
-
-The `postinstall` script causes the `grunt build` command to be executed after
-the `npm install` command succeeds. This allows you to execute the build after
-deployment.
+[1]: http://gruntjs.com/
+[2]: https://cloud.google.com/nodejs/resources/tools/grunt
+[3]: http://grunt-dot-nodejs-docs-samples.appspot.com
+[4]: http://gruntjs.com/getting-started

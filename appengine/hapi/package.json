@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project hapi-demo"
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "hapi": "^10.5.0"

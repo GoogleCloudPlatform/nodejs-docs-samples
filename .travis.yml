@@ -1,7 +1,21 @@
-sudo: false
+# Copyright 2015, Google, Inc.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+sudo: required
 language: node_js
 node_js:
 - "stable"
+- "0.12"
 - "0.10"
 
 cache:
@@ -20,38 +34,30 @@ cache:
 
 services:
   - redis-server
+  - docker
 
 env:
-- PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/nodejs-docs-samples.json TEST_BUCKET_NAME=cloud-samples-tests TEST_PROJECT_ID=cloud-samples-tests #Other environment variables on same line
+  - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/encrypted/nodejs-docs-samples.json TEST_BUCKET_NAME=nodejs-docs-samples TEST_PROJECT_ID=nodejs-docs-samples #Other environment variables on same line
 
 before_install:
-#ENCRYPT YOUR PRIVATE KEY (If you need authentication)
-# 1. Install and login to the Travis CLI:
-#       $ gem install travis
-#       $ travis login
-# 2. Move your json private key to client_secrets.json
-# 3. Run:
-#       $ travis encrypt-file client_secrets.json --add
-# 4. Commit changes:
-#       $ git add client_secrets.json.enc
-#       $ git commit client_secrets.json.enc .travis.yml
-
-- if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
-        mkdir -p $HOME/gcloud &&
-        wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&
-        cd $HOME/gcloud &&
-        tar xzf google-cloud-sdk.tar.gz &&
-        printf '\ny\n\ny\ny\n' | ./google-cloud-sdk/install.sh &&
-        cd $TRAVIS_BUILD_DIR;
-  fi
-- openssl aes-256-cbc -K $encrypted_95e832a36b06_key -iv $encrypted_95e832a36b06_iv -in nodejs-docs-samples.json.enc -out nodejs-docs-samples.json -d
-- if [ -a nodejs-docs-samples.json ]; then
-        gcloud auth activate-service-account --key-file nodejs-docs-samples.json;
-  fi
-
-install:
-#Add app specific setup here
-#Use '-q' to disable interactive prompts
+  - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
+      mkdir -p $HOME/gcloud &&
+      wget https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&
+      cd $HOME/gcloud &&
+      tar xzf google-cloud-sdk.tar.gz &&
+      printf '\ny\n\ny\ny\n' | ./google-cloud-sdk/install.sh &&
+      source /home/travis/.bash_profile &&
+      cd $TRAVIS_BUILD_DIR;
+    fi
+  - gcloud components update -q
+  - gcloud components update app -q
+  - openssl aes-256-cbc -K $encrypted_fda0b707c7d5_key -iv $encrypted_fda0b707c7d5_iv -in test/encrypted/nodejs-docs-samples.json.enc -out test/encrypted/nodejs-docs-samples.json -d
+  - if [ -a test/encrypted/nodejs-docs-samples.json ]; then
+      gcloud auth activate-service-account --key-file test/encrypted/nodejs-docs-samples.json;
+    fi
 
 after_success:
   - npm run coveralls
+
+after_script:
+  - gsutil -m cp *.log gs://nodejs-docs-samples-travis-deployments

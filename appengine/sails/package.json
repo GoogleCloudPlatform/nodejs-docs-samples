@@ -10,7 +10,7 @@
   "scripts": {
     "debug": "node debug app.js",
     "start": "node app.js",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project sails-demo"
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "ejs": "^2.3.4",

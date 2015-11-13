@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node --harmony app.js",
-    "deploy": "gcloud preview app deploy app.yaml --promote --project koa-demo"
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "koa": "^1.0.0"

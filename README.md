@@ -24,6 +24,7 @@ and applications on [Google App Engine](http://cloud.google.com/nodejs).
 ### Databases
 
 - Redis - [Source code][redis_1] | [App Engine Tutorial][redis_2] | [Documentation][redis_3]
+- MongoDB - [Source code][mongo_1] | [App Engine Tutorial][mongo_2] | [Documentation][mongo_3]
 
 ### Tools
 
@@ -106,7 +107,11 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 
 [redis_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/redis
 [redis_2]: https://cloud.google.com/nodejs/resources/databases/redis
-[redis_3]: http://redis.io/
+[redis_3]: https://redis.io/
+
+[mongo_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mongo
+[mongo_2]: https://cloud.google.com/nodejs/resources/databases/mongo
+[mongo_3]: https://docs.mongodb.org/
 
 [gcloud_1]: https://github.com/GoogleCloudPlatform/gcloud-node
 [gcloud_2]: https://googlecloudplatform.github.io/gcloud-node/#/

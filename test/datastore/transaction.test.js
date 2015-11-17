@@ -16,31 +16,33 @@
 var Transaction = require('../../datastore/concepts').Transaction;
 var transaction;
 
-before(function() {
-  var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
-  transaction = new Transaction(projectId);
-});
-
-describe('update', function() {
-  it('performs a transactional update', function(done) {
-    transaction.testTransactionalUpdate(done);
+describe('datastore/concepts/transaction', function () {
+  before(function() {
+    var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+    transaction = new Transaction(projectId);
   });
-});
 
-describe('retry', function() {
-  it('performs retries if necessary', function(done) {
-    transaction.testTransactionalRetry(done);
+  describe('update', function() {
+    it('performs a transactional update', function(done) {
+      transaction.testTransactionalUpdate(done);
+    });
   });
-});
 
-describe('getOrCreate', function() {
-  it('performs a get or create', function(done) {
-    transaction.testTransactionalGetOrCreate(done);
+  describe('retry', function() {
+    it('performs retries if necessary', function(done) {
+      transaction.testTransactionalRetry(done);
+    });
   });
-});
 
-describe('single entity group read only', function() {
-  it('gets a snapshot of task list entities', function(done) {
-    transaction.testSingleEntityGroupReadOnly(done);
+  describe('getOrCreate', function() {
+    it('performs a get or create', function(done) {
+      transaction.testTransactionalGetOrCreate(done);
+    });
+  });
+
+  describe('single entity group read only', function() {
+    it('gets a snapshot of task list entities', function(done) {
+      transaction.testSingleEntityGroupReadOnly(done);
+    });
   });
 });

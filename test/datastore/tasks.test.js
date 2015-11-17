@@ -14,79 +14,72 @@
 'use strict';
 
 var assert = require('assert');
+var async = require('async');
 
 var tasks = require('../../datastore/tasks.js');
+var taskIds = [];
 
-describe('adding an entity', function() {
-  it('should add a task', function(done) {
-    tasks.addEntity('description', done);
+describe('datastore/tasks/', function() {
+
+  after(function (done) {
+    async.parallel(taskIds.map(function(taskId) {
+      return function (cb) {
+        tasks.deleteEntity(taskId, cb);
+      };
+    }), done);
   });
-});
 
-describe('updating an entity', function() {
-  var taskId;
-
-  before(function(done) {
-    getTaskId(function(err, _taskId) {
-      if (err) {
-        done(err);
-        return;
-      }
-
-      taskId = _taskId;
-      done();
+  describe('adding an entity', function() {
+    it('should add a task', function(done) {
+      getTaskId(done);
     });
   });
 
-  it('should mark a task as done', function(done) {
-    tasks.updateEntity(taskId, done);
-  });
-});
-
-describe('retrieving entities', function() {
-  it('should list tasks', function(done) {
-    tasks.retrieveEntities(done);
-  });
-});
-
-describe('deleting an entity', function() {
-  var taskId;
-
-  before(function(done) {
-    getTaskId(function(err, _taskId) {
-      if (err) {
-        done(err);
-        return;
-      }
-
-      taskId = _taskId;
-      done();
+  describe('updating an entity', function() {
+    it('should mark a task as done', function(done) {
+      getTaskId(function (err, taskId) {
+        if (err) {
+          return done(err);
+        }
+        tasks.updateEntity(taskId, done);
+      });
     });
   });
 
-  it('should delete a task', function(done) {
-    tasks.deleteEntity(taskId, done);
-  });
-});
-
-describe('formatting results', function() {
-  var tasks;
-
-  before(function(done) {
-    tasks.retrieveEntities(function(err, _tasks) {
-      if (err) {
-        done(err);
-        return;
-      }
-
-      tasks = _tasks;
-      done();
+  describe('retrieving entities', function() {
+    it('should list tasks', function(done) {
+      tasks.retrieveEntities(done);
     });
   });
 
-  it('should format tasks', function() {
-    assert.doesNotThrow(function() {
-      tasks.formatResults(tasks);
+  describe('deleting an entity', function() {
+    it('should delete a task', function(done) {
+      getTaskId(function (err, taskId) {
+        if (err) {
+          return done(err);
+        }
+        tasks.deleteEntity(taskId, done);
+      });
+    });
+  });
+
+  describe('formatting results', function() {
+    it('should format tasks', function(done) {
+      tasks.retrieveEntities(function(err, _tasks) {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        try {
+          assert.doesNotThrow(function() {
+            tasks.formatTasks(_tasks);
+          });
+          done();
+        } catch (err) {
+          done(err);
+        }
+      });
     });
   });
 });
@@ -99,6 +92,7 @@ function getTaskId(callback) {
     }
 
     var taskId = taskKey.path.pop();
+    taskIds.push(taskId);
     callback(null, taskId);
   });
 }

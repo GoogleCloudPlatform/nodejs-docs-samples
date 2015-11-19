@@ -13,6 +13,8 @@
 
 'use strict';
 
+var testUtil = require('./util.js');
+
 var Transaction = require('../../datastore/concepts').Transaction;
 var transaction;
 
@@ -20,6 +22,13 @@ describe('datastore/concepts/transaction', function () {
   before(function() {
     var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
     transaction = new Transaction(projectId);
+  });
+
+  after(function(done) {
+    var datastore = transaction.datastore;
+    var query = datastore.createQuery('Task');
+
+    testUtil.deleteEntities(datastore, query, done);
   });
 
   describe('update', function() {

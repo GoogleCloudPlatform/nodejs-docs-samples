@@ -13,6 +13,8 @@
 
 'use strict';
 
+var testUtil = require('./util.js');
+
 var Entity = require('../../datastore/concepts').Entity;
 var entity;
 
@@ -20,6 +22,13 @@ describe('datastore/concepts/entity', function () {
   before(function() {
     var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
     entity = new Entity(projectId);
+  });
+
+  after(function(done) {
+    var datastore = entity.datastore;
+    var query = datastore.createQuery('Task');
+
+    testUtil.deleteEntities(datastore, query, done);
   });
 
   describe('incomplete key', function() {

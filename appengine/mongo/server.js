@@ -33,7 +33,9 @@ var uri = 'mongodb://' +
 
 mongodb.MongoClient.connect(uri, function(err, db) {
   
-  if (err) throw err;
+  if (err) {
+    throw err;
+  }
 
   // Create a simple little server. 
   http.createServer(function(req, res) {
@@ -41,16 +43,20 @@ mongodb.MongoClient.connect(uri, function(err, db) {
     // Track every IP that has visited this site
     var collection = db.collection('IPs');
 
-    var ip = {"address": req.connection.remoteAddress};
+    var ip = { address: req.connection.remoteAddress };
 
-    collection.insert(ip, function(err, result) {
+    collection.insert(ip, function(err) {
 
-      if (err) throw err;
+      if (err) {
+        throw err;
+      }
 
       // push out a range 
       var iplist = '';
       collection.find().toArray(function(err, data) {
-        if (err) throw err;
+        if (err) {
+          throw err;
+        }
         data.forEach(function(ip) {
           iplist += ip.address + '; ';
         });
@@ -61,7 +67,7 @@ mongodb.MongoClient.connect(uri, function(err, db) {
           })
           .end(iplist);
       });
-    })
+    });
   }).listen(process.env.PORT || 8080, function () {
     console.log('started web process');  
   });

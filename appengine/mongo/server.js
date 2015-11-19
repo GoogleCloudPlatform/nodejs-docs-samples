@@ -38,9 +38,6 @@ mongodb.MongoClient.connect(uri, function(err, db) {
   // Create a simple little server. 
   http.createServer(function(req, res) {
 	  
-	  console.log("test");
-	  console.log(err);
-
     // Track every IP that has visited this site
     var collection = db.collection('IPs');
 
@@ -54,18 +51,18 @@ mongodb.MongoClient.connect(uri, function(err, db) {
       var iplist = '';
       collection.find().toArray(function(err, data) {
         if (err) throw err;
-        console.log('listing data...\n');
         data.forEach(function(ip) {
-        console.log('IP: ' + ip.address + '\n');
-        iplist += ip.address + '; ';
+          iplist += ip.address + '; ';
         });
 
-        res.writeHead(200, {
-        'Content-Type': 'text/plain'
-        });
-        res.end(iplist);
+        res
+          .writeHead(200, {
+            'Content-Type': 'text/plain'
+          })
+          .end(iplist);
       });
     })
-  }).listen(process.env.PORT || 8080);;
-  console.log('started web process');
+  }).listen(process.env.PORT || 8080, function () {
+    console.log('started web process');  
+  });
 });

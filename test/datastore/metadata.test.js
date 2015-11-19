@@ -13,6 +13,8 @@
 
 'use strict';
 
+var testUtil = require('./util.js');
+
 var Metadata = require('../../datastore/concepts').Metadata;
 var metadata;
 
@@ -20,6 +22,13 @@ describe('datastore/concepts/metadata', function () {
   before(function() {
     var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
     metadata = new Metadata(projectId);
+  });
+
+  after(function(done) {
+    var datastore = metadata.datastore;
+    var query = datastore.createQuery('Task');
+
+    testUtil.deleteEntities(datastore, query, done);
   });
 
   describe('namespace query', function() {

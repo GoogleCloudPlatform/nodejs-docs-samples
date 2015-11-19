@@ -24,10 +24,12 @@
     "mocha": "mocha --timeout 10000 --recursive",
     "cover": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- --timeout 10000 --recursive",
     "coveralls": "cat ./coverage/lcov.info | node_modules/.bin/coveralls",
-    "pretest_express": "cd appengine/express && npm install && cd ../..",
-    "pretest_memcached": "cd appengine/express-memcached-session && npm install && cd ../..",
-    "pretest_geddy": "cd appengine/geddy && npm install geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
-    "pretest": "npm run pretest_express && npm run pretest_geddy",
+    "deps_datastore": "cd datastore && npm i && cd ../..",
+    "deps_storage": "cd storage && npm i && cd ../..",
+    "deps_express": "cd appengine/express && npm i && cd ../..",
+    "deps_memcached": "cd appengine/express-memcached-session && npm i && cd ../..",
+    "pretest_geddy": "cd appengine/geddy && npm i geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
+    "pretest": "npm run deps_datastore && npm run deps_storage && npm run deps_memcached && npm run deps_express && npm run pretest_geddy",
     "test": "npm run jshint && npm run cover"
   },
   "devDependencies": {

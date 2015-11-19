@@ -20,13 +20,20 @@ var projectId = process.env.DATASTORE_PROJECT_ID || process.env.TEST_PROJECT_ID;
 if (!projectId) {
   throw new Error('TEST_PROJECT_ID environment variable required.');
 }
+var keyFile = process.env.DATASTORE_KEYFILE ||
+              process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 // [START build_service]
 var gcloud = require('gcloud');
-
-var datastore = gcloud.datastore({
+var options = {
   projectId: projectId
-});
+};
+
+if (keyFile) {
+  options.keyFilename = keyFile;
+}
+
+var datastore = gcloud.datastore(options);
 // [END build_service]
 
 /*
@@ -218,14 +225,17 @@ switch (command) {
   }
 
   default: {
-    console.log([
-      'Usage:',
-      '',
-      '  new <description> Adds a task with a description <description>',
-      '  done <task-id>    Marks a task as done',
-      '  list              Lists all tasks by creation time',
-      '  delete <task-id>  Deletes a task'
-    ].join('\n'));
+    // Only print usage if this file is being executed directly
+    if (module === require.main) {
+      console.log([
+        'Usage:',
+        '',
+        '  new <description> Adds a task with a description <description>',
+        '  done <task-id>    Marks a task as done',
+        '  list              Lists all tasks by creation time',
+        '  delete <task-id>  Deletes a task'
+      ].join('\n'));
+    }
   }
 }
 
@@ -233,4 +243,4 @@ module.exports.addEntity = addTask;
 module.exports.updateEntity = markDone;
 module.exports.retrieveEntities = listTasks;
 module.exports.deleteEntity = deleteTask;
-module.exports.formatResults = formatTasks;
+module.exports.formatTasks = formatTasks;

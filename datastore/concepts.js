@@ -36,10 +36,18 @@ var datastore = {
   save: function() {}
 };
 
+var keyFile = process.env.DATASTORE_KEYFILE ||
+              process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
 function Entity(projectId) {
-  this.datastore = gcloud.datastore({
+  var options = {
     projectId: projectId
-  });
+  };
+
+  if (keyFile) {
+    options.keyFilename = keyFile;
+  }
+  this.datastore = gcloud.datastore(options);
 
   // To create the keys, we have to use this instance of Datastore.
   datastore.key = this.datastore.key;
@@ -427,9 +435,14 @@ Entity.prototype.testBatchDelete = function(callback) {
 };
 
 function Index(projectId) {
-  this.datastore = gcloud.datastore({
+  var options = {
     projectId: projectId
-  });
+  };
+
+  if (keyFile) {
+    options.keyFilename = keyFile;
+  }
+  this.datastore = gcloud.datastore(options);
 }
 
 Index.prototype.testUnindexedPropertyQuery = function(callback) {
@@ -471,9 +484,14 @@ Index.prototype.testExplodingProperties = function(callback) {
 };
 
 function Metadata(projectId) {
-  this.datastore = gcloud.datastore({
+  var options = {
     projectId: projectId
-  });
+  };
+
+  if (keyFile) {
+    options.keyFilename = keyFile;
+  }
+  this.datastore = gcloud.datastore(options);
 }
 
 Metadata.prototype.testNamespaceRunQuery = function(callback) {
@@ -604,9 +622,14 @@ Metadata.prototype.testPropertyByKindRunQuery = function(callback) {
 };
 
 function Query(projectId) {
-  this.datastore = gcloud.datastore({
+  var options = {
     projectId: projectId
-  });
+  };
+
+  if (keyFile) {
+    options.keyFilename = keyFile;
+  }
+  this.datastore = gcloud.datastore(options);
 
   this.basicQuery = this.getBasicQuery();
   this.projectionQuery = this.getProjectionQuery();
@@ -1029,9 +1052,14 @@ function transferFunds(fromKey, toKey, amount, callback) {
 // [END transactional_update]
 
 function Transaction(projectId) {
-  this.datastore = gcloud.datastore({
+  var options = {
     projectId: projectId
-  });
+  };
+
+  if (keyFile) {
+    options.keyFilename = keyFile;
+  }
+  this.datastore = gcloud.datastore(options);
 
   this.fromKey = this.datastore.key(['Bank', 1, 'Account', 1]);
   this.toKey = this.datastore.key(['Bank', 1, 'Account', 2]);

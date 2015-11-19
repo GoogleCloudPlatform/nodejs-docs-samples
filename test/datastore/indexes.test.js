@@ -16,19 +16,23 @@
 var Index = require('../../datastore/concepts').Index;
 var index;
 
-before(function() {
-  var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
-  index = new Index(projectId);
-});
-
-describe('unindexed properties', function() {
-  it('performs a query with a filter on an unindexed property', function(done) {
-    index.testUnindexedPropertyQuery(done);
+describe('datastore/concepts/indexes', function () {
+  before(function() {
+    var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+    index = new Index(projectId);
   });
-});
 
-describe('exploding properties', function() {
-  it('inserts arrays of data', function(done) {
-    index.testExplodingProperties(done);
+  describe('unindexed properties', function() {
+    it('performs a query with a filter on an unindexed property',
+      function(done) {
+        index.testUnindexedPropertyQuery(done);
+      }
+    );
+  });
+
+  describe('exploding properties', function() {
+    it('inserts arrays of data', function(done) {
+      index.testExplodingProperties(done);
+    });
   });
 });

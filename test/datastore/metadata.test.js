@@ -16,31 +16,33 @@
 var Metadata = require('../../datastore/concepts').Metadata;
 var metadata;
 
-before(function() {
-  var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
-  metadata = new Metadata(projectId);
-});
-
-describe('namespace query', function() {
-  it('performs a namespace query', function(done) {
-    metadata.testNamespaceRunQuery(done);
+describe('datastore/concepts/metadata', function () {
+  before(function() {
+    var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+    metadata = new Metadata(projectId);
   });
-});
 
-describe('kinds query', function() {
-  it('performs a kind query', function(done) {
-    metadata.testKindRunQuery(done);
+  describe('namespace query', function() {
+    it('performs a namespace query', function(done) {
+      metadata.testNamespaceRunQuery(done);
+    });
   });
-});
 
-describe('property query', function() {
-  it('performs a property query', function(done) {
-    metadata.testPropertyRunQuery(done);
+  describe('kinds query', function() {
+    it('performs a kind query', function(done) {
+      metadata.testKindRunQuery(done);
+    });
   });
-});
 
-describe('property by kind query', function() {
-  it('performs a property by kind query', function(done) {
-    metadata.testPropertyByKindRunQuery(done);
+  describe('property query', function() {
+    it('performs a property query', function(done) {
+      metadata.testPropertyRunQuery(done);
+    });
+  });
+
+  describe('property by kind query', function() {
+    it('performs a property by kind query', function(done) {
+      metadata.testPropertyByKindRunQuery(done);
+    });
   });
 });

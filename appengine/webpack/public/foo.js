@@ -13,6 +13,8 @@
 
 'use strict';
 
+// [START module]
 module.exports = {
   name: 'foo'
 };
+// [END module]

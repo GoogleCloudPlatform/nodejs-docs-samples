@@ -15,6 +15,5 @@
 runtime: nodejs
 vm: true
 env_variables:
-  PORT: 8080
   MAILGUN_API_KEY: <your-mailgun-api-key>
 # [END app_yaml]

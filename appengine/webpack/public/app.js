@@ -14,6 +14,8 @@
 /* global document:true */
 'use strict';
 
+// [START load_module]
 var foo = require('./foo.js');
+// [END load_module]
 
 document.getElementById('module-name').innerText = foo.name;

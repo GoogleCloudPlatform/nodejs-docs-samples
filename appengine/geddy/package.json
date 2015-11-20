@@ -5,7 +5,7 @@
   "private": true,
   "license": "Apache Version 2.0",
   "engines": {
-    "node": "~0.12.7"
+    "node": "~4.2"
   },
   "scripts": {
     "prestart": "GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && geddy gen secret",

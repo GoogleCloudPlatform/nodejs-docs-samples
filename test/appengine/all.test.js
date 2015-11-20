@@ -102,6 +102,13 @@ var sampleTests = [
     args: ['server.js'],
     msg: 'Hello World! Restify.js on Google App Engine.',
     TRAVIS_NODE_VERSION: 'stable'
+  },
+  {
+    dir: 'webpack',
+    deploy: false,
+    cmd: 'node',
+    args: ['server.js'],
+    msg: 'Loaded module <span>foo</span> via Webpack.'
   }
 ];
 

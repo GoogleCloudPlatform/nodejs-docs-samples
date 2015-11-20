@@ -1,0 +1,21 @@
+{
+  "name": "appengine-webpack",
+  "description": "An example of using Webpack with Node.js on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "engines": {
+    "node": "~4.2"
+  },
+  "scripts": {
+    "bundle": "webpack --config webpack.config.js",
+    "prestart": "npm run bundle",
+    "start": "node server.js",
+    "deploy": "gcloud preview app deploy app.yaml"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "jade": "^1.11.0",
+    "webpack": "^1.12.6"
+  }
+}

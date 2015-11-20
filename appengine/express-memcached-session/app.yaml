@@ -14,5 +14,4 @@
 runtime: nodejs
 vm: true
 env_variables:
-  PORT: 8080
   MEMCACHE_URL: localhost:11211

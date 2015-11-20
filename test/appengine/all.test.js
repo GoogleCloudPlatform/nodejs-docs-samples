@@ -43,11 +43,9 @@ var sampleTests = [
   },
   {
     dir: 'geddy',
-    deploy: true,
     cmd: 'node',
     args: ['node_modules/geddy/bin/cli.js'],
-    msg: 'Hello, World! Geddy.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: '0.10'
+    msg: 'Hello, World! Geddy.js on Google App Engine.'
   },
   {
     dir: 'grunt',
@@ -59,29 +57,23 @@ var sampleTests = [
   },
   {
     dir: 'hapi',
-    deploy: true,
     cmd: 'node',
     args: ['index.js'],
-    msg: 'Hello World! Hapi.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: '0.12'
+    msg: 'Hello World! Hapi.js on Google App Engine.'
   },
   {
     dir: 'kraken',
-    deploy: true,
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello World! Kraken.js on Google App Engine.',
-    code: 304,
-    TRAVIS_NODE_VERSION: '0.12'
+    code: 304
   },
   {
     dir: 'loopback',
-    deploy: true,
     cmd: 'node',
     args: ['server/server.js'],
     msg: 'LoopBack.js on Google App Engine.',
-    code: 304,
-    TRAVIS_NODE_VERSION: 'stable'
+    code: 304
   },
   {
     dir: 'mailgun',
@@ -97,15 +89,12 @@ var sampleTests = [
   },
   {
     dir: 'restify',
-    deploy: true,
     cmd: 'node',
     args: ['server.js'],
-    msg: 'Hello World! Restify.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: 'stable'
+    msg: 'Hello World! Restify.js on Google App Engine.'
   },
   {
     dir: 'webpack',
-    deploy: false,
     cmd: 'node',
     args: ['server.js'],
     msg: 'Loaded module <span>foo</span> via Webpack.'
@@ -117,12 +106,10 @@ if (process.env.TRAVIS_NODE_VERSION === '0.10') {
   // Travis when using Node.js stable. It works locally, however.
   sampleTests.push({
     dir: 'sails',
-    deploy: true,
     cmd: 'node',
     args: ['app.js'],
     msg: 'Hello World! Sails.js on Google App Engine.',
-    timeout: 240000,
-    TRAVIS_NODE_VERSION: '0.10'
+    timeout: 240000
   });
 }
 

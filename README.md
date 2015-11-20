@@ -32,6 +32,7 @@ and applications on [Google App Engine](http://cloud.google.com/nodejs).
 - gcloud-node - [Source code][gcloud_1] | [Documentation][gcloud_2]
 - Grunt.js - [Source code][grunt_1] | [App Engine Tutorial][grunt_2] | [Live demo][grunt_3] | [Documentation][grunt_4]
 - Mailgun - [Source code][mailgun_1] | [App Engine Tutorial][mailgun_2] | [Documentation][mailgun_3]
+- Webpack.js - [Source code][webpack_1] | [App Engine Tutorial][webpack_2] | [Documentation][webpack_3]
 
 ## Google Storage
 
@@ -127,6 +128,10 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [mailgun_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mailgun
 [mailgun_2]: https://cloud.google.com/nodejs/resources/tools/mailgun
 [mailgun_3]: http://www.mailgun.com/
+
+[webpack_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/webpack
+[webpack_2]: https://cloud.google.com/nodejs/resources/tools/webpack
+[webpack_3]: http://webpack.github.io/
 
 [nodejs_1]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
 [nodejs_2]: https://cloud.google.com/nodejs/getting-started/hello-world

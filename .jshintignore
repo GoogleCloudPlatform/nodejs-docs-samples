@@ -2,5 +2,6 @@ appengine/kraken/public/components/**
 appengine/sails/config/**
 appengine/sails/tasks/**
 appengine/sails/assets/**
+appengine/webpack/dist/**
 **/node_modules/**
 coverage/

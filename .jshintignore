@@ -1,3 +1,4 @@
+appengine/bower/public/bower_components/**
 appengine/kraken/public/components/**
 appengine/sails/config/**
 appengine/sails/tasks/**

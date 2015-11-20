@@ -26,6 +26,12 @@ function getPath(dir) {
 
 var sampleTests = [
   {
+    dir: 'bower',
+    cmd: 'node',
+    args: ['server.js'],
+    msg: 'Using jquery, installed via Bower.'
+  },
+  {
     dir: 'express',
     deploy: true,
     promote: true,

@@ -13,6 +13,8 @@
 
 'use strict';
 
+var testUtil = require('./util.js');
+
 var Index = require('../../datastore/concepts').Index;
 var index;
 
@@ -20,6 +22,13 @@ describe('datastore/concepts/indexes', function () {
   before(function() {
     var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
     index = new Index(projectId);
+  });
+
+  after(function(done) {
+    var datastore = index.datastore;
+    var query = datastore.createQuery('Task');
+
+    testUtil.deleteEntities(datastore, query, done);
   });
 
   describe('unindexed properties', function() {

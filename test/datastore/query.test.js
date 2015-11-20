@@ -15,13 +15,24 @@
 
 var assert = require('assert');
 
-var Query = require('../../datastore/concepts').Query;
+var concepts = require('../../datastore/concepts.js');
+var testUtil = require('./util.js');
+
 var query;
+var entity;
 
 describe('datastore/concepts/query', function () {
   before(function() {
     var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
-    query = new Query(projectId);
+    entity = new concepts.Entity(projectId);
+    query = new concepts.Query(projectId);
+  });
+
+  after(function(done) {
+    var datastore = query.datastore;
+    var q = datastore.createQuery('Task');
+
+    testUtil.deleteEntities(datastore, q, done);
   });
 
   describe('basic query', function() {
@@ -73,6 +84,10 @@ describe('datastore/concepts/query', function () {
   });
 
   describe('projection query', function() {
+    before(function(done) {
+      entity.testProperties(done);
+    });
+
     it('performs a projection query', function(done) {
       query.testRunQueryProjection(done);
     });
@@ -158,6 +173,10 @@ describe('datastore/concepts/query', function () {
   });
 
   describe('cursor paging', function() {
+    before(function(done) {
+      entity.testBatchUpsert(done);
+    });
+
     it('allows manual pagination through results', function(done) {
       query.testCursorPaging(done);
     });

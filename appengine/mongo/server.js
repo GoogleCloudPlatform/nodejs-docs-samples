@@ -31,6 +31,7 @@ var uri = 'mongodb://' +
   nconf.get('mongoPort') + '/' +
   nconf.get('mongoDatabase');
 
+// [START client]
 mongodb.MongoClient.connect(uri, function(err, db) {
   
   if (err) {
@@ -71,3 +72,4 @@ mongodb.MongoClient.connect(uri, function(err, db) {
     console.log('started web process');  
   });
 });
+// [END client]

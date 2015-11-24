@@ -1,5 +1,5 @@
 {
-  "name": "appengine-mongo",
+  "name": "appengine-mongodb",
   "description": "An example of using MongoDB with Node.js on Google App Engine.",
   "version": "0.0.1",
   "private": true,

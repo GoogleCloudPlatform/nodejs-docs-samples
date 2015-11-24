@@ -24,14 +24,16 @@ and applications on [Google App Engine](http://cloud.google.com/nodejs).
 
 ### Databases
 
-- MongoDB - [Source code][mongo_1] | [App Engine Tutorial][mongo_2] | [Documentation][mongo_3]
+- MongoDB - [Source code][mongodb_1] | [App Engine Tutorial][mongodb_2] | [Documentation][mongodb_3]
 - Redis - [Source code][redis_1] | [App Engine Tutorial][redis_2] | [Documentation][redis_3]
 
 ### Tools
 
 - gcloud-node - [Source code][gcloud_1] | [Documentation][gcloud_2]
-- Grunt.js - [Source code][grunt_1] | [App Engine Tutorial][grunt_2] | [Live demo][grunt_3] | [Documentation][grunt_4]
+- Bower - [Source code][bower_1] | [App Engine Tutorial][bower_2] | [Documentation][bower_3]
+- Grunt - [Source code][grunt_1] | [App Engine Tutorial][grunt_2] | [Live demo][grunt_3] | [Documentation][grunt_4]
 - Mailgun - [Source code][mailgun_1] | [App Engine Tutorial][mailgun_2] | [Documentation][mailgun_3]
+- Webpack - [Source code][webpack_1] | [App Engine Tutorial][webpack_2] | [Documentation][webpack_3]
 
 ## Google Storage
 
@@ -108,9 +110,9 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [sails_3]: http://sails-dot-nodejs-docs-samples.appspot.com
 [sails_4]: http://sailsjs.org/
 
-[mongo_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mongo
-[mongo_2]: https://cloud.google.com/nodejs/resources/databases/mongo
-[mongo_3]: https://docs.mongodb.org/
+[mongodb_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mongodb
+[mongodb_2]: https://cloud.google.com/nodejs/resources/databases/mongo
+[mongodb_3]: https://docs.mongodb.org/
 
 [redis_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/redis
 [redis_2]: https://cloud.google.com/nodejs/resources/databases/redis
@@ -118,6 +120,10 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 
 [gcloud_1]: https://github.com/GoogleCloudPlatform/gcloud-node
 [gcloud_2]: https://googlecloudplatform.github.io/gcloud-node/#/
+
+[bower_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/bower
+[bower_2]: https://cloud.google.com/nodejs/resources/tools/bower
+[bower_3]: http://bower.io/
 
 [grunt_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/grunt
 [grunt_2]: https://cloud.google.com/nodejs/resources/tools/grunt
@@ -127,6 +133,10 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [mailgun_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mailgun
 [mailgun_2]: https://cloud.google.com/nodejs/resources/tools/mailgun
 [mailgun_3]: http://www.mailgun.com/
+
+[webpack_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/webpack
+[webpack_2]: https://cloud.google.com/nodejs/resources/tools/webpack
+[webpack_3]: https://webpack.github.io/
 
 [nodejs_1]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
 [nodejs_2]: https://cloud.google.com/nodejs/getting-started/hello-world

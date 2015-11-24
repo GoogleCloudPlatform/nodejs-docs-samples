@@ -24,6 +24,8 @@ nconf.argv().env().file('keys.json');
 
 // Connect to a MongoDB server provisioned over at 
 // MongoLab.  See the README for more info.
+
+// [START client]
 var uri = 'mongodb://' +
   nconf.get('mongoUser') + ':' +
   nconf.get('mongoPass') + '@' +
@@ -31,7 +33,6 @@ var uri = 'mongodb://' +
   nconf.get('mongoPort') + '/' +
   nconf.get('mongoDatabase');
 
-// [START client]
 mongodb.MongoClient.connect(uri, function(err, db) {
   
   if (err) {

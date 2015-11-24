@@ -61,11 +61,10 @@ mongodb.MongoClient.connect(uri, function(err, db) {
           iplist += ip.address + '; ';
         });
 
-        res
-          .writeHead(200, {
-            'Content-Type': 'text/plain'
-          })
-          .end(iplist);
+        res.writeHead(200, {
+          'Content-Type': 'text/plain'
+        });
+        res.end(iplist);
       });
     });
   }).listen(process.env.PORT || 8080, function () {

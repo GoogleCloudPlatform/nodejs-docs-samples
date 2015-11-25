@@ -21,7 +21,9 @@ node_js:
 cache:
   directories:
   - $HOME/gcloud/
+  - appengine/bower/node_modules/
   - appengine/express/node_modules/
+  - appengine/express-memcached-session/node_modules/
   - appengine/geddy/node_modules/
   - appengine/grunt/node_modules/
   - appengine/hapi/node_modules/
@@ -31,6 +33,7 @@ cache:
   - appengine/redis/node_modules/
   - appengine/restify/node_modules/
   - appengine/sails/node_modules/
+  - appengine/webpack/node_modules/
 
 services:
   - redis-server

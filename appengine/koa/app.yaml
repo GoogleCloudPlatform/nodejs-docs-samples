@@ -15,3 +15,5 @@
 runtime: nodejs
 vm: true
 # [END app_yaml]
+skip_files:
+  - ^(.*/)?.*/node_modules/.*$

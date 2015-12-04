@@ -33,6 +33,7 @@ and applications on [Google App Engine](http://cloud.google.com/nodejs).
 - Bower - [Source code][bower_1] | [App Engine Tutorial][bower_2] | [Documentation][bower_3]
 - Grunt - [Source code][grunt_1] | [App Engine Tutorial][grunt_2] | [Live demo][grunt_3] | [Documentation][grunt_4]
 - Mailgun - [Source code][mailgun_1] | [App Engine Tutorial][mailgun_2] | [Documentation][mailgun_3]
+- Sendgrid - [Source code][sendgrid_1] | [App Engine Tutorial][sendgrid_2] | [Documentation][sendgrid_3]
 - Webpack - [Source code][webpack_1] | [App Engine Tutorial][webpack_2] | [Documentation][webpack_3]
 
 ## Google Storage
@@ -133,6 +134,10 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [mailgun_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mailgun
 [mailgun_2]: https://cloud.google.com/nodejs/resources/tools/mailgun
 [mailgun_3]: http://www.mailgun.com/
+
+[sendgrid_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/sendgrid
+[sendgrid_2]: https://cloud.google.com/nodejs/resources/tools/sendgrid
+[sendgrid_3]: http://sendgrid.com/
 
 [webpack_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/webpack
 [webpack_2]: https://cloud.google.com/nodejs/resources/tools/webpack

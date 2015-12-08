@@ -100,6 +100,12 @@ var sampleTests = [
     msg: 'Hello World! Restify.js on Google App Engine.'
   },
   {
+    dir: 'sendgrid',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Express.js + Sendgrid on Google App Engine.'
+  },
+  {
     dir: 'webpack',
     cmd: 'node',
     args: ['server.js'],

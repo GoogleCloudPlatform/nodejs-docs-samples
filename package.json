@@ -27,9 +27,10 @@
     "deps_datastore": "cd datastore && npm i && cd ../..",
     "deps_storage": "cd storage && npm i && cd ../..",
     "deps_express": "cd appengine/express && npm i && cd ../..",
+    "deps_sendgrid": "cd appengine/sendgrid && npm i && cd ../.. && cd computeengine/sendgrid && npm i && cd ../..",
     "deps_memcached": "cd appengine/express-memcached-session && npm i && cd ../..",
     "pretest_geddy": "cd appengine/geddy && npm i geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
-    "pretest": "npm run deps_datastore && npm run deps_storage && npm run deps_memcached && npm run deps_express && npm run pretest_geddy",
+    "pretest": "npm run deps_datastore && npm run deps_storage && npm run deps_memcached && npm run deps_express && npm run deps_sendgrid && npm run pretest_geddy",
     "test": "npm run jshint && npm run cover"
   },
   "devDependencies": {
@@ -39,6 +40,7 @@
     "istanbul": "^0.4.0",
     "jshint": "~2.8.0",
     "mocha": "^2.2.5",
+    "proxyquire": "^1.7.3",
     "request": "^2.65.0",
     "supertest": "^1.1.0"
   }

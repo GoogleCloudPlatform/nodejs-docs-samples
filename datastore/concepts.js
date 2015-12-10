@@ -619,6 +619,35 @@ Metadata.prototype.testPropertyByKindRunQuery = function(callback) {
   this.datastore.runQuery(query, callback);
 };
 
+Metadata.prototype.testPropertyFilteringRunQuery = function(callback) {
+  datastore.createQuery = this.datastore.createQuery;
+
+  // [START property_filtering_run_query]
+  var query = datastore.createQuery('__property__')
+    .select('__key__')
+    .filter('__key__ >=', datastore.key(['__kind__', 'Task', '__property__', 'priority']));
+
+  datastore.runQuery(query, function(err, entities) {
+    if (err) {
+      // An error occurred while running the query.
+      return;
+    }
+
+    var propertiesByKind = {};
+
+    entities.forEach(function(entity) {
+      var kind = entity.key.path[1];
+      var propertyName = entity.key.path[3];
+
+      propertiesByKind[kind] = propertiesByKind[kind] || [];
+      propertiesByKind[kind].push(propertyName);
+    });
+  });
+  // [END property_filtering_run_query]
+
+  this.datastore.runQuery(query, callback);
+};
+
 function Query(projectId) {
   var options = {
     projectId: projectId

@@ -623,9 +623,10 @@ Metadata.prototype.testPropertyFilteringRunQuery = function(callback) {
   datastore.createQuery = this.datastore.createQuery;
 
   // [START property_filtering_run_query]
+  var startKey = datastore.key(['__kind__', 'Task', '__property__', 'priority'])
   var query = datastore.createQuery('__property__')
     .select('__key__')
-    .filter('__key__ >=', datastore.key(['__kind__', 'Task', '__property__', 'priority']));
+    .filter('__key__ >=', startKey);
 
   datastore.runQuery(query, function(err, entities) {
     if (err) {

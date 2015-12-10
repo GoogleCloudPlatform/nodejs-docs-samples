@@ -54,4 +54,10 @@ describe('datastore/concepts/metadata', function () {
       metadata.testPropertyByKindRunQuery(done);
     });
   });
+
+  describe('property filtering query', function() {
+    it('performs a filtered property query', function(done) {
+      metadata.testPropertyFilteringRunQuery(done);
+    });
+  });
 });

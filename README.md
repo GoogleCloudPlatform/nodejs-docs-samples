@@ -60,6 +60,51 @@ Contributions welcome!
 
 See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md)
 
+### Running the tests
+
+1. `git clone git@github.com:GoogleCloudPlatform/nodejs-docs-samples.git`
+1. `cd nodejs-docs-samples`
+1. `npm install`
+1. Start Redis
+1. Start Memcached
+1. Set the `TEST_PROJECT_ID` environment variable to id of your project
+1. `npm test`
+
+Since the tests use [Mocha.js](https://mochajs.org/), you can use the `--grep`
+option to run only the tests that match a provided pattern. The `--invert`
+option causes the matched tests to be excluded instead of included.
+
+__Run only the tests that match a pattern:__
+
+
+```
+npm test -- -- --grep <pattern>
+```
+
+__Only run the tests for the `datastore` sample:__
+
+```
+npm test -- -- --grep datastore
+```
+
+__Skip the tests that match a pattern:__
+
+```
+npm test -- -- --grep <pattern> --invert
+```
+
+__Run all but the `datastore` tests:__
+
+```
+npm test -- -- --grep datastore --invert
+```
+
+__Skip the tests that require Redis and Memcached:__
+
+```
+npm test -- -- --grep "express-memcached-session|redis" --invert
+```
+
 ## Licensing
 
 Apache Version 2.0

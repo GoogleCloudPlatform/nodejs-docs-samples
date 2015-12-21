@@ -3,7 +3,7 @@
 > [Express][1] is a minimal and flexible Node.js web application framework that
 provides a robust set of features for web and mobile applications.
 
-Read the [Express.js on App Engine Tutorial][2] for how to run and deploy this
+Read the [Express.js on App Engine Tutorial][2] for how to run and how to deploy this
 sample app.
 
 You can also view the [live demo][3] and read the [Express.js documentation][1].

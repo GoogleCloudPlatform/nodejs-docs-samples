@@ -1,4 +1,4 @@
-## Storage Samples
+## Prediction API Samples
 
 These samples require an environment variable to be set:
 
@@ -17,8 +17,8 @@ To print available commands:
 
 Execute a sample:
 
-    npm run <sample> -- [arg_1] [arg_2] [arg_n]
+    npm run <sample>
 
 Example:
 
-    npm run authSample -- my-cool-project
+    npm run hostedmodels

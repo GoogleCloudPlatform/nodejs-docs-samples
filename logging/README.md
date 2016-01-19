@@ -1,4 +1,4 @@
-## Datastore Samples
+## Logging Samples
 
 These samples require two environment variables to be set:
 
@@ -10,24 +10,16 @@ download one from your Google project's "permissions" page.
 
 Install dependencies:
 
-```
-$ npm install
-```
+    npm install
 
 To print available commands:
 
-```
-$ npm run
-```
+    npm run
 
 Execute a sample:
 
-```
-$ npm run <sample> -- [arg_1] [arg_2] [arg_n]
-```
+    npm run <sample>
 
 Example:
 
-```
-$ npm run tasks -- list
-```
+    npm run write

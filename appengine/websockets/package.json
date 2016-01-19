@@ -1,0 +1,22 @@
+{
+  "name": "appengine-websockets",
+  "description": "Node.js websockets sample for Google App Engine",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "~4.2"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "monitor": "nodemon app.js",
+    "deploy": "gcloud preview app deploy"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "express-ws": "^1.0.0-rc.2",
+    "jade": "^1.11.0",
+    "request": "^2.67.0"
+  }
+}

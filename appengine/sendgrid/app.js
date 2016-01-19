@@ -1,4 +1,4 @@
-// Copyright 2015, Google, Inc.
+// Copyright 2015-2016, Google, Inc.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START app]
 'use strict';
 
 var express = require('express');
@@ -18,7 +19,11 @@ var path = require('path');
 var bodyParser = require('body-parser');
 
 // [START setup]
-var Sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
+// The following environment variables are set by app.yaml when running on GAE,
+// but will need to be manually set when running locally.
+var SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+var SENDGRID_SENDER = process.env.SENDGRID_SENDER;
+var Sendgrid = require('sendgrid')(SENDGRID_API_KEY);
 // [END setup]
 
 var app = express();
@@ -39,7 +44,7 @@ app.get('/', function(req, res) {
 // [START hello]
 app.post('/hello', function(req, res, next) {
   Sendgrid.send({
-    from: 'no-reply@appengine-sendgrid-demo.com', // From address
+    from: SENDGRID_SENDER, // From address
     to: req.body.email, // To address
     subject: 'Hello World!', // Subject
     text: 'Sendgrid on Google App Engine with Node.js', // Content
@@ -71,3 +76,4 @@ if (module === require.main) {
 }
 
 module.exports = app;
+// [END app]

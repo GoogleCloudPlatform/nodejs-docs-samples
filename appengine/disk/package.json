@@ -1,0 +1,19 @@
+{
+  "name": "appengine-disk",
+  "version": "0.0.1",
+  "description": "Simple sample for Node.js on Google App Engine",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "~4.2"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "monitor": "nodemon app.js",
+    "deploy": "gcloud preview app deploy"
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}

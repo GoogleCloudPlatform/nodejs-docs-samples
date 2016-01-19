@@ -1,4 +1,4 @@
-## Bower on Google App Engine
+# Bower on Google App Engine
 
 > [Bower][1]: A package manager for the web.
 

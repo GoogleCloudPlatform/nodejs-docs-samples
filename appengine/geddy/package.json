@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
+  "author": "Google Inc.",
   "engines": {
     "node": "~4.2"
   },
@@ -11,7 +12,7 @@
     "prestart": "GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && geddy gen secret",
     "start": "geddy",
     "debug": "geddy --debug",
-    "deploy": "gcloud preview app deploy app.yaml"
+    "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
     "geddy": "^13.0.8"

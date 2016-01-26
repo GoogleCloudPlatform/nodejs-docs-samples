@@ -1,20 +1,33 @@
-## Express.js + Sendgrid on Google App Engine
+# Node.js SendGrid email sample for Google App Engine
 
-> [Sendgrid][1]: Delivering your transactional and marketing email through one reliable platform.
->
-> – sendgrid.com
+This sample demonstrates how to use [SendGrid](https://www.sendgrid.com) on
+[Google App Engine Managed VMs](https://cloud.google.com/appengine).
 
-This sample application demonstrates how to use [Express.js][2] and
-[sendgrid-nodejs][3] to send transactional email on [Google App Engine][4].
+For more information about SendGrid, see their
+[documentation](https://sendgrid.com/docs/User_Guide/index.html).
 
 Read the [Sendgrid on App Engine Tutorial][5] for how to run and deploy this
 sample app.
 
-You can also read the [Sendgrid documentation][6].
+## Setup
 
-[1]: https://sendgrid.com/
-[2]: http://expressjs.com
-[3]: https://github.com/sendgrid/sendgrid-nodejs
-[4]: https://cloud.google.com/appengine
-[5]: https://cloud.google.com/nodejs/resources/tools/sendgrid
-[6]: https://sendgrid.com/docs
+Before you can run or deploy the sample, you will need to do the following:
+
+1. [Create a SendGrid Account](http://sendgrid.com/partner/google). As of
+September 2015, Google users start with 25,000 free emails per month.
+1. Configure your SendGrid settings in the environment variables section in
+`app.yaml`.
+
+## Running locally
+
+Refer to the [appengine/README.md](../README.md) file for instructions on
+running and deploying.
+
+You can run the application locally and send emails from your local machine. You
+will need to set environment variables before starting your application:
+
+    export SENDGRID_API_KEY=<your-sendgrid-api-key>
+    export SENDGRID_SENDER=<your-sendgrid-sender-email-address>
+    npm start
+
+[1]: https://cloud.google.com/nodejs/resources/tools/sendgrid

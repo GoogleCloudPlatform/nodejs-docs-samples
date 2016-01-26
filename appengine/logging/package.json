@@ -1,0 +1,21 @@
+{
+  "name": "appengine-logging",
+  "description": "Node.js logging sample for Google App Engine",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "~4.2"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "monitor": "nodemon app.js",
+    "deploy": "gcloud preview app deploy"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "winston": "^2.1.1",
+    "winston-gae": "^0.1.0"
+  }
+}

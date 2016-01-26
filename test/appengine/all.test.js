@@ -1,4 +1,4 @@
-// Copyright 2015, Google, Inc.
+// Copyright 2015-2016, Google, Inc.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -24,12 +24,44 @@ function getPath(dir) {
   return cwd + '/appengine/' + dir;
 }
 
+function changeScaling(dir) {
+  try {
+    var filepath = getPath(dir) + '/app.yaml';
+    fs.statSync(filepath);
+
+    var appYaml = fs.readFileSync(filepath, { encoding: 'utf8' });
+
+    appYaml = appYaml + '\n\nmanual_scaling:\n  instances: 1\n';
+    fs.writeFileSync(filepath, appYaml, { encoding: 'utf8' });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 var sampleTests = [
+  {
+    dir: 'analytics',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Event tracked.'
+  },
   {
     dir: 'bower',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Using jquery, installed via Bower.'
+  },
+  {
+    dir: 'datastore',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Last 10 visits:'
+  },
+  {
+    dir: 'disk',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Instance:'
   },
   {
     dir: 'express',
@@ -68,11 +100,23 @@ var sampleTests = [
     msg: 'Hello World! Hapi.js on Google App Engine.'
   },
   {
+    dir: 'hello-world',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Hello, world!'
+  },
+  {
     dir: 'kraken',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello World! Kraken.js on Google App Engine.',
     code: 304
+  },
+  {
+    dir: 'logging',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Logged'
   },
   {
     dir: 'loopback',
@@ -86,6 +130,23 @@ var sampleTests = [
     cmd: 'node',
     args: ['app.js'],
     msg: 'Express.js + Mailgun on Google App Engine.'
+  },
+  {
+    dir: 'memcached',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Value:',
+    test: /Value: \d\.\d+/
+  },
+  {
+    dir: 'pubsub',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Messages received by this instance:',
+    env: {
+      PUBSUB_TOPIC: 'test',
+      PUBSUB_VERIFICATION_TOKEN: 'foo'
+    }
   },
   {
     dir: 'redis',
@@ -106,10 +167,31 @@ var sampleTests = [
     msg: 'Express.js + Sendgrid on Google App Engine.'
   },
   {
+    dir: 'static-files',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'This is a static file serving example.'
+  },
+  {
+    dir: 'storage',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: '<title>Static Files</title>',
+    env: {
+      GCLOUD_STORAGE_BUCKET: 'nodejs-docs-samples'
+    }
+  },
+  {
     dir: 'webpack',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Loaded module <span>foo</span> via Webpack.'
+  },
+  {
+    dir: 'websockets',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Echo demo'
   }
 ];
 
@@ -147,7 +229,8 @@ function testRequest(url, sample, cb) {
       return cb(err);
     } else {
       if (body && body.indexOf(sample.msg) !== -1 &&
-            (res.statusCode === 200 || res.statusCode === sample.code)) {
+            (res.statusCode === 200 || res.statusCode === sample.code) &&
+            (!sample.test || sample.test.test(body))) {
         // Success
         return cb(null, true);
       } else {
@@ -226,9 +309,18 @@ function testInstallation(sample, done) {
 function testLocalApp(sample, done) {
   var calledDone = false;
 
-  var proc = spawn(sample.cmd, sample.args, {
+  var opts = {
     cwd: getPath(sample.dir)
-  });
+  };
+  if (sample.env) {
+    opts.env = sample.env;
+    for (var key in process.env) {
+      if (process.env.hasOwnProperty(key)) {
+        opts.env[key] = process.env[key];
+      }
+    }
+  }
+  var proc = spawn(sample.cmd, sample.args, opts);
 
   proc.on('error', finish);
 
@@ -281,6 +373,9 @@ function testDeployments(done) {
       var calledDone = false;
       // Keep track off whether the logs have fully flushed
       var logFinished = false;
+
+      // Manually set # of instances to 1
+      changeScaling(sample.dir);
 
       var _cwd = getPath(sample.dir);
       var args = [

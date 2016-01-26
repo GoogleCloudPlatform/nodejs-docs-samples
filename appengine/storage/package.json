@@ -1,0 +1,16 @@
+{
+  "name": "appengine-storage",
+  "description": "Node.js Google Cloud Storage sample for Google App Engine",
+  "scripts": {
+    "start": "node app.js",
+    "monitor": "nodemon app.js",
+    "deploy": "gcloud preview app deploy"
+  },
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "gcloud": "^0.27.0",
+    "jade": "^1.11.0",
+    "multer": "^1.1.0"
+  }
+}

@@ -260,7 +260,7 @@ describe('appengine/', function () {
     });
   });
 
-  if (!process.env.TRAVIS) {
+  if (!process.env.TRAVIS || !process.env.DEPLOY_TESTS) {
     return;
   }
 

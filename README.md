@@ -116,7 +116,7 @@ See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/nodejs-docs-samples
 1. `npm install`
 1. Start Redis
 1. Start Memcached
-1. Set the `TEST_PROJECT_ID` environment variable to id of your project
+1. Set the `GCLOUD_PROJECT` environment variable to id of your project
 1. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to the path to
 a service account file. You can download one from your Google project's
 "permissions" page.

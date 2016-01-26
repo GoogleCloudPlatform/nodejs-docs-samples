@@ -14,9 +14,9 @@
 'use strict';
 
 var async = require('async');
-var utils = require('./subscription');
-var createTopic = utils.createTopic;
-var subscribe = utils.subscribe;
+var subscriptionSampleMethods = require('./subscription');
+var createTopic = subscriptionSampleMethods.createTopic;
+var subscribe = subscriptionSampleMethods.subscribe;
 
 // [START get_topic_policy]
 function getTopicPolicy(topic, callback) {
@@ -91,12 +91,8 @@ function testSubscriptionPermissions(subscription, callback) {
 }
 // [END test_subscription_permissions]
 
-exports.getTopicPolicy = getTopicPolicy;
-exports.getSubscriptionPolicy = getSubscriptionPolicy;
 exports.setTopicPolicy = setTopicPolicy;
 exports.setSubscriptionPolicy = setSubscriptionPolicy;
-exports.testTopicPermissions = testTopicPermissions;
-exports.testSubscriptionPermissions = testSubscriptionPermissions;
 exports.runSample = runSample;
 
 function runSample(callback) {
@@ -119,13 +115,6 @@ function runSample(callback) {
     function (policy, apiResponse, cb) {
       responses.push([policy, apiResponse]);
       console.log('got topic policy', policy);
-    // IAM server is down?
-    //   console.log('updating topic policy...');
-    //   setTopicPolicy(_topic, cb);
-    // },
-    // function (policy, apiResponse, cb) {
-    //   responses.push([policy, apiResponse]);
-    //   console.log('updated topic policy', policy);
       console.log('testing topic permissions...');
       testTopicPermissions(_topic, cb);
     },
@@ -145,13 +134,6 @@ function runSample(callback) {
     function (policy, apiResponse, cb) {
       responses.push([policy, apiResponse]);
       console.log('got subscription policy', policy);
-    // IAM server is down?
-    //   console.log('updating subscription policy...');
-    //   setSubscriptionPolicy(_subscription, cb);
-    // },
-    // function (policy, apiResponse, cb) {
-    //   responses.push([policy, apiResponse]);
-    //   console.log('updated subscription policy', policy);
       console.log('testing subscription permissions...');
       testSubscriptionPermissions(_subscription, cb);
     },

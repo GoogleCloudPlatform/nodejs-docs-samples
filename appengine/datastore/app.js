@@ -25,7 +25,7 @@ app.enable('trust proxy');
 var dataset = gcloud.datastore.dataset({
   // This environment variable is set by app.yaml when running on GAE, but will
   // need to be manually set when running locally.
-  projectId: process.env.GCLOUD_PROJECT || process.env.TEST_PROJECT_ID
+  projectId: process.env.GCLOUD_PROJECT
 });
 
 app.get('/', function(req, res, next) {

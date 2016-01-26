@@ -16,20 +16,14 @@
 var async = require('async');
 
 // [START auth]
-// You must set these environment variables to run this sample
-var projectId = process.env.TEST_PROJECT_ID;
-var keyFilename = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-
-// If you don't set the environment variables, then you can modify this file
-// to set the values
-projectId = projectId || '<your-project-id>';
-keyFilename = keyFilename || '/path/to/keyfile.json';
+// You must set the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
+// environment variables to run this sample
+var projectId = process.env.GCLOUD_PROJECT;
 
 // [START require]
 // Provide projectId and authentication to gcloud
 var gcloud = require('gcloud')({
-  projectId: projectId,
-  keyFilename: keyFilename
+  projectId: projectId
 });
 
 // Get a reference to the pubsub component
@@ -166,12 +160,7 @@ function pullMessages(callback) {
 // [END pull_messages]
 
 exports.createTopic = createTopic;
-exports.publish = publish;
-exports.getAllTopics = getAllTopics;
-exports.getAllSubscriptions = getAllSubscriptions;
-exports.pullMessages = pullMessages;
 exports.subscribe = subscribe;
-exports.pubsub = pubsub;
 exports.runSample = runSample;
 
 function runSample(callback) {

@@ -14,7 +14,7 @@
 'use strict';
 
 var assert = require('assert');
-var projectId = process.env.TEST_PROJECT_ID;
+var projectId = process.env.GCLOUD_PROJECT;
 
 var subscriptionSample = require('../../pubsub/subscription');
 

@@ -41,7 +41,7 @@ services:
   - docker
 
 env:
-  - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/encrypted/nodejs-docs-samples.json TEST_BUCKET_NAME=nodejs-docs-samples TEST_PROJECT_ID=nodejs-docs-samples #Other environment variables on same line
+  - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/encrypted/nodejs-docs-samples.json TEST_BUCKET_NAME=nodejs-docs-samples GCLOUD_PROJECT=nodejs-docs-samples #Other environment variables on same line
 
 before_install:
   - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then

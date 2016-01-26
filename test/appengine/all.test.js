@@ -18,7 +18,7 @@ var request = require('request');
 var fs = require('fs');
 var async = require('async');
 var cwd = process.cwd();
-var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+var projectId = process.env.GCLOUD_PROJECT || 'nodejs-docs-samples';
 
 function getPath(dir) {
   return cwd + '/appengine/' + dir;

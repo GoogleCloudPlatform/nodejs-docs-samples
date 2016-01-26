@@ -1,4 +1,4 @@
-## Logging Samples
+## Pub/Sub Samples
 
 These samples require two environment variables to be set:
 
@@ -22,4 +22,4 @@ Execute a sample:
 
 Example:
 
-    npm run write
+    npm run subscription

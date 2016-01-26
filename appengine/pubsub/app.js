@@ -32,8 +32,10 @@ var messages = [];
 // but will need to be manually set when running locally.
 var PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
 
+// You must set the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
+// environment variables to run this sample
 var pubsub = gcloud.pubsub({
-  projectId: process.env.GCLOUD_PROJECT || process.env.TEST_PROJECT_ID
+  projectId: process.env.GCLOUD_PROJECT
 });
 
 var topic = pubsub.topic(process.env.PUBSUB_TOPIC);

@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sudo: required
+sudo: false
 language: node_js
 node_js:
 - "stable"
@@ -19,26 +19,45 @@ node_js:
 - "0.10"
 
 cache:
-  directories:
-  - $HOME/gcloud/
+  directories:  
+  - appengine/analytics/node_modules/
   - appengine/bower/node_modules/
+  - appengine/cloudsql/node_modules/
+  - appengine/datastore/node_modules/
+  - appengine/disk/node_modules/
   - appengine/express/node_modules/
   - appengine/express-memcached-session/node_modules/
+  - appengine/extending-runtime/node_modules/
   - appengine/geddy/node_modules/
   - appengine/grunt/node_modules/
   - appengine/hapi/node_modules/
+  - appengine/hello-world/node_modules/
+  - appengine/koa/node_modules/
   - appengine/kraken/node_modules/
+  - appengine/logging/node_modules/
   - appengine/loopback/node_modules/
   - appengine/mailgun/node_modules/
+  - appengine/memcached/node_modules/
+  - appengine/mongodb/node_modules/
   - appengine/redis/node_modules/
   - appengine/restify/node_modules/
   - appengine/sails/node_modules/
+  - appengine/sendgrid/node_modules/
+  - appengine/static-files/node_modules/
+  - appengine/storage/node_modules/
+  - appengine/twilio/node_modules/
   - appengine/webpack/node_modules/
+  - appengine/websockets/node_modules/
+  - computeengine/sendgrid/node_modules/
+  - datastore/node_modules/
+  - logging/node_modules/
+  - prediction/node_modules/
+  - pubsub/node_modules/
+  - storage/node_modules/
 
 services:
   - redis-server
   - memcached
-  - docker
 
 env:
   - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/encrypted/nodejs-docs-samples.json TEST_BUCKET_NAME=nodejs-docs-samples GCLOUD_PROJECT=nodejs-docs-samples #Other environment variables on same line
@@ -50,18 +69,14 @@ before_install:
       cd $HOME/gcloud &&
       tar xzf google-cloud-sdk.tar.gz &&
       printf '\ny\n\ny\ny\n' | ./google-cloud-sdk/install.sh &&
-      source /home/travis/.bash_profile &&
+      source $HOME/.bashrc &&
       cd $TRAVIS_BUILD_DIR;
     fi
-  - gcloud components update -q
-  - gcloud components update app -q
   - openssl aes-256-cbc -K $encrypted_fda0b707c7d5_key -iv $encrypted_fda0b707c7d5_iv -in test/encrypted/nodejs-docs-samples.json.enc -out test/encrypted/nodejs-docs-samples.json -d
   - if [ -a test/encrypted/nodejs-docs-samples.json ]; then
       gcloud auth activate-service-account --key-file test/encrypted/nodejs-docs-samples.json;
     fi
+  - npm set progress=false
 
 after_success:
   - npm run coveralls
-
-after_script:
-  - gsutil -m cp *.log gs://nodejs-docs-samples-travis-deployments

@@ -23,17 +23,25 @@ describe('logging/write', function () {
       if (err) {
         return done(err);
       }
-      assert.deepEqual(apiResponse, {}, 'should have correct response');
-      done();
-    });
-  });
-  it('should delete entries', function (done) {
-    logging.deleteLog(function (err, apiResponse) {
-      if (err) {
+      try {
+        assert.deepEqual(apiResponse, {}, 'should have correct response');
+        logging.deleteLog(function (err, apiResponse) {
+          if (err) {
+            if (err.code === 404) {
+              return done();
+            }
+            return done(err);
+          }
+          try {
+            assert.deepEqual(apiResponse, {}, 'should have correct response');
+            return done();
+          } catch (err) {
+            return done(err);
+          }
+        });
+      } catch (err) {
         return done(err);
       }
-      assert.deepEqual(apiResponse, {}, 'should have correct response');
-      done();
     });
   });
 });

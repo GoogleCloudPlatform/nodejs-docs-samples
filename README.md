@@ -8,6 +8,7 @@ This repository holds Node.js samples used throughout [cloud.google.com]().
 
 * [Google App Engine](#google-app-engine)
 * [Google Cloud Logging](#google-cloud-logging)
+* [Google Cloud Pub/Sub](#google-cloud-pubsub)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Google Prediction API](#google-prediction-api)
 * [Other Example Apps](#other-example-apps)
@@ -75,6 +76,11 @@ __Other Examples__
 - Writing logs sample - [Source code][logging_write_1] | [Documentation][logging_write_2]
 - Exporting logs sample - [Source code][logging_export_1] | [Documentation][logging_export_2]
 
+## Google Cloud Pub/Sub
+
+- Subscriber/Publisher sample - [Source code][pubsub_subscriber_1] | [Documentation][pubsub_subscriber_2]
+- IAM sample - [Source code][pubsub_iam_1] | [Documentation][pubsub_iam_2]
+
 ## Google Cloud Storage
 
 - Auth sample - [Source code][storage_1] | [Documentation][storage_2]
@@ -110,7 +116,7 @@ See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/nodejs-docs-samples
 1. `npm install`
 1. Start Redis
 1. Start Memcached
-1. Set the `TEST_PROJECT_ID` environment variable to id of your project
+1. Set the `GCLOUD_PROJECT` environment variable to id of your project
 1. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to the path to
 a service account file. You can download one from your Google project's
 "permissions" page.
@@ -240,14 +246,19 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [aestaticfiles_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/static-files
 
 [datastore_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/datastore/tasks.js
-[datastore_2]: https://cloud-dot-devsite.googleplex.com/datastore/docs/concepts/overview
+[datastore_2]: https://cloud.google.com/datastore/docs/concepts/overview
 
 [logging_read_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/logging/list.js
-[logging_read_2]: https://cloud-dot-devsite.googleplex.com/logging/docs/api/tasks/authorization
+[logging_read_2]: https://cloud.google.com/logging/docs/api/tasks/authorization
 [logging_write_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/logging/write.js
 [logging_write_2]: https://cloud.google.com/logging/docs/api/tasks/creating-logs
 [logging_export_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/logging/export.js
 [logging_export_2]: https://cloud.google.com/logging/docs/api/tasks/exporting-logs
+
+[pubsub_subscriber_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/pubsub/subscription.js
+[pubsub_subscriber_2]: https://cloud.google.com/pubsub/subscriber
+[pubsub_iam_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/pubsub/iam.js
+[pubsub_iam_2]: https://cloud.google.com/pubsub/access_control
 
 [storage_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/storage/authSample.js
 [storage_2]: https://cloud.google.com/storage/docs/authentication#acd-examples

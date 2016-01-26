@@ -33,7 +33,7 @@ var messages = [];
 var PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
 
 var pubsub = gcloud.pubsub({
-  projectId: process.env.GCLOUD_PROJECT || process.env.TEST_PROJECT_ID
+  projectId: process.env.GCLOUD_PROJECT
 });
 
 var topic = pubsub.topic(process.env.PUBSUB_TOPIC);

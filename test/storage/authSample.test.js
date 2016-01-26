@@ -18,7 +18,7 @@
 
 var assert = require('assert');
 var authSample = require('../../storage/authSample');
-var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+var projectId = process.env.GCLOUD_PROJECT;
 
 describe('listBuckets', function () {
 

@@ -8,5 +8,5 @@ app.
 You can also read the [node_mongodb documentation][3].
 
 [1]: http://mongodb.org/
-[2]: https://cloud.google.com/nodejs/resources/databases/mongo
+[2]: https://cloud.google.com/nodejs/resources/databases/mongodb
 [3]: http://mongodb.github.io/node-mongodb-native/

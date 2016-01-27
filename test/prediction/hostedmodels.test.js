@@ -31,6 +31,7 @@ var EXPECTED_RESULT = {
 
 describe('prediction/hostedmodels', function () {
   it('should predict', function (done) {
+    this.timeout(30000);
     hostedmodels.predict(function (err, result) {
       if (err) {
         return done(err);

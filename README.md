@@ -66,7 +66,7 @@ __Other Examples__
 - Reading/writing from/to disk - [Source code][aedisk_1]
 - Serving static files - [Source code][aestaticfiles_1]
 
-## Google Cloud Datastore
+## Google Cloud Datastorem
 
 - Tasks sample - [Source code][datastore_1] | [Documentation][datastore_2]
 
@@ -205,7 +205,7 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [memcached_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/memcached
 
 [mongodb_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mongodb
-[mongodb_2]: https://cloud.google.com/nodejs/resources/databases/mongo
+[mongodb_2]: https://cloud.google.com/nodejs/resources/databases/mongodb
 [mongodb_3]: https://docs.mongodb.org/
 
 [redis_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/redis

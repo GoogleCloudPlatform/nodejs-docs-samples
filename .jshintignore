@@ -1,5 +1,6 @@
 appengine/bower/public/bower_components/**
 appengine/kraken/public/components/**
+appengine/parse-server/cloud/main.js
 appengine/sails/config/**
 appengine/sails/tasks/**
 appengine/sails/assets/**

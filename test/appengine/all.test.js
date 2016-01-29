@@ -139,6 +139,16 @@ var sampleTests = [
     test: /Value: \d\.\d+/
   },
   {
+    dir: 'parse-server',
+    cmd: 'node',
+    args: ['server.js'],
+    msg: 'Hello, world!',
+    env: {
+      APP_ID: 'foo',
+      MASTER_KEY: 'bar'
+    }
+  },
+  {
     dir: 'pubsub',
     cmd: 'node',
     args: ['app.js'],

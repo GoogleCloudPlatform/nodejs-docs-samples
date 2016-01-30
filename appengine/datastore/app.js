@@ -18,6 +18,7 @@
 var format = require('util').format;
 var express = require('express');
 var gcloud = require('gcloud');
+var crypto = require('crypto');
 
 var app = express();
 app.enable('trust proxy');
@@ -29,12 +30,15 @@ var dataset = gcloud.datastore.dataset({
 });
 
 app.get('/', function(req, res, next) {
+  var hash = crypto.createHash('sha256');
+
   // Add this visit to the datastore
   dataset.save({
     key: dataset.key('visit'),
     data: {
       timestamp: new Date(),
-      userIp: req.ip
+      // Store a hash of the ip address
+      userIp: hash.update(req.ip).digest('hex').substr(0, 7)
     }
   }, function(err) {
     if (err) { return next(err); }
@@ -49,7 +53,7 @@ app.get('/', function(req, res, next) {
 
       var visits = entities.map(function(entity) {
         return format(
-          'Time: %s, Addr: %s',
+          'Time: %s, AddrHash: %s',
           entity.data.timestamp,
           entity.data.userIp);
       });

@@ -17,6 +17,7 @@
 var format = require('util').format;
 var express = require('express');
 var mysql = require('mysql');
+var crypto = require('crypto');
 
 var app = express();
 app.enable('trust proxy');
@@ -33,11 +34,13 @@ var connection = mysql.createConnection({
 });
 
 app.get('/', function(req, res, next) {
+  var hash = crypto.createHash('sha256');
 
   // Add this visit to the database
   var visit = {
     timestamp: new Date(),
-    userIp: req.ip
+    // Store a hash of the ip address
+    userIp: hash.update(req.ip).digest('hex').substr(0, 7)
   };
 
   connection.query('INSERT INTO `visits` SET ?', visit, function(err) {
@@ -52,7 +55,7 @@ app.get('/', function(req, res, next) {
 
         var visits = results.map(function(visit) {
           return format(
-            'Time: %s, Addr: %s',
+            'Time: %s, AddrHash: %s',
             visit.timestamp,
             visit.userIp);
         });

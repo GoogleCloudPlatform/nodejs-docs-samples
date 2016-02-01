@@ -18,13 +18,17 @@
 var fs = require('fs');
 var util = require('util');
 var express = require('express');
+var crypto = require('crypto');
 
 var app = express();
 app.enable('trust proxy');
 
 app.get('/', function(req, res, next) {
   var instanceId = process.env.GAE_MODULE_INSTANCE || '1';
-  var userIp = util.format('%s\n', req.ip);
+  var hash = crypto.createHash('sha256');
+  // Only store a hash of the ip address
+  var ip = hash.update(req.ip).digest('hex').substr(0, 7);
+  var userIp = util.format('%s\n', ip);
 
   fs.appendFile('/tmp/seen.txt', userIp, function(err) {
     if (err) { return next(err); }

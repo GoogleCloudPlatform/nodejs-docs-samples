@@ -18,6 +18,7 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var MemcachedStore = require('connect-memcached')(session);
 var publicIp = require('public-ip');
+var crypto = require('crypto');
 
 var app = express();
 
@@ -33,9 +34,10 @@ app.use(session({
 
 app.get('/', function(req, res){
   publicIp.v4(function (err, ip) {
+    var hash = crypto.createHash('sha256');
 
-    // This shows the IP for each 
-    res.write('<div>' + ip + '</div>');
+    // This shows the hashed IP for each 
+    res.write('<div>' + hash.update(ip).digest('hex').substr(0, 7) + '</div>');
 
     if(req.session.views) {
       ++req.session.views;

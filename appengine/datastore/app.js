@@ -67,7 +67,7 @@ app.get('/', function(req, res, next) {
 });
 
 /* Start the server */
-var server = app.listen(process.env.PORT || '8080', '0.0.0.0', function() {
+var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
   console.log('App listening at http://%s:%s', server.address().address,
     server.address().port);
   console.log('Press Ctrl+C to quit.');

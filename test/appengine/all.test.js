@@ -49,7 +49,7 @@ var sampleTests = [
     dir: 'bower',
     cmd: 'node',
     args: ['server.js'],
-    msg: 'Using jquery, installed via Bower.'
+    msg: 'Express.js + Bower on Google App Engine.'
   },
   {
     dir: 'datastore',
@@ -195,7 +195,7 @@ var sampleTests = [
     dir: 'webpack',
     cmd: 'node',
     args: ['server.js'],
-    msg: 'Loaded module <span>foo</span> via Webpack.'
+    msg: 'Express.js + Webpack on Google App Engine.'
   },
   {
     dir: 'websockets',

@@ -26,7 +26,7 @@
   "scripts": {
     "jshint": "jshint --exclude-path=.jshintignore .",
     "mocha": "mocha --timeout 10000 --recursive",
-    "cover": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- --timeout 10000 --recursive",
+    "cover": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- -t 30000 --recursive",
     "coveralls": "cat ./coverage/lcov.info | node_modules/.bin/coveralls",
     "deps_datastore": "cd datastore; npm i; cd ../..",
     "deps_pubsub": "cd pubsub; npm i; cd ../..",
@@ -43,10 +43,10 @@
     "coveralls": "^2.11.6",
     "googleapis": "^2.1.7",
     "istanbul": "^0.4.2",
-    "jshint": "~2.8.0",
-    "mocha": "^2.2.5",
-    "proxyquire": "^1.7.3",
-    "request": "^2.65.0",
+    "jshint": "~2.9.1",
+    "mocha": "^2.4.5",
+    "proxyquire": "^1.7.4",
+    "request": "^2.69.0",
     "supertest": "^1.1.0"
   }
 }

@@ -14,7 +14,7 @@
     "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
-    "express": "^4.13.3",
+    "express": "^4.13.4",
     "gcloud": "^0.27.0"
   }
 }

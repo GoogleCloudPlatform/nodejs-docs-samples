@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "body-parser": "^1.14.2",
-    "express": "^4.13.3",
+    "express": "^4.13.4",
     "gcloud": "^0.27.0",
     "jade": "^1.11.0",
     "multer": "^1.1.0"

@@ -13,8 +13,8 @@
     "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
-    "body-parser": "^1.14.1",
-    "express": "^4.13.3",
+    "body-parser": "^1.14.2",
+    "express": "^4.13.4",
     "jade": "^1.11.0",
     "mailgun": "^0.5.0"
   }

@@ -13,6 +13,6 @@
     "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
-    "hapi": "^10.5.0"
+    "hapi": "^13.0.0"
   }
 }

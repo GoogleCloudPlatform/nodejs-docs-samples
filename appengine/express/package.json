@@ -13,10 +13,10 @@
     "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
-    "body-parser": "^1.14.1",
-    "cookie-parser": "^1.4.0",
+    "body-parser": "^1.14.2",
+    "cookie-parser": "^1.4.1",
     "debug": "^2.2.0",
-    "express": "^4.13.3",
+    "express": "^4.13.4",
     "jade": "^1.11.0",
     "morgan": "^1.6.1",
     "serve-favicon": "^2.3.0"

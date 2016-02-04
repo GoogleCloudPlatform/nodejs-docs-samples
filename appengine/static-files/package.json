@@ -14,7 +14,7 @@
     "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
-    "express": "^4.13.3",
+    "express": "^4.13.4",
     "jade": "^1.11.0"
   }
 }

@@ -13,7 +13,7 @@
     "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
-    "nconf": "^0.8.0",
-    "mongodb": "^2.0.48"
+    "nconf": "^0.8.4",
+    "mongodb": "^2.1.5"
   }
 }

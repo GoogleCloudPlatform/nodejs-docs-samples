@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "express": "^4.13.4",
-    "parse-server": "^2.0.0"
+    "parse-server": "^2.0.6"
   }
 }

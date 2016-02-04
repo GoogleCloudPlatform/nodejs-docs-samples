@@ -2,7 +2,7 @@
   "camelcase" : true,
   "curly": true,
   "eqeqeq": true,
-  "globalstrict": true,
+  "strict": "global",
   "indent": 2,
   "newcap": true,
   "maxlen": 80,

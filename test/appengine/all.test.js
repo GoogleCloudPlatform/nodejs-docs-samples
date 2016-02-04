@@ -94,12 +94,6 @@ var sampleTests = [
     TRAVIS_NODE_VERSION: '0.12'
   },
   {
-    dir: 'hapi',
-    cmd: 'node',
-    args: ['index.js'],
-    msg: 'Hello World! Hapi.js on Google App Engine.'
-  },
-  {
     dir: 'hello-world',
     cmd: 'node',
     args: ['app.js'],
@@ -137,16 +131,6 @@ var sampleTests = [
     args: ['app.js'],
     msg: 'Value:',
     test: /Value: \d\.\d+/
-  },
-  {
-    dir: 'parse-server',
-    cmd: 'node',
-    args: ['server.js'],
-    msg: 'Hello, world!',
-    env: {
-      APP_ID: 'foo',
-      MASTER_KEY: 'bar'
-    }
   },
   {
     dir: 'pubsub',
@@ -218,8 +202,13 @@ if (process.env.TRAVIS_NODE_VERSION === '0.10') {
 }
 
 if (process.env.TRAVIS_NODE_VERSION === 'stable') {
-  // For some reason the "npm install" step for the Sails sample doesn't work on
-  // Travis when using Node.js stable. It works locally, however.
+  sampleTests.push({
+    dir: 'hapi',
+    cmd: 'node',
+    args: ['index.js'],
+    msg: 'Hello World! Hapi.js on Google App Engine.',
+    TRAVIS_NODE_VERSION: 'stable'
+  });
   sampleTests.push({
     dir: 'koa',
     deploy: true,
@@ -227,6 +216,17 @@ if (process.env.TRAVIS_NODE_VERSION === 'stable') {
     args: ['--harmony', 'app.js'],
     msg: 'Hello World! Koa.js on Google App Engine.',
     TRAVIS_NODE_VERSION: 'stable'
+  });
+  sampleTests.push({
+    dir: 'parse-server',
+    cmd: 'node',
+    args: ['server.js'],
+    msg: 'Hello, world!',
+    TRAVIS_NODE_VERSION: 'stable',
+    env: {
+      APP_ID: 'foo',
+      MASTER_KEY: 'bar'
+    }
   });
 }
 

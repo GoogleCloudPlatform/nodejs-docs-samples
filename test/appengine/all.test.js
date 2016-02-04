@@ -365,7 +365,8 @@ function testLocalApp(sample, done) {
   setTimeout(function () {
     console.log('\t' + sample.dir + ': Send test request...');
     // Test that the app is working
-    testRequest('http://localhost:' + sample.env.PORT, sample, function (err, result) {
+    var url = 'http://localhost:' + sample.env.PORT;
+    testRequest(url, sample, function (err, result) {
       requestError = err;
       if (result) {
         console.log('\t' + sample.dir + ': Success!');

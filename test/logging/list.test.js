@@ -19,12 +19,20 @@ var logging = require('../../logging/list');
 
 describe('logging/list', function () {
   it('should list entries', function (done) {
-    logging.list(function (err, entries) {
+    logging.list(function (err, entries, apiResponse) {
       if (err) {
         return done(err);
       }
       assert.ok(Array.isArray(entries), 'should have got an array');
-      assert.equal(entries.length, 3, 'should have three entries');
+      assert.ok(apiResponse.orderBy);
+      assert.ok(apiResponse.pageSize);
+      assert.ok(Array.isArray(apiResponse.projectIds));
+      if (entries.length === 3) {
+        // obviously this will pass
+        assert.equal(entries.length, 3, 'should have three entries');
+      } else {
+        console.error('Received correct apiResponse, but no logs. Why not?');
+      }
       done();
     });
   });

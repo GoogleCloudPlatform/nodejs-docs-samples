@@ -257,7 +257,11 @@ function testRequest(url, sample, cb) {
 }
 
 describe('appengine/', function () {
+  var port = 8080;
   sampleTests.forEach(function (sample) {
+    sample.env = sample.env || {};
+    sample.env.PORT = port;
+    port++;
     it(sample.dir + ': dependencies should install', function (done) {
       // Allow extra time for "npm install"
       this.timeout(sample.timeout || 120000);
@@ -318,6 +322,7 @@ function testInstallation(sample, done) {
 
 function testLocalApp(sample, done) {
   var calledDone = false;
+  var requestError;
 
   var opts = {
     cwd: getPath(sample.dir)
@@ -330,9 +335,13 @@ function testLocalApp(sample, done) {
       }
     }
   }
+  console.log('\t' + sample.dir + ': Start server on port ' + sample.env.PORT);
   var proc = spawn(sample.cmd, sample.args, opts);
 
-  proc.on('error', finish);
+  proc.on('error', function (err) {
+    console.log('\t' + sample.dir + ': ERROR', err.message);
+    finish(err);
+  });
 
   if (!process.env.TRAVIS) {
     proc.stderr.on('data', function (data) {
@@ -341,7 +350,11 @@ function testLocalApp(sample, done) {
   }
 
   proc.on('exit', function (code, signal) {
+    if (signal === 'SIGKILL') {
+      console.log('\t' + sample.dir + ': SIGKILL received!');
+    }
     if (code !== 0 && signal !== 'SIGKILL') {
+      console.log('\t' + sample.dir + ': ERROR', code, signal);
       return finish(new Error(sample.dir + ': failed to run!'));
     } else {
       return finish();
@@ -350,12 +363,15 @@ function testLocalApp(sample, done) {
 
   // Give the server time to start up
   setTimeout(function () {
+    console.log('\t' + sample.dir + ': Send test request...');
     // Test that the app is working
-    testRequest('http://localhost:8080', sample, function (err) {
+    testRequest('http://localhost:' + sample.env.PORT, sample, function (err, result) {
+      requestError = err;
+      if (result) {
+        console.log('\t' + sample.dir + ': Success!');
+      }
+      console.log('\t' + sample.dir + ': Send shutdown signal...');
       proc.kill('SIGKILL');
-      setTimeout(function () {
-        return finish(err);
-      }, 2000);
     });
   }, 5000);
 
@@ -363,7 +379,7 @@ function testLocalApp(sample, done) {
   function finish(err) {
     if (!calledDone) {
       calledDone = true;
-      done(err);
+      done(err || requestError);
     }
   }
 }

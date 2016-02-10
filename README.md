@@ -7,6 +7,7 @@ This repository holds Node.js samples used throughout [cloud.google.com]().
 ## Table of Contents
 
 * [Google App Engine](#google-app-engine)
+* [Google Cloud Functions](#google-cloud-functions)
 * [Google Cloud Logging](#google-cloud-logging)
 * [Google Cloud Pub/Sub](#google-cloud-pubsub)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -67,9 +68,13 @@ __Other Examples__
 - Reading/writing from/to disk - [Source code][aedisk_1]
 - Serving static files - [Source code][aestaticfiles_1]
 
-## Google Cloud Datastorem
+## Google Cloud Datastore
 
 - Tasks sample - [Source code][datastore_1] | [Documentation][datastore_2]
+
+## Google Cloud Functions
+
+- Samples - [Source code][functions_1] | [Documentation][functions_2]
 
 ## Google Cloud Logging
 
@@ -250,6 +255,9 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 
 [datastore_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/datastore/tasks.js
 [datastore_2]: https://cloud.google.com/datastore/docs/concepts/overview
+
+[functions_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/functions/
+[functions_2]: https://cloud.google.com/functions/docs
 
 [logging_read_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/logging/list.js
 [logging_read_2]: https://cloud.google.com/logging/docs/api/tasks/authorization

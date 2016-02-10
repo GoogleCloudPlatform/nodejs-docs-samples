@@ -36,7 +36,14 @@ describe('pubsub/subscription', function () {
         // apiResponse
         assert.ok(responses[1][1]);
         // topics
-        assert.equal(responses[2][0][0].name, expectedTopic);
+        var foundExpectedTopic = false;
+        responses[2][0].forEach(function (topic) {
+          if (topic.name === expectedTopic) {
+            foundExpectedTopic = true;
+            return false;
+          }
+        });
+        assert.ok(foundExpectedTopic, 'topic should have been created!');
         assert.ok(responses[2][0][0].iam);
         // subscriptions
         assert.ok(responses[3][0][0].on);

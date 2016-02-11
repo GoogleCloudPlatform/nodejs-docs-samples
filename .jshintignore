@@ -6,5 +6,6 @@ appengine/sails/tasks/**
 appengine/sails/assets/**
 appengine/sails/api/responses/**
 appengine/webpack/dist/**
+functions/**
 **/node_modules/**
 coverage/

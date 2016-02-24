@@ -23,13 +23,14 @@ describe('sendgrid', function () {
       sendgrid: function (key) {
         assert.equal(key, 'foo');
         return {
-          send: function (payload) {
+          send: function (payload, cb) {
             assert.deepEqual(payload, {
               from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
               to: 'EMAIL@EXAMPLE.COM',
               subject: 'test email from Node.js on Google Cloud Platform',
               text: 'Hello!\n\nThis a test email from Node.js.'
             });
+            cb('done');
             done();
           }
         };

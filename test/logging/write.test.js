@@ -19,26 +19,15 @@ var logging = require('../../logging/write');
 
 describe('logging/write', function () {
   it('should write entries', function (done) {
-    logging.write(function (err, apiResponse) {
+    logging.runExample(function (err, result) {
       if (err) {
         return done(err);
       }
       try {
-        assert.deepEqual(apiResponse, {}, 'should have correct response');
-        logging.deleteLog(function (err, apiResponse) {
-          if (err) {
-            if (err.code === 404) {
-              return done();
-            }
-            return done(err);
-          }
-          try {
-            assert.deepEqual(apiResponse, {}, 'should have correct response');
-            return done();
-          } catch (err) {
-            return done(err);
-          }
-        });
+        assert.equal(result.length, 2, 'should have two results');
+        assert.deepEqual(result[0], {}, 'should have correct response');
+        assert.deepEqual(result[1], {}, 'should have correct response');
+        done();
       } catch (err) {
         return done(err);
       }

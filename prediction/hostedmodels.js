@@ -27,10 +27,10 @@ function auth (callback) {
     // in manually. When the code is  running in GCE or a Managed VM, the scopes
     // are pulled from the GCE metadata server.
     // See https://cloud.google.com/compute/docs/authentication for more
-    // information. 
+    // information.
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
       // Scopes can be specified either as an array or as a single,
-      // space-delimited string. 
+      // space-delimited string.
       authClient = authClient.createScoped([
         'https://www.googleapis.com/auth/prediction'
       ]);
@@ -44,7 +44,7 @@ function predict(callback) {
     if (err) {
       return callback(err);
     }
-    // Predict the sentiment for the word "hello". 
+    // Predict the sentiment for the word "hello".
     hostedmodels.predict({
       auth: authClient,
       // Project id used for this sample
@@ -56,7 +56,12 @@ function predict(callback) {
           csvInstance: ['hello']
         }
       }
-    }, callback);
+    }, function (err, result) {
+      console.log(err, result);
+      if (typeof callback === 'function') {
+        callback(err, result);
+      }
+    });
   });
 }
 // [END predict]
@@ -64,7 +69,5 @@ function predict(callback) {
 exports.predict = predict;
 
 if (module === require.main) {
-  predict(function (err, result) {
-    console.log(err, result);
-  });
+  predict();
 }

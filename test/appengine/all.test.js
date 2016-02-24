@@ -252,7 +252,7 @@ function testRequest(url, sample, cb) {
         // Response body did not match expected
         return cb(new Error(message));
       }
-    } 
+    }
   });
 }
 
@@ -429,9 +429,9 @@ function testDeployments(done) {
 
       console.log(_cwd + ' $ gcloud ' + args.join(' '));
 
-      var logFile = process.env.TRAVIS_BUILD_DIR + 
+      var logFile = process.env.TRAVIS_BUILD_DIR +
                     '/' +
-                    sample.dir + 
+                    sample.dir +
                     '-' +
                     process.env.TRAVIS_BUILD_ID +
                     '-' +
@@ -480,7 +480,7 @@ function testDeployments(done) {
           console.log('Saved logs for ' + sample.dir + ' to ' + logFile);
         }
       }
-      
+
       proc.stdout.on('end', finishLogs);
       proc.stderr.on('end', finishLogs);
 

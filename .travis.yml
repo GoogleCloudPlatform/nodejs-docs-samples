@@ -19,7 +19,7 @@ node_js:
 - "0.10"
 
 cache:
-  directories:  
+  directories:
   - appengine/analytics/node_modules/
   - appengine/bower/node_modules/
   - appengine/cloudsql/node_modules/
@@ -60,7 +60,11 @@ services:
   - memcached
 
 env:
-  - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/encrypted/nodejs-docs-samples.json TEST_BUCKET_NAME=nodejs-docs-samples GCLOUD_PROJECT=nodejs-docs-samples #Other environment variables on same line
+  global:
+    - PATH=$PATH:$HOME/gcloud/google-cloud-sdk/bin
+    - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/encrypted/nodejs-docs-samples.json
+    - TEST_BUCKET_NAME=nodejs-docs-samples
+    - GCLOUD_PROJECT=nodejs-docs-samples
 
 before_install:
   - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then

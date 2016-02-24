@@ -63,18 +63,23 @@ function listBuckets(projectId, cb) {
 }
 // [END list_buckets]
 
-exports.listBuckets = listBuckets;
-
-// For command-line execution of sample
-if (module === require.main) {
+exports.runExample = function runExample(projectId, cb) {
   listBuckets(
-    process.argv.length > 2 ? process.argv[2] : '',
+    projectId,
     function (err, response) {
       if (err) {
         console.log(err);
       } else if (response && response.items) {
         console.log(JSON.stringify(response.items, null, 2));
       }
+      if (typeof cb === 'function') {
+        cb(err, response);
+      }
     }
   );
+}
+
+// For command-line execution of sample
+if (module === require.main) {
+  runExample(process.argv.length > 2 ? process.argv[2] : '');
 }

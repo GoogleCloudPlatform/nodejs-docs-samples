@@ -25,7 +25,7 @@ describe('listBuckets', function () {
   it('should return a list of buckets', function (done) {
     var bucketName = process.env.TEST_BUCKET_NAME || 'nodejs-docs-samples';
 
-    authSample.listBuckets(
+    authSample.runExample(
       projectId,
       function (err, response) {
         if (err) {

@@ -19,7 +19,7 @@ var logging = require('../../logging/export');
 
 describe('logging/export', function () {
   it('should list sinks', function (done) {
-    logging.listSinks(function (err, sinks) {
+    logging.runExample(function (err, sinks) {
       if (err) {
         return done(err);
       }

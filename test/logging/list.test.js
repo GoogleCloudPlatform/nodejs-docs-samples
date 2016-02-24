@@ -19,7 +19,7 @@ var logging = require('../../logging/list');
 
 describe('logging/list', function () {
   it('should list entries', function (done) {
-    logging.list(function (err, entries, apiResponse) {
+    logging.runExample(function (err, entries, apiResponse) {
       if (err) {
         return done(err);
       }

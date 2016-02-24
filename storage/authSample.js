@@ -63,7 +63,7 @@ function listBuckets(projectId, cb) {
 }
 // [END list_buckets]
 
-exports.runExample = function runExample(projectId, cb) {
+exports.runExample = function (projectId, cb) {
   listBuckets(
     projectId,
     function (err, response) {
@@ -77,9 +77,9 @@ exports.runExample = function runExample(projectId, cb) {
       }
     }
   );
-}
+};
 
 // For command-line execution of sample
 if (module === require.main) {
-  runExample(process.argv.length > 2 ? process.argv[2] : '');
+  exports.runExample(process.argv.length > 2 ? process.argv[2] : '');
 }

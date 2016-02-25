@@ -20,7 +20,7 @@ var entity;
 
 describe('datastore/concepts/entity', function () {
   before(function() {
-    var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+    var projectId = process.env.GCLOUD_PROJECT || 'nodejs-docs-samples';
     entity = new Entity(projectId);
   });
 
@@ -76,12 +76,6 @@ describe('datastore/concepts/entity', function () {
   describe('testBasicEntity', function() {
     it('saves a basic entity', function(done) {
       entity.testBasicEntity(done);
-    });
-  });
-
-  describe('testUpsert', function() {
-    it('saves with an upsert', function(done) {
-      entity.testUpsert(done);
     });
   });
 

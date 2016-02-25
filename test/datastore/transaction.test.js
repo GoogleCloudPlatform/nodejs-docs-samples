@@ -20,7 +20,7 @@ var transaction;
 
 describe('datastore/concepts/transaction', function () {
   before(function() {
-    var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+    var projectId = process.env.GCLOUD_PROJECT || 'nodejs-docs-samples';
     transaction = new Transaction(projectId);
   });
 

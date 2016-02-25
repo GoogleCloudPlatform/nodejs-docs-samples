@@ -20,7 +20,7 @@ var metadata;
 
 describe('datastore/concepts/metadata', function () {
   before(function() {
-    var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+    var projectId = process.env.GCLOUD_PROJECT || 'nodejs-docs-samples';
     metadata = new Metadata(projectId);
   });
 

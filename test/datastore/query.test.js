@@ -23,7 +23,7 @@ var entity;
 
 describe('datastore/concepts/query', function () {
   before(function() {
-    var projectId = process.env.TEST_PROJECT_ID || 'nodejs-docs-samples';
+    var projectId = process.env.GCLOUD_PROJECT || 'nodejs-docs-samples';
     entity = new concepts.Entity(projectId);
     query = new concepts.Query(projectId);
   });

@@ -17,12 +17,12 @@ var mongodb = require('mongodb');
 var http = require('http');
 var nconf = require('nconf');
 
-// read in keys and secrets.  You can store these in a variety of ways.  
-// I like to use a keys.json  file that is in the .gitignore file, 
+// read in keys and secrets.  You can store these in a variety of ways.
+// I like to use a keys.json  file that is in the .gitignore file,
 // but you can also store them in environment variables
 nconf.argv().env().file('keys.json');
 
-// Connect to a MongoDB server provisioned over at 
+// Connect to a MongoDB server provisioned over at
 // MongoLab.  See the README for more info.
 
 // [START client]
@@ -30,18 +30,21 @@ var uri = 'mongodb://' +
   nconf.get('mongoUser') + ':' +
   nconf.get('mongoPass') + '@' +
   nconf.get('mongoHost') + ':' +
-  nconf.get('mongoPort') + '/' +
-  nconf.get('mongoDatabase');
+  nconf.get('mongoPort');
+
+if (nconf.get('mongoDatabase')) {
+  uri = uri + '/' + nconf.get('mongoDatabase');
+}
 
 mongodb.MongoClient.connect(uri, function(err, db) {
-  
+
   if (err) {
     throw err;
   }
 
-  // Create a simple little server. 
+  // Create a simple little server.
   http.createServer(function(req, res) {
-	  
+
     // Track every IP that has visited this site
     var collection = db.collection('IPs');
 
@@ -53,7 +56,7 @@ mongodb.MongoClient.connect(uri, function(err, db) {
         throw err;
       }
 
-      // push out a range 
+      // push out a range
       var iplist = '';
       collection.find().toArray(function(err, data) {
         if (err) {
@@ -66,11 +69,12 @@ mongodb.MongoClient.connect(uri, function(err, db) {
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         });
+        res.write('IPs:\n');
         res.end(iplist);
       });
     });
   }).listen(process.env.PORT || 8080, function () {
-    console.log('started web process');  
+    console.log('started web process');
   });
 });
 // [END client]

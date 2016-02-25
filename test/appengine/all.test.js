@@ -52,6 +52,13 @@ var sampleTests = [
     msg: 'Express.js + Bower on Google App Engine.'
   },
   {
+    dir: 'cloudsql',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Last 10 visits:',
+    TRAVIS: true
+  },
+  {
     dir: 'datastore',
     cmd: 'node',
     args: ['app.js'],
@@ -131,6 +138,13 @@ var sampleTests = [
     args: ['app.js'],
     msg: 'Value:',
     test: /Value: \d\.\d+/
+  },
+  {
+    dir: 'mongodb',
+    cmd: 'node',
+    args: ['server.js'],
+    msg: 'IPs:',
+    TRAVIS: true
   },
   {
     dir: 'pubsub',
@@ -268,6 +282,10 @@ describe('appengine/', function () {
 
       testInstallation(sample, done);
     });
+
+    if (sample.TRAVIS && !process.env.TRAVIS) {
+      return;
+    }
 
     it(sample.dir + ' should return 200 and Hello World', function (done) {
       testLocalApp(sample, done);

@@ -25,7 +25,8 @@ var parseServer = new ParseServer({
   cloud: process.env.CLOUD_PATH || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID,
   masterKey: process.env.MASTER_KEY,
-  fileKey: process.env.FILE_KEY
+  fileKey: process.env.FILE_KEY,
+  serverURL: process.env.SERVER_URL
 });
 
 // Mount the Parse API server middleware to /parse

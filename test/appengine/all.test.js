@@ -239,7 +239,8 @@ if (process.env.TRAVIS_NODE_VERSION === 'stable') {
     TRAVIS_NODE_VERSION: 'stable',
     env: {
       APP_ID: 'foo',
-      MASTER_KEY: 'bar'
+      MASTER_KEY: 'bar',
+      SERVER_URL: 'http://localhost:'
     }
   });
 }
@@ -275,6 +276,10 @@ describe('appengine/', function () {
   sampleTests.forEach(function (sample) {
     sample.env = sample.env || {};
     sample.env.PORT = port;
+    if (sample.dir === 'parse-server') {
+      sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
+      console.log(sample);
+    }
     port++;
     it(sample.dir + ': dependencies should install', function (done) {
       // Allow extra time for "npm install"

@@ -11,19 +11,22 @@ app to [Google App Engine Managed VMs](https://cloud.google.com/appengine).
 1. Setup a MongoDB server. Here are two possible options:
   1. Create a Google Compute Engine virtual machine with [MongoDB pre-installed](https://cloud.google.com/launcher/?q=mongodb).
   1. Use [MongoLab](https://mongolab.com/google/) to create a free MongoDB deployment on Google Cloud Platform.
-
-## Running locally
+  
+## Downloading Files
 
 1. `git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git`
 1. `cd appengine/parse-server`
+
+## Running locally
+
 1. `npm install`
-1. Set the necessary [environment variables](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/parse-server/server.js#L23).
+1. Set the necessary [environment variables](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/parse-server/config.json).
 1. `npm start`
 
 ## Deploy
 
-1. Modify `app.yaml` as needed.
-1. `gcloud preview app deploy`
+1. Set the necessary [environment variables](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/parse-server/config.json).
+1. `npm run deploy`
 
 Refer to the [appengine/README.md](../README.md) file for more instructions on
 running and deploying.

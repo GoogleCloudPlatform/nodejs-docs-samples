@@ -22,6 +22,7 @@ cache:
   directories:
   - appengine/analytics/node_modules/
   - appengine/bower/node_modules/
+  - appengine/brunch/node_modules/
   - appengine/cloudsql/node_modules/
   - appengine/datastore/node_modules/
   - appengine/disk/node_modules/

@@ -54,6 +54,7 @@ __Databases__
 __Tools__
 
 - gcloud-node - [Source code][gcloud_1] | [Documentation][gcloud_2]
+- Brunch - [Source code][brunch_1] | [Documentation][brunch_2]
 - Bower - [Source code][bower_1] | [App Engine Tutorial][bower_2] | [Documentation][bower_3]
 - Grunt - [Source code][grunt_1] | [App Engine Tutorial][grunt_2] | [Live demo][grunt_3] | [Documentation][grunt_4]
 - Mailgun - [Source code][mailgun_1] | [App Engine Tutorial][mailgun_2] | [Documentation][mailgun_3]
@@ -223,6 +224,9 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 
 [gcloud_1]: https://github.com/GoogleCloudPlatform/gcloud-node
 [gcloud_2]: https://googlecloudplatform.github.io/gcloud-node/#/
+
+[brunch_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/brunch
+[brunch_2]: http://brunch.io
 
 [bower_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/bower
 [bower_2]: https://cloud.google.com/nodejs/resources/tools/bower

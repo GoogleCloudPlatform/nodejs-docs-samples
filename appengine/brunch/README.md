@@ -1,7 +1,7 @@
 # Brunch with ES6 running on Google App Engine.
 
 This sample demonstrates how to use [Brunch](http://brunch.io) on
-[Google App Engine Managed VMs](https://cloud.google.com/appengine).
+[Google App Engine Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/).
 
 For more information about getting started with Brunch, see the
 [Getting Started with Brunch Guide](https://github.com/brunch/brunch-guide/blob/master/content/en/chapter02-getting-started.md) .

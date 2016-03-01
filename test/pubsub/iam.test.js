@@ -23,7 +23,7 @@ describe('pubsub/iam', function () {
     this.timeout(30000);
     iamSample.runSample(function (err, responses) {
       try {
-        assert.ok(err === null);
+        assert.ok(!err);
         // topic
         var expectedTopic = 'projects/' + projectId + '/topics/messageCenter';
         assert.equal(responses[0][0].name, expectedTopic);

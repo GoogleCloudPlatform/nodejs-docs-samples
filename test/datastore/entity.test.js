@@ -79,6 +79,12 @@ describe('datastore/concepts/entity', function () {
     });
   });
 
+  describe('testUpsert', function() {
+    it('saves with an upsert', function(done) {
+      entity.testUpsert(done);
+    });
+  });
+
   describe('testInsert', function() {
     it('saves with an insert', function(done) {
       entity.testInsert(done);

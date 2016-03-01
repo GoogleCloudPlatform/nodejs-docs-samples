@@ -8,9 +8,8 @@ module.exports = {
     },
     stylesheets: {
       joinTo: 'app.css'
-    }
+    },
   },
-
   plugins: {
     babel: {
       presets: ['es2015']
@@ -18,7 +17,17 @@ module.exports = {
   },
   server: {
     run: true,
-    base: '/',
     port: 8080
+  },
+  overrides: {
+    production: {
+      optimize: true,
+      sourceMaps: false,
+      plugins: {
+        autoReload: {
+          enabled: false
+        }
+      }
+    }
   }
 };

@@ -12,7 +12,7 @@
     "start": "node app.js",
     "watch": "brunch watch --server",
     "deploy": "gcloud preview app deploy",
-    "prod": "brunch build --production"
+    "build": "brunch build --production"
   },
   "dependencies": {
     "auto-reload-brunch": "^2.0.0",

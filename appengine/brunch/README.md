@@ -17,6 +17,11 @@ Add the necessary modules in your `package.json`:
 $ npm install --save-dev express body-parser morgan
 ```
 
+Compiles and copies files over `package.json`:
+```sh
+npm run build
+```
+
 ## Running locally
 Refer to the [appengine/README.md](../README.md) file for instructions on
 running and deploying.

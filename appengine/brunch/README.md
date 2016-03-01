@@ -1,10 +1,13 @@
-# Brunch with ES6 running on Google App Engine.
+## Brunch with ES6 running on Google App Engine.
+
+> [Brunch](http://brunch.io) is a build tool, an alternative to [Grunt](http://gruntjs.com) and [Gulp](http://gulpjs.com) geared towards building assets with an emphasis on speed.  
+
 
 This sample demonstrates how to use [Brunch](http://brunch.io) on
 [Google App Engine Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/).
 
 For more information about getting started with Brunch, see the
-[Getting Started with Brunch Guide](https://github.com/brunch/brunch-guide/blob/master/content/en/chapter02-getting-started.md) .
+[Getting Started with Brunch Guide](https://github.com/brunch/brunch-guide/blob/master/content/en/chapter02-getting-started.md).
 
 You can also view the [live demo](https://alien-lattice-123714.appspot.com) and read the full [Brunch documentation](https://github.com/brunch/brunch-guide).
 

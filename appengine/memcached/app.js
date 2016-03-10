@@ -23,8 +23,8 @@ var app = express();
 // The environment variables are automatically set by App Engine when running
 // on GAE. When running locally, you should have a local instance of the
 // memcached daemon running.
-var memcachedAddr = process.env.MEMCACHED_PORT_11211_TCP_ADDR || 'localhost';
-var memcachedPort = process.env.MEMCACHED_PORT_11211_TCP_PORT || '11211';
+var memcachedAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR || 'localhost';
+var memcachedPort = process.env.MEMCACHE_PORT_11211_TCP_PORT || '11211';
 var memcached = new Memcached(memcachedAddr + ':' + memcachedPort);
 
 app.get('/', function(req, res, next) {

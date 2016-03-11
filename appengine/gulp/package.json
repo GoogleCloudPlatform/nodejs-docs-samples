@@ -19,13 +19,13 @@
     "debug": "^2.2.0",
     "express": "^4.13.4",
     "jade": "^1.11.0",
+    "jshint": "^2.9.1",
+    "gulp": "^3.9.1",
+    "gulp-cssnano": "^2.1.1",
+    "gulp-jshint": "^2.0.0",
     "morgan": "^1.6.1",
     "serve-favicon": "^2.3.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-cssnano": "^2.1.1",
-    "gulp-jshint": "^2.0.0",
-    "jshint": "^2.9.1"
   }
 }

@@ -93,7 +93,7 @@ function listMetricDescriptors(authClient, projectId, callback) {
     var monitoring = google.monitoring('v3');
     monitoring.projects.metricDescriptors.list({
         auth: authClient,
-        filter: 'metric.name="' + METRIC + '"',
+        filter: 'metric.type="' + METRIC + '"',
         name: projectId
     }, function (error, metricDescriptors) {
         if (error) {

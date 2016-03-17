@@ -20,147 +20,170 @@
 var google = require('googleapis');
 var async = require('async');
 
-var args = process.argv.slice(2);
-if (args.length !== 1) {
-    console.log('Usage: node list_resources.js <project_id>');
-    process.exit();
-}
-
 var monitoringScopes = [
-    'https://www.googleapis.com/auth/cloud-platform',
-    'https://www.googleapis.com/auth/monitoring',
-    'https://www.googleapis.com/auth/monitoring.read',
-    'https://www.googleapis.com/auth/monitoring.write'
+  'https://www.googleapis.com/auth/cloud-platform',
+  'https://www.googleapis.com/auth/monitoring',
+  'https://www.googleapis.com/auth/monitoring.read',
+  'https://www.googleapis.com/auth/monitoring.write'
 ];
 
-var PROJECT_ID = 'projects/' + args[0];
 var METRIC = 'compute.googleapis.com/instance/cpu/usage_time';
-
 
 /**
  * Returns an hour ago minus 5 minutes in RFC33339 format.
  */
 function getStartTime() {
-    var d = new Date();
-    d.setHours(d.getHours() - 1);
-    d.setMinutes(d.getMinutes() - 5);
-    return JSON.parse(JSON.stringify(d).replace('Z', '000Z'));
+  var d = new Date();
+  d.setHours(d.getHours() - 1);
+  d.setMinutes(d.getMinutes() - 5);
+  return JSON.parse(JSON.stringify(d).replace('Z', '000Z'));
 }
 
 /**
  * Returns an hour ago in RFC33339 format.
  */
 function getEndTime() {
-    var d = new Date();
-    d.setHours(d.getHours() - 1);
-    return JSON.parse(JSON.stringify(d).replace('Z', '000Z'));
+  var d = new Date();
+  d.setHours(d.getHours() - 1);
+  return JSON.parse(JSON.stringify(d).replace('Z', '000Z'));
 }
 
-/**
- * This Lists all the resources available to be monitored in the API.
- *
- * @param {googleAuthClient} authClient - The authenticated Google api client
- * @param {String} projectId - the project id
- * @param {requestCallback} callback - a function to be called when the server
- *     responds with the list of monitored resource descriptors
- */
-function listMonitoredResourceDescriptors(authClient, projectId, callback) {
+var ListResources = {
+
+  /**
+   * This Lists all the resources available to be monitored in the API.
+   *
+   * @param {googleAuthClient} authClient - The authenticated Google api client
+   * @param {String} projectId - the project id
+   * @param {requestCallback} callback - a function to be called when the server
+   *     responds with the list of monitored resource descriptors
+   */
+  listMonitoredResourceDescriptors: function (authClient, projectId, callback) {
     var monitoring = google.monitoring('v3');
     monitoring.projects.monitoredResourceDescriptors.list({
-        auth: authClient,
-        name: projectId,
-    }, function (error, monitoredResources) {
-        if (error) {
-            console.error(
-                'Error Retrieving Monitored Resource Descriptors', error);
-            return;
-        }
-        console.log('listMonitoredResourceDescriptors: ');
-        console.log(monitoredResources);
-        callback();
-    });
-}
+      auth: authClient,
+      name: projectId,
+      pageSize: 3
+    }, function (err, monitoredResources) {
+      if (err) {
+        return callback(err);
+      }
 
-/**
- * This Lists the metric descriptors that start with our METRIC name, in this
- * case the CPU usage time.
- * @param {googleAuthClient} authClient - The authenticated Google api client
- * @param {String} projectId - the project id
- * @param {requestCallback} callback - a function to be called when the server
- *     responds with the list of monitored resource descriptors
- */
-function listMetricDescriptors(authClient, projectId, callback) {
+      console.log('Monitored resources', monitoredResources);
+      callback(null, monitoredResources);
+    });
+  },
+
+  /**
+   * This Lists the metric descriptors that start with our METRIC name, in this
+   * case the CPU usage time.
+   * @param {googleAuthClient} authClient - The authenticated Google api client
+   * @param {String} projectId - the project id
+   * @param {requestCallback} callback - a function to be called when the server
+   *     responds with the list of monitored resource descriptors
+   */
+  listMetricDescriptors: function (authClient, projectId, callback) {
     var monitoring = google.monitoring('v3');
     monitoring.projects.metricDescriptors.list({
-        auth: authClient,
-        filter: 'metric.type="' + METRIC + '"',
-        name: projectId
-    }, function (error, metricDescriptors) {
-        if (error) {
-            console.error('Error Retrieving Metric Descriptors', error);
-            return;
-        }
-        console.log('listMetricDescriptors');
-        console.log(metricDescriptors);
-        callback();
-    });
-}
+      auth: authClient,
+      filter: 'metric.type="' + METRIC + '"',
+      pageSize: 3,
+      name: projectId
+    }, function (err, metricDescriptors) {
+      if (err) {
+        return callback(err);
+      }
 
-/**
- * This Lists all the timeseries created between START_TIME and END_TIME
- * for our METRIC.
- * @param {googleAuthClient} authClient - The authenticated Google api client
- * @param {String} projectId - the project id
- * @param {requestCallback} callback - a function to be called when the server
- *     responds with the list of monitored resource descriptors
- */
-function listTimeseries(authClient, projectId, callback) {
+      console.log('Metric descriptors', metricDescriptors);
+      callback(null, metricDescriptors);
+    });
+  },
+
+  /**
+   * This Lists all the timeseries created between START_TIME and END_TIME
+   * for our METRIC.
+   * @param {googleAuthClient} authClient - The authenticated Google api client
+   * @param {String} projectId - the project id
+   * @param {requestCallback} callback - a function to be called when the server
+   *     responds with the list of monitored resource descriptors
+   */
+  listTimeseries: function (authClient, projectId, callback) {
     var monitoring = google.monitoring('v3');
     var startTime = getStartTime();
     var endTime = getEndTime();
 
     monitoring.projects.timeSeries.list({
-        auth: authClient,
-        filter: 'metric.type="' + METRIC + '"',
-        pageSize: 3,
-        'interval.startTime': startTime,
-        'interval.endTime': endTime,
-        name: projectId
-    }, function (error, timeSeries) {
-        if (error) {
-            console.error('Error Retrieving Timeseries', error);
-            return;
-        }
-        console.log('listTimeseries');
-        console.log(timeSeries);
-        callback();
+      auth: authClient,
+      filter: 'metric.type="' + METRIC + '"',
+      pageSize: 3,
+      'interval.startTime': startTime,
+      'interval.endTime': endTime,
+      name: projectId
+    }, function (err, timeSeries) {
+      if (err) {
+        return callback(err);
+      }
+
+      console.log('Time series', timeSeries);
+      callback(null, timeSeries);
     });
-}
+  },
 
-
-google.auth.getApplicationDefault(function (error, authClient) {
-    if (error) {
-        console.error(error);
-        process.exit();
-    }
-
-    // Depending on the environment that provides the default credentials
-    // (e.g. Compute Engine, App Engine), the credentials retrieved may require
-    // you to specify the scopes you need explicitly.
-    // Check for this case, and inject the Cloud Storage scope if required.
-    if (authClient.createScopedRequired &&
+  getMonitoringClient: function (callback) {
+    google.auth.getApplicationDefault(function (err, authClient) {
+      if (err) {
+        return callback(err);
+      }
+      // Depending on the environment that provides the default credentials
+      // (e.g. Compute Engine, App Engine), the credentials retrieved may
+      // require you to specify the scopes you need explicitly.
+      // Check for this case, and inject the Cloud Storage scope if required.
+      if (authClient.createScopedRequired &&
         authClient.createScopedRequired()) {
         authClient = authClient.createScoped(monitoringScopes);
-    }
+      }
+      callback(null, authClient);
+    });
+  }
+};
 
+exports.main = function (projectId, cb) {
+  var projectName = 'projects/' + projectId;
+  ListResources.getMonitoringClient(function (err, authClient) {
+    if (err) {
+      return cb(err);
+    }
     // Create the service object.
     async.series([
-        function (callback) {
-            listMonitoredResourceDescriptors(authClient, PROJECT_ID, callback);
-        }, function (callback) {
-            listMetricDescriptors(authClient, PROJECT_ID, callback);
-        }, function (callback) {
-            listTimeseries(authClient, PROJECT_ID, callback);
-        }]
-    );
-});
+      function (cb) {
+        ListResources.listMonitoredResourceDescriptors(
+          authClient,
+          projectName,
+          cb
+        );
+      },
+      function(cb) {
+        ListResources.listMetricDescriptors(
+          authClient,
+          projectName,
+          cb
+        );
+      },
+      function(cb) {
+        ListResources.listTimeseries(
+          authClient,
+          projectName,
+          cb
+        );
+      }
+    ], cb);
+  });
+};
+
+if (require.main === module) {
+  var args = process.argv.slice(2);
+  exports.main(
+    args[0] || process.env.GCLOUD_PROJECT,
+    console.log
+  );
+}

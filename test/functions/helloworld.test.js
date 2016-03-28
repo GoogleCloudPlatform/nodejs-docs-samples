@@ -13,21 +13,14 @@
 
 'use strict';
 
-var assert = require('assert');
-
+var test = require('ava');
 var helloworldSample = require('../../functions/helloworld');
 
-describe('functions/helloworld', function () {
-  it('should return a hello world message', function (done) {
-    helloworldSample.helloworld({
-      success: function (result) {
-        try {
-          assert.equal(result, 'Hello World!');
-          done();
-        } catch (err) {
-          done(err);
-        }
-      }
-    });
+test.cb('should return a hello world message', function (t) {
+  helloworldSample.helloworld({
+    success: function (result) {
+      t.is(result, 'Hello World!');
+      t.end();
+    }
   });
 });

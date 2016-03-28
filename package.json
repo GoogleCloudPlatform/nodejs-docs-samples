@@ -25,9 +25,11 @@
   },
   "scripts": {
     "jshint": "jshint --exclude-path=.jshintignore .",
-    "mocha": "mocha --timeout 10000 --recursive",
-    "cover": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- -t 30000 --recursive",
-    "coveralls": "cat ./coverage/lcov.info | node_modules/.bin/coveralls",
+    "deps_appengine": "ava --match='*: dependencies should install*'",
+    "ava": "npm run deps_appengine && ava --match='!*: dependencies should install*'",
+    "cover": "npm run deps_appengine && nyc ava --match='!*: dependencies should install*'",
+    "report": "nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
+    "report-html": "nyc report --reporter=html",
     "deps_datastore": "cd datastore; npm i; cd ../",
     "deps_pubsub": "cd pubsub; npm i; cd ../",
     "deps_monitoring": "cd monitoring; npm i; cd ../",
@@ -40,13 +42,17 @@
     "pretest": "npm run deps_datastore; npm run deps_monitoring; npm run deps_storage; npm run deps_pubsub; npm run deps_prediction; npm run deps_logging; npm run deps_functions; npm run deps_sendgrid; npm run pretest_geddy",
     "test": "npm run jshint && npm run cover"
   },
+  "ava": {
+    "files": [
+      "test/**/*.test.js"
+    ]
+  },
   "devDependencies": {
     "async": "^1.5.2",
-    "coveralls": "^2.11.6",
-    "googleapis": "^2.1.7",
-    "istanbul": "^0.4.2",
+    "ava": "^0.13.0",
+    "coveralls": "^2.11.9",
     "jshint": "~2.9.1",
-    "mocha": "^2.4.5",
+    "nyc": "^6.1.1",
     "proxyquire": "^1.7.4",
     "request": "^2.69.0",
     "supertest": "^1.1.0"

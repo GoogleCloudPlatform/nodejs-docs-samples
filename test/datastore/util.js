@@ -17,8 +17,7 @@ module.exports = {
   deleteEntities: function(datastore, query, callback) {
     datastore.runQuery(query, function(err, entities) {
       if (err) {
-        callback(err);
-        return;
+        return callback(err);
       }
 
       var keys = entities.map(function(entity) {

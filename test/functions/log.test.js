@@ -13,86 +13,63 @@
 
 'use strict';
 
-var assert = require('assert');
-
+var test = require('ava');
 var logSample = require('../../functions/log');
 
-describe('functions/log', function () {
-  it('should write to log', function (done) {
-    var logMessage = 'I am a log entry!';
-    var messageWasPrinted = false;
-    var originalLog = console.log;
+test.cb('should write to log', function (t) {
+  var logMessage = 'I am a log entry!';
+  var messageWasPrinted = false;
 
-    console.log = function (data) {
-      if (data === logMessage) {
-        messageWasPrinted = true;
-      }
-    };
+  console.log = function (data) {
+    if (data === logMessage) {
+      messageWasPrinted = true;
+    }
+  };
 
-    logSample.log({
-      success: function (result) {
-        try {
-          assert.equal(result, undefined);
-          if (messageWasPrinted) {
-            console.log = originalLog;
-            done();
-          } else {
-            console.log = originalLog;
-            done('message was not printed!');
-          }
-        } catch (err) {
-          console.log = originalLog;
-          done(err);
-        }
+  logSample.log({
+    success: function (result) {
+      t.is(result, undefined);
+      if (messageWasPrinted) {
+        t.end();
+      } else {
+        t.end('message was not printed!');
       }
-    });
+    }
   });
-  it('should write to log 2', function (done) {
-    var logMessage = 'My GCF Function: foo';
-    var messageWasPrinted = false;
-    var originalLog = console.log;
+});
+test.cb('should write to log 2', function (t) {
+  var logMessage = 'My GCF Function: foo';
+  var messageWasPrinted = false;
 
-    console.log = function (data) {
-      if (data === logMessage) {
-        messageWasPrinted = true;
-      }
-    };
+  console.log = function (data) {
+    if (data === logMessage) {
+      messageWasPrinted = true;
+    }
+  };
 
-    logSample.helloworld({
-      success: function (result) {
-        try {
-          assert.equal(result, undefined);
-          if (messageWasPrinted) {
-            console.log = originalLog;
-            done();
-          } else {
-            console.log = originalLog;
-            done('message was not printed!');
-          }
-        } catch (err) {
-          console.log = originalLog;
-          done(err);
-        }
+  logSample.helloworld({
+    success: function (result) {
+      t.is(result, undefined);
+      if (messageWasPrinted) {
+        t.end();
+      } else {
+        t.end('message was not printed!');
       }
-    },
-    {
-      message: 'foo'
-    });
+    }
+  },
+  {
+    message: 'foo'
   });
-  it('should write to log 3', function (done) {
-    var logMessage = 'My GCF Function: foo';
-    logSample.hellohttp({
-      success: function (result) {
-        try {
-          assert.equal(result, logMessage);
-          done();
-        } catch (err) {
-          done(err);
-        }
-      }
-    },
-    {
-      message: 'foo'
-    });
+});
+test.cb('should write to log 3', function (t) {
+  var logMessage = 'My GCF Function: foo';
+  logSample.hellohttp({
+    success: function (result) {
+      t.is(result, logMessage);
+      t.end();
+    }
+  },
+  {
+    message: 'foo'
   });
 });

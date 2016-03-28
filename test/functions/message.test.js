@@ -13,52 +13,37 @@
 
 'use strict';
 
-var assert = require('assert');
-
+var test = require('ava');
 var messageSample = require('../../functions/message');
 
-describe('functions/message', function () {
-  it('should print a message', function (done) {
-    var testMessage = 'test message';
-    var messageWasPrinted = false;
-    var originalLog = console.log;
+test.cb('should print a message', function (t) {
+  var testMessage = 'test message';
+  var messageWasPrinted = false;
 
-    console.log = function (data) {
-      if (data === testMessage) {
-        messageWasPrinted = true;
-      }
-    };
+  console.log = function (data) {
+    if (data === testMessage) {
+      messageWasPrinted = true;
+    }
+  };
 
-    messageSample.helloworld({
-      success: function (result) {
-        try {
-          assert.equal(result, undefined);
-          if (messageWasPrinted) {
-            console.log = originalLog;
-            done();
-          } else {
-            console.log = originalLog;
-            done('message was not printed!');
-          }
-        } catch (err) {
-          console.log = originalLog;
-          done(err);
-        }
+  messageSample.helloworld({
+    success: function (result) {
+      t.is(result, undefined);
+      if (messageWasPrinted) {
+        t.end();
+      } else {
+        t.end('message was not printed!');
       }
-    }, {
-      message: testMessage
-    });
+    }
+  }, {
+    message: testMessage
   });
-  it('should say no message was providied', function (done) {
-    messageSample.helloworld({
-      failure: function (result) {
-        try {
-          assert.equal(result, 'No message defined!');
-          done();
-        } catch (err) {
-          done(err);
-        }
-      }
-    }, {});
-  });
+});
+test.cb('should say no message was providied', function (t) {
+  messageSample.helloworld({
+    failure: function (result) {
+      t.is(result, 'No message defined!');
+      t.end();
+    }
+  }, {});
 });

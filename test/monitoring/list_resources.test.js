@@ -13,23 +13,22 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
 var listResourcesExample = require('../../monitoring/list_resources');
 
-it('should list a bunch of stuff', function (done) {
-  this.timeout(20000);
+test.cb('should list a bunch of stuff', function (t) {
   listResourcesExample.main(
     process.env.GCLOUD_PROJECT,
     function (err, results) {
-      assert.ifError(err);
-      assert.equal(results.length, 3);
+      t.ifError(err);
+      t.is(results.length, 3);
       // Monitored resources
-      assert.ok(Array.isArray(results[0].resourceDescriptors));
+      t.ok(Array.isArray(results[0].resourceDescriptors));
       // Metric descriptors
-      assert.ok(Array.isArray(results[1].metricDescriptors));
+      t.ok(Array.isArray(results[1].metricDescriptors));
       // Time series
-      assert.ok(Array.isArray(results[2].timeSeries));
-      done();
+      t.ok(Array.isArray(results[2].timeSeries));
+      t.end();
     }
   );
 });

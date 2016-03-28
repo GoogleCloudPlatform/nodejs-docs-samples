@@ -13,27 +13,16 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
+var listExample = require('../../logging/list');
 
-var logging = require('../../logging/list');
-
-describe('logging/list', function () {
-  it('should list entries', function (done) {
-    logging.runExample(function (err, entries, apiResponse) {
-      if (err) {
-        return done(err);
-      }
-      assert.ok(Array.isArray(entries), 'should have got an array');
-      assert.ok(apiResponse.orderBy);
-      assert.ok(apiResponse.pageSize);
-      assert.ok(Array.isArray(apiResponse.projectIds));
-      if (entries.length === 3) {
-        // obviously this will pass
-        assert.equal(entries.length, 3, 'should have three entries');
-      } else {
-        console.error('Received correct apiResponse, but no logs. Why not?');
-      }
-      done();
-    });
+test.cb('should list entries', function (t) {
+  listExample.main(undefined, function (err, entries, nextQuery, apiResponse) {
+    t.ifError(err);
+    t.ok(entries, 'should have received entries');
+    t.ok(Array.isArray(entries), 'entries should be an array');
+    t.ok(nextQuery, 'should have received nextQuery');
+    t.ok(apiResponse, 'should have received apiResponse');
+    t.end();
   });
 });

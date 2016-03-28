@@ -13,18 +13,14 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
+var exportExample = require('../../logging/export');
 
-var logging = require('../../logging/export');
-
-describe('logging/export', function () {
-  it('should list sinks', function (done) {
-    logging.runExample(function (err, sinks) {
-      if (err) {
-        return done(err);
-      }
-      assert.ok(Array.isArray(sinks), 'should be an array');
-      done();
-    });
+test.cb('should list sinks', function (t) {
+  exportExample.main(function (err, sinks) {
+    t.ifError(err);
+    t.ok(sinks, 'should have received sinks');
+    t.ok(Array.isArray(sinks), 'sinks should be an array');
+    t.end();
   });
 });

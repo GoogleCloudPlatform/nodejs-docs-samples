@@ -13,15 +13,17 @@
 
 'use strict';
 
+var test = require('ava');
 var spawn = require('child_process').spawn;
 var request = require('request');
 var fs = require('fs');
+var path = require('path');
 var async = require('async');
 var cwd = process.cwd();
 var projectId = process.env.GCLOUD_PROJECT;
 
 function getPath(dir) {
-  return cwd + '/appengine/' + dir;
+  return path.join(cwd, '/../../appengine/', dir);
 }
 
 function changeScaling(dir) {
@@ -90,7 +92,8 @@ var sampleTests = [
     dir: 'geddy',
     cmd: 'node',
     args: ['node_modules/geddy/bin/cli.js'],
-    msg: 'Hello, World! Geddy.js on Google App Engine.'
+    msg: 'Hello, World! Geddy.js on Google App Engine.',
+    TRAVIS_NODE_VERSION: 'stable'
   },
   {
     dir: 'grunt',
@@ -245,69 +248,81 @@ if (process.env.TRAVIS_NODE_VERSION === 'stable') {
   });
 }
 
-// Send a request to the given url and test that the response body has the
-// expected value
-function testRequest(url, sample, cb) {
+// Retry the request using exponential backoff up to a maximum number of tries.
+function makeRequest(url, numTry, maxTries, cb) {
   request(url, function (err, res, body) {
     if (err) {
-      // Request error
-      return cb(err);
-    } else {
-      if (body && body.indexOf(sample.msg) !== -1 &&
-            (res.statusCode === 200 || res.statusCode === sample.code) &&
-            (!sample.test || sample.test.test(body))) {
-        // Success
-        return cb(null, true);
-      } else {
-        // Short-circuit app test
-        var message = sample.dir + ': failed verification!\n' +
-                      'Expected: ' + sample.msg + '\n' +
-                      'Actual: ' + body;
-
-        // Response body did not match expected
-        return cb(new Error(message));
+      if (numTry >= maxTries) {
+        return cb(err);
       }
+      setTimeout(function () {
+        makeRequest(url, numTry + 1, maxTries, cb);
+      }, 500 * Math.pow(numTry, 2));
+    } else {
+      cb(null, res, body);
     }
   });
 }
 
-describe('appengine/', function () {
-  var port = 8080;
-  sampleTests.forEach(function (sample) {
-    sample.env = sample.env || {};
-    sample.env.PORT = port;
-    if (sample.dir === 'parse-server') {
-      sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
-      console.log(sample);
+// Send a request to the given url and test that the response body has the
+// expected value
+function testRequest(url, sample, cb) {
+  // Try up to 8 times
+  makeRequest(url, 1, 8, function (err, res, body) {
+    if (err) {
+      // Request error
+      return cb(err);
     }
-    port++;
-    it(sample.dir + ': dependencies should install', function (done) {
-      // Allow extra time for "npm install"
-      this.timeout(sample.timeout || 120000);
-
-      testInstallation(sample, done);
-    });
-
-    if (sample.TRAVIS && !process.env.TRAVIS) {
-      return;
+    if (body && body.indexOf(sample.msg) !== -1 &&
+          (res.statusCode === 200 || res.statusCode === sample.code) &&
+          (!sample.test || sample.test.test(body))) {
+      // Success
+      return cb(null, true);
     }
+    // Short-circuit app test
+    var message = sample.dir + ': failed verification!\n' +
+                  'Expected: ' + sample.msg + '\n' +
+                  'Actual: ' + body;
 
-    it(sample.dir + ' should return 200 and Hello World', function (done) {
-      testLocalApp(sample, done);
-    });
+    // Response body did not match expected
+    cb(new Error(message));
+  });
+}
+
+var port = 8080;
+sampleTests.forEach(function (sample) {
+  sample.env = sample.env || {};
+  sample.env.PORT = port;
+  if (sample.dir === 'parse-server') {
+    sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
+  }
+  port++;
+  test.cb(sample.dir + ': dependencies should install', function (t) {
+    testInstallation(sample, t.end);
   });
 
-  if (!process.env.TRAVIS || !process.env.DEPLOY_TESTS) {
+  if (sample.TRAVIS && !process.env.TRAVIS) {
     return;
   }
 
-  it('should deploy all samples', function (done) {
+  if (sample.TRAVIS_NODE_VERSION && process.env.TRAVIS &&
+    process.env.TRAVIS_NODE_VERSION !== sample.TRAVIS_NODE_VERSION) {
+    return;
+  }
+
+  test.cb(sample.dir + ' should return 200 and Hello World', function (t) {
+    testLocalApp(sample, t.end);
+  });
+});
+
+if (process.env.TRAVIS && process.env.DEPLOY_TESTS) {
+  test.cb('should deploy all samples', function (t) {
     // 30 minutes because deployments are slow
     this.timeout(30 * 60 * 1000);
 
-    testDeployments(done);
+    testDeployments(t.end);
   });
-});
+}
 
 function testInstallation(sample, done) {
 
@@ -361,34 +376,18 @@ function testLocalApp(sample, done) {
   console.log('\t' + sample.dir + ': Start server on port ' + sample.env.PORT);
   var proc = spawn(sample.cmd, sample.args, opts);
 
-  proc.on('error', function (err) {
-    console.log('\t' + sample.dir + ': ERROR', err.message);
-    finish(err);
-  });
-
-  if (!process.env.TRAVIS) {
-    proc.stderr.on('data', function (data) {
-      console.log('stderr: ' + data);
-    });
+  // Exit helper so we don't call "cb" more than once
+  function finish(err) {
+    if (!calledDone) {
+      calledDone = true;
+      done(err || requestError);
+    }
   }
 
-  proc.on('exit', function (code, signal) {
-    if (signal === 'SIGKILL') {
-      console.log('\t' + sample.dir + ': SIGKILL received!');
-    }
-    if (code !== 0 && signal !== 'SIGKILL') {
-      console.log('\t' + sample.dir + ': ERROR', code, signal);
-      return finish(new Error(sample.dir + ': failed to run!'));
-    } else {
-      return finish();
-    }
-  });
-
-  // Give the server time to start up
-  setTimeout(function () {
-    console.log('\t' + sample.dir + ': Send test request...');
-    // Test that the app is working
+  try {
+    console.log('\t' + sample.dir + ': Testing app...');
     var url = 'http://localhost:' + sample.env.PORT;
+    // Test that the app is working
     testRequest(url, sample, function (err, result) {
       requestError = err;
       if (result) {
@@ -397,13 +396,32 @@ function testLocalApp(sample, done) {
       console.log('\t' + sample.dir + ': Send shutdown signal...');
       proc.kill('SIGKILL');
     });
-  }, 5000);
 
-  // Exit helper so we don't call "cb" more than once
-  function finish(err) {
-    if (!calledDone) {
-      calledDone = true;
-      done(err || requestError);
+    proc.on('error', function (err) {
+      console.log('\t' + sample.dir + ': ERROR', err.message);
+      finish(err);
+    });
+
+    if (!process.env.TRAVIS) {
+      proc.stderr.on('data', function (data) {
+        console.log('stderr: ' + data);
+      });
+    }
+
+    proc.on('exit', function (code, signal) {
+      if (signal === 'SIGKILL') {
+        console.log('\t' + sample.dir + ': SIGKILL received!');
+      }
+      if (code !== 0 && signal !== 'SIGKILL') {
+        console.log('\t' + sample.dir + ': ERROR', code, signal);
+        return finish(new Error(sample.dir + ': failed to run!'));
+      } else {
+        return finish();
+      }
+    });
+  } catch (err) {
+    if (proc) {
+      proc.kill('SIGKILL');
     }
   }
 }

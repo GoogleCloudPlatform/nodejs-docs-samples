@@ -36,10 +36,10 @@ var google = require('googleapis');
  *     responds with the list of buckets.
  */
 // [START list_buckets]
-function listBuckets(projectId, cb) {
+function listBucketsExample(projectId, callback) {
   google.auth.getApplicationDefault(function(err, authClient) {
     if (err) {
-      return cb(err);
+      return callback(err);
     }
 
     // Depending on the environment that provides the default credentials
@@ -54,32 +54,30 @@ function listBuckets(projectId, cb) {
 
     // Create the service object.
     var storage = google.storage('v1');
+
     // Make the api call to list the buckets.
     storage.buckets.list({
       auth: authClient,
       project: projectId
-    }, cb);
+    }, function (err, response) {
+      if (err) {
+      return callback(err);
+    }
+
+      console.log('Found ' + response.items.length + ' buckets');
+      callback(null, response);
+    });
   });
 }
 // [END list_buckets]
 
-exports.runExample = function (projectId, cb) {
-  listBuckets(
-    projectId,
-    function (err, response) {
-      if (err) {
-        console.log(err);
-      } else if (response && response.items) {
-        console.log(JSON.stringify(response.items, null, 2));
-      }
-      if (typeof cb === 'function') {
-        cb(err, response);
-      }
-    }
-  );
+// Run the samples
+exports.main = function (projectId, cb) {
+  listBucketsExample(projectId, cb || function (err, response) {
+    console.log(err, response.items);
+  });
 };
 
-// For command-line execution of sample
 if (module === require.main) {
-  exports.runExample(process.argv.length > 2 ? process.argv[2] : '');
+  exports.main(process.argv.slice(2).shift());
 }

@@ -129,30 +129,29 @@ a service account file. You can download one from your Google project's
 "permissions" page.
 1. `npm test`
 
-Since the tests use [Mocha.js](https://mochajs.org/), you can use the `--grep`
-option to run only the tests that match a provided pattern. The `--invert`
-option causes the matched tests to be excluded instead of included.
+Since the tests use [AVA](https://github.com/sindresorhus/ava), you can use the
+`--match` option to run only the tests that match a provided pattern.
 
 __Run only the tests that match a pattern:__
 
 
-    npm test -- -- --grep <pattern>
+    npm test -- -- --match="<pattern>"
 
 __Only run the tests for the `datastore` sample:__
 
-    npm test -- -- --grep datastore
+    npm test -- -- --match="datastore"
 
 __Skip the tests that match a pattern:__
 
-    npm test -- -- --grep <pattern> --invert
+    npm test -- -- --match="!<pattern>"
 
 __Run all but the `datastore` tests:__
 
-    npm test -- -- --grep datastore --invert
+    npm test -- -- --match="!datastore"
 
 __Skip the tests that require Redis and Memcached:__
 
-    npm test -- -- --grep "express-memcached-session|redis" --invert
+    npm test -- -- --match="express-memcached-session|redis"
 
 ## License
 

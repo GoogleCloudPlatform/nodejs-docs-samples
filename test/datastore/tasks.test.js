@@ -13,82 +13,56 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
 var async = require('async');
 
 var tasks = require('../../datastore/tasks.js');
 var taskIds = [];
 
-describe('datastore/tasks/', function() {
+test.after.cb(function (t) {
+  async.parallel(taskIds.map(function (taskId) {
+    return function (cb) {
+      tasks.deleteEntity(taskId, cb);
+    };
+  }), t.end);
+});
 
-  after(function (done) {
-    async.parallel(taskIds.map(function(taskId) {
-      return function (cb) {
-        tasks.deleteEntity(taskId, cb);
-      };
-    }), done);
+test.cb.serial('should add a task', function (t) {
+  getTaskId(t.end);
+});
+
+test.cb.serial('should mark a task as done', function (t) {
+  getTaskId(function (err, taskId) {
+    t.ifError(err);
+    tasks.updateEntity(taskId, t.end);
   });
+});
 
-  describe('adding an entity', function() {
-    it('should add a task', function(done) {
-      getTaskId(done);
-    });
+test.cb.serial('should list tasks', function (t) {
+  tasks.retrieveEntities(t.end);
+});
+
+test.cb.serial('should delete a task', function (t) {
+  getTaskId(function (err, taskId) {
+    t.ifError(err);
+    tasks.deleteEntity(taskId, t.end);
   });
+});
 
-  describe('updating an entity', function() {
-    it('should mark a task as done', function(done) {
-      getTaskId(function (err, taskId) {
-        if (err) {
-          return done(err);
-        }
-        tasks.updateEntity(taskId, done);
-      });
+test.cb.serial('should format tasks', function (t) {
+  tasks.retrieveEntities(function (err, _tasks) {
+    t.ifError(err);
+    t.notThrows(function () {
+      tasks.formatTasks(_tasks);
     });
-  });
-
-  describe('retrieving entities', function() {
-    it('should list tasks', function(done) {
-      tasks.retrieveEntities(done);
-    });
-  });
-
-  describe('deleting an entity', function() {
-    it('should delete a task', function(done) {
-      getTaskId(function (err, taskId) {
-        if (err) {
-          return done(err);
-        }
-        tasks.deleteEntity(taskId, done);
-      });
-    });
-  });
-
-  describe('formatting results', function() {
-    it('should format tasks', function(done) {
-      tasks.retrieveEntities(function(err, _tasks) {
-        if (err) {
-          done(err);
-          return;
-        }
-
-        try {
-          assert.doesNotThrow(function() {
-            tasks.formatTasks(_tasks);
-          });
-          done();
-        } catch (err) {
-          done(err);
-        }
-      });
-    });
+    t.end();
   });
 });
 
 function getTaskId(callback) {
-  tasks.addEntity('description', function(err, taskKey) {
+  tasks.addEntity('description', function (err, taskKey) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
     var taskId = taskKey.path.pop();

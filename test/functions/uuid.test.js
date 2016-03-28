@@ -13,22 +13,15 @@
 
 'use strict';
 
-var assert = require('assert');
-
+var test = require('ava');
 var uuidSample = require('../../functions/uuid');
 
-describe('functions/uuid', function () {
-  it('should generate a uuid', function (done) {
-    uuidSample.uuid({
-      success: function (uuid) {
-        try {
-          assert.equal(typeof uuid, 'string');
-          assert.equal(uuid.length, 36);
-          done();
-        } catch (err) {
-          done(err);
-        }
-      }
-    });
+test.cb('should generate a uuid', function (t) {
+  uuidSample.uuid({
+    success: function (uuid) {
+      t.is(typeof uuid, 'string');
+      t.is(uuid.length, 36);
+      t.end();
+    }
   });
 });

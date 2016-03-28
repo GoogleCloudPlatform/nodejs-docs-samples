@@ -17,7 +17,7 @@ To print available commands:
 
 Execute a sample:
 
-    npm run <sample> -- [arg_1] [arg_2] [arg_n]
+    npm run <sample> -- [args...]
 
 Example:
 

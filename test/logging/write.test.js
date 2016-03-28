@@ -13,24 +13,16 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
+var writeExample = require('../../logging/write');
 
-var logging = require('../../logging/write');
-
-describe('logging/write', function () {
-  it('should write entries', function (done) {
-    logging.runExample(function (err, result) {
-      if (err) {
-        return done(err);
-      }
-      try {
-        assert.equal(result.length, 2, 'should have two results');
-        assert.deepEqual(result[0], {}, 'should have correct response');
-        assert.deepEqual(result[1], {}, 'should have correct response');
-        done();
-      } catch (err) {
-        return done(err);
-      }
-    });
+test.cb('should write entries', function (t) {
+  writeExample.main(function (err, results) {
+    if (err && err.code === 404) {
+      return t.end();
+    }
+    t.ifError(err);
+    t.is(results.length, 2, 'should have two results');
+    t.end();
   });
 });

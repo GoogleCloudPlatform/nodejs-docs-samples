@@ -13,31 +13,13 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
 var hostedmodels = require('../../prediction/hostedmodels');
 
-var EXPECTED_RESULT = {
-  kind: 'prediction#output',
-  id: 'sample.sentiment',
-  selfLink: 'https://www.googleapis.com/prediction/v1.6/projects/414649711441' +
-    '/hostedmodels/sample.sentiment/predict',
-  outputLabel: 'positive',
-  outputMulti: [
-    { label: 'positive', score: '0.784671' },
-    { label: 'negative', score: '0.186649' },
-    { label: 'neutral', score: '0.028680' }
-  ]
-};
-
-describe('prediction/hostedmodels', function () {
-  it('should predict', function (done) {
-    this.timeout(30000);
-    hostedmodels.predict(function (err, result) {
-      if (err) {
-        return done(err);
-      }
-      assert.deepEqual(result, EXPECTED_RESULT);
-      done();
-    });
+test.cb('should predict', function (t) {
+  hostedmodels.main('good night', function (err, result) {
+    t.ifError(err);
+    t.ok(result);
+    t.end();
   });
 });

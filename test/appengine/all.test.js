@@ -52,6 +52,13 @@ var sampleTests = [
     msg: 'Express.js + Bower on Google App Engine.'
   },
   {
+    dir: 'brunch',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Brunch with ES6 running on Google App Engine.',
+    TRAVIS: true
+  },
+  {
     dir: 'cloudsql',
     cmd: 'node',
     args: ['app.js'],

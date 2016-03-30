@@ -1,4 +1,6 @@
 appengine/bower/public/bower_components/**
+appengine/brunch/app/**
+appengine/brunch/public/**
 appengine/kraken/public/components/**
 appengine/parse-server/cloud/main.js
 appengine/sails/config/**

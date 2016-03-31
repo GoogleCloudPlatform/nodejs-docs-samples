@@ -21,4 +21,4 @@ Execute a sample:
 
 Example:
 
-    npm run hostedmodels
+    npm run hostedmodels -- "good evening"

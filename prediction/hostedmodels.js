@@ -17,11 +17,12 @@
 var google = require('googleapis');
 var hostedmodels = google.prediction('v1.6').hostedmodels;
 
-function auth (callback) {
-  google.auth.getApplicationDefault(function(err, authClient) {
+function auth(callback) {
+  google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
       return callback(err);
     }
+
     // The createScopedRequired method returns true when running on GAE or a
     // local developer machine. In that case, the desired scopes must be passed
     // in manually. When the code is  running in GCE or a Managed VM, the scopes
@@ -39,12 +40,17 @@ function auth (callback) {
   });
 }
 
-function predict(callback) {
-  auth(function(err, authClient) {
+/**
+ * @param {string} phrase The phrase for which to predict sentiment,
+ * e.g. "good morning".
+ * @param {Function} callback Callback function.
+ */
+function predict(phrase, callback) {
+  auth(function (err, authClient) {
     if (err) {
       return callback(err);
     }
-    // Predict the sentiment for the word "hello".
+    // Predict the sentiment for the provided phrase
     hostedmodels.predict({
       auth: authClient,
       // Project id used for this sample
@@ -52,22 +58,28 @@ function predict(callback) {
       hostedModelName: 'sample.sentiment',
       resource: {
         input: {
-          // Predict sentiment of the word "hello"
-          csvInstance: ['hello']
+          // Predict sentiment of the provided phrase
+          csvInstance: phrase.split(/\s/gi)
         }
       }
-    }, function (err, result) {
-      console.log(err, result);
-      if (typeof callback === 'function') {
-        callback(err, result);
-      }
+    }, function (err, prediction) {
+      if (err) {
+      return callback(err);
+    }
+
+      // Received prediction result
+      console.log('Sentiment for "' + phrase + '": ' + prediction.outputLabel);
+      callback(null, prediction);
     });
   });
 }
 // [END predict]
 
-exports.predict = predict;
+// Run the examples
+exports.main = function (phrase, cb) {
+  predict(phrase || 'good morning', cb || console.log);
+};
 
 if (module === require.main) {
-  predict();
+  exports.main(process.argv.slice(2).shift());
 }

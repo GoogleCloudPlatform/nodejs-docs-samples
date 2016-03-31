@@ -13,51 +13,29 @@
 
 'use strict';
 
-var assert = require('assert');
-var projectId = process.env.GCLOUD_PROJECT;
-
+var test = require('ava');
 var subscriptionSample = require('../../pubsub/subscription');
 
-describe('pubsub/subscription', function () {
-  it('should run the sample', function (done) {
-    this.timeout(30000);
-    subscriptionSample.runSample(function (err, responses) {
-      try {
-        assert.ok(!err);
-        // topic
-        var expectedTopic = 'projects/' + projectId + '/topics/messageCenter';
-        assert.equal(responses[0][0].name, expectedTopic);
-        assert.ok(responses[0][0].iam);
-        // apiResponse
-        assert.ok(responses[0][1]);
-        // subscription
-        assert.ok(responses[1][0].on);
-        assert.ok(responses[1][0].iam);
-        // apiResponse
-        assert.ok(responses[1][1]);
-        // topics
-        var foundExpectedTopic = false;
-        responses[2][0].forEach(function (topic) {
-          if (topic.name === expectedTopic) {
-            foundExpectedTopic = true;
-            return false;
-          }
-        });
-        assert.ok(foundExpectedTopic, 'topic should have been created!');
-        assert.ok(responses[2][0][0].iam);
-        // subscriptions
-        assert.ok(responses[3][0][0].on);
-        assert.ok(responses[3][0][0].iam);
-        // messageIds
-        assert.ok(typeof responses[4][0][0] === 'string');
-        // apiResponse
-        assert.ok(responses[4][1]);
-        // messages
-        assert.equal(responses[5][0][0].data, 'Hello, world!');
-        done();
-      } catch (err) {
-        done(err);
-      }
-    });
+test.cb('should run the sample', function (t) {
+  subscriptionSample.main(function (err, results) {
+    t.ifError(err);
+    t.is(results.length, 8);
+    // Got topic and apiResponse
+    t.is(results[0].length, 2);
+    // Got subscription and apiResponse
+    t.is(results[1].length, 2);
+    // Got array of topics
+    t.ok(Array.isArray(results[2]));
+    // Got array of subscriptions
+    t.ok(Array.isArray(results[3]));
+    // Got messageIds and apiResponse
+    t.is(results[4].length, 2);
+    // Got array of messages
+    t.ok(Array.isArray(results[5]));
+    // Got empty apiResponse
+    t.same(results[6], {});
+    // Got empty apiResponse
+    t.same(results[7], {});
+    t.end();
   });
 });

@@ -13,7 +13,7 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
 var customMetricsExample = require('../../monitoring/create_custom_metric');
 
 /** Refactored out to keep lines shorter */
@@ -21,24 +21,23 @@ function getPointValue(timeSeries) {
   return timeSeries.timeSeries[0].points[0].value.int64Value;
 }
 
-it('should create and read back a custom metric', function (done) {
-  this.timeout(20000);
+test.cb('should create and read back a custom metric', function (t) {
   customMetricsExample.main(
     process.env.GCLOUD_PROJECT,
     Math.random().toString(36).substring(7),
     function (err, results) {
-      assert.ifError(err);
-      assert.equal(results.length, 4);
+      t.ifError(err);
+      t.is(results.length, 4);
       // Result of creating metric
-      assert.ok(typeof results[0].name === 'string');
+      t.ok(typeof results[0].name === 'string');
       // Result of writing time series
-      assert.deepEqual(results[1], {});
+      t.same(results[1], {});
       // Result of reading time series
-      assert.ok(typeof getPointValue(results[2]) === 'string');
-      assert.ok(!isNaN(parseInt(getPointValue(results[2]), 10)));
+      t.ok(typeof getPointValue(results[2]) === 'string');
+      t.ok(!isNaN(parseInt(getPointValue(results[2]), 10)));
       // Result of deleting metric
-      assert.deepEqual(results[3], {});
-      done();
+      t.same(results[3], {});
+      t.end();
     }
   );
 });

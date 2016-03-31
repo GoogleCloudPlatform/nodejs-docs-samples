@@ -13,51 +13,29 @@
 
 'use strict';
 
-var assert = require('assert');
-var projectId = process.env.GCLOUD_PROJECT;
-
+var test = require('ava');
 var iamSample = require('../../pubsub/iam');
 
-describe('pubsub/iam', function () {
-  it('should run the sample', function (done) {
-    this.timeout(30000);
-    iamSample.runSample(function (err, responses) {
-      try {
-        assert.ok(!err);
-        // topic
-        var expectedTopic = 'projects/' + projectId + '/topics/messageCenter';
-        assert.equal(responses[0][0].name, expectedTopic);
-        assert.ok(responses[0][0].iam);
-        // apiResponse
-        assert.ok(responses[0][1]);
-        // policy
-        assert.deepEqual(responses[1][0], { etag: 'ACAB' });
-        // permissions
-        assert.deepEqual(responses[2][0], {
-          'pubsub.topics.attachSubscription': true,
-          'pubsub.topics.publish': true,
-          'pubsub.topics.update': true
-        });
-        // apiResponse
-        assert.ok(responses[2][1]);
-        // subscription
-        assert.ok(responses[3][0].on);
-        assert.ok(responses[3][0].iam);
-        // apiResponse
-        assert.ok(responses[3][1]);
-        // policy
-        assert.deepEqual(responses[4][0], { etag: 'ACAB' });
-        // permissions
-        assert.deepEqual(responses[5][0], {
-          'pubsub.subscriptions.consume': true,
-          'pubsub.subscriptions.update': true
-        });
-        // apiResponse
-        assert.ok(responses[5][1]);
-        done();
-      } catch (err) {
-        done(err);
-      }
-    });
+test.cb('should run the sample', function (t) {
+  iamSample.main(function (err, results) {
+    t.ifError(err);
+    t.is(results.length, 8);
+    // Got topic and apiResponse
+    t.is(results[0].length, 2);
+    // Got policy and apiResponse
+    t.is(results[1].length, 2);
+    // Got permissions and apiResponse
+    t.is(results[2].length, 2);
+    // Got subscription and apiResponse
+    t.is(results[3].length, 2);
+    // Got policy and apiResponse
+    t.is(results[4].length, 2);
+    // Got permissions and apiResponse
+    t.is(results[5].length, 2);
+    // Got empty apiResponse
+    t.same(results[6], {});
+    // Got empty apiResponse
+    t.same(results[7], {});
+    t.end();
   });
 });

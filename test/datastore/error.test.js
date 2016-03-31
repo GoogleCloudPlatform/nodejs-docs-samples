@@ -13,19 +13,13 @@
 
 'use strict';
 
+var test = require('ava');
 var error = require('../../datastore/error.js');
-var assert = require('assert');
 
-describe('datastore/error', function () {
-  it('should have an error', function (done) {
-    error.runQuery(function (err) {
-      try {
-        assert.ok(err);
-        assert.equal(err.code, 400);
-        done();
-      } catch (err) {
-        done(err);
-      }
-    });
+test.cb.serial('should have an error', function (t) {
+  error.runQuery(function (err) {
+    t.ok(err);
+    t.is(err.code, 400);
+    t.end();
   });
 });

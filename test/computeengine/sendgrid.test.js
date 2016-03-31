@@ -13,28 +13,26 @@
 
 'use strict';
 
-var assert = require('assert');
+var test = require('ava');
 var proxyquire = require('proxyquire').noPreserveCache();
 process.env.SENDGRID_API_KEY = 'foo';
 
-describe('sendgrid', function () {
-  it('should send an email', function (done) {
-    proxyquire('../../computeengine/sendgrid/sendmail.js', {
-      sendgrid: function (key) {
-        assert.equal(key, 'foo');
-        return {
-          send: function (payload, cb) {
-            assert.deepEqual(payload, {
-              from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
-              to: 'EMAIL@EXAMPLE.COM',
-              subject: 'test email from Node.js on Google Cloud Platform',
-              text: 'Hello!\n\nThis a test email from Node.js.'
-            });
-            cb('done');
-            done();
-          }
-        };
-      }
-    });
+test.cb('should send an email', function (t) {
+  proxyquire('../../computeengine/sendgrid/sendmail.js', {
+    sendgrid: function (key) {
+      t.is(key, 'foo');
+      return {
+        send: function (payload, cb) {
+          t.same(payload, {
+            from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
+            to: 'EMAIL@EXAMPLE.COM',
+            subject: 'test email from Node.js on Google Cloud Platform',
+            text: 'Hello!\n\nThis a test email from Node.js.'
+          });
+          cb('done');
+          t.end();
+        }
+      };
+    }
   });
 });

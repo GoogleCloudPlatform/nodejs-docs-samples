@@ -7,3 +7,4 @@ dump.rdb
 logs/
 *.iml
 .idea/
+.nyc_output

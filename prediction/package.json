@@ -12,6 +12,6 @@
     "hostedmodels": "node hostedmodels.js"
   },
   "dependencies": {
-    "googleapis": "^2.1.7"
+    "googleapis": "^4.0.0"
   }
 }

@@ -23,7 +23,7 @@ var cwd = process.cwd();
 var projectId = process.env.GCLOUD_PROJECT;
 
 function getPath(dir) {
-  return path.join(cwd, '/../../appengine/', dir);
+  return path.join(cwd, '/../../', dir);
 }
 
 function changeScaling(dir) {
@@ -42,38 +42,38 @@ function changeScaling(dir) {
 
 var sampleTests = [
   {
-    dir: 'analytics',
+    dir: 'appengine/analytics',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Event tracked.'
   },
   {
-    dir: 'bower',
+    dir: 'appengine/bower',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Express.js + Bower on Google App Engine.'
   },
   {
-    dir: 'cloudsql',
+    dir: 'appengine/cloudsql',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Last 10 visits:',
     TRAVIS: true
   },
   {
-    dir: 'datastore',
+    dir: 'appengine/datastore',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Last 10 visits:'
   },
   {
-    dir: 'disk',
+    dir: 'appengine/disk',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Instance:'
   },
   {
-    dir: 'express',
+    dir: 'appengine/express',
     deploy: true,
     promote: true,
     cmd: 'node',
@@ -82,21 +82,21 @@ var sampleTests = [
     TRAVIS_NODE_VERSION: '0.10'
   },
   {
-    dir: 'express-memcached-session',
+    dir: 'appengine/express-memcached-session',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Viewed',
     TRAVIS_NODE_VERSION: '0.10'
   },
   {
-    dir: 'geddy',
+    dir: 'appengine/geddy',
     cmd: 'node',
     args: ['node_modules/geddy/bin/cli.js'],
     msg: 'Hello, World! Geddy.js on Google App Engine.',
     TRAVIS_NODE_VERSION: 'stable'
   },
   {
-    dir: 'grunt',
+    dir: 'appengine/grunt',
     deploy: true,
     cmd: 'node',
     args: ['./src/bin/www'],
@@ -104,53 +104,53 @@ var sampleTests = [
     TRAVIS_NODE_VERSION: '0.12'
   },
   {
-    dir: 'hello-world',
+    dir: 'appengine/hello-world',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Hello, world!'
   },
   {
-    dir: 'kraken',
+    dir: 'appengine/kraken',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello World! Kraken.js on Google App Engine.',
     code: 304
   },
   {
-    dir: 'logging',
+    dir: 'appengine/logging',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Logged'
   },
   {
-    dir: 'loopback',
+    dir: 'appengine/loopback',
     cmd: 'node',
     args: ['server/server.js'],
     msg: 'LoopBack.js on Google App Engine.',
     code: 304
   },
   {
-    dir: 'mailgun',
+    dir: 'appengine/mailgun',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Express.js + Mailgun on Google App Engine.'
   },
   {
-    dir: 'memcached',
+    dir: 'appengine/memcached',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Value:',
     test: /Value: \d\.\d+/
   },
   {
-    dir: 'mongodb',
+    dir: 'appengine/mongodb',
     cmd: 'node',
     args: ['server.js'],
     msg: 'IPs:',
     TRAVIS: true
   },
   {
-    dir: 'pubsub',
+    dir: 'appengine/pubsub',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Messages received by this instance:',
@@ -160,31 +160,31 @@ var sampleTests = [
     }
   },
   {
-    dir: 'redis',
+    dir: 'appengine/redis',
     cmd: 'node',
     args: ['server.js'],
     msg: '127.0.0.1'
   },
   {
-    dir: 'restify',
+    dir: 'appengine/restify',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello World! Restify.js on Google App Engine.'
   },
   {
-    dir: 'sendgrid',
+    dir: 'appengine/sendgrid',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Express.js + Sendgrid on Google App Engine.'
   },
   {
-    dir: 'static-files',
+    dir: 'appengine/static-files',
     cmd: 'node',
     args: ['app.js'],
     msg: 'This is a static file serving example.'
   },
   {
-    dir: 'storage',
+    dir: 'appengine/storage',
     cmd: 'node',
     args: ['app.js'],
     msg: '<title>Static Files</title>',
@@ -193,16 +193,22 @@ var sampleTests = [
     }
   },
   {
-    dir: 'webpack',
+    dir: 'appengine/webpack',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Express.js + Webpack on Google App Engine.'
   },
   {
-    dir: 'websockets',
+    dir: 'appengine/websockets',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Echo demo'
+  },
+  {
+    dir: 'containerengine/hello-world',
+    cmd: 'node',
+    args: ['server.js'],
+    msg: 'Hello Kubernetes!'
   }
 ];
 
@@ -210,7 +216,7 @@ if (process.env.TRAVIS_NODE_VERSION === '0.10') {
   // For some reason the "npm install" step for the Sails sample doesn't work on
   // Travis when using Node.js stable. It works locally, however.
   sampleTests.push({
-    dir: 'sails',
+    dir: 'appengine/sails',
     cmd: 'node',
     args: ['app.js'],
     msg: 'Hello World! Sails.js on Google App Engine.',
@@ -220,14 +226,14 @@ if (process.env.TRAVIS_NODE_VERSION === '0.10') {
 
 if (process.env.TRAVIS_NODE_VERSION === 'stable') {
   sampleTests.push({
-    dir: 'hapi',
+    dir: 'appengine/hapi',
     cmd: 'node',
     args: ['index.js'],
     msg: 'Hello World! Hapi.js on Google App Engine.',
     TRAVIS_NODE_VERSION: 'stable'
   });
   sampleTests.push({
-    dir: 'koa',
+    dir: 'appengine/koa',
     deploy: true,
     cmd: 'node',
     args: ['--harmony', 'app.js'],
@@ -235,7 +241,7 @@ if (process.env.TRAVIS_NODE_VERSION === 'stable') {
     TRAVIS_NODE_VERSION: 'stable'
   });
   sampleTests.push({
-    dir: 'parse-server',
+    dir: 'appengine/parse-server',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello, world!',
@@ -293,7 +299,7 @@ var port = 8080;
 sampleTests.forEach(function (sample) {
   sample.env = sample.env || {};
   sample.env.PORT = port;
-  if (sample.dir === 'parse-server') {
+  if (sample.dir === 'appengine/parse-server') {
     sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
   }
   port++;

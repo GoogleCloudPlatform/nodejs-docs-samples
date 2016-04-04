@@ -15,22 +15,6 @@
 runtime: nodejs
 vm: true
 
-env_variables:
-  # Your MongoDB URI, e.g. mongodb://user:password@123.456.78.901:27017/db
-  DATABASE_URI: mongodb://localhost:27017/dev
-  # Absolute path to your cloud code main.js file
-  # CLOUD_PATH: <your-cloud-path>
-  # App id
-  # REQUIRED
-  APP_ID: <your-app-id>
-  # master key
-  # REQUIRED
-  MASTER_KEY: <your-master-key>
-  # file key
-  FILE_KEY: <your-file-key>
-  # Mount path for Parse API
-  PARSE_MOUNT_PATH: /parse
-
 skip_files:
   # Don't deploy node_modules folder
   - ^(.*/)?.*/node_modules/.*$

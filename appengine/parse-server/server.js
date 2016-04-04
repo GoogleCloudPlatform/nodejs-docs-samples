@@ -16,17 +16,20 @@
 
 // [START app]
 var express = require('express');
+var nconf = require('nconf');
 var ParseServer = require('parse-server').ParseServer;
+
+nconf.argv().env().file({ file: 'config.json' });
 
 var app = express();
 
 var parseServer = new ParseServer({
-  databaseURI: process.env.DATABASE_URI || 'mongodb://localhost:27017/dev',
-  cloud: process.env.CLOUD_PATH || __dirname + '/cloud/main.js',
-  appId: process.env.APP_ID,
-  masterKey: process.env.MASTER_KEY,
-  fileKey: process.env.FILE_KEY,
-  serverURL: process.env.SERVER_URL
+  databaseURI: nconf.get('DATABASE_URI') || 'mongodb://localhost:27017/dev',
+  cloud: nconf.get('CLOUD_PATH') || __dirname + '/cloud/main.js',
+  appId: nconf.get('APP_ID'),
+  masterKey: nconf.get('MASTER_KEY'),
+  fileKey: nconf.get('FILE_KEY'),
+  serverURL: nconf.get('SERVER_URL')
 });
 
 // Mount the Parse API server middleware to /parse

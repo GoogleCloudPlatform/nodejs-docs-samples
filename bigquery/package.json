@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-docs-samples-bigquery",
+  "description": "Node.js samples for Google BigQuery.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": ">=0.10.x"
+  },
+  "scripts": {
+    "dataset_size": "node dataset_size.js"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "gcloud": "^0.29.0",
+    "request": "^2.69.0"
+  }
+}

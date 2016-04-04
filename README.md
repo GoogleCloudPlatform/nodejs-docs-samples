@@ -8,6 +8,7 @@ This repository holds Node.js samples used throughout [cloud.google.com]().
 ## Table of Contents
 
 * [Google App Engine](#google-app-engine)
+* [Google BigQuery](#google-bigquery)
 * [Google Cloud Functions](#google-cloud-functions)
 * [Google Cloud Logging](#google-cloud-logging)
 * [Google Cloud Pub/Sub](#google-cloud-pubsub)
@@ -69,6 +70,13 @@ __Other Examples__
 - Reading/writing from/to disk - [Source code][aedisk_1]
 - Serving static files - [Source code][aestaticfiles_1]
 
+## Google BigQuery
+
+- Query sample - [Source code][bigquery_query_1] | [Documentation][bigquery_query_2]
+- Dataset size sample - [Source code][bigquery_size_1]
+- Load from file sample - [Source code][bigquery_file_1] | [Documentation][bigquery_file_2]
+- Load from GCS sample - [Source code][bigquery_gcs_1] | [Documentation][bigquery_gcs_2]
+
 ## Google Cloud Datastore
 
 - Tasks sample - [Source code][datastore_1] | [Documentation][datastore_2]
@@ -124,6 +132,8 @@ See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/nodejs-docs-samples
 1. Start Redis
 1. Start Memcached
 1. Set the `GCLOUD_PROJECT` environment variable to id of your project
+1. Set the `TEST_BUCKET_NAME` environment variable to the name of a test Google
+Cloud Storage bucket.
 1. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to the path to
 a service account file. You can download one from your Google project's
 "permissions" page.
@@ -252,6 +262,17 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [aedisk_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/disk
 [aeextending_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/extending-runtime
 [aestaticfiles_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/static-files
+
+[bigquery_query_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/bigquery/getting_started.js
+[bigquery_query_2]: https://cloud.google.com/datastore/docs/concepts/overview
+
+[bigquery_size_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/bigquery/dataset_size.js
+
+[bigquery_file_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/bigquery/load_data_from_csv.js
+[bigquery_file_2]: https://cloud.google.com/bigquery/loading-data-into-bigquery#loaddatapostrequest
+
+[bigquery_gcs_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/bigquery/load_data_from_gcs.js
+[bigquery_gcs_2]: https://cloud.google.com/bigquery/loading-data-into-bigquery#loaddatagcs
 
 [datastore_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/datastore/tasks.js
 [datastore_2]: https://cloud.google.com/datastore/docs/concepts/overview

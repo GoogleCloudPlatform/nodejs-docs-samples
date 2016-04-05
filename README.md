@@ -9,6 +9,7 @@ This repository holds Node.js samples used throughout [cloud.google.com]().
 
 * [Google App Engine](#google-app-engine)
 * [Google BigQuery](#google-bigquery)
+* [Google Compute Engine](#google-compute-engine)
 * [Google Cloud Functions](#google-cloud-functions)
 * [Google Cloud Logging](#google-cloud-logging)
 * [Google Cloud Pub/Sub](#google-cloud-pubsub)
@@ -76,6 +77,11 @@ __Other Examples__
 - Dataset size sample - [Source code][bigquery_size_1]
 - Load from file sample - [Source code][bigquery_file_1] | [Documentation][bigquery_file_2]
 - Load from GCS sample - [Source code][bigquery_gcs_1] | [Documentation][bigquery_gcs_2]
+
+## Google Compute Engine
+
+- Sendgrid sample - [Source code][compute_sendgrid_1] | [Documentation][compute_sendgrid_2]
+- VMs sample - [Source code][compute_vms_1] | [Documentation][compute_vms_2]
 
 ## Google Cloud Datastore
 
@@ -273,6 +279,12 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 
 [bigquery_gcs_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/bigquery/load_data_from_gcs.js
 [bigquery_gcs_2]: https://cloud.google.com/bigquery/loading-data-into-bigquery#loaddatagcs
+
+[compute_sendgrid_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/computeengine/sendgrid.js
+[compute_sendgrid_2]: https://cloud.google.com/compute/docs/tutorials/sending-mail/using-sendgrid
+
+[compute_vms_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/computeengine/vms.js
+[compute_vms_2]: https://cloud.google.com/compute/docs/tutorials/nodejs-guide
 
 [datastore_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/datastore/tasks.js
 [datastore_2]: https://cloud.google.com/datastore/docs/concepts/overview

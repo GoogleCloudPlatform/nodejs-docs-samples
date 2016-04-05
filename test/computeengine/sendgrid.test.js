@@ -18,7 +18,7 @@ var proxyquire = require('proxyquire').noPreserveCache();
 process.env.SENDGRID_API_KEY = 'foo';
 
 test.cb('should send an email', function (t) {
-  proxyquire('../../computeengine/sendgrid/sendmail.js', {
+  proxyquire('../../computeengine/sendgrid.js', {
     sendgrid: function (key) {
       t.is(key, 'foo');
       return {

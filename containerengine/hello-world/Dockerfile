@@ -11,7 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START all]
 FROM node:4
 EXPOSE 8080
 COPY server.js .
 CMD node server.js
+# [END all]

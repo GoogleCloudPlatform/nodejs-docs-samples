@@ -65,19 +65,19 @@ test.cb.serial('gets a snapshot of task list entities', function (t) {
 
 // Metadata
 
-test.cb('performs a namespace query', function (t) {
+test.cb.serial('performs a namespace query', function (t) {
   metadata.testNamespaceRunQuery(t.end);
 });
 
-test.cb('performs a kind query', function (t) {
+test.cb.serial('performs a kind query', function (t) {
   metadata.testKindRunQuery(t.end);
 });
 
-test.cb('performs a property query', function (t) {
+test.cb.serial('performs a property query', function (t) {
   metadata.testPropertyRunQuery(t.end);
 });
 
-test.cb('performs a property by kind query', function (t) {
+test.cb.serial('performs a property by kind query', function (t) {
   metadata.testPropertyByKindRunQuery(t.end);
 });
 
@@ -216,66 +216,66 @@ test.skip('performs an ancestor query', function (t) {
 
 // Entities
 
-test.cb('saves with an incomplete key', function (t) {
+test.cb.serial('saves with an incomplete key', function (t) {
   entity.testIncompleteKey(t.end);
 });
 
-test.cb('saves with a named key', function (t) {
+test.cb.serial('saves with a named key', function (t) {
   entity.testNamedKey(t.end);
 });
 
-test.cb('saves a key with a parent', function (t) {
+test.cb.serial('saves a key with a parent', function (t) {
   entity.testKeyWithParent(t.end);
 });
 
-test.cb('saves a key with multiple parents', function (t) {
+test.cb.serial('saves a key with multiple parents', function (t) {
   entity.testKeyWithMultiLevelParent(t.end);
 });
 
-test.cb('saves an entity with a parent', function (t) {
+test.cb.serial('saves an entity with a parent', function (t) {
   entity.testEntityWithParent(t.end);
 });
 
-test.cb('saves an entity with properties', function (t) {
+test.cb.serial('saves an entity with properties', function (t) {
   entity.testProperties(t.end);
 });
 
-test.cb('saves an entity with arrays', function (t) {
+test.cb.serial('saves an entity with arrays', function (t) {
   entity.testArrayValue(t.end);
 });
 
-test.cb('saves a basic entity', function (t) {
+test.cb.serial('saves a basic entity', function (t) {
   entity.testBasicEntity(t.end);
 });
 
-test.cb('saves with an upsert', function (t) {
+test.cb.serial('saves with an upsert', function (t) {
   entity.testUpsert(t.end);
 });
 
-test.cb('saves with an insert', function (t) {
+test.cb.serial('saves with an insert', function (t) {
   entity.testInsert(t.end);
 });
 
-test.cb('performs a lookup', function (t) {
+test.cb.serial('performs a lookup', function (t) {
   entity.testLookup(t.end);
 });
 
-test.cb('saves with an update', function (t) {
+test.cb.serial('saves with an update', function (t) {
   entity.testUpdate(t.end);
 });
 
-test.cb('deletes an entity', function (t) {
+test.cb.serial('deletes an entity', function (t) {
   entity.testDelete(t.end);
 });
 
-test.cb('performs a batch upsert', function (t) {
+test.cb.serial('performs a batch upsert', function (t) {
   entity.testBatchUpsert(t.end);
 });
 
-test.cb('performs a batch lookup', function (t) {
+test.cb.serial('performs a batch lookup', function (t) {
   entity.testBatchLookup(t.end);
 });
 
-test.cb('performs a batch delete', function (t) {
+test.cb.serial('performs a batch delete', function (t) {
   entity.testBatchDelete(t.end);
 });

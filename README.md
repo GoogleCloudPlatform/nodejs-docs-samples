@@ -3,7 +3,7 @@
 This repository holds Node.js samples used throughout [cloud.google.com]().
 
 [![Build Status](https://travis-ci.org/GoogleCloudPlatform/nodejs-docs-samples.svg)](https://travis-ci.org/GoogleCloudPlatform/nodejs-docs-samples)
-[![Coverage Status](https://codecov.io/github/GoogleCloudPlatform/nodejs-getting-started/coverage.svg?branch=master)](https://codecov.io/github/GoogleCloudPlatform/nodejs-getting-started?branch=master)
+[![Coverage Status](https://codecov.io/github/GoogleCloudPlatform/nodejs-docs-samples/coverage.svg?branch=master)](https://codecov.io/github/GoogleCloudPlatform/nodejs-docs-samples?branch=master)
 
 ## Table of Contents
 

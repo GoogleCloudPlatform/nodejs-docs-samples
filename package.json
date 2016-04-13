@@ -29,7 +29,7 @@
     "ava": "ava --match='!*: dependencies should install*'",
     "ava:deps": "npm run deps_appengine && npm run ava",
     "cover": "npm run deps_appengine && nyc ava --match='!*: dependencies should install*'",
-    "report": "nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
+    "report": "nyc report --reporter=lcov | codecov",
     "report-html": "nyc report --reporter=html",
     "deps_gce": "cd computeengine; npm i; cd ../",
     "deps_bigquery": "cd bigquery; npm i; cd ../",
@@ -52,11 +52,11 @@
   "devDependencies": {
     "async": "^1.5.2",
     "ava": "^0.13.0",
-    "coveralls": "^2.11.9",
+    "codecov": "^1.0.1",
     "jshint": "~2.9.1",
     "nyc": "^6.1.1",
     "proxyquire": "^1.7.4",
-    "request": "^2.69.0",
-    "supertest": "^1.1.0"
+    "request": "^2.70.0",
+    "supertest": "^1.2.0"
   }
 }

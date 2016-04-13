@@ -16,7 +16,7 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
-    "gcloud": "^0.27.0",
+    "gcloud": "^0.30.3",
     "jade": "^1.11.0"
   }
 }

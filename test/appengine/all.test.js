@@ -79,14 +79,14 @@ var sampleTests = [
     cmd: 'node',
     args: ['./bin/www'],
     msg: 'Hello World! Express.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: '0.10'
+    TRAVIS_NODE_VERSION: '0.12'
   },
   {
     dir: 'appengine/express-memcached-session',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Viewed',
-    TRAVIS_NODE_VERSION: '0.10'
+    TRAVIS_NODE_VERSION: '0.12'
   },
   {
     dir: 'appengine/geddy',
@@ -212,7 +212,7 @@ var sampleTests = [
   }
 ];
 
-if (process.env.TRAVIS_NODE_VERSION === '0.10') {
+if (process.env.TRAVIS_NODE_VERSION === '0.12') {
   // For some reason the "npm install" step for the Sails sample doesn't work on
   // Travis when using Node.js stable. It works locally, however.
   sampleTests.push({

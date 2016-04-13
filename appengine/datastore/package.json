@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "express": "^4.13.4",
-    "gcloud": "^0.27.0"
+    "gcloud": "^0.30.3"
   }
 }

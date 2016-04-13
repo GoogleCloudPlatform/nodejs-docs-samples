@@ -23,7 +23,7 @@ var crypto = require('crypto');
 var app = express();
 app.enable('trust proxy');
 
-var dataset = gcloud.datastore.dataset({
+var dataset = gcloud.datastore({
   // This environment variable is set by app.yaml when running on GAE, but will
   // need to be manually set when running locally.
   projectId: process.env.GCLOUD_PROJECT

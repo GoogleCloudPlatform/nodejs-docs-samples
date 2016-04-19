@@ -136,6 +136,12 @@ var sampleTests = [
     msg: 'Express.js + Mailgun on Google App Engine.'
   },
   {
+    dir: 'appengine/mailjet',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Express.js + Mailjet on Google App Engine.'
+  },
+  {
     dir: 'appengine/memcached',
     cmd: 'node',
     args: ['app.js'],

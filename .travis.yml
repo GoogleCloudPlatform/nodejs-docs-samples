@@ -36,6 +36,7 @@ cache:
   - appengine/logging/node_modules/
   - appengine/loopback/node_modules/
   - appengine/mailgun/node_modules/
+  - appengine/mailjet/node_modules/
   - appengine/memcached/node_modules/
   - appengine/mongodb/node_modules/
   - appengine/parse-server/node_modules/
@@ -49,7 +50,8 @@ cache:
   - appengine/twilio/node_modules/
   - appengine/webpack/node_modules/
   - appengine/websockets/node_modules/
-  - computeengine/sendgrid/node_modules/
+  - bigquery/node_modules/
+  - computeengine/node_modules/
   - datastore/node_modules/
   - functions/uuid/node_modules/
   - logging/node_modules/

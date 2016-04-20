@@ -9,3 +9,4 @@ appengine/webpack/dist/**
 functions/**
 **/node_modules/**
 coverage/
+logging/fluent.js

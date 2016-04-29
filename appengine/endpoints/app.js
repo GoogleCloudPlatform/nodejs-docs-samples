@@ -15,7 +15,7 @@
 'use strict';
 
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 
 var app = express();
 app.use(bodyParser.json());
@@ -27,7 +27,7 @@ app.post('/echo', function(req, res) {
 });
 
 function authInfoHandler(req, res) {
-  var authUser = {id: "anonymous"};
+  var authUser = {id: 'anonymous'};
   var encodedInfo = req.get('X-Endpoint-API-UserInfo');
   if (encodedInfo) {
     authUser = JSON.parse(new Buffer(encodedInfo, 'base64'));

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START app]
 'use strict';
 
 var express = require('express');
@@ -45,4 +44,3 @@ var server = app.listen(process.env.PORT || '8080', '0.0.0.0', function() {
     server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]

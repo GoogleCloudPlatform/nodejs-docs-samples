@@ -3,7 +3,7 @@ info:
   description: "A simple Google Cloud Endpoints API example."
   title: "Endpoints Example"
   version: "1.0.0"
-host: "YOUR-PROJECT-ID.appspot.com"
+host: "ep-node-dot-cbro-scratch.appspot.com"
 basePath: "/"
 consumes:
 - "application/json"
@@ -94,7 +94,7 @@ securityDefinitions:
     # This must match the 'iss' field in the JWT.
     x-issuer: "jwt-client.endpoints.sample.google.com"
     # Update this with your service account's email address.
-    x-jwks_uri: "https://www.googleapis.com/service_accounts/v1/jwk/YOUR-SERVICE-ACCOUNT-EMAIL"
+    x-jwks_uri: "https://www.googleapis.com/service_accounts/v1/jwk/endpointsexample@cbro-scratch.iam.gserviceaccount.com"
   # This section configures authentication using Google OAuth2 ID Tokens.
   # ID Tokens can be obtained using OAuth2 clients, and can be used to access
   # your API on behalf of a particular user.

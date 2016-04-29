@@ -2,11 +2,6 @@
 
 This sample demonstrates how to use Google Cloud Endpoints on Google App Engine Flexible Environment using Node.js.
 
-This sample consists of two parts:
-
-1. The backend
-2. The clients
-
 ## Running locally
 
 Refer to the [appengine/README.md](../README.md) file for instructions on
@@ -34,6 +29,7 @@ If you're running locally, you won't need an API key.
 
 ## Sending authenticated requests
 
-Not written yet, try the Python client found [here][python-client].
+No Node.js client is written yet, but you can try the Python client found [here][python-client].
+It will send authenticated JWT requests using a Google Cloud service account, or using a three-legged OAuth flow.
 
 [python-client]: https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/managed_vms/endpoints

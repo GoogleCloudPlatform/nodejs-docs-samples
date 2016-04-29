@@ -26,9 +26,6 @@ app.post('/echo', function(req, res) {
   res.status(200).json({message: msg});
 });
 
-app.get('/auth/info/googlejwt', authInfoHandler);
-app.get('/auth/info/googleidtoken', authInfoHandler);
-
 function authInfoHandler(req, res) {
   var authUser = {id: "anonymous"};
   var encodedInfo = req.get('X-Endpoint-API-UserInfo');
@@ -37,6 +34,9 @@ function authInfoHandler(req, res) {
   }
   res.status(200).json(authUser);
 }
+
+app.get('/auth/info/googlejwt', authInfoHandler);
+app.get('/auth/info/googleidtoken', authInfoHandler);
 
 // Start the server
 var server = app.listen(process.env.PORT || '8080', '0.0.0.0', function() {

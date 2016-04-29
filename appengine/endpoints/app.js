@@ -21,9 +21,7 @@ var app = express();
 app.use(bodyParser.json());
 
 app.post('/echo', function(req, res) {
-  var msg = req.body.message;
-  console.log(req);
-  res.status(200).json({message: msg});
+  res.status(200).json({message: req.body.message});
 });
 
 function authInfoHandler(req, res) {

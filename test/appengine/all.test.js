@@ -93,7 +93,7 @@ var sampleTests = [
     cmd: 'node',
     args: ['node_modules/geddy/bin/cli.js'],
     msg: 'Hello, World! Geddy.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: 'stable'
+    TRAVIS_NODE_VERSION: '5'
   },
   {
     dir: 'appengine/grunt',
@@ -220,7 +220,7 @@ var sampleTests = [
 
 if (process.env.TRAVIS_NODE_VERSION === '0.12') {
   // For some reason the "npm install" step for the Sails sample doesn't work on
-  // Travis when using Node.js stable. It works locally, however.
+  // Travis when using Node.js 5.x. It works locally, however.
   sampleTests.push({
     dir: 'appengine/sails',
     cmd: 'node',
@@ -230,13 +230,13 @@ if (process.env.TRAVIS_NODE_VERSION === '0.12') {
   });
 }
 
-if (process.env.TRAVIS_NODE_VERSION === 'stable') {
+if (process.env.TRAVIS_NODE_VERSION === '5') {
   sampleTests.push({
     dir: 'appengine/hapi',
     cmd: 'node',
     args: ['index.js'],
     msg: 'Hello World! Hapi.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: 'stable'
+    TRAVIS_NODE_VERSION: '5'
   });
   sampleTests.push({
     dir: 'appengine/koa',
@@ -244,14 +244,14 @@ if (process.env.TRAVIS_NODE_VERSION === 'stable') {
     cmd: 'node',
     args: ['--harmony', 'app.js'],
     msg: 'Hello World! Koa.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: 'stable'
+    TRAVIS_NODE_VERSION: '5'
   });
   sampleTests.push({
     dir: 'appengine/parse-server',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello, world!',
-    TRAVIS_NODE_VERSION: 'stable',
+    TRAVIS_NODE_VERSION: '5',
     env: {
       APP_ID: 'foo',
       MASTER_KEY: 'bar',

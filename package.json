@@ -46,7 +46,7 @@
   },
   "ava": {
     "files": [
-      "test/**/*.test.js"
+      "test/appengine/**/*.test.js"
     ]
   },
   "devDependencies": {

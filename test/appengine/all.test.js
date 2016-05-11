@@ -73,6 +73,13 @@ var sampleTests = [
     msg: 'Instance:'
   },
   {
+    dir: 'appengine/errorreporting',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'something is wrong',
+    code: 500
+  },
+  {
     dir: 'appengine/express',
     deploy: true,
     promote: true,
@@ -291,6 +298,7 @@ function testRequest(url, sample, cb) {
       // Success
       return cb(null, true);
     }
+
     // Short-circuit app test
     var message = sample.dir + ': failed verification!\n' +
                   'Expected: ' + sample.msg + '\n' +

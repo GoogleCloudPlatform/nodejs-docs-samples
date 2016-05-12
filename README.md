@@ -13,6 +13,7 @@ This repository holds Node.js samples used throughout [cloud.google.com]().
 * [Google Cloud Functions](#google-cloud-functions)
 * [Google Cloud Logging](#google-cloud-logging)
 * [Google Cloud Pub/Sub](#google-cloud-pubsub)
+* [Google Cloud Speech](#google-cloud-speech)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Google Cloud Vision](#google-cloud-vision)
 * [Google Prediction API](#google-prediction-api)
@@ -102,6 +103,10 @@ __Other Examples__
 
 - Subscriber/Publisher sample - [Source code][pubsub_subscriber_1] | [Documentation][pubsub_subscriber_2]
 - IAM sample - [Source code][pubsub_iam_1] | [Documentation][pubsub_iam_2]
+
+## Google Cloud Speech
+
+- Recognition sample - [Source code][speech_1] | [Documentation][speech_2]
 
 ## Google Cloud Storage
 
@@ -308,6 +313,9 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [pubsub_subscriber_2]: https://cloud.google.com/pubsub/subscriber
 [pubsub_iam_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/pubsub/iam.js
 [pubsub_iam_2]: https://cloud.google.com/pubsub/access_control
+
+[speech_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/speech/recognize.js
+[speech_2]: https://cloud.google.com/speech
 
 [storage_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/storage/authSample.js
 [storage_2]: https://cloud.google.com/storage/docs/authentication#acd-examples

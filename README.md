@@ -14,6 +14,7 @@ This repository holds Node.js samples used throughout [cloud.google.com]().
 * [Google Cloud Logging](#google-cloud-logging)
 * [Google Cloud Pub/Sub](#google-cloud-pubsub)
 * [Google Cloud Storage](#google-cloud-storage)
+* [Google Cloud Vision](#google-cloud-vision)
 * [Google Prediction API](#google-prediction-api)
 * [Other Example Apps](#other-example-apps)
 * [More Information](#more-information)
@@ -105,6 +106,10 @@ __Other Examples__
 ## Google Cloud Storage
 
 - Auth sample - [Source code][storage_1] | [Documentation][storage_2]
+
+## Google Cloud Vision
+
+- Face detection - [Source code][vision_1] | [Documentation][vision_2]
 
 ## Google Prediction API
 
@@ -306,6 +311,9 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 
 [storage_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/storage/authSample.js
 [storage_2]: https://cloud.google.com/storage/docs/authentication#acd-examples
+
+[vision_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/vision/faceDetection.js
+[vision_2]: https://cloud.google.com/vision/docs/face-tutorial
 
 [predictionapi_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/prediction/hostedmodels.js
 [predictionapi_2]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine

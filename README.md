@@ -60,6 +60,7 @@ __Tools__
 - gcloud-node - [Source code][gcloud_1] | [Documentation][gcloud_2]
 - Bower - [Source code][bower_1] | [App Engine Tutorial][bower_2] | [Documentation][bower_3]
 - Grunt - [Source code][grunt_1] | [App Engine Tutorial][grunt_2] | [Live demo][grunt_3] | [Documentation][grunt_4]
+- Gulp - [Source code][gulp_1] | [Documentation][gulp_2]
 - Mailgun - [Source code][mailgun_1] | [App Engine Tutorial][mailgun_2] | [Documentation][mailgun_3]
 - Sendgrid - [Source code][sendgrid_1] | [App Engine Tutorial][sendgrid_2] | [Documentation][sendgrid_3]
 - Twilio - [Source code][twilio_1]
@@ -254,6 +255,9 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [bower_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/bower
 [bower_2]: https://cloud.google.com/nodejs/resources/tools/bower
 [bower_3]: http://bower.io/
+
+[gulp_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/gulp
+[gulp_2]: http://gulpjs.com/
 
 [grunt_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/grunt
 [grunt_2]: https://cloud.google.com/nodejs/resources/tools/grunt

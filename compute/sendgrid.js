@@ -25,9 +25,8 @@ Sendgrid.send({
   text: 'Hello!\n\nThis a test email from Node.js.' // Content
 }, function (err, json) {
   if (err) {
-    console.log(err);
-  } else {
-    console.log(json); 
+    return console.log(err);
   }
+  console.log(json);
 });
 // [END send]

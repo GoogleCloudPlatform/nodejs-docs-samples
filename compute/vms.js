@@ -15,14 +15,11 @@
 'use strict';
 
 // [START auth]
-// You must set the GOOGLE_APPLICATION_CREDENTIALS and GCLOUD_PROJECT
-// environment variables to run this sample
-var projectId = process.env.GCLOUD_PROJECT;
-
-// Initialize gcloud
-var gcloud = require('gcloud')({
-  projectId: projectId
-});
+// By default, gcloud will authenticate using the service account file specified
+// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+// project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+var gcloud = require('gcloud');
 // [END auth]
 
 // [START initialize]
@@ -34,7 +31,7 @@ var compute = gcloud.compute();
 /**
  * @param {Function} callback Callback function.
  */
-function getVmsExample(callback) {
+function getVmsExample (callback) {
   // In this example we only want one VM per page
   var options = {
     maxResults: 1

@@ -18,14 +18,19 @@
 var async = require('async');
 var fs = require('fs');
 var path = require('path');
-var gcloud = require('gcloud')();
+
+// By default, gcloud will authenticate using the service account file specified
+// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+// project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+var gcloud = require('gcloud');
 var natural = require('natural');
 var redis = require('redis');
 // Get a reference to the vision component
 var vision = gcloud.vision();
 // [END import_libraries]
 
-function Index() {
+function Index () {
   // Connect to a redis server.
   var TOKEN_DB = 0;
   var DOCS_DB = 1;
@@ -104,7 +109,7 @@ Index.prototype.setContainsNoText = function (filename, callback) {
   this.docsClient.set(filename, '', callback);
 };
 
-function lookup(words, callback) {
+function lookup (words, callback) {
   var index = new Index();
   index.lookup(words, function (err, hits) {
     index.quit();
@@ -112,14 +117,14 @@ function lookup(words, callback) {
       return callback(err);
     }
     words.forEach(function (word, i) {
-      console.log('hits for \"' + word + '\":', hits[i].join(', '));
+      console.log('hits for "' + word + '":', hits[i].join(', '));
     });
     callback(null, hits);
   });
 }
 
 // [START extract_descrs]
-function extractDescription(texts) {
+function extractDescription (texts) {
   var document = '';
   texts.forEach(function (text) {
     document += (text.desc || '');
@@ -127,7 +132,7 @@ function extractDescription(texts) {
   return document;
 }
 
-function extractDescriptions(filename, index, texts, callback) {
+function extractDescriptions (filename, index, texts, callback) {
   if (texts.length) {
     index.add(filename, extractDescription(texts), callback);
   } else {
@@ -138,7 +143,7 @@ function extractDescriptions(filename, index, texts, callback) {
 // [END extract_descrs]
 
 // [START get_text]
-function getTextFromFiles(index, inputFiles, callback) {
+function getTextFromFiles (index, inputFiles, callback) {
   var options = { verbose: true };
 
   // Make a call to the Vision API to detect text
@@ -172,7 +177,7 @@ function getTextFromFiles(index, inputFiles, callback) {
 }
 
 // Run the example
-function main(inputDir, callback) {
+function main (inputDir, callback) {
   var index = new Index();
 
   async.waterfall([

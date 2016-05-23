@@ -14,15 +14,11 @@
 'use strict';
 
 // [START auth]
-// You must set the GOOGLE_APPLICATION_CREDENTIALS and GCLOUD_PROJECT
-// environment variables to run this sample. See:
-// https://github.com/GoogleCloudPlatform/gcloud-node/blob/master/docs/authentication.md
-var projectId = process.env.GCLOUD_PROJECT;
-
-// Initialize gcloud
-var gcloud = require('gcloud')({
-  projectId: projectId
-});
+// By default, gcloud will authenticate using the service account file specified
+// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+// project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+var gcloud = require('gcloud');
 
 // Get a reference to the vision component
 var vision = gcloud.vision();
@@ -33,7 +29,7 @@ var fs = require('fs');
 /**
  * Uses the Vision API to detect faces in the given file.
  */
-function detectFaces(inputFile, callback) {
+function detectFaces (inputFile, callback) {
   // Make a call to the Vision API to detect the faces
   vision.detectFaces(inputFile, function (err, faces) {
     if (err) {
@@ -48,7 +44,7 @@ function detectFaces(inputFile, callback) {
 /**
  * Draws a polygon around the faces, then saves to outputFile.
  */
-function highlightFaces(inputFile, faces, outputFile, Canvas, callback) {
+function highlightFaces (inputFile, faces, outputFile, Canvas, callback) {
   fs.readFile(inputFile, function (err, image) {
     if (err) {
       return callback(err);
@@ -89,7 +85,7 @@ function highlightFaces(inputFile, faces, outputFile, Canvas, callback) {
 }
 
 // Run the example
-function main(inputFile, outputFile, Canvas, callback) {
+function main (inputFile, outputFile, Canvas, callback) {
   outputFile = outputFile || 'out.png';
   detectFaces(inputFile, function (err, faces) {
     if (err) {

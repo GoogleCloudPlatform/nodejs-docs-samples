@@ -19,15 +19,10 @@ var gcloud = require('gcloud');
 // [END import_libraries]
 
 // [START authenticate]
-// You must set the GOOGLE_APPLICATION_CREDENTIALS and GCLOUD_PROJECT
-// environment variables to run this sample. See:
-// https://github.com/GoogleCloudPlatform/gcloud-node/blob/master/docs/authentication.md
-var projectId = process.env.GCLOUD_PROJECT;
-
-// Initialize gcloud
-gcloud = gcloud({
-  projectId: projectId
-});
+// By default, gcloud will authenticate using the service account file specified
+// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+// project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
 
 // Get a reference to the vision component
 var vision = gcloud.vision();
@@ -37,7 +32,7 @@ var vision = gcloud.vision();
  * Uses the Vision API to detect landmarks in the given file.
  */
 // [START construct_request]
-function detectLandmarks(inputFile, callback) {
+function detectLandmarks (inputFile, callback) {
   var options = { verbose: true };
 
   // Make a call to the Vision API to detect the landmarks
@@ -52,7 +47,7 @@ function detectLandmarks(inputFile, callback) {
 // [END construct_request]
 
 // Run the example
-function main(inputFile, callback) {
+function main (inputFile, callback) {
   detectLandmarks(inputFile, function (err, landmarks) {
     if (err) {
       return callback(err);

@@ -20,7 +20,7 @@ test.cb('should run a query', function (t) {
   gettingStartedExample.main(
     function (err, rows) {
       t.ifError(err);
-      t.ok(Array.isArray(rows));
+      t.truthy(Array.isArray(rows));
       t.is(rows.length, 10);
       t.end();
     }

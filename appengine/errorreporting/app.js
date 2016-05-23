@@ -1,4 +1,3 @@
-/*jshint unused:false*/
 // Copyright 2015-2016, Google, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,10 +25,10 @@ winston.add(winston.transports.File, {
   filename: logFile
 });
 
-function report(err, req) {
+function report (err, req) {
   var payload = {
     serviceContext: {
-      service: 'myapp',
+      service: 'myapp'
     },
     message: err.stack,
     context: {
@@ -39,7 +38,7 @@ function report(err, req) {
         referrer: req.header('Referer'),
         userAgent: req.header('User-Agent'),
         remoteIp: req.ip,
-        responseStatusCode: 500,
+        responseStatusCode: 500
       }
     }
   };

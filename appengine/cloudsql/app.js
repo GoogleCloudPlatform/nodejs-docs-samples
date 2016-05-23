@@ -33,7 +33,7 @@ var connection = mysql.createConnection({
   database: process.env.MYSQL_DATABASE
 });
 
-app.get('/', function(req, res, next) {
+app.get('/', function (req, res, next) {
   var hash = crypto.createHash('sha256');
 
   // Add this visit to the database
@@ -43,17 +43,21 @@ app.get('/', function(req, res, next) {
     userIp: hash.update(req.ip).digest('hex').substr(0, 7)
   };
 
-  connection.query('INSERT INTO `visits` SET ?', visit, function(err) {
-    if (err) { return next(err); }
+  connection.query('INSERT INTO `visits` SET ?', visit, function (err) {
+    if (err) {
+      return next(err);
+    }
 
     // Query the last 10 visits from the database.
     connection.query(
       'SELECT `timestamp`, `userIp` FROM `visits` ORDER BY `timestamp` DESC ' +
       'LIMIT 10',
-      function(err, results) {
-        if (err) { return next(err); }
+      function (err, results) {
+        if (err) {
+          return next(err);
+        }
 
-        var visits = results.map(function(visit) {
+        var visits = results.map(function (visit) {
           return format(
             'Time: %s, AddrHash: %s',
             visit.timestamp,
@@ -68,9 +72,8 @@ app.get('/', function(req, res, next) {
   });
 });
 
-var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

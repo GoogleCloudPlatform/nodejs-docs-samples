@@ -26,14 +26,14 @@ app.set('view engine', 'jade');
 require('express-ws')(app);
 
 // A simple echo service.
-app.ws('/echo', function(ws) {
-  ws.on('message', function(msg) {
+app.ws('/echo', function (ws) {
+  ws.on('message', function (msg) {
     ws.send(msg);
   });
 });
 
-app.get('/', function(req, res) {
-  getExternalIp(function(externalIp){
+app.get('/', function (req, res) {
+  getExternalIp(function (externalIp) {
     res.render('index.jade', {externalIp: externalIp});
   });
 });
@@ -45,7 +45,7 @@ app.get('/', function(req, res) {
 var METADATA_NETWORK_INTERFACE_URL = 'http://metadata/computeMetadata/v1/' +
     '/instance/network-interfaces/0/access-configs/0/external-ip';
 
-function getExternalIp(cb) {
+function getExternalIp (cb) {
   var options = {
     url: METADATA_NETWORK_INTERFACE_URL,
     headers: {
@@ -53,8 +53,8 @@ function getExternalIp(cb) {
     }
   };
 
-  request(options, function(err, resp, body){
-    if(err || resp.statusCode !== 200) {
+  request(options, function (err, resp, body) {
+    if (err || resp.statusCode !== 200) {
       console.log('Error while talking to metadata server, assuming localhost');
       return cb('localhost');
     }
@@ -64,26 +64,15 @@ function getExternalIp(cb) {
 // [END external_ip]
 
 // Start the websocket server
-var wsServer = app.listen(
-  '65080',
-  '0.0.0.0',
-  function() {
-    console.log('Websocket server listening at http://%s:%s',
-      wsServer.address().address,
-      wsServer.address().port);
-  }
-);
+var wsServer = app.listen('65080', function () {
+  console.log('Websocket server listening on port %s', wsServer.address().port);
+});
 
 // Additionally listen for non-websocket connections on the default App Engine
 // port 8080. Using http.createServer will skip express-ws's logic to upgrade
 // websocket connections.
-var server = http.createServer(app).listen(
-  process.env.PORT || '8080',
-  '0.0.0.0',
-  function() {
-    console.log('App listening at http://%s:%s', server.address().address,
-      server.address().port);
-    console.log('Press Ctrl+C to quit.');
-  }
-);
+var server = http.createServer(app).listen(process.env.PORT || '8080', function () {
+  console.log('App listening on port %s', server.address().port);
+  console.log('Press Ctrl+C to quit.');
+});
 // [END app]

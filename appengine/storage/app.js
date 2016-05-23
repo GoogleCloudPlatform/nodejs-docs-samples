@@ -43,14 +43,14 @@ var bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
 
 // [START form]
 // Display a form for uploading files.
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.render('form.jade');
 });
 // [END form]
 
 // [START process]
 // Process the file upload and upload to Google Cloud Storage.
-app.post('/upload', multer.single('file'), function(req, res, next) {
+app.post('/upload', multer.single('file'), function (req, res, next) {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
@@ -59,11 +59,11 @@ app.post('/upload', multer.single('file'), function(req, res, next) {
   var blob = bucket.file(req.file.originalname);
   var blobStream = blob.createWriteStream();
 
-  blobStream.on('error', function(err) {
+  blobStream.on('error', function (err) {
     return next(err);
   });
 
-  blobStream.on('finish', function() {
+  blobStream.on('finish', function () {
     // The public URL can be used to directly access the file via HTTP.
     var publicUrl = format(
       'https://storage.googleapis.com/%s/%s',
@@ -75,9 +75,8 @@ app.post('/upload', multer.single('file'), function(req, res, next) {
 });
 // [END process]
 
-var server = app.listen(process.env.PORT || '8080', '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || '8080', function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

@@ -19,7 +19,7 @@ var hostedmodels = require('../../prediction/hostedmodels');
 test.cb('should predict', function (t) {
   hostedmodels.main('good night', function (err, result) {
     t.ifError(err);
-    t.ok(result);
+    t.truthy(result);
     t.end();
   });
 });

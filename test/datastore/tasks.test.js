@@ -59,7 +59,7 @@ test.cb.serial('should format tasks', function (t) {
   });
 });
 
-function getTaskId(callback) {
+function getTaskId (callback) {
   tasks.addEntity('description', function (err, taskKey) {
     if (err) {
       return callback(err);

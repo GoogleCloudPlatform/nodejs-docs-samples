@@ -18,8 +18,8 @@ var Hapi = require('hapi');
 
 // Create a server with a host and port
 var server = new Hapi.Server();
-server.connection({ 
-  host: '0.0.0.0', 
+server.connection({
+  host: '0.0.0.0',
   port: process.env.PORT || 8080
 });
 // [END server]
@@ -27,7 +27,7 @@ server.connection({
 // [START index]
 server.route({
   method: 'GET',
-  path:'/', 
+  path: '/',
   handler: function (request, reply) {
     reply('Hello World! Hapi.js on Google App Engine.');
   }
@@ -37,9 +37,9 @@ server.route({
 // Add another route
 server.route({
   method: 'GET',
-  path:'/hello', 
+  path: '/hello',
   handler: function (request, reply) {
-   reply('Hello World! Hapi.js on Google App Engine.');
+    reply('Hello World! Hapi.js on Google App Engine.');
   }
 });
 

@@ -25,7 +25,7 @@ test.cb('should return a list of buckets', function (t) {
 
   authSampleExample.main(projectId, function (err, response) {
     t.ifError(err);
-    t.ok(response.items.length > 0, 'There should be some buckets.');
+    t.truthy(response.items.length > 0, 'There should be some buckets.');
     t.is(response.items.filter(function (item) {
       return item.name === bucketName;
     }).length, 1, 'There should be a bucket named ' + bucketName);

@@ -23,13 +23,13 @@ test.cb('should detect texts', function (t) {
     inputDir,
     function (err, textResponse) {
       t.ifError(err);
-      t.ok(Object.keys(textResponse).length > 0);
+      t.truthy(Object.keys(textResponse).length > 0);
       textDetectionSample.lookup(
         ['the', 'sunbeams', 'in'],
         function (err, hits) {
           t.ifError(err);
-          t.ok(hits.length > 0);
-          t.ok(hits[0].length > 0);
+          t.truthy(hits.length > 0);
+          t.truthy(hits[0].length > 0);
           t.end();
         }
       );

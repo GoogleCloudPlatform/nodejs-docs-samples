@@ -19,8 +19,8 @@ var exportExample = require('../../logging/export');
 test.cb('should list sinks', function (t) {
   exportExample.main(function (err, sinks) {
     t.ifError(err);
-    t.ok(sinks, 'should have received sinks');
-    t.ok(Array.isArray(sinks), 'sinks should be an array');
+    t.truthy(sinks, 'should have received sinks');
+    t.truthy(Array.isArray(sinks), 'sinks should be an array');
     t.end();
   });
 });

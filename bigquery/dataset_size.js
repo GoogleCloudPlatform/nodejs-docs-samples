@@ -16,21 +16,12 @@
 var async = require('async');
 
 // [START auth]
-// You must set the GOOGLE_APPLICATION_CREDENTIALS and GCLOUD_PROJECT
-// environment variables to run this sample
-var projectId = process.env.GCLOUD_PROJECT;
-
-// Initialize gcloud
-var gcloud = require('gcloud')({
-  projectId: projectId
-});
-
-// Get a reference to the bigquery component
-var bigquery = gcloud.bigquery();
+// By default, gcloud will authenticate using the service account file specified
+// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+// project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+var gcloud = require('gcloud');
 // [END auth]
-
-// not going to use this bigquery instance
-bigquery = undefined;
 
 // [START list_tables]
 /**
@@ -41,7 +32,7 @@ bigquery = undefined;
  * @param {string} [pageToken] Page to retrieve.
  * @param {Function} callback Callback function.
  */
-function getAllTablesExample(bigquery, datasetId, pageToken, callback) {
+function getAllTablesExample (bigquery, datasetId, pageToken, callback) {
   if (typeof pageToken === 'function') {
     callback = pageToken;
     pageToken = undefined;
@@ -63,6 +54,7 @@ function getAllTablesExample(bigquery, datasetId, pageToken, callback) {
     if (nextQuery) {
       // Grab the remaining pages of tables recursively
       return getAllTablesExample(
+        bigquery,
         datasetId,
         nextQuery.token,
         function (err, _tables) {
@@ -87,21 +79,20 @@ function getAllTablesExample(bigquery, datasetId, pageToken, callback) {
  * @param {string} datasetId The dataset, e.g. "hacker_news"
  * @param {Function} callback Callback function.
  */
-function getSizeExample(projectId, datasetId, callback) {
-  if (!projectId) {
-    return callback(new Error('projectId is required!'));
-  }
+function getSizeExample (projectId, datasetId, callback) {
   if (!datasetId) {
     return callback(new Error('datasetId is require!'));
   }
 
-  var gcloud = require('gcloud')({
-    projectId: projectId || process.env.GCLOUD_PROJECT
+  var bigquery = gcloud.bigquery({
+    projectId: projectId
   });
-  var bigquery = gcloud.bigquery();
 
   // Fetch all tables in the dataset
   getAllTablesExample(bigquery, datasetId, function (err, tables) {
+    if (err) {
+      return callback(err);
+    }
     return async.parallel(tables.map(function (table) {
       return function (cb) {
         // Fetch more detailed info for each table
@@ -151,9 +142,5 @@ if (module === require.main) {
   if (args.length !== 2) {
     throw new Error('Usage: node dataset_size.js <projectId> <datasetId>');
   }
-  exports.main(
-    args[0],
-    args[1],
-    console.log
-  );
+  exports.main(args[0], args[1], console.log);
 }

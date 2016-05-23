@@ -56,8 +56,7 @@ test.cb('should write to log 2', function (t) {
         t.end('message was not printed!');
       }
     }
-  },
-  {
+  }, {
     message: 'foo'
   });
 });
@@ -68,8 +67,7 @@ test.cb('should write to log 3', function (t) {
       t.is(result, logMessage);
       t.end();
     }
-  },
-  {
+  }, {
     message: 'foo'
   });
 });

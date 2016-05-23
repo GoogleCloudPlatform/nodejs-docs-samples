@@ -18,6 +18,7 @@
 var express = require('express');
 var nconf = require('nconf');
 var ParseServer = require('parse-server').ParseServer;
+var path = require('path');
 
 nconf.argv().env().file({ file: 'config.json' });
 
@@ -25,7 +26,7 @@ var app = express();
 
 var parseServer = new ParseServer({
   databaseURI: nconf.get('DATABASE_URI') || 'mongodb://localhost:27017/dev',
-  cloud: nconf.get('CLOUD_PATH') || __dirname + '/cloud/main.js',
+  cloud: nconf.get('CLOUD_PATH') || path.join(__dirname, '/cloud/main.js'),
   appId: nconf.get('APP_ID'),
   masterKey: nconf.get('MASTER_KEY'),
   fileKey: nconf.get('FILE_KEY'),
@@ -35,13 +36,12 @@ var parseServer = new ParseServer({
 // Mount the Parse API server middleware to /parse
 app.use(process.env.PARSE_MOUNT_PATH || '/parse', parseServer);
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.status(200).send('Hello, world!');
 });
 
-var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 

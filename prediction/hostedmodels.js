@@ -17,7 +17,7 @@
 var google = require('googleapis');
 var hostedmodels = google.prediction('v1.6').hostedmodels;
 
-function auth(callback) {
+function auth (callback) {
   google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -45,7 +45,7 @@ function auth(callback) {
  * e.g. "good morning".
  * @param {Function} callback Callback function.
  */
-function predict(phrase, callback) {
+function predict (phrase, callback) {
   auth(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -64,8 +64,8 @@ function predict(phrase, callback) {
       }
     }, function (err, prediction) {
       if (err) {
-      return callback(err);
-    }
+        return callback(err);
+      }
 
       // Received prediction result
       console.log('Sentiment for "' + phrase + '": ' + prediction.outputLabel);

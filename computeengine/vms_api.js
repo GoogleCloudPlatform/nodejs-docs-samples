@@ -20,7 +20,7 @@ var compute = google.compute('v1');
 // [END initialize]
 
 // [START auth]
-function auth(callback) {
+function auth (callback) {
   google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -50,7 +50,7 @@ function auth(callback) {
 /**
  * @param {Function} callback Callback function.
  */
-function getVmsExample(callback) {
+function getVmsExample (callback) {
   auth(function (err, authClient) {
     if (err) {
       return callback(err);

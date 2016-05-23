@@ -22,7 +22,7 @@ test.cb('should detect landmarks', function (t) {
     'https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg',
     function (err, landmarks) {
       t.ifError(err);
-      t.ok(landmarks.length > 0);
+      t.truthy(landmarks.length > 0);
       t.end();
     }
   );

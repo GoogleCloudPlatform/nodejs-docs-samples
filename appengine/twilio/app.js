@@ -39,7 +39,7 @@ var TwimlResponse = require('twilio').TwimlResponse;
 // [END config]
 
 // [START receive_call]
-app.post('/call/receive', function(req, res) {
+app.post('/call/receive', function (req, res) {
   var resp = new TwimlResponse();
   resp.say('Hello from Google App Engine.');
 
@@ -50,7 +50,7 @@ app.post('/call/receive', function(req, res) {
 // [END receive_call]
 
 // [START send_sms]
-app.get('/sms/send', function(req, res, next) {
+app.get('/sms/send', function (req, res, next) {
   var to = req.query.to;
   if (!to) {
     return res.status(400).send(
@@ -61,15 +61,17 @@ app.get('/sms/send', function(req, res, next) {
     to: to,
     from: TWILIO_NUMBER,
     body: 'Hello from Google App Engine'
-  }, function(err) {
-    if (err) { return next(err); }
+  }, function (err) {
+    if (err) {
+      return next(err);
+    }
     res.status(200).send('Message sent.');
   });
 });
 // [END send_sms]
 
 // [START receive_sms]
-app.post('/sms/receive', bodyParser, function(req, res) {
+app.post('/sms/receive', bodyParser, function (req, res) {
   var sender = req.body.From;
   var body = req.body.Body;
 
@@ -83,9 +85,8 @@ app.post('/sms/receive', bodyParser, function(req, res) {
 // [END receive_sms]
 
 // Start the server
-var server = app.listen(process.env.PORT || '8080', '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || '8080', function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

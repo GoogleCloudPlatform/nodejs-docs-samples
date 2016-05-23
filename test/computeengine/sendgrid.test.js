@@ -23,7 +23,7 @@ test.cb('should send an email', function (t) {
       t.is(key, 'foo');
       return {
         send: function (payload, cb) {
-          t.same(payload, {
+          t.deepEqual(payload, {
             from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
             to: 'EMAIL@EXAMPLE.COM',
             subject: 'test email from Node.js on Google Cloud Platform',

@@ -14,25 +14,20 @@
 'use strict';
 
 var express = require('express');
+var path = require('path');
 
 var app = express();
 
 // Setup view engine
 app.set('view engine', 'jade');
 
-app.use(express.static(__dirname + '/dist'));
+app.use(express.static(path.resolve(path.join(__dirname, '/dist'))));
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.render('index');
 });
 
-var server = app.listen(
-  process.env.PORT || 8080,
-  '0.0.0.0',
-  function () {
-    var address = server.address().address;
-    var port = server.address().port;
-    console.log('App listening at http://%s:%s', address, port);
-    console.log('Press Ctrl+C to quit.');
-  }
-);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
+  console.log('Press Ctrl+C to quit.');
+});

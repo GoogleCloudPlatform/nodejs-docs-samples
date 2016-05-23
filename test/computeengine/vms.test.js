@@ -19,7 +19,7 @@ var vmsExample = require('../../computeengine/vms');
 test.cb('should retrieve vms', function (t) {
   vmsExample.main(function (err, result) {
     t.ifError(err);
-    t.ok(result);
+    t.truthy(result);
     t.is(Array.isArray(result), true);
     t.end();
   });

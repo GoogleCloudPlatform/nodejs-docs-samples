@@ -25,17 +25,17 @@ test.cb('should run the sample', function (t) {
     // Got subscription and apiResponse
     t.is(results[1].length, 2);
     // Got array of topics
-    t.ok(Array.isArray(results[2]));
+    t.truthy(Array.isArray(results[2]));
     // Got array of subscriptions
-    t.ok(Array.isArray(results[3]));
+    t.truthy(Array.isArray(results[3]));
     // Got messageIds and apiResponse
     t.is(results[4].length, 2);
     // Got array of messages
-    t.ok(Array.isArray(results[5]));
+    t.truthy(Array.isArray(results[5]));
     // Got empty apiResponse
-    t.same(results[6], {});
+    t.deepEqual(results[6], {});
     // Got empty apiResponse
-    t.same(results[7], {});
+    t.deepEqual(results[7], {});
     t.end();
   });
 });

@@ -33,7 +33,7 @@ var monitoringScopes = [
 /**
  * Returns the current timestamp in RFC33339 with milliseconds format.
  */
-function getNow() {
+function getNow () {
   var d = new Date();
   return JSON.parse(JSON.stringify(d).replace('Z', '000Z'));
 }
@@ -42,7 +42,7 @@ function getNow() {
  * Returns an hour ago in RFC33339 with milliseconds format. This is used
  * to start the window to view the metric written in.
  */
-function getStartTime() {
+function getStartTime () {
   var d = new Date();
   d.setHours(d.getHours() - 1);
   return JSON.parse(JSON.stringify(d).replace('Z', '000Z'));
@@ -54,7 +54,7 @@ var CUSTOM_METRIC_DOMAIN = 'custom.googleapis.com';
  * Constructor function. The CustomMetrics class stores the type of metric
  * in its instance class allowing unique ones to be used in tests.
  */
-function CustomMetrics(projectName, metricType) {
+function CustomMetrics (projectName, metricType) {
   this.projectResource = 'projects/' + projectName;
   this.metricType = CUSTOM_METRIC_DOMAIN + '/' + metricType;
   this.metricName = this.projectResource +
@@ -250,7 +250,7 @@ exports.main = function (projectId, name, cb) {
         }, 5000);
       },
       function (cb) {
-        setTimeout(function() {
+        setTimeout(function () {
           customMetrics.listTimeSeries(authClient, cb);
         }, 5000);
       },

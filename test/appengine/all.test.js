@@ -22,11 +22,11 @@ var async = require('async');
 var cwd = process.cwd();
 var projectId = process.env.GCLOUD_PROJECT;
 
-function getPath(dir) {
+function getPath (dir) {
   return path.join(cwd, '/../../', dir);
 }
 
-function changeScaling(dir) {
+function changeScaling (dir) {
   try {
     var filepath = getPath(dir) + '/app.yaml';
     fs.statSync(filepath);
@@ -268,7 +268,7 @@ if (process.env.TRAVIS_NODE_VERSION === '5') {
 }
 
 // Retry the request using exponential backoff up to a maximum number of tries.
-function makeRequest(url, numTry, maxTries, cb) {
+function makeRequest (url, numTry, maxTries, cb) {
   request(url, function (err, res, body) {
     if (err) {
       if (numTry >= maxTries) {
@@ -285,7 +285,7 @@ function makeRequest(url, numTry, maxTries, cb) {
 
 // Send a request to the given url and test that the response body has the
 // expected value
-function testRequest(url, sample, cb) {
+function testRequest (url, sample, cb) {
   // Try up to 8 times
   makeRequest(url, 1, 8, function (err, res, body) {
     if (err) {
@@ -344,8 +344,7 @@ if (process.env.TRAVIS && process.env.DEPLOY_TESTS) {
   });
 }
 
-function testInstallation(sample, done) {
-
+function testInstallation (sample, done) {
   // Keep track off whether "done" has been called yet
   var calledDone = false;
 
@@ -370,7 +369,7 @@ function testInstallation(sample, done) {
   });
 
   // Exit helper so we don't call "cb" more than once
-  function finish(err) {
+  function finish (err) {
     if (!calledDone) {
       calledDone = true;
       done(err);
@@ -378,7 +377,7 @@ function testInstallation(sample, done) {
   }
 }
 
-function testLocalApp(sample, done) {
+function testLocalApp (sample, done) {
   var calledDone = false;
   var requestError;
 
@@ -397,7 +396,7 @@ function testLocalApp(sample, done) {
   var proc = spawn(sample.cmd, sample.args, opts);
 
   // Exit helper so we don't call "cb" more than once
-  function finish(err) {
+  function finish (err) {
     if (!calledDone) {
       calledDone = true;
       done(err || requestError);
@@ -446,8 +445,7 @@ function testLocalApp(sample, done) {
   }
 }
 
-function testDeployments(done) {
-
+function testDeployments (done) {
   // Only deploy samples that have a projectId
   var samplesToDeploy = sampleTests.filter(function (sample) {
     return (sample.deploy &&
@@ -511,7 +509,7 @@ function testDeployments(done) {
       });
 
       // Exit helper so we don't call "cb" more than once
-      function finish(err, result) {
+      function finish (err, result) {
         if (!calledDone) {
           calledDone = true;
           var intervalId = setInterval(function () {
@@ -534,7 +532,7 @@ function testDeployments(done) {
 
       var numEnded = 0;
 
-      function finishLogs() {
+      function finishLogs () {
         numEnded++;
         if (numEnded === 2) {
           logStream.end();

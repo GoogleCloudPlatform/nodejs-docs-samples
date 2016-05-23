@@ -20,20 +20,21 @@ var express = require('express');
 
 var app = express();
 
-app.get('/', function(req, res, next) {
+app.get('/', function (req, res, next) {
   // Get the output from the "fortune" program. This is installed into the
   // environment by the Dockerfile.
-  exec('/usr/games/fortune', function(err, stdout) {
-    if (err) { return next(err); }
+  exec('/usr/games/fortune', function (err, stdout) {
+    if (err) {
+      return next(err);
+    }
 
     res.set('Content-Type', 'text/plain');
     res.status(200).send(stdout);
   });
 });
 
-var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

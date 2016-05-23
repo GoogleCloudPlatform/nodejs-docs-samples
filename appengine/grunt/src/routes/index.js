@@ -17,7 +17,7 @@ var express = require('express');
 var router = express.Router();
 
 // [START hello_world]
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
   res.render('index', {
     title: 'Hello World! Express.js + Grunt.js on Google App Engine.'
   });

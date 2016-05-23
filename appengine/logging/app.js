@@ -31,14 +31,13 @@ var logger = new winston.Logger({
   ]
 });
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   logger.info('Request from %s', req.ip);
   res.status(200).send('Logged');
 });
 
-var server = app.listen(process.env.PORT || '8080', '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || '8080', function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

@@ -18,7 +18,7 @@ var error = require('../../datastore/error.js');
 
 test.cb.serial('should have an error', function (t) {
   error.runQuery(function (err) {
-    t.ok(err);
+    t.truthy(err);
     t.is(err.code, 400);
     t.end();
   });

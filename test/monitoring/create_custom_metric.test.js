@@ -17,7 +17,7 @@ var test = require('ava');
 var customMetricsExample = require('../../monitoring/create_custom_metric');
 
 /** Refactored out to keep lines shorter */
-function getPointValue(timeSeries) {
+function getPointValue (timeSeries) {
   return timeSeries.timeSeries[0].points[0].value.int64Value;
 }
 
@@ -29,14 +29,14 @@ test.cb('should create and read back a custom metric', function (t) {
       t.ifError(err);
       t.is(results.length, 4);
       // Result of creating metric
-      t.ok(typeof results[0].name === 'string');
+      t.truthy(typeof results[0].name === 'string');
       // Result of writing time series
-      t.same(results[1], {});
+      t.deepEqual(results[1], {});
       // Result of reading time series
-      t.ok(typeof getPointValue(results[2]) === 'string');
-      t.ok(!isNaN(parseInt(getPointValue(results[2]), 10)));
+      t.truthy(typeof getPointValue(results[2]) === 'string');
+      t.truthy(!isNaN(parseInt(getPointValue(results[2]), 10)));
       // Result of deleting metric
-      t.same(results[3], {});
+      t.deepEqual(results[3], {});
       t.end();
     }
   );

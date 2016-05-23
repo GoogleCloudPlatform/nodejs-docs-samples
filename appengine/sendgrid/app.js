@@ -36,18 +36,18 @@ app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // [START index]
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.render('index');
 });
 // [END index]
 
 // [START hello]
-app.post('/hello', function(req, res, next) {
+app.post('/hello', function (req, res, next) {
   Sendgrid.send({
     from: SENDGRID_SENDER, // From address
     to: req.body.email, // To address
     subject: 'Hello World!', // Subject
-    text: 'Sendgrid on Google App Engine with Node.js', // Content
+    text: 'Sendgrid on Google App Engine with Node.js' // Content
   }, function (err) {
     if (err) {
       return next(err);
@@ -62,16 +62,10 @@ app.post('/hello', function(req, res, next) {
 
 if (module === require.main) {
   // [START server]
-  var server = app.listen(
-    process.env.PORT || 8080,
-    '0.0.0.0',
-    function () {
-      var address = server.address().address;
-      var port = server.address().port;
-      console.log('App listening at http://%s:%s', address, port);
-      console.log('Press Ctrl+C to quit.');
-    }
-  );
+  var server = app.listen(process.env.PORT || 8080, function () {
+    console.log('App listening on port %s', server.address().port);
+    console.log('Press Ctrl+C to quit.');
+  });
   // [END server]
 }
 

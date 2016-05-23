@@ -36,8 +36,8 @@ var google = require('googleapis');
  *     responds with the list of buckets.
  */
 // [START list_buckets]
-function listBucketsExample(projectId, callback) {
-  google.auth.getApplicationDefault(function(err, authClient) {
+function listBucketsExample (projectId, callback) {
+  google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
       return callback(err);
     }
@@ -61,8 +61,8 @@ function listBucketsExample(projectId, callback) {
       project: projectId
     }, function (err, response) {
       if (err) {
-      return callback(err);
-    }
+        return callback(err);
+      }
 
       console.log('Found ' + response.items.length + ' buckets');
       callback(null, response);

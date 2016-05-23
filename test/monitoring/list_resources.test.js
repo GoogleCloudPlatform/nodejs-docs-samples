@@ -23,11 +23,11 @@ test.cb('should list a bunch of stuff', function (t) {
       t.ifError(err);
       t.is(results.length, 3);
       // Monitored resources
-      t.ok(Array.isArray(results[0].resourceDescriptors));
+      t.truthy(Array.isArray(results[0].resourceDescriptors));
       // Metric descriptors
-      t.ok(Array.isArray(results[1].metricDescriptors));
+      t.truthy(Array.isArray(results[1].metricDescriptors));
       // Time series
-      t.ok(Array.isArray(results[2].timeSeries));
+      t.truthy(Array.isArray(results[2].timeSeries));
       t.end();
     }
   );

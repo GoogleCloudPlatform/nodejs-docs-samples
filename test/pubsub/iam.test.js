@@ -33,9 +33,9 @@ test.cb('should run the sample', function (t) {
     // Got permissions and apiResponse
     t.is(results[5].length, 2);
     // Got empty apiResponse
-    t.same(results[6], {});
+    t.deepEqual(results[6], {});
     // Got empty apiResponse
-    t.same(results[7], {});
+    t.deepEqual(results[7], {});
     t.end();
   });
 });

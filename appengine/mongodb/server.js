@@ -36,33 +36,32 @@ if (nconf.get('mongoDatabase')) {
   uri = uri + '/' + nconf.get('mongoDatabase');
 }
 
-mongodb.MongoClient.connect(uri, function(err, db) {
-
+mongodb.MongoClient.connect(uri, function (err, db) {
   if (err) {
     throw err;
   }
 
   // Create a simple little server.
-  http.createServer(function(req, res) {
-
+  http.createServer(function (req, res) {
     // Track every IP that has visited this site
     var collection = db.collection('IPs');
 
-    var ip = { address: req.connection.remoteAddress };
+    var ip = {
+      address: req.connection.remoteAddress
+    };
 
-    collection.insert(ip, function(err) {
-
+    collection.insert(ip, function (err) {
       if (err) {
         throw err;
       }
 
       // push out a range
       var iplist = '';
-      collection.find().toArray(function(err, data) {
+      collection.find().toArray(function (err, data) {
         if (err) {
           throw err;
         }
-        data.forEach(function(ip) {
+        data.forEach(function (ip) {
           iplist += ip.address + '; ';
         });
 

@@ -33,13 +33,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // [START index]
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.render('index');
 });
 // [END index]
 
 // [START hello]
-app.post('/hello', function(req, res, next) {
+app.post('/hello', function (req, res, next) {
   var servername = '';
   var options = {};
 
@@ -57,27 +57,19 @@ app.post('/hello', function(req, res, next) {
     function (err) {
       if (err) {
         return next(err);
-      } else {
-        // Render the index route on success
-        return res.render('index', {
-          sent: true
-        });
       }
+      // Render the index route on success
+      return res.render('index', {
+        sent: true
+      });
     }
   );
 });
 // [END hello]
 
 // [START server]
-var server = app.listen(
-  process.env.PORT || 8080,
-  '0.0.0.0',
-  function () {
-    var address = server.address().address;
-    var port = server.address().port;
-    console.log('App listening at http://%s:%s', address, port);
-    console.log('Press Ctrl+C to quit.');
-  }
-);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
+  console.log('Press Ctrl+C to quit.');
+});
 // [END server]
-

@@ -32,14 +32,17 @@ app.use(session({
   })
 }));
 
-app.get('/', function(req, res){
+app.get('/', function (req, res, next) {
   publicIp.v4(function (err, ip) {
+    if (err) {
+      return next(err);
+    }
     var hash = crypto.createHash('sha256');
 
-    // This shows the hashed IP for each 
+    // This shows the hashed IP for each
     res.write('<div>' + hash.update(ip).digest('hex').substr(0, 7) + '</div>');
 
-    if(req.session.views) {
+    if (req.session.views) {
       ++req.session.views;
     } else {
       req.session.views = 1;
@@ -49,9 +52,10 @@ app.get('/', function(req, res){
 });
 
 if (module === require.main) {
-  app.listen(process.env.PORT || 8080, function() {
-    console.log('Listening on %d', this.address().port);
-  });  
+  var server = app.listen(process.env.PORT || 8080, function () {
+    console.log('App listening on port %d', server.address().port);
+  });
+  console.log('Press Ctrl+C to quit.');
 }
 
 module.exports = app;

@@ -20,7 +20,7 @@ var prompt = require('prompt');
 
 prompt.start();
 
-prompt.get(['host', 'user', 'password', 'database'], function(err, config) {
+prompt.get(['host', 'user', 'password', 'database'], function (err, config) {
   if (err) { return; }
 
   config.multipleStatements = true;
@@ -33,8 +33,10 @@ prompt.get(['host', 'user', 'password', 'database'], function(err, config) {
     '  `timestamp` DATETIME NULL,' +
     '  `userIp` VARCHAR(46) NULL,' +
     '  PRIMARY KEY (`id`));',
-    function(err) {
-      if (err) { throw err; }
+    function (err) {
+      if (err) {
+        throw err;
+      }
       console.log('Done!');
       connection.end();
     }

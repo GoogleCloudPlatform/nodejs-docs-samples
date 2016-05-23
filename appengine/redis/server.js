@@ -17,17 +17,17 @@ var redis = require('redis');
 var http = require('http');
 var nconf = require('nconf');
 
-// read in keys and secrets.  You can store these in a variety of ways.  
-// I like to use a keys.json  file that is in the .gitignore file, 
+// read in keys and secrets. You can store these in a variety of ways.
+// I like to use a keys.json file that is in the .gitignore file,
 // but you can also store them in environment variables
 nconf.argv().env().file('keys.json');
 
 // [START client]
-// Connect to a redis server provisioned over at 
-// Redis Labs.  See the README for more info. 
+// Connect to a redis server provisioned over at
+// Redis Labs. See the README for more info.
 var client = redis.createClient(
   nconf.get('redisPort') || '6379',
-  nconf.get('redisHost') || '127.0.0.1', 
+  nconf.get('redisHost') || '127.0.0.1',
   {
     'auth_pass': nconf.get('redisKey'),
     'return_buffers': true
@@ -37,7 +37,7 @@ var client = redis.createClient(
 });
 // [END client]
 
-// Create a simple little server. 
+// Create a simple little server.
 http.createServer(function (req, res) {
   client.on('error', function (err) {
     console.log('Error ' + err);
@@ -48,7 +48,7 @@ http.createServer(function (req, res) {
   client.lpush(listName, req.connection.remoteAddress);
   client.ltrim(listName, 0, 25);
 
-  // push out a range 
+  // push out a range
   var iplist = '';
   client.lrange(listName, 0, -1, function (err, data) {
     if (err) {
@@ -59,7 +59,7 @@ http.createServer(function (req, res) {
       console.log('IP: ' + ip + '\n');
       iplist += ip + '; ';
     });
-    
+
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end(iplist);
   });

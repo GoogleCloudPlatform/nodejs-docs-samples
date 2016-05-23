@@ -31,7 +31,7 @@ test.cb('should log error', function (t) {
     'fluent-logger': {
       createFluentSender: function (name, options) {
         t.is(name, 'myapp');
-        t.same(options, {
+        t.deepEqual(options, {
           host: 'localhost',
           port: 24224,
           timeout: 3.0

@@ -24,7 +24,7 @@ var app = express();
 // but will need to be manually set when running locally. See README.md.
 var GA_TRACKING_ID = process.env.GA_TRACKING_ID;
 
-function trackEvent(category, action, label, value, cb) {
+function trackEvent (category, action, label, value, cb) {
   var data = {
     v: '1', // API Version.
     tid: GA_TRACKING_ID, // Tracking ID / Property ID.
@@ -35,14 +35,14 @@ function trackEvent(category, action, label, value, cb) {
     ec: category, // Event category.
     ea: action, // Event action.
     el: label, // Event label.
-    ev: value, // Event value.
+    ev: value // Event value.
   };
 
   request.post(
     'http://www.google-analytics.com/collect', {
       form: data
     },
-    function(err, response) {
+    function (err, response) {
       if (err) { return cb(err); }
       if (response.statusCode !== 200) {
         return cb(new Error('Tracking failed'));
@@ -52,13 +52,13 @@ function trackEvent(category, action, label, value, cb) {
   );
 }
 
-app.get('/', function(req, res, next) {
+app.get('/', function (req, res, next) {
   trackEvent(
     'Example category',
     'Example action',
     'Example label',
     '100', // Event value must be numeric.
-    function(err) {
+    function (err) {
       // This sample treats an event tracking error as a fatal error. Depending
       // on your application's needs, failing to track an event may not be
       // considered an error.
@@ -68,9 +68,8 @@ app.get('/', function(req, res, next) {
 });
 
 // Start the server
-var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

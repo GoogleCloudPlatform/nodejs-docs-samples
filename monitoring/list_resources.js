@@ -32,7 +32,7 @@ var METRIC = 'compute.googleapis.com/instance/cpu/usage_time';
 /**
  * Returns an hour ago minus 5 minutes in RFC33339 format.
  */
-function getStartTime() {
+function getStartTime () {
   var d = new Date();
   d.setHours(d.getHours() - 1);
   d.setMinutes(d.getMinutes() - 5);
@@ -42,7 +42,7 @@ function getStartTime() {
 /**
  * Returns an hour ago in RFC33339 format.
  */
-function getEndTime() {
+function getEndTime () {
   var d = new Date();
   d.setHours(d.getHours() - 1);
   return JSON.parse(JSON.stringify(d).replace('Z', '000Z'));
@@ -162,14 +162,14 @@ exports.main = function (projectId, cb) {
           cb
         );
       },
-      function(cb) {
+      function (cb) {
         ListResources.listMetricDescriptors(
           authClient,
           projectName,
           cb
         );
       },
-      function(cb) {
+      function (cb) {
         ListResources.listTimeseries(
           authClient,
           projectName,

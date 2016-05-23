@@ -15,21 +15,18 @@
 'use strict';
 
 // [START auth]
-// You must set the GOOGLE_APPLICATION_CREDENTIALS and GCLOUD_PROJECT
-// environment variables to run this sample
-var projectId = process.env.GCLOUD_PROJECT;
-
-// Initialize gcloud
-var gcloud = require('gcloud')({
-  projectId: projectId
-});
+// By default, gcloud will authenticate using the service account file specified
+// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+// project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+var gcloud = require('gcloud');
 
 // Get a reference to the bigquery component
 var bigquery = gcloud.bigquery();
 // [END auth]
 
 // [START print]
-function printExample(rows) {
+function printExample (rows) {
   console.log('Query Results:');
   rows.forEach(function (row) {
     var str = '';
@@ -50,11 +47,11 @@ function printExample(rows) {
  *
  * @param {Function} callback Callback function.
  */
-function queryExample(callback) {
+function queryExample (callback) {
   var query = 'SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words\n' +
     'FROM [publicdata:samples.shakespeare];';
 
-  bigquery.query(query, function(err, rows) {
+  bigquery.query(query, function (err, rows) {
     if (err) {
       return callback(err);
     }
@@ -73,7 +70,5 @@ exports.main = function (cb) {
 };
 
 if (module === require.main) {
-  exports.main(
-    console.log
-  );
+  exports.main(console.log);
 }

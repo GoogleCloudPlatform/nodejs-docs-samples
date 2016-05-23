@@ -19,10 +19,10 @@ var listExample = require('../../logging/list');
 test.cb('should list entries', function (t) {
   listExample.main(undefined, function (err, entries, nextQuery, apiResponse) {
     t.ifError(err);
-    t.ok(entries, 'should have received entries');
-    t.ok(Array.isArray(entries), 'entries should be an array');
-    t.ok(nextQuery, 'should have received nextQuery');
-    t.ok(apiResponse, 'should have received apiResponse');
+    t.truthy(entries, 'should have received entries');
+    t.truthy(Array.isArray(entries), 'entries should be an array');
+    t.truthy(nextQuery, 'should have received nextQuery');
+    t.truthy(apiResponse, 'should have received apiResponse');
     t.end();
   });
 });

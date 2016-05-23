@@ -24,7 +24,7 @@ test.cb('should detect labels', function (t) {
     inputFile,
     function (err, labels) {
       t.ifError(err);
-      t.ok(labels.length > 0);
+      t.truthy(labels.length > 0);
       t.end();
     }
   );

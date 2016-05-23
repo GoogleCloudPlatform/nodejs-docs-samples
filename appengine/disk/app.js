@@ -23,18 +23,22 @@ var crypto = require('crypto');
 var app = express();
 app.enable('trust proxy');
 
-app.get('/', function(req, res, next) {
+app.get('/', function (req, res, next) {
   var instanceId = process.env.GAE_MODULE_INSTANCE || '1';
   var hash = crypto.createHash('sha256');
   // Only store a hash of the ip address
   var ip = hash.update(req.ip).digest('hex').substr(0, 7);
   var userIp = util.format('%s\n', ip);
 
-  fs.appendFile('/tmp/seen.txt', userIp, function(err) {
-    if (err) { return next(err); }
+  fs.appendFile('/tmp/seen.txt', userIp, function (err) {
+    if (err) {
+      return next(err);
+    }
 
-    fs.readFile('/tmp/seen.txt', function(err, data) {
-      if (err) { return next(err); }
+    fs.readFile('/tmp/seen.txt', function (err, data) {
+      if (err) {
+        return next(err);
+      }
 
       res.set('Content-Type', 'text/plain');
       res.status(200).send(util.format(
@@ -44,9 +48,8 @@ app.get('/', function(req, res, next) {
   });
 });
 
-var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

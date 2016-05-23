@@ -15,15 +15,13 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
 
-// You must set the GOOGLE_APPLICATION_CREDENTIALS and GCLOUD_PROJECT
-// environment variables to run this sample
-var projectId = process.env.GCLOUD_PROJECT;
-
-// Initialize gcloud
-var gcloud = require('gcloud')({
-  projectId: projectId
-});
+// By default, gcloud will authenticate using the service account file specified
+// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+// project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+var gcloud = require('gcloud');
 
 // Get a reference to the bigquery component
 var bigquery = gcloud.bigquery();
@@ -35,7 +33,7 @@ var bigquery = gcloud.bigquery();
  * @param {number} timeout Maximum time to wait (milliseconds).
  * @param {Function} Callback function.
  */
-function pollJobUntilDone(job, timeout, timeWaited, callback) {
+function pollJobUntilDone (job, timeout, timeWaited, callback) {
   job.getMetadata(function (err, metadata) {
     if (err) {
       return callback(err);
@@ -63,8 +61,7 @@ function pollJobUntilDone(job, timeout, timeWaited, callback) {
  * @param {string} tableName The table.
  * @param {Function} callback Callback function.
  */
-function loadDataFromCsvExample(pathToCsvFile, datasetId, tableName, callback) {
-
+function loadDataFromCsvExample (pathToCsvFile, datasetId, tableName, callback) {
   if (!pathToCsvFile || typeof pathToCsvFile !== 'string') {
     return callback(new Error('pathToCsvFile is required!'));
   }
@@ -99,7 +96,7 @@ function loadDataFromCsvExample(pathToCsvFile, datasetId, tableName, callback) {
 
 exports.createTable = function (datasetId, tableName, callback) {
   var dataset = bigquery.dataset(datasetId);
-  var pathToSchemaFile = __dirname + '/resources/schema.json';
+  var pathToSchemaFile = path.join(__dirname, '/resources/schema.json');
   fs.readFile(pathToSchemaFile, { encoding: 'utf8' }, function (err, file) {
     if (err) {
       return callback(err);

@@ -27,23 +27,26 @@ var memcachedAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR || 'localhost';
 var memcachedPort = process.env.MEMCACHE_PORT_11211_TCP_PORT || '11211';
 var memcached = new Memcached(memcachedAddr + ':' + memcachedPort);
 
-app.get('/', function(req, res, next) {
-  memcached.get('foo', function(err, value) {
-    if (err) { return next(err); }
+app.get('/', function (req, res, next) {
+  memcached.get('foo', function (err, value) {
+    if (err) {
+      return next(err);
+    }
     if (value) {
       return res.status(200).send('Value: ' + value);
     }
 
-    memcached.set('foo', Math.random(), 60, function(err) {
-      if (err) { return next(err); }
+    memcached.set('foo', Math.random(), 60, function (err) {
+      if (err) {
+        return next(err);
+      }
       return res.redirect('/');
     });
   });
 });
 
-var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

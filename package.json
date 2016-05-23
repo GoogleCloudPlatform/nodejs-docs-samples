@@ -23,28 +23,49 @@
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
+  "semistandard": {
+    "globals": [
+      "after",
+      "afterEach",
+      "before",
+      "beforeEach",
+      "describe",
+      "it"
+    ],
+    "ignore": [
+      "appengine/bower/public/bower_components/**",
+      "appengine/geddy/**",
+      "appengine/kraken/**",
+      "appengine/loopback/**",
+      "appengine/parse-server/cloud/main.js",
+      "appengine/sails/**",
+      "appengine/webpack/dist/**",
+      "**/node_modules/**",
+      "coverage/"
+    ]
+  },
   "scripts": {
-    "jshint": "jshint --exclude-path=.jshintignore .",
-    "deps_appengine": "ava --match='*: dependencies should install*'",
     "ava": "ava --match='!*: dependencies should install*'",
     "ava:deps": "npm run deps_appengine && npm run ava",
     "cover": "npm run deps_appengine && nyc ava --match='!*: dependencies should install*'",
+    "deps_appengine": "ava --match='*: dependencies should install*'",
+    "deps_bigquery": "cd bigquery; npm i; cd ../",
+    "deps_computeengine": "cd computeengine; npm i; cd ../",
+    "deps_datastore": "cd datastore; npm i; cd ../",
+    "deps_functions": "cd functions/uuid; npm i; cd ../..",
+    "deps_logging": "cd logging; npm i; cd ../",
+    "deps_monitoring": "cd monitoring; npm i; cd ../",
+    "deps_prediction": "cd prediction; npm i; cd ../",
+    "deps_pubsub": "cd pubsub; npm i; cd ../",
+    "deps_speech": "cd speech; npm i; cd ../",
+    "deps_storage": "cd storage; npm i; cd ../",
+    "deps_vision": "cd vision; npm i; cd ../",
+    "lint": "semistandard \"**/*.js\"",
+    "pretest_geddy": "cd appengine/geddy; npm i geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
+    "pretest": "npm run deps_vision; npm run deps_computeengine; npm run deps_bigquery; npm run deps_datastore; npm run deps_monitoring; npm run deps_storage; npm run deps_pubsub; npm run deps_prediction; npm run deps_logging; npm run deps_functions; npm run deps_speech; npm run pretest_geddy;",
     "report": "nyc report --reporter=lcov | codecov",
     "report-html": "nyc report --reporter=html",
-    "deps_gce": "cd computeengine; npm i; cd ../",
-    "deps_bigquery": "cd bigquery; npm i; cd ../",
-    "deps_speech": "cd speech; npm i; cd ../",
-    "deps_datastore": "cd datastore; npm i; cd ../",
-    "deps_pubsub": "cd pubsub; npm i; cd ../",
-    "deps_monitoring": "cd monitoring; npm i; cd ../",
-    "deps_storage": "cd storage; npm i; cd ../",
-    "deps_prediction": "cd prediction; npm i; cd ../",
-    "deps_logging": "cd logging; npm i; cd ../",
-    "deps_vision": "cd vision; npm i; cd ../",
-    "deps_functions": "cd functions/uuid; npm i; cd ../..",
-    "pretest_geddy": "cd appengine/geddy; npm i geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
-    "pretest": "npm run deps_vision; npm run deps_gce; npm run deps_bigquery; npm run deps_datastore; npm run deps_monitoring; npm run deps_storage; npm run deps_pubsub; npm run deps_prediction; npm run deps_logging; npm run deps_functions; npm run deps_speech; npm run pretest_geddy;",
-    "test": "npm run jshint && npm run cover"
+    "test": "npm run lint && npm run cover"
   },
   "ava": {
     "files": [
@@ -53,12 +74,13 @@
   },
   "devDependencies": {
     "async": "^1.5.2",
-    "ava": "^0.13.0",
+    "ava": "^0.14.0",
     "codecov": "^1.0.1",
-    "jshint": "~2.9.1",
-    "nyc": "^6.1.1",
-    "proxyquire": "^1.7.4",
-    "request": "^2.70.0",
+    "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",
+    "nyc": "^6.4.4",
+    "proxyquire": "^1.7.9",
+    "request": "^2.72.0",
+    "semistandard": "^8.0.0",
     "supertest": "^1.2.0"
   }
 }

@@ -14,9 +14,10 @@
 'use strict';
 
 var async = require('async');
+var path = require('path');
 var test = require('ava');
 var loadDataFromCsvExample = require('../../bigquery/load_data_from_csv');
-var pathToCsvFile = __dirname + '/../../bigquery/resources/data.csv';
+var pathToCsvFile = path.join(__dirname, '/../../bigquery/resources/data.csv');
 var datasetId = 'nodejs_docs_samples';
 var tableName = 'test_' + new Date().getTime() + '_' +
   Math.floor(Math.random() * 10000);

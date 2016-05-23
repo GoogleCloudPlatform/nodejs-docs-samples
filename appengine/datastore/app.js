@@ -29,7 +29,7 @@ var dataset = gcloud.datastore({
   projectId: process.env.GCLOUD_PROJECT
 });
 
-app.get('/', function(req, res, next) {
+app.get('/', function (req, res, next) {
   var hash = crypto.createHash('sha256');
 
   // Add this visit to the datastore
@@ -40,18 +40,22 @@ app.get('/', function(req, res, next) {
       // Store a hash of the ip address
       userIp: hash.update(req.ip).digest('hex').substr(0, 7)
     }
-  }, function(err) {
-    if (err) { return next(err); }
+  }, function (err) {
+    if (err) {
+      return next(err);
+    }
 
     // Query the last 10 visits from the datastore.
     var query = dataset.createQuery('visit')
       .order('-timestamp')
       .limit(10);
 
-    dataset.runQuery(query, function(err, entities) {
-      if (err) { return next(err); }
+    dataset.runQuery(query, function (err, entities) {
+      if (err) {
+        return next(err);
+      }
 
-      var visits = entities.map(function(entity) {
+      var visits = entities.map(function (entity) {
         return format(
           'Time: %s, AddrHash: %s',
           entity.data.timestamp,
@@ -67,9 +71,8 @@ app.get('/', function(req, res, next) {
 });
 
 /* Start the server */
-var server = app.listen(process.env.PORT || 8080, '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || 8080, function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

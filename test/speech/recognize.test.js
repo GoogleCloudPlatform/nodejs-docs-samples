@@ -22,10 +22,10 @@ test.cb('should list entries', function (t) {
     path.resolve('../../speech/resources/audio.raw'),
     function (err, result) {
       t.ifError(err);
-      t.ok(result);
-      t.ok(result.responses);
+      t.truthy(result);
+      t.truthy(result.responses);
       t.is(result.responses.length, 1);
-      t.ok(result.responses[0].results);
+      t.truthy(result.responses[0].results);
       t.end();
     }
   );

@@ -39,28 +39,29 @@ var pubsub = gcloud.pubsub({
 var topic = pubsub.topic(process.env.PUBSUB_TOPIC);
 
 // [START index]
-app.get('/', function(req, res) {
-  res.render('index', {messages: messages});
+app.get('/', function (req, res) {
+  res.render('index', { messages: messages });
 });
 
-app.post('/', formBodyParser, function(req, res, next) {
-  if(!req.body.payload) {
+app.post('/', formBodyParser, function (req, res, next) {
+  if (!req.body.payload) {
     return res.status(400).send('Missing payload');
   }
 
   topic.publish({
-      data: req.body.payload
-    },
-    function(err){
-      if(err) { return next(err); }
-      res.status(200).send('Message sent');
-    });
+    data: req.body.payload
+  }, function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.status(200).send('Message sent');
+  });
 });
 // [END index]
 
 // [START push]
-app.post('/pubsub/push', jsonBodyParser, function(req, res) {
-  if(req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
+app.post('/pubsub/push', jsonBodyParser, function (req, res) {
+  if (req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
     return res.status(400).send();
   }
 
@@ -74,9 +75,8 @@ app.post('/pubsub/push', jsonBodyParser, function(req, res) {
 // [END push]
 
 // Start the server
-var server = app.listen(process.env.PORT || '8080', '0.0.0.0', function() {
-  console.log('App listening at http://%s:%s', server.address().address,
-    server.address().port);
+var server = app.listen(process.env.PORT || '8080', function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

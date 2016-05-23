@@ -25,7 +25,7 @@ test.cb('should send an email', function (t) {
         t.is(arg, 'test');
         return {
           sendMail: function (payload, cb) {
-            t.same(payload, {
+            t.deepEqual(payload, {
               from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
               to: 'EMAIL@EXAMPLE.COM',
               subject: 'test email from Node.js on Google Cloud Platform',
@@ -38,7 +38,7 @@ test.cb('should send an email', function (t) {
       }
     },
     'nodemailer-smtp-transport': function (options) {
-      t.same(options, {
+      t.deepEqual(options, {
         service: 'Mailjet',
         auth: {
           user: 'foo',

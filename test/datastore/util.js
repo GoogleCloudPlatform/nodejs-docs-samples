@@ -14,13 +14,13 @@
 'use strict';
 
 module.exports = {
-  deleteEntities: function(datastore, query, callback) {
-    datastore.runQuery(query, function(err, entities) {
+  deleteEntities: function (datastore, query, callback) {
+    datastore.runQuery(query, function (err, entities) {
       if (err) {
         return callback(err);
       }
 
-      var keys = entities.map(function(entity) {
+      var keys = entities.map(function (entity) {
         return entity.key;
       });
 

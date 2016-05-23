@@ -23,7 +23,7 @@ test.cb('should return the size of a dataset', function (t) {
     function (err, size) {
       t.ifError(err);
       t.is(typeof size, 'string');
-      t.ok(size.indexOf(' GB') === size.length - 3);
+      t.truthy(size.indexOf(' GB') === size.length - 3);
       t.end();
     }
   );

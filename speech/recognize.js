@@ -26,7 +26,7 @@ var url = 'https://speech.googleapis.com/$discovery/rest';
 // [END discovery_doc]
 
 // [START authenticating]
-function getSpeechService(callback) {
+function getSpeechService (callback) {
   // Acquire credentials
   google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
@@ -64,7 +64,7 @@ function getSpeechService(callback) {
 // [END authenticating]
 
 // [START construct_request]
-function prepareRequest(inputFile, callback) {
+function prepareRequest (inputFile, callback) {
   fs.readFile(inputFile, function (err, audioFile) {
     if (err) {
       return callback(err);
@@ -85,7 +85,7 @@ function prepareRequest(inputFile, callback) {
 }
 // [END construct_request]
 
-function main(inputFile, callback) {
+function main (inputFile, callback) {
   var requestPayload;
 
   async.waterfall([
@@ -97,7 +97,7 @@ function main(inputFile, callback) {
       getSpeechService(cb);
     },
     // [START send_request]
-    function sendRequest(speechService, authClient, cb) {
+    function sendRequest (speechService, authClient, cb) {
       console.log('Analyzing speech...');
       speechService.speech.recognize({
         auth: authClient,

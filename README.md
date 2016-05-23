@@ -117,6 +117,7 @@ __Other Examples__
 - Face detection - [Source code][vision_1] | [Documentation][vision_2]
 - Label detection - [Source code][vision_3] | [Documentation][vision_4]
 - Landmark detection - [Source code][vision_5] | [Documentation][vision_6]
+- Text detection - [Source code][vision_7] | [Documentation][vision_8]
 
 ## Google Prediction API
 
@@ -328,6 +329,8 @@ See [LICENSE](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/ma
 [vision_4]: https://cloud.google.com/vision/docs/label-tutorial
 [vision_5]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/vision/landmarkDetection.js
 [vision_6]: https://cloud.google.com/vision/docs/landmark-tutorial
+[vision_7]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/vision/textDetection.js
+[vision_8]: https://cloud.google.com/vision/docs/text-tutorial
 
 [predictionapi_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/prediction/hostedmodels.js
 [predictionapi_2]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine

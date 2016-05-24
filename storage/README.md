@@ -22,3 +22,9 @@ Execute a sample:
 Example:
 
     npm run authSample -- my-cool-project
+
+
+- Auth sample - [Source code][storage_1] | [Documentation][storage_2]
+
+[storage_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/storage/authSample.js
+[storage_2]: https://cloud.google.com/storage/docs/authentication#acd-examples

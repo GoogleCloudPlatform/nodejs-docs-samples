@@ -22,3 +22,8 @@ Execute a sample:
 Example:
 
     npm run hostedmodels -- "good evening"
+
+- Hosted Models sample - [Source code][predictionapi_1] | [Documentation][predictionapi_2]
+
+[predictionapi_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/prediction/hostedmodels.js
+[predictionapi_2]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine

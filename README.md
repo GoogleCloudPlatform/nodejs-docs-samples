@@ -169,18 +169,14 @@ Cloud Storage bucket:
 
 ## Client libraries
 
-<img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=36" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="left" height="36" width="36" style="margin-top: 9px;"/>
-
-### Google Cloud Node.js client library
+### <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=36" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="left" height="36" width="36" style="margin-top: 9px;"/>Google Cloud Node.js client library
 
 The idiomatic client for Google Cloud Platform services.
 
 * [Documentation](https://googlecloudplatform.github.io/gcloud-node/)
 * [Source code](https://github.com/GoogleCloudPlatform/gcloud-node)
 
-<img src="https://avatars0.githubusercontent.com/u/1342004?v=3&s=36" alt="Google logo" title="Google" align="left" height="36" width="36" style="margin-top: 9px;"/>
-
-### Google API Node.js client library
+### <img src="https://avatars0.githubusercontent.com/u/1342004?v=3&s=36" alt="Google logo" title="Google" align="left" height="36" width="36" style="margin-top: 9px;"/>Google API Node.js client library
 
 Node.js client library for Google APIs.
 

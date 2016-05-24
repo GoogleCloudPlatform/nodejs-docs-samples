@@ -1,7 +1,6 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
 # Google Cloud Platform Node.js Samples [![Slack][slack_badge]][slack_link] [![Build][build_badge]][build_link] [![Coverage][cov_badge]][cov_link]
-googlecloud-community
 
 Node.js samples for [Google Cloud Platform products][cloud].
 
@@ -77,13 +76,14 @@ on Google Cloud Platform.
 1. Obtain authentication credentials.
 
     Create local credentials by running the following command and following the
-    oauth2 flow (read about the command [here][auth_command]:
+    oauth2 flow (read more about the command [here][auth_command]):
 
         gcloud beta auth application-default login
 
     In non-Google Cloud environments, GCE instances created without the
-    correct scopes, or local workstations if the `gcloud beta auth application-default login`
-    command fails, use a service account by doing the following:
+    correct scopes, or local workstations where the
+    `gcloud beta auth application-default login` command fails, use a service
+    account by doing the following:
 
     * Go to API Manager -> Credentials
     * Click "New Credentials", and create a service account or [click here](https://console.cloud.google.com/project/_/apiui/credential/serviceaccount)
@@ -104,7 +104,7 @@ on Google Cloud Platform.
 
         $env:GOOGLE_APPLICATION_CREDENTIALS="/path/to/service_account_file.json"
 
-    __Note:__ For code running on GCE, GAE, or other environments:
+    __Note for code running on GCE, GAE, or other environments:__
 
     On Google App Engine, the credentials should be found automatically.
 
@@ -115,7 +115,7 @@ on Google Cloud Platform.
 
     If you did not create the instance with the right scopes, you can still
     upload a JSON service account and set `GOOGLE_APPLICATION_CREDENTIALS`
-    as described below.
+    as described.
 
     Read more about [Google Cloud Platform Authentication][gcp_auth].
 
@@ -129,7 +129,7 @@ on Google Cloud Platform.
 
         cd bigquery/
 
-1. Install the sample's dependencies (see the README for the sample):
+1. Install the sample's dependencies (see the sample's README for details):
 
         npm install
 
@@ -169,12 +169,16 @@ Cloud Storage bucket:
 
 ## Client libraries
 
+<img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=36" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="left" height="36" width="36" style="margin-top: 9px;"/>
+
 ### Google Cloud Node.js client library
 
 The idiomatic client for Google Cloud Platform services.
 
 * [Documentation](https://googlecloudplatform.github.io/gcloud-node/)
 * [Source code](https://github.com/GoogleCloudPlatform/gcloud-node)
+
+<img src="https://avatars0.githubusercontent.com/u/1342004?v=3&s=36" alt="Google logo" title="Google" align="left" height="36" width="36" style="margin-top: 9px;"/>
 
 ### Google API Node.js client library
 

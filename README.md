@@ -303,7 +303,7 @@ recognition technologies into developer applications.
 View the [Cloud Speech API Node.js samples][speech_samples].
 
 [speech_signup]: https://services.google.com/fb/forms/speech-api-alpha/
-[speech_docs]: https://cloud.google.com/speech/docs/
+[speech_docs]: https://cloud.google.com/speech/
 [speech_samples]: speech
 
 ### Google Cloud Storage

@@ -1,30 +1,37 @@
-## Storage Samples
+<img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-These samples require an environment variable to be set:
+# Google Cloud Storage Node.js Samples
 
-- `GOOGLE_APPLICATION_CREDENTIALS` - Path to a service account file. You can
-download one from your Google project's "permissions" page.
+[Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
+amount of data at any time.
 
-## Run a sample
+[storage_docs]: https://cloud.google.com/storage/docs/
 
-Install dependencies:
+## Table of Contents
 
-    npm install
+* [Setup](#setup)
+* [Samples](#samples)
+  * [Authentication](#authentication)
 
-To print available commands:
+## Setup
 
-    npm run
+1. Read [Prerequisites][prereq] and [How to run a sample][run] first.
+1. Install dependencies:
 
-Execute a sample:
+        npm install
 
-    npm run <sample> -- [args...]
+[prereq]: ../README.md#prerequisities
+[run]: ../README.md#how-to-run-a-sample
 
-Example:
+## Samples
 
-    npm run authSample -- my-cool-project
+### Authentication
 
+View the [documentation][authentication_1] or the [source code][authentication_2].
 
-- Auth sample - [Source code][storage_1] | [Documentation][storage_2]
+__Run the sample:__
 
-[storage_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/storage/authSample.js
-[storage_2]: https://cloud.google.com/storage/docs/authentication#acd-examples
+    node authSample <your-project-id>
+
+[authentication_1]: authSample.js
+[authentication_2]: https://cloud.google.com/storage/docs/authentication#acd-examples

@@ -52,6 +52,7 @@ create a project/app id. (App id and project id are identical.)
 
 
 ## Samples
+
 __Google (Cloud) Products__
 
 - Google Analytics - [Source code][aeanalytics_1]
@@ -98,96 +99,96 @@ __Other Examples__
 - Reading/writing from/to disk - [Source code][aedisk_1]
 - Serving static files - [Source code][aestaticfiles_1]
 
-[aeanalytics_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/analytics
-[aelogging_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/logging
-[aepubsub_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/pubsub
-[aestorage_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/storage
+[aeanalytics_1]: analytics
+[aelogging_1]: logging
+[aepubsub_1]: pubsub
+[aestorage_1]: storage
 
-[express_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/express
+[express_1]: express
 [express_2]: https://cloud.google.com/nodejs/resources/frameworks/express
 [express_3]: http://express-dot-nodejs-docs-samples.appspot.com
 [express_4]: http://expressjs.com/
-[express_5]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/express-memcached-session
+[express_5]: express-memcached-session
 [express_6]: https://github.com/balor/connect-memcached
 
-[geddy_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/geddy
+[geddy_1]: geddy
 [geddy_2]: https://cloud.google.com/nodejs/resources/frameworks/geddy
 [geddy_3]: http://geddy-dot-nodejs-docs-samples.appspot.com
 [geddy_4]: http://geddyjs.org/
 
-[hapi_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/hapi
+[hapi_1]: hapi
 [hapi_2]: https://cloud.google.com/nodejs/resources/frameworks/hapi
 [hapi_3]: http://hapi-dot-nodejs-docs-samples.appspot.com
 [hapi_4]: http://hapijs.com/
 
-[loopback_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/loopback
+[loopback_1]: loopback
 [loopback_2]: https://cloud.google.com/nodejs/resources/frameworks/loopback
 [loopback_3]: http://loopback-dot-nodejs-docs-samples.appspot.com
 [loopback_4]: http://loopback.io/
 
-[koa_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/koa
+[koa_1]: koa
 [koa_2]: https://cloud.google.com/nodejs/resources/frameworks/koa
 [koa_3]: http://koa-dot-nodejs-docs-samples.appspot.com
 [koa_4]: http://koajs.com/
 
-[kraken_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/kraken
+[kraken_1]: kraken
 [kraken_2]: https://cloud.google.com/nodejs/resources/frameworks/kraken
 [kraken_3]: http://kraken-dot-nodejs-docs-samples.appspot.com
 [kraken_4]: http://krakenjs.com/
 
-[parse_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/parse-server
+[parse_1]: parse-server
 
-[restify_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/restify
+[restify_1]: restify
 [restify_2]: https://cloud.google.com/nodejs/resources/frameworks/restify
 [restify_3]: http://restify-dot-nodejs-docs-samples.appspot.com
 [restify_4]: http://restify.com/
 
-[sails_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/sails
+[sails_1]: sails
 [sails_2]: https://cloud.google.com/nodejs/resources/frameworks/sails
 [sails_3]: http://sails-dot-nodejs-docs-samples.appspot.com
 [sails_4]: http://sailsjs.org/
 
-[aedatastore_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/datastore
-[aecloudsql_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/cloudsql
-[memcached_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/memcached
+[aedatastore_1]: datastore
+[aecloudsql_1]: cloudsql
+[memcached_1]: memcached
 
-[mongodb_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mongodb
+[mongodb_1]: mongodb
 [mongodb_2]: https://cloud.google.com/nodejs/resources/databases/mongodb
 [mongodb_3]: https://docs.mongodb.org/
 
-[redis_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/redis
+[redis_1]: redis
 [redis_2]: https://cloud.google.com/nodejs/resources/databases/redis
 [redis_3]: https://redis.io/
 
 [gcloud_1]: https://github.com/GoogleCloudPlatform/gcloud-node
 [gcloud_2]: https://googlecloudplatform.github.io/gcloud-node/#/
 
-[bower_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/bower
+[bower_1]: bower
 [bower_2]: https://cloud.google.com/nodejs/resources/tools/bower
 [bower_3]: http://bower.io/
 
-[grunt_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/grunt
+[grunt_1]: grunt
 [grunt_2]: https://cloud.google.com/nodejs/resources/tools/grunt
 [grunt_3]: http://grunt-dot-nodejs-docs-samples.appspot.com
 [grunt_4]: http://gruntjs.com/
 
-[mailgun_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/mailgun
+[mailgun_1]: mailgun
 [mailgun_2]: https://cloud.google.com/nodejs/resources/tools/mailgun
 [mailgun_3]: http://www.mailgun.com/
 
-[sendgrid_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/sendgrid
+[sendgrid_1]: sendgrid
 [sendgrid_2]: https://cloud.google.com/nodejs/resources/tools/sendgrid
 [sendgrid_3]: http://sendgrid.com/
 
-[twilio_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/twilio
+[twilio_1]: twilio
 
-[webpack_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/webpack
+[webpack_1]: webpack
 [webpack_2]: https://cloud.google.com/nodejs/resources/tools/webpack
 [webpack_3]: https://webpack.github.io/
 
-[websockets_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/websockets
+[websockets_1]: websockets
 
-[expresshw_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/hello-world
-[aedisk_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/disk
-[aeextending_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/extending-runtime
-[aestaticfiles_1]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/static-files
+[expresshw_1]: hello-world
+[aedisk_1]: disk
+[aeextending_1]: extending-runtime
+[aestaticfiles_1]: static-files

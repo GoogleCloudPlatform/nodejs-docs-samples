@@ -20,7 +20,4 @@ env_variables:
   SENDGRID_API_KEY: <your-sendgrid-api-key>
   SENDGRID_SENDER: <your-sendgrid-sender>
 # [END env_variables]
-
-skip_files:
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

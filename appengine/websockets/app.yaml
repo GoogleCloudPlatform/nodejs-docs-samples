@@ -23,7 +23,4 @@ network:
   - 65080
   instance_tag: websocket
 # [END network]
-
-skip_files:
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

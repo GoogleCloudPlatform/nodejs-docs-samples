@@ -24,7 +24,4 @@ env_variables:
   MYSQL_PASSWORD: <your-cloudsql-password>
   MYSQL_DATABASE: <your-cloudsql-database>
 # [END env]
-
-skip_files:
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

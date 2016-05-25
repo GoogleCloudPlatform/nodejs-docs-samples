@@ -14,8 +14,4 @@
 # [START app_yaml]
 runtime: nodejs
 vm: true
-
-skip_files:
-  # Don't deploy node_modules folder
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

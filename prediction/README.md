@@ -27,7 +27,7 @@ Machine Learning models.
 
 ### Hosted Models
 
-View the [documentation][hostedmodels_1] or the [source code][hostedmodels_2].
+View the [documentation][hostedmodels_docs] or the [source code][hostedmodels_code].
 
 __Run the sample:__
 
@@ -37,5 +37,5 @@ Example:
 
     node hostedmodels "Hello world"
 
-[hostedmodels_1]: hostedmodels.js
-[hostedmodels_2]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
+[hostedmodels_docs]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
+[hostedmodels_code]: hostedmodels.js

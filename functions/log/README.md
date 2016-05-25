@@ -4,10 +4,10 @@
 
 This sample shows writing to logs in a Cloud Function.
 
-View the [documentation][docs] or the [source code][source].
+View the [documentation][docs] or the [source code][code].
 
-[docs]: index.js
-[source]: https://cloud.google.com/functions/walkthroughs
+[docs]: https://cloud.google.com/functions/walkthroughs
+[code]: index.js
 
 ## Deploy
 

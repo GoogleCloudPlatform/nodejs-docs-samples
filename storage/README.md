@@ -27,11 +27,11 @@ amount of data at any time.
 
 ### Authentication
 
-View the [documentation][authentication_1] or the [source code][authentication_2].
+View the [documentation][authentication_docs] or the [source code][authentication_code].
 
 __Run the sample:__
 
     node authSample <your-project-id>
 
-[authentication_1]: authSample.js
-[authentication_2]: https://cloud.google.com/storage/docs/authentication#acd-examples
+[authentication_docs]: https://cloud.google.com/storage/docs/authentication#acd-examples
+[authentication_code]: authSample.js

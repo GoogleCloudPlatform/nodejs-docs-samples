@@ -5,10 +5,10 @@
 This sample shows a Google Cloud Function that uses a dependency from NPM, and
 is a handy way to generate a v4 UUID from the command-line.
 
-View the [documentation][docs] or the [source code][source].
+View the [documentation][docs] or the [source code][code].
 
-[docs]: index.js
-[source]: https://cloud.google.com/functions/writing
+[docs]: https://cloud.google.com/functions/writing
+[code]: index.js
 
 ## Deploy
 

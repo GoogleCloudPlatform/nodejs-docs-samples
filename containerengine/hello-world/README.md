@@ -4,10 +4,10 @@
 
 This is a basic hello world sample.
 
-View the [documentation][docs] or the [source code][source].
+View the [documentation][docs] or the [source code][code].
 
-[docs]: server.js
-[source]: https://cloud.google.com/container-engine/docs/quickstart
+[docs]: https://cloud.google.com/container-engine/docs/quickstart
+[code]: server.js
 
 __Run the sample:__
 

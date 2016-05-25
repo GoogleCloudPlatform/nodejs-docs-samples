@@ -5,10 +5,10 @@
 This sample shows exporting a Google Cloud Function as part of a module, which
 is the method one would use to store multiple function in a single source file.
 
-View the [documentation][docs] or the [source code][source].
+View the [documentation][docs] or the [source code][code].
 
-[docs]: index.js
-[source]: https://cloud.google.com/functions/writing
+[docs]: https://cloud.google.com/functions/writing
+[code]: index.js
 
 ## Deploy
 

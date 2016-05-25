@@ -30,18 +30,18 @@ analytics data warehouse.
 
 ### Create A Simple Application With the API
 
-View the [documentation][basics_1] or the [source code][basics_2].
+View the [documentation][basics_docs] or the [source code][basics_code].
 
 __Run the sample:__
 
     node getting_started
 
-[basics_1]: getting_started.js
-[basics_2]: https://cloud.google.com/bigquery/create-simple-app-api
+[basics_docs]: https://cloud.google.com/bigquery/create-simple-app-api
+[basics_code]: getting_started.js
 
 ### Calculate size of dataset
 
-View the [source code][size_1].
+View the [source code][size_code].
 
 __Run the sample:__
 
@@ -51,11 +51,11 @@ Example:
 
     node dataset_size bigquery-public-data hacker_news
 
-[size_1]: dataset_size.js
+[size_code]: dataset_size.js
 
 ### Loading Data with a POST Request
 
-View the [documentation][file_1] or the [source code][file_2].
+View the [documentation][file_docs] or the [source code][file_code].
 
 __Run the sample:__
 
@@ -65,12 +65,12 @@ Example:
 
     node load_data_from_csv resources/data.csv my-dataset my-table
 
-[file_1]: load_data_from_csv.js
-[file_2]: https://cloud.google.com/bigquery/loading-data-post-request
+[file_docs]: https://cloud.google.com/bigquery/loading-data-post-request
+[file_code]: load_data_from_csv.js
 
 ### Loading Data from Cloud Storage
 
-View the [documentation][gcs_1] or the [source code][gcs_2].
+View the [documentation][gcs_docs] or the [source code][gcs_code].
 
 __Run the sample:__
 
@@ -80,5 +80,5 @@ Example:
 
     node load_data_from_gcs my-bucket data.csv my-dataset my-table
 
-[gcs_1]: load_data_from_gcs.js
-[gcs_2]: https://cloud.google.com/bigquery/docs/loading-data-cloud-storage
+[gcs_docs]: https://cloud.google.com/bigquery/docs/loading-data-cloud-storage
+[gcs_code]: load_data_from_gcs.js

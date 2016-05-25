@@ -4,10 +4,10 @@
 
 This sample shows calling the `success` and `failure` callbacks.
 
-View the [documentation][docs] or the [source code][source].
+View the [documentation][docs] or the [source code][code].
 
-[docs]: index.js
-[source]: https://cloud.google.com/functions/writing
+[docs]: https://cloud.google.com/functions/writing
+[code]: index.js
 
 ## Deploy
 

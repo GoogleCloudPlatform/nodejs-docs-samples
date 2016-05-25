@@ -21,7 +21,4 @@ env_variables:
   TWILIO_AUTH_TOKEN: <your-auth-token>
   TWILIO_NUMBER: <your-twilio-number>
 # [END env_variables]
-
-skip_files:
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

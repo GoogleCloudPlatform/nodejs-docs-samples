@@ -19,7 +19,4 @@ vm: true
 beta_settings:
   use_memcache_proxy: true
 # [END config]
-
-skip_files:
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

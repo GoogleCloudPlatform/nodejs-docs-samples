@@ -23,7 +23,4 @@ env_variables:
   # application. It can be any sufficiently random string.
   PUBSUB_VERIFICATION_TOKEN: <your-verification-token>
 # [END env]
-
-skip_files:
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

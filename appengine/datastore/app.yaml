@@ -19,7 +19,4 @@ vm: true
 env_variables:
     GCLOUD_PROJECT: <your-project-id>
 # [END env_variables]
-
-skip_files:
-  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

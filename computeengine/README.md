@@ -1,35 +1,93 @@
-## Compute Engine Samples
+<img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-These samples require two environment variables to be set:
+# Google Compute Engine Node.js Samples
 
-- `GOOGLE_APPLICATION_CREDENTIALS` - Path to a service account file. You can
-download one from your Google project's "permissions" page.
-- `GCLOUD_PROJECT` - Id of your Google project.
+[Compute Engine][compute_docs] lets you create and run virtual machines on
+Google infrastructure.
 
-## Run the samples
+[compute_docs]: https://cloud.google.com/compute/docs/
 
-Install dependencies:
+## Table of Contents
 
-    npm install
+* [Setup](#setup)
+* [Samples](#samples)
+  * [Sending mail with Sendgrid](#sending-mail-with-sendgrid)
+  * [Sending mail with Mailjet](#sending-mail-with-mailjet)
+  * [Listing instances (recommended)](#listing-instances-recommended)
+  * [Listing instances](#listing-instances)
 
-### sendgrid.js
+## Setup
 
-Requires a `SENDGRID_API_KEY` environment variable to be set.
+1. Read [Prerequisites][prereq] and [How to run a sample][run] first.
+1. Install dependencies:
 
-    npm run sendgrid
+        npm install
 
-### mailjet.js
+[prereq]: ../README.md#prerequisities
+[run]: ../README.md#how-to-run-a-sample
 
-Requires `MAILJET_API_KEY` and `MAILJET_API_SECRET` environment variables to be
-set.
+## Samples
 
-    npm run mailjet
+### Sending mail with Sendgrid
 
-### vms.js
+View the [documentation][sendgrid_docs] or the [source code][sendgrid_code].
 
-    npm run vms
+__Run the sample:__
 
-### vms_api.js
+1. Set the `SENDGRID_API_KEY` environment variable:
 
-    npm run vms_api
+        export SENDGRID_API_KEY=<your-sendgrid-api-key>
 
+1. Start the server:
+
+        node sendgrid
+
+1. Open http://localhost:8080 in your browser
+
+[sendgrid_docs]: https://cloud.google.com/compute/docs/tutorials/sending-mail/using-sendgrid
+[sendgrid_code]: sendgrid.js
+
+### Sending mail with Mailjet
+
+View the [documentation][mailjet_docs] or the [source code][mailjet_code].
+
+__Run the sample:__
+
+1. Set the `MAILJET_API_KEY` environment variable:
+
+        export MAILJET_API_KEY=<your-mailjet-api-key>
+
+1. Set the `MAILJET_API_SECRET` environment variable:
+
+        export MAILJET_API_SECRET=<your-mailjet-api-secret>
+
+1. Start the server:
+
+        node mailjet
+
+1. Open http://localhost:8080 in your browser
+
+[mailjet_docs]: https://cloud.google.com/compute/docs/tutorials/sending-mail/using-mailjet
+[mailjet_code]: mailjet.js
+
+### Listing instances (recommended)
+
+View the [documentation][vms_docs] or the [source code][vms_code].
+
+__Run the sample:__
+
+    node vms
+
+[vms_docs]: https://cloud.google.com/compute/docs/tutorials/nodejs-guide
+[vms_code]: vms.js
+
+### Listing instances
+
+View the [documentation][vms_api_docs] or the [source code][vms_api_code].
+
+__Run the sample:__
+
+    node vms_api
+
+[vms_api_docs]: https://cloud.google.com/compute/docs/tutorials/nodejs-guide
+[vms_api_code]: vms_api.js

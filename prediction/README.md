@@ -1,24 +1,41 @@
-## Prediction API Samples
+<img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-These samples require an environment variable to be set:
+# Google Cloud Prediction API Node.js Samples
 
-- `GOOGLE_APPLICATION_CREDENTIALS` - Path to a service account file. You can
-download one from your Google project's "permissions" page.
+The [Cloud Prediction API][prediction_docs] provides a RESTful API to build
+Machine Learning models.
 
-## Run a sample
+[prediction_docs]: https://cloud.google.com/prediction/docs/
 
-Install dependencies:
+## Table of Contents
 
-    npm install
+* [Setup](#setup)
+* [Samples](#samples)
+  * [Hosted Models](#hosted-models)
 
-To print available commands:
+## Setup
 
-    npm run
+1. Read [Prerequisites][prereq] and [How to run a sample][run] first.
+1. Install dependencies:
 
-Execute a sample:
+        npm install
 
-    npm run <sample>
+[prereq]: ../README.md#prerequisities
+[run]: ../README.md#how-to-run-a-sample
+
+## Samples
+
+### Hosted Models
+
+View the [documentation][hostedmodels_docs] or the [source code][hostedmodels_code].
+
+__Run the sample:__
+
+Usage: `node hostedmodels "some phrase"`
 
 Example:
 
-    npm run hostedmodels -- "good evening"
+    node hostedmodels "Hello world"
+
+[hostedmodels_docs]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
+[hostedmodels_code]: hostedmodels.js

@@ -8,9 +8,6 @@
   "engines": {
     "node": ">=0.10.x"
   },
-  "scripts": {
-    "authSample": "node authSample.js"
-  },
   "dependencies": {
     "googleapis": "^4.0.0"
   }

@@ -81,6 +81,7 @@
     "proxyquire": "^1.7.9",
     "request": "^2.72.0",
     "semistandard": "^8.0.0",
+    "sinon": "^1.17.4",
     "supertest": "^1.2.0"
   }
 }

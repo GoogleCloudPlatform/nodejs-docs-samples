@@ -13,9 +13,16 @@
 
 'use strict';
 
-// [START log]
+// [START walkthrough_pubsub]
 exports.helloworld = function (context, data) {
-  console.log('I am a log entry!');
+  console.log('My GCF Function: ' + data.message);
   context.success();
 };
-// [END log]
+// [END walkthrough_pubsub]
+
+// [START walkthrough_http]
+exports.hellohttp = function (context, data) {
+  // Use the success argument to send data back to the caller
+  context.success('My GCF Function: ' + data.message);
+};
+// [END walkthrough_http]

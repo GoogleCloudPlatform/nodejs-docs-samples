@@ -56,7 +56,7 @@ test('Publish fails without a topic', function (t) {
   });
 
   t.is(context.failure.calledOnce, true);
-  t.is(context.failure.calledWith(expectedMsg), true);
+  t.is(context.failure.firstCall.args[0], expectedMsg);
   t.is(context.success.called, false);
 });
 
@@ -70,7 +70,7 @@ test('Publish fails without a message', function (t) {
   });
 
   t.is(context.failure.calledOnce, true);
-  t.is(context.failure.calledWith(expectedMsg), true);
+  t.is(context.failure.firstCall.args[0], expectedMsg);
   t.is(context.success.called, false);
 });
 
@@ -86,16 +86,16 @@ test('Publishes the message to the topic and calls success', function (t) {
   pubsubSample.sample.publish(context, data);
 
   t.is(context.success.calledOnce, true);
-  t.is(context.success.calledWith(expectedMsg), true);
+  t.is(context.success.firstCall.args[0], expectedMsg);
   t.is(context.failure.called, false);
   t.is(pubsubSample.mocks.pubsub.topic.calledOnce, true);
-  t.is(pubsubSample.mocks.pubsub.topic.calledWith(data.topic), true);
+  t.deepEqual(pubsubSample.mocks.pubsub.topic.firstCall.args[0], data.topic);
   t.is(pubsubSample.mocks.topic.publish.calledOnce, true);
-  t.is(pubsubSample.mocks.topic.publish.calledWith({
+  t.deepEqual(pubsubSample.mocks.topic.publish.firstCall.args[0], {
     data: {
       message: data.message
     }
-  }), true);
+  });
 });
 
 test('Fails to publish the message and calls failure', function (t) {
@@ -113,15 +113,15 @@ test('Fails to publish the message and calls failure', function (t) {
 
   t.is(context.success.called, false);
   t.is(context.failure.calledOnce, true);
-  t.is(context.failure.calledWith(expectedMsg), true);
+  t.is(context.failure.firstCall.args[0], expectedMsg);
   t.is(pubsubSample.mocks.pubsub.topic.calledOnce, true);
-  t.is(pubsubSample.mocks.pubsub.topic.calledWith(data.topic), true);
+  t.deepEqual(pubsubSample.mocks.pubsub.topic.firstCall.args[0], data.topic);
   t.is(pubsubSample.mocks.topic.publish.calledOnce, true);
-  t.is(pubsubSample.mocks.topic.publish.calledWith({
+  t.deepEqual(pubsubSample.mocks.topic.publish.firstCall.args[0], {
     data: {
       message: data.message
     }
-  }), true);
+  });
 });
 
 test('Subscribes to a message', function (t) {
@@ -138,7 +138,7 @@ test('Subscribes to a message', function (t) {
   pubsubSample.sample.subscribe(context, data);
 
   t.is(console.log.calledOnce, true);
-  t.is(console.log.calledWith(expectedMsg), true);
+  t.is(console.log.firstCall.args[0], expectedMsg);
   t.is(context.success.calledOnce, true);
   t.is(context.failure.called, false);
 

@@ -15,20 +15,33 @@
 
 var test = require('ava');
 var sinon = require('sinon');
-var logSample = require('../../functions/log');
+var log2Sample = require('../../functions/log2');
 
-test('should write to log', function (t) {
-  var expectedMsg = 'I am a log entry!';
+test('should write to log 2', function (t) {
+  var expectedMsg = 'My GCF Function: foo';
   sinon.spy(console, 'log');
 
-  logSample.helloworld({
+  log2Sample.helloworld({
     success: function (result) {
       t.is(result, undefined);
       t.is(console.log.calledOnce, true);
       t.is(console.log.calledWith(expectedMsg), true);
     },
     failure: t.fail
+  }, {
+    message: 'foo'
   });
 
   console.log.restore();
+});
+test('should write to log 3', function (t) {
+  var logMessage = 'My GCF Function: foo';
+  log2Sample.hellohttp({
+    success: function (result) {
+      t.is(result, logMessage);
+    },
+    failure: t.fail
+  }, {
+    message: 'foo'
+  });
 });

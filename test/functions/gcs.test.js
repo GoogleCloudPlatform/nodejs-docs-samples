@@ -65,7 +65,7 @@ test('Fails without a bucket', function (t) {
   });
 
   t.is(context.failure.calledOnce, true);
-  t.is(context.failure.calledWith(expectedMsg), true);
+  t.is(context.failure.firstCall.args[0], expectedMsg);
   t.is(context.success.called, false);
 });
 
@@ -79,7 +79,7 @@ test('Fails without a file', function (t) {
   });
 
   t.is(context.failure.calledOnce, true);
-  t.is(context.failure.calledWith(expectedMsg), true);
+  t.is(context.failure.firstCall.args[0], expectedMsg);
   t.is(context.success.called, false);
 });
 
@@ -103,7 +103,7 @@ test.cb('Reads the file line by line', function (t) {
   gcsSample.sample.wordCount(context, data);
 
   t.is(gcsSample.mocks.storage.bucket.calledOnce, true);
-  t.is(gcsSample.mocks.storage.bucket.calledWith(data.bucket), true);
+  t.is(gcsSample.mocks.storage.bucket.firstCall.args[0], data.bucket);
   t.is(gcsSample.mocks.bucket.file.calledOnce, true);
-  t.is(gcsSample.mocks.bucket.file.calledWith(data.file), true);
+  t.is(gcsSample.mocks.bucket.file.firstCall.args[0], data.file);
 });

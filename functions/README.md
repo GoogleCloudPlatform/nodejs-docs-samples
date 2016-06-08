@@ -20,7 +20,10 @@ environment.
 ## Samples
 
 * [Hello World](helloworld/)
-* [Logging](log/)
 * [Callbacks](messages/)
-* [Modules](module/)
+* [Cloud Storage](gcs/)
+* [Cloud Datastore](datastore/)
+* [Cloud Pub/Sub](pubsub/)
 * [Dependencies](uid/)
+* [Logging](log/)
+* [Modules](module/)

@@ -43,6 +43,9 @@ function getKeyFromRequestData (requestData) {
 /**
  * Creates and/or updates a record.
  *
+ * @example
+ * gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message": "Hello World!"}}'
+ *
  * @param {Object} context Cloud Function context.
  * @param {Function} context.success Success callback.
  * @param {Function} context.failure Failure callback.
@@ -81,6 +84,9 @@ function set (context, data) {
 /**
  * Retrieves a record.
  *
+ * @example
+ * gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
+ *
  * @param {Object} context Cloud Function context.
  * @param {Function} context.success Success callback.
  * @param {Function} context.failure Failure callback.
@@ -114,6 +120,9 @@ function get (context, data) {
 
 /**
  * Deletes a record.
+ *
+ * @example
+ * gcloud alpha functions call ds-del --data '{"kind":"gcf-test","key":"foobar"}'
  *
  * @param {Object} context Cloud Function context.
  * @param {Function} context.success Success callback.

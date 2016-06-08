@@ -18,68 +18,55 @@ var gcloud = require('gcloud');
 // Create a datastore client.
 var datastore = gcloud.datastore();
 
-// Gets a Datastore key from the kind/key pair in the request
-function _getKeyFromData (data, callback) {
-  var key = data.key;
-  var kind = data.kind;
+/**
+ * Gets a Datastore key from the kind/key pair in the request.
+ *
+ * @param {Object} requestData Cloud Function request data.
+ * @param {string} requestData.key Datastore key string.
+ * @param {string} requestData.kind Datastore kind.
+ * @returns {Object} Datastore key object.
+ */
+function getKeyFromRequestData (requestData) {
+  var key = requestData.key;
+  var kind = requestData.kind;
 
   if (!key) {
-    return callback('Key not provided. Make sure you have a "key" property ' +
+    throw new Error('Key not provided. Make sure you have a "key" property ' +
       'in your request');
   }
 
   if (!kind) {
-    return callback('Kind not provided. Make sure you have a "kind" property ' +
+    throw new Error('Kind not provided. Make sure you have a "kind" property ' +
       'in your request');
   }
 
-  return callback(null, datastore.key([kind, key]));
-}
-
-// Gets a Datastore entity based on the key information in the request and
-// returns null if the entity does not exist
-function _getEntity (data, callback) {
-  return _getKeyFromData(data, function (err, k) {
-    if (err) {
-      return callback(err);
-    }
-
-    return datastore.get(k, function (err, entity) {
-      if (err) {
-        return callback(err);
-      }
-      return callback(null, k, entity || null);
-    });
-  });
-}
-
-// Saves (creates or inserts) an entity with the given key
-function _saveEntity (key, entity, callback) {
-  return datastore.save({
-    key: key,
-    data: entity
-  }, callback);
+  return datastore.key([kind, key]);
 }
 
 /**
- * Creates and/or updates a record
+ * Creates and/or updates a record.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Function} context.success Success callback.
+ * @param {Function} context.failure Failure callback.
+ * @param {Object} data Cloud Function request data.
  */
 function set (context, data) {
-  // The value contains a JSON document representing the entity we want to save
-  var value = data.value;
+  try {
+    // The value contains a JSON document representing the entity we want to save
+    var value = data.value;
 
-  if (!value) {
-    return context.failure('Value not provided. Make sure you have a "value" ' +
-      'property in your request');
-  }
-
-  _getKeyFromData(data, function (err, k) {
-    if (err) {
-      console.error(err);
-      return context.failure(err);
+    if (!value) {
+      throw new Error('Value not provided. Make sure you have a "value" ' +
+        'property in your request');
     }
 
-    _saveEntity(k, value, function (err) {
+    var key = getKeyFromRequestData(data);
+
+    return datastore.save({
+      key: key,
+      data: value
+    }, function (err) {
       if (err) {
         console.error(err);
         return context.failure(err);
@@ -87,39 +74,57 @@ function set (context, data) {
 
       return context.success('Entity saved');
     });
-  });
+  } catch (err) {
+    console.error(err);
+    return context.failure(err.message);
+  }
 }
 
 /**
- * Retrieves a record
+ * Retrieves a record.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Function} context.success Success callback.
+ * @param {Function} context.failure Failure callback.
+ * @param {Object} data Cloud Function request data.
  */
 function get (context, data) {
-  return _getEntity(data, function (err, key, entity) {
-    if (err) {
-      console.error(err);
-      return context.failure(err);
-    }
+  try {
+    var key = getKeyFromRequestData(data);
 
-    // The get operation will not fail for a non-existent entity, it just returns null.
-    if (!entity) {
-      return context.failure('No entity found for key ' + key.path);
-    }
+    return datastore.get(key, function (err, entity) {
+      if (err) {
+        console.error(err);
+        return context.failure(err);
+      }
 
-    return context.success(entity);
-  });
+      // The get operation will not fail for a non-existent entity, it just
+      // returns null.
+      if (!entity) {
+        return context.failure('No entity found for key ' + key.path);
+      }
+
+      return context.success(entity);
+    });
+  } catch (err) {
+    console.error(err);
+    return context.failure(err.message);
+  }
 }
 
 /**
- * Deletes a record
+ * Deletes a record.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Function} context.success Success callback.
+ * @param {Function} context.failure Failure callback.
+ * @param {Object} data Cloud Function request data.
  */
 function del (context, data) {
-  return _getKeyFromData(data, function (err, k) {
-    if (err) {
-      console.error(err);
-      return context.failure(err);
-    }
+  try {
+    var key = getKeyFromRequestData(data);
 
-    datastore.delete(k, function (err) {
+    return datastore.delete(key, function (err) {
       if (err) {
         console.error(err);
         return context.failure(err);
@@ -127,7 +132,10 @@ function del (context, data) {
 
       return context.success('Entity deleted');
     });
-  });
+  } catch (err) {
+    console.error(err);
+    return context.failure(err.message);
+  }
 }
 
 exports.set = set;

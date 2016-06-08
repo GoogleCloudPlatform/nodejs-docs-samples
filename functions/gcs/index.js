@@ -16,29 +16,29 @@
 var gcloud = require('gcloud');
 var readline = require('readline');
 
-module.exports = {
-  wordCount: function (context, data) {
-    var bucketName = data.bucket;
-    var fileName = data.file;
+function getFileStream (bucketName, fileName) {
+  if (!bucketName) {
+    throw new Error('Bucket not provided. Make sure you have a ' +
+      '"bucket" property in your request');
+  }
+  if (!fileName) {
+    throw new Error('Filename not provided. Make sure you have a ' +
+      '"file" property in your request');
+  }
 
-    if (!bucketName) {
-      return context.failure('Bucket not provided. Make sure you have a ' +
-        '"bucket" property in your request');
-    }
-    if (!fileName) {
-      return context.failure('Filename not provided. Make sure you have a ' +
-        '"file" property in your request');
-    }
+  // Create a gcs client.
+  var gcs = gcloud.storage();
+  var bucket = gcs.bucket(bucketName);
+  return bucket.file(fileName).createReadStream();
+}
 
-    // Create a gcs client.
-    var gcs = gcloud.storage();
-    var bucket = gcs.bucket(bucketName);
-    var file = bucket.file(fileName);
+function wordCount (context, data) {
+  try {
     var count = 0;
 
     // Use the linebyline module to read the stream line by line.
     var lineReader = readline.createInterface({
-      input: file.createReadStream()
+      input: getFileStream(data.bucket, data.file)
     });
 
     lineReader.on('line', function (line) {
@@ -46,7 +46,11 @@ module.exports = {
     });
 
     lineReader.on('close', function () {
-      context.success('The file ' + fileName + ' has ' + count + ' words');
+      context.success('The file ' + data.file + ' has ' + count + ' words');
     });
+  } catch (err) {
+    context.failure(err.message);
   }
-};
+}
+
+exports.wordCount = wordCount;

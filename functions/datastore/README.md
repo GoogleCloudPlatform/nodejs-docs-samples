@@ -14,12 +14,12 @@ View the [source code][code].
 
 1. Clone this repository:
 
-    git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
-    cd nodejs-docs-samples/functions/datastore
+        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+        cd nodejs-docs-samples/functions/datastore
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-    gsutil mb gs://<your-bucket-name>
+        gsutil mb gs://<your-bucket-name>
 
 1. Ensure the Cloud Datastore API is enabled:
 
@@ -27,28 +27,28 @@ View the [source code][code].
 
 1. Deploy the "ds-get" function with an HTTP trigger:
 
-    gcloud alpha functions deploy ds-get --bucket <your-bucket-name> --trigger-http --entry-point get
+        gcloud alpha functions deploy ds-get --bucket <your-bucket-name> --trigger-http --entry-point get
 
 1. Deploy the "ds-set" function with an HTTP trigger:
 
-    gcloud alpha functions deploy ds-set --bucket <your-bucket-name> --trigger-http --entry-point set
+        gcloud alpha functions deploy ds-set --bucket <your-bucket-name> --trigger-http --entry-point set
 
 1. Deploy the "ds-del" function with an HTTP trigger:
 
-    gcloud alpha functions deploy ds-del --bucket <your-bucket-name> --trigger-http --entry-point del
+        gcloud alpha functions deploy ds-del --bucket <your-bucket-name> --trigger-http --entry-point del
 
 1. Call the "ds-set" function to create a new entity:
 
-    gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message": "Hello World!"}}'
+        gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message": "Hello World!"}}'
 
 1. Call the "ds-get" function to read the newly created entity:
 
-    gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
+        gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
 
 1. Call the "ds-del" function to delete the entity:
 
-    gcloud alpha functions call ds-del --data '{"kind":"gcf-test","key":"foobar"}'
+        gcloud alpha functions call ds-del --data '{"kind":"gcf-test","key":"foobar"}'
 
 1. Call the "ds-get" function again to verify it was deleted:
 
-    gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
+        gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'

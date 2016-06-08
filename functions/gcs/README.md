@@ -14,24 +14,24 @@ View the [source code][code].
 
 1. Clone this repository:
 
-    git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
-    cd nodejs-docs-samples/functions/gcs
+        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+        cd nodejs-docs-samples/functions/gcs
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-    gsutil mb gs://<your-bucket-name>
+        gsutil mb gs://<your-bucket-name>
 
 1. Upload the sample file to the bucket:
 
-    gsutil cp sample.txt gs://<your-bucket-name>
+        gsutil cp sample.txt gs://<your-bucket-name>
 
 1. Deploy the "wordCount" function with an HTTP trigger:
 
-    gcloud alpha functions deploy wordCount --bucket <your-bucket-name> --trigger-http --entry-point map
+        gcloud alpha functions deploy wordCount --bucket <your-bucket-name> --trigger-http --entry-point map
 
 1. Call the "wordCount" function using the sample file:
 
-    gcloud alpha functions call wordCount --data '{"bucket":"<your-bucket-name>","file":"sample.txt"}'
+        gcloud alpha functions call wordCount --data '{"bucket":"<your-bucket-name>","file":"sample.txt"}'
 
     You should see something like this in your console
 

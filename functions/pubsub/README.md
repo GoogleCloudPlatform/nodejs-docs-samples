@@ -16,33 +16,33 @@ to setup Cloud Functions for your project.
 
 1. Clone this repository:
 
-    git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
-    cd nodejs-docs-samples/functions/pubsub
+        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+        cd nodejs-docs-samples/functions/pubsub
 
 1. Create a Cloud Pub/Sub topic (if you already have one you want to use, you
 can skip this step):
 
-    gcloud alpha pubsub topics create <your-topic-name>
+        gcloud alpha pubsub topics create <your-topic-name>
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-    gsutil mb gs://<your-bucket-name>
+        gsutil mb gs://<your-bucket-name>
 
 1. Deploy the "publish" function with an HTTP trigger
 
-    gcloud alpha functions deploy publish --bucket <your-bucket-name> --trigger-http
+        gcloud alpha functions deploy publish --bucket <your-bucket-name> --trigger-http
 
 1. Deploy the "subscribe" function with the Pub/Sub topic as a trigger
 
-    gcloud alpha functions deploy subscribe --bucket <your-bucket-name> --trigger-topic <your-topic-name>
+        gcloud alpha functions deploy subscribe --bucket <your-bucket-name> --trigger-topic <your-topic-name>
 
 1. Call the "publish" function:
 
-    gcloud alpha functions call publish --data '{"topic":"<your-topic-name>","message":"Hello World!"}'
+        gcloud alpha functions call publish --data '{"topic":"<your-topic-name>","message":"Hello World!"}'
 
 1. Check the logs for the "subscribe" function:
 
-    gcloud alpha functions get-logs subscribe
+        gcloud alpha functions get-logs subscribe
 
 You should see something like this in your console
 ```

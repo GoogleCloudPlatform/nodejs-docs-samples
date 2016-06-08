@@ -18,50 +18,69 @@ var gcloud = require('gcloud');
 // Create a pubsub client.
 var pubsub = gcloud.pubsub();
 
-module.exports = {
-  /**
-   * Publishes a message to a Cloud Pub/Sub Topic.
-   */
-  publish: function (context, data) {
-    var topicName = data.topic;
-    var message = data.message;
-
-    if (!topicName) {
-      return context.failure('Topic not provided. Make sure you have a ' +
+/**
+ * Publishes a message to a Cloud Pub/Sub Topic.
+ *
+ * @example
+ * gcloud alpha functions call publish --data '{"topic":"<your-topic-name>","message":"Hello World!"}'
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Function} context.success Success callback.
+ * @param {Function} context.failure Failure callback.
+ * @param {Object} data Request data, in this case an object provided by the user.
+ * @param {string} data.topic Topic name on which to publish.
+ * @param {string} data.message Message to publish.
+ */
+function publish (context, data) {
+  try {
+    if (!data.topic) {
+      throw new Error('Topic not provided. Make sure you have a ' +
         '"topic" property in your request');
     }
-    if (!message) {
-      return context.failure('Message not provided. Make sure you have a ' +
+    if (!data.message) {
+      throw new Error('Message not provided. Make sure you have a ' +
         '"message" property in your request');
     }
 
-    console.log('Publishing message to topic ' + topicName);
+    console.log('Publishing message to topic ' + data.topic);
 
     // The Pub/Sub topic must already exist.
-    var topic = pubsub.topic(topicName);
+    var topic = pubsub.topic(data.topic);
 
     // Pub/Sub messages must be valid JSON objects.
-    topic.publish({
+    return topic.publish({
       data: {
-        message: message
+        message: data.message
       }
     }, function (err) {
       if (err) {
         console.error(err);
         return context.failure(err);
       }
-      context.success('Message published');
+      return context.success('Message published');
     });
-  },
-
-  /**
-   * Triggered from a message on a Pub/Sub topic.
-   */
-  subscribe: function (context, data) {
-    // We're just going to log the message to prove that it worked!
-    console.log(data['message']);
-
-    // Don't forget to call success!
-    context.success();
+  } catch (err) {
+    console.error(err);
+    return context.failure(err.message);
   }
-};
+}
+
+/**
+ * Triggered from a message on a Pub/Sub topic.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Function} context.success Success callback.
+ * @param {Function} context.failure Failure callback.
+ * @param {Object} data Request data, in this case an object provided by the Pub/Sub trigger.
+ * @param {Object} data.message Message that was published via Pub/Sub.
+ */
+function subscribe (context, data) {
+  // We're just going to log the message to prove that it worked!
+  console.log(data.message);
+
+  // Don't forget to call success!
+  context.success();
+}
+
+exports.publish = publish;
+exports.subscribe = subscribe;

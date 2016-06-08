@@ -39,16 +39,16 @@ View the [source code][code].
 
 1. Call the "ds-set" function to create a new entity:
 
-    gcloud alpha functions call ds-set --data '{"kind": "gcf-test", "key": "foobar", "value": {"message": "Hello World!"}}'
+    gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message": "Hello World!"}}'
 
 1. Call the "ds-get" function to read the newly created entity:
 
-    gcloud alpha functions call ds-get --data '{"kind": "gcf-test", "key": "foobar"}'
+    gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
 
 1. Call the "ds-del" function to delete the entity:
 
-    gcloud alpha functions call ds-del --data '{"kind": "gcf-test", "key": "foobar"}'
+    gcloud alpha functions call ds-del --data '{"kind":"gcf-test","key":"foobar"}'
 
 1. Call the "ds-get" function again to verify it was deleted:
 
-    gcloud alpha functions call ds-get --data '{"kind": "gcf-test", "key": "foobar"}'
+    gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'

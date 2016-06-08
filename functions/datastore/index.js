@@ -27,20 +27,17 @@ var datastore = gcloud.datastore();
  * @returns {Object} Datastore key object.
  */
 function getKeyFromRequestData (requestData) {
-  var key = requestData.key;
-  var kind = requestData.kind;
-
-  if (!key) {
+  if (!requestData.key) {
     throw new Error('Key not provided. Make sure you have a "key" property ' +
       'in your request');
   }
 
-  if (!kind) {
+  if (!requestData.kind) {
     throw new Error('Kind not provided. Make sure you have a "kind" property ' +
       'in your request');
   }
 
-  return datastore.key([kind, key]);
+  return datastore.key([requestData.kind, requestData.key]);
 }
 
 /**
@@ -49,14 +46,15 @@ function getKeyFromRequestData (requestData) {
  * @param {Object} context Cloud Function context.
  * @param {Function} context.success Success callback.
  * @param {Function} context.failure Failure callback.
- * @param {Object} data Cloud Function request data.
+ * @param {Object} data Request data, in this case an object provided by the user.
+ * @param {string} data.kind The Datastore kind of the data to save, e.g. "user".
+ * @param {string} data.key Key at which to save the data, e.g. 5075192766267392.
+ * @param {Object} data.value Value to save to Cloud Datastore, e.g. {"name":"John"}
  */
 function set (context, data) {
   try {
     // The value contains a JSON document representing the entity we want to save
-    var value = data.value;
-
-    if (!value) {
+    if (!data.value) {
       throw new Error('Value not provided. Make sure you have a "value" ' +
         'property in your request');
     }
@@ -65,7 +63,7 @@ function set (context, data) {
 
     return datastore.save({
       key: key,
-      data: value
+      data: data.value
     }, function (err) {
       if (err) {
         console.error(err);
@@ -86,7 +84,9 @@ function set (context, data) {
  * @param {Object} context Cloud Function context.
  * @param {Function} context.success Success callback.
  * @param {Function} context.failure Failure callback.
- * @param {Object} data Cloud Function request data.
+ * @param {Object} data Request data, in this case an object provided by the user.
+ * @param {string} data.kind The Datastore kind of the data to retrieve, e.g. "user".
+ * @param {string} data.key Key at which to retrieve the data, e.g. 5075192766267392.
  */
 function get (context, data) {
   try {
@@ -118,7 +118,9 @@ function get (context, data) {
  * @param {Object} context Cloud Function context.
  * @param {Function} context.success Success callback.
  * @param {Function} context.failure Failure callback.
- * @param {Object} data Cloud Function request data.
+ * @param {Object} data Request data, in this case an object provided by the user.
+ * @param {string} data.kind The Datastore kind of the data to delete, e.g. "user".
+ * @param {string} data.key Key at which to delete data, e.g. 5075192766267392.
  */
 function del (context, data) {
   try {

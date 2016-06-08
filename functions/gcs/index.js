@@ -32,6 +32,19 @@ function getFileStream (bucketName, fileName) {
   return bucket.file(fileName).createReadStream();
 }
 
+/**
+ * Reads file and responds with the number of words in the file.
+ *
+ * @example
+ * gcloud alpha functions call wordCount --data '{"bucket":"<your-bucket-name>","file":"sample.txt"}'
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Function} context.success Success callback.
+ * @param {Function} context.failure Failure callback.
+ * @param {Object} data Request data, in this case an object provided by the user.
+ * @param {Object} data.bucket Name of a Cloud Storage bucket.
+ * @param {Object} data.file Name of a file in the Cloud Storage bucket.
+ */
 function wordCount (context, data) {
   try {
     var count = 0;

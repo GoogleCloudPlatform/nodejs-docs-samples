@@ -31,7 +31,7 @@ View the [source code][code].
 
 1. Call the "wordCount" function using the sample file:
 
-    gcloud alpha functions call wordCount --data '{"bucket": "<your-bucket-name>", "file": "sample.txt"}'
+    gcloud alpha functions call wordCount --data '{"bucket":"<your-bucket-name>","file":"sample.txt"}'
 
     You should see something like this in your console
 

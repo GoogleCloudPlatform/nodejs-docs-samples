@@ -15,5 +15,5 @@
 runtime: nodejs
 vm: true
 env_variables:
-  MEMCACHE_URL: localhost:11211
+  MEMCACHE_URL: memcache:11211
 # [END app_yaml]

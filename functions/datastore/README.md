@@ -10,7 +10,8 @@ View the [source code][code].
 
 ## Deploy and Test
 
-1. Follow the [Cloud Functions quickstart guide](https://cloud.google.com/functions/quickstart) to setup Cloud Functions for your project.
+1. Follow the [Cloud Functions quickstart guide][quickstart] to setup Cloud
+Functions for your project.
 
 1. Clone this repository:
 
@@ -19,7 +20,9 @@ View the [source code][code].
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-        gsutil mb gs://<your-bucket-name>
+        gsutil mb gs://[YOUR_BUCKET_NAME]
+
+    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Ensure the Cloud Datastore API is enabled:
 
@@ -27,19 +30,25 @@ View the [source code][code].
 
 1. Deploy the "ds-get" function with an HTTP trigger:
 
-        gcloud alpha functions deploy ds-get --bucket <your-bucket-name> --trigger-http --entry-point get
+        gcloud alpha functions deploy ds-get --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point get
+
+    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Deploy the "ds-set" function with an HTTP trigger:
 
-        gcloud alpha functions deploy ds-set --bucket <your-bucket-name> --trigger-http --entry-point set
+        gcloud alpha functions deploy ds-set --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point set
+
+    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Deploy the "ds-del" function with an HTTP trigger:
 
-        gcloud alpha functions deploy ds-del --bucket <your-bucket-name> --trigger-http --entry-point del
+        gcloud alpha functions deploy ds-del --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point del
+
+    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Call the "ds-set" function to create a new entity:
 
-        gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message": "Hello World!"}}'
+        gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message":"Hello World!"}}'
 
 1. Call the "ds-get" function to read the newly created entity:
 
@@ -52,3 +61,5 @@ View the [source code][code].
 1. Call the "ds-get" function again to verify it was deleted:
 
         gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
+
+[quickstart]: https://cloud.google.com/functions/quickstart

@@ -9,16 +9,40 @@ View the [documentation][docs] or the [source code][code].
 [docs]: https://cloud.google.com/functions/walkthroughs
 [code]: index.js
 
-## Deploy
+## Deploy and Test
 
-This example deploys the function with an HTTP trigger.
+1. Follow the [Cloud Functions quickstart guide][quickstart] to setup Cloud
+Functions for your project.
 
-    gcloud alpha functions deploy helloworld --bucket <your-bucket-name> --trigger-http
+1. Clone this repository:
 
-## Test
+        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+        cd nodejs-docs-samples/functions/module
 
-    gcloud alpha functions call helloworld
+1. Create a Cloud Storage Bucket to stage our deployment:
 
-You can also use `curl` to trigger the function:
+        gsutil mb gs://[YOUR_BUCKET_NAME]
 
-    curl -X POST https://<your-project-region>.<your-project-id>.cloudfunctions.net/helloworld
+    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+
+1. Deploy the `helloworld` function with an HTTP trigger:
+
+        gcloud alpha functions deploy helloworld --bucket [YOUR_BUCKET_NAME] --trigger-http
+
+    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+
+1. Call the `helloworld` function:
+
+        gcloud alpha functions call helloworld
+
+1. Check the logs for the `helloworld` function:
+
+        gcloud alpha functions get-logs helloworld
+
+    You should see something like this in your console:
+
+        D      ... User function triggered, starting execution
+        I      ... I am a log entry!
+        D      ... Execution took 1 ms, user function completed successfully
+
+[quickstart]: https://cloud.google.com/functions/quickstart

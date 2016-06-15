@@ -24,13 +24,13 @@ Functions for your project.
 
         gsutil mb gs://[YOUR_BUCKET_NAME]
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Deploy the `uuid` function with an HTTP trigger:
 
         gcloud alpha functions deploy uuid --bucket [YOUR_BUCKET_NAME] --trigger-http
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Call the `uuid` function:
 

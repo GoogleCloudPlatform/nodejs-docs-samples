@@ -36,21 +36,21 @@ which will create an account for you and integrate billing.
 
         gsutil mb gs://[YOUR_BUCKET_NAME]
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Deploy the `sendEmail` function with an HTTP trigger:
 
         gcloud alpha functions deploy sendEmail --bucket [YOUR_BUCKET_NAME] --trigger-http
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Call the `sendEmail` function:
 
         gcloud alpha functions call sendEmail --data '{"sg_key":"[YOUR_SENDGRID_KEY]","to":"[YOUR_RECIPIENT_ADDR]","from":"[YOUR_SENDER_ADDR]","subject":"Hello from Sendgrid!","body":"Hello World!"}'
 
-    1. Replace `[YOUR_SENDGRID_KEY]` with your SendGrid API KEY.
-    1. Replace `[YOUR_RECIPIENT_ADDR]` with the recipient's email address.
-    1. Replace `[YOUR_SENDER_ADDR]` with your SendGrid account's email address.
+    * Replace `[YOUR_SENDGRID_KEY]` with your SendGrid API KEY.
+    * Replace `[YOUR_RECIPIENT_ADDR]` with the recipient's email address.
+    * Replace `[YOUR_SENDER_ADDR]` with your SendGrid account's email address.
 
 1. Check the logs for the `subscribe` function:
 

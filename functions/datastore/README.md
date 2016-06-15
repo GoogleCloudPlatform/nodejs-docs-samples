@@ -22,7 +22,7 @@ Functions for your project.
 
         gsutil mb gs://[YOUR_BUCKET_NAME]
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Ensure the Cloud Datastore API is enabled:
 
@@ -32,19 +32,19 @@ Functions for your project.
 
         gcloud alpha functions deploy ds-get --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point get
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Deploy the "ds-set" function with an HTTP trigger:
 
         gcloud alpha functions deploy ds-set --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point set
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Deploy the "ds-del" function with an HTTP trigger:
 
         gcloud alpha functions deploy ds-del --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point del
 
-    1. Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Call the "ds-set" function to create a new entity:
 

@@ -21,8 +21,8 @@ exports.helloworld = function (context, data) {
 // [END walkthrough_pubsub]
 
 // [START walkthrough_http]
-exports.hellohttp = function (context, data) {
-  // Use the success argument to send data back to the caller
-  context.success('My GCF Function: ' + data.message);
+exports.hellohttp = function (req, res) {
+  // Use the response argument to send data back to the caller
+  res.send('My GCF Function: ' + req.body.message);
 };
 // [END walkthrough_http]

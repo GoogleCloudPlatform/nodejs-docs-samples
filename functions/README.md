@@ -24,6 +24,7 @@ environment.
 * [Cloud Storage](gcs/)
 * [Cloud Datastore](datastore/)
 * [Cloud Pub/Sub](pubsub/)
-* [Dependencies](uid/)
+* [Dependencies](uuid/)
+* [HTTP](http/)
 * [Logging](log/)
 * [Modules](module/)

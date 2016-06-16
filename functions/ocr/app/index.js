@@ -163,7 +163,7 @@ exports.processImage = function processImage (context, data) {
     console.error(err);
     return context.failure(err.message);
   }
-}
+};
 // [END ocr_process]
 
 // [START ocr_translate]
@@ -221,7 +221,7 @@ exports.translateText = function translateText (context, data) {
     console.error(err);
     return context.failure(err.message);
   }
-}
+};
 // [END ocr_translate]
 
 // [START ocr_save]
@@ -272,5 +272,5 @@ exports.saveResult = function saveResult (context, data) {
     console.error(err);
     return context.failure(err.message);
   }
-}
+};
 // [END ocr_save]

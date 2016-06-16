@@ -305,7 +305,6 @@ test.cb('translateText handles publish error', function (t) {
 });
 
 test.cb('translateText translates and publishes text', function (t) {
-  var expectedMsg = 'error';
   var context = {
     success: function () {
       t.is(context.success.called, true);
@@ -398,7 +397,6 @@ test.cb('saveResult handles save error', function (t) {
 });
 
 test.cb('saveResult translates and publishes text', function (t) {
-  var expectedMsg = 'error';
   var context = {
     success: function () {
       t.is(context.success.called, true);
@@ -421,7 +419,6 @@ test.cb('saveResult translates and publishes text', function (t) {
 });
 
 test.cb('saveResult translates and publishes text with dot in filename', function (t) {
-  var expectedMsg = 'error';
   var context = {
     success: function () {
       t.is(context.success.called, true);

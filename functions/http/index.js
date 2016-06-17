@@ -13,31 +13,92 @@
 
 'use strict';
 
+// [START helloworld]
 /**
- * Responds to a GET request.
- *
- * @example
- * gcloud alpha functions call helloGET
+ * Responds to any HTTP request that can provide a "message" field in the body.
  *
  * @param {Object} req Cloud Function request context.
- * @param {string} req.method HTTP method of the request.
  * @param {Object} res Cloud Function response context.
- * @param {Function} res.send Write data to the response stream.
- * @param {Function} res.status Set the status of the response.
  */
-function helloGET (req, res) {
-  console.log(req.method);
+exports.helloworld = function helloworld (req, res) {
+  if (req.body.message === undefined) {
+    // This is an error case, as "message" is required
+    res.status(400).send('No message defined!');
+  } else {
+    // Everything is ok
+    console.log(req.body.message);
+    res.status(200).end();
+  }
+};
+// [END helloworld]
+
+// [START helloHttp]
+function handleGET (req, res) {
+  // Do something with the GET request
+  res.status(200).send('Hello World!');
+}
+
+function handlePUT (req, res) {
+  // Do something with the PUT request
+  res.status(403).send('Forbidden!');
+}
+
+/**
+ * Responds to a GET request with "Hello World!". Forbids a PUT request.
+ *
+ * @example
+ * gcloud alpha functions call helloHttp
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.helloHttp = function helloHttp (req, res) {
   switch (req.method) {
     case 'GET':
-      res.send('Hello World!');
+      handleGET(req, res);
       break;
-    case 'POST':
-      res.status(403).send('Forbidden!');
+    case 'PUT':
+      handlePUT(req, res)
       break;
     default:
       res.status(500).send({ error: 'Something blew up!' });
       break;
   }
-}
+};
+// [END helloHttp]
 
-exports.helloGET = helloGET;
+// [START helloContent]
+/**
+ * Responds to any HTTP request that can provide a "message" field in the body.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.helloContent = function helloContent (req, res) {
+  var name;
+
+  switch (req.get('content-type')) {
+    // '{"name":"John"}'
+    case 'application/json':
+      name = req.body.name;
+      break;
+
+    // 'John', stored in a Buffer
+    case 'application/octet-stream':
+      name = req.body.toString(); // Convert buffer to a string
+      break;
+
+    // 'John'
+    case 'text/plain':
+      name = req.body;
+      break;
+
+    // 'name=John'
+    case 'application/x-www-form-urlencoded':
+      name = req.body.name;
+      break;
+  }
+
+  res.status(200).send('Hello ' + (name || 'World') + '!');
+};
+// [END helloContent]

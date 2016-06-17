@@ -31,7 +31,7 @@ var pubsub = gcloud.pubsub();
  * @param {string} data.topic Topic name on which to publish.
  * @param {string} data.message Message to publish.
  */
-function publish (context, data) {
+exports.publish = function publish (context, data) {
   try {
     if (!data.topic) {
       throw new Error('Topic not provided. Make sure you have a ' +
@@ -63,7 +63,7 @@ function publish (context, data) {
     console.error(err);
     return context.failure(err.message);
   }
-}
+};
 
 /**
  * Triggered from a message on a Pub/Sub topic.
@@ -74,13 +74,10 @@ function publish (context, data) {
  * @param {Object} data Request data, in this case an object provided by the Pub/Sub trigger.
  * @param {Object} data.message Message that was published via Pub/Sub.
  */
-function subscribe (context, data) {
+exports.subscribe = function subscribe (context, data) {
   // We're just going to log the message to prove that it worked!
   console.log(data.message);
 
   // Don't forget to call success!
   context.success();
-}
-
-exports.publish = publish;
-exports.subscribe = subscribe;
+};

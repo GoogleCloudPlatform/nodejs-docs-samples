@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-docs-samples-functions",
+  "description": "Node.js samples found on https://cloud.google.com",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "dependencies": {
+    "request-promise": "^3.0.0"
+  }
+}

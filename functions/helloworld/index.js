@@ -21,7 +21,8 @@
  * @param {Object} data Request data, provided by a trigger.
  */
 exports.helloworld = function helloworld (context, data) {
-  context.success('Hello World!');
+  console.log('My Cloud Function: ' + data.message);
+  context.success();
 };
 // [END helloworld]
 

@@ -56,7 +56,7 @@ contents:
     * Replace `[YOUR_API_KEY]` with your Translate API key.
     * Replace `[RESULT_TOPIC_NAME]` with a topic name used for saving results.
     * Replace `[RESULT_BUCKET_NAME]` with a bucket name used for saving results.
-    * Replace `[TRANSLATE_TOPIC]` with a topic name used for translating results.
+    * Replace `[TRANSLATE_TOPIC_NAME]` with a topic name used for translating results.
 
 1. Deploy the `processImage` function with a GCS trigger:
 

@@ -87,7 +87,7 @@ function getPayload (requestData) {
  * @param {string} data.subject Email subject line.
  * @param {string} data.body Body of the email subject line.
  */
-function sendEmail (context, data) {
+exports.sendEmail = function sendEmail (context, data) {
   try {
     var client = getClient(data);
     var payload = getPayload(data);
@@ -105,6 +105,4 @@ function sendEmail (context, data) {
     console.error(err);
     return context.failure(err.message);
   }
-}
-
-exports.sendEmail = sendEmail;
+};

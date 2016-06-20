@@ -39,7 +39,8 @@ test.cb('should send an email', function (t) {
     },
     'nodemailer-smtp-transport': function (options) {
       t.deepEqual(options, {
-        service: 'Mailjet',
+        host: 'in.mailjet.com',
+        port: 2525,
         auth: {
           user: 'foo',
           pass: 'bar'

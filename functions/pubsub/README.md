@@ -11,8 +11,8 @@ View the [source code][code].
 
 ## Deploy and Test
 
-1. Follow the [Cloud Functions quickstart guide](https://cloud.google.com/functions/quickstart)
-to setup Cloud Functions for your project.
+1. Follow the [Cloud Functions quickstart guide][quickstart] to setup Cloud
+Functions for your project.
 
 1. Clone this repository:
 
@@ -22,31 +22,43 @@ to setup Cloud Functions for your project.
 1. Create a Cloud Pub/Sub topic (if you already have one you want to use, you
 can skip this step):
 
-        gcloud alpha pubsub topics create <your-topic-name>
+        gcloud alpha pubsub topics create [YOUR_TOPIC_NAME]
+
+    * Replace `[YOUR_TOPIC_NAME]` with the name of your Pub/Sub Topic.
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-        gsutil mb gs://<your-bucket-name>
+        gsutil mb gs://[YOUR_BUCKET_NAME]
 
-1. Deploy the "publish" function with an HTTP trigger
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
-        gcloud alpha functions deploy publish --bucket <your-bucket-name> --trigger-http
+1. Deploy the `publish` function with an HTTP trigger:
 
-1. Deploy the "subscribe" function with the Pub/Sub topic as a trigger
+        gcloud alpha functions deploy publish --bucket [YOUR_BUCKET_NAME] --trigger-http
 
-        gcloud alpha functions deploy subscribe --bucket <your-bucket-name> --trigger-topic <your-topic-name>
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
-1. Call the "publish" function:
+1. Deploy the `subscribe` function with the Pub/Sub topic as a trigger:
 
-        gcloud alpha functions call publish --data '{"topic":"<your-topic-name>","message":"Hello World!"}'
+        gcloud alpha functions deploy subscribe --bucket [YOUR_BUCKET_NAME] --trigger-topic [YOUR_TOPIC_NAME]
 
-1. Check the logs for the "subscribe" function:
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `[YOUR_TOPIC_NAME]` with the name of your Pub/Sub Topic.
+
+1. Call the `publish` function:
+
+        gcloud alpha functions call publish --data '{"topic":"[YOUR_TOPIC_NAME]","message":"Hello World!"}'
+
+    * Replace `[YOUR_TOPIC_NAME]` with the name of your Pub/Sub Topic.
+
+1. Check the logs for the `subscribe` function:
 
         gcloud alpha functions get-logs subscribe
 
-You should see something like this in your console
-```
-D      ... User function triggered, starting execution
-I      ... Hello World!
-D      ... Execution took 1 ms, user function completed successfully
-```
+    You should see something like this in your console:
+
+        D      ... User function triggered, starting execution
+        I      ... Hello World!
+        D      ... Execution took 1 ms, user function completed successfully
+
+[quickstart]: https://cloud.google.com/functions/quickstart

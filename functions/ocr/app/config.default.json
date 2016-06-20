@@ -1,0 +1,8 @@
+{
+  "TRANSLATE_API_KEY": "[YOUR_API_KEY]",
+  "RESULT_TOPIC": "[RESULT_TOPIC_NAME]",
+  "RESULT_BUCKET": "[RESULT_BUCKET_NAME]",
+  "TRANSLATE_TOPIC": "[TRANSLATE_TOPIC_NAME]",
+  "TRANSLATE": true,
+  "TO_LANG": ["en", "fr", "es", "ja", "ru"]
+}

@@ -10,18 +10,35 @@ View the [documentation][docs] or the [source code][code].
 [docs]: https://cloud.google.com/functions/writing
 [code]: index.js
 
-## Deploy
+## Deploy and Test
 
-This example deploys the function with an HTTP trigger.
+1. Follow the [Cloud Functions quickstart guide][quickstart] to setup Cloud
+Functions for your project.
 
-    gcloud alpha functions deploy uuid --bucket <your-bucket-name> --trigger-http
+1. Clone this repository:
 
-## Test
+        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+        cd nodejs-docs-samples/functions/uuid
 
-    gcloud alpha functions call uuid
+1. Create a Cloud Storage Bucket to stage our deployment:
 
-Running the above command should print a generated UUID.
+        gsutil mb gs://[YOUR_BUCKET_NAME]
 
-You can also use `curl` to trigger the function:
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
-    curl -X POST https://<your-project-region>.<your-project-id>.cloudfunctions.net/uuid
+1. Deploy the `uuid` function with an HTTP trigger:
+
+        gcloud alpha functions deploy uuid --bucket [YOUR_BUCKET_NAME] --trigger-http
+
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+
+1. Call the `uuid` function:
+
+        gcloud alpha functions call uuid
+
+    You should see something like this in your console:
+
+        executionId: abcd1234-0
+        result: 0ef22088-07f2-44ca-9cef-cea8ff666d69
+
+[quickstart]: https://cloud.google.com/functions/quickstart

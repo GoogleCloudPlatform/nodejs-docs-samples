@@ -22,20 +22,35 @@ var to = 'receiver@email.com';
 var from = 'sender@email.com';
 var subject = 'subject';
 var body = 'body';
-var result = { foo: 'bar' };
 
 function getSample () {
-  var sendgrid = {
-    send: sinon.stub().callsArgWith(1, null, result)
+  var request = {};
+  var client = {
+    API: sinon.stub().callsArgWith(1, {
+      statusCode: 200
+    }),
+    emptyRequest: sinon.stub().returns(request)
   };
-  var SendGrid = sinon.stub().returns(sendgrid);
+  var mail = {
+    toJSON: sinon.stub()
+  };
+  var sendgrid = {
+    SendGrid: sinon.stub().returns(client),
+    mail: {
+      Mail: sinon.stub().returns(mail),
+      Email: sinon.stub(),
+      Content: sinon.stub()
+    }
+  };
   return {
     sample: proxyquire('../../functions/sendgrid', {
-      sendgrid: SendGrid
+      sendgrid: sendgrid
     }),
     mocks: {
-      SendGrid: SendGrid,
-      sendgrid: sendgrid
+      sendgrid: sendgrid,
+      client: client,
+      mail: mail,
+      request: request
     }
   };
 }
@@ -132,7 +147,7 @@ test('Send fails without a "body"', function (t) {
 });
 
 test('Sends the email and calls success', function (t) {
-  var expectedMsg = result;
+  var expectedMsg = 'Email sent!';
   var data = {
     sg_key: key,
     to: to,
@@ -141,10 +156,9 @@ test('Sends the email and calls success', function (t) {
     body: body
   };
   var payload = {
-    to: to,
-    from: from,
-    subject: subject,
-    text: body
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: null
   };
   var context = getMockContext();
 
@@ -154,13 +168,13 @@ test('Sends the email and calls success', function (t) {
   t.is(context.success.calledOnce, true);
   t.is(context.success.firstCall.args[0], expectedMsg);
   t.is(context.failure.called, false);
-  t.is(sendgridSample.mocks.sendgrid.send.calledOnce, true);
-  t.deepEqual(sendgridSample.mocks.sendgrid.send.firstCall.args[0], payload);
+  t.is(sendgridSample.mocks.client.API.calledOnce, true);
+  t.deepEqual(sendgridSample.mocks.client.API.firstCall.args[0], payload);
   t.is(console.error.called, false);
 });
 
 test('Fails to send the email and calls failure', function (t) {
-  var expectedMsg = 'error';
+  var expectedMsg = 'Failed to send email';
   var data = {
     sg_key: key,
     to: to,
@@ -169,23 +183,24 @@ test('Fails to send the email and calls failure', function (t) {
     body: body
   };
   var payload = {
-    to: to,
-    from: from,
-    subject: subject,
-    text: body
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: null
   };
   var context = getMockContext();
 
   var sendgridSample = getSample();
-  sendgridSample.mocks.sendgrid.send = sinon.stub().callsArgWith(1, expectedMsg);
+  sendgridSample.mocks.client.API = sinon.stub().callsArgWith(1, {
+    statusCode: 400
+  });
 
   sendgridSample.sample.sendEmail(context, data);
 
   t.is(context.success.called, false);
   t.is(context.failure.calledOnce, true);
   t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(sendgridSample.mocks.sendgrid.send.calledOnce, true);
-  t.deepEqual(sendgridSample.mocks.sendgrid.send.firstCall.args[0], payload);
+  t.is(sendgridSample.mocks.client.API.calledOnce, true);
+  t.deepEqual(sendgridSample.mocks.client.API.firstCall.args[0], payload);
   t.is(console.error.called, true);
 });
 

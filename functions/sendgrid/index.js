@@ -13,7 +13,7 @@
 
 'use strict';
 
-var SendGrid = require('sendgrid');
+var sendgrid = require('sendgrid');
 
 /**
  * Returns a configured SendGrid client.
@@ -29,7 +29,7 @@ function getClient (requestData) {
   }
 
   // Using SendGrid's Node.js Library https://github.com/sendgrid/sendgrid-nodejs
-  return SendGrid(requestData.sg_key);
+  return sendgrid.SendGrid(requestData.sg_key);
 }
 
 /**
@@ -63,12 +63,13 @@ function getPayload (requestData) {
       '"body" property in your request');
   }
 
-  return {
-    to: requestData.to,
-    from: requestData.from,
-    subject: requestData.subject,
-    text: requestData.body
-  };
+  var helper = sendgrid.mail;
+  return new helper.Mail(
+    new helper.Email(requestData.from),
+    requestData.subject,
+    new helper.Email(requestData.to),
+    new helper.Content('text/plain', requestData.body)
+  );
 }
 
 /**
@@ -90,16 +91,20 @@ function getPayload (requestData) {
 exports.sendEmail = function sendEmail (context, data) {
   try {
     var client = getClient(data);
-    var payload = getPayload(data);
+    var mail = getPayload(data);
 
-    console.log('Sending email to: ' + payload.to);
-
-    client.send(payload, function (err, json) {
-      if (err) {
-        console.error(err);
-        return context.failure(err);
+    var requestBody = mail.toJSON();
+    console.log('Sending email...');
+    var request = client.emptyRequest();
+    request.method = 'POST';
+    request.path = '/v3/mail/send';
+    request.body = requestBody;
+    client.API(request, function (response) {
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        return context.success('Email sent!');
       }
-      return context.success(json);
+      console.error(response);
+      return context.failure('Failed to send email');
     });
   } catch (err) {
     console.error(err);

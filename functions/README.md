@@ -20,6 +20,7 @@ environment.
 ## Samples
 
 * [Hello World](helloworld/)
+* [Background](background/)
 * [Callbacks](messages/)
 * [Cloud Storage](gcs/)
 * [Cloud Datastore](datastore/)
@@ -28,3 +29,4 @@ environment.
 * [HTTP](http/)
 * [Logging](log/)
 * [Modules](module/)
+* [OCR (Optical Character Recognition)](ocr/)

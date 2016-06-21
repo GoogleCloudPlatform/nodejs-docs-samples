@@ -134,7 +134,11 @@ test('http:helloContent: should handle application/octet-stream', function (t) {
   var mocks = getMocks();
   var httpSample = getSample();
   mocks.req.headers['content-type'] = 'application/octet-stream';
-  mocks.req.body = Buffer.from('John');
+  if (typeof Buffer.from === 'function') {
+    mocks.req.body = Buffer.from('John');
+  } else {
+    mocks.req.body = new Buffer('John');
+  }
   httpSample.sample.helloContent(mocks.req, mocks.res);
 
   t.is(mocks.res.status.calledOnce, true);

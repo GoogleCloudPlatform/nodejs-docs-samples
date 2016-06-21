@@ -20,7 +20,7 @@
  * @param {Object} context Cloud Function context.
  * @param {Object} data Request data, provided by a trigger.
  */
-exports.helloworld = function helloworld (context, data) {
+exports.helloWorld = function helloWorld (context, data) {
   if (data.message === undefined) {
     // This is an error case, "message" is required
     context.failure('No message defined!');

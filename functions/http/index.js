@@ -20,7 +20,7 @@
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloworld = function helloworld (req, res) {
+exports.helloWorld = function helloWorld (req, res) {
   if (req.body.message === undefined) {
     // This is an error case, as "message" is required
     res.status(400).send('No message defined!');

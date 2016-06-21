@@ -13,101 +13,297 @@
 
 'use strict';
 
+// [START setup]
+var async = require('async');
 var sendgrid = require('sendgrid');
+var config = require('./config.json');
+var gcloud = require('gcloud');
 
+// Get a reference to the Cloud Storage component
+var storage = gcloud.storage();
+// Get a reference to the BigQuery component
+var bigquery = gcloud.bigquery();
+// [END setup]
+
+// [START getClient]
 /**
  * Returns a configured SendGrid client.
  *
- * @param {Object} requestData Cloud Function request data.
- * @param {string} data.sg_key Your SendGrid API key.
+ * @param {string} key Your SendGrid API key.
  * @returns {Object} SendGrid client.
  */
-function getClient (requestData) {
-  if (!requestData.sg_key) {
-    throw new Error('SendGrid API key not provided. Make sure you have a ' +
-      '"sg_key" property in your request');
+function getClient (key) {
+  if (!key) {
+    var error = new Error('SendGrid API key not provided. Make sure you have a ' +
+      '"sg_key" property in your request querystring');
+    error.code = 401;
+    throw error;
   }
 
   // Using SendGrid's Node.js Library https://github.com/sendgrid/sendgrid-nodejs
-  return sendgrid.SendGrid(requestData.sg_key);
+  return sendgrid.SendGrid(key);
 }
+// [END getClient]
 
+// [START getPayload]
 /**
- * Constructs the payload object from the request data.
+ * Constructs the payload object from the request body.
  *
- * @param {Object} requestData Cloud Function request data.
+ * @param {Object} requestBody Cloud Function request body.
  * @param {string} data.to Email address of the recipient.
  * @param {string} data.from Email address of the sender.
  * @param {string} data.subject Email subject line.
  * @param {string} data.body Body of the email subject line.
  * @returns {Object} Payload object.
  */
-function getPayload (requestData) {
-  if (!requestData.to) {
-    throw new Error('To email address not provided. Make sure you have a ' +
+function getPayload (requestBody) {
+  if (!requestBody.to) {
+    var error = new Error('To email address not provided. Make sure you have a ' +
       '"to" property in your request');
+    error.code = 400;
+    throw error;
   }
 
-  if (!requestData.from) {
-    throw new Error('From email address not provided. Make sure you have a ' +
+  if (!requestBody.from) {
+    error = new Error('From email address not provided. Make sure you have a ' +
       '"from" property in your request');
+    error.code = 400;
+    throw error;
   }
 
-  if (!requestData.subject) {
-    throw new Error('Email subject line not provided. Make sure you have a ' +
+  if (!requestBody.subject) {
+    error = new Error('Email subject line not provided. Make sure you have a ' +
       '"subject" property in your request');
+    error.code = 400;
+    throw error;
   }
 
-  if (!requestData.body) {
-    throw new Error('Email content not provided. Make sure you have a ' +
+  if (!requestBody.body) {
+    error = new Error('Email content not provided. Make sure you have a ' +
       '"body" property in your request');
+    error.code = 400;
+    throw error;
   }
 
   var helper = sendgrid.mail;
   return new helper.Mail(
-    new helper.Email(requestData.from),
-    requestData.subject,
-    new helper.Email(requestData.to),
-    new helper.Content('text/plain', requestData.body)
+    new helper.Email(requestBody.from),
+    requestBody.subject,
+    new helper.Email(requestBody.to),
+    new helper.Content('text/plain', requestBody.body)
   );
 }
+// [END getPayload]
 
+// [START email]
 /**
  * Send an email using SendGrid.
  *
+ * Trigger this function by making a POST request with a payload to:
+ * https://[YOUR_REGION].[YOUR_PROJECT_ID].cloudfunctions.net/sendEmail?sg_key=[YOUR_API_KEY]
+ *
  * @example
- * gcloud alpha functions call sendEmail --data '{"sg_key":"[YOUR_SENDGRID_KEY]","to":"[YOUR_RECIPIENT_ADDR]","from":"[YOUR_SENDER_ADDR]","subject":"Hello from Sendgrid!","body":"Hello World!"}'
+ * curl -X POST "https://us-central1.your-project-id.cloudfunctions.net/sendEmail?sg_key=your_api_key" --data '{"to":"bob@email.com","from":"alice@email.com","subject":"Hello from Sendgrid!","body":"Hello World!"}'
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} req.query The parsed querystring.
+ * @param {string} req.query.sg_key Your SendGrid API key.
+ * @param {Object} req.body The request payload.
+ * @param {string} req.body.to Email address of the recipient.
+ * @param {string} req.body.from Email address of the sender.
+ * @param {string} req.body.subject Email subject line.
+ * @param {string} req.body.body Body of the email subject line.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.sendgridEmail = function sendgridEmail (req, res) {
+  try {
+    if (req.method !== 'POST') {
+      var error = new Error('Only POST requests are accepted');
+      error.code = 405;
+      throw error;
+    }
+
+    // Get a SendGrid client
+    var client = getClient(req.query.sg_key);
+
+    // Formulate the request
+    var request = client.emptyRequest();
+    request.method = 'POST';
+    request.path = '/v3/mail/send';
+    request.body = getPayload(req.body).toJSON();
+
+    // Make the request to SendGrid's API
+    console.log('Sending email to: ' + req.body.to);
+    client.API(request, function (response) {
+      if (response.statusCode < 200 || response.statusCode >= 400) {
+        console.error(response);
+      } else {
+        console.log('Email sent to: ' + req.body.to);
+      }
+
+      // Forward the response back to the requester
+      res.status(response.statusCode);
+      if (response.headers['content-type']) {
+        res.set('content-type', response.headers['content-type']);
+      }
+      if (response.headers['content-length']) {
+        res.set('content-length', response.headers['content-length']);
+      }
+      if (response.body) {
+        res.send(response.body);
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(err.code || 500).send(err.message);
+  }
+};
+// [END email]
+
+// [START webhook]
+/**
+ * Receive a webhook from SendGrid.
+ *
+ * See https://sendgrid.com/docs/API_Reference/Webhooks/event.html
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.sendgridWebhook = function sendgridWebhook (req, res) {
+  try {
+    if (req.method !== 'POST') {
+      var error = new Error('Only POST requests are accepted');
+      error.code = 405;
+      throw error;
+    }
+
+    var events = req.body || [];
+
+    // Generate newline-delimite JSON
+    // See https://cloud.google.com/bigquery/data-formats#json_format
+    var json = events.map(function (event) {
+      return JSON.stringify(event);
+    }).join('\n');
+    var bucketName = config.RESULT_BUCKET;
+    var filename = '' + new Date().getTime() + '.json';
+    var file = storage.bucket(bucketName).file(filename);
+
+    // Upload a new file to Cloud Storage if we have events to save
+    if (json.length) {
+      console.log('Saving events to ' + filename + ' in bucket ' + bucketName);
+
+      return file.save(json, function (err) {
+        if (err) {
+          console.error(err);
+          return res.status(500).end();
+        }
+        console.log('JSON written to ' + filename);
+        return res.status(200).end();
+      });
+    }
+
+    return res.end();
+  } catch (err) {
+    console.error(err);
+    return res.status(err.code || 500).send(err.message);
+  }
+};
+// [END webhook]
+
+// [START getTable]
+/**
+ * Helper method to get a handle on a BigQuery table. Automatically creates the
+ * dataset and table if necessary.
+ *
+ * @param {Function} callback Callback function.
+ */
+function getTable (callback) {
+  var dataset = bigquery.dataset(config.DATASET);
+  return dataset.get({
+    autoCreate: true
+  }, function (err, dataset) {
+    if (err) {
+      return callback(err);
+    }
+    var table = dataset.table(config.TABLE);
+    return table.get({
+      autoCreate: true
+    }, function (err, table) {
+      if (err) {
+        return callback(err);
+      }
+      return callback(null, table);
+    });
+  });
+}
+// [END getTable]
+
+// [START load]
+/**
+ * Cloud Function triggered by Cloud Storage when a file is uploaded.
  *
  * @param {Object} context Cloud Function context.
  * @param {Function} context.success Success callback.
  * @param {Function} context.failure Failure callback.
- * @param {Object} data Request data, in this case an object provided by the user.
- * @param {string} data.to Email address of the recipient.
- * @param {string} data.from Email address of the sender.
- * @param {string} data.sg_key Your SendGrid API key.
- * @param {string} data.subject Email subject line.
- * @param {string} data.body Body of the email subject line.
+ * @param {Object} data Request data, in this case an object provided by Cloud Storage.
+ * @param {string} data.bucket Name of the Cloud Storage bucket.
+ * @param {string} data.name Name of the file.
+ * @param {string} [data.timeDeleted] Time the file was deleted if this is a deletion event.
+ * @see https://cloud.google.com/storage/docs/json_api/v1/objects#resource
  */
-exports.sendEmail = function sendEmail (context, data) {
+exports.sendgridLoad = function sendgridLoad (context, data) {
   try {
-    var client = getClient(data);
-    var mail = getPayload(data);
+    if (data.hasOwnProperty('timeDeleted')) {
+      // This was a deletion event, we don't want to process this
+      return context.done();
+    }
 
-    var requestBody = mail.toJSON();
-    console.log('Sending email...');
-    var request = client.emptyRequest();
-    request.method = 'POST';
-    request.path = '/v3/mail/send';
-    request.body = requestBody;
-    client.API(request, function (response) {
-      if (response.statusCode >= 200 && response.statusCode < 400) {
-        return context.success('Email sent!');
+    if (!data.bucket) {
+      throw new Error('Bucket not provided. Make sure you have a ' +
+        '"bucket" property in your request');
+    }
+    if (!data.name) {
+      throw new Error('Filename not provided. Make sure you have a ' +
+        '"name" property in your request');
+    }
+
+    return async.waterfall([
+      // Get a handle on the table
+      function (callback) {
+        getTable(callback);
+      },
+      // Start the load job
+      function (table, callback) {
+        console.log('Starting job for ' + data.name);
+
+        var file = storage.bucket(data.bucket).file(data.name);
+        var metadata = {
+          autodetect: true,
+          sourceFormat: 'NEWLINE_DELIMITED_JSON'
+        };
+        table.import(file, metadata, callback);
+      },
+      // Poll the job for completion
+      function (job, apiResponse, callback) {
+        job.on('complete', function (metadata) {
+          console.log('Job complete for ' + data.name);
+          callback(null, metadata);
+        });
+        job.on('error', function (err) {
+          console.log('Job failed for ' + data.name);
+          callback(err);
+        });
       }
-      console.error(response);
-      return context.failure('Failed to send email');
+    ], function (err) {
+      if (err) {
+        console.error(err);
+        return context.failure(err);
+      }
+      return context.success();
     });
   } catch (err) {
     console.error(err);
     return context.failure(err.message);
   }
 };
+// [END load]

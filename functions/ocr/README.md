@@ -5,9 +5,10 @@
 This recipe shows you how to use the Cloud Vision API together with the Google
 Translate API using Cloud Pub/Sub as a message bus.
 
-View the [source code][code].
+View the [source code][code] or the [tutorial][tutorial].
 
 [code]: index.js
+[tutorial]: https://cloud.google.com/functions/docs/tutorials/ocr
 
 ## Overview
 

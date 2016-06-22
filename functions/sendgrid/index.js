@@ -177,6 +177,22 @@ function verifyWebhook (authorization) {
 }
 // [END verifyWebhook]
 
+function fixNames (obj) {
+  if (Array.isArray(obj)) {
+    obj.forEach(fixNames);
+  } else if (obj && typeof obj === 'object') {
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        var fixedKey = key.replace('-', '_');
+        if (fixedKey !== key) {
+          obj[fixedKey] = obj[key];
+          delete obj[key];
+        }
+      }
+    }
+  }
+}
+
 // [START webhook]
 /**
  * Receive a webhook from SendGrid.
@@ -197,6 +213,8 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
     verifyWebhook(req.get('authorization') || '');
 
     var events = req.body || [];
+
+    fixNames(events);
 
     // Generate newline-delimite JSON
     // See https://cloud.google.com/bigquery/data-formats#json_format

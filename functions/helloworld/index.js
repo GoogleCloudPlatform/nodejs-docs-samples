@@ -26,6 +26,18 @@ exports.helloWorld = function helloWorld (context, data) {
 };
 // [END helloworld]
 
+// [START helloGET]
+/**
+ * HTTP Cloud Function.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.helloGET = function helloGET (req, res) {
+  res.send('Hello World!');
+};
+// [END helloGET]
+
 // [START helloHttp]
 /**
  * HTTP Cloud Function.

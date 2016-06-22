@@ -42,6 +42,16 @@ test('helloworld:helloworld: should log a message', function (t) {
   t.is(console.log.calledWith(expectedMsg), true);
 });
 
+test.cb('helloworld:helloGET: should print hello world', function (t) {
+  var expectedMsg = 'Hello World!';
+  helloworldSample.helloGET({}, {
+    send: function (message) {
+      t.is(message, expectedMsg);
+      t.end();
+    }
+  });
+});
+
 test.cb('helloworld:helloHttp: should print a name', function (t) {
   var expectedMsg = 'Hello John!';
   helloworldSample.helloHttp({

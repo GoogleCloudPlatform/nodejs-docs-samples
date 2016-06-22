@@ -12,6 +12,7 @@
   "dependencies": {
     "async": "^1.5.2",
     "gcloud": "^0.36.0",
+    "node-uuid": "^1.4.7",
     "sendgrid": "^3.0.5"
   }
 }

@@ -59,7 +59,7 @@ test('http:helloworld: should error with no message', function (t) {
   var mocks = getMocks();
   var httpSample = getSample();
   mocks.req.body = {};
-  httpSample.sample.helloworld(mocks.req, mocks.res);
+  httpSample.sample.helloWorld(mocks.req, mocks.res);
 
   t.is(mocks.res.status.calledOnce, true);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -73,7 +73,7 @@ test('http:helloworld: should log message', function (t) {
   mocks.req.body = {
     message: 'hi'
   };
-  httpSample.sample.helloworld(mocks.req, mocks.res);
+  httpSample.sample.helloWorld(mocks.req, mocks.res);
 
   t.is(mocks.res.status.calledOnce, true);
   t.is(mocks.res.status.firstCall.args[0], 200);

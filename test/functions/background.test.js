@@ -47,7 +47,7 @@ test('should echo message', function (t) {
   var expectedMsg = 'hi';
   var context = getMockContext();
   var backgroundSample = getSample();
-  backgroundSample.sample.helloworld(context, {
+  backgroundSample.sample.helloWorld(context, {
     message: expectedMsg
   });
 
@@ -59,7 +59,7 @@ test('should say no message was provided', function (t) {
   var expectedMsg = 'No message defined!';
   var context = getMockContext();
   var backgroundSample = getSample();
-  backgroundSample.sample.helloworld(context, {});
+  backgroundSample.sample.helloWorld(context, {});
 
   t.is(context.failure.calledOnce, true);
   t.is(context.failure.firstCall.args[0], expectedMsg);

@@ -18,6 +18,7 @@ var async = require('async');
 var sendgrid = require('sendgrid');
 var config = require('./config.json');
 var gcloud = require('gcloud');
+var uuid = require('node-uuid');
 
 // Get a reference to the Cloud Storage component
 var storage = gcloud.storage();
@@ -167,7 +168,7 @@ exports.sendgridEmail = function sendgridEmail (req, res) {
  * @param {string} authorization The authorization header of the request, e.g. "Basic ZmdvOhJhcg=="
  */
 function verifyWebhook (authorization) {
-  var basicAuth = new Buffer(authorization.replace('Basic ', ''), 'base64');
+  var basicAuth = new Buffer(authorization.replace('Basic ', ''), 'base64').toString();
   var parts = basicAuth.split(':');
   if (parts[0] !== config.USERNAME || parts[1] !== config.PASSWORD) {
     var error = new Error('Invalid credentials');
@@ -230,12 +231,13 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
     var json = events.map(function (event) {
       return JSON.stringify(event);
     }).join('\n');
-    var bucketName = config.RESULT_BUCKET;
-    var filename = '' + new Date().getTime() + '.json';
-    var file = storage.bucket(bucketName).file(filename);
 
     // Upload a new file to Cloud Storage if we have events to save
     if (json.length) {
+      var bucketName = config.EVENT_BUCKET;
+      var filename = uuid.v4() + '.json';
+      var file = storage.bucket(bucketName).file(filename);
+
       console.log('Saving events to ' + filename + ' in bucket ' + bucketName);
 
       return file.save(json, function (err) {
@@ -248,7 +250,7 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
       });
     }
 
-    return res.end();
+    return res.status(200).end();
   } catch (err) {
     console.error(err);
     return res.status(err.code || 500).send(err.message);
@@ -331,12 +333,12 @@ exports.sendgridLoad = function sendgridLoad (context, data) {
       },
       // Poll the job for completion
       function (job, apiResponse, callback) {
-        job.on('complete', function (metadata) {
+        job.on('complete', function () {
           console.log('Job complete for ' + data.name);
-          callback(null, metadata);
+          callback();
         });
         job.on('error', function (err) {
-          console.log('Job failed for ' + data.name);
+          console.error('Job failed for ' + data.name);
           callback(err);
         });
       }

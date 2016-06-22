@@ -51,6 +51,11 @@ function getMockContext () {
   };
 }
 
+test.before(function () {
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
+});
+
 test('set: Set fails without a value', function (t) {
   var expectedMsg = 'Value not provided. Make sure you have a "value" ' +
     'property in your request';
@@ -309,4 +314,9 @@ test('del: Deletes an entity', function (t) {
       kind: KIND
     }
   );
+});
+
+test.after(function () {
+  console.error.restore();
+  console.log.restore();
 });

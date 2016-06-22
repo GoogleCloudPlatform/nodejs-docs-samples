@@ -177,21 +177,30 @@ function verifyWebhook (authorization) {
 }
 // [END verifyWebhook]
 
+// [START fixNames]
+/**
+ * Recursively rename properties in to meet BigQuery field name requirements.
+ *
+ * @param {*} obj Value to examine.
+ */
 function fixNames (obj) {
   if (Array.isArray(obj)) {
     obj.forEach(fixNames);
   } else if (obj && typeof obj === 'object') {
     for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
+        var value = obj[key];
+        fixNames(value);
         var fixedKey = key.replace('-', '_');
         if (fixedKey !== key) {
-          obj[fixedKey] = obj[key];
+          obj[fixedKey] = value;
           delete obj[key];
         }
       }
     }
   }
 }
+// [END fixNames]
 
 // [START webhook]
 /**

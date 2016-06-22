@@ -14,7 +14,7 @@
 'use strict';
 
 // [START log]
-exports.helloworld = function (context, data) {
+exports.helloWorld = function (context, data) {
   console.log('I am a log entry!');
   context.success();
 };

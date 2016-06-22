@@ -160,6 +160,23 @@ exports.sendgridEmail = function sendgridEmail (req, res) {
 };
 // [END email]
 
+// [START verifyWebhook]
+/**
+ * Verify that the webhook request came from sendgrid.
+ *
+ * @param {string} authorization The authorization header of the request, e.g. "Basic ZmdvOhJhcg=="
+ */
+function verifyWebhook (authorization) {
+  var basicAuth = new Buffer(authorization.replace('Basic ', ''), 'base64');
+  var parts = basicAuth.split(':');
+  if (parts[0] !== config.USERNAME || parts[1] !== config.PASSWORD) {
+    var error = new Error('Invalid credentials');
+    error.code = 401;
+    throw error;
+  }
+}
+// [END verifyWebhook]
+
 // [START webhook]
 /**
  * Receive a webhook from SendGrid.
@@ -176,6 +193,8 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
       error.code = 405;
       throw error;
     }
+
+    verifyWebhook(req.get('authorization') || '');
 
     var events = req.body || [];
 

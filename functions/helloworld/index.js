@@ -70,7 +70,8 @@ exports.helloBackground = function helloBackground (context, data) {
  * @param {Object} data Request data, provided by a Pub/Sub trigger.
  */
 exports.helloPubSub = function helloPubSub (context, data) {
-  context.success('Hello ' + (data.name || 'World') + '!');
+  console.log('Hello ' + (data.name || 'World') + '!');
+  context.success();
 };
 // [END helloPubSub]
 
@@ -82,6 +83,7 @@ exports.helloPubSub = function helloPubSub (context, data) {
  * @param {Object} data Request data, provided by a Cloud Storage trigger.
  */
 exports.helloGCS = function helloGCS (context, data) {
-  context.success('Hello ' + (data.name || 'World') + '!');
+  console.log('Hello ' + (data.name || 'World') + '!');
+  context.success();
 };
 // [END helloGCS]

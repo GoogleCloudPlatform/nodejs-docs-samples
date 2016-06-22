@@ -33,7 +33,7 @@ test.before(function () {
 test('helloworld:helloworld: should log a message', function (t) {
   var expectedMsg = 'My Cloud Function: hi';
   var context = getMockContext();
-  helloworldSample.helloworld(context, {
+  helloworldSample.helloWorld(context, {
     message: 'hi'
   });
 
@@ -101,15 +101,15 @@ test('helloworld:helloBackground: should print hello world', function (t) {
 });
 
 test('helloworld:helloPubSub: should print a name', function (t) {
-  var expectedMsg = 'Hello John!';
+  var expectedMsg = 'Hello Bob!';
   var context = getMockContext();
   helloworldSample.helloPubSub(context, {
-    name: 'John'
+    name: 'Bob'
   });
 
   t.is(context.success.calledOnce, true);
-  t.is(context.success.firstCall.args[0], expectedMsg);
   t.is(context.failure.called, false);
+  t.is(console.log.calledWith(expectedMsg), true);
 });
 
 test('helloworld:helloPubSub: should print hello world', function (t) {
@@ -118,20 +118,20 @@ test('helloworld:helloPubSub: should print hello world', function (t) {
   helloworldSample.helloPubSub(context, {});
 
   t.is(context.success.calledOnce, true);
-  t.is(context.success.firstCall.args[0], expectedMsg);
   t.is(context.failure.called, false);
+  t.is(console.log.calledWith(expectedMsg), true);
 });
 
 test('helloworld:helloGCS: should print a name', function (t) {
-  var expectedMsg = 'Hello John!';
+  var expectedMsg = 'Hello Sally!';
   var context = getMockContext();
   helloworldSample.helloGCS(context, {
-    name: 'John'
+    name: 'Sally'
   });
 
   t.is(context.success.calledOnce, true);
-  t.is(context.success.firstCall.args[0], expectedMsg);
   t.is(context.failure.called, false);
+  t.is(console.log.calledWith(expectedMsg), true);
 });
 
 test('helloworld:helloGCS: should print hello world', function (t) {
@@ -140,8 +140,8 @@ test('helloworld:helloGCS: should print hello world', function (t) {
   helloworldSample.helloGCS(context, {});
 
   t.is(context.success.calledOnce, true);
-  t.is(context.success.firstCall.args[0], expectedMsg);
   t.is(context.failure.called, false);
+  t.is(console.log.calledWith(expectedMsg), true);
 });
 
 test.after(function () {

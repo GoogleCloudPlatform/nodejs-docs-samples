@@ -21,7 +21,7 @@ test('should write to log', function (t) {
   var expectedMsg = 'I am a log entry!';
   sinon.spy(console, 'log');
 
-  logSample.helloworld({
+  logSample.helloWorld({
     success: function (result) {
       t.is(result, undefined);
       t.is(console.log.calledOnce, true);

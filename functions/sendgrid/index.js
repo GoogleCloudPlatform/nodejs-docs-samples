@@ -48,7 +48,7 @@ function getClient (key) {
 
 // [START getPayload]
 /**
- * Constructs the payload object from the request body.
+ * Constructs the SendGrid email request from the HTTP request body.
  *
  * @param {Object} requestBody Cloud Function request body.
  * @param {string} data.to Email address of the recipient.
@@ -127,7 +127,7 @@ exports.sendgridEmail = function sendgridEmail (req, res) {
     // Get a SendGrid client
     var client = getClient(req.query.sg_key);
 
-    // Formulate the request
+    // Build the SendGrid request to send email
     var request = client.emptyRequest();
     request.method = 'POST';
     request.path = '/v3/mail/send';
@@ -226,9 +226,10 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
 
     var events = req.body || [];
 
+    // Make sure property names in the data meet BigQuery standards
     fixNames(events);
 
-    // Generate newline-delimite JSON
+    // Generate newline-delimited JSON
     // See https://cloud.google.com/bigquery/data-formats#json_format
     var json = events.map(function (event) {
       return JSON.stringify(event);

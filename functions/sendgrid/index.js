@@ -86,12 +86,11 @@ function getPayload (requestBody) {
     throw error;
   }
 
-  var helper = sendgrid.mail;
-  return new helper.Mail(
-    new helper.Email(requestBody.from),
+  return new sendgrid.mail.Mail(
+    new sendgrid.mail.Email(requestBody.from),
     requestBody.subject,
-    new helper.Email(requestBody.to),
-    new helper.Content('text/plain', requestBody.body)
+    new sendgrid.mail.Email(requestBody.to),
+    new sendgrid.mail.Content('text/plain', requestBody.body)
   );
 }
 // [END getPayload]
@@ -238,7 +237,8 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
     // Upload a new file to Cloud Storage if we have events to save
     if (json.length) {
       var bucketName = config.EVENT_BUCKET;
-      var filename = uuid.v4() + '.json';
+      var unixTimestamp = new Date().getTime() * 1000
+      var filename = '' + unixTimestamp + uuid.v4() + '.json';
       var file = storage.bucket(bucketName).file(filename);
 
       console.log('Saving events to ' + filename + ' in bucket ' + bucketName);
@@ -334,7 +334,8 @@ exports.sendgridLoad = function sendgridLoad (context, data) {
         };
         table.import(file, metadata, callback);
       },
-      // Poll the job for completion
+      // Here we wait for the job to finish (or fail) in order to log the
+      // job result, but one could just exit without waiting.
       function (job, apiResponse, callback) {
         job.on('complete', function () {
           console.log('Job complete for ' + data.name);

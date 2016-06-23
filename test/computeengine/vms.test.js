@@ -16,7 +16,7 @@
 var test = require('ava');
 var vmsExample = require('../../computeengine/vms');
 
-test.cb('should retrieve vms', function (t) {
+test.cb.serial('should retrieve vms', function (t) {
   vmsExample.main(function (err, result) {
     t.ifError(err);
     t.truthy(result);

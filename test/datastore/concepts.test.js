@@ -38,7 +38,7 @@ test.before(function () {
   query = new Query(projectId);
 });
 
-test.after.cb(function (t) {
+test.after.cb.serial(function (t) {
   var datastore = transaction.datastore;
   var query = datastore.createQuery('Task');
 

@@ -23,7 +23,7 @@ var datasetId = 'nodejs_docs_samples';
 var tableName = 'test_' + new Date().getTime() + '_' +
   Math.floor(Math.random() * 10000);
 
-test.cb('should load data from a csv file in a GCS bucket', function (t) {
+test.cb.serial('should load data from a csv file in a GCS bucket', function (t) {
   async.series([
     function (cb) {
       loadDataFromCsvExample.createTable(datasetId, tableName, cb);

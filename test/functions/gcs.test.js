@@ -83,7 +83,7 @@ test('Fails without a file', function (t) {
   t.is(context.success.called, false);
 });
 
-test.cb('Reads the file line by line', function (t) {
+test.cb.serial('Reads the file line by line', function (t) {
   var expectedMsg = 'The file sample.txt has 114 words';
   var data = {
     bucket: 'bucket',

@@ -16,7 +16,7 @@
 var test = require('ava');
 var gettingStartedExample = require('../../bigquery/getting_started');
 
-test.cb('should run a query', function (t) {
+test.cb.serial('should run a query', function (t) {
   gettingStartedExample.main(
     function (err, rows) {
       t.ifError(err);

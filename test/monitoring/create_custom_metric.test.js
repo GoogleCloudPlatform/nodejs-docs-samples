@@ -21,7 +21,7 @@ function getPointValue (timeSeries) {
   return timeSeries.timeSeries[0].points[0].value.int64Value;
 }
 
-test.cb('should create and read back a custom metric', function (t) {
+test.cb.serial('should create and read back a custom metric', function (t) {
   customMetricsExample.main(
     process.env.GCLOUD_PROJECT,
     Math.random().toString(36).substring(7),

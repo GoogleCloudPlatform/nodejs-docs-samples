@@ -49,7 +49,7 @@ var faceDetectionExample = require('../../vision/faceDetection');
 var inputFile = path.resolve(path.join('../../vision/resources', 'face.png'));
 var outputFile = path.resolve(path.join('../../vision', 'out.png'));
 
-test.cb('should detect faces', function (t) {
+test.cb.serial('should detect faces', function (t) {
   faceDetectionExample.main(
     inputFile,
     outputFile,

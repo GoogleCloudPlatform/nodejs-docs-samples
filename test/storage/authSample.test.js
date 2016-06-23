@@ -20,7 +20,7 @@ var test = require('ava');
 var authSampleExample = require('../../storage/authSample');
 var projectId = process.env.GCLOUD_PROJECT;
 
-test.cb('should return a list of buckets', function (t) {
+test.cb.serial('should return a list of buckets', function (t) {
   var bucketName = process.env.TEST_BUCKET_NAME || 'nodejs-docs-samples';
 
   authSampleExample.main(projectId, function (err, response) {

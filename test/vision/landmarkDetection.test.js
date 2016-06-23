@@ -17,7 +17,7 @@ var test = require('ava');
 
 var landmarkDetectionSample = require('../../vision/landmarkDetection');
 
-test.cb('should detect landmarks', function (t) {
+test.cb.serial('should detect landmarks', function (t) {
   landmarkDetectionSample.main(
     'https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg',
     function (err, landmarks) {

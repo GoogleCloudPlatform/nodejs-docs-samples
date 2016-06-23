@@ -16,7 +16,7 @@
 var test = require('ava');
 var moduleSample = require('../../functions/module');
 
-test.cb('should return a hello world message', function (t) {
+test.cb.serial('should return a hello world message', function (t) {
   moduleSample.helloworld({
     success: function (result) {
       t.is(result, 'Hello World!');

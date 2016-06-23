@@ -16,7 +16,7 @@
 var test = require('ava');
 var writeExample = require('../../logging/write');
 
-test.cb('should write entries', function (t) {
+test.cb.serial('should write entries', function (t) {
   writeExample.main(function (err, results) {
     if (err && err.code === 404) {
       return t.end();

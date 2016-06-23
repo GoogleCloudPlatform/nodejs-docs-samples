@@ -90,7 +90,7 @@ test('should throw an error', function (t) {
   t.throws(function () {
     backgroundSample.sample.helloSynchronous({
       something: false
-    })
+    });
   }, Error, 'Something was not true!');
 });
 

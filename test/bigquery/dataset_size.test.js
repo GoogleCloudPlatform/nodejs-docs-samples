@@ -16,7 +16,7 @@
 var test = require('ava');
 var datasetSizeExample = require('../../bigquery/dataset_size');
 
-test.cb('should return the size of a dataset', function (t) {
+test.cb.serial('should return the size of a dataset', function (t) {
   datasetSizeExample.main(
     'bigquery-public-data',
     'hacker_news',

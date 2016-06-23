@@ -16,7 +16,7 @@
 var test = require('ava');
 var listExample = require('../../logging/list');
 
-test.cb('should list entries', function (t) {
+test.cb.serial('should list entries', function (t) {
   listExample.main(undefined, function (err, entries, nextQuery, apiResponse) {
     t.ifError(err);
     t.truthy(entries, 'should have received entries');

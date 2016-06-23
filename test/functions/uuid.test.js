@@ -16,7 +16,7 @@
 var test = require('ava');
 var uuidSample = require('../../functions/uuid');
 
-test.cb('should generate a uuid', function (t) {
+test.cb.serial('should generate a uuid', function (t) {
   uuidSample.uuid({
     success: function (uuid) {
       t.is(typeof uuid, 'string');

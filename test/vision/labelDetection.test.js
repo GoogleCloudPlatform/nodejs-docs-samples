@@ -19,7 +19,7 @@ var path = require('path');
 var labelDetectionSample = require('../../vision/labelDetection');
 var inputFile = path.resolve(path.join('../../vision/resources', 'cat.jpg'));
 
-test.cb('should detect labels', function (t) {
+test.cb.serial('should detect labels', function (t) {
   labelDetectionSample.main(
     inputFile,
     function (err, labels) {

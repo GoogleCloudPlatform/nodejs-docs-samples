@@ -27,6 +27,9 @@ test.cb('should create and read back a custom metric', function (t) {
     Math.random().toString(36).substring(7),
     function (err, results) {
       t.ifError(err);
+      // console.log('---------------------------------------------');
+      // console.log(JSON.stringify(results, null, 2));
+      // console.log('---------------------------------------------');
       t.is(results.length, 4);
       // Result of creating metric
       t.truthy(typeof results[0].name === 'string');

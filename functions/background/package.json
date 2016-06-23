@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-docs-samples-functions-sendgrid",
+  "name": "nodejs-docs-samples-functions",
   "description": "Node.js samples found on https://cloud.google.com",
   "version": "0.0.1",
   "private": true,
@@ -10,9 +10,6 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "dependencies": {
-    "async": "^1.5.2",
-    "gcloud": "^0.36.0",
-    "node-uuid": "^1.4.7",
-    "sendgrid": "^3.0.5"
+    "request-promise": "^3.0.0"
   }
 }

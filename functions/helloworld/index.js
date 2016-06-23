@@ -14,7 +14,76 @@
 'use strict';
 
 // [START helloworld]
-exports.helloworld = function (context, data) {
-  context.success('Hello World!');
+/**
+ * Cloud Function.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Object} data Request data, provided by a trigger.
+ */
+exports.helloWorld = function helloWorld (context, data) {
+  console.log('My Cloud Function: ' + data.message);
+  context.success();
 };
 // [END helloworld]
+
+// [START helloGET]
+/**
+ * HTTP Cloud Function.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.helloGET = function helloGET (req, res) {
+  res.send('Hello World!');
+};
+// [END helloGET]
+
+// [START helloHttp]
+/**
+ * HTTP Cloud Function.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.helloHttp = function helloHttp (req, res) {
+  res.send('Hello ' + (req.body.name || 'World') + '!');
+};
+// [END helloHttp]
+
+// [START helloBackground]
+/**
+ * Background Cloud Function.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Object} data Request data, provided by a trigger.
+ */
+exports.helloBackground = function helloBackground (context, data) {
+  context.success('Hello ' + (data.name || 'World') + '!');
+};
+// [END helloBackground]
+
+// [START helloPubSub]
+/**
+ * Background Cloud Function to be triggered by Pub/Sub.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Object} data Request data, provided by a Pub/Sub trigger.
+ */
+exports.helloPubSub = function helloPubSub (context, data) {
+  console.log('Hello ' + (data.name || 'World') + '!');
+  context.success();
+};
+// [END helloPubSub]
+
+// [START helloGCS]
+/**
+ * Background Cloud Function to be triggered by Cloud Storage.
+ *
+ * @param {Object} context Cloud Function context.
+ * @param {Object} data Request data, provided by a Cloud Storage trigger.
+ */
+exports.helloGCS = function helloGCS (context, data) {
+  console.log('Hello ' + (data.name || 'World') + '!');
+  context.success();
+};
+// [END helloGCS]

@@ -46,6 +46,11 @@ function getMockContext () {
   };
 }
 
+test.before(function () {
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
+});
+
 test('Publish fails without a topic', function (t) {
   var expectedMsg = 'Topic not provided. Make sure you have a "topic" ' +
     'property in your request';
@@ -133,14 +138,16 @@ test('Subscribes to a message', function (t) {
   var context = getMockContext();
 
   var pubsubSample = getSample();
-  sinon.spy(console, 'log');
 
   pubsubSample.sample.subscribe(context, data);
 
-  t.is(console.log.calledOnce, true);
-  t.is(console.log.firstCall.args[0], expectedMsg);
+  t.is(console.log.called, true);
+  t.is(console.log.calledWith(expectedMsg), true);
   t.is(context.success.calledOnce, true);
   t.is(context.failure.called, false);
+});
 
+test.after(function () {
+  console.error.restore();
   console.log.restore();
 });

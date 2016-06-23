@@ -20,10 +20,14 @@ environment.
 ## Samples
 
 * [Hello World](helloworld/)
+* [Background](background/)
 * [Callbacks](messages/)
 * [Cloud Storage](gcs/)
 * [Cloud Datastore](datastore/)
 * [Cloud Pub/Sub](pubsub/)
-* [Dependencies](uid/)
+* [Dependencies](uuid/)
+* [HTTP](http/)
 * [Logging](log/)
 * [Modules](module/)
+* [OCR (Optical Character Recognition)](ocr/)
+* [SendGrid](sendgrid/)

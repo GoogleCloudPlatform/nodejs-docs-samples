@@ -37,7 +37,8 @@ exports.helloWorld = function helloWorld (context, data) {
 var request = require('request-promise');
 
 /**
- * Background Cloud Function that returns a Promise.
+ * Background Cloud Function that returns a Promise. Note that we don't pass
+ * a "context" argument to the function.
  *
  * @param {Object} data Request data, provided by a trigger.
  * @returns {Promise}
@@ -48,3 +49,20 @@ exports.helloPromise = function helloPromise (data) {
   });
 };
 // [END helloPromise]
+
+// [START helloSynchronous]
+/**
+ * Background Cloud Function that returns synchronously. Note that we don't pass
+ * a "context" argument to the function.
+ *
+ * @param {Object} data Request data, provided by a trigger.
+ */
+exports.helloSynchronous = function helloSynchronous (data) {
+  // This function returns synchronously
+  if (data.something === true) {
+    return 'Something is true!';
+  } else {
+    throw new Error('Something was not true!');
+  }
+};
+// [END helloSynchronous]

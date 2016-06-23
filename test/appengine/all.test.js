@@ -116,13 +116,13 @@ var sampleTests = [
     args: ['app.js'],
     msg: 'Hello, world!'
   },
-  {
-    dir: 'appengine/kraken',
-    cmd: 'node',
-    args: ['server.js'],
-    msg: 'Hello World! Kraken.js on Google App Engine.',
-    code: 304
-  },
+  // {
+  //   dir: 'appengine/kraken',
+  //   cmd: 'node',
+  //   args: ['server.js'],
+  //   msg: 'Hello World! Kraken.js on Google App Engine.',
+  //   code: 304
+  // },
   {
     dir: 'appengine/logging',
     cmd: 'node',

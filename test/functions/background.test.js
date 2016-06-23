@@ -65,7 +65,7 @@ test('should say no message was provided', function (t) {
   t.is(context.failure.firstCall.args[0], expectedMsg);
   t.is(context.success.called, false);
 });
-test.cb('should make a promise request', function (t) {
+test.cb.serial('should make a promise request', function (t) {
   var backgroundSample = getSample();
   backgroundSample.sample.helloPromise({
     endpoint: 'foo.com'

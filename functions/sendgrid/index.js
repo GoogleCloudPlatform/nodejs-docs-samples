@@ -237,8 +237,8 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
     // Upload a new file to Cloud Storage if we have events to save
     if (json.length) {
       var bucketName = config.EVENT_BUCKET;
-      var unixTimestamp = new Date().getTime() * 1000
-      var filename = '' + unixTimestamp + uuid.v4() + '.json';
+      var unixTimestamp = new Date().getTime() * 1000;
+      var filename = '' + unixTimestamp + '-' + uuid.v4() + '.json';
       var file = storage.bucket(bucketName).file(filename);
 
       console.log('Saving events to ' + filename + ' in bucket ' + bucketName);

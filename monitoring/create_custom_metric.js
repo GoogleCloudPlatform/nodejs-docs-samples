@@ -121,7 +121,10 @@ CustomMetrics.prototype.writeTimeSeriesForCustomMetric =
       resource: {
         timeSeries: [{
           metric: {
-            type: this.metricType
+            type: this.metricType,
+            labels: {
+              environment: 'production'
+            }
           },
           resource: {
             type: 'gce_instance',

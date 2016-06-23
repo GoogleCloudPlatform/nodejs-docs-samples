@@ -47,7 +47,7 @@
   "scripts": {
     "ava": "ava --match='!*: dependencies should install*' --timeout=1m --fail-fast --concurrency=5",
     "ava:deps": "npm run deps_appengine && npm run ava",
-    "cover": "npm run deps_appengine && nyc ava --match='!*: dependencies should install*'",
+    "cover": "npm run deps_appengine && nyc ava --match='!*: dependencies should install*' --timeout=1m --fail-fast --concurrency=5 --cache",
     "deps_appengine": "ava --match='*: dependencies should install*'",
     "deps_bigquery": "cd bigquery; npm i; cd ../",
     "deps_computeengine": "cd computeengine; npm i; cd ../",

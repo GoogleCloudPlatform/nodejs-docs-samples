@@ -132,7 +132,7 @@ test('processImage fails without a name', function (t) {
   t.is(console.error.called, true);
 });
 
-test.cb('processImage handles detectText error', function (t) {
+test.cb.serial('processImage handles detectText error', function (t) {
   var expectedMsg = 'error';
   var context = {
     success: t.fail,
@@ -156,7 +156,7 @@ test.cb('processImage handles detectText error', function (t) {
   });
 });
 
-test.cb('processImage processes an image', function (t) {
+test.cb.serial('processImage processes an image', function (t) {
   var context = {
     success: function () {
       t.is(context.success.calledOnce, true);
@@ -227,7 +227,7 @@ test('translateText fails without a lang', function (t) {
   t.is(console.error.called, true);
 });
 
-test.cb('translateText handles translation error', function (t) {
+test.cb.serial('translateText handles translation error', function (t) {
   var expectedMsg = 'error';
   var context = {
     success: t.fail,
@@ -252,7 +252,7 @@ test.cb('translateText handles translation error', function (t) {
   });
 });
 
-test.cb('translateText handles get topic error', function (t) {
+test.cb.serial('translateText handles get topic error', function (t) {
   var expectedMsg = 'error';
   var context = {
     success: t.fail,
@@ -278,7 +278,7 @@ test.cb('translateText handles get topic error', function (t) {
   });
 });
 
-test.cb('translateText handles publish error', function (t) {
+test.cb.serial('translateText handles publish error', function (t) {
   var expectedMsg = 'error';
   var context = {
     success: t.fail,
@@ -304,7 +304,7 @@ test.cb('translateText handles publish error', function (t) {
   });
 });
 
-test.cb('translateText translates and publishes text', function (t) {
+test.cb.serial('translateText translates and publishes text', function (t) {
   var context = {
     success: function () {
       t.is(context.success.called, true);
@@ -371,7 +371,7 @@ test('saveResult fails without a lang', function (t) {
   t.is(console.error.called, true);
 });
 
-test.cb('saveResult handles save error', function (t) {
+test.cb.serial('saveResult handles save error', function (t) {
   var expectedMsg = 'error';
   var context = {
     success: t.fail,
@@ -396,7 +396,7 @@ test.cb('saveResult handles save error', function (t) {
   });
 });
 
-test.cb('saveResult translates and publishes text', function (t) {
+test.cb.serial('saveResult translates and publishes text', function (t) {
   var context = {
     success: function () {
       t.is(context.success.called, true);
@@ -418,7 +418,7 @@ test.cb('saveResult translates and publishes text', function (t) {
   });
 });
 
-test.cb('saveResult translates and publishes text with dot in filename', function (t) {
+test.cb.serial('saveResult translates and publishes text with dot in filename', function (t) {
   var context = {
     success: function () {
       t.is(context.success.called, true);

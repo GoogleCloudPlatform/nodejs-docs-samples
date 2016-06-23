@@ -14,10 +14,11 @@
 'use strict';
 
 var test = require('ava');
-var iamSample = require('../../pubsub/iam');
+var sinon = require('sinon');
+var proxyquire = require('proxyquire');
 
-test.cb('should run the sample', function (t) {
-  iamSample.main(function (err, results) {
+test.cb.serial('should run the sample', function (t) {
+  proxyquire('../../pubsub/iam', {}).main(function (err, results) {
     t.ifError(err);
     t.is(results.length, 8);
     // Got topic and apiResponse
@@ -37,5 +38,145 @@ test.cb('should run the sample', function (t) {
     // Got empty apiResponse
     t.deepEqual(results[7], {});
     t.end();
+  });
+});
+
+test('getTopicPolicyExample: handles error', function (t) {
+  var topic = {
+    iam: {
+      getPolicy: sinon.stub().callsArgWith(0, 'error')
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        topic: sinon.stub().returns(topic)
+      }
+    }
+  }).getTopicPolicyExample('test-topic', function (err) {
+    t.is(err, 'error');
+  });
+});
+
+test('getSubscriptionPolicyExample: handles error', function (t) {
+  var subscription = {
+    iam: {
+      getPolicy: sinon.stub().callsArgWith(0, 'error')
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        subscription: sinon.stub().returns(subscription)
+      }
+    }
+  }).getSubscriptionPolicyExample('test-subscription', function (err) {
+    t.is(err, 'error');
+  });
+});
+
+test('setTopicPolicyExample: sets topic policy', function (t) {
+  var policy = {};
+  var apiResponse = {};
+  var topic = {
+    iam: {
+      setPolicy: sinon.stub().callsArgWith(1, null, policy, apiResponse)
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        topic: sinon.stub().returns(topic)
+      }
+    }
+  }).setTopicPolicyExample('test-topic', function (err, policy, apiResponse) {
+    t.ifError(err);
+  });
+});
+
+test('setTopicPolicyExample: handles error', function (t) {
+  var topic = {
+    iam: {
+      setPolicy: sinon.stub().callsArgWith(1, 'error')
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        topic: sinon.stub().returns(topic)
+      }
+    }
+  }).setTopicPolicyExample('test-topic', function (err) {
+    t.is(err, 'error');
+  });
+});
+
+test('setSubscriptionPolicyExample: sets subscription policy', function (t) {
+  var policy = {};
+  var apiResponse = {};
+  var subscription = {
+    iam: {
+      setPolicy: sinon.stub().callsArgWith(1, null, policy, apiResponse)
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        subscription: sinon.stub().returns(subscription)
+      }
+    }
+  }).setSubscriptionPolicyExample('test-subscription', function (err, policy, apiResponse) {
+    t.ifError(err);
+  });
+});
+
+test('setSubscriptionPolicyExample: handles error', function (t) {
+  var subscription = {
+    iam: {
+      setPolicy: sinon.stub().callsArgWith(1, 'error')
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        subscription: sinon.stub().returns(subscription)
+      }
+    }
+  }).setSubscriptionPolicyExample('test-subscription', function (err) {
+    t.is(err, 'error');
+  });
+});
+
+test('testTopicPermissionsExample: handles error', function (t) {
+  var topic = {
+    iam: {
+      testPermissions: sinon.stub().callsArgWith(1, 'error')
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        topic: sinon.stub().returns(topic)
+      }
+    }
+  }).testTopicPermissionsExample('test-topic', function (err) {
+    t.is(err, 'error');
+  });
+});
+
+test('testSubscriptionPermissionsExample: handles error', function (t) {
+  var subscription = {
+    iam: {
+      testPermissions: sinon.stub().callsArgWith(1, 'error')
+    }
+  };
+  proxyquire('../../pubsub/iam', {
+    './subscription': {
+      pubsub: {
+        subscription: sinon.stub().returns(subscription)
+      }
+    }
+  }).testSubscriptionPermissionsExample('test-subscription', function (err) {
+    t.is(err, 'error');
   });
 });

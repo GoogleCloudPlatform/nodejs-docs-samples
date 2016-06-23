@@ -77,7 +77,6 @@ exports.helloHttp = function helloHttp (req, res) {
 exports.helloContent = function helloContent (req, res) {
   var name;
 
-  console.log(req.get('content-type'));
   switch (req.get('content-type')) {
     // '{"name":"John"}'
     case 'application/json':

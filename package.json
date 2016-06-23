@@ -45,7 +45,7 @@
     ]
   },
   "scripts": {
-    "ava": "ava --match='!*: dependencies should install*'",
+    "ava": "ava --match='!*: dependencies should install*' --timeout=1m --fail-fast --concurrency=5",
     "ava:deps": "npm run deps_appengine && npm run ava",
     "cover": "npm run deps_appengine && nyc ava --match='!*: dependencies should install*'",
     "deps_appengine": "ava --match='*: dependencies should install*'",
@@ -74,7 +74,7 @@
   },
   "devDependencies": {
     "async": "^1.5.2",
-    "ava": "^0.14.0",
+    "ava": "^0.15.2",
     "codecov": "^1.0.1",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",
     "nyc": "^6.4.4",

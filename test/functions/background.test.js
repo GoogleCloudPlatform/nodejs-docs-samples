@@ -79,6 +79,20 @@ test.cb.serial('should make a promise request', function (t) {
     t.fail();
   });
 });
+test('should return synchronously', function (t) {
+  var backgroundSample = getSample();
+  t.is(backgroundSample.sample.helloSynchronous({
+    something: true
+  }), 'Something is true!');
+});
+test('should throw an error', function (t) {
+  var backgroundSample = getSample();
+  t.throws(function () {
+    backgroundSample.sample.helloSynchronous({
+      something: false
+    })
+  }, Error, 'Something was not true!');
+});
 
 test.after(function () {
   console.error.restore();

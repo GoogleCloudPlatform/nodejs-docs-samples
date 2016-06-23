@@ -19,7 +19,7 @@ var async = require('async');
 var tasks = require('../../datastore/tasks.js');
 var taskIds = [];
 
-test.after.cb(function (t) {
+test.after.cb.serial(function (t) {
   async.parallel(taskIds.map(function (taskId) {
     return function (cb) {
       tasks.deleteEntity(taskId, cb);

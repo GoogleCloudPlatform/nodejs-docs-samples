@@ -16,7 +16,7 @@
 var test = require('ava');
 var listResourcesExample = require('../../monitoring/list_resources');
 
-test.cb('should list a bunch of stuff', function (t) {
+test.cb.serial('should list a bunch of stuff', function (t) {
   listResourcesExample.main(
     process.env.GCLOUD_PROJECT,
     function (err, results) {

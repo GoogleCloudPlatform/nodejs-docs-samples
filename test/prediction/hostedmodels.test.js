@@ -16,7 +16,7 @@
 var test = require('ava');
 var hostedmodels = require('../../prediction/hostedmodels');
 
-test.cb('should predict', function (t) {
+test.cb.serial('should predict', function (t) {
   hostedmodels.main('good night', function (err, result) {
     t.ifError(err);
     t.truthy(result);

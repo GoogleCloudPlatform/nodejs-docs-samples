@@ -17,7 +17,7 @@ var test = require('ava');
 var path = require('path');
 var recognizeExample = require('../../speech/recognize');
 
-test.cb('should list entries', function (t) {
+test.cb.serial('should list entries', function (t) {
   recognizeExample.main(
     path.resolve('../../speech/resources/audio.raw'),
     function (err, result) {

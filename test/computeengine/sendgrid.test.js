@@ -17,7 +17,7 @@ var test = require('ava');
 var proxyquire = require('proxyquire').noPreserveCache();
 process.env.SENDGRID_API_KEY = 'foo';
 
-test.cb('should send an email', function (t) {
+test.cb.serial('should send an email', function (t) {
   proxyquire('../../computeengine/sendgrid.js', {
     sendgrid: function (key) {
       t.is(key, 'foo');

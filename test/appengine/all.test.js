@@ -317,7 +317,7 @@ sampleTests.forEach(function (sample) {
     sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
   }
   port++;
-  test.cb(sample.dir + ': dependencies should install', function (t) {
+  test.cb.serial(sample.dir + ': dependencies should install', function (t) {
     testInstallation(sample, t.end);
   });
 
@@ -330,13 +330,13 @@ sampleTests.forEach(function (sample) {
     return;
   }
 
-  test.cb(sample.dir + ' should return 200 and Hello World', function (t) {
+  test.cb.serial(sample.dir + ' should return 200 and Hello World', function (t) {
     testLocalApp(sample, t.end);
   });
 });
 
 if (process.env.TRAVIS && process.env.DEPLOY_TESTS) {
-  test.cb('should deploy all samples', function (t) {
+  test.cb.serial('should deploy all samples', function (t) {
     // 30 minutes because deployments are slow
     this.timeout(30 * 60 * 1000);
 

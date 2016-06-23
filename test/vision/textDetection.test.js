@@ -18,7 +18,7 @@ var path = require('path');
 var inputDir = path.resolve('../../vision/resources');
 var textDetectionSample = require('../../vision/textDetection');
 
-test.cb('should detect texts', function (t) {
+test.cb.serial('should detect texts', function (t) {
   textDetectionSample.main(
     inputDir,
     function (err, textResponse) {

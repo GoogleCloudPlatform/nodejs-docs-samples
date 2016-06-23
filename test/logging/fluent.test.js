@@ -17,7 +17,7 @@ var test = require('ava');
 var proxyquire = require('proxyquire').noPreserveCache();
 var request = require('supertest');
 
-test.cb('should log error', function (t) {
+test.cb.serial('should log error', function (t) {
   var loggerCalled = false;
 
   var structuredLogger = {

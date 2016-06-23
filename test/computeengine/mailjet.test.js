@@ -18,7 +18,7 @@ var proxyquire = require('proxyquire').noPreserveCache();
 process.env.MAILJET_API_KEY = 'foo';
 process.env.MAILJET_API_SECRET = 'bar';
 
-test.cb('should send an email', function (t) {
+test.cb.serial('should send an email', function (t) {
   proxyquire('../../computeengine/mailjet.js', {
     nodemailer: {
       createTransport: function (arg) {

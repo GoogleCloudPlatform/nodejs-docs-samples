@@ -16,7 +16,7 @@
 var test = require('ava');
 var exportExample = require('../../logging/export');
 
-test.cb('should list sinks', function (t) {
+test.cb.serial('should list sinks', function (t) {
   exportExample.main(function (err, sinks) {
     t.ifError(err);
     t.truthy(sinks, 'should have received sinks');

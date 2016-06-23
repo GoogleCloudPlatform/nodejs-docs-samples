@@ -152,6 +152,8 @@ exports.sendgridEmail = function sendgridEmail (req, res) {
       }
       if (response.body) {
         res.send(response.body);
+      } else {
+        res.end();
       }
     });
   } catch (err) {

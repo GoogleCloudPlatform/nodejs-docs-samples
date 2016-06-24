@@ -20,7 +20,9 @@ var gcloud = require('gcloud');
 var logging = gcloud.logging();
 // [END setup]
 
+// [START reporting]
 var reporting = require('./report');
+// [END reporting]
 
 // [START helloSimpleErrorReport]
 /**
@@ -34,7 +36,7 @@ function reportError (err, callback) {
   // This is the name of the StackDriver log stream that will receive the log
   // entry. This name can be any valid log stream name, but must contain "err"
   // in order for the error to be picked up by StackDriver Error Reporting.
-  var logName = 'error';
+  var logName = 'errors';
   var log = logging.log(logName);
 
   // https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource

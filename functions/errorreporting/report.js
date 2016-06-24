@@ -72,8 +72,6 @@ function report (options, callback) {
     resource.labels.projectId = options.projectId;
   }
 
-  // ErrorEvent
-  // See https://cloud.google.com/error-reporting/reference/rest/v1beta1/ErrorEvent
   var context = {};
   if (typeof options.user === 'string') {
     // ErrorEvent.context.user
@@ -88,10 +86,12 @@ function report (options, callback) {
     context.reportLocation = {
       filePath: typeof options.filePath === 'string' ? options.filePath : 'unknown',
       lineNumber: typeof options.lineNumber === 'number' ? options.lineNumber : 0,
-      functionName: ENTRY_POINT
+      functionName: typeof options.functionName === 'string' ? options.functionName : 'unknown'
     };
   }
 
+  // ErrorEvent
+  // See https://cloud.google.com/error-reporting/reference/rest/v1beta1/ErrorEvent
   var structPayload = {
     // ErrorEvent.serviceContext
     serviceContext: {

@@ -14,8 +14,32 @@
 'use strict';
 
 // [START log]
-exports.helloWorld = function (context, data) {
+exports.helloWorld = function helloWorld (context, data) {
   console.log('I am a log entry!');
   context.success();
 };
 // [END log]
+
+exports.retrieve = function retrieve () {
+  // [START retrieve]
+  // By default, gcloud will authenticate using the service account file specified
+  // by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+  // project specified by the GCLOUD_PROJECT environment variable. See
+  // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+  var gcloud = require('gcloud');
+  var logging = gcloud.logging();
+
+  // Retrieve the latest Cloud Function log entries
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/logging
+  logging.getEntries({
+    pageSize: 10,
+    filter: 'resource.type="cloud_function"'
+  }, function (err, entries) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(entries);
+    }
+  });
+  // [END retrieve]
+}

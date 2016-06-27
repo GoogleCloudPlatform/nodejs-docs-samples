@@ -20,9 +20,9 @@ var gcloud = require('gcloud');
 var logging = gcloud.logging();
 // [END setup]
 
-// [START reporting]
-var reporting = require('./report');
-// [END reporting]
+// [START reportDetailedError]
+var reportDetailedError = require('./report');
+// [END reportDetailedError]
 
 // [START helloSimpleErrorReport]
 /**
@@ -104,9 +104,10 @@ exports.helloHttpError = function helloHttpError (req, res) {
     // All is good, respond to the HTTP request
     return res.send('Hello ' + (req.body.message || 'World') + '!').end();
   } catch (err) {
+    // Set the response status code before reporting the error
     res.status(err.code || 500);
     // Report the error
-    return reporting.reportHttpError(err, req, res, function () {
+    return reportDetailedError(err, req, res, function () {
       // Now respond to the HTTP request
       res.send(err.message);
     });
@@ -131,7 +132,7 @@ exports.helloBackgroundError = function helloBackgroundError (context, data) {
     return context.success('Hello World!');
   } catch (err) {
     // Report the error
-    return reporting.reportError(err, function () {
+    return reportDetailedError(err, function () {
       // Now finish mark the execution failure
       context.failure(err.message);
     });

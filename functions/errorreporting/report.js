@@ -16,42 +16,32 @@
 var gcloud = require('gcloud');
 var logging = gcloud.logging();
 
-function getVersion (options) {
-  try {
-    if (options.version === undefined) {
-      var pkg = require('./package.json');
-      options.version = pkg.version;
-    }
-  } catch (err) {}
-  if (options.version === undefined) {
-    options.version = 'unknown';
+// [START helloHttpError]
+/**
+ * Report an error to StackDriver Error Reporting. Writes up to the maximum data
+ * accepted by StackDriver Error Reporting.
+ *
+ * @param {Error} err The Error object to report.
+ * @param {Object} [req] Request context, if any.
+ * @param {Object} [res] Response context, if any.
+ * @param {Object} [options] Additional context, if any.
+ * @param {Function} callback Callback function.
+ */
+function reportDetailedError (err, req, res, options, callback) {
+  if (typeof req === 'function') {
+    callback = req;
+    req = null;
+    res = null;
+    options = {};
+  } else if (typeof options === 'function') {
+    callback = options;
+    options = {};
   }
-}
-
-function getRequest (options) {
-  if (options.req && options.req) {
-    var req = options.req;
-    return {
-      method: req.method,
-      url: req.originalUrl,
-      userAgent: typeof req.get === 'function' ? req.get('user-agent') : 'unknown',
-      referrer: '',
-      responseStatusCode: options.res.statusCode,
-      remoteIp: req.ip
-    };
-  }
-}
-
-function report (options, callback) {
   options || (options = {});
-  options.err || (options.err = {});
-  options.req || (options.req = {});
 
   var FUNCTION_NAME = process.env.FUNCTION_NAME;
   var FUNCTION_TRIGGER_TYPE = process.env.FUNCTION_TRIGGER_TYPE;
   var ENTRY_POINT = process.env.ENTRY_POINT;
-
-  getVersion(options);
 
   var log = logging.log('errors');
 
@@ -77,17 +67,36 @@ function report (options, callback) {
     // ErrorEvent.context.user
     context.user = options.user;
   }
-  if (FUNCTION_TRIGGER_TYPE === 'HTTP_TRIGGER') {
+  if (FUNCTION_TRIGGER_TYPE === 'HTTP_TRIGGER' && req && res) {
     // ErrorEvent.context.httpRequest
-    context.httpRequest = getRequest(options);
+    context.httpRequest = {
+      method: req.method,
+      url: req.originalUrl,
+      userAgent: typeof req.get === 'function' ? req.get('user-agent') : 'unknown',
+      referrer: '',
+      remoteIp: req.ip
+    };
+    if (typeof res.statusCode === 'number') {
+      context.httpRequest.responseStatusCode = res.statusCode;
+    }
   }
-  if (!(options.err instanceof Error)) {
+  if (!(err instanceof Error) || typeof err.stack !== 'string') {
     // ErrorEvent.context.reportLocation
     context.reportLocation = {
       filePath: typeof options.filePath === 'string' ? options.filePath : 'unknown',
       lineNumber: typeof options.lineNumber === 'number' ? options.lineNumber : 0,
       functionName: typeof options.functionName === 'string' ? options.functionName : 'unknown'
     };
+  }
+
+  try {
+    if (options.version === undefined) {
+      var pkg = require('./package.json');
+      options.version = pkg.version;
+    }
+  } catch (err) {}
+  if (options.version === undefined) {
+    options.version = 'unknown';
   }
 
   // ErrorEvent
@@ -105,35 +114,16 @@ function report (options, callback) {
   };
 
   // ErrorEvent.message
-  if (options.err instanceof Error && typeof options.err.stack === 'string') {
-    structPayload.message = options.err.stack;
-  } else if (typeof options.err === 'string') {
-    structPayload.message = options.err;
-  } else if (typeof options.err.message === 'string') {
-    structPayload.message = options.err.message;
+  if (err instanceof Error && typeof err.stack === 'string') {
+    structPayload.message = err.stack;
+  } else if (typeof err === 'string') {
+    structPayload.message = err;
+  } else if (typeof err.message === 'string') {
+    structPayload.message = err.message;
   }
 
   log.write(log.entry(resource, structPayload), callback);
 }
+// [END helloHttpError]
 
-exports.report = report;
-
-exports.reportError = function reportError (err, options, callback) {
-  if (typeof options === 'function') {
-    callback = options;
-    options = {};
-  }
-  options.err = err;
-  report(options, callback);
-};
-
-exports.reportHttpError = function reportHttpError (err, req, res, options, callback) {
-  if (typeof options === 'function') {
-    callback = options;
-    options = {};
-  }
-  options.err = err;
-  options.req = req;
-  options.res = res;
-  report(options, callback);
-};
+module.exports = reportDetailedError;

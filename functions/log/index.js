@@ -42,16 +42,16 @@ exports.retrieve = function retrieve () {
     }
   });
   // [END retrieve]
-}
+};
 
 exports.getMetrics = function getMetrics () {
   // [START getMetrics]
   var google = require('googleapis');
   var monitoring = google.monitoring('v3');
 
-  google.auth.getApplicationDefault(function(err, authClient) {
+  google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
-      return console.log('Authentication failed because of ', err);
+      return console.error('Authentication failed', err);
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
       var scopes = [
@@ -70,7 +70,7 @@ exports.getMetrics = function getMetrics () {
 
     // Create two datestrings, a start and end range
     var oneWeekAgo = new Date();
-    var now = new Date()
+    var now = new Date();
     oneWeekAgo.setHours(oneWeekAgo.getHours() - (7 * 24));
     oneWeekAgo = formatDate(oneWeekAgo);
     now = formatDate(now);
@@ -83,13 +83,13 @@ exports.getMetrics = function getMetrics () {
       'interval.startTime': oneWeekAgo,
       'interval.endTime': now,
       name: 'projects/' + process.env.GCLOUD_PROJECT
-    }, function(err, results) {
+    }, function (err, results) {
       if (err) {
-        console.log(err);
+        console.error(err);
       } else {
         console.log(results.timeSeries);
       }
     });
   });
   // [END getMetrics]
-}
+};

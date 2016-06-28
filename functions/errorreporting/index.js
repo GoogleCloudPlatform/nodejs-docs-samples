@@ -65,8 +65,8 @@ function reportError (err, callback) {
 /**
  * HTTP Cloud Function.
  *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
+ * @param {Object} req Cloud Function request object.
+ * @param {Object} res Cloud Function response object.
  */
 exports.helloSimpleError = function helloSimpleError (req, res) {
   try {
@@ -76,12 +76,12 @@ exports.helloSimpleError = function helloSimpleError (req, res) {
       throw error;
     }
     // All is good, respond to the HTTP request
-    return res.send('Hello World!').end();
+    return res.send('Hello World!');
   } catch (err) {
     // Report the error
     return reportError(err, function () {
       // Now respond to the HTTP request
-      res.status(error.code || 500).send(err.message);
+      return res.status(error.code || 500).send(err.message);
     });
   }
 };
@@ -91,8 +91,8 @@ exports.helloSimpleError = function helloSimpleError (req, res) {
 /**
  * HTTP Cloud Function.
  *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
+ * @param {Object} req Cloud Function request object.
+ * @param {Object} res Cloud Function response object.
  */
 exports.helloHttpError = function helloHttpError (req, res) {
   try {
@@ -102,14 +102,14 @@ exports.helloHttpError = function helloHttpError (req, res) {
       throw error;
     }
     // All is good, respond to the HTTP request
-    return res.send('Hello ' + (req.body.message || 'World') + '!').end();
+    return res.send('Hello ' + (req.body.message || 'World') + '!');
   } catch (err) {
     // Set the response status code before reporting the error
     res.status(err.code || 500);
     // Report the error
     return reportDetailedError(err, req, res, function () {
       // Now respond to the HTTP request
-      res.send(err.message);
+      return res.send(err.message);
     });
   }
 };
@@ -119,7 +119,7 @@ exports.helloHttpError = function helloHttpError (req, res) {
 /**
  * Background Cloud Function.
  *
- * @param {Object} context Cloud Function context.
+ * @param {Object} context Cloud Function context object.
  * @param {Object} data Request data, provided by a trigger.
  * @param {string} data.message Message, provided by the trigger.
  */
@@ -134,7 +134,7 @@ exports.helloBackgroundError = function helloBackgroundError (context, data) {
     // Report the error
     return reportDetailedError(err, function () {
       // Now finish mark the execution failure
-      context.failure(err.message);
+      return context.failure(err.message);
     });
   }
 };

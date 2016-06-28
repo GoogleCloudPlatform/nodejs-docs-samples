@@ -43,3 +43,53 @@ exports.retrieve = function retrieve () {
   });
   // [END retrieve]
 }
+
+exports.getMetrics = function getMetrics () {
+  // [START getMetrics]
+  var google = require('googleapis');
+  var monitoring = google.monitoring('v3');
+
+  google.auth.getApplicationDefault(function(err, authClient) {
+    if (err) {
+      return console.log('Authentication failed because of ', err);
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = [
+        'https://www.googleapis.com/auth/cloud-platform',
+        'https://www.googleapis.com/auth/monitoring',
+        'https://www.googleapis.com/auth/monitoring.read',
+        'https://www.googleapis.com/auth/monitoring.write'
+      ];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    // Format a date according to RFC33339 with milliseconds format
+    function formatDate (date) {
+      return JSON.parse(JSON.stringify(date).replace('Z', '000Z'));
+    }
+
+    // Create two datestrings, a start and end range
+    var oneWeekAgo = new Date();
+    var now = new Date()
+    oneWeekAgo.setHours(oneWeekAgo.getHours() - (7 * 24));
+    oneWeekAgo = formatDate(oneWeekAgo);
+    now = formatDate(now);
+
+    monitoring.projects.timeSeries.list({
+      auth: authClient,
+      // There is also cloudfunctions.googleapis.com/function/execution_count
+      filter: 'metric.type="cloudfunctions.googleapis.com/function/execution_times"',
+      pageSize: 10,
+      'interval.startTime': oneWeekAgo,
+      'interval.endTime': now,
+      name: 'projects/' + process.env.GCLOUD_PROJECT
+    }, function(err, results) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(results.timeSeries);
+      }
+    });
+  });
+  // [END getMetrics]
+}

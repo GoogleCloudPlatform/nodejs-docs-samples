@@ -40,9 +40,6 @@ function reportDetailedError (err, req, res, options, callback) {
   options || (options = {});
 
   var FUNCTION_NAME = process.env.FUNCTION_NAME;
-  var FUNCTION_TRIGGER_TYPE = process.env.FUNCTION_TRIGGER_TYPE;
-  var ENTRY_POINT = process.env.ENTRY_POINT;
-
   var log = logging.log('errors');
 
   // MonitoredResource
@@ -67,7 +64,7 @@ function reportDetailedError (err, req, res, options, callback) {
     // ErrorEvent.context.user
     context.user = options.user;
   }
-  if (FUNCTION_TRIGGER_TYPE === 'HTTP_TRIGGER' && req && res) {
+  if (req && res) {
     // ErrorEvent.context.httpRequest
     context.httpRequest = {
       method: req.method,

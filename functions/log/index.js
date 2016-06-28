@@ -14,8 +14,82 @@
 'use strict';
 
 // [START log]
-exports.helloWorld = function (context, data) {
+exports.helloWorld = function helloWorld (context, data) {
   console.log('I am a log entry!');
   context.success();
 };
 // [END log]
+
+exports.retrieve = function retrieve () {
+  // [START retrieve]
+  // By default, gcloud will authenticate using the service account file specified
+  // by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
+  // project specified by the GCLOUD_PROJECT environment variable. See
+  // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+  var gcloud = require('gcloud');
+  var logging = gcloud.logging();
+
+  // Retrieve the latest Cloud Function log entries
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/logging
+  logging.getEntries({
+    pageSize: 10,
+    filter: 'resource.type="cloud_function"'
+  }, function (err, entries) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(entries);
+    }
+  });
+  // [END retrieve]
+};
+
+exports.getMetrics = function getMetrics () {
+  // [START getMetrics]
+  var google = require('googleapis');
+  var monitoring = google.monitoring('v3');
+
+  google.auth.getApplicationDefault(function (err, authClient) {
+    if (err) {
+      return console.error('Authentication failed', err);
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = [
+        'https://www.googleapis.com/auth/cloud-platform',
+        'https://www.googleapis.com/auth/monitoring',
+        'https://www.googleapis.com/auth/monitoring.read',
+        'https://www.googleapis.com/auth/monitoring.write'
+      ];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    // Format a date according to RFC33339 with milliseconds format
+    function formatDate (date) {
+      return JSON.parse(JSON.stringify(date).replace('Z', '000Z'));
+    }
+
+    // Create two datestrings, a start and end range
+    var oneWeekAgo = new Date();
+    var now = new Date();
+    oneWeekAgo.setHours(oneWeekAgo.getHours() - (7 * 24));
+    oneWeekAgo = formatDate(oneWeekAgo);
+    now = formatDate(now);
+
+    monitoring.projects.timeSeries.list({
+      auth: authClient,
+      // There is also cloudfunctions.googleapis.com/function/execution_count
+      filter: 'metric.type="cloudfunctions.googleapis.com/function/execution_times"',
+      pageSize: 10,
+      'interval.startTime': oneWeekAgo,
+      'interval.endTime': now,
+      name: 'projects/' + process.env.GCLOUD_PROJECT
+    }, function (err, results) {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(results.timeSeries);
+      }
+    });
+  });
+  // [END getMetrics]
+};

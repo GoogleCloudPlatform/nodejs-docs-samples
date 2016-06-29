@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "hapi": "^13.0.0"

@@ -46,7 +46,7 @@ create a project/app id. (App id and project id are identical.)
 
 1. Use gcloud to deploy your app.
 
-        gcloud preview app deploy
+        gcloud app deploy
 
 1. Awesome! Your application is now live at `your-project-id.appspot.com`.
 

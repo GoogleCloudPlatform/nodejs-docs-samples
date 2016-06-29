@@ -11,7 +11,7 @@
   "scripts": {
     "pretest": "jshint .",
     "start": "node server/server.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "compression": "^1.0.3",

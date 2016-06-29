@@ -26,7 +26,7 @@ Where appropriate, replace `[YOUR_PROJECT_ID]` with the ID of your Cloud project
 
 1. Deploy the app:
 
-    gcloud preview app deploy
+    gcloud app deploy
 
 1. View the deployed app at https://[YOUR_PROJECT_ID].appspot.com/.
 1. Use the [StackDriver Debugger dashboard](https://console.cloud.google.com/debug) to inspect runtime data of the app.

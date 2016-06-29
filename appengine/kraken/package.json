@@ -13,7 +13,7 @@
     "build": "node_modules/grunt-cli/bin/grunt build",
     "all": "npm run build && npm run test",
     "start": "node server.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "construx": "^1.0.0",

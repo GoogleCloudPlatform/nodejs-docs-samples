@@ -12,7 +12,7 @@
     "bundle": "webpack --config webpack.config.js",
     "prestart": "npm run bundle",
     "start": "node server.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "express": "^4.13.4",

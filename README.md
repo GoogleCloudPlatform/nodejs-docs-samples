@@ -31,6 +31,7 @@ on Google Cloud Platform.
   * [Google Container Engine](#google-container-engine)
   * [Google BigQuery](#google-bigquery)
   * [Google Cloud Datastore (Beta)](#google-cloud-datastore-beta)
+  * [Stackdriver Debugger (Beta)](#stackdriver-debugger-beta)
   * [Google Cloud Functions (Alpha)](#google-cloud-functions-alpha)
   * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
   * [Stackdriver Monitoring (Beta)](#stackdriver-monitoring-beta)
@@ -38,6 +39,7 @@ on Google Cloud Platform.
   * [Google Cloud Pub/Sub](#google-cloud-pubsub)
   * [Google Cloud Speech API (Alpha)](#google-cloud-speech-api-alpha)
   * [Google Cloud Storage](#google-cloud-storage)
+  * [Stackdriver Trace (Beta)](#stackdriver-trace-beta)
   * [Google Cloud Vision API](#google-cloud-vision-api)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
@@ -235,6 +237,16 @@ View the [Cloud Datastore Node.js samples][datastore_samples].
 [datastore_docs]: https://cloud.google.com/datastore/docs/
 [datastore_samples]: datastore
 
+### Stackdriver Debugger (Beta)
+
+[Stackdriver Debugger][debugger_docs] makes it easier to view the application
+state without adding logging statements.
+
+View the [Stackdriver Debugger Node.js sample][debugger_sample].
+
+[debugger_docs]: https://cloud.google.com/debugger/docs/
+[debugger_sample]: debugger
+
 ### Google Cloud Functions (Alpha)
 
 [Sign up for the Alpha][functions_signup].
@@ -315,6 +327,17 @@ View the [Cloud Storage Node.js samples][storage_samples].
 
 [storage_docs]: https://cloud.google.com/storage/docs/
 [storage_samples]: storage
+
+### Stackdriver Trace (Beta)
+
+[Stackdriver Trace][trace_docs] is a distributed tracing system for Google Cloud
+Platform that collects latency data from App Engine applications and displays it
+in near real time in the Google Cloud Platform Console.
+
+View the [Stackdriver Trace Node.js sample][trace_sample].
+
+[trace_docs]: https://cloud.google.com/trace/docs/
+[trace_sample]: trace
 
 ### Google Cloud Vision API
 

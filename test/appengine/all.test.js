@@ -222,6 +222,18 @@ var sampleTests = [
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello Kubernetes!'
+  },
+  {
+    dir: 'debugger',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'Hello, world!'
+  },
+  {
+    dir: 'trace',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: 'acceleratedmobilepageurl'
   }
 ];
 

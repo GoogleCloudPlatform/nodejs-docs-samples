@@ -1,0 +1,19 @@
+{
+  "name": "stackdriver-trace",
+  "description": "StackDriver Trace sample for Node.js",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "~6"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "@google/cloud-trace": "^0.5.3",
+    "express": "^4.13.4",
+    "request": "^2.72.0"
+  }
+}

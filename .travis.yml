@@ -61,6 +61,7 @@ cache:
   - pubsub/node_modules/
   - storage/node_modules/
   - trace/node_modules/
+  - vision/node_modules/
 
 services:
   - redis-server

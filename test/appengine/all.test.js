@@ -18,7 +18,6 @@ var request = require('request');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
-var cwd = process.cwd();
 var projectId = process.env.GCLOUD_PROJECT;
 
 function getPath (dir) {

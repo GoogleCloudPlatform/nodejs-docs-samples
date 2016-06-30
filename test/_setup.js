@@ -1,4 +1,4 @@
-// Copyright 2015-2016, Google, Inc.
+// Copyright 2016, Google, Inc.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -13,15 +13,18 @@
 
 'use strict';
 
-var exportExample = require('../../logging/export');
+var assert = require('power-assert');
+var sinon = require('sinon');
 
-describe('logging:export', function () {
-  it('should list sinks', function (done) {
-    exportExample.main(function (err, sinks) {
-      assert(!err);
-      assert(sinks, 'should have received sinks');
-      assert(Array.isArray(sinks), 'sinks should be an array');
-      done();
-    });
-  });
+global.assert = assert;
+global.sinon = sinon;
+
+beforeEach(function () {
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
+});
+
+afterEach(function () {
+  console.error.restore();
+  console.log.restore();
 });

@@ -13,16 +13,17 @@
 
 'use strict';
 
-var test = require('ava');
 var listExample = require('../../logging/list');
 
-test.cb.serial('should list entries', function (t) {
-  listExample.main(undefined, function (err, entries, nextQuery, apiResponse) {
-    t.ifError(err);
-    t.truthy(entries, 'should have received entries');
-    t.truthy(Array.isArray(entries), 'entries should be an array');
-    t.truthy(nextQuery, 'should have received nextQuery');
-    t.truthy(apiResponse, 'should have received apiResponse');
-    t.end();
+describe('logging:list', function () {
+  it('should list entries', function (done) {
+    listExample.main(undefined, function (err, entries, nextQuery, apiResponse) {
+      assert(!err);
+      assert(entries, 'should have received entries');
+      assert(Array.isArray(entries), 'entries should be an array');
+      assert(nextQuery, 'should have received nextQuery');
+      assert(apiResponse, 'should have received apiResponse');
+      done();
+    });
   });
 });

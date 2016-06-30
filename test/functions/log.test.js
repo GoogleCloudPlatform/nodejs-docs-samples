@@ -13,8 +13,6 @@
 
 'use strict';
 
-var test = require('ava');
-var sinon = require('sinon');
 var proxyquire = require('proxyquire').noCallThru();
 
 var authClient = {};
@@ -53,76 +51,69 @@ function getSample () {
   };
 }
 
-test.before(function () {
-  sinon.stub(console, 'error');
-  sinon.stub(console, 'log');
-});
+describe('functions:log', function () {
+  it('should write to log', function () {
+    var expectedMsg = 'I am a log entry!';
+    getSample().sample.helloWorld({
+      success: function (result) {
+        assert.equal(result, undefined);
+        assert.equal(console.log.called, true);
+        assert.equal(console.log.calledWith(expectedMsg), true);
+      },
+      failure: assert.fail
+    });
+  });
 
-test('should write to log', function (t) {
-  var expectedMsg = 'I am a log entry!';
-  getSample().sample.helloWorld({
-    success: function (result) {
-      t.is(result, undefined);
-      t.is(console.log.called, true);
-      t.is(console.log.calledWith(expectedMsg), true);
-    },
-    failure: t.fail
+  it('retrieve: should retrieve logs', function () {
+    var logSample = getSample();
+    logSample.sample.retrieve();
+    assert.equal(console.log.calledWith('entries'), true);
+  });
+
+  it('retrieve: handles error', function () {
+    var expectedMsg = 'entries error';
+    var logSample = getSample();
+    logSample.mocks.logging.getEntries = sinon.stub().callsArgWith(1, expectedMsg);
+    logSample.sample.retrieve();
+    assert.equal(console.error.calledWith(expectedMsg), true);
+  });
+
+  it('getMetrics: should retrieve metrics', function () {
+    var logSample = getSample();
+    logSample.sample.getMetrics();
+    assert.equal(console.log.calledWith('series'), true);
+  });
+
+  it('getMetrics: creates with scope', function () {
+    var authClient = {
+      createScopedRequired: sinon.stub().returns(true),
+      createScoped: sinon.stub().returns('foo')
+    };
+    var logSample = getSample();
+    logSample.mocks.auth.getApplicationDefault = sinon.stub().callsArgWith(0, null, authClient);
+    logSample.sample.getMetrics();
+    assert.deepEqual(authClient.createScoped.firstCall.args[0], [
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/monitoring',
+      'https://www.googleapis.com/auth/monitoring.read',
+      'https://www.googleapis.com/auth/monitoring.write'
+    ]);
+  });
+
+  it('getMetrics: handles auth error', function () {
+    var expectedMsg = 'auth error';
+    var logSample = getSample();
+    logSample.mocks.auth.getApplicationDefault = sinon.stub().callsArgWith(0, expectedMsg);
+    logSample.sample.getMetrics();
+    assert.equal(console.error.calledWith('Authentication failed', expectedMsg), true);
+  });
+
+  it('getMetrics: handles time series error', function () {
+    var expectedMsg = 'time series error';
+    var logSample = getSample();
+    logSample.mocks.monitoring.projects.timeSeries.list = sinon.stub().callsArgWith(1, expectedMsg);
+    logSample.sample.getMetrics();
+    assert.equal(console.error.calledWith(expectedMsg), true);
   });
 });
 
-test('retrieve: should retrieve logs', function (t) {
-  var logSample = getSample();
-  logSample.sample.retrieve();
-  t.is(console.log.calledWith('entries'), true);
-});
-
-test('retrieve: handles error', function (t) {
-  var expectedMsg = 'entries error';
-  var logSample = getSample();
-  logSample.mocks.logging.getEntries = sinon.stub().callsArgWith(1, expectedMsg);
-  logSample.sample.retrieve();
-  t.is(console.error.calledWith(expectedMsg), true);
-});
-
-test('getMetrics: should retrieve metrics', function (t) {
-  var logSample = getSample();
-  logSample.sample.getMetrics();
-  t.is(console.log.calledWith('series'), true);
-});
-
-test('getMetrics: creates with scope', function (t) {
-  var authClient = {
-    createScopedRequired: sinon.stub().returns(true),
-    createScoped: sinon.stub().returns('foo')
-  };
-  var logSample = getSample();
-  logSample.mocks.auth.getApplicationDefault = sinon.stub().callsArgWith(0, null, authClient);
-  logSample.sample.getMetrics();
-  t.deepEqual(authClient.createScoped.firstCall.args[0], [
-    'https://www.googleapis.com/auth/cloud-platform',
-    'https://www.googleapis.com/auth/monitoring',
-    'https://www.googleapis.com/auth/monitoring.read',
-    'https://www.googleapis.com/auth/monitoring.write'
-  ]);
-});
-
-test('getMetrics: handles auth error', function (t) {
-  var expectedMsg = 'auth error';
-  var logSample = getSample();
-  logSample.mocks.auth.getApplicationDefault = sinon.stub().callsArgWith(0, expectedMsg);
-  logSample.sample.getMetrics();
-  t.is(console.error.calledWith('Authentication failed', expectedMsg), true);
-});
-
-test('getMetrics: handles time series error', function (t) {
-  var expectedMsg = 'time series error';
-  var logSample = getSample();
-  logSample.mocks.monitoring.projects.timeSeries.list = sinon.stub().callsArgWith(1, expectedMsg);
-  logSample.sample.getMetrics();
-  t.is(console.error.calledWith(expectedMsg), true);
-});
-
-test.after(function () {
-  console.error.restore();
-  console.log.restore();
-});

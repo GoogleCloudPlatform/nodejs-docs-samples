@@ -13,13 +13,14 @@
 
 'use strict';
 
-var test = require('ava');
 var vmsExample = require('../../computeengine/vms_api');
 
-test.cb.serial('should retrieve vms', function (t) {
-  vmsExample.main(function (err, result) {
-    t.ifError(err);
-    t.truthy(result);
-    t.end();
+describe('computeengine:vms_api', function () {
+  it('should retrieve vms', function (done) {
+    vmsExample.main(function (err, result) {
+      assert(!err);
+      assert(result);
+      done();
+    });
   });
 });

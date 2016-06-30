@@ -13,26 +13,21 @@
 
 'use strict';
 
-var test = require('ava');
 var path = require('path');
-var inputDir = path.resolve('../../vision/resources');
+var inputDir = path.join(__dirname, '../../vision/resources');
 var textDetectionSample = require('../../vision/textDetection');
 
-test.cb.serial('should detect texts', function (t) {
-  textDetectionSample.main(
-    inputDir,
-    function (err, textResponse) {
-      t.ifError(err);
-      t.truthy(Object.keys(textResponse).length > 0);
-      textDetectionSample.lookup(
-        ['the', 'sunbeams', 'in'],
-        function (err, hits) {
-          t.ifError(err);
-          t.truthy(hits.length > 0);
-          t.truthy(hits[0].length > 0);
-          t.end();
-        }
-      );
-    }
-  );
+describe('vision:textDetection', function () {
+  it('should detect texts', function (done) {
+    textDetectionSample.main(inputDir, function (err, textResponse) {
+      assert(!err);
+      assert(Object.keys(textResponse).length > 0);
+      textDetectionSample.lookup(['the', 'sunbeams', 'in'], function (err, hits) {
+        assert(!err);
+        assert(hits.length > 0);
+        assert(hits[0].length > 0);
+        done();
+      });
+    });
+  });
 });

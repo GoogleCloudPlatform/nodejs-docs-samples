@@ -15,8 +15,6 @@
 
 var fs = require('fs');
 var path = require('path');
-var test = require('ava');
-var sinon = require('sinon');
 var proxyquire = require('proxyquire').noCallThru();
 
 function getSample () {
@@ -55,55 +53,57 @@ function getMockContext () {
   };
 }
 
-test('Fails without a bucket', function (t) {
-  var expectedMsg = 'Bucket not provided. Make sure you have a "bucket" ' +
-    'property in your request';
-  var context = getMockContext();
+describe('functions:gcs', function () {
+  it('Fails without a bucket', function () {
+    var expectedMsg = 'Bucket not provided. Make sure you have a "bucket" ' +
+      'property in your request';
+    var context = getMockContext();
 
-  getSample().sample.wordCount(context, {
-    file: 'file'
+    getSample().sample.wordCount(context, {
+      file: 'file'
+    });
+
+    assert.equal(context.failure.calledOnce, true);
+    assert.equal(context.failure.firstCall.args[0], expectedMsg);
+    assert.equal(context.success.called, false);
   });
 
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(context.success.called, false);
-});
+  it('Fails without a file', function () {
+    var expectedMsg = 'Filename not provided. Make sure you have a "file" ' +
+      'property in your request';
+    var context = getMockContext();
 
-test('Fails without a file', function (t) {
-  var expectedMsg = 'Filename not provided. Make sure you have a "file" ' +
-    'property in your request';
-  var context = getMockContext();
+    getSample().sample.wordCount(context, {
+      bucket: 'bucket'
+    });
 
-  getSample().sample.wordCount(context, {
-    bucket: 'bucket'
+    assert.equal(context.failure.calledOnce, true);
+    assert.equal(context.failure.firstCall.args[0], expectedMsg);
+    assert.equal(context.success.called, false);
   });
 
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(context.success.called, false);
-});
+  it('Reads the file line by line', function (done) {
+    var expectedMsg = 'The file sample.txt has 114 words';
+    var data = {
+      bucket: 'bucket',
+      file: 'sample.txt'
+    };
+    var context = {
+      success: function (message) {
+        assert.equal(message, expectedMsg);
+        done();
+      },
+      failure: function () {
+        done('Should have succeeded!');
+      }
+    };
 
-test.cb.serial('Reads the file line by line', function (t) {
-  var expectedMsg = 'The file sample.txt has 114 words';
-  var data = {
-    bucket: 'bucket',
-    file: 'sample.txt'
-  };
-  var context = {
-    success: function (message) {
-      t.is(message, expectedMsg);
-      t.end();
-    },
-    failure: function () {
-      t.end('Should have succeeded!');
-    }
-  };
+    var gcsSample = getSample();
+    gcsSample.sample.wordCount(context, data);
 
-  var gcsSample = getSample();
-  gcsSample.sample.wordCount(context, data);
-
-  t.is(gcsSample.mocks.storage.bucket.calledOnce, true);
-  t.is(gcsSample.mocks.storage.bucket.firstCall.args[0], data.bucket);
-  t.is(gcsSample.mocks.bucket.file.calledOnce, true);
-  t.is(gcsSample.mocks.bucket.file.firstCall.args[0], data.file);
+    assert.equal(gcsSample.mocks.storage.bucket.calledOnce, true);
+    assert.equal(gcsSample.mocks.storage.bucket.firstCall.args[0], data.bucket);
+    assert.equal(gcsSample.mocks.bucket.file.calledOnce, true);
+    assert.equal(gcsSample.mocks.bucket.file.firstCall.args[0], data.file);
+  });
 });

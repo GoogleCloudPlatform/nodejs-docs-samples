@@ -13,11 +13,9 @@
 
 'use strict';
 
-var test = require('ava');
-var sinon = require('sinon');
 var proxyquire = require('proxyquire').noCallThru();
-const util = require('util');
-const EventEmitter = require('events');
+var util = require('util');
+var EventEmitter = require('events');
 
 var method = 'POST';
 var key = 'sengrid_key';
@@ -177,449 +175,440 @@ function getMockContext () {
   };
 }
 
-test.before(function () {
-  sinon.stub(console, 'error');
-  sinon.stub(console, 'log');
-});
+describe('functions:pubsub', function () {
+  it('Send fails if not a POST request', function () {
+    var expectedMsg = 'Only POST requests are accepted';
+    var mocks = getMocks();
 
-test('Send fails if not a POST request', function (t) {
-  var expectedMsg = 'Only POST requests are accepted';
-  var mocks = getMocks();
+    getSample().sample.sendgridEmail(mocks.req, mocks.res);
 
-  getSample().sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 405);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Send fails without an API key', function (t) {
-  var expectedMsg = 'SendGrid API key not provided. Make sure you have a ' +
-    '"sg_key" property in your request querystring';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  getSample().sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 401);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Send fails without a "to"', function (t) {
-  var expectedMsg = 'To email address not provided. Make sure you have a ' +
-    '"to" property in your request';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  getSample().sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 400);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Send fails without a "from"', function (t) {
-  var expectedMsg = 'From email address not provided. Make sure you have a ' +
-    '"from" property in your request';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  getSample().sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 400);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Send fails without a "subject"', function (t) {
-  var expectedMsg = 'Email subject line not provided. Make sure you have a ' +
-    '"subject" property in your request';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  getSample().sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 400);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Send fails without a "body"', function (t) {
-  var expectedMsg = 'Email content not provided. Make sure you have a ' +
-    '"body" property in your request';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-  getSample().sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 400);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Sends the email and successfully responds', function (t) {
-  var expectedMsg = 'success';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-  mocks.req.body.body = body;
-  getSample().sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 200);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-});
-
-test('Handles response error', function (t) {
-  var expectedMsg = 'failure';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-  mocks.req.body.body = body;
-
-  var sendgridSample = getSample();
-  sendgridSample.mocks.client.API = sinon.stub().callsArgWith(1, {
-    statusCode: 400,
-    body: 'failure',
-    headers: {}
-  });
-  sendgridSample.sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 400);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-});
-
-test('Handles thrown error', function (t) {
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-  mocks.req.body.body = body;
-
-  var sendgridSample = getSample();
-  sendgridSample.mocks.mail.toJSON = sinon.stub().throws('TypeError');
-  sendgridSample.sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 500);
-  t.is(mocks.res.send.calledOnce, true);
-});
-
-test('Handles emtpy response body', function (t) {
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-  mocks.req.body.body = body;
-
-  var sendgridSample = getSample();
-  sendgridSample.mocks.client.API = sinon.stub().callsArgWith(1, {
-    statusCode: 200,
-    headers: {}
-  });
-  sendgridSample.sample.sendgridEmail(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 200);
-  t.is(mocks.res.send.calledOnce, false);
-});
-
-test('Send fails if not a POST request', function (t) {
-  var expectedMsg = 'Only POST requests are accepted';
-  var mocks = getMocks();
-
-  getSample().sample.sendgridWebhook(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 405);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Throws if no basic auth', function (t) {
-  var expectedMsg = 'Invalid credentials';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.headers.authorization = '';
-  getSample().sample.sendgridWebhook(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 401);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Throws if invalid username', function (t) {
-  var expectedMsg = 'Invalid credentials';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.headers.authorization = 'Basic d3Jvbmc6YmFy';
-  getSample().sample.sendgridWebhook(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 401);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Throws if invalid password', function (t) {
-  var expectedMsg = 'Invalid credentials';
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.headers.authorization = 'Basic Zm9vOndyb25n';
-  getSample().sample.sendgridWebhook(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 401);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-  t.is(console.error.called, true);
-});
-
-test('Calls "end" if no events', function (t) {
-  var mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.headers.authorization = auth;
-  mocks.req.body = undefined;
-  getSample().sample.sendgridWebhook(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 200);
-  t.is(mocks.res.send.called, false);
-  t.is(mocks.res.end.calledOnce, true);
-  t.is(console.error.called, true);
-});
-
-test('Saves files', function (t) {
-  var mocks = getMocks();
-
-  mocks.req.method = 'POST';
-  mocks.req.headers.authorization = auth;
-  mocks.req.body = events;
-  var sendgridSample = getSample();
-  sendgridSample.mocks.uuid.v4 = sinon.stub().returns('1357');
-  sendgridSample.sample.sendgridWebhook(mocks.req, mocks.res);
-
-  var filename = sendgridSample.mocks.bucket.file.firstCall.args[0];
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 200);
-  t.is(mocks.res.end.calledOnce, true);
-  t.is(console.log.calledWith('Saving events to ' + filename + ' in bucket ' + sendgridSample.mocks.config.EVENT_BUCKET), true);
-  t.is(console.log.calledWith('JSON written to ' + filename), true);
-});
-
-test('Handles save error', function (t) {
-  var expectedMsg = 'save_error';
-  var mocks = getMocks();
-
-  mocks.req.method = 'POST';
-  mocks.req.headers.authorization = auth;
-  mocks.req.body = events;
-  var sendgridSample = getSample();
-  sendgridSample.mocks.uuid.v4 = sinon.stub().returns('2468');
-  sendgridSample.mocks.file.save = sinon.stub().callsArgWith(1, expectedMsg);
-  sendgridSample.sample.sendgridWebhook(mocks.req, mocks.res);
-
-  var filename = sendgridSample.mocks.bucket.file.firstCall.args[0];
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 500);
-  t.is(mocks.res.end.calledOnce, true);
-  t.is(console.log.calledWith('Saving events to ' + filename + ' in bucket ' + sendgridSample.mocks.config.EVENT_BUCKET), true);
-  t.is(console.error.calledWith(expectedMsg), true);
-});
-
-test('Handles random error', function (t) {
-  var expectedMsg = 'random_error';
-  var mocks = getMocks();
-
-  mocks.req.method = 'POST';
-  mocks.req.headers.authorization = auth;
-  mocks.req.body = events;
-  var sendgridSample = getSample();
-  sendgridSample.mocks.uuid.v4 = sinon.stub().throws(new Error(expectedMsg));
-  sendgridSample.sample.sendgridWebhook(mocks.req, mocks.res);
-
-  t.is(mocks.res.status.calledOnce, true);
-  t.is(mocks.res.status.firstCall.args[0], 500);
-  t.is(mocks.res.send.calledOnce, true);
-  t.is(mocks.res.send.firstCall.args[0], expectedMsg);
-});
-
-test('sendgridLoad does nothing on delete', function (t) {
-  var context = getMockContext();
-
-  getSample().sample.sendgridLoad(context, {
-    timeDeleted: 1234
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 405);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
   });
 
-  t.is(context.done.calledOnce, true);
-  t.is(context.failure.called, false);
-  t.is(context.success.called, false);
-});
+  it('Send fails without an API key', function () {
+    var expectedMsg = 'SendGrid API key not provided. Make sure you have a ' +
+      '"sg_key" property in your request querystring';
+    var mocks = getMocks();
 
-test('sendgridLoad fails without a bucket', function (t) {
-  var expectedMsg = 'Bucket not provided. Make sure you have a ' +
-    '"bucket" property in your request';
-  var context = getMockContext();
+    mocks.req.method = method;
+    getSample().sample.sendgridEmail(mocks.req, mocks.res);
 
-  getSample().sample.sendgridLoad(context, {});
-
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(context.success.called, false);
-  t.is(console.error.called, true);
-});
-
-test('sendgridLoad fails without a name', function (t) {
-  var expectedMsg = 'Filename not provided. Make sure you have a ' +
-    '"name" property in your request';
-  var context = getMockContext();
-
-  getSample().sample.sendgridLoad(context, {
-    bucket: 'event-bucket'
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 401);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
   });
 
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(context.success.called, false);
-  t.is(console.error.called, true);
-});
+  it('Send fails without a "to"', function () {
+    var expectedMsg = 'To email address not provided. Make sure you have a ' +
+      '"to" property in your request';
+    var mocks = getMocks();
 
-test.cb.serial('starts a load job', function (t) {
-  var name = '1234.json';
-  var context = {
-    success: function () {
-      t.is(console.log.calledWith('Starting job for ' + name), true);
-      t.is(console.log.calledWith('Job complete for ' + name), true);
-      t.end();
-    },
-    failure: t.fail
-  };
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    getSample().sample.sendgridEmail(mocks.req, mocks.res);
 
-  var sendgridSample = getSample();
-  sendgridSample.sample.sendgridLoad(context, {
-    bucket: 'event-bucket',
-    name: name
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 400);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
   });
 
-  setTimeout(function () {
-    sendgridSample.mocks.job.emit('complete', {});
-  }, 10);
-});
+  it('Send fails without a "from"', function () {
+    var expectedMsg = 'From email address not provided. Make sure you have a ' +
+      '"from" property in your request';
+    var mocks = getMocks();
 
-test.cb.serial('handles job failure', function (t) {
-  var name = '1234.json';
-  var error = 'job_error';
-  var context = {
-    success: t.fail,
-    failure: function (msg) {
-      t.is(msg, error);
-      t.is(console.log.calledWith('Starting job for ' + name), true);
-      t.is(console.error.calledWith('Job failed for ' + name), true);
-      t.is(console.error.calledWith(error), true);
-      t.end();
-    }
-  };
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    getSample().sample.sendgridEmail(mocks.req, mocks.res);
 
-  var sendgridSample = getSample();
-  sendgridSample.sample.sendgridLoad(context, {
-    bucket: 'event-bucket',
-    name: name
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 400);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
   });
 
-  setTimeout(function () {
-    sendgridSample.mocks.job.emit('error', error);
-  }, 10);
-});
+  it('Send fails without a "subject"', function () {
+    var expectedMsg = 'Email subject line not provided. Make sure you have a ' +
+      '"subject" property in your request';
+    var mocks = getMocks();
 
-test.cb.serial('handles dataset error', function (t) {
-  var name = '1234.json';
-  var error = 'dataset_error';
-  var context = {
-    success: t.fail,
-    failure: function (msg) {
-      t.is(msg, error);
-      t.is(console.error.calledWith(error), true);
-      t.end();
-    }
-  };
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    getSample().sample.sendgridEmail(mocks.req, mocks.res);
 
-  var sendgridSample = getSample();
-  sendgridSample.mocks.dataset.get = sinon.stub().callsArgWith(1, error);
-  sendgridSample.sample.sendgridLoad(context, {
-    bucket: 'event-bucket',
-    name: name
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 400);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
   });
-});
 
-test.cb.serial('handles table error', function (t) {
-  var name = '1234.json';
-  var error = 'table_error';
-  var context = {
-    success: t.fail,
-    failure: function (msg) {
-      t.is(msg, error);
-      t.is(console.error.calledWith(error), true);
-      t.end();
-    }
-  };
+  it('Send fails without a "body"', function () {
+    var expectedMsg = 'Email content not provided. Make sure you have a ' +
+      '"body" property in your request';
+    var mocks = getMocks();
 
-  var sendgridSample = getSample();
-  sendgridSample.mocks.table.get = sinon.stub().callsArgWith(1, error);
-  sendgridSample.sample.sendgridLoad(context, {
-    bucket: 'event-bucket',
-    name: name
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+    getSample().sample.sendgridEmail(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 400);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
   });
-});
 
-test.after(function () {
-  console.error.restore();
-  console.log.restore();
+  it('Sends the email and successfully responds', function () {
+    var expectedMsg = 'success';
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+    mocks.req.body.body = body;
+    getSample().sample.sendgridEmail(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 200);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+  });
+
+  it('Handles response error', function () {
+    var expectedMsg = 'failure';
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+    mocks.req.body.body = body;
+
+    var sendgridSample = getSample();
+    sendgridSample.mocks.client.API = sinon.stub().callsArgWith(1, {
+      statusCode: 400,
+      body: 'failure',
+      headers: {}
+    });
+    sendgridSample.sample.sendgridEmail(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 400);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+  });
+
+  it('Handles thrown error', function () {
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+    mocks.req.body.body = body;
+
+    var sendgridSample = getSample();
+    sendgridSample.mocks.mail.toJSON = sinon.stub().throws('TypeError');
+    sendgridSample.sample.sendgridEmail(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 500);
+    assert.equal(mocks.res.send.calledOnce, true);
+  });
+
+  it('Handles emtpy response body', function () {
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+    mocks.req.body.body = body;
+
+    var sendgridSample = getSample();
+    sendgridSample.mocks.client.API = sinon.stub().callsArgWith(1, {
+      statusCode: 200,
+      headers: {}
+    });
+    sendgridSample.sample.sendgridEmail(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 200);
+    assert.equal(mocks.res.send.calledOnce, false);
+  });
+
+  it('Send fails if not a POST request', function () {
+    var expectedMsg = 'Only POST requests are accepted';
+    var mocks = getMocks();
+
+    getSample().sample.sendgridWebhook(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 405);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
+  });
+
+  it('Throws if no basic auth', function () {
+    var expectedMsg = 'Invalid credentials';
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = '';
+    getSample().sample.sendgridWebhook(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 401);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
+  });
+
+  it('Throws if invalid username', function () {
+    var expectedMsg = 'Invalid credentials';
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = 'Basic d3Jvbmc6YmFy';
+    getSample().sample.sendgridWebhook(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 401);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
+  });
+
+  it('Throws if invalid password', function () {
+    var expectedMsg = 'Invalid credentials';
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = 'Basic Zm9vOndyb25n';
+    getSample().sample.sendgridWebhook(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 401);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+    assert(console.error.called);
+  });
+
+  it('Calls "end" if no events', function () {
+    var mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = auth;
+    mocks.req.body = undefined;
+    getSample().sample.sendgridWebhook(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 200);
+    assert.equal(mocks.res.send.called, false);
+    assert.equal(mocks.res.end.calledOnce, true);
+  });
+
+  it('Saves files', function () {
+    var mocks = getMocks();
+
+    mocks.req.method = 'POST';
+    mocks.req.headers.authorization = auth;
+    mocks.req.body = events;
+    var sendgridSample = getSample();
+    sendgridSample.mocks.uuid.v4 = sinon.stub().returns('1357');
+    sendgridSample.sample.sendgridWebhook(mocks.req, mocks.res);
+
+    var filename = sendgridSample.mocks.bucket.file.firstCall.args[0];
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 200);
+    assert.equal(mocks.res.end.calledOnce, true);
+    assert.equal(console.log.calledWith('Saving events to ' + filename + ' in bucket ' + sendgridSample.mocks.config.EVENT_BUCKET), true);
+    assert.equal(console.log.calledWith('JSON written to ' + filename), true);
+  });
+
+  it('Handles save error', function () {
+    var expectedMsg = 'save_error';
+    var mocks = getMocks();
+
+    mocks.req.method = 'POST';
+    mocks.req.headers.authorization = auth;
+    mocks.req.body = events;
+    var sendgridSample = getSample();
+    sendgridSample.mocks.uuid.v4 = sinon.stub().returns('2468');
+    sendgridSample.mocks.file.save = sinon.stub().callsArgWith(1, expectedMsg);
+    sendgridSample.sample.sendgridWebhook(mocks.req, mocks.res);
+
+    var filename = sendgridSample.mocks.bucket.file.firstCall.args[0];
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 500);
+    assert.equal(mocks.res.end.calledOnce, true);
+    assert.equal(console.log.calledWith('Saving events to ' + filename + ' in bucket ' + sendgridSample.mocks.config.EVENT_BUCKET), true);
+    assert.equal(console.error.calledWith(expectedMsg), true);
+  });
+
+  it('Handles random error', function () {
+    var expectedMsg = 'random_error';
+    var mocks = getMocks();
+
+    mocks.req.method = 'POST';
+    mocks.req.headers.authorization = auth;
+    mocks.req.body = events;
+    var sendgridSample = getSample();
+    sendgridSample.mocks.uuid.v4 = sinon.stub().throws(new Error(expectedMsg));
+    sendgridSample.sample.sendgridWebhook(mocks.req, mocks.res);
+
+    assert.equal(mocks.res.status.calledOnce, true);
+    assert.equal(mocks.res.status.firstCall.args[0], 500);
+    assert.equal(mocks.res.send.calledOnce, true);
+    assert.equal(mocks.res.send.firstCall.args[0], expectedMsg);
+  });
+
+  it('sendgridLoad does nothing on delete', function () {
+    var context = getMockContext();
+
+    getSample().sample.sendgridLoad(context, {
+      timeDeleted: 1234
+    });
+
+    assert.equal(context.done.calledOnce, true);
+    assert.equal(context.failure.called, false);
+    assert.equal(context.success.called, false);
+  });
+
+  it('sendgridLoad fails without a bucket', function () {
+    var expectedMsg = 'Bucket not provided. Make sure you have a ' +
+      '"bucket" property in your request';
+    var context = getMockContext();
+
+    getSample().sample.sendgridLoad(context, {});
+
+    assert.equal(context.failure.calledOnce, true);
+    assert.equal(context.failure.firstCall.args[0], expectedMsg);
+    assert.equal(context.success.called, false);
+    assert(console.error.called);
+  });
+
+  it('sendgridLoad fails without a name', function () {
+    var expectedMsg = 'Filename not provided. Make sure you have a ' +
+      '"name" property in your request';
+    var context = getMockContext();
+
+    getSample().sample.sendgridLoad(context, {
+      bucket: 'event-bucket'
+    });
+
+    assert.equal(context.failure.calledOnce, true);
+    assert.equal(context.failure.firstCall.args[0], expectedMsg);
+    assert.equal(context.success.called, false);
+    assert(console.error.called);
+  });
+
+  it('starts a load job', function (done) {
+    var name = '1234.json';
+    var context = {
+      success: function () {
+        assert.equal(console.log.calledWith('Starting job for ' + name), true);
+        assert.equal(console.log.calledWith('Job complete for ' + name), true);
+        done();
+      },
+      failure: assert.fail
+    };
+
+    var sendgridSample = getSample();
+    sendgridSample.sample.sendgridLoad(context, {
+      bucket: 'event-bucket',
+      name: name
+    });
+
+    setTimeout(function () {
+      sendgridSample.mocks.job.emit('complete', {});
+    }, 10);
+  });
+
+  it('handles job failure', function (done) {
+    var name = '1234.json';
+    var error = 'job_error';
+    var context = {
+      success: assert.fail,
+      failure: function (msg) {
+        assert.equal(msg, error);
+        assert.equal(console.log.calledWith('Starting job for ' + name), true);
+        assert.equal(console.error.calledWith('Job failed for ' + name), true);
+        assert.equal(console.error.calledWith(error), true);
+        done();
+      }
+    };
+
+    var sendgridSample = getSample();
+    sendgridSample.sample.sendgridLoad(context, {
+      bucket: 'event-bucket',
+      name: name
+    });
+
+    setTimeout(function () {
+      sendgridSample.mocks.job.emit('error', error);
+    }, 10);
+  });
+
+  it('handles dataset error', function (done) {
+    var name = '1234.json';
+    var error = 'dataset_error';
+    var context = {
+      success: assert.fail,
+      failure: function (msg) {
+        assert.equal(msg, error);
+        assert.equal(console.error.calledWith(error), true);
+        done();
+      }
+    };
+
+    var sendgridSample = getSample();
+    sendgridSample.mocks.dataset.get = sinon.stub().callsArgWith(1, error);
+    sendgridSample.sample.sendgridLoad(context, {
+      bucket: 'event-bucket',
+      name: name
+    });
+  });
+
+  it('handles table error', function (done) {
+    var name = '1234.json';
+    var error = 'table_error';
+    var context = {
+      success: assert.fail,
+      failure: function (msg) {
+        assert.equal(msg, error);
+        assert.equal(console.error.calledWith(error), true);
+        done();
+      }
+    };
+
+    var sendgridSample = getSample();
+    sendgridSample.mocks.table.get = sinon.stub().callsArgWith(1, error);
+    sendgridSample.sample.sendgridLoad(context, {
+      bucket: 'event-bucket',
+      name: name
+    });
+  });
 });

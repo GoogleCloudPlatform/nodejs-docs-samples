@@ -13,17 +13,16 @@
 
 'use strict';
 
-var test = require('ava');
-
 var landmarkDetectionSample = require('../../vision/landmarkDetection');
+var inputFile = 'https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg';
 
-test.cb.serial('should detect landmarks', function (t) {
-  landmarkDetectionSample.main(
-    'https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg',
-    function (err, landmarks) {
-      t.ifError(err);
-      t.truthy(landmarks.length > 0);
-      t.end();
-    }
-  );
+describe('vision:landmarkDetection', function () {
+  it('should detect landmarks', function (done) {
+    landmarkDetectionSample.main(inputFile, function (err, landmarks) {
+      assert(!err);
+      assert(landmarks.length > 0);
+      assert(console.log.calledWith('Found landmark: Taitung, Famous Places "up the water flow" marker for ' + inputFile));
+      done();
+    });
+  });
 });

@@ -13,13 +13,15 @@
 
 'use strict';
 
-var test = require('ava');
 var hostedmodels = require('../../prediction/hostedmodels');
 
-test.cb.serial('should predict', function (t) {
-  hostedmodels.main('good night', function (err, result) {
-    t.ifError(err);
-    t.truthy(result);
-    t.end();
+describe('prediction:hostedmodels', function () {
+  it('should predict', function (done) {
+    hostedmodels.main('good night', function (err, result) {
+      assert(!err);
+      assert(result);
+      assert(console.log.calledWith('Sentiment for "good night": positive'));
+      done();
+    });
   });
 });

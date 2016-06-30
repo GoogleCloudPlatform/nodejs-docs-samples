@@ -13,16 +13,17 @@
 
 'use strict';
 
-var test = require('ava');
 var gettingStartedExample = require('../../bigquery/getting_started');
 
-test.cb.serial('should run a query', function (t) {
-  gettingStartedExample.main(
-    function (err, rows) {
-      t.ifError(err);
-      t.truthy(Array.isArray(rows));
-      t.is(rows.length, 10);
-      t.end();
-    }
-  );
+describe('bigquery:getting_started', function () {
+  it('should run a query', function (done) {
+    gettingStartedExample.main(
+      function (err, rows) {
+        assert(!err);
+        assert(Array.isArray(rows));
+        assert.equal(rows.length, 10);
+        done();
+      }
+    );
+  });
 });

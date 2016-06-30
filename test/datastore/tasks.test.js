@@ -13,60 +13,60 @@
 
 'use strict';
 
-var test = require('ava');
 var async = require('async');
-
 var tasks = require('../../datastore/tasks.js');
 var taskIds = [];
 
-test.after.cb.serial(function (t) {
-  async.parallel(taskIds.map(function (taskId) {
-    return function (cb) {
-      tasks.deleteEntity(taskId, cb);
-    };
-  }), t.end);
-});
-
-test.cb.serial('should add a task', function (t) {
-  getTaskId(t.end);
-});
-
-test.cb.serial('should mark a task as done', function (t) {
-  getTaskId(function (err, taskId) {
-    t.ifError(err);
-    tasks.updateEntity(taskId, t.end);
+describe('datastore:tasks', function () {
+  after(function (done) {
+    async.parallel(taskIds.map(function (taskId) {
+      return function (cb) {
+        tasks.deleteEntity(taskId, cb);
+      };
+    }), done);
   });
-});
 
-test.cb.serial('should list tasks', function (t) {
-  tasks.retrieveEntities(t.end);
-});
-
-test.cb.serial('should delete a task', function (t) {
-  getTaskId(function (err, taskId) {
-    t.ifError(err);
-    tasks.deleteEntity(taskId, t.end);
+  it('should add a task', function (done) {
+    getTaskId(done);
   });
-});
 
-test.cb.serial('should format tasks', function (t) {
-  tasks.retrieveEntities(function (err, _tasks) {
-    t.ifError(err);
-    t.notThrows(function () {
-      tasks.formatTasks(_tasks);
+  it('should mark a task as done', function (done) {
+    getTaskId(function (err, taskId) {
+      assert(!err);
+      tasks.updateEntity(taskId, done);
     });
-    t.end();
   });
+
+  it('should list tasks', function (done) {
+    tasks.retrieveEntities(done);
+  });
+
+  it('should delete a task', function (done) {
+    getTaskId(function (err, taskId) {
+      assert(!err);
+      tasks.deleteEntity(taskId, done);
+    });
+  });
+
+  it('should format tasks', function (done) {
+    tasks.retrieveEntities(function (err, _tasks) {
+      assert(!err);
+      assert.doesNotThrow(function () {
+        tasks.formatTasks(_tasks);
+      });
+      done();
+    });
+  });
+
+  function getTaskId (callback) {
+    tasks.addEntity('description', function (err, taskKey) {
+      if (err) {
+        return callback(err);
+      }
+
+      var taskId = taskKey.path.pop();
+      taskIds.push(taskId);
+      callback(null, taskId);
+    });
+  }
 });
-
-function getTaskId (callback) {
-  tasks.addEntity('description', function (err, taskKey) {
-    if (err) {
-      return callback(err);
-    }
-
-    var taskId = taskKey.path.pop();
-    taskIds.push(taskId);
-    callback(null, taskId);
-  });
-}

@@ -13,19 +13,20 @@
 
 'use strict';
 
-var test = require('ava');
 var path = require('path');
-
 var labelDetectionSample = require('../../vision/labelDetection');
-var inputFile = path.resolve(path.join('../../vision/resources', 'cat.jpg'));
+var inputFile = path.join(__dirname, '../../vision/resources', 'cat.jpg');
 
-test.cb.serial('should detect labels', function (t) {
-  labelDetectionSample.main(
-    inputFile,
-    function (err, labels) {
-      t.ifError(err);
-      t.truthy(labels.length > 0);
-      t.end();
-    }
-  );
+describe('vision:labelDetection', function () {
+  it('should detect labels', function (done) {
+    labelDetectionSample.main(
+      inputFile,
+      function (err, labels) {
+        assert(!err);
+        assert(labels.length > 0);
+        assert(console.log.calledWith('Found label: cat for ' + inputFile));
+        done();
+      }
+    );
+  });
 });

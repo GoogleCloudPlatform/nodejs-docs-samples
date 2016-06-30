@@ -13,203 +13,224 @@
 
 'use strict';
 
-var test = require('ava');
-var sinon = require('sinon');
 var proxyquire = require('proxyquire');
 
-test.cb.serial('should run the sample', function (t) {
-  proxyquire('../../pubsub/subscription', {}).main(function (err, results) {
-    t.ifError(err);
-    t.is(results.length, 8);
-    // Got topic and apiResponse
-    t.is(results[0].length, 2);
-    // Got subscription and apiResponse
-    t.is(results[1].length, 2);
-    // Got array of topics
-    t.truthy(Array.isArray(results[2]));
-    // Got array of subscriptions
-    t.truthy(Array.isArray(results[3]));
-    // Got messageIds and apiResponse
-    t.is(results[4].length, 2);
-    // Got array of messages
-    t.truthy(Array.isArray(results[5]));
-    // Got empty apiResponse
-    t.deepEqual(results[6], {});
-    // Got empty apiResponse
-    t.deepEqual(results[7], {});
-    t.end();
+describe('pubsub:subscription', function () {
+  it('should run the sample', function (done) {
+    proxyquire('../../pubsub/subscription', {}).main(function (err, results) {
+      assert(!err);
+      assert(results.length === 8);
+      // Got topic and apiResponse
+      assert(results[0].length === 2);
+      // Got subscription and apiResponse
+      assert(results[1].length === 2);
+      // Got array of topics
+      assert(Array.isArray(results[2]));
+      // Got array of subscriptions
+      assert(Array.isArray(results[3]));
+      // Got messageIds and apiResponse
+      assert(results[4].length === 2);
+      // Got array of messages
+      assert(Array.isArray(results[5]));
+      // Got empty apiResponse
+      assert.deepEqual(results[6], {});
+      // Got empty apiResponse
+      assert.deepEqual(results[7], {});
+      assert(console.log.calledWith('Created topic messageCenter'));
+      assert(console.log.calledWith('Subscribed to messageCenter'));
+      assert(console.log.calledWith('Published 1 messages'));
+      assert(console.log.calledWith('received message: Hello, world!'));
+      assert(console.log.calledWith('Pulled 1 messages'));
+      assert(console.log.calledWith('Deleted subscription newMessages'));
+      assert(console.log.calledWith('Deleted topic messageCenter'));
+      done();
+    });
   });
-});
 
-test('createTopicExample: handles error', function (t) {
-  var topic = {
-    get: sinon.stub().callsArgWith(1, 'error')
-  };
-  var pubsub = {
-    topic: sinon.stub().returns(topic)
-  };
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).createTopicExample('test-topic', function (err) {
-    t.is(err, 'error');
+  describe('createTopicExample', function () {
+    it('handles error', function () {
+      var topic = {
+        get: sinon.stub().callsArgWith(1, 'error')
+      };
+      var pubsub = {
+        topic: sinon.stub().returns(topic)
+      };
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).createTopicExample('test-topic', function (err) {
+        assert(err === 'error');
+      });
+    });
   });
-});
 
-test('deleteTopicExample: handles error', function (t) {
-  var topic = {
-    delete: sinon.stub().callsArgWith(0, 'error')
-  };
-  var pubsub = {
-    topic: sinon.stub().returns(topic)
-  };
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).deleteTopicExample('test-topic', function (err) {
-    t.is(err, 'error');
+  describe('deleteTopicExample', function () {
+    it('handles error', function () {
+      var topic = {
+        delete: sinon.stub().callsArgWith(0, 'error')
+      };
+      var pubsub = {
+        topic: sinon.stub().returns(topic)
+      };
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).deleteTopicExample('test-topic', function (err) {
+        assert(err === 'error');
+      });
+    });
   });
-});
 
-test('deleteSubscriptionExample: handles error', function (t) {
-  var subscription = {
-    delete: sinon.stub().callsArgWith(0, 'error')
-  };
-  var pubsub = {
-    subscription: sinon.stub().returns(subscription)
-  };
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).deleteSubscriptionExample('test-subscription', function (err) {
-    t.is(err, 'error');
+  describe('deleteSubscriptionExample', function () {
+    it('handles error', function () {
+      var subscription = {
+        delete: sinon.stub().callsArgWith(0, 'error')
+      };
+      var pubsub = {
+        subscription: sinon.stub().returns(subscription)
+      };
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).deleteSubscriptionExample('test-subscription', function (err) {
+        assert(err === 'error');
+      });
+    });
   });
-});
 
-test('publishExample: handles error', function (t) {
-  var topic = {
-    publish: sinon.stub().callsArgWith(1, 'error')
-  };
-  var pubsub = {
-    topic: sinon.stub().returns(topic)
-  };
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).publishExample('test-topic', function (err) {
-    t.is(err, 'error');
+  describe('publishExample', function () {
+    it('handles error', function () {
+      var topic = {
+        publish: sinon.stub().callsArgWith(1, 'error')
+      };
+      var pubsub = {
+        topic: sinon.stub().returns(topic)
+      };
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).publishExample('test-topic', function (err) {
+        assert(err === 'error');
+      });
+    });
   });
-});
 
-test('getAllTopicsExample: handles error', function (t) {
-  var pubsub = {
-    getTopics: sinon.stub().callsArgWith(1, 'error')
-  };
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).getAllTopicsExample(function (err) {
-    t.is(err, 'error');
-  });
-});
+  describe('getAllTopicsExample', function () {
+    it('handles error', function () {
+      var pubsub = {
+        getTopics: sinon.stub().callsArgWith(1, 'error')
+      };
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).getAllTopicsExample(function (err) {
+        assert(err === 'error');
+      });
+    });
 
-test('getAllTopicsExample: recurses', function (t) {
-  var pubsub = {
-    getTopics: sinon.stub().callsArgWith(1, 'error')
-  };
-  pubsub.getTopics.onFirstCall().callsArgWith(1, null, [], {
-    token: '1234'
-  });
-  pubsub.getTopics.onSecondCall().callsArgWith(1, null, []);
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).getAllTopicsExample(function (err, topics) {
-    t.ifError(err);
-    t.deepEqual(topics, []);
-  });
-});
+    it('recurses', function () {
+      var pubsub = {
+        getTopics: sinon.stub().callsArgWith(1, 'error')
+      };
+      pubsub.getTopics.onFirstCall().callsArgWith(1, null, [], {
+        token: '1234'
+      });
+      pubsub.getTopics.onSecondCall().callsArgWith(1, null, []);
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).getAllTopicsExample(function (err, topics) {
+        assert(!err);
+        assert.deepEqual(topics, []);
+      });
+    });
 
-test('getAllTopicsExample: handles deep error', function (t) {
-  var pubsub = {
-    getTopics: sinon.stub().callsArgWith(1, 'error')
-  };
-  pubsub.getTopics.onFirstCall().callsArgWith(1, null, [], {
-    token: '1234'
+    it('handles deep error', function () {
+      var pubsub = {
+        getTopics: sinon.stub().callsArgWith(1, 'error')
+      };
+      pubsub.getTopics.onFirstCall().callsArgWith(1, null, [], {
+        token: '1234'
+      });
+      pubsub.getTopics.onSecondCall().callsArgWith(1, 'error');
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).getAllTopicsExample(function (err) {
+        assert(err === 'error');
+      });
+    });
   });
-  pubsub.getTopics.onSecondCall().callsArgWith(1, 'error');
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).getAllTopicsExample(function (err) {
-    t.is(err, 'error');
-  });
-});
 
-test('getAllSubscriptionsExample: handles error', function (t) {
-  var pubsub = {
-    getSubscriptions: sinon.stub().callsArgWith(1, 'error')
-  };
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).getAllSubscriptionsExample(function (err) {
-    t.is(err, 'error');
-  });
-});
+  describe('getAllSubscriptionsExample', function () {
+    it('handles error', function () {
+      var pubsub = {
+        getSubscriptions: sinon.stub().callsArgWith(1, 'error')
+      };
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).getAllSubscriptionsExample(function (err) {
+        assert(err === 'error');
+      });
+    });
 
-test('getAllSubscriptionsExample: recurses', function (t) {
-  var pubsub = {
-    getSubscriptions: sinon.stub().callsArgWith(1, 'error')
-  };
-  pubsub.getSubscriptions.onFirstCall().callsArgWith(1, null, [], {
-    token: '1234'
-  });
-  pubsub.getSubscriptions.onSecondCall().callsArgWith(1, null, []);
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).getAllSubscriptionsExample(function (err, subscriptions) {
-    t.ifError(err);
-    t.deepEqual(subscriptions, []);
-  });
-});
+    it('recurses', function () {
+      var pubsub = {
+        getSubscriptions: sinon.stub().callsArgWith(1, 'error')
+      };
+      pubsub.getSubscriptions.onFirstCall().callsArgWith(1, null, [], {
+        token: '1234'
+      });
+      pubsub.getSubscriptions.onSecondCall().callsArgWith(1, null, []);
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).getAllSubscriptionsExample(function (err, subscriptions) {
+        assert(!err);
+        assert.deepEqual(subscriptions, []);
+      });
+    });
 
-test('getAllSubscriptionsExample: handles deep error', function (t) {
-  var pubsub = {
-    getSubscriptions: sinon.stub().callsArgWith(1, 'error')
-  };
-  pubsub.getSubscriptions.onFirstCall().callsArgWith(1, null, [], {
-    token: '1234'
+    it('handles deep error', function () {
+      var pubsub = {
+        getSubscriptions: sinon.stub().callsArgWith(1, 'error')
+      };
+      pubsub.getSubscriptions.onFirstCall().callsArgWith(1, null, [], {
+        token: '1234'
+      });
+      pubsub.getSubscriptions.onSecondCall().callsArgWith(1, 'error');
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).getAllSubscriptionsExample(function (err) {
+        assert(err === 'error');
+      });
+    });
   });
-  pubsub.getSubscriptions.onSecondCall().callsArgWith(1, 'error');
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).getAllSubscriptionsExample(function (err) {
-    t.is(err, 'error');
-  });
-});
 
-test('subscribeExample: handles error', function (t) {
-  var pubsub = {
-    subscribe: sinon.stub().callsArgWith(3, 'error')
-  };
-  proxyquire('../../pubsub/subscription', {
-    gcloud: {
-      pubsub: sinon.stub().returns(pubsub)
-    }
-  }).subscribeExample('test-topic', 'test-subscription', function (err) {
-    t.is(err, 'error');
+  describe('subscribeExample', function () {
+    it('handles error', function () {
+      var pubsub = {
+        subscribe: sinon.stub().callsArgWith(3, 'error')
+      };
+      proxyquire('../../pubsub/subscription', {
+        gcloud: {
+          pubsub: sinon.stub().returns(pubsub)
+        }
+      }).subscribeExample('test-topic', 'test-subscription', function (err) {
+        assert(err === 'error');
+      });
+    });
   });
 });

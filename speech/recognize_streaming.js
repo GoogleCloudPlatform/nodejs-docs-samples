@@ -59,24 +59,12 @@ function getSpeechService (callback) {
 // [END authenticating]
 
 // [START construct_request]
-function prepareRequest (inputFile, callback) {
+function getAudioFile (inputFile, callback) {
   fs.readFile(inputFile, function (err, audioFile) {
     if (err) {
       return callback(err);
     }
     console.log('Got audio file!');
-    // var payload = new speechProto.RecognizeRequest({
-    //   initialRequest: new speechProto.InitialRecognizeRequest({
-    //     encoding: 'LINEAR16',
-    //     sampleRate: 16000,
-    //     interimResults: true,
-    //     continuous: false,
-    //     enableEndpointerEvents: true
-    //   }),
-    //   audioRequest: new speechProto.AudioRequest({
-    //     content: audioFile
-    //   })
-    // });
     return callback(null, audioFile);
   });
 }
@@ -87,7 +75,7 @@ function main (inputFile, callback) {
 
   async.waterfall([
     function (cb) {
-      prepareRequest(inputFile, cb);
+      getAudioFile(inputFile, cb);
     },
     function (_audioFile, cb) {
       audioFile = _audioFile;

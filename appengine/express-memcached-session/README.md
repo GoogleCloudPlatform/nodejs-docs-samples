@@ -40,7 +40,7 @@ In your terminal window, press Ctrl+C to exit the web server.
 
 In your terminal window, enter the following command to deploy the sample:
 
-    gcloud preview app deploy
+    gcloud app deploy
 
 ### See the app run in the cloud
 
@@ -53,7 +53,7 @@ lines to your package.json file:
 
     "scripts": {
       "start": "node server.js",
-      "deploy": "gcloud preview app deploy"
+      "deploy": "gcloud app deploy"
     }
 
 At the terminal you can now run the following command to deploy your application:
@@ -72,6 +72,6 @@ deployment configuration.
       MEMCACHE_URL: memcache:11211
 
 Notice the `MEMCACHE_URL` environment variable–this is where you can reach your
-standard memcached cluster across instances. 
+standard memcached cluster across instances.
 
 [download]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/archive/master.zip

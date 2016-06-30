@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "connect-memcached": "^0.1.0",

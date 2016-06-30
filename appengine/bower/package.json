@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node server.js",
     "postinstall": "bower install --config.interactive=false",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "bower": "^1.7.7",

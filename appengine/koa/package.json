@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node --harmony app.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "koa": "^1.1.2"

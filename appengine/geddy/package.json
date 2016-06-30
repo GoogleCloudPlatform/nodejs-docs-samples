@@ -12,7 +12,7 @@
     "prestart": "GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && geddy gen secret",
     "start": "geddy",
     "debug": "geddy --debug",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "geddy": "^13.0.8"

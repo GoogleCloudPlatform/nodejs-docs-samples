@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "body-parser": "^1.14.2",

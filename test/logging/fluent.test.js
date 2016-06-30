@@ -13,39 +13,40 @@
 
 'use strict';
 
-var test = require('ava');
 var proxyquire = require('proxyquire').noPreserveCache();
 var request = require('supertest');
 
-test.cb.serial('should log error', function (t) {
-  var loggerCalled = false;
+describe('logging:fluent', function () {
+  it('should log error', function (done) {
+    var loggerCalled = false;
 
-  var structuredLogger = {
-    emit: function (name) {
-      loggerCalled = true;
-      t.is(name, 'errors');
-    }
-  };
-
-  var app = proxyquire('../../logging/fluent.js', {
-    'fluent-logger': {
-      createFluentSender: function (name, options) {
-        t.is(name, 'myapp');
-        t.deepEqual(options, {
-          host: 'localhost',
-          port: 24224,
-          timeout: 3.0
-        });
-        return structuredLogger;
+    var structuredLogger = {
+      emit: function (name) {
+        loggerCalled = true;
+        assert(name === 'errors');
       }
-    }
-  });
+    };
 
-  request(app)
-    .get('/')
-    .expect(500)
-    .expect(function () {
-      t.is(loggerCalled, true, 'structuredLogger.emit should have been called');
-    })
-    .end(t.end);
+    var app = proxyquire('../../logging/fluent.js', {
+      'fluent-logger': {
+        createFluentSender: function (name, options) {
+          assert(name === 'myapp');
+          assert.deepEqual(options, {
+            host: 'localhost',
+            port: 24224,
+            timeout: 3.0
+          });
+          return structuredLogger;
+        }
+      }
+    });
+
+    request(app)
+      .get('/')
+      .expect(500)
+      .expect(function () {
+        assert(loggerCalled, 'structuredLogger.emit should have been called');
+      })
+      .end(done);
+  });
 });

@@ -14,7 +14,7 @@
 sudo: false
 language: node_js
 node_js:
-- "5"
+- "6"
 - "0.12"
 
 cache:
@@ -53,12 +53,15 @@ cache:
   - bigquery/node_modules/
   - computeengine/node_modules/
   - datastore/node_modules/
+  - debugger/node_modules/
   - functions/uuid/node_modules/
   - logging/node_modules/
   - monitoring/node_modules/
   - prediction/node_modules/
   - pubsub/node_modules/
   - storage/node_modules/
+  - trace/node_modules/
+  - vision/node_modules/
 
 services:
   - redis-server

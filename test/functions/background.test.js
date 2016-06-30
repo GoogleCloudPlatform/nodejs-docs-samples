@@ -13,8 +13,6 @@
 
 'use strict';
 
-var test = require('ava');
-var sinon = require('sinon');
 var proxyquire = require('proxyquire').noCallThru();
 
 function getSample () {
@@ -38,63 +36,55 @@ function getMockContext () {
   };
 }
 
-test.before(function () {
-  sinon.stub(console, 'error');
-  sinon.stub(console, 'log');
-});
-
-test('should echo message', function (t) {
-  var expectedMsg = 'hi';
-  var context = getMockContext();
-  var backgroundSample = getSample();
-  backgroundSample.sample.helloWorld(context, {
-    message: expectedMsg
-  });
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.failure.called, false);
-  t.is(console.log.calledWith(expectedMsg), true);
-});
-test('should say no message was provided', function (t) {
-  var expectedMsg = 'No message defined!';
-  var context = getMockContext();
-  var backgroundSample = getSample();
-  backgroundSample.sample.helloWorld(context, {});
-
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(context.success.called, false);
-});
-test.cb.serial('should make a promise request', function (t) {
-  var backgroundSample = getSample();
-  backgroundSample.sample.helloPromise({
-    endpoint: 'foo.com'
-  }).then(function (result) {
-    t.deepEqual(backgroundSample.mocks.requestPromise.firstCall.args[0], {
-      uri: 'foo.com'
+describe('functions:background', function () {
+  it('should echo message', function () {
+    var expectedMsg = 'hi';
+    var context = getMockContext();
+    var backgroundSample = getSample();
+    backgroundSample.sample.helloWorld(context, {
+      message: expectedMsg
     });
-    t.is(result, 'test');
-    t.end();
-  }, function () {
-    t.fail();
-  });
-});
-test('should return synchronously', function (t) {
-  var backgroundSample = getSample();
-  t.is(backgroundSample.sample.helloSynchronous({
-    something: true
-  }), 'Something is true!');
-});
-test('should throw an error', function (t) {
-  var backgroundSample = getSample();
-  t.throws(function () {
-    backgroundSample.sample.helloSynchronous({
-      something: false
-    });
-  }, Error, 'Something was not true!');
-});
 
-test.after(function () {
-  console.error.restore();
-  console.log.restore();
+    assert(context.success.calledOnce);
+    assert.equal(context.failure.called, false);
+    assert(console.log.calledWith(expectedMsg));
+  });
+  it('should say no message was provided', function () {
+    var expectedMsg = 'No message defined!';
+    var context = getMockContext();
+    var backgroundSample = getSample();
+    backgroundSample.sample.helloWorld(context, {});
+
+    assert(context.failure.calledOnce);
+    assert(context.failure.firstCall.args[0] === expectedMsg);
+    assert.equal(context.success.called, false);
+  });
+  it('should make a promise request', function (done) {
+    var backgroundSample = getSample();
+    backgroundSample.sample.helloPromise({
+      endpoint: 'foo.com'
+    }).then(function (result) {
+      assert.deepEqual(backgroundSample.mocks.requestPromise.firstCall.args[0], {
+        uri: 'foo.com'
+      });
+      assert.equal(result, 'test');
+      done();
+    }, function () {
+      assert.fail();
+    });
+  });
+  it('should return synchronously', function () {
+    var backgroundSample = getSample();
+    assert(backgroundSample.sample.helloSynchronous({
+      something: true
+    }) === 'Something is true!');
+  });
+  it('should throw an error', function () {
+    var backgroundSample = getSample();
+    assert.throws(function () {
+      backgroundSample.sample.helloSynchronous({
+        something: false
+      });
+    }, Error, 'Something was not true!');
+  });
 });

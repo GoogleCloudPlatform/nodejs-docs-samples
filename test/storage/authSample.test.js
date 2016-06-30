@@ -16,19 +16,20 @@
  */
 'use strict';
 
-var test = require('ava');
 var authSampleExample = require('../../storage/authSample');
 var projectId = process.env.GCLOUD_PROJECT;
 
-test.cb.serial('should return a list of buckets', function (t) {
-  var bucketName = process.env.TEST_BUCKET_NAME || 'nodejs-docs-samples';
+describe('storage:authSample', function () {
+  it('should return a list of buckets', function (done) {
+    var bucketName = process.env.TEST_BUCKET_NAME || 'nodejs-docs-samples';
 
-  authSampleExample.main(projectId, function (err, response) {
-    t.ifError(err);
-    t.truthy(response.items.length > 0, 'There should be some buckets.');
-    t.is(response.items.filter(function (item) {
-      return item.name === bucketName;
-    }).length, 1, 'There should be a bucket named ' + bucketName);
-    t.end();
+    authSampleExample.main(projectId, function (err, response) {
+      assert(!err);
+      assert(response.items.length > 0, 'There should be some buckets.');
+      assert(response.items.filter(function (item) {
+        return item.name === bucketName;
+      }).length === 1, 'There should be a bucket named ' + bucketName);
+      done();
+    });
   });
 });

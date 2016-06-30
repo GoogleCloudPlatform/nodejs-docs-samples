@@ -13,7 +13,6 @@
 
 'use strict';
 
-var test = require('ava');
 var spawn = require('child_process').spawn;
 var request = require('request');
 var fs = require('fs');
@@ -23,7 +22,7 @@ var cwd = process.cwd();
 var projectId = process.env.GCLOUD_PROJECT;
 
 function getPath (dir) {
-  return path.join(cwd, '/../../', dir);
+  return path.join(__dirname, '/../../', dir);
 }
 
 function changeScaling (dir) {
@@ -323,36 +322,40 @@ function testRequest (url, sample, cb) {
 
 var port = 8080;
 sampleTests.forEach(function (sample) {
-  sample.env = sample.env || {};
-  sample.env.PORT = port;
-  if (sample.dir === 'appengine/parse-server') {
-    sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
-  }
-  port++;
-  test.cb.serial(sample.dir + ': dependencies should install', function (t) {
-    testInstallation(sample, t.end);
-  });
+  describe(sample.dir, function () {
+    sample.env = sample.env || {};
+    sample.env.PORT = port;
+    if (sample.dir === 'appengine/parse-server') {
+      sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
+    }
+    port++;
+    it('should install dependencies', function (done) {
+      testInstallation(sample, done);
+    });
 
-  if (sample.TRAVIS && !process.env.TRAVIS) {
-    return;
-  }
+    if (sample.TRAVIS && !process.env.TRAVIS) {
+      return;
+    }
 
-  if (sample.TRAVIS_NODE_VERSION && process.env.TRAVIS &&
-    process.env.TRAVIS_NODE_VERSION !== sample.TRAVIS_NODE_VERSION) {
-    return;
-  }
+    if (sample.TRAVIS_NODE_VERSION && process.env.TRAVIS &&
+      process.env.TRAVIS_NODE_VERSION !== sample.TRAVIS_NODE_VERSION) {
+      return;
+    }
 
-  test.cb.serial(sample.dir + ' should return 200 and Hello World', function (t) {
-    testLocalApp(sample, t.end);
+    it('should return 200 and Hello World', function (done) {
+      testLocalApp(sample, done);
+    });
   });
 });
 
 if (process.env.TRAVIS && process.env.DEPLOY_TESTS) {
-  test.cb.serial('should deploy all samples', function (t) {
-    // 30 minutes because deployments are slow
-    this.timeout(30 * 60 * 1000);
+  describe('deployments', function () {
+    it('should deploy all samples', function (done) {
+      // 30 minutes because deployments are slow
+      this.timeout(30 * 60 * 1000);
 
-    testDeployments(t.end);
+      testDeployments(done);
+    });
   });
 }
 

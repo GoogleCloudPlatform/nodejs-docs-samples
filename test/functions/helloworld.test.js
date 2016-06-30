@@ -13,8 +13,6 @@
 
 'use strict';
 
-var test = require('ava');
-var sinon = require('sinon');
 var proxyquire = require('proxyquire').noCallThru();
 var helloworldSample = proxyquire('../../functions/helloworld', {});
 
@@ -25,126 +23,119 @@ function getMockContext () {
   };
 }
 
-test.before(function () {
-  sinon.stub(console, 'error');
-  sinon.stub(console, 'log');
-});
+describe('functions:helloworld', function () {
+  it('helloworld: should log a message', function () {
+    var expectedMsg = 'My Cloud Function: hi';
+    var context = getMockContext();
+    helloworldSample.helloWorld(context, {
+      message: 'hi'
+    });
 
-test('helloworld:helloworld: should log a message', function (t) {
-  var expectedMsg = 'My Cloud Function: hi';
-  var context = getMockContext();
-  helloworldSample.helloWorld(context, {
-    message: 'hi'
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.failure.called, false);
+    assert.equal(console.log.calledWith(expectedMsg), true);
   });
 
-  t.is(context.success.calledOnce, true);
-  t.is(context.failure.called, false);
-  t.is(console.log.calledWith(expectedMsg), true);
-});
-
-test.cb.serial('helloworld:helloGET: should print hello world', function (t) {
-  var expectedMsg = 'Hello World!';
-  helloworldSample.helloGET({}, {
-    send: function (message) {
-      t.is(message, expectedMsg);
-      t.end();
-    }
+  it('helloGET: should print hello world', function (done) {
+    var expectedMsg = 'Hello World!';
+    helloworldSample.helloGET({}, {
+      send: function (message) {
+        assert.equal(message, expectedMsg);
+        done();
+      }
+    });
   });
-});
 
-test.cb.serial('helloworld:helloHttp: should print a name', function (t) {
-  var expectedMsg = 'Hello John!';
-  helloworldSample.helloHttp({
-    body: {
+  it('helloHttp: should print a name', function (done) {
+    var expectedMsg = 'Hello John!';
+    helloworldSample.helloHttp({
+      body: {
+        name: 'John'
+      }
+    }, {
+      send: function (message) {
+        assert.equal(message, expectedMsg);
+        done();
+      }
+    });
+  });
+
+  it('helloHttp: should print hello world', function (done) {
+    var expectedMsg = 'Hello World!';
+    helloworldSample.helloHttp({
+      body: {}
+    }, {
+      send: function (message) {
+        assert.equal(message, expectedMsg);
+        done();
+      }
+    });
+  });
+
+  it('helloBackground: should print a name', function () {
+    var expectedMsg = 'Hello John!';
+    var context = getMockContext();
+    helloworldSample.helloBackground(context, {
       name: 'John'
-    }
-  }, {
-    send: function (message) {
-      t.is(message, expectedMsg);
-      t.end();
-    }
+    });
+
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.success.firstCall.args[0], expectedMsg);
+    assert.equal(context.failure.called, false);
+  });
+
+  it('helloBackground: should print hello world', function () {
+    var expectedMsg = 'Hello World!';
+    var context = getMockContext();
+    helloworldSample.helloBackground(context, {});
+
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.success.firstCall.args[0], expectedMsg);
+    assert.equal(context.failure.called, false);
+  });
+
+  it('helloPubSub: should print a name', function () {
+    var expectedMsg = 'Hello Bob!';
+    var context = getMockContext();
+    helloworldSample.helloPubSub(context, {
+      name: 'Bob'
+    });
+
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.failure.called, false);
+    assert.equal(console.log.calledWith(expectedMsg), true);
+  });
+
+  it('helloPubSub: should print hello world', function () {
+    var expectedMsg = 'Hello World!';
+    var context = getMockContext();
+    helloworldSample.helloPubSub(context, {});
+
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.failure.called, false);
+    assert.equal(console.log.calledWith(expectedMsg), true);
+  });
+
+  it('helloGCS: should print a name', function () {
+    var expectedMsg = 'Hello Sally!';
+    var context = getMockContext();
+    helloworldSample.helloGCS(context, {
+      name: 'Sally'
+    });
+
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.failure.called, false);
+    assert.equal(console.log.calledWith(expectedMsg), true);
+  });
+
+  it('helloGCS: should print hello world', function () {
+    var expectedMsg = 'Hello World!';
+    var context = getMockContext();
+    helloworldSample.helloGCS(context, {});
+
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.failure.called, false);
+    assert.equal(console.log.calledWith(expectedMsg), true);
   });
 });
 
-test.cb.serial('helloworld:helloHttp: should print hello world', function (t) {
-  var expectedMsg = 'Hello World!';
-  helloworldSample.helloHttp({
-    body: {}
-  }, {
-    send: function (message) {
-      t.is(message, expectedMsg);
-      t.end();
-    }
-  });
-});
-
-test('helloworld:helloBackground: should print a name', function (t) {
-  var expectedMsg = 'Hello John!';
-  var context = getMockContext();
-  helloworldSample.helloBackground(context, {
-    name: 'John'
-  });
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.success.firstCall.args[0], expectedMsg);
-  t.is(context.failure.called, false);
-});
-
-test('helloworld:helloBackground: should print hello world', function (t) {
-  var expectedMsg = 'Hello World!';
-  var context = getMockContext();
-  helloworldSample.helloBackground(context, {});
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.success.firstCall.args[0], expectedMsg);
-  t.is(context.failure.called, false);
-});
-
-test('helloworld:helloPubSub: should print a name', function (t) {
-  var expectedMsg = 'Hello Bob!';
-  var context = getMockContext();
-  helloworldSample.helloPubSub(context, {
-    name: 'Bob'
-  });
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.failure.called, false);
-  t.is(console.log.calledWith(expectedMsg), true);
-});
-
-test('helloworld:helloPubSub: should print hello world', function (t) {
-  var expectedMsg = 'Hello World!';
-  var context = getMockContext();
-  helloworldSample.helloPubSub(context, {});
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.failure.called, false);
-  t.is(console.log.calledWith(expectedMsg), true);
-});
-
-test('helloworld:helloGCS: should print a name', function (t) {
-  var expectedMsg = 'Hello Sally!';
-  var context = getMockContext();
-  helloworldSample.helloGCS(context, {
-    name: 'Sally'
-  });
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.failure.called, false);
-  t.is(console.log.calledWith(expectedMsg), true);
-});
-
-test('helloworld:helloGCS: should print hello world', function (t) {
-  var expectedMsg = 'Hello World!';
-  var context = getMockContext();
-  helloworldSample.helloGCS(context, {});
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.failure.called, false);
-  t.is(console.log.calledWith(expectedMsg), true);
-});
-
-test.after(function () {
-  console.error.restore();
-  console.log.restore();
-});

@@ -13,8 +13,6 @@
 
 'use strict';
 
-var test = require('ava');
-var sinon = require('sinon');
 var proxyquire = require('proxyquire').noCallThru();
 
 function getSample () {
@@ -46,108 +44,100 @@ function getMockContext () {
   };
 }
 
-test.before(function () {
-  sinon.stub(console, 'error');
-  sinon.stub(console, 'log');
-});
+describe('functions:pubsub', function () {
+  it('Publish fails without a topic', function () {
+    var expectedMsg = 'Topic not provided. Make sure you have a "topic" ' +
+      'property in your request';
+    var context = getMockContext();
 
-test('Publish fails without a topic', function (t) {
-  var expectedMsg = 'Topic not provided. Make sure you have a "topic" ' +
-    'property in your request';
-  var context = getMockContext();
+    getSample().sample.publish(context, {
+      message: 'message'
+    });
 
-  getSample().sample.publish(context, {
-    message: 'message'
+    assert.equal(context.failure.calledOnce, true);
+    assert.equal(context.failure.firstCall.args[0], expectedMsg);
+    assert.equal(context.success.called, false);
   });
 
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(context.success.called, false);
-});
+  it('Publish fails without a message', function () {
+    var expectedMsg = 'Message not provided. Make sure you have a "message" ' +
+      'property in your request';
+    var context = getMockContext();
 
-test('Publish fails without a message', function (t) {
-  var expectedMsg = 'Message not provided. Make sure you have a "message" ' +
-    'property in your request';
-  var context = getMockContext();
+    getSample().sample.publish(context, {
+      topic: 'topic'
+    });
 
-  getSample().sample.publish(context, {
-    topic: 'topic'
+    assert.equal(context.failure.calledOnce, true);
+    assert.equal(context.failure.firstCall.args[0], expectedMsg);
+    assert.equal(context.success.called, false);
   });
 
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(context.success.called, false);
-});
+  it('Publishes the message to the topic and calls success', function () {
+    var expectedMsg = 'Message published';
+    var data = {
+      topic: 'topic',
+      message: 'message'
+    };
+    var context = getMockContext();
 
-test('Publishes the message to the topic and calls success', function (t) {
-  var expectedMsg = 'Message published';
-  var data = {
-    topic: 'topic',
-    message: 'message'
-  };
-  var context = getMockContext();
+    var pubsubSample = getSample();
+    pubsubSample.sample.publish(context, data);
 
-  var pubsubSample = getSample();
-  pubsubSample.sample.publish(context, data);
-
-  t.is(context.success.calledOnce, true);
-  t.is(context.success.firstCall.args[0], expectedMsg);
-  t.is(context.failure.called, false);
-  t.is(pubsubSample.mocks.pubsub.topic.calledOnce, true);
-  t.deepEqual(pubsubSample.mocks.pubsub.topic.firstCall.args[0], data.topic);
-  t.is(pubsubSample.mocks.topic.publish.calledOnce, true);
-  t.deepEqual(pubsubSample.mocks.topic.publish.firstCall.args[0], {
-    data: {
-      message: data.message
-    }
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.success.firstCall.args[0], expectedMsg);
+    assert.equal(context.failure.called, false);
+    assert.equal(pubsubSample.mocks.pubsub.topic.calledOnce, true);
+    assert.deepEqual(pubsubSample.mocks.pubsub.topic.firstCall.args[0], data.topic);
+    assert.equal(pubsubSample.mocks.topic.publish.calledOnce, true);
+    assert.deepEqual(pubsubSample.mocks.topic.publish.firstCall.args[0], {
+      data: {
+        message: data.message
+      }
+    });
   });
-});
 
-test('Fails to publish the message and calls failure', function (t) {
-  var expectedMsg = 'error';
-  var data = {
-    topic: 'topic',
-    message: 'message'
-  };
-  var context = getMockContext();
+  it('Fails to publish the message and calls failure', function () {
+    var expectedMsg = 'error';
+    var data = {
+      topic: 'topic',
+      message: 'message'
+    };
+    var context = getMockContext();
 
-  var pubsubSample = getSample();
-  pubsubSample.mocks.topic.publish = sinon.stub().callsArgWith(1, expectedMsg);
+    var pubsubSample = getSample();
+    pubsubSample.mocks.topic.publish = sinon.stub().callsArgWith(1, expectedMsg);
 
-  pubsubSample.sample.publish(context, data);
+    pubsubSample.sample.publish(context, data);
 
-  t.is(context.success.called, false);
-  t.is(context.failure.calledOnce, true);
-  t.is(context.failure.firstCall.args[0], expectedMsg);
-  t.is(pubsubSample.mocks.pubsub.topic.calledOnce, true);
-  t.deepEqual(pubsubSample.mocks.pubsub.topic.firstCall.args[0], data.topic);
-  t.is(pubsubSample.mocks.topic.publish.calledOnce, true);
-  t.deepEqual(pubsubSample.mocks.topic.publish.firstCall.args[0], {
-    data: {
-      message: data.message
-    }
+    assert.equal(context.success.called, false);
+    assert.equal(context.failure.calledOnce, true);
+    assert.equal(context.failure.firstCall.args[0], expectedMsg);
+    assert.equal(pubsubSample.mocks.pubsub.topic.calledOnce, true);
+    assert.deepEqual(pubsubSample.mocks.pubsub.topic.firstCall.args[0], data.topic);
+    assert.equal(pubsubSample.mocks.topic.publish.calledOnce, true);
+    assert.deepEqual(pubsubSample.mocks.topic.publish.firstCall.args[0], {
+      data: {
+        message: data.message
+      }
+    });
   });
-});
 
-test('Subscribes to a message', function (t) {
-  var expectedMsg = 'message';
-  var data = {
-    topic: 'topic',
-    message: expectedMsg
-  };
-  var context = getMockContext();
+  it('Subscribes to a message', function () {
+    var expectedMsg = 'message';
+    var data = {
+      topic: 'topic',
+      message: expectedMsg
+    };
+    var context = getMockContext();
 
-  var pubsubSample = getSample();
+    var pubsubSample = getSample();
 
-  pubsubSample.sample.subscribe(context, data);
+    pubsubSample.sample.subscribe(context, data);
 
-  t.is(console.log.called, true);
-  t.is(console.log.calledWith(expectedMsg), true);
-  t.is(context.success.calledOnce, true);
-  t.is(context.failure.called, false);
-});
-
-test.after(function () {
-  console.error.restore();
-  console.log.restore();
+    assert.equal(console.log.called, true);
+    assert.equal(console.log.calledWith(expectedMsg), true);
+    assert.equal(context.success.calledOnce, true);
+    assert.equal(context.failure.called, false);
+  });
 });

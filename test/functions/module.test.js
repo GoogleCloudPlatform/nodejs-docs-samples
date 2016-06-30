@@ -13,14 +13,15 @@
 
 'use strict';
 
-var test = require('ava');
 var moduleSample = require('../../functions/module');
 
-test.cb.serial('should return a hello world message', function (t) {
-  moduleSample.helloworld({
-    success: function (result) {
-      t.is(result, 'Hello World!');
-      t.end();
-    }
+describe('functions:module', function () {
+  it('should return a hello world message', function (done) {
+    moduleSample.helloworld({
+      success: function (result) {
+        assert(result === 'Hello World!');
+        done();
+      }
+    });
   });
 });

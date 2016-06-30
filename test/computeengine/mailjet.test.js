@@ -13,40 +13,41 @@
 
 'use strict';
 
-var test = require('ava');
 var proxyquire = require('proxyquire').noPreserveCache();
 process.env.MAILJET_API_KEY = 'foo';
 process.env.MAILJET_API_SECRET = 'bar';
 
-test.cb.serial('should send an email', function (t) {
-  proxyquire('../../computeengine/mailjet.js', {
-    nodemailer: {
-      createTransport: function (arg) {
-        t.is(arg, 'test');
-        return {
-          sendMail: function (payload, cb) {
-            t.deepEqual(payload, {
-              from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
-              to: 'EMAIL@EXAMPLE.COM',
-              subject: 'test email from Node.js on Google Cloud Platform',
-              text: 'Hello!\n\nThis a test email from Node.js.'
-            });
-            cb('done');
-            t.end();
-          }
-        };
-      }
-    },
-    'nodemailer-smtp-transport': function (options) {
-      t.deepEqual(options, {
-        host: 'in.mailjet.com',
-        port: 2525,
-        auth: {
-          user: 'foo',
-          pass: 'bar'
+describe('computeengine:mailjet', function () {
+  it('should send an email', function (done) {
+    proxyquire('../../computeengine/mailjet.js', {
+      nodemailer: {
+        createTransport: function (arg) {
+          assert.equal(arg, 'test');
+          return {
+            sendMail: function (payload, cb) {
+              assert.deepEqual(payload, {
+                from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
+                to: 'EMAIL@EXAMPLE.COM',
+                subject: 'test email from Node.js on Google Cloud Platform',
+                text: 'Hello!\n\nThis a test email from Node.js.'
+              });
+              cb('done');
+              done();
+            }
+          };
         }
-      });
-      return 'test';
-    }
+      },
+      'nodemailer-smtp-transport': function (options) {
+        assert.deepEqual(options, {
+          host: 'in.mailjet.com',
+          port: 2525,
+          auth: {
+            user: 'foo',
+            pass: 'bar'
+          }
+        });
+        return 'test';
+      }
+    });
   });
 });

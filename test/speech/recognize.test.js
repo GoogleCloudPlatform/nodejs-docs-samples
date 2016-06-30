@@ -13,20 +13,24 @@
 
 'use strict';
 
-var test = require('ava');
 var path = require('path');
 var recognizeExample = require('../../speech/recognize');
 
-test.cb.serial('should list entries', function (t) {
-  recognizeExample.main(
-    path.resolve('../../speech/resources/audio.raw'),
-    function (err, result) {
-      t.ifError(err);
-      t.truthy(result);
-      t.truthy(result.responses);
-      t.is(result.responses.length, 1);
-      t.truthy(result.responses[0].results);
-      t.end();
-    }
-  );
+describe('speech:recognize', function () {
+  it('should list entries', function (done) {
+    recognizeExample.main(
+      path.join(__dirname, '../../speech/resources/audio.raw'),
+      function (err, result) {
+        assert(!err);
+        assert(result);
+        assert(result.responses);
+        assert(result.responses.length === 1);
+        assert(result.responses[0].results);
+        assert(console.log.calledWith('Got audio file!'));
+        assert(console.log.calledWith('Loading speech service...'));
+        assert(console.log.calledWith('Analyzing speech...'));
+        done();
+      }
+    );
+  });
 });

@@ -14,7 +14,6 @@
 'use strict';
 
 var async = require('async');
-var test = require('ava');
 var loadDataFromCsvExample = require('../../bigquery/load_data_from_csv');
 var loadDataFromGcsExample = require('../../bigquery/load_data_from_gcs');
 var bucket = process.env.TEST_BUCKET_NAME;
@@ -23,42 +22,44 @@ var datasetId = 'nodejs_docs_samples';
 var tableName = 'test_' + new Date().getTime() + '_' +
   Math.floor(Math.random() * 10000);
 
-test.cb.serial('should load data from a csv file in a GCS bucket', function (t) {
-  async.series([
-    function (cb) {
-      loadDataFromCsvExample.createTable(datasetId, tableName, cb);
-    },
-    function (cb) {
-      loadDataFromGcsExample.main(bucket, file, datasetId, tableName, cb);
-    },
-    function (cb) {
-      loadDataFromCsvExample.deleteTable(datasetId, tableName, cb);
-    }
-  ], function (err, results) {
-    if (err) {
-      loadDataFromCsvExample.deleteTable(datasetId, tableName, function () {
-        t.end(err);
-      });
-    } else {
-      t.ifError(err);
-      // metadata
-      t.is(results[1].status.state, 'DONE');
-      t.end();
-    }
+describe('bigquery:load_data_from_gcs', function () {
+  it('should load data from a csv file in a GCS bucket', function (done) {
+    async.series([
+      function (cb) {
+        loadDataFromCsvExample.createTable(datasetId, tableName, cb);
+      },
+      function (cb) {
+        loadDataFromGcsExample.main(bucket, file, datasetId, tableName, cb);
+      },
+      function (cb) {
+        loadDataFromCsvExample.deleteTable(datasetId, tableName, cb);
+      }
+    ], function (err, results) {
+      if (err) {
+        loadDataFromCsvExample.deleteTable(datasetId, tableName, function () {
+          done(err);
+        });
+      } else {
+        assert(!err);
+        // metadata
+        assert.equal(results[1].status.state, 'DONE');
+        done();
+      }
+    });
   });
-});
 
-test('should require correct arguments', function (t) {
-  t.throws(function () {
-    loadDataFromGcsExample.main();
-  }, Error, 'bucket is required!');
-  t.throws(function () {
-    loadDataFromGcsExample.main(bucket);
-  }, Error, 'file is required!');
-  t.throws(function () {
-    loadDataFromGcsExample.main(bucket, file);
-  }, Error, 'datasetId is required!');
-  t.throws(function () {
-    loadDataFromGcsExample.main(bucket, file, datasetId);
-  }, Error, 'tableName is required!');
+  it('should require correct arguments', function () {
+    assert.throws(function () {
+      loadDataFromGcsExample.main();
+    }, Error, 'bucket is required!');
+    assert.throws(function () {
+      loadDataFromGcsExample.main(bucket);
+    }, Error, 'file is required!');
+    assert.throws(function () {
+      loadDataFromGcsExample.main(bucket, file);
+    }, Error, 'datasetId is required!');
+    assert.throws(function () {
+      loadDataFromGcsExample.main(bucket, file, datasetId);
+    }, Error, 'tableName is required!');
+  });
 });

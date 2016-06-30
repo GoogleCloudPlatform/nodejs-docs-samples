@@ -13,18 +13,19 @@
 
 'use strict';
 
-var test = require('ava');
 var datasetSizeExample = require('../../bigquery/dataset_size');
 
-test.cb.serial('should return the size of a dataset', function (t) {
-  datasetSizeExample.main(
-    'bigquery-public-data',
-    'hacker_news',
-    function (err, size) {
-      t.ifError(err);
-      t.is(typeof size, 'string');
-      t.truthy(size.indexOf(' GB') === size.length - 3);
-      t.end();
-    }
-  );
+describe('bigquery:dataset_size', function () {
+  it('should return the size of a dataset', function (done) {
+    datasetSizeExample.main(
+      'bigquery-public-data',
+      'hacker_news',
+      function (err, size) {
+        assert(!err);
+        assert.equal(typeof size, 'string');
+        assert(size.indexOf(' GB') === size.length - 3);
+        done();
+      }
+    );
+  });
 });

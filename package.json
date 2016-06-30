@@ -30,7 +30,9 @@
       "before",
       "beforeEach",
       "describe",
-      "it"
+      "it",
+      "assert",
+      "sinon"
     ],
     "ignore": [
       "appengine/bower/public/bower_components/**",
@@ -45,10 +47,8 @@
     ]
   },
   "scripts": {
-    "ava": "ava --match='!*: dependencies should install*' --timeout=2m --fail-fast --concurrency=5",
-    "ava:deps": "npm run deps_appengine && npm run ava",
-    "cover": "npm run deps_appengine && nyc ava --match='!*: dependencies should install*' --timeout=2m --fail-fast --concurrency=5 --cache",
-    "deps_appengine": "ava --match='*: dependencies should install*'",
+    "mocha": "mocha -R dot -t 120000 --require intelli-espower-loader test/_setup.js test/**/*.test.js",
+    "cover": "nyc mocha --cache -R dot -t 180000 --require intelli-espower-loader test/_setup.js test/**/*.test.js",
     "deps_bigquery": "cd bigquery; npm i; cd ../",
     "deps_computeengine": "cd computeengine; npm i; cd ../",
     "deps_datastore": "cd datastore; npm i; cd ../",
@@ -69,17 +69,14 @@
     "report-html": "nyc report --reporter=html",
     "test": "npm run lint && npm run cover"
   },
-  "ava": {
-    "files": [
-      "test/**/*.test.js"
-    ]
-  },
   "devDependencies": {
     "async": "^1.5.2",
-    "ava": "^0.15.2",
     "codecov": "^1.0.1",
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^2.5.3",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",
     "nyc": "^6.4.4",
+    "power-assert": "^1.4.1",
     "proxyquire": "^1.7.9",
     "request": "^2.72.0",
     "semistandard": "^8.0.0",

@@ -13,7 +13,6 @@
 
 'use strict';
 
-var test = require('ava');
 var fs = require('fs');
 var path = require('path');
 
@@ -46,20 +45,25 @@ function MockCanvas () {
 MockCanvas.Image = function () {};
 
 var faceDetectionExample = require('../../vision/faceDetection');
-var inputFile = path.resolve(path.join('../../vision/resources', 'face.png'));
-var outputFile = path.resolve(path.join('../../vision', 'out.png'));
+var inputFile = path.join(__dirname, '../../vision/resources', 'face.png');
+var outputFile = path.join(__dirname, '../../vision', 'out.png');
 
-test.cb.serial('should detect faces', function (t) {
-  faceDetectionExample.main(
-    inputFile,
-    outputFile,
-    MockCanvas,
-    function (err, faces) {
-      t.ifError(err);
-      t.is(faces.length, 1);
-      var image = fs.readFileSync(outputFile);
-      t.is(image.toString('utf8'), 'testfoobar');
-      t.end();
-    }
-  );
+describe('vision:faceDetection', function () {
+  it('should detect faces', function (done) {
+    faceDetectionExample.main(
+      inputFile,
+      outputFile,
+      MockCanvas,
+      function (err, faces) {
+        assert(!err);
+        assert(faces.length === 1);
+        var image = fs.readFileSync(outputFile);
+        assert(image.toString('utf8') === 'testfoobar');
+        assert(console.log.calledWith('Found 1 face'));
+        assert(console.log.calledWith('Highlighting...'));
+        assert(console.log.calledWith('Finished!'));
+        done();
+      }
+    );
+  });
 });

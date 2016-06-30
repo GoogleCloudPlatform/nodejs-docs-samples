@@ -13,16 +13,17 @@
 
 'use strict';
 
-var test = require('ava');
 var writeExample = require('../../logging/write');
 
-test.cb.serial('should write entries', function (t) {
-  writeExample.main(function (err, results) {
-    if (err && err.code === 404) {
-      return t.end();
-    }
-    t.ifError(err);
-    t.is(results.length, 2, 'should have two results');
-    t.end();
+describe('logging:write', function () {
+  it('should write entries', function (done) {
+    writeExample.main(function (err, results) {
+      if (err && err.code === 404) {
+        return done();
+      }
+      assert(!err);
+      assert(results.length === 2, 'should have two results');
+      done();
+    });
   });
 });

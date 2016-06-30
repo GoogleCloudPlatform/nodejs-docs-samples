@@ -13,22 +13,26 @@
 
 'use strict';
 
-var test = require('ava');
 var listResourcesExample = require('../../monitoring/list_resources');
 
-test.cb.serial('should list a bunch of stuff', function (t) {
-  listResourcesExample.main(
-    process.env.GCLOUD_PROJECT,
-    function (err, results) {
-      t.ifError(err);
-      t.is(results.length, 3);
-      // Monitored resources
-      t.truthy(Array.isArray(results[0].resourceDescriptors));
-      // Metric descriptors
-      t.truthy(Array.isArray(results[1].metricDescriptors));
-      // Time series
-      t.truthy(Array.isArray(results[2].timeSeries));
-      t.end();
-    }
-  );
+describe('monitoring:list_resources', function () {
+  it('should list a bunch of stuff', function (done) {
+    listResourcesExample.main(
+      process.env.GCLOUD_PROJECT,
+      function (err, results) {
+        assert(!err);
+        assert(results.length === 3);
+        // Monitored resources
+        assert(Array.isArray(results[0].resourceDescriptors));
+        // Metric descriptors
+        assert(Array.isArray(results[1].metricDescriptors));
+        // Time series
+        assert(Array.isArray(results[2].timeSeries));
+        assert(console.log.calledWith('Monitored resources'));
+        assert(console.log.calledWith('Metric descriptors'));
+        assert(console.log.calledWith('Time series'));
+        done();
+      }
+    );
+  });
 });

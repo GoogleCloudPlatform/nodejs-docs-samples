@@ -52,6 +52,7 @@ function getSpeechService (callback) {
       grpc.credentials.createFromGoogleCredential(authClient)
     );
 
+    console.log('Loading speech service...');
     var stub = new speechProto.Speech('speech.googleapis.com', credentials);
     return callback(null, stub);
   });
@@ -133,3 +134,5 @@ if (module === require.main) {
   main(inputFile, console.log);
 }
 // [END run_application]
+
+exports.main = main;

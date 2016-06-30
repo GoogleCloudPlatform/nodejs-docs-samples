@@ -175,7 +175,7 @@ function getMockContext () {
   };
 }
 
-describe('functions:pubsub', function () {
+describe('functions:sendgrid', function () {
   it('Send fails if not a POST request', function () {
     var expectedMsg = 'Only POST requests are accepted';
     var mocks = getMocks();
@@ -566,7 +566,9 @@ describe('functions:pubsub', function () {
       bucket: 'event-bucket',
       name: name
     });
-
+    sendgridSample.mocks.job.on('error', function (err) {
+      assert.equal(err, error);
+    });
     setTimeout(function () {
       sendgridSample.mocks.job.emit('error', error);
     }, 10);

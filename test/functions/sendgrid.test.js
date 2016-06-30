@@ -14,8 +14,8 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru();
-const util = require('util');
-const EventEmitter = require('events');
+var util = require('util');
+var EventEmitter = require('events');
 
 var method = 'POST';
 var key = 'sengrid_key';

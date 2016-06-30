@@ -36,13 +36,13 @@ var speechProto = protoDescriptor.google.cloud.speech.v1;
 
 // [START authenticating]
 function getSpeechService (callback) {
-  var authClient = googleAuth({
+  var googleAuthClient = googleAuth({
     scopes: [
       'https://www.googleapis.com/auth/cloud-platform'
     ]
   });
 
-  authClient.getAuthClient(function (err, authClient) {
+  googleAuthClient.getAuthClient(function (err, authClient) {
     if (err) {
       return callback(err);
     }

@@ -17,15 +17,16 @@ var path = require('path');
 var recognizeExample = require('../../speech/recognize');
 
 describe('speech:recognize', function () {
-  it('should list entries', function (done) {
+  it('should recognize speech in audio', function (done) {
     recognizeExample.main(
       path.join(__dirname, '../../speech/resources/audio.raw'),
+      process.env.SPEECH_API_HOST || 'speech.googleapis.com',
       function (err, result) {
         assert(!err);
         assert(result);
-        assert(result.responses);
-        assert(result.responses.length === 1);
-        assert(result.responses[0].results);
+        assert(Array.isArray(result.results));
+        assert(result.results.length === 1);
+        assert(result.results[0].alternatives);
         assert(console.log.calledWith('Got audio file!'));
         assert(console.log.calledWith('Loading speech service...'));
         assert(console.log.calledWith('Analyzing speech...'));

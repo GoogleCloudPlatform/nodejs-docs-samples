@@ -22,13 +22,7 @@ var googleAuth = require('google-auto-auth');
 var Transform = require('stream').Transform;
 
 // [START proto]
-var PROTO_ROOT_DIR = googleProtoFiles('..');
-var PROTO_FILE_PATH = path.join(__dirname, 'cloud_speech.proto');
-
-var protoDescriptor = grpc.load({
-  root: PROTO_ROOT_DIR,
-  file: path.relative(PROTO_ROOT_DIR, PROTO_FILE_PATH)
-}, 'proto', {
+var protoDescriptor = grpc.load(googleProtoFiles.speech.v1beta1, 'proto', {
   binaryAsBase64: true,
   convertFieldsToCamelCase: true
 });

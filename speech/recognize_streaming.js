@@ -15,7 +15,6 @@
 
 var async = require('async');
 var fs = require('fs');
-var path = require('path');
 var grpc = require('grpc');
 var googleProtoFiles = require('google-proto-files');
 var googleAuth = require('google-auto-auth');

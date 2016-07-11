@@ -80,6 +80,7 @@ function addTask (description, callback) {
       {
         name: 'description',
         value: description,
+        excludeFromIndexes: true
       },
       {
         name: 'done',

@@ -20,13 +20,8 @@ var async = require('async');
 var fs = require('fs');
 // [END import_libraries]
 
-// Url to discovery doc file
-// [START discovery_doc]
-var url = 'https://speech.googleapis.com/$discovery/rest';
-// [END discovery_doc]
-
 // [START authenticating]
-function getSpeechService (callback) {
+function getSpeechService (host, callback) {
   // Acquire credentials
   google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
@@ -49,9 +44,16 @@ function getSpeechService (callback) {
 
     // Load the speach service using acquired credentials
     console.log('Loading speech service...');
+
+    // Url to discovery doc file
+    // [START discovery_doc]
+    host = host || 'speech.googleapis.com';
+    var url = 'https://' + host + '/$discovery/rest';
+    // [END discovery_doc]
+
     google.discoverAPI({
       url: url,
-      version: 'v1',
+      version: 'v1beta1',
       auth: authClient
     }, function (err, speechService) {
       if (err) {
@@ -72,11 +74,11 @@ function prepareRequest (inputFile, callback) {
     console.log('Got audio file!');
     var encoded = new Buffer(audioFile).toString('base64');
     var payload = {
-      initialRequest: {
+      config: {
         encoding: 'LINEAR16',
         sampleRate: 16000
       },
-      audioRequest: {
+      audio: {
         content: encoded
       }
     };
@@ -85,7 +87,7 @@ function prepareRequest (inputFile, callback) {
 }
 // [END construct_request]
 
-function main (inputFile, callback) {
+function main (inputFile, host, callback) {
   var requestPayload;
 
   async.waterfall([
@@ -94,12 +96,12 @@ function main (inputFile, callback) {
     },
     function (payload, cb) {
       requestPayload = payload;
-      getSpeechService(cb);
+      getSpeechService(host, cb);
     },
     // [START send_request]
     function sendRequest (speechService, authClient, cb) {
       console.log('Analyzing speech...');
-      speechService.speech.recognize({
+      speechService.speech.syncrecognize({
         auth: authClient,
         resource: requestPayload
       }, function (err, result) {
@@ -117,11 +119,12 @@ function main (inputFile, callback) {
 // [START run_application]
 if (module === require.main) {
   if (process.argv.length < 3) {
-    console.log('Usage: node recognize <inputFile>');
+    console.log('Usage: node recognize <inputFile> [speech_api_host]');
     process.exit();
   }
   var inputFile = process.argv[2];
-  main(inputFile, console.log);
+  var host = process.argv[3];
+  main(inputFile, host || 'speech.googleapis.com', console.log);
 }
 // [END run_application]
 // [END app]

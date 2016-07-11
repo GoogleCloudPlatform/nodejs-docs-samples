@@ -19,23 +19,23 @@ var path = require('path');
 var grpc = require('grpc');
 var googleProtoFiles = require('google-proto-files');
 var googleAuth = require('google-auto-auth');
+var Transform = require('stream').Transform;
 
 // [START proto]
 var PROTO_ROOT_DIR = googleProtoFiles('..');
-var PROTO_FILE_PATH = googleProtoFiles('cloud', 'speech', 'v1', 'cloud_speech.proto');
 
 var protoDescriptor = grpc.load({
   root: PROTO_ROOT_DIR,
-  file: path.relative(PROTO_ROOT_DIR, PROTO_FILE_PATH)
+  file: path.relative(PROTO_ROOT_DIR, googleProtoFiles.speech.v1beta1)
 }, 'proto', {
   binaryAsBase64: true,
   convertFieldsToCamelCase: true
 });
-var speechProto = protoDescriptor.google.cloud.speech.v1;
+var speechProto = protoDescriptor.google.cloud.speech.v1beta1;
 // [END proto]
 
 // [START authenticating]
-function getSpeechService (callback) {
+function getSpeechService (host, callback) {
   var googleAuthClient = googleAuth({
     scopes: [
       'https://www.googleapis.com/auth/cloud-platform'
@@ -53,46 +53,31 @@ function getSpeechService (callback) {
     );
 
     console.log('Loading speech service...');
-    var stub = new speechProto.Speech('speech.googleapis.com', credentials);
+    var stub = new speechProto.Speech(host, credentials);
     return callback(null, stub);
   });
 }
 // [END authenticating]
 
-// [START construct_request]
-function getAudioFile (inputFile, callback) {
-  fs.readFile(inputFile, function (err, audioFile) {
-    if (err) {
-      return callback(err);
-    }
-    console.log('Got audio file!');
-    return callback(null, audioFile);
-  });
-}
-// [END construct_request]
-
-function main (inputFile, callback) {
-  var audioFile;
-
+function main (inputFile, host, callback) {
   async.waterfall([
     function (cb) {
-      getAudioFile(inputFile, cb);
-    },
-    function (_audioFile, cb) {
-      audioFile = _audioFile;
-      getSpeechService(cb);
+      getSpeechService(host, cb);
     },
     // [START send_request]
     function sendRequest (speechService, cb) {
       console.log('Analyzing speech...');
       var responses = [];
-      var call = speechService.recognize();
+      var call = speechService.streamingRecognize();
 
       // Listen for various responses
       call.on('error', cb);
       call.on('data', function (recognizeResponse) {
         if (recognizeResponse) {
           responses.push(recognizeResponse);
+          if (recognizeResponse.results && recognizeResponse.results.length) {
+            console.log(JSON.stringify(recognizeResponse.results, null, 2));
+          }
         }
       });
       call.on('end', function () {
@@ -100,25 +85,28 @@ function main (inputFile, callback) {
       });
 
       // Write the initial recognize reqeust
-      call.write(new speechProto.RecognizeRequest({
-        initialRequest: new speechProto.InitialRecognizeRequest({
-          encoding: 'LINEAR16',
-          sampleRate: 16000,
+      call.write({
+        streamingConfig: {
+          config: {
+            encoding: 'LINEAR16',
+            sampleRate: 16000
+          },
           interimResults: false,
-          continuous: false,
-          enableEndpointerEvents: false
-        })
-      }));
+          singleUtterance: false
+        }
+      });
 
-      // Write an audio request
-      call.write(new speechProto.RecognizeRequest({
-        audioRequest: new speechProto.AudioRequest({
-          content: audioFile
-        })
-      }));
+      var toRecognizeRequest = new Transform({ objectMode: true });
+      toRecognizeRequest._transform = function (chunk, encoding, done) {
+        done(null, {
+          audioContent: chunk
+        });
+      };
 
-      // Signal that we're done writing
-      call.end();
+      // Stream the audio to the Speech API
+      fs.createReadStream(inputFile)
+        .pipe(toRecognizeRequest)
+        .pipe(call);
     }
     // [END send_request]
   ], callback);
@@ -127,11 +115,12 @@ function main (inputFile, callback) {
 // [START run_application]
 if (module === require.main) {
   if (process.argv.length < 3) {
-    console.log('Usage: node recognize_streaming <inputFile>');
+    console.log('Usage: node recognize_streaming <inputFile> [speech_api_host]');
     process.exit();
   }
   var inputFile = process.argv[2];
-  main(inputFile, console.log);
+  var host = process.argv[3];
+  main(inputFile, host || 'speech.googleapis.com', console.log);
 }
 // [END run_application]
 

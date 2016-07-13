@@ -2,8 +2,8 @@
 
 # Google Cloud Functions Slack Slash Command sample
 
-This recipe shows you how to implement a Slack Slash Command with Cloud
-Functions.
+This tutorial demonstrates using Cloud Functions to implement a Slack Slash
+Command that searches the Google Knowledge Graph API.
 
 View the [source code][code].
 

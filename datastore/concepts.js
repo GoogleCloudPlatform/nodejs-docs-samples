@@ -168,7 +168,7 @@ Entity.prototype.testProperties = function (callback) {
   var task  =  [
       {
         name: 'type',
-        value: 'personal'
+        value: 'Personal'
       },
       {
         name: 'created',

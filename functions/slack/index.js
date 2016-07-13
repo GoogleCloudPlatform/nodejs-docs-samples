@@ -23,7 +23,7 @@ var kgsearch = googleapis.kgsearch('v1');
 
 // [START formatSlackMessage]
 /**
- * TODO.
+ * Format the Knowledge Graph API response into a richly formatted Slack message.
  *
  * @param {string} query The user's search query.
  * @param {Object} response The response from the Knowledge Graph API.
@@ -40,14 +40,14 @@ function formatSlackMessage (query, response) {
 
   // Prepare a rich Slack message
   // See https://api.slack.com/docs/message-formatting
-  var response = {
+  var slackMessage = {
     response_type: 'in_channel',
     text: 'Query: ' + query,
     attachments: []
   };
 
   if (entity) {
-    response.attachments.push({
+    slackMessage.attachments.push({
       color: '#3367d6',
       title: entity.name + ': ' + entity.description,
       title_link: entity.detailedDescription.url,
@@ -55,12 +55,12 @@ function formatSlackMessage (query, response) {
       image_url: entity.image.contentUrl
     });
   } else {
-    response.attachments.push({
+    slackMessage.attachments.push({
       text: 'No results match your query...'
     });
   }
 
-  return response;
+  return slackMessage;
 }
 // [END formatSlackMessage]
 

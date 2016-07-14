@@ -46,13 +46,15 @@ function formatSlackMessage (query, response) {
     attachments: []
   };
 
+  console.log(JSON.stringify(entity, null, 2));
+
   if (entity) {
     slackMessage.attachments.push({
       color: '#3367d6',
       title: entity.name + ': ' + entity.description,
       title_link: entity.detailedDescription.url,
       text: entity.detailedDescription.articleBody,
-      image_url: entity.image.contentUrl
+      image_url: entity.image ? entity.image.contentUrl : undefined
     });
   } else {
     slackMessage.attachments.push({

@@ -14,8 +14,6 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru();
-var util = require('util');
-var EventEmitter = require('events');
 
 var method = 'POST';
 var query = 'giraffe';
@@ -77,14 +75,6 @@ function getMocks () {
   return {
     req: req,
     res: res
-  };
-}
-
-function getMockContext () {
-  return {
-    done: sinon.stub(),
-    success: sinon.stub(),
-    failure: sinon.stub()
   };
 }
 

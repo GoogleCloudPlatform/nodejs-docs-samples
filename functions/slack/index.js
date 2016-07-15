@@ -46,16 +46,28 @@ function formatSlackMessage (query, response) {
     attachments: []
   };
 
-  console.log(JSON.stringify(entity, null, 2));
-
   if (entity) {
-    slackMessage.attachments.push({
-      color: '#3367d6',
-      title: entity.name + ': ' + entity.description,
-      title_link: entity.detailedDescription.url,
-      text: entity.detailedDescription.articleBody,
-      image_url: entity.image ? entity.image.contentUrl : undefined
-    });
+    var attachment = {
+      color: '#3367d6'
+    };
+    if (entity.name) {
+      attachment.title = entity.name;
+      if (entity.description) {
+        attachment.title = attachment.title + ': ' + entity.description;
+      }
+    }
+    if (entity.detailedDescription) {
+      if (entity.detailedDescription.url) {
+        attachment.title_link = entity.detailedDescription.url;
+      }
+      if (entity.detailedDescription.articleBody) {
+        attachment.text = entity.detailedDescription.articleBody;
+      }
+    }
+    if (entity.image && entity.image.contentUrl) {
+      attachment.image_url = entity.image.contentUrl;
+    }
+    slackMessage.attachments.push(attachment);
   } else {
     slackMessage.attachments.push({
       text: 'No results match your query...'

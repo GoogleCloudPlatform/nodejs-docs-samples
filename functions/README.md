@@ -32,3 +32,4 @@ environment.
 * [Modules](module/)
 * [OCR (Optical Character Recognition)](ocr/)
 * [SendGrid](sendgrid/)
+* [Slack](slack/)

@@ -54,6 +54,7 @@
     "deps_datastore": "cd datastore; npm i; cd ../",
     "deps_debugger": "cd debugger; npm i; cd ../",
     "deps_functions": "cd functions/uuid; npm i; cd ../..",
+    "deps_language": "cd language; npm i; cd ../",
     "deps_logging": "cd logging; npm i; cd ../",
     "deps_monitoring": "cd monitoring; npm i; cd ../",
     "deps_prediction": "cd prediction; npm i; cd ../",
@@ -64,7 +65,7 @@
     "deps_vision": "cd vision; npm i; cd ../",
     "lint": "semistandard \"**/*.js\"",
     "pretest_geddy": "cd appengine/geddy; npm i geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
-    "pretest": "npm run deps_trace; npm run deps_debugger; npm run deps_vision; npm run deps_computeengine; npm run deps_bigquery; npm run deps_datastore; npm run deps_monitoring; npm run deps_storage; npm run deps_pubsub; npm run deps_prediction; npm run deps_logging; npm run deps_functions; npm run deps_speech; npm run pretest_geddy;",
+    "pretest": "npm run deps_language; npm run deps_trace; npm run deps_debugger; npm run deps_vision; npm run deps_computeengine; npm run deps_bigquery; npm run deps_datastore; npm run deps_monitoring; npm run deps_storage; npm run deps_pubsub; npm run deps_prediction; npm run deps_logging; npm run deps_functions; npm run deps_speech; npm run pretest_geddy;",
     "report": "nyc report --reporter=lcov | codecov",
     "report-html": "nyc report --reporter=html",
     "test": "npm run lint && npm run cover"

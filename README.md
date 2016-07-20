@@ -27,20 +27,21 @@ on Google Cloud Platform.
   * [Google API Node.js client library](#google-api-nodejs-client-library)
 * [Code samples](#code-samples)
   * [Google App Engine (flexible environment)](#google-app-engine-flexible-environment)
+  * [Google BigQuery](#google-bigquery)
   * [Google Compute Engine](#google-compute-engine)
   * [Google Container Engine](#google-container-engine)
-  * [Google BigQuery](#google-bigquery)
   * [Google Cloud Datastore (Beta)](#google-cloud-datastore-beta)
-  * [Stackdriver Debugger (Beta)](#stackdriver-debugger-beta)
   * [Google Cloud Functions (Alpha)](#google-cloud-functions-alpha)
-  * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
-  * [Stackdriver Monitoring (Beta)](#stackdriver-monitoring-beta)
+  * [Google Cloud Natural Language API (Beta)](#google-cloud-natural-language-api-beta)
   * [Google Cloud Prediction API](#google-cloud-prediction-api)
   * [Google Cloud Pub/Sub](#google-cloud-pubsub)
-  * [Google Cloud Speech API (Alpha)](#google-cloud-speech-api-alpha)
+  * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
   * [Google Cloud Storage](#google-cloud-storage)
-  * [Stackdriver Trace (Beta)](#stackdriver-trace-beta)
   * [Google Cloud Vision API](#google-cloud-vision-api)
+  * [Stackdriver Debugger (Beta)](#stackdriver-debugger-beta)
+  * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
+  * [Stackdriver Monitoring (Beta)](#stackdriver-monitoring-beta)
+  * [Stackdriver Trace (Beta)](#stackdriver-trace-beta)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
   * [LabelCat](#labelcat)
@@ -237,16 +238,6 @@ View the [Cloud Datastore Node.js samples][datastore_samples].
 [datastore_docs]: https://cloud.google.com/datastore/docs/
 [datastore_samples]: datastore
 
-### Stackdriver Debugger (Beta)
-
-[Stackdriver Debugger][debugger_docs] makes it easier to view the application
-state without adding logging statements.
-
-View the [Stackdriver Debugger Node.js sample][debugger_sample].
-
-[debugger_docs]: https://cloud.google.com/debugger/docs/
-[debugger_sample]: debugger
-
 ### Google Cloud Functions (Alpha)
 
 [Sign up for the Alpha][functions_signup].
@@ -261,6 +252,80 @@ View the [Cloud Functions Node.js samples][functions_samples].
 [functions_signup]: https://docs.google.com/a/google.com/forms/d/1WQNWPK3xdLnw4oXPT_AIVR9-gd6DLo5ZIucyxzSQ5fQ/viewform
 [functions_docs]: https://cloud.google.com/functions/docs/
 [functions_samples]: functions
+
+### Google Cloud Natural Language API (Beta)
+
+[Cloud Natural Language API][language_docs] provides natural language
+understanding technologies to developers, including sentiment analysis, entity
+recognition, and syntax analysis. This API is part of the larger Cloud Machine
+Learning API.
+
+View the [Cloud Natural Language API Node.js samples][language_samples].
+
+[language_docs]: https://cloud.google.com/natural-language/docs/
+[language_samples]: language
+
+### Google Cloud Prediction API
+
+The [Cloud Prediction API][prediction_docs] provides a RESTful API to build
+Machine Learning models.
+
+View the [Cloud Prediction API Node.js samples][prediction_samples].
+
+[prediction_docs]: https://cloud.google.com/prediction/docs/
+[prediction_samples]: prediction
+
+### Google Cloud Pub/Sub
+
+[Cloud Pub/Sub][pubsub_docs] is a fully-managed real-time messaging service that
+allows you to send and receive messages between independent applications.
+
+View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
+
+[pubsub_docs]: https://cloud.google.com/pubsub/docs/
+[pubsub_samples]: pubsub
+
+### Google Cloud Speech API (Beta)
+
+The [Cloud Speech API][speech_docs] enables easy integration of Google speech
+recognition technologies into developer applications.
+
+View the [Cloud Speech API Node.js samples][speech_samples].
+
+[speech_docs]: https://cloud.google.com/speech/
+[speech_samples]: speech
+
+### Google Cloud Storage
+
+[Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
+amount of data at any time.
+
+View the [Cloud Storage Node.js samples][storage_samples].
+
+[storage_docs]: https://cloud.google.com/storage/docs/
+[storage_samples]: storage
+
+### Google Cloud Vision API
+
+The [Cloud Vision API][vision_docs] allows developers to easily integrate vision
+detection features within applications, including image labeling, face and
+landmark detection, optical character recognition (OCR), and tagging of explicit
+content.
+
+View the [Cloud Vision API Node.js samples][vision_samples].
+
+[vision_docs]: https://cloud.google.com/vision/docs/
+[vision_samples]: vision
+
+### Stackdriver Debugger (Beta)
+
+[Stackdriver Debugger][debugger_docs] makes it easier to view the application
+state without adding logging statements.
+
+View the [Stackdriver Debugger Node.js sample][debugger_sample].
+
+[debugger_docs]: https://cloud.google.com/debugger/docs/
+[debugger_sample]: debugger
 
 ### Stackdriver Logging (Beta)
 
@@ -285,49 +350,6 @@ View the [Stackdriver Monitoring Node.js samples][monitoring_samples].
 [monitoring_docs]: https://cloud.google.com/monitoring/docs/
 [monitoring_samples]: monitoring
 
-### Google Cloud Prediction API
-
-The [Cloud Prediction API][prediction_docs] provides a RESTful API to build
-Machine Learning models.
-
-View the [Cloud Prediction API Node.js samples][prediction_samples].
-
-[prediction_docs]: https://cloud.google.com/prediction/docs/
-[prediction_samples]: prediction
-
-### Google Cloud Pub/Sub
-
-[Cloud Pub/Sub][pubsub_docs] is a fully-managed real-time messaging service that
-allows you to send and receive messages between independent applications.
-
-View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
-
-[pubsub_docs]: https://cloud.google.com/pubsub/docs/
-[pubsub_samples]: pubsub
-
-### Google Cloud Speech API (Alpha)
-
-[Sign up for the Alpha][speech_signup].
-
-The [Cloud Speech API][speech_docs] enables easy integration of Google speech
-recognition technologies into developer applications.
-
-View the [Cloud Speech API Node.js samples][speech_samples].
-
-[speech_signup]: https://services.google.com/fb/forms/speech-api-alpha/
-[speech_docs]: https://cloud.google.com/speech/
-[speech_samples]: speech
-
-### Google Cloud Storage
-
-[Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
-amount of data at any time.
-
-View the [Cloud Storage Node.js samples][storage_samples].
-
-[storage_docs]: https://cloud.google.com/storage/docs/
-[storage_samples]: storage
-
 ### Stackdriver Trace (Beta)
 
 [Stackdriver Trace][trace_docs] is a distributed tracing system for Google Cloud
@@ -338,18 +360,6 @@ View the [Stackdriver Trace Node.js sample][trace_sample].
 
 [trace_docs]: https://cloud.google.com/trace/docs/
 [trace_sample]: trace
-
-### Google Cloud Vision API
-
-The [Cloud Vision API][vision_docs] allows developers to easily integrate vision
-detection features within applications, including image labeling, face and
-landmark detection, optical character recognition (OCR), and tagging of explicit
-content.
-
-View the [Cloud Vision API Node.js samples][vision_samples].
-
-[vision_docs]: https://cloud.google.com/vision/docs/
-[vision_samples]: vision
 
 ## Other sample applications
 

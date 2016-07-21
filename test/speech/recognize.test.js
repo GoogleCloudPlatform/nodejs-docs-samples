@@ -20,7 +20,6 @@ describe('speech:recognize', function () {
   it('should recognize speech in audio', function (done) {
     recognizeExample.main(
       path.join(__dirname, '../../speech/resources/audio.raw'),
-      process.env.SPEECH_API_HOST || 'speech.googleapis.com',
       function (err, result) {
         assert(!err);
         assert(result);
@@ -28,7 +27,6 @@ describe('speech:recognize', function () {
         assert(result.results.length === 1);
         assert(result.results[0].alternatives);
         assert(console.log.calledWith('Got audio file!'));
-        assert(console.log.calledWith('Loading speech service...'));
         assert(console.log.calledWith('Analyzing speech...'));
         done();
       }

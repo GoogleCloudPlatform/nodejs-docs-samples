@@ -18,10 +18,13 @@
 var google = require('googleapis');
 var async = require('async');
 var fs = require('fs');
+
+// Get a reference to the speech service
+var speech = google.speech('v1beta1').speech;
 // [END import_libraries]
 
 // [START authenticating]
-function getSpeechService (host, callback) {
+function getAuthClient (callback) {
   // Acquire credentials
   google.auth.getApplicationDefault(function (err, authClient) {
     if (err) {
@@ -42,25 +45,7 @@ function getSpeechService (host, callback) {
       ]);
     }
 
-    // Load the speach service using acquired credentials
-    console.log('Loading speech service...');
-
-    // Url to discovery doc file
-    // [START discovery_doc]
-    host = host || 'speech.googleapis.com';
-    var url = 'https://' + host + '/$discovery/rest';
-    // [END discovery_doc]
-
-    google.discoverAPI({
-      url: url,
-      version: 'v1beta1',
-      auth: authClient
-    }, function (err, speechService) {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, speechService, authClient);
-    });
+    return callback(null, authClient);
   });
 }
 // [END authenticating]
@@ -87,7 +72,7 @@ function prepareRequest (inputFile, callback) {
 }
 // [END construct_request]
 
-function main (inputFile, host, callback) {
+function main (inputFile, callback) {
   var requestPayload;
 
   async.waterfall([
@@ -96,12 +81,12 @@ function main (inputFile, host, callback) {
     },
     function (payload, cb) {
       requestPayload = payload;
-      getSpeechService(host, cb);
+      getAuthClient(cb);
     },
     // [START send_request]
-    function sendRequest (speechService, authClient, cb) {
+    function sendRequest (authClient, cb) {
       console.log('Analyzing speech...');
-      speechService.speech.syncrecognize({
+      speech.syncrecognize({
         auth: authClient,
         resource: requestPayload
       }, function (err, result) {
@@ -119,12 +104,11 @@ function main (inputFile, host, callback) {
 // [START run_application]
 if (module === require.main) {
   if (process.argv.length < 3) {
-    console.log('Usage: node recognize <inputFile> [speech_api_host]');
+    console.log('Usage: node recognize <inputFile>');
     process.exit();
   }
   var inputFile = process.argv[2];
-  var host = process.argv[3];
-  main(inputFile, host || 'speech.googleapis.com', console.log);
+  main(inputFile, console.log);
 }
 // [END run_application]
 // [END app]

@@ -17,18 +17,18 @@ vm: true
 
 # [START env]
 env_variables:
-  MYSQL_USER: YOUR_USER
-  MYSQL_PASSWORD: YOUR_PASSWORD
-  MYSQL_DATABASE: YOUR_DATABASE
+  MYSQL_USER: [YOUR_USER]
+  MYSQL_PASSWORD: [YOUR_PASSWORD]
+  MYSQL_DATABASE: [YOUR_DATABASE]
   # This path was printed to the console when you started the proxy, and is of
   # the format: `/[DIR]/[YOUR_PROJECT_ID]:[YOUR_REGION]:[YOUR_INSTANCE_NAME]`
-  MYSQL_SOCKET_PATH: YOUR_SOCKET_PATH
+  MYSQL_SOCKET_PATH: [YOUR_SOCKET_PATH]
 # [END env]
 
 # [START cloudsql_settings]
 beta_settings:
   # The connection name of your instance on its Overview page in the Google
   # Cloud Platform Console, or use `[YOUR_PROJECT_ID]:[YOUR_REGION]:[YOUR_INSTANCE_NAME]`
-  cloud_sql_instances: YOUR_INSTANCE_CONNECTION_NAME
+  cloud_sql_instances: [YOUR_INSTANCE_CONNECTION_NAME]
 # [END cloudsql_settings]
 # [END app_yaml]

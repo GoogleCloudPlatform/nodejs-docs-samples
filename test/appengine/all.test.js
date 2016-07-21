@@ -54,9 +54,9 @@ var sampleTests = [
   {
     dir: 'appengine/cloudsql',
     cmd: 'node',
-    args: ['app.js'],
+    args: ['server.js'],
     msg: 'Last 10 visits:',
-    TRAVIS: true
+    TRAVIS_NODE_VERSION: '4'
   },
   {
     dir: 'appengine/datastore',

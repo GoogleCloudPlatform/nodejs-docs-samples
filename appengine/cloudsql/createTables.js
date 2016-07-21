@@ -29,7 +29,7 @@ var SQL_STRING = 'CREATE TABLE `visits` (\n' +
   ');';
 
 /**
- * Create a the "visits" table.
+ * Create the "visits" table.
  *
  * @param {object} connection A mysql connection object.
  * @param {function} callback The callback function.

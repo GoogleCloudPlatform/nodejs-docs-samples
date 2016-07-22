@@ -5,7 +5,18 @@ This sample demonstrates how to use Google Cloud Endpoints on Google App Engine 
 ## Running locally
 
 Refer to the [appengine/README.md](../README.md) file for instructions on
-running and deploying.
+running locally.
+
+## Deploying to Google App Engine
+
+Open the `swagger.yaml` file and in the `host` property, replace
+`YOUR-PROJECT-ID` with your project's ID.
+
+Then, deploy the sample using `gcloud`:
+
+    gcloud beta app deploy
+
+Once deployed, you can access the application at https://YOUR-PROJECT-ID.appspot.com/.
 
 ## Send an echo request
 

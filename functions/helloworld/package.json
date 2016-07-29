@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-docs-samples-functions-hello-world",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "main": "./index.js",
+  "scripts": {
+    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3"
+  }
+}

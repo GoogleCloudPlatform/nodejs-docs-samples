@@ -1,15 +1,17 @@
 {
   "name": "nodejs-docs-samples-functions-datastore",
-  "description": "Node.js samples found on https://cloud.google.com",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  "main": "./index.js",
+  "scripts": {
+    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "gcloud": "^0.35.0"
+    "gcloud": "^0.37.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3"
   }
 }

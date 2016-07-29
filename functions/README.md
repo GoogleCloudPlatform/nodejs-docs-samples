@@ -29,7 +29,6 @@ environment.
 * [Error Reporting](errorreporting/)
 * [HTTP](http/)
 * [Logging & Monitoring](log/)
-* [Modules](module/)
 * [OCR (Optical Character Recognition)](ocr/)
 * [SendGrid](sendgrid/)
 * [Slack](slack/)

@@ -54,11 +54,24 @@ cache:
   - computeengine/node_modules/
   - datastore/node_modules/
   - debugger/node_modules/
+  - functions/background/node_modules/
+  - functions/datastore/node_modules/
+  - functions/errorreporting/node_modules/
+  - functions/gcs/node_modules/
+  - functions/helloworld/node_modules/
+  - functions/http/node_modules/
+  - functions/log/node_modules/
+  - functions/ocr/node_modules/
+  - functions/pubsub/node_modules/
+  - functions/sendgrid/node_modules/
+  - functions/slack/node_modules/
   - functions/uuid/node_modules/
+  - language/node_modules/
   - logging/node_modules/
   - monitoring/node_modules/
   - prediction/node_modules/
   - pubsub/node_modules/
+  - speech/node_modules/
   - storage/node_modules/
   - trace/node_modules/
   - vision/node_modules/
@@ -69,13 +82,15 @@ services:
 
 env:
   global:
-    - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/encrypted/nodejs-docs-samples.json
+    - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/nodejs-docs-samples.json
     - TEST_BUCKET_NAME=nodejs-docs-samples
     - GCLOUD_PROJECT=nodejs-docs-samples
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_fda0b707c7d5_key -iv $encrypted_fda0b707c7d5_iv -in test/encrypted/nodejs-docs-samples.json.enc -out test/encrypted/nodejs-docs-samples.json -d
+  - openssl aes-256-cbc -K $encrypted_fda0b707c7d5_key -iv $encrypted_fda0b707c7d5_iv -in test/nodejs-docs-samples.json.enc -out test/nodejs-docs-samples.json -d
   - npm set progress=false
+  - npm i -g npm
+  - npm i -g codecov nyc
+  - node scripts/install
 
-after_success:
-  - npm run report
+script: npm run cover && nyc report --reporter=lcov > coverage.lcov && codecov

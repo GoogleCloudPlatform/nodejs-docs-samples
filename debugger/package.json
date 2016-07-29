@@ -1,6 +1,5 @@
 {
-  "name": "stackdriver-debugger",
-  "description": "StackDriver Debugger sample for Node.js",
+  "name": "nodejs-docs-samples-debugger",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
@@ -9,10 +8,14 @@
     "node": "~4.2"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../test/_setup.js test/*.test.js"
   },
   "dependencies": {
     "@google/cloud-debug": "^0.8.3",
     "express": "^4.13.4"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3"
   }
 }

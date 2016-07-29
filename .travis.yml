@@ -91,6 +91,8 @@ before_install:
   - npm set progress=false
   - npm i -g npm
   - npm i -g codecov nyc
+
+before_script:
   - node scripts/install
 
-script: npm run cover && nyc report --reporter=lcov > coverage.lcov && codecov
+script: npm run cover && nyc report --reporter=lcov && codecov

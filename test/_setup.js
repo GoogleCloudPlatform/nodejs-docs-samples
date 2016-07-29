@@ -20,7 +20,6 @@ global.assert = assert;
 global.sinon = sinon;
 
 var log = console.log;
-var error = console.error;
 
 beforeEach(function () {
   if (process.env.DEBUG) {

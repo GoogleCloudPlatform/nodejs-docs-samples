@@ -328,9 +328,9 @@ sampleTests.forEach(function (sample) {
       sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
     }
     port++;
-    // it('should install dependencies', function (done) {
-    //   testInstallation(sample, done);
-    // });
+    it.skip('should install dependencies', function (done) {
+      testInstallation(sample, done);
+    });
 
     if (sample.TRAVIS && !process.env.TRAVIS) {
       return;

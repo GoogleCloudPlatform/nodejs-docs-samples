@@ -13,6 +13,11 @@
 
 'use strict';
 
+var loadDataFromGcsExample = require('../load_data_from_gcs');
+var bucket = process.env.TEST_BUCKET_NAME || 'nodejs-docs-samples';
+var file = 'data.csv';
+var datasetId = 'nodejs_docs_samples';
+
 describe('bigquery:load_data_from_gcs', function () {
   it('should be tested');
 

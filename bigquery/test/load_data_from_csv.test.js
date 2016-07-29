@@ -13,6 +13,11 @@
 
 'use strict';
 
+var path = require('path');
+var loadDataFromCsvExample = require('../load_data_from_csv');
+var pathToCsvFile = path.join(__dirname, '/../resources/data.csv');
+var datasetId = 'nodejs_docs_samples';
+
 describe('bigquery:load_data_from_csv', function () {
   it('should be tested');
 

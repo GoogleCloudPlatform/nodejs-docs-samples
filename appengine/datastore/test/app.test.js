@@ -15,7 +15,7 @@
 
 var express = require('express');
 var path = require('path');
-var proxyquire = require('proxyquire').noPreserveCache();
+var proxyquire = require('proxyquire').noCallThru();
 var request = require('supertest');
 
 var SAMPLE_PATH = path.join(__dirname, '../app.js');
@@ -76,7 +76,7 @@ function getSample () {
   };
 }
 
-describe('appengine/cloudsql/server.js', function () {
+describe.only('appengine/datastore/app.js', function () {
   var sample;
 
   beforeEach(function () {

@@ -35,34 +35,24 @@
       "sinon"
     ],
     "ignore": [
-      "appengine/bower/public/bower_components/**",
-      "appengine/geddy/**",
-      "appengine/kraken/**",
-      "appengine/loopback/**",
+      "appengine/bower/public/bower_components",
+      "appengine/geddy",
+      "appengine/kraken",
+      "appengine/loopback",
       "appengine/parse-server/cloud/main.js",
-      "appengine/sails/**",
-      "appengine/webpack/dist/**",
+      "appengine/sails",
+      "appengine/webpack/dist",
       "**/node_modules/**",
-      "coverage/"
-    ]
-  },
-  "nyc": {
-    "exclude": [
-      "test",
-      "test{,-*}.js",
-      "**/*.test.js",
-      "**/__tests__/**",
-      "base64url.test.js"
+      "coverage"
     ]
   },
   "scripts": {
-    "lint": "semistandard \"**/*.js\"",
-    "pretest_geddy": "cd appengine/geddy; npm i geddy; GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && node node_modules/.bin/geddy gen secret; cd ../..;",
-    "pretest": "npm run lint && npm run pretest_geddy && node ./scripts/clean",
-    "mocha": "mocha -R spec -S -t 120000 --require intelli-espower-loader ./test/_setup.js {*,appengine/**,functions/**}/test/*.test.js",
+    "lint": "semistandard",
+    "pretest": "npm run lint && ./scripts/geddy && ./scripts/clean",
+    "mocha": "mocha -R spec -S -t 120000 --require intelli-espower-loader ./test/_setup.js '{*,appengine/*,functions/*}/test/*.test.js'",
     "test": "npm run mocha",
     "cover": "nyc --cache npm test && nyc report --reporter=html",
-    "system-test": "mocha -R spec -S -t 120000 --require intelli-espower-loader system-test/_setup.js {*,appengine/**}/system-test/*.test.js",
+    "system-test": "mocha -R spec -S -t 120000 --require intelli-espower-loader system-test/_setup.js {*,appengine/*}/system-test/*.test.js",
     "system-cover": "npm run pretest && nyc --cache npm run system-test && nyc report --reporter=html"
   },
   "devDependencies": {

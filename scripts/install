@@ -21,7 +21,7 @@ require('shelljs/global');
 // Install NPM dependencies, in up to 4 directories at a time
 var queue = async.queue(function (directory, callback) {
   installForDirectory(directory, callback);
-}, 4);
+}, 5);
 
 queueDirectories('appengine');
 queue.push('bigquery');

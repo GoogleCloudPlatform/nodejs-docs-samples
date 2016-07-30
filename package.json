@@ -52,7 +52,7 @@
     "mocha": "mocha -R spec -S -t 120000 --require intelli-espower-loader ./test/_setup.js '{*,appengine/*,functions/*}/test/*.test.js'",
     "test": "npm run mocha",
     "cover": "nyc --cache npm test && nyc report --reporter=html && nyc report --reporter=lcov",
-    "system-test": "mocha -R spec -S -t 120000 --require intelli-espower-loader system-test/_setup.js {*,appengine/*}/system-test/*.test.js",
+    "system-test": "mocha -R spec -S -t 120000 --require intelli-espower-loader system-test/_setup.js '{*,appengine/*}/system-test/*.test.js'",
     "system-cover": "npm run pretest && nyc --cache npm run system-test && nyc report --reporter=html && nyc report --reporter=lcov"
   },
   "devDependencies": {

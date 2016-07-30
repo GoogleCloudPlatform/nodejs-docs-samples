@@ -15,40 +15,38 @@
 
 require('shelljs/global');
 
-installForDirectories('appengine');
-installForDirectory('bigquery');
-installForDirectory('computeengine');
-installForDirectory('datastore');
-installForDirectory('debugger');
-installForDirectories('functions');
-installForDirectory('language');
-installForDirectory('logging');
-installForDirectory('monitoring');
-installForDirectory('prediction');
-installForDirectory('pubsub');
-installForDirectory('speech');
-installForDirectory('storage');
-installForDirectory('trace');
-installForDirectory('vision');
+uninstallForDirectories('appengine');
+uninstallForDirectory('bigquery');
+uninstallForDirectory('computeengine');
+uninstallForDirectory('datastore');
+uninstallForDirectory('debugger');
+uninstallForDirectories('functions');
+uninstallForDirectory('language');
+uninstallForDirectory('logging');
+uninstallForDirectory('monitoring');
+uninstallForDirectory('prediction');
+uninstallForDirectory('pubsub');
+uninstallForDirectory('speech');
+uninstallForDirectory('storage');
+uninstallForDirectory('trace');
+uninstallForDirectory('vision');
 
 cd('functions/ocr/app');
-console.log('functions/ocr/app...installing dependencies');
-exec('npm install');
-console.log('functions/ocr/app...done');
+rm('-rf', 'node_modules');
 cd('../../..');
 
 /**
- * Install NPM dependencies within a single directory.
+ * unInstall NPM dependencies within a single directory.
  *
- * @param {string} directory The name of the directory in which to install dependencies.
+ * @param {string} directory The name of the directory in which to uninstall dependencies.
  */
-function installForDirectory(directory) {
+function uninstallForDirectory(directory) {
   // Move into the directory
   cd(directory);
 
-  // Install dependencies
-  console.log(directory + '...installing dependencies');
-  exec('npm install');
+  // Uninstall dependencies
+  console.log(directory + '...uninstalling dependencies');
+  rm('-rf', 'node_modules');
   console.log(directory + '...done');
 
   // Move out of the directory
@@ -56,11 +54,11 @@ function installForDirectory(directory) {
 }
 
 /**
- * Recursively install NPM dependencies within a single directory.
+ * Recursively uninstall NPM dependencies within a single directory.
  *
- * @param {string} directory The name of the directory in which to recursively install dependencies.
+ * @param {string} directory The name of the directory in which to recursively uninstall dependencies.
  */
-function installForDirectories(directory) {
+function uninstallForDirectories(directory) {
   // Move into the directory
   cd(directory);
 
@@ -74,9 +72,9 @@ function installForDirectories(directory) {
       // Move into the sub-directory
       cd(file.name);
 
-      // Install dependencies
-      console.log(directory + '/' + file.name + '...installing dependencies');
-      exec('npm install');
+      // Uninstall dependencies
+      console.log(directory + '/' + file.name + '...uninstalling dependencies');
+      rm('-rf', 'node_modules');
       console.log(directory + '/' + file.name + '...done');
 
       // Move out of the sub-directory

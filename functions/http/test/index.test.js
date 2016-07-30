@@ -128,11 +128,7 @@ describe('functions:http', function () {
     var mocks = getMocks();
     var httpSample = getSample();
     mocks.req.headers['content-type'] = 'application/octet-stream';
-    if (typeof Buffer.from === 'function') {
-      mocks.req.body = Buffer.from('John');
-    } else {
-      mocks.req.body = new Buffer('John');
-    }
+    mocks.req.body = new Buffer('John');
     httpSample.sample.helloContent(mocks.req, mocks.res);
 
     assert.equal(mocks.res.status.calledOnce, true);

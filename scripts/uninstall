@@ -13,44 +13,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var async = require('async');
+var path = require('path');
+
 require('shelljs/global');
 
-uninstallForDirectories('appengine');
-uninstallForDirectory('bigquery');
-uninstallForDirectory('computeengine');
-uninstallForDirectory('datastore');
-uninstallForDirectory('debugger');
-uninstallForDirectories('functions');
-uninstallForDirectory('language');
-uninstallForDirectory('logging');
-uninstallForDirectory('monitoring');
-uninstallForDirectory('prediction');
-uninstallForDirectory('pubsub');
-uninstallForDirectory('speech');
-uninstallForDirectory('storage');
-uninstallForDirectory('trace');
-uninstallForDirectory('vision');
+// Uninstall NPM dependencies, in up to 5 directories at a time
+var queue = async.queue(function (directory, callback) {
+  uninstallForDirectory(directory, callback);
+}, 5);
 
-cd('functions/ocr/app');
-rm('-rf', 'node_modules');
-cd('../../..');
+queueDirectories('appengine');
+queue.push('bigquery');
+queue.push('computeengine');
+queue.push('datastore');
+queue.push('debugger');
+queueDirectories('functions');
+queue.push('functions/ocr/app');
+queue.push('language');
+queue.push('logging');
+queue.push('monitoring');
+queue.push('prediction');
+queue.push('pubsub');
+queue.push('speech');
+queue.push('storage');
+queue.push('trace');
+queue.push('vision');
 
 /**
- * unInstall NPM dependencies within a single directory.
+ * Uninstall NPM dependencies within a single directory.
  *
  * @param {string} directory The name of the directory in which to uninstall dependencies.
+ * @param {function} callback The callback function.
  */
-function uninstallForDirectory(directory) {
+function uninstallForDirectory(directory, callback) {
   // Move into the directory
   cd(directory);
 
   // Uninstall dependencies
   console.log(directory + '...uninstalling dependencies');
   rm('-rf', 'node_modules');
-  console.log(directory + '...done');
 
   // Move out of the directory
   cd('..');
+  console.log(directory + '...done');
+  callback();
 }
 
 /**
@@ -58,7 +65,7 @@ function uninstallForDirectory(directory) {
  *
  * @param {string} directory The name of the directory in which to recursively uninstall dependencies.
  */
-function uninstallForDirectories(directory) {
+function queueDirectories(directory) {
   // Move into the directory
   cd(directory);
 
@@ -66,19 +73,10 @@ function uninstallForDirectories(directory) {
   ls('-dl', '*')
     .filter(function (file) {
       // Find the directories within the directory
-      return file.isDirectory();
+      return file.isDirectory() && file.name !== 'test' && file.name !== 'system-test';
     })
     .forEach(function (file) {
-      // Move into the sub-directory
-      cd(file.name);
-
-      // Uninstall dependencies
-      console.log(directory + '/' + file.name + '...uninstalling dependencies');
-      rm('-rf', 'node_modules');
-      console.log(directory + '/' + file.name + '...done');
-
-      // Move out of the sub-directory
-      cd('..');
+      queue.push(directory + '/' + file.name);
     });
 
   // Move out of the directory

@@ -18,7 +18,7 @@ var path = require('path');
 
 require('shelljs/global');
 
-// Install NPM dependencies, in up to 4 directories at a time
+// Install NPM dependencies, in up to 5 directories at a time
 var queue = async.queue(function (directory, callback) {
   installForDirectory(directory, callback);
 }, 5);
@@ -70,7 +70,7 @@ function queueDirectories(directory) {
   ls('-dl', '*')
     .filter(function (file) {
       // Find the directories within the directory
-      return file.isDirectory();
+      return file.isDirectory() && file.name !== 'test' && file.name !== 'system-test';
     })
     .forEach(function (file) {
       queue.push(directory + '/' + file.name);

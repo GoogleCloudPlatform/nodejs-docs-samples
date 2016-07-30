@@ -76,7 +76,7 @@ function getSample () {
   };
 }
 
-describe.only('appengine/datastore/app.js', function () {
+describe('appengine/datastore/app.js', function () {
   var sample;
 
   beforeEach(function () {

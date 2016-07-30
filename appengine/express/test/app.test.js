@@ -13,48 +13,59 @@
 
 'use strict';
 
-var express = require('express');
 var path = require('path');
 var proxyquire = require('proxyquire').noPreserveCache();
 var request = require('supertest');
 
-var SAMPLE_PATH = path.join(__dirname, '../server.js');
+var SAMPLE_PATH = path.join(__dirname, '../app.js');
 
 function getSample () {
-  var testApp = express();
-  sinon.stub(testApp, 'listen').callsArg(1);
-  var expressMock = sinon.stub().returns(testApp);
-
-  var app = proxyquire(SAMPLE_PATH, {
-    express: expressMock
-  });
+  var app = proxyquire(SAMPLE_PATH, {});
   return {
     app: app,
-    mocks: {
-      express: expressMock
-    }
+    mocks: {}
   };
 }
 
-describe('appengine/bower/server.js', function () {
+describe('appengine/express/app.js', function () {
   var sample;
 
   beforeEach(function () {
     sample = getSample();
-
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should render a page', function (done) {
-    var expectedResult = '<h1>Hello World!</h1><p>Express.js + Bower on Google App Engine.</p>';
+  it('should render index page', function (done) {
+    var expectedResult = 'Hello World! Express.js on Google App Engine.';
 
     request(sample.app)
       .get('/')
       .expect(200)
       .expect(function (response) {
-        assert.notEqual(response.text.indexOf(expectedResult), -1);
+        assert(response.text.indexOf(expectedResult) !== -1);
+      })
+      .end(done);
+  });
+
+  it('should render users page', function (done) {
+    var expectedResult = 'respond with a resource';
+
+    request(sample.app)
+      .get('/users')
+      .expect(200)
+      .expect(function (response) {
+        assert(response.text.indexOf(expectedResult) !== -1);
+      })
+      .end(done);
+  });
+
+  it('should catch 404', function (done) {
+    var expectedResult = 'Error: Not Found';
+
+    request(sample.app)
+      .get('/doesnotexist')
+      .expect(404)
+      .expect(function (response) {
+        assert(response.text.indexOf(expectedResult) !== -1);
       })
       .end(done);
   });

@@ -11,8 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START app]
 'use strict';
 
+// [START setup]
 var express = require('express');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -21,6 +23,8 @@ var publicIp = require('public-ip');
 var crypto = require('crypto');
 
 var app = express();
+app.enable('trust proxy');
+// [END setup]
 
 app.use(cookieParser());
 app.use(session({
@@ -33,17 +37,18 @@ app.use(session({
 }));
 
 app.get('/', function (req, res, next) {
+  // Discover requester's public IP address
   publicIp.v4(function (err, ip) {
     if (err) {
       return next(err);
     }
-    var hash = crypto.createHash('sha256');
+    var userIp = crypto.createHash('sha256').update(ip).digest('hex').substr(0, 7);
 
     // This shows the hashed IP for each
-    res.write('<div>' + hash.update(ip).digest('hex').substr(0, 7) + '</div>');
+    res.write('<div>' + userIp + '</div>');
 
     if (req.session.views) {
-      ++req.session.views;
+      req.session.views += 1;
     } else {
       req.session.views = 1;
     }
@@ -51,11 +56,13 @@ app.get('/', function (req, res, next) {
   });
 });
 
-if (module === require.main) {
-  var server = app.listen(process.env.PORT || 8080, function () {
-    console.log('App listening on port %d', server.address().port);
-  });
+// [START listen]
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
-}
+});
+// [END listen]
+// [END app]
 
 module.exports = app;

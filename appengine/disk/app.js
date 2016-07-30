@@ -15,41 +15,95 @@
 // [START app]
 'use strict';
 
+// [START setup]
 var fs = require('fs');
-var util = require('util');
 var express = require('express');
 var crypto = require('crypto');
+var path = require('path');
 
 var app = express();
 app.enable('trust proxy');
 
-app.get('/', function (req, res, next) {
-  var instanceId = process.env.GAE_MODULE_INSTANCE || '1';
-  var hash = crypto.createHash('sha256');
-  // Only store a hash of the ip address
-  var ip = hash.update(req.ip).digest('hex').substr(0, 7);
-  var userIp = util.format('%s\n', ip);
+var FILENAME = path.join(__dirname, 'seen.txt');
+// [END setup]
 
-  fs.appendFile('/tmp/seen.txt', userIp, function (err) {
+// [START insertVisit]
+/**
+ * Store a visit record on disk.
+ *
+ * @param {object} visit The visit record to insert.
+ * @param {function} callback The callback function.
+ */
+function insertVisit (visit, callback) {
+  fs.appendFile(FILENAME, JSON.stringify(visit) + '\n', function (err) {
+    if (err) {
+      return callback(err);
+    }
+    return callback();
+  });
+}
+// [END insertVisit]
+
+// [START getVisits]
+/**
+ * Retrieve the latest 10 visit records from disk.
+ *
+ * @param {function} callback The callback function.
+ */
+function getVisits (callback) {
+  fs.readFile(FILENAME, { encoding: 'utf8' }, function (err, data) {
+    if (err) {
+      return callback(err);
+    }
+
+    var visits = data.split('\n')
+      .filter(function (line) {
+        return line;
+      })
+      .map(function (line) {
+        var visit = JSON.parse(line);
+        return 'Time: ' + visit.timestamp + ', AddrHash: ' + visit.userIp;
+      });
+
+    return callback(null, visits);
+  });
+}
+// [END getVisits]
+
+app.get('/', function (req, res, next) {
+  // Create a visit record to be stored on disk
+  var visit = {
+    timestamp: new Date(),
+    // Store a hash of the visitor's ip address
+    userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
+  };
+
+  insertVisit(visit, function (err) {
     if (err) {
       return next(err);
     }
 
-    fs.readFile('/tmp/seen.txt', function (err, data) {
+    // Query the last 10 visits from disk.
+    getVisits(function (err, visits) {
       if (err) {
         return next(err);
       }
 
-      res.set('Content-Type', 'text/plain');
-      res.status(200).send(util.format(
-        'Instance: %s\n' +
-        'Seen: \n%s', instanceId, data));
+      return res
+        .status(200)
+        .set('Content-Type', 'text/plain')
+        .send('Last 10 visits:\n' + visits.join('\n'));
     });
   });
 });
 
-var server = app.listen(process.env.PORT || 8080, function () {
-  console.log('App listening on port %s', server.address().port);
+// [START listen]
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
 });
+// [END listen]
 // [END app]
+
+module.exports = app;

@@ -33,8 +33,9 @@ app.get('/', function (req, res) {
 });
 
 // [START listen]
-var server = app.listen(process.env.PORT || 8080, function () {
-  console.log('App listening on port %s', server.address().port);
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
 });
 // [END listen]

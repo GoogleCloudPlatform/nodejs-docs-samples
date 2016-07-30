@@ -15,6 +15,7 @@
 // [START app]
 'use strict';
 
+// [START setup]
 var express = require('express');
 var winston = require('winston');
 
@@ -24,6 +25,7 @@ var logFile = '/var/log/app_engine/custom_logs/myapp.errors.log.json';
 winston.add(winston.transports.File, {
   filename: logFile
 });
+// [END setup]
 
 function report (err, req) {
   var payload = {
@@ -54,8 +56,14 @@ app.use(function (err, req, res, next) {
   res.status(500).send(err.message || 'Something broke!');
 });
 
-var server = app.listen(process.env.PORT || '8080', function () {
-  console.log('App listening on port %s', server.address().port);
+// [START listen]
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
 });
+// [END listen]
 // [END app]
+
+module.exports = app;
+

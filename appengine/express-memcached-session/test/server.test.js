@@ -14,6 +14,7 @@
 'use strict';
 
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var proxyquire = require('proxyquire').noPreserveCache();
 var request = require('supertest');
@@ -23,20 +24,30 @@ var SAMPLE_PATH = path.join(__dirname, '../server.js');
 function getSample () {
   var testApp = express();
   sinon.stub(testApp, 'listen').callsArg(1);
+  var storeMock = session.MemoryStore;
   var expressMock = sinon.stub().returns(testApp);
+  var memcachedMock = sinon.stub().returns(storeMock);
+  var publicIpMock = {
+    v4: sinon.stub().callsArgWith(0, null, '123.45.67.890')
+  };
 
   var app = proxyquire(SAMPLE_PATH, {
+    publicIp: publicIpMock,
+    'connect-memcached': memcachedMock,
     express: expressMock
   });
   return {
     app: app,
     mocks: {
-      express: expressMock
+      express: expressMock,
+      store: storeMock,
+      'connect-memcached': memcachedMock,
+      publicIp: publicIpMock
     }
   };
 }
 
-describe('appengine/bower/server.js', function () {
+describe('appengine/express-memcached-session/app.js', function () {
   var sample;
 
   beforeEach(function () {
@@ -47,14 +58,14 @@ describe('appengine/bower/server.js', function () {
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should render a page', function (done) {
-    var expectedResult = '<h1>Hello World!</h1><p>Express.js + Bower on Google App Engine.</p>';
+  it('should respond with visit count', function (done) {
+    var expectedResult = 'Viewed <strong>1</strong> times.';
 
     request(sample.app)
       .get('/')
       .expect(200)
       .expect(function (response) {
-        assert.notEqual(response.text.indexOf(expectedResult), -1);
+        assert(response.text.indexOf(expectedResult) !== -1);
       })
       .end(done);
   });

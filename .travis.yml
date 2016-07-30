@@ -94,4 +94,4 @@ before_install:
 before_script:
   - node scripts/install
 
-script: npm run cover && bash <(curl -s https://codecov.io/bash) -F unittests
+script: npm run all-cover && bash <(curl -s https://codecov.io/bash)

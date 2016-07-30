@@ -14,47 +14,64 @@
 'use strict';
 
 var express = require('express');
+var winston = require('winston');
 var path = require('path');
 var proxyquire = require('proxyquire').noPreserveCache();
 var request = require('supertest');
 
-var SAMPLE_PATH = path.join(__dirname, '../server.js');
+var SAMPLE_PATH = path.join(__dirname, '../app.js');
 
 function getSample () {
   var testApp = express();
   sinon.stub(testApp, 'listen').callsArg(1);
   var expressMock = sinon.stub().returns(testApp);
+  var resultsMock = JSON.stringify({
+    timestamp: '1234',
+    userIp: 'abcd'
+  }) + '\n';
+  var winstonMock = {
+    add: sinon.stub(),
+    error: sinon.stub()
+  };
 
   var app = proxyquire(SAMPLE_PATH, {
+    winston: winstonMock,
     express: expressMock
   });
   return {
     app: app,
     mocks: {
-      express: expressMock
+      express: expressMock,
+      results: resultsMock,
+      winston: winstonMock
     }
   };
 }
 
-describe('appengine/bower/server.js', function () {
+describe('appengine/errorreporting/app.js', function () {
   var sample;
 
   beforeEach(function () {
     sample = getSample();
 
     assert(sample.mocks.express.calledOnce);
+    assert(sample.mocks.winston.add.calledOnce);
+    assert.strictEqual(sample.mocks.winston.add.firstCall.args[0], winston.transports.File);
     assert(sample.app.listen.calledOnce);
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should render a page', function (done) {
-    var expectedResult = '<h1>Hello World!</h1><p>Express.js + Bower on Google App Engine.</p>';
+  it('should throw an error', function (done) {
+    var expectedResult = 'something is wrong!';
 
     request(sample.app)
       .get('/')
-      .expect(200)
+      .expect(500)
       .expect(function (response) {
-        assert.notEqual(response.text.indexOf(expectedResult), -1);
+        assert(sample.mocks.winston.error.calledOnce);
+        var payload = sample.mocks.winston.error.firstCall.args[0];
+        assert.deepEqual(payload.serviceContext, { service: 'myapp' });
+        assert.equal(response.text, expectedResult);
       })
       .end(done);
   });

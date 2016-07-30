@@ -18,25 +18,36 @@ var path = require('path');
 var proxyquire = require('proxyquire').noPreserveCache();
 var request = require('supertest');
 
-var SAMPLE_PATH = path.join(__dirname, '../server.js');
+var SAMPLE_PATH = path.join(__dirname, '../app.js');
 
 function getSample () {
   var testApp = express();
   sinon.stub(testApp, 'listen').callsArg(1);
   var expressMock = sinon.stub().returns(testApp);
+  var resultsMock = JSON.stringify({
+    timestamp: '1234',
+    userIp: 'abcd'
+  }) + '\n';
+  var fsMock = {
+    appendFile: sinon.stub().callsArg(2),
+    readFile: sinon.stub().callsArgWith(2, null, resultsMock)
+  };
 
   var app = proxyquire(SAMPLE_PATH, {
+    fs: fsMock,
     express: expressMock
   });
   return {
     app: app,
     mocks: {
-      express: expressMock
+      express: expressMock,
+      results: resultsMock,
+      fs: fsMock
     }
   };
 }
 
-describe('appengine/bower/server.js', function () {
+describe('appengine/disk/app.js', function () {
   var sample;
 
   beforeEach(function () {
@@ -47,14 +58,42 @@ describe('appengine/bower/server.js', function () {
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should render a page', function (done) {
-    var expectedResult = '<h1>Hello World!</h1><p>Express.js + Bower on Google App Engine.</p>';
+  it('should record a visit', function (done) {
+    var expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
 
     request(sample.app)
       .get('/')
       .expect(200)
       .expect(function (response) {
-        assert.notEqual(response.text.indexOf(expectedResult), -1);
+        assert.equal(response.text, expectedResult);
+      })
+      .end(done);
+  });
+
+  it('should handle insert error', function (done) {
+    var expectedResult = 'insert_error';
+
+    sample.mocks.fs.appendFile.callsArgWith(2, expectedResult);
+
+    request(sample.app)
+      .get('/')
+      .expect(500)
+      .expect(function (response) {
+        assert.equal(response.text, expectedResult + '\n');
+      })
+      .end(done);
+  });
+
+  it('should handle read error', function (done) {
+    var expectedResult = 'read_error';
+
+    sample.mocks.fs.readFile.callsArgWith(2, expectedResult);
+
+    request(sample.app)
+      .get('/')
+      .expect(500)
+      .expect(function (response) {
+        assert.equal(response.text, expectedResult + '\n');
       })
       .end(done);
   });

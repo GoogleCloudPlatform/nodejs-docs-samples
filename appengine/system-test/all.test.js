@@ -51,13 +51,13 @@ var sampleTests = [
     args: ['server.js'],
     msg: 'Express.js + Bower on Google App Engine.'
   },
-  {
-    dir: 'appengine/cloudsql',
-    cmd: 'node',
-    args: ['server.js'],
-    msg: 'Last 10 visits:',
-    TRAVIS_NODE_VERSION: '4'
-  },
+  // {
+  //   dir: 'appengine/cloudsql',
+  //   cmd: 'node',
+  //   args: ['server.js'],
+  //   msg: 'Last 10 visits:',
+  //   TRAVIS_NODE_VERSION: '4'
+  // },
   {
     dir: 'appengine/datastore',
     cmd: 'node',
@@ -68,7 +68,7 @@ var sampleTests = [
     dir: 'appengine/disk',
     cmd: 'node',
     args: ['app.js'],
-    msg: 'Instance:'
+    msg: 'Last 10 visits:'
   },
   {
     dir: 'appengine/errorreporting',
@@ -247,13 +247,13 @@ if (process.env.TRAVIS_NODE_VERSION === '0.12') {
   });
 }
 
-if (process.env.TRAVIS_NODE_VERSION === '5') {
+if (process.env.TRAVIS_NODE_VERSION === '6') {
   sampleTests.push({
     dir: 'appengine/hapi',
     cmd: 'node',
     args: ['index.js'],
     msg: 'Hello World! Hapi.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: '5'
+    TRAVIS_NODE_VERSION: '6'
   });
   sampleTests.push({
     dir: 'appengine/koa',
@@ -261,14 +261,14 @@ if (process.env.TRAVIS_NODE_VERSION === '5') {
     cmd: 'node',
     args: ['--harmony', 'app.js'],
     msg: 'Hello World! Koa.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: '5'
+    TRAVIS_NODE_VERSION: '6'
   });
   sampleTests.push({
     dir: 'appengine/parse-server',
     cmd: 'node',
     args: ['server.js'],
     msg: 'Hello, world!',
-    TRAVIS_NODE_VERSION: '5',
+    TRAVIS_NODE_VERSION: '6',
     env: {
       APP_ID: 'foo',
       MASTER_KEY: 'bar',

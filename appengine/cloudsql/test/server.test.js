@@ -21,19 +21,8 @@ var request = require('supertest');
 var SAMPLE_PATH = path.join(__dirname, '../server.js');
 
 function getSample () {
-  var serverMock = {
-    address: sinon.stub().returns({
-      port: 8080
-    })
-  };
   var testApp = express();
-  sinon.stub(testApp, 'listen', function (port, callback) {
-    assert.equal(port, 8080);
-    setTimeout(function () {
-      callback();
-    });
-    return serverMock;
-  });
+  sinon.stub(testApp, 'listen').callsArg(1);
   var expressMock = sinon.stub().returns(testApp);
   var resultsMock = [
     {
@@ -58,7 +47,6 @@ function getSample () {
   return {
     app: app,
     mocks: {
-      server: serverMock,
       express: expressMock,
       results: resultsMock,
       connection: connectionMock,

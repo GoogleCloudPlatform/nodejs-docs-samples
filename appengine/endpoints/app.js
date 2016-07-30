@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START app]
 'use strict';
 
+// [START setup]
 var express = require('express');
 var bodyParser = require('body-parser');
 
 var app = express();
 app.use(bodyParser.json());
+// [END setup]
 
 app.post('/echo', function (req, res) {
-  res.status(200).json({message: req.body.message});
+  res.status(200).json({ message: req.body.message });
 });
 
 function authInfoHandler (req, res) {
-  var authUser = {id: 'anonymous'};
+  var authUser = { id: 'anonymous' };
   var encodedInfo = req.get('X-Endpoint-API-UserInfo');
   if (encodedInfo) {
     authUser = JSON.parse(new Buffer(encodedInfo, 'base64'));
@@ -36,8 +39,13 @@ function authInfoHandler (req, res) {
 app.get('/auth/info/googlejwt', authInfoHandler);
 app.get('/auth/info/googleidtoken', authInfoHandler);
 
-// Start the server
-var server = app.listen(process.env.PORT || '8080', function () {
-  console.log('App listening on port %s', server.address().port);
+// [START listen]
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
 });
+// [END listen]
+// [END app]
+
+module.exports = app;

@@ -18,7 +18,7 @@ var path = require('path');
 var proxyquire = require('proxyquire').noPreserveCache();
 var request = require('supertest');
 
-var SAMPLE_PATH = path.join(__dirname, '../server.js');
+var SAMPLE_PATH = path.join(__dirname, '../app.js');
 
 function getSample () {
   var testApp = express();
@@ -36,7 +36,7 @@ function getSample () {
   };
 }
 
-describe('appengine/bower/server.js', function () {
+describe('appengine/endpoints/app.js', function () {
   var sample;
 
   beforeEach(function () {
@@ -47,14 +47,34 @@ describe('appengine/bower/server.js', function () {
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should render a page', function (done) {
-    var expectedResult = '<h1>Hello World!</h1><p>Express.js + Bower on Google App Engine.</p>';
-
+  it('should echo a message', function (done) {
     request(sample.app)
-      .get('/')
+      .post('/echo')
+      .send({ message: 'foo' })
       .expect(200)
       .expect(function (response) {
-        assert.notEqual(response.text.indexOf(expectedResult), -1);
+        assert.equal(response.body.message, 'foo');
+      })
+      .end(done);
+  });
+
+  it('should try to parse encoded info', function (done) {
+    request(sample.app)
+      .get('/auth/info/googlejwt')
+      .expect(200)
+      .expect(function (response) {
+        assert.deepEqual(response.body, { id: 'anonymous' });
+      })
+      .end(done);
+  });
+
+  it('should successfully parse encoded info', function (done) {
+    request(sample.app)
+      .get('/auth/info/googlejwt')
+      .set('X-Endpoint-API-UserInfo', new Buffer(JSON.stringify({ id: 'foo' })).toString('base64'))
+      .expect(200)
+      .expect(function (response) {
+        assert.deepEqual(response.body, { id: 'foo' });
       })
       .end(done);
   });

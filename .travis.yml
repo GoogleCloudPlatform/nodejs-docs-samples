@@ -96,4 +96,5 @@ before_install:
 before_script:
   - node scripts/install
 
-script: npm run cover && nyc report --reporter=lcov && bash <(curl -s https://codecov.io/bash) -F unittests
+# script: npm run cover && nyc report --reporter=lcov && bash <(curl -s https://codecov.io/bash) -F unittests
+script: npm run mocha

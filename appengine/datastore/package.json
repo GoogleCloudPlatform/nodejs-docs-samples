@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "express": "^4.13.4",
-    "gcloud": "^0.30.3"
+    "gcloud": "^0.37.0"
   },
   "devDependencies": {
     "mocha": "^2.5.3"

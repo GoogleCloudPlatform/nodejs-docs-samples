@@ -15,7 +15,7 @@
 // [START app]
 'use strict';
 
-var format = require('util').format;
+// [START setup]
 var express = require('express');
 var gcloud = require('gcloud');
 var crypto = require('crypto');
@@ -28,51 +28,83 @@ var dataset = gcloud.datastore({
   // need to be manually set when running locally.
   projectId: process.env.GCLOUD_PROJECT
 });
+// [END setup]
 
-app.get('/', function (req, res, next) {
-  var hash = crypto.createHash('sha256');
-
-  // Add this visit to the datastore
+// [START insertVisit]
+/**
+ * Insert a visit record into the database.
+ *
+ * @param {object} visit The visit record to insert.
+ * @param {function} callback The callback function.
+ */
+function insertVisit (visit, callback) {
   dataset.save({
     key: dataset.key('visit'),
-    data: {
-      timestamp: new Date(),
-      // Store a hash of the ip address
-      userIp: hash.update(req.ip).digest('hex').substr(0, 7)
-    }
+    data: visit
   }, function (err) {
+    if (err) {
+      return callback(err);
+    }
+    return callback();
+  });
+}
+// [END insertVisit]
+
+// [START getVisits]
+/**
+ * Retrieve the latest 10 visit records from the database.
+ *
+ * @param {function} callback The callback function.
+ */
+function getVisits (callback) {
+  var query = dataset.createQuery('visit')
+    .order('-timestamp')
+    .limit(10);
+
+  dataset.runQuery(query, function (err, entities) {
+    if (err) {
+      return callback(err);
+    }
+    return callback(null, entities.map(function (entity) {
+      return 'Time: ' + entity.data.timestamp + ', AddrHash: ' + entity.data.userIp;
+    }));
+  });
+}
+// [END getVisits]
+
+app.get('/', function (req, res, next) {
+  // Create a visit record to be stored in the database
+  var visit = {
+    timestamp: new Date(),
+    // Store a hash of the visitor's ip address
+    userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
+  };
+
+  insertVisit(visit, function (err) {
     if (err) {
       return next(err);
     }
 
     // Query the last 10 visits from the datastore.
-    var query = dataset.createQuery('visit')
-      .order('-timestamp')
-      .limit(10);
-
-    dataset.runQuery(query, function (err, entities) {
+    getVisits(function (err, visits) {
       if (err) {
         return next(err);
       }
 
-      var visits = entities.map(function (entity) {
-        return format(
-          'Time: %s, AddrHash: %s',
-          entity.data.timestamp,
-          entity.data.userIp);
-      });
-
-      var output = format('Last 10 visits:\n%s', visits.join('\n'));
-
-      res.set('Content-Type', 'text/plain');
-      res.status(200).send(output);
+      return res
+        .status(200)
+        .set('Content-Type', 'text/plain')
+        .send('Last 10 visits:\n' + visits.join('\n'));
     });
   });
 });
 
-/* Start the server */
+// [START listen]
 var server = app.listen(process.env.PORT || 8080, function () {
   console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
+// [END listen]
 // [END app]
+
+module.exports = app;

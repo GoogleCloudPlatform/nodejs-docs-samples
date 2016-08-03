@@ -9,14 +9,12 @@
     "node": "~4.2"
   },
   "scripts": {
-    "start": "node app.js",
-    "monitor": "nodemon app.js",
-    "deploy": "gcloud app deploy"
+    "start": "node app.js"
   },
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
-    "gcloud": "^0.30.3",
+    "gcloud": "^0.37.0",
     "jade": "^1.11.0"
   }
 }

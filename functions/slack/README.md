@@ -1,14 +1,27 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Functions Slack Slash Command sample
+# Google Cloud Functions - Slack Slash Command sample
 
-This tutorial demonstrates using Cloud Functions to implement a Slack Slash
-Command that searches the Google Knowledge Graph API.
+See:
 
-View the [source code][code].
+* [Cloud Functions Slack tutorial][tutorial]
+* [Cloud Functions Slack sample source code][code]
 
+[tutorial]: https://cloud.google.com/functions/docs/tutorials/slack
 [code]: index.js
 
-## Deploy and Test
+## Deploy and run the sample
 
-Read the tutorial at https://cloud.google.com/functions/docs/tutorials/slack
+See the [Cloud Functions Slack tutorial][tutorial].
+
+## Run the tests
+
+1. Read and follow the [prerequisites][../../#how-to-run-the-tests].
+
+1. Install dependencies:
+
+        npm install
+
+1. Run the tests:
+
+        npm test

@@ -1,48 +1,27 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Functions message sample
+# Google Cloud Functions - Logging and Monitoring sample
 
-This sample shows writing to logs in a Cloud Function.
+* [Writing and Viewing Logs from Cloud Functions documentation][docs]
+* [Viewing Cloud Functions monitored metrics documentation][docs2]
+* [Background functions sample source code][code]
 
-View the [documentation][docs] or the [source code][code].
-
-[docs]: https://cloud.google.com/functions/walkthroughs
+[docs]: https://cloud.google.com/functions/docs/monitoring/logging
+[docs2]: https://cloud.google.com/functions/docs/monitoring/metrics
 [code]: index.js
 
-## Deploy and Test
+## Deploy and run the sample
 
-1. Follow the [Cloud Functions quickstart guide][quickstart] to setup Cloud
-Functions for your project.
+See the [Writing and Viewing Logs from Cloud Functions documentation][docs].
 
-1. Clone this repository:
+## Run the tests
 
-        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
-        cd nodejs-docs-samples/functions/module
+1. Read and follow the [prerequisites][../../#how-to-run-the-tests].
 
-1. Create a Cloud Storage Bucket to stage our deployment:
+1. Install dependencies:
 
-        gsutil mb gs://[YOUR_BUCKET_NAME]
+        npm install
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+1. Run the tests:
 
-1. Deploy the `helloworld` function with an HTTP trigger:
-
-        gcloud alpha functions deploy helloworld --bucket [YOUR_BUCKET_NAME] --trigger-http
-
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
-
-1. Call the `helloworld` function:
-
-        gcloud alpha functions call helloworld
-
-1. Check the logs for the `helloworld` function:
-
-        gcloud alpha functions get-logs helloworld
-
-    You should see something like this in your console:
-
-        D      ... User function triggered, starting execution
-        I      ... I am a log entry!
-        D      ... Execution took 1 ms, user function completed successfully
-
-[quickstart]: https://cloud.google.com/functions/quickstart
+        npm test

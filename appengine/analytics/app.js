@@ -15,11 +15,15 @@
 // [START app]
 'use strict';
 
+// [START setup]
 var express = require('express');
 var request = require('request');
 
 var app = express();
+app.enable('trust proxy');
+// [END setup]
 
+// [START track]
 // The following environment variable is set by app.yaml when running on GAE,
 // but will need to be manually set when running locally. See README.md.
 var GA_TRACKING_ID = process.env.GA_TRACKING_ID;
@@ -43,7 +47,9 @@ function trackEvent (category, action, label, value, cb) {
       form: data
     },
     function (err, response) {
-      if (err) { return cb(err); }
+      if (err) {
+        return cb(err);
+      }
       if (response.statusCode !== 200) {
         return cb(new Error('Tracking failed'));
       }
@@ -51,7 +57,9 @@ function trackEvent (category, action, label, value, cb) {
     }
   );
 }
+// [END track]
 
+// [START endpoint]
 app.get('/', function (req, res, next) {
   trackEvent(
     'Example category',
@@ -62,14 +70,21 @@ app.get('/', function (req, res, next) {
       // This sample treats an event tracking error as a fatal error. Depending
       // on your application's needs, failing to track an event may not be
       // considered an error.
-      if (err) { return next(err); }
+      if (err) {
+        return next(err);
+      }
       res.status(200).send('Event tracked.');
     });
 });
+// [END endpoint]
 
-// Start the server
-var server = app.listen(process.env.PORT || 8080, function () {
-  console.log('App listening on port %s', server.address().port);
+// [START listen]
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
 });
+// [END listen]
 // [END app]
+
+module.exports = app;

@@ -19,9 +19,20 @@ var sinon = require('sinon');
 global.assert = assert;
 global.sinon = sinon;
 
+var log = console.log;
+
 beforeEach(function () {
-  sinon.stub(console, 'error');
-  sinon.stub(console, 'log');
+  if (process.env.DEBUG) {
+    sinon.spy(console, 'error');
+    sinon.spy(console, 'log');
+  } else {
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log', function (a, b, c) {
+      if (typeof a === 'string' && a.indexOf('\u001b') !== -1 && typeof b === 'string') {
+        log.apply(console, arguments);
+      }
+    });
+  }
 });
 
 afterEach(function () {

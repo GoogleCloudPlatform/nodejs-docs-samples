@@ -1,35 +1,29 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Functions HTTP sample
+# Google Cloud Functions - HTTP functions sample
 
-This recipe shows you how to respond to HTTP requests with a Cloud Function.
+See:
 
-View the [source code][code].
+* [HTTP functions documentation][docs]
+* [HTTP functions tutorial][tutorial]
+* [HTTP functions sample source code][code]
 
+[docs]: https://cloud.google.com/functions/docs/writing/http
+[tutorial]: https://cloud.google.com/functions/docs/tutorials/http
 [code]: index.js
 
-## Deploy and Test
+## Deploy and run the sample
 
-1. Follow the [Cloud Functions quickstart guide][quickstart] to setup Cloud
-Functions for your project.
+See the [HTTP functions tutorial][tutorial].
 
-1. Clone this repository:
+## Run the tests
 
-        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
-        cd nodejs-docs-samples/functions/http
+1. Read and follow the [prerequisites][../../#how-to-run-the-tests].
 
-1. Create a Cloud Storage Bucket to stage our deployment:
+1. Install dependencies:
 
-        gsutil mb gs://[YOUR_BUCKET_NAME]
+        npm install
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+1. Run the tests:
 
-1. Deploy the "helloGET" function with an HTTP trigger
-
-        gcloud alpha functions deploy publish --bucket [YOUR_BUCKET_NAME] --trigger-http
-
-1. Call the "helloGET" function:
-
-        curl https://[YOUR_PROJECT_REGION].[YOUR_PROJECT_ID].cloudfunctions.net/helloGET
-
-[quickstart]: https://cloud.google.com/functions/quickstart
+        npm test

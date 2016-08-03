@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+// Copyright 2016, Google, Inc.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+var async = require('async');
+var path = require('path');
+
+require('shelljs/global');
+
+// Uninstall NPM dependencies, in up to 5 directories at a time
+var queue = async.queue(function (directory, callback) {
+  uninstallForDirectory(directory, callback);
+}, 5);
+
+queueDirectories('appengine');
+queue.push('bigquery');
+queue.push('computeengine');
+queue.push('datastore');
+queue.push('debugger');
+queueDirectories('functions');
+queue.push('functions/ocr/app');
+queue.push('language');
+queue.push('logging');
+queue.push('monitoring');
+queue.push('prediction');
+queue.push('pubsub');
+queue.push('speech');
+queue.push('storage');
+queue.push('trace');
+queue.push('vision');
+
+/**
+ * Uninstall NPM dependencies within a single directory.
+ *
+ * @param {string} directory The name of the directory in which to uninstall dependencies.
+ * @param {function} callback The callback function.
+ */
+function uninstallForDirectory(directory, callback) {
+  // Move into the directory
+  cd(directory);
+
+  // Uninstall dependencies
+  console.log(directory + '...uninstalling dependencies');
+  rm('-rf', 'node_modules');
+
+  // Move out of the directory
+  cd('..');
+  console.log(directory + '...done');
+  callback();
+}
+
+/**
+ * Recursively uninstall NPM dependencies within a single directory.
+ *
+ * @param {string} directory The name of the directory in which to recursively uninstall dependencies.
+ */
+function queueDirectories(directory) {
+  // Move into the directory
+  cd(directory);
+
+  // List the files in the directory
+  ls('-dl', '*')
+    .filter(function (file) {
+      // Find the directories within the directory
+      return file.isDirectory() && file.name !== 'test' && file.name !== 'system-test';
+    })
+    .forEach(function (file) {
+      queue.push(directory + '/' + file.name);
+    });
+
+  // Move out of the directory
+  cd('..');
+}

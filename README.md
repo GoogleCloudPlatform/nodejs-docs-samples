@@ -166,9 +166,25 @@ Cloud Storage bucket:
 
         memcached
 
-1. In another terminal, run the tests from the root of the project:
+1. In another terminal, run the unit tests from the root of the project:
 
         npm test
+
+    or with coverage:
+
+        npm run coverage
+
+1. Then run the system tests from the root of the project:
+
+        npm run system-test
+
+    or with coverage:
+
+        npm run system-cover
+
+1. Or run all the tests at once with coverage:
+
+        npm run all-cover
 
 ## Client libraries
 

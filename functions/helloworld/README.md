@@ -1,43 +1,27 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Functions Hello World sample
+# Google Cloud Functions - Hello World sample
 
-This is a basic hello world sample that shows a single exported function.
+See:
 
-View the [documentation][docs] or the [source code][code].
+* [Cloud Functions Hello World tutorial][tutorial]
+* [Cloud Functions Hello World sample source code][code]
 
-[docs]: https://cloud.google.com/functions/writing
+[tutorial]: https://cloud.google.com/functions/docs/quickstart
 [code]: index.js
 
-## Deploy and Test
+## Deploy and run the sample
 
-1. Follow the [Cloud Functions quickstart guide][quickstart] to setup Cloud
-Functions for your project.
+See the [Cloud Functions Hello World tutorial][tutorial].
 
-1. Clone this repository:
+## Run the tests
 
-        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
-        cd nodejs-docs-samples/functions/module
+1. Read and follow the [prerequisites][../../#how-to-run-the-tests].
 
-1. Create a Cloud Storage Bucket to stage our deployment:
+1. Install dependencies:
 
-        gsutil mb gs://[YOUR_BUCKET_NAME]
+        npm install
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+1. Run the tests:
 
-1. Deploy the `helloworld` function with an HTTP trigger:
-
-        gcloud alpha functions deploy helloworld --bucket [YOUR_BUCKET_NAME] --trigger-http
-
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
-
-1. Call the `helloworld` function:
-
-        gcloud alpha functions call helloworld
-
-    You should see something like this in your console:
-
-        executionId: abcd1234-0
-        result: Hello World!
-
-[quickstart]: https://cloud.google.com/functions/quickstart
+        npm test

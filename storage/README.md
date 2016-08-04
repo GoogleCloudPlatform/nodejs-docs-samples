@@ -11,7 +11,7 @@ amount of data at any time.
 
 * [Setup](#setup)
 * [Samples](#samples)
-  * [Authentication](#authentication)
+  * [Buckets](#buckets)
 
 ## Setup
 
@@ -25,13 +25,33 @@ amount of data at any time.
 
 ## Samples
 
-### Authentication
+### Buckets
 
-View the [documentation][authentication_docs] or the [source code][authentication_code].
+View the [documentation][buckets_docs] or the [source code][buckets_code].
 
-__Run the sample:__
+__Usage:__
 
-    node authSample <your-project-id>
+```
+Usage: node buckets [COMMAND] [ARGS...]
 
-[authentication_docs]: https://cloud.google.com/storage/docs/authentication#acd-examples
-[authentication_code]: authSample.js
+Commands:
+
+  create [BUCKET_NAME]
+  list
+  delete [BUCKET_NAME]
+```
+
+__Create a bucket:__
+
+    node buckets create [BUCKET_NAME]
+
+__List buckets:__
+
+    node buckets list
+
+__Delete a bucket:__
+
+    node buckets delete [BUCKET_NAME]
+
+[buckets_docs]: https://cloud.google.com/storage/docs/json_api/v1/json-api-nodejs-samples
+[buckets_code]: buckets.js

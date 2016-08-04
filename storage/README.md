@@ -53,5 +53,5 @@ __Delete a bucket:__
 
     node buckets delete [BUCKET_NAME]
 
-[buckets_docs]: https://cloud.google.com/storage/docs/authentication#acd-examples
+[buckets_docs]: https://cloud.google.com/storage/docs/json_api/v1/json-api-nodejs-samples
 [buckets_code]: buckets.js

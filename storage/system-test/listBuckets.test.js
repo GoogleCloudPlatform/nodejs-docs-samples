@@ -1,4 +1,4 @@
-// Copyright 2016, Google, Inc.
+// Copyright 2015-2016, Google, Inc.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -11,8 +11,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Tests for the list-buckets module.
+ */
 'use strict';
 
-describe('storage:authSample', function () {
-  it('should be tested');
+var listBucketsExample = require('../listBuckets');
+var projectId = process.env.GCLOUD_PROJECT;
+
+describe('storage:listBuckets', function () {
+  it('should return a list of buckets', function (done) {
+    listBucketsExample.main(projectId, function (err, buckets) {
+      assert(!err);
+      assert(buckets.length, 'There should be some buckets.');
+      assert(buckets[0].id);
+      assert(buckets[0].name);
+      done();
+    });
+  });
 });

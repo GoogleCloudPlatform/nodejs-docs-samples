@@ -2,7 +2,6 @@
 npm-debug.log
 coverage/
 
-test/encrypted/nodejs-docs-samples.json
 dump.rdb
 logs/
 *.iml

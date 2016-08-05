@@ -83,12 +83,12 @@ services:
 
 env:
   global:
-    - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/test/nodejs-docs-samples.json
+    - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/key.json
     - TEST_BUCKET_NAME=nodejs-docs-samples
     - GCLOUD_PROJECT=nodejs-docs-samples
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_fda0b707c7d5_key -iv $encrypted_fda0b707c7d5_iv -in test/nodejs-docs-samples.json.enc -out test/nodejs-docs-samples.json -d
+  - openssl aes-256-cbc -K $encrypted_fda0b707c7d5_key -iv $encrypted_fda0b707c7d5_iv -in key.json.enc -out key.json -d
   - npm set progress=false
 
 before_script:

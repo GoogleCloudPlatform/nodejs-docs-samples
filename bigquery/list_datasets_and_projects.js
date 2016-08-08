@@ -40,23 +40,14 @@ function listDatasets (projectId, callback) {
   if (!projectId) {
     throw new Error('projectId is required');
   }
-
   var bigquery = gcloud.bigquery({
     projectId: projectId
   });
 
-  bigquery.getDatasets(function (err, datasets, nextQuery, apiResponse) {
-    // Quit on error
+  bigquery.getDatasets(function (err, datasets) {
     if (err) {
       return callback(err);
     }
-
-    // Pagination
-    if (nextQuery) {
-      return bigquery.getDatasets(nextQuery, callback);
-    }
-
-    // Last page of datasets
     return callback(null, datasets);
   });
 }
@@ -70,18 +61,10 @@ function listDatasets (projectId, callback) {
  */
 function listProjects (callback) {
   var resource = gcloud.resource();
-  resource.getProjects(function (err, projects, nextQuery) {
-    // Quit on error
+  resource.getProjects(function (err, projects) {
     if (err) {
       return callback(err);
     }
-
-    // Pagination
-    if (nextQuery) {
-      return resource.getProjects(nextQuery, callback);
-    }
-
-    // Last page of projects
     return callback(null, projects);
   });
 }

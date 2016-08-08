@@ -102,8 +102,6 @@ exports.printUsage = printUsage;
 
 // Run the examples
 exports.main = function (args, cb) {
-  printUsage();
-
   if (args.length === 2 && args[0] === 'list-datasets') {
     listDatasets(args[1], cb);
   } else if (args.length === 1 && args[0] === 'list-projects') {

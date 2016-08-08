@@ -32,7 +32,8 @@
       "describe",
       "it",
       "assert",
-      "sinon"
+      "sinon",
+      "uuid"
     ],
     "ignore": [
       "appengine/bower/public/bower_components",
@@ -58,17 +59,17 @@
     "all-cover": "npm run pretest && nyc --cache npm run all-test && nyc report --reporter=html && nyc report --reporter=lcov"
   },
   "devDependencies": {
-    "async": "^1.5.2",
+    "async": "^2.0.1",
     "intelli-espower-loader": "^1.0.1",
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.2",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",
-    "nyc": "^6.4.4",
+    "nyc": "^7.1.0",
     "power-assert": "^1.4.1",
     "proxyquire": "^1.7.10",
     "request": "^2.72.0",
     "semistandard": "^8.0.0",
     "shelljs": "^0.7.3",
     "sinon": "^1.17.5",
-    "supertest": "^1.2.0"
+    "supertest": "^2.0.0"
   }
 }

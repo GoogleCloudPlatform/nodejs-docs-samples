@@ -13,25 +13,25 @@
 
 'use strict';
 
-var listDatasetsAndProjectsExample = require('../list_datasets_and_projects');
-sinon.spy(listDatasetsAndProjectsExample, 'printUsage');
+var example = require('../list_datasets_and_projects');
+sinon.spy(example, 'printUsage');
 
 describe('bigquery:list_datasets_and_projects', function () {
   describe('main', function () {
     it('should show usage if no arguments exist', function () {
-      listDatasetsAndProjectsExample.main([],
+      example.main([],
         function (err) {
           assert.ifError(err);
-          assert(listDatasetsAndProjectsExample.printUsage.called);
+          assert(example.printUsage.called);
         }
       );
     });
 
     it('should show usage if first argument is -h', function () {
-      listDatasetsAndProjectsExample.main(['-h'],
+      example.main(['-h'],
         function (err) {
           assert.ifError(err);
-          assert(listDatasetsAndProjectsExample.printUsage.called);
+          assert(example.printUsage.called);
         }
       );
     });
@@ -39,7 +39,7 @@ describe('bigquery:list_datasets_and_projects', function () {
 
   describe('printUsage', function () {
     it('should print usage', function () {
-      listDatasetsAndProjectsExample.printUsage();
+      example.printUsage();
       assert(console.log.calledWith('Usage: node list_datasets_and_projects.js COMMAND [ARGS]'));
       assert(console.log.calledWith('\nCommands:'));
       assert(console.log.calledWith('\tlist-datasets PROJECT_ID'));
@@ -49,7 +49,7 @@ describe('bigquery:list_datasets_and_projects', function () {
 
   describe('listProjects', function () {
     it('should list projects', function () {
-      listDatasetsAndProjectsExample.listProjects(
+      example.listProjects(
         function (err, projects) {
           assert.ifError(err);
           assert.notNull(projects);
@@ -61,7 +61,7 @@ describe('bigquery:list_datasets_and_projects', function () {
 
   describe('listDatasets', function () {
     it('should list datasets', function () {
-      listDatasetsAndProjectsExample.listDatasets('googledata',
+      example.listDatasets('googledata',
         function (err, datasets) {
           assert.ifError(err);
           assert.notNull(datasets);
@@ -73,7 +73,7 @@ describe('bigquery:list_datasets_and_projects', function () {
     it('should require a Project ID', function () {
       assert.throws(
         function () {
-          listDatasetsAndProjectsExample.listDatasets(null, null);
+          example.listDatasets(null, null);
         },
         Error,
         'projectId is required'

@@ -13,16 +13,19 @@
 
 'use strict';
 
-var listDatasetsAndProjectsExample = require('../list_datasets_and_projects');
-sinon.spy(listDatasetsAndProjectsExample, 'printUsage');
+var example = require('../list_datasets_and_projects');
+sinon.stub(example, 'printUsage');
+sinon.stub(example, 'listDatasets');
+sinon.stub(example, 'listProjects');
 
 describe('bigquery:list_datasets_and_projects', function () {
   describe('main', function () {
     it('should list datasets via the command line', function () {
-      listDatasetsAndProjectsExample.main(
+      example.main(
         ['list-datasets', 'googledata'],
         function (err, datasets) {
           assert.ifError(err);
+          assert(example.listProjects.calledWith('googledata'));
           assert.notNull(datasets);
           assert(Array.isArray(datasets));
           assert(datasets.length > 0);
@@ -31,19 +34,21 @@ describe('bigquery:list_datasets_and_projects', function () {
     });
 
     it('should require a project ID when listing datasets', function () {
-      listDatasetsAndProjectsExample.main(
+      example.main(
         ['list-datasets'],
         function (err) {
           assert.ifError(err);
-          assert(listDatasetsAndProjectsExample.printUsage.called);
+          assert.equal(example.listDatasets.called, false);
+          assert(example.printUsage.called);
         });
     });
 
     it('should list projects via the command line', function () {
-      listDatasetsAndProjectsExample.main(
+      example.main(
         ['list-projects'],
         function (err, projects) {
           assert.ifError(err);
+          assert(example.listProjects.called);
           assert.notNull(projects);
           assert(Array.isArray(projects));
           assert(projects.length > 0);

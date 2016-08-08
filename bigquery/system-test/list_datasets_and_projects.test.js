@@ -14,9 +14,9 @@
 'use strict';
 
 var example = require('../list_datasets_and_projects');
-sinon.stub(example, 'printUsage');
-sinon.stub(example, 'listDatasets');
-sinon.stub(example, 'listProjects');
+sinon.spy(example, 'printUsage');
+sinon.spy(example, 'listDatasets');
+sinon.spy(example, 'listProjects');
 
 describe('bigquery:list_datasets_and_projects', function () {
   describe('main', function () {

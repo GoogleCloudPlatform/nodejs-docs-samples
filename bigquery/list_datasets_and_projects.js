@@ -70,31 +70,34 @@ function listProjects (callback) {
 }
 // [END list_projects]
 
-// Print usage instructions
-function printUsage () {
-  console.log('Usage: node list_datasets_and_projects.js COMMAND [ARGS]');
-  console.log('\nCommands:');
-  console.log('\tlist-datasets PROJECT_ID');
-  console.log('\tlist-projects');
-}
+// The command-line program
+var program = {
+  // Print usage instructions
+  printUsage: function () {
+    console.log('Usage: node list_datasets_and_projects.js COMMAND [ARGS]');
+    console.log('\nCommands:');
+    console.log('\tlist-datasets PROJECT_ID');
+    console.log('\tlist-projects');
+  },
 
-// Exports
-exports.listDatasets = listDatasets;
-exports.listProjects = listProjects;
-exports.printUsage = printUsage;
+  // Exports
+  listDatasets: listDatasets,
+  listProjects: listProjects,
 
-// Run the examples
-exports.main = function (args, cb) {
-  if (args.length === 2 && args[0] === 'list-datasets') {
-    listDatasets(args[1], cb);
-  } else if (args.length === 1 && args[0] === 'list-projects') {
-    listProjects(cb);
-  } else {
-    exports.printUsage();
-    cb();
+  // Run the examples
+  main: function (args, cb) {
+    if (args.length === 2 && args[0] === 'list-datasets') {
+      listDatasets(args[1], cb);
+    } else if (args.length === 1 && args[0] === 'list-projects') {
+      listProjects(cb);
+    } else {
+      program.printUsage();
+      cb();
+    }
   }
 };
 
 if (module === require.main) {
-  exports.main(process.argv.slice(2), console.log);
+  program.main(process.argv.slice(2), console.log);
 }
+module.exports = program;

@@ -14,6 +14,7 @@
 'use strict';
 
 var listDatasetsAndProjectsExample = require('../list_datasets_and_projects');
+sinon.spy(listDatasetsAndProjectsExample, 'printUsage');
 
 describe('bigquery:list_datasets_and_projects', function () {
   describe('main', function () {
@@ -26,6 +27,15 @@ describe('bigquery:list_datasets_and_projects', function () {
           assert(Array.isArray(datasets));
           assert(datasets.length > 0);
           assert(console.log.calledWith(datasets));
+        });
+    });
+
+    it('should require a project ID when listing datasets', function () {
+      listDatasetsAndProjectsExample.main(
+        ['list-datasets'],
+        function (err) {
+          assert.ifError(err);
+          assert(listDatasetsAndProjectsExample.printUsage.called);
         });
     });
 

@@ -14,11 +14,10 @@
 'use strict';
 
 var listDatasetsAndProjectsExample = require('../list_datasets_and_projects');
+sinon.spy(listDatasetsAndProjectsExample, 'printUsage');
 
 describe('bigquery:list_datasets_and_projects', function () {
   describe('main', function () {
-    sinon.spy(listDatasetsAndProjectsExample, 'printUsage');
-
     it('should show usage if no arguments exist', function () {
       listDatasetsAndProjectsExample.main([],
         function (err) {

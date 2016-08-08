@@ -32,18 +32,17 @@ var storage = gcloud.storage();
  * @param {string} name The name of the new bucket.
  * @param {function} cb The callback function.
  */
-function createBucketExample (name, callback) {
+function createBucket (name, callback) {
   if (!name) {
     return callback(new Error('"name" is required!'));
   }
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage?method=createBucket
-  storage.createBucket(name, function (err, bucket, apiResponse) {
+  storage.createBucket(name, function (err, bucket) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Created bucket: ' + name);
+    console.log('Created bucket: %s', name);
     return callback(null, bucket);
   });
 }
@@ -55,15 +54,14 @@ function createBucketExample (name, callback) {
  *
  * @param {function} cb The callback function.
  */
-function listBucketsExample (callback) {
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage?method=getBuckets
-  storage.getBuckets(function (err, buckets, apiResponse) {
+function listBuckets (callback) {
+  storage.getBuckets(function (err, buckets) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Found ' + buckets.length + ' buckets!');
-    return callback(null, buckets, apiResponse);
+    console.log('Found %d buckets!', buckets.length);
+    return callback(null, buckets);
   });
 }
 // [END list]
@@ -75,21 +73,19 @@ function listBucketsExample (callback) {
  * @param {string} name The name of the bucket to delete.
  * @param {function} cb The callback function.
  */
-function deleteBucketExample (name, callback) {
+function deleteBucket (name, callback) {
   if (!name) {
     return callback(new Error('"name" is required!'));
   }
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage?method=bucket
   var bucket = storage.bucket(name);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/bucket?method=delete
   bucket.delete(function (err, apiResponse) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Deleted bucket: ' + name);
+    console.log('Deleted bucket: %s', name);
     return callback(null, apiResponse);
   });
 }
@@ -105,28 +101,31 @@ function printUsage () {
 }
 // [END usage]
 
-// Run the command-line program
-function main (args, cb) {
-  var command = args.shift();
-  if (command === 'create') {
-    createBucketExample(args[0], cb);
-  } else if (command === 'list') {
-    listBucketsExample(cb);
-  } else if (command === 'delete') {
-    deleteBucketExample(args[0], cb);
-  } else {
-    printUsage();
-    cb();
+// The command-line program
+var program = {
+  createBucket: createBucket,
+  listBuckets: listBuckets,
+  deleteBucket: deleteBucket,
+  printUsage: printUsage,
+
+  // Executed when this program is run from the command-line
+  main: function (args, cb) {
+    var command = args.shift();
+    if (command === 'create') {
+      this.createBucket(args[0], cb);
+    } else if (command === 'list') {
+      this.listBuckets(cb);
+    } else if (command === 'delete') {
+      this.deleteBucket(args[0], cb);
+    } else {
+      this.printUsage();
+    }
   }
-}
+};
 
 if (module === require.main) {
-  main(process.argv.slice(2), console.log);
+  program.main(process.argv.slice(2), console.log);
 }
 // [END all]
 
-exports.createBucketExample = createBucketExample;
-exports.listBucketsExample = listBucketsExample;
-exports.deleteBucketExample = deleteBucketExample;
-exports.printUsage = printUsage;
-exports.main = main;
+module.exports = program;

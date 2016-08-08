@@ -12,6 +12,7 @@ amount of data at any time.
 * [Setup](#setup)
 * [Samples](#samples)
   * [Buckets](#buckets)
+  * [Files](#files)
 
 ## Setup
 
@@ -29,7 +30,7 @@ amount of data at any time.
 
 View the [documentation][buckets_docs] or the [source code][buckets_code].
 
-__Usage:__
+__Usage:__ `node buckets --help`
 
 ```
 Usage: node buckets [COMMAND] [ARGS...]
@@ -41,17 +42,30 @@ Commands:
   delete [BUCKET_NAME]
 ```
 
-__Create a bucket:__
-
-    node buckets create [BUCKET_NAME]
-
-__List buckets:__
-
-    node buckets list
-
-__Delete a bucket:__
-
-    node buckets delete [BUCKET_NAME]
-
-[buckets_docs]: https://cloud.google.com/storage/docs/json_api/v1/json-api-nodejs-samples
+[buckets_docs]: https://cloud.google.com/storage/docs
 [buckets_code]: buckets.js
+
+### Files
+
+View the [documentation][files_docs] or the [source code][files_code].
+
+__Usage:__ `node files --help`
+
+```
+Usage: node files [COMMAND] [ARGS...]
+
+Commands:
+
+  list [BUCKET_NAME]
+  listByPrefix [BUCKET_NAME] [PREFIX] [DELIMITER]
+  upload [BUCKET_NAME] [FILE_NAME]
+  download [BUCKET_NAME] [SRC_FILE_NAME] [DEST_FILE_NAME]
+  delete [BUCKET_NAME] [FILE_NAME]
+  getMetadata [BUCKET_NAME] [FILE_NAME]
+  makePublic [BUCKET_NAME] [FILE_NAME]
+  move [BUCKET_NAME] [SRC_FILE_NAME] [DEST_FILE_NAME]
+  copy [BUCKET_NAME] [SRC_FILE_NAME] [DEST_BUCKET_NAME] [DEST_FILE_NAME]
+```
+
+[files_docs]: https://cloud.google.com/storage/docs
+[files_code]: files.js

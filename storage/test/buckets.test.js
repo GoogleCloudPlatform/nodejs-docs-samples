@@ -52,16 +52,16 @@ describe('storage:buckets', function () {
     it('should create a bucket', function () {
       var bucketsSample = getSample();
 
-      bucketsSample.sample.createBucketExample(bucketName, function (err, bucket) {
+      bucketsSample.sample.createBucket(bucketName, function (err, bucket) {
         assert.ifError(err);
         assert.strictEqual(bucket, bucketsSample.mocks.buckets[0]);
-        assert(console.log.calledWith('Created bucket: ' + bucketName));
+        assert(console.log.calledWith('Created bucket: %s', bucketName));
       });
     });
     it('should require name', function () {
       var bucketsSample = getSample();
 
-      bucketsSample.sample.createBucketExample(undefined, function (err, bucket) {
+      bucketsSample.sample.createBucket(undefined, function (err, bucket) {
         assert(err);
         assert(err.message = '"name" is required!');
         assert.equal(bucket, undefined);
@@ -72,7 +72,7 @@ describe('storage:buckets', function () {
       var bucketsSample = getSample();
       bucketsSample.mocks.storage.createBucket = sinon.stub().callsArgWith(1, error);
 
-      bucketsSample.sample.createBucketExample(bucketName, function (err, bucket) {
+      bucketsSample.sample.createBucket(bucketName, function (err, bucket) {
         assert.equal(err, error);
         assert.equal(bucket, undefined);
       });
@@ -82,10 +82,10 @@ describe('storage:buckets', function () {
     it('should list buckets', function () {
       var bucketsSample = getSample();
 
-      bucketsSample.sample.listBucketsExample(function (err, buckets) {
+      bucketsSample.sample.listBuckets(function (err, buckets) {
         assert.ifError(err);
         assert.strictEqual(buckets, bucketsSample.mocks.buckets);
-        assert(console.log.calledWith('Found 1 buckets!'));
+        assert(console.log.calledWith('Found %d buckets!', bucketsSample.mocks.buckets.length));
       });
     });
     it('should handle error', function () {
@@ -93,7 +93,7 @@ describe('storage:buckets', function () {
       var bucketsSample = getSample();
       bucketsSample.mocks.storage.getBuckets = sinon.stub().callsArgWith(0, error);
 
-      bucketsSample.sample.listBucketsExample(function (err, buckets) {
+      bucketsSample.sample.listBuckets(function (err, buckets) {
         assert.equal(err, error);
         assert.equal(buckets, undefined);
       });
@@ -103,16 +103,16 @@ describe('storage:buckets', function () {
     it('should delete a bucket', function () {
       var bucketsSample = getSample();
 
-      bucketsSample.sample.deleteBucketExample(bucketName, function (err, apiResponse) {
+      bucketsSample.sample.deleteBucket(bucketName, function (err, apiResponse) {
         assert.ifError(err);
         assert.equal(bucketsSample.mocks.storage.bucket.firstCall.args[0], bucketName);
-        assert(console.log.calledWith('Deleted bucket: ' + bucketName));
+        assert(console.log.calledWith('Deleted bucket: %s', bucketName));
       });
     });
     it('should require name', function () {
       var bucketsSample = getSample();
 
-      bucketsSample.sample.deleteBucketExample(undefined, function (err, apiResponse) {
+      bucketsSample.sample.deleteBucket(undefined, function (err, apiResponse) {
         assert(err);
         assert(err.message = '"name" is required!');
         assert.equal(apiResponse, undefined);
@@ -123,37 +123,9 @@ describe('storage:buckets', function () {
       var bucketsSample = getSample();
       bucketsSample.mocks.bucket.delete = sinon.stub().callsArgWith(0, error);
 
-      bucketsSample.sample.deleteBucketExample(bucketName, function (err, apiResponse) {
+      bucketsSample.sample.deleteBucket(bucketName, function (err, apiResponse) {
         assert.equal(err, error);
         assert.equal(apiResponse, undefined);
-      });
-    });
-  });
-  describe('main', function () {
-    it('should call the right commands', function () {
-      var bucketsSample = getSample();
-
-      bucketsSample.sample.main(['create', bucketName], function (err, bucket) {
-        assert.ifError(err);
-        assert.strictEqual(bucket, bucketsSample.mocks.buckets[0]);
-        assert(console.log.calledWith('Created bucket: ' + bucketName));
-      });
-      bucketsSample.sample.main(['list'], function (err, buckets) {
-        assert.ifError(err);
-        assert.strictEqual(buckets, bucketsSample.mocks.buckets);
-        assert(console.log.calledWith('Found 1 buckets!'));
-      });
-      bucketsSample.sample.main(['delete', bucketName], function (err, apiResponse) {
-        assert.ifError(err);
-        assert.equal(bucketsSample.mocks.storage.bucket.firstCall.args[0], bucketName);
-        assert(console.log.calledWith('Deleted bucket: ' + bucketName));
-      });
-      bucketsSample.sample.main(['foo'], function () {
-        assert(console.log.calledWith('Usage: node buckets [COMMAND] [ARGS...]'));
-        assert(console.log.calledWith('\nCommands:\n'));
-        assert(console.log.calledWith('\tcreate [BUCKET_NAME]'));
-        assert(console.log.calledWith('\tlist'));
-        assert(console.log.calledWith('\tdelete [BUCKET_NAME]'));
       });
     });
   });
@@ -168,6 +140,27 @@ describe('storage:buckets', function () {
       assert(console.log.calledWith('\tcreate [BUCKET_NAME]'));
       assert(console.log.calledWith('\tlist'));
       assert(console.log.calledWith('\tdelete [BUCKET_NAME]'));
+    });
+  });
+  describe('main', function () {
+    it('should call the right commands', function () {
+      var program = getSample().sample;
+
+      sinon.stub(program, 'createBucket');
+      program.main(['create']);
+      assert(program.createBucket.calledOnce);
+
+      sinon.stub(program, 'listBuckets');
+      program.main(['list']);
+      assert(program.listBuckets.calledOnce);
+
+      sinon.stub(program, 'deleteBucket');
+      program.main(['delete']);
+      assert(program.deleteBucket.calledOnce);
+
+      sinon.stub(program, 'printUsage');
+      program.main(['--help']);
+      assert(program.printUsage.calledOnce);
     });
   });
 });

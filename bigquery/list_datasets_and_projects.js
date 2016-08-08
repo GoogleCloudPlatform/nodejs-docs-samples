@@ -11,17 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-Command-line application to list all projects and datasets in BigQuery.
-
-This sample is used on this page:
-
-    https://cloud.google.com/bigquery/docs/managing_jobs_datasets_projects
-*/
+/**
+ * Command-line application to list all projects and datasets in BigQuery.
+ *
+ * This sample is used on this page:
+ *
+ *   https://cloud.google.com/bigquery/docs/managing_jobs_datasets_projects
+ */
 
 'use strict';
-
-var async = require('async');
 
 // [START auth]
 // By default, gcloud will authenticate using the service account file specified
@@ -29,7 +27,6 @@ var async = require('async');
 // project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
 var gcloud = require('gcloud');
-
 // [END auth]
 
 // [START list_tables]
@@ -40,13 +37,15 @@ var gcloud = require('gcloud');
  * @param {Function} callback Callback function.
  */
 function listDatasets (projectId, callback) {
+  if (!projectId) {
+    throw new Error('projectId is required');
+  }
+
   var bigquery = gcloud.bigquery({
     projectId: projectId
   });
 
-  // Grab paginated tables
   bigquery.getDatasets(function (err, datasets, nextQuery, apiResponse) {
-
     // Quit on error
     if (err) {
       return callback(err);
@@ -54,7 +53,7 @@ function listDatasets (projectId, callback) {
 
     // Pagination
     if (nextQuery) {
-      return bigquery.getDatasets(nextQuery, callback)
+      return bigquery.getDatasets(nextQuery, callback);
     }
 
     // Last page of datasets
@@ -71,9 +70,7 @@ function listDatasets (projectId, callback) {
  */
 function listProjects (callback) {
   var resource = gcloud.resource();
-
-  resource.getProjects({}, function(err, projects, nextQuery, apiResponse) {
-
+  resource.getProjects(function (err, projects, nextQuery) {
     // Quit on error
     if (err) {
       return callback(err);
@@ -81,39 +78,42 @@ function listProjects (callback) {
 
     // Pagination
     if (nextQuery) {
-      return resource.getProjects(nextQuery, callback)
+      return resource.getProjects(nextQuery, callback);
     }
 
     // Last page of projects
     return callback(null, projects);
-
   });
 }
 // [END list_projects]
 
+// Print usage instructions
+function printUsage () {
+  console.log('Usage: node list_datasets_and_projects.js COMMAND [ARGS]');
+  console.log('\nCommands:');
+  console.log('\tlist-datasets PROJECT_ID');
+  console.log('\tlist-projects');
+}
+
+// Exports
+exports.listDatasets = listDatasets;
+exports.listProjects = listProjects;
+exports.printUsage = printUsage;
+
 // Run the examples
-exports.main = function (projectId, callback) {
-  var cbFunc =
-    function (err, response) {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, response);
-    };
+exports.main = function (args, cb) {
+  printUsage();
 
-
-  if (projectId != null) {
-    listDatasets(projectId, cbFunc);
+  if (args.length === 2 && args[0] === 'list-datasets') {
+    listDatasets(args[1], cb);
+  } else if (args.length === 1 && args[0] === 'list-projects') {
+    listProjects(cb);
   } else {
-    listProjects(cbFunc);
+    exports.printUsage();
+    cb();
   }
-
 };
 
 if (module === require.main) {
-  var args = process.argv.slice(1);
-  if (args.length > 2) {
-    throw new Error('Usage: node list_datasets_and_projects.js [<projectId>]');
-  }
-  exports.main(args[1], console.log);
+  exports.main(process.argv.slice(2), console.log);
 }

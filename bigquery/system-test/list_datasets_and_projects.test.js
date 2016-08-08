@@ -13,23 +13,33 @@
 
 'use strict';
 
-var listDatasetsAndProjectsExample = require("../list_datasets_and_projects")
+var listDatasetsAndProjectsExample = require('../list_datasets_and_projects');
 
 describe('bigquery:list_datasets_and_projects', function () {
-  it('should be tested');
+  describe('main', function () {
+    it('should list datasets via the command line', function () {
+      listDatasetsAndProjectsExample.main(
+        ['list-datasets', 'googledata'],
+        function (err, datasets) {
+          assert.ifError(err);
+          assert.notNull(datasets);
+          assert(Array.isArray(datasets));
+          assert(datasets.length > 0);
+          assert(console.log.calledWith(datasets));
+        });
+    });
 
-  it('should list datasets', function () {
-    listDatasetsAndProjectsExample.main("googledata", function(datasets) {
-      assert.notNull(datasets)
-      assert.notEqual(len(datasets), 0)
-    })
+    it('should list projects via the command line', function () {
+      listDatasetsAndProjectsExample.main(
+        ['list-projects'],
+        function (err, projects) {
+          assert.ifError(err);
+          assert.notNull(projects);
+          assert(Array.isArray(projects));
+          assert(projects.length > 0);
+          assert(console.log.calledWith(projects));
+        }
+      );
+    });
   });
-
-  it('should list projects', function () {
-    listDatasetsAndProjectsExample.main(null, function(projects) {
-      assert.notNull(projects)
-      assert.notEqual(len(projects), 0)
-    })
-  });
-
 });

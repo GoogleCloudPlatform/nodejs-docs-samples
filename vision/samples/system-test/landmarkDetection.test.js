@@ -19,7 +19,7 @@ var inputFile = 'https://cloud-samples-tests.storage.googleapis.com/vision/water
 describe('vision:landmarkDetection', function () {
   it('should detect landmarks', function (done) {
     landmarkDetectionSample.main(inputFile, function (err, landmarks) {
-      assert(!err);
+      assert.ifError(err);
       assert(landmarks.length > 0);
       assert(console.log.calledWith('Found landmark: Taitung, Famous Places "up the water flow" marker for ' + inputFile));
       done();

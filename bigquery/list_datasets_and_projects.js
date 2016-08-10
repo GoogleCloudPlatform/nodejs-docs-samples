@@ -21,6 +21,7 @@
 
 'use strict';
 
+// [START all]
 // [START auth]
 // By default, gcloud will authenticate using the service account file specified
 // by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
@@ -38,7 +39,7 @@ var gcloud = require('gcloud');
  */
 function listDatasets (projectId, callback) {
   if (!projectId) {
-    throw new Error('projectId is required');
+    return callback(new Error('projectId is required!'));
   }
   var bigquery = gcloud.bigquery({
     projectId: projectId
@@ -48,6 +49,8 @@ function listDatasets (projectId, callback) {
     if (err) {
       return callback(err);
     }
+
+    console.log('Found %d datasets!', datasets.length);
     return callback(null, datasets);
   });
 }
@@ -61,24 +64,31 @@ function listDatasets (projectId, callback) {
  */
 function listProjects (callback) {
   var resource = gcloud.resource();
+
   resource.getProjects(function (err, projects) {
     if (err) {
       return callback(err);
     }
+
+    console.log('Found %d projects!', projects.length);
     return callback(null, projects);
   });
 }
 // [END list_projects]
 
+// [START usage]
+function printUsage () {
+  console.log('Usage: node list_datasets_and_projects [COMMAND] [ARGS...]');
+  console.log('\nCommands:\n');
+  console.log('\tlist-datasets PROJECT_ID');
+  console.log('\tlist-projects');
+}
+// [END usage]
+
 // The command-line program
 var program = {
   // Print usage instructions
-  printUsage: function () {
-    console.log('Usage: node list_datasets_and_projects.js COMMAND [ARGS]');
-    console.log('\nCommands:');
-    console.log('\tlist-datasets PROJECT_ID');
-    console.log('\tlist-projects');
-  },
+  printUsage: printUsage,
 
   // Exports
   listDatasets: listDatasets,
@@ -86,13 +96,13 @@ var program = {
 
   // Run the examples
   main: function (args, cb) {
-    if (args.length === 2 && args[0] === 'list-datasets') {
-      listDatasets(args[1], cb);
-    } else if (args.length === 1 && args[0] === 'list-projects') {
-      listProjects(cb);
+    var command = args.shift();
+    if (command === 'list-datasets') {
+      this.listDatasets(args[0], cb);
+    } else if (command === 'list-projects') {
+      this.listProjects(cb);
     } else {
-      program.printUsage();
-      cb();
+      this.printUsage();
     }
   }
 };
@@ -100,4 +110,6 @@ var program = {
 if (module === require.main) {
   program.main(process.argv.slice(2), console.log);
 }
+// [END all]
+
 module.exports = program;

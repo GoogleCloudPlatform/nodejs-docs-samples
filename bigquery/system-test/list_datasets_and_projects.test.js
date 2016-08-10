@@ -14,47 +14,31 @@
 'use strict';
 
 var example = require('../list_datasets_and_projects');
-sinon.spy(example, 'printUsage');
-sinon.spy(example, 'listDatasets');
-sinon.spy(example, 'listProjects');
+var projectId = process.env.GCLOUD_PROJECT || 'nodejs-docs-samples';
 
 describe('bigquery:list_datasets_and_projects', function () {
-  describe('main', function () {
-    it('should list datasets via the command line', function () {
-      example.main(
-        ['list-datasets', 'googledata'],
-        function (err, datasets) {
-          assert.ifError(err);
-          assert(example.listProjects.calledWith('googledata'));
-          assert.notNull(datasets);
-          assert(Array.isArray(datasets));
-          assert(datasets.length > 0);
-          assert(console.log.calledWith(datasets));
-        });
+  describe('listDatasets', function () {
+    it('should list datasets', function (done) {
+      example.listDatasets(projectId, function (err, datasets) {
+        assert.ifError(err);
+        assert(Array.isArray(datasets));
+        assert(datasets.length > 0);
+        assert(datasets[0].id);
+        assert(console.log.calledWith('Found %d datasets!', datasets.length));
+        done();
+      });
     });
-
-    it('should require a project ID when listing datasets', function () {
-      example.main(
-        ['list-datasets'],
-        function (err) {
-          assert.ifError(err);
-          assert.equal(example.listDatasets.called, false);
-          assert(example.printUsage.called);
-        });
-    });
-
-    it('should list projects via the command line', function () {
-      example.main(
-        ['list-projects'],
-        function (err, projects) {
-          assert.ifError(err);
-          assert(example.listProjects.called);
-          assert.notNull(projects);
-          assert(Array.isArray(projects));
-          assert(projects.length > 0);
-          assert(console.log.calledWith(projects));
-        }
-      );
+  });
+  describe('listProjects', function () {
+    it('should list projects', function (done) {
+      example.listProjects(function (err, projects) {
+        assert.ifError(err);
+        assert(Array.isArray(projects));
+        assert(projects.length > 0);
+        assert(projects[0].id);
+        assert(console.log.calledWith('Found %d projects!', projects.length));
+        done();
+      });
     });
   });
 });

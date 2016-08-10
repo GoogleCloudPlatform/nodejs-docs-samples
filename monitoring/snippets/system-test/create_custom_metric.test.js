@@ -26,10 +26,7 @@ describe('monitoring:create_custom_metric', function () {
       process.env.GCLOUD_PROJECT,
       Math.random().toString(36).substring(7),
       function (err, results) {
-        assert(!err);
-        // console.log('---------------------------------------------');
-        // console.log(JSON.stringify(results, null, 2));
-        // console.log('---------------------------------------------');
+        assert.ifError(err);
         assert(results.length === 4);
         // Result of creating metric
         assert(typeof results[0].name === 'string');

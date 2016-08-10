@@ -250,12 +250,12 @@ exports.main = function (projectId, name, cb) {
       function (cb) {
         setTimeout(function () {
           customMetrics.writeTimeSeriesForCustomMetric(authClient, cb);
-        }, 5000);
+        }, 10000);
       },
       function (cb) {
         setTimeout(function () {
           customMetrics.listTimeSeries(authClient, cb);
-        }, 5000);
+        }, 10000);
       },
       function (cb) {
         customMetrics.deleteMetric(authClient, cb);

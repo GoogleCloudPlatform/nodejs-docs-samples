@@ -20,10 +20,10 @@ var textDetectionSample = require('../textDetection');
 describe('vision:textDetection', function () {
   it('should detect texts', function (done) {
     textDetectionSample.main(inputDir, function (err, textResponse) {
-      assert(!err);
+      assert.ifError(err);
       assert(Object.keys(textResponse).length > 0);
       textDetectionSample.lookup(['the', 'sunbeams', 'in'], function (err, hits) {
-        assert(!err);
+        assert.ifError(err);
         assert(hits.length > 0);
         assert(hits[0].length > 0);
         done();

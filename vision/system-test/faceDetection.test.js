@@ -55,7 +55,7 @@ describe('vision:faceDetection', function () {
       outputFile,
       MockCanvas,
       function (err, faces) {
-        assert(!err);
+        assert.ifError(err);
         assert(faces.length === 1);
         var image = fs.readFileSync(outputFile);
         assert(image.toString('utf8') === 'testfoobar');

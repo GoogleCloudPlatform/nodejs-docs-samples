@@ -18,7 +18,7 @@ var hostedmodels = require('../../prediction/hostedmodels');
 describe('prediction:hostedmodels', function () {
   it('should predict', function (done) {
     hostedmodels.main('good night', function (err, result) {
-      assert(!err);
+      assert.ifError(err);
       assert(result);
       assert(console.log.calledWith('Sentiment for "good night": positive'));
       done();

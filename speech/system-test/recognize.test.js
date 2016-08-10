@@ -21,7 +21,7 @@ describe('speech:recognize', function () {
     recognizeExample.main(
       path.join(__dirname, '../resources/audio.raw'),
       function (err, result) {
-        assert(!err);
+        assert.ifError(err);
         assert(result);
         assert(Array.isArray(result.results));
         assert(result.results.length === 1);

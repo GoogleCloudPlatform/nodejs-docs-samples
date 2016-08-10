@@ -19,7 +19,7 @@ describe('bigquery:getting_started', function () {
   it('should run a query', function (done) {
     gettingStartedExample.main(
       function (err, rows) {
-        assert(!err);
+        assert.ifError(err);
         assert(Array.isArray(rows));
         assert.equal(rows.length, 10);
         done();

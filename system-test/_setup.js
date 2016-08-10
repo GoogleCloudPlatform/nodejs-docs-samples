@@ -22,8 +22,6 @@ global.sinon = sinon;
 var log = console.log;
 
 beforeEach(function () {
-  assert(process.env.GCLOUD_PROJECT, 'Must set GCLOUD_PROJECT environment variable!');
-  assert(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!');
   if (process.env.DEBUG) {
     sinon.spy(console, 'error');
     sinon.spy(console, 'log');
@@ -35,6 +33,8 @@ beforeEach(function () {
       }
     });
   }
+  assert(process.env.GCLOUD_PROJECT, 'Must set GCLOUD_PROJECT environment variable!');
+  assert(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!');
 });
 
 afterEach(function () {

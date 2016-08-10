@@ -55,7 +55,7 @@
     "cover": "nyc --cache npm test && nyc report --reporter=html && nyc report --reporter=lcov",
     "system-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js'",
     "system-cover": "npm run pretest && nyc --cache npm run system-test && nyc report --reporter=html && nyc report --reporter=lcov",
-    "all-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*,functions/*}/test/*.test.js' '{*,appengine/*}/system-test/*.test.js'",
+    "all-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js' '{*,appengine/*,functions/*}/test/*.test.js'",
     "all-cover": "npm run pretest && nyc --cache npm run all-test && nyc report --reporter=html && nyc report --reporter=lcov"
   },
   "devDependencies": {

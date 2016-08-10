@@ -18,7 +18,7 @@ var vmsExample = require('../vms_api');
 describe('computeengine:vms_api', function () {
   it('should retrieve vms', function (done) {
     vmsExample.main(function (err, result) {
-      assert(!err);
+      assert.ifError(err);
       assert(result);
       done();
     });

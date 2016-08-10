@@ -20,7 +20,7 @@ describe('monitoring:list_resources', function () {
     listResourcesExample.main(
       process.env.GCLOUD_PROJECT,
       function (err, results) {
-        assert(!err);
+        assert.ifError(err);
         assert(results.length === 3);
         // Monitored resources
         assert(Array.isArray(results[0].resourceDescriptors));

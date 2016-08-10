@@ -22,7 +22,7 @@ describe('vision:labelDetection', function () {
     labelDetectionSample.main(
       inputFile,
       function (err, labels) {
-        assert(!err);
+        assert.ifError(err);
         assert(labels.length > 0);
         assert(console.log.calledWith('Found label: cat for ' + inputFile));
         done();

@@ -21,7 +21,7 @@ describe('bigquery:dataset_size', function () {
       'bigquery-public-data',
       'hacker_news',
       function (err, size) {
-        assert(!err);
+        assert.ifError(err);
         assert.equal(typeof size, 'string');
         assert(size.indexOf(' GB') === size.length - 3);
         done();

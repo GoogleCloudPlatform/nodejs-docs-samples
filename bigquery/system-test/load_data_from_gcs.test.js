@@ -40,7 +40,7 @@ describe('bigquery:load_data_from_gcs', function () {
           done(err);
         });
       } else {
-        assert(!err);
+        assert.ifError(err);
         // metadata
         assert.equal(results[1].status.state, 'DONE');
         done();

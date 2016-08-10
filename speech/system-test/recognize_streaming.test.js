@@ -22,7 +22,7 @@ describe('speech:recognize_streaming', function () {
       path.join(__dirname, '../resources/audio.raw'),
       process.env.SPEECH_API_HOST || 'speech.googleapis.com',
       function (err, results) {
-        assert(!err);
+        assert.ifError(err);
         assert(results);
         assert(results.length === 3);
         assert(results[0].results);

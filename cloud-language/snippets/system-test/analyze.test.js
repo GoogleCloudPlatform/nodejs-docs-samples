@@ -21,7 +21,7 @@ describe('language:analyze', function () {
       'sentiment',
       'This gazinga pin is bad and it should feel bad',
       function (err, result) {
-        assert(!err);
+        assert.ifError(err);
         assert(result);
         assert(result.documentSentiment);
         assert(result.documentSentiment.polarity < 0);
@@ -34,7 +34,7 @@ describe('language:analyze', function () {
       'entities',
       'Mark Twain is the author of a book called Tom Sawyer',
       function (err, result) {
-        assert(!err);
+        assert.ifError(err);
         assert(result);
         assert(result.entities && result.entities.length);
         assert(result.entities[0].name === 'Mark Twain');
@@ -51,7 +51,7 @@ describe('language:analyze', function () {
       'buy some better butter - better than this bitter butter - it will ' +
       'make my batter better."',
       function (err, result) {
-        assert(!err);
+        assert.ifError(err);
         assert(result);
         assert(result.sentences && result.sentences.length);
         assert(result.tokens && result.tokens.length > 5);

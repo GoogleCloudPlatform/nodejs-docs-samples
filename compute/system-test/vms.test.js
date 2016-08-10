@@ -18,7 +18,7 @@ var vmsExample = require('../vms');
 describe('computeengine:vms', function () {
   it('should retrieve vms', function (done) {
     vmsExample.main(function (err, result) {
-      assert(!err);
+      assert.ifError(err);
       assert(result);
       assert(Array.isArray(result));
       done();

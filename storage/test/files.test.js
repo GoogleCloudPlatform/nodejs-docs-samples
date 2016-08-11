@@ -421,17 +421,17 @@ describe('storage:files', function () {
 
       filesSample.sample.printUsage();
 
-      assert(console.log.calledWith('Usage: node files [COMMAND] [ARGS...]'));
+      assert(console.log.calledWith('Usage: node files COMMAND [ARGS...]'));
       assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tlist [BUCKET_NAME]'));
-      assert(console.log.calledWith('\tlistByPrefix [BUCKET_NAME] [PREFIX] [DELIMITER]'));
-      assert(console.log.calledWith('\tupload [BUCKET_NAME] [FILE_NAME]'));
-      assert(console.log.calledWith('\tdownload [BUCKET_NAME] [SRC_FILE_NAME] [DEST_FILE_NAME]'));
-      assert(console.log.calledWith('\tdelete [BUCKET_NAME] [FILE_NAME]'));
-      assert(console.log.calledWith('\tgetMetadata [BUCKET_NAME] [FILE_NAME]'));
-      assert(console.log.calledWith('\tmakePublic [BUCKET_NAME] [FILE_NAME]'));
-      assert(console.log.calledWith('\tmove [BUCKET_NAME] [SRC_FILE_NAME] [DEST_FILE_NAME]'));
-      assert(console.log.calledWith('\tcopy [BUCKET_NAME] [SRC_FILE_NAME] [DEST_BUCKET_NAME] [DEST_FILE_NAME]'));
+      assert(console.log.calledWith('\tlist BUCKET_NAME'));
+      assert(console.log.calledWith('\tlistByPrefix BUCKET_NAME PREFIX [DELIMITER]'));
+      assert(console.log.calledWith('\tupload BUCKET_NAME FILE_NAME'));
+      assert(console.log.calledWith('\tdownload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME'));
+      assert(console.log.calledWith('\tdelete BUCKET_NAME FILE_NAME'));
+      assert(console.log.calledWith('\tgetMetadata BUCKET_NAME FILE_NAME'));
+      assert(console.log.calledWith('\tmakePublic BUCKET_NAME FILE_NAME'));
+      assert(console.log.calledWith('\tmove BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME'));
+      assert(console.log.calledWith('\tcopy BUCKET_NAME SRC_FILE_NAME DEST_BUCKET_NAME DEST_FILE_NAME'));
     });
   });
   describe('main', function () {

@@ -21,7 +21,7 @@
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
 var gcloud = require('gcloud');
 
-// Get a reference to the storage component
+// Instantiate a storage client
 var storage = gcloud.storage();
 // [END setup]
 
@@ -324,17 +324,28 @@ function copyFile (name, srcFileName, destBucketName, destFileName, callback) {
 
 // [START usage]
 function printUsage () {
-  console.log('Usage: node files [COMMAND] [ARGS...]');
+  console.log('Usage: node files COMMAND [ARGS...]');
   console.log('\nCommands:\n');
-  console.log('\tlist [BUCKET_NAME]');
-  console.log('\tlistByPrefix [BUCKET_NAME] [PREFIX] [DELIMITER]');
-  console.log('\tupload [BUCKET_NAME] [FILE_NAME]');
-  console.log('\tdownload [BUCKET_NAME] [SRC_FILE_NAME] [DEST_FILE_NAME]');
-  console.log('\tdelete [BUCKET_NAME] [FILE_NAME]');
-  console.log('\tgetMetadata [BUCKET_NAME] [FILE_NAME]');
-  console.log('\tmakePublic [BUCKET_NAME] [FILE_NAME]');
-  console.log('\tmove [BUCKET_NAME] [SRC_FILE_NAME] [DEST_FILE_NAME]');
-  console.log('\tcopy [BUCKET_NAME] [SRC_FILE_NAME] [DEST_BUCKET_NAME] [DEST_FILE_NAME]');
+  console.log('\tlist BUCKET_NAME');
+  console.log('\tlistByPrefix BUCKET_NAME PREFIX [DELIMITER]');
+  console.log('\tupload BUCKET_NAME FILE_NAME');
+  console.log('\tdownload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME');
+  console.log('\tdelete BUCKET_NAME FILE_NAME');
+  console.log('\tgetMetadata BUCKET_NAME FILE_NAME');
+  console.log('\tmakePublic BUCKET_NAME FILE_NAME');
+  console.log('\tmove BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME');
+  console.log('\tcopy BUCKET_NAME SRC_FILE_NAME DEST_BUCKET_NAME DEST_FILE_NAME');
+  console.log('\nExamples:\n');
+  console.log('\tlist my-bucket');
+  console.log('\tlistByPrefix my-bucket /some-folder');
+  console.log('\tlistByPrefix my-bucket /some-folder -');
+  console.log('\tupload my-bucket ./file.txt');
+  console.log('\tdownload my-bucket file.txt ./file.txt');
+  console.log('\tdelete my-bucket file.txt');
+  console.log('\tgetMetadata my-bucket file.txt');
+  console.log('\tmakePublic my-bucket file.txt');
+  console.log('\tmove my-bucket file.txt file2.txt');
+  console.log('\tcopy my-bucket file.txt my-other-bucket file.txt');
 }
 // [END usage]
 

@@ -21,7 +21,7 @@
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
 var gcloud = require('gcloud');
 
-// Get a reference to the storage component
+// Instantiate a storage client
 var storage = gcloud.storage();
 // [END setup]
 
@@ -93,11 +93,15 @@ function deleteBucket (name, callback) {
 
 // [START usage]
 function printUsage () {
-  console.log('Usage: node buckets [COMMAND] [ARGS...]');
+  console.log('Usage: node buckets COMMAND [ARGS...]');
   console.log('\nCommands:\n');
-  console.log('\tcreate [BUCKET_NAME]');
+  console.log('\tcreate BUCKET_NAME');
   console.log('\tlist');
-  console.log('\tdelete [BUCKET_NAME]');
+  console.log('\tdelete BUCKET_NAME');
+  console.log('\nExamples:\n');
+  console.log('\tnode buckets create my-bucket');
+  console.log('\tnode buckets list');
+  console.log('\tnode buckets delete my-bucket');
 }
 // [END usage]
 

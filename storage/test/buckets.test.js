@@ -135,11 +135,15 @@ describe('storage:buckets', function () {
 
       bucketsSample.sample.printUsage();
 
-      assert(console.log.calledWith('Usage: node buckets [COMMAND] [ARGS...]'));
+      assert(console.log.calledWith('Usage: node buckets COMMAND [ARGS...]'));
       assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tcreate [BUCKET_NAME]'));
+      assert(console.log.calledWith('\tcreate BUCKET_NAME'));
       assert(console.log.calledWith('\tlist'));
-      assert(console.log.calledWith('\tdelete [BUCKET_NAME]'));
+      assert(console.log.calledWith('\tdelete BUCKET_NAME'));
+      assert(console.log.calledWith('\nExamples:\n'));
+      assert(console.log.calledWith('\tnode buckets create my-bucket'));
+      assert(console.log.calledWith('\tnode buckets list'));
+      assert(console.log.calledWith('\tnode buckets delete my-bucket'));
     });
   });
   describe('main', function () {

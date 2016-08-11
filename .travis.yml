@@ -77,10 +77,6 @@ cache:
   - trace/node_modules/
   - vision/node_modules/
 
-services:
-  - redis-server
-  - memcached
-
 env:
   global:
     - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/key.json
@@ -94,4 +90,4 @@ before_install:
 before_script:
   - node scripts/install
 
-script: npm run all-cover && bash <(curl -s https://codecov.io/bash)
+script: npm test

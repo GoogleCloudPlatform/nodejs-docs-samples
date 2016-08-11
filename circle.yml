@@ -1,0 +1,65 @@
+machine:
+  node:
+    version: 6.1.0
+  services:
+    - redis
+    - memcached
+
+dependencies:
+  cache_directories:
+    - appengine/analytics/node_modules/
+    - appengine/bower/node_modules/
+    - appengine/cloudsql/node_modules/
+    - appengine/datastore/node_modules/
+    - appengine/disk/node_modules/
+    - appengine/express/node_modules/
+    - appengine/express-memcached-session/node_modules/
+    - appengine/extending-runtime/node_modules/
+    - appengine/geddy/node_modules/
+    - appengine/grunt/node_modules/
+    - appengine/hapi/node_modules/
+    - appengine/hello-world/node_modules/
+    - appengine/koa/node_modules/
+    - appengine/kraken/node_modules/
+    - appengine/logging/node_modules/
+    - appengine/loopback/node_modules/
+    - appengine/mailgun/node_modules/
+    - appengine/mailjet/node_modules/
+    - appengine/memcached/node_modules/
+    - appengine/mongodb/node_modules/
+    - appengine/parse-server/node_modules/
+    - appengine/pubsub/node_modules/
+    - appengine/redis/node_modules/
+    - appengine/restify/node_modules/
+    - appengine/sails/node_modules/
+    - appengine/sendgrid/node_modules/
+    - appengine/static-files/node_modules/
+    - appengine/storage/node_modules/
+    - appengine/twilio/node_modules/
+    - appengine/webpack/node_modules/
+    - appengine/websockets/node_modules/
+    - bigquery/node_modules/
+    - computeengine/node_modules/
+    - datastore/node_modules/
+    - debugger/node_modules/
+    - functions/background/node_modules/
+    - functions/datastore/node_modules/
+    - functions/errorreporting/node_modules/
+    - functions/gcs/node_modules/
+    - functions/helloworld/node_modules/
+    - functions/http/node_modules/
+    - functions/log/node_modules/
+    - functions/ocr/node_modules/
+    - functions/pubsub/node_modules/
+    - functions/sendgrid/node_modules/
+    - functions/slack/node_modules/
+    - functions/uuid/node_modules/
+    - language/node_modules/
+    - logging/node_modules/
+    - monitoring/node_modules/
+    - prediction/node_modules/
+    - pubsub/node_modules/
+    - speech/node_modules/
+    - storage/node_modules/
+    - trace/node_modules/
+    - vision/node_modules/

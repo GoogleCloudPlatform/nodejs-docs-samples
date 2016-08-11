@@ -62,14 +62,11 @@ describe('bigquery:sync_query', function () {
       var example = getSample();
       sinon.stub(example.program, 'syncQuery');
 
-      example.program.main(
-        ['foo'],
-        function (err, data) {
-          assert.ifError(err);
-          assert(example.program.syncQuery.calledWith({ query: 'foo' }));
-          assert.deepEqual(data, example.mocks.natality);
-        }
-      );
+      example.program.main(['foo'], function (err, data) {
+        assert.ifError(err);
+        assert(example.program.syncQuery.calledWith({ query: 'foo' }));
+        assert.deepEqual(data, example.mocks.natality);
+      });
     });
   });
 
@@ -79,8 +76,7 @@ describe('bigquery:sync_query', function () {
 
     it('should return results', function () {
       var example = getSample();
-      example.program.syncQuery(
-        queryObj,
+      example.program.syncQuery(queryObj,
         function (err, data) {
           assert.ifError(err);
           assert(example.mocks.bigquery.query.calledWith(queryObj));
@@ -92,26 +88,20 @@ describe('bigquery:sync_query', function () {
 
     it('should require a query', function () {
       var example = getSample();
-      example.program.syncQuery(
-        {},
-        function (err, data) {
-          assert.deepEqual(err, Error('queryObj must be an object with a \'query\' parameter'));
-          assert.equal(data, undefined);
-        }
-      );
+      example.program.syncQuery({}, function (err, data) {
+        assert.deepEqual(err, Error('queryObj must be an object with a "query" parameter'));
+        assert.equal(data, undefined);
+      });
     });
 
     it('should handle error', function () {
       var error = Error('syncQueryError');
       var example = getSample();
       example.mocks.bigquery.query = sinon.stub().callsArgWith(1, error);
-      example.program.syncQuery(
-        queryObj,
-        function (err, data) {
-          assert.deepEqual(err, error);
-          assert.equal(data, undefined);
-        }
-      );
+      example.program.syncQuery(queryObj, function (err, data) {
+        assert.deepEqual(err, error);
+        assert.equal(data, undefined);
+      });
     });
   });
 
@@ -119,7 +109,9 @@ describe('bigquery:sync_query', function () {
     it('should print usage', function () {
       var program = getSample().program;
       program.printUsage();
-      assert(console.log.calledWith('Usage: node sync_query.js QUERY'));
+      assert(console.log.calledWith('Usage: node sync_query QUERY'));
+      assert(console.log.calledWith('\nExamples:\n'));
+      assert(console.log.calledWith('\tnode sync_query "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
     });
   });
 });

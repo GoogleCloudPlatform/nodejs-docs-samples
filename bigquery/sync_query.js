@@ -29,43 +29,37 @@
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
 var gcloud = require('gcloud');
 
-// Get a reference to the bigquery component
+// Instantiate the bigquery client
 var bigquery = gcloud.bigquery();
 // [END auth]
 
 // [START query]
 /**
  * Run an example synchronous query.
- * @param {Object} queryObj The BigQuery query to run, plus any additional options
+ * @param {object} queryObj The BigQuery query to run, plus any additional options
  *        listed at https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
- * @param {Function} callback Callback function.
+ * @param {function} callback Callback function.
  */
 function syncQuery (queryObj, callback) {
   if (!queryObj || !queryObj.query) {
-    return callback(Error('queryObj must be an object with a \'query\' parameter'));
+    return callback(Error('queryObj must be an object with a "query" parameter'));
   }
 
-  // Paginate through the results
-  var allRows = [];
-  var paginator = function (err, rows, nextQueryObj) {
+  bigquery.query(queryObj, function (err, rows) {
     if (err) {
       return callback(err);
     }
-    allRows = allRows.concat(rows);
-    if (nextQueryObj) {
-      bigquery.query(nextQueryObj, paginator);
-    } else {
-      console.log('Found %d rows!', allRows.length);
-      return callback(null, allRows);
-    }
-  };
 
-  return bigquery.query(queryObj, paginator);
+    console.log('Found %d rows!', rows.length);
+    return callback(null, rows);
+  });
 }
 // [END query]
 // [START usage]
 function printUsage () {
-  console.log('Usage: node sync_query.js QUERY');
+  console.log('Usage: node sync_query QUERY');
+  console.log('\nExamples:\n');
+  console.log('\tnode sync_query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
 }
 // [END usage]
 
@@ -81,9 +75,7 @@ var program = {
   // Run the sample
   main: function (args, cb) {
     if (args.length === 1 && !(args[0] === '-h' || args[0] === '--help')) {
-      var queryObj = {
-        query: args[0]
-      };
+      var queryObj = { query: args[0], timeoutMs: 10000 };
       this.syncQuery(queryObj, cb);
     } else {
       this.printUsage();

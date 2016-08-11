@@ -29,7 +29,7 @@ describe('storage:encryption', function () {
   var key;
 
   before(function (done) {
-    // Create an key to use throughout the test
+    // Create an encryption key to use throughout the test
     key = program.generateEncryptionKey();
     // Create a test bucket
     storage.createBucket(bucketName, done);

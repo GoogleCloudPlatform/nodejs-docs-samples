@@ -123,7 +123,7 @@ describe('storage:encryption', function () {
 
   describe('downloadEncryptedFile', function () {
     var fileName = 'test.txt';
-    it('should upload a file', function () {
+    it('should download a file', function () {
       var sample = getSample();
 
       sample.program.downloadEncryptedFile(bucketName, fileName, fileName, 'key', function (err) {
@@ -181,6 +181,7 @@ describe('storage:encryption', function () {
   });
 
   describe('rotateEncryptionKey', function () {
+    it('should be implemented');
     it('should rotate an encryption key', function () {
       var sample = getSample();
 

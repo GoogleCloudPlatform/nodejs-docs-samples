@@ -27,21 +27,27 @@ var downloadFilePath = path.join(__dirname, '../resources/downloaded.txt');
 
 describe('storage:encryption', function () {
   var key;
+
   before(function (done) {
+    // Create an key to use throughout the test
     key = program.generateEncryptionKey();
+    // Create a test bucket
     storage.createBucket(bucketName, done);
   });
 
   after(function (done) {
     try {
+      // Delete the downloaded file
       fs.unlinkSync(downloadFilePath);
     } catch (err) {
       console.log(err);
     }
+    // Delete any files that were uploaded
     storage.bucket(bucketName).deleteFiles({ force: true }, function (err) {
       if (err) {
         return done(err);
       }
+      // Delete the test bucket
       storage.bucket(bucketName).delete(done);
     });
   });

@@ -59,7 +59,7 @@ function generateEncryptionKey () {
  * @param {string} srcFileName The local file to be uploaded.
  * @param {string} destFileName The name of the destination file.
  * @param {string} key The encryption key.
- * @param {function} key The callback function.
+ * @param {function} callback The callback function.
  */
 function uploadEncryptedFile (bucketName, srcFileName, destFileName, key, callback) {
   if (!bucketName) {
@@ -97,8 +97,8 @@ function uploadEncryptedFile (bucketName, srcFileName, destFileName, key, callba
  * file.
  *
  * @param {string} bucketName The bucket from which the file will be downloaded.
- * @param {string} srcFileName The local file to be downloaded.
- * @param {string} destFileName The name of the destination file.
+ * @param {string} srcFileName The name of the file to be downloaded.
+ * @param {string} destFileName The local path to which to save the file.
  * @param {string} key The encryption key.
  * @param {function} key The callback function.
  */

@@ -33,12 +33,12 @@ var gcloud = require('gcloud');
 var bigquery = gcloud.bigquery();
 // [END auth]
 
-// [START query]
+// [START sync_query]
 /**
  * Run an example synchronous query.
  * @param {object} queryObj The BigQuery query to run, plus any additional options
  *        listed at https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
- * @param {function} callback Callback function.
+ * @param {function} callback Callback function to receive query results.
  */
 function syncQuery (queryObj, callback) {
   if (!queryObj || !queryObj.query) {
@@ -50,16 +50,66 @@ function syncQuery (queryObj, callback) {
       return callback(err);
     }
 
-    console.log('Found %d rows!', rows.length);
+    console.log('SyncQuery: found %d rows!', rows.length);
     return callback(null, rows);
   });
 }
-// [END query]
+// [END sync_query]
+
+// [START async_query]
+/**
+ * Run an example asynchronous query.
+ * @param {object} queryObj The BigQuery query to run, plus any additional options
+ *        listed at https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+ * @param {function} callback Callback function to receive job data.
+ */
+function asyncQuery (queryObj, callback) {
+  if (!queryObj || !queryObj.query) {
+    return callback(Error('queryObj must be an object with a "query" parameter'));
+  }
+
+  bigquery.startQuery(queryObj, function (err, job) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('AsyncQuery: submitted job %s!', job.id);
+    return callback(null, job);
+  });
+}
+
+/**
+ * Poll an asynchronous query job for results.
+ * @param {object} jobId The ID of the BigQuery job to poll.
+ * @param {function} callback Callback function to receive job data.
+ */
+function asyncPoll (jobId, callback) {
+  if (!jobId) {
+    return callback(Error('"jobId" is required!'));
+  }
+
+  bigquery.job(jobId).getQueryResults(function (err, rows) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('AsyncQuery: polled job %s; got %d rows!', jobId, rows.length);
+    return callback(null, rows);
+  });
+}
+// [END async_query]
+
 // [START usage]
 function printUsage () {
-  console.log('Usage: node sync_query QUERY');
+  console.log('Usage:');
+  console.log('\nCommands:\n');
+  console.log('\tnode query sync-query QUERY');
+  console.log('\tnode query async-query QUERY');
+  console.log('\tnode query poll JOB_ID');
   console.log('\nExamples:\n');
-  console.log('\tnode sync_query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
+  console.log('\tnode query sync-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
+  console.log('\tnode query async-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
+  console.log('\tnode query poll 12345"');
 }
 // [END usage]
 
@@ -69,14 +119,21 @@ var program = {
   printUsage: printUsage,
 
   // Exports
+  asyncQuery: asyncQuery,
+  asyncPoll: asyncPoll,
   syncQuery: syncQuery,
   bigquery: bigquery,
 
   // Run the sample
   main: function (args, cb) {
-    if (args.length === 1 && !(args[0] === '-h' || args[0] === '--help')) {
-      var queryObj = { query: args[0], timeoutMs: 10000 };
-      this.syncQuery(queryObj, cb);
+    var command = args.shift();
+    var arg = args.shift();
+    if (command === 'sync-query') {
+      this.syncQuery({ query: arg, timeoutMs: 10000 }, cb);
+    } else if (command === 'async-query') {
+      this.asyncQuery({ query: arg }, cb);
+    } else if (command === 'poll') {
+      this.asyncPoll(arg, cb);
     } else {
       this.printUsage();
     }

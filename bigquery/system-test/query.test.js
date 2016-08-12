@@ -15,7 +15,7 @@
 
 var example = require('../sync_query');
 
-describe('bigquery:sync_query', function () {
+describe('bigquery:query', function () {
   describe('sync_query', function () {
     it('should fetch data given a query', function (done) {
       example.syncQuery(
@@ -26,6 +26,26 @@ describe('bigquery:sync_query', function () {
           assert(Array.isArray(data));
           assert(data.length === 5);
           done();
+        }
+      );
+    });
+  });
+
+  describe('async_query', function () {
+    it('should submit a job and fetch its results', function (done) {
+      example.asyncQuery(
+        { query: 'SELECT * FROM publicdata:samples.natality LIMIT 5;' },
+        function (err, job) {
+          assert.ifError(err);
+          setTimeout(function () {
+            example.asyncPoll(job.id, function (err, data) {
+              assert.ifError(err);
+              assert.notEqual(data, null);
+              assert(Array.isArray(data));
+              assert(data.length === 5);
+              done();
+            });
+          }, 5000);
         }
       );
     });

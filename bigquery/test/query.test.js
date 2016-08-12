@@ -40,7 +40,7 @@ function getSample () {
     bigquery: sinon.stub().returns(bigqueryMock)
   };
   return {
-    program: proxyquire('../sync_query', {
+    program: proxyquire('../query', {
       gcloud: gcloudMock
     }),
     mocks: {

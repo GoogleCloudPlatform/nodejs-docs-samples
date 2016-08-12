@@ -13,7 +13,7 @@
 
 'use strict';
 
-var example = require('../sync_query');
+var example = require('../query');
 
 describe('bigquery:query', function () {
   describe('sync_query', function () {

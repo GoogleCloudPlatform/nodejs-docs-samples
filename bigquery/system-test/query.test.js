@@ -37,6 +37,7 @@ describe('bigquery:query', function () {
         { query: 'SELECT * FROM publicdata:samples.natality LIMIT 5;' },
         function (err, job) {
           assert.ifError(err);
+          assert.notEqual(job.id, null);
           setTimeout(function () {
             example.asyncPoll(job.id, function (err, data) {
               assert.ifError(err);

@@ -18,8 +18,7 @@ var example = require('../query');
 describe('bigquery:query', function () {
   describe('sync_query', function () {
     it('should fetch data given a query', function (done) {
-      example.syncQuery(
-        { query: 'SELECT * FROM publicdata:samples.natality LIMIT 5;' },
+      example.syncQuery('SELECT * FROM publicdata:samples.natality LIMIT 5;',
         function (err, data) {
           assert.ifError(err);
           assert.notEqual(data, null);
@@ -33,8 +32,7 @@ describe('bigquery:query', function () {
 
   describe('async_query', function () {
     it('should submit a job and fetch its results', function (done) {
-      example.asyncQuery(
-        { query: 'SELECT * FROM publicdata:samples.natality LIMIT 5;' },
+      example.asyncQuery('SELECT * FROM publicdata:samples.natality LIMIT 5;',
         function (err, job) {
           assert.ifError(err);
           assert.notEqual(job.id, null);

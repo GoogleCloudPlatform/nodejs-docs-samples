@@ -27,23 +27,29 @@
 // by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
 // project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
-var gcloud = require('gcloud');
+var BigQuery = require('@google-cloud/bigquery');
 
 // Instantiate the bigquery client
-var bigquery = gcloud.bigquery();
+var bigquery = BigQuery();
 // [END auth]
 
 // [START sync_query]
 /**
  * Run a synchronous query.
- * @param {object} queryObj The BigQuery query to run, plus any additional options
- *        listed at https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+ * @param {string} query The BigQuery query to run, as a string
  * @param {function} callback Callback function to receive query results.
  */
-function syncQuery (queryObj, callback) {
-  if (!queryObj || !queryObj.query) {
-    return callback(Error('queryObj must be an object with a "query" parameter'));
+function syncQuery (query, callback) {
+  if (!query || typeof query !== 'string') {
+    return callback(Error('"query" is required, and must be a string!'));
   }
+
+  // Construct query object
+  // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+  var queryObj = {
+    query: query,
+    timeoutMs: 10000 // Time out after 10 seconds
+  };
 
   bigquery.query(queryObj, function (err, rows) {
     if (err) {
@@ -59,14 +65,19 @@ function syncQuery (queryObj, callback) {
 // [START async_query]
 /**
  * Run an asynchronous query.
- * @param {object} queryObj The BigQuery query to run, plus any additional options
- *        listed at https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+ * @param {string} query The BigQuery query to run, as a string
  * @param {function} callback Callback function to receive job data.
  */
-function asyncQuery (queryObj, callback) {
-  if (!queryObj || !queryObj.query) {
-    return callback(Error('queryObj must be an object with a "query" parameter'));
+function asyncQuery (query, callback) {
+  if (!query || typeof query !== 'string') {
+    return callback(Error('"query" is required, and must be a string!'));
   }
+
+  // Construct query object
+  // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+  var queryObj = {
+    query: query
+  };
 
   bigquery.startQuery(queryObj, function (err, job) {
     if (err) {
@@ -117,12 +128,12 @@ function asyncPoll (jobId, callback) {
 function printUsage () {
   console.log('Usage:');
   console.log('\nCommands:\n');
-  console.log('\tnode query sync-query QUERY');
-  console.log('\tnode query async-query QUERY');
+  console.log('\tnode query sync QUERY');
+  console.log('\tnode query async QUERY');
   console.log('\tnode query poll JOB_ID');
   console.log('\nExamples:\n');
-  console.log('\tnode query sync-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
-  console.log('\tnode query async-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
+  console.log('\tnode query sync "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
+  console.log('\tnode query async "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
   console.log('\tnode query poll 12345');
 }
 // [END usage]
@@ -142,10 +153,10 @@ var program = {
   main: function (args, cb) {
     var command = args.shift();
     var arg = args.shift();
-    if (command === 'sync-query') {
-      this.syncQuery({ query: arg, timeoutMs: 10000 }, cb);
-    } else if (command === 'async-query') {
-      this.asyncQuery({ query: arg }, cb);
+    if (command === 'sync') {
+      this.syncQuery(arg, cb);
+    } else if (command === 'async') {
+      this.asyncQuery(arg, cb);
     } else if (command === 'poll') {
       this.asyncPoll(arg, cb);
     } else {

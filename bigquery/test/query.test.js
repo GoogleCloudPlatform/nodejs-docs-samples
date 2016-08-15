@@ -39,15 +39,15 @@ function getSample () {
     startQuery: sinon.stub().callsArgWith(1, null, jobMock),
     query: sinon.stub().callsArgWith(1, null, natalityMock)
   };
-  var gcloudMock = {
-    bigquery: sinon.stub().returns(bigqueryMock)
-  };
+
+  var BigQueryMock = sinon.stub().returns(bigqueryMock);
+
   return {
     program: proxyquire('../query', {
-      gcloud: gcloudMock
+      '@google-cloud/bigquery': BigQueryMock
     }),
     mocks: {
-      gcloud: gcloudMock,
+      BigQuery: BigQueryMock,
       bigquery: bigqueryMock,
       natality: natalityMock,
       metadata: metadataMock,
@@ -79,10 +79,10 @@ describe('bigquery:query', function () {
       sinon.stub(program, 'asyncQuery');
       sinon.stub(program, 'asyncPoll');
 
-      program.main(['sync-query']);
+      program.main(['sync']);
       assert(program.syncQuery.calledOnce);
 
-      program.main(['async-query']);
+      program.main(['async']);
       assert(program.asyncQuery.calledOnce);
 
       program.main(['poll']);
@@ -102,14 +102,14 @@ describe('bigquery:query', function () {
   });
 
   describe('syncQuery', function () {
-    var queryObj = { query: 'foo' };
+    var query = 'foo';
 
     it('should return results', function () {
       var example = getSample();
-      example.program.syncQuery(queryObj,
+      example.program.syncQuery(query,
         function (err, data) {
           assert.ifError(err);
-          assert(example.mocks.bigquery.query.calledWith(queryObj));
+          assert(example.mocks.bigquery.query.called);
           assert.deepEqual(data, example.mocks.natality);
           assert(console.log.calledWith(
             'SyncQuery: found %d rows!',
@@ -119,12 +119,12 @@ describe('bigquery:query', function () {
       );
     });
 
-    it('should require a query', function () {
+    it('should require a query as a string', function () {
       var example = getSample();
       example.program.syncQuery({}, function (err, data) {
         assert.deepEqual(
           err,
-          Error('queryObj must be an object with a "query" parameter')
+          Error('"query" is required, and must be a string!')
         );
         assert.equal(data, undefined);
       });
@@ -134,7 +134,7 @@ describe('bigquery:query', function () {
       var error = Error('syncQueryError');
       var example = getSample();
       example.mocks.bigquery.query = sinon.stub().callsArgWith(1, error);
-      example.program.syncQuery(queryObj, function (err, data) {
+      example.program.syncQuery(query, function (err, data) {
         assert.deepEqual(err, error);
         assert.equal(data, undefined);
       });
@@ -142,14 +142,14 @@ describe('bigquery:query', function () {
   });
 
   describe('asyncQuery', function () {
-    var queryObj = { query: 'foo' };
+    var query = 'foo';
 
     it('should submit a job', function () {
       var example = getSample();
-      example.program.asyncQuery(queryObj,
+      example.program.asyncQuery(query,
         function (err, job) {
           assert.ifError(err);
-          assert(example.mocks.bigquery.startQuery.calledWith(queryObj));
+          assert(example.mocks.bigquery.startQuery.called);
           assert.deepEqual(example.mocks.job, job);
           assert(console.log.calledWith(
             'AsyncQuery: submitted job %s!', example.jobId
@@ -158,11 +158,11 @@ describe('bigquery:query', function () {
       );
     });
 
-    it('should require a query', function () {
+    it('should require a query as a string', function () {
       var example = getSample();
       example.program.asyncQuery({}, function (err, job) {
         assert.deepEqual(err, Error(
-          'queryObj must be an object with a "query" parameter'
+          '"query" is required, and must be a string!'
         ));
         assert.equal(job, undefined);
       });
@@ -172,7 +172,7 @@ describe('bigquery:query', function () {
       var error = Error('asyncQueryError');
       var example = getSample();
       example.mocks.bigquery.startQuery = sinon.stub().callsArgWith(1, error);
-      example.program.asyncQuery(queryObj, function (err, job) {
+      example.program.asyncQuery(query, function (err, job) {
         assert.deepEqual(err, error);
         assert.equal(job, undefined);
       });
@@ -215,8 +215,8 @@ describe('bigquery:query', function () {
       example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, pendingState);
       example.program.asyncPoll(example.jobId, function (err, rows) {
         assert.deepEqual(err, Error('Job %s is not done', example.jobId));
-        assert(example.mocks.job.getMetadata.called);
         assert(console.log.calledWith('Job status: %s', pendingState.status.state));
+        assert(example.mocks.job.getMetadata.called);
         assert.equal(example.mocks.job.getQueryResults.called, false);
         assert.equal(rows, undefined);
       });
@@ -228,6 +228,7 @@ describe('bigquery:query', function () {
         assert(console.log.calledWith('Job status: %s', doneState.status.state));
         assert(example.mocks.job.getMetadata.called);
         assert(example.mocks.job.getQueryResults.called);
+        assert.equal(rows, example.mocks.natality);
       });
     });
 
@@ -256,12 +257,12 @@ describe('bigquery:query', function () {
       program.printUsage();
       assert(console.log.calledWith('Usage:'));
       assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tnode query sync-query QUERY'));
-      assert(console.log.calledWith('\tnode query async-query QUERY'));
+      assert(console.log.calledWith('\tnode query sync QUERY'));
+      assert(console.log.calledWith('\tnode query async QUERY'));
       assert(console.log.calledWith('\tnode query poll JOB_ID'));
       assert(console.log.calledWith('\nExamples:\n'));
-      assert(console.log.calledWith('\tnode query sync-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
-      assert(console.log.calledWith('\tnode query async-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
+      assert(console.log.calledWith('\tnode query sync "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
+      assert(console.log.calledWith('\tnode query async "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
       assert(console.log.calledWith('\tnode query poll 12345'));
     });
   });

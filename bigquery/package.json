@@ -11,6 +11,7 @@
   "dependencies": {
     "@google-cloud/bigquery": "^0.1.1",
     "@google-cloud/resource": "^0.1.1",
+    "@google-cloud/storage": "^0.1.1",
     "async": "^2.0.1",
     "request": "^2.72.0"
   },

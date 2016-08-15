@@ -51,6 +51,7 @@ function syncQuery (query, callback) {
     timeoutMs: 10000 // Time out after 10 seconds
   };
 
+  // Run query
   bigquery.query(queryObj, function (err, rows) {
     if (err) {
       return callback(err);
@@ -79,6 +80,8 @@ function asyncQuery (query, callback) {
     query: query
   };
 
+
+  // Submit query asynchronously
   bigquery.startQuery(queryObj, function (err, job) {
     if (err) {
       return callback(err);

@@ -35,7 +35,7 @@ var bigquery = gcloud.bigquery();
 
 // [START sync_query]
 /**
- * Run an example synchronous query.
+ * Run a synchronous query.
  * @param {object} queryObj The BigQuery query to run, plus any additional options
  *        listed at https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
  * @param {function} callback Callback function to receive query results.
@@ -58,7 +58,7 @@ function syncQuery (queryObj, callback) {
 
 // [START async_query]
 /**
- * Run an example asynchronous query.
+ * Run an asynchronous query.
  * @param {object} queryObj The BigQuery query to run, plus any additional options
  *        listed at https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
  * @param {function} callback Callback function to receive job data.
@@ -81,7 +81,7 @@ function asyncQuery (queryObj, callback) {
 /**
  * Poll an asynchronous query job for results.
  * @param {object} jobId The ID of the BigQuery job to poll.
- * @param {function} callback Callback function to receive job data.
+ * @param {function} callback Callback function to receive query results.
  */
 function asyncPoll (jobId, callback) {
   if (!jobId) {
@@ -96,7 +96,7 @@ function asyncPoll (jobId, callback) {
     }
     console.log('Job status: %s', metadata.status.state);
 
-    // If job is done, get query results
+    // If job is done, get query results; if not, return an error.
     if (metadata.status.state === 'DONE') {
       job.getQueryResults(function (err, rows) {
         if (err) {

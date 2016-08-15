@@ -119,13 +119,10 @@ describe('bigquery:query', function () {
       );
     });
 
-    it('should require a query as a string', function () {
+    it('should require a query', function () {
       var example = getSample();
-      example.program.syncQuery({}, function (err, data) {
-        assert.deepEqual(
-          err,
-          Error('"query" is required, and must be a string!')
-        );
+      example.program.syncQuery(null, function (err, data) {
+        assert.deepEqual(err, Error('"query" is required!'));
         assert.equal(data, undefined);
       });
     });
@@ -158,12 +155,10 @@ describe('bigquery:query', function () {
       );
     });
 
-    it('should require a query as a string', function () {
+    it('should require a query', function () {
       var example = getSample();
-      example.program.asyncQuery({}, function (err, job) {
-        assert.deepEqual(err, Error(
-          '"query" is required, and must be a string!'
-        ));
+      example.program.asyncQuery(null, function (err, job) {
+        assert.deepEqual(err, Error('"query" is required!'));
         assert.equal(job, undefined);
       });
     });

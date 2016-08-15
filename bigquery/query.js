@@ -38,19 +38,19 @@ var bigquery = BigQuery();
 // [START sync_query]
 /**
  * Run a synchronous query.
- * @param {string} query The BigQuery query to run, as a string
+ * @param {string} query The BigQuery query to run, as a string.
  * @param {function} callback Callback function to receive query results.
  */
 function syncQuery (query, callback) {
-  if (!query || typeof query !== 'string') {
-    return callback(Error('"query" is required, and must be a string!'));
+  if (!query) {
+    return callback(new Error('"query" is required!'));
   }
 
-  // Construct query object
+  // Construct query object.
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   var queryObj = {
     query: query,
-    timeoutMs: 10000 // Time out after 10 seconds
+    timeoutMs: 10000 // Time out after 10 seconds.
   };
 
   // Run query
@@ -68,12 +68,12 @@ function syncQuery (query, callback) {
 // [START async_query]
 /**
  * Run an asynchronous query.
- * @param {string} query The BigQuery query to run, as a string
+ * @param {string} query The BigQuery query to run, as a string.
  * @param {function} callback Callback function to receive job data.
  */
 function asyncQuery (query, callback) {
-  if (!query || typeof query !== 'string') {
-    return callback(Error('"query" is required, and must be a string!'));
+  if (!query) {
+    return callback(new Error('"query" is required!'));
   }
 
   // Construct query object
@@ -81,7 +81,6 @@ function asyncQuery (query, callback) {
   var queryObj = {
     query: query
   };
-
 
   // Submit query asynchronously
   bigquery.startQuery(queryObj, function (err, job) {
@@ -101,7 +100,7 @@ function asyncQuery (query, callback) {
  */
 function asyncPoll (jobId, callback) {
   if (!jobId) {
-    return callback(Error('"jobId" is required!'));
+    return callback(new Error('"jobId" is required!'));
   }
 
   // Check for job status
@@ -123,7 +122,7 @@ function asyncPoll (jobId, callback) {
         return callback(null, rows);
       });
     } else {
-      return callback(Error('Job %s is not done', jobId));
+      return callback(new Error('Job %s is not done', jobId));
     }
   });
 }
@@ -143,9 +142,9 @@ function printUsage () {
 }
 // [END usage]
 
-// The command-line program
+// The command-line program:
 var program = {
-  // Print usage instructions
+  // Print usage instructions.
   printUsage: printUsage,
 
   // Exports
@@ -154,7 +153,7 @@ var program = {
   syncQuery: syncQuery,
   bigquery: bigquery,
 
-  // Run the sample
+  // Run the sample.
   main: function (args, cb) {
     var command = args.shift();
     var arg = args.shift();

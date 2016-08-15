@@ -38,15 +38,22 @@ describe('bigquery:query', function () {
         function (err, job) {
           assert.ifError(err);
           assert.notEqual(job.id, null);
-          setTimeout(function () {
+
+          var poller = function (tries) {
             example.asyncPoll(job.id, function (err, data) {
-              assert.ifError(err);
-              assert.notEqual(data, null);
-              assert(Array.isArray(data));
-              assert(data.length === 5);
-              done();
+              if (!err || tries === 0) {
+                assert.ifError(err);
+                assert.notEqual(data, null);
+                assert(Array.isArray(data));
+                assert(data.length === 5);
+                done();
+              } else {
+                setTimeout(function () { poller(tries - 1); }, 1000);
+              }
             });
-          }, 5000);
+          };
+
+          poller(5);
         }
       );
     });

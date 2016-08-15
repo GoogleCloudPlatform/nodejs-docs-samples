@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START complete]
 /**
- * [START complete]
  * Command-line application to perform an synchronous query in BigQuery.
  *
  * This sample is used on this page:
@@ -88,13 +88,27 @@ function asyncPoll (jobId, callback) {
     return callback(Error('"jobId" is required!'));
   }
 
-  bigquery.job(jobId).getQueryResults(function (err, rows) {
+  // Check for job status
+  var job = bigquery.job(jobId);
+  job.getMetadata(function (err, metadata) {
     if (err) {
       return callback(err);
     }
+    console.log('Job status: %s', metadata.status.state);
 
-    console.log('AsyncQuery: polled job %s; got %d rows!', jobId, rows.length);
-    return callback(null, rows);
+    // If job is done, get query results
+    if (metadata.status.state === 'DONE') {
+      job.getQueryResults(function (err, rows) {
+        if (err) {
+          return callback(err);
+        }
+
+        console.log('AsyncQuery: polled job %s; got %d rows!', jobId, rows.length);
+        return callback(null, rows);
+      });
+    } else {
+      return callback(Error('Job %s is not done', jobId));
+    }
   });
 }
 // [END async_query]
@@ -109,7 +123,7 @@ function printUsage () {
   console.log('\nExamples:\n');
   console.log('\tnode query sync-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
   console.log('\tnode query async-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
-  console.log('\tnode query poll 12345"');
+  console.log('\tnode query poll 12345');
 }
 // [END usage]
 

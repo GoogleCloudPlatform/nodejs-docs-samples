@@ -24,11 +24,14 @@ function getSample () {
     { year: '2005' }
   ];
 
+  var metadataMock = { status: { state: 'DONE' } };
+
   var jobId = 'abc';
 
   var jobMock = {
     id: jobId,
-    getQueryResults: sinon.stub().callsArgWith(0, null, natalityMock)
+    getQueryResults: sinon.stub().callsArgWith(0, null, natalityMock),
+    getMetadata: sinon.stub().callsArgWith(0, null, metadataMock)
   };
 
   var bigqueryMock = {
@@ -47,6 +50,7 @@ function getSample () {
       gcloud: gcloudMock,
       bigquery: bigqueryMock,
       natality: natalityMock,
+      metadata: metadataMock,
       job: jobMock
     },
     jobId: jobId
@@ -107,7 +111,10 @@ describe('bigquery:query', function () {
           assert.ifError(err);
           assert(example.mocks.bigquery.query.calledWith(queryObj));
           assert.deepEqual(data, example.mocks.natality);
-          assert(console.log.calledWith('SyncQuery: found %d rows!', data.length));
+          assert(console.log.calledWith(
+            'SyncQuery: found %d rows!',
+            data.length
+          ));
         }
       );
     });
@@ -115,7 +122,10 @@ describe('bigquery:query', function () {
     it('should require a query', function () {
       var example = getSample();
       example.program.syncQuery({}, function (err, data) {
-        assert.deepEqual(err, Error('queryObj must be an object with a "query" parameter'));
+        assert.deepEqual(
+          err,
+          Error('queryObj must be an object with a "query" parameter')
+        );
         assert.equal(data, undefined);
       });
     });
@@ -141,7 +151,9 @@ describe('bigquery:query', function () {
           assert.ifError(err);
           assert(example.mocks.bigquery.startQuery.calledWith(queryObj));
           assert.deepEqual(example.mocks.job, job);
-          assert(console.log.calledWith('AsyncQuery: submitted job %s!', example.jobId));
+          assert(console.log.calledWith(
+            'AsyncQuery: submitted job %s!', example.jobId
+          ));
         }
       );
     });
@@ -149,7 +161,9 @@ describe('bigquery:query', function () {
     it('should require a query', function () {
       var example = getSample();
       example.program.asyncQuery({}, function (err, job) {
-        assert.deepEqual(err, Error('queryObj must be an object with a "query" parameter'));
+        assert.deepEqual(err, Error(
+          'queryObj must be an object with a "query" parameter'
+        ));
         assert.equal(job, undefined);
       });
     });
@@ -168,20 +182,60 @@ describe('bigquery:query', function () {
   describe('asyncPoll', function () {
     it('should get the results of a job given its ID', function () {
       var example = getSample();
+      example.mocks.bigquery.job = sinon.stub().returns(example.mocks.job);
       example.program.asyncPoll(example.jobId,
-        function (err, job) {
+        function (err, rows) {
           assert.ifError(err);
           assert(example.mocks.job.getQueryResults.called);
-          assert(console.log.calledWith('AsyncQuery: polled job %s; got %d rows!', example.jobId));
+          assert(console.log.calledWith(
+            'AsyncQuery: polled job %s; got %d rows!',
+            example.jobId,
+            example.mocks.natality.length
+          ));
         }
       );
     });
 
+    it('should report the status of a job', function () {
+      var example = getSample();
+      example.program.asyncPoll(example.jobId, function (err, rows) {
+        assert.ifError(err);
+        assert(example.mocks.job.getMetadata.called);
+        assert(console.log.calledWith(
+          'Job status: %s',
+          example.mocks.metadata.status.state
+        ));
+      });
+    });
+
+    it('should check whether a job is finished', function () {
+      var example = getSample();
+
+      var pendingState = { status: { state: 'PENDING' } };
+      example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, pendingState);
+      example.program.asyncPoll(example.jobId, function (err, rows) {
+        assert.deepEqual(err, Error('Job %s is not done', example.jobId));
+        assert(example.mocks.job.getMetadata.called);
+        assert(console.log.calledWith('Job status: %s', pendingState.status.state));
+        assert.equal(example.mocks.job.getQueryResults.called, false);
+        assert.equal(rows, undefined);
+      });
+
+      var doneState = { status: { state: 'DONE' } };
+      example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, doneState);
+      example.program.asyncPoll(example.jobId, function (err, rows) {
+        assert.ifError(err);
+        assert(console.log.calledWith('Job status: %s', doneState.status.state));
+        assert(example.mocks.job.getMetadata.called);
+        assert(example.mocks.job.getQueryResults.called);
+      });
+    });
+
     it('should require a job ID', function () {
       var example = getSample();
-      example.program.asyncPoll(null, function (err, job) {
+      example.program.asyncPoll(null, function (err, rows) {
         assert.deepEqual(err, Error('"jobId" is required!'));
-        assert.equal(job, undefined);
+        assert.equal(rows, undefined);
       });
     });
 
@@ -189,9 +243,9 @@ describe('bigquery:query', function () {
       var error = Error('asyncPollError');
       var example = getSample();
       example.mocks.job.getQueryResults = sinon.stub().callsArgWith(0, error);
-      example.program.asyncPoll(example.jobId, function (err, job) {
+      example.program.asyncPoll(example.jobId, function (err, rows) {
         assert.deepEqual(err, error);
-        assert.equal(job, undefined);
+        assert.equal(rows, undefined);
       });
     });
   });
@@ -208,7 +262,7 @@ describe('bigquery:query', function () {
       assert(console.log.calledWith('\nExamples:\n'));
       assert(console.log.calledWith('\tnode query sync-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
       assert(console.log.calledWith('\tnode query async-query "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
-      assert(console.log.calledWith('\tnode query poll 12345"'));
+      assert(console.log.calledWith('\tnode query poll 12345'));
     });
   });
 });

@@ -17,7 +17,9 @@
  *
  * This sample is used on this page:
  *
- *   https://cloud.google.com/bigquery/querying-data#syncqueries
+ *   https://cloud.google.com/bigquery/querying-data
+ *
+ * For more information, see the README.md under /bigquery.
  */
 
 'use strict';

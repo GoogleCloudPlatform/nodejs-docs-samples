@@ -31,15 +31,13 @@ function getSample () {
     getBuckets: sinon.stub().callsArgWith(0, null, bucketsMock, null, bucketsMock),
     bucket: sinon.stub().returns(bucketMock)
   };
-  var gcloudMock = {
-    storage: sinon.stub().returns(storageMock)
-  };
+  var StorageMock = sinon.stub().returns(storageMock);
   return {
     sample: proxyquire('../buckets', {
-      gcloud: gcloudMock
+      '@google-cloud/storage': StorageMock
     }),
     mocks: {
-      gcloud: gcloudMock,
+      Storage: StorageMock,
       storage: storageMock,
       buckets: bucketsMock,
       bucket: bucketMock

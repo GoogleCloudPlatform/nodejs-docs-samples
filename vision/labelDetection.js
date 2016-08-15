@@ -15,17 +15,17 @@
 
 // [START app]
 // [START import_libraries]
-var gcloud = require('gcloud');
+var Vision = require('@google-cloud/vision');
 // [END import_libraries]
 
 // [START authenticate]
-// By default, gcloud will authenticate using the service account file specified
-// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
-// project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 
-// Get a reference to the vision component
-var vision = gcloud.vision();
+// Instantiate a vision client
+var vision = Vision();
 // [END authenticate]
 
 /**

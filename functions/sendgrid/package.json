@@ -9,12 +9,12 @@
     "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "async": "^1.5.2",
-    "gcloud": "^0.37.0",
+    "async": "^2.0.1",
+    "google-cloud": "^0.38.3",
     "node-uuid": "^1.4.7",
     "sendgrid": "^3.0.5"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.0.2"
   }
 }

@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@google-cloud/bigquery": "^0.1.1",
-    "async": "^1.5.2",
-    "gcloud": "^0.37.0",
+    "@google-cloud/resource": "^0.1.1",
+    "async": "^2.0.1",
     "request": "^2.72.0"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.0.2"
   }
 }

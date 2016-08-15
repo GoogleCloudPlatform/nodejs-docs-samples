@@ -22,15 +22,13 @@ function getSample () {
   var pubsub = {
     topic: sinon.stub().returns(topic)
   };
-  var gcloud = {
-    pubsub: sinon.stub().returns(pubsub)
-  };
+  var PubSubMock = sinon.stub().returns(pubsub);
   return {
     sample: proxyquire('../', {
-      gcloud: gcloud
+      '@google-cloud/pubsub': PubSubMock
     }),
     mocks: {
-      gcloud: gcloud,
+      PubSub: PubSubMock,
       pubsub: pubsub,
       topic: topic
     }

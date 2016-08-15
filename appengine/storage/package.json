@@ -5,10 +5,10 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "@google-cloud/storage": "^0.1.1",
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
-    "gcloud": "^0.37.0",
     "jade": "^1.11.0",
-    "multer": "^1.1.0"
+    "multer": "^1.2.0"
   }
 }

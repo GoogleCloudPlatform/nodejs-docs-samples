@@ -15,9 +15,9 @@
 
 var fs = require('fs');
 var path = require('path');
-var gcloud = require('gcloud');
+var Storage = require('@google-cloud/storage');
 var uuid = require('node-uuid');
-var storage = gcloud.storage();
+var storage = Storage();
 var program = require('../encryption');
 
 var bucketName = 'nodejs-docs-samples-test-' + uuid.v4();

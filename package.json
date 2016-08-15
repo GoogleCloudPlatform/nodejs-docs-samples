@@ -49,7 +49,7 @@
   },
   "scripts": {
     "lint": "semistandard",
-    "pretest": "npm run lint && ./scripts/geddy && ./scripts/clean",
+    "pretest": "npm run lint && ./scripts/clean",
     "mocha": "mocha -R spec -t 120000 --require intelli-espower-loader ./test/_setup.js '{*,appengine/*,functions/*}/test/*.test.js'",
     "test": "npm run mocha",
     "cover": "nyc --cache npm test && nyc report --reporter=html && nyc report --reporter=lcov",

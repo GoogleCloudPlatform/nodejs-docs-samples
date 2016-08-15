@@ -34,15 +34,13 @@ function getSample () {
   var storageMock = {
     bucket: sinon.stub().returns(bucketMock)
   };
-  var gcloudMock = {
-    storage: sinon.stub().returns(storageMock)
-  };
+  var StorageMock = sinon.stub().returns(storageMock);
   return {
     program: proxyquire('../encryption', {
-      gcloud: gcloudMock
+      '@google-cloud/storage': StorageMock
     }),
     mocks: {
-      gcloud: gcloudMock,
+      Storage: StorageMock,
       storage: storageMock,
       files: filesMock,
       bucket: bucketMock,

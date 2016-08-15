@@ -39,9 +39,7 @@ function getSample () {
         auth: auth,
         monitoring: sinon.stub().returns(monitoring)
       },
-      gcloud: {
-        logging: sinon.stub().returns(logging)
-      }
+      '@google-cloud/logging': sinon.stub().returns(logging)
     }),
     mocks: {
       auth: auth,

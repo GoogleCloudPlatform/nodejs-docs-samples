@@ -23,11 +23,16 @@
 
 // [START all]
 // [START auth]
-// By default, gcloud will authenticate using the service account file specified
-// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
-// project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
-var gcloud = require('gcloud');
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+var BigQuery = require('@google-cloud/bigquery');
+
+var Resource = require('@google-cloud/resource');
+
+// Instantiate a resource client
+var resource = Resource();
 // [END auth]
 
 // [START list_tables]
@@ -41,7 +46,9 @@ function listDatasets (projectId, callback) {
   if (!projectId) {
     return callback(new Error('projectId is required!'));
   }
-  var bigquery = gcloud.bigquery({
+
+  // Instantiate a bigquery client
+  var bigquery = BigQuery({
     projectId: projectId
   });
 
@@ -63,8 +70,6 @@ function listDatasets (projectId, callback) {
  * @param {Function} callback Callback function.
  */
 function listProjects (callback) {
-  var resource = gcloud.resource();
-
   resource.getProjects(function (err, projects) {
     if (err) {
       return callback(err);

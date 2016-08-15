@@ -28,15 +28,13 @@ function getSample () {
     }),
     save: sinon.stub().callsArg(1)
   };
-  var gcloud = {
-    datastore: sinon.stub().returns(datastore)
-  };
+  var DatastoreMock = sinon.stub().returns(datastore);
   return {
     sample: proxyquire('../', {
-      gcloud: gcloud
+      '@google-cloud/datastore': DatastoreMock
     }),
     mocks: {
-      gcloud: gcloud,
+      Datastore: DatastoreMock,
       datastore: datastore
     }
   };

@@ -13,10 +13,10 @@
     "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "express": "^4.13.4",
-    "gcloud": "^0.37.0"
+    "@google-cloud/datastore": "^0.1.1",
+    "express": "^4.13.4"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.0.2"
   }
 }

@@ -13,7 +13,8 @@
 
 'use strict';
 
-var gcloud = require('gcloud');
+var Storage = require('@google-cloud/storage');
+
 var readline = require('readline');
 
 function getFileStream (bucketName, fileName) {
@@ -26,9 +27,9 @@ function getFileStream (bucketName, fileName) {
       '"file" property in your request');
   }
 
-  // Create a gcs client.
-  var gcs = gcloud.storage();
-  var bucket = gcs.bucket(bucketName);
+  // Instantiate a storage client
+  var storage = Storage();
+  var bucket = storage.bucket(bucketName);
   return bucket.file(fileName).createReadStream();
 }
 

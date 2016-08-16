@@ -1053,7 +1053,7 @@ function transferFunds (fromKey, toKey, amount, callback) {
     ], function (err, accounts) {
       if (err) {
         return transaction.rollback(function (_err) {
-          return callback(err || _err);
+          return callback(_err || err);
         });
       }
 
@@ -1223,7 +1223,7 @@ Transaction.prototype.testTransactionalGetOrCreate = function (callback) {
         if (err) {
           // An error occurred while getting the values.
           return transaction.rollback(function (_err) {
-            return callback(err || _err);
+            return callback(_err || err);
           });
         }
 
@@ -1310,7 +1310,7 @@ Transaction.prototype.testSingleEntityGroupReadOnly = function (callback) {
       datastore.get(taskListKey, function (err) {
         if (err) {
           return transaction.rollback(function (_err) {
-            return callback(err || _err);
+            return callback(_err || err);
           });
         }
 
@@ -1321,7 +1321,7 @@ Transaction.prototype.testSingleEntityGroupReadOnly = function (callback) {
           if (err) {
             // An error occurred while running the query.
             return transaction.rollback(function (_err) {
-              return callback(err || _err);
+              return callback(_err || err);
             });
           }
 

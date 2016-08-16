@@ -16,21 +16,21 @@
 var proxyquire = require('proxyquire').noCallThru();
 
 function getSample () {
-  var topic = {
+  var topicMock = {
     publish: sinon.stub().callsArg(1)
   };
-  var pubsub = {
-    topic: sinon.stub().returns(topic)
+  var pubsubMock = {
+    topic: sinon.stub().returns(topicMock)
   };
-  var PubSubMock = sinon.stub().returns(pubsub);
+  var PubSubMock = sinon.stub().returns(pubsubMock);
   return {
     sample: proxyquire('../', {
       '@google-cloud/pubsub': PubSubMock
     }),
     mocks: {
       PubSub: PubSubMock,
-      pubsub: pubsub,
-      topic: topic
+      pubsub: pubsubMock,
+      topic: topicMock
     }
   };
 }

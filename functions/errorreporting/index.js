@@ -14,10 +14,10 @@
 'use strict';
 
 // [START setup]
-var gcloud = require('gcloud');
+var Logging = require('@google-cloud/logging');
 
-// Get a reference to the StackDriver Logging component
-var logging = gcloud.logging();
+// Instantiate a logging client
+var logging = Logging();
 // [END setup]
 
 // [START reportDetailedError]

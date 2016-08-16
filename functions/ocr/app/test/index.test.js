@@ -53,7 +53,7 @@ function getSample () {
   var translate = {
     detect: sinon.stub().callsArg(1)
   };
-  var gcloud = {
+  var gcloudMock = {
     pubsub: sinon.stub().returns(pubsub),
     storage: sinon.stub().returns(storage),
     vision: sinon.stub().returns(vision),
@@ -61,11 +61,11 @@ function getSample () {
   };
   return {
     sample: proxyquire('../', {
-      gcloud: gcloud,
+      'google-cloud': gcloudMock,
       './config.json': config
     }),
     mocks: {
-      gcloud: gcloud,
+      gcloud: gcloudMock,
       pubsub: pubsub,
       storage: storage,
       bucket: bucket,

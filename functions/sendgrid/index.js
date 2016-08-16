@@ -17,7 +17,7 @@
 var async = require('async');
 var sendgrid = require('sendgrid');
 var config = require('./config.json');
-var gcloud = require('gcloud');
+var gcloud = require('google-cloud');
 var uuid = require('node-uuid');
 
 // Get a reference to the Cloud Storage component

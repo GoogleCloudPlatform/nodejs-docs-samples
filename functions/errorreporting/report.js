@@ -13,8 +13,10 @@
 
 'use strict';
 
-var gcloud = require('gcloud');
-var logging = gcloud.logging();
+var Logging = require('@google-cloud/logging');
+
+// Instantiate a logging client
+var logging = Logging();
 
 // [START helloHttpError]
 /**

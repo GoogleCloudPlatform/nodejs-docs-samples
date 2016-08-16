@@ -16,14 +16,14 @@
 
 var request = require('request');
 
-// By default, gcloud will authenticate using the service account file specified
-// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
-// project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
-var gcloud = require('gcloud');
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+var BigQuery = require('@google-cloud/bigquery');
 
-// Get a reference to the bigquery component
-var bigquery = gcloud.bigquery();
+// Instantiate a bigquery client
+var bigquery = BigQuery();
 
 /**
  * Wait for the provided job to complete.

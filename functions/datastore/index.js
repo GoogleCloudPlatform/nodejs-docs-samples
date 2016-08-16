@@ -13,10 +13,10 @@
 
 'use strict';
 
-var gcloud = require('gcloud');
+var Datastore = require('@google-cloud/datastore');
 
-// Create a datastore client.
-var datastore = gcloud.datastore();
+// Instantiate a datastore client
+var datastore = Datastore();
 
 /**
  * Gets a Datastore key from the kind/key pair in the request.

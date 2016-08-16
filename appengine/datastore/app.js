@@ -17,17 +17,20 @@
 
 // [START setup]
 var express = require('express');
-var gcloud = require('gcloud');
 var crypto = require('crypto');
 
 var app = express();
 app.enable('trust proxy');
 
-var dataset = gcloud.datastore({
-  // This environment variable is set by app.yaml when running on GAE, but will
-  // need to be manually set when running locally.
-  projectId: process.env.GCLOUD_PROJECT
-});
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+// These environment variables are set automatically on Google App Engine
+var Datastore = require('@google-cloud/datastore');
+
+// Instantiate a datastore client
+var datastore = Datastore();
 // [END setup]
 
 // [START insertVisit]
@@ -38,8 +41,8 @@ var dataset = gcloud.datastore({
  * @param {function} callback The callback function.
  */
 function insertVisit (visit, callback) {
-  dataset.save({
-    key: dataset.key('visit'),
+  datastore.save({
+    key: datastore.key('visit'),
     data: visit
   }, function (err) {
     if (err) {
@@ -57,11 +60,11 @@ function insertVisit (visit, callback) {
  * @param {function} callback The callback function.
  */
 function getVisits (callback) {
-  var query = dataset.createQuery('visit')
+  var query = datastore.createQuery('visit')
     .order('-timestamp')
     .limit(10);
 
-  dataset.runQuery(query, function (err, entities) {
+  datastore.runQuery(query, function (err, entities) {
     if (err) {
       return callback(err);
     }

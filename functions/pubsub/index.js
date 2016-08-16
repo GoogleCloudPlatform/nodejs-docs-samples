@@ -13,10 +13,10 @@
 
 'use strict';
 
-var gcloud = require('gcloud');
+var PubSub = require('@google-cloud/pubsub');
 
-// Create a pubsub client.
-var pubsub = gcloud.pubsub();
+// Instantiate a pubsub client
+var pubsub = PubSub();
 
 /**
  * Publishes a message to a Cloud Pub/Sub Topic.

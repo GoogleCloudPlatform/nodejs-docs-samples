@@ -22,12 +22,14 @@ exports.helloWorld = function helloWorld (context, data) {
 
 exports.retrieve = function retrieve () {
   // [START retrieve]
-  // By default, gcloud will authenticate using the service account file specified
-  // by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
-  // project specified by the GCLOUD_PROJECT environment variable. See
-  // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
-  var gcloud = require('gcloud');
-  var logging = gcloud.logging();
+  // By default, the client will authenticate using the service account file
+  // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+  // the project specified by the GCLOUD_PROJECT environment variable. See
+  // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+  var Logging = require('@google-cloud/logging');
+
+  // Instantiate a logging client
+  var logging = Logging();
 
   // Retrieve the latest Cloud Function log entries
   // See https://googlecloudplatform.github.io/gcloud-node/#/docs/logging

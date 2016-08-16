@@ -17,7 +17,16 @@
 
 var express = require('express');
 var bodyParser = require('body-parser');
-var gcloud = require('gcloud');
+
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+// These environment variables are set automatically on Google App Engine
+var PubSub = require('@google-cloud/pubsub');
+
+// Instantiate a pubsub client
+var pubsub = PubSub();
 
 var app = express();
 app.set('view engine', 'jade');
@@ -31,10 +40,6 @@ var messages = [];
 // The following environment variables are set by app.yaml when running on GAE,
 // but will need to be manually set when running locally.
 var PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
-
-var pubsub = gcloud.pubsub({
-  projectId: process.env.GCLOUD_PROJECT
-});
 
 var topic = pubsub.topic(process.env.PUBSUB_TOPIC);
 

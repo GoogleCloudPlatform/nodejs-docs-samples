@@ -32,16 +32,16 @@ function getSample () {
   var resourceMock = {
     getProjects: sinon.stub().callsArgWith(0, null, projectsMock)
   };
-  var gcloudMock = {
-    bigquery: sinon.stub().returns(bigqueryMock),
-    resource: sinon.stub().returns(resourceMock)
-  };
+  var BigQueryMock = sinon.stub().returns(bigqueryMock);
+  var ResourceMock = sinon.stub().returns(resourceMock);
   return {
     program: proxyquire('../list_datasets_and_projects', {
-      gcloud: gcloudMock
+      '@google-cloud/bigquery': BigQueryMock,
+      '@google-cloud/resource': ResourceMock
     }),
     mocks: {
-      gcloud: gcloudMock,
+      BigQuery: BigQueryMock,
+      Resource: ResourceMock,
       bigquery: bigqueryMock,
       resource: resourceMock,
       datasets: datasetsMock,

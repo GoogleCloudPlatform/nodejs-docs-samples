@@ -56,12 +56,10 @@ function getSample () {
     runQuery: sinon.stub().callsArgWith(1, null, resultsMock),
     key: sinon.stub().returns({})
   };
-  var gcloudMock = {
-    datastore: sinon.stub().returns(datasetMock)
-  };
+  var DatastoreMock = sinon.stub().returns(datasetMock);
 
   var app = proxyquire(SAMPLE_PATH, {
-    gcloud: gcloudMock,
+    '@google-cloud/datastore': DatastoreMock,
     express: expressMock
   });
   return {
@@ -71,7 +69,7 @@ function getSample () {
       express: expressMock,
       results: resultsMock,
       dataset: datasetMock,
-      gcloud: gcloudMock
+      Datastore: DatastoreMock
     }
   };
 }
@@ -83,10 +81,7 @@ describe('appengine/datastore/app.js', function () {
     sample = getSample();
 
     assert(sample.mocks.express.calledOnce);
-    assert(sample.mocks.gcloud.datastore.calledOnce);
-    assert.deepEqual(sample.mocks.gcloud.datastore.firstCall.args[0], {
-      projectId: process.env.GCLOUD_PROJECT
-    });
+    assert(sample.mocks.Datastore.calledOnce);
     assert(sample.app.listen.calledOnce);
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });

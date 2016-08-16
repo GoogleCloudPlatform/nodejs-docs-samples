@@ -17,7 +17,16 @@
 
 var format = require('util').format;
 var express = require('express');
-var gcloud = require('gcloud');
+
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+// These environment variables are set automatically on Google App Engine
+var Storage = require('@google-cloud/storage');
+
+// Instantiate a storage client
+var storage = Storage();
 
 var app = express();
 app.set('view engine', 'jade');
@@ -28,13 +37,6 @@ app.set('view engine', 'jade');
 var multer = require('multer')({
   inMemory: true,
   fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
-});
-
-// The following environment variables are set by app.yaml when running on GAE,
-// but will need to be manually set when running locally.
-// The storage client is used to communicate with Google Cloud Storage
-var storage = gcloud.storage({
-  projectId: process.env.GCLOUD_PROJECT
 });
 
 // A bucket is a container for objects (files).

@@ -16,7 +16,7 @@
 // [START ocr_setup]
 var async = require('async');
 var config = require('./config.json');
-var gcloud = require('gcloud');
+var gcloud = require('google-cloud');
 
 // Get a reference to the Pub/Sub component
 var pubsub = gcloud.pubsub();

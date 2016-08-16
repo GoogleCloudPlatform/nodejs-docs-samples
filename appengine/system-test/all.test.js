@@ -93,13 +93,13 @@ var sampleTests = [
     msg: 'Viewed',
     TRAVIS_NODE_VERSION: '0.12'
   },
-  {
-    dir: 'appengine/geddy',
-    cmd: 'node',
-    args: ['node_modules/geddy/bin/cli.js'],
-    msg: 'Hello, World! Geddy.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: '5'
-  },
+  // {
+  //   dir: 'appengine/geddy',
+  //   cmd: 'node',
+  //   args: ['node_modules/geddy/bin/cli.js'],
+  //   msg: 'Hello, World! Geddy.js on Google App Engine.',
+  //   TRAVIS_NODE_VERSION: '5'
+  // },
   {
     dir: 'appengine/grunt',
     deploy: true,

@@ -24,7 +24,7 @@ describe('storage:buckets', function () {
         assert.ifError(err);
         assert.equal(bucket.name, bucketName);
         assert(console.log.calledWith('Created bucket: %s', bucketName));
-        done();
+        setTimeout(done, 2000);
       });
     });
   });
@@ -35,7 +35,7 @@ describe('storage:buckets', function () {
         assert(Array.isArray(buckets));
         assert(buckets.length > 0);
         assert(console.log.calledWith('Found %d buckets!', buckets.length));
-        done();
+        setTimeout(done, 2000);
       });
     });
   });

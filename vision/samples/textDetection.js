@@ -19,15 +19,16 @@ var async = require('async');
 var fs = require('fs');
 var path = require('path');
 
-// By default, gcloud will authenticate using the service account file specified
-// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
-// project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
-var gcloud = require('gcloud');
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+var Vision = require('@google-cloud/vision');
 var natural = require('natural');
 var redis = require('redis');
-// Get a reference to the vision component
-var vision = gcloud.vision();
+
+// Instantiate a vision client
+var vision = Vision();
 // [END import_libraries]
 
 function Index () {

@@ -15,16 +15,16 @@
 'use strict';
 
 // [START auth]
-// By default, gcloud will authenticate using the service account file specified
-// by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
-// project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
-var gcloud = require('gcloud');
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+var Compute = require('@google-cloud/compute');
 // [END auth]
 
 // [START initialize]
-// Get a reference to the compute component
-var compute = gcloud.compute();
+// Instantiate a compute client
+var compute = Compute();
 // [END initialize]
 
 // [START list]

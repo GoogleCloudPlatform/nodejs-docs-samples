@@ -133,8 +133,6 @@ CustomMetrics.prototype.writeTimeSeriesForCustomMetric =
               zone: 'us-central1-f'
             }
           },
-          metricKind: 'GAUGE',
-          valueType: 'INT64',
           points: {
             interval: {
               startTime: now,

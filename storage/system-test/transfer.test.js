@@ -18,10 +18,10 @@ var program = require('../transfer');
 var Storage = require('@google-cloud/storage');
 
 var storage = Storage();
-var bucketName = 'nodejs-docs-samples-test-' + uuid.v4();
-var bucketName2 = 'nodejs-docs-samples-test-' + uuid.v4();
+var firstBucketName = 'nodejs-docs-samples-test-' + uuid.v4();
+var secondBucketName = 'nodejs-docs-samples-test-' + uuid.v4();
 
-describe.only('storage:transfer', function () {
+describe('storage:transfer', function () {
   var jobName;
   var date = '2222/08/11';
   var time = '15:30';
@@ -29,28 +29,28 @@ describe.only('storage:transfer', function () {
   var status = 'DISABLED';
 
   before(function (done) {
-    storage.createBucket(bucketName, function (err) {
+    storage.createBucket(firstBucketName, function (err) {
       if (err) {
         return done(err);
       }
-      storage.createBucket(bucketName2, done);
+      storage.createBucket(secondBucketName, done);
     });
   });
 
   after(function (done) {
-    storage.bucket(bucketName).deleteFiles({ force: true }, function (err) {
+    storage.bucket(firstBucketName).deleteFiles({ force: true }, function (err) {
       if (err) {
         return done(err);
       }
-      storage.bucket(bucketName).delete(function (err) {
+      storage.bucket(firstBucketName).delete(function (err) {
         if (err) {
           return done(err);
         }
-        storage.bucket(bucketName2).deleteFiles({ force: true }, function (err) {
+        storage.bucket(secondBucketName).deleteFiles({ force: true }, function (err) {
           if (err) {
             return done(err);
           }
-          storage.bucket(bucketName2).delete(done);
+          storage.bucket(secondBucketName).delete(done);
         });
       });
     });
@@ -58,7 +58,7 @@ describe.only('storage:transfer', function () {
 
   describe('createTransferJob', function () {
     it('should create a storage transfer job', function (done) {
-      program.createTransferJob(bucketName, bucketName2, date, time, description, function (err, transferJob) {
+      program.createTransferJob(firstBucketName, secondBucketName, date, time, description, function (err, transferJob) {
         assert.ifError(err);
         jobName = transferJob.name;
         assert.equal(transferJob.name.indexOf('transferJobs/'), 0);

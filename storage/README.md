@@ -12,7 +12,9 @@ amount of data at any time.
 * [Setup](#setup)
 * [Samples](#samples)
   * [Buckets](#buckets)
+  * [Encryption](#encryption)
   * [Files](#files)
+  * [Storage Transfer API](#storage-transfer-api)
 
 ## Setup
 
@@ -50,6 +52,33 @@ Examples:
 
 [buckets_docs]: https://cloud.google.com/storage/docs
 [buckets_code]: buckets.js
+
+### Encryption
+
+View the [documentation][encryption_docs] or the [source code][encryption_code].
+
+__Usage:__ `node encryption --help`
+
+```
+Usage: node encryption COMMAND [ARGS...]
+
+Commands:
+
+  generate-encryption-key
+  upload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY
+  download BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY
+  rotate BUCKET_NAME FILE_NAME OLD_KEY NEW_KEY
+
+Examples:
+
+  node encryption generate-encryption-key
+  node encryption upload my-bucket resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=
+  node encryption download my-bucket file_encrypted.txt ./file.txt QxhqaZEqBGVTW55HhQw9Q=
+  node encryption rotate my-bucket file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=
+```
+
+[encryption_docs]: https://cloud.google.com/storage/docs
+[encryption_code]: encryption.js
 
 ### Files
 
@@ -89,29 +118,48 @@ Examples:
 [files_docs]: https://cloud.google.com/storage/docs
 [files_code]: files.js
 
-### Encryption
+### Storage Transfer API
 
-View the [documentation][encryption_docs] or the [source code][encryption_code].
+View the [documentation][storagetransfer_docs] or the [source code][storagetransfer_code].
 
-__Usage:__ `node encryption --help`
+__Usage:__ `node transfer --help`
 
 ```
-Usage: node encryption COMMAND [ARGS...]
+Usage: node encryption RESOURCE COMMAND [ARGS...]
 
-Commands:
+Resources:
 
-  generate-encryption-key
-  upload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY
-  download BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY
-  rotate BUCKET_NAME FILE_NAME OLD_KEY NEW_KEY
+  jobs
+
+      Commands:
+
+        create SRC_BUCKET_NAME DEST_BUCKET_NAME DATE TIME [DESCRIPTION]
+        get JOB_NAME
+        list
+        set JOB_NAME FIELD VALUE
+
+  operations
+
+      Commands:
+
+        list [JOB_NAME]
+        get TRANSFER_NAME
+        pause TRANSFER_NAME
+        resume TRANSFER_NAME
 
 Examples:
 
-  node encryption generate-encryption-key
-  node encryption upload my-bucket resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=
-  node encryption download my-bucket file_encrypted.txt ./file.txt QxhqaZEqBGVTW55HhQw9Q=
-  node encryption rotate my-bucket file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=
+  node transfer jobs create my-bucket my-other-bucket 2016/08/12 16:30 "Move my files"
+  node transfer jobs get transferJobs/123456789012345678
+  node transfer jobs list
+  node transfer jobs set transferJobs/123456789012345678 description "My new description"
+  node transfer jobs set transferJobs/123456789012345678 status DISABLED
+  node transfer operations list
+  node transfer operations list transferJobs/123456789012345678
+  node transfer operations get transferOperations/123456789012345678
+  node transfer operations pause transferOperations/123456789012345678
+  node transfer operations resume transferOperations/123456789012345678
 ```
 
-[encryption_docs]: https://cloud.google.com/storage/docs
-[encryption_code]: encryption.js
+[storagetransfer_docs]: https://cloud.google.com/storage/docs
+[storagetransfer_code]: transfer.js

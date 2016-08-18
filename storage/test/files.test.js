@@ -15,6 +15,7 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 var bucketName = 'foo';
+var fileName = 'test.txt';
 
 function getSample () {
   var filesMock = [
@@ -28,7 +29,8 @@ function getSample () {
     getMetadata: sinon.stub().callsArgWith(0, null, { foo: 'bar' }),
     makePublic: sinon.stub().callsArgWith(0, null),
     delete: sinon.stub().callsArgWith(0, null),
-    move: sinon.stub().callsArgWith(1, null, filesMock[0])
+    move: sinon.stub().callsArgWith(1, null, filesMock[0]),
+    copy: sinon.stub().callsArgWith(1, null, filesMock[0])
   };
   var bucketMock = {
     getFiles: sinon.stub().callsArgWith(0, null, filesMock, null, filesMock),
@@ -40,8 +42,9 @@ function getSample () {
   };
   var StorageMock = sinon.stub().returns(storageMock);
   return {
-    sample: proxyquire('../files', {
-      '@google-cloud/storage': StorageMock
+    program: proxyquire('../files', {
+      '@google-cloud/storage': StorageMock,
+      yargs: proxyquire('yargs', {})
     }),
     mocks: {
       Storage: StorageMock,
@@ -56,425 +59,461 @@ function getSample () {
 describe('storage:files', function () {
   describe('list', function () {
     it('should list files', function () {
-      var filesSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
 
-      filesSample.sample.listFiles(bucketName, function (err, files) {
-        assert.ifError(err);
-        assert.strictEqual(files, filesSample.mocks.files);
-        assert(console.log.calledWith('Found %d files!', filesSample.mocks.files.length));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.listFiles(bucketName, callback);
 
-      filesSample.sample.listFiles(undefined, function (err, files) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(files, undefined);
-      });
+      assert(sample.mocks.bucket.getFiles.calledOnce, 'getFiles called once');
+      assert.equal(sample.mocks.bucket.getFiles.firstCall.args.length, 1, 'getFiles received 1 argument');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files, 'callback received files');
+      assert(console.log.calledWith('Found %d file(s)!', sample.mocks.files.length));
     });
+
     it('should handle error', function () {
-      var error = 'listError';
-      var filesSample = getSample();
-      filesSample.mocks.bucket.getFiles = sinon.stub().callsArgWith(0, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(0, error);
 
-      filesSample.sample.listFiles(bucketName, function (err, files) {
-        assert.equal(err, error);
-        assert.equal(files, undefined);
-      });
+      sample.program.listFiles(bucketName, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
-  describe('listWithPrefix', function () {
+
+  describe('listFilesByPrefix', function () {
     it('should list files with prefix', function () {
-      var filesSample = getSample();
-      filesSample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, null, filesSample.mocks.files);
+      var sample = getSample();
+      var callback = sinon.stub();
+      var prefix = '/a';
+      var options = {
+        bucket: bucketName,
+        prefix: prefix
+      };
+      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, null, sample.mocks.files);
 
-      filesSample.sample.listFilesWithPrefix(bucketName, '/a', undefined, function (err, files) {
-        assert.ifError(err);
-        assert.strictEqual(files, filesSample.mocks.files);
-        assert(console.log.calledWith('Found %d files!', filesSample.mocks.files.length));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.listFilesByPrefix(options, callback);
 
-      filesSample.sample.listFilesWithPrefix(undefined, undefined, undefined, function (err, files) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(files, undefined);
-      });
+      assert(sample.mocks.bucket.getFiles.calledOnce, 'getFiles called once');
+      assert.equal(sample.mocks.bucket.getFiles.firstCall.args.length, 2, 'getFiles received 2 arguments');
+      assert.deepEqual(sample.mocks.bucket.getFiles.firstCall.args[0], {
+        prefix: prefix
+      }, 'getFiles received options');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files, 'callback received files');
+      assert(console.log.calledWith('Found %d file(s)!', sample.mocks.files.length));
     });
-    it('should require prefix', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.listFilesWithPrefix(bucketName, undefined, undefined, function (err, files) {
-        assert(err);
-        assert(err.message = '"prefix" is required!');
-        assert.equal(files, undefined);
-      });
+    it('should list files with prefix and delimiter', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var prefix = '/a';
+      var delimiter = '-';
+      var options = {
+        bucket: bucketName,
+        prefix: prefix,
+        delimiter: delimiter
+      };
+      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, null, sample.mocks.files);
+
+      sample.program.listFilesByPrefix(options, callback);
+
+      assert(sample.mocks.bucket.getFiles.calledOnce, 'getFiles called once');
+      assert.equal(sample.mocks.bucket.getFiles.firstCall.args.length, 2, 'getFiles received 2 arguments');
+      assert.deepEqual(sample.mocks.bucket.getFiles.firstCall.args[0], {
+        prefix: prefix,
+        delimiter: delimiter
+      }, 'getFiles received options');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files, 'callback received files');
+      assert(console.log.calledWith('Found %d file(s)!', sample.mocks.files.length));
     });
+
     it('should handle error', function () {
-      var error = 'listError';
-      var filesSample = getSample();
-      filesSample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var prefix = '/a';
+      var options = {
+        bucket: bucketName,
+        prefix: prefix
+      };
+      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, error);
 
-      filesSample.sample.listFilesWithPrefix(bucketName, '/a', undefined, function (err, files) {
-        assert.equal(err, error);
-        assert.equal(files, undefined);
-      });
+      sample.program.listFilesByPrefix(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
+
   describe('uploadFile', function () {
-    var fileName = 'test.txt';
     it('should upload a file', function () {
-      var filesSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName
+      };
 
-      filesSample.sample.uploadFile(bucketName, fileName, function (err, file) {
-        assert.ifError(err);
-        assert.strictEqual(file, filesSample.mocks.files[0]);
-        assert(console.log.calledWith('Uploaded file: %s', fileName));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.uploadFile(options, callback);
 
-      filesSample.sample.uploadFile(undefined, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(file, undefined);
-      });
+      assert(sample.mocks.bucket.upload.calledOnce, 'upload called once');
+      assert.equal(sample.mocks.bucket.upload.firstCall.args.length, 2, 'upload received 2 arguments');
+      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[0], fileName, 'upload received file name');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
+      assert(console.log.calledWith('Uploaded gs://%s/%s', options.bucket, options.srcFile));
     });
-    it('should require fileName', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.uploadFile(bucketName, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"fileName" is required!');
-        assert.equal(file, undefined);
-      });
-    });
     it('should handle error', function () {
-      var error = 'uploadError';
-      var filesSample = getSample();
-      filesSample.mocks.bucket.upload = sinon.stub().callsArgWith(1, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName
+      };
+      sample.mocks.bucket.upload = sinon.stub().callsArgWith(1, error);
 
-      filesSample.sample.uploadFile(bucketName, fileName, function (err, file) {
-        assert.equal(err, error);
-        assert.equal(file, undefined);
-      });
+      sample.program.uploadFile(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
+
   describe('downloadFile', function () {
-    var fileName = 'test.txt';
     it('should download a file', function () {
-      var filesSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName
+      };
 
-      filesSample.sample.downloadFile(bucketName, fileName, fileName, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Downloaded %s to %s', fileName, fileName));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.downloadFile(options, callback);
 
-      filesSample.sample.downloadFile(undefined, undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-      });
+      assert(sample.mocks.file.download.calledOnce, 'download called once');
+      assert.equal(sample.mocks.file.download.firstCall.args.length, 2, 'download received 2 arguments');
+      assert.deepEqual(sample.mocks.file.download.firstCall.args[0], {
+        destination: options.destFile
+      }, 'download received file name');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert(console.log.calledWith('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile));
     });
-    it('should require srcFileName', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.downloadFile(bucketName, undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"srcFileName" is required!');
-      });
-    });
-    it('should require destFileName', function () {
-      var filesSample = getSample();
-
-      filesSample.sample.downloadFile(bucketName, fileName, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"destFileName" is required!');
-      });
-    });
     it('should handle error', function () {
-      var error = 'downloadError';
-      var filesSample = getSample();
-      filesSample.mocks.file.download = sinon.stub().callsArgWith(1, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName
+      };
+      sample.mocks.file.download = sinon.stub().callsArgWith(1, error);
 
-      filesSample.sample.downloadFile(bucketName, fileName, fileName, function (err) {
-        assert.equal(err, error);
-      });
+      sample.program.downloadFile(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
+
   describe('deleteFile', function () {
-    var fileName = 'test.txt';
     it('should delete a file', function () {
-      var filesSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        file: fileName
+      };
 
-      filesSample.sample.deleteFile(bucketName, fileName, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Deleted file: %s', fileName));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.deleteFile(options, callback);
 
-      filesSample.sample.deleteFile(undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-      });
+      assert(sample.mocks.file.delete.calledOnce, 'delete called once');
+      assert.equal(sample.mocks.file.delete.firstCall.args.length, 1, 'delete received 1 argument');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert(console.log.calledWith('Deleted gs://%s/%s', options.bucket, options.file));
     });
-    it('should require fileName', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.deleteFile(bucketName, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"fileName" is required!');
-      });
-    });
     it('should handle error', function () {
-      var error = 'deleteError';
-      var filesSample = getSample();
-      filesSample.mocks.file.delete = sinon.stub().callsArgWith(0, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        file: fileName
+      };
+      sample.mocks.file.delete = sinon.stub().callsArgWith(0, error);
 
-      filesSample.sample.deleteFile(bucketName, fileName, function (err) {
-        assert.equal(err, error);
-      });
+      sample.program.deleteFile(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
+
   describe('getMetadata', function () {
-    var fileName = 'test.txt';
     it('should get metadata for a file', function () {
-      var filesSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        file: fileName
+      };
 
-      filesSample.sample.getMetadata(bucketName, fileName, function (err, metadata) {
-        assert.ifError(err);
-        assert.deepEqual(metadata, { foo: 'bar' });
-        assert(console.log.calledWith('Got metadata for file: %s', fileName));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.getMetadata(options, callback);
 
-      filesSample.sample.getMetadata(undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-      });
+      assert(sample.mocks.file.getMetadata.calledOnce, 'getMetadata called once');
+      assert.equal(sample.mocks.file.getMetadata.firstCall.args.length, 1, 'getMetadata received 1 argument');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.deepEqual(callback.firstCall.args[1], { foo: 'bar' }, 'callback received metadata');
+      assert(console.log.calledWith('Got metadata for gs://%s/%s', options.bucket, options.file));
     });
-    it('should require fileName', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.getMetadata(bucketName, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"fileName" is required!');
-      });
-    });
     it('should handle error', function () {
-      var error = 'getMetadataError';
-      var filesSample = getSample();
-      filesSample.mocks.file.getMetadata = sinon.stub().callsArgWith(0, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        file: fileName
+      };
+      sample.mocks.file.getMetadata = sinon.stub().callsArgWith(0, error);
 
-      filesSample.sample.getMetadata(bucketName, fileName, function (err) {
-        assert.equal(err, error);
-      });
+      sample.program.getMetadata(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
+
   describe('makePublic', function () {
-    var fileName = 'test.txt';
     it('should make a file public', function () {
-      var filesSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        file: fileName
+      };
 
-      filesSample.sample.makePublic(bucketName, fileName, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Made %s public!', fileName));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.makePublic(options, callback);
 
-      filesSample.sample.makePublic(undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-      });
+      assert(sample.mocks.file.makePublic.calledOnce, 'makePublic called once');
+      assert.equal(sample.mocks.file.makePublic.firstCall.args.length, 1, 'makePublic received 1 argument');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert(console.log.calledWith('Made gs://%s/%s public!', options.bucket, options.file));
     });
-    it('should require fileName', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.makePublic(bucketName, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"fileName" is required!');
-      });
-    });
     it('should handle error', function () {
-      var error = 'makePublicError';
-      var filesSample = getSample();
-      filesSample.mocks.file.makePublic = sinon.stub().callsArgWith(0, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        file: fileName
+      };
+      sample.mocks.file.makePublic = sinon.stub().callsArgWith(0, error);
 
-      filesSample.sample.makePublic(bucketName, fileName, function (err) {
-        assert.equal(err, error);
-      });
+      sample.program.makePublic(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
+
   describe('moveFile', function () {
-    var fileName = 'test.txt';
-    it('should move a file', function () {
-      var filesSample = getSample();
+    it('should rename a file', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName
+      };
 
-      filesSample.sample.moveFile(bucketName, fileName, fileName, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('%s moved to %s', fileName, fileName));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.moveFile(options, callback);
 
-      filesSample.sample.moveFile(undefined, undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-      });
+      assert(sample.mocks.file.move.calledOnce, 'move called once');
+      assert.equal(sample.mocks.file.move.firstCall.args.length, 2, 'move received 2 arguments');
+      assert.deepEqual(sample.mocks.file.move.firstCall.args[0], options.destFile, 'move received options');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
+      assert(console.log.calledWith('Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile));
     });
-    it('should require srcFileName', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.moveFile(bucketName, undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"srcFileName" is required!');
-      });
-    });
-    it('should require destFileName', function () {
-      var filesSample = getSample();
-
-      filesSample.sample.moveFile(bucketName, fileName, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"destFileName" is required!');
-      });
-    });
     it('should handle error', function () {
-      var error = 'moveFileError';
-      var filesSample = getSample();
-      filesSample.mocks.file.move = sinon.stub().callsArgWith(1, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName
+      };
+      sample.mocks.file.move = sinon.stub().callsArgWith(1, error);
 
-      filesSample.sample.moveFile(bucketName, fileName, fileName, function (err) {
-        assert.equal(err, error);
-      });
+      sample.program.moveFile(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
+
   describe('copyFile', function () {
-    var fileName = 'test.txt';
     it('should copy a file', function () {
-      var filesSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        srcBucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        destBucket: bucketName
+      };
 
-      filesSample.sample.copyFile(bucketName, fileName, bucketName, fileName, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('%s moved to %s in %s', fileName, fileName, bucketName));
-      });
-    });
-    it('should require name', function () {
-      var filesSample = getSample();
+      sample.program.copyFile(options, callback);
 
-      filesSample.sample.copyFile(undefined, undefined, undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-      });
+      assert(sample.mocks.file.copy.calledOnce, 'copy called once');
+      assert.equal(sample.mocks.file.copy.firstCall.args.length, 2, 'copy received 2 arguments');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
+      assert(console.log.calledWith('Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile));
     });
-    it('should require srcFileName', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.copyFile(bucketName, undefined, undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"srcFileName" is required!');
-      });
-    });
-    it('should require destBucketName', function () {
-      var filesSample = getSample();
-
-      filesSample.sample.copyFile(bucketName, fileName, undefined, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"destBucketName" is required!');
-      });
-    });
-    it('should require destFileName', function () {
-      var filesSample = getSample();
-
-      filesSample.sample.copyFile(bucketName, fileName, bucketName, undefined, function (err) {
-        assert(err);
-        assert(err.message = '"destFileName" is required!');
-      });
-    });
     it('should handle error', function () {
-      var error = 'copyFileError';
-      var filesSample = getSample();
-      filesSample.mocks.file.move = sinon.stub().callsArgWith(1, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        srcBucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        destBucket: bucketName
+      };
+      sample.mocks.file.copy = sinon.stub().callsArgWith(1, error);
 
-      filesSample.sample.copyFile(bucketName, fileName, bucketName, fileName, function (err) {
-        assert.equal(err, error);
-      });
+      sample.program.copyFile(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
-  describe('printUsage', function () {
-    it('should print usage', function () {
-      var filesSample = getSample();
 
-      filesSample.sample.printUsage();
-
-      assert(console.log.calledWith('Usage: node files COMMAND [ARGS...]'));
-      assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tlist BUCKET_NAME'));
-      assert(console.log.calledWith('\tlistByPrefix BUCKET_NAME PREFIX [DELIMITER]'));
-      assert(console.log.calledWith('\tupload BUCKET_NAME FILE_NAME'));
-      assert(console.log.calledWith('\tdownload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME'));
-      assert(console.log.calledWith('\tdelete BUCKET_NAME FILE_NAME'));
-      assert(console.log.calledWith('\tgetMetadata BUCKET_NAME FILE_NAME'));
-      assert(console.log.calledWith('\tmakePublic BUCKET_NAME FILE_NAME'));
-      assert(console.log.calledWith('\tmove BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME'));
-      assert(console.log.calledWith('\tcopy BUCKET_NAME SRC_FILE_NAME DEST_BUCKET_NAME DEST_FILE_NAME'));
-    });
-  });
   describe('main', function () {
-    it('should call the right commands', function () {
-      var program = getSample().sample;
+    it('should call listFiles', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'listFiles');
-      program.main(['list']);
+      program.main(['list', bucketName]);
       assert(program.listFiles.calledOnce);
+    });
 
-      sinon.stub(program, 'listFilesWithPrefix');
-      program.main(['listByPrefix']);
-      assert(program.listFilesWithPrefix.calledOnce);
+    it('should call listFilesByPrefix', function () {
+      var program = getSample().program;
+
+      sinon.stub(program, 'listFilesByPrefix');
+      program.main(['list', bucketName, '-p', 'public/']);
+      assert(program.listFilesByPrefix.calledOnce);
+    });
+
+    it('should call uploadFile', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'uploadFile');
-      program.main(['upload']);
+      program.main(['upload', bucketName, fileName]);
       assert(program.uploadFile.calledOnce);
+    });
+
+    it('should call downloadFile', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'downloadFile');
-      program.main(['download']);
+      program.main(['download', bucketName, fileName, fileName]);
       assert(program.downloadFile.calledOnce);
+    });
+
+    it('should call deleteFile', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'deleteFile');
-      program.main(['delete']);
+      program.main(['delete', bucketName, fileName]);
       assert(program.deleteFile.calledOnce);
+    });
+
+    it('should call getMetadata', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'getMetadata');
-      program.main(['getMetadata']);
+      program.main(['getMetadata', bucketName, fileName]);
       assert(program.getMetadata.calledOnce);
+    });
+
+    it('should call makePublic', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'makePublic');
-      program.main(['makePublic']);
+      program.main(['makePublic', bucketName, fileName]);
       assert(program.makePublic.calledOnce);
+    });
+
+    it('should call moveFile', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'moveFile');
-      program.main(['move']);
+      program.main(['move', bucketName, fileName, fileName]);
       assert(program.moveFile.calledOnce);
+    });
+
+    it('should call copyFile', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'copyFile');
-      program.main(['copy']);
+      program.main(['copy', bucketName, fileName, bucketName, fileName]);
       assert(program.copyFile.calledOnce);
-
-      sinon.stub(program, 'printUsage');
-      program.main(['--help']);
-      assert(program.printUsage.calledOnce);
     });
   });
 });

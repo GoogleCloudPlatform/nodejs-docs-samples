@@ -14,13 +14,13 @@
 'use strict';
 
 var uuid = require('node-uuid');
-var bucketsExample = require('../buckets');
+var program = require('../buckets');
 var bucketName = 'nodejs-docs-samples-test-' + uuid.v4();
 
 describe('storage:buckets', function () {
   describe('create', function () {
     it('should create a bucket', function (done) {
-      bucketsExample.createBucket(bucketName, function (err, bucket) {
+      program.createBucket(bucketName, function (err, bucket) {
         assert.ifError(err);
         assert.equal(bucket.name, bucketName);
         assert(console.log.calledWith('Created bucket: %s', bucketName));
@@ -28,20 +28,22 @@ describe('storage:buckets', function () {
       });
     });
   });
+
   describe('list', function () {
     it('should list buckets', function (done) {
-      bucketsExample.listBuckets(function (err, buckets) {
+      program.listBuckets(function (err, buckets) {
         assert.ifError(err);
         assert(Array.isArray(buckets));
         assert(buckets.length > 0);
-        assert(console.log.calledWith('Found %d buckets!', buckets.length));
+        assert(console.log.calledWith('Found %d bucket(s)!', buckets.length));
         setTimeout(done, 2000);
       });
     });
   });
+
   describe('delete', function () {
     it('should delete a bucket', function (done) {
-      bucketsExample.deleteBucket(bucketName, function (err, apiResponse) {
+      program.deleteBucket(bucketName, function (err, apiResponse) {
         assert.ifError(err);
         assert(console.log.calledWith('Deleted bucket: %s', bucketName));
         done();

@@ -25,7 +25,7 @@ var Storage = require('@google-cloud/storage');
 var storage = Storage();
 // [END setup]
 
-// [START list]
+// [START list_files]
 /**
  * Lists files in a bucket.
  *
@@ -33,24 +33,20 @@ var storage = Storage();
  * @param {function} cb The callback function.
  */
 function listFiles (name, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  }
-
   var bucket = storage.bucket(name);
 
-  bucket.getFiles(function (err, files, apiResponse) {
+  bucket.getFiles(function (err, files) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Found %d files!', files.length);
+    console.log('Found %d file(s)!', files.length);
     return callback(null, files);
   });
 }
-// [END list]
+// [END list_files]
 
-// [START listPrefix]
+// [START list_files_with_prefix]
 /**
  * Lists files in a bucket that match a certain prefix.
  *
@@ -72,287 +68,212 @@ function listFiles (name, callback) {
  *
  *   /a/1.txt
  *
- * @param {string} name The name of the bucket.
- * @param {string} prefix Filter results to objects whose names begin with this prefix.
- * @param {string} [delimiter] Results will contain only objects whose names, aside from the prefix, do not contain delimiter.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The name of the bucket.
+ * @param {string} options.prefix Filter results to objects whose names begin
+ *     with this prefix.
+ * @param {string} [options.delimiter] Optional. Results will contain only
+ *     objects whose names, aside from the prefix, do not contain delimiter.
  * @param {function} cb The callback function.
  */
-function listFilesWithPrefix (name, prefix, delimiter, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!prefix) {
-    return callback(new Error('"prefix" is required!'));
-  }
+function listFilesByPrefix (options, callback) {
+  var bucket = storage.bucket(options.bucket);
 
-  var bucket = storage.bucket(name);
-  var options = {
-    prefix: prefix
+  var config = {
+    prefix: options.prefix
   };
-  if (delimiter && typeof delimiter === 'string') {
-    options.delimiter = delimiter;
+  if (options.delimiter && typeof options.delimiter === 'string') {
+    config.delimiter = options.delimiter;
   }
 
-  bucket.getFiles(options, function (err, files, apiResponse) {
+  bucket.getFiles(config, function (err, files) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Found %d files!', files.length);
+    console.log('Found %d file(s)!', files.length);
     return callback(null, files);
   });
 }
-// [END listPrefix]
+// [END list_files_with_prefix]
 
-// [START upload]
+// [START upload_file]
 /**
  * Upload a file to a bucket.
  *
- * @param {string} name The name of the bucket.
- * @param {string} fileName The name of the file.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The name of the bucket.
+ * @param {string} options.srcFile The name of the file.
  * @param {function} cb The callback function.
  */
-function uploadFile (name, fileName, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!fileName) {
-    return callback(new Error('"fileName" is required!'));
-  }
+function uploadFile (options, callback) {
+  var bucket = storage.bucket(options.bucket);
 
-  var bucket = storage.bucket(name);
-
-  bucket.upload(fileName, function (err, file) {
+  bucket.upload(options.srcFile, function (err, file) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Uploaded file: %s', fileName);
+    console.log('Uploaded gs://%s/%s', options.bucket, options.srcFile);
     return callback(null, file);
   });
 }
-// [END upload]
+// [END upload_file]
 
-// [START download]
+// [START download_file]
 /**
  * Download a file from a bucket.
  *
- * @param {string} name The name of the bucket.
- * @param {string} srcFileName The source file name.
- * @param {string} destFileName The destination file name.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The name of the bucket.
+ * @param {string} options.srcFile The source file name.
+ * @param {string} options.destFile The destination file name.
  * @param {function} cb The callback function.
  */
-function downloadFile (name, srcFileName, destFileName, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!srcFileName) {
-    return callback(new Error('"srcFileName" is required!'));
-  } else if (!destFileName) {
-    return callback(new Error('"destFileName" is required!'));
-  }
+function downloadFile (options, callback) {
+  var file = storage.bucket(options.bucket).file(options.srcFile);
 
-  var bucket = storage.bucket(name);
-  var file = bucket.file(srcFileName);
-  var options = {
-    destination: destFileName
+  var config = {
+    destination: options.destFile
   };
 
-  file.download(options, function (err) {
+  file.download(config, function (err) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Downloaded %s to %s', srcFileName, destFileName);
+    console.log('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile);
     return callback(null);
   });
 }
-// [END download]
+// [END download_file]
 
-// [START delete]
+// [START delete_file]
 /**
  * Delete a file from a bucket.
  *
- * @param {string} name The name of the bucket.
- * @param {string} fileName The file to delete.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The name of the bucket.
+ * @param {string} options.file The name of the file to delete.
  * @param {function} cb The callback function.
  */
-function deleteFile (name, fileName, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!fileName) {
-    return callback(new Error('"fileName" is required!'));
-  }
-
-  var bucket = storage.bucket(name);
-  var file = bucket.file(fileName);
+function deleteFile (options, callback) {
+  var file = storage.bucket(options.bucket).file(options.file);
 
   file.delete(function (err) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Deleted file: %s', fileName);
+    console.log('Deleted gs://%s/%s', options.bucket, options.file);
     return callback(null);
   });
 }
-// [END delete]
+// [END delete_file]
 
-// [START metadata]
+// [START get_metadata]
 /**
  * Get a file's metadata.
  *
- * @param {string} name The name of the bucket.
- * @param {string} fileName The name of the file.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The name of the bucket.
+ * @param {string} options.file The name of the file.
  * @param {function} cb The callback function.
  */
-function getMetadata (name, fileName, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!fileName) {
-    return callback(new Error('"fileName" is required!'));
-  }
-
-  var bucket = storage.bucket(name);
-  var file = bucket.file(fileName);
+function getMetadata (options, callback) {
+  var file = storage.bucket(options.bucket).file(options.file);
 
   file.getMetadata(function (err, metadata) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Got metadata for file: %s', fileName);
+    console.log('Got metadata for gs://%s/%s', options.bucket, options.file);
     return callback(null, metadata);
   });
 }
-// [END metadata]
+// [END get_metadata]
 
 // [START public]
 /**
  * Make a file public.
  *
- * @param {string} name The name of the bucket.
- * @param {string} fileName The name of the file to make public.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The name of the bucket.
+ * @param {string} options.file The name of the file to make public.
  * @param {function} cb The callback function.
  */
-function makePublic (name, fileName, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!fileName) {
-    return callback(new Error('"fileName" is required!'));
-  }
+function makePublic (options, callback) {
+  var file = storage.bucket(options.bucket).file(options.file);
 
-  var bucket = storage.bucket(name);
-  var file = bucket.file(fileName);
-
-  file.makePublic(function (err, apiResponse) {
+  file.makePublic(function (err) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Made %s public!', fileName);
-    return callback(null, apiResponse);
+    console.log('Made gs://%s/%s public!', options.bucket, options.file);
+    return callback(null);
   });
 }
 // [END public]
 
-// [START move]
+// [START move_file]
 /**
  * Move a file to a new location within the same bucket.
  *
- * @param {string} name The name of the bucket.
- * @param {string} srcFileName The source file name.
- * @param {string} destFileName The destination file name.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The name of the bucket.
+ * @param {string} options.srcFile The source file name.
+ * @param {string} options.destFile The destination file name.
  * @param {function} cb The callback function.
  */
-function moveFile (name, srcFileName, destFileName, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!srcFileName) {
-    return callback(new Error('"srcFileName" is required!'));
-  } else if (!destFileName) {
-    return callback(new Error('"destFileName" is required!'));
-  }
+function moveFile (options, callback) {
+  var file = storage.bucket(options.bucket).file(options.srcFile);
 
-  var bucket = storage.bucket(name);
-  var file = bucket.file(srcFileName);
-
-  file.move(destFileName, function (err, file) {
+  file.move(options.destFile, function (err, file) {
     if (err) {
       return callback(err);
     }
 
-    console.log('%s moved to %s', srcFileName, destFileName);
+    console.log('Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile);
     return callback(null, file);
   });
 }
-// [END move]
+// [END move_file]
 
-// [START copy]
+// [START copy_file]
 /**
  * Copy a file to a new bucket with a new name.
  *
- * @param {string} name The name of the bucket.
- * @param {string} srcFileName The source file name.
- * @param {string} destBucketName The destination bucket name.
- * @param {string} destFileName The destination file name.
+ * @param {object} options Configuration options.
+ * @param {string} options.srcBucket The name of the bucket.
+ * @param {string} options.srcFile The source file name.
+ * @param {string} options.destBucket The destination bucket name.
+ * @param {string} options.destFile The destination file name.
  * @param {function} cb The callback function.
  */
-function copyFile (name, srcFileName, destBucketName, destFileName, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  } else if (!srcFileName) {
-    return callback(new Error('"srcFileName" is required!'));
-  } else if (!destBucketName) {
-    return callback(new Error('"destBucketName" is required!'));
-  } else if (!destFileName) {
-    return callback(new Error('"destFileName" is required!'));
-  }
+function copyFile (options, callback) {
+  var file = storage.bucket(options.srcBucket).file(options.srcFile);
+  var copy = storage.bucket(options.destBucket).file(options.destFile);
 
-  var bucket = storage.bucket(name);
-  var file = bucket.file(srcFileName);
-  var newBucket = storage.bucket(destBucketName);
-  var newFile = newBucket.file(destFileName);
-
-  file.move(newFile, function (err, file) {
+  file.copy(copy, function (err, file) {
     if (err) {
       return callback(err);
     }
 
-    console.log('%s moved to %s in %s', srcFileName, destFileName, destBucketName);
+    console.log('Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile);
     return callback(null, file);
   });
 }
-// [END copy]
-
-// [START usage]
-function printUsage () {
-  console.log('Usage: node files COMMAND [ARGS...]');
-  console.log('\nCommands:\n');
-  console.log('\tlist BUCKET_NAME');
-  console.log('\tlistByPrefix BUCKET_NAME PREFIX [DELIMITER]');
-  console.log('\tupload BUCKET_NAME FILE_NAME');
-  console.log('\tdownload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME');
-  console.log('\tdelete BUCKET_NAME FILE_NAME');
-  console.log('\tgetMetadata BUCKET_NAME FILE_NAME');
-  console.log('\tmakePublic BUCKET_NAME FILE_NAME');
-  console.log('\tmove BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME');
-  console.log('\tcopy BUCKET_NAME SRC_FILE_NAME DEST_BUCKET_NAME DEST_FILE_NAME');
-  console.log('\nExamples:\n');
-  console.log('\tlist my-bucket');
-  console.log('\tlistByPrefix my-bucket /some-folder');
-  console.log('\tlistByPrefix my-bucket /some-folder -');
-  console.log('\tupload my-bucket ./file.txt');
-  console.log('\tdownload my-bucket file.txt ./file.txt');
-  console.log('\tdelete my-bucket file.txt');
-  console.log('\tgetMetadata my-bucket file.txt');
-  console.log('\tmakePublic my-bucket file.txt');
-  console.log('\tmove my-bucket file.txt file2.txt');
-  console.log('\tcopy my-bucket file.txt my-other-bucket file.txt');
-}
-// [END usage]
+// [END copy_file]
+// [END all]
 
 // The command-line program
-var program = {
+var cli = require('yargs');
+
+var program = module.exports = {
   listFiles: listFiles,
-  listFilesWithPrefix: listFilesWithPrefix,
+  listFilesByPrefix: listFilesByPrefix,
   uploadFile: uploadFile,
   downloadFile: downloadFile,
   deleteFile: deleteFile,
@@ -360,38 +281,68 @@ var program = {
   makePublic: makePublic,
   moveFile: moveFile,
   copyFile: copyFile,
-  printUsage: printUsage,
-
-  // Executed when this program is run from the command-line
-  main: function (args, cb) {
-    var command = args.shift();
-    if (command === 'list') {
-      this.listFiles(args[0], cb);
-    } else if (command === 'listByPrefix') {
-      this.listFilesWithPrefix(args[0], args[1], args[2], cb);
-    } else if (command === 'upload') {
-      this.uploadFile(args[0], args[1], cb);
-    } else if (command === 'download') {
-      this.downloadFile(args[0], args[1], args[2], cb);
-    } else if (command === 'delete') {
-      this.deleteFile(args[0], args[1], cb);
-    } else if (command === 'getMetadata') {
-      this.getMetadata(args[0], args[1], cb);
-    } else if (command === 'makePublic') {
-      this.makePublic(args[0], args[1], cb);
-    } else if (command === 'move') {
-      this.moveFile(args[0], args[1], args[2], cb);
-    } else if (command === 'copy') {
-      this.copyFile(args[0], args[1], args[2], args[3], cb);
-    } else {
-      this.printUsage();
-    }
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
   }
 };
 
-if (module === require.main) {
-  program.main(process.argv.slice(2), console.log);
-}
-// [END all]
+cli
+  .demand(1)
+  .command('list <bucket> [options]', 'List files in a bucket, optionally filtering by a prefix.', {
+    prefix: {
+      alias: 'p',
+      requiresArg: true,
+      type: 'string',
+      description: 'Filter files by a prefix.'
+    },
+    delimiter: {
+      alias: 'd',
+      requiresArg: true,
+      type: 'string',
+      description: 'Specify a delimiter.'
+    }
+  }, function (options) {
+    if (options.prefix !== undefined) {
+      program.listFilesByPrefix(options, console.log);
+    } else {
+      program.listFiles(options.bucket, console.log);
+    }
+  })
+  .command('upload <bucket> <srcFile>', 'Upload a local file to a bucket.', {}, function (options) {
+    program.uploadFile(options, console.log);
+  })
+  .command('download <bucket> <srcFile> <destFile>', 'Download a file from a bucket.', {}, function (options) {
+    program.downloadFile(options, console.log);
+  })
+  .command('delete <bucket> <file>', 'Delete a file from a bucket.', {}, function (options) {
+    program.deleteFile(options, console.log);
+  })
+  .command('getMetadata <bucket> <file>', 'Get metadata for a file in a bucket.', {}, function (options) {
+    program.getMetadata(options, console.log);
+  })
+  .command('makePublic <bucket> <file>', 'Make a file public in a bucket.', {}, function (options) {
+    program.makePublic(options, console.log);
+  })
+  .command('move <bucket> <srcFile> <destFile>', 'Rename a file in a bucket.', {}, function (options) {
+    program.moveFile(options, console.log);
+  })
+  .command('copy <srcBucket> <srcFile> <destBucket> <destFile>', 'Copy a file in a bucket to another bucket.', {}, function (options) {
+    program.copyFile(options, console.log);
+  })
+  .example('node $0 list my-bucket', 'List files in "my-bucket".')
+  .example('node $0 list my-bucket -p public/', 'List files in "my-bucket" filtered by prefix "public/".')
+  .example('node $0 upload my-bucket ./file.txt', 'Upload "./file.txt" to "my-bucket".')
+  .example('node $0 download my-bucket file.txt ./file.txt', 'Download "gs://my-bucket/file.txt" to "./file.txt".')
+  .example('node $0 delete my-bucket file.txt', 'Delete "gs://my-bucket/file.txt".')
+  .example('node $0 getMetadata my-bucket file.txt', 'Get metadata for "gs://my-bucket/file.txt".')
+  .example('node $0 makePublic my-bucket file.txt', 'Make "gs://my-bucket/file.txt" public.')
+  .example('node $0 move my-bucket file.txt file2.txt', 'Rename "gs://my-bucket/file.txt" to "gs://my-bucket/file2.txt".')
+  .example('node $0 copy my-bucket file.txt my-other-bucket file.txt', 'Copy "gs://my-bucket/file.txt" to "gs://my-other-bucket/file.txt".')
+  .wrap(100)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/storage/docs');
 
-module.exports = program;
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}

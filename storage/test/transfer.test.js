@@ -19,7 +19,9 @@ var jobName = 'transferJobs/123456789012345678';
 var transferOperationName = 'transferOperations/123456789012345678';
 
 function getSample () {
-  var transferJobMock = {};
+  var transferJobMock = {
+    name: jobName
+  };
   var transferOperationMock = {};
   var storagetransferMock = {
     transferJobs: {
@@ -41,9 +43,11 @@ function getSample () {
       getApplicationDefault: sinon.stub().callsArgWith(0, null, {})
     }
   };
+
   return {
     program: proxyquire('../transfer', {
-      googleapis: googleapisMock
+      googleapis: googleapisMock,
+      yargs: proxyquire('yargs', {})
     }),
     mocks: {
       googleapis: googleapisMock,
@@ -61,45 +65,33 @@ describe('storage:transfer', function () {
         var description = 'description';
         var sample = getSample();
         var callback = sinon.stub();
+        var date = '2016/08/11';
+        var time = '15:30';
+        var options = {
+          srcBucket: bucketName,
+          destBucket: bucketName,
+          date: date,
+          time: time
+        };
 
-        sample.program.createTransferJob(bucketName, bucketName, '2016/08/11', '15:30', null, callback);
+        sample.program.createTransferJob(options, callback);
 
         assert(callback.calledOnce, 'callback called once');
         assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
         assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
+        assert.equal(sample.mocks.storagetransfer.transferJobs.create.firstCall.args[0].resource.description, undefined, 'description was not set');
+        assert(console.log.calledWith('Created transfer job: %s', sample.mocks.transferJob.name));
 
-        sample.program.createTransferJob(bucketName, bucketName, '2016/08/11', '15:30', description, callback);
+        options.description = description;
+        sample.program.createTransferJob(options, callback);
 
         assert(callback.calledTwice, 'callback called twice');
         assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
         assert.strictEqual(callback.secondCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
         assert.equal(sample.mocks.storagetransfer.transferJobs.create.secondCall.args[0].resource.description, description, 'description was set');
-      });
-
-      it('should require "srcBucketName"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.createTransferJob(null, null, null, null, null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"srcBucketName" is required!', 'error has correct message');
-      });
-
-      it('should require "destBucketName"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.createTransferJob(bucketName, null, null, null, null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"destBucketName" is required!', 'error has correct message');
+        assert(console.log.calledWith('Created transfer job: %s', sample.mocks.transferJob.name));
       });
 
       it('should handle auth error', function () {
@@ -108,7 +100,7 @@ describe('storage:transfer', function () {
         var callback = sinon.stub();
         sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
 
-        sample.program.createTransferJob(bucketName, bucketName, 'time', 'date', null, callback);
+        sample.program.createTransferJob({}, callback);
 
         assert(callback.calledOnce, 'callback called once');
         assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -122,7 +114,7 @@ describe('storage:transfer', function () {
         var callback = sinon.stub();
         sample.mocks.storagetransfer.transferJobs.create.callsArgWith(1, error);
 
-        sample.program.createTransferJob(bucketName, bucketName, 'time', 'date', null, callback);
+        sample.program.createTransferJob({}, callback);
 
         assert(callback.calledOnce, 'callback called once');
         assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -142,18 +134,7 @@ describe('storage:transfer', function () {
         assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
         assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
-      });
-
-      it('should require "jobName"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.getTransferJob(null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"jobName" is required!', 'error has correct message');
+        assert(console.log.calledWith('Found transfer job: %s', sample.mocks.transferJob.name));
       });
 
       it('should handle auth error', function () {
@@ -191,78 +172,55 @@ describe('storage:transfer', function () {
         var value = 'DISABLED';
         var sample = getSample();
         var callback = sinon.stub();
+        var options = {
+          job: jobName,
+          field: field,
+          value: value
+        };
 
-        sample.program.updateTransferJob(jobName, field, value, callback);
+        sample.program.updateTransferJob(options, callback);
 
         assert(callback.calledOnce, 'callback called once');
         assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
         assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
 
-        field = 'description';
-        value = 'description';
+        options.field = 'description';
+        options.value = 'description';
 
-        sample.program.updateTransferJob(jobName, field, value, callback);
+        sample.program.updateTransferJob(options, callback);
 
         assert(callback.calledTwice, 'callback called twice');
         assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
         assert.strictEqual(callback.secondCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
 
-        field = 'transferSpec';
-        value = '{"foo":"bar"}';
+        options.field = 'transferSpec';
+        options.value = '{"foo":"bar"}';
 
-        sample.program.updateTransferJob(jobName, field, value, callback);
+        sample.program.updateTransferJob(options, callback);
 
         assert(callback.calledThrice, 'callback called thrice');
         assert.equal(callback.thirdCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.thirdCall.args[0], 'callback did not receive error');
         assert.strictEqual(callback.thirdCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
-      });
-
-      it('should require "jobName"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.updateTransferJob(null, null, null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"jobName" is required!', 'error has correct message');
-      });
-
-      it('should require "field"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.updateTransferJob(jobName, null, null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"field" is required!', 'error has correct message');
-      });
-
-      it('should require "value"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.updateTransferJob(jobName, 'field', null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"value" is required!', 'error has correct message');
+        assert(console.log.calledWith('Updated transfer job: %s', sample.mocks.transferJob.name));
       });
 
       it('should handle auth error', function () {
+        var field = 'status';
+        var value = 'DISABLED';
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
+        var options = {
+          job: jobName,
+          field: field,
+          value: value
+        };
         sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
 
-        sample.program.updateTransferJob(jobName, 'field', 'value', callback);
+        sample.program.updateTransferJob(options, callback);
 
         assert(callback.calledOnce, 'callback called once');
         assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -271,12 +229,19 @@ describe('storage:transfer', function () {
       });
 
       it('should handle patch error', function () {
+        var field = 'status';
+        var value = 'DISABLED';
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
+        var options = {
+          job: jobName,
+          field: field,
+          value: value
+        };
         sample.mocks.storagetransfer.transferJobs.patch.callsArgWith(1, error);
 
-        sample.program.updateTransferJob(jobName, 'field', 'value', callback);
+        sample.program.updateTransferJob(options, callback);
 
         assert(callback.calledOnce, 'callback called once');
         assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -304,6 +269,7 @@ describe('storage:transfer', function () {
         assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
         assert.deepEqual(callback.secondCall.args[1], [], 'callback received no transfer jobs');
+        assert(console.log.calledWith('Found %d jobs!', 1));
       });
 
       it('should handle auth error', function () {
@@ -407,18 +373,6 @@ describe('storage:transfer', function () {
         assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferOperation, 'callback received transfer operation');
       });
 
-      it('should require "transferOperationName"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.getTransferOperation(null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"transferOperationName" is required!', 'error has correct message');
-      });
-
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
@@ -458,18 +412,6 @@ describe('storage:transfer', function () {
         assert(callback.calledOnce, 'callback called once');
         assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      });
-
-      it('should require "transferOperationName"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.pauseTransferOperation(null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"transferOperationName" is required!', 'error has correct message');
       });
 
       it('should handle auth error', function () {
@@ -513,18 +455,6 @@ describe('storage:transfer', function () {
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
       });
 
-      it('should require "transferOperationName"', function () {
-        var sample = getSample();
-        var callback = sinon.stub();
-
-        sample.program.resumeTransferOperation(null, callback);
-
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, '"transferOperationName" is required!', 'error has correct message');
-      });
-
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
@@ -555,85 +485,69 @@ describe('storage:transfer', function () {
     });
   });
 
-  describe('printUsage', function () {
-    it('should print usage', function () {
-      var program = getSample().program;
-
-      program.printUsage();
-
-      assert(console.log.calledWith('Usage: node encryption RESOURCE COMMAND [ARGS...]'));
-      assert(console.log.calledWith('\nResources:\n'));
-      assert(console.log.calledWith('    jobs'));
-      assert(console.log.calledWith('\n\tCommands:\n'));
-      assert(console.log.calledWith('\t\tcreate SRC_BUCKET_NAME DEST_BUCKET_NAME DATE TIME [DESCRIPTION]'));
-      assert(console.log.calledWith('\t\tget JOB_NAME'));
-      assert(console.log.calledWith('\t\tlist'));
-      assert(console.log.calledWith('\t\tset JOB_NAME FIELD VALUE'));
-      assert(console.log.calledWith('\n    operations'));
-      assert(console.log.calledWith('\n\tCommands:\n'));
-      assert(console.log.calledWith('\t\tlist [JOB_NAME]'));
-      assert(console.log.calledWith('\t\tget TRANSFER_NAME'));
-      assert(console.log.calledWith('\t\tpause TRANSFER_NAME'));
-      assert(console.log.calledWith('\t\tresume TRANSFER_NAME'));
-      assert(console.log.calledWith('\nExamples:\n'));
-      assert(console.log.calledWith('\tnode transfer jobs create my-bucket my-other-bucket 2016/08/12 16:30 "Move my files"'));
-      assert(console.log.calledWith('\tnode transfer jobs get transferJobs/123456789012345678'));
-      assert(console.log.calledWith('\tnode transfer jobs list'));
-      assert(console.log.calledWith('\tnode transfer jobs set transferJobs/123456789012345678 description "My new description"'));
-      assert(console.log.calledWith('\tnode transfer jobs set transferJobs/123456789012345678 status DISABLED'));
-      assert(console.log.calledWith('\tnode transfer operations list'));
-      assert(console.log.calledWith('\tnode transfer operations list transferJobs/123456789012345678'));
-      assert(console.log.calledWith('\tnode transfer operations get transferOperations/123456789012345678'));
-      assert(console.log.calledWith('\tnode transfer operations pause transferOperations/123456789012345678'));
-      assert(console.log.calledWith('\tnode transfer operations resume transferOperations/123456789012345678'));
-    });
-  });
-
   describe('main', function () {
-    it('should call the right commands', function () {
+    it('should call createTransferJob', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'createTransferJob');
-      program.main(['jobs', 'create']);
+      program.main(['jobs', 'create', bucketName, bucketName, 'time', 'date']);
       assert(program.createTransferJob.calledOnce);
+    });
+
+    it('should call getTransferJob', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'getTransferJob');
-      program.main(['jobs', 'get']);
+      program.main(['jobs', 'get', jobName]);
       assert(program.getTransferJob.calledOnce);
+    });
+
+    it('should call listTransferJobs', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'listTransferJobs');
       program.main(['jobs', 'list']);
       assert(program.listTransferJobs.calledOnce);
+    });
+
+    it('should call updateTransferJob', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'updateTransferJob');
-      program.main(['jobs', 'set']);
+      program.main(['jobs', 'set', jobName, 'status', 'DISABLED']);
       assert(program.updateTransferJob.calledOnce);
+    });
+
+    it('should call listTransferOperations', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'listTransferOperations');
       program.main(['operations', 'list']);
       assert(program.listTransferOperations.calledOnce);
+    });
+
+    it('should call getTransferOperation', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'getTransferOperation');
-      program.main(['operations', 'get']);
+      program.main(['operations', 'get', transferOperationName]);
       assert(program.getTransferOperation.calledOnce);
+    });
+
+    it('should call pauseTransferOperation', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'pauseTransferOperation');
-      program.main(['operations', 'pause']);
+      program.main(['operations', 'pause', transferOperationName]);
       assert(program.pauseTransferOperation.calledOnce);
+    });
+
+    it('should call resumeTransferOperation', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'resumeTransferOperation');
-      program.main(['operations', 'resume']);
+      program.main(['operations', 'resume', transferOperationName]);
       assert(program.resumeTransferOperation.calledOnce);
-
-      sinon.stub(program, 'printUsage');
-      program.main(['--help']);
-      assert(program.printUsage.calledOnce);
-
-      program.main(['jobs']);
-      assert(program.printUsage.calledTwice);
-
-      program.main(['operations']);
-      assert(program.printUsage.calledThrice);
     });
   });
 });

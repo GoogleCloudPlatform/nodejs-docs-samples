@@ -42,11 +42,12 @@ Commands:
   delete <entity>      Delete access controls from a bucket or file.
 
 Options:
-  --bucket, -b   The target storage bucket.                                      [string] [required]
-  --default, -d  Whether to set default access controls. Only valid when setting access controls on
-                 a bucket.                                                                 [boolean]
-  --file, -f     The target file.                                                           [string]
-  --help         Show help                                                                 [boolean]
+  --bucket, -b   The target storage bucket.           [string] [required]
+  --default, -d  Whether to set default access
+                 controls. Only valid when setting
+                 access controls on a bucket.         [boolean]
+  --file, -f     The target file.                     [string]
+  --help         Show help                            [boolean]
 
 Examples:
   node acl add user-bob@domain.com OWNER -b mybucket  Add OWNER access controls for
@@ -71,19 +72,20 @@ View the [documentation][buckets_docs] or the [source code][buckets_code].
 __Usage:__ `node buckets --help`
 
 ```
-Usage: node buckets COMMAND [ARGS...]
-
 Commands:
+  create <bucket>  Create a new bucket with the given name.
+  list             List all buckets in the authenticated project.
+  delete <bucket>  Delete the specified bucket.
 
-  create BUCKET_NAME
-  list
-  delete BUCKET_NAME
+Options:
+  --help  Show help              [boolean]
 
 Examples:
+  node buckets create my-bucket  Create a new bucket named "my-bucket".
+  node buckets list              List all buckets in the authenticated project.
+  node buckets delete my-bucket  Delete "my-bucket".
 
-  node buckets create my-bucket
-  node buckets list
-  node buckets delete my-bucket
+For more information, see https://cloud.google.com/storage/docs
 ```
 
 [buckets_docs]: https://cloud.google.com/storage/docs
@@ -96,21 +98,25 @@ View the [documentation][encryption_docs] or the [source code][encryption_code].
 __Usage:__ `node encryption --help`
 
 ```
-Usage: node encryption COMMAND [ARGS...]
-
 Commands:
+  generate-encryption-key                       Generate a sample encryption key.
+  upload <bucket> <srcFile> <destFile> <key>    Upload an encrypted file to a bucket.
+  download <bucket> <srcFile> <destFile> <key>  Download an encrypted file from a bucket.
+  rotate <bucket> <file> <oldkey> <newKey>      Rotate encryption keys for a file.
 
-  generate-encryption-key
-  upload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY
-  download BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY
-  rotate BUCKET_NAME FILE_NAME OLD_KEY NEW_KEY
+Options:
+  --help  Show help                                             [boolean]
 
 Examples:
+  node encryption generate-encryption-key                       Generate a sample encryption key.
+  node encryption upload my-bucket resources/test.txt           Upload "resources/test.txt" to
+  file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=                     "gs://my-bucket/file_encrypted.txt".
+  node encryption download my-bucket file_encrypted.txt         Download "gs://my-bucket/file_encrypted.txt" to
+  ./file.txt QxhqaZEqBGVTW55HhQw9Q=                             "./file.txt".
+  node encryption rotate my-bucket file_encrypted.txt           Rotate encryptiong keys for
+  QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=                   "gs://my-bucket/file_encrypted.txt".
 
-  node encryption generate-encryption-key
-  node encryption upload my-bucket resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=
-  node encryption download my-bucket file_encrypted.txt ./file.txt QxhqaZEqBGVTW55HhQw9Q=
-  node encryption rotate my-bucket file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=
+For more information, see https://cloud.google.com/storage/docs
 ```
 
 [encryption_docs]: https://cloud.google.com/storage/docs
@@ -123,32 +129,36 @@ View the [documentation][files_docs] or the [source code][files_code].
 __Usage:__ `node files --help`
 
 ```
-Usage: node files COMMAND [ARGS...]
-
 Commands:
+  list <bucket> [options]                             List files in a bucket, optionally filtering
+                                                      by a prefix.
+  upload <bucket> <srcFile>                           Upload a local file to a bucket.
+  download <bucket> <srcFile> <destFile>              Download a file from a bucket.
+  delete <bucket> <file>                              Delete a file from a bucket.
+  getMetadata <bucket> <file>                         Get metadata for a file in a bucket.
+  makePublic <bucket> <file>                          Make a file public in a bucket.
+  move <bucket> <srcFile> <destFile>                  Rename a file in a bucket.
+  copy <srcBucket> <srcFile> <destBucket> <destFile>  Copy a file in a bucket to another bucket.
 
-  list BUCKET_NAME
-  listByPrefix BUCKET_NAME PREFIX [DELIMITER]
-  upload BUCKET_NAME FILE_NAME
-  download BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME
-  delete BUCKET_NAME FILE_NAME
-  getMetadata BUCKET_NAME FILE_NAME
-  makePublic BUCKET_NAME FILE_NAME
-  move BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME
-  copy BUCKET_NAME SRC_FILE_NAME DEST_BUCKET_NAME DEST_FILE_NAME
+Options:
+  --help  Show help                                                                        [boolean]
 
 Examples:
+  node files list my-bucket                           List files in "my-bucket".
+  node files list my-bucket -p public/                List files in "my-bucket" filtered by prefix
+                                                      "public/".
+  node files upload my-bucket ./file.txt              Upload "./file.txt" to "my-bucket".
+  node files download my-bucket file.txt ./file.txt   Download "gs://my-bucket/file.txt" to
+                                                      "./file.txt".
+  node files delete my-bucket file.txt                Delete "gs://my-bucket/file.txt".
+  node files getMetadata my-bucket file.txt           Get metadata for "gs://my-bucket/file.txt".
+  node files makePublic my-bucket file.txt            Make "gs://my-bucket/file.txt" public.
+  node files move my-bucket file.txt file2.txt        Rename "gs://my-bucket/file.txt" to
+                                                      "gs://my-bucket/file2.txt".
+  node files copy my-bucket file.txt my-other-bucket  Copy "gs://my-bucket/file.txt" to
+  file.txt                                            "gs://my-other-bucket/file.txt".
 
-  list my-bucket
-  listByPrefix my-bucket /some-folder
-  listByPrefix my-bucket /some-folder -
-  upload my-bucket ./file.txt
-  download my-bucket file.txt ./file.txt
-  delete my-bucket file.txt
-  getMetadata my-bucket file.txt
-  makePublic my-bucket file.txt
-  move my-bucket file.txt file2.txt
-  copy my-bucket file.txt my-other-bucket file.txt
+For more information, see https://cloud.google.com/storage/docs
 ```
 
 [files_docs]: https://cloud.google.com/storage/docs
@@ -161,41 +171,74 @@ View the [documentation][storagetransfer_docs] or the [source code][storagetrans
 __Usage:__ `node transfer --help`
 
 ```
-Usage: node encryption RESOURCE COMMAND [ARGS...]
+Commands:
+  jobs <cmd> [args]        Run a job command.
+  operations <cmd> [args]  Run an operation command.
 
-Resources:
-
-  jobs
-
-      Commands:
-
-        create SRC_BUCKET_NAME DEST_BUCKET_NAME DATE TIME [DESCRIPTION]
-        get JOB_NAME
-        list
-        set JOB_NAME FIELD VALUE
-
-  operations
-
-      Commands:
-
-        list [JOB_NAME]
-        get TRANSFER_NAME
-        pause TRANSFER_NAME
-        resume TRANSFER_NAME
+Options:
+  --help  Show help                                                                        [boolean]
 
 Examples:
+  node transfer jobs --help        Show job commands.
+  node transfer operations --help  Show operations commands.
 
-  node transfer jobs create my-bucket my-other-bucket 2016/08/12 16:30 "Move my files"
-  node transfer jobs get transferJobs/123456789012345678
-  node transfer jobs list
-  node transfer jobs set transferJobs/123456789012345678 description "My new description"
-  node transfer jobs set transferJobs/123456789012345678 status DISABLED
-  node transfer operations list
-  node transfer operations list transferJobs/123456789012345678
-  node transfer operations get transferOperations/123456789012345678
-  node transfer operations pause transferOperations/123456789012345678
-  node transfer operations resume transferOperations/123456789012345678
+For more information, see https://cloud.google.com/storage/transfer
 ```
 
-[storagetransfer_docs]: https://cloud.google.com/storage/docs
+__Usage:__ `node transfer jobs --help`
+
+```
+transfer jobs <cmd> [args]
+
+Commands:
+  create <srcBucket> <destBucket> <time> <date>       Create a transfer job.
+  [description]
+  get <job>                                           Get a transfer job.
+  list                                                List transfer jobs.
+  set <job> <field> <value>                           Change the status, description or transferSpec
+                                                      of a transfer job.
+
+Options:
+  --help  Show help                                                                        [boolean]
+
+Examples:
+  node transfer jobs create my-bucket                 Create a transfer job.
+  my-other-bucket 2016/08/12 16:30 "Move my files"
+  node transfer jobs get                              Get a transfer job.
+  transferJobs/123456789012345678
+  node transfer jobs list                             List transfer jobs.
+  node transfer jobs set                              Update the description for a transfer job.
+  transferJobs/123456789012345678 description "My
+  new description"
+  node transfer jobs set                              Disable a transfer job.
+  transferJobs/123456789012345678 status DISABLED
+```
+
+__Usage:__ `node transfer operations --help`
+
+```
+transfer operations <cmd> [args]
+
+Commands:
+  list [job]          List transfer operations, optionally filtering by a job name.
+  get <operation>     Get a transfer operation.
+  pause <operation>   Pause a transfer operation.
+  resume <operation>  Resume a transfer operation.
+
+Options:
+  --help  Show help                                                                        [boolean]
+
+Examples:
+  node transfer operations list                       List all transfer operations.
+  node transfer operations list                       List all transfer operations for a specific
+  transferJobs/123456789012345678                     job.
+  node transfer operations get                        Get a transfer operation.
+  transferOperations/123456789012345678
+  node transfer operations pause                      Pause a transfer operation.
+  transferOperations/123456789012345678
+  node transfer operations resume                     Resume a transfer operation.
+  transferOperations/123456789012345678
+```
+
+[storagetransfer_docs]: https://cloud.google.com/storage/transfer
 [storagetransfer_code]: transfer.js

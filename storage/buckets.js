@@ -25,7 +25,7 @@ var Storage = require('@google-cloud/storage');
 var storage = Storage();
 // [END setup]
 
-// [START create]
+// [START create_bucket]
 /**
  * Creates a new bucket with the given name.
  *
@@ -33,11 +33,9 @@ var storage = Storage();
  * @param {function} cb The callback function.
  */
 function createBucket (name, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  }
+  var bucket = storage.bucket(name);
 
-  storage.createBucket(name, function (err, bucket) {
+  bucket.create(function (err, bucket) {
     if (err) {
       return callback(err);
     }
@@ -46,11 +44,11 @@ function createBucket (name, callback) {
     return callback(null, bucket);
   });
 }
-// [END create]
+// [END create_bucket]
 
-// [START list]
+// [START list_buckets]
 /**
- * Fetches all of the current project's buckets.
+ * List all of the authenticated project's buckets.
  *
  * @param {function} cb The callback function.
  */
@@ -60,13 +58,13 @@ function listBuckets (callback) {
       return callback(err);
     }
 
-    console.log('Found %d buckets!', buckets.length);
+    console.log('Found %d bucket(s)!', buckets.length);
     return callback(null, buckets);
   });
 }
-// [END list]
+// [END list_buckets]
 
-// [START delete]
+// [START delete_bucket]
 /**
  * Deletes the specified bucket.
  *
@@ -74,62 +72,51 @@ function listBuckets (callback) {
  * @param {function} cb The callback function.
  */
 function deleteBucket (name, callback) {
-  if (!name) {
-    return callback(new Error('"name" is required!'));
-  }
-
   var bucket = storage.bucket(name);
 
-  bucket.delete(function (err, apiResponse) {
+  bucket.delete(function (err) {
     if (err) {
       return callback(err);
     }
 
     console.log('Deleted bucket: %s', name);
-    return callback(null, apiResponse);
+    return callback(null);
   });
 }
-// [END delete]
-
-// [START usage]
-function printUsage () {
-  console.log('Usage: node buckets COMMAND [ARGS...]');
-  console.log('\nCommands:\n');
-  console.log('\tcreate BUCKET_NAME');
-  console.log('\tlist');
-  console.log('\tdelete BUCKET_NAME');
-  console.log('\nExamples:\n');
-  console.log('\tnode buckets create my-bucket');
-  console.log('\tnode buckets list');
-  console.log('\tnode buckets delete my-bucket');
-}
-// [END usage]
+// [END delete_bucket]
+// [END all]
 
 // The command-line program
-var program = {
+var cli = require('yargs');
+
+var program = module.exports = {
   createBucket: createBucket,
   listBuckets: listBuckets,
   deleteBucket: deleteBucket,
-  printUsage: printUsage,
-
-  // Executed when this program is run from the command-line
-  main: function (args, cb) {
-    var command = args.shift();
-    if (command === 'create') {
-      this.createBucket(args[0], cb);
-    } else if (command === 'list') {
-      this.listBuckets(cb);
-    } else if (command === 'delete') {
-      this.deleteBucket(args[0], cb);
-    } else {
-      this.printUsage();
-    }
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
   }
 };
 
-if (module === require.main) {
-  program.main(process.argv.slice(2), console.log);
-}
-// [END all]
+cli
+  .demand(1)
+  .command('create <bucket>', 'Create a new bucket with the given name.', {}, function (options) {
+    program.createBucket(options.bucket, console.log);
+  })
+  .command('list', 'List all buckets in the authenticated project.', {}, function () {
+    program.listBuckets(console.log);
+  })
+  .command('delete <bucket>', 'Delete the specified bucket.', {}, function (options) {
+    program.deleteBucket(options.bucket, console.log);
+  })
+  .example('node $0 create my-bucket', 'Create a new bucket named "my-bucket".')
+  .example('node $0 list', 'List all buckets in the authenticated project.')
+  .example('node $0 delete my-bucket', 'Delete "my-bucket".')
+  .wrap(80)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/storage/docs');
 
-module.exports = program;
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}

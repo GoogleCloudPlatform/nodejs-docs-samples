@@ -24,17 +24,19 @@ function getSample () {
     }
   ];
   var bucketMock = {
+    create: sinon.stub().callsArgWith(0, null, bucketsMock[0]),
     delete: sinon.stub().callsArgWith(0, null)
   };
   var storageMock = {
-    createBucket: sinon.stub().callsArgWith(1, null, bucketsMock[0]),
     getBuckets: sinon.stub().callsArgWith(0, null, bucketsMock, null, bucketsMock),
     bucket: sinon.stub().returns(bucketMock)
   };
   var StorageMock = sinon.stub().returns(storageMock);
+
   return {
-    sample: proxyquire('../buckets', {
-      '@google-cloud/storage': StorageMock
+    program: proxyquire('../buckets', {
+      '@google-cloud/storage': StorageMock,
+      yargs: proxyquire('yargs', {})
     }),
     mocks: {
       Storage: StorageMock,
@@ -46,123 +48,123 @@ function getSample () {
 }
 
 describe('storage:buckets', function () {
-  describe('create', function () {
+  describe('createBucket', function () {
     it('should create a bucket', function () {
-      var bucketsSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
 
-      bucketsSample.sample.createBucket(bucketName, function (err, bucket) {
-        assert.ifError(err);
-        assert.strictEqual(bucket, bucketsSample.mocks.buckets[0]);
-        assert(console.log.calledWith('Created bucket: %s', bucketName));
-      });
-    });
-    it('should require name', function () {
-      var bucketsSample = getSample();
+      sample.program.createBucket(bucketName, callback);
 
-      bucketsSample.sample.createBucket(undefined, function (err, bucket) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(bucket, undefined);
-      });
+      assert(sample.mocks.bucket.create.calledOnce, 'create called once');
+      assert.equal(sample.mocks.bucket.create.firstCall.args.length, 1, 'create received 1 argument');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.buckets[0], 'callback received bucket');
+      assert(console.log.calledWith('Created bucket: %s', bucketName));
     });
+
     it('should handle error', function () {
-      var error = 'createError';
-      var bucketsSample = getSample();
-      bucketsSample.mocks.storage.createBucket = sinon.stub().callsArgWith(1, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.bucket.create = sinon.stub().callsArgWith(0, error);
 
-      bucketsSample.sample.createBucket(bucketName, function (err, bucket) {
-        assert.equal(err, error);
-        assert.equal(bucket, undefined);
-      });
+      sample.program.createBucket(bucketName, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
-  describe('list', function () {
+
+  describe('listBuckets', function () {
     it('should list buckets', function () {
-      var bucketsSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
 
-      bucketsSample.sample.listBuckets(function (err, buckets) {
-        assert.ifError(err);
-        assert.strictEqual(buckets, bucketsSample.mocks.buckets);
-        assert(console.log.calledWith('Found %d buckets!', bucketsSample.mocks.buckets.length));
-      });
+      sample.program.listBuckets(callback);
+
+      assert(sample.mocks.storage.getBuckets.calledOnce, 'getBuckets called once');
+      assert.equal(sample.mocks.storage.getBuckets.firstCall.args.length, 1, 'getBuckets received 1 argument');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.buckets, 'callback received buckets');
+      assert(console.log.calledWith('Found %d bucket(s)!', sample.mocks.buckets.length));
     });
-    it('should handle error', function () {
-      var error = 'listError';
-      var bucketsSample = getSample();
-      bucketsSample.mocks.storage.getBuckets = sinon.stub().callsArgWith(0, error);
 
-      bucketsSample.sample.listBuckets(function (err, buckets) {
-        assert.equal(err, error);
-        assert.equal(buckets, undefined);
-      });
+    it('should handle error', function () {
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.storage.getBuckets = sinon.stub().callsArgWith(0, error);
+
+      sample.program.listBuckets(callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
-  describe('delete', function () {
+
+  describe('deleteBuckets', function () {
     it('should delete a bucket', function () {
-      var bucketsSample = getSample();
+      var sample = getSample();
+      var callback = sinon.stub();
 
-      bucketsSample.sample.deleteBucket(bucketName, function (err, apiResponse) {
-        assert.ifError(err);
-        assert.equal(bucketsSample.mocks.storage.bucket.firstCall.args[0], bucketName);
-        assert(console.log.calledWith('Deleted bucket: %s', bucketName));
-      });
-    });
-    it('should require name', function () {
-      var bucketsSample = getSample();
+      sample.program.deleteBucket(bucketName, callback);
 
-      bucketsSample.sample.deleteBucket(undefined, function (err, apiResponse) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(apiResponse, undefined);
-      });
+      assert(sample.mocks.bucket.delete.calledOnce, 'delete called once');
+      assert.equal(sample.mocks.bucket.delete.firstCall.args.length, 1, 'delete received 1 argument');
+      assert.equal(sample.mocks.storage.bucket.firstCall.args[0], bucketName);
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
+      assert(console.log.calledWith('Deleted bucket: %s', bucketName));
     });
+
     it('should handle error', function () {
-      var error = 'deleteError';
-      var bucketsSample = getSample();
-      bucketsSample.mocks.bucket.delete = sinon.stub().callsArgWith(0, error);
+      var error = 'error';
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.bucket.delete = sinon.stub().callsArgWith(0, error);
 
-      bucketsSample.sample.deleteBucket(bucketName, function (err, apiResponse) {
-        assert.equal(err, error);
-        assert.equal(apiResponse, undefined);
-      });
+      sample.program.deleteBucket(bucketName, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
-  describe('printUsage', function () {
-    it('should print usage', function () {
-      var bucketsSample = getSample();
 
-      bucketsSample.sample.printUsage();
-
-      assert(console.log.calledWith('Usage: node buckets COMMAND [ARGS...]'));
-      assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tcreate BUCKET_NAME'));
-      assert(console.log.calledWith('\tlist'));
-      assert(console.log.calledWith('\tdelete BUCKET_NAME'));
-      assert(console.log.calledWith('\nExamples:\n'));
-      assert(console.log.calledWith('\tnode buckets create my-bucket'));
-      assert(console.log.calledWith('\tnode buckets list'));
-      assert(console.log.calledWith('\tnode buckets delete my-bucket'));
-    });
-  });
   describe('main', function () {
-    it('should call the right commands', function () {
-      var program = getSample().sample;
+    it('should call createBucket', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'createBucket');
-      program.main(['create']);
+      program.main(['create', 'my-bucket']);
       assert(program.createBucket.calledOnce);
+    });
+
+    it('should call listBuckets', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'listBuckets');
       program.main(['list']);
       assert(program.listBuckets.calledOnce);
+    });
+
+    it('should call deleteBucket', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'deleteBucket');
-      program.main(['delete']);
+      program.main(['delete', 'my-bucket']);
       assert(program.deleteBucket.calledOnce);
-
-      sinon.stub(program, 'printUsage');
-      program.main(['--help']);
-      assert(program.printUsage.calledOnce);
     });
   });
 });

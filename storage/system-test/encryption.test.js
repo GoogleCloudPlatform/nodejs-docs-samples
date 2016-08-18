@@ -25,7 +25,7 @@ var fileName = 'test.txt';
 var filePath = path.join(__dirname, '../resources', fileName);
 var downloadFilePath = path.join(__dirname, '../resources/downloaded.txt');
 
-describe('storage:encryption', function () {
+describe.only('storage:encryption', function () {
   var key;
 
   before(function (done) {
@@ -54,11 +54,18 @@ describe('storage:encryption', function () {
 
   describe('uploadEncryptedFile', function () {
     it('should upload a file', function (done) {
-      program.uploadEncryptedFile(bucketName, filePath, fileName, key, function (err, file) {
+      var options = {
+        bucket: bucketName,
+        srcFile: filePath,
+        destFile: fileName,
+        key: key
+      };
+
+      program.uploadEncryptedFile(options, function (err, file) {
         assert.ifError(err);
         assert(file);
         assert.equal(file.name, fileName);
-        assert(console.log.calledWith('Uploaded encrypted file: %s', fileName));
+        assert(console.log.calledWith('Uploaded gs://%s/%s', options.bucket, options.destFile));
         done();
       });
     });
@@ -66,12 +73,19 @@ describe('storage:encryption', function () {
 
   describe('downloadEncryptedFile', function () {
     it('should download a file', function (done) {
-      program.downloadEncryptedFile(bucketName, fileName, downloadFilePath, key, function (err) {
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: downloadFilePath,
+        key: key
+      };
+
+      program.downloadEncryptedFile(options, function (err) {
         assert.ifError(err);
         assert.doesNotThrow(function () {
           fs.statSync(downloadFilePath);
         });
-        assert(console.log.calledWith('Downloaded encrypted file: %s', downloadFilePath));
+        assert(console.log.calledWith('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile));
         done();
       });
     });

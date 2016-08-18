@@ -173,6 +173,7 @@ var program = module.exports = {
 };
 
 cli
+  .demand(1)
   .command('add <entity> <role>', 'Add access controls on a bucket or file.', {}, function (options) {
     program.addAccessControl(options, console.log);
   })

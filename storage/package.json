@@ -11,7 +11,8 @@
   "dependencies": {
     "@google-cloud/storage": "^0.1.1",
     "googleapis": "^12.2.0",
-    "moment": "^2.14.1"
+    "moment": "^2.14.1",
+    "yargs": "^5.0.0"
   },
   "devDependencies": {
     "mocha": "^3.0.2",

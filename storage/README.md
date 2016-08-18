@@ -11,6 +11,7 @@ amount of data at any time.
 
 * [Setup](#setup)
 * [Samples](#samples)
+  * [ACL (Access Control Lists)](#acl-access-control-lists)
   * [Buckets](#buckets)
   * [Encryption](#encryption)
   * [Files](#files)
@@ -27,6 +28,41 @@ amount of data at any time.
 [run]: ../README.md#how-to-run-a-sample
 
 ## Samples
+
+### ACL (Access Control Lists)
+
+View the [documentation][acl_docs] or the [source code][acl_code].
+
+__Usage:__ `node acl --help`
+
+```
+Commands:
+  add <entity> <role>  Add access controls on a bucket or file.
+  get [entity]         Get access controls on a bucket or file.
+  delete <entity>      Delete access controls from a bucket or file.
+
+Options:
+  --bucket, -b   The target storage bucket.                                      [string] [required]
+  --default, -d  Whether to set default access controls. Only valid when setting access controls on
+                 a bucket.                                                                 [boolean]
+  --file, -f     The target file.                                                           [string]
+  --help         Show help                                                                 [boolean]
+
+Examples:
+  node acl add user-bob@domain.com OWNER -b mybucket  Add OWNER access controls for
+                                                      "user-bob@domain.com" to "mybucket".
+  node acl add viewers-2256 WRITER -b mybucket -d     Add default WRITER access controls to
+                                                      "mybucket" for "viewers-2256".
+  node acl get editors-1234 -b mybucket               Get access controls for "editors-1234" in
+                                                      "mybucket".
+  node acl delete -b mybucket -f file.txt             Delete all access controls for all entities
+                                                      from "file.txt" in "mybucket".
+
+For more information, see https://cloud.google.com/storage/docs/access-control/create-manage-lists
+```
+
+[acl_docs]: https://cloud.google.com/storage/docs/access-control/create-manage-lists
+[acl_code]: acl.js
 
 ### Buckets
 

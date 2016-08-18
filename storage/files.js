@@ -82,7 +82,7 @@ function listFilesByPrefix (options, callback) {
   var config = {
     prefix: options.prefix
   };
-  if (options.delimiter && typeof options.delimiter === 'string') {
+  if (options.delimiter) {
     config.delimiter = options.delimiter;
   }
 
@@ -219,7 +219,7 @@ function makePublic (options, callback) {
 
 // [START move_file]
 /**
- * Move a file to a new location within the same bucket.
+ * Move a file to a new location within the same bucket, i.e. rename the file.
  *
  * @param {object} options Configuration options.
  * @param {string} options.bucket The name of the bucket.
@@ -303,7 +303,7 @@ cli
       description: 'Specify a delimiter.'
     }
   }, function (options) {
-    if (options.prefix !== undefined) {
+    if (options.prefix) {
       program.listFilesByPrefix(options, console.log);
     } else {
       program.listFiles(options.bucket, console.log);
@@ -324,7 +324,7 @@ cli
   .command('makePublic <bucket> <file>', 'Make a file public in a bucket.', {}, function (options) {
     program.makePublic(options, console.log);
   })
-  .command('move <bucket> <srcFile> <destFile>', 'Rename a file in a bucket.', {}, function (options) {
+  .command('move <bucket> <srcFile> <destFile>', 'Move a file to a new location within the same bucket, i.e. rename the file.', {}, function (options) {
     program.moveFile(options, console.log);
   })
   .command('copy <srcBucket> <srcFile> <destBucket> <destFile>', 'Copy a file in a bucket to another bucket.', {}, function (options) {

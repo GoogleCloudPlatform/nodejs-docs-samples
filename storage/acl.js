@@ -41,13 +41,16 @@ function addAccessControl (options, callback) {
   // Reference the specified storage bucket
   var bucket = storage.bucket(options.bucket);
   // Reference the bucket's acl resource
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/bucket?method=acl.add
   var acl = bucket.acl;
 
   if (options.file) {
     // Optionally target a file's acl resource
+    // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/file?method=acl.add
     acl = bucket.file(options.file).acl;
   } else if (options.default) {
     // Optionally add "default" access controls to the bucket
+    // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/bucket?method=acl.default.add
     acl = acl.default;
   }
 
@@ -83,13 +86,16 @@ function getAccessControl (options, callback) {
   // Reference the specified storage bucket
   var bucket = storage.bucket(options.bucket);
   // Reference the bucket's acl resource
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/bucket?method=acl.get
   var acl = bucket.acl;
 
   if (options.file) {
     // Optionally target a file's acl resource
+    // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/file?method=acl.get
     acl = bucket.file(options.file).acl;
   } else if (options.default) {
     // Optionally get "default" access controls for the bucket
+    // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/bucket?method=acl.default.get
     acl = acl.default;
   }
 
@@ -127,13 +133,16 @@ function deleteAccessControl (options, callback) {
   // Reference the specified storage bucket
   var bucket = storage.bucket(options.bucket);
   // Reference the bucket's acl resource
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/bucket?method=acl.delete
   var acl = bucket.acl;
 
   if (options.file) {
     // Optionally target a file's acl resource
+    // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/file?method=acl.delete
     acl = bucket.file(options.file).acl;
   } else if (options.default) {
     // Optionally delete "default" access controls from the bucket
+    // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/storage/bucket?method=acl.default.delete
     acl = acl.default;
   }
 

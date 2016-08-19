@@ -69,6 +69,7 @@ function uploadEncryptedFile (options, callback) {
     encryptionKey: new Buffer(options.key, 'base64')
   };
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
   bucket.upload(options.srcFile, config, function (err, file) {
     if (err) {
       return callback(err);
@@ -102,6 +103,7 @@ function downloadEncryptedFile (options, callback) {
 
   file.setEncryptionKey(new Buffer(options.key, 'base64'));
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
   file.download(config, function (err) {
     if (err) {
       return callback(err);

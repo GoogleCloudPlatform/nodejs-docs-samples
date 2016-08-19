@@ -35,6 +35,7 @@ var storage = Storage();
 function createBucket (name, callback) {
   var bucket = storage.bucket(name);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
   bucket.create(function (err, bucket) {
     if (err) {
       return callback(err);
@@ -53,6 +54,7 @@ function createBucket (name, callback) {
  * @param {function} cb The callback function.
  */
 function listBuckets (callback) {
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage
   storage.getBuckets(function (err, buckets) {
     if (err) {
       return callback(err);
@@ -74,6 +76,7 @@ function listBuckets (callback) {
 function deleteBucket (name, callback) {
   var bucket = storage.bucket(name);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
   bucket.delete(function (err) {
     if (err) {
       return callback(err);

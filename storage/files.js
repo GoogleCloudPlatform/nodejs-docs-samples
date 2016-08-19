@@ -35,6 +35,7 @@ var storage = Storage();
 function listFiles (name, callback) {
   var bucket = storage.bucket(name);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
   bucket.getFiles(function (err, files) {
     if (err) {
       return callback(err);
@@ -86,6 +87,7 @@ function listFilesByPrefix (options, callback) {
     config.delimiter = options.delimiter;
   }
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
   bucket.getFiles(config, function (err, files) {
     if (err) {
       return callback(err);
@@ -109,6 +111,7 @@ function listFilesByPrefix (options, callback) {
 function uploadFile (options, callback) {
   var bucket = storage.bucket(options.bucket);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
   bucket.upload(options.srcFile, function (err, file) {
     if (err) {
       return callback(err);
@@ -137,6 +140,7 @@ function downloadFile (options, callback) {
     destination: options.destFile
   };
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
   file.download(config, function (err) {
     if (err) {
       return callback(err);
@@ -160,6 +164,7 @@ function downloadFile (options, callback) {
 function deleteFile (options, callback) {
   var file = storage.bucket(options.bucket).file(options.file);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
   file.delete(function (err) {
     if (err) {
       return callback(err);
@@ -183,6 +188,7 @@ function deleteFile (options, callback) {
 function getMetadata (options, callback) {
   var file = storage.bucket(options.bucket).file(options.file);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
   file.getMetadata(function (err, metadata) {
     if (err) {
       return callback(err);
@@ -206,6 +212,7 @@ function getMetadata (options, callback) {
 function makePublic (options, callback) {
   var file = storage.bucket(options.bucket).file(options.file);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
   file.makePublic(function (err) {
     if (err) {
       return callback(err);
@@ -230,6 +237,7 @@ function makePublic (options, callback) {
 function moveFile (options, callback) {
   var file = storage.bucket(options.bucket).file(options.srcFile);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
   file.move(options.destFile, function (err, file) {
     if (err) {
       return callback(err);
@@ -256,6 +264,7 @@ function copyFile (options, callback) {
   var file = storage.bucket(options.srcBucket).file(options.srcFile);
   var copy = storage.bucket(options.destBucket).file(options.destFile);
 
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
   file.copy(copy, function (err, file) {
     if (err) {
       return callback(err);

@@ -55,35 +55,27 @@ function generateEncryptionKey () {
  * The file will be encrypted by Google Cloud Storage and only retrievable using
  * the provided encryption key.
  *
- * @param {string} bucketName The bucket where the file will be uploaded.
- * @param {string} srcFileName The local file to be uploaded.
- * @param {string} destFileName The name of the destination file.
- * @param {string} key The encryption key.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The bucket where the file will be uploaded.
+ * @param {string} options.srcFile The local file to be uploaded.
+ * @param {string} options.destFile The name of the destination file.
+ * @param {string} options.key The encryption key.
  * @param {function} callback The callback function.
  */
-function uploadEncryptedFile (bucketName, srcFileName, destFileName, key, callback) {
-  if (!bucketName) {
-    return callback(new Error('"bucketName" is required!'));
-  } else if (!srcFileName) {
-    return callback(new Error('"srcFileName" is required!'));
-  } else if (!destFileName) {
-    return callback(new Error('"destFileName" is required!'));
-  } else if (!key) {
-    return callback(new Error('"key" is required!'));
-  }
-
-  var bucket = storage.bucket(bucketName);
-  var options = {
-    destination: destFileName,
-    encryptionKey: new Buffer(key, 'base64')
+function uploadEncryptedFile (options, callback) {
+  var bucket = storage.bucket(options.bucket);
+  var config = {
+    destination: options.destFile,
+    encryptionKey: new Buffer(options.key, 'base64')
   };
 
-  bucket.upload(srcFileName, options, function (err, file) {
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
+  bucket.upload(options.srcFile, config, function (err, file) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Uploaded encrypted file: %s', destFileName);
+    console.log('Uploaded gs://%s/%s', options.bucket, options.destFile);
     return callback(null, file);
   });
 }
@@ -96,37 +88,28 @@ function uploadEncryptedFile (bucketName, srcFileName, destFileName, key, callba
  * The encryption key provided must be the same key provided when uploading the
  * file.
  *
- * @param {string} bucketName The bucket from which the file will be downloaded.
- * @param {string} srcFileName The name of the file to be downloaded.
- * @param {string} destFileName The local path to which to save the file.
- * @param {string} key The encryption key.
+ * @param {object} options Configuration options.
+ * @param {string} options.bucket The bucket from which the file will be downloaded.
+ * @param {string} options.srcFile The name of the file to be downloaded.
+ * @param {string} options.destFile The local path to which to save the file.
+ * @param {string} options.key The encryption key.
  * @param {function} key The callback function.
  */
-function downloadEncryptedFile (bucketName, srcFileName, destFileName, key, callback) {
-  if (!bucketName) {
-    return callback(new Error('"bucketName" is required!'));
-  } else if (!srcFileName) {
-    return callback(new Error('"srcFileName" is required!'));
-  } else if (!destFileName) {
-    return callback(new Error('"destFileName" is required!'));
-  } else if (!key) {
-    return callback(new Error('"key" is required!'));
-  }
-
-  var bucket = storage.bucket(bucketName);
-  var file = bucket.file(srcFileName);
-  var options = {
-    destination: destFileName
+function downloadEncryptedFile (options, callback) {
+  var file = storage.bucket(options.bucket).file(options.srcFile);
+  var config = {
+    destination: options.destFile
   };
 
-  file.setEncryptionKey(new Buffer(key, 'base64'));
+  file.setEncryptionKey(new Buffer(options.key, 'base64'));
 
-  file.download(options, function (err) {
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
+  file.download(config, function (err) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Downloaded encrypted file: %s', destFileName);
+    console.log('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile);
     return callback(null);
   });
 }
@@ -137,57 +120,50 @@ function downloadEncryptedFile (bucketName, srcFileName, destFileName, key, call
  * Performs a key rotation by re-writing an encrypted blob with a new encryption
  * key.
  *
- * @param {function} key The callback function.
+ * @param {function} callback The callback function.
  */
 function rotateEncryptionKey (callback) {
   callback(new Error('This is currently not available using the Cloud Client Library.'));
 }
 // [END rotate_encryption_key]
-
-// [START usage]
-function printUsage () {
-  console.log('Usage: node encryption COMMAND [ARGS...]');
-  console.log('\nCommands:\n');
-  console.log('\tgenerate-encryption-key');
-  console.log('\tupload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY');
-  console.log('\tdownload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY');
-  console.log('\trotate BUCKET_NAME FILE_NAME OLD_KEY NEW_KEY');
-  console.log('\nExamples:\n');
-  console.log('\tnode encryption generate-encryption-key');
-  console.log('\tnode encryption upload my-bucket resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=');
-  console.log('\tnode encryption download my-bucket file_encrypted.txt ./file.txt QxhqaZEqBGVTW55HhQw9Q=');
-  console.log('\tnode encryption rotate my-bucket file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=');
-}
-// [END usage]
+// [END all]
 
 // The command-line program
-var program = {
+var cli = require('yargs');
+
+var program = module.exports = {
   generateEncryptionKey: generateEncryptionKey,
   uploadEncryptedFile: uploadEncryptedFile,
   downloadEncryptedFile: downloadEncryptedFile,
   rotateEncryptionKey: rotateEncryptionKey,
-  printUsage: printUsage,
-
-  // Executed when this program is run from the command-line
-  main: function (args, cb) {
-    var command = args.shift();
-    if (command === 'generate-encryption-key') {
-      this.generateEncryptionKey();
-    } else if (command === 'upload') {
-      this.uploadEncryptedFile(args[0], args[1], args[2], args[3], cb);
-    } else if (command === 'download') {
-      this.downloadEncryptedFile(args[0], args[1], args[2], args[3], cb);
-    } else if (command === 'rotate') {
-      this.rotateEncryptionKey(cb);
-    } else {
-      this.printUsage();
-    }
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
   }
 };
 
-if (module === require.main) {
-  program.main(process.argv.slice(2), console.log);
-}
-// [END all]
+cli
+  .demand(1)
+  .command('generate-encryption-key', 'Generate a sample encryption key.', {}, function () {
+    program.generateEncryptionKey();
+  })
+  .command('upload <bucket> <srcFile> <destFile> <key>', 'Upload an encrypted file to a bucket.', {}, function (options) {
+    program.uploadEncryptedFile(options, console.log);
+  })
+  .command('download <bucket> <srcFile> <destFile> <key>', 'Download an encrypted file from a bucket.', {}, function (options) {
+    program.downloadEncryptedFile(options, console.log);
+  })
+  .command('rotate <bucket> <file> <oldkey> <newKey>', 'Rotate encryption keys for a file.', {}, function () {
+    program.rotateEncryptionKey(console.log);
+  })
+  .example('node $0 generate-encryption-key', 'Generate a sample encryption key.')
+  .example('node $0 upload my-bucket resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=', 'Upload "resources/test.txt" to "gs://my-bucket/file_encrypted.txt".')
+  .example('node $0 download my-bucket file_encrypted.txt ./file.txt QxhqaZEqBGVTW55HhQw9Q=', 'Download "gs://my-bucket/file_encrypted.txt" to "./file.txt".')
+  .example('node $0 rotate my-bucket file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=', 'Rotate encryptiong keys for "gs://my-bucket/file_encrypted.txt".')
+  .wrap(120)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/storage/docs');
 
-module.exports = program;
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}

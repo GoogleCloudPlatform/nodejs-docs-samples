@@ -50,7 +50,8 @@ function getSample () {
 
   return {
     program: proxyquire('../acl', {
-      '@google-cloud/storage': StorageMock
+      '@google-cloud/storage': StorageMock,
+      yargs: proxyquire('yargs', {})
     }),
     mocks: {
       Storage: StorageMock,
@@ -63,7 +64,7 @@ function getSample () {
 }
 
 describe('storage:acl', function () {
-  describe('add', function () {
+  describe('addAccessControl', function () {
     it('should add access controls to bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -87,6 +88,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Added access controls to: gs://%s', bucketName, ''));
     });
+
     it('should add "default" access controls to bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -111,6 +113,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Added access controls to: gs://%s', bucketName, ''));
     });
+
     it('should add access controls to a file', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -135,6 +138,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Added access controls to: gs://%s/%s', bucketName, fileName));
     });
+
     it('should handle error', function () {
       var error = 'error';
       var sample = getSample();
@@ -154,7 +158,7 @@ describe('storage:acl', function () {
     });
   });
 
-  describe('get', function () {
+  describe('getAccessControl', function () {
     it('should get all access controls for a bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -172,6 +176,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Got access controls for: gs://%s', bucketName, ''));
     });
+
     it('should get all "default" access controls for a bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -190,6 +195,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Got access controls for: gs://%s', bucketName, ''));
     });
+
     it('should get an entity\'s access controls for a bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -212,6 +218,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Got access controls for: gs://%s', bucketName, ''));
     });
+
     it('should get an entity\'s "default" access controls for a bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -235,6 +242,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Got access controls for: gs://%s', bucketName, ''));
     });
+
     it('should get access controls for a file', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -253,6 +261,7 @@ describe('storage:acl', function () {
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
       assert(console.log.calledWith('Got access controls for: gs://%s/%s', bucketName, fileName));
     });
+
     it('should handle error', function () {
       var error = 'error';
       var sample = getSample();
@@ -271,7 +280,7 @@ describe('storage:acl', function () {
     });
   });
 
-  describe('delete', function () {
+  describe('deleteAccessControl', function () {
     it('should delete an entity\'s access controls from a bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -293,6 +302,7 @@ describe('storage:acl', function () {
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
       assert(console.log.calledWith('Deleted access controls from: gs://%s', bucketName, ''));
     });
+
     it('should delete an entity\'s "default" access controls from a bucket', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -315,6 +325,7 @@ describe('storage:acl', function () {
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
       assert(console.log.calledWith('Deleted access controls from: gs://%s', bucketName, ''));
     });
+
     it('should delete access controls from a file', function () {
       var sample = getSample();
       var callback = sinon.stub();
@@ -333,6 +344,7 @@ describe('storage:acl', function () {
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
       assert(console.log.calledWith('Deleted access controls from: gs://%s/%s', bucketName, fileName));
     });
+
     it('should handle error', function () {
       var error = 'error';
       var sample = getSample();
@@ -356,7 +368,7 @@ describe('storage:acl', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'addAccessControl');
-      program.main(['add', 'owners-1234', 'OWNER', '-b', 'nodejs-docs-samples']);
+      program.main(['add', entity, role, '-b', bucketName]);
       assert(program.addAccessControl.calledOnce);
     });
 
@@ -364,15 +376,15 @@ describe('storage:acl', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'getAccessControl');
-      program.main(['get', 'owners-1234', '-b', 'nodejs-docs-samples']);
+      program.main(['get', entity, '-b', bucketName]);
       assert(program.getAccessControl.calledOnce);
     });
 
-    it('should call getAccessControl', function () {
+    it('should call deleteAccessControl', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'deleteAccessControl');
-      program.main(['delete', 'owners-1234', '-b', 'nodejs-docs-samples']);
+      program.main(['delete', entity, '-b', bucketName]);
       assert(program.deleteAccessControl.calledOnce);
     });
   });

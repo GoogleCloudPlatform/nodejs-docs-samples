@@ -58,7 +58,15 @@ describe('storage:transfer', function () {
 
   describe('createTransferJob', function () {
     it('should create a storage transfer job', function (done) {
-      program.createTransferJob(firstBucketName, secondBucketName, date, time, description, function (err, transferJob) {
+      var options = {
+        srcBucket: firstBucketName,
+        destBucket: secondBucketName,
+        date: date,
+        time: time,
+        description: description
+      };
+
+      program.createTransferJob(options, function (err, transferJob) {
         assert.ifError(err);
         jobName = transferJob.name;
         assert.equal(transferJob.name.indexOf('transferJobs/'), 0);
@@ -85,7 +93,13 @@ describe('storage:transfer', function () {
 
   describe('updateTransferJob', function () {
     it('should update a transferJob', function (done) {
-      program.updateTransferJob(jobName, 'status', status, function (err, transferJob) {
+      var options = {
+        job: jobName,
+        field: 'status',
+        value: status
+      };
+
+      program.updateTransferJob(options, function (err, transferJob) {
         assert.ifError(err);
         assert.equal(transferJob.name, jobName);
         assert.equal(transferJob.description, description);

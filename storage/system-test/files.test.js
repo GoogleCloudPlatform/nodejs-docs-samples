@@ -31,6 +31,7 @@ describe('storage:files', function () {
   before(function (done) {
     storage.createBucket(bucketName, done);
   });
+
   after(function (done) {
     try {
       fs.unlinkSync(downloadFilePath);
@@ -44,39 +45,60 @@ describe('storage:files', function () {
       storage.bucket(bucketName).delete(done);
     });
   });
+
   describe('uploadFile', function () {
     it('should upload a file', function (done) {
-      filesExample.uploadFile(bucketName, filePath, function (err, file) {
+      var options = {
+        bucket: bucketName,
+        srcFile: filePath
+      };
+
+      filesExample.uploadFile(options, function (err, file) {
         assert.ifError(err);
         assert(file);
         assert.equal(file.name, fileName);
-        assert(console.log.calledWith('Uploaded file: %s', filePath));
+        assert(console.log.calledWith('Uploaded gs://%s/%s', options.bucket, options.srcFile));
         done();
       });
     });
   });
+
   describe('downloadFile', function () {
     it('should download a file', function (done) {
-      filesExample.downloadFile(bucketName, fileName, downloadFilePath, function (err) {
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: downloadFilePath
+      };
+
+      filesExample.downloadFile(options, function (err) {
         assert.ifError(err);
         assert.doesNotThrow(function () {
           fs.statSync(downloadFilePath);
         });
-        assert(console.log.calledWith('Downloaded %s to %s', fileName, downloadFilePath));
+        assert(console.log.calledWith('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile));
         done();
       });
     });
   });
+
   describe('moveFile', function () {
     it('should move a file', function (done) {
-      filesExample.moveFile(bucketName, fileName, movedFileName, function (err, file) {
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: movedFileName
+      };
+
+      filesExample.moveFile(options, function (err, file) {
         assert.ifError(err);
         assert.equal(file.name, movedFileName);
-        assert(console.log.calledWith('%s moved to %s', fileName, movedFileName));
+        assert(console.log.calledWith('Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile));
         done();
       });
     });
   });
+
   describe('listFiles', function () {
     it('should list files', function (done) {
       filesExample.listFiles(bucketName, function (err, files) {
@@ -84,65 +106,103 @@ describe('storage:files', function () {
         assert(Array.isArray(files));
         assert.equal(files.length, 1);
         assert.equal(files[0].name, movedFileName);
-        assert(console.log.calledWith('Found %d files!', files.length));
+        assert(console.log.calledWith('Found %d file(s)!', files.length));
         done();
       });
     });
   });
+
   describe('copyFile', function () {
     it('should copy a file', function (done) {
-      filesExample.copyFile(bucketName, movedFileName, bucketName, copiedFileName, function (err, file) {
+      var options = {
+        srcBucket: bucketName,
+        srcFile: movedFileName,
+        destBucket: bucketName,
+        destFile: copiedFileName
+      };
+
+      filesExample.copyFile(options, function (err, file) {
         assert.ifError(err);
         assert.equal(file.name, copiedFileName);
-        assert(console.log.calledWith('%s moved to %s in %s', movedFileName, copiedFileName, bucketName));
+        assert(console.log.calledWith('Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile));
         done();
       });
     });
   });
-  describe('listFilesWithPrefix', function () {
+
+  describe('listFilesByPrefix', function () {
     it('should list files by a prefix', function (done) {
-      filesExample.listFilesWithPrefix(bucketName, 'test', undefined, function (err, files) {
+      var options = {
+        bucket: bucketName,
+        prefix: 'test'
+      };
+
+      filesExample.listFilesByPrefix(options, function (err, files) {
         assert.ifError(err);
         assert(Array.isArray(files));
-        assert.equal(files.length, 1);
-        assert.equal(files[0].name, copiedFileName);
-        assert(console.log.calledWith('Found %d files!', files.length));
-        filesExample.listFilesWithPrefix(bucketName, 'foo', undefined, function (err, files) {
+        assert.equal(files.length, 2);
+        assert.equal(files[0].name, movedFileName);
+        assert.equal(files[1].name, copiedFileName);
+        assert(console.log.calledWith('Found %d file(s)!', files.length));
+
+        options = {
+          bucket: bucketName,
+          prefix: 'foo'
+        };
+
+        filesExample.listFilesByPrefix(options, function (err, files) {
           assert.ifError(err);
           assert(Array.isArray(files));
           assert.equal(files.length, 0);
-          assert(console.log.calledWith('Found %d files!', files.length));
+          assert(console.log.calledWith('Found %d file(s)!', files.length));
           done();
         });
       });
     });
   });
+
   describe('makePublic', function () {
     it('should make a file public', function (done) {
-      filesExample.makePublic(bucketName, copiedFileName, function (err, apiResponse) {
+      var options = {
+        bucket: bucketName,
+        file: copiedFileName
+      };
+
+      filesExample.makePublic(options, function (err) {
         assert.ifError(err);
-        assert(apiResponse);
-        assert(console.log.calledWith('Made %s public!', copiedFileName));
+        assert(console.log.calledWith('Made gs://%s/%s public!', options.bucket, options.file));
         done();
       });
     });
   });
+
   describe('getMetadata', function () {
     it('should get metadata for a file', function (done) {
-      filesExample.getMetadata(bucketName, copiedFileName, function (err, metadata) {
+      var options = {
+        bucket: bucketName,
+        file: copiedFileName
+      };
+
+      filesExample.getMetadata(options, function (err, metadata) {
         assert.ifError(err);
         assert(metadata);
         assert.equal(metadata.name, copiedFileName);
-        assert(console.log.calledWith('Got metadata for file: %s', copiedFileName));
+        assert(console.log.calledWith('Got metadata for gs://%s/%s', options.bucket, options.file));
         done();
       });
     });
   });
+
   describe('deleteFile', function () {
     it('should delete a file', function (done) {
-      filesExample.deleteFile(bucketName, copiedFileName, function (err) {
+      var options = {
+        bucket: bucketName,
+        file: copiedFileName
+      };
+
+      filesExample.deleteFile(options, function (err) {
         assert.ifError(err);
-        assert(console.log.calledWith('Deleted file: %s', copiedFileName));
+        assert(console.log.calledWith('Deleted gs://%s/%s', options.bucket, options.file));
         done();
       });
     });

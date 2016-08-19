@@ -27,6 +27,65 @@ accept your pull requests.
 1. Fork the desired repo, develop and test your code changes.
 1. Ensure that your code adheres to the existing style in the sample to which you are contributing. Refer to the
    [Google Cloud Platform Samples Style Guide](https://github.com/GoogleCloudPlatform/Template/wiki/style.html) for the
-   recommended coding standards for this organization.  You can run `npm run jshint` to match our JavaScript coding standards. 
+   recommended coding standards for this organization.  You can run `npm run jshint` to match our JavaScript coding standards.
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. Submit a pull request!
+
+## Sample template
+
+```
+<LICENSE_HEADER>
+
+// [START all]
+// [START setup]
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+var <API_CLIENT> = require('@google-cloud/<API>');
+
+// Instantiate a <API> client
+var <CLIENT> = <API_CLIENT>();
+// [END setup]
+
+// [START <REGION_TAG_NAME>]
+/**
+ * <DESCRIPTION>
+ *
+ * @param {<TYPE>} <NAME> <DESCRIPTION>.
+ * @param {function} cb The callback function.
+ */
+function <METHOD_NAME> (<ARGUMENTS>, callback) {
+  // <SETUP>
+
+  // <RUN SAMPLE CODE>
+
+  // Inside callback: console.log(<MESSAGE>)
+}
+// [END <REGION_TAG_NAME>]
+
+// The command-line program
+var cli = require('yargs');
+
+var program = module.exports = {
+  <METHOD_NAME>: <METHOD_NAME>,
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
+  }
+};
+
+cli
+  .demand(1)
+  .command('<COMMAND> <ARGS>', '<DESCRIPTION>.', {}, function (options) {
+    program.<METHOD_NAME>(options, console.log);
+  })
+  .example('node $0 <COMMAND> <ARGS>', '<DESCRIPTION>.')
+  .wrap(100)
+  .recommendCommands()
+  .epilogue('For more information, see <DOCS_LINK>');
+
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}
+```

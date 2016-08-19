@@ -15,6 +15,8 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 var bucketName = 'foo';
+var fileName = 'file.txt';
+var key = 'keyboard-cat';
 
 function getSample () {
   var filesMock = [
@@ -37,7 +39,8 @@ function getSample () {
   var StorageMock = sinon.stub().returns(storageMock);
   return {
     program: proxyquire('../encryption', {
-      '@google-cloud/storage': StorageMock
+      '@google-cloud/storage': StorageMock,
+      yargs: proxyquire('yargs', {})
     }),
     mocks: {
       Storage: StorageMock,
@@ -60,121 +63,95 @@ describe('storage:encryption', function () {
   });
 
   describe('uploadEncryptedFile', function () {
-    var fileName = 'test.txt';
     it('should upload a file', function () {
       var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        key: key
+      };
 
-      sample.program.uploadEncryptedFile(bucketName, fileName, fileName, 'key', function (err, file) {
-        assert.ifError(err);
-        assert.strictEqual(file, sample.mocks.files[0]);
-        assert(console.log.calledWith('Uploaded encrypted file: %s', fileName));
-      });
-    });
-    it('should require bucket', function () {
-      var sample = getSample();
+      sample.program.uploadEncryptedFile(options, callback);
 
-      sample.program.uploadEncryptedFile(undefined, undefined, undefined, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"bucket" is required!');
-        assert.equal(file, undefined);
-      });
+      assert(sample.mocks.bucket.upload.calledOnce, 'upload called once');
+      assert.equal(sample.mocks.bucket.upload.firstCall.args.length, 3, 'upload received 3 arguments');
+      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[0], fileName, 'upload received file name');
+      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[1], {
+        destination: options.destFile,
+        encryptionKey: new Buffer(options.key, 'base64')
+      }, 'upload received config');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
+      assert(console.log.calledWith('Uploaded gs://%s/%s', options.bucket, options.destFile));
     });
-    it('should require srcFileName', function () {
-      var sample = getSample();
 
-      sample.program.uploadEncryptedFile(bucketName, undefined, undefined, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"srcFileName" is required!');
-        assert.equal(file, undefined);
-      });
-    });
-    it('should require destFileName', function () {
-      var sample = getSample();
-
-      sample.program.uploadEncryptedFile(bucketName, fileName, undefined, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"destFileName" is required!');
-        assert.equal(file, undefined);
-      });
-    });
-    it('should require key', function () {
-      var sample = getSample();
-
-      sample.program.uploadEncryptedFile(bucketName, fileName, fileName, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"key" is required!');
-        assert.equal(file, undefined);
-      });
-    });
     it('should handle error', function () {
       var error = 'error';
       var sample = getSample();
-      sample.mocks.bucket.upload = sinon.stub().callsArgWith(2, new Error(error));
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        key: key
+      };
+      sample.mocks.bucket.upload = sinon.stub().callsArgWith(2, error);
 
-      sample.program.uploadEncryptedFile(bucketName, fileName, fileName, 'key', function (err, file) {
-        assert(err);
-        assert.equal(err.message, error);
-        assert.equal(file, undefined);
-      });
+      sample.program.uploadEncryptedFile(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
 
   describe('downloadEncryptedFile', function () {
-    var fileName = 'test.txt';
     it('should download a file', function () {
       var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        key: key
+      };
 
-      sample.program.downloadEncryptedFile(bucketName, fileName, fileName, 'key', function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Downloaded encrypted file: %s', fileName));
-      });
-    });
-    it('should require bucket', function () {
-      var sample = getSample();
+      sample.program.downloadEncryptedFile(options, callback);
 
-      sample.program.downloadEncryptedFile(undefined, undefined, undefined, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"bucket" is required!');
-        assert.equal(file, undefined);
-      });
+      assert(sample.mocks.file.download.calledOnce, 'download called once');
+      assert.equal(sample.mocks.file.download.firstCall.args.length, 2, 'download received 2 arguments');
+      assert.deepEqual(sample.mocks.file.download.firstCall.args[0], {
+        destination: options.destFile
+      }, 'download received config');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+      assert(console.log.calledWith('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile));
     });
-    it('should require srcFileName', function () {
-      var sample = getSample();
 
-      sample.program.downloadEncryptedFile(bucketName, undefined, undefined, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"srcFileName" is required!');
-        assert.equal(file, undefined);
-      });
-    });
-    it('should require destFileName', function () {
-      var sample = getSample();
-
-      sample.program.downloadEncryptedFile(bucketName, fileName, undefined, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"destFileName" is required!');
-        assert.equal(file, undefined);
-      });
-    });
-    it('should require key', function () {
-      var sample = getSample();
-
-      sample.program.downloadEncryptedFile(bucketName, fileName, fileName, undefined, function (err, file) {
-        assert(err);
-        assert(err.message = '"key" is required!');
-        assert.equal(file, undefined);
-      });
-    });
     it('should handle error', function () {
       var error = 'error';
       var sample = getSample();
-      sample.mocks.file.download = sinon.stub().callsArgWith(1, new Error(error));
+      var callback = sinon.stub();
+      var options = {
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        key: key
+      };
+      sample.mocks.file.download = sinon.stub().callsArgWith(1, error);
 
-      sample.program.downloadEncryptedFile(bucketName, fileName, fileName, 'key', function (err, file) {
-        assert(err);
-        assert.equal(err.message, error);
-        assert.equal(file, undefined);
-      });
+      sample.program.downloadEncryptedFile(options, callback);
+
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
     });
   });
 
@@ -182,57 +159,49 @@ describe('storage:encryption', function () {
     it('should be implemented');
     it('should rotate an encryption key', function () {
       var sample = getSample();
+      var callback = sinon.stub();
+      var expected = 'This is currently not available using the Cloud Client Library.';
 
-      sample.program.rotateEncryptionKey(function (err) {
-        assert(err);
-        assert.equal(err.message, 'This is currently not available using the Cloud Client Library.');
-      });
-    });
-  });
+      sample.program.rotateEncryptionKey(callback);
 
-  describe('printUsage', function () {
-    it('should print usage', function () {
-      var program = getSample().program;
-
-      program.printUsage();
-
-      assert(console.log.calledWith('Usage: node encryption COMMAND [ARGS...]'));
-      assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tgenerate-encryption-key'));
-      assert(console.log.calledWith('\tupload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY'));
-      assert(console.log.calledWith('\tdownload BUCKET_NAME SRC_FILE_NAME DEST_FILE_NAME KEY'));
-      assert(console.log.calledWith('\trotate BUCKET_NAME FILE_NAME OLD_KEY NEW_KEY'));
-      assert(console.log.calledWith('\nExamples:\n'));
-      assert(console.log.calledWith('\tnode encryption generate-encryption-key'));
-      assert(console.log.calledWith('\tnode encryption upload my-bucket resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q='));
-      assert(console.log.calledWith('\tnode encryption download my-bucket file_encrypted.txt ./file.txt QxhqaZEqBGVTW55HhQw9Q='));
-      assert(console.log.calledWith('\tnode encryption rotate my-bucket file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q='));
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
+      assert(callback.firstCall.args[0], 'callback received error');
+      assert.equal(callback.firstCall.args[0].message, expected, 'error has correct message');
     });
   });
 
   describe('main', function () {
-    it('should call the right commands', function () {
+    it('should call generateEncryptionKey', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'generateEncryptionKey');
       program.main(['generate-encryption-key']);
       assert(program.generateEncryptionKey.calledOnce);
+    });
+
+    it('should call uploadEncryptedFile', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'uploadEncryptedFile');
-      program.main(['upload']);
+      program.main(['upload', bucketName, fileName, fileName, key]);
       assert(program.uploadEncryptedFile.calledOnce);
+    });
+
+    it('should call downloadEncryptedFile', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'downloadEncryptedFile');
-      program.main(['download']);
+      program.main(['download', bucketName, fileName, fileName, key]);
       assert(program.downloadEncryptedFile.calledOnce);
+    });
+
+    it('should call rotateEncryptionKey', function () {
+      var program = getSample().program;
 
       sinon.stub(program, 'rotateEncryptionKey');
-      program.main(['rotate']);
+      program.main(['rotate', bucketName, fileName, key, key]);
       assert(program.rotateEncryptionKey.calledOnce);
-
-      sinon.stub(program, 'printUsage');
-      program.main(['--help']);
-      assert(program.printUsage.calledOnce);
     });
   });
 });

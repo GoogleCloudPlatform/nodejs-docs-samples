@@ -51,20 +51,17 @@ function auth (callback) {
 /**
  * Review the transfer operations associated with a transfer job.
  *
- * @param {string} srcBucketName The name of the source bucket.
- * @param {string} destBucketName The name of the destination bucket.
- * @param {string} [description] Optional description for the new transfer job.
+ * @param {object} options Configuration options.
+ * @param {string} options.srcBucket The name of the source bucket.
+ * @param {string} options.destBucket The name of the destination bucket.
+ * @param {string} options.date The date of the first transfer in the format YYYY/MM/DD.
+ * @param {string} options.time The time of the first transfer in the format HH:MM.
+ * @param {string} [options.description] Optional. Description for the new transfer job.
  * @param {function} callback The callback function.
  */
-function createTransferJob (srcBucketName, destBucketName, date, time, description, callback) {
-  if (!srcBucketName) {
-    return callback(new Error('"srcBucketName" is required!'));
-  } else if (!destBucketName) {
-    return callback(new Error('"destBucketName" is required!'));
-  }
-
-  var startDate = moment(date, 'YYYY/MM/DD');
-  var transferTime = moment(time, 'HH:mm');
+function createTransferJob (options, callback) {
+  var startDate = moment(options.date, 'YYYY/MM/DD');
+  var transferTime = moment(options.time, 'HH:mm');
 
   auth(function (err, authClient) {
     if (err) {
@@ -76,10 +73,10 @@ function createTransferJob (srcBucketName, destBucketName, date, time, descripti
       status: 'ENABLED',
       transferSpec: {
         gcsDataSource: {
-          bucketName: srcBucketName
+          bucketName: options.srcBucket
         },
         gcsDataSink: {
-          bucketName: destBucketName
+          bucketName: options.destBucket
         },
         transferOptions: {
           deleteObjectsFromSourceAfterTransfer: false
@@ -98,8 +95,8 @@ function createTransferJob (srcBucketName, destBucketName, date, time, descripti
       }
     };
 
-    if (description) {
-      transferJob.description = description;
+    if (options.description) {
+      transferJob.description = options.description;
     }
 
     storagetransfer.transferJobs.create({
@@ -125,10 +122,6 @@ function createTransferJob (srcBucketName, destBucketName, date, time, descripti
  * @param {function} callback The callback function.
  */
 function getTransferJob (jobName, callback) {
-  if (!jobName) {
-    return callback(new Error('"jobName" is required!'));
-  }
-
   auth(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -154,20 +147,13 @@ function getTransferJob (jobName, callback) {
 /**
  * Get a transfer job.
  *
- * @param {string} jobName The name of the transfer job to get.
- * @param {string} field The field to update. Can be description, status, or transferSpec.
- * @param {string} value The new value for the field.
+ * @param {object} options Configuration options.
+ * @param {string} options.job The name of the transfer job to get.
+ * @param {string} options.field The field to update. Can be description, status, or transferSpec.
+ * @param {string} options.value The new value for the field.
  * @param {function} callback The callback function.
  */
-function updateTransferJob (jobName, field, value, callback) {
-  if (!jobName) {
-    return callback(new Error('"jobName" is required!'));
-  } else if (!field) {
-    return callback(new Error('"field" is required!'));
-  } else if (!value) {
-    return callback(new Error('"value" is required!'));
-  }
-
+function updateTransferJob (options, callback) {
   auth(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -176,22 +162,22 @@ function updateTransferJob (jobName, field, value, callback) {
     var patchRequest = {
       projectId: process.env.GCLOUD_PROJECT,
       transferJob: {
-        name: jobName
+        name: options.job
       },
-      updateTransferJobFieldMask: field
+      updateTransferJobFieldMask: options.field
     };
 
-    if (field === 'description') {
-      patchRequest.transferJob.description = value;
-    } else if (field === 'status') {
-      patchRequest.transferJob.status = value;
-    } else if (field === 'transferSpec') {
-      patchRequest.transferJob.transferSpec = JSON.parse(value);
+    if (options.field === 'description') {
+      patchRequest.transferJob.description = options.value;
+    } else if (options.field === 'status') {
+      patchRequest.transferJob.status = options.value;
+    } else if (options.field === 'transferSpec') {
+      patchRequest.transferJob.transferSpec = JSON.parse(options.value);
     }
 
     storagetransfer.transferJobs.patch({
       auth: authClient,
-      jobName: jobName,
+      jobName: options.job,
       resource: patchRequest
     }, function (err, transferJob) {
       if (err) {
@@ -281,10 +267,6 @@ function listTransferOperations (jobName, callback) {
  * @param {function} callback The callback function.
  */
 function getTransferOperation (transferOperationName, callback) {
-  if (!transferOperationName) {
-    return callback(new Error('"transferOperationName" is required!'));
-  }
-
   auth(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -313,10 +295,6 @@ function getTransferOperation (transferOperationName, callback) {
  * @param {function} callback The callback function.
  */
 function pauseTransferOperation (transferOperationName, callback) {
-  if (!transferOperationName) {
-    return callback(new Error('"transferOperationName" is required!'));
-  }
-
   auth(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -345,10 +323,6 @@ function pauseTransferOperation (transferOperationName, callback) {
  * @param {function} callback The callback function.
  */
 function resumeTransferOperation (transferOperationName, callback) {
-  if (!transferOperationName) {
-    return callback(new Error('"transferOperationName" is required!'));
-  }
-
   auth(function (err, authClient) {
     if (err) {
       return callback(err);
@@ -368,39 +342,12 @@ function resumeTransferOperation (transferOperationName, callback) {
   });
 }
 // [END resume_transfer_operation]
-
-// [START usage]
-function printUsage () {
-  console.log('Usage: node encryption RESOURCE COMMAND [ARGS...]');
-  console.log('\nResources:\n');
-  console.log('    jobs');
-  console.log('\n\tCommands:\n');
-  console.log('\t\tcreate SRC_BUCKET_NAME DEST_BUCKET_NAME DATE TIME [DESCRIPTION]');
-  console.log('\t\tget JOB_NAME');
-  console.log('\t\tlist');
-  console.log('\t\tset JOB_NAME FIELD VALUE');
-  console.log('\n    operations');
-  console.log('\n\tCommands:\n');
-  console.log('\t\tlist [JOB_NAME]');
-  console.log('\t\tget TRANSFER_NAME');
-  console.log('\t\tpause TRANSFER_NAME');
-  console.log('\t\tresume TRANSFER_NAME');
-  console.log('\nExamples:\n');
-  console.log('\tnode transfer jobs create my-bucket my-other-bucket 2016/08/12 16:30 "Move my files"');
-  console.log('\tnode transfer jobs get transferJobs/123456789012345678');
-  console.log('\tnode transfer jobs list');
-  console.log('\tnode transfer jobs set transferJobs/123456789012345678 description "My new description"');
-  console.log('\tnode transfer jobs set transferJobs/123456789012345678 status DISABLED');
-  console.log('\tnode transfer operations list');
-  console.log('\tnode transfer operations list transferJobs/123456789012345678');
-  console.log('\tnode transfer operations get transferOperations/123456789012345678');
-  console.log('\tnode transfer operations pause transferOperations/123456789012345678');
-  console.log('\tnode transfer operations resume transferOperations/123456789012345678');
-}
-// [END usage]
+// [END all]
 
 // The command-line program
-var program = {
+var cli = require('yargs');
+
+var program = module.exports = {
   createTransferJob: createTransferJob,
   getTransferJob: getTransferJob,
   listTransferJobs: listTransferJobs,
@@ -409,45 +356,64 @@ var program = {
   getTransferOperation: getTransferOperation,
   pauseTransferOperation: pauseTransferOperation,
   resumeTransferOperation: resumeTransferOperation,
-  printUsage: printUsage,
-
-  // Executed when this program is run from the command-line
-  main: function (args, cb) {
-    var resource = args.shift();
-    var command = args.shift();
-    if (resource === 'jobs') {
-      if (command === 'create') {
-        this.createTransferJob(args[0], args[1], args[2], args[3], args[4], cb);
-      } else if (command === 'get') {
-        this.getTransferJob(args[0], cb);
-      } else if (command === 'list') {
-        this.listTransferJobs(cb);
-      } else if (command === 'set') {
-        this.updateTransferJob(args[0], args[1], args[2], cb);
-      } else {
-        this.printUsage();
-      }
-    } else if (resource === 'operations') {
-      if (command === 'list') {
-        this.listTransferOperations(args[0], cb);
-      } else if (command === 'get') {
-        this.getTransferOperation(args[0], cb);
-      } else if (command === 'pause') {
-        this.pauseTransferOperation(args[0], cb);
-      } else if (command === 'resume') {
-        this.resumeTransferOperation(args[0], cb);
-      } else {
-        this.printUsage();
-      }
-    } else {
-      this.printUsage();
-    }
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
   }
 };
 
-if (module === require.main) {
-  program.main(process.argv.slice(2), console.log);
-}
-// [END all]
+cli
+  .demand(1)
+  .command('jobs <cmd> [args]', 'Run a job command.', function (yargs) {
+    yargs
+      .demand(2)
+      .command('create <srcBucket> <destBucket> <time> <date> [description]', 'Create a transfer job.', {}, function (options) {
+        program.createTransferJob(options, console.log);
+      })
+      .command('get <job>', 'Get a transfer job.', function (options) {
+        program.getTransferJob(options.job, console.log);
+      })
+      .command('list', 'List transfer jobs.', function (options) {
+        program.listTransferJobs(options, console.log);
+      })
+      .command('set <job> <field> <value>', 'Change the status, description or transferSpec of a transfer job.', function (options) {
+        program.updateTransferJob(options, console.log);
+      })
+      .example('node $0 jobs create my-bucket my-other-bucket 2016/08/12 16:30 "Move my files"', 'Create a transfer job.')
+      .example('node $0 jobs get transferJobs/123456789012345678', 'Get a transfer job.')
+      .example('node $0 jobs list', 'List transfer jobs.')
+      .example('node $0 jobs set transferJobs/123456789012345678 description "My new description"', 'Update the description for a transfer job.')
+      .example('node $0 jobs set transferJobs/123456789012345678 status DISABLED', 'Disable a transfer job.')
+      .wrap(100);
+  }, function () {})
+  .command('operations <cmd> [args]', 'Run an operation command.', function (yargs) {
+    yargs
+      .demand(2)
+      .command('list [job]', 'List transfer operations, optionally filtering by a job name.', function (options) {
+        program.listTransferOperations(options.job, console.log);
+      })
+      .command('get <operation>', 'Get a transfer operation.', function (options) {
+        program.getTransferOperation(options.operation, console.log);
+      })
+      .command('pause <operation>', 'Pause a transfer operation.', function (options) {
+        program.pauseTransferOperation(options.operation, console.log);
+      })
+      .command('resume <operation>', 'Resume a transfer operation.', function (options) {
+        program.resumeTransferOperation(options.operation, console.log);
+      })
+      .example('node $0 operations list', 'List all transfer operations.')
+      .example('node $0 operations list transferJobs/123456789012345678', 'List all transfer operations for a specific job.')
+      .example('node $0 operations get transferOperations/123456789012345678', 'Get a transfer operation.')
+      .example('node $0 operations pause transferOperations/123456789012345678', 'Pause a transfer operation.')
+      .example('node $0 operations resume transferOperations/123456789012345678', 'Resume a transfer operation.')
+      .wrap(100);
+  }, function () {})
+  .example('node $0 jobs --help', 'Show job commands.')
+  .example('node $0 operations --help', 'Show operations commands.')
+  .wrap(100)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/storage/transfer');
 
-module.exports = program;
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}

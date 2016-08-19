@@ -25,7 +25,7 @@ var fileName = 'test.txt';
 var filePath = path.join(__dirname, '../resources', fileName);
 var downloadFilePath = path.join(__dirname, '../resources/downloaded.txt');
 
-describe.only('storage:encryption', function () {
+describe('storage:encryption', function () {
   var key;
 
   before(function (done) {

@@ -168,14 +168,12 @@ describe('storage:transfer', function () {
 
     describe('set', function () {
       it('should update a transfer job', function () {
-        var field = 'status';
-        var value = 'DISABLED';
         var sample = getSample();
         var callback = sinon.stub();
         var options = {
           job: jobName,
-          field: field,
-          value: value
+          field: 'status',
+          value: 'DISABLED'
         };
 
         sample.program.updateTransferJob(options, callback);
@@ -208,15 +206,13 @@ describe('storage:transfer', function () {
       });
 
       it('should handle auth error', function () {
-        var field = 'status';
-        var value = 'DISABLED';
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
         var options = {
           job: jobName,
-          field: field,
-          value: value
+          field: 'status',
+          value: 'DISABLED'
         };
         sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
 
@@ -229,15 +225,13 @@ describe('storage:transfer', function () {
       });
 
       it('should handle patch error', function () {
-        var field = 'status';
-        var value = 'DISABLED';
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
         var options = {
           job: jobName,
-          field: field,
-          value: value
+          field: 'status',
+          value: 'DISABLED'
         };
         sample.mocks.storagetransfer.transferJobs.patch.callsArgWith(1, error);
 

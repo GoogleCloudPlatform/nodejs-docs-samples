@@ -37,6 +37,7 @@ on Google Cloud Platform.
   * [Google Cloud Pub/Sub](#google-cloud-pubsub)
   * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
   * [Google Cloud Storage](#google-cloud-storage)
+  * [Google Translate API](#google-translate-api)
   * [Google Cloud Vision API](#google-cloud-vision-api)
   * [Stackdriver Debugger (Beta)](#stackdriver-debugger-beta)
   * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
@@ -320,6 +321,16 @@ View the [Cloud Storage Node.js samples][storage_samples].
 
 [storage_docs]: https://cloud.google.com/storage/docs/
 [storage_samples]: storage
+
+### Google Translate API
+
+With the [Google Translate API][translate_docs], you can dynamically translate
+text between thousands of language pairs.
+
+View the [Translate API Node.js samples][translate_samples].
+
+[translate_docs]: https://cloud.google.com/translate/docs/
+[translate_samples]: translate
 
 ### Google Cloud Vision API
 

@@ -21,6 +21,7 @@
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 var Translate = require('@google-cloud/translate');
 
+// Helper library for language codes
 var ISO6391 = require('iso-639-1');
 // [END setup]
 

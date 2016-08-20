@@ -62,4 +62,5 @@ dependencies:
     - speech/node_modules/
     - storage/node_modules/
     - trace/node_modules/
+    - translate/node_modules/
     - vision/node_modules/

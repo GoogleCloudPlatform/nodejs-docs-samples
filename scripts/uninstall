@@ -38,6 +38,7 @@ queue.push('pubsub');
 queue.push('speech');
 queue.push('storage');
 queue.push('trace');
+queue.push('translate');
 queue.push('vision');
 
 /**

@@ -15,7 +15,7 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 var text = 'Hello world!';
-var key = 'key';
+var apiKey = 'key';
 
 function getSample () {
   var languagesMock = [
@@ -56,11 +56,11 @@ describe('translate:translate', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.detectLanguage(text, key, callback);
+      sample.program.detectLanguage(text, apiKey, callback);
 
-      assert(sample.mocks.translate.detect.calledOnce, 'create called once');
-      assert.equal(sample.mocks.translate.detect.firstCall.args.length, 2, 'create received 2 arguments');
-      assert.equal(sample.mocks.translate.detect.firstCall.args[0], text, 'create received correct argument');
+      assert(sample.mocks.translate.detect.calledOnce, 'method called once');
+      assert.equal(sample.mocks.translate.detect.firstCall.args.length, 2, 'method received 2 arguments');
+      assert.equal(sample.mocks.translate.detect.firstCall.args[0], text, 'method received correct argument');
       assert(callback.calledOnce, 'callback called once');
       assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
@@ -74,7 +74,7 @@ describe('translate:translate', function () {
       var callback = sinon.stub();
       sample.mocks.translate.detect = sinon.stub().callsArgWith(1, error);
 
-      sample.program.detectLanguage(text, key, callback);
+      sample.program.detectLanguage(text, apiKey, callback);
 
       assert(callback.calledOnce, 'callback called once');
       assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -88,7 +88,7 @@ describe('translate:translate', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.listLanguages(key, callback);
+      sample.program.listLanguages(apiKey, callback);
 
       assert(sample.mocks.translate.getLanguages.calledOnce, 'method called once');
       assert.equal(sample.mocks.translate.getLanguages.firstCall.args.length, 1, 'method received 1 argument');
@@ -105,7 +105,7 @@ describe('translate:translate', function () {
       var callback = sinon.stub();
       sample.mocks.translate.getLanguages = sinon.stub().callsArgWith(0, error);
 
-      sample.program.listLanguages(key, callback);
+      sample.program.listLanguages(apiKey, callback);
 
       assert(callback.calledOnce, 'callback called once');
       assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -121,14 +121,14 @@ describe('translate:translate', function () {
       var options = {
         text: text,
         to: 'ru',
-        key: key
+        apiKey: apiKey
       };
 
       sample.program.translateText(options, callback);
 
       assert(sample.mocks.translate.translate.calledOnce, 'method called once');
       assert.equal(sample.mocks.translate.translate.firstCall.args.length, 3, 'method received 3 arguments');
-      assert.deepEqual(sample.mocks.translate.translate.firstCall.args[0], text, 'method received correct first argument');
+      assert.equal(sample.mocks.translate.translate.firstCall.args[0], text, 'method received correct first argument');
       assert.deepEqual(sample.mocks.translate.translate.firstCall.args[1], {
         to: 'ru',
         from: undefined
@@ -147,7 +147,7 @@ describe('translate:translate', function () {
       var options = {
         text: text,
         to: 'ru',
-        key: key
+        apiKey: apiKey
       };
       sample.mocks.translate.translate = sinon.stub().callsArgWith(2, error);
 
@@ -165,7 +165,7 @@ describe('translate:translate', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'detectLanguage');
-      program.main(['detect', text, '-k', key]);
+      program.main(['detect', text, '-k', apiKey]);
       assert(program.detectLanguage.calledOnce);
     });
 
@@ -173,7 +173,7 @@ describe('translate:translate', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'listLanguages');
-      program.main(['list', '-k', key]);
+      program.main(['list', '-k', apiKey]);
       assert(program.listLanguages.calledOnce);
     });
 
@@ -181,7 +181,7 @@ describe('translate:translate', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'translateText');
-      program.main(['translate', text, '-k', key, '-t', 'ru']);
+      program.main(['translate', text, '-k', apiKey, '-t', 'ru']);
       assert(program.translateText.calledOnce);
     });
   });

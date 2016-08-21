@@ -38,19 +38,17 @@ Commands:
   translate <text>  Translate the provided text to the target language.
 
 Options:
-  --help     Show help                                                 [boolean]
-  --key, -k                                                  [string] [required]
+  --apiKey, -k  Your Translate API key. Defaults to the value of the TRANSLATE_API_KEY environment
+                variable.                                                                   [string]
+  --help        Show help                                                                  [boolean]
 
 Examples:
-  node translate detect "Hello world!"      Detect the language of "Hello
-                                            world!".
-  node translate list                       List available translation
-                                            languages.
-  node translate translate --to ru "Good    Translate "Good morning!" to
-  morning!"                                 Russian, auto-detecting English.
-  node translate translate --key            Translate "Good morning!" to Russian
-  asdfqwerzxcv --to ru --from en "Good      from English.
-  morning!"
+  node translate detect -k your-key "Hello world!"    Detect the language of "Hello world!".
+  node translate list -k your-key                     List available translation languages.
+  node translate translate -k your-key --to ru "Good  Translate "Good morning!" to Russian,
+  morning!"                                           auto-detecting English.
+  node translate translate -k your-key --to ru        Translate "Good morning!" to Russian from
+  --from en "Good morning!"                           English.
 
 For more information, see https://cloud.google.com/translate/docs
 ```

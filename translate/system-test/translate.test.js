@@ -50,7 +50,7 @@ describe('translate:translate', function () {
     it('should translate text', function (done) {
       var options = {
         text: text,
-        key: apiKey,
+        apiKey: apiKey,
         to: 'ru'
       };
       var expected = 'Привет мир!';

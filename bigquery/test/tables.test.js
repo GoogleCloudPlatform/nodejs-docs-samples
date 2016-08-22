@@ -14,40 +14,30 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru();
+var jobId = 'abc';
 
 function getSample () {
   var bucketMock = {
     file: sinon.stub().returns(fileMock)
   };
-
   var storageMock = {
     bucket: sinon.stub().returns(bucketMock)
   };
-
   var fileMock = {};
-
   var metadataMock = { status: { state: 'DONE' } };
-
-  var jobId = 'abc';
-
   var jobMock = {
-    id: jobId,
     getMetadata: sinon.stub().callsArgWith(0, null, metadataMock)
   };
-
   var tableMock = {
     export: sinon.stub().callsArgWith(2, null, jobMock)
   };
-
   var datasetMock = {
     table: sinon.stub().returns(tableMock)
   };
-
   var bigqueryMock = {
     job: sinon.stub().returns(jobMock),
     dataset: sinon.stub().returns(datasetMock)
   };
-
   var BigQueryMock = sinon.stub().returns(bigqueryMock);
   var StorageMock = sinon.stub().returns(storageMock);
 
@@ -67,8 +57,7 @@ function getSample () {
       table: tableMock,
       bucket: bucketMock,
       dataset: datasetMock
-    },
-    jobId: jobId
+    }
   };
 }
 
@@ -121,7 +110,7 @@ describe('bigquery:tables', function () {
       var example = getSample();
       var callback = sinon.stub();
       example.mocks.bigquery.job = sinon.stub().returns(example.mocks.job);
-      example.program.pollExportJob(example.jobId, callback);
+      example.program.pollExportJob(jobId, callback);
 
       assert(example.mocks.bigquery.job.calledOnce, 'job called once');
       assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');
@@ -144,7 +133,7 @@ describe('bigquery:tables', function () {
 
       var pendingState = { status: { state: 'PENDING' } };
       example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, pendingState);
-      example.program.pollExportJob(example.jobId, callback);
+      example.program.pollExportJob(jobId, callback);
 
       assert(example.mocks.bigquery.job.calledOnce, 'bigquery.job called once');
       assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');
@@ -160,7 +149,7 @@ describe('bigquery:tables', function () {
 
       var doneState = { status: { state: 'DONE' } };
       example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, doneState);
-      example.program.pollExportJob(example.jobId, callback);
+      example.program.pollExportJob(jobId, callback);
 
       assert(example.mocks.bigquery.job.calledTwice, 'bigquery.job called a second time');
       assert(example.mocks.job.getMetadata.calledOnce, 'new getMetadata called once');
@@ -182,7 +171,7 @@ describe('bigquery:tables', function () {
       var example = getSample();
       var callback = sinon.stub();
       example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, error);
-      example.program.pollExportJob(example.jobId, callback);
+      example.program.pollExportJob(jobId, callback);
 
       assert(example.mocks.bigquery.job.calledOnce, 'bigquery.job called once');
       assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');

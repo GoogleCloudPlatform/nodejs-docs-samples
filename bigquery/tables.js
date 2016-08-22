@@ -30,13 +30,10 @@
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
 var BigQuery = require('@google-cloud/bigquery');
 var Storage = require('@google-cloud/storage');
-var projectId = process.env.GCLOUD_PROJECT;
 
 // Instantiate the BigQuery and Storage clients
 var bigquery = BigQuery();
-var storage = Storage({
-  projectId: projectId
-});
+var storage = Storage();
 // [END auth]
 
 // [START export_table_to_gcs]
@@ -60,7 +57,10 @@ function exportTableToGCS (options, callback) {
   var table = bigquery.dataset(options.dataset).table(options.table);
   table.export(
     gcsFileObj,
-    { format: options.format, gzip: options.gzip },
+    {
+      format: options.format,
+      gzip: options.gzip
+    },
     function (err, job) {
       if (err) {
         return callback(err);
@@ -112,15 +112,10 @@ var program = module.exports = {
 };
 
 cli
-  .command('export <bucket> <file> <dataset> <table> [--format] [--gzip]', 'Export a table from BigQuery to Google Cloud Storage.', {}, function (options) {
+  .command('export <bucket> <file> <dataset> <table>', 'Export a table from BigQuery to Google Cloud Storage.', {}, function (options) {
     program.exportTableToGCS(options, console.log);
   })
-  .command('poll <jobId>', 'Check the status of a BigQuery table export job.', {}, function (options) {
-    program.pollExportJob(options.jobId, console.log);
-  })
-  .example('node $0 export sample-bigquery-export data.json github_samples natality JSON', 'Export github_samples:natality to gcs://sample-bigquery-export/data.json as JSON')
-  .example('node $0 poll job_12345ABCDE', 'Check the status of BigQuery job 12345ABCDE')
-  .options({
+  .command('poll <jobId>', 'Check the status of a BigQuery table export job.', {
     format: {
       alias: 'f',
       global: true,
@@ -133,13 +128,15 @@ cli
       type: 'boolean',
       description: 'Whether to compress the exported table using gzip. Defaults to false.'
     }
+  }, function (options) {
+    program.pollExportJob(options.jobId, console.log);
   })
+  .example('node $0 export sample-bigquery-export data.json github_samples natality JSON', 'Export github_samples:natality to gcs://sample-bigquery-export/data.json as JSON')
+  .example('node $0 poll job_12345ABCDE', 'Check the status of BigQuery job 12345ABCDE')
   .wrap(100)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/bigquery/exporting-data-from-bigquery');
 
 if (module === require.main) {
-  program.main(process.argv.slice(2), console.log);
+  program.main(process.argv.slice(2));
 }
-
-module.exports = program;

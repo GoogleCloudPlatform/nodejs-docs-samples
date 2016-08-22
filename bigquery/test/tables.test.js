@@ -52,7 +52,7 @@ function getSample () {
   var StorageMock = sinon.stub().returns(storageMock);
 
   return {
-    program: proxyquire('../export_data', {
+    program: proxyquire('../tables', {
       '@google-cloud/bigquery': BigQueryMock,
       '@google-cloud/storage': StorageMock,
       yargs: proxyquire('yargs', {})
@@ -72,7 +72,7 @@ function getSample () {
   };
 }
 
-describe('bigquery:export', function () {
+describe('bigquery:tables', function () {
   describe('exportTable', function () {
     it('should export to a table', function () {
       var example = getSample();

@@ -13,7 +13,7 @@
 
 'use strict';
 
-var example = require('../export_data');
+var example = require('../tables');
 var options = {
   bucket: 'sample-bigquery-export',
   file: 'data.json',
@@ -22,7 +22,7 @@ var options = {
 };
 var jobId = null;
 
-describe('bigquery:export_data', function () {
+describe('bigquery:tables', function () {
   describe('export_table_to_gcs', function () {
     it('should export data to GCS', function (done) {
       example.exportTableToGCS(options, function (err, job) {

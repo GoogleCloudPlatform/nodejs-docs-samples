@@ -123,12 +123,14 @@ describe('bigquery:export', function () {
       example.mocks.bigquery.job = sinon.stub().returns(example.mocks.job);
       example.program.pollExportJob(example.jobId, callback);
 
-      assert(example.mocks.bigquery.job.calledOnce);
-      assert(example.mocks.job.getMetadata.calledOnce);
-      assert(callback.calledOnce);
-      assert.equal(callback.firstCall.args.length, 2);
-      assert.equal(callback.firstCall.args[0], null);
-      assert.deepEqual(callback.firstCall.args[1], example.mocks.metadata);
+      assert(example.mocks.bigquery.job.calledOnce, 'job called once');
+      assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
+      assert.equal(callback.firstCall.args[0], null, 'callback did not receive error');
+      assert.deepEqual(callback.firstCall.args[1], example.mocks.metadata,
+        'callback received metadata'
+      );
 
       assert(
         console.log.calledWith('PollExportJob: job status: %s', example.mocks.metadata.status.state),
@@ -148,9 +150,7 @@ describe('bigquery:export', function () {
       assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');
       assert(callback.calledOnce, 'callback called once');
       assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.deepEqual(
-        callback.firstCall.args[0],
-        new Error('Job %s is not done'),
+      assert.deepEqual(callback.firstCall.args[0], new Error('Job %s is not done'),
         'callback received error'
       );
 
@@ -168,9 +168,7 @@ describe('bigquery:export', function () {
 
       assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
       assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
-      assert.deepEqual(
-        callback.secondCall.args[1],
-        example.mocks.metadata,
+      assert.deepEqual(callback.secondCall.args[1], example.mocks.metadata,
         'callback received metadata'
       );
 

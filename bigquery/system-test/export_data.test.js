@@ -27,9 +27,9 @@ describe('bigquery:export_data', function () {
     it('should export data to GCS', function (done) {
       example.exportTableToGCS(options, function (err, job) {
         assert.ifError(err);
-        assert.notEqual(job, null);
-        assert.notEqual(job.id, null);
-        assert(job.id.length > 5);
+        assert(job, 'job is not null');
+        assert(job.id, 'job has an id');
+        assert(job.id.length > 5, 'job id is 5 characters or more');
         jobId = job.id;
         setTimeout(done, 100); // Wait for export job to be submitted
       });
@@ -38,15 +38,17 @@ describe('bigquery:export_data', function () {
 
   describe('export_poll', function () {
     it('should fetch job status', function (done) {
-      assert.notEqual(jobId, null);
+      assert(jobId);
       var poller = function (tries) {
         example.pollExportJob(jobId, function (err, metadata) {
           if (!err || tries === 0) {
-            assert.ifError(err);
-            assert.equal(metadata.status.state, 'DONE');
+            assert.ifError(err, 'no error occurred');
+            assert.equal(metadata.status.state, 'DONE', 'export job is finished');
             done();
           } else {
-            setTimeout(function () { poller(tries - 1); }, 1000);
+            setTimeout(function () {
+              poller(tries - 1);
+            }, 1000);
           }
         });
       };

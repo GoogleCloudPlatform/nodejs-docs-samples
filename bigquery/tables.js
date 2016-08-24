@@ -96,7 +96,8 @@ cli
       global: true,
       requiresArg: true,
       type: 'string',
-      choices: ['JSON', 'CSV', 'AVRO']
+      choices: ['JSON', 'CSV', 'AVRO'],
+      default: 'JSON'
     },
     gzip: {
       global: true,

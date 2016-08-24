@@ -61,11 +61,12 @@ describe('bigquery:tables', function () {
         if (err) {
           return done(err);
         }
-        // Delete bucket
+        // Delete files in bucket
         storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
           if (err) {
             return done(err);
           }
+          // Delete bucket
           storage.bucket(options.bucket).delete(done);
         });
       });

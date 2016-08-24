@@ -14,6 +14,11 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru();
+var bucket = 'bucket';
+var file = 'file';
+var dataset = 'dataset';
+var table = 'table';
+var format = 'JSON';
 
 function getSample () {
   var bucketMock = {
@@ -28,7 +33,6 @@ function getSample () {
     getMetadata: sinon.stub().callsArgWith(0, null, metadataMock),
     on: sinon.stub()
   };
-
   var tableMock = {
     export: sinon.stub().callsArgWith(2, null, jobMock)
   };
@@ -67,16 +71,15 @@ describe('bigquery:tables', function () {
     it('should export to a table', function () {
       var example = getSample();
       var options = {
-        bucket: 'bucket',
-        file: 'file',
-        dataset: 'dataset',
-        table: 'table',
-        format: 'JSON',
+        bucket: bucket,
+        file: file,
+        dataset: dataset,
+        table: table,
+        format: format,
         gzip: true
       };
       var callback = sinon.stub();
       example.mocks.job.on.withArgs('complete').callsArgWith(1, example.mocks.metadata);
-      example.mocks.job.on.withArgs('error').returns(0);
 
       example.program.exportTableToGCS(options, callback);
 
@@ -100,7 +103,7 @@ describe('bigquery:tables', function () {
       var example = getSample();
       var callback = sinon.stub();
       example.mocks.table.export = sinon.stub().callsArgWith(2, error);
-      example.program.exportTableToGCS({ format: 'JSON' }, callback);
+      example.program.exportTableToGCS({ format: format }, callback);
 
       assert(callback.calledOnce, 'callback called once');
       assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -112,7 +115,7 @@ describe('bigquery:tables', function () {
       var example = getSample();
       var callback = sinon.stub();
       example.mocks.job.on.withArgs('error').callsArgWith(1, error);
-      example.program.exportTableToGCS({ format: 'JSON' }, callback);
+      example.program.exportTableToGCS({ format: format }, callback);
 
       assert(callback.calledOnce, 'callback called once');
       assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
@@ -125,7 +128,7 @@ describe('bigquery:tables', function () {
       var program = getSample().program;
       program.exportTableToGCS = sinon.stub();
 
-      program.main(['export', 'bucket', 'file', 'dataset', 'table', 'JSON']);
+      program.main(['export', bucket, file, dataset, table, format]);
       assert(program.exportTableToGCS.calledOnce);
     });
   });

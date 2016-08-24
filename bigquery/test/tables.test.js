@@ -14,7 +14,6 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru();
-var jobId = 'abc';
 
 function getSample () {
   var bucketMock = {
@@ -26,8 +25,10 @@ function getSample () {
   var fileMock = {};
   var metadataMock = { status: { state: 'DONE' } };
   var jobMock = {
-    getMetadata: sinon.stub().callsArgWith(0, null, metadataMock)
+    getMetadata: sinon.stub().callsArgWith(0, null, metadataMock),
+    on: sinon.stub()
   };
+
   var tableMock = {
     export: sinon.stub().callsArgWith(2, null, jobMock)
   };
@@ -73,8 +74,10 @@ describe('bigquery:tables', function () {
         format: 'JSON',
         gzip: true
       };
-
       var callback = sinon.stub();
+      example.mocks.job.on.withArgs('complete').callsArgWith(1, example.mocks.metadata);
+      example.mocks.job.on.withArgs('error').returns(0);
+
       example.program.exportTableToGCS(options, callback);
 
       assert(example.mocks.storage.bucket.calledWith(options.bucket), 'bucket found');
@@ -82,17 +85,17 @@ describe('bigquery:tables', function () {
       assert(example.mocks.bigquery.dataset.calledWith(options.dataset), 'dataset found');
       assert(example.mocks.dataset.table.calledWith(options.table), 'table found');
       assert(example.mocks.table.export.calledOnce, 'table.export called once');
-
       assert(console.log.calledWith('ExportTableToGCS: submitted job %s!', example.mocks.job.id),
         'job submittal was reported'
       );
 
-      assert.equal(callback.firstCall.args.length, 2, 'callback has 2 arguments');
+      assert(callback.calledOnce, 'callback called once');
+      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.equal(callback.firstCall.args[1], example.mocks.job, 'callback received job');
+      assert.equal(callback.firstCall.args[1], example.mocks.metadata, 'callback received metadata');
     });
 
-    it('should handle error', function () {
+    it('should handle export error', function () {
       var error = new Error('exportTableToGCSError');
       var example = getSample();
       var callback = sinon.stub();
@@ -103,79 +106,15 @@ describe('bigquery:tables', function () {
       assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
       assert.equal(callback.firstCall.args[0], error, 'callback received error');
     });
-  });
 
-  describe('pollExportJob', function () {
-    it('should fetch and report the status of a job', function () {
+    it('should handle job-processing error', function () {
+      var error = new Error('exportTableToGCSError');
       var example = getSample();
       var callback = sinon.stub();
-      example.mocks.bigquery.job = sinon.stub().returns(example.mocks.job);
-      example.program.pollExportJob(jobId, callback);
+      example.mocks.job.on.withArgs('error').callsArgWith(1, error);
+      example.program.exportTableToGCS({ format: 'JSON' }, callback);
 
-      assert(example.mocks.bigquery.job.calledOnce, 'job called once');
-      assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');
       assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.equal(callback.firstCall.args[0], null, 'callback did not receive error');
-      assert.deepEqual(callback.firstCall.args[1], example.mocks.metadata,
-        'callback received metadata'
-      );
-
-      assert(
-        console.log.calledWith('PollExportJob: job status: %s', example.mocks.metadata.status.state),
-        'job status was reported'
-      );
-    });
-
-    it('should error if a job is not finished', function () {
-      var example = getSample();
-      var callback = sinon.stub();
-
-      var pendingState = { status: { state: 'PENDING' } };
-      example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, pendingState);
-      example.program.pollExportJob(jobId, callback);
-
-      assert(example.mocks.bigquery.job.calledOnce, 'bigquery.job called once');
-      assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.deepEqual(callback.firstCall.args[0], new Error('Job %s is not done'),
-        'callback received error'
-      );
-
-      assert(console.log.calledWith('PollExportJob: job status: %s', pendingState.status.state),
-        'job status was reported'
-      );
-
-      var doneState = { status: { state: 'DONE' } };
-      example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, doneState);
-      example.program.pollExportJob(jobId, callback);
-
-      assert(example.mocks.bigquery.job.calledTwice, 'bigquery.job called a second time');
-      assert(example.mocks.job.getMetadata.calledOnce, 'new getMetadata called once');
-      assert(callback.calledTwice, 'callback called a second time');
-
-      assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
-      assert.deepEqual(callback.secondCall.args[1], example.mocks.metadata,
-        'callback received metadata'
-      );
-
-      assert(console.log.calledWith('PollExportJob: job status: %s', doneState.status.state),
-        'job status was reported'
-      );
-    });
-
-    it('should handle error', function () {
-      var error = new Error('pollExportJobError');
-      var example = getSample();
-      var callback = sinon.stub();
-      example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, error);
-      example.program.pollExportJob(jobId, callback);
-
-      assert(example.mocks.bigquery.job.calledOnce, 'bigquery.job called once');
-      assert(example.mocks.job.getMetadata.calledOnce, 'getMetadata called once');
-      assert(callback.calledOnce, 'callback called');
       assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
       assert.equal(callback.firstCall.args[0], error, 'callback received error');
     });
@@ -188,15 +127,6 @@ describe('bigquery:tables', function () {
 
       program.main(['export', 'bucket', 'file', 'dataset', 'table', 'JSON']);
       assert(program.exportTableToGCS.calledOnce);
-    });
-
-    it('should call pollExportJob', function () {
-      var program = getSample().program;
-      program.pollExportJob = sinon.stub();
-      var jobId = 'ABCDE';
-
-      program.main(['poll', jobId]);
-      assert(program.pollExportJob.calledWith(jobId));
     });
   });
 });

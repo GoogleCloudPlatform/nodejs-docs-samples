@@ -13,47 +13,67 @@
 
 'use strict';
 
+var uuid = require('node-uuid');
+var generateUuid = function () {
+  return 'nodejs_docs_samples_' + uuid.v4().replace(/-/gi, '_');
+};
 var example = require('../tables');
 var options = {
-  bucket: 'sample-bigquery-export',
+  bucket: generateUuid(),
   file: 'data.json',
-  dataset: 'github_samples',
-  table: 'natality'
+  dataset: generateUuid(),
+  table: generateUuid()
 };
-var jobId = null;
+var BigQuery = require('@google-cloud/bigquery');
+var bigquery = BigQuery();
+var Storage = require('@google-cloud/storage');
+var storage = Storage();
+var file = storage.bucket(options.bucket).file(options.file);
 
 describe('bigquery:tables', function () {
-  describe('export_table_to_gcs', function () {
-    it('should export data to GCS', function (done) {
-      example.exportTableToGCS(options, function (err, job) {
-        assert.ifError(err);
-        assert(job, 'job is not null');
-        assert(job.id, 'job has an id');
-        assert(job.id.length > 5, 'job id is 5 characters or more');
-        jobId = job.id;
-        setTimeout(done, 100); // Wait for export job to be submitted
+  before(function (done) {
+    // Create bucket
+    storage.createBucket(options.bucket, function (err, bucket) {
+      assert.ifError(err, 'bucket creation succeeded');
+
+      // Create dataset
+      bigquery.createDataset(options.dataset, function (err, dataset) {
+        assert.ifError(err, 'dataset creation succeeded');
+
+        // Create table
+        dataset.createTable(
+          options.table,
+          { schema: 'name:string, age:integer' },
+          function (err, table) {
+            assert.ifError(err, 'table creation succeeded');
+            done();
+          }
+        );
       });
     });
   });
+  after(function (done) {
+    // Delete table export
+    file.delete(function () {
+      // Delete testing dataset/table
+      bigquery.dataset(options.dataset).delete({ force: true }, done);
+    });
+  });
 
-  describe('export_poll', function () {
-    it('should fetch job status', function (done) {
-      assert(jobId);
-      var poller = function (tries) {
-        example.pollExportJob(jobId, function (err, metadata) {
-          if (!err || tries === 0) {
-            assert.ifError(err, 'no error occurred');
-            assert.equal(metadata.status.state, 'DONE', 'export job is finished');
-            done();
-          } else {
-            setTimeout(function () {
-              poller(tries - 1);
-            }, 1000);
-          }
+  describe('export_table_to_gcs', function () {
+    it('should export data to GCS', function (done) {
+      example.exportTableToGCS(options, function (err, metadata) {
+        assert.ifError(err, 'no error occurred');
+        assert(metadata, 'job metadata was received');
+        assert(metadata.status, 'job metadata has status');
+        assert.equal(metadata.status.state, 'DONE', 'job was finished');
+
+        file.exists(function (err, exists) {
+          assert.ifError(err, 'file existence check succeeded');
+          assert(exists, 'export destination exists');
+          done();
         });
-      };
-
-      poller(60);
+      });
     });
   });
 });

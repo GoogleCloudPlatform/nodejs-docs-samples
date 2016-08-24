@@ -65,38 +65,18 @@ function exportTableToGCS (options, callback) {
       if (err) {
         return callback(err);
       }
-
       console.log('ExportTableToGCS: submitted job %s!', job.id);
-      return callback(null, job);
+
+      job.on('error', function (err) {
+        return callback(err);
+      });
+      job.on('complete', function (job) {
+        return callback(null, job);
+      });
     }
   );
 }
 // [END export_table_to_gcs]
-
-// [START poll_export_job]
-/**
- * Check the status of a BigQuery table export job.
- *
- * @param {string} jobId The ID of the export job to poll.
- * @param {function} callback Callback function to execute when the table is exported.
- */
-function pollExportJob (jobId, callback) {
-  var job = bigquery.job(jobId);
-  job.getMetadata(function (err, metadata) {
-    if (err) {
-      return callback(err);
-    }
-    console.log('PollExportJob: job status: %s', metadata.status.state);
-
-    // If job is done, return metadata; if not, return an error.
-    if (metadata.status.state === 'DONE') {
-      return callback(null, metadata);
-    } else {
-      return callback(new Error('Job %s is not done', jobId));
-    }
-  });
-}
-// [END poll_export_job]
 // [END complete]
 
 // The command-line program
@@ -104,7 +84,6 @@ var cli = require('yargs');
 
 var program = module.exports = {
   exportTableToGCS: exportTableToGCS,
-  pollExportJob: pollExportJob,
   main: function (args) {
     // Run the command-line program
     cli.help().strict().parse(args).argv;
@@ -112,10 +91,7 @@ var program = module.exports = {
 };
 
 cli
-  .command('export <bucket> <file> <dataset> <table>', 'Export a table from BigQuery to Google Cloud Storage.', {}, function (options) {
-    program.exportTableToGCS(options, console.log);
-  })
-  .command('poll <jobId>', 'Check the status of a BigQuery table export job.', {
+  .command('export <bucket> <file> <dataset> <table>', 'Export a table from BigQuery to Google Cloud Storage.', {
     format: {
       alias: 'f',
       global: true,
@@ -129,10 +105,9 @@ cli
       description: 'Whether to compress the exported table using gzip. Defaults to false.'
     }
   }, function (options) {
-    program.pollExportJob(options.jobId, console.log);
+    program.exportTableToGCS(options, console.log);
   })
-  .example('node $0 export sample-bigquery-export data.json github_samples natality JSON', 'Export github_samples:natality to gcs://sample-bigquery-export/data.json as JSON')
-  .example('node $0 poll job_12345ABCDE', 'Check the status of BigQuery job 12345ABCDE')
+  .example('node $0 export sample-bigquery-export data.json github_samples natality JSON --gzip', 'Export github_samples:natality to gcs://sample-bigquery-export/data.json as gzipped JSON')
   .wrap(100)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/bigquery/exporting-data-from-bigquery');

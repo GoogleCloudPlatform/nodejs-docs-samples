@@ -51,29 +51,27 @@ var storage = Storage();
  */
 function exportTableToGCS (options, callback) {
   var gcsFileObj = storage.bucket(options.bucket).file(options.file);
+  var table = bigquery.dataset(options.dataset).table(options.table);
+  var config = {
+    format: options.format,
+    gzip: options.gzip
+  };
+
   // Export table
   // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/bigquery/table?method=export
-  var table = bigquery.dataset(options.dataset).table(options.table);
-  table.export(
-    gcsFileObj,
-    {
-      format: options.format,
-      gzip: options.gzip
-    },
-    function (err, job) {
-      if (err) {
-        return callback(err);
-      }
-      console.log('ExportTableToGCS: submitted job %s!', job.id);
-
-      job.on('error', function (err) {
-        return callback(err);
-      });
-      job.on('complete', function (job) {
-        return callback(null, job);
-      });
+  table.export(gcsFileObj, config, function (err, job) {
+    if (err) {
+      return callback(err);
     }
-  );
+    console.log('ExportTableToGCS: submitted job %s!', job.id);
+
+    job.on('error', function (err) {
+      return callback(err);
+    });
+    job.on('complete', function (job) {
+      return callback(null, job);
+    });
+  });
 }
 // [END export_table_to_gcs]
 // [END complete]
@@ -96,8 +94,7 @@ cli
       global: true,
       requiresArg: true,
       type: 'string',
-      choices: ['JSON', 'CSV', 'AVRO'],
-      default: 'JSON'
+      choices: ['JSON', 'CSV', 'AVRO']
     },
     gzip: {
       global: true,
@@ -108,16 +105,16 @@ cli
     program.exportTableToGCS(options, console.log);
   })
   .example(
-    'node $0 export sample-bigquery-export data.json github_samples natality',
-    'Export github_samples:natality to gcs://sample-bigquery-export/data.json as raw JSON'
+    'node $0 export my-bucket my-file my-dataset my-table',
+    'Export my-dataset:my-table to gcs://my-bucket/my-file as raw JSON'
   )
   .example(
-    'node $0 export sample-bigquery-export data.csv github_samples natality -f CSV --gzip',
-    'Export github_samples:natality to gcs://sample-bigquery-export/data.csv as gzipped CSV'
+    'node $0 export my-bucket my-file my-dataset my-table -f CSV --gzip',
+    'Export my-dataset:my-table to gcs://my-bucket/my-file as gzipped CSV'
   )
   .wrap(100)
   .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/bigquery/exporting-data-from-bigquery');
+  .epilogue('For more information, see https://cloud.google.com/bigquery/docs');
 
 if (module === require.main) {
   program.main(process.argv.slice(2));

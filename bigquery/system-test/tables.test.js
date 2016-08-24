@@ -24,10 +24,8 @@ var options = {
   dataset: generateUuid(),
   table: generateUuid()
 };
-var BigQuery = require('@google-cloud/bigquery');
-var bigquery = BigQuery();
-var Storage = require('@google-cloud/storage');
-var storage = Storage();
+var bigquery = require('@google-cloud/bigquery')();
+var storage = require('@google-cloud/storage')();
 var file = storage.bucket(options.bucket).file(options.file);
 
 describe('bigquery:tables', function () {
@@ -54,9 +52,23 @@ describe('bigquery:tables', function () {
   });
   after(function (done) {
     // Delete table export
-    file.delete(function () {
+    file.delete(function (err) {
+      if (err) {
+        return done(err);
+      }
       // Delete testing dataset/table
-      bigquery.dataset(options.dataset).delete({ force: true }, done);
+      bigquery.dataset(options.dataset).delete({ force: true }, function (err) {
+        if (err) {
+          return done(err);
+        }
+        // Delete bucket
+        storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
+          if (err) {
+            return done(err);
+          }
+          storage.bucket(options.bucket).delete(done);
+        });
+      });
     });
   });
 

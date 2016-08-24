@@ -51,24 +51,15 @@ describe('bigquery:tables', function () {
     });
   });
   after(function (done) {
-    // Delete table export
-    file.delete(function (err) {
-      if (err) {
-        return done(err);
-      }
-      // Delete testing dataset/table
-      bigquery.dataset(options.dataset).delete({ force: true }, function (err) {
+    // Delete testing dataset/table
+    bigquery.dataset(options.dataset).delete({ force: true }, function () {
+      // Delete files
+      storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
         if (err) {
           return done(err);
         }
-        // Delete files in bucket
-        storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
-          if (err) {
-            return done(err);
-          }
-          // Delete bucket
-          storage.bucket(options.bucket).delete(done);
-        });
+        // Delete bucket
+        storage.bucket(options.bucket).delete(done);
       });
     });
   });

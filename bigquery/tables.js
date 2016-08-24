@@ -51,7 +51,6 @@ var storage = Storage();
  */
 function exportTableToGCS (options, callback) {
   var gcsFileObj = storage.bucket(options.bucket).file(options.file);
-
   // Export table
   // See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/bigquery/table?method=export
   var table = bigquery.dataset(options.dataset).table(options.table);
@@ -107,7 +106,14 @@ cli
   }, function (options) {
     program.exportTableToGCS(options, console.log);
   })
-  .example('node $0 export sample-bigquery-export data.json github_samples natality JSON --gzip', 'Export github_samples:natality to gcs://sample-bigquery-export/data.json as gzipped JSON')
+  .example(
+    'node $0 export sample-bigquery-export data.json github_samples natality',
+    'Export github_samples:natality to gcs://sample-bigquery-export/data.json as raw JSON'
+  )
+  .example(
+    'node $0 export sample-bigquery-export data.csv github_samples natality -f CSV --gzip',
+    'Export github_samples:natality to gcs://sample-bigquery-export/data.csv as gzipped CSV'
+  )
   .wrap(100)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/bigquery/exporting-data-from-bigquery');

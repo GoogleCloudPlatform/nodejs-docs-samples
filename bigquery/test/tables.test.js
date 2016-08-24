@@ -128,8 +128,34 @@ describe('bigquery:tables', function () {
       var program = getSample().program;
       program.exportTableToGCS = sinon.stub();
 
-      program.main(['export', bucket, file, dataset, table, format]);
-      assert(program.exportTableToGCS.calledOnce);
+      program.main(['export', bucket, file, dataset, table]);
+      assert(program.exportTableToGCS.calledOnce, 'exportTableToGCS called');
+    });
+
+    it('should recognize --gzip flag', function () {
+      var program = getSample().program;
+      program.exportTableToGCS = sinon.stub();
+
+      program.main(['export', bucket, file, dataset, table, '--gzip']);
+      assert(program.exportTableToGCS.calledOnce, 'exportTableToGCS called once');
+
+      var firstArgs = program.exportTableToGCS.firstCall.args;
+      assert.equal(firstArgs.length, 2, 'exportTableToGCS received 2 arguments');
+      assert(firstArgs[0], 'exportTableToGCS received options');
+      assert(firstArgs[0].gzip, 'exportTableToGCS received gzip as True');
+    });
+
+    it('should recognize --format flag', function () {
+      var program = getSample().program;
+      program.exportTableToGCS = sinon.stub();
+
+      program.main(['export', bucket, file, dataset, table, '--format', 'CSV']);
+      assert(program.exportTableToGCS.calledOnce, 'exportTableToGCS called once');
+
+      var firstArgs = program.exportTableToGCS.firstCall.args;
+      assert.equal(firstArgs.length, 2, 'exportTableToGCS received 2 arguments');
+      assert(firstArgs[0], 'exportTableToGCS received options');
+      assert.equal(firstArgs[0].format, 'CSV', 'exportTableToGCS received format as CSV');
     });
   });
 });

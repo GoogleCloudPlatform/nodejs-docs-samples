@@ -369,7 +369,14 @@ describe('storage:acl', function () {
 
       sinon.stub(program, 'addAccessControl');
       program.main(['add', entity, role, '-b', bucketName]);
-      assert(program.addAccessControl.calledOnce);
+      assert.equal(program.addAccessControl.calledOnce, true);
+      assert.deepEqual(program.addAccessControl.firstCall.args.slice(0, -1), [{
+        entity: entity,
+        role: role,
+        bucket: bucketName,
+        default: false,
+        file: undefined
+      }]);
     });
 
     it('should call getAccessControl', function () {
@@ -377,7 +384,13 @@ describe('storage:acl', function () {
 
       sinon.stub(program, 'getAccessControl');
       program.main(['get', entity, '-b', bucketName]);
-      assert(program.getAccessControl.calledOnce);
+      assert.equal(program.getAccessControl.calledOnce, true);
+      assert.deepEqual(program.getAccessControl.firstCall.args.slice(0, -1), [{
+        entity: entity,
+        bucket: bucketName,
+        default: false,
+        file: undefined
+      }]);
     });
 
     it('should call deleteAccessControl', function () {
@@ -385,7 +398,13 @@ describe('storage:acl', function () {
 
       sinon.stub(program, 'deleteAccessControl');
       program.main(['delete', entity, '-b', bucketName]);
-      assert(program.deleteAccessControl.calledOnce);
+      assert.equal(program.deleteAccessControl.calledOnce, true);
+      assert.deepEqual(program.deleteAccessControl.firstCall.args.slice(0, -1), [{
+        entity: entity,
+        bucket: bucketName,
+        default: false,
+        file: undefined
+      }]);
     });
   });
 });

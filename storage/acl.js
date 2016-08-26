@@ -161,6 +161,7 @@ function deleteAccessControl (options, callback) {
 
 // The command-line program
 var cli = require('yargs');
+var utils = require('../utils');
 
 var program = module.exports = {
   addAccessControl: addAccessControl,
@@ -175,13 +176,13 @@ var program = module.exports = {
 cli
   .demand(1)
   .command('add <entity> <role>', 'Add access controls on a bucket or file.', {}, function (options) {
-    program.addAccessControl(options, console.log);
+    program.addAccessControl(utils.pick(options, ['entity', 'role', 'bucket', 'default', 'file']), utils.makeHandler());
   })
   .command('get [entity]', 'Get access controls on a bucket or file.', {}, function (options) {
-    program.getAccessControl(options, console.log);
+    program.getAccessControl(utils.pick(options, ['entity', 'bucket', 'default', 'file']), utils.makeHandler());
   })
   .command('delete <entity>', 'Delete access controls from a bucket or file.', {}, function (options) {
-    program.deleteAccessControl(options, console.log);
+    program.deleteAccessControl(utils.pick(options, ['entity', 'bucket', 'default', 'file']), utils.makeHandler());
   })
   .example('node $0 add user-bob@domain.com OWNER -b mybucket', 'Add OWNER access controls for "user-bob@domain.com" to "mybucket".')
   .example('node $0 add viewers-2256 WRITER -b mybucket -d', 'Add default WRITER access controls to "mybucket" for "viewers-2256".')

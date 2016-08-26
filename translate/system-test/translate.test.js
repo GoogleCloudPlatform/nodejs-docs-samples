@@ -28,7 +28,7 @@ describe('translate:translate', function () {
         assert.ifError(err);
         assert(result, 'should have received a result');
         assert.equal(result.language, 'en', 'should have detected english');
-        assert(console.log.calledWith('Detected %s with confidence %d', 'English', result.confidence));
+        assert(console.log.calledWith('Detected %s (%s) with confidence %d', 'English', 'en', result.confidence));
         done();
       });
     });
@@ -58,7 +58,7 @@ describe('translate:translate', function () {
       program.translateText(options, function (err, translation) {
         assert.ifError(err);
         assert.equal(translation, expected);
-        assert(console.log.calledWith('Translated text to %s', 'Russian'));
+        assert(console.log.calledWith('Translated text to %s:', 'Russian'));
         done();
       });
     });

@@ -45,7 +45,12 @@ function detectLanguage (text, apiKey, callback) {
       return callback(err);
     }
 
-    console.log('Detected %s with confidence %d', ISO6391.getName(result.language), result.confidence);
+    console.log(
+      'Detected %s (%s) with confidence %d',
+      ISO6391.getName(result.language),
+      result.language,
+      result.confidence
+    );
     return callback(null, result);
   });
 }
@@ -104,7 +109,7 @@ function translateText (options, callback) {
       return callback(err);
     }
 
-    console.log('Translated text to %s', ISO6391.getName(options.to));
+    console.log('Translated text to %s:', ISO6391.getName(options.to));
     return callback(null, translation);
   });
 }
@@ -113,6 +118,7 @@ function translateText (options, callback) {
 
 // The command-line program
 var cli = require('yargs');
+var utils = require('../utils');
 
 var program = module.exports = {
   detectLanguage: detectLanguage,
@@ -127,10 +133,10 @@ var program = module.exports = {
 cli
   .demand(1)
   .command('detect <text>', 'Detect the language of the provided text', {}, function (options) {
-    program.detectLanguage(options.text, options.apiKey, console.log);
+    program.detectLanguage(options.text, options.apiKey, utils.makeHandler(false));
   })
   .command('list', 'List available translation languages.', {}, function (options) {
-    program.listLanguages(options.apiKey, console.log);
+    program.listLanguages(options.apiKey, utils.makeHandler());
   })
   .command('translate <text>', 'Translate the provided text to the target language.', {
     to: {
@@ -147,7 +153,7 @@ cli
       description: 'The language of the source text.'
     }
   }, function (options) {
-    program.translateText(options, console.log);
+    program.translateText(utils.pick(options, ['text', 'to', 'from', 'apiKey']), utils.makeHandler());
   })
   .option('apiKey', {
     alias: 'k',

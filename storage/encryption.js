@@ -130,6 +130,7 @@ function rotateEncryptionKey (callback) {
 
 // The command-line program
 var cli = require('yargs');
+var utils = require('../utils');
 
 var program = module.exports = {
   generateEncryptionKey: generateEncryptionKey,
@@ -148,13 +149,13 @@ cli
     program.generateEncryptionKey();
   })
   .command('upload <bucket> <srcFile> <destFile> <key>', 'Upload an encrypted file to a bucket.', {}, function (options) {
-    program.uploadEncryptedFile(options, console.log);
+    program.uploadEncryptedFile(utils.pick(options, ['bucket', 'srcFile', 'destFile', 'key']), utils.makeHandler(false));
   })
   .command('download <bucket> <srcFile> <destFile> <key>', 'Download an encrypted file from a bucket.', {}, function (options) {
-    program.downloadEncryptedFile(options, console.log);
+    program.downloadEncryptedFile(utils.pick(options, ['bucket', 'srcFile', 'destFile', 'key']), utils.makeHandler(false));
   })
   .command('rotate <bucket> <file> <oldkey> <newKey>', 'Rotate encryption keys for a file.', {}, function () {
-    program.rotateEncryptionKey(console.log);
+    program.rotateEncryptionKey(utils.makeHandler());
   })
   .example('node $0 generate-encryption-key', 'Generate a sample encryption key.')
   .example('node $0 upload my-bucket resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=', 'Upload "resources/test.txt" to "gs://my-bucket/file_encrypted.txt".')

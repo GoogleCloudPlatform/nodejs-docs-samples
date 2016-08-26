@@ -13,6 +13,7 @@ analytics data warehouse.
 * [Samples](#samples)
   * [Create A Simple Application With the API](#create-a-simple-application-with-the-api)
   * [Datasets](#datasets)
+  * [Queries](#queries)
   * [Tables](#tables)
 
 ## Setup
@@ -71,6 +72,32 @@ For more information, see https://cloud.google.com/bigquery/docs
 
 [datasets_docs]: https://cloud.google.com/bigquery/docs
 [datasets_code]: datasets.js
+
+### Queries
+
+View the [documentation][queries_docs] or the [source code][queries_code].
+
+__Usage:__ `node queries --help`
+
+```
+Commands:
+  sync <query>   Run a synchronous query.
+  async <query>  Start an asynchronous query.
+  poll <jobId>   Get the status of a job.
+
+Options:
+  --help  Show help                                            [boolean]
+
+Examples:
+  node queries sync "SELECT * FROM publicdata:samples.natality LIMIT 5;"
+  node queries async "SELECT * FROM publicdata:samples.natality LIMIT 5;"
+  node queries poll 12345
+
+For more information, see https://cloud.google.com/bigquery/docs
+```
+
+[queries_docs]: https://cloud.google.com/bigquery/docs
+[queries_code]: queries.js
 
 ### Tables
 

@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START complete]
+// [START all]
 /**
  * Command-line application to perform an synchronous query in BigQuery.
  *
@@ -127,51 +127,41 @@ function asyncPoll (jobId, callback) {
   });
 }
 // [END async_query]
+// [END all]
 
-// [START usage]
-function printUsage () {
-  console.log('Usage:');
-  console.log('\nCommands:\n');
-  console.log('\tnode query sync QUERY');
-  console.log('\tnode query async QUERY');
-  console.log('\tnode query poll JOB_ID');
-  console.log('\nExamples:\n');
-  console.log('\tnode query sync "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
-  console.log('\tnode query async "SELECT * FROM publicdata:samples.natality LIMIT 5;"');
-  console.log('\tnode query poll 12345');
-}
-// [END usage]
+// The command-line program
+var cli = require('yargs');
+var makeHandler = require('../utils').makeHandler;
 
-// The command-line program:
-var program = {
-  // Print usage instructions.
-  printUsage: printUsage,
-
-  // Exports
+var program = module.exports = {
   asyncQuery: asyncQuery,
   asyncPoll: asyncPoll,
   syncQuery: syncQuery,
   bigquery: bigquery,
-
-  // Run the sample.
-  main: function (args, cb) {
-    var command = args.shift();
-    var arg = args.shift();
-    if (command === 'sync') {
-      this.syncQuery(arg, cb);
-    } else if (command === 'async') {
-      this.asyncQuery(arg, cb);
-    } else if (command === 'poll') {
-      this.asyncPoll(arg, cb);
-    } else {
-      this.printUsage();
-    }
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
   }
 };
 
-if (module === require.main) {
-  program.main(process.argv.slice(2), console.log);
-}
-// [END complete]
+cli
+  .demand(1)
+  .command('sync <query>', 'Run a synchronous query.', {}, function (options) {
+    program.syncQuery(options.query, makeHandler());
+  })
+  .command('async <query>', 'Start an asynchronous query.', {}, function (options) {
+    program.asyncQuery(options.query, makeHandler());
+  })
+  .command('poll <jobId>', 'Get the status of a job.', {}, function (options) {
+    program.asyncPoll(options.jobId, makeHandler());
+  })
+  .example('node $0 sync "SELECT * FROM publicdata:samples.natality LIMIT 5;"')
+  .example('node $0 async "SELECT * FROM publicdata:samples.natality LIMIT 5;"')
+  .example('node $0 poll 12345')
+  .wrap(80)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/bigquery/docs');
 
-module.exports = program;
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}

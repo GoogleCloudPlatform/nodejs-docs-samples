@@ -13,50 +13,103 @@
 
 'use strict';
 
-var analyzeExample = require('../../language/analyze');
+var uuid = require('node-uuid');
+var path = require('path');
+var storage = require('@google-cloud/storage')();
+var program = require('../analyze');
+
+var bucketName = 'nodejs-docs-samples-test-' + uuid.v4();
+var fileName = 'text.txt';
+var localFilePath = path.join(__dirname, '../resources/text.txt');
+var text = 'President Obama is speaking at the White House.';
+var options = {
+  type: 'text'
+};
 
 describe('language:analyze', function () {
-  it('should analyze sentiment in text', function (done) {
-    analyzeExample.main(
-      'sentiment',
-      'This gazinga pin is bad and it should feel bad',
-      function (err, result) {
-        assert.ifError(err);
-        assert(result);
-        assert(result.documentSentiment);
-        assert(result.documentSentiment.polarity < 0);
-        done();
-      }
-    );
+  before(function (done) {
+    storage.createBucket(bucketName, function (err, bucket) {
+      assert.equal(err, null);
+      bucket.upload(localFilePath, done);
+    });
   });
-  it('should analyze entities in text', function (done) {
-    analyzeExample.main(
-      'entities',
-      'Mark Twain is the author of a book called Tom Sawyer',
-      function (err, result) {
-        assert.ifError(err);
-        assert(result);
-        assert(result.entities && result.entities.length);
-        assert(result.entities[0].name === 'Mark Twain');
-        assert(result.entities[0].type === 'PERSON');
-        done();
-      }
-    );
+
+  after(function (done) {
+    storage.bucket(bucketName).deleteFiles({ force: true }, function (err) {
+      assert.equal(err, null);
+      storage.bucket(bucketName).delete(done);
+    });
   });
-  it('should analyze syntax in text', function (done) {
-    analyzeExample.main(
-      'syntax',
-      'Betty bought a bit of bitter butter. But she said, "This butter\'s ' +
-      'bitter! If I put it in my batter, it will make my batter bitter. If I ' +
-      'buy some better butter - better than this bitter butter - it will ' +
-      'make my batter better."',
-      function (err, result) {
-        assert.ifError(err);
-        assert(result);
-        assert(result.sentences && result.sentences.length);
-        assert(result.tokens && result.tokens.length > 5);
+
+  describe('analyzeSentiment', function () {
+    it('should analyze sentiment in text', function (done) {
+      program.analyzeSentiment(text, options, function (err, sentiment) {
+        assert.equal(null, err);
+        assert.equal(typeof sentiment, 'object');
+        assert.equal(typeof sentiment.polarity, 'number');
+        assert.equal(typeof sentiment.magnitude, 'number');
         done();
-      }
-    );
+      });
+    });
+  });
+
+  describe('analyzeSentimentFromFile', function () {
+    it('should analyze sentiment in a file', function (done) {
+      program.analyzeSentimentFromFile(bucketName, fileName, options, function (err, sentiment) {
+        assert.equal(null, err);
+        assert.equal(typeof sentiment, 'object');
+        assert.equal(typeof sentiment.polarity, 'number');
+        assert.equal(typeof sentiment.magnitude, 'number');
+        done();
+      });
+    });
+  });
+
+  describe('analyzeEntities', function () {
+    it('should analyze entities in text', function (done) {
+      program.analyzeEntities(text, options, function (err, entities) {
+        assert.equal(null, err);
+        assert.equal(typeof entities, 'object');
+        assert.equal(Array.isArray(entities.people), true);
+        assert.equal(Array.isArray(entities.places), true);
+        done();
+      });
+    });
+  });
+
+  describe('analyzeEntitiesFromFile', function () {
+    it('should analyze entities in a file', function (done) {
+      program.analyzeEntitiesFromFile(bucketName, fileName, options, function (err, entities) {
+        assert.equal(null, err);
+        assert.equal(typeof entities, 'object');
+        assert.equal(Array.isArray(entities.people), true);
+        assert.equal(Array.isArray(entities.places), true);
+        done();
+      });
+    });
+  });
+
+  describe('analyzeSyntax', function () {
+    it('should analyze syntax in text', function (done) {
+      program.analyzeSyntax(text, options, function (err, syntax) {
+        assert.equal(null, err);
+        assert.equal(typeof syntax, 'object');
+        assert.equal(Array.isArray(syntax.sentences), true);
+        assert.equal(Array.isArray(syntax.tokens), true);
+        done();
+      });
+    });
+  });
+
+  describe('analyzeSyntaxFromFile', function () {
+    it('should analyze syntax in a file', function (done) {
+      program.analyzeSyntaxFromFile(bucketName, fileName, options, function (err, syntax) {
+        assert.equal(null, err);
+        assert.equal(typeof syntax, 'object');
+        assert.equal(Array.isArray(syntax.sentences), true);
+        assert.equal(Array.isArray(syntax.tokens), true);
+        done();
+      });
+    });
   });
 });

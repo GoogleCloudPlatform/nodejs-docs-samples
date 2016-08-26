@@ -16,11 +16,18 @@
 var proxyquire = require('proxyquire').noCallThru();
 var bucket = 'bucket';
 var file = 'file';
+var job = 'job';
 var dataset = 'dataset';
 var table = 'table';
 var format = 'JSON';
+var schema = 'schema';
 
 function getSample () {
+  var tableMocks = [
+    {
+      id: table
+    }
+  ];
   var bucketMock = {
     file: sinon.stub().returns(fileMock)
   };
@@ -30,14 +37,19 @@ function getSample () {
   var fileMock = {};
   var metadataMock = { status: { state: 'DONE' } };
   var jobMock = {
-    getMetadata: sinon.stub().callsArgWith(0, null, metadataMock),
-    on: sinon.stub()
+    id: job,
+    getMetadata: sinon.stub().yields(null, metadataMock),
+    on: sinon.stub().returnsThis()
   };
   var tableMock = {
-    export: sinon.stub().callsArgWith(2, null, jobMock)
+    export: sinon.stub().yields(null, jobMock),
+    delete: sinon.stub().yields(null),
+    import: sinon.stub().yields(null, jobMock)
   };
   var datasetMock = {
-    table: sinon.stub().returns(tableMock)
+    table: sinon.stub().returns(tableMock),
+    createTable: sinon.stub().yields(null, tableMocks[0]),
+    getTables: sinon.stub().yields(null, tableMocks)
   };
   var bigqueryMock = {
     job: sinon.stub().returns(jobMock),
@@ -61,15 +73,188 @@ function getSample () {
       job: jobMock,
       table: tableMock,
       bucket: bucketMock,
-      dataset: datasetMock
+      dataset: datasetMock,
+      tables: tableMocks
     }
   };
 }
 
 describe('bigquery:tables', function () {
-  describe('exportTable', function () {
+  describe('createTable', function () {
+    it('should create a table', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        dataset: dataset,
+        table: table
+      };
+
+      sample.program.createTable(options, callback);
+
+      assert.equal(sample.mocks.dataset.createTable.calledOnce, true);
+      assert.deepEqual(sample.mocks.dataset.createTable.firstCall.args.slice(0, -1), [options.table, {}]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.tables[0]]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Created table: %s', options.table]);
+    });
+
+    it('should create a table with a schema', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        dataset: dataset,
+        table: table,
+        schema: schema
+      };
+
+      sample.program.createTable(options, callback);
+
+      assert.equal(sample.mocks.dataset.createTable.calledOnce, true);
+      assert.deepEqual(sample.mocks.dataset.createTable.firstCall.args.slice(0, -1), [options.table, { schema: schema }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.tables[0]]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Created table: %s', options.table]);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.dataset.createTable.yields(error);
+
+      sample.program.createTable({}, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
+  describe('listTables', function () {
+    it('should list tables', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        dataset: dataset
+      };
+
+      sample.program.listTables(options, callback);
+
+      assert.equal(sample.mocks.dataset.getTables.calledOnce, true);
+      assert.deepEqual(sample.mocks.dataset.getTables.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.tables]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d table(s)!', sample.mocks.tables.length]);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.dataset.getTables.yields(error);
+
+      sample.program.listTables({}, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
+  describe('deleteTable', function () {
+    it('should delete a table', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        dataset: dataset,
+        table: table
+      };
+
+      sample.program.deleteTable(options, callback);
+
+      assert.equal(sample.mocks.table.delete.calledOnce, true);
+      assert.deepEqual(sample.mocks.table.delete.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Deleted table: %s', options.table]);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.table.delete.yields(error);
+
+      sample.program.deleteTable({}, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
+  describe('importFile', function () {
+    it('should import a local file', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        dataset: dataset,
+        table: table,
+        file: file
+      };
+      sample.mocks.job.on.withArgs('complete').yields(sample.mocks.metadata);
+
+      sample.program.importFile(options, callback);
+
+      assert.equal(sample.mocks.table.import.calledOnce, true);
+      assert.deepEqual(sample.mocks.table.import.firstCall.args.slice(0, -1), [options.file, { format: undefined }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
+      assert.equal(console.log.calledTwice, true);
+      assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
+      assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
+    });
+
+    it('should import a GCS file', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+      var options = {
+        dataset: dataset,
+        table: table,
+        file: file,
+        bucket: bucket,
+        format: format
+      };
+      sample.mocks.job.on.withArgs('complete').yields(sample.mocks.metadata);
+
+      sample.program.importFile(options, callback);
+
+      assert.equal(sample.mocks.table.import.calledOnce, true);
+      assert.deepEqual(sample.mocks.table.import.firstCall.args.slice(0, -1), [sample.mocks.file, { format: format }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
+      assert.equal(console.log.calledTwice, true);
+      assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
+      assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.table.import.yields(error);
+
+      sample.program.importFile({}, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
+  describe('exportTableToGCS', function () {
     it('should export to a table', function () {
-      var example = getSample();
+      var sample = getSample();
       var options = {
         bucket: bucket,
         file: file,
@@ -79,42 +264,24 @@ describe('bigquery:tables', function () {
         gzip: true
       };
       var callback = sinon.stub();
-      example.mocks.job.on.withArgs('complete').callsArgWith(1, example.mocks.metadata);
+      sample.mocks.job.on.withArgs('complete').yields(sample.mocks.metadata);
 
-      example.program.exportTableToGCS(options, callback);
+      sample.program.exportTableToGCS(options, callback);
 
-      assert(example.mocks.storage.bucket.calledWith(options.bucket), 'bucket found');
-      assert(example.mocks.bucket.file.calledWith(options.file), 'file found');
-      assert(example.mocks.bigquery.dataset.calledWith(options.dataset), 'dataset found');
-      assert(example.mocks.dataset.table.calledWith(options.table), 'table found');
-      assert(example.mocks.table.export.calledOnce, 'table.export called once');
-      assert(console.log.calledWith('ExportTableToGCS: submitted job %s!', example.mocks.job.id),
-        'job submittal was reported'
-      );
-
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.equal(callback.firstCall.args[1], example.mocks.metadata, 'callback received metadata');
+      assert.equal(sample.mocks.table.export.calledOnce, true);
+      assert.deepEqual(sample.mocks.table.export.firstCall.args.slice(0, -1), [sample.mocks.file, { format: format, gzip: true }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
+      assert.equal(console.log.calledTwice, true);
+      assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
+      assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
     });
 
     it('should handle export error', function () {
       var error = new Error('exportTableToGCSError');
       var example = getSample();
       var callback = sinon.stub();
-      example.mocks.table.export = sinon.stub().callsArgWith(2, error);
-      example.program.exportTableToGCS({ format: format }, callback);
-
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.equal(callback.firstCall.args[0], error, 'callback received error');
-    });
-
-    it('should handle job-processing error', function () {
-      var error = new Error('exportTableToGCSError');
-      var example = getSample();
-      var callback = sinon.stub();
-      example.mocks.job.on.withArgs('error').callsArgWith(1, error);
+      example.mocks.table.export.yields(error);
       example.program.exportTableToGCS({ format: format }, callback);
 
       assert(callback.calledOnce, 'callback called once');
@@ -124,38 +291,94 @@ describe('bigquery:tables', function () {
   });
 
   describe('main', function () {
+    it('should call createTable', function () {
+      var program = getSample().program;
+      program.createTable = sinon.stub();
+
+      program.main(['create', dataset, table]);
+      assert.equal(program.createTable.calledOnce, true);
+      assert.deepEqual(program.createTable.firstCall.args.slice(0, -1), [{ dataset: dataset, table: table }]);
+    });
+
+    it('should call listTables', function () {
+      var program = getSample().program;
+      program.listTables = sinon.stub();
+
+      program.main(['list', dataset]);
+      assert.equal(program.listTables.calledOnce, true);
+      assert.deepEqual(program.listTables.firstCall.args.slice(0, -1), [{ dataset: dataset }]);
+    });
+
+    it('should call deleteTable', function () {
+      var program = getSample().program;
+      program.deleteTable = sinon.stub();
+
+      program.main(['delete', dataset, table]);
+      assert.equal(program.deleteTable.calledOnce, true);
+      assert.deepEqual(program.deleteTable.firstCall.args.slice(0, -1), [{ dataset: dataset, table: table }]);
+    });
+
+    it('should call importFile', function () {
+      var program = getSample().program;
+      program.importFile = sinon.stub();
+
+      program.main(['import', dataset, table, file]);
+      assert.equal(program.importFile.calledOnce, true);
+      assert.deepEqual(program.importFile.firstCall.args.slice(0, -1), [{
+        dataset: dataset,
+        table: table,
+        file: file,
+        bucket: undefined,
+        format: undefined
+      }]);
+    });
+
     it('should call exportTableToGCS', function () {
       var program = getSample().program;
       program.exportTableToGCS = sinon.stub();
 
-      program.main(['export', bucket, file, dataset, table]);
-      assert(program.exportTableToGCS.calledOnce, 'exportTableToGCS called');
+      program.main(['export', dataset, table, bucket, file]);
+      assert.equal(program.exportTableToGCS.calledOnce, true);
+      assert.deepEqual(program.exportTableToGCS.firstCall.args.slice(0, -1), [{
+        dataset: dataset,
+        table: table,
+        file: file,
+        bucket: bucket,
+        format: undefined,
+        gzip: false
+      }]);
     });
 
     it('should recognize --gzip flag', function () {
       var program = getSample().program;
       program.exportTableToGCS = sinon.stub();
 
-      program.main(['export', bucket, file, dataset, table, '--gzip']);
-      assert(program.exportTableToGCS.calledOnce, 'exportTableToGCS called once');
-
-      var firstArgs = program.exportTableToGCS.firstCall.args;
-      assert.equal(firstArgs.length, 2, 'exportTableToGCS received 2 arguments');
-      assert(firstArgs[0], 'exportTableToGCS received options');
-      assert(firstArgs[0].gzip, 'exportTableToGCS received gzip as True');
+      program.main(['export', dataset, table, bucket, file, '--gzip']);
+      assert.equal(program.exportTableToGCS.calledOnce, true);
+      assert.deepEqual(program.exportTableToGCS.firstCall.args.slice(0, -1), [{
+        dataset: dataset,
+        table: table,
+        file: file,
+        bucket: bucket,
+        format: undefined,
+        gzip: true
+      }]);
     });
 
     it('should recognize --format flag', function () {
       var program = getSample().program;
       program.exportTableToGCS = sinon.stub();
 
-      program.main(['export', bucket, file, dataset, table, '--format', 'CSV']);
-      assert(program.exportTableToGCS.calledOnce, 'exportTableToGCS called once');
-
-      var firstArgs = program.exportTableToGCS.firstCall.args;
-      assert.equal(firstArgs.length, 2, 'exportTableToGCS received 2 arguments');
-      assert(firstArgs[0], 'exportTableToGCS received options');
-      assert.equal(firstArgs[0].format, 'CSV', 'exportTableToGCS received format as CSV');
+      program.main(['export', dataset, table, bucket, file, '--format', 'CSV']);
+      assert.equal(program.exportTableToGCS.calledOnce, true);
+      assert.deepEqual(program.exportTableToGCS.firstCall.args.slice(0, -1), [{
+        dataset: dataset,
+        table: table,
+        file: file,
+        bucket: bucket,
+        format: 'CSV',
+        gzip: false
+      }]);
     });
   });
 });

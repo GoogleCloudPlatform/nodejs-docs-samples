@@ -13,6 +13,18 @@
 
 'use strict';
 
-describe('bigquery:dataset_size', function () {
-  it('should be tested');
+var program = require('../projects');
+
+describe('resource:projects', function () {
+  describe('list', function () {
+    it('should list projects', function (done) {
+      program.listProjects(function (err, projects) {
+        assert.ifError(err);
+        assert(Array.isArray(projects));
+        assert(projects.length > 0);
+        assert(console.log.calledWith('Found %d project(s)!', projects.length));
+        setTimeout(done, 2000);
+      });
+    });
+  });
 });

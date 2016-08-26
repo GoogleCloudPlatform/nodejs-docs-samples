@@ -12,9 +12,8 @@ analytics data warehouse.
 * [Setup](#setup)
 * [Samples](#samples)
   * [Create A Simple Application With the API](#create-a-simple-application-with-the-api)
-  * [Calculate size of dataset](#calculate-size-of-dataset)
-  * [Loading Data with a POST Request](#loading-data-with-a-post-request)
-  * [Loading Data from Cloud Storage](#loading-data-from-cloud-storage)
+  * [Datasets](#datasets)
+  * [Tables](#tables)
 
 ## Setup
 
@@ -39,46 +38,72 @@ __Run the sample:__
 [basics_docs]: https://cloud.google.com/bigquery/create-simple-app-api
 [basics_code]: getting_started.js
 
-### Calculate size of dataset
+### Datasets
 
-View the [source code][size_code].
+View the [documentation][datasets_docs] or the [source code][datasets_code].
 
-__Run the sample:__
+__Usage:__ `node datasets --help`
 
-Usage: `node dataset_size <projectId> <datasetId>`
+```
+Commands:
+  create <name>       Create a new dataset.
+  delete <datasetId>  Delete the specified dataset.
+  list                List datasets in the authenticated project.
+  size <datasetId>    Calculate the size of the specified dataset.
 
-Example:
+Options:
+  --projectId, -p  Optionally specify the project ID to use.
+                                                                         [string]
+  --help           Show help                                            [boolean]
 
-    node dataset_size bigquery-public-data hacker_news
+Examples:
+  node datasets create my_dataset                     Create a new dataset named "my_dataset".
+  node datasets delete my_dataset                     Delete "my_dataset".
+  node datasets list                                  List datasets.
+  node datasets list -p bigquery-public-data          List datasets in a project other than the
+                                                      authenticated project.
+  node datasets size my_dataset                       Calculate the size of "my_dataset".
+  node datasets size hacker_news -p                   Calculate the size of
+  bigquery-public-data                                "bigquery-public-data:hacker_news".
 
-[size_code]: dataset_size.js
+For more information, see https://cloud.google.com/bigquery/docs
+```
 
-### Loading Data with a POST Request
+[datasets_docs]: https://cloud.google.com/bigquery/docs
+[datasets_code]: datasets.js
 
-View the [documentation][file_docs] or the [source code][file_code].
+### Tables
 
-__Run the sample:__
+View the [documentation][tables_docs] or the [source code][tables_code].
 
-Usage: `node load_data_from_csv <path-to-file> <dataset-id> <table-name>`
+__Usage:__ `node tables --help`
 
-Example:
+```
+Commands:
+  create <dataset> <table>                  Create a new table in the specified dataset.
+  list <dataset>                            List tables in the specified dataset.
+  delete <dataset> <table>                  Delete a table in the specified dataset.
+  import <dataset> <table> <file>           Import data from a local file or a Google Cloud Storage
+                                            file into BigQuery.
+  export <dataset> <table> <bucket> <file>  Export a table from BigQuery to Google Cloud Storage.
 
-    node load_data_from_csv resources/data.csv my-dataset my-table
+Options:
+  --help  Show help                                                                        [boolean]
 
-[file_docs]: https://cloud.google.com/bigquery/loading-data-post-request
-[file_code]: load_data_from_csv.js
+Examples:
+  node tables create my_dataset my_table              Create table "my_table" in "my_dataset".
+  node tables list my_dataset                         List tables in "my_dataset".
+  node tables delete my_dataset my_table              Delete "my_table" from "my_dataset".
+  node tables import my_dataset my_table ./data.csv   Import a local file into a table.
+  node tables import my_dataset my_table data.csv     Import a GCS file into a table.
+  --bucket my-bucket
+  node tables export my_dataset my_table my-bucket    Export my_dataset:my_table to
+  my-file                                             gcs://my-bucket/my-file as raw CSV
+  node tables export my_dataset my_table my-bucket    Export my_dataset:my_table to
+  my-file -f JSON --gzip                              gcs://my-bucket/my-file as gzipped JSON
 
-### Loading Data from Cloud Storage
+For more information, see https://cloud.google.com/bigquery/docs
+```
 
-View the [documentation][gcs_docs] or the [source code][gcs_code].
-
-__Run the sample:__
-
-Usage: `node load_data_from_gcs <bucket-name> <filename> <dataset-id> <table-name>`
-
-Example:
-
-    node load_data_from_gcs my-bucket data.csv my-dataset my-table
-
-[gcs_docs]: https://cloud.google.com/bigquery/docs/loading-data-cloud-storage
-[gcs_code]: load_data_from_gcs.js
+[tables_docs]: https://cloud.google.com/bigquery/docs
+[tables_code]: tables.js

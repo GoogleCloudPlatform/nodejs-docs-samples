@@ -13,19 +13,26 @@
 
 'use strict';
 
+var bigquery = require('@google-cloud/bigquery')();
+var storage = require('@google-cloud/storage')();
 var uuid = require('node-uuid');
-var generateUuid = function () {
+var program = require('../tables');
+var path = require('path');
+
+function generateUuid () {
   return 'nodejs_docs_samples_' + uuid.v4().replace(/-/gi, '_');
-};
-var example = require('../tables');
+}
+
 var options = {
+  projectId: process.env.GCLOUD_PROJECT,
+  localFilePath: path.join(__dirname, '../resources/data.csv'),
   bucket: generateUuid(),
   file: 'data.json',
   dataset: generateUuid(),
-  table: generateUuid()
+  table: generateUuid(),
+  schema: 'Name:string, Age:integer, Weigth:float, IsMagic:boolean'
 };
-var bigquery = require('@google-cloud/bigquery')();
-var storage = require('@google-cloud/storage')();
+
 var file = storage.bucket(options.bucket).file(options.file);
 
 describe('bigquery:tables', function () {
@@ -34,22 +41,18 @@ describe('bigquery:tables', function () {
     storage.createBucket(options.bucket, function (err, bucket) {
       assert.ifError(err, 'bucket creation succeeded');
 
-      // Create dataset
-      bigquery.createDataset(options.dataset, function (err, dataset) {
-        assert.ifError(err, 'dataset creation succeeded');
+      bucket.upload(options.localFilePath, function (err) {
+        assert.ifError(err, 'file upload succeeded');
 
-        // Create table
-        dataset.createTable(
-          options.table,
-          { schema: 'name:string, age:integer' },
-          function (err, table) {
-            assert.ifError(err, 'table creation succeeded');
-            done();
-          }
-        );
+        // Create dataset
+        bigquery.createDataset(options.dataset, function (err, dataset) {
+          assert.ifError(err, 'dataset creation succeeded');
+          done();
+        });
       });
     });
   });
+
   after(function (done) {
     // Delete testing dataset/table
     bigquery.dataset(options.dataset).delete({ force: true }, function () {
@@ -64,9 +67,56 @@ describe('bigquery:tables', function () {
     });
   });
 
-  describe('export_table_to_gcs', function () {
+  describe('createTable', function () {
+    it('should create a new table', function (done) {
+      program.createTable(options, function (err, table) {
+        assert.ifError(err);
+        assert(table, 'new table was created');
+        assert.equal(table.id, options.table);
+        assert(console.log.calledWith('Created table: %s', options.table));
+        done();
+      });
+    });
+  });
+
+  describe('listTables', function () {
+    it('should list tables', function (done) {
+      program.listTables(options, function (err, tables) {
+        assert.ifError(err);
+        assert(Array.isArray(tables));
+        assert(tables.length > 0);
+        assert(tables[0].id);
+        var matchingTables = tables.filter(function (table) {
+          return table.id === options.table;
+        });
+        assert.equal(matchingTables.length, 1, 'newly created table is in list');
+        assert(console.log.calledWith('Found %d table(s)!', tables.length));
+        done();
+      });
+    });
+  });
+
+  describe('import', function () {
+    it('should import local file', function (done) {
+      program.importFile({
+        file: options.localFilePath,
+        projectId: options.projectId,
+        dataset: options.dataset,
+        table: options.table
+      }, function (err, metadata) {
+        assert.ifError(err);
+        assert(metadata, 'got metadata');
+        assert.deepEqual(metadata.status, {
+          state: 'DONE'
+        }, 'job completed');
+        done();
+      });
+    });
+  });
+
+  describe('exportTableToGCS', function () {
     it('should export data to GCS', function (done) {
-      example.exportTableToGCS(options, function (err, metadata) {
+      program.exportTableToGCS(options, function (err, metadata) {
         assert.ifError(err, 'no error occurred');
         assert(metadata, 'job metadata was received');
         assert(metadata.status, 'job metadata has status');
@@ -77,6 +127,16 @@ describe('bigquery:tables', function () {
           assert(exists, 'export destination exists');
           done();
         });
+      });
+    });
+  });
+
+  describe('deleteTable', function () {
+    it('should list tables', function (done) {
+      program.deleteTable(options, function (err) {
+        assert.ifError(err);
+        assert(console.log.calledWith('Deleted table: %s', options.table));
+        done();
       });
     });
   });

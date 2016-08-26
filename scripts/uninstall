@@ -35,6 +35,7 @@ queue.push('logging');
 queue.push('monitoring');
 queue.push('prediction');
 queue.push('pubsub');
+queue.push('resource');
 queue.push('speech');
 queue.push('storage');
 queue.push('trace');

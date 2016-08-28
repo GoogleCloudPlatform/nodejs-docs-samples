@@ -63,7 +63,7 @@
     "intelli-espower-loader": "^1.0.1",
     "mocha": "^3.0.2",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",
-    "nyc": "^7.1.0",
+    "nyc": "^8.1.0",
     "power-assert": "^1.4.1",
     "proxyquire": "^1.7.10",
     "request": "^2.72.0",

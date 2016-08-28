@@ -65,7 +65,7 @@ describe('translate:translate', function () {
       assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.result, 'callback received result');
-      assert(console.log.calledWith('Detected %s with confidence %d', 'English', sample.mocks.result.confidence));
+      assert(console.log.calledWith('Detected %s (%s) with confidence %d', 'English', 'en', sample.mocks.result.confidence));
     });
 
     it('should handle error', function () {
@@ -137,7 +137,7 @@ describe('translate:translate', function () {
       assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
       assert.strictEqual(callback.firstCall.args[1], sample.mocks.translation, 'callback received result');
-      assert(console.log.calledWith('Translated text to %s', 'Russian'));
+      assert(console.log.calledWith('Translated text to %s:', 'Russian'));
     });
 
     it('should handle error', function () {
@@ -166,7 +166,8 @@ describe('translate:translate', function () {
 
       sinon.stub(program, 'detectLanguage');
       program.main(['detect', text, '-k', apiKey]);
-      assert(program.detectLanguage.calledOnce);
+      assert.equal(program.detectLanguage.calledOnce, true);
+      assert.deepEqual(program.detectLanguage.firstCall.args.slice(0, -1), [text, apiKey]);
     });
 
     it('should call listLanguages', function () {
@@ -174,7 +175,8 @@ describe('translate:translate', function () {
 
       sinon.stub(program, 'listLanguages');
       program.main(['list', '-k', apiKey]);
-      assert(program.listLanguages.calledOnce);
+      assert.equal(program.listLanguages.calledOnce, true);
+      assert.deepEqual(program.listLanguages.firstCall.args.slice(0, -1), [apiKey]);
     });
 
     it('should call translateText', function () {
@@ -182,7 +184,13 @@ describe('translate:translate', function () {
 
       sinon.stub(program, 'translateText');
       program.main(['translate', text, '-k', apiKey, '-t', 'ru']);
-      assert(program.translateText.calledOnce);
+      assert.equal(program.translateText.calledOnce, true);
+      assert.deepEqual(program.translateText.firstCall.args.slice(0, -1), [{
+        text: text,
+        to: 'ru',
+        from: undefined,
+        apiKey: apiKey
+      }]);
     });
   });
 });

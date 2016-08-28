@@ -41,10 +41,10 @@ describe('language:analyze', function () {
     });
   });
 
-  describe('analyzeSentiment', function () {
+  describe('analyzeSentimentFromString', function () {
     it('should analyze sentiment in text', function (done) {
-      program.analyzeSentiment(text, options, function (err, sentiment) {
-        assert.equal(null, err);
+      program.analyzeSentimentFromString(text, options, function (err, sentiment) {
+        assert.equal(err, null);
         assert.equal(typeof sentiment, 'object');
         assert.equal(typeof sentiment.polarity, 'number');
         assert.equal(typeof sentiment.magnitude, 'number');
@@ -56,7 +56,7 @@ describe('language:analyze', function () {
   describe('analyzeSentimentFromFile', function () {
     it('should analyze sentiment in a file', function (done) {
       program.analyzeSentimentFromFile(bucketName, fileName, options, function (err, sentiment) {
-        assert.equal(null, err);
+        assert.equal(err, null);
         assert.equal(typeof sentiment, 'object');
         assert.equal(typeof sentiment.polarity, 'number');
         assert.equal(typeof sentiment.magnitude, 'number');
@@ -65,10 +65,10 @@ describe('language:analyze', function () {
     });
   });
 
-  describe('analyzeEntities', function () {
+  describe('analyzeEntitiesFromString', function () {
     it('should analyze entities in text', function (done) {
-      program.analyzeEntities(text, options, function (err, entities) {
-        assert.equal(null, err);
+      program.analyzeEntitiesFromString(text, options, function (err, entities) {
+        assert.equal(err, null);
         assert.equal(typeof entities, 'object');
         assert.equal(Array.isArray(entities.people), true);
         assert.equal(Array.isArray(entities.places), true);
@@ -80,7 +80,7 @@ describe('language:analyze', function () {
   describe('analyzeEntitiesFromFile', function () {
     it('should analyze entities in a file', function (done) {
       program.analyzeEntitiesFromFile(bucketName, fileName, options, function (err, entities) {
-        assert.equal(null, err);
+        assert.equal(err, null);
         assert.equal(typeof entities, 'object');
         assert.equal(Array.isArray(entities.people), true);
         assert.equal(Array.isArray(entities.places), true);
@@ -89,10 +89,10 @@ describe('language:analyze', function () {
     });
   });
 
-  describe('analyzeSyntax', function () {
+  describe('analyzeSyntaxFromString', function () {
     it('should analyze syntax in text', function (done) {
-      program.analyzeSyntax(text, options, function (err, syntax) {
-        assert.equal(null, err);
+      program.analyzeSyntaxFromString(text, options, function (err, syntax) {
+        assert.equal(err, null);
         assert.equal(typeof syntax, 'object');
         assert.equal(Array.isArray(syntax.sentences), true);
         assert.equal(Array.isArray(syntax.tokens), true);
@@ -104,7 +104,7 @@ describe('language:analyze', function () {
   describe('analyzeSyntaxFromFile', function () {
     it('should analyze syntax in a file', function (done) {
       program.analyzeSyntaxFromFile(bucketName, fileName, options, function (err, syntax) {
-        assert.equal(null, err);
+        assert.equal(err, null);
         assert.equal(typeof syntax, 'object');
         assert.equal(Array.isArray(syntax.sentences), true);
         assert.equal(Array.isArray(syntax.tokens), true);

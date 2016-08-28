@@ -70,7 +70,8 @@ describe('resource:projects', function () {
 
       sinon.stub(program, 'listProjects');
       program.main(['list']);
-      assert(program.listProjects.calledOnce);
+      assert.equal(program.listProjects.calledOnce, true);
+      assert.deepEqual(program.listProjects.firstCall.args.slice(0, -1), []);
     });
   });
 });

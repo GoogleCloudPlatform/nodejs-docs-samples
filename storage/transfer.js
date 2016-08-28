@@ -346,6 +346,7 @@ function resumeTransferOperation (transferOperationName, callback) {
 
 // The command-line program
 var cli = require('yargs');
+var utils = require('../utils');
 
 var program = module.exports = {
   createTransferJob: createTransferJob,
@@ -368,16 +369,16 @@ cli
     yargs
       .demand(2)
       .command('create <srcBucket> <destBucket> <time> <date> [description]', 'Create a transfer job.', {}, function (options) {
-        program.createTransferJob(options, console.log);
+        program.createTransferJob(utils.pick(options, ['srcBucket', 'destBucket', 'time', 'date', 'description']), utils.makeHandler(false));
       })
-      .command('get <job>', 'Get a transfer job.', function (options) {
-        program.getTransferJob(options.job, console.log);
+      .command('get <job>', 'Get a transfer job.', {}, function (options) {
+        program.getTransferJob(options.job, utils.makeHandler());
       })
-      .command('list', 'List transfer jobs.', function (options) {
-        program.listTransferJobs(options, console.log);
+      .command('list', 'List transfer jobs.', {}, function (options) {
+        program.listTransferJobs(utils.makeHandler());
       })
-      .command('set <job> <field> <value>', 'Change the status, description or transferSpec of a transfer job.', function (options) {
-        program.updateTransferJob(options, console.log);
+      .command('set <job> <field> <value>', 'Change the status, description or transferSpec of a transfer job.', {}, function (options) {
+        program.updateTransferJob(utils.pick(options, ['job', 'field', 'value']), utils.makeHandler(false));
       })
       .example('node $0 jobs create my-bucket my-other-bucket 2016/08/12 16:30 "Move my files"', 'Create a transfer job.')
       .example('node $0 jobs get transferJobs/123456789012345678', 'Get a transfer job.')
@@ -389,17 +390,17 @@ cli
   .command('operations <cmd> [args]', 'Run an operation command.', function (yargs) {
     yargs
       .demand(2)
-      .command('list [job]', 'List transfer operations, optionally filtering by a job name.', function (options) {
-        program.listTransferOperations(options.job, console.log);
+      .command('list [job]', 'List transfer operations, optionally filtering by a job name.', {}, function (options) {
+        program.listTransferOperations(options.job, utils.makeHandler());
       })
-      .command('get <operation>', 'Get a transfer operation.', function (options) {
-        program.getTransferOperation(options.operation, console.log);
+      .command('get <operation>', 'Get a transfer operation.', {}, function (options) {
+        program.getTransferOperation(options.operation, utils.makeHandler());
       })
-      .command('pause <operation>', 'Pause a transfer operation.', function (options) {
-        program.pauseTransferOperation(options.operation, console.log);
+      .command('pause <operation>', 'Pause a transfer operation.', {}, function (options) {
+        program.pauseTransferOperation(options.operation, utils.makeHandler(false));
       })
-      .command('resume <operation>', 'Resume a transfer operation.', function (options) {
-        program.resumeTransferOperation(options.operation, console.log);
+      .command('resume <operation>', 'Resume a transfer operation.', {}, function (options) {
+        program.resumeTransferOperation(options.operation, utils.makeHandler(false));
       })
       .example('node $0 operations list', 'List all transfer operations.')
       .example('node $0 operations list transferJobs/123456789012345678', 'List all transfer operations for a specific job.')

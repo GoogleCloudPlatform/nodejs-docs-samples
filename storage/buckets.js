@@ -91,6 +91,7 @@ function deleteBucket (name, callback) {
 
 // The command-line program
 var cli = require('yargs');
+var utils = require('../utils');
 
 var program = module.exports = {
   createBucket: createBucket,
@@ -105,13 +106,13 @@ var program = module.exports = {
 cli
   .demand(1)
   .command('create <bucket>', 'Create a new bucket with the given name.', {}, function (options) {
-    program.createBucket(options.bucket, console.log);
+    program.createBucket(options.bucket, utils.makeHandler(false));
   })
   .command('list', 'List all buckets in the authenticated project.', {}, function () {
-    program.listBuckets(console.log);
+    program.listBuckets(utils.makeHandler(true, 'name'));
   })
   .command('delete <bucket>', 'Delete the specified bucket.', {}, function (options) {
-    program.deleteBucket(options.bucket, console.log);
+    program.deleteBucket(options.bucket, utils.makeHandler(false));
   })
   .example('node $0 create my-bucket', 'Create a new bucket named "my-bucket".')
   .example('node $0 list', 'List all buckets in the authenticated project.')

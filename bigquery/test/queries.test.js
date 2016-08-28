@@ -43,7 +43,7 @@ function getSample () {
   var BigQueryMock = sinon.stub().returns(bigqueryMock);
 
   return {
-    program: proxyquire('../query', {
+    program: proxyquire('../queries', {
       '@google-cloud/bigquery': BigQueryMock
     }),
     mocks: {
@@ -58,49 +58,6 @@ function getSample () {
 }
 
 describe('bigquery:query', function () {
-  describe('main', function () {
-    it('should show usage based on arguments', function () {
-      var program = getSample().program;
-      sinon.stub(program, 'printUsage');
-
-      program.main([]);
-      assert(program.printUsage.calledOnce);
-
-      program.main(['-h']);
-      assert(program.printUsage.calledTwice);
-
-      program.main(['--help']);
-      assert(program.printUsage.calledThrice);
-    });
-
-    it('should run the correct commands', function () {
-      var program = getSample().program;
-      sinon.stub(program, 'syncQuery');
-      sinon.stub(program, 'asyncQuery');
-      sinon.stub(program, 'asyncPoll');
-
-      program.main(['sync']);
-      assert(program.syncQuery.calledOnce);
-
-      program.main(['async']);
-      assert(program.asyncQuery.calledOnce);
-
-      program.main(['poll']);
-      assert(program.asyncPoll.calledOnce);
-    });
-
-    it('should execute queries', function () {
-      var example = getSample();
-      sinon.stub(example.program, 'syncQuery');
-
-      example.program.main(['foo'], function (err, data) {
-        assert.ifError(err);
-        assert(example.program.syncQuery.calledWith({ query: 'foo' }));
-        assert.deepEqual(data, example.mocks.natality);
-      });
-    });
-  });
-
   describe('syncQuery', function () {
     var query = 'foo';
 
@@ -246,19 +203,35 @@ describe('bigquery:query', function () {
     });
   });
 
-  describe('printUsage', function () {
-    it('should print usage', function () {
+  describe('main', function () {
+    var query = 'foo';
+    var jobId = 'foo';
+
+    it('should call syncQuery', function () {
       var program = getSample().program;
-      program.printUsage();
-      assert(console.log.calledWith('Usage:'));
-      assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tnode query sync QUERY'));
-      assert(console.log.calledWith('\tnode query async QUERY'));
-      assert(console.log.calledWith('\tnode query poll JOB_ID'));
-      assert(console.log.calledWith('\nExamples:\n'));
-      assert(console.log.calledWith('\tnode query sync "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
-      assert(console.log.calledWith('\tnode query async "SELECT * FROM publicdata:samples.natality LIMIT 5;"'));
-      assert(console.log.calledWith('\tnode query poll 12345'));
+
+      sinon.stub(program, 'syncQuery');
+      program.main(['sync', query]);
+      assert.equal(program.syncQuery.calledOnce, true);
+      assert.deepEqual(program.syncQuery.firstCall.args.slice(0, -1), [query]);
+    });
+
+    it('should call asyncQuery', function () {
+      var program = getSample().program;
+
+      sinon.stub(program, 'asyncQuery');
+      program.main(['async', query]);
+      assert.equal(program.asyncQuery.calledOnce, true);
+      assert.deepEqual(program.asyncQuery.firstCall.args.slice(0, -1), [query]);
+    });
+
+    it('should call asyncPoll', function () {
+      var program = getSample().program;
+
+      sinon.stub(program, 'asyncPoll');
+      program.main(['poll', jobId]);
+      assert.equal(program.asyncPoll.calledOnce, true);
+      assert.deepEqual(program.asyncPoll.firstCall.args.slice(0, -1), [jobId]);
     });
   });
 });

@@ -279,6 +279,7 @@ function copyFile (options, callback) {
 
 // The command-line program
 var cli = require('yargs');
+var utils = require('../utils');
 
 var program = module.exports = {
   listFiles: listFiles,
@@ -313,31 +314,31 @@ cli
     }
   }, function (options) {
     if (options.prefix) {
-      program.listFilesByPrefix(options, console.log);
+      program.listFilesByPrefix(utils.pick(options, ['bucket', 'prefix', 'delimiter']), utils.makeHandler(true, 'name'));
     } else {
-      program.listFiles(options.bucket, console.log);
+      program.listFiles(options.bucket, utils.makeHandler(true, 'name'));
     }
   })
   .command('upload <bucket> <srcFile>', 'Upload a local file to a bucket.', {}, function (options) {
-    program.uploadFile(options, console.log);
+    program.uploadFile(utils.pick(options, ['bucket', 'srcFile']), utils.makeHandler(false));
   })
   .command('download <bucket> <srcFile> <destFile>', 'Download a file from a bucket.', {}, function (options) {
-    program.downloadFile(options, console.log);
+    program.downloadFile(utils.pick(options, ['bucket', 'srcFile', 'destFile']), utils.makeHandler(false));
   })
   .command('delete <bucket> <file>', 'Delete a file from a bucket.', {}, function (options) {
-    program.deleteFile(options, console.log);
+    program.deleteFile(utils.pick(options, ['bucket', 'file']), utils.makeHandler(false));
   })
   .command('getMetadata <bucket> <file>', 'Get metadata for a file in a bucket.', {}, function (options) {
-    program.getMetadata(options, console.log);
+    program.getMetadata(utils.pick(options, ['bucket', 'file']), utils.makeHandler());
   })
   .command('makePublic <bucket> <file>', 'Make a file public in a bucket.', {}, function (options) {
-    program.makePublic(options, console.log);
+    program.makePublic(utils.pick(options, ['bucket', 'file']), utils.makeHandler(false));
   })
   .command('move <bucket> <srcFile> <destFile>', 'Move a file to a new location within the same bucket, i.e. rename the file.', {}, function (options) {
-    program.moveFile(options, console.log);
+    program.moveFile(utils.pick(options, ['bucket', 'srcFile', 'destFile']), utils.makeHandler(false));
   })
   .command('copy <srcBucket> <srcFile> <destBucket> <destFile>', 'Copy a file in a bucket to another bucket.', {}, function (options) {
-    program.copyFile(options, console.log);
+    program.copyFile(utils.pick(options, ['srcBucket', 'srcFile', 'destBucket', 'destFile']), utils.makeHandler(false));
   })
   .example('node $0 list my-bucket', 'List files in "my-bucket".')
   .example('node $0 list my-bucket -p public/', 'List files in "my-bucket" filtered by prefix "public/".')

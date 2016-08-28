@@ -68,12 +68,12 @@ function getSample () {
 }
 
 describe('language:analyze', function () {
-  describe('analyzeSentiment', function () {
+  describe('analyzeSentimentFromString', function () {
     it('should analyze sentiment in text', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.analyzeSentiment(text, {
+      sample.program.analyzeSentimentFromString(text, {
         type: type,
         language: language
       }, callback);
@@ -98,7 +98,7 @@ describe('language:analyze', function () {
       var callback = sinon.stub();
       sample.mocks.document.detectSentiment.yields(error);
 
-      sample.program.analyzeSentiment(text, {
+      sample.program.analyzeSentimentFromString(text, {
         type: type,
         language: language
       }, callback);
@@ -148,12 +148,12 @@ describe('language:analyze', function () {
     });
   });
 
-  describe('analyzeEntities', function () {
+  describe('analyzeEntitiesFromString', function () {
     it('should analyze entities in text', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.analyzeEntities(text, {
+      sample.program.analyzeEntitiesFromString(text, {
         type: type,
         language: language
       }, callback);
@@ -178,7 +178,7 @@ describe('language:analyze', function () {
       var callback = sinon.stub();
       sample.mocks.document.detectEntities.yields(error);
 
-      sample.program.analyzeEntities(text, {
+      sample.program.analyzeEntitiesFromString(text, {
         type: type,
         language: language
       }, callback);
@@ -228,12 +228,12 @@ describe('language:analyze', function () {
     });
   });
 
-  describe('analyzeSyntax', function () {
+  describe('analyzeSyntaxFromString', function () {
     it('should analyze syntax in text', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.analyzeSyntax(text, {
+      sample.program.analyzeSyntaxFromString(text, {
         type: type,
         language: language
       }, callback);
@@ -258,7 +258,7 @@ describe('language:analyze', function () {
       var callback = sinon.stub();
       sample.mocks.document.annotate.yields(error);
 
-      sample.program.analyzeSyntax(text, {
+      sample.program.analyzeSyntaxFromString(text, {
         type: type,
         language: language
       }, callback);
@@ -309,16 +309,15 @@ describe('language:analyze', function () {
   });
 
   describe('main', function () {
-    it('should call analyzeSentiment', function () {
+    var options = { type: 'text', language: undefined };
+
+    it('should call analyzeSentimentFromString', function () {
       var program = getSample().program;
 
-      sinon.stub(program, 'analyzeSentiment');
-      program.main(['sentiment', text]);
-      assert.equal(program.analyzeSentiment.calledOnce, true);
-      assert.deepEqual(program.analyzeSentiment.firstCall.args.slice(0, -1), [text, {
-        type: 'text',
-        language: undefined
-      }]);
+      sinon.stub(program, 'analyzeSentimentFromString');
+      program.main(['sentimentFromString', text]);
+      assert.equal(program.analyzeSentimentFromString.calledOnce, true);
+      assert.deepEqual(program.analyzeSentimentFromString.firstCall.args.slice(0, -1), [text, options]);
     });
 
     it('should call analyzeSentimentFromFile', function () {
@@ -327,22 +326,16 @@ describe('language:analyze', function () {
       sinon.stub(program, 'analyzeSentimentFromFile');
       program.main(['sentimentFromFile', bucketName, fileName]);
       assert.equal(program.analyzeSentimentFromFile.calledOnce, true);
-      assert.deepEqual(program.analyzeSentimentFromFile.firstCall.args.slice(0, -1), [bucketName, fileName, {
-        type: 'text',
-        language: undefined
-      }]);
+      assert.deepEqual(program.analyzeSentimentFromFile.firstCall.args.slice(0, -1), [bucketName, fileName, options]);
     });
 
-    it('should call analyzeEntities', function () {
+    it('should call analyzeEntitiesFromString', function () {
       var program = getSample().program;
 
-      sinon.stub(program, 'analyzeEntities');
-      program.main(['entities', text]);
-      assert.equal(program.analyzeEntities.calledOnce, true);
-      assert.deepEqual(program.analyzeEntities.firstCall.args.slice(0, -1), [text, {
-        type: 'text',
-        language: undefined
-      }]);
+      sinon.stub(program, 'analyzeEntitiesFromString');
+      program.main(['entitiesFromString', text]);
+      assert.equal(program.analyzeEntitiesFromString.calledOnce, true);
+      assert.deepEqual(program.analyzeEntitiesFromString.firstCall.args.slice(0, -1), [text, options]);
     });
 
     it('should call analyzeEntitiesFromFile', function () {
@@ -351,22 +344,16 @@ describe('language:analyze', function () {
       sinon.stub(program, 'analyzeEntitiesFromFile');
       program.main(['entitiesFromFile', bucketName, fileName]);
       assert.equal(program.analyzeEntitiesFromFile.calledOnce, true);
-      assert.deepEqual(program.analyzeEntitiesFromFile.firstCall.args.slice(0, -1), [bucketName, fileName, {
-        type: 'text',
-        language: undefined
-      }]);
+      assert.deepEqual(program.analyzeEntitiesFromFile.firstCall.args.slice(0, -1), [bucketName, fileName, options]);
     });
 
-    it('should call analyzeSyntax', function () {
+    it('should call analyzeSyntaxFromString', function () {
       var program = getSample().program;
 
-      sinon.stub(program, 'analyzeSyntax');
-      program.main(['syntax', text]);
-      assert.equal(program.analyzeSyntax.calledOnce, true);
-      assert.deepEqual(program.analyzeSyntax.firstCall.args.slice(0, -1), [text, {
-        type: 'text',
-        language: undefined
-      }]);
+      sinon.stub(program, 'analyzeSyntaxFromString');
+      program.main(['syntaxFromString', text]);
+      assert.equal(program.analyzeSyntaxFromString.calledOnce, true);
+      assert.deepEqual(program.analyzeSyntaxFromString.firstCall.args.slice(0, -1), [text, options]);
     });
 
     it('should call analyzeSyntaxFromFile', function () {
@@ -375,10 +362,7 @@ describe('language:analyze', function () {
       sinon.stub(program, 'analyzeSyntaxFromFile');
       program.main(['syntaxFromFile', bucketName, fileName]);
       assert.equal(program.analyzeSyntaxFromFile.calledOnce, true);
-      assert.deepEqual(program.analyzeSyntaxFromFile.firstCall.args.slice(0, -1), [bucketName, fileName, {
-        type: 'text',
-        language: undefined
-      }]);
+      assert.deepEqual(program.analyzeSyntaxFromFile.firstCall.args.slice(0, -1), [bucketName, fileName, options]);
     });
   });
 });

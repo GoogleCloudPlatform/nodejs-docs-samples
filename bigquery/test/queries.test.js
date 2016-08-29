@@ -85,7 +85,7 @@ describe('bigquery:query', function () {
     });
 
     it('should handle error', function () {
-      var error = Error('syncQueryError');
+      var error = new Error('error');
       var example = getSample();
       example.mocks.bigquery.query = sinon.stub().callsArgWith(1, error);
       example.program.syncQuery(query, function (err, data) {
@@ -121,7 +121,7 @@ describe('bigquery:query', function () {
     });
 
     it('should handle error', function () {
-      var error = Error('asyncQueryError');
+      var error = new Error('error');
       var example = getSample();
       example.mocks.bigquery.startQuery = sinon.stub().callsArgWith(1, error);
       example.program.asyncQuery(query, function (err, job) {
@@ -193,7 +193,7 @@ describe('bigquery:query', function () {
     });
 
     it('should handle error', function () {
-      var error = Error('asyncPollError');
+      var error = new Error('error');
       var example = getSample();
       example.mocks.job.getQueryResults = sinon.stub().callsArgWith(0, error);
       example.program.asyncPoll(example.jobId, function (err, rows) {

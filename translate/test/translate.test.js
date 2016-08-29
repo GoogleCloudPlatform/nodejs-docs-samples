@@ -69,7 +69,7 @@ describe('translate:translate', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.translate.detect = sinon.stub().callsArgWith(1, error);
@@ -100,7 +100,7 @@ describe('translate:translate', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.translate.getLanguages = sinon.stub().callsArgWith(0, error);
@@ -141,7 +141,7 @@ describe('translate:translate', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {

@@ -278,7 +278,7 @@ describe('bigquery:tables', function () {
     });
 
     it('should handle export error', function () {
-      var error = new Error('exportTableToGCSError');
+      var error = new Error('error');
       var example = getSample();
       var callback = sinon.stub();
       example.mocks.table.export.yields(error);

@@ -65,7 +65,7 @@ describe('storage:buckets', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.bucket.create = sinon.stub().callsArgWith(0, error);
@@ -96,7 +96,7 @@ describe('storage:buckets', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.storage.getBuckets = sinon.stub().callsArgWith(0, error);
@@ -128,7 +128,7 @@ describe('storage:buckets', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.bucket.delete = sinon.stub().callsArgWith(0, error);

@@ -140,7 +140,7 @@ describe('storage:acl', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.bucket.acl.add = sinon.stub().callsArgWith(1, error);
@@ -263,7 +263,7 @@ describe('storage:acl', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
@@ -346,7 +346,7 @@ describe('storage:acl', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {

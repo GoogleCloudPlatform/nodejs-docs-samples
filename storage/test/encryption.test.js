@@ -90,7 +90,7 @@ describe('storage:encryption', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
@@ -135,7 +135,7 @@ describe('storage:encryption', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {

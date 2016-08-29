@@ -63,7 +63,7 @@ cli
     program.listProjects(makeHandler(true, 'id'));
   })
   .example('node $0 list', 'List projects.')
-  .wrap(80)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/resource-manager/docs/');
 

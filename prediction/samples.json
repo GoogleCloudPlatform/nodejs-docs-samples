@@ -1,0 +1,15 @@
+{
+  "id": "prediction",
+  "samples": [
+    {
+      "id": "models",
+      "name": "Models",
+      "file": "hostedmodels.js",
+      "docs_link": "https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine",
+      "usage": {
+        "text": "node hostedmodels <phrase>"
+      },
+      "help": "node hostedmodels \"Hello world\""
+    }
+  ]
+}

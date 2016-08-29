@@ -1,0 +1,25 @@
+{
+  "id": "speech",
+  "samples": [
+    {
+      "id": "recognize",
+      "name": "Sync Recognize",
+      "file": "recognize.js",
+      "docs_link": "https://cloud.google.com/speech/docs/",
+      "usage": {
+        "text": "node recognize <path-to-audio-file>"
+      },
+      "help": "node recognize resources/audio.raw"
+    },
+    {
+      "id": "recognize",
+      "name": "Streaming Recognition",
+      "file": "recognize_streaming.js",
+      "docs_link": "https://cloud.google.com/speech/docs/",
+      "usage": {
+        "text": "node recognize_streaming <path-to-audio-file>"
+      },
+      "help": "node recognize_streaming resources/audio.raw"
+    }
+  ]
+}

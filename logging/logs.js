@@ -172,7 +172,7 @@ cli
   .example('node $0 list -f "severity = ERROR" -s "timestamp" -l 2', 'List up to 2 error entries, sorted by timestamp ascending.')
   .example('node $0 write my-log \'{"type":"gae_app","labels":{"module_id":"default"}}\' \'{"message":"Hello World!"}\'', 'Write a log entry.')
   .example('node $0 delete my-log', 'Delete "my-log".')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/logging/docs');
 

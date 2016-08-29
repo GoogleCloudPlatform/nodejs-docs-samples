@@ -296,7 +296,7 @@ cli
   .example('node $0 entitiesFromFile my-bucket file.txt', '')
   .example('node $0 syntaxFromString "President Obama is speaking at the White House."', '')
   .example('node $0 syntaxFromFile my-bucket es_file.txt -l es', '')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/natural-language/docs');
 

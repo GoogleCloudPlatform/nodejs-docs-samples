@@ -1,6 +1,6 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Resource Manager Node.js Samples
+# Google Cloud Resource Manager API Node.js Samples
 
 Google Cloud Platform provides container resources such as Organizations and
 Projects, that allow you to group and hierarchically organize other Cloud
@@ -31,7 +31,7 @@ programmatically manage these container resources.
 
 ### Projects
 
-View the [documentation][projects_docs] or the [source code][projects_code].
+View the [documentation][projects_0_docs] or the [source code][projects_0_code].
 
 __Usage:__ `node projects --help`
 
@@ -40,7 +40,7 @@ Commands:
   list  List all projects the authenticated user has access to.
 
 Options:
-  --help  Show help                                                    [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
   node projects list  List projects.
@@ -48,5 +48,5 @@ Examples:
 For more information, see https://cloud.google.com/resource-manager/docs/
 ```
 
-[projects_docs]: https://cloud.google.com/resource-manager/docs/
-[projects_code]: projects.js
+[projects_0_docs]: https://cloud.google.com/resource-manager/docs/
+[projects_0_code]: projects.js

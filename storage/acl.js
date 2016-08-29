@@ -211,7 +211,7 @@ cli
       description: 'The target file.'
     }
   })
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/storage/docs/access-control/create-manage-lists');
 

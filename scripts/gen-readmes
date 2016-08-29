@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+// Copyright 2016, Google, Inc.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+var async = require('async');
+var path = require('path');
+
+require('shelljs/global');
+
+// Generate README.md files, in up to 5 directories at a time
+var queue = async.queue(function (directory, callback) {
+  generateForDirectory(directory, callback);
+}, 5);
+
+queue.push('bigquery');
+queue.push('datastore');
+queue.push('language');
+queue.push('logging');
+queue.push('monitoring');
+queue.push('prediction');
+queue.push('pubsub');
+queue.push('resource');
+queue.push('speech');
+queue.push('storage');
+queue.push('translate');
+queue.push('vision');
+
+/**
+ * Generate the README.md file within a single directory.
+ *
+ * @param {string} directory The name of the directory in which to generate the file.
+ * @param {function} callback The callback function.
+ */
+function generateForDirectory(directory, callback) {
+  console.log(directory + '...generating README.md');
+  exec('samples generate', {
+    async: true,
+    cwd: path.join(__dirname, '../', directory)
+  }, function (err) {
+    console.log(directory + '...done');
+    callback(err);
+  });
+}

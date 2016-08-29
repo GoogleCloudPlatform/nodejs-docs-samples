@@ -1,0 +1,27 @@
+{
+  "id": "monitoring",
+  "samples": [
+    {
+      "id": "list",
+      "name": "Listing resources",
+      "file": "list_resources.js",
+      "docs_link": "https://cloud.google.com/monitoring/demos/#hello-world",
+      "description": "`list_resources.js` is a command-line program to demonstrate connecting to the\nGoogle Monitoring API to retrieve API data.",
+      "usage": {
+        "text": "node list_resources <YOUR_PROJECT_ID>"
+      },
+      "help": "node list_resources my-cool-project"
+    },
+    {
+      "id": "metrics",
+      "name": "Custom metrics",
+      "file": "create_custom_metric.js",
+      "docs_link": "https://cloud.google.com/monitoring/demos/#custom_metrics",
+      "description": "`create_custom_metric.js` demonstrates how to create a custom metric, write a\ntimeseries value to it, and read it back.",
+      "usage": {
+        "text": "node create_custom_metric <YOUR_PROJECT_ID>"
+      },
+      "help": "node create_custom_metric my-cool-project"
+    }
+  ]
+}

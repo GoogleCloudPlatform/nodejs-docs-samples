@@ -1,0 +1,26 @@
+{
+  "id": "pubsub",
+  "samples": [
+    {
+      "id": "topics",
+      "name": "Topics",
+      "file": "topics.js",
+      "docs_link": "https://cloud.google.com/pubsub/publisher",
+      "usage": "node topics --help"
+    },
+    {
+      "id": "subscriptions",
+      "name": "Subscriptions",
+      "file": "subscriptions.js",
+      "docs_link": "https://cloud.google.com/pubsub/subscriber",
+      "usage": "node subscriptions --help"
+    },
+    {
+      "id": "iam",
+      "name": "IAM (Identity and Access Management)",
+      "file": "iam.js",
+      "docs_link": "https://cloud.google.com/pubsub/docs",
+      "usage": "node iam --help"
+    }
+  ]
+}

@@ -208,7 +208,7 @@ cli
   .example('node $0 list', 'List all sinks in the authenticated project.')
   .example('node $0 update my-sink \'{"filter":"severity > ALERT"}\'', 'Update the specified sink.')
   .example('node $0 delete my-sink', 'Delete "my-sink".')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/logging/docs');
 

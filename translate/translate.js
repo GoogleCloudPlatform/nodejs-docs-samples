@@ -167,7 +167,7 @@ cli
   .example('node $0 list -k your-key', 'List available translation languages.')
   .example('node $0 translate -k your-key --to ru "Good morning!"', 'Translate "Good morning!" to Russian, auto-detecting English.')
   .example('node $0 translate -k your-key --to ru --from en "Good morning!"', 'Translate "Good morning!" to Russian from English.')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/translate/docs');
 

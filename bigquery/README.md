@@ -1,8 +1,8 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google BigQuery Node.js Samples
+# BigQuery Node.js Samples
 
-[BigQuery][bigquery_docs] is Google's fully managed, petabyte scale, low cost
+[BigQuery][bigquery_docs] is Google&#x27;s fully managed, petabyte scale, low cost
 analytics data warehouse.
 
 [bigquery_docs]: https://cloud.google.com/bigquery/docs/
@@ -11,10 +11,9 @@ analytics data warehouse.
 
 * [Setup](#setup)
 * [Samples](#samples)
-  * [Create A Simple Application With the API](#create-a-simple-application-with-the-api)
   * [Datasets](#datasets)
-  * [Queries](#queries)
   * [Tables](#tables)
+  * [Queries](#queries)
 
 ## Setup
 
@@ -28,20 +27,9 @@ analytics data warehouse.
 
 ## Samples
 
-### Create A Simple Application With the API
-
-View the [documentation][basics_docs] or the [source code][basics_code].
-
-__Run the sample:__
-
-    node getting_started
-
-[basics_docs]: https://cloud.google.com/bigquery/create-simple-app-api
-[basics_code]: getting_started.js
-
 ### Datasets
 
-View the [documentation][datasets_docs] or the [source code][datasets_code].
+View the [documentation][datasets_0_docs] or the [source code][datasets_0_code].
 
 __Usage:__ `node datasets --help`
 
@@ -54,8 +42,8 @@ Commands:
 
 Options:
   --projectId, -p  Optionally specify the project ID to use.
-                                                                         [string]
-  --help           Show help                                            [boolean]
+                                                           [string] [default: "nodejs-docs-samples"]
+  --help           Show help                                                               [boolean]
 
 Examples:
   node datasets create my_dataset                     Create a new dataset named "my_dataset".
@@ -70,38 +58,12 @@ Examples:
 For more information, see https://cloud.google.com/bigquery/docs
 ```
 
-[datasets_docs]: https://cloud.google.com/bigquery/docs
-[datasets_code]: datasets.js
-
-### Queries
-
-View the [documentation][queries_docs] or the [source code][queries_code].
-
-__Usage:__ `node queries --help`
-
-```
-Commands:
-  sync <query>   Run a synchronous query.
-  async <query>  Start an asynchronous query.
-  poll <jobId>   Get the status of a job.
-
-Options:
-  --help  Show help                                            [boolean]
-
-Examples:
-  node queries sync "SELECT * FROM publicdata:samples.natality LIMIT 5;"
-  node queries async "SELECT * FROM publicdata:samples.natality LIMIT 5;"
-  node queries poll 12345
-
-For more information, see https://cloud.google.com/bigquery/docs
-```
-
-[queries_docs]: https://cloud.google.com/bigquery/docs
-[queries_code]: queries.js
+[datasets_0_docs]: https://cloud.google.com/bigquery/docs
+[datasets_0_code]: datasets.js
 
 ### Tables
 
-View the [documentation][tables_docs] or the [source code][tables_code].
+View the [documentation][tables_1_docs] or the [source code][tables_1_code].
 
 __Usage:__ `node tables --help`
 
@@ -132,5 +94,33 @@ Examples:
 For more information, see https://cloud.google.com/bigquery/docs
 ```
 
-[tables_docs]: https://cloud.google.com/bigquery/docs
-[tables_code]: tables.js
+[tables_1_docs]: https://cloud.google.com/bigquery/docs
+[tables_1_code]: tables.js
+
+### Queries
+
+View the [documentation][queries_2_docs] or the [source code][queries_2_code].
+
+__Usage:__ `node queries --help`
+
+```
+Commands:
+  sync <query>   Run a synchronous query.
+  async <query>  Start an asynchronous query.
+  poll <jobId>   Get the status of a job.
+
+Options:
+  --help  Show help                                                    [boolean]
+
+Examples:
+  node queries sync "SELECT * FROM
+  publicdata:samples.natality LIMIT 5;"
+  node queries async "SELECT * FROM
+  publicdata:samples.natality LIMIT 5;"
+  node queries poll 12345
+
+For more information, see https://cloud.google.com/bigquery/docs
+```
+
+[queries_2_docs]: https://cloud.google.com/bigquery/docs
+[queries_2_code]: queries.js

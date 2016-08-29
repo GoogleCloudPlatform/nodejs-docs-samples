@@ -117,7 +117,7 @@ cli
   .example('node $0 create my-bucket', 'Create a new bucket named "my-bucket".')
   .example('node $0 list', 'List all buckets in the authenticated project.')
   .example('node $0 delete my-bucket', 'Delete "my-bucket".')
-  .wrap(80)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/storage/docs');
 

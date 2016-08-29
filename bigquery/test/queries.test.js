@@ -63,35 +63,39 @@ describe('bigquery:query', function () {
 
     it('should return results', function () {
       var example = getSample();
-      example.program.syncQuery(query,
-        function (err, data) {
-          assert.ifError(err);
-          assert(example.mocks.bigquery.query.called);
-          assert.deepEqual(data, example.mocks.natality);
-          assert(console.log.calledWith(
-            'SyncQuery: found %d rows!',
-            data.length
-          ));
-        }
-      );
+      var callback = sinon.stub();
+
+      example.program.syncQuery(query, callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert(example.mocks.bigquery.query.called);
+      assert.deepEqual(callback.firstCall.args[1], example.mocks.natality);
+      assert(console.log.calledWith(
+        'SyncQuery: found %d rows!',
+        callback.firstCall.args[1].length
+      ));
     });
 
     it('should require a query', function () {
       var example = getSample();
-      example.program.syncQuery(null, function (err, data) {
-        assert.deepEqual(err, Error('"query" is required!'));
-        assert.equal(data, undefined);
-      });
+      var callback = sinon.stub();
+
+      example.program.syncQuery(null, callback);
+
+      assert.deepEqual(callback.firstCall.args[0], new Error('"query" is required!'));
+      assert.equal(callback.firstCall.args[1], undefined);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var example = getSample();
+      var callback = sinon.stub();
       example.mocks.bigquery.query = sinon.stub().callsArgWith(1, error);
-      example.program.syncQuery(query, function (err, data) {
-        assert.deepEqual(err, error);
-        assert.equal(data, undefined);
-      });
+
+      example.program.syncQuery(query, callback);
+
+      assert.deepEqual(callback.firstCall.args[0], error);
+      assert.equal(callback.firstCall.args[1], undefined);
     });
   });
 
@@ -100,106 +104,119 @@ describe('bigquery:query', function () {
 
     it('should submit a job', function () {
       var example = getSample();
-      example.program.asyncQuery(query,
-        function (err, job) {
-          assert.ifError(err);
-          assert(example.mocks.bigquery.startQuery.called);
-          assert.deepEqual(example.mocks.job, job);
-          assert(console.log.calledWith(
-            'AsyncQuery: submitted job %s!', example.jobId
-          ));
-        }
-      );
+      var callback = sinon.stub();
+
+      example.program.asyncQuery(query, callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert(example.mocks.bigquery.startQuery.called);
+      assert.deepEqual(callback.firstCall.args[1], example.mocks.job);
+      assert(console.log.calledWith(
+        'AsyncQuery: submitted job %s!', example.jobId
+      ));
     });
 
     it('should require a query', function () {
       var example = getSample();
-      example.program.asyncQuery(null, function (err, job) {
-        assert.deepEqual(err, Error('"query" is required!'));
-        assert.equal(job, undefined);
-      });
+      var callback = sinon.stub();
+
+      example.program.asyncQuery(null, callback);
+
+      assert.deepEqual(callback.firstCall.args[0], new Error('"query" is required!'));
+      assert.equal(callback.firstCall.args[1], undefined);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var example = getSample();
+      var callback = sinon.stub();
       example.mocks.bigquery.startQuery = sinon.stub().callsArgWith(1, error);
-      example.program.asyncQuery(query, function (err, job) {
-        assert.deepEqual(err, error);
-        assert.equal(job, undefined);
-      });
+
+      example.program.asyncQuery(query, callback);
+
+      assert.deepEqual(callback.firstCall.args[0], error);
+      assert.equal(callback.firstCall.args[1], undefined);
     });
   });
 
   describe('asyncPoll', function () {
     it('should get the results of a job given its ID', function () {
       var example = getSample();
+      var callback = sinon.stub();
       example.mocks.bigquery.job = sinon.stub().returns(example.mocks.job);
-      example.program.asyncPoll(example.jobId,
-        function (err, rows) {
-          assert.ifError(err);
-          assert(example.mocks.job.getQueryResults.called);
-          assert(console.log.calledWith(
-            'AsyncQuery: polled job %s; got %d rows!',
-            example.jobId,
-            example.mocks.natality.length
-          ));
-        }
-      );
+
+      example.program.asyncPoll(example.jobId, callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert(example.mocks.job.getQueryResults.called);
+      assert(console.log.calledWith(
+        'AsyncQuery: polled job %s; got %d rows!',
+        example.jobId,
+        example.mocks.natality.length
+      ));
     });
 
     it('should report the status of a job', function () {
       var example = getSample();
-      example.program.asyncPoll(example.jobId, function (err, rows) {
-        assert.ifError(err);
-        assert(example.mocks.job.getMetadata.called);
-        assert(console.log.calledWith(
-          'Job status: %s',
-          example.mocks.metadata.status.state
-        ));
-      });
+      var callback = sinon.stub();
+
+      example.program.asyncPoll(example.jobId, callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert(example.mocks.job.getMetadata.called);
+      assert(console.log.calledWith(
+        'Job status: %s',
+        example.mocks.metadata.status.state
+      ));
     });
 
     it('should check whether a job is finished', function () {
       var example = getSample();
+      var callback = sinon.stub();
 
       var pendingState = { status: { state: 'PENDING' } };
       example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, pendingState);
-      example.program.asyncPoll(example.jobId, function (err, rows) {
-        assert.deepEqual(err, Error('Job %s is not done', example.jobId));
-        assert(console.log.calledWith('Job status: %s', pendingState.status.state));
-        assert(example.mocks.job.getMetadata.called);
-        assert.equal(example.mocks.job.getQueryResults.called, false);
-        assert.equal(rows, undefined);
-      });
+
+      example.program.asyncPoll(example.jobId, callback);
+
+      assert.deepEqual(callback.firstCall.args[0], Error('Job %s is not done', example.jobId));
+      assert(console.log.calledWith('Job status: %s', pendingState.status.state));
+      assert(example.mocks.job.getMetadata.called);
+      assert.equal(example.mocks.job.getQueryResults.called, false);
+      assert.equal(callback.firstCall.args[1], undefined);
 
       var doneState = { status: { state: 'DONE' } };
       example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, doneState);
-      example.program.asyncPoll(example.jobId, function (err, rows) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Job status: %s', doneState.status.state));
-        assert(example.mocks.job.getMetadata.called);
-        assert(example.mocks.job.getQueryResults.called);
-        assert.equal(rows, example.mocks.natality);
-      });
+
+      example.program.asyncPoll(example.jobId, callback);
+
+      assert.ifError(callback.secondCall.args[0]);
+      assert(console.log.calledWith('Job status: %s', doneState.status.state));
+      assert(example.mocks.job.getMetadata.called);
+      assert(example.mocks.job.getQueryResults.called);
+      assert.equal(callback.secondCall.args[1], example.mocks.natality);
     });
 
     it('should require a job ID', function () {
       var example = getSample();
-      example.program.asyncPoll(null, function (err, rows) {
-        assert.deepEqual(err, Error('"jobId" is required!'));
-        assert.equal(rows, undefined);
-      });
+      var callback = sinon.stub();
+
+      example.program.asyncPoll(null, callback);
+
+      assert.deepEqual(callback.firstCall.args[0], Error('"jobId" is required!'));
+      assert.equal(callback.firstCall.args[1], undefined);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var example = getSample();
+      var callback = sinon.stub();
       example.mocks.job.getQueryResults = sinon.stub().callsArgWith(0, error);
-      example.program.asyncPoll(example.jobId, function (err, rows) {
-        assert.deepEqual(err, error);
-        assert.equal(rows, undefined);
-      });
+
+      example.program.asyncPoll(example.jobId, callback);
+
+      assert.deepEqual(callback.firstCall.args[0], error);
+      assert.equal(callback.firstCall.args[1], undefined);
     });
   });
 

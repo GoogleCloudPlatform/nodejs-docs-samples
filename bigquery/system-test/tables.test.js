@@ -22,7 +22,10 @@ var path = require('path');
 function generateUuid () {
   return 'nodejs_docs_samples_' + uuid.v4().replace(/-/gi, '_');
 }
-
+var rows = [
+  { Name: 'foo', Age: 27, Weight: 80.3, IsMagic: true },
+  { Name: 'bar', Age: 13, Weight: 54.6, IsMagic: false }
+];
 var options = {
   projectId: process.env.GCLOUD_PROJECT,
   localFilePath: path.join(__dirname, '../resources/data.csv'),
@@ -30,10 +33,9 @@ var options = {
   file: 'data.json',
   dataset: generateUuid(),
   table: generateUuid(),
-  schema: 'Name:string, Age:integer, Weigth:float, IsMagic:boolean'
+  schema: 'Name:string, Age:integer, Weight:float, IsMagic:boolean',
+  rows: rows
 };
-
-var file = storage.bucket(options.bucket).file(options.file);
 
 describe('bigquery:tables', function () {
   before(function (done) {
@@ -122,7 +124,7 @@ describe('bigquery:tables', function () {
         assert(metadata.status, 'job metadata has status');
         assert.equal(metadata.status.state, 'DONE', 'job was finished');
 
-        file.exists(function (err, exists) {
+        storage.bucket(options.bucket).file(options.file).exists(function (err, exists) {
           assert.ifError(err, 'file existence check succeeded');
           assert(exists, 'export destination exists');
           done();
@@ -131,8 +133,28 @@ describe('bigquery:tables', function () {
     });
   });
 
+  describe('insertRowsAsStream', function () {
+    it('should insert rows into a table', function (done) {
+      var table = bigquery.dataset(options.dataset).table(options.table);
+      table.getRows({}, function (err, startRows) {
+        assert.equal(err, null);
+
+        program.insertRowsAsStream(options, function (err, insertErrors) {
+          assert.equal(err, null);
+          assert.deepEqual(insertErrors, [], 'no per-row insert errors occurred');
+
+          table.getRows({}, function (err, endRows) {
+            assert.equal(err, null);
+            assert.equal(startRows.length + 2, endRows.length, 'insertRows() added 2 rows');
+            done();
+          });
+        });
+      });
+    });
+  });
+
   describe('deleteTable', function () {
-    it('should list tables', function (done) {
+    it('should delete table', function (done) {
       program.deleteTable(options, function (err) {
         assert.ifError(err);
         assert(console.log.calledWith('Deleted table: %s', options.table));

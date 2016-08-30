@@ -68,7 +68,7 @@ function getSample () {
   var BigQueryMock = sinon.stub().returns(bigqueryMock);
   var StorageMock = sinon.stub().returns(storageMock);
   var fsMock = {
-    readFileSync: sinon.stub().returns(null)
+    readFileSync: sinon.stub().throws(new Error('Invalid file.'))
   };
   fsMock.readFileSync.withArgs(validJsonFile).returns(validJsonString);
   fsMock.readFileSync.withArgs(invalidJsonFile).returns(invalidJsonString);
@@ -473,6 +473,17 @@ describe('bigquery:tables', function () {
 
         assert.throws(
           function () { program.main(['insert', invalidJsonFile, dataset, table]); },
+          /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
+        );
+        assert.equal(program.insertRowsAsStream.called, false);
+      });
+
+      it('should reject invalid file names', function () {
+        var program = getSample().program;
+        program.insertRowsAsStream = sinon.stub();
+
+        assert.throws(
+          function () { program.main(['insert', '', dataset, table]); },
           /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
         );
         assert.equal(program.insertRowsAsStream.called, false);

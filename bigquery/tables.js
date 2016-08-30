@@ -200,6 +200,7 @@ function insertRowsAsStream (options, callback) {
     if (err) {
       return callback(err);
     }
+    console.log('Inserted %d rows!', options.rows.length);
     return callback(null, insertErrors);
   });
 }
@@ -268,10 +269,13 @@ cli
   .command('insert <json_or_file> <dataset> <table>',
     'Insert a JSON array (as a string or newline-delimited file) into a BigQuery table.', {},
     function (options) {
-      var content = fs.readFileSync(options.json_or_file);
-      if (!content) {
+      var content;
+      try {
+        content = fs.readFileSync(options.json_or_file);
+      } catch (err) {
         content = options.json_or_file;
       }
+
       var rows = null;
       try {
         rows = JSON.parse(content);

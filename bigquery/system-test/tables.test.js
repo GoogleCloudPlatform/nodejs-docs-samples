@@ -143,11 +143,13 @@ describe('bigquery:tables', function () {
           assert.equal(err, null);
           assert.deepEqual(insertErrors, [], 'no per-row insert errors occurred');
 
-          table.getRows({}, function (err, endRows) {
-            assert.equal(err, null);
-            assert.equal(startRows.length + 2, endRows.length, 'insertRows() added 2 rows');
-            done();
-          });
+          setTimeout(function () {
+            table.getRows({}, function (err, endRows) {
+              assert.equal(err, null);
+              assert.equal(startRows.length + 2, endRows.length, 'insertRows() added 2 rows');
+              done();
+            });
+          }, 2000);
         });
       });
     });

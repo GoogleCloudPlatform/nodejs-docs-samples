@@ -104,6 +104,37 @@ function deleteTable (options, callback) {
 }
 // [END delete_table]
 
+// [START copy_table]
+/**
+ * Create a copy of an existing table
+ *
+ * @param {object} options Configuration options.
+ * @param {string} options.srcDataset The source dataset ID.
+ * @param {string} options.srcTable The source table ID.
+ * @param {string} options.destDataset The destination dataset ID.
+ * @param {string} options.destTable The destination table ID. Will be created if it doesn't exist.
+ * @param {function} callback The callback function.
+ */
+function copyTable (options, callback) {
+  var srcTable = bigquery.dataset(options.srcDataset).table(options.srcTable);
+  var destTable = bigquery.dataset(options.destDataset).table(options.destTable);
+
+  srcTable.copy(destTable, function (err, job) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('Started job: %s', job.id);
+    job
+      .on('error', callback)
+      .on('complete', function (metadata) {
+        console.log('Completed job: %s', job.id);
+        return callback(null, metadata);
+      });
+  });
+}
+// [END copy_table]
+
 // [START import_file]
 /**
  * Load a csv file into a BigQuery table.
@@ -219,6 +250,7 @@ var program = module.exports = {
   importFile: importFile,
   exportTableToGCS: exportTableToGCS,
   insertRowsAsStream: insertRowsAsStream,
+  copyTable: copyTable,
   main: function (args) {
     // Run the command-line program
     cli.help().strict().parse(args).argv;
@@ -236,6 +268,15 @@ cli
   .command('delete <dataset> <table>', 'Delete a table in the specified dataset.', {}, function (options) {
     program.deleteTable(utils.pick(options, ['dataset', 'table']), utils.makeHandler());
   })
+  .command('copy <srcDataset> <srcTable> <destDataset> <destTable>',
+    'Make a copy of an existing table.', {},
+    function (options) {
+      program.copyTable(
+        utils.pick(options, ['srcDataset', 'srcTable', 'destDataset', 'destTable']),
+        utils.makeHandler()
+      );
+    }
+  )
   .command('import <dataset> <table> <file>', 'Import data from a local file or a Google Cloud Storage file into BigQuery.', {
     bucket: {
       alias: 'b',
@@ -324,6 +365,10 @@ cli
   .example(
     'node $0 insert my_dataset my_table json_file',
     'Insert the JSON objects contained in json_file (one per line) into my_dataset:my_table.'
+  )
+  .example(
+    'node $0 copy src_dataset src_table dest_dataset dest_table',
+    'Copy src_dataset:src_table to dest_dataset:dest_table.'
   )
   .wrap(100)
   .recommendCommands()

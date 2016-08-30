@@ -16,9 +16,13 @@
 var proxyquire = require('proxyquire').noCallThru();
 var bucket = 'bucket';
 var file = 'file';
-var job = 'job';
+var jobId = 'job';
 var dataset = 'dataset';
 var table = 'table';
+var srcDataset = dataset;
+var srcTable = table;
+var destDataset = dataset + '_dest';
+var destTable = table + '_dest';
 var format = 'JSON';
 var schema = 'schema';
 var jsonArray = [
@@ -46,12 +50,14 @@ function getSample () {
   var fileMock = {};
   var metadataMock = { status: { state: 'DONE' } };
   var jobMock = {
-    id: job,
+    id: jobId,
     getMetadata: sinon.stub().yields(null, metadataMock),
     on: sinon.stub().returnsThis()
   };
+  jobMock.on.withArgs('complete').yields(metadataMock);
   var tableMock = {
     export: sinon.stub().yields(null, jobMock),
+    copy: sinon.stub().yields(null, jobMock),
     delete: sinon.stub().yields(null),
     import: sinon.stub().yields(null, jobMock),
     insert: sinon.stub().yields(null, errorList)
@@ -220,7 +226,6 @@ describe('bigquery:tables', function () {
         table: table,
         file: file
       };
-      sample.mocks.job.on.withArgs('complete').yields(sample.mocks.metadata);
 
       sample.program.importFile(options, callback);
 
@@ -243,7 +248,6 @@ describe('bigquery:tables', function () {
         bucket: bucket,
         format: format
       };
-      sample.mocks.job.on.withArgs('complete').yields(sample.mocks.metadata);
 
       sample.program.importFile(options, callback);
 
@@ -269,6 +273,45 @@ describe('bigquery:tables', function () {
     });
   });
 
+  describe('copyTable', function () {
+    var options = {
+      srcDataset: srcDataset,
+      srcTable: srcTable,
+      destDataset: destDataset,
+      destTable: destTable
+    };
+
+    it('should copy a table', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+
+      sample.program.copyTable(options, callback);
+
+      assert.equal(sample.mocks.table.copy.calledOnce, true);
+      assert.deepEqual(
+        sample.mocks.table.copy.firstCall.args.slice(0, -1),
+        [sample.mocks.table]
+      );
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
+      assert.equal(console.log.calledTwice, true);
+      assert.equal(console.log.calledWith('Started job: %s', sample.mocks.job.id), true);
+      assert.equal(console.log.calledWith('Completed job: %s', sample.mocks.job.id), true);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.table.copy.yields(error);
+
+      sample.program.copyTable(options, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
   describe('exportTableToGCS', function () {
     it('should export to a table', function () {
       var sample = getSample();
@@ -281,7 +324,6 @@ describe('bigquery:tables', function () {
         gzip: true
       };
       var callback = sinon.stub();
-      sample.mocks.job.on.withArgs('complete').yields(sample.mocks.metadata);
 
       sample.program.exportTableToGCS(options, callback);
 
@@ -386,6 +428,20 @@ describe('bigquery:tables', function () {
         file: file,
         bucket: undefined,
         format: undefined
+      }]);
+    });
+
+    it('should call copyTable', function () {
+      var program = getSample().program;
+      program.copyTable = sinon.stub();
+
+      program.main(['copy', srcDataset, srcTable, destDataset, destTable]);
+      assert.equal(program.copyTable.calledOnce, true);
+      assert.deepEqual(program.copyTable.firstCall.args.slice(0, -1), [{
+        srcDataset: srcDataset,
+        srcTable: srcTable,
+        destDataset: destDataset,
+        destTable: destTable
       }]);
     });
 

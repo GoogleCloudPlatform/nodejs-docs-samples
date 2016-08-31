@@ -64,7 +64,9 @@ describe('bigquery:tables', function () {
           return done(err);
         }
         // Delete bucket
-        storage.bucket(options.bucket).delete(done);
+        setTimeout(function () {
+          storage.bucket(options.bucket).delete(done);
+        }, 2000);
       });
     });
   });

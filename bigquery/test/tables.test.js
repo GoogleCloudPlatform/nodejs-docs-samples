@@ -409,7 +409,7 @@ describe('bigquery:tables', function () {
       var program = getSample().program;
       program.insertRowsAsStream = sinon.stub();
 
-      program.main(['insert', validJsonFile, dataset, table]);
+      program.main(['insert', dataset, table, validJsonFile]);
 
       assert.equal(program.insertRowsAsStream.calledOnce, true);
       assert.deepEqual(
@@ -450,7 +450,7 @@ describe('bigquery:tables', function () {
       }]);
     });
 
-    describe('main:insert', function () {
+    describe('insert', function () {
       var options = {
         dataset: dataset,
         table: table,
@@ -461,7 +461,7 @@ describe('bigquery:tables', function () {
         var program = getSample().program;
         program.insertRowsAsStream = sinon.stub();
 
-        program.main(['insert', validJsonFile, dataset, table]);
+        program.main(['insert', dataset, table, validJsonFile]);
 
         assert.equal(program.insertRowsAsStream.calledOnce, true);
         assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [options]);
@@ -472,7 +472,7 @@ describe('bigquery:tables', function () {
         program.insertRowsAsStream = sinon.stub();
 
         assert.throws(
-          function () { program.main(['insert', invalidJsonFile, dataset, table]); },
+          function () { program.main(['insert', dataset, table, invalidJsonFile]); },
           /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
         );
         assert.equal(program.insertRowsAsStream.called, false);
@@ -483,7 +483,7 @@ describe('bigquery:tables', function () {
         program.insertRowsAsStream = sinon.stub();
 
         assert.throws(
-          function () { program.main(['insert', '', dataset, table]); },
+          function () { program.main(['insert', dataset, table, '']); },
           /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
         );
         assert.equal(program.insertRowsAsStream.called, false);
@@ -493,7 +493,7 @@ describe('bigquery:tables', function () {
         var program = getSample().program;
         program.insertRowsAsStream = sinon.stub();
 
-        program.main(['insert', validJsonString, dataset, table]);
+        program.main(['insert', dataset, table, validJsonString]);
         assert.equal(program.insertRowsAsStream.calledOnce, true);
         assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [options]);
       });
@@ -503,7 +503,7 @@ describe('bigquery:tables', function () {
         program.insertRowsAsStream = sinon.stub();
 
         assert.throws(
-          function () { program.main(['insert', invalidJsonString, dataset, table]); },
+          function () { program.main(['insert', dataset, table, invalidJsonString]); },
           /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
         );
         assert.equal(program.insertRowsAsStream.called, false);

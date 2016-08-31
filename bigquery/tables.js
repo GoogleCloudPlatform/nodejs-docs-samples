@@ -266,7 +266,7 @@ cli
   }, function (options) {
     program.exportTableToGCS(utils.pick(options, ['dataset', 'table', 'bucket', 'file', 'format', 'gzip']), utils.makeHandler());
   })
-  .command('insert <json_or_file> <dataset> <table>',
+  .command('insert <dataset> <table> <json_or_file>',
     'Insert a JSON array (as a string or newline-delimited file) into a BigQuery table.', {},
     function (options) {
       var content;
@@ -318,11 +318,11 @@ cli
     'Export my_dataset:my_table to gcs://my-bucket/my-file as gzipped JSON.'
   )
   .example(
-    'node $0 insert json_string my_dataset my_table',
+    'node $0 insert my_dataset my_table json_string',
     'Insert the JSON array represented by json_string into my_dataset:my_table.'
   )
   .example(
-    'node $0 insert json_file my_dataset my_table',
+    'node $0 insert my_dataset my_table json_file',
     'Insert the JSON objects contained in json_file (one per line) into my_dataset:my_table.'
   )
   .wrap(100)

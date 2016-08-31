@@ -385,7 +385,8 @@ cli
       .example('node $0 jobs list', 'List transfer jobs.')
       .example('node $0 jobs set transferJobs/123456789012345678 description "My new description"', 'Update the description for a transfer job.')
       .example('node $0 jobs set transferJobs/123456789012345678 status DISABLED', 'Disable a transfer job.')
-      .wrap(100);
+      .wrap(120)
+      .epilogue('For more information, see https://cloud.google.com/storage/transfer');
   }, function () {})
   .command('operations <cmd> [args]', 'Run an operation command.', function (yargs) {
     yargs
@@ -407,11 +408,12 @@ cli
       .example('node $0 operations get transferOperations/123456789012345678', 'Get a transfer operation.')
       .example('node $0 operations pause transferOperations/123456789012345678', 'Pause a transfer operation.')
       .example('node $0 operations resume transferOperations/123456789012345678', 'Resume a transfer operation.')
-      .wrap(100);
+      .wrap(120)
+      .epilogue('For more information, see https://cloud.google.com/storage/transfer');
   }, function () {})
   .example('node $0 jobs --help', 'Show job commands.')
   .example('node $0 operations --help', 'Show operations commands.')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/storage/transfer');
 

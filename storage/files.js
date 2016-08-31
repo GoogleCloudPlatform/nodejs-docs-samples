@@ -349,7 +349,7 @@ cli
   .example('node $0 makePublic my-bucket file.txt', 'Make "gs://my-bucket/file.txt" public.')
   .example('node $0 move my-bucket file.txt file2.txt', 'Rename "gs://my-bucket/file.txt" to "gs://my-bucket/file2.txt".')
   .example('node $0 copy my-bucket file.txt my-other-bucket file.txt', 'Copy "gs://my-bucket/file.txt" to "gs://my-other-bucket/file.txt".')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/storage/docs');
 

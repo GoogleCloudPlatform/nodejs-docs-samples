@@ -245,6 +245,9 @@ function main (inputDir, callback) {
 if (module === require.main) {
   var generalError = 'Usage: node textDetection <command> <arg> ...\n\n' +
     '\tCommands: analyze, lookup';
+  if (process.argv[2] === '--help') {
+    return console.log(generalError);
+  }
   if (process.argv.length < 3) {
     console.log(generalError);
     process.exit(1);

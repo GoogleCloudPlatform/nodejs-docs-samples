@@ -1,0 +1,43 @@
+{
+  "id": "vision",
+  "samples": [
+    {
+      "id": "face",
+      "name": "Face Detection",
+      "file": "faceDetection.js",
+      "docs_link": "https://cloud.google.com/vision/docs/face-tutorial",
+      "description": "This sample uses [node-canvas](https://github.com/Automattic/node-canvas)\nto draw an output image. node-canvas depends on Cairo, which may require separate\ninstallation. See the node-canvas [installation section][canvas-install] for\ndetails.\n\n[canvas-install]: https://github.com/Automattic/node-canvas#installation",
+      "usage": {
+        "text": "node faceDetection <path-to-image-file>"
+      },
+      "help": "node faceDetection \"./resources/face.png\""
+    },
+    {
+      "id": "label",
+      "name": "Label Detection",
+      "file": "labelDetection.js",
+      "docs_link": "https://cloud.google.com/vision/docs/label-tutorial",
+      "usage": {
+        "text": "node labelDetection <path-to-image-file>"
+      },
+      "help": "node labelDetection \"./resources/wakeupcat.jpg\""
+    },
+    {
+      "id": "landmark",
+      "name": "Landmark Detection",
+      "file": "landmarkDetection.js",
+      "docs_link": "https://cloud.google.com/vision/docs/landmark-tutorial",
+      "usage": {
+        "text": "node landmarkDetection <image-uri>"
+      },
+      "help": "node landmarkDetection \"https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg\""
+    },
+    {
+      "id": "text",
+      "name": "Text Detection",
+      "file": "textDetection.js",
+      "docs_link": "https://cloud.google.com/vision/docs",
+      "usage": "node textDetection --help"
+    }
+  ]
+}

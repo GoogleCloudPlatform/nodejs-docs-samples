@@ -1,0 +1,25 @@
+{
+  "id": "logging",
+  "samples": [
+    {
+      "id": "logs",
+      "name": "Logs",
+      "file": "logs.js",
+      "docs_link": "https://cloud.google.com/logging/docs",
+      "usage": "node logs --help"
+    },
+    {
+      "id": "sinks",
+      "name": "Sinks",
+      "file": "sinks.js",
+      "docs_link": "https://cloud.google.com/logging/docs",
+      "usage": "node sinks --help"
+    },
+    {
+      "id": "fluent",
+      "name": "Error Reporting on Compute Engine",
+      "file": "fluent.js",
+      "docs_link": "https://cloud.google.com/error-reporting/docs/setup/compute-engine"
+    }
+  ]
+}

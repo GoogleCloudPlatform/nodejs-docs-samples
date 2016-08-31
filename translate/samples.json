@@ -1,0 +1,12 @@
+{
+  "id": "translate",
+  "samples": [
+    {
+      "id": "translate",
+      "name": "Translate",
+      "file": "translate.js",
+      "docs_link": "https://cloud.google.com/translate/docs",
+      "usage": "node translate --help"
+    }
+  ]
+}

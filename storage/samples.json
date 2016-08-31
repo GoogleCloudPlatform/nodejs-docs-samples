@@ -1,0 +1,47 @@
+{
+  "id": "storage",
+  "samples": [
+    {
+      "id": "acl",
+      "name": "ACL (Access Control Lists)",
+      "file": "acl.js",
+      "docs_link": "https://cloud.google.com/storage/docs/access-control/create-manage-lists",
+      "usage": "node acl --help"
+    },
+    {
+      "id": "buckets",
+      "name": "Buckets",
+      "file": "buckets.js",
+      "docs_link": "https://cloud.google.com/storage/docs",
+      "usage": "node buckets --help"
+    },
+    {
+      "id": "encryption",
+      "name": "Encryption",
+      "file": "encryption.js",
+      "docs_link": "https://cloud.google.com/storage/docs",
+      "usage": "node encryption --help"
+    },
+    {
+      "id": "files",
+      "name": "Files",
+      "file": "files.js",
+      "docs_link": "https://cloud.google.com/storage/docs",
+      "usage": "node files --help"
+    },
+    {
+      "id": "transfer",
+      "name": "Storage Transfer API (Jobs)",
+      "file": "transfer.js",
+      "docs_link": "https://cloud.google.com/storage/transfer",
+      "usage": "node transfer jobs --help"
+    },
+    {
+      "id": "transfer",
+      "name": "Storage Transfer API (Operations)",
+      "file": "transfer.js",
+      "docs_link": "https://cloud.google.com/storage/transfer",
+      "usage": "node transfer operations --help"
+    }
+  ]
+}

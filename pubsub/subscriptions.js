@@ -191,7 +191,7 @@ cli
   .example('node $0 pull my-subscription', 'Pull messages from "my-subscription".')
   .example('node $0 list', 'List all subscriptions.')
   .example('node $0 list my-topic', 'List subscriptions to topic "my-topic".')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/pubsub/docs');
 

@@ -1,0 +1,26 @@
+{
+  "id": "bigquery",
+  "samples": [
+    {
+      "id": "datasets",
+      "name": "Datasets",
+      "file": "datasets.js",
+      "docs_link": "https://cloud.google.com/bigquery/docs",
+      "usage": "node datasets --help"
+    },
+    {
+      "id": "tables",
+      "name": "Tables",
+      "file": "tables.js",
+      "docs_link": "https://cloud.google.com/bigquery/docs",
+      "usage": "node tables --help"
+    },
+    {
+      "id": "queries",
+      "name": "Queries",
+      "file": "queries.js",
+      "docs_link": "https://cloud.google.com/bigquery/docs",
+      "usage": "node queries --help"
+    }
+  ]
+}

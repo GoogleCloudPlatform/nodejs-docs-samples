@@ -2,19 +2,17 @@
 
 # Google Cloud Speech API Node.js Samples
 
-[Sign up for the Alpha][speech_signup].
-
 The [Cloud Speech API][speech_docs] enables easy integration of Google speech
 recognition technologies into developer applications.
 
-[speech_signup]: https://services.google.com/fb/forms/speech-api-alpha/
 [speech_docs]: https://cloud.google.com/speech/
 
 ## Table of Contents
 
 * [Setup](#setup)
 * [Samples](#samples)
-  * [Recognition](#recognition)
+  * [Sync Recognize](#sync-recognize)
+  * [Streaming Recognition](#streaming-recognition)
 
 ## Setup
 
@@ -28,32 +26,28 @@ recognition technologies into developer applications.
 
 ## Samples
 
-### Recognition
+### Sync Recognize
 
-View the [documentation][recognition_docs] or the [source code][recognition_code].
+View the [documentation][recognize_0_docs] or the [source code][recognize_0_code].
 
-__Run the sample:__
+__Usage:__ `node recognize <path-to-audio-file>`
 
-Usage: `node recognize <path-to-audio-file>`
+```
+node recognize resources/audio.raw
+```
 
-Example:
+[recognize_0_docs]: https://cloud.google.com/speech/docs/
+[recognize_0_code]: recognize.js
 
-    node recognize resources/audio.raw
+### Streaming Recognition
 
-[recognition_docs]: https://cloud.google.com/speech/
-[recognition_code]: recognize.js
+View the [documentation][recognize_1_docs] or the [source code][recognize_1_code].
 
-### Recognition (Streaming)
+__Usage:__ `node recognize_streaming <path-to-audio-file>`
 
-View the [documentation][recognition_streaming_docs] or the [source code][recognition_streaming_code].
+```
+node recognize_streaming resources/audio.raw
+```
 
-__Run the sample:__
-
-Usage: `node recognize_streaming <path-to-audio-file>`
-
-Example:
-
-    node recognize_streaming resources/audio.raw
-
-[recognition_streaming_docs]: https://cloud.google.com/speech/
-[recognition_streaming_code]: recognize_streaming.js
+[recognize_1_docs]: https://cloud.google.com/speech/docs/
+[recognize_1_code]: recognize_streaming.js

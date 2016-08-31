@@ -11,7 +11,7 @@ Machine Learning models.
 
 * [Setup](#setup)
 * [Samples](#samples)
-  * [Hosted Models](#hosted-models)
+  * [Models](#models)
 
 ## Setup
 
@@ -25,17 +25,15 @@ Machine Learning models.
 
 ## Samples
 
-### Hosted Models
+### Models
 
-View the [documentation][hostedmodels_docs] or the [source code][hostedmodels_code].
+View the [documentation][models_0_docs] or the [source code][models_0_code].
 
-__Run the sample:__
+__Usage:__ `node hostedmodels <phrase>`
 
-Usage: `node hostedmodels "some phrase"`
+```
+node hostedmodels "Hello world"
+```
 
-Example:
-
-    node hostedmodels "Hello world"
-
-[hostedmodels_docs]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
-[hostedmodels_code]: hostedmodels.js
+[models_0_docs]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
+[models_0_code]: hostedmodels.js

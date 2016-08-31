@@ -15,7 +15,8 @@ amount of data at any time.
   * [Buckets](#buckets)
   * [Encryption](#encryption)
   * [Files](#files)
-  * [Storage Transfer API](#storage-transfer-api)
+  * [Storage Transfer API (Jobs)](#storage-transfer-api-jobs)
+  * [Storage Transfer API (Operations)](#storage-transfer-api-operations)
 
 ## Setup
 
@@ -31,7 +32,7 @@ amount of data at any time.
 
 ### ACL (Access Control Lists)
 
-View the [documentation][acl_docs] or the [source code][acl_code].
+View the [documentation][acl_0_docs] or the [source code][acl_0_code].
 
 __Usage:__ `node acl --help`
 
@@ -42,32 +43,28 @@ Commands:
   delete <entity>      Delete access controls from a bucket or file.
 
 Options:
-  --bucket, -b   The target storage bucket.           [string] [required]
-  --default, -d  Whether to set default access
-                 controls. Only valid when setting
-                 access controls on a bucket.         [boolean]
-  --file, -f     The target file.                     [string]
-  --help         Show help                            [boolean]
+  --bucket, -b   The target storage bucket.                                                          [string] [required]
+  --default, -d  Whether to set default access controls. Only valid when setting access controls on a bucket.  [boolean]
+  --file, -f     The target file.                                                                               [string]
+  --help         Show help                                                                                     [boolean]
 
 Examples:
-  node acl add user-bob@domain.com OWNER -b mybucket  Add OWNER access controls for
-                                                      "user-bob@domain.com" to "mybucket".
-  node acl add viewers-2256 WRITER -b mybucket -d     Add default WRITER access controls to
-                                                      "mybucket" for "viewers-2256".
-  node acl get editors-1234 -b mybucket               Get access controls for "editors-1234" in
+  node acl add user-bob@domain.com OWNER -b mybucket  Add OWNER access controls for "user-bob@domain.com" to "mybucket".
+  node acl add viewers-2256 WRITER -b mybucket -d     Add default WRITER access controls to "mybucket" for
+                                                      "viewers-2256".
+  node acl get editors-1234 -b mybucket               Get access controls for "editors-1234" in "mybucket".
+  node acl delete -b mybucket -f file.txt             Delete all access controls for all entities from "file.txt" in
                                                       "mybucket".
-  node acl delete -b mybucket -f file.txt             Delete all access controls for all entities
-                                                      from "file.txt" in "mybucket".
 
 For more information, see https://cloud.google.com/storage/docs/access-control/create-manage-lists
 ```
 
-[acl_docs]: https://cloud.google.com/storage/docs/access-control/create-manage-lists
-[acl_code]: acl.js
+[acl_0_docs]: https://cloud.google.com/storage/docs/access-control/create-manage-lists
+[acl_0_code]: acl.js
 
 ### Buckets
 
-View the [documentation][buckets_docs] or the [source code][buckets_code].
+View the [documentation][buckets_1_docs] or the [source code][buckets_1_code].
 
 __Usage:__ `node buckets --help`
 
@@ -78,7 +75,7 @@ Commands:
   delete <bucket>  Delete the specified bucket.
 
 Options:
-  --help  Show help              [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
   node buckets create my-bucket  Create a new bucket named "my-bucket".
@@ -88,12 +85,12 @@ Examples:
 For more information, see https://cloud.google.com/storage/docs
 ```
 
-[buckets_docs]: https://cloud.google.com/storage/docs
-[buckets_code]: buckets.js
+[buckets_1_docs]: https://cloud.google.com/storage/docs
+[buckets_1_code]: buckets.js
 
 ### Encryption
 
-View the [documentation][encryption_docs] or the [source code][encryption_code].
+View the [documentation][encryption_2_docs] or the [source code][encryption_2_code].
 
 __Usage:__ `node encryption --help`
 
@@ -105,7 +102,7 @@ Commands:
   rotate <bucket> <file> <oldkey> <newKey>      Rotate encryption keys for a file.
 
 Options:
-  --help  Show help                                             [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
   node encryption generate-encryption-key                       Generate a sample encryption key.
@@ -119,71 +116,52 @@ Examples:
 For more information, see https://cloud.google.com/storage/docs
 ```
 
-[encryption_docs]: https://cloud.google.com/storage/docs
-[encryption_code]: encryption.js
+[encryption_2_docs]: https://cloud.google.com/storage/docs
+[encryption_2_code]: encryption.js
 
 ### Files
 
-View the [documentation][files_docs] or the [source code][files_code].
+View the [documentation][files_3_docs] or the [source code][files_3_code].
 
 __Usage:__ `node files --help`
 
 ```
 Commands:
-  list <bucket> [options]                             List files in a bucket, optionally filtering
-                                                      by a prefix.
+  list <bucket> [options]                             List files in a bucket, optionally filtering by a prefix.
   upload <bucket> <srcFile>                           Upload a local file to a bucket.
   download <bucket> <srcFile> <destFile>              Download a file from a bucket.
   delete <bucket> <file>                              Delete a file from a bucket.
   getMetadata <bucket> <file>                         Get metadata for a file in a bucket.
   makePublic <bucket> <file>                          Make a file public in a bucket.
-  move <bucket> <srcFile> <destFile>                  Rename a file in a bucket.
+  move <bucket> <srcFile> <destFile>                  Move a file to a new location within the same bucket, i.e. rename
+                                                      the file.
   copy <srcBucket> <srcFile> <destBucket> <destFile>  Copy a file in a bucket to another bucket.
 
 Options:
-  --help  Show help                                                                        [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
-  node files list my-bucket                           List files in "my-bucket".
-  node files list my-bucket -p public/                List files in "my-bucket" filtered by prefix
-                                                      "public/".
-  node files upload my-bucket ./file.txt              Upload "./file.txt" to "my-bucket".
-  node files download my-bucket file.txt ./file.txt   Download "gs://my-bucket/file.txt" to
-                                                      "./file.txt".
-  node files delete my-bucket file.txt                Delete "gs://my-bucket/file.txt".
-  node files getMetadata my-bucket file.txt           Get metadata for "gs://my-bucket/file.txt".
-  node files makePublic my-bucket file.txt            Make "gs://my-bucket/file.txt" public.
-  node files move my-bucket file.txt file2.txt        Rename "gs://my-bucket/file.txt" to
-                                                      "gs://my-bucket/file2.txt".
-  node files copy my-bucket file.txt my-other-bucket  Copy "gs://my-bucket/file.txt" to
-  file.txt                                            "gs://my-other-bucket/file.txt".
+  node files list my-bucket                                    List files in "my-bucket".
+  node files list my-bucket -p public/                         List files in "my-bucket" filtered by prefix "public/".
+  node files upload my-bucket ./file.txt                       Upload "./file.txt" to "my-bucket".
+  node files download my-bucket file.txt ./file.txt            Download "gs://my-bucket/file.txt" to "./file.txt".
+  node files delete my-bucket file.txt                         Delete "gs://my-bucket/file.txt".
+  node files getMetadata my-bucket file.txt                    Get metadata for "gs://my-bucket/file.txt".
+  node files makePublic my-bucket file.txt                     Make "gs://my-bucket/file.txt" public.
+  node files move my-bucket file.txt file2.txt                 Rename "gs://my-bucket/file.txt" to
+                                                               "gs://my-bucket/file2.txt".
+  node files copy my-bucket file.txt my-other-bucket file.txt  Copy "gs://my-bucket/file.txt" to
+                                                               "gs://my-other-bucket/file.txt".
 
 For more information, see https://cloud.google.com/storage/docs
 ```
 
-[files_docs]: https://cloud.google.com/storage/docs
-[files_code]: files.js
+[files_3_docs]: https://cloud.google.com/storage/docs
+[files_3_code]: files.js
 
-### Storage Transfer API
+### Storage Transfer API (Jobs)
 
-View the [documentation][storagetransfer_docs] or the [source code][storagetransfer_code].
-
-__Usage:__ `node transfer --help`
-
-```
-Commands:
-  jobs <cmd> [args]        Run a job command.
-  operations <cmd> [args]  Run an operation command.
-
-Options:
-  --help  Show help                                                                        [boolean]
-
-Examples:
-  node transfer jobs --help        Show job commands.
-  node transfer operations --help  Show operations commands.
-
-For more information, see https://cloud.google.com/storage/transfer
-```
+View the [documentation][transfer_4_docs] or the [source code][transfer_4_code].
 
 __Usage:__ `node transfer jobs --help`
 
@@ -191,28 +169,34 @@ __Usage:__ `node transfer jobs --help`
 transfer jobs <cmd> [args]
 
 Commands:
-  create <srcBucket> <destBucket> <time> <date>       Create a transfer job.
-  [description]
-  get <job>                                           Get a transfer job.
-  list                                                List transfer jobs.
-  set <job> <field> <value>                           Change the status, description or transferSpec
-                                                      of a transfer job.
+  create <srcBucket> <destBucket> <time> <date> [description]  Create a transfer job.
+  get <job>                                                    Get a transfer job.
+  list                                                         List transfer jobs.
+  set <job> <field> <value>                                    Change the status, description or transferSpec of a
+                                                               transfer job.
 
 Options:
-  --help  Show help                                                                        [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
-  node transfer jobs create my-bucket                 Create a transfer job.
-  my-other-bucket 2016/08/12 16:30 "Move my files"
-  node transfer jobs get                              Get a transfer job.
-  transferJobs/123456789012345678
-  node transfer jobs list                             List transfer jobs.
-  node transfer jobs set                              Update the description for a transfer job.
-  transferJobs/123456789012345678 description "My
-  new description"
-  node transfer jobs set                              Disable a transfer job.
-  transferJobs/123456789012345678 status DISABLED
+  node transfer jobs create my-bucket my-other-bucket           Create a transfer job.
+  2016/08/12 16:30 "Move my files"
+  node transfer jobs get transferJobs/123456789012345678        Get a transfer job.
+  node transfer jobs list                                       List transfer jobs.
+  node transfer jobs set transferJobs/123456789012345678        Update the description for a transfer job.
+  description "My new description"
+  node transfer jobs set transferJobs/123456789012345678        Disable a transfer job.
+  status DISABLED
+
+For more information, see https://cloud.google.com/storage/transfer
 ```
+
+[transfer_4_docs]: https://cloud.google.com/storage/transfer
+[transfer_4_code]: transfer.js
+
+### Storage Transfer API (Operations)
+
+View the [documentation][transfer_5_docs] or the [source code][transfer_5_code].
 
 __Usage:__ `node transfer operations --help`
 
@@ -226,19 +210,21 @@ Commands:
   resume <operation>  Resume a transfer operation.
 
 Options:
-  --help  Show help                                                                        [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
-  node transfer operations list                       List all transfer operations.
-  node transfer operations list                       List all transfer operations for a specific
-  transferJobs/123456789012345678                     job.
-  node transfer operations get                        Get a transfer operation.
+  node transfer operations list                                 List all transfer operations.
+  node transfer operations list                                 List all transfer operations for a specific job.
+  transferJobs/123456789012345678
+  node transfer operations get                                  Get a transfer operation.
   transferOperations/123456789012345678
-  node transfer operations pause                      Pause a transfer operation.
+  node transfer operations pause                                Pause a transfer operation.
   transferOperations/123456789012345678
-  node transfer operations resume                     Resume a transfer operation.
+  node transfer operations resume                               Resume a transfer operation.
   transferOperations/123456789012345678
+
+For more information, see https://cloud.google.com/storage/transfer
 ```
 
-[storagetransfer_docs]: https://cloud.google.com/storage/transfer
-[storagetransfer_code]: transfer.js
+[transfer_5_docs]: https://cloud.google.com/storage/transfer
+[transfer_5_code]: transfer.js

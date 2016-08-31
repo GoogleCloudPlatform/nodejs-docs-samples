@@ -29,7 +29,7 @@ Learning API.
 
 ### Analyze
 
-View the [documentation][analyze_docs] or the [source code][analyze_code].
+View the [documentation][analyze_0_docs] or the [source code][analyze_0_code].
 
 __Usage:__ `node analyze --help`
 
@@ -43,20 +43,23 @@ Commands:
   syntaxFromFile <bucket> <filename>     Detect the syntax of text in a GCS file.
 
 Options:
-  --language, -l  The language of the text.                                             [string]
-  --type, -t      Type of text              [string] [choices: "text", "html"] [default: "text"]
-  --help          Show help                                                            [boolean]
+  --language, -l  The language of the text.                                                                     [string]
+  --type, -t      Type of text.                                     [string] [choices: "text", "html"] [default: "text"]
+  --help          Show help                                                                                    [boolean]
 
 Examples:
-  node analyze sentimentFromString "President Obama is speaking at the White House."
+  node analyze sentimentFromString "President Obama is
+  speaking at the White House."
   node analyze sentimentFromFile my-bucket file.txt
-  node analyze entitiesFromString "<p>President Obama is speaking at the White House.</p>" -t html
+  node analyze entitiesFromString "<p>President Obama is
+  speaking at the White House.</p>" -t html
   node analyze entitiesFromFile my-bucket file.txt
-  node analyze syntaxFromString "President Obama is speaking at the White House."
+  node analyze syntaxFromString "President Obama is speaking
+  at the White House."
   node analyze syntaxFromFile my-bucket es_file.txt -l es
 
 For more information, see https://cloud.google.com/natural-language/docs
 ```
 
-[analyze_docs]: https://cloud.google.com/natural-language/docs
-[analyze_code]: analyze.js
+[analyze_0_docs]: https://cloud.google.com/natural-language/docs/
+[analyze_0_code]: analyze.js

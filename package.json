@@ -49,6 +49,7 @@
   },
   "scripts": {
     "lint": "semistandard",
+    "gen-readmes": "./scripts/gen-readmes",
     "pretest": "npm run lint && ./scripts/clean",
     "mocha": "mocha -R spec -t 120000 --require intelli-espower-loader ./test/_setup.js ./test/*.test.js '{*,appengine/*,functions/*}/test/*.test.js'",
     "test": "npm run mocha",

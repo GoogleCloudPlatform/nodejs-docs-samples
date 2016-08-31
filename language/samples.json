@@ -1,0 +1,12 @@
+{
+  "id": "nl",
+  "samples": [
+    {
+      "id": "analyze",
+      "name": "Analyze",
+      "file": "analyze.js",
+      "docs_link": "https://cloud.google.com/natural-language/docs/",
+      "usage": "node analyze --help"
+    }
+  ]
+}

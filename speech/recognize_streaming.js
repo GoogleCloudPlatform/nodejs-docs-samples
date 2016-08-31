@@ -13,6 +13,7 @@
 
 'use strict';
 
+// [START all]
 var async = require('async');
 var fs = require('fs');
 var path = require('path');
@@ -123,5 +124,6 @@ if (module === require.main) {
   main(inputFile, host || 'speech.googleapis.com', console.log);
 }
 // [END run_application]
+// [END all]
 
 exports.main = main;

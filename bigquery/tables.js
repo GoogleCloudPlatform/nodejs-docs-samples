@@ -184,11 +184,33 @@ function exportTableToGCS (options, callback) {
   });
 }
 // [END export_table_to_gcs]
+
+// [START insert_rows_as_stream]
+/**
+ * Insert rows (as a stream) into a BigQuery table.
+ * @param {object} options Configuration options.
+ * @param {array} options.rows An array of rows to insert into a BigQuery table.
+ * @param {string} options.dataset The ID of the dataset containing the target table.
+ * @param {string} options.table The ID of the table to insert rows into.
+ * @param {function} callback Callback function to receive query status.
+ */
+function insertRowsAsStream (options, callback) {
+  var table = bigquery.dataset(options.dataset).table(options.table);
+  table.insert(options.rows, function (err, insertErrors) {
+    if (err) {
+      return callback(err);
+    }
+    console.log('Inserted %d rows!', options.rows.length);
+    return callback(null, insertErrors);
+  });
+}
+// [END insert_rows_as_stream]
 // [END all]
 
 // The command-line program
 var cli = require('yargs');
 var utils = require('../utils');
+var fs = require('fs');
 
 var program = module.exports = {
   createTable: createTable,
@@ -196,6 +218,7 @@ var program = module.exports = {
   deleteTable: deleteTable,
   importFile: importFile,
   exportTableToGCS: exportTableToGCS,
+  insertRowsAsStream: insertRowsAsStream,
   main: function (args) {
     // Run the command-line program
     cli.help().strict().parse(args).argv;
@@ -243,6 +266,29 @@ cli
   }, function (options) {
     program.exportTableToGCS(utils.pick(options, ['dataset', 'table', 'bucket', 'file', 'format', 'gzip']), utils.makeHandler());
   })
+  .command('insert <dataset> <table> <json_or_file>',
+    'Insert a JSON array (as a string or newline-delimited file) into a BigQuery table.', {},
+    function (options) {
+      var content;
+      try {
+        content = fs.readFileSync(options.json_or_file);
+      } catch (err) {
+        content = options.json_or_file;
+      }
+
+      var rows = null;
+      try {
+        rows = JSON.parse(content);
+      } catch (err) {}
+
+      if (!Array.isArray(rows)) {
+        throw new Error('"json_or_file" (or the file it points to) is not a valid JSON array.');
+      }
+
+      options.rows = rows;
+      program.insertRowsAsStream(utils.pick(options, ['rows', 'dataset', 'table']), utils.makeHandler());
+    }
+  )
   .example(
     'node $0 create my_dataset my_table',
     'Create table "my_table" in "my_dataset".'
@@ -265,11 +311,19 @@ cli
   )
   .example(
     'node $0 export my_dataset my_table my-bucket my-file',
-    'Export my_dataset:my_table to gcs://my-bucket/my-file as raw CSV'
+    'Export my_dataset:my_table to gcs://my-bucket/my-file as raw CSV.'
   )
   .example(
     'node $0 export my_dataset my_table my-bucket my-file -f JSON --gzip',
-    'Export my_dataset:my_table to gcs://my-bucket/my-file as gzipped JSON'
+    'Export my_dataset:my_table to gcs://my-bucket/my-file as gzipped JSON.'
+  )
+  .example(
+    'node $0 insert my_dataset my_table json_string',
+    'Insert the JSON array represented by json_string into my_dataset:my_table.'
+  )
+  .example(
+    'node $0 insert my_dataset my_table json_file',
+    'Insert the JSON objects contained in json_file (one per line) into my_dataset:my_table.'
   )
   .wrap(100)
   .recommendCommands()

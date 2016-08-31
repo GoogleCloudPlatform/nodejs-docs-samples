@@ -21,6 +21,15 @@ var dataset = 'dataset';
 var table = 'table';
 var format = 'JSON';
 var schema = 'schema';
+var jsonArray = [
+  { name: 'foo', age: 27 },
+  { name: 'bar', age: 13 }
+];
+var validJsonFile = 'validJsonFile';
+var invalidJsonFile = 'invalidJsonFile';
+var validJsonString = JSON.stringify(jsonArray);
+var invalidJsonString = 'INVALID';
+var errorList = ['error 1', 'error 2'];
 
 function getSample () {
   var tableMocks = [
@@ -44,7 +53,8 @@ function getSample () {
   var tableMock = {
     export: sinon.stub().yields(null, jobMock),
     delete: sinon.stub().yields(null),
-    import: sinon.stub().yields(null, jobMock)
+    import: sinon.stub().yields(null, jobMock),
+    insert: sinon.stub().yields(null, errorList)
   };
   var datasetMock = {
     table: sinon.stub().returns(tableMock),
@@ -57,11 +67,17 @@ function getSample () {
   };
   var BigQueryMock = sinon.stub().returns(bigqueryMock);
   var StorageMock = sinon.stub().returns(storageMock);
+  var fsMock = {
+    readFileSync: sinon.stub().throws(new Error('Invalid file.'))
+  };
+  fsMock.readFileSync.withArgs(validJsonFile).returns(validJsonString);
+  fsMock.readFileSync.withArgs(invalidJsonFile).returns(invalidJsonString);
 
   return {
     program: proxyquire('../tables', {
       '@google-cloud/bigquery': BigQueryMock,
       '@google-cloud/storage': StorageMock,
+      'fs': fsMock,
       yargs: proxyquire('yargs', {})
     }),
     mocks: {
@@ -74,6 +90,7 @@ function getSample () {
       table: tableMock,
       bucket: bucketMock,
       dataset: datasetMock,
+      fs: fsMock,
       tables: tableMocks
     }
   };
@@ -290,6 +307,45 @@ describe('bigquery:tables', function () {
     });
   });
 
+  describe('insertRowsAsStream', function () {
+    var options = {
+      file: file,
+      dataset: dataset,
+      table: table,
+      rows: jsonArray
+    };
+
+    it('should stream-insert rows into a table', function () {
+      var program = getSample().program;
+      var callback = sinon.stub();
+
+      program.insertRowsAsStream(options, callback);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, errorList]);
+    });
+
+    it('should handle API errors', function () {
+      var example = getSample();
+      var callback = sinon.stub();
+      var error = new Error('error');
+      example.mocks.table.insert = sinon.stub().yields(error);
+
+      example.program.insertRowsAsStream(options, callback);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+
+    it('should handle (per-row) insert errors', function () {
+      var example = getSample();
+      var callback = sinon.stub();
+      example.mocks.table.insert = sinon.stub().yields(null, errorList);
+
+      example.program.insertRowsAsStream(options, callback);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, errorList]);
+    });
+  });
+
   describe('main', function () {
     it('should call createTable', function () {
       var program = getSample().program;
@@ -349,6 +405,19 @@ describe('bigquery:tables', function () {
       }]);
     });
 
+    it('should call insertRowsAsStream', function () {
+      var program = getSample().program;
+      program.insertRowsAsStream = sinon.stub();
+
+      program.main(['insert', dataset, table, validJsonFile]);
+
+      assert.equal(program.insertRowsAsStream.calledOnce, true);
+      assert.deepEqual(
+        program.insertRowsAsStream.firstCall.args.slice(0, -1),
+        [{ rows: jsonArray, dataset: dataset, table: table }]
+      );
+    });
+
     it('should recognize --gzip flag', function () {
       var program = getSample().program;
       program.exportTableToGCS = sinon.stub();
@@ -379,6 +448,66 @@ describe('bigquery:tables', function () {
         format: 'CSV',
         gzip: false
       }]);
+    });
+
+    describe('insert', function () {
+      var options = {
+        dataset: dataset,
+        table: table,
+        rows: jsonArray
+      };
+
+      it('should accept valid JSON files', function () {
+        var program = getSample().program;
+        program.insertRowsAsStream = sinon.stub();
+
+        program.main(['insert', dataset, table, validJsonFile]);
+
+        assert.equal(program.insertRowsAsStream.calledOnce, true);
+        assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [options]);
+      });
+
+      it('should reject files with invalid JSON', function () {
+        var program = getSample().program;
+        program.insertRowsAsStream = sinon.stub();
+
+        assert.throws(
+          function () { program.main(['insert', dataset, table, invalidJsonFile]); },
+          /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
+        );
+        assert.equal(program.insertRowsAsStream.called, false);
+      });
+
+      it('should reject invalid file names', function () {
+        var program = getSample().program;
+        program.insertRowsAsStream = sinon.stub();
+
+        assert.throws(
+          function () { program.main(['insert', dataset, table, '']); },
+          /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
+        );
+        assert.equal(program.insertRowsAsStream.called, false);
+      });
+
+      it('should accept valid JSON strings', function () {
+        var program = getSample().program;
+        program.insertRowsAsStream = sinon.stub();
+
+        program.main(['insert', dataset, table, validJsonString]);
+        assert.equal(program.insertRowsAsStream.calledOnce, true);
+        assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [options]);
+      });
+
+      it('should reject invalid JSON strings', function () {
+        var program = getSample().program;
+        program.insertRowsAsStream = sinon.stub();
+
+        assert.throws(
+          function () { program.main(['insert', dataset, table, invalidJsonString]); },
+          /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
+        );
+        assert.equal(program.insertRowsAsStream.called, false);
+      });
     });
   });
 });

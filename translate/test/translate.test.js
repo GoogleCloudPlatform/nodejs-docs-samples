@@ -13,14 +13,19 @@
 
 'use strict';
 
+var ISO6391 = require('iso-639-1');
 var proxyquire = require('proxyquire').noCallThru();
+
 var text = 'Hello world!';
 var apiKey = 'key';
+var target = 'es';
+var toLang = 'ru';
 
 function getSample () {
+  var apiResponseMock = {};
   var languagesMock = [
     'en',
-    'ru'
+    toLang
   ];
   var resultMock = {
     language: 'en',
@@ -29,9 +34,9 @@ function getSample () {
   };
   var translationMock = 'Привет мир!';
   var translateMock = {
-    getLanguages: sinon.stub().callsArgWith(0, null, languagesMock),
-    detect: sinon.stub().callsArgWith(1, null, resultMock),
-    translate: sinon.stub().callsArgWith(2, null, translationMock)
+    getLanguages: sinon.stub().yields(null, languagesMock, apiResponseMock),
+    detect: sinon.stub().yields(null, resultMock, apiResponseMock),
+    translate: sinon.stub().yields(null, translationMock, apiResponseMock)
   };
   var TranslateMock = sinon.stub().returns(translateMock);
 
@@ -45,7 +50,8 @@ function getSample () {
       translate: translateMock,
       languages: languagesMock,
       result: resultMock,
-      translation: translationMock
+      translation: translationMock,
+      apiResponse: apiResponseMock
     }
   };
 }
@@ -56,30 +62,26 @@ describe('translate:translate', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.detectLanguage(text, apiKey, callback);
+      sample.program.detectLanguage(text, callback);
 
-      assert(sample.mocks.translate.detect.calledOnce, 'method called once');
-      assert.equal(sample.mocks.translate.detect.firstCall.args.length, 2, 'method received 2 arguments');
-      assert.equal(sample.mocks.translate.detect.firstCall.args[0], text, 'method received correct argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.result, 'callback received result');
-      assert(console.log.calledWith('Detected %s (%s) with confidence %d', 'English', 'en', sample.mocks.result.confidence));
+      assert.equal(sample.mocks.translate.detect.calledOnce, true);
+      assert.deepEqual(sample.mocks.translate.detect.firstCall.args.slice(0, -1), [text]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.result, sample.mocks.apiResponse]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Detected language(s):', sample.mocks.result]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
-      sample.mocks.translate.detect = sinon.stub().callsArgWith(1, error);
+      sample.mocks.translate.detect.yields(error);
 
-      sample.program.detectLanguage(text, apiKey, callback);
+      sample.program.detectLanguage(text, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -88,29 +90,54 @@ describe('translate:translate', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.listLanguages(apiKey, callback);
+      sample.program.listLanguages(callback);
 
-      assert(sample.mocks.translate.getLanguages.calledOnce, 'method called once');
-      assert.equal(sample.mocks.translate.getLanguages.firstCall.args.length, 1, 'method received 1 argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.languages, 'callback received result');
-      assert(console.log.calledWith('Found %d language(s)!', sample.mocks.languages.length));
+      assert.equal(sample.mocks.translate.getLanguages.calledOnce, true);
+      assert.deepEqual(sample.mocks.translate.getLanguages.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.languages, sample.mocks.apiResponse]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d language(s)!', sample.mocks.languages.length]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
-      sample.mocks.translate.getLanguages = sinon.stub().callsArgWith(0, error);
+      sample.mocks.translate.getLanguages.yields(error);
 
-      sample.program.listLanguages(apiKey, callback);
+      sample.program.listLanguages(callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
+  describe('listLanguagesWithTarget', function () {
+    it('should list languages', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+
+      sample.program.listLanguagesWithTarget(target, callback);
+
+      assert.equal(sample.mocks.translate.getLanguages.calledOnce, true);
+      assert.deepEqual(sample.mocks.translate.getLanguages.firstCall.args.slice(0, -1), [target]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.languages, sample.mocks.apiResponse]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d language(s)!', sample.mocks.languages.length]);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.translate.getLanguages.yields(error);
+
+      sample.program.listLanguagesWithTarget(target, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -118,45 +145,27 @@ describe('translate:translate', function () {
     it('should translate text', function () {
       var sample = getSample();
       var callback = sinon.stub();
-      var options = {
-        text: text,
-        to: 'ru',
-        apiKey: apiKey
-      };
 
-      sample.program.translateText(options, callback);
+      sample.program.translateText(text, toLang, undefined, callback);
 
-      assert(sample.mocks.translate.translate.calledOnce, 'method called once');
-      assert.equal(sample.mocks.translate.translate.firstCall.args.length, 3, 'method received 3 arguments');
-      assert.equal(sample.mocks.translate.translate.firstCall.args[0], text, 'method received correct first argument');
-      assert.deepEqual(sample.mocks.translate.translate.firstCall.args[1], {
-        to: 'ru',
-        from: undefined
-      }, 'method received correct second argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.translation, 'callback received result');
-      assert(console.log.calledWith('Translated text to %s:', 'Russian'));
+      assert.equal(sample.mocks.translate.translate.calledOnce, true);
+      assert.deepEqual(sample.mocks.translate.translate.firstCall.args.slice(0, -1), [text, { to: toLang, from: undefined }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.translation, sample.mocks.apiResponse]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Translated to %s:', ISO6391.getName(toLang)]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
-      var options = {
-        text: text,
-        to: 'ru',
-        apiKey: apiKey
-      };
-      sample.mocks.translate.translate = sinon.stub().callsArgWith(2, error);
+      sample.mocks.translate.translate.yields(error);
 
-      sample.program.translateText(options, callback);
+      sample.program.translateText(text, toLang, undefined, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -165,32 +174,108 @@ describe('translate:translate', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'detectLanguage');
-      program.main(['detect', text, '-k', apiKey]);
+      program.main(['detect', text]);
       assert.equal(program.detectLanguage.calledOnce, true);
-      assert.deepEqual(program.detectLanguage.firstCall.args.slice(0, -1), [text, apiKey]);
+      assert.deepEqual(program.detectLanguage.firstCall.args.slice(0, -1), [[text]]);
+    });
+
+    describe('detectLanguage with inline API key', function () {
+      var originalApiKey;
+
+      before(function () {
+        originalApiKey = process.env.TRANSLATE_API_KEY;
+        delete process.env.TRANSLATE_API_KEY;
+      });
+
+      after(function () {
+        process.env.TRANSLATE_API_KEY = originalApiKey;
+      });
+
+      it('should set env var from option', function () {
+        var program = getSample().program;
+
+        sinon.stub(program, 'detectLanguage');
+        assert.equal(process.env.TRANSLATE_API_KEY, undefined);
+        program.main(['detect', text, '-k', apiKey]);
+        assert.equal(process.env.TRANSLATE_API_KEY, apiKey);
+        assert.equal(program.detectLanguage.calledOnce, true);
+        assert.deepEqual(program.detectLanguage.firstCall.args.slice(0, -1), [[text]]);
+      });
     });
 
     it('should call listLanguages', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'listLanguages');
-      program.main(['list', '-k', apiKey]);
+      program.main(['list']);
       assert.equal(program.listLanguages.calledOnce, true);
-      assert.deepEqual(program.listLanguages.firstCall.args.slice(0, -1), [apiKey]);
+      assert.deepEqual(program.listLanguages.firstCall.args.slice(0, -1), []);
+    });
+
+    it('should call listLanguagesWithTarget', function () {
+      var program = getSample().program;
+
+      sinon.stub(program, 'listLanguagesWithTarget');
+      program.main(['list', target]);
+      assert.equal(program.listLanguagesWithTarget.calledOnce, true);
+      assert.deepEqual(program.listLanguagesWithTarget.firstCall.args.slice(0, -1), [target]);
+    });
+
+    describe('listLanguagesWithTarget with inline API key', function () {
+      var originalApiKey;
+
+      before(function () {
+        originalApiKey = process.env.TRANSLATE_API_KEY;
+        delete process.env.TRANSLATE_API_KEY;
+      });
+
+      after(function () {
+        process.env.TRANSLATE_API_KEY = originalApiKey;
+      });
+
+      it('should set env var from option', function () {
+        var program = getSample().program;
+
+        sinon.stub(program, 'listLanguagesWithTarget');
+        assert.equal(process.env.TRANSLATE_API_KEY, undefined);
+        program.main(['list', target, '-k', apiKey]);
+        assert.equal(process.env.TRANSLATE_API_KEY, apiKey);
+        assert.equal(program.listLanguagesWithTarget.calledOnce, true);
+        assert.deepEqual(program.listLanguagesWithTarget.firstCall.args.slice(0, -1), [target]);
+      });
     });
 
     it('should call translateText', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'translateText');
-      program.main(['translate', text, '-k', apiKey, '-t', 'ru']);
+      program.main(['translate', toLang, text]);
       assert.equal(program.translateText.calledOnce, true);
-      assert.deepEqual(program.translateText.firstCall.args.slice(0, -1), [{
-        text: text,
-        to: 'ru',
-        from: undefined,
-        apiKey: apiKey
-      }]);
+      assert.deepEqual(program.translateText.firstCall.args.slice(0, -1), [[text], toLang, undefined]);
+    });
+
+    describe('translateText with inline API key', function () {
+      var originalApiKey;
+
+      before(function () {
+        originalApiKey = process.env.TRANSLATE_API_KEY;
+        delete process.env.TRANSLATE_API_KEY;
+      });
+
+      after(function () {
+        process.env.TRANSLATE_API_KEY = originalApiKey;
+      });
+
+      it('should set env var from option', function () {
+        var program = getSample().program;
+
+        sinon.stub(program, 'translateText');
+        assert.equal(process.env.TRANSLATE_API_KEY, undefined);
+        program.main(['translate', toLang, text, '-k', apiKey]);
+        assert.equal(process.env.TRANSLATE_API_KEY, apiKey);
+        assert.equal(program.translateText.calledOnce, true);
+        assert.deepEqual(program.translateText.firstCall.args.slice(0, -1), [[text], toLang, undefined]);
+      });
     });
   });
 });

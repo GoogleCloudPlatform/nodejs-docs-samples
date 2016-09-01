@@ -274,18 +274,11 @@ describe('bigquery:tables', function () {
   });
 
   describe('copyTable', function () {
-    var options = {
-      srcDataset: srcDataset,
-      srcTable: srcTable,
-      destDataset: destDataset,
-      destTable: destTable
-    };
-
     it('should copy a table', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.copyTable(options, callback);
+      sample.program.copyTable(srcDataset, srcTable, destDataset, destTable, callback);
 
       assert.equal(sample.mocks.table.copy.calledOnce, true);
       assert.deepEqual(
@@ -305,7 +298,7 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       sample.mocks.table.copy.yields(error);
 
-      sample.program.copyTable(options, callback);
+      sample.program.copyTable(srcDataset, srcTable, destDataset, destTable, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -437,12 +430,9 @@ describe('bigquery:tables', function () {
 
       program.main(['copy', srcDataset, srcTable, destDataset, destTable]);
       assert.equal(program.copyTable.calledOnce, true);
-      assert.deepEqual(program.copyTable.firstCall.args.slice(0, -1), [{
-        srcDataset: srcDataset,
-        srcTable: srcTable,
-        destDataset: destDataset,
-        destTable: destTable
-      }]);
+      assert.deepEqual(program.copyTable.firstCall.args.slice(0, -1),
+        [srcDataset, srcTable, destDataset, destTable]
+      );
     });
 
     it('should call exportTableToGCS', function () {

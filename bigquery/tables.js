@@ -104,22 +104,13 @@ function deleteTable (options, callback) {
 }
 // [END delete_table]
 
-// [START copy_table]
-/**
- * Create a copy of an existing table
- *
- * @param {object} options Configuration options.
- * @param {string} options.srcDataset The source dataset ID.
- * @param {string} options.srcTable The source table ID.
- * @param {string} options.destDataset The destination dataset ID.
- * @param {string} options.destTable The destination table ID. Will be created if it doesn't exist.
- * @param {function} callback The callback function.
- */
-function copyTable (options, callback) {
-  var srcTable = bigquery.dataset(options.srcDataset).table(options.srcTable);
-  var destTable = bigquery.dataset(options.destDataset).table(options.destTable);
+function copyTable (srcDataset, srcTable, destDataset, destTable, callback) {
+  var bigquery = BigQuery();
 
-  srcTable.copy(destTable, function (err, job) {
+  var srcTableObj = bigquery.dataset(srcDataset).table(srcTable);
+  var destTableObj = bigquery.dataset(destDataset).table(destTable);
+
+  srcTableObj.copy(destTableObj, function (err, job) {
     if (err) {
       return callback(err);
     }
@@ -133,7 +124,6 @@ function copyTable (options, callback) {
       });
   });
 }
-// [END copy_table]
 
 // [START import_file]
 /**
@@ -272,7 +262,10 @@ cli
     'Make a copy of an existing table.', {},
     function (options) {
       program.copyTable(
-        utils.pick(options, ['srcDataset', 'srcTable', 'destDataset', 'destTable']),
+        options.srcDataset,
+        options.srcTable,
+        options.destDataset,
+        options.destTable,
         utils.makeHandler()
       );
     }

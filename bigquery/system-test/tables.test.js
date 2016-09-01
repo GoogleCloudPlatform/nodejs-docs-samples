@@ -36,12 +36,10 @@ var options = {
   schema: 'Name:string, Age:integer, Weight:float, IsMagic:boolean',
   rows: rows
 };
-var copyOptions = {
-  srcDataset: options.dataset,
-  srcTable: options.table,
-  destDataset: generateUuid(),
-  destTable: generateUuid()
-};
+var srcDataset = options.dataset;
+var srcTable = options.table;
+var destDataset = generateUuid();
+var destTable = generateUuid();
 
 describe('bigquery:tables', function () {
   before(function (done) {
@@ -52,10 +50,10 @@ describe('bigquery:tables', function () {
       bucket.upload(options.localFilePath, function (err) {
         assert.ifError(err, 'file upload succeeded');
         // Create srcDataset
-        bigquery.createDataset(copyOptions.srcDataset, function (err) {
+        bigquery.createDataset(srcDataset, function (err) {
           assert.ifError(err, 'srcDataset creation succeeded');
           // Create destDataset
-          bigquery.createDataset(copyOptions.destDataset, function (err) {
+          bigquery.createDataset(destDataset, function (err) {
             assert.ifError(err, 'destDataset creation succeeded');
             done();
           });
@@ -66,9 +64,9 @@ describe('bigquery:tables', function () {
 
   after(function (done) {
     // Delete srcDataset
-    bigquery.dataset(copyOptions.srcDataset).delete({ force: true }, function () {
+    bigquery.dataset(srcDataset).delete({ force: true }, function () {
       // Delete destDataset
-      bigquery.dataset(copyOptions.destDataset).delete({ force: true }, function () {
+      bigquery.dataset(destDataset).delete({ force: true }, function () {
         // Delete files
         storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
           if (err) {
@@ -171,16 +169,16 @@ describe('bigquery:tables', function () {
 
   describe('copyTable', function () {
     it('should copy a table between datasets', function (done) {
-      program.copyTable(copyOptions, function (err, metadata) {
+      program.copyTable(srcDataset, srcTable, destDataset, destTable, function (err, metadata) {
         assert.equal(err, null);
         assert.deepEqual(metadata.status, { state: 'DONE' });
 
-        bigquery.dataset(copyOptions.srcDataset).table(copyOptions.srcTable).exists(
+        bigquery.dataset(srcDataset).table(srcTable).exists(
           function (err, exists) {
             assert.equal(err, null);
             assert.equal(exists, true, 'srcTable exists');
 
-            bigquery.dataset(copyOptions.destDataset).table(copyOptions.destTable).exists(
+            bigquery.dataset(destDataset).table(destTable).exists(
               function (err, exists) {
                 assert.equal(err, null);
                 assert.equal(exists, true, 'destTable exists');

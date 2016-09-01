@@ -82,7 +82,7 @@ function listTables (options, callback) {
 
 // [START delete_table]
 /**
- * Creates a new table with the given name in the specified dataset.
+ * Deletes a table with the specified name from the specified dataset.
  *
  * @param {object} options Configuration options.
  * @param {string} options.dataset The dataset of the new table.

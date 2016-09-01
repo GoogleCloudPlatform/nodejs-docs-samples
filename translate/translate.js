@@ -13,108 +13,98 @@
 
 'use strict';
 
-// [START all]
 // [START setup]
-// By default, the client will authenticate using the service account file
-// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+// By default, the client will use the project specified by the GCLOUD_PROJECT
+// environment variable. The Translate API uses an API key for authentication.
+// See https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 var Translate = require('@google-cloud/translate');
-
-// Helper library for language codes
-var ISO6391 = require('iso-639-1');
 // [END setup]
 
-// [START detect_language]
-/**
- * Detect the language of the provided text.
- *
- * @param {string} text The text for which to detect the language.
- * @param {string} apiKey Your Translate API key.
- * @param {function} cb The callback function.
- */
-function detectLanguage (text, apiKey, callback) {
-  // Instantiate a translate client
+function detectLanguage (input, callback) {
   var translate = Translate({
-    key: apiKey
+    // The Translate API uses an API key for authentication. This sample looks
+    // at an environment variable for the key.
+    key: process.env.TRANSLATE_API_KEY
   });
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/translate/latest/translate
-  translate.detect(text, function (err, result) {
+  // "input" can be a string for detecting the language of a single piece of
+  // text, or an array of strings for detecting the languages of multiple texts.
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/translate/latest/translate?method=detect
+  translate.detect(input, function (err, result, apiResponse) {
     if (err) {
       return callback(err);
     }
 
-    console.log(
-      'Detected %s (%s) with confidence %d',
-      ISO6391.getName(result.language),
-      result.language,
-      result.confidence
-    );
-    return callback(null, result);
+    console.log('Detected language(s):', result);
+    return callback(null, result, apiResponse);
   });
 }
-// [END detect_language]
 
-// [START list_languages]
-/**
- * List all of the authenticated project's buckets.
- *
- * @param {string} apiKey Your Translate API key.
- * @param {function} cb The callback function.
- */
-function listLanguages (apiKey, callback) {
-  // Instantiate a translate client
+function listLanguages (callback) {
   var translate = Translate({
-    key: apiKey
+    // The Translate API uses an API key for authentication. This sample looks
+    // at an environment variable for the key.
+    key: process.env.TRANSLATE_API_KEY
   });
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/translate/latest/translate
-  translate.getLanguages(function (err, languages) {
+  // List available translation language with their names in English (the default).
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/translate/latest/translate?method=getLanguages
+  translate.getLanguages(function (err, languages, apiResponse) {
     if (err) {
       return callback(err);
     }
 
     console.log('Found %d language(s)!', languages.length);
-    return callback(null, languages);
+    return callback(null, languages, apiResponse);
   });
 }
-// [END list_languages]
 
-// [START translate_text]
-/**
- * Translate the provided text.
- *
- * @param {object} options Configuration options.
- * @param {string} options.text The text to translate.
- * @param {string} options.from The language of the source text.
- * @param {string} options.to The language to which to translate the text.
- * @param {string} options.apiKey Your Translate API key.
- * @param {function} cb The callback function.
- */
-function translateText (options, callback) {
-  // Instantiate a translate client
+function listLanguagesWithTarget (target, callback) {
   var translate = Translate({
-    key: options.apiKey
+    // The Translate API uses an API key for authentication. This sample looks
+    // at an environment variable for the key.
+    key: process.env.TRANSLATE_API_KEY
   });
 
-  var config = {
-    from: options.from,
-    to: options.to
-  };
-
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/translate/latest/translate
-  translate.translate(options.text, config, function (err, translation) {
+  // List available translation language with their names in the target language.
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/translate/latest/translate?method=getLanguages
+  translate.getLanguages(target, function (err, languages, apiResponse) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Translated text to %s:', ISO6391.getName(options.to));
-    return callback(null, translation);
+    console.log('Found %d language(s)!', languages.length);
+    return callback(null, languages, apiResponse);
+  });
+}
+
+// [START translate_text]
+// Helper library for language codes
+var ISO6391 = require('iso-639-1');
+
+function translateText (input, toLang, fromLang, callback) {
+  var translate = Translate({
+    // The Translate API uses an API key for authentication. This sample looks
+    // at an environment variable for the key.
+    key: process.env.TRANSLATE_API_KEY
+  });
+
+  // "input" can be a string for translating a single piece of text, or an array
+  // of strings for translating multiple texts.
+  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/translate/latest/translate?method=translate
+  translate.translate(input, {
+    from: fromLang,
+    to: toLang
+  }, function (err, translation, apiResponse) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('Translated to %s:', ISO6391.getName(toLang));
+    return callback(null, translation, apiResponse);
   });
 }
 // [END translate_text]
-// [END all]
 
 // The command-line program
 var cli = require('yargs');
@@ -123,6 +113,7 @@ var utils = require('../utils');
 var program = module.exports = {
   detectLanguage: detectLanguage,
   listLanguages: listLanguages,
+  listLanguagesWithTarget: listLanguagesWithTarget,
   translateText: translateText,
   main: function (args) {
     // Run the command-line program
@@ -132,28 +123,34 @@ var program = module.exports = {
 
 cli
   .demand(1)
-  .command('detect <text>', 'Detect the language of the provided text', {}, function (options) {
-    program.detectLanguage(options.text, options.apiKey, utils.makeHandler(false));
+  .command('detect <input..>', 'Detect the language of the provided text or texts', {}, function (options) {
+    if (!process.env.TRANSLATE_API_KEY) {
+      process.env.TRANSLATE_API_KEY = options.apiKey;
+    }
+    program.detectLanguage(options.input, utils.makeHandler(false));
   })
-  .command('list', 'List available translation languages.', {}, function (options) {
-    program.listLanguages(options.apiKey, utils.makeHandler());
+  .command('list [target]', 'List available translation languages. To return language names in a language other than English, specify a target language.', {}, function (options) {
+    if (!process.env.TRANSLATE_API_KEY) {
+      process.env.TRANSLATE_API_KEY = options.apiKey;
+    }
+    if (options.target) {
+      program.listLanguagesWithTarget(options.target, utils.makeHandler());
+    } else {
+      program.listLanguages(utils.makeHandler());
+    }
   })
-  .command('translate <text>', 'Translate the provided text to the target language.', {
-    to: {
-      alias: 't',
-      demand: true,
-      requiresArg: true,
-      type: 'string',
-      description: 'The language to which to translate the text.'
-    },
-    from: {
+  .command('translate <toLang> <input..>', 'Translate the provided text or texts to the target language, optionally specifying the source language.', {
+    fromLang: {
       alias: 'f',
       requiresArg: true,
       type: 'string',
       description: 'The language of the source text.'
     }
   }, function (options) {
-    program.translateText(utils.pick(options, ['text', 'to', 'from', 'apiKey']), utils.makeHandler());
+    if (!process.env.TRANSLATE_API_KEY) {
+      process.env.TRANSLATE_API_KEY = options.apiKey;
+    }
+    program.translateText(options.input, options.toLang, options.fromLang, utils.makeHandler());
   })
   .option('apiKey', {
     alias: 'k',
@@ -163,11 +160,13 @@ cli
     type: 'string',
     description: 'Your Translate API key. Defaults to the value of the TRANSLATE_API_KEY environment variable.'
   })
-  .example('node $0 detect -k your-key "Hello world!"', 'Detect the language of "Hello world!".')
-  .example('node $0 list -k your-key', 'List available translation languages.')
-  .example('node $0 translate -k your-key --to ru "Good morning!"', 'Translate "Good morning!" to Russian, auto-detecting English.')
-  .example('node $0 translate -k your-key --to ru --from en "Good morning!"', 'Translate "Good morning!" to Russian from English.')
-  .wrap(100)
+  .example('node $0 detect "Hello world!"', 'Detect the language of "Hello world!".')
+  .example('node $0 detect -k your-api-key "Hello world!" "Goodbye"', 'Detect the language of "Hello world!" and "Goodbye", supplying the API key inline..')
+  .example('node $0 list -k your-api-key', 'List available translation languages with names in English, supplying the API key inline..')
+  .example('node $0 list es', 'List available translation languages with names in Spanish.')
+  .example('node $0 translate ru "Good morning!"', 'Translate "Good morning!" to Russian, auto-detecting the source language.')
+  .example('node $0 translate ru "Good morning!" -f en -k your-api-key', 'Translate "Good morning!" to Russian from English, supplying the API key inline.')
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/translate/docs');
 

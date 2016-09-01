@@ -13,22 +13,27 @@
 
 'use strict';
 
+var ISO6391 = require('iso-639-1');
 var program = require('../translate');
-var apiKey = process.env.TRANSLATE_API_KEY;
+
 var text = 'Hello world!';
+var toLang = 'ru';
 
 describe('translate:translate', function () {
   if (!process.env.TRANSLATE_API_KEY) {
     process.stdout.write('Skipping Translate API tests...\n');
     return;
   }
+
   describe('detectLanguage', function () {
     it('should detect language', function (done) {
-      program.detectLanguage(text, apiKey, function (err, result) {
-        assert.ifError(err);
-        assert(result, 'should have received a result');
+      program.detectLanguage(text, function (err, result, apiResponse) {
+        assert.equal(err, null);
+        assert.notEqual(result, undefined);
         assert.equal(result.language, 'en', 'should have detected english');
-        assert(console.log.calledWith('Detected %s (%s) with confidence %d', 'English', 'en', result.confidence));
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Detected language(s):', result]);
+        assert.notEqual(apiResponse, undefined);
         done();
       });
     });
@@ -36,11 +41,35 @@ describe('translate:translate', function () {
 
   describe('listLanguages', function () {
     it('should list languages', function (done) {
-      program.listLanguages(apiKey, function (err, languages) {
-        assert.ifError(err);
-        assert(Array.isArray(languages));
-        assert(languages.length > 0);
-        assert(console.log.calledWith('Found %d language(s)!', languages.length));
+      program.listLanguages(function (err, languages, apiResponse) {
+        assert.equal(err, null);
+        assert.equal(Array.isArray(languages), true);
+        assert.equal(languages.length > 0, true);
+        var matchingLanguages = languages.filter(function (language) {
+          return language.code === 'af' && language.name === 'Afrikaans';
+        });
+        assert.equal(matchingLanguages.length, 1, 'found language with name in English');
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found %d language(s)!', languages.length]);
+        assert.notEqual(apiResponse, undefined);
+        done();
+      });
+    });
+  });
+
+  describe('listLanguagesWithTarget', function () {
+    it('should list languages with a target', function (done) {
+      program.listLanguagesWithTarget('es', function (err, languages, apiResponse) {
+        assert.equal(err, null);
+        assert.equal(Array.isArray(languages), true);
+        assert.equal(languages.length > 0, true);
+        var matchingLanguages = languages.filter(function (language) {
+          return language.code === 'af' && language.name === 'afrikáans';
+        });
+        assert.equal(matchingLanguages.length, 1, 'found language with name in Spanish');
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found %d language(s)!', languages.length]);
+        assert.notEqual(apiResponse, undefined);
         done();
       });
     });
@@ -48,17 +77,14 @@ describe('translate:translate', function () {
 
   describe('translateText', function () {
     it('should translate text', function (done) {
-      var options = {
-        text: text,
-        apiKey: apiKey,
-        to: 'ru'
-      };
       var expected = 'Привет мир!';
 
-      program.translateText(options, function (err, translation) {
-        assert.ifError(err);
+      program.translateText(text, toLang, undefined, function (err, translation, apiResponse) {
+        assert.equal(err, null);
         assert.equal(translation, expected);
-        assert(console.log.calledWith('Translated text to %s:', 'Russian'));
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Translated to %s:', ISO6391.getName(toLang)]);
+        assert.notEqual(apiResponse, undefined);
         done();
       });
     });

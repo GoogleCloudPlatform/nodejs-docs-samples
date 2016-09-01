@@ -36,37 +36,47 @@ var options = {
   schema: 'Name:string, Age:integer, Weight:float, IsMagic:boolean',
   rows: rows
 };
+var srcDataset = options.dataset;
+var srcTable = options.table;
+var destDataset = generateUuid();
+var destTable = generateUuid();
 
 describe('bigquery:tables', function () {
   before(function (done) {
     // Create bucket
     storage.createBucket(options.bucket, function (err, bucket) {
       assert.ifError(err, 'bucket creation succeeded');
-
+      // Upload data.csv
       bucket.upload(options.localFilePath, function (err) {
         assert.ifError(err, 'file upload succeeded');
-
-        // Create dataset
-        bigquery.createDataset(options.dataset, function (err, dataset) {
-          assert.ifError(err, 'dataset creation succeeded');
-          done();
+        // Create srcDataset
+        bigquery.createDataset(srcDataset, function (err) {
+          assert.ifError(err, 'srcDataset creation succeeded');
+          // Create destDataset
+          bigquery.createDataset(destDataset, function (err) {
+            assert.ifError(err, 'destDataset creation succeeded');
+            done();
+          });
         });
       });
     });
   });
 
   after(function (done) {
-    // Delete testing dataset/table
-    bigquery.dataset(options.dataset).delete({ force: true }, function () {
-      // Delete files
-      storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
-        if (err) {
-          return done(err);
-        }
-        // Delete bucket
-        setTimeout(function () {
-          storage.bucket(options.bucket).delete(done);
-        }, 2000);
+    // Delete srcDataset
+    bigquery.dataset(srcDataset).delete({ force: true }, function () {
+      // Delete destDataset
+      bigquery.dataset(destDataset).delete({ force: true }, function () {
+        // Delete files
+        storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
+          if (err) {
+            return done(err);
+          }
+          // Delete bucket
+          setTimeout(function () {
+            storage.bucket(options.bucket).delete(done);
+          }, 2000);
+        });
       });
     });
   });
@@ -153,6 +163,30 @@ describe('bigquery:tables', function () {
             });
           }, 2000);
         });
+      });
+    });
+  });
+
+  describe('copyTable', function () {
+    it('should copy a table between datasets', function (done) {
+      program.copyTable(srcDataset, srcTable, destDataset, destTable, function (err, metadata) {
+        assert.equal(err, null);
+        assert.deepEqual(metadata.status, { state: 'DONE' });
+
+        bigquery.dataset(srcDataset).table(srcTable).exists(
+          function (err, exists) {
+            assert.equal(err, null);
+            assert.equal(exists, true, 'srcTable exists');
+
+            bigquery.dataset(destDataset).table(destTable).exists(
+              function (err, exists) {
+                assert.equal(err, null);
+                assert.equal(exists, true, 'destTable exists');
+                done();
+              }
+            );
+          }
+        );
       });
     });
   });

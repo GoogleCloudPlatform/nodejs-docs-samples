@@ -42,10 +42,9 @@ describe('bigquery:tables', function () {
     // Create bucket
     storage.createBucket(options.bucket, function (err, bucket) {
       assert.ifError(err, 'bucket creation succeeded');
-
+      // Upload data.csv
       bucket.upload(options.localFilePath, function (err) {
         assert.ifError(err, 'file upload succeeded');
-
         // Create dataset
         bigquery.createDataset(options.dataset, function (err, dataset) {
           assert.ifError(err, 'dataset creation succeeded');

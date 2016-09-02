@@ -187,7 +187,7 @@ describe('bigquery:tables', function () {
   });
 
   describe('listRows', function () {
-    it('should list tables', function () {
+    it('should list rows', function () {
       var sample = getSample();
       var callback = sinon.stub();
 

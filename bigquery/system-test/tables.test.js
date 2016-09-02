@@ -188,9 +188,9 @@ describe('bigquery:tables', function () {
     });
   });
 
-  describe('listRows', function () {
-    it('should list rows in a table', function (done) {
-      program.listRows(options.dataset, options.table, function (err, rows) {
+  describe('browseRows', function () {
+    it('should display rows in a table', function (done) {
+      program.browseRows(options.dataset, options.table, function (err, rows) {
         assert.equal(err, null);
         assert.notEqual(rows, null);
         assert.equal(Array.isArray(rows), true);

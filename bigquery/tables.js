@@ -80,7 +80,7 @@ function listTables (options, callback) {
 }
 // [END list_tables]
 
-function listRows (dataset, table, callback) {
+function browseRows (dataset, table, callback) {
   var bigquery = BigQuery();
   var tableObj = bigquery.dataset(dataset).table(table);
   tableObj.getRows(function (err, rows) {
@@ -249,7 +249,7 @@ var fs = require('fs');
 var program = module.exports = {
   createTable: createTable,
   listTables: listTables,
-  listRows: listRows,
+  browseRows: browseRows,
   deleteTable: deleteTable,
   importFile: importFile,
   exportTableToGCS: exportTableToGCS,
@@ -266,7 +266,7 @@ cli
   .command('create <dataset> <table>', 'Create a new table in the specified dataset.', {}, function (options) {
     program.createTable(utils.pick(options, ['dataset', 'table']), utils.makeHandler());
   })
-  .command('tables <dataset>', 'List tables in the specified dataset.', {}, function (options) {
+  .command('list <dataset>', 'List tables in the specified dataset.', {}, function (options) {
     program.listTables(utils.pick(options, ['dataset']), utils.makeHandler(true, 'id'));
   })
   .command('delete <dataset> <table>', 'Delete a table in the specified dataset.', {}, function (options) {
@@ -284,8 +284,8 @@ cli
       );
     }
   )
-  .command('rows <dataset> <table>', 'List the rows in a BigQuery table.', {}, function (options) {
-    program.listRows(options.dataset, options.table, utils.makeHandler());
+  .command('browse <dataset> <table>', 'List the rows in a BigQuery table.', {}, function (options) {
+    program.browseRows(options.dataset, options.table, utils.makeHandler());
   })
   .command('import <dataset> <table> <file>', 'Import data from a local file or a Google Cloud Storage file into BigQuery.', {
     bucket: {
@@ -345,12 +345,12 @@ cli
     'Create table "my_table" in "my_dataset".'
   )
   .example(
-    'node $0 tables my_dataset',
+    'node $0 list my_dataset',
     'List tables in "my_dataset".'
   )
   .example(
-    'node $0 rows my_dataset my_table',
-    'List rows from "my_table" in "my_dataset".'
+    'node $0 browse my_dataset my_table',
+    'Display rows from "my_table" in "my_dataset".'
   )
   .example(
     'node $0 delete my_dataset my_table',

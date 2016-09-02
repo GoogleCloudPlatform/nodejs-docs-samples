@@ -186,12 +186,12 @@ describe('bigquery:tables', function () {
     });
   });
 
-  describe('listRows', function () {
-    it('should list rows', function () {
+  describe('browseRows', function () {
+    it('should display rows', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.listRows(dataset, table, callback);
+      sample.program.browseRows(dataset, table, callback);
 
       assert.equal(sample.mocks.table.getRows.calledOnce, true);
       assert.deepEqual(sample.mocks.table.getRows.firstCall.args.slice(0, -1), []);
@@ -207,7 +207,7 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       sample.mocks.table.getRows.yields(error);
 
-      sample.program.listRows(dataset, table, callback);
+      sample.program.browseRows(dataset, table, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -424,18 +424,18 @@ describe('bigquery:tables', function () {
       var program = getSample().program;
       program.listTables = sinon.stub();
 
-      program.main(['tables', dataset]);
+      program.main(['list', dataset]);
       assert.equal(program.listTables.calledOnce, true);
       assert.deepEqual(program.listTables.firstCall.args.slice(0, -1), [{ dataset: dataset }]);
     });
 
-    it('should call listRows', function () {
+    it('should call browseRows', function () {
       var program = getSample().program;
-      program.listRows = sinon.stub();
+      program.browseRows = sinon.stub();
 
-      program.main(['rows', dataset, table]);
-      assert.equal(program.listRows.calledOnce, true);
-      assert.deepEqual(program.listRows.firstCall.args.slice(0, -1), [dataset, table]);
+      program.main(['browse', dataset, table]);
+      assert.equal(program.browseRows.calledOnce, true);
+      assert.deepEqual(program.browseRows.firstCall.args.slice(0, -1), [dataset, table]);
     });
 
     it('should call deleteTable', function () {

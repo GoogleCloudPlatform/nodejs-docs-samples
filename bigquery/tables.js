@@ -83,6 +83,8 @@ function listTables (options, callback) {
 function browseRows (dataset, table, callback) {
   var bigquery = BigQuery();
   var tableObj = bigquery.dataset(dataset).table(table);
+
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=getRows
   tableObj.getRows(function (err, rows) {
     if (err) {
       return callback(err);
@@ -123,6 +125,7 @@ function copyTable (srcDataset, srcTable, destDataset, destTable, callback) {
   var srcTableObj = bigquery.dataset(srcDataset).table(srcTable);
   var destTableObj = bigquery.dataset(destDataset).table(destTable);
 
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=copy
   srcTableObj.copy(destTableObj, function (err, job) {
     if (err) {
       return callback(err);

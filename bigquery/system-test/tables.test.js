@@ -63,17 +63,20 @@ describe('bigquery:tables', function () {
   });
 
   after(function (done) {
-    // Delete testing dataset/table
-    bigquery.dataset(options.dataset).delete({ force: true }, function () {
-      // Delete files
-      storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
-        if (err) {
-          return done(err);
-        }
-        // Delete bucket
-        setTimeout(function () {
-          storage.bucket(options.bucket).delete(done);
-        }, 2000);
+    // Delete srcDataset
+    bigquery.dataset(srcDataset).delete({ force: true }, function () {
+      // Delete destDataset
+      bigquery.dataset(destDataset).delete({ force: true }, function () {
+        // Delete files
+        storage.bucket(options.bucket).deleteFiles({ force: true }, function (err) {
+          if (err) {
+            return done(err);
+          }
+          // Delete bucket
+          setTimeout(function () {
+            storage.bucket(options.bucket).delete(done);
+          }, 2000);
+        });
       });
     });
   });
@@ -192,7 +195,6 @@ describe('bigquery:tables', function () {
     it('should display rows in a table', function (done) {
       program.browseRows(options.dataset, options.table, function (err, rows) {
         assert.equal(err, null);
-        assert.notEqual(rows, null);
         assert.equal(Array.isArray(rows), true);
         assert.equal(rows.length > 0, true);
         assert.equal(console.log.calledOnce, true);

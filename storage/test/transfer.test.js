@@ -26,22 +26,22 @@ function getSample () {
   var transferOperationMock = {};
   var storagetransferMock = {
     transferJobs: {
-      create: sinon.stub().callsArgWith(1, null, transferJobMock),
-      get: sinon.stub().callsArgWith(1, null, transferJobMock),
-      patch: sinon.stub().callsArgWith(1, null, transferJobMock),
-      list: sinon.stub().callsArgWith(1, null, { transferJobs: [transferJobMock] })
+      create: sinon.stub().yields(null, transferJobMock),
+      get: sinon.stub().yields(null, transferJobMock),
+      patch: sinon.stub().yields(null, transferJobMock),
+      list: sinon.stub().yields(null, { transferJobs: [transferJobMock] })
     },
     transferOperations: {
-      get: sinon.stub().callsArgWith(1, null, transferOperationMock),
-      pause: sinon.stub().callsArgWith(1, null, transferOperationMock),
-      resume: sinon.stub().callsArgWith(1, null, transferOperationMock),
-      list: sinon.stub().callsArgWith(1, null, { operations: [transferOperationMock] })
+      get: sinon.stub().yields(null, transferOperationMock),
+      pause: sinon.stub().yields(null, transferOperationMock),
+      resume: sinon.stub().yields(null, transferOperationMock),
+      list: sinon.stub().yields(null, { operations: [transferOperationMock] })
     }
   };
   var googleapisMock = {
     storagetransfer: sinon.stub().returns(storagetransferMock),
     auth: {
-      getApplicationDefault: sinon.stub().callsArgWith(0, null, {})
+      getApplicationDefault: sinon.stub().yields(null, {})
     }
   };
 
@@ -77,50 +77,46 @@ describe('storage:transfer', function () {
 
         sample.program.createTransferJob(options, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-        assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
-        assert.equal(sample.mocks.storagetransfer.transferJobs.create.firstCall.args[0].resource.description, undefined, 'description was not set');
-        assert(console.log.calledWith('Created transfer job: %s', sample.mocks.transferJob.name));
+        assert.equal(sample.mocks.storagetransfer.transferJobs.create.calledOnce, true);
+        assert.equal(sample.mocks.storagetransfer.transferJobs.create.firstCall.args[0].resource.description, undefined);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Created transfer job: %s', sample.mocks.transferJob.name]);
 
         options.description = description;
         sample.program.createTransferJob(options, callback);
 
-        assert(callback.calledTwice, 'callback called twice');
-        assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
-        assert.strictEqual(callback.secondCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
-        assert.equal(sample.mocks.storagetransfer.transferJobs.create.secondCall.args[0].resource.description, description, 'description was set');
-        assert(console.log.calledWith('Created transfer job: %s', sample.mocks.transferJob.name));
+        assert.equal(sample.mocks.storagetransfer.transferJobs.create.calledTwice, true);
+        assert.equal(sample.mocks.storagetransfer.transferJobs.create.secondCall.args[0].resource.description, description);
+        assert.equal(callback.calledTwice, true);
+        assert.deepEqual(callback.secondCall.args, [null, sample.mocks.transferJob]);
+        assert.equal(console.log.calledTwice, true);
+        assert.deepEqual(console.log.secondCall.args, ['Created transfer job: %s', sample.mocks.transferJob.name]);
       });
 
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.createTransferJob({}, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle create error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.storagetransfer.transferJobs.create.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferJobs.create.yields(error);
 
         sample.program.createTransferJob({}, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
 
@@ -131,39 +127,40 @@ describe('storage:transfer', function () {
 
         sample.program.getTransferJob(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-        assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
-        assert(console.log.calledWith('Found transfer job: %s', sample.mocks.transferJob.name));
+        assert.equal(sample.mocks.storagetransfer.transferJobs.get.calledOnce, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferJobs.get.firstCall.args.slice(0, -1), [{
+          auth: {},
+          projectId: process.env.GCLOUD_PROJECT,
+          jobName: jobName
+        }]);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found transfer job: %s', sample.mocks.transferJob.name]);
       });
 
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.getTransferJob(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle get error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.storagetransfer.transferJobs.get.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferJobs.get.yields(error);
 
         sample.program.getTransferJob(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
 
@@ -179,31 +176,69 @@ describe('storage:transfer', function () {
 
         sample.program.updateTransferJob(options, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-        assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
+        assert.equal(sample.mocks.storagetransfer.transferJobs.patch.calledOnce, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferJobs.patch.firstCall.args.slice(0, -1), [{
+          auth: {},
+          jobName: jobName,
+          resource: {
+            projectId: process.env.GCLOUD_PROJECT,
+            transferJob: {
+              name: jobName,
+              status: options.value
+            },
+            updateTransferJobFieldMask: options.field
+          }
+        }]);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Updated transfer job: %s', jobName]);
 
         options.field = 'description';
         options.value = 'description';
 
         sample.program.updateTransferJob(options, callback);
 
-        assert(callback.calledTwice, 'callback called twice');
-        assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
-        assert.strictEqual(callback.secondCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
+        assert.equal(sample.mocks.storagetransfer.transferJobs.patch.calledTwice, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferJobs.patch.secondCall.args.slice(0, -1), [{
+          auth: {},
+          jobName: jobName,
+          resource: {
+            projectId: process.env.GCLOUD_PROJECT,
+            transferJob: {
+              name: jobName,
+              description: options.value
+            },
+            updateTransferJobFieldMask: options.field
+          }
+        }]);
+        assert.equal(callback.calledTwice, true);
+        assert.deepEqual(callback.secondCall.args, [null, sample.mocks.transferJob]);
+        assert.equal(console.log.calledTwice, true);
+        assert.deepEqual(console.log.secondCall.args, ['Updated transfer job: %s', jobName]);
 
         options.field = 'transferSpec';
         options.value = '{"foo":"bar"}';
 
         sample.program.updateTransferJob(options, callback);
 
-        assert(callback.calledThrice, 'callback called thrice');
-        assert.equal(callback.thirdCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.thirdCall.args[0], 'callback did not receive error');
-        assert.strictEqual(callback.thirdCall.args[1], sample.mocks.transferJob, 'callback received transfer job');
-        assert(console.log.calledWith('Updated transfer job: %s', sample.mocks.transferJob.name));
+        assert.equal(sample.mocks.storagetransfer.transferJobs.patch.calledThrice, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferJobs.patch.thirdCall.args.slice(0, -1), [{
+          auth: {},
+          jobName: jobName,
+          resource: {
+            projectId: process.env.GCLOUD_PROJECT,
+            transferJob: {
+              name: jobName,
+              transferSpec: JSON.parse(options.value)
+            },
+            updateTransferJobFieldMask: options.field
+          }
+        }]);
+        assert.equal(callback.calledThrice, true);
+        assert.deepEqual(callback.thirdCall.args, [null, sample.mocks.transferJob]);
+        assert.equal(console.log.calledThrice, true);
+        assert.deepEqual(console.log.thirdCall.args, ['Updated transfer job: %s', jobName]);
       });
 
       it('should handle auth error', function () {
@@ -215,14 +250,12 @@ describe('storage:transfer', function () {
           field: 'status',
           value: 'DISABLED'
         };
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.updateTransferJob(options, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle patch error', function () {
@@ -234,14 +267,12 @@ describe('storage:transfer', function () {
           field: 'status',
           value: 'DISABLED'
         };
-        sample.mocks.storagetransfer.transferJobs.patch.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferJobs.patch.yields(error);
 
         sample.program.updateTransferJob(options, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
 
@@ -252,47 +283,51 @@ describe('storage:transfer', function () {
 
         sample.program.listTransferJobs(callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-        assert.deepEqual(callback.firstCall.args[1], [sample.mocks.transferJob], 'callback received transfer jobs');
+        assert.equal(sample.mocks.storagetransfer.transferJobs.list.calledOnce, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferJobs.list.firstCall.args.slice(0, -1), [{
+          auth: {},
+          filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT })
+        }]);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null, [sample.mocks.transferJob]]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found %d jobs!', 1]);
 
-        sample.mocks.storagetransfer.transferJobs.list.callsArgWith(1, null, {});
+        sample.mocks.storagetransfer.transferJobs.list.yields(null, {});
         sample.program.listTransferJobs(callback);
 
-        assert(callback.calledTwice, 'callback called twice');
-        assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
-        assert.deepEqual(callback.secondCall.args[1], [], 'callback received no transfer jobs');
-        assert(console.log.calledWith('Found %d jobs!', 1));
+        assert.equal(sample.mocks.storagetransfer.transferJobs.list.calledTwice, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferJobs.list.secondCall.args.slice(0, -1), [{
+          auth: {},
+          filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT })
+        }]);
+        assert.equal(callback.calledTwice, true);
+        assert.deepEqual(callback.secondCall.args, [null, []]);
+        assert.equal(console.log.calledOnce, true);
       });
 
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.listTransferJobs(callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle list error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.storagetransfer.transferJobs.list.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferJobs.list.yields(error);
 
         sample.program.listTransferJobs(callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
   });
@@ -305,53 +340,66 @@ describe('storage:transfer', function () {
 
         sample.program.listTransferOperations(undefined, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-        assert.deepEqual(callback.firstCall.args[1], [sample.mocks.transferOperation], 'callback received transfer operations');
+        assert.equal(sample.mocks.storagetransfer.transferOperations.list.calledOnce, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferOperations.list.firstCall.args.slice(0, -1), [{
+          name: 'transferOperations',
+          auth: {},
+          filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT })
+        }]);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null, [sample.mocks.transferOperation]]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found %d operations!', 1]);
 
         sample.program.listTransferOperations(jobName, callback);
 
-        assert(callback.calledTwice, 'callback called twice');
-        assert.equal(callback.secondCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.secondCall.args[0], 'callback did not receive error');
-        assert.deepEqual(callback.secondCall.args[1], [sample.mocks.transferOperation], 'callback received transfer operations');
+        assert.equal(sample.mocks.storagetransfer.transferOperations.list.calledTwice, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferOperations.list.secondCall.args.slice(0, -1), [{
+          name: 'transferOperations',
+          auth: {},
+          filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT, job_names: [jobName] })
+        }]);
+        assert.equal(callback.calledTwice, true);
+        assert.deepEqual(callback.secondCall.args, [null, [sample.mocks.transferOperation]]);
+        assert.equal(console.log.calledTwice, true);
+        assert.deepEqual(console.log.secondCall.args, ['Found %d operations!', 1]);
 
-        sample.mocks.storagetransfer.transferOperations.list.callsArgWith(1, null, {});
+        sample.mocks.storagetransfer.transferOperations.list.yields(null, {});
         sample.program.listTransferOperations(jobName, callback);
 
-        assert(callback.calledThrice, 'callback called thrice');
-        assert.equal(callback.thirdCall.args.length, 2, 'callback received 2 arguments');
-        assert.ifError(callback.thirdCall.args[0], 'callback did not receive error');
-        assert.deepEqual(callback.thirdCall.args[1], [], 'callback received no transfer operations');
+        assert.equal(sample.mocks.storagetransfer.transferOperations.list.calledThrice, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferOperations.list.thirdCall.args.slice(0, -1), [{
+          name: 'transferOperations',
+          auth: {},
+          filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT, job_names: [jobName] })
+        }]);
+        assert.equal(callback.calledThrice, true);
+        assert.deepEqual(callback.thirdCall.args, [null, []]);
+        assert.equal(console.log.calledTwice, true);
       });
 
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.listTransferOperations(undefined, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle list error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.storagetransfer.transferOperations.list.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferOperations.list.yields(error);
 
         sample.program.listTransferOperations(undefined, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
 
@@ -362,38 +410,44 @@ describe('storage:transfer', function () {
 
         sample.program.getTransferOperation(transferOperationName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
+        assert.equal(callback.calledOnce, true);
         assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
         assert.strictEqual(callback.firstCall.args[1], sample.mocks.transferOperation, 'callback received transfer operation');
+
+        assert.equal(sample.mocks.storagetransfer.transferOperations.get.calledOnce, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferOperations.get.firstCall.args.slice(0, -1), [{
+          name: transferOperationName,
+          auth: {}
+        }]);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null, sample.mocks.transferOperation]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found transfer operation: %s', sample.mocks.transferOperation]);
       });
 
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.getTransferOperation(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle get error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.storagetransfer.transferOperations.get.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferOperations.get.yields(error);
 
         sample.program.getTransferOperation(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
 
@@ -404,37 +458,43 @@ describe('storage:transfer', function () {
 
         sample.program.pauseTransferOperation(transferOperationName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
+        assert.equal(callback.calledOnce, true);
         assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+
+        assert.equal(sample.mocks.storagetransfer.transferOperations.pause.calledOnce, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferOperations.pause.firstCall.args.slice(0, -1), [{
+          name: transferOperationName,
+          auth: {}
+        }]);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Paused transfer operation: %s', transferOperationName]);
       });
 
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.pauseTransferOperation(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle pause error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.storagetransfer.transferOperations.pause.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferOperations.pause.yields(error);
 
         sample.program.pauseTransferOperation(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
 
@@ -445,37 +505,43 @@ describe('storage:transfer', function () {
 
         sample.program.resumeTransferOperation(transferOperationName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
+        assert.equal(callback.calledOnce, true);
         assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
         assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+
+        assert.equal(sample.mocks.storagetransfer.transferOperations.resume.calledOnce, true);
+        assert.deepEqual(sample.mocks.storagetransfer.transferOperations.resume.firstCall.args.slice(0, -1), [{
+          name: transferOperationName,
+          auth: {}
+        }]);
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [null]);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Resumed transfer operation: %s', transferOperationName]);
       });
 
       it('should handle auth error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.googleapis.auth.getApplicationDefault.callsArgWith(0, error);
+        sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
 
         sample.program.resumeTransferOperation(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
 
       it('should handle resume error', function () {
         var error = new Error('error');
         var sample = getSample();
         var callback = sinon.stub();
-        sample.mocks.storagetransfer.transferOperations.resume.callsArgWith(1, error);
+        sample.mocks.storagetransfer.transferOperations.resume.yields(error);
 
         sample.program.resumeTransferOperation(jobName, callback);
 
-        assert(callback.calledOnce, 'callback called once');
-        assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-        assert(callback.firstCall.args[0], 'callback received error');
-        assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+        assert.equal(callback.calledOnce, true);
+        assert.deepEqual(callback.firstCall.args, [error]);
       });
     });
   });

@@ -26,17 +26,18 @@ function getSample () {
     }
   ];
   var fileMock = {
-    download: sinon.stub().callsArgWith(1, null),
+    download: sinon.stub().yields(null),
     setEncryptionKey: sinon.stub()
   };
   var bucketMock = {
-    upload: sinon.stub().callsArgWith(2, null, filesMock[0]),
+    upload: sinon.stub().yields(null, filesMock[0]),
     file: sinon.stub().returns(fileMock)
   };
   var storageMock = {
     bucket: sinon.stub().returns(bucketMock)
   };
   var StorageMock = sinon.stub().returns(storageMock);
+
   return {
     program: proxyquire('../encryption', {
       '@google-cloud/storage': StorageMock,
@@ -58,7 +59,8 @@ describe('storage:encryption', function () {
       var program = getSample().program;
 
       var key = program.generateEncryptionKey();
-      assert(console.log.calledWith('Base 64 encoded encryption key: %s', key));
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Base 64 encoded encryption key: %s', key]);
     });
   });
 
@@ -75,18 +77,15 @@ describe('storage:encryption', function () {
 
       sample.program.uploadEncryptedFile(options, callback);
 
-      assert(sample.mocks.bucket.upload.calledOnce, 'upload called once');
-      assert.equal(sample.mocks.bucket.upload.firstCall.args.length, 3, 'upload received 3 arguments');
-      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[0], fileName, 'upload received file name');
-      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[1], {
+      assert.equal(sample.mocks.bucket.upload.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args.slice(0, -1), [fileName, {
         destination: options.destFile,
         encryptionKey: new Buffer(options.key, 'base64')
-      }, 'upload received config');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
-      assert(console.log.calledWith('Uploaded gs://%s/%s', options.bucket, options.destFile));
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.files[0]]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Uploaded gs://%s/%s', options.bucket, options.destFile]);
     });
 
     it('should handle error', function () {
@@ -99,14 +98,12 @@ describe('storage:encryption', function () {
         destFile: fileName,
         key: key
       };
-      sample.mocks.bucket.upload = sinon.stub().callsArgWith(2, error);
+      sample.mocks.bucket.upload.yields(error);
 
       sample.program.uploadEncryptedFile(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -123,15 +120,14 @@ describe('storage:encryption', function () {
 
       sample.program.downloadEncryptedFile(options, callback);
 
-      assert(sample.mocks.file.download.calledOnce, 'download called once');
-      assert.equal(sample.mocks.file.download.firstCall.args.length, 2, 'download received 2 arguments');
-      assert.deepEqual(sample.mocks.file.download.firstCall.args[0], {
+      assert.equal(sample.mocks.file.download.calledOnce, true);
+      assert.deepEqual(sample.mocks.file.download.firstCall.args.slice(0, -1), [{
         destination: options.destFile
-      }, 'download received config');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert(console.log.calledWith('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile));
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile]);
     });
 
     it('should handle error', function () {
@@ -144,14 +140,12 @@ describe('storage:encryption', function () {
         destFile: fileName,
         key: key
       };
-      sample.mocks.file.download = sinon.stub().callsArgWith(1, error);
+      sample.mocks.file.download.yields(error);
 
       sample.program.downloadEncryptedFile(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 

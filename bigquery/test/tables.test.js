@@ -317,8 +317,8 @@ describe('bigquery:tables', function () {
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
       assert.equal(console.log.calledTwice, true);
-      assert.equal(console.log.calledWith('Started job: %s', sample.mocks.job.id), true);
-      assert.equal(console.log.calledWith('Completed job: %s', sample.mocks.job.id), true);
+      assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
+      assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
     });
 
     it('should handle error', function () {
@@ -363,11 +363,11 @@ describe('bigquery:tables', function () {
       var example = getSample();
       var callback = sinon.stub();
       example.mocks.table.export.yields(error);
+
       example.program.exportTableToGCS({ format: format }, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.equal(callback.firstCall.args[0], error, 'callback received error');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -384,6 +384,7 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
 
       program.insertRowsAsStream(options, callback);
+
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [null, errorList]);
     });
@@ -392,9 +393,10 @@ describe('bigquery:tables', function () {
       var example = getSample();
       var callback = sinon.stub();
       var error = new Error('error');
-      example.mocks.table.insert = sinon.stub().yields(error);
+      example.mocks.table.insert.yields(error);
 
       example.program.insertRowsAsStream(options, callback);
+
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
     });
@@ -402,9 +404,10 @@ describe('bigquery:tables', function () {
     it('should handle (per-row) insert errors', function () {
       var example = getSample();
       var callback = sinon.stub();
-      example.mocks.table.insert = sinon.stub().yields(null, errorList);
+      example.mocks.table.insert.yields(null, errorList);
 
       example.program.insertRowsAsStream(options, callback);
+
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [null, errorList]);
     });

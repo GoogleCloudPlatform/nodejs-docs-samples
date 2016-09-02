@@ -28,22 +28,23 @@ function getSample () {
     }
   ];
   var fileMock = {
-    download: sinon.stub().callsArgWith(1, null),
-    getMetadata: sinon.stub().callsArgWith(0, null, { foo: 'bar' }),
-    makePublic: sinon.stub().callsArgWith(0, null),
-    delete: sinon.stub().callsArgWith(0, null),
-    move: sinon.stub().callsArgWith(1, null, filesMock[0]),
-    copy: sinon.stub().callsArgWith(1, null, filesMock[0])
+    download: sinon.stub().yields(null),
+    getMetadata: sinon.stub().yields(null, { foo: 'bar' }),
+    makePublic: sinon.stub().yields(null),
+    delete: sinon.stub().yields(null),
+    move: sinon.stub().yields(null, filesMock[0]),
+    copy: sinon.stub().yields(null, filesMock[0])
   };
   var bucketMock = {
-    getFiles: sinon.stub().callsArgWith(0, null, filesMock, null, filesMock),
+    getFiles: sinon.stub().yields(null, filesMock),
     file: sinon.stub().returns(fileMock),
-    upload: sinon.stub().callsArgWith(1, null, filesMock[0])
+    upload: sinon.stub().yields(null, filesMock[0])
   };
   var storageMock = {
     bucket: sinon.stub().returns(bucketMock)
   };
   var StorageMock = sinon.stub().returns(storageMock);
+
   return {
     program: proxyquire('../files', {
       '@google-cloud/storage': StorageMock,
@@ -67,27 +68,24 @@ describe('storage:files', function () {
 
       sample.program.listFiles(bucketName, callback);
 
-      assert(sample.mocks.bucket.getFiles.calledOnce, 'getFiles called once');
-      assert.equal(sample.mocks.bucket.getFiles.firstCall.args.length, 1, 'getFiles received 1 argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files, 'callback received files');
-      assert(console.log.calledWith('Found %d file(s)!', sample.mocks.files.length));
+      assert.equal(sample.mocks.bucket.getFiles.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.getFiles.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.files]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d file(s)!', sample.mocks.files.length]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
-      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(0, error);
+      sample.mocks.bucket.getFiles.yields(error);
 
       sample.program.listFiles(bucketName, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -100,20 +98,17 @@ describe('storage:files', function () {
         bucket: bucketName,
         prefix: prefix
       };
-      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, null, sample.mocks.files);
 
       sample.program.listFilesByPrefix(options, callback);
 
-      assert(sample.mocks.bucket.getFiles.calledOnce, 'getFiles called once');
-      assert.equal(sample.mocks.bucket.getFiles.firstCall.args.length, 2, 'getFiles received 2 arguments');
-      assert.deepEqual(sample.mocks.bucket.getFiles.firstCall.args[0], {
+      assert.equal(sample.mocks.bucket.getFiles.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.getFiles.firstCall.args.slice(0, -1), [{
         prefix: prefix
-      }, 'getFiles received options');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files, 'callback received files');
-      assert(console.log.calledWith('Found %d file(s)!', sample.mocks.files.length));
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.files]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d file(s)!', sample.mocks.files.length]);
     });
 
     it('should list files with prefix and delimiter', function () {
@@ -126,21 +121,18 @@ describe('storage:files', function () {
         prefix: prefix,
         delimiter: delimiter
       };
-      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, null, sample.mocks.files);
 
       sample.program.listFilesByPrefix(options, callback);
 
-      assert(sample.mocks.bucket.getFiles.calledOnce, 'getFiles called once');
-      assert.equal(sample.mocks.bucket.getFiles.firstCall.args.length, 2, 'getFiles received 2 arguments');
-      assert.deepEqual(sample.mocks.bucket.getFiles.firstCall.args[0], {
+      assert.equal(sample.mocks.bucket.getFiles.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.getFiles.firstCall.args.slice(0, -1), [{
         prefix: prefix,
         delimiter: delimiter
-      }, 'getFiles received options');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files, 'callback received files');
-      assert(console.log.calledWith('Found %d file(s)!', sample.mocks.files.length));
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.files]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d file(s)!', sample.mocks.files.length]);
     });
 
     it('should handle error', function () {
@@ -152,14 +144,12 @@ describe('storage:files', function () {
         bucket: bucketName,
         prefix: prefix
       };
-      sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(1, error);
+      sample.mocks.bucket.getFiles.yields(error);
 
       sample.program.listFilesByPrefix(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -174,14 +164,12 @@ describe('storage:files', function () {
 
       sample.program.uploadFile(options, callback);
 
-      assert(sample.mocks.bucket.upload.calledOnce, 'upload called once');
-      assert.equal(sample.mocks.bucket.upload.firstCall.args.length, 2, 'upload received 2 arguments');
-      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[0], srcFileName, 'upload received file name');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
-      assert(console.log.calledWith('Uploaded gs://%s/%s', options.bucket, options.srcFile));
+      assert.equal(sample.mocks.bucket.upload.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args.slice(0, -1), [srcFileName]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.files[0]]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Uploaded gs://%s/%s', options.bucket, options.srcFile]);
     });
 
     it('should handle error', function () {
@@ -192,14 +180,12 @@ describe('storage:files', function () {
         bucket: bucketName,
         srcFile: srcFileName
       };
-      sample.mocks.bucket.upload = sinon.stub().callsArgWith(1, error);
+      sample.mocks.bucket.upload.yields(error);
 
       sample.program.uploadFile(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -215,15 +201,14 @@ describe('storage:files', function () {
 
       sample.program.downloadFile(options, callback);
 
-      assert(sample.mocks.file.download.calledOnce, 'download called once');
-      assert.equal(sample.mocks.file.download.firstCall.args.length, 2, 'download received 2 arguments');
-      assert.deepEqual(sample.mocks.file.download.firstCall.args[0], {
+      assert.equal(sample.mocks.file.download.calledOnce, true);
+      assert.deepEqual(sample.mocks.file.download.firstCall.args.slice(0, -1), [{
         destination: options.destFile
-      }, 'download received file name');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert(console.log.calledWith('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile));
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile]);
     });
 
     it('should handle error', function () {
@@ -235,14 +220,12 @@ describe('storage:files', function () {
         srcFile: srcFileName,
         destFile: destFileName
       };
-      sample.mocks.file.download = sinon.stub().callsArgWith(1, error);
+      sample.mocks.file.download.yields(error);
 
       sample.program.downloadFile(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -257,12 +240,12 @@ describe('storage:files', function () {
 
       sample.program.deleteFile(options, callback);
 
-      assert(sample.mocks.file.delete.calledOnce, 'delete called once');
-      assert.equal(sample.mocks.file.delete.firstCall.args.length, 1, 'delete received 1 argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert(console.log.calledWith('Deleted gs://%s/%s', options.bucket, options.file));
+      assert.equal(sample.mocks.file.delete.calledOnce, true);
+      assert.deepEqual(sample.mocks.file.delete.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Deleted gs://%s/%s', options.bucket, options.file]);
     });
 
     it('should handle error', function () {
@@ -273,14 +256,12 @@ describe('storage:files', function () {
         bucket: bucketName,
         file: srcFileName
       };
-      sample.mocks.file.delete = sinon.stub().callsArgWith(0, error);
+      sample.mocks.file.delete.yields(error);
 
       sample.program.deleteFile(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -295,13 +276,12 @@ describe('storage:files', function () {
 
       sample.program.getMetadata(options, callback);
 
-      assert(sample.mocks.file.getMetadata.calledOnce, 'getMetadata called once');
-      assert.equal(sample.mocks.file.getMetadata.firstCall.args.length, 1, 'getMetadata received 1 argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.deepEqual(callback.firstCall.args[1], { foo: 'bar' }, 'callback received metadata');
-      assert(console.log.calledWith('Got metadata for gs://%s/%s', options.bucket, options.file));
+      assert.equal(sample.mocks.file.getMetadata.calledOnce, true);
+      assert.deepEqual(sample.mocks.file.getMetadata.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, { foo: 'bar' }]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Got metadata for gs://%s/%s', options.bucket, options.file]);
     });
 
     it('should handle error', function () {
@@ -312,14 +292,12 @@ describe('storage:files', function () {
         bucket: bucketName,
         file: srcFileName
       };
-      sample.mocks.file.getMetadata = sinon.stub().callsArgWith(0, error);
+      sample.mocks.file.getMetadata.yields(error);
 
       sample.program.getMetadata(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -334,12 +312,12 @@ describe('storage:files', function () {
 
       sample.program.makePublic(options, callback);
 
-      assert(sample.mocks.file.makePublic.calledOnce, 'makePublic called once');
-      assert.equal(sample.mocks.file.makePublic.firstCall.args.length, 1, 'makePublic received 1 argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert(console.log.calledWith('Made gs://%s/%s public!', options.bucket, options.file));
+      assert.equal(sample.mocks.file.makePublic.calledOnce, true);
+      assert.deepEqual(sample.mocks.file.makePublic.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Made gs://%s/%s public!', options.bucket, options.file]);
     });
 
     it('should handle error', function () {
@@ -350,14 +328,12 @@ describe('storage:files', function () {
         bucket: bucketName,
         file: srcFileName
       };
-      sample.mocks.file.makePublic = sinon.stub().callsArgWith(0, error);
+      sample.mocks.file.makePublic.yields(error);
 
       sample.program.makePublic(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -373,14 +349,12 @@ describe('storage:files', function () {
 
       sample.program.moveFile(options, callback);
 
-      assert(sample.mocks.file.move.calledOnce, 'move called once');
-      assert.equal(sample.mocks.file.move.firstCall.args.length, 2, 'move received 2 arguments');
-      assert.deepEqual(sample.mocks.file.move.firstCall.args[0], options.destFile, 'move received options');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
-      assert(console.log.calledWith('Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile));
+      assert.equal(sample.mocks.file.move.calledOnce, true);
+      assert.deepEqual(sample.mocks.file.move.firstCall.args.slice(0, -1), [options.destFile]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.files[0]]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile]);
     });
 
     it('should handle error', function () {
@@ -392,14 +366,12 @@ describe('storage:files', function () {
         srcFile: srcFileName,
         destFile: movedFileName
       };
-      sample.mocks.file.move = sinon.stub().callsArgWith(1, error);
+      sample.mocks.file.move.yields(error);
 
       sample.program.moveFile(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -416,13 +388,12 @@ describe('storage:files', function () {
 
       sample.program.copyFile(options, callback);
 
-      assert(sample.mocks.file.copy.calledOnce, 'copy called once');
-      assert.equal(sample.mocks.file.copy.firstCall.args.length, 2, 'copy received 2 arguments');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.files[0], 'callback received file');
-      assert(console.log.calledWith('Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile));
+      assert.equal(sample.mocks.file.copy.calledOnce, true);
+      assert.deepEqual(sample.mocks.file.copy.firstCall.args.slice(0, -1), [sample.mocks.storage.bucket(options.destBucket).file(options.destFile)]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.files[0]]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile]);
     });
 
     it('should handle error', function () {
@@ -435,14 +406,12 @@ describe('storage:files', function () {
         destFile: copiedFileName,
         destBucket: bucketName
       };
-      sample.mocks.file.copy = sinon.stub().callsArgWith(1, error);
+      sample.mocks.file.copy.yields(error);
 
       sample.program.copyFile(options, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 

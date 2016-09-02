@@ -30,14 +30,14 @@ function getSample () {
 
   var jobMock = {
     id: jobId,
-    getQueryResults: sinon.stub().callsArgWith(0, null, natalityMock),
-    getMetadata: sinon.stub().callsArgWith(0, null, metadataMock)
+    getQueryResults: sinon.stub().yields(null, natalityMock),
+    getMetadata: sinon.stub().yields(null, metadataMock)
   };
 
   var bigqueryMock = {
     job: sinon.stub().returns(jobMock),
-    startQuery: sinon.stub().callsArgWith(1, null, jobMock),
-    query: sinon.stub().callsArgWith(1, null, natalityMock)
+    startQuery: sinon.stub().yields(null, jobMock),
+    query: sinon.stub().yields(null, natalityMock)
   };
 
   var BigQueryMock = sinon.stub().returns(bigqueryMock);
@@ -67,35 +67,38 @@ describe('bigquery:query', function () {
 
       example.program.syncQuery(query, callback);
 
-      assert.ifError(callback.firstCall.args[0]);
-      assert(example.mocks.bigquery.query.called);
-      assert.deepEqual(callback.firstCall.args[1], example.mocks.natality);
-      assert(console.log.calledWith(
-        'SyncQuery: found %d rows!',
-        callback.firstCall.args[1].length
-      ));
+      assert.equal(example.mocks.bigquery.query.calledOnce, true);
+      assert.deepEqual(example.mocks.bigquery.query.firstCall.args.slice(0, -1), [{
+        query: query,
+        timeoutMs: 10000
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, example.mocks.natality]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['SyncQuery: found %d rows!', example.mocks.natality.length]);
     });
 
     it('should require a query', function () {
+      var error = new Error('"query" is required!');
       var example = getSample();
       var callback = sinon.stub();
 
       example.program.syncQuery(null, callback);
 
-      assert.deepEqual(callback.firstCall.args[0], new Error('"query" is required!'));
-      assert.equal(callback.firstCall.args[1], undefined);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var example = getSample();
       var callback = sinon.stub();
-      example.mocks.bigquery.query = sinon.stub().callsArgWith(1, error);
+      example.mocks.bigquery.query.yields(error);
 
       example.program.syncQuery(query, callback);
 
-      assert.deepEqual(callback.firstCall.args[0], error);
-      assert.equal(callback.firstCall.args[1], undefined);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -108,34 +111,37 @@ describe('bigquery:query', function () {
 
       example.program.asyncQuery(query, callback);
 
-      assert.ifError(callback.firstCall.args[0]);
-      assert(example.mocks.bigquery.startQuery.called);
-      assert.deepEqual(callback.firstCall.args[1], example.mocks.job);
-      assert(console.log.calledWith(
-        'AsyncQuery: submitted job %s!', example.jobId
-      ));
+      assert.equal(example.mocks.bigquery.startQuery.calledOnce, true);
+      assert.deepEqual(example.mocks.bigquery.startQuery.firstCall.args.slice(0, -1), [{
+        query: query
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, example.mocks.job]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['AsyncQuery: submitted job %s!', example.jobId]);
     });
 
     it('should require a query', function () {
+      var error = new Error('"query" is required!');
       var example = getSample();
       var callback = sinon.stub();
 
       example.program.asyncQuery(null, callback);
 
-      assert.deepEqual(callback.firstCall.args[0], new Error('"query" is required!'));
-      assert.equal(callback.firstCall.args[1], undefined);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var example = getSample();
       var callback = sinon.stub();
-      example.mocks.bigquery.startQuery = sinon.stub().callsArgWith(1, error);
+      example.mocks.bigquery.startQuery.yields(error);
 
       example.program.asyncQuery(query, callback);
 
-      assert.deepEqual(callback.firstCall.args[0], error);
-      assert.equal(callback.firstCall.args[1], undefined);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -143,58 +149,35 @@ describe('bigquery:query', function () {
     it('should get the results of a job given its ID', function () {
       var example = getSample();
       var callback = sinon.stub();
-      example.mocks.bigquery.job = sinon.stub().returns(example.mocks.job);
+      example.mocks.bigquery.job.returns(example.mocks.job);
 
       example.program.asyncPoll(example.jobId, callback);
 
-      assert.ifError(callback.firstCall.args[0]);
-      assert(example.mocks.job.getQueryResults.called);
-      assert(console.log.calledWith(
-        'AsyncQuery: polled job %s; got %d rows!',
-        example.jobId,
-        example.mocks.natality.length
-      ));
+      assert.equal(example.mocks.job.getMetadata.calledOnce, true);
+      assert.deepEqual(example.mocks.job.getMetadata.firstCall.args.slice(0, -1), []);
+      assert.equal(example.mocks.job.getQueryResults.calledOnce, true);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, example.mocks.natality]);
+      assert.equal(console.log.calledTwice, true);
+      assert.deepEqual(console.log.firstCall.args, ['Job status: %s', example.mocks.metadata.status.state]);
+      assert.deepEqual(console.log.secondCall.args, ['AsyncQuery: polled job %s; got %d rows!', example.jobId, example.mocks.natality.length]);
     });
 
-    it('should report the status of a job', function () {
-      var example = getSample();
-      var callback = sinon.stub();
-
-      example.program.asyncPoll(example.jobId, callback);
-
-      assert.ifError(callback.firstCall.args[0]);
-      assert(example.mocks.job.getMetadata.called);
-      assert(console.log.calledWith(
-        'Job status: %s',
-        example.mocks.metadata.status.state
-      ));
-    });
-
-    it('should check whether a job is finished', function () {
+    it('should error when job is not finished', function () {
       var example = getSample();
       var callback = sinon.stub();
 
       var pendingState = { status: { state: 'PENDING' } };
-      example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, pendingState);
+      example.mocks.job.getMetadata.yields(null, pendingState);
 
       example.program.asyncPoll(example.jobId, callback);
 
-      assert.deepEqual(callback.firstCall.args[0], Error('Job %s is not done', example.jobId));
-      assert(console.log.calledWith('Job status: %s', pendingState.status.state));
-      assert(example.mocks.job.getMetadata.called);
-      assert.equal(example.mocks.job.getQueryResults.called, false);
-      assert.equal(callback.firstCall.args[1], undefined);
-
-      var doneState = { status: { state: 'DONE' } };
-      example.mocks.job.getMetadata = sinon.stub().callsArgWith(0, null, doneState);
-
-      example.program.asyncPoll(example.jobId, callback);
-
-      assert.ifError(callback.secondCall.args[0]);
-      assert(console.log.calledWith('Job status: %s', doneState.status.state));
-      assert(example.mocks.job.getMetadata.called);
-      assert(example.mocks.job.getQueryResults.called);
-      assert.equal(callback.secondCall.args[1], example.mocks.natality);
+      assert.equal(example.mocks.job.getMetadata.calledOnce, true);
+      assert.deepEqual(example.mocks.job.getMetadata.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [new Error('Job %s is not done', example.jobId)]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Job status: %s', pendingState.status.state]);
     });
 
     it('should require a job ID', function () {
@@ -207,16 +190,28 @@ describe('bigquery:query', function () {
       assert.equal(callback.firstCall.args[1], undefined);
     });
 
+    it('should handle getMetadata error', function () {
+      var error = new Error('error');
+      var example = getSample();
+      var callback = sinon.stub();
+      example.mocks.job.getMetadata.yields(error);
+
+      example.program.asyncPoll(example.jobId, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+
     it('should handle error', function () {
       var error = new Error('error');
       var example = getSample();
       var callback = sinon.stub();
-      example.mocks.job.getQueryResults = sinon.stub().callsArgWith(0, error);
+      example.mocks.job.getQueryResults.yields(error);
 
       example.program.asyncPoll(example.jobId, callback);
 
-      assert.deepEqual(callback.firstCall.args[0], error);
-      assert.equal(callback.firstCall.args[1], undefined);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 

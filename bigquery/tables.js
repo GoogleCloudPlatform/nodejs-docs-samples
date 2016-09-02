@@ -80,6 +80,19 @@ function listTables (options, callback) {
 }
 // [END list_tables]
 
+function listRows (dataset, table, callback) {
+  var bigquery = BigQuery();
+  var tableObj = bigquery.dataset(dataset).table(table);
+  tableObj.getRows(function (err, rows) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('Found %d row(s)!', rows.length);
+    return callback(null, rows);
+  });
+}
+
 // [START delete_table]
 /**
  * Deletes a table with the specified name from the specified dataset.
@@ -236,6 +249,7 @@ var fs = require('fs');
 var program = module.exports = {
   createTable: createTable,
   listTables: listTables,
+  listRows: listRows,
   deleteTable: deleteTable,
   importFile: importFile,
   exportTableToGCS: exportTableToGCS,
@@ -252,7 +266,7 @@ cli
   .command('create <dataset> <table>', 'Create a new table in the specified dataset.', {}, function (options) {
     program.createTable(utils.pick(options, ['dataset', 'table']), utils.makeHandler());
   })
-  .command('list <dataset>', 'List tables in the specified dataset.', {}, function (options) {
+  .command('tables <dataset>', 'List tables in the specified dataset.', {}, function (options) {
     program.listTables(utils.pick(options, ['dataset']), utils.makeHandler(true, 'id'));
   })
   .command('delete <dataset> <table>', 'Delete a table in the specified dataset.', {}, function (options) {
@@ -270,6 +284,9 @@ cli
       );
     }
   )
+  .command('rows <dataset> <table>', 'List the rows in a BigQuery table.', {}, function (options) {
+    program.listRows(options.dataset, options.table, utils.makeHandler());
+  })
   .command('import <dataset> <table> <file>', 'Import data from a local file or a Google Cloud Storage file into BigQuery.', {
     bucket: {
       alias: 'b',
@@ -328,8 +345,12 @@ cli
     'Create table "my_table" in "my_dataset".'
   )
   .example(
-    'node $0 list my_dataset',
+    'node $0 tables my_dataset',
     'List tables in "my_dataset".'
+  )
+  .example(
+    'node $0 rows my_dataset my_table',
+    'List rows from "my_table" in "my_dataset".'
   )
   .example(
     'node $0 delete my_dataset my_table',
@@ -363,7 +384,7 @@ cli
     'node $0 copy src_dataset src_table dest_dataset dest_table',
     'Copy src_dataset:src_table to dest_dataset:dest_table.'
   )
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/bigquery/docs');
 

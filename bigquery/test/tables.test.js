@@ -58,9 +58,10 @@ function getSample () {
   var tableMock = {
     export: sinon.stub().yields(null, jobMock),
     copy: sinon.stub().yields(null, jobMock),
-    delete: sinon.stub().yields(null),
     import: sinon.stub().yields(null, jobMock),
-    insert: sinon.stub().yields(null, errorList)
+    insert: sinon.stub().yields(null, errorList),
+    getRows: sinon.stub().yields(null, jsonArray),
+    delete: sinon.stub().yields(null)
   };
   var datasetMock = {
     table: sinon.stub().returns(tableMock),
@@ -179,6 +180,34 @@ describe('bigquery:tables', function () {
       sample.mocks.dataset.getTables.yields(error);
 
       sample.program.listTables({}, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
+  describe('listRows', function () {
+    it('should list tables', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+
+      sample.program.listRows(dataset, table, callback);
+
+      assert.equal(sample.mocks.table.getRows.calledOnce, true);
+      assert.deepEqual(sample.mocks.table.getRows.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, jsonArray]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d row(s)!', jsonArray.length]);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.table.getRows.yields(error);
+
+      sample.program.listRows(dataset, table, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -395,9 +424,18 @@ describe('bigquery:tables', function () {
       var program = getSample().program;
       program.listTables = sinon.stub();
 
-      program.main(['list', dataset]);
+      program.main(['tables', dataset]);
       assert.equal(program.listTables.calledOnce, true);
       assert.deepEqual(program.listTables.firstCall.args.slice(0, -1), [{ dataset: dataset }]);
+    });
+
+    it('should call listRows', function () {
+      var program = getSample().program;
+      program.listRows = sinon.stub();
+
+      program.main(['rows', dataset, table]);
+      assert.equal(program.listRows.calledOnce, true);
+      assert.deepEqual(program.listRows.firstCall.args.slice(0, -1), [dataset, table]);
     });
 
     it('should call deleteTable', function () {

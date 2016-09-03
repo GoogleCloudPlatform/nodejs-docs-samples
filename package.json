@@ -67,7 +67,7 @@
     "power-assert": "^1.4.1",
     "proxyquire": "^1.7.10",
     "request": "^2.72.0",
-    "semistandard": "^8.0.0",
+    "semistandard": "^9.0.0",
     "shelljs": "^0.7.3",
     "sinon": "^1.17.5",
     "supertest": "^2.0.0"

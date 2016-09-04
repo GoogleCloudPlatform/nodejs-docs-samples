@@ -191,6 +191,19 @@ describe('bigquery:tables', function () {
     });
   });
 
+  describe('browseRows', function () {
+    it('should display rows in a table', function (done) {
+      program.browseRows(options.dataset, options.table, function (err, rows) {
+        assert.equal(err, null);
+        assert.equal(Array.isArray(rows), true);
+        assert.equal(rows.length > 0, true);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found %d row(s)!', rows.length]);
+        done();
+      });
+    });
+  });
+
   describe('deleteTable', function () {
     it('should delete table', function (done) {
       program.deleteTable(options, function (err) {

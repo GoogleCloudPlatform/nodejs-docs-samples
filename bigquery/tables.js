@@ -80,6 +80,21 @@ function listTables (options, callback) {
 }
 // [END list_tables]
 
+function browseRows (dataset, table, callback) {
+  var bigquery = BigQuery();
+  var tableObj = bigquery.dataset(dataset).table(table);
+
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=getRows
+  tableObj.getRows(function (err, rows) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('Found %d row(s)!', rows.length);
+    return callback(null, rows);
+  });
+}
+
 // [START delete_table]
 /**
  * Deletes a table with the specified name from the specified dataset.
@@ -110,6 +125,7 @@ function copyTable (srcDataset, srcTable, destDataset, destTable, callback) {
   var srcTableObj = bigquery.dataset(srcDataset).table(srcTable);
   var destTableObj = bigquery.dataset(destDataset).table(destTable);
 
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=copy
   srcTableObj.copy(destTableObj, function (err, job) {
     if (err) {
       return callback(err);
@@ -236,6 +252,7 @@ var fs = require('fs');
 var program = module.exports = {
   createTable: createTable,
   listTables: listTables,
+  browseRows: browseRows,
   deleteTable: deleteTable,
   importFile: importFile,
   exportTableToGCS: exportTableToGCS,
@@ -270,6 +287,9 @@ cli
       );
     }
   )
+  .command('browse <dataset> <table>', 'List the rows in a BigQuery table.', {}, function (options) {
+    program.browseRows(options.dataset, options.table, utils.makeHandler());
+  })
   .command('import <dataset> <table> <file>', 'Import data from a local file or a Google Cloud Storage file into BigQuery.', {
     bucket: {
       alias: 'b',
@@ -332,6 +352,10 @@ cli
     'List tables in "my_dataset".'
   )
   .example(
+    'node $0 browse my_dataset my_table',
+    'Display rows from "my_table" in "my_dataset".'
+  )
+  .example(
     'node $0 delete my_dataset my_table',
     'Delete "my_table" from "my_dataset".'
   )
@@ -363,7 +387,7 @@ cli
     'node $0 copy src_dataset src_table dest_dataset dest_table',
     'Copy src_dataset:src_table to dest_dataset:dest_table.'
   )
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/bigquery/docs');
 

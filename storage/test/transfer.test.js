@@ -14,7 +14,8 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru();
-var bucketName = 'foo';
+var srcBucketName = 'foo';
+var destBucketName = 'bar';
 var jobName = 'transferJobs/123456789012345678';
 var transferOperationName = 'transferOperations/123456789012345678';
 
@@ -68,8 +69,8 @@ describe('storage:transfer', function () {
         var date = '2016/08/11';
         var time = '15:30';
         var options = {
-          srcBucket: bucketName,
-          destBucket: bucketName,
+          srcBucket: srcBucketName,
+          destBucket: destBucketName,
           date: date,
           time: time
         };
@@ -484,8 +485,15 @@ describe('storage:transfer', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'createTransferJob');
-      program.main(['jobs', 'create', bucketName, bucketName, 'time', 'date']);
-      assert(program.createTransferJob.calledOnce);
+      program.main(['jobs', 'create', srcBucketName, destBucketName, 'time', 'date']);
+      assert.equal(program.createTransferJob.calledOnce, true);
+      assert.deepEqual(program.createTransferJob.firstCall.args.slice(0, -1), [{
+        srcBucket: srcBucketName,
+        destBucket: destBucketName,
+        time: 'time',
+        date: 'date',
+        description: undefined
+      }]);
     });
 
     it('should call getTransferJob', function () {
@@ -493,7 +501,8 @@ describe('storage:transfer', function () {
 
       sinon.stub(program, 'getTransferJob');
       program.main(['jobs', 'get', jobName]);
-      assert(program.getTransferJob.calledOnce);
+      assert.equal(program.getTransferJob.calledOnce, true);
+      assert.deepEqual(program.getTransferJob.firstCall.args.slice(0, -1), [jobName]);
     });
 
     it('should call listTransferJobs', function () {
@@ -501,7 +510,8 @@ describe('storage:transfer', function () {
 
       sinon.stub(program, 'listTransferJobs');
       program.main(['jobs', 'list']);
-      assert(program.listTransferJobs.calledOnce);
+      assert.equal(program.listTransferJobs.calledOnce, true);
+      assert.deepEqual(program.listTransferJobs.firstCall.args.slice(0, -1), []);
     });
 
     it('should call updateTransferJob', function () {
@@ -509,7 +519,12 @@ describe('storage:transfer', function () {
 
       sinon.stub(program, 'updateTransferJob');
       program.main(['jobs', 'set', jobName, 'status', 'DISABLED']);
-      assert(program.updateTransferJob.calledOnce);
+      assert.equal(program.updateTransferJob.calledOnce, true);
+      assert.deepEqual(program.updateTransferJob.firstCall.args.slice(0, -1), [{
+        job: jobName,
+        field: 'status',
+        value: 'DISABLED'
+      }]);
     });
 
     it('should call listTransferOperations', function () {
@@ -517,7 +532,17 @@ describe('storage:transfer', function () {
 
       sinon.stub(program, 'listTransferOperations');
       program.main(['operations', 'list']);
-      assert(program.listTransferOperations.calledOnce);
+      assert.equal(program.listTransferOperations.calledOnce, true);
+      assert.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [undefined]);
+    });
+
+    it('should call listTransferOperations and filter', function () {
+      var program = getSample().program;
+
+      sinon.stub(program, 'listTransferOperations');
+      program.main(['operations', 'list', jobName]);
+      assert.equal(program.listTransferOperations.calledOnce, true);
+      assert.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [jobName]);
     });
 
     it('should call getTransferOperation', function () {
@@ -525,7 +550,8 @@ describe('storage:transfer', function () {
 
       sinon.stub(program, 'getTransferOperation');
       program.main(['operations', 'get', transferOperationName]);
-      assert(program.getTransferOperation.calledOnce);
+      assert.equal(program.getTransferOperation.calledOnce, true);
+      assert.deepEqual(program.getTransferOperation.firstCall.args.slice(0, -1), [transferOperationName]);
     });
 
     it('should call pauseTransferOperation', function () {
@@ -533,7 +559,8 @@ describe('storage:transfer', function () {
 
       sinon.stub(program, 'pauseTransferOperation');
       program.main(['operations', 'pause', transferOperationName]);
-      assert(program.pauseTransferOperation.calledOnce);
+      assert.equal(program.pauseTransferOperation.calledOnce, true);
+      assert.deepEqual(program.pauseTransferOperation.firstCall.args.slice(0, -1), [transferOperationName]);
     });
 
     it('should call resumeTransferOperation', function () {
@@ -541,7 +568,8 @@ describe('storage:transfer', function () {
 
       sinon.stub(program, 'resumeTransferOperation');
       program.main(['operations', 'resume', transferOperationName]);
-      assert(program.resumeTransferOperation.calledOnce);
+      assert.equal(program.resumeTransferOperation.calledOnce, true);
+      assert.deepEqual(program.resumeTransferOperation.firstCall.args.slice(0, -1), [transferOperationName]);
     });
   });
 });

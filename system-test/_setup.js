@@ -13,7 +13,11 @@
 
 'use strict';
 
-var assert = require('power-assert');
+var assert = require('power-assert').customize({
+  output: {
+    maxDepth: 2
+  }
+});
 var sinon = require('sinon');
 
 global.assert = assert;

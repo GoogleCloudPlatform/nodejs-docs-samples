@@ -15,7 +15,10 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 var bucketName = 'foo';
-var fileName = 'test.txt';
+var srcFileName = 'test1.txt';
+var destFileName = 'test2.txt';
+var movedFileName = 'test3.txt';
+var copiedFileName = 'test4.txt';
 
 function getSample () {
   var filesMock = [
@@ -74,7 +77,7 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.bucket.getFiles = sinon.stub().callsArgWith(0, error);
@@ -141,7 +144,7 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var prefix = '/a';
@@ -166,14 +169,14 @@ describe('storage:files', function () {
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        srcFile: fileName
+        srcFile: srcFileName
       };
 
       sample.program.uploadFile(options, callback);
 
       assert(sample.mocks.bucket.upload.calledOnce, 'upload called once');
       assert.equal(sample.mocks.bucket.upload.firstCall.args.length, 2, 'upload received 2 arguments');
-      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[0], fileName, 'upload received file name');
+      assert.deepEqual(sample.mocks.bucket.upload.firstCall.args[0], srcFileName, 'upload received file name');
       assert(callback.calledOnce, 'callback called once');
       assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
       assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
@@ -182,12 +185,12 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        srcFile: fileName
+        srcFile: srcFileName
       };
       sample.mocks.bucket.upload = sinon.stub().callsArgWith(1, error);
 
@@ -206,8 +209,8 @@ describe('storage:files', function () {
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        srcFile: fileName,
-        destFile: fileName
+        srcFile: srcFileName,
+        destFile: destFileName
       };
 
       sample.program.downloadFile(options, callback);
@@ -224,13 +227,13 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        srcFile: fileName,
-        destFile: fileName
+        srcFile: srcFileName,
+        destFile: destFileName
       };
       sample.mocks.file.download = sinon.stub().callsArgWith(1, error);
 
@@ -249,7 +252,7 @@ describe('storage:files', function () {
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        file: fileName
+        file: srcFileName
       };
 
       sample.program.deleteFile(options, callback);
@@ -263,12 +266,12 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        file: fileName
+        file: srcFileName
       };
       sample.mocks.file.delete = sinon.stub().callsArgWith(0, error);
 
@@ -287,7 +290,7 @@ describe('storage:files', function () {
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        file: fileName
+        file: srcFileName
       };
 
       sample.program.getMetadata(options, callback);
@@ -302,12 +305,12 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        file: fileName
+        file: srcFileName
       };
       sample.mocks.file.getMetadata = sinon.stub().callsArgWith(0, error);
 
@@ -326,7 +329,7 @@ describe('storage:files', function () {
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        file: fileName
+        file: srcFileName
       };
 
       sample.program.makePublic(options, callback);
@@ -340,12 +343,12 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        file: fileName
+        file: srcFileName
       };
       sample.mocks.file.makePublic = sinon.stub().callsArgWith(0, error);
 
@@ -364,8 +367,8 @@ describe('storage:files', function () {
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        srcFile: fileName,
-        destFile: fileName
+        srcFile: srcFileName,
+        destFile: movedFileName
       };
 
       sample.program.moveFile(options, callback);
@@ -381,13 +384,13 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
         bucket: bucketName,
-        srcFile: fileName,
-        destFile: fileName
+        srcFile: srcFileName,
+        destFile: movedFileName
       };
       sample.mocks.file.move = sinon.stub().callsArgWith(1, error);
 
@@ -406,8 +409,8 @@ describe('storage:files', function () {
       var callback = sinon.stub();
       var options = {
         srcBucket: bucketName,
-        srcFile: fileName,
-        destFile: fileName,
+        srcFile: srcFileName,
+        destFile: copiedFileName,
         destBucket: bucketName
       };
 
@@ -423,13 +426,13 @@ describe('storage:files', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
         srcBucket: bucketName,
-        srcFile: fileName,
-        destFile: fileName,
+        srcFile: srcFileName,
+        destFile: copiedFileName,
         destBucket: bucketName
       };
       sample.mocks.file.copy = sinon.stub().callsArgWith(1, error);
@@ -449,7 +452,8 @@ describe('storage:files', function () {
 
       sinon.stub(program, 'listFiles');
       program.main(['list', bucketName]);
-      assert(program.listFiles.calledOnce);
+      assert.equal(program.listFiles.calledOnce, true);
+      assert.deepEqual(program.listFiles.firstCall.args.slice(0, -1), [bucketName]);
     });
 
     it('should call listFilesByPrefix', function () {
@@ -457,63 +461,100 @@ describe('storage:files', function () {
 
       sinon.stub(program, 'listFilesByPrefix');
       program.main(['list', bucketName, '-p', 'public/']);
-      assert(program.listFilesByPrefix.calledOnce);
+      assert.equal(program.listFilesByPrefix.calledOnce, true);
+      assert.deepEqual(program.listFilesByPrefix.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        prefix: 'public/',
+        delimiter: undefined
+      }]);
     });
 
     it('should call uploadFile', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'uploadFile');
-      program.main(['upload', bucketName, fileName]);
-      assert(program.uploadFile.calledOnce);
+      program.main(['upload', bucketName, srcFileName]);
+      assert.equal(program.uploadFile.calledOnce, true);
+      assert.deepEqual(program.uploadFile.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        srcFile: srcFileName
+      }]);
     });
 
     it('should call downloadFile', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'downloadFile');
-      program.main(['download', bucketName, fileName, fileName]);
-      assert(program.downloadFile.calledOnce);
+      program.main(['download', bucketName, srcFileName, destFileName]);
+      assert.equal(program.downloadFile.calledOnce, true);
+      assert.deepEqual(program.downloadFile.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        srcFile: srcFileName,
+        destFile: destFileName
+      }]);
     });
 
     it('should call deleteFile', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'deleteFile');
-      program.main(['delete', bucketName, fileName]);
-      assert(program.deleteFile.calledOnce);
+      program.main(['delete', bucketName, srcFileName]);
+      assert.equal(program.deleteFile.calledOnce, true);
+      assert.deepEqual(program.deleteFile.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        file: srcFileName
+      }]);
     });
 
     it('should call getMetadata', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'getMetadata');
-      program.main(['getMetadata', bucketName, fileName]);
-      assert(program.getMetadata.calledOnce);
+      program.main(['getMetadata', bucketName, srcFileName]);
+      assert.equal(program.getMetadata.calledOnce, true);
+      assert.deepEqual(program.getMetadata.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        file: srcFileName
+      }]);
     });
 
     it('should call makePublic', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'makePublic');
-      program.main(['makePublic', bucketName, fileName]);
-      assert(program.makePublic.calledOnce);
+      program.main(['makePublic', bucketName, srcFileName]);
+      assert.equal(program.makePublic.calledOnce, true);
+      assert.deepEqual(program.makePublic.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        file: srcFileName
+      }]);
     });
 
     it('should call moveFile', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'moveFile');
-      program.main(['move', bucketName, fileName, fileName]);
-      assert(program.moveFile.calledOnce);
+      program.main(['move', bucketName, srcFileName, movedFileName]);
+      assert.equal(program.moveFile.calledOnce, true);
+      assert.deepEqual(program.moveFile.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        srcFile: srcFileName,
+        destFile: movedFileName
+      }]);
     });
 
     it('should call copyFile', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'copyFile');
-      program.main(['copy', bucketName, fileName, bucketName, fileName]);
-      assert(program.copyFile.calledOnce);
+      program.main(['copy', bucketName, srcFileName, bucketName, copiedFileName]);
+      assert.equal(program.copyFile.calledOnce, true);
+      assert.deepEqual(program.copyFile.firstCall.args.slice(0, -1), [{
+        srcBucket: bucketName,
+        srcFile: srcFileName,
+        destBucket: bucketName,
+        destFile: copiedFileName
+      }]);
     });
   });
 });

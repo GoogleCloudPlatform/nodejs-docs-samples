@@ -90,7 +90,7 @@ describe('storage:encryption', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
@@ -135,7 +135,7 @@ describe('storage:encryption', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       var options = {
@@ -177,7 +177,8 @@ describe('storage:encryption', function () {
 
       sinon.stub(program, 'generateEncryptionKey');
       program.main(['generate-encryption-key']);
-      assert(program.generateEncryptionKey.calledOnce);
+      assert.equal(program.generateEncryptionKey.calledOnce, true);
+      assert.deepEqual(program.generateEncryptionKey.firstCall.args.slice(0, -1), []);
     });
 
     it('should call uploadEncryptedFile', function () {
@@ -185,7 +186,13 @@ describe('storage:encryption', function () {
 
       sinon.stub(program, 'uploadEncryptedFile');
       program.main(['upload', bucketName, fileName, fileName, key]);
-      assert(program.uploadEncryptedFile.calledOnce);
+      assert.equal(program.uploadEncryptedFile.calledOnce, true);
+      assert.deepEqual(program.uploadEncryptedFile.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        key: key
+      }]);
     });
 
     it('should call downloadEncryptedFile', function () {
@@ -193,7 +200,13 @@ describe('storage:encryption', function () {
 
       sinon.stub(program, 'downloadEncryptedFile');
       program.main(['download', bucketName, fileName, fileName, key]);
-      assert(program.downloadEncryptedFile.calledOnce);
+      assert.equal(program.downloadEncryptedFile.calledOnce, true);
+      assert.deepEqual(program.downloadEncryptedFile.firstCall.args.slice(0, -1), [{
+        bucket: bucketName,
+        srcFile: fileName,
+        destFile: fileName,
+        key: key
+      }]);
     });
 
     it('should call rotateEncryptionKey', function () {
@@ -201,7 +214,8 @@ describe('storage:encryption', function () {
 
       sinon.stub(program, 'rotateEncryptionKey');
       program.main(['rotate', bucketName, fileName, key, key]);
-      assert(program.rotateEncryptionKey.calledOnce);
+      assert.equal(program.rotateEncryptionKey.calledOnce, true);
+      assert.deepEqual(program.rotateEncryptionKey.firstCall.args.slice(0, -1), []);
     });
   });
 });

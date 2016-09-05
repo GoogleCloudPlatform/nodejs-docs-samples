@@ -34,21 +34,22 @@ View the [documentation][topics_docs] or the [source code][topics_code].
 __Usage:__ `node topics --help`
 
 ```
-Usage: node topics COMMAND [ARGS...]
-
 Commands:
+  create <topicName>             Creates a new topic.
+  list                           Lists topics.
+  publish <topicName> <message>  Publish a message to the specified topic.
+  delete <topicName>             Deletes the specified topic.
 
-  create TOPIC_NAME
-  delete TOPIC_NAME
-  publish TOPIC_NAME MESSAGE
-  list
+Options:
+  --help  Show help                                                                                            [boolean]
 
 Examples:
+  node topics create greetings                             Creates a new topic named "greetings".
+  node topics list                                         Lists all topics.
+  node topics publish greetings '{"data":"Hello world!"}'  Publishes a message to "greetings".
+  node topics delete greetings                             Deletes a topic named "greetings".
 
-  node topics create my-topic
-  node topics list
-  node topics publish my-topic '{"data":"Hello world!"}'
-  node topics delete my-topic
+For more information, see https://cloud.google.com/pubsub/docs
 ```
 
 [topics_docs]: https://cloud.google.com/pubsub/publisher
@@ -61,22 +62,25 @@ View the [documentation][subscriptions_docs] or the [source code][subscriptions_
 __Usage:__ `node subscriptions --help`
 
 ```
-Usage: node subscriptions COMMAND [ARGS...]
-
 Commands:
+  create <topicName> <subscriptionName>  Creates a new subscription.
+  list [topicName]                       Lists subscriptions, optionally filtering by a topic.
+  get <subscriptionName>                 Gets the metadata the metadata for the specified subscription.
+  pull <subscriptionName>                Pulls messages for the specified subscription.
+  delete <subscriptionName>              Deletes the specified subscription.
 
-  create TOPIC_NAME SUBSCRIPTION_NAME
-  delete SUBSCRIPTION_NAME
-  pull SUBSCRIPTION_NAME
-  list [TOPIC_NAME]
+Options:
+  --help  Show help                                                                                            [boolean]
 
 Examples:
+  node subscriptions create greetings greetings-worker-1  Creates a subscription named "greetings-worker-1" to a topic
+                                                          named "greetings".
+  node subscriptions delete greetings-worker-1            Deletes a subscription named "greetings-worker-1".
+  node subscriptions pull greetings-worker-1              Pulls messages for a subscription named "greetings-worker-1".
+  node subscriptions list                                 Lists all subscriptions.
+  node subscriptions list greetings                       Lists subscriptions for a topic named "greetings".
 
-  node subscriptions create my-topic my-subscription
-  node subscriptions delete my-subscription
-  node subscriptions pull my-subscription
-  node subscriptions list
-  node subscriptions list my-topic
+For more information, see https://cloud.google.com/pubsub/docs
 ```
 
 [subscriptions_docs]: https://cloud.google.com/pubsub/subscriber

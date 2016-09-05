@@ -50,12 +50,12 @@
   "scripts": {
     "lint": "semistandard",
     "pretest": "npm run lint && ./scripts/clean",
-    "mocha": "mocha -R spec -t 120000 --require intelli-espower-loader ./test/_setup.js '{*,appengine/*,functions/*}/test/*.test.js'",
+    "mocha": "mocha -R spec -t 120000 --require intelli-espower-loader ./test/_setup.js ./test/*.test.js '{*,appengine/*,functions/*}/test/*.test.js'",
     "test": "npm run mocha",
     "cover": "nyc --cache npm test && nyc report --reporter=html && nyc report --reporter=lcov",
     "system-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js'",
     "system-cover": "npm run pretest && nyc --cache npm run system-test && nyc report --reporter=html && nyc report --reporter=lcov",
-    "all-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js' '{*,appengine/*,functions/*}/test/*.test.js'",
+    "all-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js' ./test/*.test.js '{*,appengine/*,functions/*}/test/*.test.js'",
     "all-cover": "npm run pretest && nyc --cache npm run all-test && nyc report --reporter=html && nyc report --reporter=lcov"
   },
   "devDependencies": {
@@ -63,7 +63,7 @@
     "intelli-espower-loader": "^1.0.1",
     "mocha": "^3.0.2",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",
-    "nyc": "^7.1.0",
+    "nyc": "^8.1.0",
     "power-assert": "^1.4.1",
     "proxyquire": "^1.7.10",
     "request": "^2.72.0",

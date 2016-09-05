@@ -26,22 +26,28 @@ on Google Cloud Platform.
   * [Google Cloud Node.js client library](#google-cloud-nodejs-client-library)
   * [Google API Node.js client library](#google-api-nodejs-client-library)
 * [Code samples](#code-samples)
-  * [Google App Engine (flexible environment)](#google-app-engine-flexible-environment)
-  * [Google BigQuery](#google-bigquery)
-  * [Google Compute Engine](#google-compute-engine)
-  * [Google Container Engine](#google-container-engine)
-  * [Google Cloud Datastore (Beta)](#google-cloud-datastore-beta)
-  * [Google Cloud Functions (Alpha)](#google-cloud-functions-alpha)
-  * [Google Cloud Natural Language API (Beta)](#google-cloud-natural-language-api-beta)
-  * [Google Cloud Prediction API](#google-cloud-prediction-api)
-  * [Google Cloud Pub/Sub](#google-cloud-pubsub)
-  * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
-  * [Google Cloud Storage](#google-cloud-storage)
-  * [Google Cloud Vision API](#google-cloud-vision-api)
-  * [Stackdriver Debugger (Beta)](#stackdriver-debugger-beta)
-  * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
-  * [Stackdriver Monitoring (Beta)](#stackdriver-monitoring-beta)
-  * [Stackdriver Trace (Beta)](#stackdriver-trace-beta)
+  * [**Compute**](#compute)
+    * [Google App Engine (Flexible Environment)](#google-app-engine-flexible-environment)
+    * [Google Compute Engine](#google-compute-engine)
+    * [Google Container Engine](#google-container-engine)
+    * [Google Cloud Functions (Alpha)](#google-cloud-functions-alpha)
+  * [**Storage and Databases**](#storage-and-databases)
+    * [Google Cloud Datastore (Beta)](#google-cloud-datastore-beta)
+    * [Google Cloud Storage](#google-cloud-storage)
+  * [**Big Data**](#big-data)
+    * [Google BigQuery](#google-bigquery)
+    * [Google Cloud Pub/Sub](#google-cloud-pubsub)
+  * [**Machine Learning**](#machine-learning)
+    * [Google Cloud Natural Language API (Beta)](#google-cloud-natural-language-api-beta)
+    * [Google Cloud Prediction API](#google-cloud-prediction-api)
+    * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
+    * [Google Translate API](#google-translate-api)
+    * [Google Cloud Vision API](#google-cloud-vision-api)
+  * [**Management Tools**](#management-tools)
+    * [Stackdriver Debugger (Beta)](#stackdriver-debugger-beta)
+    * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
+    * [Stackdriver Monitoring (Beta)](#stackdriver-monitoring-beta)
+    * [Stackdriver Trace (Beta)](#stackdriver-trace-beta)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
   * [LabelCat](#labelcat)
@@ -204,7 +210,9 @@ Node.js client library for Google APIs.
 
 ## Code samples
 
-### Google App Engine (flexible environment)
+### Compute
+
+#### Google App Engine (flexible environment)
 
 The [App Engine flexible environment][flex_docs] is based on Google Compute
 Engine and automatically scales your app up and down while balancing the load.
@@ -214,17 +222,7 @@ View the [App Engine flexible environment Node.js samples][flex_samples].
 [flex_docs]: https://cloud.google.com/appengine/docs/flexible/nodejs/
 [flex_samples]: appengine
 
-### Google BigQuery
-
-[BigQuery][bigquery_docs] is Google's fully managed, petabyte scale, low cost
-analytics data warehouse.
-
-View the [BigQuery Node.js samples][bigquery_samples].
-
-[bigquery_docs]: https://cloud.google.com/bigquery/docs/
-[bigquery_samples]: bigquery
-
-### Google Compute Engine
+#### Google Compute Engine
 
 [Compute Engine][compute_docs] lets you create and run virtual machines on
 Google infrastructure.
@@ -234,7 +232,7 @@ View the [Compute Engine Node.js samples][compute_samples].
 [compute_docs]: https://cloud.google.com/compute/docs/
 [compute_samples]: computeengine
 
-### Google Container Engine
+#### Google Container Engine
 
 [Container Engine][container_docs]: Run Docker containers on Google Cloud
 Platform, powered by Kubernetes.
@@ -244,17 +242,7 @@ View the [Container Engine Node.js samples][container_samples].
 [container_docs]: https://cloud.google.com/container-engine/docs/
 [container_samples]: containerengine
 
-### Google Cloud Datastore (Beta)
-
-[Cloud Datastore][datastore_docs] is a NoSQL document database built for
-automatic scaling, high performance, and ease of application development.
-
-View the [Cloud Datastore Node.js samples][datastore_samples].
-
-[datastore_docs]: https://cloud.google.com/datastore/docs/
-[datastore_samples]: datastore
-
-### Google Cloud Functions (Alpha)
+#### Google Cloud Functions (Alpha)
 
 [Sign up for the Alpha][functions_signup].
 
@@ -269,7 +257,53 @@ View the [Cloud Functions Node.js samples][functions_samples].
 [functions_docs]: https://cloud.google.com/functions/docs/
 [functions_samples]: functions
 
-### Google Cloud Natural Language API (Beta)
+### Storage and Databases
+
+#### Google Cloud Datastore (Beta)
+
+[Cloud Datastore][datastore_docs] is a NoSQL document database built for
+automatic scaling, high performance, and ease of application development.
+
+View the [Cloud Datastore Node.js samples][datastore_samples].
+
+[datastore_docs]: https://cloud.google.com/datastore/docs/
+[datastore_samples]: datastore
+
+#### Google Cloud Storage
+
+[Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
+amount of data at any time.
+
+View the [Cloud Storage Node.js samples][storage_samples].
+
+[storage_docs]: https://cloud.google.com/storage/docs/
+[storage_samples]: storage
+
+### Big Data
+
+#### Google BigQuery
+
+[BigQuery][bigquery_docs] is Google's fully managed, petabyte scale, low cost
+analytics data warehouse.
+
+View the [BigQuery Node.js samples][bigquery_samples].
+
+[bigquery_docs]: https://cloud.google.com/bigquery/docs/
+[bigquery_samples]: bigquery
+
+#### Google Cloud Pub/Sub
+
+[Cloud Pub/Sub][pubsub_docs] is a fully-managed real-time messaging service that
+allows you to send and receive messages between independent applications.
+
+View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
+
+[pubsub_docs]: https://cloud.google.com/pubsub/docs/
+[pubsub_samples]: pubsub
+
+### Machine Learning
+
+#### Google Cloud Natural Language API (Beta)
 
 [Cloud Natural Language API][language_docs] provides natural language
 understanding technologies to developers, including sentiment analysis, entity
@@ -281,7 +315,7 @@ View the [Cloud Natural Language API Node.js samples][language_samples].
 [language_docs]: https://cloud.google.com/natural-language/docs/
 [language_samples]: language
 
-### Google Cloud Prediction API
+#### Google Cloud Prediction API
 
 The [Cloud Prediction API][prediction_docs] provides a RESTful API to build
 Machine Learning models.
@@ -291,17 +325,7 @@ View the [Cloud Prediction API Node.js samples][prediction_samples].
 [prediction_docs]: https://cloud.google.com/prediction/docs/
 [prediction_samples]: prediction
 
-### Google Cloud Pub/Sub
-
-[Cloud Pub/Sub][pubsub_docs] is a fully-managed real-time messaging service that
-allows you to send and receive messages between independent applications.
-
-View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
-
-[pubsub_docs]: https://cloud.google.com/pubsub/docs/
-[pubsub_samples]: pubsub
-
-### Google Cloud Speech API (Beta)
+#### Google Cloud Speech API (Beta)
 
 The [Cloud Speech API][speech_docs] enables easy integration of Google speech
 recognition technologies into developer applications.
@@ -311,17 +335,17 @@ View the [Cloud Speech API Node.js samples][speech_samples].
 [speech_docs]: https://cloud.google.com/speech/
 [speech_samples]: speech
 
-### Google Cloud Storage
+#### Google Translate API
 
-[Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
-amount of data at any time.
+With the [Google Translate API][translate_docs], you can dynamically translate
+text between thousands of language pairs.
 
-View the [Cloud Storage Node.js samples][storage_samples].
+View the [Translate API Node.js samples][translate_samples].
 
-[storage_docs]: https://cloud.google.com/storage/docs/
-[storage_samples]: storage
+[translate_docs]: https://cloud.google.com/translate/docs/
+[translate_samples]: translate
 
-### Google Cloud Vision API
+#### Google Cloud Vision API
 
 The [Cloud Vision API][vision_docs] allows developers to easily integrate vision
 detection features within applications, including image labeling, face and
@@ -333,7 +357,9 @@ View the [Cloud Vision API Node.js samples][vision_samples].
 [vision_docs]: https://cloud.google.com/vision/docs/
 [vision_samples]: vision
 
-### Stackdriver Debugger (Beta)
+### Management Tools
+
+#### Stackdriver Debugger (Beta)
 
 [Stackdriver Debugger][debugger_docs] makes it easier to view the application
 state without adding logging statements.
@@ -343,7 +369,7 @@ View the [Stackdriver Debugger Node.js sample][debugger_sample].
 [debugger_docs]: https://cloud.google.com/debugger/docs/
 [debugger_sample]: debugger
 
-### Stackdriver Logging (Beta)
+#### Stackdriver Logging (Beta)
 
 [Stackdriver Logging][logging_docs] allows you to store, search, analyze,
 monitor, and alert on log data and events from Google Cloud Platform and Amazon
@@ -354,7 +380,7 @@ View the [Stackdriver Logging Node.js samples][logging_samples].
 [logging_docs]: https://cloud.google.com/logging/docs/
 [logging_samples]: logging
 
-### Stackdriver Monitoring (Beta)
+#### Stackdriver Monitoring (Beta)
 
 [Stackdriver Monitoring][monitoring_docs] collects metrics, events, and metadata
 from Google Cloud Platform, Amazon Web Services (AWS), hosted uptime probes,
@@ -366,7 +392,7 @@ View the [Stackdriver Monitoring Node.js samples][monitoring_samples].
 [monitoring_docs]: https://cloud.google.com/monitoring/docs/
 [monitoring_samples]: monitoring
 
-### Stackdriver Trace (Beta)
+#### Stackdriver Trace (Beta)
 
 [Stackdriver Trace][trace_docs] is a distributed tracing system for Google Cloud
 Platform that collects latency data from App Engine applications and displays it

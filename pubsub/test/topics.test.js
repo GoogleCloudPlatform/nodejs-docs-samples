@@ -15,14 +15,16 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 var topicName = 'foo';
+var message = { data: 'Hello, world!' };
 
 function getSample () {
+  var apiResponseMock = {};
   var topicMock = {
     get: sinon.stub(),
-    publish: sinon.stub().callsArgWith(1, null, [1]),
-    delete: sinon.stub().callsArgWith(0, null)
+    publish: sinon.stub().callsArgWith(1, null, [1], apiResponseMock),
+    delete: sinon.stub().callsArgWith(0, null, apiResponseMock)
   };
-  topicMock.get.callsArgWith(1, null, topicMock);
+  topicMock.get.callsArgWith(1, null, topicMock, apiResponseMock);
   var topicsMock = [
     {
       name: topicName
@@ -42,176 +44,162 @@ function getSample () {
       PubSub: PubSubMock,
       pubsub: pubsubMock,
       topics: topicsMock,
-      topic: topicMock
+      topic: topicMock,
+      apiResponse: apiResponseMock
     }
   };
 }
 
 describe('pubsub:topics', function () {
-  describe('create', function () {
+  describe('createTopic', function () {
     it('should create a topic', function () {
       var sample = getSample();
-      sample.program.create(topicName, function (err, topic) {
-        assert.ifError(err);
-        assert.strictEqual(topic, sample.mocks.topic);
-        assert(console.log.calledWith('Created topic: %s', topicName));
-      });
+      var callback = sinon.stub();
+
+      sample.program.createTopic(topicName, callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.topic);
+      assert.strictEqual(callback.firstCall.args[2], sample.mocks.apiResponse);
+      assert(console.log.calledWith('Created topic: %s', topicName));
     });
-    it('should require name', function () {
-      var sample = getSample();
-      sample.program.create(undefined, function (err, topic) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(topic, undefined);
-      });
-    });
+
     it('should handle error', function () {
       var sample = getSample();
-      var error = 'error';
-      sample.mocks.topic.get.callsArgWith(1, new Error(error));
-      sample.program.create(topicName, function (err) {
-        assert(err);
-        assert(err.message === 'error');
-      });
+      var error = new Error('error');
+      var callback = sinon.stub();
+      sample.mocks.topic.get.callsArgWith(1, error);
+
+      sample.program.createTopic(topicName, callback);
+
+      assert(callback.firstCall.args[0]);
+      assert(callback.firstCall.args[0].message === 'error');
     });
   });
 
-  describe('delete', function () {
+  describe('deleteTopic', function () {
     it('should delete a topic', function () {
       var sample = getSample();
-      sample.program.delete(topicName, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Deleted topic: %s', topicName));
-      });
+      var callback = sinon.stub();
+
+      sample.program.deleteTopic(topicName, callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.apiResponse);
+      assert(console.log.calledWith('Deleted topic: %s', topicName));
     });
-    it('should require name', function () {
-      var sample = getSample();
-      sample.program.delete(undefined, function (err, topic) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(topic, undefined);
-      });
-    });
+
     it('should handle error', function () {
       var sample = getSample();
-      var error = 'error';
-      sample.mocks.topic.delete.callsArgWith(0, new Error(error));
-      sample.program.delete(topicName, function (err) {
-        assert(err);
-        assert(err.message === 'error');
-      });
+      var error = new Error('error');
+      var callback = sinon.stub();
+      sample.mocks.topic.delete.callsArgWith(0, error);
+
+      sample.program.deleteTopic(topicName, callback);
+
+      assert(callback.firstCall.args[0]);
+      assert(callback.firstCall.args[0].message === 'error');
     });
   });
 
   describe('publish', function () {
     it('should publish a message', function () {
       var sample = getSample();
-      sample.program.publish(topicName, '{"data":"hello world"}', function (err, messageIds) {
-        assert.ifError(err);
-        assert.deepEqual(messageIds, [1]);
-        assert(console.log.calledWith('Published %d messages!', messageIds.length));
-      });
+      var callback = sinon.stub();
+
+      sample.program.publishMessage(topicName, message, callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert.deepEqual(callback.firstCall.args[1], [1]);
+      assert.strictEqual(callback.firstCall.args[2], sample.mocks.apiResponse);
+      assert(console.log.calledWith('Published %d message(s)!', callback.firstCall.args[1].length));
     });
-    it('should require name', function () {
-      var sample = getSample();
-      sample.program.publish(undefined, undefined, function (err, messageIds) {
-        assert(err);
-        assert(err.message = '"name" is required!');
-        assert.equal(messageIds, undefined);
-      });
-    });
-    it('should require message', function () {
-      var sample = getSample();
-      sample.program.publish(topicName, undefined, function (err, messageIds) {
-        assert(err);
-        assert(err.message = '"message" is required!');
-        assert.equal(messageIds, undefined);
-      });
-    });
-    it('should require a valid JSON string', function () {
-      var sample = getSample();
-      sample.program.publish(topicName, 'asdf', function (err, messageIds) {
-        assert(err);
-        assert(err.message = '"message" must be a valid JSON string!');
-        assert.equal(messageIds, undefined);
-      });
-    });
+
     it('should handle error', function () {
       var sample = getSample();
-      var error = 'error';
-      sample.mocks.topic.publish.callsArgWith(1, new Error(error));
-      sample.program.publish(topicName, '{"data":"hello world"}', function (err, messageIds) {
-        assert(err);
-        assert(err.message === 'error');
-        assert.equal(messageIds, undefined);
-      });
+      var error = new Error('error');
+      var callback = sinon.stub();
+      sample.mocks.topic.publish.callsArgWith(1, error);
+
+      sample.program.publishMessage(topicName, message, callback);
+
+      assert(callback.firstCall.args[0]);
+      assert(callback.firstCall.args[0].message === 'error');
+      assert.equal(callback.firstCall.args[1], undefined);
     });
   });
 
   describe('list', function () {
     it('should list topics', function () {
       var sample = getSample();
-      sample.program.list(function (err, topics) {
-        assert.ifError(err);
-        assert.strictEqual(topics, sample.mocks.topics);
-        assert(console.log.calledWith('Found %d topics!', topics.length));
-      });
+      var callback = sinon.stub();
+
+      sample.program.listTopics(callback);
+
+      assert.ifError(callback.firstCall.args[0]);
+      assert.strictEqual(callback.firstCall.args[1], sample.mocks.topics);
+      assert(console.log.calledWith('Found %d topics!', callback.firstCall.args[1].length));
     });
+
     it('should handle error', function () {
       var sample = getSample();
-      var error = 'error';
-      sample.mocks.pubsub.getTopics.callsArgWith(0, new Error(error));
-      sample.program.list(function (err, topics) {
-        assert(err);
-        assert(err.message === 'error');
-        assert.equal(topics, undefined);
-      });
-    });
-  });
+      var error = new Error('error');
+      var callback = sinon.stub();
+      sample.mocks.pubsub.getTopics.callsArgWith(0, error);
 
-  describe('printUsage', function () {
-    it('should print usage', function () {
-      var program = getSample().program;
+      sample.program.listTopics(callback);
 
-      program.printUsage();
-
-      assert(console.log.calledWith('Usage: node topics COMMAND [ARGS...]'));
-      assert(console.log.calledWith('\nCommands:\n'));
-      assert(console.log.calledWith('\tcreate TOPIC_NAME'));
-      assert(console.log.calledWith('\tdelete TOPIC_NAME'));
-      assert(console.log.calledWith('\tpublish TOPIC_NAME MESSAGE'));
-      assert(console.log.calledWith('\tlist'));
-      assert(console.log.calledWith('\nExamples:\n'));
-      assert(console.log.calledWith('\tnode topics create my-topic'));
-      assert(console.log.calledWith('\tnode topics list'));
-      assert(console.log.calledWith('\tnode topics publish my-topic \'{"data":"Hello world!"}\''));
-      assert(console.log.calledWith('\tnode topics delete my-topic'));
+      assert(callback.firstCall.args[0]);
+      assert(callback.firstCall.args[0].message === 'error');
+      assert.equal(callback.firstCall.args[1], undefined);
     });
   });
 
   describe('main', function () {
-    it('should call the right commands', function () {
+    it('should call createTopic', function () {
       var program = getSample().program;
 
-      sinon.stub(program, 'create');
-      program.main(['create']);
-      assert(program.create.calledOnce);
+      sinon.stub(program, 'createTopic');
+      program.main(['create', topicName]);
+      assert.equal(program.createTopic.calledOnce, true);
+      assert.deepEqual(program.createTopic.firstCall.args.slice(0, -1), [topicName]);
+    });
 
-      sinon.stub(program, 'delete');
-      program.main(['delete']);
-      assert(program.delete.calledOnce);
+    it('should call deleteTopic', function () {
+      var program = getSample().program;
 
-      sinon.stub(program, 'list');
+      sinon.stub(program, 'deleteTopic');
+      program.main(['delete', topicName]);
+      assert.equal(program.deleteTopic.calledOnce, true);
+      assert.deepEqual(program.deleteTopic.firstCall.args.slice(0, -1), [topicName]);
+    });
+
+    it('should call listTopics', function () {
+      var program = getSample().program;
+
+      sinon.stub(program, 'listTopics');
       program.main(['list']);
-      assert(program.list.calledOnce);
+      assert.equal(program.listTopics.calledOnce, true);
+      assert.deepEqual(program.listTopics.firstCall.args.slice(0, -1), []);
+    });
 
-      sinon.stub(program, 'publish');
-      program.main(['publish']);
-      assert(program.publish.calledOnce);
+    it('should call publishMessage', function () {
+      var program = getSample().program;
 
-      sinon.stub(program, 'printUsage');
-      program.main(['--help']);
-      assert(program.printUsage.calledOnce);
+      sinon.stub(program, 'publishMessage');
+      program.main(['publish', topicName, '{}']);
+      assert.equal(program.publishMessage.calledOnce, true);
+      assert.deepEqual(program.publishMessage.firstCall.args.slice(0, -1), [topicName, {}]);
+    });
+
+    it('should call publishMessage and validate message', function () {
+      var program = getSample().program;
+
+      sinon.stub(program, 'publishMessage');
+      program.main(['publish', topicName, '{asdf}']);
+      assert.equal(program.publishMessage.calledOnce, false);
+      assert.equal(console.error.calledOnce, true);
+      assert.deepEqual(console.error.firstCall.args, ['"message" must be a valid JSON string!']);
     });
   });
 });

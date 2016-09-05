@@ -65,7 +65,7 @@ describe('storage:buckets', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.bucket.create = sinon.stub().callsArgWith(0, error);
@@ -96,7 +96,7 @@ describe('storage:buckets', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.storage.getBuckets = sinon.stub().callsArgWith(0, error);
@@ -128,7 +128,7 @@ describe('storage:buckets', function () {
     });
 
     it('should handle error', function () {
-      var error = 'error';
+      var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
       sample.mocks.bucket.delete = sinon.stub().callsArgWith(0, error);
@@ -147,8 +147,9 @@ describe('storage:buckets', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'createBucket');
-      program.main(['create', 'my-bucket']);
-      assert(program.createBucket.calledOnce);
+      program.main(['create', bucketName]);
+      assert.equal(program.createBucket.calledOnce, true);
+      assert.deepEqual(program.createBucket.firstCall.args.slice(0, -1), [bucketName]);
     });
 
     it('should call listBuckets', function () {
@@ -156,15 +157,17 @@ describe('storage:buckets', function () {
 
       sinon.stub(program, 'listBuckets');
       program.main(['list']);
-      assert(program.listBuckets.calledOnce);
+      assert.equal(program.listBuckets.calledOnce, true);
+      assert.deepEqual(program.listBuckets.firstCall.args.slice(0, -1), []);
     });
 
     it('should call deleteBucket', function () {
       var program = getSample().program;
 
       sinon.stub(program, 'deleteBucket');
-      program.main(['delete', 'my-bucket']);
-      assert(program.deleteBucket.calledOnce);
+      program.main(['delete', bucketName]);
+      assert.equal(program.deleteBucket.calledOnce, true);
+      assert.deepEqual(program.deleteBucket.firstCall.args.slice(0, -1), [bucketName]);
     });
   });
 });

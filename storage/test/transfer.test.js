@@ -338,6 +338,7 @@ describe('storage:transfer', function () {
         var sample = getSample();
         var callback = sinon.stub();
 
+        // Test that all operations get listed
         sample.program.listTransferOperations(undefined, callback);
 
         assert.equal(sample.mocks.storagetransfer.transferOperations.list.calledOnce, true);
@@ -351,6 +352,7 @@ describe('storage:transfer', function () {
         assert.equal(console.log.calledOnce, true);
         assert.deepEqual(console.log.firstCall.args, ['Found %d operations!', 1]);
 
+        // Test that operations for a specific job get listed
         sample.program.listTransferOperations(jobName, callback);
 
         assert.equal(sample.mocks.storagetransfer.transferOperations.list.calledTwice, true);
@@ -364,6 +366,7 @@ describe('storage:transfer', function () {
         assert.equal(console.log.calledTwice, true);
         assert.deepEqual(console.log.secondCall.args, ['Found %d operations!', 1]);
 
+        // Test that operations for a specific job get listed when the API response with just an object
         sample.mocks.storagetransfer.transferOperations.list.yields(null, {});
         sample.program.listTransferOperations(jobName, callback);
 

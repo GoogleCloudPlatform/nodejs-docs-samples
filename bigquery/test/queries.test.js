@@ -156,6 +156,7 @@ describe('bigquery:query', function () {
       assert.equal(example.mocks.job.getMetadata.calledOnce, true);
       assert.deepEqual(example.mocks.job.getMetadata.firstCall.args.slice(0, -1), []);
       assert.equal(example.mocks.job.getQueryResults.calledOnce, true);
+      assert.deepEqual(example.mocks.job.getQueryResults.firstCall.args.slice(0, -1), []);
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [null, example.mocks.natality]);
       assert.equal(console.log.calledTwice, true);

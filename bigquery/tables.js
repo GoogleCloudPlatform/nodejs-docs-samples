@@ -13,62 +13,41 @@
 
 'use strict';
 
-// [START all]
 // [START setup]
 // By default, gcloud will authenticate using the service account file specified
 // by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
 // project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
+// https://googlecloudplatform.github.io/google-cloud-node/#/docs/guides/authentication
 var BigQuery = require('@google-cloud/bigquery');
-var Storage = require('@google-cloud/storage');
-
-// Instantiate the BigQuery and Storage clients
-var bigquery = BigQuery();
-var storage = Storage();
 // [END setup]
 
-// [START create_table]
-/**
- * Creates a new table with the given name in the specified dataset.
- *
- * @param {object} options Configuration options.
- * @param {string} options.dataset The dataset of the new table.
- * @param {string} options.table The name for the new table.
- * @param {string|object} [options.schema] The schema for the new table.
- * @param {function} cb The callback function.
- */
-function createTable (options, callback) {
-  // var table = bigquery.dataset(options.dataset).table(options.table);
-  var dataset = bigquery.dataset(options.dataset);
-  var config = {};
-  if (options.schema) {
-    config.schema = options.schema;
-  }
+function createTable (datasetId, tableId, schema, callback) {
+  var bigquery = BigQuery();
+  var dataset = bigquery.dataset(datasetId);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery/table
-  dataset.createTable(options.table, config, function (err, table) {
+  // For all options, see https://cloud.google.com/bigquery/docs/reference/v2/tables#resource
+  var options = {
+    schema: schema
+  };
+
+  // Create a new table in the given dataset
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/dataset?method=createTable
+  dataset.createTable(tableId, options, function (err, table, apiResponse) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Created table: %s', options.table);
-    return callback(null, table);
+    console.log('Created table %s in %s', tableId, datasetId);
+    return callback(null, table, apiResponse);
   });
 }
-// [END create_table]
 
-// [START list_tables]
-/**
- * List tables in the specified dataset.
- *
- * @param {object} options Configuration options.
- * @param {string} options.dataset The dataset of the new table.
- * @param {Function} callback Callback function.
- */
-function listTables (options, callback) {
-  var dataset = bigquery.dataset(options.dataset);
+function listTables (datasetId, callback) {
+  var bigquery = BigQuery();
+  var dataset = bigquery.dataset(datasetId);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery/dataset
+  // List the tables in the specified dataset
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/dataset?method=getTables
   dataset.getTables(function (err, tables) {
     if (err) {
       return callback(err);
@@ -78,14 +57,14 @@ function listTables (options, callback) {
     return callback(null, tables);
   });
 }
-// [END list_tables]
 
-function browseRows (dataset, table, callback) {
+function browseRows (datasetId, tableId, callback) {
   var bigquery = BigQuery();
-  var tableObj = bigquery.dataset(dataset).table(table);
+  var table = bigquery.dataset(datasetId).table(tableId);
 
+  // Retreive rows from the specified table
   // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=getRows
-  tableObj.getRows(function (err, rows) {
+  table.getRows(function (err, rows) {
     if (err) {
       return callback(err);
     }
@@ -95,38 +74,30 @@ function browseRows (dataset, table, callback) {
   });
 }
 
-// [START delete_table]
-/**
- * Deletes a table with the specified name from the specified dataset.
- *
- * @param {object} options Configuration options.
- * @param {string} options.dataset The dataset of the new table.
- * @param {string} options.table The name for the new table.
- * @param {function} cb The callback function.
- */
-function deleteTable (options, callback) {
-  var table = bigquery.dataset(options.dataset).table(options.table);
+function deleteTable (datasetId, tableId, callback) {
+  var bigquery = BigQuery();
+  var table = bigquery.dataset(datasetId).table(tableId);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery/table
+  // Delete the specified table
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=delete
   table.delete(function (err) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Deleted table: %s', options.table);
+    console.log('Deleted table %s from %s', tableId, datasetId);
     return callback(null);
   });
 }
-// [END delete_table]
 
-function copyTable (srcDataset, srcTable, destDataset, destTable, callback) {
+function copyTable (srcDatasetId, srcTableId, destDatasetId, destTableId, callback) {
   var bigquery = BigQuery();
 
-  var srcTableObj = bigquery.dataset(srcDataset).table(srcTable);
-  var destTableObj = bigquery.dataset(destDataset).table(destTable);
+  var srcTable = bigquery.dataset(srcDatasetId).table(srcTableId);
+  var destTable = bigquery.dataset(destDatasetId).table(destTableId);
 
   // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=copy
-  srcTableObj.copy(destTableObj, function (err, job) {
+  srcTable.copy(destTable, function (err, job, apiResponse) {
     if (err) {
       return callback(err);
     }
@@ -136,37 +107,17 @@ function copyTable (srcDataset, srcTable, destDataset, destTable, callback) {
       .on('error', callback)
       .on('complete', function (metadata) {
         console.log('Completed job: %s', job.id);
-        return callback(null, metadata);
+        return callback(null, metadata, apiResponse);
       });
   });
 }
 
-// [START import_file]
-/**
- * Load a csv file into a BigQuery table.
- *
- * @param {string} file Path to file to load.
- * @param {string} dataset The dataset.
- * @param {string} table The table.
- * @param {string} [format] The format of the file to be imported.
- * @param {function} callback The callback function.
- */
-function importFile (options, callback) {
-  var file;
-  if (options.bucket) {
-    // File is in Google Cloud Storage, e.g. gs://my-bucket/file.csv
-    file = storage.bucket(options.bucket).file(options.file);
-  } else {
-    // File is local, e.g. ./data/file.csv
-    file = options.file;
-  }
-  var table = bigquery.dataset(options.dataset).table(options.table);
-  var config = {
-    format: options.format
-  };
+function importLocalFile (datasetId, tableId, fileName, callback) {
+  var bigquery = BigQuery();
+  var table = bigquery.dataset(datasetId).table(tableId);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery/table?method=import
-  table.import(file, config, function (err, job) {
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=import
+  table.import(fileName, function (err, job, apiResponse) {
     if (err) {
       console.log(err.stack);
       return callback(err);
@@ -177,36 +128,53 @@ function importFile (options, callback) {
       .on('error', callback)
       .on('complete', function (metadata) {
         console.log('Completed job: %s', job.id);
-        return callback(null, metadata);
+        return callback(null, metadata, apiResponse);
       });
   });
 }
-// [END import_file]
 
+// [START import_file_from_gcs]
+var Storage = require('@google-cloud/storage');
+
+function importFileFromGCS (datasetId, tableId, bucketName, fileName, callback) {
+  var bigquery = BigQuery();
+  var storage = Storage();
+
+  var table = bigquery.dataset(datasetId).table(tableId);
+  var file = storage.bucket(bucketName).file(fileName);
+
+  // Import the file from Google Cloud Storage
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=import
+  table.import(file, function (err, job, apiResponse) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('Started job: %s', job.id);
+    job
+      .on('error', callback)
+      .on('complete', function (metadata) {
+        console.log('Completed job: %s', job.id);
+        return callback(null, metadata, apiResponse);
+      });
+  });
+}
+// [END import_file_from_gcs]
+
+/* eslint-disable no-redeclare */
 // [START export_table_to_gcs]
-/**
- * Export a table from BigQuery to Google Cloud Storage.
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket A Google Cloud Storage bucket to use for storage.
- * @param {string} options.file The file to save results to within Google Cloud Storage.
- * @param {string} options.dataset The ID of the dataset to use.
- * @param {string} options.table The ID of the project to use.
- * @param {string} options.format Format to export as - either 'CSV', 'JSON', or 'AVRO'.
- * @param {boolean} [options.gzip] Optional. Whether or not data should be compressed using GZIP.
- * @param {function} callback Callback function to receive query results.
- */
-function exportTableToGCS (options, callback) {
-  var gcsFileObj = storage.bucket(options.bucket).file(options.file);
-  var table = bigquery.dataset(options.dataset).table(options.table);
-  var config = {
-    format: options.format,
-    gzip: options.gzip
-  };
+var Storage = require('@google-cloud/storage');
 
-  // Export table
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery/table?method=export
-  table.export(gcsFileObj, config, function (err, job) {
+function exportTableToGCS (datasetId, tableId, bucketName, fileName, callback) {
+  var bigquery = BigQuery();
+  var storage = Storage();
+
+  var table = bigquery.dataset(datasetId).table(tableId);
+  var file = storage.bucket(bucketName).file(fileName);
+
+  // Export a table to Google Cloud Storage
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=export
+  table.export(file, function (err, job, apiResponse) {
     if (err) {
       return callback(err);
     }
@@ -216,33 +184,27 @@ function exportTableToGCS (options, callback) {
       .on('error', callback)
       .on('complete', function (metadata) {
         console.log('Completed job: %s', job.id);
-        return callback(null, metadata);
+        return callback(null, metadata, apiResponse);
       });
   });
 }
 // [END export_table_to_gcs]
+/* eslint-enable no-redeclare */
 
-// [START insert_rows_as_stream]
-/**
- * Insert rows (as a stream) into a BigQuery table.
- * @param {object} options Configuration options.
- * @param {array} options.rows An array of rows to insert into a BigQuery table.
- * @param {string} options.dataset The ID of the dataset containing the target table.
- * @param {string} options.table The ID of the table to insert rows into.
- * @param {function} callback Callback function to receive query status.
- */
-function insertRowsAsStream (options, callback) {
-  var table = bigquery.dataset(options.dataset).table(options.table);
-  table.insert(options.rows, function (err, insertErrors) {
+function insertRowsAsStream (datasetId, tableId, rows, callback) {
+  var bigquery = BigQuery();
+  var table = bigquery.dataset(datasetId).table(tableId);
+
+  // Insert rows into a table
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=insert
+  table.insert(rows, function (err, insertErrors, apiResponse) {
     if (err) {
       return callback(err);
     }
-    console.log('Inserted %d rows!', options.rows.length);
-    return callback(null, insertErrors);
+    console.log('Inserted %d row(s)!', rows.length);
+    return callback(null, insertErrors, apiResponse);
   });
 }
-// [END insert_rows_as_stream]
-// [END all]
 
 // The command-line program
 var cli = require('yargs');
@@ -254,7 +216,8 @@ var program = module.exports = {
   listTables: listTables,
   browseRows: browseRows,
   deleteTable: deleteTable,
-  importFile: importFile,
+  importLocalFile: importLocalFile,
+  importFileFromGCS: importFileFromGCS,
   exportTableToGCS: exportTableToGCS,
   insertRowsAsStream: insertRowsAsStream,
   copyTable: copyTable,
@@ -266,61 +229,39 @@ var program = module.exports = {
 
 cli
   .demand(1)
-  .command('create <dataset> <table>', 'Create a new table in the specified dataset.', {}, function (options) {
-    program.createTable(utils.pick(options, ['dataset', 'table']), utils.makeHandler());
+  .command('create <datasetId> <tableId>', 'Create a new table with the specified ID in the specified dataset.', {}, function (options) {
+    program.createTable(options.datasetId, options.tableId, utils.makeHandler(false));
   })
-  .command('list <dataset>', 'List tables in the specified dataset.', {}, function (options) {
-    program.listTables(utils.pick(options, ['dataset']), utils.makeHandler(true, 'id'));
+  .command('list <datasetId>', 'List tables in the specified dataset.', {}, function (options) {
+    program.listTables(options.datasetId, utils.makeHandler(true, 'id'));
   })
-  .command('delete <dataset> <table>', 'Delete a table in the specified dataset.', {}, function (options) {
-    program.deleteTable(utils.pick(options, ['dataset', 'table']), utils.makeHandler());
+  .command('delete <datasetId> <tableId>', 'Delete the specified table from the specified dataset.', {}, function (options) {
+    program.deleteTable(options.datasetId, options.tableId, utils.makeHandler(false));
   })
-  .command('copy <srcDataset> <srcTable> <destDataset> <destTable>',
-    'Make a copy of an existing table.', {},
-    function (options) {
-      program.copyTable(
-        options.srcDataset,
-        options.srcTable,
-        options.destDataset,
-        options.destTable,
-        utils.makeHandler()
-      );
-    }
-  )
-  .command('browse <dataset> <table>', 'List the rows in a BigQuery table.', {}, function (options) {
-    program.browseRows(options.dataset, options.table, utils.makeHandler());
+  .command('copy <srcDatasetId> <srcTableId> <destDatasetId> <destTableId>', 'Make a copy of an existing table.', {}, function (options) {
+    program.copyTable(options.srcDatasetId, options.srcTableId, options.destDatasetId, options.destTableId, utils.makeHandler(false));
   })
-  .command('import <dataset> <table> <file>', 'Import data from a local file or a Google Cloud Storage file into BigQuery.', {
-    bucket: {
+  .command('browse <datasetId> <tableId>', 'List the rows from the specified table.', {}, function (options) {
+    program.browseRows(options.datasetId, options.tableId, utils.makeHandler());
+  })
+  .command('import <datasetId> <tableId> <fileName>', 'Import data from a local file or a Google Cloud Storage file into the specified table.', {
+    bucketName: {
       alias: 'b',
       requiresArg: true,
-      description: 'Specify Cloud Storage bucket.',
+      description: 'Specify a Cloud Storage bucket.',
       type: 'string'
-    },
-    format: {
-      alias: 'f',
-      requiresArg: true,
-      type: 'string',
-      choices: ['JSON', 'CSV', 'AVRO']
     }
   }, function (options) {
-    program.importFile(utils.pick(options, ['dataset', 'table', 'file', 'format', 'bucket']), utils.makeHandler());
-  })
-  .command('export <dataset> <table> <bucket> <file>', 'Export a table from BigQuery to Google Cloud Storage.', {
-    format: {
-      alias: 'f',
-      requiresArg: true,
-      type: 'string',
-      choices: ['JSON', 'CSV', 'AVRO']
-    },
-    gzip: {
-      type: 'boolean',
-      description: 'Whether to compress the exported table using gzip. Defaults to false.'
+    if (options.bucketName) {
+      program.importFileFromGCS(options.datasetId, options.tableId, options.bucketName, options.fileName, utils.makeHandler(false));
+    } else {
+      program.importLocalFile(options.datasetId, options.tableId, options.fileName, utils.makeHandler(false));
     }
-  }, function (options) {
-    program.exportTableToGCS(utils.pick(options, ['dataset', 'table', 'bucket', 'file', 'format', 'gzip']), utils.makeHandler());
   })
-  .command('insert <dataset> <table> <json_or_file>',
+  .command('export <datasetId> <tableId> <bucketName> <fileName>', 'Export a table from BigQuery to Google Cloud Storage.', {}, function (options) {
+    program.exportTableToGCS(options.datasetId, options.tableId, options.bucketName, options.fileName, utils.makeHandler(false));
+  })
+  .command('insert <datasetId> <tableId> <json_or_file>',
     'Insert a JSON array (as a string or newline-delimited file) into a BigQuery table.', {},
     function (options) {
       var content;
@@ -339,8 +280,7 @@ cli
         throw new Error('"json_or_file" (or the file it points to) is not a valid JSON array.');
       }
 
-      options.rows = rows;
-      program.insertRowsAsStream(utils.pick(options, ['rows', 'dataset', 'table']), utils.makeHandler());
+      program.insertRowsAsStream(options.datasetId, options.tableId, rows, utils.makeHandler(false));
     }
   )
   .example(

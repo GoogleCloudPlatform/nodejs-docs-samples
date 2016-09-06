@@ -14,16 +14,15 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru();
-var bucket = 'bucket';
-var file = 'file';
+var bucketName = 'bucket';
+var fileName = 'file';
 var jobId = 'job';
-var dataset = 'dataset';
-var table = 'table';
-var srcDataset = dataset;
-var srcTable = table;
-var destDataset = dataset + '_dest';
-var destTable = table + '_dest';
-var format = 'JSON';
+var datasetId = 'dataset';
+var tableId = 'table';
+var srcDatasetId = datasetId;
+var srcTableId = tableId;
+var destDatasetId = datasetId + '_dest';
+var destTableId = tableId + '_dest';
 var schema = 'schema';
 var jsonArray = [
   { name: 'foo', age: 27 },
@@ -36,9 +35,10 @@ var invalidJsonString = 'INVALID';
 var errorList = ['error 1', 'error 2'];
 
 function getSample () {
+  var apiResponseMock = {};
   var tableMocks = [
     {
-      id: table
+      id: tableId
     }
   ];
   var bucketMock = {
@@ -56,16 +56,16 @@ function getSample () {
   };
   jobMock.on.withArgs('complete').yields(metadataMock);
   var tableMock = {
-    export: sinon.stub().yields(null, jobMock),
-    copy: sinon.stub().yields(null, jobMock),
-    import: sinon.stub().yields(null, jobMock),
-    insert: sinon.stub().yields(null, errorList),
+    export: sinon.stub().yields(null, jobMock, apiResponseMock),
+    copy: sinon.stub().yields(null, jobMock, apiResponseMock),
+    import: sinon.stub().yields(null, jobMock, apiResponseMock),
+    insert: sinon.stub().yields(null, errorList, apiResponseMock),
     getRows: sinon.stub().yields(null, jsonArray),
     delete: sinon.stub().yields(null)
   };
   var datasetMock = {
     table: sinon.stub().returns(tableMock),
-    createTable: sinon.stub().yields(null, tableMocks[0]),
+    createTable: sinon.stub().yields(null, tableMocks[0], apiResponseMock),
     getTables: sinon.stub().yields(null, tableMocks)
   };
   var bigqueryMock = {
@@ -98,7 +98,8 @@ function getSample () {
       bucket: bucketMock,
       dataset: datasetMock,
       fs: fsMock,
-      tables: tableMocks
+      tables: tableMocks,
+      apiResponse: apiResponseMock
     }
   };
 }
@@ -108,38 +109,29 @@ describe('bigquery:tables', function () {
     it('should create a table', function () {
       var sample = getSample();
       var callback = sinon.stub();
-      var options = {
-        dataset: dataset,
-        table: table
-      };
 
-      sample.program.createTable(options, callback);
+      sample.program.createTable(datasetId, tableId, undefined, callback);
 
       assert.equal(sample.mocks.dataset.createTable.calledOnce, true);
-      assert.deepEqual(sample.mocks.dataset.createTable.firstCall.args.slice(0, -1), [options.table, {}]);
+      assert.deepEqual(sample.mocks.dataset.createTable.firstCall.args.slice(0, -1), [tableId, { schema: undefined }]);
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.tables[0]]);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.tables[0], sample.mocks.apiResponse]);
       assert.equal(console.log.calledOnce, true);
-      assert.deepEqual(console.log.firstCall.args, ['Created table: %s', options.table]);
+      assert.deepEqual(console.log.firstCall.args, ['Created table %s in %s', tableId, datasetId]);
     });
 
     it('should create a table with a schema', function () {
       var sample = getSample();
       var callback = sinon.stub();
-      var options = {
-        dataset: dataset,
-        table: table,
-        schema: schema
-      };
 
-      sample.program.createTable(options, callback);
+      sample.program.createTable(datasetId, tableId, schema, callback);
 
       assert.equal(sample.mocks.dataset.createTable.calledOnce, true);
-      assert.deepEqual(sample.mocks.dataset.createTable.firstCall.args.slice(0, -1), [options.table, { schema: schema }]);
+      assert.deepEqual(sample.mocks.dataset.createTable.firstCall.args.slice(0, -1), [tableId, { schema: schema }]);
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.tables[0]]);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.tables[0], sample.mocks.apiResponse]);
       assert.equal(console.log.calledOnce, true);
-      assert.deepEqual(console.log.firstCall.args, ['Created table: %s', options.table]);
+      assert.deepEqual(console.log.firstCall.args, ['Created table %s in %s', tableId, datasetId]);
     });
 
     it('should handle error', function () {
@@ -148,7 +140,7 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       sample.mocks.dataset.createTable.yields(error);
 
-      sample.program.createTable({}, callback);
+      sample.program.createTable(datasetId, tableId, undefined, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -159,11 +151,8 @@ describe('bigquery:tables', function () {
     it('should list tables', function () {
       var sample = getSample();
       var callback = sinon.stub();
-      var options = {
-        dataset: dataset
-      };
 
-      sample.program.listTables(options, callback);
+      sample.program.listTables(datasetId, callback);
 
       assert.equal(sample.mocks.dataset.getTables.calledOnce, true);
       assert.deepEqual(sample.mocks.dataset.getTables.firstCall.args.slice(0, -1), []);
@@ -191,7 +180,7 @@ describe('bigquery:tables', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.browseRows(dataset, table, callback);
+      sample.program.browseRows(datasetId, tableId, callback);
 
       assert.equal(sample.mocks.table.getRows.calledOnce, true);
       assert.deepEqual(sample.mocks.table.getRows.firstCall.args.slice(0, -1), []);
@@ -207,7 +196,7 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       sample.mocks.table.getRows.yields(error);
 
-      sample.program.browseRows(dataset, table, callback);
+      sample.program.browseRows(datasetId, tableId, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -218,19 +207,15 @@ describe('bigquery:tables', function () {
     it('should delete a table', function () {
       var sample = getSample();
       var callback = sinon.stub();
-      var options = {
-        dataset: dataset,
-        table: table
-      };
 
-      sample.program.deleteTable(options, callback);
+      sample.program.deleteTable(datasetId, tableId, callback);
 
       assert.equal(sample.mocks.table.delete.calledOnce, true);
       assert.deepEqual(sample.mocks.table.delete.firstCall.args.slice(0, -1), []);
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [null]);
       assert.equal(console.log.calledOnce, true);
-      assert.deepEqual(console.log.firstCall.args, ['Deleted table: %s', options.table]);
+      assert.deepEqual(console.log.firstCall.args, ['Deleted table %s from %s', tableId, datasetId]);
     });
 
     it('should handle error', function () {
@@ -239,51 +224,24 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       sample.mocks.table.delete.yields(error);
 
-      sample.program.deleteTable({}, callback);
+      sample.program.deleteTable(datasetId, tableId, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
-  describe('importFile', function () {
+  describe('importLocalFile', function () {
     it('should import a local file', function () {
       var sample = getSample();
       var callback = sinon.stub();
-      var options = {
-        dataset: dataset,
-        table: table,
-        file: file
-      };
 
-      sample.program.importFile(options, callback);
+      sample.program.importLocalFile(datasetId, tableId, fileName, callback);
 
       assert.equal(sample.mocks.table.import.calledOnce, true);
-      assert.deepEqual(sample.mocks.table.import.firstCall.args.slice(0, -1), [options.file, { format: undefined }]);
+      assert.deepEqual(sample.mocks.table.import.firstCall.args.slice(0, -1), [fileName]);
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
-      assert.equal(console.log.calledTwice, true);
-      assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
-      assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
-    });
-
-    it('should import a GCS file', function () {
-      var sample = getSample();
-      var callback = sinon.stub();
-      var options = {
-        dataset: dataset,
-        table: table,
-        file: file,
-        bucket: bucket,
-        format: format
-      };
-
-      sample.program.importFile(options, callback);
-
-      assert.equal(sample.mocks.table.import.calledOnce, true);
-      assert.deepEqual(sample.mocks.table.import.firstCall.args.slice(0, -1), [sample.mocks.file, { format: format }]);
-      assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata, sample.mocks.apiResponse]);
       assert.equal(console.log.calledTwice, true);
       assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
       assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
@@ -295,7 +253,36 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       sample.mocks.table.import.yields(error);
 
-      sample.program.importFile({}, callback);
+      sample.program.importLocalFile(datasetId, tableId, fileName, callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
+  describe('importFileFromGCS', function () {
+    it('should import a GCS file', function () {
+      var sample = getSample();
+      var callback = sinon.stub();
+
+      sample.program.importFileFromGCS(datasetId, tableId, bucketName, fileName, callback);
+
+      assert.equal(sample.mocks.table.import.calledOnce, true);
+      assert.deepEqual(sample.mocks.table.import.firstCall.args.slice(0, -1), [sample.mocks.file]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata, sample.mocks.apiResponse]);
+      assert.equal(console.log.calledTwice, true);
+      assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
+      assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var sample = getSample();
+      var callback = sinon.stub();
+      sample.mocks.table.import.yields(error);
+
+      sample.program.importFileFromGCS(datasetId, tableId, bucketName, fileName, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -307,7 +294,7 @@ describe('bigquery:tables', function () {
       var sample = getSample();
       var callback = sinon.stub();
 
-      sample.program.copyTable(srcDataset, srcTable, destDataset, destTable, callback);
+      sample.program.copyTable(srcDatasetId, srcTableId, destDatasetId, destTableId, callback);
 
       assert.equal(sample.mocks.table.copy.calledOnce, true);
       assert.deepEqual(
@@ -315,7 +302,7 @@ describe('bigquery:tables', function () {
         [sample.mocks.table]
       );
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata, sample.mocks.apiResponse]);
       assert.equal(console.log.calledTwice, true);
       assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
       assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
@@ -327,7 +314,7 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       sample.mocks.table.copy.yields(error);
 
-      sample.program.copyTable(srcDataset, srcTable, destDataset, destTable, callback);
+      sample.program.copyTable(srcDatasetId, srcTableId, destDatasetId, destTableId, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -337,22 +324,14 @@ describe('bigquery:tables', function () {
   describe('exportTableToGCS', function () {
     it('should export to a table', function () {
       var sample = getSample();
-      var options = {
-        bucket: bucket,
-        file: file,
-        dataset: dataset,
-        table: table,
-        format: format,
-        gzip: true
-      };
       var callback = sinon.stub();
 
-      sample.program.exportTableToGCS(options, callback);
+      sample.program.exportTableToGCS(datasetId, tableId, bucketName, fileName, callback);
 
       assert.equal(sample.mocks.table.export.calledOnce, true);
-      assert.deepEqual(sample.mocks.table.export.firstCall.args.slice(0, -1), [sample.mocks.file, { format: format, gzip: true }]);
+      assert.deepEqual(sample.mocks.table.export.firstCall.args.slice(0, -1), [sample.mocks.file]);
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata]);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.metadata, sample.mocks.apiResponse]);
       assert.equal(console.log.calledTwice, true);
       assert.deepEqual(console.log.firstCall.args, ['Started job: %s', sample.mocks.job.id]);
       assert.deepEqual(console.log.secondCall.args, ['Completed job: %s', sample.mocks.job.id]);
@@ -364,7 +343,7 @@ describe('bigquery:tables', function () {
       var callback = sinon.stub();
       example.mocks.table.export.yields(error);
 
-      example.program.exportTableToGCS({ format: format }, callback);
+      example.program.exportTableToGCS(datasetId, tableId, bucketName, fileName, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
@@ -372,44 +351,41 @@ describe('bigquery:tables', function () {
   });
 
   describe('insertRowsAsStream', function () {
-    var options = {
-      file: file,
-      dataset: dataset,
-      table: table,
-      rows: jsonArray
-    };
-
     it('should stream-insert rows into a table', function () {
-      var program = getSample().program;
+      var sample = getSample();
       var callback = sinon.stub();
 
-      program.insertRowsAsStream(options, callback);
+      sample.program.insertRowsAsStream(datasetId, tableId, jsonArray, callback);
 
+      assert.equal(sample.mocks.table.insert.calledOnce, true);
+      assert.deepEqual(sample.mocks.table.insert.firstCall.args.slice(0, -1), [jsonArray]);
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, errorList]);
+      assert.deepEqual(callback.firstCall.args, [null, errorList, sample.mocks.apiResponse]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Inserted %d row(s)!', jsonArray.length]);
     });
 
     it('should handle API errors', function () {
-      var example = getSample();
+      var sample = getSample();
       var callback = sinon.stub();
       var error = new Error('error');
-      example.mocks.table.insert.yields(error);
+      sample.mocks.table.insert.yields(error);
 
-      example.program.insertRowsAsStream(options, callback);
+      sample.program.insertRowsAsStream(datasetId, tableId, jsonArray, callback);
 
       assert.equal(callback.calledOnce, true);
       assert.deepEqual(callback.firstCall.args, [error]);
     });
 
     it('should handle (per-row) insert errors', function () {
-      var example = getSample();
+      var sample = getSample();
       var callback = sinon.stub();
-      example.mocks.table.insert.yields(null, errorList);
+      sample.mocks.table.insert.yields(null, errorList, sample.mocks.apiResponse);
 
-      example.program.insertRowsAsStream(options, callback);
+      sample.program.insertRowsAsStream(datasetId, tableId, jsonArray, callback);
 
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, errorList]);
+      assert.deepEqual(callback.firstCall.args, [null, errorList, sample.mocks.apiResponse]);
     });
   });
 
@@ -418,140 +394,93 @@ describe('bigquery:tables', function () {
       var program = getSample().program;
       program.createTable = sinon.stub();
 
-      program.main(['create', dataset, table]);
+      program.main(['create', datasetId, tableId]);
       assert.equal(program.createTable.calledOnce, true);
-      assert.deepEqual(program.createTable.firstCall.args.slice(0, -1), [{ dataset: dataset, table: table }]);
+      assert.deepEqual(program.createTable.firstCall.args.slice(0, -1), [datasetId, tableId]);
     });
 
     it('should call listTables', function () {
       var program = getSample().program;
       program.listTables = sinon.stub();
 
-      program.main(['list', dataset]);
+      program.main(['list', datasetId]);
       assert.equal(program.listTables.calledOnce, true);
-      assert.deepEqual(program.listTables.firstCall.args.slice(0, -1), [{ dataset: dataset }]);
+      assert.deepEqual(program.listTables.firstCall.args.slice(0, -1), [datasetId]);
     });
 
     it('should call browseRows', function () {
       var program = getSample().program;
       program.browseRows = sinon.stub();
 
-      program.main(['browse', dataset, table]);
+      program.main(['browse', datasetId, tableId]);
       assert.equal(program.browseRows.calledOnce, true);
-      assert.deepEqual(program.browseRows.firstCall.args.slice(0, -1), [dataset, table]);
+      assert.deepEqual(program.browseRows.firstCall.args.slice(0, -1), [datasetId, tableId]);
     });
 
     it('should call deleteTable', function () {
       var program = getSample().program;
       program.deleteTable = sinon.stub();
 
-      program.main(['delete', dataset, table]);
+      program.main(['delete', datasetId, tableId]);
       assert.equal(program.deleteTable.calledOnce, true);
-      assert.deepEqual(program.deleteTable.firstCall.args.slice(0, -1), [{ dataset: dataset, table: table }]);
+      assert.deepEqual(program.deleteTable.firstCall.args.slice(0, -1), [datasetId, tableId]);
     });
 
-    it('should call importFile', function () {
+    it('should call importLocalFile', function () {
       var program = getSample().program;
-      program.importFile = sinon.stub();
+      program.importLocalFile = sinon.stub();
 
-      program.main(['import', dataset, table, file]);
-      assert.equal(program.importFile.calledOnce, true);
-      assert.deepEqual(program.importFile.firstCall.args.slice(0, -1), [{
-        dataset: dataset,
-        table: table,
-        file: file,
-        bucket: undefined,
-        format: undefined
-      }]);
+      program.main(['import', datasetId, tableId, fileName]);
+      assert.equal(program.importLocalFile.calledOnce, true);
+      assert.deepEqual(program.importLocalFile.firstCall.args.slice(0, -1), [datasetId, tableId, fileName]);
+    });
+
+    it('should call importFileFromGCS', function () {
+      var program = getSample().program;
+      program.importFileFromGCS = sinon.stub();
+
+      program.main(['import', datasetId, tableId, fileName, '-b', bucketName]);
+      assert.equal(program.importFileFromGCS.calledOnce, true);
+      assert.deepEqual(program.importFileFromGCS.firstCall.args.slice(0, -1), [datasetId, tableId, bucketName, fileName]);
     });
 
     it('should call copyTable', function () {
       var program = getSample().program;
       program.copyTable = sinon.stub();
 
-      program.main(['copy', srcDataset, srcTable, destDataset, destTable]);
+      program.main(['copy', srcDatasetId, srcTableId, destDatasetId, destTableId]);
       assert.equal(program.copyTable.calledOnce, true);
-      assert.deepEqual(program.copyTable.firstCall.args.slice(0, -1),
-        [srcDataset, srcTable, destDataset, destTable]
-      );
+      assert.deepEqual(program.copyTable.firstCall.args.slice(0, -1), [srcDatasetId, srcTableId, destDatasetId, destTableId]);
     });
 
     it('should call exportTableToGCS', function () {
       var program = getSample().program;
       program.exportTableToGCS = sinon.stub();
 
-      program.main(['export', dataset, table, bucket, file]);
+      program.main(['export', datasetId, tableId, bucketName, fileName]);
       assert.equal(program.exportTableToGCS.calledOnce, true);
-      assert.deepEqual(program.exportTableToGCS.firstCall.args.slice(0, -1), [{
-        dataset: dataset,
-        table: table,
-        file: file,
-        bucket: bucket,
-        format: undefined,
-        gzip: false
-      }]);
+      assert.deepEqual(program.exportTableToGCS.firstCall.args.slice(0, -1), [datasetId, tableId, bucketName, fileName]);
     });
 
     it('should call insertRowsAsStream', function () {
       var program = getSample().program;
       program.insertRowsAsStream = sinon.stub();
 
-      program.main(['insert', dataset, table, validJsonFile]);
+      program.main(['insert', datasetId, tableId, validJsonFile]);
 
       assert.equal(program.insertRowsAsStream.calledOnce, true);
-      assert.deepEqual(
-        program.insertRowsAsStream.firstCall.args.slice(0, -1),
-        [{ rows: jsonArray, dataset: dataset, table: table }]
-      );
-    });
-
-    it('should recognize --gzip flag', function () {
-      var program = getSample().program;
-      program.exportTableToGCS = sinon.stub();
-
-      program.main(['export', dataset, table, bucket, file, '--gzip']);
-      assert.equal(program.exportTableToGCS.calledOnce, true);
-      assert.deepEqual(program.exportTableToGCS.firstCall.args.slice(0, -1), [{
-        dataset: dataset,
-        table: table,
-        file: file,
-        bucket: bucket,
-        format: undefined,
-        gzip: true
-      }]);
-    });
-
-    it('should recognize --format flag', function () {
-      var program = getSample().program;
-      program.exportTableToGCS = sinon.stub();
-
-      program.main(['export', dataset, table, bucket, file, '--format', 'CSV']);
-      assert.equal(program.exportTableToGCS.calledOnce, true);
-      assert.deepEqual(program.exportTableToGCS.firstCall.args.slice(0, -1), [{
-        dataset: dataset,
-        table: table,
-        file: file,
-        bucket: bucket,
-        format: 'CSV',
-        gzip: false
-      }]);
+      assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [datasetId, tableId, jsonArray]);
     });
 
     describe('insert', function () {
-      var options = {
-        dataset: dataset,
-        table: table,
-        rows: jsonArray
-      };
-
       it('should accept valid JSON files', function () {
         var program = getSample().program;
         program.insertRowsAsStream = sinon.stub();
 
-        program.main(['insert', dataset, table, validJsonFile]);
+        program.main(['insert', datasetId, tableId, validJsonFile]);
 
         assert.equal(program.insertRowsAsStream.calledOnce, true);
-        assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [options]);
+        assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [datasetId, tableId, jsonArray]);
       });
 
       it('should reject files with invalid JSON', function () {
@@ -559,7 +488,7 @@ describe('bigquery:tables', function () {
         program.insertRowsAsStream = sinon.stub();
 
         assert.throws(
-          function () { program.main(['insert', dataset, table, invalidJsonFile]); },
+          function () { program.main(['insert', datasetId, tableId, invalidJsonFile]); },
           /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
         );
         assert.equal(program.insertRowsAsStream.called, false);
@@ -570,7 +499,7 @@ describe('bigquery:tables', function () {
         program.insertRowsAsStream = sinon.stub();
 
         assert.throws(
-          function () { program.main(['insert', dataset, table, '']); },
+          function () { program.main(['insert', datasetId, tableId, '']); },
           /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
         );
         assert.equal(program.insertRowsAsStream.called, false);
@@ -580,9 +509,9 @@ describe('bigquery:tables', function () {
         var program = getSample().program;
         program.insertRowsAsStream = sinon.stub();
 
-        program.main(['insert', dataset, table, validJsonString]);
+        program.main(['insert', datasetId, tableId, validJsonString]);
         assert.equal(program.insertRowsAsStream.calledOnce, true);
-        assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [options]);
+        assert.deepEqual(program.insertRowsAsStream.firstCall.args.slice(0, -1), [datasetId, tableId, jsonArray]);
       });
 
       it('should reject invalid JSON strings', function () {
@@ -590,7 +519,7 @@ describe('bigquery:tables', function () {
         program.insertRowsAsStream = sinon.stub();
 
         assert.throws(
-          function () { program.main(['insert', dataset, table, invalidJsonString]); },
+          function () { program.main(['insert', datasetId, tableId, invalidJsonString]); },
           /"json_or_file" \(or the file it points to\) is not a valid JSON array\./
         );
         assert.equal(program.insertRowsAsStream.called, false);

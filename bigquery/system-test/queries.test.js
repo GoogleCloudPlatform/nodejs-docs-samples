@@ -13,47 +13,32 @@
 
 'use strict';
 
-var example = require('../queries');
+var program = require('../queries');
 
-describe('bigquery:query', function () {
-  describe('sync_query', function () {
+var sqlQuery = 'SELECT * FROM `publicdata.samples.natality` LIMIT 5;';
+
+describe('bigquery:queries', function () {
+  describe('syncQuery', function () {
     it('should fetch data given a query', function (done) {
-      example.syncQuery('SELECT * FROM publicdata:samples.natality LIMIT 5;',
-        function (err, data) {
-          assert.ifError(err);
-          assert.notEqual(data, null);
-          assert(Array.isArray(data));
-          assert(data.length === 5);
-          done();
-        }
-      );
+      program.syncQuery(sqlQuery, function (err, data) {
+        assert.equal(err, null);
+        assert(Array.isArray(data));
+        assert(data.length === 5);
+
+        done();
+      });
     });
   });
 
-  describe('async_query', function () {
+  describe('asyncQuery', function () {
     it('should submit a job and fetch its results', function (done) {
-      example.asyncQuery('SELECT * FROM publicdata:samples.natality LIMIT 5;',
-        function (err, job) {
-          assert.ifError(err);
-          assert.notEqual(job.id, null);
+      program.asyncQuery(sqlQuery, function (err, data) {
+        assert.equal(err, null);
+        assert(Array.isArray(data));
+        assert(data.length === 5);
 
-          var poller = function (tries) {
-            example.asyncPoll(job.id, function (err, data) {
-              if (!err || tries === 0) {
-                assert.ifError(err);
-                assert.notEqual(data, null);
-                assert(Array.isArray(data));
-                assert(data.length === 5);
-                done();
-              } else {
-                setTimeout(function () { poller(tries - 1); }, 1000);
-              }
-            });
-          };
-
-          poller(5);
-        }
-      );
+        done();
+      });
     });
   });
 });

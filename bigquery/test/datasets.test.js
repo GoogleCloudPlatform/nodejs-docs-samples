@@ -18,6 +18,7 @@ var datasetId = 'foo';
 var projectId = process.env.GCLOUD_PROJECT;
 
 function getSample () {
+  var apiResponseMock = {};
   var tableMock = {
     get: sinon.stub(),
     metadata: {
@@ -29,7 +30,7 @@ function getSample () {
   var datasetsMock = [{ id: datasetId }];
   var datasetMock = {
     getTables: sinon.stub().yields(null, tablesMock),
-    create: sinon.stub().yields(null, datasetsMock[0]),
+    create: sinon.stub().yields(null, datasetsMock[0], apiResponseMock),
     delete: sinon.stub().yields(null)
   };
   var bigqueryMock = {
@@ -48,7 +49,8 @@ function getSample () {
       datasets: datasetsMock,
       dataset: datasetMock,
       tables: tablesMock,
-      table: tableMock
+      table: tableMock,
+      apiResponse: apiResponseMock
     }
   };
 }
@@ -64,7 +66,7 @@ describe('bigquery:datasets', function () {
       assert.equal(sample.mocks.dataset.create.calledOnce, true);
       assert.deepEqual(sample.mocks.dataset.create.firstCall.args.slice(0, -1), []);
       assert.equal(callback.calledOnce, true);
-      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.datasets[0]]);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.datasets[0], sample.mocks.apiResponse]);
       assert.equal(console.log.calledOnce, true);
       assert.deepEqual(console.log.firstCall.args, ['Created dataset: %s', datasetId]);
     });

@@ -24,11 +24,11 @@ function getSample () {
     }
   ];
   var bucketMock = {
-    create: sinon.stub().callsArgWith(0, null, bucketsMock[0]),
-    delete: sinon.stub().callsArgWith(0, null)
+    create: sinon.stub().yields(null, bucketsMock[0]),
+    delete: sinon.stub().yields(null)
   };
   var storageMock = {
-    getBuckets: sinon.stub().callsArgWith(0, null, bucketsMock, null, bucketsMock),
+    getBuckets: sinon.stub().yields(null, bucketsMock, null, bucketsMock),
     bucket: sinon.stub().returns(bucketMock)
   };
   var StorageMock = sinon.stub().returns(storageMock);
@@ -55,27 +55,24 @@ describe('storage:buckets', function () {
 
       sample.program.createBucket(bucketName, callback);
 
-      assert(sample.mocks.bucket.create.calledOnce, 'create called once');
-      assert.equal(sample.mocks.bucket.create.firstCall.args.length, 1, 'create received 1 argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.buckets[0], 'callback received bucket');
-      assert(console.log.calledWith('Created bucket: %s', bucketName));
+      assert.equal(sample.mocks.bucket.create.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.create.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.buckets[0]]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Created bucket: %s', bucketName]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
-      sample.mocks.bucket.create = sinon.stub().callsArgWith(0, error);
+      sample.mocks.bucket.create.yields(error);
 
       sample.program.createBucket(bucketName, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -86,27 +83,24 @@ describe('storage:buckets', function () {
 
       sample.program.listBuckets(callback);
 
-      assert(sample.mocks.storage.getBuckets.calledOnce, 'getBuckets called once');
-      assert.equal(sample.mocks.storage.getBuckets.firstCall.args.length, 1, 'getBuckets received 1 argument');
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 2, 'callback received 2 arguments');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.buckets, 'callback received buckets');
-      assert(console.log.calledWith('Found %d bucket(s)!', sample.mocks.buckets.length));
+      assert.equal(sample.mocks.storage.getBuckets.calledOnce, true);
+      assert.deepEqual(sample.mocks.storage.getBuckets.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, sample.mocks.buckets]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Found %d bucket(s)!', sample.mocks.buckets.length]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
-      sample.mocks.storage.getBuckets = sinon.stub().callsArgWith(0, error);
+      sample.mocks.storage.getBuckets.yields(error);
 
       sample.program.listBuckets(callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 
@@ -117,28 +111,24 @@ describe('storage:buckets', function () {
 
       sample.program.deleteBucket(bucketName, callback);
 
-      assert(sample.mocks.bucket.delete.calledOnce, 'delete called once');
-      assert.equal(sample.mocks.bucket.delete.firstCall.args.length, 1, 'delete received 1 argument');
-      assert.equal(sample.mocks.storage.bucket.firstCall.args[0], bucketName);
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
-      assert.strictEqual(callback.firstCall.args[1], sample.mocks.aclObject, 'callback received acl object');
-      assert(console.log.calledWith('Deleted bucket: %s', bucketName));
+      assert.equal(sample.mocks.bucket.delete.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.delete.firstCall.args.slice(0, -1), []);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Deleted bucket: %s', bucketName]);
     });
 
     it('should handle error', function () {
       var error = new Error('error');
       var sample = getSample();
       var callback = sinon.stub();
-      sample.mocks.bucket.delete = sinon.stub().callsArgWith(0, error);
+      sample.mocks.bucket.delete.yields(error);
 
       sample.program.deleteBucket(bucketName, callback);
 
-      assert(callback.calledOnce, 'callback called once');
-      assert.equal(callback.firstCall.args.length, 1, 'callback received 1 argument');
-      assert(callback.firstCall.args[0], 'callback received error');
-      assert.equal(callback.firstCall.args[0].message, error.message, 'error has correct message');
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
     });
   });
 

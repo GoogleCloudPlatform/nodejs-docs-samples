@@ -49,7 +49,7 @@ dependencies:
     - functions/helloworld/node_modules/
     - functions/http/node_modules/
     - functions/log/node_modules/
-    - functions/ocr/node_modules/
+    - functions/ocr/app/node_modules/
     - functions/pubsub/node_modules/
     - functions/sendgrid/node_modules/
     - functions/slack/node_modules/

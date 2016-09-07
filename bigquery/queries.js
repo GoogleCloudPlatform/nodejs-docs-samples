@@ -13,6 +13,7 @@
 
 'use strict';
 
+// [START complete]
 // [START setup]
 // By default, gcloud will authenticate using the service account file specified
 // by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use the
@@ -66,6 +67,7 @@ function queryShakespeare (callback) {
     return callback(null, rows);
   });
 }
+// [END complete]
 
 function syncQuery (sqlQuery, callback) {
   var bigquery = BigQuery();

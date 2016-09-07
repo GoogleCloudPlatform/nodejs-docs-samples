@@ -94,7 +94,9 @@ describe('storage:files', function () {
         assert.ifError(err);
         assert.equal(file.name, movedFileName);
         assert(console.log.calledWith('Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile));
-        done();
+
+        // Listing is eventually consistent, give the index time to update
+        setTimeout(done, 5000);
       });
     });
   });
@@ -125,7 +127,9 @@ describe('storage:files', function () {
         assert.ifError(err);
         assert.equal(file.name, copiedFileName);
         assert(console.log.calledWith('Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile));
-        done();
+
+        // Listing is eventually consistent, give the index time to update
+        setTimeout(done, 5000);
       });
     });
   });

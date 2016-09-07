@@ -54,13 +54,8 @@ function installForDirectory(directory, callback) {
     async: true,
     cwd: path.join(__dirname, '../', directory)
   }, function (err) {
-    exec('npm rebuild', {
-      async: true,
-      cwd: path.join(__dirname, '../', directory)
-    }, function (err) {
-      console.log(directory + '...done');
-      callback(err);
-    });
+    console.log(directory + '...done');
+    callback(err);
   });
 }
 

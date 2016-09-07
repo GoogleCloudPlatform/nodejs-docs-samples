@@ -1,4 +1,4 @@
-# Google Cloud Endpoints sample for Google App Engine
+# Google Cloud Endpoints sample for Google App Engine Flexible Environment
 
 This sample demonstrates how to use Google Cloud Endpoints on Google App Engine Flexible Environment using Node.js.
 

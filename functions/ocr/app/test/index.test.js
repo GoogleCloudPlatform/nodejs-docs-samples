@@ -41,37 +41,38 @@ function getSample () {
   var bucket = {
     file: sinon.stub().returns(file)
   };
-  var pubsub = {
+  var pubsubMock = {
     topic: sinon.stub().returns(topic)
   };
-  var storage = {
+  var storageMock = {
     bucket: sinon.stub().returns(bucket)
   };
-  var vision = {
+  var visionMock = {
     detectText: sinon.stub().callsArg(1)
   };
-  var translate = {
+  var translateMock = {
     detect: sinon.stub().callsArg(1)
   };
-  var gcloudMock = {
-    pubsub: sinon.stub().returns(pubsub),
-    storage: sinon.stub().returns(storage),
-    vision: sinon.stub().returns(vision),
-    translate: sinon.stub().returns(translate)
-  };
+  var PubsubMock = sinon.stub().returns(pubsubMock);
+  var StorageMock = sinon.stub().returns(storageMock);
+  var VisionMock = sinon.stub().returns(visionMock);
+  var TranslateMock = sinon.stub().returns(translateMock);
+
   return {
     sample: proxyquire('../', {
-      'google-cloud': gcloudMock,
+      '@google-cloud/translate': TranslateMock,
+      '@google-cloud/vision': VisionMock,
+      '@google-cloud/pubsub': PubsubMock,
+      '@google-cloud/storage': StorageMock,
       './config.json': config
     }),
     mocks: {
-      gcloud: gcloudMock,
-      pubsub: pubsub,
-      storage: storage,
+      pubsub: pubsubMock,
+      storage: storageMock,
       bucket: bucket,
       file: file,
-      vision: vision,
-      translate: translate,
+      vision: visionMock,
+      translate: translateMock,
       topic: topic
     }
   };

@@ -18,10 +18,10 @@ var path = require('path');
 
 require('shelljs/global');
 
-// Install NPM dependencies, in up to 5 directories at a time
+// Install NPM dependencies, in up to 7 directories at a time
 var queue = async.queue(function (directory, callback) {
   installForDirectory(directory, callback);
-}, 5);
+}, 7);
 
 queueDirectories('appengine');
 queue.push('bigquery');
@@ -54,8 +54,13 @@ function installForDirectory(directory, callback) {
     async: true,
     cwd: path.join(__dirname, '../', directory)
   }, function (err) {
-    console.log(directory + '...done');
-    callback(err);
+    exec('npm rebuild', {
+      async: true,
+      cwd: path.join(__dirname, '../', directory)
+    }, function (err) {
+      console.log(directory + '...done');
+      callback(err);
+    });
   });
 }
 

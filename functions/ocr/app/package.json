@@ -9,8 +9,11 @@
     "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "async": "^2.0.1",
-    "google-cloud": "^0.38.3"
+    "@google-cloud/pubsub": "^0.2.0",
+    "@google-cloud/storage": "^0.1.1",
+    "@google-cloud/translate": "^0.2.0",
+    "@google-cloud/vision": "^0.2.0",
+    "async": "^2.0.1"
   },
   "devDependencies": {
     "mocha": "^3.0.2"

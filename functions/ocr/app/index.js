@@ -16,16 +16,15 @@
 // [START ocr_setup]
 var async = require('async');
 var config = require('./config.json');
-var gcloud = require('google-cloud');
 
 // Get a reference to the Pub/Sub component
-var pubsub = gcloud.pubsub();
+var pubsub = require('@google-cloud/pubsub')();
 // Get a reference to the Cloud Storage component
-var storage = gcloud.storage();
+var storage = require('@google-cloud/storage')();
 // Get a reference to the Cloud Vision API component
-var vision = gcloud.vision();
+var vision = require('@google-cloud/vision')();
 // Get a reference to the Translate API component
-var translate = gcloud.translate({
+var translate = require('@google-cloud/translate')({
   key: config.TRANSLATE_API_KEY
 });
 // [END ocr_setup]

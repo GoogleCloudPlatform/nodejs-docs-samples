@@ -18,10 +18,10 @@ var path = require('path');
 
 require('shelljs/global');
 
-// Uninstall NPM dependencies, in up to 5 directories at a time
+// Uninstall NPM dependencies, in up to 7 directories at a time
 var queue = async.queue(function (directory, callback) {
   uninstallForDirectory(directory, callback);
-}, 5);
+}, 7);
 
 queueDirectories('appengine');
 queue.push('bigquery');

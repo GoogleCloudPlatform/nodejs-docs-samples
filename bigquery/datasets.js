@@ -13,79 +13,50 @@
 
 'use strict';
 
-// [START all]
 // [START setup]
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/latest/guides/authentication
 var BigQuery = require('@google-cloud/bigquery');
-
-// Instantiate the bigquery client
-var bigquery = BigQuery();
 // [END setup]
 
-// Control-flow helper library
-var async = require('async');
+function createDataset (datasetId, callback) {
+  var bigquery = BigQuery();
+  var dataset = bigquery.dataset(datasetId);
 
-// [START create_dataset]
-/**
- * List datasets in the authenticated project.
- *
- * @param {string} name The name for the new dataset.
- * @param {function} callback The callback function.
- */
-function createDataset (name, callback) {
-  var dataset = bigquery.dataset(name);
-
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery
-  dataset.create(function (err, dataset) {
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/dataset?method=create
+  dataset.create(function (err, dataset, apiResponse) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Created dataset: %s', name);
-    return callback(null, dataset);
+    console.log('Created dataset: %s', datasetId);
+    return callback(null, dataset, apiResponse);
   });
 }
-// [END create_dataset]
 
-// [START delete_dataset]
-/**
- * List datasets in the authenticated project.
- *
- * @param {string} name The name for the new dataset.
- * @param {function} callback The callback function.
- */
-function deleteDataset (name, callback) {
-  var dataset = bigquery.dataset(name);
+function deleteDataset (datasetId, callback) {
+  var bigquery = BigQuery();
+  var dataset = bigquery.dataset(datasetId);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/dataset?method=delete
   dataset.delete(function (err) {
     if (err) {
       return callback(err);
     }
 
-    console.log('Deleted dataset: %s', name);
+    console.log('Deleted dataset: %s', datasetId);
     return callback(null);
   });
 }
-// [END delete_dataset]
 
-// [START list_datasets]
-/**
- * List datasets in the authenticated project.
- *
- * @param {string} projectId The project ID to use.
- * @param {function} callback The callback function.
- */
 function listDatasets (projectId, callback) {
-  // Instantiate a bigquery client
   var bigquery = BigQuery({
     projectId: projectId
   });
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery?method=getDatasets
   bigquery.getDatasets(function (err, datasets) {
     if (err) {
       return callback(err);
@@ -95,16 +66,11 @@ function listDatasets (projectId, callback) {
     return callback(null, datasets);
   });
 }
-// [END list_datasets]
 
 // [START get_dataset_size]
-/**
- * Calculate the size of the specified dataset.
- *
- * @param {string} datasetId The ID of the dataset.
- * @param {string} projectId The project ID.
- * @param {function} callback The callback function.
- */
+// Control-flow helper library
+var async = require('async');
+
 function getDatasetSize (datasetId, projectId, callback) {
   // Instantiate a bigquery client
   var bigquery = BigQuery({
@@ -112,7 +78,7 @@ function getDatasetSize (datasetId, projectId, callback) {
   });
   var dataset = bigquery.dataset(datasetId);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/bigquery/latest/bigquery/dataset
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/dataset?method=getTables
   dataset.getTables(function (err, tables) {
     if (err) {
       return callback(err);
@@ -120,6 +86,7 @@ function getDatasetSize (datasetId, projectId, callback) {
 
     return async.map(tables, function (table, cb) {
       // Fetch more detailed info for each table
+      // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=get
       table.get(function (err, tableInfo) {
         if (err) {
           return cb(err);
@@ -142,7 +109,6 @@ function getDatasetSize (datasetId, projectId, callback) {
   });
 }
 // [END get_dataset_size]
-// [END all]
 
 // The command-line program
 var cli = require('yargs');
@@ -161,13 +127,13 @@ var program = module.exports = {
 
 cli
   .demand(1)
-  .command('create <name>', 'Create a new dataset.', {}, function (options) {
-    program.createDataset(options.name, makeHandler());
+  .command('create <datasetId>', 'Create a new dataset with the specified ID.', {}, function (options) {
+    program.createDataset(options.datasetId, makeHandler());
   })
-  .command('delete <datasetId>', 'Delete the specified dataset.', {}, function (options) {
+  .command('delete <datasetId>', 'Delete the dataset with the specified ID.', {}, function (options) {
     program.deleteDataset(options.datasetId, makeHandler());
   })
-  .command('list', 'List datasets in the authenticated project.', {}, function (options) {
+  .command('list', 'List datasets in the specified project.', {}, function (options) {
     program.listDatasets(options.projectId, makeHandler(true, 'id'));
   })
   .command('size <datasetId>', 'Calculate the size of the specified dataset.', {}, function (options) {
@@ -181,13 +147,13 @@ cli
     description: 'Optionally specify the project ID to use.',
     global: true
   })
-  .example('node $0 create my_dataset', 'Create a new dataset named "my_dataset".')
-  .example('node $0 delete my_dataset', 'Delete "my_dataset".')
+  .example('node $0 create my_dataset', 'Create a new dataset with the ID "my_dataset".')
+  .example('node $0 delete my_dataset', 'Delete a dataset identified as "my_dataset".')
   .example('node $0 list', 'List datasets.')
-  .example('node $0 list -p bigquery-public-data', 'List datasets in a project other than the authenticated project.')
+  .example('node $0 list -p bigquery-public-data', 'List datasets in the "bigquery-public-data" project.')
   .example('node $0 size my_dataset', 'Calculate the size of "my_dataset".')
   .example('node $0 size hacker_news -p bigquery-public-data', 'Calculate the size of "bigquery-public-data:hacker_news".')
-  .wrap(100)
+  .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/bigquery/docs');
 

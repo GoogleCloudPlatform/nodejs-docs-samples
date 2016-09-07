@@ -36,11 +36,14 @@ describe('bigquery:datasets', function () {
 
   describe('createDataset', function () {
     it('should create a new dataset', function (done) {
-      program.createDataset(datasetId, function (err, dataset) {
-        assert.ifError(err);
-        assert(dataset, 'new dataset was created');
+      program.createDataset(datasetId, function (err, dataset, apiResponse) {
+        assert.equal(err, null);
+        assert.notEqual(dataset, undefined);
         assert.equal(dataset.id, datasetId);
-        assert(console.log.calledWith('Created dataset: %s', datasetId));
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Created dataset: %s', datasetId]);
+        assert.notEqual(apiResponse, undefined);
+
         done();
       });
     });
@@ -49,15 +52,16 @@ describe('bigquery:datasets', function () {
   describe('listDatasets', function () {
     it('should list datasets', function (done) {
       program.listDatasets(projectId, function (err, datasets) {
-        assert.ifError(err);
-        assert(Array.isArray(datasets));
-        assert(datasets.length > 0);
-        assert(datasets[0].id);
+        assert.equal(err, null);
+        assert.equal(Array.isArray(datasets), true);
+        assert.equal(datasets.length > 0, true);
         var matchingDatasets = datasets.filter(function (dataset) {
           return dataset.id === datasetId;
         });
         assert.equal(matchingDatasets.length, 1, 'newly created dataset is in list');
-        assert(console.log.calledWith('Found %d dataset(s)!', datasets.length));
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Found %d dataset(s)!', datasets.length]);
+
         done();
       });
     });
@@ -66,8 +70,11 @@ describe('bigquery:datasets', function () {
   describe('getDatasetSize', function () {
     it('should return the size of a dataset', function (done) {
       program.getDatasetSize(datasetId, projectId, function (err, size) {
-        assert.ifError(err);
+        assert.equal(err, null);
         assert.equal(typeof size, 'number', 'should have received a number');
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Size of %s: %d MB', datasetId, size]);
+
         done();
       });
     });
@@ -76,8 +83,10 @@ describe('bigquery:datasets', function () {
   describe('deleteDataset', function () {
     it('should list datasets', function (done) {
       program.deleteDataset(datasetId, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Deleted dataset: %s', datasetId));
+        assert.equal(err, null);
+        assert.equal(console.log.calledOnce, true);
+        assert.deepEqual(console.log.firstCall.args, ['Deleted dataset: %s', datasetId]);
+
         done();
       });
     });

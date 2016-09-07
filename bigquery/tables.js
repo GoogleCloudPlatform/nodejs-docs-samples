@@ -62,7 +62,7 @@ function browseRows (datasetId, tableId, callback) {
   var bigquery = BigQuery();
   var table = bigquery.dataset(datasetId).table(tableId);
 
-  // Retreive rows from the specified table
+  // Retrieve rows from the specified table
   // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery/table?method=getRows
   table.getRows(function (err, rows) {
     if (err) {

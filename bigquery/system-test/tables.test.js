@@ -101,8 +101,8 @@ describe.only('bigquery:tables', function () {
     it('should list tables', function (done) {
       program.listTables(options.datasetId, function (err, tables) {
         assert.equal(err, null);
-        assert(Array.isArray(tables));
-        assert(tables.length > 0);
+        assert.equal(Array.isArray(tables), true);
+        assert.equal(tables.length > 0, true);
         var matchingTables = tables.filter(function (table) {
           return table.id === options.tableId;
         });
@@ -119,7 +119,7 @@ describe.only('bigquery:tables', function () {
     it('should import local file', function (done) {
       program.importLocalFile(options.datasetId, options.tableId, options.localFilePath, function (err, metadata, apiResponse) {
         assert.equal(err, null);
-        assert(metadata, 'got metadata');
+        assert.notEqual(metadata, undefined);
         assert.deepEqual(metadata.status, {
           state: 'DONE'
         }, 'job completed');
@@ -135,7 +135,6 @@ describe.only('bigquery:tables', function () {
       program.exportTableToGCS(options.datasetId, options.tableId, options.bucketName, options.fileName, function (err, metadata, apiResponse) {
         assert.equal(err, null);
         assert.notEqual(metadata, undefined);
-        assert.notEqual(metadata.status, undefined);
         assert.deepEqual(metadata.status, { state: 'DONE' });
         assert.notEqual(apiResponse, undefined);
 

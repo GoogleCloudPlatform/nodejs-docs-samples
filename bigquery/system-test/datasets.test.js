@@ -53,8 +53,8 @@ describe('bigquery:datasets', function () {
     it('should list datasets', function (done) {
       program.listDatasets(projectId, function (err, datasets) {
         assert.equal(err, null);
-        assert(Array.isArray(datasets));
-        assert(datasets.length > 0);
+        assert.equal(Array.isArray(datasets), true);
+        assert.equal(datasets.length > 0, true);
         var matchingDatasets = datasets.filter(function (dataset) {
           return dataset.id === datasetId;
         });

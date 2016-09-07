@@ -15,6 +15,11 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 
+var shakespeareQuery = 'SELECT\n' +
+  '  TOP(corpus, 10) as title,\n' +
+  '  COUNT(*) as unique_words\n' +
+  'FROM `publicdata.samples.shakespeare`;';
+
 function getSample () {
   var natalityMock = [
     { year: '2001' },
@@ -60,6 +65,56 @@ function getSample () {
 }
 
 describe('bigquery:query', function () {
+  describe('printExample', function () {
+    it('should return results', function () {
+      var example = getSample();
+
+      example.program.printExample([
+        {
+          foo: 'bar',
+          beep: 'boop'
+        }
+      ]);
+
+      assert.equal(console.log.calledTwice, true);
+      assert.deepEqual(console.log.firstCall.args, ['Query Results:']);
+      assert.deepEqual(console.log.secondCall.args, ['foo: bar\nbeep: boop']);
+    });
+  });
+
+  describe('queryShakespeare', function () {
+    it('should query shakespeare', function () {
+      var example = getSample();
+      var callback = sinon.stub();
+      var mockResult = [];
+      example.mocks.bigquery.query.yields(null, mockResult);
+
+      example.program.queryShakespeare(callback);
+
+      assert.equal(example.mocks.bigquery.query.calledOnce, true);
+      assert.deepEqual(example.mocks.bigquery.query.firstCall.args.slice(0, -1), [{
+        query: shakespeareQuery,
+        useLegacySql: false
+      }]);
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [null, mockResult]);
+      assert.equal(console.log.calledOnce, true);
+      assert.deepEqual(console.log.firstCall.args, ['Query Results:']);
+    });
+
+    it('should handle error', function () {
+      var error = new Error('error');
+      var example = getSample();
+      var callback = sinon.stub();
+      example.mocks.bigquery.query.yields(error);
+
+      example.program.queryShakespeare(callback);
+
+      assert.equal(callback.calledOnce, true);
+      assert.deepEqual(callback.firstCall.args, [error]);
+    });
+  });
+
   describe('syncQuery', function () {
     var query = 'foo';
 

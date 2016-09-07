@@ -22,8 +22,8 @@ describe('bigquery:queries', function () {
     it('should fetch data given a query', function (done) {
       program.syncQuery(sqlQuery, function (err, data) {
         assert.equal(err, null);
-        assert(Array.isArray(data));
-        assert(data.length === 5);
+        assert.equal(Array.isArray(data), true);
+        assert.equal(data.length, 5);
 
         done();
       });
@@ -34,8 +34,8 @@ describe('bigquery:queries', function () {
     it('should submit a job and fetch its results', function (done) {
       program.asyncQuery(sqlQuery, function (err, data) {
         assert.equal(err, null);
-        assert(Array.isArray(data));
-        assert(data.length === 5);
+        assert.equal(Array.isArray(data), true);
+        assert.equal(data.length, 5);
 
         done();
       });

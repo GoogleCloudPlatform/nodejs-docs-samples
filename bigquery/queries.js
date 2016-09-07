@@ -11,17 +11,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START all]
-/**
- * Command-line application to perform an synchronous query in BigQuery.
- *
- * This sample is used on this page:
- *
- *   https://cloud.google.com/bigquery/querying-data
- *
- * For more information, see the README.md under /bigquery.
- */
-
 'use strict';
 
 // [START setup]
@@ -31,6 +20,52 @@
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/guides/authentication
 var BigQuery = require('@google-cloud/bigquery');
 // [END setup]
+
+function printExample (rows) {
+  console.log('Query Results:');
+  rows.forEach(function (row) {
+    var str = '';
+    for (var key in row) {
+      if (str) {
+        str += '\n';
+      }
+      str += key + ': ' + row[key];
+    }
+    console.log(str);
+  });
+}
+
+function queryShakespeare (callback) {
+  var bigquery = BigQuery();
+
+  var sqlQuery = 'SELECT\n' +
+                 '  TOP(corpus, 10) as title,\n' +
+                 '  COUNT(*) as unique_words\n' +
+                 'FROM `publicdata.samples.shakespeare`;';
+
+  // Construct query object.
+  // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+  var options = {
+    query: sqlQuery,
+
+    // Use standard SQL syntax for queries.
+    // See: https://cloud.google.com/bigquery/sql-reference/
+    useLegacySql: false
+  };
+
+  // Run the query
+  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/bigquery/latest/bigquery?method=query
+  bigquery.query(options, function (err, rows) {
+    if (err) {
+      return callback(err);
+    }
+
+    // Print the result
+    printExample(rows);
+
+    return callback(null, rows);
+  });
+}
 
 function syncQuery (sqlQuery, callback) {
   var bigquery = BigQuery();
@@ -112,6 +147,8 @@ var cli = require('yargs');
 var makeHandler = require('../utils').makeHandler;
 
 var program = module.exports = {
+  printExample: printExample,
+  queryShakespeare: queryShakespeare,
   asyncQuery: asyncQuery,
   waitForJob: waitForJob,
   syncQuery: syncQuery,

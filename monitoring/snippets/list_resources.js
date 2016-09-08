@@ -13,7 +13,7 @@
 
 /**
  * @fileoverview Simple command-line program to demonstrate connecting to the
- * Google Monitoring API to retrieve API data.
+ * Stackdriver Monitoring API to retrieve API data.
  */
 'use strict';
 

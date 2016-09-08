@@ -13,7 +13,7 @@
 
 /**
  * @fileoverview Simple command-line program to demonstrate creating a custom
- * metric with the Google Cloud Monitoring API, writing a random value to it,
+ * metric with the Stackdriver Monitoring API, writing a random value to it,
  * and reading it back.
  */
 'use strict';
@@ -107,7 +107,7 @@ CustomMetrics.prototype.createCustomMetric = function (client, callback) {
  * demonstration purposes, this is a random value. For GAUGE measurements,
  * the start time and end time of the value must be the same. The
  * resource for this value is a hypothetical GCE instance.
- * @param {Object} authClient The authorized Google Cloud Monitoring API client
+ * @param {Object} authClient The authorized Stackdriver Monitoring API client
  * @param {Function} callback Callback Function.
  */
 CustomMetrics.prototype.writeTimeSeriesForCustomMetric =
@@ -159,7 +159,7 @@ CustomMetrics.prototype.writeTimeSeriesForCustomMetric =
  * to read the timeseries starts an hour ago and extends unti the current
  * time, so should include the metric value written by
  * the earlier calls.
- * @param {Object} authClient The authorized Google Cloud Monitoring API client
+ * @param {Object} authClient The authorized Stackdriver Monitoring API client
  * @param {Function} callback Callback function.
  */
 CustomMetrics.prototype.listTimeSeries = function (client, callback) {
@@ -187,7 +187,7 @@ CustomMetrics.prototype.listTimeSeries = function (client, callback) {
 };
 
 /**
- * @param {Object} authClient The authorized Google Cloud Monitoring API client
+ * @param {Object} authClient The authorized Stackdriver Monitoring API client
  * @param {Function} callback Callback function.
  */
 CustomMetrics.prototype.deleteMetric = function (client, callback) {

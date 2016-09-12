@@ -173,7 +173,6 @@ function formatTasks (tasks) {
 // [END format_results]
 
 var cli = require('yargs');
-var makeHandler = require('../utils').makeHandler;
 
 var program = module.exports = {
   addEntity: addTask,
@@ -232,7 +231,7 @@ cli
   .example('node $0 delete 12345', 'Deletes task 12345.')
   .wrap(120)
   .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/datastore/docs')
+  .epilogue('For more information, see https://cloud.google.com/datastore/docs');
 
 if (module === require.main) {
   program.main(process.argv.slice(2));

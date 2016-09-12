@@ -13,9 +13,6 @@
 
 'use strict';
 
-var input = process.argv.splice(2);
-var command = input.shift();
-
 // [START build_service]
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -175,78 +172,68 @@ function formatTasks (tasks) {
 }
 // [END format_results]
 
-if (module === require.main) {
-  var taskId;
+var cli = require('yargs');
+var makeHandler = require('../utils').makeHandler;
 
-  switch (command) {
-    case 'new': {
-      addTask(input, function (err, taskKey) {
-        if (err) {
-          throw err;
-        }
-
-        taskId = taskKey.path.pop();
-
-        console.log('Task %d created successfully.', taskId);
-      });
-
-      break;
-    }
-    case 'done': {
-      taskId = parseInt(input, 10);
-
-      markDone(taskId, function (err) {
-        if (err) {
-          throw err;
-        }
-
-        console.log('Task %d updated successfully.', taskId);
-      });
-
-      break;
-    }
-    case 'list': {
-      listTasks(function (err, tasks) {
-        if (err) {
-          throw err;
-        }
-
-        console.log(formatTasks(tasks));
-      });
-
-      break;
-    }
-    case 'delete': {
-      taskId = parseInt(input, 10);
-
-      deleteTask(taskId, function (err) {
-        if (err) {
-          throw err;
-        }
-
-        console.log('Task %d deleted successfully.', taskId);
-      });
-
-      break;
-    }
-    default: {
-      // Only print usage if this file is being executed directly
-      if (module === require.main) {
-        console.log([
-          'Usage:',
-          '',
-          '  new <description> Adds a task with a description <description>',
-          '  done <task-id>    Marks a task as done',
-          '  list              Lists all tasks by creation time',
-          '  delete <task-id>  Deletes a task'
-        ].join('\n'));
-      }
-    }
+var program = module.exports = {
+  addEntity: addTask,
+  updateEntity: markDone,
+  retrieveEntities: listTasks,
+  deleteEntity: deleteTask,
+  formatTasks: formatTasks,
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
   }
-}
+};
 
-module.exports.addEntity = addTask;
-module.exports.updateEntity = markDone;
-module.exports.retrieveEntities = listTasks;
-module.exports.deleteEntity = deleteTask;
-module.exports.formatTasks = formatTasks;
+cli
+  .demand(1)
+  .command('new <description>', 'Adds a task with a description <description>.', {}, function (options) {
+    addTask(options.description, function (err, taskKey) {
+      if (err) {
+        throw err;
+      }
+
+      var taskId = taskKey.path.pop();
+      console.log('Task %d created successfully.', taskId);
+    });
+  })
+  .command('done <taskId>', 'Marks the specified task as done.', {}, function (options) {
+    markDone(options.taskId, function (err) {
+      if (err) {
+        throw err;
+      }
+
+      console.log('Task %d updated successfully.', options.taskId);
+    });
+  })
+  .command('list', 'Lists all tasks ordered by creation time.', {}, function (options) {
+    listTasks(function (err, tasks) {
+      if (err) {
+        throw err;
+      }
+
+      console.log(formatTasks(tasks));
+    });
+  })
+  .command('delete <taskId>', 'Deletes a task.', {}, function (options) {
+    deleteTask(options.taskId, function (err) {
+      if (err) {
+        throw err;
+      }
+
+      console.log('Task %d deleted successfully.', options.taskId);
+    });
+  })
+  .example('node $0 new "Buy milk"', 'Adds a task with description "Buy milk".')
+  .example('node $0 done 12345', 'Marks task 12345 as Done.')
+  .example('node $0 list', 'Lists all tasks ordered by creation time')
+  .example('node $0 delete 12345', 'Deletes task 12345.')
+  .wrap(120)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/datastore/docs')
+
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}

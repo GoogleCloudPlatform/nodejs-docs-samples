@@ -57,7 +57,7 @@ export GCLOUD_PROJECT=<project-id>
 
 7. Run the application!
 ```sh
-npm run tasks
+node tasks <command>
 ```
 */
 

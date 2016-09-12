@@ -84,11 +84,12 @@ function addTask (description, callback) {
     ]
   }, function (err) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
-    callback(null, taskKey);
+    var taskId = taskKey.path.pop();
+    console.log('Task %d created successfully.', taskId);
+    return callback(null, taskKey);
   });
 }
 // [END add_entity]
@@ -126,7 +127,8 @@ function markDone (taskId, callback) {
         }
 
         // The transaction completed successfully.
-        callback();
+        console.log('Task %d updated successfully.', taskId);
+        return callback(null);
       });
     });
   });
@@ -138,7 +140,14 @@ function listTasks (callback) {
   var query = datastore.createQuery('Task')
     .order('created');
 
-  datastore.runQuery(query, callback);
+  datastore.runQuery(query, function (err, tasks) {
+    if (err) {
+      return callback(err);
+    }
+
+    console.log('Found %d task(s)!', tasks.length);
+    return callback(null, tasks);
+  });
 }
 // [END retrieve_entities]
 
@@ -149,37 +158,24 @@ function deleteTask (taskId, callback) {
     taskId
   ]);
 
-  datastore.delete(taskKey, callback);
+  datastore.delete(taskKey, function (err) {
+    if (err) {
+      return callback(err);
+    }
+
+    return callback();
+  });
 }
 // [END delete_entity]
 
-// [START format_results]
-function formatTasks (tasks) {
-  return tasks
-    .map(function (task) {
-      var taskKey = task.key.path.pop();
-      var status;
-
-      if (task.data.done) {
-        status = 'done';
-      } else {
-        status = 'created ' + new Date(task.data.created);
-      }
-
-      return taskKey + ' : ' + task.data.description + ' (' + status + ')';
-    })
-    .join('\n');
-}
-// [END format_results]
-
 var cli = require('yargs');
+var makeHandler = require('../utils').makeHandler;
 
 var program = module.exports = {
   addEntity: addTask,
   updateEntity: markDone,
   retrieveEntities: listTasks,
   deleteEntity: deleteTask,
-  formatTasks: formatTasks,
   main: function (args) {
     // Run the command-line program
     cli.help().strict().parse(args).argv;
@@ -189,41 +185,16 @@ var program = module.exports = {
 cli
   .demand(1)
   .command('new <description>', 'Adds a task with a description <description>.', {}, function (options) {
-    addTask(options.description, function (err, taskKey) {
-      if (err) {
-        throw err;
-      }
-
-      var taskId = taskKey.path.pop();
-      console.log('Task %d created successfully.', taskId);
-    });
+    addTask(options.description, makeHandler());
   })
   .command('done <taskId>', 'Marks the specified task as done.', {}, function (options) {
-    markDone(options.taskId, function (err) {
-      if (err) {
-        throw err;
-      }
-
-      console.log('Task %d updated successfully.', options.taskId);
-    });
+    markDone(options.taskId, makeHandler());
   })
   .command('list', 'Lists all tasks ordered by creation time.', {}, function (options) {
-    listTasks(function (err, tasks) {
-      if (err) {
-        throw err;
-      }
-
-      console.log(formatTasks(tasks));
-    });
+    listTasks(makeHandler());
   })
   .command('delete <taskId>', 'Deletes a task.', {}, function (options) {
-    deleteTask(options.taskId, function (err) {
-      if (err) {
-        throw err;
-      }
-
-      console.log('Task %d deleted successfully.', options.taskId);
-    });
+    deleteTask(options.taskId, makeHandler());
   })
   .example('node $0 new "Buy milk"', 'Adds a task with description "Buy milk".')
   .example('node $0 done 12345', 'Marks task 12345 as Done.')

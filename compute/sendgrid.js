@@ -14,19 +14,33 @@
 'use strict';
 
 // [START send]
+// This sample is based off of https://www.npmjs.com/package/sendgrid#without-mail-helper-class
 var Sendgrid = require('sendgrid')(
   process.env.SENDGRID_API_KEY || '<your-sendgrid-api-key>'
 );
 
-Sendgrid.send({
-  from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM', // From address
-  to: 'EMAIL@EXAMPLE.COM', // To address
-  subject: 'test email from Node.js on Google Cloud Platform', // Subject
-  text: 'Hello!\n\nThis a test email from Node.js.' // Content
-}, function (err, json) {
-  if (err) {
-    return console.log(err);
+var request = Sendgrid.emptyRequest({
+  method: 'POST',
+  path: '/v3/mail/send',
+  body: {
+    personalizations: [{
+      to: [{ email: 'to_email@example.com' }],
+      subject: 'Sendgrid test email from Node.js on Google Cloud Platform'
+    }],
+    from: { email: 'from_email@example.com' },
+    content: [{
+      type: 'text/plain',
+      value: 'Hello!\n\nThis a Sendgrid test email from Node.js on Google Cloud Platform.'
+    }]
   }
-  console.log(json);
+});
+
+Sendgrid.API(request, function (error, response) {
+  if (error) {
+    console.log('Mail not sent; see error message below.');
+  } else {
+    console.log('Mail sent successfully!');
+  }
+  console.log(response);
 });
 // [END send]

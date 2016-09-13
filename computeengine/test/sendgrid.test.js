@@ -22,14 +22,25 @@ describe('computeengine:sendgrid', function () {
       sendgrid: function (key) {
         assert.equal(key, 'foo');
         return {
-          send: function (payload, cb) {
-            assert.deepEqual(payload, {
-              from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
-              to: 'EMAIL@EXAMPLE.COM',
-              subject: 'test email from Node.js on Google Cloud Platform',
-              text: 'Hello!\n\nThis a test email from Node.js.'
+          emptyRequest: function (x) {
+            return x;
+          },
+          API: function (request, cb) {
+            assert.deepEqual(request, {
+              method: 'POST',
+              path: '/v3/mail/send',
+              body: {
+                personalizations: [{
+                  to: [{ email: 'to_email@example.com' }],
+                  subject: 'Sendgrid test email from Node.js on Google Cloud Platform'
+                }],
+                from: { email: 'from_email@example.com' },
+                content: [{
+                  type: 'text/plain',
+                  value: 'Hello!\n\nThis a Sendgrid test email from Node.js on Google Cloud Platform.'
+                }]
+              }
             });
-            cb('done');
             done();
           }
         };

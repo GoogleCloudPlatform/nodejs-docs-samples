@@ -41,8 +41,6 @@ Sendgrid.API(request, function (error, response) {
   } else {
     console.log('Mail sent successfully!');
   }
-  console.log(response.statusCode);
-  console.log(response.body);
-  console.log(response.headers);
+  console.log(response);
 });
 // [END send]

@@ -43,12 +43,23 @@ app.get('/', function (req, res) {
 
 // [START hello]
 app.post('/hello', function (req, res, next) {
-  Sendgrid.send({
-    from: SENDGRID_SENDER, // From address
-    to: req.body.email, // To address
-    subject: 'Hello World!', // Subject
-    text: 'Sendgrid on Google App Engine with Node.js' // Content
-  }, function (err) {
+  var sgReq = Sendgrid.emptyRequest({
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: {
+      personalizations: [{
+        to: [{ email: req.body.email }],
+        subject: 'Hello World!'
+      }],
+      from: { email: SENDGRID_SENDER },
+      content: [{
+        type: 'text/plain',
+        value: 'Sendgrid on Google App Engine with Node.js.'
+      }]
+    }
+  });
+
+  Sendgrid.API(sgReq, function (err) {
     if (err) {
       return next(err);
     }

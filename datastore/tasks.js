@@ -163,7 +163,8 @@ function deleteTask (taskId, callback) {
       return callback(err);
     }
 
-    return callback();
+    console.log('Task %d deleted successfully.', taskId);
+    return callback(null);
   });
 }
 // [END delete_entity]

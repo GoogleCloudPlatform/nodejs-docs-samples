@@ -33,7 +33,7 @@ describe('storage:quickstart', function () {
     });
 
     assert.equal(StorageMock.calledOnce, true);
-    assert.deepEqual(StorageMock.firstCall.args, []);
+    assert.deepEqual(StorageMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
     assert.equal(storageMock.createBucket.calledOnce, true);
     assert.deepEqual(storageMock.createBucket.firstCall.args.slice(0, -1), [expectedBucketName]);
   });

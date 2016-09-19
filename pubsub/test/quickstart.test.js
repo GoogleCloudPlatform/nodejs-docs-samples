@@ -33,7 +33,7 @@ describe('pubsub:quickstart', function () {
     });
 
     assert.equal(PubSubMock.calledOnce, true);
-    assert.deepEqual(PubSubMock.firstCall.args, []);
+    assert.deepEqual(PubSubMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
     assert.equal(pubsubMock.createTopic.calledOnce, true);
     assert.deepEqual(pubsubMock.createTopic.firstCall.args.slice(0, -1), [expectedTopicName]);
   });

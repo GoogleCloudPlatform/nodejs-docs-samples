@@ -105,6 +105,52 @@ function publishMessage (topicName, data, callback) {
 }
 // [END pubsub_publish_message]
 
+let publishCounterValue = 1;
+
+function getPublishCounterValue () {
+  return publishCounterValue;
+}
+
+function setPublishCounterValue (value) {
+  publishCounterValue = value;
+}
+
+// [START pubsub_publish_ordered_message]
+function publishOrderedMessage (topicName, data, callback) {
+  // References an existing topic, e.g. "my-topic"
+  const topic = pubsubClient.topic(topicName);
+
+  /**
+   * In Node.js, a PubSub message requires a "data" property, which can have a
+   * string or an object as its value. An optional "attributes" property can be
+   * an object of key/value pairs, where the keys and values are both strings.
+   * See https://cloud.google.com/pubsub/reference/rpc/google.pubsub.v1#google.pubsub.v1.PubsubMessage
+   *
+   * Topic#publish() takes either a single message object or an array of message
+   * objects. See https://googlecloudplatform.github.io/google-cloud-node/#/docs/pubsub/latest/pubsub/topic?method=publish
+   */
+  const message = {
+    data: data,
+
+    // Assign an id to the message
+    messageId: getPublishCounterValue()
+  };
+
+  topic.publish(message, (err, messageIds) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    // Update the counter value
+    setPublishCounterValue(message.messageId + 1);
+
+    console.log(`Message ${messageIds[0]} published.`);
+    callback();
+  });
+}
+// [END pubsub_publish_ordered_message]
+
 // [START pubsub_get_topic_policy]
 function getTopicPolicy (topicName, callback) {
   // References an existing topic, e.g. "my-topic"
@@ -191,10 +237,16 @@ const program = module.exports = {
   createTopic: createTopic,
   deleteTopic: deleteTopic,
   publishMessage: publishMessage,
+<<<<<<< 35b153f2b1c74343053f4e9d6dd9951cca326f73
   getTopicPolicy: getTopicPolicy,
   setTopicPolicy: setTopicPolicy,
   testTopicPermissions: testTopicPermissions,
   main: (args) => {
+=======
+  publishOrderedMessage: publishOrderedMessage,
+  listTopics: listTopics,
+  main: function (args) {
+>>>>>>> Initial commit.
     // Run the command-line program
     cli.help().strict().parse(args).argv;
   }

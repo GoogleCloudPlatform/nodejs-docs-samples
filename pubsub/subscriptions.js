@@ -168,6 +168,62 @@ function pullMessages (subscriptionName, callback) {
 }
 // [END pubsub_pull_messages]
 
+let subscribeCounterValue = 1;
+
+function getSubscribeCounterValue () {
+  return subscribeCounterValue;
+}
+
+function setSubscribeCounterValue (value) {
+  subscribeCounterValue = value;
+}
+
+// [START pubsub_pull_ordered_messages]
+var outstandingMessages = {};
+
+function pullOrderedMessages (subscriptionName, callback) {
+  // References an existing subscription, e.g. "my-subscription"
+  const subscription = pubsubClient.subscription(subscriptionName);
+
+  // Pulls messages. Set returnImmediately to false to block until messages are
+  // received.
+  subscription.pull({ returnImmediately: true }, (err, messages) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    // Sort messages in order of increasing messageId
+    messages.sort((a, b) => b.messageId - a.messageId);
+
+    // Iterate over messages in order of increasing messageId
+    messages.forEach((message) => outstandingMessages[message.messageId] = message);
+
+    const outstandingMessageIds = Object.keys(outstandingMessages);
+    outstandingMessageIds.sort();
+
+    outstandingMessageIds.forEach((messageId) => {
+      const counter = getSubscribeCounterValue();
+      const message = outstandingMessages[messageId];
+
+      if (messageId < counter) {
+        // The message has already been processed
+        subscription.ack(message.ackId);
+        delete outstandingMessages[messageId];
+      } else if (messageId === counter) {
+        handleMessage(message);
+        setSubscribeCounterValue(messageId + 1);
+        subscription.ack(message.ackId);
+        delete outstandingMessages[messageId];
+      } else {
+        // Have not yet processed the message on which this message is dependent
+        return false;
+      }
+    });
+  });
+}
+// [END pubsub_pull_ordered_messages]
+
 // [START pubsub_get_subscription_policy]
 function getSubscriptionPolicy (subscriptionName, callback) {
   // References an existing subscription, e.g. "my-subscription"
@@ -255,6 +311,7 @@ const program = module.exports = {
   deleteSubscription: deleteSubscription,
   getSubscriptionMetadata: getSubscriptionMetadata,
   pullMessages: pullMessages,
+  pullOrderedMessages: pullOrderedMessages,
   getSubscriptionPolicy: getSubscriptionPolicy,
   setSubscriptionPolicy: setSubscriptionPolicy,
   testSubscriptionPermissions: testSubscriptionPermissions,

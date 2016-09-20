@@ -15,26 +15,24 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 
-describe('storage:quickstart', function () {
-  var storageMock, StorageMock;
-
-  var expectedBucketName = 'my-new-bucket';
+describe('bigquery:quickstart', function () {
+  var bigqueryMock, BigqueryMock;
 
   before(function () {
-    storageMock = {
-      createBucket: sinon.stub().yields(null, {}, {})
+    bigqueryMock = {
+      createDataset: sinon.stub().yields(null, {}, {})
     };
-    StorageMock = sinon.stub().returns(storageMock);
+    BigqueryMock = sinon.stub().returns(bigqueryMock);
   });
 
-  it('should create a bucket', function () {
+  it('should create a dataset', function () {
     proxyquire('../quickstart', {
-      '@google-cloud/storage': StorageMock
+      '@google-cloud/bigquery': BigqueryMock
     });
 
-    assert.equal(StorageMock.calledOnce, true);
-    assert.deepEqual(StorageMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
-    assert.equal(storageMock.createBucket.calledOnce, true);
-    assert.deepEqual(storageMock.createBucket.firstCall.args.slice(0, -1), [expectedBucketName]);
+    assert.equal(BigqueryMock.calledOnce, true);
+    assert.deepEqual(BigqueryMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
+    assert.equal(bigqueryMock.createDataset.calledOnce, true);
+    assert.deepEqual(bigqueryMock.createDataset.firstCall.args.slice(0, -1), ['my_new_dataset']);
   });
 });

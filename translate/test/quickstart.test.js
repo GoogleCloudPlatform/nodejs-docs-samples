@@ -15,26 +15,24 @@
 
 var proxyquire = require('proxyquire').noCallThru();
 
-describe('storage:quickstart', function () {
-  var storageMock, StorageMock;
-
-  var expectedBucketName = 'my-new-bucket';
+describe('translate:quickstart', function () {
+  var translateMock, TranslateMock;
 
   before(function () {
-    storageMock = {
-      createBucket: sinon.stub().yields(null, {}, {})
+    translateMock = {
+      translate: sinon.stub().yields(null, 'Привет мир!', {})
     };
-    StorageMock = sinon.stub().returns(storageMock);
+    TranslateMock = sinon.stub().returns(translateMock);
   });
 
-  it('should create a bucket', function () {
+  it('should translate a string', function () {
     proxyquire('../quickstart', {
-      '@google-cloud/storage': StorageMock
+      '@google-cloud/translate': TranslateMock
     });
 
-    assert.equal(StorageMock.calledOnce, true);
-    assert.deepEqual(StorageMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
-    assert.equal(storageMock.createBucket.calledOnce, true);
-    assert.deepEqual(storageMock.createBucket.firstCall.args.slice(0, -1), [expectedBucketName]);
+    assert.equal(TranslateMock.calledOnce, true);
+    assert.deepEqual(TranslateMock.firstCall.args, [{ key: 'YOUR_API_KEY' }]);
+    assert.equal(translateMock.translate.calledOnce, true);
+    assert.deepEqual(translateMock.translate.firstCall.args.slice(0, -1), ['Hello, world!', 'ru']);
   });
 });

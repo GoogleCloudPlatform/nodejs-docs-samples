@@ -39,7 +39,7 @@ describe('logging:quickstart', function () {
     });
 
     assert.equal(LoggingMock.calledOnce, true);
-    assert.deepEqual(LoggingMock.firstCall.args, []);
+    assert.deepEqual(LoggingMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
     assert.equal(loggingMock.log.calledOnce, true);
     assert.deepEqual(loggingMock.log.firstCall.args, [expectedLogName]);
     assert.equal(logMock.entry.calledOnce, true);

@@ -14,7 +14,8 @@
 'use strict';
 
 // [START quickstart]
-// Import and instantiate the Google Cloud Pub/Sub client library
+// Import and instantiate the Google Cloud client library
+// for Google Cloud Pub/Sub
 var pubsub = require('@google-cloud/pubsub')({
   projectId: 'YOUR_PROJECT_ID'
 });

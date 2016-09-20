@@ -14,7 +14,8 @@
 'use strict';
 
 // [START quickstart]
-// Import and instantiate the Google Cloud Storage client library
+// Import and instantiate the Google Cloud client library
+// for Google Cloud Storage
 var storage = require('@google-cloud/storage')({
   projectId: 'YOUR_PROJECT_ID'
 });

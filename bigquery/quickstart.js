@@ -14,7 +14,8 @@
 'use strict';
 
 // [START quickstart]
-// Import and instantiate the Google BigQuery client library
+// Import and instantiate the Google Cloud client library
+// for Google BigQuery
 var bigquery = require('@google-cloud/bigquery')({
   projectId: 'YOUR_PROJECT_ID'
 });

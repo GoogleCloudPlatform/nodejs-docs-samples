@@ -36,7 +36,7 @@ describe('datastore:quickstart', function () {
 
   after(function (done) {
     datastore.delete(key, function () {
-      // Ignore any error, the Datastore might not have been created
+      // Ignore any error, the entity might not have been created
       done();
     });
   });

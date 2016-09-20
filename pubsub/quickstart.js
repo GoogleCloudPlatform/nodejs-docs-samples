@@ -14,10 +14,12 @@
 'use strict';
 
 // [START quickstart]
+// Import and instantiate the Google Cloud Pub/Sub client library
 var pubsub = require('@google-cloud/pubsub')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
+// Create a new Cloud Pub/Sub topic
 pubsub.createTopic('my-new-topic', function (err, topic, apiResponse) {
   if (!err) {
     // The topic was created successfully.

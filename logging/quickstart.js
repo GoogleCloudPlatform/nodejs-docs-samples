@@ -1,4 +1,4 @@
-// Copyright 2015-2016, Google, Inc.
+// Copyright 2016, Google, Inc.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,13 +14,17 @@
 'use strict';
 
 // [START quickstart]
+// Import and instantiate the Stackdriver Logging client library
 var logging = require('@google-cloud/logging')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
+// Select the log to write to
 var log = logging.log('my-log');
+// Prepare a log entry
 var entry = log.entry({ type: 'global' }, 'Hello, world!');
 
+// Write the log entry
 log.write(entry, function (err, apiResponse) {
   if (!err) {
     // The entry was logged successfully.

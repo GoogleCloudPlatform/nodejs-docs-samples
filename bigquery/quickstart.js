@@ -14,10 +14,12 @@
 'use strict';
 
 // [START quickstart]
+// Import and instantiate the Google BigQuery client library
 var bigquery = require('@google-cloud/bigquery')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
+// Create a new BigQuery dataset
 bigquery.createDataset('my_new_dataset', function (err, dataset, apiResponse) {
   if (!err) {
     // The dataset was created successfully.

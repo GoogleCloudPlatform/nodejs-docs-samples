@@ -42,6 +42,7 @@ describe(`pubsub:topics`, () => {
     program.createTopic(topicName, callback);
     program.deleteTopic(topicName, callback);
     program.publishMessage(topicName, {}, callback);
+    program.publishOrderedMessage(topicName, {}, callback);
     program.listTopics(callback);
     program.getTopicPolicy(topicName, callback);
     program.setTopicPolicy(topicName, callback);

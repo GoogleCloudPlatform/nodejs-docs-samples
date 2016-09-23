@@ -42,7 +42,7 @@ var srcTableId = options.tableId;
 var destDatasetId = generateUuid();
 var destTableId = generateUuid();
 
-describe.only('bigquery:tables', function () {
+describe('bigquery:tables', function () {
   before(function (done) {
     // Create bucket
     storage.createBucket(options.bucketName, function (err, bucket) {

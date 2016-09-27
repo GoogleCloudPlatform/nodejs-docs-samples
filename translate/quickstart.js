@@ -13,7 +13,7 @@
 
 'use strict';
 
-// [START quickstart]
+// [START translate_quickstart]
 // Import and instantiate the Google Cloud client library
 // for the Google Translate API
 const translate = require('@google-cloud/translate')({
@@ -26,4 +26,4 @@ translate.translate('Hello, world!', 'ru', (err, translation, apiResponse) => {
     // The text was translated successfully
   }
 });
-// [END quickstart]
+// [END translate_quickstart]

@@ -13,7 +13,7 @@
 
 'use strict';
 
-// [START quickstart]
+// [START storage_quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google Cloud Storage
 const storage = require('@google-cloud/storage')({
@@ -26,4 +26,4 @@ storage.createBucket('my-new-bucket', (err, bucket) => {
     // The bucket was created successfully
   }
 });
-// [END quickstart]
+// [END storage_quickstart]

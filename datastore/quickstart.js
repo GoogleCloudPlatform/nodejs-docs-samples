@@ -13,7 +13,7 @@
 
 'use strict';
 
-// [START quickstart]
+// [START datastore_quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google Cloud Datastore
 const datastore = require('@google-cloud/datastore')({
@@ -28,4 +28,4 @@ datastore.get(taskKey, (err, entity) => {
     // The entity was retrieved successfully
   }
 });
-// [END quickstart]
+// [END datastore_quickstart]

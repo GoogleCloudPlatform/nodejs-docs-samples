@@ -13,7 +13,7 @@
 
 'use strict';
 
-// [START quickstart]
+// [START bigquery_quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google BigQuery
 const bigquery = require('@google-cloud/bigquery')({
@@ -26,4 +26,4 @@ bigquery.createDataset('my_new_dataset', (err, dataset) => {
     // The dataset was created successfully
   }
 });
-// [END quickstart]
+// [END bigquery_quickstart]

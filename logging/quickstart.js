@@ -13,7 +13,7 @@
 
 'use strict';
 
-// [START quickstart]
+// [START logging_quickstart]
 // Import and instantiate the Google Cloud client library
 // for Stackdriver Logging
 const logging = require('@google-cloud/logging')({
@@ -31,4 +31,4 @@ log.write(entry, (err) => {
     // The entry was logged successfully
   }
 });
-// [END quickstart]
+// [END logging_quickstart]

@@ -13,7 +13,7 @@
 
 'use strict';
 
-// [START quickstart]
+// [START pubsub_quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google Cloud Pub/Sub
 const pubsub = require('@google-cloud/pubsub')({
@@ -26,4 +26,4 @@ pubsub.createTopic('my-new-topic', (err, topic) => {
     // The topic was created successfully
   }
 });
-// [END quickstart]
+// [END pubsub_quickstart]

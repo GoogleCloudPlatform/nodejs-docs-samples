@@ -140,7 +140,7 @@ cli
   .example('node $0 sync ./resources/audio.raw', 'Detects speech in "./resources/audio.raw".')
   .example('node $0 async ./resources/audio.raw', 'Creates a job to detect speech in "./resources/audio.raw", and waits for the job to complete.')
   .example('node $0 stream ./resources/audio.raw', 'Detects speech in "./resources/audio.raw" by streaming it to the Speech API.')
-  .example('node $0 listen ./resources/audio.raw', 'Detects speech in a microphone input stream.')
+  .example('node $0 listen', 'Detects speech in a microphone input stream.')
   .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/speech/docs');

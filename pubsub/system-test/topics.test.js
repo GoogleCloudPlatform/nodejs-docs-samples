@@ -61,12 +61,13 @@ describe(`pubsub:topics`, () => {
     pubsub.topic(topicName).subscribe(subscriptionName, (err, subscription) => {
       assert.ifError(err);
       run(`${cmd} publish ${topicName} "${message.data}"`, cwd);
-      subscription.pull((err, messages) => {
-        assert.ifError(err);
-        console.log(JSON.stringify(messages, null, 2));
-        assert.equal(messages[0].data, message.data);
-        done();
-      });
+      setTimeout(() => {
+        subscription.pull((err, messages) => {
+          assert.ifError(err);
+          assert.equal(messages[0].data, message.data);
+          done();
+        });
+      }, 2000);
     });
   });
 
@@ -74,11 +75,38 @@ describe(`pubsub:topics`, () => {
     pubsub.topic(topicName).subscribe(subscriptionName, { reuseExisting: true }, (err, subscription) => {
       assert.ifError(err);
       run(`${cmd} publish ${topicName} '${JSON.stringify(message)}'`, cwd);
-      subscription.pull((err, messages) => {
-        assert.ifError(err);
-        console.log(JSON.stringify(messages, null, 2));
-        assert.deepEqual(messages[0].data, message);
-        done();
+      setTimeout(() => {
+        subscription.pull((err, messages) => {
+          assert.ifError(err);
+          assert.deepEqual(messages[0].data, message);
+          done();
+        });
+      }, 2000);
+    });
+  });
+
+  it(`should publish ordered messages`, (done) => {
+    const topics = require('../topics');
+    pubsub.topic(topicName).subscribe(subscriptionName, { reuseExisting: true }, (err, subscription) => {
+      assert.ifError(err);
+      topics.publishOrderedMessage(topicName, message.data, () => {
+        setTimeout(() => {
+          subscription.pull((err, messages) => {
+            assert.ifError(err);
+            assert.equal(messages[0].data, message.data);
+            assert.equal(messages[0].attributes.orderId, '1');
+            topics.publishOrderedMessage(topicName, message.data, () => {
+              setTimeout(() => {
+                subscription.pull((err, messages) => {
+                  assert.ifError(err);
+                  assert.equal(messages[0].data, message.data);
+                  assert.equal(messages[0].attributes.orderId, '2');
+                  done();
+                });
+              }, 2000);
+            });
+          });
+        }, 2000);
       });
     });
   });

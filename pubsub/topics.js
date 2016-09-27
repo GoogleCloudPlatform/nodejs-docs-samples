@@ -23,10 +23,13 @@
 
 'use strict';
 
-const pubsubClient = require(`@google-cloud/pubsub`)();
+const PubSub = require(`@google-cloud/pubsub`);
 
 // [START pubsub_list_topics]
 function listTopics (callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // Lists all topics in the current project
   pubsubClient.getTopics((err, topics) => {
     if (err) {
@@ -43,6 +46,9 @@ function listTopics (callback) {
 
 // [START pubsub_create_topic]
 function createTopic (topicName, callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // Creates a new topic, e.g. "my-new-topic"
   pubsubClient.createTopic(topicName, (err, topic) => {
     if (err) {
@@ -58,6 +64,9 @@ function createTopic (topicName, callback) {
 
 // [START pubsub_delete_topic]
 function deleteTopic (topicName, callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // References an existing topic, e.g. "my-topic"
   const topic = pubsubClient.topic(topicName);
 
@@ -76,6 +85,9 @@ function deleteTopic (topicName, callback) {
 
 // [START pubsub_publish_message]
 function publishMessage (topicName, data, callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // References an existing topic, e.g. "my-topic"
   const topic = pubsubClient.topic(topicName);
 
@@ -117,6 +129,9 @@ function setPublishCounterValue (value) {
 
 // [START pubsub_publish_ordered_message]
 function publishOrderedMessage (topicName, data, callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // References an existing topic, e.g. "my-topic"
   const topic = pubsubClient.topic(topicName);
 
@@ -132,8 +147,10 @@ function publishOrderedMessage (topicName, data, callback) {
   const message = {
     data: data,
 
-    // Assign an id to the message
-    messageId: getPublishCounterValue()
+    // Assign an order id to the message
+    attributes: {
+      orderId: '' + getPublishCounterValue()
+    }
   };
 
   topic.publish(message, (err, messageIds) => {
@@ -143,7 +160,7 @@ function publishOrderedMessage (topicName, data, callback) {
     }
 
     // Update the counter value
-    setPublishCounterValue(message.messageId + 1);
+    setPublishCounterValue(+message.attributes.orderId + 1);
 
     console.log(`Message ${messageIds[0]} published.`);
     callback();
@@ -153,6 +170,9 @@ function publishOrderedMessage (topicName, data, callback) {
 
 // [START pubsub_get_topic_policy]
 function getTopicPolicy (topicName, callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // References an existing topic, e.g. "my-topic"
   const topic = pubsubClient.topic(topicName);
 
@@ -171,6 +191,9 @@ function getTopicPolicy (topicName, callback) {
 
 // [START pubsub_set_topic_policy]
 function setTopicPolicy (topicName, callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // References an existing topic, e.g. "my-topic"
   const topic = pubsubClient.topic(topicName);
 
@@ -205,6 +228,9 @@ function setTopicPolicy (topicName, callback) {
 
 // [START pubsub_test_topic_permissions]
 function testTopicPermissions (topicName, callback) {
+  // Instantiates the client library
+  const pubsubClient = PubSub();
+
   // References an existing topic, e.g. "my-topic"
   const topic = pubsubClient.topic(topicName);
 
@@ -237,16 +263,11 @@ const program = module.exports = {
   createTopic: createTopic,
   deleteTopic: deleteTopic,
   publishMessage: publishMessage,
-<<<<<<< 35b153f2b1c74343053f4e9d6dd9951cca326f73
+  publishOrderedMessage: publishOrderedMessage,
   getTopicPolicy: getTopicPolicy,
   setTopicPolicy: setTopicPolicy,
   testTopicPermissions: testTopicPermissions,
   main: (args) => {
-=======
-  publishOrderedMessage: publishOrderedMessage,
-  listTopics: listTopics,
-  main: function (args) {
->>>>>>> Initial commit.
     // Run the command-line program
     cli.help().strict().parse(args).argv;
   }

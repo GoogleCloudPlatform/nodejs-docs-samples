@@ -48,7 +48,7 @@ describe(`pubsub:topics`, () => {
     program.setTopicPolicy(topicName, callback);
     program.testTopicPermissions(topicName, callback);
 
-    assert.equal(callback.callCount, 7);
+    assert.equal(callback.callCount, 8);
     assert.equal(callback.alwaysCalledWithExactly(error), true);
   });
 });

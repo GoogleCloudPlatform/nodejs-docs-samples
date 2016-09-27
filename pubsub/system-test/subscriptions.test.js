@@ -108,7 +108,46 @@ describe(`pubsub:subscriptions`, () => {
           `* ${messageIds[0]} "${expected}" {}`;
         assert.equal(output, expectedOutput);
         done();
-      }, 5000);
+      }, 2000);
+    });
+  });
+
+  it(`should pull ordered messages`, (done) => {
+    const subscriptions = require('../subscriptions');
+    const expected = `Hello, world!`;
+    pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '3' } }, (err, firstMessageIds) => {
+      assert.ifError(err);
+      setTimeout(() => {
+        subscriptions.pullOrderedMessages(subscriptionNameOne, (err) => {
+          assert.ifError(err);
+          assert.equal(console.log.callCount, 0);
+          pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '1' } }, (err, secondMessageIds) => {
+            assert.ifError(err);
+            setTimeout(() => {
+              subscriptions.pullOrderedMessages(subscriptionNameOne, (err) => {
+                assert.ifError(err);
+                assert.equal(console.log.callCount, 1);
+                assert.deepEqual(console.log.firstCall.args, [`* %d %j %j`, secondMessageIds[0], expected, { orderId: '1' }]);
+                pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '1' } }, (err) => {
+                  assert.ifError(err);
+                  pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '2' } }, (err, thirdMessageIds) => {
+                    assert.ifError(err);
+                    setTimeout(() => {
+                      subscriptions.pullOrderedMessages(subscriptionNameOne, (err) => {
+                        assert.ifError(err);
+                        assert.equal(console.log.callCount, 3);
+                        assert.deepEqual(console.log.secondCall.args, [`* %d %j %j`, thirdMessageIds[0], expected, { orderId: '2' }]);
+                        assert.deepEqual(console.log.thirdCall.args, [`* %d %j %j`, firstMessageIds[0], expected, { orderId: '3' }]);
+                        done();
+                      });
+                    }, 2000);
+                  });
+                });
+              });
+            }, 2000);
+          });
+        });
+      }, 2000);
     });
   });
 

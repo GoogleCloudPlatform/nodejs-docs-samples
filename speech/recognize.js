@@ -11,106 +11,140 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * This application demonstrates how to perform basic recognize operations with
+ * with the Google Cloud Speech API.
+ *
+ * For more information, see the README.md under /speech and the documentation
+ * at https://cloud.google.com/speech/docs.
+ */
+
 'use strict';
 
-// [START app]
-// [START import_libraries]
-var google = require('googleapis');
-var async = require('async');
-var fs = require('fs');
+const fs = require('fs');
+const record = require('node-record-lpcm16');
+const speech = require('@google-cloud/speech')();
 
-// Get a reference to the speech service
-var speech = google.speech('v1beta1').speech;
-// [END import_libraries]
-
-// [START authenticating]
-function getAuthClient (callback) {
-  // Acquire credentials
-  google.auth.getApplicationDefault(function (err, authClient) {
+// [START speech_sync_recognize]
+function syncRecognize (filename, callback) {
+  // Detect speech in the audio file, e.g. "./resources/audio.raw"
+  speech.recognize(filename, {
+    encoding: 'LINEAR16',
+    sampleRate: 16000
+  }, (err, results) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    // The createScopedRequired method returns true when running on GAE or a
-    // local developer machine. In that case, the desired scopes must be passed
-    // in manually. When the code is  running in GCE or a Managed VM, the scopes
-    // are pulled from the GCE metadata server.
-    // See https://cloud.google.com/compute/docs/authentication for more
-    // information.
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      // Scopes can be specified either as an array or as a single,
-      // space-delimited string.
-      authClient = authClient.createScoped([
-        'https://www.googleapis.com/auth/cloud-platform'
-      ]);
-    }
-
-    return callback(null, authClient);
+    console.log('Results:', results);
+    callback();
   });
 }
-// [END authenticating]
+// [END speech_sync_recognize]
 
-// [START construct_request]
-function prepareRequest (inputFile, callback) {
-  fs.readFile(inputFile, function (err, audioFile) {
+// [START speech_async_recognize]
+function asyncRecognize (filename, callback) {
+  // Detect speech in the audio file, e.g. "./resources/audio.raw"
+  speech.startRecognition(filename, {
+    encoding: 'LINEAR16',
+    sampleRate: 16000
+  }, (err, operation) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
-    console.log('Got audio file!');
-    var encoded = new Buffer(audioFile).toString('base64');
-    var payload = {
-      config: {
-        encoding: 'LINEAR16',
-        sampleRate: 16000
-      },
-      audio: {
-        content: encoded
-      }
-    };
-    return callback(null, payload);
-  });
-}
-// [END construct_request]
 
-function main (inputFile, callback) {
-  var requestPayload;
-
-  async.waterfall([
-    function (cb) {
-      prepareRequest(inputFile, cb);
-    },
-    function (payload, cb) {
-      requestPayload = payload;
-      getAuthClient(cb);
-    },
-    // [START send_request]
-    function sendRequest (authClient, cb) {
-      console.log('Analyzing speech...');
-      speech.syncrecognize({
-        auth: authClient,
-        resource: requestPayload
-      }, function (err, result) {
-        if (err) {
-          return cb(err);
-        }
-        console.log('result:', JSON.stringify(result, null, 2));
-        cb(null, result);
+    operation
+      .on('error', callback)
+      .on('complete', (results) => {
+        console.log('Results:', results);
+        callback();
       });
+  });
+}
+// [END speech_async_recognize]
+
+// [START speech_streaming_recognize]
+function streamingRecognize (filename, callback) {
+  const options = {
+    config: {
+      encoding: 'LINEAR16',
+      sampleRate: 16000
     }
-    // [END send_request]
-  ], callback);
-}
+  };
 
-// [START run_application]
-if (module === require.main) {
-  if (process.argv.length < 3) {
-    console.log('Usage: node recognize <inputFile>');
-    process.exit();
+  // Create a recognize stream
+  const recognizeStream = speech.createRecognizeStream(options)
+    .on('error', callback)
+    .on('data', (data) => {
+      console.log('Data received: %j', data);
+      callback();
+    });
+
+  // Stream an audio file from disk to the Speech API, e.g. "./resources/audio.raw"
+  fs.createReadStream(filename).pipe(recognizeStream);
+}
+// [END speech_streaming_recognize]
+
+// [START speech_streaming_mic_recognize]
+function streamingMicRecognize (filename) {
+  const options = {
+    config: {
+      encoding: 'LINEAR16',
+      sampleRate: 16000
+    }
+  };
+
+  // Create a recognize stream
+  const recognizeStream = speech.createRecognizeStream(options)
+    .on('error', console.error)
+    .on('data', (data) => process.stdout.write(data.results));
+
+  // Start recording and send the microphone input to the Speech API
+  record.start({ sampleRate: 16000 }).pipe(recognizeStream);
+
+  console.log('Listening, press Ctrl+C to stop.');
+}
+// [END speech_streaming_mic_recognize]
+
+// The command-line program
+var cli = require('yargs');
+var utils = require('../utils');
+
+var program = module.exports = {
+  syncRecognize: syncRecognize,
+  asyncRecognize: asyncRecognize,
+  streamingRecognize: streamingRecognize,
+  streamingMicRecognize: streamingMicRecognize,
+  main: function (args) {
+    // Run the command-line program
+    cli.help().strict().parse(args).argv;
   }
-  var inputFile = process.argv[2];
-  main(inputFile, console.log);
-}
-// [END run_application]
-// [END app]
+};
 
-exports.main = main;
+cli
+  .demand(1)
+  .command('sync <filename>', 'Detects speech in an audio file.', {}, function (options) {
+    program.syncRecognize(options.filename, utils.makeHandler(false));
+  })
+  .command('async <filename>', 'Creates a job to detect speech in an audio file, and waits for the job to complete.', {}, function (options) {
+    program.asyncRecognize(options.filename, utils.makeHandler(false));
+  })
+  .command('stream <filename>', 'Detects speech in an audio file by streaming it to the Speech API.', {}, function (options) {
+    program.streamingRecognize(options.filename, utils.makeHandler(false));
+  })
+  .command('listen', 'Detects speech in a microphone input stream.', {}, function () {
+    program.streamingMicRecognize();
+  })
+  .example('node $0 sync ./resources/audio.raw', 'Detects speech in "./resources/audio.raw".')
+  .example('node $0 async ./resources/audio.raw', 'Creates a job to detect speech in "./resources/audio.raw", and waits for the job to complete.')
+  .example('node $0 stream ./resources/audio.raw', 'Detects speech in "./resources/audio.raw" by streaming it to the Speech API.')
+  .example('node $0 listen', 'Detects speech in a microphone input stream.')
+  .wrap(120)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/speech/docs');
+
+if (module === require.main) {
+  program.main(process.argv.slice(2));
+}

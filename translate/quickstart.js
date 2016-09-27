@@ -14,7 +14,7 @@
 'use strict';
 
 // [START translate_quickstart]
-// Import and instantiate the Google Cloud client library
+// Imports and instantiates the Google Cloud client library
 // for the Google Translate API
 const translate = require('@google-cloud/translate')({
   key: 'YOUR_API_KEY'

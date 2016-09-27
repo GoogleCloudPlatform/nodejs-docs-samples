@@ -14,7 +14,7 @@
 'use strict';
 
 // [START datastore_quickstart]
-// Import and instantiate the Google Cloud client library
+// Imports and instantiates the Google Cloud client library
 // for Google Cloud Datastore
 const datastore = require('@google-cloud/datastore')({
   projectId: 'YOUR_PROJECT_ID'

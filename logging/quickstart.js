@@ -14,7 +14,7 @@
 'use strict';
 
 // [START logging_quickstart]
-// Import and instantiate the Google Cloud client library
+// Imports and instantiates the Google Cloud client library
 // for Stackdriver Logging
 const logging = require('@google-cloud/logging')({
   projectId: 'YOUR_PROJECT_ID'

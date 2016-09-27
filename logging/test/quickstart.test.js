@@ -13,16 +13,16 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require(`proxyquire`).noCallThru();
 
-describe('logging:quickstart', function () {
-  var logMock, loggingMock, LoggingMock;
+describe(`logging:quickstart`, () => {
+  let logMock, loggingMock, LoggingMock;
 
-  var expectedLogName = 'my-log';
-  var expectedResource = { type: 'global' };
-  var expectedMessage = 'Hello, world!';
+  const expectedLogName = `my-log`;
+  const expectedResource = { type: `global` };
+  const expectedMessage = `Hello, world!`;
 
-  before(function () {
+  before(() => {
     logMock = {
       entry: sinon.stub().returns({}),
       write: sinon.stub().yields(null, {})
@@ -33,8 +33,8 @@ describe('logging:quickstart', function () {
     LoggingMock = sinon.stub().returns(loggingMock);
   });
 
-  it('should log an entry', function () {
-    proxyquire('../quickstart', {
+  it(`should log an entry`, () => {
+    proxyquire(`../quickstart`, {
       '@google-cloud/logging': LoggingMock
     });
 

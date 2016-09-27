@@ -13,20 +13,20 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require(`proxyquire`).noCallThru();
 
-describe('bigquery:quickstart', function () {
-  var bigqueryMock, BigqueryMock;
+describe(`bigquery:quickstart`, () => {
+  let bigqueryMock, BigqueryMock;
 
-  before(function () {
+  before(() => {
     bigqueryMock = {
       createDataset: sinon.stub().yields(null, {}, {})
     };
     BigqueryMock = sinon.stub().returns(bigqueryMock);
   });
 
-  it('should create a dataset', function () {
-    proxyquire('../quickstart', {
+  it(`should create a dataset`, () => {
+    proxyquire(`../quickstart`, {
       '@google-cloud/bigquery': BigqueryMock
     });
 

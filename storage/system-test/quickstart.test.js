@@ -13,30 +13,30 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noPreserveCache();
-var storage = proxyquire('@google-cloud/storage', {})();
-var uuid = require('node-uuid');
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const storage = proxyquire(`@google-cloud/storage`, {})();
+const uuid = require(`node-uuid`);
 
-var bucketName = 'nodejs-docs-samples-test-' + uuid.v4();
+const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 
-describe('storage:quickstart', function () {
-  var storageMock, StorageMock;
+describe(`storage:quickstart`, () => {
+  let storageMock, StorageMock;
 
-  after(function (done) {
-    storage.bucket(bucketName).delete(function () {
+  after((done) => {
+    storage.bucket(bucketName).delete(() => {
       // Ignore any error, the topic might not have been created
       done();
     });
   });
 
-  it('should create a topic', function (done) {
-    var expectedBucketName = 'my-new-bucket';
+  it(`should create a topic`, (done) => {
+    const expectedBucketName = `my-new-bucket`;
 
     storageMock = {
-      createBucket: function (_bucketName) {
+      createBucket: (_bucketName) => {
         assert.equal(_bucketName, expectedBucketName);
 
-        storage.createBucket(bucketName, function (err, bucket, apiResponse) {
+        storage.createBucket(bucketName, (err, bucket, apiResponse) => {
           assert.ifError(err);
           assert.notEqual(bucket, undefined);
           assert.equal(bucket.name, bucketName);
@@ -47,7 +47,7 @@ describe('storage:quickstart', function () {
     };
     StorageMock = sinon.stub().returns(storageMock);
 
-    proxyquire('../quickstart', {
+    proxyquire(`../quickstart`, {
       '@google-cloud/storage': StorageMock
     });
   });

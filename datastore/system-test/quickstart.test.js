@@ -13,44 +13,44 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noPreserveCache();
-var datastore = proxyquire('@google-cloud/datastore', {})();
-var kind = 'Task';
-var message = 'Buy milk';
-var key = datastore.key(kind);
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const datastore = proxyquire(`@google-cloud/datastore`, {})();
+const kind = `Task`;
+const message = `Buy milk`;
+const key = datastore.key(kind);
 
-describe('datastore:quickstart', function () {
-  var datastoreMock, DatastoreMock;
+describe(`datastore:quickstart`, () => {
+  let datastoreMock, DatastoreMock;
 
-  before(function (done) {
+  before((done) => {
     datastore.save({
       key: key,
       data: {
         message: message
       }
-    }, function () {
+    }, () => {
       // Datastore is eventually consistent
       setTimeout(done, 5000);
     });
   });
 
-  after(function (done) {
-    datastore.delete(key, function () {
+  after((done) => {
+    datastore.delete(key, () => {
       // Ignore any error, the entity might not have been created
       done();
     });
   });
 
-  it('should get a task from Datastore', function (done) {
+  it(`should get a task from Datastore`, (done) => {
     datastoreMock = {
-      key: function () {
+      key: () => {
         return key;
       },
 
-      get: function (_key) {
+      get: (_key) => {
         assert.equal(_key, key);
 
-        datastore.get(_key, function (err, entity) {
+        datastore.get(_key, (err, entity) => {
           assert.ifError(err);
           assert.notEqual(entity, undefined);
           assert.notEqual(entity.key, undefined);
@@ -62,7 +62,7 @@ describe('datastore:quickstart', function () {
     };
     DatastoreMock = sinon.stub().returns(datastoreMock);
 
-    proxyquire('../quickstart', {
+    proxyquire(`../quickstart`, {
       '@google-cloud/datastore': DatastoreMock
     });
   });

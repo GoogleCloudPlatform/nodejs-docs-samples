@@ -16,14 +16,14 @@
 // [START quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google Cloud Storage
-var storage = require('@google-cloud/storage')({
+const storage = require('@google-cloud/storage')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
-// Create a new Cloud Storage bucket
-storage.createBucket('my-new-bucket', function (err, bucket, apiResponse) {
+// Creates a new bucket
+storage.createBucket('my-new-bucket', (err, bucket) => {
   if (!err) {
-    // The bucket was created successfully.
+    // The bucket was created successfully
   }
 });
 // [END quickstart]

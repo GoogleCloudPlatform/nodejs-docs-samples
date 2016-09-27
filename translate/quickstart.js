@@ -16,14 +16,14 @@
 // [START quickstart]
 // Import and instantiate the Google Cloud client library
 // for the Google Translate API
-var translate = require('@google-cloud/translate')({
+const translate = require('@google-cloud/translate')({
   key: 'YOUR_API_KEY'
 });
 
-// Translate some text into Russian
-translate.translate('Hello, world!', 'ru', function (err, translation, apiResponse) {
+// Translates some text into Russian
+translate.translate('Hello, world!', 'ru', (err, translation, apiResponse) => {
   if (!err) {
-    // The text was translated successfully.
+    // The text was translated successfully
   }
 });
 // [END quickstart]

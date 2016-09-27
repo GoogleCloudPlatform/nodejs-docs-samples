@@ -13,22 +13,22 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require(`proxyquire`).noCallThru();
 
-describe('storage:quickstart', function () {
-  var storageMock, StorageMock;
+describe(`storage:quickstart`, () => {
+  let storageMock, StorageMock;
 
-  var expectedBucketName = 'my-new-bucket';
+  const expectedBucketName = `my-new-bucket`;
 
-  before(function () {
+  before(() => {
     storageMock = {
       createBucket: sinon.stub().yields(null, {}, {})
     };
     StorageMock = sinon.stub().returns(storageMock);
   });
 
-  it('should create a bucket', function () {
-    proxyquire('../quickstart', {
+  it(`should create a bucket`, () => {
+    proxyquire(`../quickstart`, {
       '@google-cloud/storage': StorageMock
     });
 

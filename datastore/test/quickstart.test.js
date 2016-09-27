@@ -13,21 +13,21 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noPreserveCache();
+const proxyquire = require(`proxyquire`).noPreserveCache();
 
-describe('datastore:quickstart', function () {
-  var datastoreMock, DatastoreMock;
+describe(`datastore:quickstart`, () => {
+  let datastoreMock, DatastoreMock;
 
-  before(function () {
+  before(() => {
     datastoreMock = {
-      get: sinon.stub().yields(null, {key: 1234}),
-      key: sinon.stub.returns('task/1234')
+      get: sinon.stub().yields(null, { key: 1234 }),
+      key: sinon.stub.returns(`task/1234`)
     };
     DatastoreMock = sinon.stub().returns(datastoreMock);
   });
 
-  it('should get a task from Datastore', function () {
-    proxyquire('../quickstart', {
+  it(`should get a task from Datastore`, () => {
+    proxyquire(`../quickstart`, {
       '@google-cloud/datastore': DatastoreMock
     });
 

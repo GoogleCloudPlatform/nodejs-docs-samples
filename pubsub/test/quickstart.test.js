@@ -13,22 +13,22 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require(`proxyquire`).noCallThru();
 
-describe('pubsub:quickstart', function () {
-  var pubsubMock, PubSubMock;
+describe(`pubsub:quickstart`, () => {
+  let pubsubMock, PubSubMock;
 
-  var expectedTopicName = 'my-new-topic';
+  const expectedTopicName = `my-new-topic`;
 
-  before(function () {
+  before(() => {
     pubsubMock = {
       createTopic: sinon.stub().yields(null, {}, {})
     };
     PubSubMock = sinon.stub().returns(pubsubMock);
   });
 
-  it('should create a topic', function () {
-    proxyquire('../quickstart', {
+  it(`should create a topic`, () => {
+    proxyquire(`../quickstart`, {
       '@google-cloud/pubsub': PubSubMock
     });
 

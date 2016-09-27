@@ -13,25 +13,25 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noPreserveCache();
-var translate = proxyquire('@google-cloud/translate', {})({
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const translate = proxyquire(`@google-cloud/translate`, {})({
   key: process.env.TRANSLATE_API_KEY
 });
-var string = 'Hello, world!';
-var targetLanguage = 'ru';
+const string = `Hello, world!`;
+const targetLanguage = `ru`;
 
-describe('translate:quickstart', function () {
-  var translateMock, TranslateMock;
+describe(`translate:quickstart`, () => {
+  let translateMock, TranslateMock;
 
-  it('should translate a string', function (done) {
+  it(`should translate a string`, (done) => {
     translateMock = {
-      translate: function (_string, _targetLanguage) {
+      translate: (_string, _targetLanguage) => {
         assert.equal(_string, string);
         assert.equal(_targetLanguage, targetLanguage);
 
-        translate.translate(_string, _targetLanguage, function (err, translation, apiResponse) {
+        translate.translate(_string, _targetLanguage, (err, translation, apiResponse) => {
           assert.ifError(err);
-          assert.equal(translation, 'Привет мир!');
+          assert.equal(translation, `Привет мир!`);
           assert.notEqual(apiResponse, undefined);
           done();
         });
@@ -39,7 +39,7 @@ describe('translate:quickstart', function () {
     };
     TranslateMock = sinon.stub().returns(translateMock);
 
-    proxyquire('../quickstart', {
+    proxyquire(`../quickstart`, {
       '@google-cloud/translate': TranslateMock
     });
   });

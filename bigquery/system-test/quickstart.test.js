@@ -13,27 +13,27 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noPreserveCache();
-var bigquery = proxyquire('@google-cloud/bigquery', {})();
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const bigquery = proxyquire(`@google-cloud/bigquery`, {})();
 
-var datasetName = 'my_new_dataset';
+const datasetName = `my_new_dataset`;
 
-describe('bigquery:quickstart', function () {
-  var bigqueryMock, BigqueryMock;
+describe(`bigquery:quickstart`, () => {
+  let bigqueryMock, BigqueryMock;
 
-  after(function (done) {
-    bigquery.dataset(datasetName).delete(function () {
+  after((done) => {
+    bigquery.dataset(datasetName).delete(() => {
       // Ignore any error, the dataset might not have been created
       done();
     });
   });
 
-  it('should create a dataset', function (done) {
+  it(`should create a dataset`, (done) => {
     bigqueryMock = {
-      createDataset: function (_datasetName) {
+      createDataset: (_datasetName) => {
         assert.equal(_datasetName, datasetName);
 
-        bigquery.createDataset(datasetName, function (err, dataset, apiResponse) {
+        bigquery.createDataset(datasetName, (err, dataset, apiResponse) => {
           assert.ifError(err);
           assert.notEqual(dataset, undefined);
           assert.notEqual(apiResponse, undefined);
@@ -43,7 +43,7 @@ describe('bigquery:quickstart', function () {
     };
     BigqueryMock = sinon.stub().returns(bigqueryMock);
 
-    proxyquire('../quickstart', {
+    proxyquire(`../quickstart`, {
       '@google-cloud/bigquery': BigqueryMock
     });
   });

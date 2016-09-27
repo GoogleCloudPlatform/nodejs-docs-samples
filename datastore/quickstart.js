@@ -16,16 +16,16 @@
 // [START quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google Cloud Datastore
-var datastore = require('@google-cloud/datastore')({
+const datastore = require('@google-cloud/datastore')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
-var taskKey = datastore.key(['Task', 1234]);
+const taskKey = datastore.key(['Task', 1234]);
 
-// Retrieve an entity from Cloud Datastore
-datastore.get(taskKey, function (err, entity, apiResponse) {
+// Retrieves an entity
+datastore.get(taskKey, (err, entity) => {
   if (!err) {
-    // The entity was retrieved successfully.
+    // The entity was retrieved successfully
   }
 });
 // [END quickstart]

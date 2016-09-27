@@ -13,20 +13,20 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require(`proxyquire`).noCallThru();
 
-describe('translate:quickstart', function () {
-  var translateMock, TranslateMock;
+describe(`translate:quickstart`, () => {
+  let translateMock, TranslateMock;
 
-  before(function () {
+  before(() => {
     translateMock = {
-      translate: sinon.stub().yields(null, 'Привет мир!', {})
+      translate: sinon.stub().yields(null, `Привет мир!`, {})
     };
     TranslateMock = sinon.stub().returns(translateMock);
   });
 
-  it('should translate a string', function () {
-    proxyquire('../quickstart', {
+  it(`should translate a string`, () => {
+    proxyquire(`../quickstart`, {
       '@google-cloud/translate': TranslateMock
     });
 

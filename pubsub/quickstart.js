@@ -16,14 +16,14 @@
 // [START quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google Cloud Pub/Sub
-var pubsub = require('@google-cloud/pubsub')({
+const pubsub = require('@google-cloud/pubsub')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
-// Create a new Cloud Pub/Sub topic
-pubsub.createTopic('my-new-topic', function (err, topic, apiResponse) {
+// Creates a new topic
+pubsub.createTopic('my-new-topic', (err, topic) => {
   if (!err) {
-    // The topic was created successfully.
+    // The topic was created successfully
   }
 });
 // [END quickstart]

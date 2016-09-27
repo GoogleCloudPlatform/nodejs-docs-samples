@@ -16,14 +16,14 @@
 // [START quickstart]
 // Import and instantiate the Google Cloud client library
 // for Google BigQuery
-var bigquery = require('@google-cloud/bigquery')({
+const bigquery = require('@google-cloud/bigquery')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
-// Create a new BigQuery dataset
-bigquery.createDataset('my_new_dataset', function (err, dataset, apiResponse) {
+// Creates a new dataset
+bigquery.createDataset('my_new_dataset', (err, dataset) => {
   if (!err) {
-    // The dataset was created successfully.
+    // The dataset was created successfully
   }
 });
 // [END quickstart]

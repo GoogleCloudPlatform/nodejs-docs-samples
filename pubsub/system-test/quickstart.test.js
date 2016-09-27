@@ -13,32 +13,32 @@
 
 'use strict';
 
-var proxyquire = require('proxyquire').noPreserveCache();
-var pubsub = proxyquire('@google-cloud/pubsub', {})();
-var uuid = require('node-uuid');
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const pubsub = proxyquire(`@google-cloud/pubsub`, {})();
+const uuid = require(`node-uuid`);
 
-var topicName = 'nodejs-docs-samples-test-' + uuid.v4();
-var projectId = process.env.GCLOUD_PROJECT;
-var fullTopicName = 'projects/' + projectId + '/topics/' + topicName;
+const topicName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const projectId = process.env.GCLOUD_PROJECT;
+const fullTopicName = `projects/${projectId}/topics/${topicName}`;
 
-describe('pubsub:quickstart', function () {
-  var pubsubMock, PubSubMock;
+describe(`pubsub:quickstart`, () => {
+  let pubsubMock, PubSubMock;
 
-  after(function (done) {
-    pubsub.topic(topicName).delete(function () {
+  after((done) => {
+    pubsub.topic(topicName).delete(() => {
       // Ignore any error, the topic might not have been created
       done();
     });
   });
 
-  it('should create a topic', function (done) {
-    var expectedTopicName = 'my-new-topic';
+  it(`should create a topic`, (done) => {
+    const expectedTopicName = `my-new-topic`;
 
     pubsubMock = {
-      createTopic: function (_topicName) {
+      createTopic: (_topicName) => {
         assert.equal(_topicName, expectedTopicName);
 
-        pubsub.createTopic(topicName, function (err, topic, apiResponse) {
+        pubsub.createTopic(topicName, (err, topic, apiResponse) => {
           assert.ifError(err);
           assert.notEqual(topic, undefined);
           assert.equal(topic.name, fullTopicName);
@@ -49,7 +49,7 @@ describe('pubsub:quickstart', function () {
     };
     PubSubMock = sinon.stub().returns(pubsubMock);
 
-    proxyquire('../quickstart', {
+    proxyquire(`../quickstart`, {
       '@google-cloud/pubsub': PubSubMock
     });
   });

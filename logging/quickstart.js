@@ -16,19 +16,19 @@
 // [START quickstart]
 // Import and instantiate the Google Cloud client library
 // for Stackdriver Logging
-var logging = require('@google-cloud/logging')({
+const logging = require('@google-cloud/logging')({
   projectId: 'YOUR_PROJECT_ID'
 });
 
-// Select the log to write to
-var log = logging.log('my-log');
-// Prepare a log entry
-var entry = log.entry({ type: 'global' }, 'Hello, world!');
+// Selects the log to write to
+const log = logging.log('my-log');
+// Prepares a log entry
+const entry = log.entry({ type: 'global' }, 'Hello, world!');
 
-// Write the log entry
-log.write(entry, function (err, apiResponse) {
+// Writes the log entry
+log.write(entry, (err) => {
   if (!err) {
-    // The entry was logged successfully.
+    // The entry was logged successfully
   }
 });
 // [END quickstart]

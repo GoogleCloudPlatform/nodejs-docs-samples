@@ -13,23 +13,24 @@
 
 'use strict';
 
-var path = require('path');
-var recognizeExample = require('../recognize');
+const path = require(`path`);
+const run = require(`../../utils`).run;
 
-describe('speech:recognize', function () {
-  it('should recognize speech in audio', function (done) {
-    recognizeExample.main(
-      path.join(__dirname, '../resources/audio.raw'),
-      function (err, result) {
-        assert.ifError(err);
-        assert(result);
-        assert(Array.isArray(result.results));
-        assert(result.results.length === 1);
-        assert(result.results[0].alternatives);
-        assert(console.log.calledWith('Got audio file!'));
-        assert(console.log.calledWith('Analyzing speech...'));
-        done();
-      }
-    );
+const cmd = `node recognize.js`;
+const cwd = path.join(__dirname, `..`);
+const filename = `./resources/audio.raw`;
+const text = `how old is the Brooklyn Bridge`;
+
+describe(`speech:recognize`, () => {
+  it(`should run sync recognize`, () => {
+    assert.equal(run(`${cmd} sync ${filename}`, cwd), `Results: ${text}`);
+  });
+
+  it(`should run async recognize`, () => {
+    assert.equal(run(`${cmd} async ${filename}`, cwd), `Results: ${text}`);
+  });
+
+  it(`should run streaming recognize`, () => {
+    assert.notEqual(run(`${cmd} stream ${filename}`, cwd).indexOf(text), -1);
   });
 });

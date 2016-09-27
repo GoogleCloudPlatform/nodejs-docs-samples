@@ -59,7 +59,7 @@ on Google Cloud Platform.
 
 ### Prerequisites
 
-1. Install [Node.js (and NPM)][node]
+1. Install [Node.js v4.5.0 or greater][node]
 1. Clone this repository:
 
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git

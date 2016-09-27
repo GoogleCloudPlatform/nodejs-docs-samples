@@ -39,9 +39,12 @@ describe(`pubsub:subscriptions`, () => {
   after((done) => {
     pubsub.subscription(subscriptionNameOne).delete(() => {
       // Ignore any error
-      pubsub.topic(topicName).delete(() => {
+      pubsub.subscription(subscriptionNameTwo).delete(() => {
         // Ignore any error
-        done();
+        pubsub.topic(topicName).delete(() => {
+          // Ignore any error
+          done();
+        });
       });
     });
   });
@@ -81,6 +84,7 @@ describe(`pubsub:subscriptions`, () => {
       const output = run(`${cmd} list`, cwd);
       assert.notEqual(output.indexOf(`Subscriptions:`), -1);
       assert.notEqual(output.indexOf(fullSubscriptionNameOne), -1);
+      assert.notEqual(output.indexOf(fullSubscriptionNameTwo), -1);
       done();
     }, 5000);
   });
@@ -90,6 +94,7 @@ describe(`pubsub:subscriptions`, () => {
     const output = run(`${cmd} list ${topicName}`, cwd);
     assert.notEqual(output.indexOf(`Subscriptions for ${topicName}:`), -1);
     assert.notEqual(output.indexOf(fullSubscriptionNameOne), -1);
+    assert.notEqual(output.indexOf(fullSubscriptionNameTwo), -1);
     done();
   });
 

@@ -135,7 +135,7 @@ function getSubscriptionMetadata (subscriptionName, callback) {
 
     console.log(`Subscription: ${metadata.name}`);
     console.log(`Topic: ${metadata.topic}`);
-    console.log(`Push config: %s`, metadata.pushConfig.pushEndpoint);
+    console.log(`Push config: ${metadata.pushConfig.pushEndpoint}`);
     console.log(`Ack deadline: ${metadata.ackDeadlineSeconds}s`);
     callback();
   });
@@ -158,7 +158,7 @@ function pullMessages (subscriptionName, callback) {
     console.log(`Received ${messages.length} messages.`);
 
     messages.forEach((message) => {
-      console.log(`* ${message.id} %j %j`, message.data, message.attributes);
+      console.log(`* %d %j %j`, message.id, message.data, message.attributes);
     });
 
     // Acknowledges received messages. If you do not acknowledge, Pub/Sub will

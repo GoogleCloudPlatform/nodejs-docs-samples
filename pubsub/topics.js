@@ -147,9 +147,10 @@ function publishOrderedMessage (topicName, data, callback) {
   const message = {
     data: data,
 
-    // Assign an order id to the message
+    // Pub/Sub messages are unordered, so assign an order id to the message to
+    // manually order messages
     attributes: {
-      orderId: '' + getPublishCounterValue()
+      counterId: '' + getPublishCounterValue()
     }
   };
 
@@ -160,7 +161,7 @@ function publishOrderedMessage (topicName, data, callback) {
     }
 
     // Update the counter value
-    setPublishCounterValue(+message.attributes.orderId + 1);
+    setPublishCounterValue(+message.attributes.counterId + 1);
 
     console.log(`Message ${messageIds[0]} published.`);
     callback();

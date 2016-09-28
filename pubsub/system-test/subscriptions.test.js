@@ -13,6 +13,7 @@
 
 'use strict';
 
+const async = require(`async`);
 const pubsub = require(`@google-cloud/pubsub`)();
 const uuid = require(`node-uuid`);
 const path = require(`path`);
@@ -115,40 +116,43 @@ describe(`pubsub:subscriptions`, () => {
   it(`should pull ordered messages`, (done) => {
     const subscriptions = require('../subscriptions');
     const expected = `Hello, world!`;
-    pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '3' } }, (err, firstMessageIds) => {
-      assert.ifError(err);
-      setTimeout(() => {
-        subscriptions.pullOrderedMessages(subscriptionNameOne, (err) => {
-          assert.ifError(err);
-          assert.equal(console.log.callCount, 0);
-          pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '1' } }, (err, secondMessageIds) => {
-            assert.ifError(err);
-            setTimeout(() => {
-              subscriptions.pullOrderedMessages(subscriptionNameOne, (err) => {
-                assert.ifError(err);
-                assert.equal(console.log.callCount, 1);
-                assert.deepEqual(console.log.firstCall.args, [`* %d %j %j`, secondMessageIds[0], expected, { orderId: '1' }]);
-                pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '1' } }, (err) => {
-                  assert.ifError(err);
-                  pubsub.topic(topicName).publish({ data: expected, attributes: { orderId: '2' } }, (err, thirdMessageIds) => {
-                    assert.ifError(err);
-                    setTimeout(() => {
-                      subscriptions.pullOrderedMessages(subscriptionNameOne, (err) => {
-                        assert.ifError(err);
-                        assert.equal(console.log.callCount, 3);
-                        assert.deepEqual(console.log.secondCall.args, [`* %d %j %j`, thirdMessageIds[0], expected, { orderId: '2' }]);
-                        assert.deepEqual(console.log.thirdCall.args, [`* %d %j %j`, firstMessageIds[0], expected, { orderId: '3' }]);
-                        done();
-                      });
-                    }, 2000);
-                  });
-                });
-              });
-            }, 2000);
-          });
-        });
-      }, 2000);
-    });
+    const publishedMessageIds = [];
+
+    async.waterfall([
+      (cb) => {
+        pubsub.topic(topicName).publish({ data: expected, attributes: { counterId: '3' } }, cb);
+      },
+      (messageIds, apiResponse, cb) => {
+        publishedMessageIds.push(messageIds[0]);
+        setTimeout(() => subscriptions.pullOrderedMessages(subscriptionNameOne, cb), 2000);
+      },
+      (cb) => {
+        assert.equal(console.log.callCount, 0);
+        pubsub.topic(topicName).publish({ data: expected, attributes: { counterId: '1' } }, cb);
+      },
+      (messageIds, apiResponse, cb) => {
+        publishedMessageIds.push(messageIds[0]);
+        setTimeout(() => subscriptions.pullOrderedMessages(subscriptionNameOne, cb), 2000);
+      },
+      (cb) => {
+        assert.equal(console.log.callCount, 1);
+        assert.deepEqual(console.log.firstCall.args, [`* %d %j %j`, publishedMessageIds[1], expected, { counterId: '1' }]);
+        pubsub.topic(topicName).publish({ data: expected, attributes: { counterId: '1' } }, cb);
+      },
+      (messageIds, apiResponse, cb) => {
+        pubsub.topic(topicName).publish({ data: expected, attributes: { counterId: '2' } }, cb);
+      },
+      (messageIds, apiResponse, cb) => {
+        publishedMessageIds.push(messageIds[0]);
+        setTimeout(() => subscriptions.pullOrderedMessages(subscriptionNameOne, cb), 2000);
+      },
+      (cb) => {
+        assert.equal(console.log.callCount, 3);
+        assert.deepEqual(console.log.secondCall.args, [`* %d %j %j`, publishedMessageIds[2], expected, { counterId: '2' }]);
+        assert.deepEqual(console.log.thirdCall.args, [`* %d %j %j`, publishedMessageIds[0], expected, { counterId: '3' }]);
+        cb();
+      }
+    ], done);
   });
 
   it(`should set the IAM policy for a subscription`, (done) => {

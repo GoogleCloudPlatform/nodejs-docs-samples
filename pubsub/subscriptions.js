@@ -216,28 +216,30 @@ function pullOrderedMessages (subscriptionName, callback) {
       return;
     }
 
+    // Pub/Sub messages are unordered, so here we manually order messages by
+    // their "counterId" attribute which was set when they were published.
     messages.forEach((message) => {
-      outstandingMessages[message.attributes.orderId] = message;
+      outstandingMessages[message.attributes.counterId] = message;
     });
 
-    const outstandingIds = Object.keys(outstandingMessages).map((orderId) => +orderId);
+    const outstandingIds = Object.keys(outstandingMessages).map((counterId) => +counterId);
     outstandingIds.sort();
 
-    outstandingIds.forEach((orderId) => {
+    outstandingIds.forEach((counterId) => {
       const counter = getSubscribeCounterValue();
-      const message = outstandingMessages[orderId];
+      const message = outstandingMessages[counterId];
 
-      if (orderId < counter) {
+      if (counterId < counter) {
         // The message has already been processed
         subscription.ack(message.ackId);
-        delete outstandingMessages[orderId];
-      } else if (orderId === counter) {
+        delete outstandingMessages[counterId];
+      } else if (counterId === counter) {
         // Process the message
         console.log(`* %d %j %j`, message.id, message.data, message.attributes);
 
-        setSubscribeCounterValue(orderId + 1);
+        setSubscribeCounterValue(counterId + 1);
         subscription.ack(message.ackId);
-        delete outstandingMessages[orderId];
+        delete outstandingMessages[counterId];
       } else {
         // Have not yet processed the message on which this message is dependent
         return false;

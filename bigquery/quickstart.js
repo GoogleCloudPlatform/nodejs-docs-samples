@@ -14,13 +14,22 @@
 'use strict';
 
 // [START bigquery_quickstart]
-// Imports and instantiates the Google Cloud client library
-const bigquery = require('@google-cloud/bigquery')({
-  projectId: 'YOUR_PROJECT_ID'
+// Imports the Google Cloud client library
+const BigQuery = require('@google-cloud/bigquery');
+
+// Your Google Cloud Platform project ID
+const projectId = 'YOUR_PROJECT_ID';
+
+// Instantiates a client
+const bigqueryClient = BigQuery({
+  projectId: projectId
 });
 
-// Creates a new dataset
-bigquery.createDataset('my_new_dataset', (err, dataset) => {
+// The name for the new dataset
+const datasetName = 'my_new_dataset';
+
+// Creates the new dataset
+bigqueryClient.createDataset(datasetName, (err, dataset) => {
   if (!err) {
     // The dataset was created successfully
   }

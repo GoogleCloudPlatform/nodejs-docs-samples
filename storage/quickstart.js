@@ -14,13 +14,22 @@
 'use strict';
 
 // [START storage_quickstart]
-// Imports and instantiates the Google Cloud client library
-const storage = require('@google-cloud/storage')({
-  projectId: 'YOUR_PROJECT_ID'
+// Imports the Google Cloud client library
+const Storage = require('@google-cloud/storage');
+
+// Your Google Cloud Platform project ID
+const projectId = 'YOUR_PROJECT_ID';
+
+// Instantiates a client
+const storageClient = Storage({
+  projectId: projectId
 });
 
-// Creates a new bucket
-storage.createBucket('my-new-bucket', (err, bucket) => {
+// The name for the new bucket
+const bucketName = 'my-new-bucket';
+
+// Creates the new bucket
+storageClient.createBucket(bucketName, (err, bucket) => {
   if (!err) {
     // The bucket was created successfully
   }

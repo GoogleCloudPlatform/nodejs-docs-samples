@@ -135,8 +135,8 @@ function deleteSubscription (subscriptionName, callback) {
 }
 // [END pubsub_delete_subscription]
 
-// [START pubsub_get_subscription_metadata]
-function getSubscriptionMetadata (subscriptionName, callback) {
+// [START pubsub_get_subscription]
+function getSubscription (subscriptionName, callback) {
   // Instantiates the client library
   const pubsubClient = PubSub();
 
@@ -157,7 +157,7 @@ function getSubscriptionMetadata (subscriptionName, callback) {
     callback();
   });
 }
-// [END pubsub_get_subscription_metadata]
+// [END pubsub_get_subscription]
 
 // [START pubsub_pull_messages]
 function pullMessages (subscriptionName, callback) {
@@ -342,7 +342,7 @@ const program = module.exports = {
   createSubscription: createSubscription,
   createPushSubscription: createPushSubscription,
   deleteSubscription: deleteSubscription,
-  getSubscriptionMetadata: getSubscriptionMetadata,
+  getSubscription: getSubscription,
   pullMessages: pullMessages,
   pullOrderedMessages: pullOrderedMessages,
   getSubscriptionPolicy: getSubscriptionPolicy,
@@ -373,7 +373,7 @@ cli
     program.deleteSubscription(options.subscriptionName, makeHandler(false));
   })
   .command(`get <subscriptionName>`, `Gets the metadata for a subscription.`, {}, (options) => {
-    program.getSubscriptionMetadata(options.subscriptionName, makeHandler(false));
+    program.getSubscription(options.subscriptionName, makeHandler(false));
   })
   .command(`pull <subscriptionName>`, `Pulls messages for a subscription.`, {}, (options) => {
     program.pullMessages(options.subscriptionName, makeHandler(false));

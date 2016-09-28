@@ -48,7 +48,7 @@ describe(`pubsub:subscriptions`, () => {
     program.createSubscription(topicName, subscriptionName, callback);
     program.createPushSubscription(topicName, subscriptionName, callback);
     program.deleteSubscription(subscriptionName, callback);
-    program.getSubscriptionMetadata(subscriptionName, callback);
+    program.getSubscription(subscriptionName, callback);
     program.listSubscriptions(callback);
     program.listTopicSubscriptions(topicName, callback);
     program.pullMessages(subscriptionName, callback);

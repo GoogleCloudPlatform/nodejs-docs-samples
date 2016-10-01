@@ -15,31 +15,34 @@
 
 'use strict';
 
-// [START translate_quickstart]
+// [START speech_quickstart]
 // Imports the Google Cloud client library
-const Translate = require('@google-cloud/translate');
+const Speech = require('@google-cloud/speech');
 
-// Your Translate API key
-const apiKey = 'YOUR_API_KEY';
+// Your Google Cloud Platform project ID
+const projectId = 'YOUR_PROJECT_ID';
 
 // Instantiates a client
-const translateClient = Translate({
-  key: apiKey
+const speechClient = Speech({
+  projectId: projectId
 });
 
-// The text to translate
-const text = 'Hello, world!';
-// The target language
-const target = 'ru';
+// The name of the audio file to transcribe
+const fileName = './resources/audio.raw';
 
-// Translates some text into Russian
-translateClient.translate(text, target, (err, translation) => {
+// The audio file's encoding and sample rate
+const options = {
+  encoding: 'LINEAR16',
+  sampleRate: 16000
+};
+
+// Detects speech in the audio file
+speechClient.recognize(fileName, options, (err, result) => {
   if (err) {
     console.error(err);
     return;
   }
 
-  console.log(`Text: ${text}`);
-  console.log(`Translation: ${translation}`);
+  console.log(`Transcription: ${result}`);
 });
-// [END translate_quickstart]
+// [END speech_quickstart]

@@ -15,31 +15,26 @@
 
 'use strict';
 
-// [START translate_quickstart]
+// [START dns_quickstart]
 // Imports the Google Cloud client library
-const Translate = require('@google-cloud/translate');
+const DNS = require('@google-cloud/dns');
 
-// Your Translate API key
-const apiKey = 'YOUR_API_KEY';
+// Your Google Cloud Platform project ID
+const projectId = 'YOUR_PROJECT_ID';
 
 // Instantiates a client
-const translateClient = Translate({
-  key: apiKey
+const dnsClient = DNS({
+  projectId: projectId
 });
 
-// The text to translate
-const text = 'Hello, world!';
-// The target language
-const target = 'ru';
-
-// Translates some text into Russian
-translateClient.translate(text, target, (err, translation) => {
+// Lists all zones in the current project
+dnsClient.getZones((err, zones) => {
   if (err) {
     console.error(err);
     return;
   }
 
-  console.log(`Text: ${text}`);
-  console.log(`Translation: ${translation}`);
+  console.log('Zones:');
+  zones.forEach((zone) => console.log(zone.name));
 });
-// [END translate_quickstart]
+// [END dns_quickstart]

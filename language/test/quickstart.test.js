@@ -17,27 +17,27 @@
 
 const proxyquire = require(`proxyquire`).noCallThru();
 
-describe(`pubsub:quickstart`, () => {
-  let pubsubMock, PubSubMock;
+describe(`language:quickstart`, () => {
+  let languageMock, LanguageMock;
   const error = new Error(`error`);
-  const expectedTopicName = `my-new-topic`;
+  const text = 'Hello, world!';
 
   before(() => {
-    pubsubMock = {
-      createTopic: sinon.stub().yields(error)
+    languageMock = {
+      detectSentiment: sinon.stub().yields(error)
     };
-    PubSubMock = sinon.stub().returns(pubsubMock);
+    LanguageMock = sinon.stub().returns(languageMock);
   });
 
   it(`should handle error`, () => {
     proxyquire(`../quickstart`, {
-      '@google-cloud/pubsub': PubSubMock
+      '@google-cloud/language': LanguageMock
     });
 
-    assert.equal(PubSubMock.calledOnce, true);
-    assert.deepEqual(PubSubMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
-    assert.equal(pubsubMock.createTopic.calledOnce, true);
-    assert.deepEqual(pubsubMock.createTopic.firstCall.args.slice(0, -1), [expectedTopicName]);
+    assert.equal(LanguageMock.calledOnce, true);
+    assert.deepEqual(LanguageMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
+    assert.equal(languageMock.detectSentiment.calledOnce, true);
+    assert.deepEqual(languageMock.detectSentiment.firstCall.args.slice(0, -1), [text, { verbose: true }]);
     assert.equal(console.error.calledOnce, true);
     assert.deepEqual(console.error.firstCall.args, [error]);
   });

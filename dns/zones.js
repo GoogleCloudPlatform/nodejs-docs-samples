@@ -15,33 +15,33 @@
 
 'use strict';
 
-const Resource = require('@google-cloud/resource');
+const DNS = require('@google-cloud/dns');
 
-// [START resource_list_projects]
-function listProjects (callback) {
+// [START dns_list_zones]
+function listZones (callback) {
   // Instantiates a client
-  const resource = Resource();
+  const dns = DNS();
 
-  // Lists all current projects
-  resource.getProjects((err, projects) => {
+  // Lists all zones in the current project
+  dns.getZones((err, zones) => {
     if (err) {
       callback(err);
       return;
     }
 
-    console.log('Projects:');
-    projects.forEach((project) => console.log(project.id));
+    console.log('Zones:');
+    zones.forEach((zone) => console.log(zone.name));
     callback();
   });
 }
-// [END resource_list_projects]
+// [END dns_list_zones]
 
 // The command-line program
-const cli = require(`yargs`);
-const makeHandler = require(`../utils`).makeHandler;
+const cli = require('yargs');
+const makeHandler = require('../utils').makeHandler;
 
 const program = module.exports = {
-  listProjects: listProjects,
+  listZones: listZones,
   main: (args) => {
     // Run the command-line program
     cli.help().strict().parse(args).argv;
@@ -50,13 +50,13 @@ const program = module.exports = {
 
 cli
   .demand(1)
-  .command(`list`, `List all current projects.`, {}, () => {
-    program.listProjects(makeHandler(false));
+  .command('list', 'Lists all zones in the current project.', {}, () => {
+    program.listZones(makeHandler(false));
   })
-  .example(`node $0 list`, `Lists all current projects.`)
+  .example('node $0 list', 'Lists all zones in the current project.')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/resource-manager/docs`);
+  .epilogue('For more information, see https://cloud.google.com/dns/docs');
 
 if (module === require.main) {
   program.main(process.argv.slice(2));

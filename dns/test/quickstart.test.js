@@ -17,27 +17,26 @@
 
 const proxyquire = require(`proxyquire`).noCallThru();
 
-describe(`pubsub:quickstart`, () => {
-  let pubsubMock, PubSubMock;
+describe(`dns:quickstart`, () => {
+  let dnsMock, DNSMock;
   const error = new Error(`error`);
-  const expectedTopicName = `my-new-topic`;
 
   before(() => {
-    pubsubMock = {
-      createTopic: sinon.stub().yields(error)
+    dnsMock = {
+      getZones: sinon.stub().yields(error)
     };
-    PubSubMock = sinon.stub().returns(pubsubMock);
+    DNSMock = sinon.stub().returns(dnsMock);
   });
 
   it(`should handle error`, () => {
     proxyquire(`../quickstart`, {
-      '@google-cloud/pubsub': PubSubMock
+      '@google-cloud/dns': DNSMock
     });
 
-    assert.equal(PubSubMock.calledOnce, true);
-    assert.deepEqual(PubSubMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
-    assert.equal(pubsubMock.createTopic.calledOnce, true);
-    assert.deepEqual(pubsubMock.createTopic.firstCall.args.slice(0, -1), [expectedTopicName]);
+    assert.equal(DNSMock.calledOnce, true);
+    assert.deepEqual(DNSMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
+    assert.equal(dnsMock.getZones.calledOnce, true);
+    assert.deepEqual(dnsMock.getZones.firstCall.args.slice(0, -1), []);
     assert.equal(console.error.calledOnce, true);
     assert.deepEqual(console.error.firstCall.args, [error]);
   });

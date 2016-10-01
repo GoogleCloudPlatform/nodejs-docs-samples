@@ -28,6 +28,7 @@ queue.push('bigquery');
 queue.push('computeengine');
 queue.push('datastore');
 queue.push('debugger');
+queue.push('dns');
 queueDirectories('functions');
 queue.push('functions/ocr/app');
 queue.push('language');

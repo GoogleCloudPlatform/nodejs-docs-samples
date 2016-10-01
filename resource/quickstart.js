@@ -15,31 +15,26 @@
 
 'use strict';
 
-// [START translate_quickstart]
+// [START resource_quickstart]
 // Imports the Google Cloud client library
-const Translate = require('@google-cloud/translate');
+const Resource = require('@google-cloud/resource');
 
-// Your Translate API key
-const apiKey = 'YOUR_API_KEY';
+// Your Google Cloud Platform project ID
+const projectId = 'YOUR_PROJECT_ID';
 
 // Instantiates a client
-const translateClient = Translate({
-  key: apiKey
+const resourceClient = Resource({
+  projectId: projectId
 });
 
-// The text to translate
-const text = 'Hello, world!';
-// The target language
-const target = 'ru';
-
-// Translates some text into Russian
-translateClient.translate(text, target, (err, translation) => {
+// Lists current projects
+resourceClient.getProjects((err, projects) => {
   if (err) {
     console.error(err);
     return;
   }
 
-  console.log(`Text: ${text}`);
-  console.log(`Translation: ${translation}`);
+  console.log('Projects:');
+  projects.forEach((project) => console.log(project.id));
 });
-// [END translate_quickstart]
+// [END resource_quickstart]

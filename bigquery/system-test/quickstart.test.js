@@ -17,14 +17,17 @@
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const bigquery = proxyquire(`@google-cloud/bigquery`, {})();
+var uuid = require('node-uuid');
 
-const datasetName = `my_new_dataset`;
+const expectedDatasetId = `my_new_dataset`;
+let datasetId = `nodejs-docs-samples-test-${uuid.v4()}`;
+datasetId = datasetId.replace(/-/gi, `_`);
 
-describe(`bigquery:quickstart`, () => {
+describe.only(`bigquery:quickstart`, () => {
   let bigqueryMock, BigqueryMock;
 
   after((done) => {
-    bigquery.dataset(datasetName).delete(() => {
+    bigquery.dataset(datasetId).delete(() => {
       // Ignore any error, the dataset might not have been created
       done();
     });
@@ -32,11 +35,11 @@ describe(`bigquery:quickstart`, () => {
 
   it(`should create a dataset`, (done) => {
     bigqueryMock = {
-      createDataset: (_datasetName, _callback) => {
-        assert.equal(_datasetName, datasetName);
+      createDataset: (_datasetId, _callback) => {
+        assert.equal(_datasetId, expectedDatasetId);
         assert.equal(typeof _callback, 'function');
 
-        bigquery.createDataset(datasetName, (err, dataset, apiResponse) => {
+        bigquery.createDataset(datasetId, (err, dataset, apiResponse) => {
           _callback(err, dataset, apiResponse);
           assert.ifError(err);
           assert.notEqual(dataset, undefined);

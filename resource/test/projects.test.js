@@ -24,9 +24,9 @@ describe(`resource:projects`, () => {
     const resourceMock = {
       getProjects: sinon.stub().yields(error)
     };
-    const ResourceMocket = sinon.stub().returns(resourceMock);
+    const ResourceMock = sinon.stub().returns(resourceMock);
     const program = proxyquire(`../projects`, {
-      '@google-cloud/resource': ResourceMocket
+      '@google-cloud/resource': ResourceMock
     });
 
     program.listProjects(callback);

@@ -19,7 +19,7 @@ const proxyquire = require(`proxyquire`).noPreserveCache();
 const dns = proxyquire(`@google-cloud/dns`, {})();
 
 const uuid = require(`uuid`);
-const zoneName = `test-${uuid().substr(0, 13)}`;
+const zoneName = `test-${uuid().substring(0, 13)}`;
 
 describe(`dns:quickstart`, () => {
   let dnsMock, DNSMock;

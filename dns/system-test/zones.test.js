@@ -33,10 +33,8 @@ describe(`dns:zones`, () => {
 
   after((done) => {
     dns.zone(zoneName).delete(() => {
-      dns.zone('my-awesome-zone').delete(() => {
-        // Ignore error
-        done();
-      });
+      // Ignore error
+      done();
     });
   });
 

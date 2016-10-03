@@ -20,7 +20,7 @@ const translate = proxyquire(`@google-cloud/translate`, {})({
   key: process.env.TRANSLATE_API_KEY
 });
 const string = `Hello, world!`;
-const translated = `Привет мир!`;
+const expectedTranslation = `Привет мир!`;
 const targetLanguage = `ru`;
 
 describe(`translate:quickstart`, () => {
@@ -36,11 +36,11 @@ describe(`translate:quickstart`, () => {
         translate.translate(_string, _targetLanguage, (err, translation, apiResponse) => {
           _callback(err, translation, apiResponse);
           assert.ifError(err);
-          assert.equal(translation, translated);
+          assert.equal(translation, expectedTranslation);
           assert.notEqual(apiResponse, undefined);
           assert.equal(console.log.calledTwice, true);
           assert.deepEqual(console.log.firstCall.args, [`Text: ${string}`]);
-          assert.deepEqual(console.log.secondCall.args, [`Translation: ${translated}`]);
+          assert.deepEqual(console.log.secondCall.args, [`Translation: ${expectedTranslation}`]);
           done();
         });
       }

@@ -15,31 +15,29 @@
 
 'use strict';
 
-// [START translate_quickstart]
+// [START vision_quickstart]
 // Imports the Google Cloud client library
-const Translate = require('@google-cloud/translate');
+const Vision = require('@google-cloud/vision');
 
-// Your Translate API key
-const apiKey = 'YOUR_API_KEY';
+// Your Google Cloud Platform project ID
+const projectId = 'YOUR_PROJECT_ID';
 
 // Instantiates a client
-const translateClient = Translate({
-  key: apiKey
+const visionClient = Vision({
+  projectId: projectId
 });
 
-// The text to translate
-const text = 'Hello, world!';
-// The target language
-const target = 'ru';
+// The name of the image file to annotate
+const fileName = './resources/wakeupcat.jpg';
 
-// Translates some text into Russian
-translateClient.translate(text, target, (err, translation) => {
+// Performs label detection on the image file
+visionClient.detectLabels(fileName, (err, labels) => {
   if (err) {
     console.error(err);
     return;
   }
 
-  console.log(`Text: ${text}`);
-  console.log(`Translation: ${translation}`);
+  console.log('Labels:');
+  labels.forEach((label) => console.log(label));
 });
-// [END translate_quickstart]
+// [END vision_quickstart]

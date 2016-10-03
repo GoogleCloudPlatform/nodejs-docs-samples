@@ -17,27 +17,26 @@
 
 const proxyquire = require(`proxyquire`).noCallThru();
 
-describe(`pubsub:quickstart`, () => {
-  let pubsubMock, PubSubMock;
+describe(`resource:quickstart`, () => {
+  let resourceMock, ResourceMock;
   const error = new Error(`error`);
-  const expectedTopicName = `my-new-topic`;
 
   before(() => {
-    pubsubMock = {
-      createTopic: sinon.stub().yields(error)
+    resourceMock = {
+      getProjects: sinon.stub().yields(error)
     };
-    PubSubMock = sinon.stub().returns(pubsubMock);
+    ResourceMock = sinon.stub().returns(resourceMock);
   });
 
   it(`should handle error`, () => {
     proxyquire(`../quickstart`, {
-      '@google-cloud/pubsub': PubSubMock
+      '@google-cloud/resource': ResourceMock
     });
 
-    assert.equal(PubSubMock.calledOnce, true);
-    assert.deepEqual(PubSubMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
-    assert.equal(pubsubMock.createTopic.calledOnce, true);
-    assert.deepEqual(pubsubMock.createTopic.firstCall.args.slice(0, -1), [expectedTopicName]);
+    assert.equal(ResourceMock.calledOnce, true);
+    assert.deepEqual(ResourceMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
+    assert.equal(resourceMock.getProjects.calledOnce, true);
+    assert.deepEqual(resourceMock.getProjects.firstCall.args.slice(0, -1), []);
     assert.equal(console.error.calledOnce, true);
     assert.deepEqual(console.error.firstCall.args, [error]);
   });

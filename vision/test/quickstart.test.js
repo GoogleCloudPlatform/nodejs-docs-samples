@@ -17,27 +17,27 @@
 
 const proxyquire = require(`proxyquire`).noCallThru();
 
-describe(`pubsub:quickstart`, () => {
-  let pubsubMock, PubSubMock;
+describe(`vision:quickstart`, () => {
+  let visionMock, VisionMock;
   const error = new Error(`error`);
-  const expectedTopicName = `my-new-topic`;
+  const fileName = `./resources/wakeupcat.jpg`;
 
   before(() => {
-    pubsubMock = {
-      createTopic: sinon.stub().yields(error)
+    visionMock = {
+      detectLabels: sinon.stub().yields(error)
     };
-    PubSubMock = sinon.stub().returns(pubsubMock);
+    VisionMock = sinon.stub().returns(visionMock);
   });
 
   it(`should handle error`, () => {
     proxyquire(`../quickstart`, {
-      '@google-cloud/pubsub': PubSubMock
+      '@google-cloud/vision': VisionMock
     });
 
-    assert.equal(PubSubMock.calledOnce, true);
-    assert.deepEqual(PubSubMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
-    assert.equal(pubsubMock.createTopic.calledOnce, true);
-    assert.deepEqual(pubsubMock.createTopic.firstCall.args.slice(0, -1), [expectedTopicName]);
+    assert.equal(VisionMock.calledOnce, true);
+    assert.deepEqual(VisionMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
+    assert.equal(visionMock.detectLabels.calledOnce, true);
+    assert.deepEqual(visionMock.detectLabels.firstCall.args.slice(0, -1), [fileName]);
     assert.equal(console.error.calledOnce, true);
     assert.deepEqual(console.error.firstCall.args, [error]);
   });

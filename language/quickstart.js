@@ -15,31 +15,29 @@
 
 'use strict';
 
-// [START translate_quickstart]
+// [START language_quickstart]
 // Imports the Google Cloud client library
-const Translate = require('@google-cloud/translate');
+const Language = require('@google-cloud/language');
 
-// Your Translate API key
-const apiKey = 'YOUR_API_KEY';
+// Your Google Cloud Platform project ID
+const projectId = 'YOUR_PROJECT_ID';
 
 // Instantiates a client
-const translateClient = Translate({
-  key: apiKey
+const languageClient = Language({
+  projectId: projectId
 });
 
-// The text to translate
+// The text to analyze
 const text = 'Hello, world!';
-// The target language
-const target = 'ru';
 
-// Translates some text into Russian
-translateClient.translate(text, target, (err, translation) => {
+// Detects the sentiment of the text
+languageClient.detectSentiment(text, { verbose: true }, (err, sentiment) => {
   if (err) {
     console.error(err);
     return;
   }
 
-  console.log(`Text: ${text}`);
-  console.log(`Translation: ${translation}`);
+  console.log('Text: %s', text);
+  console.log('Sentiment: %j', sentiment);
 });
-// [END translate_quickstart]
+// [END language_quickstart]

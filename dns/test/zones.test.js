@@ -15,16 +15,23 @@
 
 'use strict';
 
-const path = require(`path`);
-const run = require(`../../utils`).run;
+const proxyquire = require(`proxyquire`).noCallThru();
 
-const cwd = path.join(__dirname, `..`);
-const cmd = `node projects.js`;
+describe(`dns:zones`, () => {
+  it(`should handle errors`, () => {
+    const error = new Error(`error`);
+    const callback = sinon.spy();
+    const dnsMock = {
+      getZones: sinon.stub().yields(error)
+    };
+    const DNSMock = sinon.stub().returns(dnsMock);
+    const program = proxyquire(`../zones`, {
+      '@google-cloud/dns': DNSMock
+    });
 
-describe(`resource:projects`, () => {
-  it(`should list projects`, () => {
-    const output = run(`${cmd} list`, cwd);
-    assert.notEqual(output.indexOf(`Projects:`), -1);
-    assert.notEqual(output.indexOf(`${process.env.GCLOUD_PROJECT}`), -1);
+    program.listZones(callback);
+
+    assert.equal(callback.callCount, 1);
+    assert.equal(callback.alwaysCalledWithExactly(error), true);
   });
 });

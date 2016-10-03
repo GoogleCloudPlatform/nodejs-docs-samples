@@ -17,27 +17,32 @@
 
 const proxyquire = require(`proxyquire`).noCallThru();
 
-describe(`pubsub:quickstart`, () => {
-  let pubsubMock, PubSubMock;
+const config = {
+  encoding: 'LINEAR16',
+  sampleRate: 16000
+};
+
+describe(`speech:quickstart`, () => {
+  let speechMock, SpeechMock;
   const error = new Error(`error`);
-  const expectedTopicName = `my-new-topic`;
+  const fileName = `./resources/audio.raw`;
 
   before(() => {
-    pubsubMock = {
-      createTopic: sinon.stub().yields(error)
+    speechMock = {
+      recognize: sinon.stub().yields(error)
     };
-    PubSubMock = sinon.stub().returns(pubsubMock);
+    SpeechMock = sinon.stub().returns(speechMock);
   });
 
   it(`should handle error`, () => {
     proxyquire(`../quickstart`, {
-      '@google-cloud/pubsub': PubSubMock
+      '@google-cloud/speech': SpeechMock
     });
 
-    assert.equal(PubSubMock.calledOnce, true);
-    assert.deepEqual(PubSubMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
-    assert.equal(pubsubMock.createTopic.calledOnce, true);
-    assert.deepEqual(pubsubMock.createTopic.firstCall.args.slice(0, -1), [expectedTopicName]);
+    assert.equal(SpeechMock.calledOnce, true);
+    assert.deepEqual(SpeechMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
+    assert.equal(speechMock.recognize.calledOnce, true);
+    assert.deepEqual(speechMock.recognize.firstCall.args.slice(0, -1), [fileName, config]);
     assert.equal(console.error.calledOnce, true);
     assert.deepEqual(console.error.firstCall.args, [error]);
   });

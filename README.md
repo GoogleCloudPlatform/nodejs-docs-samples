@@ -48,6 +48,8 @@ on Google Cloud Platform.
     * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
     * [Stackdriver Monitoring (Beta)](#stackdriver-monitoring-beta)
     * [Stackdriver Trace (Beta)](#stackdriver-trace-beta)
+  * [**Networking**](#management-tools)
+    * [Google Cloud DNS](#google-cloud-dns)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
   * [LabelCat](#labelcat)
@@ -402,6 +404,22 @@ View the [Stackdriver Trace Node.js sample][trace_sample].
 
 [trace_docs]: https://cloud.google.com/trace/docs/
 [trace_sample]: trace
+
+### Networking
+
+#### Google Cloud DNS
+
+Publish your domain names using Google's infrastructure for production-quality,
+high-volume DNS services. Google's global network of anycast name servers
+provide reliable, low-latency authoritative name lookups for your domains from
+anywhere in the world. Read more about [Google Cloud DNS][dns_docs].
+
+[dns_docs]: https://cloud.google.com/dns/docs
+
+View the [Google Cloud DNS Node.js sample][dns_sample].
+
+[dns_docs]: https://cloud.google.com/dns/docs/
+[dns_sample]: dns
 
 ## Other sample applications
 

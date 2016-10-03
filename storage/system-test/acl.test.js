@@ -1,237 +1,111 @@
-// Copyright 2015-2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var path = require('path');
-var Storage = require('@google-cloud/storage');
-var uuid = require('node-uuid');
-var program = require('../acl');
+const storage = require(`@google-cloud/storage`)();
+const uuid = require(`node-uuid`);
+const path = require(`path`);
+const run = require(`../../utils`).run;
 
-var storage = Storage();
-var bucketName = 'nodejs-docs-samples-test-' + uuid.v4();
-var fileName = 'test.txt';
-var entity = 'allAuthenticatedUsers';
-var role = 'READER';
-var filePath = path.join(__dirname, '../resources', fileName);
+const cwd = path.join(__dirname, `..`);
+const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const userEmail = `00b4903a973860a50828a620e09dde96aae6122ca4f0835bd469384659f1a5b8`;
+const fileName = `test.txt`;
+const filePath = path.join(__dirname, `../resources`, fileName);
+const cmd = `node acl.js`;
 
-var expected = {
-  entity: entity,
-  role: role
-};
-
-describe('storage:acl', function () {
-  before(function (done) {
-    storage.createBucket(bucketName, function (err, bucket) {
-      if (err) {
-        return done(err);
-      }
+describe('storage:acl', () => {
+  before((done) => {
+    storage.createBucket(bucketName, (err, bucket) => {
+      assert.ifError(err);
       bucket.upload(filePath, done);
     });
   });
 
-  after(function (done) {
-    storage.bucket(bucketName).deleteFiles({ force: true }, function (err) {
-      if (err) {
-        return done(err);
-      }
-      storage.bucket(bucketName).delete(done);
+  after((done) => {
+    storage.bucket(bucketName).file(fileName).delete(() => {
+      // Ignore error
+      setTimeout(() => {
+        storage.bucket(bucketName).delete(() => {
+          // Ignore error
+          done();
+        });
+      }, 2000);
     });
   });
 
-  describe('add', function () {
-    it('should add access controls to a bucket', function (done) {
-      program.addAccessControl({
-        bucket: bucketName,
-        entity: entity,
-        role: role
-      }, function (err, aclObject) {
-        assert.ifError(err);
-        assert.deepEqual(aclObject, expected);
-        done();
-      });
-    });
+  it(`should print acl for a bucket`, () => {
+    const output = run(`${cmd} print-bucket-acl ${bucketName}`, cwd);
+    assert.equal(/OWNER: project-editors-/.test(output), true);
+    assert.equal(/OWNER: project-owners-/.test(output), true);
+    assert.equal(/READER: project-viewers-/.test(output), true);
+  });
 
-    it('should add "default" access controls to a bucket', function (done) {
-      program.addAccessControl({
-        bucket: bucketName,
-        entity: entity,
-        role: role,
-        default: true
-      }, function (err, aclObject) {
-        assert.ifError(err);
-        assert.deepEqual(aclObject, expected);
-        done();
-      });
-    });
-
-    it('should add access controls to a file', function (done) {
-      program.addAccessControl({
-        bucket: bucketName,
-        file: fileName,
-        entity: entity,
-        role: role
-      }, function (err, aclObject) {
-        assert.ifError(err);
-        assert.ifError(err);
-        assert.deepEqual(aclObject, expected);
-        setTimeout(done, 2000); // Make sure changes have time to take effect
-      });
+  it(`should print a user's acl for a bucket`, (done) => {
+    storage.bucket(bucketName).acl.readers.addUser(userEmail, (err) => {
+      assert.ifError(err);
+      const output = run(`${cmd} print-bucket-acl-for-user ${bucketName} ${userEmail}`, cwd);
+      assert.equal(output, `READER: user-${userEmail}`);
+      storage.bucket(bucketName).acl.readers.deleteUser(userEmail, done);
     });
   });
 
-  describe('get', function () {
-    it('should get all access controls for a bucket', function (done) {
-      program.getAccessControl({
-        bucket: bucketName
-      }, function (err, aclObjects) {
-        assert.ifError(err);
-        assert(Array.isArray(aclObjects));
-        assert(aclObjects.length > 1);
-        var matchesExpected = aclObjects.filter(function (aclObject) {
-          return aclObject.entity === entity && aclObject.role === role;
-        });
-        assert.equal(matchesExpected.length, 1, 'Recently added aclObject should be in list');
-        done();
-      });
-    });
+  it(`should add a user as an owner on a bucket`, () => {
+    const output = run(`${cmd} add-bucket-owner ${bucketName} ${userEmail}`, cwd);
+    assert.equal(output, `Added user ${userEmail} as an owner on bucket ${bucketName}.`);
+  });
 
-    it('should get an entity\'s access controls for a bucket', function (done) {
-      program.getAccessControl({
-        bucket: bucketName,
-        entity: entity
-      }, function (err, aclObject) {
-        assert.ifError(err);
-        assert.deepEqual(aclObject, expected);
-        done();
-      });
-    });
+  it(`should remove a user from a bucket`, () => {
+    const output = run(`${cmd} remove-bucket-owner ${bucketName} ${userEmail}`, cwd);
+    assert.equal(output, `Removed user ${userEmail} from bucket ${bucketName}.`);
+  });
 
-    it('should get all "default" access controls for a bucket', function (done) {
-      program.getAccessControl({
-        bucket: bucketName,
-        default: true
-      }, function (err, aclObjects) {
-        assert.ifError(err);
-        assert(Array.isArray(aclObjects));
-        assert(aclObjects.length > 1);
-        var matchesExpected = aclObjects.filter(function (aclObject) {
-          return aclObject.entity === entity && aclObject.role === role;
-        });
-        assert.equal(matchesExpected.length, 1, 'Recently added aclObject should be in list');
-        done();
-      });
-    });
+  it(`should add a user as a default owner on a bucket`, () => {
+    const output = run(`${cmd} add-bucket-default-owner ${bucketName} ${userEmail}`, cwd);
+    assert.equal(output, `Added user ${userEmail} as an owner on bucket ${bucketName}.`);
+  });
 
-    it('should get an entity\'s "default" access controls for a bucket', function (done) {
-      program.getAccessControl({
-        bucket: bucketName,
-        entity: entity,
-        default: true
-      }, function (err, aclObject) {
-        assert.ifError(err);
-        assert.deepEqual(aclObject, expected);
-        done();
-      });
-    });
+  it(`should remove a default user from a bucket`, () => {
+    const output = run(`${cmd} remove-bucket-default-owner ${bucketName} ${userEmail}`, cwd);
+    assert.equal(output, `Removed user ${userEmail} from bucket ${bucketName}.`);
+  });
 
-    it('should get all access controls for a file', function (done) {
-      program.getAccessControl({
-        bucket: bucketName,
-        file: fileName
-      }, function (err, aclObjects) {
-        assert.ifError(err);
-        assert(Array.isArray(aclObjects));
-        assert(aclObjects.length > 1);
-        var matchesExpected = aclObjects.filter(function (aclObject) {
-          return aclObject.entity === entity && aclObject.role === role;
-        });
-        assert.equal(matchesExpected.length, 1, 'Recently added aclObject should be in list');
-        done();
-      });
-    });
+  it(`should print acl for a file`, () => {
+    const output = run(`${cmd} print-file-acl ${bucketName} ${fileName}`, cwd);
+    assert.equal(/OWNER: project-editors-/.test(output), true);
+    assert.equal(/OWNER: project-owners-/.test(output), true);
+    assert.equal(/READER: project-viewers-/.test(output), true);
+  });
 
-    it('should get an entity\'s access controls for a file', function (done) {
-      program.getAccessControl({
-        bucket: bucketName,
-        file: fileName,
-        entity: entity
-      }, function (err, aclObject) {
-        assert.ifError(err);
-        assert.deepEqual(aclObject, expected);
-        done();
-      });
+  it(`should print a user's acl for a file`, (done) => {
+    storage.bucket(bucketName).file(fileName).acl.readers.addUser(userEmail, (err) => {
+      assert.ifError(err);
+      const output = run(`${cmd} print-file-acl-for-user ${bucketName} ${fileName} ${userEmail}`, cwd);
+      assert.equal(output, `READER: user-${userEmail}`);
+      storage.bucket(bucketName).file(fileName).acl.readers.deleteUser(userEmail, done);
     });
   });
 
-  describe('delete', function () {
-    it('should delete an entity\'s access controls from a file', function (done) {
-      program.deleteAccessControl({
-        bucket: bucketName,
-        file: fileName,
-        entity: entity
-      }, function (err) {
-        assert.ifError(err);
+  it(`should add a user as an owner on a bucket`, () => {
+    const output = run(`${cmd} add-file-owner ${bucketName} ${fileName} ${userEmail}`, cwd);
+    assert.equal(output, `Added user ${userEmail} as an owner on file ${fileName}.`);
+  });
 
-        program.getAccessControl({
-          bucket: bucketName,
-          file: fileName,
-          entity: entity
-        }, function (err, aclObject) {
-          assert(err);
-          assert.equal(err.message, 'Not Found');
-          done();
-        });
-      });
-    });
-
-    it('should delete an entity\'s access controls from a bucket', function (done) {
-      program.deleteAccessControl({
-        bucket: bucketName,
-        entity: entity
-      }, function (err, aclObject) {
-        assert.ifError(err);
-
-        program.getAccessControl({
-          bucket: bucketName,
-          entity: entity
-        }, function (err, aclObject) {
-          assert(err);
-          assert.equal(err.message, 'Not Found');
-          done();
-        });
-      });
-    });
-
-    it('should delete an entity\'s "default" access controls from a bucket', function (done) {
-      program.deleteAccessControl({
-        bucket: bucketName,
-        entity: entity,
-        default: true
-      }, function (err, aclObject) {
-        assert.ifError(err);
-
-        program.getAccessControl({
-          bucket: bucketName,
-          file: fileName,
-          entity: entity,
-          default: true
-        }, function (err, aclObject) {
-          assert(err);
-          assert.equal(err.message, 'Not Found');
-          done();
-        });
-      });
-    });
+  it(`should remove a user from a bucket`, () => {
+    const output = run(`${cmd} remove-file-owner ${bucketName} ${fileName} ${userEmail}`, cwd);
+    assert.equal(output, `Removed user ${userEmail} from file ${fileName}.`);
   });
 });

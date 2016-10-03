@@ -58,3 +58,9 @@ exports.makeHandler = function (print, field) {
     }
   };
 };
+
+exports.noop = (err) => {
+  if (err) {
+    throw err;
+  }
+};

@@ -1,214 +1,133 @@
-// Copyright 2015-2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var Storage = require('@google-cloud/storage');
-var uuid = require('node-uuid');
-var filesExample = require('../files');
+const fs = require(`fs`);
+const storage = require(`@google-cloud/storage`)();
+const uuid = require(`node-uuid`);
+const path = require(`path`);
+const run = require(`../../utils`).run;
 
-var storage = Storage();
-var bucketName = 'nodejs-docs-samples-test-' + uuid.v4();
-var fileName = 'test.txt';
-var movedFileName = 'test2.txt';
-var copiedFileName = 'test3.txt';
-var filePath = path.join(__dirname, '../resources', fileName);
-var downloadFilePath = path.join(__dirname, '../resources/downloaded.txt');
+const cwd = path.join(__dirname, `..`);
+const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const fileName = `test.txt`;
+const movedFileName = `test2.txt`;
+const copiedFileName = `test3.txt`;
+const filePath = path.join(__dirname, `../resources`, fileName);
+const downloadFilePath = path.join(__dirname, `../resources/downloaded.txt`);
+const cmd = `node files.js`;
 
-describe('storage:files', function () {
-  before(function (done) {
+describe('storage:files', () => {
+  before((done) => {
     storage.createBucket(bucketName, done);
   });
 
-  after(function (done) {
+  after((done) => {
     try {
       fs.unlinkSync(downloadFilePath);
     } catch (err) {
       console.log(err);
     }
-    storage.bucket(bucketName).deleteFiles({ force: true }, function (err) {
-      if (err) {
-        return done(err);
-      }
-      storage.bucket(bucketName).delete(done);
+    storage.bucket(bucketName).deleteFiles({ force: true }, (err) => {
+      assert.ifError(err);
+      setTimeout(() => storage.bucket(bucketName).delete(done), 2000);
     });
   });
 
-  describe('uploadFile', function () {
-    it('should upload a file', function (done) {
-      var options = {
-        bucket: bucketName,
-        srcFile: filePath
-      };
-
-      filesExample.uploadFile(options, function (err, file) {
-        assert.ifError(err);
-        assert(file);
-        assert.equal(file.name, fileName);
-        assert(console.log.calledWith('Uploaded gs://%s/%s', options.bucket, options.srcFile));
-        done();
-      });
+  it('should upload a file', (done) => {
+    const output = run(`${cmd} upload ${bucketName} ${filePath}`, cwd);
+    assert.equal(output, `File ${fileName} uploaded.`);
+    storage.bucket(bucketName).file(fileName).exists((err, exists) => {
+      assert.ifError(err);
+      assert.equal(exists, true);
+      done();
     });
   });
 
-  describe('downloadFile', function () {
-    it('should download a file', function (done) {
-      var options = {
-        bucket: bucketName,
-        srcFile: fileName,
-        destFile: downloadFilePath
-      };
+  it('should download a file', () => {
+    const output = run(`${cmd} download ${bucketName} ${fileName} ${downloadFilePath}`, cwd);
+    assert.equal(output, `File ${fileName} downloaded to ${downloadFilePath}.`);
+    assert.doesNotThrow(() => fs.statSync(downloadFilePath));
+  });
 
-      filesExample.downloadFile(options, function (err) {
-        assert.ifError(err);
-        assert.doesNotThrow(function () {
-          fs.statSync(downloadFilePath);
-        });
-        assert(console.log.calledWith('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile));
-        done();
-      });
+  it('should move a file', (done) => {
+    const output = run(`${cmd} move ${bucketName} ${fileName} ${movedFileName}`, cwd);
+    assert.equal(output, `File ${fileName} moved to ${movedFileName}.`);
+    storage.bucket(bucketName).file(movedFileName).exists((err, exists) => {
+      assert.ifError(err);
+      assert.equal(exists, true);
+      done();
     });
   });
 
-  describe('moveFile', function () {
-    it('should move a file', function (done) {
-      var options = {
-        bucket: bucketName,
-        srcFile: fileName,
-        destFile: movedFileName
-      };
-
-      filesExample.moveFile(options, function (err, file) {
-        assert.ifError(err);
-        assert.equal(file.name, movedFileName);
-        assert(console.log.calledWith('Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile));
-
-        // Listing is eventually consistent, give the index time to update
-        setTimeout(done, 5000);
-      });
+  it('should copy a file', (done) => {
+    const output = run(`${cmd} copy ${bucketName} ${movedFileName} ${bucketName} ${copiedFileName}`, cwd);
+    assert.equal(output, `File ${movedFileName} copied to ${copiedFileName} in ${bucketName}.`);
+    storage.bucket(bucketName).file(copiedFileName).exists((err, exists) => {
+      assert.ifError(err);
+      assert.equal(exists, true);
+      done();
     });
   });
 
-  describe('listFiles', function () {
-    it('should list files', function (done) {
-      filesExample.listFiles(bucketName, function (err, files) {
-        assert.ifError(err);
-        assert(Array.isArray(files));
-        assert.equal(files.length, 1);
-        assert.equal(files[0].name, movedFileName);
-        assert(console.log.calledWith('Found %d file(s)!', files.length));
-        done();
-      });
-    });
+  it('should list files', (done) => {
+    // Listing is eventually consistent, give the indexes time to update
+    setTimeout(() => {
+      const output = run(`${cmd} list ${bucketName}`, cwd);
+      assert.notEqual(output.indexOf(`Files:`), -1);
+      assert.notEqual(output.indexOf(movedFileName), -1);
+      assert.notEqual(output.indexOf(copiedFileName), -1);
+      done();
+    }, 5000);
   });
 
-  describe('copyFile', function () {
-    it('should copy a file', function (done) {
-      var options = {
-        srcBucket: bucketName,
-        srcFile: movedFileName,
-        destBucket: bucketName,
-        destFile: copiedFileName
-      };
-
-      filesExample.copyFile(options, function (err, file) {
-        assert.ifError(err);
-        assert.equal(file.name, copiedFileName);
-        assert(console.log.calledWith('Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile));
-
-        // Listing is eventually consistent, give the index time to update
-        setTimeout(done, 5000);
-      });
-    });
+  it('should list files by a prefix', () => {
+    let output = run(`${cmd} list ${bucketName} test "/"`, cwd);
+    assert.notEqual(output.indexOf(`Files:`), -1);
+    assert.notEqual(output.indexOf(movedFileName), -1);
+    assert.notEqual(output.indexOf(copiedFileName), -1);
+    output = run(`${cmd} list ${bucketName} foo`, cwd);
+    assert.notEqual(output.indexOf(`Files:`), -1);
+    assert.equal(output.indexOf(movedFileName), -1);
+    assert.equal(output.indexOf(copiedFileName), -1);
   });
 
-  describe('listFilesByPrefix', function () {
-    it('should list files by a prefix', function (done) {
-      var options = {
-        bucket: bucketName,
-        prefix: 'test'
-      };
-
-      filesExample.listFilesByPrefix(options, function (err, files) {
-        assert.ifError(err);
-        assert(Array.isArray(files));
-        assert.equal(files.length, 2);
-        assert.equal(files[0].name, movedFileName);
-        assert.equal(files[1].name, copiedFileName);
-        assert(console.log.calledWith('Found %d file(s)!', files.length));
-
-        options = {
-          bucket: bucketName,
-          prefix: 'foo'
-        };
-
-        filesExample.listFilesByPrefix(options, function (err, files) {
-          assert.ifError(err);
-          assert(Array.isArray(files));
-          assert.equal(files.length, 0);
-          assert(console.log.calledWith('Found %d file(s)!', files.length));
-          done();
-        });
-      });
-    });
+  it('should make a file public', () => {
+    const output = run(`${cmd} make-public ${bucketName} ${copiedFileName}`, cwd);
+    assert.equal(output, `File ${copiedFileName} is now public.`);
   });
 
-  describe('makePublic', function () {
-    it('should make a file public', function (done) {
-      var options = {
-        bucket: bucketName,
-        file: copiedFileName
-      };
-
-      filesExample.makePublic(options, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Made gs://%s/%s public!', options.bucket, options.file));
-        done();
-      });
-    });
+  it('should generate a signed URL for a file', () => {
+    const output = run(`${cmd} generate-signed-url ${bucketName} ${copiedFileName}`, cwd);
+    assert.notEqual(output.indexOf(`The signed url for ${copiedFileName} is `), -1);
   });
 
-  describe('getMetadata', function () {
-    it('should get metadata for a file', function (done) {
-      var options = {
-        bucket: bucketName,
-        file: copiedFileName
-      };
-
-      filesExample.getMetadata(options, function (err, metadata) {
-        assert.ifError(err);
-        assert(metadata);
-        assert.equal(metadata.name, copiedFileName);
-        assert(console.log.calledWith('Got metadata for gs://%s/%s', options.bucket, options.file));
-        done();
-      });
-    });
+  it('should get metadata for a file', () => {
+    const output = run(`${cmd} get-metadata ${bucketName} ${copiedFileName}`, cwd);
+    assert.notEqual(output.indexOf(`File: ${copiedFileName}`), -1);
+    assert.notEqual(output.indexOf(`Bucket: ${bucketName}`), -1);
   });
 
-  describe('deleteFile', function () {
-    it('should delete a file', function (done) {
-      var options = {
-        bucket: bucketName,
-        file: copiedFileName
-      };
-
-      filesExample.deleteFile(options, function (err) {
-        assert.ifError(err);
-        assert(console.log.calledWith('Deleted gs://%s/%s', options.bucket, options.file));
-        done();
-      });
+  it('should delete a file', (done) => {
+    const output = run(`${cmd} delete ${bucketName} ${copiedFileName}`, cwd);
+    assert.equal(output, `File ${copiedFileName} deleted.`);
+    storage.bucket(bucketName).file(copiedFileName).exists((err, exists) => {
+      assert.ifError(err);
+      assert.equal(exists, false);
+      done();
     });
   });
 });

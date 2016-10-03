@@ -1,287 +1,329 @@
-// Copyright 2015-2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * This application demonstrates how to perform basic operations on files with
+ * the Google Cloud Storage API.
+ *
+ * For more information, see the README.md under /storage and the documentation
+ * at https://cloud.google.com/storage/docs.
+ */
 
 'use strict';
 
-// [START all]
-// [START setup]
-// By default, the client will authenticate using the service account file
-// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-var Storage = require('@google-cloud/storage');
+const Storage = require('@google-cloud/storage');
 
-// Instantiate a storage client
-var storage = Storage();
-// [END setup]
+// [START storage_list_files]
+function listFiles (bucketName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-// [START list_files]
-/**
- * Lists files in a bucket.
- *
- * @param {string} name The name of the bucket.
- * @param {function} cb The callback function.
- */
-function listFiles (name, callback) {
-  var bucket = storage.bucket(name);
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
-  bucket.getFiles(function (err, files) {
+  // Lists files in the bucket
+  bucket.getFiles((err, files) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Found %d file(s)!', files.length);
-    return callback(null, files);
+    console.log('Files:');
+    files.forEach((file) => console.log(file.name));
+    callback();
   });
 }
-// [END list_files]
+// [END storage_list_files]
 
-// [START list_files_with_prefix]
-/**
- * Lists files in a bucket that match a certain prefix.
- *
- * This can be used to list all blobs in a "folder", e.g. "public/".
- *
- * The delimiter argument can be used to restrict the results to only the
- * "files" in the given "folder". Without the delimiter, the entire tree under
- * the prefix is returned. For example, given these blobs:
- *
- *   /a/1.txt
- *   /a/b/2.txt
- *
- * If you just specify prefix = '/a', you'll get back:
- *
- *   /a/1.txt
- *   /a/b/2.txt
- *
- * However, if you specify prefix='/a' and delimiter='/', you'll get back:
- *
- *   /a/1.txt
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket The name of the bucket.
- * @param {string} options.prefix Filter results to objects whose names begin
- *     with this prefix.
- * @param {string} [options.delimiter] Optional. Results will contain only
- *     objects whose names, aside from the prefix, do not contain delimiter.
- * @param {function} cb The callback function.
- */
-function listFilesByPrefix (options, callback) {
-  var bucket = storage.bucket(options.bucket);
+// [START storage_list_files_with_prefix]
+function listFilesByPrefix (bucketName, prefix, delimiter, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  var config = {
-    prefix: options.prefix
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  /**
+   * This can be used to list all blobs in a "folder", e.g. "public/".
+   *
+   * The delimiter argument can be used to restrict the results to only the
+   * "files" in the given "folder". Without the delimiter, the entire tree under
+   * the prefix is returned. For example, given these blobs:
+   *
+   *   /a/1.txt
+   *   /a/b/2.txt
+   *
+   * If you just specify prefix = '/a', you'll get back:
+   *
+   *   /a/1.txt
+   *   /a/b/2.txt
+   *
+   * However, if you specify prefix='/a' and delimiter='/', you'll get back:
+   *
+   *   /a/1.txt
+   */
+  const options = {
+    prefix: prefix
   };
-  if (options.delimiter) {
-    config.delimiter = options.delimiter;
+  if (delimiter) {
+    options.delimiter = delimiter;
   }
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
-  bucket.getFiles(config, function (err, files) {
+  // Lists files in the bucket, filtered by a prefix
+  bucket.getFiles(options, (err, files) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Found %d file(s)!', files.length);
-    return callback(null, files);
+    console.log('Files:');
+    files.forEach((file) => console.log(file.name));
+    callback();
   });
 }
-// [END list_files_with_prefix]
+// [END storage_list_files_with_prefix]
 
-// [START upload_file]
-/**
- * Upload a file to a bucket.
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket The name of the bucket.
- * @param {string} options.srcFile The name of the file.
- * @param {function} cb The callback function.
- */
-function uploadFile (options, callback) {
-  var bucket = storage.bucket(options.bucket);
+// [START storage_upload_file]
+function uploadFile (bucketName, fileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/bucket
-  bucket.upload(options.srcFile, function (err, file) {
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  // Uploads a local file to the bucket, e.g. "./local/path/to/file.txt"
+  bucket.upload(fileName, (err, file) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Uploaded gs://%s/%s', options.bucket, options.srcFile);
-    return callback(null, file);
+    console.log(`File ${file.name} uploaded.`);
+    callback();
   });
 }
-// [END upload_file]
+// [END storage_upload_file]
 
-// [START download_file]
-/**
- * Download a file from a bucket.
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket The name of the bucket.
- * @param {string} options.srcFile The source file name.
- * @param {string} options.destFile The destination file name.
- * @param {function} cb The callback function.
- */
-function downloadFile (options, callback) {
-  var file = storage.bucket(options.bucket).file(options.srcFile);
+// [START storage_download_file]
+function downloadFile (bucketName, srcFileName, destFileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  var config = {
-    destination: options.destFile
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  // References an existing file, e.g. "file.txt"
+  const file = bucket.file(srcFileName);
+
+  const options = {
+    // The path to which the file should be downloaded, e.g. "./file.txt"
+    destination: destFileName
   };
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
-  file.download(config, function (err) {
+  // Downloads the file
+  file.download(options, (err) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Downloaded gs://%s/%s to %s', options.bucket, options.srcFile, options.destFile);
-    return callback(null);
+    console.log(`File ${file.name} downloaded to ${destFileName}.`);
+    callback();
   });
 }
-// [END download_file]
+// [END storage_download_file]
 
-// [START delete_file]
-/**
- * Delete a file from a bucket.
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket The name of the bucket.
- * @param {string} options.file The name of the file to delete.
- * @param {function} cb The callback function.
- */
-function deleteFile (options, callback) {
-  var file = storage.bucket(options.bucket).file(options.file);
+// [START storage_delete_file]
+function deleteFile (bucketName, fileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
-  file.delete(function (err) {
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  // References an existing file, e.g. "file.txt"
+  const file = bucket.file(fileName);
+
+  // Deletes the file from the bucket
+  file.delete((err) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Deleted gs://%s/%s', options.bucket, options.file);
-    return callback(null);
+    console.log(`File ${fileName} deleted.`);
+    callback();
   });
 }
-// [END delete_file]
+// [END storage_delete_file]
 
-// [START get_metadata]
-/**
- * Get a file's metadata.
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket The name of the bucket.
- * @param {string} options.file The name of the file.
- * @param {function} cb The callback function.
- */
-function getMetadata (options, callback) {
-  var file = storage.bucket(options.bucket).file(options.file);
+// [START storage_get_metadata]
+function getMetadata (bucketName, fileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
-  file.getMetadata(function (err, metadata) {
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  // References an existing file, e.g. "file.txt"
+  const file = bucket.file(fileName);
+
+  // Gets the metadata for the file
+  file.getMetadata((err, metadata) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Got metadata for gs://%s/%s', options.bucket, options.file);
-    return callback(null, metadata);
+    console.log(`File: ${metadata.name}`);
+    console.log(`Bucket: ${metadata.bucket}`);
+    console.log(`Storage class: ${metadata.storageClass}`);
+    console.log(`ID: ${metadata.id}`);
+    console.log(`Size: ${metadata.size}`);
+    console.log(`Updated: ${metadata.updated}`);
+    console.log(`Generation: ${metadata.generation}`);
+    console.log(`Metageneration: ${metadata.metageneration}`);
+    console.log(`Etag: ${metadata.etag}`);
+    console.log(`Owner: ${metadata.owner}`);
+    console.log(`Component count: ${metadata.component_count}`);
+    console.log(`Crc32c: ${metadata.crc32c}`);
+    console.log(`md5Hash: ${metadata.md5Hash}`);
+    console.log(`Cache-control: ${metadata.cacheControl}`);
+    console.log(`Content-type: ${metadata.contentType}`);
+    console.log(`Content-disposition: ${metadata.contentDisposition}`);
+    console.log(`Content-encoding: ${metadata.contentEncoding}`);
+    console.log(`Content-language: ${metadata.contentLanguage}`);
+    console.log(`Metadata: ${metadata.metadata}`);
+    callback();
   });
 }
-// [END get_metadata]
+// [END storage_get_metadata]
 
-// [START public]
-/**
- * Make a file public.
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket The name of the bucket.
- * @param {string} options.file The name of the file to make public.
- * @param {function} cb The callback function.
- */
-function makePublic (options, callback) {
-  var file = storage.bucket(options.bucket).file(options.file);
+// [START storage_make_public]
+function makePublic (bucketName, fileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
-  file.makePublic(function (err) {
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  // References an existing file, e.g. "file.txt"
+  const file = bucket.file(fileName);
+
+  // Makes the file public
+  file.makePublic((err) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Made gs://%s/%s public!', options.bucket, options.file);
-    return callback(null);
+    console.log(`File ${file.name} is now public.`);
+    callback();
   });
 }
-// [END public]
+// [END storage_make_public]
 
-// [START move_file]
-/**
- * Move a file to a new location within the same bucket, i.e. rename the file.
- *
- * @param {object} options Configuration options.
- * @param {string} options.bucket The name of the bucket.
- * @param {string} options.srcFile The source file name.
- * @param {string} options.destFile The destination file name.
- * @param {function} cb The callback function.
- */
-function moveFile (options, callback) {
-  var file = storage.bucket(options.bucket).file(options.srcFile);
+// [START storage_generate_signed_url]
+function generateSignedUrl (bucketName, fileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
-  file.move(options.destFile, function (err, file) {
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  // References an existing file, e.g. "file.txt"
+  const file = bucket.file(fileName);
+
+  // These options will allow temporary read access to the file
+  const options = {
+    action: 'read',
+    expires: '03-17-2025'
+  };
+
+  // Get a signed URL for the file
+  file.getSignedUrl(options, (err, url) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Renamed gs://%s/%s to gs://%s/%s', options.bucket, options.srcFile, options.bucket, options.destFile);
-    return callback(null, file);
+    console.log(`The signed url for ${file.name} is ${url}.`);
+    callback();
   });
 }
-// [END move_file]
+// [END storage_generate_signed_url]
 
-// [START copy_file]
-/**
- * Copy a file to a new bucket with a new name.
- *
- * @param {object} options Configuration options.
- * @param {string} options.srcBucket The name of the bucket.
- * @param {string} options.srcFile The source file name.
- * @param {string} options.destBucket The destination bucket name.
- * @param {string} options.destFile The destination file name.
- * @param {function} cb The callback function.
- */
-function copyFile (options, callback) {
-  var file = storage.bucket(options.srcBucket).file(options.srcFile);
-  var copy = storage.bucket(options.destBucket).file(options.destFile);
+// [START storage_move_file]
+function moveFile (bucketName, srcFileName, destFileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
 
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/storage/latest/storage/file
-  file.copy(copy, function (err, file) {
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(bucketName);
+
+  // References an existing file, e.g. "file.txt"
+  const file = bucket.file(srcFileName);
+
+  // Moves the file within the bucket
+  file.move(destFileName, (err) => {
     if (err) {
-      return callback(err);
+      callback(err);
+      return;
     }
 
-    console.log('Copied gs://%s/%s to gs://%s/%s', options.srcBucket, options.srcFile, options.destBucket, options.destFile);
-    return callback(null, file);
+    console.log(`File ${file.name} moved to ${destFileName}.`);
+    callback();
   });
 }
-// [END copy_file]
-// [END all]
+// [END storage_move_file]
+
+// [START storage_copy_file]
+function copyFile (srcBucketName, srcFileName, destBucketName, destFileName, callback) {
+  // Instantiates a client
+  const storageClient = Storage();
+
+  // References an existing bucket, e.g. "my-bucket"
+  const bucket = storageClient.bucket(srcBucketName);
+
+  // References an existing file, e.g. "file.txt"
+  const file = bucket.file(srcFileName);
+
+  // References another existing bucket, e.g. "my-other-bucket"
+  const destBucket = storageClient.bucket(destBucketName);
+
+  // Creates a reference to a destination file, e.g. "file.txt"
+  const destFile = destBucket.file(destFileName);
+
+  // Copies the file to the other bucket
+  file.copy(destFile, (err, file) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    console.log(`File ${srcFileName} copied to ${file.name} in ${destBucket.name}.`);
+    callback();
+  });
+}
+// [END storage_copy_file]
 
 // The command-line program
-var cli = require('yargs');
-var utils = require('../utils');
+const cli = require(`yargs`);
+const noop = require(`../utils`).noop;
 
-var program = module.exports = {
+const program = module.exports = {
   listFiles: listFiles,
   listFilesByPrefix: listFilesByPrefix,
   uploadFile: uploadFile,
@@ -289,9 +331,10 @@ var program = module.exports = {
   deleteFile: deleteFile,
   getMetadata: getMetadata,
   makePublic: makePublic,
+  generateSignedUrl: generateSignedUrl,
   moveFile: moveFile,
   copyFile: copyFile,
-  main: function (args) {
+  main: (args) => {
     // Run the command-line program
     cli.help().strict().parse(args).argv;
   }
@@ -299,59 +342,49 @@ var program = module.exports = {
 
 cli
   .demand(1)
-  .command('list <bucket> [options]', 'List files in a bucket, optionally filtering by a prefix.', {
-    prefix: {
-      alias: 'p',
-      requiresArg: true,
-      type: 'string',
-      description: 'Filter files by a prefix.'
-    },
-    delimiter: {
-      alias: 'd',
-      requiresArg: true,
-      type: 'string',
-      description: 'Specify a delimiter.'
-    }
-  }, function (options) {
-    if (options.prefix) {
-      program.listFilesByPrefix(utils.pick(options, ['bucket', 'prefix', 'delimiter']), utils.makeHandler(true, 'name'));
+  .command(`list <bucketName> [prefix] [delimiter]`, `Lists files in a bucket, optionally filtering by a prefix.`, {}, (opts) => {
+    if (opts.prefix) {
+      program.listFilesByPrefix(opts.bucketName, opts.prefix, opts.delimiter, noop);
     } else {
-      program.listFiles(options.bucket, utils.makeHandler(true, 'name'));
+      program.listFiles(opts.bucketName, noop);
     }
   })
-  .command('upload <bucket> <srcFile>', 'Upload a local file to a bucket.', {}, function (options) {
-    program.uploadFile(utils.pick(options, ['bucket', 'srcFile']), utils.makeHandler(false));
+  .command(`upload <bucketName> <srcFileName>`, `Uploads a local file to a bucket.`, {}, (opts) => {
+    program.uploadFile(opts.bucketName, opts.srcFileName, noop);
   })
-  .command('download <bucket> <srcFile> <destFile>', 'Download a file from a bucket.', {}, function (options) {
-    program.downloadFile(utils.pick(options, ['bucket', 'srcFile', 'destFile']), utils.makeHandler(false));
+  .command(`download <bucketName> <srcFileName> <destFileName>`, `Downloads a file from a bucket.`, {}, (opts) => {
+    program.downloadFile(opts.bucketName, opts.srcFileName, opts.destFileName, noop);
   })
-  .command('delete <bucket> <file>', 'Delete a file from a bucket.', {}, function (options) {
-    program.deleteFile(utils.pick(options, ['bucket', 'file']), utils.makeHandler(false));
+  .command(`delete <bucketName> <fileName>`, `Deletes a file from a bucket.`, {}, (opts) => {
+    program.deleteFile(opts.bucketName, opts.fileName, noop);
   })
-  .command('getMetadata <bucket> <file>', 'Get metadata for a file in a bucket.', {}, function (options) {
-    program.getMetadata(utils.pick(options, ['bucket', 'file']), utils.makeHandler());
+  .command(`get-metadata <bucketName> <fileName>`, `Gets the metadata for a file.`, {}, (opts) => {
+    program.getMetadata(opts.bucketName, opts.fileName, noop);
   })
-  .command('makePublic <bucket> <file>', 'Make a file public in a bucket.', {}, function (options) {
-    program.makePublic(utils.pick(options, ['bucket', 'file']), utils.makeHandler(false));
+  .command(`make-public <bucketName> <fileName>`, `Makes a file public.`, {}, (opts) => {
+    program.makePublic(opts.bucketName, opts.fileName, noop);
   })
-  .command('move <bucket> <srcFile> <destFile>', 'Move a file to a new location within the same bucket, i.e. rename the file.', {}, function (options) {
-    program.moveFile(utils.pick(options, ['bucket', 'srcFile', 'destFile']), utils.makeHandler(false));
+  .command(`generate-signed-url <bucketName> <fileName>`, `Generates a signed URL for a file.`, {}, (opts) => {
+    program.generateSignedUrl(opts.bucketName, opts.fileName, noop);
   })
-  .command('copy <srcBucket> <srcFile> <destBucket> <destFile>', 'Copy a file in a bucket to another bucket.', {}, function (options) {
-    program.copyFile(utils.pick(options, ['srcBucket', 'srcFile', 'destBucket', 'destFile']), utils.makeHandler(false));
+  .command(`move <bucketName> <srcFileName> <destFileName>`, `Moves a file to a new location within the same bucket, i.e. rename the file.`, {}, (opts) => {
+    program.moveFile(opts.bucketName, opts.srcFileName, opts.destFileName, noop);
   })
-  .example('node $0 list my-bucket', 'List files in "my-bucket".')
-  .example('node $0 list my-bucket -p public/', 'List files in "my-bucket" filtered by prefix "public/".')
-  .example('node $0 upload my-bucket ./file.txt', 'Upload "./file.txt" to "my-bucket".')
-  .example('node $0 download my-bucket file.txt ./file.txt', 'Download "gs://my-bucket/file.txt" to "./file.txt".')
-  .example('node $0 delete my-bucket file.txt', 'Delete "gs://my-bucket/file.txt".')
-  .example('node $0 getMetadata my-bucket file.txt', 'Get metadata for "gs://my-bucket/file.txt".')
-  .example('node $0 makePublic my-bucket file.txt', 'Make "gs://my-bucket/file.txt" public.')
-  .example('node $0 move my-bucket file.txt file2.txt', 'Rename "gs://my-bucket/file.txt" to "gs://my-bucket/file2.txt".')
-  .example('node $0 copy my-bucket file.txt my-other-bucket file.txt', 'Copy "gs://my-bucket/file.txt" to "gs://my-other-bucket/file.txt".')
-  .wrap(100)
+  .command(`copy <srcBucketName> <srcFileName> <destBucketName> <destFileName>`, `Copies a file in a bucket to another bucket.`, {}, (opts) => {
+    program.copyFile(opts.srcBucketName, opts.srcFileName, opts.destBucketName, opts.destFileName, noop);
+  })
+  .example(`node $0 list my-bucket`, `Lists files in "my-bucket".`)
+  .example(`node $0 list my-bucket public/`, `Lists files in "my-bucket" filtered by prefix "public/".`)
+  .example(`node $0 upload my-bucket ./file.txt`, `Uploads "./file.txt" to "my-bucket".`)
+  .example(`node $0 download my-bucket file.txt ./file.txt`, `Downloads "gs://my-bucket/file.txt" to "./file.txt".`)
+  .example(`node $0 delete my-bucket file.txt`, `Deletes "gs://my-bucket/file.txt".`)
+  .example(`node $0 get-metadata my-bucket file.txt`, `Gets the metadata for "gs://my-bucket/file.txt".`)
+  .example(`node $0 make-public my-bucket file.txt`, `Makes "gs://my-bucket/file.txt" public.`)
+  .example(`node $0 move my-bucket file.txt file2.txt`, `Renames "gs://my-bucket/file.txt" to "gs://my-bucket/file2.txt".`)
+  .example(`node $0 copy my-bucket file.txt my-other-bucket file.txt`, `Copies "gs://my-bucket/file.txt" to "gs://my-other-bucket/file.txt".`)
+  .wrap(120)
   .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/storage/docs');
+  .epilogue(`For more information, see https://cloud.google.com/storage/docs`);
 
 if (module === require.main) {
   program.main(process.argv.slice(2));

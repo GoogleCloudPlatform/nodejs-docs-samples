@@ -69,8 +69,6 @@ describe('appengine/errorreporting/app.js', function () {
       .expect(500)
       .expect(function (response) {
         assert(sample.mocks.winston.error.calledOnce);
-        var payload = sample.mocks.winston.error.firstCall.args[0];
-        assert.deepEqual(payload.serviceContext, { service: 'myapp' });
         assert.equal(response.text, expectedResult);
       })
       .end(done);

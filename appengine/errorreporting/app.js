@@ -29,9 +29,6 @@ winston.add(winston.transports.File, {
 
 function report (err, req) {
   var payload = {
-    serviceContext: {
-      service: 'myapp'
-    },
     message: err.stack,
     context: {
       httpRequest: {

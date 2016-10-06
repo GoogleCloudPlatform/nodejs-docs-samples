@@ -1,65 +1,68 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require(`proxyquire`).noCallThru();
 
-var bucket = 'bucket';
-var name = 'name';
-var text = 'text';
-var filename = 'filename';
-var lang = 'lang';
-var translation = 'translation';
+const bucketName = `my-bucket`;
+const filename = `image.jpg`;
+const text = `text`;
+const lang = `lang`;
+const translation = `translation`;
 
 function getSample () {
-  var config = {
-    TRANSLATE_API_KEY: 'key',
-    RESULT_TOPIC: 'result-topic',
-    RESULT_BUCKET: 'result-bucket',
-    TRANSLATE_TOPIC: 'translate-topic',
+  const config = {
+    RESULT_TOPIC: `result-topic`,
+    RESULT_BUCKET: `result-bucket`,
+    TRANSLATE_TOPIC: `translate-topic`,
     TRANSLATE: true,
-    TO_LANG: ['en', 'fr', 'es', 'ja', 'ru']
+    TO_LANG: [`en`, `fr`, `es`, `ja`, `ru`]
   };
-  var topic = {
-    publish: sinon.stub().callsArg(1)
+  const topic = {
+    publish: sinon.stub().returns(Promise.resolve([]))
   };
-  topic.get = sinon.stub().callsArgWith(1, null, topic);
-  var file = {
-    save: sinon.stub().callsArg(1)
+  topic.get = sinon.stub().returns(Promise.resolve([topic]));
+  const file = {
+    save: sinon.stub().returns(Promise.resolve([])),
+    bucket: bucketName,
+    name: filename
   };
-  var bucket = {
+  const bucket = {
     file: sinon.stub().returns(file)
   };
-  var pubsubMock = {
+  const pubsubMock = {
     topic: sinon.stub().returns(topic)
   };
-  var storageMock = {
+  const storageMock = {
     bucket: sinon.stub().returns(bucket)
   };
-  var visionMock = {
-    detectText: sinon.stub().callsArg(1)
+  const visionMock = {
+    detectText: sinon.stub().returns(Promise.resolve([ text ]))
   };
-  var translateMock = {
-    detect: sinon.stub().callsArg(1)
+  const translateMock = {
+    detect: sinon.stub().returns(Promise.resolve([{ language: `ja` }])),
+    translate: sinon.stub().returns(Promise.resolve([translation]))
   };
-  var PubsubMock = sinon.stub().returns(pubsubMock);
-  var StorageMock = sinon.stub().returns(storageMock);
-  var VisionMock = sinon.stub().returns(visionMock);
-  var TranslateMock = sinon.stub().returns(translateMock);
+  const PubsubMock = sinon.stub().returns(pubsubMock);
+  const StorageMock = sinon.stub().returns(storageMock);
+  const VisionMock = sinon.stub().returns(visionMock);
+  const TranslateMock = sinon.stub().returns(translateMock);
 
   return {
-    sample: proxyquire('../', {
+    program: proxyquire(`../`, {
       '@google-cloud/translate': TranslateMock,
       '@google-cloud/vision': VisionMock,
       '@google-cloud/pubsub': PubsubMock,
@@ -67,372 +70,200 @@ function getSample () {
       './config.json': config
     }),
     mocks: {
+      config,
       pubsub: pubsubMock,
       storage: storageMock,
       bucket: bucket,
-      file: file,
+      file,
       vision: visionMock,
       translate: translateMock,
-      topic: topic
+      topic
     }
   };
 }
 
-function getMockContext () {
-  return {
-    done: sinon.stub(),
-    success: sinon.stub(),
-    failure: sinon.stub()
-  };
-}
-
-describe('functions:ocr', function () {
-  it('processImage does nothing on delete', function () {
-    var context = getMockContext();
-
-    getSample().sample.processImage(context, {
-      timeDeleted: 1234
-    });
-
-    assert.equal(context.done.calledOnce, true);
-    assert.equal(context.failure.called, false);
-    assert.equal(context.success.called, false);
+describe(`functions:ocr`, () => {
+  it(`processImage does nothing on delete`, () => {
+    return getSample().program.processImage({ data: { resourceState: `not_exists` } });
   });
 
-  it('processImage fails without a bucket', function () {
-    var expectedMsg = 'Bucket not provided. Make sure you have a ' +
-      '"bucket" property in your request';
-    var context = getMockContext();
+  it(`processImage fails without a bucket`, () => {
+    const error = new Error(`Bucket not provided. Make sure you have a "bucket" property in your request`);
 
-    getSample().sample.processImage(context, {});
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
+    return getSample().program.processImage({ data: {} })
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('processImage fails without a name', function () {
-    var expectedMsg = 'Filename not provided. Make sure you have a ' +
-      '"name" property in your request';
-    var context = getMockContext();
+  it(`processImage fails without a name`, () => {
+    const error = new Error(`Filename not provided. Make sure you have a "name" property in your request`);
 
-    getSample().sample.processImage(context, {
-      bucket: bucket
-    });
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
+    return getSample().program.processImage({ data: { bucket: bucketName } })
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('processImage handles detectText error', function (done) {
-    var expectedMsg = 'error';
-    var context = {
-      success: assert.fail,
-      failure: function () {
-        assert.equal(context.failure.calledOnce, true);
-        assert.equal(context.failure.firstCall.args[0], expectedMsg);
-        assert.equal(context.success.called, false);
-        assert.equal(console.error.calledWith(expectedMsg), true);
-        done();
+  it(`processImage processes an image`, () => {
+    const event = {
+      data: {
+        bucket: bucketName,
+        name: filename
+      }
+    };
+    const sample = getSample();
+
+    return sample.program.processImage(event)
+      .then(() => {
+        assert.equal(console.log.callCount, 4);
+        assert.deepEqual(console.log.getCall(0).args, [`Looking for text in image ${filename}`]);
+        assert.deepEqual(console.log.getCall(1).args, [`Extracted text from image (${text.length} chars)`]);
+        assert.deepEqual(console.log.getCall(2).args, [`Detected language "ja" for ${filename}`]);
+        assert.deepEqual(console.log.getCall(3).args, [`File ${event.data.name} processed.`]);
+      });
+  });
+
+  it(`translateText fails without text`, () => {
+    const error = new Error(`Text not provided. Make sure you have a "text" property in your request`);
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({})).toString(`base64`)
       }
     };
 
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.mocks.vision.detectText = sinon.stub().callsArgWith(1, expectedMsg);
-    ocrSample.sample.processImage(context, {
-      bucket: bucket,
-      name: name
-    });
+    return getSample().program.translateText(event)
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('processImage processes an image', function (done) {
-    var context = {
-      success: function () {
-        assert.equal(context.success.calledOnce, true);
-        assert.equal(context.failure.called, false);
-        assert.equal(console.log.calledWith('Processed ' + name), true);
-        done();
-      },
-      failure: assert.fail
-    };
-
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.mocks.vision.detectText = sinon.stub().callsArgWith(1, null, [
-      text
-    ], {});
-    ocrSample.mocks.translate.detect = sinon.stub().callsArgWith(1, null, {
-      language: 'ja'
-    });
-    ocrSample.sample.processImage(context, {
-      bucket: bucket,
-      name: name
-    });
-  });
-
-  it('translateText fails without text', function () {
-    var expectedMsg = 'Text not provided. Make sure you have a ' +
-      '"text" property in your request';
-    var context = getMockContext();
-
-    getSample().sample.translateText(context, {});
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
-  });
-
-  it('translateText fails without a filename', function () {
-    var expectedMsg = 'Filename not provided. Make sure you have a ' +
-      '"filename" property in your request';
-    var context = getMockContext();
-
-    getSample().sample.translateText(context, {
-      text: text
-    });
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
-  });
-
-  it('translateText fails without a lang', function () {
-    var expectedMsg = 'Language not provided. Make sure you have a ' +
-      '"lang" property in your request';
-    var context = getMockContext();
-
-    getSample().sample.translateText(context, {
-      text: text,
-      filename: filename
-    });
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
-  });
-
-  it('translateText handles translation error', function (done) {
-    var expectedMsg = 'error';
-    var context = {
-      success: assert.fail,
-      failure: function () {
-        assert.equal(context.failure.calledOnce, true);
-        assert.equal(context.failure.firstCall.args[0], expectedMsg);
-        assert.equal(context.success.called, false);
-        assert.equal(console.error.calledWith(expectedMsg), true);
-        done();
+  it(`translateText fails without a filename`, () => {
+    const error = new Error(`Filename not provided. Make sure you have a "filename" property in your request`);
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({ text })).toString(`base64`)
       }
     };
 
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.mocks.translate.translate = sinon.stub().callsArgWith(2, expectedMsg);
-    ocrSample.sample.translateText(context, {
-      text: text,
-      filename: filename,
-      lang: lang
-    });
+    return getSample().program.translateText(event)
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('translateText handles get topic error', function (done) {
-    var expectedMsg = 'error';
-    var context = {
-      success: assert.fail,
-      failure: function () {
-        assert.equal(context.failure.calledOnce, true);
-        assert.equal(context.failure.firstCall.args[0], expectedMsg);
-        assert.equal(context.success.called, false);
-        assert.equal(console.error.calledWith(expectedMsg), true);
-        done();
+  it(`translateText fails without a lang`, () => {
+    const error = new Error(`Language not provided. Make sure you have a "lang" property in your request`);
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({ text, filename })).toString(`base64`)
       }
     };
 
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.mocks.translate.translate = sinon.stub().callsArgWith(2, null, translation);
-    ocrSample.mocks.topic.get = sinon.stub().callsArgWith(1, expectedMsg);
-    ocrSample.sample.translateText(context, {
-      text: text,
-      filename: filename,
-      lang: lang
-    });
+    return getSample().program.translateText(event)
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('translateText handles publish error', function (done) {
-    var expectedMsg = 'error';
-    var context = {
-      success: assert.fail,
-      failure: function () {
-        assert.equal(context.failure.calledOnce, true);
-        assert.equal(context.failure.firstCall.args[0], expectedMsg);
-        assert.equal(context.success.called, false);
-        assert.equal(console.error.calledWith(expectedMsg), true);
-        done();
+  it(`translateText translates and publishes text`, () => {
+    const event = {
+      data: {
+        data: Buffer.from(
+          JSON.stringify({
+            text,
+            filename,
+            lang
+          })
+        ).toString(`base64`)
+      }
+    };
+    const sample = getSample();
+
+    sample.mocks.translate.translate.returns(Promise.resolve([translation]));
+
+    return sample.program.translateText(event)
+      .then(() => {
+        assert.equal(console.log.callCount, 2);
+        assert.deepEqual(console.log.firstCall.args, [`Translating text into ${lang}`]);
+        assert.deepEqual(console.log.secondCall.args, [`Text translated to ${lang}`]);
+      });
+  });
+
+  it(`saveResult fails without text`, () => {
+    const error = new Error(`Text not provided. Make sure you have a "text" property in your request`);
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({})).toString(`base64`)
       }
     };
 
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.mocks.translate.translate = sinon.stub().callsArgWith(2, null, translation);
-    ocrSample.mocks.topic.publish = sinon.stub().callsArgWith(1, expectedMsg);
-    ocrSample.sample.translateText(context, {
-      text: text,
-      filename: filename,
-      lang: lang
-    });
+    return getSample().program.saveResult(event)
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('translateText translates and publishes text', function (done) {
-    var context = {
-      success: function () {
-        assert.equal(context.success.called, true);
-        assert.equal(context.failure.called, false);
-        assert.equal(console.log.calledWith('Text translated to ' + lang), true);
-        done();
-      },
-      failure: assert.fail
-    };
-
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.mocks.translate.translate = sinon.stub().callsArgWith(2, null, translation);
-    ocrSample.sample.translateText(context, {
-      text: text,
-      filename: filename,
-      lang: lang
-    });
-  });
-
-  it('saveResult fails without text', function () {
-    var expectedMsg = 'Text not provided. Make sure you have a ' +
-      '"text" property in your request';
-    var context = getMockContext();
-
-    getSample().sample.saveResult(context, {});
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
-  });
-
-  it('saveResult fails without a filename', function () {
-    var expectedMsg = 'Filename not provided. Make sure you have a ' +
-      '"filename" property in your request';
-    var context = getMockContext();
-
-    getSample().sample.saveResult(context, {
-      text: text
-    });
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
-  });
-
-  it('saveResult fails without a lang', function () {
-    var expectedMsg = 'Language not provided. Make sure you have a ' +
-      '"lang" property in your request';
-    var context = getMockContext();
-
-    getSample().sample.saveResult(context, {
-      text: text,
-      filename: filename
-    });
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
-    assert.equal(console.error.called, true);
-  });
-
-  it('saveResult handles save error', function (done) {
-    var expectedMsg = 'error';
-    var context = {
-      success: assert.fail,
-      failure: function () {
-        assert.equal(context.failure.calledOnce, true);
-        assert.equal(context.failure.firstCall.args[0], expectedMsg);
-        assert.equal(context.success.called, false);
-        assert.equal(console.error.calledWith(expectedMsg), true);
-        done();
+  it(`saveResult fails without a filename`, () => {
+    const error = new Error(`Filename not provided. Make sure you have a "filename" property in your request`);
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({ text })).toString(`base64`)
       }
     };
 
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.mocks.file.save = sinon.stub().callsArgWith(1, expectedMsg);
-    ocrSample.sample.saveResult(context, {
-      text: text,
-      filename: filename,
-      lang: lang
-    });
+    return getSample().program.saveResult(event)
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('saveResult translates and publishes text', function (done) {
-    var context = {
-      success: function () {
-        assert.equal(context.success.called, true);
-        assert.equal(context.failure.called, false);
-        assert.equal(console.log.calledWith('Text written to ' + filename + '_to_lang.txt'), true);
-        done();
-      },
-      failure: assert.fail
+  it(`saveResult fails without a lang`, () => {
+    const error = new Error(`Language not provided. Make sure you have a "lang" property in your request`);
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({ text, filename })).toString(`base64`)
+      }
     };
 
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
-
-    var ocrSample = getSample();
-    ocrSample.sample.saveResult(context, {
-      text: text,
-      filename: filename,
-      lang: lang
-    });
+    return getSample().program.saveResult(event)
+      .catch((err) => {
+        assert.deepEqual(err, error);
+      });
   });
 
-  it('saveResult translates and publishes text with dot in filename', function (done) {
-    var context = {
-      success: function () {
-        assert.equal(context.success.called, true);
-        assert.equal(context.failure.called, false);
-        assert.equal(console.log.calledWith('Text written to ' + filename + '_to_lang.txt'), true);
-        done();
-      },
-      failure: assert.fail
+  it(`saveResult translates and publishes text`, () => {
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({ text, filename, lang })).toString(`base64`)
+      }
     };
+    const sample = getSample();
 
-    sinon.spy(context, 'success');
-    sinon.spy(context, 'failure');
+    return sample.program.saveResult(event)
+      .then(() => {
+        assert.equal(console.log.callCount, 3);
+        assert.deepEqual(console.log.getCall(0).args, [`Received request to save file ${filename}`]);
+        assert.deepEqual(console.log.getCall(1).args, [`Saving result to ${filename}_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`]);
+        assert.deepEqual(console.log.getCall(2).args, [`File saved.`]);
+      });
+  });
 
-    var ocrSample = getSample();
-    ocrSample.sample.saveResult(context, {
-      text: text,
-      filename: filename + '.jpg',
-      lang: lang
-    });
+  it(`saveResult translates and publishes text with dot in filename`, () => {
+    const event = {
+      data: {
+        data: Buffer.from(JSON.stringify({ text, filename: `${filename}.jpg`, lang })).toString(`base64`)
+      }
+    };
+    const sample = getSample();
+
+    return sample.program.saveResult(event)
+      .then(() => {
+        assert.equal(console.log.callCount, 3);
+        assert.deepEqual(console.log.getCall(0).args, [`Received request to save file ${filename}.jpg`]);
+        assert.deepEqual(console.log.getCall(1).args, [`Saving result to ${filename}.jpg_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`]);
+        assert.deepEqual(console.log.getCall(2).args, [`File saved.`]);
+      });
   });
 });
 

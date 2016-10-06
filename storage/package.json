@@ -5,18 +5,18 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "scripts": {
-    "test": "mocha -R spec -t 120000 ../test/_setup.js test/*.test.js",
-    "system-test": "mocha -R spec -t 120000 ../system-test/_setup.js system-test/*.test.js"
+    "test": "cd ..; npm run t -- storage/test/*.test.js",
+    "system-test": "cd ..; npm run st -- storage/system-test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/storage": "^0.2.0",
-    "googleapis": "^13.0.0",
-    "moment": "^2.15.1",
-    "yargs": "^6.0.0"
+    "@google-cloud/storage": "0.4.0",
+    "googleapis": "14.2.0",
+    "moment": "2.15.1",
+    "yargs": "6.4.0"
   },
   "devDependencies": {
-    "mocha": "^3.1.0",
-    "node-uuid": "^1.4.7"
+    "mocha": "3.1.0",
+    "node-uuid": "1.4.7"
   },
   "engines": {
     "node": ">=4.3.2"

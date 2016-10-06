@@ -56,7 +56,7 @@
     "pretest": "npm run lint && ./scripts/clean",
     "t": "mocha -R spec -t 2000 --require intelli-espower-loader test/_setup.js",
     "st": "mocha -R spec -t 120000 --require intelli-espower-loader system-test/_setup.js",
-    "mocha": "npm run t -- ./test/_setup.js ./test/*.test.js '{*,appengine/*,functions/*}/test/*.test.js'",
+    "mocha": "npm run t -- ./test/_setup.js ./test/*.test.js '{*,appengine/*,functions/*,functions/ocr/*}/test/*.test.js'",
     "test": "npm run mocha",
     "cover": "nyc --cache npm test && nyc report --reporter=html && nyc report --reporter=lcov",
     "system-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js'",
@@ -65,17 +65,17 @@
     "all-cover": "npm run pretest && nyc --cache npm run all-test && nyc report --reporter=html && nyc report --reporter=lcov"
   },
   "devDependencies": {
-    "async": "^2.0.1",
-    "intelli-espower-loader": "^1.0.1",
-    "mocha": "^3.0.2",
+    "async": "2.1.2",
+    "intelli-espower-loader": "1.0.1",
+    "mocha": "3.1.2",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",
-    "nyc": "^8.1.0",
-    "power-assert": "^1.4.1",
-    "proxyquire": "^1.7.10",
-    "request": "^2.72.0",
-    "semistandard": "^9.0.0",
-    "shelljs": "^0.7.3",
-    "sinon": "^1.17.5",
-    "supertest": "^2.0.0"
+    "nyc": "9.0.1",
+    "power-assert": "1.4.2",
+    "proxyquire": "1.7.10",
+    "request": "2.78.0",
+    "semistandard": "9.1.0",
+    "shelljs": "0.7.5",
+    "sinon": "1.17.6",
+    "supertest": "2.0.1"
   }
 }

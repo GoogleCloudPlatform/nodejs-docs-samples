@@ -1,70 +1,73 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var Storage = require('@google-cloud/storage');
+// [START functions_word_count_setup]
+const Storage = require('@google-cloud/storage');
+const readline = require('readline');
 
-var readline = require('readline');
+// Instantiates a client
+const storage = Storage();
+// [END functions_word_count_setup]
 
-function getFileStream (bucketName, fileName) {
-  if (!bucketName) {
-    throw new Error('Bucket not provided. Make sure you have a ' +
-      '"bucket" property in your request');
+function getFileStream (file) {
+  if (!file.bucket) {
+    throw new Error('Bucket not provided. Make sure you have a "bucket" property in your request');
   }
-  if (!fileName) {
-    throw new Error('Filename not provided. Make sure you have a ' +
-      '"file" property in your request');
+  if (!file.name) {
+    throw new Error('Filename not provided. Make sure you have a "name" property in your request');
   }
 
-  // Instantiate a storage client
-  var storage = Storage();
-  var bucket = storage.bucket(bucketName);
-  return bucket.file(fileName).createReadStream();
+  return storage.bucket(file.bucket).file(file.name).createReadStream();
 }
 
+// [START functions_word_count_read]
 /**
  * Reads file and responds with the number of words in the file.
  *
  * @example
- * gcloud alpha functions call wordCount --data '{"bucket":"<your-bucket-name>","file":"sample.txt"}'
+ * gcloud alpha functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
  *
- * @param {Object} context Cloud Function context.
- * @param {Function} context.success Success callback.
- * @param {Function} context.failure Failure callback.
- * @param {Object} data Request data, in this case an object provided by the user.
- * @param {Object} data.bucket Name of a Cloud Storage bucket.
- * @param {Object} data.file Name of a file in the Cloud Storage bucket.
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.data A Google Cloud Storage File object.
+ * @param {string} event.data.bucket Name of a Cloud Storage bucket.
+ * @param {string} event.data.name Name of a file in the Cloud Storage bucket.
+ * @param {function} The callback function.
  */
-function wordCount (context, data) {
-  try {
-    var count = 0;
+exports.wordCount = function (event, callback) {
+  const file = event.data;
 
-    // Use the linebyline module to read the stream line by line.
-    var lineReader = readline.createInterface({
-      input: getFileStream(data.bucket, data.file)
-    });
-
-    lineReader.on('line', function (line) {
-      count += line.trim().split(/\s+/).length;
-    });
-
-    lineReader.on('close', function () {
-      context.success('The file ' + data.file + ' has ' + count + ' words');
-    });
-  } catch (err) {
-    context.failure(err.message);
+  if (file.resourceState === 'not_exists') {
+    // This is a file deletion event, so skip it
+    callback();
+    return;
   }
-}
 
-exports.wordCount = wordCount;
+  let count = 0;
+  const options = {
+    input: getFileStream(file)
+  };
+
+  // Use the readline module to read the stream line by line.
+  readline.createInterface(options)
+    .on('line', (line) => {
+      count += line.trim().split(/\s+/).length;
+    })
+    .on('close', () => {
+      callback(null, `File ${file.name} has ${count} words`);
+    });
+};
+// [END functions_word_count_read]

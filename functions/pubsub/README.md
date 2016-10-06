@@ -22,34 +22,34 @@ Functions for your project.
 1. Create a Cloud Pub/Sub topic (if you already have one you want to use, you
 can skip this step):
 
-        gcloud alpha pubsub topics create [YOUR_TOPIC_NAME]
+        gcloud beta pubsub topics create YOUR_TOPIC_NAME
 
-    * Replace `[YOUR_TOPIC_NAME]` with the name of your Pub/Sub Topic.
+    * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-        gsutil mb gs://[YOUR_BUCKET_NAME]
+        gsutil mb gs://YOUR_BUCKET_NAME
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Deploy the `publish` function with an HTTP trigger:
 
-        gcloud alpha functions deploy publish --bucket [YOUR_BUCKET_NAME] --trigger-http
+        gcloud alpha functions deploy publish --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Deploy the `subscribe` function with the Pub/Sub topic as a trigger:
 
-        gcloud alpha functions deploy subscribe --bucket [YOUR_BUCKET_NAME] --trigger-topic [YOUR_TOPIC_NAME]
+        gcloud alpha functions deploy subscribe --stage-bucket YOUR_BUCKET_NAME --trigger-topic YOUR_TOPIC_NAME
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
-    * Replace `[YOUR_TOPIC_NAME]` with the name of your Pub/Sub Topic.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 
 1. Call the `publish` function:
 
-        gcloud alpha functions call publish --data '{"topic":"[YOUR_TOPIC_NAME]","message":"Hello World!"}'
+        gcloud alpha functions call publish --data '{"topic":"YOUR_TOPIC_NAME","message":"Hello World!"}'
 
-    * Replace `[YOUR_TOPIC_NAME]` with the name of your Pub/Sub Topic.
+    * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 
 1. Check the logs for the `subscribe` function:
 

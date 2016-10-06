@@ -6,16 +6,15 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js",
-    "deploy": "gcloud app deploy"
+    "start": "node app.js"
   },
   "dependencies": {
-    "body-parser": "^1.14.2",
-    "express": "^4.13.4",
-    "jade": "^1.11.0",
-    "node-mailjet": "^1.1.0"
+    "body-parser": "1.15.2",
+    "express": "4.14.0",
+    "jade": "1.11.0",
+    "node-mailjet": "1.1.0"
   }
 }

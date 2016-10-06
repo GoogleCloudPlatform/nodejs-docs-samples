@@ -71,7 +71,7 @@ function getVisits (callback) {
       callback(err);
       return;
     }
-    callback(null, entities.map((entity) => `Time: ${entity.data.timestamp}, AddrHash: ${entity.data.userIp}`));
+    callback(null, entities.map((entity) => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`));
   });
 }
 // [END getVisits]

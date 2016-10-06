@@ -10,16 +10,13 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha -R spec -t 1000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- appengine/analytics/test/*.test.js"
   },
   "dependencies": {
-    "connect-memjs": "^0.1.0",
-    "cookie-parser": "^1.4.3",
-    "express": "^4.14.0",
-    "express-session": "^1.14.2",
-    "public-ip": "^2.0.1"
-  },
-  "devDependencies": {
-    "mocha": "^3.1.2"
+    "connect-memjs": "0.1.0",
+    "cookie-parser": "1.4.3",
+    "express": "4.14.0",
+    "express-session": "1.14.2",
+    "public-ip": "2.0.1"
   }
 }

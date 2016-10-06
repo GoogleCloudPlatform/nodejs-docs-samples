@@ -6,15 +6,12 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- functions/sendgrid/test/*.test.js"
   },
   "dependencies": {
-    "async": "^2.0.1",
-    "google-cloud": "^0.38.3",
+    "@google-cloud/storage": "^0.4.0",
+    "@google-cloud/bigquery": "^0.4.0",
     "node-uuid": "^1.4.7",
-    "sendgrid": "^3.0.5"
-  },
-  "devDependencies": {
-    "mocha": "^3.0.2"
+    "sendgrid": "^4.7.1"
   }
 }

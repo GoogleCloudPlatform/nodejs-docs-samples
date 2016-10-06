@@ -9,7 +9,7 @@
     "node": ">=4.3.2"
   },
   "dependencies": {
-    "nconf": "^0.8.4",
-    "redis": "^2.6.2"
+    "nconf": "0.8.4",
+    "redis": "2.6.2"
   }
 }

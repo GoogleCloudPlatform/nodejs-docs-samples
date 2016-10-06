@@ -9,7 +9,7 @@
     "node": ">=4.3.2"
   },
   "dependencies": {
-    "nconf": "^0.8.4",
-    "mongodb": "^2.2.10"
+    "nconf": "0.8.4",
+    "mongodb": "2.2.11"
   }
 }

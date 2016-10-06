@@ -17,18 +17,18 @@
 /**
  * Background Cloud Function.
  *
- * @param {Object} context Cloud Function context.
- * @param {Object} data Request data, provided by a trigger.
- * @param {string} data.message Message, provided by the trigger.
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.payload The event payload.
+ * @param {function} The callback function.
  */
-exports.helloWorld = function helloWorld (context, data) {
-  if (data.message === undefined) {
-    // This is an error case, "message" is required
-    context.failure('No message defined!');
+exports.helloWorld = function helloWorld (event, callback) {
+  if (!event.payload.myMessage) {
+    // This is an error case, "myMessage" is required
+    callback(new Error('No message defined!'));
   } else {
     // Everything is ok
-    console.log(data.message);
-    context.success();
+    console.log(event.payload.myMessage);
+    callback();
   }
 };
 // [END helloworld]
@@ -40,12 +40,13 @@ var request = require('request-promise');
  * Background Cloud Function that returns a Promise. Note that we don't pass
  * a "context" argument to the function.
  *
- * @param {Object} data Request data, provided by a trigger.
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.payload The event payload.
  * @returns {Promise}
  */
-exports.helloPromise = function helloPromise (data) {
+exports.helloPromise = function helloPromise (event) {
   return request({
-    uri: data.endpoint
+    uri: event.payload.endpoint
   });
 };
 // [END helloPromise]
@@ -55,11 +56,12 @@ exports.helloPromise = function helloPromise (data) {
  * Background Cloud Function that returns synchronously. Note that we don't pass
  * a "context" argument to the function.
  *
- * @param {Object} data Request data, provided by a trigger.
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.payload The event payload.
  */
-exports.helloSynchronous = function helloSynchronous (data) {
+exports.helloSynchronous = function helloSynchronous (event) {
   // This function returns synchronously
-  if (data.something === true) {
+  if (event.payload.something === true) {
     return 'Something is true!';
   } else {
     throw new Error('Something was not true!');

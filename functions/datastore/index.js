@@ -13,18 +13,18 @@
 
 'use strict';
 
-var Datastore = require('@google-cloud/datastore');
+const Datastore = require('@google-cloud/datastore');
 
 // Instantiate a datastore client
-var datastore = Datastore();
+const datastore = Datastore();
 
 /**
  * Gets a Datastore key from the kind/key pair in the request.
  *
- * @param {Object} requestData Cloud Function request data.
+ * @param {object} requestData Cloud Function request data.
  * @param {string} requestData.key Datastore key string.
  * @param {string} requestData.kind Datastore kind.
- * @returns {Object} Datastore key object.
+ * @returns {object} Datastore key object.
  */
 function getKeyFromRequestData (requestData) {
   if (!requestData.key) {
@@ -46,38 +46,38 @@ function getKeyFromRequestData (requestData) {
  * @example
  * gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message": "Hello World!"}}'
  *
- * @param {Object} context Cloud Function context.
- * @param {Function} context.success Success callback.
- * @param {Function} context.failure Failure callback.
- * @param {Object} data Request data, in this case an object provided by the user.
- * @param {string} data.kind The Datastore kind of the data to save, e.g. "user".
- * @param {string} data.key Key at which to save the data, e.g. 5075192766267392.
- * @param {Object} data.value Value to save to Cloud Datastore, e.g. {"name":"John"}
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.payload The event payload, in this case provided by the user.
+ * @param {string} event.payload.kind The Datastore kind of the data to save, e.g. "user".
+ * @param {string} event.payload.key Key at which to save the data, e.g. 5075192766267392.
+ * @param {object} event.payload.value Value to save to Cloud Datastore, e.g. {"name":"John"}
+ * @param {function} The callback function.
  */
-function set (context, data) {
+function set (event, callback) {
   try {
     // The value contains a JSON document representing the entity we want to save
-    if (!data.value) {
+    if (!event.payload.value) {
       throw new Error('Value not provided. Make sure you have a "value" ' +
         'property in your request');
     }
 
-    var key = getKeyFromRequestData(data);
+    const key = getKeyFromRequestData(event.payload);
 
-    return datastore.save({
+    datastore.save({
       key: key,
-      data: data.value
-    }, function (err) {
+      data: event.payload.value
+    }, (err) => {
       if (err) {
         console.error(err);
-        return context.failure(err);
+        callback(err);
+        return;
       }
 
-      return context.success('Entity saved');
+      callback(null, 'Entity saved');
     });
   } catch (err) {
     console.error(err);
-    return context.failure(err.message);
+    callback(err);
   }
 }
 
@@ -87,34 +87,35 @@ function set (context, data) {
  * @example
  * gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
  *
- * @param {Object} context Cloud Function context.
- * @param {Function} context.success Success callback.
- * @param {Function} context.failure Failure callback.
- * @param {Object} data Request data, in this case an object provided by the user.
- * @param {string} data.kind The Datastore kind of the data to retrieve, e.g. "user".
- * @param {string} data.key Key at which to retrieve the data, e.g. 5075192766267392.
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.payload The event payload, in this case provided by the user.
+ * @param {string} event.payload.kind The Datastore kind of the data to retrieve, e.g. "user".
+ * @param {string} event.payload.key Key at which to retrieve the data, e.g. 5075192766267392.
+ * @param {function} The callback function.
  */
-function get (context, data) {
+function get (event, callback) {
   try {
-    var key = getKeyFromRequestData(data);
+    const key = getKeyFromRequestData(data);
 
-    return datastore.get(key, function (err, entity) {
+    datastore.get(key, (err, entity) => {
       if (err) {
         console.error(err);
-        return context.failure(err);
+        callback(err);
+        return;
       }
 
       // The get operation will not fail for a non-existent entity, it just
       // returns null.
       if (!entity) {
-        return context.failure('No entity found for key ' + key.path);
+        callback(new Error('No entity found for key ' + key.path));
+        return;
       }
 
-      return context.success(entity);
+      callback(null, entity);
     });
   } catch (err) {
     console.error(err);
-    return context.failure(err.message);
+    callback(err);
   }
 }
 
@@ -124,28 +125,28 @@ function get (context, data) {
  * @example
  * gcloud alpha functions call ds-del --data '{"kind":"gcf-test","key":"foobar"}'
  *
- * @param {Object} context Cloud Function context.
- * @param {Function} context.success Success callback.
- * @param {Function} context.failure Failure callback.
- * @param {Object} data Request data, in this case an object provided by the user.
- * @param {string} data.kind The Datastore kind of the data to delete, e.g. "user".
- * @param {string} data.key Key at which to delete data, e.g. 5075192766267392.
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.payload The event payload, in this case provided by the user.
+ * @param {string} event.payload.kind The Datastore kind of the data to delete, e.g. "user".
+ * @param {string} event.payload.key Key at which to delete data, e.g. 5075192766267392.
+ * @param {function} The callback function.
  */
-function del (context, data) {
+function del (event, callback) {
   try {
-    var key = getKeyFromRequestData(data);
+    const key = getKeyFromRequestData(data);
 
-    return datastore.delete(key, function (err) {
+    datastore.delete(key, (err) => {
       if (err) {
         console.error(err);
-        return context.failure(err);
+        callback(err);
+        return;
       }
 
-      return context.success('Entity deleted');
+      callback(null, 'Entity deleted');
     });
   } catch (err) {
     console.error(err);
-    return context.failure(err.message);
+    callback(err);
   }
 }
 

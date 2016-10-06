@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
     "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
@@ -17,6 +17,6 @@
     "prompt": "^1.0.0"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.1.0"
   }
 }

@@ -6,15 +6,13 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js",
-    "monitor": "nodemon app.js",
-    "deploy": "gcloud app deploy"
+    "start": "node app.js"
   },
   "dependencies": {
-    "express": "^4.13.4",
-    "jade": "^1.11.0"
+    "express": "^4.14.0",
+    "pug": "^2.0.0-beta6"
   }
 }

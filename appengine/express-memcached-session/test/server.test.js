@@ -13,25 +13,25 @@
 
 'use strict';
 
-var express = require('express');
-var session = require('express-session');
-var path = require('path');
-var proxyquire = require('proxyquire').noPreserveCache();
-var request = require('supertest');
+const express = require(`express`);
+const session = require(`express-session`);
+const path = require(`path`);
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const request = require(`supertest`);
 
-var SAMPLE_PATH = path.join(__dirname, '../server.js');
+const SAMPLE_PATH = path.join(__dirname, `../server.js`);
 
 function getSample () {
-  var testApp = express();
-  sinon.stub(testApp, 'listen').callsArg(1);
-  var storeMock = session.MemoryStore;
-  var expressMock = sinon.stub().returns(testApp);
-  var memcachedMock = sinon.stub().returns(storeMock);
-  var publicIpMock = {
-    v4: sinon.stub().callsArgWith(0, null, '123.45.67.890')
+  const testApp = express();
+  sinon.stub(testApp, `listen`).callsArg(1);
+  const storeMock = session.MemoryStore;
+  const expressMock = sinon.stub().returns(testApp);
+  const memcachedMock = sinon.stub().returns(storeMock);
+  const publicIpMock = {
+    v4: sinon.stub().yields(null, `123.45.67.890`)
   };
 
-  var app = proxyquire(SAMPLE_PATH, {
+  const app = proxyquire(SAMPLE_PATH, {
     publicIp: publicIpMock,
     'connect-memcached': memcachedMock,
     express: expressMock
@@ -47,10 +47,10 @@ function getSample () {
   };
 }
 
-describe('appengine/express-memcached-session/app.js', function () {
-  var sample;
+describe(`appengine/express-memcached-session/app.js`, () => {
+  let sample;
 
-  beforeEach(function () {
+  beforeEach(() => {
     sample = getSample();
 
     assert(sample.mocks.express.calledOnce);
@@ -58,13 +58,13 @@ describe('appengine/express-memcached-session/app.js', function () {
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should respond with visit count', function (done) {
-    var expectedResult = 'Viewed <strong>1</strong> times.';
+  it(`should respond with visit count`, (done) => {
+    const expectedResult = `Viewed <strong>1</strong> times.`;
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(200)
-      .expect(function (response) {
+      .expect((response) => {
         assert(response.text.indexOf(expectedResult) !== -1);
       })
       .end(done);

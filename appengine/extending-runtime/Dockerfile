@@ -15,4 +15,4 @@ COPY . /app/
 RUN npm --unsafe-perm install
 
 # Run the app, default is "npm start"
-CMD npm start-on-prod
+CMD npm run start-on-prod

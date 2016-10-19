@@ -23,7 +23,7 @@ describe(`bigquery:quickstart`, () => {
 
   before(() => {
     bigqueryMock = {
-      createDataset: sinon.stub().yields(error)
+      createDataset: sinon.stub().returns(Promise.reject(error))
     };
     BigqueryMock = sinon.stub().returns(bigqueryMock);
   });
@@ -36,8 +36,6 @@ describe(`bigquery:quickstart`, () => {
     assert.equal(BigqueryMock.calledOnce, true);
     assert.deepEqual(BigqueryMock.firstCall.args, [{ projectId: 'YOUR_PROJECT_ID' }]);
     assert.equal(bigqueryMock.createDataset.calledOnce, true);
-    assert.deepEqual(bigqueryMock.createDataset.firstCall.args.slice(0, -1), ['my_new_dataset']);
-    assert.equal(console.error.calledOnce, true);
-    assert.deepEqual(console.error.firstCall.args, [error]);
+    assert.deepEqual(bigqueryMock.createDataset.firstCall.args, ['my_new_dataset']);
   });
 });

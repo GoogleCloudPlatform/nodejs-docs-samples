@@ -1,224 +1,177 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var bigquery = require('@google-cloud/bigquery')();
-var storage = require('@google-cloud/storage')();
-var uuid = require('node-uuid');
-var program = require('../tables');
-var path = require('path');
+const bigquery = require(`@google-cloud/bigquery`)();
+const storage = require(`@google-cloud/storage`)();
+const uuid = require(`node-uuid`);
+const path = require(`path`);
+const utils = require(`../../utils`);
+const run = utils.run;
+const noop = utils.noop;
 
-function generateUuid () {
-  return 'nodejs_docs_samples_' + uuid.v4().replace(/-/gi, '_');
-}
+const cwd = path.join(__dirname, `..`);
+const cmd = `node tables.js`;
+const generateUuid = () => `nodejs_docs_samples_${uuid.v4().replace(/-/gi, '_')}`;
 
-var rows = [
+const datasetId = generateUuid();
+const srcDatasetId = datasetId;
+const destDatasetId = generateUuid();
+const tableId = generateUuid();
+const srcTableId = tableId;
+const destTableId = generateUuid();
+const schema = `Name:string, Age:integer, Weight:float, IsMagic:boolean`;
+const bucketName = generateUuid();
+const exportFileName = `data.json`;
+const importFileName = `data.csv`;
+const localFilePath = path.join(__dirname, `../resources/${importFileName}`);
+const rows = [
   { Name: 'foo', Age: 27, Weight: 80.3, IsMagic: true },
   { Name: 'bar', Age: 13, Weight: 54.6, IsMagic: false }
 ];
-var options = {
-  projectId: process.env.GCLOUD_PROJECT,
-  localFilePath: path.join(__dirname, '../resources/data.csv'),
-  bucketName: generateUuid(),
-  fileName: 'data.json',
-  datasetId: generateUuid(),
-  tableId: generateUuid(),
-  schema: 'Name:string, Age:integer, Weight:float, IsMagic:boolean',
-  rows: rows
-};
-var srcDatasetId = options.datasetId;
-var srcTableId = options.tableId;
-var destDatasetId = generateUuid();
-var destTableId = generateUuid();
 
-describe('bigquery:tables', function () {
-  before(function (done) {
-    // Create bucket
-    storage.createBucket(options.bucketName, function (err, bucket) {
-      assert.ifError(err, 'bucket creation succeeded');
-      // Upload data.csv
-      bucket.upload(options.localFilePath, function (err) {
-        assert.ifError(err, 'file upload succeeded');
-        // Create srcDataset
-        bigquery.createDataset(srcDatasetId, function (err) {
-          assert.ifError(err, 'srcDataset creation succeeded');
-          // Create destDataset
-          bigquery.createDataset(destDatasetId, function (err) {
-            assert.ifError(err, 'destDataset creation succeeded');
-            done();
-          });
-        });
-      });
-    });
+describe('bigquery:tables', () => {
+  before(() => {
+    return storage.createBucket(bucketName)
+      .then((results) => results[0].upload(localFilePath))
+      .then(() => bigquery.createDataset(srcDatasetId))
+      .then(() => bigquery.createDataset(destDatasetId));
   });
 
-  after(function (done) {
-    // Delete srcDataset
-    bigquery.dataset(srcDatasetId).delete({ force: true }, function () {
-      // Delete destDataset
-      bigquery.dataset(destDatasetId).delete({ force: true }, function () {
-        // Delete files
-        storage.bucket(options.bucketName).deleteFiles({ force: true }, function (err) {
-          if (err) {
-            return done(err);
-          }
-          // Delete bucket
-          setTimeout(function () {
-            storage.bucket(options.bucketName).delete(done);
+  after(() => {
+    return bigquery.dataset(srcDatasetId).delete({ force: true })
+      .then(() => bigquery.dataset(destDatasetId).delete({ force: true }), noop)
+      .then(() => storage.bucket(bucketName).deleteFiles({ force: true }), noop)
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            storage.bucket(bucketName).delete().then(resolve, reject);
           }, 2000);
         });
-      });
-    });
+      }, noop);
   });
 
-  describe('createTable', function () {
-    it('should create a new table', function (done) {
-      program.createTable(options.datasetId, options.tableId, options.schema, function (err, table) {
-        assert.equal(err, null);
-        assert.notEqual(table, undefined);
-        assert.equal(table.id, options.tableId);
-        assert.equal(console.log.calledOnce, true);
-        assert.deepEqual(console.log.firstCall.args, ['Created table %s in %s', options.tableId, options.datasetId]);
-
-        // Listing is eventually consistent, give the index time to update
-        setTimeout(done, 5000);
-      });
-    });
+  it(`should create a table`, () => {
+    const output = run(`${cmd} create ${datasetId} ${tableId} "${schema}"`, cwd);
+    assert.equal(output, `Table ${tableId} created.`);
+    return bigquery.dataset(datasetId).table(tableId).exists()
+      .then((results) => assert.equal(results[0], true));
   });
 
-  describe('listTables', function () {
-    it('should list tables', function (done) {
-      program.listTables(options.datasetId, function (err, tables) {
-        assert.equal(err, null);
-        assert.equal(Array.isArray(tables), true);
-        assert.equal(tables.length > 0, true);
-        var matchingTables = tables.filter(function (table) {
-          return table.id === options.tableId;
-        });
-        assert.equal(matchingTables.length, 1, 'newly created table is in list');
-        assert.equal(console.log.calledOnce, true);
-        assert.deepEqual(console.log.firstCall.args, ['Found %d table(s)!', tables.length]);
-
-        done();
-      });
-    });
+  it(`should list tables`, (done) => {
+    // Listing is eventually consistent. Give the indexes time to update.
+    setTimeout(() => {
+      const output = run(`${cmd} list ${datasetId}`, cwd);
+      assert.equal(output.includes(`Tables:`), true);
+      assert.equal(output.includes(tableId), true);
+      done();
+    }, 5000);
   });
 
-  describe('importLocalFile', function () {
-    it('should import local file', function (done) {
-      program.importLocalFile(options.datasetId, options.tableId, options.localFilePath, function (err, metadata, apiResponse) {
-        assert.equal(err, null);
-        assert.notEqual(metadata, undefined);
-        assert.deepEqual(metadata.status, {
-          state: 'DONE'
-        }, 'job completed');
-        assert.notEqual(apiResponse, undefined);
-
-        done();
-      });
+  it(`should import a local file`, () => {
+    const output = run(`${cmd} import ${datasetId} ${tableId} ${localFilePath}`, cwd);
+    assert.equal(output.includes(`started.`), true);
+    assert.equal(output.includes(`completed.`), true);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return bigquery.dataset(datasetId).table(tableId).getRows()
+          .then((results) => {
+            assert.equal(results[0].length, 1);
+            resolve();
+          })
+          .catch(reject);
+      }, 2000);
     });
+  }).timeout(120000);
+
+  it(`should browse table rows`, () => {
+    const output = run(`${cmd} browse ${datasetId} ${tableId}`, cwd);
+    assert.equal(output, `Rows:\n{ Name: 'Gandalf', Age: 2000, Weight: 140, IsMagic: true }`);
   });
 
-  describe('exportTableToGCS', function () {
-    it('should export data to GCS', function (done) {
-      program.exportTableToGCS(options.datasetId, options.tableId, options.bucketName, options.fileName, function (err, metadata, apiResponse) {
-        assert.equal(err, null);
-        assert.notEqual(metadata, undefined);
-        assert.deepEqual(metadata.status, { state: 'DONE' });
-        assert.notEqual(apiResponse, undefined);
-
-        storage.bucket(options.bucketName).file(options.fileName).exists(function (err, exists) {
-          assert.equal(err, null);
-          assert.equal(exists, true);
-
-          done();
-        });
-      });
+  it(`should export a table to GCS`, () => {
+    const output = run(`${cmd} export ${datasetId} ${tableId} ${bucketName} ${exportFileName}`, cwd);
+    assert.equal(output.includes(`started.`), true);
+    assert.equal(output.includes(`completed.`), true);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        storage.bucket(bucketName).file(exportFileName).exists()
+          .then((results) => {
+            assert.equal(results[0], true);
+            resolve();
+          })
+          .catch(reject);
+      }, 10000);
     });
-  });
+  }).timeout(120000);
 
-  describe('insertRowsAsStream', function () {
-    it('should insert rows into a table', function (done) {
-      var table = bigquery.dataset(options.datasetId).table(options.tableId);
-
-      table.getRows(function (err, startRows) {
-        assert.equal(err, null);
-
-        program.insertRowsAsStream(options.datasetId, options.tableId, options.rows, function (err, insertErrors, apiResponse) {
-          assert.equal(err, null);
-          assert.deepEqual(insertErrors, []);
-          assert.notEqual(apiResponse, undefined);
-
-          setTimeout(function () {
-            table.getRows(function (err, endRows) {
-              assert.equal(err, null);
-              assert.equal(startRows.length + 2, endRows.length);
-
-              done();
-            });
-          }, 2000);
-        });
-      });
+  it(`should import a GCS file`, () => {
+    const output = run(`${cmd} import-gcs ${datasetId} ${tableId} ${bucketName} ${importFileName}`, cwd);
+    assert.equal(output.includes(`started.`), true);
+    assert.equal(output.includes(`completed.`), true);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return bigquery.dataset(datasetId).table(tableId).getRows()
+          .then((results) => {
+            assert.equal(results[0].length, 2);
+            resolve();
+          })
+          .catch(reject);
+      }, 2000);
     });
-  });
+  }).timeout(120000);
 
-  describe('copyTable', function () {
-    it('should copy a table between datasets', function (done) {
-      program.copyTable(srcDatasetId, srcTableId, destDatasetId, destTableId, function (err, metadata, apiResponse) {
-        assert.equal(err, null);
-        assert.notEqual(metadata, undefined);
-        assert.deepEqual(metadata.status, { state: 'DONE' });
-        assert.notEqual(apiResponse, undefined);
-
-        bigquery.dataset(srcDatasetId).table(srcTableId).exists(function (err, exists) {
-          assert.equal(err, null);
-          assert.equal(exists, true);
-
-          bigquery.dataset(destDatasetId).table(destTableId).exists(function (err, exists) {
-            assert.equal(err, null);
-            assert.equal(exists, true);
-
-            done();
-          });
-        });
-      });
+  it(`should copy a table`, () => {
+    const output = run(`${cmd} copy ${srcDatasetId} ${srcTableId} ${destDatasetId} ${destTableId}`, cwd);
+    assert.equal(output.includes(`started.`), true);
+    assert.equal(output.includes(`completed.`), true);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        bigquery.dataset(destDatasetId).table(destTableId).getRows()
+          .then((results) => {
+            assert.equal(results[0].length, 2);
+            resolve();
+          })
+          .catch(reject);
+      }, 2000);
     });
-  });
+  }).timeout(120000);
 
-  describe('browseRows', function () {
-    it('should display rows in a table', function (done) {
-      program.browseRows(options.datasetId, options.tableId, function (err, rows) {
-        assert.equal(err, null);
-        assert.equal(Array.isArray(rows), true);
-        assert.equal(rows.length > 0, true);
-        assert.equal(console.log.calledOnce, true);
-        assert.deepEqual(console.log.firstCall.args, ['Found %d row(s)!', rows.length]);
-
-        done();
-      });
+  it(`should insert rows`, () => {
+    assert.throws(() => {
+      run(`${cmd} insert ${datasetId} ${tableId} 'foo.bar'`, cwd);
+    }, Error, `"json_or_file" (or the file it points to) is not a valid JSON array.`);
+    const output = run(`${cmd} insert ${datasetId} ${tableId} '${JSON.stringify(rows)}'`, cwd);
+    assert.equal(output, `Inserted:\n{ Name: 'foo', Age: 27, Weight: 80.3, IsMagic: true }\n{ Name: 'bar', Age: 13, Weight: 54.6, IsMagic: false }`);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        bigquery.dataset(datasetId).table(tableId).getRows()
+          .then((results) => {
+            assert.equal(results[0].length, 4);
+            resolve();
+          })
+          .catch(reject);
+      }, 2000);
     });
-  });
+  }).timeout(120000);
 
-  describe('deleteTable', function () {
-    it('should delete table', function (done) {
-      program.deleteTable(options.datasetId, options.tableId, function (err) {
-        assert.equal(err, null);
-        assert.equal(console.log.calledOnce, true);
-        assert.deepEqual(console.log.firstCall.args, ['Deleted table %s from %s', options.tableId, options.datasetId]);
-
-        done();
-      });
-    });
+  it(`should delete a table`, () => {
+    const output = run(`${cmd} delete ${datasetId} ${tableId}`, cwd);
+    assert.equal(output, `Table ${tableId} deleted.`);
+    return bigquery.dataset(datasetId).table(tableId).exists()
+      .then((results) => assert.equal(results[0], false));
   });
 });

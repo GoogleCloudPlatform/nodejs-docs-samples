@@ -35,22 +35,21 @@ __Usage:__ `node datasets --help`
 
 ```
 Commands:
-  create <datasetId>  Create a new dataset with the specified ID.
-  delete <datasetId>  Delete the dataset with the specified ID.
-  list                List datasets in the specified project.
-  size <datasetId>    Calculate the size of the specified dataset.
+  create <datasetId>            Creates a new dataset.
+  delete <datasetId>            Deletes a dataset.
+  list [projectId]              Lists all datasets in the specified project or the current project.
+  size <datasetId> [projectId]  Calculates the size of a dataset.
 
 Options:
-  --projectId, -p  Optionally specify the project ID to use.                   [string] [default: "nodejs-docs-samples"]
-  --help           Show help                                                                                   [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
-  node datasets create my_dataset                         Create a new dataset with the ID "my_dataset".
-  node datasets delete my_dataset                         Delete a dataset identified as "my_dataset".
-  node datasets list                                      List datasets.
-  node datasets list -p bigquery-public-data              List datasets in the "bigquery-public-data" project.
-  node datasets size my_dataset                           Calculate the size of "my_dataset".
-  node datasets size hacker_news -p bigquery-public-data  Calculate the size of "bigquery-public-data:hacker_news".
+  node datasets create my_dataset                      Creates a new dataset named "my_dataset".
+  node datasets delete my_dataset                      Deletes a dataset named "my_dataset".
+  node datasets list                                   Lists all datasets in the current project.
+  node datasets list bigquery-public-data              Lists all datasets in the "bigquery-public-data" project.
+  node datasets size my_dataset                        Calculates the size of "my_dataset" in the current project.
+  node datasets size hacker_news bigquery-public-data  Calculates the size of "bigquery-public-data:hacker_news".
 
 For more information, see https://cloud.google.com/bigquery/docs
 ```
@@ -68,17 +67,17 @@ __Usage:__ `node queries --help`
 Commands:
   sync <sqlQuery>   Run the specified synchronous query.
   async <sqlQuery>  Start the specified asynchronous query.
-  wait <jobId>      Wait for the specified job to complete and retrieve its results.
+  shakespeare       Queries a public Shakespeare dataset.
 
 Options:
   --help  Show help                                                                                            [boolean]
 
 Examples:
-  node queries sync "SELECT * FROM
-  `publicdata.samples.natality` LIMIT 5;"
-  node queries async "SELECT * FROM
-  `publicdata.samples.natality` LIMIT 5;"
-  node queries wait job_VwckYXnR8yz54GBDMykIGnrc2
+  node queries sync "SELECT * FROM publicdata.samples.natality  Synchronously queries the natality dataset.
+  LIMIT 5;"
+  node queries async "SELECT * FROM                             Queries the natality dataset as a job.
+  publicdata.samples.natality LIMIT 5;"
+  node queries shakespeare                                      Queries a public Shakespeare dataset.
 
 For more information, see https://cloud.google.com/bigquery/docs
 ```
@@ -94,39 +93,41 @@ __Usage:__ `node tables --help`
 
 ```
 Commands:
-  create <datasetId> <tableId>                                  Create a new table with the specified ID in the
-                                                                specified dataset.
-  list <datasetId>                                              List tables in the specified dataset.
-  delete <datasetId> <tableId>                                  Delete the specified table from the specified dataset.
-  copy <srcDatasetId> <srcTableId> <destDatasetId>              Make a copy of an existing table.
-  <destTableId>
-  browse <datasetId> <tableId>                                  List the rows from the specified table.
-  import <datasetId> <tableId> <fileName>                       Import data from a local file or a Google Cloud Storage
-                                                                file into the specified table.
+  create <datasetId> <tableId> <schema> [projectId]             Creates a new table.
+  list <datasetId> [projectId]                                  Lists all tables in a dataset.
+  delete <datasetId> <tableId> [projectId]                      Deletes a table.
+  copy <srcDatasetId> <srcTableId> <destDatasetId>              Makes a copy of a table.
+  <destTableId> [projectId]
+  browse <datasetId> <tableId> [projectId]                      Lists rows in a table.
+  import <datasetId> <tableId> <fileName> [projectId]           Imports data from a local file into a table.
+  import-gcs <datasetId> <tableId> <bucketName> <fileName>      Imports data from a Google Cloud Storage file into a
+  [projectId]                                                   table.
   export <datasetId> <tableId> <bucketName> <fileName>          Export a table from BigQuery to Google Cloud Storage.
-  insert <datasetId> <tableId> <json_or_file>                   Insert a JSON array (as a string or newline-delimited
+  [projectId]
+  insert <datasetId> <tableId> <json_or_file> [projectId]       Insert a JSON array (as a string or newline-delimited
                                                                 file) into a BigQuery table.
 
 Options:
   --help  Show help                                                                                            [boolean]
 
 Examples:
-  node tables create my_dataset my_table                        Create table "my_table" in "my_dataset".
-  node tables list my_dataset                                   List tables in "my_dataset".
-  node tables browse my_dataset my_table                        Display rows from "my_table" in "my_dataset".
-  node tables delete my_dataset my_table                        Delete "my_table" from "my_dataset".
-  node tables import my_dataset my_table ./data.csv             Import a local file into a table.
-  node tables import my_dataset my_table data.csv --bucket      Import a GCS file into a table.
-  my-bucket
-  node tables export my_dataset my_table my-bucket my-file      Export my_dataset:my_table to gcs://my-bucket/my-file as
-                                                                raw CSV.
-  node tables export my_dataset my_table my-bucket my-file -f   Export my_dataset:my_table to gcs://my-bucket/my-file as
-  JSON --gzip                                                   gzipped JSON.
-  node tables insert my_dataset my_table json_string            Insert the JSON array represented by json_string into
+  node tables create my_dataset my_table "Name:string,          Createss a new table named "my_table" in "my_dataset".
+  Age:integer, Weight:float, IsMagic:boolean"
+  node tables list my_dataset                                   Lists tables in "my_dataset".
+  node tables browse my_dataset my_table                        Displays rows from "my_table" in "my_dataset".
+  node tables delete my_dataset my_table                        Deletes "my_table" from "my_dataset".
+  node tables import my_dataset my_table ./data.csv             Imports a local file into a table.
+  node tables import-gcs my_dataset my_table my-bucket          Imports a GCS file into a table.
+  data.csv
+  node tables export my_dataset my_table my-bucket my-file      Exports my_dataset:my_table to gcs://my-bucket/my-file
+                                                                as raw CSV.
+  node tables export my_dataset my_table my-bucket my-file -f   Exports my_dataset:my_table to gcs://my-bucket/my-file
+  JSON --gzip                                                   as gzipped JSON.
+  node tables insert my_dataset my_table json_string            Inserts the JSON array represented by json_string into
                                                                 my_dataset:my_table.
-  node tables insert my_dataset my_table json_file              Insert the JSON objects contained in json_file (one per
+  node tables insert my_dataset my_table json_file              Inserts the JSON objects contained in json_file (one per
                                                                 line) into my_dataset:my_table.
-  node tables copy src_dataset src_table dest_dataset           Copy src_dataset:src_table to dest_dataset:dest_table.
+  node tables copy src_dataset src_table dest_dataset           Copies src_dataset:src_table to dest_dataset:dest_table.
   dest_table
 
 For more information, see https://cloud.google.com/bigquery/docs

@@ -23,7 +23,7 @@ const expectedDatasetId = `my_new_dataset`;
 let datasetId = `nodejs-docs-samples-test-${uuid.v4()}`;
 datasetId = datasetId.replace(/-/gi, `_`);
 
-describe.only(`bigquery:quickstart`, () => {
+describe(`bigquery:quickstart`, () => {
   let bigqueryMock, BigqueryMock;
 
   after((done) => {
@@ -33,21 +33,22 @@ describe.only(`bigquery:quickstart`, () => {
     });
   });
 
-  it(`should create a dataset`, (done) => {
+  it(`quickstart should create a dataset`, (done) => {
     bigqueryMock = {
-      createDataset: (_datasetId, _callback) => {
+      createDataset: (_datasetId) => {
         assert.equal(_datasetId, expectedDatasetId);
-        assert.equal(typeof _callback, 'function');
 
-        bigquery.createDataset(datasetId, (err, dataset, apiResponse) => {
-          _callback(err, dataset, apiResponse);
-          assert.ifError(err);
-          assert.notEqual(dataset, undefined);
-          assert.notEqual(apiResponse, undefined);
-          assert.equal(console.log.calledOnce, true);
-          assert.deepEqual(console.log.firstCall.args, [`Dataset ${dataset.name} created.`]);
-          done();
-        });
+        return bigquery.createDataset(datasetId)
+          .then((results) => {
+            const dataset = results[0];
+            assert.notEqual(dataset, undefined);
+            setTimeout(() => {
+              assert.equal(console.log.calledOnce, true);
+              assert.deepEqual(console.log.firstCall.args, [`Dataset ${dataset.id} created.`]);
+              done();
+            }, 500);
+            return results;
+          }).catch(done);
       }
     };
     BigqueryMock = sinon.stub().returns(bigqueryMock);

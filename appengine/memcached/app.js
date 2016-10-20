@@ -26,7 +26,7 @@ const app = express();
 // memcached daemon running.
 const memcachedAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR || 'localhost';
 const memcachedPort = process.env.MEMCACHE_PORT_11211_TCP_PORT || '11211';
-const memcached = new Memcached(memcachedAddr + ':' + memcachedPort);
+const memcached = new Memcached(`${memcachedAddr}:${memcachedPort}`);
 
 app.get('/', (req, res, next) => {
   memcached.get('foo', (err, value) => {

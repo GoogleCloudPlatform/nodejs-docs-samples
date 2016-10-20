@@ -1,5 +1,9 @@
 # Express.js + Memcached Sessions on Google App Engine
 
+**Note: This sample uses the older `vm: true` configuration. It will be upgraded
+to use the newer `env: flex` configuration when `env: flex` fully supports
+Memcached.**
+
 This is a simple guide to using memcached for session state while running
 [Express.js](http://expressjs.com/) on Google App Engine. Each Google App Engine
 application comes with a memcached service instance, which can be reached with a
@@ -19,22 +23,20 @@ Alternatively, you can [download the sample][download] as a zip and extract it.
 
 ## Run the app on your local computer
 
-1. Install dependencies. Enter the following command:
+1. Install dependencies:
 
     npm install
 
-1. Run the start script.
+1. Run the start script:
 
     npm start
 
-1. In your web browser, enter the following address:
+1. In your web browser, visit the following address:
 
     http://localhost:8080
 
-You can see the sample app displayed in the page. This page was delivered by the
-Express.js web server running on your computer.
-
-In your terminal window, press Ctrl+C to exit the web server.
+You can see the sample app displayed in the page. In your terminal window, press
+Ctrl+C to exit the web server.
 
 ## Deploy the app to Google Cloud Platform
 
@@ -48,30 +50,12 @@ In your web browser, enter the following address:
 
     https://<your-project-id>.appspot.com
 
-For convenience, you can use an npm script to run the gcloud command. Add these
-lines to your package.json file:
-
-    "scripts": {
-      "start": "node server.js",
-      "deploy": "gcloud app deploy"
-    }
-
-At the terminal you can now run the following command to deploy your application:
-
-    npm run deploy
-
 ## Configuration
 
-Every Managed VMs application requires an app.yaml file to describe its
-deployment configuration.
+Every Google App Engine Flexible Environment application requires an `app.yaml`
+file to describe its deployment configuration:
 
     runtime: nodejs
-    vm: true
-    env_variables:
-      PORT: 8080
-      MEMCACHE_URL: memcache:11211
-
-Notice the `MEMCACHE_URL` environment variable–this is where you can reach your
-standard memcached cluster across instances.
+    env: flex
 
 [download]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/archive/master.zip

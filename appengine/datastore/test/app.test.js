@@ -13,52 +13,52 @@
 
 'use strict';
 
-var express = require('express');
-var path = require('path');
-var proxyquire = require('proxyquire').noCallThru();
-var request = require('supertest');
+const express = require(`express`);
+const path = require(`path`);
+const proxyquire = require(`proxyquire`).noCallThru();
+const request = require(`supertest`);
 
-var SAMPLE_PATH = path.join(__dirname, '../app.js');
+const SAMPLE_PATH = path.join(__dirname, `../app.js`);
 
 function getSample () {
-  var serverMock = {
+  const serverMock = {
     address: sinon.stub().returns({
       port: 8080
     })
   };
-  var testApp = express();
-  sinon.stub(testApp, 'listen', function (port, callback) {
+  const testApp = express();
+  sinon.stub(testApp, `listen`, (port, callback) => {
     assert.equal(port, 8080);
-    setTimeout(function () {
+    setTimeout(() => {
       callback();
     });
     return serverMock;
   });
-  var expressMock = sinon.stub().returns(testApp);
-  var resultsMock = [
+  const expressMock = sinon.stub().returns(testApp);
+  const resultsMock = [
     {
       data: {
-        timestamp: '1234',
-        userIp: 'abcd'
+        timestamp: `1234`,
+        userIp: `abcd`
       }
     }
   ];
-  var queryMock = {
+  const queryMock = {
     order: sinon.stub(),
     limit: sinon.stub()
   };
   queryMock.order.returns(queryMock);
   queryMock.limit.returns(queryMock);
 
-  var datasetMock = {
+  const datasetMock = {
     save: sinon.stub().callsArg(1),
     createQuery: sinon.stub().returns(queryMock),
     runQuery: sinon.stub().callsArgWith(1, null, resultsMock),
     key: sinon.stub().returns({})
   };
-  var DatastoreMock = sinon.stub().returns(datasetMock);
+  const DatastoreMock = sinon.stub().returns(datasetMock);
 
-  var app = proxyquire(SAMPLE_PATH, {
+  const app = proxyquire(SAMPLE_PATH, {
     '@google-cloud/datastore': DatastoreMock,
     express: expressMock
   });
@@ -74,10 +74,10 @@ function getSample () {
   };
 }
 
-describe('appengine/datastore/app.js', function () {
-  var sample;
+describe(`appengine/datastore/app.js`, () => {
+  let sample;
 
-  beforeEach(function () {
+  beforeEach(() => {
     sample = getSample();
 
     assert(sample.mocks.express.calledOnce);
@@ -86,43 +86,43 @@ describe('appengine/datastore/app.js', function () {
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should record a visit', function (done) {
-    var expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
+  it(`should record a visit`, (done) => {
+    const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(200)
-      .expect(function (response) {
+      .expect((response) => {
         console.log(response.body);
         assert.equal(response.text, expectedResult);
       })
       .end(done);
   });
 
-  it('should handle insert error', function (done) {
-    var expectedResult = 'insert_error';
+  it(`should handle insert error`, (done) => {
+    const expectedResult = `insert_error`;
 
     sample.mocks.dataset.save.callsArgWith(1, expectedResult);
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(500)
-      .expect(function (response) {
-        assert.equal(response.text, expectedResult + '\n');
+      .expect((response) => {
+        assert.equal(response.text, expectedResult + `\n`);
       })
       .end(done);
   });
 
-  it('should handle read error', function (done) {
-    var expectedResult = 'read_error';
+  it(`should handle read error`, (done) => {
+    const expectedResult = `read_error`;
 
     sample.mocks.dataset.runQuery.callsArgWith(1, expectedResult);
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(500)
-      .expect(function (response) {
-        assert.equal(response.text, expectedResult + '\n');
+      .expect((response) => {
+        assert.equal(response.text, `${expectedResult}\n`);
       })
       .end(done);
   });

@@ -6,17 +6,15 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
     "bundle": "webpack --config webpack.config.js",
-    "prestart": "npm run bundle",
-    "start": "node server.js",
-    "deploy": "gcloud app deploy"
+    "prestart": "npm run bundle"
   },
   "dependencies": {
-    "express": "^4.13.4",
-    "jade": "^1.11.0",
+    "express": "^4.14.0",
+    "pug": "^2.0.0-beta6",
     "webpack": "^1.12.13"
   }
 }

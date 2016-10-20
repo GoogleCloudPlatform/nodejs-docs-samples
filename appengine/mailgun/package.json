@@ -13,9 +13,9 @@
     "deploy": "gcloud app deploy"
   },
   "dependencies": {
-    "body-parser": "^1.14.2",
-    "express": "^4.13.4",
-    "jade": "^1.11.0",
-    "mailgun": "^0.5.0"
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mailgun": "^0.5.0",
+    "pug": "^2.0.0-beta6"
   }
 }

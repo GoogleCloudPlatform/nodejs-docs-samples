@@ -6,13 +6,12 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node index.js",
-    "deploy": "gcloud app deploy"
+    "start": "node index.js"
   },
   "dependencies": {
-    "hapi": "^13.0.0"
+    "hapi": "^15.1.1"
   }
 }

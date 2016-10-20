@@ -34,13 +34,13 @@ can skip this step):
 
 1. Deploy the `publish` function with an HTTP trigger:
 
-        gcloud alpha functions deploy publish --bucket [YOUR_BUCKET_NAME] --trigger-http
+        gcloud alpha functions deploy publish --stage-bucket [YOUR_BUCKET_NAME] --trigger-http
 
     * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
 1. Deploy the `subscribe` function with the Pub/Sub topic as a trigger:
 
-        gcloud alpha functions deploy subscribe --bucket [YOUR_BUCKET_NAME] --trigger-topic [YOUR_TOPIC_NAME]
+        gcloud alpha functions deploy subscribe --stage-bucket [YOUR_BUCKET_NAME] --trigger-topic [YOUR_TOPIC_NAME]
 
     * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
     * Replace `[YOUR_TOPIC_NAME]` with the name of your Pub/Sub Topic.

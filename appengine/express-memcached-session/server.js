@@ -26,7 +26,7 @@ const crypto = require('crypto');
 
 let MEMCACHE_URL = process.env.MEMCACHE_URL;
 if (!MEMCACHE_URL) {
-  if () {
+  if (process.env.MEMCACHE_PORT_11211_TCP_ADDR && process.env.MEMCACHE_PORT_11211_TCP_PORT) {
     MEMCACHE_URL = `${process.env.MEMCACHE_PORT_11211_TCP_ADDR}:${process.env.MEMCACHE_PORT_11211_TCP_PORT}`;
   } else {
     MEMCACHE_URL = '127.0.0.1:11211';

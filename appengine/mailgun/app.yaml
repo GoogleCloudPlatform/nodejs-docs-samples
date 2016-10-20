@@ -13,7 +13,7 @@
 
 # [START app_yaml]
 runtime: nodejs
-env: flex
+vm: true
 env_variables:
   MAILGUN_API_KEY: <your-mailgun-api-key>
 # [END app_yaml]

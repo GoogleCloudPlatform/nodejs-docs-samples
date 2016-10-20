@@ -13,10 +13,11 @@
 
 # [START app_yaml]
 runtime: nodejs
-env: flex
+vm: true
 
 # [START env]
 env_variables:
+  GCLOUD_PROJECT: <your-project-id>
   PUBSUB_TOPIC: <your-topic-name>
   # This token is used to verify that requests originate from your
   # application. It can be any sufficiently random string.

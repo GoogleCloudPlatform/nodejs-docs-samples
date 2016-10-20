@@ -6,12 +6,13 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=4.3.2"
+    "node": "~4.2"
   },
   "scripts": {
     "prestart": "GEDDY_SECRET=config/secrets.json; [[ -f $GEDDY_SECRET ]] || echo '{}' > $GEDDY_SECRET && geddy gen secret",
     "start": "geddy",
-    "debug": "geddy --debug"
+    "debug": "geddy --debug",
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "geddy": "^13.0.8"

@@ -13,29 +13,29 @@
 
 'use strict';
 
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noPreserveCache();
+var path = require('path');
+var proxyquire = require('proxyquire').noPreserveCache();
 
-const SAMPLE_PATH = path.join(__dirname, `../createTables.js`);
+var SAMPLE_PATH = path.join(__dirname, '../createTables.js');
 
 function getSample () {
-  const connectionMock = {
+  var connectionMock = {
     query: sinon.stub(),
     end: sinon.stub()
   };
-  connectionMock.query.onFirstCall().yields(null, `created visits table!`);
-  const mysqlMock = {
+  connectionMock.query.onFirstCall().callsArgWith(1, null, 'created visits table!');
+  var mysqlMock = {
     createConnection: sinon.stub().returns(connectionMock)
   };
-  const configMock = {
-    user: `user`,
-    password: `password`,
-    database: `database`,
-    socketPath: `socketPath`
+  var configMock = {
+    user: 'user',
+    password: 'password',
+    database: 'database',
+    socketPath: 'socketPath'
   };
-  const promptMock = {
+  var promptMock = {
     start: sinon.stub(),
-    get: sinon.stub().yields(null, configMock)
+    get: sinon.stub().callsArgWith(1, null, configMock)
   };
 
   proxyquire(SAMPLE_PATH, {
@@ -52,29 +52,30 @@ function getSample () {
   };
 }
 
-describe(`appengine/cloudsql/createTables.js`, () => {
-  it(`should record a visit`, (done) => {
-    const sample = getSample();
-    const expectedResult = `created visits table!`;
+describe('appengine/cloudsql/createTables.js', function () {
+  it('should record a visit', function (done) {
+    var sample = getSample();
+    var expectedResult = 'created visits table!';
 
     assert(sample.mocks.prompt.start.calledOnce);
     assert(sample.mocks.prompt.get.calledOnce);
     assert.deepEqual(sample.mocks.prompt.get.firstCall.args[0], [
-      `user`,
-      `password`,
-      `database`
+      'socketPath',
+      'user',
+      'password',
+      'database'
     ]);
 
-    setTimeout(() => {
+    setTimeout(function () {
       assert.deepEqual(sample.mocks.mysql.createConnection.firstCall.args[0], sample.mocks.config);
       assert(console.log.calledWith(expectedResult));
       done();
     }, 10);
   });
 
-  it(`should handle prompt error`, (done) => {
-    const expectedResult = `createTables_prompt_error`;
-    const sample = getSample();
+  it('should handle prompt error', function (done) {
+    var expectedResult = 'createTables_prompt_error';
+    var sample = getSample();
 
     proxyquire(SAMPLE_PATH, {
       mysql: sample.mocks.mysql,
@@ -84,17 +85,17 @@ describe(`appengine/cloudsql/createTables.js`, () => {
       }
     });
 
-    setTimeout(() => {
+    setTimeout(function () {
       assert(console.error.calledWith(expectedResult));
       done();
     }, 10);
   });
 
-  it(`should handle insert error`, (done) => {
-    const expectedResult = `createTables_insert_error`;
-    const sample = getSample();
+  it('should handle insert error', function (done) {
+    var expectedResult = 'createTables_insert_error';
+    var sample = getSample();
 
-    const connectionMock = {
+    var connectionMock = {
       query: sinon.stub().callsArgWith(1, expectedResult)
     };
 
@@ -105,7 +106,7 @@ describe(`appengine/cloudsql/createTables.js`, () => {
       prompt: sample.mocks.prompt
     });
 
-    setTimeout(() => {
+    setTimeout(function () {
       assert(console.error.calledWith(expectedResult));
       done();
     }, 10);

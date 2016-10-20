@@ -6,11 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
-  },
-  "scripts": {
-    "start": "node server.js",
-    "deploy": "gcloud app deploy"
+    "node": ">=4.3.2"
   },
   "dependencies": {
     "restify": "^4.0.0"

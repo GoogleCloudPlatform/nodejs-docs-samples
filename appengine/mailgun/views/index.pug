@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    title= title
+  body
+    h1 Hello World!
+    p Express.js + Mailgun on Google App Engine.
+    hr
+    if sent
+      p Email sent!
+    else
+      form(name="hello", action="/hello", method="post")
+        input(type="email", placeholder="Enter your email to send yourself a Hello World message", name="email", style="width: 50%; margin-right: 15px;")
+        input(type="submit", value="Send")

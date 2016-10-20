@@ -1,7 +1,7 @@
 # Parse-server sample for Google App Engine
 
 This sample demonstrates deploying a [Parse-server](https://github.com/ParsePlatform/parse-server)
-app to [Google App Engine Managed VMs](https://cloud.google.com/appengine).
+app to [Google App Engine Flexible Environment](https://cloud.google.com/appengine).
 
 ## Setup
 
@@ -11,7 +11,7 @@ app to [Google App Engine Managed VMs](https://cloud.google.com/appengine).
 1. Setup a MongoDB server. Here are two possible options:
   1. Create a Google Compute Engine virtual machine with [MongoDB pre-installed](https://cloud.google.com/launcher/?q=mongodb).
   1. Use [MongoLab](https://mongolab.com/google/) to create a free MongoDB deployment on Google Cloud Platform.
-  
+
 ## Downloading Files
 
 1. `git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git`

@@ -14,6 +14,8 @@
 # [START app_yaml]
 runtime: nodejs
 vm: true
-env_variables:
-  MEMCACHE_URL: memcache:11211
 # [END app_yaml]
+
+# Optionally specify the Memcache connection string
+# env_variables:
+#  MEMCACHE_URL: <YOUR_MEMCACHE_URL>

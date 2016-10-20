@@ -1,7 +1,7 @@
 # Node.js error reporting sample for Google App Engine
 
 This sample demonstrates error reporting in a Node.js app for
-[Google App Engine Managed VMs](https://cloud.google.com/appengine).
+[Google App Engine Flexible Environment](https://cloud.google.com/appengine).
 
 ## Running locally
 

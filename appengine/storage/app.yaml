@@ -13,11 +13,10 @@
 
 # [START app_yaml]
 runtime: nodejs
-vm: true
+env: flex
 
 # [START env]
 env_variables:
-  GCLOUD_PROJECT: <your-project-id>
   GCLOUD_STORAGE_BUCKET: <your-bucket-name>
 # [END env]
 # [END app_yaml]

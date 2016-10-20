@@ -1,20 +1,17 @@
 {
   "name": "appengine-extending-runtime",
-  "description": "Sample for extending the Google App Engine Managed VMs Node.js runtime",
+  "description": "Sample for extending the Google App Engine Flexible Environment Node.js runtime",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js",
-    "start-on-prod": "node app.js",
-    "monitor": "nodemon app.js",
-    "deploy": "gcloud app deploy"
+    "start": "node app.js"
   },
   "dependencies": {
-    "express": "^4.13.4"
+    "express": "^4.14.0"
   }
 }

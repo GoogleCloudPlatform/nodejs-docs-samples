@@ -35,7 +35,7 @@ app.get('/', (req, res, next) => {
       return;
     }
     if (value) {
-      res.status(200).send('Value: ' + value);
+      res.status(200).send(`Value: ${value}`);
       return;
     }
 

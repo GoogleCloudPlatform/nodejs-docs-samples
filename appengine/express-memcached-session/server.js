@@ -23,17 +23,20 @@ const cookieParser = require('cookie-parser');
 const MemcachedStore = require('connect-memcached')(session);
 const publicIp = require('public-ip');
 const crypto = require('crypto');
+
 let MEMCACHE_URL = process.env.MEMCACHE_URL;
-if (process.env.GAE_MEMCACHE_HOST && process.env.GAE_MEMCACHE_PORT) {
-  MEMCACHE_URL = MEMCACHE_URL || `${process.env.GAE_MEMCACHE_HOST}:${process.env.GAE_MEMCACHE_PORT}`;
+if (!MEMCACHE_URL) {
+  if () {
+    MEMCACHE_URL = `${process.env.MEMCACHE_PORT_11211_TCP_ADDR}:${process.env.MEMCACHE_PORT_11211_TCP_PORT}`;
+  } else {
+    MEMCACHE_URL = '127.0.0.1:11211';
+  }
 }
-MEMCACHE_URL = MEMCACHE_URL || '127.0.0.1:11211';
 
 const app = express();
 app.enable('trust proxy');
 // [END setup]
 
-console.log(MEMCACHE_URL);
 app.use(cookieParser());
 app.use(session({
   secret: 'your-secret-here',

@@ -3,7 +3,7 @@
 This sample demonstrates how to use websockets on
 [Google App Engine Flexible Environment](https://cloud.google.com/appengine) with Node.js.
 
-__Note:__ Secure WebSockets are currently not supported by Managed VMs.
+__Note:__ Secure WebSockets are currently not supported by App Engine Flexible Environment.
 WebSockets will only work if you load your page over HTTP (not HTTPS).
 
 To use Secure WebSockets now, you can launch a VM on Google Compute Engine using

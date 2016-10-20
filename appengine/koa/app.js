@@ -16,8 +16,7 @@
 'use strict';
 
 // [START server]
-const koa = require('koa');
-const app = koa();
+const app = require('koa')();
 
 app.use(function * () {
   this.body = 'Hello World! Koa.js on Google App Engine.';

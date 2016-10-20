@@ -62,8 +62,7 @@ function insertVisit (visit, callback) {
 const SQL_STRING = `SELECT timestamp, userIp
 FROM visits
 ORDER BY timestamp DESC
-LIMIT 10;
-`;
+LIMIT 10;`;
 
 /**
  * Retrieve the latest 10 visit records from the database.

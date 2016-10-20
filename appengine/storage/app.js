@@ -70,9 +70,7 @@ app.post('/upload', multer.single('file'), (req, res, next) => {
 
   blobStream.on('finish', () => {
     // The public URL can be used to directly access the file via HTTP.
-    const publicUrl = format(
-      'https://storage.googleapis.com/%s/%s',
-      bucket.name, blob.name);
+    const publicUrl = format(`https://storage.googleapis.com/${bucket.name}/${blob.name}`);
     res.status(200).send(publicUrl);
   });
 

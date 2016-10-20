@@ -25,7 +25,7 @@ function auth (callback) {
 
     // The createScopedRequired method returns true when running on GAE or a
     // local developer machine. In that case, the desired scopes must be passed
-    // in manually. When the code is  running in GCE or a Managed VM, the scopes
+    // in manually. When the code is  running in GCE or GAE Flexible, the scopes
     // are pulled from the GCE metadata server.
     // See https://cloud.google.com/compute/docs/authentication for more
     // information.

@@ -27,8 +27,7 @@ const SQL_STRING = `CREATE TABLE visits (
   timestamp DATETIME NULL,
   userIp VARCHAR(46) NULL,
   PRIMARY KEY (id)
-);
-`;
+);`;
 
 /**
  * Create the "visits" table.

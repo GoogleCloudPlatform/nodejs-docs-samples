@@ -34,12 +34,12 @@ const client = redis.createClient(
     'auth_pass': nconf.get('redisKey'),
     'return_buffers': true
   }
-).on('error', (err) => console.error('ERR:REDIS: ' + err));
+).on('error', (err) => console.error('ERR:REDIS:', err));
 // [END client]
 
 // Create a simple little server.
 http.createServer((req, res) => {
-  client.on('error', (err) => console.log('Error ' + err));
+  client.on('error', (err) => console.log('Error', err));
 
   // Track every IP that has visited this site
   const listName = 'IPs';

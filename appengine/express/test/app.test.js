@@ -13,58 +13,58 @@
 
 'use strict';
 
-var path = require('path');
-var proxyquire = require('proxyquire').noPreserveCache();
-var request = require('supertest');
+const path = require(`path`);
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const request = require(`supertest`);
 
-var SAMPLE_PATH = path.join(__dirname, '../app.js');
+const SAMPLE_PATH = path.join(__dirname, `../app.js`);
 
 function getSample () {
-  var app = proxyquire(SAMPLE_PATH, {});
+  const app = proxyquire(SAMPLE_PATH, {});
   return {
     app: app,
     mocks: {}
   };
 }
 
-describe('appengine/express/app.js', function () {
-  var sample;
+describe(`appengine/express/app.js`, () => {
+  let sample;
 
-  beforeEach(function () {
+  beforeEach(() => {
     sample = getSample();
   });
 
-  it('should render index page', function (done) {
-    var expectedResult = 'Hello World! Express.js on Google App Engine.';
+  it(`should render index page`, (done) => {
+    const expectedResult = `Hello World! Express.js on Google App Engine.`;
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(200)
-      .expect(function (response) {
+      .expect((response) => {
         assert(response.text.indexOf(expectedResult) !== -1);
       })
       .end(done);
   });
 
-  it('should render users page', function (done) {
-    var expectedResult = 'respond with a resource';
+  it(`should render users page`, (done) => {
+    const expectedResult = `respond with a resource`;
 
     request(sample.app)
-      .get('/users')
+      .get(`/users`)
       .expect(200)
-      .expect(function (response) {
+      .expect((response) => {
         assert(response.text.indexOf(expectedResult) !== -1);
       })
       .end(done);
   });
 
-  it('should catch 404', function (done) {
-    var expectedResult = 'Error: Not Found';
+  it(`should catch 404`, (done) => {
+    const expectedResult = `Error: Not Found`;
 
     request(sample.app)
-      .get('/doesnotexist')
+      .get(`/doesnotexist`)
       .expect(404)
-      .expect(function (response) {
+      .expect((response) => {
         assert(response.text.indexOf(expectedResult) !== -1);
       })
       .end(done);

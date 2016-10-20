@@ -1,6 +1,6 @@
 # Google App Engine Node.js Samples
 
-These are samples for using Node.js on Google App Engine Managed VMs. These
+These are samples for using Node.js on Google App Engine Flexible Environment. These
 samples are referenced from the [docs](https://cloud.google.com/appengine/docs).
 
 See our other [Google Cloud Platform github repos](https://github.com/GoogleCloudPlatform)

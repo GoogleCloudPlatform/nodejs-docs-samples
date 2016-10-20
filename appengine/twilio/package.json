@@ -1,21 +1,19 @@
 {
   "name": "appengine-twilio",
-  "description": "Samples for Google App Engine Managed VMs",
+  "description": "Samples for Google App Engine Flexible Environment",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js",
-    "monitor": "nodemon app.js",
-    "deploy": "gcloud app deploy"
+    "start": "node app.js"
   },
   "dependencies": {
-    "body-parser": "^1.14.2",
-    "express": "^4.13.4",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
     "twilio": "^2.9.0"
   }
 }

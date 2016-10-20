@@ -1,66 +1,63 @@
-/**
- * Copyright 2016, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2015-2016, Google, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // [START app]
 'use strict';
 
-const express = require('express');
-const bodyParser = require('body-parser');
+var express = require('express');
+var bodyParser = require('body-parser');
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 // These environment variables are set automatically on Google App Engine
-const PubSub = require('@google-cloud/pubsub');
+var PubSub = require('@google-cloud/pubsub');
 
 // Instantiate a pubsub client
-const pubsub = PubSub();
+var pubsub = PubSub();
 
-const app = express();
-app.set('view engine', 'pug');
+var app = express();
+app.set('view engine', 'jade');
 
-const formBodyParser = bodyParser.urlencoded({ extended: false });
-const jsonBodyParser = bodyParser.json();
+var formBodyParser = bodyParser.urlencoded({extended: false});
+var jsonBodyParser = bodyParser.json();
 
 // List of all messages received by this instance
-const messages = [];
+var messages = [];
 
 // The following environment variables are set by app.yaml when running on GAE,
 // but will need to be manually set when running locally.
-const PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
+var PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
 
-const topic = pubsub.topic(process.env.PUBSUB_TOPIC);
+var topic = pubsub.topic(process.env.PUBSUB_TOPIC);
 
 // [START index]
-app.get('/', (req, res) => {
+app.get('/', function (req, res) {
   res.render('index', { messages: messages });
 });
 
-app.post('/', formBodyParser, (req, res, next) => {
+app.post('/', formBodyParser, function (req, res, next) {
   if (!req.body.payload) {
-    res.status(400).send('Missing payload');
-    return;
+    return res.status(400).send('Missing payload');
   }
 
   topic.publish({
     data: req.body.payload
-  }, (err) => {
+  }, function (err) {
     if (err) {
-      next(err);
-      return;
+      return next(err);
     }
     res.status(200).send('Message sent');
   });
@@ -68,14 +65,13 @@ app.post('/', formBodyParser, (req, res, next) => {
 // [END index]
 
 // [START push]
-app.post('/pubsub/push', jsonBodyParser, (req, res) => {
+app.post('/pubsub/push', jsonBodyParser, function (req, res) {
   if (req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
-    res.status(400).send();
-    return;
+    return res.status(400).send();
   }
 
   // The message is a unicode string encoded in base64.
-  const message = new Buffer(req.body.message.data, 'base64').toString('utf-8');
+  var message = new Buffer(req.body.message.data, 'base64').toString('utf-8');
 
   messages.push(message);
 
@@ -84,9 +80,8 @@ app.post('/pubsub/push', jsonBodyParser, (req, res) => {
 // [END push]
 
 // Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+var server = app.listen(process.env.PORT || '8080', function () {
+  console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]

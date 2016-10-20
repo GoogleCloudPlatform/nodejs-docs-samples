@@ -13,5 +13,8 @@
 
 # [START app_yaml]
 runtime: custom
-env: flex
+vm: true
+
+skip_files:
+  - ^(.*/)?.*/node_modules/.*$
 # [END app_yaml]

@@ -13,5 +13,6 @@
 
 # [START app_yaml]
 runtime: nodejs
-env: flex
+vm: true
 # [END app_yaml]
+

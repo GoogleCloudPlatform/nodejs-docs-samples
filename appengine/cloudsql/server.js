@@ -1,43 +1,37 @@
-/**
- * Copyright 2016, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2015-2016, Google, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // [START app]
 'use strict';
 
 // [START setup]
-const express = require('express');
-const mysql = require('mysql');
-const crypto = require('crypto');
+var express = require('express');
+var mysql = require('mysql');
+var crypto = require('crypto');
 
-const app = express();
+var app = express();
 app.enable('trust proxy');
 // [END setup]
 
 // [START connect]
-var config = {
+// Connect to the database
+var connection = mysql.createConnection({
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
+  socketPath: process.env.MYSQL_SOCKET_PATH,
   database: process.env.MYSQL_DATABASE
-};
-
-if (process.env.INSTANCE_CONNECTION_NAME) {
-  config.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
-}
-
-// Connect to the database
-const connection = mysql.createConnection(config);
+});
 // [END connect]
 
 // [START insertVisit]
@@ -48,21 +42,20 @@ const connection = mysql.createConnection(config);
  * @param {function} callback The callback function.
  */
 function insertVisit (visit, callback) {
-  connection.query('INSERT INTO `visits` SET ?', visit, (err) => {
+  connection.query('INSERT INTO `visits` SET ?', visit, function (err) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
-    callback();
+    return callback();
   });
 }
 // [END insertVisit]
 
 // [START getVisits]
-const SQL_STRING = `SELECT timestamp, userIp
-FROM visits
-ORDER BY timestamp DESC
-LIMIT 10;`;
+var SQL_STRING = 'SELECT `timestamp`, `userIp`\n' +
+  'FROM `visits`\n' +
+  'ORDER BY `timestamp` DESC\n' +
+  'LIMIT 10;';
 
 /**
  * Retrieve the latest 10 visit records from the database.
@@ -70,50 +63,49 @@ LIMIT 10;`;
  * @param {function} callback The callback function.
  */
 function getVisits (callback) {
-  connection.query(SQL_STRING, (err, results) => {
+  connection.query(SQL_STRING, function (err, results) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
-    callback(null, results.map((visit) => `Time: ${visit.timestamp}, AddrHash: ${visit.userIp}`));
+    return callback(null, results.map(function (visit) {
+      return 'Time: ' + visit.timestamp + ', AddrHash: ' + visit.userIp;
+    }));
   });
 }
 // [END getVisits]
 
-app.get('/', (req, res, next) => {
+app.get('/', function (req, res, next) {
   // Create a visit record to be stored in the database
-  const visit = {
+  var visit = {
     timestamp: new Date(),
     // Store a hash of the visitor's ip address
     userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
   };
 
-  insertVisit(visit, (err, results) => {
+  insertVisit(visit, function (err) {
     if (err) {
-      next(err);
-      return;
+      return next(err);
     }
 
     // Query the last 10 visits from the database.
-    getVisits((err, visits) => {
+    getVisits(function (err, visits) {
       if (err) {
-        next(err);
-        return;
+        return next(err);
       }
 
-      res
+      return res
         .status(200)
         .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${visits.join('\n')}`);
+        .send('Last 10 visits:\n' + visits.join('\n'));
     });
   });
 });
 
 // [START listen]
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
 });
 // [END listen]

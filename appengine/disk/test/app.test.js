@@ -13,27 +13,27 @@
 
 'use strict';
 
-const express = require(`express`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const request = require(`supertest`);
+var express = require('express');
+var path = require('path');
+var proxyquire = require('proxyquire').noPreserveCache();
+var request = require('supertest');
 
-const SAMPLE_PATH = path.join(__dirname, `../app.js`);
+var SAMPLE_PATH = path.join(__dirname, '../app.js');
 
 function getSample () {
-  const testApp = express();
-  sinon.stub(testApp, `listen`).callsArg(1);
-  const expressMock = sinon.stub().returns(testApp);
-  const resultsMock = JSON.stringify({
-    timestamp: `1234`,
-    userIp: `abcd`
-  }) + `\n`;
-  const fsMock = {
+  var testApp = express();
+  sinon.stub(testApp, 'listen').callsArg(1);
+  var expressMock = sinon.stub().returns(testApp);
+  var resultsMock = JSON.stringify({
+    timestamp: '1234',
+    userIp: 'abcd'
+  }) + '\n';
+  var fsMock = {
     appendFile: sinon.stub().callsArg(2),
     readFile: sinon.stub().callsArgWith(2, null, resultsMock)
   };
 
-  const app = proxyquire(SAMPLE_PATH, {
+  var app = proxyquire(SAMPLE_PATH, {
     fs: fsMock,
     express: expressMock
   });
@@ -47,10 +47,10 @@ function getSample () {
   };
 }
 
-describe(`appengine/disk/app.js`, () => {
-  let sample;
+describe('appengine/disk/app.js', function () {
+  var sample;
 
-  beforeEach(() => {
+  beforeEach(function () {
     sample = getSample();
 
     assert(sample.mocks.express.calledOnce);
@@ -58,42 +58,42 @@ describe(`appengine/disk/app.js`, () => {
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it(`should record a visit`, (done) => {
-    const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
+  it('should record a visit', function (done) {
+    var expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
 
     request(sample.app)
-      .get(`/`)
+      .get('/')
       .expect(200)
-      .expect((response) => {
+      .expect(function (response) {
         assert.equal(response.text, expectedResult);
       })
       .end(done);
   });
 
-  it(`should handle insert error`, (done) => {
-    const expectedResult = `insert_error`;
+  it('should handle insert error', function (done) {
+    var expectedResult = 'insert_error';
 
     sample.mocks.fs.appendFile.callsArgWith(2, expectedResult);
 
     request(sample.app)
-      .get(`/`)
+      .get('/')
       .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, expectedResult + `\n`);
+      .expect(function (response) {
+        assert.equal(response.text, expectedResult + '\n');
       })
       .end(done);
   });
 
-  it(`should handle read error`, (done) => {
-    const expectedResult = `read_error`;
+  it('should handle read error', function (done) {
+    var expectedResult = 'read_error';
 
     sample.mocks.fs.readFile.callsArgWith(2, expectedResult);
 
     request(sample.app)
-      .get(`/`)
+      .get('/')
       .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, `${expectedResult}\n`);
+      .expect(function (response) {
+        assert.equal(response.text, expectedResult + '\n');
       })
       .end(done);
   });

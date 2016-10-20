@@ -1,31 +1,30 @@
-/**
- * Copyright 2016, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2015-2016, Google, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // [START app]
 'use strict';
 
 // [START setup]
-const fs = require('fs');
-const express = require('express');
-const crypto = require('crypto');
-const path = require('path');
+var fs = require('fs');
+var express = require('express');
+var crypto = require('crypto');
+var path = require('path');
 
-const app = express();
+var app = express();
 app.enable('trust proxy');
 
-const FILENAME = path.join(__dirname, 'seen.txt');
+var FILENAME = path.join(__dirname, 'seen.txt');
 // [END setup]
 
 // [START insertVisit]
@@ -36,12 +35,11 @@ const FILENAME = path.join(__dirname, 'seen.txt');
  * @param {function} callback The callback function.
  */
 function insertVisit (visit, callback) {
-  fs.appendFile(FILENAME, `${JSON.stringify(visit)}\n`, (err) => {
+  fs.appendFile(FILENAME, JSON.stringify(visit) + '\n', function (err) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
-    callback();
+    return callback();
   });
 }
 // [END insertVisit]
@@ -53,55 +51,56 @@ function insertVisit (visit, callback) {
  * @param {function} callback The callback function.
  */
 function getVisits (callback) {
-  fs.readFile(FILENAME, { encoding: 'utf8' }, (err, data) => {
+  fs.readFile(FILENAME, { encoding: 'utf8' }, function (err, data) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
-    const visits = data.split('\n')
-      .filter((line) => line)
-      .map(JSON.parse)
-      .map((visit) => `Time: ${visit.timestamp}, AddrHash: ${visit.userIp}`);
+    var visits = data.split('\n')
+      .filter(function (line) {
+        return line;
+      })
+      .map(function (line) {
+        var visit = JSON.parse(line);
+        return 'Time: ' + visit.timestamp + ', AddrHash: ' + visit.userIp;
+      });
 
-    callback(null, visits);
+    return callback(null, visits);
   });
 }
 // [END getVisits]
 
-app.get('/', (req, res, next) => {
+app.get('/', function (req, res, next) {
   // Create a visit record to be stored on disk
-  const visit = {
+  var visit = {
     timestamp: new Date(),
     // Store a hash of the visitor's ip address
     userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
   };
 
-  insertVisit(visit, (err) => {
+  insertVisit(visit, function (err) {
     if (err) {
-      next(err);
-      return;
+      return next(err);
     }
 
     // Query the last 10 visits from disk.
-    getVisits((err, visits) => {
+    getVisits(function (err, visits) {
       if (err) {
-        next(err);
-        return;
+        return next(err);
       }
 
-      res
+      return res
         .status(200)
         .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${visits.join('\n')}`);
+        .send('Last 10 visits:\n' + visits.join('\n'));
     });
   });
 });
 
 // [START listen]
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+var PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log('App listening on port %s', PORT);
   console.log('Press Ctrl+C to quit.');
 });
 // [END listen]

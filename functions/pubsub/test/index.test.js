@@ -51,8 +51,8 @@ function getSample () {
   };
 }
 
-describe('functions:pubsub', () => {
-  it('Publish fails without a topic', () => {
+describe(`functions:pubsub`, () => {
+  it(`Publish fails without a topic`, () => {
     const expectedMsg = `Topic not provided. Make sure you have a "topic" property in your request`;
     const sample = getSample();
 
@@ -65,7 +65,7 @@ describe('functions:pubsub', () => {
     assert.deepEqual(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
   });
 
-  it('Publish fails without a message', () => {
+  it(`Publish fails without a message`, () => {
     const expectedMsg = `Message not provided. Make sure you have a "message" property in your request`;
     const sample = getSample();
 
@@ -78,8 +78,8 @@ describe('functions:pubsub', () => {
     assert.deepEqual(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
   });
 
-  it('Publishes the message to the topic and calls success', () => {
-    const expectedMsg = 'Message published.';
+  it(`Publishes the message to the topic and calls success`, () => {
+    const expectedMsg = `Message published.`;
     const sample = getSample();
 
     return sample.program.publish(sample.mocks.req, sample.mocks.res)
@@ -97,7 +97,7 @@ describe('functions:pubsub', () => {
       });
   });
 
-  it('Fails to publish the message and calls failure', () => {
+  it(`Fails to publish the message and calls failure`, () => {
     const error = new Error(`error`);
     const sample = getSample();
     sample.mocks.topic.publish.returns(Promise.reject(error));

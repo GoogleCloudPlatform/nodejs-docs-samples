@@ -9,9 +9,10 @@
     "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "request-promise": "^3.0.0"
+    "request": "^2.75.0",
+    "request-promise": "^4.1.1"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.1.2"
   }
 }

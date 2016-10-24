@@ -2,7 +2,8 @@
 
 # Google Cloud Functions Cloud Datastore sample
 
-This recipe shows you how to read and write an entity in Datastore from a Cloud Function.
+This recipe shows you how to read and write an entity in Cloud Datastore from a
+Cloud Function.
 
 View the [source code][code].
 
@@ -28,38 +29,67 @@ Functions for your project.
 
   [Click here to enable the Cloud Datastore API](https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com&redirect=https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/functions/datastore)
 
-1. Deploy the "ds-get" function with an HTTP trigger:
+1. Deploy the "get" function with an HTTP trigger:
 
-        gcloud alpha functions deploy ds-get --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point get
-
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
-
-1. Deploy the "ds-set" function with an HTTP trigger:
-
-        gcloud alpha functions deploy ds-set --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point set
+        gcloud alpha functions deploy get --stage-bucket [YOUR_BUCKET_NAME] --trigger-http
 
     * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
-1. Deploy the "ds-del" function with an HTTP trigger:
+1. Deploy the "set" function with an HTTP trigger:
 
-        gcloud alpha functions deploy ds-del --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point del
+        gcloud alpha functions deploy set --stage-bucket [YOUR_BUCKET_NAME] --trigger-http
 
     * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
-1. Call the "ds-set" function to create a new entity:
+1. Deploy the "del" function with an HTTP trigger:
 
-        gcloud alpha functions call ds-set --data '{"kind":"gcf-test","key":"foobar","value":{"message":"Hello World!"}}'
+        gcloud alpha functions deploy del --stage-bucket [YOUR_BUCKET_NAME] --trigger-http
 
-1. Call the "ds-get" function to read the newly created entity:
+    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
 
-        gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
+1. Call the "set" function to create a new entity:
 
-1. Call the "ds-del" function to delete the entity:
+        gcloud alpha functions call set --data '{"kind":"Task","key":"sampletask1","value":{"description":"Buy milk"}}'
 
-        gcloud alpha functions call ds-del --data '{"kind":"gcf-test","key":"foobar"}'
+    or
 
-1. Call the "ds-get" function again to verify it was deleted:
+        curl -H "Content-Type: application/json" -X POST -d '{"kind":"Task","key":"sampletask1","value":{"description":"Buy milk"}}' "https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/set"
 
-        gcloud alpha functions call ds-get --data '{"kind":"gcf-test","key":"foobar"}'
+    * Replace `[YOUR_REGION]` with the region where your function is deployed.
+    * Replace `[YOUR_PROJECT_ID]` with your Google Cloud Platform project ID.
+
+1. Call the "get" function to read the newly created entity:
+
+        gcloud alpha functions call get --data '{"kind":"Task","key":"sampletask1"}'
+
+    or
+
+        curl -H "Content-Type: application/json" -X POST -d '{"kind":"Task","key":"sampletask1"}' "https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/get"
+
+    * Replace `[YOUR_REGION]` with the region where your function is deployed.
+    * Replace `[YOUR_PROJECT_ID]` with your Google Cloud Platform project ID.
+
+1. Call the "del" function to delete the entity:
+
+        gcloud alpha functions call del --data '{"kind":"Task","key":"sampletask1"}'
+
+    or
+
+        curl -H "Content-Type: application/json" -X POST -d '{"kind":"Task","key":"sampletask1"}' "https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/del"
+
+    * Replace `[YOUR_REGION]` with the region where your function is deployed.
+    * Replace `[YOUR_PROJECT_ID]` with your Google Cloud Platform project ID.
+
+1. Call the "get" function again to verify it was deleted:
+
+        gcloud alpha functions call get --data '{"kind":"Task","key":"sampletask1"}'
+
+    or
+
+        curl -H "Content-Type: application/json" -X POST -d '{"kind":"Task","key":"sampletask1"}' "https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/get"
+
+    * Replace `[YOUR_REGION]` with the region where your function is deployed.
+    * Replace `[YOUR_PROJECT_ID]` with your Google Cloud Platform project ID.
+
 
 [quickstart]: https://cloud.google.com/functions/quickstart

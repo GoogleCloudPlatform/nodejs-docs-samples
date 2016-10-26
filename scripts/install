@@ -51,7 +51,7 @@ queue.push('vision');
  */
 function installForDirectory(directory, callback) {
   console.log(directory + '...installing dependencies');
-  exec('npm install', {
+  exec('yarn install', {
     async: true,
     cwd: path.join(__dirname, '../', directory)
   }, function (err) {

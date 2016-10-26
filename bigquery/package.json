@@ -5,18 +5,17 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "scripts": {
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../test/_setup.js test/*.test.js",
-    "system-test": "mocha -R spec -t 120000 --require intelli-espower-loader ../system-test/_setup.js system-test/*.test.js"
+    "test": "mocha -R spec -t 10000 --require intelli-espower-loader ../test/_setup.js test/*.test.js",
+    "system-test": "mocha -R spec -t 10000 --require intelli-espower-loader ../system-test/_setup.js system-test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^0.1.1",
-    "@google-cloud/storage": "^0.1.1",
-    "async": "^2.0.1",
-    "request": "^2.74.0",
-    "yargs": "^5.0.0"
+    "@google-cloud/bigquery": "^0.4.0",
+    "@google-cloud/storage": "^0.4.0",
+    "async": "^2.1.2",
+    "yargs": "^6.3.0"
   },
   "devDependencies": {
-    "mocha": "^3.0.2",
+    "mocha": "^3.1.2",
     "node-uuid": "^1.4.7"
   },
   "engines": {

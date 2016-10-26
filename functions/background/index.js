@@ -20,16 +20,16 @@
  * Background Cloud Function.
  *
  * @param {object} event The Cloud Functions event.
- * @param {object} event.payload The event payload.
+ * @param {object} event.data The event data.
  * @param {function} The callback function.
  */
 exports.helloWorld = function helloWorld (event, callback) {
-  if (!event.payload.myMessage) {
+  if (!event.data.myMessage) {
     // This is an error case, "myMessage" is required
     callback(new Error('No message defined!'));
   } else {
     // Everything is ok
-    console.log(event.payload.myMessage);
+    console.log(event.data.myMessage);
     callback();
   }
 };
@@ -41,14 +41,14 @@ exports.helloWorld = function helloWorld (event, callback) {
  * a "context" argument to the function.
  *
  * @param {object} event The Cloud Functions event.
- * @param {object} event.payload The event payload.
+ * @param {object} event.data The event data.
  * @returns {Promise}
  */
 exports.helloPromise = function helloPromise (event) {
   const request = require('request-promise');
 
   return request({
-    uri: event.payload.endpoint
+    uri: event.data.endpoint
   });
 };
 // [END helloPromise]
@@ -59,11 +59,11 @@ exports.helloPromise = function helloPromise (event) {
  * a "context" argument to the function.
  *
  * @param {object} event The Cloud Functions event.
- * @param {object} event.payload The event payload.
+ * @param {object} event.data The event data.
  */
 exports.helloSynchronous = function helloSynchronous (event) {
   // This function returns synchronously
-  if (event.payload.something === true) {
+  if (event.data.something === true) {
     return 'Something is true!';
   } else {
     throw new Error('Something was not true!');

@@ -1,22 +1,24 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var Logging = require('@google-cloud/logging');
+const Logging = require('@google-cloud/logging');
 
-// Instantiate a logging client
-var logging = Logging();
+// Instantiates a client
+const logging = Logging();
 
 // [START helloHttpError]
 /**
@@ -24,10 +26,10 @@ var logging = Logging();
  * accepted by StackDriver Error Reporting.
  *
  * @param {Error} err The Error object to report.
- * @param {Object} [req] Request context, if any.
- * @param {Object} [res] Response context, if any.
- * @param {Object} [options] Additional context, if any.
- * @param {Function} callback Callback function.
+ * @param {object} [req] Request context, if any.
+ * @param {object} [res] Response context, if any.
+ * @param {object} [options] Additional context, if any.
+ * @param {function} callback Callback function.
  */
 function reportDetailedError (err, req, res, options, callback) {
   if (typeof req === 'function') {
@@ -41,12 +43,12 @@ function reportDetailedError (err, req, res, options, callback) {
   }
   options || (options = {});
 
-  var FUNCTION_NAME = process.env.FUNCTION_NAME;
-  var log = logging.log('errors');
+  const FUNCTION_NAME = process.env.FUNCTION_NAME;
+  const log = logging.log('errors');
 
   // MonitoredResource
   // See https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource
-  var resource = {
+  const resource = {
     // MonitoredResource.type
     type: 'cloud_function',
     // MonitoredResource.labels
@@ -61,7 +63,7 @@ function reportDetailedError (err, req, res, options, callback) {
     resource.labels.projectId = options.projectId;
   }
 
-  var context = {};
+  const context = {};
   if (typeof options.user === 'string') {
     // ErrorEvent.context.user
     context.user = options.user;
@@ -90,7 +92,7 @@ function reportDetailedError (err, req, res, options, callback) {
 
   try {
     if (options.version === undefined) {
-      var pkg = require('./package.json');
+      const pkg = require('./package.json');
       options.version = pkg.version;
     }
   } catch (err) {}
@@ -100,11 +102,11 @@ function reportDetailedError (err, req, res, options, callback) {
 
   // ErrorEvent
   // See https://cloud.google.com/error-reporting/reference/rest/v1beta1/ErrorEvent
-  var structPayload = {
+  const structPayload = {
     // ErrorEvent.serviceContext
     serviceContext: {
       // ErrorEvent.serviceContext.service
-      service: 'cloud_function:' + FUNCTION_NAME,
+      service: `cloud_function:${FUNCTION_NAME}`,
       // ErrorEvent.serviceContext.version
       version: '' + options.version
     },

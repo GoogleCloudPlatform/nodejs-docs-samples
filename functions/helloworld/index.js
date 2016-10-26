@@ -1,15 +1,17 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
@@ -17,12 +19,12 @@
 /**
  * Cloud Function.
  *
- * @param {Object} context Cloud Function context.
- * @param {Object} data Request data, provided by a trigger.
+ * @param {object} event The Cloud Functions event.
+ * @param {function} The callback function.
  */
-exports.helloWorld = function helloWorld (context, data) {
-  console.log('My Cloud Function: ' + data.message);
-  context.success();
+exports.helloWorld = function helloWorld (event, callback) {
+  console.log(`My Cloud Function: ${event.data.message}`);
+  callback();
 };
 // [END helloworld]
 
@@ -46,7 +48,7 @@ exports.helloGET = function helloGET (req, res) {
  * @param {Object} res Cloud Function response context.
  */
 exports.helloHttp = function helloHttp (req, res) {
-  res.send('Hello ' + (req.body.name || 'World') + '!');
+  res.send(`Hello ${req.body.name || 'World'}!`);
 };
 // [END helloHttp]
 
@@ -54,11 +56,11 @@ exports.helloHttp = function helloHttp (req, res) {
 /**
  * Background Cloud Function.
  *
- * @param {Object} context Cloud Function context.
- * @param {Object} data Request data, provided by a trigger.
+ * @param {object} event The Cloud Functions event.
+ * @param {function} The callback function.
  */
-exports.helloBackground = function helloBackground (context, data) {
-  context.success('Hello ' + (data.name || 'World') + '!');
+exports.helloBackground = function helloBackground (event, callback) {
+  callback(null, `Hello ${event.data.name || 'World'}!`);
 };
 // [END helloBackground]
 
@@ -66,12 +68,14 @@ exports.helloBackground = function helloBackground (context, data) {
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
  *
- * @param {Object} context Cloud Function context.
- * @param {Object} data Request data, provided by a Pub/Sub trigger.
+ * @param {object} event The Cloud Functions event.
+ * @param {function} The callback function.
  */
-exports.helloPubSub = function helloPubSub (context, data) {
-  console.log('Hello ' + (data.name || 'World') + '!');
-  context.success();
+exports.helloPubSub = function helloPubSub (event, callback) {
+  const pubsubMessage = event.data;
+  const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64') : 'World';
+  console.log(`Hello ${name}!`);
+  callback();
 };
 // [END helloPubSub]
 
@@ -79,11 +83,11 @@ exports.helloPubSub = function helloPubSub (context, data) {
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {Object} context Cloud Function context.
- * @param {Object} data Request data, provided by a Cloud Storage trigger.
+ * @param {object} event The Cloud Functions event.
+ * @param {function} The callback function.
  */
-exports.helloGCS = function helloGCS (context, data) {
-  console.log('Hello ' + (data.name || 'World') + '!');
-  context.success();
+exports.helloGCS = function helloGCS (event, callback) {
+  console.log(`Hello ${event.data.name || 'World'}!`);
+  callback();
 };
 // [END helloGCS]

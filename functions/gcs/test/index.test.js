@@ -1,38 +1,38 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var proxyquire = require('proxyquire').noCallThru();
+const fs = require(`fs`);
+const path = require(`path`);
+const proxyquire = require(`proxyquire`).noCallThru();
 
 function getSample () {
-  var file = {
-    createReadStream: function () {
-      var filepath = path.join(__dirname, '../sample.txt');
-      return fs.createReadStream(filepath, { encoding: 'utf8' });
-    }
+  const file = {
+    createReadStream: () => fs.createReadStream(path.join(__dirname, `../sample.txt`), { encoding: `utf8` })
   };
-  var bucket = {
+  const bucket = {
     file: sinon.stub().returns(file)
   };
-  var storage = {
+  const storage = {
     bucket: sinon.stub().returns(bucket)
   };
-  var StorageMock = sinon.stub().returns(storage);
+  const StorageMock = sinon.stub().returns(storage);
+
   return {
-    sample: proxyquire('../', {
+    program: proxyquire(`../`, {
       '@google-cloud/storage': StorageMock
     }),
     mocks: {
@@ -44,64 +44,45 @@ function getSample () {
   };
 }
 
-function getMockContext () {
-  return {
-    success: sinon.stub(),
-    failure: sinon.stub()
-  };
-}
+describe(`functions:gcs`, () => {
+  it(`Fails without a bucket`, () => {
+    const expectedMsg = `Bucket not provided. Make sure you have a "bucket" property in your request`;
 
-describe('functions:gcs', function () {
-  it('Fails without a bucket', function () {
-    var expectedMsg = 'Bucket not provided. Make sure you have a "bucket" ' +
-      'property in your request';
-    var context = getMockContext();
-
-    getSample().sample.wordCount(context, {
-      file: 'file'
-    });
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
+    assert.throws(
+      () => getSample().program.wordCount({ data: { file: `file` } }),
+      Error,
+      expectedMsg
+    );
   });
 
-  it('Fails without a file', function () {
-    var expectedMsg = 'Filename not provided. Make sure you have a "file" ' +
-      'property in your request';
-    var context = getMockContext();
+  it(`Fails without a file`, () => {
+    const expectedMsg = `Filename not provided. Make sure you have a "file" property in your request`;
 
-    getSample().sample.wordCount(context, {
-      bucket: 'bucket'
-    });
-
-    assert.equal(context.failure.calledOnce, true);
-    assert.equal(context.failure.firstCall.args[0], expectedMsg);
-    assert.equal(context.success.called, false);
+    assert.throws(
+      () => getSample().program.wordCount({ data: { bucket: `bucket` } }),
+      Error,
+      expectedMsg
+    );
   });
 
-  it('Reads the file line by line', function (done) {
-    var expectedMsg = 'The file sample.txt has 114 words';
-    var data = {
-      bucket: 'bucket',
-      file: 'sample.txt'
-    };
-    var context = {
-      success: function (message) {
-        assert.equal(message, expectedMsg);
-        done();
-      },
-      failure: function () {
-        done('Should have succeeded!');
+  it(`Reads the file line by line`, (done) => {
+    const expectedMsg = `The file sample.txt has 114 words`;
+    const event = {
+      data: {
+        bucket: `bucket`,
+        file: `sample.txt`
       }
     };
 
-    var gcsSample = getSample();
-    gcsSample.sample.wordCount(context, data);
-
-    assert.equal(gcsSample.mocks.storage.bucket.calledOnce, true);
-    assert.equal(gcsSample.mocks.storage.bucket.firstCall.args[0], data.bucket);
-    assert.equal(gcsSample.mocks.bucket.file.calledOnce, true);
-    assert.equal(gcsSample.mocks.bucket.file.firstCall.args[0], data.file);
+    const sample = getSample();
+    sample.program.wordCount(event, (err, message) => {
+      assert.ifError(err);
+      assert.deepEqual(message, expectedMsg);
+      assert.deepEqual(sample.mocks.storage.bucket.calledOnce, true);
+      assert.deepEqual(sample.mocks.storage.bucket.firstCall.args, [event.data.bucket]);
+      assert.deepEqual(sample.mocks.bucket.file.calledOnce, true);
+      assert.deepEqual(sample.mocks.bucket.file.firstCall.args, [event.data.file]);
+      done();
+    });
   });
 });

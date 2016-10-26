@@ -117,10 +117,10 @@ describe(`functions:pubsub`, () => {
       });
   });
 
-  it('Subscribes to a message', () => {
+  it(`Subscribes to a message`, () => {
     const callback = sinon.stub();
     const event = {
-      payload: {
+      data: {
         data: MESSAGE
       }
     };
@@ -129,7 +129,7 @@ describe(`functions:pubsub`, () => {
     sample.program.subscribe(event, callback);
 
     assert.deepEqual(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [event.payload]);
+    assert.deepEqual(console.log.firstCall.args, [event.data]);
     assert.deepEqual(callback.callCount, 1);
     assert.deepEqual(callback.firstCall.args, []);
   });

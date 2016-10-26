@@ -21,9 +21,9 @@ Functions for your project.
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-        gsutil mb gs://[YOUR_BUCKET_NAME]
+        gsutil mb gs://YOUR_BUCKET_NAME
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Ensure the Cloud Datastore API is enabled:
 
@@ -31,21 +31,21 @@ Functions for your project.
 
 1. Deploy the "get" function with an HTTP trigger:
 
-        gcloud alpha functions deploy get --stage-bucket [YOUR_BUCKET_NAME] --trigger-http
+        gcloud alpha functions deploy get --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Deploy the "set" function with an HTTP trigger:
 
-        gcloud alpha functions deploy set --stage-bucket [YOUR_BUCKET_NAME] --trigger-http
+        gcloud alpha functions deploy set --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Deploy the "del" function with an HTTP trigger:
 
-        gcloud alpha functions deploy del --stage-bucket [YOUR_BUCKET_NAME] --trigger-http
+        gcloud alpha functions deploy del --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Call the "set" function to create a new entity:
 

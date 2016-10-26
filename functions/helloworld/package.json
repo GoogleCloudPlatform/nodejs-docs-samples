@@ -9,6 +9,6 @@
     "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.1.2"
   }
 }

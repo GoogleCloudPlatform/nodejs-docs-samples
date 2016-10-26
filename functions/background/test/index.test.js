@@ -33,7 +33,7 @@ function getSample () {
 describe(`functions:background`, () => {
   it(`should echo message`, () => {
     const event = {
-      payload: {
+      data: {
         myMessage: `hi`
       }
     };
@@ -43,7 +43,7 @@ describe(`functions:background`, () => {
     sample.program.helloWorld(event, callback);
 
     assert.equal(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [event.payload.myMessage]);
+    assert.deepEqual(console.log.firstCall.args, [event.data.myMessage]);
     assert.equal(callback.callCount, 1);
     assert.deepEqual(callback.firstCall.args, []);
   });
@@ -52,7 +52,7 @@ describe(`functions:background`, () => {
     const error = new Error(`No message defined!`);
     const callback = sinon.stub();
     const sample = getSample();
-    sample.program.helloWorld({ payload: {} }, callback);
+    sample.program.helloWorld({ data: {} }, callback);
 
     assert.equal(callback.callCount, 1);
     assert.deepEqual(callback.firstCall.args, [error]);
@@ -61,7 +61,7 @@ describe(`functions:background`, () => {
   it(`should make a promise request`, () => {
     const sample = getSample();
     const event = {
-      payload: {
+      data: {
         endpoint: `foo.com`
       }
     };
@@ -75,7 +75,7 @@ describe(`functions:background`, () => {
 
   it(`should return synchronously`, () => {
     assert.equal(getSample().program.helloSynchronous({
-      payload: {
+      data: {
         something: true
       }
     }), `Something is true!`);
@@ -84,7 +84,7 @@ describe(`functions:background`, () => {
   it(`should throw an error`, () => {
     assert.throws(() => {
       getSample().program.helloSynchronous({
-        payload: {
+        data: {
           something: false
         }
       });

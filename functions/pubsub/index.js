@@ -67,13 +67,15 @@ exports.publish = function publish (req, res) {
  * Triggered from a message on a Pub/Sub topic.
  *
  * @param {object} event The Cloud Functions event.
- * @param {object} event.payload The event payload.
- * @param {string} event.payload.message Message that was published to Pub/Sub.
+ * @param {object} event.data The event data.
+ * @param {string} event.data.message Message that was published to Pub/Sub.
  * @param {function} The callback function.
  */
 exports.subscribe = function subscribe (event, callback) {
+  const pubsubMessage = event.data;
+
   // We're just going to log the message to prove that it worked!
-  console.log(event.payload);
+  console.log(Buffer.from(pubsubMessage.data, 'base64'));
 
   // Don't forget to call the callback!
   callback();

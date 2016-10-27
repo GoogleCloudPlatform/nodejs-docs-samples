@@ -13,14 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var async = require('async');
-var path = require('path');
+const async = require('async');
+const path = require('path');
 
 require('shelljs/global');
 
 // Install NPM dependencies, in up to 7 directories at a time
-var queue = async.queue(function (directory, callback) {
-  installForDirectory(directory, callback);
+const queue = async.queue((directory, cb) => {
+  installForDirectory(directory, cb);
 }, 7);
 
 queueDirectories('appengine');
@@ -47,16 +47,39 @@ queue.push('vision');
  * Install NPM dependencies within a single directory.
  *
  * @param {string} directory The name of the directory in which to install dependencies.
- * @param {function} callback The callback function.
+ * @param {function} cb The callback function.
  */
-function installForDirectory(directory, callback) {
-  console.log(directory + '...installing dependencies');
+function installForDirectory (directory, cb) {
+  console.log(`${directory}...installing dependencies`);
   exec('yarn install', {
     async: true,
     cwd: path.join(__dirname, '../', directory)
-  }, function (err) {
-    console.log(directory + '...done');
-    callback(err);
+  }, (err) => {
+    if (err) {
+      cd(directory);
+
+      // Uninstall dependencies
+      console.log(`Retrying in ${directory} with NPM...`);
+      rm('-rf', 'node_modules');
+
+      // Move out of the directory
+      cd('..');
+      exec('npm install', {
+        async: true,
+        cwd: path.join(__dirname, '../', directory)
+      }, (err) => {
+        if (err) {
+          console.error(`Failed to install dependencies in ${directory}!`);
+          throw err;
+        } else {
+          console.log(`${directory}...done`);
+          cb();
+        }
+      });
+    } else {
+      console.log(`${directory}...done`);
+      cb();
+    }
   });
 }
 
@@ -65,19 +88,17 @@ function installForDirectory(directory, callback) {
  *
  * @param {string} directory The name of the directory in which to recursively install dependencies.
  */
-function queueDirectories(directory) {
+function queueDirectories (directory) {
   // Move into the directory
   cd(directory);
 
   // List the files in the directory
   ls('-dl', '*')
-    .filter(function (file) {
+    .filter((file) => {
       // Find the directories within the directory
       return file.isDirectory() && file.name !== 'test' && file.name !== 'system-test';
     })
-    .forEach(function (file) {
-      queue.push(directory + '/' + file.name);
-    });
+    .forEach((file) => queue.push(`${directory}/${file.name}`));
 
   // Move out of the directory
   cd('..');

@@ -108,6 +108,7 @@ exports.helloGCS = function helloGCS (event, callback) {
  * @param {function} The callback function.
  */
 exports.helloError = function helloError (event, callback) {
+  // This WILL be reported to Stackdriver errors  
   throw new Error('I failed you');
 };
 // [END functions_hello_error]
@@ -120,6 +121,7 @@ exports.helloError = function helloError (event, callback) {
  * @param {function} The callback function.
  */
 exports.helloError2 = function helloError2 (event, callback) {
+  // This will NOT be reported to Stackdriver errors  
   throw 1;
 };
 // [END functions_hello_error_2]
@@ -132,6 +134,7 @@ exports.helloError2 = function helloError2 (event, callback) {
  * @param {function} The callback function.
  */
 exports.helloError3 = function helloError3 (event, callback) {
+  // This will NOT be reported to Stackdriver errors
   callback('I failed you');
 };
 // [END functions_hello_error_3]

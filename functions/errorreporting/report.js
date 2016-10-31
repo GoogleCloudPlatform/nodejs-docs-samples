@@ -20,7 +20,7 @@ const Logging = require('@google-cloud/logging');
 // Instantiates a client
 const logging = Logging();
 
-// [START helloHttpError]
+// [START functions_hello_advanced_http_error]
 /**
  * Report an error to StackDriver Error Reporting. Writes up to the maximum data
  * accepted by StackDriver Error Reporting.
@@ -46,21 +46,24 @@ function reportDetailedError (err, req, res, options, callback) {
   const FUNCTION_NAME = process.env.FUNCTION_NAME;
   const log = logging.log('errors');
 
-  // MonitoredResource
-  // See https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource
-  const resource = {
-    // MonitoredResource.type
-    type: 'cloud_function',
-    // MonitoredResource.labels
-    labels: {
-      function_name: FUNCTION_NAME
+  const metadata = {
+    // MonitoredResource
+    // See https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource
+    resource: {
+      // MonitoredResource.type
+      type: 'cloud_function',
+      // MonitoredResource.labels
+      labels: {
+        function_name: FUNCTION_NAME
+      }
     }
   };
+
   if (typeof options.region === 'string') {
-    resource.labels.region = options.region;
+    metadata.resource.labels.region = options.region;
   }
   if (typeof options.projectId === 'string') {
-    resource.labels.projectId = options.projectId;
+    metadata.resource.labels.projectId = options.projectId;
   }
 
   const context = {};
@@ -108,7 +111,7 @@ function reportDetailedError (err, req, res, options, callback) {
       // ErrorEvent.serviceContext.service
       service: `cloud_function:${FUNCTION_NAME}`,
       // ErrorEvent.serviceContext.version
-      version: '' + options.version
+      version: `${options.version}`
     },
     // ErrorEvent.context
     context: context
@@ -123,8 +126,8 @@ function reportDetailedError (err, req, res, options, callback) {
     structPayload.message = err.message;
   }
 
-  log.write(log.entry(resource, structPayload), callback);
+  log.write(log.entry(metadata, structPayload), callback);
 }
-// [END helloHttpError]
+// [END functions_hello_advanced_http_error]
 
 module.exports = reportDetailedError;

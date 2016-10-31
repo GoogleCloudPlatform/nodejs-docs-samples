@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START helloworld]
+// [START functions_background_helloworld]
 /**
  * Background Cloud Function.
  *
@@ -33,12 +33,12 @@ exports.helloWorld = function helloWorld (event, callback) {
     callback();
   }
 };
-// [END helloworld]
+// [END functions_background_helloworld]
 
-// [START helloPromise]
+// [START functions_background_hello_promise]
 /**
  * Background Cloud Function that returns a Promise. Note that we don't pass
- * a "context" argument to the function.
+ * a "callback" argument to the function.
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The event data.
@@ -51,12 +51,12 @@ exports.helloPromise = function helloPromise (event) {
     uri: event.data.endpoint
   });
 };
-// [END helloPromise]
+// [END functions_background_hello_promise]
 
-// [START helloSynchronous]
+// [START functions_background_hello_synchronous]
 /**
  * Background Cloud Function that returns synchronously. Note that we don't pass
- * a "context" argument to the function.
+ * a "callback" argument to the function.
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The event data.
@@ -69,4 +69,4 @@ exports.helloSynchronous = function helloSynchronous (event) {
     throw new Error('Something was not true!');
   }
 };
-// [END helloSynchronous]
+// [END functions_background_hello_synchronous]

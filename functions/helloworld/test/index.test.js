@@ -125,13 +125,14 @@ describe(`functions:helloworld`, () => {
     assert.deepEqual(callback.firstCall.args, []);
   });
 
-  it(`helloGCS: should print a name`, () => {
-    const expectedMsg = `Hello Sally!`;
+  it(`helloGCS: should print uploaded message`, () => {
+    const expectedMsg = `File foo uploaded.`;
     const callback = sinon.stub();
 
     program.helloGCS({
       data: {
-        name: `Sally`
+        name: `foo`,
+        resourceState: `exists`
       }
     }, callback);
 
@@ -141,16 +142,45 @@ describe(`functions:helloworld`, () => {
     assert.deepEqual(callback.firstCall.args, []);
   });
 
-  it(`helloGCS: should print hello world`, () => {
-    const expectedMsg = `Hello World!`;
+  it(`helloGCS: should print deleted message`, () => {
+    const expectedMsg = `File foo deleted.`;
     const callback = sinon.stub();
 
-    program.helloGCS({ data: {} }, callback);
+    program.helloGCS({
+      data: {
+        name: `foo`,
+        resourceState: `not_exists`
+      }
+    }, callback);
 
     assert.deepEqual(console.log.callCount, 1);
     assert.deepEqual(console.log.firstCall.args, [expectedMsg]);
     assert.deepEqual(callback.callCount, 1);
     assert.deepEqual(callback.firstCall.args, []);
+  });
+
+  it(`helloError: should throw an error`, () => {
+    const expectedMsg = `I failed you`;
+
+    assert.throws(() => {
+      program.helloError();
+    }, Error, expectedMsg);
+  });
+
+  it(`helloError2: should throw an error`, () => {
+    assert.throws(() => {
+      program.helloError2();
+    });
+  });
+
+  it(`helloError3: should throw an error`, () => {
+    const expectedMsg = `I failed you`;
+    const callback = sinon.stub();
+
+    program.helloError3({}, callback);
+
+    assert.deepEqual(callback.callCount, 1);
+    assert.deepEqual(callback.firstCall.args, [expectedMsg]);
   });
 });
 

@@ -15,23 +15,28 @@
 
 'use strict';
 
+// [START functions_word_count_setup]
 const Storage = require('@google-cloud/storage');
 const readline = require('readline');
 
 // Instantiates a client
 const storage = Storage();
+// [END functions_word_count_setup]
 
-function getFileStream (bucketName, fileName) {
-  if (!bucketName) {
+// [START functions_word_count_stream]
+function getFileStream (file) {
+  if (!file.bucket) {
     throw new Error('Bucket not provided. Make sure you have a "bucket" property in your request');
   }
-  if (!fileName) {
-    throw new Error('Filename not provided. Make sure you have a "file" property in your request');
+  if (!file.name) {
+    throw new Error('Filename not provided. Make sure you have a "name" property in your request');
   }
 
-  return storage.bucket(bucketName).file(fileName).createReadStream();
+  return storage.bucket(file.bucket).file(file.name).createReadStream();
 }
+// [END functions_word_count_stream]
 
+// [START functions_word_count_read]
 /**
  * Reads file and responds with the number of words in the file.
  *
@@ -39,24 +44,32 @@ function getFileStream (bucketName, fileName) {
  * gcloud alpha functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
  *
  * @param {object} event The Cloud Functions event.
- * @param {object} event.data The event data.
+ * @param {object} event.data A Google Cloud Storage File object.
  * @param {string} event.data.bucket Name of a Cloud Storage bucket.
- * @param {string} event.data.file Name of a file in the Cloud Storage bucket.
+ * @param {string} event.data.name Name of a file in the Cloud Storage bucket.
  * @param {function} The callback function.
  */
 exports.wordCount = function (event, callback) {
+  const file = event.data;
+
+  if (file.resourceState === 'not_exists') {
+    // This is a file deletion event, so skip it
+    callback();
+    return;
+  }
+
   let count = 0;
+  const options = {
+    input: getFileStream(file)
+  };
 
-  // Use the linebyline module to read the stream line by line.
-  const lineReader = readline.createInterface({
-    input: getFileStream(event.data.bucket, event.data.file)
-  });
-
-  lineReader.on('line', (line) => {
-    count += line.trim().split(/\s+/).length;
-  });
-
-  lineReader.on('close', () => {
-    callback(null, `The file ${event.data.file} has ${count} words`);
-  });
+  // Use the readline module to read the stream line by line.
+  readline.createInterface(options)
+    .on('line', (line) => {
+      count += line.trim().split(/\s+/).length;
+    })
+    .on('close', () => {
+      callback(null, `File ${file.name} has ${count} words`);
+    });
 };
+// [END functions_word_count_read]

@@ -18,10 +18,11 @@
 const fs = require(`fs`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noCallThru();
+const filename = `sample.txt`;
 
 function getSample () {
   const file = {
-    createReadStream: () => fs.createReadStream(path.join(__dirname, `../sample.txt`), { encoding: `utf8` })
+    createReadStream: () => fs.createReadStream(path.join(__dirname, `../${filename}`), { encoding: `utf8` })
   };
   const bucket = {
     file: sinon.stub().returns(file)
@@ -49,7 +50,7 @@ describe(`functions:gcs`, () => {
     const expectedMsg = `Bucket not provided. Make sure you have a "bucket" property in your request`;
 
     assert.throws(
-      () => getSample().program.wordCount({ data: { file: `file` } }),
+      () => getSample().program.wordCount({ data: { name: `file` } }),
       Error,
       expectedMsg
     );
@@ -66,11 +67,11 @@ describe(`functions:gcs`, () => {
   });
 
   it(`Reads the file line by line`, (done) => {
-    const expectedMsg = `The file sample.txt has 114 words`;
+    const expectedMsg = `File ${filename} has 114 words`;
     const event = {
       data: {
         bucket: `bucket`,
-        file: `sample.txt`
+        name: `sample.txt`
       }
     };
 
@@ -81,7 +82,7 @@ describe(`functions:gcs`, () => {
       assert.deepEqual(sample.mocks.storage.bucket.calledOnce, true);
       assert.deepEqual(sample.mocks.storage.bucket.firstCall.args, [event.data.bucket]);
       assert.deepEqual(sample.mocks.bucket.file.calledOnce, true);
-      assert.deepEqual(sample.mocks.bucket.file.firstCall.args, [event.data.file]);
+      assert.deepEqual(sample.mocks.bucket.file.firstCall.args, [event.data.name]);
       done();
     });
   });

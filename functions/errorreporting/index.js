@@ -15,18 +15,18 @@
 
 'use strict';
 
-// [START setup]
+// [START functions_error_setup]
 const Logging = require('@google-cloud/logging');
 
 // Instantiates a client
 const logging = Logging();
-// [END setup]
+// [END functions_error_setup]
 
-// [START reportDetailedError]
+// [START functions_report_detailed_error]
 const reportDetailedError = require('./report');
-// [END reportDetailedError]
+// [END functions_report_detailed_error]
 
-// [START helloSimpleErrorReport]
+// [START functions_hello_simple_error_report]
 /**
  * Report an error to StackDriver Error Reporting. Writes the minimum data
  * required for the error to be picked up by StackDriver Error Reporting.
@@ -41,11 +41,13 @@ function reportError (err, callback) {
   const logName = 'errors';
   const log = logging.log(logName);
 
-  // https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource
-  const monitoredResource = {
-    type: 'cloud_function',
-    labels: {
-      function_name: process.env.FUNCTION_NAME
+  const metadata = {
+    // https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource
+    resource: {
+      type: 'cloud_function',
+      labels: {
+        function_name: process.env.FUNCTION_NAME
+      }
     }
   };
 
@@ -59,11 +61,11 @@ function reportError (err, callback) {
   };
 
   // Write the error log entry
-  log.write(log.entry(monitoredResource, errorEvent), callback);
+  log.write(log.entry(metadata, errorEvent), callback);
 }
-// [END helloSimpleErrorReport]
+// [END functions_hello_simple_error_report]
 
-// [START helloSimpleError]
+// [START functions_hello_simple_error]
 /**
  * HTTP Cloud Function.
  *
@@ -87,9 +89,9 @@ exports.helloSimpleError = function helloSimpleError (req, res) {
     });
   }
 };
-// [END helloSimpleError]
+// [END functions_hello_simple_error]
 
-// [START helloHttpError]
+// [START functions_hello_http_error]
 /**
  * HTTP Cloud Function.
  *
@@ -117,9 +119,9 @@ exports.helloHttpError = function helloHttpError (req, res) {
     });
   }
 };
-// [END helloHttpError]
+// [END functions_hello_http_error]
 
-// [START helloBackgroundError]
+// [START functions_hello_background_error]
 /**
  * Background Cloud Function.
  *
@@ -133,8 +135,11 @@ exports.helloBackgroundError = function helloBackgroundError (event, callback) {
     if (!event.data.message) {
       throw new Error('"message" is required!');
     }
-    // All is good, respond with a message
-    callback(null, 'Hello World!');
+
+    // Do something
+
+    // Done, respond with a success message
+    callback(null, 'Done!');
   } catch (err) {
     // Report the error
     reportDetailedError(err, () => {
@@ -143,4 +148,4 @@ exports.helloBackgroundError = function helloBackgroundError (event, callback) {
     });
   }
 };
-// [END helloBackgroundError]
+// [END functions_hello_background_error]

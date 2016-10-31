@@ -15,11 +15,14 @@
 
 'use strict';
 
+// [START functions_pubsub_setup]
 const PubSub = require('@google-cloud/pubsub');
 
 // Instantiates a client
 const pubsub = PubSub();
+// [END functions_pubsub_setup]
 
+// [START functions_pubsub_publish]
 /**
  * Publishes a message to a Cloud Pub/Sub Topic.
  *
@@ -62,7 +65,9 @@ exports.publish = function publish (req, res) {
       res.status(500).send(err);
     });
 };
+// [END functions_pubsub_publish]
 
+// [START functions_pubsub_subscribe]
 /**
  * Triggered from a message on a Pub/Sub topic.
  *
@@ -80,3 +85,4 @@ exports.subscribe = function subscribe (event, callback) {
   // Don't forget to call the callback!
   callback();
 };
+// [END functions_pubsub_subscribe]

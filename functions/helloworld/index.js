@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START helloworld]
+// [START functions_helloworld]
 /**
  * Cloud Function.
  *
@@ -26,9 +26,9 @@ exports.helloWorld = function helloWorld (event, callback) {
   console.log(`My Cloud Function: ${event.data.message}`);
   callback();
 };
-// [END helloworld]
+// [END functions_helloworld]
 
-// [START helloGET]
+// [START functions_hello_get]
 /**
  * HTTP Cloud Function.
  *
@@ -38,9 +38,9 @@ exports.helloWorld = function helloWorld (event, callback) {
 exports.helloGET = function helloGET (req, res) {
   res.send('Hello World!');
 };
-// [END helloGET]
+// [END functions_hello_get]
 
-// [START helloHttp]
+// [START functions_hello_http]
 /**
  * HTTP Cloud Function.
  *
@@ -50,9 +50,9 @@ exports.helloGET = function helloGET (req, res) {
 exports.helloHttp = function helloHttp (req, res) {
   res.send(`Hello ${req.body.name || 'World'}!`);
 };
-// [END helloHttp]
+// [END functions_hello_http]
 
-// [START helloBackground]
+// [START functions_hello_background]
 /**
  * Background Cloud Function.
  *
@@ -62,9 +62,9 @@ exports.helloHttp = function helloHttp (req, res) {
 exports.helloBackground = function helloBackground (event, callback) {
   callback(null, `Hello ${event.data.name || 'World'}!`);
 };
-// [END helloBackground]
+// [END functions_hello_background]
 
-// [START helloPubSub]
+// [START functions_hello_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
  *
@@ -77,9 +77,9 @@ exports.helloPubSub = function helloPubSub (event, callback) {
   console.log(`Hello ${name}!`);
   callback();
 };
-// [END helloPubSub]
+// [END functions_hello_pubsub]
 
-// [START helloGCS]
+// [START functions_hello_storage]
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
@@ -87,7 +87,51 @@ exports.helloPubSub = function helloPubSub (event, callback) {
  * @param {function} The callback function.
  */
 exports.helloGCS = function helloGCS (event, callback) {
-  console.log(`Hello ${event.data.name || 'World'}!`);
+  const file = event.data;
+  const isDelete = file.resourceState === 'not_exists';
+
+  if (isDelete) {
+    console.log(`File ${file.name} deleted.`);
+  } else {
+    console.log(`File ${file.name} uploaded.`);
+  }
+
   callback();
 };
-// [END helloGCS]
+// [END functions_hello_storage]
+
+// [START functions_hello_error]
+/**
+ * Background Cloud Function that throws an error.
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {function} The callback function.
+ */
+exports.helloError = function helloError (event, callback) {
+  throw new Error('I failed you');
+};
+// [END functions_hello_error]
+
+// [START functions_hello_error_2]
+/**
+ * Background Cloud Function that throws a value.
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {function} The callback function.
+ */
+exports.helloError2 = function helloError2 (event, callback) {
+  throw 1;
+};
+// [END functions_hello_error_2]
+
+// [START functions_hello_error_3]
+/**
+ * Background Cloud Function that throws an error.
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {function} The callback function.
+ */
+exports.helloError3 = function helloError3 (event, callback) {
+  callback('I failed you');
+};
+// [END functions_hello_error_3]

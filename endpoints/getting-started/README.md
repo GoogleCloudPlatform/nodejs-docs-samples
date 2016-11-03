@@ -1,22 +1,15 @@
-# Google Cloud Endpoints sample for Google App Engine Flexible Environment
+# Google Cloud Endpoints sample for Node.js
 
-This sample demonstrates how to use Google Cloud Endpoints on Google App Engine Flexible Environment using Node.js.
+This sample demonstrates how to use Google Cloud Endpoints using Node.js.
+
+For a complete walkthrough showing how to run this sample in different
+environments, see the
+[Google Cloud Endpoints Quickstarts](https://cloud.google.com/endpoints/docs/quickstarts).
 
 ## Running locally
 
-Refer to the [appengine/README.md](../README.md) file for instructions on
-running locally.
-
-## Deploying to Google App Engine
-
-Open the `swagger.yaml` file and in the `host` property, replace
-`YOUR-PROJECT-ID` with your project's ID.
-
-Then, deploy the sample using `gcloud`:
-
-    gcloud beta app deploy
-
-Once deployed, you can access the application at https://YOUR-PROJECT-ID.appspot.com/.
+Refer to the [appengine/README.md](../../appengine/README.md) file for
+instructions on running locally.
 
 ## Send an echo request
 
@@ -43,4 +36,4 @@ If you're running locally, you won't need an API key.
 No Node.js client is written yet, but you can try the Python client found [here][python-client].
 It will send authenticated JWT requests using a Google Cloud service account, or using a three-legged OAuth flow.
 
-[python-client]: https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/managed_vms/endpoints
+[python-client]: https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/endpoints/getting-started

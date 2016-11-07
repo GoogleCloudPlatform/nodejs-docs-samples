@@ -9,8 +9,8 @@ on Google Cloud Platform.
 
 [slack_badge]: https://img.shields.io/badge/slack-nodejs%20on%20gcp-E01563.svg
 [slack_link]: https://gcp-slack.appspot.com/
-[build_badge]: https://img.shields.io/travis/GoogleCloudPlatform/nodejs-docs-samples.svg?style=flat
-[build_link]: https://travis-ci.org/GoogleCloudPlatform/nodejs-docs-samples
+[build_badge]: https://img.shields.io/circleci/project/github/GoogleCloudPlatform/nodejs-docs-samples/master.svg?style=flat
+[build_link]: https://circleci.com/gh/GoogleCloudPlatform/nodejs-docs-samples
 [cov_badge]: https://img.shields.io/codecov/c/github/GoogleCloudPlatform/nodejs-docs-samples/master.svg?style=flat
 [cov_link]: https://codecov.io/github/GoogleCloudPlatform/nodejs-docs-samples?branch=master
 [cloud]: https://cloud.google.com/
@@ -32,22 +32,22 @@ on Google Cloud Platform.
     * [Google Container Engine](#google-container-engine)
     * [Google Cloud Functions (Alpha)](#google-cloud-functions-alpha)
   * [**Storage and Databases**](#storage-and-databases)
-    * [Google Cloud Datastore (Beta)](#google-cloud-datastore-beta)
+    * [Google Cloud Datastore](#google-cloud-datastore)
     * [Google Cloud Storage](#google-cloud-storage)
   * [**Big Data**](#big-data)
     * [Google BigQuery](#google-bigquery)
     * [Google Cloud Pub/Sub](#google-cloud-pubsub)
   * [**Machine Learning**](#machine-learning)
-    * [Google Cloud Natural Language API (Beta)](#google-cloud-natural-language-api-beta)
+    * [Google Cloud Natural Language API](#google-cloud-natural-language-api)
     * [Google Cloud Prediction API](#google-cloud-prediction-api)
     * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
     * [Google Translate API](#google-translate-api)
     * [Google Cloud Vision API](#google-cloud-vision-api)
   * [**Management Tools**](#management-tools)
-    * [Stackdriver Debugger (Beta)](#stackdriver-debugger-beta)
-    * [Stackdriver Logging (Beta)](#stackdriver-logging-beta)
-    * [Stackdriver Monitoring (Beta)](#stackdriver-monitoring-beta)
-    * [Stackdriver Trace (Beta)](#stackdriver-trace-beta)
+    * [Stackdriver Debugger](#stackdriver-debugger)
+    * [Stackdriver Logging](#stackdriver-logging)
+    * [Stackdriver Monitoring](#stackdriver-monitoring)
+    * [Stackdriver Trace](#stackdriver-trace)
   * [**Networking**](#management-tools)
     * [Google Cloud DNS](#google-cloud-dns)
 * [Other sample applications](#other-sample-applications)
@@ -151,21 +151,6 @@ on Google Cloud Platform.
 ### How to run the tests
 
 1. Read the [Contributing Guide][contrib].
-1. Set the `TEST_BUCKET_NAME` environment variable to the name of a test Google
-Cloud Storage bucket:
-
-    Linux:
-
-        export TEST_BUCKET_NAME=your-bucket-name
-
-    Windows:
-
-        set TEST_BUCKET_NAME=your-bucket-name
-
-    Windows (PowerShell):
-
-        $env:TEST_BUCKET_NAME="your-bucket-name"
-
 1. In a terminal, start Redis:
 
         redis-server
@@ -198,14 +183,14 @@ Cloud Storage bucket:
 
 ### <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=36" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="left" height="36" width="36" style="margin-top: 9px;"/>Google Cloud Node.js client library
 
-The idiomatic client for Google Cloud Platform services.
+The recommended, idiomatic client for Google Cloud Platform services.
 
 * [Documentation](https://googlecloudplatform.github.io/gcloud-node/)
 * [Source code](https://github.com/GoogleCloudPlatform/gcloud-node)
 
 ### <img src="https://avatars0.githubusercontent.com/u/1342004?v=3&s=36" alt="Google logo" title="Google" align="left" height="36" width="36" style="margin-top: 9px;"/>Google API Node.js client library
 
-Node.js client library for Google APIs.
+An older Node.js client library for making REST requests to Google APIs.
 
 * [Documentation](http://google.github.io/google-api-nodejs-client/)
 * [Source code](https://github.com/google/google-api-nodejs-client)
@@ -261,7 +246,7 @@ View the [Cloud Functions Node.js samples][functions_samples].
 
 ### Storage and Databases
 
-#### Google Cloud Datastore (Beta)
+#### Google Cloud Datastore
 
 [Cloud Datastore][datastore_docs] is a NoSQL document database built for
 automatic scaling, high performance, and ease of application development.
@@ -305,7 +290,7 @@ View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
 
 ### Machine Learning
 
-#### Google Cloud Natural Language API (Beta)
+#### Google Cloud Natural Language API
 
 [Cloud Natural Language API][language_docs] provides natural language
 understanding technologies to developers, including sentiment analysis, entity
@@ -361,7 +346,7 @@ View the [Cloud Vision API Node.js samples][vision_samples].
 
 ### Management Tools
 
-#### Stackdriver Debugger (Beta)
+#### Stackdriver Debugger
 
 [Stackdriver Debugger][debugger_docs] makes it easier to view the application
 state without adding logging statements.
@@ -371,7 +356,7 @@ View the [Stackdriver Debugger Node.js sample][debugger_sample].
 [debugger_docs]: https://cloud.google.com/debugger/docs/
 [debugger_sample]: debugger
 
-#### Stackdriver Logging (Beta)
+#### Stackdriver Logging
 
 [Stackdriver Logging][logging_docs] allows you to store, search, analyze,
 monitor, and alert on log data and events from Google Cloud Platform and Amazon
@@ -382,7 +367,7 @@ View the [Stackdriver Logging Node.js samples][logging_samples].
 [logging_docs]: https://cloud.google.com/logging/docs/
 [logging_samples]: logging
 
-#### Stackdriver Monitoring (Beta)
+#### Stackdriver Monitoring
 
 [Stackdriver Monitoring][monitoring_docs] collects metrics, events, and metadata
 from Google Cloud Platform, Amazon Web Services (AWS), hosted uptime probes,
@@ -394,7 +379,7 @@ View the [Stackdriver Monitoring Node.js samples][monitoring_samples].
 [monitoring_docs]: https://cloud.google.com/monitoring/docs/
 [monitoring_samples]: monitoring
 
-#### Stackdriver Trace (Beta)
+#### Stackdriver Trace
 
 [Stackdriver Trace][trace_docs] is a distributed tracing system for Google Cloud
 Platform that collects latency data from App Engine applications and displays it

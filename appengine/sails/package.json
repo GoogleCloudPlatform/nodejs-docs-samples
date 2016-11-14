@@ -6,12 +6,11 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
     "debug": "node debug app.js",
-    "start": "node app.js",
-    "deploy": "gcloud app deploy"
+    "start": "node app.js"
   },
   "dependencies": {
     "ejs": "^2.3.4",

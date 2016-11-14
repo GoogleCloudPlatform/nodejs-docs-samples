@@ -6,14 +6,13 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
     "test": "node_modules/grunt-cli/bin/grunt test",
     "build": "node_modules/grunt-cli/bin/grunt build",
     "all": "npm run build && npm run test",
-    "start": "node server.js",
-    "deploy": "gcloud app deploy"
+    "start": "node server.js"
   },
   "dependencies": {
     "construx": "^1.0.0",

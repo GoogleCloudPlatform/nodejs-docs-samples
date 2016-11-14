@@ -1,23 +1,25 @@
-// Copyright 2015-2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
 // [START server]
-var Hapi = require('hapi');
+const Hapi = require('hapi');
 
 // Create a server with a host and port
-var server = new Hapi.Server();
+const server = new Hapi.Server();
 server.connection({
   host: '0.0.0.0',
   port: process.env.PORT || 8080
@@ -28,7 +30,7 @@ server.connection({
 server.route({
   method: 'GET',
   path: '/',
-  handler: function (request, reply) {
+  handler: (request, reply) => {
     reply('Hello World! Hapi.js on Google App Engine.');
   }
 });
@@ -38,13 +40,13 @@ server.route({
 server.route({
   method: 'GET',
   path: '/hello',
-  handler: function (request, reply) {
+  handler: (request, reply) => {
     reply('Hello World! Hapi.js on Google App Engine.');
   }
 });
 
 // [START server_start]
-server.start(function () {
-  console.log('Server running at:', server.info.uri);
+server.start(() => {
+  console.log(`Server running at: ${server.info.uri}`);
 });
 // [END server_start]

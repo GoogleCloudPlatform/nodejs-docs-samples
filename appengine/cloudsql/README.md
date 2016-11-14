@@ -7,6 +7,8 @@ server) on [Google App Engine Flexible][flexible].
 
 Before you can run or deploy the sample, you will need to do the following:
 
+1. In order for some of the commands below to work, you need to enable the
+[Cloud SQL Admin API](https://console.cloud.google.com/apis/api/sqladmin-json.googleapis.com/overview).
 1. Create a [Second Generation Cloud SQL][gen] instance. You can do this from
 the [Cloud Console][console] or via the [Cloud SDK][sdk]. To create it via the
 SDK use the following command:
@@ -24,18 +26,17 @@ SDK use the following command:
     where `[YOUR_INSTANCE_NAME]` is the name you chose in step 1 and
     `[YOUR_INSTANCE_ROOT_PASSWORD]` is a password of your choice.
 
-1. Create a [Service Account][service] for your project. You will use this
-service account to connect to your Cloud SQL instance locally.
+1. Create and download a [Service Account][service] for your project. You will
+use this service account to connect to your Cloud SQL instance locally.
 
 1. Download and install the [Cloud SQL Proxy][proxy].
 
 1. [Start the proxy][start] to allow connecting to your instance from your local
 machine:
 
-        cloud_sql_proxy \
-            -dir /cloudsql \
-            -instances=[YOUR_INSTANCE_CONNECTION_NAME] \
-            -credential_file=PATH_TO_YOUR_SERVICE_ACCOUNT_JSON
+        ./cloud_sql_proxy \
+            -instances=[YOUR_INSTANCE_CONNECTION_NAME]=tcp:3306 \
+            -credential_file=PATH_TO_YOUR_SERVICE_ACCOUNT_JSON_FILE
 
     where `[YOUR_INSTANCE_CONNECTION_NAME]` is the connection name of your
     instance on its Overview page in the Google Cloud Platform Console, or use
@@ -44,18 +45,14 @@ machine:
 1. Use the MySQL command line tools (or a management tool of your choice) to
 create a [new user][user] and [database][database] for your application:
 
-        mysql --socket [YOUR_SOCKET_PATH] -u root -p
-          mysql> create database YOUR_DATABASE;
+        mysql -h 127.0.0.1 -P 3306 -u root -p
+          mysql> create database `YOUR_DATABASE`;
           mysql> create user 'YOUR_USER'@'%' identified by 'PASSWORD';
           mysql> grant all on YOUR_DATABASE.* to 'YOUR_USER'@'%';
 
-    where `[YOUR_SOCKET_PATH]` is that socket opened by the proxy. This path was
-    printed to the console when you started the proxy, and is of the format:
-    `/[DIR]/[YOUR_PROJECT_ID]:[YOUR_REGION]:[YOUR_INSTANCE_NAME]`.
-
-1. Set the `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_SOCKET_PATH`, and
-`MYSQL_DATABASE` environment variables. This allows the app to connect to your
-Cloud SQL instance through the proxy.
+1. Set the `MYSQL_USER`, `MYSQL_PASSWORD`, and `MYSQL_DATABASE` environment
+variables (see below). This allows your local app to connect to your Cloud SQL
+instance through the proxy.
 
 1. Update the values in in `app.yaml` with your instance configuration.
 
@@ -72,7 +69,6 @@ running the sample:
 
     export MYSQL_USER="YOUR_USER"
     export MYSQL_PASSWORD="YOUR_PASSWORD"
-    export MYSQL_SOCKET_PATH="YOUR_SOCKET_PATH"
     export MYSQL_DATABASE="YOUR_DATABASE"
     npm install
     npm start

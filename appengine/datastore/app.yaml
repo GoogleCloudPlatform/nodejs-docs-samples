@@ -13,10 +13,5 @@
 
 # [START app_yaml]
 runtime: nodejs
-vm: true
-
-# [START env_variables]
-env_variables:
-    GCLOUD_PROJECT: <your-project-id>
-# [END env_variables]
+env: flex
 # [END app_yaml]

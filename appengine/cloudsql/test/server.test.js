@@ -13,34 +13,34 @@
 
 'use strict';
 
-var express = require('express');
-var path = require('path');
-var proxyquire = require('proxyquire').noPreserveCache();
-var request = require('supertest');
+const express = require(`express`);
+const path = require(`path`);
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const request = require(`supertest`);
 
-var SAMPLE_PATH = path.join(__dirname, '../server.js');
+const SAMPLE_PATH = path.join(__dirname, `../server.js`);
 
 function getSample () {
-  var testApp = express();
-  sinon.stub(testApp, 'listen').callsArg(1);
-  var expressMock = sinon.stub().returns(testApp);
-  var resultsMock = [
+  const testApp = express();
+  sinon.stub(testApp, `listen`).yields();
+  const expressMock = sinon.stub().returns(testApp);
+  const resultsMock = [
     {
-      timestamp: '1234',
-      userIp: 'abcd'
+      timestamp: `1234`,
+      userIp: `abcd`
     }
   ];
-  var connectionMock = {
+  const connectionMock = {
     query: sinon.stub()
   };
-  connectionMock.query.onFirstCall().callsArg(2);
-  connectionMock.query.onSecondCall().callsArgWith(1, null, resultsMock);
+  connectionMock.query.onFirstCall().yields();
+  connectionMock.query.onSecondCall().yields(null, resultsMock);
 
-  var mysqlMock = {
+  const mysqlMock = {
     createConnection: sinon.stub().returns(connectionMock)
   };
 
-  var app = proxyquire(SAMPLE_PATH, {
+  const app = proxyquire(SAMPLE_PATH, {
     mysql: mysqlMock,
     express: expressMock
   });
@@ -55,10 +55,10 @@ function getSample () {
   };
 }
 
-describe('appengine/cloudsql/server.js', function () {
-  var sample;
+describe(`appengine/cloudsql/server.js`, () => {
+  let sample;
 
-  beforeEach(function () {
+  beforeEach(() => {
     sample = getSample();
 
     assert(sample.mocks.express.calledOnce);
@@ -73,42 +73,42 @@ describe('appengine/cloudsql/server.js', function () {
     assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
   });
 
-  it('should record a visit', function (done) {
-    var expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
+  it(`should record a visit`, (done) => {
+    const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(200)
-      .expect(function (response) {
+      .expect((response) => {
         assert.equal(response.text, expectedResult);
       })
       .end(done);
   });
 
-  it('should handle insert error', function (done) {
-    var expectedResult = 'insert_error';
+  it(`should handle insert error`, (done) => {
+    const expectedResult = `insert_error`;
 
-    sample.mocks.connection.query.onFirstCall().callsArgWith(2, expectedResult);
+    sample.mocks.connection.query.onFirstCall().yields(expectedResult);
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(500)
-      .expect(function (response) {
-        assert.equal(response.text, expectedResult + '\n');
+      .expect((response) => {
+        assert.equal(response.text, `${expectedResult}\n`);
       })
       .end(done);
   });
 
-  it('should handle read error', function (done) {
-    var expectedResult = 'read_error';
+  it(`should handle read error`, (done) => {
+    const expectedResult = `read_error`;
 
-    sample.mocks.connection.query.onSecondCall().callsArgWith(1, expectedResult);
+    sample.mocks.connection.query.onSecondCall().yields(expectedResult);
 
     request(sample.app)
-      .get('/')
+      .get(`/`)
       .expect(500)
-      .expect(function (response) {
-        assert.equal(response.text, expectedResult + '\n');
+      .expect((response) => {
+        assert.equal(response.text, `${expectedResult}\n`);
       })
       .end(done);
   });

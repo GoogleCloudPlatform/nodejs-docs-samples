@@ -13,7 +13,7 @@
 
 # [START app_yaml]
 runtime: nodejs
-vm: true
+env: flex
 env_variables:
   MJ_APIKEY_PUBLIC: <your-mj-apikey-public>
   MJ_APIKEY_PRIVATE: <your-mj-apikey-private>

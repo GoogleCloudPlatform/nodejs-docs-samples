@@ -4,11 +4,14 @@
   "scripts": {
     "start": "node app.js"
   },
+  "engines": {
+    "node": ">=4.3.2"
+  },
   "dependencies": {
-    "@google-cloud/storage": "^0.1.1",
-    "body-parser": "^1.14.2",
-    "express": "^4.13.4",
-    "jade": "^1.11.0",
-    "multer": "^1.2.0"
+    "@google-cloud/storage": "^0.3.0",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "multer": "^1.2.0",
+    "pug": "^2.0.0-beta6"
   }
 }

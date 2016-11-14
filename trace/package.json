@@ -5,18 +5,18 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../test/_setup.js test/*.test.js"
+    "test": "mocha -R spec --require intelli-espower-loader ../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "@google/cloud-trace": "^0.5.3",
-    "express": "^4.13.4",
-    "request": "^2.72.0"
+    "@google/cloud-trace": "^0.5.10",
+    "express": "^4.14.0",
+    "request": "^2.78.0"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.1.2"
   }
 }

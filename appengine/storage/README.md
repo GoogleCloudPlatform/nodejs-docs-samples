@@ -1,7 +1,7 @@
 # Node.js Google Cloud Storage sample for Google App Engine
 
 This sample demonstrates how to use [Google Cloud Storage](https://cloud.google.com/storage/)
-on [Google App Engine Managed VMs](https://cloud.google.com/appengine).
+on [Google App Engine Flexible Environment](https://cloud.google.com/appengine).
 
 ## Setup
 

@@ -1,6 +1,6 @@
 # Node.js Cloud Pub/Sub sample for Google App Engine
 
-This demonstrates how to send and receive messages using [Google Cloud Pub/Sub](https://cloud.google.com/pubsub) on [Google App Engine Managed VMs](https://cloud.google.com/appengine) using Node.js.
+This demonstrates how to send and receive messages using [Google Cloud Pub/Sub](https://cloud.google.com/pubsub) on [Google App Engine Flexible Environment](https://cloud.google.com/appengine) using Node.js.
 
 ## Setup
 
@@ -30,7 +30,6 @@ to provide authentication to use Google Cloud APIs:
 
 Then set environment variables before starting your application:
 
-    export GCLOUD_PROJECT=<your-project-id>
     export PUBSUB_VERIFICATION_TOKEN=<your-verification-token>
     export PUBSUB_TOPIC=<your-topic-name>
     npm start

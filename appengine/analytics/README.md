@@ -1,7 +1,7 @@
 # Google Analytics Measurement Protocol on Google App Engine
 
 This sample demonstrates how to use the [Google Analytics Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/v1/)
-(or any other SQL server) on [Google App Engine Managed VMs](https://cloud.google.com/appengine).
+(or any other SQL server) on [Google App Engine Flexible Environment](https://cloud.google.com/appengine).
 
 ## Setup
 

@@ -1,4 +1,4 @@
-# Copyright 2015-2016, Google, Inc.
+# Copyright 2016, Google, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,22 +13,21 @@
 
 # [START app_yaml]
 runtime: nodejs
-vm: true
+env: flex
 
 # [START env]
 env_variables:
-  MYSQL_USER: [YOUR_USER]
-  MYSQL_PASSWORD: [YOUR_PASSWORD]
-  MYSQL_DATABASE: [YOUR_DATABASE]
-  # This path was printed to the console when you started the proxy, and is of
-  # the format: `/[DIR]/[YOUR_PROJECT_ID]:[YOUR_REGION]:[YOUR_INSTANCE_NAME]`
-  MYSQL_SOCKET_PATH: [YOUR_SOCKET_PATH]
+  MYSQL_USER: YOUR_USER
+  MYSQL_PASSWORD: YOUR_PASSWORD
+  MYSQL_DATABASE: YOUR_DATABASE
+  # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
+  INSTANCE_CONNECTION_NAME: YOUR_PROJECT_ID:YOUR_REGION:YOUR_INSTANCE_NAME
 # [END env]
 
 # [START cloudsql_settings]
 beta_settings:
   # The connection name of your instance on its Overview page in the Google
-  # Cloud Platform Console, or use `[YOUR_PROJECT_ID]:[YOUR_REGION]:[YOUR_INSTANCE_NAME]`
-  cloud_sql_instances: [YOUR_INSTANCE_CONNECTION_NAME]
+  # Cloud Platform Console, or use `YOUR_PROJECT_ID:YOUR_REGION:YOUR_INSTANCE_NAME`
+  cloud_sql_instances: YOUR_PROJECT_ID:YOUR_REGION:YOUR_INSTANCE_NAME
 # [END cloudsql_settings]
 # [END app_yaml]

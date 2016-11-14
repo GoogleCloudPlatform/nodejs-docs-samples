@@ -12,7 +12,7 @@
 # limitations under the License.
 
 runtime: nodejs
-vm: true
+env: flex
 
 beta_settings:
   # Enable Google Cloud Endpoints API management.

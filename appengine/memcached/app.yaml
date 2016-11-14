@@ -1,4 +1,4 @@
-# Copyright 2015-2016, Google, Inc.
+# Copyright 2016, Google, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,10 +13,17 @@
 
 # [START app_yaml]
 runtime: nodejs
-vm: true
+env: flex
 
-# [START config]
-beta_settings:
-  use_memcache_proxy: true
-# [END config]
+# [START env_variables]
+env_variables:
+  # If you are using the App Engine Memcache service (currently in alpha),
+  # uncomment this section and comment out the other Memcache variables.
+  # USE_GAE_MEMCACHE: 1
+  MEMCACHE_URL: your-memcache-url
+  # If you are using a Memcached server with SASL authentiation enabled,
+  # fill in these values with your username and password.
+  MEMCACHE_USERNAME: your-memcache-username
+  MEMCACHE_PASSWORD: your-memcache-password
+# [END env_variables]
 # [END app_yaml]

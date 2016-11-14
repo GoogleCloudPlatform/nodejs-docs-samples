@@ -1,47 +1,49 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-var path = require('path');
-var proxyquire = require('proxyquire').noPreserveCache();
+const path = require(`path`);
+const proxyquire = require(`proxyquire`).noPreserveCache();
 
-var SAMPLE_PATH = path.join(__dirname, '../createTables.js');
+const SAMPLE_PATH = path.join(__dirname, `../createTables.js`);
 
 function getSample () {
-  var connectionMock = {
+  const connectionMock = {
     query: sinon.stub(),
     end: sinon.stub()
   };
-  connectionMock.query.onFirstCall().callsArgWith(1, null, 'created visits table!');
-  var mysqlMock = {
+  connectionMock.query.onFirstCall().yields(null, `created visits table!`);
+  const mysqlMock = {
     createConnection: sinon.stub().returns(connectionMock)
   };
-  var configMock = {
-    user: 'user',
-    password: 'password',
-    database: 'database',
-    socketPath: 'socketPath'
+  const configMock = {
+    user: `user`,
+    password: `password`,
+    database: `database`
   };
-  var promptMock = {
+  const promptMock = {
     start: sinon.stub(),
-    get: sinon.stub().callsArgWith(1, null, configMock)
+    get: sinon.stub().yields(null, configMock)
   };
 
   proxyquire(SAMPLE_PATH, {
     mysql: mysqlMock,
     prompt: promptMock
   });
+
   return {
     mocks: {
       connection: connectionMock,
@@ -52,30 +54,30 @@ function getSample () {
   };
 }
 
-describe('appengine/cloudsql/createTables.js', function () {
-  it('should record a visit', function (done) {
-    var sample = getSample();
-    var expectedResult = 'created visits table!';
+describe(`appengine/cloudsql/createTables.js`, () => {
+  it(`should record a visit`, (done) => {
+    const sample = getSample();
+    const expectedResult = `created visits table!`;
 
     assert(sample.mocks.prompt.start.calledOnce);
     assert(sample.mocks.prompt.get.calledOnce);
     assert.deepEqual(sample.mocks.prompt.get.firstCall.args[0], [
-      'socketPath',
-      'user',
-      'password',
-      'database'
+      `user`,
+      `password`,
+      `database`
     ]);
 
-    setTimeout(function () {
-      assert.deepEqual(sample.mocks.mysql.createConnection.firstCall.args[0], sample.mocks.config);
+    setTimeout(() => {
+      const uri = `mysql://${sample.mocks.config.user}:${sample.mocks.config.password}@127.0.0.1:3306/${sample.mocks.config.database}`;
+      assert.deepEqual(sample.mocks.mysql.createConnection.firstCall.args, [uri]);
       assert(console.log.calledWith(expectedResult));
       done();
     }, 10);
   });
 
-  it('should handle prompt error', function (done) {
-    var expectedResult = 'createTables_prompt_error';
-    var sample = getSample();
+  it(`should handle prompt error`, (done) => {
+    const expectedResult = `createTables_prompt_error`;
+    const sample = getSample();
 
     proxyquire(SAMPLE_PATH, {
       mysql: sample.mocks.mysql,
@@ -85,18 +87,19 @@ describe('appengine/cloudsql/createTables.js', function () {
       }
     });
 
-    setTimeout(function () {
+    setTimeout(() => {
       assert(console.error.calledWith(expectedResult));
       done();
     }, 10);
   });
 
-  it('should handle insert error', function (done) {
-    var expectedResult = 'createTables_insert_error';
-    var sample = getSample();
+  it(`should handle insert error`, (done) => {
+    const expectedResult = `createTables_insert_error`;
+    const sample = getSample();
 
-    var connectionMock = {
-      query: sinon.stub().callsArgWith(1, expectedResult)
+    const connectionMock = {
+      query: sinon.stub().callsArgWith(1, expectedResult),
+      end: sinon.stub()
     };
 
     proxyquire(SAMPLE_PATH, {
@@ -106,7 +109,7 @@ describe('appengine/cloudsql/createTables.js', function () {
       prompt: sample.mocks.prompt
     });
 
-    setTimeout(function () {
+    setTimeout(() => {
       assert(console.error.calledWith(expectedResult));
       done();
     }, 10);

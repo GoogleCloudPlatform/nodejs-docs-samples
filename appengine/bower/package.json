@@ -6,18 +6,18 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "~4.2"
+    "node": ">=4.3.2"
   },
   "scripts": {
     "postinstall": "bower install --config.interactive=false",
     "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "bower": "^1.7.7",
-    "express": "^4.13.4",
-    "jade": "^1.11.0"
+    "bower": "^1.7.9",
+    "express": "^4.14.0",
+    "pug": "^2.0.0-beta6"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^3.1.0"
   }
 }

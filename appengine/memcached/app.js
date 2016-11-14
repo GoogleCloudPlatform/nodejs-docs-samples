@@ -17,37 +17,43 @@
 'use strict';
 
 const express = require('express');
-const Memcached = require('memcached');
+const memjs = require('memjs');
 
 const app = express();
 
-// The environment variables are automatically set by App Engine when running
-// on GAE. When running locally, you should have a local instance of the
-// memcached daemon running.
-const memcachedAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR || 'localhost';
-const memcachedPort = process.env.MEMCACHE_PORT_11211_TCP_PORT || '11211';
-const memcached = new Memcached(`${memcachedAddr}:${memcachedPort}`);
+// [START client]
+// Environment variables are defined in app.yaml.
+let MEMCACHE_URL = process.env.MEMCACHE_URL || '127.0.0.1:11211';
 
+if (process.env.USE_GAE_MEMCACHE) {
+  MEMCACHE_URL = `${process.env.GAE_MEMCACHE_HOST}:${process.env.GAE_MEMCACHE_PORT}`;
+}
+
+const mc = memjs.Client.create(MEMCACHE_URL);
+// [END client]
+
+// [START example]
 app.get('/', (req, res, next) => {
-  memcached.get('foo', (err, value) => {
+  mc.get('foo', (err, value) => {
     if (err) {
       next(err);
       return;
     }
     if (value) {
-      res.status(200).send(`Value: ${value}`);
+      res.status(200).send(`Value: ${value.toString('utf-8')}`);
       return;
     }
 
-    memcached.set('foo', Math.random(), 60, (err) => {
+    mc.set('foo', `${Math.random()}`, (err) => {
       if (err) {
         next(err);
         return;
       }
       res.redirect('/');
-    });
+    }, 60);
   });
 });
+// [END example]
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

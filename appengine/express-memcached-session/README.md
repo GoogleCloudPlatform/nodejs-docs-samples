@@ -5,10 +5,8 @@ to use the newer `env: flex` configuration when `env: flex` fully supports
 Memcached.**
 
 This is a simple guide to using memcached for session state while running
-[Express.js](http://expressjs.com/) on Google App Engine. Each Google App Engine
-application comes with a memcached service instance, which can be reached with a
-standard memcached driver at `memcache:11211`. This sample uses the
-[connect-memcached](https://github.com/balor/connect-memcached) module to store
+[Express.js](http://expressjs.com/) on Google App Engine. This sample uses the
+[connect-memjs](https://github.com/liamdon/connect-memjs) module to store
 session data in memcached.
 
 ## Clone the Express.js + Memcached Sessions app

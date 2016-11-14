@@ -20,17 +20,15 @@
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const MemcachedStore = require('connect-memcached')(session);
+const MemcachedStore = require('connect-memjs')(session);
 const publicIp = require('public-ip');
 const crypto = require('crypto');
 
-let MEMCACHE_URL = process.env.MEMCACHE_URL;
-if (!MEMCACHE_URL) {
-  if (process.env.MEMCACHE_PORT_11211_TCP_ADDR && process.env.MEMCACHE_PORT_11211_TCP_PORT) {
-    MEMCACHE_URL = `${process.env.MEMCACHE_PORT_11211_TCP_ADDR}:${process.env.MEMCACHE_PORT_11211_TCP_PORT}`;
-  } else {
-    MEMCACHE_URL = '127.0.0.1:11211';
-  }
+// Environment variables are defined in app.yaml.
+let MEMCACHE_URL = process.env.MEMCACHE_URL || '127.0.0.1:11211';
+
+if (process.env.USE_GAE_MEMCACHE) {
+  MEMCACHE_URL = `${process.env.GAE_MEMCACHE_HOST}:${process.env.GAE_MEMCACHE_PORT}`;
 }
 
 const app = express();
@@ -43,7 +41,7 @@ app.use(session({
   key: 'view:count',
   proxy: 'true',
   store: new MemcachedStore({
-    hosts: [MEMCACHE_URL]
+    servers: [MEMCACHE_URL]
   })
 }));
 

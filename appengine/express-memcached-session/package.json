@@ -1,6 +1,6 @@
 {
   "name": "appengine-express-memcached-session",
-  "description": "An example of using memcached for sessions in Express.js on Google App Engine.",
+  "description": "An example of using memcached for sessions in Express.js on Google App Engine Flexible Environment",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
@@ -10,16 +10,16 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "mocha -R spec -t 1000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
   },
   "dependencies": {
-    "connect-memcached": "^0.2.0",
-    "cookie-parser": "^1.4.1",
+    "connect-memjs": "^0.1.0",
+    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
-    "express-session": "^1.13.0",
+    "express-session": "^1.14.2",
     "public-ip": "^2.0.1"
   },
   "devDependencies": {
-    "mocha": "^3.1.0"
+    "mocha": "^3.1.2"
   }
 }

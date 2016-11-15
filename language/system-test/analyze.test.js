@@ -37,13 +37,11 @@ describe(`language:analyze`, () => {
   });
 
   it(`should analyze sentiment in text`, () => {
-    const output = run(`${cmd} sentimentOfText "${text}"`, cwd);
-    assert.equal(typeof parseFloat(output), `number`);
+    assert.equal(run(`${cmd} sentimentOfText "${text}"`, cwd), `Sentiment: positive.`);
   });
 
   it(`should analyze sentiment in a file`, () => {
-    const output = run(`${cmd} sentimentInFile ${bucketName} ${fileName}`, cwd);
-    assert.equal(typeof parseFloat(output), `number`);
+    assert.equal(run(`${cmd} sentimentInFile ${bucketName} ${fileName}`, cwd), `Sentiment: positive.`);
   });
 
   it(`should analyze entities in text`, () => {

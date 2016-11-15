@@ -174,12 +174,12 @@ function analyzeSyntaxInFile (bucketName, fileName) {
 const cli = require(`yargs`);
 
 const program = module.exports = {
-  analyzeSentimentOfText: analyzeSentimentOfText,
-  analyzeSentimentInFile: analyzeSentimentInFile,
-  analyzeEntitiesOfText: analyzeEntitiesOfText,
-  analyzeEntitiesInFile: analyzeEntitiesInFile,
-  analyzeSyntaxOfText: analyzeSyntaxOfText,
-  analyzeSyntaxInFile: analyzeSyntaxInFile,
+  analyzeSentimentOfText,
+  analyzeSentimentInFile,
+  analyzeEntitiesOfText,
+  analyzeEntitiesInFile,
+  analyzeSyntaxOfText,
+  analyzeSyntaxInFile,
   main: (args) => {
     // Run the command-line program
     cli.help().strict().parse(args).argv;

@@ -54,16 +54,18 @@
   "scripts": {
     "lint": "semistandard",
     "pretest": "npm run lint && ./scripts/clean",
-    "mocha": "mocha -R spec -t 120000 --require intelli-espower-loader ./test/_setup.js ./test/*.test.js '{*,appengine/*,functions/*}/test/*.test.js'",
-    "test": "npm run mocha",
+    "ava": "ava -c 5 -T 2s speech/test",
+    "test": "npm run ava",
     "cover": "nyc --cache npm test && nyc report --reporter=html && nyc report --reporter=lcov",
-    "system-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js'",
+    "system-ava": "ava -c 5 -T 2m speech/system-test",
+    "system-test": "npm run pretest && npm run system-ava",
     "system-cover": "npm run pretest && nyc --cache npm run system-test && nyc report --reporter=html && nyc report --reporter=lcov",
     "all-test": "mocha -R spec -t 120000 --require intelli-espower-loader ./system-test/_setup.js '{*,appengine/*}/system-test/*.test.js' ./test/*.test.js '{*,appengine/*,functions/*}/test/*.test.js'",
     "all-cover": "npm run pretest && nyc --cache npm run all-test && nyc report --reporter=html && nyc report --reporter=lcov"
   },
   "devDependencies": {
     "async": "^2.0.1",
+    "ava": "^0.16.0",
     "intelli-espower-loader": "^1.0.1",
     "mocha": "^3.0.2",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#bbbb6035d77671eb053dbe6b6f0e3ff983f79639",

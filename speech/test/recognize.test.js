@@ -15,26 +15,27 @@
 
 'use strict';
 
+require(`../../test/_setup`);
+
 const proxyquire = require(`proxyquire`).noCallThru();
 
-describe(`speech:recognize`, () => {
-  it(`should handle errors`, () => {
-    const filename = `audio.raw`;
-    const error = new Error(`error`);
-    const callback = sinon.spy();
-    const speechMock = {
-      recognize: sinon.stub().yields(error),
-      startRecognition: sinon.stub().yields(error)
-    };
-    const SpeechMock = sinon.stub().returns(speechMock);
-    const program = proxyquire(`../recognize`, {
-      '@google-cloud/speech': SpeechMock
-    });
-
-    program.syncRecognize(filename, callback);
-    program.asyncRecognize(filename, callback);
-
-    assert.equal(callback.callCount, 2);
-    assert.equal(callback.alwaysCalledWithExactly(error), true);
+test(`should handle error`, (t) => {
+  const filename = `audio.raw`;
+  const error = new Error(`error`);
+  const callback = sinon.spy();
+  const speechMock = {
+    recognize: sinon.stub().yields(error),
+    startRecognition: sinon.stub().yields(error)
+  };
+  const SpeechMock = sinon.stub().returns(speechMock);
+  const program = proxyquire(`../recognize`, {
+    '@google-cloud/speech': SpeechMock
   });
+
+  program.syncRecognize(filename, callback);
+  program.asyncRecognize(filename, callback);
+
+  t.is(callback.callCount, 2);
+  t.deepEqual(callback.getCall(0).args, [error]);
+  t.deepEqual(callback.getCall(1).args, [error]);
 });

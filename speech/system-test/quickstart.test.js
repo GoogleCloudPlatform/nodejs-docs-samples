@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../test/_setup`);
+
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const speech = proxyquire(`@google-cloud/speech`, {})();
@@ -25,34 +27,31 @@ const config = {
   sampleRate: 16000
 };
 
-describe(`speech:quickstart`, () => {
-  let speechMock, SpeechMock;
+test.cb(`should detect speech`, (t) => {
+  stubConsole();
+  const expectedFileName = `./resources/audio.raw`;
+  const expectedText = `how old is the Brooklyn Bridge`;
 
-  it(`should detect speech`, (done) => {
-    const expectedFileName = `./resources/audio.raw`;
-    const expectedText = `how old is the Brooklyn Bridge`;
+  const speechMock = {
+    recognize: (_fileName, _config, _callback) => {
+      t.is(_fileName, expectedFileName);
+      t.deepEqual(_config, config);
+      t.is(typeof _callback, `function`);
 
-    speechMock = {
-      recognize: (_fileName, _config, _callback) => {
-        assert.equal(_fileName, expectedFileName);
-        assert.deepEqual(_config, config);
-        assert.equal(typeof _callback, `function`);
+      speech.recognize(fileName, config, (err, transcription, apiResponse) => {
+        _callback(err, transcription, apiResponse);
+        t.ifError(err);
+        t.is(transcription, expectedText);
+        t.not(apiResponse, undefined);
+        // t.is(console.log.calledCount, 1);
+        // t.deepEqual(console.log.getCall(0).args, [`Transcription: ${expectedText}`]);
+        t.end();
+      });
+    }
+  };
+  const SpeechMock = sinon.stub().returns(speechMock);
 
-        speech.recognize(fileName, config, (err, transcription, apiResponse) => {
-          _callback(err, transcription, apiResponse);
-          assert.ifError(err);
-          assert.equal(transcription, expectedText);
-          assert.notEqual(apiResponse, undefined);
-          assert.equal(console.log.calledOnce, true);
-          assert.deepEqual(console.log.firstCall.args, [`Transcription: ${expectedText}`]);
-          done();
-        });
-      }
-    };
-    SpeechMock = sinon.stub().returns(speechMock);
-
-    proxyquire(`../quickstart`, {
-      '@google-cloud/speech': SpeechMock
-    });
+  proxyquire(`../quickstart`, {
+    '@google-cloud/speech': SpeechMock
   });
 });

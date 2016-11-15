@@ -15,24 +15,39 @@
 
 'use strict';
 
+require(`../../test/_setup`);
+
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cmd = `node recognize.js`;
 const cwd = path.join(__dirname, `..`);
 const filename = `./resources/audio.raw`;
 const text = `how old is the Brooklyn Bridge`;
 
-describe(`speech:recognize`, () => {
-  it(`should run sync recognize`, () => {
-    assert.equal(run(`${cmd} sync ${filename}`, cwd), `Results: ${text}`);
-  });
+test.cb(`should run sync recognize`, (t) => {
+  const expected = `Results: ${text}\n`;
 
-  it(`should run async recognize`, () => {
-    assert.equal(run(`${cmd} async ${filename}`, cwd), `Results: ${text}`);
+  runAsync(`${cmd} sync ${filename}`, cwd, (err, stdout) => {
+    t.ifError(err);
+    t.is(stdout, expected);
+    t.end();
   });
+});
 
-  it(`should run streaming recognize`, () => {
-    assert.notEqual(run(`${cmd} stream ${filename}`, cwd).indexOf(text), -1);
+test.cb(`should run async recognize`, (t) => {
+  const expected = `Results: ${text}\n`;
+
+  runAsync(`${cmd} async ${filename}`, cwd, (err, stdout) => {
+    t.ifError(err);
+    t.is(stdout, expected);
+    t.end();
+  });
+});
+
+test.cb(`should run streaming recognize`, (t) => {
+  runAsync(`${cmd} stream ${filename}`, cwd, (err, stdout) => {
+    t.ifError(err);
+    t.is(stdout.includes(text), true);
+    t.end();
   });
 });

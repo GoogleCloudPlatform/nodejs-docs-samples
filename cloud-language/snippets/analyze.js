@@ -1,252 +1,186 @@
-// Copyright 2016, Google, Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-// [START all]
-// [START setup]
-// By default, the client will authenticate using the service account file
-// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-var Language = require('@google-cloud/language');
-var Storage = require('@google-cloud/storage');
+const Language = require('@google-cloud/language');
+const Storage = require('@google-cloud/storage');
 
-// Instantiate the language client
-var language = Language();
-// Instantiate the storage client
-var storage = Storage();
-// [END setup]
+// [START language_sentiment_string]
+function analyzeSentimentOfText (text) {
+  // Instantiates a client
+  const language = Language();
 
-// [START analyze_sentiment_from_string]
-/**
- * Detect the sentiment of a block of text.
- *
- * @param {string} text The text to analyze.
- * @param {object} [options] Configuration options.
- * @param {string} [options.type] The type of the text, either "text" or "html".
- * @param {string} [options.language] The language of the text, e.g. "en".
- * @param {function} callback The callback function.
- */
-function analyzeSentimentFromString (text, options, callback) {
-  var document = language.document({
-    content: text,
-    type: options.type,
-    language: options.language
+  // Instantiates a Document, representing the provided text
+  const document = language.document({
+    // The document text, e.g. "Hello, world!"
+    content: text
   });
 
-  var config = {
-    // Get more detailed results
-    verbose: true
-  };
-
-  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/language/latest/language/document
-  document.detectSentiment(config, function (err, sentiment) {
-    if (err) {
-      return callback(err);
-    }
-
-    console.log('Found %s sentiment', sentiment.polarity >= 0 ? 'positive' : 'negative');
-    return callback(null, sentiment);
-  });
+  // Detects the sentiment of the document
+  return document.detectSentiment()
+    .then((results) => {
+      const sentiment = results[0];
+      console.log(`Sentiment: ${sentiment >= 0 ? 'positive' : 'negative'}.`);
+      return sentiment;
+    });
 }
-// [END analyze_sentiment_from_string]
+// [END language_sentiment_string]
 
-// [START analyze_sentiment_from_file]
-/**
- * Detect the sentiment in a text file that resides in Google Cloud Storage.
- *
- * @param {string} bucket The bucket where the file resides.
- * @param {string} filename The name of the file to be analyzed.
- * @param {object} [options] Optional configuration.
- * @param {string} [options.language] The language of the text, e.g. "en".
- * @param {string} [options.type] The type of the text, either "text" or "html".
- * @param {function} callback The callback function.
- */
-function analyzeSentimentFromFile (bucket, filename, options, callback) {
-  var document = language.document({
-    content: storage.bucket(bucket).file(filename),
-    type: options.type,
-    language: options.language
+// [START language_sentiment_file]
+function analyzeSentimentInFile (bucketName, fileName) {
+  // Instantiates clients
+  const language = Language();
+  const storage = Storage();
+
+  // The bucket where the file resides, e.g. "my-bucket"
+  const bucket = storage.bucket(bucketName);
+  // The text file to analyze, e.g. "file.txt"
+  const file = bucket.file(fileName);
+
+  // Instantiates a Document, representing a text file in Cloud Storage
+  const document = language.document({
+    // The GCS file
+    content: file
   });
 
-  var config = {
-    // Get more detailed results
-    verbose: true
-  };
-
-  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/language/latest/language/document
-  document.detectSentiment(config, function (err, sentiment) {
-    if (err) {
-      return callback(err);
-    }
-
-    console.log('Found %s sentiment', sentiment.polarity >= 0 ? 'positive' : 'negative');
-    return callback(null, sentiment);
-  });
+  // Detects the sentiment of the document
+  return document.detectSentiment()
+    .then((results) => {
+      const sentiment = results[0];
+      console.log(`Sentiment: ${sentiment >= 0 ? 'positive' : 'negative'}.`);
+      return sentiment;
+    });
 }
-// [END analyze_sentiment_from_file]
+// [END language_sentiment_file]
 
-// [START analyze_entities_from_string]
-/**
- * Detect the entities from a block of text.
- *
- * @param {string} text The text to analyze.
- * @param {object} [options] Optional configuration.
- * @param {string} [options.language] The language of the text, e.g. "en".
- * @param {string} [options.type] The type of the text, either "text" or "html".
- * @param {function} callback The callback function.
- */
-function analyzeEntitiesFromString (text, options, callback) {
-  var document = language.document({
-    content: text,
-    type: options.type,
-    language: options.language
+// [START language_entities_string]
+function analyzeEntitiesOfText (text) {
+  // Instantiates a client
+  const language = Language();
+
+  // Instantiates a Document, representing the provided text
+  const document = language.document({
+    // The document text, e.g. "Hello, world!"
+    content: text
   });
 
-  var config = {
-    // Get more detailed results
-    verbose: true
-  };
-
-  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/language/latest/language/document
-  document.detectEntities(config, function (err, entities) {
-    if (err) {
-      return callback(err);
-    }
-
-    console.log('Found %d entity type(s)!', Object.keys(entities).length);
-    return callback(null, entities);
-  });
+  // Detects entities in the document
+  return document.detectEntities()
+    .then((results) => {
+      const entities = results[0];
+      console.log('Entities:');
+      for (let type in entities) {
+        console.log(`${type}:`, entities[type]);
+      }
+      return entities;
+    });
 }
-// [END analyze_entities_from_string]
+// [END language_entities_string]
 
-// [START analyze_entities_from_file]
-/**
- * Detect the entities in a text file that resides in Google Cloud Storage.
- *
- * @param {string} bucket The bucket where the file resides.
- * @param {string} filename The name of the file to be analyzed.
- * @param {object} [options] Optional configuration.
- * @param {string} [options.language] The language of the text, e.g. "en".
- * @param {string} [options.type] The type of the text, either "text" or "html".
- * @param {function} callback The callback function.
- */
-function analyzeEntitiesFromFile (bucket, filename, options, callback) {
-  var document = language.document({
-    content: storage.bucket(bucket).file(filename),
-    type: options.type,
-    language: options.language
+// [START language_entities_file]
+function analyzeEntitiesInFile (bucketName, fileName) {
+  // Instantiates clients
+  const language = Language();
+  const storage = Storage();
+
+  // The bucket where the file resides, e.g. "my-bucket"
+  const bucket = storage.bucket(bucketName);
+  // The text file to analyze, e.g. "file.txt"
+  const file = bucket.file(fileName);
+
+  // Instantiates a Document, representing a text file in Cloud Storage
+  const document = language.document({
+    // The GCS file
+    content: file
   });
 
-  var config = {
-    // Get more detailed results
-    verbose: true
-  };
-
-  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/language/latest/language/document
-  document.detectEntities(config, function (err, entities) {
-    if (err) {
-      return callback(err);
-    }
-
-    console.log('Found %d entity type(s)!', Object.keys(entities).length);
-    return callback(null, entities);
-  });
+  // Detects entities in the document
+  return document.detectEntities()
+    .then((results) => {
+      const entities = results[0];
+      console.log('Entities:');
+      for (let type in entities) {
+        console.log(`${type}:`, entities[type]);
+      }
+      return entities;
+    });
 }
-// [END analyze_entities_from_file]
+// [END language_entities_file]
 
-// [START analyze_syntax_from_string]
-/**
- * Detect the syntax in a block of text.
- *
- * @param {string} text The text to analyze.
- * @param {object} [options] Optional configuration.
- * @param {string} [options.language] The language of the text, e.g. "en".
- * @param {string} [options.type] The type of the text, either "text" or "html".
- * @param {function} callback The callback function.
- */
-function analyzeSyntaxFromString (text, options, callback) {
-  var document = language.document({
-    content: text,
-    type: options.type,
-    language: options.language
+// [START language_syntax_string]
+function analyzeSyntaxOfText (text) {
+  // Instantiates a client
+  const language = Language();
+
+  // Instantiates a Document, representing the provided text
+  const document = language.document({
+    // The document text, e.g. "Hello, world!"
+    content: text
   });
 
-  var config = {
-    syntax: true
-  };
-
-  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/language/latest/language/document
-  document.annotate(config, function (err, result, apiResponse) {
-    if (err) {
-      return callback(err);
-    }
-
-    console.log('Done analyzing syntax');
-    return callback(null, apiResponse);
-  });
+  // Detects syntax in the document
+  return document.detectSyntax()
+    .then((results) => {
+      const syntax = results[0];
+      console.log('Tags:');
+      syntax.forEach((part) => console.log(part.tag));
+      return syntax;
+    });
 }
-// [END analyze_syntax_from_string]
+// [END language_syntax_string]
 
-// [START analyze_syntax_from_file]
-/**
- * Detect the syntax in a text file that resides in Google Cloud Storage.
- *
- * @param {string} bucket The bucket where the file resides.
- * @param {string} filename The name of the file to be analyzed.
- * @param {object} [options] Optional configuration.
- * @param {string} [options.language] The language of the text, e.g. "en".
- * @param {string} [options.type] The type of the text, either "text" or "html".
- * @param {function} callback The callback function.
- */
-function analyzeSyntaxFromFile (bucket, filename, options, callback) {
-  var document = language.document({
-    content: storage.bucket(bucket).file(filename),
-    type: options.type,
-    language: options.language
+// [START language_syntax_file]
+function analyzeSyntaxInFile (bucketName, fileName) {
+  // Instantiates clients
+  const language = Language();
+  const storage = Storage();
+
+  // The bucket where the file resides, e.g. "my-bucket"
+  const bucket = storage.bucket(bucketName);
+  // The text file to analyze, e.g. "file.txt"
+  const file = bucket.file(fileName);
+
+  // Instantiates a Document, representing a text file in Cloud Storage
+  const document = language.document({
+    // The GCS file
+    content: file
   });
 
-  var config = {
-    syntax: true
-  };
-
-  // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/language/latest/language/document
-  document.annotate(config, function (err, result, apiResponse) {
-    if (err) {
-      return callback(err);
-    }
-
-    console.log('Done analyzing syntax');
-    return callback(null, apiResponse);
-  });
+  // Detects syntax in the document
+  return document.detectSyntax()
+    .then((results) => {
+      const syntax = results[0];
+      console.log('Tags:');
+      syntax.forEach((part) => console.log(part.tag));
+      return syntax;
+    });
 }
-// [END analyze_syntax_from_file]
-// [END all]
+// [END language_syntax_file]
 
 // The command-line program
-var cli = require('yargs');
-var utils = require('../utils');
+const cli = require(`yargs`);
 
-var program = module.exports = {
-  analyzeSentimentFromString: analyzeSentimentFromString,
-  analyzeSentimentFromFile: analyzeSentimentFromFile,
-  analyzeEntitiesFromString: analyzeEntitiesFromString,
-  analyzeEntitiesFromFile: analyzeEntitiesFromFile,
-  analyzeSyntaxFromString: analyzeSyntaxFromString,
-  analyzeSyntaxFromFile: analyzeSyntaxFromFile,
-  main: function (args) {
+const program = module.exports = {
+  analyzeSentimentOfText,
+  analyzeSentimentInFile,
+  analyzeEntitiesOfText,
+  analyzeEntitiesInFile,
+  analyzeSyntaxOfText,
+  analyzeSyntaxInFile,
+  main: (args) => {
     // Run the command-line program
     cli.help().strict().parse(args).argv;
   }
@@ -254,51 +188,33 @@ var program = module.exports = {
 
 cli
   .demand(1)
-  .command('sentimentFromString <text>', 'Detect the sentiment of a block of text.', {}, function (options) {
-    program.analyzeSentimentFromString(options.text, utils.pick(options, ['language', 'type']), utils.makeHandler());
+  .command(`sentimentOfText <text>`, `Detect the sentiment of a block of text.`, {}, (opts) => {
+    program.analyzeSentimentOfText(opts.text);
   })
-  .command('sentimentFromFile <bucket> <filename>', 'Detect the sentiment of text in a GCS file.', {}, function (options) {
-    program.analyzeSentimentFromFile(options.bucket, options.filename, utils.pick(options, ['language', 'type']), utils.makeHandler());
+  .command(`sentimentInFile <bucket> <filename>`, `Detect the sentiment of text in a GCS file.`, {}, (opts) => {
+    program.analyzeSentimentInFile(opts.bucket, opts.filename);
   })
-  .command('entitiesFromString <text>', 'Detect the entities of a block of text.', {}, function (options) {
-    program.analyzeEntitiesFromString(options.text, utils.pick(options, ['language', 'type']), utils.makeHandler());
+  .command(`entitiesOfText <text>`, `Detect the entities of a block of text.`, {}, (opts) => {
+    program.analyzeEntitiesOfText(opts.text);
   })
-  .command('entitiesFromFile <bucket> <filename>', 'Detect the entities of text in a GCS file.', {}, function (options) {
-    program.analyzeEntitiesFromFile(options.bucket, options.filename, utils.pick(options, ['language', 'type']), utils.makeHandler());
+  .command(`entitiesInFile <bucket> <filename>`, `Detect the entities of text in a GCS file.`, {}, (opts) => {
+    program.analyzeEntitiesInFile(opts.bucket, opts.filename);
   })
-  .command('syntaxFromString <text>', 'Detect the syntax of a block of text.', {}, function (options) {
-    program.analyzeSyntaxFromString(options.text, utils.pick(options, ['language', 'type']), utils.makeHandler());
+  .command(`syntaxOfText <text>`, `Detect the syntax of a block of text.`, {}, (opts) => {
+    program.analyzeSyntaxOfText(opts.text);
   })
-  .command('syntaxFromFile <bucket> <filename>', 'Detect the syntax of text in a GCS file.', {}, function (options) {
-    program.analyzeSyntaxFromFile(options.bucket, options.filename, utils.pick(options, ['language', 'type']), utils.makeHandler());
+  .command(`syntaxInFile <bucket> <filename>`, `Detect the syntax of text in a GCS file.`, {}, (opts) => {
+    program.analyzeSyntaxInFile(opts.bucket, opts.filename);
   })
-  .options({
-    language: {
-      alias: 'l',
-      type: 'string',
-      requiresArg: true,
-      description: 'The language of the text.',
-      global: true
-    },
-    type: {
-      alias: 't',
-      type: 'string',
-      choices: ['text', 'html'],
-      default: 'text',
-      requiresArg: true,
-      description: 'Type of text.',
-      global: true
-    }
-  })
-  .example('node $0 sentimentFromString "President Obama is speaking at the White House."', '')
-  .example('node $0 sentimentFromFile my-bucket file.txt', '')
-  .example('node $0 entitiesFromString "<p>President Obama is speaking at the White House.</p>" -t html', '')
-  .example('node $0 entitiesFromFile my-bucket file.txt', '')
-  .example('node $0 syntaxFromString "President Obama is speaking at the White House."', '')
-  .example('node $0 syntaxFromFile my-bucket es_file.txt -l es', '')
-  .wrap(100)
+  .example(`node $0 sentimentOfText "President Obama is speaking at the White House."`, ``)
+  .example(`node $0 sentimentInFile my-bucket file.txt`, ``)
+  .example(`node $0 entitiesOfText "President Obama is speaking at the White House."`, ``)
+  .example(`node $0 entitiesInFile my-bucket file.txt`, ``)
+  .example(`node $0 syntaxOfText "President Obama is speaking at the White House."`, ``)
+  .example(`node $0 syntaxInFile my-bucket file.txt`, ``)
+  .wrap(120)
   .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/natural-language/docs');
+  .epilogue(`For more information, see https://cloud.google.com/natural-language/docs`);
 
 if (module === require.main) {
   program.main(process.argv.slice(2));

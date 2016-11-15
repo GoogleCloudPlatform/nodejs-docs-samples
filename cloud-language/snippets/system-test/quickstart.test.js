@@ -25,21 +25,23 @@ describe(`language:quickstart`, () => {
     const expectedText = `Hello, world!`;
 
     languageMock = {
-      detectSentiment: (_text, _config, _callback) => {
+      detectSentiment: (_text) => {
         assert.equal(_text, expectedText);
-        assert.deepEqual(_config, { verbose: true });
-        assert.equal(typeof _callback, 'function');
 
-        language.detectSentiment(_text, _config, (err, sentiment, apiResponse) => {
-          _callback(err, sentiment, apiResponse);
-          assert.ifError(err);
-          assert.equal(typeof sentiment, 'object');
-          assert.notEqual(apiResponse, undefined);
-          assert.equal(console.log.calledTwice, true);
-          assert.deepEqual(console.log.firstCall.args, [`Text: %s`, expectedText]);
-          assert.deepEqual(console.log.secondCall.args, [`Sentiment: %j`, sentiment]);
-          done();
-        });
+        return language.detectSentiment(_text)
+          .then((results) => {
+            const sentiment = results[0];
+            assert.equal(typeof sentiment, `number`);
+
+            setTimeout(() => {
+              assert.equal(console.log.calledTwice, true);
+              assert.deepEqual(console.log.firstCall.args, [`Text: ${expectedText}`]);
+              assert.deepEqual(console.log.secondCall.args, [`Sentiment: ${sentiment}`]);
+              done();
+            }, 200);
+
+            return results;
+          });
       }
     };
     LanguageMock = sinon.stub().returns(languageMock);

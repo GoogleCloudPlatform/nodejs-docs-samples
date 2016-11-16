@@ -37,7 +37,7 @@ app.set('view engine', 'pug');
 // Multer is required to process file uploads and make them available via
 // req.files.
 const multer = Multer({
-  storage: Multer.MemoryStorage,
+  storage: Multer.memoryStorage(),
   fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
 });
 

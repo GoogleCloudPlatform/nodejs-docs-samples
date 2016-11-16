@@ -33,7 +33,9 @@ function analyzeSentimentOfText (text) {
   return document.detectSentiment()
     .then((results) => {
       const sentiment = results[0];
+
       console.log(`Sentiment: ${sentiment >= 0 ? 'positive' : 'negative'}.`);
+
       return sentiment;
     });
 }
@@ -60,7 +62,9 @@ function analyzeSentimentInFile (bucketName, fileName) {
   return document.detectSentiment()
     .then((results) => {
       const sentiment = results[0];
+
       console.log(`Sentiment: ${sentiment >= 0 ? 'positive' : 'negative'}.`);
+
       return sentiment;
     });
 }
@@ -81,10 +85,12 @@ function analyzeEntitiesOfText (text) {
   return document.detectEntities()
     .then((results) => {
       const entities = results[0];
+
       console.log('Entities:');
       for (let type in entities) {
         console.log(`${type}:`, entities[type]);
       }
+
       return entities;
     });
 }
@@ -111,10 +117,12 @@ function analyzeEntitiesInFile (bucketName, fileName) {
   return document.detectEntities()
     .then((results) => {
       const entities = results[0];
+
       console.log('Entities:');
       for (let type in entities) {
         console.log(`${type}:`, entities[type]);
       }
+
       return entities;
     });
 }
@@ -135,8 +143,10 @@ function analyzeSyntaxOfText (text) {
   return document.detectSyntax()
     .then((results) => {
       const syntax = results[0];
+
       console.log('Tags:');
       syntax.forEach((part) => console.log(part.tag));
+
       return syntax;
     });
 }
@@ -163,59 +173,62 @@ function analyzeSyntaxInFile (bucketName, fileName) {
   return document.detectSyntax()
     .then((results) => {
       const syntax = results[0];
+
       console.log('Tags:');
       syntax.forEach((part) => console.log(part.tag));
+
       return syntax;
     });
 }
 // [END language_syntax_file]
 
-// The command-line program
-const cli = require(`yargs`);
-
-const program = module.exports = {
-  analyzeSentimentOfText,
-  analyzeSentimentInFile,
-  analyzeEntitiesOfText,
-  analyzeEntitiesInFile,
-  analyzeSyntaxOfText,
-  analyzeSyntaxInFile,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`)
   .demand(1)
-  .command(`sentimentOfText <text>`, `Detect the sentiment of a block of text.`, {}, (opts) => {
-    program.analyzeSentimentOfText(opts.text);
-  })
-  .command(`sentimentInFile <bucket> <filename>`, `Detect the sentiment of text in a GCS file.`, {}, (opts) => {
-    program.analyzeSentimentInFile(opts.bucket, opts.filename);
-  })
-  .command(`entitiesOfText <text>`, `Detect the entities of a block of text.`, {}, (opts) => {
-    program.analyzeEntitiesOfText(opts.text);
-  })
-  .command(`entitiesInFile <bucket> <filename>`, `Detect the entities of text in a GCS file.`, {}, (opts) => {
-    program.analyzeEntitiesInFile(opts.bucket, opts.filename);
-  })
-  .command(`syntaxOfText <text>`, `Detect the syntax of a block of text.`, {}, (opts) => {
-    program.analyzeSyntaxOfText(opts.text);
-  })
-  .command(`syntaxInFile <bucket> <filename>`, `Detect the syntax of text in a GCS file.`, {}, (opts) => {
-    program.analyzeSyntaxInFile(opts.bucket, opts.filename);
-  })
-  .example(`node $0 sentimentOfText "President Obama is speaking at the White House."`, ``)
-  .example(`node $0 sentimentInFile my-bucket file.txt`, ``)
-  .example(`node $0 entitiesOfText "President Obama is speaking at the White House."`, ``)
-  .example(`node $0 entitiesInFile my-bucket file.txt`, ``)
-  .example(`node $0 syntaxOfText "President Obama is speaking at the White House."`, ``)
-  .example(`node $0 syntaxInFile my-bucket file.txt`, ``)
+  .command(
+    `sentiment-text <text>`,
+    `Detects sentiment of a string.`,
+    {},
+    (opts) => analyzeSentimentOfText(opts.text)
+  )
+  .command(
+    `sentiment-file <bucket> <filename>`,
+    `Detects sentiment in a file in Google Cloud Storage.`,
+    {},
+    (opts) => analyzeSentimentInFile(opts.bucket, opts.filename)
+  )
+  .command(
+    `entities-text <text>`,
+    `Detects entities in a string.`,
+    {},
+    (opts) => analyzeEntitiesOfText(opts.text)
+  )
+  .command(
+    `entities-file <bucket> <filename>`,
+    `Detects entities in a file in Google Cloud Storage.`,
+    {},
+    (opts) => analyzeEntitiesInFile(opts.bucket, opts.filename)
+  )
+  .command(
+    `syntax-text <text>`,
+    `Detects syntax of a string.`,
+    {},
+    (opts) => analyzeSyntaxOfText(opts.text)
+  )
+  .command(
+    `syntax-file <bucket> <filename>`,
+    `Detects syntax in a file in Google Cloud Storage.`,
+    {},
+    (opts) => analyzeSyntaxInFile(opts.bucket, opts.filename)
+  )
+  .example(`node $0 sentiment-text "President Obama is speaking at the White House."`)
+  .example(`node $0 sentiment-file my-bucket file.txt`, `Detects sentiment in gs://my-bucket/file.txt`)
+  .example(`node $0 entities-text "President Obama is speaking at the White House."`)
+  .example(`node $0 entities-file my-bucket file.txt`, `Detects entities in gs://my-bucket/file.txt`)
+  .example(`node $0 syntax-text "President Obama is speaking at the White House."`)
+  .example(`node $0 syntax-file my-bucket file.txt`, `Detects syntax in gs://my-bucket/file.txt`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/natural-language/docs`);
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/natural-language/docs`)
+  .help()
+  .strict()
+  .argv;

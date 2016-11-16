@@ -39,10 +39,8 @@ function getSample () {
   const expressMock = sinon.stub().returns(testApp);
   const resultsMock = [
     {
-      data: {
-        timestamp: `1234`,
-        userIp: `abcd`
-      }
+      timestamp: `1234`,
+      userIp: `abcd`
     }
   ];
   const queryMock = {

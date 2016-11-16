@@ -10,18 +10,17 @@
   },
   "scripts": {
     "pretest": "jshint .",
-    "start": "node server/server.js",
-    "deploy": "gcloud app deploy"
+    "start": "node server/server.js"
   },
   "dependencies": {
-    "compression": "^1.0.3",
-    "cors": "^2.5.2",
-    "errorhandler": "^1.1.1",
-    "jshint": "^2.5.6",
-    "loopback": "^2.14.0",
-    "loopback-boot": "^2.6.5",
-    "loopback-datasource-juggler": "^2.19.0",
-    "loopback-explorer": "^1.1.0",
-    "serve-favicon": "^2.0.1"
+    "compression": "1.0.3",
+    "cors": "2.5.2",
+    "errorhandler": "1.1.1",
+    "jshint": "2.5.6",
+    "loopback": "2.14.0",
+    "loopback-boot": "2.6.5",
+    "loopback-datasource-juggler": "2.19.0",
+    "loopback-explorer": "1.1.0",
+    "serve-favicon": "2.0.1"
   }
 }

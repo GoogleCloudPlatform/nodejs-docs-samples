@@ -6,12 +6,9 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- functions/datastore/test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^0.1.1"
-  },
-  "devDependencies": {
-    "mocha": "^3.0.2"
+    "@google-cloud/datastore": "^0.5.0"
   }
 }

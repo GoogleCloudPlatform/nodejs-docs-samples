@@ -6,9 +6,9 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- functions/helloworld/test/*.test.js"
   },
-  "devDependencies": {
-    "mocha": "^2.5.3"
+  "dependencies": {
+    "@google/cloud-debug": "^0.9.0"
   }
 }

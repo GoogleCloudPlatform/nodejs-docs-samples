@@ -6,12 +6,9 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- functions/uuid/test/*.test.js"
   },
   "dependencies": {
     "node-uuid": "^1.4.7"
-  },
-  "devDependencies": {
-    "mocha": "^2.5.3"
   }
 }

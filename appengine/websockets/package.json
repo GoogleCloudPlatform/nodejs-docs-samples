@@ -12,9 +12,9 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "^4.14.0",
-    "express-ws": "^1.0.0-rc.2",
-    "pug": "^2.0.0-beta6",
-    "request": "^2.75.0"
+    "express": "4.14.0",
+    "express-ws": "1.0.0-rc.2",
+    "pug": "2.0.0-beta6",
+    "request": "2.78.0"
   }
 }

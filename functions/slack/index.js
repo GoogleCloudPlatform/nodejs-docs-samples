@@ -1,59 +1,60 @@
-// Copyright 2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * Copyright 2016, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict';
 
-// [START setup]
-var config = require('./config.json');
-var googleapis = require('googleapis');
+// [START functions_slack_setup]
+const config = require('./config.json');
+const googleapis = require('googleapis');
 
 // Get a reference to the Knowledge Graph Search component
-var kgsearch = googleapis.kgsearch('v1');
-// [END setup]
+const kgsearch = googleapis.kgsearch('v1');
+// [END functions_slack_setup]
 
-// [START formatSlackMessage]
+// [START functions_slack_format]
 /**
  * Format the Knowledge Graph API response into a richly formatted Slack message.
  *
  * @param {string} query The user's search query.
- * @param {Object} response The response from the Knowledge Graph API.
- * @returns {Object} The formatted message.
+ * @param {object} response The response from the Knowledge Graph API.
+ * @returns {object} The formatted message.
  */
 function formatSlackMessage (query, response) {
-  var entity;
+  let entity;
 
   // Extract the first entity from the result list, if any
-  if (response && response.itemListElement &&
-    response.itemListElement.length) {
+  if (response && response.itemListElement && response.itemListElement.length > 0) {
     entity = response.itemListElement[0].result;
   }
 
   // Prepare a rich Slack message
   // See https://api.slack.com/docs/message-formatting
-  var slackMessage = {
+  const slackMessage = {
     response_type: 'in_channel',
-    text: 'Query: ' + query,
+    text: `Query: ${query}`,
     attachments: []
   };
 
   if (entity) {
-    var attachment = {
+    const attachment = {
       color: '#3367d6'
     };
     if (entity.name) {
       attachment.title = entity.name;
       if (entity.description) {
-        attachment.title = attachment.title + ': ' + entity.description;
+        attachment.title = `${attachment.title}: ${entity.description}`;
       }
     }
     if (entity.detailedDescription) {
@@ -76,48 +77,51 @@ function formatSlackMessage (query, response) {
 
   return slackMessage;
 }
-// [END formatSlackMessage]
+// [END functions_slack_format]
 
-// [START verifyWebhook]
+// [START functions_verify_webhook]
 /**
  * Verify that the webhook request came from Slack.
  *
- * @param {Object} body The body of the request.
+ * @param {object} body The body of the request.
  * @param {string} body.token The Slack token to be verified.
  */
 function verifyWebhook (body) {
   if (!body || body.token !== config.SLACK_TOKEN) {
-    var error = new Error('Invalid credentials');
+    const error = new Error('Invalid credentials');
     error.code = 401;
     throw error;
   }
 }
-// [END verifyWebhook]
+// [END functions_verify_webhook]
 
-// [START makeSearchRequest]
+// [START functions_slack_request]
 /**
  * Send the user's search query to the Knowledge Graph API.
  *
  * @param {string} query The user's search query.
- * @param {Function} callback Callback function.
  */
-function makeSearchRequest (query, callback) {
-  kgsearch.entities.search({
-    auth: config.KG_API_KEY,
-    query: query,
-    limit: 1
-  }, function (err, response) {
-    if (err) {
-      return callback(err);
-    }
+function makeSearchRequest (query) {
+  return new Promise((resolve, reject) => {
+    kgsearch.entities.search({
+      auth: config.KG_API_KEY,
+      query: query,
+      limit: 1
+    }, (err, response) => {
+      console.log(err);
+      if (err) {
+        reject(err);
+        return;
+      }
 
-    // Return a formatted message
-    return callback(null, formatSlackMessage(query, response));
+      // Return a formatted message
+      resolve(formatSlackMessage(query, response));
+    });
   });
 }
-// [END makeSearchRequest]
+// [END functions_slack_request]
 
-// [START kgSearch]
+// [START functions_slack_search]
 /**
  * Receive a Slash Command request from Slack.
  *
@@ -127,36 +131,34 @@ function makeSearchRequest (query, callback) {
  * @example
  * curl -X POST "https://us-central1.your-project-id.cloudfunctions.net/kgSearch" --data '{"token":"[YOUR_SLACK_TOKEN]","text":"giraffe"}'
  *
- * @param {Object} req Cloud Function request object.
- * @param {Object} req.body The request payload.
+ * @param {object} req Cloud Function request object.
+ * @param {object} req.body The request payload.
  * @param {string} req.body.token Slack's verification token.
  * @param {string} req.body.text The user's search query.
- * @param {Object} res Cloud Function response object.
+ * @param {object} res Cloud Function response object.
  */
 exports.kgSearch = function kgSearch (req, res) {
-  try {
-    if (req.method !== 'POST') {
-      var error = new Error('Only POST requests are accepted');
-      error.code = 405;
-      throw error;
-    }
-
-    // Verify that this request came from Slack
-    verifyWebhook(req.body);
-
-    // Make the request to the Knowledge Graph Search API
-    makeSearchRequest(req.body.text, function (err, response) {
-      if (err) {
-        console.error(err);
-        return res.status(500);
+  return Promise.resolve()
+    .then(() => {
+      if (req.method !== 'POST') {
+        const error = new Error('Only POST requests are accepted');
+        error.code = 405;
+        throw error;
       }
 
+      // Verify that this request came from Slack
+      verifyWebhook(req.body);
+
+      // Make the request to the Knowledge Graph Search API
+      return makeSearchRequest(req.body.text);
+    })
+    .then((response) => {
       // Send the formatted message back to Slack
-      return res.json(response);
+      res.json(response);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(err.code || 500).send(err);
     });
-  } catch (err) {
-    console.error(err);
-    return res.status(err.code || 500).send(err.message);
-  }
 };
-// [END kgSearch]
+// [END functions_slack_search]

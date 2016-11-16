@@ -9,14 +9,11 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha -R spec --require intelli-espower-loader ../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- trace/test/*.test.js",
   },
   "dependencies": {
-    "@google/cloud-trace": "^0.5.10",
-    "express": "^4.14.0",
-    "request": "^2.78.0"
-  },
-  "devDependencies": {
-    "mocha": "^3.1.2"
+    "@google/cloud-trace": "0.5.10",
+    "express": "4.14.0",
+    "request": "2.78.0"
   }
 }

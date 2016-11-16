@@ -6,13 +6,10 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- functions/log/test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/logging": "^0.1.1",
-    "googleapis": "^12.2.0"
-  },
-  "devDependencies": {
-    "mocha": "^3.0.2"
+    "@google-cloud/logging": "^0.5.0",
+    "@google-cloud/monitoring": "^0.1.0"
   }
 }

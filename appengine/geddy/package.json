@@ -14,6 +14,6 @@
     "debug": "geddy --debug"
   },
   "dependencies": {
-    "geddy": "^13.0.8"
+    "geddy": "13.0.8"
   }
 }

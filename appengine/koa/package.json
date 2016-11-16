@@ -12,6 +12,6 @@
     "start": "node --harmony app.js"
   },
   "dependencies": {
-    "koa": "^1.2.4"
+    "koa": "1.2.4"
   }
 }

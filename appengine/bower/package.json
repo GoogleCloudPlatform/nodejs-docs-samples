@@ -10,14 +10,11 @@
   },
   "scripts": {
     "postinstall": "bower install --config.interactive=false",
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- appengine/analytics/test/*.test.js"
   },
   "dependencies": {
-    "bower": "^1.7.9",
-    "express": "^4.14.0",
-    "pug": "^2.0.0-beta6"
-  },
-  "devDependencies": {
-    "mocha": "^3.1.0"
+    "bower": "1.8.0",
+    "express": "4.14.0",
+    "pug": "2.0.0-beta6"
   }
 }

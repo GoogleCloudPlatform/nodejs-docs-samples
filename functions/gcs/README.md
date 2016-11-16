@@ -20,27 +20,27 @@ Functions for your project.
 
 1. Create a Cloud Storage Bucket to stage our deployment:
 
-        gsutil mb gs://[YOUR_BUCKET_NAME]
+        gsutil mb gs://YOUR_BUCKET_NAME
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Upload the sample file to the bucket:
 
-        gsutil cp sample.txt gs://[YOUR_BUCKET_NAME]
+        gsutil cp sample.txt gs://YOUR_BUCKET_NAME
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Deploy the "wordCount" function with an HTTP trigger:
 
-        gcloud alpha functions deploy wordCount --bucket [YOUR_BUCKET_NAME] --trigger-http --entry-point map
+        gcloud alpha functions deploy wordCount --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
 1. Call the "wordCount" function using the sample file:
 
-        gcloud alpha functions call wordCount --data '{"bucket":"[YOUR_BUCKET_NAME]","file":"sample.txt"}'
+        gcloud alpha functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
 
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 
     You should see something like this in your console
 

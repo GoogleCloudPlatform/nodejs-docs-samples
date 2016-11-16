@@ -1,11 +1,9 @@
 {
   "restApiRoot": "/api",
   "host": "0.0.0.0",
-  "port": 8080,
+  "port": 3000,
   "remoting": {
-    "context": {
-      "enableHttpContext": false
-    },
+    "context": false,
     "rest": {
       "normalizeHttpPath": false,
       "xml": false
@@ -19,9 +17,7 @@
       "limit": "100kb"
     },
     "cors": false,
-    "errorHandler": {
-      "disableStackTrace": false
-    }
+    "handleErrors": false
   },
   "legacyExplorer": false
 }

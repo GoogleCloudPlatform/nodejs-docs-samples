@@ -131,7 +131,7 @@ var sampleTests = [
     dir: 'appengine/loopback',
     cmd: 'node',
     args: ['server/server.js'],
-    msg: 'LoopBack.js on Google App Engine.',
+    msg: 'started',
     code: 304
   },
   {

@@ -18,6 +18,7 @@
 
 const format = require('util').format;
 const express = require('express');
+const Multer = require('multer');
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -35,8 +36,8 @@ app.set('view engine', 'pug');
 // [START config]
 // Multer is required to process file uploads and make them available via
 // req.files.
-const multer = require('multer')({
-  inMemory: true,
+const multer = Multer({
+  storage: Multer.MemoryStorage,
   fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
 });
 

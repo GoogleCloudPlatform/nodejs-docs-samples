@@ -38,7 +38,9 @@ app.set('view engine', 'pug');
 // req.files.
 const multer = Multer({
   storage: Multer.memoryStorage(),
-  fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+  limits: {
+    fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+  }
 });
 
 // A bucket is a container for objects (files).

@@ -23,54 +23,66 @@
 
 'use strict';
 
-const fs = require('fs');
-const record = require('node-record-lpcm16');
-const speech = require('@google-cloud/speech')();
+const Speech = require('@google-cloud/speech');
 
 // [START speech_sync_recognize]
-function syncRecognize (filename, callback) {
-  // Detect speech in the audio file, e.g. "./resources/audio.raw"
-  speech.recognize(filename, {
+function syncRecognize (filename) {
+  // Instantiates a client
+  const speech = Speech();
+
+  const config = {
+    // Configure these settings based on the audio you're transcribing
     encoding: 'LINEAR16',
     sampleRate: 16000
-  }, (err, results) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  };
 
-    console.log('Results:', results);
-    callback();
-  });
+  // Detects speech in the audio file, e.g. "./resources/audio.raw"
+  return speech.recognize(filename, config)
+    .then((results) => {
+      const transcription = results[0];
+      console.log(`Transcription: ${transcription}`);
+      return transcription;
+    });
 }
 // [END speech_sync_recognize]
 
 // [START speech_async_recognize]
-function asyncRecognize (filename, callback) {
-  // Detect speech in the audio file, e.g. "./resources/audio.raw"
-  speech.startRecognition(filename, {
+function asyncRecognize (filename) {
+  // Instantiates a client
+  const speech = Speech();
+
+  const config = {
+    // Configure these settings based on the audio you're transcribing
     encoding: 'LINEAR16',
     sampleRate: 16000
-  }, (err, operation) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  };
 
-    operation
-      .on('error', callback)
-      .on('complete', (results) => {
-        console.log('Results:', results);
-        callback();
-      });
-  });
+  // Detects speech in the audio file, e.g. "./resources/audio.raw"
+  // This creates a recognition job that you can wait for now, or get its result
+  // later.
+  return speech.startRecognition(filename, config)
+    .then((results) => {
+      const operation = results[0];
+      // Get a Promise represention the final result of the job
+      return operation.promise();
+    })
+    .then((transcription) => {
+      console.log(`Transcription: ${transcription}`);
+      return transcription;
+    });
 }
 // [END speech_async_recognize]
 
 // [START speech_streaming_recognize]
+const fs = require('fs');
+
 function streamingRecognize (filename, callback) {
+  // Instantiates a client
+  const speech = Speech();
+
   const options = {
     config: {
+      // Configure these settings based on the audio you're transcribing
       encoding: 'LINEAR16',
       sampleRate: 16000
     }
@@ -90,9 +102,15 @@ function streamingRecognize (filename, callback) {
 // [END speech_streaming_recognize]
 
 // [START speech_streaming_mic_recognize]
-function streamingMicRecognize (filename) {
+const record = require('node-record-lpcm16');
+
+function streamingMicRecognize () {
+  // Instantiates a client
+  const speech = Speech();
+
   const options = {
     config: {
+      // Configure these settings based on the audio you're transcribing
       encoding: 'LINEAR16',
       sampleRate: 16000
     }
@@ -110,43 +128,39 @@ function streamingMicRecognize (filename) {
 }
 // [END speech_streaming_mic_recognize]
 
-// The command-line program
-var cli = require('yargs');
-var utils = require('../utils');
-
-var program = module.exports = {
-  syncRecognize: syncRecognize,
-  asyncRecognize: asyncRecognize,
-  streamingRecognize: streamingRecognize,
-  streamingMicRecognize: streamingMicRecognize,
-  main: function (args) {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`)
   .demand(1)
-  .command('sync <filename>', 'Detects speech in an audio file.', {}, function (options) {
-    program.syncRecognize(options.filename, utils.makeHandler(false));
-  })
-  .command('async <filename>', 'Creates a job to detect speech in an audio file, and waits for the job to complete.', {}, function (options) {
-    program.asyncRecognize(options.filename, utils.makeHandler(false));
-  })
-  .command('stream <filename>', 'Detects speech in an audio file by streaming it to the Speech API.', {}, function (options) {
-    program.streamingRecognize(options.filename, utils.makeHandler(false));
-  })
-  .command('listen', 'Detects speech in a microphone input stream.', {}, function () {
-    program.streamingMicRecognize();
-  })
-  .example('node $0 sync ./resources/audio.raw', 'Detects speech in "./resources/audio.raw".')
-  .example('node $0 async ./resources/audio.raw', 'Creates a job to detect speech in "./resources/audio.raw", and waits for the job to complete.')
-  .example('node $0 stream ./resources/audio.raw', 'Detects speech in "./resources/audio.raw" by streaming it to the Speech API.')
-  .example('node $0 listen', 'Detects speech in a microphone input stream.')
+  .command(
+    `sync <filename>`,
+    `Detects speech in an audio file.`,
+    {},
+    (opts) => syncRecognize(opts.filename)
+  )
+  .command(
+    `async <filename>`,
+    `Creates a job to detect speech in an audio file, and waits for the job to complete.`,
+    {},
+    (opts) => asyncRecognize(opts.filename)
+  )
+  .command(
+    `stream <filename>`,
+    `Detects speech in an audio file by streaming it to the Speech API.`,
+    {},
+    (opts) => streamingRecognize(opts.filename, () => {})
+  )
+  .command(
+    `listen`,
+    `Detects speech in a microphone input stream.`,
+    {},
+    streamingMicRecognize
+  )
+  .example(`node $0 sync ./resources/audio.raw`)
+  .example(`node $0 async ./resources/audio.raw`)
+  .example(`node $0 stream ./resources/audio.raw`)
+  .example(`node $0 listen`)
   .wrap(120)
   .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/speech/docs');
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
+  .help()
+  .strict()
+  .argv;

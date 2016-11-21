@@ -210,7 +210,7 @@ function pullOrderedMessages (subscriptionName) {
         outstandingMessages[message.attributes.counterId] = message;
       });
 
-      const outstandingIds = Object.keys(outstandingMessages).map((counterId) => +counterId);
+      const outstandingIds = Object.keys(outstandingMessages).map((counterId) => parseInt(counterId, 10));
       outstandingIds.sort();
 
       outstandingIds.forEach((counterId) => {

@@ -130,7 +130,7 @@ function publishOrderedMessage (topicName, data) {
       const messageIds = results[0];
 
       // Update the counter value
-      setPublishCounterValue(+message.attributes.counterId + 1);
+      setPublishCounterValue(parseInt(message.attributes.counterId, 10) + 1);
 
       console.log(`Message ${messageIds[0]} published.`);
 

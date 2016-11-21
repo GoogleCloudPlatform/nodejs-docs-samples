@@ -22,45 +22,57 @@ const run = require(`../../utils`).run;
 const cwd = path.join(__dirname, `..`);
 const cmd = `node translate.js`;
 const text = `Hello world!`;
+const text2 = `Goodbye!`;
 const toLang = `ru`;
 
 describe(`translate:translate`, () => {
-  const translate = Translate({
-    key: process.env.TRANSLATE_API_KEY
-  });
-  if (!process.env.TRANSLATE_API_KEY) {
-    process.stdout.write(`Skipping Translate API tests...\n`);
-    return;
-  }
+  const translate = Translate();
 
-  it(`should detect language`, (done) => {
+  it(`should detect language of a single string`, () => {
     const output = run(`${cmd} detect "${text}"`, cwd);
-    translate.detect(text, (err, result) => {
-      assert.ifError(err);
-      assert.equal(output, `Detected: ${JSON.stringify(result)}`);
-      done();
-    });
+    return translate.detect(text)
+      .then((results) => {
+        const expected = `Detections:\n${text} => ${results[0].language}`;
+        assert.equal(output, expected);
+      });
+  });
+
+  it(`should detect language of multiple strings`, () => {
+    const output = run(`${cmd} detect "${text}" "${text2}"`, cwd);
+    return translate.detect([text, text2])
+      .then((results) => {
+        const expected = `Detections:\n${text} => ${results[0][0].language}\n${text2} => ${results[0][1].language}`;
+        assert.equal(output, expected);
+      });
   });
 
   it(`should list languages`, () => {
     const output = run(`${cmd} list`, cwd);
-    assert.notEqual(output.indexOf(`Languages:`), -1);
-    assert.notEqual(output.indexOf(`{ code: 'af', name: 'Afrikaans' }`), -1);
+    assert.equal(output.includes(`Languages:`), true);
+    assert.equal(output.includes(`{ code: 'af', name: 'Afrikaans' }`), true);
   });
 
   it(`should list languages with a target`, () => {
     const output = run(`${cmd} list es`, cwd);
-    assert.notEqual(output.indexOf(`Languages:`), -1);
-    assert.notEqual(output.indexOf(`{ code: 'af', name: 'afrikáans' }`), -1);
+    assert.equal(output.includes(`Languages:`), true);
+    assert.equal(output.includes(`{ code: 'af', name: 'afrikáans' }`), true);
   });
 
-  it(`should translate text`, (done) => {
+  it(`should translate a single string`, () => {
     const output = run(`${cmd} translate ${toLang} "${text}"`, cwd);
-    translate.translate(text, toLang, (err, translation) => {
-      assert.ifError(err);
-      assert.notEqual(output.indexOf(`Text: ["${text}"]`), -1);
-      assert.notEqual(output.indexOf(`Translation: "${translation}"`), -1);
-      done();
-    });
+    return translate.translate(text, toLang)
+      .then((results) => {
+        const expected = `Translations:\n${text} => (${toLang}) ${results[0]}`;
+        assert.equal(output, expected);
+      });
+  });
+
+  it(`should translate multiple strings`, () => {
+    const output = run(`${cmd} translate ${toLang} "${text}" "${text2}"`, cwd);
+    return translate.translate([text, text2], toLang)
+      .then((results) => {
+        const expected = `Translations:\n${text} => (${toLang}) ${results[0][0]}\n${text2} => (${toLang}) ${results[0][1]}`;
+        assert.equal(output, expected);
+      });
   });
 });

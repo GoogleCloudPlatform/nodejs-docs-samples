@@ -18,156 +18,130 @@
 const Translate = require('@google-cloud/translate');
 
 // [START translate_detect_language]
-function detectLanguage (input, callback) {
+function detectLanguage (input) {
   // Instantiates a client
-  const translate = Translate({
-    // The Translate API uses an API key for authentication. This sample looks
-    // for the key in an environment variable.
-    key: process.env.TRANSLATE_API_KEY
-  });
+  const translate = Translate();
 
   // Detects the language. "input" can be a string for detecting the language of
   // a single piece of text, or an array of strings for detecting the languages
   // of multiple texts.
-  translate.detect(input, (err, result) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return translate.detect(input)
+    .then((results) => {
+      let detections = results[0];
 
-    console.log('Detected: %j', result);
-    callback();
-  });
+      if (!Array.isArray(detections)) {
+        detections = [detections];
+      }
+
+      console.log('Detections:');
+      detections.forEach((detection) => {
+        console.log(`${detection.input} => ${detection.language}`);
+      });
+
+      return detections;
+    });
 }
 // [END translate_detect_language]
 
 // [START translate_list_codes]
-function listLanguages (callback) {
+function listLanguages () {
   // Instantiates a client
-  const translate = Translate({
-    // The Translate API uses an API key for authentication. This sample looks
-    // for the key in an environment variable.
-    key: process.env.TRANSLATE_API_KEY
-  });
+  const translate = Translate();
 
   // Lists available translation language with their names in English (the default).
-  translate.getLanguages((err, languages) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return translate.getLanguages()
+    .then((results) => {
+      const languages = results[0];
 
-    console.log('Languages:');
-    languages.forEach((language) => console.log(language));
-    callback();
-  });
+      console.log('Languages:');
+      languages.forEach((language) => console.log(language));
+
+      return languages;
+    });
 }
 // [END translate_list_codes]
 
 // [START translate_list_language_names]
-function listLanguagesWithTarget (target, callback) {
+function listLanguagesWithTarget (target) {
   // Instantiates a client
-  const translate = Translate({
-    // The Translate API uses an API key for authentication. This sample looks
-    // for the key in an environment variable.
-    key: process.env.TRANSLATE_API_KEY
-  });
+  const translate = Translate();
 
-  // Lists available translation language with their names in a target language
-  translate.getLanguages(target, (err, languages) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  // Lists available translation language with their names in a target language,
+  // e.g. "ru"
+  return translate.getLanguages(target)
+    .then((results) => {
+      const languages = results[0];
 
-    console.log('Languages:');
-    languages.forEach((language) => console.log(language));
-    callback();
-  });
+      console.log('Languages:');
+      languages.forEach((language) => console.log(language));
+
+      return languages;
+    });
 }
 // [END translate_list_language_names]
 
 // [START translate_translate_text]
-function translateText (input, target, callback) {
+function translateText (input, target) {
+  if (!Array.isArray(input)) {
+    input = [input];
+  }
+
   // Instantiates a client
-  const translate = Translate({
-    // The Translate API uses an API key for authentication. This sample looks
-    // for the key in an environment variable.
-    key: process.env.TRANSLATE_API_KEY
-  });
+  const translate = Translate();
 
   // Translates the text into the target language. "input" can be a string for
   // translating a single piece of text, or an array of strings for translating
   // multiple texts.
-  translate.translate(input, target, (err, translation) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return translate.translate(input, target)
+    .then((results) => {
+      let translations = results[0];
+      translations = Array.isArray(translations) ? translations : [translations];
 
-    console.log('Text: %j', input);
-    console.log('Translation: %j', translation);
-    callback();
-  });
+      console.log('Translations:');
+      translations.forEach((translation, i) => {
+        console.log(`${input[i]} => (${target}) ${translation}`);
+      });
+
+      return translations;
+    });
 }
 // [END translate_translate_text]
 
-// The command-line program
-const cli = require(`yargs`);
-const noop = require(`../utils`).noop;
-
-const program = module.exports = {
-  detectLanguage: detectLanguage,
-  listLanguages: listLanguages,
-  listLanguagesWithTarget: listLanguagesWithTarget,
-  translateText: translateText,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`)
   .demand(1)
-  .command(`detect <input..>`, `Detects the language of the provided text or texts`, {}, (opts) => {
-    if (!process.env.TRANSLATE_API_KEY) {
-      process.env.TRANSLATE_API_KEY = opts.apiKey;
+  .command(
+    `detect <input..>`,
+    `Detects the language of one or more strings.`,
+    {},
+    (opts) => detectLanguage(opts.input)
+  )
+  .command(
+    `list [target]`,
+    `Lists available translation languages. To return language names in a language other than English, specify a target language.`,
+    {},
+    (opts) => {
+      if (opts.target) {
+        listLanguagesWithTarget(opts.target);
+      } else {
+        listLanguages();
+      }
     }
-    program.detectLanguage(opts.input, noop);
-  })
-  .command(`list [target]`, `Lists available translation languages. To return language names in a language other than English, specify a target language.`, {}, (opts) => {
-    if (!process.env.TRANSLATE_API_KEY) {
-      process.env.TRANSLATE_API_KEY = opts.apiKey;
-    }
-    if (opts.target) {
-      program.listLanguagesWithTarget(opts.target, noop);
-    } else {
-      program.listLanguages(noop);
-    }
-  })
-  .command(`translate <toLang> <input..>`, `Translates the provided text or texts to the target language.`, {}, (opts) => {
-    if (!process.env.TRANSLATE_API_KEY) {
-      process.env.TRANSLATE_API_KEY = opts.apiKey;
-    }
-    program.translateText(opts.input, opts.toLang, noop);
-  })
-  .option(`apiKey`, {
-    alias: `k`,
-    global: true,
-    requiresArg: true,
-    default: process.env.TRANSLATE_API_KEY,
-    type: `string`,
-    description: `Your Translate API key. Defaults to the value of the TRANSLATE_API_KEY environment variable.`
-  })
-  .example(`node $0 detect "Hello world!"`, `Detects the language of "Hello world!".`)
-  .example(`node $0 detect -k YOUR_API_KEY "Hello world!" "Goodbye"`, `Detects the language of "Hello world!" and "Goodbye", supplying the API key inline.`)
-  .example(`node $0 list -k YOUR_API_KEY`, `Lists available translation languages with names in English, supplying the API key inline.`)
+  )
+  .command(
+    `translate <toLang> <input..>`,
+    `Translates one or more strings into the target language.`,
+    {},
+    (opts) => translateText(opts.input, opts.toLang)
+  )
+  .example(`node $0 detect "Hello world!"`, `Detects the language of a string.`)
+  .example(`node $0 detect "Hello world!" "Goodbye"`, `Detects the languages of multiple strings.`)
+  .example(`node $0 list`, `Lists available translation languages with names in English.`)
   .example(`node $0 list es`, `Lists available translation languages with names in Spanish.`)
-  .example(`node $0 translate ru "Good morning!"`, `Translates "Good morning!" to Russian, auto-detecting the source language.`)
+  .example(`node $0 translate ru "Good morning!"`, `Translates a string into Russian.`)
+  .example(`node $0 translate ru "Good morning!" "Good night!"`, `Translates multiple strings into Russian.`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/translate/docs`);
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/translate/docs`)
+  .help()
+  .strict()
+  .argv;

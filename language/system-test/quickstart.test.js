@@ -19,12 +19,9 @@ const proxyquire = require(`proxyquire`).noPreserveCache();
 const language = proxyquire(`@google-cloud/language`, {})();
 
 describe(`language:quickstart`, () => {
-  let languageMock, LanguageMock;
-
   it(`should detect sentiment`, (done) => {
     const expectedText = `Hello, world!`;
-
-    languageMock = {
+    const languageMock = {
       detectSentiment: (_text) => {
         assert.equal(_text, expectedText);
 
@@ -34,9 +31,9 @@ describe(`language:quickstart`, () => {
             assert.equal(typeof sentiment, `number`);
 
             setTimeout(() => {
-              assert.equal(console.log.calledTwice, true);
-              assert.deepEqual(console.log.firstCall.args, [`Text: ${expectedText}`]);
-              assert.deepEqual(console.log.secondCall.args, [`Sentiment: ${sentiment}`]);
+              assert.equal(console.log.callCount, 2);
+              assert.deepEqual(console.log.getCall(0).args, [`Text: ${expectedText}`]);
+              assert.deepEqual(console.log.getCall(1).args, [`Sentiment: ${sentiment}`]);
               done();
             }, 200);
 
@@ -44,10 +41,9 @@ describe(`language:quickstart`, () => {
           });
       }
     };
-    LanguageMock = sinon.stub().returns(languageMock);
 
     proxyquire(`../quickstart`, {
-      '@google-cloud/language': LanguageMock
+      '@google-cloud/language': sinon.stub().returns(languageMock)
     });
   });
 });

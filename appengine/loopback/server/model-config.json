@@ -32,8 +32,7 @@
     "dataSource": "db",
     "public": false
   },
-  "person": {
-    "dataSource": "db",
-    "public": true
+  "Message": {
+    "dataSource": null
   }
 }

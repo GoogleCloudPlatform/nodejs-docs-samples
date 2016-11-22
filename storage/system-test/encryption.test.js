@@ -17,13 +17,13 @@
 
 const fs = require('fs');
 const path = require('path');
-const program = require('../encryption');
 const run = require(`../../utils`).run;
 const storage = require('@google-cloud/storage')();
 const uuid = require('node-uuid');
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const bucket = storage.bucket(bucketName);
 const cmd = `node encryption.js`;
 
 const fileName = `test.txt`;
@@ -33,52 +33,43 @@ const downloadFilePath = path.join(__dirname, `../resources/downloaded.txt`);
 describe('storage:encryption', () => {
   let key;
 
-  before((done) => {
-    // Create an encryption key to use throughout the test
-    key = program.generateEncryptionKey();
-    // Create a test bucket
-    storage.createBucket(bucketName, done);
-  });
+  before(() => bucket.create(bucketName));
 
-  after((done) => {
+  after(() => {
     try {
       // Delete the downloaded file
       fs.unlinkSync(downloadFilePath);
     } catch (err) {
       console.log(err);
     }
-    // Delete any files that were uploaded
-    storage.bucket(bucketName).deleteFiles({ force: true }, (err) => {
-      assert.ifError(err);
-      // Delete the test bucket
-      storage.bucket(bucketName).delete(done);
-    });
+    // Try deleting all files twice, just to make sure. Ignore any errors.
+    return bucket.deleteFiles({ force: true })
+      .then(() => bucket.deleteFiles({ force: true }), () => {})
+      .then(() => bucket.delete(), () => {})
+      .catch(() => {});
   });
 
   it(`should generate a key`, () => {
     const output = run(`${cmd} generate-encryption-key`, cwd);
-    assert.notEqual(output.indexOf(`Base 64 encoded encryption key:`), -1);
+    assert.equal(output.includes(`Base 64 encoded encryption key:`), true);
+    const test = /^Base 64 encoded encryption key: (.+)$/;
+    key = output.match(test)[1];
   });
 
-  it(`should upload a file`, (done) => {
+  it(`should upload a file`, () => {
     const output = run(`${cmd} upload ${bucketName} ${filePath} ${fileName} ${key}`, cwd);
     assert.equal(output, `File ${filePath} uploaded to ${fileName}.`);
-    storage.bucket(bucketName).file(fileName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.equal(exists, true);
-      done();
-    });
+    return bucket.file(fileName).exists()
+      .then((results) => {
+        assert.equal(results[0], true);
+      });
   });
 
-  it(`should download a file`, (done) => {
+  it(`should download a file`, () => {
     const output = run(`${cmd} download ${bucketName} ${fileName} ${downloadFilePath} ${key}`, cwd);
     assert.equal(output, `File ${fileName} downloaded to ${downloadFilePath}.`);
-    storage.bucket(bucketName).file(fileName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.doesNotThrow(() => {
-        fs.statSync(downloadFilePath);
-      });
-      done();
+    assert.doesNotThrow(() => {
+      fs.statSync(downloadFilePath);
     });
   });
 

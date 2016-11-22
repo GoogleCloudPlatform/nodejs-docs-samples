@@ -20,41 +20,38 @@ const storage = proxyquire(`@google-cloud/storage`, {})();
 const uuid = require(`node-uuid`);
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const bucket = storage.bucket(bucketName);
 
 describe(`storage:quickstart`, () => {
-  let storageMock, StorageMock;
+  after(() => bucket.delete().catch(() => {}));
 
-  after((done) => {
-    storage.bucket(bucketName).delete(() => {
-      // Ignore any error, the topic might not have been created
-      done();
-    });
-  });
-
-  it(`should create a topic`, (done) => {
+  it(`should create a bucket`, (done) => {
     const expectedBucketName = `my-new-bucket`;
 
-    storageMock = {
-      createBucket: (_bucketName, _callback) => {
+    const storageMock = {
+      createBucket: (_bucketName) => {
         assert.equal(_bucketName, expectedBucketName);
-        assert.equal(typeof _callback, 'function');
 
-        storage.createBucket(bucketName, (err, bucket, apiResponse) => {
-          _callback(err, bucket, apiResponse);
-          assert.ifError(err);
-          assert.notEqual(bucket, undefined);
-          assert.equal(bucket.name, bucketName);
-          assert.notEqual(apiResponse, undefined);
-          assert.equal(console.log.calledOnce, true);
-          assert.deepEqual(console.log.firstCall.args, [`Bucket ${bucket.name} created.`]);
-          done();
-        });
+        return bucket.create()
+          .then((results) => {
+            const bucket = results[0];
+
+            assert.notEqual(bucket, undefined);
+            assert.equal(bucket.name, bucketName);
+
+            setTimeout(() => {
+              assert.equal(console.log.calledOnce, true);
+              assert.deepEqual(console.log.firstCall.args, [`Bucket ${bucket.name} created.`]);
+              done();
+            }, 200);
+
+            return results;
+          });
       }
     };
-    StorageMock = sinon.stub().returns(storageMock);
 
     proxyquire(`../quickstart`, {
-      '@google-cloud/storage': StorageMock
+      '@google-cloud/storage': sinon.stub().returns(storageMock)
     });
   });
 });

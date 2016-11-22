@@ -22,45 +22,37 @@ const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const bucket = storage.bucket(bucketName);
 const userEmail = `00b4903a973860a50828a620e09dde96aae6122ca4f0835bd469384659f1a5b8`;
 const fileName = `test.txt`;
 const filePath = path.join(__dirname, `../resources`, fileName);
 const cmd = `node acl.js`;
 
 describe('storage:acl', () => {
-  before((done) => {
-    storage.createBucket(bucketName, (err, bucket) => {
-      assert.ifError(err);
-      bucket.upload(filePath, done);
-    });
-  });
+  before(() => bucket.create().then((results) => results[0].upload(filePath)));
 
-  after((done) => {
-    storage.bucket(bucketName).file(fileName).delete(() => {
-      // Ignore error
-      setTimeout(() => {
-        storage.bucket(bucketName).delete(() => {
-          // Ignore error
-          done();
-        });
-      }, 2000);
-    });
+  after(() => {
+    // Try deleting all files twice, just to make sure. Ignore any errors.
+    return bucket.deleteFiles({ force: true })
+      .then(() => bucket.deleteFiles({ force: true }), () => {})
+      .then(() => bucket.delete(), () => {})
+      .catch(() => {});
   });
 
   it(`should print acl for a bucket`, () => {
     const output = run(`${cmd} print-bucket-acl ${bucketName}`, cwd);
-    assert.equal(/OWNER: project-editors-/.test(output), true);
-    assert.equal(/OWNER: project-owners-/.test(output), true);
-    assert.equal(/READER: project-viewers-/.test(output), true);
+    assert.equal(output.includes(`OWNER: project-editors-`), true);
+    assert.equal(output.includes(`OWNER: project-owners-`), true);
+    assert.equal(output.includes(`READER: project-viewers-`), true);
   });
 
-  it(`should print a user's acl for a bucket`, (done) => {
-    storage.bucket(bucketName).acl.readers.addUser(userEmail, (err) => {
-      assert.ifError(err);
-      const output = run(`${cmd} print-bucket-acl-for-user ${bucketName} ${userEmail}`, cwd);
-      assert.equal(output, `READER: user-${userEmail}`);
-      storage.bucket(bucketName).acl.readers.deleteUser(userEmail, done);
-    });
+  it(`should print a user's acl for a bucket`, () => {
+    return bucket.acl.readers.addUser(userEmail)
+      .then(() => {
+        const output = run(`${cmd} print-bucket-acl-for-user ${bucketName} ${userEmail}`, cwd);
+        assert.equal(output, `READER: user-${userEmail}`);
+        return bucket.acl.readers.deleteUser(userEmail);
+      });
   });
 
   it(`should add a user as an owner on a bucket`, () => {
@@ -85,18 +77,18 @@ describe('storage:acl', () => {
 
   it(`should print acl for a file`, () => {
     const output = run(`${cmd} print-file-acl ${bucketName} ${fileName}`, cwd);
-    assert.equal(/OWNER: project-editors-/.test(output), true);
-    assert.equal(/OWNER: project-owners-/.test(output), true);
-    assert.equal(/READER: project-viewers-/.test(output), true);
+    assert.equal(output.includes(`OWNER: project-editors-`), true);
+    assert.equal(output.includes(`OWNER: project-owners-`), true);
+    assert.equal(output.includes(`READER: project-viewers-`), true);
   });
 
-  it(`should print a user's acl for a file`, (done) => {
-    storage.bucket(bucketName).file(fileName).acl.readers.addUser(userEmail, (err) => {
-      assert.ifError(err);
-      const output = run(`${cmd} print-file-acl-for-user ${bucketName} ${fileName} ${userEmail}`, cwd);
-      assert.equal(output, `READER: user-${userEmail}`);
-      storage.bucket(bucketName).file(fileName).acl.readers.deleteUser(userEmail, done);
-    });
+  it(`should print a user's acl for a file`, () => {
+    return bucket.file(fileName).acl.readers.addUser(userEmail)
+      .then(() => {
+        const output = run(`${cmd} print-file-acl-for-user ${bucketName} ${fileName} ${userEmail}`, cwd);
+        assert.equal(output, `READER: user-${userEmail}`);
+        return bucket.file(fileName).acl.readers.deleteUser(userEmail);
+      });
   });
 
   it(`should add a user as an owner on a bucket`, () => {

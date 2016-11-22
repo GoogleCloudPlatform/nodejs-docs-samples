@@ -33,7 +33,7 @@ amount of data at any time.
 
 View the [documentation][acl_docs] or the [source code][acl_code].
 
-__Usage:__ `node acl --help`
+__Usage:__ `node acl.js --help`
 
 ```
 Commands:
@@ -49,26 +49,19 @@ Commands:
   remove-file-owner <bucketName> <fileName> <userEmail>        Removes a user from the ACL of a file.
 
 Options:
-  --help  Show help                                                                                            [boolean]
+  --help  Show help                                                    [boolean]
 
 Examples:
-  node acl print-bucket-acl my-bucket                           Prints the ACL for a bucket named "my-bucket".
-  node acl print-bucket-acl-for-user my-bucket bob@company.com  Prints a user's ACL for a bucket named "my-bucket".
-  node acl add-bucket-owner my-bucket bob@company.com           Adds "bob@company.com" as an owner of a bucket named
-                                                                "my-bucket".
-  node acl remove-bucket-owner my-bucket bob@company.com        Removes "bob@company.com" from the ACL of a bucket named
-                                                                "my-bucket".
-  node acl add-bucket-default-owner my-bucket bob@company.com   Adds "bob@company.com" as an owner in the default ACL of
-                                                                a bucket named "my-bucket".
-  node acl remove-bucket-default-owner my-bucket                Removes "bob@company.com" from the default ACL of a
-  bob@company.com                                               bucket named "my-bucket".
-  node acl print-file-acl my-bucket file.txt                    Prints the ACL for a file named "file.txt".
-  node acl print-file-acl-for-user my-bucket file.txt           Prints a user's ACL for a file named "file.txt".
-  bob@company.com
-  node acl add-file-owner my-bucket file.txt bob@company.com    Adds "bob@company.com" as an owner of a file named
-                                                                "file.txt".
-  node acl remove-file-owner my-bucket file.txt                 Removes "bob@company.com" from the ACL of a file named
-  bob@company.com                                               "file.txt".
+  node acl.js print-bucket-acl my-bucket
+  node acl.js print-bucket-acl-for-user my-bucket bob@company.com
+  node acl.js add-bucket-owner my-bucket bob@company.com
+  node acl.js remove-bucket-owner my-bucket bob@company.com
+  node acl.js add-bucket-default-owner my-bucket bob@company.com
+  node acl.js remove-bucket-default-owner my-bucket bob@company.com
+  node acl.js print-file-acl my-bucket file.txt
+  node acl.js print-file-acl-for-user my-bucket file.txt bob@company.com
+  node acl.js add-file-owner my-bucket file.txt bob@company.com
+  node acl.js remove-file-owner my-bucket file.txt bob@company.com
 
 For more information, see https://cloud.google.com/storage/docs/access-control/create-manage-lists
 ```
@@ -80,7 +73,7 @@ For more information, see https://cloud.google.com/storage/docs/access-control/c
 
 View the [documentation][buckets_docs] or the [source code][buckets_code].
 
-__Usage:__ `node buckets --help`
+__Usage:__ `node buckets.js --help`
 
 ```
 Commands:
@@ -89,12 +82,12 @@ Commands:
   delete <bucket>  Deletes a bucket.
 
 Options:
-  --help  Show help                                                                                            [boolean]
+  --help  Show help                                                    [boolean]
 
 Examples:
-  node buckets create my-bucket  Creates a new bucket named "my-bucket".
-  node buckets list              Lists all buckets in the current project.
-  node buckets delete my-bucket  Deletes a bucket named "my-bucket".
+  node buckets.js create my-bucket  Creates a new bucket named "my-bucket".
+  node buckets.js list              Lists all buckets in the current project.
+  node buckets.js delete my-bucket  Deletes a bucket named "my-bucket".
 
 For more information, see https://cloud.google.com/storage/docs
 ```
@@ -106,7 +99,7 @@ For more information, see https://cloud.google.com/storage/docs
 
 View the [documentation][encryption_docs] or the [source code][encryption_code].
 
-__Usage:__ `node encryption --help`
+__Usage:__ `node encryption.js --help`
 
 ```
 Commands:
@@ -119,12 +112,12 @@ Options:
   --help  Show help                                                                                            [boolean]
 
 Examples:
-  node encryption generate-encryption-key                       Generate a sample encryption key.
-  node encryption upload my-bucket ./resources/test.txt         Encrypts and uploads "resources/test.txt" to
+  node encryption.js generate-encryption-key                    Generate a sample encryption key.
+  node encryption.js upload my-bucket ./resources/test.txt      Encrypts and uploads "resources/test.txt" to
   file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=                     "gs://my-bucket/file_encrypted.txt".
-  node encryption download my-bucket file_encrypted.txt         Decrypts and downloads
+  node encryption.js download my-bucket file_encrypted.txt      Decrypts and downloads
   ./file.txt QxhqaZEqBGVTW55HhQw9Q=                             "gs://my-bucket/file_encrypted.txt" to "./file.txt".
-  node encryption rotate my-bucket file_encrypted.txt           Rotates encryptiong keys for
+  node encryption.js rotate my-bucket file_encrypted.txt        Rotates encryption keys for
   QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=                   "gs://my-bucket/file_encrypted.txt".
 
 For more information, see https://cloud.google.com/storage/docs
@@ -137,7 +130,7 @@ For more information, see https://cloud.google.com/storage/docs
 
 View the [documentation][files_docs] or the [source code][files_code].
 
-__Usage:__ `node files --help`
+__Usage:__ `node files.js --help`
 
 ```
 Commands:
@@ -158,19 +151,20 @@ Options:
   --help  Show help                                                                                            [boolean]
 
 Examples:
-  node files list my-bucket                                    Lists files in "my-bucket".
-  node files list my-bucket public/                            Lists files in "my-bucket" filtered by prefix "public/".
-  node files upload my-bucket ./file.txt                       Uploads "./file.txt" to "my-bucket".
-  node files download my-bucket file.txt ./file.txt            Downloads "gs://my-bucket/file.txt" to "./file.txt".
-  node files delete my-bucket file.txt                         Deletes "gs://my-bucket/file.txt".
-  node files get-metadata my-bucket file.txt                   Gets the metadata for "gs://my-bucket/file.txt".
-  node files make-public my-bucket file.txt                    Makes "gs://my-bucket/file.txt" public.
-  node files move my-bucket file.txt file2.txt                 Renames "gs://my-bucket/file.txt" to
-                                                               "gs://my-bucket/file2.txt".
-  node files copy my-bucket file.txt my-other-bucket file.txt  Copies "gs://my-bucket/file.txt" to
-                                                               "gs://my-other-bucket/file.txt".
+  node files.js list my-bucket                                  Lists files in "my-bucket".
+  node files.js list my-bucket public/                          Lists files in "my-bucket" filtered by prefix "public/".
+  node files.js upload my-bucket ./file.txt                     Uploads "./file.txt" to "my-bucket".
+  node files.js download my-bucket file.txt ./file.txt          Downloads "gs://my-bucket/file.txt" to "./file.txt".
+  node files.js delete my-bucket file.txt                       Deletes "gs://my-bucket/file.txt".
+  node files.js get-metadata my-bucket file.txt                 Gets the metadata for "gs://my-bucket/file.txt".
+  node files.js make-public my-bucket file.txt                  Makes "gs://my-bucket/file.txt" public.
+  node files.js move my-bucket file.txt file2.txt               Renames "gs://my-bucket/file.txt" to
+                                                                "gs://my-bucket/file2.txt".
+  node files.js copy my-bucket file.txt my-other-bucket         Copies "gs://my-bucket/file.txt" to
+  file.txt                                                      "gs://my-other-bucket/file.txt".
 
 For more information, see https://cloud.google.com/storage/docs
+
 ```
 
 [files_docs]: https://cloud.google.com/storage/docs

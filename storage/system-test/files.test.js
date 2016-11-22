@@ -23,6 +23,7 @@ const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const bucket = storage.bucket(bucketName);
 const fileName = `test.txt`;
 const movedFileName = `test2.txt`;
 const copiedFileName = `test3.txt`;
@@ -31,30 +32,28 @@ const downloadFilePath = path.join(__dirname, `../resources/downloaded.txt`);
 const cmd = `node files.js`;
 
 describe('storage:files', () => {
-  before((done) => {
-    storage.createBucket(bucketName, done);
-  });
+  before(() => bucket.create());
 
-  after((done) => {
+  after(() => {
     try {
       fs.unlinkSync(downloadFilePath);
     } catch (err) {
       console.log(err);
     }
-    storage.bucket(bucketName).deleteFiles({ force: true }, (err) => {
-      assert.ifError(err);
-      setTimeout(() => storage.bucket(bucketName).delete(done), 2000);
-    });
+    // Try deleting all files twice, just to make sure. Ignore any errors.
+    return bucket.deleteFiles({ force: true })
+      .then(() => bucket.deleteFiles({ force: true }), () => {})
+      .then(() => bucket.delete(), () => {})
+      .catch(() => {});
   });
 
-  it('should upload a file', (done) => {
+  it('should upload a file', () => {
     const output = run(`${cmd} upload ${bucketName} ${filePath}`, cwd);
     assert.equal(output, `File ${fileName} uploaded.`);
-    storage.bucket(bucketName).file(fileName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.equal(exists, true);
-      done();
-    });
+    return bucket.file(fileName).exists()
+      .then((results) => {
+        assert.equal(results[0], true);
+      });
   });
 
   it('should download a file', () => {
@@ -63,44 +62,42 @@ describe('storage:files', () => {
     assert.doesNotThrow(() => fs.statSync(downloadFilePath));
   });
 
-  it('should move a file', (done) => {
+  it('should move a file', () => {
     const output = run(`${cmd} move ${bucketName} ${fileName} ${movedFileName}`, cwd);
     assert.equal(output, `File ${fileName} moved to ${movedFileName}.`);
-    storage.bucket(bucketName).file(movedFileName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.equal(exists, true);
-      done();
-    });
+    return bucket.file(movedFileName).exists()
+      .then((results) => {
+        assert.equal(results[0], true);
+      });
   });
 
-  it('should copy a file', (done) => {
+  it('should copy a file', () => {
     const output = run(`${cmd} copy ${bucketName} ${movedFileName} ${bucketName} ${copiedFileName}`, cwd);
     assert.equal(output, `File ${movedFileName} copied to ${copiedFileName} in ${bucketName}.`);
-    storage.bucket(bucketName).file(copiedFileName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.equal(exists, true);
-      done();
-    });
+    return bucket.file(copiedFileName).exists()
+      .then((results) => {
+        assert.equal(results[0], true);
+      });
   });
 
   it('should list files', (done) => {
     // Listing is eventually consistent, give the indexes time to update
     setTimeout(() => {
       const output = run(`${cmd} list ${bucketName}`, cwd);
-      assert.notEqual(output.indexOf(`Files:`), -1);
-      assert.notEqual(output.indexOf(movedFileName), -1);
-      assert.notEqual(output.indexOf(copiedFileName), -1);
+      assert.equal(output.includes(`Files:`), true);
+      assert.equal(output.includes(movedFileName), true);
+      assert.equal(output.includes(copiedFileName), true);
       done();
     }, 5000);
   });
 
   it('should list files by a prefix', () => {
     let output = run(`${cmd} list ${bucketName} test "/"`, cwd);
-    assert.notEqual(output.indexOf(`Files:`), -1);
-    assert.notEqual(output.indexOf(movedFileName), -1);
-    assert.notEqual(output.indexOf(copiedFileName), -1);
+    assert.equal(output.includes(`Files:`), true);
+    assert.equal(output.includes(movedFileName), true);
+    assert.equal(output.includes(copiedFileName), true);
     output = run(`${cmd} list ${bucketName} foo`, cwd);
-    assert.notEqual(output.indexOf(`Files:`), -1);
+    assert.equal(output.includes(`Files:`), true);
     assert.equal(output.indexOf(movedFileName), -1);
     assert.equal(output.indexOf(copiedFileName), -1);
   });
@@ -112,22 +109,21 @@ describe('storage:files', () => {
 
   it('should generate a signed URL for a file', () => {
     const output = run(`${cmd} generate-signed-url ${bucketName} ${copiedFileName}`, cwd);
-    assert.notEqual(output.indexOf(`The signed url for ${copiedFileName} is `), -1);
+    assert.equal(output.includes(`The signed url for ${copiedFileName} is `), true);
   });
 
   it('should get metadata for a file', () => {
     const output = run(`${cmd} get-metadata ${bucketName} ${copiedFileName}`, cwd);
-    assert.notEqual(output.indexOf(`File: ${copiedFileName}`), -1);
-    assert.notEqual(output.indexOf(`Bucket: ${bucketName}`), -1);
+    assert.equal(output.includes(`File: ${copiedFileName}`), true);
+    assert.equal(output.includes(`Bucket: ${bucketName}`), true);
   });
 
-  it('should delete a file', (done) => {
+  it('should delete a file', () => {
     const output = run(`${cmd} delete ${bucketName} ${copiedFileName}`, cwd);
     assert.equal(output, `File ${copiedFileName} deleted.`);
-    storage.bucket(bucketName).file(copiedFileName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.equal(exists, false);
-      done();
-    });
+    return bucket.file(copiedFileName).exists()
+      .then((results) => {
+        assert.equal(results[0], false);
+      });
   });
 });

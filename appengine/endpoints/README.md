@@ -9,7 +9,7 @@ running locally.
 
 ## Deploying to Google App Engine
 
-Open the `swagger.yaml` file and in the `host` property, replace
+Open the `openapi.yaml` file and in the `host` property, replace
 `YOUR-PROJECT-ID` with your project's ID.
 
 Then, deploy the sample using `gcloud`:

@@ -272,8 +272,8 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
 function getTable () {
   const dataset = bigquery.dataset(config.DATASET);
 
-  return dataset.get({autoCreate: true})
-    .then(([dataset]) => dataset.table(config.TABLE).get({autoCreate: true}));
+  return dataset.get({ autoCreate: true })
+    .then(([dataset]) => dataset.table(config.TABLE).get({ autoCreate: true }));
 }
 // [END functions_sendgrid_get_table]
 

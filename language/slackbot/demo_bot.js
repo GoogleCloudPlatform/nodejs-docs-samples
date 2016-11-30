@@ -225,6 +225,6 @@ exports.analyzeEntitiesOfText = analyzeEntitiesOfText;
 exports.analyzeSentimentOfText = analyzeSentimentOfText;
 exports.handleAmbientMessage = handleAmbientMessage;
 
-if (require === module.main) {
+if (require.main === module) {
   startController();
 }

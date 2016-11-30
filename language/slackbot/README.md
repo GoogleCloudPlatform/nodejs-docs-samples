@@ -2,12 +2,12 @@
 # Building a Botkit-based Slack Bot that uses the GCP NL API and runs on Google Container Engine
 
 
-This example shows a Slack bot built using the [Botkit](https://github.com/howdyai/botkit) library. 
+This example shows a Slack bot built using the [Botkit](https://github.com/howdyai/botkit) library.
 It runs on a Google Contain Engine (Kubernetes) cluster, and uses one of the Google Cloud Platform's ML
-APIs, the Natural Language (NL) API, to interact in a Slack channel. 
+APIs, the Natural Language (NL) API, to interact in a Slack channel.
 
 It uses the NL API in two different ways.
-First, it uses the [Google Cloud NL API](https://cloud.google.com/natural-language/) to assess 
+First, it uses the [Google Cloud NL API](https://cloud.google.com/natural-language/) to assess
 the [sentiment](https://cloud.google.com/natural-language/docs/basics) of any message posted to
 the channel, and if the positive or negative magnitude of the statement is
 sufficiently large, it sends a 'thumbs up' or 'thumbs down' in reaction.
@@ -56,7 +56,9 @@ authentication token.
 
 Then, 'invite' your new bot to a channel on a Slack team.
 
-## Upload the slackbot token to Kubernetes
+## Running the slackbot on Kubernetes
+
+### Upload the slackbot token to Kubernetes
 
 We will be loading this token in our bot using
 [secrets](http://kubernetes.io/v1.1/docs/user-guide/secrets.html).
@@ -68,7 +70,7 @@ Run the following script to create a secret .yaml file (replacing `MY-SLACK-TOKE
 kubectl create -f slack-token-secret.yaml
 ```
 
-## Build the bot's container
+### Build the bot's container
 
 We'll run the slackbot app in our Kubernetes cluster as a [Replication Controller](http://kubernetes.io/docs/user-guide/replication-controller/) with one replica.
 
@@ -88,7 +90,7 @@ gcloud docker -- push gcr.io/${PROJECT_ID}/slack-bot
 ```
 
 
-## Running the container
+### Running the container
 
 First, create a Replication Controller configuration, populated with your Google
 Cloud Project ID, so that Kubernetes knows where to find the Docker image.
@@ -113,11 +115,35 @@ Now your bot should be online.  As a sanity check, check that it responds to a "
 
 Note: if you have forgotten to create the secret first, the pod won't come up successfully.
 
+## Running the bot locally
+
+If you want, you can run your slackbot locally instead.  This is handy if
+you've made some changes and want to test them out before redeploying.  To do
+this, first run:
+
+```bash
+npm install
+```
+
+Then, set GCLOUD_PROJECT to your project id:
+
+```bash
+export GCLOUD_PROJECT=my-cloud-project-id
+```
+
+Then, create a file containing your Slack token, and point 'SLACK_TOKEN_PATH' to that file when you run the script
+(substitute 'my-slack-token with your actual token):
+
+    echo my-slack-token > slack-token
+    SLACK_TOKEN_PATH=./slack-token node demo_bot.js
+
 ## Using the Bot
 
-Once you've confirmed the bot is running, ..
+Once you've confirmed the bot is running, you can start putting it through its paces.
 
 ### Sentiment Analysis
+
+The slackbot will give a 'thumbs up' or 'thumbs down' if it thinks a message is above a certain magnitude in positive or negative sentiment.
 
 E.g., try posting this message to the channel (you don't need to explicitly mention the bot in this message):
 
@@ -125,17 +151,26 @@ E.g., try posting this message to the channel (you don't need to explicitly ment
 I hate bananas.
 ```
 
-You should see that bot give a thumbs down in reply, indicatig that the NL API reported negative sentiment for this sentence. Next, try:
+You should see that bot give a thumbs down in reply, indicatig that the NL API
+reported negative sentiment for this sentence. Next, try:
 
 ```
 I love coffee.
 ```
 
-This should generate a thumbs up.  Posted text won't get a reply from the bot unless the magnitude of the sentiment is above a given threshold, 30 by default.  E.g., with a neutral statement like `The temperature is seventy degrees.` the bot is unlikely to give a response.
+This should generate a thumbs up.  Posted text won't get a reply from the bot
+unless the magnitude of the sentiment is above a given threshold, 30 by
+default.  E.g., with a neutral statement like `The temperature is seventy
+degrees.` the bot is unlikely to give a response.
 
 ### Entity Analysis
 
-For every message posted to the channel, the bot-- behind the scenes-- is analyzing and storing information about the entities it detects.  At any time you can query the bot to get the current N most frequent entities, where N is 20 by default.
+For every message posted to the channel, the bot-- behind the scenes-- is
+analyzing and storing information about the entities it detects.  At any time
+you can query the bot to get the current N most frequent entities, where N is
+20 by default.  It will be more interesting if you wait until a few messages
+have been posted to the channel, so that the bot has the chance to identify
+and log some entities.
 
 E.g., suppose your bot is called `nlpbot`.
 To see the top entities, send it this message:

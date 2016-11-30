@@ -77,13 +77,14 @@ function startController () {
     throw new Error('Please set the SLACK_TOKEN_PATH environment variable!');
   }
 
-  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH).replace(/\s/g, '');
+  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH);
+  token = String(token).replace(/\s/g, '');
 
   // Create the table that will store entity information if it does not already
   // exist.
   db.run(TABLE_SQL);
 
-  return controller
+  controller
     .spawn({ token: token })
     .startRTM((err) => {
       if (err) {
@@ -91,10 +92,10 @@ function startController () {
         console.error(err);
         process.exit(1);
       }
-    })
+    });
     // If the bot gets a DM or mention with 'hello' or 'hi', it will reply.  You
     // can use this to sanity-check your app without needing to use the NL API.
-    .hears(
+    return controller.hears(
       ['hello', 'hi'],
       ['direct_message', 'direct_mention', 'mention'],
       handleSimpleReply
@@ -151,7 +152,7 @@ function analyzeEntitiesOfText (text, ts) {
   // Detects entities in the document
   return document.detectEntities({ verbose: true })
     .then((results) => {
-      const entities = results[0];
+      const entities = results[1].entities;
 
       entities.forEach((entity) => {
         const name = entity.name;

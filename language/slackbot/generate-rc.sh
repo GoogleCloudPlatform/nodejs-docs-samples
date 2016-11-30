@@ -40,8 +40,10 @@ spec:
         - name: slack-token
           mountPath: /etc/slack-token
         env:
-        - name: slack_token_path
+        - name: SLACK_TOKEN_PATH
           value: /etc/slack-token/slack-token
+        - name: GCLOUD_PROJECT
+          value: ${cloud_project}
       volumes:
       - name: slack-token
         secret:

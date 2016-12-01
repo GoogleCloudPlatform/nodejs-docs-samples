@@ -51,7 +51,7 @@ const sqlite3 = require('sqlite3').verbose();
 const controller = Botkit.slackbot({ debug: false });
 
 // create our database if it does not already exist.
-const db = new sqlite3.Database(path.join(__dirname, './slackDB.db'));
+const db = new sqlite3.cached.Database(path.join(__dirname, './slackDB.db'));
 
 // the number of most frequent entities to retrieve from the db on request.
 const NUM_ENTITIES = 20;
@@ -77,8 +77,8 @@ function startController () {
     throw new Error('Please set the SLACK_TOKEN_PATH environment variable!');
   }
 
-  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH);
-  token = String(token).replace(/\s/g, '');
+  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
+  token = token.replace(/\s/g, '');
 
   // Create the table that will store entity information if it does not already
   // exist.
@@ -92,10 +92,12 @@ function startController () {
         console.error(err);
         process.exit(1);
       }
-    });
+    })
+
+  return controller
     // If the bot gets a DM or mention with 'hello' or 'hi', it will reply.  You
     // can use this to sanity-check your app without needing to use the NL API.
-    return controller.hears(
+    .hears(
       ['hello', 'hi'],
       ['direct_message', 'direct_mention', 'mention'],
       handleSimpleReply
@@ -139,7 +141,7 @@ function handleEntitiesReply (bot, message) {
   });
 }
 
-function analyzeEntitiesOfText (text, ts) {
+function analyzeEntities (text, ts) {
   // Instantiates a client
   const language = Language();
 
@@ -150,7 +152,7 @@ function analyzeEntitiesOfText (text, ts) {
   });
 
   // Detects entities in the document
-  return document.detectEntities({ verbose: true })
+  return document.detectEntities()
     .then((results) => {
       const entities = results[1].entities;
 
@@ -167,7 +169,7 @@ function analyzeEntitiesOfText (text, ts) {
         // console.log(`${name}, type: ${type}, w url: ${wikiUrl}, salience: ${salience}, ts: ${ts}`);
 
         db.run(
-          'INSERT into entities VALUES (?, ?, ?, ?, ?)',
+          'INSERT INTO entities VALUES (?, ?, ?, ?, ?);',
           [name, type, salience, wikiUrl, Math.round(ts)]
         );
       });
@@ -176,7 +178,7 @@ function analyzeEntitiesOfText (text, ts) {
     });
 }
 
-function analyzeSentimentOfText (text) {
+function analyzeSentiment (text) {
   // Instantiates a client
   const language = Language();
 
@@ -206,8 +208,8 @@ function handleAmbientMessage (bot, message) {
   // Note: for purposes of this example, we're making two separate calls to the
   // API, one to extract the entities from the message, and one to analyze the
   // 'sentiment' of the message. These could be combined into one call.
-  return analyzeEntitiesOfText(message.text, message.ts)
-    .then(() => analyzeSentimentOfText(message.text))
+  return analyzeEntities(message.text, message.ts)
+    .then(() => analyzeSentiment(message.text))
     .then((sentiment) => {
       if (sentiment >= SENTIMENT_THRESHOLD) {
         // We have a positive sentiment of magnitude larger than the threshold.
@@ -219,11 +221,13 @@ function handleAmbientMessage (bot, message) {
     });
 }
 
+exports.ENTITIES_SQL = ENTITIES_SQL;
+exports.TABLE_SQL = TABLE_SQL;
 exports.startController = startController;
 exports.handleSimpleReply = handleSimpleReply;
 exports.handleEntitiesReply = handleEntitiesReply;
-exports.analyzeEntitiesOfText = analyzeEntitiesOfText;
-exports.analyzeSentimentOfText = analyzeSentimentOfText;
+exports.analyzeEntities = analyzeEntities;
+exports.analyzeSentiment = analyzeSentiment;
 exports.handleAmbientMessage = handleAmbientMessage;
 
 if (require.main === module) {

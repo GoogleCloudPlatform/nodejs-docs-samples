@@ -92,7 +92,7 @@ function startController () {
         console.error(err);
         process.exit(1);
       }
-    })
+    });
 
   return controller
     // If the bot gets a DM or mention with 'hello' or 'hi', it will reply.  You

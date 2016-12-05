@@ -3,7 +3,7 @@
 
 
 This example shows a Slack bot built using the [Botkit](https://github.com/howdyai/botkit) library.
-It runs on a Google Contain Engine (Kubernetes) cluster, and uses one of the Google Cloud Platform's ML
+It runs on a Google Container Engine (Kubernetes) cluster, and uses one of the Google Cloud Platform's ML
 APIs, the Natural Language (NL) API, to interact in a Slack channel.
 
 It uses the NL API in two different ways.

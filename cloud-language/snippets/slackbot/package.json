@@ -1,0 +1,20 @@
+{
+  "name": "kubernetes-slack-botkit-example",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "description": "A Slack Botkit bot, running on Kubernetes.",
+  "main": "demo_bot.js",
+  "dependencies": {
+    "botkit": "^0.0.5",
+    "@google-cloud/language": "^0.6.3",
+    "sqlite3": "^3.1.8"
+  },
+  "scripts": {
+    "test": "cd ../..; npm run st -- language/slackbot/*.test.js"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  }
+}

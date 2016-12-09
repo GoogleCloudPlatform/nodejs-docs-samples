@@ -15,7 +15,7 @@
 
 'use strict';
 
-const uuid = require(`node-uuid`);
+const uuid = require(`uuid`);
 const path = require(`path`);
 const storage = require(`@google-cloud/storage`)();
 const run = require(`../../utils`).run;

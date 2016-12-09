@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 const run = require(`../../utils`).run;
 const storage = require('@google-cloud/storage')();
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;

@@ -9,13 +9,13 @@
     "system-test": "cd ..; npm run st -- bigquery/system-test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "0.4.0",
-    "@google-cloud/storage": "0.4.0",
-    "async": "2.1.2",
-    "yargs": "6.3.0"
+    "@google-cloud/bigquery": "0.6.0",
+    "@google-cloud/storage": "0.6.0",
+    "async": "2.1.4",
+    "yargs": "6.5.0"
   },
   "devDependencies": {
-    "node-uuid": "^1.4.7"
+    "uuid": "3.0.1"
   },
   "engines": {
     "node": ">=4.3.2"

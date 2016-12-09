@@ -17,7 +17,7 @@
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const storage = proxyquire(`@google-cloud/storage`, {})();
-const uuid = require(`node-uuid`);
+const uuid = require(`uuid`);
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);

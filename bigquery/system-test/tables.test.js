@@ -17,7 +17,7 @@
 
 const bigquery = require(`@google-cloud/bigquery`)();
 const storage = require(`@google-cloud/storage`)();
-const uuid = require(`node-uuid`);
+const uuid = require(`uuid`);
 const path = require(`path`);
 const utils = require(`../../utils`);
 const run = utils.run;

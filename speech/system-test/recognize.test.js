@@ -25,11 +25,11 @@ const text = `how old is the Brooklyn Bridge`;
 
 describe(`speech:recognize`, () => {
   it(`should run sync recognize`, () => {
-    assert.equal(run(`${cmd} sync ${filename}`, cwd), `Transcription: ${text}`);
+    assert.equal(run(`${cmd} sync ${filename}`, cwd).includes(text), true);
   });
 
   it(`should run async recognize`, () => {
-    assert.equal(run(`${cmd} async ${filename}`, cwd), `Transcription: ${text}`);
+    assert.equal(run(`${cmd} async ${filename}`, cwd).includes(text), true);
   });
 
   it(`should run streaming recognize`, () => {

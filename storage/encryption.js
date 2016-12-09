@@ -24,9 +24,10 @@
 'use strict';
 
 const Storage = require('@google-cloud/storage');
-const crypto = require('crypto');
 
 // [START storage_generate_encryption_key]
+const crypto = require('crypto');
+
 /**
  * Generates a 256 bit (32 byte) AES encryption key and prints the base64
  * representation.
@@ -48,7 +49,7 @@ function generateEncryptionKey () {
 // [END storage_generate_encryption_key]
 
 // [START storage_upload_encrypted_file]
-function uploadEncryptedFile (bucketName, srcFileName, destFileName, key, callback) {
+function uploadEncryptedFile (bucketName, srcFileName, destFileName, key) {
   // Instantiates a client
   const storageClient = Storage();
 
@@ -64,20 +65,19 @@ function uploadEncryptedFile (bucketName, srcFileName, destFileName, key, callba
 
   // Encrypts and uploads a local file, e.g. "./local/path/to/file.txt".
   // The file will only be retrievable using the key used to upload it.
-  bucket.upload(srcFileName, config, (err, file) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return bucket.upload(srcFileName, config)
+    .then((results) => {
+      const file = results[0];
 
-    console.log(`File ${srcFileName} uploaded to ${file.name}.`);
-    callback();
-  });
+      console.log(`File ${srcFileName} uploaded to ${file.name}.`);
+
+      return file;
+    });
 }
 // [END storage_upload_encrypted_file]
 
 // [START storage_download_encrypted_file]
-function downloadEncryptedFile (bucketName, srcFileName, destFileName, key, callback) {
+function downloadEncryptedFile (bucketName, srcFileName, destFileName, key) {
   // Instantiates a client
   const storageClient = Storage();
 
@@ -97,62 +97,52 @@ function downloadEncryptedFile (bucketName, srcFileName, destFileName, key, call
 
   // Descrypts and downloads the file. This can only be done with the key used
   // to encrypt and upload the file.
-  file.download(config, (err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log(`File ${file.name} downloaded to ${destFileName}.`);
-    callback();
-  });
+  return file.download(config)
+    .then(() => {
+      console.log(`File ${file.name} downloaded to ${destFileName}.`);
+    });
 }
 // [END storage_download_encrypted_file]
 
 // [START storage_rotate_encryption_key]
-function rotateEncryptionKey (callback) {
-  callback(new Error('This is currently not available using the Cloud Client Library.'));
+function rotateEncryptionKey () {
+  throw new Error('This is currently not available using the Cloud Client Library.');
 }
 // [END storage_rotate_encryption_key]
-// [END all]
 
-// The command-line program
-const cli = require(`yargs`);
-const noop = require(`../utils`).noop;
-
-const program = module.exports = {
-  generateEncryptionKey: generateEncryptionKey,
-  uploadEncryptedFile: uploadEncryptedFile,
-  downloadEncryptedFile: downloadEncryptedFile,
-  rotateEncryptionKey: rotateEncryptionKey,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`)
   .demand(1)
-  .command(`generate-encryption-key`, `Generate a sample encryption key.`, {}, () => {
-    program.generateEncryptionKey();
-  })
-  .command(`upload <bucketName> <srcFileName> <destFileName> <key>`, `Encrypts and uploads a file.`, {}, (opts) => {
-    program.uploadEncryptedFile(opts.bucketName, opts.srcFileName, opts.destFileName, opts.key, noop);
-  })
-  .command(`download <bucketName> <srcFileName> <destFileName> <key>`, `Decrypts and downloads a file.`, {}, (opts) => {
-    program.downloadEncryptedFile(opts.bucketName, opts.srcFileName, opts.destFileName, opts.key, noop);
-  })
-  .command(`rotate <bucketName> <fileName> <oldkey> <newKey>`, `Rotates encryption keys for a file.`, {}, () => {
-    program.rotateEncryptionKey(noop);
-  })
+  .command(
+    `generate-encryption-key`,
+    `Generate a sample encryption key.`,
+    {},
+    generateEncryptionKey
+  )
+  .command(
+    `upload <bucketName> <srcFileName> <destFileName> <key>`,
+    `Encrypts and uploads a file.`,
+    {},
+    (opts) => uploadEncryptedFile(opts.bucketName, opts.srcFileName, opts.destFileName, opts.key)
+  )
+  .command(
+    `download <bucketName> <srcFileName> <destFileName> <key>`,
+    `Decrypts and downloads a file.`,
+    {},
+    (opts) => downloadEncryptedFile(opts.bucketName, opts.srcFileName, opts.destFileName, opts.key)
+  )
+  .command(
+    `rotate <bucketName> <fileName> <oldkey> <newKey>`,
+    `Rotates encryption keys for a file.`,
+    {},
+    rotateEncryptionKey
+  )
   .example(`node $0 generate-encryption-key`, `Generate a sample encryption key.`)
   .example(`node $0 upload my-bucket ./resources/test.txt file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q=`, `Encrypts and uploads "resources/test.txt" to "gs://my-bucket/file_encrypted.txt".`)
   .example(`node $0 download my-bucket file_encrypted.txt ./file.txt QxhqaZEqBGVTW55HhQw9Q=`, `Decrypts and downloads "gs://my-bucket/file_encrypted.txt" to "./file.txt".`)
   .example(`node $0 rotate my-bucket file_encrypted.txt QxhqaZEqBGVTW55HhQw9Q= SxafpsdfSDFS89sds9Q=`, `Rotates encryption keys for "gs://my-bucket/file_encrypted.txt".`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/storage/docs`);
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/storage/docs`)
+  .help()
+  .strict()
+  .argv;

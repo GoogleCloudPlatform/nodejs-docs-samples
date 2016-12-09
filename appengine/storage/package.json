@@ -8,7 +8,7 @@
     "node": ">=4.3.2"
   },
   "dependencies": {
-    "@google-cloud/storage": "0.3.0",
+    "@google-cloud/storage": "0.6.0",
     "body-parser": "1.15.2",
     "express": "4.14.0",
     "multer": "1.2.0",

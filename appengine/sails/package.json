@@ -29,6 +29,6 @@
     "include-all": "0.1.6",
     "rc": "1.1.1",
     "sails": "0.11.2",
-    "sails-disk": "0.10.0"
+    "sails-disk": "0.10.10"
   }
 }

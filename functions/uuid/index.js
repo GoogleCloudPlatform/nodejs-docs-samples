@@ -16,7 +16,7 @@
 'use strict';
 
 // [START functions_uuid]
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 
 exports.uuid = function (event, callback) {
   callback(null, uuid.v4());

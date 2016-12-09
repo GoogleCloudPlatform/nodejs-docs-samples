@@ -16,49 +16,43 @@
 'use strict';
 
 const storage = require(`@google-cloud/storage`)();
-const uuid = require(`node-uuid`);
+const uuid = require(`uuid`);
 const path = require(`path`);
 const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const bucket = storage.bucket(bucketName);
 const cmd = `node buckets.js`;
 
 describe('storage:buckets', () => {
-  after((done) => {
-    storage.bucket(bucketName).delete(() => {
-      // Ignore any error
-      done();
-    });
-  });
+  after(() => bucket.delete().catch(() => {}));
 
-  it(`should create a bucket`, (done) => {
+  it(`should create a bucket`, () => {
     const output = run(`${cmd} create ${bucketName}`, cwd);
     assert.equal(output, `Bucket ${bucketName} created.`);
-    storage.bucket(bucketName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.equal(exists, true);
-      done();
-    });
+    return bucket.exists()
+      .then((results) => {
+        assert.equal(results[0], true);
+      });
   });
 
   it(`should list buckets`, (done) => {
     // Listing is eventually consistent. Give the indexes time to update.
     setTimeout(() => {
       const output = run(`${cmd} list`, cwd);
-      assert.notEqual(output.indexOf(`Buckets:`), -1);
-      assert.notEqual(output.indexOf(bucketName), -1);
+      assert.equal(output.includes(`Buckets:`), true);
+      assert.equal(output.includes(bucketName), true);
       done();
     }, 5000);
   });
 
-  it(`should delete a bucket`, (done) => {
+  it(`should delete a bucket`, () => {
     const output = run(`${cmd} delete ${bucketName}`, cwd);
     assert.equal(output, `Bucket ${bucketName} deleted.`);
-    storage.bucket(bucketName).exists((err, exists) => {
-      assert.ifError(err);
-      assert.equal(exists, false);
-      done();
-    });
+    return bucket.exists()
+      .then((results) => {
+        assert.equal(results[0], false);
+      });
   });
 });

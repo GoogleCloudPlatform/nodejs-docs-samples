@@ -18,7 +18,7 @@
 // [START functions_sendgrid_setup]
 const sendgrid = require('sendgrid');
 const config = require('./config.json');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 
 // Get a reference to the Cloud Storage component
 const storage = require('@google-cloud/storage')();

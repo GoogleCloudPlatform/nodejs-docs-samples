@@ -16,7 +16,7 @@
 'use strict';
 
 const bigquery = require(`@google-cloud/bigquery`)();
-const uuid = require(`node-uuid`);
+const uuid = require(`uuid`);
 const path = require(`path`);
 const run = require(`../../utils`).run;
 

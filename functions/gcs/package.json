@@ -8,7 +8,7 @@
   "scripts": {
     "test": "cd ..; npm run t -- functions/gcs/test/*.test.js"
   },  "dependencies": {
-    "@google-cloud/storage": "^0.4.0",
-    "request": "^2.78.0"
+    "@google-cloud/storage": "0.6.0",
+    "request": "2.79.0"
   }
 }

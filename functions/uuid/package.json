@@ -9,6 +9,6 @@
     "test": "cd ..; npm run t -- functions/uuid/test/*.test.js"
   },
   "dependencies": {
-    "node-uuid": "^1.4.7"
+    "uuid": "3.0.1"
   }
 }

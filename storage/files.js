@@ -26,34 +26,33 @@
 const Storage = require('@google-cloud/storage');
 
 // [START storage_list_files]
-function listFiles (bucketName, callback) {
+function listFiles (bucketName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // Lists files in the bucket
-  bucket.getFiles((err, files) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return bucket.getFiles()
+    .then((results) => {
+      const files = results[0];
 
-    console.log('Files:');
-    files.forEach((file) => console.log(file.name));
-    callback();
-  });
+      console.log('Files:');
+      files.forEach((file) => console.log(file.name));
+
+      return files;
+    });
 }
 // [END storage_list_files]
 
 // [START storage_list_files_with_prefix]
-function listFilesByPrefix (bucketName, prefix, delimiter, callback) {
+function listFilesByPrefix (bucketName, prefix, delimiter) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   /**
    * This can be used to list all blobs in a "folder", e.g. "public/".
@@ -82,47 +81,45 @@ function listFilesByPrefix (bucketName, prefix, delimiter, callback) {
   }
 
   // Lists files in the bucket, filtered by a prefix
-  bucket.getFiles(options, (err, files) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return bucket.getFiles(options)
+    .then((results) => {
+      const files = results[0];
 
-    console.log('Files:');
-    files.forEach((file) => console.log(file.name));
-    callback();
-  });
+      console.log('Files:');
+      files.forEach((file) => console.log(file.name));
+
+      return files;
+    });
 }
 // [END storage_list_files_with_prefix]
 
 // [START storage_upload_file]
-function uploadFile (bucketName, fileName, callback) {
+function uploadFile (bucketName, fileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // Uploads a local file to the bucket, e.g. "./local/path/to/file.txt"
-  bucket.upload(fileName, (err, file) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return bucket.upload(fileName)
+    .then((results) => {
+      const file = results[0];
 
-    console.log(`File ${file.name} uploaded.`);
-    callback();
-  });
+      console.log(`File ${file.name} uploaded.`);
+
+      return file;
+    });
 }
 // [END storage_upload_file]
 
 // [START storage_download_file]
-function downloadFile (bucketName, srcFileName, destFileName, callback) {
+function downloadFile (bucketName, srcFileName, destFileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // References an existing file, e.g. "file.txt"
   const file = bucket.file(srcFileName);
@@ -133,115 +130,99 @@ function downloadFile (bucketName, srcFileName, destFileName, callback) {
   };
 
   // Downloads the file
-  file.download(options, (err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log(`File ${file.name} downloaded to ${destFileName}.`);
-    callback();
-  });
+  return file.download(options)
+    .then(() => {
+      console.log(`File ${file.name} downloaded to ${destFileName}.`);
+    });
 }
 // [END storage_download_file]
 
 // [START storage_delete_file]
-function deleteFile (bucketName, fileName, callback) {
+function deleteFile (bucketName, fileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // References an existing file, e.g. "file.txt"
   const file = bucket.file(fileName);
 
   // Deletes the file from the bucket
-  file.delete((err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log(`File ${fileName} deleted.`);
-    callback();
-  });
+  return file.delete()
+    .then(() => {
+      console.log(`File ${fileName} deleted.`);
+    });
 }
 // [END storage_delete_file]
 
 // [START storage_get_metadata]
-function getMetadata (bucketName, fileName, callback) {
+function getMetadata (bucketName, fileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // References an existing file, e.g. "file.txt"
   const file = bucket.file(fileName);
 
   // Gets the metadata for the file
-  file.getMetadata((err, metadata) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return file.getMetadata()
+    .then((results) => {
+      const metadata = results[0];
 
-    console.log(`File: ${metadata.name}`);
-    console.log(`Bucket: ${metadata.bucket}`);
-    console.log(`Storage class: ${metadata.storageClass}`);
-    console.log(`ID: ${metadata.id}`);
-    console.log(`Size: ${metadata.size}`);
-    console.log(`Updated: ${metadata.updated}`);
-    console.log(`Generation: ${metadata.generation}`);
-    console.log(`Metageneration: ${metadata.metageneration}`);
-    console.log(`Etag: ${metadata.etag}`);
-    console.log(`Owner: ${metadata.owner}`);
-    console.log(`Component count: ${metadata.component_count}`);
-    console.log(`Crc32c: ${metadata.crc32c}`);
-    console.log(`md5Hash: ${metadata.md5Hash}`);
-    console.log(`Cache-control: ${metadata.cacheControl}`);
-    console.log(`Content-type: ${metadata.contentType}`);
-    console.log(`Content-disposition: ${metadata.contentDisposition}`);
-    console.log(`Content-encoding: ${metadata.contentEncoding}`);
-    console.log(`Content-language: ${metadata.contentLanguage}`);
-    console.log(`Metadata: ${metadata.metadata}`);
-    callback();
-  });
+      console.log(`File: ${metadata.name}`);
+      console.log(`Bucket: ${metadata.bucket}`);
+      console.log(`Storage class: ${metadata.storageClass}`);
+      console.log(`ID: ${metadata.id}`);
+      console.log(`Size: ${metadata.size}`);
+      console.log(`Updated: ${metadata.updated}`);
+      console.log(`Generation: ${metadata.generation}`);
+      console.log(`Metageneration: ${metadata.metageneration}`);
+      console.log(`Etag: ${metadata.etag}`);
+      console.log(`Owner: ${metadata.owner}`);
+      console.log(`Component count: ${metadata.component_count}`);
+      console.log(`Crc32c: ${metadata.crc32c}`);
+      console.log(`md5Hash: ${metadata.md5Hash}`);
+      console.log(`Cache-control: ${metadata.cacheControl}`);
+      console.log(`Content-type: ${metadata.contentType}`);
+      console.log(`Content-disposition: ${metadata.contentDisposition}`);
+      console.log(`Content-encoding: ${metadata.contentEncoding}`);
+      console.log(`Content-language: ${metadata.contentLanguage}`);
+      console.log(`Metadata: ${metadata.metadata}`);
+
+      return metadata;
+    });
 }
 // [END storage_get_metadata]
 
 // [START storage_make_public]
-function makePublic (bucketName, fileName, callback) {
+function makePublic (bucketName, fileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // References an existing file, e.g. "file.txt"
   const file = bucket.file(fileName);
 
   // Makes the file public
-  file.makePublic((err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log(`File ${file.name} is now public.`);
-    callback();
-  });
+  return file.makePublic()
+    .then(() => {
+      console.log(`File ${file.name} is now public.`);
+    });
 }
 // [END storage_make_public]
 
 // [START storage_generate_signed_url]
-function generateSignedUrl (bucketName, fileName, callback) {
+function generateSignedUrl (bucketName, fileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // References an existing file, e.g. "file.txt"
   const file = bucket.file(fileName);
@@ -253,126 +234,127 @@ function generateSignedUrl (bucketName, fileName, callback) {
   };
 
   // Get a signed URL for the file
-  file.getSignedUrl(options, (err, url) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return file.getSignedUrl(options)
+    .then((results) => {
+      const url = results[0];
 
-    console.log(`The signed url for ${file.name} is ${url}.`);
-    callback();
-  });
+      console.log(`The signed url for ${file.name} is ${url}.`);
+
+      return url;
+    });
 }
 // [END storage_generate_signed_url]
 
 // [START storage_move_file]
-function moveFile (bucketName, srcFileName, destFileName, callback) {
+function moveFile (bucketName, srcFileName, destFileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // References an existing file, e.g. "file.txt"
   const file = bucket.file(srcFileName);
 
   // Moves the file within the bucket
-  file.move(destFileName, (err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log(`File ${file.name} moved to ${destFileName}.`);
-    callback();
-  });
+  return file.move(destFileName)
+    .then(() => {
+      console.log(`File ${file.name} moved to ${destFileName}.`);
+    });
 }
 // [END storage_move_file]
 
 // [START storage_copy_file]
-function copyFile (srcBucketName, srcFileName, destBucketName, destFileName, callback) {
+function copyFile (srcBucketName, srcFileName, destBucketName, destFileName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(srcBucketName);
+  const bucket = storage.bucket(srcBucketName);
 
   // References an existing file, e.g. "file.txt"
   const file = bucket.file(srcFileName);
 
   // References another existing bucket, e.g. "my-other-bucket"
-  const destBucket = storageClient.bucket(destBucketName);
+  const destBucket = storage.bucket(destBucketName);
 
   // Creates a reference to a destination file, e.g. "file.txt"
   const destFile = destBucket.file(destFileName);
 
   // Copies the file to the other bucket
-  file.copy(destFile, (err, file) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return file.copy(destFile)
+    .then((results) => {
+      const file = results[0];
 
-    console.log(`File ${srcFileName} copied to ${file.name} in ${destBucket.name}.`);
-    callback();
-  });
+      console.log(`File ${srcFileName} copied to ${file.name} in ${destBucket.name}.`);
+
+      return file;
+    });
 }
 // [END storage_copy_file]
 
-// The command-line program
-const cli = require(`yargs`);
-const noop = require(`../utils`).noop;
-
-const program = module.exports = {
-  listFiles: listFiles,
-  listFilesByPrefix: listFilesByPrefix,
-  uploadFile: uploadFile,
-  downloadFile: downloadFile,
-  deleteFile: deleteFile,
-  getMetadata: getMetadata,
-  makePublic: makePublic,
-  generateSignedUrl: generateSignedUrl,
-  moveFile: moveFile,
-  copyFile: copyFile,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`)
   .demand(1)
-  .command(`list <bucketName> [prefix] [delimiter]`, `Lists files in a bucket, optionally filtering by a prefix.`, {}, (opts) => {
-    if (opts.prefix) {
-      program.listFilesByPrefix(opts.bucketName, opts.prefix, opts.delimiter, noop);
-    } else {
-      program.listFiles(opts.bucketName, noop);
+  .command(
+    `list <bucketName> [prefix] [delimiter]`,
+    `Lists files in a bucket, optionally filtering by a prefix.`,
+    {},
+    (opts) => {
+      if (opts.prefix) {
+        listFilesByPrefix(opts.bucketName, opts.prefix, opts.delimiter);
+      } else {
+        listFiles(opts.bucketName);
+      }
     }
-  })
-  .command(`upload <bucketName> <srcFileName>`, `Uploads a local file to a bucket.`, {}, (opts) => {
-    program.uploadFile(opts.bucketName, opts.srcFileName, noop);
-  })
-  .command(`download <bucketName> <srcFileName> <destFileName>`, `Downloads a file from a bucket.`, {}, (opts) => {
-    program.downloadFile(opts.bucketName, opts.srcFileName, opts.destFileName, noop);
-  })
-  .command(`delete <bucketName> <fileName>`, `Deletes a file from a bucket.`, {}, (opts) => {
-    program.deleteFile(opts.bucketName, opts.fileName, noop);
-  })
-  .command(`get-metadata <bucketName> <fileName>`, `Gets the metadata for a file.`, {}, (opts) => {
-    program.getMetadata(opts.bucketName, opts.fileName, noop);
-  })
-  .command(`make-public <bucketName> <fileName>`, `Makes a file public.`, {}, (opts) => {
-    program.makePublic(opts.bucketName, opts.fileName, noop);
-  })
-  .command(`generate-signed-url <bucketName> <fileName>`, `Generates a signed URL for a file.`, {}, (opts) => {
-    program.generateSignedUrl(opts.bucketName, opts.fileName, noop);
-  })
-  .command(`move <bucketName> <srcFileName> <destFileName>`, `Moves a file to a new location within the same bucket, i.e. rename the file.`, {}, (opts) => {
-    program.moveFile(opts.bucketName, opts.srcFileName, opts.destFileName, noop);
-  })
-  .command(`copy <srcBucketName> <srcFileName> <destBucketName> <destFileName>`, `Copies a file in a bucket to another bucket.`, {}, (opts) => {
-    program.copyFile(opts.srcBucketName, opts.srcFileName, opts.destBucketName, opts.destFileName, noop);
-  })
+  )
+  .command(
+    `upload <bucketName> <srcFileName>`,
+    `Uploads a local file to a bucket.`,
+    {},
+    (opts) => uploadFile(opts.bucketName, opts.srcFileName)
+  )
+  .command(
+    `download <bucketName> <srcFileName> <destFileName>`,
+    `Downloads a file from a bucket.`,
+    {},
+    (opts) => downloadFile(opts.bucketName, opts.srcFileName, opts.destFileName)
+  )
+  .command(
+    `delete <bucketName> <fileName>`,
+    `Deletes a file from a bucket.`,
+    {},
+    (opts) => deleteFile(opts.bucketName, opts.fileName)
+  )
+  .command(
+    `get-metadata <bucketName> <fileName>`,
+    `Gets the metadata for a file.`,
+    {},
+    (opts) => getMetadata(opts.bucketName, opts.fileName)
+  )
+  .command(
+    `make-public <bucketName> <fileName>`,
+    `Makes a file public.`,
+    {},
+    (opts) => makePublic(opts.bucketName, opts.fileName)
+  )
+  .command(
+    `generate-signed-url <bucketName> <fileName>`,
+    `Generates a signed URL for a file.`,
+    {},
+    (opts) => generateSignedUrl(opts.bucketName, opts.fileName)
+  )
+  .command(
+    `move <bucketName> <srcFileName> <destFileName>`,
+    `Moves a file to a new location within the same bucket, i.e. rename the file.`,
+    {},
+    (opts) => moveFile(opts.bucketName, opts.srcFileName, opts.destFileName)
+  )
+  .command(
+    `copy <srcBucketName> <srcFileName> <destBucketName> <destFileName>`,
+    `Copies a file in a bucket to another bucket.`,
+    {},
+    (opts) => copyFile(opts.srcBucketName, opts.srcFileName, opts.destBucketName, opts.destFileName)
+  )
   .example(`node $0 list my-bucket`, `Lists files in "my-bucket".`)
   .example(`node $0 list my-bucket public/`, `Lists files in "my-bucket" filtered by prefix "public/".`)
   .example(`node $0 upload my-bucket ./file.txt`, `Uploads "./file.txt" to "my-bucket".`)
@@ -384,8 +366,7 @@ cli
   .example(`node $0 copy my-bucket file.txt my-other-bucket file.txt`, `Copies "gs://my-bucket/file.txt" to "gs://my-other-bucket/file.txt".`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/storage/docs`);
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/storage/docs`)
+  .help()
+  .strict()
+  .argv;

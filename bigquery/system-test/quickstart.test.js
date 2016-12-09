@@ -17,7 +17,7 @@
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const bigquery = proxyquire(`@google-cloud/bigquery`, {})();
-var uuid = require('node-uuid');
+const uuid = require(`uuid`);
 
 const expectedDatasetId = `my_new_dataset`;
 let datasetId = `nodejs-docs-samples-test-${uuid.v4()}`;

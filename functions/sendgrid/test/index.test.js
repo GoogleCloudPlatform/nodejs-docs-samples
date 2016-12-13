@@ -90,7 +90,7 @@ function getSample () {
       '@google-cloud/bigquery': BigQueryMock,
       '@google-cloud/storage': StorageMock,
       './config.json': config,
-      'node-uuid': uuid
+      'uuid': uuid
     }),
     mocks: {
       sendgrid,

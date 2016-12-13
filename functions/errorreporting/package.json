@@ -9,6 +9,6 @@
     "test": "cd ..; npm run t -- functions/errorreporting/test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/logging": "^0.5.0"
+    "@google-cloud/logging": "0.6.0"
   }
 }

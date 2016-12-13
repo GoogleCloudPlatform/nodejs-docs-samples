@@ -23,100 +23,85 @@
 
 'use strict';
 
-// [START all]
 const Storage = require('@google-cloud/storage');
 
 // [START storage_create_bucket]
-function createBucket (bucketName, callback) {
+function createBucket (bucketName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // Creates a new bucket, e.g. "my-new-bucket"
-  storageClient.createBucket(bucketName, (err, bucket) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return storage.createBucket(bucketName)
+    .then((results) => {
+      const bucket = results[0];
 
-    console.log(`Bucket ${bucket.name} created.`);
-    callback();
-  });
+      console.log(`Bucket ${bucket.name} created.`);
+
+      return bucket;
+    });
 }
 // [END storage_create_bucket]
 
 // [START storage_list_buckets]
-function listBuckets (callback) {
+function listBuckets () {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // Lists all buckets in the current project
-  storageClient.getBuckets((err, buckets) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  return storage.getBuckets()
+    .then((results) => {
+      const buckets = results[0];
 
-    console.log('Buckets:');
-    buckets.forEach((bucket) => console.log(bucket.name));
-    callback();
-  });
+      console.log('Buckets:');
+      buckets.forEach((bucket) => console.log(bucket.name));
+
+      return buckets;
+    });
 }
 // [END storage_list_buckets]
 
 // [START storage_delete_bucket]
-function deleteBucket (bucketName, callback) {
+function deleteBucket (bucketName) {
   // Instantiates a client
-  const storageClient = Storage();
+  const storage = Storage();
 
   // References an existing bucket, e.g. "my-bucket"
-  const bucket = storageClient.bucket(bucketName);
+  const bucket = storage.bucket(bucketName);
 
   // Deletes the bucket
-  bucket.delete((err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log(`Bucket ${bucket.name} deleted.`);
-    callback();
-  });
+  return bucket.delete()
+    .then(() => {
+      console.log(`Bucket ${bucket.name} deleted.`);
+    });
 }
 // [END storage_delete_bucket]
-// [END all]
 
-// The command-line program
-const cli = require(`yargs`);
-const noop = require(`../utils`).noop;
-
-const program = module.exports = {
-  createBucket: createBucket,
-  listBuckets: listBuckets,
-  deleteBucket: deleteBucket,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`)
   .demand(1)
-  .command(`create <bucket>`, `Creates a new bucket.`, {}, (options) => {
-    program.createBucket(options.bucket, noop);
-  })
-  .command(`list`, `Lists all buckets in the current project.`, {}, () => {
-    program.listBuckets(noop);
-  })
-  .command(`delete <bucket>`, `Deletes a bucket.`, {}, (options) => {
-    program.deleteBucket(options.bucket, noop);
-  })
+  .command(
+    `create <bucket>`,
+    `Creates a new bucket.`,
+    {},
+    (opts) => createBucket(opts.bucket)
+  )
+  .command(
+    `list`,
+    `Lists all buckets in the current project.`,
+    {},
+    listBuckets
+  )
+  .command(
+    `delete <bucket>`,
+    `Deletes a bucket.`,
+    {},
+    (opts) => deleteBucket(opts.bucket)
+  )
   .example(`node $0 create my-bucket`, `Creates a new bucket named "my-bucket".`)
   .example(`node $0 list`, `Lists all buckets in the current project.`)
   .example(`node $0 delete my-bucket`, `Deletes a bucket named "my-bucket".`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/storage/docs`);
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/storage/docs`)
+  .help()
+  .strict()
+  .argv;

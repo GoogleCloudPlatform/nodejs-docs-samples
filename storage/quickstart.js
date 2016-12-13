@@ -31,12 +31,9 @@ const storageClient = Storage({
 const bucketName = 'my-new-bucket';
 
 // Creates the new bucket
-storageClient.createBucket(bucketName, (err, bucket) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-
-  console.log(`Bucket ${bucket.name} created.`);
-});
+storageClient.createBucket(bucketName)
+  .then((results) => {
+    const bucket = results[0];
+    console.log(`Bucket ${bucket.name} created.`);
+  });
 // [END storage_quickstart]

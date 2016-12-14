@@ -23,6 +23,7 @@ const cwd = path.join(__dirname, `..`);
 const cmd = `node translate.js`;
 const text = `Hello world!`;
 const text2 = `Goodbye!`;
+const model = `nmt`;
 const toLang = `ru`;
 
 describe(`translate:translate`, () => {
@@ -69,6 +70,24 @@ describe(`translate:translate`, () => {
 
   it(`should translate multiple strings`, () => {
     const output = run(`${cmd} translate ${toLang} "${text}" "${text2}"`, cwd);
+    return translate.translate([text, text2], toLang)
+      .then((results) => {
+        const expected = `Translations:\n${text} => (${toLang}) ${results[0][0]}\n${text2} => (${toLang}) ${results[0][1]}`;
+        assert.equal(output, expected);
+      });
+  });
+
+  it(`should translate a single string with a model`, () => {
+    const output = run(`${cmd} translate-with-model ${toLang} ${model} "${text}"`, cwd);
+    return translate.translate(text, toLang)
+      .then((results) => {
+        const expected = `Translations:\n${text} => (${toLang}) ${results[0]}`;
+        assert.equal(output, expected);
+      });
+  });
+
+  it(`should translate multiple strings with a model`, () => {
+    const output = run(`${cmd} translate-with-model ${toLang} ${model} "${text}" "${text2}"`, cwd);
     return translate.translate([text, text2], toLang)
       .then((results) => {
         const expected = `Translations:\n${text} => (${toLang}) ${results[0][0]}\n${text2} => (${toLang}) ${results[0][1]}`;

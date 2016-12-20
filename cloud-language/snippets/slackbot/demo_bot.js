@@ -52,16 +52,21 @@ const controller = Botkit.slackbot({ debug: false });
 
 // create our database if it does not already exist.
 const db = new sqlite3.cached.Database(path.join(__dirname, './slackDB.db'));
+// comment out the line above, and instead uncomment the following, to store
+// the db on a persistent disk mounted at /var/sqlite3.  See the README
+// section on 'using a persistent disk' for this config.
+// const db = new sqlite3.cached.Database('/var/sqlite3/slackDB.db');
 
 // the number of most frequent entities to retrieve from the db on request.
 const NUM_ENTITIES = 20;
 // The magnitude of sentiment of a posted text above which the bot will respond.
 const SENTIMENT_THRESHOLD = 30;
+const SEVEN_DAYS_AGO = 60 * 60 * 24 * 7;
 
-const ENTITIES_SQL = `SELECT name, type, count(name) as wc
-FROM entities
-GROUP BY name
-ORDER BY wc DESC
+const ENTITIES_BASE_SQL = `SELECT name, type, count(name) as wc
+FROM entities`;
+
+const ENTITIES_SQL = ` GROUP BY name ORDER BY wc DESC
 LIMIT ${NUM_ENTITIES};`;
 
 const TABLE_SQL = `CREATE TABLE if not exists entities (
@@ -112,7 +117,24 @@ function startController () {
     )
     // For any posted message, the bot will send the text to the NL API for
     // analysis.
-    .on('ambient', handleAmbientMessage);
+    .on('ambient', handleAmbientMessage)
+    .on('rtm_close', startBot);
+}
+
+function startBot (bot, cerr) {
+  console.error('RTM closed');
+  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
+  token = token.replace(/\s/g, '');
+
+  bot
+  .spawn({ token: token })
+  .startRTM((err) => {
+    if (err) {
+      console.error('Failed to start controller!');
+      console.error(err);
+      process.exit(1);
+    }
+  });
 }
 
 function handleSimpleReply (bot, message) {
@@ -122,8 +144,10 @@ function handleSimpleReply (bot, message) {
 function handleEntitiesReply (bot, message) {
   bot.reply(message, 'Top entities: ');
 
-  // Query the database for the top N entities
-  db.all(ENTITIES_SQL, (err, topEntities) => {
+  // Query the database for the top N entities in the past week
+  const queryTs = Math.floor(Date.now() / 1000) - SEVEN_DAYS_AGO;
+  const entitiesWeekSql = `${ENTITIES_BASE_SQL} WHERE ts > ${queryTs}${ENTITIES_SQL}`;
+  db.all(entitiesWeekSql, (err, topEntities) => {
     if (err) {
       throw err;
     }

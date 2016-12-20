@@ -1,6 +1,24 @@
 
 # Building a Botkit-based Slack Bot that uses the GCP NL API and runs on Google Container Engine
 
+  - [Setting up your environment](#setting-up-your-environment)
+    - [Container Engine prerequisites](#container-engine-prerequisites)
+    - [NL API prerequisites](#nl-api-prerequisites)
+    - [Create a cluster](#create-a-cluster)
+    - [Install Docker](#install-docker)
+  - [Get a Slack token and invite the bot to a Slack channel](#get-a-slack-token-and-invite-the-bot-to-a-slack-channel)
+  - [Running the slackbot on Kubernetes](#running-the-slackbot-on-kubernetes)
+    - [Upload the slackbot token to Kubernetes](#upload-the-slackbot-token-to-kubernetes)
+    - [Build the bot's container](#build-the-bots-container)
+    - [Running the container](#running-the-container)
+  - [Running the bot locally](#running-the-bot-locally)
+  - [Using the Bot](#using-the-bot)
+    - [Sentiment Analysis](#sentiment-analysis)
+    - [Entity Analysis](#entity-analysis)
+  - [Optional: Create a slackbot app that uses persistent storage](#optional-create-a-slackbot-app-that-uses-persistent-storage)
+  - [Shutting down](#shutting-down)
+  - [Cleanup](#cleanup)
+
 
 This example shows a Slack bot built using the [Botkit](https://github.com/howdyai/botkit) library.
 It runs on a Google Container Engine (Kubernetes) cluster, and uses one of the Google Cloud Platform's ML
@@ -131,8 +149,8 @@ Then, set GCLOUD_PROJECT to your project id:
 export GCLOUD_PROJECT=my-cloud-project-id
 ```
 
-Then, create a file containing your Slack token, and point 'SLACK_TOKEN_PATH' to that file when you run the script
-(substitute 'my-slack-token with your actual token):
+Then, create a file containing your Slack token, and point `SLACK_TOKEN_PATH` to that file when you run the script
+(substitute `my-slack-token` with your actual token):
 
     echo my-slack-token > slack-token
     SLACK_TOKEN_PATH=./slack-token node demo_bot.js
@@ -180,14 +198,72 @@ To see the top entities, send it this message:
 ```
 
 
+## Optional: Create a slackbot app that uses persistent storage
+
+Kubernetes will keep your slackbot running — we have specified that we want one pod replica, and so if this pod goes down for some reason, Kubernetes will restart it.
+You might be pondering what happens to your sqlite3 database if this happens.
+With the configuration above, you will lose your data if the pod needs to be restarted.
+
+One way to address that would be to use a more persistent database service instead of sqlite3, and configure your bot to connect to that instead. ([Cloud SQL](https://cloud.google.com/sql/) would be an option for such a service.)
+
+Alternatively (for this simple scenario), we can just create a persistent disk on which to store our sqlite3 database, and configure our pod replica to access it.  That way, if the slackbot pod needs to be restarted, the database file won't be lost. We'll do that for this example.
+
+We'll accomplish this by defining a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) resource, and then creating a [Persistent Volume Claim](http://kubernetes.io/docs/user-guide/persistent-volumes/#persistentvolumeclaims) on that resource which will be used by the slackbot app.
+
+First, create a persistent disk to use with this app, as follows.  Name it `slackbotstore`. You can adjust its size as you like.
+
+```bash
+gcloud compute disks create --size=20GB --zone=<your-cluster-zone> slackbotstore
+```
+
+Then, edit `demo_bot.js` to use `/var/sqlite3/slackDB.db` as its sqlite3 db file:
+
+```javascript
+// create our database if it does not already exist.
+// const db = new sqlite3.cached.Database(path.join(__dirname, './slackDB.db'));
+const db = new sqlite3.cached.Database('/var/sqlite3/slackDB.db');
+```
+
+Once you've done that, rebuild your docker image to capture that code change:
+
+```bash
+export PROJECT_ID=my-cloud-project-id
+docker build -t gcr.io/${PROJECT_ID}/slack-bot .
+```
+
+Generate a different .yaml file to use for this configuration:
+
+```bash
+./generate-dep.sh $PROJECT_ID
+```
+
+If you take a look at the result, in `slack-bot-dep.yaml`, you will see that it contains the specification of the persistent volume as well as a persistent volume claim on that volume.  Then, you'll see that the slackbot mounts a volume matching that claim at `/var/sqlite3`.
+(In this config, the slackbot is also specified as a [Deployment](http://kubernetes.io/docs/user-guide/deployments/) rather than a Replication Controller.  For the purposes of this example, the difference is not important.)
+
+Note: when you created your disk, if you named it something other than `slackbotstore`, you will need to edit this configuration to specify your disk name instead.
+
+If you already have a slackbot running, you will probably want to shut it down before you start up this new version, so that there are not two separate bots monitoring your channel.  See the "Shutting down" section below.  Then, start up the persistent-storage version of the bot like this:
+
+```bash
+kubectl create -f slack-bot-dep.yaml
+```
+
+
 ## Shutting down
 
-To shutdown your bot, we tell Kubernetes to delete the replication controller.
+To shut down your bot, we tell Kubernetes to delete the Replication Controller:
 
 ```bash
 kubectl delete -f slack-bot-rc.yaml
 ```
 
+Or, if you are running the variant that uses a persistent disk, shut it down with:
+
+```bash
+kubectl delete -f slack-bot-dep.yaml
+```
+
+This will delete the persistent disk resource and claim as well as the Deployment, but does *not* delete the disk itself, which remains part of your GCP project.  If you restart later using the same config file, your existing sqlite3 db will be preserved.
 
 ## Cleanup
 
@@ -202,3 +278,4 @@ gcloud container clusters delete slackbot-cluster
 (If you used a different name for your cluster, substitute that name for `slackbot-cluster`.)
 This deletes the Google Compute Engine instances that are running the cluster.
 
+If you created a persistent disk for your db, you may want to [delete that as well](https://cloud.google.com/sdk/gcloud/reference/compute/disks/delete).

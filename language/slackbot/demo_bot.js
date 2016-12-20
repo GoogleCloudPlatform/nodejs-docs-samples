@@ -145,8 +145,8 @@ function handleEntitiesReply (bot, message) {
   bot.reply(message, 'Top entities: ');
 
   // Query the database for the top N entities in the past week
-  let queryTs = Math.floor(Date.now() / 1000) - SEVEN_DAYS_AGO;
-  let entitiesWeekSql = ENTITIES_BASE_SQL + ` WHERE ts > ${queryTs}` + ENTITIES_SQL;
+  const queryTs = Math.floor(Date.now() / 1000) - SEVEN_DAYS_AGO;
+  const entitiesWeekSql = `${ENTITIES_BASE_SQL} WHERE ts > ${queryTs}${ENTITIES_SQL}`;
   db.all(entitiesWeekSql, (err, topEntities) => {
     if (err) {
       throw err;

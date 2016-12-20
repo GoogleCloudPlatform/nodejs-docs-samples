@@ -149,8 +149,8 @@ Then, set GCLOUD_PROJECT to your project id:
 export GCLOUD_PROJECT=my-cloud-project-id
 ```
 
-Then, create a file containing your Slack token, and point 'SLACK_TOKEN_PATH' to that file when you run the script
-(substitute 'my-slack-token with your actual token):
+Then, create a file containing your Slack token, and point `SLACK_TOKEN_PATH` to that file when you run the script
+(substitute `my-slack-token` with your actual token):
 
     echo my-slack-token > slack-token
     SLACK_TOKEN_PATH=./slack-token node demo_bot.js

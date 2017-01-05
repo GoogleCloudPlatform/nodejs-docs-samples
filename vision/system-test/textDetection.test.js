@@ -15,21 +15,22 @@
 
 'use strict';
 
-var path = require('path');
-var inputDir = path.join(__dirname, '../resources');
-var textDetectionSample = require('../textDetection');
+require(`../../system-test/_setup`);
 
-describe('vision:textDetection', function () {
-  it('should detect texts', function (done) {
-    textDetectionSample.main(inputDir, function (err, textResponse) {
-      assert.ifError(err);
-      assert(Object.keys(textResponse).length > 0);
-      textDetectionSample.lookup(['the', 'sunbeams', 'in'], function (err, hits) {
-        assert.ifError(err);
-        assert(hits.length > 0);
-        assert(hits[0].length > 0);
-        done();
-      });
+const path = require(`path`);
+
+const inputDir = path.join(__dirname, `../resources`);
+const textDetectionSample = require(`../textDetection`);
+
+test.cb(`should detect texts`, (t) => {
+  textDetectionSample.main(inputDir, (err, textResponse) => {
+    t.ifError(err);
+    t.true(Object.keys(textResponse).length > 0);
+    textDetectionSample.lookup(['the', 'sunbeams', 'in'], (err, hits) => {
+      t.ifError(err);
+      t.true(hits.length > 0);
+      t.true(hits[0].length > 0);
+      t.end();
     });
   });
 });

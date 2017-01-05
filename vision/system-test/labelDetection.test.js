@@ -15,20 +15,21 @@
 
 'use strict';
 
-var path = require('path');
-var labelDetectionSample = require('../labelDetection');
-var inputFile = path.join(__dirname, '../resources', 'cat.jpg');
+require(`../../system-test/_setup`);
 
-describe('vision:labelDetection', function () {
-  it('should detect labels', function (done) {
-    labelDetectionSample.main(
-      inputFile,
-      function (err, labels) {
-        assert.ifError(err);
-        assert(labels.length > 0);
-        assert(console.log.calledWith('Found label: cat for ' + inputFile));
-        done();
-      }
-    );
+const path = require(`path`);
+
+const labelDetectionSample = require(`../labelDetection`);
+const inputFile = path.join(__dirname, `../resources`, `cat.jpg`);
+
+test.before(stubConsole);
+test.after(restoreConsole);
+
+test.cb(`should detect labels`, (t) => {
+  labelDetectionSample.main(inputFile, (err, labels) => {
+    t.ifError(err);
+    t.true(labels.length > 0);
+    t.true(console.log.calledWith(`Found label: cat for ${inputFile}`));
+    t.end();
   });
 });

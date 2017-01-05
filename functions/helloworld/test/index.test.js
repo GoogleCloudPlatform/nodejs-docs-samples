@@ -15,173 +15,176 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const proxyquire = require('proxyquire').noCallThru();
 const program = proxyquire(`../`, {});
 
-describe(`functions:helloworld`, () => {
-  it(`helloworld: should log a message`, () => {
-    const expectedMsg = `My Cloud Function: hi`;
-    const callback = sinon.stub();
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-    program.helloWorld({
-      data: {
-        message: `hi`
-      }
-    }, callback);
+test.serial(`helloworld: should log a message`, (t) => {
+  const expectedMsg = `My Cloud Function: hi`;
+  const callback = sinon.stub();
 
-    assert.deepEqual(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [expectedMsg]);
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
+  program.helloWorld({
+    data: {
+      message: `hi`
+    }
+  }, callback);
+
+  t.deepEqual(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
+});
+
+test.cb.serial(`helloGET: should print hello world`, (t) => {
+  const expectedMsg = `Hello World!`;
+
+  program.helloGET({}, {
+    send: (message) => {
+      t.is(message, expectedMsg);
+      t.end();
+    }
   });
+});
 
-  it(`helloGET: should print hello world`, (done) => {
-    const expectedMsg = `Hello World!`;
+test.cb.serial(`helloHttp: should print a name`, (t) => {
+  const expectedMsg = `Hello John!`;
 
-    program.helloGET({}, {
-      send: (message) => {
-        assert.equal(message, expectedMsg);
-        done();
-      }
-    });
+  program.helloHttp({
+    body: {
+      name: `John`
+    }
+  }, {
+    send: (message) => {
+      t.is(message, expectedMsg);
+      t.end();
+    }
   });
+});
 
-  it(`helloHttp: should print a name`, (done) => {
-    const expectedMsg = `Hello John!`;
+test.cb.serial(`helloHttp: should print hello world`, (t) => {
+  const expectedMsg = `Hello World!`;
 
-    program.helloHttp({
-      body: {
-        name: `John`
-      }
-    }, {
-      send: (message) => {
-        assert.equal(message, expectedMsg);
-        done();
-      }
-    });
+  program.helloHttp({
+    body: {}
+  }, {
+    send: (message) => {
+      t.is(message, expectedMsg);
+      t.end();
+    }
   });
+});
 
-  it(`helloHttp: should print hello world`, (done) => {
-    const expectedMsg = `Hello World!`;
+test.serial(`helloBackground: should print a name`, (t) => {
+  const expectedMsg = `Hello John!`;
+  const callback = sinon.stub();
 
-    program.helloHttp({
-      body: {}
-    }, {
-      send: (message) => {
-        assert.equal(message, expectedMsg);
-        done();
-      }
-    });
+  program.helloBackground({
+    data: {
+      name: `John`
+    }
+  }, callback);
+
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, [null, expectedMsg]);
+});
+
+test.serial(`helloBackground: should print hello world`, (t) => {
+  const expectedMsg = `Hello World!`;
+  const callback = sinon.stub();
+
+  program.helloBackground({ data: {} }, callback);
+
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, [null, expectedMsg]);
+});
+
+test.serial(`helloPubSub: should print a name`, (t) => {
+  const expectedMsg = `Hello Bob!`;
+  const callback = sinon.stub();
+
+  program.helloPubSub({
+    data: {
+      data: new Buffer(`Bob`).toString(`base64`)
+    }
+  }, callback);
+
+  t.deepEqual(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
+});
+
+test.serial(`helloPubSub: should print hello world`, (t) => {
+  const expectedMsg = `Hello World!`;
+  const callback = sinon.stub();
+
+  program.helloPubSub({ data: {} }, callback);
+
+  t.deepEqual(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
+});
+
+test.serial(`helloGCS: should print uploaded message`, (t) => {
+  const expectedMsg = `File foo uploaded.`;
+  const callback = sinon.stub();
+
+  program.helloGCS({
+    data: {
+      name: `foo`,
+      resourceState: `exists`
+    }
+  }, callback);
+
+  t.deepEqual(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
+});
+
+test.serial(`helloGCS: should print deleted message`, (t) => {
+  const expectedMsg = `File foo deleted.`;
+  const callback = sinon.stub();
+
+  program.helloGCS({
+    data: {
+      name: `foo`,
+      resourceState: `not_exists`
+    }
+  }, callback);
+
+  t.deepEqual(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
+});
+
+test.serial(`helloError: should throw an error`, (t) => {
+  const expectedMsg = `I failed you`;
+
+  t.throws(() => {
+    program.helloError();
+  }, Error, expectedMsg);
+});
+
+test.serial(`helloError2: should throw a value`, (t) => {
+  t.throws(() => {
+    program.helloError2();
   });
+});
 
-  it(`helloBackground: should print a name`, () => {
-    const expectedMsg = `Hello John!`;
-    const callback = sinon.stub();
+test.serial(`helloError3: callback shoud return an errback value`, (t) => {
+  const expectedMsg = `I failed you`;
+  const callback = sinon.stub();
 
-    program.helloBackground({
-      data: {
-        name: `John`
-      }
-    }, callback);
+  program.helloError3({}, callback);
 
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, [null, expectedMsg]);
-  });
-
-  it(`helloBackground: should print hello world`, () => {
-    const expectedMsg = `Hello World!`;
-    const callback = sinon.stub();
-
-    program.helloBackground({ data: {} }, callback);
-
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, [null, expectedMsg]);
-  });
-
-  it(`helloPubSub: should print a name`, () => {
-    const expectedMsg = `Hello Bob!`;
-    const callback = sinon.stub();
-
-    program.helloPubSub({
-      data: {
-        data: new Buffer(`Bob`).toString(`base64`)
-      }
-    }, callback);
-
-    assert.deepEqual(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [expectedMsg]);
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
-  });
-
-  it(`helloPubSub: should print hello world`, () => {
-    const expectedMsg = `Hello World!`;
-    const callback = sinon.stub();
-
-    program.helloPubSub({ data: {} }, callback);
-
-    assert.deepEqual(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [expectedMsg]);
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
-  });
-
-  it(`helloGCS: should print uploaded message`, () => {
-    const expectedMsg = `File foo uploaded.`;
-    const callback = sinon.stub();
-
-    program.helloGCS({
-      data: {
-        name: `foo`,
-        resourceState: `exists`
-      }
-    }, callback);
-
-    assert.deepEqual(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [expectedMsg]);
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
-  });
-
-  it(`helloGCS: should print deleted message`, () => {
-    const expectedMsg = `File foo deleted.`;
-    const callback = sinon.stub();
-
-    program.helloGCS({
-      data: {
-        name: `foo`,
-        resourceState: `not_exists`
-      }
-    }, callback);
-
-    assert.deepEqual(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [expectedMsg]);
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
-  });
-
-  it(`helloError: should throw an error`, () => {
-    const expectedMsg = `I failed you`;
-
-    assert.throws(() => {
-      program.helloError();
-    }, Error, expectedMsg);
-  });
-
-  it(`helloError2: should throw a value`, () => {
-    assert.throws(() => {
-      program.helloError2();
-    });
-  });
-
-  it(`helloError3: callback shoud return an errback value`, () => {
-    const expectedMsg = `I failed you`;
-    const callback = sinon.stub();
-
-    program.helloError3({}, callback);
-
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, [expectedMsg]);
-  });
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, [expectedMsg]);
 });
 

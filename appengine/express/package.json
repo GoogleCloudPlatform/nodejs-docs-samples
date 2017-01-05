@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "test": "cd ..; npm run t -- appengine/analytics/test/*.test.js"
+    "test": "cd ..; npm run t -- appengine/express/test/*.test.js"
   },
   "dependencies": {
     "body-parser": "1.15.2",

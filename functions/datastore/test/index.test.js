@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const proxyquire = require(`proxyquire`).noCallThru();
 
 const NAME = `sampletask1`;
@@ -65,202 +67,177 @@ function getSample () {
   };
 }
 
-describe(`functions:datastore`, () => {
-  it(`set: Set fails without a value`, () => {
-    const expectedMsg = `Value not provided. Make sure you have a "value" property in your request`;
-    const sample = getSample();
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-    assert.throws(() => {
-      sample.mocks.req.body.value = undefined;
-      sample.program.set(sample.mocks.req, sample.mocks.res);
-    }, Error, expectedMsg);
-  });
+test.serial(`set: Set fails without a value`, (t) => {
+  const expectedMsg = `Value not provided. Make sure you have a "value" property in your request`;
+  const sample = getSample();
 
-  it(`set: Set fails without a key`, () => {
-    const expectedMsg = `Key not provided. Make sure you have a "key" property in your request`;
-    const sample = getSample();
+  t.throws(() => {
+    sample.mocks.req.body.value = undefined;
+    sample.program.set(sample.mocks.req, sample.mocks.res);
+  }, Error, expectedMsg);
+});
 
-    assert.throws(() => {
-      sample.mocks.req.body.key = undefined;
-      sample.program.set(sample.mocks.req, sample.mocks.res);
-    }, Error, expectedMsg);
-  });
+test.serial(`set: Set fails without a key`, (t) => {
+  const expectedMsg = `Key not provided. Make sure you have a "key" property in your request`;
+  const sample = getSample();
 
-  it(`set: Set fails without a kind`, () => {
-    const expectedMsg = `Kind not provided. Make sure you have a "kind" property in your request`;
-    const sample = getSample();
+  t.throws(() => {
+    sample.mocks.req.body.key = undefined;
+    sample.program.set(sample.mocks.req, sample.mocks.res);
+  }, Error, expectedMsg);
+});
 
-    assert.throws(() => {
-      sample.mocks.req.body.kind = undefined;
-      sample.program.set(sample.mocks.req, sample.mocks.res);
-    }, Error, expectedMsg);
-  });
+test.serial(`set: Set fails without a kind`, (t) => {
+  const expectedMsg = `Kind not provided. Make sure you have a "kind" property in your request`;
+  const sample = getSample();
 
-  it(`set: Handles save error`, () => {
-    const error = new Error(`error`);
-    const sample = getSample();
+  t.throws(() => {
+    sample.mocks.req.body.kind = undefined;
+    sample.program.set(sample.mocks.req, sample.mocks.res);
+  }, Error, expectedMsg);
+});
 
-    sample.mocks.datastore.save.returns(Promise.reject(error));
+test.serial(`set: Handles save error`, async (t) => {
+  const error = new Error(`error`);
+  const sample = getSample();
 
-    return sample.program.set(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        throw new Error(`Should have failed!`);
-      })
-      .catch((err) => {
-        assert.deepEqual(err, error);
-        assert.deepEqual(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
-      });
-  });
+  sample.mocks.datastore.save.returns(Promise.reject(error));
 
-  it(`set: Set saves an entity`, () => {
-    const expectedMsg = `Entity ${KIND}/${NAME} saved.`;
-    const sample = getSample();
+  const err = await t.throws(sample.program.set(sample.mocks.req, sample.mocks.res));
+  t.deepEqual(err, error);
+  t.deepEqual(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
+});
 
-    return sample.program.set(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        assert.deepEqual(sample.mocks.datastore.save.callCount, 1);
-        assert.deepEqual(sample.mocks.datastore.save.firstCall.args, [sample.mocks.entity]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
-      });
-  });
+test.serial(`set: Set saves an entity`, async (t) => {
+  const expectedMsg = `Entity ${KIND}/${NAME} saved.`;
+  const sample = getSample();
 
-  it(`get: Get fails without a key`, () => {
-    const expectedMsg = `Key not provided. Make sure you have a "key" property in your request`;
-    const sample = getSample();
+  await sample.program.set(sample.mocks.req, sample.mocks.res);
+  t.deepEqual(sample.mocks.datastore.save.callCount, 1);
+  t.deepEqual(sample.mocks.datastore.save.firstCall.args, [sample.mocks.entity]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
+});
 
-    assert.throws(() => {
-      sample.mocks.req.body.key = undefined;
-      sample.program.get(sample.mocks.req, sample.mocks.res);
-    }, Error, expectedMsg);
-  });
+test.serial(`get: Get fails without a key`, (t) => {
+  const expectedMsg = `Key not provided. Make sure you have a "key" property in your request`;
+  const sample = getSample();
 
-  it(`get: Get fails without a kind`, () => {
-    const expectedMsg = `Kind not provided. Make sure you have a "kind" property in your request`;
-    const sample = getSample();
+  t.throws(() => {
+    sample.mocks.req.body.key = undefined;
+    sample.program.get(sample.mocks.req, sample.mocks.res);
+  }, Error, expectedMsg);
+});
 
-    assert.throws(() => {
-      sample.mocks.req.body.kind = undefined;
-      sample.program.get(sample.mocks.req, sample.mocks.res);
-    }, Error, expectedMsg);
-  });
+test.serial(`get: Get fails without a kind`, (t) => {
+  const expectedMsg = `Kind not provided. Make sure you have a "kind" property in your request`;
+  const sample = getSample();
 
-  it(`get: Handles get error`, () => {
-    const error = new Error(`error`);
-    const sample = getSample();
+  t.throws(() => {
+    sample.mocks.req.body.kind = undefined;
+    sample.program.get(sample.mocks.req, sample.mocks.res);
+  }, Error, expectedMsg);
+});
 
-    sample.mocks.datastore.get.returns(Promise.reject(error));
+test.serial(`get: Handles get error`, async (t) => {
+  const error = new Error(`error`);
+  const sample = getSample();
 
-    return sample.program.get(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        throw new Error(`Should have failed!`);
-      })
-      .catch((err) => {
-        assert.deepEqual(err, error);
-        assert.deepEqual(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
-      });
-  });
+  sample.mocks.datastore.get.returns(Promise.reject(error));
 
-  it(`get: Fails when entity does not exist`, () => {
-    const sample = getSample();
-    const error = new Error(`No entity found for key ${sample.mocks.key.path.join('/')}.`);
+  const err = await t.throws(sample.program.get(sample.mocks.req, sample.mocks.res));
+  t.deepEqual(err, error);
+  t.deepEqual(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
+});
 
-    sample.mocks.datastore.get.returns(Promise.resolve([]));
+test.serial(`get: Fails when entity does not exist`, async (t) => {
+  const sample = getSample();
+  const error = new Error(`No entity found for key ${sample.mocks.key.path.join('/')}.`);
 
-    return sample.program.get(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        throw new Error(`Should have failed!`);
-      })
-      .catch((err) => {
-        assert.deepEqual(err, error);
-        assert.deepEqual(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
-      });
-  });
+  sample.mocks.datastore.get.returns(Promise.resolve([]));
 
-  it(`get: Finds an entity`, () => {
-    const sample = getSample();
+  const err = await t.throws(sample.program.get(sample.mocks.req, sample.mocks.res));
+  t.deepEqual(err, error);
+  t.deepEqual(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
+});
 
-    return sample.program.get(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        assert.deepEqual(sample.mocks.datastore.get.callCount, 1);
-        assert.deepEqual(sample.mocks.datastore.get.firstCall.args, [sample.mocks.key]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [sample.mocks.entity]);
-      });
-  });
+test.serial(`get: Finds an entity`, async (t) => {
+  const sample = getSample();
 
-  it(`del: Delete fails without a key`, () => {
-    const expectedMsg = `Key not provided. Make sure you have a "key" property in your request`;
-    const sample = getSample();
+  await sample.program.get(sample.mocks.req, sample.mocks.res);
+  t.deepEqual(sample.mocks.datastore.get.callCount, 1);
+  t.deepEqual(sample.mocks.datastore.get.firstCall.args, [sample.mocks.key]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [sample.mocks.entity]);
+});
 
-    assert.throws(() => {
-      sample.mocks.req.body.key = undefined;
-      sample.program.del(sample.mocks.req, sample.mocks.res);
-    }, Error, expectedMsg);
-  });
+test.serial(`del: Delete fails without a key`, (t) => {
+  const expectedMsg = `Key not provided. Make sure you have a "key" property in your request`;
+  const sample = getSample();
 
-  it(`del: Delete fails without a kind`, () => {
-    const expectedMsg = `Kind not provided. Make sure you have a "kind" property in your request`;
-    const sample = getSample();
+  t.throws(() => {
+    sample.mocks.req.body.key = undefined;
+    sample.program.del(sample.mocks.req, sample.mocks.res);
+  }, Error, expectedMsg);
+});
 
-    assert.throws(() => {
-      sample.mocks.req.body.kind = undefined;
-      sample.program.del(sample.mocks.req, sample.mocks.res);
-    }, Error, expectedMsg);
-  });
+test.serial(`del: Delete fails without a kind`, (t) => {
+  const expectedMsg = `Kind not provided. Make sure you have a "kind" property in your request`;
+  const sample = getSample();
 
-  it(`del: Handles delete error`, () => {
-    const error = new Error(`error`);
-    const sample = getSample();
+  t.throws(() => {
+    sample.mocks.req.body.kind = undefined;
+    sample.program.del(sample.mocks.req, sample.mocks.res);
+  }, Error, expectedMsg);
+});
 
-    sample.mocks.datastore.delete.returns(Promise.reject(error));
+test.serial(`del: Handles delete error`, async (t) => {
+  const error = new Error(`error`);
+  const sample = getSample();
 
-    return sample.program.del(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        throw new Error(`Should have failed!`);
-      })
-      .catch((err) => {
-        assert.deepEqual(err, error);
-        assert.deepEqual(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
-      });
-  });
+  sample.mocks.datastore.delete.returns(Promise.reject(error));
 
-  it(`del: Deletes an entity`, () => {
-    const expectedMsg = `Entity ${KIND}/${NAME} deleted.`;
-    const sample = getSample();
+  const err = await t.throws(sample.program.del(sample.mocks.req, sample.mocks.res));
+  t.deepEqual(err, error);
+  t.deepEqual(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
+});
 
-    return sample.program.del(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        assert.deepEqual(sample.mocks.datastore.delete.callCount, 1);
-        assert.deepEqual(sample.mocks.datastore.delete.firstCall.args, [sample.mocks.key]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
-      });
-  });
+test.serial(`del: Deletes an entity`, async (t) => {
+  const expectedMsg = `Entity ${KIND}/${NAME} deleted.`;
+  const sample = getSample();
+
+  await sample.program.del(sample.mocks.req, sample.mocks.res);
+  t.deepEqual(sample.mocks.datastore.delete.callCount, 1);
+  t.deepEqual(sample.mocks.datastore.delete.firstCall.args, [sample.mocks.key]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
 });

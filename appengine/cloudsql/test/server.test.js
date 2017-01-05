@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const express = require(`express`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
@@ -57,60 +59,62 @@ function getSample () {
   };
 }
 
-describe(`appengine/cloudsql/server.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
+test(`sets up sample`, (t) => {
+  const sample = getSample();
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.mocks.mysql.createConnection.calledOnce);
-    assert.deepEqual(sample.mocks.mysql.createConnection.firstCall.args[0], {
-      user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE
-    });
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+  t.true(sample.mocks.express.calledOnce);
+  t.true(sample.mocks.mysql.createConnection.calledOnce);
+  t.deepEqual(sample.mocks.mysql.createConnection.firstCall.args[0], {
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
   });
+  t.true(sample.app.listen.calledOnce);
+  t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+});
 
-  it(`should record a visit`, (done) => {
-    const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
+test.cb(`should record a visit`, (t) => {
+  const sample = getSample();
+  const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
-    request(sample.app)
-      .get(`/`)
-      .expect(200)
-      .expect((response) => {
-        assert.equal(response.text, expectedResult);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, expectedResult);
+    })
+    .end(t.end);
+});
 
-  it(`should handle insert error`, (done) => {
-    const expectedResult = `insert_error`;
+test.cb(`should handle insert error`, (t) => {
+  const sample = getSample();
+  const expectedResult = `insert_error`;
 
-    sample.mocks.connection.query.onFirstCall().yields(expectedResult);
+  sample.mocks.connection.query.onFirstCall().yields(expectedResult);
 
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, `${expectedResult}\n`);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(500)
+    .expect((response) => {
+      t.is(response.text, `${expectedResult}\n`);
+    })
+    .end(t.end);
+});
 
-  it(`should handle read error`, (done) => {
-    const expectedResult = `read_error`;
+test.cb(`should handle read error`, (t) => {
+  const sample = getSample();
+  const expectedResult = `read_error`;
 
-    sample.mocks.connection.query.onSecondCall().yields(expectedResult);
+  sample.mocks.connection.query.onSecondCall().yields(expectedResult);
 
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, `${expectedResult}\n`);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(500)
+    .expect((response) => {
+      t.is(response.text, `${expectedResult}\n`);
+    })
+    .end(t.end);
 });

@@ -18,27 +18,23 @@
 const Resource = require('@google-cloud/resource');
 
 // [START resource_list_projects]
-function listProjects (callback) {
+function listProjects () {
   // Instantiates a client
   const resource = Resource();
 
   // Lists all current projects
-  resource.getProjects((err, projects) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log('Projects:');
-    projects.forEach((project) => console.log(project.id));
-    callback();
-  });
+  return resource.getProjects()
+    .then((results) => {
+      const projects = results[0];
+      console.log('Projects:');
+      projects.forEach((project) => console.log(project.id));
+      return projects;
+    });
 }
 // [END resource_list_projects]
 
 // The command-line program
 const cli = require(`yargs`);
-const makeHandler = require(`../utils`).makeHandler;
 
 const program = module.exports = {
   listProjects: listProjects,
@@ -50,9 +46,7 @@ const program = module.exports = {
 
 cli
   .demand(1)
-  .command(`list`, `List all current projects.`, {}, () => {
-    program.listProjects(makeHandler(false));
-  })
+  .command(`list`, `List all current projects.`, {}, program.listProjects)
   .example(`node $0 list`, `Lists all current projects.`)
   .wrap(120)
   .recommendCommands()

@@ -15,11 +15,12 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const fs = require(`fs`);
 const storage = require(`@google-cloud/storage`)();
 const uuid = require(`uuid`);
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
@@ -31,99 +32,97 @@ const filePath = path.join(__dirname, `../resources`, fileName);
 const downloadFilePath = path.join(__dirname, `../resources/downloaded.txt`);
 const cmd = `node files.js`;
 
-describe('storage:files', () => {
-  before(() => bucket.create());
+test.before(async () => {
+  await bucket.create();
+});
 
-  after(() => {
-    try {
-      fs.unlinkSync(downloadFilePath);
-    } catch (err) {
-      console.log(err);
-    }
-    // Try deleting all files twice, just to make sure. Ignore any errors.
-    return bucket.deleteFiles({ force: true })
-      .then(() => bucket.deleteFiles({ force: true }), () => {})
-      .then(() => bucket.delete(), () => {})
-      .catch(() => {});
-  });
+test.after(async () => {
+  try {
+    fs.unlinkSync(downloadFilePath);
+  } catch (err) {
+    console.log(err);
+  }
+  // Try deleting all files twice, just to make sure
+  try {
+    await bucket.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    await bucket.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    await bucket.delete();
+  } catch (err) {} // ignore error
+});
 
-  it('should upload a file', () => {
-    const output = run(`${cmd} upload ${bucketName} ${filePath}`, cwd);
-    assert.equal(output, `File ${fileName} uploaded.`);
-    return bucket.file(fileName).exists()
-      .then((results) => {
-        assert.equal(results[0], true);
-      });
-  });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  it('should download a file', () => {
-    const output = run(`${cmd} download ${bucketName} ${fileName} ${downloadFilePath}`, cwd);
-    assert.equal(output, `File ${fileName} downloaded to ${downloadFilePath}.`);
-    assert.doesNotThrow(() => fs.statSync(downloadFilePath));
-  });
+test.serial(`should upload a file`, async (t) => {
+  const output = await runAsync(`${cmd} upload ${bucketName} ${filePath}`, cwd);
+  t.is(output, `File ${fileName} uploaded.`);
+  const [exists] = await bucket.file(fileName).exists();
+  t.true(exists);
+});
 
-  it('should move a file', () => {
-    const output = run(`${cmd} move ${bucketName} ${fileName} ${movedFileName}`, cwd);
-    assert.equal(output, `File ${fileName} moved to ${movedFileName}.`);
-    return bucket.file(movedFileName).exists()
-      .then((results) => {
-        assert.equal(results[0], true);
-      });
-  });
+test.serial(`should download a file`, async (t) => {
+  const output = await runAsync(`${cmd} download ${bucketName} ${fileName} ${downloadFilePath}`, cwd);
+  t.is(output, `File ${fileName} downloaded to ${downloadFilePath}.`);
+  t.notThrows(() => fs.statSync(downloadFilePath));
+});
 
-  it('should copy a file', () => {
-    const output = run(`${cmd} copy ${bucketName} ${movedFileName} ${bucketName} ${copiedFileName}`, cwd);
-    assert.equal(output, `File ${movedFileName} copied to ${copiedFileName} in ${bucketName}.`);
-    return bucket.file(copiedFileName).exists()
-      .then((results) => {
-        assert.equal(results[0], true);
-      });
-  });
+test.serial(`should move a file`, async (t) => {
+  const output = await runAsync(`${cmd} move ${bucketName} ${fileName} ${movedFileName}`, cwd);
+  t.is(output, `File ${fileName} moved to ${movedFileName}.`);
+  const [exists] = await bucket.file(movedFileName).exists();
+  t.true(exists);
+});
 
-  it('should list files', (done) => {
-    // Listing is eventually consistent, give the indexes time to update
-    setTimeout(() => {
-      const output = run(`${cmd} list ${bucketName}`, cwd);
-      assert.equal(output.includes(`Files:`), true);
-      assert.equal(output.includes(movedFileName), true);
-      assert.equal(output.includes(copiedFileName), true);
-      done();
-    }, 5000);
-  });
+test.serial(`should copy a file`, async (t) => {
+  const output = await runAsync(`${cmd} copy ${bucketName} ${movedFileName} ${bucketName} ${copiedFileName}`, cwd);
+  t.is(output, `File ${movedFileName} copied to ${copiedFileName} in ${bucketName}.`);
+  const [exists] = await bucket.file(copiedFileName).exists();
+  t.true(exists);
+});
 
-  it('should list files by a prefix', () => {
-    let output = run(`${cmd} list ${bucketName} test "/"`, cwd);
-    assert.equal(output.includes(`Files:`), true);
-    assert.equal(output.includes(movedFileName), true);
-    assert.equal(output.includes(copiedFileName), true);
-    output = run(`${cmd} list ${bucketName} foo`, cwd);
-    assert.equal(output.includes(`Files:`), true);
-    assert.equal(output.indexOf(movedFileName), -1);
-    assert.equal(output.indexOf(copiedFileName), -1);
-  });
+test.serial(`should list files`, async (t) => {
+  await tryTest(async () => {
+    const output = await runAsync(`${cmd} list ${bucketName}`, cwd);
+    t.true(output.includes(`Files:`));
+    t.true(output.includes(movedFileName));
+    t.true(output.includes(copiedFileName));
+  }).start();
+});
 
-  it('should make a file public', () => {
-    const output = run(`${cmd} make-public ${bucketName} ${copiedFileName}`, cwd);
-    assert.equal(output, `File ${copiedFileName} is now public.`);
-  });
+test.serial(`should list files by a prefix`, async (t) => {
+  let output = await runAsync(`${cmd} list ${bucketName} test "/"`, cwd);
+  t.true(output.includes(`Files:`));
+  t.true(output.includes(movedFileName));
+  t.true(output.includes(copiedFileName));
+  output = await runAsync(`${cmd} list ${bucketName} foo`, cwd);
+  t.true(output.includes(`Files:`));
+  t.false(output.includes(movedFileName));
+  t.false(output.includes(copiedFileName));
+});
 
-  it('should generate a signed URL for a file', () => {
-    const output = run(`${cmd} generate-signed-url ${bucketName} ${copiedFileName}`, cwd);
-    assert.equal(output.includes(`The signed url for ${copiedFileName} is `), true);
-  });
+test.serial(`should make a file public`, async (t) => {
+  const output = await runAsync(`${cmd} make-public ${bucketName} ${copiedFileName}`, cwd);
+  t.is(output, `File ${copiedFileName} is now public.`);
+});
 
-  it('should get metadata for a file', () => {
-    const output = run(`${cmd} get-metadata ${bucketName} ${copiedFileName}`, cwd);
-    assert.equal(output.includes(`File: ${copiedFileName}`), true);
-    assert.equal(output.includes(`Bucket: ${bucketName}`), true);
-  });
+test.serial(`should generate a signed URL for a file`, async (t) => {
+  const output = await runAsync(`${cmd} generate-signed-url ${bucketName} ${copiedFileName}`, cwd);
+  t.true(output.includes(`The signed url for ${copiedFileName} is `));
+});
 
-  it('should delete a file', () => {
-    const output = run(`${cmd} delete ${bucketName} ${copiedFileName}`, cwd);
-    assert.equal(output, `File ${copiedFileName} deleted.`);
-    return bucket.file(copiedFileName).exists()
-      .then((results) => {
-        assert.equal(results[0], false);
-      });
-  });
+test.serial(`should get metadata for a file`, async (t) => {
+  const output = await runAsync(`${cmd} get-metadata ${bucketName} ${copiedFileName}`, cwd);
+  t.true(output.includes(`File: ${copiedFileName}`));
+  t.true(output.includes(`Bucket: ${bucketName}`));
+});
+
+test.serial(`should delete a file`, async (t) => {
+  const output = await runAsync(`${cmd} delete ${bucketName} ${copiedFileName}`, cwd);
+  t.is(output, `File ${copiedFileName} deleted.`);
+  const [exists] = await bucket.file(copiedFileName).exists();
+  t.false(exists);
 });

@@ -10,13 +10,10 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../../test/_setup.js test/*.test.js"
+    "test": "cd ..; npm run t -- endpoints/getting-started/test/*.test.js"
   },
   "dependencies": {
     "express": "^4.13.4",
     "body-parser": "^1.15.0"
-  },
-  "devDependencies": {
-    "mocha": "^2.5.3"
   }
 }

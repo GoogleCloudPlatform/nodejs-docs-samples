@@ -15,6 +15,6 @@
 
 'use strict';
 
-describe(`trace`, () => {
-  it(`should be tested`);
-});
+require(`../../test/_setup`);
+
+test.todo(`trace app should be tested`);

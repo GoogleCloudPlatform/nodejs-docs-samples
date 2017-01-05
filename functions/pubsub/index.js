@@ -63,6 +63,7 @@ exports.publish = function publish (req, res) {
     .catch((err) => {
       console.error(err);
       res.status(500).send(err);
+      return Promise.reject(err);
     });
 };
 // [END functions_pubsub_publish]

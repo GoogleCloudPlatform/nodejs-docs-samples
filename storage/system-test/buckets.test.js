@@ -15,44 +15,44 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const storage = require(`@google-cloud/storage`)();
 const uuid = require(`uuid`);
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);
 const cmd = `node buckets.js`;
 
-describe('storage:buckets', () => {
-  after(() => bucket.delete().catch(() => {}));
+test.after(async () => {
+  try {
+    await bucket.delete();
+  } catch (err) {} // ignore error
+});
 
-  it(`should create a bucket`, () => {
-    const output = run(`${cmd} create ${bucketName}`, cwd);
-    assert.equal(output, `Bucket ${bucketName} created.`);
-    return bucket.exists()
-      .then((results) => {
-        assert.equal(results[0], true);
-      });
-  });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  it(`should list buckets`, (done) => {
-    // Listing is eventually consistent. Give the indexes time to update.
-    setTimeout(() => {
-      const output = run(`${cmd} list`, cwd);
-      assert.equal(output.includes(`Buckets:`), true);
-      assert.equal(output.includes(bucketName), true);
-      done();
-    }, 5000);
-  });
+test.serial(`should create a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} create ${bucketName}`, cwd);
+  t.is(output, `Bucket ${bucketName} created.`);
+  const [exists] = await bucket.exists();
+  t.true(exists);
+});
 
-  it(`should delete a bucket`, () => {
-    const output = run(`${cmd} delete ${bucketName}`, cwd);
-    assert.equal(output, `Bucket ${bucketName} deleted.`);
-    return bucket.exists()
-      .then((results) => {
-        assert.equal(results[0], false);
-      });
-  });
+test.serial(`should list buckets`, async (t) => {
+  await tryTest(async () => {
+    const output = await runAsync(`${cmd} list`, cwd);
+    t.true(output.includes(`Buckets:`));
+    t.true(output.includes(bucketName));
+  }).start();
+});
+
+test.serial(`should delete a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} delete ${bucketName}`, cwd);
+  t.is(output, `Bucket ${bucketName} deleted.`);
+  const [exists] = await bucket.exists();
+  t.false(exists);
 });

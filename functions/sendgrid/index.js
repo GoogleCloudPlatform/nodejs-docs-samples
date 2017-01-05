@@ -169,6 +169,7 @@ exports.sendgridEmail = function sendgridEmail (req, res) {
       console.error(err);
       const code = err.code || (err.response ? err.response.statusCode : 500) || 500;
       res.status(code).send(err);
+      return Promise.reject(err);
     });
 };
 // [END functions_sendgrid_email]
@@ -260,6 +261,7 @@ exports.sendgridWebhook = function sendgridWebhook (req, res) {
     .catch((err) => {
       console.error(err);
       res.status(err.code || 500).send(err);
+      return Promise.reject(err);
     });
 };
 // [END functions_sendgrid_webhook]
@@ -319,7 +321,7 @@ exports.sendgridLoad = function sendgridLoad (event) {
     .then(() => console.log(`Job complete for ${file.name}`))
     .catch((err) => {
       console.log(`Job failed for ${file.name}`);
-      throw err;
+      return Promise.reject(err);
     });
 };
 // [END functions_sendgrid_load]

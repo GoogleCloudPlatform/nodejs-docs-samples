@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const express = require(`express`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
@@ -38,26 +40,18 @@ function getSample () {
   };
 }
 
-describe(`appengine/bower/server.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
+test.cb(`should render a page`, (t) => {
+  const sample = getSample();
+  const expectedResult = `<h1>Hello World!</h1><p>Express.js + Bower on Google App Engine.</p>`;
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
-  });
-
-  it(`should render a page`, (done) => {
-    const expectedResult = `<h1>Hello World!</h1><p>Express.js + Bower on Google App Engine.</p>`;
-
-    request(sample.app)
-      .get(`/`)
-      .expect(200)
-      .expect((response) => {
-        assert.notEqual(response.text.indexOf(expectedResult), -1);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(200)
+    .expect((response) => {
+      t.true(response.text.includes(expectedResult));
+    })
+    .end(t.end);
 });

@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const express = require(`express`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
@@ -50,54 +52,48 @@ function getSample () {
   };
 }
 
-describe(`appengine/analytics/app.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
+test.cb(`should record a visit`, (t) => {
+  const sample = getSample();
+  const expectedResult = `Event tracked.`;
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+  request(sample.app)
+    .get(`/`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, expectedResult);
+    })
+    .end(t.end);
+});
+
+test.cb(`should handle request error`, (t) => {
+  const sample = getSample();
+  const expectedResult = `request_error`;
+
+  sample.mocks.request.post.onFirstCall().callsArgWith(2, expectedResult);
+
+  request(sample.app)
+    .get(`/`)
+    .expect(500)
+    .expect((response) => {
+      t.is(response.text, `${expectedResult}\n`);
+    })
+    .end(t.end);
+});
+
+test.cb(`should handle track error`, (t) => {
+  const sample = getSample();
+  sample.mocks.request.post.onFirstCall().callsArgWith(2, null, {
+    statusCode: 400
   });
 
-  it(`should record a visit`, (done) => {
-    const expectedResult = `Event tracked.`;
-
-    request(sample.app)
-      .get(`/`)
-      .expect(200)
-      .expect((response) => {
-        assert.equal(response.text, expectedResult);
-      })
-      .end(done);
-  });
-
-  it(`should handle request error`, (done) => {
-    const expectedResult = `request_error`;
-
-    sample.mocks.request.post.onFirstCall().callsArgWith(2, expectedResult);
-
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, expectedResult + `\n`);
-      })
-      .end(done);
-  });
-
-  it(`should handle track error`, (done) => {
-    sample.mocks.request.post.onFirstCall().callsArgWith(2, null, {
-      statusCode: 400
-    });
-
-    request(sample.app)
-      .get('/')
-      .expect(500)
-      .expect((response) => {
-        assert.notEqual(response.text.indexOf('Error: Tracking failed'), -1);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get('/')
+    .expect(500)
+    .expect((response) => {
+      t.true(response.text.includes('Error: Tracking failed'));
+    })
+    .end(t.end);
 });

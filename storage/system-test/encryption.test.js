@@ -15,9 +15,10 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const fs = require('fs');
 const path = require('path');
-const run = require(`../../utils`).run;
 const storage = require('@google-cloud/storage')();
 const uuid = require('uuid');
 
@@ -30,52 +31,58 @@ const fileName = `test.txt`;
 const filePath = path.join(__dirname, `../resources`, fileName);
 const downloadFilePath = path.join(__dirname, `../resources/downloaded.txt`);
 
-describe('storage:encryption', () => {
-  let key;
+let key;
 
-  before(() => bucket.create(bucketName));
+test.before(async () => {
+  await bucket.create(bucketName);
+});
 
-  after(() => {
-    try {
-      // Delete the downloaded file
-      fs.unlinkSync(downloadFilePath);
-    } catch (err) {
-      console.log(err);
-    }
-    // Try deleting all files twice, just to make sure. Ignore any errors.
-    return bucket.deleteFiles({ force: true })
-      .then(() => bucket.deleteFiles({ force: true }), () => {})
-      .then(() => bucket.delete(), () => {})
-      .catch(() => {});
+test.after(async () => {
+  try {
+    // Delete the downloaded file
+    fs.unlinkSync(downloadFilePath);
+  } catch (err) {
+    console.log(err);
+  }
+  // Try deleting all files twice, just to make sure
+  try {
+    await bucket.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    await bucket.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    await bucket.delete();
+  } catch (err) {} // ignore error
+});
+
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
+
+test.serial(`should generate a key`, async (t) => {
+  const output = await runAsync(`${cmd} generate-encryption-key`, cwd);
+  t.true(output.includes(`Base 64 encoded encryption key:`));
+  const test = /^Base 64 encoded encryption key: (.+)$/;
+  key = output.match(test)[1];
+});
+
+test.serial(`should upload a file`, async (t) => {
+  const output = await runAsync(`${cmd} upload ${bucketName} ${filePath} ${fileName} ${key}`, cwd);
+  t.is(output, `File ${filePath} uploaded to ${fileName}.`);
+  const [exists] = await bucket.file(fileName).exists();
+  t.true(exists);
+});
+
+test.serial(`should download a file`, async (t) => {
+  const output = await runAsync(`${cmd} download ${bucketName} ${fileName} ${downloadFilePath} ${key}`, cwd);
+  t.is(output, `File ${fileName} downloaded to ${downloadFilePath}.`);
+  t.notThrows(() => {
+    fs.statSync(downloadFilePath);
   });
+});
 
-  it(`should generate a key`, () => {
-    const output = run(`${cmd} generate-encryption-key`, cwd);
-    assert.equal(output.includes(`Base 64 encoded encryption key:`), true);
-    const test = /^Base 64 encoded encryption key: (.+)$/;
-    key = output.match(test)[1];
-  });
-
-  it(`should upload a file`, () => {
-    const output = run(`${cmd} upload ${bucketName} ${filePath} ${fileName} ${key}`, cwd);
-    assert.equal(output, `File ${filePath} uploaded to ${fileName}.`);
-    return bucket.file(fileName).exists()
-      .then((results) => {
-        assert.equal(results[0], true);
-      });
-  });
-
-  it(`should download a file`, () => {
-    const output = run(`${cmd} download ${bucketName} ${fileName} ${downloadFilePath} ${key}`, cwd);
-    assert.equal(output, `File ${fileName} downloaded to ${downloadFilePath}.`);
-    assert.doesNotThrow(() => {
-      fs.statSync(downloadFilePath);
-    });
-  });
-
-  it(`should rotate keys`, () => {
-    assert.throws(() => {
-      run(`${cmd} rotate ${bucketName} ${fileName} ${key} ${key}`, cwd);
-    }, Error, `This is currently not available using the Cloud Client Library.`);
-  });
+test.serial(`should rotate keys`, (t) => {
+  t.throws(() => {
+    run(`${cmd} rotate ${bucketName} ${fileName} ${key} ${key}`, cwd);
+  }, Error, `This is currently not available using the Cloud Client Library.`);
 });

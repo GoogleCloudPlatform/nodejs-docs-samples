@@ -15,21 +15,23 @@
 
 'use strict';
 
-var express = require('express');
-var path = require('path');
-var proxyquire = require('proxyquire').noPreserveCache();
-var request = require('supertest');
+require(`../../../test/_setup`);
 
-var SAMPLE_PATH = path.join(__dirname, '../app.js');
+const express = require('express');
+const path = require('path');
+const proxyquire = require('proxyquire').noPreserveCache();
+const request = require('supertest');
+
+const SAMPLE_PATH = path.join(__dirname, '../app.js');
 
 function getSample () {
-  var testApp = express();
+  const testApp = express();
   sinon.stub(testApp, 'listen').callsArg(1);
-  var expressMock = sinon.stub().returns(testApp);
-
-  var app = proxyquire(SAMPLE_PATH, {
+  const expressMock = sinon.stub().returns(testApp);
+  const app = proxyquire(SAMPLE_PATH, {
     express: expressMock
   });
+
   return {
     app: app,
     mocks: {
@@ -38,46 +40,48 @@ function getSample () {
   };
 }
 
-describe('appengine/endpoints/app.js', function () {
-  var sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(function () {
-    sample = getSample();
+test(`sets up the sample`, (t) => {
+  const sample = getSample();
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
-  });
+  t.true(sample.mocks.express.calledOnce);
+  t.true(sample.app.listen.calledOnce);
+  t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+});
 
-  it('should echo a message', function (done) {
-    request(sample.app)
-      .post('/echo')
-      .send({ message: 'foo' })
-      .expect(200)
-      .expect(function (response) {
-        assert.equal(response.body.message, 'foo');
-      })
-      .end(done);
-  });
+test.cb(`should echo a message`, (t) => {
+  const sample = getSample();
+  request(sample.app)
+    .post('/echo')
+    .send({ message: 'foo' })
+    .expect(200)
+    .expect((response) => {
+      t.is(response.body.message, 'foo');
+    })
+    .end(t.end);
+});
 
-  it('should try to parse encoded info', function (done) {
-    request(sample.app)
-      .get('/auth/info/googlejwt')
-      .expect(200)
-      .expect(function (response) {
-        assert.deepEqual(response.body, { id: 'anonymous' });
-      })
-      .end(done);
-  });
+test.cb(`should try to parse encoded info`, (t) => {
+  const sample = getSample();
+  request(sample.app)
+    .get('/auth/info/googlejwt')
+    .expect(200)
+    .expect((response) => {
+      t.deepEqual(response.body, { id: 'anonymous' });
+    })
+    .end(t.end);
+});
 
-  it('should successfully parse encoded info', function (done) {
-    request(sample.app)
-      .get('/auth/info/googlejwt')
-      .set('X-Endpoint-API-UserInfo', new Buffer(JSON.stringify({ id: 'foo' })).toString('base64'))
-      .expect(200)
-      .expect(function (response) {
-        assert.deepEqual(response.body, { id: 'foo' });
-      })
-      .end(done);
-  });
+test.cb(`should successfully parse encoded info`, (t) => {
+  const sample = getSample();
+  request(sample.app)
+    .get('/auth/info/googlejwt')
+    .set('X-Endpoint-API-UserInfo', new Buffer(JSON.stringify({ id: 'foo' })).toString('base64'))
+    .expect(200)
+    .expect((response) => {
+      t.deepEqual(response.body, { id: 'foo' });
+    })
+    .end(t.end);
 });

@@ -18,27 +18,23 @@
 const DNS = require('@google-cloud/dns');
 
 // [START dns_list_zones]
-function listZones (callback) {
+function listZones () {
   // Instantiates a client
   const dns = DNS();
 
   // Lists all zones in the current project
-  dns.getZones((err, zones) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    console.log('Zones:');
-    zones.forEach((zone) => console.log(zone.name));
-    callback();
-  });
+  return dns.getZones()
+    .then((results) => {
+      const zones = results[0];
+      console.log('Zones:');
+      zones.forEach((zone) => console.log(zone.name));
+      return zones;
+    });
 }
 // [END dns_list_zones]
 
 // The command-line program
-const cli = require('yargs');
-const makeHandler = require('../utils').makeHandler;
+const cli = require(`yargs`);
 
 const program = module.exports = {
   listZones: listZones,
@@ -50,13 +46,11 @@ const program = module.exports = {
 
 cli
   .demand(1)
-  .command('list', 'Lists all zones in the current project.', {}, () => {
-    program.listZones(makeHandler(false));
-  })
-  .example('node $0 list', 'Lists all zones in the current project.')
+  .command(`list`, `Lists all zones in the current project.`, {}, program.listZones)
+  .example(`node $0 list`, `Lists all zones in the current project.`)
   .wrap(120)
   .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/dns/docs');
+  .epilogue(`For more information, see https://cloud.google.com/dns/docs`);
 
 if (module === require.main) {
   program.main(process.argv.slice(2));

@@ -15,57 +15,54 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
+require(`../../system-test/_setup`);
 
-function MockCanvas () {
-  this.getContext = function () {
+const fs = require(`fs`);
+const path = require(`path`);
+
+class MockCanvas {
+  getContext () {
     return {
-      drawImage: function () {},
-      beginPath: function () {},
-      lineTo: function () {},
-      stroke: function () {}
+      drawImage: () => {},
+      beginPath: () => {},
+      lineTo: () => {},
+      stroke: () => {}
     };
-  };
-  this.pngStream = function () {
+  }
+
+  pngStream () {
     return {
-      on: function (event, cb) {
+      on: (event, cb) => {
         if (event === 'end') {
-          setTimeout(function () {
-            cb();
-          }, 1000);
-        } else if (event === 'data') {
-          cb('test');
-          cb('foo');
-          cb('bar');
+          setTimeout(cb, 1000);
+        } else if (event === `data`) {
+          cb(`test`);
+          cb(`foo`);
+          cb(`bar`);
         }
       }
     };
-  };
+  }
 }
 
-MockCanvas.Image = function () {};
+MockCanvas.Image = class Image {};
 
-var faceDetectionExample = require('../faceDetection');
-var inputFile = path.join(__dirname, '../resources', 'face.png');
-var outputFile = path.join(__dirname, '../../vision', 'out.png');
+const faceDetectionExample = require(`../faceDetection`);
+const inputFile = path.join(__dirname, `../resources`, `face.png`);
+const outputFile = path.join(__dirname, `../../vision`, `out.png`);
 
-describe('vision:faceDetection', function () {
-  it('should detect faces', function (done) {
-    faceDetectionExample.main(
-      inputFile,
-      outputFile,
-      MockCanvas,
-      function (err, faces) {
-        assert.ifError(err);
-        assert(faces.length === 1);
-        var image = fs.readFileSync(outputFile);
-        assert(image.toString('utf8') === 'testfoobar');
-        assert(console.log.calledWith('Found 1 face'));
-        assert(console.log.calledWith('Highlighting...'));
-        assert(console.log.calledWith('Finished!'));
-        done();
-      }
-    );
+test.before(stubConsole);
+test.after(restoreConsole);
+
+test.cb(`should detect faces`, (t) => {
+  faceDetectionExample.main(inputFile, outputFile, MockCanvas, (err, faces) => {
+    t.ifError(err);
+    t.is(faces.length, 1);
+    const image = fs.readFileSync(outputFile);
+    t.is(image.toString(`utf8`), `testfoobar`);
+    t.true(console.log.calledWith(`Found 1 face`));
+    t.true(console.log.calledWith(`Highlighting...`));
+    t.true(console.log.calledWith(`Finished!`));
+    t.end();
   });
 });

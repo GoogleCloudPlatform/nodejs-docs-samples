@@ -70,6 +70,7 @@ exports.set = function set (req, res) {
     .catch((err) => {
       console.error(err);
       res.status(500).send(err);
+      return Promise.reject(err);
     });
 };
 
@@ -101,6 +102,7 @@ exports.get = function get (req, res) {
     .catch((err) => {
       console.error(err);
       res.status(500).send(err);
+      return Promise.reject(err);
     });
 };
 
@@ -125,5 +127,6 @@ exports.del = function del (req, res) {
     .catch((err) => {
       console.error(err);
       res.status(500).send(err);
+      return Promise.reject(err);
     });
 };

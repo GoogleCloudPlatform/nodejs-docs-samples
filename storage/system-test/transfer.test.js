@@ -15,127 +15,115 @@
 
 'use strict';
 
-var uuid = require('uuid');
-var program = require('../transfer');
-var Storage = require('@google-cloud/storage');
+require(`../../system-test/_setup`);
 
-var storage = Storage();
-var firstBucketName = 'nodejs-docs-samples-test-' + uuid.v4();
-var secondBucketName = 'nodejs-docs-samples-test-' + uuid.v4();
+const uuid = require(`uuid`);
+const program = require(`../transfer`);
+const Storage = require(`@google-cloud/storage`);
 
-describe('storage:transfer', function () {
-  var jobName;
-  var date = '2222/08/11';
-  var time = '15:30';
-  var description = 'this is a test';
-  var status = 'DISABLED';
+const storage = Storage();
+const firstBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const secondBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 
-  before(function (done) {
-    storage.createBucket(firstBucketName, function (err) {
-      if (err) {
-        return done(err);
-      }
-      storage.createBucket(secondBucketName, done);
-    });
+let jobName;
+const date = `2222/08/11`;
+const time = `15:30`;
+const description = `this is a test`;
+const status = `DISABLED`;
+
+test.before(async () => {
+  stubConsole();
+  await storage.createBucket(firstBucketName);
+  await storage.createBucket(secondBucketName);
+});
+
+test.after(async () => {
+  restoreConsole();
+  const bucketOne = storage.bucket(firstBucketName);
+  const bucketTwo = storage.bucket(secondBucketName);
+  try {
+    bucketOne.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    bucketOne.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    bucketOne.delete();
+  } catch (err) {} // ignore error
+  try {
+    bucketTwo.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    bucketTwo.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    bucketTwo.delete();
+  } catch (err) {} // ignore error
+});
+
+test.cb.serial(`should create a storage transfer job`, (t) => {
+  const options = {
+    srcBucket: firstBucketName,
+    destBucket: secondBucketName,
+    date: date,
+    time: time,
+    description: description
+  };
+
+  program.createTransferJob(options, (err, transferJob) => {
+    t.ifError(err);
+    jobName = transferJob.name;
+    t.is(transferJob.name.indexOf(`transferJobs/`), 0);
+    t.is(transferJob.description, description);
+    t.is(transferJob.status, `ENABLED`);
+    t.true(console.log.calledWith(`Created transfer job: %s`, transferJob.name));
+    setTimeout(t.end, 2000);
   });
+});
 
-  after(function (done) {
-    storage.bucket(firstBucketName).deleteFiles({ force: true }, function (err) {
-      if (err) {
-        return done(err);
-      }
-      storage.bucket(firstBucketName).delete(function (err) {
-        if (err) {
-          return done(err);
-        }
-        storage.bucket(secondBucketName).deleteFiles({ force: true }, function (err) {
-          if (err) {
-            return done(err);
-          }
-          storage.bucket(secondBucketName).delete(done);
-        });
-      });
-    });
+test.cb.serial(`should get a transferJob`, (t) => {
+  program.getTransferJob(jobName, (err, transferJob) => {
+    t.ifError(err);
+    t.is(transferJob.name, jobName);
+    t.is(transferJob.description, description);
+    t.is(transferJob.status, `ENABLED`);
+    t.true(console.log.calledWith(`Found transfer job: %s`, transferJob.name));
+    setTimeout(t.end, 2000);
   });
+});
 
-  describe('createTransferJob', function () {
-    it('should create a storage transfer job', function (done) {
-      var options = {
-        srcBucket: firstBucketName,
-        destBucket: secondBucketName,
-        date: date,
-        time: time,
-        description: description
-      };
+test.cb.serial(`should update a transferJob`, (t) => {
+  var options = {
+    job: jobName,
+    field: `status`,
+    value: status
+  };
 
-      program.createTransferJob(options, function (err, transferJob) {
-        assert.ifError(err);
-        jobName = transferJob.name;
-        assert.equal(transferJob.name.indexOf('transferJobs/'), 0);
-        assert.equal(transferJob.description, description);
-        assert.equal(transferJob.status, 'ENABLED');
-        assert(console.log.calledWith('Created transfer job: %s', transferJob.name));
-        setTimeout(done, 2000);
-      });
-    });
+  program.updateTransferJob(options, (err, transferJob) => {
+    t.ifError(err);
+    t.is(transferJob.name, jobName);
+    t.is(transferJob.description, description);
+    t.is(transferJob.status, status);
+    t.true(console.log.calledWith(`Updated transfer job: %s`, transferJob.name));
+    setTimeout(t.end, 2000);
   });
+});
 
-  describe('getTransferJob', function () {
-    it('should get a transferJob', function (done) {
-      program.getTransferJob(jobName, function (err, transferJob) {
-        assert.ifError(err);
-        assert.equal(transferJob.name, jobName);
-        assert.equal(transferJob.description, description);
-        assert.equal(transferJob.status, 'ENABLED');
-        assert(console.log.calledWith('Found transfer job: %s', transferJob.name));
-        setTimeout(done, 2000);
-      });
-    });
+test.cb.serial(`should list transferJobs`, (t) => {
+  program.listTransferJobs((err, transferJobs) => {
+    t.ifError(err);
+    t.true(transferJobs.some((transferJob) => transferJob.name === jobName));
+    t.true(transferJobs.some((transferJob) => transferJob.description === description));
+    t.true(transferJobs.some((transferJob) => transferJob.status === status));
+    t.true(console.log.calledWith(`Found %d jobs!`, transferJobs.length));
+    setTimeout(t.end, 2000);
   });
+});
 
-  describe('updateTransferJob', function () {
-    it('should update a transferJob', function (done) {
-      var options = {
-        job: jobName,
-        field: 'status',
-        value: status
-      };
-
-      program.updateTransferJob(options, function (err, transferJob) {
-        assert.ifError(err);
-        assert.equal(transferJob.name, jobName);
-        assert.equal(transferJob.description, description);
-        assert.equal(transferJob.status, status);
-        assert(console.log.calledWith('Updated transfer job: %s', transferJob.name));
-        setTimeout(done, 2000);
-      });
-    });
-  });
-
-  describe('listTransferJobs', function () {
-    it('should list transferJobs', function (done) {
-      program.listTransferJobs(function (err, transferJobs) {
-        assert.ifError(err);
-        var matchingTransferJobs = transferJobs.filter(function (transferJob) {
-          return transferJob.name === jobName;
-        });
-        assert.equal(matchingTransferJobs.length, 1);
-        assert.equal(matchingTransferJobs[0].name, jobName);
-        assert.equal(matchingTransferJobs[0].description, description);
-        assert.equal(matchingTransferJobs[0].status, status);
-        assert(console.log.calledWith('Found %d jobs!', transferJobs.length));
-        setTimeout(done, 2000);
-      });
-    });
-  });
-
-  describe('listTransferOperations', function () {
-    it('should list transferJobs', function (done) {
-      program.listTransferOperations(jobName, function (err, operations) {
-        assert.ifError(err);
-        assert(Array.isArray(operations));
-        done();
-      });
-    });
+test.cb.serial(`should list transferJobs`, (t) => {
+  program.listTransferOperations(jobName, (err, operations) => {
+    t.ifError(err);
+    t.true(Array.isArray(operations));
+    t.end();
   });
 });

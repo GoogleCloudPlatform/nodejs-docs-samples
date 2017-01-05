@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const proxyquire = require(`proxyquire`).noCallThru();
 
 const TOPIC = `topic`;
@@ -51,87 +53,81 @@ function getSample () {
   };
 }
 
-describe(`functions:pubsub`, () => {
-  it(`Publish fails without a topic`, () => {
-    const expectedMsg = `Topic not provided. Make sure you have a "topic" property in your request`;
-    const sample = getSample();
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-    delete sample.mocks.req.body.topic;
-    sample.program.publish(sample.mocks.req, sample.mocks.res);
+test.serial(`Publish fails without a topic`, (t) => {
+  const expectedMsg = `Topic not provided. Make sure you have a "topic" property in your request`;
+  const sample = getSample();
 
-    assert.deepEqual(sample.mocks.res.status.callCount, 1);
-    assert.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
-    assert.deepEqual(sample.mocks.res.send.callCount, 1);
-    assert.equal(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
-  });
+  delete sample.mocks.req.body.topic;
+  sample.program.publish(sample.mocks.req, sample.mocks.res);
 
-  it(`Publish fails without a message`, () => {
-    const expectedMsg = `Message not provided. Make sure you have a "message" property in your request`;
-    const sample = getSample();
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.is(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
+});
 
-    delete sample.mocks.req.body.message;
-    sample.program.publish(sample.mocks.req, sample.mocks.res);
+test.serial(`Publish fails without a message`, (t) => {
+  const expectedMsg = `Message not provided. Make sure you have a "message" property in your request`;
+  const sample = getSample();
 
-    assert.deepEqual(sample.mocks.res.status.callCount, 1);
-    assert.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
-    assert.deepEqual(sample.mocks.res.send.callCount, 1);
-    assert.equal(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
-  });
+  delete sample.mocks.req.body.message;
+  sample.program.publish(sample.mocks.req, sample.mocks.res);
 
-  it(`Publishes the message to the topic and calls success`, () => {
-    const expectedMsg = `Message published.`;
-    const sample = getSample();
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.is(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
+});
 
-    return sample.program.publish(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        assert.deepEqual(sample.mocks.topic.publish.callCount, 1);
-        assert.deepEqual(sample.mocks.topic.publish.firstCall.args, [{
-          data: {
-            message: MESSAGE
-          }
-        }]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
-      });
-  });
+test.serial(`Publishes the message to the topic and calls success`, async (t) => {
+  const expectedMsg = `Message published.`;
+  const sample = getSample();
 
-  it(`Fails to publish the message and calls failure`, () => {
-    const error = new Error(`error`);
-    const sample = getSample();
-    sample.mocks.topic.publish.returns(Promise.reject(error));
+  await sample.program.publish(sample.mocks.req, sample.mocks.res);
+  t.deepEqual(sample.mocks.topic.publish.callCount, 1);
+  t.deepEqual(sample.mocks.topic.publish.firstCall.args, [{
+    data: {
+      message: MESSAGE
+    }
+  }]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
+});
 
-    return sample.program.publish(sample.mocks.req, sample.mocks.res)
-      .then(() => {
-        throw new Error(`Should have failed!`);
-      })
-      .catch((err) => {
-        assert.deepEqual(err, error);
-        assert.deepEqual(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-        assert.deepEqual(sample.mocks.res.status.callCount, 1);
-        assert.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
-        assert.deepEqual(sample.mocks.res.send.callCount, 1);
-        assert.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
-      });
-  });
+test.serial(`Fails to publish the message and calls failure`, async (t) => {
+  const error = new Error(`error`);
+  const sample = getSample();
+  sample.mocks.topic.publish.returns(Promise.reject(error));
 
-  it(`Subscribes to a message`, () => {
-    const callback = sinon.stub();
-    const json = JSON.stringify({ data: MESSAGE });
-    const event = {
-      data: {
-        data: Buffer.from(json).toString('base64')
-      }
-    };
+  const err = await t.throws(sample.program.publish(sample.mocks.req, sample.mocks.res));
+  t.deepEqual(err, error);
+  t.deepEqual(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+  t.deepEqual(sample.mocks.res.status.callCount, 1);
+  t.deepEqual(sample.mocks.res.status.firstCall.args, [500]);
+  t.deepEqual(sample.mocks.res.send.callCount, 1);
+  t.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
+});
 
-    const sample = getSample();
-    sample.program.subscribe(event, callback);
+test.serial(`Subscribes to a message`, (t) => {
+  const callback = sinon.stub();
+  const json = JSON.stringify({ data: MESSAGE });
+  const event = {
+    data: {
+      data: Buffer.from(json).toString('base64')
+    }
+  };
 
-    assert.deepEqual(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [json]);
-    assert.deepEqual(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
-  });
+  const sample = getSample();
+  sample.program.subscribe(event, callback);
+
+  t.deepEqual(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [json]);
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
 });

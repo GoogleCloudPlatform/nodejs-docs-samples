@@ -13,6 +13,8 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 var spawn = require('child_process').spawn;
 var request = require('request');
 var fs = require('fs');
@@ -296,8 +298,8 @@ function makeRequest (url, numTry, maxTries, cb) {
 // Send a request to the given url and test that the response body has the
 // expected value
 function testRequest (url, sample, cb) {
-  // Try up to 8 times
-  makeRequest(url, 1, 8, function (err, res, body) {
+  // Try up to 10 times
+  makeRequest(url, 1, 10, function (err, res, body) {
     if (err) {
       // Request error
       return cb(err);
@@ -319,31 +321,29 @@ function testRequest (url, sample, cb) {
   });
 }
 
-var port = 8080;
-sampleTests.forEach(function (sample) {
-  describe(sample.dir, function () {
-    sample.env = sample.env || {};
-    sample.env.PORT = port;
-    if (sample.dir === 'appengine/parse-server') {
-      sample.env.SERVER_URL = sample.env.SERVER_URL + port + '/parse';
-    }
-    port++;
-    it.skip('should install dependencies', function (done) {
-      testInstallation(sample, done);
-    });
+let port = 8080;
+sampleTests.forEach((sample) => {
+  sample.env = sample.env || {};
+  sample.env.PORT = port;
+  if (sample.dir === 'appengine/parse-server') {
+    sample.env.SERVER_URL = `${sample.env.SERVER_URL}${port}/parse`;
+  }
+  port++;
+  test.cb.skip(`${sample.dir}: should install dependencies`, (t) => {
+    testInstallation(sample, t.end);
+  });
 
-    if (sample.TRAVIS && !process.env.TRAVIS) {
-      return;
-    }
+  if (sample.TRAVIS && !process.env.TRAVIS) {
+    return;
+  }
 
-    if (sample.TRAVIS_NODE_VERSION && process.env.TRAVIS &&
-      process.env.TRAVIS_NODE_VERSION !== sample.TRAVIS_NODE_VERSION) {
-      return;
-    }
+  if (sample.TRAVIS_NODE_VERSION && process.env.TRAVIS &&
+    process.env.TRAVIS_NODE_VERSION !== sample.TRAVIS_NODE_VERSION) {
+    return;
+  }
 
-    it('should return 200 and Hello World', function (done) {
-      testLocalApp(sample, done);
-    });
+  test.cb(`${sample.dir}: should return 200 and Hello World`, (t) => {
+    testLocalApp(sample, t.end);
   });
 });
 

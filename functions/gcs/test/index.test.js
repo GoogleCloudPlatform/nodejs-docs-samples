@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const fs = require(`fs`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noCallThru();
@@ -46,62 +48,60 @@ function getSample () {
   };
 }
 
-describe(`functions:gcs`, () => {
-  it(`Fails without a bucket`, () => {
-    const expectedMsg = `Bucket not provided. Make sure you have a "bucket" property in your request`;
+test.serial(`Fails without a bucket`, (t) => {
+  const expectedMsg = `Bucket not provided. Make sure you have a "bucket" property in your request`;
 
-    assert.throws(
-      () => getSample().program.wordCount({ data: { name: `file` } }),
-      Error,
-      expectedMsg
-    );
+  t.throws(
+    () => getSample().program.wordCount({ data: { name: `file` } }),
+    Error,
+    expectedMsg
+  );
+});
+
+test.serial(`Fails without a file`, (t) => {
+  const expectedMsg = `Filename not provided. Make sure you have a "file" property in your request`;
+
+  t.throws(
+    () => getSample().program.wordCount({ data: { bucket: `bucket` } }),
+    Error,
+    expectedMsg
+  );
+});
+
+test.cb.serial(`Does nothing for deleted files`, (t) => {
+  const event = {
+    data: {
+      resourceState: `not_exists`
+    }
+  };
+  const sample = getSample();
+
+  sample.program.wordCount(event, (err, message) => {
+    t.ifError(err);
+    t.is(message, undefined);
+    t.deepEqual(sample.mocks.storage.bucket.callCount, 0);
+    t.deepEqual(sample.mocks.bucket.file.callCount, 0);
+    t.end();
   });
+});
 
-  it(`Fails without a file`, () => {
-    const expectedMsg = `Filename not provided. Make sure you have a "file" property in your request`;
+test.cb.serial(`Reads the file line by line`, (t) => {
+  const expectedMsg = `File ${filename} has 114 words`;
+  const event = {
+    data: {
+      bucket: `bucket`,
+      name: `sample.txt`
+    }
+  };
 
-    assert.throws(
-      () => getSample().program.wordCount({ data: { bucket: `bucket` } }),
-      Error,
-      expectedMsg
-    );
-  });
-
-  it(`Does nothing for deleted files`, (done) => {
-    const event = {
-      data: {
-        resourceState: `not_exists`
-      }
-    };
-    const sample = getSample();
-
-    sample.program.wordCount(event, (err, message) => {
-      assert.ifError(err);
-      assert.equal(message, undefined);
-      assert.deepEqual(sample.mocks.storage.bucket.callCount, 0);
-      assert.deepEqual(sample.mocks.bucket.file.callCount, 0);
-      done();
-    });
-  });
-
-  it(`Reads the file line by line`, (done) => {
-    const expectedMsg = `File ${filename} has 114 words`;
-    const event = {
-      data: {
-        bucket: `bucket`,
-        name: `sample.txt`
-      }
-    };
-
-    const sample = getSample();
-    sample.program.wordCount(event, (err, message) => {
-      assert.ifError(err);
-      assert.deepEqual(message, expectedMsg);
-      assert.deepEqual(sample.mocks.storage.bucket.calledOnce, true);
-      assert.deepEqual(sample.mocks.storage.bucket.firstCall.args, [event.data.bucket]);
-      assert.deepEqual(sample.mocks.bucket.file.calledOnce, true);
-      assert.deepEqual(sample.mocks.bucket.file.firstCall.args, [event.data.name]);
-      done();
-    });
+  const sample = getSample();
+  sample.program.wordCount(event, (err, message) => {
+    t.ifError(err);
+    t.deepEqual(message, expectedMsg);
+    t.deepEqual(sample.mocks.storage.bucket.calledOnce, true);
+    t.deepEqual(sample.mocks.storage.bucket.firstCall.args, [event.data.bucket]);
+    t.deepEqual(sample.mocks.bucket.file.calledOnce, true);
+    t.deepEqual(sample.mocks.bucket.file.firstCall.args, [event.data.name]);
+    t.end();
   });
 });

@@ -15,8 +15,9 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const cmd = `node queries.js`;
@@ -45,21 +46,22 @@ unique_words: 4582`;
 
 const sqlQuery = `SELECT * FROM publicdata.samples.natality LIMIT 5;`;
 
-describe(`bigquery:queries`, function () {
-  it(`should query shakespeare`, () => {
-    const output = run(`${cmd} shakespeare`, cwd);
-    assert.equal(output, expectedShakespeareResult);
-  });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  it(`should run a sync query`, () => {
-    const output = run(`${cmd} sync "${sqlQuery}"`, cwd);
-    assert.equal(output.includes(`Rows:`), true);
-    assert.equal(output.includes(`source_year`), true);
-  });
+test(`should query shakespeare`, async (t) => {
+  const output = await runAsync(`${cmd} shakespeare`, cwd);
+  t.is(output, expectedShakespeareResult);
+});
 
-  it(`should run an async query`, () => {
-    const output = run(`${cmd} async "${sqlQuery}"`, cwd);
-    assert.equal(output.includes(`Rows:`), true);
-    assert.equal(output.includes(`source_year`), true);
-  });
+test(`should run a sync query`, async (t) => {
+  const output = await runAsync(`${cmd} sync "${sqlQuery}"`, cwd);
+  t.true(output.includes(`Rows:`));
+  t.true(output.includes(`source_year`));
+});
+
+test(`should run an async query`, async (t) => {
+  const output = await runAsync(`${cmd} async "${sqlQuery}"`, cwd);
+  t.true(output.includes(`Rows:`));
+  t.true(output.includes(`source_year`));
 });

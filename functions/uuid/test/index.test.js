@@ -15,17 +15,17 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const uuidSample = require('../');
 
-describe(`functions:uuid`, () => {
-  it(`should generate a uuid`, () => {
-    const callback = sinon.stub();
+test(`should generate a uuid`, (t) => {
+  const callback = sinon.stub();
 
-    uuidSample.uuid({}, callback);
+  uuidSample.uuid({}, callback);
 
-    assert.equal(callback.callCount, 1);
-    assert.strictEqual(callback.firstCall.args[0], null);
-    assert.equal(typeof callback.firstCall.args[1], `string`);
-    assert.equal(callback.firstCall.args[1].length, 36);
-  });
+  t.is(callback.callCount, 1);
+  t.is(callback.firstCall.args[0], null);
+  t.is(typeof callback.firstCall.args[1], `string`);
+  t.is(callback.firstCall.args[1].length, 36);
 });

@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const proxyquire = require(`proxyquire`).noCallThru();
 
 function getSample () {
@@ -49,36 +51,36 @@ function getSample () {
   };
 }
 
-describe(`functions:log`, () => {
-  it(`should write to log`, () => {
-    const expectedMsg = `I am a log entry!`;
-    const callback = sinon.stub();
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-    getSample().program.helloWorld({}, callback);
+test.serial(`should write to log`, (t) => {
+  const expectedMsg = `I am a log entry!`;
+  const callback = sinon.stub();
 
-    assert.equal(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [expectedMsg]);
-    assert.equal(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
-  });
+  getSample().program.helloWorld({}, callback);
 
-  it(`getLogEntries: should retrieve logs`, () => {
-    const sample = getSample();
-
-    return sample.program.getLogEntries()
-      .then((entries) => {
-        assert.equal(console.log.calledWith(`Entries:`), true);
-        assert.strictEqual(entries, sample.mocks.results[0]);
-      });
-  });
-
-  it(`getMetrics: should retrieve metrics`, () => {
-    const sample = getSample();
-    const callback = sinon.stub();
-
-    sample.program.getMetrics(callback);
-
-    assert.equal(callback.callCount, 1);
-  });
+  t.is(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
+  t.is(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
 });
 
+test.serial(`getLogEntries: should retrieve logs`, (t) => {
+  const sample = getSample();
+
+  return sample.program.getLogEntries()
+    .then((entries) => {
+      t.true(console.log.calledWith(`Entries:`));
+      t.true(entries === sample.mocks.results[0]);
+    });
+});
+
+test.serial(`getMetrics: should retrieve metrics`, (t) => {
+  const sample = getSample();
+  const callback = sinon.stub();
+
+  sample.program.getMetrics(callback);
+
+  t.is(callback.callCount, 1);
+});

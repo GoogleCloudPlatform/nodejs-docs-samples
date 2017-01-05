@@ -5,8 +5,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "scripts": {
-    "test": "cd ..; npm run t -- bigquery/test/*.test.js",
-    "system-test": "cd ..; npm run st -- bigquery/system-test/*.test.js"
+    "test": "cd ..; npm run st -- bigquery/system-test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/bigquery": "0.6.0",

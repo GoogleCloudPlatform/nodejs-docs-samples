@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const bigquery = proxyquire(`@google-cloud/bigquery`, {})();
 const uuid = require(`uuid`);
@@ -23,38 +25,42 @@ const expectedDatasetId = `my_new_dataset`;
 let datasetId = `nodejs-docs-samples-test-${uuid.v4()}`;
 datasetId = datasetId.replace(/-/gi, `_`);
 
-describe(`bigquery:quickstart`, () => {
-  let bigqueryMock, BigqueryMock;
+test.after(async () => {
+  try {
+    bigquery.dataset(datasetId).delete({ force: true });
+  } catch (err) {} // ignore error
+});
 
-  after((done) => {
-    bigquery.dataset(datasetId).delete(() => {
-      // Ignore any error, the dataset might not have been created
-      done();
-    });
-  });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  it(`quickstart should create a dataset`, (done) => {
-    bigqueryMock = {
+test(`quickstart should create a dataset`, async (t) => {
+  await new Promise((resolve, reject) => {
+    const bigqueryMock = {
       createDataset: (_datasetId) => {
-        assert.equal(_datasetId, expectedDatasetId);
+        t.is(_datasetId, expectedDatasetId);
 
         return bigquery.createDataset(datasetId)
-          .then((results) => {
-            const dataset = results[0];
-            assert.notEqual(dataset, undefined);
+          .then(([dataset]) => {
+            t.not(dataset, undefined);
+
             setTimeout(() => {
-              assert.equal(console.log.calledOnce, true);
-              assert.deepEqual(console.log.firstCall.args, [`Dataset ${dataset.id} created.`]);
-              done();
-            }, 500);
-            return results;
-          }).catch(done);
+              try {
+                t.true(console.log.calledOnce);
+                t.deepEqual(console.log.firstCall.args, [`Dataset ${dataset.id} created.`]);
+                resolve();
+              } catch (err) {
+                reject(err);
+              }
+            }, 200);
+
+            return [dataset];
+          }).catch(reject);
       }
     };
-    BigqueryMock = sinon.stub().returns(bigqueryMock);
 
     proxyquire(`../quickstart`, {
-      '@google-cloud/bigquery': BigqueryMock
+      '@google-cloud/bigquery': sinon.stub().returns(bigqueryMock)
     });
   });
 });

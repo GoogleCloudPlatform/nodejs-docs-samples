@@ -13,14 +13,17 @@
 
 'use strict';
 
-var vmsExample = require('../vms_api');
+require(`../../system-test/_setup`);
 
-describe('computeengine:vms_api', function () {
-  it('should retrieve vms', function (done) {
-    vmsExample.main(function (err, result) {
-      assert.ifError(err);
-      assert(result);
-      done();
-    });
+const vmsExample = require(`../vms_api`);
+
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
+
+test.cb('should retrieve vms', (t) => {
+  vmsExample.main((err, result) => {
+    t.ifError(err);
+    t.truthy(result);
+    t.end();
   });
 });

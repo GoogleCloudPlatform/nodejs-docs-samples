@@ -32,7 +32,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb(`should render index page`, (t) => {
   const sample = getSample();

@@ -53,7 +53,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb(`should record a visit`, (t) => {
   const sample = getSample();

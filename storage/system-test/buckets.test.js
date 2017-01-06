@@ -26,14 +26,14 @@ const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);
 const cmd = `node buckets.js`;
 
-test.after(async () => {
+test.after.always(async () => {
   try {
     await bucket.delete();
   } catch (err) {} // ignore error
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`should create a bucket`, async (t) => {
   const output = await runAsync(`${cmd} create ${bucketName}`, cwd);

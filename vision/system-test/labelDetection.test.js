@@ -23,7 +23,7 @@ const labelDetectionSample = require(`../labelDetection`);
 const inputFile = path.join(__dirname, `../resources`, `cat.jpg`);
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should detect labels`, (t) => {
   labelDetectionSample.main(inputFile, (err, labels) => {

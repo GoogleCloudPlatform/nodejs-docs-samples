@@ -39,7 +39,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb('should echo a message', (t) => {
   request(getSample().app)

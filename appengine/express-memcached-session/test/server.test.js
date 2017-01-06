@@ -52,7 +52,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test(`sets up the sample`, (t) => {
   const sample = getSample();

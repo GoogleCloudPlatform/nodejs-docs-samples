@@ -64,7 +64,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`should create a transfer job`, (t) => {
   const description = `description`;

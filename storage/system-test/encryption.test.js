@@ -37,7 +37,7 @@ test.before(async () => {
   await bucket.create(bucketName);
 });
 
-test.after(async () => {
+test.after.always(async () => {
   try {
     // Delete the downloaded file
     fs.unlinkSync(downloadFilePath);
@@ -57,7 +57,7 @@ test.after(async () => {
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`should generate a key`, async (t) => {
   const output = await runAsync(`${cmd} generate-encryption-key`, cwd);

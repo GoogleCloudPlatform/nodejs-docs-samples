@@ -21,7 +21,7 @@ const proxyquire = require(`proxyquire`).noPreserveCache();
 const language = proxyquire(`@google-cloud/language`, {})();
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb(`should detect sentiment`, (t) => {
   const expectedText = `Hello, world!`;

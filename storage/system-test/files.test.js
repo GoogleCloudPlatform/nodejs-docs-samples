@@ -36,7 +36,7 @@ test.before(async () => {
   await bucket.create();
 });
 
-test.after(async () => {
+test.after.always(async () => {
   try {
     fs.unlinkSync(downloadFilePath);
   } catch (err) {
@@ -55,7 +55,7 @@ test.after(async () => {
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`should upload a file`, async (t) => {
   const output = await runAsync(`${cmd} upload ${bucketName} ${filePath}`, cwd);

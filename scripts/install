@@ -26,7 +26,6 @@ const queue = async.queue((directory, callback) => {
 }, 4);
 
 queue.push('appengine/bower');
-queue.push('appengine/cloudsql');
 queue.push('appengine/express-memcached-session');
 queue.push('appengine/geddy');
 queue.push('appengine/grunt');

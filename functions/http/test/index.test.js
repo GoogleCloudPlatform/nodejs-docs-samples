@@ -53,7 +53,7 @@ function getMocks () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`http:helloworld: should error with no message`, (t) => {
   const mocks = getMocks();

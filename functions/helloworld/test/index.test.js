@@ -21,7 +21,7 @@ const proxyquire = require('proxyquire').noCallThru();
 const program = proxyquire(`../`, {});
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`helloworld: should log a message`, (t) => {
   const expectedMsg = `My Cloud Function: hi`;

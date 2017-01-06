@@ -21,7 +21,7 @@ const proxyquire = require(`proxyquire`).noPreserveCache();
 const resource = proxyquire(`@google-cloud/resource`, {})();
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should list projects`, (t) => {
   const resourceMock = {

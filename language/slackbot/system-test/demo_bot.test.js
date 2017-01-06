@@ -59,7 +59,7 @@ test.before.cb((t) => {
   });
 });
 
-test.after.cb((t) => {
+test.after.cb.always((t) => {
   fs.unlink(DB_PATH, (err) => {
     if (err) {
       t.end(err);

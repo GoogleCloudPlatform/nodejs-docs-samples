@@ -31,14 +31,14 @@ test.before(async () => {
   });
 });
 
-test.after(async () => {
+test.after.always(async () => {
   try {
     await dns.zone(zoneName).delete();
   } catch (err) {} // ignore error
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb(`should list zones`, (t) => {
   // Listing is eventually consistent, give the indexes time to update

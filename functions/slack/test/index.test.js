@@ -84,7 +84,7 @@ function getMocks () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`Send fails if not a POST request`, async (t) => {
   const error = new Error(`Only POST requests are accepted`);

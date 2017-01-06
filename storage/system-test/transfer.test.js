@@ -37,7 +37,7 @@ test.before(async () => {
   await storage.createBucket(secondBucketName);
 });
 
-test.after(async () => {
+test.after.always(async () => {
   restoreConsole();
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);

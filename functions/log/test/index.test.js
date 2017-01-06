@@ -52,7 +52,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`should write to log`, (t) => {
   const expectedMsg = `I am a log entry!`;

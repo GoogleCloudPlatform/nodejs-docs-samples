@@ -13,26 +13,26 @@
 
 'use strict';
 
-var listResourcesExample = require('../list_resources');
+require(`../../system-test/_setup`);
 
-describe('monitoring:list_resources', function () {
-  it('should list a bunch of stuff', function (done) {
-    listResourcesExample.main(
-      process.env.GCLOUD_PROJECT,
-      function (err, results) {
-        assert.ifError(err);
-        assert(results.length === 3);
-        // Monitored resources
-        assert(Array.isArray(results[0].resourceDescriptors));
-        // Metric descriptors
-        assert(Array.isArray(results[1].metricDescriptors));
-        // Time series
-        assert(Array.isArray(results[2].timeSeries));
-        assert(console.log.calledWith('Monitored resources'));
-        assert(console.log.calledWith('Metric descriptors'));
-        assert(console.log.calledWith('Time series'));
-        done();
-      }
-    );
+const listResourcesExample = require(`../list_resources`);
+
+test.before(stubConsole);
+test.after(restoreConsole);
+
+test.cb(`should list a bunch of stuff`, (t) => {
+  listResourcesExample.main(process.env.GCLOUD_PROJECT, (err, results) => {
+    t.ifError(err);
+    t.is(results.length, 3);
+    // Monitored resources
+    t.true(Array.isArray(results[0].resourceDescriptors));
+    // Metric descriptors
+    t.true(Array.isArray(results[1].metricDescriptors));
+    // Time series
+    t.true(Array.isArray(results[2].timeSeries));
+    t.true(console.log.calledWith('Monitored resources'));
+    t.true(console.log.calledWith('Metric descriptors'));
+    t.true(console.log.calledWith('Time series'));
+    t.end();
   });
 });

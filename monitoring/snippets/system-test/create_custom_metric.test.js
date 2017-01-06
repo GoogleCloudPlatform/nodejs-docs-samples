@@ -13,37 +13,40 @@
 
 'use strict';
 
-var customMetricsExample = require('../create_custom_metric');
+require(`../../system-test/_setup`);
+
+const customMetricsExample = require('../create_custom_metric');
 
 /** Refactored out to keep lines shorter */
 function getPointValue (timeSeries) {
   return timeSeries.timeSeries[0].points[0].value.int64Value;
 }
 
-describe('monitoring:create_custom_metric', function () {
-  it('should create and read back a custom metric', function (done) {
-    customMetricsExample.main(
-      process.env.GCLOUD_PROJECT,
-      Math.random().toString(36).substring(7),
-      function (err, results) {
-        assert.ifError(err);
-        assert(results.length === 4);
-        // Result of creating metric
-        assert(typeof results[0].name === 'string');
-        // Result of writing time series
-        assert.deepEqual(results[1], {});
-        // Result of reading time series
-        assert(typeof getPointValue(results[2]) === 'string');
-        assert(!isNaN(parseInt(getPointValue(results[2]), 10)));
-        // Result of deleting metric
-        assert.deepEqual(results[3], {});
-        assert(console.log.calledWith('Created custom metric'));
-        assert(console.log.calledWith('Wrote time series'));
-        assert(console.log.calledWith('Reading metric type'));
-        assert(console.log.calledWith('Time series'));
-        assert(console.log.calledWith('Deleted metric'));
-        done();
-      }
-    );
-  });
+test.before(stubConsole);
+test.after(restoreConsole);
+
+test.cb('should create and read back a custom metric', (t) => {
+  customMetricsExample.main(
+    process.env.GCLOUD_PROJECT,
+    Math.random().toString(36).substring(7),
+    (err, results) => {
+      t.ifError(err);
+      t.is(results.length, 4);
+      // Result of creating metric
+      t.is(typeof results[0].name, 'string');
+      // Result of writing time series
+      t.deepEqual(results[1], {});
+      // Result of reading time series
+      t.is(typeof getPointValue(results[2]), 'string');
+      t.false(isNaN(parseInt(getPointValue(results[2]), 10)));
+      // Result of deleting metric
+      t.deepEqual(results[3], {});
+      t.true(console.log.calledWith('Created custom metric'));
+      t.true(console.log.calledWith('Wrote time series'));
+      t.true(console.log.calledWith('Reading metric type'));
+      t.true(console.log.calledWith('Time series'));
+      t.true(console.log.calledWith('Deleted metric'));
+      t.end();
+    }
+  );
 });

@@ -15,35 +15,41 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const language = proxyquire(`@google-cloud/language`, {})();
 
-describe(`language:quickstart`, () => {
-  it(`should detect sentiment`, (done) => {
-    const expectedText = `Hello, world!`;
-    const languageMock = {
-      detectSentiment: (_text) => {
-        assert.equal(_text, expectedText);
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-        return language.detectSentiment(_text)
-          .then((results) => {
-            const sentiment = results[0];
-            assert.equal(typeof sentiment, `number`);
+test.cb(`should detect sentiment`, (t) => {
+  const expectedText = `Hello, world!`;
+  const languageMock = {
+    detectSentiment: (_text) => {
+      t.is(_text, expectedText);
 
-            setTimeout(() => {
-              assert.equal(console.log.callCount, 2);
-              assert.deepEqual(console.log.getCall(0).args, [`Text: ${expectedText}`]);
-              assert.deepEqual(console.log.getCall(1).args, [`Sentiment: ${sentiment}`]);
-              done();
-            }, 200);
+      return language.detectSentiment(_text)
+        .then(([sentiment]) => {
+          t.is(typeof sentiment, `number`);
 
-            return results;
-          });
-      }
-    };
+          setTimeout(() => {
+            try {
+              t.is(console.log.callCount, 2);
+              t.deepEqual(console.log.getCall(0).args, [`Text: ${expectedText}`]);
+              t.deepEqual(console.log.getCall(1).args, [`Sentiment: ${sentiment}`]);
+              t.end();
+            } catch (err) {
+              t.end(err);
+            }
+          }, 200);
 
-    proxyquire(`../quickstart`, {
-      '@google-cloud/language': sinon.stub().returns(languageMock)
-    });
+          return [sentiment];
+        });
+    }
+  };
+
+  proxyquire(`../quickstart`, {
+    '@google-cloud/language': sinon.stub().returns(languageMock)
   });
 });

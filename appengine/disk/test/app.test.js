@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const express = require(`express`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
@@ -31,8 +33,8 @@ function getSample () {
     userIp: `abcd`
   }) + `\n`;
   const fsMock = {
-    appendFile: sinon.stub().callsArg(2),
-    readFile: sinon.stub().callsArgWith(2, null, resultsMock)
+    appendFile: sinon.stub().yields(),
+    readFile: sinon.stub().yields(null, resultsMock)
   };
 
   const app = proxyquire(SAMPLE_PATH, {
@@ -49,54 +51,56 @@ function getSample () {
   };
 }
 
-describe(`appengine/disk/app.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
+test(`sets up the sample`, (t) => {
+  const sample = getSample();
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
-  });
+  t.true(sample.mocks.express.calledOnce);
+  t.true(sample.app.listen.calledOnce);
+  t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+});
 
-  it(`should record a visit`, (done) => {
-    const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
+test.cb(`should record a visit`, (t) => {
+  const sample = getSample();
+  const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
-    request(sample.app)
-      .get(`/`)
-      .expect(200)
-      .expect((response) => {
-        assert.equal(response.text, expectedResult);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, expectedResult);
+    })
+    .end(t.end);
+});
 
-  it(`should handle insert error`, (done) => {
-    const expectedResult = `insert_error`;
+test.cb(`should handle insert error`, (t) => {
+  const sample = getSample();
+  const error = new Error(`error`);
 
-    sample.mocks.fs.appendFile.callsArgWith(2, expectedResult);
+  sample.mocks.fs.appendFile.yields(error);
 
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, expectedResult + `\n`);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(500)
+    .expect((response) => {
+      t.true(response.text.includes(error.message));
+    })
+    .end(t.end);
+});
 
-  it(`should handle read error`, (done) => {
-    const expectedResult = `read_error`;
+test.cb(`should handle read error`, (t) => {
+  const sample = getSample();
+  const error = new Error(`error`);
 
-    sample.mocks.fs.readFile.callsArgWith(2, expectedResult);
+  sample.mocks.fs.readFile.yields(error);
 
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, `${expectedResult}\n`);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(500)
+    .expect((response) => {
+      t.true(response.text.includes(error.message));
+    })
+    .end(t.end);
 });

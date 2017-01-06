@@ -15,10 +15,11 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const storage = require(`@google-cloud/storage`)();
 const uuid = require(`uuid`);
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
@@ -28,76 +29,78 @@ const fileName = `test.txt`;
 const filePath = path.join(__dirname, `../resources`, fileName);
 const cmd = `node acl.js`;
 
-describe('storage:acl', () => {
-  before(() => bucket.create().then((results) => results[0].upload(filePath)));
+test.before(async (t) => {
+  await bucket.create();
+  await bucket.upload(filePath);
+});
 
-  after(() => {
-    // Try deleting all files twice, just to make sure. Ignore any errors.
-    return bucket.deleteFiles({ force: true })
-      .then(() => bucket.deleteFiles({ force: true }), () => {})
-      .then(() => bucket.delete(), () => {})
-      .catch(() => {});
-  });
+test.after(async (t) => {
+  // Try deleting all files twice
+  try {
+    await bucket.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    await bucket.deleteFiles({ force: true });
+  } catch (err) {} // ignore error
+  try {
+    await bucket.delete();
+  } catch (err) {} // ignore error
+});
 
-  it(`should print acl for a bucket`, () => {
-    const output = run(`${cmd} print-bucket-acl ${bucketName}`, cwd);
-    assert.equal(output.includes(`OWNER: project-editors-`), true);
-    assert.equal(output.includes(`OWNER: project-owners-`), true);
-    assert.equal(output.includes(`READER: project-viewers-`), true);
-  });
+test(`should print acl for a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} print-bucket-acl ${bucketName}`, cwd);
+  t.true(output.includes(`OWNER: project-editors-`));
+  t.true(output.includes(`OWNER: project-owners-`));
+  t.true(output.includes(`READER: project-viewers-`));
+});
 
-  it(`should print a user's acl for a bucket`, () => {
-    return bucket.acl.readers.addUser(userEmail)
-      .then(() => {
-        const output = run(`${cmd} print-bucket-acl-for-user ${bucketName} ${userEmail}`, cwd);
-        assert.equal(output, `READER: user-${userEmail}`);
-        return bucket.acl.readers.deleteUser(userEmail);
-      });
-  });
+test(`should print acl for a file`, async (t) => {
+  const output = await runAsync(`${cmd} print-file-acl ${bucketName} ${fileName}`, cwd);
+  t.true(output.includes(`OWNER: project-editors-`));
+  t.true(output.includes(`OWNER: project-owners-`));
+  t.true(output.includes(`READER: project-viewers-`));
+});
 
-  it(`should add a user as an owner on a bucket`, () => {
-    const output = run(`${cmd} add-bucket-owner ${bucketName} ${userEmail}`, cwd);
-    assert.equal(output, `Added user ${userEmail} as an owner on bucket ${bucketName}.`);
-  });
+test.serial(`should print a user's acl for a bucket`, async (t) => {
+  await bucket.acl.readers.addUser(userEmail);
+  const output = await runAsync(`${cmd} print-bucket-acl-for-user ${bucketName} ${userEmail}`, cwd);
+  t.is(output, `READER: user-${userEmail}`);
+  await bucket.acl.readers.deleteUser(userEmail);
+});
 
-  it(`should remove a user from a bucket`, () => {
-    const output = run(`${cmd} remove-bucket-owner ${bucketName} ${userEmail}`, cwd);
-    assert.equal(output, `Removed user ${userEmail} from bucket ${bucketName}.`);
-  });
+test.serial(`should add a user as an owner on a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} add-bucket-owner ${bucketName} ${userEmail}`, cwd);
+  t.is(output, `Added user ${userEmail} as an owner on bucket ${bucketName}.`);
+});
 
-  it(`should add a user as a default owner on a bucket`, () => {
-    const output = run(`${cmd} add-bucket-default-owner ${bucketName} ${userEmail}`, cwd);
-    assert.equal(output, `Added user ${userEmail} as an owner on bucket ${bucketName}.`);
-  });
+test.serial(`should remove a user from a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} remove-bucket-owner ${bucketName} ${userEmail}`, cwd);
+  t.is(output, `Removed user ${userEmail} from bucket ${bucketName}.`);
+});
 
-  it(`should remove a default user from a bucket`, () => {
-    const output = run(`${cmd} remove-bucket-default-owner ${bucketName} ${userEmail}`, cwd);
-    assert.equal(output, `Removed user ${userEmail} from bucket ${bucketName}.`);
-  });
+test.serial(`should add a user as a default owner on a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} add-bucket-default-owner ${bucketName} ${userEmail}`, cwd);
+  t.is(output, `Added user ${userEmail} as an owner on bucket ${bucketName}.`);
+});
 
-  it(`should print acl for a file`, () => {
-    const output = run(`${cmd} print-file-acl ${bucketName} ${fileName}`, cwd);
-    assert.equal(output.includes(`OWNER: project-editors-`), true);
-    assert.equal(output.includes(`OWNER: project-owners-`), true);
-    assert.equal(output.includes(`READER: project-viewers-`), true);
-  });
+test.serial(`should remove a default user from a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} remove-bucket-default-owner ${bucketName} ${userEmail}`, cwd);
+  t.is(output, `Removed user ${userEmail} from bucket ${bucketName}.`);
+});
 
-  it(`should print a user's acl for a file`, () => {
-    return bucket.file(fileName).acl.readers.addUser(userEmail)
-      .then(() => {
-        const output = run(`${cmd} print-file-acl-for-user ${bucketName} ${fileName} ${userEmail}`, cwd);
-        assert.equal(output, `READER: user-${userEmail}`);
-        return bucket.file(fileName).acl.readers.deleteUser(userEmail);
-      });
-  });
+test.serial(`should print a user's acl for a file`, async (t) => {
+  await bucket.file(fileName).acl.readers.addUser(userEmail);
+  const output = await runAsync(`${cmd} print-file-acl-for-user ${bucketName} ${fileName} ${userEmail}`, cwd);
+  t.is(output, `READER: user-${userEmail}`);
+  await bucket.file(fileName).acl.readers.deleteUser(userEmail);
+});
 
-  it(`should add a user as an owner on a bucket`, () => {
-    const output = run(`${cmd} add-file-owner ${bucketName} ${fileName} ${userEmail}`, cwd);
-    assert.equal(output, `Added user ${userEmail} as an owner on file ${fileName}.`);
-  });
+test.serial(`should add a user as an owner on a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} add-file-owner ${bucketName} ${fileName} ${userEmail}`, cwd);
+  t.is(output, `Added user ${userEmail} as an owner on file ${fileName}.`);
+});
 
-  it(`should remove a user from a bucket`, () => {
-    const output = run(`${cmd} remove-file-owner ${bucketName} ${fileName} ${userEmail}`, cwd);
-    assert.equal(output, `Removed user ${userEmail} from file ${fileName}.`);
-  });
+test.serial(`should remove a user from a bucket`, async (t) => {
+  const output = await runAsync(`${cmd} remove-file-owner ${bucketName} ${fileName} ${userEmail}`, cwd);
+  t.is(output, `Removed user ${userEmail} from file ${fileName}.`);
 });

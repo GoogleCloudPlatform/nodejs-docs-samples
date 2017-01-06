@@ -15,8 +15,9 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const path = require(`path`);
-const run = require(`../../utils`).run;
 const dns = require(`@google-cloud/dns`)();
 const uuid = require(`uuid`);
 
@@ -24,27 +25,29 @@ const zoneName = `test-${uuid().substr(0, 13)}`;
 const cwd = path.join(__dirname, `..`);
 const cmd = `node zones.js`;
 
-describe(`dns:zones`, () => {
-  before((done) => {
-    dns.createZone(zoneName, {
-      dnsName: `${process.env.GCLOUD_PROJECT}.appspot.com.`
-    }, done);
+test.before(async () => {
+  await dns.createZone(zoneName, {
+    dnsName: `${process.env.GCLOUD_PROJECT}.appspot.com.`
   });
+});
 
-  after((done) => {
-    dns.zone(zoneName).delete(() => {
-      // Ignore error
-      done();
-    });
-  });
+test.after(async () => {
+  try {
+    await dns.zone(zoneName).delete();
+  } catch (err) {} // ignore error
+});
 
-  it(`should list zones`, (done) => {
-    // Listing is eventually consistent, give the indexes time to update
-    setTimeout(() => {
-      const output = run(`${cmd} list`, cwd);
-      assert.notEqual(output.indexOf(`Zones:`), -1);
-      assert.notEqual(output.indexOf(zoneName), -1);
-      done();
-    }, 5000);
-  });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
+
+test.cb(`should list zones`, (t) => {
+  // Listing is eventually consistent, give the indexes time to update
+  setTimeout(() => {
+    runAsync(`${cmd} list`, cwd)
+      .then((output) => {
+        t.true(output.includes(`Zones:`));
+        t.true(output.includes(zoneName));
+        t.end();
+      }).catch(t.end);
+  }, 5000);
 });

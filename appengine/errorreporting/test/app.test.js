@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const express = require(`express`);
 const winston = require(`winston`);
 const path = require(`path`);
@@ -50,29 +52,29 @@ function getSample () {
   };
 }
 
-describe(`appengine/errorreporting/app.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
+test(`sets up the sample`, (t) => {
+  const sample = getSample();
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.mocks.winston.add.calledOnce);
-    assert.strictEqual(sample.mocks.winston.add.firstCall.args[0], winston.transports.File);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
-  });
+  t.true(sample.mocks.express.calledOnce);
+  t.true(sample.mocks.winston.add.calledOnce);
+  t.true(sample.mocks.winston.add.firstCall.args[0] === winston.transports.File);
+  t.true(sample.app.listen.calledOnce);
+  t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+});
 
-  it(`should throw an error`, (done) => {
-    const expectedResult = `something is wrong!`;
+test.cb(`should throw an error`, (t) => {
+  const sample = getSample();
+  const expectedResult = `something is wrong!`;
 
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert(sample.mocks.winston.error.calledOnce);
-        assert.equal(response.text, expectedResult);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(500)
+    .expect((response) => {
+      t.true(sample.mocks.winston.error.calledOnce);
+      t.is(response.text, expectedResult);
+    })
+    .end(t.end);
 });

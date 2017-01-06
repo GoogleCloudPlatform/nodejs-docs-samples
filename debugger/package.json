@@ -8,14 +8,10 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js",
-    "test": "mocha -R spec -t 120000 --require intelli-espower-loader ../test/_setup.js test/*.test.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "@google/cloud-debug": "^0.8.3",
     "express": "^4.13.4"
-  },
-  "devDependencies": {
-    "mocha": "^2.5.3"
   }
 }

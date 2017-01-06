@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const express = require(`express`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noCallThru();
@@ -30,7 +32,6 @@ function getSample () {
   };
   const testApp = express();
   sinon.stub(testApp, `listen`, (port, callback) => {
-    assert.equal(port, 8080);
     setTimeout(() => {
       callback();
     });
@@ -51,9 +52,9 @@ function getSample () {
   queryMock.limit.returns(queryMock);
 
   const datasetMock = {
-    save: sinon.stub().callsArg(1),
+    save: sinon.stub().returns(Promise.resolve()),
     createQuery: sinon.stub().returns(queryMock),
-    runQuery: sinon.stub().callsArgWith(1, null, resultsMock),
+    runQuery: sinon.stub().returns(Promise.resolve([resultsMock])),
     key: sinon.stub().returns({})
   };
   const DatastoreMock = sinon.stub().returns(datasetMock);
@@ -74,56 +75,27 @@ function getSample () {
   };
 }
 
-describe(`appengine/datastore/app.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
+test(`sets up sample`, (t) => {
+  const sample = getSample();
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.mocks.Datastore.calledOnce);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
-  });
+  t.true(sample.mocks.express.calledOnce);
+  t.true(sample.mocks.Datastore.calledOnce);
+  t.true(sample.app.listen.calledOnce);
+  t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+});
 
-  it(`should record a visit`, (done) => {
-    const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
+test.cb(`should record a visit`, (t) => {
+  const sample = getSample();
+  const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
-    request(sample.app)
-      .get(`/`)
-      .expect(200)
-      .expect((response) => {
-        console.log(response.body);
-        assert.equal(response.text, expectedResult);
-      })
-      .end(done);
-  });
-
-  it(`should handle insert error`, (done) => {
-    const expectedResult = `insert_error`;
-
-    sample.mocks.dataset.save.callsArgWith(1, expectedResult);
-
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, expectedResult + `\n`);
-      })
-      .end(done);
-  });
-
-  it(`should handle read error`, (done) => {
-    const expectedResult = `read_error`;
-
-    sample.mocks.dataset.runQuery.callsArgWith(1, expectedResult);
-
-    request(sample.app)
-      .get(`/`)
-      .expect(500)
-      .expect((response) => {
-        assert.equal(response.text, `${expectedResult}\n`);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, expectedResult);
+    })
+    .end(t.end);
 });

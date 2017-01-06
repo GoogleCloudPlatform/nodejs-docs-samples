@@ -33,15 +33,16 @@ const FILENAME = path.join(__dirname, 'seen.txt');
  * Store a visit record on disk.
  *
  * @param {object} visit The visit record to insert.
- * @param {function} callback The callback function.
  */
-function insertVisit (visit, callback) {
-  fs.appendFile(FILENAME, `${JSON.stringify(visit)}\n`, (err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-    callback();
+function insertVisit (visit) {
+  return new Promise((resolve, reject) => {
+    fs.appendFile(FILENAME, `${JSON.stringify(visit)}\n`, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
   });
 }
 // [END insertVisit]
@@ -49,22 +50,22 @@ function insertVisit (visit, callback) {
 // [START getVisits]
 /**
  * Retrieve the latest 10 visit records from disk.
- *
- * @param {function} callback The callback function.
  */
-function getVisits (callback) {
-  fs.readFile(FILENAME, { encoding: 'utf8' }, (err, data) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+function getVisits () {
+  return new Promise((resolve, reject) => {
+    fs.readFile(FILENAME, { encoding: 'utf8' }, (err, data) => {
+      if (err) {
+        reject(err);
+        return;
+      }
 
-    const visits = data.split('\n')
-      .filter((line) => line)
-      .map(JSON.parse)
-      .map((visit) => `Time: ${visit.timestamp}, AddrHash: ${visit.userIp}`);
+      const visits = data.split('\n')
+        .filter((line) => line)
+        .map(JSON.parse)
+        .map((visit) => `Time: ${visit.timestamp}, AddrHash: ${visit.userIp}`);
 
-    callback(null, visits);
+      resolve(visits);
+    });
   });
 }
 // [END getVisits]
@@ -77,25 +78,16 @@ app.get('/', (req, res, next) => {
     userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
   };
 
-  insertVisit(visit, (err) => {
-    if (err) {
-      next(err);
-      return;
-    }
-
+  insertVisit(visit)
     // Query the last 10 visits from disk.
-    getVisits((err, visits) => {
-      if (err) {
-        next(err);
-        return;
-      }
-
+    .then(() => getVisits())
+    .then((visits) => {
       res
         .status(200)
         .set('Content-Type', 'text/plain')
         .send(`Last 10 visits:\n${visits.join('\n')}`);
-    });
-  });
+    })
+    .catch(next);
 });
 
 // [START listen]

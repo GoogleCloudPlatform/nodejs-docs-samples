@@ -15,38 +15,44 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const translate = proxyquire(`@google-cloud/translate`, {})();
 
-describe(`translate:quickstart`, () => {
-  it(`should translate a string`, (done) => {
-    const string = `Hello, world!`;
-    const expectedTranslation = `Привет мир!`;
-    const targetLanguage = `ru`;
-    const translateMock = {
-      translate: (_string, _targetLanguage) => {
-        assert.equal(_string, string);
-        assert.equal(_targetLanguage, targetLanguage);
+test.before(stubConsole);
+test.after(restoreConsole);
 
-        return translate.translate(_string, _targetLanguage)
-          .then((results) => {
-            const translation = results[0];
-            assert.equal(translation, expectedTranslation);
+test.cb(`should translate a string`, (t) => {
+  const string = `Hello, world!`;
+  const expectedTranslation = `Привет мир!`;
+  const targetLanguage = `ru`;
+  const translateMock = {
+    translate: (_string, _targetLanguage) => {
+      t.is(_string, string);
+      t.is(_targetLanguage, targetLanguage);
 
-            setTimeout(() => {
-              assert.equal(console.log.callCount, 2);
-              assert.deepEqual(console.log.getCall(0).args, [`Text: ${string}`]);
-              assert.deepEqual(console.log.getCall(1).args, [`Translation: ${expectedTranslation}`]);
-              done();
-            }, 200);
+      return translate.translate(_string, _targetLanguage)
+        .then(([translation]) => {
+          t.is(translation, expectedTranslation);
 
-            return results;
-          });
-      }
-    };
+          setTimeout(() => {
+            try {
+              t.is(console.log.callCount, 2);
+              t.deepEqual(console.log.getCall(0).args, [`Text: ${string}`]);
+              t.deepEqual(console.log.getCall(1).args, [`Translation: ${expectedTranslation}`]);
+              t.end();
+            } catch (err) {
+              t.end(err);
+            }
+          }, 200);
 
-    proxyquire(`../quickstart`, {
-      '@google-cloud/translate': sinon.stub().returns(translateMock)
-    });
+          return [translation];
+        });
+    }
+  };
+
+  proxyquire(`../quickstart`, {
+    '@google-cloud/translate': sinon.stub().returns(translateMock)
   });
 });

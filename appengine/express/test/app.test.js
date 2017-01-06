@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const request = require(`supertest`);
@@ -29,46 +31,44 @@ function getSample () {
   };
 }
 
-describe(`appengine/express/app.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
-  });
+test.cb(`should render index page`, (t) => {
+  const sample = getSample();
+  const expectedResult = `Hello World! Express.js on Google App Engine.`;
 
-  it(`should render index page`, (done) => {
-    const expectedResult = `Hello World! Express.js on Google App Engine.`;
+  request(sample.app)
+    .get(`/`)
+    .expect(200)
+    .expect((response) => {
+      t.true(response.text.includes(expectedResult));
+    })
+    .end(t.end);
+});
 
-    request(sample.app)
-      .get(`/`)
-      .expect(200)
-      .expect((response) => {
-        assert(response.text.indexOf(expectedResult) !== -1);
-      })
-      .end(done);
-  });
+test.cb(`should render users page`, (t) => {
+  const sample = getSample();
+  const expectedResult = `respond with a resource`;
 
-  it(`should render users page`, (done) => {
-    const expectedResult = `respond with a resource`;
+  request(sample.app)
+    .get(`/users`)
+    .expect(200)
+    .expect((response) => {
+      t.true(response.text.includes(expectedResult));
+    })
+    .end(t.end);
+});
 
-    request(sample.app)
-      .get(`/users`)
-      .expect(200)
-      .expect((response) => {
-        assert(response.text.indexOf(expectedResult) !== -1);
-      })
-      .end(done);
-  });
+test.cb(`should catch 404`, (t) => {
+  const sample = getSample();
+  const expectedResult = `Error: Not Found`;
 
-  it(`should catch 404`, (done) => {
-    const expectedResult = `Error: Not Found`;
-
-    request(sample.app)
-      .get(`/doesnotexist`)
-      .expect(404)
-      .expect((response) => {
-        assert(response.text.indexOf(expectedResult) !== -1);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/doesnotexist`)
+    .expect(404)
+    .expect((response) => {
+      t.true(response.text.includes(expectedResult));
+    })
+    .end(t.end);
 });

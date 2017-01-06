@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const proxyquire = require(`proxyquire`).noCallThru();
 
 function getSample () {
@@ -30,64 +32,65 @@ function getSample () {
   };
 }
 
-describe(`functions:background`, () => {
-  it(`should echo message`, () => {
-    const event = {
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
+
+test.serial(`should echo message`, (t) => {
+  const event = {
+    data: {
+      myMessage: `hi`
+    }
+  };
+  const sample = getSample();
+  const callback = sinon.stub();
+
+  sample.program.helloWorld(event, callback);
+
+  t.is(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [event.data.myMessage]);
+  t.is(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
+});
+
+test.serial(`should say no message was provided`, (t) => {
+  const error = new Error(`No message defined!`);
+  const callback = sinon.stub();
+  const sample = getSample();
+  sample.program.helloWorld({ data: {} }, callback);
+
+  t.is(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, [error]);
+});
+
+test.serial(`should make a promise request`, (t) => {
+  const sample = getSample();
+  const event = {
+    data: {
+      endpoint: `foo.com`
+    }
+  };
+
+  return sample.program.helloPromise(event)
+    .then((result) => {
+      t.deepEqual(sample.mocks.requestPromise.firstCall.args, [{ uri: `foo.com` }]);
+      t.is(result, `test`);
+    });
+});
+
+test.serial(`should return synchronously`, (t) => {
+  t.is(getSample().program.helloSynchronous({
+    data: {
+      something: true
+    }
+  }), `Something is true!`);
+});
+
+test.serial(`should throw an error`, (t) => {
+  t.throws(() => {
+    getSample().program.helloSynchronous({
       data: {
-        myMessage: `hi`
+        something: false
       }
-    };
-    const sample = getSample();
-    const callback = sinon.stub();
-
-    sample.program.helloWorld(event, callback);
-
-    assert.equal(console.log.callCount, 1);
-    assert.deepEqual(console.log.firstCall.args, [event.data.myMessage]);
-    assert.equal(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, []);
-  });
-
-  it(`should say no message was provided`, () => {
-    const error = new Error(`No message defined!`);
-    const callback = sinon.stub();
-    const sample = getSample();
-    sample.program.helloWorld({ data: {} }, callback);
-
-    assert.equal(callback.callCount, 1);
-    assert.deepEqual(callback.firstCall.args, [error]);
-  });
-
-  it(`should make a promise request`, () => {
-    const sample = getSample();
-    const event = {
-      data: {
-        endpoint: `foo.com`
-      }
-    };
-
-    return sample.program.helloPromise(event)
-      .then((result) => {
-        assert.deepEqual(sample.mocks.requestPromise.firstCall.args, [{ uri: `foo.com` }]);
-        assert.equal(result, `test`);
-      });
-  });
-
-  it(`should return synchronously`, () => {
-    assert.equal(getSample().program.helloSynchronous({
-      data: {
-        something: true
-      }
-    }), `Something is true!`);
-  });
-
-  it(`should throw an error`, () => {
-    assert.throws(() => {
-      getSample().program.helloSynchronous({
-        data: {
-          something: false
-        }
-      });
-    }, Error, `Something was not true!`);
-  });
+    });
+  }, Error, `Something was not true!`);
 });

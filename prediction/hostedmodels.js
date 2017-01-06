@@ -15,7 +15,6 @@
 
 // [START predict]
 var google = require('googleapis');
-var hostedmodels = google.prediction('v1.6').hostedmodels;
 
 function auth (callback) {
   google.auth.getApplicationDefault(function (err, authClient) {
@@ -50,9 +49,12 @@ function predict (phrase, callback) {
     if (err) {
       return callback(err);
     }
+    var hostedmodels = google.prediction({
+      version: 'v1.6',
+      auth: authClient
+    }).hostedmodels;
     // Predict the sentiment for the provided phrase
     hostedmodels.predict({
-      auth: authClient,
       // Project id used for this sample
       project: '414649711441',
       hostedModelName: 'sample.sentiment',

@@ -159,6 +159,7 @@ exports.kgSearch = function kgSearch (req, res) {
     .catch((err) => {
       console.error(err);
       res.status(err.code || 500).send(err);
+      return Promise.reject(err);
     });
 };
 // [END functions_slack_search]

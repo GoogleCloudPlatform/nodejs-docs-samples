@@ -15,52 +15,51 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const bigquery = require(`@google-cloud/bigquery`)();
 const uuid = require(`uuid`);
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const cmd = `node datasets.js`;
 const datasetId = (`nodejs-docs-samples-test-${uuid.v4()}`).replace(/-/gi, '_');
 
-describe(`bigquery:datasets`, function () {
-  after(() => {
-    return bigquery
-      .dataset(datasetId)
-      .delete({ force: true })
-      .catch(() => undefined);
-  });
+test.after(async () => {
+  try {
+    await bigquery.dataset(datasetId).delete({ force: true });
+  } catch (err) {} // ignore error
+});
 
-  it(`should create a dataset`, () => {
-    const output = run(`${cmd} create ${datasetId}`, cwd);
-    assert.equal(output, `Dataset ${datasetId} created.`);
-    return bigquery.dataset(datasetId).exists()
-      .then((results) => assert.equal(results[0], true));
-  });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  it(`should list datasets`, (done) => {
-    // Listing is eventually consistent. Give the indexes time to update.
-    setTimeout(() => {
-      const output = run(`${cmd} list`, cwd);
-      assert.equal(output.includes(`Datasets:`), true);
-      assert.equal(output.includes(datasetId), true);
-      done();
-    }, 5000);
-  });
+test.serial(`should create a dataset`, async (t) => {
+  const output = await runAsync(`${cmd} create ${datasetId}`, cwd);
+  t.is(output, `Dataset ${datasetId} created.`);
+  const [exists] = await bigquery.dataset(datasetId).exists();
+  t.true(exists);
+});
 
-  it(`should return the size of a dataset`, function () {
-    let output = run(`${cmd} size hacker_news bigquery-public-data`, cwd);
-    assert.equal(output.includes(`Size of hacker_news`), true);
-    assert.equal(output.includes(`MB`), true);
-    output = run(`${cmd} size ${datasetId}`, cwd);
-    assert.equal(output.includes(`Size of ${datasetId}: 0 MB`), true);
-  });
+test.serial(`should list datasets`, async (t) => {
+  await tryTest(async () => {
+    const output = await runAsync(`${cmd} list`, cwd);
+    t.true(output.includes(`Datasets:`));
+    t.true(output.includes(datasetId));
+  }).start();
+});
 
-  it(`should delete a dataset`, () => {
-    const output = run(`${cmd} delete ${datasetId}`, cwd);
-    assert.equal(output, `Dataset ${datasetId} deleted.`);
-    return bigquery.dataset(datasetId).exists()
-      .then((results) => assert.equal(results[0], false));
-  });
+test.serial(`should return the size of a dataset`, async (t) => {
+  let output = await runAsync(`${cmd} size hacker_news bigquery-public-data`, cwd);
+  t.true(output.includes(`Size of hacker_news`));
+  t.true(output.includes(`MB`));
+  output = await runAsync(`${cmd} size ${datasetId}`, cwd);
+  t.true(output.includes(`Size of ${datasetId}: 0 MB`));
+});
+
+test.serial(`should delete a dataset`, async (t) => {
+  const output = await runAsync(`${cmd} delete ${datasetId}`, cwd);
+  t.is(output, `Dataset ${datasetId} deleted.`);
+  const [exists] = await bigquery.dataset(datasetId).exists();
+  t.false(exists);
 });

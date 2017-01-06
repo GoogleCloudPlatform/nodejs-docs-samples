@@ -39,18 +39,11 @@ const datastore = Datastore();
  * Insert a visit record into the database.
  *
  * @param {object} visit The visit record to insert.
- * @param {function} callback The callback function.
  */
-function insertVisit (visit, callback) {
-  datastore.save({
+function insertVisit (visit) {
+  return datastore.save({
     key: datastore.key('visit'),
     data: visit
-  }, (err) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-    callback();
   });
 }
 // [END insertVisit]
@@ -58,21 +51,17 @@ function insertVisit (visit, callback) {
 // [START getVisits]
 /**
  * Retrieve the latest 10 visit records from the database.
- *
- * @param {function} callback The callback function.
  */
-function getVisits (callback) {
+function getVisits () {
   const query = datastore.createQuery('visit')
     .order('timestamp', { descending: true })
     .limit(10);
 
-  datastore.runQuery(query, (err, entities) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-    callback(null, entities.map((entity) => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`));
-  });
+  return datastore.runQuery(query)
+    .then((results) => {
+      const entities = results[0];
+      return entities.map((entity) => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`);
+    });
 }
 // [END getVisits]
 
@@ -84,25 +73,17 @@ app.get('/', (req, res, next) => {
     userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
   };
 
-  insertVisit(visit, (err) => {
-    if (err) {
-      next(err);
-      return;
-    }
-
-    // Query the last 10 visits from the datastore.
-    getVisits((err, visits) => {
-      if (err) {
-        next(err);
-        return;
-      }
-
+  insertVisit(visit)
+    // Query the last 10 visits from Datastore.
+    .then(() => getVisits())
+    .then((visits) => {
       res
         .status(200)
         .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${visits.join('\n')}`);
-    });
-  });
+        .send(`Last 10 visits:\n${visits.join('\n')}`)
+        .end();
+    })
+    .catch(next);
 });
 
 // [START listen]

@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const proxyquire = require(`proxyquire`).noCallThru();
 
 const method = `POST`;
@@ -81,164 +83,156 @@ function getMocks () {
   };
 }
 
-describe(`functions:slack`, () => {
-  it(`Send fails if not a POST request`, () => {
-    const error = new Error(`Only POST requests are accepted`);
-    error.code = 405;
-    const mocks = getMocks();
-    const sample = getSample();
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-    return sample.program.kgSearch(mocks.req, mocks.res)
-      .then(() => {
-        assert.equal(mocks.res.status.callCount, 1);
-        assert.deepEqual(mocks.res.status.firstCall.args, [error.code]);
-        assert.equal(mocks.res.send.callCount, 1);
-        assert.deepEqual(mocks.res.send.firstCall.args, [error]);
-        assert.equal(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-      });
-  });
+test.serial(`Send fails if not a POST request`, async (t) => {
+  const error = new Error(`Only POST requests are accepted`);
+  error.code = 405;
+  const mocks = getMocks();
+  const sample = getSample();
 
-  it(`Throws if invalid slack token`, () => {
-    const error = new Error(`Invalid credentials`);
-    error.code = 401;
-    const mocks = getMocks();
-    const sample = getSample();
+  const err = await t.throws(sample.program.kgSearch(mocks.req, mocks.res));
+  t.deepEqual(err, error);
+  t.is(mocks.res.status.callCount, 1);
+  t.deepEqual(mocks.res.status.firstCall.args, [error.code]);
+  t.is(mocks.res.send.callCount, 1);
+  t.deepEqual(mocks.res.send.firstCall.args, [error]);
+  t.is(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+});
 
-    mocks.req.method = method;
-    mocks.req.body.token = 'wrong';
-    return sample.program.kgSearch(mocks.req, mocks.res)
-      .then(() => {
-        assert.equal(mocks.res.status.callCount, 1);
-        assert.deepEqual(mocks.res.status.firstCall.args, [error.code]);
-        assert.equal(mocks.res.send.callCount, 1);
-        assert.deepEqual(mocks.res.send.firstCall.args, [error]);
-        assert.equal(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-      });
-  });
+test.serial(`Throws if invalid slack token`, async (t) => {
+  const error = new Error(`Invalid credentials`);
+  error.code = 401;
+  const mocks = getMocks();
+  const sample = getSample();
 
-  it(`Handles search error`, () => {
-    const error = new Error(`error`);
-    const mocks = getMocks();
-    const sample = getSample();
+  mocks.req.method = method;
+  mocks.req.body.token = 'wrong';
+  const err = await t.throws(sample.program.kgSearch(mocks.req, mocks.res));
+  t.deepEqual(err, error);
+  t.is(mocks.res.status.callCount, 1);
+  t.deepEqual(mocks.res.status.firstCall.args, [error.code]);
+  t.is(mocks.res.send.callCount, 1);
+  t.deepEqual(mocks.res.send.firstCall.args, [error]);
+  t.is(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+});
 
-    mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
-    sample.mocks.kgsearch.entities.search.yields(error);
+test.serial(`Handles search error`, async (t) => {
+  const error = new Error(`error`);
+  const mocks = getMocks();
+  const sample = getSample();
 
-    return sample.program.kgSearch(mocks.req, mocks.res)
-      .then(() => {
-        assert.equal(mocks.res.status.callCount, 1);
-        assert.deepEqual(mocks.res.status.firstCall.args, [500]);
-        assert.equal(mocks.res.send.callCount, 1);
-        assert.deepEqual(mocks.res.send.firstCall.args, [error]);
-        assert.equal(console.error.callCount, 1);
-        assert.deepEqual(console.error.firstCall.args, [error]);
-      });
-  });
+  mocks.req.method = method;
+  mocks.req.body.token = SLACK_TOKEN;
+  mocks.req.body.text = query;
+  sample.mocks.kgsearch.entities.search.yields(error);
 
-  it(`Makes search request, receives empty results`, () => {
-    const mocks = getMocks();
-    const sample = getSample();
+  const err = await t.throws(sample.program.kgSearch(mocks.req, mocks.res));
+  t.deepEqual(err, error);
+  t.is(mocks.res.status.callCount, 1);
+  t.deepEqual(mocks.res.status.firstCall.args, [500]);
+  t.is(mocks.res.send.callCount, 1);
+  t.deepEqual(mocks.res.send.firstCall.args, [error]);
+  t.is(console.error.callCount, 1);
+  t.deepEqual(console.error.firstCall.args, [error]);
+});
 
-    mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
-    sample.mocks.kgsearch.entities.search.yields(null, { itemListElement: [] });
+test.serial(`Makes search request, receives empty results`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
 
-    return sample.program.kgSearch(mocks.req, mocks.res)
-      .then(() => {
-        assert.equal(mocks.res.json.callCount, 1);
-        assert.deepEqual(mocks.res.json.firstCall.args, [{
-          text: `Query: ${query}`,
-          response_type: `in_channel`,
-          attachments: [
-            {
-              text: `No results match your query...`
-            }
-          ]
-        }]);
-      });
-  });
+  mocks.req.method = method;
+  mocks.req.body.token = SLACK_TOKEN;
+  mocks.req.body.text = query;
+  sample.mocks.kgsearch.entities.search.yields(null, { itemListElement: [] });
 
-  it(`Makes search request, receives non-empty results`, () => {
-    const mocks = getMocks();
-    const sample = getSample();
+  await sample.program.kgSearch(mocks.req, mocks.res);
+  t.is(mocks.res.json.callCount, 1);
+  t.deepEqual(mocks.res.json.firstCall.args, [{
+    text: `Query: ${query}`,
+    response_type: `in_channel`,
+    attachments: [
+      {
+        text: `No results match your query...`
+      }
+    ]
+  }]);
+});
 
-    mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
-    sample.mocks.kgsearch.entities.search.yields(null, {
-      itemListElement: [
-        {
-          result: {
-            name: `Giraffe`,
-            description: `Animal`,
-            detailedDescription: {
-              url: `http://domain.com/giraffe`,
-              articleBody: `giraffe is a tall animal`
-            },
-            image: {
-              contentUrl: `http://domain.com/image.jpg`
-            }
+test.serial(`Makes search request, receives non-empty results`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+
+  mocks.req.method = method;
+  mocks.req.body.token = SLACK_TOKEN;
+  mocks.req.body.text = query;
+  sample.mocks.kgsearch.entities.search.yields(null, {
+    itemListElement: [
+      {
+        result: {
+          name: `Giraffe`,
+          description: `Animal`,
+          detailedDescription: {
+            url: `http://domain.com/giraffe`,
+            articleBody: `giraffe is a tall animal`
+          },
+          image: {
+            contentUrl: `http://domain.com/image.jpg`
           }
         }
-      ]
-    });
-
-    return sample.program.kgSearch(mocks.req, mocks.res)
-      .then(() => {
-        assert.equal(mocks.res.json.callCount, 1);
-        assert.deepEqual(mocks.res.json.firstCall.args, [{
-          text: `Query: ${query}`,
-          response_type: `in_channel`,
-          attachments: [
-            {
-              color: `#3367d6`,
-              title: `Giraffe: Animal`,
-              title_link: `http://domain.com/giraffe`,
-              text: `giraffe is a tall animal`,
-              image_url: `http://domain.com/image.jpg`
-            }
-          ]
-        }]);
-      });
+      }
+    ]
   });
 
-  it(`Makes search request, receives non-empty results but partial data`, () => {
-    const mocks = getMocks();
-    const sample = getSample();
+  await sample.program.kgSearch(mocks.req, mocks.res);
+  t.is(mocks.res.json.callCount, 1);
+  t.deepEqual(mocks.res.json.firstCall.args, [{
+    text: `Query: ${query}`,
+    response_type: `in_channel`,
+    attachments: [
+      {
+        color: `#3367d6`,
+        title: `Giraffe: Animal`,
+        title_link: `http://domain.com/giraffe`,
+        text: `giraffe is a tall animal`,
+        image_url: `http://domain.com/image.jpg`
+      }
+    ]
+  }]);
+});
 
-    mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
-    sample.mocks.kgsearch.entities.search.yields(null, {
-      itemListElement: [
-        {
-          result: {
-            name: `Giraffe`,
-            detailedDescription: {},
-            image: {}
-          }
+test.serial(`Makes search request, receives non-empty results but partial data`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+
+  mocks.req.method = method;
+  mocks.req.body.token = SLACK_TOKEN;
+  mocks.req.body.text = query;
+  sample.mocks.kgsearch.entities.search.yields(null, {
+    itemListElement: [
+      {
+        result: {
+          name: `Giraffe`,
+          detailedDescription: {},
+          image: {}
         }
-      ]
-    });
-
-    return sample.program.kgSearch(mocks.req, mocks.res)
-      .then(() => {
-        assert.equal(mocks.res.json.callCount, 1);
-        assert.deepEqual(mocks.res.json.firstCall.args, [{
-          text: `Query: ${query}`,
-          response_type: `in_channel`,
-          attachments: [
-            {
-              color: `#3367d6`,
-              title: `Giraffe`
-            }
-          ]
-        }]);
-      });
+      }
+    ]
   });
+
+  await sample.program.kgSearch(mocks.req, mocks.res);
+  t.is(mocks.res.json.callCount, 1);
+  t.deepEqual(mocks.res.json.firstCall.args, [{
+    text: `Query: ${query}`,
+    response_type: `in_channel`,
+    attachments: [
+      {
+        color: `#3367d6`,
+        title: `Giraffe`
+      }
+    ]
+  }]);
 });

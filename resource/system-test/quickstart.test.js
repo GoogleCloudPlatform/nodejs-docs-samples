@@ -15,34 +15,40 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const resource = proxyquire(`@google-cloud/resource`, {})();
 
-describe(`resource:quickstart`, () => {
-  let resourceMock, ResourceMock;
+test.before(stubConsole);
+test.after(restoreConsole);
 
-  it(`should list projects`, (done) => {
-    resourceMock = {
-      getProjects: (_callback) => {
-        assert.equal(typeof _callback, 'function');
+test.cb(`should list projects`, (t) => {
+  const resourceMock = {
+    getProjects: () => {
+      return resource.getProjects()
+        .then(([projects]) => {
+          t.true(Array.isArray(projects));
 
-        resource.getProjects((err, projects) => {
-          _callback(err, projects);
-          assert.ifError(err);
-          assert.equal(Array.isArray(projects), true);
-          assert.equal(console.log.called, true);
-          assert.deepEqual(console.log.firstCall.args, [`Projects:`]);
-          projects.forEach((project, i) => {
-            assert.deepEqual(console.log.getCall(i + 1).args, [project.id]);
-          });
-          done();
+          setTimeout(() => {
+            try {
+              t.true(console.log.called);
+              t.deepEqual(console.log.firstCall.args, [`Projects:`]);
+              projects.forEach((project, i) => {
+                t.deepEqual(console.log.getCall(i + 1).args, [project.id]);
+              });
+              t.end();
+            } catch (err) {
+              t.end(err);
+            }
+          }, 200);
+
+          return [projects];
         });
-      }
-    };
-    ResourceMock = sinon.stub().returns(resourceMock);
+    }
+  };
 
-    proxyquire(`../quickstart`, {
-      '@google-cloud/resource': ResourceMock
-    });
+  proxyquire(`../quickstart`, {
+    '@google-cloud/resource': sinon.stub().returns(resourceMock)
   });
 });

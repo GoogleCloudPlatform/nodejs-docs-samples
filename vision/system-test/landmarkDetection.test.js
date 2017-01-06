@@ -15,16 +15,19 @@
 
 'use strict';
 
-var landmarkDetectionSample = require('../landmarkDetection');
-var inputFile = 'https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg';
+require(`../../system-test/_setup`);
 
-describe('vision:landmarkDetection', function () {
-  it('should detect landmarks', function (done) {
-    landmarkDetectionSample.main(inputFile, function (err, landmarks) {
-      assert.ifError(err);
-      assert(landmarks.length > 0);
-      assert(console.log.calledWith('Found landmark: Taitung, Famous Places "up the water flow" marker for ' + inputFile));
-      done();
-    });
+const landmarkDetectionSample = require(`../landmarkDetection`);
+const inputFile = `https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg`;
+
+test.before(stubConsole);
+test.after(restoreConsole);
+
+test.cb(`should detect landmarks`, (t) => {
+  landmarkDetectionSample.main(inputFile, (err, landmarks) => {
+    t.ifError(err);
+    t.true(landmarks.length > 0);
+    t.true(console.log.calledWith(`Found landmark: Taitung, Famous Places "up the water flow" marker for ${inputFile}`));
+    t.end();
   });
 });

@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const storage = proxyquire(`@google-cloud/storage`, {})();
 const uuid = require(`uuid`);
@@ -22,36 +24,42 @@ const uuid = require(`uuid`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);
 
-describe(`storage:quickstart`, () => {
-  after(() => bucket.delete().catch(() => {}));
+test.before(stubConsole);
+test.after(async () => {
+  restoreConsole();
+  try {
+    await bucket.delete();
+  } catch (err) {} // ignore error
+});
 
-  it(`should create a bucket`, (done) => {
-    const expectedBucketName = `my-new-bucket`;
+test.cb(`should create a bucket`, (t) => {
+  const expectedBucketName = `my-new-bucket`;
 
-    const storageMock = {
-      createBucket: (_bucketName) => {
-        assert.equal(_bucketName, expectedBucketName);
+  const storageMock = {
+    createBucket: (_bucketName) => {
+      t.is(_bucketName, expectedBucketName);
 
-        return bucket.create()
-          .then((results) => {
-            const bucket = results[0];
+      return bucket.create()
+        .then(([bucket]) => {
+          t.not(bucket, undefined);
+          t.is(bucket.name, bucketName);
 
-            assert.notEqual(bucket, undefined);
-            assert.equal(bucket.name, bucketName);
+          setTimeout(() => {
+            try {
+              t.true(console.log.calledOnce);
+              t.deepEqual(console.log.firstCall.args, [`Bucket ${bucket.name} created.`]);
+              t.end();
+            } catch (err) {
+              t.end(err);
+            }
+          }, 200);
 
-            setTimeout(() => {
-              assert.equal(console.log.calledOnce, true);
-              assert.deepEqual(console.log.firstCall.args, [`Bucket ${bucket.name} created.`]);
-              done();
-            }, 200);
+          return [bucket];
+        });
+    }
+  };
 
-            return results;
-          });
-      }
-    };
-
-    proxyquire(`../quickstart`, {
-      '@google-cloud/storage': sinon.stub().returns(storageMock)
-    });
+  proxyquire(`../quickstart`, {
+    '@google-cloud/storage': sinon.stub().returns(storageMock)
   });
 });

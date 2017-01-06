@@ -15,6 +15,8 @@
 
 'use strict';
 
+require(`../../../test/_setup`);
+
 const express = require(`express`);
 const session = require(`express-session`);
 const path = require(`path`);
@@ -49,26 +51,26 @@ function getSample () {
   };
 }
 
-describe(`appengine/express-memcached-session/app.js`, () => {
-  let sample;
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  beforeEach(() => {
-    sample = getSample();
+test(`sets up the sample`, (t) => {
+  const sample = getSample();
 
-    assert(sample.mocks.express.calledOnce);
-    assert(sample.app.listen.calledOnce);
-    assert.equal(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
-  });
+  t.true(sample.mocks.express.calledOnce);
+  t.true(sample.app.listen.calledOnce);
+  t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
+});
 
-  it(`should respond with visit count`, (done) => {
-    const expectedResult = `Viewed <strong>1</strong> times.`;
+test.cb(`should respond with visit count`, (t) => {
+  const sample = getSample();
+  const expectedResult = `Viewed <strong>1</strong> times.`;
 
-    request(sample.app)
-      .get(`/`)
-      .expect(200)
-      .expect((response) => {
-        assert(response.text.indexOf(expectedResult) !== -1);
-      })
-      .end(done);
-  });
+  request(sample.app)
+    .get(`/`)
+    .expect(200)
+    .expect((response) => {
+      t.true(response.text.includes(expectedResult));
+    })
+    .end(t.end);
 });

@@ -15,16 +15,15 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cwd = path.join(__dirname, `..`);
 const cmd = `node projects.js`;
 
-describe(`resource:projects`, () => {
-  it(`should list projects`, () => {
-    const output = run(`${cmd} list`, cwd);
-    assert.notEqual(output.indexOf(`Projects:`), -1);
-    assert.notEqual(output.indexOf(`${process.env.GCLOUD_PROJECT}`), -1);
-  });
+test(`should list projects`, async (t) => {
+  const stdout = await runAsync(`${cmd} list`, cwd);
+  t.true(stdout.includes(`Projects:`));
+  t.true(stdout.includes(`${process.env.GCLOUD_PROJECT}`));
 });

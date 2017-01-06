@@ -13,67 +13,68 @@
 
 'use strict';
 
+require(`./_setup`);
+
 var utils = require('../utils');
 
-describe('utils', function () {
-  describe('makeHandler', function () {
-    it('should throw error', function () {
-      var handler = utils.makeHandler();
-      var error = new Error('error');
-      assert.throws(function () {
-        handler(error);
-      }, Error, error.message);
-    });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-    it('should do nothing', function () {
-      var callCount = console.log.callCount;
-      var handler = utils.makeHandler(false);
-      handler();
-      assert.equal(console.log.callCount, callCount, 'Console.log was not called');
-    });
+test.serial('should throw error', (t) => {
+  var handler = utils.makeHandler();
+  var error = new Error('error');
+  t.throws(() => {
+    handler(error);
+  }, Error, error.message);
+});
 
-    it('should pretty print an array', function () {
-      var handler = utils.makeHandler(true, 'foo');
-      handler(null, [{
-        foo: 'utils:bar'
-      }, {
-        foo: 'utils:bar2'
-      }]);
-      assert.equal(console.log.calledOnce, true);
-      assert.deepEqual(console.log.firstCall.args, ['utils:bar\nutils:bar2']);
-    });
+test.serial('should do nothing', (t) => {
+  var callCount = console.log.callCount;
+  var handler = utils.makeHandler(false);
+  handler();
+  t.is(console.log.callCount, callCount, 'Console.log was not called');
+});
 
-    it('should pretty print an array with multiple fields', function () {
-      var handler = utils.makeHandler(true, ['foo', 'bar']);
-      handler(null, [{
-        foo: 'utils:bar',
-        bar: 'utils:foo'
-      }, {
-        foo: 'utils:bar2',
-        bar: 'utils:foo2'
-      }]);
-      assert.equal(console.log.calledOnce, true);
-      assert.deepEqual(console.log.firstCall.args, ['{"foo":"utils:bar","bar":"utils:foo"}\n{"foo":"utils:bar2","bar":"utils:foo2"}']);
-    });
+test.serial('should pretty print an array', (t) => {
+  var handler = utils.makeHandler(true, 'foo');
+  handler(null, [{
+    foo: 'utils:bar'
+  }, {
+    foo: 'utils:bar2'
+  }]);
+  t.is(console.log.calledOnce, true);
+  t.deepEqual(console.log.firstCall.args, ['utils:bar\nutils:bar2']);
+});
 
-    it('should pretty print a single field', function () {
-      var handler = utils.makeHandler(true, 'foo');
-      handler(null, {
-        foo: 'utils:bar'
-      });
-      assert.equal(console.log.calledOnce, true);
-      assert.deepEqual(console.log.firstCall.args, ['utils:bar']);
-    });
+test.serial('should pretty print an array with multiple fields', (t) => {
+  var handler = utils.makeHandler(true, ['foo', 'bar']);
+  handler(null, [{
+    foo: 'utils:bar',
+    bar: 'utils:foo'
+  }, {
+    foo: 'utils:bar2',
+    bar: 'utils:foo2'
+  }]);
+  t.is(console.log.calledOnce, true);
+  t.deepEqual(console.log.firstCall.args, ['{"foo":"utils:bar","bar":"utils:foo"}\n{"foo":"utils:bar2","bar":"utils:foo2"}']);
+});
 
-    it('should just print', function () {
-      var handler = utils.makeHandler();
-      handler(null, {
-        foo: 'utils:bar'
-      });
-      assert.equal(console.log.calledOnce, true);
-      assert.deepEqual(console.log.firstCall.args, [{
-        foo: 'utils:bar'
-      }]);
-    });
+test.serial('should pretty print a single field', (t) => {
+  var handler = utils.makeHandler(true, 'foo');
+  handler(null, {
+    foo: 'utils:bar'
   });
+  t.is(console.log.calledOnce, true);
+  t.deepEqual(console.log.firstCall.args, ['utils:bar']);
+});
+
+test.serial('should just print', (t) => {
+  var handler = utils.makeHandler();
+  handler(null, {
+    foo: 'utils:bar'
+  });
+  t.is(console.log.calledOnce, true);
+  t.deepEqual(console.log.firstCall.args, [{
+    foo: 'utils:bar'
+  }]);
 });

@@ -15,24 +15,26 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const path = require(`path`);
-const run = require(`../../utils`).run;
 
 const cmd = `node recognize.js`;
 const cwd = path.join(__dirname, `..`);
 const filename = `./resources/audio.raw`;
 const text = `how old is the Brooklyn Bridge`;
 
-describe(`speech:recognize`, () => {
-  it(`should run sync recognize`, () => {
-    assert.equal(run(`${cmd} sync ${filename}`, cwd).includes(text), true);
-  });
+test(`should run sync recognize`, async (t) => {
+  const output = await runAsync(`${cmd} sync ${filename}`, cwd);
+  t.true(output.includes(`Transcription: ${text}`));
+});
 
-  it(`should run async recognize`, () => {
-    assert.equal(run(`${cmd} async ${filename}`, cwd).includes(text), true);
-  });
+test(`should run async recognize`, async (t) => {
+  const output = await runAsync(`${cmd} async ${filename}`, cwd);
+  t.true(output.includes(`Transcription: ${text}`));
+});
 
-  it(`should run streaming recognize`, () => {
-    assert.equal(run(`${cmd} stream ${filename}`, cwd).includes(text), true);
-  });
+test(`should run streaming recognize`, async (t) => {
+  const output = await runAsync(`${cmd} stream ${filename}`, cwd);
+  t.true(output.includes(text));
 });

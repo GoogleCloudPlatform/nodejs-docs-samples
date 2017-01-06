@@ -12,7 +12,7 @@
     "sqlite3": "^3.1.8"
   },
   "scripts": {
-    "test": "cd ../..; npm run st -- language/slackbot/*.test.js"
+    "test": "cd ../..; npm run st -- language/slackbot/system-test/*.test.js"
   },
   "engines": {
     "node": ">=4.3.2"

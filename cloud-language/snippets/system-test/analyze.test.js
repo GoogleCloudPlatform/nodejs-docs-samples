@@ -15,10 +15,11 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const uuid = require(`uuid`);
 const path = require(`path`);
 const storage = require(`@google-cloud/storage`)();
-const run = require(`../../utils`).run;
 
 const cmd = `node analyze.js`;
 const cwd = path.join(__dirname, `..`);
@@ -27,52 +28,57 @@ const fileName = `text.txt`;
 const localFilePath = path.join(__dirname, `../resources/text.txt`);
 const text = `President Obama is speaking at the White House.`;
 
-describe(`language:analyze`, () => {
-  before(() => {
-    return storage.createBucket(bucketName)
-      .then((results) => results[0].upload(localFilePath));
-  });
+test.before(async () => {
+  const [bucket] = await storage.createBucket(bucketName);
+  await bucket.upload(localFilePath);
+});
 
-  after(() => {
-    return storage.bucket(bucketName).deleteFiles({ force: true })
-      .then(() => storage.bucket(bucketName).delete());
-  });
+test.after(async () => {
+  const bucket = storage.bucket(bucketName);
+  await bucket.deleteFiles({ force: true });
+  await bucket.deleteFiles({ force: true }); // Try a second time...
+  await bucket.delete();
+});
 
-  it(`should analyze sentiment in text`, () => {
-    assert.equal(run(`${cmd} sentiment-text "${text}"`, cwd), `Sentiment: positive.`);
-  });
+test.beforeEach(stubConsole);
+test.afterEach(restoreConsole);
 
-  it(`should analyze sentiment in a file`, () => {
-    assert.equal(run(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd), `Sentiment: positive.`);
-  });
+test(`should run sync recognize`, async (t) => {
+  const output = await runAsync(`${cmd} sentiment-text "${text}"`, cwd);
+  t.true(output.includes(`Sentiment: positive.`));
+});
 
-  it(`should analyze entities in text`, () => {
-    const output = run(`${cmd} entities-text "${text}"`, cwd);
-    assert.equal(output.includes(`Entities:`), true);
-    assert.equal(output.includes(`people:`), true);
-    assert.equal(output.includes(`places:`), true);
-  });
+test(`should analyze sentiment in a file`, async (t) => {
+  const output = await runAsync(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd);
+  t.true(output.includes(`Sentiment: positive.`));
+});
 
-  it('should analyze entities in a file', () => {
-    const output = run(`${cmd} entities-file ${bucketName} ${fileName}`, cwd);
-    assert.equal(output.includes(`Entities:`), true);
-    assert.equal(output.includes(`people:`), true);
-    assert.equal(output.includes(`places:`), true);
-  });
+test(`should analyze entities in text`, async (t) => {
+  const output = await runAsync(`${cmd} entities-text "${text}"`, cwd);
+  t.true(output.includes(`Entities:`));
+  t.true(output.includes(`people:`));
+  t.true(output.includes(`places:`));
+});
 
-  it(`should analyze syntax in text`, () => {
-    const output = run(`${cmd} syntax-text "${text}"`, cwd);
-    assert.equal(output.includes(`Tags:`), true);
-    assert.equal(output.includes(`NOUN`), true);
-    assert.equal(output.includes(`VERB`), true);
-    assert.equal(output.includes(`PUNCT`), true);
-  });
+test('should analyze entities in a file', async (t) => {
+  const output = await runAsync(`${cmd} entities-file ${bucketName} ${fileName}`, cwd);
+  t.true(output.includes(`Entities:`));
+  t.true(output.includes(`people:`));
+  t.true(output.includes(`places:`));
+});
 
-  it('should analyze syntax in a file', () => {
-    const output = run(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
-    assert.equal(output.includes(`Tags:`), true);
-    assert.equal(output.includes(`NOUN`), true);
-    assert.equal(output.includes(`VERB`), true);
-    assert.equal(output.includes(`PUNCT`), true);
-  });
+test(`should analyze syntax in text`, async (t) => {
+  const output = await runAsync(`${cmd} syntax-text "${text}"`, cwd);
+  t.true(output.includes(`Tags:`));
+  t.true(output.includes(`NOUN`));
+  t.true(output.includes(`VERB`));
+  t.true(output.includes(`PUNCT`));
+});
+
+test('should analyze syntax in a file', async (t) => {
+  const output = await runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
+  t.true(output.includes(`Tags:`));
+  t.true(output.includes(`NOUN`));
+  t.true(output.includes(`VERB`));
+  t.true(output.includes(`PUNCT`));
 });

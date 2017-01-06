@@ -15,40 +15,45 @@
 
 'use strict';
 
+require(`../../system-test/_setup`);
+
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const vision = proxyquire(`@google-cloud/vision`, {})();
 const path = require(`path`);
 
-describe(`vision:quickstart`, () => {
-  let visionMock, VisionMock;
+test.before(stubConsole);
+test.after(restoreConsole);
 
-  it(`should detect labels`, (done) => {
-    const filePath = path.join(__dirname, `../resources/wakeupcat.jpg`);
-    const expectedFileName = `./resources/wakeupcat.jpg`;
+test.cb(`should detect labels`, (t) => {
+  const filePath = path.join(__dirname, `../resources/wakeupcat.jpg`);
+  const expectedFileName = `./resources/wakeupcat.jpg`;
+  const visionMock = {
+    detectLabels: (_fileName) => {
+      t.is(_fileName, expectedFileName);
 
-    visionMock = {
-      detectLabels: (_fileName, _callback) => {
-        assert.equal(_fileName, expectedFileName);
-        assert.equal(typeof _callback, 'function');
+      return vision.detectLabels(filePath)
+        .then(([labels]) => {
+          t.true(Array.isArray(labels));
 
-        vision.detectLabels(filePath, (err, labels, apiResponse) => {
-          _callback(err, labels, apiResponse);
-          assert.ifError(err);
-          assert.equal(Array.isArray(labels), true);
-          assert.notEqual(apiResponse, undefined);
-          assert.equal(console.log.called, true);
-          assert.deepEqual(console.log.firstCall.args, [`Labels:`]);
-          labels.forEach((label, i) => {
-            assert.deepEqual(console.log.getCall(i + 1).args, [label]);
-          });
-          done();
+          setTimeout(() => {
+            try {
+              t.is(console.log.callCount, 6);
+              t.deepEqual(console.log.getCall(0).args, [`Labels:`]);
+              labels.forEach((label, i) => {
+                t.deepEqual(console.log.getCall(i + 1).args, [label]);
+              });
+              t.end();
+            } catch (err) {
+              t.end(err);
+            }
+          }, 200);
+
+          return [labels];
         });
-      }
-    };
-    VisionMock = sinon.stub().returns(visionMock);
+    }
+  };
 
-    proxyquire(`../quickstart`, {
-      '@google-cloud/vision': VisionMock
-    });
+  proxyquire(`../quickstart`, {
+    '@google-cloud/vision': sinon.stub().returns(visionMock)
   });
 });

@@ -12,6 +12,6 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "hapi": "15.2.0"
+    "hapi": "16.1.0"
   }
 }

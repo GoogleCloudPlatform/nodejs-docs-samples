@@ -10,7 +10,7 @@
   },
   "scripts": {
     "postinstall": "bower install --config.interactive=false",
-    "test": "cd ..; npm run t -- appengine/bower/test/*.test.js"
+    "test": "cd ../..; npm run t -- appengine/bower/test/*.test.js"
   },
   "dependencies": {
     "bower": "1.8.0",

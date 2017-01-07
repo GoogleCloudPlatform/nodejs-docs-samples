@@ -6,7 +6,7 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "cd ..; npm run t -- functions/datastore/test/*.test.js"
+    "test": "cd ../..; npm run t -- functions/datastore/test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/datastore": "0.6.0"

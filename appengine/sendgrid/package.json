@@ -12,9 +12,9 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "body-parser": "1.14.2",
+    "body-parser": "1.15.2",
     "express": "4.14.0",
     "pug": "2.0.0-beta6",
-    "sendgrid": "4.0.1"
+    "sendgrid": "4.7.1"
   }
 }

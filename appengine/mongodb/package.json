@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "nconf": "0.8.4",
-    "mongodb": "2.2.11"
+    "mongodb": "2.2.19"
   }
 }

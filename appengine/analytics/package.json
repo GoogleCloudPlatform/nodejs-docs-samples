@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "cd ..; npm run t -- appengine/analytics/test/*.test.js"
+    "test": "cd ../..; npm run t -- appengine/analytics/test/*.test.js"
   },
   "dependencies": {
     "express": "4.14.0",

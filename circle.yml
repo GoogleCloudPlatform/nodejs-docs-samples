@@ -1,66 +1,76 @@
+# Copyright 2017, Google, Inc.
+# Licensed under the Apache License, Version 2.0 (the "License")
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# See:
+#
+#  https://circleci.com/docs/configuration/
+#  https://circleci.com/docs/install-and-use-yarn/
+
 machine:
   node:
-    version: 6.1.0
+    version: 6.9.1
+  environment:
+    YARN_VERSION: 0.18.1
+    PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   services:
     - redis
     - memcached
 
+# Use for broader build-related configuration
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+# Install your project's language-specific dependencies
 dependencies:
+  pre:
+    - |
+      if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
+        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
+      fi
+    - yarn global add nyc codecov
+  override:
+    - yarn install
+  post:
+    - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
+    - node scripts/install
   cache_directories:
-    - appengine/analytics/node_modules/
-    - appengine/bower/node_modules/
-    - appengine/cloudsql/node_modules/
-    - appengine/datastore/node_modules/
-    - appengine/disk/node_modules/
-    - appengine/express/node_modules/
-    - appengine/express-memcached-session/node_modules/
-    - appengine/extending-runtime/node_modules/
-    - appengine/geddy/node_modules/
-    - appengine/grunt/node_modules/
-    - appengine/hapi/node_modules/
-    - appengine/hello-world/node_modules/
-    - appengine/koa/node_modules/
-    - appengine/kraken/node_modules/
-    - appengine/logging/node_modules/
-    - appengine/loopback/node_modules/
-    - appengine/mailgun/node_modules/
-    - appengine/mailjet/node_modules/
-    - appengine/memcached/node_modules/
-    - appengine/mongodb/node_modules/
-    - appengine/parse-server/node_modules/
-    - appengine/pubsub/node_modules/
-    - appengine/redis/node_modules/
-    - appengine/restify/node_modules/
-    - appengine/sails/node_modules/
-    - appengine/sendgrid/node_modules/
-    - appengine/static-files/node_modules/
-    - appengine/storage/node_modules/
-    - appengine/twilio/node_modules/
-    - appengine/webpack/node_modules/
-    - appengine/websockets/node_modules/
-    - bigquery/node_modules/
-    - computeengine/node_modules/
-    - datastore/node_modules/
-    - debugger/node_modules/
-    - functions/background/node_modules/
-    - functions/datastore/node_modules/
-    - functions/errorreporting/node_modules/
-    - functions/gcs/node_modules/
-    - functions/helloworld/node_modules/
-    - functions/http/node_modules/
-    - functions/log/node_modules/
-    - functions/ocr/app/node_modules/
-    - functions/pubsub/node_modules/
-    - functions/sendgrid/node_modules/
-    - functions/slack/node_modules/
-    - functions/uuid/node_modules/
-    - language/node_modules/
-    - logging/node_modules/
-    - monitoring/node_modules/
-    - prediction/node_modules/
-    - pubsub/node_modules/
-    - speech/node_modules/
-    - storage/node_modules/
-    - trace/node_modules/
-    - translate/node_modules/
-    - vision/node_modules/
+    - ~/.yarn
+    - ~/.cache/yarn
+    - appengine/bower/node_modules
+    - appengine/cloudsql/node_modules
+    - appengine/express-memcached-session/node_modules
+    - appengine/geddy/node_modules
+    - appengine/grunt/node_modules
+    - appengine/hapi/node_modules
+    - appengine/koa/node_modules
+    - appengine/kraken/node_modules
+    - appengine/loopback/node_modules
+    - appengine/mailgun/node_modules
+    - appengine/mailjet/node_modules
+    - appengine/memcached/node_modules
+    - appengine/mongodb/node_modules
+    - appengine/parse-server/node_modules
+    - appengine/restify/node_modules
+    - appengine/sails/node_modules
+    - appengine/twilio/node_modules
+    - appengine/webpack/node_modules
+    - appengine/websockets/node_modules
+
+# Run your tests
+test:
+  override:
+    - yarn run all-cover
+  post:
+    - nyc report --reporter=lcov > coverage.lcov && codecov

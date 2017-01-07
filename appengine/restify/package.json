@@ -9,6 +9,6 @@
     "node": ">=4.3.2"
   },
   "dependencies": {
-    "restify": "4.0.0"
+    "restify": "4.3.0"
   }
 }

@@ -6,10 +6,10 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "cd ..; npm run t -- functions/background/test/*.test.js"
+    "test": "cd ../..; npm run t -- functions/background/test/*.test.js"
   },
   "dependencies": {
-    "request": "^2.78.0",
-    "request-promise": "^4.1.1"
+    "request": "2.79.0",
+    "request-promise": "4.1.1"
   }
 }

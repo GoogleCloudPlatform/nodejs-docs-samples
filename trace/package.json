@@ -8,8 +8,7 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js",
-    "test": "cd ..; npm run t -- trace/test/*.test.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "@google/cloud-trace": "0.5.10",

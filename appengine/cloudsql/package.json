@@ -9,7 +9,7 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "test": "cd ..; npm run t -- appengine/cloudsql/test/*.test.js"
+    "test": "cd ../..; npm run t -- appengine/cloudsql/test/*.test.js"
   },
   "dependencies": {
     "express": "4.14.0",

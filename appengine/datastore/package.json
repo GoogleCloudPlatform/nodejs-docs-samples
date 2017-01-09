@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "cd ..; npm run t -- appengine/datastore/test/*.test.js"
+    "test": "cd ../..; npm run t -- appengine/datastore/test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/datastore": "0.6.0",

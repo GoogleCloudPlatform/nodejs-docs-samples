@@ -25,7 +25,7 @@ require('shelljs/global');
 // Run the command in up to 7 directories at a time
 const queue = async.queue((directory, callback) => {
   runForDirectory(directory, callback);
-}, 7);
+}, 4);
 
 queueDirectories('appengine');
 queue.push('bigquery');

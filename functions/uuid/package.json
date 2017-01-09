@@ -6,7 +6,7 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "cd ..; npm run t -- functions/uuid/test/*.test.js"
+    "test": "cd ../..; npm run t -- functions/uuid/test/*.test.js"
   },
   "dependencies": {
     "uuid": "3.0.1"

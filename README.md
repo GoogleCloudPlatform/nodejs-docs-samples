@@ -21,7 +21,6 @@ on Google Cloud Platform.
 * [Setup](#setup)
   * [Prerequisites](#prerequisites)
   * [How to run a sample](#how-to-run-a-sample)
-  * [How to run the tests](#how-to-run-the-tests)
 * [Client libraries](#client-libraries)
   * [Google Cloud Node.js client library](#google-cloud-nodejs-client-library)
   * [Google API Node.js client library](#google-api-nodejs-client-library)
@@ -144,40 +143,15 @@ on Google Cloud Platform.
 
         npm install
 
+    or
+
+        yarn install
+
+    **Note:** Use `npm` *or* `yarn` exclusively, don't mix them.
+
 1. Run the sample:
 
         node sample_file.js [args]...
-
-### How to run the tests
-
-1. Read the [Contributing Guide][contrib].
-1. In a terminal, start Redis:
-
-        redis-server
-
-1. In another terminal, start `memcached`:
-
-        memcached
-
-1. In another terminal, run the unit tests from the root of the project:
-
-        npm test
-
-    or with coverage:
-
-        npm run coverage
-
-1. Then run the system tests from the root of the project:
-
-        npm run system-test
-
-    or with coverage:
-
-        npm run system-cover
-
-1. Or run all the tests at once with coverage:
-
-        npm run all-cover
 
 ## Client libraries
 
@@ -190,7 +164,9 @@ The recommended, idiomatic client for Google Cloud Platform services.
 
 ### <img src="https://avatars0.githubusercontent.com/u/1342004?v=3&s=36" alt="Google logo" title="Google" align="left" height="36" width="36" style="margin-top: 9px;"/>Google API Node.js client library
 
-An older Node.js client library for making REST requests to Google APIs.
+An older Node.js client library for making REST requests to Google APIs. Use
+this for Google Cloud APIs that are not yet supported by the Google Cloud
+Node.js client library.
 
 * [Documentation](http://google.github.io/google-api-nodejs-client/)
 * [Source code](https://github.com/google/google-api-nodejs-client)

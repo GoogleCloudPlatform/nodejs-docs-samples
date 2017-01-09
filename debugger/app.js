@@ -17,7 +17,7 @@
 
 // [START setup]
 if (process.env.GCLOUD_PROJECT) {
-  require('@google/cloud-debug');
+  require('@google/cloud-debug').start();
 }
 
 var express = require('express');

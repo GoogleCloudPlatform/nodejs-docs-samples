@@ -6,8 +6,9 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "cd ..; npm run t -- functions/gcs/test/*.test.js"
-  },  "dependencies": {
+    "test": "cd ../..; npm run t -- functions/gcs/test/*.test.js"
+  },
+  "dependencies": {
     "@google-cloud/storage": "0.6.0",
     "request": "2.79.0"
   }

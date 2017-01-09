@@ -5,13 +5,13 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "scripts": {
-    "test": "cd ..; npm run st -- bigquery/system-test/*.test.js"
+    "test": "cd ..; npm run st -- --verbose bigquery/system-test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/bigquery": "0.6.0",
     "@google-cloud/storage": "0.6.0",
     "async": "2.1.4",
-    "yargs": "6.5.0"
+    "yargs": "6.6.0"
   },
   "devDependencies": {
     "uuid": "3.0.1"

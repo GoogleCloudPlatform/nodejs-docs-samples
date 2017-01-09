@@ -6,6 +6,6 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "scripts": {
-    "test": "cd ..; npm run t -- functions/http/test/*.test.js"
+    "test": "cd ../..; npm run t -- functions/http/test/*.test.js"
   }
 }

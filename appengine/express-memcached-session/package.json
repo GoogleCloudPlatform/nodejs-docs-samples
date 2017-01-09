@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "cd ..; npm run t -- appengine/express-memcached-session/test/*.test.js"
+    "test": "cd ../..; npm run t -- appengine/express-memcached-session/test/*.test.js"
   },
   "dependencies": {
     "connect-memjs": "0.1.0",

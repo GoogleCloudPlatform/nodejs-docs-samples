@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+// Copyright 2016, Google, Inc.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+const async = require(`async`);
+const fs = require(`fs`);
+const path = require(`path`);
+
+const PROJECT_ROOT = path.dirname(__dirname);
+
+// Get subdirectories with a `package.json` file
+const directories = fs.readdirSync(PROJECT_ROOT)
+                      .filter(dir => fs.existsSync(`${PROJECT_ROOT}/${dir}/package.json`));
+
+// Dedupe package.json dependencies
+// WARNING: This will fail if two different versions of the same package are required.
+let pkgSet = {};
+let devPkgSet = {};
+let pkgJson;
+for (const dir of directories) {
+  pkgJson = JSON.parse(fs.readFileSync(`${PROJECT_ROOT}/${dir}/package.json`));
+
+  const deps = pkgJson[`dependencies`];
+  const devDeps = pkgJson[`devDependencies`];
+
+  for (p in deps) {
+    pkgSet[p] = deps[p];
+  }
+  for (p in devDeps) {
+    devPkgSet[p] = devDeps[p];
+  }
+}
+
+// Update root-level package.json (by shelling to npm)
+const spawn = require('child_process').spawn;
+process.chdir(PROJECT_ROOT);
+Object.keys(pkgSet).forEach(pkg => spawn(`yarn`, [`add`, `${pkg}@${pkgSet[pkg]}`]));
+Object.keys(devPkgSet).forEach(pkg => spawn(`yarn`, [`add`, `${pkg}@${devPkgSet[pkg]}`, `-D`]));

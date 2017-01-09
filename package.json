@@ -67,7 +67,8 @@
     "system-test": "npm run st -- --verbose system-test/**/*.test.js **/system-test/**/*.test.js",
     "system-cover": "npm run pretest && nyc --cache npm run system-test && nyc report --reporter=html",
     "all-test": "npm run st -- --no-power-assert bigquery/system-test/*.test.js test/**/*.test.js **/test/**/*.test.js system-test/**/*.test.js **/system-test/**/*.test.js",
-    "all-cover": "npm run pretest && nyc --cache npm run all-test && nyc report --reporter=html"
+    "all-cover": "npm run pretest && nyc --cache npm run all-test && nyc report --reporter=html",
+    "unify": "node scripts/unify"
   },
   "devDependencies": {
     "@google-cloud/bigquery": "0.6.0",

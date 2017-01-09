@@ -7,12 +7,12 @@
   "description": "A Slack Botkit bot, running on Kubernetes.",
   "main": "demo_bot.js",
   "dependencies": {
-    "botkit": "^0.0.5",
+    "botkit": "0.0.5",
     "@google-cloud/language": "0.7.0",
-    "sqlite3": "^3.1.8"
+    "sqlite3": "3.1.8"
   },
   "scripts": {
-    "test": "cd ../..; npm run st -- language/slackbot/system-test/*.test.js"
+    "test": "cd ../..; npm run st -- --verbose language/slackbot/system-test/*.test.js"
   },
   "engines": {
     "node": ">=4.3.2"

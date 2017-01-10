@@ -28,7 +28,7 @@ const config = {
 };
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should detect speech`, (t) => {
   const expectedFileName = `./resources/audio.raw`;

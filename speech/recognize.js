@@ -122,7 +122,10 @@ function streamingMicRecognize () {
     .on('data', (data) => process.stdout.write(data.results));
 
   // Start recording and send the microphone input to the Speech API
-  record.start({ sampleRate: 16000 }).pipe(recognizeStream);
+  record.start({
+    sampleRate: 16000,
+    threshold: 0
+  }).pipe(recognizeStream);
 
   console.log('Listening, press Ctrl+C to stop.');
 }

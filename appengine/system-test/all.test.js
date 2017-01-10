@@ -53,6 +53,7 @@ var sampleTests = [
     args: ['server.js'],
     msg: 'Express.js + Bower on Google App Engine.'
   },
+  // TODO: Investigate flaky test
   // {
   //   dir: 'appengine/cloudsql',
   //   cmd: 'node',
@@ -95,6 +96,7 @@ var sampleTests = [
     msg: 'Viewed',
     TRAVIS_NODE_VERSION: '0.12'
   },
+  // TODO: Investigate flaky test
   // {
   //   dir: 'appengine/geddy',
   //   cmd: 'node',
@@ -116,6 +118,7 @@ var sampleTests = [
     args: ['app.js'],
     msg: 'Hello, world!'
   },
+  // TODO: Investigate flaky test
   // {
   //   dir: 'appengine/kraken',
   //   cmd: 'node',
@@ -129,13 +132,14 @@ var sampleTests = [
     args: ['app.js'],
     msg: 'Logged'
   },
-  {
-    dir: 'appengine/loopback',
-    cmd: 'node',
-    args: ['server/server.js'],
-    msg: 'started',
-    code: 304
-  },
+  // TODO: Investigate flaky test
+  // {
+  //   dir: 'appengine/loopback',
+  //   cmd: 'node',
+  //   args: ['server/server.js'],
+  //   msg: 'started',
+  //   code: 304
+  // },
   {
     dir: 'appengine/mailgun',
     cmd: 'node',

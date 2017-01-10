@@ -25,7 +25,7 @@ const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);
 
 test.before(stubConsole);
-test.after(async () => {
+test.after.always(async () => {
   restoreConsole();
   try {
     await bucket.delete();

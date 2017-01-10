@@ -34,7 +34,7 @@ test.before(async (t) => {
   await bucket.upload(filePath);
 });
 
-test.after(async (t) => {
+test.after.always(async (t) => {
   // Try deleting all files twice
   try {
     await bucket.deleteFiles({ force: true });

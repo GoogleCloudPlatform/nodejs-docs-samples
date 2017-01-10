@@ -18,7 +18,7 @@ require(`./_setup`);
 var utils = require('../utils');
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial('should throw error', (t) => {
   var handler = utils.makeHandler();

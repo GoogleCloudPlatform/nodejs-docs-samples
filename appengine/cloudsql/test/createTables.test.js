@@ -57,7 +57,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb.serial(`should record a visit`, (t) => {
   const sample = getSample();

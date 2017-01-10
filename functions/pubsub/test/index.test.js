@@ -54,7 +54,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`Publish fails without a topic`, (t) => {
   const expectedMsg = `Topic not provided. Make sure you have a "topic" property in your request`;

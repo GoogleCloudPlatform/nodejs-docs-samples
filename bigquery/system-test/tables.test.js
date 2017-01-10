@@ -51,7 +51,7 @@ test.before(async () => {
   ]);
 });
 
-test.after(async () => {
+test.after.always(async () => {
   try {
     await bigquery.dataset(srcDatasetId).delete({ force: true });
   } catch (err) {} // ignore error
@@ -74,7 +74,7 @@ test.after(async () => {
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`should create a table`, async (t) => {
   const output = await runAsync(`${cmd} create ${datasetId} ${tableId} "${schema}"`, cwd);

@@ -18,7 +18,7 @@ require(`../../system-test/_setup`);
 const listResourcesExample = require(`../list_resources`);
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should list a bunch of stuff`, (t) => {
   listResourcesExample.main(process.env.GCLOUD_PROJECT, (err, results) => {

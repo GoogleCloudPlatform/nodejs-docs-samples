@@ -68,7 +68,7 @@ function getSample () {
 }
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`set: Set fails without a value`, (t) => {
   const expectedMsg = `Value not provided. Make sure you have a "value" property in your request`;

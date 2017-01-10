@@ -47,7 +47,7 @@ unique_words: 4582`;
 const sqlQuery = `SELECT * FROM publicdata.samples.natality LIMIT 5;`;
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test(`should query shakespeare`, async (t) => {
   const output = await runAsync(`${cmd} shakespeare`, cwd);

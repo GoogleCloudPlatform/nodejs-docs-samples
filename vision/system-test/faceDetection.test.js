@@ -52,7 +52,7 @@ const inputFile = path.join(__dirname, `../resources`, `face.png`);
 const outputFile = path.join(__dirname, `../../vision`, `out.png`);
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should detect faces`, (t) => {
   faceDetectionExample.main(inputFile, outputFile, MockCanvas, (err, faces) => {

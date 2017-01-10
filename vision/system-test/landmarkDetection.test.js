@@ -21,7 +21,7 @@ const landmarkDetectionSample = require(`../landmarkDetection`);
 const inputFile = `https://cloud-samples-tests.storage.googleapis.com/vision/water.jpg`;
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should detect landmarks`, (t) => {
   landmarkDetectionSample.main(inputFile, (err, landmarks) => {

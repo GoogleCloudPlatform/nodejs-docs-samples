@@ -25,14 +25,14 @@ const expectedDatasetId = `my_new_dataset`;
 let datasetId = `nodejs-docs-samples-test-${uuid.v4()}`;
 datasetId = datasetId.replace(/-/gi, `_`);
 
-test.after(async () => {
+test.after.always(async () => {
   try {
     bigquery.dataset(datasetId).delete({ force: true });
   } catch (err) {} // ignore error
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test(`quickstart should create a dataset`, async (t) => {
   await new Promise((resolve, reject) => {

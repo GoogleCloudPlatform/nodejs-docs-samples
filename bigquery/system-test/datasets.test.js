@@ -25,14 +25,14 @@ const cwd = path.join(__dirname, `..`);
 const cmd = `node datasets.js`;
 const datasetId = (`nodejs-docs-samples-test-${uuid.v4()}`).replace(/-/gi, '_');
 
-test.after(async () => {
+test.after.always(async () => {
   try {
     await bigquery.dataset(datasetId).delete({ force: true });
   } catch (err) {} // ignore error
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.serial(`should create a dataset`, async (t) => {
   const output = await runAsync(`${cmd} create ${datasetId}`, cwd);

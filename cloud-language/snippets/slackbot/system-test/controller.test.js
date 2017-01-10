@@ -50,7 +50,7 @@ test.before((t) => {
   });
 });
 
-test.after((t) => {
+test.after.always((t) => {
   process.env.SLACK_TOKEN_PATH = originalToken;
   try {
     fs.unlinkSync(SLACK_TOKEN_PATH);

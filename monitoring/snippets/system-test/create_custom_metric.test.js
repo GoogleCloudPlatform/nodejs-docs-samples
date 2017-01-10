@@ -23,7 +23,7 @@ function getPointValue (timeSeries) {
 }
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb('should create and read back a custom metric', (t) => {
   customMetricsExample.main(

@@ -13,37 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const async = require(`async`);
 const fs = require(`fs`);
 const path = require(`path`);
 
-const PROJECT_ROOT = path.dirname(__dirname);
+const PROJECT_ROOT = path.join(__dirname, `..`);
 
 // Get subdirectories with a `package.json` file
 const directories = fs.readdirSync(PROJECT_ROOT)
-                      .filter(dir => fs.existsSync(`${PROJECT_ROOT}/${dir}/package.json`));
+                      .filter((dir) => fs.existsSync(path.join(PROJECT_ROOT, dir, `package.json`)));
 
 // Dedupe package.json dependencies
 // WARNING: This will fail if two different versions of the same package are required.
 let pkgSet = {};
-let devPkgSet = {};
 let pkgJson;
-for (const dir of directories) {
-  pkgJson = JSON.parse(fs.readFileSync(`${PROJECT_ROOT}/${dir}/package.json`));
-
-  const deps = pkgJson[`dependencies`];
-  const devDeps = pkgJson[`devDependencies`];
-
-  for (p in deps) {
-    pkgSet[p] = deps[p];
-  }
-  for (p in devDeps) {
-    devPkgSet[p] = devDeps[p];
-  }
-}
+directories.forEach((dir) => {
+  pkgJson = JSON.parse(fs.readFileSync(path.join(PROJECT_ROOT, dir, `package.json`)));
+  Object.assign(pkgSet, pkgJson.dependencies);
+})
 
 // Update root-level package.json (by shelling to npm)
 const spawn = require('child_process').spawn;
-process.chdir(PROJECT_ROOT);
-Object.keys(pkgSet).forEach(pkg => spawn(`yarn`, [`add`, `${pkg}@${pkgSet[pkg]}`]));
-Object.keys(devPkgSet).forEach(pkg => spawn(`yarn`, [`add`, `${pkg}@${devPkgSet[pkg]}`, `-D`]));
+spawn(`yarn`, [`add`].concat(Object.keys(pkgSet).map(pkg => `${pkg}@${pkgSet[pkg]}`)));

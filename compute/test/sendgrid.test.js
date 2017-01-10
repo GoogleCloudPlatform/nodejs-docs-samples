@@ -19,7 +19,7 @@ const proxyquire = require(`proxyquire`).noPreserveCache();
 process.env.SENDGRID_API_KEY = `foo`;
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb(`should send an email`, (t) => {
   proxyquire(`../sendgrid`, {

@@ -20,7 +20,7 @@ process.env.MAILJET_API_KEY = `foo`;
 process.env.MAILJET_API_SECRET = `bar`;
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb(`should send an email`, (t) => {
   proxyquire(`../mailjet`, {

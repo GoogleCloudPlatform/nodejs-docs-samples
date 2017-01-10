@@ -21,7 +21,7 @@ const proxyquire = require(`proxyquire`).noPreserveCache();
 const translate = proxyquire(`@google-cloud/translate`, {})();
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should translate a string`, (t) => {
   const string = `Hello, world!`;

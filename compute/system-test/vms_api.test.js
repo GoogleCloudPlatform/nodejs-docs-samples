@@ -18,7 +18,7 @@ require(`../../system-test/_setup`);
 const vmsExample = require(`../vms_api`);
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test.cb('should retrieve vms', (t) => {
   vmsExample.main((err, result) => {

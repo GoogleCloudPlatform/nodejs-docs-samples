@@ -33,7 +33,7 @@ test.before(async () => {
   await bucket.upload(localFilePath);
 });
 
-test.after(async () => {
+test.after.always(async () => {
   const bucket = storage.bucket(bucketName);
   await bucket.deleteFiles({ force: true });
   await bucket.deleteFiles({ force: true }); // Try a second time...
@@ -41,7 +41,7 @@ test.after(async () => {
 });
 
 test.beforeEach(stubConsole);
-test.afterEach(restoreConsole);
+test.afterEach.always(restoreConsole);
 
 test(`should run sync recognize`, async (t) => {
   const output = await runAsync(`${cmd} sentiment-text "${text}"`, cwd);

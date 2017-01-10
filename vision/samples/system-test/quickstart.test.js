@@ -22,7 +22,7 @@ const vision = proxyquire(`@google-cloud/vision`, {})();
 const path = require(`path`);
 
 test.before(stubConsole);
-test.after(restoreConsole);
+test.after.always(restoreConsole);
 
 test.cb(`should detect labels`, (t) => {
   const filePath = path.join(__dirname, `../resources/wakeupcat.jpg`);

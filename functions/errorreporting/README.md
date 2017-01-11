@@ -16,7 +16,7 @@ See:
 
 ## Run the tests
 
-1. Read and follow the [prerequisites][../../#how-to-run-the-tests].
+1. Read and follow the [prerequisites](../../#how-to-run-the-tests).
 
 1. Install dependencies:
 

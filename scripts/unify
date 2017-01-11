@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 // Copyright 2016, Google, Inc.
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,12 +24,12 @@ const directories = fs.readdirSync(PROJECT_ROOT)
 
 // Dedupe package.json dependencies
 // WARNING: This will fail if two different versions of the same package are required.
-let pkgSet = {};
+const pkgSet = {};
 let pkgJson;
 directories.forEach((dir) => {
   pkgJson = JSON.parse(fs.readFileSync(path.join(PROJECT_ROOT, dir, `package.json`)));
   Object.assign(pkgSet, pkgJson.dependencies);
-})
+});
 
 // Update root-level package.json (by shelling to npm)
 const spawn = require('child_process').spawn;

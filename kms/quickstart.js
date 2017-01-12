@@ -22,8 +22,8 @@ const google = require('googleapis');
 // Your Google Cloud Platform project ID
 const projectId = 'YOUR_PROJECT_ID';
 
-// The "global" zone will list all keys. It can be a specific zone if desired.
-const zone = 'global';
+// Lists keys in the "global" location.
+const location = 'global';
 
 // Acquires credentials
 google.auth.getApplicationDefault((err, authClient) => {
@@ -44,7 +44,7 @@ google.auth.getApplicationDefault((err, authClient) => {
     auth: authClient
   });
   const params = {
-    parent: `projects/${projectId}/locations/${zone}`
+    parent: `projects/${projectId}/locations/${location}`
   };
 
   // Lists key rings

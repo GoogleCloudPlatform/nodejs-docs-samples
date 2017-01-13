@@ -1,0 +1,9 @@
+{
+  "name" : "audit-log-monitoring",
+  "version" : "1.0.0",
+  "description" : "monitor my audit logs",
+  "main" : "index.js",
+  "dependencies" : {
+    "@google-cloud/compute" : "^0.4.1"
+  }
+}

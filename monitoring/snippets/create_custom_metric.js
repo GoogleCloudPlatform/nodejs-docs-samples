@@ -110,6 +110,7 @@ CustomMetrics.prototype.createCustomMetric = function (client, callback) {
  * @param {Object} authClient The authorized Stackdriver Monitoring API client
  * @param {Function} callback Callback Function.
  */
+// [START write_timeseries]
 CustomMetrics.prototype.writeTimeSeriesForCustomMetric =
   function (client, callback) {
     var monitoring = google.monitoring('v3');
@@ -153,6 +154,7 @@ CustomMetrics.prototype.writeTimeSeriesForCustomMetric =
       callback(null, timeSeries);
     });
   };
+// [END write_timeseries]
 
 /**
  * Lists the time series written for the custom metric. The window

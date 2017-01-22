@@ -107,9 +107,9 @@
     is-circular "^1.0.1"
     string-format-obj "^1.0.0"
 
-"@google-cloud/monitoring@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@google-cloud/monitoring/-/monitoring-0.1.3.tgz#d8e9ac0bb5eece45657b9f0ee94d62935225fc54"
+"@google-cloud/monitoring@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@google-cloud/monitoring/-/monitoring-0.1.4.tgz#d2629045150289ae6eef385f68f6e1b93cce2967"
   dependencies:
     extend "^3.0.0"
     google-gax "^0.10.0"
@@ -3343,20 +3343,20 @@ jwa@~1.0.0:
     buffer-equal-constant-time "^1.0.1"
     ecdsa-sig-formatter "^1.0.0"
 
-jws@^3.0.0, jws@~3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/jws/-/jws-3.0.0.tgz#da5f267897dd4e9cf8137979db33fc54a3c05418"
-  dependencies:
-    base64url "~1.0.4"
-    jwa "~1.0.0"
-
-jws@^3.1.4:
+jws@^3.0.0, jws@^3.1.4:
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/jws/-/jws-3.1.4.tgz#f9e8b9338e8a847277d6444b1464f61880e050a2"
   dependencies:
     base64url "^2.0.0"
     jwa "^1.1.4"
     safe-buffer "^5.0.1"
+
+jws@~3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/jws/-/jws-3.0.0.tgz#da5f267897dd4e9cf8137979db33fc54a3c05418"
+  dependencies:
+    base64url "~1.0.4"
+    jwa "~1.0.0"
 
 kind-of@^3.0.2:
   version "3.1.0"

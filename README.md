@@ -47,8 +47,10 @@ on Google Cloud Platform.
     * [Stackdriver Logging](#stackdriver-logging)
     * [Stackdriver Monitoring](#stackdriver-monitoring)
     * [Stackdriver Trace](#stackdriver-trace)
-  * [**Networking**](#management-tools)
+  * [**Networking**](#networking)
     * [Google Cloud DNS](#google-cloud-dns)
+  * [**Identity and Security**](#identity-and-security)
+    * [Google Cloud Key Management Service](#google-cloud-key-management-service)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
   * [LabelCat](#labelcat)
@@ -381,6 +383,20 @@ View the [Google Cloud DNS Node.js sample][dns_sample].
 
 [dns_docs]: https://cloud.google.com/dns/docs/
 [dns_sample]: dns
+
+### Identity and Security
+
+#### Google Cloud Key Management Service
+
+The [Cloud KMS API][kms_docs] is a service that allows you to keep encryption
+keys centrally in the cloud, for direct use by cloud services.
+
+[kms_docs]: https://cloud.google.com/kms/docs/
+
+View the [Google Cloud Key Management Service Node.js sample][kms_sample].
+
+[kms_docs]: https://cloud.google.com/kms/docs/
+[kms_sample]: dns
 
 ## Other sample applications
 

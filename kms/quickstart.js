@@ -43,12 +43,12 @@ google.auth.getApplicationDefault((err, authClient) => {
     version: 'v1beta1',
     auth: authClient
   });
-  const params = {
+  const request = {
     parent: `projects/${projectId}/locations/${location}`
   };
 
   // Lists key rings
-  cloudkms.projects.locations.keyRings.list(params, (err, result) => {
+  cloudkms.projects.locations.keyRings.list(request, (err, result) => {
     if (err) {
       console.error(err);
       return;
@@ -57,7 +57,7 @@ google.auth.getApplicationDefault((err, authClient) => {
     const keyRings = result.keyRings || [];
 
     if (keyRings.length) {
-      console.log('Key kings:');
+      console.log('Key rings:');
       result.keyRings.forEach((keyRing) => console.log(keyRing.name));
     } else {
       console.log(`No key rings found.`);

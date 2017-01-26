@@ -8,6 +8,7 @@
     "test": "cd ..; npm run st -- --verbose kms/system-test/*.test.js"
   },
   "dependencies": {
-    "googleapis": "16.1.0"
+    "googleapis": "16.1.0",
+    "yargs": "6.6.0"
   }
 }

@@ -71,6 +71,6 @@ dependencies:
 # Run your tests
 test:
   override:
-    - yarn run all-cover
+    - node scripts/test
   post:
-    - nyc report --reporter=lcov > coverage.lcov && codecov
+    - nyc report --reporter=lcov > coverage.lcov && codecov || true

@@ -18,7 +18,8 @@
 // [START functions_uuid]
 const uuid = require('uuid');
 
-exports.uuid = function (event, callback) {
-  callback(null, uuid.v4());
+// Return a newly generated UUID in the HTTP response.
+exports.getUuid = function (req, res) {
+  res.send(uuid.v4());
 };
 // [END functions_uuid]

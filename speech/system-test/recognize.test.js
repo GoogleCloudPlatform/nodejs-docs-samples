@@ -18,23 +18,49 @@
 require(`../../system-test/_setup`);
 
 const path = require(`path`);
+const storage = require(`@google-cloud/storage`)();
+const uuid = require(`uuid`);
 
+const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node recognize.js`;
 const cwd = path.join(__dirname, `..`);
-const filename = `./resources/audio.raw`;
+const filename = `audio.raw`;
+const filepath = path.join(__dirname, `../resources/${filename}`);
 const text = `how old is the Brooklyn Bridge`;
 
+test.before(async () => {
+  const [bucket] = await storage.createBucket(bucketName);
+  await bucket.upload(filepath);
+});
+
+test.after.always(async () => {
+  const bucket = storage.bucket(bucketName);
+  await bucket.deleteFiles({ force: true });
+  await bucket.deleteFiles({ force: true }); // Try a second time...
+  await bucket.delete();
+});
+
 test(`should run sync recognize`, async (t) => {
-  const output = await runAsync(`${cmd} sync ${filename}`, cwd);
+  const output = await runAsync(`${cmd} sync ${filepath}`, cwd);
   t.true(output.includes(`Transcription: ${text}`));
 });
 
-test(`should run async recognize`, async (t) => {
-  const output = await runAsync(`${cmd} async ${filename}`, cwd);
+test(`should run sync recognize on a GCS file`, async (t) => {
+  const output = await runAsync(`${cmd} sync-gcs gs://${bucketName}/${filename}`, cwd);
+  t.true(output.includes(`Transcription: ${text}`));
+});
+
+test(`should run async recognize on a local file`, async (t) => {
+  const output = await runAsync(`${cmd} async ${filepath}`, cwd);
+  t.true(output.includes(`Transcription: ${text}`));
+});
+
+test(`should run async recognize on a GCS file`, async (t) => {
+  const output = await runAsync(`${cmd} async-gcs gs://${bucketName}/${filename}`, cwd);
   t.true(output.includes(`Transcription: ${text}`));
 });
 
 test(`should run streaming recognize`, async (t) => {
-  const output = await runAsync(`${cmd} stream ${filename}`, cwd);
+  const output = await runAsync(`${cmd} stream ${filepath}`, cwd);
   t.true(output.includes(text));
 });

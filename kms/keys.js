@@ -1209,75 +1209,77 @@ function disableCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
   // [END kms_disable_cryptokey_version]
 }
 
-// [START kms_create_keyring]
-// [START kms_list_keyrings]
-// [START kms_get_keyring]
-// [START kms_get_keyring_policy]
-// [START kms_add_member_to_keyring_policy]
-// [START kms_remove_member_from_keyring_policy]
-// [START kms_create_cryptokey]
-// [START kms_list_cryptokeys]
-// [START kms_encrypt]
-// [START kms_decrypt]
-// [START kms_get_cryptokey]
-// [START kms_set_cryptokey_primary_version]
-// [START kms_get_cryptokey_policy]
-// [START kms_add_member_to_cryptokey_policy]
-// [START kms_remove_member_from_cryptokey_policy]
-// [START kms_list_cryptokey_versions]
-// [START kms_create_cryptokey_version]
-// [START kms_destroy_cryptokey_version]
-// [START kms_restore_cryptokey_version]
-// [START kms_enable_cryptokey_version]
-// [START kms_disable_cryptokey_version]
-function buildAndAuthorizeService (callback) {
-  // Imports the Google APIs client library
-  const google = require('googleapis');
+/* eslint-disable indent */
+  // [START kms_create_keyring]
+  // [START kms_list_keyrings]
+  // [START kms_get_keyring]
+  // [START kms_get_keyring_policy]
+  // [START kms_add_member_to_keyring_policy]
+  // [START kms_remove_member_from_keyring_policy]
+  // [START kms_create_cryptokey]
+  // [START kms_list_cryptokeys]
+  // [START kms_encrypt]
+  // [START kms_decrypt]
+  // [START kms_get_cryptokey]
+  // [START kms_set_cryptokey_primary_version]
+  // [START kms_get_cryptokey_policy]
+  // [START kms_add_member_to_cryptokey_policy]
+  // [START kms_remove_member_from_cryptokey_policy]
+  // [START kms_list_cryptokey_versions]
+  // [START kms_create_cryptokey_version]
+  // [START kms_destroy_cryptokey_version]
+  // [START kms_restore_cryptokey_version]
+  // [START kms_enable_cryptokey_version]
+  // [START kms_disable_cryptokey_version]
 
-  // Acquires credentials
-  google.auth.getApplicationDefault((err, authClient) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+  function buildAndAuthorizeService (callback) {
+    // Imports the Google APIs client library
+    const google = require('googleapis');
 
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      authClient = authClient.createScoped([
-        'https://www.googleapis.com/auth/cloud-platform'
-      ]);
-    }
+    // Acquires credentials
+    google.auth.getApplicationDefault((err, authClient) => {
+      if (err) {
+        callback(err);
+        return;
+      }
 
-    // Instantiates an authorized client
-    const cloudkms = google.cloudkms({
-      version: 'v1beta1',
-      auth: authClient
+      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+        authClient = authClient.createScoped([
+          'https://www.googleapis.com/auth/cloud-platform'
+        ]);
+      }
+
+      // Instantiates an authorized client
+      const cloudkms = google.cloudkms({
+        version: 'v1beta1',
+        auth: authClient
+      });
+
+      callback(null, cloudkms);
     });
-
-    callback(null, cloudkms);
-  });
-}
-
-// [END kms_create_keyring]
-// [END kms_list_keyrings]
-// [END kms_get_keyring]
-// [END kms_get_keyring_policy]
-// [END kms_add_member_to_keyring_policy]
-// [END kms_remove_member_from_keyring_policy]
-// [END kms_create_cryptokey]
-// [END kms_list_cryptokeys]
-// [END kms_encrypt]
-// [END kms_decrypt]
-// [END kms_get_cryptokey]
-// [END kms_set_cryptokey_primary_version]
-// [END kms_get_cryptokey_policy]
-// [END kms_add_member_to_cryptokey_policy]
-// [END kms_remove_member_from_cryptokey_policy]
-// [END kms_list_cryptokey_versions]
-// [END kms_create_cryptokey_version]
-// [END kms_destroy_cryptokey_version]
-// [END kms_restore_cryptokey_version]
-// [END kms_enable_cryptokey_version]
-// [END kms_disable_cryptokey_version]
+  }
+  // [END kms_create_keyring]
+  // [END kms_list_keyrings]
+  // [END kms_get_keyring]
+  // [END kms_get_keyring_policy]
+  // [END kms_add_member_to_keyring_policy]
+  // [END kms_remove_member_from_keyring_policy]
+  // [END kms_create_cryptokey]
+  // [END kms_list_cryptokeys]
+  // [END kms_encrypt]
+  // [END kms_decrypt]
+  // [END kms_get_cryptokey]
+  // [END kms_set_cryptokey_primary_version]
+  // [END kms_get_cryptokey_policy]
+  // [END kms_add_member_to_cryptokey_policy]
+  // [END kms_remove_member_from_cryptokey_policy]
+  // [END kms_list_cryptokey_versions]
+  // [END kms_create_cryptokey_version]
+  // [END kms_destroy_cryptokey_version]
+  // [END kms_restore_cryptokey_version]
+  // [END kms_enable_cryptokey_version]
+  // [END kms_disable_cryptokey_version]
+/* eslint-disable indent */
 
 const cli = require(`yargs`)
   .demand(1)

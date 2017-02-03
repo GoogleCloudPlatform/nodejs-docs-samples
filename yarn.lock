@@ -220,11 +220,11 @@
     string-format-obj "^1.1.0"
     through2 "^2.0.1"
 
-"@google-cloud/storage@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-0.6.1.tgz#c0cb2966839b259b82ec3f04f34af61b5b2f4ec4"
+"@google-cloud/storage@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-0.7.0.tgz#87eb7bde35a1597511cba7b651e666178ac90fe1"
   dependencies:
-    "@google-cloud/common" "^0.11.0"
+    "@google-cloud/common" "^0.12.0"
     arrify "^1.0.0"
     async "^2.0.1"
     concat-stream "^1.5.0"
@@ -252,11 +252,12 @@
     is-html "^1.0.0"
     propprop "^0.3.0"
 
-"@google-cloud/vision@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/vision/-/vision-0.7.0.tgz#286a4cde76235b9178a462041f4b7c861a242cd0"
+"@google-cloud/vision@0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/vision/-/vision-0.8.0.tgz#6af1d7e1b793e41f87c9e43633d1ac098967a4b3"
   dependencies:
-    "@google-cloud/common" "^0.9.0"
+    "@google-cloud/common" "^0.12.0"
+    "@google-cloud/common-grpc" "^0.1.1"
     arrify "^1.0.0"
     async "^2.0.1"
     extend "^3.0.0"

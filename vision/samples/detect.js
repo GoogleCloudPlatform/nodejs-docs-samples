@@ -15,16 +15,19 @@
 
 'use strict';
 
-const Vision = require('@google-cloud/vision');
-const Storage = require('@google-cloud/storage');
-
-// [START vision_face_detection]
 function detectFaces (fileName) {
+  // [START vision_face_detection]
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates a client
   const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = '/path/to/image.png';
 
   // Performs face detection on the local file
-  return vision.detectFaces(fileName)
+  vision.detectFaces(fileName)
     .then((results) => {
       const faces = results[0];
 
@@ -36,25 +39,28 @@ function detectFaces (fileName) {
         console.log(`    Sorrow: ${face.sorrow}`);
         console.log(`    Surprise: ${face.surprise}`);
       });
-
-      return faces;
     });
+  // [END vision_face_detection]
 }
-// [END vision_face_detection]
 
-// [START vision_face_detection_gcs]
 function detectFacesGCS (bucketName, fileName) {
+  // [START vision_face_detection_gcs]
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates clients
   const storage = Storage();
   const vision = Vision();
 
-  // The bucket where the file resides, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-  // The image file to analyze, e.g. "image.jpg"
-  const file = bucket.file(fileName);
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'path/to/image.png';
 
   // Performs face detection on the remote file
-  return vision.detectFaces(file)
+  vision.detectFaces(storage.bucket(bucketName).file(fileName))
     .then((results) => {
       const faces = results[0];
 
@@ -66,229 +72,268 @@ function detectFacesGCS (bucketName, fileName) {
         console.log(`    Sorrow: ${face.sorrow}`);
         console.log(`    Surprise: ${face.surprise}`);
       });
-
-      return faces;
     });
+  // [END vision_face_detection_gcs]
 }
-// [END vision_face_detection_gcs]
 
-// [START vision_label_detection]
 function detectLabels (fileName) {
+  // [START vision_label_detection]
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates a client
   const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = '/path/to/image.png';
 
   // Performs label detection on the local file
-  return vision.detectLabels(fileName)
+  vision.detectLabels(fileName)
     .then((results) => {
       const labels = results[0];
 
       console.log('Labels:');
       labels.forEach((label) => console.log(label));
-
-      return labels;
     });
+  // [END vision_label_detection]
 }
-// [END vision_label_detection]
 
-// [START vision_label_detection_gcs]
 function detectLabelsGCS (bucketName, fileName) {
+  // [START vision_label_detection_gcs]
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates clients
   const storage = Storage();
   const vision = Vision();
 
-  // The bucket where the file resides, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-  // The image file to analyze, e.g. "image.jpg"
-  const file = bucket.file(fileName);
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'path/to/image.png';
 
   // Performs label detection on the remote file
-  return vision.detectLabels(file)
+  vision.detectLabels(storage.bucket(bucketName).file(fileName))
     .then((results) => {
       const labels = results[0];
 
       console.log('Labels:');
       labels.forEach((label) => console.log(label));
-
-      return labels;
     });
+  // [END vision_label_detection_gcs]
 }
-// [END vision_label_detection_gcs]
 
-// [START vision_landmark_detection]
 function detectLandmarks (fileName) {
+  // [START vision_landmark_detection]
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates a client
   const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = '/path/to/image.png';
 
   // Performs landmark detection on the local file
-  return vision.detectLandmarks(fileName)
+  vision.detectLandmarks(fileName)
     .then((results) => {
       const landmarks = results[0];
 
       console.log('Landmarks:');
       landmarks.forEach((landmark) => console.log(landmark));
-
-      return landmarks;
     });
+  // [END vision_landmark_detection]
 }
-// [END vision_landmark_detection]
 
-// [START vision_landmark_detection_gcs]
 function detectLandmarksGCS (bucketName, fileName) {
+  // [START vision_landmark_detection_gcs]
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates clients
   const storage = Storage();
   const vision = Vision();
 
-  // The bucket where the file resides, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-  // The image file to analyze, e.g. "image.jpg"
-  const file = bucket.file(fileName);
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'path/to/image.png';
 
   // Performs landmark detection on the remote file
-  return vision.detectLandmarks(file)
+  vision.detectLandmarks(storage.bucket(bucketName).file(fileName))
     .then((results) => {
       const landmarks = results[0];
 
       console.log('Landmarks:');
       landmarks.forEach((landmark) => console.log(landmark));
-
-      return landmarks;
     });
+  // [END vision_landmark_detection_gcs]
 }
-// [END vision_landmark_detection_gcs]
 
-// [START vision_text_detection]
 function detectText (fileName) {
+  // [START vision_text_detection]
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates a client
   const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = '/path/to/image.png';
 
   // Performs text detection on the local file
-  return vision.detectText(fileName)
+  vision.detectText(fileName)
     .then((results) => {
       const detections = results[0];
 
       console.log('Text:');
       detections.forEach((text) => console.log(text));
-
-      return detections;
     });
+  // [END vision_text_detection]
 }
-// [END vision_text_detection]
 
-// [START vision_text_detection_gcs]
 function detectTextGCS (bucketName, fileName) {
+  // [START vision_text_detection_gcs]
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates clients
   const storage = Storage();
   const vision = Vision();
 
-  // The bucket where the file resides, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-  // The image file to analyze, e.g. "image.jpg"
-  const file = bucket.file(fileName);
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'path/to/image.png';
 
   // Performs text detection on the remote file
-  return vision.detectText(file)
+  vision.detectText(storage.bucket(bucketName).file(fileName))
     .then((results) => {
       const detections = results[0];
 
       console.log('Text:');
       detections.forEach((text) => console.log(text));
-
-      return detections;
     });
+  // [END vision_text_detection_gcs]
 }
-// [END vision_text_detection_gcs]
 
-// [START vision_logo_detection]
 function detectLogos (fileName) {
+  // [START vision_logo_detection]
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates a client
   const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = '/path/to/image.png';
 
   // Performs logo detection on the local file
-  return vision.detectLogos(fileName)
+  vision.detectLogos(fileName)
     .then((results) => {
       const logos = results[0];
 
       console.log('Logos:');
       logos.forEach((logo) => console.log(logo));
-
-      return logos;
     });
+  // [END vision_logo_detection]
 }
-// [END vision_logo_detection]
 
-// [START vision_logo_detection_gcs]
 function detectLogosGCS (bucketName, fileName) {
+  // [START vision_logo_detection_gcs]
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates clients
   const storage = Storage();
   const vision = Vision();
 
-  // The bucket where the file resides, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-  // The image file to analyze, e.g. "image.jpg"
-  const file = bucket.file(fileName);
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'path/to/image.png';
 
   // Performs logo detection on the remote file
-  return vision.detectLogos(file)
+  vision.detectLogos(storage.bucket(bucketName).file(fileName))
     .then((results) => {
       const logos = results[0];
 
       console.log('Logos:');
       logos.forEach((logo) => console.log(logo));
-
-      return logos;
     });
+  // [END vision_logo_detection_gcs]
 }
-// [END vision_logo_detection_gcs]
 
-// [START vision_image_property_detection]
 function detectProperties (fileName) {
+  // [START vision_image_property_detection]
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates a client
   const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = '/path/to/image.png';
 
   // Performs image property detection on the local file
-  return vision.detectProperties(fileName)
+  vision.detectProperties(fileName)
     .then((results) => {
       const properties = results[0];
 
       console.log('Colors:');
       properties.colors.forEach((color) => console.log(color));
-
-      return properties;
     });
+  // [END vision_image_property_detection]
 }
-// [END vision_image_property_detection]
 
-// [START vision_image_property_detection_gcs]
 function detectPropertiesGCS (bucketName, fileName) {
+  // [START vision_image_property_detection_gcs]
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates clients
   const storage = Storage();
   const vision = Vision();
 
-  // The bucket where the file resides, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-  // The image file to analyze, e.g. "image.jpg"
-  const file = bucket.file(fileName);
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'path/to/image.png';
 
   // Performs image property detection on the remote file
-  return vision.detectProperties(file)
+  vision.detectProperties(storage.bucket(bucketName).file(fileName))
     .then((results) => {
       const properties = results[0];
 
       console.log('Colors:');
       properties.colors.forEach((color) => console.log(color));
-
-      return properties;
     });
+  // [END vision_image_property_detection_gcs]
 }
-// [END vision_image_property_detection_gcs]
 
-// [START vision_safe_search_detection]
 function detectSafeSearch (fileName) {
+  // [START vision_safe_search_detection]
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates a client
   const vision = Vision();
 
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = '/path/to/image.png';
+
   // Performs safe search property detection on the local file
-  return vision.detectSafeSearch(fileName)
+  vision.detectSafeSearch(fileName)
     .then((results) => {
       const detections = results[0];
 
@@ -296,25 +341,28 @@ function detectSafeSearch (fileName) {
       console.log(`Spoof: ${detections.spoof}`);
       console.log(`Medical: ${detections.medical}`);
       console.log(`Violence: ${detections.violence}`);
-
-      return detections;
     });
+  // [END vision_safe_search_detection]
 }
-// [END vision_safe_search_detection]
 
-// [START vision_safe_search_detection_gcs]
 function detectSafeSearchGCS (bucketName, fileName) {
+  // [START vision_safe_search_detection_gcs]
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
   // Instantiates clients
   const storage = Storage();
   const vision = Vision();
 
-  // The bucket where the file resides, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-  // The image file to analyze, e.g. "image.jpg"
-  const file = bucket.file(fileName);
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'path/to/image.png';
 
   // Performs safe search property detection on the remote file
-  return vision.detectSafeSearch(file)
+  vision.detectSafeSearch(storage.bucket(bucketName).file(fileName))
     .then((results) => {
       const detections = results[0];
 
@@ -322,11 +370,9 @@ function detectSafeSearchGCS (bucketName, fileName) {
       console.log(`Spoof: ${detections.spoof}`);
       console.log(`Medical: ${detections.medical}`);
       console.log(`Violence: ${detections.violence}`);
-
-      return detections;
     });
+  // [END vision_safe_search_detection_gcs]
 }
-// [END vision_safe_search_detection_gcs]
 
 require(`yargs`)
   .demand(1)

@@ -9,8 +9,8 @@
     "node": ">=4.3.2"
   },
   "dependencies": {
-    "express": "4.14.0",
-    "parse-server": "2.3.1",
+    "express": "4.14.1",
+    "parse-server": "2.3.2",
     "nconf": "0.8.4"
   }
 }

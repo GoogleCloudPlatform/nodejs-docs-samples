@@ -9,6 +9,6 @@
     "test": "cd ../..; npm run t -- functions/slack/test/*.test.js"
   },
   "dependencies": {
-    "googleapis": "16.0.0"
+    "googleapis": "16.1.0"
   }
 }

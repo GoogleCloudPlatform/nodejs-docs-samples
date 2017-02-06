@@ -11,8 +11,8 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "@google/cloud-trace": "0.5.10",
-    "express": "4.14.0",
+    "@google/cloud-trace": "0.6.1",
+    "express": "4.14.1",
     "request": "2.79.0"
   }
 }

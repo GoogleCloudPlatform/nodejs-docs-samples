@@ -9,6 +9,6 @@
     "test": "cd ../..; npm run t -- functions/datastore/test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/datastore": "0.6.0"
+    "@google-cloud/datastore": "0.7.0"
   }
 }

@@ -170,9 +170,9 @@ google-p12-pem@^0.1.0:
   dependencies:
     node-forge "^0.6.46"
 
-googleapis@16.0.0:
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-16.0.0.tgz#037fb52d604ca5bfb91bb20979f3eed36af06dc3"
+googleapis@16.1.0:
+  version "16.1.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-16.1.0.tgz#0f19f2d70572d918881a0f626e3b1a2fa8629576"
   dependencies:
     async "~2.1.4"
     google-auth-library "~0.10.0"

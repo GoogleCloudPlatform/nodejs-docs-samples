@@ -13,7 +13,7 @@
     "test": "cd ../..; npm run t -- appengine/errorreporting/test/*.test.js"
   },
   "dependencies": {
-    "express": "4.14.0",
-    "winston": "2.3.0"
+    "express": "4.14.1",
+    "winston": "2.3.1"
   }
 }

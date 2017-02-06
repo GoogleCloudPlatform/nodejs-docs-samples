@@ -21,15 +21,33 @@ services.
 
         gcloud init
 
-1. Clone this repo.
+1. Acquire local credentials for autheticating with Google Cloud Platform APIs:
 
-        git clone https://github.com/GoogleCloudPlatform/<REPO NAME>.git
+        gcloud beta auth application-default login
 
-1. Open a sample folder, install dependencies, and run the sample:
+1. Clone this repo:
+
+        git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+
+1. Open a sample folder:
 
         cd <sample-folder>/
+
+1. Install depedencies using `npm` or `yarn`:
+
         npm install
+
+    or
+
+        yarn install
+
+1. Run the sample with `npm` or `yarn`:
+
         npm start
+
+    or
+
+        yarn start
 
 1. Visit the application at [http://localhost:8080](http://localhost:8080).
 
@@ -48,8 +66,10 @@ create a project/app id. (App id and project id are identical.)
 
         gcloud app deploy
 
-1. Awesome! Your application is now live at `your-project-id.appspot.com`.
+    Note: If there is a `yarn.lock` file then `yarn install` will be used during
+    deployment. Delete the `yarn.lock` file to fall back to `npm install`.
 
+1. Awesome! Your application is now live at `https://YOUR_PROJECT_ID.appspot.com`.
 
 ## Samples
 

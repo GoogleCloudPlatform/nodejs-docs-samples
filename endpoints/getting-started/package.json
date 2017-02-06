@@ -13,7 +13,7 @@
     "test": "cd ..; npm run t -- endpoints/getting-started/test/*.test.js"
   },
   "dependencies": {
-    "express": "4.14.0",
-    "body-parser": "1.15.2"
+    "express": "4.14.1",
+    "body-parser": "1.16.0"
   }
 }

@@ -12,8 +12,8 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "4.14.0",
-    "winston": "2.3.0",
+    "express": "4.14.1",
+    "winston": "2.3.1",
     "winston-gae": "0.1.0"
   }
 }

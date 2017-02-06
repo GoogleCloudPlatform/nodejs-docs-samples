@@ -9,9 +9,9 @@
     "test": "cd ../../..; npm run t -- functions/ocr/app/test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.7.0",
-    "@google-cloud/storage": "0.6.0",
-    "@google-cloud/translate": "0.6.0",
-    "@google-cloud/vision": "0.7.0"
+    "@google-cloud/pubsub": "0.8.0",
+    "@google-cloud/storage": "0.7.0",
+    "@google-cloud/translate": "0.7.0",
+    "@google-cloud/vision": "0.8.0"
   }
 }

@@ -20,12 +20,13 @@ require(`../../../test/_setup`);
 const uuidSample = require('../');
 
 test(`should generate a uuid`, (t) => {
-  const callback = sinon.stub();
+  const req = {};
+  const res = {
+    send: sinon.stub()
+  };
+  uuidSample.getUuid(req, res);
 
-  uuidSample.uuid({}, callback);
-
-  t.is(callback.callCount, 1);
-  t.is(callback.firstCall.args[0], null);
-  t.is(typeof callback.firstCall.args[1], `string`);
-  t.is(callback.firstCall.args[1].length, 36);
+  t.is(res.send.callCount, 1);
+  t.is(typeof res.send.firstCall.args[0], `string`);
+  t.is(res.send.firstCall.args[0].length, 36);
 });

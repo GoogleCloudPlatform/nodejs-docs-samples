@@ -12,9 +12,9 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.7.0",
-    "body-parser": "1.15.2",
-    "express": "4.14.0",
+    "@google-cloud/pubsub": "0.8.0",
+    "body-parser": "1.16.0",
+    "express": "4.14.1",
     "pug": "2.0.0-beta6"
   }
 }

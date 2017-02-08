@@ -16,9 +16,7 @@
 'use strict';
 
 // [START setup]
-if (process.env.GCLOUD_PROJECT) {
-  require('@google/cloud-debug').start();
-}
+require('@google/cloud-debug').start();
 
 var express = require('express');
 var app = express();

@@ -12,6 +12,10 @@ Where appropriate, replace `[YOUR_PROJECT_ID]` with the ID of your Cloud project
 
     git init
 
+1. Acquire local credentials for authenticating with Google Cloud Platform APIs:
+
+    gcloud beta auth application-default login
+
 1. Configure git to use gcloud SDK:
 
     git config credential.helper gcloud.sh

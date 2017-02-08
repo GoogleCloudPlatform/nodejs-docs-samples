@@ -9,6 +9,6 @@
     "test": "cd ../..; npm run t -- functions/helloworld/test/*.test.js"
   },
   "dependencies": {
-    "@google/cloud-debug": "0.9.1"
+    "@google-cloud/debug-agent": "0.10.2"
   }
 }

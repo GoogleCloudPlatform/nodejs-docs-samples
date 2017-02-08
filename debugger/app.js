@@ -16,20 +16,20 @@
 'use strict';
 
 // [START setup]
-require('@google/cloud-debug').start();
+require('@google-cloud/debug-agent').start();
 
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 app.enable('trust proxy');
 // [END setup]
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   // Try using the StackDriver Debugger dashboard to inspect the "req" object
   res.status(200).send('Hello, world!');
 });
 
 // Start the server
-var server = app.listen(process.env.PORT || 8080, function () {
+const server = app.listen(process.env.PORT || 8080, () => {
   console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });

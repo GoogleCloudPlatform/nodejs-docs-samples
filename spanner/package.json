@@ -1,0 +1,17 @@
+{
+  "name": "nodejs-docs-samples-spanner",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "scripts": {
+    "test": "cd ..; npm run st -- --verbose spanner/system-test/*.test.js"
+  },
+  "dependencies": {
+    "@google-cloud/spanner": "0.1.0",
+    "yargs": "6.6.0"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  }
+}

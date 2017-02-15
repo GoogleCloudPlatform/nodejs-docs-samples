@@ -46,7 +46,7 @@ function readOnlyTransaction (instanceId, databaseId) {
 
           rows.forEach((row) => {
             const json = row.toJSON();
-            console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
+            console.log(`SingerId: ${json.SingerId}, AlbumId: ${json.AlbumId}, AlbumTitle: ${json.AlbumTitle}`);
           });
         });
 
@@ -66,7 +66,7 @@ function readOnlyTransaction (instanceId, databaseId) {
 
           rows.forEach((row) => {
             const json = row.toJSON();
-            console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
+            console.log(`SingerId: ${json.SingerId}, AlbumId: ${json.AlbumId}, AlbumTitle: ${json.AlbumTitle}`);
           });
         });
     })

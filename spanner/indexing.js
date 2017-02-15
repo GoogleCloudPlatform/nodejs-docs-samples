@@ -117,7 +117,7 @@ function queryDataWithIndex (instanceId, databaseId) {
 
       rows.forEach((row) => {
         const json = row.toJSON();
-        console.log(`AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${json.MarketingBudget.value}`);
+        console.log(`AlbumId: ${json.AlbumId}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${json.MarketingBudget}`);
       });
     });
   // [END query_data_with_index]
@@ -156,7 +156,7 @@ function readDataWithIndex (instanceId, databaseId) {
 
       rows.forEach((row) => {
         const json = row.toJSON();
-        console.log(`AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
+        console.log(`AlbumId: ${json.AlbumId}, AlbumTitle: ${json.AlbumTitle}`);
       });
     });
   // [END read_data_with_index]
@@ -200,7 +200,7 @@ function readDataWithStoringIndex (instanceId, databaseId) {
 
       rows.forEach((row) => {
         const json = row.toJSON();
-        console.log(`AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${json.MarketingBudget.value}`);
+        console.log(`AlbumId: ${json.AlbumId}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${json.MarketingBudget}`);
       });
     });
   // [END read_data_with_storing_index]

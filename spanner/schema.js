@@ -131,7 +131,7 @@ function queryDataWithNewColumn (instanceId, databaseId) {
       rows.forEach((row) => {
         const json = row.toJSON();
 
-        console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, MarketingBudget: ${json.MarketingBudget ? json.MarketingBudget.value : null}`);
+        console.log(`SingerId: ${json.SingerId}, AlbumId: ${json.AlbumId}, MarketingBudget: ${json.MarketingBudget ? json.MarketingBudget.value : null}`);
       });
     });
   // [END query_data_with_new_column]

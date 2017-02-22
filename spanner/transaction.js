@@ -126,8 +126,8 @@ function readWriteTransaction (instanceId, databaseId) {
           console.log(`The second album's marketing budget: ${secondBudget}`);
 
           // Makes sure the second album's budget is sufficient
-          if (secondBudget < transferAmount) {
-            throw new Error(`The second album's budget (${secondBudget}) is less than the transfer amount (${transferAmount}).`);
+          if (secondBudget < 300000) {
+            throw new Error(`The second album's budget (${secondBudget}) is less than the minimum required amount of $300,000.`);
           }
         }),
 

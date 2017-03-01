@@ -66,7 +66,7 @@ function analyzeLabels (gcsPath) {
 
   const request = {
     inputUri: gcsPath,
-    features: ['FACE_DETECTION']
+    features: ['LABEL_DETECTION']
   };
 
   // Detect labels in a video
@@ -103,7 +103,7 @@ function analyzeShots (gcsPath) {
 
   const request = {
     inputUri: gcsPath,
-    features: ['FACE_DETECTION']
+    features: ['SHOT_CHANGE_DETECTION']
   };
 
   // Detect camera shot changes

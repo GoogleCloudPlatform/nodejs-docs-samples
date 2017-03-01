@@ -25,18 +25,14 @@ const cmd = `node analyze.js`;
 test(`should analyze faces`, async (t) => {
   const output = await runAsync(`${cmd} faces gs://nodejs-docs-samples/obama.mp4`);
 
-  t.true(output.includes('Processing video for face annotations:'));
-  t.true(output.includes('Finished processing.'));
-  t.true(output.includes('Thumbnail size: 23295'));
-  t.true(output.includes('Track 0 of face 0: frames 19933270 to 22466722'));
+  t.true(output.includes('Thumbnail size: 19856'));
+  t.true(output.includes('Track 0 of face 0: frames 33281 to 1099937'));
 });
 
 // analyze_labels
 test(`should analyze labels`, async (t) => {
   const output = await runAsync(`${cmd} labels gs://nodejs-docs-samples/obama.mp4`);
 
-  t.true(output.includes('Processing video for label annotations:'));
-  t.true(output.includes('Finished processing.'));
   t.true(output.includes('Label description: News conference'));
   t.true(output.includes('Frames 33281 to 22466722'));
 });
@@ -45,8 +41,6 @@ test(`should analyze labels`, async (t) => {
 test(`should analyze shots`, async (t) => {
   const output = await runAsync(`${cmd} shots gs://nodejs-docs-samples/obama.mp4`);
 
-  t.true(output.includes('Processing video for shot change annotations:'));
-  t.true(output.includes('Finished processing.'));
   t.true(output.includes('Scene 0:'));
   t.true(output.includes('Start: 33281'));
   t.true(output.includes('End: 22466722'));

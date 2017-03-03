@@ -374,6 +374,205 @@ function detectSafeSearchGCS (bucketName, fileName) {
   // [END vision_safe_search_detection_gcs]
 }
 
+function detectCropHints (fileName) {
+  // [START vision_crop_hint_detection]
+
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
+  // Instantiates a client
+  const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = 'my-file.jpg';
+
+  // Find crop hints for the local file
+  vision.detectCrops(fileName)
+    .then((data) => {
+      const cropHints = data[0];
+
+      cropHints.forEach((hintBounds, hintIdx) => {
+        console.log(`Crop Hint ${hintIdx}:`);
+        hintBounds.forEach((bound, boundIdx) => {
+          console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
+        });
+      });
+    });
+  // [END vision_crop_hint_detection]
+}
+
+function detectCropHintsGCS (bucketName, fileName) {
+  // [START vision_crop_hint_detection_gcs]
+
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
+  // Instantiates clients
+  const storage = Storage();
+  const vision = Vision();
+
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'my-file.jpg';
+
+  // Find crop hints for the remote file
+  vision.detectCrops(storage.bucket(bucketName).file(fileName))
+    .then((data) => {
+      const cropHints = data[0];
+
+      cropHints.forEach((hintBounds, hintIdx) => {
+        console.log(`Crop Hint ${hintIdx}:`);
+        hintBounds.forEach((bound, boundIdx) => {
+          console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
+        });
+      });
+    });
+  // [END vision_crop_hint_detection_gcs]
+}
+
+function detectWeb (fileName) {
+  // [START vision_web_detection]
+
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
+  // Instantiates a client
+  const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = 'my-file.jpg';
+
+  // Detect similar images on the web to a local file
+  vision.detectSimilar(fileName)
+    .then((data) => {
+      const results = data[1].responses[0].webDetection;
+
+      if (results.fullMatchingImages.length > 0) {
+        console.log(`Full matches found: ${results.fullMatchingImages.length}`);
+        results.fullMatchingImages.forEach((image) => {
+          console.log(`  URL: ${image.url}`);
+          console.log(`  Score: ${image.score}`);
+        });
+      }
+
+      if (results.partialMatchingImages.length > 0) {
+        console.log(`Partial matches found: ${results.partialMatchingImages.length}`);
+        results.partialMatchingImages.forEach((image) => {
+          console.log(`  URL: ${image.url}`);
+          console.log(`  Score: ${image.score}`);
+        });
+      }
+
+      if (results.webEntities.length > 0) {
+        console.log(`Web entities found: ${results.webEntities.length}`);
+        results.webEntities.forEach((webEntity) => {
+          console.log(`  Description: ${webEntity.description}`);
+          console.log(`  Score: ${webEntity.score}`);
+        });
+      }
+    });
+  // [END vision_web_detection]
+}
+
+function detectWebGCS (bucketName, fileName) {
+  // [START vision_web_detection_gcs]
+
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
+  // Instantiates clients
+  const storage = Storage();
+  const vision = Vision();
+
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'my-file.jpg';
+
+  // Detect similar images on the web to a remote file
+  vision.detectSimilar(storage.bucket(bucketName).file(fileName))
+    .then((data) => {
+      const results = data[1].responses[0].webDetection;
+
+      if (results.fullMatchingImages.length > 0) {
+        console.log(`Full matches found: ${results.fullMatchingImages.length}`);
+        results.fullMatchingImages.forEach((image) => {
+          console.log(`  URL: ${image.url}`);
+          console.log(`  Score: ${image.score}`);
+        });
+      }
+
+      if (results.partialMatchingImages.length > 0) {
+        console.log(`Partial matches found: ${results.partialMatchingImages.length}`);
+        results.partialMatchingImages.forEach((image) => {
+          console.log(`  URL: ${image.url}`);
+          console.log(`  Score: ${image.score}`);
+        });
+      }
+
+      if (results.webEntities.length > 0) {
+        console.log(`Web entities found: ${results.webEntities.length}`);
+        results.webEntities.forEach((webEntity) => {
+          console.log(`  Description: ${webEntity.description}`);
+          console.log(`  Score: ${webEntity.score}`);
+        });
+      }
+    });
+  // [END vision_web_detection_gcs]
+}
+
+function detectFulltext (fileName) {
+  // [START vision_fulltext_detection]
+
+  // Imports the Google Cloud client library
+  const Vision = require('@google-cloud/vision');
+
+  // Instantiates a client
+  const vision = Vision();
+
+  // The path to the local image file, e.g. "/path/to/image.png"
+  // const fileName = 'my-file.jpg';
+
+  // // Read a local image as a text document
+  vision.readDocument(fileName)
+    .then((data) => {
+      const results = data[1].responses[0].fullTextAnnotation;
+      console.log(results.text);
+    });
+  // [END vision_fulltext_detection]
+}
+
+function detectFulltextGCS (bucketName, fileName) {
+  // [START vision_fulltext_detection_gcs]
+
+  // Imports the Google Cloud client libraries
+  const Storage = require('@google-cloud/storage');
+  const Vision = require('@google-cloud/vision');
+
+  // Instantiates clients
+  const storage = Storage();
+  const vision = Vision();
+
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The path to the file within the bucket, e.g. "path/to/image.png"
+  // const fileName = 'my-file.jpg';
+
+  // Read a remote image as a text document
+  vision.readDocument(storage.bucket(bucketName).file(fileName))
+    .then((data) => {
+      const results = data[1].responses[0].fullTextAnnotation;
+      console.log(results.text);
+    });
+  // [END vision_fulltext_detection_gcs]
+}
+
 require(`yargs`)
   .demand(1)
   .command(
@@ -460,6 +659,42 @@ require(`yargs`)
     {},
     (opts) => detectSafeSearchGCS(opts.bucket, opts.fileName)
   )
+  .command(
+    `crops <fileName>`,
+    `Detects crop hints in a local image file.`,
+    {},
+    (opts) => detectCropHints(opts.fileName)
+  )
+  .command(
+    `crops-gcs <bucket> <fileName>`,
+    `Detects crop hints in an image in Google Cloud Storage.`,
+    {},
+    (opts) => detectCropHintsGCS(opts.bucket, opts.fileName)
+  )
+  .command(
+    `web <fileName>`,
+    `Finds similar photos on the web for a local image file.`,
+    {},
+    (opts) => detectWeb(opts.fileName)
+  )
+  .command(
+    `web-gcs <bucket> <fileName>`,
+    `Finds similar photos on the web for an image in Google Cloud Storage.`,
+    {},
+    (opts) => detectWebGCS(opts.bucket, opts.fileName)
+  )
+  .command(
+    `fulltext <fileName>`,
+    `Extracts full text from a local image file.`,
+    {},
+    (opts) => detectFulltext(opts.fileName)
+  )
+  .command(
+    `fulltext-gcs <bucket> <fileName>`,
+    `Extracts full text from an image in Google Cloud Storage.`,
+    {},
+    (opts) => detectFulltextGCS(opts.bucket, opts.fileName)
+  )
   .example(`node $0 faces ./resources/face_no_surprise.jpg`)
   .example(`node $0 faces-gcs my-bucket your-image.jpg`)
   .example(`node $0 labels ./resources/wakeupcat.jpg`)
@@ -474,6 +709,12 @@ require(`yargs`)
   .example(`node $0 properties-gcs my-bucket your-image.jpg`)
   .example(`node $0 safe-search ./resources/wakeupcat.jpg`)
   .example(`node $0 safe-search-gcs my-bucket your-image.jpg`)
+  .example(`node $0 crops ./resources/wakeupcat.jpg`)
+  .example(`node $0 crops-gcs my-bucket your-image.jpg`)
+  .example(`node $0 web ./resources/wakeupcat.jpg`)
+  .example(`node $0 web-gcs my-bucket your-image.jpg`)
+  .example(`node $0 fulltext ./resources/wakeupcat.jpg`)
+  .example(`node $0 fulltext-gcs my-bucket your-image.jpg`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/vision/docs`)

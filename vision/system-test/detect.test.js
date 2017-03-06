@@ -29,7 +29,8 @@ const files = [
   `landmark.jpg`,
   `logos.png`,
   `text.jpg`,
-  `wakeupcat.jpg`
+  `wakeupcat.jpg`,
+  `faulkner.jpg`
 ].map((name) => {
   return {
     name,
@@ -129,4 +130,44 @@ test(`should detect safe-search in a local file`, async (t) => {
 test(`should detect safe-search in a remote file`, async (t) => {
   const output = await runAsync(`${cmd} safe-search-gcs ${bucketName} ${files[4].name}`, cwd);
   t.true(output.includes(`Medical:`));
+});
+
+test(`should detect crop hints in a local file`, async (t) => {
+  const output = await runAsync(`${cmd} crops ${files[2].localPath}`, cwd);
+  t.true(output.includes(`Crop Hint 0:`));
+  t.true(output.includes(`Bound 2: (280, 43)`));
+});
+
+test(`should detect crop hints in a remote file`, async (t) => {
+  const output = await runAsync(`${cmd} crops-gcs ${bucketName} ${files[2].name}`, cwd);
+  t.true(output.includes(`Crop Hint 0:`));
+  t.true(output.includes(`Bound 2: (280, 43)`));
+});
+
+test(`should detect similar web images in a local file`, async (t) => {
+  const output = await runAsync(`${cmd} web ${files[5].localPath}`, cwd);
+  t.true(output.includes('Full matches found: 5'));
+  t.true(output.includes('URL: https://cloud.google.com/vision/docs/images/'));
+  t.true(output.includes('Partial matches found: 5'));
+  t.true(output.includes('Web entities found: 5'));
+  t.true(output.includes('Description: Google Cloud Platform'));
+});
+
+test(`should detect similar web images in a remote file`, async (t) => {
+  const output = await runAsync(`${cmd} web-gcs ${bucketName} ${files[5].name}`, cwd);
+  t.true(output.includes('Full matches found: 5'));
+  t.true(output.includes('URL: https://cloud.google.com/vision/docs/images/'));
+  t.true(output.includes('Partial matches found: 5'));
+  t.true(output.includes('Web entities found: 5'));
+  t.true(output.includes('Description: Google Cloud Platform'));
+});
+
+test(`should read a document from a local file`, async (t) => {
+  const output = await runAsync(`${cmd} fulltext ${files[2].localPath}`, cwd);
+  t.true(output.includes('Google Cloud Platform'));
+});
+
+test(`should read a document from a remote file`, async (t) => {
+  const output = await runAsync(`${cmd} fulltext-gcs ${bucketName} ${files[2].name}`, cwd);
+  t.true(output.includes('Google Cloud Platform'));
 });

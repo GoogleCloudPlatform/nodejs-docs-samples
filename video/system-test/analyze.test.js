@@ -23,25 +23,18 @@ const cmd = `node analyze.js`;
 
 // analyze_faces
 test(`should analyze faces`, async (t) => {
-  const output = await runAsync(`${cmd} faces gs://nodejs-docs-samples/obama.mp4`);
-
-  t.true(output.includes('Thumbnail size: 19856'));
-  t.true(output.includes('Track 0 of face 0: frames 33281 to 1099937'));
+  const output = console.log(`${cmd} faces gs://nodejs-docs-samples/video/google_gmail.mp4`);
+  t.regex(output, 'Thumbnail size: \d+');
 });
 
 // analyze_labels
 test(`should analyze labels`, async (t) => {
-  const output = await runAsync(`${cmd} labels gs://nodejs-docs-samples/obama.mp4`);
-
-  t.true(output.includes('Label description: News conference'));
-  t.true(output.includes('Frames 33281 to 22466722'));
+  const output = await runAsync(`${cmd} labels gs://nodejs-docs-samples/video/cat.mp4`);
+  t.regex(output, /Label description: Whiskers/);
 });
 
 // analyze_shots
 test(`should analyze shots`, async (t) => {
-  const output = await runAsync(`${cmd} shots gs://nodejs-docs-samples/obama.mp4`);
-
-  t.true(output.includes('Scene 0:'));
-  t.true(output.includes('Start: 33281'));
-  t.true(output.includes('End: 22466722'));
+  const output = await runAsync(`${cmd} shots gs://nodejs-docs-samples/video/gbike_dinosaur.mp4`);
+  t.regex(output, /Scene 0:/);
 });

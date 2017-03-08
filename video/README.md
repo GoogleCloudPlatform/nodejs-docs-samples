@@ -30,17 +30,17 @@ View the [documentation][analyze_docs] or the [source code][analyze_code].
 ```
 node analyze.js
 Commands:
-  faces <gcsPath>   Analyzes faces in a video.
-  labels <gcsPath>  Labels objects in a video.
-  shots <gcsPath>   Analyzes shot changes in a video.
+  faces <gcsPath>   Analyzes faces in a video using the Cloud Video Intelligence API.
+  shots <gcsPath>   Analyzes shot angles in a video using the Cloud Video Intelligence API.
+  labels <gcsPath>  Labels objects in a video using the Cloud Video Intelligence API.
 
 Options:
-  --help  Show help
+  --help  Show help                                                                                            [boolean]
 
 Examples:
-  node analyze.js faces gs://demomaker/google_gmail.mp4
-  node analyze.js shots gs://demomaker/gbikes_dinosaur.mp4
-  node analyze.js labels gs://demomaker/cat.mp4
+  node analyze.js faces gs://my-bucket/my-video.mp4
+  node analyze.js shots gs://my-bucket/my-video.mp4
+  node analyze.js labels gs://my-bucket/my-video.mp4
 
 ```
 

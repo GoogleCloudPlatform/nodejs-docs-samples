@@ -39,8 +39,8 @@ Options:
 
 Examples:
   node analyze.js faces gs://demomaker/google_gmail.mp4
-  node analyze.js shots gs://demomaker/cat.mp4
-  node analyze.js labels gs://demomaker/google_gmail.mp4
+  node analyze.js shots gs://demomaker/gbikes_dinosaur.mp4
+  node analyze.js labels gs://demomaker/cat.mp4
 
 ```
 

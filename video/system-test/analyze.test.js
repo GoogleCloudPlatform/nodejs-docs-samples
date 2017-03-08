@@ -23,7 +23,7 @@ const cmd = `node analyze.js`;
 
 // analyze_faces
 test(`should analyze faces`, async (t) => {
-  const output = console.log(`${cmd} faces gs://nodejs-docs-samples/video/google_gmail.mp4`);
+  const output = await runAsync(`${cmd} faces gs://nodejs-docs-samples/video/google_gmail.mp4`);
   t.regex(output, 'Thumbnail size: \d+');
 });
 

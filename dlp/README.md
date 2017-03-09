@@ -6,7 +6,7 @@ The [Data Loss Prevention][dlp_docs] (DLP) API provides programmatic access to a
 
 This code provides a demonstration of the DLP API's functionality via REST in Node.js. It is intended for developers who want to be early adopters of the API.
 
-[gRPC](grpc.io)-based samples/client libraries for [several languages](https://cloud.google.com/docs/) are under active development, and will be released shortly.
+[gRPC](https://grpc.io)-based samples/client libraries for [several languages](https://cloud.google.com/docs/) are under active development, and will be released shortly.
 
 ## Table of Contents
 
@@ -116,5 +116,5 @@ https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#Inspect
 
 For more information, see [the docs][dlp_docs].
 
-[dlp_samples]: ../
+[dlp_samples]: ../dlp
 [dlp_docs]: https://cloud.google.com/dlp/docs/

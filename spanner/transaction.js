@@ -100,6 +100,7 @@ function readWriteTransaction (instanceId, databaseId) {
   // at a specific point in time
   let transaction, firstBudget, secondBudget;
   const transferAmount = 200000;
+  const minimumAmountToTransfer = 300000;
 
   database.runTransaction()
     .then((results) => {
@@ -126,8 +127,8 @@ function readWriteTransaction (instanceId, databaseId) {
           console.log(`The second album's marketing budget: ${secondBudget}`);
 
           // Makes sure the second album's budget is sufficient
-          if (secondBudget < transferAmount) {
-            throw new Error(`The second album's budget (${secondBudget}) is less than the transfer amount (${transferAmount}).`);
+          if (secondBudget < minimumAmountToTransfer) {
+            throw new Error(`The second album's budget (${secondBudget}) is less than the minimum required amount to transfer.`);
           }
         }),
 

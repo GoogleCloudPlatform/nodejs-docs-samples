@@ -1251,7 +1251,7 @@ function disableCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
 
       // Instantiates an authorized client
       const cloudkms = google.cloudkms({
-        version: 'v1beta1',
+        version: 'v1',
         auth: authClient
       });
 

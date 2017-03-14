@@ -21,10 +21,12 @@ const Translate = require('@google-cloud/translate');
 
 // Your Google Cloud Platform project ID
 const projectId = 'YOUR_PROJECT_ID';
+const apiKey = 'YOUR_API_KEY';
 
 // Instantiates a client
 const translateClient = Translate({
-  projectId: projectId
+  projectId: projectId,
+  key: apiKey
 });
 
 // The text to translate

@@ -40,7 +40,7 @@ google.auth.getApplicationDefault((err, authClient) => {
 
   // Instantiates an authorized client
   const cloudkms = google.cloudkms({
-    version: 'v1beta1',
+    version: 'v1',
     auth: authClient
   });
   const request = {

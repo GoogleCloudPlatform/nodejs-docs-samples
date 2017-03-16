@@ -34,7 +34,7 @@ function list (callback) {
     }
 
     const cloudkms = google.cloudkms({
-      version: 'v1beta1',
+      version: 'v1',
       auth: authClient
     });
     const params = {

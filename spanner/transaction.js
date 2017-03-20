@@ -33,7 +33,7 @@ function readOnlyTransaction (instanceId, databaseId) {
 
   // Gets a transaction object that captures the database state
   // at a specific point in time
-  database.runTransaction()
+  database.runTransaction({readOnly: true})
     .then((results) => {
       const transaction = results[0];
 

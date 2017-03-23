@@ -149,7 +149,7 @@ function importLocalFile (datasetId, tableId, fileName, projectId) {
 
   // References an existing dataset, e.g. "my_dataset"
   const dataset = bigquery.dataset(datasetId);
-  // References an existing dataset, e.g. "my_dataset"
+  // References an existing table, e.g. "my_table"
   const table = dataset.table(tableId);
 
   let job;
@@ -180,7 +180,7 @@ function importFileFromGCS (datasetId, tableId, bucketName, fileName, projectId)
 
   // References an existing dataset, e.g. "my_dataset"
   const dataset = bigquery.dataset(datasetId);
-  // References an existing dataset, e.g. "my_dataset"
+  // References an existing table, e.g. "my_table"
   const table = dataset.table(tableId);
   // References an existing bucket, e.g. "my-bucket"
   const bucket = storage.bucket(bucketName);
@@ -215,7 +215,7 @@ function exportTableToGCS (datasetId, tableId, bucketName, fileName, projectId) 
 
   // References an existing dataset, e.g. "my_dataset"
   const dataset = bigquery.dataset(datasetId);
-  // References an existing dataset, e.g. "my_dataset"
+  // References an existing table, e.g. "my_table"
   const table = dataset.table(tableId);
   // References an existing bucket, e.g. "my-bucket"
   const bucket = storage.bucket(bucketName);
@@ -247,7 +247,7 @@ function insertRowsAsStream (datasetId, tableId, rows, projectId) {
 
   // References an existing dataset, e.g. "my_dataset"
   const dataset = bigquery.dataset(datasetId);
-  // References an existing dataset, e.g. "my_dataset"
+  // References an existing table, e.g. "my_table"
   const table = dataset.table(tableId);
 
   // Inserts data into a table

@@ -59,7 +59,7 @@ $ sudo apt-get update
 $ sudo apt-get install docker.io
 ```
 
-1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_SERVICE_NAME]` and `[YOUR_SERVICE_CONFIG_ID]` with your service's name and config ID respectively.
+1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_GCLOUD_PROJECT]`, `[YOUR_SERVICE_NAME]` and `[YOUR_SERVICE_CONFIG_ID]` with your GCloud Project ID, your service's name and your service's config ID respectively.
 ```
 $ sudo docker run -d --name=helloworld gcr.io/[YOUR_GCLOUD_PROJECT]/endpoints-example:1.0
 ```
@@ -106,13 +106,13 @@ $ kubectl create -f container-engine.yaml
 $ kubectl get service
 ```
 
-1. Use the client to test your Endpoints deployment. Replace `[YOUR_CLUSTER_IP_ADDRESS]` with your pod's external IP address, and `[YOUR_API_KEY]` with a [valid Google Cloud Platform API key](https://support.google.com/cloud/answer/6158862?hl=en).
+1. Use the client to test your Endpoints deployment. Replace `[YOUR_CLUSTER_IP_ADDRESS]` with your service's external IP address, and `[YOUR_API_KEY]` with a [valid Google Cloud Platform API key](https://support.google.com/cloud/answer/6158862?hl=en).
 ```
 $ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -k [YOUR_API_KEY]
 ```
 
 ## Cleanup
-If you do not intend to use the resources you created for this tutorial in the future, delete your [VM instances](https://console.cloud.google.com/compute/instances) or [container clusters](https://console.cloud.google.com/kubernetes/list) to prevent additional charges.
+If you do not intend to use the resources you created for this tutorial in the future, delete your [VM instances](https://console.cloud.google.com/compute/instances) and/or [container clusters](https://console.cloud.google.com/kubernetes/list) to prevent additional charges.
 
 ## Troubleshooting
 If you're having issues with this tutorial, here are some things to try:

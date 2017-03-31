@@ -26,29 +26,44 @@ const PROJECT_ROOT = path.join(__dirname, `..`);
 // WARNING: This will fail if two different versions of the same package are required.
 const pkgSet = {};
 
-function getDeps (directory) {
-  // Get subdirectories with a `package.json` file
-  const directories = fs.readdirSync(directory)
-    .filter((dir) => fs.existsSync(path.join(directory, dir, `package.json`)));
+function getDeps (directory, depth) {
+  // Limit recursion depth
+  if (depth < 0) {
+    return;
+  }
 
+  // Skip module directories
+  if (directory.includes('node_modules')) {
+    return;
+  }
+
+  // Get subdirectories
+  const dirs = fs.readdirSync(directory)
+
+  // Record subdirectories that contain a package.json file
   let pkgJson;
-  directories.forEach((dir) => {
+  const pkgJsonDirs = dirs.filter((dir) =>
+    fs.existsSync(path.join(directory, dir, `package.json`))
+  );
+  pkgJsonDirs.forEach((dir) => {
     pkgJson = JSON.parse(fs.readFileSync(path.join(directory, dir, `package.json`)));
     Object.assign(pkgSet, pkgJson.dependencies);
   });
-}
 
-getDeps(PROJECT_ROOT);
-getDeps(path.join(PROJECT_ROOT, 'endpoints/getting-started'));
-getDeps(path.join(PROJECT_ROOT, 'functions'));
-getDeps(path.join(PROJECT_ROOT, 'language/slackbot'));
+  // Recurse
+  const recurseDirs = dirs.filter((dir) => {
+    return fs.statSync(path.join(directory, dir)).isDirectory();
+  });
+  recurseDirs.forEach((dir) => {
+    getDeps(path.join(directory, dir), depth-1);
+  });
+};
 
-console.log(JSON.stringify(pkgSet, null, 2));
+getDeps(PROJECT_ROOT, 3);
 
 // Update root-level package.json (by shelling to npm)
 const spawn = require('child_process').spawn;
 const args = [`add`, `-D`].concat(Object.keys(pkgSet).map(pkg => `${pkg}@${pkgSet[pkg]}`));
-console.log(`yarn ${args.join(' ')}`);
 spawn(`yarn`, args, {
   cwd: PROJECT_ROOT
 });

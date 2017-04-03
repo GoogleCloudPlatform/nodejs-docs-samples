@@ -16,102 +16,104 @@
 'use strict';
 
 require(`../../system-test/_setup`);
+const path = require('path');
 
 const cmd = 'node inspect';
+const cwd = path.join(__dirname, `..`);
 
 // inspect_string
 test(`should inspect a string`, async (t) => {
-  const output = await runAsync(`${cmd} string "I'm Gary and my email is gary@example.com"`);
+  const output = await runAsync(`${cmd} string "I'm Gary and my email is gary@example.com"`, cwd);
   t.regex(output, /"name": "EMAIL_ADDRESS"/);
 });
 
 test(`should handle a string with no sensitive data`, async (t) => {
-  const output = await runAsync(`${cmd} string "foo"`);
+  const output = await runAsync(`${cmd} string "foo"`, cwd);
   t.is(output, 'undefined');
 });
 
 test(`should report string inspection handling errors`, async (t) => {
-  const output = await runAsync(`${cmd} string "I'm Gary and my email is gary@example.com" -a foo`);
+  const output = await runAsync(`${cmd} string "I'm Gary and my email is gary@example.com" -a foo`, cwd);
   t.regex(output, /Error in inspectString/);
 });
 
 // inspect_file
 test(`should inspect a local text file`, async (t) => {
-  const output = await runAsync(`${cmd} file resources/test.txt`);
+  const output = await runAsync(`${cmd} file resources/test.txt`, cwd);
   t.regex(output, /"name": "PHONE_NUMBER"/);
   t.regex(output, /"name": "EMAIL_ADDRESS"/);
 });
 
 test(`should inspect a local image file`, async (t) => {
-  const output = await runAsync(`${cmd} file resources/test.png`);
+  const output = await runAsync(`${cmd} file resources/test.png`, cwd);
   t.regex(output, /"name": "PHONE_NUMBER"/);
 });
 
 test(`should handle a local file with no sensitive data`, async (t) => {
-  const output = await runAsync(`${cmd} file resources/harmless.txt`);
+  const output = await runAsync(`${cmd} file resources/harmless.txt`, cwd);
   t.is(output, 'undefined');
 });
 
 test(`should report local file handling errors`, async (t) => {
-  const output = await runAsync(`${cmd} file resources/harmless.txt -a foo`);
+  const output = await runAsync(`${cmd} file resources/harmless.txt -a foo`, cwd);
   t.regex(output, /Error in inspectFile/);
 });
 
 // inspect_gcs_file
 test.serial(`should inspect a GCS text file`, async (t) => {
-  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp test.txt`);
+  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp test.txt`, cwd);
   t.regex(output, /"name": "PHONE_NUMBER"/);
   t.regex(output, /"name": "EMAIL_ADDRESS"/);
 });
 
 test.serial(`should inspect multiple GCS text files`, async (t) => {
-  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp *.txt`);
+  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp *.txt`, cwd);
   t.regex(output, /"name": "PHONE_NUMBER"/);
   t.regex(output, /"name": "EMAIL_ADDRESS"/);
   t.regex(output, /"name": "CREDIT_CARD_NUMBER"/);
 });
 
 test.serial(`should accept try limits for inspecting GCS files`, async (t) => {
-  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp test.txt --tries 0`);
+  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp test.txt --tries 0`, cwd);
   t.regex(output, /polling timed out/);
 });
 
 test.serial(`should handle a GCS file with no sensitive data`, async (t) => {
-  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp harmless.txt`);
+  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp harmless.txt`, cwd);
   t.is(output, 'undefined');
 });
 
 test.serial(`should report GCS file handling errors`, async (t) => {
-  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp harmless.txt -a foo`);
+  const output = await runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp harmless.txt -a foo`, cwd);
   t.regex(output, /Error in inspectGCSFile/);
 });
 
 // inspect_datastore
 test.serial(`should inspect Datastore`, async (t) => {
-  const output = await runAsync(`${cmd} datastore Person --namespaceId DLP`);
+  const output = await runAsync(`${cmd} datastore Person --namespaceId DLP`, cwd);
   t.regex(output, /"name": "PHONE_NUMBER"/);
   t.regex(output, /"name": "EMAIL_ADDRESS"/);
 });
 
 test.serial(`should accept try limits for inspecting Datastore`, async (t) => {
-  const output = await runAsync(`${cmd} datastore Person --namespaceId DLP --tries 0`);
+  const output = await runAsync(`${cmd} datastore Person --namespaceId DLP --tries 0`, cwd);
   t.regex(output, /polling timed out/);
 });
 
 test.serial(`should handle Datastore with no sensitive data`, async (t) => {
-  const output = await runAsync(`${cmd} datastore Harmless --namespaceId DLP`);
+  const output = await runAsync(`${cmd} datastore Harmless --namespaceId DLP`, cwd);
   t.is(output, 'undefined');
 });
 
 test.serial(`should report Datastore file handling errors`, async (t) => {
-  const output = await runAsync(`${cmd} datastore Harmless --namespaceId DLP -a foo`);
+  const output = await runAsync(`${cmd} datastore Harmless --namespaceId DLP -a foo`, cwd);
   t.regex(output, /Error in inspectDatastore/);
 });
 
 // CLI options
 test(`should have a minLikelihood option`, async (t) => {
-  const promiseA = runAsync(`${cmd} string "My phone number is (123) 456-7890." -m POSSIBLE`);
-  const promiseB = runAsync(`${cmd} string "My phone number is (123) 456-7890." -m UNLIKELY`);
+  const promiseA = runAsync(`${cmd} string "My phone number is (123) 456-7890." -m POSSIBLE`, cwd);
+  const promiseB = runAsync(`${cmd} string "My phone number is (123) 456-7890." -m UNLIKELY`, cwd);
 
   const outputA = await promiseA;
   t.truthy(outputA);
@@ -122,8 +124,8 @@ test(`should have a minLikelihood option`, async (t) => {
 });
 
 test(`should have a maxFindings option`, async (t) => {
-  const promiseA = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 1`);
-  const promiseB = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 2`);
+  const promiseA = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 1`, cwd);
+  const promiseB = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 2`, cwd);
 
   const outputA = await promiseA;
   t.not(outputA.includes('PHONE_NUMBER'), outputA.includes('EMAIL_ADDRESS')); // Exactly one of these should be included
@@ -134,8 +136,8 @@ test(`should have a maxFindings option`, async (t) => {
 });
 
 test(`should have an option to include quotes`, async (t) => {
-  const promiseA = runAsync(`${cmd} string "My phone number is (223) 456-7890." -q false`);
-  const promiseB = runAsync(`${cmd} string "My phone number is (223) 456-7890."`);
+  const promiseA = runAsync(`${cmd} string "My phone number is (223) 456-7890." -q false`, cwd);
+  const promiseB = runAsync(`${cmd} string "My phone number is (223) 456-7890."`, cwd);
 
   const outputA = await promiseA;
   t.truthy(outputA);
@@ -146,8 +148,8 @@ test(`should have an option to include quotes`, async (t) => {
 });
 
 test(`should have an option to filter results by infoType`, async (t) => {
-  const promiseA = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890."`);
-  const promiseB = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -t PHONE_NUMBER`);
+  const promiseA = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890."`, cwd);
+  const promiseB = runAsync(`${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -t PHONE_NUMBER`, cwd);
 
   const outputA = await promiseA;
   t.regex(outputA, /EMAIL_ADDRESS/);
@@ -159,7 +161,7 @@ test(`should have an option to filter results by infoType`, async (t) => {
 });
 
 test(`should have an option for custom auth tokens`, async (t) => {
-  const output = await runAsync(`${cmd} string "My name is Gary and my phone number is (223) 456-7890." -a foo`);
+  const output = await runAsync(`${cmd} string "My name is Gary and my phone number is (223) 456-7890." -a foo`, cwd);
   t.regex(output, /Error in inspectString/);
   t.regex(output, /invalid authentication/);
 });

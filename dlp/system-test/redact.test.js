@@ -16,29 +16,31 @@
 'use strict';
 
 require(`../../system-test/_setup`);
+const path = require('path');
 
 const cmd = 'node redact';
+const cwd = path.join(__dirname, `..`);
 
 // redact_string
 test(`should redact sensitive data from a string`, async (t) => {
-  const output = await runAsync(`${cmd} string "I am Gary and my phone number is (123) 456-7890." REDACTED -t US_MALE_NAME PHONE_NUMBER`);
+  const output = await runAsync(`${cmd} string "I am Gary and my phone number is (123) 456-7890." REDACTED -t US_MALE_NAME PHONE_NUMBER`, cwd);
   t.is(output, 'I am REDACTED and my phone number is REDACTED.');
 });
 
 test(`should ignore unspecified type names when redacting from a string`, async (t) => {
-  const output = await runAsync(`${cmd} string "I am Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER`);
+  const output = await runAsync(`${cmd} string "I am Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER`, cwd);
   t.is(output, 'I am Gary and my phone number is REDACTED.');
 });
 
 test(`should report string redaction handling errors`, async (t) => {
-  const output = await runAsync(`${cmd} string "My name is Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -a foo`);
+  const output = await runAsync(`${cmd} string "My name is Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -a foo`, cwd);
   t.regex(output, /Error in redactString/);
 });
 
 // CLI options
 test(`should have a minLikelihood option`, async (t) => {
-  const promiseA = runAsync(`${cmd} string "My phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -m VERY_LIKELY`);
-  const promiseB = runAsync(`${cmd} string "My phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -m UNLIKELY`);
+  const promiseA = runAsync(`${cmd} string "My phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -m VERY_LIKELY`, cwd);
+  const promiseB = runAsync(`${cmd} string "My phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -m UNLIKELY`, cwd);
 
   const outputA = await promiseA;
   t.is(outputA, 'My phone number is (123) 456-7890.');
@@ -48,7 +50,7 @@ test(`should have a minLikelihood option`, async (t) => {
 });
 
 test(`should have an option for custom auth tokens`, async (t) => {
-  const output = await runAsync(`${cmd} string "My name is Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -a foo`);
+  const output = await runAsync(`${cmd} string "My name is Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -a foo`, cwd);
   t.regex(output, /Error in redactString/);
   t.regex(output, /invalid authentication/);
 });

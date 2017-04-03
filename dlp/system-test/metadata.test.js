@@ -16,32 +16,34 @@
 'use strict';
 
 require(`../../system-test/_setup`);
+const path = require('path');
 
-const cmd = `node metadata`;
+const cmd = 'node metadata';
+const cwd = path.join(__dirname, `..`);
 
 test(`should list info types for a given category`, async (t) => {
-  const output = await runAsync(`${cmd} infoTypes GOVERNMENT`);
+  const output = await runAsync(`${cmd} infoTypes GOVERNMENT`, cwd);
   t.regex(output, /name: 'US_DRIVERS_LICENSE_NUMBER'/);
 });
 
 test(`should inspect categories`, async (t) => {
-  const output = await runAsync(`${cmd} categories`);
+  const output = await runAsync(`${cmd} categories`, cwd);
   t.regex(output, /name: 'FINANCE'/);
 });
 
 test(`should have an option for custom auth tokens`, async (t) => {
-  const output = await runAsync(`${cmd} categories -a foo`);
+  const output = await runAsync(`${cmd} categories -a foo`, cwd);
   t.regex(output, /Error in listCategories/);
   t.regex(output, /invalid authentication/);
 });
 
 // Error handling
 test(`should report info type listing handling errors`, async (t) => {
-  const output = await runAsync(`${cmd} infoTypes GOVERNMENT -a foo`);
+  const output = await runAsync(`${cmd} infoTypes GOVERNMENT -a foo`, cwd);
   t.regex(output, /Error in listInfoTypes/);
 });
 
 test(`should report category listing handling errors`, async (t) => {
-  const output = await runAsync(`${cmd} categories -a foo`);
+  const output = await runAsync(`${cmd} categories -a foo`, cwd);
   t.regex(output, /Error in listCategories/);
 });

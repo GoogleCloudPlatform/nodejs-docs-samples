@@ -79,7 +79,7 @@
     "@google-cloud/dns": "0.5.0",
     "@google-cloud/language": "0.8.0",
     "@google-cloud/logging": "0.7.0",
-    "@google-cloud/monitoring": "0.1.4",
+    "@google-cloud/monitoring": "0.2.0",
     "@google-cloud/pubsub": "0.8.0",
     "@google-cloud/resource": "0.6.0",
     "@google-cloud/spanner": "0.1.0",

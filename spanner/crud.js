@@ -23,10 +23,6 @@ function updateData (instanceId, databaseId) {
   // Instantiates a client
   const spanner = Spanner();
 
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -53,10 +49,6 @@ function insertData (instanceId, databaseId) {
 
   // Instantiates a client
   const spanner = Spanner();
-
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
 
   // Gets a reference to a Spanner instance and database
   const instance = spanner.instance(instanceId);
@@ -101,10 +93,6 @@ function queryData (instanceId, databaseId) {
   // Instantiates a client
   const spanner = Spanner();
 
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -133,10 +121,6 @@ function readData (instanceId, databaseId) {
 
   // Instantiates a client
   const spanner = Spanner();
-
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
 
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);

@@ -23,10 +23,6 @@ function readOnlyTransaction (instanceId, databaseId) {
   // Instantiates a client
   const spanner = Spanner();
 
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -87,10 +83,6 @@ function readWriteTransaction (instanceId, databaseId) {
 
   // Instantiates a client
   const spanner = Spanner();
-
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
 
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);

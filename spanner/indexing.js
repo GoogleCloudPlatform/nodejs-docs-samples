@@ -23,10 +23,6 @@ function createIndex (instanceId, databaseId) {
   // Instantiates a client
   const spanner = Spanner();
 
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -62,10 +58,6 @@ function createStoringIndex (instanceId, databaseId) {
   // Instantiates a client
   const spanner = Spanner();
 
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -95,10 +87,6 @@ function queryDataWithIndex (instanceId, databaseId) {
 
   // Instantiates a client
   const spanner = Spanner();
-
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
 
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
@@ -130,10 +118,6 @@ function readDataWithIndex (instanceId, databaseId) {
 
   // Instantiates a client
   const spanner = Spanner();
-
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
 
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
@@ -174,10 +158,6 @@ function readDataWithStoringIndex (instanceId, databaseId) {
 
   // Instantiates a client
   const spanner = Spanner();
-
-  // Uncomment these lines to specify the instance and database to use
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
 
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);

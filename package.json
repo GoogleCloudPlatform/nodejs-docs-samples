@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@google-cloud/bigquery": "0.7.0",
-    "@google-cloud/compute": "0.5.0",
+    "@google-cloud/compute": "0.6.0",
     "@google-cloud/datastore": "0.7.0",
     "@google-cloud/debug-agent": "0.10.2",
     "@google-cloud/dns": "0.5.0",

@@ -8,7 +8,7 @@
     "test": "cd ..; npm run st -- --verbose spanner/system-test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/spanner": "0.1.0",
+    "@google-cloud/spanner": "0.3.0",
     "yargs": "6.6.0"
   },
   "engines": {

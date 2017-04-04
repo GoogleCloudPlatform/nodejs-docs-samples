@@ -33,36 +33,34 @@ function readOnlyTransaction (instanceId, databaseId) {
 
   // Gets a transaction object that captures the database state
   // at a specific point in time
-  database.runTransaction({readOnly: true}, function (err, transaction) {
+  database.runTransaction({readOnly: true}, (err, transaction) => {
     if (err) {
         // Error handling omitted.
     }
     const queryOne = 'SELECT SingerId, AlbumId, AlbumTitle FROM Albums';
 
       // Read #1, using SQL
-    transaction.run(queryOne, function (err, rows) {
-      if (err) {
-            // Error handling omitted.
-      }
-      rows.forEach((row) => {
-        const json = row.toJSON();
-        console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
-      });
-
-      const queryTwo = {
-        columns: ['SingerId', 'AlbumId', 'AlbumTitle'],
-        keySet: {
-          all: true
-        }
-      };
+    transaction.run(queryOne)
+      .then((results) => {
+        const rows = results[0];
+        rows.forEach((row) => {
+          const json = row.toJSON();
+          console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
+        });
+        const queryTwo = {
+          columns: ['SingerId', 'AlbumId', 'AlbumTitle'],
+          keySet: {
+            all: true
+          }
+        };
 
       // Read #2, using the `read` method. Even if changes occur
       // in-between the reads, the transaction ensures that both
       // return the same data.
-      transaction.read('Albums', queryTwo, function (err, rows) {
-        if (err) {
-          // Error handling omitted.
-        }
+        return transaction.read('Albums', queryTwo);
+      })
+      .then((results) => {
+        const rows = results[0];
         rows.forEach((row) => {
           const json = row.toJSON();
           console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
@@ -70,7 +68,6 @@ function readOnlyTransaction (instanceId, databaseId) {
         console.log('Successfully executed read-only transaction.');
         transaction.end();
       });
-    });
   });
   // [END read_only_transaction]
 }

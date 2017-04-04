@@ -84,7 +84,7 @@ function insertData (instanceId, databaseId) {
       { SingerId: '2', AlbumId: '1', AlbumTitle: 'Green' },
       { SingerId: '2', AlbumId: '2', AlbumTitle: 'Forever Hold your Peace' },
       { SingerId: '2', AlbumId: '3', AlbumTitle: 'Terrified' }
-    ])
+    ]);
   })
   .then(() => {
     console.log('Inserted data.');

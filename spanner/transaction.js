@@ -33,36 +33,44 @@ function readOnlyTransaction (instanceId, databaseId) {
 
   // Gets a transaction object that captures the database state
   // at a specific point in time
-  database.runTransaction({readOnly: true}, function(err, transaction) {
-
-      const queryOne = 'SELECT SingerId, AlbumId, AlbumTitle FROM Albums';
+  database.runTransaction({readOnly: true}, function (err, transaction) {
+    if (err) {
+        // Error handling omitted.
+    }
+    const queryOne = 'SELECT SingerId, AlbumId, AlbumTitle FROM Albums';
 
       // Read #1, using SQL
-      transaction.run(queryOne, function(err, rows) {
-          rows.forEach((row) => {
-            const json = row.toJSON();
-            console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
-          });
-
-          const queryTwo = {
-            columns: ['SingerId', 'AlbumId', 'AlbumTitle'],
-            keySet: {
-              all: true
-            }
-          };
-
-      	  // Read #2, using the `read` method. Even if changes occur
-      	  // in-between the reads, the transaction ensures that both
-          // return the same data.
-          transaction.read('Albums', queryTwo, function(err, rows) {
-              rows.forEach((row) => {
-                const json = row.toJSON();
-                console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
-              });
-              console.log('Successfully executed read-only transaction.');
-              transaction.end();
-          });
+    transaction.run(queryOne, function (err, rows) {
+      if (err) {
+            // Error handling omitted.
+      }
+      rows.forEach((row) => {
+        const json = row.toJSON();
+        console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
       });
+
+      const queryTwo = {
+        columns: ['SingerId', 'AlbumId', 'AlbumTitle'],
+        keySet: {
+          all: true
+        }
+      };
+
+      // Read #2, using the `read` method. Even if changes occur
+      // in-between the reads, the transaction ensures that both
+      // return the same data.
+      transaction.read('Albums', queryTwo, function (err, rows) {
+        if (err) {
+          // Error handling omitted.
+        }
+        rows.forEach((row) => {
+          const json = row.toJSON();
+          console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
+        });
+        console.log('Successfully executed read-only transaction.');
+        transaction.end();
+      });
+    });
   });
   // [END read_only_transaction]
 }
@@ -90,8 +98,10 @@ function readWriteTransaction (instanceId, databaseId) {
   const transferAmount = 200000;
   const minimumAmountToTransfer = 300000;
 
-  database.runTransaction(function(err, transaction) {
-
+  database.runTransaction(function (err, transaction) {
+    if (err) {
+      // Error handling omitted.
+    }
     let firstBudget, secondBudget;
     const queryOne = {
       columns: [`MarketingBudget`],
@@ -144,11 +154,11 @@ function readWriteTransaction (instanceId, databaseId) {
       ]);
     })
     // Commits the transaction and send the changes to the database
-    .then(() => transaction.commit(function(err) {
-       if (!err) {
-         console.log(`Successfully executed read-write transaction to transfer ${transferAmount} from Album 2 to Album 1.`);
-       }
-    }))
+    .then(() => transaction.commit(function (err) {
+      if (!err) {
+        console.log(`Successfully executed read-write transaction to transfer ${transferAmount} from Album 2 to Album 1.`);
+      }
+    }));
   });
   // [END read_write_transaction]
 }

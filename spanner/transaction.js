@@ -35,7 +35,8 @@ function readOnlyTransaction (instanceId, databaseId) {
   // at a specific point in time
   database.runTransaction({readOnly: true}, (err, transaction) => {
     if (err) {
-        // Error handling omitted.
+      console.error(err);
+      return;
     }
     const queryOne = 'SELECT SingerId, AlbumId, AlbumTitle FROM Albums';
 
@@ -97,7 +98,8 @@ function readWriteTransaction (instanceId, databaseId) {
 
   database.runTransaction(function (err, transaction) {
     if (err) {
-      // Error handling omitted.
+      console.error(err);
+      return;
     }
     let firstBudget, secondBudget;
     const queryOne = {
@@ -152,7 +154,9 @@ function readWriteTransaction (instanceId, databaseId) {
     })
     // Commits the transaction and send the changes to the database
     .then(() => transaction.commit(function (err) {
-      if (!err) {
+      if (err) {
+        console.error(err);
+      } else {
         console.log(`Successfully executed read-write transaction to transfer ${transferAmount} from Album 2 to Album 1.`);
       }
     }));

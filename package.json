@@ -85,7 +85,7 @@
     "@google-cloud/spanner": "0.1.0",
     "@google-cloud/speech": "0.6.0",
     "@google-cloud/storage": "0.7.0",
-    "@google-cloud/translate": "0.7.0",
+    "@google-cloud/translate": "0.8.0",
     "@google-cloud/videointelligence": "https://storage.googleapis.com/videointelligence-alpha/videointelligence-nodejs.tar.gz",
     "@google-cloud/vision": "0.11.0",
     "@google/cloud-trace": "0.6.1",

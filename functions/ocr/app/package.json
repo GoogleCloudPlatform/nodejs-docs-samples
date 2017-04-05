@@ -11,7 +11,7 @@
   "dependencies": {
     "@google-cloud/pubsub": "0.8.0",
     "@google-cloud/storage": "0.7.0",
-    "@google-cloud/translate": "0.7.0",
+    "@google-cloud/translate": "0.8.0",
     "@google-cloud/vision": "0.11.0"
   }
 }

@@ -96,7 +96,7 @@ function readWriteTransaction (instanceId, databaseId) {
   const transferAmount = 200000;
   const minimumAmountToTransfer = 300000;
 
-  database.runTransaction(function (err, transaction) {
+  database.runTransaction((err, transaction) => {
     if (err) {
       console.error(err);
       return;
@@ -153,7 +153,7 @@ function readWriteTransaction (instanceId, databaseId) {
       ]);
     })
     // Commits the transaction and send the changes to the database
-    .then(() => transaction.commit(function (err) {
+    .then(() => transaction.commit((err) => {
       if (err) {
         console.error(err);
       } else {

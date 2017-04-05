@@ -8,7 +8,7 @@
   "main": "demo_bot.js",
   "dependencies": {
     "botkit": "0.0.5",
-    "@google-cloud/language": "0.7.0",
+    "@google-cloud/language": "0.8.0",
     "sqlite3": "3.1.8"
   },
   "scripts": {

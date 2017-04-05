@@ -168,7 +168,7 @@
     "sails-disk": "0.10.10",
     "semistandard": "9.2.1",
     "sendgrid": "4.7.1",
-    "serve-favicon": "2.0.1",
+    "serve-favicon": "2.3.2",
     "shelljs": "0.7.6",
     "sinon": "1.17.7",
     "sqlite3": "3.1.8",

@@ -23,7 +23,7 @@
 
 'use strict';
 
-function syncRecognize (filename, encoding, sampleRate) {
+function syncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // [START speech_sync_recognize]
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
@@ -37,12 +37,16 @@ function syncRecognize (filename, encoding, sampleRate) {
   // The encoding of the audio file, e.g. 'LINEAR16'
   // const encoding = 'LINEAR16';
 
-  // The sample rate of the audio file, e.g. 16000
-  // const sampleRate = 16000;
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
 
   const request = {
     encoding: encoding,
-    sampleRate: sampleRate
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode
   };
 
   // Detects speech in the audio file
@@ -55,7 +59,7 @@ function syncRecognize (filename, encoding, sampleRate) {
   // [END speech_sync_recognize]
 }
 
-function syncRecognizeGCS (gcsUri, encoding, sampleRate) {
+function syncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // [START speech_sync_recognize_gcs]
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
@@ -69,12 +73,16 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRate) {
   // The encoding of the audio file, e.g. 'LINEAR16'
   // const encoding = 'LINEAR16';
 
-  // The sample rate of the audio file, e.g. 16000
-  // const sampleRate = 16000;
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
 
   const request = {
     encoding: encoding,
-    sampleRate: sampleRate
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode
   };
 
   // Detects speech in the audio file
@@ -87,7 +95,7 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRate) {
   // [END speech_sync_recognize_gcs]
 }
 
-function asyncRecognize (filename, encoding, sampleRate) {
+function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // [START speech_async_recognize]
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
@@ -101,12 +109,16 @@ function asyncRecognize (filename, encoding, sampleRate) {
   // The encoding of the audio file, e.g. 'LINEAR16'
   // const encoding = 'LINEAR16';
 
-  // The sample rate of the audio file, e.g. 16000
-  // const sampleRate = 16000;
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
 
   const request = {
     encoding: encoding,
-    sampleRate: sampleRate
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode
   };
 
   // Detects speech in the audio file. This creates a recognition job that you
@@ -123,7 +135,7 @@ function asyncRecognize (filename, encoding, sampleRate) {
   // [END speech_async_recognize]
 }
 
-function asyncRecognizeGCS (gcsUri, encoding, sampleRate) {
+function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // [START speech_async_recognize_gcs]
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
@@ -137,12 +149,16 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRate) {
   // The encoding of the audio file, e.g. 'LINEAR16'
   // const encoding = 'LINEAR16';
 
-  // The sample rate of the audio file, e.g. 16000
-  // const sampleRate = 16000;
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
 
   const request = {
     encoding: encoding,
-    sampleRate: sampleRate
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode
   };
 
   // Detects speech in the audio file. This creates a recognition job that you
@@ -159,7 +175,7 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRate) {
   // [END speech_async_recognize_gcs]
 }
 
-function streamingRecognize (filename, encoding, sampleRate) {
+function streamingRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // [START speech_streaming_recognize]
   const fs = require('fs');
 
@@ -175,13 +191,17 @@ function streamingRecognize (filename, encoding, sampleRate) {
   // The encoding of the audio file, e.g. 'LINEAR16'
   // const encoding = 'LINEAR16';
 
-  // The sample rate of the audio file, e.g. 16000
-  // const sampleRate = 16000;
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
 
   const request = {
     config: {
       encoding: encoding,
-      sampleRate: sampleRate
+      sampleRateHertz: sampleRateHertz,
+      languageCode: languageCode
     }
   };
 
@@ -197,7 +217,7 @@ function streamingRecognize (filename, encoding, sampleRate) {
   // [END speech_streaming_recognize]
 }
 
-function streamingMicRecognize (encoding, sampleRate) {
+function streamingMicRecognize (encoding, sampleRateHertz, languageCode) {
   // [START speech_streaming_mic_recognize]
   const record = require('node-record-lpcm16');
 
@@ -210,13 +230,17 @@ function streamingMicRecognize (encoding, sampleRate) {
   // The encoding of the audio file, e.g. 'LINEAR16'
   // const encoding = 'LINEAR16';
 
-  // The sample rate of the audio file, e.g. 16000
-  // const sampleRate = 16000;
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
 
   const request = {
     config: {
       encoding: encoding,
-      sampleRate: sampleRate
+      sampleRateHertz: sampleRateHertz,
+      languageCode: languageCode
     }
   };
 
@@ -227,7 +251,7 @@ function streamingMicRecognize (encoding, sampleRate) {
 
   // Start recording and send the microphone input to the Speech API
   record.start({
-    sampleRate: sampleRate,
+    sampleRateHertz: sampleRateHertz,
     threshold: 0
   }).pipe(recognizeStream);
 
@@ -241,37 +265,37 @@ require(`yargs`)
     `sync <filename>`,
     `Detects speech in a local audio file.`,
     {},
-    (opts) => syncRecognize(opts.filename, opts.encoding, opts.sampleRate)
+    (opts) => syncRecognize(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
     `sync-gcs <gcsUri>`,
     `Detects speech in an audio file located in a Google Cloud Storage bucket.`,
     {},
-    (opts) => syncRecognizeGCS(opts.gcsUri, opts.encoding, opts.sampleRate)
+    (opts) => syncRecognizeGCS(opts.gcsUri, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
     `async <filename>`,
     `Creates a job to detect speech in a local audio file, and waits for the job to complete.`,
     {},
-    (opts) => asyncRecognize(opts.filename, opts.encoding, opts.sampleRate)
+    (opts) => asyncRecognize(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
     `async-gcs <gcsUri>`,
     `Creates a job to detect speech in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
     {},
-    (opts) => asyncRecognizeGCS(opts.gcsUri, opts.encoding, opts.sampleRate)
+    (opts) => asyncRecognizeGCS(opts.gcsUri, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
     `stream <filename>`,
     `Detects speech in a local audio file by streaming it to the Speech API.`,
     {},
-    (opts) => streamingRecognize(opts.filename, opts.encoding, opts.sampleRate)
+    (opts) => streamingRecognize(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
     `listen`,
     `Detects speech in a microphone input stream.`,
     {},
-    (opts) => streamingMicRecognize(opts.encoding, opts.sampleRate)
+    (opts) => streamingMicRecognize(opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .options({
     encoding: {
@@ -281,12 +305,19 @@ require(`yargs`)
       requiresArg: true,
       type: 'string'
     },
-    sampleRate: {
+    sampleRateHertz: {
       alias: 'r',
       default: 16000,
       global: true,
       requiresArg: true,
       type: 'number'
+    },
+    languageCode: {
+      alias: 'l',
+      default: 'en-US',
+      global: true,
+      requiresArg: true,
+      type: 'string'
     }
   })
   .example(`node $0 sync ./resources/audio.raw -e LINEAR16 -r 16000`)

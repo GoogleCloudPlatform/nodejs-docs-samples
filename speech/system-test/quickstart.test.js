@@ -24,7 +24,8 @@ const speech = proxyquire(`@google-cloud/speech`, {})();
 const fileName = path.join(__dirname, `../resources/audio.raw`);
 const config = {
   encoding: `LINEAR16`,
-  sampleRate: 16000
+  sampleRateHertz: 16000,
+  languageCode: `en-US`
 };
 
 test.before(stubConsole);

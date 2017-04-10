@@ -50,11 +50,6 @@ test(`should run sync recognize on a GCS file`, async (t) => {
   t.true(output.includes(`Transcription: ${text}`));
 });
 
-test(`should run async recognize on a local file`, async (t) => {
-  const output = await runAsync(`${cmd} async ${filepath}`, cwd);
-  t.true(output.includes(`Transcription: ${text}`));
-});
-
 test(`should run async recognize on a GCS file`, async (t) => {
   const output = await runAsync(`${cmd} async-gcs gs://${bucketName}/${filename}`, cwd);
   t.true(output.includes(`Transcription: ${text}`));

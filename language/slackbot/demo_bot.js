@@ -62,7 +62,7 @@ const NUM_ENTITIES = 20;
 // The threshold of sentiment score of a posted text, above which the bot will
 // respond. This threshold is rather arbitrary; you may want to play with this
 // value.
-const SENTIMENT_THRESHOLD = .3;
+const SENTIMENT_THRESHOLD = 0.3;
 const SEVEN_DAYS_AGO = 60 * 60 * 24 * 7;
 
 const ENTITIES_BASE_SQL = `SELECT name, type, count(name) as wc

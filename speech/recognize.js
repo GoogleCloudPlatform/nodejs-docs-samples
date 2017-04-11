@@ -95,6 +95,46 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // [END speech_sync_recognize_gcs]
 }
 
+function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
+  // [START speech_async_recognize]
+  // Imports the Google Cloud client library
+  const Speech = require('@google-cloud/speech');
+
+  // Instantiates a client
+  const speech = Speech();
+
+  // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
+  // const filename = '/path/to/audio.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  const request = {
+    encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode
+  };
+
+  // Detects speech in the audio file. This creates a recognition job that you
+  // can wait for now, or get its result later.
+  speech.startRecognition(filename, request)
+    .then((results) => {
+      const operation = results[0];
+      // Get a Promise represention of the final result of the job
+      return operation.promise();
+    })
+    .then((transcription) => {
+      console.log(`Transcription: ${transcription}`);
+    });
+  // [END speech_async_recognize]
+}
+
 function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // [START speech_async_recognize_gcs]
   // Imports the Google Cloud client library
@@ -232,6 +272,12 @@ require(`yargs`)
     `Detects speech in an audio file located in a Google Cloud Storage bucket.`,
     {},
     (opts) => syncRecognizeGCS(opts.gcsUri, opts.encoding, opts.sampleRateHertz, opts.languageCode)
+  )
+  .command(
+    `async <filename>`,
+    `Creates a job to detect speech in a local audio file, and waits for the job to complete.`,
+    {},
+    (opts) => asyncRecognize(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
     `async-gcs <gcsUri>`,

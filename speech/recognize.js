@@ -135,7 +135,8 @@ function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
       // Get a Promise represention of the final result of the job
       return operation.promise();
     })
-    .then((transcription) => {
+    .then((results) => {
+      const transcription = results[0];
       console.log(`Transcription: ${transcription}`);
     })
     .catch((err) => {
@@ -178,7 +179,8 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
       // Get a Promise represention of the final result of the job
       return operation.promise();
     })
-    .then((transcription) => {
+    .then((results) => {
+      const transcription = results[0];
       console.log(`Transcription: ${transcription}`);
     })
     .catch((err) => {
@@ -333,7 +335,7 @@ require(`yargs`)
     }
   })
   .example(`node $0 sync ./resources/audio.raw -e LINEAR16 -r 16000`)
-  .example(`node $0 async-gcs gs://my-bucket/audio.raw -e LINEAR16 -r 16000`)
+  .example(`node $0 async-gcs gs://gcs-test-data/vr.flac -e FLAC -r 16000`)
   .example(`node $0 stream ./resources/audio.raw  -e LINEAR16 -r 16000`)
   .example(`node $0 listen`)
   .wrap(120)

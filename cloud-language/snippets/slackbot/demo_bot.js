@@ -181,7 +181,7 @@ function analyzeEntities (text, ts) {
   // Detects entities in the document
   return document.detectEntities()
     .then((results) => {
-      const entities = results[1].entities;
+      const entities = results[0];
 
       entities.forEach((entity) => {
         const name = entity.name;
@@ -222,9 +222,9 @@ function analyzeSentiment (text) {
 
       // Uncomment the following lines to log the sentiment to the console:
       // console.log(`Sentiment: ${sentiment}`)
-      // if (sentiment >= SENTIMENT_THRESHOLD) {
+      // if (sentiment.score >= SENTIMENT_THRESHOLD) {
       //   console.log('Sentiment: positive.');
-      // } else if (sentiment <= -SENTIMENT_THRESHOLD) {
+      // } else if (sentiment.score <= -SENTIMENT_THRESHOLD) {
       //   console.log('Sentiment: negative.');
       // }
 
@@ -239,10 +239,10 @@ function handleAmbientMessage (bot, message) {
   return analyzeEntities(message.text, message.ts)
     .then(() => analyzeSentiment(message.text))
     .then((sentiment) => {
-      if (sentiment >= SENTIMENT_THRESHOLD) {
+      if (sentiment.score >= SENTIMENT_THRESHOLD) {
         // We have a positive sentiment score larger than the threshold.
         bot.reply(message, ':thumbsup:');
-      } else if (sentiment <= -SENTIMENT_THRESHOLD) {
+      } else if (sentiment.score <= -SENTIMENT_THRESHOLD) {
         // We have a negative sentiment score of absolute value larger than
         // the threshold.
         bot.reply(message, ':thumbsdown:');

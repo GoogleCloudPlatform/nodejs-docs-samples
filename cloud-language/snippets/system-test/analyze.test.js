@@ -45,40 +45,46 @@ test.afterEach.always(restoreConsole);
 
 test(`should run sync recognize`, async (t) => {
   const output = await runAsync(`${cmd} sentiment-text "${text}"`, cwd);
-  t.true(output.includes(`Sentiment: positive.`));
+  t.true(output.includes(`Score: 0.`));
+  t.true(output.includes(`Magnitude: 0.`));
 });
 
 test(`should analyze sentiment in a file`, async (t) => {
   const output = await runAsync(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd);
-  t.true(output.includes(`Sentiment: positive.`));
+  t.true(output.includes(`Score: 0.`));
+  t.true(output.includes(`Magnitude: 0.`));
 });
 
 test(`should analyze entities in text`, async (t) => {
   const output = await runAsync(`${cmd} entities-text "${text}"`, cwd);
-  t.true(output.includes(`Entities:`));
-  t.true(output.includes(`people:`));
-  t.true(output.includes(`places:`));
+  t.true(output.includes(`Obama`));
+  t.true(output.includes(`Type: PERSON`));
+  t.true(output.includes(`White House`));
+  t.true(output.includes(`Type: LOCATION`));
 });
 
 test('should analyze entities in a file', async (t) => {
   const output = await runAsync(`${cmd} entities-file ${bucketName} ${fileName}`, cwd);
   t.true(output.includes(`Entities:`));
-  t.true(output.includes(`people:`));
-  t.true(output.includes(`places:`));
+  t.true(output.includes(`Obama`));
+  t.true(output.includes(`Type: PERSON`));
+  t.true(output.includes(`White House`));
+  t.true(output.includes(`Type: LOCATION`));
 });
 
 test(`should analyze syntax in text`, async (t) => {
   const output = await runAsync(`${cmd} syntax-text "${text}"`, cwd);
-  t.true(output.includes(`Tags:`));
-  t.true(output.includes(`NOUN`));
-  t.true(output.includes(`VERB`));
-  t.true(output.includes(`PUNCT`));
+  t.true(output.includes(`Parts of speech:`));
+  t.true(output.includes(`NOUN:`));
+  t.true(output.includes(`President`));
+  t.true(output.includes(`NOUN:`));
+  t.true(output.includes(`Obama`));
 });
 
 test('should analyze syntax in a file', async (t) => {
   const output = await runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
-  t.true(output.includes(`Tags:`));
-  t.true(output.includes(`NOUN`));
-  t.true(output.includes(`VERB`));
-  t.true(output.includes(`PUNCT`));
+  t.true(output.includes(`NOUN:`));
+  t.true(output.includes(`President`));
+  t.true(output.includes(`NOUN:`));
+  t.true(output.includes(`Obama`));
 });

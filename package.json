@@ -77,7 +77,7 @@
     "@google-cloud/datastore": "0.7.0",
     "@google-cloud/debug-agent": "0.10.2",
     "@google-cloud/dns": "0.5.0",
-    "@google-cloud/language": "0.8.0",
+    "@google-cloud/language": "0.10.2",
     "@google-cloud/logging": "0.7.0",
     "@google-cloud/monitoring": "0.2.0",
     "@google-cloud/pubsub": "0.8.0",

@@ -62,5 +62,5 @@ test(`should run async recognize on a GCS file`, async (t) => {
 
 test(`should run streaming recognize`, async (t) => {
   const output = await runAsync(`${cmd} stream ${filepath}`, cwd);
-  t.true(output.includes(text));
+  t.true(output.includes(`Transcription: ${text}`));
 });

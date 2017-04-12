@@ -59,8 +59,10 @@ const db = new sqlite3.cached.Database(path.join(__dirname, './slackDB.db'));
 
 // the number of most frequent entities to retrieve from the db on request.
 const NUM_ENTITIES = 20;
-// The magnitude of sentiment of a posted text above which the bot will respond.
-const SENTIMENT_THRESHOLD = 30;
+// The threshold of sentiment score of a posted text, above which the bot will
+// respond. This threshold is rather arbitrary; you may want to play with this
+// value.
+const SENTIMENT_THRESHOLD = 0.3;
 const SEVEN_DAYS_AGO = 60 * 60 * 24 * 7;
 
 const ENTITIES_BASE_SQL = `SELECT name, type, count(name) as wc
@@ -218,10 +220,11 @@ function analyzeSentiment (text) {
     .then((results) => {
       const sentiment = results[0];
 
-      // Uncomment the following four lines to log the sentiment to the console:
-      // if (results >= SENTIMENT_THRESHOLD) {
+      // Uncomment the following lines to log the sentiment to the console:
+      // console.log(`Sentiment: ${sentiment}`)
+      // if (sentiment >= SENTIMENT_THRESHOLD) {
       //   console.log('Sentiment: positive.');
-      // } else if (results <= -SENTIMENT_THRESHOLD) {
+      // } else if (sentiment <= -SENTIMENT_THRESHOLD) {
       //   console.log('Sentiment: negative.');
       // }
 
@@ -237,10 +240,11 @@ function handleAmbientMessage (bot, message) {
     .then(() => analyzeSentiment(message.text))
     .then((sentiment) => {
       if (sentiment >= SENTIMENT_THRESHOLD) {
-        // We have a positive sentiment of magnitude larger than the threshold.
+        // We have a positive sentiment score larger than the threshold.
         bot.reply(message, ':thumbsup:');
       } else if (sentiment <= -SENTIMENT_THRESHOLD) {
-        // We have a negative sentiment of magnitude larger than the threshold.
+        // We have a negative sentiment score of absolute value larger than
+        // the threshold.
         bot.reply(message, ':thumbsdown:');
       }
     });

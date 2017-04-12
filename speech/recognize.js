@@ -55,6 +55,9 @@ function syncRecognize (filename, encoding, sampleRateHertz, languageCode) {
       const transcription = results[0];
 
       console.log(`Transcription: ${transcription}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END speech_sync_recognize]
 }
@@ -91,6 +94,9 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
       const transcription = results[0];
 
       console.log(`Transcription: ${transcription}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END speech_sync_recognize_gcs]
 }
@@ -131,6 +137,9 @@ function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
     })
     .then((transcription) => {
       console.log(`Transcription: ${transcription}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END speech_async_recognize]
 }
@@ -171,6 +180,9 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
     })
     .then((transcription) => {
       console.log(`Transcription: ${transcription}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END speech_async_recognize_gcs]
 }
@@ -209,7 +221,7 @@ function streamingRecognize (filename, encoding, sampleRateHertz, languageCode) 
   const recognizeStream = speech.createRecognizeStream(request)
     .on('error', console.error)
     .on('data', (data) => {
-      console.log('Data received: %j', data);
+      console.log(`Transcription: ${data.results}`);
     });
 
   // Stream an audio file from disk to the Speech API, e.g. "./resources/audio.raw"

@@ -39,6 +39,9 @@ function detectFaces (fileName) {
         console.log(`    Sorrow: ${face.sorrow}`);
         console.log(`    Surprise: ${face.surprise}`);
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_face_detection]
 }
@@ -72,6 +75,9 @@ function detectFacesGCS (bucketName, fileName) {
         console.log(`    Sorrow: ${face.sorrow}`);
         console.log(`    Surprise: ${face.surprise}`);
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_face_detection_gcs]
 }
@@ -94,6 +100,9 @@ function detectLabels (fileName) {
 
       console.log('Labels:');
       labels.forEach((label) => console.log(label));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_label_detection]
 }
@@ -121,6 +130,9 @@ function detectLabelsGCS (bucketName, fileName) {
 
       console.log('Labels:');
       labels.forEach((label) => console.log(label));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_label_detection_gcs]
 }
@@ -143,6 +155,9 @@ function detectLandmarks (fileName) {
 
       console.log('Landmarks:');
       landmarks.forEach((landmark) => console.log(landmark));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_landmark_detection]
 }
@@ -170,6 +185,9 @@ function detectLandmarksGCS (bucketName, fileName) {
 
       console.log('Landmarks:');
       landmarks.forEach((landmark) => console.log(landmark));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_landmark_detection_gcs]
 }
@@ -192,6 +210,9 @@ function detectText (fileName) {
 
       console.log('Text:');
       detections.forEach((text) => console.log(text));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_text_detection]
 }
@@ -219,6 +240,9 @@ function detectTextGCS (bucketName, fileName) {
 
       console.log('Text:');
       detections.forEach((text) => console.log(text));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_text_detection_gcs]
 }
@@ -241,6 +265,9 @@ function detectLogos (fileName) {
 
       console.log('Logos:');
       logos.forEach((logo) => console.log(logo));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_logo_detection]
 }
@@ -268,6 +295,9 @@ function detectLogosGCS (bucketName, fileName) {
 
       console.log('Logos:');
       logos.forEach((logo) => console.log(logo));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_logo_detection_gcs]
 }
@@ -290,6 +320,9 @@ function detectProperties (fileName) {
 
       console.log('Colors:');
       properties.colors.forEach((color) => console.log(color));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_image_property_detection]
 }
@@ -317,6 +350,9 @@ function detectPropertiesGCS (bucketName, fileName) {
 
       console.log('Colors:');
       properties.colors.forEach((color) => console.log(color));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_image_property_detection_gcs]
 }
@@ -341,6 +377,9 @@ function detectSafeSearch (fileName) {
       console.log(`Spoof: ${detections.spoof}`);
       console.log(`Medical: ${detections.medical}`);
       console.log(`Violence: ${detections.violence}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_safe_search_detection]
 }
@@ -370,6 +409,9 @@ function detectSafeSearchGCS (bucketName, fileName) {
       console.log(`Spoof: ${detections.spoof}`);
       console.log(`Medical: ${detections.medical}`);
       console.log(`Violence: ${detections.violence}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_safe_search_detection_gcs]
 }
@@ -388,8 +430,8 @@ function detectCropHints (fileName) {
 
   // Find crop hints for the local file
   vision.detectCrops(fileName)
-    .then((data) => {
-      const cropHints = data[0];
+    .then((results) => {
+      const cropHints = results[0];
 
       cropHints.forEach((hintBounds, hintIdx) => {
         console.log(`Crop Hint ${hintIdx}:`);
@@ -397,6 +439,9 @@ function detectCropHints (fileName) {
           console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
         });
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_crop_hint_detection]
 }
@@ -420,8 +465,8 @@ function detectCropHintsGCS (bucketName, fileName) {
 
   // Find crop hints for the remote file
   vision.detectCrops(storage.bucket(bucketName).file(fileName))
-    .then((data) => {
-      const cropHints = data[0];
+    .then((results) => {
+      const cropHints = results[0];
 
       cropHints.forEach((hintBounds, hintIdx) => {
         console.log(`Crop Hint ${hintIdx}:`);
@@ -429,6 +474,9 @@ function detectCropHintsGCS (bucketName, fileName) {
           console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
         });
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_crop_hint_detection_gcs]
 }
@@ -447,32 +495,35 @@ function detectWeb (fileName) {
 
   // Detect similar images on the web to a local file
   vision.detectSimilar(fileName)
-    .then((data) => {
-      const results = data[1].responses[0].webDetection;
+    .then((results) => {
+      const webDetection = results[1].responses[0].webDetection;
 
-      if (results.fullMatchingImages.length > 0) {
-        console.log(`Full matches found: ${results.fullMatchingImages.length}`);
-        results.fullMatchingImages.forEach((image) => {
+      if (webDetection.fullMatchingImages.length) {
+        console.log(`Full matches found: ${webDetection.fullMatchingImages.length}`);
+        webDetection.fullMatchingImages.forEach((image) => {
           console.log(`  URL: ${image.url}`);
           console.log(`  Score: ${image.score}`);
         });
       }
 
-      if (results.partialMatchingImages.length > 0) {
-        console.log(`Partial matches found: ${results.partialMatchingImages.length}`);
-        results.partialMatchingImages.forEach((image) => {
+      if (webDetection.partialMatchingImages.length) {
+        console.log(`Partial matches found: ${webDetection.partialMatchingImages.length}`);
+        webDetection.partialMatchingImages.forEach((image) => {
           console.log(`  URL: ${image.url}`);
           console.log(`  Score: ${image.score}`);
         });
       }
 
-      if (results.webEntities.length > 0) {
-        console.log(`Web entities found: ${results.webEntities.length}`);
-        results.webEntities.forEach((webEntity) => {
+      if (webDetection.webEntities.length) {
+        console.log(`Web entities found: ${webDetection.webEntities.length}`);
+        webDetection.webEntities.forEach((webEntity) => {
           console.log(`  Description: ${webEntity.description}`);
           console.log(`  Score: ${webEntity.score}`);
         });
       }
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_web_detection]
 }
@@ -496,32 +547,35 @@ function detectWebGCS (bucketName, fileName) {
 
   // Detect similar images on the web to a remote file
   vision.detectSimilar(storage.bucket(bucketName).file(fileName))
-    .then((data) => {
-      const results = data[1].responses[0].webDetection;
+    .then((results) => {
+      const webDetection = results[1].responses[0].webDetection;
 
-      if (results.fullMatchingImages.length > 0) {
-        console.log(`Full matches found: ${results.fullMatchingImages.length}`);
-        results.fullMatchingImages.forEach((image) => {
+      if (webDetection.fullMatchingImages.length) {
+        console.log(`Full matches found: ${webDetection.fullMatchingImages.length}`);
+        webDetection.fullMatchingImages.forEach((image) => {
           console.log(`  URL: ${image.url}`);
           console.log(`  Score: ${image.score}`);
         });
       }
 
-      if (results.partialMatchingImages.length > 0) {
-        console.log(`Partial matches found: ${results.partialMatchingImages.length}`);
-        results.partialMatchingImages.forEach((image) => {
+      if (webDetection.partialMatchingImages.length) {
+        console.log(`Partial matches found: ${webDetection.partialMatchingImages.length}`);
+        webDetection.partialMatchingImages.forEach((image) => {
           console.log(`  URL: ${image.url}`);
           console.log(`  Score: ${image.score}`);
         });
       }
 
-      if (results.webEntities.length > 0) {
-        console.log(`Web entities found: ${results.webEntities.length}`);
-        results.webEntities.forEach((webEntity) => {
+      if (webDetection.webEntities.length) {
+        console.log(`Web entities found: ${webDetection.webEntities.length}`);
+        webDetection.webEntities.forEach((webEntity) => {
           console.log(`  Description: ${webEntity.description}`);
           console.log(`  Score: ${webEntity.score}`);
         });
       }
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_web_detection_gcs]
 }
@@ -538,11 +592,14 @@ function detectFulltext (fileName) {
   // The path to the local image file, e.g. "/path/to/image.png"
   // const fileName = 'my-file.jpg';
 
-  // // Read a local image as a text document
+  // Read a local image as a text document
   vision.readDocument(fileName)
-    .then((data) => {
-      const results = data[1].responses[0].fullTextAnnotation;
-      console.log(results.text);
+    .then((results) => {
+      const fullTextAnnotation = results[1].responses[0].fullTextAnnotation;
+      console.log(fullTextAnnotation.text);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_fulltext_detection]
 }
@@ -566,9 +623,12 @@ function detectFulltextGCS (bucketName, fileName) {
 
   // Read a remote image as a text document
   vision.readDocument(storage.bucket(bucketName).file(fileName))
-    .then((data) => {
-      const results = data[1].responses[0].fullTextAnnotation;
-      console.log(results.text);
+    .then((results) => {
+      const fullTextAnnotation = results[1].responses[0].fullTextAnnotation;
+      console.log(fullTextAnnotation.text);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END vision_fulltext_detection_gcs]
 }
@@ -582,10 +642,10 @@ require(`yargs`)
     (opts) => detectFaces(opts.fileName)
   )
   .command(
-    `faces-gcs <bucket> <fileName>`,
+    `faces-gcs <bucketName> <fileName>`,
     `Detects faces in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectFacesGCS(opts.bucket, opts.fileName)
+    (opts) => detectFacesGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `labels <fileName>`,
@@ -594,10 +654,10 @@ require(`yargs`)
     (opts) => detectLabels(opts.fileName)
   )
   .command(
-    `labels-gcs <bucket> <fileName>`,
+    `labels-gcs <bucketName> <fileName>`,
     `Detects labels in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectLabelsGCS(opts.bucket, opts.fileName)
+    (opts) => detectLabelsGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `landmarks <fileName>`,
@@ -606,10 +666,10 @@ require(`yargs`)
     (opts) => detectLandmarks(opts.fileName)
   )
   .command(
-    `landmarks-gcs <bucket> <fileName>`,
+    `landmarks-gcs <bucketName> <fileName>`,
     `Detects landmarks in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectLandmarksGCS(opts.bucket, opts.fileName)
+    (opts) => detectLandmarksGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `text <fileName>`,
@@ -618,10 +678,10 @@ require(`yargs`)
     (opts) => detectText(opts.fileName)
   )
   .command(
-    `text-gcs <bucket> <fileName>`,
+    `text-gcs <bucketName> <fileName>`,
     `Detects text in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectTextGCS(opts.bucket, opts.fileName)
+    (opts) => detectTextGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `logos <fileName>`,
@@ -630,10 +690,10 @@ require(`yargs`)
     (opts) => detectLogos(opts.fileName)
   )
   .command(
-    `logos-gcs <bucket> <fileName>`,
+    `logos-gcs <bucketName> <fileName>`,
     `Detects logos in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectLogosGCS(opts.bucket, opts.fileName)
+    (opts) => detectLogosGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `properties <fileName>`,
@@ -642,10 +702,10 @@ require(`yargs`)
     (opts) => detectProperties(opts.fileName)
   )
   .command(
-    `properties-gcs <bucket> <fileName>`,
+    `properties-gcs <bucketName> <fileName>`,
     `Detects image properties in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectPropertiesGCS(opts.bucket, opts.fileName)
+    (opts) => detectPropertiesGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `safe-search <fileName>`,
@@ -654,10 +714,10 @@ require(`yargs`)
     (opts) => detectSafeSearch(opts.fileName)
   )
   .command(
-    `safe-search-gcs <bucket> <fileName>`,
+    `safe-search-gcs <bucketName> <fileName>`,
     `Detects safe search properties in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectSafeSearchGCS(opts.bucket, opts.fileName)
+    (opts) => detectSafeSearchGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `crops <fileName>`,
@@ -666,10 +726,10 @@ require(`yargs`)
     (opts) => detectCropHints(opts.fileName)
   )
   .command(
-    `crops-gcs <bucket> <fileName>`,
+    `crops-gcs <bucketName> <fileName>`,
     `Detects crop hints in an image in Google Cloud Storage.`,
     {},
-    (opts) => detectCropHintsGCS(opts.bucket, opts.fileName)
+    (opts) => detectCropHintsGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `web <fileName>`,
@@ -678,10 +738,10 @@ require(`yargs`)
     (opts) => detectWeb(opts.fileName)
   )
   .command(
-    `web-gcs <bucket> <fileName>`,
+    `web-gcs <bucketName> <fileName>`,
     `Finds similar photos on the web for an image in Google Cloud Storage.`,
     {},
-    (opts) => detectWebGCS(opts.bucket, opts.fileName)
+    (opts) => detectWebGCS(opts.bucketName, opts.fileName)
   )
   .command(
     `fulltext <fileName>`,
@@ -690,10 +750,10 @@ require(`yargs`)
     (opts) => detectFulltext(opts.fileName)
   )
   .command(
-    `fulltext-gcs <bucket> <fileName>`,
+    `fulltext-gcs <bucketName> <fileName>`,
     `Extracts full text from an image in Google Cloud Storage.`,
     {},
-    (opts) => detectFulltextGCS(opts.bucket, opts.fileName)
+    (opts) => detectFulltextGCS(opts.bucketName, opts.fileName)
   )
   .example(`node $0 faces ./resources/face_no_surprise.jpg`)
   .example(`node $0 faces-gcs my-bucket your-image.jpg`)

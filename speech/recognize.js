@@ -305,7 +305,7 @@ require(`yargs`)
   )
   .command(
     `listen`,
-    `Detects speech in a microphone input stream.`,
+    `Detects speech in a microphone input stream. This command requires that you have SoX installed and available in your $PATH. See https://www.npmjs.com/package/node-record-lpcm16#dependencies`,
     {},
     (opts) => streamingMicRecognize(opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )

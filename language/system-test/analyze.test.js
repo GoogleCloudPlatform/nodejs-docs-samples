@@ -86,3 +86,21 @@ test('should analyze syntax in a file', async (t) => {
   t.true(output.includes(`President`));
   t.true(output.includes(`Obama`));
 });
+
+test(`should analyze entity sentiment in text`, async (t) => {
+  const output = await runAsync(`${cmd} entity-sentiment-text "${text}"`, cwd);
+  t.true(output.includes(`Entities and sentiments:`));
+  t.true(output.includes(`Obama`));
+  t.true(output.includes(`PERSON`));
+  t.true(output.includes(`Score: 0`));
+  t.true(output.includes(`Magnitude: 0`));
+});
+
+test('should analyze entity sentiment in a file', async (t) => {
+  const output = await runAsync(`${cmd} entity-sentiment-file ${bucketName} ${fileName}`, cwd);
+  t.true(output.includes(`Entities and sentiments:`));
+  t.true(output.includes(`Obama`));
+  t.true(output.includes(`PERSON`));
+  t.true(output.includes(`Score: 0`));
+  t.true(output.includes(`Magnitude: 0`));
+});

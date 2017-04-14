@@ -35,18 +35,13 @@ general:
 # Install your project's language-specific dependencies
 dependencies:
   pre:
-    - |
-      if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
-        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
-      fi
     - yarn global add nyc codecov
   override:
-    - yarn install
+    - yarn
   post:
     - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
     - node scripts/install
   cache_directories:
-    - ~/.yarn
     - ~/.cache/yarn
     - appengine/bower/node_modules
     - appengine/cloudsql/node_modules

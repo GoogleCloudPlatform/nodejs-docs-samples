@@ -32,7 +32,7 @@ function analyzeSentimentOfText (text) {
   // Detects the sentiment of the document
   document.detectSentiment()
     .then((results) => {
-      const sentiment = results[0];
+      const sentiment = results[1].documentSentiment;
       console.log(`Score: ${sentiment.score}`);
       console.log(`Magnitude: ${sentiment.magnitude}`);
     })
@@ -67,7 +67,7 @@ function analyzeSentimentInFile (bucketName, fileName) {
   // Detects the sentiment of the document
   document.detectSentiment()
     .then((results) => {
-      const sentiment = results[0];
+      const sentiment = results[1].documentSentiment;
       console.log(`Score: ${sentiment.score}`);
       console.log(`Magnitude: ${sentiment.magnitude}`);
     })
@@ -94,7 +94,7 @@ function analyzeEntitiesOfText (text) {
   // Detects entities in the document
   document.detectEntities()
     .then((results) => {
-      const entities = results[0];
+      const entities = results[1].entities;
 
       console.log('Entities:');
       entities.forEach((entity) => {
@@ -168,7 +168,7 @@ function analyzeSyntaxOfText (text) {
 
       console.log('Parts of speech:');
       syntax.forEach((part) => {
-        console.log(`${part.partOfSpeech.tag}:\t ${part.text.content}`);
+        console.log(`${part.tag}:\t ${part.text}`);
       });
     })
     .catch((err) => {
@@ -206,7 +206,7 @@ function analyzeSyntaxInFile (bucketName, fileName) {
 
       console.log('Parts of speech:');
       syntax.forEach((part) => {
-        console.log(`${part.partOfSpeech.tag}:\t ${part.text.content}`);
+        console.log(`${part.tag}:\t ${part.text}`);
       });
     })
     .catch((err) => {

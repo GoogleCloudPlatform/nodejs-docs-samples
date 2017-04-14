@@ -77,7 +77,6 @@ test(`should analyze syntax in text`, async (t) => {
   t.true(output.includes(`Parts of speech:`));
   t.true(output.includes(`NOUN:`));
   t.true(output.includes(`President`));
-  t.true(output.includes(`NOUN:`));
   t.true(output.includes(`Obama`));
 });
 
@@ -85,6 +84,5 @@ test('should analyze syntax in a file', async (t) => {
   const output = await runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
   t.true(output.includes(`NOUN:`));
   t.true(output.includes(`President`));
-  t.true(output.includes(`NOUN:`));
   t.true(output.includes(`Obama`));
 });

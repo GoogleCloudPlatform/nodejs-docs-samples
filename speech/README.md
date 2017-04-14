@@ -39,21 +39,25 @@ Commands:
   async-gcs <gcsUri>  Creates a job to detect speech in an audio file located in a Google Cloud Storage bucket, and
                       waits for the job to complete.
   stream <filename>   Detects speech in a local audio file by streaming it to the Speech API.
-  listen              Detects speech in a microphone input stream.
+  listen              Detects speech in a microphone input stream. This command requires that you have SoX installed and
+                      available in your $PATH. See https://www.npmjs.com/package/node-record-lpcm16#dependencies
 
 Options:
-  --help            Show help                                                                                  [boolean]
+  --help                 Show help                                                                             [boolean]
   --encoding, -e                                                                          [string] [default: "LINEAR16"]
-  --sampleRate, -r                                                                             [number] [default: 16000]
+  --sampleRateHertz, -r                                                                        [number] [default: 16000]
+  --languageCode, -l                                                                         [string] [default: "en-US"]
 
 Examples:
   node recognize.js sync ./resources/audio.raw -e LINEAR16 -r 16000
-  node recognize.js async-gcs gs://my-bucket/audio.raw -e LINEAR16 -r 16000
+  node recognize.js async-gcs gs://gcs-test-data/vr.flac -e FLAC -r 16000
   node recognize.js stream ./resources/audio.raw  -e LINEAR16 -r 16000
   node recognize.js listen
 
 For more information, see https://cloud.google.com/speech/docs
 ```
+
+**Note:** The `listen` command requires that you have SoX installed and available in your $PATH. See https://www.npmjs.com/package/node-record-lpcm16#dependencies.
 
 [recognize_docs]: https://cloud.google.com/speech/docs
 [recognize_code]: recognize.js

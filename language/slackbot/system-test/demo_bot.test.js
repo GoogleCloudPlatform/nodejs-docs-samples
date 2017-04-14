@@ -76,7 +76,7 @@ test.after.cb.always((t) => {
 
 test.serial(`should analyze sentiment in text`, async (t) => {
   const sentiment = await program.analyzeSentiment(text);
-  t.is(sentiment > 0, true);
+  t.is(sentiment.score > 0, true);
 });
 
 test.serial(`should analyze entities in text`, async (t) => {

@@ -46,7 +46,7 @@ function readOnlyTransaction (instanceId, databaseId) {
 
           rows.forEach((row) => {
             const json = row.toJSON();
-            console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
+            console.log(`SingerId: ${json.SingerId}, AlbumId: ${json.AlbumId}, AlbumTitle: ${json.AlbumTitle}`);
           });
         });
 
@@ -66,7 +66,7 @@ function readOnlyTransaction (instanceId, databaseId) {
 
           rows.forEach((row) => {
             const json = row.toJSON();
-            console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
+            console.log(`SingerId: ${json.SingerId}, AlbumId: ${json.AlbumId}, AlbumTitle: ${json.AlbumTitle}`);
           });
         });
     })
@@ -123,7 +123,7 @@ function readWriteTransaction (instanceId, databaseId) {
           // Note: MarketingBudget is an INT64, which comes from Cloud Spanner
           // as a string - so we convert it to a number with parseInt()
           const rows = results[0].map((row) => row.toJSON());
-          secondBudget = parseInt(rows[0].MarketingBudget.value);
+          secondBudget = parseInt(rows[0].MarketingBudget);
           console.log(`The second album's marketing budget: ${secondBudget}`);
 
           // Makes sure the second album's budget is sufficient
@@ -137,7 +137,7 @@ function readWriteTransaction (instanceId, databaseId) {
           // Gets first album's budget
           // As above, MarketingBudget is an INT64 and comes as a string
           const rows = results[0].map((row) => row.toJSON());
-          firstBudget = parseInt(rows[0].MarketingBudget.value);
+          firstBudget = parseInt(rows[0].MarketingBudget);
           console.log(`The first album's marketing budget: ${firstBudget}`);
         })
       ]);

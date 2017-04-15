@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,12 +15,12 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const bigquery = require(`@google-cloud/bigquery`)();
-const storage = require(`@google-cloud/storage`)();
-const uuid = require(`uuid`);
 const path = require(`path`);
+const storage = require(`@google-cloud/storage`)();
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
+const uuid = require(`uuid`);
 
 const cwd = path.join(__dirname, `..`);
 const cmd = `node tables.js`;
@@ -42,6 +42,7 @@ const rows = [
   { Name: `bar`, Age: 13, Weight: 54.6, IsMagic: false }
 ];
 
+test.before(tools.checkCredentials);
 test.before(async () => {
   const [bucket] = await storage.createBucket(bucketName);
   await Promise.all([
@@ -73,82 +74,88 @@ test.after.always(async () => {
   } catch (err) {} // ignore error
 });
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should create a table`, async (t) => {
-  const output = await runAsync(`${cmd} create ${datasetId} ${tableId} "${schema}"`, cwd);
+  const output = await tools.runAsync(`${cmd} create ${datasetId} ${tableId} "${schema}"`, cwd);
   t.is(output, `Table ${tableId} created.`);
   const [exists] = await bigquery.dataset(datasetId).table(tableId).exists();
   t.true(exists);
 });
 
 test.serial(`should list tables`, async (t) => {
-  await tryTest(async () => {
-    const output = await runAsync(`${cmd} list ${datasetId}`, cwd);
-    t.true(output.includes(`Tables:`));
-    t.true(output.includes(tableId));
+  t.plan(0);
+  await tools.tryTest(async (assert) => {
+    const output = await tools.runAsync(`${cmd} list ${datasetId}`, cwd);
+    assert(output.includes(`Tables:`));
+    assert(output.includes(tableId));
   }).start();
 });
 
 test.serial(`should import a local file`, async (t) => {
-  const output = await runAsync(`${cmd} import ${datasetId} ${tableId} ${localFilePath}`, cwd);
+  t.plan(2);
+  const output = await tools.runAsync(`${cmd} import ${datasetId} ${tableId} ${localFilePath}`, cwd);
   t.true(output.includes(`started.`));
   t.true(output.includes(`completed.`));
-  await tryTest(async () => {
+  await tools.tryTest(async (assert) => {
     const [rows] = await bigquery.dataset(datasetId).table(tableId).getRows();
-    t.is(rows.length, 1);
+    assert.equal(rows.length, 1);
   }).start();
 });
 
 test.serial(`should browse table rows`, async (t) => {
-  const output = await runAsync(`${cmd} browse ${datasetId} ${tableId}`, cwd);
+  const output = await tools.runAsync(`${cmd} browse ${datasetId} ${tableId}`, cwd);
   t.is(output, `Rows:\n{ Name: 'Gandalf', Age: 2000, Weight: 140, IsMagic: true }`);
 });
 
 test.serial(`should export a table to GCS`, async (t) => {
-  const output = await runAsync(`${cmd} export ${datasetId} ${tableId} ${bucketName} ${exportFileName}`, cwd);
+  t.plan(2);
+  const output = await tools.runAsync(`${cmd} export ${datasetId} ${tableId} ${bucketName} ${exportFileName}`, cwd);
   t.true(output.includes(`started.`));
   t.true(output.includes(`completed.`));
-  await tryTest(async () => {
+  await tools.tryTest(async (assert) => {
     const [exists] = await storage.bucket(bucketName).file(exportFileName).exists();
-    t.true(exists);
+    assert(exists);
   }).start();
 });
 
 test.serial(`should import a GCS file`, async (t) => {
-  const output = await runAsync(`${cmd} import-gcs ${datasetId} ${tableId} ${bucketName} ${importFileName}`, cwd);
+  t.plan(2);
+  const output = await tools.runAsync(`${cmd} import-gcs ${datasetId} ${tableId} ${bucketName} ${importFileName}`, cwd);
   t.true(output.includes(`started.`));
   t.true(output.includes(`completed.`));
-  await tryTest(async () => {
+  await tools.tryTest(async (assert) => {
     const [rows] = await bigquery.dataset(datasetId).table(tableId).getRows();
-    t.is(rows.length, 2);
+    assert.equal(rows.length, 2);
   }).start();
 });
 
 test.serial(`should copy a table`, async (t) => {
-  const output = await runAsync(`${cmd} copy ${srcDatasetId} ${srcTableId} ${destDatasetId} ${destTableId}`, cwd);
+  t.plan(2);
+  const output = await tools.runAsync(`${cmd} copy ${srcDatasetId} ${srcTableId} ${destDatasetId} ${destTableId}`, cwd);
   t.true(output.includes(`started.`));
   t.true(output.includes(`completed.`));
-  await tryTest(async () => {
+  await tools.tryTest(async (assert) => {
     const [rows] = await bigquery.dataset(destDatasetId).table(destTableId).getRows();
-    t.is(rows.length, 2);
+    assert.equal(rows.length, 2);
   }).start();
 });
 
 test.serial(`should insert rows`, async (t) => {
-  const err = await t.throws(runAsync(`${cmd} insert ${datasetId} ${tableId} 'foo.bar'`, cwd));
+  t.plan(3);
+  const err = await t.throws(tools.runAsync(`${cmd} insert ${datasetId} ${tableId} 'foo.bar'`, cwd));
   t.true(err.message.includes(`"json_or_file" (or the file it points to) is not a valid JSON array.`));
-  const output = await runAsync(`${cmd} insert ${datasetId} ${tableId} '${JSON.stringify(rows)}'`, cwd);
+  const output = await tools.runAsync(`${cmd} insert ${datasetId} ${tableId} '${JSON.stringify(rows)}'`, cwd);
   t.is(output, `Inserted:\n{ Name: 'foo', Age: 27, Weight: 80.3, IsMagic: true }\n{ Name: 'bar', Age: 13, Weight: 54.6, IsMagic: false }`);
-  await tryTest(async () => {
+  await tools.tryTest(async (assert) => {
     const [rows] = await bigquery.dataset(datasetId).table(tableId).getRows();
-    t.is(rows.length, 4);
+    assert.equal(rows.length, 4);
   }).start();
 });
 
 test.serial(`should delete a table`, async (t) => {
-  const output = await runAsync(`${cmd} delete ${datasetId} ${tableId}`, cwd);
+  const output = await tools.runAsync(`${cmd} delete ${datasetId} ${tableId}`, cwd);
   t.is(output, `Table ${tableId} deleted.`);
   const [exists] = await bigquery.dataset(datasetId).table(tableId).exists();
   t.false(exists);

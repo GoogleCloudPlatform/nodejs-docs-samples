@@ -1,0 +1,30 @@
+{
+  "name": "nodejs-docs-samples-containerengine",
+  "description": "Node.js Google Container Engine sample.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "cloud": {
+    "msg": "Hello Kubernetes!",
+    "startArgs": ["server.js"]
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "lint": "samples lint",
+    "pretest": "npm run lint",
+    "system-test": "samples test app",
+    "test": "npm run system-test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.3.1"
+  }
+}

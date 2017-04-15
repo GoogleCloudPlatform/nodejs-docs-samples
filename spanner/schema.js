@@ -165,5 +165,5 @@ const cli = require(`yargs`)
   .epilogue(`For more information, see https://cloud.google.com/spanner/docs`);
 
 if (module === require.main) {
-  cli.help().strict().argv;
+  cli.help().strict().argv; // eslint-disable-line
 }

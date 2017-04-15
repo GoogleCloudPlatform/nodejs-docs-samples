@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,14 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const resource = proxyquire(`@google-cloud/resource`, {})();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-test.before(stubConsole);
-test.after.always(restoreConsole);
+test.before(tools.stubConsole);
+test.after.always(tools.restoreConsole);
 
 test.cb(`should list projects`, (t) => {
   const resourceMock = {

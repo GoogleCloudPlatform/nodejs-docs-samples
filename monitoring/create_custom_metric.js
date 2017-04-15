@@ -214,7 +214,7 @@ CustomMetrics.prototype.deleteMetric = function (client, callback) {
  * a random value for the measurement.
  */
 CustomMetrics.prototype.getRandomInt = function (low, high) {
-  return Math.floor(Math.random() * (high - low) + low);
+  return Math.floor((Math.random() * (high - low)) + low);
 };
 
 CustomMetrics.prototype.getMonitoringClient = function (callback) {

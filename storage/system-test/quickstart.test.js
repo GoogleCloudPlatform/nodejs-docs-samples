@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,18 +15,19 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const proxyquire = require(`proxyquire`).noPreserveCache();
+const sinon = require(`sinon`);
 const storage = proxyquire(`@google-cloud/storage`, {})();
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);
 
-test.before(stubConsole);
+test.before(tools.stubConsole);
 test.after.always(async () => {
-  restoreConsole();
+  tools.restoreConsole();
   try {
     await bucket.delete();
   } catch (err) {} // ignore error

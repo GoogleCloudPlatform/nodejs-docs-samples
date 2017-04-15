@@ -15,12 +15,13 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const proxyquire = require(`proxyquire`).noPreserveCache();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-test.before(stubConsole);
-test.after.always(restoreConsole);
+test.before(tools.stubConsole);
+test.after.always(tools.restoreConsole);
 
 test.cb(`should query a table`, (t) => {
   const databaseMock = {

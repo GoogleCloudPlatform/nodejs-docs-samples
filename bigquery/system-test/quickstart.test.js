@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,11 +15,13 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const proxyquire = require(`proxyquire`).noPreserveCache();
-const bigquery = proxyquire(`@google-cloud/bigquery`, {})();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
+
+const bigquery = proxyquire(`@google-cloud/bigquery`, {})();
 
 const expectedDatasetId = `my_new_dataset`;
 let datasetId = `nodejs-docs-samples-test-${uuid.v4()}`;
@@ -31,8 +33,8 @@ test.after.always(async () => {
   } catch (err) {} // ignore error
 });
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test(`quickstart should create a dataset`, async (t) => {
   await new Promise((resolve, reject) => {

@@ -2,14 +2,32 @@
   "name": "nodejs-docs-samples-functions-background",
   "version": "0.0.1",
   "private": true,
-  "license": "Apache Version 2.0",
+  "license": "Apache-2.0",
   "author": "Google Inc.",
-  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "cloud": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  },
   "scripts": {
-    "test": "cd ../..; npm run t -- functions/background/test/*.test.js"
+    "lint": "samples lint",
+    "pretest": "npm run lint",
+    "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "request": "2.79.0",
-    "request-promise": "4.1.1"
+    "request": "2.81.0",
+    "request-promise": "4.2.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.3.1",
+    "ava": "0.19.1",
+    "proxyquire": "1.7.11",
+    "sinon": "2.1.0"
   }
 }

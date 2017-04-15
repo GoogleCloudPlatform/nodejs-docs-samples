@@ -1,16 +1,56 @@
-# StackDriver Trace sample for Node.js
+# Stackdriver Trace sample for Node.js
 
-This sample demonstrates [StackDriver Trace](https://cloud.google.com/trace/) with Node.js.
+This sample demonstrates [StackDriver Trace][trace] with Node.js.
 
-## Deploy and test
+* [Setup](#setup)
+* [Running locally](#running-locally)
+* [Deploying to App Engine](#deploying-to-app-engine)
+* [Running the tests](#running-the-tests)
 
-Where appropriate, replace `[YOUR_PROJECT_ID]` with the ID of your Cloud project.
+## Setup
 
-1. `git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git`
-1. `cd nodejs-docs-samples/trace`
-1. Deploy the app:
+Before you can run or deploy the sample, you need to do the following:
 
-    gcloud app deploy
+1.  Refer to the [appengine/README.md][readme] file for instructions on
+    running and deploying.
+1.  [Create a Google Analytics Property and obtain the Tracking ID][tracking].
+1.  Add your tracking ID to `app.yaml`.
+1.  Install dependencies:
 
-1. Visit the deployed app at https://[YOUR_PROJECT_ID].appspot.com/.
-1. Use the [StackDriver Trace dashboard](https://console.cloud.google.com/traces/traces) to inspect recorded traces.
+    With `npm`:
+
+        npm install
+
+    or with `yarn`:
+
+        yarn install
+
+## Running locally
+
+With `npm`:
+
+    npm start
+
+or with `yarn`:
+
+    yarn start
+
+## Deploying to App Engine
+
+With `npm`:
+
+    npm run deploy
+
+or with `yarn`:
+
+    yarn run deploy
+
+Use the [Stackdriver Trace dashboard](https://console.cloud.google.com/traces/traces) to inspect recorded traces.
+
+## Running the tests
+
+See [Contributing][contributing].
+
+[trace]: https://cloud.google.com/trace/
+[readme]: ../README.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md

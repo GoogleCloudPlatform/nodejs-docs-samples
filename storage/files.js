@@ -293,7 +293,7 @@ function copyFile (srcBucketName, srcFileName, destBucketName, destFileName) {
 }
 // [END storage_copy_file]
 
-require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `list <bucketName> [prefix] [delimiter]`,

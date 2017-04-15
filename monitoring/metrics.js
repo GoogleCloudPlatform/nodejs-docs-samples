@@ -69,6 +69,9 @@ function createMetricDescriptor (projectId) {
       descriptor.labels.forEach((label) => {
         console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_create_metric]
 }
@@ -95,6 +98,9 @@ function listMetricDescriptors (projectId) {
 
       console.log('Metric Descriptors:');
       descriptors.forEach((descriptor) => console.log(descriptor.name));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_list_descriptors]
 }
@@ -132,6 +138,9 @@ function getMetricDescriptor (projectId, metricId) {
       descriptor.labels.forEach((label) => {
         console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_get_descriptor]
 }
@@ -158,6 +167,9 @@ function deleteMetricDescriptor (projectId, metricId) {
   client.deleteMetricDescriptor(request)
     .then((results) => {
       console.log(`Deleted ${metricId}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_delete_metric]
 }
@@ -213,6 +225,9 @@ function writeTimeSeriesData (projectId, metricId) {
   client.createTimeSeries(request)
     .then((results) => {
       console.log(`Done writing time series data.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_write_timeseries]
 }
@@ -256,6 +271,9 @@ function readTimeSeriesData (projectId, filter) {
           console.log(JSON.stringify(point.value));
         });
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_simple]
 }
@@ -297,6 +315,9 @@ function readTimeSeriesFields (projectId) {
       timeSeries.forEach((data) => {
         console.log(data.metric.labels.instance_name);
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_fields]
 }
@@ -344,6 +365,9 @@ function readTimeSeriesAggregate (projectId) {
         console.log(`  Now: ${data.points[0].value.doubleValue}`);
         console.log(`  10 min ago: ${data.points[1].value.doubleValue}`);
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_align]
 }
@@ -389,6 +413,9 @@ function readTimeSeriesReduce (projectId) {
       console.log('Average CPU utilization across all GCE instances:');
       console.log(`  Last 10 min: ${reductions[0].value.doubleValue}`);
       console.log(`  10-20 min ago: ${reductions[0].value.doubleValue}`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_reduce]
 }
@@ -415,6 +442,9 @@ function listMonitoredResourceDescriptors (projectId) {
 
       console.log('Monitored Resource Descriptors:');
       descriptors.forEach((descriptor) => console.log(descriptor.name));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_list_resources]
 }
@@ -449,6 +479,9 @@ function getMonitoredResourceDescriptor (projectId, resourceType) {
       descriptor.labels.forEach((label) => {
         console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
       });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END monitoring_get_resource]
 }
@@ -546,5 +579,5 @@ const cli = require(`yargs`)
   .epilogue(`For more information, see https://cloud.google.com/monitoring/docs`);
 
 if (module === require.main) {
-  cli.help().strict().argv;
+  cli.help().strict().argv; // eslint-disable-line
 }

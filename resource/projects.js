@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,43 +15,34 @@
 
 'use strict';
 
-const Resource = require('@google-cloud/resource');
-
-// [START resource_list_projects]
 function listProjects () {
+  // [START resource_list_projects]
+  // Imports the Google Cloud client library
+  const Resource = require('@google-cloud/resource');
+
   // Instantiates a client
   const resource = Resource();
 
   // Lists all current projects
-  return resource.getProjects()
+  resource.getProjects()
     .then((results) => {
       const projects = results[0];
       console.log('Projects:');
       projects.forEach((project) => console.log(project.id));
-      return projects;
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END resource_list_projects]
 }
-// [END resource_list_projects]
 
-// The command-line program
-const cli = require(`yargs`);
-
-const program = module.exports = {
-  listProjects: listProjects,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`) // eslint-disable-line
   .demand(1)
-  .command(`list`, `List all current projects.`, {}, program.listProjects)
+  .command(`list`, `List all current projects.`, {}, listProjects)
   .example(`node $0 list`, `Lists all current projects.`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/resource-manager/docs`);
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/resource-manager/docs`)
+  .help()
+  .strict()
+  .argv;

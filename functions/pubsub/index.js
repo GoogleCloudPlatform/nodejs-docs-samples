@@ -22,6 +22,8 @@ const PubSub = require('@google-cloud/pubsub');
 const pubsub = PubSub();
 // [END functions_pubsub_setup]
 
+const Buffer = require('safe-buffer').Buffer;
+
 // [START functions_pubsub_publish]
 /**
  * Publishes a message to a Cloud Pub/Sub Topic.

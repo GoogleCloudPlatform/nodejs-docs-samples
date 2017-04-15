@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,43 +15,34 @@
 
 'use strict';
 
-const DNS = require('@google-cloud/dns');
-
-// [START dns_list_zones]
 function listZones () {
+  // [START dns_list_zones]
+  // Imports the Google Cloud client library
+  const DNS = require('@google-cloud/dns');
+
   // Instantiates a client
   const dns = DNS();
 
   // Lists all zones in the current project
-  return dns.getZones()
+  dns.getZones()
     .then((results) => {
       const zones = results[0];
       console.log('Zones:');
       zones.forEach((zone) => console.log(zone.name));
-      return zones;
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END dns_list_zones]
 }
-// [END dns_list_zones]
 
-// The command-line program
-const cli = require(`yargs`);
-
-const program = module.exports = {
-  listZones: listZones,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv;
-  }
-};
-
-cli
+require(`yargs`) // eslint-disable-line
   .demand(1)
-  .command(`list`, `Lists all zones in the current project.`, {}, program.listZones)
+  .command(`list`, `Lists all zones in the current project.`, {}, listZones)
   .example(`node $0 list`, `Lists all zones in the current project.`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/dns/docs`);
-
-if (module === require.main) {
-  program.main(process.argv.slice(2));
-}
+  .epilogue(`For more information, see https://cloud.google.com/dns/docs`)
+  .help()
+  .strict()
+  .argv;

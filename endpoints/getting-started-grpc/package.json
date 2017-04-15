@@ -3,18 +3,32 @@
   "description": "Endpoints Node.js gRPC sample for Google App Engine",
   "version": "0.0.1",
   "private": true,
-  "license": "Apache Version 2.0",
+  "license": "Apache-2.0",
   "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "cloud": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  },
   "engines": {
     "node": ">=4.3.2"
   },
   "scripts": {
     "start": "node server.js",
-    "system-test": "ava system-test/*.test.js --timeout=30s"
+    "system-test": "ava -T 30s --verbose system-test/*.test.js",
+    "test": "npm run system-test"
   },
   "dependencies": {
-    "body-parser": "1.16.0",
-    "express": "4.14.1",
-    "grpc": "^1.1.2"
+    "body-parser": "1.17.1",
+    "express": "4.15.2",
+    "grpc": "1.1.2",
+    "yargs": "7.1.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.2.1",
+    "ava": "0.19.1"
   }
 }

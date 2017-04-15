@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,14 +13,15 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
+// [START app]
 const express = require('express');
+
 const app = express();
 
 app.get('/', (req, res) => {
-  res.status(200).send('Hello, world!');
+  res.status(200).send('Hello, world!').end();
 });
 
 // Start the server

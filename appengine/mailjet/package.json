@@ -1,20 +1,36 @@
 {
   "name": "appengine-mailjet",
-  "description": "An example of using Mailjet in Node.js on Google App Engine.",
+  "description": "An example of using Mailjet in Node.js on Google App Engine Flexible Environment.",
   "version": "0.0.1",
   "private": true,
-  "license": "Apache Version 2.0",
+  "license": "Apache-2.0",
   "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "cloud": {
+    "msg": "Express.js + Mailjet on Google App Engine."
+  },
   "engines": {
     "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js"
+    "deploy": "gcloud app deploy",
+    "start": "node app.js",
+    "lint": "samples lint",
+    "pretest": "npm run lint",
+    "system-test": "samples test app",
+    "test": "npm run system-test",
+    "e2e-test": "samples test deploy"
   },
   "dependencies": {
-    "body-parser": "1.16.0",
-    "express": "4.14.1",
+    "body-parser": "1.17.1",
+    "express": "4.15.2",
     "jade": "1.11.0",
     "node-mailjet": "1.1.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.3.1"
   }
 }

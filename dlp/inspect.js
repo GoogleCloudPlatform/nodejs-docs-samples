@@ -19,6 +19,7 @@ const API_URL = 'https://dlp.googleapis.com/v2beta1';
 const fs = require('fs');
 const requestPromise = require('request-promise');
 const mime = require('mime');
+const Buffer = require('safe-buffer').Buffer;
 
 // Helper function to poll the rest API using exponential backoff
 function pollJob (body, initialTimeout, tries, authToken) {
@@ -135,7 +136,7 @@ function inspectFile (authToken, filepath, inspectConfig) {
   // Construct file data to inspect
   const fileItems = [{
     type: mime.lookup(filepath) || 'application/octet-stream',
-    data: new Buffer(fs.readFileSync(filepath)).toString('base64')
+    data: Buffer.from(fs.readFileSync(filepath)).toString('base64')
   }];
 
   // Construct REST request body
@@ -294,7 +295,7 @@ if (module === require.main) {
       process.exit(1);
     }
 
-    const cli = require(`yargs`)
+    require(`yargs`) // eslint-disable-line
       .demand(1)
       .command(
         `string <string>`,
@@ -313,12 +314,13 @@ if (module === require.main) {
         `Inspects a text file stored on Google Cloud Storage using the Data Loss Prevention API.`,
       {
         initialTimeout: {
-          type: 'integer',
-          alias: '-i',
+          type: 'number',
+          alias: 'i',
           default: 5000
         },
         tries: {
-          type: 'integer',
+          type: 'number',
+          alias: 'r',
           default: 5
         }
       },
@@ -330,19 +332,22 @@ if (module === require.main) {
       {
         projectId: {
           type: 'string',
+          alias: 'p',
           default: process.env.GCLOUD_PROJECT
         },
         namespaceId: {
           type: 'string',
+          alias: 'n',
           default: ''
         },
         initialTimeout: {
-          type: 'integer',
-          alias: '-i',
+          type: 'number',
+          alias: 'i',
           default: 5000
         },
         tries: {
-          type: 'integer',
+          type: 'number',
+          alias: 'r',
           default: 5
         }
       },
@@ -365,7 +370,7 @@ if (module === require.main) {
       .option('f', {
         alias: 'maxFindings',
         default: 0,
-        type: 'integer',
+        type: 'number',
         global: true
       })
       .option('q', {
@@ -394,8 +399,9 @@ if (module === require.main) {
       .example(`node $0 gcsFile my-bucket my-file.txt`)
       .wrap(120)
       .recommendCommands()
-      .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`);
-
-    cli.help().strict().argv;
+      .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`)
+      .help()
+      .strict()
+      .argv;
   });
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
+// [START app]
 // [START setup]
 const express = require('express');
 const mysql = require('mysql');
@@ -26,7 +26,7 @@ app.enable('trust proxy');
 // [END setup]
 
 // [START connect]
-var config = {
+const config = {
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE
@@ -105,18 +105,21 @@ app.get('/', (req, res, next) => {
       res
         .status(200)
         .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${visits.join('\n')}`);
+        .send(`Last 10 visits:\n${visits.join('\n')}`)
+        .end();
     });
   });
 });
 
-// [START listen]
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
-// [END listen]
+if (module === require.main) {
+  // [START listen]
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
+  });
+  // [END listen]
+}
 // [END app]
 
 module.exports = app;

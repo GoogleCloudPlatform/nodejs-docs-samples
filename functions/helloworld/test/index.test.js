@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,15 +13,20 @@
  * limitations under the License.
  */
 
-'use strict';
+const Buffer = require('safe-buffer').Buffer;
+const proxyquire = require(`proxyquire`).noCallThru();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-require(`../../../test/_setup`);
+const program = proxyquire(`../`, {
+  '@google-cloud/debug-agent': {
+    start: sinon.stub()
+  }
+});
 
-const proxyquire = require('proxyquire').noCallThru();
-const program = proxyquire(`../`, {});
-
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test.serial(`helloworld: should log a message`, (t) => {
   const expectedMsg = `My Cloud Function: hi`;
@@ -108,7 +113,7 @@ test.serial(`helloPubSub: should print a name`, (t) => {
 
   program.helloPubSub({
     data: {
-      data: new Buffer(`Bob`).toString(`base64`)
+      data: Buffer.from(`Bob`).toString(`base64`)
     }
   }, callback);
 
@@ -187,4 +192,3 @@ test.serial(`helloError3: callback shoud return an errback value`, (t) => {
   t.deepEqual(callback.callCount, 1);
   t.deepEqual(callback.firstCall.args, [expectedMsg]);
 });
-

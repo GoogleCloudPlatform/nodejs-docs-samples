@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,14 @@
 
 'use strict';
 
-require(`../../../test/_setup`);
-
 const express = require(`express`);
 const winston = require(`winston`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const request = require(`supertest`);
+const sinon = require('sinon');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, `../app.js`);
 
@@ -52,8 +53,8 @@ function getSample () {
   };
 }
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test(`sets up the sample`, (t) => {
   const sample = getSample();

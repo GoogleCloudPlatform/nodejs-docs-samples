@@ -16,6 +16,7 @@
 'use strict';
 
 // [START functions_sendgrid_setup]
+const Buffer = require('safe-buffer').Buffer;
 const sendgrid = require('sendgrid');
 const config = require('./config.json');
 const uuid = require('uuid');
@@ -181,7 +182,7 @@ exports.sendgridEmail = function sendgridEmail (req, res) {
  * @param {string} authorization The authorization header of the request, e.g. "Basic ZmdvOhJhcg=="
  */
 function verifyWebhook (authorization) {
-  const basicAuth = new Buffer(authorization.replace('Basic ', ''), 'base64').toString();
+  const basicAuth = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString();
   const parts = basicAuth.split(':');
   if (parts[0] !== config.USERNAME || parts[1] !== config.PASSWORD) {
     const error = new Error('Invalid credentials');

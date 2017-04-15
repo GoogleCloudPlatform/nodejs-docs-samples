@@ -68,7 +68,6 @@ app.post('/upload', multer.single('file'), (req, res, next) => {
 
   blobStream.on('error', (err) => {
     next(err);
-    return;
   });
 
   blobStream.on('finish', () => {

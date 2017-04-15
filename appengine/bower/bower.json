@@ -1,6 +1,0 @@
-{
-  "name": "appengine-bower",
-  "dependencies": {
-    "jquery": "~2.1.4"
-  }
-}

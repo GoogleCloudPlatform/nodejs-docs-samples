@@ -66,18 +66,17 @@ function insertData (instanceId, databaseId) {
   const singersTable = database.table('Singers');
   const albumsTable = database.table('Albums');
 
-  Promise.all([
-    // Inserts rows into the Singers table
-    // Note: Cloud Spanner interprets Node.js numbers as FLOAT64s, so
-    // they must be converted to strings before being inserted as INT64s
-    singersTable.insert([
-      { SingerId: '1', FirstName: 'Marc', LastName: 'Richards' },
-      { SingerId: '2', FirstName: 'Catalina', LastName: 'Smith' },
-      { SingerId: '3', FirstName: 'Alice', LastName: 'Trentor' },
-      { SingerId: '4', FirstName: 'Lea', LastName: 'Martin' },
-      { SingerId: '5', FirstName: 'David', LastName: 'Lomond' }
-    ]),
-
+  // Inserts rows into the Singers table
+  // Note: Cloud Spanner interprets Node.js numbers as FLOAT64s, so
+  // they must be converted to strings before being inserted as INT64s
+  singersTable.insert([
+    { SingerId: '1', FirstName: 'Marc', LastName: 'Richards' },
+    { SingerId: '2', FirstName: 'Catalina', LastName: 'Smith' },
+    { SingerId: '3', FirstName: 'Alice', LastName: 'Trentor' },
+    { SingerId: '4', FirstName: 'Lea', LastName: 'Martin' },
+    { SingerId: '5', FirstName: 'David', LastName: 'Lomond' }
+  ])
+  .then(() => {
     // Inserts rows into the Albums table
     albumsTable.insert([
       { SingerId: '1', AlbumId: '1', AlbumTitle: 'Go, Go, Go' },
@@ -85,8 +84,8 @@ function insertData (instanceId, databaseId) {
       { SingerId: '2', AlbumId: '1', AlbumTitle: 'Green' },
       { SingerId: '2', AlbumId: '2', AlbumTitle: 'Forever Hold your Peace' },
       { SingerId: '2', AlbumId: '3', AlbumTitle: 'Terrified' }
-    ])
-  ])
+    ]);
+  })
   .then(() => {
     console.log('Inserted data.');
   });

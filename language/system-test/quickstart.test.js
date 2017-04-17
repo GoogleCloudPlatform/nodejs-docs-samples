@@ -31,13 +31,12 @@ test.cb(`should detect sentiment`, (t) => {
 
       return language.detectSentiment(_text)
         .then(([sentiment]) => {
-          t.is(typeof sentiment, `number`);
-
           setTimeout(() => {
             try {
-              t.is(console.log.callCount, 2);
+              t.is(console.log.callCount, 3);
               t.deepEqual(console.log.getCall(0).args, [`Text: ${expectedText}`]);
-              t.deepEqual(console.log.getCall(1).args, [`Sentiment: ${sentiment}`]);
+              t.deepEqual(console.log.getCall(1).args, [`Sentiment score: ${sentiment.score}`]);
+              t.deepEqual(console.log.getCall(2).args, [`Sentiment magnitude: ${sentiment.magnitude}`]);
               t.end();
             } catch (err) {
               t.end(err);

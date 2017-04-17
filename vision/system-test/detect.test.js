@@ -159,7 +159,7 @@ test(`should detect similar web images in a remote file`, async (t) => {
   t.true(output.includes('URL: https://cloud.google.com/vision/docs/images/'));
   t.true(output.includes('Partial matches found: 5'));
   t.true(output.includes('Web entities found: 5'));
-  t.true(output.includes('Description: Google Cloud Platform'));
+  t.true(output.includes('Description: Google'));
 });
 
 test(`should read a document from a local file`, async (t) => {

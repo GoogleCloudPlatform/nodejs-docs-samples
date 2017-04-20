@@ -21,7 +21,7 @@ function analyzeSentimentOfText (text) {
   const Language = require('@google-cloud/language');
 
   // Instantiates a client
-  const language = Language();
+  const language = Language({ apiVersion: 'v1beta2' });
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
@@ -33,8 +33,16 @@ function analyzeSentimentOfText (text) {
   document.detectSentiment()
     .then((results) => {
       const sentiment = results[1].documentSentiment;
-      console.log(`Score: ${sentiment.score}`);
-      console.log(`Magnitude: ${sentiment.magnitude}`);
+      console.log(`Document sentiment:`)
+      console.log(`  Score: ${sentiment.score}`);
+      console.log(`  Magnitude: ${sentiment.magnitude}`);
+
+      const sentences = results[1].sentences;
+      sentences.forEach((sentence) => {
+        console.log(`Sentence: ${sentence.text.content}`);
+        console.log(`  Score: ${sentence.sentiment.score}`);
+        console.log(`  Magnitude: ${sentence.sentiment.magnitude}`);
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -49,7 +57,7 @@ function analyzeSentimentInFile (bucketName, fileName) {
   const Storage = require('@google-cloud/storage');
 
   // Instantiates the clients
-  const language = Language();
+  const language = Language({ apiVersion: 'v1beta2' });
   const storage = Storage();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
@@ -68,8 +76,16 @@ function analyzeSentimentInFile (bucketName, fileName) {
   document.detectSentiment()
     .then((results) => {
       const sentiment = results[1].documentSentiment;
-      console.log(`Score: ${sentiment.score}`);
-      console.log(`Magnitude: ${sentiment.magnitude}`);
+      console.log(`Document sentiment:`)
+      console.log(`  Score: ${sentiment.score}`);
+      console.log(`  Magnitude: ${sentiment.magnitude}`);
+
+      const sentences = results[1].sentences;
+      sentences.forEach((sentence) => {
+        console.log(`Sentence: ${sentence.text.content}`);
+        console.log(`  Score: ${sentence.sentiment.score}`);
+        console.log(`  Magnitude: ${sentence.sentiment.magnitude}`);
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -83,7 +99,7 @@ function analyzeEntitiesOfText (text) {
   const Language = require('@google-cloud/language');
 
   // Instantiates a client
-  const language = Language();
+  const language = Language({ apiVersion: 'v1beta2' });
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
@@ -100,6 +116,9 @@ function analyzeEntitiesOfText (text) {
       entities.forEach((entity) => {
         console.log(entity.name);
         console.log(` - Type: ${entity.type}, Salience: ${entity.salience}`);
+        if (entity.metadata && entity.metadata.wikipedia_url) {
+          console.log(` - Wikipedia URL: ${entity.metadata.wikipedia_url}$`);
+        }
       });
     })
     .catch((err) => {
@@ -115,7 +134,7 @@ function analyzeEntitiesInFile (bucketName, fileName) {
   const Storage = require('@google-cloud/storage');
 
   // Instantiates the clients
-  const language = Language();
+  const language = Language({ apiVersion: 'v1beta2' });
   const storage = Storage();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
@@ -139,6 +158,9 @@ function analyzeEntitiesInFile (bucketName, fileName) {
       entities.forEach((entity) => {
         console.log(entity.name);
         console.log(` - Type: ${entity.type}, Salience: ${entity.salience}`);
+        if (entity.metadata && entity.metadata.wikipedia_url) {
+          console.log(` - Wikipedia URL: ${entity.metadata.wikipedia_url}$`);
+        }
       });
     })
     .catch((err) => {
@@ -153,7 +175,7 @@ function analyzeSyntaxOfText (text) {
   const Language = require('@google-cloud/language');
 
   // Instantiates a client
-  const language = Language();
+  const language = Language({ apiVersion: 'v1beta2' });
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
@@ -168,7 +190,8 @@ function analyzeSyntaxOfText (text) {
 
       console.log('Parts of speech:');
       syntax.forEach((part) => {
-        console.log(`${part.partOfSpeech.tag}:\t ${part.text.content}`);
+        console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
+        console.log(`Morphology:`, part.partOfSpeech);
       });
     })
     .catch((err) => {
@@ -184,7 +207,7 @@ function analyzeSyntaxInFile (bucketName, fileName) {
   const Storage = require('@google-cloud/storage');
 
   // Instantiates the clients
-  const language = Language();
+  const language = Language({ apiVersion: 'v1beta2' });
   const storage = Storage();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
@@ -206,7 +229,8 @@ function analyzeSyntaxInFile (bucketName, fileName) {
 
       console.log('Parts of speech:');
       syntax.forEach((part) => {
-        console.log(`${part.partOfSpeech.tag}:\t ${part.text.content}`);
+        console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
+        console.log(`Morphology:`, part.partOfSpeech);
       });
     })
     .catch((err) => {

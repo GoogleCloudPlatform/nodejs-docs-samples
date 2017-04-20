@@ -168,7 +168,7 @@ function analyzeSyntaxOfText (text) {
 
       console.log('Parts of speech:');
       syntax.forEach((part) => {
-        console.log(`${part.tag}:\t ${part.text}`);
+        console.log(`${part.partOfSpeech.tag}:\t ${part.text.content}`);
       });
     })
     .catch((err) => {
@@ -206,7 +206,7 @@ function analyzeSyntaxInFile (bucketName, fileName) {
 
       console.log('Parts of speech:');
       syntax.forEach((part) => {
-        console.log(`${part.tag}:\t ${part.text}`);
+        console.log(`${part.partOfSpeech.tag}:\t ${part.text.content}`);
       });
     })
     .catch((err) => {

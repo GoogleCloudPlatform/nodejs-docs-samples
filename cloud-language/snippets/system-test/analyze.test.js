@@ -27,6 +27,7 @@ const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const fileName = `text.txt`;
 const localFilePath = path.join(__dirname, `../resources/text.txt`);
 const text = `President Obama is speaking at the White House.`;
+const germanText = `Willkommen bei München`;
 
 test.before(async () => {
   const [bucket] = await storage.createBucket(bucketName);
@@ -43,16 +44,20 @@ test.after.always(async () => {
 test.beforeEach(stubConsole);
 test.afterEach.always(restoreConsole);
 
-test(`should run sync recognize`, async (t) => {
+test(`should analyze sentiment in text`, async (t) => {
   const output = await runAsync(`${cmd} sentiment-text "${text}"`, cwd);
-  t.true(output.includes(`Score: 0.`));
-  t.true(output.includes(`Magnitude: 0.`));
+  t.true(output.includes(`Document sentiment:`));
+  t.true(output.includes(`Sentence: ${text}`));
+  t.true(output.includes(`Score: 0`));
+  t.true(output.includes(`Magnitude: 0`));
 });
 
 test(`should analyze sentiment in a file`, async (t) => {
   const output = await runAsync(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd);
-  t.true(output.includes(`Score: 0.`));
-  t.true(output.includes(`Magnitude: 0.`));
+  t.true(output.includes(`Document sentiment:`));
+  t.true(output.includes(`Sentence: ${text}`));
+  t.true(output.includes(`Score: 0`));
+  t.true(output.includes(`Magnitude: 0`));
 });
 
 test(`should analyze entities in text`, async (t) => {
@@ -61,6 +66,7 @@ test(`should analyze entities in text`, async (t) => {
   t.true(output.includes(`Type: PERSON`));
   t.true(output.includes(`White House`));
   t.true(output.includes(`Type: LOCATION`));
+  t.true(output.includes(`/wiki/Barack_Obama`));
 });
 
 test('should analyze entities in a file', async (t) => {
@@ -70,6 +76,7 @@ test('should analyze entities in a file', async (t) => {
   t.true(output.includes(`Type: PERSON`));
   t.true(output.includes(`White House`));
   t.true(output.includes(`Type: LOCATION`));
+  t.true(output.includes(`/wiki/Barack_Obama`));
 });
 
 test(`should analyze syntax in text`, async (t) => {
@@ -77,14 +84,42 @@ test(`should analyze syntax in text`, async (t) => {
   t.true(output.includes(`Parts of speech:`));
   t.true(output.includes(`NOUN:`));
   t.true(output.includes(`President`));
-  t.true(output.includes(`NOUN:`));
   t.true(output.includes(`Obama`));
+  t.true(output.includes(`Morphology:`));
+  t.true(output.includes(`tag: 'NOUN'`));
 });
 
 test('should analyze syntax in a file', async (t) => {
   const output = await runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
   t.true(output.includes(`NOUN:`));
   t.true(output.includes(`President`));
-  t.true(output.includes(`NOUN:`));
   t.true(output.includes(`Obama`));
+  t.true(output.includes(`Morphology:`));
+  t.true(output.includes(`tag: 'NOUN'`));
+});
+
+test('should analyze syntax in a 1.1 language (German)', async (t) => {
+  const output = await runAsync(`${cmd} syntax-text "${germanText}"`, cwd);
+  t.true(output.includes(`Parts of speech:`));
+  t.true(output.includes(`ADV: Willkommen`));
+  t.true(output.includes(`ADP: bei`));
+  t.true(output.includes(`NOUN: München`));
+});
+
+test(`should analyze entity sentiment in text`, async (t) => {
+  const output = await runAsync(`${cmd} entity-sentiment-text "${text}"`, cwd);
+  t.true(output.includes(`Entities and sentiments:`));
+  t.true(output.includes(`Obama`));
+  t.true(output.includes(`PERSON`));
+  t.true(output.includes(`Score: 0`));
+  t.true(output.includes(`Magnitude: 0`));
+});
+
+test('should analyze entity sentiment in a file', async (t) => {
+  const output = await runAsync(`${cmd} entity-sentiment-file ${bucketName} ${fileName}`, cwd);
+  t.true(output.includes(`Entities and sentiments:`));
+  t.true(output.includes(`Obama`));
+  t.true(output.includes(`PERSON`));
+  t.true(output.includes(`Score: 0`));
+  t.true(output.includes(`Magnitude: 0`));
 });

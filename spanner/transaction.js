@@ -33,46 +33,43 @@ function readOnlyTransaction (instanceId, databaseId) {
 
   // Gets a transaction object that captures the database state
   // at a specific point in time
-  database.runTransaction({readOnly: true})
-    .then((results) => {
-      const transaction = results[0];
-
-      const queryOne = 'SELECT SingerId, AlbumId, AlbumTitle FROM Albums';
+  database.runTransaction({readOnly: true}, (err, transaction) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const queryOne = 'SELECT SingerId, AlbumId, AlbumTitle FROM Albums';
 
       // Read #1, using SQL
-      transaction.run(queryOne)
-        .then((results) => {
-          const rows = results[0];
-
-          rows.forEach((row) => {
-            const json = row.toJSON();
-            console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
-          });
+    transaction.run(queryOne)
+      .then((results) => {
+        const rows = results[0];
+        rows.forEach((row) => {
+          const json = row.toJSON();
+          console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
         });
-
-      const queryTwo = {
-        columns: ['SingerId', 'AlbumId', 'AlbumTitle'],
-        keySet: {
-          all: true
-        }
-      };
+        const queryTwo = {
+          columns: ['SingerId', 'AlbumId', 'AlbumTitle'],
+          keySet: {
+            all: true
+          }
+        };
 
       // Read #2, using the `read` method. Even if changes occur
       // in-between the reads, the transaction ensures that both
       // return the same data.
-      transaction.read('Albums', queryTwo)
-        .then((results) => {
-          const rows = results[0];
-
-          rows.forEach((row) => {
-            const json = row.toJSON();
-            console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
-          });
+        return transaction.read('Albums', queryTwo);
+      })
+      .then((results) => {
+        const rows = results[0];
+        rows.forEach((row) => {
+          const json = row.toJSON();
+          console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}`);
         });
-    })
-    .then(() => {
-      console.log('Successfully executed read-only transaction.');
-    });
+        console.log('Successfully executed read-only transaction.');
+        transaction.end();
+      });
+  });
   // [END read_only_transaction]
 }
 
@@ -96,53 +93,50 @@ function readWriteTransaction (instanceId, databaseId) {
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
 
-  // Gets a transaction object that captures the database state
-  // at a specific point in time
-  let transaction, firstBudget, secondBudget;
   const transferAmount = 200000;
   const minimumAmountToTransfer = 300000;
 
-  database.runTransaction()
-    .then((results) => {
-      transaction = results[0];
+  database.runTransaction((err, transaction) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    let firstBudget, secondBudget;
+    const queryOne = {
+      columns: [`MarketingBudget`],
+      keys: [[2, 2]] // SingerId: 2, AlbumId: 2
+    };
 
-      const queryOne = {
-        columns: [`MarketingBudget`],
-        keys: [2, 2] // SingerId: 2, AlbumId: 2
-      };
+    const queryTwo = {
+      columns: ['MarketingBudget'],
+      keys: [[1, 1]] // SingerId: 1, AlbumId: 1
+    };
 
-      const queryTwo = {
-        columns: ['MarketingBudget'],
-        keys: [1, 1] // SingerId: 1, AlbumId: 1
-      };
+    Promise.all([
+      // Reads the second album's budget
+      transaction.read('Albums', queryOne).then((results) => {
+        // Gets second album's budget
+        // Note: MarketingBudget is an INT64, which comes from Cloud Spanner
+        // as a string - so we convert it to a number with parseInt()
+        const rows = results[0].map((row) => row.toJSON());
+        secondBudget = parseInt(rows[0].MarketingBudget.value);
+        console.log(`The second album's marketing budget: ${secondBudget}`);
 
-      return Promise.all([
-        // Reads the second album's budget
-        transaction.read('Albums', queryOne).then((results) => {
-          // Gets second album's budget
-          // Note: MarketingBudget is an INT64, which comes from Cloud Spanner
-          // as a string - so we convert it to a number with parseInt()
-          const rows = results[0].map((row) => row.toJSON());
-          secondBudget = parseInt(rows[0].MarketingBudget.value);
-          console.log(`The second album's marketing budget: ${secondBudget}`);
+        // Makes sure the second album's budget is sufficient
+        if (secondBudget < minimumAmountToTransfer) {
+          throw new Error(`The second album's budget (${secondBudget}) is less than the minimum required amount to transfer.`);
+        }
+      }),
 
-          // Makes sure the second album's budget is sufficient
-          if (secondBudget < minimumAmountToTransfer) {
-            throw new Error(`The second album's budget (${secondBudget}) is less than the minimum required amount to transfer.`);
-          }
-        }),
-
-        // Reads the first album's budget
-        transaction.read('Albums', queryTwo).then((results) => {
-          // Gets first album's budget
-          // As above, MarketingBudget is an INT64 and comes as a string
-          const rows = results[0].map((row) => row.toJSON());
-          firstBudget = parseInt(rows[0].MarketingBudget.value);
-          console.log(`The first album's marketing budget: ${firstBudget}`);
-        })
-      ]);
-    })
-    .then(() => {
+      // Reads the first album's budget
+      transaction.read('Albums', queryTwo).then((results) => {
+        // Gets first album's budget
+        // As above, MarketingBudget is an INT64 and comes as a string
+        const rows = results[0].map((row) => row.toJSON());
+        firstBudget = parseInt(rows[0].MarketingBudget.value);
+        console.log(`The first album's marketing budget: ${firstBudget}`);
+      })
+    ]).then(() => {
       // Transfer the budgets between the albums
       console.log(firstBudget, secondBudget);
       firstBudget += transferAmount;
@@ -159,12 +153,15 @@ function readWriteTransaction (instanceId, databaseId) {
       ]);
     })
     // Commits the transaction and send the changes to the database
-    .then(() => transaction.commit())
-    .then(() => {
-      // Logs success
-      console.log(`Successfully executed read-write transaction to transfer ${transferAmount} from Album 2 to Album 1.`);
-    });
-    // [END read_write_transaction]
+    .then(() => transaction.commit((err) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(`Successfully executed read-write transaction to transfer ${transferAmount} from Album 2 to Album 1.`);
+      }
+    }));
+  });
+  // [END read_write_transaction]
 }
 
 const cli = require(`yargs`)

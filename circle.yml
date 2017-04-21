@@ -19,6 +19,9 @@
 machine:
   node:
     version: 6.9.1
+  environment:
+    YARN_VERSION: 0.22.0
+    PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   services:
     - redis
     - memcached

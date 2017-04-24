@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -169,7 +169,7 @@ function translateTextWithModel (text, target, model) {
   // [END translate_text_with_model]
 }
 
-require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `detect <text..>`,

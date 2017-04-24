@@ -70,7 +70,6 @@ app.post('/hello', (req, res, next) => {
     res.render('index', {
       sent: true
     });
-    return;
   });
 });
 // [END hello]

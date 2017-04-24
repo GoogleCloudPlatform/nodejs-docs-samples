@@ -238,7 +238,7 @@ function removeFileOwner (bucketName, fileName, userEmail) {
 }
 // [END storage_remove_file_owner]
 
-require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `print-bucket-acl <bucketName>`,

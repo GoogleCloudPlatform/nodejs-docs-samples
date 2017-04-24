@@ -34,8 +34,12 @@ app.ws('/echo', (ws) => {
 });
 
 app.get('/', (req, res) => {
-  getExternalIp((externalIp) => {
-    res.render('index.pug', {externalIp: externalIp});
+  getExternalIp((err, externalIp) => {
+    if (err) {
+      res.status(500).send(err.message).end();
+      return;
+    }
+    res.render('index.pug', { externalIp: externalIp }).end();
   });
 });
 
@@ -57,10 +61,10 @@ function getExternalIp (cb) {
   request(options, (err, resp, body) => {
     if (err || resp.statusCode !== 200) {
       console.log('Error while talking to metadata server, assuming localhost');
-      cb('localhost');
+      cb(null, 'localhost');
       return;
     }
-    cb(body);
+    cb(null, body);
   });
 }
 // [END external_ip]

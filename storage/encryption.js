@@ -23,6 +23,7 @@
 
 'use strict';
 
+const Buffer = require('safe-buffer').Buffer;
 const Storage = require('@google-cloud/storage');
 
 // [START storage_generate_encryption_key]
@@ -110,7 +111,7 @@ function rotateEncryptionKey () {
 }
 // [END storage_rotate_encryption_key]
 
-require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `generate-encryption-key`,

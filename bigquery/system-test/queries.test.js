@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,9 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const path = require(`path`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const cwd = path.join(__dirname, `..`);
 const cmd = `node queries.js`;
@@ -46,22 +46,23 @@ unique_words: 4582`;
 
 const sqlQuery = `SELECT * FROM publicdata.samples.natality LIMIT 5;`;
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.before(tools.checkCredentials);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test(`should query shakespeare`, async (t) => {
-  const output = await runAsync(`${cmd} shakespeare`, cwd);
+  const output = await tools.runAsync(`${cmd} shakespeare`, cwd);
   t.is(output, expectedShakespeareResult);
 });
 
 test(`should run a sync query`, async (t) => {
-  const output = await runAsync(`${cmd} sync "${sqlQuery}"`, cwd);
+  const output = await tools.runAsync(`${cmd} sync "${sqlQuery}"`, cwd);
   t.true(output.includes(`Rows:`));
   t.true(output.includes(`source_year`));
 });
 
 test(`should run an async query`, async (t) => {
-  const output = await runAsync(`${cmd} async "${sqlQuery}"`, cwd);
+  const output = await tools.runAsync(`${cmd} async "${sqlQuery}"`, cwd);
   t.true(output.includes(`Rows:`));
   t.true(output.includes(`source_year`));
 });

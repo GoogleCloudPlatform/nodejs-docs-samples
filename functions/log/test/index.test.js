@@ -15,9 +15,10 @@
 
 'use strict';
 
-require(`../../../test/_setup`);
-
 const proxyquire = require(`proxyquire`).noCallThru();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 function getSample () {
   const results = [[{}], {}];
@@ -51,8 +52,8 @@ function getSample () {
   };
 }
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should write to log`, (t) => {
   const expectedMsg = `I am a log entry!`;

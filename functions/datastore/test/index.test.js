@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,10 @@
 
 'use strict';
 
-require(`../../../test/_setup`);
-
 const proxyquire = require(`proxyquire`).noCallThru();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const NAME = `sampletask1`;
 const KIND = `Task`;
@@ -67,8 +68,8 @@ function getSample () {
   };
 }
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test.serial(`set: Set fails without a value`, (t) => {
   const expectedMsg = `Value not provided. Make sure you have a "value" property in your request`;

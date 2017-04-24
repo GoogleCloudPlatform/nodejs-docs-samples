@@ -15,6 +15,7 @@
     "@google-cloud/pubsub": "0.8.0",
     "body-parser": "1.16.0",
     "express": "4.14.1",
-    "pug": "2.0.0-beta6"
+    "pug": "2.0.0-beta6",
+    "safe-buffer": "5.0.1"
   }
 }

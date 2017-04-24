@@ -9,6 +9,33 @@ View the [documentation][docs] or the [source code][code].
 [docs]: https://cloud.google.com/container-engine/docs/quickstart
 [code]: server.js
 
-__Run the sample:__
+* [Running locally](#running-locally)
+* [Running the tests](#running-the-tests)
 
-    node server
+## Running locally
+
+1.  Install dependencies:
+
+    With `npm`:
+
+        npm install
+
+    or with `yarn`:
+
+        yarn install
+
+1.  Start the server:
+
+    With `npm`:
+
+        npm start
+
+    or with `yarn`:
+
+        yarn start
+
+## Running the tests
+
+See [Contributing][contributing].
+
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md

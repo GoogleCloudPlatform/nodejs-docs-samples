@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,26 +13,27 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
+// [START app]
 // [START setup]
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
+const Buffer = require('safe-buffer').Buffer;
 
-var app = express();
+const app = express();
 app.use(bodyParser.json());
 // [END setup]
 
-app.post('/echo', function (req, res) {
+app.post('/echo', (req, res) => {
   res.status(200).json({ message: req.body.message });
 });
 
 function authInfoHandler (req, res) {
-  var authUser = { id: 'anonymous' };
-  var encodedInfo = req.get('X-Endpoint-API-UserInfo');
+  let authUser = { id: 'anonymous' };
+  const encodedInfo = req.get('X-Endpoint-API-UserInfo');
   if (encodedInfo) {
-    authUser = JSON.parse(new Buffer(encodedInfo, 'base64'));
+    authUser = JSON.parse(Buffer.from(encodedInfo, 'base64'));
   }
   res.status(200).json(authUser);
 }
@@ -40,13 +41,15 @@ function authInfoHandler (req, res) {
 app.get('/auth/info/googlejwt', authInfoHandler);
 app.get('/auth/info/googleidtoken', authInfoHandler);
 
-// [START listen]
-var PORT = process.env.PORT || 8080;
-app.listen(PORT, function () {
-  console.log('App listening on port %s', PORT);
-  console.log('Press Ctrl+C to quit.');
-});
-// [END listen]
+if (module === require.main) {
+  // [START listen]
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
+  });
+  // [END listen]
+}
 // [END app]
 
 module.exports = app;

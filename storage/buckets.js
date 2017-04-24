@@ -76,7 +76,7 @@ function deleteBucket (bucketName) {
 }
 // [END storage_delete_bucket]
 
-require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `create <bucket>`,

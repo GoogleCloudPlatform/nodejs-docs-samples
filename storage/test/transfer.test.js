@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,11 @@
 
 'use strict';
 
-require(`../../test/_setup`);
-
 const proxyquire = require(`proxyquire`).noCallThru();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
+
 const srcBucketName = `foo`;
 const destBucketName = `bar`;
 const jobName = `transferJobs/123456789012345678`;
@@ -63,8 +65,8 @@ function getSample () {
   };
 }
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should create a transfer job`, (t) => {
   const description = `description`;

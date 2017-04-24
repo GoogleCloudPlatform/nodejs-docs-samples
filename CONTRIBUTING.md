@@ -176,7 +176,7 @@ var program = module.exports = {
   <METHOD_NAME>: <METHOD_NAME>,
   main: function (args) {
     // Run the command-line program
-    cli.help().strict().parse(args).argv;
+    cli.help().strict().parse(args).argv; // eslint-disable-line
   }
 };
 

@@ -15,12 +15,14 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const path = require(`path`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const inputDir = path.join(__dirname, `../resources`);
 const textDetectionSample = require(`../textDetection`);
+
+test.before(tools.checkCredentials);
 
 test.cb(`should detect texts`, (t) => {
   textDetectionSample.main(inputDir, (err, textResponse) => {

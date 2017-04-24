@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,10 +15,11 @@
 
 'use strict';
 
-require(`../../../test/_setup`);
-
+const test = require(`ava`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
+const sinon = require(`sinon`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const SAMPLE_PATH = path.join(__dirname, `../createTables.js`);
 
@@ -56,8 +57,8 @@ function getSample () {
   };
 }
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test.cb.serial(`should record a visit`, (t) => {
   const sample = getSample();

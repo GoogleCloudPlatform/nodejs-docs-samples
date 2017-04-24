@@ -26,6 +26,8 @@ const storage = require('@google-cloud/storage')();
 const vision = require('@google-cloud/vision')();
 // Get a reference to the Translate API component
 const translate = require('@google-cloud/translate')();
+
+const Buffer = require('safe-buffer').Buffer;
 // [END functions_ocr_setup]
 
 // [START functions_ocr_publish]

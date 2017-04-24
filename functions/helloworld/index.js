@@ -15,6 +15,8 @@
 
 'use strict';
 
+const Buffer = require('safe-buffer').Buffer;
+
 // [START functions_helloworld_debug]
 require('@google-cloud/debug-agent').start();
 // [END functions_helloworld_debug]
@@ -130,7 +132,6 @@ exports.helloError2 = function helloError2 (event, callback) {
   throw 1;
 };
 // [END functions_helloworld_error_2]
-/* eslint-enable */
 
 // [START functions_helloworld_error_3]
 /**
@@ -144,3 +145,4 @@ exports.helloError3 = function helloError3 (event, callback) {
   callback('I failed you');
 };
 // [END functions_helloworld_error_3]
+/* eslint-enable */

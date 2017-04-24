@@ -18,7 +18,7 @@
 
 machine:
   node:
-    version: 6.9.1
+    version: 6.10.2
   services:
     - redis
     - memcached
@@ -31,38 +31,87 @@ general:
 
 # Install your project's language-specific dependencies
 dependencies:
-  pre:
-    - yarn global add nyc codecov
   override:
-    - yarn
-  post:
     - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
-    - node scripts/install
+    - gcloud auth activate-service-account --key-file /home/ubuntu/nodejs-docs-samples/key.json || true
+    - yarn install
+    - yarn run lint
+    - yarn global add ava nyc codecov @google-cloud/nodejs-repo-tools
+    - samples test install -l=functions/background
+    - samples test install -l=functions/datastore
+    - samples test install -l=functions/errorreporting
+    - samples test install -l=functions/gcs
+    - samples test install -l=functions/helloworld
+    - samples test install -l=functions/http
+    - samples test install -l=functions/log
+    - samples test install -l=functions/ocr/app
+    - samples test install -l=functions/pubsub
+    - samples test install -l=functions/sendgrid
+    - samples test install -l=functions/slack
+    - samples test install -l=functions/uuid
+    - samples test install -l=vision
   cache_directories:
     - ~/.cache/yarn
-    - appengine/bower/node_modules
-    - appengine/cloudsql/node_modules
-    - appengine/express-memcached-session/node_modules
-    - appengine/geddy/node_modules
-    - appengine/grunt/node_modules
-    - appengine/hapi/node_modules
-    - appengine/koa/node_modules
-    - appengine/kraken/node_modules
-    - appengine/loopback/node_modules
-    - appengine/mailgun/node_modules
-    - appengine/mailjet/node_modules
-    - appengine/memcached/node_modules
-    - appengine/mongodb/node_modules
-    - appengine/parse-server/node_modules
-    - appengine/restify/node_modules
-    - appengine/sails/node_modules
-    - appengine/twilio/node_modules
-    - appengine/webpack/node_modules
-    - appengine/websockets/node_modules
+    - functions/background
+    - functions/datastore
+    - functions/errorreporting
+    - functions/gcs
+    - functions/helloworld
+    - functions/http
+    - functions/log
+    - functions/ocr/app
+    - functions/pubsub
+    - functions/sendgrid
+    - functions/slack
+    - functions/uuid
+    - vision
 
 # Run your tests
 test:
   override:
-    - node scripts/test
+    - nyc --cache ava --verbose -T 30s functions/**/test/**/*.test.js
+    - nyc --cache ava --verbose -T 30s vision/system-test/**/*.test.js
   post:
     - nyc report --reporter=lcov > coverage.lcov && codecov || true
+deployment:
+  tests:
+    branch: /.*/
+    owner: GoogleCloudPlatform
+    commands:
+      - node scripts/build "appengine/analytics"
+      # TODO: Add env vars to CI environment
+      # - samples test build -l=appengine/cloudsql --async
+      - node scripts/build "appengine/datastore"
+      - node scripts/build "appengine/endpoints"
+      - node scripts/build "appengine/errorreporting"
+      - node scripts/build "appengine/hello-world"
+      - node scripts/build "appengine/mailjet"
+      - node scripts/build "bigquery"
+      - node scripts/build "computeengine"
+      - node scripts/build "containerengine/hello-world"
+      - node scripts/build "datastore"
+      - node scripts/build "debugger"
+      - node scripts/build "dlp"
+      - node scripts/build "dns"
+      - node scripts/build "endpoints/getting-started"
+      # TODO: Update repo tools to accept list of environment variables that must
+      #       be set for the build to work.
+      # - node scripts/build "endpoints/getting-started-grpc"
+      - node scripts/build "kms"
+      - node scripts/build "language"
+      - node scripts/build "language/slackbot"
+      - node scripts/build "logging"
+      - node scripts/build "monitoring"
+      - node scripts/build "prediction"
+      - node scripts/build "pubsub"
+      - node scripts/build "resource"
+      - node scripts/build "spanner"
+      - node scripts/build "speech"
+      - node scripts/build "storage"
+      - node scripts/build "trace"
+      - node scripts/build "translate"
+      # TODO: This build times out. Does video need more than 10 minutes?
+      # - node scripts/build "video"
+      # TODO: Repo tools doesn't support Redis in build container yet.
+      #       When this is done, remove Vision from main system tests.
+      # - node scripts/build "vision"

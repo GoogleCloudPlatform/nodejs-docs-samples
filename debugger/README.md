@@ -1,36 +1,72 @@
 # StackDriver Debugger sample for Node.js
 
-This sample demonstrates [StackDriver Debugger](https://cloud.google.com/debugger/) with Node.js.
+This sample demonstrates [StackDriver Debugger][debugger] with Node.js.
 
-## Deploy and test
+* [Setup](#setup)
+* [Running locally](#running-locally)
+* [Deploying to App Engine](#deploying-to-app-engine)
+* [Running the tests](#running-the-tests)
 
-Where appropriate, replace `[YOUR_PROJECT_ID]` with the ID of your Cloud project.
+## Setup
 
-1. `git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git`
-1. `cd nodejs-docs-samples/debugger`
-1. Initialize a new git repository:
+Before you can run or deploy the sample, you need to do the following (where
+appropriate, replace `YOUR_PROJECT_ID` with the ID of your Cloud project):
 
-    git init
+1.  Refer to the [appengine/README.md][readme] file for instructions on
+    running and deploying.
 
-1. Acquire local credentials for authenticating with Google Cloud Platform APIs:
+1.  Acquire local credentials for authenticating with Google Cloud Platform APIs:
 
-    gcloud beta auth application-default login
+        gcloud auth application-default login
 
-1. Configure git to use gcloud SDK:
+1.  Configure git to use gcloud SDK:
 
-    git config credential.helper gcloud.sh
+        git config credential.helper gcloud.sh
 
-1. Add your Cloud Source Repository as a git remote:
+1.  Add your Cloud Source Repository as a git remote:
 
-    git remote add google https://source.developers.google.com/p/[YOUR_PROJECT_ID]/r/default
+        git remote add google https://source.developers.google.com/p/YOUR_PROJECT_ID/r/default
 
-1. Commit and push the code into the Cloud Source Repository:
+1.  Commit and push the code into the Cloud Source Repository:
 
-    git add -A && git commit -m "Initial commit" && git push --all google
+        git add -A && git commit -m "Initial commit" && git push --all google
 
-1. Deploy the app:
+1.  Install dependencies:
 
-    gcloud app deploy
+    With `npm`:
 
-1. View the deployed app at https://[YOUR_PROJECT_ID].appspot.com/.
-1. Use the [StackDriver Debugger dashboard](https://console.cloud.google.com/debug) to inspect runtime data of the app.
+        npm install
+
+    or with `yarn`:
+
+        yarn install
+
+## Running locally
+
+With `npm`:
+
+    npm start
+
+or with `yarn`:
+
+    yarn start
+
+## Deploying to App Engine
+
+With `npm`:
+
+    npm run deploy
+
+or with `yarn`:
+
+    yarn run deploy
+
+Use the [Stackdriver Debugger dashboard](https://console.cloud.google.com/debug) to inspect runtime data of the app.
+
+## Running the tests
+
+See [Contributing][contributing].
+
+[debugger]: https://cloud.google.com/debugger/
+[readme]: ../README.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md

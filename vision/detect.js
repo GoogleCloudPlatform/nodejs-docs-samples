@@ -633,7 +633,7 @@ function detectFulltextGCS (bucketName, fileName) {
   // [END vision_fulltext_detection_gcs]
 }
 
-require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `faces <fileName>`,

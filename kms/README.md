@@ -12,13 +12,20 @@ keys centrally in the cloud, for direct use by cloud services.
 * [Setup](#setup)
 * [Samples](#samples)
   * [Quickstart](#quickstart)
+* [Running the tests](#running-the-tests)
 
 ## Setup
 
-1. Read [Prerequisites][prereq] and [How to run a sample][run] first.
-1. Install dependencies:
+1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
+1.  Install dependencies:
+
+    With `npm`:
 
         npm install
+
+    With `yarn`:
+
+        yarn install
 
 [prereq]: ../README.md#prerequisities
 [run]: ../README.md#how-to-run-a-sample
@@ -44,22 +51,22 @@ __Usage:__ `node keys.js --help`
 
 ```
 Commands:
-  create <keyRingName> <keyName>                            Creates a crypto key.
-  decrypt <keyRingName> <keyName> <infile> <outfile>        Decrypts a file.
-  encrypt <keyRingName> <keyName> <infile> <outfile>        Encrypts a file.
-  get <keyRingName> <keyName>                               Gets a crypto key.
-  get-policy <keyRingName> <keyName>                        Gets a crypto key's IAM policy.
-  grant-access <keyRingName> <keyName> <member> <role>      Adds a members to a crypto key's IAM policy.
-  keyrings <command>                                        Access key rings subcommands.
-  list <keyRingName>                                        Lists crypto keys.
-  revoke-access <keyRingName> <keyName> <member> <role>     Removes a member from a crypto key's IAM policy.
-  set-primary <keyRingName> <keyName> <version>             Sets a crypto key's primary version.
-  versions <command>                                        Access crypto key versions subcommands.
+  create <keyRingName> <keyName>                         Creates a crypto key.
+  decrypt <keyRingName> <keyName> <infile> <outfile>     Decrypts a file.
+  encrypt <keyRingName> <keyName> <infile> <outfile>     Encrypts a file.
+  get <keyRingName> <keyName>                            Gets a crypto key.
+  get-policy <keyRingName> <keyName>                     Gets a crypto key's IAM policy.
+  grant-access <keyRingName> <keyName> <member> <role>   Adds a members to a crypto key's IAM policy.
+  keyrings <command>                                     Access key rings subcommands.
+  list <keyRingName>                                     Lists crypto keys.
+  revoke-access <keyRingName> <keyName> <member> <role>  Removes a member from a crypto key's IAM policy.
+  set-primary <keyRingName> <keyName> <version>          Sets a crypto key's primary version.
+  versions <command>                                     Access crypto key versions subcommands.
 
 Options:
   --help           Show help                                                                                   [boolean]
   --location, -l                                                                            [string] [default: "global"]
-  --projectId, -p                                                                                               [string]
+  --projectId, -p                                                              [string] [default: "nodejs-docs-samples"]
 
 Examples:
   node keys.js keyrings create "my-key-ring"
@@ -87,3 +94,18 @@ For more information, see https://cloud.google.com/kms/docs
 
 [keys_docs]: https://cloud.google.com/kms/docs
 [keys_code]: keys.js
+
+## Running the tests
+
+1.  Set the `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment
+    variables.
+
+1.  Run the tests:
+
+    With `npm`:
+
+        npm test
+
+    With `yarn`:
+
+        yarn test

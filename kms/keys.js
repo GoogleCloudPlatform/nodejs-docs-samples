@@ -15,6 +15,8 @@
 
 'use strict';
 
+const Buffer = require('safe-buffer').Buffer;
+
 function createKeyRing (projectId, location, keyRingName) {
   // [START kms_create_keyring]
   // Your Google Cloud Platform project ID
@@ -1465,5 +1467,5 @@ const cli = require(`yargs`)
   .epilogue(`For more information, see https://cloud.google.com/kms/docs`);
 
 if (module === require.main) {
-  cli.help().strict().argv;
+  cli.help().strict().argv; // eslint-disable-line
 }

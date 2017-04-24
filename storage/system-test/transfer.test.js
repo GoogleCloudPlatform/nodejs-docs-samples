@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,13 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
+const storage = require(`@google-cloud/storage`)();
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
-const program = require(`../transfer`);
-const Storage = require(`@google-cloud/storage`);
 
-const storage = Storage();
+const program = require(`../transfer`);
+
 const firstBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const secondBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 
@@ -31,14 +31,15 @@ const time = `15:30`;
 const description = `this is a test`;
 const status = `DISABLED`;
 
+test.before(tools.checkCredentials);
 test.before(async () => {
-  stubConsole();
+  tools.stubConsole();
   await storage.createBucket(firstBucketName);
   await storage.createBucket(secondBucketName);
 });
 
 test.after.always(async () => {
-  restoreConsole();
+  tools.restoreConsole();
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);
   try {

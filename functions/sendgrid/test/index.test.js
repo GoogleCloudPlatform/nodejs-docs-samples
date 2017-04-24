@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,10 @@
 
 'use strict';
 
-require(`../../../test/_setup`);
-
 const proxyquire = require(`proxyquire`).noCallThru();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const method = `POST`;
 const key = `sengrid_key`;
@@ -143,8 +144,8 @@ function getMocks () {
   };
 }
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test.serial(`Send fails if not a POST request`, async (t) => {
   const error = new Error(`Only POST requests are accepted`);
@@ -415,6 +416,7 @@ test.serial(`Saves files`, async (t) => {
 });
 
 test.serial(`sendgridLoad does nothing on delete`, (t) => {
+  t.plan(0);
   return getSample().program.sendgridLoad({
     data: {
       resourceState: `not_exists`

@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,18 +15,19 @@
 
 'use strict';
 
-require(`../../../test/_setup`);
-
+const Buffer = require('safe-buffer').Buffer;
 const express = require('express');
 const path = require('path');
-const proxyquire = require('proxyquire').noPreserveCache();
+const proxyquire = require('proxyquire').noCallThru();
 const request = require('supertest');
+const sinon = require('sinon');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../app.js');
 
 function getSample () {
   const testApp = express();
-  sinon.stub(testApp, 'listen').callsArg(1);
   const expressMock = sinon.stub().returns(testApp);
   const app = proxyquire(SAMPLE_PATH, {
     express: expressMock
@@ -40,15 +41,13 @@ function getSample () {
   };
 }
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test(`sets up the sample`, (t) => {
   const sample = getSample();
 
   t.true(sample.mocks.express.calledOnce);
-  t.true(sample.app.listen.calledOnce);
-  t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
 });
 
 test.cb(`should echo a message`, (t) => {
@@ -78,7 +77,7 @@ test.cb(`should successfully parse encoded info`, (t) => {
   const sample = getSample();
   request(sample.app)
     .get('/auth/info/googlejwt')
-    .set('X-Endpoint-API-UserInfo', new Buffer(JSON.stringify({ id: 'foo' })).toString('base64'))
+    .set('X-Endpoint-API-UserInfo', Buffer.from(JSON.stringify({ id: 'foo' })).toString('base64'))
     .expect(200)
     .expect((response) => {
       t.deepEqual(response.body, { id: 'foo' });

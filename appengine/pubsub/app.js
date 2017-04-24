@@ -18,6 +18,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const Buffer = require('safe-buffer').Buffer;
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -75,7 +76,7 @@ app.post('/pubsub/push', jsonBodyParser, (req, res) => {
   }
 
   // The message is a unicode string encoded in base64.
-  const message = new Buffer(req.body.message.data, 'base64').toString('utf-8');
+  const message = Buffer.from(req.body.message.data, 'base64').toString('utf-8');
 
   messages.push(message);
 

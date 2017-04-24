@@ -883,10 +883,6 @@ frameguard@1.1.0:
   dependencies:
     lodash.isstring "4.0.1"
 
-fresh@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.2.2.tgz#9731dcf5678c7faeb44fb903c4f72df55187fa77"
-
 fresh@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.3.0.tgz#651f838e22424e7566de161d8358caa199f83d4f"
@@ -2043,13 +2039,7 @@ send@0.14.1:
     range-parser "~1.2.0"
     statuses "~1.3.0"
 
-serve-favicon@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/serve-favicon/-/serve-favicon-2.0.1.tgz#4826975d9f173ca3a4158e9698161f75dec7afec"
-  dependencies:
-    fresh "0.2.2"
-
-serve-favicon@^2.2.0:
+serve-favicon@2.3.2, serve-favicon@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/serve-favicon/-/serve-favicon-2.3.2.tgz#dd419e268de012ab72b319d337f2105013f9381f"
   dependencies:

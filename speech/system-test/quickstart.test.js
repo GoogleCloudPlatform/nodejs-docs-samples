@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,11 +15,17 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
+const sinon = require(`sinon`);
 const speech = proxyquire(`@google-cloud/speech`, {})();
+const test = require(`ava`);
+
+const {
+  checkCredentials,
+  stubConsole,
+  restoreConsole
+} = require(`@google-cloud/nodejs-repo-tools`);
 
 const fileName = path.join(__dirname, `../resources/audio.raw`);
 const config = {
@@ -28,6 +34,7 @@ const config = {
   languageCode: `en-US`
 };
 
+test.before(checkCredentials);
 test.before(stubConsole);
 test.after.always(restoreConsole);
 

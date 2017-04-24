@@ -15,14 +15,16 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const vision = proxyquire(`@google-cloud/vision`, {})();
 const path = require(`path`);
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-test.before(stubConsole);
-test.after.always(restoreConsole);
+const vision = proxyquire(`@google-cloud/vision`, {})();
+
+test.before(tools.stubConsole);
+test.after.always(tools.restoreConsole);
 
 test.cb(`should detect labels`, (t) => {
   const filePath = path.join(__dirname, `../resources/wakeupcat.jpg`);

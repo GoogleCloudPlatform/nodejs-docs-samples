@@ -15,10 +15,10 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const fs = require(`fs`);
 const path = require(`path`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 class MockCanvas {
   getContext () {
@@ -36,9 +36,11 @@ class MockCanvas {
         if (event === 'end') {
           setTimeout(cb, 1000);
         } else if (event === `data`) {
+          /* eslint-disable */
           cb(`test`);
           cb(`foo`);
           cb(`bar`);
+          /* eslint-enable */
         }
       }
     };
@@ -51,8 +53,9 @@ const faceDetectionExample = require(`../faceDetection`);
 const inputFile = path.join(__dirname, `../resources`, `face.png`);
 const outputFile = path.join(__dirname, `../../vision`, `out.png`);
 
-test.before(stubConsole);
-test.after.always(restoreConsole);
+test.before(tools.checkCredentials);
+test.before(tools.stubConsole);
+test.after.always(tools.restoreConsole);
 
 test.cb(`should detect faces`, (t) => {
   faceDetectionExample.main(inputFile, outputFile, MockCanvas, (err, faces) => {

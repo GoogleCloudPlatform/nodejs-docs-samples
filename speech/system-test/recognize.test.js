@@ -15,11 +15,14 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const path = require(`path`);
 const storage = require(`@google-cloud/storage`)();
+const test = require(`ava`);
 const uuid = require(`uuid`);
+
+const {
+  runAsync
+} = require(`@google-cloud/nodejs-repo-tools`);
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node recognize.js`;

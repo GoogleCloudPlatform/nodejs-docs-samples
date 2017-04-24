@@ -16,8 +16,6 @@
 'use strict';
 
 // [START bigquery_simple_app_all]
-const BigQuery = require('@google-cloud/bigquery');
-
 // [START bigquery_simple_app_print]
 function printResult (rows) {
   console.log('Query Results:');
@@ -43,9 +41,17 @@ GROUP BY
 ORDER BY
   unique_words DESC LIMIT 10;`;
 
-function queryShakespeare () {
+function queryShakespeare (projectId) {
+  // Imports the Google Cloud client library
+  const BigQuery = require('@google-cloud/bigquery');
+
+  // The project ID to use, e.g. "your-project-id"
+  // const projectId = "your-project-id";
+
   // Instantiates a client
-  const bigquery = BigQuery();
+  const bigquery = BigQuery({
+    projectId: projectId
+  });
 
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
@@ -54,20 +60,28 @@ function queryShakespeare () {
   };
 
   // Runs the query
-  return bigquery.query(options)
+  bigquery
+    .query(options)
     .then((results) => {
       const rows = results[0];
       printResult(rows);
-      return rows;
     });
 }
 // [END bigquery_simple_app_query]
 // [END bigquery_simple_app_all]
 
-// [START bigquery_sync_query]
-function syncQuery (sqlQuery) {
+function syncQuery (sqlQuery, projectId) {
+  // [START bigquery_sync_query]
+  // Imports the Google Cloud client library
+  const BigQuery = require('@google-cloud/bigquery');
+
+  // The project ID to use, e.g. "your-project-id"
+  // const projectId = "your-project-id";
+
   // Instantiates a client
-  const bigquery = BigQuery();
+  const bigquery = BigQuery({
+    projectId: projectId
+  });
 
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
@@ -77,20 +91,28 @@ function syncQuery (sqlQuery) {
   };
 
   // Runs the query
-  return bigquery.query(options)
+  bigquery
+    .query(options)
     .then((results) => {
       const rows = results[0];
       console.log('Rows:');
       rows.forEach((row) => console.log(row));
-      return rows;
     });
+  // [END bigquery_sync_query]
 }
-// [END bigquery_sync_query]
 
-// [START bigquery_async_query]
-function asyncQuery (sqlQuery) {
+function asyncQuery (sqlQuery, projectId) {
+  // [START bigquery_async_query]
+  // Imports the Google Cloud client library
+  const BigQuery = require('@google-cloud/bigquery');
+
+  // The project ID to use, e.g. "your-project-id"
+  // const projectId = "your-project-id";
+
   // Instantiates a client
-  const bigquery = BigQuery();
+  const bigquery = BigQuery({
+    projectId: projectId
+  });
 
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
@@ -101,7 +123,8 @@ function asyncQuery (sqlQuery) {
   let job;
 
   // Runs the query as a job
-  return bigquery.startQuery(options)
+  bigquery
+    .startQuery(options)
     .then((results) => {
       job = results[0];
       console.log(`Job ${job.id} started.`);
@@ -115,43 +138,38 @@ function asyncQuery (sqlQuery) {
       const rows = results[0];
       console.log('Rows:');
       rows.forEach((row) => console.log(row));
-      return rows;
     });
+  // [END bigquery_async_query]
 }
-// [END bigquery_async_query]
 
-// The command-line program
-const cli = require(`yargs`);
-
-const program = module.exports = {
-  queryShakespeare: queryShakespeare,
-  asyncQuery: asyncQuery,
-  syncQuery: syncQuery,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv; // eslint-disable-line
-  }
-};
-
-cli
+const cli = require(`yargs`)
   .demand(1)
+  .options({
+    projectId: {
+      alias: 'p',
+      default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+      description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      requiresArg: true,
+      type: 'string'
+    }
+  })
   .command(
     `sync <sqlQuery>`,
     `Run the specified synchronous query.`,
     {},
-    (opts) => program.syncQuery(opts.sqlQuery)
+    (opts) => syncQuery(opts.sqlQuery, opts.projectId)
   )
   .command(
     `async <sqlQuery>`,
     `Start the specified asynchronous query.`,
     {},
-    (opts) => program.asyncQuery(opts.sqlQuery)
+    (opts) => asyncQuery(opts.sqlQuery, opts.projectId)
   )
   .command(
     `shakespeare`,
     `Queries a public Shakespeare dataset.`,
     {},
-    program.queryShakespeare
+    (opts) => queryShakespeare(opts.projectId)
   )
   .example(
     `node $0 sync "SELECT * FROM publicdata.samples.natality LIMIT 5;"`,
@@ -167,8 +185,10 @@ cli
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/bigquery/docs`);
+  .epilogue(`For more information, see https://cloud.google.com/bigquery/docs`)
+  .help()
+  .strict();
 
 if (module === require.main) {
-  program.main(process.argv.slice(2));
+  cli.parse(process.argv.slice(2));
 }

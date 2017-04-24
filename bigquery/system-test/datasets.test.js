@@ -25,15 +25,14 @@ const cwd = path.join(__dirname, `..`);
 const cmd = `node datasets.js`;
 const datasetId = (`nodejs-docs-samples-test-${uuid.v4()}`).replace(/-/gi, '_');
 
+test.before(tools.checkCredentials);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 test.after.always(async () => {
   try {
     await bigquery.dataset(datasetId).delete({ force: true });
   } catch (err) {} // ignore error
 });
-
-test.before(tools.checkCredentials);
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should create a dataset`, async (t) => {
   const output = await tools.runAsync(`${cmd} create ${datasetId}`, cwd);
@@ -43,19 +42,12 @@ test.serial(`should create a dataset`, async (t) => {
 });
 
 test.serial(`should list datasets`, async (t) => {
-  await tools.tryTest(async () => {
+  t.plan(0);
+  await tools.tryTest(async (assert) => {
     const output = await tools.runAsync(`${cmd} list`, cwd);
-    t.true(output.includes(`Datasets:`));
-    t.true(output.includes(datasetId));
+    assert(output.includes(`Datasets:`));
+    assert(output.includes(datasetId));
   }).start();
-});
-
-test.serial(`should return the size of a dataset`, async (t) => {
-  let output = await tools.runAsync(`${cmd} size hacker_news bigquery-public-data`, cwd);
-  t.true(output.includes(`Size of hacker_news`));
-  t.true(output.includes(`MB`));
-  output = await tools.runAsync(`${cmd} size ${datasetId}`, cwd);
-  t.true(output.includes(`Size of ${datasetId}: 0 MB`));
 });
 
 test.serial(`should delete a dataset`, async (t) => {

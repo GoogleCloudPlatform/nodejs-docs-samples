@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,12 +15,13 @@
 
 'use strict';
 
-require(`../../../system-test/_setup`);
-
 const fs = require(`fs`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noCallThru();
+const sinon = require(`sinon`);
 const sqlite3 = require(`sqlite3`).verbose();
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const DB_PATH = path.join(__dirname, `../slackDB.db`);
 const SLACK_TOKEN_PATH = path.join(__dirname, `../.token`);
@@ -28,6 +29,7 @@ const text = `President Obama is speaking at the White House.`;
 
 let db, controllerMock, botkitMock, botMock, program;
 
+test.before(tools.checkCredentials);
 test.before.cb((t) => {
   fs.unlink(DB_PATH, (err) => {
     if (err && err.code !== `ENOENT`) {

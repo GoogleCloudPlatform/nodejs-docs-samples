@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,11 +15,11 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
-const uuid = require(`uuid`);
 const path = require(`path`);
 const storage = require(`@google-cloud/storage`)();
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
+const uuid = require(`uuid`);
 
 const cmd = `node analyze.js`;
 const cwd = path.join(__dirname, `..`);
@@ -30,6 +30,7 @@ const text = `President Obama is speaking at the White House.`;
 const germanText = `Willkommen bei München`;
 
 test.before(async () => {
+  tools.checkCredentials();
   const [bucket] = await storage.createBucket(bucketName);
   await bucket.upload(localFilePath);
 });
@@ -41,11 +42,11 @@ test.after.always(async () => {
   await bucket.delete();
 });
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 test(`should analyze sentiment in text`, async (t) => {
-  const output = await runAsync(`${cmd} sentiment-text "${text}"`, cwd);
+  const output = await tools.runAsync(`${cmd} sentiment-text "${text}"`, cwd);
   t.true(output.includes(`Document sentiment:`));
   t.true(output.includes(`Sentence: ${text}`));
   t.true(output.includes(`Score: 0`));
@@ -53,7 +54,7 @@ test(`should analyze sentiment in text`, async (t) => {
 });
 
 test(`should analyze sentiment in a file`, async (t) => {
-  const output = await runAsync(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd);
+  const output = await tools.runAsync(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd);
   t.true(output.includes(`Document sentiment:`));
   t.true(output.includes(`Sentence: ${text}`));
   t.true(output.includes(`Score: 0`));
@@ -61,7 +62,7 @@ test(`should analyze sentiment in a file`, async (t) => {
 });
 
 test(`should analyze entities in text`, async (t) => {
-  const output = await runAsync(`${cmd} entities-text "${text}"`, cwd);
+  const output = await tools.runAsync(`${cmd} entities-text "${text}"`, cwd);
   t.true(output.includes(`Obama`));
   t.true(output.includes(`Type: PERSON`));
   t.true(output.includes(`White House`));
@@ -70,7 +71,7 @@ test(`should analyze entities in text`, async (t) => {
 });
 
 test('should analyze entities in a file', async (t) => {
-  const output = await runAsync(`${cmd} entities-file ${bucketName} ${fileName}`, cwd);
+  const output = await tools.runAsync(`${cmd} entities-file ${bucketName} ${fileName}`, cwd);
   t.true(output.includes(`Entities:`));
   t.true(output.includes(`Obama`));
   t.true(output.includes(`Type: PERSON`));
@@ -80,7 +81,7 @@ test('should analyze entities in a file', async (t) => {
 });
 
 test(`should analyze syntax in text`, async (t) => {
-  const output = await runAsync(`${cmd} syntax-text "${text}"`, cwd);
+  const output = await tools.runAsync(`${cmd} syntax-text "${text}"`, cwd);
   t.true(output.includes(`Parts of speech:`));
   t.true(output.includes(`NOUN:`));
   t.true(output.includes(`President`));
@@ -90,7 +91,7 @@ test(`should analyze syntax in text`, async (t) => {
 });
 
 test('should analyze syntax in a file', async (t) => {
-  const output = await runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
+  const output = await tools.runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
   t.true(output.includes(`NOUN:`));
   t.true(output.includes(`President`));
   t.true(output.includes(`Obama`));
@@ -99,7 +100,7 @@ test('should analyze syntax in a file', async (t) => {
 });
 
 test('should analyze syntax in a 1.1 language (German)', async (t) => {
-  const output = await runAsync(`${cmd} syntax-text "${germanText}"`, cwd);
+  const output = await tools.runAsync(`${cmd} syntax-text "${germanText}"`, cwd);
   t.true(output.includes(`Parts of speech:`));
   t.true(output.includes(`ADV: Willkommen`));
   t.true(output.includes(`ADP: bei`));
@@ -107,7 +108,7 @@ test('should analyze syntax in a 1.1 language (German)', async (t) => {
 });
 
 test(`should analyze entity sentiment in text`, async (t) => {
-  const output = await runAsync(`${cmd} entity-sentiment-text "${text}"`, cwd);
+  const output = await tools.runAsync(`${cmd} entity-sentiment-text "${text}"`, cwd);
   t.true(output.includes(`Entities and sentiments:`));
   t.true(output.includes(`Obama`));
   t.true(output.includes(`PERSON`));
@@ -116,7 +117,7 @@ test(`should analyze entity sentiment in text`, async (t) => {
 });
 
 test('should analyze entity sentiment in a file', async (t) => {
-  const output = await runAsync(`${cmd} entity-sentiment-file ${bucketName} ${fileName}`, cwd);
+  const output = await tools.runAsync(`${cmd} entity-sentiment-file ${bucketName} ${fileName}`, cwd);
   t.true(output.includes(`Entities and sentiments:`));
   t.true(output.includes(`Obama`));
   t.true(output.includes(`PERSON`));

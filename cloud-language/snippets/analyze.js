@@ -33,7 +33,7 @@ function analyzeSentimentOfText (text) {
   document.detectSentiment()
     .then((results) => {
       const sentiment = results[1].documentSentiment;
-      console.log(`Document sentiment:`)
+      console.log(`Document sentiment:`);
       console.log(`  Score: ${sentiment.score}`);
       console.log(`  Magnitude: ${sentiment.magnitude}`);
 
@@ -76,7 +76,7 @@ function analyzeSentimentInFile (bucketName, fileName) {
   document.detectSentiment()
     .then((results) => {
       const sentiment = results[1].documentSentiment;
-      console.log(`Document sentiment:`)
+      console.log(`Document sentiment:`);
       console.log(`  Score: ${sentiment.score}`);
       console.log(`  Magnitude: ${sentiment.magnitude}`);
 
@@ -263,7 +263,7 @@ function analyzeEntitySentimentOfText (text) {
     .then((results) => {
       const entities = results[0].entities;
 
-      console.log(`Entities and sentiments:`)
+      console.log(`Entities and sentiments:`);
       entities.forEach((entity) => {
         console.log(`  Name: ${entity.name}`);
         console.log(`  Type: ${entity.type}`);
@@ -279,13 +279,11 @@ function analyzeEntitySentimentOfText (text) {
 
 function analyzeEntitySentimentInFile (bucketName, fileName) {
   // [START language_entity_sentiment_file]
-  // Imports the Google Cloud client libraries
+  // Imports the Google Cloud client library
   const Language = require('@google-cloud/language').v1beta2();
-  const Storage = require('@google-cloud/storage');
 
   // Instantiates the clients
   const language = Language.languageServiceClient();
-  const storage = Storage();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
   // const bucketName = 'my-bucket';
@@ -306,7 +304,7 @@ function analyzeEntitySentimentInFile (bucketName, fileName) {
     .then((results) => {
       const entities = results[0].entities;
 
-      console.log(`Entities and sentiments:`)
+      console.log(`Entities and sentiments:`);
       entities.forEach((entity) => {
         console.log(`  Name: ${entity.name}`);
         console.log(`  Type: ${entity.type}`);
@@ -320,7 +318,7 @@ function analyzeEntitySentimentInFile (bucketName, fileName) {
   // [END language_entity_sentiment_file]
 }
 
-require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `sentiment-text <text>`,

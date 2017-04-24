@@ -111,6 +111,6 @@ if (module === require.main) {
       .recommendCommands()
       .epilogue(`For more information, see https://cloud.google.com/dlp/docs`);
 
-    cli.help().strict().argv;
+    cli.help().strict().argv; // eslint-disable-line
   });
 }

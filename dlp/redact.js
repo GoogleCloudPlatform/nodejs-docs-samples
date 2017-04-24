@@ -125,6 +125,6 @@ if (module === require.main) {
       .recommendCommands()
       .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`);
 
-    cli.help().strict().argv;
+    cli.help().strict().argv; // eslint-disable-line
   });
 }

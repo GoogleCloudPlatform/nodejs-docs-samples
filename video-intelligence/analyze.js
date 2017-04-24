@@ -132,7 +132,7 @@ function analyzeShots (gcsUri) {
   // [END analyze_shots]
 }
 
-const cli = require(`yargs`)
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `faces <gcsUri>`,

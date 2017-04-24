@@ -15,13 +15,15 @@
 
 'use strict';
 
-require(`../../system-test/_setup`);
-
 const proxyquire = require(`proxyquire`).noPreserveCache();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
+
 const client = proxyquire(`@google-cloud/monitoring`, {}).v3().metricServiceClient();
 
-test.beforeEach(stubConsole);
-test.afterEach.always(restoreConsole);
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
 // TODO(anassri): Fix this test occasionally omitting time series data
 test.skip.cb(`should list time series`, (t) => {

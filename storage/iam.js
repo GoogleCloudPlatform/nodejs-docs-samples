@@ -30,12 +30,12 @@ function viewBucketIamMembers (bucketName) {
   // Get a reference to a Google Cloud Storage bucket
   const bucket = storage.bucket(bucketName);
 
-  // Get and display the bucket's IAM policy
+  // Gets and displays the bucket's IAM policy
   bucket.iam.getPolicy()
     .then((data) => {
       const policy = data[0].bindings;
 
-      // Display the roles in the bucket's IAM policy
+      // Displays the roles in the bucket's IAM policy
       console.log(`Roles for bucket ${bucketName}:`);
       policy.forEach((role) => {
         console.log(`  Role: ${role.role}`);
@@ -73,18 +73,18 @@ function addBucketIamMember (bucketName, roleName, members) {
   // Get a reference to a Google Cloud Storage bucket
   const bucket = storage.bucket(bucketName);
 
-  // Get and update the bucket's IAM policy
+  // Gets and updates the bucket's IAM policy
   bucket.iam.getPolicy()
     .then((data) => {
       const policy = data[0];
 
-      // Add the new roles to the bucket's IAM policy
+      // Adds the new roles to the bucket's IAM policy
       policy.bindings.push({
         role: roleName,
         members: members
       });
 
-      // Update the bucket's IAM policy
+      // Updates the bucket's IAM policy
       return bucket.iam.setPolicy(policy);
     })
     .then(() => {
@@ -119,28 +119,28 @@ function removeBucketIamMember (bucketName, roleName, members) {
   // Get a reference to a Google Cloud Storage bucket
   const bucket = storage.bucket(bucketName);
 
-  // Get and update the bucket's IAM policy
+  // Gets and updates the bucket's IAM policy
   bucket.iam.getPolicy()
     .then((data) => {
       const policy = data[0];
 
-      // Find and update the appropriate role-member group
+      // Finds and updates the appropriate role-member group
       const index = policy.bindings.findIndex((role) => role.role === roleName);
       let role = policy.bindings[index];
       if (role) {
         role.members = role.members.filter((member) => members.indexOf(member) === -1);
 
-        // Update the policy object with the new (or empty) role-member group
+        // Updates the policy object with the new (or empty) role-member group
         if (role.members.length === 0) {
           policy.bindings.splice(index, 1);
         } else {
           policy.bindings.index = role;
         }
 
-        // Update the bucket's IAM policy
+        // Updates the bucket's IAM policy
         return bucket.iam.setPolicy(policy);
       } else {
-        // No matching role-member group(s) found
+        // No matching role-member group(s) were found
         throw new Error('No matching role-member group(s) found.');
       }
     })

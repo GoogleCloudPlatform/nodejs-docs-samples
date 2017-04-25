@@ -51,7 +51,8 @@ test.before(async () => {
     bigquery.createDataset(destDatasetId)
   ]);
 });
-
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 test.after.always(async () => {
   try {
     await bigquery.dataset(srcDatasetId).delete({ force: true });
@@ -73,9 +74,6 @@ test.after.always(async () => {
     await storage.bucket(bucketName).delete();
   } catch (err) {} // ignore error
 });
-
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should create a table`, async (t) => {
   const output = await tools.runAsync(`${cmd} create ${datasetId} ${tableId} "${schema}"`, cwd);
@@ -147,7 +145,7 @@ test.serial(`should insert rows`, async (t) => {
   const err = await t.throws(tools.runAsync(`${cmd} insert ${datasetId} ${tableId} 'foo.bar'`, cwd));
   t.true(err.message.includes(`"json_or_file" (or the file it points to) is not a valid JSON array.`));
   const output = await tools.runAsync(`${cmd} insert ${datasetId} ${tableId} '${JSON.stringify(rows)}'`, cwd);
-  t.is(output, `Inserted:\n{ Name: 'foo', Age: 27, Weight: 80.3, IsMagic: true }\n{ Name: 'bar', Age: 13, Weight: 54.6, IsMagic: false }`);
+  t.is(output.includes(`Inserted:\n{ Name: 'foo', Age: 27, Weight: 80.3, IsMagic: true }\n{ Name: 'bar', Age: 13, Weight: 54.6, IsMagic: false }`), true);
   await tools.tryTest(async (assert) => {
     const [rows] = await bigquery.dataset(datasetId).table(tableId).getRows();
     assert.equal(rows.length, 4);

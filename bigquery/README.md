@@ -42,21 +42,21 @@ __Usage:__ `node datasets --help`
 
 ```
 Commands:
-  create <datasetId>            Creates a new dataset.
-  delete <datasetId>            Deletes a dataset.
-  list [projectId]              Lists all datasets in the specified project or the current project.
-  size <datasetId> [projectId]  Calculates the size of a dataset.
+  create <datasetId>  Creates a new dataset.
+  delete <datasetId>  Deletes a dataset.
+  list                Lists datasets.
 
 Options:
-  --help  Show help                                                                                            [boolean]
+  --projectId, -p  The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+                   environment variables.                                                                       [string]
+  --help           Show help                                                                                   [boolean]
 
 Examples:
-  node datasets create my_dataset                      Creates a new dataset named "my_dataset".
-  node datasets delete my_dataset                      Deletes a dataset named "my_dataset".
-  node datasets list                                   Lists all datasets in the current project.
-  node datasets list bigquery-public-data              Lists all datasets in the "bigquery-public-data" project.
-  node datasets size my_dataset                        Calculates the size of "my_dataset" in the current project.
-  node datasets size hacker_news bigquery-public-data  Calculates the size of "bigquery-public-data:hacker_news".
+  node datasets.js create my_dataset                      Creates a new dataset named "my_dataset".
+  node datasets.js delete my_dataset                      Deletes a dataset named "my_dataset".
+  node datasets.js list                                   Lists all datasets in the project specified by the
+                                                          GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environments variables.
+  node datasets.js list --projectId=bigquery-public-data  Lists all datasets in the "bigquery-public-data" project.
 
 For more information, see https://cloud.google.com/bigquery/docs
 ```
@@ -77,14 +77,16 @@ Commands:
   shakespeare       Queries a public Shakespeare dataset.
 
 Options:
-  --help  Show help                                                                                            [boolean]
+  --projectId, -p  The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+                   environment variables.                                                                       [string]
+  --help           Show help                                                                                   [boolean]
 
 Examples:
-  node queries sync "SELECT * FROM publicdata.samples.natality  Synchronously queries the natality dataset.
-  LIMIT 5;"
-  node queries async "SELECT * FROM                             Queries the natality dataset as a job.
+  node queries.js sync "SELECT * FROM                           Synchronously queries the natality dataset.
   publicdata.samples.natality LIMIT 5;"
-  node queries shakespeare                                      Queries a public Shakespeare dataset.
+  node queries.js async "SELECT * FROM                          Queries the natality dataset as a job.
+  publicdata.samples.natality LIMIT 5;"
+  node queries.js shakespeare                                   Queries a public Shakespeare dataset.
 
 For more information, see https://cloud.google.com/bigquery/docs
 ```
@@ -100,41 +102,42 @@ __Usage:__ `node tables --help`
 
 ```
 Commands:
-  create <datasetId> <tableId> <schema> [projectId]             Creates a new table.
-  list <datasetId> [projectId]                                  Lists all tables in a dataset.
-  delete <datasetId> <tableId> [projectId]                      Deletes a table.
+  create <datasetId> <tableId> <schema>                         Creates a new table.
+  list <datasetId>                                              Lists all tables in a dataset.
+  delete <datasetId> <tableId>                                  Deletes a table.
   copy <srcDatasetId> <srcTableId> <destDatasetId>              Makes a copy of a table.
-  <destTableId> [projectId]
-  browse <datasetId> <tableId> [projectId]                      Lists rows in a table.
-  import <datasetId> <tableId> <fileName> [projectId]           Imports data from a local file into a table.
+  <destTableId>
+  browse <datasetId> <tableId>                                  Lists rows in a table.
+  import <datasetId> <tableId> <fileName>                       Imports data from a local file into a table.
   import-gcs <datasetId> <tableId> <bucketName> <fileName>      Imports data from a Google Cloud Storage file into a
-  [projectId]                                                   table.
+                                                                table.
   export <datasetId> <tableId> <bucketName> <fileName>          Export a table from BigQuery to Google Cloud Storage.
-  [projectId]
-  insert <datasetId> <tableId> <json_or_file> [projectId]       Insert a JSON array (as a string or newline-delimited
+  insert <datasetId> <tableId> <json_or_file>                   Insert a JSON array (as a string or newline-delimited
                                                                 file) into a BigQuery table.
 
 Options:
-  --help  Show help                                                                                            [boolean]
+  --projectId, -p  The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+                   environment variables.                                                                       [string]
+  --help           Show help                                                                                   [boolean]
 
 Examples:
-  node tables create my_dataset my_table "Name:string,          Createss a new table named "my_table" in "my_dataset".
+  node tables.js create my_dataset my_table "Name:string,       Creates a new table named "my_table" in "my_dataset".
   Age:integer, Weight:float, IsMagic:boolean"
-  node tables list my_dataset                                   Lists tables in "my_dataset".
-  node tables browse my_dataset my_table                        Displays rows from "my_table" in "my_dataset".
-  node tables delete my_dataset my_table                        Deletes "my_table" from "my_dataset".
-  node tables import my_dataset my_table ./data.csv             Imports a local file into a table.
-  node tables import-gcs my_dataset my_table my-bucket          Imports a GCS file into a table.
+  node tables.js list my_dataset                                Lists tables in "my_dataset".
+  node tables.js browse my_dataset my_table                     Displays rows from "my_table" in "my_dataset".
+  node tables.js delete my_dataset my_table                     Deletes "my_table" from "my_dataset".
+  node tables.js import my_dataset my_table ./data.csv          Imports a local file into a table.
+  node tables.js import-gcs my_dataset my_table my-bucket       Imports a GCS file into a table.
   data.csv
-  node tables export my_dataset my_table my-bucket my-file      Exports my_dataset:my_table to gcs://my-bucket/my-file
+  node tables.js export my_dataset my_table my-bucket my-file   Exports my_dataset:my_table to gcs://my-bucket/my-file
                                                                 as raw CSV.
-  node tables export my_dataset my_table my-bucket my-file -f   Exports my_dataset:my_table to gcs://my-bucket/my-file
-  JSON --gzip                                                   as gzipped JSON.
-  node tables insert my_dataset my_table json_string            Inserts the JSON array represented by json_string into
+  node tables.js export my_dataset my_table my-bucket my-file   Exports my_dataset:my_table to gcs://my-bucket/my-file
+  -f JSON --gzip                                                as gzipped JSON.
+  node tables.js insert my_dataset my_table json_string         Inserts the JSON array represented by json_string into
                                                                 my_dataset:my_table.
-  node tables insert my_dataset my_table json_file              Inserts the JSON objects contained in json_file (one per
+  node tables.js insert my_dataset my_table json_file           Inserts the JSON objects contained in json_file (one per
                                                                 line) into my_dataset:my_table.
-  node tables copy src_dataset src_table dest_dataset           Copies src_dataset:src_table to dest_dataset:dest_table.
+  node tables.js copy src_dataset src_table dest_dataset        Copies src_dataset:src_table to dest_dataset:dest_table.
   dest_table
 
 For more information, see https://cloud.google.com/bigquery/docs

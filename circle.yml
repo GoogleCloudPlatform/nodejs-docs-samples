@@ -58,6 +58,7 @@ dependencies:
     - functions/gcs
     - functions/helloworld
     - functions/http
+    - functions/imagemagick
     - functions/log
     - functions/ocr/app
     - functions/pubsub

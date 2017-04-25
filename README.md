@@ -29,7 +29,7 @@ on Google Cloud Platform.
     * [Google App Engine (Flexible Environment)](#google-app-engine-flexible-environment)
     * [Google Compute Engine](#google-compute-engine)
     * [Google Container Engine](#google-container-engine)
-    * [Google Cloud Functions (Alpha)](#google-cloud-functions-alpha)
+    * [Google Cloud Functions (Beta)](#google-cloud-functions-beta)
   * [**Storage and Databases**](#storage-and-databases)
     * [Google Cloud Datastore](#google-cloud-datastore)
     * [Google Cloud Storage](#google-cloud-storage)
@@ -207,9 +207,7 @@ View the [Container Engine Node.js samples][container_samples].
 [container_docs]: https://cloud.google.com/container-engine/docs/
 [container_samples]: containerengine
 
-#### Google Cloud Functions (Alpha)
-
-[Sign up for the Alpha][functions_signup].
+#### Google Cloud Functions (Beta)
 
 [Cloud Functions][functions_docs] is a lightweight, event-based, asynchronous
 compute solution that allows you to create small, single-purpose functions that

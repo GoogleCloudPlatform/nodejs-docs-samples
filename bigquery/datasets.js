@@ -15,123 +15,129 @@
 
 'use strict';
 
-const BigQuery = require('@google-cloud/bigquery');
+function createDataset (datasetId, projectId) {
+  // [START bigquery_create_dataset]
+  // Imports the Google Cloud client library
+  const BigQuery = require('@google-cloud/bigquery');
 
-// [START bigquery_create_dataset]
-function createDataset (datasetId) {
+  // The project ID to use, e.g. "your-project-id"
+  // const projectId = "your-project-id";
+
   // Instantiates a client
-  const bigquery = BigQuery();
+  const bigquery = BigQuery({
+    projectId: projectId
+  });
 
-  // Creates a new dataset, e.g. "my_new_dataset"
-  return bigquery.createDataset(datasetId)
+  // The ID for the new dataset, e.g. "my_new_dataset"
+  // const datasetId = "my_new_dataset";
+
+  // Creates a new dataset
+  bigquery.createDataset(datasetId)
     .then((results) => {
       const dataset = results[0];
       console.log(`Dataset ${dataset.id} created.`);
-      return dataset;
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END bigquery_create_dataset]
 }
-// [END bigquery_create_dataset]
 
-// [START bigquery_delete_dataset]
-function deleteDataset (datasetId) {
+function deleteDataset (datasetId, projectId) {
+  // [START bigquery_delete_dataset]
+  // Imports the Google Cloud client library
+  const BigQuery = require('@google-cloud/bigquery');
+
+  // The project ID to use, e.g. "your-project-id"
+  // const projectId = "your-project-id";
+
   // Instantiates a client
-  const bigquery = BigQuery();
+  const bigquery = BigQuery({
+    projectId: projectId
+  });
 
-  // References an existing dataset, e.g. "my_dataset"
+  // The ID of the dataset to delete, e.g. "my_new_dataset"
+  // const datasetId = "my_new_dataset";
+
+  // Creates a reference to the existing dataset
   const dataset = bigquery.dataset(datasetId);
 
   // Deletes the dataset
-  return dataset.delete()
+  dataset.delete()
     .then(() => {
       console.log(`Dataset ${dataset.id} deleted.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END bigquery_delete_dataset]
 }
-// [END bigquery_delete_dataset]
 
-// [START bigquery_list_datasets]
 function listDatasets (projectId) {
+  // [START bigquery_list_datasets]
+  // Imports the Google Cloud client library
+  const BigQuery = require('@google-cloud/bigquery');
+
+  // The project ID to use, e.g. "your-project-id"
+  // const projectId = "your-project-id";
+
   // Instantiates a client
   const bigquery = BigQuery({
     projectId: projectId
   });
 
   // Lists all datasets in the specified project
-  return bigquery.getDatasets()
+  bigquery.getDatasets()
     .then((results) => {
       const datasets = results[0];
       console.log('Datasets:');
       datasets.forEach((dataset) => console.log(dataset.id));
-      return datasets;
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END bigquery_list_datasets]
 }
-// [END bigquery_list_datasets]
 
-// [START bigquery_get_dataset_size]
-function getDatasetSize (datasetId, projectId) {
-  // Instantiate a client
-  const bigquery = BigQuery({
-    projectId: projectId
-  });
-
-  // References an existing dataset, e.g. "my_dataset"
-  const dataset = bigquery.dataset(datasetId);
-
-  // Lists all tables in the dataset
-  return dataset.getTables()
-    .then((results) => results[0])
-    // Retrieve the metadata for each table
-    .then((tables) => Promise.all(tables.map((table) => table.get())))
-    .then((results) => results.map((result) => result[0]))
-    // Select the size of each table
-    .then((tables) => tables.map((table) => (parseInt(table.metadata.numBytes, 10) / 1000) / 1000))
-    // Sum up the sizes
-    .then((sizes) => sizes.reduce((cur, prev) => cur + prev, 0))
-    // Print and return the size
-    .then((sum) => {
-      console.log(`Size of ${dataset.id}: ${sum} MB`);
-      return sum;
-    });
-}
-// [END bigquery_get_dataset_size]
-
-// The command-line program
-const cli = require(`yargs`);
-
-const program = module.exports = {
-  createDataset: createDataset,
-  deleteDataset: deleteDataset,
-  listDatasets: listDatasets,
-  getDatasetSize: getDatasetSize,
-  main: (args) => {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv; // eslint-disable-line
-  }
-};
-
-cli
+const cli = require(`yargs`)
   .demand(1)
-  .command(`create <datasetId>`, `Creates a new dataset.`, {}, (opts) => {
-    program.createDataset(opts.datasetId);
+  .options({
+    projectId: {
+      alias: 'p',
+      default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+      description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      requiresArg: true,
+      type: 'string'
+    }
   })
-  .command(`delete <datasetId>`, `Deletes a dataset.`, {}, (opts) => {
-    program.deleteDataset(opts.datasetId);
-  })
-  .command(`list [projectId]`, `Lists all datasets in the specified project or the current project.`, {}, (opts) => {
-    program.listDatasets(opts.projectId || process.env.GCLOUD_PROJECT);
-  })
-  .command(`size <datasetId> [projectId]`, `Calculates the size of a dataset.`, {}, (opts) => {
-    program.getDatasetSize(opts.datasetId, opts.projectId || process.env.GCLOUD_PROJECT);
-  })
+  .command(
+    `create <datasetId>`,
+    `Creates a new dataset.`,
+    {},
+    (opts) => createDataset(opts.datasetId, opts.projectId)
+  )
+  .command(
+    `delete <datasetId>`,
+    `Deletes a dataset.`,
+    {},
+    (opts) => deleteDataset(opts.datasetId, opts.projectId)
+  )
+  .command(
+    `list`,
+    `Lists datasets.`,
+    {},
+    (opts) => listDatasets(opts.projectId)
+  )
   .example(`node $0 create my_dataset`, `Creates a new dataset named "my_dataset".`)
   .example(`node $0 delete my_dataset`, `Deletes a dataset named "my_dataset".`)
-  .example(`node $0 list`, `Lists all datasets in the current project.`)
-  .example(`node $0 list bigquery-public-data`, `Lists all datasets in the "bigquery-public-data" project.`)
-  .example(`node $0 size my_dataset`, `Calculates the size of "my_dataset" in the current project.`)
-  .example(`node $0 size hacker_news bigquery-public-data`, `Calculates the size of "bigquery-public-data:hacker_news".`)
+  .example(`node $0 list`, `Lists all datasets in the project specified by the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environments variables.`)
+  .example(`node $0 list --projectId=bigquery-public-data`, `Lists all datasets in the "bigquery-public-data" project.`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/bigquery/docs`);
+  .epilogue(`For more information, see https://cloud.google.com/bigquery/docs`)
+  .help()
+  .strict();
 
 if (module === require.main) {
-  program.main(process.argv.slice(2));
+  cli.parse(process.argv.slice(2));
 }

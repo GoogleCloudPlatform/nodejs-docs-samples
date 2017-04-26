@@ -216,7 +216,8 @@ function streamingRecognize (filename, encoding, sampleRateHertz, languageCode) 
       encoding: encoding,
       sampleRateHertz: sampleRateHertz,
       languageCode: languageCode
-    }
+    },
+    interimResults: false // If you want interim results, set this to true
   };
 
   // Stream the audio to the Google Cloud Speech API
@@ -255,7 +256,8 @@ function streamingMicRecognize (encoding, sampleRateHertz, languageCode) {
       encoding: encoding,
       sampleRateHertz: sampleRateHertz,
       languageCode: languageCode
-    }
+    },
+    interimResults: false // If you want interim results, set this to true
   };
 
   // Create a recognize stream
@@ -264,16 +266,23 @@ function streamingMicRecognize (encoding, sampleRateHertz, languageCode) {
     .on('data', (data) => process.stdout.write(data.results));
 
   // Start recording and send the microphone input to the Speech API
-  record.start({
-    sampleRateHertz: sampleRateHertz,
-    threshold: 0
-  }).pipe(recognizeStream);
+  record
+    .start({
+      sampleRateHertz: sampleRateHertz,
+      threshold: 0,
+      // Other options, see https://www.npmjs.com/package/node-record-lpcm16#options
+      verbose: false,
+      recordProgram: 'rec', // Try also "arecord" or "sox"
+      silence: '10.0'
+    })
+    .on('error', console.error)
+    .pipe(recognizeStream);
 
   console.log('Listening, press Ctrl+C to stop.');
   // [END speech_streaming_mic_recognize]
 }
 
-require(`yargs`) // eslint-disable-line
+const cli = require(`yargs`)
   .demand(1)
   .command(
     `sync <filename>`,
@@ -342,5 +351,8 @@ require(`yargs`) // eslint-disable-line
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
   .help()
-  .strict()
-  .argv;
+  .strict();
+
+if (module === require.main) {
+  cli.parse(process.argv.slice(2));
+}

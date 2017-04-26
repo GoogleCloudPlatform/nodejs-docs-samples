@@ -148,3 +148,15 @@ exports.helloError3 = function helloError3 (event, callback) {
 };
 // [END functions_helloworld_error_3]
 /* eslint-enable */
+
+// [START functions_helloworld_template]
+const pug = require('pug');
+
+// Renders the index.pug
+exports.helloTemplate = (req, res) => {
+  // Render the index.pug file
+  const html = pug.renderFile('./index.pug');
+
+  res.send(html).end();
+};
+// [END functions_helloworld_template]

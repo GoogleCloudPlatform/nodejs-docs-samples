@@ -192,3 +192,17 @@ test.serial(`helloError3: callback shoud return an errback value`, (t) => {
   t.deepEqual(callback.callCount, 1);
   t.deepEqual(callback.firstCall.args, [expectedMsg]);
 });
+
+test.serial(`helloTemplate: should render the html`, async (t) => {
+  const req = {};
+  const res = {};
+  res.send = sinon.stub().returnsThis();
+  res.end = sinon.stub().returnsThis();
+
+  program.helloTemplate(req, res);
+
+  t.is(res.send.callCount, 1);
+  t.is(res.send.getCall(0).args.length, 1);
+  t.is(res.send.getCall(0).args[0].includes('<h1>Cloud Functions Template Sample</h1>'), true);
+  t.is(res.end.callCount, 1);
+});

@@ -21,7 +21,7 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
 
-const cmd = `node analyze.v1beta1.js`;
+const cmd = `node analyze.v1.js`;
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const fileName = `text.txt`;

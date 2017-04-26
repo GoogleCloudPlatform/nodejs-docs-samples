@@ -31,7 +31,7 @@ function analyzeFaces (gcsUri) {
     features: ['FACE_DETECTION']
   };
 
-  // Detect faces in a video
+  // Detects faces in a video
   video.annotateVideo(request)
     .then((results) => {
       const operation = results[0];
@@ -39,7 +39,7 @@ function analyzeFaces (gcsUri) {
       return operation.promise();
     })
     .then((results) => {
-      // Get faces for first video
+      // Gets faces for first video
       const faces = results[0].annotationResults[0].faceAnnotations;
       faces.forEach((face, faceIdx) => {
         console.log('Thumbnail size:', face.thumbnail.buffer.length);
@@ -70,7 +70,7 @@ function analyzeLabels (gcsUri) {
     features: ['LABEL_DETECTION']
   };
 
-  // Detect labels in a video
+  // Detects labels in a video
   video.annotateVideo(request)
     .then((results) => {
       const operation = results[0];
@@ -78,7 +78,7 @@ function analyzeLabels (gcsUri) {
       return operation.promise();
     })
     .then((results) => {
-      // Get labels for first video
+      // Gets labels for first video
       const labels = results[0].annotationResults[0].labelAnnotations;
       labels.forEach((label) => {
         console.log('Label description:', label.description);
@@ -110,7 +110,7 @@ function analyzeShots (gcsUri) {
     features: ['SHOT_CHANGE_DETECTION']
   };
 
-  // Detect camera shot changes
+  // Detects camera shot changes
   video.annotateVideo(request)
     .then((results) => {
       const operation = results[0];
@@ -118,7 +118,7 @@ function analyzeShots (gcsUri) {
       return operation.promise();
     })
     .then((results) => {
-      // Get shot changes for first video
+      // Gets shot changes for first video
       const shotChanges = results[0].annotationResults[0].shotAnnotations;
       shotChanges.forEach((shot, shotIdx) => {
         console.log(`Scene ${shotIdx}:`);

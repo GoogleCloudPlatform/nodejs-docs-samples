@@ -15,12 +15,15 @@
 
 'use strict';
 
+// [START functions_imagemagick_setup]
 const exec = require('child_process').exec;
 const fs = require('fs');
 const path = require('path');
 const storage = require('@google-cloud/storage')();
 const vision = require('@google-cloud/vision')();
+// [END functions_imagemagick_setup]
 
+// [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
 exports.blurOffensiveImages = (event) => {
   const object = event.data;
@@ -52,7 +55,9 @@ exports.blurOffensiveImages = (event) => {
       }
     });
 };
+// [END functions_imagemagick_analyze]
 
+// [START functions_imagemagick_blur]
 // Blurs the given file using ImageMagick.
 function blurImage (file) {
   const tempLocalFilename = `/tmp/${path.parse(file.name).base}`;
@@ -103,3 +108,4 @@ function blurImage (file) {
       });
     });
 }
+// [END functions_imagemagick_blur]

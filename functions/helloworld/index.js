@@ -77,10 +77,12 @@ exports.helloBackground = function helloBackground (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} The callback function.
  */
-exports.helloPubSub = function helloPubSub (event, callback) {
+exports.helloPubSub = function (event, callback) {
   const pubsubMessage = event.data;
   const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
-  console.log(`Hello ${name}!`);
+
+  console.log(`Hello, ${name}!`);
+
   callback();
 };
 // [END functions_helloworld_pubsub]
@@ -92,7 +94,7 @@ exports.helloPubSub = function helloPubSub (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} The callback function.
  */
-exports.helloGCS = function helloGCS (event, callback) {
+exports.helloGCS = function (event, callback) {
   const file = event.data;
   const isDelete = file.resourceState === 'not_exists';
 

@@ -8,10 +8,6 @@
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
-  "cloud": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true
-  },
   "engines": {
     "node": ">=4.3.2"
   },
@@ -27,10 +23,38 @@
     "yargs": "7.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.3.2",
+    "@google-cloud/nodejs-repo-tools": "1.4.7",
     "ava": "0.19.1",
     "proxyquire": "1.7.11",
     "sinon": "2.1.0",
     "uuid": "3.0.1"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "product": "bigquery",
+    "samples": [
+      {
+        "id": "datasets",
+        "name": "Datasets",
+        "file": "datasets.js",
+        "docs_link": "https://cloud.google.com/bigquery/docs",
+        "usage": "node datasets.js --help"
+      },
+      {
+        "id": "tables",
+        "name": "Tables",
+        "file": "tables.js",
+        "docs_link": "https://cloud.google.com/bigquery/docs",
+        "usage": "node tables.js --help"
+      },
+      {
+        "id": "queries",
+        "name": "Queries",
+        "file": "queries.js",
+        "docs_link": "https://cloud.google.com/bigquery/docs",
+        "usage": "node queries.js --help"
+      }
+    ]
   }
 }

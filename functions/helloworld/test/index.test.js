@@ -108,7 +108,7 @@ test.serial(`helloBackground: should print hello world`, (t) => {
 });
 
 test.serial(`helloPubSub: should print a name`, (t) => {
-  const expectedMsg = `Hello Bob!`;
+  const expectedMsg = `Hello, Bob!`;
   const callback = sinon.stub();
 
   program.helloPubSub({
@@ -124,7 +124,7 @@ test.serial(`helloPubSub: should print a name`, (t) => {
 });
 
 test.serial(`helloPubSub: should print hello world`, (t) => {
-  const expectedMsg = `Hello World!`;
+  const expectedMsg = `Hello, World!`;
   const callback = sinon.stub();
 
   program.helloPubSub({ data: {} }, callback);

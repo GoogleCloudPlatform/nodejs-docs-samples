@@ -1,19 +1,18 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google BigQuery Node.js Samples
+# BigQuery Node.js Samples
 
-[BigQuery][bigquery_docs] is Google's fully managed, petabyte scale, low cost
-analytics data warehouse.
+[![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-bigquery.svg)]()
 
-[bigquery_docs]: https://cloud.google.com/bigquery/docs/
+[BigQuery](https://cloud.google.com/bigquery/docs) is Google&#x27;s fully managed, petabyte scale, low cost analytics data warehouse.
 
 ## Table of Contents
 
 * [Setup](#setup)
 * [Samples](#samples)
   * [Datasets](#datasets)
-  * [Queries](#queries)
   * [Tables](#tables)
+  * [Queries](#queries)
 * [Running the tests](#running-the-tests)
 
 ## Setup
@@ -36,9 +35,10 @@ analytics data warehouse.
 
 ### Datasets
 
-View the [documentation][datasets_docs] or the [source code][datasets_code].
 
-__Usage:__ `node datasets --help`
+View the [documentation][datasets_0_docs] or the [source code][datasets_0_code].
+
+__Usage:__ `node datasets.js --help`
 
 ```
 Commands:
@@ -61,44 +61,15 @@ Examples:
 For more information, see https://cloud.google.com/bigquery/docs
 ```
 
-[datasets_docs]: https://cloud.google.com/bigquery/docs
-[datasets_code]: datasets.js
-
-### Queries
-
-View the [documentation][queries_docs] or the [source code][queries_code].
-
-__Usage:__ `node queries --help`
-
-```
-Commands:
-  sync <sqlQuery>   Run the specified synchronous query.
-  async <sqlQuery>  Start the specified asynchronous query.
-  shakespeare       Queries a public Shakespeare dataset.
-
-Options:
-  --projectId, -p  The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
-                   environment variables.                                                                       [string]
-  --help           Show help                                                                                   [boolean]
-
-Examples:
-  node queries.js sync "SELECT * FROM                           Synchronously queries the natality dataset.
-  publicdata.samples.natality LIMIT 5;"
-  node queries.js async "SELECT * FROM                          Queries the natality dataset as a job.
-  publicdata.samples.natality LIMIT 5;"
-  node queries.js shakespeare                                   Queries a public Shakespeare dataset.
-
-For more information, see https://cloud.google.com/bigquery/docs
-```
-
-[queries_docs]: https://cloud.google.com/bigquery/docs
-[queries_code]: queries.js
+[datasets_0_docs]: https://cloud.google.com/bigquery/docs
+[datasets_0_code]: datasets.js
 
 ### Tables
 
-View the [documentation][tables_docs] or the [source code][tables_code].
 
-__Usage:__ `node tables --help`
+View the [documentation][tables_1_docs] or the [source code][tables_1_code].
+
+__Usage:__ `node tables.js --help`
 
 ```
 Commands:
@@ -143,8 +114,39 @@ Examples:
 For more information, see https://cloud.google.com/bigquery/docs
 ```
 
-[tables_docs]: https://cloud.google.com/bigquery/docs
-[tables_code]: tables.js
+[tables_1_docs]: https://cloud.google.com/bigquery/docs
+[tables_1_code]: tables.js
+
+### Queries
+
+
+View the [documentation][queries_2_docs] or the [source code][queries_2_code].
+
+__Usage:__ `node queries.js --help`
+
+```
+Commands:
+  sync <sqlQuery>   Run the specified synchronous query.
+  async <sqlQuery>  Start the specified asynchronous query.
+  shakespeare       Queries a public Shakespeare dataset.
+
+Options:
+  --projectId, -p  The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+                   environment variables.                                                                       [string]
+  --help           Show help                                                                                   [boolean]
+
+Examples:
+  node queries.js sync "SELECT * FROM                           Synchronously queries the natality dataset.
+  publicdata.samples.natality LIMIT 5;"
+  node queries.js async "SELECT * FROM                          Queries the natality dataset as a job.
+  publicdata.samples.natality LIMIT 5;"
+  node queries.js shakespeare                                   Queries a public Shakespeare dataset.
+
+For more information, see https://cloud.google.com/bigquery/docs
+```
+
+[queries_2_docs]: https://cloud.google.com/bigquery/docs
+[queries_2_code]: queries.js
 
 ## Running the tests
 

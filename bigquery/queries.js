@@ -65,6 +65,9 @@ function queryShakespeare (projectId) {
     .then((results) => {
       const rows = results[0];
       printResult(rows);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
 }
 // [END bigquery_simple_app_query]
@@ -97,6 +100,9 @@ function syncQuery (sqlQuery, projectId) {
       const rows = results[0];
       console.log('Rows:');
       rows.forEach((row) => console.log(row));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END bigquery_sync_query]
 }
@@ -138,6 +144,9 @@ function asyncQuery (sqlQuery, projectId) {
       const rows = results[0];
       console.log('Rows:');
       rows.forEach((row) => console.log(row));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
   // [END bigquery_async_query]
 }

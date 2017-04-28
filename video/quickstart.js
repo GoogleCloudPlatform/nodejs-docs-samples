@@ -20,7 +20,9 @@
 const Video = require('@google-cloud/videointelligence').v1beta1();
 
 // Instantiates a client
-const video = Video.videoIntelligenceServiceClient();
+const video = Video.videoIntelligenceServiceClient({
+  projectId: process.env.GCLOUD_PROJECT // Replace with your Google Cloud project ID
+});
 
 // The GCS filepath of the video to analyze
 const gcsUri = 'gs://nodejs-docs-samples/videointelligence_quickstart.mp4';

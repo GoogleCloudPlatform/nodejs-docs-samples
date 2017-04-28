@@ -31,19 +31,19 @@ Functions for your project.
 
 1. Deploy the "get" function with an HTTP trigger:
 
-        gcloud alpha functions deploy get --stage-bucket YOUR_BUCKET_NAME --trigger-http
+        gcloud beta functions deploy get --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
 1. Deploy the "set" function with an HTTP trigger:
 
-        gcloud alpha functions deploy set --stage-bucket YOUR_BUCKET_NAME --trigger-http
+        gcloud beta functions deploy set --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
 1. Deploy the "del" function with an HTTP trigger:
 
-        gcloud alpha functions deploy del --stage-bucket YOUR_BUCKET_NAME --trigger-http
+        gcloud beta functions deploy del --stage-bucket YOUR_BUCKET_NAME --trigger-http
 
 1. Call the "set" function to create a new entity:
 
-        gcloud alpha functions call set --data '{"kind":"Task","key":"sampletask1","value":{"description":"Buy milk"}}'
+        gcloud beta functions call set --data '{"kind":"Task","key":"sampletask1","value":{"description":"Buy milk"}}'
 
     or
 
@@ -54,7 +54,7 @@ Functions for your project.
 
 1. Call the "get" function to read the newly created entity:
 
-        gcloud alpha functions call get --data '{"kind":"Task","key":"sampletask1"}'
+        gcloud beta functions call get --data '{"kind":"Task","key":"sampletask1"}'
 
     or
 
@@ -76,7 +76,7 @@ Functions for your project.
 
 1. Call the "get" function again to verify it was deleted:
 
-        gcloud alpha functions call get --data '{"kind":"Task","key":"sampletask1"}'
+        gcloud beta functions call get --data '{"kind":"Task","key":"sampletask1"}'
 
     or
 

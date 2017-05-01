@@ -39,7 +39,7 @@ const databaseId = 'my-database';
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.get = function helloGET (req, res) {
+exports.get = (req, res) => {
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);

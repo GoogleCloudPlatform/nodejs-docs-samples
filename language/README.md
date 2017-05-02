@@ -39,7 +39,7 @@ Learning API.
 
 View the [documentation][analyze_docs] or the [source code][analyze_code].
 
-__Usage:__ `node analyze.js --help`
+__Usage:__ `node analyze.v1.js --help`
 
 ```
 Commands:
@@ -54,12 +54,12 @@ Options:
   --help  Show help                                                                                            [boolean]
 
 Examples:
-  node analyze.js sentiment-text "President Obama is speaking at the White House."
-  node analyze.js sentiment-file my-bucket file.txt             Detects sentiment in gs://my-bucket/file.txt
-  node analyze.js entities-text "President Obama is speaking at the White House."
-  node analyze.js entities-file my-bucket file.txt              Detects entities in gs://my-bucket/file.txt
-  node analyze.js syntax-text "President Obama is speaking at the White House."
-  node analyze.js syntax-file my-bucket file.txt                Detects syntax in gs://my-bucket/file.txt
+  node analyze.v1.js sentiment-text "President Obama is speaking at the White House."
+  node analyze.v1.js sentiment-file my-bucket file.txt             Detects sentiment in gs://my-bucket/file.txt
+  node analyze.v1.js entities-text "President Obama is speaking at the White House."
+  node analyze.v1.js entities-file my-bucket file.txt              Detects entities in gs://my-bucket/file.txt
+  node analyze.v1.js syntax-text "President Obama is speaking at the White House."
+  node analyze.v1.js syntax-file my-bucket file.txt                Detects syntax in gs://my-bucket/file.txt
 
 For more information, see https://cloud.google.com/natural-language/docs
 ```
@@ -67,6 +67,32 @@ For more information, see https://cloud.google.com/natural-language/docs
 [analyze_docs]: https://cloud.google.com/natural-language/docs
 [analyze_code]: analyze.js
 
+
+NL 1.1 Beta features:
+__Usage:__ `node analyze.v1beta2.js --help`
+
+```
+Commands:
+  sentiment-text <text>                   Detects sentiment of a string.
+  entities-text <text>                    Detects entities in a string.
+  entity-sentiment-text <text>            Detects entity sentiment of a string.
+  syntax-text <text>                      Detects syntax of a string.
+
+Options:
+  --help  Show help                                                                                            [boolean]
+
+Examples:
+  node analyze.v1beta2.js sentiment-text "Der schnelle braune Fuchs sprang über den faulen Hund."
+  node analyze.v1beta2.js entities-text "Der schnelle braune Fuchs sprang über den faulen Hund."
+  node analyze.v1beta2.js entity-sentiment-text "There's nothing better than searching for ice cream on Google."
+  node analyze.v1beta2.js syntax-text "Der schnelle braune Fuchs sprang über den faulen Hund."
+
+For more information, see https://cloud.google.com/natural-language/docs/beta
+```
+
+[analyze_docs]: https://cloud.google.com/natural-language/docs/beta
+
+```
 ### Slackbot
 
 The example in the [slackbot](./slackbot) subdirectory shows a Slack bot built using the

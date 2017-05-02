@@ -2,10 +2,9 @@
 
 # Google Cloud Prediction API Node.js Samples
 
-The [Cloud Prediction API][prediction_docs] provides a RESTful API to build
-Machine Learning models.
+[![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-prediction.svg)]()
 
-[prediction_docs]: https://cloud.google.com/prediction/docs/
+The [Cloud Prediction API](https://cloud.google.com/prediction/docs) provides a RESTful API to build Machine Learning models.
 
 ## Table of Contents
 
@@ -34,18 +33,17 @@ Machine Learning models.
 
 ### Hosted Models
 
-View the [documentation][hostedmodels_docs] or the [source code][hostedmodels_code].
 
-__Run the sample:__
+View the [documentation][hostedmodels_0_docs] or the [source code][hostedmodels_0_code].
 
-Usage: `node hostedmodels "some phrase"`
+__Usage:__ `node hostedmodels <phrase>`
 
-Example:
+```
+node hostedmodels "Hello world"
+```
 
-    node hostedmodels "Hello world"
-
-[hostedmodels_docs]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
-[hostedmodels_code]: hostedmodels.js
+[hostedmodels_0_docs]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
+[hostedmodels_0_code]: hostedmodels.js
 
 ## Running the tests
 

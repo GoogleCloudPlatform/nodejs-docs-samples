@@ -39,17 +39,17 @@ const delay = (mSec) => {
   return new Promise((resolve) => setTimeout(resolve, mSec));
 };
 
-test(`should request a greeting from a remote Compute Engine instance`, async (t) => {
+test.serial(`should request a greeting from a remote Compute Engine instance`, async (t) => {
   const output = await tools.runAsync(`${clientCmd} -h ${GCE_HOST} -k ${API_KEY}`, cwd);
   t.regex(output, /Hello world/);
 });
 
-test(`should request a greeting from a remote Container Engine cluster`, async (t) => {
+test.serial(`should request a greeting from a remote Container Engine cluster`, async (t) => {
   const output = await tools.runAsync(`${clientCmd} -h ${GKE_HOST} -k ${API_KEY}`, cwd);
   t.regex(output, /Hello world/);
 });
 
-test(`should request and handle a greeting locally`, async (t) => {
+test.serial(`should request and handle a greeting locally`, async (t) => {
   const PORT = 50051;
   const server = childProcess.exec(`${serverCmd} -p ${PORT}`, { cwd: cwd });
 

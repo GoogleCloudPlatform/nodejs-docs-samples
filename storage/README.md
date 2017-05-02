@@ -2,10 +2,9 @@
 
 # Google Cloud Storage Node.js Samples
 
-[Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
-amount of data at any time.
+[![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-storage.svg)]()
 
-[storage_docs]: https://cloud.google.com/storage/docs/
+[Cloud Storage](https://cloud.google.com/storage/docs) allows world-wide storage and retrieval of any amount of data at any time.
 
 ## Table of Contents
 
@@ -38,7 +37,8 @@ amount of data at any time.
 
 ### ACL (Access Control Lists)
 
-View the [documentation][acl_docs] or the [source code][acl_code].
+
+View the [documentation][acl_0_docs] or the [source code][acl_0_code].
 
 __Usage:__ `node acl.js --help`
 
@@ -56,7 +56,7 @@ Commands:
   remove-file-owner <bucketName> <fileName> <userEmail>        Removes a user from the ACL of a file.
 
 Options:
-  --help  Show help                                                    [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
   node acl.js print-bucket-acl my-bucket
@@ -73,12 +73,13 @@ Examples:
 For more information, see https://cloud.google.com/storage/docs/access-control/create-manage-lists
 ```
 
-[acl_docs]: https://cloud.google.com/storage/docs/access-control/create-manage-lists
-[acl_code]: acl.js
+[acl_0_docs]: https://cloud.google.com/storage/docs/access-control/create-manage-lists
+[acl_0_code]: acl.js
 
 ### Buckets
 
-View the [documentation][buckets_docs] or the [source code][buckets_code].
+
+View the [documentation][buckets_1_docs] or the [source code][buckets_1_code].
 
 __Usage:__ `node buckets.js --help`
 
@@ -89,7 +90,7 @@ Commands:
   delete <bucket>  Deletes a bucket.
 
 Options:
-  --help  Show help                                                    [boolean]
+  --help  Show help                                                                                            [boolean]
 
 Examples:
   node buckets.js create my-bucket  Creates a new bucket named "my-bucket".
@@ -99,12 +100,13 @@ Examples:
 For more information, see https://cloud.google.com/storage/docs
 ```
 
-[buckets_docs]: https://cloud.google.com/storage/docs
-[buckets_code]: buckets.js
+[buckets_1_docs]: https://cloud.google.com/storage/docs
+[buckets_1_code]: buckets.js
 
 ### Encryption
 
-View the [documentation][encryption_docs] or the [source code][encryption_code].
+
+View the [documentation][encryption_2_docs] or the [source code][encryption_2_code].
 
 __Usage:__ `node encryption.js --help`
 
@@ -130,12 +132,13 @@ Examples:
 For more information, see https://cloud.google.com/storage/docs
 ```
 
-[encryption_docs]: https://cloud.google.com/storage/docs
-[encryption_code]: encryption.js
+[encryption_2_docs]: https://cloud.google.com/storage/docs
+[encryption_2_code]: encryption.js
 
 ### Files
 
-View the [documentation][files_docs] or the [source code][files_code].
+
+View the [documentation][files_3_docs] or the [source code][files_3_code].
 
 __Usage:__ `node files.js --help`
 
@@ -171,17 +174,17 @@ Examples:
   file.txt                                                      "gs://my-other-bucket/file.txt".
 
 For more information, see https://cloud.google.com/storage/docs
-
 ```
 
-[files_docs]: https://cloud.google.com/storage/docs
-[files_code]: files.js
+[files_3_docs]: https://cloud.google.com/storage/docs
+[files_3_code]: files.js
 
 ### Storage Transfer API
 
-View the [documentation][storagetransfer_docs] or the [source code][storagetransfer_code].
 
-__Usage:__ `node transfer --help`
+View the [documentation][transfer_4_docs] or the [source code][transfer_4_code].
+
+__Usage:__ `node transfer.js --help`
 
 ```
 Commands:
@@ -192,69 +195,14 @@ Options:
   --help  Show help                                                                        [boolean]
 
 Examples:
-  node transfer jobs --help        Show job commands.
-  node transfer operations --help  Show operations commands.
+  node transfer.js jobs --help        Show job commands.
+  node transfer.js operations --help  Show operations commands.
 
 For more information, see https://cloud.google.com/storage/transfer
 ```
 
-__Usage:__ `node transfer jobs --help`
-
-```
-transfer jobs <cmd> [args]
-
-Commands:
-  create <srcBucket> <destBucket> <time> <date>       Create a transfer job.
-  [description]
-  get <job>                                           Get a transfer job.
-  list                                                List transfer jobs.
-  set <job> <field> <value>                           Change the status, description or transferSpec
-                                                      of a transfer job.
-
-Options:
-  --help  Show help                                                                        [boolean]
-
-Examples:
-  node transfer jobs create my-bucket                 Create a transfer job.
-  my-other-bucket 2016/08/12 16:30 "Move my files"
-  node transfer jobs get                              Get a transfer job.
-  transferJobs/123456789012345678
-  node transfer jobs list                             List transfer jobs.
-  node transfer jobs set                              Update the description for a transfer job.
-  transferJobs/123456789012345678 description "My
-  new description"
-  node transfer jobs set                              Disable a transfer job.
-  transferJobs/123456789012345678 status DISABLED
-```
-
-__Usage:__ `node transfer operations --help`
-
-```
-transfer operations <cmd> [args]
-
-Commands:
-  list [job]          List transfer operations, optionally filtering by a job name.
-  get <operation>     Get a transfer operation.
-  pause <operation>   Pause a transfer operation.
-  resume <operation>  Resume a transfer operation.
-
-Options:
-  --help  Show help                                                                        [boolean]
-
-Examples:
-  node transfer operations list                       List all transfer operations.
-  node transfer operations list                       List all transfer operations for a specific
-  transferJobs/123456789012345678                     job.
-  node transfer operations get                        Get a transfer operation.
-  transferOperations/123456789012345678
-  node transfer operations pause                      Pause a transfer operation.
-  transferOperations/123456789012345678
-  node transfer operations resume                     Resume a transfer operation.
-  transferOperations/123456789012345678
-```
-
-[storagetransfer_docs]: https://cloud.google.com/storage/transfer
-[storagetransfer_code]: transfer.js
+[transfer_4_docs]: https://cloud.google.com/storage/transfer
+[transfer_4_code]: transfer.js
 
 ## Running the tests
 

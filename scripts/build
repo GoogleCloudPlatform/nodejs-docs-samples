@@ -27,6 +27,7 @@ if (!path.isAbsolute(localPath)) {
 const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 
 const command = `samples test build -l=${localPath} --async`;
+
 console.log(`Command: ${command}`);
 
 if (branch === 'master') {

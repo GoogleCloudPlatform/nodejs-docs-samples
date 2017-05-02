@@ -69,12 +69,11 @@ function getSample () {
   };
 }
 
-test(`get: Gets albums`, async (t) => {
+test(`get: Gets albums`, (t) => {
   const sample = getSample();
   const mocks = sample.mocks;
 
-  const err = await sample.program.get(mocks.req, mocks.res);
-  t.falsy(err, null);
+  const err = sample.program.get(mocks.req, mocks.res);
   t.true(mocks.spanner.instance.called);
   t.true(mocks.instance.database.called);
   t.true(mocks.database.run.calledWith(query));

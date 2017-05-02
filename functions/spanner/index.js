@@ -19,13 +19,8 @@
 // Imports the Google Cloud client library
 const Spanner = require('@google-cloud/spanner');
 
-// Your Google Cloud Platform project ID
-const projectId = 'YOUR_PROJECT_ID';
-
 // Instantiates a client
-const spanner = Spanner({
-  projectId: projectId
-});
+const spanner = Spanner();
 
 // Your Cloud Spanner instance ID
 const instanceId = 'my-instance';
@@ -53,9 +48,11 @@ exports.get = (req, res) => {
   database.run(query)
     .then((results) => {
       const rows = results[0];
-      var data = [];
-      rows.forEach((row) => data.push(row.toJSON()));
-      res.send(data);
+      res.send(rows.map((row) => row.toJSON()));
+    })
+    .catch((err) => {
+      res.status(500);
+      res.send(`Error querying Spanner: ${err}`);
     });
 };
 // [END spanner_functions_quickstart]

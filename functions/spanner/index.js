@@ -58,7 +58,8 @@ exports.get = (req, res) => {
     .catch((err) => {
       res
         .status(500)
-        .send(`Error querying Spanner: ${err}`);
+        .send(`Error querying Spanner: ${err}`)
+        .end();
     });
 };
 // [END spanner_functions_quickstart]

@@ -63,21 +63,23 @@ function getSample () {
       results: resultsMock,
       res: {
         status: sinon.stub().returnsThis(),
-        send: sinon.stub().returnsThis()
+        send: sinon.stub().returnsThis(),
+        end: sinon.stub().returnsThis(),
+        write: sinon.stub().returnsThis()
       }
     }
   };
 }
 
-test(`get: Gets albums`, (t) => {
+test(`get: Gets albums`, async (t) => {
   const sample = getSample();
   const mocks = sample.mocks;
 
-  const err = sample.program.get(mocks.req, mocks.res);
+  await sample.program.get(mocks.req, mocks.res);
   t.true(mocks.spanner.instance.called);
   t.true(mocks.instance.database.called);
   t.true(mocks.database.run.calledWith(query));
   t.true(mocks.results[0].toJSON.called);
-  t.true(mocks.res.send.called);
-  t.true(mocks.res.send.calledWith(entities));
+  t.true(mocks.res.write.calledWith(`SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk</br>`));
+  t.true(mocks.res.end.called);
 });

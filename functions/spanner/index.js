@@ -47,12 +47,18 @@ exports.get = (req, res) => {
   // Execute the query
   database.run(query)
     .then((results) => {
-      const rows = results[0];
-      res.send(rows.map((row) => row.toJSON()));
+      const rows = results[0].map((row) => row.toJSON());
+      rows.forEach((row) => {
+        res.write(`SingerId: ${row.SingerId.value}, AlbumId: ${row.AlbumId.value}, AlbumTitle: ${row.AlbumTitle}</br>`);
+      });
+      res
+        .status(200)
+        .end();
     })
     .catch((err) => {
-      res.status(500);
-      res.send(`Error querying Spanner: ${err}`);
+      res
+        .status(500)
+        .send(`Error querying Spanner: ${err}`);
     });
 };
 // [END spanner_functions_quickstart]

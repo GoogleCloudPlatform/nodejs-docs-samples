@@ -49,7 +49,7 @@ exports.get = (req, res) => {
     .then((results) => {
       const rows = results[0].map((row) => row.toJSON());
       rows.forEach((row) => {
-        res.write(`SingerId: ${row.SingerId.value}, AlbumId: ${row.AlbumId.value}, AlbumTitle: ${row.AlbumTitle}</br>`);
+        res.write(`SingerId: ${row.SingerId.value}, AlbumId: ${row.AlbumId.value}, AlbumTitle: ${row.AlbumTitle}\n`);
       });
       res
         .status(200)

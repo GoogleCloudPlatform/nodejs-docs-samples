@@ -80,6 +80,6 @@ test(`get: Gets albums`, async (t) => {
   t.true(mocks.instance.database.called);
   t.true(mocks.database.run.calledWith(query));
   t.true(mocks.results[0].toJSON.called);
-  t.true(mocks.res.write.calledWith(`SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk</br>`));
+  t.true(mocks.res.write.calledWith(`SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n`));
   t.true(mocks.res.end.called);
 });

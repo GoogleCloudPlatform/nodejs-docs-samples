@@ -45,7 +45,7 @@ exports.get = (req, res) => {
   };
 
   // Execute the query
-  database.run(query)
+  return database.run(query)
     .then((results) => {
       const rows = results[0].map((row) => row.toJSON());
       rows.forEach((row) => {

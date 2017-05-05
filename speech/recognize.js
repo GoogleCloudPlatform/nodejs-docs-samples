@@ -132,7 +132,7 @@ function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   speech.startRecognition(filename, request)
     .then((results) => {
       const operation = results[0];
-      // Get a Promise represention of the final result of the job
+      // Get a Promise representation of the final result of the job
       return operation.promise();
     })
     .then((results) => {
@@ -176,7 +176,7 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   speech.startRecognition(gcsUri, request)
     .then((results) => {
       const operation = results[0];
-      // Get a Promise represention of the final result of the job
+      // Get a Promise representation of the final result of the job
       return operation.promise();
     })
     .then((results) => {

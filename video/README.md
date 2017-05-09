@@ -3,8 +3,8 @@
 # Google Cloud Video Intelligence API Node.js Samples
 
 The [Cloud Video Intelligence API][video_docs] allows developers to easily
-integrate video analysis within applications, including video labeling, face
-detection, and shot change detection.
+integrate video analysis within applications, including video labeling, safe search
+, and shot change detection.
 
 [video_docs]: https://cloud.google.com/video-intelligence/docs/
 
@@ -50,7 +50,6 @@ Options:
   --help  Show help                                                                                            [boolean]
 
 Examples:
-  node analyze.js faces gs://my-bucket/my-video.mp4
   node analyze.js shots gs://my-bucket/my-video.mp4
   node analyze.js labels-gcs gs://my-bucket/my-video.mp4
   node analyze.js labels-file my-video.mp4

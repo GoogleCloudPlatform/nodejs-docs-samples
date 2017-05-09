@@ -1,17 +1,19 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Cloud Spanner Node.js Samples
+# Google Cloud Spanner Node.js Samples
 
-[Cloud Spanner][spanner_docs] is a managed, mission-critical, globally
-consistent and scalable relational database service. Cloud Spanner solves the
-need for a horizontally-scaling database with consistent global transaction and
-SQL semantics.
+[![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-spanner.svg)]()
+
+[Cloud Spanner](https://cloud.google.com/spanner/docs/) is a fully managed, mission-critical, relational database service that offers transactional consistency at global scale, schemas, SQL (ANSI 2011 with extensions), and automatic, synchronous replication for high availability.
 
 ## Table of Contents
 
 * [Setup](#setup)
 * [Samples](#samples)
-  * [Getting started with Google Cloud Spanner API](#getting-started-with-google-cloud-spanner-api)
+  * [Schema](#schema)
+  * [CRUD](#crud)
+  * [Indexing](#indexing)
+  * [Transactions](#transactions)
 * [Running the tests](#running-the-tests)
 
 ## Setup
@@ -19,11 +21,11 @@ SQL semantics.
 1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
 1.  Install dependencies:
 
-    With `npm`:
+    With **npm**:
 
         npm install
 
-    With `yarn`:
+    With **yarn**:
 
         yarn install
 
@@ -32,15 +34,11 @@ SQL semantics.
 
 ## Samples
 
-### Getting started with Google Cloud Spanner API
+### Schema
 
-View the [Spanner documentation][spanner_docs] or the [samples][spanner_samples].
+View the [documentation][schema_0_docs] or the [source code][schema_0_code].
 
-__Run the samples:__
-
-```sh
-node schema.js --help
-```
+__Usage:__ `node schema.js --help`
 
 ```
 Commands:
@@ -61,9 +59,14 @@ Examples:
 For more information, see https://cloud.google.com/spanner/docs
 ```
 
-```sh
-node crud.js --help
-```
+[schema_0_docs]: https://cloud.google.com/spanner/docs
+[schema_0_code]: schema.js
+
+### CRUD
+
+View the [documentation][crud_1_docs] or the [source code][crud_1_code].
+
+__Usage:__ `node crud.js --help`
 
 ```
 Commands:
@@ -84,9 +87,14 @@ Examples:
 For more information, see https://cloud.google.com/spanner/docs
 ```
 
-```sh
-node indexing.js --help
-```
+[crud_1_docs]: https://cloud.google.com/spanner/docs
+[crud_1_code]: crud.js
+
+### Indexing
+
+View the [documentation][indexing_2_docs] or the [source code][indexing_2_code].
+
+__Usage:__ `node indexing.js --help`
 
 ```
 Commands:
@@ -112,9 +120,14 @@ Examples:
 For more information, see https://cloud.google.com/spanner/docs
 ```
 
-```sh
-node transaction.js --help
-```
+[indexing_2_docs]: https://cloud.google.com/spanner/docs
+[indexing_2_code]: indexing.js
+
+### Transactions
+
+View the [documentation][transaction_3_docs] or the [source code][transaction_3_code].
+
+__Usage:__ `node transaction.js --help`
 
 ```
 Commands:
@@ -131,22 +144,19 @@ Examples:
 For more information, see https://cloud.google.com/spanner/docs
 ```
 
-For more information, see [the docs][spanner_docs].
-
-[spanner_samples]: ../
-[spanner_docs]: https://cloud.google.com/spanner/docs/
+[transaction_3_docs]: https://cloud.google.com/spanner/docs
+[transaction_3_code]: transaction.js
 
 ## Running the tests
 
-1.  Set the `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment
-    variables.
+1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
 
 1.  Run the tests:
 
-    With `npm`:
+    With **npm**:
 
         npm test
 
-    With `yarn`:
+    With **yarn**:
 
         yarn test

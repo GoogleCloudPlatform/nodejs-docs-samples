@@ -142,7 +142,26 @@ test.serial(`helloGCS: should print uploaded message`, (t) => {
   program.helloGCS({
     data: {
       name: `foo`,
-      resourceState: `exists`
+      resourceState: `exists`,
+      metageneration: 1
+    }
+  }, callback);
+
+  t.deepEqual(console.log.callCount, 1);
+  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
+  t.deepEqual(callback.callCount, 1);
+  t.deepEqual(callback.firstCall.args, []);
+});
+
+test.serial(`helloGCS: should print metadata updated message`, (t) => {
+  const expectedMsg = `File foo metadata updated.`;
+  const callback = sinon.stub();
+
+  program.helloGCS({
+    data: {
+      name: `foo`,
+      resourceState: `exists`,
+      metageneration: 2
     }
   }, callback);
 

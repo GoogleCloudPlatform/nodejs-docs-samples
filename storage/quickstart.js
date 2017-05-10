@@ -23,7 +23,7 @@ const Storage = require('@google-cloud/storage');
 const projectId = 'YOUR_PROJECT_ID';
 
 // Instantiates a client
-const storageClient = Storage({
+const storage = Storage({
   projectId: projectId
 });
 
@@ -31,10 +31,9 @@ const storageClient = Storage({
 const bucketName = 'my-new-bucket';
 
 // Creates the new bucket
-storageClient.createBucket(bucketName)
-  .then((results) => {
-    const bucket = results[0];
-    console.log(`Bucket ${bucket.name} created.`);
+storage.createBucket(bucketName)
+  .then(() => {
+    console.log(`Bucket ${bucketName} created.`);
   })
   .catch((err) => {
     console.error('ERROR:', err);

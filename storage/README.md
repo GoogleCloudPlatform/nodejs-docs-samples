@@ -110,8 +110,8 @@ __Usage:__ `node encryption.js --help`
 ```
 Commands:
   generate-encryption-key                                   Generate a sample encryption key.
-  upload <bucketName> <srcFileName> <destFileName> <key>    Encrypts and uploads a file.
-  download <bucketName> <srcFileName> <destFileName> <key>  Decrypts and downloads a file.
+  upload <bucketName> <srcFilename> <destFilename> <key>    Encrypts and uploads a file.
+  download <bucketName> <srcFilename> <destFilename> <key>  Decrypts and downloads a file.
   rotate <bucketName> <fileName> <oldkey> <newKey>          Rotates encryption keys for a file.
 
 Options:

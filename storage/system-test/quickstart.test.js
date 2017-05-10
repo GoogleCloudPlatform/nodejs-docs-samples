@@ -48,7 +48,7 @@ test.cb(`should create a bucket`, (t) => {
           setTimeout(() => {
             try {
               t.true(console.log.calledOnce);
-              t.deepEqual(console.log.firstCall.args, [`Bucket ${bucket.name} created.`]);
+              t.deepEqual(console.log.firstCall.args, [`Bucket ${expectedBucketName} created.`]);
               t.end();
             } catch (err) {
               t.end(err);

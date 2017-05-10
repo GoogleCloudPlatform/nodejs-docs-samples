@@ -26,7 +26,7 @@
     "express": "4.15.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.7"
+    "@google-cloud/nodejs-repo-tools": "1.4.13"
   },
   "cloud-repo-tools": {
     "test": {

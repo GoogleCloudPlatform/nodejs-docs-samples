@@ -1,10 +1,10 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# BigQuery Node.js Samples
+# Google BigQuery Node.js Samples
 
 [![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-bigquery.svg)]()
 
-[BigQuery](https://cloud.google.com/bigquery/docs) is Google&#x27;s fully managed, petabyte scale, low cost analytics data warehouse.
+[BigQuery](https://cloud.google.com/bigquery/docs) is Google&#x27;s fully managed, petabyte scale, low cost analytics data warehouse. BigQuery is NoOps—there is no infrastructure to manage and you don&#x27;t need a database administrator—so you can focus on analyzing data to find meaningful insights, use familiar SQL, and take advantage of our pay-as-you-go model.
 
 ## Table of Contents
 
@@ -20,11 +20,11 @@
 1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
 1.  Install dependencies:
 
-    With `npm`:
+    With **npm**:
 
         npm install
 
-    With `yarn`:
+    With **yarn**:
 
         yarn install
 
@@ -34,7 +34,6 @@
 ## Samples
 
 ### Datasets
-
 
 View the [documentation][datasets_0_docs] or the [source code][datasets_0_code].
 
@@ -65,7 +64,6 @@ For more information, see https://cloud.google.com/bigquery/docs
 [datasets_0_code]: datasets.js
 
 ### Tables
-
 
 View the [documentation][tables_1_docs] or the [source code][tables_1_code].
 
@@ -119,7 +117,6 @@ For more information, see https://cloud.google.com/bigquery/docs
 
 ### Queries
 
-
 View the [documentation][queries_2_docs] or the [source code][queries_2_code].
 
 __Usage:__ `node queries.js --help`
@@ -150,15 +147,14 @@ For more information, see https://cloud.google.com/bigquery/docs
 
 ## Running the tests
 
-1.  Set the `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment
-    variables.
+1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
 
 1.  Run the tests:
 
-    With `npm`:
+    With **npm**:
 
         npm test
 
-    With `yarn`:
+    With **yarn**:
 
         yarn test

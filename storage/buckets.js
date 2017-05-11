@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,60 +23,79 @@
 
 'use strict';
 
-const Storage = require('@google-cloud/storage');
-
-// [START storage_create_bucket]
 function createBucket (bucketName) {
+  // [START storage_create_bucket]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to create, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
   // Instantiates a client
   const storage = Storage();
 
-  // Creates a new bucket, e.g. "my-new-bucket"
-  return storage.createBucket(bucketName)
-    .then((results) => {
-      const bucket = results[0];
-
-      console.log(`Bucket ${bucket.name} created.`);
-
-      return bucket;
+  // Creates a new bucket
+  storage
+    .createBucket(bucketName)
+    .then(() => {
+      console.log(`Bucket ${bucketName} created.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_create_bucket]
 }
-// [END storage_create_bucket]
 
-// [START storage_list_buckets]
 function listBuckets () {
+  // [START storage_list_buckets]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
   // Instantiates a client
   const storage = Storage();
 
   // Lists all buckets in the current project
-  return storage.getBuckets()
+  storage
+    .getBuckets()
     .then((results) => {
       const buckets = results[0];
 
       console.log('Buckets:');
-      buckets.forEach((bucket) => console.log(bucket.name));
-
-      return buckets;
+      buckets.forEach((bucket) => {
+        console.log(bucket.name);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_list_buckets]
 }
-// [END storage_list_buckets]
 
-// [START storage_delete_bucket]
 function deleteBucket (bucketName) {
+  // [START storage_delete_bucket]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to delete, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
   // Instantiates a client
   const storage = Storage();
 
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
   // Deletes the bucket
-  return bucket.delete()
+  storage
+    .bucket(bucketName)
+    .delete()
     .then(() => {
-      console.log(`Bucket ${bucket.name} deleted.`);
+      console.log(`Bucket ${bucketName} deleted.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_delete_bucket]
 }
-// [END storage_delete_bucket]
 
-require(`yargs`) // eslint-disable-line
+const cli = require(`yargs`)
   .demand(1)
   .command(
     `create <bucket>`,
@@ -103,5 +122,8 @@ require(`yargs`) // eslint-disable-line
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/storage/docs`)
   .help()
-  .strict()
-  .argv;
+  .strict();
+
+if (module === require.main) {
+  cli.parse(process.argv.slice(2));
+}

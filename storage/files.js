@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,36 +23,51 @@
 
 'use strict';
 
-const Storage = require('@google-cloud/storage');
-
-// [START storage_list_files]
 function listFiles (bucketName) {
+  // [START storage_list_files]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
   // Instantiates a client
   const storage = Storage();
 
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
   // Lists files in the bucket
-  return bucket.getFiles()
+  storage
+    .bucket(bucketName)
+    .getFiles()
     .then((results) => {
       const files = results[0];
 
       console.log('Files:');
-      files.forEach((file) => console.log(file.name));
-
-      return files;
+      files.forEach((file) => {
+        console.log(file.name);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_list_files]
 }
-// [END storage_list_files]
 
-// [START storage_list_files_with_prefix]
 function listFilesByPrefix (bucketName, prefix, delimiter) {
+  // [START storage_list_files_with_prefix]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The prefix by which to filter files, e.g. "public/"
+  // const prefix = "public/";
+
+  // The delimiter to use, e.g. "/"
+  // const delimiter = "/";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
 
   /**
    * This can be used to list all blobs in a "folder", e.g. "public/".
@@ -76,99 +91,139 @@ function listFilesByPrefix (bucketName, prefix, delimiter) {
   const options = {
     prefix: prefix
   };
+
   if (delimiter) {
     options.delimiter = delimiter;
   }
 
   // Lists files in the bucket, filtered by a prefix
-  return bucket.getFiles(options)
+  storage
+    .bucket(bucketName)
+    .getFiles(options)
     .then((results) => {
       const files = results[0];
 
       console.log('Files:');
-      files.forEach((file) => console.log(file.name));
-
-      return files;
+      files.forEach((file) => {
+        console.log(file.name);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_list_files_with_prefix]
 }
-// [END storage_list_files_with_prefix]
 
-// [START storage_upload_file]
-function uploadFile (bucketName, fileName) {
+function uploadFile (bucketName, filename) {
+  // [START storage_upload_file]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the local file to upload, e.g. "./local/path/to/file.txt"
+  // const filename = "./local/path/to/file.txt";
+
   // Instantiates a client
   const storage = Storage();
 
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // Uploads a local file to the bucket, e.g. "./local/path/to/file.txt"
-  return bucket.upload(fileName)
-    .then((results) => {
-      const file = results[0];
-
-      console.log(`File ${file.name} uploaded.`);
-
-      return file;
+  // Uploads a local file to the bucket
+  storage
+    .bucket(bucketName)
+    .upload(filename)
+    .then(() => {
+      console.log(`${filename} uploaded to ${bucketName}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_upload_file]
 }
-// [END storage_upload_file]
 
-// [START storage_download_file]
-function downloadFile (bucketName, srcFileName, destFileName) {
+function downloadFile (bucketName, srcFilename, destFilename) {
+  // [START storage_download_file]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the remote file to download, e.g. "file.txt"
+  // const srcFilename = "file.txt";
+
+  // The path to which the file should be downloaded, e.g. "./local/path/to/file.txt"
+  // const destFilename = "./local/path/to/file.txt";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(srcFileName);
 
   const options = {
     // The path to which the file should be downloaded, e.g. "./file.txt"
-    destination: destFileName
+    destination: destFilename
   };
 
   // Downloads the file
-  return file.download(options)
+  storage
+    .bucket(bucketName)
+    .file(srcFilename)
+    .download(options)
     .then(() => {
-      console.log(`File ${file.name} downloaded to ${destFileName}.`);
+      console.log(`gs://${bucketName}/${srcFilename} downloaded to ${destFilename}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_download_file]
 }
-// [END storage_download_file]
 
-// [START storage_delete_file]
-function deleteFile (bucketName, fileName) {
+function deleteFile (bucketName, filename) {
+  // [START storage_delete_file]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to delete, e.g. "file.txt"
+  // const filename = "file.txt";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
 
   // Deletes the file from the bucket
-  return file.delete()
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .delete()
     .then(() => {
-      console.log(`File ${fileName} deleted.`);
+      console.log(`gs://${bucketName}/${filename} deleted.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_delete_file]
 }
-// [END storage_delete_file]
 
-// [START storage_get_metadata]
-function getMetadata (bucketName, fileName) {
+function getMetadata (bucketName, filename) {
+  // [START storage_get_metadata]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to access, e.g. "file.txt"
+  // const filename = "file.txt";
+
   // Instantiates a client
   const storage = Storage();
 
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
-
   // Gets the metadata for the file
-  return file.getMetadata()
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .getMetadata()
     .then((results) => {
       const metadata = results[0];
 
@@ -191,41 +246,54 @@ function getMetadata (bucketName, fileName) {
       console.log(`Content-encoding: ${metadata.contentEncoding}`);
       console.log(`Content-language: ${metadata.contentLanguage}`);
       console.log(`Metadata: ${metadata.metadata}`);
-
-      return metadata;
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_get_metadata]
 }
-// [END storage_get_metadata]
 
-// [START storage_make_public]
-function makePublic (bucketName, fileName) {
+function makePublic (bucketName, filename) {
+  // [START storage_make_public]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to make public, e.g. "file.txt"
+  // const filename = "file.txt";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
 
   // Makes the file public
-  return file.makePublic()
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .makePublic()
     .then(() => {
-      console.log(`File ${file.name} is now public.`);
+      console.log(`gs://${bucketName}/${filename} is now public.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_make_public]
 }
-// [END storage_make_public]
 
-// [START storage_generate_signed_url]
-function generateSignedUrl (bucketName, fileName) {
+function generateSignedUrl (bucketName, filename) {
+  // [START storage_generate_signed_url]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to access, e.g. "file.txt"
+  // const filename = "file.txt";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
 
   // These options will allow temporary read access to the file
   const options = {
@@ -234,66 +302,87 @@ function generateSignedUrl (bucketName, fileName) {
   };
 
   // Get a signed URL for the file
-  return file.getSignedUrl(options)
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .getSignedUrl(options)
     .then((results) => {
       const url = results[0];
 
-      console.log(`The signed url for ${file.name} is ${url}.`);
-
-      return url;
+      console.log(`The signed url for ${filename} is ${url}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_generate_signed_url]
 }
-// [END storage_generate_signed_url]
 
-// [START storage_move_file]
-function moveFile (bucketName, srcFileName, destFileName) {
+function moveFile (bucketName, srcFilename, destFilename) {
+  // [START storage_move_file]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to move, e.g. "file.txt"
+  // const srcFilename = "file.txt";
+
+  // The destination path for the file, e.g. "moved.txt"
+  // const destFilename = "moved.txt";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(srcFileName);
 
   // Moves the file within the bucket
-  return file.move(destFileName)
+  storage
+    .bucket(bucketName)
+    .file(srcFilename)
+    .move(destFilename)
     .then(() => {
-      console.log(`File ${file.name} moved to ${destFileName}.`);
+      console.log(`gs://${bucketName}/${srcFilename} moved to gs://${bucketName}/${destFilename}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_move_file]
 }
-// [END storage_move_file]
 
-// [START storage_copy_file]
-function copyFile (srcBucketName, srcFileName, destBucketName, destFileName) {
+function copyFile (srcBucketName, srcFilename, destBucketName, destFilename) {
+  // [START storage_copy_file]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the source bucket, e.g. "my-bucket"
+  // const srcBucketName = "my-bucket";
+
+  // The name of the source file, e.g. "file.txt"
+  // const srcFilename = "file.txt";
+
+  // The destination bucket, e.g. "my-other-bucket"
+  // const destBucketName = "my-other-bucket";
+
+  // The destination filename, e.g. "file.txt"
+  // const destFilename = "file.txt";
+
   // Instantiates a client
   const storage = Storage();
 
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(srcBucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(srcFileName);
-
-  // References another existing bucket, e.g. "my-other-bucket"
-  const destBucket = storage.bucket(destBucketName);
-
-  // Creates a reference to a destination file, e.g. "file.txt"
-  const destFile = destBucket.file(destFileName);
-
   // Copies the file to the other bucket
-  return file.copy(destFile)
-    .then((results) => {
-      const file = results[0];
-
-      console.log(`File ${srcFileName} copied to ${file.name} in ${destBucket.name}.`);
-
-      return file;
+  storage
+    .bucket(srcBucketName)
+    .file(srcFilename)
+    .copy(storage.bucket(destBucketName).file(destFilename))
+    .then(() => {
+      console.log(`gs://${srcBucketName}/${srcFilename} copied to gs://${destBucketName}/${destFilename}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_copy_file]
 }
-// [END storage_copy_file]
 
-require(`yargs`) // eslint-disable-line
+const cli = require(`yargs`)
   .demand(1)
   .command(
     `list <bucketName> [prefix] [delimiter]`,
@@ -368,5 +457,8 @@ require(`yargs`) // eslint-disable-line
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/storage/docs`)
   .help()
-  .strict()
-  .argv;
+  .strict();
+
+if (module === require.main) {
+  cli.parse(process.argv.slice(2));
+}

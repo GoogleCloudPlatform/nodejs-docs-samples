@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,35 +23,48 @@
 
 'use strict';
 
-const Storage = require('@google-cloud/storage');
-
-// [START storage_print_bucket_acl]
 function printBucketAcl (bucketName) {
+  // [START storage_print_bucket_acl]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
   // Instantiates a client
   const storage = Storage();
 
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
   // Gets the ACL for the bucket
-  return bucket.acl.get()
+  storage
+    .bucket(bucketName)
+    .acl
+    .get()
     .then((results) => {
       const acls = results[0];
 
-      acls.forEach((acl) => console.log(`${acl.role}: ${acl.entity}`));
-
-      return acls;
+      acls.forEach((acl) => {
+        console.log(`${acl.role}: ${acl.entity}`);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_print_bucket_acl]
 }
-// [END storage_print_bucket_acl]
 
-// [START storage_print_bucket_acl_for_user]
 function printBucketAclForUser (bucketName, userEmail) {
+  // [START storage_print_bucket_acl_for_user]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The email of the user to check, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
 
   const options = {
     // Specify the user
@@ -59,124 +72,198 @@ function printBucketAclForUser (bucketName, userEmail) {
   };
 
   // Gets the user's ACL for the bucket
-  return bucket.acl.get(options)
+  storage
+    .bucket(bucketName)
+    .acl
+    .get(options)
     .then((results) => {
       const aclObject = results[0];
 
       console.log(`${aclObject.role}: ${aclObject.entity}`);
-
-      return aclObject;
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_print_bucket_acl_for_user]
 }
-// [END storage_print_bucket_acl_for_user]
 
-// [START storage_add_bucket_owner]
 function addBucketOwner (bucketName, userEmail) {
+  // [START storage_add_bucket_owner]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The email of the user to add, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
 
   // Makes the user an owner of the bucket. You can use addAllUsers(),
   // addDomain(), addProject(), addGroup(), and addAllAuthenticatedUsers()
   // to grant access to different types of entities. You can also use "readers"
   // and "writers" to grant different roles.
-  return bucket.acl.owners.addUser(userEmail)
+  storage
+    .bucket(bucketName)
+    .acl
+    .owners
+    .addUser(userEmail)
     .then(() => {
-      console.log(`Added user ${userEmail} as an owner on bucket ${bucket.name}.`);
+      console.log(`Added user ${userEmail} as an owner on bucket ${bucketName}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_add_bucket_owner]
 }
-// [END storage_add_bucket_owner]
 
-// [START storage_remove_bucket_owner]
 function removeBucketOwner (bucketName, userEmail) {
+  // [START storage_remove_bucket_owner]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The email of the user to remove, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
 
   // Removes the user from the access control list of the bucket. You can use
   // deleteAllUsers(), deleteDomain(), deleteProject(), deleteGroup(), and
   // deleteAllAuthenticatedUsers() to remove access for different types of entities.
-  return bucket.acl.owners.deleteUser(userEmail)
+  storage
+    .bucket(bucketName)
+    .acl
+    .owners
+    .deleteUser(userEmail)
     .then(() => {
-      console.log(`Removed user ${userEmail} from bucket ${bucket.name}.`);
+      console.log(`Removed user ${userEmail} from bucket ${bucketName}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_remove_bucket_owner]
 }
-// [END storage_remove_bucket_owner]
 
-// [START storage_add_bucket_default_owner]
 function addBucketDefaultOwner (bucketName, userEmail) {
+  // [START storage_add_bucket_default_owner]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The email of the user to add, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
 
   // Makes the user an owner in the default ACL of the bucket. You can use
   // addAllUsers(), addDomain(), addProject(), addGroup(), and
   // addAllAuthenticatedUsers() to grant access to different types of entities.
   // You can also use "readers" and "writers" to grant different roles.
-  return bucket.acl.default.owners.addUser(userEmail)
+  storage
+    .bucket(bucketName)
+    .acl
+    .default
+    .owners
+    .addUser(userEmail)
     .then(() => {
-      console.log(`Added user ${userEmail} as an owner on bucket ${bucket.name}.`);
+      console.log(`Added user ${userEmail} as an owner on bucket ${bucketName}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_add_bucket_default_owner]
 }
-// [END storage_add_bucket_default_owner]
 
-// [START storage_remove_bucket_default_owner]
 function removeBucketDefaultOwner (bucketName, userEmail) {
+  // [START storage_remove_bucket_default_owner]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The email of the user to remove, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
 
   // Removes the user from the access control list of the bucket. You can use
   // deleteAllUsers(), deleteDomain(), deleteProject(), deleteGroup(), and
   // deleteAllAuthenticatedUsers() to remove access for different types of entities.
-  return bucket.acl.default.owners.deleteUser(userEmail)
+  storage
+    .bucket(bucketName)
+    .acl
+    .default
+    .owners
+    .deleteUser(userEmail)
     .then(() => {
-      console.log(`Removed user ${userEmail} from bucket ${bucket.name}.`);
+      console.log(`Removed user ${userEmail} from bucket ${bucketName}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_remove_bucket_default_owner]
 }
-// [END storage_remove_bucket_default_owner]
 
-// [START storage_print_file_acl]
-function printFileAcl (bucketName, fileName) {
+function printFileAcl (bucketName, filename) {
+  // [START storage_print_file_acl]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to access, e.g. "file.txt"
+  // const filename = "file.txt";
+
   // Instantiates a client
   const storage = Storage();
 
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
-
   // Gets the ACL for the file
-  return file.acl.get()
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .acl
+    .get()
     .then((results) => {
       const acls = results[0];
 
-      acls.forEach((acl) => console.log(`${acl.role}: ${acl.entity}`));
-
-      return acls;
+      acls.forEach((acl) => {
+        console.log(`${acl.role}: ${acl.entity}`);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_print_file_acl]
 }
-// [END storage_print_file_acl]
 
-// [START storage_print_file_acl_for_user]
-function printFileAclForUser (bucketName, fileName, userEmail) {
+function printFileAclForUser (bucketName, filename, userEmail) {
+  // [START storage_print_file_acl_for_user]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to access, e.g. "file.txt"
+  // const filename = "file.txt";
+
+  // The email of the user to check, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
 
   const options = {
     // Specify the user
@@ -184,61 +271,94 @@ function printFileAclForUser (bucketName, fileName, userEmail) {
   };
 
   // Gets the user's ACL for the file
-  return file.acl.get(options)
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .acl
+    .get(options)
     .then((results) => {
       const aclObject = results[0];
 
       console.log(`${aclObject.role}: ${aclObject.entity}`);
-
-      return aclObject;
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_print_file_acl_for_user]
 }
-// [END storage_print_file_acl_for_user]
 
-// [START storage_add_file_owner]
-function addFileOwner (bucketName, fileName, userEmail) {
+function addFileOwner (bucketName, filename, userEmail) {
+  // [START storage_add_file_owner]
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to access, e.g. "file.txt"
+  // const filename = "file.txt";
+
+  // The email of the user to add, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
 
   // Makes the user an owner of the file. You can use addAllUsers(),
   // addDomain(), addProject(), addGroup(), and addAllAuthenticatedUsers()
   // to grant access to different types of entities. You can also use "readers"
   // and "writers" to grant different roles.
-  return file.acl.owners.addUser(userEmail)
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .acl
+    .owners
+    .addUser(userEmail)
     .then(() => {
-      console.log(`Added user ${userEmail} as an owner on file ${file.name}.`);
+      console.log(`Added user ${userEmail} as an owner on file ${filename}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
+  // [END storage_add_file_owner]
 }
-// [END storage_add_file_owner]
 
 // [START storage_remove_file_owner]
-function removeFileOwner (bucketName, fileName, userEmail) {
+function removeFileOwner (bucketName, filename, userEmail) {
+  // Imports the Google Cloud client library
+  const Storage = require('@google-cloud/storage');
+
+  // The name of the bucket to access, e.g. "my-bucket"
+  // const bucketName = "my-bucket";
+
+  // The name of the file to access, e.g. "file.txt"
+  // const filename = "file.txt";
+
+  // The email of the user to remove, e.g. "developer@company.com"
+  // const userEmail = "developer@company.com";
+
   // Instantiates a client
   const storage = Storage();
-
-  // References an existing bucket, e.g. "my-bucket"
-  const bucket = storage.bucket(bucketName);
-
-  // References an existing file, e.g. "file.txt"
-  const file = bucket.file(fileName);
 
   // Removes the user from the access control list of the file. You can use
   // deleteAllUsers(), deleteDomain(), deleteProject(), deleteGroup(), and
   // deleteAllAuthenticatedUsers() to remove access for different types of entities.
-  return file.acl.owners.deleteUser(userEmail)
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .acl
+    .owners
+    .deleteUser(userEmail)
     .then(() => {
-      console.log(`Removed user ${userEmail} from file ${file.name}.`);
+      console.log(`Removed user ${userEmail} from file ${filename}.`);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
     });
 }
 // [END storage_remove_file_owner]
 
-require(`yargs`) // eslint-disable-line
+const cli = require(`yargs`)
   .demand(1)
   .command(
     `print-bucket-acl <bucketName>`,
@@ -314,5 +434,8 @@ require(`yargs`) // eslint-disable-line
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/storage/docs/access-control/create-manage-lists`)
   .help()
-  .strict()
-  .argv;
+  .strict();
+
+if (module === require.main) {
+  cli.parse(process.argv.slice(2));
+}

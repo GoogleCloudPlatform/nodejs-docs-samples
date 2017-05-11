@@ -15,4 +15,35 @@
 
 require('shelljs/global');
 
-rm('-rf', 'coverage');
+const storage = require('@google-cloud/storage')();
+
+const args = process.argv.slice(2);
+
+if (!args.length || args[0] === 'coverage') {
+  rm('-rf', 'coverage');
+} else if (args[0] === 'buckets') {
+  const NAME_REG_EXP = /^nodejs-docs-samples-test-[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/;
+
+  storage
+    .getBuckets()
+    .then(([buckets]) => {
+      let promise = Promise.resolve();
+
+      buckets
+        .filter((bucket) => NAME_REG_EXP.test(bucket.name))
+        .forEach((bucket) => {
+          promise = promise.then(() => {
+            return bucket.deleteFiles()
+              .then(() => bucket.deleteFiles(), console.error)
+              .then(() => {
+                console.log(`Deleting ${bucket.name}`);
+                return bucket.delete();
+              }, console.error)
+              .catch(console.error);
+          });
+        });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+}

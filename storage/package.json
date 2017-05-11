@@ -23,13 +23,13 @@
     "googleapis": "19.0.0",
     "moment": "2.18.1",
     "safe-buffer": "5.0.1",
-    "yargs": "7.1.0"
+    "yargs": "8.0.1"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.13",
     "ava": "0.19.1",
     "proxyquire": "1.7.11",
-    "sinon": "2.1.0",
+    "sinon": "2.2.0",
     "uuid": "3.0.1"
   },
   "cloud-repo-tools": {

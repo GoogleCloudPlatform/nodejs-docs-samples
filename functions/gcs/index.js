@@ -39,7 +39,7 @@ function getFileStream (file) {
  * Reads file and responds with the number of words in the file.
  *
  * @example
- * gcloud alpha functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
+ * gcloud alpha functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","name":"sample.txt"}'
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data A Google Cloud Storage File object.

@@ -23,14 +23,14 @@
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
-    "express": "4.15.2",
-    "winston": "2.3.1"
+    "@google-cloud/error-reporting": "0.1.1",
+    "express": "4.15.2"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.14",
     "ava": "0.19.1",
-    "proxyquire": "1.7.11",
-    "sinon": "2.1.0"
+    "proxyquire": "1.8.0",
+    "sinon": "2.2.0"
   },
   "cloud-repo-tools": {
     "test": {

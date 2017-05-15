@@ -44,13 +44,13 @@ test(`should analyze labels in a local file`, async (t) => {
 
 // analyze_shots
 test(`should analyze shots in a GCS file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} shots gs://nodejs-docs-samples/video/gbike_dinosaur.mp4`, cwd);
+  const output = await tools.runAsync(`${cmd} shots gs://nodejs-docs-samples/video/google_gmail.mp4`, cwd);
   t.regex(output, /Scene 0:/);
 });
 
 // analyze_safe_search
 test(`should analyze safe search results in a GCS file`, async (t) => {
   const output = await tools.runAsync(`${cmd} safe-search gs://nodejs-docs-samples/video/google_gmail.mp4`, cwd);
-  t.regex(output, /Frame \d+/);
-  t.regex(output, /Spoof: \d+/);
+  t.regex(output, /Time: \d\.\d+s/);
+  t.regex(output, /Spoof:/);
 });

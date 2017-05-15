@@ -44,7 +44,8 @@
   "scripts": {
     "check": "yarn check --strict-semver --integrity",
     "lint": "samples lint",
-    "pretest": "npm run lint && ./scripts/clean",
+    "generate": "node ./scripts/generate",
+    "pretest": "npm run lint && node ./scripts/clean coverage",
     "unit-test": "ava --verbose -T 30s functions/**/test/**/*.test.js",
     "unit-cover": "nyc --cache npm test && nyc report --reporter=html",
     "system-test": "ava --verbose -T 30s vision/system-test/**/*.test.js",
@@ -53,9 +54,10 @@
     "cover": "nyc --cache npm run test && nyc report --reporter=html"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.4",
+    "@google-cloud/nodejs-repo-tools": "1.4.13",
+    "@google-cloud/storage": "1.1.0",
     "ava": "0.19.1",
-    "nyc": "10.2.0",
+    "nyc": "10.3.2",
     "shelljs": "0.7.7"
   }
 }

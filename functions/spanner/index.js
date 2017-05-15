@@ -23,10 +23,10 @@ const Spanner = require('@google-cloud/spanner');
 const spanner = Spanner();
 
 // Your Cloud Spanner instance ID
-const instanceId = 'my-instance';
+const instanceId = 'test-instance';
 
 // Your Cloud Spanner database ID
-const databaseId = 'my-database';
+const databaseId = 'example-db';
 
 /**
  * HTTP Cloud Function.

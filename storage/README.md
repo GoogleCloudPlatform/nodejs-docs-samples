@@ -4,7 +4,7 @@
 
 [![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-storage.svg)]()
 
-[Cloud Storage](https://cloud.google.com/storage/docs) allows world-wide storage and retrieval of any amount of data at any time.
+[Cloud Storage](https://cloud.google.com/storage/docs) allows world-wide storage and retrieval of any amount of data at any time. You can use Google Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.
 
 ## Table of Contents
 
@@ -22,11 +22,11 @@
 1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
 1.  Install dependencies:
 
-    With `npm`:
+    With **npm**:
 
         npm install
 
-    With `yarn`:
+    With **yarn**:
 
         yarn install
 
@@ -36,7 +36,6 @@
 ## Samples
 
 ### ACL (Access Control Lists)
-
 
 View the [documentation][acl_0_docs] or the [source code][acl_0_code].
 
@@ -78,7 +77,6 @@ For more information, see https://cloud.google.com/storage/docs/access-control/c
 
 ### Buckets
 
-
 View the [documentation][buckets_1_docs] or the [source code][buckets_1_code].
 
 __Usage:__ `node buckets.js --help`
@@ -105,7 +103,6 @@ For more information, see https://cloud.google.com/storage/docs
 
 ### Encryption
 
-
 View the [documentation][encryption_2_docs] or the [source code][encryption_2_code].
 
 __Usage:__ `node encryption.js --help`
@@ -113,8 +110,8 @@ __Usage:__ `node encryption.js --help`
 ```
 Commands:
   generate-encryption-key                                   Generate a sample encryption key.
-  upload <bucketName> <srcFileName> <destFileName> <key>    Encrypts and uploads a file.
-  download <bucketName> <srcFileName> <destFileName> <key>  Decrypts and downloads a file.
+  upload <bucketName> <srcFilename> <destFilename> <key>    Encrypts and uploads a file.
+  download <bucketName> <srcFilename> <destFilename> <key>  Decrypts and downloads a file.
   rotate <bucketName> <fileName> <oldkey> <newKey>          Rotates encryption keys for a file.
 
 Options:
@@ -136,7 +133,6 @@ For more information, see https://cloud.google.com/storage/docs
 [encryption_2_code]: encryption.js
 
 ### Files
-
 
 View the [documentation][files_3_docs] or the [source code][files_3_code].
 
@@ -181,7 +177,6 @@ For more information, see https://cloud.google.com/storage/docs
 
 ### Storage Transfer API
 
-
 View the [documentation][transfer_4_docs] or the [source code][transfer_4_code].
 
 __Usage:__ `node transfer.js --help`
@@ -206,15 +201,14 @@ For more information, see https://cloud.google.com/storage/transfer
 
 ## Running the tests
 
-1.  Set the `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment
-    variables.
+1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
 
 1.  Run the tests:
 
-    With `npm`:
+    With **npm**:
 
         npm test
 
-    With `yarn`:
+    With **yarn**:
 
         yarn test

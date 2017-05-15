@@ -18,11 +18,11 @@ The [Cloud Prediction API](https://cloud.google.com/prediction/docs) provides a 
 1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
 1.  Install dependencies:
 
-    With `npm`:
+    With **npm**:
 
         npm install
 
-    With `yarn`:
+    With **yarn**:
 
         yarn install
 
@@ -32,7 +32,6 @@ The [Cloud Prediction API](https://cloud.google.com/prediction/docs) provides a 
 ## Samples
 
 ### Hosted Models
-
 
 View the [documentation][hostedmodels_0_docs] or the [source code][hostedmodels_0_code].
 
@@ -47,15 +46,14 @@ node hostedmodels "Hello world"
 
 ## Running the tests
 
-1.  Set the `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment
-    variables.
+1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
 
 1.  Run the tests:
 
-    With `npm`:
+    With **npm**:
 
         npm test
 
-    With `yarn`:
+    With **yarn**:
 
         yarn test

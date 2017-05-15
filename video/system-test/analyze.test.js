@@ -25,19 +25,32 @@ const cmd = `node analyze.js`;
 const cwd = path.join(__dirname, `..`);
 
 // analyze_faces
-test(`should analyze faces`, async (t) => {
+test(`should analyze faces in a GCS file`, async (t) => {
   const output = await tools.runAsync(`${cmd} faces gs://nodejs-docs-samples/video/google_gmail.mp4`, cwd);
   t.regex(output, /Thumbnail size: \d+/);
 });
 
-// analyze_labels
-test(`should analyze labels`, async (t) => {
-  const output = await tools.runAsync(`${cmd} labels gs://nodejs-docs-samples/video/cat.mp4`, cwd);
+// analyze_labels_gcs
+test(`should analyze labels in a GCS file`, async (t) => {
+  const output = await tools.runAsync(`${cmd} labels-gcs gs://nodejs-docs-samples/video/cat.mp4`, cwd);
+  t.regex(output, /Label description: Whiskers/);
+});
+
+// analyze_labels_local
+test(`should analyze labels in a local file`, async (t) => {
+  const output = await tools.runAsync(`${cmd} labels-file resources/cat.mp4`, cwd);
   t.regex(output, /Label description: Whiskers/);
 });
 
 // analyze_shots
-test(`should analyze shots`, async (t) => {
+test(`should analyze shots in a GCS file`, async (t) => {
   const output = await tools.runAsync(`${cmd} shots gs://nodejs-docs-samples/video/gbike_dinosaur.mp4`, cwd);
   t.regex(output, /Scene 0:/);
+});
+
+// analyze_safe_search
+test(`should analyze safe search results in a GCS file`, async (t) => {
+  const output = await tools.runAsync(`${cmd} safe-search gs://nodejs-docs-samples/video/google_gmail.mp4`, cwd);
+  t.regex(output, /Frame \d+/);
+  t.regex(output, /Spoof: \d+/);
 });

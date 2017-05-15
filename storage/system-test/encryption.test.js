@@ -69,7 +69,7 @@ test.serial(`should generate a key`, async (t) => {
 
 test.serial(`should upload a file`, async (t) => {
   const output = await tools.runAsync(`${cmd} upload ${bucketName} ${filePath} ${fileName} ${key}`, cwd);
-  t.is(output, `File ${filePath} uploaded to ${fileName}.`);
+  t.is(output, `File ${filePath} uploaded to gs://${bucketName}/${fileName}.`);
   const [exists] = await bucket.file(fileName).exists();
   t.true(exists);
 });

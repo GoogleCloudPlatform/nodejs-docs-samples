@@ -18,14 +18,14 @@
   },
   "dependencies": {
     "@google-cloud/debug-agent": "1.0.0",
-    "pug": "2.0.0-beta.12",
+    "pug": "2.0.0-rc.1",
     "safe-buffer": "5.0.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.7",
+    "@google-cloud/nodejs-repo-tools": "1.4.12",
     "ava": "0.19.1",
     "proxyquire": "1.7.11",
-    "sinon": "2.1.0"
+    "sinon": "2.2.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

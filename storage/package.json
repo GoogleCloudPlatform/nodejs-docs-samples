@@ -19,7 +19,7 @@
     "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/storage": "1.1.0",
+    "@google-cloud/storage": "1.1.1",
     "googleapis": "19.0.0",
     "moment": "2.18.1",
     "safe-buffer": "5.0.1",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.14",
     "ava": "0.19.1",
-    "proxyquire": "1.7.11",
+    "proxyquire": "1.8.0",
     "sinon": "2.2.0",
     "uuid": "3.0.1"
   },

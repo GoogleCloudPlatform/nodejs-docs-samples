@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.14",
-    "@google-cloud/storage": "1.1.0",
+    "@google-cloud/storage": "1.1.1",
     "ava": "0.19.1",
     "nyc": "10.3.2",
     "shelljs": "0.7.7"

@@ -108,15 +108,12 @@ function downloadEncryptedFile (bucketName, srcFilename, destFilename, key) {
     destination: destFilename
   };
 
-  const file = storage
-    .bucket(bucketName)
-    .file(srcFilename);
-
-  file.setEncryptionKey(Buffer.from(key, 'base64'));
-
   // Descrypts and downloads the file. This can only be done with the key used
   // to encrypt and upload the file.
-  file
+  storage
+    .bucket(bucketName)
+    .file(srcFilename)
+    .setEncryptionKey(Buffer.from(key, 'base64'))
     .download(options)
     .then(() => {
       console.log(`File ${srcFilename} downloaded to ${destFilename}.`);

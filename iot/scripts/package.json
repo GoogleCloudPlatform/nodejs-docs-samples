@@ -1,0 +1,10 @@
+{
+  "name": "nodejs-docs-samples-iot-scripts",
+  "version": "1.0.0",
+  "main": "iam.js",
+  "author": "Google Inc.",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@google-cloud/pubsub": "0.12.0"
+  }
+}

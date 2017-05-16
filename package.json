@@ -54,7 +54,7 @@
     "cover": "nyc --cache npm run test && nyc report --reporter=html"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.13",
+    "@google-cloud/nodejs-repo-tools": "1.4.14",
     "@google-cloud/storage": "1.1.0",
     "ava": "0.19.1",
     "nyc": "10.3.2",

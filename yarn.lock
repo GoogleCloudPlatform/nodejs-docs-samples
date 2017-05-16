@@ -60,9 +60,9 @@
     string-format-obj "^1.1.0"
     through2 "^2.0.3"
 
-"@google-cloud/nodejs-repo-tools@1.4.13":
-  version "1.4.13"
-  resolved "https://registry.yarnpkg.com/@google-cloud/nodejs-repo-tools/-/nodejs-repo-tools-1.4.13.tgz#005556d8b93cb29f16018988e466cf0f9dc6d91f"
+"@google-cloud/nodejs-repo-tools@1.4.14":
+  version "1.4.14"
+  resolved "https://registry.yarnpkg.com/@google-cloud/nodejs-repo-tools/-/nodejs-repo-tools-1.4.14.tgz#b778687bcd798ea172a01d2b92db43ad95a8b0ce"
   dependencies:
     ava "0.19.1"
     colors "1.1.2"

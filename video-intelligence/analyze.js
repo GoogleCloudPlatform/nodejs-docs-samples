@@ -45,7 +45,12 @@ function analyzeFaces (gcsUri) {
       faces.forEach((face, faceIdx) => {
         console.log('\tThumbnail size:', face.thumbnail.length);
         face.segments.forEach((segment, segmentIdx) => {
-          console.log(`\tTrack ${segmentIdx} of face ${faceIdx}: frames ${segment.startTimeOffset} to ${segment.endTimeOffset}`);
+          if (segment.startTimeOffset === -1 && segment.endTimeOffset === -1) {
+            console.log(`\tEntire video`);
+          } else {
+            console.log(`\tStart: ${segment.startTimeOffset / 1e6}s`);
+            console.log(`\tEnd: ${segment.endTimeOffset / 1e6}s`);
+          }
         });
       });
     })
@@ -86,7 +91,12 @@ function analyzeLabelsGCS (gcsUri) {
         console.log('Label description:', label.description);
         console.log('Locations:');
         label.locations.forEach((location) => {
-          console.log(`\tFrames ${location.segment.startTimeOffset} to ${location.segment.endTimeOffset}`);
+          if (location.segment.startTimeOffset === -1 && location.segment.endTimeOffset === -1) {
+            console.log(`\tEntire video`);
+          } else {
+            console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
+            console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
+          }
         });
       });
     })
@@ -133,7 +143,12 @@ function analyzeLabelsLocal (path) {
         console.log('Label description:', label.description);
         console.log('Locations:');
         label.locations.forEach((location) => {
-          console.log(`\tFrames ${location.segment.startTimeOffset} to ${location.segment.endTimeOffset}`);
+          if (location.segment.startTimeOffset === -1 && location.segment.endTimeOffset === -1) {
+            console.log(`\tEntire video`);
+          } else {
+            console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
+            console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
+          }
         });
       });
     })
@@ -172,8 +187,12 @@ function analyzeShots (gcsUri) {
       console.log('Shot changes:');
       shotChanges.forEach((shot, shotIdx) => {
         console.log(`Scene ${shotIdx}:`);
-        console.log(`\tStart: ${shot.startTimeOffset}`);
-        console.log(`\tEnd: ${shot.endTimeOffset}`);
+        if (shot.startTimeOffset === -1 && shot.endTimeOffset === -1) {
+          console.log(`\tEntire video`);
+        } else {
+          console.log(`\tStart: ${shot.startTimeOffset}`);
+          console.log(`\tEnd: ${shot.endTimeOffset}`);
+        }
       });
     })
     .catch((err) => {
@@ -198,6 +217,9 @@ function analyzeSafeSearch (gcsUri) {
     features: ['SAFE_SEARCH_DETECTION']
   };
 
+  // Human-readable likelihoods
+  const likelihoods = ['UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE', 'LIKELY', 'VERY_LIKELY'];
+
   // Detects unsafe content
   video.annotateVideo(request)
     .then((results) => {
@@ -210,12 +232,12 @@ function analyzeSafeSearch (gcsUri) {
       const safeSearchResults = results[0].annotationResults[0].safeSearchAnnotations;
       console.log('Safe search results:');
       safeSearchResults.forEach((result) => {
-        console.log(`Frame ${result.timeOffset}:`);
-        console.log(`\tAdult: ${result.adult}`);
-        console.log(`\tSpoof: ${result.spoof}`);
-        console.log(`\tMedical: ${result.medical}`);
-        console.log(`\tViolent: ${result.violent}`);
-        console.log(`\tRacy: ${result.racy}`);
+        console.log(`Time: ${result.timeOffset / 1e6}s`);
+        console.log(`\tAdult: ${likelihoods[result.adult]}`);
+        console.log(`\tSpoof: ${likelihoods[result.spoof]}`);
+        console.log(`\tMedical: ${likelihoods[result.medical]}`);
+        console.log(`\tViolent: ${likelihoods[result.violent]}`);
+        console.log(`\tRacy: ${likelihoods[result.racy]}`);
       });
     })
     .catch((err) => {
@@ -256,11 +278,11 @@ require(`yargs`) // eslint-disable-line
     {},
     (opts) => analyzeSafeSearch(opts.gcsUri)
   )
-  .example(`node $0 faces gs://my-bucket/my-video.mp4`)
-  .example(`node $0 shots gs://my-bucket/my-video.mp4`)
-  .example(`node $0 labels-gcs gs://my-bucket/my-video.mp4`)
-  .example(`node $0 labels-file my-video.mp4`)
-  .example(`node $0 safe-search gs://my-bucket/my-video.mp4`)
+  .example(`node $0 faces gs://demomaker/volleyball_court.mp4`)
+  .example(`node $0 shots gs://demomaker/volleyball_court.mp4`)
+  .example(`node $0 labels-gcs gs://demomaker/volleyball_court.mp4`)
+  .example(`node $0 labels-file cat.mp4`)
+  .example(`node $0 safe-search gs://demomaker/volleyball_court.mp4`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/video-intelligence/docs`)

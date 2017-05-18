@@ -24,8 +24,6 @@ const cwd = path.join(__dirname, `..`);
 
 test(`should analyze a hardcoded video`, async (t) => {
   const output = await tools.runAsync(cmd, cwd);
-  t.regex(output, /Label description:/);
-  t.regex(output, /Frames \d+ to \d+/);
-  t.regex(output, /Track \d+ of face \d+: frames \d+ to \d+/);
-  t.regex(output, /Scene \d+/);
+  t.regex(output, /Label Property occurs at:/);
+  t.regex(output, /Scene \d+ occurs from:/);
 });

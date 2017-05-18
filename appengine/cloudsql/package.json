@@ -24,7 +24,9 @@
   },
   "dependencies": {
     "express": "4.15.2",
+    "knex": "^0.13.0",
     "mysql": "2.13.0",
+    "pg": "^6.2.3",
     "prompt": "1.0.0"
   },
   "devDependencies": {
@@ -35,19 +37,18 @@
     "test": {
       "app": {
         "requiredEnvVars": [
-          "MYSQL_USER",
-          "MYSQL_PASSWORD",
-          "MYSQL_DATABASE",
-          "YOUR_INSTANCE_CONNECTION_NAME"
+          "SQL_CLIENT",
+          "SQL_USER",
+          "SQL_PASSWORD",
+          "SQL_DATABASE",
+          "INSTANCE_CONNECTION_NAME"
         ],
         "msg": "Last 10 visits:",
-        "args": ["server.js"]
-      },
-      "deploy": {
-        "substitutions": "YOUR_USER=$MYSQL_USER,YOUR_PASSWORD=$MYSQL_PASSWORD,YOUR_DATABASE=$MYSQL_DATABASE,YOUR_INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME"
+        "substitutions": "YOUR_SQL_CLIENT=$SQL_CLIENT,YOUR_USER=$SQL_USER,YOUR_PASSWORD=$SQL_PASSWORD,YOUR_DATABASE=$SQL_DATABASE,YOUR_INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME",
+        "args": [
+          "server.js"
+        ]
       }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
+    }
   }
 }

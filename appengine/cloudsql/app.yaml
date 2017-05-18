@@ -17,11 +17,12 @@ env: flex
 
 # [START env]
 env_variables:
-  MYSQL_USER: YOUR_USER
-  MYSQL_PASSWORD: YOUR_PASSWORD
-  MYSQL_DATABASE: YOUR_DATABASE
+  SQL_USER: YOUR_USER
+  SQL_PASSWORD: YOUR_PASSWORD
+  SQL_DATABASE: YOUR_DATABASE
   # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
   INSTANCE_CONNECTION_NAME: YOUR_INSTANCE_CONNECTION_NAME
+  SQL_CLIENT: YOUR_SQL_CLIENT # either 'pg' or 'mysql' (all lowercase)
 # [END env]
 
 # [START cloudsql_settings]

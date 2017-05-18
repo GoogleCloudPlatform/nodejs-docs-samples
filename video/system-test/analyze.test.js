@@ -26,31 +26,48 @@ const cwd = path.join(__dirname, `..`);
 
 // analyze_faces
 test(`should analyze faces in a GCS file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} faces gs://nodejs-docs-samples/video/google_gmail.mp4`, cwd);
+  const output = await tools.runAsync(`${cmd} faces gs://demomaker/larry_sergey_ice_bucket_short.mp4`, cwd);
   t.regex(output, /Thumbnail size: \d+/);
+  t.regex(output, /Start: \d+\.\d+s/);
+  t.regex(output, /End: \d+\.\d+s/);
 });
 
-// analyze_labels_gcs
-test(`should analyze labels in a GCS file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} labels-gcs gs://nodejs-docs-samples/video/cat.mp4`, cwd);
-  t.regex(output, /Label description: Whiskers/);
+// analyze_labels_gcs (one scene)
+test(`should analyze labels in a GCS file with one scene`, async (t) => {
+  const output = await tools.runAsync(`${cmd} labels-gcs gs://demomaker/tomatoes.mp4`, cwd);
+  t.regex(output, /Label Tomato occurs at:/);
+  t.regex(output, /Entire video/);
+});
+
+// analyze_labels_gcs (multiple scenes)
+test(`should analyze labels in a GCS file with multiple scenes`, async (t) => {
+  const output = await tools.runAsync(`${cmd} labels-gcs gs://demomaker/sushi.mp4`, cwd);
+  t.regex(output, /Label Food occurs at:/);
+  t.regex(output, /Start: \d+\.\d+s/);
+  t.regex(output, /End: \d+\.\d+s/);
 });
 
 // analyze_labels_local
 test(`should analyze labels in a local file`, async (t) => {
   const output = await tools.runAsync(`${cmd} labels-file resources/cat.mp4`, cwd);
-  t.regex(output, /Label description: Whiskers/);
+  t.regex(output, /Label Whiskers occurs at:/);
+  t.regex(output, /Entire video/);
 });
 
-// analyze_shots
-test(`should analyze shots in a GCS file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} shots gs://nodejs-docs-samples/video/google_gmail.mp4`, cwd);
-  t.regex(output, /Scene 0:/);
+// analyze_shots (multiple shots)
+test(`should analyze shots in a GCS file with multiple shots`, async (t) => {
+  const output = await tools.runAsync(`${cmd} shots gs://demomaker/sushi.mp4`, cwd);
+  t.regex(output, /Shot 0 occurs from:/);
+});
+
+// analyze_shots (one shot)
+test(`should analyze shots in a GCS file with one shot`, async (t) => {
+  const output = await tools.runAsync(`${cmd} shots gs://demomaker/tomatoes.mp4`, cwd);
+  t.regex(output, /The entire video is one shot./);
 });
 
 // analyze_safe_search
 test(`should analyze safe search results in a GCS file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} safe-search gs://nodejs-docs-samples/video/google_gmail.mp4`, cwd);
-  t.regex(output, /Time: \d\.\d+s/);
+  const output = await tools.runAsync(`${cmd} safe-search gs://demomaker/tomatoes.mp4`, cwd);
   t.regex(output, /Spoof:/);
 });

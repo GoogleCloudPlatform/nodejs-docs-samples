@@ -76,9 +76,9 @@
     supertest "3.0.0"
     yargs "8.0.1"
 
-"@google-cloud/storage@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.1.0.tgz#5e905a1aed4c196d5ce75dcdb5e4cd7ce29a0860"
+"@google-cloud/storage@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.1.1.tgz#6590b5ce6e779556c9cc7043bd6449d6bc0781de"
   dependencies:
     "@google-cloud/common" "^0.13.0"
     arrify "^1.0.0"

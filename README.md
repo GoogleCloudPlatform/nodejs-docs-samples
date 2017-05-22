@@ -91,7 +91,7 @@ on Google Cloud Platform.
     Create local credentials by running the following command and following the
     oauth2 flow (read more about the command [here][auth_command]):
 
-        gcloud beta auth application-default login
+        gcloud auth application-default login
 
     In non-Google Cloud environments, GCE instances created without the
     correct scopes, or local workstations where the

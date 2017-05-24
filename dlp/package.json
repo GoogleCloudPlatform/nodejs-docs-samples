@@ -22,6 +22,7 @@
     "google-auth-library": "0.10.0",
     "google-auto-auth": "0.7.0",
     "mime": "1.3.6",
+    "google-proto-files": "0.12.0",
     "request": "2.81.0",
     "request-promise": "4.2.1",
     "safe-buffer": "5.1.0",

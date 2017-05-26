@@ -25,7 +25,7 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const SAMPLE_PATH = path.join(__dirname, `../server.js`);
 
-function getSample () {
+function getSample (sqlClient) {
   const testApp = express();
   sinon.stub(testApp, `listen`).yields();
   const expressMock = sinon.stub().returns(testApp);
@@ -35,27 +35,42 @@ function getSample () {
       userIp: `abcd`
     }
   ];
-  const connectionMock = {
-    query: sinon.stub()
-  };
-  connectionMock.query.onFirstCall().yields();
-  connectionMock.query.onSecondCall().yields(null, resultsMock);
 
-  const mysqlMock = {
-    createConnection: sinon.stub().returns(connectionMock)
+  const knexMock = sinon.stub().returns({
+    insert: sinon.stub().returns(Promise.resolve())
+  });
+  Object.assign(knexMock, {
+    select: sinon.stub().returnsThis(),
+    from: sinon.stub().returnsThis(),
+    orderBy: sinon.stub().returnsThis(),
+    limit: sinon.stub().returns(Promise.resolve(resultsMock))
+  });
+
+  const KnexMock = sinon.stub().returns(knexMock);
+
+  const processMock = {
+    env: {
+      SQL_CLIENT: sqlClient,
+      SQL_USER: 'user',
+      SQL_PASSWORD: 'password',
+      SQL_DATABASE: 'database'
+    }
   };
 
   const app = proxyquire(SAMPLE_PATH, {
-    mysql: mysqlMock,
-    express: expressMock
+    knex: KnexMock,
+    express: expressMock,
+    process: processMock
   });
+
   return {
     app: app,
     mocks: {
       express: expressMock,
       results: resultsMock,
-      connection: connectionMock,
-      mysql: mysqlMock
+      knex: knexMock,
+      Knex: KnexMock,
+      process: processMock
     }
   };
 }
@@ -63,20 +78,47 @@ function getSample () {
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`sets up sample`, (t) => {
-  const sample = getSample();
+test(`should set up sample in MySQL`, (t) => {
+  const sample = getSample('mysql');
 
   t.true(sample.mocks.express.calledOnce);
-  t.true(sample.mocks.mysql.createConnection.calledOnce);
-  t.deepEqual(sample.mocks.mysql.createConnection.firstCall.args[0], {
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-  });
+  t.true(sample.mocks.Knex.calledOnce);
+  t.deepEqual(sample.mocks.Knex.firstCall.args, [{
+    client: 'mysql',
+    connection: {
+      user: sample.mocks.process.env.SQL_USER,
+      password: sample.mocks.process.env.SQL_PASSWORD,
+      database: sample.mocks.process.env.SQL_DATABASE
+    }
+  }]);
 });
 
-test.cb(`should record a visit`, (t) => {
-  const sample = getSample();
+test(`should set up sample in Postgres`, (t) => {
+  const sample = getSample('pg');
+
+  t.true(sample.mocks.express.calledOnce);
+  t.true(sample.mocks.Knex.calledOnce);
+  t.deepEqual(sample.mocks.Knex.firstCall.args, [{
+    client: 'pg',
+    connection: {
+      user: sample.mocks.process.env.SQL_USER,
+      password: sample.mocks.process.env.SQL_PASSWORD,
+      database: sample.mocks.process.env.SQL_DATABASE
+    }
+  }]);
+});
+
+test(`should validate SQL_CLIENT env var`, (t) => {
+  const expected = `The SQL_CLIENT environment variable must be set to lowercase 'pg' or 'mysql'.`;
+  t.throws(() => { getSample(null); }, expected);
+  t.throws(() => { getSample('foo'); }, expected);
+
+  t.notThrows(() => { getSample('mysql'); });
+  t.notThrows(() => { getSample('pg'); });
+});
+
+test.cb(`should record a visit in mysql`, (t) => {
+  const sample = getSample('mysql');
   const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
   request(sample.app)
@@ -89,10 +131,10 @@ test.cb(`should record a visit`, (t) => {
 });
 
 test.cb(`should handle insert error`, (t) => {
-  const sample = getSample();
+  const sample = getSample('mysql');
   const expectedResult = `insert_error`;
 
-  sample.mocks.connection.query.onFirstCall().yields(expectedResult);
+  sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
 
   request(sample.app)
     .get(`/`)
@@ -104,10 +146,10 @@ test.cb(`should handle insert error`, (t) => {
 });
 
 test.cb(`should handle read error`, (t) => {
-  const sample = getSample();
+  const sample = getSample('mysql');
   const expectedResult = `read_error`;
 
-  sample.mocks.connection.query.onSecondCall().yields(expectedResult);
+  sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
 
   request(sample.app)
     .get(`/`)

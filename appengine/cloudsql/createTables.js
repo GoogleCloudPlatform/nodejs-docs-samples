@@ -13,71 +13,86 @@
  * limitations under the License.
  */
 
+'use strict';
+
+// Require process, so we can mock environment variables
+const process = require('process');
+
 // [START createTables]
 // [START setup]
-const mysql = require('mysql');
+const Knex = require('knex');
 const prompt = require('prompt');
 // [END setup]
 
 // [START createTable]
-const SQL_STRING = `CREATE TABLE visits (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  timestamp DATETIME NULL,
-  userIp VARCHAR(46) NULL,
-  PRIMARY KEY (id)
-);`;
-
 /**
  * Create the "visits" table.
  *
- * @param {object} connection A mysql connection object.
- * @param {function} callback The callback function.
+ * @param {object} knex A Knex client object.
  */
-function createTable (connection, callback) {
-  connection.query(SQL_STRING, callback);
+function createTable (knex) {
+  return knex.schema.createTable('visits', (table) => {
+    table.increments();
+    table.timestamp('timestamp');
+    table.string('userIp');
+  })
+  .then(() => {
+    console.log(`Successfully created 'visits' table.`);
+    return knex;
+  })
+  .catch((err) => {
+    console.error(`Failed to create 'visits' table:`, err);
+    return knex;
+  });
 }
 // [END createTable]
 
 // [START getConnection]
-const FIELDS = ['user', 'password', 'database'];
-
 /**
  * Ask the user for connection configuration and create a new connection.
- *
- * @param {function} callback The callback function.
  */
-function getConnection (callback) {
-  prompt.start();
-  prompt.get(FIELDS, (err, config) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+function getConnection () {
+  const FIELDS = ['user', 'password', 'database'];
+  return new Promise((resolve, reject) => {
+    prompt.start();
+    prompt.get(FIELDS, (err, config) => {
+      if (err) {
+        return reject(err);
+      }
 
-    const user = encodeURIComponent(config.user);
-    const password = encodeURIComponent(config.password);
-    const database = encodeURIComponent(config.database);
-
-    const uri = `mysql://${user}:${password}@127.0.0.1:3306/${database}`;
-    callback(null, mysql.createConnection(uri));
+      // Connect to the database
+      return resolve(Knex({
+        client: process.env.SQL_CLIENT,
+        connection: config
+      }));
+    });
   });
 }
 // [END getConnection]
 
-// [START main]
-getConnection((err, connection) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  createTable(connection, (err, result) => {
-    connection.end();
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(result);
-  });
-});
-// [END main]
+exports.main = function () {
+  // [START main]
+  getConnection()
+    .then((knex) => {
+      return createTable(knex);
+    })
+    .then((knex) => {
+      return knex.destroy();
+    })
+    .catch((err, knex) => {
+      console.error(`Failed to create database connection:`, err);
+      if (knex) {
+        knex.destroy();
+      }
+    });
+  // [END main]
+};
 // [END createTables]
+
+// Get type of SQL client to use
+const sqlClient = process.env.SQL_CLIENT;
+if (sqlClient === 'pg' || sqlClient === 'mysql') {
+  exports.main();
+} else {
+  throw new Error(`The SQL_CLIENT environment variable must be set to lowercase 'pg' or 'mysql'.`);
+}

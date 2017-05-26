@@ -84,8 +84,7 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      # TODO: Add env vars to CI environment
-      # - node scripts/build "appengine/cloudsql"
+      - node scripts/build "appengine/cloudsql" -- --test-args "run unit-test"
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"

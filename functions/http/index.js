@@ -36,7 +36,8 @@ exports.helloWorld = function helloWorld (req, res) {
 
 // [START functions_http_content]
 /**
- * Responds to any HTTP request that can provide a "message" field in the body.
+ * Responds to an HTTP request using data from the request body parsed according
+ * to the "content-type" header.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.

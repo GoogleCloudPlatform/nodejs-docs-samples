@@ -15,8 +15,9 @@
 
 'use strict';
 
-function makeGrpcRequest (API_KEY, HOST, GREETEE) {
+function makeGrpcRequest (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
   // Uncomment these lines to set their values
+  // const JWT_AUTH_TOKEN = 'YOUR_JWT_AUTH_TOKEN';
   // const API_KEY = 'YOUR_API_KEY';
   // const HOST = 'localhost:50051'; // The IP address of your endpoints host
   // const GREETEE = 'world';
@@ -34,7 +35,13 @@ function makeGrpcRequest (API_KEY, HOST, GREETEE) {
 
   // Build gRPC request
   const metadata = new grpc.Metadata();
-  metadata.add('x-api-key', API_KEY);
+  if (API_KEY) {
+    metadata.add('x-api-key', API_KEY);
+  } else if (JWT_AUTH_TOKEN) {
+    metadata.add('authorization', `Bearer ${JWT_AUTH_TOKEN}`);
+  } else {
+    throw new Error('One of API_KEY or JWT_AUTH_TOKEN must be set.');
+  }
 
   // Execute gRPC request
   client.sayHello({ name: GREETEE }, metadata, (err, response) => {
@@ -50,7 +57,13 @@ function makeGrpcRequest (API_KEY, HOST, GREETEE) {
 
 // The command-line program
 const argv = require('yargs')
-  .usage('Usage: node $0 -k YOUR_API_KEY [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]')
+  .usage('Usage: node $0 [-k YOUR_API_KEY] [-a YOUR_JWT_AUTH_TOKEN] [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]')
+  .option('jwtAuthToken', {
+    alias: 'j',
+    type: 'string',
+    global: true,
+    default: ''
+  })
   .option('apiKey', {
     alias: 'k',
     type: 'string',
@@ -70,7 +83,9 @@ const argv = require('yargs')
     global: true
   })
   .wrap(120)
+  .help()
+  .strict()
   .epilogue(`For more information, see https://cloud.google.com/endpoints/docs`)
   .argv;
 
-makeGrpcRequest(argv.apiKey, argv.host, argv.greetee);
+makeGrpcRequest(argv.jwtAuthToken, argv.apiKey, argv.host, argv.greetee);

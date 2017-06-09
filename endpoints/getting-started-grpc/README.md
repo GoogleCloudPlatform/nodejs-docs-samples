@@ -3,7 +3,7 @@
 This sample demonstrates how to use Google Cloud Endpoints with Node.js.
 
 For a complete walkthrough showing how to run this sample in different
-environments, see the [Google Cloud Endpoints Quickstarts](https://cloud.google.com/endpoints/docs/quickstarts).
+environments, see the [Google Cloud Endpoints Quickstarts][docs_quickstart].
 
 ## Running locally
 
@@ -19,19 +19,26 @@ $ node client.js -h localhost:50051
 
 ## Running on Google Cloud Platform
 ### Setup
-Make sure you have [gcloud](https://cloud.google.com/sdk/gcloud/) and [Node.js](https://nodejs.org/) installed.
+Make sure you have [gcloud][gcloud] and [Node.js][nodejs] installed.
 
 To update `gcloud`, use the `gcloud components update` command.
 
+### Selecting an authentication method
+1. Determine the appropriate API configuration file to use based on your authentication method.
+- [JSON Web Tokens][jwt_io]: use `api_config.jwt.yaml`
+- [API keys][gcp_api_key]: use `api_config.key.yaml`
+
+2. Rename the `api_config.*.yaml` file you chose in Step 1 to `api_config.yaml`.
+
 ### Deploying to Endpoints
-1. Install [protoc](https://github.com/google/protobuf/#protocol-compiler-installation).
+1. Install [protoc][protoc].
 
 1. Compile the proto file using protoc.
 ```
 $ protoc --include_imports --include_source_info protos/helloworld.proto --descriptor_set_out out.pb
 ```
 
-1. In `api_config.yaml`, replace `MY_PROJECT_ID` with your Project ID.
+1. In `api_config.yaml`, replace `MY_PROJECT_ID` and `SERVICE-ACCOUNT-ID` with your Project ID and your service account's email address respectively.
 
 1. Deploy your service's configuration to Endpoints. Take note of your service's config ID and name once the deployment completes.
 ```
@@ -47,11 +54,11 @@ $ gcloud container builds submit --tag gcr.io/[YOUR_PROJECT_ID]/endpoints-exampl
 
 ### Running your service
 #### Compute Engine
-1. [Create](https://console.cloud.google.com/compute/instancesAdd) a Compute Engine instance. Be sure to check **Allow HTTP traffic** and **Allow HTTPS traffic** when creating the instance.
+1. [Create][console_gce_create] a Compute Engine instance. Be sure to check **Allow HTTP traffic** and **Allow HTTPS traffic** when creating the instance.
 
 1. Once your instance is created, take note of its IP address.
 
-Note: this IP address is _ephemeral_ by default, and may change unexpectedly. If you plan to use this instance in the future, [reserve a static IP address](https://cloud.google.com/compute/docs/configure-ip-addresses#reserve_new_static) instead.
+Note: this IP address is _ephemeral_ by default, and may change unexpectedly. If you plan to use this instance in the future, [reserve a static IP address][docs_gce_static_ip] instead.
 
 1. SSH into your instance, and install Docker.
 ```
@@ -75,7 +82,7 @@ $ sudo docker run --detach --name=esp \
     -a grpc://helloworld:50051
 ```
 
-1. On your local machine, use the client to test your Endpoints deployment. Replace `[YOUR_INSTANCE_IP_ADDRESS]` with your instance's external IP address, and `[YOUR_API_KEY]` with a [valid Google Cloud Platform API key](https://support.google.com/cloud/answer/6158862?hl=en).
+1. On your local machine, use the client to test your Endpoints deployment. Replace `[YOUR_INSTANCE_IP_ADDRESS]` with your instance's external IP address, and `[YOUR_API_KEY]` with a [valid Google Cloud Platform API key][gcp_api_key].
 ```
 $ node client.js -h [YOUR_INSTANCE_IP_ADDRESS]:80 -k [YOUR_API_KEY]
 ```
@@ -86,7 +93,7 @@ $ node client.js -h [YOUR_INSTANCE_IP_ADDRESS]:80 -k [YOUR_API_KEY]
 $ gcloud components install kubectl
 ```
 
-1. [Create](https://console.cloud.google.com/kubernetes/add) a container cluster with the default settings. Remember the cluster's name and zone, as you will need these later.
+1. [Create][console_gke_create] a container cluster with the default settings. Remember the cluster's name and zone, as you will need these later.
 
 
 1. Configure `kubectl` to have access to the cluster. Replace `[YOUR_CLUSTER_NAME]` and `[YOUR_CLUSTER_ZONE]` with your cluster's name and zone respectively.
@@ -96,7 +103,7 @@ $ gcloud container clusters get-credentials [YOUR_CLUSTER_NAME] --zone [YOUR_CLU
 
 1. Edit the `container_engine.yaml` file, and replace `GCLOUD_PROJECT`, `SERVICE_NAME`, and `SERVICE_CONFIG` with your Project ID and your Endpoints service's name and config ID respectively.
 
-1. Add a [Kubernetes service](https://kubernetes.io/docs/user-guide/services/) to the cluster you created. Note that Kubernetes services should not be confused with [Endpoints services](https://cloud.google.com/endpoints/docs/grpc).
+1. Add a [Kubernetes service][docs_k8s_services] to the cluster you created. Note that Kubernetes services should not be confused with [Endpoints services][docs_endpoints_services].
 ```
 $ kubectl create -f container-engine.yaml
 ```
@@ -106,17 +113,41 @@ $ kubectl create -f container-engine.yaml
 $ kubectl get service
 ```
 
-1. Use the client to test your Endpoints deployment. Replace `[YOUR_CLUSTER_IP_ADDRESS]` with your service's external IP address, and `[YOUR_API_KEY]` with a [valid Google Cloud Platform API key](https://support.google.com/cloud/answer/6158862?hl=en).
+1. Use the client to test your Endpoints deployment. When running the following commands, replace `[YOUR_CLUSTER_IP_ADDRESS]` with your service's external IP address.
+
+If you're using an API key, run the following command and replace `[YOUR_API_KEY]` with the appropriate [API key][gcp_api_key].
 ```
 $ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -k [YOUR_API_KEY]
 ```
 
+If you're using a [JSON Web Token][jwt_io], run the following command and replace `[YOUR_JWT_AUTHTOKEN]` with a valid JSON Web Token.
+```
+$ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -k [YOUR_JWT_AUTHTOKEN]
+```
+
 ## Cleanup
-If you do not intend to use the resources you created for this tutorial in the future, delete your [VM instances](https://console.cloud.google.com/compute/instances) and/or [container clusters](https://console.cloud.google.com/kubernetes/list) to prevent additional charges.
+If you do not intend to use the resources you created for this tutorial in the future, delete your [VM instances][console_gce_instances] and/or [container clusters][console_gke_instances] to prevent additional charges.
 
 ## Troubleshooting
 If you're having issues with this tutorial, here are some things to try:
-- [Check](https://console.cloud.google.com/logs/viewer) your VM instance's/cluster's logs
+- [Check][console_logs] your GCE/GKE instance's logs
 - Make sure your Compute Engine instance's [firewall](https://console.cloud.google.com/networking/firewalls/list) permits TCP access to port 80
 
-If those suggestions don't solve your problem, please [let us know](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues) or [submit a PR](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/pulls).
+If those suggestions don't solve your problem, please [let us know][github_issues] or [submit a pull request][github_pulls].
+
+[nodejs]: https://nodejs.org/
+[gcloud]: https://cloud.google.com/sdk/gcloud/
+[jwt_io]: https://jwt.io
+[protoc]: https://github.com/google/protobuf/#protocol-compiler-installation
+[gcp_api_key]: https://support.google.com/cloud/answer/6158862?hl=en
+[github_issues]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues
+[github_pulls]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/pulls
+[console_gce_instances]: https://console.cloud.google.com/compute/instances
+[console_gce_create]: https://console.cloud.google.com/compute/instancesAdd
+[console_gke_instances]: https://console.cloud.google.com/kubernetes/list
+[console_gke_create]: https://console.cloud.google.com/kubernetes/add
+[console_logs]: https://console.cloud.google.com/logs/viewer
+[docs_k8s_services]: https://kubernetes.io/docs/user-guide/services/
+[docs_endpoints_services]: https://cloud.google.com/endpoints/docs/grpc
+[docs_gce_static_ip]: https://cloud.google.com/compute/docs/configure-ip-addresses#reserve_new_static
+[docs_quickstart]: https://cloud.google.com/endpoints/docs/quickstarts

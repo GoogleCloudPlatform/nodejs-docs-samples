@@ -23,12 +23,12 @@
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
-    "body-parser": "1.17.1",
-    "express": "4.15.2",
-    "safe-buffer": "5.0.1"
+    "body-parser": "1.17.2",
+    "express": "4.15.3",
+    "safe-buffer": "5.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.14",
+    "@google-cloud/nodejs-repo-tools": "1.4.15",
     "ava": "0.19.1"
   },
   "cloud-repo-tools": {

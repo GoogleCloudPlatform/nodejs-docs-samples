@@ -21,7 +21,7 @@
     "googleapis": "19.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.14",
+    "@google-cloud/nodejs-repo-tools": "1.4.15",
     "ava": "0.19.1"
   },
   "cloud-repo-tools": {

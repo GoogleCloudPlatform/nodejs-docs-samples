@@ -21,12 +21,12 @@
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
-    "@google-cloud/trace-agent": "1.1.0",
-    "express": "4.15.2",
-    "got": "6.7.1"
+    "@google-cloud/trace-agent": "2.1.0",
+    "express": "4.15.3",
+    "got": "7.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.14"
+    "@google-cloud/nodejs-repo-tools": "1.4.15"
   },
   "cloud-repo-tools": {
     "test": {

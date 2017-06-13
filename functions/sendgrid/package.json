@@ -17,17 +17,17 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "0.9.3",
-    "@google-cloud/storage": "1.1.0",
-    "safe-buffer": "5.0.1",
-    "sendgrid": "5.0.0",
+    "@google-cloud/bigquery": "0.9.5",
+    "@google-cloud/storage": "1.1.1",
+    "safe-buffer": "5.1.0",
+    "sendgrid": "5.1.1",
     "uuid": "3.0.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.14",
+    "@google-cloud/nodejs-repo-tools": "1.4.15",
     "ava": "0.19.1",
-    "proxyquire": "1.7.11",
-    "sinon": "2.1.0"
+    "proxyquire": "1.8.0",
+    "sinon": "2.3.4"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

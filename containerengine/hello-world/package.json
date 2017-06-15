@@ -21,13 +21,15 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.14"
+    "@google-cloud/nodejs-repo-tools": "1.4.15"
   },
   "cloud-repo-tools": {
     "test": {
       "app": {
         "msg": "Hello Kubernetes!",
-        "args": ["server.js"]
+        "args": [
+          "server.js"
+        ]
       }
     },
     "requiresKeyFile": true,

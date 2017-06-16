@@ -74,6 +74,7 @@ dependencies:
 test:
   override:
     - nyc --cache ava --verbose -T 1m 'endpoints/**/system-test/**/*.test.js'
+    - nyc --cache ava --verbose -T 30s 'auth/system-test/*.test.js'
     - nyc --cache ava --verbose -T 30s 'functions/**/test/**/*.test.js'
     - nyc --cache ava --verbose -T 2m 'vision/system-test/**/*.test.js'
   post:

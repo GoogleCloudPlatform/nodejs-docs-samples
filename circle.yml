@@ -91,6 +91,7 @@ deployment:
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
+      - node scripts/build "appengine/websockets"
       - node scripts/build "bigquery"
       - node scripts/build "computeengine"
       - node scripts/build "containerengine/hello-world"

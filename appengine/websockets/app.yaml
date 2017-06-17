@@ -13,14 +13,8 @@
 
 # [START app_yaml]
 runtime: nodejs
-vm: true
+env: flex
 
-# [START network]
-# This ensures clients will be able to connect via websockets to any instance of
-# this app using websockets
-network:
-  forwarded_ports:
-  - 65080
-  instance_tag: websocket
-# [END network]
+manual_scaling:
+  instances: 1
 # [END app_yaml]

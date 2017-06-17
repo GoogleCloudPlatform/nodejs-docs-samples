@@ -1,25 +1,53 @@
 # Node.js websockets sample for Google App Engine
 
 This sample demonstrates how to use websockets on
-[Google App Engine Flexible Environment](https://cloud.google.com/appengine) with Node.js.
+[Google App Engine Flexible Environment][appengine] with Node.js.
 
-__Note:__ Secure WebSockets are currently not supported by App Engine Flexible Environment.
-WebSockets will only work if you load your page over HTTP (not HTTPS).
-
-To use Secure WebSockets now, you can launch a VM on Google Compute Engine using
-a custom image where you have added SSL support for WebSockets.
-
-Refer to the [appengine/README.md](../README.md) file for instructions on
-running and deploying.
+* [Setup](#setup)
+* [Running locally](#running-locally)
+* [Deploying to App Engine](#deploying-to-app-engine)
+* [Running the tests](#running-the-tests)
 
 ## Setup
 
-Before you can run or deploy the sample, you will need to create a new firewall
-rule to allow traffic on port 65080. This port will be used for websocket
-connections. You can do this with the
-[Google Cloud SDK](https://cloud.google.com/sdk) with the following command:
+Before you can run or deploy the sample, you need to do the following:
 
-    gcloud compute firewall-rules create default-allow-websockets \
-      --allow tcp:65080 \
-      --target-tags websocket \
-      --description "Allow websocket traffic on port 65080"
+1.  Refer to the [appengine/README.md][readme] file for instructions on
+    running and deploying.
+1.  Install dependencies:
+
+    With `npm`:
+
+        npm install
+
+    or with `yarn`:
+
+        yarn install
+
+## Running locally
+
+With `npm`:
+
+    npm start
+
+or with `yarn`:
+
+    yarn start
+
+## Deploying to App Engine
+
+With `npm`:
+
+    npm run deploy
+
+or with `yarn`:
+
+    yarn run deploy
+
+## Running the tests
+
+See [Contributing][contributing].
+
+[appengine]: https://cloud.google.com/appengine/docs/flexible/nodejs
+[readme]: ../README.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md

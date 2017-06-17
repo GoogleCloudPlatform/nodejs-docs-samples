@@ -1,70 +1,41 @@
 doctype html
 html(lang="en")
   head
-    title Websockets Echo
+    title Socket.IO chat on App Engine
     meta(charset="utf-8")
-  //- [START form]
-  body(data-external-ip=externalIp)
-    p Echo demo
-    form(id="echo-form")
-      textarea(id="echo-text", placeholder="Enter some text...")
-      button(type="submit") Send
+    style.
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+  //- [START appengine_websockets_form]
+  body
+    ul(id="messages")
+    form(action="")
+      input(id="m" autocomplete="off")
+      button Send
+    //- [END appengine_websockets_form]
 
-    div
-      p Response:
-      pre(id="echo-response")
-
-    div
-      p Status:
-      pre(id="echo-status")
-    //- [END form]
-
-    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="https://code.jquery.com/jquery-1.11.1.js")
     script.
-      // [START js]
-      $(function() {
-        /* The external ip is determined by app.js and passed into the template. */
-        var webSocketHost = location.protocol === 'https:' ? 'wss://' : 'ws://';
-        var externalIp = $('body').data('external-ip');
-        var webSocketUri =  webSocketHost + externalIp + ':65080/echo';
-
-        /* Get elements from the page */
-        var form = $('#echo-form');
-        var textarea = $('#echo-text');
-        var output = $('#echo-response');
-        var status = $('#echo-status');
-
-        /* Helper to keep an activity log on the page. */
-        function log(text){
-          status.text(status.text() + text + '\n');
-        }
-
-        /* Establish the WebSocket connection and register event handlers. */
-        var websocket = new WebSocket(webSocketUri);
-
-        websocket.onopen = function() {
-          log('Connected');
-        };
-
-        websocket.onclose = function() {
-          log('Closed');
-        };
-
-        websocket.onmessage = function(e) {
-          log('Message received');
-          output.text(e.data);
-        };
-
-        websocket.onerror = function(e) {
-          log('Error (see console)');
-          console.log(e);
-        };
-
-        /* Handle form submission and send a message to the websocket. */
-        form.submit(function(e) {
-          e.preventDefault();
-          var data = textarea.val();
-          websocket.send(data);
+      // [START appengine_websockets_js]
+      $(function () {
+        var socket = io();
+        $('form').submit(function(){
+          console.log($('#m').val());
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+        socket.on('chat message', function(msg){
+          console.log(msg);
+          $('#messages').append($('<li>').text(msg));
+          window.scrollTo(0, document.body.scrollHeight);
         });
       });
-      // [END js]
+      // [END appengine_websockets_js]

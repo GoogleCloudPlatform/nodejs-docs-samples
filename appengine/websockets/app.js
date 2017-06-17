@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,73 +13,30 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
-const http = require('http');
-const express = require('express');
-const request = require('request');
-
-const app = express();
+// [START appengine_websockets_app]
+const app = require('express')();
 app.set('view engine', 'pug');
 
-// Use express-ws to enable web sockets.
-require('express-ws')(app);
-
-// A simple echo service.
-app.ws('/echo', (ws) => {
-  ws.on('message', (msg) => {
-    ws.send(msg);
-  });
-});
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 app.get('/', (req, res) => {
-  getExternalIp((err, externalIp) => {
-    if (err) {
-      res.status(500).send(err.message).end();
-      return;
-    }
-    res.render('index.pug', { externalIp: externalIp }).end();
+  res.render('index.pug');
+});
+
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
   });
 });
 
-// [START external_ip]
-// In order to use websockets on App Engine, you need to connect directly to
-// application instance using the instance's public external IP. This IP can
-// be obtained from the metadata server.
-const METADATA_NETWORK_INTERFACE_URL = 'http://metadata/computeMetadata/v1/' +
-    '/instance/network-interfaces/0/access-configs/0/external-ip';
-
-function getExternalIp (cb) {
-  const options = {
-    url: METADATA_NETWORK_INTERFACE_URL,
-    headers: {
-      'Metadata-Flavor': 'Google'
-    }
-  };
-
-  request(options, (err, resp, body) => {
-    if (err || resp.statusCode !== 200) {
-      console.log('Error while talking to metadata server, assuming localhost');
-      cb(null, 'localhost');
-      return;
-    }
-    cb(null, body);
+if (module === require.main) {
+  const PORT = process.env.PORT || 8080;
+  server.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
   });
 }
-// [END external_ip]
-
-// Start the websocket server
-const wsServer = app.listen('65080', () => {
-  console.log('Websocket server listening on port %s', wsServer.address().port);
-});
-
-// Additionally listen for non-websocket connections on the default App Engine
-// port 8080. Using http.createServer will skip express-ws's logic to upgrade
-// websocket connections.
-const PORT = process.env.PORT || 8080;
-http.createServer(app).listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
-// [END app]
+// [END appengine_websockets_app]

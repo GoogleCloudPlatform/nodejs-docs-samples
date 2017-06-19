@@ -143,7 +143,7 @@ test.serial(`helloGCS: should print uploaded message`, (t) => {
     data: {
       name: `foo`,
       resourceState: `exists`,
-      metageneration: 1
+      metageneration: `1`
     }
   }, callback);
 
@@ -161,7 +161,7 @@ test.serial(`helloGCS: should print metadata updated message`, (t) => {
     data: {
       name: `foo`,
       resourceState: `exists`,
-      metageneration: 2
+      metageneration: `2`
     }
   }, callback);
 

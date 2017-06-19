@@ -18,13 +18,13 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "body-parser": "1.17.1",
-    "express": "4.15.2",
-    "grpc": "1.1.2",
-    "yargs": "7.1.0"
+    "body-parser": "1.17.2",
+    "express": "4.15.3",
+    "grpc": "1.3.8",
+    "yargs": "8.0.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.14",
+    "@google-cloud/nodejs-repo-tools": "1.4.15",
     "ava": "0.19.1"
   },
   "cloud-repo-tools": {

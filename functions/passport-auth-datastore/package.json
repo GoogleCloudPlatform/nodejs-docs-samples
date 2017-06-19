@@ -1,0 +1,38 @@
+{
+  "name": "nodejs-docs-samples-functions-passport-auth-datastore",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "scripts": {
+    "lint": "samples lint",
+    "pretest": "npm run lint",
+    "test": "ava -T 20s --verbose test/*.test.js"
+  },
+  "dependencies": {
+    "@google-cloud/datastore": "1.0.2",
+    "connect-ensure-login": "0.1.1",
+    "cookie-session": "2.0.0-beta.2",
+    "express": "4.15.3",
+    "googleapis": "19.0.0",
+    "passport": "0.3.2",
+    "passport-google-oauth20": "1.0.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.4.15",
+    "ava": "0.19.1",
+    "proxyquire": "1.8.0",
+    "sinon": "2.3.4"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  }
+}

@@ -8,7 +8,7 @@ See:
 * [Cloud Functions OCR sample source code][code]
 
 [tutorial]: https://cloud.google.com/functions/docs/tutorials/ocr
-[code]: index.js
+[code]: app/index.js
 
 ## Deploy and run the sample
 

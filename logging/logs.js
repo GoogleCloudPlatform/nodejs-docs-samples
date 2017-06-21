@@ -148,11 +148,12 @@ function listLogEntries (logName) {
   // List the most recent entries for a given log
   // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/logging/latest/logging?method=getEntries
   log.getEntries()
-    .then((result) => {
+    .then((results) => {
       const entries = results[0];
 
+      console.log('Logs:');
       entries.forEach((entry) => {
-        console.log(entry.textPayload || entry.jsonPayload || entry.protoPayload);
+        console.log(entry.metadata[entry.metadata.payload]);
       });
     })
     .catch((err) => {
@@ -168,11 +169,6 @@ function listLogEntriesAdvanced (filter, pageSize, orderBy) {
 
   // Instantiates a client
   const logging = Logging();
-
-  // The log from which to list entries, e.g. "my-log"
-  // const logName = "my-log";
-
-  const log = logging.log(logName);
 
   // Filter results, e.g. "severity=ERROR"
   // See https://cloud.google.com/logging/docs/view/advanced_filters for more filter information.
@@ -191,11 +187,12 @@ function listLogEntriesAdvanced (filter, pageSize, orderBy) {
 
   // See https://googlecloudplatform.github.io/google-cloud-node/#/docs/logging/latest/logging?method=getEntries
   logging.getEntries(options)
-    .then((result) => {
+    .then((results) => {
       const entries = results[0];
 
+      console.log('Logs:');
       entries.forEach((entry) => {
-        console.log(entry.textPayload || entry.jsonPayload || entry.protoPayload);
+        console.log(entry.metadata[entry.metadata.payload]);
       });
     })
     .catch((err) => {
@@ -255,6 +252,7 @@ const cli = require(`yargs`)
   }, (opts) => {
     listLogEntriesAdvanced(opts.filter, opts.limit, opts.sort);
   })
+  .command('list-simple <logName>', 'Lists log entries.', {}, (opts) => listLogEntries(opts.logName))
   .command('write <logName> <resource> <entry>', 'Writes a log entry to the specified log.', {}, (opts) => {
     try {
       opts.resource = JSON.parse(opts.resource);
@@ -269,6 +267,9 @@ const cli = require(`yargs`)
 
     writeLogEntryAdvanced(opts.logName, opts);
   })
+  .command('write-simple <logName>', 'Writes a basic log entry to the specified log.', {}, (opts) => {
+    writeLogEntry(opts.logName);
+  })
   .command('bunyan', 'Writes some logs entries to Stackdriver Logging via Winston.', {}, () => {
     loggingBunyan();
   })
@@ -280,13 +281,13 @@ const cli = require(`yargs`)
   })
   .example('node $0 list', 'List all log entries.')
   .example('node $0 list -f "severity=ERROR" -s "timestamp" -l 2', 'List up to 2 error entries, sorted by timestamp ascending.')
-  .example('node $0 list -f \'logName="my-log"\' -l 2', 'List up to 2 log entries from the "my-log" log.')
+  .example(`node $0 list -f 'logName="my-log"' -l 2`, 'List up to 2 log entries from the "my-log" log.')
   .example('node $0 write my-log \'{"type":"gae_app","labels":{"module_id":"default"}}\' \'"Hello World!"\'', 'Write a string log entry.')
   .example('node $0 write my-log \'{"type":"global"}\' \'{"message":"Hello World!"}\'', 'Write a JSON log entry.')
   .example('node $0 delete my-log', 'Delete "my-log".')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/bigquery/docs`)
+  .epilogue(`For more information, see https://cloud.google.com/logging/docs`)
   .help()
   .strict();
 

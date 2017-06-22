@@ -56,7 +56,7 @@ function manual () {
   const errorEvent = errors.event();
 
   // Add error information
-  errorEvent.setMessage('My error message')
+  errorEvent.setMessage('My error message');
   errorEvent.setUser('root@nexus');
 
   // Report the error event
@@ -94,7 +94,7 @@ function express () {
   });
 
   app.get('/exception', () => {
-    JSON.parse('{\"malformedJson\": true');
+    JSON.parse('{"malformedJson": true');
   });
 
   // Note that express error handling middleware should be attached after all

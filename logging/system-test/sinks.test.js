@@ -67,12 +67,13 @@ test.serial(`should list sinks`, async (t) => {
 });
 
 test.serial(`should update a sink`, async (t) => {
-  const output = await tools.runAsync(`${cmd} update ${sinkName} "severity >= WARNING"`, cwd);
+  const newFilter = 'severity >= WARNING';
+  const output = await tools.runAsync(`${cmd} update ${sinkName} "${newFilter}"`, cwd);
   t.is(output, `Sink ${sinkName} updated.`);
   const [metadata] = await logging.sink(sinkName).getMetadata();
   t.is(metadata.name, sinkName);
   t.is(metadata.destination.includes(bucketName), true);
-  t.is(metadata.filter, 'severity >= WARNING');
+  t.is(metadata.filter, newFilter);
 });
 
 test.serial(`should delete a sink`, async (t) => {

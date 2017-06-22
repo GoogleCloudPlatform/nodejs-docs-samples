@@ -24,8 +24,6 @@ const cwd = path.join(__dirname, `..`);
 const cmd = `node logs.js`;
 
 const logName = `nodejs-docs-samples-test-${uuid.v4()}`;
-// const projectId = process.env.GCLOUD_PROJECT;
-// const filter = `resource.type="global" AND logName="projects/${projectId}/logs/${logName}"`;
 const message = `Hello world!`;
 
 test.before(tools.checkCredentials);

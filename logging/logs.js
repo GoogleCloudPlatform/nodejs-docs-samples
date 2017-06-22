@@ -153,7 +153,8 @@ function listLogEntries (logName) {
 
       console.log('Logs:');
       entries.forEach((entry) => {
-        console.log(entry.metadata[entry.metadata.payload]);
+        const metadata = entry.metadata;
+        console.log(`${metadata.timestamp}:`, metadata[metadata.payload]);
       });
     })
     .catch((err) => {
@@ -192,7 +193,8 @@ function listLogEntriesAdvanced (filter, pageSize, orderBy) {
 
       console.log('Logs:');
       entries.forEach((entry) => {
-        console.log(entry.metadata[entry.metadata.payload]);
+        const metadata = entry.metadata;
+        console.log(`${metadata.timestamp}:`, metadata[metadata.payload]);
       });
     })
     .catch((err) => {

@@ -20,4 +20,4 @@ require('@google-cloud/trace-agent').start({
   projectId: 'your-project-id',
   keyFilename: '/path/to/key.json'
 });
-// [END trace_setup_explicity]
+// [END trace_setup_explicit]

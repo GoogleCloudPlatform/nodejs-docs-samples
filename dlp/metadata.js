@@ -15,102 +15,90 @@
 
 'use strict';
 
-const API_URL = 'https://dlp.googleapis.com/v2beta1';
-const requestPromise = require('request-promise');
-
-function listInfoTypes (authToken, category) {
+function listInfoTypes (category, languageCode) {
   // [START list_info_types]
-  // Your gcloud auth token.
-  // const authToken = 'YOUR_AUTH_TOKEN';
+  // Imports the Google Cloud Data Loss Prevention library
+  const DLP = require('@google-cloud/dlp');
+
+  // Instantiates a client
+  const dlp = DLP();
 
   // The category of info types to list.
   // const category = 'CATEGORY_TO_LIST';
 
-  // Construct REST request
-  const options = {
-    url: `${API_URL}/rootCategories/${category}/infoTypes`,
-    headers: {
-      'Authorization': `Bearer ${authToken}`,
-      'Content-Type': 'application/json'
-    },
-    json: true
-  };
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
 
-  // Run REST request
-  requestPromise.get(options)
-    .then((body) => {
-      console.log(body);
-    })
-    .catch((err) => {
-      console.log('Error in listInfoTypes:', err);
+  dlp.listInfoTypes({
+    category: category,
+    languageCode: languageCode
+  })
+  .then((body) => {
+    const infoTypes = body[0].infoTypes;
+    console.log(`Info types for category ${category}:`);
+    infoTypes.forEach((infoType) => {
+      console.log(`\t${infoType.name} (${infoType.displayName})`);
     });
+  })
+  .catch((err) => {
+    console.log(`Error in listInfoTypes: ${err.message || err}`);
+  });
   // [END list_info_types]
 }
 
-function listCategories (authToken) {
+function listRootCategories (languageCode) {
   // [START list_categories]
-  // Your gcloud auth token.
-  // const authToken = 'YOUR_AUTH_TOKEN';
+  // Imports the Google Cloud Data Loss Prevention library
+  const DLP = require('@google-cloud/dlp');
 
-  // Construct REST request
-  const options = {
-    url: `${API_URL}/rootCategories`,
-    headers: {
-      'Authorization': `Bearer ${authToken}`,
-      'Content-Type': 'application/json'
-    },
-    json: true
-  };
+  // Instantiates a client
+  const dlp = DLP();
 
-  // Run REST request
-  requestPromise.get(options)
-    .then((body) => {
-      const categories = body.categories;
-      console.log(categories);
-    })
-    .catch((err) => {
-      console.log('Error in listCategories:', err);
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  dlp.listRootCategories({
+    languageCode: languageCode
+  })
+  .then((body) => {
+    const categories = body[0].categories;
+    console.log(`Categories:`);
+    categories.forEach((category) => {
+      console.log(`\t${category.name}: ${category.displayName}`);
     });
+  })
+  .catch((err) => {
+    console.log(`Error in listRootCategories: ${err.message || err}`);
+  });
   // [END list_categories]
 }
 
+const cli = require(`yargs`)
+  .demand(1)
+  .command(
+    `infoTypes <category>`,
+    `List types of sensitive information within a category.`,
+    {},
+    (opts) => listInfoTypes(opts.category, opts.languageCode)
+  )
+  .command(
+    `categories`,
+    `List root categories of sensitive information.`,
+    {},
+    (opts) => listRootCategories(opts.languageCode)
+  )
+  .option('l', {
+    alias: 'languageCode',
+    default: 'en-US',
+    type: 'string',
+    global: true
+  })
+  .example(`node $0 infoTypes GOVERNMENT`)
+  .example(`node $0 categories`)
+  .wrap(120)
+  .recommendCommands()
+  .epilogue(`For more information, see https://cloud.google.com/dlp/docs`);
+
 if (module === require.main) {
-  const auth = require('google-auto-auth')({
-    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    scopes: ['https://www.googleapis.com/auth/cloud-platform']
-  });
-  auth.getToken((err, token) => {
-    if (err) {
-      console.err('Error fetching auth token:', err);
-      process.exit(1);
-    }
-
-    const cli = require(`yargs`)
-      .demand(1)
-      .command(
-        `infoTypes <category>`,
-        `List types of sensitive information within a category.`,
-        {},
-        (opts) => listInfoTypes(opts.authToken, opts.category)
-      )
-      .command(
-        `categories`,
-        `List root categories of sensitive information.`,
-        {},
-        (opts) => listCategories(opts.authToken)
-      )
-      .option('a', {
-        alias: 'authToken',
-        default: token,
-        type: 'string',
-        global: true
-      })
-      .example(`node $0 infoTypes GOVERNMENT`)
-      .example(`node $0 categories`)
-      .wrap(120)
-      .recommendCommands()
-      .epilogue(`For more information, see https://cloud.google.com/dlp/docs`);
-
-    cli.help().strict().argv; // eslint-disable-line
-  });
+  cli.help().strict().argv; // eslint-disable-line
 }

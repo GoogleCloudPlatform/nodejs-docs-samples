@@ -36,7 +36,7 @@ test(`should ignore unspecified type names when redacting from a string`, async 
 });
 
 test(`should report string redaction handling errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} string "My name is Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -a foo`, cwd);
+  const output = await tools.runAsync(`${cmd} string "My name is Gary and my phone number is (123) 456-7890." REDACTED -t BAD_TYPE`, cwd);
   t.regex(output, /Error in redactString/);
 });
 
@@ -50,10 +50,4 @@ test(`should have a minLikelihood option`, async (t) => {
 
   const outputB = await promiseB;
   t.is(outputB, 'My phone number is REDACTED.');
-});
-
-test(`should have an option for custom auth tokens`, async (t) => {
-  const output = await tools.runAsync(`${cmd} string "My name is Gary and my phone number is (123) 456-7890." REDACTED -t PHONE_NUMBER -a foo`, cwd);
-  t.regex(output, /Error in redactString/);
-  t.regex(output, /invalid authentication/);
 });

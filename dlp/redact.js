@@ -44,7 +44,6 @@ function redactString (string, replaceString, minLikelihood, infoTypes) {
     };
   });
 
-  // Construct request
   const request = {
     inspectConfig: {
       infoTypes: infoTypes,
@@ -54,14 +53,13 @@ function redactString (string, replaceString, minLikelihood, infoTypes) {
     replaceConfigs: replaceConfigs
   };
 
-  // Run REST request
   dlp.redactContent(request)
     .then((body) => {
       const results = body[0].items[0].value;
       console.log(results);
     })
     .catch((err) => {
-      console.log('Error in redactString:', err.message || err);
+      console.log(`Error in redactString: ${err.message || err}`);
     });
   // [END redact_string]
 }

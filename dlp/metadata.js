@@ -41,7 +41,7 @@ function listInfoTypes (category, languageCode) {
     });
   })
   .catch((err) => {
-    console.log('Error in listInfoTypes:', err.message || err);
+    console.log(`Error in listInfoTypes: ${err.message || err}`);
   });
   // [END list_info_types]
 }
@@ -68,7 +68,7 @@ function listRootCategories (languageCode) {
     });
   })
   .catch((err) => {
-    console.log('Error in listRootCategories:', err.message || err);
+    console.log(`Error in listRootCategories: ${err.message || err}`);
   });
   // [END list_categories]
 }

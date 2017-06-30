@@ -65,12 +65,14 @@ test(`should report local file handling errors`, async (t) => {
 // inspect_gcs_file_event
 test.serial(`should inspect a GCS text file with event handlers`, async (t) => {
   const output = await tools.runAsync(`${cmd} gcsFileEvent nodejs-docs-samples-dlp test.txt`, cwd);
+  t.regex(output, /Processed \d+ of approximately \d+ bytes./);
   t.regex(output, /Info type: PHONE_NUMBER/);
   t.regex(output, /Info type: EMAIL_ADDRESS/);
 });
 
 test.serial(`should inspect multiple GCS text files with event handlers`, async (t) => {
   const output = await tools.runAsync(`${cmd} gcsFileEvent nodejs-docs-samples-dlp *.txt`, cwd);
+  t.regex(output, /Processed \d+ of approximately \d+ bytes./);
   t.regex(output, /Info type: PHONE_NUMBER/);
   t.regex(output, /Info type: EMAIL_ADDRESS/);
   t.regex(output, /Info type: CREDIT_CARD_NUMBER/);
@@ -78,7 +80,8 @@ test.serial(`should inspect multiple GCS text files with event handlers`, async 
 
 test.serial(`should handle a GCS file with no sensitive data with event handlers`, async (t) => {
   const output = await tools.runAsync(`${cmd} gcsFileEvent nodejs-docs-samples-dlp harmless.txt`, cwd);
-  t.is(output, 'No findings.');
+  t.regex(output, /Processed \d+ of approximately \d+ bytes./);
+  t.regex(output, /No findings./);
 });
 
 test.serial(`should report GCS file handling errors with event handlers`, async (t) => {

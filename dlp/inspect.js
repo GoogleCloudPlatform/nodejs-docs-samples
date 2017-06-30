@@ -74,7 +74,7 @@ function inspectString (string, minLikelihood, maxFindings, infoTypes, includeQu
       }
     })
     .catch((err) => {
-      console.log('Error in inspectString:', err.message || err);
+      console.log(`Error in inspectString: ${err.message || err}`);
     });
   // [END inspect_string]
 }
@@ -137,7 +137,7 @@ function inspectFile (filepath, minLikelihood, maxFindings, infoTypes, includeQu
       }
     })
     .catch((err) => {
-      console.log('Error in inspectFile:', err.message || err);
+      console.log(`Error in inspectFile: ${err.message || err}`);
     });
   // [END inspect_file]
 }
@@ -183,9 +183,7 @@ function promiseInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings
     storageConfig: storageItems
   };
 
-  // Create a GCS File inspection job, and resolve it using promises
-  // TODO: is the client library going to handle pagination if no user settings are specified?
-  // TODO: if the client library has no valid nextPageToken, can we set nextPageToken to null (if we don't already)
+  // Create a GCS File inspection job and wait for it to complete (using promises)
   dlp.createInspectOperation(request)
     .then((createJobResponse) => {
       const operation = createJobResponse[0];
@@ -213,7 +211,7 @@ function promiseInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings
       }
     })
     .catch((err) => {
-      console.log('Error in promiseInspectGCSFile:', err.message || err);
+      console.log(`Error in promiseInspectGCSFile: ${err.message || err}`);
     });
   // [END inspect_gcs_file_promise]
 }
@@ -259,22 +257,21 @@ function eventInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings, 
     storageConfig: storageItems
   };
 
-  // Create a GCS File inspection job, and resolve it using event handlers
+  // Create a GCS File inspection job, and handle its completion (using event handlers)
+  // Promises are used (only) to avoid nested callbacks
   dlp.createInspectOperation(request)
     .then((createJobResponse) => {
       const operation = createJobResponse[0];
       return new Promise((resolve, reject) => {
-        // Handle job completion
         operation.on('complete', (completeJobResponse) => {
           return resolve(completeJobResponse);
         });
 
         // Handle changes in job metadata (e.g. progress updates)
         operation.on('progress', (metadata) => {
-          // TODO this doesn't produce meaningful results
+          console.log(`Processed ${metadata.processedBytes} of approximately ${metadata.totalEstimatedBytes} bytes.`);
         });
 
-        // Handle job errors
         operation.on('error', (err) => {
           return reject(err);
         });
@@ -299,7 +296,7 @@ function eventInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings, 
       }
     })
     .catch((err) => {
-      console.log('Error in eventInspectGCSFile:', err.message || err);
+      console.log(`Error in eventInspectGCSFile: ${err.message || err}`);
     });
   // [END inspect_gcs_file_event]
 }
@@ -382,7 +379,7 @@ function inspectDatastore (projectId, namespaceId, kind, minLikelihood, maxFindi
       }
     })
     .catch((err) => {
-      console.log('Error in inspectDatastore:', err.message || err);
+      console.log(`Error in inspectDatastore: ${err.message || err}`);
     });
   // [END inspect_datastore]
 }

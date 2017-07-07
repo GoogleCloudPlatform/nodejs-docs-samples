@@ -26,7 +26,7 @@ require('@google-cloud/debug-agent').start();
  * Cloud Function.
  *
  * @param {object} event The Cloud Functions event.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
 exports.helloWorld = function helloWorld (event, callback) {
   console.log(`My Cloud Function: ${event.data.message}`);
@@ -63,7 +63,7 @@ exports.helloHttp = function helloHttp (req, res) {
  * Background Cloud Function.
  *
  * @param {object} event The Cloud Functions event.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
 exports.helloBackground = function helloBackground (event, callback) {
   callback(null, `Hello ${event.data.name || 'World'}!`);
@@ -75,7 +75,7 @@ exports.helloBackground = function helloBackground (event, callback) {
  * Background Cloud Function to be triggered by Pub/Sub.
  *
  * @param {object} event The Cloud Functions event.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
 exports.helloPubSub = function (event, callback) {
   const pubsubMessage = event.data;
@@ -92,7 +92,7 @@ exports.helloPubSub = function (event, callback) {
  * Background Cloud Function to be triggered by Cloud Storage.
  *
  * @param {object} event The Cloud Functions event.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
 exports.helloGCS = function (event, callback) {
   const file = event.data;
@@ -116,7 +116,7 @@ exports.helloGCS = function (event, callback) {
  * Background Cloud Function that throws an error.
  *
  * @param {object} event The Cloud Functions event.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
 exports.helloError = function helloError (event, callback) {
   // This WILL be reported to Stackdriver errors
@@ -130,7 +130,7 @@ exports.helloError = function helloError (event, callback) {
  * Background Cloud Function that throws a value.
  *
  * @param {object} event The Cloud Functions event.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
 exports.helloError2 = function helloError2 (event, callback) {
   // This will NOT be reported to Stackdriver errors
@@ -143,7 +143,7 @@ exports.helloError2 = function helloError2 (event, callback) {
  * Background Cloud Function that throws an error.
  *
  * @param {object} event The Cloud Functions event.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
 exports.helloError3 = function helloError3 (event, callback) {
   // This will NOT be reported to Stackdriver errors

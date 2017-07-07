@@ -102,6 +102,8 @@ Commands:
   createStoringIndex <instanceName> <databaseName>  Creates a new value-storing index in an example Cloud Spanner table.
   queryIndex <instanceName> <databaseName>          Executes a read-only SQL query against an example Cloud Spanner
                                                     table using an existing index.
+                                                    Returns results with titles between a start title (default:
+                                                    'Ardvark') and an end title (default: 'Goo').
   readIndex <instanceName> <databaseName>           Reads data from an example Cloud Spanner table using an existing
                                                     index.
   readStoringIndex <instanceName> <databaseName>    Reads data from an example Cloud Spanner table using an existing

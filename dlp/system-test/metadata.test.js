@@ -26,27 +26,10 @@ test.before(tools.checkCredentials);
 
 test(`should list info types for a given category`, async (t) => {
   const output = await tools.runAsync(`${cmd} infoTypes GOVERNMENT`, cwd);
-  t.regex(output, /name: 'US_DRIVERS_LICENSE_NUMBER'/);
+  t.regex(output, /US_DRIVERS_LICENSE_NUMBER/);
 });
 
 test(`should inspect categories`, async (t) => {
   const output = await tools.runAsync(`${cmd} categories`, cwd);
-  t.regex(output, /name: 'FINANCE'/);
-});
-
-test(`should have an option for custom auth tokens`, async (t) => {
-  const output = await tools.runAsync(`${cmd} categories -a foo`, cwd);
-  t.regex(output, /Error in listCategories/);
-  t.regex(output, /invalid authentication/);
-});
-
-// Error handling
-test(`should report info type listing handling errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} infoTypes GOVERNMENT -a foo`, cwd);
-  t.regex(output, /Error in listInfoTypes/);
-});
-
-test(`should report category listing handling errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} categories -a foo`, cwd);
-  t.regex(output, /Error in listCategories/);
+  t.regex(output, /FINANCE/);
 });

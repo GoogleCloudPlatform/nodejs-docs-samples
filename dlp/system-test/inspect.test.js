@@ -27,89 +27,106 @@ test.before(tools.checkCredentials);
 // inspect_string
 test(`should inspect a string`, async (t) => {
   const output = await tools.runAsync(`${cmd} string "I'm Gary and my email is gary@example.com"`, cwd);
-  t.regex(output, /"name": "EMAIL_ADDRESS"/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
 });
 
 test(`should handle a string with no sensitive data`, async (t) => {
   const output = await tools.runAsync(`${cmd} string "foo"`, cwd);
-  t.is(output, 'undefined');
+  t.is(output, 'No findings.');
 });
 
 test(`should report string inspection handling errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} string "I'm Gary and my email is gary@example.com" -a foo`, cwd);
+  const output = await tools.runAsync(`${cmd} string "I'm Gary and my email is gary@example.com" -t BAD_TYPE`, cwd);
   t.regex(output, /Error in inspectString/);
 });
 
 // inspect_file
 test(`should inspect a local text file`, async (t) => {
   const output = await tools.runAsync(`${cmd} file resources/test.txt`, cwd);
-  t.regex(output, /"name": "PHONE_NUMBER"/);
-  t.regex(output, /"name": "EMAIL_ADDRESS"/);
+  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
 });
 
 test(`should inspect a local image file`, async (t) => {
   const output = await tools.runAsync(`${cmd} file resources/test.png`, cwd);
-  t.regex(output, /"name": "PHONE_NUMBER"/);
+  t.regex(output, /Info type: PHONE_NUMBER/);
 });
 
 test(`should handle a local file with no sensitive data`, async (t) => {
   const output = await tools.runAsync(`${cmd} file resources/harmless.txt`, cwd);
-  t.is(output, 'undefined');
+  t.is(output, 'No findings.');
 });
 
 test(`should report local file handling errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} file resources/harmless.txt -a foo`, cwd);
+  const output = await tools.runAsync(`${cmd} file resources/harmless.txt -t BAD_TYPE`, cwd);
   t.regex(output, /Error in inspectFile/);
 });
 
-// inspect_gcs_file
-test.serial(`should inspect a GCS text file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp test.txt`, cwd);
-  t.regex(output, /"name": "PHONE_NUMBER"/);
-  t.regex(output, /"name": "EMAIL_ADDRESS"/);
+// inspect_gcs_file_event
+test.serial(`should inspect a GCS text file with event handlers`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFileEvent nodejs-docs-samples-dlp test.txt`, cwd);
+  t.regex(output, /Processed \d+ of approximately \d+ bytes./);
+  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
 });
 
-test.serial(`should inspect multiple GCS text files`, async (t) => {
-  const output = await tools.runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp *.txt`, cwd);
-  t.regex(output, /"name": "PHONE_NUMBER"/);
-  t.regex(output, /"name": "EMAIL_ADDRESS"/);
-  t.regex(output, /"name": "CREDIT_CARD_NUMBER"/);
+test.serial(`should inspect multiple GCS text files with event handlers`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFileEvent nodejs-docs-samples-dlp *.txt`, cwd);
+  t.regex(output, /Processed \d+ of approximately \d+ bytes./);
+  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  t.regex(output, /Info type: CREDIT_CARD_NUMBER/);
 });
 
-test.serial(`should accept try limits for inspecting GCS files`, async (t) => {
-  const output = await tools.runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp test.txt --tries 0`, cwd);
-  t.regex(output, /polling timed out/);
+test.serial(`should handle a GCS file with no sensitive data with event handlers`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFileEvent nodejs-docs-samples-dlp harmless.txt`, cwd);
+  t.regex(output, /Processed \d+ of approximately \d+ bytes./);
+  t.regex(output, /No findings./);
 });
 
-test.serial(`should handle a GCS file with no sensitive data`, async (t) => {
-  const output = await tools.runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp harmless.txt`, cwd);
-  t.is(output, 'undefined');
+test.serial(`should report GCS file handling errors with event handlers`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFileEvent nodejs-docs-samples-dlp harmless.txt -t BAD_TYPE`, cwd);
+  t.regex(output, /Error in eventInspectGCSFile/);
 });
 
-test.serial(`should report GCS file handling errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} gcsFile nodejs-docs-samples-dlp harmless.txt -a foo`, cwd);
-  t.regex(output, /Error in inspectGCSFile/);
+// inspect_gcs_file_promise
+test.serial(`should inspect a GCS text file with promises`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFilePromise nodejs-docs-samples-dlp test.txt`, cwd);
+  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
+});
+
+test.serial(`should inspect multiple GCS text files with promises`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFilePromise nodejs-docs-samples-dlp *.txt`, cwd);
+  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  t.regex(output, /Info type: CREDIT_CARD_NUMBER/);
+});
+
+test.serial(`should handle a GCS file with no sensitive data with promises`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFilePromise nodejs-docs-samples-dlp harmless.txt`, cwd);
+  t.is(output, 'No findings.');
+});
+
+test.serial(`should report GCS file handling errors with promises`, async (t) => {
+  const output = await tools.runAsync(`${cmd} gcsFilePromise nodejs-docs-samples-dlp harmless.txt -t BAD_TYPE`, cwd);
+  t.regex(output, /Error in promiseInspectGCSFile/);
 });
 
 // inspect_datastore
 test.serial(`should inspect Datastore`, async (t) => {
   const output = await tools.runAsync(`${cmd} datastore Person --namespaceId DLP`, cwd);
-  t.regex(output, /"name": "PHONE_NUMBER"/);
-  t.regex(output, /"name": "EMAIL_ADDRESS"/);
-});
-
-test.serial(`should accept try limits for inspecting Datastore`, async (t) => {
-  const output = await tools.runAsync(`${cmd} datastore Person --namespaceId DLP --tries 0`, cwd);
-  t.regex(output, /polling timed out/);
+  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
 });
 
 test.serial(`should handle Datastore with no sensitive data`, async (t) => {
   const output = await tools.runAsync(`${cmd} datastore Harmless --namespaceId DLP`, cwd);
-  t.is(output, 'undefined');
+  t.is(output, 'No findings.');
 });
 
 test.serial(`should report Datastore file handling errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} datastore Harmless --namespaceId DLP -a foo`, cwd);
+  const output = await tools.runAsync(`${cmd} datastore Harmless --namespaceId DLP -t BAD_TYPE`, cwd);
   t.regex(output, /Error in inspectDatastore/);
 });
 
@@ -161,10 +178,4 @@ test(`should have an option to filter results by infoType`, async (t) => {
   const outputB = await promiseB;
   t.notRegex(outputB, /EMAIL_ADDRESS/);
   t.regex(outputB, /PHONE_NUMBER/);
-});
-
-test(`should have an option for custom auth tokens`, async (t) => {
-  const output = await tools.runAsync(`${cmd} string "My name is Gary and my phone number is (223) 456-7890." -a foo`, cwd);
-  t.regex(output, /Error in inspectString/);
-  t.regex(output, /invalid authentication/);
 });

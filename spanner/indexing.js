@@ -88,7 +88,7 @@ function createStoringIndex (instanceId, databaseId) {
   // [END create_storing_index]
 }
 
-function queryDataWithIndex (instanceId, databaseId) {
+function queryDataWithIndex (instanceId, databaseId, startTitle, endTitle) {
   // [START query_data_with_index]
   // Imports the Google Cloud client library
   const Spanner = require('@google-cloud/spanner');
@@ -100,6 +100,10 @@ function queryDataWithIndex (instanceId, databaseId) {
   // const instanceId = 'my-instance';
   // const databaseId = 'my-database';
 
+  // Uncomment these lines to specify the start and end title(s)
+  // const startTitle = 'Ardvark';
+  // const endTitle = 'Goo';
+
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -107,7 +111,11 @@ function queryDataWithIndex (instanceId, databaseId) {
   const query = {
     sql: `SELECT AlbumId, AlbumTitle, MarketingBudget
           FROM Albums@{FORCE_INDEX=AlbumsByAlbumTitle}
-          WHERE AlbumTitle >= 'Ardvark' AND AlbumTitle < 'Goo'`
+          WHERE AlbumTitle >= @startTitle AND AlbumTitle <= @endTitle`,
+    params: {
+      startTitle: startTitle,
+      endTitle: endTitle
+    }
   };
 
   // Queries rows from the Albums table
@@ -117,7 +125,8 @@ function queryDataWithIndex (instanceId, databaseId) {
 
       rows.forEach((row) => {
         const json = row.toJSON();
-        console.log(`AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${json.MarketingBudget.value}`);
+        const marketingBudget = json.MarketingBudget ? json.MarketingBudget.value : null; // This value is nullable
+        console.log(`AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${marketingBudget}`);
       });
     });
   // [END query_data_with_index]
@@ -222,9 +231,21 @@ const cli = require(`yargs`)
   )
   .command(
     `queryIndex <instanceName> <databaseName>`,
-    `Executes a read-only SQL query against an example Cloud Spanner table using an existing index.`,
-    {},
-    (opts) => queryDataWithIndex(opts.instanceName, opts.databaseName)
+    `Executes a read-only SQL query against an example Cloud Spanner table using an existing index.
+    Returns results with titles between a start title (default: 'Ardvark') and an end title (default: 'Goo').`,
+  {
+    startTitle: {
+      type: 'string',
+      alias: 's',
+      default: 'Ardvark'
+    },
+    endTitle: {
+      type: 'string',
+      alias: 'e',
+      default: 'Goo'
+    }
+  },
+    (opts) => queryDataWithIndex(opts.instanceName, opts.databaseName, opts.startTitle, opts.endTitle)
   )
   .command(
     `readIndex <instanceName> <databaseName>`,

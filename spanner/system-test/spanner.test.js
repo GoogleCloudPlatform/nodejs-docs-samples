@@ -114,6 +114,13 @@ test.serial(`should create a storing index in an example table`, async (t) => {
 test.serial(`should query an example table with an index and return matching rows`, async (t) => {
   const output = await tools.runAsync(`${indexingCmd} queryIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
   t.true(output.includes(`AlbumId: 1, AlbumTitle: Go, Go, Go, MarketingBudget:`));
+  t.false(output.includes(`AlbumId: 2, AlbumTitle: Total Junk, MarketingBudget:`));
+});
+
+test.serial(`should respect query boundaries when querying an example table with an index`, async (t) => {
+  const output = await tools.runAsync(`${indexingCmd} queryIndex ${INSTANCE_ID} ${DATABASE_ID} -s Ardvark -e Zoo`, cwd);
+  t.true(output.includes(`AlbumId: 1, AlbumTitle: Go, Go, Go, MarketingBudget:`));
+  t.true(output.includes(`AlbumId: 2, AlbumTitle: Total Junk, MarketingBudget:`));
 });
 
 // read_data_with_index

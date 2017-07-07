@@ -39,8 +39,6 @@ function makeGrpcRequest (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
     metadata.add('x-api-key', API_KEY);
   } else if (JWT_AUTH_TOKEN) {
     metadata.add('authorization', `Bearer ${JWT_AUTH_TOKEN}`);
-  } else {
-    throw new Error('One of API_KEY or JWT_AUTH_TOKEN must be set.');
   }
 
   // Execute gRPC request
@@ -57,7 +55,7 @@ function makeGrpcRequest (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
 
 // The command-line program
 const argv = require('yargs')
-  .usage('Usage: node $0 [-k YOUR_API_KEY] [-a YOUR_JWT_AUTH_TOKEN] [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]')
+  .usage('Usage: node $0 {-k YOUR_API_KEY>, <-j YOUR_JWT_AUTH_TOKEN} [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]')
   .option('jwtAuthToken', {
     alias: 'j',
     type: 'string',
@@ -81,6 +79,12 @@ const argv = require('yargs')
     type: 'string',
     default: 'world',
     global: true
+  })
+  .check((argv) => {
+    const valid = !!(argv.jwtAuthToken || argv.apiKey);
+    if (!valid)
+      console.error('One of API_KEY or JWT_AUTH_TOKEN must be set.');
+    return valid;
   })
   .wrap(120)
   .help()

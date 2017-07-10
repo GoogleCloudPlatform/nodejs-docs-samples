@@ -113,17 +113,26 @@ $ kubectl create -f container-engine.yaml
 $ kubectl get service
 ```
 
-1. Use the client to test your Endpoints deployment. When running the following commands, replace `[YOUR_CLUSTER_IP_ADDRESS]` with your service's external IP address.
+### Testing your service
+You can use the included client to test your Endpoints deployment.
 
-If you're using an API key, run the following command and replace `[YOUR_API_KEY]` with the appropriate [API key][gcp_api_key].
-```
-$ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -k [YOUR_API_KEY]
-```
+1. Determine your service's IP address.
 
-If you're using a [JSON Web Token][jwt_io], run the following command and replace `[YOUR_JWT_AUTHTOKEN]` with a valid JSON Web Token.
-```
-$ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -k [YOUR_JWT_AUTHTOKEN]
-```
+* If your service is hosted on Compute Engine, this will be your _instance's_ external IP address.
+
+* If your service is hosted on Container Engine, this will be your _service's_ external IP address.
+
+2. Run the client to connect to your service. When running the following commands, replace `[YOUR_IP_ADDRESS]` with the IP address you found in Step 1.
+
+  * If you're using an API key, run the following command and replace `[YOUR_API_KEY]` with the appropriate [API key][gcp_api_key].
+    ```
+    $ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -k [YOUR_API_KEY]
+    ```
+
+  * If you're using a [JSON Web Token][jwt_io], run the following command and replace `[YOUR_JWT_AUTHTOKEN]` with a valid JSON Web Token.
+    ```
+    $ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -j [YOUR_JWT_AUTHTOKEN]
+    ```
 
 ## Cleanup
 If you do not intend to use the resources you created for this tutorial in the future, delete your [VM instances][console_gce_instances] and/or [container clusters][console_gke_instances] to prevent additional charges.

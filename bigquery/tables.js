@@ -187,9 +187,20 @@ function copyTable (srcDatasetId, srcTableId, destDatasetId, destTableId, projec
     .then((results) => {
       job = results[0];
       console.log(`Job ${job.id} started.`);
+
+      // Wait for the job to finish
       return job.promise();
     })
-    .then(() => {
+    .then((results) => {
+      // Get the job's status
+      return job.getMetadata();
+    }).then((metadata) => {
+      // Check the job's status for errors
+      const errors = metadata[0].status.errors;
+      if (errors && errors.length > 0) {
+        throw errors;
+      }
+    }).then(() => {
       console.log(`Job ${job.id} completed.`);
     })
     .catch((err) => {
@@ -230,9 +241,20 @@ function importLocalFile (datasetId, tableId, filename, projectId) {
     .then((results) => {
       job = results[0];
       console.log(`Job ${job.id} started.`);
+
+      // Wait for the job to finish
       return job.promise();
     })
     .then((results) => {
+      // Get the job's status
+      return job.getMetadata();
+    }).then((metadata) => {
+      // Check the job's status for errors
+      const errors = metadata[0].status.errors;
+      if (errors && errors.length > 0) {
+        throw errors;
+      }
+    }).then(() => {
       console.log(`Job ${job.id} completed.`);
     })
     .catch((err) => {
@@ -281,9 +303,20 @@ function importFileFromGCS (datasetId, tableId, bucketName, filename, projectId)
     .then((results) => {
       job = results[0];
       console.log(`Job ${job.id} started.`);
+
+      // Wait for the job to finish
       return job.promise();
     })
     .then((results) => {
+      // Get the job's status
+      return job.getMetadata();
+    }).then((metadata) => {
+      // Check the job's status for errors
+      const errors = metadata[0].status.errors;
+      if (errors && errors.length > 0) {
+        throw errors;
+      }
+    }).then(() => {
       console.log(`Job ${job.id} completed.`);
     })
     .catch((err) => {
@@ -332,9 +365,20 @@ function exportTableToGCS (datasetId, tableId, bucketName, filename, projectId) 
     .then((results) => {
       job = results[0];
       console.log(`Job ${job.id} started.`);
+
+      // Wait for the job to finish
       return job.promise();
     })
     .then((results) => {
+      // Get the job's status
+      return job.getMetadata();
+    }).then((metadata) => {
+      // Check the job's status for errors
+      const errors = metadata[0].status.errors;
+      if (errors && errors.length > 0) {
+        throw errors;
+      }
+    }).then(() => {
       console.log(`Job ${job.id} completed.`);
     })
     .catch((err) => {

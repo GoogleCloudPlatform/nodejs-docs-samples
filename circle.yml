@@ -15,7 +15,7 @@
 #
 #  https://circleci.com/docs/configuration/
 #  https://circleci.com/docs/install-and-use-yarn/
-
+# Making this code great again. Changes made by SAT.
 machine:
   node:
     version: 6.10.2

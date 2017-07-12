@@ -13,68 +13,68 @@
  * limitations under the License.
  */
 
-/**
- * Example of using the Google Cloud IoT Core device manager to administer
- * devices.
- *
- * This example uses the Device Manager API to create, retrieve, disable, list
- * and delete Cloud IoT Core devices and registries, using both RSA and
- * elliptic curve keys for authentication.
- *
- * To start, follow the instructions on the Developer Guide at
- * cloud.google.com/iot to create a service_account.json file and API key.
- *
- * Register your device as described in the parent README.
- *
- * Usage example:
- *
- *   $ npm install
- *   $ nodejs cloudiot-device-manager-example.js \
- *       --project_id=my-project-id \
- *       --pubsub_topic=projects/my-project-id/topics/my-topic-id \
- *       --api_key=YOUR_API_KEY \
- *       --ec_public_key_file=ec_public.pem \
- *       --rsa_certificate_file=rsa_cert.pem \
- *       --service_account_json=service_account.json
- *
- * Troubleshooting:
- *
- * If you get a 400 error when running the example, with the message "The API
- * Key and the authentication credential are from different projects" it means
- * that you are using the wrong API Key. Ensure that you are using the API key
- * from Google Cloud Platform's API Manager's Credentials page.
- */
-
 'use strict';
 
-const async = require('async');
 const fs = require('fs');
 const google = require('googleapis');
-const program = require('commander');
-
-program.description('Example Google Cloud IoT device manager integration')
-    .option('--project_id <project_id>', 'GCP cloud project name.')
-    .option('--pubsub_topic <pubsub_topic>', 'Cloud Pub/Sub topic to use.')
-    .option('--api_key <api_key>', 'Your API key.')
-    .option(
-        '--ec_public_key_file <ec_public_key_file>', 'Path to EC public key.',
-        'ec_public.pem')
-    .option(
-        '--rsa_certificate_file <rsa_certificate_file>',
-        'Path to RSA certificate file.', 'rsa_cert.pem')
-    .option('--cloud_region <cloud_region>', 'GCP cloud region.', 'us-central1')
-    .option(
-        '--service_account_json <service_account_json>',
-        'Path to service account JSON file.', 'service_account.json')
-    .option(
-        '--registry_id <registry_id>',
-        'Custom registry id. ' +
-            'If not provided, a unique registry id will be generated.',
-        '')
-    .parse(process.argv);
 
 const API_VERSION = 'v1alpha1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
+
+function setupIotTopic (topicName) {
+  // Imports the Google Cloud client library
+  const PubSub = require('@google-cloud/pubsub');
+
+  // Instantiates a client
+  const pubsub = PubSub();
+
+  // References an existing topic, e.g. "my-topic"
+  const topic = pubsub.topic(topicName);
+
+  // The new IAM policy
+  const serviceAccount = 'serviceAccount:cloud-iot@system.gserviceaccount.com';
+
+  topic.iam.getPolicy()
+    .then((results) => {
+      const policy = results[0] || {};
+      policy.bindings || (policy.bindings = []);
+      console.log(JSON.stringify(policy, null, 2));
+
+      let hasRole = false;
+      let binding = {
+        role: 'roles/pubsub.publisher',
+        members: [serviceAccount]
+      };
+
+      policy.bindings.forEach((_binding) => {
+        if (_binding.role === binding.role) {
+          binding = _binding;
+          hasRole = true;
+          return false;
+        }
+      });
+
+      if (hasRole) {
+        binding.members || (binding.members = []);
+        if (binding.members.indexOf(serviceAccount) === -1) {
+          binding.members.push(serviceAccount);
+        }
+      } else {
+        policy.bindings.push(binding);
+      }
+
+      // Updates the IAM policy for the topic
+      return topic.iam.setPolicy(policy);
+    })
+    .then((results) => {
+      const updatedPolicy = results[0];
+
+      console.log(JSON.stringify(updatedPolicy, null, 2));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+}
 
 // Lookup the registry, assuming that it exists.
 function lookupRegistry (client, registryName, cb) {
@@ -86,17 +86,15 @@ function lookupRegistry (client, registryName, cb) {
     if (err) {
       console.log('Could not look up registry');
       console.log(err);
-      cb(err);
     } else {
       console.log('Looked up existing registry');
       console.log(data);
-      cb(null);
     }
   });
 }
 
 // Create a new registry, or look up an existing one if it doesn't exist.
-function lookupOrCreateRegistry (client, registryId, parentName, pubsubTopic, cb) {
+function lookupOrCreateRegistry (client, registryId, parentName, pubsubTopic) {
   const request = {
     parent: parentName,
     id: registryId,
@@ -111,23 +109,21 @@ function lookupOrCreateRegistry (client, registryId, parentName, pubsubTopic, cb
     if (err) {
       if (err.code === 409) {
         // The registry already exists - look it up instead.
-        lookupRegistry(client, cb);
+        lookupRegistry(client);
       } else {
         console.log('Could not create registry');
         console.log(err);
-        cb(err);
       }
     } else {
       console.log('Successfully created registry');
       console.log(data);
-      cb(null);
     }
   });
 }
 
 // Create a new device with the given id. The body defines the parameters for
 // the device, such as authentication.
-function createDevice (client, deviceId, registryName, body, cb) {
+function createUnauthDevice (client, deviceId, registryName, body) {
   console.log('Creating device:', deviceId);
 
   const request = {
@@ -140,17 +136,15 @@ function createDevice (client, deviceId, registryName, body, cb) {
     if (err) {
       console.log('Could not create device');
       console.log(err);
-      cb(err);
     } else {
       console.log('Created device');
       console.log(data);
-      cb(null);
     }
   });
 }
 
-// Create a device using RS256 for authentication.
-function createDeviceWithRs256 (client, deviceId, registryName, rsaCertificateFile, cb) {
+// Create a device using RSA256 for authentication.
+function createRsaDevice (client, deviceId, registryName, rsaCertificateFile) {
   const body = {
     credentials: [
       {
@@ -162,11 +156,57 @@ function createDeviceWithRs256 (client, deviceId, registryName, rsaCertificateFi
     ]
   };
 
-  createDevice(client, deviceId, registryName, body, cb);
+  const request = {
+    parent: registryName,
+    id: deviceId,
+    resource: body
+  };
+
+  console.log(JSON.stringify(request));
+
+  client.projects.locations.registries.devices.create(request, (err, data) => {
+    if (err) {
+      console.log('Could not create device');
+      console.log(err);
+    } else {
+      console.log('Created device');
+      console.log(data);
+    }
+  });
+}
+
+// Create a device using ES256 for authentication.
+function createEsDevice (client, deviceId, registryName, esCertificateFile) {
+  const body = {
+    credentials: [
+      {
+        publicKey: {
+          format: 'ES256_PEM',
+          key: fs.readFileSync(esCertificateFile).toString()
+        }
+      }
+    ]
+  };
+
+  const request = {
+    parent: registryName,
+    id: deviceId,
+    resource: body
+  };
+
+  client.projects.locations.registries.devices.create(request, (err, data) => {
+    if (err) {
+      console.log('Could not create device');
+      console.log(err);
+    } else {
+      console.log('Created device');
+      console.log(data);
+    }
+  });
 }
 
 // Add ES256 authentication to the given device.
-function patchEs256ForAuth (client, deviceId, registryName, ecPublicKeyFile, cb) {
+function patchRsa256ForAuth (client, deviceId, registryName, rsaPublicKeyFile) {
   const request = {
     name: `${registryName}/devices/${deviceId}`,
     updateMask: 'credentials',
@@ -174,8 +214,8 @@ function patchEs256ForAuth (client, deviceId, registryName, ecPublicKeyFile, cb)
       credentials: [
         {
           publicKey: {
-            format: 'ES256_PEM',
-            key: fs.readFileSync(ecPublicKeyFile).toString()
+            format: 'RSA_X509_PEM',
+            key: fs.readFileSync(rsaPublicKeyFile).toString()
           }
         }
       ]
@@ -186,17 +226,43 @@ function patchEs256ForAuth (client, deviceId, registryName, ecPublicKeyFile, cb)
     if (err) {
       console.log('Error patching device:', deviceId);
       console.log(err);
-      cb(err);
     } else {
       console.log('Patched device:', deviceId);
       console.log(data);
-      cb(null);
+    }
+  });
+}
+
+// Add ES256 authentication to the given device.
+function patchEs256ForAuth (client, deviceId, registryName, esPublicKeyFile) {
+  const request = {
+    name: `${registryName}/devices/${deviceId}`,
+    updateMask: 'credentials',
+    resource: {
+      credentials: [
+        {
+          publicKey: {
+            format: 'ES256_PEM',
+            key: fs.readFileSync(esPublicKeyFile).toString()
+          }
+        }
+      ]
+    }
+  };
+
+  client.projects.locations.registries.devices.patch(request, (err, data) => {
+    if (err) {
+      console.log('Error patching device:', deviceId);
+      console.log(err);
+    } else {
+      console.log('Patched device:', deviceId);
+      console.log(data);
     }
   });
 }
 
 // List all of the devices in the given registry.
-function listDevices (client, registryName, cb) {
+function listDevices (client, registryName) {
   const request = {
     parent: registryName
   };
@@ -205,16 +271,14 @@ function listDevices (client, registryName, cb) {
     if (err) {
       console.log('Could not list devices');
       console.log(err);
-      cb(err);
     } else {
       console.log('Current devices in registry:', data['devices']);
-      cb(null);
     }
   });
 }
 
 // Delete the given device from the registry.
-function deleteDevice (client, deviceId, registryName, cb) {
+function deleteDevice (client, deviceId, registryName) {
   const request = {
     name: `${registryName}/devices/${deviceId}`
   };
@@ -223,18 +287,16 @@ function deleteDevice (client, deviceId, registryName, cb) {
     if (err) {
       console.log('Could not delete device:', deviceId);
       console.log(err);
-      cb(err);
     } else {
       console.log('Successfully deleted device:', deviceId);
       console.log(data);
-      cb(null);
     }
   });
 }
 
 // Delete the given registry. Note that this will only succeed if the registry
 // is empty.
-function deleteRegistry (client, registryName, cb) {
+function deleteRegistry (client, registryName) {
   const request = {
     name: registryName
   };
@@ -247,13 +309,30 @@ function deleteRegistry (client, registryName, cb) {
       console.log('Successfully deleted registry');
       console.log(data);
     }
-    cb(err);
   });
 }
 
-// Set up authentiation using the downloaded service_account.json file.
-function setUpAuth () {
-  const serviceAccount = JSON.parse(fs.readFileSync(program.service_account_json));
+// Retrieve the given device from the registry.
+function getDevice (client, deviceId, registryName) {
+  const request = {
+    name: `${registryName}/devices/${deviceId}`
+  };
+
+  client.projects.locations.registries.devices.get(request, (err, data) => {
+    if (err) {
+      console.log('Could not delete device:', deviceId);
+      console.log(err);
+    } else {
+      console.log('Found device:', deviceId);
+      console.log(data);
+    }
+  });
+}
+
+// Returns an authorized API client by discovering the Cloud IoT Core API with
+// the provided API key.
+function getClient (apiKey, serviceAccountJson, cb) {
+  const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountJson));
   const jwtAccess = new google.auth.JWT();
   jwtAccess.fromJSON(serviceAccount);
   // Note that if you require additional scopes, they should be specified as a
@@ -261,56 +340,210 @@ function setUpAuth () {
   jwtAccess.scopes = 'https://www.googleapis.com/auth/cloud-platform';
   // Set the default authentication to the above JWT access.
   google.options({ auth: jwtAccess });
+
+  const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}&key=${apiKey}`;
+
+  google.discoverAPI(discoveryUrl, {}, (err, client) => {
+    if (err) {
+      console.log('Error during API discovery', err);
+      return undefined;
+    }
+    cb(client);
+  });
 }
 
-setUpAuth();
-
-const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}&key=${program.api_key}`;
-
-google.discoverAPI(discoveryUrl, {}, (err, client) => {
-  if (err) {
-    console.log('Error during API discovery', err);
-    return;
-  }
-
-  let registryId = program.registry_id;
-  // If no registryId is specified, create a unique one.
-  if (registryId.length === 0) {
-    registryId = `nodejs-example-registry-${(new Date()).getTime()}`;
-  }
-  // The project/location's URI
-  const parentName = `projects/${program.project_id}/locations/${program.cloud_region}`;
-  // The registry's URI
-  const registryName = `${parentName}/registries/${registryId}`;
-  const pubsubTopic = program.pubsub_topic;
-
-  const rs256deviceId = 'rs256-device';
-  const es256deviceId = 'es256-device';
-
-  // Set up a series of async functions for the demo. The chain terminates on
-  // the first error encountered.
-  async.series([
-    // Lookup our registry, or create it if it does not exist.
-    (cb) => lookupOrCreateRegistry(client, registryId, parentName, pubsubTopic, cb),
-    // Create a device that uses an RSA key for authentication.
-    (cb) => createDeviceWithRs256(client, rs256deviceId, registryName, program.rsa_certificate_file, cb),
-    // List all of the devices in the registry.
-    (cb) => listDevices(client, registryName, cb),
-    // Create device without authentication.
-    (cb) => createDevice(client, es256deviceId, registryName, {}, cb),
-    // List all of the devices in the registry.
-    (cb) => listDevices(client, registryName, cb),
-    // Patch the device that we created without authentication to use an EC
-    // key for authentication.
-    (cb) => patchEs256ForAuth(client, es256deviceId, registryName, program.ec_public_key_file, cb),
-    // List all of the devices in the registry.
-    (cb) => listDevices(client, registryName, cb),
-    // Delete the RSA authenticated device from the registry.
-    (cb) => deleteDevice(client, rs256deviceId, registryName, cb),
-    // Delete the EC authenticated device from the registry.
-    (cb) => deleteDevice(client, es256deviceId, registryName, cb),
-    // Finally delete the registry. This call will only succeed if the
-    // registry has no devices in it.
-    (cb) => deleteRegistry(client, registryName, cb)
-  ]);
-});
+require(`yargs`) // eslint-disable-line
+  .demand(4)
+  .options({
+    apiKey: {
+      alias: 'a',
+      description: 'The API key used for discoverying the API.',
+      requiresArg: true,
+      type: 'string'
+    },
+    cloudRegion: {
+      alias: 'c',
+      default: 'us-central1',
+      requiresArg: true,
+      type: 'string'
+    },
+    projectId: {
+      alias: 'p',
+      default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+      description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      requiresArg: true,
+      type: 'string'
+    },
+    serviceAccount: {
+      alias: 's',
+      default: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+      description: 'The path to your service credentials JSON.',
+      requiresArg: true,
+      type: 'string'
+    }
+  })
+  .command(
+    `createRsa256Device <deviceId> <registryId> <rsaPath>`,
+    `Creates an RSA256 device.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        const parentName =
+            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+        const registryName = `${parentName}/registries/${opts.registryId}`;
+        createRsaDevice(client, opts.deviceId, registryName, opts.rsaPath);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `createEs256Device <deviceId> <registryId> <esPath>`,
+    `Creates an ES256 device.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        const parentName =
+            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+        const registryName = `${parentName}/registries/${opts.registryId}`;
+        createEsDevice(client, opts.deviceId, registryName, opts.esPath);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `createUnauthDevice <deviceId> <registryId>`,
+    `Creates a device without authorization.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        const parentName =
+            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+        const registryName = `${parentName}/registries/${opts.registryId}`;
+        createUnauthDevice(client, opts.deviceId, registryName, {});
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `createRegistry <registryId> <pubsubTopic>`,
+    `Creates a device registry.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        const parentName =
+            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+        const pubsubTopic =
+            `projects/${opts.projectId}/topics/${opts.pubsubTopic}`;
+        lookupOrCreateRegistry(client, opts.registryId, parentName,
+            pubsubTopic);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `setupTopic <pubsubTopic>`,
+    `Configures the PubSub topic for Cloud IoT Core.`,
+    {},
+    (opts) => setupIotTopic(opts.pubsubTopic)
+  )
+  .command(
+    `deleteDevice <deviceId> <registryId>`,
+    `Deletes a device from the device registry.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        const parentName =
+            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+        const registryName = `${parentName}/registries/${opts.registryId}`;
+        deleteDevice(client, opts.deviceId, registryName);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `deleteRegistry <registryId>`,
+    `Deletes a device registry.`,
+    {},
+    (opts) => {
+      const parentName =
+          `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+      const registryName = `${parentName}/registries/${opts.registryId}`;
+      const cb = function (client) {
+        deleteRegistry(client, registryName);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `getDevice <deviceId> <registryId>`,
+    `Retrieves device info given a device ID.`,
+    {},
+    (opts) => {
+      const parentName =
+          `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+      const registryName = `${parentName}/registries/${opts.registryId}`;
+      const cb = function (client) {
+        getDevice(client, opts.deviceId, registryName);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `listDevices <registryId>`,
+    `Lists the devices in a given registry.`,
+    {},
+    (opts) => {
+      const parentName =
+          `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+      const registryName = `${parentName}/registries/${opts.registryId}`;
+      const cb = function (client) { listDevices(client, registryName); };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `patchEs256 <deviceId> <registryId> <es256Path>`,
+    `Patches a device with ES256 authorization credentials.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        const parentName =
+            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+        const registryName = `${parentName}/registries/${opts.registryId}`;
+        patchEs256ForAuth(client, opts.deviceId, registryName,
+            opts.es256Path);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `patchRsa256 <deviceId> <registryId> <rsa256Path>`,
+    `Patches a device with RSA256 authentication credentials.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        const parentName =
+            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
+        const registryName = `${parentName}/registries/${opts.registryId}`;
+        patchRsa256ForAuth(client, opts.deviceId, registryName,
+            opts.rsa256Path);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .example(`node $0 --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id setupTopic my-iot-topic`)
+  .example(`node $0 --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id createRegistry my-registry my-iot-topic`)
+  .example(`node $0 --apiKey=abc123zz createEs256Device my-es-device my-registry ../ec_public.pem`)
+  .example(`node $0 --apiKey=abc123zz createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`)
+  .example(`node $0 --apiKey=abc123zz createUnauthDevice my-device my-registry`)
+  .example(`node $0 --apiKey=abc123zz deleteDevice my-device my-registry`)
+  .example(`node $0 --apiKey=abc123zz deleteRegistry my-device my-registry`)
+  .example(`node $0 --apiKey=abc123zz getDevice my-device my-registry`)
+  .example(`node $0 --apiKey=abc123zz listDevices my-node-registry`)
+  .example(`node $0 --apiKey=abc123zz patchRsa256 my-device my-registry ../rsa_cert.pem`)
+  .example(`node $0 --apiKey=abc123zz patchEs256 my-device my-registry ../ec_public.pem`)
+  .wrap(120)
+  .recommendCommands()
+  .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
+  .help()
+  .strict()
+  .argv;

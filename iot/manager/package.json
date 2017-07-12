@@ -5,7 +5,8 @@
   "main": "cloudiot-device-manager-example.js",
   "dependencies": {
     "async": "2.4.1",
-    "commander": "2.9.0",
-    "googleapis": "19.0.0"
+    "@google-cloud/pubsub": "0.12.0",
+    "googleapis": "19.0.0",
+    "yargs": "^8.0.2"
   }
 }

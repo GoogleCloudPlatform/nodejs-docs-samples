@@ -21,18 +21,13 @@ const google = require('googleapis');
 const API_VERSION = 'v1alpha1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
+// Configures the topic for Cloud IoT Core.
 function setupIotTopic (topicName) {
-  // Imports the Google Cloud client library
   const PubSub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
   const pubsub = PubSub();
-
-  // References an existing topic, e.g. "my-topic"
   const topic = pubsub.topic(topicName);
-
-  // The new IAM policy
-  const serviceAccount = 'serviceAccount:cloud-iot@system.gserviceaccount.com';
+  const serviceAccount = `serviceAccount:cloud-iot@system.gserviceaccount.com`;
 
   topic.iam.getPolicy()
     .then((results) => {
@@ -73,6 +68,19 @@ function setupIotTopic (topicName) {
     })
     .catch((err) => {
       console.error('ERROR:', err);
+    });
+}
+
+function createIotTopic (topicName) {
+  // Imports the Google Cloud client library
+  const PubSub = require('@google-cloud/pubsub');
+
+  // Instantiates a client
+  const pubsub = PubSub();
+
+  pubsub.createTopic(topicName)
+    .then((results) => {
+      setupIotTopic(topicName);
     });
 }
 
@@ -206,7 +214,11 @@ function createEsDevice (client, deviceId, registryName, esCertificateFile) {
 }
 
 // Add RSA256 authentication to the given device.
-function patchRsa256ForAuth (client, deviceId, registryName, rsaPublicKeyFile) {
+function patchRsa256ForAuth (client, deviceId, registryId, rsaPublicKeyFile,
+    projectId, cloudRegion) {
+  const parentName =
+      `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
   const request = {
     name: `${registryName}/devices/${deviceId}`,
     updateMask: 'credentials',
@@ -234,7 +246,11 @@ function patchRsa256ForAuth (client, deviceId, registryName, rsaPublicKeyFile) {
 }
 
 // Add ES256 authentication to the given device.
-function patchEs256ForAuth (client, deviceId, registryName, esPublicKeyFile) {
+function patchEs256ForAuth (client, deviceId, registryId, esPublicKeyFile,
+    projectId, cloudRegion) {
+  const parentName =
+      `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
   const request = {
     name: `${registryName}/devices/${deviceId}`,
     updateMask: 'credentials',
@@ -405,6 +421,7 @@ require(`yargs`) // eslint-disable-line
   .options({
     apiKey: {
       alias: 'a',
+      default: process.env.API_KEY,
       description: 'The API key used for discoverying the API.',
       requiresArg: true,
       type: 'string'
@@ -489,7 +506,13 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `setupTopic <pubsubTopic>`,
+    `createIotTopic <pubsubTopic>`,
+    `Creates and configures a PubSub topic for Cloud IoT Core.`,
+    {},
+    (opts) => createIotTopic(opts.pubsubTopic)
+  )
+  .command(
+    `setupIotTopic <pubsubTopic>`,
     `Configures the PubSub topic for Cloud IoT Core.`,
     {},
     (opts) => setupIotTopic(opts.pubsubTopic)
@@ -568,11 +591,8 @@ require(`yargs`) // eslint-disable-line
     {},
     (opts) => {
       const cb = function (client) {
-        const parentName =
-            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
-        const registryName = `${parentName}/registries/${opts.registryId}`;
-        patchEs256ForAuth(client, opts.deviceId, registryName,
-            opts.es256Path);
+        patchEs256ForAuth(client, opts.deviceId, opts.registryId,
+            opts.es256Path, opts.projectId, opts.cloudRegion);
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
@@ -583,26 +603,23 @@ require(`yargs`) // eslint-disable-line
     {},
     (opts) => {
       const cb = function (client) {
-        const parentName =
-            `projects/${opts.projectId}/locations/${opts.cloudRegion}`;
-        const registryName = `${parentName}/registries/${opts.registryId}`;
-        patchRsa256ForAuth(client, opts.deviceId, registryName,
-            opts.rsa256Path);
+        patchRsa256ForAuth(client, opts.deviceId, opts.registryId,
+            opts.rsa256Path, opts.projectId, opts.cloudRegion);
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
   )
-  .example(`node $0 --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id setupTopic my-iot-topic`)
-  .example(`node $0 --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id createRegistry my-registry my-iot-topic`)
-  .example(`node $0 --apiKey=abc123zz createEs256Device my-es-device my-registry ../ec_public.pem`)
-  .example(`node $0 --apiKey=abc123zz createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`)
-  .example(`node $0 --apiKey=abc123zz createUnauthDevice my-device my-registry`)
-  .example(`node $0 --apiKey=abc123zz deleteDevice my-device my-registry`)
-  .example(`node $0 --apiKey=abc123zz deleteRegistry my-device my-registry`)
-  .example(`node $0 --apiKey=abc123zz getDevice my-device my-registry`)
-  .example(`node $0 --apiKey=abc123zz listDevices my-node-registry`)
-  .example(`node $0 --apiKey=abc123zz patchRsa256 my-device my-registry ../rsa_cert.pem`)
-  .example(`node $0 --apiKey=abc123zz patchEs256 my-device my-registry ../ec_public.pem`)
+  .example(`node $0 createEs256Device my-es-device my-registry ../ec_public.pem --apiKey=abc123zz`)
+  .example(`node $0 createRegistry my-registry my-iot-topic --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id`)
+  .example(`node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem --apiKey=abc123zz`)
+  .example(`node $0 createUnauthDevice my-device my-registry`)
+  .example(`node $0 deleteDevice my-device my-registry`)
+  .example(`node $0 deleteRegistry my-device my-registry`)
+  .example(`node $0 getDevice my-device my-registry`)
+  .example(`node $0 listDevices my-node-registry`)
+  .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
+  .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
+  .example(`node $0 setupTopic my-iot-topic --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)

@@ -53,10 +53,10 @@ test(`should create and delete an unauthorized device`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
-      `node manager.js createUnauthDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Created device`));
   output = await tools.runAsync(
-      `node manager.js deleteDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
@@ -68,10 +68,10 @@ test(`should create and delete an RSA256 device`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
-      `node manager.js createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+      `${cmd} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
   t.true(output.includes(`Created device`));
   output = await tools.runAsync(
-      `node manager.js deleteDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
@@ -83,10 +83,10 @@ test(`should create and delete an EC256 device`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
-      `node manager.js createEs256Device ${localDevice} ${localRegName} resources/ec_public.pem`, cwd);
+      `${cmd} createEs256Device ${localDevice} ${localRegName} resources/ec_public.pem`, cwd);
   t.true(output.includes(`Created device`));
   output = await tools.runAsync(
-      `node manager.js deleteDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
@@ -98,13 +98,13 @@ test(`should patch an unauthorized device with RSA256`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
-      `node manager.js createUnauthDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Created device`));
   output = await tools.runAsync(
-      `node manager.js patchRsa256 ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+      `${cmd} patchRsa256 ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
   t.true(output.includes(`Patched device:`));
   output = await tools.runAsync(
-      `node manager.js deleteDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
@@ -116,13 +116,13 @@ test(`should patch an unauthorized device with RSA256`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
-      `node manager.js createUnauthDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Created device`));
   output = await tools.runAsync(
-      `node manager.js patchEs256 ${localDevice} ${localRegName} resources/ec_public.pem`, cwd);
+      `${cmd} patchEs256 ${localDevice} ${localRegName} resources/ec_public.pem`, cwd);
   t.true(output.includes(`Patched device:`));
   output = await tools.runAsync(
-      `node manager.js deleteDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
@@ -134,13 +134,13 @@ test(`should create and list devices`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
-      `node manager.js createUnauthDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Created device`));
   output = await tools.runAsync(
-      `node manager.js listDevices ${localRegName}`, cwd);
+      `${cmd} listDevices ${localRegName}`, cwd);
   t.true(output.includes(`Current devices in registry: [ { id: '${localDevice}'`));
   output = await tools.runAsync(
-      `node manager.js deleteDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
@@ -152,13 +152,13 @@ test(`should create and get a device`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
-      `node manager.js createUnauthDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Created device`));
   output = await tools.runAsync(
-      `node manager.js getDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} getDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Found device: ${localDevice}`));
   output = await tools.runAsync(
-      `node manager.js deleteDevice ${localDevice} ${localRegName}`, cwd);
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.true(output.includes(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });

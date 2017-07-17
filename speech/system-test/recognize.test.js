@@ -45,12 +45,12 @@ test.after.always(async () => {
 
 test(`should run sync recognize`, async (t) => {
   const output = await runAsync(`${cmd} sync ${filepath}`, cwd);
-  t.true(output.includes(`Transcription: ${text}`));
+  t.true(output.includes(`Transcription:  ${text}`));
 });
 
 test(`should run sync recognize on a GCS file`, async (t) => {
   const output = await runAsync(`${cmd} sync-gcs gs://${bucketName}/${filename}`, cwd);
-  t.true(output.includes(`Transcription: ${text}`));
+  t.true(output.includes(`Transcription:  ${text}`));
 });
 
 test(`should run async recognize on a local file`, async (t) => {

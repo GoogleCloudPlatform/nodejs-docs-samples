@@ -16,8 +16,8 @@
 'use strict';
 
 // [START bigquery_simple_app_all]
-// [START bigquery_simple_app_print]
 function printResult (rows) {
+  // [START bigquery_simple_app_print]
   console.log('Query Results:');
   rows.forEach(function (row) {
     let str = '';
@@ -29,24 +29,25 @@ function printResult (rows) {
     }
     console.log(str);
   });
+  // [END bigquery_simple_app_print]
 }
-// [END bigquery_simple_app_print]
-
-// [START bigquery_simple_app_query]
-const sqlQuery = `SELECT
-  corpus, COUNT(*) as unique_words
-FROM publicdata.samples.shakespeare
-GROUP BY
-  corpus
-ORDER BY
-  unique_words DESC LIMIT 10;`;
 
 function queryShakespeare (projectId) {
+  // [START bigquery_simple_app_query]
   // Imports the Google Cloud client library
   const BigQuery = require('@google-cloud/bigquery');
 
   // The project ID to use, e.g. "your-project-id"
   // const projectId = "your-project-id";
+
+  // The SQL query to run
+  const sqlQuery = `SELECT
+    corpus, COUNT(*) as unique_words
+    FROM publicdata.samples.shakespeare
+    GROUP BY
+      corpus
+    ORDER BY
+    unique_words DESC LIMIT 10;`;
 
   // Instantiates a client
   const bigquery = BigQuery({
@@ -69,8 +70,8 @@ function queryShakespeare (projectId) {
     .catch((err) => {
       console.error('ERROR:', err);
     });
+  // [END bigquery_simple_app_query]
 }
-// [END bigquery_simple_app_query]
 // [END bigquery_simple_app_all]
 
 function syncQuery (sqlQuery, projectId) {
@@ -80,6 +81,9 @@ function syncQuery (sqlQuery, projectId) {
 
   // The project ID to use, e.g. "your-project-id"
   // const projectId = "your-project-id";
+
+  // The SQL query to run, e.g. "SELECT * FROM publicdata.samples.natality LIMIT 5;"
+  // const sqlQuery = "SELECT * FROM publicdata.samples.natality LIMIT 5;";
 
   // Instantiates a client
   const bigquery = BigQuery({
@@ -114,6 +118,9 @@ function asyncQuery (sqlQuery, projectId) {
 
   // The project ID to use, e.g. "your-project-id"
   // const projectId = "your-project-id";
+
+  // The SQL query to run, e.g. "SELECT * FROM publicdata.samples.natality LIMIT 5;"
+  // const sqlQuery = "SELECT * FROM publicdata.samples.natality LIMIT 5;";
 
   // Instantiates a client
   const bigquery = BigQuery({

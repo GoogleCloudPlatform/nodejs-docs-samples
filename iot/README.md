@@ -7,7 +7,7 @@ Cloud IoT Core platform.
 
 ## Quickstart
 
-1.  Install the Google Cloud SDK as described in [the device manager guide](/iot/docs/device_manager_guide#install_the_gcloud_cli).
+1.  Install the Google Cloud SDK as described in [the device manager guide](https://cloud.google.com/iot/docs/device_manager_guide#install_the_gcloud_cli).
 1.  Create a Cloud Pub/Sub topic:
 
     gcloud beta pubsub topics create projects/my-iot-project/topics/device-events

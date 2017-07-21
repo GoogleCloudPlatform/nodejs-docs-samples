@@ -113,19 +113,21 @@ function syncQuery (sqlQuery, projectId) {
 
 function asyncQuery (sqlQuery, projectId) {
   // [START bigquery_async_query]
+  // [START bigquery_build_client]
   // Imports the Google Cloud client library
   const BigQuery = require('@google-cloud/bigquery');
 
   // The project ID to use, e.g. "your-project-id"
   // const projectId = "your-project-id";
 
-  // The SQL query to run, e.g. "SELECT * FROM publicdata.samples.natality LIMIT 5;"
-  // const sqlQuery = "SELECT * FROM publicdata.samples.natality LIMIT 5;";
-
   // Instantiates a client
   const bigquery = BigQuery({
     projectId: projectId
   });
+  // [END bigquery_build_client]
+
+  // The SQL query to run, e.g. "SELECT * FROM publicdata.samples.natality LIMIT 5;"
+  // const sqlQuery = "SELECT * FROM publicdata.samples.natality LIMIT 5;";
 
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {

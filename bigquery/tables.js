@@ -97,6 +97,9 @@ function listTables (datasetId, projectId) {
   // The project ID to use, e.g. "your-project-id"
   // const projectId = "your-project-id";
 
+  // The ID of the dataset to list tables in, e.g. "my_dataset"
+  // const datasetId = "my_dataset";
+
   // Instantiates a client
   const bigquery = BigQuery({
     projectId: projectId
@@ -400,6 +403,10 @@ function insertRowsAsStream (datasetId, tableId, rows, projectId) {
 
   // The ID of the table into which data should be inserted, e.g. "my_table"
   // const tableId = "my_table";
+
+  // The rows to insert into the table
+  // Customize this object to match your table's schema
+  // const rows = [{name: "Tom", age: 30}, {name: "Jane", age: 32}];
 
   // Instantiates a client
   const bigquery = BigQuery({

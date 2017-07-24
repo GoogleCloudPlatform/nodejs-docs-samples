@@ -44,10 +44,11 @@ test.serial(`should create a bucket`, async (t) => {
 });
 
 test.serial(`should list buckets`, async (t) => {
-  await tools.tryTest(async () => {
+  t.plan(0);
+  await tools.tryTest(async (assert) => {
     const output = await tools.runAsync(`${cmd} list`, cwd);
-    t.true(output.includes(`Buckets:`));
-    t.true(output.includes(bucketName));
+    assert(output.includes(`Buckets:`));
+    assert(output.includes(bucketName));
   }).start();
 });
 

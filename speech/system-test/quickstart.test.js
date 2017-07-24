@@ -16,57 +16,20 @@
 'use strict';
 
 const path = require(`path`);
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const sinon = require(`sinon`);
-const speech = proxyquire(`@google-cloud/speech`, {})();
 const test = require(`ava`);
 
+const cmd = `node quickstart.js`;
+const cwd = path.join(__dirname, `..`);
+const text = `how old is the Brooklyn Bridge`;
+
 const {
-  checkCredentials,
-  stubConsole,
-  restoreConsole
+  runAsync
 } = require(`@google-cloud/nodejs-repo-tools`);
 
-const fileName = path.join(__dirname, `../resources/audio.raw`);
-const config = {
-  encoding: `LINEAR16`,
-  sampleRateHertz: 16000,
-  languageCode: `en-US`
-};
+test.before(async () => {
+});
 
-test.before(checkCredentials);
-test.before(stubConsole);
-test.after.always(restoreConsole);
-
-test.cb(`should detect speech`, (t) => {
-  const expectedFileName = `./resources/audio.raw`;
-  const expectedText = `how old is the Brooklyn Bridge`;
-
-  const speechMock = {
-    recognize: (_fileName, _config) => {
-      t.is(_fileName, expectedFileName);
-      t.deepEqual(_config, config);
-
-      return speech.recognize(fileName, config)
-        .then(([transcription]) => {
-          t.is(transcription, expectedText);
-
-          setTimeout(() => {
-            try {
-              t.is(console.log.callCount, 1);
-              t.deepEqual(console.log.getCall(0).args, [`Transcription: ${expectedText}`]);
-              t.end();
-            } catch (err) {
-              t.end(err);
-            }
-          }, 200);
-
-          return [transcription];
-        });
-    }
-  };
-
-  proxyquire(`../quickstart`, {
-    '@google-cloud/speech': sinon.stub().returns(speechMock)
-  });
+test(`should run quickstart`, async (t) => {
+  const output = await runAsync(`${cmd}`, cwd);
+  t.true(output.includes(`Transcription: ${text}`));
 });

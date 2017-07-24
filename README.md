@@ -31,6 +31,7 @@ on Google Cloud Platform.
     * [Google Container Engine](#google-container-engine)
     * [Google Cloud Functions (Beta)](#google-cloud-functions-beta)
   * [**Storage and Databases**](#storage-and-databases)
+    * [Cloud Spanner](#cloud-spanner)
     * [Google Cloud Datastore](#google-cloud-datastore)
     * [Google Cloud Storage](#google-cloud-storage)
   * [**Big Data**](#big-data)
@@ -90,7 +91,7 @@ on Google Cloud Platform.
     Create local credentials by running the following command and following the
     oauth2 flow (read more about the command [here][auth_command]):
 
-        gcloud beta auth application-default login
+        gcloud auth application-default login
 
     In non-Google Cloud environments, GCE instances created without the
     correct scopes, or local workstations where the
@@ -221,6 +222,16 @@ View the [Cloud Functions Node.js samples][functions_samples].
 [functions_samples]: functions
 
 ### Storage and Databases
+
+#### Cloud Spanner
+
+[Cloud Spanner][spanner_docs] is a managed, mission-critical, globally
+consistent and scalable relational database service.
+
+View the [Cloud Spanner Node.js samples][spanner_samples].
+
+[spanner_docs]: https://cloud.google.com/spanner/docs/
+[spanner_samples]: spanner
 
 #### Google Cloud Datastore
 

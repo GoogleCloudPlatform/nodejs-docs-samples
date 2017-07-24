@@ -17,13 +17,13 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/spanner": "0.4.2"
+    "@google-cloud/spanner": "0.4.4"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.7",
+    "@google-cloud/nodejs-repo-tools": "1.4.15",
     "ava": "0.19.1",
-    "proxyquire": "1.7.11",
-    "sinon": "2.1.0"
+    "proxyquire": "1.8.0",
+    "sinon": "2.3.4"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

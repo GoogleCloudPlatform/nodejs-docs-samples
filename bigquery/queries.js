@@ -136,6 +136,17 @@ function asyncQuery (sqlQuery, projectId) {
       console.log(`Job ${job.id} started.`);
       return job.promise();
     })
+    .then((results) => {
+      // Get the job's status
+      return job.getMetadata();
+    })
+    .then((metadata) => {
+      // Check the job's status for errors
+      const errors = metadata[0].status.errors;
+      if (errors && errors.length > 0) {
+        throw errors;
+      }
+    })
     .then(() => {
       console.log(`Job ${job.id} completed.`);
       return job.getQueryResults();

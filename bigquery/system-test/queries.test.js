@@ -45,10 +45,7 @@ corpus: antonyandcleopatra
 unique_words: 4582`;
 
 const sqlQuery = `SELECT * FROM publicdata.samples.natality LIMIT 5;`;
-
-test.before(tools.checkCredentials);
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+const badQuery = `SELECT * FROM INVALID`;
 
 test(`should query shakespeare`, async (t) => {
   const output = await tools.runAsync(`${cmd} shakespeare`, cwd);
@@ -65,4 +62,12 @@ test(`should run an async query`, async (t) => {
   const output = await tools.runAsync(`${cmd} async "${sqlQuery}"`, cwd);
   t.true(output.includes(`Rows:`));
   t.true(output.includes(`source_year`));
+});
+
+test.skip(`should handle sync query errors`, async (t) => {
+  await t.throws(tools.runAsync(`${cmd} sync "${badQuery}"`, cwd), /ERROR:/);
+});
+
+test.skip(`should handle async query errors`, async (t) => {
+  await t.throws(tools.runAsync(`${cmd} async "${badQuery}"`, cwd), /ERROR:/);
 });

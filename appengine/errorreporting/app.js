@@ -18,39 +18,17 @@
 
 // [START setup]
 const express = require('express');
-const winston = require('winston');
+const errors = require('@google-cloud/error-reporting')();
 
 const app = express();
-const logFile = '/var/log/app_engine/custom_logs/myapp.errors.log.json';
-
-winston.add(winston.transports.File, {
-  filename: logFile
-});
 // [END setup]
-
-function report (err, req) {
-  const payload = {
-    message: err.stack,
-    context: {
-      httpRequest: {
-        url: req.originalUrl,
-        method: req.method,
-        referrer: req.header('Referer'),
-        userAgent: req.header('User-Agent'),
-        remoteIp: req.ip,
-        responseStatusCode: 500
-      }
-    }
-  };
-  winston.error(payload);
-}
 
 app.get('/', (req, res, next) => {
   next(new Error('something is wrong!'));
 });
 
 app.use((err, req, res, next) => {
-  report(err, req);
+  errors.report(err);
   res.status(500).send(err.message || 'Something broke!');
 });
 

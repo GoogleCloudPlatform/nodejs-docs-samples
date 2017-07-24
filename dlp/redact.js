@@ -15,13 +15,13 @@
 
 'use strict';
 
-const API_URL = 'https://dlp.googleapis.com/v2beta1';
-const requestPromise = require('request-promise');
-
-function redactString (authToken, string, replaceString, inspectConfig) {
+function redactString (string, replaceString, minLikelihood, infoTypes) {
   // [START redact_string]
-  // Your gcloud auth token
-  // const authToken = 'YOUR_AUTH_TOKEN';
+  // Imports the Google Cloud Data Loss Prevention library
+  const DLP = require('@google-cloud/dlp');
+
+  // Instantiates a client
+  const dlp = DLP();
 
   // The string to inspect
   // const string = 'My name is Gary and my email is gary@example.com';
@@ -29,102 +29,77 @@ function redactString (authToken, string, replaceString, inspectConfig) {
   // The string to replace sensitive data with
   // const replaceString = 'REDACTED';
 
-  // Construct items to inspect
+  // The minimum likelihood required before redacting a match
+  // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
+
+  // The infoTypes of information to redact
+  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+
   const items = [{ type: 'text/plain', value: string }];
 
-  // Construct info types + replacement configs
-  const replaceConfigs = inspectConfig.infoTypes.map((infoType) => {
+  const replaceConfigs = infoTypes.map((infoType) => {
     return {
       infoType: infoType,
       replaceWith: replaceString
     };
   });
 
-  // Construct REST request body
-  const requestBody = {
+  const request = {
     inspectConfig: {
-      infoTypes: inspectConfig.infoTypes,
-      minLikelihood: inspectConfig.minLikelihood
+      infoTypes: infoTypes,
+      minLikelihood: minLikelihood
     },
     items: items,
     replaceConfigs: replaceConfigs
   };
 
-  // Construct REST request
-  const options = {
-    url: `${API_URL}/content:redact`,
-    headers: {
-      'Authorization': `Bearer ${authToken}`,
-      'Content-Type': 'application/json'
-    },
-    json: requestBody
-  };
-
-  // Run REST request
-  requestPromise.post(options)
+  dlp.redactContent(request)
     .then((body) => {
-      const results = body.items[0].value;
+      const results = body[0].items[0].value;
       console.log(results);
     })
     .catch((err) => {
-      console.log('Error in redactString:', err);
+      console.log(`Error in redactString: ${err.message || err}`);
     });
   // [END redact_string]
 }
 
+const cli = require(`yargs`)
+  .demand(1)
+  .command(
+    `string <string> <replaceString>`,
+    `Redact sensitive data from a string using the Data Loss Prevention API.`,
+    {},
+    (opts) => redactString(opts.string, opts.replaceString, opts.minLikelihood, opts.infoTypes)
+  )
+  .option('m', {
+    alias: 'minLikelihood',
+    default: 'LIKELIHOOD_UNSPECIFIED',
+    type: 'string',
+    choices: [
+      'LIKELIHOOD_UNSPECIFIED',
+      'VERY_UNLIKELY',
+      'UNLIKELY',
+      'POSSIBLE',
+      'LIKELY',
+      'VERY_LIKELY'
+    ],
+    global: true
+  })
+  .option('t', {
+    alias: 'infoTypes',
+    required: true,
+    type: 'array',
+    global: true,
+    coerce: (infoTypes) => infoTypes.map((type) => {
+      return { name: type };
+    })
+  })
+  .example(`node $0 string "My name is Gary" "REDACTED" -t US_MALE_NAME`)
+  .wrap(120)
+  .recommendCommands()
+  .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`);
+
 if (module === require.main) {
-  const auth = require('google-auto-auth')({
-    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    scopes: ['https://www.googleapis.com/auth/cloud-platform']
-  });
-  auth.getToken((err, token) => {
-    if (err) {
-      console.err('Error fetching auth token:', err);
-      process.exit(1);
-    }
-
-    const cli = require(`yargs`)
-      .demand(1)
-      .command(
-        `string <string> <replaceString>`,
-        `Redact sensitive data from a string using the Data Loss Prevention API.`,
-        {},
-        (opts) => redactString(opts.authToken, opts.string, opts.replaceString, opts)
-      )
-      .option('m', {
-        alias: 'minLikelihood',
-        default: 'LIKELIHOOD_UNSPECIFIED',
-        type: 'string',
-        choices: [
-          'LIKELIHOOD_UNSPECIFIED',
-          'VERY_UNLIKELY',
-          'UNLIKELY',
-          'POSSIBLE',
-          'LIKELY',
-          'VERY_LIKELY'
-        ],
-        global: true
-      })
-      .option('a', {
-        alias: 'authToken',
-        default: token,
-        type: 'string',
-        global: true
-      })
-      .option('t', {
-        alias: 'infoTypes',
-        required: true,
-        type: 'array',
-        global: true,
-        coerce: (infoTypes) => infoTypes.map((type) => {
-          return { name: type };
-        })
-      })
-      .example(`node $0 string "My name is Gary" "REDACTED" -t US_MALE_NAME`)
-      .wrap(120)
-      .recommendCommands()
-      .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`);
-
-    cli.help().strict().argv; // eslint-disable-line
-  });
+  cli.help().strict().argv; // eslint-disable-line
 }

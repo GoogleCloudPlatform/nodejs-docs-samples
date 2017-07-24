@@ -15,6 +15,20 @@ appropriate, replace `YOUR_PROJECT_ID` with the ID of your Cloud project):
 1.  Refer to the [appengine/README.md][readme] file for instructions on
     running and deploying.
 
+1. Set the `GCLOUD_PROJECT` environment variable:
+
+    Linux:
+
+        export GCLOUD_PROJECT=your-project-id
+
+    Windows:
+
+        set GCLOUD_PROJECT=your-project-id
+
+    Windows (PowerShell):
+
+        $env:GCLOUD_PROJECT="your-project-id"
+
 1.  Acquire local credentials for authenticating with Google Cloud Platform APIs:
 
         gcloud auth application-default login

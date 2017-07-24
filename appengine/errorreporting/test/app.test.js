@@ -16,7 +16,6 @@
 'use strict';
 
 const express = require(`express`);
-const winston = require(`winston`);
 const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const request = require(`supertest`);
@@ -34,21 +33,24 @@ function getSample () {
     timestamp: `1234`,
     userIp: `abcd`
   }) + `\n`;
-  const winstonMock = {
-    add: sinon.stub(),
-    error: sinon.stub()
-  };
+  const reportMock = sinon.stub();
+  const errorsMock = sinon.stub().callsFake(function ErrorReporting () {
+    return {
+      report: reportMock
+    };
+  });
 
   const app = proxyquire(SAMPLE_PATH, {
-    winston: winstonMock,
-    express: expressMock
+    express: expressMock,
+    '@google-cloud/error-reporting': errorsMock
   });
   return {
     app: app,
     mocks: {
+      errors: errorsMock,
       express: expressMock,
-      results: resultsMock,
-      winston: winstonMock
+      report: reportMock,
+      results: resultsMock
     }
   };
 }
@@ -60,8 +62,8 @@ test(`sets up the sample`, (t) => {
   const sample = getSample();
 
   t.true(sample.mocks.express.calledOnce);
-  t.true(sample.mocks.winston.add.calledOnce);
-  t.true(sample.mocks.winston.add.firstCall.args[0] === winston.transports.File);
+  t.true(sample.mocks.errors.calledOnce);
+  t.is(sample.mocks.report.callCount, 0);
   t.true(sample.app.listen.calledOnce);
   t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
 });
@@ -74,7 +76,7 @@ test.cb(`should throw an error`, (t) => {
     .get(`/`)
     .expect(500)
     .expect((response) => {
-      t.true(sample.mocks.winston.error.calledOnce);
+      t.true(sample.mocks.report.calledOnce);
       t.is(response.text, expectedResult);
     })
     .end(t.end);

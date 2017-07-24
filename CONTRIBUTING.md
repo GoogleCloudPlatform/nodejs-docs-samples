@@ -9,11 +9,11 @@ Please fill out either the individual or corporate Contributor License Agreement
 (CLA).
 
   * If you are an individual writing original source code and you're sure you
-    own the intellectual property, then you'll need to sign an [individual CLA]
-    (https://developers.google.com/open-source/cla/individual).
+    own the intellectual property, then you'll need to sign an
+    [individual CLA](https://developers.google.com/open-source/cla/individual).
   * If you work for a company that wants to allow you to contribute your work,
-    then you'll need to sign a [corporate CLA]
-    (https://developers.google.com/open-source/cla/corporate).
+    then you'll need to sign a
+    [corporate CLA](https://developers.google.com/open-source/cla/corporate).
 
 Follow either of the two links above to access the appropriate CLA and
 instructions for how to sign and return it. Once we receive it, we'll be able to
@@ -138,59 +138,68 @@ You can run `npm run lint` to match our JavaScript coding standards.
 
 ## Sample template
 
-```
-<LICENSE_HEADER>
-
-// [START all]
-// [START setup]
-// By default, the client will authenticate using the service account file
-// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-var <API_CLIENT> = require('@google-cloud/<API>');
-
-// Instantiate a <API> client
-var <CLIENT> = <API_CLIENT>();
-// [END setup]
-
-// [START <REGION_TAG_NAME>]
+```js
 /**
- * <DESCRIPTION>
+ * Copyright 2017, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * @param {<TYPE>} <NAME> <DESCRIPTION>.
- * @param {function} cb The callback function.
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-function <METHOD_NAME> (<ARGUMENTS>, callback) {
-  // <SETUP>
 
-  // <RUN SAMPLE CODE>
+'use strict';
 
-  // Inside callback: console.log(<MESSAGE>)
+function someMethod (someVariable) {
+  // [START some_region_tag]
+  // Imports the Google Cloud client library
+  const Library = require('@google-cloud/some-library');
+
+  // The something something, e.g. "some-value"
+  // const someVariable = "some-value";
+
+  // Instantiates a client
+  const library = Library();
+
+  // Does something
+  library
+    .someMethod(someVariable)
+    .then((results) => {
+      const someResults = results[0];
+
+      console.log('Results:');
+      someResults.forEach((result) => {
+        console.log(result);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END some_region_tag]
 }
-// [END <REGION_TAG_NAME>]
 
-// The command-line program
-var cli = require('yargs');
-
-var program = module.exports = {
-  <METHOD_NAME>: <METHOD_NAME>,
-  main: function (args) {
-    // Run the command-line program
-    cli.help().strict().parse(args).argv; // eslint-disable-line
-  }
-};
-
-cli
+const cli = require('yargs')
   .demand(1)
-  .command('<COMMAND> <ARGS>', '<DESCRIPTION>.', {}, function (options) {
-    program.<METHOD_NAME>(options, console.log);
-  })
-  .example('node $0 <COMMAND> <ARGS>', '<DESCRIPTION>.')
-  .wrap(100)
+  .command(
+    'someCommand <someVariable>',
+    'Does something.',
+    {},
+    (opts) => someMethod(opts.someVariable)
+  )
+  .example('node $0 someCommand someValue', 'Does something.')
+  .wrap(120)
   .recommendCommands()
-  .epilogue('For more information, see <DOCS_LINK>');
+  .epilogue(`For more information, see https://cloud.google.com/someProduct/docs`)
+  .help()
+  .strict();
 
 if (module === require.main) {
-  program.main(process.argv.slice(2));
+  cli.parse(process.argv.slice(2));
 }
 ```

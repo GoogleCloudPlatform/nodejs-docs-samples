@@ -20,13 +20,26 @@ const path = require('path');
 
 let localPath = process.argv.slice(2)[0] || process.cwd();
 
+let remainingArgs = [];
+
+process.argv.forEach((arg, i) => {
+  if (arg === '--' && i <= (process.argv.length - 1)) {
+    remainingArgs = process.argv.slice(i + 1).map((arg) => {
+      if (arg && arg.indexOf(' ') !== -1 && arg[0] !== `"` && arg[arg.length - 1] !== `"`) {
+        return `"${arg}"`;
+      }
+      return arg;
+    });
+  }
+});
+
 if (!path.isAbsolute(localPath)) {
   localPath = path.join(process.cwd(), localPath);
 }
 
 const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 
-const command = `samples test build -l=${localPath} --async`;
+const command = `samples test build -l=${localPath} --async ${remainingArgs.join(' ')}`.trim();
 
 console.log(`Command: ${command}`);
 

@@ -1,17 +1,16 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud KMS API Node.js Samples
+# Google Cloud Key Management Service Node.js Samples
 
-The [Cloud KMS API][kms_docs] is a service that allows you to keep encryption
-keys centrally in the cloud, for direct use by cloud services.
+[![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-kms.svg)]()
 
-[kms_docs]: https://cloud.google.com/kms/docs/
+[Cloud KMS](https://cloud.google.com/kms/docs/) allows you to keep encryption keys in one central cloud service, for direct use by other cloud resources and applications. With Cloud KMS you are the ultimate custodian of your data, you can manage encryption in the cloud the same way you do on-premises, and you have a provable and monitorable root of trust over your data.
 
 ## Table of Contents
 
 * [Setup](#setup)
 * [Samples](#samples)
-  * [Quickstart](#quickstart)
+  * [KMS](#kms)
 * [Running the tests](#running-the-tests)
 
 ## Setup
@@ -19,33 +18,22 @@ keys centrally in the cloud, for direct use by cloud services.
 1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
 1.  Install dependencies:
 
-    With `npm`:
+    With **npm**:
 
         npm install
 
-    With `yarn`:
+    With **yarn**:
 
         yarn install
 
-[prereq]: ../README.md#prerequisities
+[prereq]: ../README.md#prerequisites
 [run]: ../README.md#how-to-run-a-sample
 
 ## Samples
 
-### Quickstart
+### KMS
 
-View the [documentation][quickstart_docs] or the [source code][quickstart_code].
-
-Run the sample:
-
-    node quickstart.js
-
-[quickstart_docs]: https://cloud.google.com/kms/docs
-[quickstart_code]: hostedmodels.js
-
-### Keys
-
-View the [documentation][keys_docs] or the [source code][keys_code].
+View the [documentation][kms_0_docs] or the [source code][kms_0_code].
 
 __Usage:__ `node keys.js --help`
 
@@ -66,7 +54,7 @@ Commands:
 Options:
   --help           Show help                                                                                   [boolean]
   --location, -l                                                                            [string] [default: "global"]
-  --projectId, -p                                                              [string] [default: "nodejs-docs-samples"]
+  --projectId, -p                                                                                               [string]
 
 Examples:
   node keys.js keyrings create "my-key-ring"
@@ -92,20 +80,19 @@ Examples:
 For more information, see https://cloud.google.com/kms/docs
 ```
 
-[keys_docs]: https://cloud.google.com/kms/docs
-[keys_code]: keys.js
+[kms_0_docs]: https://cloud.google.com/kms/docs
+[kms_0_code]: keys.js
 
 ## Running the tests
 
-1.  Set the `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment
-    variables.
+1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
 
 1.  Run the tests:
 
-    With `npm`:
+    With **npm**:
 
         npm test
 
-    With `yarn`:
+    With **yarn**:
 
         yarn test

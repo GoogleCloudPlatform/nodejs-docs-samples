@@ -33,14 +33,17 @@ var fs = require('fs');
  */
 function detectFaces (inputFile, callback) {
   // Make a call to the Vision API to detect the faces
-  vision.detectFaces(inputFile, function (err, faces) {
-    if (err) {
-      return callback(err);
-    }
-    var numFaces = faces.length;
-    console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
-    callback(null, faces);
-  });
+  const request = { source: { filename: inputFile } };
+  vision.faceDetection(request)
+    .then((results) => {
+      const faces = results[0].faceAnnotations;
+      var numFaces = faces.length;
+      console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+      callback(null, faces);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
 }
 
 /**
@@ -64,12 +67,18 @@ function highlightFaces (inputFile, faces, outputFile, Canvas, callback) {
     context.strokeStyle = 'rgba(0,255,0,0.8)';
     context.lineWidth = '5';
 
-    faces.forEach(function (face) {
+    faces.forEach((face) => {
       context.beginPath();
-      face.bounds.face.forEach(function (bounds) {
+      let origX = 0;
+      let origY = 0;
+      face.boundingPoly.vertices.forEach(function (bounds, i) {
+        if (i === 0) {
+          origX = bounds.x;
+          origY = bounds.y;
+        }
         context.lineTo(bounds.x, bounds.y);
       });
-      context.lineTo(face.bounds.face[0].x, face.bounds.face[0].y);
+      context.lineTo(origX, origY);
       context.stroke();
     });
 

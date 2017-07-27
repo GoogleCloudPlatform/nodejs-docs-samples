@@ -31,12 +31,12 @@ const visionClient = Vision({
 const fileName = './resources/wakeupcat.jpg';
 
 // Performs label detection on the image file
-visionClient.detectLabels(fileName)
+visionClient.labelDetection({ source: { filename: fileName } })
   .then((results) => {
-    const labels = results[0];
+    const labels = results[0].labelAnnotations;
 
     console.log('Labels:');
-    labels.forEach((label) => console.log(label));
+    labels.forEach((label) => console.log(label.description));
   })
   .catch((err) => {
     console.error('ERROR:', err);

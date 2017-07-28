@@ -158,7 +158,6 @@ function getTextFromFiles (index, inputFiles, callback) {
   });
   vision.batchAnnotateImages({requests: requests})
       .then((results) => {
-    // console.log(JSON.stringify(results, undefined, 2));
         let detections = results[0].responses;
         var textResponse = {};
         var tasks = [];

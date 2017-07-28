@@ -59,7 +59,7 @@ function detectFacesGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'path/to/image.png';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Performs face detection on the gcs file
   vision.faceDetection({ source: { imageUri: gcsPath } })
@@ -119,7 +119,7 @@ function detectLabelsGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'path/to/image.png';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Performs label detection on the gcs file
   vision.labelDetection({ source: { imageUri: gcsPath } })
@@ -171,7 +171,7 @@ function detectLandmarksGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'path/to/image.png';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Performs landmark detection on the gcs file
   vision.landmarkDetection({ source: {imageUri: gcsPath} })
@@ -223,7 +223,7 @@ function detectTextGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'path/to/image.png';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Performs text detection on the gcs file
   vision.textDetection({ source: { imageUri: gcsPath } })
@@ -275,7 +275,7 @@ function detectLogosGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'path/to/image.png';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Performs logo detection on the gcs file
   vision.logoDetection({ source: { imageUri: gcsPath } })
@@ -327,7 +327,7 @@ function detectPropertiesGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'path/to/image.png';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Performs property detection on the gcs file
   vision.imageProperties({ source: { imageUri: gcsPath } })
@@ -382,7 +382,7 @@ function detectSafeSearchGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'path/to/image.png';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Performs safe search property detection on the remote file
   vision.safeSearchDetection({ source: { imageUri: gcsPath } })
@@ -447,7 +447,7 @@ function detectCropHintsGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'my-file.jpg';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Find crop hints for the remote file
   vision.cropHints({source: {imageUri: gcsPath}})
@@ -529,7 +529,7 @@ function detectWebGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'my-file.jpg';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Detect similar images on the web to a remote file
   vision.webDetection({ source: { imageUri: gcsPath } })
@@ -605,7 +605,7 @@ function detectFulltextGCS (bucketName, fileName) {
   // The path to the file within the bucket, e.g. "path/to/image.png"
   // const fileName = 'my-file.jpg';
 
-  const gcsPath = `gs://` + bucketName + `/` + fileName;
+  const gcsPath = `gs://${bucketName}/${fileName}`;
 
   // Read a remote image as a text document
   vision.documentTextDetection({ source: { imageUri: gcsPath } })

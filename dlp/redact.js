@@ -64,6 +64,62 @@ function redactString (string, replaceString, minLikelihood, infoTypes) {
   // [END redact_string]
 }
 
+function redactImage (filepath, minLikelihood, infoTypes, outputPath) {
+  // [START redact_image]
+  // Imports required Node.js libraries
+  const mime = require('mime');
+  const fs = require('fs');
+
+  // Imports the Google Cloud Data Loss Prevention library
+  const DLP = require('@google-cloud/dlp');
+
+  // Instantiates a client
+  const dlp = DLP();
+
+  // The path to a local file to inspect. Can be a text, JPG, or PNG file.
+  // const fileName = 'path/to/image.png';
+
+  // The minimum likelihood required before redacting a match
+  // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
+
+  // The infoTypes of information to redact
+  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+
+  // The local path to save the resulting image to.
+  // const outputPath = 'path/to/result.png';
+
+  const fileItems = [{
+    type: mime.lookup(filepath) || 'application/octet-stream',
+    data: Buffer.from(fs.readFileSync(filepath)).toString('base64')
+  }];
+
+  const imageRedactionConfigs = infoTypes.map((infoType) => {
+    return { infoType: infoType };
+  });
+
+  const request = {
+    inspectConfig: {
+      minLikelihood: minLikelihood
+    },
+    imageRedactionConfigs: imageRedactionConfigs,
+    items: fileItems
+  };
+
+  // Run request
+  dlp.redactContent(request)
+    .then((response) => {
+      const image = response[0].items[0].data;
+      fs.writeFileSync(outputPath, image);
+    })
+    .then(() => {
+      console.log(`Saved image redaction results to path: ${outputPath}`);
+    })
+    .catch((err) => {
+      console.log(`Error in redactImage: ${err.message || err}`);
+    });
+  // [END redact_image]
+}
+
 const cli = require(`yargs`)
   .demand(1)
   .command(
@@ -71,6 +127,12 @@ const cli = require(`yargs`)
     `Redact sensitive data from a string using the Data Loss Prevention API.`,
     {},
     (opts) => redactString(opts.string, opts.replaceString, opts.minLikelihood, opts.infoTypes)
+  )
+  .command(
+    `image <filepath> <outputPath>`,
+    `Redact sensitive data from an image using the Data Loss Prevention API.`,
+    {},
+    (opts) => redactImage(opts.filepath, opts.minLikelihood, opts.infoTypes, opts.outputPath)
   )
   .option('m', {
     alias: 'minLikelihood',
@@ -96,6 +158,7 @@ const cli = require(`yargs`)
     })
   })
   .example(`node $0 string "My name is Gary" "REDACTED" -t US_MALE_NAME`)
+  .example(`node $0 image resources/test.png redacted_result.png -t US_MALE_NAME`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`);

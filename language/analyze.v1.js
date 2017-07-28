@@ -32,7 +32,7 @@ function analyzeSentimentOfText (text) {
   };
 
   // Detects the sentiment of the document
-  language.analyzeSentiment({'document': document})
+  language.analyzeSentiment({ document: document})
     .then((results) => {
       const sentiment = results[0].documentSentiment;
       console.log(`Document sentiment:`);
@@ -73,7 +73,7 @@ function analyzeSentimentInFile (bucketName, fileName) {
   };
 
   // Detects the sentiment of the document
-  language.analyzeSentiment({'document': document})
+  language.analyzeSentiment({ document: document})
     .then((results) => {
       const sentiment = results[0].documentSentiment;
       console.log(`Document sentiment:`);
@@ -111,7 +111,7 @@ function analyzeEntitiesOfText (text) {
   };
 
   // Detects entities in the document
-  language.analyzeEntities({'document': document})
+  language.analyzeEntities({ document: document})
     .then((results) => {
       const entities = results[0].entities;
 
@@ -151,7 +151,7 @@ function analyzeEntitiesInFile (bucketName, fileName) {
   };
 
   // Detects entities in the document
-  language.analyzeEntities({'document': document})
+  language.analyzeEntities({ document: document})
     .then((results) => {
       const entities = results[0].entities;
 
@@ -188,7 +188,7 @@ function analyzeSyntaxOfText (text) {
   };
 
   // Detects syntax in the document
-  language.analyzeSyntax({'document': document})
+  language.analyzeSyntax({ document: document})
     .then((results) => {
       const syntax = results[0];
 
@@ -225,7 +225,7 @@ function analyzeSyntaxInFile (bucketName, fileName) {
   };
 
   // Detects syntax in the document
-  language.analyzeSyntax({'document': document})
+  language.analyzeSyntax({ document: document})
     .then((results) => {
       const syntax = results[0];
 

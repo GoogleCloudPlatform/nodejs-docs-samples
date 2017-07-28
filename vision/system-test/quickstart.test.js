@@ -16,17 +16,46 @@
 'use strict';
 
 const path = require(`path`);
+const proxyquire = require(`proxyquire`).noPreserveCache();
+const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+
+const vision = proxyquire(`@google-cloud/vision`, {})();
 
 test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
-const cmd = `node quickstart.js`;
-const cwd = path.join(__dirname, `..`);
+test.cb(`should detect labels`, (t) => {
+  const filePath = path.join(__dirname, `../resources/wakeupcat.jpg`);
+  const expectedFileName = `./resources/wakeupcat.jpg`;
+  const visionMock = {
+    detectLabels: (_fileName) => {
+      t.is(_fileName, expectedFileName);
 
-test(`should detect labels in a remote file`, async (t) => {
-  const output = await tools.runAsync(`${cmd}`, cwd);
-  t.true(output.includes(`Labels:`));
-  t.true(output.includes(`cat`));
+      return vision.detectLabels(filePath)
+        .then(([labels]) => {
+          t.true(Array.isArray(labels));
+
+          setTimeout(() => {
+            try {
+              t.is(console.log.callCount, 6);
+              t.deepEqual(console.log.getCall(0).args, [`Labels:`]);
+              labels.forEach((label, i) => {
+                t.deepEqual(console.log.getCall(i + 1).args, [label]);
+              });
+              t.end();
+            } catch (err) {
+              t.end(err);
+            }
+          }, 200);
+
+          return [labels];
+        });
+    }
+  };
+
+  proxyquire(`../quickstart`, {
+    '@google-cloud/vision': sinon.stub().returns(visionMock)
+  });
 });

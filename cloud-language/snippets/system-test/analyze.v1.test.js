@@ -81,7 +81,7 @@ test('should analyze entities in a file', async (t) => {
 
 test(`should analyze syntax in text`, async (t) => {
   const output = await tools.runAsync(`${cmd} syntax-text "${text}"`, cwd);
-  t.true(output.includes(`Parts of speech:`));
+  t.true(output.includes(`Tokens:`));
   t.true(output.includes(`NOUN:`));
   t.true(output.includes(`President`));
   t.true(output.includes(`Obama`));

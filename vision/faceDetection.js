@@ -33,21 +33,25 @@ var fs = require('fs');
  */
 function detectFaces (inputFile, callback) {
   // Make a call to the Vision API to detect the faces
-  vision.detectFaces(inputFile, function (err, faces) {
-    if (err) {
-      return callback(err);
-    }
-    var numFaces = faces.length;
-    console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
-    callback(null, faces);
-  });
+  const request = { source: { filename: inputFile } };
+  vision.faceDetection(request)
+    .then((results) => {
+      const faces = results[0].faceAnnotations;
+      var numFaces = faces.length;
+      console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+      callback(null, faces);
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+      callback(err);
+    });
 }
 
 /**
  * Draws a polygon around the faces, then saves to outputFile.
  */
 function highlightFaces (inputFile, faces, outputFile, Canvas, callback) {
-  fs.readFile(inputFile, function (err, image) {
+  fs.readFile(inputFile, (err, image) => {
     if (err) {
       return callback(err);
     }
@@ -64,12 +68,18 @@ function highlightFaces (inputFile, faces, outputFile, Canvas, callback) {
     context.strokeStyle = 'rgba(0,255,0,0.8)';
     context.lineWidth = '5';
 
-    faces.forEach(function (face) {
+    faces.forEach((face) => {
       context.beginPath();
-      face.bounds.face.forEach(function (bounds) {
+      let origX = 0;
+      let origY = 0;
+      face.boundingPoly.vertices.forEach((bounds, i) => {
+        if (i === 0) {
+          origX = bounds.x;
+          origY = bounds.y;
+        }
         context.lineTo(bounds.x, bounds.y);
       });
-      context.lineTo(face.bounds.face[0].x, face.bounds.face[0].y);
+      context.lineTo(origX, origY);
       context.stroke();
     });
 
@@ -78,7 +88,7 @@ function highlightFaces (inputFile, faces, outputFile, Canvas, callback) {
     var writeStream = fs.createWriteStream(outputFile);
     var pngStream = canvas.pngStream();
 
-    pngStream.on('data', function (chunk) {
+    pngStream.on('data', (chunk) => {
       writeStream.write(chunk);
     });
     pngStream.on('error', console.log);
@@ -89,13 +99,13 @@ function highlightFaces (inputFile, faces, outputFile, Canvas, callback) {
 // Run the example
 function main (inputFile, outputFile, Canvas, callback) {
   outputFile = outputFile || 'out.png';
-  detectFaces(inputFile, function (err, faces) {
+  detectFaces(inputFile, (err, faces) => {
     if (err) {
       return callback(err);
     }
 
     console.log('Highlighting...');
-    highlightFaces(inputFile, faces, outputFile, Canvas, function (err) {
+    highlightFaces(inputFile, faces, outputFile, Canvas, (err) => {
       if (err) {
         return callback(err);
       }

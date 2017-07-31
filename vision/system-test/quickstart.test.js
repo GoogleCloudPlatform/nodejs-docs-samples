@@ -15,7 +15,6 @@
 
 'use strict';
 
-const path = require(`path`);
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const sinon = require(`sinon`);
 const test = require(`ava`);
@@ -27,30 +26,30 @@ test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
 test.cb(`should detect labels`, (t) => {
-  const filePath = path.join(__dirname, `../resources/wakeupcat.jpg`);
   const expectedFileName = `./resources/wakeupcat.jpg`;
   const visionMock = {
-    detectLabels: (_fileName) => {
+    labelDetection: (_request) => {
+      let _fileName = _request.source.filename;
       t.is(_fileName, expectedFileName);
 
-      return vision.detectLabels(filePath)
-        .then(([labels]) => {
+      return vision.labelDetection(_request)
+        .then((results) => {
+          const labels = results[0].labelAnnotations;
           t.true(Array.isArray(labels));
-
           setTimeout(() => {
             try {
               t.is(console.log.callCount, 6);
               t.deepEqual(console.log.getCall(0).args, [`Labels:`]);
               labels.forEach((label, i) => {
-                t.deepEqual(console.log.getCall(i + 1).args, [label]);
+                t.deepEqual(console.log.getCall(i + 1).args, [label.description]);
               });
+
               t.end();
             } catch (err) {
               t.end(err);
             }
           }, 200);
-
-          return [labels];
+          return results;
         });
     }
   };

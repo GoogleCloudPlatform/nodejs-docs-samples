@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,46 +15,18 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const sinon = require(`sinon`);
+const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-const vision = proxyquire(`@google-cloud/vision`, {})();
+const cmd = `node quickstart.js`;
+const cwd = path.join(__dirname, `..`);
 
 test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
-test.cb(`should detect labels`, (t) => {
-  const expectedFileName = `./resources/wakeupcat.jpg`;
-  const visionMock = {
-    labelDetection: (_request) => {
-      let _fileName = _request.source.filename;
-      t.is(_fileName, expectedFileName);
-
-      return vision.labelDetection(_request)
-        .then((results) => {
-          const labels = results[0].labelAnnotations;
-          t.true(Array.isArray(labels));
-          setTimeout(() => {
-            try {
-              t.is(console.log.callCount, 6);
-              t.deepEqual(console.log.getCall(0).args, [`Labels:`]);
-              labels.forEach((label, i) => {
-                t.deepEqual(console.log.getCall(i + 1).args,
-                    [label.description]);
-              });
-              t.end();
-            } catch (err) {
-              t.end(err);
-            }
-          }, 1000);
-          return results;
-        });
-    }
-  };
-
-  proxyquire(`../quickstart`, {
-    '@google-cloud/vision': sinon.stub().returns(visionMock)
-  });
+test(`should detect labels in a remote file`, async (t) => {
+  const output = await tools.runAsync(`${cmd}`, cwd);
+  t.true(output.includes(`Labels:`));
+  t.true(output.includes(`cat`));
 });

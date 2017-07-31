@@ -41,7 +41,8 @@ test.cb(`should detect labels`, (t) => {
               t.is(console.log.callCount, 6);
               t.deepEqual(console.log.getCall(0).args, [`Labels:`]);
               labels.forEach((label, i) => {
-                t.deepEqual(console.log.getCall(i + 1).args, [label.description]);
+                t.deepEqual(console.log.getCall(i + 1).args,
+                    [label.description]);
               });
 
               t.end();

@@ -44,12 +44,11 @@ test.cb(`should detect labels`, (t) => {
                 t.deepEqual(console.log.getCall(i + 1).args,
                     [label.description]);
               });
-
               t.end();
             } catch (err) {
               t.end(err);
             }
-          }, 200);
+          }, 1000);
           return results;
         });
     }

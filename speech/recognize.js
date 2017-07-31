@@ -190,6 +190,7 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // const languageCode = 'en-US';
 
   const config = {
+    enableWordTimeOffsets: true,
     encoding: encoding,
     sampleRateHertz: sampleRateHertz,
     languageCode: languageCode
@@ -215,6 +216,16 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
     .then((results) => {
       const transcription = results[0].results[0].alternatives[0].transcript;
       console.log(`Transcription: ${transcription}`);
+      results[0].results[0].alternatives[0].words.forEach((wordInfo) => {
+        // NOTE: If you have a time offset exceeding 2^32 seconds, use the
+        // wordInfo.{x}Time.seconds.high to calculate seconds.
+        let startSecs = `${wordInfo.startTime.seconds.low}` + `.` +
+            (wordInfo.startTime.nanos / 100000000);
+        let endSecs = `${wordInfo.endTime.seconds.low}` + `.` +
+            (wordInfo.endTime.nanos / 100000000);
+        console.log(`Word: ${wordInfo.word}`);
+        console.log(`\t ${startSecs} secs - ${endSecs} secs`);
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);

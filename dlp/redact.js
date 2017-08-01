@@ -109,8 +109,6 @@ function redactImage (filepath, minLikelihood, infoTypes, outputPath) {
     .then((response) => {
       const image = response[0].items[0].data;
       fs.writeFileSync(outputPath, image);
-    })
-    .then(() => {
       console.log(`Saved image redaction results to path: ${outputPath}`);
     })
     .catch((err) => {

@@ -15,41 +15,20 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const language = proxyquire(`@google-cloud/language`, {})();
-const sinon = require(`sinon`);
+const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+
+const cmd = `node quickstart.js`;
+const cwd = path.join(__dirname, `..`);
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb(`should detect sentiment`, (t) => {
-  const expectedText = `Hello, world!`;
-  const languageMock = {
-    detectSentiment: (_text) => {
-      t.is(_text, expectedText);
+test(`should analyze sentiment in text`, async (t) => {
+  const output = await tools.runAsync(cmd, cwd);
 
-      return language.detectSentiment(_text)
-        .then(([sentiment]) => {
-          setTimeout(() => {
-            try {
-              t.is(console.log.callCount, 3);
-              t.deepEqual(console.log.getCall(0).args, [`Text: ${expectedText}`]);
-              t.deepEqual(console.log.getCall(1).args, [`Sentiment score: ${sentiment.score}`]);
-              t.deepEqual(console.log.getCall(2).args, [`Sentiment magnitude: ${sentiment.magnitude}`]);
-              t.end();
-            } catch (err) {
-              t.end(err);
-            }
-          }, 200);
-
-          return [sentiment];
-        });
-    }
-  };
-
-  proxyquire(`../quickstart`, {
-    '@google-cloud/language': sinon.stub().returns(languageMock)
-  });
+  t.true(output.includes(`Text: Hello, world!`));
+  t.true(output.includes(`Sentiment score: 0.40`));
+  t.true(output.includes(`Sentiment magnitude: 0.40`));
 });

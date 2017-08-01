@@ -130,14 +130,14 @@ function lookup (words, callback) {
 function extractDescription (texts) {
   var document = '';
   texts.forEach(function (text) {
-    document += (text.desc || '');
+    document += (text.description || '');
   });
   return document;
 }
 
-function extractDescriptions (filename, index, texts, callback) {
-  if (texts.length) {
-    index.add(filename, extractDescription(texts), callback);
+function extractDescriptions (filename, index, response, callback) {
+  if (response.textAnnotations.length) {
+    index.add(filename, extractDescription(response.textAnnotations), callback);
   } else {
     console.log(filename + ' had no discernable text.');
     index.setContainsNoText(filename, callback);
@@ -147,36 +147,41 @@ function extractDescriptions (filename, index, texts, callback) {
 
 // [START get_text]
 function getTextFromFiles (index, inputFiles, callback) {
-  var options = { verbose: true };
-
   // Make a call to the Vision API to detect text
-  vision.detectText(inputFiles, options, function (err, detections) {
-    if (err) {
-      return callback(err);
-    }
-    var textResponse = {};
-    var tasks = [];
-    inputFiles.forEach(function (filename, i) {
-      var response = detections[i];
-      if (response.error) {
-        console.log('API Error for ' + filename, response.error);
-        return;
-      } else if (Array.isArray(response)) {
-        textResponse[filename] = 1;
-      } else {
-        textResponse[filename] = 0;
-      }
-      tasks.push(function (cb) {
-        extractDescriptions(filename, index, response, cb);
-      });
-    });
-    async.parallel(tasks, function (err) {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, textResponse);
-    });
+  let requests = [];
+  inputFiles.forEach((filename) => {
+    let request = {
+      image: {content: fs.readFileSync(filename).toString('base64')},
+      features: {type: 'TEXT_DETECTION'}
+    };
+    requests.push(request);
   });
+  vision.batchAnnotateImages({requests: requests})
+      .then((results) => {
+        let detections = results[0].responses;
+        var textResponse = {};
+        var tasks = [];
+        inputFiles.forEach(function (filename, i) {
+          var response = detections[i];
+          if (response.error) {
+            console.log('API Error for ' + filename, response.error);
+            return;
+          } else if (Array.isArray(response)) {
+            textResponse[filename] = 1;
+          } else {
+            textResponse[filename] = 0;
+          }
+          tasks.push(function (cb) {
+            extractDescriptions(filename, index, response, cb);
+          });
+        });
+        async.parallel(tasks, function (err) {
+          if (err) {
+            return callback(err);
+          }
+          callback(null, textResponse);
+        });
+      });
 }
 
 // Run the example

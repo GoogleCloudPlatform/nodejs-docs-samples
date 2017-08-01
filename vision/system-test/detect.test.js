@@ -113,13 +113,13 @@ test(`should detect logos in a remote file`, async (t) => {
 
 test(`should detect properties in a local file`, async (t) => {
   const output = await tools.runAsync(`${cmd} properties ${files[1].localPath}`, cwd);
-  t.true(output.includes(`Colors:`));
+  t.true(output.includes(`{ color: { red: 69, green: 42, blue: 27`));
   t.true(output.split(`\n`).length > 4, `Multiple colors were detected.`);
 });
 
 test(`should detect properties in a remote file`, async (t) => {
   const output = await tools.runAsync(`${cmd} properties-gcs ${bucketName} ${files[1].name}`, cwd);
-  t.true(output.includes(`Colors:`));
+  t.true(output.includes(`{ color: { red: 69, green: 42, blue: 27`));
   t.true(output.split(`\n`).length > 4, `Multiple colors were detected.`);
 });
 

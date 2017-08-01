@@ -27,17 +27,20 @@ function analyzeSentimentOfText (text) {
   // const text = 'Hello, world!';
 
   // Instantiates a Document, representing the provided text
-  const document = language.document({ content: text });
+  const document = {
+    'content': text,
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects the sentiment of the document
-  document.detectSentiment()
+  language.analyzeSentiment({ document: document })
     .then((results) => {
-      const sentiment = results[1].documentSentiment;
+      const sentiment = results[0].documentSentiment;
       console.log(`Document sentiment:`);
       console.log(`  Score: ${sentiment.score}`);
       console.log(`  Magnitude: ${sentiment.magnitude}`);
 
-      const sentences = results[1].sentences;
+      const sentences = results[0].sentences;
       sentences.forEach((sentence) => {
         console.log(`Sentence: ${sentence.text.content}`);
         console.log(`  Score: ${sentence.sentiment.score}`);
@@ -54,11 +57,9 @@ function analyzeSentimentInFile (bucketName, fileName) {
   // [START language_sentiment_file]
   // Imports the Google Cloud client libraries
   const Language = require('@google-cloud/language');
-  const Storage = require('@google-cloud/storage');
 
   // Instantiates the clients
   const language = Language({ apiVersion: 'v1beta2' });
-  const storage = Storage();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
   // const bucketName = 'my-bucket';
@@ -67,20 +68,20 @@ function analyzeSentimentInFile (bucketName, fileName) {
   // const fileName = 'file.txt';
 
   // Instantiates a Document, representing a text file in Cloud Storage
-  const document = language.document({
-    // The Google Cloud Storage file
-    content: storage.bucket(bucketName).file(fileName)
-  });
+  const document = {
+    gcsContentUri: `gs://${bucketName}/${fileName}`,
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects the sentiment of the document
-  document.detectSentiment()
+  language.analyzeSentiment({ document: document })
     .then((results) => {
-      const sentiment = results[1].documentSentiment;
+      const sentiment = results[0].documentSentiment;
       console.log(`Document sentiment:`);
       console.log(`  Score: ${sentiment.score}`);
       console.log(`  Magnitude: ${sentiment.magnitude}`);
 
-      const sentences = results[1].sentences;
+      const sentences = results[0].sentences;
       sentences.forEach((sentence) => {
         console.log(`Sentence: ${sentence.text.content}`);
         console.log(`  Score: ${sentence.sentiment.score}`);
@@ -96,21 +97,21 @@ function analyzeSentimentInFile (bucketName, fileName) {
 function analyzeEntitiesOfText (text) {
   // [START language_entities_string]
   // Imports the Google Cloud client library
-  const Language = require('@google-cloud/language');
-
-  // Instantiates a client
-  const language = Language({ apiVersion: 'v1beta2' });
+  const language = require('@google-cloud/language').v1beta2();
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
 
   // Instantiates a Document, representing the provided text
-  const document = language.document({ content: text });
+  const document = {
+    'content': text,
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects entities in the document
-  document.detectEntities()
+  language.analyzeEntities({ document: document })
     .then((results) => {
-      const entities = results[1].entities;
+      const entities = results[0].entities;
 
       console.log('Entities:');
       entities.forEach((entity) => {
@@ -130,12 +131,7 @@ function analyzeEntitiesOfText (text) {
 function analyzeEntitiesInFile (bucketName, fileName) {
   // [START language_entities_file]
   // Imports the Google Cloud client libraries
-  const Language = require('@google-cloud/language');
-  const Storage = require('@google-cloud/storage');
-
-  // Instantiates the clients
-  const language = Language({ apiVersion: 'v1beta2' });
-  const storage = Storage();
+  const language = require('@google-cloud/language').v1beta2();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
   // const bucketName = 'my-bucket';
@@ -144,15 +140,15 @@ function analyzeEntitiesInFile (bucketName, fileName) {
   // const fileName = 'file.txt';
 
   // Instantiates a Document, representing a text file in Cloud Storage
-  const document = language.document({
-    // The Google Cloud Storage file
-    content: storage.bucket(bucketName).file(fileName)
-  });
+  const document = {
+    gcsContentUri: `gs://${bucketName}/${fileName}`,
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects entities in the document
-  document.detectEntities()
+  language.analyzeEntities({ document: document })
     .then((results) => {
-      const entities = results[0];
+      const entities = results[0].entities;
 
       console.log('Entities:');
       entities.forEach((entity) => {
@@ -172,24 +168,24 @@ function analyzeEntitiesInFile (bucketName, fileName) {
 function analyzeSyntaxOfText (text) {
   // [START language_syntax_string]
   // Imports the Google Cloud client library
-  const Language = require('@google-cloud/language');
-
-  // Instantiates a client
-  const language = Language({ apiVersion: 'v1beta2' });
+  const language = require('@google-cloud/language').v1beta2();
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
 
   // Instantiates a Document, representing the provided text
-  const document = language.document({ content: text });
+  const document = {
+    'content': text,
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects syntax in the document
-  document.detectSyntax()
+  language.analyzeSyntax({ document: document })
     .then((results) => {
       const syntax = results[0];
 
       console.log('Parts of speech:');
-      syntax.forEach((part) => {
+      syntax.tokens.forEach((part) => {
         console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
         console.log(`Morphology:`, part.partOfSpeech);
       });
@@ -203,12 +199,7 @@ function analyzeSyntaxOfText (text) {
 function analyzeSyntaxInFile (bucketName, fileName) {
   // [START language_syntax_file]
   // Imports the Google Cloud client libraries
-  const Language = require('@google-cloud/language');
-  const Storage = require('@google-cloud/storage');
-
-  // Instantiates the clients
-  const language = Language({ apiVersion: 'v1beta2' });
-  const storage = Storage();
+  const language = require('@google-cloud/language').v1beta2();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
   // const bucketName = 'my-bucket';
@@ -217,18 +208,18 @@ function analyzeSyntaxInFile (bucketName, fileName) {
   // const fileName = 'file.txt';
 
   // Instantiates a Document, representing a text file in Cloud Storage
-  const document = language.document({
-    // The Google Cloud Storage file
-    content: storage.bucket(bucketName).file(fileName)
-  });
+  const document = {
+    gcsContentUri: `gs://${bucketName}/${fileName}`,
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects syntax in the document
-  document.detectSyntax()
+  language.analyzeSyntax({ document: document })
     .then((results) => {
       const syntax = results[0];
 
       console.log('Parts of speech:');
-      syntax.forEach((part) => {
+      syntax.tokens.forEach((part) => {
         console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
         console.log(`Morphology:`, part.partOfSpeech);
       });
@@ -242,10 +233,7 @@ function analyzeSyntaxInFile (bucketName, fileName) {
 function analyzeEntitySentimentOfText (text) {
   // [START language_entity_sentiment_string]
   // Imports the Google Cloud client library
-  const Language = require('@google-cloud/language').v1beta2();
-
-  // Instantiates a client
-  const language = Language.languageServiceClient();
+  const language = require('@google-cloud/language').v1beta2();
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
@@ -280,10 +268,7 @@ function analyzeEntitySentimentOfText (text) {
 function analyzeEntitySentimentInFile (bucketName, fileName) {
   // [START language_entity_sentiment_file]
   // Imports the Google Cloud client library
-  const Language = require('@google-cloud/language').v1beta2();
-
-  // Instantiates the clients
-  const language = Language.languageServiceClient();
+  const language = require('@google-cloud/language').v1beta2();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
   // const bucketName = 'my-bucket';

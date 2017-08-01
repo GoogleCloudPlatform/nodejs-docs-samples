@@ -76,17 +76,17 @@ function redactImage (filepath, minLikelihood, infoTypes, outputPath) {
   // Instantiates a client
   const dlp = DLP();
 
-  // The path to a local file to inspect. Can be a text, JPG, or PNG file.
+  // The path to a local file to inspect. Can be a JPG or PNG image file.
   // const fileName = 'path/to/image.png';
 
   // The minimum likelihood required before redacting a match
   // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
 
   // The infoTypes of information to redact
-  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+  // const infoTypes = ['EMAIL_ADDRESS', 'PHONE_NUMBER'];
 
   // The local path to save the resulting image to.
-  // const outputPath = 'path/to/result.png';
+  // const outputPath = 'result.png';
 
   const fileItems = [{
     type: mime.lookup(filepath) || 'application/octet-stream',
@@ -105,7 +105,6 @@ function redactImage (filepath, minLikelihood, infoTypes, outputPath) {
     items: fileItems
   };
 
-  // Run request
   dlp.redactContent(request)
     .then((response) => {
       const image = response[0].items[0].data;
@@ -158,7 +157,7 @@ const cli = require(`yargs`)
     })
   })
   .example(`node $0 string "My name is Gary" "REDACTED" -t US_MALE_NAME`)
-  .example(`node $0 image resources/test.png redacted_result.png -t US_MALE_NAME`)
+  .example(`node $0 image resources/test.png redaction_result.png -t US_MALE_NAME`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`);

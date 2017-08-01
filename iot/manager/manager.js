@@ -18,7 +18,7 @@
 const fs = require('fs');
 const google = require('googleapis');
 
-const API_VERSION = 'v1alpha1';
+const API_VERSION = 'v1beta1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
 // Configures the topic for Cloud IoT Core.
@@ -125,11 +125,11 @@ function lookupOrCreateRegistry (client, registryId, projectId, cloudRegion,
 
   const request = {
     parent: parentName,
-    id: registryId,
     resource: {
       eventNotificationConfig: {
         pubsubTopicName: pubsubTopic
-      }
+      },
+      'id': registryId
     }
   };
 
@@ -167,8 +167,7 @@ function createUnauthDevice (client, deviceId, registryId, projectId,
 
   const request = {
     parent: registryName,
-    id: deviceId,
-    resource: body
+    resource: {id: deviceId}
   };
 
   client.projects.locations.registries.devices.create(request, (err, data) => {
@@ -196,6 +195,7 @@ function createRsaDevice (client, deviceId, registryId, projectId, cloudRegion,
   const parentName = `projects/${projectId}/locations/${cloudRegion}`;
   const registryName = `${parentName}/registries/${registryId}`;
   const body = {
+    id: deviceId,
     credentials: [
       {
         publicKey: {
@@ -208,7 +208,6 @@ function createRsaDevice (client, deviceId, registryId, projectId, cloudRegion,
 
   const request = {
     parent: registryName,
-    id: deviceId,
     resource: body
   };
 
@@ -239,6 +238,7 @@ function createEsDevice (client, deviceId, registryId, projectId, cloudRegion,
   const parentName = `projects/${projectId}/locations/${cloudRegion}`;
   const registryName = `${parentName}/registries/${registryId}`;
   const body = {
+    id: deviceId,
     credentials: [
       {
         publicKey: {
@@ -251,7 +251,6 @@ function createEsDevice (client, deviceId, registryId, projectId, cloudRegion,
 
   const request = {
     parent: registryName,
-    id: deviceId,
     resource: body
   };
 
@@ -590,7 +589,7 @@ require(`yargs`) // eslint-disable-line
     (opts) => {
       const cb = function (client) {
         createUnauthDevice(client, opts.deviceId, opts.registryId,
-            opts.projectId, opts.cloudRegion, {});
+            opts.projectId, opts.cloudRegion);
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }

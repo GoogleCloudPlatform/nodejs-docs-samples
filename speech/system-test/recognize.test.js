@@ -56,6 +56,8 @@ test(`should run sync recognize on a GCS file`, async (t) => {
 test(`should run async recognize on a local file`, async (t) => {
   const output = await runAsync(`${cmd} async ${filepath}`, cwd);
   t.true(output.includes(`Transcription: ${text}`));
+  // Check for word time offsets
+  t.true(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
 });
 
 test(`should run async recognize on a GCS file`, async (t) => {

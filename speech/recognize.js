@@ -45,7 +45,6 @@ function syncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // const languageCode = 'en-US';
 
   const config = {
-    enableWordTimeOffsets: false,
     encoding: encoding,
     sampleRateHertz: sampleRateHertz,
     languageCode: languageCode
@@ -92,7 +91,6 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // const languageCode = 'en-US';
 
   const config = {
-    enableWordTimeOffsets: false,
     encoding: encoding,
     sampleRateHertz: sampleRateHertz,
     languageCode: languageCode

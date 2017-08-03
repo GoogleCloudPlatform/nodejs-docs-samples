@@ -72,6 +72,6 @@ dlp.inspectContent(request)
     }
   })
   .catch((err) => {
-    console.log(`Error in inspectString: ${err.message || err}`);
+    console.error(`Error in inspectString: ${err.message || err}`);
   });
 // [END quickstart]

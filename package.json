@@ -57,6 +57,7 @@
     "@google-cloud/storage": "1.1.1",
     "ava": "0.19.1",
     "nyc": "11.0.2",
+    "semistandard": "^11.0.0",
     "shelljs": "0.7.8"
   }
 }

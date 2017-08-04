@@ -31,13 +31,13 @@ function inspectString (string, minLikelihood, maxFindings, infoTypes, includeQu
   // const string = 'My name is Gary and my email is gary@example.com';
 
   // The minimum likelihood required before returning a match
-  // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
+  // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
   // The maximum number of findings to report (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+  // const infoTypes = [{ name: 'US_MALE_NAME', name: 'US_FEMALE_NAME' }];
 
   // Whether to include the matching string
   // const includeQuote = true;
@@ -91,13 +91,13 @@ function inspectFile (filepath, minLikelihood, maxFindings, infoTypes, includeQu
   // const fileName = 'path/to/image.png';
 
   // The minimum likelihood required before returning a match
-  // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
+  // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
   // The maximum number of findings to report (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
 
   // Whether to include the matching string
   // const includeQuote = true;
@@ -158,13 +158,13 @@ function promiseInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings
   // const fileName = 'my-image.png';
 
   // The minimum likelihood required before returning a match
-  // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
+  // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
   // The maximum number of findings to report (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
 
   // Get reference to the file to be inspected
   const storageItems = {
@@ -232,13 +232,13 @@ function eventInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings, 
   // const fileName = 'my-image.png';
 
   // The minimum likelihood required before returning a match
-  // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
+  // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
   // The maximum number of findings to report (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
 
   // Get reference to the file to be inspected
   const storageItems = {
@@ -320,13 +320,13 @@ function inspectDatastore (projectId, namespaceId, kind, minLikelihood, maxFindi
   // const kind = 'Person';
 
   // The minimum likelihood required before returning a match
-  // const minLikelihood = LIKELIHOOD_UNSPECIFIED;
+  // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
   // The maximum number of findings to report (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
+  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
 
   // Get reference to the file to be inspected
   const storageItems = {

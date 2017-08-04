@@ -25,10 +25,10 @@
     "body-parser": "1.17.2",
     "express": "4.15.3",
     "jade": "1.11.0",
-    "node-mailjet": "3.1.0"
+    "node-mailjet": "3.2.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15"
+    "@google-cloud/nodejs-repo-tools": "1.4.16"
   },
   "cloud-repo-tools": {
     "test": {

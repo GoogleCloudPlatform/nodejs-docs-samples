@@ -17,12 +17,12 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "uuid": "3.0.1"
+    "uuid": "3.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1",
-    "sinon": "2.3.4"
+    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "ava": "0.21.0",
+    "sinon": "3.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

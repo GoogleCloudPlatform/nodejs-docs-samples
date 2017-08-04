@@ -173,16 +173,17 @@ function analyzeEntities (text, ts) {
   const language = Language();
 
   // Instantiates a Document, representing the provided text
-  const document = language.document({
+  const document = {
     // The document text, e.g. "Hello, world!"
-    content: text
-  });
+    content: text,
+    // The type of content to analyze
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects entities in the document
-  return document.detectEntities()
+  return language.analyzeEntities({ document: document })
     .then((results) => {
-      const entities = results[0];
-
+      const entities = results[0].entities;
       entities.forEach((entity) => {
         const name = entity.name;
         const type = entity.type;
@@ -210,13 +211,15 @@ function analyzeSentiment (text) {
   const language = Language();
 
   // Instantiates a Document, representing the provided text
-  const document = language.document({
+  const document = {
     // The document text, e.g. "Hello, world!"
-    content: text
-  });
+    content: text,
+    // The type of content to analyze
+    type: 'PLAIN_TEXT'
+  };
 
   // Detects the 'sentiment' of some text using the NL API
-  return document.detectSentiment()
+  return language.analyzeSentiment({ document: document })
     .then((results) => {
       const sentiment = results[0];
 

@@ -34,8 +34,21 @@ const status = `DISABLED`;
 test.before(tools.checkCredentials);
 test.before(async () => {
   tools.stubConsole();
-  await storage.createBucket(firstBucketName);
-  await storage.createBucket(secondBucketName);
+
+  const bucketOptions = {
+    entity: 'allUsers',
+    role: storage.acl.WRITER_ROLE
+  };
+  await storage.createBucket(firstBucketName)
+    .then((data) => {
+      const bucket = data[0];
+      return bucket.acl.add(bucketOptions);
+    });
+  await storage.createBucket(secondBucketName)
+    .then((data) => {
+      const bucket = data[0];
+      return bucket.acl.add(bucketOptions);
+    });
 });
 
 test.after.always(async () => {

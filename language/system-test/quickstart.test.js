@@ -28,7 +28,7 @@ test.afterEach.always(tools.restoreConsole);
 test(`should analyze sentiment in text`, async (t) => {
   const output = await tools.runAsync(cmd, cwd);
 
-  t.true(output.includes(`Text: Hello, world!`));
-  t.true(output.includes(`Sentiment score: 0.40`));
-  t.true(output.includes(`Sentiment magnitude: 0.40`));
+  t.regex(output, /Text: Hello, world!/);
+  t.regex(output, /Sentiment score: \d/);
+  t.regex(output, /Sentiment magnitude: \d/);
 });

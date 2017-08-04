@@ -66,7 +66,7 @@ test(`should analyze entities in text`, async (t) => {
   t.true(output.includes(`Type: PERSON`));
   t.true(output.includes(`White House`));
   t.true(output.includes(`Type: LOCATION`));
-  t.true(output.includes(`/wiki/Barack_Obama`));
+  t.true(output.includes(`/wiki/White_House`));
 });
 
 test('should analyze entities in a file', async (t) => {
@@ -76,7 +76,7 @@ test('should analyze entities in a file', async (t) => {
   t.true(output.includes(`Type: PERSON`));
   t.true(output.includes(`White House`));
   t.true(output.includes(`Type: LOCATION`));
-  t.true(output.includes(`/wiki/Barack_Obama`));
+  t.true(output.includes(`/wiki/White_House`));
 });
 
 test(`should analyze syntax in text`, async (t) => {

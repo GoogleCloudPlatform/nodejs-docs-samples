@@ -19,18 +19,18 @@
     "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/storage": "1.1.1",
-    "googleapis": "19.0.0",
+    "@google-cloud/storage": "1.2.1",
+    "googleapis": "20.1.0",
     "moment": "2.18.1",
-    "safe-buffer": "5.1.0",
+    "safe-buffer": "5.1.1",
     "yargs": "8.0.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1",
+    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "ava": "0.21.0",
     "proxyquire": "1.8.0",
-    "sinon": "2.3.4",
-    "uuid": "3.0.1"
+    "sinon": "3.0.0",
+    "uuid": "3.1.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

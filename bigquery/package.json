@@ -19,14 +19,14 @@
   },
   "dependencies": {
     "@google-cloud/bigquery": "0.9.6",
-    "@google-cloud/storage": "1.2.0",
+    "@google-cloud/storage": "1.2.1",
     "yargs": "8.0.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.20.0",
+    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "ava": "0.21.0",
     "proxyquire": "1.8.0",
-    "sinon": "2.3.6",
+    "sinon": "3.0.0",
     "uuid": "3.1.0"
   },
   "cloud-repo-tools": {

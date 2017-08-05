@@ -18,13 +18,13 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "googleapis": "19.0.0",
-    "safe-buffer": "5.1.0",
+    "googleapis": "20.1.0",
+    "safe-buffer": "5.1.1",
     "yargs": "8.0.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1",
+    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "ava": "0.21.0",
     "proxyquire": "1.8.0"
   },
   "cloud-repo-tools": {

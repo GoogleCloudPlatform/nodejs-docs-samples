@@ -22,13 +22,13 @@
   "dependencies": {
     "body-parser": "1.17.2",
     "express": "4.15.3",
-    "safe-buffer": "5.1.0"
+    "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1",
+    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "ava": "0.21.0",
     "proxyquire": "1.8.0",
-    "sinon": "2.3.4",
+    "sinon": "3.0.0",
     "supertest": "3.0.0"
   }
 }

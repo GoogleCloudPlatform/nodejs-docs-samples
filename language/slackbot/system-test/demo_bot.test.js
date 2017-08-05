@@ -25,7 +25,7 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const DB_PATH = path.join(__dirname, `../slackDB.db`);
 const SLACK_TOKEN_PATH = path.join(__dirname, `../.token`);
-const text = `President Obama is speaking at the White House.`;
+const text = `President Obama is speaking at the White House. He is announcing an amazing new cookie recipe.`;
 
 let db, controllerMock, botkitMock, botMock, program;
 
@@ -77,8 +77,8 @@ test.after.cb.always((t) => {
 });
 
 test.serial(`should analyze sentiment in text`, async (t) => {
-  const sentiment = await program.analyzeSentiment(text);
-  t.is(sentiment.score > 0, true);
+  const results = await program.analyzeSentiment(text);
+  t.is(results.documentSentiment.score > 0, true);
 });
 
 test.serial(`should analyze entities in text`, async (t) => {
@@ -119,7 +119,7 @@ test.cb.serial(`should reply to entities message`, (t) => {
     try {
       t.is(botMock.reply.callCount, 3);
       t.deepEqual(botMock.reply.getCall(1).args, [message, `Top entities: `]);
-      t.deepEqual(botMock.reply.getCall(2).args, [message, `entity: *Obama*, type: PERSON, count: 1\nentity: *White House*, type: LOCATION, count: 1\n`]);
+      t.deepEqual(botMock.reply.getCall(2).args, [message, `entity: *Obama*, type: PERSON, count: 1\nentity: *White House*, type: LOCATION, count: 1\nentity: *cookie recipe*, type: WORK_OF_ART, count: 1\n`]);
       t.end();
     } catch (err) {
       t.end(err);

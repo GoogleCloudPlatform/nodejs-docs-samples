@@ -18,11 +18,11 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "googleapis": "19.0.0"
+    "googleapis": "20.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1"
+    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "ava": "0.21.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

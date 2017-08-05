@@ -24,14 +24,14 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/language": "0.10.5",
-    "botkit": "0.5.4",
+    "@google-cloud/language": "0.11.0",
+    "botkit": "0.5.6",
     "sqlite3": "3.1.8"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1",
+    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "ava": "0.21.0",
     "proxyquire": "1.8.0",
-    "sinon": "2.3.4"
+    "sinon": "3.0.0"
   }
 }

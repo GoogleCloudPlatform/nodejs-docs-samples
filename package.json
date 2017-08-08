@@ -53,10 +53,10 @@
     "update-dependencies": "./scripts/update-dependencies.sh"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "@google-cloud/storage": "1.1.1",
-    "ava": "0.19.1",
-    "nyc": "11.0.2",
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "@google-cloud/storage": "1.2.1",
+    "ava": "0.21.0",
+    "nyc": "11.1.0",
     "semistandard": "^11.0.0",
     "shelljs": "0.7.8"
   }

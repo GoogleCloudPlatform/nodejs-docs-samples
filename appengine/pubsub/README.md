@@ -9,8 +9,8 @@ Before you can run or deploy the sample, you will need to do the following:
 1. Enable the Cloud Pub/Sub API in the [Google Developers Console](https://console.developers.google.com/project/_/apiui/apiview/pubsub/overview).
 1. Create a topic and subscription.
 
-        gcloud alpha pubsub topics create <your-topic-name>
-        gcloud alpha pubsub subcriptions create <your-subscription-name> \
+        gcloud beta pubsub topics create <your-topic-name>
+        gcloud beta pubsub subcriptions create <your-subscription-name> \
           --topic <your-topic-name> \
           --push-endpoint \
             https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \

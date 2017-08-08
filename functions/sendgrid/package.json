@@ -20,14 +20,14 @@
     "@google-cloud/bigquery": "0.9.6",
     "@google-cloud/storage": "1.2.1",
     "safe-buffer": "5.1.1",
-    "sendgrid": "5.2.0",
+    "sendgrid": "5.2.2",
     "uuid": "3.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.21.0",
     "proxyquire": "1.8.0",
-    "sinon": "3.0.0"
+    "sinon": "3.2.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

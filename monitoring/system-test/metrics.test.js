@@ -42,7 +42,7 @@ test.serial(`should list metric descriptors, including the new custom one`, asyn
     const output = await tools.runAsync(`${cmd} list`, cwd);
     assert(output.includes(customMetricId));
     assert(output.includes(computeMetricId));
-  })
+  });
   attempt.tries(30);
   attempt.timeout(120000);
   await attempt.start();

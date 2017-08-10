@@ -8,8 +8,31 @@
   "engines": {
     "node": ">=4.3.2"
   },
+  "scripts": {
+    "start": "node server.js",
+    "test": "samples test app"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "requiredEnvVars": [
+          "mongoHost",
+          "mongoPort",
+          "mongoUser",
+          "mongoPassword"
+        ],
+        "msg": "IPs:\n::1;",
+        "args": [
+          "server.js"
+        ]
+      }
+    }
+  },
   "dependencies": {
-    "nconf": "0.8.4",
-    "mongodb": "2.2.22"
+    "mongodb": "2.2.30",
+    "nconf": "0.8.4"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^1.4.16"
   }
 }

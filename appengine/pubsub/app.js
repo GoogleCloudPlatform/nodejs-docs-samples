@@ -19,6 +19,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Buffer = require('safe-buffer').Buffer;
+const process = require('process'); // Required for mocking environment variables
+
+// Make sure starting directory is consistent, so that views are found correctly
+process.chdir(__dirname);
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -91,3 +95,5 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]
+
+module.exports = app;

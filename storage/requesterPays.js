@@ -126,7 +126,7 @@ function downloadFileUsingRequesterPays (projectId, bucketName, srcFilename, des
     // The path to which the file should be downloaded, e.g. "./file.txt"
     destination: destFilename,
 
-    // Whether or not to bill the requesting project, if requester-pays requests are enabled
+    // The project to bill from, if requester-pays requests are enabled
     userProject: projectId
   };
 

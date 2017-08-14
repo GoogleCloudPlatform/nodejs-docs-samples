@@ -10,21 +10,21 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "samples test app"
+    "test": "samples test app --url localhost:8080/static/main.css"
   },
   "cloud-repo-tools": {
     "test": {
       "app": {
-        "url": "/static/main.css",
-        "msg": "background-color"
+        "msg": "background-color",
+        "port": 8080
       }
     }
   },
   "dependencies": {
-    "express": "4.15.3",
+    "express": "4.15.4",
     "pug": "2.0.0-rc.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.16"
+    "@google-cloud/nodejs-repo-tools": "1.4.17"
   }
 }

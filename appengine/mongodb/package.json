@@ -29,7 +29,7 @@
     }
   },
   "dependencies": {
-    "mongodb": "2.2.30",
+    "mongodb": "2.2.31",
     "nconf": "0.8.4"
   },
   "devDependencies": {

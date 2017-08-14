@@ -24,10 +24,10 @@
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.21.0",
     "proxyquire": "1.8.0",
-    "sinon": "3.0.0"
+    "sinon": "3.2.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

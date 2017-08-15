@@ -26,7 +26,7 @@
 function enableRequesterPays (bucketName) {
   // [START enable_requester_pays]
   // Imports the Google Cloud client library
-  const Storage = require('@google-cloud/storage');
+  const Storage = require(`@google-cloud/storage`);
 
   // The name of the bucket to enable requester-paying for, e.g. "my-bucket"
   // const bucketName = "my-bucket";
@@ -42,7 +42,7 @@ function enableRequesterPays (bucketName) {
       console.log(`Requester-pays requests have been enabled for bucket ${bucketName}.`);
     })
     .catch((err) => {
-      console.error('ERROR:', err);
+      console.error(`ERROR:`, err);
     });
   // [END enable_requester_pays]
 }
@@ -50,7 +50,7 @@ function enableRequesterPays (bucketName) {
 function disableRequesterPays (bucketName) {
   // [START disable_requester_pays]
   // Imports the Google Cloud client library
-  const Storage = require('@google-cloud/storage');
+  const Storage = require(`@google-cloud/storage`);
 
   // The name of the bucket to disable requester-paying for, e.g. "my-bucket"
   // const bucketName = "my-bucket";
@@ -66,7 +66,7 @@ function disableRequesterPays (bucketName) {
       console.log(`Requester-pays requests have been disabled for bucket ${bucketName}.`);
     })
     .catch((err) => {
-      console.error('ERROR:', err);
+      console.error(`ERROR:`, err);
     });
   // [END disable_requester_pays]
 }
@@ -74,7 +74,7 @@ function disableRequesterPays (bucketName) {
 function getRequesterPaysStatus (bucketName) {
   // [START get_requester_pays_status]
   // Imports the Google Cloud client library
-  const Storage = require('@google-cloud/storage');
+  const Storage = require(`@google-cloud/storage`);
 
   // The name of the bucket to get the requester-payable status for, e.g. "my-bucket"
   // const bucketName = "my-bucket";
@@ -97,7 +97,7 @@ function getRequesterPaysStatus (bucketName) {
       console.log(`Requester-pays requests are ${status} for bucket ${bucketName}.`);
     })
     .catch((err) => {
-      console.error('ERROR:', err);
+      console.error(`ERROR:`, err);
     });
   // [END get_requester_pays_status]
 }
@@ -105,7 +105,7 @@ function getRequesterPaysStatus (bucketName) {
 function downloadFileUsingRequesterPays (projectId, bucketName, srcFilename, destFilename) {
   // [START storage_download_file_requester_pays]
   // Imports the Google Cloud client library
-  const Storage = require('@google-cloud/storage');
+  const Storage = require(`@google-cloud/storage`);
 
   // The project ID to bill from
   // const projectId = process.env.GCLOUD_PROJECT;
@@ -139,7 +139,7 @@ function downloadFileUsingRequesterPays (projectId, bucketName, srcFilename, des
       console.log(`gs://${bucketName}/${srcFilename} downloaded to ${destFilename} using requester-pays requests.`);
     })
     .catch((err) => {
-      console.error('ERROR:', err);
+      console.error(`ERROR:`, err);
     });
   // [END storage_download_file_requester_pays]
 }
@@ -169,8 +169,8 @@ const cli = require(`yargs`)
     `Downloads a file from a bucket using requester-pays requests.`,
   {
     projectId: {
-      type: 'string',
-      alias: 'p',
+      type: `string`,
+      alias: `p`,
       default: process.env.GCLOUD_PROJECT
     }
   },

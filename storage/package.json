@@ -71,6 +71,13 @@
         "file": "transfer.js",
         "docs_link": "https://cloud.google.com/storage/transfer",
         "usage": "node transfer.js --help"
+      },
+      {
+        "id": "requesterPays",
+        "name": "Requester Pays samples",
+        "file": "requesterPays.js",
+        "docs_link": "https://cloud.google.com/storage/docs",
+        "usage": "node requesterPays.js --help"
       }
     ]
   }

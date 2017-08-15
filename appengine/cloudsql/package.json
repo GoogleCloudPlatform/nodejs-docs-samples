@@ -18,9 +18,9 @@
     "lint": "samples lint",
     "pretest": "npm run lint",
     "unit-test": "ava test/*.test.js -T 30s",
-    "system-test": "ava system-test/*.test.js -T 30s",
-    "test": "ava */*.test.js -T 30s",
-    "e2e-test": "samples test deploy"
+    "system-test": "samples test app",
+    "e2e-test": "samples test deploy",
+    "test": "npm run system-test && npm run unit-test"
   },
   "dependencies": {
     "async": "^2.5.0",
@@ -33,5 +33,23 @@
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.21.0"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "requiredEnvVars": [
+          "SQL_CLIENT",
+          "SQL_USER",
+          "SQL_PASSWORD",
+          "SQL_DATABASE",
+          "INSTANCE_CONNECTION_NAME"
+        ],
+        "msg": "Last 10 visits:",
+        "substitutions": "YOUR_SQL_CLIENT=$SQL_CLIENT,YOUR_USER=$SQL_USER,YOUR_PASSWORD=$SQL_PASSWORD,YOUR_DATABASE=$SQL_DATABASE,YOUR_INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME",
+        "args": [
+          "server.js"
+        ]
+      }
+    }
   }
 }

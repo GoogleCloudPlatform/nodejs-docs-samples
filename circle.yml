@@ -37,6 +37,7 @@ dependencies:
     - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools
     - yarn install
     - yarn run lint
+    - wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy && chmod +x cloud_sql_proxy
     - samples test install -l=endpoints/getting-started-grpc
     - samples test install -l=functions/background
     - samples test install -l=functions/datastore
@@ -85,7 +86,18 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      - node scripts/build "appengine/cloudsql" -- --test-args "run unit-test"
+      - cloud_sql_proxy -instances="$INSTANCE_CONNECTION_NAME"=tcp:3306
+        node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
+          environment:
+            SQL_CLIENT: mysql
+            SQL_DATABASE: appengine_cloudsql
+            INSTANCE_CONNECTION_NAME: nodejs-docs-samples:us-central1:integration-tests-instance-mysql
+      - cloud_sql_proxy -instances="$INSTANCE_CONNECTION_NAME"=tcp:5432
+        node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
+          environment:
+            SQL_CLIENT: pg
+            SQL_DATABASE: appengine_cloudsql
+            INSTANCE_CONNECTION_NAME: nodejs-docs-samples:us-central1:integration-tests-instance-psql
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"

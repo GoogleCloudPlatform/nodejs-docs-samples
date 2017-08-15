@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "ava -T 30s */*.test.js"
+    "test": "samples test app && ava -T 30s */*.test.js"
   },
   "dependencies": {
     "@google-cloud/pubsub": "0.13.2",
@@ -21,5 +21,17 @@
   },
   "devDependencies": {
     "uuid": "3.1.0"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "requiredEnvVars": [
+          "PUBSUB_TOPIC",
+          "PUBSUB_VERIFICATION_TOKEN"
+        ],
+        "msg": "Messages received by this instance",
+        "substitutions": "YOUR_TOPIC_NAME=$PUBSUB_TOPIC,YOUR_VERIFICATION_TOKEN=$PUBSUB_VERIFICATION_TOKEN"
+      }
+    }
   }
 }

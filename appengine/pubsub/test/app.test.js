@@ -18,14 +18,15 @@
 
 'use strict';
 
-const testConfig = require(`./_app-test-config`);
 const test = require(`ava`);
+const path = require(`path`);
 const utils = require(`@google-cloud/nodejs-repo-tools`);
 
 const message = `This is a test message sent at: `;
 const payload = message + Date.now();
 
-const requestObj = utils.getRequest(testConfig);
+const cwd = path.join(__dirname, `../`);
+const requestObj = utils.getRequest({ cwd: cwd });
 
 test.serial.cb(`should send a message to Pub/Sub`, (t) => {
   requestObj
@@ -42,7 +43,7 @@ test.serial.cb(`should send a message to Pub/Sub`, (t) => {
 test.serial.cb(`should receive incoming Pub/Sub messages`, (t) => {
   requestObj
     .post(`/pubsub/push`)
-    .query({ token: testConfig.env.PUBSUB_VERIFICATION_TOKEN })
+    .query({ token: process.env.PUBSUB_VERIFICATION_TOKEN })
     .send({
       message: {
         data: payload

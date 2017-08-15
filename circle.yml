@@ -103,6 +103,10 @@ deployment:
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
+      - node scripts/build "appengine/pubsub"
+          environment:
+            PUBSUB_TOPIC: integration-tests-instance
+            PUBSUB_VERIFICATION_TOKEN: KohQu1Ee
       - node scripts/build "bigquery"
       - node scripts/build "computeengine"
       - node scripts/build "containerengine/hello-world"

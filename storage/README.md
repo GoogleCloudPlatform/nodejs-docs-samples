@@ -15,6 +15,7 @@
   * [Encryption](#encryption)
   * [Files](#files)
   * [Storage Transfer API](#storage-transfer-api)
+  * [Requester Pays samples](#requester-pays-samples)
 * [Running the tests](#running-the-tests)
 
 ## Setup
@@ -198,6 +199,39 @@ For more information, see https://cloud.google.com/storage/transfer
 
 [transfer_4_docs]: https://cloud.google.com/storage/transfer
 [transfer_4_code]: transfer.js
+
+### Requester Pays samples
+
+View the [documentation][requesterPays_5_docs] or the [source code][requesterPays_5_code].
+
+__Usage:__ `node requesterPays.js --help`
+
+```
+Commands:
+  enable <bucket>                                     Enables requester-pays requests on a bucket.
+  disable <bucket>                                    Disables requester-pays requests on a bucket.
+  get-status <bucket>                                 Determines whether requester-pays requests are enabled on a
+                                                      bucket.
+  download <bucketName> <srcFileName> <destFileName>  Downloads a file from a bucket using requester-pays requests.
+
+Options:
+  --help  Show help                                                                                            [boolean]
+
+Examples:
+  node requesterPays.js enable my-bucket                        Enables requester-pays requests on a bucket named
+                                                                "my-bucket".
+  node requesterPays.js disable my-bucket                       Disables requester-pays requests on a bucket named
+                                                                "my-bucket".
+  node requesterPays.js get-status my-bucket                    Determines whether requester-pays requests are enabled
+                                                                for a bucket named "my-bucket".
+  node requesterPays.js download my-bucket file.txt ./file.txt  Downloads "gs://my-bucket/file.txt" to "./file.txt"
+                                                                using requester-pays requests.
+
+For more information, see https://cloud.google.com/storage/docs
+```
+
+[requesterPays_5_docs]: https://cloud.google.com/storage/docs
+[requesterPays_5_code]: requesterPays.js
 
 ## Running the tests
 

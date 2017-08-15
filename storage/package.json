@@ -26,7 +26,7 @@
     "yargs": "8.0.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.21.0",
     "proxyquire": "1.8.0",
     "sinon": "3.0.0",
@@ -71,6 +71,13 @@
         "file": "transfer.js",
         "docs_link": "https://cloud.google.com/storage/transfer",
         "usage": "node transfer.js --help"
+      },
+      {
+        "id": "requesterPays",
+        "name": "Requester Pays samples",
+        "file": "requesterPays.js",
+        "docs_link": "https://cloud.google.com/storage/docs",
+        "usage": "node requesterPays.js --help"
       }
     ]
   }

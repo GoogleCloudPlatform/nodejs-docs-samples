@@ -220,9 +220,9 @@ Options:
 Examples:
   node requesterPays.js enable my-bucket                        Enables requester-pays requests on a bucket named
                                                                 "my-bucket".
-  node requesterPays.js list                                    Disables requester-pays requests on a bucket named
+  node requesterPays.js disable                                 Disables requester-pays requests on a bucket named
                                                                 "my-bucket".
-  node requesterPays.js delete my-bucket                        Determines whether requester-pays requests are enabled
+  node requesterPays.js get-status my-bucket                    Determines whether requester-pays requests are enabled
                                                                 for a bucket named "my-bucket".
   node requesterPays.js download my-bucket file.txt ./file.txt  Downloads "gs://my-bucket/file.txt" to "./file.txt"
                                                                 using requester-pays requests.

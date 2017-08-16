@@ -45,19 +45,25 @@ app.get('/', function (req, res) {
 // [START hello]
 app.post('/hello', function (req, res, next) {
   var options = {
-    // From
-    FromEmail: 'no-reply@appengine-mailjet-demo.com',
-    FromName: 'Mailjet Demo',
-    // To
-    Recipients: [{ Email: req.body.email }],
-    // Subject
-    Subject: 'Hello World!',
-    // Body
-    'Text-part': 'Mailjet on Google App Engine with Node.js',
-    'Html-part': '<h3>Mailjet on Google App Engine with Node.js</h3>'
-  };
+        "Messages":[
+                {
+                    "From": {
+                            "Email": 'no-reply@appengine-mailjet-demo.com',
+                            "Name": "Mailjet Pilot"
+                    },
+                    "To": [
+                            {
+                                    "Email": req.body.email
+                            }
+                    ],
+                    "Subject": "Your email flight plan!",
+                    "TextPart": 'Mailjet on Google App Engine with Node.js',
+                    "HTMLPart":  '<h3>Mailjet on Google App Engine with Node.js</h3>'
+                }
+        ]
+    };
 
-  var request = Mailjet.post('send').request(options);
+  var request = Mailjet.post('send', {'version': 'v3.1'}).request(options);
 
   request
     .on('success', function (response, body) {

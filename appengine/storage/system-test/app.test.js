@@ -17,13 +17,13 @@ const path = require(`path`);
 const Storage = require(`@google-cloud/storage`);
 const storage = Storage();
 const test = require(`ava`);
-const testConfig = require(`./_test-config`);
 const utils = require(`@google-cloud/nodejs-repo-tools`);
 
-const bucketName = testConfig.bucketName;
+const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const bucket = storage.bucket(bucketName);
 
-const requestObj = utils.getRequest(testConfig);
+const cwd = path.join(__dirname, `../`);
+const requestObj = utils.getRequest({ cwd: cwd });
 
 test.before(async () => {
   utils.checkCredentials();

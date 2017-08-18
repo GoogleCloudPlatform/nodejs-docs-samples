@@ -22,6 +22,8 @@ machine:
   services:
     - redis
     - memcached
+  pre:
+    - echo "alias cloud_sql_setup=export INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-\$SQL_CLIENT && cloud_sql_proxy -instances=\"\$INSTANCE_CONNECTION_NAME\"=tcp:\$SQL_PORT" >> $BASH_ENV
 
 # Use for broader build-related configuration
 general:
@@ -86,16 +88,14 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      - cloud_sql_proxy -instances="$INSTANCE_CONNECTION_NAME"=tcp:3306
+      - SQL_CLIENT=mysql SQL_DATABASE=appengine_cloudsql
+        INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-mysql
+        cloud_sql_proxy -instances="$INSTANCE_CONNECTION_NAME"=tcp:3306
         node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
-          environment:
-            SQL_CLIENT: mysql
-            SQL_DATABASE: appengine_cloudsql
-            INSTANCE_CONNECTION_NAME: nodejs-docs-samples:us-central1:integration-tests-instance-mysql
       - cloud_sql_proxy -instances="$INSTANCE_CONNECTION_NAME"=tcp:5432
         node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
           environment:
-            SQL_CLIENT: pg
+            
             SQL_DATABASE: appengine_cloudsql
             INSTANCE_CONNECTION_NAME: nodejs-docs-samples:us-central1:integration-tests-instance-psql
       - node scripts/build "appengine/datastore"

@@ -131,7 +131,7 @@ function detectLabelsGCS (bucketName, fileName) {
     .catch((err) => {
       console.error('ERROR:', err);
     });
-  // [END vision_label_detection]
+  // [END vision_label_detection_gcs]
 }
 
 function detectLandmarks (fileName) {

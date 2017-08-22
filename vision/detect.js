@@ -412,10 +412,14 @@ function detectCropHints (fileName) {
   // The path to the local image file, e.g. "/path/to/image.png"
   // const fileName = 'my-file.jpg';
 
+  const request = {
+    source: {
+      filename: fileName
+    }
+  };
+
   // Find crop hints for the local file
-  vision.cropHints({
-    source: {filename: fileName},
-    options: {aspect_ratios: 0.25} })
+  vision.cropHints(request)
     .then((results) => {
       const cropHints = results[0].cropHintsAnnotation;
 
@@ -448,9 +452,14 @@ function detectCropHintsGCS (bucketName, fileName) {
   // const fileName = 'my-file.jpg';
 
   const gcsPath = `gs://${bucketName}/${fileName}`;
+  const request = {
+    source: {
+      imageUri: gcsPath
+    }
+  };
 
   // Find crop hints for the remote file
-  vision.cropHints({source: {imageUri: gcsPath}})
+  vision.cropHints(request)
     .then((results) => {
       const cropHints = results[0].cropHintsAnnotation;
 

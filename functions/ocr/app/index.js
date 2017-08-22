@@ -47,20 +47,18 @@ function publishResult (topicName, data) {
 /**
  * Detects the text in an image using the Google Vision API.
  *
- * @param {object} file Cloud Storage File instance.
+ * @param {string} bucketName Cloud Storage bucket name.
+ * @param {string} filename Cloud Storage file name.
  * @returns {Promise}
  */
-function detectText (file) {
+function detectText (bucketName, filename) {
   let text;
 
-  console.log(`Looking for text in image ${file.name}`);
-  return vision.detectText(file)
-    .then(([_text]) => {
-      if (Array.isArray(_text)) {
-        text = _text[0];
-      } else {
-        text = _text;
-      }
+  console.log(`Looking for text in image ${filename}`);
+  return vision.textDetection({ source: { imageUri: `gs://${bucketName}/${filename}` } })
+    .then(([detections]) => {
+      const annotation = detections.textAnnotations[0];
+      text = annotation ? annotation.description : '';
       console.log(`Extracted text from image (${text.length} chars)`);
       return translate.detect(text);
     })
@@ -68,7 +66,7 @@ function detectText (file) {
       if (Array.isArray(detection)) {
         detection = detection[0];
       }
-      console.log(`Detected language "${detection.language}" for ${file.name}`);
+      console.log(`Detected language "${detection.language}" for ${filename}`);
 
       // Submit a message to the bus for each language we're going to translate to
       const tasks = config.TO_LANG.map((lang) => {
@@ -78,7 +76,7 @@ function detectText (file) {
         }
         const messageData = {
           text: text,
-          filename: file.name,
+          filename: filename,
           lang: lang,
           from: detection.language
         };
@@ -128,9 +126,7 @@ exports.processImage = function processImage (event) {
         throw new Error('Filename not provided. Make sure you have a "name" property in your request');
       }
 
-      file = storage.bucket(file.bucket).file(file.name);
-
-      return detectText(file);
+      return detectText(file.bucket, file.name);
     })
     .then(() => {
       console.log(`File ${file.name} processed.`);

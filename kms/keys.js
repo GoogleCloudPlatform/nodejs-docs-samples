@@ -1,4 +1,4 @@
-  /**
+ /**
  * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@
 
 const Buffer = require('safe-buffer').Buffer;
 
-function createKeyRing (projectId, location, keyRingName) {
-  // [START kms_create_keyring]
+// [START kms_create_keyring]
+function createKeyRing (projectId, locationId, keyRingId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the new key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the new key ring, e.g. "my-new-key-ring"
-  // const keyRingName = 'my-new-key-ring';
+  // const keyRingId = 'my-new-key-ring';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -37,9 +37,9 @@ function createKeyRing (projectId, location, keyRingName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      parent: `projects/${projectId}/locations/${location}`,
+      parent: `projects/${projectId}/locations/${locationId}`,
       // This will be a path parameter in the request URL
-      keyRingId: keyRingName
+      keyRingId: keyRingId
     };
 
     // Creates a new key ring
@@ -52,16 +52,16 @@ function createKeyRing (projectId, location, keyRingName) {
       console.log(`Key ring ${keyRing.name} created.`);
     });
   });
-  // [END kms_create_keyring]
 }
+// [END kms_create_keyring]
 
-function listKeyRings (projectId, location) {
-  // [START kms_list_keyrings]
+// [START kms_list_keyrings]
+function listKeyRings (projectId, locationId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location from which to list key rings, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -72,7 +72,7 @@ function listKeyRings (projectId, location) {
 
     const request = {
       // This will be a path parameter in the request URL
-      parent: `projects/${projectId}/locations/${location}`
+      parent: `projects/${projectId}/locations/${locationId}`
     };
 
     // Lists key rings
@@ -94,19 +94,19 @@ function listKeyRings (projectId, location) {
       }
     });
   });
-  // [END kms_list_keyrings]
 }
+// [END kms_list_keyrings]
 
-function getKeyRing (projectId, location, keyRingName) {
-  // [START kms_get_keyring]
+// [START kms_get_keyring]
+function getKeyRing (projectId, locationId, keyRingId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -117,7 +117,7 @@ function getKeyRing (projectId, location, keyRingName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`
+      name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`
     };
 
     // Gets a key ring
@@ -131,19 +131,19 @@ function getKeyRing (projectId, location, keyRingName) {
       console.log(`Created: ${new Date(keyRing.createTime)}`);
     });
   });
-  // [END kms_get_keyring]
 }
+// [END kms_get_keyring]
 
-function getKeyRingIamPolicy (projectId, location, keyRingName) {
-  // [START kms_get_keyring_policy]
+// [START kms_get_keyring_policy]
+function getKeyRingIamPolicy (projectId, locationId, keyRingId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -154,7 +154,7 @@ function getKeyRingIamPolicy (projectId, location, keyRingName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`
+      resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`
     };
 
     // Gets the IAM policy of a key ring
@@ -174,23 +174,23 @@ function getKeyRingIamPolicy (projectId, location, keyRingName) {
           }
         });
       } else {
-        console.log(`Policy for key ring ${keyRingName} is empty.`);
+        console.log(`Policy for key ring ${keyRingId} is empty.`);
       }
     });
   });
-  // [END kms_get_keyring_policy]
 }
+// [END kms_get_keyring_policy]
 
-function addMemberToKeyRingPolicy (projectId, location, keyRingName, member, role) {
-  // [START kms_add_member_to_keyring_policy]
+// [START kms_add_member_to_keyring_policy]
+function addMemberToKeyRingPolicy (projectId, locationId, keyRingId, member, role) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The member to add to the key ring, e.g. "user:developer@company.com"
   // const member = 'user:developer@company.com';
@@ -207,7 +207,7 @@ function addMemberToKeyRingPolicy (projectId, location, keyRingName, member, rol
 
     let request = {
       // This will be a path parameter in the request URL
-      resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`
+      resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`
     };
 
     // Gets the IAM policy of a key ring
@@ -235,7 +235,7 @@ function addMemberToKeyRingPolicy (projectId, location, keyRingName, member, rol
 
       request = {
         // This will be a path parameter in the request URL
-        resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`,
+        resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`,
         // This will be the request body
         resource: {
           policy: policy
@@ -249,7 +249,7 @@ function addMemberToKeyRingPolicy (projectId, location, keyRingName, member, rol
           return;
         }
 
-        console.log(`${member}/${role} combo added to policy for key ring ${keyRingName}.`);
+        console.log(`${member}/${role} combo added to policy for key ring ${keyRingId}.`);
         if (policy.bindings) {
           policy.bindings.forEach((binding) => {
             if (binding.members && binding.members.length) {
@@ -260,24 +260,24 @@ function addMemberToKeyRingPolicy (projectId, location, keyRingName, member, rol
             }
           });
         } else {
-          console.log(`Policy for key ring ${keyRingName} is empty.`);
+          console.log(`Policy for key ring ${keyRingId} is empty.`);
         }
       });
     });
   });
-  // [END kms_add_member_to_keyring_policy]
 }
+// [END kms_add_member_to_keyring_policy]
 
-function removeMemberFromKeyRingPolicy (projectId, location, keyRingName, member, role) {
-  // [START kms_remove_member_from_keyring_policy]
+// [START kms_remove_member_from_keyring_policy]
+function removeMemberFromKeyRingPolicy (projectId, locationId, keyRingId, member, role) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The member to add to the key ring, e.g. "user:developer@company.com"
   // const member = 'user:developer@company.com';
@@ -294,7 +294,7 @@ function removeMemberFromKeyRingPolicy (projectId, location, keyRingName, member
 
     let request = {
       // This will be a path parameter in the request URL
-      resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`
+      resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`
     };
 
     // Gets the IAM policy of a key ring
@@ -324,7 +324,7 @@ function removeMemberFromKeyRingPolicy (projectId, location, keyRingName, member
 
       request = {
         // This will be a path parameter in the request URL
-        resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`,
+        resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`,
         // This will be the request body
         resource: {
           policy: policy
@@ -338,7 +338,7 @@ function removeMemberFromKeyRingPolicy (projectId, location, keyRingName, member
           return;
         }
 
-        console.log(`${member}/${role} combo removed from policy for key ring ${keyRingName}.`);
+        console.log(`${member}/${role} combo removed from policy for key ring ${keyRingId}.`);
         if (policy.bindings) {
           policy.bindings.forEach((binding) => {
             if (binding.members && binding.members.length) {
@@ -349,27 +349,27 @@ function removeMemberFromKeyRingPolicy (projectId, location, keyRingName, member
             }
           });
         } else {
-          console.log(`Policy for key ring ${keyRingName} is empty.`);
+          console.log(`Policy for key ring ${keyRingId} is empty.`);
         }
       });
     });
   });
-  // [END kms_remove_member_from_keyring_policy]
 }
+// [END kms_remove_member_from_keyring_policy]
 
-function createCryptoKey (projectId, location, keyRingName, keyName) {
-  // [START kms_create_cryptokey]
+// [START kms_create_cryptokey]
+function createCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the new crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the new crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name for the new crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -380,9 +380,9 @@ function createCryptoKey (projectId, location, keyRingName, keyName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      parent: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`,
+      parent: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`,
       // This will be a path parameter in the request URL
-      cryptoKeyId: keyName,
+      cryptoKeyId: cryptoKeyId,
 
       resource: {
         // This will allow the API access to the key for encryption and decryption
@@ -400,19 +400,19 @@ function createCryptoKey (projectId, location, keyRingName, keyName) {
       console.log(`Key ${cryptoKey.name} created.`);
     });
   });
-  // [END kms_create_cryptokey]
 }
+// [END kms_create_cryptokey]
 
-function listCryptoKeys (projectId, location, keyRingName) {
-  // [START kms_list_cryptokeys]
+// [START kms_list_cryptokeys]
+function listCryptoKeys (projectId, locationId, keyRingId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the key ring from which to list crypto keys, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the key ring from which to list crypto keys, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -423,7 +423,7 @@ function listCryptoKeys (projectId, location, keyRingName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      parent: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}`
+      parent: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`
     };
 
     // Creates a new key ring
@@ -449,30 +449,30 @@ function listCryptoKeys (projectId, location, keyRingName) {
       }
     });
   });
-  // [END kms_list_cryptokeys]
 }
+// [END kms_list_cryptokeys]
 
-function encrypt (projectId, location, keyRingName, keyName, infile, outfile) {
-  // [START kms_encrypt]
+// [START kms_encrypt]
+function encrypt (projectId, locationId, keyRingId, cryptoKeyId, plaintextFileName, ciphertextFileName) {
   const fs = require('fs');
 
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The path to the file to encrypt, e.g. "./path/to/plaintext.txt"
-  // const infile = './path/to/plaintext.txt';
+  // const plaintextFileName = './path/to/plaintext.txt';
 
   // The path where the encrypted file should be written, e.g. "./path/to/plaintext.txt.encrypted"
-  // const outfile = './path/to/plaintext.txt.encrypted';
+  // const ciphertextFileName = './path/to/plaintext.txt.encrypted';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -482,7 +482,7 @@ function encrypt (projectId, location, keyRingName, keyName, infile, outfile) {
     }
 
     // Reads the file to be encrypted
-    fs.readFile(infile, (err, contentsBuffer) => {
+    fs.readFile(plaintextFileName, (err, contentsBuffer) => {
       if (err) {
         console.log(err);
         return;
@@ -490,7 +490,7 @@ function encrypt (projectId, location, keyRingName, keyName, infile, outfile) {
 
       const request = {
         // This will be a path parameter in the request URL
-        name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`,
+        name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`,
         // This will be the request body
         resource: {
           plaintext: contentsBuffer.toString('base64')
@@ -505,42 +505,42 @@ function encrypt (projectId, location, keyRingName, keyName, infile, outfile) {
         }
 
         // Writes the encrypted file to disk
-        fs.writeFile(outfile, Buffer.from(result.ciphertext), (err) => {
+        fs.writeFile(ciphertextFileName, Buffer.from(result.ciphertext, 'base64'), (err) => {
           if (err) {
             console.log(err);
             return;
           }
 
-          console.log(`Encrypted ${infile} using ${result.name}.`);
-          console.log(`Result saved to ${outfile}.`);
+          console.log(`Encrypted ${plaintextFileName} using ${result.name}.`);
+          console.log(`Result saved to ${ciphertextFileName}.`);
         });
       });
     });
   });
-  // [END kms_encrypt]
 }
+// [END kms_encrypt]
 
-function decrypt (projectId, location, keyRingName, keyName, infile, outfile) {
-  // [START kms_decrypt]
+// [START kms_decrypt]
+function decrypt (projectId, locationId, keyRingId, cryptoKeyId, ciphertextFileName, plaintextFileName) {
   const fs = require('fs');
 
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The path to the file to decrypt, e.g. "./path/to/plaintext.txt.encrypted"
-  // const infile = './path/to/plaintext.txt.encrypted';
+  // const ciphertextFileName = './path/to/plaintext.txt.encrypted';
 
   // The path where the decrypted file should be written, e.g. "./path/to/plaintext.txt.decrypted"
-  // const outfile = './path/to/plaintext.txt.decrypted';
+  // const plaintextFileName = './path/to/plaintext.txt.decrypted';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -550,7 +550,7 @@ function decrypt (projectId, location, keyRingName, keyName, infile, outfile) {
     }
 
     // Reads the file to be decrypted
-    fs.readFile(infile, 'utf8', (err, contentsBuffer) => {
+    fs.readFile(ciphertextFileName, 'utf8', (err, contentsBuffer) => {
       if (err) {
         console.log(err);
         return;
@@ -558,10 +558,10 @@ function decrypt (projectId, location, keyRingName, keyName, infile, outfile) {
 
       const request = {
         // This will be a path parameter in the request URL
-        name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`,
+        name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`,
         // This will be the request body
         resource: {
-          ciphertext: contentsBuffer
+          ciphertext: contentsBuffer.toString('base64')
         }
       };
 
@@ -573,33 +573,33 @@ function decrypt (projectId, location, keyRingName, keyName, infile, outfile) {
         }
 
         // Writes the dencrypted file to disk
-        fs.writeFile(outfile, Buffer.from(result.plaintext, 'base64'), (err) => {
+        fs.writeFile(plaintextFileName, Buffer.from(result.plaintext, 'base64'), (err) => {
           if (err) {
             console.log(err);
             return;
           }
 
-          console.log(`Decrypted ${infile}, result saved to ${outfile}.`);
+          console.log(`Decrypted ${ciphertextFileName}, result saved to ${plaintextFileName}.`);
         });
       });
     });
   });
-  // [END kms_decrypt]
 }
+// [END kms_decrypt]
 
-function getCryptoKey (projectId, location, keyRingName, keyName) {
-  // [START kms_get_cryptokey]
+// [START kms_get_cryptokey]
+function getCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -610,7 +610,7 @@ function getCryptoKey (projectId, location, keyRingName, keyName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`
+      name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`
     };
 
     // Gets a crypto key
@@ -628,22 +628,22 @@ function getCryptoKey (projectId, location, keyRingName, keyName) {
       console.log(`  Created: ${new Date(cryptoKey.primary.createTime)}`);
     });
   });
-  // [END kms_get_cryptokey]
 }
+// [END kms_get_cryptokey]
 
-function setPrimaryCryptoKeyVersion (projectId, location, keyRingName, keyName, version) {
-  // [START kms_set_cryptokey_primary_version]
+// [START kms_set_cryptokey_primary_version]
+function setPrimaryCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key versions's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key version's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the version's crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The version's id, e.g. 123
   // const version = 123;
@@ -657,7 +657,7 @@ function setPrimaryCryptoKeyVersion (projectId, location, keyRingName, keyName, 
 
     const request = {
       // This will be a path parameter in the request URL
-      name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`,
+      name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`,
       // This will be the request body
       resource: {
         cryptoKeyVersionId: `${version}`
@@ -671,7 +671,7 @@ function setPrimaryCryptoKeyVersion (projectId, location, keyRingName, keyName, 
         return;
       }
 
-      console.log(`Set ${version} as primary version for crypto key ${keyName}.\n`);
+      console.log(`Set ${version} as primary version for crypto key ${cryptoKeyId}.\n`);
       console.log(`Name: ${cryptoKey.name}:`);
       console.log(`Created: ${new Date(cryptoKey.createTime)}`);
       console.log(`Purpose: ${cryptoKey.purpose}`);
@@ -680,22 +680,22 @@ function setPrimaryCryptoKeyVersion (projectId, location, keyRingName, keyName, 
       console.log(`  Created: ${new Date(cryptoKey.primary.createTime)}`);
     });
   });
-  // [END kms_set_cryptokey_primary_version]
 }
+// [END kms_set_cryptokey_primary_version]
 
-function getCryptoKeyIamPolicy (projectId, location, keyRingName, keyName) {
-  // [START kms_get_cryptokey_policy]
+// [START kms_get_cryptokey_policy]
+function getCryptoKeyIamPolicy (projectId, locationId, keyRingId, cryptoKeyId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -706,7 +706,7 @@ function getCryptoKeyIamPolicy (projectId, location, keyRingName, keyName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`
+      resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`
     };
 
     // Gets the IAM policy of a crypto key
@@ -726,26 +726,26 @@ function getCryptoKeyIamPolicy (projectId, location, keyRingName, keyName) {
           }
         });
       } else {
-        console.log(`Policy for crypto key ${keyName} is empty.`);
+        console.log(`Policy for crypto key ${cryptoKeyId} is empty.`);
       }
     });
   });
-  // [END kms_get_cryptokey_policy]
 }
+// [END kms_get_cryptokey_policy]
 
-function addMemberToCryptoKeyPolicy (projectId, location, keyRingName, keyName, member, role) {
-  // [START kms_add_member_to_cryptokey_policy]
+// [START kms_add_member_to_cryptokey_policy]
+function addMemberToCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKeyId, member, role) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The member to add to the crypto key, e.g. "user:developer@company.com"
   // const member = 'user:developer@company.com';
@@ -762,7 +762,7 @@ function addMemberToCryptoKeyPolicy (projectId, location, keyRingName, keyName, 
 
     let request = {
       // This will be a path parameter in the request URL
-      resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`
+      resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`
     };
 
     // Gets the IAM policy of a crypto key
@@ -790,7 +790,7 @@ function addMemberToCryptoKeyPolicy (projectId, location, keyRingName, keyName, 
 
       request = {
         // This will be a path parameter in the request URL
-        resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`,
+        resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`,
         // This will be the request body
         resource: {
           policy: policy
@@ -804,7 +804,7 @@ function addMemberToCryptoKeyPolicy (projectId, location, keyRingName, keyName, 
           return;
         }
 
-        console.log(`${member}/${role} combo added to policy for crypto key ${keyName}.`);
+        console.log(`${member}/${role} combo added to policy for crypto key ${cryptoKeyId}.`);
         if (policy.bindings) {
           policy.bindings.forEach((binding) => {
             if (binding.members && binding.members.length) {
@@ -815,27 +815,27 @@ function addMemberToCryptoKeyPolicy (projectId, location, keyRingName, keyName, 
             }
           });
         } else {
-          console.log(`Policy for crypto key ${keyName} is empty.`);
+          console.log(`Policy for crypto key ${cryptoKeyId} is empty.`);
         }
       });
     });
   });
-  // [END kms_add_member_to_cryptokey_policy]
 }
+// [END kms_add_member_to_cryptokey_policy]
 
-function removeMemberFromCryptoKeyPolicy (projectId, location, keyRingName, keyName, member, role) {
-  // [START kms_remove_member_from_cryptokey_policy]
+// [START kms_remove_member_from_cryptokey_policy]
+function removeMemberFromCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKeyId, member, role) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The member to add to the crypto key, e.g. "user:developer@company.com"
   // const member = 'user:developer@company.com';
@@ -852,7 +852,7 @@ function removeMemberFromCryptoKeyPolicy (projectId, location, keyRingName, keyN
 
     let request = {
       // This will be a path parameter in the request URL
-      resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`
+      resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`
     };
 
     // Gets the IAM policy of a crypto key
@@ -882,7 +882,7 @@ function removeMemberFromCryptoKeyPolicy (projectId, location, keyRingName, keyN
 
       request = {
         // This will be a path parameter in the request URL
-        resource_: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`,
+        resource_: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`,
         // This will be the request body
         resource: {
           policy: policy
@@ -898,7 +898,7 @@ function removeMemberFromCryptoKeyPolicy (projectId, location, keyRingName, keyN
           return;
         }
 
-        console.log(`${member}/${role} combo removed from policy for crypto key ${keyName}.`);
+        console.log(`${member}/${role} combo removed from policy for crypto key ${cryptoKeyId}.`);
         if (policy.bindings) {
           policy.bindings.forEach((binding) => {
             if (binding.members && binding.members.length) {
@@ -909,27 +909,27 @@ function removeMemberFromCryptoKeyPolicy (projectId, location, keyRingName, keyN
             }
           });
         } else {
-          console.log(`Policy for crypto key ${keyName} is empty.`);
+          console.log(`Policy for crypto key ${cryptoKeyId} is empty.`);
         }
       });
     });
   });
-  // [END kms_remove_member_from_cryptokey_policy]
 }
+// [END kms_remove_member_from_cryptokey_policy]
 
-function createCryptoKeyVersion (projectId, location, keyRingName, keyName) {
-  // [START kms_create_cryptokey_version]
+// [START kms_create_cryptokey_version]
+function createCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key versions's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key version's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the version's crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -940,7 +940,7 @@ function createCryptoKeyVersion (projectId, location, keyRingName, keyName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      parent: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`
+      parent: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`
     };
 
     // Creates a new crypto key version
@@ -953,22 +953,22 @@ function createCryptoKeyVersion (projectId, location, keyRingName, keyName) {
       console.log(`Crypto key version ${cryptoKeyVersion.name} created.`);
     });
   });
-  // [END kms_create_cryptokey_version]
 }
+// [END kms_create_cryptokey_version]
 
-function listCryptoKeyVersions (projectId, location, keyRingName, keyName) {
-  // [START kms_list_cryptokey_versions]
+// [START kms_list_cryptokey_versions]
+function listCryptoKeyVersions (projectId, locationId, keyRingId, cryptoKeyId) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the crypto key from which to list versions, e.g. "my-key"
-  // const keyName = 'my-key-ring';
+  // const cryptoKeyId = 'my-key-ring';
 
   // Builds and authorizes a Cloud KMS client
   buildAndAuthorizeService((err, cloudkms) => {
@@ -979,7 +979,7 @@ function listCryptoKeyVersions (projectId, location, keyRingName, keyName) {
 
     const request = {
       // This will be a path parameter in the request URL
-      parent: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}`
+      parent: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}`
     };
 
     // Creates a new key ring
@@ -1002,22 +1002,22 @@ function listCryptoKeyVersions (projectId, location, keyRingName, keyName) {
       }
     });
   });
-  // [END kms_list_cryptokey_versions]
 }
+// [END kms_list_cryptokey_versions]
 
-function destroyCryptoKeyVersion (projectId, location, keyRingName, keyName, version) {
-  // [START kms_destroy_cryptokey_version]
+// [START kms_destroy_cryptokey_version]
+function destroyCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key versions's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key version's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the version's crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The version's id, e.g. 123
   // const version = 123;
@@ -1031,7 +1031,7 @@ function destroyCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
 
     const request = {
       // This will be a path parameter in the request URL
-      name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}/cryptoKeyVersions/${version}`
+      name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}/cryptoKeyVersions/${version}`
     };
 
     // Destroys a crypto key version
@@ -1044,22 +1044,22 @@ function destroyCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
       console.log(`Crypto key version ${cryptoKeyVersion.name} destroyed.`);
     });
   });
-  // [END kms_destroy_cryptokey_version]
 }
+// [END kms_destroy_cryptokey_version]
 
-function restoreCryptoKeyVersion (projectId, location, keyRingName, keyName, version) {
-  // [START kms_restore_cryptokey_version]
+// [START kms_restore_cryptokey_version]
+function restoreCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key versions's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key version's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the version's crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The version's id, e.g. 123
   // const version = 123;
@@ -1073,7 +1073,7 @@ function restoreCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
 
     const request = {
       // This will be a path parameter in the request URL
-      name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}/cryptoKeyVersions/${version}`
+      name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}/cryptoKeyVersions/${version}`
     };
 
     // Restores a crypto key version
@@ -1086,22 +1086,22 @@ function restoreCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
       console.log(`Crypto key version ${cryptoKeyVersion.name} restored.`);
     });
   });
-  // [END kms_restore_cryptokey_version]
 }
+// [END kms_restore_cryptokey_version]
 
-function enableCryptoKeyVersion (projectId, location, keyRingName, keyName, version) {
-  // [START kms_enable_cryptokey_version]
+// [START kms_enable_cryptokey_version]
+function enableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key versions's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key version's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the version's crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The version's id, e.g. 123
   // const version = 123;
@@ -1115,7 +1115,7 @@ function enableCryptoKeyVersion (projectId, location, keyRingName, keyName, vers
 
     let request = {
       // This will be a path parameter in the request URL
-      name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}/cryptoKeyVersions/${version}`
+      name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}/cryptoKeyVersions/${version}`
     };
 
     // Gets a crypto key version
@@ -1147,22 +1147,22 @@ function enableCryptoKeyVersion (projectId, location, keyRingName, keyName, vers
       });
     });
   });
-  // [END kms_enable_cryptokey_version]
 }
+// [END kms_enable_cryptokey_version]
 
-function disableCryptoKeyVersion (projectId, location, keyRingName, keyName, version) {
-  // [START kms_disable_cryptokey_version]
+// [START kms_disable_cryptokey_version]
+function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
   // The location of the crypto key versions's key ring, e.g. "global"
-  // const location = 'global';
+  // const locationId = 'global';
 
   // The name of the crypto key version's key ring, e.g. "my-key-ring"
-  // const keyRingName = 'my-key-ring';
+  // const keyRingId = 'my-key-ring';
 
   // The name of the version's crypto key, e.g. "my-key"
-  // const keyName = 'my-key';
+  // const cryptoKeyId = 'my-key';
 
   // The version's id, e.g. 123
   // const version = 123;
@@ -1176,7 +1176,7 @@ function disableCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
 
     let request = {
       // This will be a path parameter in the request URL
-      name: `projects/${projectId}/locations/${location}/keyRings/${keyRingName}/cryptoKeys/${keyName}/cryptoKeyVersions/${version}`
+      name: `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${cryptoKeyId}/cryptoKeyVersions/${version}`
     };
 
     // Gets a crypto key version
@@ -1208,8 +1208,8 @@ function disableCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
       });
     });
   });
-  // [END kms_disable_cryptokey_version]
 }
+// [END kms_disable_cryptokey_version]
 
 /* eslint-disable indent */
   // [START kms_create_keyring]
@@ -1286,40 +1286,40 @@ function disableCryptoKeyVersion (projectId, location, keyRingName, keyName, ver
 const cli = require(`yargs`)
   .demand(1)
   .command(
-    `create <keyRingName> <keyName>`,
+    `create <keyRing> <cryptoKey>`,
     `Creates a crypto key.`,
     {},
-    (opts) => createCryptoKey(opts.projectId, opts.location, opts.keyRingName, opts.keyName)
+    (opts) => createCryptoKey(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey)
   )
   .command(
-    `decrypt <keyRingName> <keyName> <infile> <outfile>`,
+    `decrypt <keyRing> <cryptoKey> <ciphertextFileName> <plaintextFileName>`,
     `Decrypts a file.`,
     {},
-    (opts) => decrypt(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.infile, opts.outfile)
+    (opts) => decrypt(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.ciphertextFileName, opts.plaintextFileName)
   )
   .command(
-    `encrypt <keyRingName> <keyName> <infile> <outfile>`,
+    `encrypt <keyRing> <cryptoKey> <plaintextFileName> <ciphertextFileName>`,
     `Encrypts a file.`,
     {},
-    (opts) => encrypt(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.infile, opts.outfile)
+    (opts) => encrypt(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.plaintextFileName, opts.ciphertextFileName)
   )
   .command(
-    `get <keyRingName> <keyName>`,
+    `get <keyRing> <cryptoKey>`,
     `Gets a crypto key.`,
     {},
-    (opts) => getCryptoKey(opts.projectId, opts.location, opts.keyRingName, opts.keyName)
+    (opts) => getCryptoKey(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey)
   )
   .command(
-    `get-policy <keyRingName> <keyName>`,
+    `get-policy <keyRing> <cryptoKey>`,
     `Gets a crypto key's IAM policy.`,
     {},
-    (opts) => getCryptoKeyIamPolicy(opts.projectId, opts.location, opts.keyRingName, opts.keyName)
+    (opts) => getCryptoKeyIamPolicy(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey)
   )
   .command(
-    `grant-access <keyRingName> <keyName> <member> <role>`,
+    `grant-access <keyRing> <cryptoKey> <member> <role>`,
     `Adds a members to a crypto key's IAM policy.`,
     {},
-    (opts) => addMemberToCryptoKeyPolicy(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.member, opts.role)
+    (opts) => addMemberToCryptoKeyPolicy(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.member, opts.role)
   )
   .command(
     `keyrings <command>`,
@@ -1327,10 +1327,10 @@ const cli = require(`yargs`)
     (yargs) => {
       yargs
         .command(
-          `create <keyRingName>`,
+          `create <keyRing>`,
           `Creates a key ring.`,
           {},
-          (opts) => createKeyRing(opts.projectId, opts.location, opts.keyRingName)
+          (opts) => createKeyRing(opts.projectId, opts.location, opts.keyRing)
         )
         .command(
           `list`,
@@ -1339,49 +1339,49 @@ const cli = require(`yargs`)
           (opts) => listKeyRings(opts.projectId, opts.location)
         )
         .command(
-          `get <keyRingName>`,
+          `get <keyRing>`,
           `Gets a key ring.`,
           {},
-          (opts) => getKeyRing(opts.projectId, opts.location, opts.keyRingName)
+          (opts) => getKeyRing(opts.projectId, opts.location, opts.keyRing)
         )
         .command(
-          `get-policy <keyRingName>`,
+          `get-policy <keyRing>`,
           `Gets a key ring's IAM policy.`,
           {},
-          (opts) => getKeyRingIamPolicy(opts.projectId, opts.location, opts.keyRingName)
+          (opts) => getKeyRingIamPolicy(opts.projectId, opts.location, opts.keyRing)
         )
         .command(
-          `grant-access <keyRingName> <member> <role>`,
+          `grant-access <keyRing> <member> <role>`,
           `Adds a members to a key ring's IAM policy.`,
           {},
-          (opts) => addMemberToKeyRingPolicy(opts.projectId, opts.location, opts.keyRingName, opts.member, opts.role)
+          (opts) => addMemberToKeyRingPolicy(opts.projectId, opts.location, opts.keyRing, opts.member, opts.role)
         )
         .command(
-          `revoke-access <keyRingName> <member> <role>`,
+          `revoke-access <keyRing> <member> <role>`,
           `Removes a member from a key ring's IAM policy.`,
           {},
-          (opts) => removeMemberFromKeyRingPolicy(opts.projectId, opts.location, opts.keyRingName, opts.member, opts.role)
+          (opts) => removeMemberFromKeyRingPolicy(opts.projectId, opts.location, opts.keyRing, opts.member, opts.role)
         );
     },
     () => {}
   )
   .command(
-    `list <keyRingName>`,
+    `list <keyRing>`,
     `Lists crypto keys.`,
     {},
-    (opts) => listCryptoKeys(opts.projectId, opts.location, opts.keyRingName)
+    (opts) => listCryptoKeys(opts.projectId, opts.location, opts.keyRing)
   )
   .command(
-    `revoke-access <keyRingName> <keyName> <member> <role>`,
+    `revoke-access <keyRing> <cryptoKey> <member> <role>`,
     `Removes a member from a crypto key's IAM policy.`,
     {},
-    (opts) => removeMemberFromCryptoKeyPolicy(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.member, opts.role)
+    (opts) => removeMemberFromCryptoKeyPolicy(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.member, opts.role)
   )
   .command(
-    `set-primary <keyRingName> <keyName> <version>`,
+    `set-primary <keyRing> <cryptoKey> <version>`,
     `Sets a crypto key's primary version.`,
     {},
-    (opts) => setPrimaryCryptoKeyVersion(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.version)
+    (opts) => setPrimaryCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
   )
   .command(
     `versions <command>`,
@@ -1389,40 +1389,40 @@ const cli = require(`yargs`)
     (yargs) => {
       yargs
         .command(
-          `create <keyRingName> <keyName>`,
+          `create <keyRing> <cryptoKey>`,
           `Creates a crypto key version.`,
           {},
-          (opts) => createCryptoKeyVersion(opts.projectId, opts.location, opts.keyRingName, opts.keyName)
+          (opts) => createCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey)
         )
         .command(
-          `destroy <keyRingName> <keyName> <version>`,
+          `destroy <keyRing> <cryptoKey> <version>`,
           `Destroys a crypto key version.`,
           {},
-          (opts) => destroyCryptoKeyVersion(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.version)
+          (opts) => destroyCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
         )
         .command(
-          `disable <keyRingName> <keyName> <version>`,
+          `disable <keyRing> <cryptoKey> <version>`,
           `Disables a crypto key version.`,
           {},
-          (opts) => disableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.version)
+          (opts) => disableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
         )
         .command(
-          `enable <keyRingName> <keyName> <version>`,
+          `enable <keyRing> <cryptoKey> <version>`,
           `Enables a crypto key version.`,
           {},
-          (opts) => enableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.version)
+          (opts) => enableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
         )
         .command(
-          `list <keyRingName> <keyName>`,
+          `list <keyRing> <cryptoKey>`,
           `Lists crypto key versions.`,
           {},
-          (opts) => listCryptoKeyVersions(opts.projectId, opts.location, opts.keyRingName, opts.keyName)
+          (opts) => listCryptoKeyVersions(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey)
         )
         .command(
-          `restore <keyRingName> <keyName> <version>`,
+          `restore <keyRing> <cryptoKey> <version>`,
           `Restores a crypto key version.`,
           {},
-          (opts) => restoreCryptoKeyVersion(opts.projectId, opts.location, opts.keyRingName, opts.keyName, opts.version)
+          (opts) => restoreCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
         );
     },
     () => {}

@@ -23,7 +23,7 @@ machine:
     - redis
     - memcached
   pre:
-    - echo "alias cloud_sql_setup=export INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-\$SQL_CLIENT && cloud_sql_proxy -instances=\"\$INSTANCE_CONNECTION_NAME\"=tcp:\$SQL_PORT" >> $BASH_ENV
+    - echo "alias cloud_sql_setup=export INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-\$SQL_CLIENT && cloud_sql_proxy -instances=\$INSTANCE_CONNECTION_NAME=tcp:\$SQL_PORT" >> $BASH_ENV
 
 # Use for broader build-related configuration
 general:
@@ -88,28 +88,17 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      - SQL_CLIENT=mysql SQL_DATABASE=appengine_cloudsql
-        INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-mysql
-        cloud_sql_proxy -instances="$INSTANCE_CONNECTION_NAME"=tcp:3306
+      - SQL_CLIENT=mysql SQL_PORT=3306 cloud_sql_setup
         node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
-      - cloud_sql_proxy -instances="$INSTANCE_CONNECTION_NAME"=tcp:5432
+      - SQL_CLIENT=pg SQL_PORT=5432 cloud_sql_setup
         node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
-          environment:
-            
-            SQL_DATABASE: appengine_cloudsql
-            INSTANCE_CONNECTION_NAME: nodejs-docs-samples:us-central1:integration-tests-instance-psql
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
       - node scripts/build "appengine/pubsub"
-          environment:
-            PUBSUB_TOPIC: integration-tests-instance
-            PUBSUB_VERIFICATION_TOKEN: KohQu1Ee
-      - node scripts/build "appengine/storage"
-          environment:
-            GCLOUD_STORAGE_BUCKET: docs-samples-gae-test
+      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test node scripts/build "appengine/storage"           
       - node scripts/build "bigquery"
       - node scripts/build "computeengine"
       - node scripts/build "containerengine/hello-world"
@@ -118,9 +107,7 @@ deployment:
       - node scripts/build "dlp"
       - node scripts/build "dns"
       - node scripts/build "endpoints/getting-started"
-      # TODO: Update repo tools to accept list of environment variables that must
-      #       be set for the build to work.
-      # - node scripts/build "endpoints/getting-started-grpc"
+      - node scripts/build "endpoints/getting-started-grpc"
       - node scripts/build "kms"
       - node scripts/build "language"
       - node scripts/build "language/slackbot"

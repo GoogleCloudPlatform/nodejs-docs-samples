@@ -39,7 +39,7 @@ dependencies:
     - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools
     - yarn install
     - yarn run lint
-    - wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy && chmod +x cloud_sql_proxy
+    - wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O ~/cloud_sql_proxy && chmod +x ~/cloud_sql_proxy
     - samples test install -l=endpoints/getting-started-grpc
     - samples test install -l=functions/background
     - samples test install -l=functions/datastore

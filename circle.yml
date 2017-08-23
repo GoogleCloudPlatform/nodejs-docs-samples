@@ -23,7 +23,7 @@ machine:
     - redis
     - memcached
   pre:
-    - echo "alias cloud_sql_setup=export INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-\$SQL_CLIENT && cloud_sql_proxy -instances=\$INSTANCE_CONNECTION_NAME=tcp:\$SQL_PORT" >> ~/.bashrc
+    - echo "alias cloud_sql_setup=export INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-\$SQL_CLIENT && ~/cloud_sql_proxy -instances=\$INSTANCE_CONNECTION_NAME=tcp:\$SQL_PORT" >> ~/.bashrc
 
 # Use for broader build-related configuration
 general:

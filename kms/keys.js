@@ -550,7 +550,7 @@ function decrypt (projectId, locationId, keyRingId, cryptoKeyId, ciphertextFileN
     }
 
     // Reads the file to be decrypted
-    fs.readFile(ciphertextFileName, 'utf8', (err, contentsBuffer) => {
+    fs.readFile(ciphertextFileName, (err, contentsBuffer) => {
       if (err) {
         console.log(err);
         return;

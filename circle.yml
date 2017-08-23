@@ -18,10 +18,7 @@
 
 machine:
   node:
-    version: 6.10.2
-  services:
-    - redis
-    - memcached
+    version: 6.11.2
 
 # Use for broader build-related configuration
 general:
@@ -37,7 +34,6 @@ dependencies:
     - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools
     - yarn install
     - yarn run lint
-    - samples test install -l=endpoints/getting-started-grpc
     - samples test install -l=functions/background
     - samples test install -l=functions/datastore
     - samples test install -l=functions/errorreporting
@@ -51,10 +47,8 @@ dependencies:
     - samples test install -l=functions/sendgrid
     - samples test install -l=functions/slack
     - samples test install -l=functions/uuid
-    - samples test install -l=vision
   cache_directories:
     - ~/.cache/yarn
-    - endpoints/getting-started-grpc/node_modules
     - functions/background/node_modules
     - functions/datastore/node_modules
     - functions/errorreporting/node_modules
@@ -68,15 +62,11 @@ dependencies:
     - functions/sendgrid/node_modules
     - functions/slack/node_modules
     - functions/uuid/node_modules
-    - vision/node_modules
 
 # Run your tests
 test:
   override:
-    - nyc --cache ava --verbose -T 1m 'endpoints/**/system-test/**/*.test.js'
-    - nyc --cache ava --verbose -T 30s 'auth/system-test/*.test.js'
-    - nyc --cache ava --verbose -T 30s 'functions/**/test/**/*.test.js'
-    - nyc --cache ava --verbose -T 2m 'vision/system-test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/**/test/**/*.test.js'
   post:
     - nyc report --reporter=lcov > coverage.lcov && codecov || true
 deployment:
@@ -91,6 +81,7 @@ deployment:
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
+      - node scripts/build "auth"
       - node scripts/build "bigquery"
       - node scripts/build "computeengine"
       - node scripts/build "containerengine/hello-world"
@@ -99,9 +90,10 @@ deployment:
       - node scripts/build "dlp"
       - node scripts/build "dns"
       - node scripts/build "endpoints/getting-started"
-      # TODO: Update repo tools to accept list of environment variables that must
-      #       be set for the build to work.
+      # TODO(ace-n): Get this working again
       # - node scripts/build "endpoints/getting-started-grpc"
+      - node scripts/build "error-reporting"
+      - node scripts/build "iot/manager"
       - node scripts/build "kms"
       - node scripts/build "language"
       - node scripts/build "language/slackbot"
@@ -117,6 +109,4 @@ deployment:
       - node scripts/build "translate"
       # TODO: This build times out. Does video need more than 10 minutes?
       # - node scripts/build "video"
-      # TODO: Repo tools doesn't support Redis in build container yet.
-      #       When this is done, remove Vision from main system tests.
-      # - node scripts/build "vision"
+      - node scripts/build "vision"

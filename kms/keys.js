@@ -17,8 +17,8 @@
 
 const Buffer = require('safe-buffer').Buffer;
 
-// [START kms_create_keyring]
 function createKeyRing (projectId, locationId, keyRingId) {
+  // [START kms_create_keyring]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -52,11 +52,11 @@ function createKeyRing (projectId, locationId, keyRingId) {
       console.log(`Key ring ${keyRing.name} created.`);
     });
   });
+  // [END kms_create_keyring]
 }
-// [END kms_create_keyring]
 
-// [START kms_list_keyrings]
 function listKeyRings (projectId, locationId) {
+  // [START kms_list_keyrings]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -94,11 +94,11 @@ function listKeyRings (projectId, locationId) {
       }
     });
   });
+  // [END kms_list_keyrings]
 }
-// [END kms_list_keyrings]
 
-// [START kms_get_keyring]
 function getKeyRing (projectId, locationId, keyRingId) {
+  // [START kms_get_keyring]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -131,11 +131,11 @@ function getKeyRing (projectId, locationId, keyRingId) {
       console.log(`Created: ${new Date(keyRing.createTime)}`);
     });
   });
+  // [END kms_get_keyring]
 }
-// [END kms_get_keyring]
 
-// [START kms_get_keyring_policy]
 function getKeyRingIamPolicy (projectId, locationId, keyRingId) {
+  // [START kms_get_keyring_policy]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -178,11 +178,11 @@ function getKeyRingIamPolicy (projectId, locationId, keyRingId) {
       }
     });
   });
+  // [END kms_get_keyring_policy]
 }
-// [END kms_get_keyring_policy]
 
-// [START kms_add_member_to_keyring_policy]
 function addMemberToKeyRingPolicy (projectId, locationId, keyRingId, member, role) {
+  // [START kms_add_member_to_keyring_policy]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -265,11 +265,11 @@ function addMemberToKeyRingPolicy (projectId, locationId, keyRingId, member, rol
       });
     });
   });
+  // [END kms_add_member_to_keyring_policy]
 }
-// [END kms_add_member_to_keyring_policy]
 
-// [START kms_remove_member_from_keyring_policy]
 function removeMemberFromKeyRingPolicy (projectId, locationId, keyRingId, member, role) {
+  // [START kms_remove_member_from_keyring_policy]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -354,11 +354,11 @@ function removeMemberFromKeyRingPolicy (projectId, locationId, keyRingId, member
       });
     });
   });
+  // [END kms_remove_member_from_keyring_policy]
 }
-// [END kms_remove_member_from_keyring_policy]
 
-// [START kms_create_cryptokey]
 function createCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
+  // [START kms_create_cryptokey]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -400,11 +400,11 @@ function createCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
       console.log(`Key ${cryptoKey.name} created.`);
     });
   });
+  // [END kms_create_cryptokey]
 }
-// [END kms_create_cryptokey]
 
-// [START kms_list_cryptokeys]
 function listCryptoKeys (projectId, locationId, keyRingId) {
+  // [START kms_list_cryptokeys]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -449,11 +449,11 @@ function listCryptoKeys (projectId, locationId, keyRingId) {
       }
     });
   });
+  // [END kms_list_cryptokeys]
 }
-// [END kms_list_cryptokeys]
 
-// [START kms_encrypt]
 function encrypt (projectId, locationId, keyRingId, cryptoKeyId, plaintextFileName, ciphertextFileName) {
+  // [START kms_encrypt]
   const fs = require('fs');
 
   // Your Google Cloud Platform project ID
@@ -517,11 +517,11 @@ function encrypt (projectId, locationId, keyRingId, cryptoKeyId, plaintextFileNa
       });
     });
   });
+  // [END kms_encrypt]
 }
-// [END kms_encrypt]
 
-// [START kms_decrypt]
 function decrypt (projectId, locationId, keyRingId, cryptoKeyId, ciphertextFileName, plaintextFileName) {
+  // [START kms_decrypt]
   const fs = require('fs');
 
   // Your Google Cloud Platform project ID
@@ -584,11 +584,11 @@ function decrypt (projectId, locationId, keyRingId, cryptoKeyId, ciphertextFileN
       });
     });
   });
+  // [END kms_decrypt]
 }
-// [END kms_decrypt]
 
-// [START kms_get_cryptokey]
 function getCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
+  // [START kms_get_cryptokey]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -628,11 +628,11 @@ function getCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
       console.log(`  Created: ${new Date(cryptoKey.primary.createTime)}`);
     });
   });
+  // [END kms_get_cryptokey]
 }
-// [END kms_get_cryptokey]
 
-// [START kms_set_cryptokey_primary_version]
 function setPrimaryCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
+  // [START kms_set_cryptokey_primary_version]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -680,11 +680,11 @@ function setPrimaryCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKey
       console.log(`  Created: ${new Date(cryptoKey.primary.createTime)}`);
     });
   });
+  // [END kms_set_cryptokey_primary_version]
 }
-// [END kms_set_cryptokey_primary_version]
 
-// [START kms_get_cryptokey_policy]
 function getCryptoKeyIamPolicy (projectId, locationId, keyRingId, cryptoKeyId) {
+  // [START kms_get_cryptokey_policy]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -730,11 +730,11 @@ function getCryptoKeyIamPolicy (projectId, locationId, keyRingId, cryptoKeyId) {
       }
     });
   });
+  // [END kms_get_cryptokey_policy]
 }
-// [END kms_get_cryptokey_policy]
 
-// [START kms_add_member_to_cryptokey_policy]
 function addMemberToCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKeyId, member, role) {
+  // [START kms_add_member_to_cryptokey_policy]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -820,11 +820,11 @@ function addMemberToCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKey
       });
     });
   });
+  // [END kms_add_member_to_cryptokey_policy]
 }
-// [END kms_add_member_to_cryptokey_policy]
 
-// [START kms_remove_member_from_cryptokey_policy]
 function removeMemberFromCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKeyId, member, role) {
+  // [START kms_remove_member_from_cryptokey_policy]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -914,11 +914,11 @@ function removeMemberFromCryptoKeyPolicy (projectId, locationId, keyRingId, cryp
       });
     });
   });
+  // [END kms_remove_member_from_cryptokey_policy]
 }
-// [END kms_remove_member_from_cryptokey_policy]
 
-// [START kms_create_cryptokey_version]
 function createCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId) {
+  // [START kms_create_cryptokey_version]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -953,11 +953,11 @@ function createCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId) 
       console.log(`Crypto key version ${cryptoKeyVersion.name} created.`);
     });
   });
+  // [END kms_create_cryptokey_version]
 }
-// [END kms_create_cryptokey_version]
 
-// [START kms_list_cryptokey_versions]
 function listCryptoKeyVersions (projectId, locationId, keyRingId, cryptoKeyId) {
+  // [START kms_list_cryptokey_versions]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -1002,11 +1002,11 @@ function listCryptoKeyVersions (projectId, locationId, keyRingId, cryptoKeyId) {
       }
     });
   });
+  // [END kms_list_cryptokey_versions]
 }
-// [END kms_list_cryptokey_versions]
 
-// [START kms_destroy_cryptokey_version]
 function destroyCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
+  // [START kms_destroy_cryptokey_version]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -1044,11 +1044,11 @@ function destroyCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
       console.log(`Crypto key version ${cryptoKeyVersion.name} destroyed.`);
     });
   });
+  // [END kms_destroy_cryptokey_version]
 }
-// [END kms_destroy_cryptokey_version]
 
-// [START kms_restore_cryptokey_version]
 function restoreCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
+  // [START kms_restore_cryptokey_version]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -1086,11 +1086,11 @@ function restoreCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
       console.log(`Crypto key version ${cryptoKeyVersion.name} restored.`);
     });
   });
+  // [END kms_restore_cryptokey_version]
 }
-// [END kms_restore_cryptokey_version]
 
-// [START kms_enable_cryptokey_version]
 function enableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
+  // [START kms_enable_cryptokey_version]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -1147,11 +1147,11 @@ function enableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, 
       });
     });
   });
+  // [END kms_enable_cryptokey_version]
 }
-// [END kms_enable_cryptokey_version]
 
-// [START kms_disable_cryptokey_version]
 function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, version) {
+  // [START kms_disable_cryptokey_version]
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
@@ -1208,8 +1208,8 @@ function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
       });
     });
   });
+  // [END kms_disable_cryptokey_version]
 }
-// [END kms_disable_cryptokey_version]
 
 /* eslint-disable indent */
   // [START kms_create_keyring]

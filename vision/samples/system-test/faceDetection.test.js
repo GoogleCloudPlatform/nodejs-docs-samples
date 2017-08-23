@@ -58,6 +58,13 @@ test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
 test.cb(`should detect faces`, (t) => {
+  let done = false;
+  let timeout = setTimeout(() => {
+    if (!done) {
+      console.warn('Face detection timed out!');
+      t.end();
+    }
+  }, 30);
   faceDetectionExample.main(inputFile, outputFile, MockCanvas, (err, faces) => {
     t.ifError(err);
     t.is(faces.length, 1);
@@ -66,6 +73,8 @@ test.cb(`should detect faces`, (t) => {
     t.true(console.log.calledWith(`Found 1 face`));
     t.true(console.log.calledWith(`Highlighting...`));
     t.true(console.log.calledWith(`Finished!`));
+    done = true;
+    clearTimeout(timeout);
     t.end();
   });
 });

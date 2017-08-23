@@ -67,9 +67,8 @@ test.serial(`should create a subscription`, async (t) => {
   const output = await tools.runAsync(`${cmd} create ${topicNameOne} ${subscriptionNameOne}`, cwd);
   t.is(output, `Subscription ${fullSubscriptionNameOne} created.`);
   await tools.tryTest(async (assert) => {
-    const results = await pubsub.topic(topicNameOne).getSubscriptions();
-    assert.ok(results[0][0]);
-    assert.equal(results[0][0].name, fullSubscriptionNameOne);
+    const [subscriptions] = await pubsub.topic(topicNameOne).getSubscriptions();
+    assert.equal(subscriptions[0].name, fullSubscriptionNameOne);
   }).start();
 });
 
@@ -77,8 +76,8 @@ test.serial(`should create a push subscription`, async (t) => {
   const output = await tools.runAsync(`${cmd} create-push ${topicNameOne} ${subscriptionNameTwo}`, cwd);
   t.is(output, `Subscription ${fullSubscriptionNameTwo} created.`);
   await tools.tryTest(async (assert) => {
-    const results = await pubsub.topic(topicNameOne).getSubscriptions();
-    assert(results[0].some((s) => s.name === fullSubscriptionNameTwo));
+    const [subscriptions] = await pubsub.topic(topicNameOne).getSubscriptions();
+    assert(subscriptions.some((s) => s.name === fullSubscriptionNameTwo));
   }).start();
 });
 
@@ -127,20 +126,20 @@ test.serial(`should listen for ordered messages`, async (t) => {
   const publisherTwo = pubsub.topic(topicNameTwo).publisher();
 
   await pubsub.topic(topicNameTwo).createSubscription(subscriptionNameThree);
-  let results = await publisherTwo.publish(expectedBuffer, { counterId: '3' });
-  publishedMessageIds.push(results[0]);
+  let [result] = await publisherTwo.publish(expectedBuffer, { counterId: '3' });
+  publishedMessageIds.push(result);
   await subscriptions.listenForOrderedMessages(subscriptionNameThree, timeout);
   t.is(console.log.callCount, 0);
 
-  results = await publisherTwo.publish(expectedBuffer, { counterId: '1' });
-  publishedMessageIds.push(results[0]);
+  [result] = await publisherTwo.publish(expectedBuffer, { counterId: '1' });
+  publishedMessageIds.push(result);
   await subscriptions.listenForOrderedMessages(subscriptionNameThree, timeout);
   t.is(console.log.callCount, 1);
   t.deepEqual(console.log.firstCall.args, [`* %d %j %j`, publishedMessageIds[1], expected, { counterId: '1' }]);
 
-  results = await publisherTwo.publish(expectedBuffer, { counterId: '1' });
-  results = await publisherTwo.publish(expectedBuffer, { counterId: '2' });
-  publishedMessageIds.push(results[0]);
+  [result] = await publisherTwo.publish(expectedBuffer, { counterId: '1' });
+  [result] = await publisherTwo.publish(expectedBuffer, { counterId: '2' });
+  publishedMessageIds.push(result);
   await tools.tryTest(async (assert) => {
     await subscriptions.listenForOrderedMessages(subscriptionNameThree, timeout);
     assert.equal(console.log.callCount, 3);
@@ -181,8 +180,8 @@ test.serial(`should delete a subscription`, async (t) => {
   const output = await tools.runAsync(`${cmd} delete ${subscriptionNameOne}`, cwd);
   t.is(output, `Subscription ${fullSubscriptionNameOne} deleted.`);
   await tools.tryTest(async (assert) => {
-    const results = await pubsub.getSubscriptions();
-    assert.ok(results[0]);
-    assert(results[0].every((s) => s.name !== fullSubscriptionNameOne));
+    const [subscriptions] = await pubsub.getSubscriptions();
+    assert.ok(subscriptions);
+    assert(subscriptions.every((s) => s.name !== fullSubscriptionNameOne));
   }).start();
 });

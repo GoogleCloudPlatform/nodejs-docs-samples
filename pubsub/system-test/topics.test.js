@@ -84,9 +84,8 @@ test.serial(`should create a topic`, async (t) => {
   const output = await tools.runAsync(`${cmd} create ${topicNameOne}`, cwd);
   t.is(output, `Topic ${fullTopicNameOne} created.`);
   await tools.tryTest(async (assert) => {
-    const results = await pubsub.getTopics();
-    assert.ok(results[0]);
-    assert(results[0].some((s) => s.name === fullTopicNameOne));
+    const [topics] = await pubsub.getTopics();
+    assert(topics.some((s) => s.name === fullTopicNameOne));
   }).start();
 });
 
@@ -135,7 +134,7 @@ test.serial(`should publish ordered messages`, async (t) => {
 test.serial(`should set the IAM policy for a topic`, async (t) => {
   await tools.runAsync(`${cmd} set-policy ${topicNameOne}`, cwd);
   const results = await pubsub.topic(topicNameOne).iam.getPolicy();
-  const policy = results[0];
+  const [policy] = results;
   t.deepEqual(policy.bindings, [
     {
       role: `roles/pubsub.editor`,
@@ -164,8 +163,7 @@ test.serial(`should delete a topic`, async (t) => {
   const output = await tools.runAsync(`${cmd} delete ${topicNameOne}`, cwd);
   t.is(output, `Topic ${fullTopicNameOne} deleted.`);
   await tools.tryTest(async (assert) => {
-    const results = await pubsub.getTopics();
-    assert.ok(results[0]);
-    assert(results[0].every((s) => s.name !== fullTopicNameOne));
+    const [topics] = await pubsub.getTopics();
+    assert(topics.every((s) => s.name !== fullTopicNameOne));
   }).start();
 });

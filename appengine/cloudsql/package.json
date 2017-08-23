@@ -17,21 +17,22 @@
     "start": "node server.js",
     "lint": "samples lint",
     "pretest": "npm run lint",
-    "unit-test": "ava --verbose test/*.test.js",
+    "unit-test": "ava test/*.test.js -T 30s",
     "system-test": "samples test app",
-    "test": "npm run unit-test && npm run system-test",
-    "e2e-test": "samples test deploy"
+    "e2e-test": "samples test deploy",
+    "test": "npm run system-test && npm run unit-test"
   },
   "dependencies": {
-    "express": "4.15.3",
+    "async": "^2.5.0",
+    "express": "4.15.4",
     "knex": "^0.13.0",
-    "mysql": "2.13.0",
-    "pg": "^6.2.3",
+    "mysql": "2.14.1",
+    "pg": "^7.1.0",
     "prompt": "1.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1"
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "ava": "0.21.0"
   },
   "cloud-repo-tools": {
     "test": {

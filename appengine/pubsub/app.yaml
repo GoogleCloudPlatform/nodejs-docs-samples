@@ -17,9 +17,9 @@ env: flex
 
 # [START env]
 env_variables:
-  PUBSUB_TOPIC: <your-topic-name>
+  PUBSUB_TOPIC: YOUR_TOPIC_NAME
   # This token is used to verify that requests originate from your
   # application. It can be any sufficiently random string.
-  PUBSUB_VERIFICATION_TOKEN: <your-verification-token>
+  PUBSUB_VERIFICATION_TOKEN: YOUR_VERIFICATION_TOKEN
 # [END env]
 # [END app_yaml]

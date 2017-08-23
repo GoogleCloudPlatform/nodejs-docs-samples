@@ -1,5 +1,5 @@
 {
-  "name": "appengine-endpoints",
+  "name": "endpoints-grpc",
   "description": "Endpoints Node.js gRPC sample for Google App Engine",
   "version": "0.0.1",
   "private": true,
@@ -14,8 +14,9 @@
   },
   "scripts": {
     "start": "node server.js",
-    "system-test": "ava -T 30s --verbose system-test/*.test.js",
-    "test": "samples lint && npm run system-test"
+    "lint": "samples lint",
+    "pretest": "npm run lint",
+    "test": "samples test run --cmd ava -- -T 1m --verbose system-test/*.test.js"
   },
   "dependencies": {
     "body-parser": "1.17.2",
@@ -30,14 +31,23 @@
     "ava": "0.21.0"
   },
   "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
     "test": {
       "app": {
         "requiredEnvVars": [
           "ENDPOINTS_API_KEY",
           "ENDPOINTS_GCE_HOST",
           "ENDPOINTS_GKE_HOST",
-          "ENDPOINTS_SERVICE_NAME",
-          "GOOGLE_APPLICATION_CREDENTIALS"
+          "ENDPOINTS_SERVICE_NAME"
+        ]
+      },
+      "build": {
+        "requiredEnvVars": [
+          "ENDPOINTS_API_KEY",
+          "ENDPOINTS_GCE_HOST",
+          "ENDPOINTS_GKE_HOST",
+          "ENDPOINTS_SERVICE_NAME"
         ]
       }
     }

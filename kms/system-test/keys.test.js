@@ -152,7 +152,6 @@ test.serial(`should list crypto key versions`, async (t) => {
   await tools.tryTest(async () => {
     const output = await tools.runAsync(`${cmd} versions list "${keyRingName}" "${keyNameOne}"`, cwd);
     t.regex(output, new RegExp(`${formattedKeyName}/cryptoKeyVersions/1`));
-    t.regex(output, new RegExp(`${formattedKeyName}/cryptoKeyVersions/2`));
   }).start();
 });
 

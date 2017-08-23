@@ -54,10 +54,10 @@ test(`should create and delete an unauthorized device`, async (t) => {
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Created device`));
+  t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Successfully deleted device`));
+  t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -69,10 +69,10 @@ test(`should create and delete an RSA256 device`, async (t) => {
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
-  t.true(output.includes(`Created device`));
+  t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Successfully deleted device`));
+  t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -84,10 +84,10 @@ test(`should create and delete an EC256 device`, async (t) => {
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createEs256Device ${localDevice} ${localRegName} resources/ec_public.pem`, cwd);
-  t.true(output.includes(`Created device`));
+  t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Successfully deleted device`));
+  t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -99,13 +99,13 @@ test(`should patch an unauthorized device with RSA256`, async (t) => {
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Created device`));
+  t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
       `${cmd} patchRsa256 ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
-  t.true(output.includes(`Patched device:`));
+  t.regex(output, new RegExp(`Patched device:`));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Successfully deleted device`));
+  t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -117,13 +117,13 @@ test(`should patch an unauthorized device with RSA256`, async (t) => {
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Created device`));
+  t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
       `${cmd} patchEs256 ${localDevice} ${localRegName} resources/ec_public.pem`, cwd);
-  t.true(output.includes(`Patched device:`));
+  t.regex(output, new RegExp(`Patched device:`));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Successfully deleted device`));
+  t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -135,13 +135,14 @@ test(`should create and list devices`, async (t) => {
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Created device`));
+  t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
       `${cmd} listDevices ${localRegName}`, cwd);
-  t.true(output.includes(`Current devices in registry: [ { id: '${localDevice}'`));
+  t.regex(output, /Current devices in registry:/);
+  t.regex(output, new RegExp(localDevice));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Successfully deleted device`));
+  t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -153,13 +154,13 @@ test(`should create and get a device`, async (t) => {
       `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Created device`));
+  t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
       `${cmd} getDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Found device: ${localDevice}`));
+  t.regex(output, new RegExp(`Found device: ${localDevice}`));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.true(output.includes(`Successfully deleted device`));
+  t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -167,7 +168,7 @@ test(`should create and delete a registry`, async (t) => {
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(
       `${cmd} createRegistry ${registryName} ${topicName}`, cwd);
-  t.true(output.includes(`Successfully created registry`));
+  t.regex(output, new RegExp(`Successfully created registry`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
-  t.true(output.includes(`Successfully deleted registry`));
+  t.regex(output, new RegExp(`Successfully deleted registry`));
 });

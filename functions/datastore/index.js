@@ -44,7 +44,7 @@ function getKeyFromRequestData (requestData) {
  * Creates and/or updates a record.
  *
  * @example
- * gcloud alpha functions call set --data '{"kind":"Task","key":"sampletask1","value":{"description": "Buy milk"}}'
+ * gcloud beta functions call set --data '{"kind":"Task","key":"sampletask1","value":{"description": "Buy milk"}}'
  *
  * @param {object} req Cloud Function request context.
  * @param {object} req.body The request body.
@@ -78,7 +78,7 @@ exports.set = function set (req, res) {
  * Retrieves a record.
  *
  * @example
- * gcloud alpha functions call get --data '{"kind":"Task","key":"sampletask1"}'
+ * gcloud beta functions call get --data '{"kind":"Task","key":"sampletask1"}'
  *
  * @param {object} req Cloud Function request context.
  * @param {object} req.body The request body.
@@ -110,7 +110,7 @@ exports.get = function get (req, res) {
  * Deletes a record.
  *
  * @example
- * gcloud alpha functions call del --data '{"kind":"Task","key":"sampletask1"}'
+ * gcloud beta functions call del --data '{"kind":"Task","key":"sampletask1"}'
  *
  * @param {object} req Cloud Function request context.
  * @param {object} req.body The request body.

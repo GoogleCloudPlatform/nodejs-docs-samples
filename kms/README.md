@@ -39,17 +39,19 @@ __Usage:__ `node keys.js --help`
 
 ```
 Commands:
-  create <keyRingName> <keyName>                         Creates a crypto key.
-  decrypt <keyRingName> <keyName> <infile> <outfile>     Decrypts a file.
-  encrypt <keyRingName> <keyName> <infile> <outfile>     Encrypts a file.
-  get <keyRingName> <keyName>                            Gets a crypto key.
-  get-policy <keyRingName> <keyName>                     Gets a crypto key's IAM policy.
-  grant-access <keyRingName> <keyName> <member> <role>   Adds a members to a crypto key's IAM policy.
-  keyrings <command>                                     Access key rings subcommands.
-  list <keyRingName>                                     Lists crypto keys.
-  revoke-access <keyRingName> <keyName> <member> <role>  Removes a member from a crypto key's IAM policy.
-  set-primary <keyRingName> <keyName> <version>          Sets a crypto key's primary version.
-  versions <command>                                     Access crypto key versions subcommands.
+  create <keyRing> <cryptoKey>                                  Creates a crypto key.
+  decrypt <keyRing> <cryptoKey> <ciphertextFileName>            Decrypts a file.
+  <plaintextFileName>
+  encrypt <keyRing> <cryptoKey> <plaintextFileName>             Encrypts a file.
+  <ciphertextFileName>
+  get <keyRing> <cryptoKey>                                     Gets a crypto key.
+  get-policy <keyRing> <cryptoKey>                              Gets a crypto key's IAM policy.
+  grant-access <keyRing> <cryptoKey> <member> <role>            Adds a members to a crypto key's IAM policy.
+  keyrings <command>                                            Access key rings subcommands.
+  list <keyRing>                                                Lists crypto keys.
+  revoke-access <keyRing> <cryptoKey> <member> <role>           Removes a member from a crypto key's IAM policy.
+  set-primary <keyRing> <cryptoKey> <version>                   Sets a crypto key's primary version.
+  versions <command>                                            Access crypto key versions subcommands.
 
 Options:
   --help           Show help                                                                                   [boolean]

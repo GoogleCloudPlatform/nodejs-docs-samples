@@ -25,7 +25,7 @@ const video = Video({
 });
 
 // The GCS filepath of the video to analyze
-const gcsUri = 'gs://demomaker/tomatoes.mp4';
+const gcsUri = 'gs://nodejs-docs-samples-video/quickstart_short.mp4';
 
 // Construct request
 const request = {

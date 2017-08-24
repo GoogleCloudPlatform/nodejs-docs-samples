@@ -20,7 +20,7 @@ machine:
   node:
     version: 6.11.2
   pre:
-    - echo "alias cloud_sql_setup=\"export INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-\$SQL_CLIENT && ~/cloud_sql_proxy -instances=\$INSTANCE_CONNECTION_NAME=tcp:\$SQL_PORT\"" >> ~/.bashrc
+    - echo "export INSTANCE_CONNECTION_NAME=nodejs-docs-samples:us-central1:integration-tests-instance-\$SQL_CLIENT" >> ~/.bashrc
 
 # Use for broader build-related configuration
 general:
@@ -78,10 +78,8 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      - SQL_CLIENT=mysql SQL_PORT=3306 cloud_sql_setup
-        node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
-      - SQL_CLIENT=pg SQL_PORT=5432 cloud_sql_setup
-        node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
+      - SQL_CLIENT=mysql node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
+      - SQL_CLIENT=pg node scripts/build "appengine/cloudsql" -- --test-args "run system-test"
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"

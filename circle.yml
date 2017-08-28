@@ -76,8 +76,8 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      - SQL_CLIENT=mysql SQL_PORT=3306 INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
-      - SQL_CLIENT=pg SQL_PORT=5432 INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
+      - export SQL_CLIENT=mysql SQL_PORT=3306; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
+      - export SQL_CLIENT=pg SQL_PORT=5432; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"

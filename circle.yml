@@ -16,7 +16,6 @@
 #  https://circleci.com/docs/configuration/
 #  https://circleci.com/docs/install-and-use-yarn/
 
-
 machine:
   node:
     version: 6.11.2
@@ -83,9 +82,10 @@ deployment:
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
+      - node scripts/build "appengine/static-files"
+      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test node scripts/build "appengine/storage"
       - node scripts/build "auth"
       - node scripts/build "appengine/pubsub"
-      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test node scripts/build "appengine/storage"
       - node scripts/build "bigquery"
       - node scripts/build "computeengine"
       - node scripts/build "containerengine/hello-world"

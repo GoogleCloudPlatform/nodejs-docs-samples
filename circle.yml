@@ -83,7 +83,7 @@ deployment:
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
       - node scripts/build "appengine/static-files"
-      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test node scripts/build "appengine/storage"
+      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage"
       - node scripts/build "auth"
       - node scripts/build "appengine/pubsub"
       - node scripts/build "bigquery"

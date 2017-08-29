@@ -86,7 +86,7 @@ function createIotTopic (topicName) {
 
 // Lookup the registry, assuming that it exists.
 function lookupRegistry (client, registryId, projectId, cloudRegion, cb) {
-  // [BEGIN iot_lookup_registry]
+  // [START iot_lookup_registry]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -113,7 +113,7 @@ function lookupRegistry (client, registryId, projectId, cloudRegion, cb) {
 // Create a new registry, or look up an existing one if it doesn't exist.
 function lookupOrCreateRegistry (client, registryId, projectId, cloudRegion,
     pubsubTopicId) {
-  // [BEGIN iot_lookup_or_create_registry]
+  // [START iot_lookup_or_create_registry]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -154,7 +154,7 @@ function lookupOrCreateRegistry (client, registryId, projectId, cloudRegion,
 // the device, such as authentication.
 function createUnauthDevice (client, deviceId, registryId, projectId,
     cloudRegion, body) {
-  // [BEGIN iot_create_unauth_device]
+  // [START iot_create_unauth_device]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -185,7 +185,7 @@ function createUnauthDevice (client, deviceId, registryId, projectId,
 // Create a device using RSA256 for authentication.
 function createRsaDevice (client, deviceId, registryId, projectId, cloudRegion,
     rsaCertificateFile) {
-  // [BEGIN iot_create_rsa_device]
+  // [START iot_create_rsa_device]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -228,7 +228,7 @@ function createRsaDevice (client, deviceId, registryId, projectId, cloudRegion,
 // Create a device using ES256 for authentication.
 function createEsDevice (client, deviceId, registryId, projectId, cloudRegion,
     esCertificateFile) {
-  // [BEGIN iot_create_es_device]
+  // [START iot_create_es_device]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -269,7 +269,7 @@ function createEsDevice (client, deviceId, registryId, projectId, cloudRegion,
 // Add RSA256 authentication to the given device.
 function patchRsa256ForAuth (client, deviceId, registryId, rsaPublicKeyFile,
     projectId, cloudRegion) {
-  // [BEGIN iot_patch_rsa]
+  // [START iot_patch_rsa]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -309,7 +309,7 @@ function patchRsa256ForAuth (client, deviceId, registryId, rsaPublicKeyFile,
 // Add ES256 authentication to the given device.
 function patchEs256ForAuth (client, deviceId, registryId, esPublicKeyFile,
     projectId, cloudRegion) {
-  // [BEGIN iot_patch_es]
+  // [START iot_patch_es]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -375,7 +375,7 @@ function listDevices (client, registryId, projectId, cloudRegion) {
 // Delete the given device from the registry.
 function deleteDevice (client, deviceId, registryId, projectId, cloudRegion,
     cb) {
-  // [BEGIN iot_delete_device]
+  // [START iot_delete_device]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -454,7 +454,7 @@ function clearRegistry (client, registryId, projectId, cloudRegion) {
 // Delete the given registry. Note that this will only succeed if the registry
 // is empty.
 function deleteRegistry (client, registryId, projectId, cloudRegion) {
-  // [BEGIN iot_delete_registry]
+  // [START iot_delete_registry]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -480,7 +480,7 @@ function deleteRegistry (client, registryId, projectId, cloudRegion) {
 
 // Retrieve the given device from the registry.
 function getDevice (client, deviceId, registryId, projectId, cloudRegion) {
-  // [BEGIN iot_get_device]
+  // [START iot_get_device]
   // Client retrieved in callback
   // getClient(apiKey, serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';

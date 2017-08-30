@@ -103,21 +103,3 @@ test('should analyze syntax in a 1.1 language (German)', async (t) => {
   t.regex(output, new RegExp(`ADP: bei`));
   t.regex(output, new RegExp(`NOUN: München`));
 });
-
-test(`should analyze entity sentiment in text`, async (t) => {
-  const output = await tools.runAsync(`${cmd} entity-sentiment-text "${text}"`, cwd);
-  t.regex(output, new RegExp(`Entities and sentiments:`));
-  t.regex(output, new RegExp(`Obama`));
-  t.regex(output, new RegExp(`PERSON`));
-  t.regex(output, new RegExp(`Score: 0`));
-  t.regex(output, new RegExp(`Magnitude: 0`));
-});
-
-test('should analyze entity sentiment in a file', async (t) => {
-  const output = await tools.runAsync(`${cmd} entity-sentiment-file ${bucketName} ${fileName}`, cwd);
-  t.regex(output, new RegExp(`Entities and sentiments:`));
-  t.regex(output, new RegExp(`Obama`));
-  t.regex(output, new RegExp(`PERSON`));
-  t.regex(output, new RegExp(`Score: 0`));
-  t.regex(output, new RegExp(`Magnitude: 0`));
-});

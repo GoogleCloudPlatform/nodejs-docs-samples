@@ -15,6 +15,7 @@
 
 'use strict';
 
+const fs = require(`fs`);
 const path = require(`path`);
 const storage = require(`@google-cloud/storage`)();
 const test = require(`ava`);
@@ -25,14 +26,18 @@ const cmd = `node analyze.v1beta2.js`;
 const cwd = path.join(__dirname, `..`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const fileName = `text.txt`;
-const localFilePath = path.join(__dirname, `../resources/text.txt`);
-const text = `President Obama is speaking at the White House.`;
+const fileName2 = `android_text.txt`;
+const localFilePath = path.join(__dirname, `../resources/${fileName}`);
+const localFilePath2 = path.join(__dirname, `../resources/${fileName2}`);
+const text = fs.readFileSync(localFilePath, 'utf-8');
+const text2 = fs.readFileSync(localFilePath2, 'utf-8');
 const germanText = `Willkommen bei München`;
 
 test.before(async () => {
   tools.checkCredentials();
   const [bucket] = await storage.createBucket(bucketName);
   await bucket.upload(localFilePath);
+  await bucket.upload(localFilePath2);
 });
 
 test.after.always(async () => {
@@ -102,4 +107,16 @@ test('should analyze syntax in a 1.1 language (German)', async (t) => {
   t.regex(output, new RegExp(`ADV: Willkommen`));
   t.regex(output, new RegExp(`ADP: bei`));
   t.regex(output, new RegExp(`NOUN: München`));
+});
+
+test('should classify text in a file', async (t) => {
+  const output = await tools.runAsync(`${cmd} classify-file ${bucketName} ${fileName2}`, cwd);
+  t.regex(output, new RegExp(`Name:`));
+  t.regex(output, new RegExp(`Computers & Electronics`));
+});
+
+test('should classify text in text', async (t) => {
+  const output = await tools.runAsync(`${cmd} classify-text "${text2}"`, cwd);
+  t.regex(output, new RegExp(`Name:`));
+  t.regex(output, new RegExp(`Computers & Electronics`));
 });

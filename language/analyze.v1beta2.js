@@ -230,6 +230,69 @@ function analyzeSyntaxInFile (bucketName, fileName) {
   // [END language_syntax_file]
 }
 
+function classifyTextOfText (text) {
+  // [START language_classify_string]
+  // Imports the Google Cloud client library
+  const language = require('@google-cloud/language').v1beta2();
+
+  // The text to analyze, e.g. "Hello, world!"
+  // const text = 'Hello, world!';
+
+  // Instantiates a Document, representing the provided text
+  const document = {
+    'content': text,
+    type: 'PLAIN_TEXT'
+  };
+
+  // Classifies text in the document
+  language.classifyText({ document: document })
+    .then((results) => {
+      const classification = results[0];
+
+      console.log('Categories:');
+      classification.categories.forEach((category) => {
+        console.log(`Name: ${category.name}, Confidence: ${category.confidence}`);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END language_classify_string]
+}
+
+function classifyTextInFile (bucketName, fileName) {
+  // [START language_classify_file]
+  // Imports the Google Cloud client libraries
+  const language = require('@google-cloud/language').v1beta2();
+
+  // The name of the bucket where the file resides, e.g. "my-bucket"
+  // const bucketName = 'my-bucket';
+
+  // The name of the file to analyze, e.g. "file.txt"
+  // const fileName = 'file.txt';
+
+  // Instantiates a Document, representing a text file in Cloud Storage
+  const document = {
+    gcsContentUri: `gs://${bucketName}/${fileName}`,
+    type: 'PLAIN_TEXT'
+  };
+
+  // Classifies text in the document
+  language.classifyText({ document: document })
+    .then((results) => {
+      const classification = results[0];
+
+      console.log('Categories:');
+      classification.categories.forEach((category) => {
+        console.log(`Name: ${category.name}, Confidence: ${category.confidence}`);
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END language_classify_file]
+}
+
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
@@ -268,12 +331,26 @@ require(`yargs`) // eslint-disable-line
     {},
     (opts) => analyzeSyntaxInFile(opts.bucketName, opts.fileName)
   )
+  .command(
+    `classify-text <text>`,
+    `Classifies text of a string.`,
+    {},
+    (opts) => classifyTextOfText(opts.text)
+  )
+  .command(
+    `classify-file <bucketName> <fileName>`,
+    `Classifies text in a file in Google Cloud Storage.`,
+    {},
+    (opts) => classifyTextInFile(opts.bucketName, opts.fileName)
+  )
   .example(`node $0 sentiment-text "President Obama is speaking at the White House."`)
   .example(`node $0 sentiment-file my-bucket file.txt`, `Detects sentiment in gs://my-bucket/file.txt`)
   .example(`node $0 entities-text "President Obama is speaking at the White House."`)
   .example(`node $0 entities-file my-bucket file.txt`, `Detects entities in gs://my-bucket/file.txt`)
   .example(`node $0 syntax-text "President Obama is speaking at the White House."`)
   .example(`node $0 syntax-file my-bucket file.txt`, `Detects syntax in gs://my-bucket/file.txt`)
+  .example(`node $0 classify-text "Android is a mobile operating system developed by Google."`)
+  .example(`node $0 classify-file my-bucket android_text.txt`, `Detects syntax in gs://my-bucket/android_text.txt`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/natural-language/docs`)

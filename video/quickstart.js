@@ -49,7 +49,6 @@ video.annotateVideo(request)
     const annotations = results[0].annotationResults[0];
 
     // Gets faces for video from its annotations
-    // TODO upgrade
     const faces = annotations.faceAnnotations;
     faces.forEach((face, faceIdx) => {
       console.log('Thumbnail size:', face.thumbnail.length);

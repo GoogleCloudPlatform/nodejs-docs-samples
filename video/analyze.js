@@ -64,7 +64,6 @@ function analyzeFaces (gcsUri) {
   // [END analyze_faces]
 }
 
-// TODO finish this method
 function analyzeLabelsGCS (gcsUri) {
   // [START analyze_labels_gcs]
   // Imports the Google Cloud Video Intelligence library
@@ -230,7 +229,6 @@ function analyzeShots (gcsUri) {
   // [END analyze_shots]
 }
 
-// TODO upgrade this method for v1beta2
 function analyzeSafeSearch (gcsUri) {
   // [START analyze_safe_search]
   // Imports the Google Cloud Video Intelligence library

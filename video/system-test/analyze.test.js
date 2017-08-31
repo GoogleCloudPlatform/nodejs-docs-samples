@@ -30,31 +30,35 @@ const file = `resources/cat.mp4`;
 
 // analyze_faces
 test(`should analyze faces in a GCS file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} faces ${shortUrl}`, cwd);
+  const output = await tools.runAsync(`${cmd} faces ${url}`, cwd);
   t.regex(output, /Thumbnail size: \d+/);
   t.regex(output, /Start: \d+\.\d+s/);
   t.regex(output, /End: \d+\.\d+s/);
+  t.regex(output, /Time \d+\.\d+s: \(\d+, \d+\) - \(\d+, \d+\)/);
 });
 
 // analyze_labels_gcs (one scene)
 test(`should analyze labels in a GCS file with one scene`, async (t) => {
   const output = await tools.runAsync(`${cmd} labels-gcs ${shortUrl}`, cwd);
-  t.regex(output, /Label Shirt occurs at:/);
+  t.regex(output, /Label shirt occurs at:/);
   t.regex(output, /Entire video/);
+  t.regex(output, /Confidence: \d+\.\d+/);
 });
 
 // analyze_labels_gcs (multiple scenes)
 test(`should analyze labels in a GCS file with multiple scenes`, async (t) => {
   const output = await tools.runAsync(`${cmd} labels-gcs ${url}`, cwd);
-  t.regex(output, /Label Shirt occurs at:/);
+  t.regex(output, /Label shirt occurs at:/);
   t.regex(output, /Entire video/);
+  t.regex(output, /Confidence: \d+\.\d+/);
 });
 
 // analyze_labels_local
 test(`should analyze labels in a local file`, async (t) => {
   const output = await tools.runAsync(`${cmd} labels-file ${file}`, cwd);
-  t.regex(output, /Label Whiskers occurs at:/);
+  t.regex(output, /Label whiskers occurs at:/);
   t.regex(output, /Entire video/);
+  t.regex(output, /Confidence: \d+\.\d+/);
 });
 
 // analyze_shots (multiple shots)
@@ -72,5 +76,6 @@ test(`should analyze shots in a GCS file with one shot`, async (t) => {
 // analyze_safe_search
 test(`should analyze safe search results in a GCS file`, async (t) => {
   const output = await tools.runAsync(`${cmd} safe-search ${url}`, cwd);
+  t.regex(output, /Time: \d+\.\d+s/);
   t.regex(output, /Spoof:/);
 });

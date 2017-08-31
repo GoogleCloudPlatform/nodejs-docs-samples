@@ -21,7 +21,9 @@ function analyzeFaces (gcsUri) {
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video();
+  const video = Video({
+    servicePath: `alpha-videointelligence.googleapis.com`
+  });
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';
@@ -41,13 +43,18 @@ function analyzeFaces (gcsUri) {
     .then((results) => {
       // Gets faces
       const faces = results[0].annotationResults[0].faceAnnotations;
-      console.log('Faces:');
       faces.forEach((face, faceIdx) => {
-        console.log('Thumbnail size:', face.thumbnail.length);
+        console.log(`Face #${faceIdx}`);
+        console.log(`\tThumbnail size: ${face.thumbnail.length}`);
         face.segments.forEach((segment, segmentIdx) => {
-          console.log(`Face #${faceIdx}, appearance #${segmentIdx}:`);
-          console.log(`\tStart: ${segment.startTimeOffset / 1e6}s`);
-          console.log(`\tEnd: ${segment.endTimeOffset / 1e6}s`);
+          console.log(`\tAppearance #${segmentIdx}:`);
+          console.log(`\t\tStart: ${segment.startTimeOffset / 1e6}s`);
+          console.log(`\t\tEnd: ${segment.endTimeOffset / 1e6}s`);
+        });
+        console.log(`\tLocations:`);
+        face.locations.forEach((location, locationIdx) => {
+          const box = location.boundingBox;
+          console.log(`\t\tTime ${location.timeOffset / 1e6}s: (${box.top}, ${box.left}) - (${box.bottom}, ${box.right})`);
         });
       });
     })
@@ -57,13 +64,16 @@ function analyzeFaces (gcsUri) {
   // [END analyze_faces]
 }
 
+// TODO finish this method
 function analyzeLabelsGCS (gcsUri) {
   // [START analyze_labels_gcs]
   // Imports the Google Cloud Video Intelligence library
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video();
+  const video = Video({
+    servicePath: `alpha-videointelligence.googleapis.com`
+  });
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';
@@ -83,22 +93,27 @@ function analyzeLabelsGCS (gcsUri) {
     .then((results) => {
       // Gets labels
       const labels = results[0].annotationResults[0].labelAnnotations;
+      // TODO What does "level" mean?
+      // TODO Why are there no segment-level annotations?
+
       console.log('Labels:');
       labels.forEach((label) => {
         console.log(`Label ${label.description} occurs at:`);
-        const isEntireVideo = label.locations.some((location) =>
-          location.segment.startTimeOffset.toNumber() === -1 &&
-          location.segment.endTimeOffset.toNumber() === -1
-        );
+        label.locations.forEach((location) => {
+          const isEntireVideo = label.locations.some((location) =>
+            location.segment.startTimeOffset.toNumber() === -1 &&
+            location.segment.endTimeOffset.toNumber() === -1
+          );
 
-        if (isEntireVideo) {
-          console.log(`\tEntire video`);
-        } else {
-          label.locations.forEach((location) => {
+          if (isEntireVideo) {
+            console.log(`\tEntire video`);
+          } else {
             console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
             console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
-          });
-        }
+          }
+
+          console.log(`\tConfidence: ${location.confidence}`);
+        });
       });
     })
     .catch((err) => {
@@ -114,7 +129,9 @@ function analyzeLabelsLocal (path) {
   const fs = require('fs');
 
   // Instantiates a client
-  const video = Video();
+  const video = Video({
+    servicePath: `alpha-videointelligence.googleapis.com`
+  });
 
   // The local filepath of the video to analyze
   // const path = 'my-file.mp4';
@@ -139,22 +156,26 @@ function analyzeLabelsLocal (path) {
     .then((results) => {
       // Gets labels for first video
       const labels = results[0].annotationResults[0].labelAnnotations;
+      // TODO What does "level" mean?
+      // TODO Why are there no segment-level annotations?
+
       console.log('Labels:');
       labels.forEach((label) => {
         console.log(`Label ${label.description} occurs at:`);
-        const isEntireVideo = label.locations.some((location) =>
-          location.segment.startTimeOffset.toNumber() === -1 &&
-          location.segment.endTimeOffset.toNumber() === -1
-        );
 
-        if (isEntireVideo) {
-          console.log(`\tEntire video`);
-        } else {
-          label.locations.forEach((location) => {
+        label.locations.forEach((location) => {
+          const isEntireVideo =
+            location.segment.startTimeOffset.toNumber() === -1 &&
+            location.segment.endTimeOffset.toNumber() === -1;
+
+          if (isEntireVideo) {
+            console.log(`\tEntire video`);
+          } else {
             console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
             console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
-          });
-        }
+          }
+          console.log(`\tConfidence: ${location.confidence}`);
+        });
       });
     })
     .catch((err) => {
@@ -169,7 +190,9 @@ function analyzeShots (gcsUri) {
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video();
+  const video = Video({
+    servicePath: `alpha-videointelligence.googleapis.com`
+  });
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';
@@ -207,13 +230,16 @@ function analyzeShots (gcsUri) {
   // [END analyze_shots]
 }
 
+// TODO upgrade this method for v1beta2
 function analyzeSafeSearch (gcsUri) {
   // [START analyze_safe_search]
   // Imports the Google Cloud Video Intelligence library
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video();
+  const video = Video({
+    servicePath: `alpha-videointelligence.googleapis.com`
+  });
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';
@@ -235,9 +261,9 @@ function analyzeSafeSearch (gcsUri) {
     })
     .then((results) => {
       // Gets unsafe content
-      const safeSearchResults = results[0].annotationResults[0].safeSearchAnnotations;
-      console.log('Safe search results:');
-      safeSearchResults.forEach((result) => {
+      const explicitContentResults = results[0].annotationResults[0].safeSearchAnnotations;
+      console.log('Explicit content results:');
+      explicitContentResults.forEach((result) => {
         console.log(`Time: ${result.timeOffset / 1e6}s`);
         console.log(`\tAdult: ${likelihoods[result.adult]}`);
         console.log(`\tSpoof: ${likelihoods[result.spoof]}`);
@@ -280,7 +306,7 @@ require(`yargs`) // eslint-disable-line
   )
   .command(
     `safe-search <gcsUri>`,
-    `Detects adult content in a video stored in Google Cloud Storage.`,
+    `Detects explicit content in a video stored in Google Cloud Storage.`,
     {},
     (opts) => analyzeSafeSearch(opts.gcsUri)
   )

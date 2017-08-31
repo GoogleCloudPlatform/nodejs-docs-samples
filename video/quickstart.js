@@ -21,11 +21,15 @@ const Video = require('@google-cloud/video-intelligence');
 
 // Instantiates a client
 const video = Video({
+  servicePath: 'alpha-videointelligence.googleapis.com',
   projectId: process.env.GCLOUD_PROJECT // Replace with your Google Cloud project ID
 });
 
 // The GCS filepath of the video to analyze
 const gcsUri = 'gs://nodejs-docs-samples-video/quickstart_short.mp4';
+
+// Human-readable likelihoods
+const likelihoods = ['UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE', 'LIKELY', 'VERY_LIKELY'];
 
 // Construct request
 const request = {
@@ -45,6 +49,7 @@ video.annotateVideo(request)
     const annotations = results[0].annotationResults[0];
 
     // Gets faces for video from its annotations
+    // TODO upgrade
     const faces = annotations.faceAnnotations;
     faces.forEach((face, faceIdx) => {
       console.log('Thumbnail size:', face.thumbnail.length);
@@ -59,19 +64,19 @@ video.annotateVideo(request)
     const labels = annotations.labelAnnotations;
     labels.forEach((label) => {
       console.log(`Label ${label.description} occurs at:`);
-      const isEntireVideo = label.locations.some((location) =>
-        location.segment.startTimeOffset.toNumber() === -1 &&
-        location.segment.endTimeOffset.toNumber() === -1
-      );
+      label.locations.forEach((location) => {
+        const isEntireVideo =
+          location.segment.startTimeOffset.toNumber() === -1 &&
+          location.segment.endTimeOffset.toNumber() === -1;
 
-      if (isEntireVideo) {
-        console.log(`\tEntire video`);
-      } else {
-        label.locations.forEach((location) => {
+        if (isEntireVideo) {
+          console.log(`\tEntire video`);
+        } else {
           console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
           console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
-        });
-      }
+        }
+        console.log(`\tConfidence: ${location.confidence}`);
+      });
     });
 
     // Gets shot changes for video from its annotations
@@ -85,6 +90,18 @@ video.annotateVideo(request)
         console.log(`\tEnd: ${shot.endTimeOffset / 1e6}s`);
       });
     }
+
+    // Gets explicit content data for video from its annotations
+    const explicitContentResults = annotations.safeSearchAnnotations;
+    console.log('Explicit content results:');
+    explicitContentResults.forEach((result) => {
+      console.log(`Time: ${result.timeOffset / 1e6}s`);
+      console.log(`\tAdult: ${likelihoods[result.adult]}`);
+      console.log(`\tSpoof: ${likelihoods[result.spoof]}`);
+      console.log(`\tMedical: ${likelihoods[result.medical]}`);
+      console.log(`\tViolent: ${likelihoods[result.violent]}`);
+      console.log(`\tRacy: ${likelihoods[result.racy]}`);
+    });
   })
   .catch((err) => {
     console.error('ERROR:', err);

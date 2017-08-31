@@ -116,36 +116,38 @@ CustomMetrics.prototype.writeTimeSeriesForCustomMetric =
     var monitoring = google.monitoring('v3');
     var now = getNow();
 
+    var timeSeries = [{
+      metric: {
+        type: this.metricType,
+        labels: {
+          environment: 'production'
+        }
+      },
+      resource: {
+        type: 'gce_instance',
+        labels: {
+          instance_id: 'test_instance',
+          zone: 'us-central1-f'
+        }
+      },
+      points: {
+        interval: {
+          startTime: now,
+          endTime: now
+        },
+        value: {
+          int64Value: this.getRandomInt(1, 20)
+        }
+      }
+    }];
+
     monitoring.projects.timeSeries.create({
       auth: client,
       name: this.projectResource,
       resource: {
-        timeSeries: [{
-          metric: {
-            type: this.metricType,
-            labels: {
-              environment: 'production'
-            }
-          },
-          resource: {
-            type: 'gce_instance',
-            labels: {
-              instance_id: 'test_instance',
-              zone: 'us-central1-f'
-            }
-          },
-          points: {
-            interval: {
-              startTime: now,
-              endTime: now
-            },
-            value: {
-              int64Value: this.getRandomInt(1, 20)
-            }
-          }
-        }]
+        timeSeries: timeSeries
       }
-    }, function (err, timeSeries) {
+    }, function (err) {
       if (err) {
         return callback(err);
       }
@@ -170,11 +172,10 @@ CustomMetrics.prototype.listTimeSeries = function (client, callback) {
   var endTime = getNow();
 
   console.log('Reading metric type', this.metricType);
-
   monitoring.projects.timeSeries.list({
     auth: client,
     name: this.projectResource,
-    filter: 'metric.type="' + this.metricType + '"',
+    filter: `metric.type = "${this.metricType}"`,
     pageSize: 3,
     'interval.startTime': startTime,
     'interval.endTime': endTime
@@ -255,7 +256,7 @@ exports.main = function (projectId, name, cb) {
       function (cb) {
         setTimeout(function () {
           customMetrics.listTimeSeries(authClient, cb);
-        }, 10000);
+        }, 45000);
       },
       function (cb) {
         customMetrics.deleteMetric(authClient, cb);

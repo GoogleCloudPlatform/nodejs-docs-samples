@@ -29,7 +29,7 @@ function syncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   const fs = require('fs');
   const Speech = require('@google-cloud/speech');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
@@ -60,11 +60,15 @@ function syncRecognize (filename, encoding, sampleRateHertz, languageCode) {
 
   // Detects speech in the audio file
   speech.recognize(request)
-    .then((data) => {
-      const response = data[0];
-      const transcription = response.results.map(result =>
-          result.alternatives[0].transcript).join('\n');
-      console.log(`Transcription: `, transcription);
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -77,7 +81,7 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
@@ -108,11 +112,15 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
 
   // Detects speech in the audio file
   speech.recognize(request)
-    .then((data) => {
-      const response = data[0];
-      const transcription = response.results.map(result =>
-          result.alternatives[0].transcript).join('\n');
-      console.log(`Transcription: `, transcription);
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -126,7 +134,7 @@ function syncRecognizeWords (filename, encoding, sampleRateHertz, languageCode) 
   const fs = require('fs');
   const Speech = require('@google-cloud/speech');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
@@ -158,19 +166,23 @@ function syncRecognizeWords (filename, encoding, sampleRateHertz, languageCode) 
 
   // Detects speech in the audio file
   speech.recognize(request)
-    .then((data) => {
-      const response = data[0];
+    .then((results) => {
+      const response = results[0];
       response.results.forEach((result) => {
-        console.log(`Transcription: `, result.alternatives[0].transcript);
-        result.alternatives[0].words.forEach((wordInfo) => {
-          // NOTE: If you have a time offset exceeding 2^32 seconds, use the
-          // wordInfo.{x}Time.seconds.high to calculate seconds.
-          const startSecs = `${wordInfo.startTime.seconds}` + `.` +
-              (wordInfo.startTime.nanos / 100000000);
-          const endSecs = `${wordInfo.endTime.seconds}` + `.` +
-              (wordInfo.endTime.nanos / 100000000);
-          console.log(`Word: ${wordInfo.word}`);
-          console.log(`\t ${startSecs} secs - ${endSecs} secs`);
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+          alternative.words.forEach((wordInfo) => {
+            // NOTE: If you have a time offset exceeding 2^32 seconds, use the
+            // wordInfo.{x}Time.seconds.high to calculate seconds.
+            const startSecs = `${wordInfo.startTime.seconds}` + `.` +
+            (wordInfo.startTime.nanos / 100000000);
+            const endSecs = `${wordInfo.endTime.seconds}` + `.` +
+                (wordInfo.endTime.nanos / 100000000);
+            console.log(`    Word: ${wordInfo.word}`);
+            console.log(`      \t ${startSecs} secs - ${endSecs} secs`);
+          });
         });
       });
     })
@@ -180,13 +192,184 @@ function syncRecognizeWords (filename, encoding, sampleRateHertz, languageCode) 
   // [END speech_sync_recognize_words]
 }
 
+function syncRecognizePunctuation (filename, encoding, sampleRateHertz, languageCode) {
+  // [START sync_recognize_punctuation]
+  // Imports the Google Cloud client library
+  const fs = require('fs');
+  const Speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const speech = Speech.v1beta1();
+
+  // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
+  // const filename = '/path/to/audio.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  const config = {
+    encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode,
+    enableAutomaticPunctuation: true
+  };
+  const audio = {
+    content: fs.readFileSync(filename).toString('base64')
+  };
+
+  const request = {
+    config: config,
+    audio: audio
+  };
+
+  // Detects speech in the audio file
+  speech.recognize(request)
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END sync_recognize_punctuation]
+}
+
+function syncRecognizeVideo (filename, encoding, sampleRateHertz, languageCode) {
+  // [START sync_recognize_video]
+  // Imports the Google Cloud client library
+  const fs = require('fs');
+  const Speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const speech = Speech.v1beta1();
+
+  // The path to the local file on which to perform speech recognition, e.g. /path/to/Google_Gnome.raw
+  // const filename = '/path/to/Google_Gnome.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  const config = {
+    encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode,
+    metadata: {
+      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video
+    }
+  };
+  const audio = {
+    content: fs.readFileSync(filename).toString('base64')
+  };
+
+  const request = {
+    config: config,
+    audio: audio
+  };
+
+  // Detects speech in the audio file
+  speech.recognize(request)
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END sync_recognize_video]
+}
+
+function syncRecognizeMetadata (filename, encoding, sampleRateHertz, languageCode) {
+  // [START sync_recognize_metadata]
+  // Imports the Google Cloud client library
+  const fs = require('fs');
+  const Speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const speech = Speech.v1beta1();
+
+  // The path to the local file on which to perform speech recognition, e.g. /path/to/Google_Gnome.raw
+  // const filename = '/path/to/Google_Gnome.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  const config = {
+    encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode,
+    metadata: {
+      audioTopic: 'electronics',
+      interactionType: Speech.types.RecognitionMetadata.InteractionType.DISCUSSION,
+      microphoneDistance: Speech.types.RecognitionMetadata.MicrophoneDistance.MIDFIELD,
+      numberOfSpeakers: Speech.types.RecognitionMetadata.NumberOfSpeakers.MULTIPLE_SPEAKERS,
+      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video,
+      recordingDeviceType: Speech.types.RecognitionMetadata.RecordingDeviceType.OTHER_OUTDOOR_DEVICE,
+    }
+  };
+  const audio = {
+    content: fs.readFileSync(filename).toString('base64')
+  };
+
+  const request = {
+    config: config,
+    audio: audio
+  };
+
+  // Detects speech in the audio file
+  speech.recognize(request)
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END sync_recognize_metadata]
+}
+
 function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // [START speech_async_recognize]
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
   const fs = require('fs');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
@@ -218,17 +401,21 @@ function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // Detects speech in the audio file. This creates a recognition job that you
   // can wait for now, or get its result later.
   speech.longRunningRecognize(request)
-    .then((data) => {
-      const response = data[0];
+    .then((results) => {
+      const response = results[0];
       const operation = response;
       // Get a Promise representation of the final result of the job
       return operation.promise();
     })
-    .then((data) => {
-      const response = data[0];
-      const transcription = response.results.map(result =>
-          result.alternatives[0].transcript).join('\n');
-      console.log(`Transcription: ${transcription}`);
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -241,7 +428,7 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
@@ -274,16 +461,20 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // Detects speech in the audio file. This creates a recognition job that you
   // can wait for now, or get its result later.
   speech.longRunningRecognize(request)
-    .then((data) => {
-      const operation = data[0];
+    .then((results) => {
+      const operation = results[0];
       // Get a Promise representation of the final result of the job
       return operation.promise();
     })
-    .then((data) => {
-      const response = data[0];
-      const transcription = response.results.map(result =>
-          result.alternatives[0].transcript).join('\n');
-      console.log(`Transcription: ${transcription}`);
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -296,7 +487,7 @@ function asyncRecognizeGCSWords (gcsUri, encoding, sampleRateHertz, languageCode
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
@@ -330,24 +521,28 @@ function asyncRecognizeGCSWords (gcsUri, encoding, sampleRateHertz, languageCode
   // Detects speech in the audio file. This creates a recognition job that you
   // can wait for now, or get its result later.
   speech.longRunningRecognize(request)
-    .then((data) => {
-      const operation = data[0];
+    .then((results) => {
+      const operation = results[0];
       // Get a Promise representation of the final result of the job
       return operation.promise();
     })
-    .then((data) => {
-      const response = data[0];
+    .then((results) => {
+      const response = results[0];
       response.results.forEach((result) => {
-        console.log(`Transcription: ${result.alternatives[0].transcript}`);
-        result.alternatives[0].words.forEach((wordInfo) => {
-          // NOTE: If you have a time offset exceeding 2^32 seconds, use the
-          // wordInfo.{x}Time.seconds.high to calculate seconds.
-          const startSecs = `${wordInfo.startTime.seconds}` + `.` +
-              (wordInfo.startTime.nanos / 100000000);
-          const endSecs = `${wordInfo.endTime.seconds}` + `.` +
-              (wordInfo.endTime.nanos / 100000000);
-          console.log(`Word: ${wordInfo.word}`);
-          console.log(`\t ${startSecs} secs - ${endSecs} secs`);
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+          alternative.words.forEach((wordInfo) => {
+            // NOTE: If you have a time offset exceeding 2^32 seconds, use the
+            // wordInfo.{x}Time.seconds.high to calculate seconds.
+            const startSecs = `${wordInfo.startTime.seconds}` + `.` +
+            (wordInfo.startTime.nanos / 100000000);
+            const endSecs = `${wordInfo.endTime.seconds}` + `.` +
+                (wordInfo.endTime.nanos / 100000000);
+            console.log(`    Word: ${wordInfo.word}`);
+            console.log(`      \t ${startSecs} secs - ${endSecs} secs`);
+          });
         });
       });
     })
@@ -357,6 +552,195 @@ function asyncRecognizeGCSWords (gcsUri, encoding, sampleRateHertz, languageCode
   // [END speech_async_recognize_gcs_words]
 }
 
+function asyncRecognizeGCSPunctuation (gcsUri, encoding, sampleRateHertz, languageCode) {
+  // [START speech_async_recognize_gcs_punctuation]
+  // Imports the Google Cloud client library
+  const Speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const speech = Speech.v1beta1();
+
+  // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
+  // const gcsUri = 'gs://my-bucket/audio.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  const config = {
+    encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode,
+    enableAutomaticPunctuation: true
+  };
+
+  const audio = {
+    uri: gcsUri
+  };
+
+  const request = {
+    config: config,
+    audio: audio
+  };
+
+  // Detects speech in the audio file. This creates a recognition job that you
+  // can wait for now, or get its result later.
+  speech.longRunningRecognize(request)
+    .then((results) => {
+      const operation = results[0];
+      // Get a Promise representation of the final result of the job
+      return operation.promise();
+    })
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END speech_async_recognize_gcs_punctuation]
+}
+
+function asyncRecognizeGCSVideo (gcsUri, encoding, sampleRateHertz, languageCode) {
+  // [START speech_async_recognize_gcs_video]
+  // Imports the Google Cloud client library
+  const Speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const speech = Speech.v1beta1();
+
+  // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
+  // const gcsUri = 'gs://my-bucket/audio.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  const config = {
+    encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode,
+    metadata: {
+      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video
+    }
+  };
+
+  const audio = {
+    uri: gcsUri
+  };
+
+  const request = {
+    config: config,
+    audio: audio
+  };
+
+  // Detects speech in the audio file. This creates a recognition job that you
+  // can wait for now, or get its result later.
+  speech.longRunningRecognize(request)
+    .then((results) => {
+      const operation = results[0];
+      // Get a Promise representation of the final result of the job
+      return operation.promise();
+    })
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END speech_async_recognize_gcs_video]
+}
+
+function asyncRecognizeGCSMetadata (gcsUri, encoding, sampleRateHertz, languageCode) {
+  // [START speech_async_recognize_gcs_metadata]
+  // Imports the Google Cloud client library
+  const Speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const speech = Speech.v1beta1();
+
+  // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
+  // const gcsUri = 'gs://my-bucket/audio.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file in hertz, e.g. 16000
+  // const sampleRateHertz = 16000;
+
+  // The BCP-47 language code to use, e.g. 'en-US'
+  // const languageCode = 'en-US';
+
+  const config = {
+    encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
+    languageCode: languageCode,
+    metadata: {
+      audioTopic: 'electronics',
+      interactionType: Speech.types.RecognitionMetadata.InteractionType.DISCUSSION,
+      microphoneDistance: Speech.types.RecognitionMetadata.MicrophoneDistance.MIDFIELD,
+      numberOfSpeakers: Speech.types.RecognitionMetadata.NumberOfSpeakers.MULTIPLE_SPEAKERS,
+      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video,
+      recordingDeviceType: Speech.types.RecognitionMetadata.RecordingDeviceType.OTHER_OUTDOOR_DEVICE,
+    }
+  };
+
+  const audio = {
+    uri: gcsUri
+  };
+
+  const request = {
+    config: config,
+    audio: audio
+  };
+
+  // Detects speech in the audio file. This creates a recognition job that you
+  // can wait for now, or get its result later.
+  speech.longRunningRecognize(request)
+    .then((results) => {
+      const operation = results[0];
+      // Get a Promise representation of the final result of the job
+      return operation.promise();
+    })
+    .then((results) => {
+      const response = results[0];
+      response.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
+  // [END speech_async_recognize_gcs_metadata]
+}
+
 function streamingRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // [START speech_streaming_recognize]
   const fs = require('fs');
@@ -364,7 +748,7 @@ function streamingRecognize (filename, encoding, sampleRateHertz, languageCode) 
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
@@ -392,8 +776,13 @@ function streamingRecognize (filename, encoding, sampleRateHertz, languageCode) 
   const recognizeStream = speech.streamingRecognize(request)
     .on('error', console.error)
     .on('data', (data) => {
-      console.log(
-          `Transcription: ${data.results[0].alternatives[0].transcript}`);
+      data.results.forEach((result) => {
+        console.log('Result:');
+        result.alternatives.forEach((alternative) => {
+          const confidence = (alternative.confidence * 100).toPrecision(3);
+          console.log(`  Transcript (${confidence}% confidence): ${alternative.transcript}`);
+        });
+      });
     });
 
   // Stream an audio file from disk to the Speech API, e.g. "./resources/audio.raw"
@@ -408,7 +797,7 @@ function streamingMicRecognize (encoding, sampleRateHertz, languageCode) {
   // Imports the Google Cloud client library
   const Speech = require('@google-cloud/speech');
 
-  // Instantiates a client
+  // Creates a client
   const speech = Speech();
 
   // The encoding of the audio file, e.g. 'LINEAR16'
@@ -476,6 +865,24 @@ const cli = require(`yargs`)
     (opts) => syncRecognizeWords(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
+    `sync-punctuation <filename>`,
+    `Detects speech in a local audio file with automatic punctuation enabled.`,
+    {},
+    (opts) => syncRecognizePunctuation(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
+  )
+  .command(
+    `sync-video <filename>`,
+    `Detects speech in a local audio file with original media type set to VIDEO.`,
+    {},
+    (opts) => syncRecognizeVideo(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
+  )
+  .command(
+    `sync-metadata <filename>`,
+    `Detects speech in a local audio file with audio metadata paramters.`,
+    {},
+    (opts) => syncRecognizeMetadata(opts.filename, opts.encoding, opts.sampleRateHertz, opts.languageCode)
+  )
+  .command(
     `async <filename>`,
     `Creates a job to detect speech in a local audio file, and waits for the job to complete.`,
     {},
@@ -489,9 +896,27 @@ const cli = require(`yargs`)
   )
   .command(
     `async-gcs-words <gcsUri>`,
-    `Creates a job to detect speech  with word time offset in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
+    `Creates a job to detect speech with word time offset in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
     {},
     (opts) => asyncRecognizeGCSWords(opts.gcsUri, opts.encoding, opts.sampleRateHertz, opts.languageCode)
+  )
+  .command(
+    `async-gcs-punctuation <gcsUri>`,
+    `Creates a job to detect speech automatic punctuation enabled in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
+    {},
+    (opts) => asyncRecognizeGCSPunctuation(opts.gcsUri, opts.encoding, opts.sampleRateHertz, opts.languageCode)
+  )
+  .command(
+    `async-gcs-video <gcsUri>`,
+    `Creates a job to detect speech with original media type set to VIDEO in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
+    {},
+    (opts) => asyncRecognizeGCSVideo(opts.gcsUri, opts.encoding, opts.sampleRateHertz, opts.languageCode)
+  )
+  .command(
+    `async-gcs-metadata <gcsUri>`,
+    `Creates a job to detect speech with audio metadata paramaters in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
+    {},
+    (opts) => asyncRecognizeGCSMetadata(opts.gcsUri, opts.encoding, opts.sampleRateHertz, opts.languageCode)
   )
   .command(
     `stream <filename>`,

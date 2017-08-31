@@ -9,10 +9,22 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "samples test app --url localhost:8080/static/main.css"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "background-color",
+        "port": 8080
+      }
+    }
   },
   "dependencies": {
-    "express": "4.14.1",
-    "pug": "2.0.0-beta6"
+    "express": "4.15.4",
+    "pug": "2.0.0-rc.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.4.17"
   }
 }

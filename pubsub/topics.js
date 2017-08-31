@@ -83,13 +83,19 @@ function publishMessage (topicName, data) {
 
   // References an existing topic, e.g. "my-topic"
   const topic = pubsub.topic(topicName);
-
+  
+  // Creates a new Topic Publisher
+  const publisher = topic.publisher()
+  
+  // Creates a new Buffer from data
+  let dataBuffer = new Buffer.from(data)
+  
   // Publishes the message, e.g. "Hello, world!" or { amount: 599.00, status: 'pending' }
-  return topic.publish(data)
+  return publisher.publish(dataBuffer)
     .then((results) => {
-      const messageIds = results[0];
+      const messageIds = results.shift(); // Or results[0] since it returns [ 'ID' ]
 
-      console.log(`Message ${messageIds[0]} published.`);
+      console.log(`Message ${messageIds} published.`);
 
       return messageIds;
     });

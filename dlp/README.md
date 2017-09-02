@@ -47,6 +47,7 @@ Commands:
                                           Prevention API and the promise pattern.
   gcsFileEvent <bucketName> <fileName>    Inspects a text file stored on Google Cloud Storage using the Data Loss
                                           Prevention API and the event-handler pattern.
+  bigquery <datasetName> <tableName>      Inspects a BigQuery table using the Data Loss Prevention API.
   datastore <kind>                        Inspect a Datastore instance using the Data Loss Prevention API.
 
 Options:
@@ -64,6 +65,8 @@ Examples:
   node inspect.js file resources/test.txt
   node inspect.js gcsFilePromise my-bucket my-file.txt
   node inspect.js gcsFileEvent my-bucket my-file.txt
+  node inspect.js bigquery my-dataset my-table
+  node inspect.js datastore my-datastore-kind
 
 For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at
 https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig
@@ -81,6 +84,7 @@ __Usage:__ `node redact.js --help`
 ```
 Commands:
   string <string> <replaceString>  Redact sensitive data from a string using the Data Loss Prevention API.
+  image <filepath> <outputPath>    Redact sensitive data from an image using the Data Loss Prevention API.
 
 Options:
   --help               Show help                                                                               [boolean]
@@ -91,6 +95,7 @@ Options:
 
 Examples:
   node redact.js string "My name is Gary" "REDACTED" -t US_MALE_NAME
+  node redact.js image resources/test.png redaction_result.png -t US_MALE_NAME
 
 For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at
 https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig

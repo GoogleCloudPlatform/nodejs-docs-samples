@@ -328,7 +328,7 @@ function inspectDatastore (projectId, namespaceId, kind, minLikelihood, maxFindi
   // The infoTypes of information to match
   // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
 
-  // Get reference to the file to be inspected
+  // Construct items to be inspected
   const storageItems = {
     datastoreOptions: {
       partitionId: {
@@ -384,6 +384,86 @@ function inspectDatastore (projectId, namespaceId, kind, minLikelihood, maxFindi
   // [END inspect_datastore]
 }
 
+function inspectBigquery (projectId, datasetId, tableId, minLikelihood, maxFindings, infoTypes, includeQuote) {
+  // [START inspect_bigquery]
+  // Imports the Google Cloud Data Loss Prevention library
+  const DLP = require('@google-cloud/dlp');
+
+  // Instantiates a client
+  const dlp = DLP();
+
+  // (Optional) The project ID containing the target Datastore
+  // const projectId = process.env.GCLOUD_PROJECT;
+
+  // The ID of the dataset of the table to inspect, e.g. 'my_dataset'
+  // const datasetId = 'my_dataset';
+
+  // The ID of the table to inspect, e.g. 'my_table'
+  // const tableId = 'my_table';
+
+  // The minimum likelihood required before returning a match
+  // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
+
+  // The maximum number of findings to report (0 = server maximum)
+  // const maxFindings = 0;
+
+  // The infoTypes of information to match
+  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
+
+  // Construct items to be inspected
+  const storageItems = {
+    bigQueryOptions: {
+      tableReference: {
+        projectId: projectId,
+        datasetId: datasetId,
+        tableId: tableId
+      }
+    }
+  };
+
+  // Construct request for creating an inspect job
+  const request = {
+    inspectConfig: {
+      infoTypes: infoTypes,
+      minLikelihood: minLikelihood,
+      maxFindings: maxFindings
+    },
+    storageConfig: storageItems
+  };
+
+  // Run inspect-job creation request
+  dlp.createInspectOperation(request)
+    .then((createJobResponse) => {
+      const operation = createJobResponse[0];
+
+      // Start polling for job completion
+      return operation.promise();
+    })
+    .then((completeJobResponse) => {
+      // When job is complete, get its results
+      const jobName = completeJobResponse[0].name;
+      return dlp.listInspectFindings({
+        name: jobName
+      });
+    })
+    .then((results) => {
+      const findings = results[0].result.findings;
+      if (findings.length > 0) {
+        console.log(`Findings:`);
+        findings.forEach((finding) => {
+          console.log(`\tInfo type: ${finding.infoType.name}`);
+          console.log(`\tLikelihood: ${finding.likelihood}`);
+        });
+      } else {
+        console.log(`No findings.`);
+      }
+    })
+    .catch((err) => {
+      console.log(`Error in inspectBigquery: ${err.message || err}`);
+    });
+  // [END inspect_bigquery]
+}
+
 const cli = require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
@@ -435,6 +515,26 @@ const cli = require(`yargs`) // eslint-disable-line
     )
   )
   .command(
+    `bigquery <datasetName> <tableName>`,
+    `Inspects a BigQuery table using the Data Loss Prevention API.`,
+  {
+    projectId: {
+      type: 'string',
+      alias: 'p',
+      default: process.env.GCLOUD_PROJECT
+    }
+  },
+    (opts) => inspectBigquery(
+      opts.projectId,
+      opts.datasetName,
+      opts.tableName,
+      opts.minLikelihood,
+      opts.maxFindings,
+      opts.infoTypes,
+      opts.includeQuote
+    )
+  )
+  .command(
     `datastore <kind>`,
     `Inspect a Datastore instance using the Data Loss Prevention API.`,
   {
@@ -449,7 +549,15 @@ const cli = require(`yargs`) // eslint-disable-line
       default: ''
     }
   },
-    (opts) => inspectDatastore(opts.projectId, opts.namespaceId, opts.kind, opts.minLikelihood, opts.maxFindings, opts.infoTypes, opts.includeQuote)
+    (opts) => inspectDatastore(
+      opts.projectId,
+      opts.namespaceId,
+      opts.kind,
+      opts.minLikelihood,
+      opts.maxFindings,
+      opts.infoTypes,
+      opts.includeQuote
+    )
   )
   .option('m', {
     alias: 'minLikelihood',
@@ -496,6 +604,8 @@ const cli = require(`yargs`) // eslint-disable-line
   .example(`node $0 file resources/test.txt`)
   .example(`node $0 gcsFilePromise my-bucket my-file.txt`)
   .example(`node $0 gcsFileEvent my-bucket my-file.txt`)
+  .example(`node $0 bigquery my-dataset my-table`)
+  .example(`node $0 datastore my-datastore-kind`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`);

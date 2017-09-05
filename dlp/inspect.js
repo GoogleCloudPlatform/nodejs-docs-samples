@@ -37,7 +37,7 @@ function inspectString (string, minLikelihood, maxFindings, infoTypes, includeQu
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = [{ name: 'US_MALE_NAME', name: 'US_FEMALE_NAME' }];
+  // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // Whether to include the matching string
   // const includeQuote = true;
@@ -97,7 +97,7 @@ function inspectFile (filepath, minLikelihood, maxFindings, infoTypes, includeQu
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
+  // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // Whether to include the matching string
   // const includeQuote = true;
@@ -164,7 +164,7 @@ function promiseInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
+  // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // Get reference to the file to be inspected
   const storageItems = {
@@ -238,7 +238,7 @@ function eventInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings, 
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
+  // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // Get reference to the file to be inspected
   const storageItems = {
@@ -326,7 +326,7 @@ function inspectDatastore (projectId, namespaceId, kind, minLikelihood, maxFindi
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
+  // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // Construct items to be inspected
   const storageItems = {
@@ -392,10 +392,10 @@ function inspectBigquery (projectId, datasetId, tableId, minLikelihood, maxFindi
   // Instantiates a client
   const dlp = DLP();
 
-  // (Optional) The project ID containing the target Datastore
+  // (Optional) The project ID to run the API call under
   // const projectId = process.env.GCLOUD_PROJECT;
 
-  // The ID of the dataset of the table to inspect, e.g. 'my_dataset'
+  // The ID of the dataset to inspect, e.g. 'my_dataset'
   // const datasetId = 'my_dataset';
 
   // The ID of the table to inspect, e.g. 'my_table'
@@ -408,7 +408,7 @@ function inspectBigquery (projectId, datasetId, tableId, minLikelihood, maxFindi
   // const maxFindings = 0;
 
   // The infoTypes of information to match
-  // const infoTypes = [{ name: 'US_MALE_NAME' }, { name: 'US_FEMALE_NAME' }];
+  // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // Construct items to be inspected
   const storageItems = {
@@ -593,7 +593,7 @@ const cli = require(`yargs`) // eslint-disable-line
   })
   .option('t', {
     alias: 'infoTypes',
-    default: [],
+    default: ['PHONE_NUMBER', 'EMAIL_ADDRESS', 'CREDIT_CARD_NUMBER'],
     type: 'array',
     global: true,
     coerce: (infoTypes) => infoTypes.map((type) => {

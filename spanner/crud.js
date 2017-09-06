@@ -163,6 +163,50 @@ function readData (instanceId, databaseId) {
   // [END read_data]
 }
 
+function readStaleData (instanceId, databaseId) {
+  // [START read_stale_data]
+  // Imports the Google Cloud client library
+  const Spanner = require('@google-cloud/spanner');
+
+  // Instantiates a client
+  const spanner = Spanner();
+
+  // Uncomment these lines to specify the instance and database to use
+  // const instanceId = 'my-instance';
+  // const databaseId = 'my-database';
+
+  // Gets a reference to a Cloud Spanner instance and database
+  const instance = spanner.instance(instanceId);
+  const database = instance.database(databaseId);
+
+  // Read rows from the Albums table
+  const albumsTable = database.table('Albums');
+
+  const query = {
+    columns: ['SingerId', 'AlbumId', 'AlbumTitle', 'MarketingBudget'],
+    keySet: {
+      all: true
+    }
+  };
+
+  const options = {
+    // Guarantees that all writes that have committed more than 10 seconds ago
+    // are visible
+    exactStaleness: 10
+  };
+
+  albumsTable.read(query, options)
+    .then((results) => {
+      const rows = results[0];
+
+      rows.forEach((row) => {
+        const json = row.toJSON();
+        console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${json.MarketingBudget ? json.MarketingBudget.value : ''}`);
+      });
+    });
+  // [END read_stale_data]
+}
+
 const cli = require(`yargs`)
   .demand(1)
   .command(
@@ -189,10 +233,17 @@ const cli = require(`yargs`)
     {},
     (opts) => readData(opts.instanceName, opts.databaseName)
   )
+  .command(
+    `read-stale <instanceName> <databaseName>`,
+    `Reads data in an example Cloud Spanner table.`,
+    {},
+    (opts) => readStaleData(opts.instanceName, opts.databaseName)
+  )
   .example(`node $0 update "my-instance" "my-database"`)
   .example(`node $0 query "my-instance" "my-database"`)
   .example(`node $0 insert "my-instance" "my-database"`)
   .example(`node $0 read "my-instance" "my-database"`)
+  .example(`node $0 read-stale "my-instance" "my-database"`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/spanner/docs`);

@@ -20,7 +20,7 @@ const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-const client = proxyquire(`@google-cloud/monitoring`, {}).v3.metric();
+const client = proxyquire(`@google-cloud/monitoring`, {}).metric();
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);

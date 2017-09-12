@@ -15,7 +15,7 @@
 
 'use strict';
 
-const client = require(`@google-cloud/monitoring`).v3.metric();
+const client = require(`@google-cloud/monitoring`).metric();
 const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);

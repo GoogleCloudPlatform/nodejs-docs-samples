@@ -29,9 +29,11 @@ function createMetricDescriptor (projectId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
@@ -82,9 +84,11 @@ function listMetricDescriptors (projectId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
@@ -111,13 +115,13 @@ function getMetricDescriptor (projectId, metricId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
-
-  // An example of "metricId" is "logging.googleapis.com/log_entry_count"
-  // const metricId = 'some/metric/id';
+  // const metricId = 'custom.googleapis.com/your/id';
 
   const request = {
     name: client.metricDescriptorPath(projectId, metricId)
@@ -151,12 +155,12 @@ function deleteMetricDescriptor (projectId, metricId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
-
-  // The ID of the Metric Descriptor to delete, e.g.
   // const metricId = 'custom.googleapis.com/stores/daily_sales';
 
   const request = {
@@ -180,9 +184,11 @@ function writeTimeSeriesData (projectId, metricId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
 
   const dataPoint = {
@@ -238,12 +244,12 @@ function readTimeSeriesData (projectId, filter) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
-
-  // An example "filter" is 'metric.type="compute.googleapis.com/instance/cpu/utilization"'
   // const filter = 'metric.type="compute.googleapis.com/instance/cpu/utilization"';
 
   const request = {
@@ -284,9 +290,11 @@ function readTimeSeriesFields (projectId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
@@ -328,9 +336,11 @@ function readTimeSeriesAggregate (projectId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
@@ -378,9 +388,11 @@ function readTimeSeriesReduce (projectId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
@@ -426,9 +438,11 @@ function listMonitoredResourceDescriptors (projectId) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
@@ -441,7 +455,21 @@ function listMonitoredResourceDescriptors (projectId) {
       const descriptors = results[0];
 
       console.log('Monitored Resource Descriptors:');
-      descriptors.forEach((descriptor) => console.log(descriptor.name));
+      descriptors.forEach((descriptor) => {
+        if (descriptor.type === 'uptime_url') {
+          console.log(JSON.stringify(descriptor, null, 2));
+        } else {
+          return;
+        }
+        console.log(descriptor.name);
+        console.log(`  Type: ${descriptor.type}`);
+        if (descriptor.labels) {
+          console.log(`  Labels:`);
+          descriptor.labels.forEach((label) => {
+            console.log(`    ${label.key} (${label.valueType}): ${label.description}`);
+          });
+        }
+      });
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -455,13 +483,13 @@ function getMonitoredResourceDescriptor (projectId, resourceType) {
   const Monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.v3.metric();
+  const client = Monitoring.metric();
 
-  // The Google Cloud Platform project on which to execute the request
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
   // const projectId = 'YOUR_PROJECT_ID';
-
-  // "resourceType" should be a predefined type, such as "cloudsql_database"
-  // const resourceType = 'some_resource_type';
+  // const resourceType = 'some_resource_type, e.g. cloudsql_database';
 
   const request = {
     name: client.monitoredResourceDescriptorPath(projectId, resourceType)

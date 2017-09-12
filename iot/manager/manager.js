@@ -412,7 +412,6 @@ function listRegistries (client, projectId, cloudRegion) {
   // [END iot_list_registries]
 }
 
-
 // Delete the given device from the registry.
 function deleteDevice (client, deviceId, registryId, projectId, cloudRegion,
     cb) {

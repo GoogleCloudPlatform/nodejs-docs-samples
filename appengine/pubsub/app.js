@@ -18,7 +18,9 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const Buffer = require('safe-buffer').Buffer;
+const process = require('process'); // Required for mocking environment variables
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -32,6 +34,7 @@ const pubsub = PubSub();
 
 const app = express();
 app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 const formBodyParser = bodyParser.urlencoded({ extended: false });
 const jsonBodyParser = bodyParser.json();
@@ -91,3 +94,5 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 // [END app]
+
+module.exports = app;

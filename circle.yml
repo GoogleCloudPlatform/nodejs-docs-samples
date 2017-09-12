@@ -75,13 +75,17 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      - node scripts/build "appengine/cloudsql" -- --test-args "run unit-test"
+      - export SQL_CLIENT=mysql SQL_PORT=3306; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
+      - export SQL_CLIENT=pg SQL_PORT=5432; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
+      - node scripts/build "appengine/static-files"
+      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage"
       - node scripts/build "auth"
+      - node scripts/build "appengine/pubsub"
       - node scripts/build "bigquery"
       - node scripts/build "computeengine"
       - node scripts/build "containerengine/hello-world"

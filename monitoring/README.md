@@ -11,6 +11,7 @@
 * [Setup](#setup)
 * [Samples](#samples)
   * [Metrics](#metrics)
+  * [Uptime Config](#uptime-config)
   * [Listing resources](#listing-resources)
   * [Custom metrics](#custom-metrics)
 * [Running the tests](#running-the-tests)
@@ -81,9 +82,42 @@ For more information, see https://cloud.google.com/monitoring/docs
 [metrics_0_docs]: https://cloud.google.com/monitoring/docs
 [metrics_0_code]: metrics.js
 
+### Uptime Config
+
+View the [documentation][uptime_1_docs] or the [source code][uptime_1_code].
+
+__Usage:__ `node uptime.js --help`
+
+```
+Commands:
+  create <gceInstanceId> [projectId]        Creates an uptime check config.
+  list [filter] [projectId]                 Lists uptime check configs, optionally filtering the results.
+  list-ips                                  Lists uptime check config IPs.
+  get <uptimeCheckConfigId> [projectId]     Gets an uptime check config.
+  delete <uptimeCheckConfigId> [projectId]  Deletes an uptime check config.
+
+Options:
+  --help           Show help                                                                                   [boolean]
+  --projectId, -p                                                                                               [string]
+
+Examples:
+  node uptime.js create my-instance                             Create an uptime check for a "my-instance" GCE instance.
+  node uptime.js list                                           List all uptime check configs.
+  node uptime.js list "resource.type = gce_instance AND         List all uptime check configs for a specific GCE
+  resource.label.instance_id = mongodb"                         instance.
+  node uptime.js list-ips
+  node uptime.js get My-Uptime-Check
+  node uptime.js delete My-Uptime-Check
+
+For more information, see https://cloud.google.com/monitoring/uptime-checks/
+```
+
+[uptime_1_docs]: https://cloud.google.com/monitoring/docs
+[uptime_1_code]: uptime.js
+
 ### Listing resources
 
-View the [documentation][list_1_docs] or the [source code][list_1_code].
+View the [documentation][list_2_docs] or the [source code][list_2_code].
 
 `list_resources.js` is a command-line program to demonstrate connecting to the
 Google Monitoring API to retrieve API data.
@@ -94,12 +128,12 @@ __Usage:__ `node list_resources <YOUR_PROJECT_ID>`
 node list_resources my-cool-project
 ```
 
-[list_1_docs]: https://cloud.google.com/monitoring/demos/#hello-world
-[list_1_code]: list_resources.js
+[list_2_docs]: https://cloud.google.com/monitoring/demos/#hello-world
+[list_2_code]: list_resources.js
 
 ### Custom metrics
 
-View the [documentation][metrics_2_docs] or the [source code][metrics_2_code].
+View the [documentation][metrics_3_docs] or the [source code][metrics_3_code].
 
 `create_custom_metric.js` demonstrates how to create a custom metric, write a
 timeseries value to it, and read it back.
@@ -110,8 +144,8 @@ __Usage:__ `node create_custom_metric <YOUR_PROJECT_ID>`
 node create_custom_metric my-cool-project
 ```
 
-[metrics_2_docs]: https://cloud.google.com/monitoring/demos/#custom_metrics
-[metrics_2_code]: create_custom_metric.js
+[metrics_3_docs]: https://cloud.google.com/monitoring/demos/#custom_metrics
+[metrics_3_code]: create_custom_metric.js
 
 ## Running the tests
 

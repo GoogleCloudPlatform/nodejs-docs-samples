@@ -141,7 +141,7 @@ function readData (instanceId, databaseId) {
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
 
-  // Read rows from the Albums table
+  // Reads rows from the Albums table
   const albumsTable = database.table('Albums');
 
   const query = {
@@ -179,7 +179,7 @@ function readStaleData (instanceId, databaseId) {
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
 
-  // Read rows from the Albums table
+  // Reads rows from the Albums table
   const albumsTable = database.table('Albums');
 
   const query = {
@@ -190,8 +190,7 @@ function readStaleData (instanceId, databaseId) {
   };
 
   const options = {
-    // Guarantees that all writes that have committed more than 10 seconds ago
-    // are visible
+    // Guarantees that all writes committed more than 10 seconds ago are visible
     exactStaleness: 10
   };
 
@@ -201,7 +200,11 @@ function readStaleData (instanceId, databaseId) {
 
       rows.forEach((row) => {
         const json = row.toJSON();
-        console.log(`SingerId: ${json.SingerId.value}, AlbumId: ${json.AlbumId.value}, AlbumTitle: ${json.AlbumTitle}, MarketingBudget: ${json.MarketingBudget ? json.MarketingBudget.value : ''}`);
+        const id = json.SingerId.value;
+        const album = json.AlbumId.value;
+        const title = json.AlbumTitle;
+        const budget = json.MarketingBudget ? json.MarketingBudget.value : '';
+        console.log(`SingerId: ${id}, AlbumId: ${album}, AlbumTitle: ${title}, MarketingBudget: ${budget}`);
       });
     });
   // [END read_stale_data]
@@ -235,7 +238,7 @@ const cli = require(`yargs`)
   )
   .command(
     `read-stale <instanceName> <databaseName>`,
-    `Reads data in an example Cloud Spanner table.`,
+    `Reads stale data in an example Cloud Spanner table.`,
     {},
     (opts) => readStaleData(opts.instanceName, opts.databaseName)
   )

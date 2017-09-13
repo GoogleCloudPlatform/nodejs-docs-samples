@@ -79,7 +79,7 @@ test.cb.serial(`should create a table`, (t) => {
   setTimeout(() => {
     t.true(sample.mocks.Knex.calledOnce);
     t.deepEqual(sample.mocks.Knex.firstCall.args, [{
-      client: 'mysql',
+      client: 'pg',
       connection: exampleConfig
     }]);
 

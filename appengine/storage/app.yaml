@@ -17,6 +17,6 @@ env: flex
 
 # [START env]
 env_variables:
-  GCLOUD_STORAGE_BUCKET: <your-bucket-name>
+  GCLOUD_STORAGE_BUCKET: YOUR_BUCKET_NAME
 # [END env]
 # [END app_yaml]

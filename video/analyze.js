@@ -22,7 +22,7 @@ function analyzeFaces (gcsUri) {
 
   // Instantiates a client
   const video = Video({
-    servicePath: `alpha-videointelligence.googleapis.com`
+    servicePath: `videointelligence.googleapis.com`
   });
 
   // The GCS filepath of the video to analyze

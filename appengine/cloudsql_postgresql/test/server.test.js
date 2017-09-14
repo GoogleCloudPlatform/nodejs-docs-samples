@@ -83,7 +83,7 @@ test(`should set up sample in Postgres`, (t) => {
   t.true(sample.mocks.express.calledOnce);
   t.true(sample.mocks.Knex.calledOnce);
   t.deepEqual(sample.mocks.Knex.firstCall.args, [{
-    client: 'mysql',
+    client: 'pg',
     connection: {
       user: sample.mocks.process.env.SQL_USER,
       password: sample.mocks.process.env.SQL_PASSWORD,

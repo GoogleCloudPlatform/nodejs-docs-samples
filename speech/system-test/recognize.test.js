@@ -29,11 +29,14 @@ const cmd = `node recognize.js`;
 const cwd = path.join(__dirname, `..`);
 const filename = `audio.raw`;
 const filepath = path.join(__dirname, `../resources/${filename}`);
-const text = `how old is the Brooklyn Bridge`;
+const videofilename = `Google_Gnome.wav`;
+const videofilepath = path.join(__dirname, `../resources/${videofilename}`);
+const text = `ow old is the Brooklyn Bridge`;
 
 test.before(async () => {
   const [bucket] = await storage.createBucket(bucketName);
   await bucket.upload(filepath);
+  await bucket.upload(videofilepath);
 });
 
 test.after.always(async () => {
@@ -45,58 +48,58 @@ test.after.always(async () => {
 
 test(`should run sync recognize`, async (t) => {
   const output = await runAsync(`${cmd} sync ${filepath}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
 });
 
 test(`should run sync recognize on a GCS file`, async (t) => {
   const output = await runAsync(`${cmd} sync-gcs gs://${bucketName}/${filename}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
 });
 
 test(`should run sync recognize with word time offset`, async (t) => {
   const output = await runAsync(`${cmd} sync-words ${filepath}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
   t.true(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
 });
 
 test(`should run sync recognize with punctuation`, async (t) => {
   const output = await runAsync(`${cmd} sync-punctuation ${filepath}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
 });
 
 test(`should run sync recognize with video`, async (t) => {
-  const output = await runAsync(`${cmd} sync-video ${filepath}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
-  t.regex(output, new RegExp('you do keep doing that'));
-  t.regex(output, new RegExp('organic matter and will return'));
+  const output = await runAsync(`${cmd} sync-video ${videofilepath}`, cwd);
+  t.regex(output, new RegExp(`Transcript`));
+  t.regex(output, new RegExp(`OK Google`));
+  t.regex(output, new RegExp(`eat this lemon`));
+  t.regex(output, new RegExp(`everything is made up`));
 });
 
 test(`should run sync recognize with metadata`, async (t) => {
   const output = await runAsync(`${cmd} sync-metadata ${filepath}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
-  t.regex(output, new RegExp('you do keep doing that'));
-  t.regex(output, new RegExp('organic matter and will return'));
+  t.regex(output, new RegExp(`Transcript`));
+  t.regex(output, new RegExp(`how old is the Brooklyn Bridge`));
 });
 
 test(`should run async recognize on a local file`, async (t) => {
   const output = await runAsync(`${cmd} async ${filepath}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
 });
 
 test(`should run async recognize on a GCS file`, async (t) => {
   const output = await runAsync(`${cmd} async-gcs gs://${bucketName}/${filename}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
 });
 
 test(`should run async recognize on a GCS file with word time offset`, async (t) => {
   const output = await runAsync(`${cmd} async-gcs-words gs://${bucketName}/${filename}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
   // Check for word time offsets
   t.true(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
@@ -104,26 +107,26 @@ test(`should run async recognize on a GCS file with word time offset`, async (t)
 
 test(`should run async recognize on a GCS file with punctuation`, async (t) => {
   const output = await runAsync(`${cmd} async-gcs-punctuation gs://${bucketName}/${filename}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
 });
 
 test(`should run async recognize on a GCS file with video`, async (t) => {
-  const output = await runAsync(`${cmd} async-gcs-video gs://${bucketName}/${filename}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
-  t.regex(output, new RegExp('you do keep doing that'));
-  t.regex(output, new RegExp('organic matter and will return'));
+  const output = await runAsync(`${cmd} async-gcs-video gs://${bucketName}/${videofilename}`, cwd);
+  t.regex(output, new RegExp(`Transcript`));
+  t.regex(output, new RegExp(`OK Google`));
+  t.regex(output, new RegExp(`eat this lemon`));
+  t.regex(output, new RegExp(`everything is made up`));
 });
 
 test(`should run async recognize on a GCS file with metadata`, async (t) => {
   const output = await runAsync(`${cmd} async-gcs-metadata gs://${bucketName}/${filename}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
-  t.regex(output, new RegExp('you do keep doing that'));
-  t.regex(output, new RegExp('organic matter and will return'));
+  t.regex(output, new RegExp(`Transcript`));
+  t.regex(output, new RegExp('how old is the Brooklyn Bridge'));
 });
 
 test(`should run streaming recognize`, async (t) => {
   const output = await runAsync(`${cmd} stream ${filepath}`, cwd);
-  t.regex(output, new RegExp(`Transcription`));
+  t.regex(output, new RegExp(`Transcript`));
   t.regex(output, new RegExp(text));
 });

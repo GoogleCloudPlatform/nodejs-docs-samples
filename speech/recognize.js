@@ -199,7 +199,7 @@ function syncRecognizePunctuation (filename, encoding, sampleRateHertz, language
   const Speech = require('@google-cloud/speech');
 
   // Creates a client
-  const speech = Speech.v1beta1();
+  const speech = Speech.v1_1beta1();
 
   // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
   // const filename = '/path/to/audio.raw';
@@ -253,7 +253,7 @@ function syncRecognizeVideo (filename, encoding, sampleRateHertz, languageCode) 
   const Speech = require('@google-cloud/speech');
 
   // Creates a client
-  const speech = Speech.v1beta1();
+  const speech = Speech.v1_1beta1();
 
   // The path to the local file on which to perform speech recognition, e.g. /path/to/Google_Gnome.raw
   // const filename = '/path/to/Google_Gnome.raw';
@@ -267,12 +267,13 @@ function syncRecognizeVideo (filename, encoding, sampleRateHertz, languageCode) 
   // The BCP-47 language code to use, e.g. 'en-US'
   // const languageCode = 'en-US';
 
+
   const config = {
     encoding: encoding,
     sampleRateHertz: sampleRateHertz,
     languageCode: languageCode,
     metadata: {
-      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video
+      originalMediaType: Speech.v1_1beta1.types.RecognitionMetadata.OriginalMediaType.Video
     }
   };
   const audio = {
@@ -309,7 +310,7 @@ function syncRecognizeMetadata (filename, encoding, sampleRateHertz, languageCod
   const Speech = require('@google-cloud/speech');
 
   // Creates a client
-  const speech = Speech.v1beta1();
+  const speech = Speech.v1_1beta1();
 
   // The path to the local file on which to perform speech recognition, e.g. /path/to/Google_Gnome.raw
   // const filename = '/path/to/Google_Gnome.raw';
@@ -329,11 +330,11 @@ function syncRecognizeMetadata (filename, encoding, sampleRateHertz, languageCod
     languageCode: languageCode,
     metadata: {
       audioTopic: 'electronics',
-      interactionType: Speech.types.RecognitionMetadata.InteractionType.DISCUSSION,
-      microphoneDistance: Speech.types.RecognitionMetadata.MicrophoneDistance.MIDFIELD,
-      numberOfSpeakers: Speech.types.RecognitionMetadata.NumberOfSpeakers.MULTIPLE_SPEAKERS,
-      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video,
-      recordingDeviceType: Speech.types.RecognitionMetadata.RecordingDeviceType.OTHER_OUTDOOR_DEVICE,
+      interactionType: Speech.v1_1beta1.types.RecognitionMetadata.InteractionType.DISCUSSION,
+      microphoneDistance: Speech.v1_1beta1.types.RecognitionMetadata.MicrophoneDistance.MIDFIELD,
+      numberOfSpeakers: Speech.v1_1beta1.types.RecognitionMetadata.NumberOfSpeakers.MULTIPLE_SPEAKERS,
+      originalMediaType: Speech.v1_1beta1.types.RecognitionMetadata.OriginalMediaType.Video,
+      recordingDeviceType: Speech.v1_1beta1.types.RecognitionMetadata.RecordingDeviceType.OTHER_OUTDOOR_DEVICE,
     }
   };
   const audio = {
@@ -558,7 +559,7 @@ function asyncRecognizeGCSPunctuation (gcsUri, encoding, sampleRateHertz, langua
   const Speech = require('@google-cloud/speech');
 
   // Creates a client
-  const speech = Speech.v1beta1();
+  const speech = Speech.v1_1beta1();
 
   // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
   // const gcsUri = 'gs://my-bucket/audio.raw';
@@ -618,7 +619,7 @@ function asyncRecognizeGCSVideo (gcsUri, encoding, sampleRateHertz, languageCode
   const Speech = require('@google-cloud/speech');
 
   // Creates a client
-  const speech = Speech.v1beta1();
+  const speech = Speech.v1_1beta1();
 
   // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
   // const gcsUri = 'gs://my-bucket/audio.raw';
@@ -637,7 +638,7 @@ function asyncRecognizeGCSVideo (gcsUri, encoding, sampleRateHertz, languageCode
     sampleRateHertz: sampleRateHertz,
     languageCode: languageCode,
     metadata: {
-      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video
+      originalMediaType: Speech.v1_1beta1.types.RecognitionMetadata.OriginalMediaType.Video
     }
   };
 
@@ -680,7 +681,7 @@ function asyncRecognizeGCSMetadata (gcsUri, encoding, sampleRateHertz, languageC
   const Speech = require('@google-cloud/speech');
 
   // Creates a client
-  const speech = Speech.v1beta1();
+  const speech = Speech.v1_1beta1();
 
   // The Google Cloud Storage URI of the file on which to perform speech recognition, e.g. gs://my-bucket/audio.raw
   // const gcsUri = 'gs://my-bucket/audio.raw';
@@ -700,11 +701,11 @@ function asyncRecognizeGCSMetadata (gcsUri, encoding, sampleRateHertz, languageC
     languageCode: languageCode,
     metadata: {
       audioTopic: 'electronics',
-      interactionType: Speech.types.RecognitionMetadata.InteractionType.DISCUSSION,
-      microphoneDistance: Speech.types.RecognitionMetadata.MicrophoneDistance.MIDFIELD,
-      numberOfSpeakers: Speech.types.RecognitionMetadata.NumberOfSpeakers.MULTIPLE_SPEAKERS,
-      originalMediaType: Speech.types.RecognitionMetadata.OriginalMediaType.Video,
-      recordingDeviceType: Speech.types.RecognitionMetadata.RecordingDeviceType.OTHER_OUTDOOR_DEVICE,
+      interactionType: Speech.v1_1beta1.types.RecognitionMetadata.InteractionType.DISCUSSION,
+      microphoneDistance: Speech.v1_1beta1.types.RecognitionMetadata.MicrophoneDistance.MIDFIELD,
+      numberOfSpeakers: Speech.v1_1beta1.types.RecognitionMetadata.NumberOfSpeakers.MULTIPLE_SPEAKERS,
+      originalMediaType: Speech.v1_1beta1.types.RecognitionMetadata.OriginalMediaType.Video,
+      recordingDeviceType: Speech.v1_1beta1.types.RecognitionMetadata.RecordingDeviceType.OTHER_OUTDOOR_DEVICE,
     }
   };
 

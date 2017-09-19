@@ -96,7 +96,8 @@ Examples:
   node analyze.v1beta2.js entities-file my-bucket file.txt      Detects entities in gs://my-bucket/file.txt
   node analyze.v1beta2.js syntax-text "President Obama is speaking at the White House."
   node analyze.v1beta2.js syntax-file my-bucket file.txt        Detects syntax in gs://my-bucket/file.txt
-  node analyze.v1beta2.js classify-text "Android is a mobile operating system developed by Google."
+  node analyze.v1beta2.js classify-text "Currently the API requires 20 tokens in order \
+      to return non-empty results. Let's use a longer piece of text for the sample in order to win."
   node analyze.v1beta2.js classify-file my-bucket               Detects syntax in gs://my-bucket/android_text.txt
   android_text.txt
 

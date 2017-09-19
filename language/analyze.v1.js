@@ -244,7 +244,10 @@ function analyzeSyntaxInFile (bucketName, fileName) {
 function analyzeEntitySentimentOfText (text) {
   // [START language_entity_sentiment_string]
   // Imports the Google Cloud client library
-  const language = require('@google-cloud/language').v1beta2();
+  const Language = require('@google-cloud/language');
+
+  // Instantiates the clients
+  const language = Language();
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
@@ -279,7 +282,10 @@ function analyzeEntitySentimentOfText (text) {
 function analyzeEntitySentimentInFile (bucketName, fileName) {
   // [START language_entity_sentiment_file]
   // Imports the Google Cloud client library
-  const language = require('@google-cloud/language').v1beta2();
+  const Language = require('@google-cloud/language');
+
+  // Instantiates the clients
+  const language = Language();
 
   // The name of the bucket where the file resides, e.g. "my-bucket"
   // const bucketName = 'my-bucket';

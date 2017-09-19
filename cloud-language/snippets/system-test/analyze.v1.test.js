@@ -46,52 +46,70 @@ test.afterEach.always(tools.restoreConsole);
 
 test(`should analyze sentiment in text`, async (t) => {
   const output = await tools.runAsync(`${cmd} sentiment-text "${text}"`, cwd);
-  t.true(output.includes(`Document sentiment:`));
-  t.true(output.includes(`Sentence: ${text}`));
-  t.true(output.includes(`Score: 0`));
-  t.true(output.includes(`Magnitude: 0`));
+  t.regex(output, new RegExp(`Document sentiment:`));
+  t.regex(output, new RegExp(`Sentence: ${text}`));
+  t.regex(output, new RegExp(`Score: 0`));
+  t.regex(output, new RegExp(`Magnitude: 0`));
 });
 
 test(`should analyze sentiment in a file`, async (t) => {
   const output = await tools.runAsync(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd);
-  t.true(output.includes(`Document sentiment:`));
-  t.true(output.includes(`Sentence: ${text}`));
-  t.true(output.includes(`Score: 0`));
-  t.true(output.includes(`Magnitude: 0`));
+  t.regex(output, new RegExp(`Document sentiment:`));
+  t.regex(output, new RegExp(`Sentence: ${text}`));
+  t.regex(output, new RegExp(`Score: 0`));
+  t.regex(output, new RegExp(`Magnitude: 0`));
 });
 
 test(`should analyze entities in text`, async (t) => {
   const output = await tools.runAsync(`${cmd} entities-text "${text}"`, cwd);
-  t.true(output.includes(`Obama`));
-  t.true(output.includes(`Type: PERSON`));
-  t.true(output.includes(`White House`));
-  t.true(output.includes(`Type: LOCATION`));
+  t.regex(output, new RegExp(`Obama`));
+  t.regex(output, new RegExp(`Type: PERSON`));
+  t.regex(output, new RegExp(`White House`));
+  t.regex(output, new RegExp(`Type: LOCATION`));
 });
 
 test('should analyze entities in a file', async (t) => {
   const output = await tools.runAsync(`${cmd} entities-file ${bucketName} ${fileName}`, cwd);
-  t.true(output.includes(`Entities:`));
-  t.true(output.includes(`Obama`));
-  t.true(output.includes(`Type: PERSON`));
-  t.true(output.includes(`White House`));
-  t.true(output.includes(`Type: LOCATION`));
+  t.regex(output, new RegExp(`Entities:`));
+  t.regex(output, new RegExp(`Obama`));
+  t.regex(output, new RegExp(`Type: PERSON`));
+  t.regex(output, new RegExp(`White House`));
+  t.regex(output, new RegExp(`Type: LOCATION`));
 });
 
 test(`should analyze syntax in text`, async (t) => {
   const output = await tools.runAsync(`${cmd} syntax-text "${text}"`, cwd);
-  t.true(output.includes(`Tokens:`));
-  t.true(output.includes(`NOUN:`));
-  t.true(output.includes(`President`));
-  t.true(output.includes(`Obama`));
-  t.true(output.includes(`Morphology:`));
-  t.true(output.includes(`tag: 'NOUN'`));
+  t.regex(output, new RegExp(`Tokens:`));
+  t.regex(output, new RegExp(`NOUN:`));
+  t.regex(output, new RegExp(`President`));
+  t.regex(output, new RegExp(`Obama`));
+  t.regex(output, new RegExp(`Morphology:`));
+  t.regex(output, new RegExp(`tag: 'NOUN'`));
 });
 
 test('should analyze syntax in a file', async (t) => {
   const output = await tools.runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
-  t.true(output.includes(`NOUN:`));
-  t.true(output.includes(`President`));
-  t.true(output.includes(`Obama`));
-  t.true(output.includes(`Morphology:`));
-  t.true(output.includes(`tag: 'NOUN'`));
+  t.regex(output, new RegExp(`NOUN:`));
+  t.regex(output, new RegExp(`President`));
+  t.regex(output, new RegExp(`Obama`));
+  t.regex(output, new RegExp(`Morphology:`));
+  t.regex(output, new RegExp(`tag: 'NOUN'`));
+});
+
+test(`should analyze entity sentiment in text`, async (t) => {
+  const output = await tools.runAsync(`${cmd} entity-sentiment-text "${text}"`, cwd);
+  t.regex(output, new RegExp(`Entities and sentiments:`));
+  t.regex(output, new RegExp(`Obama`));
+  t.regex(output, new RegExp(`PERSON`));
+  t.regex(output, new RegExp(`Score: 0`));
+  t.regex(output, new RegExp(`Magnitude: 0`));
+});
+
+test('should analyze entity sentiment in a file', async (t) => {
+  const output = await tools.runAsync(`${cmd} entity-sentiment-file ${bucketName} ${fileName}`, cwd);
+  t.regex(output, new RegExp(`Entities and sentiments:`));
+  t.regex(output, new RegExp(`Obama`));
+  t.regex(output, new RegExp(`PERSON`));
+  t.regex(output, new RegExp(`Score: 0`));
+  t.regex(output, new RegExp(`Magnitude: 0`));
 });

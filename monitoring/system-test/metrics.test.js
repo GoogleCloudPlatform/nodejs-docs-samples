@@ -29,8 +29,6 @@ const projectId = process.env.GCLOUD_PROJECT;
 const resourceId = `cloudsql_database`;
 
 test.before(tools.checkCredentials);
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should create a metric descriptors`, async (t) => {
   const output = await tools.runAsync(`${cmd} create`, cwd);
@@ -40,20 +38,25 @@ test.serial(`should create a metric descriptors`, async (t) => {
 
 test.serial(`should list metric descriptors, including the new custom one`, async (t) => {
   t.plan(0);
-  await tools.tryTest(async (assert) => {
+  const attempt = tools.tryTest(async (assert) => {
     const output = await tools.runAsync(`${cmd} list`, cwd);
     assert(output.includes(customMetricId));
     assert(output.includes(computeMetricId));
-  }).start();
+  });
+  attempt.tries(30);
+  attempt.timeout(120000);
+  await attempt.start();
 });
 
 test.serial(`should get a metric descriptor`, async (t) => {
   t.plan(0);
-  await tools.tryTest(async (assert) => {
+  const attempt = tools.tryTest(async (assert) => {
     const output = await tools.runAsync(`${cmd} get ${customMetricId}`, cwd);
-    console.log(output);
     assert(output.includes(`Type: ${customMetricId}`));
-  }).start();
+  });
+  attempt.tries(30);
+  attempt.timeout(120000);
+  await attempt.start();
 });
 
 test.serial(`should write time series data`, async (t) => {

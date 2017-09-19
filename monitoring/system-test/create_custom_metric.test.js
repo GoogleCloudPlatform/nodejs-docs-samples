@@ -21,15 +21,14 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 /** Refactored out to keep lines shorter */
 function getPointValue (timeSeries) {
-  return timeSeries.timeSeries[0].points[0].value.int64Value;
+  return timeSeries[0].points.value.int64Value;
 }
 
 test.before(tools.checkCredentials);
 test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
-// TODO(anassri): Fix results[2] being undefined
-test.skip.cb('should create and read back a custom metric', (t) => {
+test.cb('should create and read back a custom metric', (t) => {
   customMetricsExample.main(
     process.env.GCLOUD_PROJECT,
     Math.random().toString(36).substring(7),
@@ -39,10 +38,9 @@ test.skip.cb('should create and read back a custom metric', (t) => {
       // Result of creating metric
       t.is(typeof results[0].name, 'string');
       // Result of writing time series
-      t.deepEqual(results[1], {});
+      t.deepEqual(results[3], {});
       // Result of reading time series
-      t.is(typeof getPointValue(results[2]), 'string');
-      t.false(isNaN(parseInt(getPointValue(results[2]), 10)));
+      t.false(isNaN(getPointValue(results[1])));
       // Result of deleting metric
       t.deepEqual(results[3], {});
       t.true(console.log.calledWith('Created custom metric'));

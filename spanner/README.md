@@ -1,8 +1,8 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Spanner Node.js Samples
+# Cloud Spanner: Node.js Samples
 
-[![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-spanner.svg)]()
+[![Build](https://storage.googleapis.com/.svg)]()
 
 [Cloud Spanner](https://cloud.google.com/spanner/docs/) is a fully managed, mission-critical, relational database service that offers transactional consistency at global scale, schemas, SQL (ANSI 2011 with extensions), and automatic, synchronous replication for high availability.
 
@@ -18,19 +18,6 @@
 
 ## Setup
 
-1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
-1.  Install dependencies:
-
-    With **npm**:
-
-        npm install
-
-    With **yarn**:
-
-        yarn install
-
-[prereq]: ../README.md#prerequisites
-[run]: ../README.md#how-to-run-a-sample
 
 ## Samples
 
@@ -70,10 +57,11 @@ __Usage:__ `node crud.js --help`
 
 ```
 Commands:
-  update <instanceName> <databaseName>  Modifies existing rows of data in an example Cloud Spanner table.
-  query <instanceName> <databaseName>   Executes a read-only SQL query against an example Cloud Spanner table.
-  insert <instanceName> <databaseName>  Inserts new rows of data into an example Cloud Spanner table.
-  read <instanceName> <databaseName>    Reads data in an example Cloud Spanner table.
+  update <instanceName> <databaseName>      Modifies existing rows of data in an example Cloud Spanner table.
+  query <instanceName> <databaseName>       Executes a read-only SQL query against an example Cloud Spanner table.
+  insert <instanceName> <databaseName>      Inserts new rows of data into an example Cloud Spanner table.
+  read <instanceName> <databaseName>        Reads data in an example Cloud Spanner table.
+  read-stale <instanceName> <databaseName>  Reads data in an example Cloud Spanner table.
 
 Options:
   --help  Show help                                                                                            [boolean]
@@ -151,14 +139,3 @@ For more information, see https://cloud.google.com/spanner/docs
 
 ## Running the tests
 
-1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
-
-1.  Run the tests:
-
-    With **npm**:
-
-        npm test
-
-    With **yarn**:
-
-        yarn test

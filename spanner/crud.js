@@ -141,7 +141,7 @@ function readData (instanceId, databaseId) {
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
 
-  // Read rows from the Albums table
+  // Reads rows from the Albums table
   const albumsTable = database.table('Albums');
 
   const query = {
@@ -161,6 +161,53 @@ function readData (instanceId, databaseId) {
       });
     });
   // [END read_data]
+}
+
+function readStaleData (instanceId, databaseId) {
+  // [START read_stale_data]
+  // Imports the Google Cloud client library
+  const Spanner = require('@google-cloud/spanner');
+
+  // Instantiates a client
+  const spanner = Spanner();
+
+  // Uncomment these lines to specify the instance and database to use
+  // const instanceId = 'my-instance';
+  // const databaseId = 'my-database';
+
+  // Gets a reference to a Cloud Spanner instance and database
+  const instance = spanner.instance(instanceId);
+  const database = instance.database(databaseId);
+
+  // Reads rows from the Albums table
+  const albumsTable = database.table('Albums');
+
+  const query = {
+    columns: ['SingerId', 'AlbumId', 'AlbumTitle', 'MarketingBudget'],
+    keySet: {
+      all: true
+    }
+  };
+
+  const options = {
+    // Guarantees that all writes committed more than 10 seconds ago are visible
+    exactStaleness: 10
+  };
+
+  albumsTable.read(query, options)
+    .then((results) => {
+      const rows = results[0];
+
+      rows.forEach((row) => {
+        const json = row.toJSON();
+        const id = json.SingerId.value;
+        const album = json.AlbumId.value;
+        const title = json.AlbumTitle;
+        const budget = json.MarketingBudget ? json.MarketingBudget.value : '';
+        console.log(`SingerId: ${id}, AlbumId: ${album}, AlbumTitle: ${title}, MarketingBudget: ${budget}`);
+      });
+    });
+  // [END read_stale_data]
 }
 
 const cli = require(`yargs`)
@@ -189,10 +236,17 @@ const cli = require(`yargs`)
     {},
     (opts) => readData(opts.instanceName, opts.databaseName)
   )
+  .command(
+    `read-stale <instanceName> <databaseName>`,
+    `Reads stale data in an example Cloud Spanner table.`,
+    {},
+    (opts) => readStaleData(opts.instanceName, opts.databaseName)
+  )
   .example(`node $0 update "my-instance" "my-database"`)
   .example(`node $0 query "my-instance" "my-database"`)
   .example(`node $0 insert "my-instance" "my-database"`)
   .example(`node $0 read "my-instance" "my-database"`)
+  .example(`node $0 read-stale "my-instance" "my-database"`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/spanner/docs`);

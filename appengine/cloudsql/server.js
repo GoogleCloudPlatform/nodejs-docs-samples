@@ -19,15 +19,14 @@
 const process = require('process');
 
 // [START app]
-// [START setup]
 const express = require('express');
 const Knex = require('knex');
 const crypto = require('crypto');
 
 const app = express();
 app.enable('trust proxy');
-// [END setup]
-let knex;
+
+const knex = connect();
 
 function connect () {
   // [START connect]
@@ -38,16 +37,12 @@ function connect () {
   };
 
   if (process.env.INSTANCE_CONNECTION_NAME && process.env.NODE_ENV === 'production') {
-    if (process.env.SQL_CLIENT === 'mysql') {
-      config.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
-    } else if (process.env.SQL_CLIENT === 'pg') {
-      config.host = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
-    }
+    config.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
   }
 
   // Connect to the database
   const knex = Knex({
-    client: process.env.SQL_CLIENT,
+    client: 'mysql',
     connection: config
   });
   // [END connect]
@@ -55,22 +50,24 @@ function connect () {
   return knex;
 }
 
-// [START insertVisit]
 /**
  * Insert a visit record into the database.
  *
+ * @param {object} knex The Knex connection object.
  * @param {object} visit The visit record to insert.
+ * @returns {Promise}
  */
-function insertVisit (visit) {
+function insertVisit (knex, visit) {
   return knex('visits').insert(visit);
 }
-// [END insertVisit]
 
-// [START getVisits]
 /**
  * Retrieve the latest 10 visit records from the database.
+ *
+ * @param {object} knex The Knex connection object.
+ * @returns {Promise}
  */
-function getVisits () {
+function getVisits (knex) {
   return knex.select('timestamp', 'userIp')
     .from('visits')
     .orderBy('timestamp', 'desc')
@@ -79,7 +76,6 @@ function getVisits () {
       return results.map((visit) => `Time: ${visit.timestamp}, AddrHash: ${visit.userIp}`);
     });
 }
-// [END getVisits]
 
 app.get('/', (req, res, next) => {
   // Create a visit record to be stored in the database
@@ -89,11 +85,9 @@ app.get('/', (req, res, next) => {
     userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
   };
 
-  insertVisit(visit)
-    .then(() => {
-      // Query the last 10 visits from the database.
-      return getVisits();
-    })
+  insertVisit(knex, visit)
+    // Query the last 10 visits from the database.
+    .then(() => getVisits(knex))
     .then((visits) => {
       res
         .status(200)
@@ -106,21 +100,11 @@ app.get('/', (req, res, next) => {
     });
 });
 
-// Get type of SQL client to use
-const sqlClient = process.env.SQL_CLIENT;
-if (sqlClient === 'pg' || sqlClient === 'mysql') {
-  knex = connect();
-} else {
-  throw new Error(`The SQL_CLIENT environment variable must be set to lowercase 'pg' or 'mysql'.`);
-}
-
-// [START listen]
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END listen]
 // [END app]
 
 module.exports = app;

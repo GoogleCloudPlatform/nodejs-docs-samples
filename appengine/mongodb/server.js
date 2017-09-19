@@ -34,12 +34,9 @@ const port = nconf.get('mongoPort');
 
 // [START client]
 let uri = `mongodb://${user}:${pass}@${host}:${port}`;
-
 if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
 }
-
-console.log(uri);
 
 mongodb.MongoClient.connect(uri, (err, db) => {
   if (err) {

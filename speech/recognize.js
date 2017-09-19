@@ -60,8 +60,10 @@ function syncRecognize (filename, encoding, sampleRateHertz, languageCode) {
 
   // Detects speech in the audio file
   speech.recognize(request)
-    .then((results) => {
-      const transcription = results[0].results[0].alternatives[0].transcript;
+    .then((data) => {
+      const response = data[0];
+      const transcription = response.results.map(result =>
+          result.alternatives[0].transcript).join('\n');
       console.log(`Transcription: `, transcription);
     })
     .catch((err) => {
@@ -106,8 +108,10 @@ function syncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
 
   // Detects speech in the audio file
   speech.recognize(request)
-    .then((results) => {
-      const transcription = results[0].results[0].alternatives[0].transcript;
+    .then((data) => {
+      const response = data[0];
+      const transcription = response.results.map(result =>
+          result.alternatives[0].transcript).join('\n');
       console.log(`Transcription: `, transcription);
     })
     .catch((err) => {
@@ -154,18 +158,20 @@ function syncRecognizeWords (filename, encoding, sampleRateHertz, languageCode) 
 
   // Detects speech in the audio file
   speech.recognize(request)
-    .then((results) => {
-      const transcription = results[0].results[0].alternatives[0].transcript;
-      console.log(`Transcription: `, transcription);
-      results[0].results[0].alternatives[0].words.forEach((wordInfo) => {
-        // NOTE: If you have a time offset exceeding 2^32 seconds, use the
-        // wordInfo.{x}Time.seconds.high to calculate seconds.
-        const startSecs = `${wordInfo.startTime.seconds}` + `.` +
-            (wordInfo.startTime.nanos / 100000000);
-        const endSecs = `${wordInfo.endTime.seconds}` + `.` +
-            (wordInfo.endTime.nanos / 100000000);
-        console.log(`Word: ${wordInfo.word}`);
-        console.log(`\t ${startSecs} secs - ${endSecs} secs`);
+    .then((data) => {
+      const response = data[0];
+      response.results.forEach((result) => {
+        console.log(`Transcription: `, result.alternatives[0].transcript);
+        result.alternatives[0].words.forEach((wordInfo) => {
+          // NOTE: If you have a time offset exceeding 2^32 seconds, use the
+          // wordInfo.{x}Time.seconds.high to calculate seconds.
+          const startSecs = `${wordInfo.startTime.seconds}` + `.` +
+              (wordInfo.startTime.nanos / 100000000);
+          const endSecs = `${wordInfo.endTime.seconds}` + `.` +
+              (wordInfo.endTime.nanos / 100000000);
+          console.log(`Word: ${wordInfo.word}`);
+          console.log(`\t ${startSecs} secs - ${endSecs} secs`);
+        });
       });
     })
     .catch((err) => {
@@ -212,13 +218,16 @@ function asyncRecognize (filename, encoding, sampleRateHertz, languageCode) {
   // Detects speech in the audio file. This creates a recognition job that you
   // can wait for now, or get its result later.
   speech.longRunningRecognize(request)
-    .then((results) => {
-      const operation = results[0];
+    .then((data) => {
+      const response = data[0];
+      const operation = response;
       // Get a Promise representation of the final result of the job
       return operation.promise();
     })
-    .then((results) => {
-      const transcription = results[0].results[0].alternatives[0].transcript;
+    .then((data) => {
+      const response = data[0];
+      const transcription = response.results.map(result =>
+          result.alternatives[0].transcript).join('\n');
       console.log(`Transcription: ${transcription}`);
     })
     .catch((err) => {
@@ -265,13 +274,15 @@ function asyncRecognizeGCS (gcsUri, encoding, sampleRateHertz, languageCode) {
   // Detects speech in the audio file. This creates a recognition job that you
   // can wait for now, or get its result later.
   speech.longRunningRecognize(request)
-    .then((results) => {
-      const operation = results[0];
+    .then((data) => {
+      const operation = data[0];
       // Get a Promise representation of the final result of the job
       return operation.promise();
     })
-    .then((results) => {
-      const transcription = results[0].results[0].alternatives[0].transcript;
+    .then((data) => {
+      const response = data[0];
+      const transcription = response.results.map(result =>
+          result.alternatives[0].transcript).join('\n');
       console.log(`Transcription: ${transcription}`);
     })
     .catch((err) => {
@@ -319,23 +330,25 @@ function asyncRecognizeGCSWords (gcsUri, encoding, sampleRateHertz, languageCode
   // Detects speech in the audio file. This creates a recognition job that you
   // can wait for now, or get its result later.
   speech.longRunningRecognize(request)
-    .then((results) => {
-      const operation = results[0];
+    .then((data) => {
+      const operation = data[0];
       // Get a Promise representation of the final result of the job
       return operation.promise();
     })
-    .then((results) => {
-      const transcription = results[0].results[0].alternatives[0].transcript;
-      console.log(`Transcription: ${transcription}`);
-      results[0].results[0].alternatives[0].words.forEach((wordInfo) => {
-        // NOTE: If you have a time offset exceeding 2^32 seconds, use the
-        // wordInfo.{x}Time.seconds.high to calculate seconds.
-        const startSecs = `${wordInfo.startTime.seconds}` + `.` +
-            (wordInfo.startTime.nanos / 100000000);
-        const endSecs = `${wordInfo.endTime.seconds}` + `.` +
-            (wordInfo.endTime.nanos / 100000000);
-        console.log(`Word: ${wordInfo.word}`);
-        console.log(`\t ${startSecs} secs - ${endSecs} secs`);
+    .then((data) => {
+      const response = data[0];
+      response.results.forEach((result) => {
+        console.log(`Transcription: ${result.alternatives[0].transcript}`);
+        result.alternatives[0].words.forEach((wordInfo) => {
+          // NOTE: If you have a time offset exceeding 2^32 seconds, use the
+          // wordInfo.{x}Time.seconds.high to calculate seconds.
+          const startSecs = `${wordInfo.startTime.seconds}` + `.` +
+              (wordInfo.startTime.nanos / 100000000);
+          const endSecs = `${wordInfo.endTime.seconds}` + `.` +
+              (wordInfo.endTime.nanos / 100000000);
+          console.log(`Word: ${wordInfo.word}`);
+          console.log(`\t ${startSecs} secs - ${endSecs} secs`);
+        });
       });
     })
     .catch((err) => {

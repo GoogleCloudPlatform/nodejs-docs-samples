@@ -15,84 +15,39 @@
 
 'use strict';
 
-// Require process, so we can mock environment variables
-const process = require('process');
-
 // [START createTables]
-// [START setup]
 const Knex = require('knex');
 const prompt = require('prompt');
-// [END setup]
 
-// [START createTable]
-/**
- * Create the "visits" table.
- *
- * @param {object} knex A Knex client object.
- */
-function createTable (knex) {
-  return knex.schema.createTable('visits', (table) => {
+const FIELDS = ['user', 'password', 'database'];
+
+prompt.start();
+
+// Prompt the user for connection details
+prompt.get(FIELDS, (err, config) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+
+  // Connect to the database
+  const knex = Knex({ client: 'mysql', connection: config });
+
+  // Create the "visits" table
+  knex.schema.createTable('visits', (table) => {
     table.increments();
     table.timestamp('timestamp');
     table.string('userIp');
   })
   .then(() => {
     console.log(`Successfully created 'visits' table.`);
-    return knex;
+    return knex.destroy();
   })
   .catch((err) => {
     console.error(`Failed to create 'visits' table:`, err);
-    return knex;
+    if (knex) {
+      knex.destroy();
+    }
   });
-}
-// [END createTable]
-
-// [START getConnection]
-/**
- * Ask the user for connection configuration and create a new connection.
- */
-function getConnection () {
-  const FIELDS = ['user', 'password', 'database'];
-  return new Promise((resolve, reject) => {
-    prompt.start();
-    prompt.get(FIELDS, (err, config) => {
-      if (err) {
-        return reject(err);
-      }
-
-      // Connect to the database
-      return resolve(Knex({
-        client: process.env.SQL_CLIENT,
-        connection: config
-      }));
-    });
-  });
-}
-// [END getConnection]
-
-exports.main = function () {
-  // [START main]
-  getConnection()
-    .then((knex) => {
-      return createTable(knex);
-    })
-    .then((knex) => {
-      return knex.destroy();
-    })
-    .catch((err, knex) => {
-      console.error(`Failed to create database connection:`, err);
-      if (knex) {
-        knex.destroy();
-      }
-    });
-  // [END main]
-};
+});
 // [END createTables]
-
-// Get type of SQL client to use
-const sqlClient = process.env.SQL_CLIENT;
-if (sqlClient === 'pg' || sqlClient === 'mysql') {
-  exports.main();
-} else {
-  throw new Error(`The SQL_CLIENT environment variable must be set to lowercase 'pg' or 'mysql'.`);
-}

@@ -21,9 +21,7 @@ function analyzeFaces (gcsUri) {
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video({
-    servicePath: `videointelligence.googleapis.com`
-  });
+  const video = Video();
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';
@@ -71,7 +69,7 @@ function analyzeLabelsGCS (gcsUri) {
 
   // Instantiates a client
   const video = Video({
-    servicePath: `alpha-videointelligence.googleapis.com`
+    servicePath: `videointelligence.googleapis.com`
   });
 
   // The GCS filepath of the video to analyze
@@ -128,9 +126,7 @@ function analyzeLabelsLocal (path) {
   const fs = require('fs');
 
   // Instantiates a client
-  const video = Video({
-    servicePath: `alpha-videointelligence.googleapis.com`
-  });
+  const video = Video();
 
   // The local filepath of the video to analyze
   // const path = 'my-file.mp4';
@@ -189,9 +185,7 @@ function analyzeShots (gcsUri) {
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video({
-    servicePath: `alpha-videointelligence.googleapis.com`
-  });
+  const video = Video();
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';
@@ -235,9 +229,7 @@ function analyzeSafeSearch (gcsUri) {
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video({
-    servicePath: `alpha-videointelligence.googleapis.com`
-  });
+  const video = Video();
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';

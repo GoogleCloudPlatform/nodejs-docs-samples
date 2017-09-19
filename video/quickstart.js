@@ -21,7 +21,7 @@ const Video = require('@google-cloud/video-intelligence');
 
 // Instantiates a client
 const video = Video({
-  servicePath: 'alpha-videointelligence.googleapis.com',
+  servicePath: 'videointelligence.googleapis.com',
   projectId: process.env.GCLOUD_PROJECT // Replace with your Google Cloud project ID
 });
 

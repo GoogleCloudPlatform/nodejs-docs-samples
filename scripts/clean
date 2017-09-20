@@ -23,6 +23,7 @@ if (!args.length || args[0] === 'coverage') {
   rm('-rf', 'coverage');
 } else if (args[0] === 'buckets') {
   const NAME_REG_EXP = /^nodejs-docs-samples-test-[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/;
+  const NAME_REG_EXP_2 = /^docs-samples-gae-test-[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/;
 
   storage
     .getBuckets()
@@ -30,7 +31,7 @@ if (!args.length || args[0] === 'coverage') {
       let promise = Promise.resolve();
 
       buckets
-        .filter((bucket) => NAME_REG_EXP.test(bucket.name))
+        .filter((bucket) => NAME_REG_EXP.test(bucket.name) || NAME_REG_EXP_2.test(bucket.name))
         .forEach((bucket) => {
           promise = promise.then(() => {
             return bucket.deleteFiles()

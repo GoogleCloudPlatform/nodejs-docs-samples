@@ -30,7 +30,7 @@ test.before(async () => {
   await bucket.create(bucket).then((data) => {
     return bucket.acl.add({
       entity: 'allUsers',
-      role: Storage.acl.WRITER_ROLE
+      role: Storage.acl.READER_ROLE
     });
   });
 });

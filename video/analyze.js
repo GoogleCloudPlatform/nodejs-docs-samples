@@ -41,14 +41,30 @@ function analyzeFaces (gcsUri) {
     .then((results) => {
       // Gets faces
       const faces = results[0].annotationResults[0].faceAnnotations;
-      console.log('Faces:');
       faces.forEach((face, faceIdx) => {
-        console.log('Thumbnail size:', face.thumbnail.length);
+        console.log(`Face #${faceIdx}`);
+        console.log(`\tThumbnail size: ${face.thumbnail.length}`);
         face.segments.forEach((segment, segmentIdx) => {
-          console.log(`Face #${faceIdx}, appearance #${segmentIdx}:`);
-          console.log(`\tStart: ${segment.startTimeOffset / 1e6}s`);
-          console.log(`\tEnd: ${segment.endTimeOffset / 1e6}s`);
+          segment = segment.segment;
+          if (segment.startTimeOffset.seconds === undefined) {
+            segment.startTimeOffset.seconds = 0;
+          }
+          if (segment.startTimeOffset.nanos === undefined) {
+            segment.startTimeOffset.nanos = 0;
+          }
+          if (segment.endTimeOffset.seconds === undefined) {
+            segment.endTimeOffset.seconds = 0;
+          }
+          if (segment.endTimeOffset.nanos === undefined) {
+            segment.endTimeOffset.nanos = 0;
+          }
+          console.log(`\tAppearance #${segmentIdx}:`);
+          console.log(`\t\tStart: ${segment.startTimeOffset.seconds}` +
+              `.${(segment.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\t\tEnd: ${segment.endTimeOffset.seconds}.` +
+              `${(segment.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
         });
+        console.log(`\tLocations:`);
       });
     })
     .catch((err) => {
@@ -63,7 +79,9 @@ function analyzeLabelsGCS (gcsUri) {
   const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
-  const video = Video();
+  const video = Video({
+    servicePath: `videointelligence.googleapis.com`
+  });
 
   // The GCS filepath of the video to analyze
   // const gcsUri = 'gs://my-bucket/my-video.mp4';
@@ -81,24 +99,32 @@ function analyzeLabelsGCS (gcsUri) {
       return operation.promise();
     })
     .then((results) => {
-      // Gets labels
-      const labels = results[0].annotationResults[0].labelAnnotations;
-      console.log('Labels:');
-      labels.forEach((label) => {
-        console.log(`Label ${label.description} occurs at:`);
-        const isEntireVideo = label.locations.some((location) =>
-          location.segment.startTimeOffset.toNumber() === -1 &&
-          location.segment.endTimeOffset.toNumber() === -1
-        );
+      // Gets annotations for video
+      const annotations = results[0].annotationResults[0];
 
-        if (isEntireVideo) {
-          console.log(`\tEntire video`);
-        } else {
-          label.locations.forEach((location) => {
-            console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
-            console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
-          });
-        }
+      const labels = annotations.segmentLabelAnnotations;
+      labels.forEach((label) => {
+        console.log(`Label ${label.entity.description} occurs at:`);
+        label.segments.forEach((segment) => {
+          let time = segment.segment;
+          if (time.startTimeOffset.seconds === undefined) {
+            time.startTimeOffset.seconds = 0;
+          }
+          if (time.startTimeOffset.nanos === undefined) {
+            time.startTimeOffset.nanos = 0;
+          }
+          if (time.endTimeOffset.seconds === undefined) {
+            time.endTimeOffset.seconds = 0;
+          }
+          if (time.endTimeOffset.nanos === undefined) {
+            time.endTimeOffset.nanos = 0;
+          }
+          console.log(`\tStart: ${time.startTimeOffset.seconds}` +
+              `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tEnd: ${time.endTimeOffset.seconds}.` +
+              `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tConfidence: ${segment.confidence}`);
+        });
       });
     })
     .catch((err) => {
@@ -137,24 +163,32 @@ function analyzeLabelsLocal (path) {
       return operation.promise();
     })
     .then((results) => {
-      // Gets labels for first video
-      const labels = results[0].annotationResults[0].labelAnnotations;
-      console.log('Labels:');
-      labels.forEach((label) => {
-        console.log(`Label ${label.description} occurs at:`);
-        const isEntireVideo = label.locations.some((location) =>
-          location.segment.startTimeOffset.toNumber() === -1 &&
-          location.segment.endTimeOffset.toNumber() === -1
-        );
+      // Gets annotations for video
+      const annotations = results[0].annotationResults[0];
 
-        if (isEntireVideo) {
-          console.log(`\tEntire video`);
-        } else {
-          label.locations.forEach((location) => {
-            console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
-            console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
-          });
-        }
+      const labels = annotations.segmentLabelAnnotations;
+      labels.forEach((label) => {
+        console.log(`Label ${label.entity.description} occurs at:`);
+        label.segments.forEach((segment) => {
+          let time = segment.segment;
+          if (time.startTimeOffset.seconds === undefined) {
+            time.startTimeOffset.seconds = 0;
+          }
+          if (time.startTimeOffset.nanos === undefined) {
+            time.startTimeOffset.nanos = 0;
+          }
+          if (time.endTimeOffset.seconds === undefined) {
+            time.endTimeOffset.seconds = 0;
+          }
+          if (time.endTimeOffset.nanos === undefined) {
+            time.endTimeOffset.nanos = 0;
+          }
+          console.log(`\tStart: ${time.startTimeOffset.seconds}` +
+              `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tEnd: ${time.endTimeOffset.seconds}.` +
+              `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tConfidence: ${segment.confidence}`);
+        });
       });
     })
     .catch((err) => {
@@ -195,9 +229,29 @@ function analyzeShots (gcsUri) {
         console.log(`The entire video is one shot.`);
       } else {
         shotChanges.forEach((shot, shotIdx) => {
-          console.log(`Shot ${shotIdx} occurs from:`);
-          console.log(`\tStart: ${shot.startTimeOffset / 1e6}s`);
-          console.log(`\tEnd: ${shot.endTimeOffset / 1e6}s`);
+          console.log(`Scene ${shotIdx} occurs from:`);
+          if (shot.startTimeOffset === undefined) {
+            shot.startTimeOffset = {};
+          }
+          if (shot.endTimeOffset === undefined) {
+            shot.endTimeOffset = {};
+          }
+          if (shot.startTimeOffset.seconds === undefined) {
+            shot.startTimeOffset.seconds = 0;
+          }
+          if (shot.startTimeOffset.nanos === undefined) {
+            shot.startTimeOffset.nanos = 0;
+          }
+          if (shot.endTimeOffset.seconds === undefined) {
+            shot.endTimeOffset.seconds = 0;
+          }
+          if (shot.endTimeOffset.nanos === undefined) {
+            shot.endTimeOffset.nanos = 0;
+          }
+          console.log(`\tStart: ${shot.startTimeOffset.seconds}` +
+              `.${(shot.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tEnd: ${shot.endTimeOffset.seconds}.` +
+              `${(shot.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
         });
       }
     })
@@ -220,7 +274,7 @@ function analyzeSafeSearch (gcsUri) {
 
   const request = {
     inputUri: gcsUri,
-    features: ['SAFE_SEARCH_DETECTION']
+    features: ['EXPLICIT_CONTENT_DETECTION']
   };
 
   // Human-readable likelihoods
@@ -235,15 +289,21 @@ function analyzeSafeSearch (gcsUri) {
     })
     .then((results) => {
       // Gets unsafe content
-      const safeSearchResults = results[0].annotationResults[0].safeSearchAnnotations;
-      console.log('Safe search results:');
-      safeSearchResults.forEach((result) => {
-        console.log(`Time: ${result.timeOffset / 1e6}s`);
-        console.log(`\tAdult: ${likelihoods[result.adult]}`);
-        console.log(`\tSpoof: ${likelihoods[result.spoof]}`);
-        console.log(`\tMedical: ${likelihoods[result.medical]}`);
-        console.log(`\tViolent: ${likelihoods[result.violent]}`);
-        console.log(`\tRacy: ${likelihoods[result.racy]}`);
+      const explicitContentResults = results[0].annotationResults[0].explicitAnnotation;
+      console.log('Explicit annotation results:');
+      explicitContentResults.frames.forEach((result) => {
+        if (result.timeOffset === undefined) {
+          result.timeOffset = {};
+        }
+        if (result.timeOffset.seconds === undefined) {
+          result.timeOffset.seconds = 0;
+        }
+        if (result.timeOffset.nanos === undefined) {
+          result.timeOffset.nanos = 0;
+        }
+        console.log(`\tTime: ${result.timeOffset.seconds}` +
+            `.${(result.timeOffset.nanos / 1e6).toFixed(0)}s`);
+        console.log(`\t\tPornography liklihood: ${likelihoods[result.pornographyLikelihood]}`);
       });
     })
     .catch((err) => {
@@ -280,7 +340,7 @@ require(`yargs`) // eslint-disable-line
   )
   .command(
     `safe-search <gcsUri>`,
-    `Detects adult content in a video stored in Google Cloud Storage.`,
+    `Detects explicit content in a video stored in Google Cloud Storage.`,
     {},
     (opts) => analyzeSafeSearch(opts.gcsUri)
   )

@@ -24,7 +24,5 @@ const cwd = path.join(__dirname, `..`);
 
 test(`should analyze a hardcoded video`, async (t) => {
   const output = await tools.runAsync(cmd, cwd);
-  t.regex(output, /Label Tomato occurs at:/);
-  t.regex(output, /Entire video/);
-  t.regex(output, /The entire video is one scene./);
+  t.regex(output, /Label standing occurs at:/);
 });

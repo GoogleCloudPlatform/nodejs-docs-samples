@@ -53,7 +53,7 @@ Examples:
   node analyze.js faces gs://demomaker/larry_sergey_ice_bucket_short.mp4
   node analyze.js shots gs://demomaker/sushi.mp4
   node analyze.js labels-gcs gs://demomaker/tomatoes.mp4
-  node analyze.js labels-file cat.mp4
+  node analyze.js labels-file resources/cat.mp4
   node analyze.js safe-search gs://demomaker/tomatoes.mp4
 
 For more information, see https://cloud.google.com/video-intelligence/docs

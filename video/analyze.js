@@ -45,15 +45,26 @@ function analyzeFaces (gcsUri) {
         console.log(`Face #${faceIdx}`);
         console.log(`\tThumbnail size: ${face.thumbnail.length}`);
         face.segments.forEach((segment, segmentIdx) => {
+          segment = segment.segment;
+          if (segment.startTimeOffset.seconds === undefined) {
+            segment.startTimeOffset.seconds = 0;
+          }
+          if (segment.startTimeOffset.nanos === undefined) {
+            segment.startTimeOffset.nanos = 0;
+          }
+          if (segment.endTimeOffset.seconds === undefined) {
+            segment.endTimeOffset.seconds = 0;
+          }
+          if (segment.endTimeOffset.nanos === undefined) {
+            segment.endTimeOffset.nanos = 0;
+          }
           console.log(`\tAppearance #${segmentIdx}:`);
-          console.log(`\t\tStart: ${segment.startTimeOffset / 1e6}s`);
-          console.log(`\t\tEnd: ${segment.endTimeOffset / 1e6}s`);
+          console.log(`\t\tStart: ${segment.startTimeOffset.seconds}` +
+              `.${(segment.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\t\tEnd: ${segment.endTimeOffset.seconds}.` +
+              `${(segment.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
         });
         console.log(`\tLocations:`);
-        face.locations.forEach((location, locationIdx) => {
-          const box = location.boundingBox;
-          console.log(`\t\tTime ${location.timeOffset / 1e6}s: (${box.top}, ${box.left}) - (${box.bottom}, ${box.right})`);
-        });
       });
     })
     .catch((err) => {
@@ -88,28 +99,31 @@ function analyzeLabelsGCS (gcsUri) {
       return operation.promise();
     })
     .then((results) => {
-      // Gets labels
-      const labels = results[0].annotationResults[0].labelAnnotations;
-      // TODO What does "level" mean?
-      // TODO Why are there no segment-level annotations?
+      // Gets annotations for video
+      const annotations = results[0].annotationResults[0];
 
-      console.log('Labels:');
+      const labels = annotations.segmentLabelAnnotations;
       labels.forEach((label) => {
-        console.log(`Label ${label.description} occurs at:`);
-        label.locations.forEach((location) => {
-          const isEntireVideo = label.locations.some((location) =>
-            location.segment.startTimeOffset.toNumber() === -1 &&
-            location.segment.endTimeOffset.toNumber() === -1
-          );
-
-          if (isEntireVideo) {
-            console.log(`\tEntire video`);
-          } else {
-            console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
-            console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
+        console.log(`Label ${label.entity.description} occurs at:`);
+        label.segments.forEach((segment) => {
+          let time = segment.segment;
+          if (time.startTimeOffset.seconds === undefined) {
+            time.startTimeOffset.seconds = 0;
           }
-
-          console.log(`\tConfidence: ${location.confidence}`);
+          if (time.startTimeOffset.nanos === undefined) {
+            time.startTimeOffset.nanos = 0;
+          }
+          if (time.endTimeOffset.seconds === undefined) {
+            time.endTimeOffset.seconds = 0;
+          }
+          if (time.endTimeOffset.nanos === undefined) {
+            time.endTimeOffset.nanos = 0;
+          }
+          console.log(`\tStart: ${time.startTimeOffset.seconds}` +
+              `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tEnd: ${time.endTimeOffset.seconds}.` +
+              `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tConfidence: ${segment.confidence}`);
         });
       });
     })
@@ -149,27 +163,31 @@ function analyzeLabelsLocal (path) {
       return operation.promise();
     })
     .then((results) => {
-      // Gets labels for first video
-      const labels = results[0].annotationResults[0].labelAnnotations;
-      // TODO What does "level" mean?
-      // TODO Why are there no segment-level annotations?
+      // Gets annotations for video
+      const annotations = results[0].annotationResults[0];
 
-      console.log('Labels:');
+      const labels = annotations.segmentLabelAnnotations;
       labels.forEach((label) => {
-        console.log(`Label ${label.description} occurs at:`);
-
-        label.locations.forEach((location) => {
-          const isEntireVideo =
-            location.segment.startTimeOffset.toNumber() === -1 &&
-            location.segment.endTimeOffset.toNumber() === -1;
-
-          if (isEntireVideo) {
-            console.log(`\tEntire video`);
-          } else {
-            console.log(`\tStart: ${location.segment.startTimeOffset / 1e6}s`);
-            console.log(`\tEnd: ${location.segment.endTimeOffset / 1e6}s`);
+        console.log(`Label ${label.entity.description} occurs at:`);
+        label.segments.forEach((segment) => {
+          let time = segment.segment;
+          if (time.startTimeOffset.seconds === undefined) {
+            time.startTimeOffset.seconds = 0;
           }
-          console.log(`\tConfidence: ${location.confidence}`);
+          if (time.startTimeOffset.nanos === undefined) {
+            time.startTimeOffset.nanos = 0;
+          }
+          if (time.endTimeOffset.seconds === undefined) {
+            time.endTimeOffset.seconds = 0;
+          }
+          if (time.endTimeOffset.nanos === undefined) {
+            time.endTimeOffset.nanos = 0;
+          }
+          console.log(`\tStart: ${time.startTimeOffset.seconds}` +
+              `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tEnd: ${time.endTimeOffset.seconds}.` +
+              `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tConfidence: ${segment.confidence}`);
         });
       });
     })
@@ -211,9 +229,29 @@ function analyzeShots (gcsUri) {
         console.log(`The entire video is one shot.`);
       } else {
         shotChanges.forEach((shot, shotIdx) => {
-          console.log(`Shot ${shotIdx} occurs from:`);
-          console.log(`\tStart: ${shot.startTimeOffset / 1e6}s`);
-          console.log(`\tEnd: ${shot.endTimeOffset / 1e6}s`);
+          console.log(`Scene ${shotIdx} occurs from:`);
+          if (shot.startTimeOffset === undefined) {
+            shot.startTimeOffset = {};
+          }
+          if (shot.endTimeOffset === undefined) {
+            shot.endTimeOffset = {};
+          }
+          if (shot.startTimeOffset.seconds === undefined) {
+            shot.startTimeOffset.seconds = 0;
+          }
+          if (shot.startTimeOffset.nanos === undefined) {
+            shot.startTimeOffset.nanos = 0;
+          }
+          if (shot.endTimeOffset.seconds === undefined) {
+            shot.endTimeOffset.seconds = 0;
+          }
+          if (shot.endTimeOffset.nanos === undefined) {
+            shot.endTimeOffset.nanos = 0;
+          }
+          console.log(`\tStart: ${shot.startTimeOffset.seconds}` +
+              `.${(shot.startTimeOffset.nanos / 1e6).toFixed(0)}s`);
+          console.log(`\tEnd: ${shot.endTimeOffset.seconds}.` +
+              `${(shot.endTimeOffset.nanos / 1e6).toFixed(0)}s`);
         });
       }
     })
@@ -236,7 +274,7 @@ function analyzeSafeSearch (gcsUri) {
 
   const request = {
     inputUri: gcsUri,
-    features: ['SAFE_SEARCH_DETECTION']
+    features: ['EXPLICIT_CONTENT_DETECTION']
   };
 
   // Human-readable likelihoods
@@ -251,15 +289,21 @@ function analyzeSafeSearch (gcsUri) {
     })
     .then((results) => {
       // Gets unsafe content
-      const explicitContentResults = results[0].annotationResults[0].safeSearchAnnotations;
-      console.log('Explicit content results:');
-      explicitContentResults.forEach((result) => {
-        console.log(`Time: ${result.timeOffset / 1e6}s`);
-        console.log(`\tAdult: ${likelihoods[result.adult]}`);
-        console.log(`\tSpoof: ${likelihoods[result.spoof]}`);
-        console.log(`\tMedical: ${likelihoods[result.medical]}`);
-        console.log(`\tViolent: ${likelihoods[result.violent]}`);
-        console.log(`\tRacy: ${likelihoods[result.racy]}`);
+      const explicitContentResults = results[0].annotationResults[0].explicitAnnotation;
+      console.log('Explicit annotation results:');
+      explicitContentResults.frames.forEach((result) => {
+        if (result.timeOffset === undefined) {
+          result.timeOffset = {};
+        }
+        if (result.timeOffset.seconds === undefined) {
+          result.timeOffset.seconds = 0;
+        }
+        if (result.timeOffset.nanos === undefined) {
+          result.timeOffset.nanos = 0;
+        }
+        console.log(`\tTime: ${result.timeOffset.seconds}` +
+            `.${(result.timeOffset.nanos / 1e6).toFixed(0)}s`);
+        console.log(`\t\tPornography liklihood: ${likelihoods[result.pornographyLikelihood]}`);
       });
     })
     .catch((err) => {

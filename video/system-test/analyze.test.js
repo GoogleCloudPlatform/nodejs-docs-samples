@@ -32,16 +32,14 @@ const file = `resources/cat.mp4`;
 test.serial(`should analyze faces in a GCS file`, async (t) => {
   const output = await tools.runAsync(`${cmd} faces ${url}`, cwd);
   t.regex(output, /Thumbnail size: \d+/);
-  t.regex(output, /Start: \d+\.\d+s/);
-  t.regex(output, /End: \d+\.\d+s/);
-  t.regex(output, /Time \d+\.\d+s: \(\d+, \d+\) - \(\d+, \d+\)/);
+  t.regex(output, /Start:.*\d+\.\d+s/);
+  t.regex(output, /End:.*\d+\.\d+s/);
 });
 
 // analyze_labels_gcs (one scene)
 test.serial(`should analyze labels in a GCS file with one scene`, async (t) => {
   const output = await tools.runAsync(`${cmd} labels-gcs ${shortUrl}`, cwd);
   t.regex(output, /Label shirt occurs at:/);
-  t.regex(output, /Entire video/);
   t.regex(output, /Confidence: \d+\.\d+/);
 });
 
@@ -49,7 +47,6 @@ test.serial(`should analyze labels in a GCS file with one scene`, async (t) => {
 test.serial(`should analyze labels in a GCS file with multiple scenes`, async (t) => {
   const output = await tools.runAsync(`${cmd} labels-gcs ${url}`, cwd);
   t.regex(output, /Label shirt occurs at:/);
-  t.regex(output, /Entire video/);
   t.regex(output, /Confidence: \d+\.\d+/);
 });
 
@@ -57,14 +54,13 @@ test.serial(`should analyze labels in a GCS file with multiple scenes`, async (t
 test.serial(`should analyze labels in a local file`, async (t) => {
   const output = await tools.runAsync(`${cmd} labels-file ${file}`, cwd);
   t.regex(output, /Label whiskers occurs at:/);
-  t.regex(output, /Entire video/);
   t.regex(output, /Confidence: \d+\.\d+/);
 });
 
 // analyze_shots (multiple shots)
 test.serial(`should analyze shots in a GCS file with multiple shots`, async (t) => {
   const output = await tools.runAsync(`${cmd} shots ${url}`, cwd);
-  t.regex(output, /Shot 0 occurs from:/);
+  t.regex(output, /Scene 0 occurs from:/);
 });
 
 // analyze_shots (one shot)
@@ -77,5 +73,5 @@ test.serial(`should analyze shots in a GCS file with one shot`, async (t) => {
 test.serial(`should analyze safe search results in a GCS file`, async (t) => {
   const output = await tools.runAsync(`${cmd} safe-search ${url}`, cwd);
   t.regex(output, /Time: \d+\.\d+s/);
-  t.regex(output, /Spoof:/);
+  t.regex(output, /Explicit annotation results:/);
 });

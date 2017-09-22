@@ -18,7 +18,7 @@
 const fs = require('fs');
 const google = require('googleapis');
 
-const API_VERSION = 'v1beta1';
+const API_VERSION = 'v1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
 // Configures the topic for Cloud IoT Core.
@@ -545,6 +545,34 @@ function getDevice (client, deviceId, registryId, projectId, cloudRegion) {
   // [END iot_get_device]
 }
 
+// Retrieve the given device's state from the registry.
+function getDeviceState (client, deviceId, registryId, projectId,
+    cloudRegion) {
+  // [START iot_get_device_state]
+  // Client retrieved in callback
+  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    name: `${registryName}/devices/${deviceId}`
+  };
+
+  client.projects.locations.registries.devices.states.list(request,
+      (err, data) => {
+        if (err) {
+          console.log('Could not find device:', deviceId);
+          console.log(err);
+        } else {
+          console.log('State:', data);
+        }
+      });
+  // [END iot_get_device_state]
+}
+
 // Retrieve the given device from the registry.
 function getRegistry (client, registryId, projectId, cloudRegion) {
   // [START iot_get_registry]
@@ -734,6 +762,18 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
+    `getDeviceState <deviceId> <registryId>`,
+    `Retrieves device state given a device ID.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        getDeviceState(client, opts.deviceId, opts.registryId, opts.projectId,
+            opts.cloudRegion);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
     `getRegistry <registryId>`,
     `Retrieves a registry.`,
     {},
@@ -797,6 +837,7 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 deleteDevice my-device my-registry`)
   .example(`node $0 deleteRegistry my-device my-registry`)
   .example(`node $0 getDevice my-device my-registry`)
+  .example(`node $0 getDeviceState my-device my-registry`)
   .example(`node $0 getRegistry my-registry`)
   .example(`node $0 listDevices my-node-registry`)
   .example(`node $0 listRegistries`)

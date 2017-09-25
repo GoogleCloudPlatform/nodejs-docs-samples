@@ -19,7 +19,7 @@ function listVoices (langs, gender) {
   console.log(`Listing available voices for synthesis.`);
   const TTS = require(`texttospeech`);
   const tts = TTS(
-      { servicePath: 'staging-texttospeech.sandbox.googleapis.com' });
+      { servicePath: 'texttospeech.googleapis.com' });
 
   let filter = {};
 
@@ -50,7 +50,7 @@ function synthesizeSsml (ssml) {
   const fs = require('fs');
   const TTS = require(`texttospeech`);
   const tts = TTS(
-      { servicePath: 'staging-texttospeech.sandbox.googleapis.com' });
+      { servicePath: 'texttospeech.googleapis.com' });
   const input = {ssml: ssml};
   const audioConfig = {
     audioEncoding: TTS.types.AudioEncoding.values.MP3
@@ -85,7 +85,7 @@ function synthesizeText (text) {
   const fs = require('fs');
   const TTS = require(`texttospeech`);
   const tts = TTS(
-      { servicePath: 'staging-texttospeech.sandbox.googleapis.com' });
+      { servicePath: 'texttospeech.googleapis.com' });
   const input = {text: text};
   const audioConfig = {
     audioEncoding: TTS.types.AudioEncoding.values.MP3
@@ -126,7 +126,7 @@ function synthesizeFile (filepath) {
       return;
     }
     const tts = TTS(
-        { servicePath: 'staging-texttospeech.sandbox.googleapis.com' });
+        { servicePath: 'texttospeech.googleapis.com' });
     const input = {text: text};
     const audioConfig = {
       audioEncoding: TTS.types.AudioEncoding.values.MP3
@@ -168,7 +168,7 @@ function synthesizeSsmlFile (filepath) {
       console.log(`Error: ${err}`);
     } else {
       const tts = TTS(
-          { servicePath: 'staging-texttospeech.sandbox.googleapis.com' });
+          { servicePath: 'texttospeech.googleapis.com' });
       const input = {ssml: ssml};
       const audioConfig = {
         audioEncoding: TTS.types.AudioEncoding.values.MP3

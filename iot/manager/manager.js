@@ -125,9 +125,9 @@ function createRegistry (client, registryId, projectId, cloudRegion,
   const request = {
     parent: parentName,
     resource: {
-      eventNotificationConfig: {
-        pubsubTopicName: pubsubTopic
-      },
+      eventNotificationConfigs: [{
+        "pubsubTopicName": pubsubTopic
+      }],
       'id': registryId
     }
   };

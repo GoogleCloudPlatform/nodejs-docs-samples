@@ -14,10 +14,11 @@
  */
 
 'use strict';
-
+// [START iot_http_includes]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const request = require('request');
+// [END iot_http_includes]
 
 console.log('Google Cloud IoT Core HTTP example.');
 var argv = require(`yargs`)
@@ -89,6 +90,7 @@ var argv = require(`yargs`)
 
 // Create a Cloud IoT Core JWT for the given project ID, signed with the given
 // private key.
+// [START iot_http_jwt]
 function createJwt (projectId, privateKeyFile, algorithm) {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
@@ -101,10 +103,12 @@ function createJwt (projectId, privateKeyFile, algorithm) {
   const privateKey = fs.readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, { algorithm: algorithm });
 }
+// [END iot_http_jwt]
 
 // Publish numMessages message asynchronously, starting from message
 // messageCount. Telemetry events are published at a rate of 1 per second and
 // states at a rate of 1 every 2 seconds.
+// [START iot_http_publish]
 function publishAsync (messageCount, numMessages) {
   const payload = `${argv.registry_id}/${argv.device_id}-payload-${messageCount}`;
   console.log('Publishing message:', payload);
@@ -140,7 +144,9 @@ function publishAsync (messageCount, numMessages) {
     }
   });
 }
+// [END iot_http_publish]
 
+// [START iot_run_http]
 // A unique string that identifies this device. For Google Cloud IoT Core, it
 // must be in the format below.
 const devicePath = `projects/${argv.project_id}/locations/${argv.cloud_region}/registries/${argv.registry_id}/devices/${argv.device_id}`;
@@ -153,3 +159,4 @@ const authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorit
 
 // Publish messages.
 publishAsync(1, argv.num_messages);
+// [END iot_run_http]

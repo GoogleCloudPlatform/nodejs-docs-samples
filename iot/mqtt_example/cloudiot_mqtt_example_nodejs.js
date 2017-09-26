@@ -15,9 +15,12 @@
 
 'use strict';
 
+
+// [START iot_mqtt_include]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
+// [END iot_mqtt_include]
 
 console.log('Google Cloud IoT Core MQTT example.');
 var argv = require(`yargs`)
@@ -95,6 +98,7 @@ var argv = require(`yargs`)
 
 // Create a Cloud IoT Core JWT for the given project id, signed with the given
 // private key.
+// [START iot_mqtt_jwt]
 function createJwt (projectId, privateKeyFile, algorithm) {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
@@ -107,9 +111,11 @@ function createJwt (projectId, privateKeyFile, algorithm) {
   const privateKey = fs.readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, { algorithm: algorithm });
 }
+// [END iot_mqtt_jwt]
 
 // Publish numMessages messages asynchronously, starting from message
 // messageCount.
+// [START iot_mqtt_publish]
 function publishAsync (messageCount, numMessages) {
   const payload = `${argv.registry_id}/${argv.device_id}-payload-${messageCount}`;
   // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
@@ -130,7 +136,10 @@ function publishAsync (messageCount, numMessages) {
     client.end();
   }
 }
+// [END iot_mqtt_publish]
 
+
+// [START iot_mqtt_run]
 // The mqttClientId is a unique string that identifies this device. For Google
 // Cloud IoT Core, it must be in the format below.
 const mqttClientId = `projects/${argv.project_id}/locations/${argv.cloud_region}/registries/${argv.registry_id}/devices/${argv.device_id}`;
@@ -178,3 +187,4 @@ client.on('packetsend', () => {
 
 // Once all of the messages have been published, the connection to Google Cloud
 // IoT will be closed and the process will exit. See the publishAsync method.
+// [END iot_mqtt_run]

@@ -53,7 +53,7 @@ var argv = require(`yargs`)
         type: 'string'
       },
       algorithm: {
-        description: 'Encryption algorithm to generate the JWT.',
+        description: 'Encryption algorithm to generate the RSA or EC JWT.',
         requiresArg: true,
         demandOption: true,
         choices: ['RS256', 'ES256'],

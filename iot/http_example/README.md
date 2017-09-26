@@ -2,12 +2,13 @@
 
 # Google Cloud IoT Core NodeJS HTTP example
 
-This sample app publishes messages to Cloud Pub/Sub or states using the HTTP
-bridge provided as part of Google Cloud IoT Core.
+This sample app publishes messages to [Google Cloud Pub/Sub](pubsub) or updates
+device states using the HTTP bridge provided as part of Google Cloud IoT Core.
 
 Note that before you can run this sample, you must register a device as
 described in the parent README.
 
+[pubsub]: https://cloud.google.com/pubsub/docs
 # Setup
 
 Run the following command to install the library dependencies for NodeJS:
@@ -29,10 +30,11 @@ Options:
     --registry_id <registry_id>        Cloud IoT Core registry id.
     --device_id <device_id>            Cloud IoT Core device id.
     --private_key_file <key_file>      Path to private key file.
-    --algorithm <algorithm>            Encryption algorithm to generate the JWT. Either RS256 or ES256
+    --algorithm <algorithm>            Encryption algorithm to generate the JWT.
+                                       Either RS256 (RSA) or ES256 (Eliptic Curve)
     --cloud_region [region]            GCP cloud region
     --num_messages [num]               Number of messages to publish.
-    --http_bridge_address [address]   HTTP bridge address.
+    --http_bridge_address [address]    HTTP bridge address.
     --message_type [events|state]      The message type to publish.
 
 For example, if your project ID is `blue-jet-123`, your service account

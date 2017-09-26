@@ -15,7 +15,6 @@
 
 'use strict';
 
-
 // [START iot_mqtt_include]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
@@ -137,7 +136,6 @@ function publishAsync (messageCount, numMessages) {
   }
 }
 // [END iot_mqtt_publish]
-
 
 // [START iot_mqtt_run]
 // The mqttClientId is a unique string that identifies this device. For Google

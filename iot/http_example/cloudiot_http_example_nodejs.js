@@ -128,6 +128,7 @@ function publishAsync (messageCount, numMessages) {
     json: true,
     body: postData
   };
+  // Send events for high-frequency updates, update state only occasionally.
   const delayMs = argv.message_type === 'events' ? 1000 : 2000;
   request.post(options, function (error, response, body) {
     if (error) {

@@ -71,6 +71,9 @@ test(`should create and delete an RSA256 device`, async (t) => {
       `${cmd} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
   t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
+      `${cmd} getDeviceState ${localDevice} ${localRegName}`, cwd);
+  t.regex(output, new RegExp(`State`));
+  output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.regex(output, new RegExp(`Successfully deleted device`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
@@ -85,6 +88,9 @@ test(`should create and delete an EC256 device`, async (t) => {
   output = await tools.runAsync(
       `${cmd} createEs256Device ${localDevice} ${localRegName} resources/ec_public.pem`, cwd);
   t.regex(output, new RegExp(`Created device`));
+  output = await tools.runAsync(
+      `${cmd} getDeviceState ${localDevice} ${localRegName}`, cwd);
+  t.regex(output, new RegExp(`State`));
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.regex(output, new RegExp(`Successfully deleted device`));

@@ -37,6 +37,7 @@ let uri = `mongodb://${user}:${pass}@${host}:${port}`;
 if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
 }
+console.log(uri);
 
 mongodb.MongoClient.connect(uri, (err, db) => {
   if (err) {
@@ -45,6 +46,14 @@ mongodb.MongoClient.connect(uri, (err, db) => {
 
   // Create a simple little server.
   http.createServer((req, res) => {
+    if (req.url === '/_ah/health') {
+      res.writeHead(200, {
+        'Content-Type': 'text/plain'
+      });
+      res.write('OK');
+      res.end();
+      return;
+    }
     // Track every IP that has visited this site
     const collection = db.collection('IPs');
 

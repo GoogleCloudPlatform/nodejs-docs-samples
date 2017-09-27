@@ -109,7 +109,7 @@ deployment:
       - node scripts/build "resource"
       - node scripts/build "spanner"
       - node scripts/build "speech"
-      - node scripts/build "storage"
+      - node scripts/build "storage-transfer"
       - node scripts/build "trace"
       - node scripts/build "translate"
       # TODO: This build times out. Does video need more than 10 minutes?

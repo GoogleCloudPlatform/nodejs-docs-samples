@@ -1,0 +1,49 @@
+{
+  "name": "nodejs-docs-samples-storage-transfer",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "lint": "samples lint",
+    "pretest": "npm run lint",
+    "unit-test": "samples test run --cmd ava -- -T 20s --verbose test/*.test.js",
+    "system-test": "samples test run --cmd ava -- -T 20s --verbose system-test/*.test.js",
+    "test": "npm run unit-test && npm run system-test"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "1.3.0",
+    "googleapis": "21.3.0",
+    "moment": "2.18.1",
+    "safe-buffer": "5.1.1",
+    "yargs": "9.0.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "ava": "0.22.0",
+    "proxyquire": "1.8.0",
+    "sinon": "3.3.0",
+    "uuid": "3.1.0"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "product": "storage",
+    "samples": [
+      {
+        "id": "transfer",
+        "name": "Storage Transfer API",
+        "file": "transfer.js",
+        "docs_link": "https://cloud.google.com/storage/transfer",
+        "usage": "node transfer.js --help"
+      }
+    ]
+  }
+}

@@ -256,7 +256,17 @@ amount of data at any time.
 View the [Cloud Storage Node.js samples][storage_samples].
 
 [storage_docs]: https://cloud.google.com/storage/docs/
-[storage_samples]: storage
+[storage_samples]: https://github.com/googleapis/nodejs-storage/tree/master/samples
+
+#### Google Cloud Storage Transfer API
+
+The Google Cloud Storage Transfer API allows you to quickly import online data
+into Google Cloud Storage.
+
+View the [Cloud Storage Transfer API Node.js samples][transfer_samples].
+
+[transfer_docs]: https://cloud.google.com/storage/transfer/
+[transfer_samples]: storage-transfer
 
 ### Big Data
 

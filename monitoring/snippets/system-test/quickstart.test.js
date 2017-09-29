@@ -20,7 +20,7 @@ const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-const client = proxyquire(`@google-cloud/monitoring`, {}).v3().metricServiceClient();
+const client = proxyquire(`@google-cloud/monitoring`, {}).v3.metric();
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
@@ -51,9 +51,9 @@ test.cb(`should list time series`, (t) => {
 
   proxyquire(`../quickstart`, {
     '@google-cloud/monitoring': {
-      v3: sinon.stub().returns({
-        metricServiceClient: sinon.stub().returns(clientMock)
-      })
+      v3: {
+        metric: sinon.stub().returns(clientMock)
+      }
     }
   });
 });

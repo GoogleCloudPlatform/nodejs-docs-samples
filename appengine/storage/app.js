@@ -13,14 +13,15 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
+const process = require('process'); // Required to mock environment variables
+
+// [START app]
 const format = require('util').format;
 const express = require('express');
 const Multer = require('multer');
 const bodyParser = require('body-parser');
-const process = require('process'); // Required to mock environment variables
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use

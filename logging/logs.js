@@ -75,7 +75,7 @@ function loggingBunyan () {
     name: 'my-service',
     streams: [
       // Log to the console
-      { stream: process.stdout },
+      { stream: process.stdout, level: 'info' },
       // And log to Stackdriver Logging at 'info' and above
       loggingBunyan.stream('info')
     ]

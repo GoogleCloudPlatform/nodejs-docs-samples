@@ -824,7 +824,7 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .example(`node $0 createEs256Device my-es-device my-registry ../ec_public.pem`)
-  .example(`node $0 createRegistry my-registry my-iot-topic --service_account_json=$HOME/creds_iot.json --project_id=my-project-id`)
+  .example(`node $0 createRegistry my-registry my-iot-topic --serviceAccount=$HOME/creds_iot.json --project_id=my-project-id`)
   .example(`node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`)
   .example(`node $0 createUnauthDevice my-device my-registry`)
   .example(`node $0 deleteDevice my-device my-registry`)
@@ -836,7 +836,7 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 listRegistries`)
   .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
   .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
-  .example(`node $0 setupTopic my-iot-topic --service_account_json=$HOME/creds_iot.json --project_id=my-project-id`)
+  .example(`node $0 setupTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json --projectId=my-project-id`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)

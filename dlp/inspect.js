@@ -25,7 +25,7 @@ function inspectString (string, minLikelihood, maxFindings, infoTypes, includeQu
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The string to inspect
   // const string = 'My name is Gary and my email is gary@example.com';
@@ -85,7 +85,7 @@ function inspectFile (filepath, minLikelihood, maxFindings, infoTypes, includeQu
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The path to a local file to inspect. Can be a text, JPG, or PNG file.
   // const fileName = 'path/to/image.png';
@@ -148,7 +148,7 @@ function promiseInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The name of the bucket where the file resides.
   // const bucketName = 'YOUR-BUCKET';
@@ -222,7 +222,7 @@ function eventInspectGCSFile (bucketName, fileName, minLikelihood, maxFindings, 
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The name of the bucket where the file resides.
   // const bucketName = 'YOUR-BUCKET';
@@ -307,7 +307,7 @@ function inspectDatastore (projectId, namespaceId, kind, minLikelihood, maxFindi
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // (Optional) The project ID containing the target Datastore
   // const projectId = process.env.GCLOUD_PROJECT;
@@ -390,7 +390,7 @@ function inspectBigquery (projectId, datasetId, tableId, minLikelihood, maxFindi
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // (Optional) The project ID to run the API call under
   // const projectId = process.env.GCLOUD_PROJECT;

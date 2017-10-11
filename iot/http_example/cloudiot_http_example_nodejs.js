@@ -123,7 +123,10 @@ function publishAsync (messageCount, numMessages) {
   const options = {
     url: url,
     headers: {
-      'Authorization': 'Bearer ' + authToken
+      'authorization': 'Bearer ' + authToken,
+      'content-type': 'application/json',
+      'cache-control': 'no-cache'
+
     },
     json: true,
     body: postData
@@ -132,10 +135,12 @@ function publishAsync (messageCount, numMessages) {
   const delayMs = argv.message_type === 'events' ? 1000 : 2000;
   request.post(options, function (error, response, body) {
     if (error) {
-      return console.error('Received error: ', error);
+      console.error('Received error: ', error);
+    } else if (response.body.error) {
+      console.error('Received error: ' + JSON.stringify(response.body.error));
+    } else {
+      console.log('Message sent.');
     }
-    console.log('Received response: ');
-    console.dir(response);
     if (messageCount < numMessages) {
       // If we have published fewer than numMessage messages, publish payload
       // messageCount + 1.

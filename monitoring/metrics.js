@@ -28,8 +28,8 @@ function createMetricDescriptor (projectId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -81,8 +81,8 @@ function listMetricDescriptors (projectId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -110,8 +110,8 @@ function getMetricDescriptor (projectId, metricId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -150,8 +150,8 @@ function deleteMetricDescriptor (projectId, metricId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -179,8 +179,8 @@ function writeTimeSeriesData (projectId, metricId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -237,8 +237,8 @@ function readTimeSeriesData (projectId, filter) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -283,8 +283,8 @@ function readTimeSeriesFields (projectId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -327,8 +327,8 @@ function readTimeSeriesAggregate (projectId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -377,8 +377,8 @@ function readTimeSeriesReduce (projectId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -425,8 +425,8 @@ function listMonitoredResourceDescriptors (projectId) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';
@@ -454,8 +454,8 @@ function getMonitoredResourceDescriptor (projectId, resourceType) {
   // Imports the Google Cloud client library
   const Monitoring = require('@google-cloud/monitoring');
 
-  // Instantiates a client
-  const client = Monitoring.v3().metricServiceClient();
+  // Creates a client
+  const client = Monitoring.v3.metric();
 
   // The Google Cloud Platform project on which to execute the request
   // const projectId = 'YOUR_PROJECT_ID';

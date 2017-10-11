@@ -31,7 +31,7 @@ prompt.get(FIELDS, (err, config) => {
   }
 
   // Connect to the database
-  const knex = Knex({ client: 'mysql', connection: config });
+  const knex = Knex({ client: 'pg', connection: config });
 
   // Create the "visits" table
   knex.schema.createTable('visits', (table) => {

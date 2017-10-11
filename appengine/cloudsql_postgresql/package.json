@@ -1,6 +1,6 @@
 {
-  "name": "appengine-cloudsql-mysql",
-  "description": "Node.js MySQL sample for Cloud SQL on App Engine flexible environment.",
+  "name": "appengine-cloudsql-postgres",
+  "description": "Node.js PostgreSQL sample for Cloud SQL on App Engine flexible environment.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -28,7 +28,7 @@
     "async": "2.5.0",
     "express": "4.15.4",
     "knex": "0.13.0",
-    "mysql": "2.14.1",
+    "pg": "7.3.0",
     "prompt": "1.0.0"
   },
   "devDependencies": {

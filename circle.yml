@@ -31,7 +31,7 @@ dependencies:
   override:
     - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
     - gcloud auth activate-service-account --key-file /home/ubuntu/nodejs-docs-samples/key.json || true
-    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools
+    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17
     - yarn install
     - yarn run lint
     - samples test install -l=functions/background
@@ -75,13 +75,14 @@ deployment:
     owner: GoogleCloudPlatform
     commands:
       - node scripts/build "appengine/analytics"
-      - export SQL_CLIENT=mysql SQL_PORT=3306; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
-      - export SQL_CLIENT=pg SQL_PORT=5432; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-$SQL_CLIENT; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
+      - export SQL_PORT=3306; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-mysql; node scripts/build "appengine/cloudsql" -- --test-args "run system-test-proxy"
+      - export SQL_PORT=5432; export INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_PREFIX-pg; node scripts/build "appengine/cloudsql_postgresql" -- --test-args "run system-test-proxy"
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
+      - node scripts/build "appengine/metadata"
       - node scripts/build "appengine/static-files"
       - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage"
       - node scripts/build "auth"
@@ -108,7 +109,7 @@ deployment:
       - node scripts/build "resource"
       - node scripts/build "spanner"
       - node scripts/build "speech"
-      - node scripts/build "storage"
+      - node scripts/build "storage-transfer"
       - node scripts/build "trace"
       - node scripts/build "translate"
       # TODO: This build times out. Does video need more than 10 minutes?

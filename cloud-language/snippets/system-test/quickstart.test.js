@@ -25,7 +25,7 @@ const cwd = path.join(__dirname, `..`);
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`should analyze sentiment in text`, async (t) => {
+test(`should analyze sentiment in text`, async t => {
   const output = await tools.runAsync(cmd, cwd);
 
   t.regex(output, /Text: Hello, world!/);

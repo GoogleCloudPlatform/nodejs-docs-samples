@@ -36,15 +36,15 @@ test.before(async () => {
 
 test.after.always(async () => {
   const bucket = storage.bucket(bucketName);
-  await bucket.deleteFiles({ force: true });
-  await bucket.deleteFiles({ force: true }); // Try a second time...
+  await bucket.deleteFiles({force: true});
+  await bucket.deleteFiles({force: true}); // Try a second time...
   await bucket.delete();
 });
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`should analyze sentiment in text`, async (t) => {
+test(`should analyze sentiment in text`, async t => {
   const output = await tools.runAsync(`${cmd} sentiment-text "${text}"`, cwd);
   t.regex(output, new RegExp(`Document sentiment:`));
   t.regex(output, new RegExp(`Sentence: ${text}`));
@@ -52,15 +52,18 @@ test(`should analyze sentiment in text`, async (t) => {
   t.regex(output, new RegExp(`Magnitude: 0`));
 });
 
-test(`should analyze sentiment in a file`, async (t) => {
-  const output = await tools.runAsync(`${cmd} sentiment-file ${bucketName} ${fileName}`, cwd);
+test(`should analyze sentiment in a file`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} sentiment-file ${bucketName} ${fileName}`,
+    cwd
+  );
   t.regex(output, new RegExp(`Document sentiment:`));
   t.regex(output, new RegExp(`Sentence: ${text}`));
   t.regex(output, new RegExp(`Score: 0`));
   t.regex(output, new RegExp(`Magnitude: 0`));
 });
 
-test(`should analyze entities in text`, async (t) => {
+test(`should analyze entities in text`, async t => {
   const output = await tools.runAsync(`${cmd} entities-text "${text}"`, cwd);
   t.regex(output, new RegExp(`Obama`));
   t.regex(output, new RegExp(`Type: PERSON`));
@@ -68,8 +71,11 @@ test(`should analyze entities in text`, async (t) => {
   t.regex(output, new RegExp(`Type: LOCATION`));
 });
 
-test('should analyze entities in a file', async (t) => {
-  const output = await tools.runAsync(`${cmd} entities-file ${bucketName} ${fileName}`, cwd);
+test('should analyze entities in a file', async t => {
+  const output = await tools.runAsync(
+    `${cmd} entities-file ${bucketName} ${fileName}`,
+    cwd
+  );
   t.regex(output, new RegExp(`Entities:`));
   t.regex(output, new RegExp(`Obama`));
   t.regex(output, new RegExp(`Type: PERSON`));
@@ -77,7 +83,7 @@ test('should analyze entities in a file', async (t) => {
   t.regex(output, new RegExp(`Type: LOCATION`));
 });
 
-test(`should analyze syntax in text`, async (t) => {
+test(`should analyze syntax in text`, async t => {
   const output = await tools.runAsync(`${cmd} syntax-text "${text}"`, cwd);
   t.regex(output, new RegExp(`Tokens:`));
   t.regex(output, new RegExp(`NOUN:`));
@@ -87,8 +93,11 @@ test(`should analyze syntax in text`, async (t) => {
   t.regex(output, new RegExp(`tag: 'NOUN'`));
 });
 
-test('should analyze syntax in a file', async (t) => {
-  const output = await tools.runAsync(`${cmd} syntax-file ${bucketName} ${fileName}`, cwd);
+test('should analyze syntax in a file', async t => {
+  const output = await tools.runAsync(
+    `${cmd} syntax-file ${bucketName} ${fileName}`,
+    cwd
+  );
   t.regex(output, new RegExp(`NOUN:`));
   t.regex(output, new RegExp(`President`));
   t.regex(output, new RegExp(`Obama`));
@@ -96,8 +105,11 @@ test('should analyze syntax in a file', async (t) => {
   t.regex(output, new RegExp(`tag: 'NOUN'`));
 });
 
-test(`should analyze entity sentiment in text`, async (t) => {
-  const output = await tools.runAsync(`${cmd} entity-sentiment-text "${text}"`, cwd);
+test(`should analyze entity sentiment in text`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} entity-sentiment-text "${text}"`,
+    cwd
+  );
   t.regex(output, new RegExp(`Entities and sentiments:`));
   t.regex(output, new RegExp(`Obama`));
   t.regex(output, new RegExp(`PERSON`));
@@ -105,8 +117,11 @@ test(`should analyze entity sentiment in text`, async (t) => {
   t.regex(output, new RegExp(`Magnitude: 0`));
 });
 
-test('should analyze entity sentiment in a file', async (t) => {
-  const output = await tools.runAsync(`${cmd} entity-sentiment-file ${bucketName} ${fileName}`, cwd);
+test('should analyze entity sentiment in a file', async t => {
+  const output = await tools.runAsync(
+    `${cmd} entity-sentiment-file ${bucketName} ${fileName}`,
+    cwd
+  );
   t.regex(output, new RegExp(`Entities and sentiments:`));
   t.regex(output, new RegExp(`Obama`));
   t.regex(output, new RegExp(`PERSON`));

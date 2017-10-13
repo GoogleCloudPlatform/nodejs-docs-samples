@@ -15,7 +15,7 @@
 
 'use strict';
 
-function deidentifyWithMask (string, maskingCharacter, numberToMask, infoTypes) {
+function deidentifyWithMask (string, maskingCharacter, numberToMask) {
   // [START deidentify_masking]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -25,9 +25,6 @@ function deidentifyWithMask (string, maskingCharacter, numberToMask, infoTypes) 
 
   // The string to deidentify
   // const string = 'My SSN is 372819127';
-
-  // The infoTypes of information to mask
-  // const infoTypes = [{ name: 'US_SOCIAL_SECURITY_NUMBER' }];
 
   // (Optional) The maximum number of sensitive characters to mask in a match
   // If omitted from the request or set to 0, the API will mask any matching characters
@@ -43,7 +40,6 @@ function deidentifyWithMask (string, maskingCharacter, numberToMask, infoTypes) 
     deidentifyConfig: {
       infoTypeTransformations: {
         transformations: [{
-          infoTypes: infoTypes,
           primitiveTransformation: {
             characterMaskConfig: {
               maskingCharacter: maskingCharacter,
@@ -52,9 +48,6 @@ function deidentifyWithMask (string, maskingCharacter, numberToMask, infoTypes) 
           }
         }]
       }
-    },
-    inspectConfig: {
-      infoTypes: infoTypes
     },
     items: items
   };
@@ -71,7 +64,7 @@ function deidentifyWithMask (string, maskingCharacter, numberToMask, infoTypes) 
   // [END deidentify_masking]
 }
 
-function deidentifyWithFpe (string, alphabet, keyName, wrappedKey, infoTypes) {
+function deidentifyWithFpe (string, alphabet, keyName, wrappedKey) {
   // [START deidentify_fpe]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -93,16 +86,12 @@ function deidentifyWithFpe (string, alphabet, keyName, wrappedKey, infoTypes) {
   // This key should be encrypted using the Cloud KMS key specified above
   // const wrappedKey = 'YOUR_ENCRYPTED_AES_256_KEY'
 
-  // The infoTypes of information to deidentify
-  // const infoTypes = [{ name: 'US_SOCIAL_SECURITY_NUMBER' }];
-
   // Construct deidentification request
   const items = [{ type: 'text/plain', value: string }];
   const request = {
     deidentifyConfig: {
       infoTypeTransformations: {
         transformations: [{
-          infoTypes: infoTypes,
           primitiveTransformation: {
             cryptoReplaceFfxFpeConfig: {
               cryptoKey: {
@@ -116,9 +105,6 @@ function deidentifyWithFpe (string, alphabet, keyName, wrappedKey, infoTypes) {
           }
         }]
       }
-    },
-    inspectConfig: {
-      infoTypes: infoTypes
     },
     items: items
   };
@@ -152,7 +138,7 @@ const cli = require(`yargs`)
       default: 0
     }
   },
-    (opts) => deidentifyWithMask(opts.string, opts.maskingCharacter, opts.numberToMask, opts.infoTypes)
+    (opts) => deidentifyWithMask(opts.string, opts.maskingCharacter, opts.numberToMask)
   )
   .command(
     `fpe <string> <wrappedKey> <keyName>`,
@@ -165,19 +151,10 @@ const cli = require(`yargs`)
       choices: ['NUMERIC', 'HEXADECIMAL', 'UPPER_CASE_ALPHA_NUMERIC', 'ALPHA_NUMERIC']
     }
   },
-    (opts) => deidentifyWithFpe(opts.string, opts.alphabet, opts.keyName, opts.wrappedKey, opts.infoTypes)
+    (opts) => deidentifyWithFpe(opts.string, opts.alphabet, opts.keyName, opts.wrappedKey)
   )
-  .option('t', {
-    alias: 'infoTypes',
-    required: true,
-    type: 'array',
-    global: true,
-    coerce: (infoTypes) => infoTypes.map((type) => {
-      return { name: type };
-    })
-  })
-  .example(`node $0 mask "My SSN is 372819127" -t US_SOCIAL_SECURITY_NUMBER`)
-  .example(`node $0 fpe "My SSN is 372819127" <YOUR_ENCRYPTED_AES_256_KEY> <YOUR_KEY_NAME> -t US_SOCIAL_SECURITY_NUMBER`)
+  .example(`node $0 mask "My SSN is 372819127"`)
+  .example(`node $0 fpe "My SSN is 372819127" <YOUR_ENCRYPTED_AES_256_KEY> <YOUR_KEY_NAME>`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/dlp/docs.`);

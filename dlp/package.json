@@ -20,6 +20,10 @@
   "cloud-repo-tools": {
     "requiresKeyFile": true,
     "requiresProjectId": true,
+    "requiredEnvVars": [
+      "DLP_DEID_WRAPPED_KEY",
+      "DLP_DEID_KEY_NAME"
+    ],
     "product": "dlp",
     "samples": [
       {

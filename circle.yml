@@ -100,7 +100,6 @@ deployment:
       - node scripts/build "error-reporting"
       - node scripts/build "iot/manager"
       - node scripts/build "kms"
-      - node scripts/build "language"
       - node scripts/build "language/slackbot"
       - node scripts/build "logging"
       - node scripts/build "monitoring"

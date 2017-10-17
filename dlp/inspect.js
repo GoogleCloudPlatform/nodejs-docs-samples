@@ -585,12 +585,6 @@ const cli = require(`yargs`) // eslint-disable-line
     type: 'boolean',
     global: true
   })
-  .option('l', {
-    alias: 'languageCode',
-    default: 'en-US',
-    type: 'string',
-    global: true
-  })
   .option('t', {
     alias: 'infoTypes',
     default: ['PHONE_NUMBER', 'EMAIL_ADDRESS', 'CREDIT_CARD_NUMBER'],

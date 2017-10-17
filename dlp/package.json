@@ -46,6 +46,20 @@
         "file": "metadata.js",
         "docs_link": "https://cloud.google.com/dlp/docs",
         "usage": "node metadata.js --help"
+      },
+      {
+        "id": "deid",
+        "name": "DeID",
+        "file": "deid.js",
+        "docs_link": "https://cloud.google.com/dlp/docs",
+        "usage": "node deid.js --help"
+      },
+      {
+        "id": "risk",
+        "name": "Risk Analysis",
+        "file": "risk.js",
+        "docs_link": "https://cloud.google.com/dlp/docs",
+        "usage": "node risk.js --help"
       }
     ]
   },

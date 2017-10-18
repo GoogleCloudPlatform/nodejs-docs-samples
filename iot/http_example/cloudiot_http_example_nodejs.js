@@ -123,7 +123,8 @@ function publishAsync (messageCount, numMessages) {
   const options = {
     url: url,
     headers: {
-      'Authorization': 'Bearer ' + authToken
+      'authorization': 'Bearer ' + authToken,
+      'cache-control': 'no-cache'
     },
     json: true,
     body: postData
@@ -161,3 +162,4 @@ const authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorit
 // Publish messages.
 publishAsync(1, argv.num_messages);
 // [END iot_run_http]
+

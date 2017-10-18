@@ -31,7 +31,6 @@ function deidentifyWithMask (string, maskingCharacter, numberToMask) {
   // const numberToMask = 5;
 
   // (Optional) The character to mask matching sensitive data with
-  // If omitted from the request, the API will use '-' for strings and 'N' for digits
   // const maskingCharacter = 'x';
 
   // Construct deidentification request

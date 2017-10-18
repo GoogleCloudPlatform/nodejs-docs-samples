@@ -53,103 +53,133 @@ test.after.always(async (t) => {
 
 // create_database
 test.serial(`should create an example database`, async (t) => {
-  const output = await tools.runAsync(`${schemaCmd} createDatabase "${INSTANCE_ID}" "${DATABASE_ID}"`, cwd);
-  t.true(output.includes(`Waiting for operation on ${DATABASE_ID} to complete...`));
-  t.true(output.includes(`Created database ${DATABASE_ID} on instance ${INSTANCE_ID}.`));
+  const results = await tools.runAsyncWithIO(`${schemaCmd} createDatabase "${INSTANCE_ID}" "${DATABASE_ID}"`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, new RegExp(`Waiting for operation on ${DATABASE_ID} to complete...`));
+  t.regex(output, new RegExp(`Created database ${DATABASE_ID} on instance ${INSTANCE_ID}.`));
 });
 
 // insert_data
 test.serial(`should insert rows into an example table`, async (t) => {
-  let output = await tools.runAsync(`${crudCmd} insert ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`Inserted data.`));
+  const results = await tools.runAsyncWithIO(`${crudCmd} insert ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /Inserted data\./);
 });
 
 // query_data
 test.serial(`should query an example table and return matching rows`, async (t) => {
-  const output = await tools.runAsync(`${crudCmd} query ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`SingerId: 1, AlbumId: 1, AlbumTitle: Go, Go, Go`));
+  const results = await tools.runAsyncWithIO(`${crudCmd} query ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /SingerId: 1, AlbumId: 1, AlbumTitle: Go, Go, Go/);
 });
 
 // read_data
 test.serial(`should read an example table`, async (t) => {
-  const output = await tools.runAsync(`${crudCmd} read ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`SingerId: 1, AlbumId: 1, AlbumTitle: Go, Go, Go`));
+  const results = await tools.runAsyncWithIO(`${crudCmd} read ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /SingerId: 1, AlbumId: 1, AlbumTitle: Go, Go, Go/);
 });
 
 // add_column
 test.serial(`should add a column to a table`, async (t) => {
-  const output = await tools.runAsync(`${schemaCmd} addColumn ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`Waiting for operation to complete...`));
-  t.true(output.includes(`Added the MarketingBudget column.`));
+  const results = await tools.runAsyncWithIO(`${schemaCmd} addColumn ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /Waiting for operation to complete\.\.\./);
+  t.regex(output, /Added the MarketingBudget column\./);
 });
 
 // update_data
 test.serial(`should update existing rows in an example table`, async (t) => {
-  let output = await tools.runAsync(`${crudCmd} update ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`Updated data.`));
+  const results = await tools.runAsyncWithIO(`${crudCmd} update ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /Updated data\./);
+});
+
+// read_stale_data
+test.serial(`should read stale data from an example table`, (t) => {
+  t.plan(2);
+  // read-stale-data reads data that is exactly 10 seconds old.  So, make sure
+  // 10 seconds have elapsed since the update_data test.
+  return (new Promise((resolve) => setTimeout(resolve, 11000)))
+    .then(async () => {
+      const results = await tools.runAsyncWithIO(`${crudCmd} read-stale ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+      const output = results.stdout + results.stderr;
+      t.regex(output, /SingerId: 1, AlbumId: 1, AlbumTitle: Go, Go, Go, MarketingBudget: 100000/);
+      t.regex(output, /SingerId: 2, AlbumId: 2, AlbumTitle: Forever Hold your Peace, MarketingBudget: 500000/);
+    });
 });
 
 // query_data_with_new_column
 test.serial(`should query an example table with an additional column and return matching rows`, async (t) => {
-  const output = await tools.runAsync(`${schemaCmd} queryNewColumn ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`SingerId: 1, AlbumId: 1, MarketingBudget: 100000`));
-  t.true(output.includes(`SingerId: 2, AlbumId: 2, MarketingBudget: 500000`));
+  const results = await tools.runAsyncWithIO(`${schemaCmd} queryNewColumn ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /SingerId: 1, AlbumId: 1, MarketingBudget: 100000/);
+  t.regex(output, /SingerId: 2, AlbumId: 2, MarketingBudget: 500000/);
 });
 
 // create_index
 test.serial(`should create an index in an example table`, async (t) => {
-  let output = await tools.runAsync(`${indexingCmd} createIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`Waiting for operation to complete...`));
-  t.true(output.includes(`Added the AlbumsByAlbumTitle index.`));
+  const results = await tools.runAsyncWithIO(`${indexingCmd} createIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /Waiting for operation to complete\.\.\./);
+  t.regex(output, /Added the AlbumsByAlbumTitle index\./);
 });
 
 // create_storing_index
 test.serial(`should create a storing index in an example table`, async (t) => {
-  const output = await tools.runAsync(`${indexingCmd} createStoringIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`Waiting for operation to complete...`));
-  t.true(output.includes(`Added the AlbumsByAlbumTitle2 index.`));
+  const results = await tools.runAsyncWithIO(`${indexingCmd} createStoringIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /Waiting for operation to complete\.\.\./);
+  t.regex(output, /Added the AlbumsByAlbumTitle2 index\./);
 });
 
 // query_data_with_index
 test.serial(`should query an example table with an index and return matching rows`, async (t) => {
-  const output = await tools.runAsync(`${indexingCmd} queryIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`AlbumId: 1, AlbumTitle: Go, Go, Go, MarketingBudget:`));
+  const results = await tools.runAsyncWithIO(`${indexingCmd} queryIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /AlbumId: 1, AlbumTitle: Go, Go, Go, MarketingBudget:/);
   t.false(output.includes(`AlbumId: 2, AlbumTitle: Total Junk, MarketingBudget:`));
 });
 
 test.serial(`should respect query boundaries when querying an example table with an index`, async (t) => {
-  const output = await tools.runAsync(`${indexingCmd} queryIndex ${INSTANCE_ID} ${DATABASE_ID} -s Ardvark -e Zoo`, cwd);
-  t.true(output.includes(`AlbumId: 1, AlbumTitle: Go, Go, Go, MarketingBudget:`));
-  t.true(output.includes(`AlbumId: 2, AlbumTitle: Total Junk, MarketingBudget:`));
+  const results = await tools.runAsyncWithIO(`${indexingCmd} queryIndex ${INSTANCE_ID} ${DATABASE_ID} -s Ardvark -e Zoo`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /AlbumId: 1, AlbumTitle: Go, Go, Go, MarketingBudget:/);
+  t.regex(output, /AlbumId: 2, AlbumTitle: Total Junk, MarketingBudget:/);
 });
 
 // read_data_with_index
 test.serial(`should read an example table with an index`, async (t) => {
-  const output = await tools.runAsync(`${indexingCmd} readIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`AlbumId: 1, AlbumTitle: Go, Go, Go`));
+  const results = await tools.runAsyncWithIO(`${indexingCmd} readIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /AlbumId: 1, AlbumTitle: Go, Go, Go/);
 });
 
 // read_data_with_storing_index
 test.serial(`should read an example table with a storing index`, async (t) => {
-  const output = await tools.runAsync(`${indexingCmd} readStoringIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`AlbumId: 1, AlbumTitle: Go, Go, Go`));
+  const results = await tools.runAsyncWithIO(`${indexingCmd} readStoringIndex ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /AlbumId: 1, AlbumTitle: Go, Go, Go/);
 });
 
 // read_only_transaction
 test.serial(`should read an example table using transactions`, async (t) => {
-  const output = await tools.runAsync(`${transactionCmd} readOnly ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`SingerId: 1, AlbumId: 1, AlbumTitle: Go, Go, Go`));
-  t.true(output.includes(`Successfully executed read-only transaction.`));
+  const results = await tools.runAsyncWithIO(`${transactionCmd} readOnly ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  const output = results.stdout + results.stderr;
+  t.regex(output, /SingerId: 1, AlbumId: 1, AlbumTitle: Go, Go, Go/);
+  t.regex(output, /Successfully executed read-only transaction\./);
 });
 
 // read_write_transaction
 test.serial(`should read from and write to an example table using transactions`, async (t) => {
-  let output = await tools.runAsync(`${transactionCmd} readWrite ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`The first album's marketing budget: 100000`));
-  t.true(output.includes(`The second album's marketing budget: 500000`));
-  t.true(output.includes(`Successfully executed read-write transaction to transfer 200000 from Album 2 to Album 1.`));
+  let results = await tools.runAsyncWithIO(`${transactionCmd} readWrite ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  let output = results.stdout + results.stderr;
+  t.regex(output, /The first album's marketing budget: 100000/);
+  t.regex(output, /The second album's marketing budget: 500000/);
+  t.regex(output, /Successfully executed read-write transaction to transfer 200000 from Album 2 to Album 1./);
 
-  output = await tools.runAsync(`${schemaCmd} queryNewColumn ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
-  t.true(output.includes(`SingerId: 1, AlbumId: 1, MarketingBudget: 300000`));
-  t.true(output.includes(`SingerId: 2, AlbumId: 2, MarketingBudget: 300000`));
+  results = await tools.runAsyncWithIO(`${schemaCmd} queryNewColumn ${INSTANCE_ID} ${DATABASE_ID}`, cwd);
+  output = results.stdout + results.stderr;
+  t.regex(output, /SingerId: 1, AlbumId: 1, MarketingBudget: 300000/);
+  t.regex(output, /SingerId: 2, AlbumId: 2, MarketingBudget: 300000/);
 });

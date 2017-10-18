@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "description": "MQTT Example for Google Cloud IoT Core using NodeJS.",
   "main": "cloudiot_mqtt_example_nodejs.js",
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
   "dependencies": {
-    "commander": "2.9.0",
+    "yargs": "8.0.2",
     "jsonwebtoken": "7.4.1",
     "mqtt": "2.7.2"
   },

@@ -18,7 +18,7 @@
 const fs = require('fs');
 const google = require('googleapis');
 
-const API_VERSION = 'v1beta1';
+const API_VERSION = 'v1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
 // Configures the topic for Cloud IoT Core.
@@ -88,7 +88,7 @@ function createIotTopic (topicName) {
 function lookupRegistry (client, registryId, projectId, cloudRegion, cb) {
   // [START iot_lookup_registry]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
@@ -110,25 +110,24 @@ function lookupRegistry (client, registryId, projectId, cloudRegion, cb) {
   // [END iot_lookup_registry]
 }
 
-// Create a new registry, or look up an existing one if it doesn't exist.
-function lookupOrCreateRegistry (client, registryId, projectId, cloudRegion,
-    pubsubTopicId) {
-  // [START iot_lookup_or_create_registry]
+function createRegistry (client, registryId, projectId, cloudRegion,
+    pubsubTopicId, foundCb) {
+  // [START iot_create_registry]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  // const pubsubTopicId = 'my-iot-topic';
+  // function errCb = lookupRegistry; // Lookup registry if already exists.
   const parentName = `projects/${projectId}/locations/${cloudRegion}`;
   const pubsubTopic = `projects/${projectId}/topics/${pubsubTopicId}`;
 
   const request = {
     parent: parentName,
     resource: {
-      eventNotificationConfig: {
-        pubsubTopicName: pubsubTopic
-      },
+      eventNotificationConfigs: [{
+        'pubsubTopicName': pubsubTopic
+      }],
       'id': registryId
     }
   };
@@ -137,7 +136,7 @@ function lookupOrCreateRegistry (client, registryId, projectId, cloudRegion,
     if (err) {
       if (err.code === 409) {
         // The registry already exists - look it up instead.
-        lookupRegistry(client, registryId, projectId, cloudRegion);
+        foundCb(client, registryId, projectId, cloudRegion);
       } else {
         console.log('Could not create registry');
         console.log(err);
@@ -147,6 +146,23 @@ function lookupOrCreateRegistry (client, registryId, projectId, cloudRegion,
       console.log(data);
     }
   });
+  // [END iot_create_registry]
+}
+
+// Create a new registry, or look up an existing one if it doesn't exist.
+function lookupOrCreateRegistry (client, registryId, projectId, cloudRegion,
+    pubsubTopicId) {
+  // [START iot_lookup_or_create_registry]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  // const pubsubTopicId = 'my-iot-topic';
+
+  createRegistry(client, registryId, projectId, cloudRegion, pubsubTopicId,
+      lookupRegistry);
+
   // [END iot_lookup_or_create_registry]
 }
 
@@ -156,7 +172,7 @@ function createUnauthDevice (client, deviceId, registryId, projectId,
     cloudRegion, body) {
   // [START iot_create_unauth_device]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-unauth-device';
   // const projectId = 'adjective-noun-123';
@@ -187,9 +203,9 @@ function createRsaDevice (client, deviceId, registryId, projectId, cloudRegion,
     rsaCertificateFile) {
   // [START iot_create_rsa_device]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
-  // const deviceId = 'my-unauth-device';
+  // const deviceId = 'my-rsa-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
   const parentName = `projects/${projectId}/locations/${cloudRegion}`;
@@ -230,7 +246,7 @@ function createEsDevice (client, deviceId, registryId, projectId, cloudRegion,
     esCertificateFile) {
   // [START iot_create_es_device]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-es-device';
   // const projectId = 'adjective-noun-123';
@@ -271,7 +287,7 @@ function patchRsa256ForAuth (client, deviceId, registryId, rsaPublicKeyFile,
     projectId, cloudRegion) {
   // [START iot_patch_rsa]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-rsa-device';
   // const projectId = 'adjective-noun-123';
@@ -311,9 +327,9 @@ function patchEs256ForAuth (client, deviceId, registryId, esPublicKeyFile,
     projectId, cloudRegion) {
   // [START iot_patch_es]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
-  // const deviceId = 'my-rsa-device';
+  // const deviceId = 'my-es-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
   const parentName =
@@ -350,7 +366,7 @@ function patchEs256ForAuth (client, deviceId, registryId, esPublicKeyFile,
 function listDevices (client, registryId, projectId, cloudRegion) {
   // [START iot_list_devices]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
@@ -372,12 +388,36 @@ function listDevices (client, registryId, projectId, cloudRegion) {
   // [END iot_list_devices]
 }
 
+// List all of the registries in the given project.
+function listRegistries (client, projectId, cloudRegion) {
+  // [START iot_list_registries]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const projectId = 'adjective-noun-123';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+
+  const request = {
+    parent: parentName
+  };
+
+  client.projects.locations.registries.list(request, (err, data) => {
+    if (err) {
+      console.log('Could not list registries');
+      console.log(err);
+    } else {
+      console.log('Current registries in project:', data['deviceRegistries']);
+    }
+  });
+  // [END iot_list_registries]
+}
+
 // Delete the given device from the registry.
 function deleteDevice (client, deviceId, registryId, projectId, cloudRegion,
     cb) {
   // [START iot_delete_device]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
@@ -456,7 +496,7 @@ function clearRegistry (client, registryId, projectId, cloudRegion) {
 function deleteRegistry (client, registryId, projectId, cloudRegion) {
   // [START iot_delete_registry]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
@@ -482,8 +522,9 @@ function deleteRegistry (client, registryId, projectId, cloudRegion) {
 function getDevice (client, deviceId, registryId, projectId, cloudRegion) {
   // [START iot_get_device]
   // Client retrieved in callback
-  // getClient(apiKey, serviceAccountJson, function(client) {...});
+  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
   const parentName = `projects/${projectId}/locations/${cloudRegion}`;
@@ -494,7 +535,7 @@ function getDevice (client, deviceId, registryId, projectId, cloudRegion) {
 
   client.projects.locations.registries.devices.get(request, (err, data) => {
     if (err) {
-      console.log('Could not delete device:', deviceId);
+      console.log('Could not find device:', deviceId);
       console.log(err);
     } else {
       console.log('Found device:', deviceId);
@@ -504,9 +545,63 @@ function getDevice (client, deviceId, registryId, projectId, cloudRegion) {
   // [END iot_get_device]
 }
 
+// Retrieve the given device's state from the registry.
+function getDeviceState (client, deviceId, registryId, projectId,
+    cloudRegion) {
+  // [START iot_get_device_state]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    name: `${registryName}/devices/${deviceId}`
+  };
+
+  client.projects.locations.registries.devices.states.list(request,
+      (err, data) => {
+        if (err) {
+          console.log('Could not find device:', deviceId);
+          console.log(err);
+        } else {
+          console.log('State:', data);
+        }
+      });
+  // [END iot_get_device_state]
+}
+
+// Retrieve the given device from the registry.
+function getRegistry (client, registryId, projectId, cloudRegion) {
+  // [START iot_get_registry]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    name: `${registryName}`
+  };
+
+  client.projects.locations.registries.get(request, (err, data) => {
+    if (err) {
+      console.log('Could not find registry:', registryId);
+      console.log(err);
+    } else {
+      console.log('Found registry:', registryId);
+      console.log(data);
+    }
+  });
+  // [END iot_get_registry]
+}
+
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
-function getClient (apiKey, serviceAccountJson, cb) {
+function getClient (serviceAccountJson, cb) {
   const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountJson));
   const jwtAccess = new google.auth.JWT();
   jwtAccess.fromJSON(serviceAccount);
@@ -516,7 +611,7 @@ function getClient (apiKey, serviceAccountJson, cb) {
   // Set the default authentication to the above JWT access.
   google.options({ auth: jwtAccess });
 
-  const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}&key=${apiKey}`;
+  const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}`;
 
   google.discoverAPI(discoveryUrl, {}, (err, client) => {
     if (err) {
@@ -528,15 +623,8 @@ function getClient (apiKey, serviceAccountJson, cb) {
 }
 
 require(`yargs`) // eslint-disable-line
-  .demand(4)
+  .demand(1)
   .options({
-    apiKey: {
-      alias: 'a',
-      default: process.env.API_KEY,
-      description: 'The API key used for discoverying the API.',
-      requiresArg: true,
-      type: 'string'
-    },
     cloudRegion: {
       alias: 'c',
       default: 'us-central1',
@@ -567,7 +655,7 @@ require(`yargs`) // eslint-disable-line
         createRsaDevice(client, opts.deviceId, opts.registryId, opts.projectId,
             opts.cloudRegion, opts.rsaPath);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -579,7 +667,7 @@ require(`yargs`) // eslint-disable-line
         createEsDevice(client, opts.deviceId, opts.registryId, opts.projectId,
             opts.cloudRegion, opts.esPath);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -591,7 +679,7 @@ require(`yargs`) // eslint-disable-line
         createUnauthDevice(client, opts.deviceId, opts.registryId,
             opts.projectId, opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -603,7 +691,7 @@ require(`yargs`) // eslint-disable-line
         lookupOrCreateRegistry(client, opts.registryId, opts.projectId,
             opts.cloudRegion, opts.pubsubTopic);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -627,7 +715,7 @@ require(`yargs`) // eslint-disable-line
         deleteDevice(client, opts.deviceId, opts.registryId, opts.projectId,
             opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -639,7 +727,7 @@ require(`yargs`) // eslint-disable-line
         clearRegistry(client, opts.registryId, opts.projectId,
             opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -651,7 +739,7 @@ require(`yargs`) // eslint-disable-line
         deleteRegistry(client, opts.registryId, opts.projectId,
             opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -663,7 +751,30 @@ require(`yargs`) // eslint-disable-line
         getDevice(client, opts.deviceId, opts.registryId, opts.projectId,
             opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `getDeviceState <deviceId> <registryId>`,
+    `Retrieves device state given a device ID.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        getDeviceState(client, opts.deviceId, opts.registryId, opts.projectId,
+            opts.cloudRegion);
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `getRegistry <registryId>`,
+    `Retrieves a registry.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        getRegistry(client, opts.registryId, opts.projectId, opts.cloudRegion);
+      };
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -674,7 +785,18 @@ require(`yargs`) // eslint-disable-line
       const cb = function (client) {
         listDevices(client, opts.registryId, opts.projectId, opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `listRegistries`,
+    `Lists the registries in a given project.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        listRegistries(client, opts.projectId, opts.cloudRegion);
+      };
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -686,7 +808,7 @@ require(`yargs`) // eslint-disable-line
         patchEs256ForAuth(client, opts.deviceId, opts.registryId,
             opts.es256Path, opts.projectId, opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -698,20 +820,23 @@ require(`yargs`) // eslint-disable-line
         patchRsa256ForAuth(client, opts.deviceId, opts.registryId,
             opts.rsa256Path, opts.projectId, opts.cloudRegion);
       };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+      getClient(opts.serviceAccount, cb);
     }
   )
-  .example(`node $0 createEs256Device my-es-device my-registry ../ec_public.pem --apiKey=abc123zz`)
-  .example(`node $0 createRegistry my-registry my-iot-topic --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id`)
-  .example(`node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem --apiKey=abc123zz`)
+  .example(`node $0 createEs256Device my-es-device my-registry ../ec_public.pem`)
+  .example(`node $0 createRegistry my-registry my-iot-topic --service_account_json=$HOME/creds_iot.json --project_id=my-project-id`)
+  .example(`node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`)
   .example(`node $0 createUnauthDevice my-device my-registry`)
   .example(`node $0 deleteDevice my-device my-registry`)
   .example(`node $0 deleteRegistry my-device my-registry`)
   .example(`node $0 getDevice my-device my-registry`)
+  .example(`node $0 getDeviceState my-device my-registry`)
+  .example(`node $0 getRegistry my-registry`)
   .example(`node $0 listDevices my-node-registry`)
+  .example(`node $0 listRegistries`)
   .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
   .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
-  .example(`node $0 setupTopic my-iot-topic --service_account_json=$HOME/creds_iot.json --api_key=abc123zz --project_id=my-project-id`)
+  .example(`node $0 setupTopic my-iot-topic --service_account_json=$HOME/creds_iot.json --project_id=my-project-id`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)

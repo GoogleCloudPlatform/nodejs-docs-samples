@@ -21,7 +21,7 @@ function redactString (string, replaceString, minLikelihood, infoTypes) {
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The string to inspect
   // const string = 'My name is Gary and my email is gary@example.com';
@@ -74,7 +74,7 @@ function redactImage (filepath, minLikelihood, infoTypes, outputPath) {
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The path to a local file to inspect. Can be a JPG or PNG image file.
   // const fileName = 'path/to/image.png';

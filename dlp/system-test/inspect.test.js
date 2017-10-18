@@ -75,7 +75,6 @@ test.serial(`should inspect multiple GCS text files with event handlers`, async 
   t.regex(output, /Processed \d+ of approximately \d+ bytes./);
   t.regex(output, /Info type: PHONE_NUMBER/);
   t.regex(output, /Info type: EMAIL_ADDRESS/);
-  t.regex(output, /Info type: CREDIT_CARD_NUMBER/);
 });
 
 test.serial(`should handle a GCS file with no sensitive data with event handlers`, async (t) => {
@@ -100,7 +99,6 @@ test.serial(`should inspect multiple GCS text files with promises`, async (t) =>
   const output = await tools.runAsync(`${cmd} gcsFilePromise nodejs-docs-samples-dlp *.txt`, cwd);
   t.regex(output, /Info type: PHONE_NUMBER/);
   t.regex(output, /Info type: EMAIL_ADDRESS/);
-  t.regex(output, /Info type: CREDIT_CARD_NUMBER/);
 });
 
 test.serial(`should handle a GCS file with no sensitive data with promises`, async (t) => {
@@ -116,7 +114,6 @@ test.serial(`should report GCS file handling errors with promises`, async (t) =>
 // inspect_datastore
 test.serial(`should inspect Datastore`, async (t) => {
   const output = await tools.runAsync(`${cmd} datastore Person --namespaceId DLP`, cwd);
-  t.regex(output, /Info type: PHONE_NUMBER/);
   t.regex(output, /Info type: EMAIL_ADDRESS/);
 });
 
@@ -125,9 +122,25 @@ test.serial(`should handle Datastore with no sensitive data`, async (t) => {
   t.is(output, 'No findings.');
 });
 
-test.serial(`should report Datastore file handling errors`, async (t) => {
+test.serial(`should report Datastore errors`, async (t) => {
   const output = await tools.runAsync(`${cmd} datastore Harmless --namespaceId DLP -t BAD_TYPE`, cwd);
   t.regex(output, /Error in inspectDatastore/);
+});
+
+// inspect_bigquery
+test.serial(`should inspect a Bigquery table`, async (t) => {
+  const output = await tools.runAsync(`${cmd} bigquery integration_tests_dlp harmful`, cwd);
+  t.regex(output, /Info type: CREDIT_CARD_NUMBER/);
+});
+
+test.serial(`should handle a Bigquery table with no sensitive data`, async (t) => {
+  const output = await tools.runAsync(`${cmd} bigquery integration_tests_dlp harmless `, cwd);
+  t.is(output, 'No findings.');
+});
+
+test.serial(`should report Bigquery table handling errors`, async (t) => {
+  const output = await tools.runAsync(`${cmd} bigquery integration_tests_dlp harmless -t BAD_TYPE`, cwd);
+  t.regex(output, /Error in inspectBigquery/);
 });
 
 // CLI options

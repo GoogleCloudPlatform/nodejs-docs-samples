@@ -21,7 +21,7 @@ function listInfoTypes (category, languageCode) {
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The category of info types to list.
   // const category = 'CATEGORY_TO_LIST';
@@ -52,7 +52,7 @@ function listRootCategories (languageCode) {
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
-  const dlp = DLP();
+  const dlp = new DLP.DlpServiceClient();
 
   // The BCP-47 language code to use, e.g. 'en-US'
   // const languageCode = 'en-US';

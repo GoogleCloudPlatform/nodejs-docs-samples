@@ -162,4 +162,3 @@ const authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorit
 // Publish messages.
 publishAsync(1, argv.num_messages);
 // [END iot_run_http]
-

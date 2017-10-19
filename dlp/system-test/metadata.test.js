@@ -27,6 +27,7 @@ test.before(tools.checkCredentials);
 test(`should list info types for a given category`, async (t) => {
   const output = await tools.runAsync(`${cmd} infoTypes GOVERNMENT`, cwd);
   t.regex(output, /US_DRIVERS_LICENSE_NUMBER/);
+  t.false(output.includes('AMERICAN_BANKERS_CUSIP_ID'));
 });
 
 test(`should inspect categories`, async (t) => {

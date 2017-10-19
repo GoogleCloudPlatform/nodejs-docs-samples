@@ -15,7 +15,8 @@
 
 'use strict';
 
-const client = require(`@google-cloud/monitoring`).metric();
+const monitoring = require(`@google-cloud/monitoring`);
+const client = new monitoring.MetricServiceClient();
 const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
@@ -30,27 +31,30 @@ const resourceId = `cloudsql_database`;
 
 test.before(tools.checkCredentials);
 
-test.serial(`should create a metric descriptors`, async (t) => {
+test.serial(`should create a metric descriptors`, async t => {
   const output = await tools.runAsync(`${cmd} create`, cwd);
   t.true(output.includes(`Created custom Metric`));
   t.true(output.includes(`Type: ${customMetricId}`));
 });
 
-test.serial(`should list metric descriptors, including the new custom one`, async (t) => {
-  t.plan(0);
-  const attempt = tools.tryTest(async (assert) => {
-    const output = await tools.runAsync(`${cmd} list`, cwd);
-    assert(output.includes(customMetricId));
-    assert(output.includes(computeMetricId));
-  });
-  attempt.tries(30);
-  attempt.timeout(120000);
-  await attempt.start();
-});
+test.serial(
+  `should list metric descriptors, including the new custom one`,
+  async t => {
+    t.plan(0);
+    const attempt = tools.tryTest(async assert => {
+      const output = await tools.runAsync(`${cmd} list`, cwd);
+      assert(output.includes(customMetricId));
+      assert(output.includes(computeMetricId));
+    });
+    attempt.tries(30);
+    attempt.timeout(120000);
+    await attempt.start();
+  }
+);
 
-test.serial(`should get a metric descriptor`, async (t) => {
+test.serial(`should get a metric descriptor`, async t => {
   t.plan(0);
-  const attempt = tools.tryTest(async (assert) => {
+  const attempt = tools.tryTest(async assert => {
     const output = await tools.runAsync(`${cmd} get ${customMetricId}`, cwd);
     assert(output.includes(`Type: ${customMetricId}`));
   });
@@ -59,124 +63,128 @@ test.serial(`should get a metric descriptor`, async (t) => {
   await attempt.start();
 });
 
-test.serial(`should write time series data`, async (t) => {
+test.serial(`should write time series data`, async t => {
   const output = await tools.runAsync(`${cmd} write`, cwd);
   t.true(output.includes(`Done writing time series data.`));
 });
 
-test.serial(`should delete a metric descriptor`, async (t) => {
+test.serial(`should delete a metric descriptor`, async t => {
   const output = await tools.runAsync(`${cmd} delete ${customMetricId}`, cwd);
   t.true(output.includes(`Deleted ${customMetricId}`));
 });
 
-test(`should list monitored resource descriptors`, async (t) => {
+test(`should list monitored resource descriptors`, async t => {
   const output = await tools.runAsync(`${cmd} list-resources`, cwd);
-  t.true(output.includes(`projects/${projectId}/monitoredResourceDescriptors/${resourceId}`));
+  t.true(
+    output.includes(
+      `projects/${projectId}/monitoredResourceDescriptors/${resourceId}`
+    )
+  );
 });
 
-test(`should get a monitored resource descriptor`, async (t) => {
+test(`should get a monitored resource descriptor`, async t => {
   const output = await tools.runAsync(`${cmd} get-resource ${resourceId}`, cwd);
   t.true(output.includes(`Type: ${resourceId}`));
 });
 
-test(`should read time series data`, async (t) => {
+test(`should read time series data`, async t => {
   const [timeSeries] = await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
-    }
+        seconds: Date.now() / 1000,
+      },
+    },
   });
   const output = await tools.runAsync(`${cmd} read '${filter}'`, cwd);
-  timeSeries.forEach((data) => {
+  timeSeries.forEach(data => {
     t.true(output.includes(`${data.metric.labels.instance_name}:`));
-    data.points.forEach((point) => {
+    data.points.forEach(point => {
       t.true(output.includes(JSON.stringify(point.value)));
     });
   });
 });
 
-test(`should read time series data fields`, async (t) => {
+test(`should read time series data fields`, async t => {
   const [timeSeries] = await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
     // Don't return time series data, instead just return information about
     // the metrics that match the filter
-    view: `HEADERS`
+    view: `HEADERS`,
   });
   const output = await tools.runAsync(`${cmd} read-fields`, cwd);
   t.true(output.includes(`Found data points for the following instances:`));
-  timeSeries.forEach((data) => {
+  timeSeries.forEach(data => {
     t.true(output.includes(data.metric.labels.instance_name));
   });
 });
 
-test(`should read time series data aggregated`, async (t) => {
+test(`should read time series data aggregated`, async t => {
   const [timeSeries] = await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
     // Aggregate results per matching instance
     aggregation: {
       alignmentPeriod: {
-        seconds: 600
+        seconds: 600,
       },
-      perSeriesAligner: `ALIGN_MEAN`
-    }
+      perSeriesAligner: `ALIGN_MEAN`,
+    },
   });
   const output = await tools.runAsync(`${cmd} read-aggregate`, cwd);
-  t.true(output.includes(`CPU utilization:`));
-  timeSeries.forEach((data) => {
-    t.true(output.includes(data.metric.labels.instance_name));
-    t.true(output.includes(`  Now: ${data.points[0].value.doubleValue}`));
-    t.true(output.includes(`  10 min ago: ${data.points[1].value.doubleValue}`));
+  t.regex(output, /CPU utilization:/);
+  timeSeries.forEach(data => {
+    t.regex(output, new RegExp(data.metric.labels.instance_name));
+    t.regex(output, / Now: 0\.\d+/);
+    t.regex(output, / 10 min ago: 0\.\d+/);
   });
 });
 
-test(`should read time series data reduced`, async (t) => {
+test(`should read time series data reduced`, async t => {
   await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
     // Aggregate results per matching instance
     aggregation: {
       alignmentPeriod: {
-        seconds: 600
+        seconds: 600,
       },
       crossSeriesReducer: `REDUCE_MEAN`,
-      perSeriesAligner: `ALIGN_MEAN`
-    }
+      perSeriesAligner: `ALIGN_MEAN`,
+    },
   });
   const output = await tools.runAsync(`${cmd} read-reduce`, cwd);
   t.true(output.includes(`Average CPU utilization across all GCE instances:`));

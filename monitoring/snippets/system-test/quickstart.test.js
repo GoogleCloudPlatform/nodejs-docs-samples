@@ -20,40 +20,42 @@ const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-const client = proxyquire(`@google-cloud/monitoring`, {}).metric();
+const monitoring = proxyquire(`@google-cloud/monitoring`, {});
+const client = new monitoring.MetricServiceClient();
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb(`should list time series`, (t) => {
+test.cb(`should list time series`, t => {
   const clientMock = {
-    projectPath: (projectId) => client.projectPath(projectId),
-    createTimeSeries: (_request) => {
+    projectPath: projectId => client.projectPath(projectId),
+    createTimeSeries: _request => {
       _request.name = client.projectPath(process.env.GCLOUD_PROJECT);
-      _request.timeSeries[0].resource.labels.project_id = process.env.GCLOUD_PROJECT;
+      _request.timeSeries[0].resource.labels.project_id =
+        process.env.GCLOUD_PROJECT;
 
-      return client.createTimeSeries(_request)
-        .then((result) => {
-          setTimeout(() => {
-            try {
-              t.is(console.log.callCount, 1);
-              t.deepEqual(console.log.getCall(0).args, [`Done writing time series data.`]);
-              t.end();
-            } catch (err) {
-              t.end(err);
-            }
-          }, 200);
+      return client.createTimeSeries(_request).then(result => {
+        setTimeout(() => {
+          try {
+            t.is(console.log.callCount, 1);
+            t.deepEqual(console.log.getCall(0).args, [
+              `Done writing time series data.`,
+              {},
+            ]);
+            t.end();
+          } catch (err) {
+            t.end(err);
+          }
+        }, 200);
 
-          return result;
-        });
-    }
+        return result;
+      });
+    },
   };
 
   proxyquire(`../quickstart`, {
     '@google-cloud/monitoring': {
-      v3: {
-        metric: sinon.stub().returns(clientMock)
-      }
-    }
+      MetricServiceClient: sinon.stub().returns(clientMock),
+    },
   });
 });

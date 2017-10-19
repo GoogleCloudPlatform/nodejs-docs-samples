@@ -15,7 +15,6 @@
 
 'use strict';
 
-const client = require(`@google-cloud/monitoring`).uptimeCheck();
 const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
@@ -27,43 +26,63 @@ const instanceId = 'uptime-test-' + Date.now();
 
 test.before(tools.checkCredentials);
 
-test(`should get an uptime check`, async (t) => {
+test(`should get an uptime check`, async t => {
   t.regex(await tools.runAsync(`${cmd} list-ips`, cwd), /USA/);
 });
 
 let id;
 
-test.serial(`should create an uptime check`, async (t) => {
-  const results = await tools.runAsyncWithIO(`${cmd} create ${instanceId}`, cwd);
+test.serial(`should create an uptime check`, async t => {
+  const results = await tools.runAsyncWithIO(
+    `${cmd} create ${instanceId}`,
+    cwd
+  );
   const output = results.stdout + results.stderr;
-  const matches = output.match(new RegExp(`ID: projects/${projectId}/uptimeCheckConfigs/(.+)`));
+  const matches = output.match(
+    new RegExp(`ID: projects/${projectId}/uptimeCheckConfigs/(.+)`)
+  );
   id = matches[1];
   t.regex(output, /Uptime check created:/);
-  t.regex(output, new RegExp(`Resource: {"type":"gce_instance","labels":{"instance_id":"${instanceId}"}}`));
+  t.regex(output, /"type":"gce_instance"/);
+  t.regex(output, new RegExp(`"labels":{"instance_id":"${instanceId}"}`));
   t.regex(output, /Display Name: My GCE Instance Uptime Check/);
 });
 
-test.serial(`should get an uptime check`, async (t) => {
+test.serial(`should get an uptime check`, async t => {
   const results = await tools.runAsyncWithIO(`${cmd} get ${id}`, cwd);
   const output = results.stdout + results.stderr;
-  t.regex(output, new RegExp(`Retrieving projects/${projectId}/uptimeCheckConfigs/${id}`));
-  t.regex(output, new RegExp(`Resource: {"type":"gce_instance","labels":{"instance_id":"${instanceId}"}}`));
+  t.regex(
+    output,
+    new RegExp(`Retrieving projects/${projectId}/uptimeCheckConfigs/${id}`)
+  );
+  t.regex(output, /"type":"gce_instance"/);
+  t.regex(output, new RegExp(`"labels":{"instance_id":"${instanceId}"}`));
 });
 
-test.serial(`should list uptime checks`, async (t) => {
+test.serial(`should list uptime checks`, async t => {
   t.plan(0);
-  await tools.tryTest(async (assert) => {
-    const results = await tools.runAsyncWithIO(`${cmd} list`, cwd);
-    const output = results.stdout + results.stderr;
-    assert((new RegExp(`Resource: {"type":"gce_instance","labels":{"instance_id":"${instanceId}"}}`)).test(output));
-    assert(/Display Name: My GCE Instance Uptime Check/.test(output));
-  }).start();
+  await tools
+    .tryTest(async assert => {
+      const results = await tools.runAsyncWithIO(`${cmd} list`, cwd);
+      const output = results.stdout + results.stderr;
+      assert(/"type":"gce_instance"/.test(output));
+      assert(
+        new RegExp(`"labels":{"instance_id":"${instanceId}"}`).test(output)
+      );
+      assert(/Display Name: My GCE Instance Uptime Check/.test(output));
+    })
+    .start();
 });
 
-test.serial(`should delete an uptime check`, async (t) => {
+test.serial(`should delete an uptime check`, async t => {
   const results = await tools.runAsyncWithIO(`${cmd} delete ${id}`, cwd);
   const output = results.stdout + results.stderr;
-  t.regex(output, new RegExp(`Deleting projects/${projectId}/uptimeCheckConfigs/${id}`));
-  t.regex(output, new RegExp(`projects/${projectId}/uptimeCheckConfigs/${id} deleted.`));
+  t.regex(
+    output,
+    new RegExp(`Deleting projects/${projectId}/uptimeCheckConfigs/${id}`)
+  );
+  t.regex(
+    output,
+    new RegExp(`projects/${projectId}/uptimeCheckConfigs/${id} deleted.`)
+  );
 });
-

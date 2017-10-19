@@ -23,13 +23,13 @@
 
 'use strict';
 
-function createMetricDescriptor (projectId) {
+function createMetricDescriptor(projectId) {
   // [START monitoring_create_metric]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -49,15 +49,16 @@ function createMetricDescriptor (projectId) {
         {
           key: 'store_id',
           valueType: 'STRING',
-          description: 'The ID of the store.'
-        }
-      ]
-    }
+          description: 'The ID of the store.',
+        },
+      ],
+    },
   };
 
   // Creates a custom metric descriptor
-  client.createMetricDescriptor(request)
-    .then((results) => {
+  client
+    .createMetricDescriptor(request)
+    .then(results => {
       const descriptor = results[0];
 
       console.log('Created custom Metric:\n');
@@ -68,23 +69,25 @@ function createMetricDescriptor (projectId) {
       console.log(`Value Type: ${descriptor.valueType}`);
       console.log(`Unit: ${descriptor.unit}`);
       console.log('Labels:');
-      descriptor.labels.forEach((label) => {
-        console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
+      descriptor.labels.forEach(label => {
+        console.log(
+          `  ${label.key} (${label.valueType}) - ${label.description}`
+        );
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_create_metric]
 }
 
-function listMetricDescriptors (projectId) {
+function listMetricDescriptors(projectId) {
   // [START monitoring_list_descriptors]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -92,30 +95,31 @@ function listMetricDescriptors (projectId) {
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
-    name: client.projectPath(projectId)
+    name: client.projectPath(projectId),
   };
 
   // Lists metric descriptors
-  client.listMetricDescriptors(request)
-    .then((results) => {
+  client
+    .listMetricDescriptors(request)
+    .then(results => {
       const descriptors = results[0];
 
       console.log('Metric Descriptors:');
-      descriptors.forEach((descriptor) => console.log(descriptor.name));
+      descriptors.forEach(descriptor => console.log(descriptor.name));
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_list_descriptors]
 }
 
-function getMetricDescriptor (projectId, metricId) {
+function getMetricDescriptor(projectId, metricId) {
   // [START monitoring_get_descriptor]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -124,12 +128,13 @@ function getMetricDescriptor (projectId, metricId) {
   // const metricId = 'custom.googleapis.com/your/id';
 
   const request = {
-    name: client.metricDescriptorPath(projectId, metricId)
+    name: client.metricDescriptorPath(projectId, metricId),
   };
 
   // Retrieves a metric descriptor
-  client.getMetricDescriptor(request)
-    .then((results) => {
+  client
+    .getMetricDescriptor(request)
+    .then(results => {
       const descriptor = results[0];
 
       console.log(`Name: ${descriptor.displayName}`);
@@ -139,23 +144,25 @@ function getMetricDescriptor (projectId, metricId) {
       console.log(`Value Type: ${descriptor.valueType}`);
       console.log(`Unit: ${descriptor.unit}`);
       console.log('Labels:');
-      descriptor.labels.forEach((label) => {
-        console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
+      descriptor.labels.forEach(label => {
+        console.log(
+          `  ${label.key} (${label.valueType}) - ${label.description}`
+        );
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_get_descriptor]
 }
 
-function deleteMetricDescriptor (projectId, metricId) {
+function deleteMetricDescriptor(projectId, metricId) {
   // [START monitoring_delete_metric]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -164,27 +171,28 @@ function deleteMetricDescriptor (projectId, metricId) {
   // const metricId = 'custom.googleapis.com/stores/daily_sales';
 
   const request = {
-    name: client.metricDescriptorPath(projectId, metricId)
+    name: client.metricDescriptorPath(projectId, metricId),
   };
 
   // Deletes a metric descriptor
-  client.deleteMetricDescriptor(request)
-    .then((results) => {
-      console.log(`Deleted ${metricId}`);
+  client
+    .deleteMetricDescriptor(request)
+    .then(results => {
+      console.log(`Deleted ${metricId}`, results[0]);
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_delete_metric]
 }
 
-function writeTimeSeriesData (projectId, metricId) {
+function writeTimeSeriesData(projectId) {
   // [START monitoring_write_timeseries]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -194,57 +202,54 @@ function writeTimeSeriesData (projectId, metricId) {
   const dataPoint = {
     interval: {
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
     value: {
-      doubleValue: 123.45
-    }
+      doubleValue: 123.45,
+    },
   };
 
   const timeSeriesData = {
     metric: {
       type: 'custom.googleapis.com/stores/daily_sales',
       labels: {
-        store_id: 'Pittsburgh'
-      }
+        store_id: 'Pittsburgh',
+      },
     },
     resource: {
       type: 'global',
       labels: {
-        project_id: projectId
-      }
+        project_id: projectId,
+      },
     },
-    points: [
-      dataPoint
-    ]
+    points: [dataPoint],
   };
 
   const request = {
     name: client.projectPath(projectId),
-    timeSeries: [
-      timeSeriesData
-    ]
+    timeSeries: [timeSeriesData],
   };
 
   // Writes time series data
-  client.createTimeSeries(request)
-    .then((results) => {
-      console.log(`Done writing time series data.`);
+  client
+    .createTimeSeries(request)
+    .then(results => {
+      console.log(`Done writing time series data.`, results[0]);
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_write_timeseries]
 }
 
-function readTimeSeriesData (projectId, filter) {
+function readTimeSeriesData(projectId, filter) {
   // [START monitoring_read_timeseries_simple]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -258,39 +263,40 @@ function readTimeSeriesData (projectId, filter) {
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
-    }
+        seconds: Date.now() / 1000,
+      },
+    },
   };
 
   // Writes time series data
-  client.listTimeSeries(request)
-    .then((results) => {
+  client
+    .listTimeSeries(request)
+    .then(results => {
       const timeSeries = results[0];
 
-      timeSeries.forEach((data) => {
+      timeSeries.forEach(data => {
         console.log(`${data.metric.labels.instance_name}:`);
-        data.points.forEach((point) => {
+        data.points.forEach(point => {
           console.log(JSON.stringify(point.value));
         });
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_simple]
 }
 
-function readTimeSeriesFields (projectId) {
+function readTimeSeriesFields(projectId) {
   // [START monitoring_read_timeseries_fields]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -303,40 +309,41 @@ function readTimeSeriesFields (projectId) {
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
     // Don't return time series data, instead just return information about
     // the metrics that match the filter
-    view: 'HEADERS'
+    view: 'HEADERS',
   };
 
   // Writes time series data
-  client.listTimeSeries(request)
-    .then((results) => {
+  client
+    .listTimeSeries(request)
+    .then(results => {
       const timeSeries = results[0];
 
       console.log('Found data points for the following instances:');
-      timeSeries.forEach((data) => {
+      timeSeries.forEach(data => {
         console.log(data.metric.labels.instance_name);
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_fields]
 }
 
-function readTimeSeriesAggregate (projectId) {
+function readTimeSeriesAggregate(projectId) {
   // [START monitoring_read_timeseries_align]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -349,46 +356,47 @@ function readTimeSeriesAggregate (projectId) {
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
     // Aggregate results per matching instance
     aggregation: {
       alignmentPeriod: {
-        seconds: 600
+        seconds: 600,
       },
-      perSeriesAligner: 'ALIGN_MEAN'
-    }
+      perSeriesAligner: 'ALIGN_MEAN',
+    },
   };
 
   // Writes time series data
-  client.listTimeSeries(request)
-    .then((results) => {
+  client
+    .listTimeSeries(request)
+    .then(results => {
       const timeSeries = results[0];
 
       console.log('CPU utilization:');
-      timeSeries.forEach((data) => {
+      timeSeries.forEach(data => {
         console.log(data.metric.labels.instance_name);
         console.log(`  Now: ${data.points[0].value.doubleValue}`);
         console.log(`  10 min ago: ${data.points[1].value.doubleValue}`);
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_align]
 }
 
-function readTimeSeriesReduce (projectId) {
+function readTimeSeriesReduce(projectId) {
   // [START monitoring_read_timeseries_reduce]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -401,44 +409,45 @@ function readTimeSeriesReduce (projectId) {
     interval: {
       startTime: {
         // Limit results to the last 20 minutes
-        seconds: (Date.now() / 1000) - (60 * 20)
+        seconds: Date.now() / 1000 - 60 * 20,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
     // Aggregate results per matching instance
     aggregation: {
       alignmentPeriod: {
-        seconds: 600
+        seconds: 600,
       },
       crossSeriesReducer: 'REDUCE_MEAN',
-      perSeriesAligner: 'ALIGN_MEAN'
-    }
+      perSeriesAligner: 'ALIGN_MEAN',
+    },
   };
 
   // Writes time series data
-  client.listTimeSeries(request)
-    .then((results) => {
+  client
+    .listTimeSeries(request)
+    .then(results => {
       const reductions = results[0][0].points;
 
       console.log('Average CPU utilization across all GCE instances:');
       console.log(`  Last 10 min: ${reductions[0].value.doubleValue}`);
       console.log(`  10-20 min ago: ${reductions[0].value.doubleValue}`);
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_read_timeseries_reduce]
 }
 
-function listMonitoredResourceDescriptors (projectId) {
+function listMonitoredResourceDescriptors(projectId) {
   // [START monitoring_list_resources]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -446,44 +455,43 @@ function listMonitoredResourceDescriptors (projectId) {
   // const projectId = 'YOUR_PROJECT_ID';
 
   const request = {
-    name: client.projectPath(projectId)
+    name: client.projectPath(projectId),
   };
 
   // Lists monitored resource descriptors
-  client.listMonitoredResourceDescriptors(request)
-    .then((results) => {
+  client
+    .listMonitoredResourceDescriptors(request)
+    .then(results => {
       const descriptors = results[0];
 
       console.log('Monitored Resource Descriptors:');
-      descriptors.forEach((descriptor) => {
-        if (descriptor.type === 'uptime_url') {
-          console.log(JSON.stringify(descriptor, null, 2));
-        } else {
-          return;
-        }
+      descriptors.forEach(descriptor => {
         console.log(descriptor.name);
         console.log(`  Type: ${descriptor.type}`);
         if (descriptor.labels) {
           console.log(`  Labels:`);
-          descriptor.labels.forEach((label) => {
-            console.log(`    ${label.key} (${label.valueType}): ${label.description}`);
+          descriptor.labels.forEach(label => {
+            console.log(
+              `    ${label.key} (${label.valueType}): ${label.description}`
+            );
           });
         }
+        console.log();
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_list_resources]
 }
 
-function getMonitoredResourceDescriptor (projectId, resourceType) {
+function getMonitoredResourceDescriptor(projectId, resourceType) {
   // [START monitoring_get_resource]
   // Imports the Google Cloud client library
-  const Monitoring = require('@google-cloud/monitoring');
+  const monitoring = require('@google-cloud/monitoring');
 
   // Creates a client
-  const client = Monitoring.metric();
+  const client = new monitoring.MetricServiceClient();
 
   /**
    * TODO(developer): Uncomment and edit the following lines of code.
@@ -492,23 +500,26 @@ function getMonitoredResourceDescriptor (projectId, resourceType) {
   // const resourceType = 'some_resource_type, e.g. cloudsql_database';
 
   const request = {
-    name: client.monitoredResourceDescriptorPath(projectId, resourceType)
+    name: client.monitoredResourceDescriptorPath(projectId, resourceType),
   };
 
   // Lists monitored resource descriptors
-  client.getMonitoredResourceDescriptor(request)
-    .then((results) => {
+  client
+    .getMonitoredResourceDescriptor(request)
+    .then(results => {
       const descriptor = results[0];
 
       console.log(`Name: ${descriptor.displayName}`);
       console.log(`Description: ${descriptor.description}`);
       console.log(`Type: ${descriptor.type}`);
       console.log('Labels:');
-      descriptor.labels.forEach((label) => {
-        console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
+      descriptor.labels.forEach(label => {
+        console.log(
+          `  ${label.key} (${label.valueType}) - ${label.description}`
+        );
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_get_resource]
@@ -520,67 +531,61 @@ const cli = require(`yargs`)
     `create [projectId]`,
     `Creates an example 'custom.googleapis.com/stores/daily_sales' custom metric descriptor.`,
     {},
-    (opts) => createMetricDescriptor(opts.projectId)
+    opts => createMetricDescriptor(opts.projectId)
   )
-  .command(
-    `list [projectId]`,
-    `Lists metric descriptors.`,
-    {},
-    (opts) => listMetricDescriptors(opts.projectId)
+  .command(`list [projectId]`, `Lists metric descriptors.`, {}, opts =>
+    listMetricDescriptors(opts.projectId)
   )
-  .command(
-    `get <metricId> [projectId]`,
-    `Get a metric descriptor.`,
-    {},
-    (opts) => getMetricDescriptor(opts.projectId, opts.metricId)
+  .command(`get <metricId> [projectId]`, `Get a metric descriptor.`, {}, opts =>
+    getMetricDescriptor(opts.projectId, opts.metricId)
   )
   .command(
     `delete <metricId> [projectId]`,
     `Deletes a custom metric descriptor.`,
     {},
-    (opts) => deleteMetricDescriptor(opts.projectId, opts.metricId)
+    opts => deleteMetricDescriptor(opts.projectId, opts.metricId)
   )
   .command(
     `write [projectId]`,
     `Writes example time series data to 'custom.googleapis.com/stores/daily_sales'.`,
     {},
-    (opts) => writeTimeSeriesData(opts.projectId)
+    opts => writeTimeSeriesData(opts.projectId)
   )
   .command(
     `read <filter> [projectId]`,
     `Reads time series data that matches the given filter.`,
     {},
-    (opts) => readTimeSeriesData(opts.projectId, opts.filter)
+    opts => readTimeSeriesData(opts.projectId, opts.filter)
   )
   .command(
     `read-fields [projectId]`,
     `Reads headers of time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.`,
     {},
-    (opts) => readTimeSeriesFields(opts.projectId)
+    opts => readTimeSeriesFields(opts.projectId)
   )
   .command(
     `read-aggregate [projectId]`,
     `Aggregates time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.`,
     {},
-    (opts) => readTimeSeriesAggregate(opts.projectId)
+    opts => readTimeSeriesAggregate(opts.projectId)
   )
   .command(
     `read-reduce [projectId]`,
     `Reduces time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.`,
     {},
-    (opts) => readTimeSeriesReduce(opts.projectId)
+    opts => readTimeSeriesReduce(opts.projectId)
   )
   .command(
     `list-resources [projectId]`,
     `Lists monitored resource descriptors.`,
     {},
-    (opts) => listMonitoredResourceDescriptors(opts.projectId)
+    opts => listMonitoredResourceDescriptors(opts.projectId)
   )
   .command(
     `get-resource <resourceType> [projectId]`,
     `Get a monitored resource descriptor.`,
     {},
-    (opts) => getMonitoredResourceDescriptor(opts.projectId, opts.resourceType)
+    opts => getMonitoredResourceDescriptor(opts.projectId, opts.resourceType)
   )
   .options({
     projectId: {
@@ -588,8 +593,8 @@ const cli = require(`yargs`)
       default: process.env.GCLOUD_PROJECT,
       global: true,
       requiresArg: true,
-      type: 'string'
-    }
+      type: 'string',
+    },
   })
   .example(`node $0 create`)
   .example(`node $0 list`)
@@ -598,13 +603,17 @@ const cli = require(`yargs`)
   .example(`node $0 list-resources`)
   .example(`node $0 get-resource cloudsql_database`)
   .example(`node $0 write`)
-  .example(`node $0 read 'metric.type="compute.googleapis.com/instance/cpu/utilization"'`)
+  .example(
+    `node $0 read 'metric.type="compute.googleapis.com/instance/cpu/utilization"'`
+  )
   .example(`node $0 read-fields`)
   .example(`node $0 read-aggregate`)
   .example(`node $0 read-reduce`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/monitoring/docs`);
+  .epilogue(
+    `For more information, see https://cloud.google.com/monitoring/docs`
+  );
 
 if (module === require.main) {
   cli.help().strict().argv; // eslint-disable-line

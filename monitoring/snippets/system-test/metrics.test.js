@@ -102,6 +102,7 @@ test(`should read time series data`, async t => {
     },
   });
   const output = await tools.runAsync(`${cmd} read '${filter}'`, cwd);
+  t.true(true); // Do not fail if there is simply no data to return.
   timeSeries.forEach(data => {
     t.true(output.includes(`${data.metric.labels.instance_name}:`));
     data.points.forEach(point => {
@@ -187,7 +188,14 @@ test(`should read time series data reduced`, async t => {
     },
   });
   const output = await tools.runAsync(`${cmd} read-reduce`, cwd);
-  t.true(output.includes(`Average CPU utilization across all GCE instances:`));
-  t.true(output.includes(`  Last 10 min`));
-  t.true(output.includes(`  10-20 min ago`));
+  // Special case: No output.
+  if (output === 'No data') {
+    t.true(output.includes('No data'));
+  } else {
+    t.true(
+      output.includes(`Average CPU utilization across all GCE instances:`)
+    );
+    t.true(output.includes(`  Last 10 min`));
+    t.true(output.includes(`  10-20 min ago`));
+  }
 });

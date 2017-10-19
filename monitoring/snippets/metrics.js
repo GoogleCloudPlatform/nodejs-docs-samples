@@ -429,6 +429,10 @@ function readTimeSeriesReduce(projectId) {
   client
     .listTimeSeries(request)
     .then(results => {
+      if (results[0].length === 0) {
+        console.log('No data');
+        return;
+      }
       const reductions = results[0][0].points;
 
       console.log('Average CPU utilization across all GCE instances:');

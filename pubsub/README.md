@@ -84,19 +84,21 @@ __Usage:__ `node subscriptions.js --help`
 subscriptions.js <command>
 
 Commands:
-  subscriptions.js list [topicName]                            Lists all subscriptions in the current project,
-                                                               optionally filtering by a topic.
-  subscriptions.js create <topicName> <subscriptionName>       Creates a new subscription.
-  subscriptions.js create-flow <topicName> <subscriptionName>  Creates a new subscription with flow-control limits,
-                                                               which don't persist between subscriptions.
-  subscriptions.js create-push <topicName> <subscriptionName>  Creates a new push subscription.
-  subscriptions.js delete <subscriptionName>                   Deletes a subscription.
-  subscriptions.js get <subscriptionName>                      Gets the metadata for a subscription.
-  subscriptions.js listen-messages <subscriptionName>          Listens to messages for a subscription.
-  subscriptions.js listen-errors <subscriptionName>            Listens to messages and errors for a subscription.
-  subscriptions.js get-policy <subscriptionName>               Gets the IAM policy for a subscription.
-  subscriptions.js set-policy <subscriptionName>               Sets the IAM policy for a subscription.
-  subscriptions.js test-permissions <subscriptionName>         Tests the permissions for a subscription.
+  subscriptions.js list [topicName]                             Lists all subscriptions in the current project,
+                                                                optionally filtering by a topic.
+  subscriptions.js create <topicName> <subscriptionName>        Creates a new subscription.
+  subscriptions.js create-flow <topicName> <subscriptionName>   Creates a new subscription with flow-control limits,
+                                                                which don't persist between subscriptions.
+  subscriptions.js create-push <topicName> <subscriptionName>   Creates a new push subscription.
+  subscriptions.js modify-config <topicName>                    Modifies the configuration of an existing push
+  <subscriptionName>                                            subscription.
+  subscriptions.js delete <subscriptionName>                    Deletes a subscription.
+  subscriptions.js get <subscriptionName>                       Gets the metadata for a subscription.
+  subscriptions.js listen-messages <subscriptionName>           Listens to messages for a subscription.
+  subscriptions.js listen-errors <subscriptionName>             Listens to messages and errors for a subscription.
+  subscriptions.js get-policy <subscriptionName>                Gets the IAM policy for a subscription.
+  subscriptions.js set-policy <subscriptionName>                Sets the IAM policy for a subscription.
+  subscriptions.js test-permissions <subscriptionName>          Tests the permissions for a subscription.
 
 Options:
   --version  Show version number                                                                               [boolean]
@@ -108,6 +110,7 @@ Examples:
   node subscriptions.js create my-topic worker-1
   node subscriptions.js create-flow my-topic worker-1 -m 5
   node subscriptions.js create-push my-topic worker-1
+  node subscriptions.js modify-config my-topic worker-1
   node subscriptions.js get worker-1
   node subscriptions.js listen-messages my-subscription
   node subscriptions.js listen-errors my-subscription

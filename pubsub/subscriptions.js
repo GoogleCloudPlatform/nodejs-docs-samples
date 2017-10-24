@@ -153,7 +153,6 @@ function modifyPushConfig (topicName, subscriptionName, pushEndpoint) {
     pushEndpoint: `https://${pubsub.projectId}.appspot.com/push`
   };
 
-  // Modify the target subscription's push config
   return subscription.modifyPushConfig(options)
     .then((results) => {
       console.log(`Modified push config for subscription ${subscription.name}.`);

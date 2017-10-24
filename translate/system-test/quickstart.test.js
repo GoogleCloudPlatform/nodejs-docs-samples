@@ -25,7 +25,7 @@ test.before(tools.checkCredentials);
 test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
-test.cb(`should translate a string`, (t) => {
+test.cb(`should translate a string`, t => {
   const string = `Hello, world!`;
   const expectedTranslation = `Привет мир!`;
   const targetLanguage = `ru`;
@@ -34,7 +34,8 @@ test.cb(`should translate a string`, (t) => {
       t.is(_string, string);
       t.is(_targetLanguage, targetLanguage);
 
-      return translate.translate(_string, _targetLanguage)
+      return translate
+        .translate(_string, _targetLanguage)
         .then(([translation]) => {
           t.is(translation, expectedTranslation);
 
@@ -42,7 +43,9 @@ test.cb(`should translate a string`, (t) => {
             try {
               t.is(console.log.callCount, 2);
               t.deepEqual(console.log.getCall(0).args, [`Text: ${string}`]);
-              t.deepEqual(console.log.getCall(1).args, [`Translation: ${expectedTranslation}`]);
+              t.deepEqual(console.log.getCall(1).args, [
+                `Translation: ${expectedTranslation}`,
+              ]);
               t.end();
             } catch (err) {
               t.end(err);
@@ -51,10 +54,10 @@ test.cb(`should translate a string`, (t) => {
 
           return [translation];
         });
-    }
+    },
   };
 
   proxyquire(`../quickstart`, {
-    '@google-cloud/translate': sinon.stub().returns(translateMock)
+    '@google-cloud/translate': sinon.stub().returns(translateMock),
   });
 });

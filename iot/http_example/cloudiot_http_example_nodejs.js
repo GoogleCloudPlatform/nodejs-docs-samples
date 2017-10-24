@@ -123,7 +123,8 @@ function publishAsync (messageCount, numMessages) {
   const options = {
     url: url,
     headers: {
-      'Authorization': 'Bearer ' + authToken
+      'authorization': 'Bearer ' + authToken,
+      'cache-control': 'no-cache'
     },
     json: true,
     body: postData

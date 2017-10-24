@@ -108,4 +108,6 @@ deployment:
       - node scripts/build "storage-transfer"
       - node scripts/build "trace"
       - node scripts/build "translate"
+      # TODO: This build times out. Does video need more than 10 minutes?
+      # - node scripts/build "video"
       - node scripts/build "vision"

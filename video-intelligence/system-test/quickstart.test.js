@@ -22,7 +22,7 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node quickstart.js`;
 const cwd = path.join(__dirname, `..`);
 
-test(`should analyze a hardcoded video`, async (t) => {
+test(`should analyze a hardcoded video`, async t => {
   const output = await tools.runAsync(cmd, cwd);
   t.regex(output, /Label standing occurs at:/);
 });

@@ -93,7 +93,6 @@ deployment:
       - node scripts/build "datastore"
       - node scripts/build "debugger"
       - node scripts/build "dlp"
-      - node scripts/build "dns"
       - node scripts/build "endpoints/getting-started"
       # TODO(ace-n): Get this working again
       # - node scripts/build "endpoints/getting-started-grpc"
@@ -101,8 +100,6 @@ deployment:
       - node scripts/build "iot/manager"
       - node scripts/build "kms"
       - node scripts/build "language/slackbot"
-      - node scripts/build "logging"
-      - node scripts/build "monitoring"
       - node scripts/build "prediction"
       - node scripts/build "pubsub"
       - node scripts/build "resource"

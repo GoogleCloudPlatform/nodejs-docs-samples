@@ -253,7 +253,7 @@ View the [Cloud Datastore Node.js samples][datastore_samples].
 [Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
 amount of data at any time.
 
-View the [Cloud Storage Node.js samples][storage_samples].
+View the [Cloud Storage JSON API Node.js Client samples][storage_samples].
 
 [storage_docs]: https://cloud.google.com/storage/docs/
 [storage_samples]: https://github.com/googleapis/nodejs-storage/tree/master/samples
@@ -299,7 +299,7 @@ understanding technologies to developers, including sentiment analysis, entity
 recognition, and syntax analysis. This API is part of the larger Cloud Machine
 Learning API.
 
-View the [Cloud Natural Language API Node.js samples][language_samples].
+View the [Cloud Natural Language API Node.js Client samples][language_samples].
 
 [language_docs]: https://cloud.google.com/natural-language/docs/
 [language_samples]: language
@@ -364,10 +364,10 @@ View the [Stackdriver Debugger Node.js sample][debugger_sample].
 monitor, and alert on log data and events from Google Cloud Platform and Amazon
 Web Services.
 
-View the [Stackdriver Logging Node.js samples][logging_samples].
+View the [Stackdriver Logging API Node.js Client samples][logging_samples].
 
 [logging_docs]: https://cloud.google.com/logging/docs/
-[logging_samples]: logging
+[logging_samples]: https://github.com/googleapis/nodejs-logging/tree/master/samples
 
 #### Stackdriver Monitoring
 
@@ -376,10 +376,10 @@ from Google Cloud Platform, Amazon Web Services (AWS), hosted uptime probes,
 application instrumentation, and a variety of common application components
 including Cassandra, Nginx, Apache Web Server, Elasticsearch and many others.
 
-View the [Stackdriver Monitoring Node.js samples][monitoring_samples].
+View the [Stackdriver Monitoring API Node.js Client samples][monitoring_samples].
 
 [monitoring_docs]: https://cloud.google.com/monitoring/docs/
-[monitoring_samples]: monitoring
+[monitoring_samples]: https://github.com/googleapis/nodejs-monitoring/tree/master/samples
 
 #### Stackdriver Trace
 
@@ -403,10 +403,10 @@ anywhere in the world. Read more about [Google Cloud DNS][dns_docs].
 
 [dns_docs]: https://cloud.google.com/dns/docs
 
-View the [Google Cloud DNS Node.js sample][dns_sample].
+View the [Google Cloud DNS API Node.js Client samples][dns_samples].
 
 [dns_docs]: https://cloud.google.com/dns/docs/
-[dns_sample]: dns
+[dns_samples]: https://github.com/googleapis/nodejs-dns/tree/master/samples
 
 ### Identity and Security
 

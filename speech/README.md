@@ -39,18 +39,28 @@ __Usage:__ `node recognize.js --help`
 
 ```
 Commands:
-  sync <filename>           Detects speech in a local audio file.
-  sync-gcs <gcsUri>         Detects speech in an audio file located in a Google Cloud Storage bucket.
-  sync-words <filename>     Detects speech in a local audio file with word time offset.
-  async <filename>          Creates a job to detect speech in a local audio file, and waits for the job to complete.
-  async-gcs <gcsUri>        Creates a job to detect speech in an audio file located in a Google Cloud Storage bucket,
-                            and waits for the job to complete.
-  async-gcs-words <gcsUri>  Creates a job to detect speech  with word time offset in an audio file located in a Google
-                            Cloud Storage bucket, and waits for the job to complete.
-  stream <filename>         Detects speech in a local audio file by streaming it to the Speech API.
-  listen                    Detects speech in a microphone input stream. This command requires that you have SoX
-                            installed and available in your $PATH. See
-                            https://www.npmjs.com/package/node-record-lpcm16#dependencies
+  sync <filename>                 Detects speech in a local audio file.
+  sync-gcs <gcsUri>               Detects speech in an audio file located in a Google Cloud Storage bucket.
+  sync-words <filename>           Detects speech in a local audio file with word time offset.
+  sync-punctuation <filename>     Detects speech in a local audio file with automatic punctuation enabled.
+  sync-video <filename>           Detects speech in a local audio file with original media type set to VIDEO.
+  sync-metadata <filename>        Detects speech in a local audio file with audio metadata paramters.
+  async <filename>                Creates a job to detect speech in a local audio file, and waits for the job to
+                                  complete.
+  async-gcs <gcsUri>              Creates a job to detect speech in an audio file located in a Google Cloud Storage
+                                  bucket, and waits for the job to complete.
+  async-gcs-words <gcsUri>        Creates a job to detect speech with word time offset in an audio file located in a
+                                  Google Cloud Storage bucket, and waits for the job to complete.
+  async-gcs-punctuation <gcsUri>  Creates a job to detect speech automatic punctuation enabled in an audio file located
+                                  in a Google Cloud Storage bucket, and waits for the job to complete.
+  async-gcs-video <gcsUri>        Creates a job to detect speech with original media type set to VIDEO in an audio file
+                                  located in a Google Cloud Storage bucket, and waits for the job to complete.
+  async-gcs-metadata <gcsUri>     Creates a job to detect speech with audio metadata paramaters in an audio file located
+                                  in a Google Cloud Storage bucket, and waits for the job to complete.
+  stream <filename>               Detects speech in a local audio file by streaming it to the Speech API.
+  listen                          Detects speech in a microphone input stream. This command requires that you have SoX
+                                  installed and available in your $PATH. See
+                                  https://www.npmjs.com/package/node-record-lpcm16#dependencies
 
 Options:
   --help                 Show help                                                                             [boolean]

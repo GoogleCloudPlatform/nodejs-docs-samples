@@ -42,6 +42,7 @@ on Google Cloud Platform.
     * [Google Cloud Prediction API](#google-cloud-prediction-api)
     * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
     * [Google Translate API](#google-translate-api)
+    * [Google Video Intelligence API](#google-video-intelligence-api)
     * [Google Cloud Vision API](#google-cloud-vision-api)
   * [**Management Tools**](#management-tools)
     * [Stackdriver Debugger](#stackdriver-debugger)
@@ -236,7 +237,7 @@ consistent and scalable relational database service.
 View the [Cloud Spanner Node.js samples][spanner_samples].
 
 [spanner_docs]: https://cloud.google.com/spanner/docs/
-[spanner_samples]: spanner
+[spanner_samples]: https://github.com/googleapis/nodejs-spanner/tree/master/samples
 
 #### Google Cloud Datastore
 
@@ -332,7 +333,17 @@ text between thousands of language pairs.
 View the [Translate API Node.js samples][translate_samples].
 
 [translate_docs]: https://cloud.google.com/translate/docs/
-[translate_samples]: translate
+[translate_samples]: https://github.com/googleapis/nodejs-translate/tree/master/samples
+
+#### Google Cloud Video Intelligence API
+
+The [Cloud Video Intelligence API][video_intelligence_docs] allows developers to
+use Google video analysis technology as part of their applications.
+
+View the [Cloud Video Intelligence API Node.js samples][video_intelligence_samples].
+
+[video_intelligence_docs]: https://cloud.google.com/video-intelligence/docs/
+[video_intelligence_samples]: https://github.com/googleapis/nodejs-video-intelligence/tree/master/samples
 
 #### Google Cloud Vision API
 

@@ -24,7 +24,7 @@ const cwd = path.join(__dirname, `..`);
 
 test.before(tools.checkCredentials);
 
-test(`should run`, async (t) => {
+test(`should run`, async t => {
   const output = await tools.runAsync(cmd, cwd);
   t.regex(output, /Info type: US_MALE_NAME/);
 });

@@ -15,7 +15,7 @@
 
 'use strict';
 
-function deidentifyWithMask (string, maskingCharacter, numberToMask) {
+function deidentifyWithMask(string, maskingCharacter, numberToMask) {
   // [START deidentify_masking]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -34,36 +34,39 @@ function deidentifyWithMask (string, maskingCharacter, numberToMask) {
   // const maskingCharacter = 'x';
 
   // Construct deidentification request
-  const items = [{ type: 'text/plain', value: string }];
+  const items = [{type: 'text/plain', value: string}];
   const request = {
     deidentifyConfig: {
       infoTypeTransformations: {
-        transformations: [{
-          primitiveTransformation: {
-            characterMaskConfig: {
-              maskingCharacter: maskingCharacter,
-              numberToMask: numberToMask
-            }
-          }
-        }]
-      }
+        transformations: [
+          {
+            primitiveTransformation: {
+              characterMaskConfig: {
+                maskingCharacter: maskingCharacter,
+                numberToMask: numberToMask,
+              },
+            },
+          },
+        ],
+      },
     },
-    items: items
+    items: items,
   };
 
   // Run deidentification request
-  dlp.deidentifyContent(request)
-    .then((response) => {
+  dlp
+    .deidentifyContent(request)
+    .then(response => {
       const deidentifiedItems = response[0].items;
       console.log(deidentifiedItems[0].value);
     })
-    .catch((err) => {
+    .catch(err => {
       console.log(`Error in deidentifyWithMask: ${err.message || err}`);
     });
   // [END deidentify_masking]
 }
 
-function deidentifyWithFpe (string, alphabet, keyName, wrappedKey) {
+function deidentifyWithFpe(string, alphabet, keyName, wrappedKey) {
   // [START deidentify_fpe]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -86,35 +89,38 @@ function deidentifyWithFpe (string, alphabet, keyName, wrappedKey) {
   // const wrappedKey = 'YOUR_ENCRYPTED_AES_256_KEY'
 
   // Construct deidentification request
-  const items = [{ type: 'text/plain', value: string }];
+  const items = [{type: 'text/plain', value: string}];
   const request = {
     deidentifyConfig: {
       infoTypeTransformations: {
-        transformations: [{
-          primitiveTransformation: {
-            cryptoReplaceFfxFpeConfig: {
-              cryptoKey: {
-                kmsWrapped: {
-                  wrappedKey: wrappedKey,
-                  cryptoKeyName: keyName
-                }
+        transformations: [
+          {
+            primitiveTransformation: {
+              cryptoReplaceFfxFpeConfig: {
+                cryptoKey: {
+                  kmsWrapped: {
+                    wrappedKey: wrappedKey,
+                    cryptoKeyName: keyName,
+                  },
+                },
+                commonAlphabet: alphabet,
               },
-              commonAlphabet: alphabet
-            }
-          }
-        }]
-      }
+            },
+          },
+        ],
+      },
     },
-    items: items
+    items: items,
   };
 
   // Run deidentification request
-  dlp.deidentifyContent(request)
-    .then((response) => {
+  dlp
+    .deidentifyContent(request)
+    .then(response => {
       const deidentifiedItems = response[0].items;
       console.log(deidentifiedItems[0].value);
     })
-    .catch((err) => {
+    .catch(err => {
       console.log(`Error in deidentifyWithFpe: ${err.message || err}`);
     });
   // [END deidentify_fpe]
@@ -125,35 +131,49 @@ const cli = require(`yargs`)
   .command(
     `mask <string>`,
     `Deidentify sensitive data by masking it with a character.`,
-  {
-    maskingCharacter: {
-      type: 'string',
-      alias: 'c',
-      default: ''
+    {
+      maskingCharacter: {
+        type: 'string',
+        alias: 'c',
+        default: '',
+      },
+      numberToMask: {
+        type: 'number',
+        alias: 'n',
+        default: 0,
+      },
     },
-    numberToMask: {
-      type: 'number',
-      alias: 'n',
-      default: 0
-    }
-  },
-    (opts) => deidentifyWithMask(opts.string, opts.maskingCharacter, opts.numberToMask)
+    opts =>
+      deidentifyWithMask(opts.string, opts.maskingCharacter, opts.numberToMask)
   )
   .command(
     `fpe <string> <wrappedKey> <keyName>`,
     `Deidentify sensitive data using Format Preserving Encryption (FPE).`,
-  {
-    alphabet: {
-      type: 'string',
-      alias: 'a',
-      default: 'ALPHA_NUMERIC',
-      choices: ['NUMERIC', 'HEXADECIMAL', 'UPPER_CASE_ALPHA_NUMERIC', 'ALPHA_NUMERIC']
-    }
-  },
-    (opts) => deidentifyWithFpe(opts.string, opts.alphabet, opts.keyName, opts.wrappedKey)
+    {
+      alphabet: {
+        type: 'string',
+        alias: 'a',
+        default: 'ALPHA_NUMERIC',
+        choices: [
+          'NUMERIC',
+          'HEXADECIMAL',
+          'UPPER_CASE_ALPHA_NUMERIC',
+          'ALPHA_NUMERIC',
+        ],
+      },
+    },
+    opts =>
+      deidentifyWithFpe(
+        opts.string,
+        opts.alphabet,
+        opts.keyName,
+        opts.wrappedKey
+      )
   )
   .example(`node $0 mask "My SSN is 372819127"`)
-  .example(`node $0 fpe "My SSN is 372819127" <YOUR_ENCRYPTED_AES_256_KEY> <YOUR_KEY_NAME>`)
+  .example(
+    `node $0 fpe "My SSN is 372819127" <YOUR_ENCRYPTED_AES_256_KEY> <YOUR_KEY_NAME>`
+  )
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/dlp/docs.`);

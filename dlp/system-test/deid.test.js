@@ -31,34 +31,49 @@ const keyName = process.env.DLP_DEID_KEY_NAME;
 test.before(tools.checkCredentials);
 
 // deidentify_masking
-test(`should mask sensitive data in a string`, async (t) => {
-  const output = await tools.runAsync(`${cmd} mask "${harmfulString}" -c x -n 5`, cwd);
+test(`should mask sensitive data in a string`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} mask "${harmfulString}" -c x -n 5`,
+    cwd
+  );
   t.is(output, 'My SSN is xxxxx9127');
 });
 
-test(`should ignore insensitive data when masking a string`, async (t) => {
+test(`should ignore insensitive data when masking a string`, async t => {
   const output = await tools.runAsync(`${cmd} mask "${harmlessString}"`, cwd);
   t.is(output, harmlessString);
 });
 
-test(`should handle masking errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} mask "${harmfulString}" -n -1`, cwd);
+test(`should handle masking errors`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} mask "${harmfulString}" -n -1`,
+    cwd
+  );
   t.regex(output, /Error in deidentifyWithMask/);
 });
 
 // deidentify_fpe
-test(`should FPE encrypt sensitive data in a string`, async (t) => {
-  const output = await tools.runAsync(`${cmd} fpe "${harmfulString}" ${wrappedKey} ${keyName} -a NUMERIC`, cwd);
+test(`should FPE encrypt sensitive data in a string`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} fpe "${harmfulString}" ${wrappedKey} ${keyName} -a NUMERIC`,
+    cwd
+  );
   t.regex(output, /My SSN is \d{9}/);
   t.not(output, harmfulString);
 });
 
-test(`should ignore insensitive data when FPE encrypting a string`, async (t) => {
-  const output = await tools.runAsync(`${cmd} fpe "${harmlessString}" ${wrappedKey} ${keyName}`, cwd);
+test(`should ignore insensitive data when FPE encrypting a string`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} fpe "${harmlessString}" ${wrappedKey} ${keyName}`,
+    cwd
+  );
   t.is(output, harmlessString);
 });
 
-test(`should handle FPE encryption errors`, async (t) => {
-  const output = await tools.runAsync(`${cmd} fpe "${harmfulString}" ${wrappedKey} BAD_KEY_NAME`, cwd);
+test(`should handle FPE encryption errors`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} fpe "${harmfulString}" ${wrappedKey} BAD_KEY_NAME`,
+    cwd
+  );
   t.regex(output, /Error in deidentifyWithFpe/);
 });

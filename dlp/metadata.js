@@ -15,7 +15,7 @@
 
 'use strict';
 
-function listInfoTypes (category, languageCode) {
+function listInfoTypes(category, languageCode) {
   // [START list_info_types]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -29,24 +29,25 @@ function listInfoTypes (category, languageCode) {
   // The BCP-47 language code to use, e.g. 'en-US'
   // const languageCode = 'en-US';
 
-  dlp.listInfoTypes({
-    category: category,
-    languageCode: languageCode
-  })
-  .then((body) => {
-    const infoTypes = body[0].infoTypes;
-    console.log(`Info types for category ${category}:`);
-    infoTypes.forEach((infoType) => {
-      console.log(`\t${infoType.name} (${infoType.displayName})`);
+  dlp
+    .listInfoTypes({
+      category: category,
+      languageCode: languageCode,
+    })
+    .then(body => {
+      const infoTypes = body[0].infoTypes;
+      console.log(`Info types for category ${category}:`);
+      infoTypes.forEach(infoType => {
+        console.log(`\t${infoType.name} (${infoType.displayName})`);
+      });
+    })
+    .catch(err => {
+      console.log(`Error in listInfoTypes: ${err.message || err}`);
     });
-  })
-  .catch((err) => {
-    console.log(`Error in listInfoTypes: ${err.message || err}`);
-  });
   // [END list_info_types]
 }
 
-function listRootCategories (languageCode) {
+function listRootCategories(languageCode) {
   // [START list_categories]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -57,19 +58,20 @@ function listRootCategories (languageCode) {
   // The BCP-47 language code to use, e.g. 'en-US'
   // const languageCode = 'en-US';
 
-  dlp.listRootCategories({
-    languageCode: languageCode
-  })
-  .then((body) => {
-    const categories = body[0].categories;
-    console.log(`Categories:`);
-    categories.forEach((category) => {
-      console.log(`\t${category.name}: ${category.displayName}`);
+  dlp
+    .listRootCategories({
+      languageCode: languageCode,
+    })
+    .then(body => {
+      const categories = body[0].categories;
+      console.log(`Categories:`);
+      categories.forEach(category => {
+        console.log(`\t${category.name}: ${category.displayName}`);
+      });
+    })
+    .catch(err => {
+      console.log(`Error in listRootCategories: ${err.message || err}`);
     });
-  })
-  .catch((err) => {
-    console.log(`Error in listRootCategories: ${err.message || err}`);
-  });
   // [END list_categories]
 }
 
@@ -79,19 +81,19 @@ const cli = require(`yargs`)
     `infoTypes <category>`,
     `List types of sensitive information within a category.`,
     {},
-    (opts) => listInfoTypes(opts.category, opts.languageCode)
+    opts => listInfoTypes(opts.category, opts.languageCode)
   )
   .command(
     `categories`,
     `List root categories of sensitive information.`,
     {},
-    (opts) => listRootCategories(opts.languageCode)
+    opts => listRootCategories(opts.languageCode)
   )
   .option('l', {
     alias: 'languageCode',
     default: 'en-US',
     type: 'string',
-    global: true
+    global: true,
   })
   .example(`node $0 infoTypes GOVERNMENT`)
   .example(`node $0 categories`)

@@ -130,7 +130,7 @@ test.serial(`should report Datastore errors`, async (t) => {
 // inspect_bigquery
 test.serial(`should inspect a Bigquery table`, async (t) => {
   const output = await tools.runAsync(`${cmd} bigquery integration_tests_dlp harmful`, cwd);
-  t.regex(output, /Info type: CREDIT_CARD_NUMBER/);
+  t.regex(output, /Info type: PHONE_NUMBER/);
 });
 
 test.serial(`should handle a Bigquery table with no sensitive data`, async (t) => {

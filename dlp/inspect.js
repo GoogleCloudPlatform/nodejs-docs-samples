@@ -118,7 +118,7 @@ function inspectFile(
   // Construct file data to inspect
   const fileItems = [
     {
-      type: mime.lookup(filepath) || 'application/octet-stream',
+      type: mime.getType(filepath) || 'application/octet-stream',
       data: Buffer.from(fs.readFileSync(filepath)).toString('base64'),
     },
   ];

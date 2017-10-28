@@ -20,7 +20,7 @@ const test = require('ava');
 const fs = require('fs');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const cmd = 'node redact';
+const cmd = 'node redact.js';
 const cwd = path.join(__dirname, `..`);
 
 const testImage = 'resources/test.png';

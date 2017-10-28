@@ -19,7 +19,7 @@ const path = require('path');
 const test = require('ava');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const cmd = 'node risk';
+const cmd = 'node risk.js';
 const cwd = path.join(__dirname, `..`);
 
 const dataset = 'integration_tests_dlp';

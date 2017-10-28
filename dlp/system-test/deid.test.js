@@ -19,7 +19,7 @@ const path = require('path');
 const test = require('ava');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const cmd = 'node deid';
+const cmd = 'node deid.js';
 const cwd = path.join(__dirname, `..`);
 
 const harmfulString = 'My SSN is 372819127';

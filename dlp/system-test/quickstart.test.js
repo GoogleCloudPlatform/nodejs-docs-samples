@@ -19,7 +19,7 @@ const path = require('path');
 const test = require('ava');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const cmd = 'node quickstart';
+const cmd = 'node quickstart.js';
 const cwd = path.join(__dirname, `..`);
 
 test.before(tools.checkCredentials);

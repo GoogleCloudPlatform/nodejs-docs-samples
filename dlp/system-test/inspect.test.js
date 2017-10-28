@@ -19,7 +19,7 @@ const path = require('path');
 const test = require('ava');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const cmd = 'node inspect';
+const cmd = 'node inspect.js';
 const cwd = path.join(__dirname, `..`);
 
 test.before(tools.checkCredentials);

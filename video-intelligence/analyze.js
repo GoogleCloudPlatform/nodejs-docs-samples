@@ -20,11 +20,13 @@ function analyzeFaces(gcsUri) {
   // Imports the Google Cloud Video Intelligence library
   const video = require('@google-cloud/video-intelligence');
 
-  // Instantiates a client
+  // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
 
-  // The GCS filepath of the video to analyze
-  // const gcsUri = 'gs://my-bucket/my-video.mp4';
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = 'GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4';
 
   const request = {
     inputUri: gcsUri,
@@ -83,11 +85,13 @@ function analyzeLabelsGCS(gcsUri) {
   // Imports the Google Cloud Video Intelligence library
   const video = require('@google-cloud/video-intelligence');
 
-  // Instantiates a client
+  // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
 
-  // The GCS filepath of the video to analyze
-  // const gcsUri = 'gs://my-bucket/my-video.mp4';
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = 'GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4';
 
   const request = {
     inputUri: gcsUri,
@@ -147,11 +151,13 @@ function analyzeLabelsLocal(path) {
   const video = require('@google-cloud/video-intelligence');
   const fs = require('fs');
 
-  // Instantiates a client
+  // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
 
-  // The local filepath of the video to analyze
-  // const path = 'my-file.mp4';
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const path = 'Local file to analyze, e.g. ./my-file.mp4';
 
   // Reads a local video file and converts it to base64
   const file = fs.readFileSync(path);
@@ -215,11 +221,13 @@ function analyzeShots(gcsUri) {
   // Imports the Google Cloud Video Intelligence library
   const video = require('@google-cloud/video-intelligence');
 
-  // Instantiates a client
+  // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
 
-  // The GCS filepath of the video to analyze
-  // const gcsUri = 'gs://my-bucket/my-video.mp4';
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = 'GCS URI of file to analyze, e.g. gs://my-bucket/my-video.mp4';
 
   const request = {
     inputUri: gcsUri,
@@ -284,11 +292,13 @@ function analyzeSafeSearch(gcsUri) {
   // Imports the Google Cloud Video Intelligence library
   const video = require('@google-cloud/video-intelligence');
 
-  // Instantiates a client
+  // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
 
-  // The GCS filepath of the video to analyze
-  // const gcsUri = 'gs://my-bucket/my-video.mp4';
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = 'GCS URI of video to analyze, e.g. gs://my-bucket/my-video.mp4';
 
   const request = {
     inputUri: gcsUri,
@@ -345,7 +355,7 @@ function analyzeSafeSearch(gcsUri) {
   // [END analyze_safe_search]
 }
 
-require(`yargs`) // eslint-disable-line
+require(`yargs`)
   .demand(1)
   .command(
     `faces <gcsUri>`,

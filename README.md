@@ -202,7 +202,7 @@ Google infrastructure.
 View the [Compute Engine Node.js samples][compute_samples].
 
 [compute_docs]: https://cloud.google.com/compute/docs/
-[compute_samples]: computeengine
+[compute_samples]: https://github.com/googleapis/nodejs-compute/tree/master/samples
 
 #### Google Container Engine
 

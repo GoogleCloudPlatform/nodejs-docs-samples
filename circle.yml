@@ -88,7 +88,6 @@ deployment:
       - node scripts/build "auth"
       - node scripts/build "appengine/pubsub"
       - node scripts/build "bigquery"
-      - node scripts/build "computeengine"
       - node scripts/build "containerengine/hello-world"
       - node scripts/build "datastore"
       - node scripts/build "debugger"

@@ -24,7 +24,7 @@ test.before(tools.checkCredentials);
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb(`should retrieve vms`, (t) => {
+test.cb(`should retrieve vms`, t => {
   vmsExample.main((err, result) => {
     t.ifError(err);
     t.truthy(result);

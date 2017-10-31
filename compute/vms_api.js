@@ -22,8 +22,8 @@ var compute = google.compute('v1');
 // [END initialize]
 
 // [START auth]
-function auth (callback) {
-  google.auth.getApplicationDefault(function (err, authClient) {
+function auth(callback) {
+  google.auth.getApplicationDefault(function(err, authClient) {
     if (err) {
       return callback(err);
     }
@@ -40,7 +40,7 @@ function auth (callback) {
       authClient = authClient.createScoped([
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/compute',
-        'https://www.googleapis.com/auth/compute.readonly'
+        'https://www.googleapis.com/auth/compute.readonly',
       ]);
     }
     callback(null, authClient);
@@ -52,32 +52,35 @@ function auth (callback) {
 /**
  * @param {Function} callback Callback function.
  */
-function getVmsExample (callback) {
-  auth(function (err, authClient) {
+function getVmsExample(callback) {
+  auth(function(err, authClient) {
     if (err) {
       return callback(err);
     }
     // Retrieve the vms
-    compute.instances.aggregatedList({
-      auth: authClient,
-      project: process.env.GCLOUD_PROJECT,
-      // In this example we only want one VM per page
-      maxResults: 1
-    }, function (err, vms) {
-      if (err) {
-        return callback(err);
-      }
+    compute.instances.aggregatedList(
+      {
+        auth: authClient,
+        project: process.env.GCLOUD_PROJECT,
+        // In this example we only want one VM per page
+        maxResults: 1,
+      },
+      function(err, vms) {
+        if (err) {
+          return callback(err);
+        }
 
-      console.log('VMs:', vms);
-      callback(null, vms);
-    });
+        console.log('VMs:', vms);
+        callback(null, vms);
+      }
+    );
   });
 }
 // [END list]
 // [END complete]
 
 // Run the examples
-exports.main = function (cb) {
+exports.main = function(cb) {
   getVmsExample(cb);
 };
 

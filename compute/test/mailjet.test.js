@@ -25,10 +25,10 @@ process.env.MAILJET_API_SECRET = `bar`;
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb(`should send an email`, (t) => {
+test.cb(`should send an email`, t => {
   proxyquire(`../mailjet`, {
     nodemailer: {
-      createTransport: (arg) => {
+      createTransport: arg => {
         t.is(arg, `test`);
         return {
           sendMail: (payload, cb) => {
@@ -36,24 +36,24 @@ test.cb(`should send an email`, (t) => {
               from: `ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM`,
               to: `EMAIL@EXAMPLE.COM`,
               subject: `test email from Node.js on Google Cloud Platform`,
-              text: `Hello!\n\nThis a test email from Node.js.`
+              text: `Hello!\n\nThis a test email from Node.js.`,
             });
             cb(null, `done`);
             t.end();
-          }
+          },
         };
-      }
+      },
     },
-    'nodemailer-smtp-transport': (options) => {
+    'nodemailer-smtp-transport': options => {
       t.deepEqual(options, {
         host: `in.mailjet.com`,
         port: 2525,
         auth: {
           user: `foo`,
-          pass: `bar`
-        }
+          pass: `bar`,
+        },
       });
       return `test`;
-    }
+    },
   });
 });

@@ -52,6 +52,7 @@ on Google Cloud Platform.
   * [**Networking**](#networking)
     * [Google Cloud DNS](#google-cloud-dns)
   * [**Identity and Security**](#identity-and-security)
+    * [Google Cloud Data Loss Prevention (DLP)](#google-cloud-data-loss-prevention-dlp)
     * [Google Cloud Key Management Service](#google-cloud-key-management-service)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
@@ -423,12 +424,21 @@ View the [Google Cloud DNS API Node.js Client samples][dns_samples].
 
 #### Google Cloud Key Management Service
 
+The [Data Loss Prevention API][dlp_docs] provides programmatic access to a
+powerful detection engine for personally identifiable information and other
+privacy-sensitive data in unstructured data streams.
+
+View the [Google Cloud Data Loss Prevention API Node.js samples][dlp_sample].
+
+[dlp_docs]: https://cloud.google.com/dlp/docs/
+[dlp_sample]: https://github.com/googleapis/nodejs-dlp/tree/master/samples
+
+#### Google Cloud Key Management Service
+
 The [Cloud KMS API][kms_docs] is a service that allows you to keep encryption
 keys centrally in the cloud, for direct use by cloud services.
 
-[kms_docs]: https://cloud.google.com/kms/docs/
-
-View the [Google Cloud Key Management Service Node.js sample][kms_sample].
+View the [Google Cloud Key Management Service Node.js samples][kms_sample].
 
 [kms_docs]: https://cloud.google.com/kms/docs/
 [kms_sample]: dns

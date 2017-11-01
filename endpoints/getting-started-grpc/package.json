@@ -19,8 +19,6 @@
     "test": "samples test run --cmd ava -- -T 1m --verbose system-test/*.test.js"
   },
   "dependencies": {
-    "body-parser": "1.17.2",
-    "express": "4.15.4",
     "google-auth-library": "^0.10.0",
     "grpc": "1.4.1",
     "jsonwebtoken": "^7.4.1",

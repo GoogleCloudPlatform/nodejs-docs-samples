@@ -26,7 +26,7 @@
 const PubSub = require(`@google-cloud/pubsub`);
 
 // [START pubsub_list_topics]
-function listTopics () {
+function listAllTopics () {
   // Instantiates a client
   const pubsub = PubSub();
 
@@ -84,17 +84,50 @@ function publishMessage (topicName, data) {
   // References an existing topic, e.g. "my-topic"
   const topic = pubsub.topic(topicName);
 
-  // Publishes the message, e.g. "Hello, world!" or { amount: 599.00, status: 'pending' }
-  return topic.publish(data)
+  // Create a publisher for the topic (which can include additional batching configuration)
+  const publisher = topic.publisher();
+
+  // Publishes the message as a string, e.g. "Hello, world!" or JSON.stringify(someObject)
+  const dataBuffer = Buffer.from(data);
+  return publisher.publish(dataBuffer)
     .then((results) => {
-      const messageIds = results[0];
+      const messageId = results[0];
 
-      console.log(`Message ${messageIds[0]} published.`);
+      console.log(`Message ${messageId} published.`);
 
-      return messageIds;
+      return messageId;
     });
 }
 // [END pubsub_publish_message]
+
+// [START pubsub_publisher_batched_settings]
+function publishBatchedMessages (topicName, data, maxMessages, maxWaitTime) {
+  // Instantiates a client
+  const pubsub = PubSub();
+
+  // References an existing topic, e.g. "my-topic"
+  const topic = pubsub.topic(topicName);
+
+  // Create a publisher for the topic (with additional batching configuration)
+  const publisher = topic.publisher({
+    batching: {
+      maxMessages: maxMessages,
+      maxMilliseconds: maxWaitTime
+    }
+  });
+
+  // Publishes the message as a string, e.g. "Hello, world!" or JSON.stringify(someObject)
+  const dataBuffer = Buffer.from(data);
+  return publisher.publish(dataBuffer)
+    .then((results) => {
+      const messageId = results[0];
+
+      console.log(`Message ${messageId} published.`);
+
+      return messageId;
+    });
+}
+// [END pubsub_publisher_batched_settings]
 
 let publishCounterValue = 1;
 
@@ -114,27 +147,27 @@ function publishOrderedMessage (topicName, data) {
   // References an existing topic, e.g. "my-topic"
   const topic = pubsub.topic(topicName);
 
-  const message = {
-    data: data,
+  // Create a publisher for the topic (which can include additional batching configuration)
+  const publisher = topic.publisher();
 
-    // Pub/Sub messages are unordered, so assign an order id to the message to
-    // manually order messages
-    attributes: {
-      counterId: `${getPublishCounterValue()}`
-    }
+  // Creates message parameters
+  const dataBuffer = Buffer.from(data);
+  const attributes = {
+    // Pub/Sub messages are unordered, so assign an order ID and manually order messages
+    counterId: `${getPublishCounterValue()}`
   };
 
-  // Publishes the message, use raw: true to pass a message with attributes
-  return topic.publish(message, { raw: true })
+  // Publishes the message
+  return publisher.publish(dataBuffer, attributes)
     .then((results) => {
-      const messageIds = results[0];
+      const messageId = results[0];
 
       // Update the counter value
-      setPublishCounterValue(parseInt(message.attributes.counterId, 10) + 1);
+      setPublishCounterValue(parseInt(attributes.counterId, 10) + 1);
 
-      console.log(`Message ${messageIds[0]} published.`);
+      console.log(`Message ${messageId} published.`);
 
-      return messageIds;
+      return messageId;
     });
 }
 // [END pubsub_publish_ordered_message]
@@ -229,7 +262,7 @@ const cli = require(`yargs`)
     `list`,
     `Lists all topics in the current project.`,
     {},
-    listTopics
+    listAllTopics
   )
   .command(
     `create <topicName>`,
@@ -248,12 +281,26 @@ const cli = require(`yargs`)
     `Publishes a message to a topic.`,
     {},
     (opts) => {
-      try {
-        opts.message = JSON.parse(opts.message);
-      } catch (err) {
-        // Ignore error
-      }
       publishMessage(opts.topicName, opts.message);
+    }
+  )
+    .command(
+    `publish-batch <topicName> <message>`,
+    `Publishes messages to a topic using custom batching settings.`,
+  {
+    maxWaitTime: {
+      alias: 'w',
+      type: 'number',
+      default: 10
+    },
+    maxMessages: {
+      alias: 'm',
+      type: 'number',
+      default: 10
+    }
+  },
+    (opts) => {
+      publishBatchedMessages(opts.topicName, opts.message, opts.maxMessages, opts.maxWaitTime);
     }
   )
   .command(
@@ -292,6 +339,8 @@ const cli = require(`yargs`)
   .example(`node $0 delete my-topic`)
   .example(`node $0 publish my-topic "Hello, world!"`)
   .example(`node $0 publish my-topic '{"data":"Hello, world!"}'`)
+  .example(`node $0 publish-ordered my-topic "Hello, world!"`)
+  .example(`node $0 publish-batch my-topic "Hello, world!" -w 1000`)
   .example(`node $0 get-policy greetings`)
   .example(`node $0 set-policy greetings`)
   .example(`node $0 test-permissions greetings`)

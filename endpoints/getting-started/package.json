@@ -1,5 +1,5 @@
 {
-  "name": "appengine-endpoints",
+  "name": "endpoints",
   "description": "Endpoints Node.js sample for Google App Engine",
   "version": "0.0.1",
   "private": true,
@@ -16,19 +16,18 @@
     "start": "node app.js",
     "lint": "samples lint",
     "pretest": "npm run lint",
-    "unit-test": "ava -T 20s --verbose test/*.test.js",
-    "test": "npm run unit-test"
+    "test": "samples test run --cmd ava -- -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
     "body-parser": "1.17.2",
-    "express": "4.15.3",
+    "express": "4.15.4",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.21.0",
     "proxyquire": "1.8.0",
-    "sinon": "3.0.0",
+    "sinon": "3.2.0",
     "supertest": "3.0.0"
   }
 }

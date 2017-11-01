@@ -73,7 +73,7 @@ function createSubscription (topicName, subscriptionName) {
   const topic = pubsub.topic(topicName);
 
   // Creates a new subscription, e.g. "my-new-subscription"
-  return topic.subscribe(subscriptionName)
+  return topic.createSubscription(subscriptionName)
     .then((results) => {
       const subscription = results[0];
 
@@ -83,6 +83,32 @@ function createSubscription (topicName, subscriptionName) {
     });
 }
 // [END pubsub_create_subscription]
+
+// [START pubsub_subscriber_flow_settings]
+function createFlowControlledSubscription (topicName, subscriptionName, maxInProgress, maxBytes) {
+  // Instantiates a client
+  const pubsub = PubSub();
+
+  // References an existing topic, e.g. "my-topic"
+  const topic = pubsub.topic(topicName);
+
+  // Creates a new subscription, e.g. "my-new-subscription"
+  // Note that flow control configurations are not persistent
+  return topic.createSubscription(subscriptionName, {
+    flowControl: {
+      maxBytes: maxBytes,
+      maxMessages: maxInProgress
+    }
+  })
+    .then((results) => {
+      const subscription = results[0];
+
+      console.log(`Subscription ${subscription.name} created with a maximum of ${maxInProgress} unprocessed messages.`);
+
+      return subscription;
+    });
+}
+// [END pubsub_subscriber_flow_settings]
 
 // [START pubsub_create_push_subscription]
 function createPushSubscription (topicName, subscriptionName) {
@@ -101,7 +127,7 @@ function createPushSubscription (topicName, subscriptionName) {
   };
 
   // Creates a new push subscription, e.g. "my-new-subscription"
-  return topic.subscribe(subscriptionName, options)
+  return topic.createSubscription(subscriptionName, options)
     .then((results) => {
       const subscription = results[0];
 
@@ -111,6 +137,28 @@ function createPushSubscription (topicName, subscriptionName) {
     });
 }
 // [END pubsub_create_push_subscription]
+
+// [START pubsub_modify_push_config]
+function modifyPushConfig (topicName, subscriptionName, pushEndpoint) {
+  // Instantiates a client
+  const pubsub = PubSub();
+
+  // References an existing topic and subscription, e.g. "my-topic" > "my-subscription"
+  const topic = pubsub.topic(topicName);
+  const subscription = topic.subscription(subscriptionName);
+
+  const options = {
+    // Set to an HTTPS endpoint of your choice. If necessary, register
+    // (authorize) the domain on which the server is hosted.
+    pushEndpoint: `https://${pubsub.projectId}.appspot.com/push`
+  };
+
+  return subscription.modifyPushConfig(options)
+    .then((results) => {
+      console.log(`Modified push config for subscription ${subscription.name}.`);
+    });
+}
+// [END pubsub_modify_push_config]
 
 // [START pubsub_delete_subscription]
 function deleteSubscription (subscriptionName) {
@@ -151,32 +199,34 @@ function getSubscription (subscriptionName) {
 }
 // [END pubsub_get_subscription]
 
-// [START pubsub_pull_messages]
-function pullMessages (subscriptionName) {
+// [START pubsub_listen_messages]
+function listenForMessages (subscriptionName, timeout) {
   // Instantiates a client
   const pubsub = PubSub();
 
   // References an existing subscription, e.g. "my-subscription"
   const subscription = pubsub.subscription(subscriptionName);
 
-  // Pulls messages. Set returnImmediately to false to block until messages are
-  // received.
-  return subscription.pull()
-    .then((results) => {
-      const messages = results[0];
+  // Create an event handler to handle messages
+  let messageCount = 0;
+  const messageHandler = (message) => {
+    console.log(`Received message ${message.id}:`);
+    console.log(`\tData: ${message.data}`);
+    console.log(`\tAttributes: ${message.attributes}`);
+    messageCount += 1;
 
-      console.log(`Received ${messages.length} messages.`);
+    // "Ack" (acknowledge receipt of) the message
+    message.ack();
+  };
 
-      messages.forEach((message) => {
-        console.log(`* %d %j %j`, message.id, message.data, message.attributes);
-      });
-
-      // Acknowledges received messages. If you do not acknowledge, Pub/Sub will
-      // redeliver the message.
-      return subscription.ack(messages.map((message) => message.ackId));
-    });
+  // Listen for new messages until timeout is hit
+  subscription.on(`message`, messageHandler);
+  setTimeout(() => {
+    subscription.removeListener('message', messageHandler);
+    console.log(`${messageCount} message(s) received.`);
+  }, timeout * 1000);
 }
-// [END pubsub_pull_messages]
+// [END pubsub_listen_messages]
 
 let subscribeCounterValue = 1;
 
@@ -188,54 +238,97 @@ function setSubscribeCounterValue (value) {
   subscribeCounterValue = value;
 }
 
-// [START pubsub_pull_ordered_messages]
+// [START pubsub_listen_ordered_messages]
 const outstandingMessages = {};
 
-function pullOrderedMessages (subscriptionName) {
+function listenForOrderedMessages (subscriptionName, timeout) {
   // Instantiates a client
   const pubsub = PubSub();
 
   // References an existing subscription, e.g. "my-subscription"
   const subscription = pubsub.subscription(subscriptionName);
 
-  // Pulls messages. Set returnImmediately to false to block until messages are
-  // received.
-  return subscription.pull()
-    .then((results) => {
-      const messages = results[0];
+  // Create an event handler to handle messages
+  const messageHandler = function (message) {
+    // Buffer the message in an object (for later ordering)
+    outstandingMessages[message.attributes.counterId] = message;
 
-      // Pub/Sub messages are unordered, so here we manually order messages by
-      // their "counterId" attribute which was set when they were published.
-      messages.forEach((message) => {
-        outstandingMessages[message.attributes.counterId] = message;
-      });
+    // "Ack" (acknowledge receipt of) the message
+    message.ack();
+  };
 
-      const outstandingIds = Object.keys(outstandingMessages).map((counterId) => parseInt(counterId, 10));
-      outstandingIds.sort();
+  // Listen for new messages until timeout is hit
+  return new Promise((resolve) => {
+    subscription.on(`message`, messageHandler);
+    setTimeout(() => {
+      subscription.removeListener(`message`, messageHandler);
+      resolve();
+    }, timeout * 1000);
+  })
+  .then(() => {
+    // Pub/Sub messages are unordered, so here we manually order messages by
+    // their "counterId" attribute which was set when they were published.
+    const outstandingIds = Object.keys(outstandingMessages).map((counterId) => parseInt(counterId, 10));
+    outstandingIds.sort();
 
-      outstandingIds.forEach((counterId) => {
-        const counter = getSubscribeCounterValue();
-        const message = outstandingMessages[counterId];
+    outstandingIds.forEach((counterId) => {
+      const counter = getSubscribeCounterValue();
+      const message = outstandingMessages[counterId];
 
-        if (counterId < counter) {
-          // The message has already been processed
-          subscription.ack(message.ackId);
-          delete outstandingMessages[counterId];
-        } else if (counterId === counter) {
-          // Process the message
-          console.log(`* %d %j %j`, message.id, message.data, message.attributes);
-
-          setSubscribeCounterValue(counterId + 1);
-          subscription.ack(message.ackId);
-          delete outstandingMessages[counterId];
-        } else {
-          // Have not yet processed the message on which this message is dependent
-          return false;
-        }
-      });
+      if (counterId < counter) {
+        // The message has already been processed
+        message.ack();
+        delete outstandingMessages[counterId];
+      } else if (counterId === counter) {
+        // Process the message
+        console.log(`* %d %j %j`, message.id, message.data.toString(), message.attributes);
+        setSubscribeCounterValue(counterId + 1);
+        message.ack();
+        delete outstandingMessages[counterId];
+      } else {
+        // Have not yet processed the message on which this message is dependent
+        return false;
+      }
     });
+  });
 }
-// [END pubsub_pull_ordered_messages]
+// [END pubsub_listen_ordered_messages]
+
+// [START pubsub_listen_errors]
+function listenForErrors (subscriptionName, timeout) {
+  // Instantiates a client
+  const pubsub = PubSub();
+
+  // References an existing subscription, e.g. "my-subscription"
+  const subscription = pubsub.subscription(subscriptionName);
+
+  // Create an event handler to handle messages
+  const messageHandler = function (message) {
+    // Do something with the message
+    console.log(`Message: ${message}`);
+
+    // "Ack" (acknowledge receipt of) the message
+    message.ack();
+  };
+
+  // Create an event handler to handle errors
+  const errorHandler = function (error) {
+    // Do something with the error
+    console.error(`ERROR: ${error}`);
+  };
+
+  // Listen for new messages/errors until timeout is hit
+  return new Promise((resolve) => {
+    subscription.on(`message`, messageHandler);
+    subscription.on(`error`, errorHandler);
+    setTimeout(() => {
+      subscription.removeListener(`message`, messageHandler);
+      subscription.removeListener(`error`, errorHandler);
+      resolve();
+    }, timeout * 1000);
+  });
+}
+// [END pubsub_listen_errors]
 
 // [START pubsub_get_subscription_policy]
 function getSubscriptionPolicy (subscriptionName) {
@@ -318,7 +411,7 @@ function testSubscriptionPermissions (subscriptionName) {
 }
 // [END pubsub_test_subscription_permissions]
 
-module.exports = { pullOrderedMessages };
+module.exports = { listenForOrderedMessages };
 
 const cli = require(`yargs`)
   .demand(1)
@@ -341,10 +434,33 @@ const cli = require(`yargs`)
     (opts) => createSubscription(opts.topicName, opts.subscriptionName)
   )
   .command(
+    `create-flow <topicName> <subscriptionName>`,
+    `Creates a new subscription with flow-control limits, which don't persist between subscriptions.`,
+  {
+    maxInProgress: {
+      alias: 'm',
+      type: 'number',
+      default: 0
+    },
+    maxBytes: {
+      alias: 'b',
+      type: 'number',
+      default: 0
+    }
+  },
+    (opts) => createFlowControlledSubscription(opts.topicName, opts.subscriptionName, opts.maxInProgress, opts.maxBytes)
+  )
+  .command(
     `create-push <topicName> <subscriptionName>`,
     `Creates a new push subscription.`,
     {},
     (opts) => createPushSubscription(opts.topicName, opts.subscriptionName)
+  )
+  .command(
+    `modify-config <topicName> <subscriptionName>`,
+    `Modifies the configuration of an existing push subscription.`,
+    {},
+    (opts) => modifyPushConfig(opts.topicName, opts.subscriptionName)
   )
   .command(
     `delete <subscriptionName>`,
@@ -359,10 +475,28 @@ const cli = require(`yargs`)
     (opts) => getSubscription(opts.subscriptionName)
   )
   .command(
-    `pull <subscriptionName>`,
-    `Pulls messages for a subscription.`,
-    {},
-    (opts) => pullMessages(opts.subscriptionName)
+    `listen-messages <subscriptionName>`,
+    `Listens to messages for a subscription.`,
+  {
+    timeout: {
+      alias: 't',
+      type: 'number',
+      default: 10
+    }
+  },
+    (opts) => listenForMessages(opts.subscriptionName, opts.timeout)
+  )
+  .command(
+    `listen-errors <subscriptionName>`,
+    `Listens to messages and errors for a subscription.`,
+  {
+    timeout: {
+      alias: 't',
+      type: 'number',
+      default: 10
+    }
+  },
+    (opts) => listenForErrors(opts.subscriptionName, opts.timeout)
   )
   .command(
     `get-policy <subscriptionName>`,
@@ -385,8 +519,12 @@ const cli = require(`yargs`)
   .example(`node $0 list`)
   .example(`node $0 list my-topic`)
   .example(`node $0 create my-topic worker-1`)
+  .example(`node $0 create-flow my-topic worker-1 -m 5`)
   .example(`node $0 create-push my-topic worker-1`)
+  .example(`node $0 modify-config my-topic worker-1`)
   .example(`node $0 get worker-1`)
+  .example(`node $0 listen-messages my-subscription`)
+  .example(`node $0 listen-errors my-subscription`)
   .example(`node $0 delete worker-1`)
   .example(`node $0 pull worker-1`)
   .example(`node $0 get-policy worker-1`)

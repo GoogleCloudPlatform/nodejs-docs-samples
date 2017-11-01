@@ -34,6 +34,7 @@ The following command summarizes the sample usage:
     --num_messages [num]               Number of messages to publish.
     --mqtt_bridge_hostname [hostname]  MQTT bridge hostname.
     --mqtt_bridge_port [port]          MQTT bridge port.
+    --message_type [events|state]       The message type to publish.
 
 For example, if your project ID is `blue-jet-123`, your service account
 credentials are stored in your home folder in creds.json and you have generated

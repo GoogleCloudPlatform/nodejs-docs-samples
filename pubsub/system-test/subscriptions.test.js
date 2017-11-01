@@ -27,10 +27,12 @@ const topicNameTwo = `nodejs-docs-samples-test-${uuid.v4()}`;
 const subscriptionNameOne = `nodejs-docs-samples-test-sub-${uuid.v4()}`;
 const subscriptionNameTwo = `nodejs-docs-samples-test-sub-${uuid.v4()}`;
 const subscriptionNameThree = `nodejs-docs-samples-test-sub-${uuid.v4()}`;
+const subscriptionNameFour = `nodejs-docs-samples-test-sub-${uuid.v4()}`;
 const projectId = process.env.GCLOUD_PROJECT;
 const fullTopicNameOne = `projects/${projectId}/topics/${topicNameOne}`;
 const fullSubscriptionNameOne = `projects/${projectId}/subscriptions/${subscriptionNameOne}`;
 const fullSubscriptionNameTwo = `projects/${projectId}/subscriptions/${subscriptionNameTwo}`;
+const fullSubscriptionNameFour = `projects/${projectId}/subscriptions/${subscriptionNameFour}`;
 const cmd = `node subscriptions.js`;
 
 test.before(tools.checkCredentials);
@@ -63,17 +65,28 @@ test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should create a subscription`, async (t) => {
+  t.plan(1);
   const output = await tools.runAsync(`${cmd} create ${topicNameOne} ${subscriptionNameOne}`, cwd);
   t.is(output, `Subscription ${fullSubscriptionNameOne} created.`);
-  const results = await pubsub.subscription(subscriptionNameOne).exists();
-  t.true(results[0]);
+  await tools.tryTest(async (assert) => {
+    const [subscriptions] = await pubsub.topic(topicNameOne).getSubscriptions();
+    assert.equal(subscriptions[0].name, fullSubscriptionNameOne);
+  }).start();
 });
 
 test.serial(`should create a push subscription`, async (t) => {
   const output = await tools.runAsync(`${cmd} create-push ${topicNameOne} ${subscriptionNameTwo}`, cwd);
   t.is(output, `Subscription ${fullSubscriptionNameTwo} created.`);
-  const results = await pubsub.subscription(subscriptionNameTwo).exists();
-  t.true(results[0]);
+  await tools.tryTest(async (assert) => {
+    const [subscriptions] = await pubsub.topic(topicNameOne).getSubscriptions();
+    assert(subscriptions.some((s) => s.name === fullSubscriptionNameTwo));
+  }).start();
+});
+
+test.serial(`should modify the config of an existing push subscription`, async (t) => {
+  t.plan(1);
+  const output = await tools.runAsync(`${cmd} modify-config ${topicNameTwo} ${subscriptionNameTwo}`, cwd);
+  t.is(output, `Modified push config for subscription ${fullSubscriptionNameTwo}.`);
 });
 
 test.serial(`should get metadata for a subscription`, async (t) => {
@@ -86,53 +99,65 @@ test.serial(`should get metadata for a subscription`, async (t) => {
 });
 
 test.serial(`should list all subscriptions`, async (t) => {
-  await tools.tryTest(async () => {
+  t.plan(0);
+  await tools.tryTest(async (assert) => {
     const output = await tools.runAsync(`${cmd} list`, cwd);
-    t.true(output.includes(`Subscriptions:`));
-    t.true(output.includes(fullSubscriptionNameOne));
-    t.true(output.includes(fullSubscriptionNameTwo));
+    assert(output.includes(`Subscriptions:`));
+    assert(output.includes(fullSubscriptionNameOne));
+    assert(output.includes(fullSubscriptionNameTwo));
   }).start();
 });
 
 test.serial(`should list subscriptions for a topic`, async (t) => {
-  const output = await tools.runAsync(`${cmd} list ${topicNameOne}`, cwd);
-  t.true(output.includes(`Subscriptions for ${topicNameOne}:`));
-  t.true(output.includes(fullSubscriptionNameOne));
-  t.true(output.includes(fullSubscriptionNameTwo));
+  t.plan(0);
+  await tools.tryTest(async (assert) => {
+    const output = await tools.runAsync(`${cmd} list ${topicNameOne}`, cwd);
+    assert(output.includes(`Subscriptions for ${topicNameOne}:`));
+    assert(output.includes(fullSubscriptionNameOne));
+    assert(output.includes(fullSubscriptionNameTwo));
+  }).start();
 });
 
-test.serial(`should pull messages`, async (t) => {
-  const expected = `Hello, world!`;
-  const results = await pubsub.topic(topicNameOne).publish(expected);
-  const messageIds = results[0];
-  const expectedOutput = `Received ${messageIds.length} messages.\n* ${messageIds[0]} "${expected}" {}`;
-  const output = await tools.runAsync(`${cmd} pull ${subscriptionNameOne}`, cwd);
-  t.is(output, expectedOutput);
+test.serial(`should listen for messages`, async (t) => {
+  const messageIds = await pubsub.topic(topicNameOne).publisher().publish(Buffer.from(`Hello, world!`));
+  const output = await tools.runAsync(`${cmd} listen-messages ${subscriptionNameOne}`, cwd);
+  t.true(output.includes(`Received message ${messageIds[0]}:`));
 });
 
-test.serial(`should pull ordered messages`, async (t) => {
+test.serial(`should listen for ordered messages`, async (t) => {
+  const timeout = 5;
   const subscriptions = require('../subscriptions');
   const expected = `Hello, world!`;
+  const expectedBuffer = Buffer.from(expected);
   const publishedMessageIds = [];
-  await pubsub.topic(topicNameTwo).subscribe(subscriptionNameThree);
-  let results = await pubsub.topic(topicNameTwo).publish({ data: expected, attributes: { counterId: '3' } }, { raw: true });
-  publishedMessageIds.push(results[0][0]);
-  await subscriptions.pullOrderedMessages(subscriptionNameThree);
+  const publisherTwo = pubsub.topic(topicNameTwo).publisher();
+
+  await pubsub.topic(topicNameTwo).createSubscription(subscriptionNameThree);
+  let [result] = await publisherTwo.publish(expectedBuffer, { counterId: '3' });
+  publishedMessageIds.push(result);
+  await subscriptions.listenForOrderedMessages(subscriptionNameThree, timeout);
   t.is(console.log.callCount, 0);
-  results = await pubsub.topic(topicNameTwo).publish({ data: expected, attributes: { counterId: '1' } }, { raw: true });
-  publishedMessageIds.push(results[0][0]);
-  await subscriptions.pullOrderedMessages(subscriptionNameThree);
+
+  [result] = await publisherTwo.publish(expectedBuffer, { counterId: '1' });
+  publishedMessageIds.push(result);
+  await subscriptions.listenForOrderedMessages(subscriptionNameThree, timeout);
   t.is(console.log.callCount, 1);
   t.deepEqual(console.log.firstCall.args, [`* %d %j %j`, publishedMessageIds[1], expected, { counterId: '1' }]);
-  results = await pubsub.topic(topicNameTwo).publish({ data: expected, attributes: { counterId: '1' } }, { raw: true });
-  results = await pubsub.topic(topicNameTwo).publish({ data: expected, attributes: { counterId: '2' } }, { raw: true });
-  publishedMessageIds.push(results[0][0]);
-  await tools.tryTest(async () => {
-    await subscriptions.pullOrderedMessages(subscriptionNameThree);
-    t.is(console.log.callCount, 3);
-    t.deepEqual(console.log.secondCall.args, [`* %d %j %j`, publishedMessageIds[2], expected, { counterId: '2' }]);
-    t.deepEqual(console.log.thirdCall.args, [`* %d %j %j`, publishedMessageIds[0], expected, { counterId: '3' }]);
+
+  [result] = await publisherTwo.publish(expectedBuffer, { counterId: '1' });
+  [result] = await publisherTwo.publish(expectedBuffer, { counterId: '2' });
+  publishedMessageIds.push(result);
+  await tools.tryTest(async (assert) => {
+    await subscriptions.listenForOrderedMessages(subscriptionNameThree, timeout);
+    assert.equal(console.log.callCount, 3);
+    assert.deepEqual(console.log.secondCall.args, [`* %d %j %j`, publishedMessageIds[2], expected, { counterId: '2' }]);
+    assert.deepEqual(console.log.thirdCall.args, [`* %d %j %j`, publishedMessageIds[0], expected, { counterId: '3' }]);
   });
+});
+
+test.serial(`should listen for error messages`, async (t) => {
+  const output = await tools.runAsyncWithIO(`${cmd} listen-errors nonexistent-subscription -t 3`, cwd);
+  t.true(output.stderr.includes(`Resource not found`));
 });
 
 test.serial(`should set the IAM policy for a subscription`, async (t) => {
@@ -163,8 +188,22 @@ test.serial(`should test permissions for a subscription`, async (t) => {
 });
 
 test.serial(`should delete a subscription`, async (t) => {
+  t.plan(1);
   const output = await tools.runAsync(`${cmd} delete ${subscriptionNameOne}`, cwd);
   t.is(output, `Subscription ${fullSubscriptionNameOne} deleted.`);
-  const results = await pubsub.subscription(subscriptionNameOne).exists();
-  t.false(results[0], false);
+  await tools.tryTest(async (assert) => {
+    const [subscriptions] = await pubsub.getSubscriptions();
+    assert.ok(subscriptions);
+    assert(subscriptions.every((s) => s.name !== fullSubscriptionNameOne));
+  }).start();
+});
+
+test.serial(`should create a subscription with flow control`, async (t) => {
+  t.plan(1);
+  const output = await tools.runAsync(`${cmd} create-flow ${topicNameTwo} ${subscriptionNameFour} -m 5 -b 1024`, cwd);
+  t.is(output, `Subscription ${fullSubscriptionNameFour} created with a maximum of 5 unprocessed messages.`);
+  await tools.tryTest(async (assert) => {
+    const [subscriptions] = await pubsub.topic(topicNameTwo).getSubscriptions();
+    assert(subscriptions.some((s) => s.name === fullSubscriptionNameFour));
+  }).start();
 });

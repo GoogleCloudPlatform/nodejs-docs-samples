@@ -86,12 +86,6 @@ var sampleTests = [
     }
   },
   {
-    dir: 'appengine/websockets',
-    cmd: 'node',
-    args: ['app.js'],
-    msg: 'Echo demo'
-  },
-  {
     dir: 'appengine/parse-server',
     cmd: 'node',
     args: ['server.js'],

@@ -13,55 +13,91 @@
  * limitations under the License.
  */
 
-/**
- * NodeJS sample of connecting to Google Cloud IoT Core via MQTT, using JWT.
- *
- * <p>This example connects to Google Cloud IoT Core via MQTT, using a JWT for
- * device authentication. After connecting, by default the device publishes 100
- * messages to the device's MQTT topic at a rate of one per second, and then
- * exits.
- *
- * <p>Before you can run this sample, you must register a device as described
- * in the parent README.
- *
- * <p>Usage example:
- *
- * <pre>
- *   $ npm install
- *   $ nodejs cloudiot_mqtt_example_nodejs.js \
- *       --project_id=my-project-id \
- *       --registry_id=my-registry-id \
- *       --device_id=my-device-id \
- *       --private_key_file=rsa_private.pem \
- *       --algorithm=RS256"
- * </pre>
- */
-
 'use strict';
 
+// [START iot_mqtt_include]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
-const program = require('commander');
+// [END iot_mqtt_include]
 
-program.description('Google Cloud IoT Core MQTT example.')
-    .option('--project_id <project_id>', 'GCP cloud project name.')
-    .option('--registry_id <registry_id>', 'Cloud IoT registry id.')
-    .option('--device_id <device_id>', 'Cloud IoT device id.')
-    .option('--private_key_file <key_file>', 'Path to private key file.')
-    .option(
-        '--algorithm <algorithm>',
-        'Encryption algorithm to generate the JWT. Either RS256 or ES256')
-    .option('--cloud_region [region]', 'GCP cloud region', 'us-central1')
-    .option('--num_messages [num]', 'Number of messages to publish.', 100)
-    .option(
-        '--mqtt_bridge_hostname [hostname]', 'MQTT bridge hostname.',
-        'mqtt.googleapis.com')
-    .option('--mqtt_bridge_port [port]', 'MQTT bridge port.', 8883)
-    .parse(process.argv);
+console.log('Google Cloud IoT Core MQTT example.');
+var argv = require(`yargs`)
+    .options({
+      project_id: {
+        default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+        description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+        requiresArg: true,
+        type: 'string'
+      },
+      cloud_region: {
+        default: 'us-central1',
+        description: 'GCP cloud region.',
+        requiresArg: true,
+        type: 'string'
+      },
+      registry_id: {
+        description: 'Cloud IoT registry ID.',
+        requiresArg: true,
+        demandOption: true,
+        type: 'string'
+      },
+      device_id: {
+        description: 'Cloud IoT device ID.',
+        requiresArg: true,
+        demandOption: true,
+        type: 'string'
+      },
+      private_key_file: {
+        description: 'Path to private key file.',
+        requiresArg: true,
+        demandOption: true,
+        type: 'string'
+      },
+      algorithm: {
+        description: 'Encryption algorithm to generate the JWT.',
+        requiresArg: true,
+        demandOption: true,
+        choices: ['RS256', 'ES256'],
+        type: 'string'
+      },
+      num_messages: {
+        default: 100,
+        description: 'Number of messages to publish.',
+        requiresArg: true,
+        type: 'number'
+      },
+      mqtt_bridge_hostname: {
+        default: 'mqtt.googleapis.com',
+        description: 'MQTT bridge hostname.',
+        requiresArg: true,
+        type: 'string'
+      },
+      mqtt_bridge_port: {
+        default: 8883,
+        description: 'MQTT bridge port.',
+        requiresArg: true,
+        type: 'number'
+      },
+      message_type: {
+        default: 'events',
+        description: 'Message type to publish.',
+        requiresArg: true,
+        choices: ['events', 'state'],
+        type: 'string'
+      }
+    })
+    .example(`node $0 cloudiot_mqtt_example_nodejs.js --project_id=blue-jet-123 --registry_id=my-registry --device_id=my-node-device --private_key_file=../rsa_private.pem --algorithm=RS256`)
+    .wrap(120)
+    .recommendCommands()
+    .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
+    .help()
+    .strict()
+    .argv;
 
 // Create a Cloud IoT Core JWT for the given project id, signed with the given
 // private key.
+// [START iot_mqtt_jwt]
 function createJwt (projectId, privateKeyFile, algorithm) {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
@@ -74,59 +110,65 @@ function createJwt (projectId, privateKeyFile, algorithm) {
   const privateKey = fs.readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, { algorithm: algorithm });
 }
+// [END iot_mqtt_jwt]
 
 // Publish numMessages messages asynchronously, starting from message
 // messageCount.
+// [START iot_mqtt_publish]
 function publishAsync (messageCount, numMessages) {
-  const payload = `${program.registry_id}/${program.device_id}-payload-${messageCount}`;
+  const payload = `${argv.registry_id}/${argv.device_id}-payload-${messageCount}`;
   // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
   // Cloud IoT Core also supports qos=0 for at most once delivery.
   console.log('Publishing message:', payload);
   client.publish(mqttTopic, payload, { qos: 1 });
 
+  const delayMs = argv.message_type === 'events' ? 1000 : 2000;
   if (messageCount < numMessages) {
     // If we have published fewer than numMessage messages, publish payload
     // messageCount + 1 in 1 second.
     setTimeout(function () {
       publishAsync(messageCount + 1, numMessages);
-    }, 1000);
+    }, delayMs);
   } else {
     // Otherwise, close the connection.
     console.log('Closing connection to MQTT. Goodbye!');
     client.end();
   }
 }
+// [END iot_mqtt_publish]
 
+// [START iot_mqtt_run]
 // The mqttClientId is a unique string that identifies this device. For Google
 // Cloud IoT Core, it must be in the format below.
-const mqttClientId = `projects/${program.project_id}/locations/${program.cloud_region}/registries/${program.registry_id}/devices/${program.device_id}`;
+const mqttClientId = `projects/${argv.project_id}/locations/${argv.cloud_region}/registries/${argv.registry_id}/devices/${argv.device_id}`;
 
 // With Google Cloud IoT Core, the username field is ignored, however it must be
 // non-empty. The password field is used to transmit a JWT to authorize the
 // device. The "mqtts" protocol causes the library to connect using SSL, which
 // is required for Cloud IoT Core.
 const connectionArgs = {
-  host: program.mqtt_bridge_hostname,
-  port: program.mqtt_bridge_port,
+  host: argv.mqtt_bridge_hostname,
+  port: argv.mqtt_bridge_port,
   clientId: mqttClientId,
   username: 'unused',
-  password: createJwt(program.project_id, program.private_key_file, program.algorithm),
+  password: createJwt(argv.project_id, argv.private_key_file, argv.algorithm),
   protocol: 'mqtts'
 };
 
 // Create a client, and connect to the Google MQTT bridge.
 const client = mqtt.connect(connectionArgs);
 
-// The MQTT topic that this device will publish telemetry data to. The MQTT
-// topic name is required to be in the format below. Note that this is not the
-// same as the device registry's Cloud Pub/Sub topic.
-const mqttTopic = `/devices/${program.device_id}/events`;
+// The MQTT topic that this device will publish data to. The MQTT
+// topic name is required to be in the format below. The topic name must end in
+// 'state' to publish state and 'events' to publish telemetry. Note that this is
+// not the same as the device registry's Cloud Pub/Sub topic.
+const mqttTopic = `/devices/${argv.device_id}/${argv.message_type}`;
 
 client.on('connect', () => {
   console.log('connect', arguments);
   // After connecting, publish 'num_messages' messagse asynchronously, at a rate
-  // of 1 per second.
-  publishAsync(1, program.num_messages);
+  // of 1 per second for telemetry events and 1 every 2 seconds for states.
+  publishAsync(1, argv.num_messages);
 });
 
 client.on('close', () => {
@@ -143,3 +185,4 @@ client.on('packetsend', () => {
 
 // Once all of the messages have been published, the connection to Google Cloud
 // IoT will be closed and the process will exit. See the publishAsync method.
+// [END iot_mqtt_run]

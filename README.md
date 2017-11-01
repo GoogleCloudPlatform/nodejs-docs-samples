@@ -42,6 +42,7 @@ on Google Cloud Platform.
     * [Google Cloud Prediction API](#google-cloud-prediction-api)
     * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
     * [Google Translate API](#google-translate-api)
+    * [Google Video Intelligence API](#google-video-intelligence-api)
     * [Google Cloud Vision API](#google-cloud-vision-api)
   * [**Management Tools**](#management-tools)
     * [Stackdriver Debugger](#stackdriver-debugger)
@@ -51,6 +52,7 @@ on Google Cloud Platform.
   * [**Networking**](#networking)
     * [Google Cloud DNS](#google-cloud-dns)
   * [**Identity and Security**](#identity-and-security)
+    * [Google Cloud Data Loss Prevention (DLP)](#google-cloud-data-loss-prevention-dlp)
     * [Google Cloud Key Management Service](#google-cloud-key-management-service)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
@@ -201,7 +203,7 @@ Google infrastructure.
 View the [Compute Engine Node.js samples][compute_samples].
 
 [compute_docs]: https://cloud.google.com/compute/docs/
-[compute_samples]: computeengine
+[compute_samples]: https://github.com/googleapis/nodejs-compute/tree/master/samples
 
 #### Google Container Engine
 
@@ -236,7 +238,7 @@ consistent and scalable relational database service.
 View the [Cloud Spanner Node.js samples][spanner_samples].
 
 [spanner_docs]: https://cloud.google.com/spanner/docs/
-[spanner_samples]: spanner
+[spanner_samples]: https://github.com/googleapis/nodejs-spanner/tree/master/samples
 
 #### Google Cloud Datastore
 
@@ -253,10 +255,20 @@ View the [Cloud Datastore Node.js samples][datastore_samples].
 [Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
 amount of data at any time.
 
-View the [Cloud Storage Node.js samples][storage_samples].
+View the [Cloud Storage JSON API Node.js Client samples][storage_samples].
 
 [storage_docs]: https://cloud.google.com/storage/docs/
-[storage_samples]: storage
+[storage_samples]: https://github.com/googleapis/nodejs-storage/tree/master/samples
+
+#### Google Cloud Storage Transfer API
+
+The Google Cloud Storage Transfer API allows you to quickly import online data
+into Google Cloud Storage.
+
+View the [Cloud Storage Transfer API Node.js samples][transfer_samples].
+
+[transfer_docs]: https://cloud.google.com/storage/transfer/
+[transfer_samples]: storage-transfer
 
 ### Big Data
 
@@ -289,7 +301,7 @@ understanding technologies to developers, including sentiment analysis, entity
 recognition, and syntax analysis. This API is part of the larger Cloud Machine
 Learning API.
 
-View the [Cloud Natural Language API Node.js samples][language_samples].
+View the [Cloud Natural Language API Node.js Client samples][language_samples].
 
 [language_docs]: https://cloud.google.com/natural-language/docs/
 [language_samples]: language
@@ -322,7 +334,17 @@ text between thousands of language pairs.
 View the [Translate API Node.js samples][translate_samples].
 
 [translate_docs]: https://cloud.google.com/translate/docs/
-[translate_samples]: translate
+[translate_samples]: https://github.com/googleapis/nodejs-translate/tree/master/samples
+
+#### Google Cloud Video Intelligence API
+
+The [Cloud Video Intelligence API][video_intelligence_docs] allows developers to
+use Google video analysis technology as part of their applications.
+
+View the [Cloud Video Intelligence API Node.js samples][video_intelligence_samples].
+
+[video_intelligence_docs]: https://cloud.google.com/video-intelligence/docs/
+[video_intelligence_samples]: https://github.com/googleapis/nodejs-video-intelligence/tree/master/samples
 
 #### Google Cloud Vision API
 
@@ -354,10 +376,10 @@ View the [Stackdriver Debugger Node.js sample][debugger_sample].
 monitor, and alert on log data and events from Google Cloud Platform and Amazon
 Web Services.
 
-View the [Stackdriver Logging Node.js samples][logging_samples].
+View the [Stackdriver Logging API Node.js Client samples][logging_samples].
 
 [logging_docs]: https://cloud.google.com/logging/docs/
-[logging_samples]: logging
+[logging_samples]: https://github.com/googleapis/nodejs-logging/tree/master/samples
 
 #### Stackdriver Monitoring
 
@@ -366,10 +388,10 @@ from Google Cloud Platform, Amazon Web Services (AWS), hosted uptime probes,
 application instrumentation, and a variety of common application components
 including Cassandra, Nginx, Apache Web Server, Elasticsearch and many others.
 
-View the [Stackdriver Monitoring Node.js samples][monitoring_samples].
+View the [Stackdriver Monitoring API Node.js Client samples][monitoring_samples].
 
 [monitoring_docs]: https://cloud.google.com/monitoring/docs/
-[monitoring_samples]: monitoring
+[monitoring_samples]: https://github.com/googleapis/nodejs-monitoring/tree/master/samples
 
 #### Stackdriver Trace
 
@@ -393,21 +415,30 @@ anywhere in the world. Read more about [Google Cloud DNS][dns_docs].
 
 [dns_docs]: https://cloud.google.com/dns/docs
 
-View the [Google Cloud DNS Node.js sample][dns_sample].
+View the [Google Cloud DNS API Node.js Client samples][dns_samples].
 
 [dns_docs]: https://cloud.google.com/dns/docs/
-[dns_sample]: dns
+[dns_samples]: https://github.com/googleapis/nodejs-dns/tree/master/samples
 
 ### Identity and Security
+
+#### Google Cloud Key Management Service
+
+The [Data Loss Prevention API][dlp_docs] provides programmatic access to a
+powerful detection engine for personally identifiable information and other
+privacy-sensitive data in unstructured data streams.
+
+View the [Google Cloud Data Loss Prevention API Node.js samples][dlp_sample].
+
+[dlp_docs]: https://cloud.google.com/dlp/docs/
+[dlp_sample]: https://github.com/googleapis/nodejs-dlp/tree/master/samples
 
 #### Google Cloud Key Management Service
 
 The [Cloud KMS API][kms_docs] is a service that allows you to keep encryption
 keys centrally in the cloud, for direct use by cloud services.
 
-[kms_docs]: https://cloud.google.com/kms/docs/
-
-View the [Google Cloud Key Management Service Node.js sample][kms_sample].
+View the [Google Cloud Key Management Service Node.js samples][kms_sample].
 
 [kms_docs]: https://cloud.google.com/kms/docs/
 [kms_sample]: dns

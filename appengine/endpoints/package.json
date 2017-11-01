@@ -19,16 +19,17 @@
     "pretest": "npm run lint",
     "unit-test": "ava --verbose test/*.test.js",
     "system-test": "samples test app",
-    "test": "npm run unit-test && npm run system-test",
+    "all-test": "npm run unit-test && npm run system-test",
+    "test": "samples test run --cmd npm -- run all-test",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
     "body-parser": "1.17.2",
-    "express": "4.15.3",
+    "express": "4.15.4",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.16",
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.21.0"
   },
   "cloud-repo-tools": {

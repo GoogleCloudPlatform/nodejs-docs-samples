@@ -34,6 +34,7 @@ Options:
                                        Either RS256 (RSA) or ES256 (Eliptic Curve)
     --cloud_region [region]            GCP cloud region
     --num_messages [num]               Number of messages to publish.
+    --token_exp_mins [num]             Minutes to JWT token expiration.
     --http_bridge_address [address]    HTTP bridge address.
     --message_type [events|state]      The message type to publish.
 

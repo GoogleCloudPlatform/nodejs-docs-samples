@@ -66,6 +66,12 @@ var argv = require(`yargs`)
         requiresArg: true,
         type: 'number'
       },
+      token_exp_mins: {
+        default: 20,
+        description: 'Minutes to JWT token expiration.',
+        requiresArg: true,
+        type: 'number'
+      },
       http_bridge_address: {
         default: 'cloudiot-device.googleapis.com',
         description: 'HTTP bridge address.',
@@ -145,6 +151,14 @@ function publishAsync (messageCount, numMessages) {
       // If we have published fewer than numMessage messages, publish payload
       // messageCount + 1.
       setTimeout(function () {
+        let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
+        if (secsFromIssue > argv.token_exp_mins * 60) {
+          iatTime = parseInt(Date.now() / 1000);
+          console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
+
+          authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
+        }
+
         publishAsync(messageCount + 1, numMessages);
       }, delayMs);
     }
@@ -161,7 +175,8 @@ const devicePath = `projects/${argv.project_id}/locations/${argv.cloud_region}/r
 const pathSuffix = argv.message_type === 'events'
     ? ':publishEvent' : ':setState';
 const url = `https://${argv.http_bridge_address}/v1beta1/${devicePath}${pathSuffix}`;
-const authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
+let iatTime = parseInt(Date.now() / 1000);
+let authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
 
 // Publish messages.
 publishAsync(1, argv.num_messages);

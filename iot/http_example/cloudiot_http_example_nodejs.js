@@ -156,8 +156,7 @@ function publishAsync (messageCount, numMessages) {
           iatTime = parseInt(Date.now() / 1000);
           console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
 
-          authToken = createJwt(argv.project_id, argv.private_key_file,
-              argv.algorithm);
+          authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
         }
 
         publishAsync(messageCount + 1, numMessages);

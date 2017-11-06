@@ -324,7 +324,7 @@ recognition technologies into developer applications.
 View the [Cloud Speech API Node.js samples][speech_samples].
 
 [speech_docs]: https://cloud.google.com/speech/
-[speech_samples]: speech
+[speech_samples]: https://github.com/googleapis/nodejs-speech/tree/master/samples
 
 #### Google Translate API
 

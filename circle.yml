@@ -100,8 +100,6 @@ deployment:
       - node scripts/build "language/slackbot"
       - node scripts/build "prediction"
       - node scripts/build "pubsub"
-      - node scripts/build "resource"
-      - node scripts/build "speech"
       - node scripts/build "storage-transfer"
       - node scripts/build "trace"
       - node scripts/build "vision"

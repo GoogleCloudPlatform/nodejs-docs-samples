@@ -22,14 +22,11 @@ const cmd = `node quickstart.js`;
 const cwd = path.join(__dirname, `..`);
 const text = `how old is the Brooklyn Bridge`;
 
-const {
-  runAsync
-} = require(`@google-cloud/nodejs-repo-tools`);
+const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 
-test.before(async () => {
-});
+test.before(async () => {});
 
-test(`should run quickstart`, async (t) => {
+test(`should run quickstart`, async t => {
   const output = await runAsync(`${cmd}`, cwd);
   t.true(output.includes(`Transcription: ${text}`));
 });

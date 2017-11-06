@@ -20,9 +20,7 @@ const storage = require(`@google-cloud/storage`)();
 const test = require(`ava`);
 const uuid = require(`uuid`);
 
-const {
-  runAsync
-} = require(`@google-cloud/nodejs-repo-tools`);
+const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node recognize.js`;
@@ -38,45 +36,54 @@ test.before(async () => {
 
 test.after.always(async () => {
   const bucket = storage.bucket(bucketName);
-  await bucket.deleteFiles({ force: true });
-  await bucket.deleteFiles({ force: true }); // Try a second time...
+  await bucket.deleteFiles({force: true});
+  await bucket.deleteFiles({force: true}); // Try a second time...
   await bucket.delete();
 });
 
-test(`should run sync recognize`, async (t) => {
+test(`should run sync recognize`, async t => {
   const output = await runAsync(`${cmd} sync ${filepath}`, cwd);
   t.true(output.includes(`Transcription:  ${text}`));
 });
 
-test(`should run sync recognize on a GCS file`, async (t) => {
-  const output = await runAsync(`${cmd} sync-gcs gs://${bucketName}/${filename}`, cwd);
+test(`should run sync recognize on a GCS file`, async t => {
+  const output = await runAsync(
+    `${cmd} sync-gcs gs://${bucketName}/${filename}`,
+    cwd
+  );
   t.true(output.includes(`Transcription:  ${text}`));
 });
 
-test(`should run sync recognize with word time offset`, async (t) => {
+test(`should run sync recognize with word time offset`, async t => {
   const output = await runAsync(`${cmd} sync-words ${filepath}`, cwd);
   t.true(output.includes(`Transcription:  ${text}`));
   t.true(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
 });
 
-test(`should run async recognize on a local file`, async (t) => {
+test(`should run async recognize on a local file`, async t => {
   const output = await runAsync(`${cmd} async ${filepath}`, cwd);
   t.true(output.includes(`Transcription: ${text}`));
 });
 
-test(`should run async recognize on a GCS file`, async (t) => {
-  const output = await runAsync(`${cmd} async-gcs gs://${bucketName}/${filename}`, cwd);
+test(`should run async recognize on a GCS file`, async t => {
+  const output = await runAsync(
+    `${cmd} async-gcs gs://${bucketName}/${filename}`,
+    cwd
+  );
   t.true(output.includes(`Transcription: ${text}`));
 });
 
-test(`should run async recognize on a GCS file with word time offset`, async (t) => {
-  const output = await runAsync(`${cmd} async-gcs-words gs://${bucketName}/${filename}`, cwd);
+test(`should run async recognize on a GCS file with word time offset`, async t => {
+  const output = await runAsync(
+    `${cmd} async-gcs-words gs://${bucketName}/${filename}`,
+    cwd
+  );
   t.true(output.includes(`Transcription: ${text}`));
   // Check for word time offsets
   t.true(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
 });
 
-test(`should run streaming recognize`, async (t) => {
+test(`should run streaming recognize`, async t => {
   const output = await runAsync(`${cmd} stream ${filepath}`, cwd);
   t.true(output.includes(`Transcription: ${text}`));
 });

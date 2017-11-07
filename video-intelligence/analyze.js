@@ -343,9 +343,9 @@ function analyzeSafeSearch(gcsUri) {
             `.${(result.timeOffset.nanos / 1e6).toFixed(0)}s`
         );
         console.log(
-          `\t\tPornography liklihood: ${likelihoods[
-            result.pornographyLikelihood
-          ]}`
+          `\t\tPornography liklihood: ${
+            likelihoods[result.pornographyLikelihood]
+          }`
         );
       });
     })

@@ -836,7 +836,7 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 listRegistries`)
   .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
   .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
-  .example(`node $0 setupTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json --projectId=my-project-id`)
+  .example(`node $0 setupIotTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json --projectId=my-project-id`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)

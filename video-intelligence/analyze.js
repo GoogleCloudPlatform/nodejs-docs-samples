@@ -18,7 +18,7 @@
 function analyzeFaces(gcsUri) {
   // [START analyze_faces]
   // Imports the Google Cloud Video Intelligence library
-  const video = require('@google-cloud/video-intelligence');
+  const video = require('@google-cloud/video-intelligence').v1;
 
   // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
@@ -83,7 +83,7 @@ function analyzeFaces(gcsUri) {
 function analyzeLabelsGCS(gcsUri) {
   // [START analyze_labels_gcs]
   // Imports the Google Cloud Video Intelligence library
-  const video = require('@google-cloud/video-intelligence');
+  const video = require('@google-cloud/video-intelligence').v1;
 
   // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
@@ -148,7 +148,7 @@ function analyzeLabelsGCS(gcsUri) {
 function analyzeLabelsLocal(path) {
   // [START analyze_labels_local]
   // Imports the Google Cloud Video Intelligence library + Node's fs library
-  const video = require('@google-cloud/video-intelligence');
+  const video = require('@google-cloud/video-intelligence').v1;
   const fs = require('fs');
 
   // Creates a client
@@ -219,7 +219,7 @@ function analyzeLabelsLocal(path) {
 function analyzeShots(gcsUri) {
   // [START analyze_shots]
   // Imports the Google Cloud Video Intelligence library
-  const video = require('@google-cloud/video-intelligence');
+  const video = require('@google-cloud/video-intelligence').v1;
 
   // Creates a client
   const client = new video.VideoIntelligenceServiceClient();
@@ -290,7 +290,7 @@ function analyzeShots(gcsUri) {
 function analyzeSafeSearch(gcsUri) {
   // [START analyze_safe_search]
   // Imports the Google Cloud Video Intelligence library
-  const video = require('@google-cloud/video-intelligence');
+  const video = require('@google-cloud/video-intelligence').v1;
 
   // Creates a client
   const client = new video.VideoIntelligenceServiceClient();

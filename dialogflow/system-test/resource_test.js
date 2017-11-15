@@ -28,7 +28,6 @@ test.before.serial('Remove all existing resources', async () => {
 test.serial('setup-agent should create entity types and intents.', async t => {
   const output = await tools.runAsync(`${cmd} setup-agent -f`);
   t.true(output.includes('Created size entity type'));
-  t.true(output.includes('Created topping entity type'));
   t.true(output.includes('Created Pizza intent'));
   t.true(output.includes('Created ChangeDeliveryAddress intent'));
   t.true(output.includes('Created PlaceOrder intent'));
@@ -134,6 +133,6 @@ test.serial(
   }
 );
 
-test.after.serial('Setting up agent for other tests', async () => {
+test.after.always('Setting up agent for other tests', async () => {
   await tools.runAsync(`${cmd} restore-room-agent -f`);
 });

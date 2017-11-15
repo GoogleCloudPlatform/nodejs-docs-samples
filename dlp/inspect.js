@@ -300,7 +300,9 @@ function eventInspectGCSFile(
         // Handle changes in job metadata (e.g. progress updates)
         operation.on('progress', metadata => {
           console.log(
-            `Processed ${metadata.processedBytes} of approximately ${metadata.totalEstimatedBytes} bytes.`
+            `Processed ${metadata.processedBytes} of approximately ${
+              metadata.totalEstimatedBytes
+            } bytes.`
           );
         });
 

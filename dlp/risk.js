@@ -216,7 +216,9 @@ function kAnonymityAnalysis(projectId, datasetId, tableId, quasiIds) {
         completedJobResponse[0].kAnonymityResult
           .equivalenceClassHistogramBuckets[0];
       console.log(
-        `Bucket size range: [${results.equivalenceClassSizeLowerBound}, ${results.equivalenceClassSizeUpperBound}]`
+        `Bucket size range: [${results.equivalenceClassSizeLowerBound}, ${
+          results.equivalenceClassSizeUpperBound
+        }]`
       );
 
       results.bucketValues.forEach(bucket => {
@@ -295,7 +297,9 @@ function lDiversityAnalysis(
           .sensitiveValueFrequencyHistogramBuckets[0];
 
       console.log(
-        `Bucket size range: [${results.sensitiveValueFrequencyLowerBound}, ${results.sensitiveValueFrequencyUpperBound}]`
+        `Bucket size range: [${results.sensitiveValueFrequencyLowerBound}, ${
+          results.sensitiveValueFrequencyUpperBound
+        }]`
       );
       results.bucketValues.forEach(bucket => {
         const quasiIdValues = bucket.quasiIdsValues.map(getValue).join(', ');
@@ -303,9 +307,9 @@ function lDiversityAnalysis(
         console.log(`  Class size: ${bucket.equivalenceClassSize}`);
         bucket.topSensitiveValues.forEach(valueObj => {
           console.log(
-            `    Sensitive value ${getValue(
-              valueObj.value
-            )} occurs ${valueObj.count} time(s).`
+            `    Sensitive value ${getValue(valueObj.value)} occurs ${
+              valueObj.count
+            } time(s).`
           );
         });
       });

@@ -233,11 +233,15 @@ test(`should have a minLikelihood option`, async t => {
 
 test(`should have a maxFindings option`, async t => {
   const promiseA = tools.runAsync(
-    `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 1`,
+    `${
+      cmd
+    } string "My email is gary@example.com and my phone number is (223) 456-7890." -f 1`,
     cwd
   );
   const promiseB = tools.runAsync(
-    `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 2`,
+    `${
+      cmd
+    } string "My email is gary@example.com and my phone number is (223) 456-7890." -f 2`,
     cwd
   );
 
@@ -269,11 +273,15 @@ test(`should have an option to include quotes`, async t => {
 
 test(`should have an option to filter results by infoType`, async t => {
   const promiseA = tools.runAsync(
-    `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890."`,
+    `${
+      cmd
+    } string "My email is gary@example.com and my phone number is (223) 456-7890."`,
     cwd
   );
   const promiseB = tools.runAsync(
-    `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -t PHONE_NUMBER`,
+    `${
+      cmd
+    } string "My email is gary@example.com and my phone number is (223) 456-7890." -t PHONE_NUMBER`,
     cwd
   );
 

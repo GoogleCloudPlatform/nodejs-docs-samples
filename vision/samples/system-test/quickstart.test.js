@@ -25,7 +25,7 @@ const cwd = path.join(__dirname, `..`);
 test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
-test(`should detect labels in a remote file`, async (t) => {
+test(`should detect labels in a remote file`, async t => {
   const output = await tools.runAsync(`${cmd}`, cwd);
   t.true(output.includes(`Labels:`));
   t.true(output.includes(`cat`));

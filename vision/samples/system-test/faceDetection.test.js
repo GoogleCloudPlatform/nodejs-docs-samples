@@ -21,16 +21,16 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 class MockCanvas {
-  getContext () {
+  getContext() {
     return {
       drawImage: () => {},
       beginPath: () => {},
       lineTo: () => {},
-      stroke: () => {}
+      stroke: () => {},
     };
   }
 
-  pngStream () {
+  pngStream() {
     return {
       on: (event, cb) => {
         if (event === 'end') {
@@ -42,7 +42,7 @@ class MockCanvas {
           cb(`bar`);
           /* eslint-enable */
         }
-      }
+      },
     };
   }
 }
@@ -57,7 +57,7 @@ test.before(tools.checkCredentials);
 test.before(tools.stubConsole);
 test.after.always(tools.restoreConsole);
 
-test.cb(`should detect faces`, (t) => {
+test.cb(`should detect faces`, t => {
   let done = false;
   let timeout = setTimeout(() => {
     if (!done) {

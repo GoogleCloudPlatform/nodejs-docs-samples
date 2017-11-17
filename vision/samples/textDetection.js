@@ -25,74 +25,78 @@ var path = require('path');
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-var Vision = require('@google-cloud/vision');
+var vision = require('@google-cloud/vision');
 var natural = require('natural');
 var redis = require('redis');
 
 // Instantiate a vision client
-var vision = Vision();
+var client = new vision.ImageAnnotatorClient();
 // [END import_libraries]
 
-function Index () {
+function Index() {
   // Connect to a redis server.
   var TOKEN_DB = 0;
   var DOCS_DB = 1;
   var PORT = process.env.REDIS_PORT || '6379';
   var HOST = process.env.REDIS_HOST || '127.0.0.1';
 
-  this.tokenClient = redis.createClient(PORT, HOST, {
-    db: TOKEN_DB
-  }).on('error', function (err) {
-    console.error('ERR:REDIS: ' + err);
-  });
-  this.docsClient = redis.createClient(PORT, HOST, {
-    db: DOCS_DB
-  }).on('error', function (err) {
-    console.error('ERR:REDIS: ' + err);
-  });
+  this.tokenClient = redis
+    .createClient(PORT, HOST, {
+      db: TOKEN_DB,
+    })
+    .on('error', function(err) {
+      console.error('ERR:REDIS: ' + err);
+    });
+  this.docsClient = redis
+    .createClient(PORT, HOST, {
+      db: DOCS_DB,
+    })
+    .on('error', function(err) {
+      console.error('ERR:REDIS: ' + err);
+    });
 }
 
-Index.prototype.quit = function () {
+Index.prototype.quit = function() {
   this.tokenClient.quit();
   this.docsClient.quit();
 };
 
-Index.prototype.add = function (filename, document, callback) {
+Index.prototype.add = function(filename, document, callback) {
   var self = this;
   var PUNCTUATION = ['.', ',', ':', ''];
   var tokenizer = new natural.WordTokenizer();
   var tokens = tokenizer.tokenize(document);
 
-  // TODO: Remove stop words
+  var tasks = tokens
+    .filter(function(token) {
+      return PUNCTUATION.indexOf(token) === -1;
+    })
+    .map(function(token) {
+      return function(cb) {
+        self.tokenClient.sadd(token, filename, cb);
+      };
+    });
 
-  var tasks = tokens.filter(function (token) {
-    return PUNCTUATION.indexOf(token) === -1;
-  }).map(function (token) {
-    return function (cb) {
-      self.tokenClient.sadd(token, filename, cb);
-    };
-  });
-
-  tasks.push(function (cb) {
+  tasks.push(function(cb) {
     self.tokenClient.set(filename, document, cb);
   });
 
   async.parallel(tasks, callback);
 };
 
-Index.prototype.lookup = function (words, callback) {
+Index.prototype.lookup = function(words, callback) {
   var self = this;
-  var tasks = words.map(function (word) {
+  var tasks = words.map(function(word) {
     word = word.toLowerCase();
-    return function (cb) {
+    return function(cb) {
       self.tokenClient.smembers(word, cb);
     };
   });
   async.parallel(tasks, callback);
 };
 
-Index.prototype.documentIsProcessed = function (filename, callback) {
-  this.docsClient.GET(filename, function (err, value) {
+Index.prototype.documentIsProcessed = function(filename, callback) {
+  this.docsClient.GET(filename, function(err, value) {
     if (err) {
       return callback(err);
     }
@@ -108,18 +112,18 @@ Index.prototype.documentIsProcessed = function (filename, callback) {
   });
 };
 
-Index.prototype.setContainsNoText = function (filename, callback) {
+Index.prototype.setContainsNoText = function(filename, callback) {
   this.docsClient.set(filename, '', callback);
 };
 
-function lookup (words, callback) {
+function lookup(words, callback) {
   var index = new Index();
-  index.lookup(words, function (err, hits) {
+  index.lookup(words, function(err, hits) {
     index.quit();
     if (err) {
       return callback(err);
     }
-    words.forEach(function (word, i) {
+    words.forEach(function(word, i) {
       console.log('hits for "' + word + '":', hits[i].join(', '));
     });
     callback(null, hits);
@@ -127,15 +131,15 @@ function lookup (words, callback) {
 }
 
 // [START extract_descrs]
-function extractDescription (texts) {
+function extractDescription(texts) {
   var document = '';
-  texts.forEach(function (text) {
-    document += (text.description || '');
+  texts.forEach(function(text) {
+    document += text.description || '';
   });
   return document;
 }
 
-function extractDescriptions (filename, index, response, callback) {
+function extractDescriptions(filename, index, response, callback) {
   if (response.textAnnotations.length) {
     index.add(filename, extractDescription(response.textAnnotations), callback);
   } else {
@@ -146,114 +150,126 @@ function extractDescriptions (filename, index, response, callback) {
 // [END extract_descrs]
 
 // [START get_text]
-function getTextFromFiles (index, inputFiles, callback) {
+function getTextFromFiles(index, inputFiles, callback) {
   // Make a call to the Vision API to detect text
   let requests = [];
-  inputFiles.forEach((filename) => {
+  inputFiles.forEach(filename => {
     let request = {
       image: {content: fs.readFileSync(filename).toString('base64')},
-      features: {type: 'TEXT_DETECTION'}
+      features: [{type: 'TEXT_DETECTION'}],
     };
     requests.push(request);
   });
-  vision.batchAnnotateImages({requests: requests})
-      .then((results) => {
-        let detections = results[0].responses;
-        var textResponse = {};
-        var tasks = [];
-        inputFiles.forEach(function (filename, i) {
-          var response = detections[i];
-          if (response.error) {
-            console.log('API Error for ' + filename, response.error);
-            return;
-          } else if (Array.isArray(response)) {
-            textResponse[filename] = 1;
-          } else {
-            textResponse[filename] = 0;
-          }
-          tasks.push(function (cb) {
-            extractDescriptions(filename, index, response, cb);
-          });
-        });
-        async.parallel(tasks, function (err) {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, textResponse);
+  client
+    .batchAnnotateImages({requests: requests})
+    .then(results => {
+      let detections = results[0].responses;
+      var textResponse = {};
+      var tasks = [];
+      inputFiles.forEach(function(filename, i) {
+        var response = detections[i];
+        if (response.error) {
+          console.log('API Error for ' + filename, response.error);
+          return;
+        } else if (Array.isArray(response)) {
+          textResponse[filename] = 1;
+        } else {
+          textResponse[filename] = 0;
+        }
+        tasks.push(function(cb) {
+          extractDescriptions(filename, index, response, cb);
         });
       });
+      async.parallel(tasks, function(err) {
+        if (err) {
+          return callback(err);
+        }
+        callback(null, textResponse);
+      });
+    })
+    .catch(callback);
 }
 
 // Run the example
-function main (inputDir, callback) {
+function main(inputDir, callback) {
   var index = new Index();
 
-  async.waterfall([
-    // Scan the specified directory for files
-    function (cb) {
-      fs.readdir(inputDir, cb);
-    },
-    // Separate directories from files
-    function (files, cb) {
-      async.parallel(files.map(function (file) {
-        var filename = path.join(inputDir, file);
-        return function (cb) {
-          fs.stat(filename, function (err, stats) {
-            if (err) {
-              return cb(err);
-            }
-            if (!stats.isDirectory()) {
-              return cb(null, filename);
-            }
-            cb();
+  async.waterfall(
+    [
+      // Scan the specified directory for files
+      function(cb) {
+        fs.readdir(inputDir, cb);
+      },
+      // Separate directories from files
+      function(files, cb) {
+        async.parallel(
+          files.map(function(file) {
+            var filename = path.join(inputDir, file);
+            return function(cb) {
+              fs.stat(filename, function(err, stats) {
+                if (err) {
+                  return cb(err);
+                }
+                if (!stats.isDirectory()) {
+                  return cb(null, filename);
+                }
+                cb();
+              });
+            };
+          }),
+          cb
+        );
+      },
+      // Figure out which files have already been processed
+      function(allImageFiles, cb) {
+        var tasks = allImageFiles
+          .filter(function(filename) {
+            return filename;
+          })
+          .map(function(filename) {
+            return function(cb) {
+              index.documentIsProcessed(filename, function(err, processed) {
+                if (err) {
+                  return cb(err);
+                }
+                if (!processed) {
+                  // Forward this filename on for further processing
+                  return cb(null, filename);
+                }
+                cb();
+              });
+            };
           });
-        };
-      }), cb);
-    },
-    // Figure out which files have already been processed
-    function (allImageFiles, cb) {
-      var tasks = allImageFiles.filter(function (filename) {
-        return filename;
-      }).map(function (filename) {
-        return function (cb) {
-          index.documentIsProcessed(filename, function (err, processed) {
-            if (err) {
-              return cb(err);
-            }
-            if (!processed) {
-              // Forward this filename on for further processing
-              return cb(null, filename);
-            }
-            cb();
-          });
-        };
-      });
-      async.parallel(tasks, cb);
-    },
-    // Analyze any remaining unprocessed files
-    function (imageFilesToProcess, cb) {
-      imageFilesToProcess = imageFilesToProcess.filter(function (filename) {
-        return filename;
-      });
-      if (imageFilesToProcess.length) {
-        return getTextFromFiles(index, imageFilesToProcess, cb);
-      }
-      console.log('All files processed!');
-      cb();
+        async.parallel(tasks, cb);
+      },
+      // Analyze any remaining unprocessed files
+      function(imageFilesToProcess, cb) {
+        imageFilesToProcess = imageFilesToProcess.filter(function(filename) {
+          return filename;
+        });
+        if (imageFilesToProcess.length) {
+          return getTextFromFiles(index, imageFilesToProcess, cb);
+        }
+        console.log('All files processed!');
+        cb();
+      },
+    ],
+    function(err, result) {
+      index.quit();
+      callback(err, result);
     }
-  ], function (err, result) {
-    index.quit();
-    callback(err, result);
-  });
+  );
 }
 // [END get_text]
 
 // [START run_application]
 if (module === require.main) {
-  var generalError = 'Usage: node textDetection <command> <arg> ...\n\n' +
+  var generalError =
+    'Usage: node textDetection <command> <arg> ...\n\n' +
     '\tCommands: analyze, lookup';
   if (process.argv.length < 3) {
     console.log(generalError);
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   }
   var args = process.argv.slice(2);
@@ -261,17 +277,20 @@ if (module === require.main) {
   if (command === 'analyze') {
     if (!args.length) {
       console.log('Usage: node textDetection analyze <dir>');
+      // eslint-disable-next-line no-process-exit
       process.exit(1);
     }
     main(args[0], console.log);
   } else if (command === 'lookup') {
     if (!args.length) {
       console.log('Usage: node textDetection lookup <word> ...');
+      // eslint-disable-next-line no-process-exit
       process.exit(1);
     }
     lookup(args, console.log);
   } else {
     console.log(generalError);
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   }
 }

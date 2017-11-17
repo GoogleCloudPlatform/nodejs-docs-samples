@@ -21,13 +21,15 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 test.before(tools.checkCredentials);
 
-test.cb(`should detect texts`, (t) => {
+test.cb(`should detect texts`, t => {
   const redis = require('redis');
   const client = redis.createClient();
   client
-    .on('error', (err) => {
+    .on('error', err => {
       if (err && err.code === 'ECONNREFUSED') {
-        console.error('Redis is unavailable. Skipping vision textDetection test.');
+        console.error(
+          'Redis is unavailable. Skipping vision textDetection test.'
+        );
         t.end();
       } else {
         t.end(err);

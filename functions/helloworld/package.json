@@ -23,12 +23,19 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "2.1.0",
+    "@google-cloud/pubsub": "^0.14.8",
+    "@google-cloud/storage": "^1.4.0",
     "ava": "0.23.0",
     "proxyquire": "1.8.0",
-    "sinon": "4.0.2"
+    "sinon": "4.0.2",
+    "supertest": "^3.0.0",
+    "uuid": "^3.1.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,
-    "requiresProjectId": true
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "FUNCTIONS_BASE_URL"
+    ]
   }
 }

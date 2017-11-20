@@ -21,19 +21,6 @@ const Buffer = require('safe-buffer').Buffer;
 require('@google-cloud/debug-agent').start();
 // [END functions_helloworld_debug]
 
-// [START functions_helloworld]
-/**
- * Cloud Function.
- *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
- */
-exports.helloWorld = function helloWorld (event, callback) {
-  console.log(`My Cloud Function: ${event.data.message}`);
-  callback();
-};
-// [END functions_helloworld]
-
 // [START functions_helloworld_get]
 /**
  * HTTP Cloud Function.

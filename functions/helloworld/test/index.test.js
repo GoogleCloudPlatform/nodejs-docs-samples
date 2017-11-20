@@ -14,10 +14,24 @@
  */
 
 const Buffer = require('safe-buffer').Buffer;
+const path = require('path');
 const proxyquire = require(`proxyquire`).noCallThru();
 const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const supertest = require(`supertest`);
+const uuid = require(`uuid`);
+
+const pubsub = require(`@google-cloud/pubsub`)();
+const storage = require(`@google-cloud/storage`)();
+
+const baseCmd = `gcloud beta functions`;
+const topicName = `integration-test-functions`;
+
+const localFileName = `test.txt`;
+const fileName = `test-${uuid.v4()}.txt`;
+
+const BASE_URL = process.env.FUNCTIONS_BASE_URL;
 
 const program = proxyquire(`../`, {
   '@google-cloud/debug-agent': {
@@ -25,12 +39,16 @@ const program = proxyquire(`../`, {
   }
 });
 
+const bucketName = `integration-test-functions`;
+const bucket = storage.bucket(bucketName);
+
+test.before(tools.checkCredentials);
+
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.serial(`helloworld: should log a message`, (t) => {
+test(`helloworld: should log a message`, (t) => {
   const expectedMsg = `My Cloud Function: hi`;
-  const callback = sinon.stub();
 
   program.helloWorld({
     data: {
@@ -44,184 +62,182 @@ test.serial(`helloworld: should log a message`, (t) => {
   t.deepEqual(callback.firstCall.args, []);
 });
 
-test.cb.serial(`helloGET: should print hello world`, (t) => {
-  const expectedMsg = `Hello World!`;
+test.cb(`helloGET: should print hello world`, (t) => {
+  supertest(BASE_URL)
+    .get(`/helloGET`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, `Hello World!`);
+    })
+    .end(t.end);
+});
 
-  program.helloGET({}, {
-    send: (message) => {
-      t.is(message, expectedMsg);
-      t.end();
-    }
+test.cb(`helloHttp: should print a name`, (t) => {
+  supertest(BASE_URL)
+    .post(`/helloHttp`)
+    .send({ name: 'John' })
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, 'Hello John!');
+    })
+    .end(t.end);
+});
+
+test.cb(`helloHttp: should print hello world`, (t) => {
+  supertest(BASE_URL)
+    .get(`/helloHttp`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, `Hello World!`);
+    })
+    .end(t.end);
+});
+
+test(`helloBackground: should print a name`, async (t) => {
+  const data = JSON.stringify({name: 'John'});
+  const output = await tools.runAsync(`${baseCmd} call helloBackground --data '${data}'`)
+
+  t.true(output.includes('Hello John!'));
+});
+
+test(`helloBackground: should print hello world`, async (t) => {
+  const output = await tools.runAsync(`${baseCmd} call helloBackground --data '{}'`)
+
+  t.true(output.includes('Hello World!'));
+});
+
+test(`helloPubSub: should print a name`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
+  const name = uuid.v4();
+
+  // Publish to pub/sub topic
+  const topic = pubsub.topic(topicName);
+  const publisher = topic.publisher();
+  await publisher.publish(Buffer.from(name));
+
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    assert(logs.includes('Hello, ${name}!'));
   });
 });
 
-test.cb.serial(`helloHttp: should print a name`, (t) => {
-  const expectedMsg = `Hello John!`;
+test(`helloPubSub: should print hello world`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
 
-  program.helloHttp({
-    body: {
-      name: `John`
-    }
-  }, {
-    send: (message) => {
-      t.is(message, expectedMsg);
-      t.end();
-    }
+  // Publish to pub/sub topic
+  const topic = pubsub.topic(topicName);
+  const publisher = topic.publisher();
+  await publisher.publish(Buffer.from(''), { a: 'b' });
+
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    assert(logs.includes('Hello, World!'));
   });
 });
 
-test.cb.serial(`helloHttp: should print hello world`, (t) => {
-  const expectedMsg = `Hello World!`;
+test.serial(`helloGCS: should print uploaded message`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
 
-  program.helloHttp({
-    body: {}
-  }, {
-    send: (message) => {
-      t.is(message, expectedMsg);
-      t.end();
-    }
+  // Upload file
+  const filepath = path.join(__dirname, localFileName);
+  await bucket.upload(filepath, {
+    destination: fileName
+  });
+
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    assert(logs.includes('File ${fileName} uploaded'));
   });
 });
 
-test.serial(`helloBackground: should print a name`, (t) => {
-  const expectedMsg = `Hello John!`;
-  const callback = sinon.stub();
+test.serial(`helloGCS: should print metadata updated message`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
 
-  program.helloBackground({
-    data: {
-      name: `John`
-    }
-  }, callback);
+  // Update file metadata
+  await bucket.setMetadata(fileName, { foo: `bar` });
 
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, [null, expectedMsg]);
-});
-
-test.serial(`helloBackground: should print hello world`, (t) => {
-  const expectedMsg = `Hello World!`;
-  const callback = sinon.stub();
-
-  program.helloBackground({ data: {} }, callback);
-
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, [null, expectedMsg]);
-});
-
-test.serial(`helloPubSub: should print a name`, (t) => {
-  const expectedMsg = `Hello, Bob!`;
-  const callback = sinon.stub();
-
-  program.helloPubSub({
-    data: {
-      data: Buffer.from(`Bob`).toString(`base64`)
-    }
-  }, callback);
-
-  t.deepEqual(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
-});
-
-test.serial(`helloPubSub: should print hello world`, (t) => {
-  const expectedMsg = `Hello, World!`;
-  const callback = sinon.stub();
-
-  program.helloPubSub({ data: {} }, callback);
-
-  t.deepEqual(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
-});
-
-test.serial(`helloGCS: should print uploaded message`, (t) => {
-  const expectedMsg = `File foo uploaded.`;
-  const callback = sinon.stub();
-
-  program.helloGCS({
-    data: {
-      name: `foo`,
-      resourceState: `exists`,
-      metageneration: `1`
-    }
-  }, callback);
-
-  t.deepEqual(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
-});
-
-test.serial(`helloGCS: should print metadata updated message`, (t) => {
-  const expectedMsg = `File foo metadata updated.`;
-  const callback = sinon.stub();
-
-  program.helloGCS({
-    data: {
-      name: `foo`,
-      resourceState: `exists`,
-      metageneration: `2`
-    }
-  }, callback);
-
-  t.deepEqual(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
-});
-
-test.serial(`helloGCS: should print deleted message`, (t) => {
-  const expectedMsg = `File foo deleted.`;
-  const callback = sinon.stub();
-
-  program.helloGCS({
-    data: {
-      name: `foo`,
-      resourceState: `not_exists`
-    }
-  }, callback);
-
-  t.deepEqual(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
-});
-
-test.serial(`helloError: should throw an error`, (t) => {
-  const expectedMsg = `I failed you`;
-
-  t.throws(() => {
-    program.helloError();
-  }, Error, expectedMsg);
-});
-
-test.serial(`helloError2: should throw a value`, (t) => {
-  t.throws(() => {
-    program.helloError2();
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    assert(logs.includes('File ${fileName} metadata updated'));
   });
 });
 
-test.serial(`helloError3: callback shoud return an errback value`, (t) => {
-  const expectedMsg = `I failed you`;
-  const callback = sinon.stub();
+test.serial(`helloGCS: should print deleted message`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
 
-  program.helloError3({}, callback);
+  // Delete file
+  bucket.delete(fileName);
 
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, [expectedMsg]);
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    assert(logs.includes('File ${fileName} deleted'));
+  });
 });
 
-test.serial(`helloTemplate: should render the html`, async (t) => {
-  const req = {};
-  const res = {};
-  res.send = sinon.stub().returnsThis();
-  res.end = sinon.stub().returnsThis();
+test(`helloError: should throw an error`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
 
-  program.helloTemplate(req, res);
+  // Publish to pub/sub topic
+  const topic = pubsub.topic(topicName);
+  const publisher = topic.publisher();
+  await publisher.publish(Buffer.from(''), { a: 'b' });
 
-  t.is(res.send.callCount, 1);
-  t.is(res.send.getCall(0).args.length, 1);
-  t.is(res.send.getCall(0).args[0].includes('<h1>Cloud Functions Template Sample</h1>'), true);
-  t.is(res.end.callCount, 1);
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloError --start-time ${startTime}`);
+    assert(logs.includes('Error: I failed you'));
+  });
+});
+
+test(`helloError2: should throw a value`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
+
+  // Publish to pub/sub topic
+  const topic = pubsub.topic(topicName);
+  const publisher = topic.publisher();
+  await publisher.publish(Buffer.from(''), { a: 'b' });
+
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloError2 --start-time ${startTime}`);
+    assert(logs.includes(' 1\n'));
+  });
+});
+
+test(`helloError3: callback should return an errback value`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
+
+  // Publish to pub/sub topic
+  const topic = pubsub.topic(topicName);
+  const publisher = topic.publisher();
+  await publisher.publish(Buffer.from(''), { a: 'b' });
+
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloError3 --start-time ${startTime}`);
+    assert(logs.includes(' I failed you\n'));
+  });
+});
+
+test.cb(`helloTemplate: should render the html`, (t) => {
+  supertest(BASE_URL)
+    .get(`/helloTemplate`)
+    .expect(200)
+    .expect((response) => {
+      t.regex(response.text, /<h1>Cloud Functions Template Sample<\/h1>/);
+    })
+    .end(t.end);
 });

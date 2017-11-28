@@ -29,7 +29,7 @@ function detectFaces(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   client
-    .faceDetection({image: {source: {filename: fileName}}})
+    .faceDetection(fileName)
     .then(results => {
       const faces = results[0].faceAnnotations;
 
@@ -62,17 +62,9 @@ function detectFacesGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Performs face detection on the gcs file
   client
-    .faceDetection(request)
+    .faceDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const faces = results[0].faceAnnotations;
 
@@ -106,7 +98,7 @@ function detectLabels(fileName) {
 
   // Performs label detection on the local file
   client
-    .labelDetection({image: {source: {filename: fileName}}})
+    .labelDetection(fileName)
     .then(results => {
       const labels = results[0].labelAnnotations;
       console.log('Labels:');
@@ -132,17 +124,9 @@ function detectLabelsGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Performs label detection on the gcs file
   client
-    .labelDetection(request)
+    .labelDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const labels = results[0].labelAnnotations;
       console.log('Labels:');
@@ -168,7 +152,7 @@ function detectLandmarks(fileName) {
 
   // Performs landmark detection on the local file
   client
-    .landmarkDetection({image: {source: {filename: fileName}}})
+    .landmarkDetection(fileName)
     .then(results => {
       const landmarks = results[0].landmarkAnnotations;
       console.log('Landmarks:');
@@ -194,17 +178,9 @@ function detectLandmarksGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Performs landmark detection on the gcs file
   client
-    .landmarkDetection(request)
+    .landmarkDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const landmarks = results[0].landmarkAnnotations;
       console.log('Landmarks:');
@@ -230,7 +206,7 @@ function detectText(fileName) {
 
   // Performs text detection on the local file
   client
-    .textDetection({image: {source: {filename: fileName}}})
+    .textDetection(fileName)
     .then(results => {
       const detections = results[0].textAnnotations;
       console.log('Text:');
@@ -256,17 +232,9 @@ function detectTextGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Performs text detection on the gcs file
   client
-    .textDetection(request)
+    .textDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const detections = results[0].textAnnotations;
       console.log('Text:');
@@ -292,7 +260,7 @@ function detectLogos(fileName) {
 
   // Performs logo detection on the local file
   client
-    .logoDetection({image: {source: {filename: fileName}}})
+    .logoDetection(fileName)
     .then(results => {
       const logos = results[0].logoAnnotations;
       console.log('Logos:');
@@ -318,17 +286,9 @@ function detectLogosGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Performs logo detection on the gcs file
   client
-    .logoDetection(request)
+    .logoDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const logos = results[0].logoAnnotations;
       console.log('Logos:');
@@ -354,7 +314,7 @@ function detectProperties(fileName) {
 
   // Performs property detection on the local file
   client
-    .imageProperties({image: {source: {filename: fileName}}})
+    .imageProperties(fileName)
     .then(results => {
       const properties = results[0].imagePropertiesAnnotation;
       const colors = properties.dominantColors.colors;
@@ -380,17 +340,9 @@ function detectPropertiesGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Performs property detection on the gcs file
   client
-    .imageProperties(request)
+    .imageProperties(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const properties = results[0].imagePropertiesAnnotation;
       const colors = properties.dominantColors.colors;
@@ -416,7 +368,7 @@ function detectSafeSearch(fileName) {
 
   // Performs safe search detection on the local file
   client
-    .safeSearchDetection({image: {source: {filename: fileName}}})
+    .safeSearchDetection(fileName)
     .then(results => {
       const detections = results[0].safeSearchAnnotation;
 
@@ -445,17 +397,9 @@ function detectSafeSearchGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Performs safe search property detection on the remote file
   client
-    .safeSearchDetection(request)
+    .safeSearchDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const detections = results[0].safeSearchAnnotation;
 
@@ -486,7 +430,7 @@ function detectCropHints(fileName) {
 
   // Find crop hints for the local file
   client
-    .cropHints({image: {source: {filename: fileName}}})
+    .cropHints(fileName)
     .then(results => {
       const cropHints = results[0].cropHintsAnnotation;
 
@@ -518,17 +462,9 @@ function detectCropHintsGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Find crop hints for the remote file
   client
-    .cropHints(request)
+    .cropHints(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const cropHints = results[0].cropHintsAnnotation;
 
@@ -561,7 +497,7 @@ function detectWeb(fileName) {
 
   // Detect similar images on the web to a local file
   client
-    .webDetection({image: {source: {filename: fileName}}})
+    .webDetection(fileName)
     .then(results => {
       const webDetection = results[0].webDetection;
 
@@ -614,17 +550,9 @@ function detectWebGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Detect similar images on the web to a remote file
   client
-    .webDetection(request)
+    .webDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const webDetection = results[0].webDetection;
 
@@ -678,7 +606,7 @@ function detectFulltext(fileName) {
 
   // Read a local image as a text document
   client
-    .documentTextDetection({image: {source: {filename: fileName}}})
+    .documentTextDetection(fileName)
     .then(results => {
       const fullTextAnnotation = results[0].fullTextAnnotation;
       console.log(fullTextAnnotation.text);
@@ -704,17 +632,9 @@ function detectFulltextGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
-  const request = {
-    image: {
-      source: {
-        imageUri: `gs://${bucketName}/${fileName}`,
-      },
-    },
-  };
-
   // Read a remote image as a text document
   client
-    .documentTextDetection(request)
+    .documentTextDetection(`gs://${bucketName}/${fileName}`)
     .then(results => {
       const fullTextAnnotation = results[0].fullTextAnnotation;
       console.log(fullTextAnnotation.text);

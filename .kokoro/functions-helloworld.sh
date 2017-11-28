@@ -18,7 +18,7 @@ export GCLOUD_PROJECT=nodejs-docs-samples
 STAGE_BUCKET=$GCLOUD_PROJECT
 GCP_REGION=us-central1
 TOPIC=integration-test-functions
-export FUNCTIONS_BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
+export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
 # Configure gcloud
 export GCLOUD_PROJECT=nodejs-getting-started-tests
@@ -29,15 +29,15 @@ gcloud config set project nodejs-getting-started-tests
 function cleanup {
   CODE=$?
 
-  gcloud beta functions deploy helloworld -q
-  gcloud beta functions deploy helloGET -q
-  gcloud beta functions deploy helloBackground -q
-  gcloud beta functions deploy helloPubSub -q
-  gcloud beta functions deploy helloGCS -q
-  gcloud beta functions deploy helloError -q
-  gcloud beta functions deploy helloError2 -q
-  gcloud beta functions deploy helloError3 -q
-  gcloud beta functions deploy helloTemplate -q
+  gcloud beta functions delete helloworld -q
+  gcloud beta functions delete helloGET -q
+  gcloud beta functions delete helloBackground -q
+  gcloud beta functions delete helloPubSub -q
+  gcloud beta functions delete helloGCS -q
+  gcloud beta functions delete helloError -q
+  gcloud beta functions delete helloError2 -q
+  gcloud beta functions delete helloError3 -q
+  gcloud beta functions delete helloTemplate -q
 }
 trap cleanup EXIT
 

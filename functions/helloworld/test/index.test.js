@@ -15,8 +15,6 @@
 
 const Buffer = require('safe-buffer').Buffer;
 const path = require('path');
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const supertest = require(`supertest`);
@@ -31,36 +29,16 @@ const topicName = `integration-test-functions`;
 const localFileName = `test.txt`;
 const fileName = `test-${uuid.v4()}.txt`;
 
-const BASE_URL = process.env.FUNCTIONS_BASE_URL;
-
-const program = proxyquire(`../`, {
-  '@google-cloud/debug-agent': {
-    start: sinon.stub()
-  }
-});
+const BASE_URL = process.env.BASE_URL;
 
 const bucketName = `integration-test-functions`;
 const bucket = storage.bucket(bucketName);
 
-test.before(tools.checkCredentials);
-
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
-
-test(`helloworld: should log a message`, (t) => {
-  const expectedMsg = `My Cloud Function: hi`;
-
-  program.helloWorld({
-    data: {
-      message: `hi`
-    }
-  }, callback);
-
-  t.deepEqual(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.deepEqual(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
+test.before(`Must specify BASE_URL`, t => {
+  t.truthy(BASE_URL);
 });
+
+test.before(tools.checkCredentials);
 
 test.cb(`helloGET: should print hello world`, (t) => {
   supertest(BASE_URL)
@@ -95,13 +73,13 @@ test.cb(`helloHttp: should print hello world`, (t) => {
 
 test(`helloBackground: should print a name`, async (t) => {
   const data = JSON.stringify({name: 'John'});
-  const output = await tools.runAsync(`${baseCmd} call helloBackground --data '${data}'`)
+  const output = await tools.runAsync(`${baseCmd} call helloBackground --data '${data}'`);
 
   t.true(output.includes('Hello John!'));
 });
 
 test(`helloBackground: should print hello world`, async (t) => {
-  const output = await tools.runAsync(`${baseCmd} call helloBackground --data '{}'`)
+  const output = await tools.runAsync(`${baseCmd} call helloBackground --data '{}'`);
 
   t.true(output.includes('Hello World!'));
 });
@@ -119,7 +97,7 @@ test(`helloPubSub: should print a name`, async (t) => {
   // Check logs
   await tools.tryTest(async (assert) => {
     const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
-    assert(logs.includes('Hello, ${name}!'));
+    assert(logs.includes(`Hello, ${name}!`));
   });
 });
 
@@ -152,7 +130,7 @@ test.serial(`helloGCS: should print uploaded message`, async (t) => {
   // Check logs
   await tools.tryTest(async (assert) => {
     const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
-    assert(logs.includes('File ${fileName} uploaded'));
+    assert(logs.includes(`File ${fileName} uploaded`));
   });
 });
 
@@ -166,7 +144,7 @@ test.serial(`helloGCS: should print metadata updated message`, async (t) => {
   // Check logs
   await tools.tryTest(async (assert) => {
     const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
-    assert(logs.includes('File ${fileName} metadata updated'));
+    assert(logs.includes(`File ${fileName} metadata updated`));
   });
 });
 
@@ -175,12 +153,12 @@ test.serial(`helloGCS: should print deleted message`, async (t) => {
   const startTime = new Date(Date.now()).toISOString();
 
   // Delete file
-  bucket.delete(fileName);
+  bucket.deleteFiles();
 
   // Check logs
   await tools.tryTest(async (assert) => {
     const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
-    assert(logs.includes('File ${fileName} deleted'));
+    assert(logs.includes(`File ${fileName} deleted`));
   });
 });
 

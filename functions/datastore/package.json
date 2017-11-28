@@ -17,7 +17,8 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/datastore": "1.1.0"
+    "@google-cloud/datastore": "1.1.0",
+    "supertest": "^3.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "2.1.0",

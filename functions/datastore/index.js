@@ -69,7 +69,7 @@ exports.set = function set (req, res) {
     .then(() => res.status(200).send(`Entity ${key.path.join('/')} saved.`))
     .catch((err) => {
       console.error(err);
-      res.status(500).send(err);
+      res.status(500).send(err.message);
       return Promise.reject(err);
     });
 };
@@ -92,7 +92,7 @@ exports.get = function get (req, res) {
   return datastore.get(key)
     .then(([entity]) => {
       // The get operation will not fail for a non-existent entity, it just
-      // returns null.
+      // returns an empty dictionary.
       if (!entity) {
         throw new Error(`No entity found for key ${key.path.join('/')}.`);
       }
@@ -101,7 +101,7 @@ exports.get = function get (req, res) {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send(err);
+      res.status(500).send(err.message);
       return Promise.reject(err);
     });
 };
@@ -122,11 +122,13 @@ exports.del = function del (req, res) {
   const key = getKeyFromRequestData(req.body);
 
   // Deletes the entity
+  // The delete operation will not fail for a non-existent entity, it just
+  // doesn't delete anything
   return datastore.delete(key)
     .then(() => res.status(200).send(`Entity ${key.path.join('/')} deleted.`))
     .catch((err) => {
       console.error(err);
       res.status(500).send(err);
-      return Promise.reject(err);
+      return Promise.reject(err.message);
     });
 };

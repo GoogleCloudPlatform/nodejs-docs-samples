@@ -376,10 +376,10 @@ require(`yargs`)
     opts => analyzeLabelsGCS(opts.gcsUri)
   )
   .command(
-    `labels-file <gcsUri>`,
+    `labels-file <filePath>`,
     `Labels objects in a video stored locally using the Cloud Video Intelligence API.`,
     {},
-    opts => analyzeLabelsLocal(opts.gcsUri)
+    opts => analyzeLabelsLocal(opts.filePath)
   )
   .command(
     `safe-search <gcsUri>`,

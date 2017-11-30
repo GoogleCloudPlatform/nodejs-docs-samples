@@ -88,6 +88,7 @@ deployment:
       - node scripts/build "auth"
       - node scripts/build "appengine/pubsub"
       - node scripts/build "bigquery"
+      - export GCP_QUEUE=nodejs-test-queue-do-not-delete; node scripts/build "cloudtasks"
       - node scripts/build "containerengine/hello-world"
       - node scripts/build "datastore"
       - node scripts/build "debugger"

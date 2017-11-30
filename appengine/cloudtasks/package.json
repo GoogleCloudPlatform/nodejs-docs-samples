@@ -1,0 +1,45 @@
+{
+  "name": "appengine-cloudtasks",
+  "description": "Google App Engine Flexible Environment Cloud Tasks example.",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "private": true,
+  "repository": "GoogleCloudPlatform/nodejs-docs-samples",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "scripts": {
+    "deploy": "gcloud app deploy",
+    "lint": "repo-tools lint",
+    "pretest": "npm run lint",
+    "unit-test": "ava --verbose test/*.test.js",
+    "system-test": "repo-tools test app --config package.json --config-key cloud-repo-tools",
+    "all-test": "npm run unit-test && npm run system-test",
+    "test": "repo-tools test run --cmd npm -- run all-test",
+    "e2e-test": "repo-tools test deploy --config package.json --config-key cloud-repo-tools"
+  },
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "googleapis": "22.2.0",
+    "yargs": "10.0.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.1.1",
+    "proxyquire": "1.8.0",
+    "sinon": "4.0.2"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "test": {
+      "app": {
+        "msg": "Hello, world!",
+        "args": [
+          "server.js"
+        ]
+      }
+    }
+  }
+}

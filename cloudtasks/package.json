@@ -1,0 +1,36 @@
+{
+  "name": "nodejs-docs-samples-cloudtasks",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "private": true,
+  "repository": "GoogleCloudPlatform/nodejs-docs-samples",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "scripts": {
+    "lint": "repo-tools lint",
+    "pretest": "npm run lint",
+    "system-test": "ava -T 3m --verbose --fail-fast system-test/*.test.js",
+    "test": "repo-tools test run --cmd npm -- run system-test"
+  },
+  "dependencies": {
+    "googleapis": "22.2.0",
+    "yargs": "10.0.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.1.0",
+    "ava": "0.23.0"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "test": {
+      "build": {
+        "requiredEnvVars": [
+          "GCP_QUEUE"
+        ]
+      }
+    }
+  }
+}

@@ -14,17 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export GCLOUD_PROJECT=nodejs-docs-samples
+export GCLOUD_PROJECT=nodejs-docs-samples-tests
 STAGE_BUCKET=$GCLOUD_PROJECT
 GCP_REGION=us-central1
 TOPIC=integration-test-functions
 export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
 # Configure gcloud
-export GCLOUD_PROJECT=nodejs-getting-started-tests
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-gcloud config set project nodejs-getting-started-tests
+gcloud config set project $GCLOUD_PROJECT
 
 function cleanup {
   CODE=$?

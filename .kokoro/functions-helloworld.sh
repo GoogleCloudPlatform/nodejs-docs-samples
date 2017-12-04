@@ -57,4 +57,4 @@ gcloud beta functions deploy helloError3 --stage-bucket $STAGE_BUCKET --trigger-
 gcloud beta functions deploy helloTemplate --stage-bucket $STAGE_BUCKET --trigger-http
 
 # Run system tests
-repo-tools test
+repo-tools test run

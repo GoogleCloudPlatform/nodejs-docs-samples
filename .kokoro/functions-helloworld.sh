@@ -20,6 +20,8 @@ GCP_REGION=us-central1
 TOPIC=integration-test-functions
 export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
+cd github/nodejs-docs-samples/functions/helloworld
+
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
@@ -28,7 +30,7 @@ gcloud config set project $GCLOUD_PROJECT
 function cleanup {
   CODE=$?
 
-  gcloud beta functions delete helloworld -q
+  gcloud beta functions delete helloHttp -q
   gcloud beta functions delete helloGET -q
   gcloud beta functions delete helloBackground -q
   gcloud beta functions delete helloPubSub -q
@@ -44,7 +46,7 @@ set -e
 
 # Deploy all hello-world functions
 # (If any step fails, the entire test run should fail)
-gcloud beta functions deploy helloworld --trigger-http --stage-bucket $STAGE_BUCKET
+gcloud beta functions deploy helloHttp --trigger-http --stage-bucket $STAGE_BUCKET
 gcloud beta functions deploy helloGET --trigger-http --stage-bucket $STAGE_BUCKET
 gcloud beta functions deploy helloBackground --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC
 gcloud beta functions deploy helloPubSub --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC

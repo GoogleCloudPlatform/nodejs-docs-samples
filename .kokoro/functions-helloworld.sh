@@ -22,6 +22,9 @@ export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
 cd github/nodejs-docs-samples/functions/helloworld
 
+# Install dependencies
+npm install
+
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"

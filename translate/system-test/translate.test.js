@@ -42,9 +42,9 @@ test(`should detect language of multiple strings`, async t => {
     cwd
   );
   const [detections] = await translate.detect([text, text2]);
-  const expected = `Detections:\n${text} => ${detections[0].language}\n${
-    text2
-  } => ${detections[1].language}`;
+  const expected = `Detections:\n${text} => ${
+    detections[0].language
+  }\n${text2} => ${detections[1].language}`;
   t.is(output, expected);
 });
 
@@ -76,9 +76,9 @@ test(`should translate multiple strings`, async t => {
     cwd
   );
   const [translations] = await translate.translate([text, text2], toLang);
-  const expected = `Translations:\n${text} => (${toLang}) ${translations[0]}\n${
-    text2
-  } => (${toLang}) ${translations[1]}`;
+  const expected = `Translations:\n${text} => (${toLang}) ${
+    translations[0]
+  }\n${text2} => (${toLang}) ${translations[1]}`;
   t.is(output, expected);
 });
 
@@ -98,8 +98,8 @@ test(`should translate multiple strings with a model`, async t => {
     cwd
   );
   const [translations] = await translate.translate([text, text2], toLang);
-  const expected = `Translations:\n${text} => (${toLang}) ${translations[0]}\n${
-    text2
-  } => (${toLang}) ${translations[1]}`;
+  const expected = `Translations:\n${text} => (${toLang}) ${
+    translations[0]
+  }\n${text2} => (${toLang}) ${translations[1]}`;
   t.is(output, expected);
 });

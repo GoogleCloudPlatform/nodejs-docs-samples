@@ -112,9 +112,7 @@ test(`should perform l-diversity analysis on a single field`, async t => {
 
 test(`should perform l-diversity analysis on multiple fields`, async t => {
   const output = await tools.runAsync(
-    `${cmd} lDiversity ${dataset} harmful ${uniqueField} ${numericField} ${
-      repeatedField
-    }`,
+    `${cmd} lDiversity ${dataset} harmful ${uniqueField} ${numericField} ${repeatedField}`,
     cwd
   );
   t.regex(output, /Quasi-ID values: \{\d{2}, \d{4} \d{4} \d{4} \d{4}\}/);

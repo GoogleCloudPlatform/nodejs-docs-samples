@@ -19,27 +19,19 @@ Functions for your project.
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
         cd nodejs-docs-samples/functions/imagemagick
 
-1. Create a Cloud Storage bucket for storing images (if you already have one you
-want to use, you can skip this step):
+1. Create a Cloud Storage Bucket:
 
         gsutil mb gs://YOUR_BUCKET_NAME
 
-    * Replace `YOUR_BUCKET_NAME` with the name of your image Bucket.
-
-1. Create a Cloud Storage Bucket to stage our deployment:
-
-        gsutil mb gs://YOUR_STAGE_BUCKET_NAME
-
-    * Replace `YOUR_STAGE_BUCKET_NAME` with the name of your Cloud Storage Bucket.
+    This storage bucket is used to upload images for the function to check.
 
 1. Deploy the `blurOffensiveImages` function with a Storage trigger:
 
-        gcloud alpha functions deploy blurOffensiveImages --trigger-bucket=YOUR_BUCKET_NAME --stage-bucket=YOUR_STAGE_BUCKET_NAME
+        gcloud beta functions deploy blurOffensiveImages --trigger-bucket=YOUR_BUCKET_NAME
 
-    * Replace `YOUR_BUCKET_NAME` with the name of your image Cloud Storage Bucket.
-    * Replace `YOUR_STAGE_BUCKET_NAME` with the name of your Cloud Storage Bucket.
+    * Replace `YOUR_BUCKET_NAME` with the name of the Cloud Storage Bucket you created earlier.
 
-1.  Upload an offensive image to your image Storage bucket, such as this image of
+1.  Upload an offensive image to the Storage bucket, such as this image of
     a flesh-eating zombie: https://cdn.pixabay.com/photo/2015/09/21/14/24/zombie-949916_1280.jpg
 
 1.  Check the logs for the `blurOffensiveImages` function:

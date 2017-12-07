@@ -26,28 +26,19 @@ can skip this step):
 
     * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 
-1. Create a Cloud Storage Bucket to stage our deployment:
-
-        gsutil mb gs://YOUR_BUCKET_NAME
-
-    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
-
 1. Deploy the `publish` function with an HTTP trigger:
 
-        gcloud alpha functions deploy publish --stage-bucket YOUR_BUCKET_NAME --trigger-http
-
-    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
+        gcloud beta functions deploy publish --trigger-http
 
 1. Deploy the `subscribe` function with the Pub/Sub topic as a trigger:
 
-        gcloud alpha functions deploy subscribe --stage-bucket YOUR_BUCKET_NAME --trigger-topic YOUR_TOPIC_NAME
+        gcloud beta functions deploy subscribe --trigger-topic YOUR_TOPIC_NAME
 
-    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
     * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 
 1. Call the `publish` function:
 
-        gcloud alpha functions call publish --data '{"topic":"YOUR_TOPIC_NAME","message":"Hello World!"}'
+        gcloud beta functions call publish --data '{"topic":"YOUR_TOPIC_NAME","message":"Hello World!"}'
 
     * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 

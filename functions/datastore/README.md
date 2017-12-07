@@ -19,27 +19,21 @@ Functions for your project.
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
         cd nodejs-docs-samples/functions/datastore
 
-1. Create a Cloud Storage Bucket to stage our deployment:
-
-        gsutil mb gs://YOUR_BUCKET_NAME
-
-    * Replace `YOUR_BUCKET_NAME` here and in subsequent commands with the name of your Cloud Storage Bucket.
-
 1. Ensure the Cloud Datastore API is enabled:
 
   [Click here to enable the Cloud Datastore API](https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com&redirect=https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/functions/datastore)
 
 1. Deploy the "get" function with an HTTP trigger:
 
-        gcloud beta functions deploy get --stage-bucket YOUR_BUCKET_NAME --trigger-http
+        gcloud beta functions deploy get --trigger-http
 
 1. Deploy the "set" function with an HTTP trigger:
 
-        gcloud beta functions deploy set --stage-bucket YOUR_BUCKET_NAME --trigger-http
+        gcloud beta functions deploy set --trigger-http
 
 1. Deploy the "del" function with an HTTP trigger:
 
-        gcloud beta functions deploy del --stage-bucket YOUR_BUCKET_NAME --trigger-http
+        gcloud beta functions deploy del --trigger-http
 
 1. Call the "set" function to create a new entity:
 

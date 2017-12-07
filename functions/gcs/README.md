@@ -18,7 +18,7 @@ Functions for your project.
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
         cd nodejs-docs-samples/functions/gcs
 
-1. Create a Cloud Storage Bucket to stage our deployment:
+1. Create a Cloud Storage Bucket:
 
         gsutil mb gs://YOUR_BUCKET_NAME
 
@@ -32,13 +32,11 @@ Functions for your project.
 
 1. Deploy the "wordCount" function with an HTTP trigger:
 
-        gcloud alpha functions deploy wordCount --stage-bucket YOUR_BUCKET_NAME --trigger-http
-
-    * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
+        gcloud beta functions deploy wordCount --trigger-http
 
 1. Call the "wordCount" function using the sample file:
 
-        gcloud alpha functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
+        gcloud beta functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
 
     * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 

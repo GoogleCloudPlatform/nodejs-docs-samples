@@ -27,7 +27,7 @@ Functions for your project.
 
 1. Deploy the `blurOffensiveImages` function with a Storage trigger:
 
-        gcloud alpha functions deploy blurOffensiveImages --trigger-bucket=YOUR_BUCKET_NAME
+        gcloud beta functions deploy blurOffensiveImages --trigger-bucket=YOUR_BUCKET_NAME
 
     * Replace `YOUR_BUCKET_NAME` with the name of the Cloud Storage Bucket you created earlier.
 

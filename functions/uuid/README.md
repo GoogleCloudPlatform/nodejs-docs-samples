@@ -22,11 +22,11 @@ Functions for your project.
 
 1. Deploy the `uuid` function with an HTTP trigger:
 
-        gcloud alpha functions deploy uuid --trigger-http
+        gcloud beta functions deploy uuid --trigger-http
 
 1. Call the `uuid` function:
 
-        gcloud alpha functions call uuid
+        gcloud beta functions call uuid
 
     You should see something like this in your console:
 

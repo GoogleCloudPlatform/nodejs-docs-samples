@@ -415,21 +415,24 @@ function insertRowsAsStream (datasetId, tableId, rows, projectId) {
 
   // Inserts data into a table
   bigquery
-    .dataset(datasetId)
-    .table(tableId)
-    .insert(rows)
-    .then((insertErrors) => {
-      console.log('Inserted:');
+  .dataset(datasetId)
+  .table(tableId)
+  .insert(rows)
+  .then((response) => {
+    const insertErrors = response.insertErrors;
+    if (insertErrors && insertErrors.length > 0) {
+      console.log('start insert errors');
+      insertErrors.forEach((err) => console.error(JSON.stringify(err, null, 2)));
+      console.log('end insert errors');
+    } else {
+      console.log('inserted:');
       rows.forEach((row) => console.log(row));
-
-      if (insertErrors && insertErrors.length > 0) {
-        console.log('Insert errors:');
-        insertErrors.forEach((err) => console.error(err));
-      }
-    })
-    .catch((err) => {
-      console.error('ERROR:', err);
-    });
+      console.log('end inserted');
+    }
+  })
+  .catch((err) => {
+    console.error('Exception:', JSON.stringify(err, null, 2));
+  });
   // [END bigquery_insert_stream]
 }
 

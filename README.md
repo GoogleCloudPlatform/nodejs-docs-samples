@@ -280,7 +280,7 @@ analytics data warehouse.
 View the [BigQuery Node.js samples][bigquery_samples].
 
 [bigquery_docs]: https://cloud.google.com/bigquery/docs/
-[bigquery_samples]: bigquery
+[bigquery_samples]: https://github.com/googleapis/nodejs-bigquery/tree/master/samples
 
 #### Google Cloud Pub/Sub
 
@@ -356,7 +356,7 @@ content.
 View the [Cloud Vision API Node.js samples][vision_samples].
 
 [vision_docs]: https://cloud.google.com/vision/docs/
-[vision_samples]: vision
+[vision_samples]: https://github.com/googleapis/nodejs-vision/tree/master/samples
 
 ### Management Tools
 

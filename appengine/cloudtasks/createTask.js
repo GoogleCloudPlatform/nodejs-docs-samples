@@ -18,24 +18,11 @@
 const google = require('googleapis');
 const cloudtasks = google.cloudtasks('v2beta2');
 
-function authorize (callback) {
-  google.auth.getApplicationDefault(function (err, authClient) {
-    if (err) {
-      console.error('authentication failed: ', err);
-      return;
-    }
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-      authClient = authClient.createScoped(scopes);
-    }
-    callback(authClient);
-  });
-}
-
 /**
  * Create a task for a given queue with an arbitrary payload.
  */
 function createTask (project, location, queue, options) {
+  // [START cloud_tasks_appengine_create_task]
   authorize((authClient) => {
     const task = {
       app_engine_http_request: {
@@ -72,6 +59,21 @@ function createTask (project, location, queue, options) {
       console.log(JSON.stringify(response, null, 2));
     });
   });
+
+  function authorize (callback) {
+    google.auth.getApplicationDefault(function (err, authClient) {
+      if (err) {
+        console.error('authentication failed: ', err);
+        return;
+      }
+      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+        authClient = authClient.createScoped(scopes);
+      }
+      callback(authClient);
+    });
+  }
+  // [END cloud_tasks_appengine_create_task]
 }
 
 const cli = require(`yargs`)

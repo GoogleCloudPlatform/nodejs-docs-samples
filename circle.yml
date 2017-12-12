@@ -87,7 +87,6 @@ deployment:
       - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage"
       - node scripts/build "auth"
       - node scripts/build "appengine/pubsub"
-      - node scripts/build "bigquery"
       - export GCP_QUEUE=nodejs-test-queue-do-not-delete; node scripts/build "cloudtasks"
       - node scripts/build "containerengine/hello-world"
       - node scripts/build "datastore"
@@ -103,4 +102,3 @@ deployment:
       - node scripts/build "pubsub"
       - node scripts/build "storage-transfer"
       - node scripts/build "trace"
-      - node scripts/build "vision"

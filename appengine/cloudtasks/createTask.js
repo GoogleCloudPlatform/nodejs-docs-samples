@@ -127,5 +127,4 @@ if (module === require.main) {
   createTask(opts.project, opts.location, opts.queue, opts);
 }
 
-exports.authorize = authorize;
 exports.createTask = createTask;

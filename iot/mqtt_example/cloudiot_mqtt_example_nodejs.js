@@ -142,20 +142,29 @@ function publishAsync (messageCount, numMessages) {
         connectionArgs.password = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
         client = mqtt.connect(connectionArgs);
 
-        client.on('connect', () => {
-          console.log('connect', arguments);
+        client.on('connect', (success) => {
+          console.log('connect');
+          if (success) {
+            publishAsync(1, argv.num_messages);
+          } else {
+            console.log('Client not connected...');
+          }
         });
 
         client.on('close', () => {
-          console.log('close', arguments);
+          console.log('close');
         });
 
-        client.on('error', () => {
-          console.log('error', arguments);
+        client.on('error', (err) => {
+          console.log('error', err);
+        });
+
+        client.on('message', (topic, message, packet) => {
+          console.log('message received: ', new Buffer(message, 'base64').toString('ascii'));
         });
 
         client.on('packetsend', () => {
-          // Too verbose to log here
+          // Note: logging packet send is very verbose
         });
       }
       publishAsync(messageCount + 1, numMessages);
@@ -191,25 +200,33 @@ let connectionArgs = {
 let iatTime = parseInt(Date.now() / 1000);
 let client = mqtt.connect(connectionArgs);
 
+client.subscribe(`/devices/${argv.device_id}/config`);
+
 // The MQTT topic that this device will publish data to. The MQTT
 // topic name is required to be in the format below. The topic name must end in
 // 'state' to publish state and 'events' to publish telemetry. Note that this is
 // not the same as the device registry's Cloud Pub/Sub topic.
 const mqttTopic = `/devices/${argv.device_id}/${argv.message_type}`;
 
-client.on('connect', () => {
-  console.log('connect', arguments);
-  // After connecting, publish 'num_messages' messagse asynchronously, at a rate
-  // of 1 per second for telemetry events and 1 every 2 seconds for states.
-  publishAsync(1, argv.num_messages);
+client.on('connect', (success) => {
+  console.log('connect');
+  if (success) {
+    publishAsync(1, argv.num_messages);
+  } else {
+    console.log('Client not connected...');
+  }
 });
 
 client.on('close', () => {
-  console.log('close', arguments);
+  console.log('close');
 });
 
-client.on('error', () => {
-  console.log('error', arguments);
+client.on('error', (err) => {
+  console.log('error', err);
+});
+
+client.on('message', (topic, message, packet) => {
+  console.log('message received: ', new Buffer(message, 'base64').toString('ascii'));
 });
 
 client.on('packetsend', () => {

@@ -160,7 +160,7 @@ function publishAsync (messageCount, numMessages) {
         });
 
         client.on('message', (topic, message, packet) => {
-          console.log('message received: ', new Buffer(message, 'base64').toString('ascii'));
+          console.log('message received: ', Buffer.from(message, 'base64').toString('ascii'));
         });
 
         client.on('packetsend', () => {
@@ -226,7 +226,7 @@ client.on('error', (err) => {
 });
 
 client.on('message', (topic, message, packet) => {
-  console.log('message received: ', new Buffer(message, 'base64').toString('ascii'));
+  console.log('message received: ', Buffer.from(message, 'base64').toString('ascii'));
 });
 
 client.on('packetsend', () => {

@@ -21,14 +21,12 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
 
-const deviceId = `test-node-device`;
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const helper = `node ../manager/manager.js`;
 const cmd = `node cloudiot_mqtt_example_nodejs.js `;
 const cmdSuffix = ` --num_messages=1 --private_key_file=resources/rsa_private.pem --algorithm=RS256`;
 const cwd = path.join(__dirname, `..`);
-
 
 test.before(tools.checkCredentials);
 test.before(async () => {

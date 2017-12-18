@@ -42,7 +42,7 @@ spec:
       - name: esp
         image: gcr.io/endpoints-release/endpoints-runtime:1
         args: [
-          "--http_port", "8081",
+          "--http1_port", "8081",
           "--backend", "127.0.0.1:8080",
           "--service", "SERVICE_NAME",
           "--version", "SERVICE_VERSION",

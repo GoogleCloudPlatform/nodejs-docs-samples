@@ -94,6 +94,21 @@ var argv = require(`yargs`)
     .strict()
     .argv;
 
+// [START iot_http_variables]
+// A unique string that identifies this device. For Google Cloud IoT Core, it
+// must be in the format below.
+
+let iatTime = parseInt(Date.now() / 1000);
+let authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
+const devicePath = `projects/${argv.project_id}/locations/${argv.cloud_region}/registries/${argv.registry_id}/devices/${argv.device_id}`;
+
+// The request path, set accordingly depending on the message type.
+const pathSuffix = argv.message_type === 'events'
+    ? ':publishEvent' : ':setState';
+const urlBase = `https://${argv.http_bridge_address}/v1beta1/${devicePath}`;
+const url = `${urlBase}${pathSuffix}`;
+// [END iot_http_variables]
+
 // Create a Cloud IoT Core JWT for the given project ID, signed with the given
 // private key.
 // [START iot_http_jwt]
@@ -115,7 +130,7 @@ function createJwt (projectId, privateKeyFile, algorithm) {
 // messageCount. Telemetry events are published at a rate of 1 per second and
 // states at a rate of 1 every 2 seconds.
 // [START iot_http_publish]
-function publishAsync (messageCount, numMessages) {
+function publishAsync (authToken, messageCount, numMessages) {
   const payload = `${argv.registry_id}/${argv.device_id}-payload-${messageCount}`;
   console.log('Publishing message:', payload);
   const binaryData = Buffer.from(payload).toString('base64');
@@ -129,10 +144,9 @@ function publishAsync (messageCount, numMessages) {
   const options = {
     url: url,
     headers: {
-      'authorization': 'Bearer ' + authToken,
+      'authorization': `Bearer ${authToken}`,
       'content-type': 'application/json',
       'cache-control': 'no-cache'
-
     },
     json: true,
     body: postData
@@ -155,7 +169,6 @@ function publishAsync (messageCount, numMessages) {
         if (secsFromIssue > argv.token_exp_mins * 60) {
           iatTime = parseInt(Date.now() / 1000);
           console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
-
           authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
         }
 
@@ -167,13 +180,12 @@ function publishAsync (messageCount, numMessages) {
 // [END iot_http_publish]
 
 // [START iot_http_getconfig]
-function getConfig (version) {
-  console.log('Getting config:');
-  console.log(urlBase);
+function getConfig (authToken, version) {
+  console.log(`Getting config from URL: ${urlBase}`);
   const options = {
     url: urlBase + '/config?local_version=' + version,
     headers: {
-      'authorization': 'Bearer ' + authToken,
+      'authorization': `Bearer ${authToken}`,
       'content-type': 'application/json',
       'cache-control': 'no-cache'
 
@@ -184,7 +196,7 @@ function getConfig (version) {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {
-      console.error('Received error: ' + JSON.stringify(response.body.error));
+      console.error(`Received error: ${JSON.stringify(response.body.error)}`);
     } else {
       console.log('Received config', JSON.stringify(body));
     }
@@ -193,21 +205,10 @@ function getConfig (version) {
 // [END iot_http_getconfig]
 
 // [START iot_run_http]
-// A unique string that identifies this device. For Google Cloud IoT Core, it
-// must be in the format below.
-const devicePath = `projects/${argv.project_id}/locations/${argv.cloud_region}/registries/${argv.registry_id}/devices/${argv.device_id}`;
-
-// The request path, set accordingly depending on the message type.
-const pathSuffix = argv.message_type === 'events'
-    ? ':publishEvent' : ':setState';
-const urlBase = `https://${argv.http_bridge_address}/v1beta1/${devicePath}`;
-const url = `${urlBase}${pathSuffix}`;
-let iatTime = parseInt(Date.now() / 1000);
-let authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
 
 // Print latest configuration
-getConfig(0);
+getConfig(authToken, 0);
 
 // Publish messages.
-publishAsync(1, argv.num_messages);
+publishAsync(authToken, 1, argv.num_messages);
 // [END iot_run_http]

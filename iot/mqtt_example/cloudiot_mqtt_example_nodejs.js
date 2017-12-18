@@ -67,6 +67,12 @@ var argv = require(`yargs`)
         requiresArg: true,
         type: 'number'
       },
+      token_exp_mins: {
+        default: 20,
+        description: 'Minutes to JWT token expiration.',
+        requiresArg: true,
+        type: 'number'
+      },
       mqtt_bridge_hostname: {
         default: 'mqtt.googleapis.com',
         description: 'MQTT bridge hostname.',
@@ -127,6 +133,31 @@ function publishAsync (messageCount, numMessages) {
     // If we have published fewer than numMessage messages, publish payload
     // messageCount + 1 in 1 second.
     setTimeout(function () {
+      let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
+      if (secsFromIssue > argv.token_exp_mins * 60) {
+        iatTime = parseInt(Date.now() / 1000);
+        console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
+
+        client.end();
+        connectionArgs.password = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
+        client = mqtt.connect(connectionArgs);
+
+        client.on('connect', () => {
+          console.log('connect', arguments);
+        });
+
+        client.on('close', () => {
+          console.log('close', arguments);
+        });
+
+        client.on('error', () => {
+          console.log('error', arguments);
+        });
+
+        client.on('packetsend', () => {
+          // Too verbose to log here
+        });
+      }
       publishAsync(messageCount + 1, numMessages);
     }, delayMs);
   } else {
@@ -146,17 +177,19 @@ const mqttClientId = `projects/${argv.project_id}/locations/${argv.cloud_region}
 // non-empty. The password field is used to transmit a JWT to authorize the
 // device. The "mqtts" protocol causes the library to connect using SSL, which
 // is required for Cloud IoT Core.
-const connectionArgs = {
+let connectionArgs = {
   host: argv.mqtt_bridge_hostname,
   port: argv.mqtt_bridge_port,
   clientId: mqttClientId,
   username: 'unused',
   password: createJwt(argv.project_id, argv.private_key_file, argv.algorithm),
-  protocol: 'mqtts'
+  protocol: 'mqtts',
+  secureProtocol: 'TLSv1_2_method'
 };
 
 // Create a client, and connect to the Google MQTT bridge.
-const client = mqtt.connect(connectionArgs);
+let iatTime = parseInt(Date.now() / 1000);
+let client = mqtt.connect(connectionArgs);
 
 // The MQTT topic that this device will publish data to. The MQTT
 // topic name is required to be in the format below. The topic name must end in
@@ -180,7 +213,7 @@ client.on('error', () => {
 });
 
 client.on('packetsend', () => {
-  console.log('packetsend', arguments);
+  // Note: logging packet send is very verbose
 });
 
 // Once all of the messages have been published, the connection to Google Cloud

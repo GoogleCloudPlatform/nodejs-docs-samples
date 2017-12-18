@@ -105,7 +105,7 @@ $ gcloud container clusters get-credentials [YOUR_CLUSTER_NAME] --zone [YOUR_CLU
 
 1. Add a [Kubernetes service][docs_k8s_services] to the cluster you created. Note that Kubernetes services should not be confused with [Endpoints services][docs_endpoints_services].
 ```
-$ kubectl create -f container-engine.yaml
+$ kubectl create -f deployment.yaml
 ```
 
 1. Get the external IP of your service. This may take a few minutes to be provisioned.

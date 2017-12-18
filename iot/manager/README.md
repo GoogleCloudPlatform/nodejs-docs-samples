@@ -32,7 +32,6 @@ Run the following command to install the library dependencies for NodeJS:
       patchRsa256 <deviceId> <registryId> <rsa256Path>      Patches a device with RSA256 authentication credentials.
 
     Options:
-      --apiKey, -a          The API key used for discoverying the API.                                              [string]
       --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                             environment variables.                                                                  [string]
       --serviceAccount, -s  The path to your service credentials JSON.                                              [string]
@@ -40,18 +39,18 @@ Run the following command to install the library dependencies for NodeJS:
       --cloudRegion, -c                                                                    [string] [default: "us-central1"]
 
     Examples:
-      node manager.js createEs256Device my-es-device my-registry ../ec_public.pem --apiKey=abc123zz
-      node manager.js createRegistry my-registry my-iot-topic --service_account_json=$HOME/creds_iot.json
+      node manager.js createEs256Device my-es-device my-registry ../ec_public.pem --serviceAccount=$HOME/creds_iot.json
+      node manager.js createRegistry my-registry my-iot-topic --serviceAccount=$HOME/creds_iot.json
       --api_key=abc123zz --project_id=my-project-id
-      node manager.js createRsa256Device my-rsa-device my-registry ../rsa_cert.pem --apiKey=abc123zz
-      node manager.js createUnauthDevice my-device my-registry
-      node manager.js deleteDevice my-device my-registry
-      node manager.js deleteRegistry my-device my-registry
-      node manager.js getDevice my-device my-registry
-      node manager.js listDevices my-node-registry
-      node manager.js patchRsa256 my-device my-registry ../rsa_cert.pem
-      node manager.js patchEs256 my-device my-registry ../ec_public.pem
-      node manager.js setupTopic my-iot-topic --service_account_json=$HOME/creds_iot.json --api_key=abc123zz
+      node manager.js createRsa256Device my-rsa-device my-registry ../rsa_cert.pem --serviceAccount=$HOME/creds_iot.json
+      node manager.js createUnauthDevice my-device my-registry --serviceAccount=$HOME/creds_iot.json
+      node manager.js deleteDevice my-device my-registry --serviceAccount=$HOME/creds_iot.json
+      node manager.js deleteRegistry my-device my-registry --serviceAccount=$HOME/creds_iot.json
+      node manager.js getDevice my-device my-registry --serviceAccount=$HOME/creds_iot.json
+      node manager.js listDevices my-node-registry --serviceAccount=$HOME/creds_iot.json
+      node manager.js patchRsa256 my-device my-registry ../rsa_cert.pem --serviceAccount=$HOME/creds_iot.json
+      node manager.js patchEs256 my-device my-registry ../ec_public.pem --serviceAccount=$HOME/creds_iot.json
+      node manager.js setupTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json
       --project_id=my-project-id
 
     For more information, see https://cloud.google.com/iot-core/docs

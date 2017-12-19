@@ -25,18 +25,18 @@ Example Google Cloud IoT Core HTTP device connection code.
 
 Options:
 
-    -h, --help                         output usage information
-    --project_id <project_id>          GCP cloud project name.
-    --registry_id <registry_id>        Cloud IoT Core registry id.
-    --device_id <device_id>            Cloud IoT Core device id.
-    --private_key_file <key_file>      Path to private key file.
-    --algorithm <algorithm>            Encryption algorithm to generate the JWT.
-                                       Either RS256 (RSA) or ES256 (Eliptic Curve)
-    --cloud_region [region]            GCP cloud region
-    --num_messages [num]               Number of messages to publish.
-    --token_exp_mins [num]             Minutes to JWT token expiration.
-    --http_bridge_address [address]    HTTP bridge address.
-    --message_type [events|state]      The message type to publish.
+    -h, --help                       output usage information
+    --projectId <projectId>          GCP cloud project name.
+    --registryId <registryId>        Cloud IoT Core registry id.
+    --deviceId <deviceId>            Cloud IoT Core device id.
+    --privateKeyFile <key_file>      Path to private key file.
+    --algorithm <algorithm>          Encryption algorithm to generate the JWT.
+                                     Either RS256 (RSA) or ES256 (Eliptic Curve)
+    --cloudRegion [region]           GCP cloud region
+    --numMessages [num]              Number of messages to publish.
+    --tokenExpMins [num]             Minutes to JWT token expiration.
+    --httpBridgeAddress [address]    HTTP bridge address.
+    --messageType [events|state]     The message type to publish.
 
 For example, if your project ID is `blue-jet-123`, your service account
 credentials are stored in your home folder in creds.json and you have generated
@@ -44,10 +44,10 @@ your credentials using the shell script provided in the parent folder, you can
 run the sample as:
 
     node cloudiot_http_example_nodejs.js \
-        --project_id=blue-jet-123 \
-        --registry_id=my-registry \
-        --device_id=my-node-device \
-        --private_key_file=../rsa_private.pem \
+        --projectId=blue-jet-123 \
+        --registryId=my-registry \
+        --deviceId=my-node-device \
+        --privateKeyFile=../rsa_private.pem \
         --algorithm=RS256
 
 # Reading Cloud Pub/Sub messages written by the sample client

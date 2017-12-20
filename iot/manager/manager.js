@@ -573,6 +573,40 @@ function getDeviceState (client, deviceId, registryId, projectId,
   // [END iot_get_device_state]
 }
 
+// Retrieve the given device's state from the registry.
+function setDeviceConfig (client, deviceId, registryId, projectId,
+    cloudRegion, data, version) {
+  // [START iot_get_device_state]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  // const data = 'test-data';
+  // const version = 0;
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+
+  const binaryData = Buffer.from(data).toString('base64');
+  const request = {
+    name: `${registryName}/devices/${deviceId}`,
+    versionToUpdate: version,
+    binaryData: binaryData
+  };
+
+  client.projects.locations.registries.devices.modifyCloudToDeviceConfig(request,
+      (err, data) => {
+        if (err) {
+          console.log('Could not update config:', deviceId);
+          console.log('Message: ', err);
+        } else {
+          console.log('Success :', data);
+        }
+      });
+  // [END iot_get_device_state]
+}
+
 // Retrieve the given device from the registry.
 function getRegistry (client, registryId, projectId, cloudRegion) {
   // [START iot_get_registry]
@@ -823,6 +857,19 @@ require(`yargs`) // eslint-disable-line
       getClient(opts.serviceAccount, cb);
     }
   )
+  .command(
+    `setConfig <deviceId> <registryId> <configuration> <version>`,
+    `Sets a devices configuration to the specified data.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        setDeviceConfig(client, opts.deviceId, opts.registryId,
+            opts.projectId, opts.cloudRegion, opts.configuration,
+            opts.version || 0);
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
   .example(`node $0 createEs256Device my-es-device my-registry ../ec_public.pem`)
   .example(`node $0 createRegistry my-registry my-iot-topic --serviceAccount=$HOME/creds_iot.json --project_id=my-project-id`)
   .example(`node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`)
@@ -836,6 +883,7 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 listRegistries`)
   .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
   .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
+  .example(`node $0 setConfig my-device my-registry "test" 0`)
   .example(`node $0 setupTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json --projectId=my-project-id`)
   .wrap(120)
   .recommendCommands()

@@ -24,14 +24,14 @@ const pubsub = require(`@google-cloud/pubsub`)();
 const storage = require(`@google-cloud/storage`)();
 
 const baseCmd = process.env.FUNCTIONS_CMD;
-const topicName = process.env.TOPIC;
+const topicName = process.env.FUNCTIONS_TOPIC;
 
 const localFileName = `test.txt`;
 const fileName = `test-${uuid.v4()}.txt`;
 
 const BASE_URL = process.env.BASE_URL;
 
-const bucketName = process.env.BUCKET;
+const bucketName = process.env.FUNCTIONS_BUCKET;
 const bucket = storage.bucket(bucketName);
 
 test.before(`Must specify BASE_URL`, t => {

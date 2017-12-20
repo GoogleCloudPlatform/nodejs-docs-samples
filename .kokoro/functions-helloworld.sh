@@ -18,6 +18,7 @@ export GCLOUD_PROJECT=nodejs-docs-samples-tests
 STAGE_BUCKET=$GCLOUD_PROJECT
 GCP_REGION=us-central1
 TOPIC=integration-test-functions
+BUCKET=$TOPIC
 export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
 cd github/nodejs-docs-samples/functions/helloworld
@@ -59,5 +60,5 @@ gcloud beta functions deploy helloError2 --stage-bucket $STAGE_BUCKET --trigger-
 gcloud beta functions deploy helloError3 --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC
 gcloud beta functions deploy helloTemplate --stage-bucket $STAGE_BUCKET --trigger-http
 
-# Run system tests
-repo-tools test run
+# Run E2E tests
+npm run e2e-test

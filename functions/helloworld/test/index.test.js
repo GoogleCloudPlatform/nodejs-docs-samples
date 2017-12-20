@@ -23,15 +23,15 @@ const uuid = require(`uuid`);
 const pubsub = require(`@google-cloud/pubsub`)();
 const storage = require(`@google-cloud/storage`)();
 
-const baseCmd = `gcloud beta functions`;
-const topicName = `integration-test-functions`;
+const baseCmd = process.env.FUNCTIONS_CMD;
+const topicName = process.env.TOPIC;
 
 const localFileName = `test.txt`;
 const fileName = `test-${uuid.v4()}.txt`;
 
 const BASE_URL = process.env.BASE_URL;
 
-const bucketName = `integration-test-functions`;
+const bucketName = process.env.BUCKET;
 const bucket = storage.bucket(bucketName);
 
 test.before(`Must specify BASE_URL`, t => {

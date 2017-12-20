@@ -23,31 +23,31 @@ const request = require('request');
 console.log('Google Cloud IoT Core HTTP example.');
 var argv = require(`yargs`)
     .options({
-      project_id: {
+      projectId: {
         default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
         description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
         requiresArg: true,
         type: 'string'
       },
-      cloud_region: {
+      cloudRegion: {
         default: 'us-central1',
         description: 'GCP cloud region.',
         requiresArg: true,
         type: 'string'
       },
-      registry_id: {
+      registryId: {
         description: 'Cloud IoT registry ID.',
         requiresArg: true,
         demandOption: true,
         type: 'string'
       },
-      device_id: {
+      deviceId: {
         description: 'Cloud IoT device ID.',
         requiresArg: true,
         demandOption: true,
         type: 'string'
       },
-      private_key_file: {
+      privateKeyFile: {
         description: 'Path to private key file.',
         requiresArg: true,
         demandOption: true,
@@ -60,25 +60,25 @@ var argv = require(`yargs`)
         choices: ['RS256', 'ES256'],
         type: 'string'
       },
-      num_messages: {
+      numMessages: {
         default: 100,
         description: 'Number of messages to publish.',
         requiresArg: true,
         type: 'number'
       },
-      token_exp_mins: {
+      tokenExpMins: {
         default: 20,
         description: 'Minutes to JWT token expiration.',
         requiresArg: true,
         type: 'number'
       },
-      http_bridge_address: {
+      httpBridgeAddress: {
         default: 'cloudiot-device.googleapis.com',
         description: 'HTTP bridge address.',
         requiresArg: true,
         type: 'string'
       },
-      message_type: {
+      messageType: {
         default: 'events',
         description: 'Message type to publish.',
         requiresArg: true,
@@ -86,13 +86,28 @@ var argv = require(`yargs`)
         type: 'string'
       }
     })
-    .example(`node $0 cloudiot_http_example_nodejs.js --project_id=blue-jet-123 --registry_id=my-registry --device_id=my-node-device --private_key_file=../rsa_private.pem --algorithm=RS256`)
+    .example(`node $0 cloudiotHttp_example_nodejs.js --projectId=blue-jet-123 --registryId=my-registry --deviceId=my-node-device --privateKeyFile=../rsaPrivate.pem --algorithm=RS256`)
     .wrap(120)
     .recommendCommands()
     .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
     .help()
     .strict()
     .argv;
+
+// [START iot_http_variables]
+// A unique string that identifies this device. For Google Cloud IoT Core, it
+// must be in the format below.
+
+let iatTime = parseInt(Date.now() / 1000);
+let authToken = createJwt(argv.projectId, argv.privateKeyFile, argv.algorithm);
+const devicePath = `projects/${argv.projectId}/locations/${argv.cloudRegion}/registries/${argv.registryId}/devices/${argv.deviceId}`;
+
+// The request path, set accordingly depending on the message type.
+const pathSuffix = argv.messageType === 'events'
+    ? ':publishEvent' : ':setState';
+const urlBase = `https://${argv.httpBridgeAddress}/v1beta1/${devicePath}`;
+const url = `${urlBase}${pathSuffix}`;
+// [END iot_http_variables]
 
 // Create a Cloud IoT Core JWT for the given project ID, signed with the given
 // private key.
@@ -115,11 +130,11 @@ function createJwt (projectId, privateKeyFile, algorithm) {
 // messageCount. Telemetry events are published at a rate of 1 per second and
 // states at a rate of 1 every 2 seconds.
 // [START iot_http_publish]
-function publishAsync (messageCount, numMessages) {
-  const payload = `${argv.registry_id}/${argv.device_id}-payload-${messageCount}`;
+function publishAsync (authToken, messageCount, numMessages) {
+  const payload = `${argv.registryId}/${argv.deviceId}-payload-${messageCount}`;
   console.log('Publishing message:', payload);
   const binaryData = Buffer.from(payload).toString('base64');
-  const postData = argv.message_type === 'events' ? {
+  const postData = argv.messageType === 'events' ? {
     binary_data: binaryData
   } : {
     state: {
@@ -129,16 +144,15 @@ function publishAsync (messageCount, numMessages) {
   const options = {
     url: url,
     headers: {
-      'authorization': 'Bearer ' + authToken,
+      'authorization': `Bearer ${authToken}`,
       'content-type': 'application/json',
       'cache-control': 'no-cache'
-
     },
     json: true,
     body: postData
   };
   // Send events for high-frequency updates, update state only occasionally.
-  const delayMs = argv.message_type === 'events' ? 1000 : 2000;
+  const delayMs = argv.messageType === 'events' ? 1000 : 2000;
   request.post(options, function (error, response, body) {
     if (error) {
       console.error('Received error: ', error);
@@ -152,14 +166,13 @@ function publishAsync (messageCount, numMessages) {
       // messageCount + 1.
       setTimeout(function () {
         let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
-        if (secsFromIssue > argv.token_exp_mins * 60) {
+        if (secsFromIssue > argv.tokenExpMins * 60) {
           iatTime = parseInt(Date.now() / 1000);
           console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
-
-          authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
+          authToken = createJwt(argv.projectId, argv.privateKeyFile, argv.algorithm);
         }
 
-        publishAsync(messageCount + 1, numMessages);
+        publishAsync(authToken, messageCount + 1, numMessages);
       }, delayMs);
     }
   });
@@ -167,13 +180,12 @@ function publishAsync (messageCount, numMessages) {
 // [END iot_http_publish]
 
 // [START iot_http_getconfig]
-function getConfig (version) {
-  console.log('Getting config:');
-  console.log(urlBase);
+function getConfig (authToken, version) {
+  console.log(`Getting config from URL: ${urlBase}`);
   const options = {
     url: urlBase + '/config?local_version=' + version,
     headers: {
-      'authorization': 'Bearer ' + authToken,
+      'authorization': `Bearer ${authToken}`,
       'content-type': 'application/json',
       'cache-control': 'no-cache'
 
@@ -184,7 +196,7 @@ function getConfig (version) {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {
-      console.error('Received error: ' + JSON.stringify(response.body.error));
+      console.error(`Received error: ${JSON.stringify(response.body.error)}`);
     } else {
       console.log('Received config', JSON.stringify(body));
     }
@@ -193,21 +205,10 @@ function getConfig (version) {
 // [END iot_http_getconfig]
 
 // [START iot_run_http]
-// A unique string that identifies this device. For Google Cloud IoT Core, it
-// must be in the format below.
-const devicePath = `projects/${argv.project_id}/locations/${argv.cloud_region}/registries/${argv.registry_id}/devices/${argv.device_id}`;
-
-// The request path, set accordingly depending on the message type.
-const pathSuffix = argv.message_type === 'events'
-    ? ':publishEvent' : ':setState';
-const urlBase = `https://${argv.http_bridge_address}/v1beta1/${devicePath}`;
-const url = `${urlBase}${pathSuffix}`;
-let iatTime = parseInt(Date.now() / 1000);
-let authToken = createJwt(argv.project_id, argv.private_key_file, argv.algorithm);
 
 // Print latest configuration
-getConfig(0);
+getConfig(authToken, 0);
 
 // Publish messages.
-publishAsync(1, argv.num_messages);
+publishAsync(authToken, 1, argv.numMessages);
 // [END iot_run_http]

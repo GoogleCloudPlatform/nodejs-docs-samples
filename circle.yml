@@ -64,7 +64,7 @@ dependencies:
 # Run your tests
 test:
   override:
-    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/**/test/**/*.test.js'
+    - BASE_URL="http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION"; samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/**/test/**/*.test.js'
   post:
     - nyc report --reporter=lcov > coverage.lcov && codecov || true
 deployment:

@@ -25,7 +25,7 @@ const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const helper = `node ../manager/manager.js`;
 const cmd = `node cloudiot_mqtt_example_nodejs.js `;
-const cmdSuffix = ` --num_messages=1 --private_key_file=resources/rsa_private.pem --algorithm=RS256`;
+const cmdSuffix = ` --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`;
 const cwd = path.join(__dirname, `..`);
 
 test.before(tools.checkCredentials);
@@ -53,67 +53,64 @@ test(`should receive configuration message`, async (t) => {
   const localRegName = `${registryName}-rsa256`;
 
   let output = await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
-  t.regex(output, new RegExp(`Created device`));
 
   output = await tools.runAsync(
-     `${cmd}  --message_type=events --registry_id="${localRegName}" --device_id="${localDevice}" ${cmdSuffix}`,
+     `${cmd}  --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
      cwd);
   t.regex(output, new RegExp(`message received`));
 
   // Check / cleanup
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
-  t.regex(output, new RegExp(`State`));
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should send event message`, async (t) => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
-  let output = await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await tools.runAsync(
       `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
-  output = await tools.runAsync(
-     `${cmd} --message_type=events --registry_id="${localRegName}" --device_id="${localDevice}" ${cmdSuffix}`,
+  const output = await tools.runAsync(
+     `${cmd} --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
      cwd);
   t.regex(output, new RegExp(`Publishing message:`));
 
   // Check / cleanup
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  output = await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should send event message`, async (t) => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
-  let output = await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await tools.runAsync(
       `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
-  output = await tools.runAsync(
-     `${cmd} --message_type=state --registry_id="${localRegName}" --device_id="${localDevice}" ${cmdSuffix}`,
+  const output = await tools.runAsync(
+     `${cmd} --messageType=state --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
      cwd);
   t.regex(output, new RegExp(`Publishing message:`));
 
   // Check / cleanup
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
-  output = await tools.runAsync(
+  await tools.runAsync(
       `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  output = await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });

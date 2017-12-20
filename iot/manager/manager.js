@@ -576,7 +576,7 @@ function getDeviceState (client, deviceId, registryId, projectId,
 // Retrieve the given device's state from the registry.
 function setDeviceConfig (client, deviceId, registryId, projectId,
     cloudRegion, data, version) {
-  // [START iot_get_device_state]
+  // [START iot_set_device_config]
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
@@ -604,7 +604,7 @@ function setDeviceConfig (client, deviceId, registryId, projectId,
           console.log('Success :', data);
         }
       });
-  // [END iot_get_device_state]
+  // [END iot_set_device_config]
 }
 
 // Retrieve the given device from the registry.

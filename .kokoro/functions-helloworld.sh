@@ -48,17 +48,5 @@ trap cleanup EXIT
 
 set -e
 
-# Deploy all hello-world functions
-# (If any step fails, the entire test run should fail)
-gcloud beta functions deploy helloHttp --trigger-http --stage-bucket $STAGE_BUCKET
-gcloud beta functions deploy helloGET --trigger-http --stage-bucket $STAGE_BUCKET
-gcloud beta functions deploy helloBackground --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC
-gcloud beta functions deploy helloPubSub --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC
-gcloud beta functions deploy helloGCS --stage-bucket $STAGE_BUCKET --trigger-bucket integration-test-functions
-gcloud beta functions deploy helloError --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC
-gcloud beta functions deploy helloError2 --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC
-gcloud beta functions deploy helloError3 --stage-bucket $STAGE_BUCKET --trigger-topic $TOPIC
-gcloud beta functions deploy helloTemplate --stage-bucket $STAGE_BUCKET --trigger-http
-
-# Run E2E tests
+# Deploy + run the functions
 npm run e2e-test

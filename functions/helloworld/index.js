@@ -28,7 +28,7 @@ require('@google-cloud/debug-agent').start();
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloWorld = function helloWorld (event, callback) {
+exports.helloWorld = (event, callback) => {
   console.log(`My Cloud Function: ${event.data.message}`);
   callback();
 };
@@ -41,7 +41,7 @@ exports.helloWorld = function helloWorld (event, callback) {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloGET = function helloGET (req, res) {
+exports.helloGET = (req, res) => {
   res.send('Hello World!');
 };
 // [END functions_helloworld_get]
@@ -53,7 +53,7 @@ exports.helloGET = function helloGET (req, res) {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloHttp = function helloHttp (req, res) {
+exports.helloHttp = (req, res) => {
   res.send(`Hello ${req.body.name || 'World'}!`);
 };
 // [END functions_helloworld_http]
@@ -65,7 +65,7 @@ exports.helloHttp = function helloHttp (req, res) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloBackground = function helloBackground (event, callback) {
+exports.helloBackground = (event, callback) => {
   callback(null, `Hello ${event.data.name || 'World'}!`);
 };
 // [END functions_helloworld_background]
@@ -77,7 +77,7 @@ exports.helloBackground = function helloBackground (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloPubSub = function (event, callback) {
+exports.helloPubSub = (event, callback) => {
   const pubsubMessage = event.data;
   const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
 
@@ -94,7 +94,7 @@ exports.helloPubSub = function (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloGCS = function (event, callback) {
+exports.helloGCS = (event, callback) => {
   const file = event.data;
 
   if (file.resourceState === 'not_exists') {
@@ -118,7 +118,7 @@ exports.helloGCS = function (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloError = function helloError (event, callback) {
+exports.helloError = (event, callback) => {
   // This WILL be reported to Stackdriver errors
   throw new Error('I failed you');
 };
@@ -132,7 +132,7 @@ exports.helloError = function helloError (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloError2 = function helloError2 (event, callback) {
+exports.helloError2 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
   throw 1;
 };
@@ -145,7 +145,7 @@ exports.helloError2 = function helloError2 (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloError3 = function helloError3 (event, callback) {
+exports.helloError3 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
   callback('I failed you');
 };

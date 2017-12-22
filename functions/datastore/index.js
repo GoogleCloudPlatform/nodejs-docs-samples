@@ -53,7 +53,7 @@ function getKeyFromRequestData (requestData) {
  * @param {object} req.body.value Value to save to Cloud Datastore, e.g. {"description":"Buy milk"}
  * @param {object} res Cloud Function response context.
  */
-exports.set = function set (req, res) {
+exports.set = (req, res) => {
   // The value contains a JSON document representing the entity we want to save
   if (!req.body.value) {
     throw new Error('Value not provided. Make sure you have a "value" property in your request');
@@ -86,7 +86,7 @@ exports.set = function set (req, res) {
  * @param {string} req.body.key Key at which to retrieve the data, e.g. "sampletask1".
  * @param {object} res Cloud Function response context.
  */
-exports.get = function get (req, res) {
+exports.get = (req, res) => {
   const key = getKeyFromRequestData(req.body);
 
   return datastore.get(key)
@@ -118,7 +118,7 @@ exports.get = function get (req, res) {
  * @param {string} req.body.key Key at which to delete data, e.g. "sampletask1".
  * @param {object} res Cloud Function response context.
  */
-exports.del = function del (req, res) {
+exports.del = (req, res) => {
   const key = getKeyFromRequestData(req.body);
 
   // Deletes the entity

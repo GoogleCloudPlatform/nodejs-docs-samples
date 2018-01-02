@@ -23,6 +23,7 @@
     "supertest": "^3.0.0"
   },
   "devDependencies": {
+    "@google-cloud/functions-emulator": "^1.0.0-alpha.29",
     "@google-cloud/nodejs-repo-tools": "2.1.0",
     "ava": "0.23.0",
     "proxyquire": "1.8.0",

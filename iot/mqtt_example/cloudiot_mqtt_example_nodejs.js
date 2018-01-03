@@ -161,7 +161,7 @@ function publishAsync (messageCount, numMessages) {
       }
       publishAsync(messageCount + 1, numMessages);
     }, delayMs);
-    // [END iot_mqtt_jwt_refresh] 
+    // [END iot_mqtt_jwt_refresh]
   } else {
     // Otherwise, close the connection.
     console.log('Closing connection to MQTT. Goodbye!');

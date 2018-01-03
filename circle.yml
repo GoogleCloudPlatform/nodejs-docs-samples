@@ -18,7 +18,7 @@
 
 machine:
   node:
-    version: 6.11.2
+    version: 6.12.3
 
 # Use for broader build-related configuration
 general:

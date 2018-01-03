@@ -132,6 +132,7 @@ function publishAsync (messageCount, numMessages) {
   if (messageCount < numMessages) {
     // If we have published fewer than numMessage messages, publish payload
     // messageCount + 1 in 1 second.
+    // [START iot_mqtt_jwt_refresh]
     setTimeout(function () {
       let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > argv.tokenExpMins * 60) {
@@ -169,6 +170,7 @@ function publishAsync (messageCount, numMessages) {
       }
       publishAsync(messageCount + 1, numMessages);
     }, delayMs);
+    // [END iot_mqtt_jwt_refresh]
   } else {
     // Otherwise, close the connection.
     console.log('Closing connection to MQTT. Goodbye!');

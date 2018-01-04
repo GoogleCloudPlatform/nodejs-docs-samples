@@ -109,7 +109,7 @@ function renameImageForSave (filename, lang) {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data A Google Cloud Storage File object.
  */
-exports.processImage = function processImage (event) {
+exports.processImage = (event) => {
   let file = event.data;
 
   return Promise.resolve()
@@ -144,7 +144,7 @@ exports.processImage = function processImage (event) {
  * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.translateText = function translateText (event) {
+exports.translateText = (event) => {
   const pubsubMessage = event.data;
   const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
   const payload = JSON.parse(jsonStr);
@@ -194,7 +194,7 @@ exports.translateText = function translateText (event) {
  * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.saveResult = function saveResult (event) {
+exports.saveResult = (event) => {
   const pubsubMessage = event.data;
   const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
   const payload = JSON.parse(jsonStr);

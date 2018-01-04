@@ -172,7 +172,7 @@ function publishAsync (authToken, messageCount, numMessages) {
           authToken = createJwt(argv.projectId, argv.privateKeyFile, argv.algorithm);
         }
 
-        publishAsync(messageCount + 1, numMessages);
+        publishAsync(authToken, messageCount + 1, numMessages);
       }, delayMs);
     }
   });

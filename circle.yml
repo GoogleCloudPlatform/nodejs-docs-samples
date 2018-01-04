@@ -37,6 +37,7 @@ dependencies:
     - samples test install -l=functions/background
     - samples test install -l=functions/errorreporting
     - samples test install -l=functions/gcs
+    - samples test install -l=functions/datastore
     - samples test install -l=functions/helloworld
     - samples test install -l=functions/imagemagick
     - samples test install -l=functions/log
@@ -44,6 +45,7 @@ dependencies:
     - samples test install -l=functions/pubsub
     - samples test install -l=functions/sendgrid
     - samples test install -l=functions/slack
+    - samples test install -l=functions/spanner
     - samples test install -l=functions/uuid
   cache_directories:
     - ~/.cache/yarn
@@ -59,6 +61,7 @@ dependencies:
     - functions/pubsub/node_modules
     - functions/sendgrid/node_modules
     - functions/slack/node_modules
+    - functions/spanner/node_modules
     - functions/uuid/node_modules
 
 # Run your tests

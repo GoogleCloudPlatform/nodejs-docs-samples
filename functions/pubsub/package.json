@@ -17,14 +17,14 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.13.2",
+    "@google-cloud/pubsub": "0.14.5",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.21.0",
+    "@google-cloud/nodejs-repo-tools": "2.1.0",
+    "ava": "0.23.0",
     "proxyquire": "1.8.0",
-    "sinon": "3.2.0"
+    "sinon": "4.0.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

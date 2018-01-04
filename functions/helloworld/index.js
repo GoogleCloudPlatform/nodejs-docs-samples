@@ -17,10 +17,6 @@
 
 const Buffer = require('safe-buffer').Buffer;
 
-// [START functions_helloworld_debug]
-require('@google-cloud/debug-agent').start();
-// [END functions_helloworld_debug]
-
 // [START functions_helloworld_get]
 /**
  * HTTP Cloud Function.

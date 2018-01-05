@@ -14,10 +14,10 @@
     "@google-cloud/pubsub": "0.13.2",
     "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.22.0",
-    "yargs": "8.0.2",
     "jsonwebtoken": "7.4.1",
-    "request": "2.82.0",
-    "uuid": "3.1.0"
+    "requestretry": "requestretry",
+    "uuid": "3.1.0",
+    "yargs": "8.0.2"
   },
   "testDependencies": {
   },

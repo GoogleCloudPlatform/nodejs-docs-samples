@@ -17,7 +17,7 @@
 // [START iot_http_includes]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const request = require('request');
+const request = require('requestretry');
 // [END iot_http_includes]
 
 console.log('Google Cloud IoT Core HTTP example.');
@@ -141,6 +141,21 @@ function publishAsync (authToken, messageCount, numMessages) {
       binary_data: binaryData
     }
   };
+
+  // Custom backoff functions
+  function retryNotSuccess (err, response, body) {
+    if (err || response.statusCode !== 200) {
+      console.log(`Retrying publish on error: ${response.statusCode}`);
+    }
+    return response.statusCode !== 200;
+  }
+  function exponentialDelay (err, response, body) {
+    if (err) {
+      // No need to report again here.
+    }
+    return Math.floor(Math.random() * (3500 - 500 + 1) + 500);
+  }
+
   const options = {
     url: url,
     headers: {
@@ -148,9 +163,13 @@ function publishAsync (authToken, messageCount, numMessages) {
       'content-type': 'application/json',
       'cache-control': 'no-cache'
     },
+    body: postData,
+    delayStrategy: exponentialDelay,
     json: true,
-    body: postData
+    maxAttempts: 5,
+    retryStrategy: retryNotSuccess
   };
+
   // Send events for high-frequency updates, update state only occasionally.
   const delayMs = argv.messageType === 'events' ? 1000 : 2000;
   request.post(options, function (error, response, body) {
@@ -182,6 +201,21 @@ function publishAsync (authToken, messageCount, numMessages) {
 // [START iot_http_getconfig]
 function getConfig (authToken, version) {
   console.log(`Getting config from URL: ${urlBase}`);
+
+  // Custom backoff functions
+  function retryNotSuccess (err, response, body) {
+    if (err || response.statusCode !== 200) {
+      console.log(`Retrying get config on error: ${response.statusCode}`);
+    }
+    return response.statusCode !== 200;
+  }
+  function exponentialDelay (err, response, body) {
+    if (err) {
+      // Reported in retry.
+    }
+    return Math.floor(Math.random() * (3500 - 500 + 1) + 500);
+  }
+
   const options = {
     url: urlBase + '/config?local_version=' + version,
     headers: {
@@ -190,8 +224,12 @@ function getConfig (authToken, version) {
       'cache-control': 'no-cache'
 
     },
-    json: true
+    json: true,
+    maxAttempts: 5,
+    retryStrategy: retryNotSuccess,
+    delayStrategy: exponentialDelay
   };
+  console.log(JSON.stringify(request.RetryStrategies));
   request.get(options, function (error, response, body) {
     if (error) {
       console.error('Received error: ', error);

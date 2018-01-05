@@ -18,7 +18,7 @@
 
 machine:
   node:
-    version: 6.11.2
+    version: 6.12.3
 
 # Use for broader build-related configuration
 general:
@@ -31,21 +31,21 @@ dependencies:
   override:
     - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
     - gcloud auth activate-service-account --key-file /home/ubuntu/nodejs-docs-samples/key.json || true
-    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17
+    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17 @google-cloud/functions-emulator@1.0.0-alpha.29
     - yarn install
     - yarn run lint
     - samples test install -l=functions/background
-    - samples test install -l=functions/datastore
     - samples test install -l=functions/errorreporting
     - samples test install -l=functions/gcs
+    - samples test install -l=functions/datastore
     - samples test install -l=functions/helloworld
-    - samples test install -l=functions/http
     - samples test install -l=functions/imagemagick
     - samples test install -l=functions/log
     - samples test install -l=functions/ocr/app
     - samples test install -l=functions/pubsub
     - samples test install -l=functions/sendgrid
     - samples test install -l=functions/slack
+    - samples test install -l=functions/spanner
     - samples test install -l=functions/uuid
   cache_directories:
     - ~/.cache/yarn
@@ -61,12 +61,24 @@ dependencies:
     - functions/pubsub/node_modules
     - functions/sendgrid/node_modules
     - functions/slack/node_modules
+    - functions/spanner/node_modules
     - functions/uuid/node_modules
 
 # Run your tests
 test:
   override:
-    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/**/test/**/*.test.js'
+    - functions start && cd functions/datastore && npm run system-test
+    - functions start && cd functions/helloworld && npm run system-test
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/http/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/imagemagick/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/log/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/pubsub/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/sendgrid/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/slack/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/spanner/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/uuid/test/**/*.test.js'
   post:
     - nyc report --reporter=lcov > coverage.lcov && codecov || true
 deployment:

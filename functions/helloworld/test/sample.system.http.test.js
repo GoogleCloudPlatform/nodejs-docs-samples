@@ -15,11 +15,11 @@
 
 // [START functions_sample_http_test]
 const test = require(`ava`);
-const supertest = require(`supertest`);
-const BASE_URL = process.env.BASE_URL;
+const Supertest = require(`supertest`);
+const supertest = Supertest(process.env.BASE_URL);
 
 test.cb(`helloHttp: should print a name`, (t) => {
-  supertest(BASE_URL)
+  supertest
     .post(`/helloHttp`)
     .send({ name: 'John' })
     .expect(200)
@@ -30,7 +30,7 @@ test.cb(`helloHttp: should print a name`, (t) => {
 });
 
 test.cb(`helloHttp: should print hello world`, (t) => {
-  supertest(BASE_URL)
+  supertest
     .get(`/helloHttp`)
     .expect(200)
     .expect((response) => {

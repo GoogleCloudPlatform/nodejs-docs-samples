@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-// [START functions_sample_pubsub_test]
+// [START functions_pubsub_system_test]
 const childProcess = require(`child_process`);
 const test = require(`ava`);
 const uuid = require(`uuid`);
@@ -44,4 +44,4 @@ test(`helloPubSub: should print hello world`, async (t) => {
   const logs = childProcess.execSync(`functions logs read helloPubSub --start-time ${startTime}`).toString();
   t.true(logs.includes(`Hello, World!`));
 });
-// [END functions_sample_pubsub_test]
+// [END functions_pubsub_system_test]

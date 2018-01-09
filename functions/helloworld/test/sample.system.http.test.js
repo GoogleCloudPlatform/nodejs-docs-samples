@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-// [START functions_sample_http_test]
+// [START functions_http_system_test]
 const test = require(`ava`);
 const Supertest = require(`supertest`);
 const supertest = Supertest(process.env.BASE_URL);
@@ -38,4 +38,4 @@ test.cb(`helloHttp: should print hello world`, (t) => {
     })
     .end(t.end);
 });
-// [END functions_sample_http_test]
+// [END functions_http_system_test]

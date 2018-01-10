@@ -34,7 +34,7 @@ to provide authentication to use Google Cloud APIs:
 
 Then set environment variables before starting your application:
 
-    export GCLOUD_PROJECT=<your-project-id>
+    export GOOGLE_CLOUD_PROJECT=<your-project-id>
     export GCLOUD_STORAGE_BUCKET=<your-bucket-name>
     npm install
     npm start

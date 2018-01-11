@@ -17,10 +17,8 @@
 
 function detectFulltext(fileName) {
   // [START vision_detect_document]
-  // [START imports]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p1beta1;
-  // [END imports]
 
   // Creates a client
   const client = new vision.ImageAnnotatorClient();

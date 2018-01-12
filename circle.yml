@@ -110,6 +110,5 @@ deployment:
       - node scripts/build "kms"
       - node scripts/build "language/slackbot"
       - node scripts/build "prediction"
-      - node scripts/build "pubsub"
       - node scripts/build "storage-transfer"
       - node scripts/build "trace"

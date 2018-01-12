@@ -290,7 +290,7 @@ allows you to send and receive messages between independent applications.
 View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
 
 [pubsub_docs]: https://cloud.google.com/pubsub/docs/
-[pubsub_samples]: pubsub
+[pubsub_samples]: https://github.com/googleapis/nodejs-pubsub/tree/master/samples
 
 ### Machine Learning
 

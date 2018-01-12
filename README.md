@@ -248,7 +248,7 @@ automatic scaling, high performance, and ease of application development.
 View the [Cloud Datastore Node.js samples][datastore_samples].
 
 [datastore_docs]: https://cloud.google.com/datastore/docs/
-[datastore_samples]: datastore
+[datastore_samples]: https://github.com/googleapis/nodejs-datastore/tree/master/samples
 
 #### Google Cloud Storage
 

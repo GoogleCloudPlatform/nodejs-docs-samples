@@ -46,6 +46,7 @@ run the sample as:
         --registry_id=my-registry \
         --device_id=my-node-device \
         --private_key_file=../rsa_private.pem \
+        --cloud_region=us-west1 \
         --algorithm=RS256
 
 # Reading the messages written by the sample client

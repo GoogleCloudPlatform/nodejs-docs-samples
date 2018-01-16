@@ -573,6 +573,34 @@ function getDeviceState (client, deviceId, registryId, projectId,
   // [END iot_get_device_state]
 }
 
+// Retrieve the given device's configuration history from the registry.
+function getDeviceConfigs (client, deviceId, registryId, projectId,
+    cloudRegion) {
+  // [START iot_get_device_configs]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    name: `${registryName}/devices/${deviceId}`
+  };
+
+  client.projects.locations.registries.devices.configVersions.list(request,
+      (err, data) => {
+        if (err) {
+          console.log('Could not find device:', deviceId);
+          console.log(err);
+        } else {
+          console.log('Configs:', data);
+        }
+      });
+  // [END iot_get_device_configs]
+}
+
 // Retrieve the given device's state from the registry.
 function setDeviceConfig (client, deviceId, registryId, projectId,
     cloudRegion, data, version) {
@@ -783,6 +811,18 @@ require(`yargs`) // eslint-disable-line
     (opts) => {
       const cb = function (client) {
         getDevice(client, opts.deviceId, opts.registryId, opts.projectId,
+            opts.cloudRegion);
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `getDeviceConfigs <deviceId> <registryId>`,
+    `Retrieves device configurations given a device ID.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        getDeviceConfigs(client, opts.deviceId, opts.registryId, opts.projectId,
             opts.cloudRegion);
       };
       getClient(opts.serviceAccount, cb);

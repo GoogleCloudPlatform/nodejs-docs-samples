@@ -202,6 +202,7 @@ let connectionArgs = {
 let iatTime = parseInt(Date.now() / 1000);
 let client = mqtt.connect(connectionArgs);
 
+// Subscribe to the /devices/{device-id}/config topic to receive config updates.
 client.subscribe(`/devices/${argv.deviceId}/config`);
 
 // The MQTT topic that this device will publish data to. The MQTT

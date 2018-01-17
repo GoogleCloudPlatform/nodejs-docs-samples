@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// [START functions_storage_system_test]
 const Storage = require(`@google-cloud/storage`);
 const storage = Storage();
 const uuid = require(`uuid`);
@@ -76,3 +77,4 @@ test.serial(`helloGCS: should print deleted message`, async (t) => {
   const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
   t.true(logs.includes(`File ${gcsFileName} deleted`));
 });
+// [START functions_storage_system_test]

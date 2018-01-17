@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-// [START functions_storage_system_test]
+// [START functions_storage_integration_test]
 const childProcess = require(`child_process`);
 const test = require(`ava`);
 const uuid = require(`uuid`);
@@ -74,4 +74,4 @@ test(`helloGCS: should print deleted message`, async (t) => {
   const logs = childProcess.execSync(`functions logs read helloGCS --start-time ${startTime}`).toString();
   t.true(logs.includes(`File ${filename} deleted.`));
 });
-// [END functions_storage_system_test]
+// [END functions_storage_integration_test]

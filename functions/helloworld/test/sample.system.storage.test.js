@@ -13,65 +13,66 @@
  * limitations under the License.
  */
 
-// [START functions_storage_system_test]
-const childProcess = require(`child_process`);
-const test = require(`ava`);
+const Storage = require(`@google-cloud/storage`);
+const storage = Storage();
 const uuid = require(`uuid`);
+const test = require(`ava`);
+const path = require(`path`);
+const childProcess = require(`child_process`);
+const localFileName = `test.txt`;
 
-test(`helloGCS: should print uploaded message`, async (t) => {
+// Use unique GCS filename to avoid conflicts between concurrent test runs
+const gcsFileName = `test-${uuid.v4()}.txt`;
+
+const bucketName = process.env.BUCKET_NAME;
+const bucket = storage.bucket(bucketName);
+const baseCmd = `gcloud beta functions`;
+
+test.serial(`helloGCS: should print uploaded message`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '1'
+  // Upload file
+  const filepath = path.join(__dirname, localFileName);
+  await bucket.upload(filepath, {
+    destination: gcsFileName
   });
 
-  childProcess.execSync(`functions call helloGCS --data '${data}'`);
+  // Wait for consistency
+  await new Promise(resolve => setTimeout(resolve, 15000));
 
-  // Check the emulator's logs
-  const logs = childProcess.execSync(`functions logs read helloGCS --start-time ${startTime}`).toString();
-  t.true(logs.includes(`File ${filename} uploaded.`));
+  // Check logs
+  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
+  t.true(logs.includes(`File ${gcsFileName} uploaded`));
 });
 
-test(`helloGCS: should print metadata updated message`, async (t) => {
+test.serial(`helloGCS: should print metadata updated message`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '2'
-  });
+  // Update file metadata
+  const file = bucket.file(gcsFileName);
+  await file.setMetadata(gcsFileName, { foo: `bar` });
 
-  childProcess.execSync(`functions call helloGCS --data '${data}'`);
+  // Wait for consistency
+  await new Promise(resolve => setTimeout(resolve, 15000));
 
-  // Check the emulator's logs
-  const logs = childProcess.execSync(`functions logs read helloGCS --start-time ${startTime}`).toString();
-  t.true(logs.includes(`File ${filename} metadata updated.`));
+  // Check logs
+  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
+  t.true(logs.includes(`File ${gcsFileName} metadata updated`));
 });
 
-test(`helloGCS: should print deleted message`, async (t) => {
+test.serial(`helloGCS: should print deleted message`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'not_exists',
-    metageneration: '3'
-  });
+  // Delete file
+  bucket.deleteFiles();
 
-  childProcess.execSync(`functions call helloGCS --data '${data}'`);
+  // Wait for consistency
+  await new Promise(resolve => setTimeout(resolve, 15000));
 
-  // Check the emulator's logs
-  const logs = childProcess.execSync(`functions logs read helloGCS --start-time ${startTime}`).toString();
-  t.true(logs.includes(`File ${filename} deleted.`));
+  // Check logs
+  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
+  t.true(logs.includes(`File ${gcsFileName} deleted`));
 });
-// [END functions_storage_system_test]

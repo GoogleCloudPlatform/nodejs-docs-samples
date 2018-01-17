@@ -13,66 +13,65 @@
  * limitations under the License.
  */
 
-const Storage = require(`@google-cloud/storage`);
-const storage = Storage();
-const uuid = require(`uuid`);
-const test = require(`ava`);
-const path = require(`path`);
+// [START functions_storage_system_test]
 const childProcess = require(`child_process`);
-const localFileName = `test.txt`;
+const test = require(`ava`);
+const uuid = require(`uuid`);
 
-// Use unique GCS filename to avoid conflicts between concurrent test runs
-const gcsFileName = `test-${uuid.v4()}.txt`;
-
-const bucketName = process.env.BUCKET_NAME;
-const bucket = storage.bucket(bucketName);
-const baseCmd = `gcloud beta functions`;
-
-test.serial(`helloGCS: should print uploaded message`, async (t) => {
+test(`helloGCS: should print uploaded message`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
+  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Upload file
-  const filepath = path.join(__dirname, localFileName);
-  await bucket.upload(filepath, {
-    destination: gcsFileName
+  // Mock GCS call, as the emulator doesn't listen to GCS buckets
+  const data = JSON.stringify({
+    name: filename,
+    resourceState: 'exists',
+    metageneration: '1'
   });
 
-  // Wait for consistency
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  childProcess.execSync(`functions call helloGCS --data '${data}'`);
 
-  // Check logs
-  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
-  t.true(logs.includes(`File ${gcsFileName} uploaded`));
+  // Check the emulator's logs
+  const logs = childProcess.execSync(`functions logs read helloGCS --start-time ${startTime}`).toString();
+  t.true(logs.includes(`File ${filename} uploaded.`));
 });
 
-test.serial(`helloGCS: should print metadata updated message`, async (t) => {
+test(`helloGCS: should print metadata updated message`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
+  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Update file metadata
-  const file = bucket.file(gcsFileName);
-  await file.setMetadata(gcsFileName, { foo: `bar` });
+  // Mock GCS call, as the emulator doesn't listen to GCS buckets
+  const data = JSON.stringify({
+    name: filename,
+    resourceState: 'exists',
+    metageneration: '2'
+  });
 
-  // Wait for consistency
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  childProcess.execSync(`functions call helloGCS --data '${data}'`);
 
-  // Check logs
-  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
-  t.true(logs.includes(`File ${gcsFileName} metadata updated`));
+  // Check the emulator's logs
+  const logs = childProcess.execSync(`functions logs read helloGCS --start-time ${startTime}`).toString();
+  t.true(logs.includes(`File ${filename} metadata updated.`));
 });
 
-test.serial(`helloGCS: should print deleted message`, async (t) => {
+test(`helloGCS: should print deleted message`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
+  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Delete file
-  bucket.deleteFiles();
+  // Mock GCS call, as the emulator doesn't listen to GCS buckets
+  const data = JSON.stringify({
+    name: filename,
+    resourceState: 'not_exists',
+    metageneration: '3'
+  });
 
-  // Wait for consistency
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  childProcess.execSync(`functions call helloGCS --data '${data}'`);
 
-  // Check logs
-  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
-  t.true(logs.includes(`File ${gcsFileName} deleted`));
+  // Check the emulator's logs
+  const logs = childProcess.execSync(`functions logs read helloGCS --start-time ${startTime}`).toString();
+  t.true(logs.includes(`File ${filename} deleted.`));
 });
+// [END functions_storage_system_test]

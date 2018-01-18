@@ -188,6 +188,21 @@ test(`should create and get a device`, async (t) => {
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
+test(`should create and get an iam policy`, async (t) => {
+  const localMember = `group:dpebot@google.com`;
+  const localRole = `roles/viewer`;
+  const localRegName = `${registryName}-get`;
+  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  output = await tools.runAsync(
+      `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
+  output = await tools.runAsync(
+      `${cmd} setIamPolicy ${localRegName} ${localMember} ${localRole}`, cwd);
+  t.regex(output, new RegExp(`ETAG`));
+  output = await tools.runAsync(`${cmd} getIamPolicy ${localRegName}`, cwd);
+  t.regex(output, new RegExp(`dpebot`));
+  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
+});
+
 test(`should create and delete a registry`, async (t) => {
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(

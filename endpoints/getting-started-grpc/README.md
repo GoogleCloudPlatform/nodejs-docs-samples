@@ -46,7 +46,7 @@ $ protoc \
 
 1. Deploy your service's configuration to Endpoints. Take note of your service's config ID and name once the deployment completes.
 ```
-$ gcloud service-management deploy api.pb api_config.yaml
+$ gcloud endpoints services deploy api.pb api_config.yaml
 ...
 Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
 ```

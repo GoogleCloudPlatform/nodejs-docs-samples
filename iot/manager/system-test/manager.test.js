@@ -61,6 +61,24 @@ test(`should create and delete an unauthorized device`, async (t) => {
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
+test(`should list configs for a device`, async (t) => {
+  const localDevice = `test-device-configs`;
+  const localRegName = `${registryName}-unauth`;
+  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  output = await tools.runAsync(
+      `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
+  output = await tools.runAsync(
+      `${cmd} createUnauthDevice ${localDevice} ${localRegName}`, cwd);
+  t.regex(output, new RegExp(`Created device`));
+  output = await tools.runAsync(
+      `${cmd} getDeviceConfigs ${localDevice} ${localRegName}`, cwd);
+  t.regex(output, new RegExp(`Configs`));
+  output = await tools.runAsync(
+      `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
+  t.regex(output, new RegExp(`Successfully deleted device`));
+  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
+});
+
 test(`should create and delete an RSA256 device`, async (t) => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
@@ -167,6 +185,21 @@ test(`should create and get a device`, async (t) => {
   output = await tools.runAsync(
       `${cmd} deleteDevice ${localDevice} ${localRegName}`, cwd);
   t.regex(output, new RegExp(`Successfully deleted device`));
+  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
+});
+
+test(`should create and get an iam policy`, async (t) => {
+  const localMember = `group:dpebot@google.com`;
+  const localRole = `roles/viewer`;
+  const localRegName = `${registryName}-get`;
+  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  output = await tools.runAsync(
+      `${cmd} createRegistry ${localRegName} ${topicName}`, cwd);
+  output = await tools.runAsync(
+      `${cmd} setIamPolicy ${localRegName} ${localMember} ${localRole}`, cwd);
+  t.regex(output, new RegExp(`ETAG`));
+  output = await tools.runAsync(`${cmd} getIamPolicy ${localRegName}`, cwd);
+  t.regex(output, new RegExp(`dpebot`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 

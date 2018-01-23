@@ -24,17 +24,20 @@ The following command summarizes the sample usage:
 
   Options:
 
-    -h, --help                         output usage information
-    --project_id <project_id>          GCP cloud project name.
-    --registry_id <registry_id>        Cloud IoT Core registry id.
-    --device_id <device_id>            Cloud IoT Core device id.
-    --private_key_file <key_file>      Path to private key file.
-    --algorithm <algorithm>            Encryption algorithm to generate the JWT. Either RS256 or ES256
-    --cloud_region [region]            GCP cloud region
-    --num_messages [num]               Number of messages to publish.
-    --mqtt_bridge_hostname [hostname]  MQTT bridge hostname.
-    --mqtt_bridge_port [port]          MQTT bridge port.
-    --message_type [events|state]       The message type to publish.
+	  --projectId           The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+							environment variables.
+	  --cloudRegion         GCP cloud region.
+	  --registryId          Cloud IoT registry ID.
+	  --deviceId            Cloud IoT device ID.
+	  --privateKeyFile      Path to private key file.
+	  --algorithm           Encryption algorithm to generate the JWT.
+	  --numMessages         Number of messages to publish.
+	  --tokenExpMins        Minutes to JWT token expiration.
+	  --mqttBridgeHostname  MQTT bridge hostname.
+	  --mqttBridgePort      MQTT bridge port.
+	  --messageType         Message type to publish.
+	  --help                Show help
+
 
 For example, if your project ID is `blue-jet-123`, your service account
 credentials are stored in your home folder in creds.json and you have generated
@@ -42,10 +45,11 @@ your credentials using the shell script provided in the parent folder, you can
 run the sample as:
 
     node cloudiot_mqtt_example_nodejs.js \
-        --project_id=blue-jet-123 \
-        --registry_id=my-registry \
-        --device_id=my-node-device \
-        --private_key_file=../rsa_private.pem \
+        --projectId=blue-jet-123 \
+        --cloudRegion=us-central1 \
+        --registryId=my-registry \
+        --deviceId=my-node-device \
+        --privateKeyFile=../rsa_private.pem \
         --algorithm=RS256
 
 # Reading the messages written by the sample client

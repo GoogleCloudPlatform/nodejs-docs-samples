@@ -117,7 +117,6 @@ function pullTask (project, location, queue) {
       callback(authClient);
     });
   }
- 
 }
 
 function acknowledgeTask (task) {

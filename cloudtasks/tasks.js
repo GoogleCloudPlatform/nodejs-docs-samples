@@ -70,7 +70,7 @@ function createTask (project, location, queue) {
 }
 
 function pullTask (project, location, queue) {
-  // [START cloud_tasks_pull_task]
+  // [START cloud_tasks_pull_and acknowledge_task]
   const google = require('googleapis');
   const cloudtasks = google.cloudtasks('v2beta2');
 
@@ -117,7 +117,7 @@ function pullTask (project, location, queue) {
       callback(authClient);
     });
   }
-  // [END cloud_tasks_pull_task]
+ 
 }
 
 function acknowledgeTask (task) {
@@ -165,7 +165,7 @@ function acknowledgeTask (task) {
       callback(authClient);
     });
   }
-  // [END cloud_tasks_acknowledge_task]
+  // [END cloud_tasks_pull_and acknowledge_task]
 }
 
 require(`yargs`) // eslint-disable-line

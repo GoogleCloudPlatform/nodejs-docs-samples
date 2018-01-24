@@ -120,7 +120,6 @@ function pullTask (project, location, queue) {
 }
 
 function acknowledgeTask (task) {
-  // [START cloud_tasks_acknowledge_task]
   const google = require('googleapis');
   const cloudtasks = google.cloudtasks('v2beta2');
 

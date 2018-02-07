@@ -17,7 +17,7 @@
 // [START iot_http_includes]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const request = require('request');
+const request = require('retry-request');
 // [END iot_http_includes]
 
 console.log('Google Cloud IoT Core HTTP example.');
@@ -141,6 +141,7 @@ function publishAsync (authToken, messageCount, numMessages) {
       binary_data: binaryData
     }
   };
+
   const options = {
     url: url,
     headers: {
@@ -148,12 +149,20 @@ function publishAsync (authToken, messageCount, numMessages) {
       'content-type': 'application/json',
       'cache-control': 'no-cache'
     },
+    body: postData,
     json: true,
-    body: postData
+    method: 'POST',
+    retries: 5,
+    shouldRetryFn:
+      function (incomingHttpMessage) {
+        return incomingHttpMessage.statusMessage !== 'OK';
+      }
   };
+
   // Send events for high-frequency updates, update state only occasionally.
   const delayMs = argv.messageType === 'events' ? 1000 : 2000;
-  request.post(options, function (error, response, body) {
+  console.log(JSON.stringify(request));
+  request(options, function (error, response, body) {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {
@@ -182,6 +191,7 @@ function publishAsync (authToken, messageCount, numMessages) {
 // [START iot_http_getconfig]
 function getConfig (authToken, version) {
   console.log(`Getting config from URL: ${urlBase}`);
+
   const options = {
     url: urlBase + '/config?local_version=' + version,
     headers: {
@@ -190,9 +200,16 @@ function getConfig (authToken, version) {
       'cache-control': 'no-cache'
 
     },
-    json: true
+    json: true,
+    retries: 5,
+    shouldRetryFn:
+      function (incomingHttpMessage) {
+        console.log('Retry?');
+        return incomingHttpMessage.statusMessage !== 'OK';
+      }
   };
-  request.get(options, function (error, response, body) {
+  console.log(JSON.stringify(request.RetryStrategies));
+  request(options, function (error, response, body) {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {

@@ -573,6 +573,34 @@ function getDeviceState (client, deviceId, registryId, projectId,
   // [END iot_get_device_state]
 }
 
+// Retrieve the given device's configuration history from the registry.
+function getDeviceConfigs (client, deviceId, registryId, projectId,
+    cloudRegion) {
+  // [START iot_get_device_configs]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    name: `${registryName}/devices/${deviceId}`
+  };
+
+  client.projects.locations.registries.devices.configVersions.list(request,
+      (err, data) => {
+        if (err) {
+          console.log('Could not find device:', deviceId);
+          console.log(err);
+        } else {
+          console.log('Configs:', data);
+        }
+      });
+  // [END iot_get_device_configs]
+}
+
 // Retrieve the given device's state from the registry.
 function setDeviceConfig (client, deviceId, registryId, projectId,
     cloudRegion, data, version) {
@@ -654,6 +682,80 @@ function getClient (serviceAccountJson, cb) {
     }
     cb(client);
   });
+}
+
+// Retrieves the IAM policy for a given registry.
+function getIamPolicy (client, registryId, projectId, cloudRegion) {
+  // [START iot_get_iam_policy]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    'resource_': `${registryName}`
+  };
+
+  client.projects.locations.registries.getIamPolicy(request, (err, data) => {
+    if (err) {
+      console.log('Could not find policy for: ', registryId);
+      console.log('Trace: ', err);
+    } else {
+      console.log(`ETAG: ${data.etag}`);
+      data.bindings = data.bindings || [];
+      data.bindings.forEach((_binding) => {
+        console.log(`Role: ${_binding.role}`);
+        _binding.members || (_binding.members = []);
+        _binding.members.forEach((_member) => {
+          console.log(`\t${_member}`);
+        });
+      });
+    }
+  });
+  // [END iot_get_iam_policy]
+}
+
+// Sets the IAM permissions for a given registry to a single member / role.
+function setIamPolicy (client, registryId, projectId, cloudRegion, member,
+    role) {
+  // [START iot_set_iam_policy]
+  // Client retrieved in callback
+  // setClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    'resource_': `${registryName}`,
+    'resource': {'policy': {
+      'bindings': [{
+        'members': member,
+        'role': role
+      }]
+    }}
+  };
+
+  client.projects.locations.registries.setIamPolicy(request, (err, data) => {
+    if (err) {
+      console.log('Could not set policy for: ', registryId);
+      console.log('Trace: ', err);
+    } else {
+      console.log(`ETAG: ${data.etag}`);
+      console.log(JSON.stringify(data));
+      data.bindings = data.bindings || [];
+      data.bindings.forEach((_binding) => {
+        console.log(`Role: ${_binding.role}`);
+        _binding.members || (_binding.members = []);
+        _binding.members.forEach((_member) => {
+          console.log(`\t${_member}`);
+        });
+      });
+    }
+  });
+  // [END iot_set_iam_policy]
 }
 
 require(`yargs`) // eslint-disable-line
@@ -789,6 +891,18 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
+    `getDeviceConfigs <deviceId> <registryId>`,
+    `Retrieves device configurations given a device ID.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        getDeviceConfigs(client, opts.deviceId, opts.registryId, opts.projectId,
+            opts.cloudRegion);
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
     `getDeviceState <deviceId> <registryId>`,
     `Retrieves device state given a device ID.`,
     {},
@@ -870,6 +984,30 @@ require(`yargs`) // eslint-disable-line
       getClient(opts.serviceAccount, cb);
     }
   )
+  .command(
+    `getIamPolicy <registryId>`,
+    `Gets the IAM permissions for a given registry`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        getIamPolicy(client, opts.registryId, opts.projectId,
+            opts.cloudRegion);
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `setIamPolicy <registryId> <member> <role>`,
+    `Gets the IAM permissions for a given registry`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        setIamPolicy(client, opts.registryId, opts.projectId,
+            opts.cloudRegion, opts.member, opts.role);
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
   .example(`node $0 createEs256Device my-es-device my-registry ../ec_public.pem`)
   .example(`node $0 createRegistry my-registry my-iot-topic --serviceAccount=$HOME/creds_iot.json --project_id=my-project-id`)
   .example(`node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`)
@@ -878,12 +1016,14 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 deleteRegistry my-device my-registry`)
   .example(`node $0 getDevice my-device my-registry`)
   .example(`node $0 getDeviceState my-device my-registry`)
+  .example(`node $0 getIamPolicy my-registry`)
   .example(`node $0 getRegistry my-registry`)
   .example(`node $0 listDevices my-node-registry`)
   .example(`node $0 listRegistries`)
   .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
   .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
   .example(`node $0 setConfig my-device my-registry "test" 0`)
+  .example(`node $0 setIamPolicy my-registry user:example@example.com roles/viewer`)
   .example(`node $0 setupTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json --projectId=my-project-id`)
   .wrap(120)
   .recommendCommands()

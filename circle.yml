@@ -102,7 +102,6 @@ deployment:
       - node scripts/build "appengine/pubsub"
       - export GCP_QUEUE=nodejs-test-queue-do-not-delete; node scripts/build "cloudtasks"
       - node scripts/build "containerengine/hello-world"
-      - node scripts/build "datastore"
       - node scripts/build "debugger"
       - node scripts/build "endpoints/getting-started"
       # TODO(ace-n): Get this working again
@@ -112,6 +111,5 @@ deployment:
       - node scripts/build "kms"
       - node scripts/build "language/slackbot"
       - node scripts/build "prediction"
-      - node scripts/build "pubsub"
       - node scripts/build "storage-transfer"
       - node scripts/build "trace"

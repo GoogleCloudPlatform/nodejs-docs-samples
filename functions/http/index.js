@@ -61,7 +61,7 @@ exports.helloContent = (req, res) => {
       name = req.body;
       break;
 
-    // 'name=John'
+    // 'name=John' in the body of a POST request (not the URL)
     case 'application/x-www-form-urlencoded':
       name = req.body.name;
       break;

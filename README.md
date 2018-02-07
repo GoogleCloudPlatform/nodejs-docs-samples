@@ -248,7 +248,7 @@ automatic scaling, high performance, and ease of application development.
 View the [Cloud Datastore Node.js samples][datastore_samples].
 
 [datastore_docs]: https://cloud.google.com/datastore/docs/
-[datastore_samples]: datastore
+[datastore_samples]: https://github.com/googleapis/nodejs-datastore/tree/master/samples
 
 #### Google Cloud Storage
 
@@ -290,7 +290,7 @@ allows you to send and receive messages between independent applications.
 View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
 
 [pubsub_docs]: https://cloud.google.com/pubsub/docs/
-[pubsub_samples]: pubsub
+[pubsub_samples]: https://github.com/googleapis/nodejs-pubsub/tree/master/samples
 
 ### Machine Learning
 

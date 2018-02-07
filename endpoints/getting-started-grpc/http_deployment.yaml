@@ -19,9 +19,13 @@ metadata:
 spec:
   ports:
   - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http1
+  - port: 443
     targetPort: 9000
     protocol: TCP
-    name: http
+    name: grpc
   selector:
     app: grpc-hello
   type: LoadBalancer
@@ -41,12 +45,14 @@ spec:
       - name: esp
         image: gcr.io/endpoints-release/endpoints-runtime:1
         args: [
+          "--http_port=8080",
           "--http2_port=9000",
           "--backend=grpc://127.0.0.1:50051",
           "--service=SERVICE_NAME",
           "--version=SERVICE_CONFIG_ID",
         ]
         ports:
+          - containerPort: 8080
           - containerPort: 9000
       - name: node-grpc-hello
         image: gcr.io/GCLOUD_PROJECT/endpoints-example:1.0

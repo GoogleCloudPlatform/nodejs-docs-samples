@@ -68,7 +68,7 @@ dependencies:
 test:
   override:
     - functions start && cd functions/datastore && npm run system-test
-    - functions start && cd functions/helloworld && npm run system-test
+    - functions start && cd functions/helloworld && npm run test
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/http/test/**/*.test.js'

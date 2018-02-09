@@ -129,7 +129,7 @@ test.serial(`helloGCS: should print uploaded message`, async (t) => {
 
   // Check logs
   await tools.tryTest(async (assert) => {
-    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    const logs = await tools.runAsync(`${baseCmd} logs read helloGCS --start-time ${startTime}`);
     assert(logs.includes(`File ${fileName} uploaded`));
   });
 });
@@ -143,8 +143,24 @@ test.serial(`helloGCS: should print metadata updated message`, async (t) => {
 
   // Check logs
   await tools.tryTest(async (assert) => {
-    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    const logs = await tools.runAsync(`${baseCmd} logs read helloGCS --start-time ${startTime}`);
     assert(logs.includes(`File ${fileName} metadata updated`));
+  });
+});
+
+test.serial(`helloGCSGeneric: should print event details`, async (t) => {
+  t.plan(0);
+  const startTime = new Date(Date.now()).toISOString();
+
+  // Update file metadata
+  await bucket.setMetadata(fileName, { foo: `baz` });
+
+  // Check logs
+  await tools.tryTest(async (assert) => {
+    const logs = await tools.runAsync(`${baseCmd} logs read helloGCSGeneric --start-time ${startTime}`);
+    assert(logs.includes(`Bucket: ${bucketName}`));
+    assert(logs.includes(`File: ${fileName}`));
+    assert(logs.includes(`Event type: google.storage.object.metadataUpdate`));
   });
 });
 
@@ -157,7 +173,7 @@ test.serial(`helloGCS: should print deleted message`, async (t) => {
 
   // Check logs
   await tools.tryTest(async (assert) => {
-    const logs = await tools.runAsync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`);
+    const logs = await tools.runAsync(`${baseCmd} logs read helloGCS --start-time ${startTime}`);
     assert(logs.includes(`File ${fileName} deleted`));
   });
 });

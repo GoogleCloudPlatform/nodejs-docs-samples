@@ -15,8 +15,8 @@
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "e2e-test": "export FUNCTIONS_CMD='gcloud beta functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCF_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js",
-    "system-test": "export FUNCTIONS_CMD='functions' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/*.test.js",
-    "test": "npm run system-test"
+    "test": "export FUNCTIONS_CMD='functions' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/index.test.js test/*unit*test.js test/*integration*test.js",
+    "system-test": "export FUNCTIONS_CMD='functions' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/debug-agent": "2.3.0",
@@ -24,7 +24,6 @@
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/functions-emulator": "^1.0.0-alpha.29",
     "@google-cloud/nodejs-repo-tools": "2.1.3",
     "@google-cloud/pubsub": "^0.15.0",
     "@google-cloud/storage": "^1.5.0",

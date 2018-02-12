@@ -103,10 +103,21 @@ exports.helloGCS = (event, callback) => {
  */
 exports.helloGCSGeneric = (event, callback) => {
   const file = event.data;
-  const context = event.context;
 
-  console.log(`Event ${context.eventId}`);
-  console.log(`  Event Type: ${context.eventType}`);
+  //BEGINNING CHANGES
+  // These three lines cause this code to crash when executed as
+  // a cloud function in the "Cloud Storage Tutorial" 
+  // (https://cloud.google.com/functions/docs/tutorials/storage#unix)
+  //  const context = event.context;  // event.context is 'undefined'
+  //  console.log(`Event ${context.eventId}`);  // causes function to crash.  Should have been file.
+  //  console.log(`  Event Type: ${context.eventType}`);  // causes function to crash.  Should have been file.
+  
+  // use 'file.' instead of 'context.'
+  console.log(`Event ${file.eventId}`);
+  console.log(`  Event Type: ${file.eventType}`);
+  //END CHANGES
+  
+  
   console.log(`  Bucket: ${file.bucket}`);
   console.log(`  File: ${file.name}`);
   console.log(`  Metageneration: ${file.metageneration}`);

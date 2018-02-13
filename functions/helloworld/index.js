@@ -101,7 +101,7 @@ exports.helloGCS = (event, callback) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloGCSGeneric = (event, callback) => {
+exports.helloGCS = (event, callback) => {
   const file = event.data;
   const context = event.context;
 

@@ -11,6 +11,8 @@ ${FUNCTIONS_CMD} deploy helloPubSub --trigger-topic $FUNCTIONS_TOPIC
 echo '-----------------------------'
 ${FUNCTIONS_CMD} deploy helloGCS --trigger-bucket $FUNCTIONS_BUCKET
 echo '-----------------------------'
+${FUNCTIONS_CMD} deploy helloGCSGeneric --trigger-bucket $FUNCTIONS_BUCKET
+echo '-----------------------------'
 ${FUNCTIONS_CMD} deploy helloError --trigger-topic $FUNCTIONS_TOPIC
 echo '-----------------------------'
 ${FUNCTIONS_CMD} deploy helloError2 --trigger-topic $FUNCTIONS_TOPIC

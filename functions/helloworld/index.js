@@ -94,6 +94,29 @@ exports.helloGCS = (event, callback) => {
 };
 // [END functions_helloworld_storage]
 
+// [START functions_helloworld_storage_generic]
+/**
+ * Generic background Cloud Function to be triggered by Cloud Storage.
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {function} callback The callback function.
+ */
+exports.helloGCSGeneric = (event, callback) => {
+  const file = event.data;
+  const context = event.context;
+
+  console.log(`Event ${context.eventId}`);
+  console.log(`  Event Type: ${context.eventType}`);
+  console.log(`  Bucket: ${file.bucket}`);
+  console.log(`  File: ${file.name}`);
+  console.log(`  Metageneration: ${file.metageneration}`);
+  console.log(`  Created: ${file.timeCreated}`);
+  console.log(`  Updated: ${file.updated}`);
+
+  callback();
+};
+// [END functions_helloworld_storage_generic]
+
 // [START functions_helloworld_error]
 /**
  * Background Cloud Function that throws an error.

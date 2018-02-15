@@ -134,11 +134,11 @@ function createJwt (projectId, privateKeyFile, algorithm) {
 // [END iot_mqtt_jwt]
 
 // Publish numMessages messages asynchronously, starting from message
-// messageCount.
+// messagesSent.
 // [START iot_mqtt_publish]
-function publishAsync (messageCount, numMessages) {
+function publishAsync (messagesSent, numMessages) {
   // If we have published enough messages or backed off too many times, stop.
-  if (messageCount > numMessages || backoffTime >= MAXIMUM_BACKOFF_TIME) {
+  if (messagesSent > numMessages || backoffTime >= MAXIMUM_BACKOFF_TIME) {
     if (backoffTime >= MAXIMUM_BACKOFF_TIME) {
       console.log('Backoff time is too high. Giving up.');
     }
@@ -158,7 +158,7 @@ function publishAsync (messageCount, numMessages) {
   }
 
   setTimeout(function () {
-    const payload = `${argv.registryId}/${argv.deviceId}-payload-${messageCount}`;
+    const payload = `${argv.registryId}/${argv.deviceId}-payload-${messagesSent}`;
 
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.
@@ -209,7 +209,7 @@ function publishAsync (messageCount, numMessages) {
         });
       }
       // [END iot_mqtt_jwt_refresh]
-      publishAsync(messageCount + 1, numMessages);
+      publishAsync(messagesSent + 1, numMessages);
     }, schedulePublishDelayMs);
   }, publishDelayMs);
 }

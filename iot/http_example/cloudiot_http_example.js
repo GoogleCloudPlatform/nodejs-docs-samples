@@ -73,7 +73,7 @@ var argv = require(`yargs`)
         type: 'number'
       },
       httpBridgeAddress: {
-        default: 'cloudiot-device.googleapis.com',
+        default: 'cloudiotdevice.googleapis.com',
         description: 'HTTP bridge address.',
         requiresArg: true,
         type: 'string'
@@ -105,7 +105,7 @@ const devicePath = `projects/${argv.projectId}/locations/${argv.cloudRegion}/reg
 // The request path, set accordingly depending on the message type.
 const pathSuffix = argv.messageType === 'events'
     ? ':publishEvent' : ':setState';
-const urlBase = `https://${argv.httpBridgeAddress}/v1beta1/${devicePath}`;
+const urlBase = `https://${argv.httpBridgeAddress}/v1/${devicePath}`;
 const url = `${urlBase}${pathSuffix}`;
 // [END iot_http_variables]
 

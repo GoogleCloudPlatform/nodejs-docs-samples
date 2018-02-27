@@ -601,7 +601,7 @@ function getDeviceConfigs (client, deviceId, registryId, projectId,
   // [END iot_get_device_configs]
 }
 
-// Retrieve the given device's state from the registry.
+// Send configuration data to device.
 function setDeviceConfig (client, deviceId, registryId, projectId,
     cloudRegion, data, version) {
   // [START iot_set_device_config]
@@ -1009,7 +1009,7 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .example(`node $0 createEs256Device my-es-device my-registry ../ec_public.pem`)
-  .example(`node $0 createRegistry my-registry my-iot-topic --serviceAccount=$HOME/creds_iot.json --project_id=my-project-id`)
+  .example(`node $0 createRegistry my-registry my-iot-topic --serviceAccount=$secure/svc.json --projectId=my-project-id`)
   .example(`node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`)
   .example(`node $0 createUnauthDevice my-device my-registry`)
   .example(`node $0 deleteDevice my-device my-registry`)
@@ -1018,8 +1018,8 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 getDeviceState my-device my-registry`)
   .example(`node $0 getIamPolicy my-registry`)
   .example(`node $0 getRegistry my-registry`)
-  .example(`node $0 listDevices my-node-registry`)
-  .example(`node $0 listRegistries`)
+  .example(`node $0 listDevices -s path/svc.json -p your-project-id -c asia-east1 my-registry`)
+  .example(`node $0 listRegistries -s path/svc.json -p your-project-id -c europe-west1`)
   .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
   .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
   .example(`node $0 setConfig my-device my-registry "test" 0`)

@@ -24,19 +24,19 @@ The following command summarizes the sample usage:
 
   Options:
 
-	  --projectId           The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
-							environment variables.
-	  --cloudRegion         GCP cloud region.
-	  --registryId          Cloud IoT registry ID.
-	  --deviceId            Cloud IoT device ID.
-	  --privateKeyFile      Path to private key file.
-	  --algorithm           Encryption algorithm to generate the JWT.
-	  --numMessages         Number of messages to publish.
-	  --tokenExpMins        Minutes to JWT token expiration.
-	  --mqttBridgeHostname  MQTT bridge hostname.
-	  --mqttBridgePort      MQTT bridge port.
-	  --messageType         Message type to publish.
-	  --help                Show help
+    --projectId           The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+                          environment variables.
+    --cloudRegion         GCP cloud region.
+    --registryId          Cloud IoT registry ID.
+    --deviceId            Cloud IoT device ID.
+    --privateKeyFile      Path to private key file.
+    --algorithm           Encryption algorithm to generate the JWT.
+    --numMessages         Number of messages to publish.
+    --tokenExpMins        Minutes to JWT token expiration.
+    --mqttBridgeHostname  MQTT bridge hostname.
+    --mqttBridgePort      MQTT bridge port.
+    --messageType         Message type to publish.
+    --help                Show help
 
 
 For example, if your project ID is `blue-jet-123`, your service account

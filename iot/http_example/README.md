@@ -42,7 +42,7 @@ For example, if your project ID is `blue-jet-123`, your region is
 asia-east1, and you have generated your credentials using the shell script
 provided in the parent folder, you can run the sample as:
 
-    node cloudiot_http_example_nodejs.js \
+    node cloudiot_http_example.js \
         --cloudRegion=asia-east1 \
         --projectId=blue-jet-123 \
         --registryId=my-registry \

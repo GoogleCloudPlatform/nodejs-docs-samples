@@ -21,15 +21,15 @@
     "test": "samples test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "@google-cloud/error-reporting": "0.2.1",
-    "express": "4.15.4",
-    "yargs": "8.0.2"
+    "@google-cloud/error-reporting": "0.2.3",
+    "express": "4.16.2",
+    "yargs": "11.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.21.0",
-    "proxyquire": "1.8.0",
-    "sinon": "3.2.0"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "proxyquire": "2.0.0",
+    "sinon": "4.4.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

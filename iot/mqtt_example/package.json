@@ -6,13 +6,13 @@
   "license": "Apache-2.0",
   "author": "Google Inc.",
   "dependencies": {
-    "@google-cloud/pubsub": "0.13.2",
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.22.0",
-    "jsonwebtoken": "7.4.1",
-    "mqtt": "2.15.0",
-    "uuid": "3.1.0",
-    "yargs": "8.0.2"
+    "@google-cloud/pubsub": "0.16.4",
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "jsonwebtoken": "8.2.0",
+    "mqtt": "2.16.0",
+    "uuid": "3.2.1",
+    "yargs": "11.0.0"
   },
   "devDependencies": {}
 }

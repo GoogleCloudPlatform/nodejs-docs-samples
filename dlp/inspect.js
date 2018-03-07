@@ -26,7 +26,7 @@ function inspectString(
   infoTypes,
   includeQuote
 ) {
-  // [START inspect_string]
+  // [START dlp_inspect_string]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -83,7 +83,7 @@ function inspectString(
     .catch(err => {
       console.log(`Error in inspectString: ${err.message || err}`);
     });
-  // [END inspect_string]
+  // [END dlp_inspect_string]
 }
 
 function inspectFile(
@@ -93,7 +93,7 @@ function inspectFile(
   infoTypes,
   includeQuote
 ) {
-  // [START inspect_file]
+  // [START dlp_inspect_file]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -155,7 +155,7 @@ function inspectFile(
     .catch(err => {
       console.log(`Error in inspectFile: ${err.message || err}`);
     });
-  // [END inspect_file]
+  // [END dlp_inspect_file]
 }
 
 function promiseInspectGCSFile(
@@ -165,7 +165,7 @@ function promiseInspectGCSFile(
   maxFindings,
   infoTypes
 ) {
-  // [START inspect_gcs_file_promise]
+  // [START dlp_inspect_gcs]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -236,7 +236,7 @@ function promiseInspectGCSFile(
     .catch(err => {
       console.log(`Error in promiseInspectGCSFile: ${err.message || err}`);
     });
-  // [END inspect_gcs_file_promise]
+  // [END dlp_inspect_gcs]
 }
 
 function eventInspectGCSFile(
@@ -246,7 +246,7 @@ function eventInspectGCSFile(
   maxFindings,
   infoTypes
 ) {
-  // [START inspect_gcs_file_event]
+  // [START dlp_inspect_gcs_event]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -332,7 +332,7 @@ function eventInspectGCSFile(
     .catch(err => {
       console.log(`Error in eventInspectGCSFile: ${err.message || err}`);
     });
-  // [END inspect_gcs_file_event]
+  // [END dlp_inspect_gcs_event]
 }
 
 function inspectDatastore(
@@ -344,7 +344,7 @@ function inspectDatastore(
   infoTypes
   // includeQuote
 ) {
-  // [START inspect_datastore]
+  // [START dlp_inspect_datastore]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -424,7 +424,7 @@ function inspectDatastore(
     .catch(err => {
       console.log(`Error in inspectDatastore: ${err.message || err}`);
     });
-  // [END inspect_datastore]
+  // [END dlp_inspect_datastore]
 }
 
 function inspectBigquery(
@@ -436,7 +436,7 @@ function inspectBigquery(
   infoTypes
   // includeQuote
 ) {
-  // [START inspect_bigquery]
+  // [START dlp_inspect_bigquery]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -513,7 +513,7 @@ function inspectBigquery(
     .catch(err => {
       console.log(`Error in inspectBigquery: ${err.message || err}`);
     });
-  // [END inspect_bigquery]
+  // [END dlp_inspect_bigquery]
 }
 
 const cli = require(`yargs`) // eslint-disable-line

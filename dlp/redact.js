@@ -16,7 +16,7 @@
 'use strict';
 
 function redactString(string, replaceString, minLikelihood, infoTypes) {
-  // [START redact_string]
+  // [START dlp_redact_string]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -62,11 +62,11 @@ function redactString(string, replaceString, minLikelihood, infoTypes) {
     .catch(err => {
       console.log(`Error in redactString: ${err.message || err}`);
     });
-  // [END redact_string]
+  // [END dlp_redact_string]
 }
 
 function redactImage(filepath, minLikelihood, infoTypes, outputPath) {
-  // [START redact_image]
+  // [START dlp_redact_image]
   // Imports required Node.js libraries
   const mime = require('mime');
   const fs = require('fs');
@@ -118,7 +118,7 @@ function redactImage(filepath, minLikelihood, infoTypes, outputPath) {
     .catch(err => {
       console.log(`Error in redactImage: ${err.message || err}`);
     });
-  // [END redact_image]
+  // [END dlp_redact_image]
 }
 
 const cli = require(`yargs`)

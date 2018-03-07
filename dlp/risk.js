@@ -16,7 +16,7 @@
 'use strict';
 
 function numericalRiskAnalysis(projectId, datasetId, tableId, columnName) {
-  // [START numerical_risk]
+  // [START dlp_numerical_stats]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -91,11 +91,11 @@ function numericalRiskAnalysis(projectId, datasetId, tableId, columnName) {
     .catch(err => {
       console.log(`Error in numericalRiskAnalysis: ${err.message || err}`);
     });
-  // [END numerical_risk]
+  // [END dlp_numerical_stats]
 }
 
 function categoricalRiskAnalysis(projectId, datasetId, tableId, columnName) {
-  // [START categorical_risk]
+  // [START dlp_categorical_stats]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -162,11 +162,11 @@ function categoricalRiskAnalysis(projectId, datasetId, tableId, columnName) {
     .catch(err => {
       console.log(`Error in categoricalRiskAnalysis: ${err.message || err}`);
     });
-  // [END categorical_risk]
+  // [END dlp_categorical_stats]
 }
 
 function kAnonymityAnalysis(projectId, datasetId, tableId, quasiIds) {
-  // [START k_anonymity]
+  // [START dlp_k_anonymity]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -230,7 +230,7 @@ function kAnonymityAnalysis(projectId, datasetId, tableId, quasiIds) {
     .catch(err => {
       console.log(`Error in kAnonymityAnalysis: ${err.message || err}`);
     });
-  // [END k_anonymity]
+  // [END dlp_k_anonymity]
 }
 
 function lDiversityAnalysis(
@@ -240,7 +240,7 @@ function lDiversityAnalysis(
   sensitiveAttribute,
   quasiIds
 ) {
-  // [START l_diversity]
+  // [START dlp_l_diversity]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -317,7 +317,7 @@ function lDiversityAnalysis(
     .catch(err => {
       console.log(`Error in lDiversityAnalysis: ${err.message || err}`);
     });
-  // [END l_diversity]
+  // [END dlp_l_diversity]
 }
 
 const cli = require(`yargs`) // eslint-disable-line

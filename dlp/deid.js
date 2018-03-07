@@ -16,7 +16,7 @@
 'use strict';
 
 function deidentifyWithMask(string, maskingCharacter, numberToMask) {
-  // [START deidentify_masking]
+  // [START dlp_deidentify_masking]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -63,11 +63,11 @@ function deidentifyWithMask(string, maskingCharacter, numberToMask) {
     .catch(err => {
       console.log(`Error in deidentifyWithMask: ${err.message || err}`);
     });
-  // [END deidentify_masking]
+  // [END dlp_deidentify_masking]
 }
 
 function deidentifyWithFpe(string, alphabet, keyName, wrappedKey) {
-  // [START deidentify_fpe]
+  // [START dlp_deidentify_fpe]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -123,7 +123,7 @@ function deidentifyWithFpe(string, alphabet, keyName, wrappedKey) {
     .catch(err => {
       console.log(`Error in deidentifyWithFpe: ${err.message || err}`);
     });
-  // [END deidentify_fpe]
+  // [END dlp_deidentify_fpe]
 }
 
 const cli = require(`yargs`)

@@ -16,7 +16,7 @@
 'use strict';
 
 function listInfoTypes(category, languageCode) {
-  // [START list_info_types]
+  // [START dlp_list_info_types]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -44,11 +44,11 @@ function listInfoTypes(category, languageCode) {
     .catch(err => {
       console.log(`Error in listInfoTypes: ${err.message || err}`);
     });
-  // [END list_info_types]
+  // [END dlp_list_info_types]
 }
 
 function listRootCategories(languageCode) {
-  // [START list_categories]
+  // [START dlp_list_categories]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -72,7 +72,7 @@ function listRootCategories(languageCode) {
     .catch(err => {
       console.log(`Error in listRootCategories: ${err.message || err}`);
     });
-  // [END list_categories]
+  // [END dlp_list_categories]
 }
 
 const cli = require(`yargs`)

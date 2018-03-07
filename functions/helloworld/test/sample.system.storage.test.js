@@ -77,4 +77,4 @@ test.serial(`helloGCS: should print deleted message`, async (t) => {
   const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
   t.true(logs.includes(`File ${gcsFileName} deleted`));
 });
-// [START functions_storage_system_test]
+// [END functions_storage_system_test]

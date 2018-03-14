@@ -1,0 +1,16 @@
+{
+  "name": "appengine-parse-server",
+  "description": "Parse-server sample for Google App Engine",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "8.x.x"
+  },
+  "dependencies": {
+    "express": "4.14.1",
+    "parse-server": "2.3.2",
+    "nconf": "0.8.4"
+  }
+}

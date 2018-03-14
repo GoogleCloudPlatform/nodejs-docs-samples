@@ -1,0 +1,19 @@
+{
+  "name": "appengine-twilio",
+  "description": "Samples for Google App Engine Standard Environment",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "8.x.x"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "1.16.0",
+    "express": "4.14.1",
+    "twilio": "2.11.1"
+  }
+}

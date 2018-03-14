@@ -27,7 +27,7 @@ const app = express();
 
 const parseServer = new ParseServer({
   databaseURI: nconf.get('DATABASE_URI') || 'mongodb://localhost:27017/dev',
-  cloud: nconf.get('CLOUD_PATH') || path.join(__dirname, '/cloud/main.js'),
+  cloud: nconf.get('CLOUD_PATH') || path.join(__dirname, '/cloud/main.js_parse'),
   appId: nconf.get('APP_ID'),
   masterKey: nconf.get('MASTER_KEY'),
   fileKey: nconf.get('FILE_KEY'),

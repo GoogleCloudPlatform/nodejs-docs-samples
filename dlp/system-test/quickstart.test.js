@@ -26,5 +26,5 @@ test.before(tools.checkCredentials);
 
 test(`should run`, async t => {
   const output = await tools.runAsync(cmd, cwd);
-  t.regex(output, /Info type: US_MALE_NAME/);
+  t.regex(output, /Info type: PERSON_NAME/);
 });

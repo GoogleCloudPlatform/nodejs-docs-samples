@@ -15,11 +15,10 @@
 
 'use strict';
 
-const fs = require('fs');
-const mime = require('mime');
 const Buffer = require('safe-buffer').Buffer;
 
 function inspectString(
+  callingProjectId,
   string,
   minLikelihood,
   maxFindings,
@@ -33,13 +32,16 @@ function inspectString(
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
 
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
   // The string to inspect
   // const string = 'My name is Gary and my email is gary@example.com';
 
   // The minimum likelihood required before returning a match
   // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
-  // The maximum number of findings to report (0 = server maximum)
+  // The maximum number of findings to report per request (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
@@ -48,25 +50,28 @@ function inspectString(
   // Whether to include the matching string
   // const includeQuote = true;
 
-  // Construct items to inspect
-  const items = [{type: 'text/plain', value: string}];
+  // Construct item to inspect
+  const item = {value: string};
 
   // Construct request
   const request = {
+    parent: dlp.projectPath(callingProjectId),
     inspectConfig: {
       infoTypes: infoTypes,
       minLikelihood: minLikelihood,
-      maxFindings: maxFindings,
       includeQuote: includeQuote,
+      limits: {
+        maxFindingsPerRequest: maxFindings,
+      },
     },
-    items: items,
+    item: item,
   };
 
   // Run request
   dlp
     .inspectContent(request)
     .then(response => {
-      const findings = response[0].results[0].findings;
+      const findings = response[0].result.findings;
       if (findings.length > 0) {
         console.log(`Findings:`);
         findings.forEach(finding => {
@@ -87,6 +92,7 @@ function inspectString(
 }
 
 function inspectFile(
+  callingProjectId,
   filepath,
   minLikelihood,
   maxFindings,
@@ -97,8 +103,15 @@ function inspectFile(
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
+  // Import other required libraries
+  const fs = require('fs');
+  const mime = require('mime');
+
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
+
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
 
   // The path to a local file to inspect. Can be a text, JPG, or PNG file.
   // const fileName = 'path/to/image.png';
@@ -106,7 +119,7 @@ function inspectFile(
   // The minimum likelihood required before returning a match
   // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
-  // The maximum number of findings to report (0 = server maximum)
+  // The maximum number of findings to report per request (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
@@ -116,29 +129,37 @@ function inspectFile(
   // const includeQuote = true;
 
   // Construct file data to inspect
-  const fileItems = [
-    {
-      type: mime.getType(filepath) || 'application/octet-stream',
-      data: Buffer.from(fs.readFileSync(filepath)).toString('base64'),
+  const fileTypeConstant =
+    ['image/jpeg', 'image/bmp', 'image/png', 'image/svg'].indexOf(
+      mime.getType(filepath)
+    ) + 1;
+  const fileBytes = Buffer.from(fs.readFileSync(filepath)).toString('base64');
+  const item = {
+    byteItem: {
+      type: fileTypeConstant,
+      data: fileBytes,
     },
-  ];
+  };
 
   // Construct request
   const request = {
+    parent: dlp.projectPath(callingProjectId),
     inspectConfig: {
       infoTypes: infoTypes,
       minLikelihood: minLikelihood,
-      maxFindings: maxFindings,
       includeQuote: includeQuote,
+      limits: {
+        maxFindingsPerRequest: maxFindings,
+      },
     },
-    items: fileItems,
+    item: item,
   };
 
   // Run request
   dlp
     .inspectContent(request)
     .then(response => {
-      const findings = response[0].results[0].findings;
+      const findings = response[0].result.findings;
       if (findings.length > 0) {
         console.log(`Findings:`);
         findings.forEach(finding => {
@@ -158,19 +179,27 @@ function inspectFile(
   // [END dlp_inspect_file]
 }
 
-function promiseInspectGCSFile(
+function inspectGCSFile(
+  callingProjectId,
   bucketName,
   fileName,
+  topicId,
+  subscriptionId,
   minLikelihood,
   maxFindings,
   infoTypes
 ) {
   // [START dlp_inspect_gcs]
-  // Imports the Google Cloud Data Loss Prevention library
+  // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
+  // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
+
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
 
   // The name of the bucket where the file resides.
   // const bucketName = 'YOUR-BUCKET';
@@ -182,177 +211,146 @@ function promiseInspectGCSFile(
   // The minimum likelihood required before returning a match
   // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
-  // The maximum number of findings to report (0 = server maximum)
+  // The maximum number of findings to report per request (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
   // Get reference to the file to be inspected
-  const storageItems = {
+  const storageItem = {
     cloudStorageOptions: {
       fileSet: {url: `gs://${bucketName}/${fileName}`},
     },
   };
 
-  // Construct REST request body for creating an inspect job
+  // Construct request for creating an inspect job
   const request = {
-    inspectConfig: {
-      infoTypes: infoTypes,
-      minLikelihood: minLikelihood,
-      maxFindings: maxFindings,
+    parent: dlp.projectPath(callingProjectId),
+    inspectJob: {
+      inspectConfig: {
+        infoTypes: infoTypes,
+        minLikelihood: minLikelihood,
+        limits: {
+          maxFindingsPerRequest: maxFindings,
+        },
+      },
+      storageConfig: storageItem,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
     },
-    storageConfig: storageItems,
   };
 
-  // Create a GCS File inspection job and wait for it to complete (using promises)
-  dlp
-    .createInspectOperation(request)
-    .then(createJobResponse => {
-      const operation = createJobResponse[0];
-
-      // Start polling for job completion
-      return operation.promise();
+  // Create a GCS File inspection job and wait for it to complete
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
     })
-    .then(completeJobResponse => {
-      // When job is complete, get its results
-      const jobName = completeJobResponse[0].name;
-      return dlp.listInspectFindings({
-        name: jobName,
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
+
+        const errorHandler = err => {
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
       });
     })
-    .then(results => {
-      const findings = results[0].result.findings;
-      if (findings.length > 0) {
-        console.log(`Findings:`);
-        findings.forEach(finding => {
-          console.log(`\tInfo type: ${finding.infoType.name}`);
-          console.log(`\tLikelihood: ${finding.likelihood}`);
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      console.log(`Job ${job.name} status: ${job.state}`);
+
+      const infoTypeStats = job.inspectDetails.result.infoTypeStats;
+      if (infoTypeStats.length > 0) {
+        infoTypeStats.forEach(infoTypeStat => {
+          console.log(
+            `  Found ${infoTypeStat.count} instance(s) of infoType ${
+              infoTypeStat.infoType.name
+            }.`
+          );
         });
       } else {
         console.log(`No findings.`);
       }
     })
     .catch(err => {
-      console.log(`Error in promiseInspectGCSFile: ${err.message || err}`);
+      console.log(`Error in inspectGCSFile: ${err.message || err}`);
     });
   // [END dlp_inspect_gcs]
 }
 
-function eventInspectGCSFile(
-  bucketName,
-  fileName,
-  minLikelihood,
-  maxFindings,
-  infoTypes
-) {
-  // [START dlp_inspect_gcs_event]
-  // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
-
-  // Instantiates a client
-  const dlp = new DLP.DlpServiceClient();
-
-  // The name of the bucket where the file resides.
-  // const bucketName = 'YOUR-BUCKET';
-
-  // The path to the file within the bucket to inspect.
-  // Can contain wildcards, e.g. "my-image.*"
-  // const fileName = 'my-image.png';
-
-  // The minimum likelihood required before returning a match
-  // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
-
-  // The maximum number of findings to report (0 = server maximum)
-  // const maxFindings = 0;
-
-  // The infoTypes of information to match
-  // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
-
-  // Get reference to the file to be inspected
-  const storageItems = {
-    cloudStorageOptions: {
-      fileSet: {url: `gs://${bucketName}/${fileName}`},
-    },
-  };
-
-  // Construct REST request body for creating an inspect job
-  const request = {
-    inspectConfig: {
-      infoTypes: infoTypes,
-      minLikelihood: minLikelihood,
-      maxFindings: maxFindings,
-    },
-    storageConfig: storageItems,
-  };
-
-  // Create a GCS File inspection job, and handle its completion (using event handlers)
-  // Promises are used (only) to avoid nested callbacks
-  dlp
-    .createInspectOperation(request)
-    .then(createJobResponse => {
-      const operation = createJobResponse[0];
-      return new Promise((resolve, reject) => {
-        operation.on('complete', completeJobResponse => {
-          return resolve(completeJobResponse);
-        });
-
-        // Handle changes in job metadata (e.g. progress updates)
-        operation.on('progress', metadata => {
-          console.log(
-            `Processed ${metadata.processedBytes} of approximately ${
-              metadata.totalEstimatedBytes
-            } bytes.`
-          );
-        });
-
-        operation.on('error', err => {
-          return reject(err);
-        });
-      });
-    })
-    .then(completeJobResponse => {
-      const jobName = completeJobResponse.name;
-      return dlp.listInspectFindings({
-        name: jobName,
-      });
-    })
-    .then(results => {
-      const findings = results[0].result.findings;
-      if (findings.length > 0) {
-        console.log(`Findings:`);
-        findings.forEach(finding => {
-          console.log(`\tInfo type: ${finding.infoType.name}`);
-          console.log(`\tLikelihood: ${finding.likelihood}`);
-        });
-      } else {
-        console.log(`No findings.`);
-      }
-    })
-    .catch(err => {
-      console.log(`Error in eventInspectGCSFile: ${err.message || err}`);
-    });
-  // [END dlp_inspect_gcs_event]
-}
-
 function inspectDatastore(
-  projectId,
+  callingProjectId,
+  dataProjectId,
   namespaceId,
   kind,
+  topicId,
+  subscriptionId,
   minLikelihood,
   maxFindings,
   infoTypes
-  // includeQuote
 ) {
   // [START dlp_inspect_datastore]
-  // Imports the Google Cloud Data Loss Prevention library
+  // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
+  // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
 
-  // (Optional) The project ID containing the target Datastore
-  // const projectId = process.env.GCLOUD_PROJECT;
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The project ID the target Datastore is stored under
+  // This may or may not equal the calling project ID
+  // const dataProjectId = process.env.GCLOUD_PROJECT;
 
   // (Optional) The ID namespace of the Datastore document to inspect.
   // To ignore Datastore namespaces, set this to an empty string ('')
@@ -364,17 +362,26 @@ function inspectDatastore(
   // The minimum likelihood required before returning a match
   // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
-  // The maximum number of findings to report (0 = server maximum)
+  // The maximum number of findings to report per request (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
   // Construct items to be inspected
   const storageItems = {
     datastoreOptions: {
       partitionId: {
-        projectId: projectId,
+        projectId: dataProjectId,
         namespaceId: namespaceId,
       },
       kind: {
@@ -385,37 +392,85 @@ function inspectDatastore(
 
   // Construct request for creating an inspect job
   const request = {
-    inspectConfig: {
-      infoTypes: infoTypes,
-      minLikelihood: minLikelihood,
-      maxFindings: maxFindings,
+    parent: dlp.projectPath(callingProjectId),
+    inspectJob: {
+      inspectConfig: {
+        infoTypes: infoTypes,
+        minLikelihood: minLikelihood,
+        limits: {
+          maxFindingsPerRequest: maxFindings,
+        },
+      },
+      storageConfig: storageItems,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
     },
-    storageConfig: storageItems,
   };
 
   // Run inspect-job creation request
-  dlp
-    .createInspectOperation(request)
-    .then(createJobResponse => {
-      const operation = createJobResponse[0];
-
-      // Start polling for job completion
-      return operation.promise();
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
     })
-    .then(completeJobResponse => {
-      // When job is complete, get its results
-      const jobName = completeJobResponse[0].name;
-      return dlp.listInspectFindings({
-        name: jobName,
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
+
+        const errorHandler = err => {
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
       });
     })
-    .then(results => {
-      const findings = results[0].result.findings;
-      if (findings.length > 0) {
-        console.log(`Findings:`);
-        findings.forEach(finding => {
-          console.log(`\tInfo type: ${finding.infoType.name}`);
-          console.log(`\tLikelihood: ${finding.likelihood}`);
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      console.log(`Job ${job.name} status: ${job.state}`);
+
+      const infoTypeStats = job.inspectDetails.result.infoTypeStats;
+      if (infoTypeStats.length > 0) {
+        infoTypeStats.forEach(infoTypeStat => {
+          console.log(
+            `  Found ${infoTypeStat.count} instance(s) of infoType ${
+              infoTypeStat.infoType.name
+            }.`
+          );
         });
       } else {
         console.log(`No findings.`);
@@ -428,23 +483,31 @@ function inspectDatastore(
 }
 
 function inspectBigquery(
-  projectId,
+  callingProjectId,
+  dataProjectId,
   datasetId,
   tableId,
+  topicId,
+  subscriptionId,
   minLikelihood,
   maxFindings,
   infoTypes
-  // includeQuote
 ) {
   // [START dlp_inspect_bigquery]
-  // Imports the Google Cloud Data Loss Prevention library
+  // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
+  // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
 
-  // (Optional) The project ID to run the API call under
-  // const projectId = process.env.GCLOUD_PROJECT;
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The project ID the table is stored under
+  // This may or (for public datasets) may not equal the calling project ID
+  // const dataProjectId = process.env.GCLOUD_PROJECT;
 
   // The ID of the dataset to inspect, e.g. 'my_dataset'
   // const datasetId = 'my_dataset';
@@ -455,17 +518,26 @@ function inspectBigquery(
   // The minimum likelihood required before returning a match
   // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 
-  // The maximum number of findings to report (0 = server maximum)
+  // The maximum number of findings to report per request (0 = server maximum)
   // const maxFindings = 0;
 
   // The infoTypes of information to match
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
-  // Construct items to be inspected
-  const storageItems = {
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
+  // Construct item to be inspected
+  const storageItem = {
     bigQueryOptions: {
       tableReference: {
-        projectId: projectId,
+        projectId: dataProjectId,
         datasetId: datasetId,
         tableId: tableId,
       },
@@ -474,37 +546,86 @@ function inspectBigquery(
 
   // Construct request for creating an inspect job
   const request = {
-    inspectConfig: {
-      infoTypes: infoTypes,
-      minLikelihood: minLikelihood,
-      maxFindings: maxFindings,
+    parent: dlp.projectPath(callingProjectId),
+    inspectJob: {
+      inspectConfig: {
+        infoTypes: infoTypes,
+        minLikelihood: minLikelihood,
+        limits: {
+          maxFindingsPerRequest: maxFindings,
+        },
+      },
+      storageConfig: storageItem,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
     },
-    storageConfig: storageItems,
   };
 
   // Run inspect-job creation request
-  dlp
-    .createInspectOperation(request)
-    .then(createJobResponse => {
-      const operation = createJobResponse[0];
-
-      // Start polling for job completion
-      return operation.promise();
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
     })
-    .then(completeJobResponse => {
-      // When job is complete, get its results
-      const jobName = completeJobResponse[0].name;
-      return dlp.listInspectFindings({
-        name: jobName,
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
+
+        const errorHandler = err => {
+          console.error(err);
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
       });
     })
-    .then(results => {
-      const findings = results[0].result.findings;
-      if (findings.length > 0) {
-        console.log(`Findings:`);
-        findings.forEach(finding => {
-          console.log(`\tInfo type: ${finding.infoType.name}`);
-          console.log(`\tLikelihood: ${finding.likelihood}`);
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      console.log(`Job ${job.name} state: ${job.state}`);
+
+      const infoTypeStats = job.inspectDetails.result.infoTypeStats;
+      if (infoTypeStats.length > 0) {
+        infoTypeStats.forEach(infoTypeStat => {
+          console.log(
+            `  Found ${infoTypeStat.count} instance(s) of infoType ${
+              infoTypeStat.infoType.name
+            }.`
+          );
         });
       } else {
         console.log(`No findings.`);
@@ -524,6 +645,7 @@ const cli = require(`yargs`) // eslint-disable-line
     {},
     opts =>
       inspectString(
+        opts.callingProjectId,
         opts.string,
         opts.minLikelihood,
         opts.maxFindings,
@@ -537,6 +659,7 @@ const cli = require(`yargs`) // eslint-disable-line
     {},
     opts =>
       inspectFile(
+        opts.callingProjectId,
         opts.filepath,
         opts.minLikelihood,
         opts.maxFindings,
@@ -545,61 +668,43 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `gcsFilePromise <bucketName> <fileName>`,
-    `Inspects a text file stored on Google Cloud Storage using the Data Loss Prevention API and the promise pattern.`,
+    `gcsFile <bucketName> <fileName> <topicId> <subscriptionId>`,
+    `Inspects a text file stored on Google Cloud Storage with the Data Loss Prevention API, using Pub/Sub for job notifications.`,
     {},
     opts =>
-      promiseInspectGCSFile(
+      inspectGCSFile(
+        opts.callingProjectId,
         opts.bucketName,
         opts.fileName,
+        opts.topicId,
+        opts.subscriptionId,
         opts.minLikelihood,
         opts.maxFindings,
         opts.infoTypes
       )
   )
   .command(
-    `gcsFileEvent <bucketName> <fileName>`,
-    `Inspects a text file stored on Google Cloud Storage using the Data Loss Prevention API and the event-handler pattern.`,
+    `bigquery <datasetName> <tableName> <topicId> <subscriptionId>`,
+    `Inspects a BigQuery table using the Data Loss Prevention API using Pub/Sub for job notifications.`,
     {},
-    opts =>
-      eventInspectGCSFile(
-        opts.bucketName,
-        opts.fileName,
-        opts.minLikelihood,
-        opts.maxFindings,
-        opts.infoTypes
-      )
-  )
-  .command(
-    `bigquery <datasetName> <tableName>`,
-    `Inspects a BigQuery table using the Data Loss Prevention API.`,
-    {
-      projectId: {
-        type: 'string',
-        alias: 'p',
-        default: process.env.GCLOUD_PROJECT,
-      },
-    },
-    opts =>
+    opts => {
       inspectBigquery(
-        opts.projectId,
+        opts.callingProjectId,
+        opts.dataProjectId,
         opts.datasetName,
         opts.tableName,
+        opts.topicId,
+        opts.subscriptionId,
         opts.minLikelihood,
         opts.maxFindings,
-        opts.infoTypes,
-        opts.includeQuote
-      )
+        opts.infoTypes
+      );
+    }
   )
   .command(
-    `datastore <kind>`,
-    `Inspect a Datastore instance using the Data Loss Prevention API.`,
+    `datastore <kind> <topicId> <subscriptionId>`,
+    `Inspect a Datastore instance using the Data Loss Prevention API using Pub/Sub for job notifications.`,
     {
-      projectId: {
-        type: 'string',
-        alias: 'p',
-        default: process.env.GCLOUD_PROJECT,
-      },
       namespaceId: {
         type: 'string',
         alias: 'n',
@@ -608,13 +713,15 @@ const cli = require(`yargs`) // eslint-disable-line
     },
     opts =>
       inspectDatastore(
-        opts.projectId,
+        opts.callingProjectId,
+        opts.dataProjectId,
         opts.namespaceId,
         opts.kind,
+        opts.topicId,
+        opts.subscriptionId,
         opts.minLikelihood,
         opts.maxFindings,
-        opts.infoTypes,
-        opts.includeQuote
+        opts.infoTypes
       )
   )
   .option('m', {
@@ -630,6 +737,16 @@ const cli = require(`yargs`) // eslint-disable-line
       'VERY_LIKELY',
     ],
     global: true,
+  })
+  .option('c', {
+    type: 'string',
+    alias: 'callingProjectId',
+    default: process.env.GCLOUD_PROJECT || '',
+  })
+  .option('p', {
+    type: 'string',
+    alias: 'dataProjectId',
+    default: process.env.GCLOUD_PROJECT || '',
   })
   .option('f', {
     alias: 'maxFindings',
@@ -653,18 +770,20 @@ const cli = require(`yargs`) // eslint-disable-line
         return {name: type};
       }),
   })
-  .example(
-    `node $0 string "My phone number is (123) 456-7890 and my email address is me@somedomain.com"`
-  )
+  .option('n', {
+    alias: 'notificationTopic',
+    type: 'string',
+    global: true,
+  })
+  .example(`node $0 string "My email address is me@somedomain.com"`)
   .example(`node $0 file resources/test.txt`)
-  .example(`node $0 gcsFilePromise my-bucket my-file.txt`)
-  .example(`node $0 gcsFileEvent my-bucket my-file.txt`)
-  .example(`node $0 bigquery my-dataset my-table`)
-  .example(`node $0 datastore my-datastore-kind`)
+  .example(`node $0 gcsFile my-bucket my-file.txt my-topic my-subscription`)
+  .example(`node $0 bigquery my-dataset my-table my-topic my-subscription`)
+  .example(`node $0 datastore my-datastore-kind my-topic my-subscription`)
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig`
+    `For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2/InspectConfig`
   );
 
 if (module === require.main) {

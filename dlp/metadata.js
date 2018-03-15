@@ -15,7 +15,7 @@
 
 'use strict';
 
-function listInfoTypes(category, languageCode) {
+function listInfoTypes(languageCode, filter) {
   // [START dlp_list_info_types]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -23,20 +23,20 @@ function listInfoTypes(category, languageCode) {
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
 
-  // The category of info types to list.
-  // const category = 'CATEGORY_TO_LIST';
-
   // The BCP-47 language code to use, e.g. 'en-US'
   // const languageCode = 'en-US';
 
+  // The filter to use
+  // const filter = 'supported_by=INSPECT'
+
   dlp
     .listInfoTypes({
-      category: category,
       languageCode: languageCode,
+      filter: filter,
     })
     .then(body => {
       const infoTypes = body[0].infoTypes;
-      console.log(`Info types for category ${category}:`);
+      console.log(`Info types:`);
       infoTypes.forEach(infoType => {
         console.log(`\t${infoType.name} (${infoType.displayName})`);
       });
@@ -47,47 +47,13 @@ function listInfoTypes(category, languageCode) {
   // [END dlp_list_info_types]
 }
 
-function listRootCategories(languageCode) {
-  // [START dlp_list_categories]
-  // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
-
-  // Instantiates a client
-  const dlp = new DLP.DlpServiceClient();
-
-  // The BCP-47 language code to use, e.g. 'en-US'
-  // const languageCode = 'en-US';
-
-  dlp
-    .listRootCategories({
-      languageCode: languageCode,
-    })
-    .then(body => {
-      const categories = body[0].categories;
-      console.log(`Categories:`);
-      categories.forEach(category => {
-        console.log(`\t${category.name}: ${category.displayName}`);
-      });
-    })
-    .catch(err => {
-      console.log(`Error in listRootCategories: ${err.message || err}`);
-    });
-  // [END dlp_list_categories]
-}
-
 const cli = require(`yargs`)
   .demand(1)
   .command(
-    `infoTypes <category>`,
-    `List types of sensitive information within a category.`,
+    `infoTypes [filter]`,
+    `List the types of sensitive information the DLP API supports.`,
     {},
-    opts => listInfoTypes(opts.category, opts.languageCode)
-  )
-  .command(
-    `categories`,
-    `List root categories of sensitive information.`,
-    {},
-    opts => listRootCategories(opts.languageCode)
+    opts => listInfoTypes(opts.languageCode, opts.filter)
   )
   .option('l', {
     alias: 'languageCode',
@@ -95,8 +61,7 @@ const cli = require(`yargs`)
     type: 'string',
     global: true,
   })
-  .example(`node $0 infoTypes GOVERNMENT`)
-  .example(`node $0 categories`)
+  .example(`node $0 infoTypes "supported_by=INSPECT"`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/dlp/docs`);

@@ -15,16 +15,30 @@
 
 'use strict';
 
-function numericalRiskAnalysis(projectId, datasetId, tableId, columnName) {
+function numericalRiskAnalysis(
+  callingProjectId,
+  tableProjectId,
+  datasetId,
+  tableId,
+  columnName,
+  topicId,
+  subscriptionId
+) {
   // [START dlp_numerical_stats]
-  // Imports the Google Cloud Data Loss Prevention library
+  // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
+  // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
 
-  // (Optional) The project ID to run the API call under
-  // const projectId = process.env.GCLOUD_PROJECT;
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The project ID the table is stored under
+  // This may or (for public datasets) may not equal the calling project ID
+  // const tableProjectId = process.env.GCLOUD_PROJECT;
 
   // The ID of the dataset to inspect, e.g. 'my_dataset'
   // const datasetId = 'my_dataset';
@@ -36,36 +50,96 @@ function numericalRiskAnalysis(projectId, datasetId, tableId, columnName) {
   // Note that this column must be a numeric data type
   // const columnName = 'firstName';
 
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
   const sourceTable = {
-    projectId: projectId,
+    projectId: tableProjectId,
     datasetId: datasetId,
     tableId: tableId,
   };
 
   // Construct request for creating a risk analysis job
   const request = {
-    privacyMetric: {
-      numericalStatsConfig: {
-        field: {
-          columnName: columnName,
+    parent: dlp.projectPath(callingProjectId),
+    riskJob: {
+      privacyMetric: {
+        numericalStatsConfig: {
+          field: {
+            name: columnName,
+          },
         },
       },
+      sourceTable: sourceTable,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
     },
-    sourceTable: sourceTable,
   };
 
   // Create helper function for unpacking values
   const getValue = obj => obj[Object.keys(obj)[0]];
 
   // Run risk analysis job
-  dlp
-    .analyzeDataSourceRisk(request)
-    .then(response => {
-      const operation = response[0];
-      return operation.promise();
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
     })
-    .then(completedJobResponse => {
-      const results = completedJobResponse[0].numericalStatsResult;
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
+
+        const errorHandler = err => {
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
+      });
+    })
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      const results = job.riskDetails.numericalStatsResult;
 
       console.log(
         `Value Range: [${getValue(results.minValue)}, ${getValue(
@@ -94,16 +168,30 @@ function numericalRiskAnalysis(projectId, datasetId, tableId, columnName) {
   // [END dlp_numerical_stats]
 }
 
-function categoricalRiskAnalysis(projectId, datasetId, tableId, columnName) {
+function categoricalRiskAnalysis(
+  callingProjectId,
+  tableProjectId,
+  datasetId,
+  tableId,
+  columnName,
+  topicId,
+  subscriptionId
+) {
   // [START dlp_categorical_stats]
-  // Imports the Google Cloud Data Loss Prevention library
+  // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
+  // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
 
-  // (Optional) The project ID to run the API call under
-  // const projectId = process.env.GCLOUD_PROJECT;
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The project ID the table is stored under
+  // This may or (for public datasets) may not equal the calling project ID
+  // const tableProjectId = process.env.GCLOUD_PROJECT;
 
   // The ID of the dataset to inspect, e.g. 'my_dataset'
   // const datasetId = 'my_dataset';
@@ -111,52 +199,124 @@ function categoricalRiskAnalysis(projectId, datasetId, tableId, columnName) {
   // The ID of the table to inspect, e.g. 'my_table'
   // const tableId = 'my_table';
 
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
   // The name of the column to compute risk metrics for, e.g. 'firstName'
   // const columnName = 'firstName';
 
   const sourceTable = {
-    projectId: projectId,
+    projectId: tableProjectId,
     datasetId: datasetId,
     tableId: tableId,
   };
 
   // Construct request for creating a risk analysis job
   const request = {
-    privacyMetric: {
-      categoricalStatsConfig: {
-        field: {
-          columnName: columnName,
+    parent: dlp.projectPath(callingProjectId),
+    riskJob: {
+      privacyMetric: {
+        categoricalStatsConfig: {
+          field: {
+            name: columnName,
+          },
         },
       },
+      sourceTable: sourceTable,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
     },
-    sourceTable: sourceTable,
   };
 
   // Create helper function for unpacking values
   const getValue = obj => obj[Object.keys(obj)[0]];
 
   // Run risk analysis job
-  dlp
-    .analyzeDataSourceRisk(request)
-    .then(response => {
-      const operation = response[0];
-      return operation.promise();
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
     })
-    .then(completedJobResponse => {
-      const results =
-        completedJobResponse[0].categoricalStatsResult
-          .valueFrequencyHistogramBuckets[0];
-      console.log(
-        `Most common value occurs ${results.valueFrequencyUpperBound} time(s)`
-      );
-      console.log(
-        `Least common value occurs ${results.valueFrequencyLowerBound} time(s)`
-      );
-      console.log(`${results.bucketSize} unique values total.`);
-      results.bucketValues.forEach(bucket => {
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
+
+        const errorHandler = err => {
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
+      });
+    })
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      const histogramBuckets =
+        job.riskDetails.categoricalStatsResult.valueFrequencyHistogramBuckets;
+      histogramBuckets.forEach((histogramBucket, histogramBucketIdx) => {
+        console.log(`Bucket ${histogramBucketIdx}:`);
+
+        // Print bucket stats
         console.log(
-          `Value ${getValue(bucket.value)} occurs ${bucket.count} time(s).`
+          `  Most common value occurs ${
+            histogramBucket.valueFrequencyUpperBound
+          } time(s)`
         );
+        console.log(
+          `  Least common value occurs ${
+            histogramBucket.valueFrequencyLowerBound
+          } time(s)`
+        );
+
+        // Print bucket values
+        console.log(`${histogramBucket.bucketSize} unique values total.`);
+        histogramBucket.bucketValues.forEach(valueBucket => {
+          console.log(
+            `  Value ${getValue(valueBucket.value)} occurs ${
+              valueBucket.count
+            } time(s).`
+          );
+        });
       });
     })
     .catch(err => {
@@ -165,16 +325,30 @@ function categoricalRiskAnalysis(projectId, datasetId, tableId, columnName) {
   // [END dlp_categorical_stats]
 }
 
-function kAnonymityAnalysis(projectId, datasetId, tableId, quasiIds) {
+function kAnonymityAnalysis(
+  callingProjectId,
+  tableProjectId,
+  datasetId,
+  tableId,
+  topicId,
+  subscriptionId,
+  quasiIds
+) {
   // [START dlp_k_anonymity]
-  // Imports the Google Cloud Data Loss Prevention library
+  // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
+  // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
 
-  // (Optional) The project ID to run the API call under
-  // const projectId = process.env.GCLOUD_PROJECT;
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The project ID the table is stored under
+  // This may or (for public datasets) may not equal the calling project ID
+  // const tableProjectId = process.env.GCLOUD_PROJECT;
 
   // The ID of the dataset to inspect, e.g. 'my_dataset'
   // const datasetId = 'my_dataset';
@@ -182,49 +356,114 @@ function kAnonymityAnalysis(projectId, datasetId, tableId, quasiIds) {
   // The ID of the table to inspect, e.g. 'my_table'
   // const tableId = 'my_table';
 
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
   // A set of columns that form a composite key ('quasi-identifiers')
-  // const quasiIds = [{ columnName: 'age' }, { columnName: 'city' }];
+  // const quasiIds = [{ name: 'age' }, { name: 'city' }];
 
   const sourceTable = {
-    projectId: projectId,
+    projectId: tableProjectId,
     datasetId: datasetId,
     tableId: tableId,
   };
 
   // Construct request for creating a risk analysis job
   const request = {
-    privacyMetric: {
-      kAnonymityConfig: {
-        quasiIds: quasiIds,
+    parent: dlp.projectPath(callingProjectId),
+    riskJob: {
+      privacyMetric: {
+        kAnonymityConfig: {
+          quasiIds: quasiIds,
+        },
       },
+      sourceTable: sourceTable,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
     },
-    sourceTable: sourceTable,
   };
 
   // Create helper function for unpacking values
   const getValue = obj => obj[Object.keys(obj)[0]];
 
   // Run risk analysis job
-  dlp
-    .analyzeDataSourceRisk(request)
-    .then(response => {
-      const operation = response[0];
-      return operation.promise();
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
     })
-    .then(completedJobResponse => {
-      const results =
-        completedJobResponse[0].kAnonymityResult
-          .equivalenceClassHistogramBuckets[0];
-      console.log(
-        `Bucket size range: [${results.equivalenceClassSizeLowerBound}, ${
-          results.equivalenceClassSizeUpperBound
-        }]`
-      );
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
 
-      results.bucketValues.forEach(bucket => {
-        const quasiIdValues = bucket.quasiIdsValues.map(getValue).join(', ');
-        console.log(`  Quasi-ID values: {${quasiIdValues}}`);
-        console.log(`  Class size: ${bucket.equivalenceClassSize}`);
+        const errorHandler = err => {
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
+      });
+    })
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      const histogramBuckets =
+        job.riskDetails.kAnonymityResult.equivalenceClassHistogramBuckets;
+
+      histogramBuckets.forEach((histogramBucket, histogramBucketIdx) => {
+        console.log(`Bucket ${histogramBucketIdx}:`);
+        console.log(
+          `  Bucket size range: [${
+            histogramBucket.equivalenceClassSizeLowerBound
+          }, ${histogramBucket.equivalenceClassSizeUpperBound}]`
+        );
+
+        histogramBucket.bucketValues.forEach(valueBucket => {
+          const quasiIdValues = valueBucket.quasiIdsValues
+            .map(getValue)
+            .join(', ');
+          console.log(`  Quasi-ID values: {${quasiIdValues}}`);
+          console.log(`  Class size: ${valueBucket.equivalenceClassSize}`);
+        });
       });
     })
     .catch(err => {
@@ -234,21 +473,30 @@ function kAnonymityAnalysis(projectId, datasetId, tableId, quasiIds) {
 }
 
 function lDiversityAnalysis(
-  projectId,
+  callingProjectId,
+  tableProjectId,
   datasetId,
   tableId,
+  topicId,
+  subscriptionId,
   sensitiveAttribute,
   quasiIds
 ) {
   // [START dlp_l_diversity]
-  // Imports the Google Cloud Data Loss Prevention library
+  // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
 
-  // Instantiates a client
+  // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
 
-  // (Optional) The project ID to run the API call under
-  // const projectId = process.env.GCLOUD_PROJECT;
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The project ID the table is stored under
+  // This may or (for public datasets) may not equal the calling project ID
+  // const tableProjectId = process.env.GCLOUD_PROJECT;
 
   // The ID of the dataset to inspect, e.g. 'my_dataset'
   // const datasetId = 'my_dataset';
@@ -256,61 +504,127 @@ function lDiversityAnalysis(
   // The ID of the table to inspect, e.g. 'my_table'
   // const tableId = 'my_table';
 
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
   // The column to measure l-diversity relative to, e.g. 'firstName'
   // const sensitiveAttribute = 'name';
 
   // A set of columns that form a composite key ('quasi-identifiers')
-  // const quasiIds = [{ columnName: 'age' }, { columnName: 'city' }];
+  // const quasiIds = [{ name: 'age' }, { name: 'city' }];
 
   const sourceTable = {
-    projectId: projectId,
+    projectId: tableProjectId,
     datasetId: datasetId,
     tableId: tableId,
   };
 
   // Construct request for creating a risk analysis job
   const request = {
-    privacyMetric: {
-      lDiversityConfig: {
-        quasiIds: quasiIds,
-        sensitiveAttribute: {
-          columnName: sensitiveAttribute,
+    parent: dlp.projectPath(callingProjectId),
+    riskJob: {
+      privacyMetric: {
+        lDiversityConfig: {
+          quasiIds: quasiIds,
+          sensitiveAttribute: {
+            name: sensitiveAttribute,
+          },
         },
       },
+      sourceTable: sourceTable,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
     },
-    sourceTable: sourceTable,
   };
 
   // Create helper function for unpacking values
   const getValue = obj => obj[Object.keys(obj)[0]];
 
   // Run risk analysis job
-  dlp
-    .analyzeDataSourceRisk(request)
-    .then(response => {
-      const operation = response[0];
-      return operation.promise();
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
     })
-    .then(completedJobResponse => {
-      const results =
-        completedJobResponse[0].lDiversityResult
-          .sensitiveValueFrequencyHistogramBuckets[0];
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
 
-      console.log(
-        `Bucket size range: [${results.sensitiveValueFrequencyLowerBound}, ${
-          results.sensitiveValueFrequencyUpperBound
-        }]`
-      );
-      results.bucketValues.forEach(bucket => {
-        const quasiIdValues = bucket.quasiIdsValues.map(getValue).join(', ');
-        console.log(`  Quasi-ID values: {${quasiIdValues}}`);
-        console.log(`  Class size: ${bucket.equivalenceClassSize}`);
-        bucket.topSensitiveValues.forEach(valueObj => {
-          console.log(
-            `    Sensitive value ${getValue(valueObj.value)} occurs ${
-              valueObj.count
-            } time(s).`
-          );
+        const errorHandler = err => {
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
+      });
+    })
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      const histogramBuckets =
+        job.riskDetails.lDiversityResult
+          .sensitiveValueFrequencyHistogramBuckets;
+
+      histogramBuckets.forEach((histogramBucket, histogramBucketIdx) => {
+        console.log(`Bucket ${histogramBucketIdx}:`);
+
+        console.log(
+          `Bucket size range: [${
+            histogramBucket.sensitiveValueFrequencyLowerBound
+          }, ${histogramBucket.sensitiveValueFrequencyUpperBound}]`
+        );
+        histogramBucket.bucketValues.forEach(valueBucket => {
+          const quasiIdValues = valueBucket.quasiIdsValues
+            .map(getValue)
+            .join(', ');
+          console.log(`  Quasi-ID values: {${quasiIdValues}}`);
+          console.log(`  Class size: ${valueBucket.equivalenceClassSize}`);
+          valueBucket.topSensitiveValues.forEach(valueObj => {
+            console.log(
+              `    Sensitive value ${getValue(valueObj.value)} occurs ${
+                valueObj.count
+              } time(s).`
+            );
+          });
         });
       });
     })
@@ -320,78 +634,302 @@ function lDiversityAnalysis(
   // [END dlp_l_diversity]
 }
 
+function kMapEstimationAnalysis(
+  callingProjectId,
+  tableProjectId,
+  datasetId,
+  tableId,
+  topicId,
+  subscriptionId,
+  regionCode,
+  quasiIds
+) {
+  // [START k_map]
+  // Import the Google Cloud client libraries
+  const DLP = require('@google-cloud/dlp');
+  const Pubsub = require('@google-cloud/pubsub');
+
+  // Instantiates clients
+  const dlp = new DLP.DlpServiceClient();
+  const pubsub = new Pubsub();
+
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The project ID the table is stored under
+  // This may or (for public datasets) may not equal the calling project ID
+  // const tableProjectId = process.env.GCLOUD_PROJECT;
+
+  // The ID of the dataset to inspect, e.g. 'my_dataset'
+  // const datasetId = 'my_dataset';
+
+  // The ID of the table to inspect, e.g. 'my_table'
+  // const tableId = 'my_table';
+
+  // The name of the Pub/Sub topic to notify once the job completes
+  // TODO(developer): create a Pub/Sub topic to use for this
+  // const topicId = 'MY-PUBSUB-TOPIC'
+
+  // The name of the Pub/Sub subscription to use when listening for job
+  // completion notifications
+  // TODO(developer): create a Pub/Sub subscription to use for this
+  // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
+  // The ISO 3166-1 region code that the data is representative of
+  // Can be omitted if using a region-specific infoType (such as US_ZIP_5)
+  // const regionCode = 'USA';
+
+  // A set of columns that form a composite key ('quasi-identifiers'), and
+  // optionally their reidentification distributions
+  // const quasiIds = [{ field: { name: 'age' }, infoType: { name: 'AGE' }}];
+
+  const sourceTable = {
+    projectId: tableProjectId,
+    datasetId: datasetId,
+    tableId: tableId,
+  };
+
+  // Construct request for creating a risk analysis job
+  const request = {
+    parent: dlp.projectPath(process.env.GCLOUD_PROJECT),
+    riskJob: {
+      privacyMetric: {
+        kMapEstimationConfig: {
+          quasiIds: quasiIds,
+          regionCode: regionCode,
+        },
+      },
+      sourceTable: sourceTable,
+      actions: [
+        {
+          pubSub: {
+            topic: `projects/${callingProjectId}/topics/${topicId}`,
+          },
+        },
+      ],
+    },
+  };
+
+  // Create helper function for unpacking values
+  const getValue = obj => obj[Object.keys(obj)[0]];
+
+  // Run risk analysis job
+  let subscription;
+  pubsub
+    .topic(topicId)
+    .get()
+    .then(topicResponse => {
+      // Verify the Pub/Sub topic and listen for job notifications via an
+      // existing subscription.
+      return topicResponse[0].subscription(subscriptionId);
+    })
+    .then(subscriptionResponse => {
+      subscription = subscriptionResponse;
+      return dlp.createDlpJob(request);
+    })
+    .then(jobsResponse => {
+      // Get the job's ID
+      return jobsResponse[0].name;
+    })
+    .then(jobName => {
+      // Watch the Pub/Sub topic until the DLP job finishes
+      return new Promise((resolve, reject) => {
+        const messageHandler = message => {
+          if (message.attributes && message.attributes.DlpJobName === jobName) {
+            message.ack();
+            subscription.removeListener('message', messageHandler);
+            subscription.removeListener('error', errorHandler);
+            resolve(jobName);
+          } else {
+            message.nack();
+          }
+        };
+
+        const errorHandler = err => {
+          subscription.removeListener('message', messageHandler);
+          subscription.removeListener('error', errorHandler);
+          reject(err);
+        };
+
+        subscription.on('message', messageHandler);
+        subscription.on('error', errorHandler);
+      });
+    })
+    .then(jobName => {
+      // Wait for DLP job to fully complete
+      return new Promise(resolve => setTimeout(resolve(jobName), 500));
+    })
+    .then(jobName => dlp.getDlpJob({name: jobName}))
+    .then(wrappedJob => {
+      const job = wrappedJob[0];
+      const histogramBuckets =
+        job.riskDetails.kMapEstimationResult.kMapEstimationHistogram;
+
+      histogramBuckets.forEach((histogramBucket, histogramBucketIdx) => {
+        console.log(`Bucket ${histogramBucketIdx}:`);
+        console.log(
+          `  Anonymity range: [${histogramBucket.minAnonymity}, ${
+            histogramBucket.maxAnonymity
+          }]`
+        );
+        console.log(`  Size: ${histogramBucket.bucketSize}`);
+        histogramBucket.bucketValues.forEach(valueBucket => {
+          const values = valueBucket.quasiIdsValues.map(value =>
+            getValue(value)
+          );
+          console.log(`    Values: ${values.join(' ')}`);
+          console.log(
+            `    Estimated k-map anonymity: ${valueBucket.estimatedAnonymity}`
+          );
+        });
+      });
+    })
+    .catch(err => {
+      console.log(`Error in kMapEstimationAnalysis: ${err.message || err}`);
+    });
+
+  // [END k_map]
+}
+
 const cli = require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `numerical <datasetId> <tableId> <columnName>`,
+    `numerical <datasetId> <tableId> <columnName> <topicId> <subscriptionId>`,
     `Computes risk metrics of a column of numbers in a Google BigQuery table.`,
     {},
     opts =>
       numericalRiskAnalysis(
-        opts.projectId,
+        opts.callingProjectId,
+        opts.tableProjectId,
         opts.datasetId,
         opts.tableId,
-        opts.columnName
+        opts.columnName,
+        opts.topicId,
+        opts.subscriptionId
       )
   )
   .command(
-    `categorical <datasetId> <tableId> <columnName>`,
+    `categorical <datasetId> <tableId> <columnName> <topicId> <subscriptionId>`,
     `Computes risk metrics of a column of data in a Google BigQuery table.`,
     {},
     opts =>
       categoricalRiskAnalysis(
-        opts.projectId,
+        opts.callingProjectId,
+        opts.tableProjectId,
         opts.datasetId,
         opts.tableId,
-        opts.columnName
+        opts.columnName,
+        opts.topicId,
+        opts.subscriptionId
       )
   )
   .command(
-    `kAnonymity <datasetId> <tableId> [quasiIdColumnNames..]`,
+    `kAnonymity <datasetId> <tableId> <topicId> <subscriptionId> [quasiIdColumnNames..]`,
     `Computes the k-anonymity of a column set in a Google BigQuery table.`,
     {},
     opts =>
       kAnonymityAnalysis(
-        opts.projectId,
+        opts.callingProjectId,
+        opts.tableProjectId,
         opts.datasetId,
         opts.tableId,
+        opts.topicId,
+        opts.subscriptionId,
         opts.quasiIdColumnNames.map(f => {
-          return {columnName: f};
+          return {name: f};
         })
       )
   )
   .command(
-    `lDiversity <datasetId> <tableId> <sensitiveAttribute> [quasiIdColumnNames..]`,
+    `lDiversity <datasetId> <tableId> <sensitiveAttribute> <topicId> <subscriptionId> [quasiIdColumnNames..]`,
     `Computes the l-diversity of a column set in a Google BigQuery table.`,
     {},
     opts =>
       lDiversityAnalysis(
-        opts.projectId,
+        opts.callingProjectId,
+        opts.tableProjectId,
         opts.datasetId,
         opts.tableId,
+        opts.topicId,
+        opts.subscriptionId,
         opts.sensitiveAttribute,
         opts.quasiIdColumnNames.map(f => {
-          return {columnName: f};
+          return {name: f};
         })
       )
   )
+  .command(
+    `kMap <datasetId> <tableId> <topicId> <subscriptionId> [quasiIdColumnNames..]`,
+    `Computes the k-map risk estimation of a column set in a Google BigQuery table.`,
+    {
+      infoTypes: {
+        alias: 't',
+        type: 'array',
+        global: true,
+        default: [],
+      },
+      regionCode: {
+        alias: 'r',
+        type: 'string',
+        global: true,
+        default: 'USA',
+      },
+    },
+    opts => {
+      // Validate infoType count (required for CLI parsing, not the API itself)
+      if (opts.infoTypes.length !== opts.quasiIdColumnNames.length) {
+        console.error(
+          'Number of infoTypes and number of quasi-identifiers must be equal!'
+        );
+      } else {
+        return kMapEstimationAnalysis(
+          opts.callingProjectId,
+          opts.tableProjectId,
+          opts.datasetId,
+          opts.tableId,
+          opts.topicId,
+          opts.subscriptionId,
+          opts.regionCode,
+          opts.quasiIdColumnNames.map((name, idx) => {
+            return {
+              field: {
+                name: name,
+              },
+              infoType: {
+                name: opts.infoTypes[idx],
+              },
+            };
+          })
+        );
+      }
+    }
+  )
+  .option('c', {
+    type: 'string',
+    alias: 'callingProjectId',
+    default: process.env.GCLOUD_PROJECT || '',
+    global: true,
+  })
   .option('p', {
     type: 'string',
-    alias: 'projectId',
-    default: process.env.GCLOUD_PROJECT,
+    alias: 'tableProjectId',
+    default: process.env.GCLOUD_PROJECT || '',
     global: true,
   })
   .example(
-    `node $0 numerical nhtsa_traffic_fatalities accident_2015 state_number -p bigquery-public-data`
+    `node $0 numerical nhtsa_traffic_fatalities accident_2015 state_number my-topic my-subscription -p bigquery-public-data`
   )
   .example(
-    `node $0 categorical nhtsa_traffic_fatalities accident_2015 state_name -p bigquery-public-data`
+    `node $0 categorical nhtsa_traffic_fatalities accident_2015 state_name my-topic my-subscription -p bigquery-public-data`
   )
   .example(
-    `node $0 kAnonymity nhtsa_traffic_fatalities accident_2015 state_number county -p bigquery-public-data`
+    `node $0 kAnonymity nhtsa_traffic_fatalities accident_2015 my-topic my-subscription state_number county -p bigquery-public-data`
   )
   .example(
-    `node $0 lDiversity nhtsa_traffic_fatalities accident_2015 city state_number county -p bigquery-public-data`
+    `node $0 lDiversity nhtsa_traffic_fatalities accident_2015 my-topic my-subscription city state_number county -p bigquery-public-data`
+  )
+  .example(
+    `node risk kMap san_francisco bikeshare_trips my-topic my-subscription zip_code -t US_ZIP_5 -p bigquery-public-data`
   )
   .wrap(120)
   .recommendCommands()

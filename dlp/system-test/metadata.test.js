@@ -24,13 +24,15 @@ const cwd = path.join(__dirname, `..`);
 
 test.before(tools.checkCredentials);
 
-test(`should list info types for a given category`, async t => {
-  const output = await tools.runAsync(`${cmd} infoTypes GOVERNMENT`, cwd);
+test(`should list info types`, async t => {
+  const output = await tools.runAsync(`${cmd} infoTypes`, cwd);
   t.regex(output, /US_DRIVERS_LICENSE_NUMBER/);
-  t.false(output.includes('AMERICAN_BANKERS_CUSIP_ID'));
 });
 
-test(`should inspect categories`, async t => {
-  const output = await tools.runAsync(`${cmd} categories`, cwd);
-  t.regex(output, /FINANCE/);
+test(`should filter listed info types`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} infoTypes "supported_by=RISK_ANALYSIS"`,
+    cwd
+  );
+  t.notRegex(output, /US_DRIVERS_LICENSE_NUMBER/);
 });

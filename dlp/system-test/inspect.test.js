@@ -18,11 +18,36 @@
 const path = require('path');
 const test = require('ava');
 const tools = require('@google-cloud/nodejs-repo-tools');
+const pubsub = require('@google-cloud/pubsub')();
+const uuid = require('uuid');
 
 const cmd = 'node inspect.js';
 const cwd = path.join(__dirname, `..`);
+const bucket = `nodejs-docs-samples-dlp`;
+const dataProject = `nodejs-docs-samples`;
 
 test.before(tools.checkCredentials);
+
+// Create new custom topic/subscription
+let topic, subscription;
+const topicName = `dlp-inspect-topic-${uuid.v4()}`;
+const subscriptionName = `dlp-inspect-subscription-${uuid.v4()}`;
+test.before(async () => {
+  await pubsub
+    .createTopic(topicName)
+    .then(response => {
+      topic = response[0];
+      return topic.createSubscription(subscriptionName);
+    })
+    .then(response => {
+      subscription = response[0];
+    });
+});
+
+// Delete custom topic/subscription
+test.after.always(async () => {
+  await subscription.delete().then(() => topic.delete());
+});
 
 // inspect_string
 test(`should inspect a string`, async t => {
@@ -55,7 +80,7 @@ test(`should inspect a local text file`, async t => {
 
 test(`should inspect a local image file`, async t => {
   const output = await tools.runAsync(`${cmd} file resources/test.png`, cwd);
-  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Info type: EMAIL_ADDRESS/);
 });
 
 test(`should handle a local file with no sensitive data`, async t => {
@@ -63,7 +88,7 @@ test(`should handle a local file with no sensitive data`, async t => {
     `${cmd} file resources/harmless.txt`,
     cwd
   );
-  t.is(output, 'No findings.');
+  t.regex(output, /No findings/);
 });
 
 test(`should report local file handling errors`, async t => {
@@ -74,139 +99,86 @@ test(`should report local file handling errors`, async t => {
   t.regex(output, /Error in inspectFile/);
 });
 
-// inspect_gcs_file_event
-test.serial(`should inspect a GCS text file with event handlers`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} gcsFileEvent nodejs-docs-samples-dlp test.txt`,
-    cwd
-  );
-  t.regex(output, /Processed \d+ of approximately \d+ bytes./);
-  t.regex(output, /Info type: PHONE_NUMBER/);
-  t.regex(output, /Info type: EMAIL_ADDRESS/);
-});
-
-test.serial(
-  `should inspect multiple GCS text files with event handlers`,
-  async t => {
-    const output = await tools.runAsync(
-      `${cmd} gcsFileEvent nodejs-docs-samples-dlp *.txt`,
-      cwd
-    );
-    t.regex(output, /Processed \d+ of approximately \d+ bytes./);
-    t.regex(output, /Info type: PHONE_NUMBER/);
-    t.regex(output, /Info type: EMAIL_ADDRESS/);
-  }
-);
-
-test.serial(
-  `should handle a GCS file with no sensitive data with event handlers`,
-  async t => {
-    const output = await tools.runAsync(
-      `${cmd} gcsFileEvent nodejs-docs-samples-dlp harmless.txt`,
-      cwd
-    );
-    t.regex(output, /Processed \d+ of approximately \d+ bytes./);
-    t.regex(output, /No findings./);
-  }
-);
-
-test.serial(
-  `should report GCS file handling errors with event handlers`,
-  async t => {
-    const output = await tools.runAsync(
-      `${cmd} gcsFileEvent nodejs-docs-samples-dlp harmless.txt -t BAD_TYPE`,
-      cwd
-    );
-    t.regex(output, /Error in eventInspectGCSFile/);
-  }
-);
-
 // inspect_gcs_file_promise
-test.serial(`should inspect a GCS text file with promises`, async t => {
+test(`should inspect a GCS text file`, async t => {
   const output = await tools.runAsync(
-    `${cmd} gcsFilePromise nodejs-docs-samples-dlp test.txt`,
+    `${cmd} gcsFile ${bucket} test.txt ${topicName} ${subscriptionName}`,
     cwd
   );
-  t.regex(output, /Info type: PHONE_NUMBER/);
-  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  t.regex(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
+  t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
 });
 
-test.serial(`should inspect multiple GCS text files with promises`, async t => {
+test(`should inspect multiple GCS text files`, async t => {
   const output = await tools.runAsync(
-    `${cmd} gcsFilePromise nodejs-docs-samples-dlp *.txt`,
+    `${cmd} gcsFile ${bucket} "*.txt" ${topicName} ${subscriptionName}`,
     cwd
   );
-  t.regex(output, /Info type: PHONE_NUMBER/);
-  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  t.regex(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
+  t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
 });
 
-test.serial(
-  `should handle a GCS file with no sensitive data with promises`,
-  async t => {
-    const output = await tools.runAsync(
-      `${cmd} gcsFilePromise nodejs-docs-samples-dlp harmless.txt`,
-      cwd
-    );
-    t.is(output, 'No findings.');
-  }
-);
-
-test.serial(`should report GCS file handling errors with promises`, async t => {
+test(`should handle a GCS file with no sensitive data`, async t => {
   const output = await tools.runAsync(
-    `${cmd} gcsFilePromise nodejs-docs-samples-dlp harmless.txt -t BAD_TYPE`,
+    `${cmd} gcsFile ${bucket} harmless.txt ${topicName} ${subscriptionName}`,
     cwd
   );
-  t.regex(output, /Error in promiseInspectGCSFile/);
+  t.regex(output, /No findings/);
+});
+
+test(`should report GCS file handling errors`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} gcsFile ${bucket} harmless.txt ${topicName} ${subscriptionName} -t BAD_TYPE`,
+    cwd
+  );
+  t.regex(output, /Error in inspectGCSFile/);
 });
 
 // inspect_datastore
-test.serial(`should inspect Datastore`, async t => {
+test(`should inspect Datastore`, async t => {
   const output = await tools.runAsync(
-    `${cmd} datastore Person --namespaceId DLP`,
+    `${cmd} datastore Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
 });
 
-test.serial(`should handle Datastore with no sensitive data`, async t => {
+test(`should handle Datastore with no sensitive data`, async t => {
   const output = await tools.runAsync(
-    `${cmd} datastore Harmless --namespaceId DLP`,
+    `${cmd} datastore Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`,
     cwd
   );
-  t.is(output, 'No findings.');
+  t.regex(output, /No findings/);
 });
 
-test.serial(`should report Datastore errors`, async t => {
+test(`should report Datastore errors`, async t => {
   const output = await tools.runAsync(
-    `${cmd} datastore Harmless --namespaceId DLP -t BAD_TYPE`,
+    `${cmd} datastore Harmless ${topicName} ${subscriptionName} --namespaceId DLP -t BAD_TYPE -p ${dataProject}`,
     cwd
   );
   t.regex(output, /Error in inspectDatastore/);
 });
 
 // inspect_bigquery
-test.serial(`should inspect a Bigquery table`, async t => {
+test(`should inspect a Bigquery table`, async t => {
   const output = await tools.runAsync(
-    `${cmd} bigquery integration_tests_dlp harmful`,
+    `${cmd} bigquery integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /Info type: PHONE_NUMBER/);
+  t.regex(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
 });
 
-test.serial(
-  `should handle a Bigquery table with no sensitive data`,
-  async t => {
-    const output = await tools.runAsync(
-      `${cmd} bigquery integration_tests_dlp harmless `,
-      cwd
-    );
-    t.is(output, 'No findings.');
-  }
-);
-
-test.serial(`should report Bigquery table handling errors`, async t => {
+test(`should handle a Bigquery table with no sensitive data`, async t => {
   const output = await tools.runAsync(
-    `${cmd} bigquery integration_tests_dlp harmless -t BAD_TYPE`,
+    `${cmd} bigquery integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`,
+    cwd
+  );
+  t.regex(output, /No findings/);
+});
+
+test(`should report Bigquery table handling errors`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} bigquery integration_tests_dlp harmless ${topicName} ${subscriptionName} -t BAD_TYPE -p ${dataProject}`,
     cwd
   );
   t.regex(output, /Error in inspectBigquery/);
@@ -215,7 +187,7 @@ test.serial(`should report Bigquery table handling errors`, async t => {
 // CLI options
 test(`should have a minLikelihood option`, async t => {
   const promiseA = tools.runAsync(
-    `${cmd} string "My phone number is (123) 456-7890." -m POSSIBLE`,
+    `${cmd} string "My phone number is (123) 456-7890." -m LIKELY`,
     cwd
   );
   const promiseB = tools.runAsync(

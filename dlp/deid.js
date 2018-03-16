@@ -155,7 +155,8 @@ function deidentifyWithDateShift(
   const csvLines = fs
     .readFileSync(inputCsvFile)
     .toString()
-    .split('\n');
+    .split('\n')
+    .filter(line => line.includes(','));
   const csvHeaders = csvLines[0].split(',');
   const csvRows = csvLines.slice(1);
 
@@ -224,6 +225,7 @@ function deidentifyWithDateShift(
         );
         csvLines[rowIndex + 1] = rowValues.join(',');
       });
+      csvLines.push('');
       fs.writeFileSync(outputCsvFile, csvLines.join('\n'));
 
       // Print status

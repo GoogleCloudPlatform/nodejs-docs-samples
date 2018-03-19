@@ -22,7 +22,9 @@ const path = require(`path`);
 
 const app = express();
 
+// [START enable_parser]
 app.use(bodyParser.urlencoded({ extended: true }));
+// [END disable_parser]
 
 app.get('/', (req, res) => {
   res.send('Hello from App Engine!');

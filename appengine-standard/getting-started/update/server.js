@@ -24,7 +24,7 @@ const app = express();
 
 // [START enable_parser]
 app.use(bodyParser.urlencoded({ extended: true }));
-// [END disable_parser]
+// [END enable_parser]
 
 app.get('/', (req, res) => {
   res.send('Hello from App Engine!');
@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 // [START add_display_form]
 app.get('/submit', (req, res) => {
-  res.sendFile(__dirname + '/views/form.html');
+  res.sendFile(path.join(__dirname, '/views/form.html'));
 });
 // [END add_display_form]
 

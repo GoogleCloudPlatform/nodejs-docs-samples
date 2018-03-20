@@ -130,7 +130,7 @@ test(`should perform k-map analysis on a single field`, async t => {
     `${cmd} kMap ${dataset} harmful ${topicName} ${subscriptionName} ${numericField} -t AGE -p ${testProjectId}`,
     cwd
   );
-  t.regex(output, /Anonymity range: \[\d, \d\]/);
+  t.regex(output, /Anonymity range: \[\d+, \d+\]/);
   t.regex(output, /Size: \d/);
   t.regex(output, /Values: \d{2}/);
 });
@@ -140,7 +140,7 @@ test(`should perform k-map analysis on multiple fields`, async t => {
     `${cmd} kMap ${dataset} harmful ${topicName} ${subscriptionName} ${numericField} ${stringBooleanField} -t AGE GENDER -p ${testProjectId}`,
     cwd
   );
-  t.regex(output, /Anonymity range: \[\d, \d\]/);
+  t.regex(output, /Anonymity range: \[\d+, \d+\]/);
   t.regex(output, /Size: \d/);
   t.regex(output, /Values: \d{2} Female/);
 });

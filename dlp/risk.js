@@ -872,7 +872,7 @@ const cli = require(`yargs`) // eslint-disable-line
         alias: 'r',
         type: 'string',
         global: true,
-        default: 'USA',
+        default: 'US',
       },
     },
     opts => {

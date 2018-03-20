@@ -28,7 +28,7 @@ function authCloudImplicit () {
   // Instantiates a client. If you don't specify credentials when constructing
   // the client, the client library will look for credentials in the
   // environment.
-  const storage = Storage();
+  const storage = new Storage();
 
   // Makes an authenticated API request.
   storage
@@ -55,7 +55,7 @@ function authCloudExplicit () {
   // Instantiates a client. Explicitly use service account credentials by
   // specifying the private key file. All clients in google-cloud-node have this
   // helper, see https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/latest/guides/authentication
-  const storage = Storage({
+  const storage = new Storage({
     keyFilename: '/path/to/keyfile.json'
   });
 

@@ -36,9 +36,8 @@ let uri = `mongodb://${user}:${pass}@${host}:${port}`;
 if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
 }
-console.log(uri);
 
-mongodb.MongoClient.connect(uri, (err, db) => {
+mongodb.MongoClient.connect(uri, (err, client) => {
   if (err) {
     throw err;
   }
@@ -54,6 +53,7 @@ mongodb.MongoClient.connect(uri, (err, db) => {
       return;
     }
     // Track every IP that has visited this site
+    const db = client.db(nconf.get('mongoDatabase'))
     const collection = db.collection('IPs');
 
     const ip = {

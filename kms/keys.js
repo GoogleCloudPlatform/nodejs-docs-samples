@@ -1,4 +1,4 @@
- /**
+/**
  * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,13 +43,13 @@ function createKeyRing (projectId, locationId, keyRingId) {
     };
 
     // Creates a new key ring
-    cloudkms.projects.locations.keyRings.create(request, (err, keyRing) => {
+    cloudkms.projects.locations.keyRings.create(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      console.log(`Key ring ${keyRing.name} created.`);
+      console.log(`Key ring ${response.data.name} created.`);
     });
   });
   // [END kms_create_keyring]
@@ -82,7 +82,7 @@ function listKeyRings (projectId, locationId) {
         return;
       }
 
-      const keyRings = result.keyRings || [];
+      const keyRings = result.data.keyRings || [];
 
       if (keyRings.length) {
         keyRings.forEach((keyRing) => {
@@ -121,12 +121,13 @@ function getKeyRing (projectId, locationId, keyRingId) {
     };
 
     // Gets a key ring
-    cloudkms.projects.locations.keyRings.get(request, (err, keyRing) => {
+    cloudkms.projects.locations.keyRings.get(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
+      const keyRing = response.data;
       console.log(`Name: ${keyRing.name}`);
       console.log(`Created: ${new Date(keyRing.createTime)}`);
     });
@@ -164,8 +165,8 @@ function getKeyRingIamPolicy (projectId, locationId, keyRingId) {
         return;
       }
 
-      if (policy.bindings) {
-        policy.bindings.forEach((binding) => {
+      if (policy.data.bindings) {
+        policy.data.bindings.forEach((binding) => {
           if (binding.members && binding.members.length) {
             console.log(`${binding.role}:`);
             binding.members.forEach((member) => {
@@ -217,7 +218,7 @@ function addMemberToKeyRingPolicy (projectId, locationId, keyRingId, member, rol
         return;
       }
 
-      policy = Object.assign({ bindings: [] }, policy);
+      policy = Object.assign({ bindings: [] }, policy.data);
 
       const index = policy.bindings.findIndex((binding) => binding.role === role);
 
@@ -250,8 +251,8 @@ function addMemberToKeyRingPolicy (projectId, locationId, keyRingId, member, rol
         }
 
         console.log(`${member}/${role} combo added to policy for key ring ${keyRingId}.`);
-        if (policy.bindings) {
-          policy.bindings.forEach((binding) => {
+        if (policy.data.bindings) {
+          policy.data.bindings.forEach((binding) => {
             if (binding.members && binding.members.length) {
               console.log(`${binding.role}:`);
               binding.members.forEach((member) => {
@@ -304,7 +305,7 @@ function removeMemberFromKeyRingPolicy (projectId, locationId, keyRingId, member
         return;
       }
 
-      policy = Object.assign({ bindings: [] }, policy);
+      policy = Object.assign({ bindings: [] }, policy.data);
 
       let index = policy.bindings.findIndex((binding) => binding.role === role);
 
@@ -332,13 +333,14 @@ function removeMemberFromKeyRingPolicy (projectId, locationId, keyRingId, member
       };
 
       // Removes the role/member combo from the policy of the key ring
-      cloudkms.projects.locations.keyRings.setIamPolicy(request, (err, policy) => {
+      cloudkms.projects.locations.keyRings.setIamPolicy(request, (err, response) => {
         if (err) {
           console.log(err);
           return;
         }
 
         console.log(`${member}/${role} combo removed from policy for key ring ${keyRingId}.`);
+        const policy = response.data;
         if (policy.bindings) {
           policy.bindings.forEach((binding) => {
             if (binding.members && binding.members.length) {
@@ -391,12 +393,13 @@ function createCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
     };
 
     // Creates a new key ring
-    cloudkms.projects.locations.keyRings.cryptoKeys.create(request, (err, cryptoKey) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.create(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
+      const cryptoKey = response.data;
       console.log(`Key ${cryptoKey.name} created.`);
     });
   });
@@ -433,7 +436,7 @@ function listCryptoKeys (projectId, locationId, keyRingId) {
         return;
       }
 
-      const cryptoKeys = result.cryptoKeys || [];
+      const cryptoKeys = result.data.cryptoKeys || [];
 
       if (cryptoKeys.length) {
         cryptoKeys.forEach((cryptoKey) => {
@@ -498,13 +501,14 @@ function encrypt (projectId, locationId, keyRingId, cryptoKeyId, plaintextFileNa
       };
 
       // Encrypts the file using the specified crypto key
-      cloudkms.projects.locations.keyRings.cryptoKeys.encrypt(request, (err, result) => {
+      cloudkms.projects.locations.keyRings.cryptoKeys.encrypt(request, (err, response) => {
         if (err) {
           console.log(err);
           return;
         }
 
         // Writes the encrypted file to disk
+        const result = response.data;
         fs.writeFile(ciphertextFileName, Buffer.from(result.ciphertext, 'base64'), (err) => {
           if (err) {
             console.log(err);
@@ -566,13 +570,14 @@ function decrypt (projectId, locationId, keyRingId, cryptoKeyId, ciphertextFileN
       };
 
       // Dencrypts the file using the specified crypto key
-      cloudkms.projects.locations.keyRings.cryptoKeys.decrypt(request, (err, result) => {
+      cloudkms.projects.locations.keyRings.cryptoKeys.decrypt(request, (err, response) => {
         if (err) {
           console.log(err);
           return;
         }
 
         // Writes the dencrypted file to disk
+        const result = response.data;
         fs.writeFile(plaintextFileName, Buffer.from(result.plaintext, 'base64'), (err) => {
           if (err) {
             console.log(err);
@@ -614,12 +619,13 @@ function getCryptoKey (projectId, locationId, keyRingId, cryptoKeyId) {
     };
 
     // Gets a crypto key
-    cloudkms.projects.locations.keyRings.cryptoKeys.get(request, (err, cryptoKey) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.get(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
+      const cryptoKey = response.data;
       console.log(`Name: ${cryptoKey.name}:`);
       console.log(`Created: ${new Date(cryptoKey.createTime)}`);
       console.log(`Purpose: ${cryptoKey.purpose}`);
@@ -665,12 +671,13 @@ function setPrimaryCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKey
     };
 
     // Sets a crypto key's primary version
-    cloudkms.projects.locations.keyRings.cryptoKeys.updatePrimaryVersion(request, (err, cryptoKey) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.updatePrimaryVersion(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
+      const cryptoKey = response.data;
       console.log(`Set ${version} as primary version for crypto key ${cryptoKeyId}.\n`);
       console.log(`Name: ${cryptoKey.name}:`);
       console.log(`Created: ${new Date(cryptoKey.createTime)}`);
@@ -710,12 +717,14 @@ function getCryptoKeyIamPolicy (projectId, locationId, keyRingId, cryptoKeyId) {
     };
 
     // Gets the IAM policy of a crypto key
-    cloudkms.projects.locations.keyRings.cryptoKeys.getIamPolicy(request, (err, policy) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.getIamPolicy(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
+      console.log(response);
+      const policy = response.data;
       if (policy.bindings) {
         policy.bindings.forEach((binding) => {
           if (binding.members && binding.members.length) {
@@ -766,13 +775,13 @@ function addMemberToCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKey
     };
 
     // Gets the IAM policy of a crypto key
-    cloudkms.projects.locations.keyRings.cryptoKeys.getIamPolicy(request, (err, policy) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.getIamPolicy(request, (err, getResponse) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      policy = Object.assign({ bindings: [] }, policy);
+      let policy = Object.assign({ bindings: [] }, getResponse.data);
 
       const index = policy.bindings.findIndex((binding) => binding.role === role);
 
@@ -798,12 +807,13 @@ function addMemberToCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKey
       };
 
       // Adds the member/role combo to the policy of the crypto key
-      cloudkms.projects.locations.keyRings.cryptoKeys.setIamPolicy(request, (err, policy) => {
+      cloudkms.projects.locations.keyRings.cryptoKeys.setIamPolicy(request, (err, setResponse) => {
         if (err) {
           console.log(err);
           return;
         }
 
+        policy = setResponse.data;
         console.log(`${member}/${role} combo added to policy for crypto key ${cryptoKeyId}.`);
         if (policy.bindings) {
           policy.bindings.forEach((binding) => {
@@ -856,13 +866,13 @@ function removeMemberFromCryptoKeyPolicy (projectId, locationId, keyRingId, cryp
     };
 
     // Gets the IAM policy of a crypto key
-    cloudkms.projects.locations.keyRings.cryptoKeys.getIamPolicy(request, (err, policy) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.getIamPolicy(request, (err, getResponse) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      policy = Object.assign({ bindings: [] }, policy);
+      let policy = Object.assign({ bindings: [] }, getResponse.data);
 
       let index = policy.bindings.findIndex((binding) => binding.role === role);
 
@@ -892,13 +902,14 @@ function removeMemberFromCryptoKeyPolicy (projectId, locationId, keyRingId, cryp
       console.log(JSON.stringify(request, null, 2));
 
       // Removes the member/role combo from the policy of the crypto key
-      cloudkms.projects.locations.keyRings.cryptoKeys.setIamPolicy(request, (err, policy) => {
+      cloudkms.projects.locations.keyRings.cryptoKeys.setIamPolicy(request, (err, setResponse) => {
         if (err) {
           console.log(err);
           return;
         }
 
         console.log(`${member}/${role} combo removed from policy for crypto key ${cryptoKeyId}.`);
+        const policy = setResponse.data;
         if (policy.bindings) {
           policy.bindings.forEach((binding) => {
             if (binding.members && binding.members.length) {
@@ -944,13 +955,13 @@ function createCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId) 
     };
 
     // Creates a new crypto key version
-    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.create(request, (err, cryptoKeyVersion) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.create(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      console.log(`Crypto key version ${cryptoKeyVersion.name} created.`);
+      console.log(`Crypto key version ${response.data.name} created.`);
     });
   });
   // [END kms_create_cryptokey_version]
@@ -989,7 +1000,7 @@ function listCryptoKeyVersions (projectId, locationId, keyRingId, cryptoKeyId) {
         return;
       }
 
-      const cryptoKeyVersions = result.cryptoKeyVersions || [];
+      const cryptoKeyVersions = result.data.cryptoKeyVersions || [];
 
       if (cryptoKeyVersions.length) {
         cryptoKeyVersions.forEach((version) => {
@@ -1035,13 +1046,13 @@ function destroyCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
     };
 
     // Destroys a crypto key version
-    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.destroy(request, (err, cryptoKeyVersion) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.destroy(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      console.log(`Crypto key version ${cryptoKeyVersion.name} destroyed.`);
+      console.log(`Crypto key version ${response.data.name} destroyed.`);
     });
   });
   // [END kms_destroy_cryptokey_version]
@@ -1077,13 +1088,13 @@ function restoreCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
     };
 
     // Restores a crypto key version
-    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.restore(request, (err, cryptoKeyVersion) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.restore(request, (err, response) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      console.log(`Crypto key version ${cryptoKeyVersion.name} restored.`);
+      console.log(`Crypto key version ${response.data.name} restored.`);
     });
   });
   // [END kms_restore_cryptokey_version]
@@ -1119,12 +1130,13 @@ function enableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, 
     };
 
     // Gets a crypto key version
-    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.get(request, (err, cryptoKeyVersion) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.get(request, (err, getResponse) => {
       if (err) {
         console.log(err);
         return;
       }
 
+      const cryptoKeyVersion = getResponse.data;
       cryptoKeyVersion.state = 'ENABLED';
 
       request = {
@@ -1137,13 +1149,13 @@ function enableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId, 
       };
 
       // Enables a crypto key version
-      cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.patch(request, (err, cryptoKeyVersion) => {
+      cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.patch(request, (err, patchResponse) => {
         if (err) {
           console.log(err);
           return;
         }
 
-        console.log(`Crypto key version ${cryptoKeyVersion.name} enabled.`);
+        console.log(`Crypto key version ${patchResponse.data.name} enabled.`);
       });
     });
   });
@@ -1180,12 +1192,13 @@ function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
     };
 
     // Gets a crypto key version
-    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.get(request, (err, cryptoKeyVersion) => {
+    cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.get(request, (err, getResponse) => {
       if (err) {
         console.log(err);
         return;
       }
 
+      const cryptoKeyVersion = getResponse.data;
       cryptoKeyVersion.state = 'DISABLED';
 
       request = {
@@ -1198,13 +1211,13 @@ function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
       };
 
       // Disables a crypto key version
-      cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.patch(request, (err, cryptoKeyVersion) => {
+      cloudkms.projects.locations.keyRings.cryptoKeys.cryptoKeyVersions.patch(request, (err, patchResponse) => {
         if (err) {
           console.log(err);
           return;
         }
 
-        console.log(`Crypto key version ${cryptoKeyVersion.name} disabled.`);
+        console.log(`Crypto key version ${patchResponse.data.name} disabled.`);
       });
     });
   });
@@ -1236,7 +1249,7 @@ function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
 
   function buildAndAuthorizeService (callback) {
     // Imports the Google APIs client library
-    const google = require('googleapis');
+    const google = require('googleapis').google;
 
     // Acquires credentials
     google.auth.getApplicationDefault((err, authClient) => {
@@ -1378,10 +1391,13 @@ const cli = require(`yargs`)
     (opts) => removeMemberFromCryptoKeyPolicy(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.member, opts.role)
   )
   .command(
-    `set-primary <keyRing> <cryptoKey> <version>`,
+    `set-primary <keyRing> <cryptoKey> <keyVersion>`,
     `Sets a crypto key's primary version.`,
     {},
-    (opts) => setPrimaryCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
+    (opts) => {
+      console.log(opts);
+      setPrimaryCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.keyVersion)
+    }
   )
   .command(
     `versions <command>`,
@@ -1395,22 +1411,22 @@ const cli = require(`yargs`)
           (opts) => createCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey)
         )
         .command(
-          `destroy <keyRing> <cryptoKey> <version>`,
+          `destroy <keyRing> <cryptoKey> <keyVersion>`,
           `Destroys a crypto key version.`,
           {},
-          (opts) => destroyCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
+          (opts) => destroyCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.keyVersion)
         )
         .command(
-          `disable <keyRing> <cryptoKey> <version>`,
+          `disable <keyRing> <cryptoKey> <keyVersion>`,
           `Disables a crypto key version.`,
           {},
-          (opts) => disableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
+          (opts) => disableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.keyVersion)
         )
         .command(
-          `enable <keyRing> <cryptoKey> <version>`,
+          `enable <keyRing> <cryptoKey> <keyVersion>`,
           `Enables a crypto key version.`,
           {},
-          (opts) => enableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
+          (opts) => enableCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.keyVersion)
         )
         .command(
           `list <keyRing> <cryptoKey>`,
@@ -1419,10 +1435,10 @@ const cli = require(`yargs`)
           (opts) => listCryptoKeyVersions(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey)
         )
         .command(
-          `restore <keyRing> <cryptoKey> <version>`,
+          `restore <keyRing> <cryptoKey> <keyVersion>`,
           `Restores a crypto key version.`,
           {},
-          (opts) => restoreCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.version)
+          (opts) => restoreCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.keyVersion)
         );
     },
     () => {}

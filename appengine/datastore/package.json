@@ -15,11 +15,11 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app",
     "test": "npm run system-test",
-    "e2e-test": "samples test deploy"
+    "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
     "@google-cloud/datastore": "1.3.4",

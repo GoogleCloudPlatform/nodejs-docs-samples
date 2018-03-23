@@ -15,12 +15,12 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "unit-test": "ava --verbose test/*.test.js",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app",
     "test": "npm run unit-test && npm run system-test",
-    "e2e-test": "samples test deploy"
+    "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
     "@google-cloud/error-reporting": "0.2.3",

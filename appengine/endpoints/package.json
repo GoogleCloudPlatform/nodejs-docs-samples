@@ -15,13 +15,13 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "unit-test": "ava --verbose test/*.test.js",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app",
     "all-test": "npm run unit-test && npm run system-test",
-    "test": "samples test run --cmd npm -- run all-test",
-    "e2e-test": "samples test deploy"
+    "test": "repo-tools test run --cmd npm -- run all-test",
+    "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
     "body-parser": "1.18.2",

@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "samples test app --url localhost:8080/static/main.css"
+    "test": "repo-tools test app --url localhost:8080/static/main.css"
   },
   "cloud-repo-tools": {
     "test": {
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "express": "4.16.2",
-    "pug": "2.0.0-rc.4"
+    "pug": "2.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "2.2.1"

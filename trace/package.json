@@ -15,10 +15,10 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "test": "samples test app",
-    "e2e-test": "samples test deploy"
+    "test": "repo-tools test app",
+    "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
     "@google-cloud/trace-agent": "2.5.0",

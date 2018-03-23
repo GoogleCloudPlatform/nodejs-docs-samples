@@ -22,77 +22,77 @@ const request = require('retry-request');
 
 console.log('Google Cloud IoT Core HTTP example.');
 var argv = require(`yargs`)
-    .options({
-      projectId: {
-        default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
-        description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
-        requiresArg: true,
-        type: 'string'
-      },
-      cloudRegion: {
-        default: 'us-central1',
-        description: 'GCP cloud region.',
-        requiresArg: true,
-        type: 'string'
-      },
-      registryId: {
-        description: 'Cloud IoT registry ID.',
-        requiresArg: true,
-        demandOption: true,
-        type: 'string'
-      },
-      deviceId: {
-        description: 'Cloud IoT device ID.',
-        requiresArg: true,
-        demandOption: true,
-        type: 'string'
-      },
-      privateKeyFile: {
-        description: 'Path to private key file.',
-        requiresArg: true,
-        demandOption: true,
-        type: 'string'
-      },
-      algorithm: {
-        description: 'Encryption algorithm to generate the RSA or EC JWT.',
-        requiresArg: true,
-        demandOption: true,
-        choices: ['RS256', 'ES256'],
-        type: 'string'
-      },
-      numMessages: {
-        default: 100,
-        description: 'Number of messages to publish.',
-        requiresArg: true,
-        type: 'number'
-      },
-      tokenExpMins: {
-        default: 20,
-        description: 'Minutes to JWT token expiration.',
-        requiresArg: true,
-        type: 'number'
-      },
-      httpBridgeAddress: {
-        default: 'cloudiotdevice.googleapis.com',
-        description: 'HTTP bridge address.',
-        requiresArg: true,
-        type: 'string'
-      },
-      messageType: {
-        default: 'events',
-        description: 'Message type to publish.',
-        requiresArg: true,
-        choices: ['events', 'state'],
-        type: 'string'
-      }
-    })
-    .example(`node $0 cloudiotHttp_example_nodejs.js --projectId=blue-jet-123 --registryId=my-registry --deviceId=my-node-device --privateKeyFile=../rsaPrivate.pem --algorithm=RS256`)
-    .wrap(120)
-    .recommendCommands()
-    .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
-    .help()
-    .strict()
-    .argv;
+  .options({
+    projectId: {
+      default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+      description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      requiresArg: true,
+      type: 'string'
+    },
+    cloudRegion: {
+      default: 'us-central1',
+      description: 'GCP cloud region.',
+      requiresArg: true,
+      type: 'string'
+    },
+    registryId: {
+      description: 'Cloud IoT registry ID.',
+      requiresArg: true,
+      demandOption: true,
+      type: 'string'
+    },
+    deviceId: {
+      description: 'Cloud IoT device ID.',
+      requiresArg: true,
+      demandOption: true,
+      type: 'string'
+    },
+    privateKeyFile: {
+      description: 'Path to private key file.',
+      requiresArg: true,
+      demandOption: true,
+      type: 'string'
+    },
+    algorithm: {
+      description: 'Encryption algorithm to generate the RSA or EC JWT.',
+      requiresArg: true,
+      demandOption: true,
+      choices: ['RS256', 'ES256'],
+      type: 'string'
+    },
+    numMessages: {
+      default: 100,
+      description: 'Number of messages to publish.',
+      requiresArg: true,
+      type: 'number'
+    },
+    tokenExpMins: {
+      default: 20,
+      description: 'Minutes to JWT token expiration.',
+      requiresArg: true,
+      type: 'number'
+    },
+    httpBridgeAddress: {
+      default: 'cloudiotdevice.googleapis.com',
+      description: 'HTTP bridge address.',
+      requiresArg: true,
+      type: 'string'
+    },
+    messageType: {
+      default: 'events',
+      description: 'Message type to publish.',
+      requiresArg: true,
+      choices: ['events', 'state'],
+      type: 'string'
+    }
+  })
+  .example(`node $0 cloudiotHttp_example_nodejs.js --projectId=blue-jet-123 --registryId=my-registry --deviceId=my-node-device --privateKeyFile=../rsaPrivate.pem --algorithm=RS256`)
+  .wrap(120)
+  .recommendCommands()
+  .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
+  .help()
+  .strict()
+  .argv;
 
 // [START iot_http_variables]
 // A unique string that identifies this device. For Google Cloud IoT Core, it
@@ -104,7 +104,7 @@ const devicePath = `projects/${argv.projectId}/locations/${argv.cloudRegion}/reg
 
 // The request path, set accordingly depending on the message type.
 const pathSuffix = argv.messageType === 'events'
-    ? ':publishEvent' : ':setState';
+  ? ':publishEvent' : ':setState';
 const urlBase = `https://${argv.httpBridgeAddress}/v1/${devicePath}`;
 const url = `${urlBase}${pathSuffix}`;
 // [END iot_http_variables]
@@ -118,7 +118,7 @@ function createJwt (projectId, privateKeyFile, algorithm) {
   // audience field should always be set to the GCP project ID.
   const token = {
     'iat': parseInt(Date.now() / 1000),
-    'exp': parseInt(Date.now() / 1000) + 20 * 60,  // 20 minutes
+    'exp': parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
     'aud': projectId
   };
   const privateKey = fs.readFileSync(privateKeyFile);

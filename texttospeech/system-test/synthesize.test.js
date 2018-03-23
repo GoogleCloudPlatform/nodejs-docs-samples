@@ -31,10 +31,7 @@ http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-US">
 Hello there.
 </speak>`;
 const outputFile = `test-output.mp3`;
-const files = [
-  `hello.txt`,
-  `hello.ssml`,
-].map(name => {
+const files = [`hello.txt`, `hello.ssml`].map(name => {
   return {
     name,
     localPath: path.resolve(path.join(__dirname, `../resources/${name}`)),

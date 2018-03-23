@@ -29,13 +29,14 @@ function synthesizeText(text, outputFile) {
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
   const request = {
-    input: { text: text },
-    voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
-    audioConfig: { audioEncoding: 'MP3' }
+    input: {text: text},
+    voice: {languageCode: 'en-US', ssmlGender: 'FEMALE'},
+    audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client.synthesizeSpeech(request)
-  .then(results => {
+  client
+    .synthesizeSpeech(request)
+    .then(results => {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
@@ -61,13 +62,14 @@ function synthesizeSsml(ssml, outputFile) {
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
   const request = {
-    input: { ssml: ssml },
-    voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
-    audioConfig: { audioEncoding: 'MP3' }
+    input: {ssml: ssml},
+    voice: {languageCode: 'en-US', ssmlGender: 'FEMALE'},
+    audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client.synthesizeSpeech(request)
-  .then(results => {
+  client
+    .synthesizeSpeech(request)
+    .then(results => {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
@@ -93,13 +95,14 @@ function synthesizeTextFile(textFile, outputFile) {
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
   const request = {
-    input: { text: fs.readFileSync(textFile) },
-    voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
-    audioConfig: { audioEncoding: 'MP3' }
+    input: {text: fs.readFileSync(textFile)},
+    voice: {languageCode: 'en-US', ssmlGender: 'FEMALE'},
+    audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client.synthesizeSpeech(request)
-  .then(results => {
+  client
+    .synthesizeSpeech(request)
+    .then(results => {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
@@ -125,13 +128,14 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
   const request = {
-    input: { ssml: fs.readFileSync(ssmlFile) },
-    voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
-    audioConfig: { audioEncoding: 'MP3' }
+    input: {ssml: fs.readFileSync(ssmlFile)},
+    voice: {languageCode: 'en-US', ssmlGender: 'FEMALE'},
+    audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client.synthesizeSpeech(request)
-  .then(results => {
+  client
+    .synthesizeSpeech(request)
+    .then(results => {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
@@ -145,17 +149,11 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
 
 require(`yargs`) // eslint-disable-line
   .demand(1)
-  .command(
-    `text <text>`,
-    `Synthesizes audio file from text`,
-    {},
-    opts => synthesizeText(opts.text, opts.outputFile)
+  .command(`text <text>`, `Synthesizes audio file from text`, {}, opts =>
+    synthesizeText(opts.text, opts.outputFile)
   )
-  .command(
-    `ssml <ssml>`,
-    `Synthesizes audio file from SSML`,
-    {},
-    opts => synthesizeSsml(opts.ssml, opts.outputFile)
+  .command(`ssml <ssml>`, `Synthesizes audio file from SSML`, {}, opts =>
+    synthesizeSsml(opts.ssml, opts.outputFile)
   )
   .command(
     `text-file <textFile>`,
@@ -175,8 +173,8 @@ require(`yargs`) // eslint-disable-line
       default: 'output.mp3',
       global: true,
       requiresArg: true,
-      type: 'string'
-    }
+      type: 'string',
+    },
   })
   .example(`node $0 text "hello" -o hello.mp3`)
   .example(`node $0 ssml "<?xml..." -o hello.mp3`)
@@ -184,6 +182,8 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 ssml-file filename.ssml -o output.mp3`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/text-to-speech/docs`)
+  .epilogue(
+    `For more information, see https://cloud.google.com/text-to-speech/docs`
+  )
   .help()
   .strict().argv;

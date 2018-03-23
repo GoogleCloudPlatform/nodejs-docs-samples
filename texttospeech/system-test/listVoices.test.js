@@ -25,10 +25,7 @@ const cwd = path.join(__dirname, `..`);
 test.before(tools.checkCredentials);
 
 test(`should list voices`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} list-voices`,
-    cwd
-  );
+  const output = await tools.runAsync(`${cmd} list-voices`, cwd);
   t.true(output.includes(`SSML Gender: FEMALE`));
   t.true(output.includes(`Natural Sample Rate Hertz: 24000`));
 });

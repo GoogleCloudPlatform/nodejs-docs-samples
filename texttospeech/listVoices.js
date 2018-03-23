@@ -21,20 +21,23 @@ function listVoices() {
 
   const client = new textToSpeech.TextToSpeechClient();
 
-  client.listVoices({})
+  client
+    .listVoices({})
     .then(results => {
       const voices = results[0].voices;
 
       console.log('Voices:');
-      voices.forEach((voice) => {
+      voices.forEach(voice => {
         console.log(`Name: ${voice.name}`);
         console.log(`  SSML Gender: ${voice.ssmlGender}`);
-        console.log(`  Natural Sample Rate Hertz: ${voice.naturalSampleRateHertz}`)
-        console.log(`  Supported languages:`)
-        voice.languageCodes.forEach((languageCode) => {
+        console.log(
+          `  Natural Sample Rate Hertz: ${voice.naturalSampleRateHertz}`
+        );
+        console.log(`  Supported languages:`);
+        voice.languageCodes.forEach(languageCode => {
           console.log(`    ${languageCode}`);
         });
-      })
+      });
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -44,15 +47,12 @@ function listVoices() {
 
 require(`yargs`) // eslint-disable-line
   .demand(1)
-  .command(
-    `list-voices`,
-    `List supported voices.`,
-    {},
-    opts => listVoices()
-  )
+  .command(`list-voices`, `List supported voices.`, {}, opts => listVoices())
   .example(`node $0 list-voices`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/text-to-speech/docs`)
+  .epilogue(
+    `For more information, see https://cloud.google.com/text-to-speech/docs`
+  )
   .help()
   .strict().argv;

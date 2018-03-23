@@ -47,7 +47,7 @@ function listVoices() {
 
 require(`yargs`) // eslint-disable-line
   .demand(1)
-  .command(`list-voices`, `List supported voices.`, {}, opts => listVoices())
+  .command(`list-voices`, `List supported voices.`, {}, () => listVoices())
   .example(`node $0 list-voices`)
   .wrap(120)
   .recommendCommands()

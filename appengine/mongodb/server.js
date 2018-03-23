@@ -19,9 +19,8 @@ const mongodb = require('mongodb');
 const http = require('http');
 const nconf = require('nconf');
 
-// read in keys and secrets.  You can store these in a variety of ways.
-// I like to use a keys.json  file that is in the .gitignore file,
-// but you can also store them in environment variables
+// Read in keys and secrets. You can store these in
+// a keys.json file, or in environment variables
 nconf.argv().env().file('keys.json');
 
 // Connect to a MongoDB server provisioned over at

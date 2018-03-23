@@ -15,33 +15,6 @@
 
 'use strict';
 
-function listVoices() {
-  // [START tts_list_voices]
-  const textToSpeech = require('@google-cloud/text-to-speech');
-
-  var client = new textToSpeech.TextToSpeechClient();
-
-  client.listVoices({})
-    .then(results => {
-      const voices = results[0].voices;
-
-      console.log('Voices:');
-      voices.forEach((voice) => {
-        console.log(`Name: ${voice.name}`);
-        console.log(`  SSML Gender: ${voice.ssmlGender}`);
-        console.log(`  Natural Sample Rate Hertz: ${voice.naturalSampleRateHertz}`)
-        console.log(`  Supported languages:`)
-        voice.languageCodes.forEach((languageCode) => {
-          console.log(`    ${languageCode}`);
-        });
-      })
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
-  // [END tts_list_voices]
-}
-
 function synthesizeText(text, outputFile) {
   // [START tts_synthesize_text]
   const textToSpeech = require('@google-cloud/text-to-speech');
@@ -173,31 +146,25 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `list-voices`,
-    `List supported languages.`,
-    {},
-    opts => listVoices()
-  )
-  .command(
-    `synthesize-text <text>`,
+    `text <text>`,
     `Synthesizes audio file from text`,
     {},
     opts => synthesizeText(opts.text, opts.outputFile)
   )
   .command(
-    `synthesize-ssml <ssml>`,
+    `ssml <ssml>`,
     `Synthesizes audio file from SSML`,
     {},
     opts => synthesizeSsml(opts.ssml, opts.outputFile)
   )
   .command(
-    `synthesize-text-file <textFile>`,
+    `text-file <textFile>`,
     `Synthesizes audio file from text in a file`,
     {},
     opts => synthesizeTextFile(opts.textFile, opts.outputFile)
   )
   .command(
-    `synthesize-ssml-file <ssmlFile>`,
+    `ssml-file <ssmlFile>`,
     `Synthesizes audio file from SSML in a file`,
     {},
     opts => synthesizeSsmlFile(opts.ssmlFile, opts.outputFile)
@@ -211,11 +178,10 @@ require(`yargs`) // eslint-disable-line
       type: 'string'
     }
   })
-  .example(`node $0 list-voices`)
-  .example(`node $0 synthesize-text "hello" -o hello.mp3`)
-  .example(`node $0 synthesize-ssml "<?xml..." -o hello.mp3`)
-  .example(`node $0 synthesize-text-file filename.txt -o output.mp3`)
-  .example(`node $0 synthesize-ssml-file filename.ssml -o output.mp3`)
+  .example(`node $0 text "hello" -o hello.mp3`)
+  .example(`node $0 ssml "<?xml..." -o hello.mp3`)
+  .example(`node $0 text-file filename.txt -o output.mp3`)
+  .example(`node $0 ssml-file filename.ssml -o output.mp3`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/text-to-speech/docs`)

@@ -20,7 +20,7 @@ const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-const cmd = `node textToSpeech.js`;
+const cmd = `node synthesize.js`;
 const cwd = path.join(__dirname, `..`);
 const text = `Hello there.`;
 const ssml = `<?xml version="1.0"?>
@@ -47,19 +47,10 @@ test.after.always(async () => {
   await fs.unlink(outputFile);
 });
 
-test(`should list voice`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} list-voices`,
-    cwd
-  );
-  t.true(output.includes(`SSML Gender: FEMALE`));
-  t.true(output.includes(`Natural Sample Rate Hertz: 24000`));
-});
-
 test(`should synthesize audio from text`, async t => {
   t.false(fs.existsSync(outputFile));
   const output = await tools.runAsync(
-    `${cmd} synthesize-text '${text}' --outputFile '${outputFile}'`,
+    `${cmd} text '${text}' --outputFile '${outputFile}'`,
     cwd
   );
   t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));
@@ -69,7 +60,7 @@ test(`should synthesize audio from text`, async t => {
 test(`should synthesize audio from ssml`, async t => {
   t.false(fs.existsSync(outputFile));
   const output = await tools.runAsync(
-    `${cmd} synthesize-ssml '${ssml}' --outputFile '${outputFile}'`,
+    `${cmd} ssml '${ssml}' --outputFile '${outputFile}'`,
     cwd
   );
   t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));
@@ -79,7 +70,7 @@ test(`should synthesize audio from ssml`, async t => {
 test(`should synthesize audio from text file`, async t => {
   t.false(fs.existsSync(outputFile));
   const output = await tools.runAsync(
-    `${cmd} synthesize-text-file '${files[0].localPath}' --outputFile '${outputFile}'`,
+    `${cmd} text-file '${files[0].localPath}' --outputFile '${outputFile}'`,
     cwd
   );
   t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));
@@ -89,7 +80,7 @@ test(`should synthesize audio from text file`, async t => {
 test(`should synthesize audio from ssml file`, async t => {
   t.false(fs.existsSync(outputFile));
   const output = await tools.runAsync(
-    `${cmd} synthesize-ssml-file '${files[1].localPath}' --outputFile '${outputFile}'`,
+    `${cmd} ssml-file '${files[1].localPath}' --outputFile '${outputFile}'`,
     cwd
   );
   t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));

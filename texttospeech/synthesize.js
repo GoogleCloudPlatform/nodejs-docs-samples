@@ -58,7 +58,7 @@ function synthesizeSsml(ssml, outputFile) {
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
-  // const ssml = 'SSML to synthesize, eg. <?xml version="1.0"?><speak...';
+  // const ssml = '<speak>Hello there.</speak>';
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
   const request = {
@@ -177,7 +177,7 @@ require(`yargs`) // eslint-disable-line
     },
   })
   .example(`node $0 text "hello" -o hello.mp3`)
-  .example(`node $0 ssml "<?xml..." -o hello.mp3`)
+  .example(`node $0 ssml "<speak>Hello there.</speak>" -o hello.mp3`)
   .example(`node $0 text-file filename.txt -o output.mp3`)
   .example(`node $0 ssml-file filename.ssml -o output.mp3`)
   .wrap(120)

@@ -23,13 +23,7 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node synthesize.js`;
 const cwd = path.join(__dirname, `..`);
 const text = `Hello there.`;
-const ssml = `<?xml version="1.0"?>
-<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.w3.org/2001/10/synthesis
-http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-US">
-Hello there.
-</speak>`;
+const ssml = `<speak>Hello there.</speak>`;
 const outputFile = `test-output.mp3`;
 const files = [`hello.txt`, `hello.ssml`].map(name => {
   return {

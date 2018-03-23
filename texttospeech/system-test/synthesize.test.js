@@ -53,7 +53,7 @@ test(`should synthesize audio from text`, async t => {
     `${cmd} text '${text}' --outputFile '${outputFile}'`,
     cwd
   );
-  t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));
+  t.true(output.includes(`Audio content written to file: ${outputFile}`));
   t.true(fs.existsSync(outputFile));
 });
 
@@ -63,7 +63,7 @@ test(`should synthesize audio from ssml`, async t => {
     `${cmd} ssml '${ssml}' --outputFile '${outputFile}'`,
     cwd
   );
-  t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));
+  t.true(output.includes(`Audio content written to file: ${outputFile}`));
   t.true(fs.existsSync(outputFile));
 });
 
@@ -73,7 +73,7 @@ test(`should synthesize audio from text file`, async t => {
     `${cmd} text-file '${files[0].localPath}' --outputFile '${outputFile}'`,
     cwd
   );
-  t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));
+  t.true(output.includes(`Audio content written to file: ${outputFile}`));
   t.true(fs.existsSync(outputFile));
 });
 
@@ -83,6 +83,6 @@ test(`should synthesize audio from ssml file`, async t => {
     `${cmd} ssml-file '${files[1].localPath}' --outputFile '${outputFile}'`,
     cwd
   );
-  t.true(output.includes(`Saved synthesized text to local audio file ${outputFile}`));
+  t.true(output.includes(`Audio content written to file: ${outputFile}`));
   t.true(fs.existsSync(outputFile));
 });

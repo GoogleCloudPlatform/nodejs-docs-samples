@@ -39,7 +39,7 @@ function synthesizeText(text, outputFile) {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
-      console.log(`Saved synthesized text to local audio file ${outputFile}`);
+      console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -71,7 +71,7 @@ function synthesizeSsml(ssml, outputFile) {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
-      console.log(`Saved synthesized text to local audio file ${outputFile}`);
+      console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -103,7 +103,7 @@ function synthesizeTextFile(textFile, outputFile) {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
-      console.log(`Saved synthesized text to local audio file ${outputFile}`);
+      console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -135,7 +135,7 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
       const audioContent = results[0].audioContent;
 
       fs.writeFileSync(outputFile, audioContent, 'binary');
-      console.log(`Saved synthesized text to local audio file ${outputFile}`);
+      console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {
       console.error('ERROR:', err);

@@ -38,8 +38,10 @@ app.get('/submit', (req, res) => {
 
 // [START add_post_handler]
 app.post('/submit', (req, res) => {
-  console.log(req.body.name);
-  console.log(req.body.message);
+  console.log({
+    name: req.body.name,
+    message: req.body.message
+  });
   res.send('Thanks for your message!');
 });
 // [END add_post_handler]

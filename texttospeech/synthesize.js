@@ -20,7 +20,7 @@ function synthesizeText(text, outputFile) {
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
 
-  var client = new textToSpeech.TextToSpeechClient();
+  const client = new textToSpeech.TextToSpeechClient();
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -28,7 +28,7 @@ function synthesizeText(text, outputFile) {
   // const text = 'Text to synthesize, eg. hello';
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
-  var request = {
+  const request = {
     input: { text: text },
     voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
     audioConfig: { audioEncoding: 'MP3' }
@@ -52,7 +52,7 @@ function synthesizeSsml(ssml, outputFile) {
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
 
-  var client = new textToSpeech.TextToSpeechClient();
+  const client = new textToSpeech.TextToSpeechClient();
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -60,7 +60,7 @@ function synthesizeSsml(ssml, outputFile) {
   // const ssml = 'SSML to synthesize, eg. <?xml version="1.0"?><speak...';
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
-  var request = {
+  const request = {
     input: { ssml: ssml },
     voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
     audioConfig: { audioEncoding: 'MP3' }
@@ -84,7 +84,7 @@ function synthesizeTextFile(textFile, outputFile) {
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
 
-  var client = new textToSpeech.TextToSpeechClient();
+  const client = new textToSpeech.TextToSpeechClient();
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -92,7 +92,7 @@ function synthesizeTextFile(textFile, outputFile) {
   // const textFile = 'Local path to text file, eg. input.txt';
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
-  var request = {
+  const request = {
     input: { text: fs.readFileSync(textFile) },
     voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
     audioConfig: { audioEncoding: 'MP3' }
@@ -116,7 +116,7 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
 
-  var client = new textToSpeech.TextToSpeechClient();
+  const client = new textToSpeech.TextToSpeechClient();
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -124,7 +124,7 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
   // const ssmlFile = 'Local path to SSML file, eg. input.ssml';
   // const outputFile = 'Local path to save audio file to, e.g. output.mp3';
 
-  var request = {
+  const request = {
     input: { ssml: fs.readFileSync(ssmlFile) },
     voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
     audioConfig: { audioEncoding: 'MP3' }

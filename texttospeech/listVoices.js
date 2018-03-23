@@ -19,7 +19,7 @@ function listVoices() {
   // [START tts_list_voices]
   const textToSpeech = require('@google-cloud/text-to-speech');
 
-  var client = new textToSpeech.TextToSpeechClient();
+  const client = new textToSpeech.TextToSpeechClient();
 
   client.listVoices({})
     .then(results => {

@@ -13,11 +13,11 @@
     "node": ">=4"
   },
   "scripts": {
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app -- server.js",
     "test": "npm run system-test",
-    "e2e-test": "samples test deploy"
+    "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
     "express": "4.16.2",

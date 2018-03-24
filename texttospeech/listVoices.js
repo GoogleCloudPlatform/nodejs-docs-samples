@@ -29,7 +29,7 @@ function listVoices() {
       console.log('Voices:');
       voices.forEach(voice => {
         console.log(`Name: ${voice.name}`);
-        console.log(`  SSML Gender: ${voice.ssmlGender}`);
+        console.log(`  SSML Voice Gender: ${voice.ssmlGender}`);
         console.log(
           `  Natural Sample Rate Hertz: ${voice.naturalSampleRateHertz}`
         );

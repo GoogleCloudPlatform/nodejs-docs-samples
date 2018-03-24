@@ -34,21 +34,20 @@ function synthesizeText(text, outputFile) {
     audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client
-    .synthesizeSpeech(request, (err, response) => {
+  client.synthesizeSpeech(request, (err, response) => {
+    if (err) {
+      console.error('ERROR:', err);
+      return;
+    }
+
+    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
       if (err) {
         console.error('ERROR:', err);
         return;
       }
-
-      fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-        if (err) {
-          console.error('ERROR:', err);
-          return;
-        }
-        console.log(`Audio content written to file: ${outputFile}`);
-      });
+      console.log(`Audio content written to file: ${outputFile}`);
     });
+  });
   // [END tts_synthesize_text]
 }
 
@@ -71,21 +70,20 @@ function synthesizeSsml(ssml, outputFile) {
     audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client
-    .synthesizeSpeech(request, (err, response) => {
+  client.synthesizeSpeech(request, (err, response) => {
+    if (err) {
+      console.error('ERROR:', err);
+      return;
+    }
+
+    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
       if (err) {
         console.error('ERROR:', err);
         return;
       }
-
-      fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-        if (err) {
-          console.error('ERROR:', err);
-          return;
-        }
-        console.log(`Audio content written to file: ${outputFile}`);
-      });
+      console.log(`Audio content written to file: ${outputFile}`);
     });
+  });
   // [END tts_synthesize_ssml]
 }
 
@@ -108,21 +106,20 @@ function synthesizeTextFile(textFile, outputFile) {
     audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client
-    .synthesizeSpeech(request, (err, response) => {
+  client.synthesizeSpeech(request, (err, response) => {
+    if (err) {
+      console.error('ERROR:', err);
+      return;
+    }
+
+    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
       if (err) {
         console.error('ERROR:', err);
         return;
       }
-
-      fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-        if (err) {
-          console.error('ERROR:', err);
-          return;
-        }
-        console.log(`Audio content written to file: ${outputFile}`);
-      });
+      console.log(`Audio content written to file: ${outputFile}`);
     });
+  });
   // [END tts_synthesize_text_file]
 }
 
@@ -145,21 +142,20 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
     audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client
-    .synthesizeSpeech(request, (err, response) => {
+  client.synthesizeSpeech(request, (err, response) => {
+    if (err) {
+      console.error('ERROR:', err);
+      return;
+    }
+
+    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
       if (err) {
         console.error('ERROR:', err);
         return;
       }
-
-      fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-        if (err) {
-          console.error('ERROR:', err);
-          return;
-        }
-        console.log(`Audio content written to file: ${outputFile}`);
-      });
+      console.log(`Audio content written to file: ${outputFile}`);
     });
+  });
   // [END tts_synthesize_ssml_file]
 }
 

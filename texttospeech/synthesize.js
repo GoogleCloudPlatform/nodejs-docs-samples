@@ -178,8 +178,8 @@ require(`yargs`) // eslint-disable-line
   })
   .example(`node $0 text "hello" -o hello.mp3`)
   .example(`node $0 ssml "<speak>Hello there.</speak>" -o hello.mp3`)
-  .example(`node $0 text-file filename.txt -o output.mp3`)
-  .example(`node $0 ssml-file filename.ssml -o output.mp3`)
+  .example(`node $0 text-file resources/hello.txt -o output.mp3`)
+  .example(`node $0 ssml-file resources/hello.ssml -o output.mp3`)
   .wrap(120)
   .recommendCommands()
   .epilogue(

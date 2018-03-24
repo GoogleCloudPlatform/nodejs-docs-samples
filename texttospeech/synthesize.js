@@ -36,10 +36,10 @@ function synthesizeText(text, outputFile) {
 
   client
     .synthesizeSpeech(request)
-    .then(results => {
+    .then(async results => {
       const audioContent = results[0].audioContent;
 
-      fs.writeFileSync(outputFile, audioContent, 'binary');
+      await fs.writeFile(outputFile, audioContent, 'binary');
       console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {
@@ -69,10 +69,10 @@ function synthesizeSsml(ssml, outputFile) {
 
   client
     .synthesizeSpeech(request)
-    .then(results => {
+    .then(async results => {
       const audioContent = results[0].audioContent;
 
-      fs.writeFileSync(outputFile, audioContent, 'binary');
+      await fs.writeFile(outputFile, audioContent, 'binary');
       console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {
@@ -102,10 +102,10 @@ function synthesizeTextFile(textFile, outputFile) {
 
   client
     .synthesizeSpeech(request)
-    .then(results => {
+    .then(async results => {
       const audioContent = results[0].audioContent;
 
-      fs.writeFileSync(outputFile, audioContent, 'binary');
+      await fs.writeFile(outputFile, audioContent, 'binary');
       console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {
@@ -135,10 +135,10 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
 
   client
     .synthesizeSpeech(request)
-    .then(results => {
+    .then(async results => {
       const audioContent = results[0].audioContent;
 
-      fs.writeFileSync(outputFile, audioContent, 'binary');
+      await fs.writeFile(outputFile, audioContent, 'binary');
       console.log(`Audio content written to file: ${outputFile}`);
     })
     .catch(err => {

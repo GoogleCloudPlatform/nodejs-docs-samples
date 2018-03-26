@@ -20,7 +20,6 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const {
-  spawnAsyncWithIO,
   runAsync
 } = require(`@google-cloud/nodejs-repo-tools`);
 
@@ -31,7 +30,7 @@ const cwd = path.join(__dirname, `..`);
 
 test.before((t) => {
   if (!QUEUE) {
-    t.fail('You must set the GCP_QUEUE environment variable!');
+    t.fail(`You must set the GCP_QUEUE environment variable!`);
   }
 });
 test.before(tools.checkCredentials);
@@ -39,35 +38,27 @@ test.before(tools.checkCredentials);
 let task;
 
 test.serial(`should create a task`, async (t) => {
-  const args = [`create`, PROJECT_ID, `us-central1`, QUEUE];
-  const results = await spawnAsyncWithIO(cmd, args, cwd);
-  t.regex(results.output, /Created task/);
+  const output = await runAsync(`${cmd} create ${PROJECT_ID} us-central1 "${QUEUE}"`, cwd);
+  t.true(output.includes('Created task'));
 });
 
 test.serial(`should pull a task`, async (t) => {
   t.plan(0);
   await tools.tryTest(async (assert) => {
-    const args = [`pull`, PROJECT_ID, `us-central1`, QUEUE];
-    const results = await spawnAsyncWithIO(cmd, args, cwd);
-    const matches = results.output.match(/^Pulled task ({.+})$/);
-    if (matches) {
-      const json = JSON.parse(matches[1]);
-      if (json.tasks && json.tasks.length) {
-        task = JSON.stringify(json.tasks[0]);
-      }
-    } else {
-      throw new Error(`Should have pulled task.\n${results.output}`);
+    const output = await runAsync(`${cmd} pull ${PROJECT_ID} us-central1 "${QUEUE}"`, cwd);
+    const matches = output.match(/^Pulled task ({.+})$/);
+    if (matches && matches.length > 1) {
+      task = matches[1]
     }
-    assert(results.output.includes(`Pulled task`));
+    assert(output.includes(`Pulled task`));
   }).start();
 });
 
 test.serial(`should acknowledge a task`, async (t) => {
   if (task) {
-    const command = `${cmd} acknowledge '${task}'`;
-    const output = await runAsync(command, cwd);
-    t.regex(output, /Acknowledged task/);
+    const output = await runAsync(`${cmd} acknowledge '${task}'`, cwd);
+    t.true(output.includes(`Acknowledged task`));
   } else {
-    t.fail('no task to acknowledge');
+    t.fail(`no task to acknowledge`);
   }
 });

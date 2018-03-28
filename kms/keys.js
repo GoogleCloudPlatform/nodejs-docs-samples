@@ -1394,10 +1394,7 @@ const cli = require(`yargs`)
     `set-primary <keyRing> <cryptoKey> <keyVersion>`,
     `Sets a crypto key's primary version.`,
     {},
-    (opts) => {
-      console.log(opts);
-      setPrimaryCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.keyVersion)
-    }
+    (opts) => setPrimaryCryptoKeyVersion(opts.projectId, opts.location, opts.keyRing, opts.cryptoKey, opts.keyVersion)
   )
   .command(
     `versions <command>`,

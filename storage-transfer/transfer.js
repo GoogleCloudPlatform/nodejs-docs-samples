@@ -18,7 +18,7 @@
 // [START all]
 // [START setup]
 var moment = require('moment');
-var google = require('googleapis');
+var google = require('googleapis').google;
 
 // Instantiate a storage client
 var storagetransfer = google.storagetransfer('v1');
@@ -104,11 +104,12 @@ function createTransferJob (options, callback) {
     storagetransfer.transferJobs.create({
       auth: authClient,
       resource: transferJob
-    }, function (err, transferJob) {
+    }, function (err, response) {
       if (err) {
         return callback(err);
       }
 
+      const transferJob = response.data;
       console.log('Created transfer job: %s', transferJob.name);
       return callback(null, transferJob);
     });
@@ -133,11 +134,12 @@ function getTransferJob (jobName, callback) {
       auth: authClient,
       projectId: process.env.GCLOUD_PROJECT,
       jobName: jobName
-    }, function (err, transferJob) {
+    }, function (err, response) {
       if (err) {
         return callback(err);
       }
 
+      const transferJob = response.data;
       console.log('Found transfer job: %s', transferJob.name);
       return callback(null, transferJob);
     });
@@ -181,11 +183,12 @@ function updateTransferJob (options, callback) {
       auth: authClient,
       jobName: options.job,
       resource: patchRequest
-    }, function (err, transferJob) {
+    }, function (err, response) {
       if (err) {
         return callback(err);
       }
 
+      const transferJob = response.data;
       console.log('Updated transfer job: %s', transferJob.name);
       return callback(null, transferJob);
     });
@@ -208,15 +211,15 @@ function listTransferJobs (callback) {
     storagetransfer.transferJobs.list({
       auth: authClient,
       filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT })
-    }, function (err, result) {
+    }, function (err, response) {
       if (err) {
         return callback(err);
-      } else if (!result.transferJobs) {
+      } else if (!response.data || !response.data.transferJobs) {
         return callback(null, []);
       }
 
-      console.log('Found %d jobs!', result.transferJobs.length);
-      return callback(null, result.transferJobs);
+      console.log('Found %d jobs!', response.data.transferJobs.length);
+      return callback(null, response.data.transferJobs);
     });
   });
 }
@@ -247,15 +250,15 @@ function listTransferOperations (jobName, callback) {
       name: 'transferOperations',
       filter: JSON.stringify(filter),
       auth: authClient
-    }, function (err, result, apiResponse) {
+    }, function (err, response, apiResponse) {
       if (err) {
         return callback(err);
-      } else if (!result.operations) {
+      } else if (!response.data || !response.data.operations) {
         return callback(null, []);
       }
 
-      console.log('Found %d operations!', result.operations.length);
-      return callback(null, result.operations);
+      console.log('Found %d operations!', response.data.operations.length);
+      return callback(null, response.data.operations);
     });
   });
 }
@@ -277,11 +280,12 @@ function getTransferOperation (transferOperationName, callback) {
     storagetransfer.transferOperations.get({
       name: transferOperationName,
       auth: authClient
-    }, function (err, transferOperation) {
+    }, function (err, response) {
       if (err) {
         return callback(err);
       }
 
+      const transferOperation = response.data;
       console.log('Found transfer operation: %s', transferOperation);
       return callback(null, transferOperation);
     });

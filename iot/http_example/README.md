@@ -32,18 +32,18 @@ Options:
     --privateKeyFile <key_file>      Path to private key file.
     --algorithm <algorithm>          Encryption algorithm to generate the JWT.
                                      Either RS256 (RSA) or ES256 (Eliptic Curve)
-    --cloudRegion [region]           GCP cloud region
+    --cloudRegion [region]           GCP cloud region (e.g. us-central1, europe-west1)
     --numMessages [num]              Number of messages to publish.
     --tokenExpMins [num]             Minutes to JWT token expiration.
     --httpBridgeAddress [address]    HTTP bridge address.
     --messageType [events|state]     The message type to publish.
 
-For example, if your project ID is `blue-jet-123`, your service account
-credentials are stored in your home folder in creds.json and you have generated
-your credentials using the shell script provided in the parent folder, you can
-run the sample as:
+For example, if your project ID is `blue-jet-123`, your region is
+asia-east1, and you have generated your credentials using the shell script
+provided in the parent folder, you can run the sample as:
 
-    node cloudiot_http_example_nodejs.js \
+    node cloudiot_http_example.js \
+        --cloudRegion=asia-east1 \
         --projectId=blue-jet-123 \
         --registryId=my-registry \
         --deviceId=my-node-device \

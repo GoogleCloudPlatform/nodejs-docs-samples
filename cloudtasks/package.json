@@ -15,12 +15,12 @@
     "test": "repo-tools test run --cmd npm -- run system-test"
   },
   "dependencies": {
-    "googleapis": "22.2.0",
-    "yargs": "10.0.3"
+    "googleapis": "27.0.0",
+    "yargs": "11.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.1.0",
-    "ava": "0.23.0"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

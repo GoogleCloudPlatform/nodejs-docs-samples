@@ -54,20 +54,20 @@ test(`should receive configuration message`, async (t) => {
 
   let output = await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+    `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
   output = await tools.runAsync(
-     `${cmd}  --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
-     cwd);
+    `${cmd}  --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
+    cwd);
   t.regex(output, new RegExp(`message received`));
 
   // Check / cleanup
   await tools.runAsync(
-      `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
+    `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
   await tools.runAsync(
-      `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
+    `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -76,20 +76,20 @@ test(`should send event message`, async (t) => {
   const localRegName = `${registryName}-rsa256`;
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+    `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
   const output = await tools.runAsync(
-     `${cmd} --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
-     cwd);
+    `${cmd} --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
+    cwd);
   t.regex(output, new RegExp(`Publishing message:`));
 
   // Check / cleanup
   await tools.runAsync(
-      `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
+    `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
   await tools.runAsync(
-      `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
+    `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -98,19 +98,19 @@ test(`should send event message`, async (t) => {
   const localRegName = `${registryName}-rsa256`;
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+    `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
   const output = await tools.runAsync(
-     `${cmd} --messageType=state --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
-     cwd);
+    `${cmd} --messageType=state --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
+    cwd);
   t.regex(output, new RegExp(`Publishing message:`));
 
   // Check / cleanup
   await tools.runAsync(
-      `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
+    `${helper} getDeviceState ${localDevice} ${localRegName}`, cwd);
   await tools.runAsync(
-      `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
+    `${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });

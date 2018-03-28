@@ -15,18 +15,18 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app",
     "test": "npm run system-test",
-    "e2e-test": "samples test deploy"
+    "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "2.1.3",
-    "express": "4.15.4"
+    "@google-cloud/debug-agent": "2.3.2",
+    "express": "4.16.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17"
+    "@google-cloud/nodejs-repo-tools": "2.2.1"
   },
   "cloud-repo-tools": {
     "test": {

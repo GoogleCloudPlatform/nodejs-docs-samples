@@ -644,7 +644,7 @@ function kMapEstimationAnalysis(
   regionCode,
   quasiIds
 ) {
-  // [START k_map]
+  // [START dlp_k_map]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
   const Pubsub = require('@google-cloud/pubsub');
@@ -788,7 +788,7 @@ function kMapEstimationAnalysis(
       console.log(`Error in kMapEstimationAnalysis: ${err.message || err}`);
     });
 
-  // [END k_map]
+  // [END dlp_k_map]
 }
 
 const cli = require(`yargs`) // eslint-disable-line

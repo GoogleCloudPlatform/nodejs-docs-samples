@@ -24,7 +24,7 @@ function createInspectTemplate(
   minLikelihood,
   maxFindings
 ) {
-  // [START dlp_create_template]
+  // [START dlp_create_inspect_template]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -81,11 +81,11 @@ function createInspectTemplate(
     .catch(err => {
       console.log(`Error in createInspectTemplate: ${err.message || err}`);
     });
-  // [END dlp_create_template]
+  // [END dlp_create_inspect_template]
 }
 
 function listInspectTemplates(callingProjectId) {
-  // [START dlp_list_templates]
+  // [START dlp_list_inspect_templates]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -136,11 +136,11 @@ function listInspectTemplates(callingProjectId) {
     .catch(err => {
       console.log(`Error in listInspectTemplates: ${err.message || err}`);
     });
-  // [END dlp_list_templates]
+  // [END dlp_list_inspect_templates]
 }
 
 function deleteInspectTemplate(templateName) {
-  // [START dlp_delete_template]
+  // [START dlp_delete_inspect_template]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -165,7 +165,7 @@ function deleteInspectTemplate(templateName) {
     .catch(err => {
       console.log(`Error in deleteInspectTemplate: ${err.message || err}`);
     });
-  // [END dlp_delete_template]
+  // [END dlp_delete_inspect_template]
 }
 
 const cli = require(`yargs`) // eslint-disable-line

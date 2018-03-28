@@ -330,7 +330,7 @@ function reidentifyWithFpe(
   keyName,
   wrappedKey
 ) {
-  // [START reidentify_fpe]
+  // [START dlp_reidentify_fpe]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -406,7 +406,7 @@ function reidentifyWithFpe(
     .catch(err => {
       console.log(`Error in reidentifyWithFpe: ${err.message || err}`);
     });
-  // [END dlp_deidentify_fpe]
+  // [END dlp_reidentify_fpe]
 }
 
 const cli = require(`yargs`)

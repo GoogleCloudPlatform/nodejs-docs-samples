@@ -47,6 +47,7 @@ const messages = [];
 const PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
 
 const topic = pubsub.topic(process.env.PUBSUB_TOPIC);
+const publisher = topic.publisher();
 
 // [START index]
 app.get('/', (req, res) => {
@@ -59,9 +60,7 @@ app.post('/', formBodyParser, (req, res, next) => {
     return;
   }
 
-  topic.publish({
-    data: req.body.payload
-  }, (err) => {
+  publisher.publish(Buffer.from(req.body.payload), (err) => {
     if (err) {
       next(err);
       return;

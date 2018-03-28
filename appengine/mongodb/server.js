@@ -53,7 +53,7 @@ mongodb.MongoClient.connect(uri, (err, client) => {
       return;
     }
     // Track every IP that has visited this site
-    const db = client.db(nconf.get('mongoDatabase'))
+    const db = client.db(nconf.get('mongoDatabase'));
     const collection = db.collection('IPs');
 
     const ip = {

@@ -48,7 +48,7 @@ test.serial(`should pull a task`, async (t) => {
     const output = await runAsync(`${cmd} pull ${PROJECT_ID} us-central1 "${QUEUE}"`, cwd);
     const matches = output.match(/^Pulled task ({.+})$/);
     if (matches && matches.length > 1) {
-      task = matches[1]
+      task = matches[1];
     }
     assert(output.includes(`Pulled task`));
   }).start();

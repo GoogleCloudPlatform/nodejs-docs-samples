@@ -1,0 +1,30 @@
+{
+  "name": "appengine-static-files",
+  "description": "Serving static files in Node.js sample for Google App Engine",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "8.x.x"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "samples test app --url localhost:8080/static/main.css"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "background-color",
+        "port": 8080
+      }
+    }
+  },
+  "dependencies": {
+    "express": "4.15.4",
+    "pug": "2.0.0-rc.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.4.17"
+  }
+}

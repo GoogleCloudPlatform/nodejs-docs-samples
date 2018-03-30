@@ -42,9 +42,11 @@ test.cb(`should create a task`, (t) => {
 
   const util = proxyquire(`../createTask`, {
     googleapis: {
-      cloudtasks: sinon.stub().returns(cloudtasksMock),
-      auth: {
-        getApplicationDefault: sinon.stub().yields(null, authClientMock)
+      google: {
+        cloudtasks: sinon.stub().returns(cloudtasksMock),
+        auth: {
+          getApplicationDefault: sinon.stub().yields(null, authClientMock)
+        }
       }
     }
   });

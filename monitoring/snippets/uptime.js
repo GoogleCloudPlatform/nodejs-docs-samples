@@ -23,7 +23,7 @@
 
 'use strict';
 
-function createUptimeCheckConfig(projectId, gceInstanceId) {
+function createUptimeCheckConfig(projectId, hostname) {
   // [START monitoring_uptime_check_create]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -35,17 +35,17 @@ function createUptimeCheckConfig(projectId, gceInstanceId) {
    * TODO(developer): Uncomment and edit the following lines of code.
    */
   // const projectId = 'YOUR_PROJECT_ID';
-  // const gceInstanceId = 'my-instance';
+  // const hostname = 'mydomain.com';
 
   const request = {
     // i.e. parent: 'projects/my-project-id'
     parent: client.projectPath(projectId),
     uptimeCheckConfig: {
-      displayName: 'My GCE Instance Uptime Check',
+      displayName: 'My Uptime Check',
       monitoredResource: {
         // See the Uptime Check docs for supported MonitoredResource types
-        type: 'gce_instance',
-        labels: {instance_id: gceInstanceId},
+        type: 'uptime_url',
+        labels: {host: hostname},
       },
       httpCheck: {path: '/', port: 80},
       timeout: {seconds: 10},
@@ -246,10 +246,10 @@ function deleteUptimeCheckConfig(projectId, uptimeCheckConfigId) {
 require(`yargs`)
   .demand(1)
   .command(
-    `create <gceInstanceId> [projectId]`,
+    `create <hostname> [projectId]`,
     `Creates an uptime check config.`,
     {},
-    opts => createUptimeCheckConfig(opts.projectId, '' + opts.gceInstanceId)
+    opts => createUptimeCheckConfig(opts.projectId, '' + opts.hostname)
   )
   .command(`list [projectId]`, `Lists uptime check configs.`, {}, opts =>
     listUptimeCheckConfigs(opts.projectId)
@@ -278,10 +278,7 @@ require(`yargs`)
       type: 'string',
     },
   })
-  .example(
-    `node $0 create my-instance`,
-    'Create an uptime check for a "my-instance" GCE instance.'
-  )
+  .example(`node $0 create mydomain.com`, 'Create an uptime check.')
   .example(`node $0 list`, 'List all uptime check configs.')
   .example(
     `node $0 list "resource.type = gce_instance AND resource.label.instance_id = mongodb"`,

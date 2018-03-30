@@ -22,30 +22,27 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node uptime.js`;
 const cwd = path.join(__dirname, `..`);
 const projectId = process.env.GCLOUD_PROJECT;
-const instanceId = 'uptime-test-' + Date.now();
+const hostname = 'mydomain.com';
 
 test.before(tools.checkCredentials);
 
-test(`should get an uptime check`, async t => {
+test(`should list uptime-check ips`, async t => {
   t.regex(await tools.runAsync(`${cmd} list-ips`, cwd), /USA/);
 });
 
 let id;
 
 test.serial(`should create an uptime check`, async t => {
-  const results = await tools.runAsyncWithIO(
-    `${cmd} create ${instanceId}`,
-    cwd
-  );
+  const results = await tools.runAsyncWithIO(`${cmd} create ${hostname}`, cwd);
   const output = results.stdout + results.stderr;
   const matches = output.match(
     new RegExp(`ID: projects/${projectId}/uptimeCheckConfigs/(.+)`)
   );
   id = matches[1];
   t.regex(output, /Uptime check created:/);
-  t.regex(output, /"type":"gce_instance"/);
-  t.regex(output, new RegExp(`"labels":{"instance_id":"${instanceId}"}`));
-  t.regex(output, /Display Name: My GCE Instance Uptime Check/);
+  t.regex(output, /"type":"uptime_url"/);
+  t.regex(output, new RegExp(`"labels":{"host":"${hostname}"}`));
+  t.regex(output, /Display Name: My Uptime Check/);
 });
 
 test.serial(`should get an uptime check`, async t => {
@@ -55,8 +52,8 @@ test.serial(`should get an uptime check`, async t => {
     output,
     new RegExp(`Retrieving projects/${projectId}/uptimeCheckConfigs/${id}`)
   );
-  t.regex(output, /"type":"gce_instance"/);
-  t.regex(output, new RegExp(`"labels":{"instance_id":"${instanceId}"}`));
+  t.regex(output, /"type":"uptime_url"/);
+  t.regex(output, new RegExp(`"labels":{"host":"${hostname}"}`));
 });
 
 test.serial(`should list uptime checks`, async t => {
@@ -65,11 +62,9 @@ test.serial(`should list uptime checks`, async t => {
     .tryTest(async assert => {
       const results = await tools.runAsyncWithIO(`${cmd} list`, cwd);
       const output = results.stdout + results.stderr;
-      assert(/"type":"gce_instance"/.test(output));
-      assert(
-        new RegExp(`"labels":{"instance_id":"${instanceId}"}`).test(output)
-      );
-      assert(/Display Name: My GCE Instance Uptime Check/.test(output));
+      assert(/"type":"uptime_url"/.test(output));
+      assert(new RegExp(`"labels":{"host":"${hostname}"}`).test(output));
+      assert(/Display Name: My Uptime Check/.test(output));
     })
     .start();
 });

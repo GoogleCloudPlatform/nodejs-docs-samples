@@ -15,7 +15,7 @@
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "e2e-test": "export FUNCTIONS_CMD='gcloud beta functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCF_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js",
-    "test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/index.test.js test/*unit*test.js test/*integration*test.js",
+    "test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose -c 1 test/index.test.js test/*unit*test.js test/*integration*test.js",
     "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {

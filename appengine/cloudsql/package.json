@@ -23,15 +23,15 @@
     "test": "samples test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "async": "2.5.0",
-    "express": "4.15.4",
-    "knex": "0.13.0",
-    "mysql": "2.14.1",
+    "async": "2.6.0",
+    "express": "4.16.3",
+    "knex": "0.14.4",
+    "mysql": "2.15.0",
     "prompt": "1.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.22.0"
+    "@google-cloud/nodejs-repo-tools": "2.2.5",
+    "ava": "0.25.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

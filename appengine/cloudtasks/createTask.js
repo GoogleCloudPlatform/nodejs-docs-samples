@@ -15,7 +15,7 @@
 
 'use strict';
 
-const google = require('googleapis');
+const google = require('googleapis').google;
 const cloudtasks = google.cloudtasks('v2beta2');
 
 /**

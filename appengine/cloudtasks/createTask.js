@@ -40,7 +40,7 @@ function createTask (project, location, queue, options) {
     }
 
     const request = {
-      parent: `projects/${project}/locations/${location}/queues/${queue}`,  // TODO: Update placeholder value.
+      parent: `projects/${project}/locations/${location}/queues/${queue}`, // TODO: Update placeholder value.
       resource: {
         task: task
       },

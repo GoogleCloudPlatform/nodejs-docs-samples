@@ -48,7 +48,7 @@ const JWT_AUTH_TOKEN = jwt.sign({
   'aud': SERVICE_NAME,
   'iss': GOOGLE_KEYFILE.client_email,
   'iat': parseInt(Date.now() / 1000),
-  'exp': parseInt(Date.now() / 1000) + (20 * 60),  // 20 minutes
+  'exp': parseInt(Date.now() / 1000) + (20 * 60), // 20 minutes
   'email': GOOGLE_KEYFILE.client_email,
   'sub': GOOGLE_KEYFILE.client_email
 }, GOOGLE_KEYFILE.private_key, { algorithm: 'RS256' });

@@ -14,9 +14,9 @@
   },
   "scripts": {
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app",
     "test": "npm run system-test"
   },
   "dependencies": {

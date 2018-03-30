@@ -20,11 +20,11 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "express": "4.16.0",
-    "got": "7.1.0"
+    "express": "4.16.2",
+    "got": "8.2.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.0.4"
+    "@google-cloud/nodejs-repo-tools": "2.2.1"
   },
   "cloud-repo-tools": {
     "test": {

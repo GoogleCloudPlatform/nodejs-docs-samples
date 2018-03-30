@@ -12,7 +12,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "4.14.1",
-    "memjs": "0.10.0"
+    "express": "4.16.2",
+    "memjs": "1.1.0"
   }
 }

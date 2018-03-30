@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "samples test app"
+    "test": "repo-tools test app -- server.js"
   },
   "cloud-repo-tools": {
     "test": {
@@ -29,10 +29,10 @@
     }
   },
   "dependencies": {
-    "mongodb": "2.2.31",
-    "nconf": "0.8.4"
+    "mongodb": "3.0.4",
+    "nconf": "0.10.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^1.4.17"
+    "@google-cloud/nodejs-repo-tools": "^2.2.1"
   }
 }

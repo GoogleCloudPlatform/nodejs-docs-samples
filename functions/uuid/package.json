@@ -12,17 +12,17 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "uuid": "3.1.0"
+    "uuid": "3.2.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.1.0",
-    "ava": "0.23.0",
-    "sinon": "4.0.2"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "sinon": "4.4.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

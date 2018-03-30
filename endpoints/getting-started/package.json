@@ -19,15 +19,15 @@
     "test": "samples test run --cmd ava -- -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "body-parser": "1.17.2",
-    "express": "4.15.4",
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.21.0",
-    "proxyquire": "1.8.0",
-    "sinon": "3.2.0",
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "proxyquire": "2.0.0",
+    "sinon": "4.4.2",
     "supertest": "3.0.0"
   }
 }

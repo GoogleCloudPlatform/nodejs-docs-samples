@@ -10,19 +10,19 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "samples test app && ava -T 30s */*.test.js"
+    "test": "repo-tools test app && ava -T 30s */*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.13.2",
-    "body-parser": "1.17.2",
-    "express": "4.15.4",
-    "pug": "2.0.0-rc.3",
+    "@google-cloud/pubsub": "0.16.4",
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "pug": "2.0.0",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.22.0",
-    "uuid": "3.1.0"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "uuid": "3.2.1"
   },
   "cloud-repo-tools": {
     "requiresProjectId": true,

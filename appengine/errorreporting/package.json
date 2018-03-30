@@ -14,10 +14,10 @@
   },
   "scripts": {
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "unit-test": "ava --verbose test/*.test.js",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app",
     "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {

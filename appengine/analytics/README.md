@@ -1,8 +1,11 @@
 # Integrating with Google Analytics
 
-This is the sample application for the
-[Integrating with Google Analytics tutorial][tutorial] tutorial found in the
-[Google App Engine Node.js Flexible Environment][appengine] documentation.
+This sample application shows how to integrate your Node.js application with
+Google Analytics on Google App Engine.
+
+App Engine Node.js Standard Environment users: See tutorial [Integrating with Google Analytics][std-tutorial] for more information on running and deploying this app.
+
+App Engine Node.js Flexible Environment users: See tutorial [Integrating with Google Analytics][flex-tutorial] for more information on running and deploying this app.
 
 * [Setup](#setup)
 * [Running locally](#running-locally)
@@ -37,22 +40,23 @@ or with `yarn`:
 
     GA_TRACKING_ID=YOUR_TRACKING_ID yarn start
 
-## Deploying to App Engine
+## Deploying to App Engine Standard Environment
 
-With `npm`:
+    gcloud app deploy app.standard.yaml
 
-    npm run deploy
+## Deploying to App Engine Flexible Environment
 
-or with `yarn`:
+	gcloud app deploy app.flexible.yaml
 
-    yarn run deploy
 
 ## Running the tests
 
 See [Contributing][contributing].
 
-[appengine]: https://cloud.google.com/appengine/docs/flexible/nodejs
-[tutorial]: https://cloud.google.com/appengine/docs/flexible/nodejs/integrating-with-analytics
+[appengine-flex]: https://cloud.google.com/appengine/docs/flexible/nodejs
+[appengine-std]: https://cloud.google.com/appengine/docs/standard/nodejs
+[flex-tutorial]: https://cloud.google.com/appengine/docs/flexible/nodejs/integrating-with-analytics
+[std-tutorial]: https://cloud.google.com/appengine/docs/standard/nodejs/integrating-with-analytics
 [readme]: ../README.md
 [tracking]: https://support.google.com/analytics/answer/1042508
 [contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md

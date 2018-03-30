@@ -2,10 +2,14 @@
 
 > [Loopback][1] is a highly-extensible, open-source Node.js framework.
 
-Read the [Loopback.js on App Engine Tutorial][2] for how to run and deploy this
+Refer to the [appengine/README.md](../README.md) file for more instructions on
+running and deploying this app.
+
+App Engine Node.js Flexible Environment users may also read the community
+tutorial [Loopback.js on App Engine Tutorial][2] for how to run and deploy this
 sample app.
 
-You can also view the [live demo][3] and read the [Loopback.js documentation][4].
+Additionally, view the [live demo][3] and read the [Loopback.js documentation][4].
 
 [1]: http://loopback.io/
 [2]: https://cloud.google.com/nodejs/resources/frameworks/loopback

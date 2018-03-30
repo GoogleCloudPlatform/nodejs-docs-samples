@@ -1,7 +1,7 @@
 # Node.js error reporting sample for Google App Engine
 
-This sample demonstrates error reporting in a Node.js app for
-[Google App Engine Flexible Environment](https://cloud.google.com/appengine).
+This sample shows how to use Stackdriver Error Reporting on Google App Engine
+Node.js Standard Environment and Flexible Environment.
 
 ## Running locally
 

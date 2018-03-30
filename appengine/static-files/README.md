@@ -1,6 +1,6 @@
 # Serving static files in Node.js sample for Google App Engine
 
-This sample demonstrates serving static files in a Node.js app for [Google App Engine Flexible Environment](https://cloud.google.com/appengine).
+This sample demonstrates serving static files in a Node.js app for [Google App Engine](https://cloud.google.com/appengine) Node.js Standard Environment and Flexible Environment.
 
 ## Running locally
 

@@ -52,5 +52,5 @@ See [Contributing][contributing].
 
 [appengine]: https://cloud.google.com/appengine/docs/flexible/nodejs
 [tutorial]: https://cloud.google.com/appengine/docs/flexible/nodejs/quickstart
-[readme]: ../README.md
+[readme]: ../../README.md
 [contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md

@@ -28,8 +28,10 @@ function createTask (project, location, queue) {
   // const queue = 'Queue ID, e.g. queue-1';
 
   authorize((authClient) => {
+    // Schedule the task for 2 minutes from now
     const scheduleTime = new Date();
     scheduleTime.setUTCMinutes(scheduleTime.getUTCMinutes() + 2);
+
     const task = {
       scheduleTime: scheduleTime,
       pull_message: {
@@ -127,7 +129,7 @@ function acknowledgeTask (task) {
    */
   // const task = {
   //   name: 'projects/YOUR_PROJECT_ID/locations/us-central1/queues/YOUR_QUEUE_ID/tasks/YOUR_TASK_ID,
-  //   scheduleTime: '2017-11-01T21:02:28.994Z'
+  //   scheduleTime: '2017-11-01T21:02:28.994Z' // TODO(developer): set this to your task's scheduled time
   // };
 
   authorize((authClient) => {

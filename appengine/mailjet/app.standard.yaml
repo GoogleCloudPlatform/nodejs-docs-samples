@@ -14,6 +14,9 @@
 # [START app_yaml]
 runtime: nodejs8
 
+# The following env variables may contain sensitive information that grants
+# anyone access to your Mailjet account. Do not add this file to your source
+# control.
 env_variables:
   MJ_APIKEY_PUBLIC: <your-mj-apikey-public>
   MJ_APIKEY_PRIVATE: <your-mj-apikey-private>

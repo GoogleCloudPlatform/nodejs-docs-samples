@@ -3,9 +3,9 @@
 This sample application shows how to integrate your Node.js application with
 Google Analytics on Google App Engine.
 
-App Engine Node.js Standard Environment users: See tutorial [Integrating with Google Analytics][std-tutorial] for more information on running and deploying this app.
+[App Engine Standard][appengine-std] users: See tutorial [Integrating with Google Analytics][std-tutorial] for more information on running and deploying this app.
 
-App Engine Node.js Flexible Environment users: See tutorial [Integrating with Google Analytics][flex-tutorial] for more information on running and deploying this app.
+[App Engine Flexible][appengine-flex] users: See tutorial [Integrating with Google Analytics][flex-tutorial] for more information on running and deploying this app.
 
 * [Setup](#setup)
 * [Running locally](#running-locally)
@@ -46,7 +46,7 @@ or with `yarn`:
 
 ## Deploying to App Engine Flexible Environment
 
-	gcloud app deploy app.flexible.yaml
+    gcloud app deploy app.flexible.yaml
 
 
 ## Running the tests

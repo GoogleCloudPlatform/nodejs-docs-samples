@@ -1,7 +1,7 @@
 # Node.js Google Cloud Tasks sample for Google App Engine
 
 This sample application shows how to use [Google Cloud Tasks](https://cloud.google.com/cloud-tasks/)
-on Google App Engine Node.js Standard Environment and Flexible Environment.
+on Google App Engine Node.js [Standard Environment][appengine-std] and [Flexible Environment][appengine-flex].
 
 App Engine queues push tasks to an App Engine HTTP target. This directory
 contains both the App Engine app to deploy, as well as the snippets to run
@@ -105,3 +105,6 @@ Examples:
 
 For more information, see https://cloud.google.com/cloud-tasks
 ```
+
+[appengine-flex]: https://cloud.google.com/appengine/docs/flexible/nodejs
+[appengine-std]: https://cloud.google.com/appengine/docs/standard/nodejs

@@ -5,6 +5,8 @@
   "private": true,
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "deploy": "gcloud app deploy",
     "lint": "samples lint",
     "pretest": "npm run lint",
     "test": "ava --verbose test/*.test.js"

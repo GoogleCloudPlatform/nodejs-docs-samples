@@ -6,12 +6,13 @@ used as database, cache and message broker.
 Refer to the [appengine/README.md](../README.md) file for more instructions on
 running and deploying this app.
 
-App Engine Node.js Flexible Environment users may also read the community
-tutorial [Redis on App Engine Tutorial][2] for how to run and deploy this sample
+[App Engine Node.js Flexible Environment][2] users may also read the community
+tutorial [Redis on App Engine Tutorial][3] for how to run and deploy this sample
 app.
 
-Additonally, read the [node_redis documentation][3].
+Additionally, you can also read the [node_redis documentation][4].
 
 [1]: http://redis.io/
-[2]: https://cloud.google.com/nodejs/resources/databases/redis
-[3]: https://github.com/NodeRedis/node_redis
+[2]: https://cloud.google.com/appengine/docs/flexible/nodejs
+[3]: https://cloud.google.com/nodejs/resources/databases/redis
+[4]: https://github.com/NodeRedis/node_redis

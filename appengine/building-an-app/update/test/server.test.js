@@ -40,7 +40,7 @@ test.cb.serial(`should display form`, (t) => {
     .get(`/submit`)
     .expect(200)
     .expect((response) => {
-      t.regex(response.text, /textarea name="message" placeholder="Message"/);
+      t.true(response.text.includes('textarea name="message" placeholder="Message"');
     })
     .end(t.end);
 });

@@ -3,9 +3,9 @@
 This sample application shows how to use Google Cloud Datastore on Google App
 Engine.
 
-App Engine Node.js Standard Environment users: See tutorial [Using Cloud Datastore][tutorial-std] for more information on running and deploying this app.
+[App Engine Standard][appengine-std] users: See tutorial [Using Cloud Datastore][tutorial-std] for more information on running and deploying this app.
 
-App Engine Node.js Flexible Environment users: See tutorial [Using Cloud Datastore][tutorial-flex] for more information on running and deploying this app.
+[App Engine Flexible][appengine-flex] users: See tutorial [Using Cloud Datastore][tutorial-flex] for more information on running and deploying this app.
 
 * [Setup](#setup)
 * [Running locally](#running-locally)
@@ -50,6 +50,8 @@ or with `yarn`:
 
 See [Contributing][contributing].
 
+[appengine-flex]: https://cloud.google.com/appengine/docs/flexible/nodejs
+[appengine-std]: https://cloud.google.com/appengine/docs/standard/nodejs
 [tutorial-std]: https://cloud.google.com/appengine/docs/standard/nodejs/using-cloud-datastore
 [tutorial-flex]: https://cloud.google.com/appengine/docs/flexible/nodejs/using-cloud-datastore
 [readme]: ../README.md

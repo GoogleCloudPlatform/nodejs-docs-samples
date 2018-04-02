@@ -15,6 +15,9 @@
 runtime: nodejs8
 
 # [START env_variables]
+# The following env variables may contain sensitive information that grants
+# anyone access to your Sendgrid account. Do not add this file to your source
+# control.
 env_variables:
   SENDGRID_API_KEY: <your-sendgrid-api-key>
   SENDGRID_SENDER: <your-sendgrid-sender>

@@ -16,6 +16,9 @@ runtime: nodejs
 env: flex
 
 # [START env_variables]
+# The following env variables may contain sensitive information that grants
+# anyone access to your Twilio account. Do not add this file to your source
+# control.
 env_variables:
   TWILIO_ACCOUNT_SID: <your-account-sid>
   TWILIO_AUTH_TOKEN: <your-auth-token>

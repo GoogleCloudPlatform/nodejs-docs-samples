@@ -16,6 +16,9 @@ runtime: nodejs
 env: flex
 
 # [START env_variables]
+# The following env variables may contain sensitive information that grants
+# anyone access to your memcached service. Do not add this file to your source
+# control.
 env_variables:
   # If you are using the App Engine Memcache service (currently in alpha),
   # uncomment this section and comment out the other Memcache variables.

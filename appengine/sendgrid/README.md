@@ -1,8 +1,8 @@
 # Node.js SendGrid email sample for Google App Engine
 
 This sample application shows how to use [SendGrid](https://www.sendgrid.com) on
-[Google App Engine](https://cloud.google.com/appengine) Node.js Standard
-Environment and Flexible Environment.
+[Google App Engine](https://cloud.google.com/appengine) Node.js [Standard Environment](https://cloud.google.com/appengine/docs/standard/nodejs)
+and [Flexible Environment](https://cloud.google.com/appengine/docs/flexible/nodejs).
 
 For more information about SendGrid, see their
 [documentation](https://sendgrid.com/docs/User_Guide/index.html).

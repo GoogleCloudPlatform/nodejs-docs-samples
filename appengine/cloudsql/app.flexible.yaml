@@ -16,6 +16,8 @@ runtime: nodejs
 env: flex
 
 # [START env]
+# The following env variables may contain sensitive information that grants
+# anyone access to your database. Do not add this file to your source control.
 env_variables:
   SQL_USER: YOUR_SQL_USER
   SQL_PASSWORD: YOUR_SQL_PASSWORD

@@ -42,11 +42,15 @@ or with `yarn`:
 
 ## Deploying to App Engine Standard Environment
 
-    gcloud app deploy app.standard.yaml
+```
+gcloud app deploy app.standard.yaml
+```
 
 ## Deploying to App Engine Flexible Environment
 
-    gcloud app deploy app.flexible.yaml
+```
+gcloud app deploy app.flexible.yaml
+```
 
 
 ## Running the tests

@@ -44,16 +44,18 @@ $ protoc \
 
 1. In `api_config.yaml`, replace `MY_PROJECT_ID` and `SERVICE-ACCOUNT-ID` with your Project ID and your service account's email address respectively.
 
-1. Deploy your service's configuration to Endpoints. Take note of your service's config ID and name once the deployment completes.
+1. Deploy your service's configuration to Endpoints. Take note of your service's name once the deployment completes.
 ```
 $ gcloud endpoints services deploy api.pb api_config.yaml
 ...
-Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
+
 ```
 
 1. Build a Docker image for later use using the following command. Make sure to replace `[YOUR_PROJECT_ID]` with your Project ID.
 ```
 $ gcloud container builds submit --tag gcr.io/[YOUR_PROJECT_ID]/endpoints-example:1.0 .
+...
+Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
 ```
 
 ### Running your service
@@ -70,7 +72,7 @@ $ sudo apt-get update
 $ sudo apt-get install docker.io
 ```
 
-1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_GCLOUD_PROJECT]`, `[YOUR_SERVICE_NAME]` and `[YOUR_SERVICE_CONFIG_ID]` with your GCloud Project ID, your service's name and your service's config ID respectively.
+1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_GCLOUD_PROJECT]` and `[YOUR_SERVICE_NAME]` with your GCloud Project ID and your service's name respectively.
 ```
 $ sudo docker run --detach --name=helloworld gcr.io/[YOUR_GCLOUD_PROJECT]/endpoints-example:1.0
 ```
@@ -83,7 +85,7 @@ $ sudo docker run \
     --link=helloworld:helloworld \
     gcr.io/endpoints-release/endpoints-runtime:1 \
     --service=[YOUR_SERVICE_NAME] \
-    --version=[YOUR_SERVICE_CONFIG_ID] \
+    --rollout_strategy=managed \
     --http2_port=9000 \
     --backend=grpc://helloworld:50051
 ```
@@ -107,7 +109,7 @@ $ gcloud components install kubectl
 $ gcloud container clusters get-credentials [YOUR_CLUSTER_NAME] --zone [YOUR_CLUSTER_ZONE]
 ```
 
-1. Edit the `container_engine.yaml` file, and replace `GCLOUD_PROJECT`, `SERVICE_NAME`, and `SERVICE_CONFIG` with your Project ID and your Endpoints service's name and config ID respectively.
+1. Edit the `container_engine.yaml` file, and replace `GCLOUD_PROJECT` and `SERVICE_NAME` with your GCloud Project ID and your service's name.
 
 1. Add a [Kubernetes service][docs_k8s_services] to the cluster you created. Note that Kubernetes services should not be confused with [Endpoints services][docs_endpoints_services].
 ```
@@ -168,11 +170,10 @@ $ protoc \
 ```
 $ gcloud endpoints services deploy api.pb api_config.yaml
 
-Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
 ```
 
 1. Deploy the Endpoints Proxy (ESP) with the HTTP 1.1 port enabled.
-Make sure to update the content of `http_deployment.yaml` and replace the placeholder `[SERVICE_NAME]`, `[SERVICE_CONFIG_ID]` and `[GCLOUD_PROJECT]`.
+Make sure to update the content of `http_deployment.yaml` and replace the placeholder `[SERVICE_NAME]` and `[GCLOUD_PROJECT]`.
 ```
 $ kubectl apply -f http_deployment.yaml
 ```

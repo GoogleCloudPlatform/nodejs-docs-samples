@@ -17,7 +17,7 @@
 
 function createTask (project, location, queue) {
   // [START cloud_tasks_create_task]
-  const google = require('googleapis');
+  const google = require('googleapis').google;
   const cloudtasks = google.cloudtasks('v2beta2');
 
   /**
@@ -28,7 +28,12 @@ function createTask (project, location, queue) {
   // const queue = 'Queue ID, e.g. queue-1';
 
   authorize((authClient) => {
+    // Schedule the task for 2 minutes from now
+    const scheduleTime = new Date();
+    scheduleTime.setUTCMinutes(scheduleTime.getUTCMinutes() + 2);
+
     const task = {
+      scheduleTime: scheduleTime,
       pull_message: {
         payload: Buffer.from('a message for the recipient').toString('base64')
       }
@@ -48,8 +53,8 @@ function createTask (project, location, queue) {
         return;
       }
 
-      console.log(`Created task ${response.name}.`);
-      console.log(JSON.stringify(response, null, 2));
+      console.log(`Created task ${response.data.name}.`);
+      console.log(JSON.stringify(response.data, null, 2));
     });
   });
 
@@ -71,7 +76,7 @@ function createTask (project, location, queue) {
 
 function pullTask (project, location, queue) {
   // [START cloud_tasks_pull_and_acknowledge_task]
-  const google = require('googleapis');
+  const google = require('googleapis').google;
   const cloudtasks = google.cloudtasks('v2beta2');
 
   /**
@@ -82,25 +87,21 @@ function pullTask (project, location, queue) {
   // const queue = 'Queue ID, e.g. queue-1';
 
   authorize((authClient) => {
-    const pullOptions = {
-      maxTasks: 1,
-      leaseDuration: '600s',
-      responseView: 'FULL'
-    };
-
     const request = {
-      name: `projects/${project}/locations/${location}/queues/${queue}`,
-      resource: pullOptions,
+      parent: `projects/${project}/locations/${location}/queues/${queue}`,
+      responseView: 'FULL',
+      pageSize: 1,
       auth: authClient
     };
 
-    cloudtasks.projects.locations.queues.tasks.pull(request, (err, response) => {
+    cloudtasks.projects.locations.queues.tasks.list(request, (err, response) => {
       if (err) {
         console.error(err);
         return;
       }
 
-      console.log('Pulled task %j', response);
+      const task = response.data.tasks[0];
+      console.log('Pulled task %j', task);
     });
   });
 
@@ -120,7 +121,7 @@ function pullTask (project, location, queue) {
 }
 
 function acknowledgeTask (task) {
-  const google = require('googleapis');
+  const google = require('googleapis').google;
   const cloudtasks = google.cloudtasks('v2beta2');
 
   /**
@@ -128,15 +129,13 @@ function acknowledgeTask (task) {
    */
   // const task = {
   //   name: 'projects/YOUR_PROJECT_ID/locations/us-central1/queues/YOUR_QUEUE_ID/tasks/YOUR_TASK_ID,
-  //   scheduleTime: '2017-11-01T21:02:28.994Z'
+  //   scheduleTime: '2017-11-01T21:02:28.994Z' // TODO(developer): set this to your task's scheduled time
   // };
 
   authorize((authClient) => {
     const request = {
       name: task.name,
-      resource: {
-        scheduleTime: task.scheduleTime
-      },
+      scheduleTime: task.scheduleTime,
       auth: authClient
     };
 

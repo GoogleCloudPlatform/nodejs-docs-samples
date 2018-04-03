@@ -22,13 +22,13 @@
   "dependencies": {
     "body-parser": "1.18.2",
     "express": "4.16.2",
-    "googleapis": "22.2.0",
-    "yargs": "10.0.3"
+    "googleapis": "27.0.0",
+    "yargs": "11.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.1.1",
-    "proxyquire": "1.8.0",
-    "sinon": "4.0.2"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "proxyquire": "2.0.0",
+    "sinon": "4.4.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

@@ -129,14 +129,14 @@ function startBot (bot, cerr) {
   token = token.replace(/\s/g, '');
 
   bot
-  .spawn({ token: token })
-  .startRTM((err) => {
-    if (err) {
-      console.error('Failed to start controller!');
-      console.error(err);
-      process.exit(1);
-    }
-  });
+    .spawn({ token: token })
+    .startRTM((err) => {
+      if (err) {
+        console.error('Failed to start controller!');
+        console.error(err);
+        process.exit(1);
+      }
+    });
 }
 
 function handleSimpleReply (bot, message) {

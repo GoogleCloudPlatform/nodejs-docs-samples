@@ -39,15 +39,15 @@ prompt.get(FIELDS, (err, config) => {
     table.timestamp('timestamp');
     table.string('userIp');
   })
-  .then(() => {
-    console.log(`Successfully created 'visits' table.`);
-    return knex.destroy();
-  })
-  .catch((err) => {
-    console.error(`Failed to create 'visits' table:`, err);
-    if (knex) {
-      knex.destroy();
-    }
-  });
+    .then(() => {
+      console.log(`Successfully created 'visits' table.`);
+      return knex.destroy();
+    })
+    .catch((err) => {
+      console.error(`Failed to create 'visits' table:`, err);
+      if (knex) {
+        knex.destroy();
+      }
+    });
 });
 // [END createTables]

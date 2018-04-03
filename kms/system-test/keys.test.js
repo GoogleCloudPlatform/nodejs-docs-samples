@@ -19,11 +19,12 @@ const fs = require(`fs`);
 const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const uuid = require(`uuid`);
 
 const cmd = `node keys.js`;
 const cwd = path.join(__dirname, `..`);
-const keyRingName = `nodejs-docs-samples-test-ring`;
-const keyNameOne = `nodejs-docs-samples-test-key-one`;
+const keyRingName = `test-ring-${uuid.v4()}`;
+const keyNameOne = `test-key-${uuid.v4()}`;
 const member = `allAuthenticatedUsers`;
 const role = `roles/viewer`;
 const projectId = process.env.GCLOUD_PROJECT;
@@ -58,10 +59,11 @@ test.afterEach.always(tools.restoreConsole);
 // Key ring tests
 
 test.serial(`should create a key ring`, async (t) => {
-  t.plan(0);
   const output = await tools.runAsync(`${cmd} keyrings create "${keyRingName}"`, cwd);
   if (!output.includes(`KeyRing ${formattedKeyRingName} already exists`)) {
     t.regex(output, new RegExp(`Key ring ${formattedKeyRingName} created.`));
+  } else {
+    t.pass();
   }
 });
 
@@ -105,10 +107,11 @@ test.serial(`should revoke access to a key ring`, async (t) => {
 
 // Crypto key tests
 test.serial(`should create a key`, async (t) => {
-  t.plan(0);
   const output = await tools.runAsync(`${cmd} create "${keyRingName}" "${keyNameOne}"`, cwd);
   if (!output.includes(`CryptoKey ${formattedKeyName} already exists`)) {
     t.regex(output, new RegExp(`Key ${formattedKeyName} created.`));
+  } else {
+    t.pass();
   }
 });
 

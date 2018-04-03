@@ -40,7 +40,7 @@ exports.blurOffensiveImages = (event) => {
   }
 
   const file = storage.bucket(object.bucket).file(object.name);
-  const filePath = `gs://${object.bucket}/${object.name}`
+  const filePath = `gs://${object.bucket}/${object.name}`;
 
   console.log(`Analyzing ${file.name}.`);
 
@@ -50,7 +50,7 @@ exports.blurOffensiveImages = (event) => {
       return Promise.reject(err);
     })
     .then(([result]) => {
-      const detections = result.safeSearchAnnotation
+      const detections = result.safeSearchAnnotation;
 
       if (detections.adult === 'VERY_LIKELY' ||
           detections.violence === 'VERY_LIKELY') {

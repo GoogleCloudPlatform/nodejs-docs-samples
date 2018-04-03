@@ -54,11 +54,11 @@ google.auth.getApplicationDefault((err, authClient) => {
       return;
     }
 
-    const keyRings = result.keyRings || [];
+    const keyRings = result.data.keyRings || [];
 
     if (keyRings.length) {
       console.log('Key rings:');
-      result.keyRings.forEach((keyRing) => console.log(keyRing.name));
+      keyRings.forEach((keyRing) => console.log(keyRing.name));
     } else {
       console.log(`No key rings found.`);
     }

@@ -20,7 +20,7 @@
 const google = require('googleapis').google;
 
 // Your Google Cloud Platform project ID
-const projectId = 'YOUR_PROJECT_ID';
+const projectId = process.env.GCLOUD_PROJECT;
 
 // Lists keys in the "global" location.
 const location = 'global';

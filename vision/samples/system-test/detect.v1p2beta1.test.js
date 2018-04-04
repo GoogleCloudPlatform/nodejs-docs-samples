@@ -52,5 +52,5 @@ test(`should extract text from pdf file`, async t => {
     `${cmd} pdf ${bucketName} ${files[0].name}`,
     cwd
   );
-  t.true(output.includes('sample.pdf.json'));
+  t.true(output.includes('pdf-ocr.pdf.json'));
 });

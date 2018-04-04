@@ -193,7 +193,6 @@ test(`should detect crop hints in a remote file`, async t => {
 test(`should detect similar web images in a local file`, async t => {
   const output = await tools.runAsync(`${cmd} web ${files[5].localPath}`, cwd);
   t.true(output.includes('Full matches found:'));
-  t.true(output.includes('URL: https://cloud.google.com/vision/docs/images/'));
   t.true(output.includes('Partial matches found:'));
   t.true(output.includes('Web entities found:'));
   t.true(output.includes('Description: Google Cloud Platform'));
@@ -205,7 +204,6 @@ test(`should detect similar web images in a remote file`, async t => {
     cwd
   );
   t.true(output.includes('Full matches found:'));
-  t.true(output.includes('URL: https://cloud.google.com/vision/docs/images/'));
   t.true(output.includes('Partial matches found:'));
   t.true(output.includes('Web entities found:'));
   t.true(output.includes('Description: Google'));

@@ -61,7 +61,6 @@ function detectPdfText(bucketName, fileName) {
   client
     .asyncBatchAnnotateFiles(request)
     .then(results => {
-      console.log(results);
       const operation = results[0];
       // Get a Promise representation of the final result of the job
       operation

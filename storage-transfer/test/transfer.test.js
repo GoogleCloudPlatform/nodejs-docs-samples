@@ -32,23 +32,35 @@ function getSample () {
   const transferOperationMock = {};
   const storagetransferMock = {
     transferJobs: {
-      create: sinon.stub().yields(null, transferJobMock),
-      get: sinon.stub().yields(null, transferJobMock),
-      patch: sinon.stub().yields(null, transferJobMock),
-      list: sinon.stub().yields(null, { transferJobs: [transferJobMock] })
+      create: sinon.stub().yields(null, { data: transferJobMock }),
+      get: sinon.stub().yields(null, { data: transferJobMock }),
+      patch: sinon.stub().yields(null, { data: transferJobMock }),
+      list: sinon.stub().yields(null, {
+        data: {
+          transferJobs: [transferJobMock]
+        }
+      })
     },
     transferOperations: {
-      get: sinon.stub().yields(null, transferOperationMock),
-      pause: sinon.stub().yields(null, transferOperationMock),
-      resume: sinon.stub().yields(null, transferOperationMock),
-      list: sinon.stub().yields(null, { operations: [transferOperationMock] })
+      get: sinon.stub().yields(null, { data: transferOperationMock }),
+      pause: sinon.stub().yields(null, { data: transferOperationMock }),
+      resume: sinon.stub().yields(null, { data: transferOperationMock }),
+      list: sinon.stub().yields(null, {
+        data: {
+          operations: [transferOperationMock]
+        }
+      })
     }
   };
-  const googleapisMock = {
+  const googleMock = {
     storagetransfer: sinon.stub().returns(storagetransferMock),
     auth: {
       getApplicationDefault: sinon.stub().yields(null, {})
     }
+  };
+
+  const googleapisMock = {
+    google: googleMock
   };
 
   return {
@@ -105,7 +117,7 @@ test.serial(`should handle auth error`, (t) => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.createTransferJob({}, callback);
 
@@ -147,7 +159,7 @@ test.serial(`should handle auth error`, (t) => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.getTransferJob(jobName, callback);
 
@@ -252,7 +264,7 @@ test.serial(`should handle auth error`, (t) => {
     field: `status`,
     value: `DISABLED`
   };
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.updateTransferJob(options, callback);
 
@@ -310,7 +322,7 @@ test.serial(`should handle auth error`, (t) => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.listTransferJobs(callback);
 
@@ -381,7 +393,7 @@ test.serial(`should handle auth error`, (t) => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.listTransferOperations(undefined, callback);
 
@@ -427,7 +439,7 @@ test.serial(`should handle auth error`, (t) => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.getTransferOperation(jobName, callback);
 
@@ -472,7 +484,7 @@ test.serial(`should handle auth error`, (t) => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.pauseTransferOperation(jobName, callback);
 
@@ -517,7 +529,7 @@ test.serial(`should handle auth error`, (t) => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.googleapis.auth.getApplicationDefault.yields(error);
+  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.resumeTransferOperation(jobName, callback);
 

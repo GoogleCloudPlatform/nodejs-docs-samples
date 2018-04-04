@@ -67,8 +67,8 @@ dependencies:
 # Run your tests
 test:
   override:
-    - functions start && cd functions/datastore && npm run system-test && functions stop
-    - functions start && cd functions/helloworld && npm run test && functions stop
+    - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/datastore && npm run system-test && functions-emulator stop
+    - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/helloworld && npm run test && functions-emulator stop
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/http/test/**/*.test.js'

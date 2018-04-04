@@ -15,7 +15,7 @@
 
 'use strict';
 
-const google = require('googleapis');
+const google = require('googleapis').google;
 const cloudtasks = google.cloudtasks('v2beta2');
 
 /**
@@ -40,7 +40,7 @@ function createTask (project, location, queue, options) {
     }
 
     const request = {
-      parent: `projects/${project}/locations/${location}/queues/${queue}`,  // TODO: Update placeholder value.
+      parent: `projects/${project}/locations/${location}/queues/${queue}`, // TODO: Update placeholder value.
       resource: {
         task: task
       },

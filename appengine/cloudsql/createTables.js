@@ -34,20 +34,21 @@ prompt.get(FIELDS, (err, config) => {
   const knex = Knex({ client: 'mysql', connection: config });
 
   // Create the "visits" table
-  knex.schema.createTable('visits', (table) => {
-    table.increments();
-    table.timestamp('timestamp');
-    table.string('userIp');
-  })
-  .then(() => {
-    console.log(`Successfully created 'visits' table.`);
-    return knex.destroy();
-  })
-  .catch((err) => {
-    console.error(`Failed to create 'visits' table:`, err);
-    if (knex) {
-      knex.destroy();
-    }
-  });
+  knex.schema.createTable('visits',
+    (table) => {
+      table.increments();
+      table.timestamp('timestamp');
+      table.string('userIp');
+    })
+    .then(() => {
+      console.log(`Successfully created 'visits' table.`);
+      return knex.destroy();
+    })
+    .catch((err) => {
+      console.error(`Failed to create 'visits' table:`, err);
+      if (knex) {
+        knex.destroy();
+      }
+    });
 });
 // [END createTables]

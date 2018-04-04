@@ -54,12 +54,12 @@ test(`should receive configuration message`, async (t) => {
 
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+    `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
   const output = await tools.runAsync(
-      `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`, cwd);
+    `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`, cwd);
 
   t.regex(output, new RegExp(/Getting config/));
 
@@ -75,12 +75,12 @@ test(`should send event message`, async (t) => {
 
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+    `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
   const output = await tools.runAsync(
-      `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`, cwd);
+    `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`, cwd);
 
   t.regex(output, new RegExp(/Publishing message/));
 
@@ -95,12 +95,12 @@ test(`should send event message`, async (t) => {
   const localRegName = `${registryName}-rsa256`;
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+    `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await tools.runAsync(
-      `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
   const output = await tools.runAsync(
-      `${cmd} --messageType=state --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`, cwd);
+    `${cmd} --messageType=state --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`, cwd);
   t.regex(output, new RegExp(/Publishing message/));
 
   // Check / cleanup

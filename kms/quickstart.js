@@ -20,7 +20,7 @@
 const google = require('googleapis').google;
 
 // Your Google Cloud Platform project ID
-const projectId = 'YOUR_PROJECT_ID';
+const projectId = process.env.GCLOUD_PROJECT;
 
 // Lists keys in the "global" location.
 const location = 'global';
@@ -54,11 +54,11 @@ google.auth.getApplicationDefault((err, authClient) => {
       return;
     }
 
-    const keyRings = result.keyRings || [];
+    const keyRings = result.data.keyRings || [];
 
     if (keyRings.length) {
       console.log('Key rings:');
-      result.keyRings.forEach((keyRing) => console.log(keyRing.name));
+      keyRings.forEach((keyRing) => console.log(keyRing.name));
     } else {
       console.log(`No key rings found.`);
     }

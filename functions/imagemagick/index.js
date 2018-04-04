@@ -20,7 +20,9 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 const path = require('path');
 const storage = require('@google-cloud/storage')();
-const vision = require('@google-cloud/vision')();
+const vision = require('@google-cloud/vision').v1p1beta1;
+
+const client = new vision.ImageAnnotatorClient();
 // [END functions_imagemagick_setup]
 
 // [START functions_imagemagick_analyze]
@@ -38,18 +40,22 @@ exports.blurOffensiveImages = (event) => {
   }
 
   const file = storage.bucket(object.bucket).file(object.name);
+  const filePath = `gs://${object.bucket}/${object.name}`;
 
   console.log(`Analyzing ${file.name}.`);
 
-  return vision.detectSafeSearch(file)
+  return client.safeSearchDetection(filePath)
     .catch((err) => {
       console.error(`Failed to analyze ${file.name}.`, err);
       return Promise.reject(err);
     })
-    .then(([safeSearch]) => {
-      if (safeSearch.adult || safeSearch.violence) {
+    .then(([result]) => {
+      const detections = result.safeSearchAnnotation;
+
+      if (detections.adult === 'VERY_LIKELY' ||
+          detections.violence === 'VERY_LIKELY') {
         console.log(`The image ${file.name} has been detected as inappropriate.`);
-        return blurImage(file, safeSearch);
+        return blurImage(file);
       } else {
         console.log(`The image ${file.name} has been detected as OK.`);
       }

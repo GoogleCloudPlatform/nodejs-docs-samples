@@ -372,10 +372,12 @@ function detectSafeSearch(fileName) {
     .then(results => {
       const detections = results[0].safeSearchAnnotation;
 
+      console.log('Safe search:');
       console.log(`Adult: ${detections.adult}`);
-      console.log(`Spoof: ${detections.spoof}`);
       console.log(`Medical: ${detections.medical}`);
+      console.log(`Spoof: ${detections.spoof}`);
       console.log(`Violence: ${detections.violence}`);
+      console.log(`Racy: ${detections.racy}`);
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -528,6 +530,15 @@ function detectWeb(fileName) {
           console.log(`  Score: ${webEntity.score}`);
         });
       }
+
+      if (webDetection.bestGuessLabels.length) {
+        console.log(
+          `Best guess labels found: ${webDetection.bestGuessLabels.length}`
+        );
+        webDetection.bestGuessLabels.forEach(label => {
+          console.log(`  Label: ${label.label}`);
+        });
+      }
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -583,11 +594,107 @@ function detectWebGCS(bucketName, fileName) {
           console.log(`  Score: ${webEntity.score}`);
         });
       }
+
+      if (webDetection.bestGuessLabels.length) {
+        console.log(
+          `Best guess labels found: ${webDetection.bestGuessLabels.length}`
+        );
+        webDetection.bestGuessLabels.forEach(label => {
+          console.log(`  Label: ${label.label}`);
+        });
+      }
     })
     .catch(err => {
       console.error('ERROR:', err);
     });
   // [END vision_web_detection_gcs]
+}
+
+function detectWebGeo(fileName) {
+  // [START vision_web_entities_include_geo_results]
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ImageAnnotatorClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const fileName = 'Local image file, e.g. /path/to/image.png';
+
+  const request = {
+    image: {
+      source: {
+        filename: fileName,
+      },
+    },
+    imageContext: {
+      webDetectionParams: {
+        includeGeoResults: true,
+      },
+    },
+  };
+
+  // Detect similar images on the web to a local file
+  client
+    .webDetection(request)
+    .then(results => {
+      const webDetection = results[0].webDetection;
+
+      webDetection.webEntities.forEach(entity => {
+        console.log(`Score: ${entity.score}`);
+        console.log(`Description: ${entity.description}`);
+      });
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END vision_web_entities_include_geo_results]
+}
+
+function detectWebGeoGCS(bucketName, fileName) {
+  // [START vision_web_entities_include_geo_results]
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ImageAnnotatorClient();
+
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
+  // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
+
+  const request = {
+    image: {
+      source: {
+        imageUri: `gs://${bucketName}/${fileName}`,
+      },
+    },
+    imageContext: {
+      webDetectionParams: {
+        includeGeoResults: true,
+      },
+    },
+  };
+
+  // Detect similar images on the web to a remote file
+  client
+    .webDetection(request)
+    .then(results => {
+      const webDetection = results[0].webDetection;
+
+      webDetection.webEntities.forEach(entity => {
+        console.log(`Score: ${entity.score}`);
+        console.log(`Description: ${entity.description}`);
+      });
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END vision_web_entities_include_geo_results]
 }
 
 function detectFulltext(fileName) {
@@ -609,7 +716,25 @@ function detectFulltext(fileName) {
     .documentTextDetection(fileName)
     .then(results => {
       const fullTextAnnotation = results[0].fullTextAnnotation;
-      console.log(fullTextAnnotation.text);
+      console.log(`Full text: ${fullTextAnnotation.text}`);
+
+      fullTextAnnotation.pages.forEach(page => {
+        page.blocks.forEach(block => {
+          console.log(`Block confidence: ${block.confidence}`);
+          block.paragraphs.forEach(paragraph => {
+            console.log(`Paragraph confidence: ${paragraph.confidence}`);
+            paragraph.words.forEach(word => {
+              const wordText = word.symbols.map(s => s.text).join('');
+              console.log(`Word text: ${wordText}`);
+              console.log(`Word confidence: ${word.confidence}`);
+              word.symbols.forEach(symbol => {
+                console.log(`Symbol text: ${symbol.text}`);
+                console.log(`Symbol confidence: ${symbol.confidence}`);
+              });
+            });
+          });
+        });
+      });
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -753,6 +878,18 @@ require(`yargs`) // eslint-disable-line
     opts => detectWebGCS(opts.bucketName, opts.fileName)
   )
   .command(
+    `web-geo <fileName>`,
+    `Detects web entities with improved results using geographic metadata`,
+    {},
+    opts => detectWebGeo(opts.fileName)
+  )
+  .command(
+    `web-geo-gcs <bucketName> <fileName>`,
+    `Detects web entities with improved results using geographic metadata`,
+    {},
+    opts => detectWebGeoGCS(opts.bucketName, opts.fileName)
+  )
+  .command(
     `fulltext <fileName>`,
     `Extracts full text from a local image file.`,
     {},
@@ -782,6 +919,8 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 crops-gcs my-bucket your-image.jpg`)
   .example(`node $0 web ./resources/wakeupcat.jpg`)
   .example(`node $0 web-gcs my-bucket your-image.jpg`)
+  .example(`node $0 web-geo ./resources/city.jpg`)
+  .example(`node $0 web-geo-gcs my-bucket your-image.jpg`)
   .example(`node $0 fulltext ./resources/wakeupcat.jpg`)
   .example(`node $0 fulltext-gcs my-bucket your-image.jpg`)
   .wrap(120)

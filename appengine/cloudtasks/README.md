@@ -26,7 +26,7 @@ Before you can run or deploy the sample, you need to do the following:
 
 1.  Refer to the [appengine/README.md][readme] file for instructions on
     running and deploying.
-1.  Enable the Cloud Tasks API in the [Google Cloud Console](https://cloud.google.com/apis/library/cloudtasks.googleapis.com).
+1.  Enable the Cloud Tasks API in the [Google Cloud Console](https://console.cloud.google.com/apis/api/tasks.googleapis.com).
 1.  Install dependencies:
 
     With `npm`:

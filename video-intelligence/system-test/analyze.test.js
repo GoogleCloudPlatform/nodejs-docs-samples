@@ -82,3 +82,15 @@ test.serial(`should analyze safe search results in a GCS file`, async t => {
   t.regex(output, /Time: \d+\.\d+s/);
   t.regex(output, /Explicit annotation results:/);
 });
+
+// analyze_video_transcription
+test.serial(
+  `should analyze video transcription results in a GCS file`,
+  async t => {
+    const output = await tools.runAsync(
+      `${cmd} transcription ${shortUrl}`,
+      cwd
+    );
+    t.regex(output, /over the past/);
+  }
+);

@@ -355,6 +355,59 @@ function analyzeSafeSearch(gcsUri) {
   // [END analyze_safe_search]
 }
 
+function analyzeVideoTranscription(gcsUri) {
+  // [START video_speech_transcription]
+  // Imports the Google Cloud Video Intelligence library
+  const videoIntelligence = require('@google-cloud/video-intelligence')
+    .v1p1beta1;
+
+  // Creates a client
+  const client = new videoIntelligence.VideoIntelligenceServiceClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = 'GCS URI of video to analyze, e.g. gs://my-bucket/my-video.mp4';
+
+  const videoContext = {
+    speechTranscriptionConfig: {
+      languageCode: 'en-US',
+    },
+  };
+
+  const request = {
+    inputUri: gcsUri,
+    features: ['SPEECH_TRANSCRIPTION'],
+    videoContext: videoContext,
+  };
+
+  client
+    .annotateVideo(request)
+    .then(results => {
+      const operation = results[0];
+      console.log('Waiting for operation to complete...');
+      return operation.promise();
+    })
+    .then(results => {
+      console.log('Word level information:');
+      const alternative =
+        results[0].annotationResults[0].speechTranscriptions[0].alternatives[0];
+      alternative.words.forEach(wordInfo => {
+        let start_time =
+          wordInfo.startTime.seconds + wordInfo.startTime.nanos * 1e-9;
+        let end_time = wordInfo.endTime.seconds + wordInfo.endTime.nanos * 1e-9;
+        console.log(
+          '\t' + start_time + 's - ' + end_time + 's: ' + wordInfo.word
+        );
+      });
+      console.log('Transcription: ' + alternative.transcript);
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END video_speech_transcription]
+}
+
 require(`yargs`)
   .demand(1)
   .command(
@@ -387,11 +440,18 @@ require(`yargs`)
     {},
     opts => analyzeSafeSearch(opts.gcsUri)
   )
+  .command(
+    `transcription <gcsUri>`,
+    `Extract the video transcription using the Cloud Video Intelligence API.`,
+    {},
+    opts => analyzeVideoTranscription(opts.gcsUri)
+  )
   .example(`node $0 faces gs://demomaker/larry_sergey_ice_bucket_short.mp4`)
   .example(`node $0 shots gs://demomaker/sushi.mp4`)
   .example(`node $0 labels-gcs gs://demomaker/tomatoes.mp4`)
   .example(`node $0 labels-file cat.mp4`)
   .example(`node $0 safe-search gs://demomaker/tomatoes.mp4`)
+  .example(`node $0 transcription gs://demomaker/tomatoes.mp4`)
   .wrap(120)
   .recommendCommands()
   .epilogue(

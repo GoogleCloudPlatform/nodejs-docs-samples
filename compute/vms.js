@@ -20,7 +20,7 @@
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
-// https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
+// https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application
 const Compute = require('@google-cloud/compute');
 // [END auth]
 

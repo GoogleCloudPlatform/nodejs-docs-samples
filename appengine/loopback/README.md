@@ -5,7 +5,7 @@
 Refer to the [appengine/README.md](../README.md) file for more instructions on
 running and deploying this app.
 
-[App Engine Flexible][5] users may also read the community
+[App Engine flexible environment][5] users may also read the community
 tutorial [Loopback.js on App Engine Tutorial][2] for how to run and deploy this
 sample app.
 

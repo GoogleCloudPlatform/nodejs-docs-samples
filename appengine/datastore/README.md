@@ -3,9 +3,9 @@
 This sample application shows how to use Google Cloud Datastore on Google App
 Engine.
 
-[App Engine Standard][appengine-std] users: See tutorial [Using Cloud Datastore][tutorial-std] for more information on running and deploying this app.
+[App Engine standard environment][appengine-std] users: See tutorial [Using Cloud Datastore][tutorial-std] for more information on running and deploying this app.
 
-[App Engine Flexible][appengine-flex] users: See tutorial [Using Cloud Datastore][tutorial-flex] for more information on running and deploying this app.
+[App Engine flexible environment][appengine-flex] users: See tutorial [Using Cloud Datastore][tutorial-flex] for more information on running and deploying this app.
 
 * [Setup](#setup)
 * [Running locally](#running-locally)
@@ -38,11 +38,11 @@ or with `yarn`:
 
     yarn start
 
-## Deploying to App Engine Standard Environment
+## Deploying to App Engine standard environment
 
 	gcloud app deploy app.standard.yaml
 
-## Deploying to App Engine Flexible Environment
+## Deploying to App Engine flexible environment
 
 	gcloud app deploy app.flexible.yaml
 

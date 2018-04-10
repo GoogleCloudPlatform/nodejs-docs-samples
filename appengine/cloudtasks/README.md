@@ -1,7 +1,7 @@
 # Node.js Google Cloud Tasks sample for Google App Engine
 
 This sample application shows how to use [Google Cloud Tasks](https://cloud.google.com/cloud-tasks/)
-on Google App Engine Node.js [Standard Environment][appengine-std] and [Flexible Environment][appengine-flex].
+on Google App Engine Node.js [standard environment][appengine-std] and [flexible environment][appengine-flex].
 
 App Engine queues push tasks to an App Engine HTTP target. This directory
 contains both the App Engine app to deploy, as well as the snippets to run
@@ -13,11 +13,11 @@ the App Engine app.
 `server.js` is the main App Engine app. This app serves as an endpoint to
 receive App Engine task attempts.
 
-`app.standard.yaml` configures the app for App Engine Node.js Standard
-Environment.
+`app.standard.yaml` configures the app for App Engine Node.js standard
+environment.
 
-`app.flexible.yaml` configures the app for App Engine Node.js Flexible
-Environment.
+`app.flexible.yaml` configures the app for App Engine Node.js flexible
+environment.
 
 * [Setup](#setup)
 * [Running locally](#running-locally)
@@ -52,7 +52,7 @@ version unless configured to do otherwise. Read the online help for the
 `create-app-engine-queue` or the `update-app-engine-queue` commands to learn
 about routing overrides for App Engine queues.
 
-## Deploying the app to App Engine Standard Environment
+## Deploying the app to App Engine standard environment
 
 Deploy the App Engine app with gcloud:
 
@@ -68,7 +68,7 @@ HTTP POST request and logs it. The log output can be viewed with:
 
     gcloud app logs read
 
-## Deploying the app to App Engine Flexible Environment
+## Deploying the app to App Engine flexible environment
 
 Deploy the App Engine app with gcloud:
 

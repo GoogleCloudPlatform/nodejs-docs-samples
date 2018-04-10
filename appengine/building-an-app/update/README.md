@@ -2,7 +2,7 @@
 
 This is the sample application for the
 [Updating Your Web Service][tutorial]
-tutorial found in the [Google App Engine Node.js Standard Environment][appengine]
+tutorial found in the [Google App Engine Node.js standard environment][appengine]
 documentation.
 
 * [Setup](#setup)

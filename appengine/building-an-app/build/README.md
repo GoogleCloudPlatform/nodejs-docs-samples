@@ -2,7 +2,7 @@
 
 This is the sample application for the
 [Writing Your Web Service with Node.js][tutorial]
-tutorial found in the [Google App Engine Node.js Standard Environment][appengine]
+tutorial found in the [Google App Engine Node.js standard environment][appengine]
 documentation.
 
 * [Setup](#setup)

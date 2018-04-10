@@ -1,8 +1,8 @@
-# Quickstart for Node.js in the App Engine Standard Environment
+# Quickstart for Node.js in the App Engine standard environment
 
 This is the sample application for the
-[Quickstart for Node.js in the App Engine Standard Environment][tutorial]
-tutorial found in the [Google App Engine Node.js Flexible Environment][appengine]
+[Quickstart for Node.js in the App Engine standard environment][tutorial]
+tutorial found in the [Google App Engine Node.js standard environment][appengine]
 documentation.
 
 * [Setup](#setup)

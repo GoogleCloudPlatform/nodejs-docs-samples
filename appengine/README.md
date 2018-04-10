@@ -60,10 +60,10 @@ The App Engine Node.js samples typically that you do the following:
 Some samples may have special deployment instructions.
 Refer to the `README.md` file in the sample folder.
 
-Many samples in this folder can be deployed to both App Engine Node.js Standard
-Environment and Flexible Environment. Those samples come with two different
-App Engine configuration files: `app.flexible.yaml` for Flexible Environment,
-and `app.standard.yaml` for Standard Environment.
+Many samples in this folder can be deployed to both App Engine Node.js standard
+environment and flexible environment. Those samples come with two different
+App Engine configuration files: `app.flexible.yaml` for flexible environment,
+and `app.standard.yaml` for standard environment.
 
 Samples with one single configuration file, `app.yaml`, can only be deployed
 to one of the two environments. See the `README.md` files for these samples

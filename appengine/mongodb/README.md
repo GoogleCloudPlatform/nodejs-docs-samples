@@ -5,7 +5,7 @@
 Refer to the [appengine/README.md](../README.md) file for more instructions on
 running and deploying this app.
 
-[App Engine Node.js Flexible Environment][2] users may also read the community
+[App Engine Node.js flexible environment][2] users may also read the community
 tutorial [MongoDB on App Engine Tutorial][3] for how to run and deploy this
 sample app.
 

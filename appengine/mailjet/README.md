@@ -6,7 +6,7 @@
 
 This sample application demonstrates how to use [Express.js][2] and
 [node-mailjet][3] to send transactional email on [Google App Engine][4] Node.js
-[Standard Environment][5] and [Flexible Environment][6].
+[standard environment][5] and [flexible environment][6].
 
 You can also read the [Mailjet documentation][7].
 

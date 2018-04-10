@@ -1,9 +1,9 @@
 # Parse-server sample for Google App Engine
 
 This sample shows how to deploy a [Parse-server](https://github.com/ParsePlatform/parse-server)
-app to [Google App Engine](https://cloud.google.com/appengine) Node.js [Standard
-Environment](https://cloud.google.com/appengine/docs/standard/nodejs)
-and [Flexible Environment](https://cloud.google.com/appengine/docs/flexible/nodejs).
+app to [Google App Engine](https://cloud.google.com/appengine) Node.js [standard
+environment](https://cloud.google.com/appengine/docs/standard/nodejs)
+and [flexible environment](https://cloud.google.com/appengine/docs/flexible/nodejs).
 
 ## Setup
 
@@ -25,12 +25,12 @@ and [Flexible Environment](https://cloud.google.com/appengine/docs/flexible/node
 1. Set the necessary [environment variables](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/parse-server/config.json).
 1. `npm start`
 
-## Deploy to App Engine Standard Environment
+## Deploy to App Engine standard environment
 
 1. Set the necessary [environment variables](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/parse-server/config.json).
 1. `gcloud app deploy app.standard.yaml`
 
-## Deploy to App Engine Flexible Environment
+## Deploy to App Engine flexible environment
 
 1. Set the necessary [environment variables](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/appengine/parse-server/config.json).
 1. `gcloud app deploy app.flexible.yaml`

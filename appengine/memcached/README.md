@@ -1,8 +1,8 @@
 # Memcached sample for Google App Engine
 
 This sample demonstrates accessing Memcached from Node.js on
-[Google App Engine](https://cloud.google.com/appengine) Node.js [Standard
-Environment][appengine-std] and [Flexible Environment][appengine-flex].
+[Google App Engine](https://cloud.google.com/appengine) Node.js [standard
+environment][appengine-std] and [flexible environment][appengine-flex].
 
 ## Running locally
 

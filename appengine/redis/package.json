@@ -8,6 +8,25 @@
   "engines": {
     "node": "8.x.x"
   },
+  "scripts": {
+    "start": "node server.js",
+    "test": "repo-tools test app -- server.js"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "requiredEnvVars": [
+          "redisHost",
+          "redisPort",
+          "redisKey"
+        ],
+        "msg": "IPs:\n::1;",
+        "args": [
+          "server.js"
+        ]
+      }
+    }
+  },
   "dependencies": {
     "nconf": "0.10.0",
     "redis": "2.8.0"

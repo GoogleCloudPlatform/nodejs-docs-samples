@@ -1,7 +1,7 @@
 # Node.js Google Cloud Storage sample for Google App Engine
 
 This sample demonstrates how to use [Google Cloud Storage](https://cloud.google.com/storage/)
-on [Google App Engine Flexible Environment](https://cloud.google.com/appengine).
+on [Google App Engine standard environment](https://cloud.google.com/appengine).
 
 ## Setup
 
@@ -24,7 +24,7 @@ with the following command:
 
 ## Running locally
 
-Refer to the [top-level README](../README.md) for instructions on running and
+Refer to the [top-level README](../../README.md) for instructions on running and
 deploying.
 
 When running locally, you can use the [Google Cloud SDK](https://cloud.google.com/sdk)

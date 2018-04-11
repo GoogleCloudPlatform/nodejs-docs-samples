@@ -1,6 +1,6 @@
 {
   "name": "appengine-analytics",
-  "description": "Sample for Google Analytics Measurement Protocol on Google App Engine Flexible Environment.",
+  "description": "Sample for Google Analytics Measurement Protocol on Google App Engine.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -10,16 +10,14 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4"
+    "node": "8.x.x"
   },
   "scripts": {
-    "deploy": "gcloud app deploy",
     "start": "node app.js",
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "system-test": "repo-tools test app",
-    "test": "npm run system-test",
-    "e2e-test": "repo-tools test deploy"
+    "test": "npm run system-test"
   },
   "dependencies": {
     "express": "4.16.2",

@@ -1,6 +1,6 @@
 {
   "name": "appengine-metadata",
-  "description": "Sample for accessing the Compute metadata server on GAE.",
+  "description": "Sample for accessing the Compute metadata server on GAE Standard Environment.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -10,14 +10,13 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4"
+    "node": "8.x.x"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "samples lint",
     "pretest": "npm run lint",
-    "system-test": "repo-tools test app -- server.js",
-    "test": "npm run system-test",
-    "e2e-test": "repo-tools test deploy"
+    "system-test": "samples test app",
+    "test": "npm run system-test"
   },
   "dependencies": {
     "express": "4.16.2",

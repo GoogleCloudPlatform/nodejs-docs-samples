@@ -132,6 +132,58 @@ function syncRecognizeModelSelectionGCS(
   // [END speech_transcribe_model_selection_gcs]
 }
 
+function syncRecognizeWithAutoPunctuation(
+  filename,
+  encoding,
+  sampleRateHertz,
+  languageCode
+) {
+  // [START speech_transcribe_file_with_auto_punctuation]
+  // Imports the Google Cloud client library
+  const fs = require('fs');
+  const speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const client = new speech.SpeechClient();
+
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // const filename = 'Local path to audio file, e.g. /path/to/audio.raw';
+  // const encoding = 'Encoding of the audio file, e.g. LINEAR16';
+  // const sampleRateHertz = 16000;
+  // const languageCode = 'BCP-47 language code, e.g. en-US';
+
+  const config = {
+    encoding: encoding,
+    languageCode: languageCode,
+    enableAutomaticPunctuation: true,
+  };
+  const audio = {
+    content: fs.readFileSync(filename).toString('base64'),
+  };
+
+  const request = {
+    config: config,
+    audio: audio,
+  };
+
+  // Detects speech in the audio file
+  client
+    .recognize(request)
+    .then(data => {
+      const response = data[0];
+      const transcription = response.results
+        .map(result => result.alternatives[0].transcript)
+        .join('\n');
+      console.log(`Transcription: `, transcription);
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END speech_transcribe_file_with_auto_punctuation]
+}
+
 require(`yargs`)
   .demand(1)
   .command(
@@ -155,6 +207,18 @@ require(`yargs`)
       syncRecognizeModelSelectionGCS(
         opts.gcsUri,
         opts.model,
+        opts.encoding,
+        opts.sampleRateHertz,
+        opts.languageCode
+      )
+  )
+  .command(
+    `sync-auto-punctuation <filename>`,
+    `Detects speech in a local audio file with auto punctuation.`,
+    {},
+    opts =>
+      syncRecognizeWithAutoPunctuation(
+        opts.filename,
         opts.encoding,
         opts.sampleRateHertz,
         opts.languageCode
@@ -189,6 +253,7 @@ require(`yargs`)
   .example(
     `node $0 sync-model-gcs gs://gcs-test-data/Google_Gnome.wav phone_call -e FLAC -r 16000`
   )
+  .example(`node $0 sync-auto-punctuation ./resources/commercial_mono.wav`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/speech/docs`)

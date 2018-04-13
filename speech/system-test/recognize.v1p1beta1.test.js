@@ -25,13 +25,16 @@ const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node recognize.v1p1beta1.js`;
 const cwd = path.join(__dirname, `..`);
-const filename = `Google_Gnome.wav`;
-const filepath = path.join(__dirname, `../resources/${filename}`);
-const text = `the weather outside is sunny`;
+const filename1 = `Google_Gnome.wav`;
+const filename2 = `commercial_mono.wav`;
+const filepath1 = path.join(__dirname, `../resources/${filename1}`);
+const filepath2 = path.join(__dirname, `../resources/${filename2}`);
+const text1 = `the weather outside is sunny`;
+const text2 = `Terrific. It's on the way.`;
 
 test.before(async () => {
   const [bucket] = await storage.createBucket(bucketName);
-  await bucket.upload(filepath);
+  await bucket.upload(filepath1);
 });
 
 test.after.always(async () => {
@@ -43,17 +46,25 @@ test.after.always(async () => {
 
 test(`should run sync recognize with model selection`, async t => {
   const model = `video`;
-  const output = await runAsync(`${cmd} sync-model ${filepath} ${model}`, cwd);
+  const output = await runAsync(`${cmd} sync-model ${filepath1} ${model}`, cwd);
   t.true(output.includes(`Transcription:`));
-  t.true(output.includes(text));
+  t.true(output.includes(text1));
 });
 
 test(`should run sync recognize on a GCS file with model selection`, async t => {
   const model = `video`;
   const output = await runAsync(
-    `${cmd} sync-model-gcs gs://${bucketName}/${filename} ${model}`,
+    `${cmd} sync-model-gcs gs://${bucketName}/${filename1} ${model}`,
     cwd
   );
   t.true(output.includes(`Transcription:`));
-  t.true(output.includes(text));
+  t.true(output.includes(text1));
+});
+
+test(`should run sync recognize with auto punctuation`, async t => {
+  const output = await runAsync(
+    `${cmd} sync-auto-punctuation ${filepath2}`,
+    cwd
+  );
+  t.true(output.includes(text2));
 });

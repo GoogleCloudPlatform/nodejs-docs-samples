@@ -1,7 +1,8 @@
 # Node.js Twilio voice and SMS sample for Google App Engine
 
-This sample demonstrates how to use [Twilio](https://www.twilio.com) on
-[Google App Engine Flexible Environment](https://cloud.google.com/appengine).
+This sample shows how to use [Twilio](https://www.twilio.com) on
+[Google App Engine](https://cloud.google.com/appengine) Node.js [standard environment](https://cloud.google.com/appengine/docs/standard/nodejs)
+and [flexible environment](https://cloud.google.com/appengine/docs/flexible/nodejs)
 
 For more information about Twilio, see the
 [Twilio Node library](https://www.twilio.com/docs/node/install).

@@ -1,13 +1,15 @@
 # Node.js SendGrid email sample for Google App Engine
 
-This sample demonstrates how to use [SendGrid](https://www.sendgrid.com) on
-[Google App Engine Flexible Environment](https://cloud.google.com/appengine).
+This sample application shows how to use [SendGrid](https://www.sendgrid.com) on
+[Google App Engine](https://cloud.google.com/appengine) Node.js [standard environment](https://cloud.google.com/appengine/docs/standard/nodejs)
+and [flexible environment](https://cloud.google.com/appengine/docs/flexible/nodejs).
 
 For more information about SendGrid, see their
 [documentation](https://sendgrid.com/docs/User_Guide/index.html).
 
-Read the [Sendgrid on App Engine Tutorial][5] for how to run and deploy this
-sample app.
+App Engine Node.js Flexible Environment users may also read the community
+tutorial [Sendgrid on App Engine Tutorial][1] for more information on how to
+run and deploy this sample app.
 
 ## Setup
 
@@ -16,7 +18,8 @@ Before you can run or deploy the sample, you will need to do the following:
 1. [Create a SendGrid Account](http://sendgrid.com/partner/google). As of
 September 2015, Google users start with 25,000 free emails per month.
 1. Configure your SendGrid settings in the environment variables section in
-`app.yaml`.
+`app.standard.yaml` (if you are deploying to App Engine standard environment) or
+`app.flexible.yaml` (if you are deploying to App Engine flexible environment).
 
 ## Running locally
 

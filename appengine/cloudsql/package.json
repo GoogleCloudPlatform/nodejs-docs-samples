@@ -1,6 +1,6 @@
 {
   "name": "appengine-cloudsql-mysql",
-  "description": "Node.js MySQL sample for Cloud SQL on App Engine flexible environment.",
+  "description": "Node.js MySQL sample for Cloud SQL on App Engine.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -10,10 +10,9 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4.3.2"
+    "node": "8.x.x"
   },
   "scripts": {
-    "deploy": "gcloud app deploy",
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "unit-test": "ava --verbose test/*.test.js",
@@ -21,8 +20,7 @@
     "system-test": "repo-tools test app -- server.js",
     "system-test-proxy": "npm run start-proxy; npm run system-test",
     "all-test": "npm run unit-test && npm run system-test",
-    "test": "repo-tools test run --cmd npm -- run all-test",
-    "e2e-test": "repo-tools test deploy"
+    "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
     "async": "2.6.0",

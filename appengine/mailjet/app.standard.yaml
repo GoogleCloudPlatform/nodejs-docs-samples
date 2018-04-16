@@ -1,4 +1,4 @@
-# Copyright 2015-2016, Google, Inc.
+# Copyright 2016, Google, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,12 +12,12 @@
 # limitations under the License.
 
 # [START app_yaml]
-runtime: nodejs
-env: flex
+runtime: nodejs8
 
-# [START env_variables]
+# The following env variables may contain sensitive information that grants
+# anyone access to your Mailjet account. Do not add this file to your source
+# control.
 env_variables:
-  SENDGRID_API_KEY: <your-sendgrid-api-key>
-  SENDGRID_SENDER: <your-sendgrid-sender>
-# [END env_variables]
+  MJ_APIKEY_PUBLIC: <your-mj-apikey-public>
+  MJ_APIKEY_PRIVATE: <your-mj-apikey-private>
 # [END app_yaml]

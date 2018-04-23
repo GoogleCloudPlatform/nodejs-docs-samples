@@ -31,6 +31,7 @@ const filepath1 = path.join(__dirname, `../resources/${filename1}`);
 const filepath2 = path.join(__dirname, `../resources/${filename2}`);
 const text1 = `the weather outside is sunny`;
 const text2 = `Terrific. It's on the way.`;
+const text3 = `Chrome`;
 
 test.before(async () => {
   const [bucket] = await storage.createBucket(bucketName);
@@ -67,4 +68,9 @@ test(`should run sync recognize with auto punctuation`, async t => {
     cwd
   );
   t.true(output.includes(text2));
+});
+
+test(`should run sync recognize with metadata`, async t => {
+  const output = await runAsync(`${cmd} sync-metadata ${filepath2}`, cwd);
+  t.true(output.includes(text3));
 });

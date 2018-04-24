@@ -74,3 +74,8 @@ test(`should run sync recognize with metadata`, async t => {
   const output = await runAsync(`${cmd} sync-metadata ${filepath2}`, cwd);
   t.true(output.includes(text3));
 });
+
+test(`should run sync recognize with enhanced model`, async t => {
+  const output = await runAsync(`${cmd} sync-enhanced-model ${filepath2}`, cwd);
+  t.true(output.includes(text3));
+});

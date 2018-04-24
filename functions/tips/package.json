@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-docs-samples-functions-http",
+  "name": "nodejs-docs-samples-functions-tips",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -9,25 +9,28 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4.3.2"
+    "node": ">=6.14.0"
   },
   "scripts": {
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "test": "ava -T 20s --verbose test/*.test.js"
-  },
-  "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1",
-    "ava": "0.25.0",
-    "proxyquire": "2.0.0",
-    "sinon": "4.4.2"
   },
   "dependencies": {
-    "busboy": "^0.2.14",
     "safe-buffer": "5.1.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.2.5",
+    "ava": "0.25.0",
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,
-    "requiresProjectId": true
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "BASE_URL",
+      "GCF_REGION",
+      "TOPIC",
+      "BUCKET",
+      "FUNCTIONS_CMD"
+    ]
   }
 }

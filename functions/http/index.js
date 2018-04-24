@@ -105,3 +105,75 @@ exports.helloHttp = (req, res) => {
   }
 };
 // [END functions_http_method]
+
+// [START functions_http_xml]
+/**
+ * Parses a document of type 'text/xml'
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.parseXML = (req, res) => {
+  // Convert the request to a Buffer and a string
+  // Use whichever one is accepted by your XML parser
+  let data = req.rawBody;
+  let xmlData = data.toString();
+
+  const parseString = require('xml2js').parseString;
+
+  parseString(xmlData, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).end();
+      return;
+    }
+    res.send(result);
+  });
+};
+// [END functions_http_xml]
+
+// [START functions_http_form_data]
+/**
+ * Parses a 'multipart/form-data' upload request
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
+const Busboy = require('busboy');
+
+exports.uploadFile = (req, res) => {
+  if (req.method === 'POST') {
+    const busboy = new Busboy({ headers: req.headers });
+
+    // This object will accumulate all the uploaded files, keyed by their name.
+    const uploads = {};
+    const tmpdir = os.tmpdir();
+
+    // This callback will be invoked for each file uploaded.
+    busboy.on('file', (fieldname, file, filename) => {
+      // Note: os.tmpdir() - and any files in it - must fit in memory.
+      const filepath = path.join(tmpdir, filename);
+      uploads[fieldname] = filepath;
+      file.pipe(fs.createWriteStream(filepath));
+    });
+
+    // This callback will be invoked after all uploaded files are saved.
+    busboy.on('finish', () => {
+      // TODO(developer): Process uploaded files here
+      for (const name in uploads) {
+        const file = uploads[name];
+        fs.unlinkSync(file);
+      }
+      res.send();
+    });
+
+    req.pipe(busboy);
+  } else {
+    // Ignore non-POST requests
+    res.status(405).send();
+  }
+};
+// [END functions_http_form_data]

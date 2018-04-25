@@ -160,7 +160,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
 // [START functions_tips_retry_promise]
 /**
  * Background Cloud Function that demonstrates
- * how to toggle retries using a callback
+ * how to toggle retries using a promise
  *
  * @param {object} event The Cloud Functions event.
  */
@@ -178,7 +178,7 @@ exports.retryPromise = (event) => {
 // [START functions_tips_retry_callback]
 /**
  * Background Cloud Function that demonstrates
- * how to toggle retries using a promise
+ * how to toggle retries using a callback
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.

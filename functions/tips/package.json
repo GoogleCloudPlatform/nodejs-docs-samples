@@ -13,14 +13,15 @@
   },
   "scripts": {
     "lint": "repo-tools lint",
-    "pretest": "npm run lint",
+    "pretest": "npm run lint"
   },
   "dependencies": {
+    "@google-cloud/pubsub": "^0.18.0",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "2.2.5",
-    "ava": "0.25.0",
+    "ava": "0.25.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

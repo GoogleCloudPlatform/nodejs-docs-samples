@@ -196,3 +196,29 @@ exports.retryCallback = (event, callback) => {
   }
 };
 // [END functions_tips_retry_callback]
+
+// [START functions_tips_gcp_apis]
+const Pubsub = require('@google-cloud/pubsub');
+const pubsub = Pubsub();
+
+/**
+ * HTTP Cloud Function that uses a cached client library instance to
+ * reduce the number of connections required per function invocation.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} req.body Cloud Function request context body.
+ * @param {String} req.body.topic The Cloud Pub/Sub topic to publish to.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.gcpApiCall = (req, res) => {
+  const topic = pubsub.topic(req.body.topic);
+
+  topic.publish('Test message', err => {
+    if (err) {
+      res.status(500).send(`Error publishing the message: ${err}`);
+    } else {
+      res.status(200).send('1 message published');
+    }
+  });
+};
+// [END functions_tips_gcp_apis]

@@ -31,7 +31,7 @@ const heavyComputation = () => {
 const functionSpecificComputation = heavyComputation;
 const fileWideComputation = lightweightComputation;
 
-// [START functions_scopes]
+// [START functions_tips_scopes]
 // Global (instance-wide) scope
 // This computation runs at instance cold-start
 const instanceVar = heavyComputation();
@@ -49,9 +49,9 @@ exports.scopeDemo = (req, res) => {
 
     res.end(`Per instance: ${instanceVar}, per function: ${functionVar}`);
 }
-// [END functions_scopes]
+// [END functions_tips_scopes]
 
-// [START functions_lazy_globals]
+// [START functions_tips_lazy_globals]
 // This value is always initialized, which happens at cold-start
 const nonLazyGlobal = fileWideComputation();
 let lazyGlobal;
@@ -68,17 +68,17 @@ exports.lazyGlobals = (req, res) => {
 
   res.end(`Lazy global: ${lazyGlobal}, non-lazy global: ${nonLazyGlobal}`);
 }
-// [END functions_lazy_globals]
+// [END functions_tips_lazy_globals]
 
-// [START functions_ephemeral_connection]
-// [START functions_cached_connection]
+// [START functions_tips_ephemeral_connection]
+// [START functions_tips_cached_connection]
 const http = require('http');
-// [END functions_ephemeral_connection]
+// [END functions_tips_ephemeral_connection]
 const agent = new http.Agent({keepAlive: true});
-// [END functions_cached_connection]
+// [END functions_tips_cached_connection]
 
 // TODO(ace-n) make sure this import works as intended
-// [START functions_ephemeral_connection]
+// [START functions_tips_ephemeral_connection]
 exports.ephemeralConnection = (req, res) => {
   req = http.request({
     host: '<HOST>',
@@ -98,9 +98,9 @@ exports.ephemeralConnection = (req, res) => {
   });
   req.end();
 };
-// [END functions_ephemeral_connection]
+// [END functions_tips_ephemeral_connection]
 
-// [START functions_cached_connection]
+// [START functions_tips_cached_connection]
 exports.cachedConnection = (request, response) => {
   req = http.request({
     host: '',
@@ -121,4 +121,4 @@ exports.cachedConnection = (request, response) => {
   });
   req.end();
 };
-// [END functions_cached_connection]
+// [END functions_tips_cached_connection]

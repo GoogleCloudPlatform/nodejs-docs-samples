@@ -43,4 +43,4 @@ test(`should demonstrate error type behavior`, (t) => {
   sample.errorTypes(req, res);
   t.deepEqual(console.error.getCall(2).args, [objError]);
   t.deepEqual(console.error.getCall(3).args, [objError]);
-})
+});

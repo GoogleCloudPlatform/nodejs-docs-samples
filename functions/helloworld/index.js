@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -170,44 +170,3 @@ exports.helloTemplate = (req, res) => {
   res.send(html).end();
 };
 // [END functions_helloworld_template]
-
-/**
- * HTTP Cloud Function that demonstrates
- * how to catch errors of different types.
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
- */
-exports.helloErrorTypes = (req, res) => {
-  // [START functions_helloworld_error_object]
-  try {
-    // Throw an Error object (to simulate a GCP API failure)
-    throw new Error('Error object!');
-  } catch (err) {
-    // err is already an Error object
-    console.error(err);
-  }
-  // [END functions_helloworld_error_object]
-
-  /* eslint-disable no-throw-literal */
-  // [START functions_helloworld_error_unknown]
-  try {
-    // Throw an unknown error type
-    if (Date.now() % 2 === 0) {
-      throw 'Error string!';
-    } else {
-      throw new Error('Error object!');
-    }
-  } catch (err) {
-    // Determine the error type
-    if (err instanceof Error) {
-      console.error(err);
-    } else {
-      console.error(new Error(err));
-    }
-  }
-  // [END functions_helloworld_error_unknown]
-  /* eslint-enable no-throw-literal */
-
-  res.end();
-};

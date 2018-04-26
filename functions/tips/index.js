@@ -45,13 +45,15 @@ exports.scopeDemo = (req, res) => {
   // This computation runs every time this function is called
   const functionVar = lightComputation();
 
-  res.end(`Per instance: ${instanceVar}, per function: ${functionVar}`);
+  res.send(`Per instance: ${instanceVar}, per function: ${functionVar}`);
 };
 // [END functions_tips_scopes]
 
 // [START functions_tips_lazy_globals]
-// This value is always initialized, which happens at cold-start
+// Always initialized (at cold-start)
 const nonLazyGlobal = fileWideComputation();
+
+// Declared at cold-start, but only initialized if/when the function executes
 let lazyGlobal;
 
 /**
@@ -64,7 +66,7 @@ exports.lazyGlobals = (req, res) => {
   // This value is initialized only if (and when) the function is called
   lazyGlobal = lazyGlobal || functionSpecificComputation();
 
-  res.end(`Lazy global: ${lazyGlobal}, non-lazy global: ${nonLazyGlobal}`);
+  res.send(`Lazy global: ${lazyGlobal}, non-lazy global: ${nonLazyGlobal}`);
 };
 // [END functions_tips_lazy_globals]
 
@@ -73,9 +75,8 @@ exports.lazyGlobals = (req, res) => {
 const http = require('http');
 // [END functions_tips_ephemeral_agent]
 const agent = new http.Agent({keepAlive: true});
-// [END functions_tips_cached_connection]
+// [END functions_tips_cached_agent]
 
-// TODO(ace-n) make sure this import works as intended
 // [START functions_tips_ephemeral_agent]
 /**
  * HTTP Cloud Function that uses an ephemeral HTTP agent

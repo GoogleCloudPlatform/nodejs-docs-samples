@@ -154,7 +154,8 @@ exports.uploadFile = (req, res) => {
 
     // This callback will be invoked for each file uploaded.
     busboy.on('file', (fieldname, file, filename) => {
-      // Note: os.tmpdir() - and any files in it - must fit in memory.
+      // Note: os.tmpdir() points to an in-memory file system on GCF
+      // Thus, any files in it must fit in the instance's memory.
       const filepath = path.join(tmpdir, filename);
       uploads[fieldname] = filepath;
       file.pipe(fs.createWriteStream(filepath));
@@ -173,7 +174,7 @@ exports.uploadFile = (req, res) => {
     req.pipe(busboy);
   } else {
     // Ignore non-POST requests
-    res.status(405).send();
+    res.status(405).end();
   }
 };
 // [END functions_http_form_data]
@@ -189,7 +190,7 @@ const storage = require('@google-cloud/storage')();
  * @param {Object} res Cloud Function response context.
  */
 exports.getSignedUrl = (req, res) => {
-  if(req.method === 'POST') {
+  if (req.method === 'POST') {
     // TODO(developer) check that the user is authorized to upload
 
     // Get a reference to the destination file in GCS
@@ -203,7 +204,7 @@ exports.getSignedUrl = (req, res) => {
       contentType: req.body.contentType
     };
 
-    file.getSignedUrl(config, function(err, url) {
+    file.getSignedUrl(config, function (err, url) {
       if (err) {
         console.error(err);
         res.status(500).end();
@@ -212,7 +213,7 @@ exports.getSignedUrl = (req, res) => {
       res.send(url);
     });
   } else {
-      res.status(405).end();
+    res.status(405).end();
   }
-}
+};
 // [END functions_http_signed_url]

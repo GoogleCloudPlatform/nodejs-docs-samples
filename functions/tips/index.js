@@ -35,7 +35,7 @@ const fileWideComputation = lightComputation;
 const instanceVar = heavyComputation();
 
 /**
- * Sample HTTP Cloud Function.
+ * HTTP Cloud Function that declares a variable.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
@@ -57,7 +57,7 @@ const nonLazyGlobal = fileWideComputation();
 let lazyGlobal;
 
 /**
- * Sample HTTP Cloud Function.
+ * HTTP Cloud Function that uses lazy-initialized globals
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.

@@ -28,15 +28,6 @@ const url = `gs://nodejs-docs-samples-video/quickstart.mp4`;
 const shortUrl = `gs://nodejs-docs-samples-video/quickstart_short.mp4`;
 const file = `resources/cat.mp4`;
 
-// analyze_faces
-// This is under whitelist and therefore will fail in most circumstances.
-test.skip(`should analyze faces in a GCS file`, async t => {
-  const output = await tools.runAsync(`${cmd} faces ${url}`, cwd);
-  t.regex(output, /Thumbnail size: \d+/);
-  t.regex(output, /Start:.*\d+\.\d+s/);
-  t.regex(output, /End:.*\d+\.\d+s/);
-});
-
 // analyze_labels_gcs (one scene)
 test.serial(`should analyze labels in a GCS file with one scene`, async t => {
   const output = await tools.runAsync(`${cmd} labels-gcs ${shortUrl}`, cwd);

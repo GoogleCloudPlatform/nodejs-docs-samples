@@ -15,71 +15,6 @@
 
 'use strict';
 
-function analyzeFaces(gcsUri) {
-  // [START analyze_faces]
-  // Imports the Google Cloud Video Intelligence library
-  const video = require('@google-cloud/video-intelligence').v1;
-
-  // Creates a client
-  const client = new video.VideoIntelligenceServiceClient();
-
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const gcsUri = 'GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4';
-
-  const request = {
-    inputUri: gcsUri,
-    features: ['FACE_DETECTION'],
-  };
-
-  // Detects faces in a video
-  client
-    .annotateVideo(request)
-    .then(results => {
-      const operation = results[0];
-      console.log('Waiting for operation to complete...');
-      return operation.promise();
-    })
-    .then(results => {
-      // Gets faces
-      const faces = results[0].annotationResults[0].faceAnnotations;
-      faces.forEach((face, faceIdx) => {
-        console.log(`Face #${faceIdx}`);
-        console.log(`\tThumbnail size: ${face.thumbnail.length}`);
-        face.segments.forEach((segment, segmentIdx) => {
-          segment = segment.segment;
-          if (segment.startTimeOffset.seconds === undefined) {
-            segment.startTimeOffset.seconds = 0;
-          }
-          if (segment.startTimeOffset.nanos === undefined) {
-            segment.startTimeOffset.nanos = 0;
-          }
-          if (segment.endTimeOffset.seconds === undefined) {
-            segment.endTimeOffset.seconds = 0;
-          }
-          if (segment.endTimeOffset.nanos === undefined) {
-            segment.endTimeOffset.nanos = 0;
-          }
-          console.log(`\tAppearance #${segmentIdx}:`);
-          console.log(
-            `\t\tStart: ${segment.startTimeOffset.seconds}` +
-              `.${(segment.startTimeOffset.nanos / 1e6).toFixed(0)}s`
-          );
-          console.log(
-            `\t\tEnd: ${segment.endTimeOffset.seconds}.` +
-              `${(segment.endTimeOffset.nanos / 1e6).toFixed(0)}s`
-          );
-        });
-        console.log(`\tLocations:`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
-  // [END analyze_faces]
-}
-
 function analyzeLabelsGCS(gcsUri) {
   // [START analyze_labels_gcs]
   // Imports the Google Cloud Video Intelligence library
@@ -411,12 +346,6 @@ function analyzeVideoTranscription(gcsUri) {
 require(`yargs`)
   .demand(1)
   .command(
-    `faces <gcsUri>`,
-    `Analyzes faces in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
-    {},
-    opts => analyzeFaces(opts.gcsUri)
-  )
-  .command(
     `shots <gcsUri>`,
     `Analyzes shot angles in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
     {},
@@ -446,7 +375,6 @@ require(`yargs`)
     {},
     opts => analyzeVideoTranscription(opts.gcsUri)
   )
-  .example(`node $0 faces gs://demomaker/larry_sergey_ice_bucket_short.mp4`)
   .example(`node $0 shots gs://demomaker/sushi.mp4`)
   .example(`node $0 labels-gcs gs://demomaker/tomatoes.mp4`)
   .example(`node $0 labels-file cat.mp4`)

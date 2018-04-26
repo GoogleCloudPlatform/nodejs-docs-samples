@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -78,6 +78,7 @@ const agent = new http.Agent({keepAlive: true});
 // [END functions_tips_cached_agent]
 
 // [START functions_tips_ephemeral_agent]
+
 /**
  * HTTP Cloud Function that uses an ephemeral HTTP agent
  *
@@ -155,6 +156,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
 
   // Do what the function is supposed to do
   console.log(`Processing event ${event} with age ${eventAge} ms.`);
+  callback();
 };
 // [END functions_tips_infinite_retries]
 
@@ -164,9 +166,11 @@ exports.avoidInfiniteRetries = (event, callback) => {
  * how to toggle retries using a promise
  *
  * @param {object} event The Cloud Functions event.
+ * @param {object} event.data Data included with the event.
+ * @param {object} event.data.retry Whether or not to retry the function.
  */
 exports.retryPromise = (event) => {
-  const tryAgain = false;
+  const tryAgain = !!event.data.retry;
 
   if (tryAgain) {
     throw new Error(`Retrying...`);
@@ -182,17 +186,19 @@ exports.retryPromise = (event) => {
  * how to toggle retries using a callback
  *
  * @param {object} event The Cloud Functions event.
+ * @param {object} event.data Data included with the event.
+ * @param {object} event.data.retry Whether or not to retry the function.
  * @param {function} callback The callback function.
  */
 exports.retryCallback = (event, callback) => {
-  const tryAgain = false;
+  const tryAgain = !!event.data.retry;
   const err = new Error('Error!');
 
   if (tryAgain) {
-    console.error(`Retrying: ${err}`);
+    console.error('Retrying:', err);
     callback(err);
   } else {
-    console.error(`Not retrying: ${err}`);
+    console.error('Not retrying:', err);
     callback();
   }
 };

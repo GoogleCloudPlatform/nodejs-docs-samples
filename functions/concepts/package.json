@@ -14,7 +14,9 @@
   "scripts": {
     "lint": "repo-tools lint"
   },
-  "dependencies": {},
+  "dependencies": {
+    "request": "^2.85.0"
+  },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "2.2.5",
     "ava": "0.25.0",

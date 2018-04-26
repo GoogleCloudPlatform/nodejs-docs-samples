@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -76,16 +76,30 @@ exports.executionCount = (req, res) => {
 };
 // [END functions_concepts_stateless]
 
-// [START functions_after_response]
+// [START functions_concepts_after_response]
+/**
+ * HTTP Cloud Function that may not completely
+ * execute due to early HTTP response
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
 exports.afterResponse = (req, res) => {
   res.end();
 
   // This statement may not execute
   console.log('Function complete!');
 };
-// [END functions_after_response]
+// [END functions_concepts_after_response]
 
-// [START functions_after_timeout]
+// [START functions_concepts_after_timeout]
+/**
+ * HTTP Cloud Function that may not completely
+ * execute due to function execution timeout
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
 exports.afterTimeout = (req, res) => {
   setTimeout(() => {
     // May not execute if function's timeout is <2 minutes
@@ -93,4 +107,65 @@ exports.afterTimeout = (req, res) => {
     res.end();
   }, 120000); // 2 minute delay
 };
-// [END functions_after_timeout]
+// [END functions_concepts_after_timeout]
+
+// [START functions_concepts_filesystem]
+const fs = require('fs');
+
+/**
+ * HTTP Cloud Function that lists files in the function directory
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.listFiles = (req, res) => {
+  fs.readdir(__dirname, (err, files) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      console.log('Files', files);
+      res.sendStatus(200);
+    }
+  });
+};
+// [END functions_concepts_filesystem]
+
+// [START functions_concepts_modules]
+const path = require('path');
+const loadedModule = require(path.join(__dirname, 'loadable.js'));
+
+/**
+ * HTTP Cloud Function that runs a function loaded from another Node.js file
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.runLoadedModule = (req, res) => {
+  console.log(`Loaded function from file ${loadedModule.getFileName()}`);
+  res.end();
+};
+// [END functions_concepts_modules]
+
+// [START functions_concepts_requests]
+const request = require('request');
+
+/**
+ * HTTP Cloud Function that makes an HTTP request
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.makeRequest = (req, res) => {
+  // The URL to send the request to
+  const url = 'https://example.com';
+
+  request(url, (err, response) => {
+    if (!err && response.statusCode === 200) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(500);
+    }
+  });
+};
+// [END functions_concepts_requests]

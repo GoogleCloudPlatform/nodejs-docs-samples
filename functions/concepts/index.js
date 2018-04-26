@@ -20,6 +20,8 @@
  * how to catch errors of different types.
  *
  * @param {Object} req Cloud Function request context.
+ * @param {Object} req.body Cloud Function request context body.
+ * @param {String} req.body.topic The Cloud Pub/Sub topic to publish to.
  * @param {Object} res Cloud Function response context.
  */
 exports.errorTypes = (req, res) => {
@@ -33,11 +35,13 @@ exports.errorTypes = (req, res) => {
   }
   // [END functions_concepts_error_object]
 
+  const someCondition = !!req.body.throwAsString;
+
   /* eslint-disable no-throw-literal */
   // [START functions_concepts_error_unknown]
   try {
     // Throw an unknown error type
-    if (Date.now() % 2 === 0) {
+    if (someCondition) {
       throw 'Error string!';
     } else {
       throw new Error('Error object!');

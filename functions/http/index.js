@@ -173,7 +173,7 @@ exports.uploadFile = (req, res) => {
 
     req.pipe(busboy);
   } else {
-    // Ignore non-POST requests
+    // Return a "method not allowed" error
     res.status(405).end();
   }
 };
@@ -213,6 +213,7 @@ exports.getSignedUrl = (req, res) => {
       res.send(url);
     });
   } else {
+    // Return a "method not allowed" error
     res.status(405).end();
   }
 };

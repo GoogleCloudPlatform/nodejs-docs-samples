@@ -18,7 +18,8 @@ Before you can run or deploy the sample, you will need to do the following:
             https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
           --ack-deadline 30
 
-1. Update the environment variables in `app.yaml`.
+1. Update the environment variables in `app.standard.yaml` or `app.flexible.yaml`
+(depending on your App Engine environment).
 
 ## Running locally
 

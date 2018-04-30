@@ -18,7 +18,7 @@
 
 machine:
   node:
-    version: 6.12.3
+    version: 6.14.1
 
 # Use for broader build-related configuration
 general:
@@ -35,10 +35,12 @@ dependencies:
     - yarn install
     - yarn run lint
     - samples test install -l=functions/background
+    - samples test install -l=functions/concepts
+    - samples test install -l=functions/datastore
     - samples test install -l=functions/errorreporting
     - samples test install -l=functions/gcs
-    - samples test install -l=functions/datastore
     - samples test install -l=functions/helloworld
+    - samples test install -l=functions/http
     - samples test install -l=functions/imagemagick
     - samples test install -l=functions/log
     - samples test install -l=functions/ocr/app
@@ -46,10 +48,12 @@ dependencies:
     - samples test install -l=functions/sendgrid
     - samples test install -l=functions/slack
     - samples test install -l=functions/spanner
+    - samples test install -l=functions/tips
     - samples test install -l=functions/uuid
   cache_directories:
     - ~/.cache/yarn
     - functions/background/node_modules
+    - functions/concepts/node_modules
     - functions/datastore/node_modules
     - functions/errorreporting/node_modules
     - functions/gcs/node_modules
@@ -62,6 +66,7 @@ dependencies:
     - functions/sendgrid/node_modules
     - functions/slack/node_modules
     - functions/spanner/node_modules
+    - functions/tips/node_modules
     - functions/uuid/node_modules
 
 # Run your tests
@@ -70,6 +75,7 @@ test:
     - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/datastore && npm run system-test && functions-emulator stop
     - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/helloworld && npm run test && functions-emulator stop
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/concepts/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/http/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/imagemagick/test/**/*.test.js'
@@ -79,6 +85,7 @@ test:
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/slack/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/spanner/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/uuid/test/**/*.test.js'
+    - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/tips/test/**/*.test.js'
   post:
     - nyc report --reporter=lcov > coverage.lcov && codecov || true
 deployment:

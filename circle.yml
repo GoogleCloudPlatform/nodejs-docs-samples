@@ -37,7 +37,6 @@ dependencies:
     - samples test install -l=functions/background
     - samples test install -l=functions/concepts
     - samples test install -l=functions/datastore
-    - samples test install -l=functions/debug
     - samples test install -l=functions/errorreporting
     - samples test install -l=functions/gcs
     - samples test install -l=functions/helloworld
@@ -56,7 +55,6 @@ dependencies:
     - functions/background/node_modules
     - functions/concepts/node_modules
     - functions/datastore/node_modules
-    - functions/debug/node_modules
     - functions/errorreporting/node_modules
     - functions/gcs/node_modules
     - functions/helloworld/node_modules

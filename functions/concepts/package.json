@@ -1,0 +1,26 @@
+{
+  "name": "nodejs-docs-samples-functions-concepts",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "scripts": {
+    "lint": "repo-tools lint"
+  },
+  "dependencies": {
+    "request": "^2.85.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.2.5",
+    "ava": "^0.25.0",
+    "sinon": "^4.5.0",
+    "supertest": "^3.0.0"
+  }
+}

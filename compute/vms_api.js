@@ -28,6 +28,8 @@ function auth(callback) {
       return callback(err);
     }
 
+    const projectId = authClient.projectId;
+
     // The createScopedRequired method returns true when running on GAE or a
     // local developer machine. In that case, the desired scopes must be passed
     // in manually. When the code is  running in GCE or GAE Flexible, the scopes
@@ -42,6 +44,7 @@ function auth(callback) {
         'https://www.googleapis.com/auth/compute',
         'https://www.googleapis.com/auth/compute.readonly',
       ]);
+      authClient.projectId = projectId;
     }
     callback(null, authClient);
   });
@@ -61,7 +64,7 @@ function getVmsExample(callback) {
     compute.instances.aggregatedList(
       {
         auth: authClient,
-        project: process.env.GCLOUD_PROJECT,
+        project: authClient.projectId,
         // In this example we only want one VM per page
         maxResults: 1,
       },

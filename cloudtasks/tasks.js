@@ -15,9 +15,9 @@
 
 'use strict';
 
-function createTask (project, location, queue) {
+async function createTask (project, location, queue) {
   // [START cloud_tasks_create_task]
-  const google = require('googleapis').google;
+  const {google} = require('googleapis');
   const cloudtasks = google.cloudtasks('v2beta2');
 
   /**
@@ -27,56 +27,38 @@ function createTask (project, location, queue) {
   // const location = 'Location of queue, e.g. us-central1';
   // const queue = 'Queue ID, e.g. queue-1';
 
-  authorize((authClient) => {
-    // Schedule the task for 2 minutes from now
-    const scheduleTime = new Date();
-    scheduleTime.setUTCMinutes(scheduleTime.getUTCMinutes() + 2);
-
-    const task = {
-      scheduleTime: scheduleTime,
-      pull_message: {
-        payload: Buffer.from('a message for the recipient').toString('base64')
-      }
-    };
-
-    const request = {
-      parent: `projects/${project}/locations/${location}/queues/${queue}`,
-      resource: {
-        task: task
-      },
-      auth: authClient
-    };
-
-    cloudtasks.projects.locations.queues.tasks.create(request, (err, response) => {
-      if (err) {
-        console.error('ERROR:', err);
-        return;
-      }
-
-      console.log(`Created task ${response.data.name}.`);
-      console.log(JSON.stringify(response.data, null, 2));
-    });
+  const authClient = await google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
   });
 
-  function authorize (callback) {
-    google.auth.getApplicationDefault(function (err, authClient) {
-      if (err) {
-        console.error('authentication failed: ', err);
-        return;
-      }
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-        authClient = authClient.createScoped(scopes);
-      }
-      callback(authClient);
-    });
-  }
+  // Schedule the task for 2 minutes from now
+  const scheduleTime = new Date();
+  scheduleTime.setUTCMinutes(scheduleTime.getUTCMinutes() + 2);
+
+  const task = {
+    scheduleTime: scheduleTime,
+    pull_message: {
+      payload: Buffer.from('a message for the recipient').toString('base64')
+    }
+  };
+
+  const request = {
+    parent: `projects/${project}/locations/${location}/queues/${queue}`,
+    resource: {
+      task: task
+    },
+    auth: authClient
+  };
+
+  const response = await cloudtasks.projects.locations.queues.tasks.create(request);
+  console.log(`Created task ${response.data.name}.`);
+  console.log(JSON.stringify(response.data, null, 2));
   // [END cloud_tasks_create_task]
 }
 
-function pullTask (project, location, queue) {
+async function pullTask (project, location, queue) {
   // [START cloud_tasks_pull_and_acknowledge_task]
-  const google = require('googleapis').google;
+  const {google} = require('googleapis');
   const cloudtasks = google.cloudtasks('v2beta2');
 
   /**
@@ -86,42 +68,24 @@ function pullTask (project, location, queue) {
   // const location = 'Location of queue, e.g. us-central1';
   // const queue = 'Queue ID, e.g. queue-1';
 
-  authorize((authClient) => {
-    const request = {
-      parent: `projects/${project}/locations/${location}/queues/${queue}`,
-      responseView: 'FULL',
-      pageSize: 1,
-      auth: authClient
-    };
-
-    cloudtasks.projects.locations.queues.tasks.list(request, (err, response) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-
-      const task = response.data.tasks[0];
-      console.log('Pulled task %j', task);
-    });
+  const authClient = await google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
   });
 
-  function authorize (callback) {
-    google.auth.getApplicationDefault(function (err, authClient) {
-      if (err) {
-        console.error('authentication failed: ', err);
-        return;
-      }
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-        authClient = authClient.createScoped(scopes);
-      }
-      callback(authClient);
-    });
-  }
+  const request = {
+    parent: `projects/${project}/locations/${location}/queues/${queue}`,
+    responseView: 'FULL',
+    pageSize: 1,
+    auth: authClient
+  };
+
+  const response = await cloudtasks.projects.locations.queues.tasks.list(request);
+  const task = response.data.tasks[0];
+  console.log('Pulled task %j', task);
 }
 
-function acknowledgeTask (task) {
-  const google = require('googleapis').google;
+async function acknowledgeTask (task) {
+  const {google} = require('googleapis');
   const cloudtasks = google.cloudtasks('v2beta2');
 
   /**
@@ -132,36 +96,18 @@ function acknowledgeTask (task) {
   //   scheduleTime: '2017-11-01T21:02:28.994Z' // TODO(developer): set this to your task's scheduled time
   // };
 
-  authorize((authClient) => {
-    const request = {
-      name: task.name,
-      scheduleTime: task.scheduleTime,
-      auth: authClient
-    };
-
-    cloudtasks.projects.locations.queues.tasks.acknowledge(request, (err, response) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-
-      console.log(`Acknowledged task ${task.name}.`);
-    });
+  const authClient = await google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
   });
 
-  function authorize (callback) {
-    google.auth.getApplicationDefault(function (err, authClient) {
-      if (err) {
-        console.error('authentication failed: ', err);
-        return;
-      }
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-        authClient = authClient.createScoped(scopes);
-      }
-      callback(authClient);
-    });
-  }
+  const request = {
+    name: task.name,
+    scheduleTime: task.scheduleTime,
+    auth: authClient
+  };
+
+  await cloudtasks.projects.locations.queues.tasks.acknowledge(request);
+  console.log(`Acknowledged task ${task.name}.`);
   // [END cloud_tasks_pull_and_acknowledge_task]
 }
 
@@ -171,19 +117,19 @@ require(`yargs`) // eslint-disable-line
     `create <project> <location> <queue>`,
     `Create a task.`,
     {},
-    (opts) => createTask(opts.project, opts.location, opts.queue)
+    (opts) => createTask(opts.project, opts.location, opts.queue).catch(console.error)
   )
   .command(
     `pull <project> <location> <queue>`,
     `Pull a task.`,
     {},
-    (opts) => pullTask(opts.project, opts.location, opts.queue)
+    (opts) => pullTask(opts.project, opts.location, opts.queue).catch(console.error)
   )
   .command(
     `acknowledge <task>`,
     `Acknowledge a task.`,
     {},
-    (opts) => acknowledgeTask(JSON.parse(opts.task))
+    (opts) => acknowledgeTask(JSON.parse(opts.task)).catch(console.error)
   )
   .example(`node $0 create my-project-id us-central1 my-queue`)
   .example(`node $0 pull my-project-id us-central1 my-queue`)

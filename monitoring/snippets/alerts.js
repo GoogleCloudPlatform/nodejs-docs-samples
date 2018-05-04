@@ -57,7 +57,7 @@ function backupPolicies(projectId) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [START monitoring_alert_backup_policies]
+  // [END monitoring_alert_backup_policies]
 }
 
 function restorePolicies(projectId) {
@@ -125,7 +125,7 @@ function restorePolicies(projectId) {
         return Promise.reject(err);
       });
   }
-  // [START monitoring_alert_restore_policies]
+  // [END monitoring_alert_restore_policies]
 }
 
 function replaceChannels(projectId, alertPolicyId, channelIds) {

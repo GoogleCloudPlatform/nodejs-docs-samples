@@ -16,7 +16,7 @@
     "@google-cloud/pubsub": "0.16.4",
     "body-parser": "1.18.2",
     "express": "4.16.2",
-    "pug": "2.0.0",
+    "pug": "2.0.1",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {

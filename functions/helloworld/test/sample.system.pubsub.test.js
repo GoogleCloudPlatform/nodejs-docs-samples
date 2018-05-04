@@ -21,7 +21,7 @@ const Pubsub = require(`@google-cloud/pubsub`);
 const pubsub = Pubsub();
 
 const topicName = process.env.FUNCTIONS_TOPIC;
-const baseCmd = `gcloud beta functions`;
+const baseCmd = `gcloud functions`;
 
 test(`helloPubSub: should print a name`, async (t) => {
   t.plan(1);

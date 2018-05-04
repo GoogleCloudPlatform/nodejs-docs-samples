@@ -15,64 +15,46 @@
 
 'use strict';
 
-const google = require('googleapis').google;
+const {google} = require('googleapis');
 const cloudtasks = google.cloudtasks('v2beta2');
 
 /**
  * Create a task for a given queue with an arbitrary payload.
  */
-function createTask (project, location, queue, options) {
+async function createTask (project, location, queue, options) {
   // [START cloud_tasks_appengine_create_task]
-  authorize((authClient) => {
-    const task = {
-      app_engine_http_request: {
-        http_method: 'POST',
-        relative_url: '/log_payload'
-      }
-    };
-
-    if (options.payload !== undefined) {
-      task.app_engine_http_request.payload = Buffer.from(options.payload).toString('base64');
-    }
-
-    if (options.inSeconds !== undefined) {
-      task.schedule_time = (new Date(options.inSeconds * 1000 + Date.now())).toISOString();
-    }
-
-    const request = {
-      parent: `projects/${project}/locations/${location}/queues/${queue}`, // TODO: Update placeholder value.
-      resource: {
-        task: task
-      },
-      auth: authClient
-    };
-
-    console.log('Sending task %j', task);
-
-    cloudtasks.projects.locations.queues.tasks.create(request, (err, response) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-
-      console.log('Created task.', response.name);
-      console.log(JSON.stringify(response, null, 2));
-    });
+  const authClient = await google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
   });
 
-  function authorize (callback) {
-    google.auth.getApplicationDefault(function (err, authClient) {
-      if (err) {
-        console.error('authentication failed: ', err);
-        return;
-      }
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-        authClient = authClient.createScoped(scopes);
-      }
-      callback(authClient);
-    });
+  const task = {
+    app_engine_http_request: {
+      http_method: 'POST',
+      relative_url: '/log_payload'
+    }
+  };
+
+  if (options.payload !== undefined) {
+    task.app_engine_http_request.payload = Buffer.from(options.payload).toString('base64');
   }
+
+  if (options.inSeconds !== undefined) {
+    task.schedule_time = (new Date(options.inSeconds * 1000 + Date.now())).toISOString();
+  }
+
+  const request = {
+    parent: `projects/${project}/locations/${location}/queues/${queue}`, // TODO: Update placeholder value.
+    resource: {
+      task: task
+    },
+    auth: authClient
+  };
+
+  console.log('Sending task %j', task);
+
+  const response = await cloudtasks.projects.locations.queues.tasks.create(request);
+  console.log('Created task.', response.name);
+  console.log(JSON.stringify(response, null, 2));
   // [END cloud_tasks_appengine_create_task]
 }
 
@@ -121,10 +103,8 @@ const cli = require(`yargs`)
 
 if (module === require.main) {
   const opts = cli.help().parse(process.argv.slice(2));
-
   process.env.GCLOUD_PROJECT = opts.project;
-
-  createTask(opts.project, opts.location, opts.queue, opts);
+  createTask(opts.project, opts.location, opts.queue, opts).catch(console.error);
 }
 
 exports.createTask = createTask;

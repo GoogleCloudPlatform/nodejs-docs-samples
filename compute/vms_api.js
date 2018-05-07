@@ -17,8 +17,8 @@
 
 // [START complete]
 // [START initialize]
-var google = require('googleapis');
-var compute = google.compute('v1');
+const {google} = require('googleapis');
+const compute = google.compute('v1');
 // [END initialize]
 
 // [START auth]

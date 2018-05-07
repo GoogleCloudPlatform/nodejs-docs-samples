@@ -44,7 +44,7 @@ test.before(async () => {
         {
           displayName: 'Condition 1',
           conditionAbsent: {
-            filter: `metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
+            filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
             aggregations: [
               {
                 alignmentPeriod: {
@@ -75,7 +75,7 @@ test.before(async () => {
         {
           displayName: 'Condition 2',
           conditionAbsent: {
-            filter: `metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
+            filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
             aggregations: [
               {
                 alignmentPeriod: {

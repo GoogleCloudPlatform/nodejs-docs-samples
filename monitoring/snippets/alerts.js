@@ -64,6 +64,7 @@ function restorePolicies(projectId) {
   // Note: The policies are restored one at a time because I get 'service
   //       unavailable' when I try to create multiple alerts simultaneously.
   // [START monitoring_alert_restore_policies]
+  // [START monitoring_alert_create_policy]
   const fs = require('fs');
 
   // Imports the Google Cloud client library
@@ -125,6 +126,7 @@ function restorePolicies(projectId) {
         return Promise.reject(err);
       });
   }
+  // [END monitoring_alert_create_policy]
   // [END monitoring_alert_restore_policies]
 }
 
@@ -172,61 +174,7 @@ function replaceChannels(projectId, alertPolicyId, channelIds) {
   // [END monitoring_alert_replace_channels]
 }
 
-function disablePolicies(projectId, filter) {
-  // [START monitoring_alert_disable_policies]
-  // Imports the Google Cloud client library
-  const monitoring = require('@google-cloud/monitoring');
-
-  // Creates a client
-  const client = new monitoring.AlertPolicyServiceClient();
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'YOUR_PROJECT_ID';
-  // const filter = 'A filter for selecting policies, e.g. user_labels="active"';
-
-  const listAlertPoliciesRequest = {
-    name: client.projectPath(projectId),
-    // See https://cloud.google.com/monitoring/alerting/docs/sorting-and-filtering
-    filter: filter,
-  };
-
-  client
-    .listAlertPolicies(listAlertPoliciesRequest)
-    .then(results => {
-      const policies = results[0];
-
-      const tasks = policies
-        .map(policy => {
-          return {
-            updateMask: {paths: ['disabled']},
-            alertPolicy: {
-              name: policy.name,
-              disabled: true,
-            },
-          };
-        })
-        .map(updateAlertPolicyRequest => {
-          return client.updateAlertPolicy(updateAlertPolicyRequest);
-        });
-
-      // Wait for all policies to be disabled
-      return Promise.all(tasks);
-    })
-    .then(responses => {
-      responses.forEach(response => {
-        const alertPolicy = response[0];
-        console.log(`Disabled ${alertPolicy.name}.`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
-  // [END monitoring_alert_disable_policies]
-}
-
-function enablePolicies(projectId, filter) {
+function enablePolicies(projectId, enabled, filter) {
   // [START monitoring_alert_enable_policies]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -238,6 +186,7 @@ function enablePolicies(projectId, filter) {
    * TODO(developer): Uncomment the following lines before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
+  // const enabled = true;
   // const filter = 'A filter for selecting policies, e.g. description:"cloud"';
 
   const listAlertPoliciesRequest = {
@@ -257,7 +206,7 @@ function enablePolicies(projectId, filter) {
             updateMask: {paths: ['disabled']},
             alertPolicy: {
               name: policy.name,
-              disabled: false,
+              disabled: enabled ? false : true,
             },
           };
         })
@@ -271,13 +220,49 @@ function enablePolicies(projectId, filter) {
     .then(responses => {
       responses.forEach(response => {
         const alertPolicy = response[0];
-        console.log(`Enabled ${alertPolicy.name}.`);
+        console.log(`${enabled ? 'Enabled' : 'Disabled'} ${alertPolicy.name}.`);
       });
     })
     .catch(err => {
       console.error('ERROR:', err);
     });
   // [END monitoring_alert_enable_policies]
+}
+
+function listPolicies(projectId) {
+  // [START monitoring_alert_list_policies]
+  // Imports the Google Cloud client library
+  const monitoring = require('@google-cloud/monitoring');
+
+  // Creates a client
+  const client = new monitoring.AlertPolicyServiceClient();
+
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+
+  const listAlertPoliciesRequest = {
+    name: client.projectPath(projectId),
+  };
+
+  client
+    .listAlertPolicies(listAlertPoliciesRequest)
+    .then(results => {
+      const policies = results[0];
+
+      console.log('Policies:');
+      policies.forEach(policy => {
+        console.log(`  Display name: ${policy.displayName}`);
+        if (policy.documentation && policy.documentation.content) {
+          console.log(`     Documentation: ${policy.documentation.content}`);
+        }
+      });
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END monitoring_alert_list_policies]
 }
 
 require(`yargs`)
@@ -308,13 +293,19 @@ require(`yargs`)
     `disable <projectId> [filter]`,
     `Disables policies that match the given filter.`,
     {},
-    opts => disablePolicies(opts.projectId, opts.filter || ``)
+    opts => enablePolicies(opts.projectId, false, opts.filter || ``)
   )
   .command(
     `enable <projectId> [filter]`,
     `Enables policies that match the given filter.`,
     {},
-    opts => enablePolicies(opts.projectId, opts.filter || ``)
+    opts => enablePolicies(opts.projectId, true, opts.filter || ``)
+  )
+  .command(
+    `list <projectId>`,
+    `Lists alert policies in the specified project.`,
+    {},
+    opts => listPolicies(opts.projectId)
   )
   .options({
     alertPolicyName: {

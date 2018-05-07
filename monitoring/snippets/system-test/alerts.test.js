@@ -36,6 +36,10 @@ test.before(async () => {
     alertPolicy: {
       displayName: 'first_policy',
       combiner: 1,
+      documentation: {
+        content: 'Test',
+        mimeType: 'text/markdown',
+      },
       conditions: [
         {
           displayName: 'Condition 1',
@@ -131,32 +135,6 @@ test.after.always(async () => {
   await deleteChannels();
 });
 
-test.serial(`should backup all policies`, async t => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `backup`, projectId],
-    cwd
-  );
-  t.regex(results.output, /Saved policies to \.\/policies_backup.json/);
-  t.true(fs.existsSync(path.join(cwd, `policies_backup.json`)));
-  await client.deleteAlertPolicy({name: policyOneName});
-});
-
-test.serial(`should restore policies`, async t => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `restore`, projectId],
-    cwd
-  );
-  t.regex(results.output, /Loading policies from .\/policies_backup.json/);
-  const nameRegexp = /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi;
-  const matches = results.output.match(nameRegexp);
-  t.true(Array.isArray(matches));
-  t.is(matches.length, 2);
-  policyOneName = matches[0];
-  policyTwoName = matches[1];
-});
-
 test.serial(`should replace notification channels`, async t => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
@@ -187,4 +165,42 @@ test.serial(`should enable policies`, async t => {
   t.regex(results.output, /Enabled projects\//);
   t.false(results.output.includes(policyOneName));
   t.true(results.output.includes(policyTwoName));
+});
+
+test.serial(`should list policies`, async t => {
+  const results = await tools.spawnAsyncWithIO(
+    `node`,
+    [`alerts.js`, `list`, projectId],
+    cwd
+  );
+  t.regex(results.output, /Policies:/);
+  t.true(results.output.includes('first_policy'));
+  t.true(results.output.includes('Test'));
+  t.true(results.output.includes('second'));
+});
+
+test.serial(`should backup all policies`, async t => {
+  const results = await tools.spawnAsyncWithIO(
+    `node`,
+    [`alerts.js`, `backup`, projectId],
+    cwd
+  );
+  t.regex(results.output, /Saved policies to \.\/policies_backup.json/);
+  t.true(fs.existsSync(path.join(cwd, `policies_backup.json`)));
+  await client.deleteAlertPolicy({name: policyOneName});
+});
+
+test.serial(`should restore policies`, async t => {
+  const results = await tools.spawnAsyncWithIO(
+    `node`,
+    [`alerts.js`, `restore`, projectId],
+    cwd
+  );
+  t.regex(results.output, /Loading policies from .\/policies_backup.json/);
+  const nameRegexp = /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi;
+  const matches = results.output.match(nameRegexp);
+  t.true(Array.isArray(matches));
+  t.is(matches.length, 2);
+  policyOneName = matches[0];
+  policyTwoName = matches[1];
 });

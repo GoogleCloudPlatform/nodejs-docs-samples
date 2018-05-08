@@ -28,10 +28,9 @@ function createTask (project, location, queue) {
   // const queue = 'Queue ID, e.g. queue-1';
 
   return google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform']
-    })
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
+  })
     .then(authClient => {
-
       // Schedule the task for 2 minutes from now
       const scheduleTime = new Date();
       scheduleTime.setUTCMinutes(scheduleTime.getUTCMinutes() + 2);
@@ -76,22 +75,21 @@ function pullTask (project, location, queue) {
   return google.auth.getClient({
     scopes: ['https://www.googleapis.com/auth/cloud-platform']
   })
-  .then(authClient => {
+    .then(authClient => {
+      const request = {
+        parent: `projects/${project}/locations/${location}/queues/${queue}`,
+        responseView: 'FULL',
+        pageSize: 1,
+        auth: authClient
+      };
 
-    const request = {
-      parent: `projects/${project}/locations/${location}/queues/${queue}`,
-      responseView: 'FULL',
-      pageSize: 1,
-      auth: authClient
-    };
-
-    return cloudtasks.projects.locations.queues.tasks.list(request);
-  })
-  .then(response => {
-    const task = response.data.tasks[0];
-    console.log('Pulled task %j', task);
-  })
-  .catch(console.error);
+      return cloudtasks.projects.locations.queues.tasks.list(request);
+    })
+    .then(response => {
+      const task = response.data.tasks[0];
+      console.log('Pulled task %j', task);
+    })
+    .catch(console.error);
 }
 
 function acknowledgeTask (task) {
@@ -109,19 +107,19 @@ function acknowledgeTask (task) {
   return google.auth.getClient({
     scopes: ['https://www.googleapis.com/auth/cloud-platform']
   })
-  .then(authClient => {
-    const request = {
-      name: task.name,
-      scheduleTime: task.scheduleTime,
-      auth: authClient
-    };
+    .then(authClient => {
+      const request = {
+        name: task.name,
+        scheduleTime: task.scheduleTime,
+        auth: authClient
+      };
 
-    return cloudtasks.projects.locations.queues.tasks.acknowledge(request);
-  })
-  .then(response => {
-    console.log(`Acknowledged task ${task.name}.`);
-  })
-  .catch(console.error);
+      return cloudtasks.projects.locations.queues.tasks.acknowledge(request);
+    })
+    .then(response => {
+      console.log(`Acknowledged task ${task.name}.`);
+    })
+    .catch(console.error);
   // [END cloud_tasks_pull_and_acknowledge_task]
 }
 

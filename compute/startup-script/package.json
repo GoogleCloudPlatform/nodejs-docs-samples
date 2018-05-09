@@ -1,0 +1,24 @@
+{
+  "name": "compute-sample-startup-script",
+  "version": "1.0.0",
+  "description": "Start a Google Compute Engine and run the startup script.",
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/compute": "0.10.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.2.3",
+    "ava": "0.23.0",
+    "uuid": "^3.2.1"
+  },
+  "scripts": {
+    "system-test": "ava -T 200s --verbose system-test/*.test.js",
+    "all-test": "npm run system-test",
+    "test": "repo-tools test run --cmd npm -- run all-test",
+    "start": "node -e 'require(\"./index.js\").create(\"vm-with-apache\", console.log)'",
+    "delete": "node -e 'require(\"./index.js\").delete(\"vm-with-apache\", console.log)'",
+    "list": "node -e 'require(\"./index.js\").list(console.log)'"
+  },
+  "author": "",
+  "license": "Apache-2.0"
+}

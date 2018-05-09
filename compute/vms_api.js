@@ -17,7 +17,7 @@
 
 // [START complete]
 // [START initialize]
-const {google} = require('googleapis');
+const google = require('googleapis').google;
 const compute = google.compute('v1');
 // [END initialize]
 

@@ -160,7 +160,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
 };
 // [END functions_tips_infinite_retries]
 
-// [START functions_tips_retry_promise]
+// [START functions_tips_retry]
 /**
  * Background Cloud Function that demonstrates
  * how to toggle retries using a promise
@@ -172,15 +172,15 @@ exports.avoidInfiniteRetries = (event, callback) => {
 exports.retryPromise = (event) => {
   const tryAgain = !!event.data.retry;
 
+  // [START functions_tips_retry_promise]
   if (tryAgain) {
     throw new Error(`Retrying...`);
   } else {
     return Promise.reject(new Error('Not retrying...'));
   }
+  // [END functions_tips_retry_promise]
 };
-// [END functions_tips_retry_promise]
 
-// [START functions_tips_retry_callback]
 /**
  * Background Cloud Function that demonstrates
  * how to toggle retries using a callback
@@ -194,6 +194,7 @@ exports.retryCallback = (event, callback) => {
   const tryAgain = !!event.data.retry;
   const err = new Error('Error!');
 
+  // [START functions_tips_retry_callback]
   if (tryAgain) {
     console.error('Retrying:', err);
     callback(err);
@@ -201,8 +202,9 @@ exports.retryCallback = (event, callback) => {
     console.error('Not retrying:', err);
     callback();
   }
+  // [END functions_tips_retry_callback]
 };
-// [END functions_tips_retry_callback]
+// [END functions_tips_retry]
 
 // [START functions_tips_gcp_apis]
 const Pubsub = require('@google-cloud/pubsub');

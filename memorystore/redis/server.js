@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// [START server_js]
+// [START memorystore_server_js]
 'use strict';
 const http = require('http');
 const redis = require('redis');
@@ -23,9 +23,8 @@ const REDISPORT = process.env.REDISPORT || 6379;
 const client = redis.createClient(REDISPORT, REDISHOST);
 client.on('error', (err) => console.error('ERR:REDIS:', err));
 
-//create a server
+// create a server
 http.createServer((req, res) => {
-
 // increment the visit counter
   client.incr('visits', (err, reply) => {
     if (err) {
@@ -37,4 +36,4 @@ http.createServer((req, res) => {
     res.end(`Visitor number: ${reply}\n`);
   });
 }).listen(8080);
-// [END server_js]
+// [END memorystore_server_js]

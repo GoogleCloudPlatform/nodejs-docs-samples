@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [START app_yaml]
+# [START memorystore_app_yaml]
 runtime: nodejs
 env: flex
 
@@ -22,4 +22,4 @@ env_variables:
 # update with Redis instance network name
 network:
   name: default
-# [END app_yaml]
+# [END memorystore_app_yaml]

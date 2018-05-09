@@ -117,13 +117,13 @@ exports.helloGCSGeneric = (event, callback) => {
 };
 // [END functions_helloworld_storage_generic]
 
-// [START functions_helloworld_error]
 /**
  * Background Cloud Function that throws an error.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
+// [START functions_helloworld_error]
 exports.helloError = (event, callback) => {
   // This WILL be reported to Stackdriver errors
   throw new Error('I failed you');
@@ -131,31 +131,32 @@ exports.helloError = (event, callback) => {
 // [END functions_helloworld_error]
 
 /* eslint-disable */
-// [START functions_helloworld_error_2]
 /**
  * Background Cloud Function that throws a value.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
+// [START functions_helloworld_error]
 exports.helloError2 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
   throw 1;
 };
-// [END functions_helloworld_error_2]
+// [END functions_helloworld_error]
 
-// [START functions_helloworld_error_3]
 /**
  * Background Cloud Function that throws an error.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
+// [START functions_helloworld_error]
 exports.helloError3 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
   callback('I failed you');
 };
-// [END functions_helloworld_error_3]
+// [END functions_helloworld_error]
+
 /* eslint-enable */
 
 // [START functions_helloworld_template]

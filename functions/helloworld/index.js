@@ -127,41 +127,55 @@ exports.helloGCSGeneric = (event, callback) => {
 exports.helloError = (event, callback) => {
   // These WILL be reported to Stackdriver errors
   console.error('I failed you');
-  throw new Error('I failed you');
+  throw new Error('I failed you'); // Will cause a cold start if not caught
 };
 
 // [END functions_helloworld_error]
 
-/* eslint-disable */
 /**
  * Background Cloud Function that throws a value.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
+/* eslint-disable no-throw-literal */
 // [START functions_helloworld_error]
 exports.helloError2 = (event, callback) => {
   // These will NOT be reported to Stackdriver errors
-  console.info(new Error('message')); // Logging an Error object at the info level
-  console.error('message'); // Logging something other than an Error object
+  console.info(new Error('I failed you')); // Logging an Error object at the info level
+  console.error('I failed you'); // Logging something other than an Error object
   throw 1; // Throwing something other than an Error object
 };
 // [END functions_helloworld_error]
+/* eslint-enable no-throw-literal */
 
 /**
- * Background Cloud Function that throws an error.
+ * Background Cloud Function that returns an error.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
+/* eslint-disable */
 // [START functions_helloworld_error]
 exports.helloError3 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
   callback('I failed you');
 };
 // [END functions_helloworld_error]
-
 /* eslint-enable */
+
+/**
+ * HTTP Cloud Function that returns an error.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+// [START functions_helloworld_error]
+exports.helloError4 = (req, res) => {
+  // This will NOT be reported to Stackdriver errors
+  res.status(500).send('I failed you');
+};
+// [END functions_helloworld_error]
 
 // [START functions_helloworld_template]
 const path = require('path');

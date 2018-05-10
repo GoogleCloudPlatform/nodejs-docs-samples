@@ -123,14 +123,15 @@ exports.helloGCSGeneric = (event, callback) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-// [START functions_helloworld_error]
+
 exports.helloError = (event, callback) => {
+  // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver errors
   console.error('I failed you');
   throw new Error('I failed you'); // Will cause a cold start if not caught
-};
 
-// [END functions_helloworld_error]
+  // [END functions_helloworld_error]
+};
 
 /**
  * Background Cloud Function that throws a value.
@@ -139,14 +140,15 @@ exports.helloError = (event, callback) => {
  * @param {function} callback The callback function.
  */
 /* eslint-disable no-throw-literal */
-// [START functions_helloworld_error]
+
 exports.helloError2 = (event, callback) => {
+  // [START functions_helloworld_error]
   // These will NOT be reported to Stackdriver errors
   console.info(new Error('I failed you')); // Logging an Error object at the info level
   console.error('I failed you'); // Logging something other than an Error object
   throw 1; // Throwing something other than an Error object
+  // [END functions_helloworld_error]
 };
-// [END functions_helloworld_error]
 /* eslint-enable no-throw-literal */
 
 /**
@@ -156,12 +158,12 @@ exports.helloError2 = (event, callback) => {
  * @param {function} callback The callback function.
  */
 /* eslint-disable */
-// [START functions_helloworld_error]
 exports.helloError3 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
+  // [START functions_helloworld_error]
   callback('I failed you');
+  // [END functions_helloworld_error]
 };
-// [END functions_helloworld_error]
 /* eslint-enable */
 
 /**
@@ -170,12 +172,12 @@ exports.helloError3 = (event, callback) => {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-// [START functions_helloworld_error]
 exports.helloError4 = (req, res) => {
   // This will NOT be reported to Stackdriver errors
+  // [START functions_helloworld_error]
   res.status(500).send('I failed you');
+  // [END functions_helloworld_error]
 };
-// [END functions_helloworld_error]
 
 // [START functions_helloworld_template]
 const path = require('path');

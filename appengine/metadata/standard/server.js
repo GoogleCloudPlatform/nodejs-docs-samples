@@ -22,31 +22,32 @@ const request = require('got');
 const app = express();
 app.enable('trust proxy');
 
-const METADATA_NETWORK_INTERFACE_URL = 'http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip';
+const METADATA_PROJECT_ID_URL = 'http://metadata.google.internal/computeMetadata/' +
+  'v1/project/project-id';
 
-function getExternalIp () {
+function getProjectId () {
   const options = {
     headers: {
       'Metadata-Flavor': 'Google'
     },
-    json: true
+    json: false
   };
 
-  return request(METADATA_NETWORK_INTERFACE_URL, options)
+  return request(METADATA_PROJECT_ID_URL, options)
     .then((response) => response.body)
     .catch((err) => {
       if (err && err.statusCode !== 200) {
-        console.log('Error while talking to metadata server, assuming localhost');
-        return 'localhost';
+        console.log('Error while talking to metadata server, assuming UnknownProjectID');
+        return 'UnknownProjectID';
       }
       return Promise.reject(err);
     });
 }
 
 app.get('/', (req, res, next) => {
-  getExternalIp()
-    .then((externalIp) => {
-      res.status(200).send(`External IP: ${externalIp}`).end();
+  getProjectId()
+    .then((projectId) => {
+      res.status(200).send(`Project ID: ${projectId}`).end();
     })
     .catch(next);
 });

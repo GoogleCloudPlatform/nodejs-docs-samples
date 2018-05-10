@@ -125,9 +125,11 @@ exports.helloGCSGeneric = (event, callback) => {
  */
 // [START functions_helloworld_error]
 exports.helloError = (event, callback) => {
-  // This WILL be reported to Stackdriver errors
+  // These WILL be reported to Stackdriver errors
+  console.error('I failed you');
   throw new Error('I failed you');
 };
+
 // [END functions_helloworld_error]
 
 /* eslint-disable */
@@ -139,8 +141,10 @@ exports.helloError = (event, callback) => {
  */
 // [START functions_helloworld_error]
 exports.helloError2 = (event, callback) => {
-  // This will NOT be reported to Stackdriver errors
-  throw 1;
+  // These will NOT be reported to Stackdriver errors
+  console.info(new Error('message')); // Logging an Error object at the info level
+  console.error('message'); // Logging something other than an Error object
+  throw 1; // Throwing something other than an Error object
 };
 // [END functions_helloworld_error]
 

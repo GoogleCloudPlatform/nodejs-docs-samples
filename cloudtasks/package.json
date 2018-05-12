@@ -15,7 +15,7 @@
     "test": "repo-tools test run --cmd npm -- run system-test"
   },
   "dependencies": {
-    "googleapis": "27.0.0",
+    "googleapis": "29.0.0",
     "yargs": "11.0.0"
   },
   "devDependencies": {

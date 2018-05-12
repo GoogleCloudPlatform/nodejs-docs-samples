@@ -39,22 +39,16 @@ function getFileStream (file) {
  * Reads file and responds with the number of words in the file.
  *
  * @example
- * gcloud alpha functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","name":"sample.txt"}'
+ * gcloud functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","name":"sample.txt"}'
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data A Google Cloud Storage File object.
- * @param {string} event.data.bucket Name of a Cloud Storage bucket.
- * @param {string} event.data.name Name of a file in the Cloud Storage bucket.
- * @param {function} callback The callback function.
+ * @param {Object} req Cloud Function request context.
+ * @param {object} req.body A Google Cloud Storage File object.
+ * @param {string} req.body.bucket Name of a Cloud Storage bucket.
+ * @param {string} req.body.name Name of a file in the Cloud Storage bucket.
+ * @param {Object} res Cloud Function response context.
  */
-exports.wordCount = (event, callback) => {
-  const file = event.data;
-
-  if (file.resourceState === 'not_exists') {
-    // This is a file deletion event, so skip it
-    callback();
-    return;
-  }
+exports.wordCount = (req, res) => {
+  const file = req.body;
 
   let count = 0;
   const options = {
@@ -67,7 +61,7 @@ exports.wordCount = (event, callback) => {
       count += line.trim().split(/\s+/).length;
     })
     .on('close', () => {
-      callback(null, `File ${file.name} has ${count} words`);
+      res.send(`File ${file.name} has ${count} words`);
     });
 };
 // [END functions_word_count_read]

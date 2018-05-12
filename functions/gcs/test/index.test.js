@@ -53,7 +53,7 @@ test.serial(`Fails without a bucket`, (t) => {
   const expectedMsg = `Bucket not provided. Make sure you have a "bucket" property in your request`;
 
   t.throws(
-    () => getSample().program.wordCount({ data: { name: `file` } }),
+    () => getSample().program.wordCount({ name: `file` }),
     Error,
     expectedMsg
   );
@@ -63,7 +63,7 @@ test.serial(`Fails without a file`, (t) => {
   const expectedMsg = `Filename not provided. Make sure you have a "file" property in your request`;
 
   t.throws(
-    () => getSample().program.wordCount({ data: { bucket: `bucket` } }),
+    () => getSample().program.wordCount({ bucket: `bucket` }),
     Error,
     expectedMsg
   );
@@ -71,9 +71,7 @@ test.serial(`Fails without a file`, (t) => {
 
 test.cb.serial(`Does nothing for deleted files`, (t) => {
   const event = {
-    data: {
-      resourceState: `not_exists`
-    }
+    resourceState: `not_exists`
   };
   const sample = getSample();
 
@@ -89,10 +87,8 @@ test.cb.serial(`Does nothing for deleted files`, (t) => {
 test.cb.serial(`Reads the file line by line`, (t) => {
   const expectedMsg = `File ${filename} has 114 words`;
   const event = {
-    data: {
-      bucket: `bucket`,
-      name: `sample.txt`
-    }
+    bucket: `bucket`,
+    name: `sample.txt`
   };
 
   const sample = getSample();

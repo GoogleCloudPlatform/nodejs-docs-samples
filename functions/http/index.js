@@ -147,22 +147,22 @@ const Busboy = require('busboy');
 exports.uploadFile = (req, res) => {
   if (req.method === 'POST') {
     const busboy = new Busboy({ headers: req.headers });
+    const tmpdir = os.tmpdir();
 
     // This object will accumulate all the fields, keyed by their name
     const fields = {};
 
     // This object will accumulate all the uploaded files, keyed by their name.
     const uploads = {};
-    const tmpdir = os.tmpdir();
 
-    // This event will be triggered for each non-file field in the form.
+    // This code will process each non-file field in the form.
     busboy.on('field', (fieldname, val) => {
       // TODO(developer): Process submitted field values here
       console.log(`Processed field ${fieldname}: ${val}.`);
       fields[fieldname] = val;
     });
 
-    // This event will be triggered for each file uploaded.
+    // This code will process each file uploaded.
     busboy.on('file', (fieldname, file, filename) => {
       // Note: os.tmpdir() points to an in-memory file system on GCF
       // Thus, any files in it must fit in the instance's memory.

@@ -37,7 +37,9 @@ exports.helloGET = (req, res) => {
  * @param {Object} res Cloud Function response context.
  */
 exports.helloHttp = (req, res) => {
+  // [START functions_tips_terminate]
   res.send(`Hello ${req.body.name || 'World'}!`);
+  // [END functions_tips_terminate]
 };
 // [END functions_helloworld_http]
 
@@ -49,7 +51,9 @@ exports.helloHttp = (req, res) => {
  * @param {function} callback The callback function.
  */
 exports.helloBackground = (event, callback) => {
+  // [START functions_tips_terminate]
   callback(null, `Hello ${event.data.name || 'World'}!`);
+  // [END functions_tips_terminate]
 };
 // [END functions_helloworld_background]
 

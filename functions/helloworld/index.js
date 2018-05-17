@@ -127,7 +127,7 @@ exports.helloGCSGeneric = (event, callback) => {
 exports.helloError = (event, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver errors
-  console.error('I failed you');
+  console.error(new Error('I failed you'));
   throw new Error('I failed you'); // Will cause a cold start if not caught
 
   // [END functions_helloworld_error]

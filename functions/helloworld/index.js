@@ -36,12 +36,13 @@ exports.helloGET = (req, res) => {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
+// [START functions_tips_terminate]
 exports.helloHttp = (req, res) => {
-  // [START functions_tips_terminate]
   res.send(`Hello ${req.body.name || 'World'}!`);
-  // [END functions_tips_terminate]
 };
 // [END functions_helloworld_http]
+
+// [END functions_tips_terminate]
 
 // [START functions_helloworld_background]
 /**
@@ -50,11 +51,11 @@ exports.helloHttp = (req, res) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
+// [START functions_tips_terminate]
 exports.helloBackground = (event, callback) => {
-  // [START functions_tips_terminate]
   callback(null, `Hello ${event.data.name || 'World'}!`);
-  // [END functions_tips_terminate]
 };
+// [END functions_tips_terminate]
 // [END functions_helloworld_background]
 
 // [START functions_helloworld_pubsub]

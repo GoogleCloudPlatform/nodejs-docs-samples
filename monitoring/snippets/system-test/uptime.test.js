@@ -24,6 +24,16 @@ const cwd = path.join(__dirname, `..`);
 const projectId = process.env.GCLOUD_PROJECT;
 const hostname = 'mydomain.com';
 
+function getResourceObjects(output) {
+  let regex = new RegExp(/^\s*Resource: (.*)$/gm);
+  let result = [];
+  let match;
+  while ((match = regex.exec(output)) !== null) {
+    result.push(JSON.parse(match[1]));
+  }
+  return result;
+}
+
 test.before(tools.checkCredentials);
 
 test(`should list uptime-check ips`, async t => {
@@ -40,8 +50,9 @@ test.serial(`should create an uptime check`, async t => {
   );
   id = matches[1];
   t.regex(output, /Uptime check created:/);
-  t.regex(output, /"type":"uptime_url"/);
-  t.regex(output, new RegExp(`"labels":{"host":"${hostname}"}`));
+  let resources = getResourceObjects(output);
+  t.is(resources[0]['type'], 'uptime_url');
+  t.is(resources[0]['labels']['host'], hostname);
   t.regex(output, /Display Name: My Uptime Check/);
 });
 
@@ -52,8 +63,9 @@ test.serial(`should get an uptime check`, async t => {
     output,
     new RegExp(`Retrieving projects/${projectId}/uptimeCheckConfigs/${id}`)
   );
-  t.regex(output, /"type":"uptime_url"/);
-  t.regex(output, new RegExp(`"labels":{"host":"${hostname}"}`));
+  let resources = getResourceObjects(output);
+  t.is(resources[0]['type'], 'uptime_url');
+  t.is(resources[0]['labels']['host'], hostname);
 });
 
 test.serial(`should list uptime checks`, async t => {
@@ -62,8 +74,14 @@ test.serial(`should list uptime checks`, async t => {
     .tryTest(async assert => {
       const results = await tools.runAsyncWithIO(`${cmd} list`, cwd);
       const output = results.stdout + results.stderr;
-      assert(/"type":"uptime_url"/.test(output));
-      assert(new RegExp(`"labels":{"host":"${hostname}"}`).test(output));
+      let resources = getResourceObjects(output);
+      assert(
+        resources.filter(
+          resource =>
+            resource['type'] === 'uptime_url' &&
+            resource['labels']['host'] === hostname
+        ).length > 0
+      );
       assert(/Display Name: My Uptime Check/.test(output));
     })
     .start();

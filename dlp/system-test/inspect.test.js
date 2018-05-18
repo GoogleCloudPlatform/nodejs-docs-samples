@@ -100,7 +100,7 @@ test(`should report local file handling errors`, async t => {
 });
 
 // inspect_gcs_file_promise
-test(`should inspect a GCS text file`, async t => {
+test.skip(`should inspect a GCS text file`, async t => {
   const output = await tools.runAsync(
     `${cmd} gcsFile ${bucket} test.txt ${topicName} ${subscriptionName}`,
     cwd
@@ -109,7 +109,7 @@ test(`should inspect a GCS text file`, async t => {
   t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
 });
 
-test(`should inspect multiple GCS text files`, async t => {
+test.skip(`should inspect multiple GCS text files`, async t => {
   const output = await tools.runAsync(
     `${cmd} gcsFile ${bucket} "*.txt" ${topicName} ${subscriptionName}`,
     cwd
@@ -118,7 +118,7 @@ test(`should inspect multiple GCS text files`, async t => {
   t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
 });
 
-test(`should handle a GCS file with no sensitive data`, async t => {
+test.skip(`should handle a GCS file with no sensitive data`, async t => {
   const output = await tools.runAsync(
     `${cmd} gcsFile ${bucket} harmless.txt ${topicName} ${subscriptionName}`,
     cwd
@@ -135,7 +135,7 @@ test(`should report GCS file handling errors`, async t => {
 });
 
 // inspect_datastore
-test(`should inspect Datastore`, async t => {
+test.skip(`should inspect Datastore`, async t => {
   const output = await tools.runAsync(
     `${cmd} datastore Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`,
     cwd
@@ -143,7 +143,7 @@ test(`should inspect Datastore`, async t => {
   t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
 });
 
-test(`should handle Datastore with no sensitive data`, async t => {
+test.skip(`should handle Datastore with no sensitive data`, async t => {
   const output = await tools.runAsync(
     `${cmd} datastore Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`,
     cwd
@@ -160,7 +160,7 @@ test(`should report Datastore errors`, async t => {
 });
 
 // inspect_bigquery
-test(`should inspect a Bigquery table`, async t => {
+test.skip(`should inspect a Bigquery table`, async t => {
   const output = await tools.runAsync(
     `${cmd} bigquery integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`,
     cwd
@@ -168,7 +168,7 @@ test(`should inspect a Bigquery table`, async t => {
   t.regex(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
 });
 
-test(`should handle a Bigquery table with no sensitive data`, async t => {
+test.skip(`should handle a Bigquery table with no sensitive data`, async t => {
   const output = await tools.runAsync(
     `${cmd} bigquery integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`,
     cwd

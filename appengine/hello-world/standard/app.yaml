@@ -13,4 +13,8 @@
 
 # [START app_yaml]
 runtime: nodejs8
+
+handlers:
+- url: /.*
+  script: auto
 # [END app_yaml]

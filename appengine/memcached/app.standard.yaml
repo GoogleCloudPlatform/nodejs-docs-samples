@@ -14,6 +14,9 @@
 # [START app_yaml]
 runtime: nodejs8
 
+handlers:
+- url: /.*
+  script: auto
 # [START env_variables]
 # The following env variables may contain sensitive information that grants
 # anyone access to your memcached service. Do not add this file to your source

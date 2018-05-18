@@ -14,6 +14,9 @@
 # [START app_yaml]
 runtime: nodejs8
 
+handlers:
+- url: /.*
+  script: auto
 # The following env variables may contain sensitive information that grants
 # anyone access to your Mailjet account. Do not add this file to your source
 # control.

@@ -16,7 +16,7 @@
 'use strict';
 
 function analyzeLabelsGCS(gcsUri) {
-  // [START analyze_labels_gcs]
+  // [START video_analyze_labels_gcs]
   // Imports the Google Cloud Video Intelligence library
   const video = require('@google-cloud/video-intelligence').v1;
 
@@ -77,11 +77,11 @@ function analyzeLabelsGCS(gcsUri) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END analyze_labels_gcs]
+  // [END video_analyze_labels_gcs]
 }
 
 function analyzeLabelsLocal(path) {
-  // [START analyze_labels_local]
+  // [START video_analyze_labels_local]
   // Imports the Google Cloud Video Intelligence library + Node's fs library
   const video = require('@google-cloud/video-intelligence').v1;
   const fs = require('fs');
@@ -148,11 +148,11 @@ function analyzeLabelsLocal(path) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END analyze_labels_local]
+  // [END video_analyze_labels_local]
 }
 
 function analyzeShots(gcsUri) {
-  // [START analyze_shots]
+  // [START video_analyze_shots]
   // Imports the Google Cloud Video Intelligence library
   const video = require('@google-cloud/video-intelligence').v1;
 
@@ -219,11 +219,11 @@ function analyzeShots(gcsUri) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END analyze_shots]
+  // [END video_analyze_shots]
 }
 
 function analyzeSafeSearch(gcsUri) {
-  // [START analyze_safe_search]
+  // [START video_analyze_explicit_content]
   // Imports the Google Cloud Video Intelligence library
   const video = require('@google-cloud/video-intelligence').v1;
 
@@ -287,7 +287,7 @@ function analyzeSafeSearch(gcsUri) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END analyze_safe_search]
+  // [END video_analyze_explicit_content]
 }
 
 function analyzeVideoTranscription(gcsUri) {

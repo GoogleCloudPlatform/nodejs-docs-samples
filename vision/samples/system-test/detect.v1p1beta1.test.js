@@ -61,5 +61,5 @@ test(`should detect web entities using geographical metadata`, async t => {
     `${cmd} web-entities-geo ${files[3].localPath}`,
     cwd
   );
-  t.true(output.includes('Zepra'));
+  t.true(output.includes('YouTube'));
 });

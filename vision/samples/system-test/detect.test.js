@@ -217,22 +217,22 @@ test(`should detect similar web images in a remote file`, async t => {
 
 test(`should detect web entities with geo metadata in local file`, async t => {
   const output = await tools.runAsync(
-    `${cmd} web-geo ${files[6].localPath}`,
+    `${cmd} web-geo ${files[1].localPath}`,
     cwd
   );
   t.true(output.includes('Description:'));
   t.true(output.includes('Score:'));
-  t.true(output.includes('Zepra'));
+  t.true(output.includes('Rome'));
 });
 
 test(`should detect web entities with geo metadata in remote file`, async t => {
   const output = await tools.runAsync(
-    `${cmd} web-geo-gcs ${bucketName} ${files[6].name}`,
+    `${cmd} web-geo-gcs ${bucketName} ${files[1].name}`,
     cwd
   );
   t.true(output.includes('Description:'));
   t.true(output.includes('Score:'));
-  t.true(output.includes('Zepra'));
+  t.true(output.includes('Rome'));
 });
 
 test(`should read a document from a local file`, async t => {

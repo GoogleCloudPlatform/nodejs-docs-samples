@@ -66,12 +66,14 @@ function createVm(name, callback) {
       console.log('Booting new VM with IP http://' + ip + '...');
 
       // Ping the VM to determine when the HTTP server is ready.
+      let waiting = true;
       const timer = setInterval(
         ip => {
           http
             .get('http://' + ip, res => {
               const statusCode = res.statusCode;
-              if (statusCode === 200) {
+              if (statusCode === 200 && waiting) {
+                waiting = false;
                 clearTimeout(timer);
                 // HTTP server is ready.
                 console.log('Ready!');

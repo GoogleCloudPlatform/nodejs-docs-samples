@@ -36,7 +36,7 @@ function getProjectId () {
     .catch((err) => {
       if (err && err.statusCode !== 200) {
         console.log('Error while talking to metadata server.');
-        return "Unknown_Project_ID";
+        return 'Unknown_Project_ID';
       }
       return Promise.reject(err);
     });

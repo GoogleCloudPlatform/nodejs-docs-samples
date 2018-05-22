@@ -29,10 +29,7 @@
   "cloud-repo-tools": {
     "test": {
       "app": {
-        "msg": "Project ID:",
-        "args": [
-          "server.js"
-        ]
+        "msg": "Project ID:"
       }
     },
     "requiresKeyFile": false,

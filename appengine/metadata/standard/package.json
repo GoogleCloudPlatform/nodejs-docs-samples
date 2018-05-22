@@ -28,7 +28,7 @@
   "cloud-repo-tools": {
     "test": {
       "app": {
-        "msg": "External IP:",
+        "msg": "Project ID:",
         "args": [
           "server.js"
         ]

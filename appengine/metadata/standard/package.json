@@ -13,6 +13,7 @@
     "node": "8.x.x"
   },
   "scripts": {
+    "start": "node app.js",
     "lint": "samples lint",
     "pretest": "npm run lint",
     "system-test": "samples test app",

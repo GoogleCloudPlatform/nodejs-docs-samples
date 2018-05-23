@@ -1,5 +1,5 @@
 {
-  "name": "appengine-metadata",
+  "name": "appengine-std-metadata",
   "description": "Sample for accessing the Compute metadata server on GAE Standard Environment.",
   "version": "0.0.1",
   "private": true,
@@ -13,9 +13,10 @@
     "node": "8.x.x"
   },
   "scripts": {
-    "lint": "samples lint",
+    "start": "node app.js",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "system-test": "samples test app",
+    "system-test": "repo-tools test app",
     "test": "npm run system-test"
   },
   "dependencies": {
@@ -28,10 +29,7 @@
   "cloud-repo-tools": {
     "test": {
       "app": {
-        "msg": "External IP:",
-        "args": [
-          "server.js"
-        ]
+        "msg": "Project ID:"
       }
     },
     "requiresKeyFile": false,

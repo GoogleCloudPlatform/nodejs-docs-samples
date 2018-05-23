@@ -14,9 +14,13 @@
  */
 
 // [START functions_testing_shim_http]
+// [START functions_testing_shim_storage]
+// [START functions_testing_shim_pubsub]
 // Import tested code + dependencies
 const gcfCode = require('./index.js');
 // [END functions_testing_shim_http]
+// [END functions_testing_shim_storage]
+// [END functions_testing_shim_pubsub]
 
 const httpShim = (PORT) => {
   // [START functions_testing_shim_http]

@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "samples lint",
     "pretest": "npm run lint",
-    "system-test": "samples test app -- server.js",
+    "system-test": "samples test app -- ./server.js",
     "test": "npm run system-test"
   },
   "dependencies": {

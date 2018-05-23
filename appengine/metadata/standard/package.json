@@ -1,5 +1,5 @@
 {
-  "name": "appengine-metadata",
+  "name": "appengine-std-metadata",
   "description": "Sample for accessing the Compute metadata server on GAE Standard Environment.",
   "version": "0.0.1",
   "private": true,

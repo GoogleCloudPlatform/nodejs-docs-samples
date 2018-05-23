@@ -39,9 +39,9 @@ function createVm(name, callback) {
         apt-get update
         apt-get install -y apache2
         cat <<EOF > /var/www/html/index.html
-        <html><body><h1>Hello World</h1>
-          <p>This page was created from a simple start up script!</p>
-        </body></html>`,
+        <!doctype html>
+        <h1>Hello World</h1>
+        <p>This page was created from a simple start-up script!</p>`,
         },
       ],
     },
@@ -62,8 +62,8 @@ function createVm(name, callback) {
       const metadata = data[0];
 
       // External IP of the VM.
-      const ip = metadata['networkInterfaces'][0]['accessConfigs'][0]['natIP'];
-      console.log('Booting new VM with IP http://' + ip + '...');
+      const ip = metadata.networkInterfaces[0].accessConfigs[0].natIP;
+      console.log(`Booting new VM with IP http://${ip}...`);
 
       // Ping the VM to determine when the HTTP server is ready.
       let waiting = true;

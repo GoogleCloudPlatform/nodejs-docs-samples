@@ -18,7 +18,7 @@
 
 machine:
   node:
-    version: 6.14.1
+    version: 6.14.2
 
 # Use for broader build-related configuration
 general:
@@ -31,7 +31,7 @@ dependencies:
   override:
     - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
     - gcloud auth activate-service-account --key-file /home/ubuntu/nodejs-docs-samples/key.json || true
-    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17 @google-cloud/functions-emulator@1.0.0-alpha.29
+    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17 @google-cloud/functions-emulator@1.0.0-beta.4
     - yarn install
     - yarn run lint
     - samples test install -l=functions/background
@@ -101,7 +101,8 @@ deployment:
       - node scripts/build "appengine/errorreporting"
       - node scripts/build "appengine/hello-world"
       - node scripts/build "appengine/mailjet"
-      - node scripts/build "appengine/metadata"
+      - node scripts/build "appengine/metadata/flexible"
+      - node scripts/build "appengine/metadata/standard"
       - node scripts/build "appengine/static-files"
       - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage"
       - node scripts/build "auth"

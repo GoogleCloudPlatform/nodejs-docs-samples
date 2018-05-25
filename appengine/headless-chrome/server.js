@@ -46,4 +46,4 @@ const server = app.listen(process.env.PORT || 8080, err => {
   const port = server.address().port;
   console.info(`App listening on port ${port}`);
 });
-// [END sample]
+// [END full_sample]

@@ -7,7 +7,7 @@
   "description": "An example of taking screenshot with Puppeteer (Headless Chrome) in Node.js on Google App Engine.",
   "scripts": {
     "start": "node server.js",
-    "system-test": "repo-tools test app",
+    "system-test": "repo-tools test server",
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "test": "npm run system-test"
@@ -30,7 +30,7 @@
   },
   "cloud-repo-tools": {
     "test": {
-      "app": {
+      "server": {
         "msg": "Please provide URL"
       }
     },

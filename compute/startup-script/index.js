@@ -49,8 +49,7 @@ function createVm(name, callback) {
 
   const vm = zone.vm(name);
 
-  vm
-    .create(config)
+  vm.create(config)
     .then(data => {
       const operation = data[1];
       return operation.promise();
@@ -120,8 +119,7 @@ function listVms(callback) {
 
 function deleteVm(name, callback) {
   const vm = zone.vm(name);
-  vm
-    .delete()
+  vm.delete()
     .then(data => {
       console.log('Deleting ...');
       const operation = data[0];

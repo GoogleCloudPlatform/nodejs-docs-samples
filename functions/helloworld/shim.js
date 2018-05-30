@@ -13,17 +13,10 @@
  * limitations under the License.
  */
 
-// [START functions_testing_shim_http]
-// [START functions_testing_shim_storage]
-// [START functions_testing_shim_pubsub]
-// Import tested code + dependencies
-const gcfCode = require('./index.js');
-// [END functions_testing_shim_http]
-// [END functions_testing_shim_storage]
-// [END functions_testing_shim_pubsub]
-
 const httpShim = (PORT) => {
   // [START functions_testing_shim_http]
+  // Import dependencies
+  const gcfCode = require('./index.js');
   const express = require('express');
 
   // TODO(developer): specify the port to use
@@ -50,12 +43,13 @@ const httpShim = (PORT) => {
 };
 
 const pubsubShim = (gcfFn, topicName, subscriptionName) => {
-  // Import dependencies (in function, to avoid cluttering other samples)
   // [START functions_testing_shim_pubsub]
+  // Import dependencies
   const Pubsub = require('@google-cloud/pubsub');
   const pubsub = Pubsub();
 
   // TODO(developer): specify a function to test
+  // const gcfCode = require('./index.js');
   // const gcfFn = gcfCode.YOUR_FUNCTION;
 
   // TODO(developer): specify an existing topic and subscription to use
@@ -77,14 +71,15 @@ const pubsubShim = (gcfFn, topicName, subscriptionName) => {
 };
 
 const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
-  // Import dependencies (in function, to avoid cluttering other samples)
   // [START functions_testing_shim_storage]
+  // Import dependencies
   const Pubsub = require('@google-cloud/pubsub');
   const Storage = require(`@google-cloud/storage`);
   const pubsub = Pubsub();
   const storage = Storage();
 
   // TODO(developer): specify a function to test
+  // const gcfCode = require('./index.js');
   // const gcfFn = gcfCode.YOUR_FUNCTION;
 
   // TODO(developer): specify a Cloud Storage bucket to monitor
@@ -121,6 +116,7 @@ const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
   // [END functions_testing_shim_storage]
 };
 
+const gcfCodeGlobal = require('./index.js');
 require(`yargs`) // eslint-disable-line
   .demandCommand(1)
   .command(
@@ -134,7 +130,7 @@ require(`yargs`) // eslint-disable-line
     'PubSub-triggered-function shim',
     {},
     opts => pubsubShim(
-      gcfCode[opts.functionName],
+      gcfCodeGlobal[opts.functionName],
       opts.topic,
       opts.subscription
     )
@@ -144,7 +140,7 @@ require(`yargs`) // eslint-disable-line
     'Storage-triggered-function shim',
     {},
     opts => storageShim(
-      gcfCode[opts.functionName],
+      gcfCodeGlobal[opts.functionName],
       opts.bucket,
       opts.topic,
       opts.subscription

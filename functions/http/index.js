@@ -143,6 +143,9 @@ exports.parseXML = (req, res) => {
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+
+// Node.js doesn't come with built-in multipart/form-data parsing tools.
+// Instead, we can use the 'busboy' library to parse these requests.
 const Busboy = require('busboy');
 
 exports.uploadFile = (req, res) => {

@@ -19,7 +19,7 @@
 /**
  * Responds to any HTTP request that can provide a "message" field in the body.
  *
- * @param {Object} req ExpresJS object containing the received HTTP request.
+ * @param {Object} req ExpressJS object containing the received HTTP request.
  * @param {Object} res ExpressJS object containing the HTTP response to send.
  */
 exports.helloWorld = (req, res) => {

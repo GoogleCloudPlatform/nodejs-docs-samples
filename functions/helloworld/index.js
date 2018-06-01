@@ -56,6 +56,8 @@ exports.helloBackground = (event, callback) => {
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
+ * This function is exported by index.js, and executed when
+ * the trigger topic receives a message.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.

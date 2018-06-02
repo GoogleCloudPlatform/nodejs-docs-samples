@@ -31,11 +31,11 @@ app.use(async (req, res) => {
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
+  // [END browser]
   const page = await browser.newPage();
   await page.goto(url);
   const imageBuffer = await page.screenshot();
   await browser.close();
-  // [END browser]
 
   res.set('Content-Type', 'image/png');
   res.send(imageBuffer);

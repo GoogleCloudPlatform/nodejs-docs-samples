@@ -47,3 +47,5 @@ const server = app.listen(process.env.PORT || 8080, err => {
   console.info(`App listening on port ${port}`);
 });
 // [END full_sample]
+
+module.exports = app;

@@ -20,6 +20,8 @@ const Buffer = require('safe-buffer').Buffer;
 // [START functions_helloworld_get]
 /**
  * HTTP Cloud Function.
+ * This function is exported by index.js, and is executed when
+ * you make an HTTP request to the deployed function's endpoint.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
@@ -56,6 +58,8 @@ exports.helloBackground = (event, callback) => {
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
+ * This function is exported by index.js, and executed when
+ * the trigger topic receives a message.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.

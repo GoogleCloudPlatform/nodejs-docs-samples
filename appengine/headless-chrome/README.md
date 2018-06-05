@@ -9,5 +9,5 @@ This sample application demonstrates how to use Headless Chrome via the [Puppete
 
 ## Deploy to App Engine
 
-* Install the [Google Cloud SDK](https://cloud.google.com/sdk/) admn create a Google Cloud project 
+* Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and create a Google Cloud project 
 * Run `gcloud app deploy`

@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "samples lint",
     "pretest": "npm run lint",
-    "system-test": "samples test app",
+    "system-test": "samples test app -- ./server.js",
     "test": "npm run system-test"
   },
   "dependencies": {
@@ -28,7 +28,7 @@
   "cloud-repo-tools": {
     "test": {
       "app": {
-        "msg": "External IP:",
+        "msg": "Project ID:",
         "args": [
           "server.js"
         ]

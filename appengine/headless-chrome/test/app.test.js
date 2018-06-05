@@ -30,7 +30,7 @@ test.serial.cb(`should return a screenshot`, t => {
     .get(`/?url=https://example.com`)
     .send()
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.type, `image/png`);
       t.true(response.body instanceof Buffer);
       t.true(response.body.length > 0);

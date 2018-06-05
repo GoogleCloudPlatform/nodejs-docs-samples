@@ -26,7 +26,7 @@ on Google Cloud Platform.
   * [Google API Node.js client library](#google-api-nodejs-client-library)
 * [Code samples](#code-samples)
   * [**Compute**](#compute)
-    * [Google App Engine (Flexible Environment)](#google-app-engine-flexible-environment)
+    * [Google App Engine](#google-app-engine)
     * [Google Compute Engine](#google-compute-engine)
     * [Google Container Engine](#google-container-engine)
     * [Google Cloud Functions (Beta)](#google-cloud-functions-beta)
@@ -185,15 +185,15 @@ Node.js client library.
 
 ### Compute
 
-#### Google App Engine (flexible environment)
+#### Google App Engine
 
-The [App Engine flexible environment][flex_docs] is based on Google Compute
-Engine and automatically scales your app up and down while balancing the load.
+[Google App Engine][gae_docs] is a fully managed serverless application
+platform.
 
-View the [App Engine flexible environment Node.js samples][flex_samples].
+View the [App Engine Node.js samples][gae_samples].
 
-[flex_docs]: https://cloud.google.com/appengine/docs/flexible/nodejs/
-[flex_samples]: appengine
+[gae_docs]: https://cloud.google.com/appengine/docs/nodejs/
+[gae_samples]: appengine
 
 #### Google Compute Engine
 

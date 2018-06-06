@@ -72,9 +72,8 @@ dependencies:
 # Run your tests
 test:
   override:
-    # (todo: fhinkel) figure out why these time out and put them back in.
-    # - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/datastore && npm run system-test && functions-emulator stop
-    # - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/helloworld && npm run test && functions-emulator stop
+    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && functions-emulator start && cd functions/datastore && npm run system-test && functions-emulator stop
+    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && functions-emulator start && cd functions/helloworld && npm run test && functions-emulator stop
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/concepts/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'

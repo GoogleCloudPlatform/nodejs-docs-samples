@@ -73,7 +73,8 @@ dependencies:
 test:
   override:
     - export GCLOUD_PROJECT=nodejs-docs-samples-tests && functions-emulator start && cd functions/datastore && npm test && functions-emulator stop
-    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && export FUNCTIONS_TOPIC=integration-test-functions && export FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC && functions-emulator start && cd functions/helloworld && npm test && functions-emulator stop
+    # Only run if the PR is not coming from a fork.
+    - if [[-z $CIRCLE_PR_USERNAME ]] ; then functions-emulator start && cd functions/helloworld && npm test && functions-emulator stop; fi
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/concepts/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'

@@ -15,16 +15,12 @@
 # limitations under the License.
 
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
-STAGE_BUCKET=$GCLOUD_PROJECT
-GCP_REGION=us-central1
 
 export NODE_ENV=development
 export GAE_VERSION=appengine-datastore-flexible
 
 # Register post-test cleanup
 function cleanup {
-  CODE=$?
-
   gcloud app versions delete $GAE_VERSION --quiet
   if [ -e "worker.yaml" ]; then
     gcloud app versions delete ${GAE_VERSION}-worker --quiet
@@ -54,7 +50,4 @@ fi
 # Test the deployed app
 npm test
 
-# Exit on error
-if [[ $CODE -ne 0 ]]; then
-  exit $CODE
-fi
+exit $?

@@ -13,4 +13,11 @@
 
 # [START app_yaml]
 runtime: nodejs8
+
+handlers:
+  - url: /static
+    static_dir: public
+
+  - url: /.*
+    script: auto
 # [END app_yaml]

@@ -34,15 +34,15 @@ gcloud config set project $GCLOUD_PROJECT
 function cleanup {
   CODE=$?
 
-  gcloud beta functions delete helloHttp -q
-  gcloud beta functions delete helloGET -q
-  gcloud beta functions delete helloBackground -q
-  gcloud beta functions delete helloPubSub -q
-  gcloud beta functions delete helloGCS -q
-  gcloud beta functions delete helloError -q
-  gcloud beta functions delete helloError2 -q
-  gcloud beta functions delete helloError3 -q
-  gcloud beta functions delete helloTemplate -q
+  gcloud functions delete helloHttp -q
+  gcloud functions delete helloGET -q
+  gcloud functions delete helloBackground -q
+  gcloud functions delete helloPubSub -q
+  gcloud functions delete helloGCS -q
+  gcloud functions delete helloError -q
+  gcloud functions delete helloError2 -q
+  gcloud functions delete helloError3 -q
+  gcloud functions delete helloTemplate -q
 }
 trap cleanup EXIT
 

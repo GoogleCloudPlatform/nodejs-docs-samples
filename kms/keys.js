@@ -1249,7 +1249,7 @@ function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
 
   function buildAndAuthorizeService (callback) {
     // Imports the Google APIs client library
-    const google = require('googleapis').google;
+    const {google} = require('googleapis');
 
     // Acquires credentials
     google.auth.getApplicationDefault((err, authClient) => {

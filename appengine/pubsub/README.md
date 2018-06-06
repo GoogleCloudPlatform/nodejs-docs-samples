@@ -12,13 +12,14 @@ Before you can run or deploy the sample, you will need to do the following:
 1. Create a topic and subscription.
 
         gcloud beta pubsub topics create <your-topic-name>
-        gcloud beta pubsub subcriptions create <your-subscription-name> \
+        gcloud beta pubsub subscriptions create <your-subscription-name> \
           --topic <your-topic-name> \
           --push-endpoint \
             https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
           --ack-deadline 30
 
-1. Update the environment variables in `app.yaml`.
+1. Update the environment variables in `app.standard.yaml` or `app.flexible.yaml`
+(depending on your App Engine environment).
 
 ## Running locally
 

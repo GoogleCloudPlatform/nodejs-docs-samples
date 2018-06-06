@@ -1,6 +1,8 @@
 # Node.js Cloud Pub/Sub sample for Google App Engine
 
-This demonstrates how to send and receive messages using [Google Cloud Pub/Sub](https://cloud.google.com/pubsub) on [Google App Engine Flexible Environment](https://cloud.google.com/appengine) using Node.js.
+This sample shows how to send and receive messages using [Google Cloud Pub/Sub](https://cloud.google.com/pubsub) on [Google App Engine](https://cloud.google.com/appengine)
+[standard environment](https://cloud.google.com/appengine/docs/standard/nodejs)
+and [flexible environment](https://cloud.google.com/appengine/docs/flexible/nodejs).
 
 ## Setup
 
@@ -10,13 +12,14 @@ Before you can run or deploy the sample, you will need to do the following:
 1. Create a topic and subscription.
 
         gcloud beta pubsub topics create <your-topic-name>
-        gcloud beta pubsub subcriptions create <your-subscription-name> \
+        gcloud beta pubsub subscriptions create <your-subscription-name> \
           --topic <your-topic-name> \
           --push-endpoint \
             https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
           --ack-deadline 30
 
-1. Update the environment variables in `app.yaml`.
+1. Update the environment variables in `app.standard.yaml` or `app.flexible.yaml`
+(depending on your App Engine environment).
 
 ## Running locally
 

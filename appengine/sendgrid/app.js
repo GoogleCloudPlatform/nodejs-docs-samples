@@ -21,7 +21,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 
 // [START setup]
-// The following environment variables are set by app.yaml when running on GAE,
+// The following environment variables are set by app.yaml (app.flexible.yaml or
+// app.standard.yaml) when running on Google App Engine,
 // but will need to be manually set when running locally.
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const SENDGRID_SENDER = process.env.SENDGRID_SENDER;

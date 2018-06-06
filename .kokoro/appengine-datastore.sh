@@ -17,7 +17,7 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 
 export NODE_ENV=development
-export GAE_VERSION=appengine-datastore-flexible
+export GAE_VERSION=appengine-datastore-${APPENGINE_ENVIRONMENT}
 
 # Register post-test cleanup
 function cleanup {
@@ -41,9 +41,9 @@ gcloud config set project $GCLOUD_PROJECT
 
 
 # Deploy the app
-gcloud app deploy app.flexible.yaml --version $GAE_VERSION --no-promote --quiet
+gcloud app deploy app.${APPENGINE_ENVIRONMENT}.yaml --version $GAE_VERSION --no-promote --quiet
 if [ -e "worker.yaml" ]; then
-  gcloud app deploy worker.yaml --version ${GAE_VERSION}-worker --no-promote --quiet
+  gcloud app deploy worker.yaml --version ${GAE_VERSION} --no-promote --quiet
 fi
 
 

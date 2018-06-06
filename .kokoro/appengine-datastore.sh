@@ -43,7 +43,7 @@ gcloud config set project $GCLOUD_PROJECT
 # Deploy the app
 gcloud app deploy app.flexible.yaml --version $GAE_VERSION --no-promote --quiet
 if [ -e "worker.yaml" ]; then
-  gcloud app deploy worker.yaml --version ${GAE_VERSION} --no-promote --quiet
+  gcloud app deploy worker.yaml --version ${GAE_VERSION}-worker --no-promote --quiet
 fi
 
 

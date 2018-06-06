@@ -72,8 +72,8 @@ dependencies:
 # Run your tests
 test:
   override:
-    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && functions-emulator start && cd functions/datastore && npm run system-test && functions-emulator stop
-    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && functions-emulator start && cd functions/helloworld && npm run test && functions-emulator stop
+    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && functions-emulator start && cd functions/datastore && npm test && functions-emulator stop
+    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && export FUNCTIONS_TOPIC=integration-test-functions && export FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC && functions-emulator start && cd functions/helloworld && npm test && functions-emulator stop
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/concepts/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'

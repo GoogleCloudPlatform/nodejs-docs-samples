@@ -27,7 +27,7 @@ const gcsFileName = `test-${uuid.v4()}.txt`;
 
 const bucketName = process.env.BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
-const baseCmd = `gcloud beta functions`;
+const baseCmd = `gcloud functions`;
 
 test.serial(`helloGCS: should print uploaded message`, async (t) => {
   t.plan(1);
@@ -77,4 +77,4 @@ test.serial(`helloGCS: should print deleted message`, async (t) => {
   const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
   t.true(logs.includes(`File ${gcsFileName} deleted`));
 });
-// [START functions_storage_system_test]
+// [END functions_storage_system_test]

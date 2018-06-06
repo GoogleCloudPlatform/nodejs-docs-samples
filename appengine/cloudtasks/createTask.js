@@ -15,7 +15,7 @@
 
 'use strict';
 
-const google = require('googleapis');
+const {google} = require('googleapis');
 const cloudtasks = google.cloudtasks('v2beta2');
 
 /**
@@ -23,7 +23,9 @@ const cloudtasks = google.cloudtasks('v2beta2');
  */
 function createTask (project, location, queue, options) {
   // [START cloud_tasks_appengine_create_task]
-  authorize((authClient) => {
+  google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
+  }).then(authClient => {
     const task = {
       app_engine_http_request: {
         http_method: 'POST',
@@ -40,7 +42,7 @@ function createTask (project, location, queue, options) {
     }
 
     const request = {
-      parent: `projects/${project}/locations/${location}/queues/${queue}`,  // TODO: Update placeholder value.
+      parent: `projects/${project}/locations/${location}/queues/${queue}`, // TODO: Update placeholder value.
       resource: {
         task: task
       },
@@ -48,31 +50,11 @@ function createTask (project, location, queue, options) {
     };
 
     console.log('Sending task %j', task);
-
-    cloudtasks.projects.locations.queues.tasks.create(request, (err, response) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-
-      console.log('Created task.', response.name);
-      console.log(JSON.stringify(response, null, 2));
-    });
-  });
-
-  function authorize (callback) {
-    google.auth.getApplicationDefault(function (err, authClient) {
-      if (err) {
-        console.error('authentication failed: ', err);
-        return;
-      }
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-        authClient = authClient.createScoped(scopes);
-      }
-      callback(authClient);
-    });
-  }
+    return cloudtasks.projects.locations.queues.tasks.create(request);
+  }).then(response => {
+    console.log('Created task.', response.name);
+    console.log(JSON.stringify(response, null, 2));
+  }).catch(console.error);
   // [END cloud_tasks_appengine_create_task]
 }
 
@@ -121,9 +103,7 @@ const cli = require(`yargs`)
 
 if (module === require.main) {
   const opts = cli.help().parse(process.argv.slice(2));
-
   process.env.GCLOUD_PROJECT = opts.project;
-
   createTask(opts.project, opts.location, opts.queue, opts);
 }
 

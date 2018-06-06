@@ -41,17 +41,18 @@ Run the following command to install the library dependencies for NodeJS:
 
     Examples:
       node manager.js createEs256Device my-es-device my-registry ../ec_public.pem
-      node manager.js createRegistry my-registry my-iot-topic --serviceAccount=$HOME/creds_iot.json
-      --project_id=my-project-id
+      node manager.js createRegistry my-registry my-iot-topic \
+        --serviceAccount=$HOME/creds_iot.json \
+        --projectId=my-project-id --cloudRegion=from-console
       node manager.js createRsa256Device my-rsa-device my-registry ../rsa_cert.pem
       node manager.js createUnauthDevice my-device my-registry
       node manager.js deleteDevice my-device my-registry
       node manager.js deleteRegistry my-device my-registry
       node manager.js getDevice my-device my-registry
       node manager.js getDeviceState my-device my-registry
-      node manager.js getRegistry my-registry
+      node manager.js getRegistry my-registry -cloudRegion europe-west1
       node manager.js listDevices my-node-registry
-      node manager.js listRegistries
+      node manager.js listRegistries -c asia-east1 -p your-project -s path/svc.json
       node manager.js patchRsa256 my-device my-registry ../rsa_cert.pem
       node manager.js patchEs256 my-device my-registry ../ec_public.pem
       node manager.js setConfig my-device my-registry "test" 0

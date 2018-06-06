@@ -19,9 +19,20 @@ const proxyquire = require(`proxyquire`).noCallThru();
 const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const vision = require('@google-cloud/vision').v1p1beta1;
 
 const bucketName = `my-bucket`;
 const filename = `image.jpg`;
+
+var VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
+VisionStub.returns({
+  safeSearchDetection: sinon.stub().returns(Promise.resolve([{
+    safeSearchAnnotation: {
+      adult: 'VERY_LIKELY',
+      violence: 'VERY_LIKELY'
+    }
+  }]))
+});
 
 function getSample () {
   const file = {
@@ -39,11 +50,7 @@ function getSample () {
   const storageMock = {
     bucket: sinon.stub().returns(bucket)
   };
-  const visionMock = {
-    detectSafeSearch: sinon.stub().returns(Promise.resolve([{ violence: true }]))
-  };
   const StorageMock = sinon.stub().returns(storageMock);
-  const VisionMock = sinon.stub().returns(visionMock);
   const childProcessMock = {
     exec: sinon.stub().yields()
   };
@@ -53,7 +60,6 @@ function getSample () {
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/vision': VisionMock,
       '@google-cloud/storage': StorageMock,
       'child_process': childProcessMock,
       'fs': fsMock
@@ -63,8 +69,7 @@ function getSample () {
       childProcess: childProcessMock,
       storage: storageMock,
       bucket,
-      file,
-      vision: visionMock
+      file
     }
   };
 }
@@ -96,8 +101,17 @@ test.serial(`blurOffensiveImages blurs images`, async (t) => {
 });
 
 test.serial(`blurOffensiveImages ignores safe images`, async (t) => {
+  VisionStub.restore();
+  VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
+  VisionStub.returns({
+    safeSearchDetection: sinon.stub().returns(Promise.resolve([{
+      safeSearchAnnotation: {
+        adult: 'VERY_UNLIKELY',
+        violence: 'VERY_UNLIKELY'
+      }
+    }]))
+  });
   const sample = getSample();
-  sample.mocks.vision.detectSafeSearch = sinon.stub().returns(Promise.resolve([{}]));
   await sample.program.blurOffensiveImages({ data: { bucket: bucketName, name: filename } });
   t.is(console.log.callCount, 2);
   t.deepEqual(console.log.getCall(0).args, [`Analyzing ${sample.mocks.file.name}.`]);

@@ -28,17 +28,17 @@ can skip this step):
 
 1. Deploy the `publish` function with an HTTP trigger:
 
-        gcloud beta functions deploy publish --trigger-http
+        gcloud functions deploy publish --trigger-http
 
 1. Deploy the `subscribe` function with the Pub/Sub topic as a trigger:
 
-        gcloud beta functions deploy subscribe --trigger-topic YOUR_TOPIC_NAME
+        gcloud functions deploy subscribe --trigger-topic YOUR_TOPIC_NAME
 
     * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 
 1. Call the `publish` function:
 
-        gcloud beta functions call publish --data '{"topic":"YOUR_TOPIC_NAME","message":"Hello World!"}'
+        gcloud functions call publish --data '{"topic":"YOUR_TOPIC_NAME","message":"Hello World!"}'
 
     * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 

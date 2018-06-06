@@ -17,8 +17,8 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 STAGE_BUCKET=$GCLOUD_PROJECT
 GCP_REGION=us-central1
-FUNCTIONS_TOPIC=integration-test-functions
-FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC
+export FUNCTIONS_TOPIC=integration-test-functions
+export FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC
 export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
 cd github/nodejs-docs-samples/functions/helloworld

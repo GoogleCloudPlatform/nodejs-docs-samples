@@ -35,7 +35,7 @@ cd github/nodejs-docs-samples/functions/helloworld
 npm install
 
 # Install global dependencies used in some integration tests.
-npm install -g  @google-cloud/functions-emulator@1.0.0-beta.4
+npm install -g @google-cloud/functions-emulator@1.0.0-beta.4
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json

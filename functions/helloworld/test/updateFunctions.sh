@@ -7,8 +7,12 @@ ${FUNCTIONS_CMD} deploy helloHttp --trigger-http
 echo '-----------------------------'
 ${FUNCTIONS_CMD} deploy helloBackground --trigger-topic $FUNCTIONS_TOPIC
 echo '-----------------------------'
+${FUNCTIONS_CMD} delete helloPubSub -q
+echo 'Deleted helloPubSub -----------------------------'
 ${FUNCTIONS_CMD} deploy helloPubSub --trigger-topic $FUNCTIONS_TOPIC
 echo '-----------------------------'
+${FUNCTIONS_CMD} delete helloGCS -q
+echo 'Deleted helloGCS -----------------------------'
 ${FUNCTIONS_CMD} deploy helloGCS --trigger-bucket $FUNCTIONS_BUCKET
 echo '-----------------------------'
 ${FUNCTIONS_CMD} deploy helloGCSGeneric --trigger-bucket $FUNCTIONS_BUCKET

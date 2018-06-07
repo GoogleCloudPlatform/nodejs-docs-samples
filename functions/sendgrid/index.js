@@ -120,7 +120,7 @@ function getPayload (requestBody) {
  * @param {string} req.body.body Body of the email subject line.
  * @param {object} res Cloud Function response context.
  */
-exports.sendgridEmail = function sendgridEmail (req, res) {
+exports.sendgridEmail = (req, res) => {
   return Promise.resolve()
     .then(() => {
       if (req.method !== 'POST') {
@@ -224,7 +224,7 @@ function fixNames (obj) {
  * @param {object} req Cloud Function request context.
  * @param {object} res Cloud Function response context.
  */
-exports.sendgridWebhook = function sendgridWebhook (req, res) {
+exports.sendgridWebhook = (req, res) => {
   return Promise.resolve()
     .then(() => {
       if (req.method !== 'POST') {
@@ -291,7 +291,7 @@ function getTable () {
  * @param {string} [event.data.timeDeleted] Time the file was deleted if this is a deletion event.
  * @see https://cloud.google.com/storage/docs/json_api/v1/objects#resource
  */
-exports.sendgridLoad = function sendgridLoad (event) {
+exports.sendgridLoad = (event) => {
   const file = event.data;
 
   if (file.resourceState === 'not_exists') {

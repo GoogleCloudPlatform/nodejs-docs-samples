@@ -1,0 +1,10 @@
+steps:
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['install']
+  dir: 'functions/autodeploy'
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['test']
+  dir: 'functions/autodeploy'
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['beta', 'functions', 'deploy', '[YOUR_FUNCTION_NAME]', '[YOUR_FUNCTION_TRIGGER]']
+  dir: 'functions/autodeploy'

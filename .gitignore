@@ -8,3 +8,5 @@ logs/
 *.pb
 .idea/
 .nyc_output
+yarn.lock
+package-lock.json

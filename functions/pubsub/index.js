@@ -39,7 +39,7 @@ const Buffer = require('safe-buffer').Buffer;
  * @param {string} req.body.message Message to publish.
  * @param {object} res Cloud Function response context.
  */
-exports.publish = function publish (req, res) {
+exports.publish = (req, res) => {
   if (!req.body.topic) {
     res.status(500).send(new Error('Topic not provided. Make sure you have a "topic" property in your request'));
     return;
@@ -77,9 +77,9 @@ exports.publish = function publish (req, res) {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The Cloud Pub/Sub Message object.
  * @param {string} event.data.data The "data" property of the Cloud Pub/Sub Message.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
-exports.subscribe = function subscribe (event, callback) {
+exports.subscribe = (event, callback) => {
   const pubsubMessage = event.data;
 
   // We're just going to log the message to prove that it worked!

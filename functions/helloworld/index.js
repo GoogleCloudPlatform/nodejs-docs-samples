@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,31 +17,16 @@
 
 const Buffer = require('safe-buffer').Buffer;
 
-// [START functions_helloworld_debug]
-require('@google-cloud/debug-agent').start();
-// [END functions_helloworld_debug]
-
-// [START functions_helloworld]
-/**
- * Cloud Function.
- *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
- */
-exports.helloWorld = function helloWorld (event, callback) {
-  console.log(`My Cloud Function: ${event.data.message}`);
-  callback();
-};
-// [END functions_helloworld]
-
 // [START functions_helloworld_get]
 /**
  * HTTP Cloud Function.
+ * This function is exported by index.js, and is executed when
+ * you make an HTTP request to the deployed function's endpoint.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloGET = function helloGET (req, res) {
+exports.helloGET = (req, res) => {
   res.send('Hello World!');
 };
 // [END functions_helloworld_get]
@@ -53,7 +38,7 @@ exports.helloGET = function helloGET (req, res) {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloHttp = function helloHttp (req, res) {
+exports.helloHttp = (req, res) => {
   res.send(`Hello ${req.body.name || 'World'}!`);
 };
 // [END functions_helloworld_http]
@@ -65,7 +50,7 @@ exports.helloHttp = function helloHttp (req, res) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloBackground = function helloBackground (event, callback) {
+exports.helloBackground = (event, callback) => {
   callback(null, `Hello ${event.data.name || 'World'}!`);
 };
 // [END functions_helloworld_background]
@@ -73,11 +58,13 @@ exports.helloBackground = function helloBackground (event, callback) {
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
+ * This function is exported by index.js, and executed when
+ * the trigger topic receives a message.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloPubSub = function (event, callback) {
+exports.helloPubSub = (event, callback) => {
   const pubsubMessage = event.data;
   const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
 
@@ -94,7 +81,7 @@ exports.helloPubSub = function (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloGCS = function (event, callback) {
+exports.helloGCS = (event, callback) => {
   const file = event.data;
 
   if (file.resourceState === 'not_exists') {
@@ -111,6 +98,29 @@ exports.helloGCS = function (event, callback) {
 };
 // [END functions_helloworld_storage]
 
+// [START functions_helloworld_storage_generic]
+/**
+ * Generic background Cloud Function to be triggered by Cloud Storage.
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {function} callback The callback function.
+ */
+exports.helloGCSGeneric = (event, callback) => {
+  const file = event.data;
+  const context = event.context;
+
+  console.log(`Event ${context.eventId}`);
+  console.log(`  Event Type: ${context.eventType}`);
+  console.log(`  Bucket: ${file.bucket}`);
+  console.log(`  File: ${file.name}`);
+  console.log(`  Metageneration: ${file.metageneration}`);
+  console.log(`  Created: ${file.timeCreated}`);
+  console.log(`  Updated: ${file.updated}`);
+
+  callback();
+};
+// [END functions_helloworld_storage_generic]
+
 // [START functions_helloworld_error]
 /**
  * Background Cloud Function that throws an error.
@@ -118,7 +128,7 @@ exports.helloGCS = function (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloError = function helloError (event, callback) {
+exports.helloError = (event, callback) => {
   // This WILL be reported to Stackdriver errors
   throw new Error('I failed you');
 };
@@ -132,7 +142,7 @@ exports.helloError = function helloError (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloError2 = function helloError2 (event, callback) {
+exports.helloError2 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
   throw 1;
 };
@@ -145,7 +155,7 @@ exports.helloError2 = function helloError2 (event, callback) {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloError3 = function helloError3 (event, callback) {
+exports.helloError3 = (event, callback) => {
   // This will NOT be reported to Stackdriver errors
   callback('I failed you');
 };

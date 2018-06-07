@@ -20,21 +20,13 @@ Functions for your project.
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
         cd nodejs-docs-samples/functions/uuid
 
-1. Create a Cloud Storage Bucket to stage our deployment:
-
-        gsutil mb gs://[YOUR_BUCKET_NAME]
-
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
-
 1. Deploy the `uuid` function with an HTTP trigger:
 
-        gcloud alpha functions deploy uuid --bucket [YOUR_BUCKET_NAME] --trigger-http
-
-    * Replace `[YOUR_BUCKET_NAME]` with the name of your Cloud Storage Bucket.
+        gcloud functions deploy uuid --trigger-http
 
 1. Call the `uuid` function:
 
-        gcloud alpha functions call uuid
+        gcloud functions call uuid
 
     You should see something like this in your console:
 

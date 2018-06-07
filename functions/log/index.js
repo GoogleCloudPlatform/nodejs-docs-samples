@@ -16,7 +16,7 @@
 'use strict';
 
 // [START functions_log_helloworld]
-exports.helloWorld = function helloWorld (event, callback) {
+exports.helloWorld = (event, callback) => {
   console.log('I am a log entry!');
   callback();
 };

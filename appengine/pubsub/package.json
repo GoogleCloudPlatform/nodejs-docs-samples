@@ -6,16 +6,42 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=4.3.2"
+    "node": "8.x.x"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "repo-tools test app && ava -T 30s */*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.8.0",
-    "body-parser": "1.16.0",
-    "express": "4.14.1",
-    "pug": "2.0.0-beta6",
-    "safe-buffer": "5.0.1"
+    "@google-cloud/pubsub": "0.16.4",
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "pug": "2.0.1",
+    "safe-buffer": "5.1.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "uuid": "3.2.1"
+  },
+  "cloud-repo-tools": {
+    "requiresProjectId": true,
+    "requiresKeyFile": true,
+    "test": {
+      "app": {
+        "requiredEnvVars": [
+          "PUBSUB_TOPIC",
+          "PUBSUB_VERIFICATION_TOKEN"
+        ],
+        "msg": "Messages received by this instance",
+        "substitutions": "YOUR_TOPIC_NAME=$PUBSUB_TOPIC,YOUR_VERIFICATION_TOKEN=$PUBSUB_VERIFICATION_TOKEN"
+      },
+      "build": {
+        "requiredEnvVars": [
+          "PUBSUB_TOPIC",
+          "PUBSUB_VERIFICATION_TOKEN"
+        ]
+      }
+    }
   }
 }

@@ -54,7 +54,7 @@ function getSample () {
     bucket: sinon.stub().returns(bucket)
   };
   const visionMock = {
-    detectText: sinon.stub().returns(Promise.resolve([ text ]))
+    textDetection: sinon.stub().returns(Promise.resolve([{ textAnnotations: [{ description: text }] }]))
   };
   const translateMock = {
     detect: sinon.stub().returns(Promise.resolve([{ language: `ja` }])),

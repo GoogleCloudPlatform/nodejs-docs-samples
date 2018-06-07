@@ -12,23 +12,24 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "error-test": "samples test app --msg \"Something broke!\" --url \"http://localhost:33332/error\" --port 33332  -- snippets.js express",
-    "exception-test": "samples test app --code 500 --msg SyntaxError --url \"http://localhost:33333/exception\" --port 33333  -- snippets.js express",
-    "system-test": "ava -T 1m --verbose system-test/*.test.js && npm run error-test && npm run exception-test",
-    "test": "npm run system-test"
+    "error-test": "repo-tools test app --msg \"Something broke!\" --url \"http://localhost:33332/error\" --port 33332  -- snippets.js express",
+    "exception-test": "repo-tools test app --code 500 --msg SyntaxError --url \"http://localhost:33333/exception\" --port 33333  -- snippets.js express",
+    "system-test": "ava -T 1m --verbose system-test/*.test.js",
+    "all-test": "npm run system-test && npm run error-test && npm run exception-test",
+    "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "@google-cloud/error-reporting": "0.1.3",
-    "express": "4.15.3",
-    "yargs": "8.0.2"
+    "@google-cloud/error-reporting": "0.2.3",
+    "express": "4.16.2",
+    "yargs": "11.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1",
-    "proxyquire": "1.8.0",
-    "sinon": "2.3.5"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "proxyquire": "2.0.0",
+    "sinon": "4.4.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

@@ -12,19 +12,19 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/storage": "1.1.1",
-    "@google-cloud/vision": "0.11.3"
+    "@google-cloud/storage": "1.6.0",
+    "@google-cloud/vision": "0.16.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.15",
-    "ava": "0.19.1",
-    "proxyquire": "1.8.0",
-    "sinon": "2.3.4"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "proxyquire": "2.0.0",
+    "sinon": "4.4.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

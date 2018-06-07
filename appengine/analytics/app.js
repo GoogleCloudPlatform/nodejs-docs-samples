@@ -48,12 +48,12 @@ function trackEvent (category, action, label, value, cb) {
   };
 
   return got.post('http://www.google-analytics.com/collect', {
-    body: data
+    form: data
   });
 }
 
 app.get('/', (req, res, next) => {
-   // Event value must be numeric.
+  // Event value must be numeric.
   trackEvent('Example category', 'Example action', 'Example label', '100')
     .then(() => {
       res.status(200).send('Event tracked.').end();

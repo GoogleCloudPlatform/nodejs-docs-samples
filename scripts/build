@@ -43,7 +43,7 @@ const command = `samples test build -l=${localPath} --async ${remainingArgs.join
 
 console.log(`Command: ${command}`);
 
-if (branch === 'master') {
+if (branch === 'master' || process.env.RUN_ALL_BUILDS) {
   execSync(command, {
     stdio: 'inherit'
   });

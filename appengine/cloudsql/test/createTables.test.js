@@ -29,7 +29,7 @@ const exampleConfig = [
   `database`
 ];
 
-function getSample (sqlClient) {
+function getSample () {
   const configMock = exampleConfig;
   const promptMock = {
     start: sinon.stub(),
@@ -42,49 +42,34 @@ function getSample (sqlClient) {
   };
   const knexMock = {
     schema: {
-      createTable: sinon.stub().returns(Promise.resolve(this)).yields(tableMock)
+      createTable: sinon.stub()
     },
     destroy: sinon.stub().returns(Promise.resolve())
   };
 
+  knexMock.schema.createTable.returns(Promise.resolve(knexMock)).yields(tableMock);
   const KnexMock = sinon.stub().returns(knexMock);
-
-  const processMock = {
-    env: {
-      SQL_CLIENT: sqlClient
-    }
-  };
 
   return {
     mocks: {
       Knex: KnexMock,
       knex: knexMock,
       config: configMock,
-      prompt: promptMock,
-      process: processMock
+      prompt: promptMock
     }
   };
-}
-
-function doProxiquire (sample) {
-  proxyquire(SAMPLE_PATH, {
-    knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-    process: sample.mocks.process
-  });
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb.serial(`should create a table in MySQL`, (t) => {
-  const sample = getSample('mysql');
+test.cb.serial(`should create a table`, (t) => {
+  const sample = getSample();
   const expectedResult = `Successfully created 'visits' table.`;
 
   proxyquire(SAMPLE_PATH, {
     knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-    process: sample.mocks.process
+    prompt: sample.mocks.prompt
   });
 
   t.true(sample.mocks.prompt.start.calledOnce);
@@ -107,50 +92,19 @@ test.cb.serial(`should create a table in MySQL`, (t) => {
   }, 10);
 });
 
-test.cb.serial(`should create a table in Postgres`, (t) => {
-  const sample = getSample('pg');
-  const expectedResult = `Successfully created 'visits' table.`;
-
-  proxyquire(SAMPLE_PATH, {
-    knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-    process: sample.mocks.process
-  });
-
-  t.true(sample.mocks.prompt.start.calledOnce);
-  t.true(sample.mocks.prompt.get.calledOnce);
-  t.deepEqual(sample.mocks.prompt.get.firstCall.args[0], exampleConfig);
-
-  setTimeout(() => {
-    t.true(sample.mocks.Knex.calledOnce);
-    t.deepEqual(sample.mocks.Knex.firstCall.args, [{
-      client: 'pg',
-      connection: exampleConfig
-    }]);
-
-    t.true(sample.mocks.knex.schema.createTable.calledOnce);
-    t.is(sample.mocks.knex.schema.createTable.firstCall.args[0], 'visits');
-
-    t.true(console.log.calledWith(expectedResult));
-    t.true(sample.mocks.knex.destroy.calledOnce);
-    t.end();
-  }, 10);
-});
-
 test.cb.serial(`should handle prompt error`, (t) => {
   const error = new Error(`error`);
-  const sample = getSample('mysql');
+  const sample = getSample();
   sample.mocks.prompt.get = sinon.stub().yields(error);
 
   proxyquire(SAMPLE_PATH, {
     knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-    process: sample.mocks.process
+    prompt: sample.mocks.prompt
   });
 
   setTimeout(() => {
     t.true(console.error.calledOnce);
-    t.true(console.error.calledWith(`Failed to create database connection:`, error));
+    t.true(console.error.calledWith(error));
     t.true(sample.mocks.Knex.notCalled);
     t.end();
   }, 10);
@@ -158,13 +112,12 @@ test.cb.serial(`should handle prompt error`, (t) => {
 
 test.cb.serial(`should handle knex creation error`, (t) => {
   const error = new Error(`error`);
-  const sample = getSample('mysql');
+  const sample = getSample();
   sample.mocks.knex.schema.createTable = sinon.stub().returns(Promise.reject(error));
 
   proxyquire(SAMPLE_PATH, {
     knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-    process: sample.mocks.process
+    prompt: sample.mocks.prompt
   });
 
   setTimeout(() => {
@@ -173,13 +126,4 @@ test.cb.serial(`should handle knex creation error`, (t) => {
     t.true(sample.mocks.knex.destroy.calledOnce);
     t.end();
   }, 10);
-});
-
-test(`should validate SQL_CLIENT env var`, (t) => {
-  const expected = `The SQL_CLIENT environment variable must be set to lowercase 'pg' or 'mysql'.`;
-  t.throws(() => { doProxiquire(getSample(null)); }, expected);
-  t.throws(() => { doProxiquire(getSample('foo')); }, expected);
-
-  t.notThrows(() => { doProxiquire(getSample('mysql')); });
-  t.notThrows(() => { doProxiquire(getSample('pg')); });
 });

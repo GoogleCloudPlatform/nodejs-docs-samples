@@ -45,9 +45,9 @@ function getFileStream (file) {
  * @param {object} event.data A Google Cloud Storage File object.
  * @param {string} event.data.bucket Name of a Cloud Storage bucket.
  * @param {string} event.data.name Name of a file in the Cloud Storage bucket.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
-exports.wordCount = function (event, callback) {
+exports.wordCount = (event, callback) => {
   const file = event.data;
 
   if (file.resourceState === 'not_exists') {

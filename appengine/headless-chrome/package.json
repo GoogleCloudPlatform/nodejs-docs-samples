@@ -1,0 +1,42 @@
+{
+  "name": "headless-chrome-sample",
+  "engines": {
+    "node": "8.x"
+  },
+  "version": "1.0.0",
+  "description": "An example of taking screenshot with Puppeteer (Headless Chrome) in Node.js on Google App Engine.",
+  "scripts": {
+    "start": "node app.js",
+    "system-test": "repo-tools test app",
+    "unit-test": "ava --verbose test/*.test.js",
+    "lint": "repo-tools lint",
+    "pretest": "npm run lint",
+    "test": "npm run unit-test && npm run system-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "author": {
+    "name": "Google LLC"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.16.3",
+    "puppeteer": "^1.2.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.3.0",
+    "ava": "^0.25.0",
+    "semistandard": "^12.0.1"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "Please provide URL"
+      }
+    },
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  }
+}

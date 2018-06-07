@@ -26,7 +26,7 @@ on Google Cloud Platform.
   * [Google API Node.js client library](#google-api-nodejs-client-library)
 * [Code samples](#code-samples)
   * [**Compute**](#compute)
-    * [Google App Engine (Flexible Environment)](#google-app-engine-flexible-environment)
+    * [Google App Engine](#google-app-engine)
     * [Google Compute Engine](#google-compute-engine)
     * [Google Container Engine](#google-container-engine)
     * [Google Cloud Functions (Beta)](#google-cloud-functions-beta)
@@ -42,6 +42,7 @@ on Google Cloud Platform.
     * [Google Cloud Prediction API](#google-cloud-prediction-api)
     * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
     * [Google Translate API](#google-translate-api)
+    * [Google Video Intelligence API](#google-video-intelligence-api)
     * [Google Cloud Vision API](#google-cloud-vision-api)
   * [**Management Tools**](#management-tools)
     * [Stackdriver Debugger](#stackdriver-debugger)
@@ -51,6 +52,7 @@ on Google Cloud Platform.
   * [**Networking**](#networking)
     * [Google Cloud DNS](#google-cloud-dns)
   * [**Identity and Security**](#identity-and-security)
+    * [Google Cloud Data Loss Prevention (DLP)](#google-cloud-data-loss-prevention-dlp)
     * [Google Cloud Key Management Service](#google-cloud-key-management-service)
 * [Other sample applications](#other-sample-applications)
   * [Bookshelf tutorial app](#bookshelf-tutorial-app)
@@ -132,9 +134,14 @@ on Google Cloud Platform.
 
     Read more about [Google Cloud Platform Authentication][gcp_auth].
 
+    __Note for running unit tests:__
+
+    Install [semistandard][] (lint tool)
+
 [node]: https://nodejs.org/
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
 [gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
+[semistandard]: https://www.npmjs.com/package/semistandard
 
 ### How to run a sample
 
@@ -178,15 +185,15 @@ Node.js client library.
 
 ### Compute
 
-#### Google App Engine (flexible environment)
+#### Google App Engine
 
-The [App Engine flexible environment][flex_docs] is based on Google Compute
-Engine and automatically scales your app up and down while balancing the load.
+[Google App Engine][gae_docs] is a fully managed serverless application
+platform.
 
-View the [App Engine flexible environment Node.js samples][flex_samples].
+View the [App Engine Node.js samples][gae_samples].
 
-[flex_docs]: https://cloud.google.com/appengine/docs/flexible/nodejs/
-[flex_samples]: appengine
+[gae_docs]: https://cloud.google.com/appengine/docs/nodejs/
+[gae_samples]: appengine
 
 #### Google Compute Engine
 
@@ -196,7 +203,7 @@ Google infrastructure.
 View the [Compute Engine Node.js samples][compute_samples].
 
 [compute_docs]: https://cloud.google.com/compute/docs/
-[compute_samples]: computeengine
+[compute_samples]: https://github.com/googleapis/nodejs-compute/tree/master/samples
 
 #### Google Container Engine
 
@@ -231,7 +238,7 @@ consistent and scalable relational database service.
 View the [Cloud Spanner Node.js samples][spanner_samples].
 
 [spanner_docs]: https://cloud.google.com/spanner/docs/
-[spanner_samples]: spanner
+[spanner_samples]: https://github.com/googleapis/nodejs-spanner/tree/master/samples
 
 #### Google Cloud Datastore
 
@@ -241,17 +248,27 @@ automatic scaling, high performance, and ease of application development.
 View the [Cloud Datastore Node.js samples][datastore_samples].
 
 [datastore_docs]: https://cloud.google.com/datastore/docs/
-[datastore_samples]: datastore
+[datastore_samples]: https://github.com/googleapis/nodejs-datastore/tree/master/samples
 
 #### Google Cloud Storage
 
 [Cloud Storage][storage_docs] allows world-wide storage and retrieval of any
 amount of data at any time.
 
-View the [Cloud Storage Node.js samples][storage_samples].
+View the [Cloud Storage JSON API Node.js Client samples][storage_samples].
 
 [storage_docs]: https://cloud.google.com/storage/docs/
-[storage_samples]: storage
+[storage_samples]: https://github.com/googleapis/nodejs-storage/tree/master/samples
+
+#### Google Cloud Storage Transfer API
+
+The Google Cloud Storage Transfer API allows you to quickly import online data
+into Google Cloud Storage.
+
+View the [Cloud Storage Transfer API Node.js samples][transfer_samples].
+
+[transfer_docs]: https://cloud.google.com/storage/transfer/
+[transfer_samples]: storage-transfer
 
 ### Big Data
 
@@ -263,7 +280,7 @@ analytics data warehouse.
 View the [BigQuery Node.js samples][bigquery_samples].
 
 [bigquery_docs]: https://cloud.google.com/bigquery/docs/
-[bigquery_samples]: bigquery
+[bigquery_samples]: https://github.com/googleapis/nodejs-bigquery/tree/master/samples
 
 #### Google Cloud Pub/Sub
 
@@ -273,7 +290,7 @@ allows you to send and receive messages between independent applications.
 View the [Cloud Pub/Sub Node.js samples][pubsub_samples].
 
 [pubsub_docs]: https://cloud.google.com/pubsub/docs/
-[pubsub_samples]: pubsub
+[pubsub_samples]: https://github.com/googleapis/nodejs-pubsub/tree/master/samples
 
 ### Machine Learning
 
@@ -284,7 +301,7 @@ understanding technologies to developers, including sentiment analysis, entity
 recognition, and syntax analysis. This API is part of the larger Cloud Machine
 Learning API.
 
-View the [Cloud Natural Language API Node.js samples][language_samples].
+View the [Cloud Natural Language API Node.js Client samples][language_samples].
 
 [language_docs]: https://cloud.google.com/natural-language/docs/
 [language_samples]: language
@@ -307,7 +324,7 @@ recognition technologies into developer applications.
 View the [Cloud Speech API Node.js samples][speech_samples].
 
 [speech_docs]: https://cloud.google.com/speech/
-[speech_samples]: speech
+[speech_samples]: https://github.com/googleapis/nodejs-speech/tree/master/samples
 
 #### Google Translate API
 
@@ -317,7 +334,17 @@ text between thousands of language pairs.
 View the [Translate API Node.js samples][translate_samples].
 
 [translate_docs]: https://cloud.google.com/translate/docs/
-[translate_samples]: translate
+[translate_samples]: https://github.com/googleapis/nodejs-translate/tree/master/samples
+
+#### Google Cloud Video Intelligence API
+
+The [Cloud Video Intelligence API][video_intelligence_docs] allows developers to
+use Google video analysis technology as part of their applications.
+
+View the [Cloud Video Intelligence API Node.js samples][video_intelligence_samples].
+
+[video_intelligence_docs]: https://cloud.google.com/video-intelligence/docs/
+[video_intelligence_samples]: https://github.com/googleapis/nodejs-video-intelligence/tree/master/samples
 
 #### Google Cloud Vision API
 
@@ -329,7 +356,7 @@ content.
 View the [Cloud Vision API Node.js samples][vision_samples].
 
 [vision_docs]: https://cloud.google.com/vision/docs/
-[vision_samples]: vision
+[vision_samples]: https://github.com/googleapis/nodejs-vision/tree/master/samples
 
 ### Management Tools
 
@@ -349,10 +376,10 @@ View the [Stackdriver Debugger Node.js sample][debugger_sample].
 monitor, and alert on log data and events from Google Cloud Platform and Amazon
 Web Services.
 
-View the [Stackdriver Logging Node.js samples][logging_samples].
+View the [Stackdriver Logging API Node.js Client samples][logging_samples].
 
 [logging_docs]: https://cloud.google.com/logging/docs/
-[logging_samples]: logging
+[logging_samples]: https://github.com/googleapis/nodejs-logging/tree/master/samples
 
 #### Stackdriver Monitoring
 
@@ -361,10 +388,10 @@ from Google Cloud Platform, Amazon Web Services (AWS), hosted uptime probes,
 application instrumentation, and a variety of common application components
 including Cassandra, Nginx, Apache Web Server, Elasticsearch and many others.
 
-View the [Stackdriver Monitoring Node.js samples][monitoring_samples].
+View the [Stackdriver Monitoring API Node.js Client samples][monitoring_samples].
 
 [monitoring_docs]: https://cloud.google.com/monitoring/docs/
-[monitoring_samples]: monitoring
+[monitoring_samples]: https://github.com/googleapis/nodejs-monitoring/tree/master/samples
 
 #### Stackdriver Trace
 
@@ -388,21 +415,30 @@ anywhere in the world. Read more about [Google Cloud DNS][dns_docs].
 
 [dns_docs]: https://cloud.google.com/dns/docs
 
-View the [Google Cloud DNS Node.js sample][dns_sample].
+View the [Google Cloud DNS API Node.js Client samples][dns_samples].
 
 [dns_docs]: https://cloud.google.com/dns/docs/
-[dns_sample]: dns
+[dns_samples]: https://github.com/googleapis/nodejs-dns/tree/master/samples
 
 ### Identity and Security
+
+#### Google Cloud Key Management Service
+
+The [Data Loss Prevention API][dlp_docs] provides programmatic access to a
+powerful detection engine for personally identifiable information and other
+privacy-sensitive data in unstructured data streams.
+
+View the [Google Cloud Data Loss Prevention API Node.js samples][dlp_sample].
+
+[dlp_docs]: https://cloud.google.com/dlp/docs/
+[dlp_sample]: https://github.com/googleapis/nodejs-dlp/tree/master/samples
 
 #### Google Cloud Key Management Service
 
 The [Cloud KMS API][kms_docs] is a service that allows you to keep encryption
 keys centrally in the cloud, for direct use by cloud services.
 
-[kms_docs]: https://cloud.google.com/kms/docs/
-
-View the [Google Cloud Key Management Service Node.js sample][kms_sample].
+View the [Google Cloud Key Management Service Node.js samples][kms_sample].
 
 [kms_docs]: https://cloud.google.com/kms/docs/
 [kms_sample]: dns

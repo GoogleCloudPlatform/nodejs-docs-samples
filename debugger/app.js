@@ -13,17 +13,17 @@
  * limitations under the License.
  */
 
-// [START app]
+// [START debugger_app]
 'use strict';
 
-// [START setup]
+// [START debugger_setup_implicit]
 require('@google-cloud/debug-agent').start();
+// [END debugger_setup_implicit]
 
 const express = require('express');
 const app = express();
 
 app.enable('trust proxy');
-// [END setup]
 
 app.get('/', (req, res) => {
   // Try using the StackDriver Debugger dashboard to inspect the "req" object
@@ -38,6 +38,6 @@ if (module === require.main) {
     console.log('Press Ctrl+C to quit.');
   });
 }
-// [END app]
+// [END debugger_app]
 
 module.exports = app;

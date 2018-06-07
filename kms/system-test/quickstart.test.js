@@ -15,77 +15,11 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const google = proxyquire(`googleapis`, {});
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-function list (callback) {
-  google.auth.getApplicationDefault((err, authClient) => {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      authClient = authClient.createScoped([
-        'https://www.googleapis.com/auth/cloud-platform'
-      ]);
-    }
-
-    const cloudkms = google.cloudkms({
-      version: 'v1',
-      auth: authClient
-    });
-    const params = {
-      parent: `projects/${process.env.GCLOUD_PROJECT}/locations/global`
-    };
-
-    cloudkms.projects.locations.keyRings.list(params, callback);
-  });
-}
-
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
-
-test.cb(`should list key rings`, (t) => {
-  const googleapisMock = {
-    cloudkms () {
-      return {
-        projects: {
-          locations: {
-            keyRings: {
-              list (params, callback) {
-                list((err, result) => {
-                  if (err) {
-                    t.end(err);
-                    return;
-                  }
-                  callback(err, result);
-
-                  setTimeout(() => {
-                    try {
-                      t.true(console.log.called);
-                      if (result && result.keyRings && result.keyRings.length) {
-                        t.deepEqual(console.log.getCall(0).args, [`Key rings:`]);
-                      } else {
-                        t.deepEqual(console.log.getCall(0).args, [`No key rings found.`]);
-                      }
-                      t.end();
-                    } catch (err) {
-                      t.end(err);
-                    }
-                  }, 200);
-                });
-              }
-            }
-          }
-        }
-      };
-    }
-  };
-
-  proxyquire(`../quickstart`, {
-    'googleapis': googleapisMock
-  });
+test(`should list key rings`, async t => {
+  const output = await tools.runAsync(`node quickstart.js`);
+  t.regex(output, /Key rings:/);
+  t.true(output.includes(`/locations/global/keyRings/`));
 });

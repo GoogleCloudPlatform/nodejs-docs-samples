@@ -4,9 +4,8 @@ info:
   description: "A simple Google Cloud Endpoints API example."
   title: "Endpoints Example"
   version: "1.0.0"
-host: "[YOUR-PROJECT-ID].appspot.com"
+host: "YOUR-PROJECT-ID.appspot.com"
 # [END swagger]
-basePath: "/"
 consumes:
 - "application/json"
 produces:
@@ -60,6 +59,7 @@ paths:
       - google_id_token: []
 definitions:
   echoMessage:
+    type: "object"
     properties:
       message:
         type: "string"
@@ -104,3 +104,4 @@ securityDefinitions:
     # Your OAuth2 client's Client ID must be added here. You can add
     # multiple client IDs to accept tokens from multiple clients.
     x-google-audiences: "YOUR-CLIENT-ID"
+

@@ -17,17 +17,17 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.10.0",
-    "@google-cloud/storage": "1.1.0",
-    "@google-cloud/translate": "0.8.1",
-    "@google-cloud/vision": "0.11.2",
-    "safe-buffer": "5.0.1"
+    "@google-cloud/pubsub": "0.13.2",
+    "@google-cloud/storage": "1.2.1",
+    "@google-cloud/translate": "1.0.0",
+    "@google-cloud/vision": "0.12.0",
+    "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.14",
-    "ava": "0.19.1",
-    "proxyquire": "1.7.11",
-    "sinon": "2.1.0"
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "ava": "0.22.0",
+    "proxyquire": "1.8.0",
+    "sinon": "3.2.1"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

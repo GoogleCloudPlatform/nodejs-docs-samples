@@ -25,7 +25,7 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const SAMPLE_PATH = path.join(__dirname, `../server.js`);
 
-function getSample (sqlClient) {
+function getSample () {
   const testApp = express();
   sinon.stub(testApp, `listen`).yields();
   const expressMock = sinon.stub().returns(testApp);
@@ -50,7 +50,6 @@ function getSample (sqlClient) {
 
   const processMock = {
     env: {
-      SQL_CLIENT: sqlClient,
       SQL_USER: 'user',
       SQL_PASSWORD: 'password',
       SQL_DATABASE: 'database'
@@ -78,8 +77,8 @@ function getSample (sqlClient) {
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`should set up sample in MySQL`, (t) => {
-  const sample = getSample('mysql');
+test(`should set up sample in Postgres`, (t) => {
+  const sample = getSample();
 
   t.true(sample.mocks.express.calledOnce);
   t.true(sample.mocks.Knex.calledOnce);
@@ -93,32 +92,8 @@ test(`should set up sample in MySQL`, (t) => {
   }]);
 });
 
-test(`should set up sample in Postgres`, (t) => {
-  const sample = getSample('pg');
-
-  t.true(sample.mocks.express.calledOnce);
-  t.true(sample.mocks.Knex.calledOnce);
-  t.deepEqual(sample.mocks.Knex.firstCall.args, [{
-    client: 'pg',
-    connection: {
-      user: sample.mocks.process.env.SQL_USER,
-      password: sample.mocks.process.env.SQL_PASSWORD,
-      database: sample.mocks.process.env.SQL_DATABASE
-    }
-  }]);
-});
-
-test(`should validate SQL_CLIENT env var`, (t) => {
-  const expected = `The SQL_CLIENT environment variable must be set to lowercase 'pg' or 'mysql'.`;
-  t.throws(() => { getSample(null); }, expected);
-  t.throws(() => { getSample('foo'); }, expected);
-
-  t.notThrows(() => { getSample('mysql'); });
-  t.notThrows(() => { getSample('pg'); });
-});
-
-test.cb(`should record a visit in mysql`, (t) => {
-  const sample = getSample('mysql');
+test.cb(`should record a visit`, (t) => {
+  const sample = getSample();
   const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
   request(sample.app)
@@ -131,7 +106,7 @@ test.cb(`should record a visit in mysql`, (t) => {
 });
 
 test.cb(`should handle insert error`, (t) => {
-  const sample = getSample('mysql');
+  const sample = getSample();
   const expectedResult = `insert_error`;
 
   sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
@@ -146,7 +121,7 @@ test.cb(`should handle insert error`, (t) => {
 });
 
 test.cb(`should handle read error`, (t) => {
-  const sample = getSample('mysql');
+  const sample = getSample();
   const expectedResult = `read_error`;
 
   sample.mocks.knex.limit.returns(Promise.reject(expectedResult));

@@ -16,7 +16,7 @@ See the [Cloud Functions Hello World tutorial][tutorial].
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](../../#how-to-run-the-tests).
+1. Read and follow the [prerequisites](../../../../#prerequisites).
 
 1. Install dependencies:
 

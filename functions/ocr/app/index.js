@@ -47,20 +47,18 @@ function publishResult (topicName, data) {
 /**
  * Detects the text in an image using the Google Vision API.
  *
- * @param {object} file Cloud Storage File instance.
+ * @param {string} bucketName Cloud Storage bucket name.
+ * @param {string} filename Cloud Storage file name.
  * @returns {Promise}
  */
-function detectText (file) {
+function detectText (bucketName, filename) {
   let text;
 
-  console.log(`Looking for text in image ${file.name}`);
-  return vision.detectText(file)
-    .then(([_text]) => {
-      if (Array.isArray(_text)) {
-        text = _text[0];
-      } else {
-        text = _text;
-      }
+  console.log(`Looking for text in image ${filename}`);
+  return vision.textDetection({ source: { imageUri: `gs://${bucketName}/${filename}` } })
+    .then(([detections]) => {
+      const annotation = detections.textAnnotations[0];
+      text = annotation ? annotation.description : '';
       console.log(`Extracted text from image (${text.length} chars)`);
       return translate.detect(text);
     })
@@ -68,7 +66,7 @@ function detectText (file) {
       if (Array.isArray(detection)) {
         detection = detection[0];
       }
-      console.log(`Detected language "${detection.language}" for ${file.name}`);
+      console.log(`Detected language "${detection.language}" for ${filename}`);
 
       // Submit a message to the bus for each language we're going to translate to
       const tasks = config.TO_LANG.map((lang) => {
@@ -78,7 +76,7 @@ function detectText (file) {
         }
         const messageData = {
           text: text,
-          filename: file.name,
+          filename: filename,
           lang: lang,
           from: detection.language
         };
@@ -111,7 +109,7 @@ function renameImageForSave (filename, lang) {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data A Google Cloud Storage File object.
  */
-exports.processImage = function processImage (event) {
+exports.processImage = (event) => {
   let file = event.data;
 
   return Promise.resolve()
@@ -128,9 +126,7 @@ exports.processImage = function processImage (event) {
         throw new Error('Filename not provided. Make sure you have a "name" property in your request');
       }
 
-      file = storage.bucket(file.bucket).file(file.name);
-
-      return detectText(file);
+      return detectText(file.bucket, file.name);
     })
     .then(() => {
       console.log(`File ${file.name} processed.`);
@@ -148,7 +144,7 @@ exports.processImage = function processImage (event) {
  * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.translateText = function translateText (event) {
+exports.translateText = (event) => {
   const pubsubMessage = event.data;
   const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
   const payload = JSON.parse(jsonStr);
@@ -198,7 +194,7 @@ exports.translateText = function translateText (event) {
  * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.saveResult = function saveResult (event) {
+exports.saveResult = (event) => {
   const pubsubMessage = event.data;
   const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
   const payload = JSON.parse(jsonStr);

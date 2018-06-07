@@ -1,0 +1,1 @@
+nodejs-docs-samples/appengine/storage test file

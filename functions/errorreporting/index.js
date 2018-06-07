@@ -70,7 +70,7 @@ function reportError (err, callback) {
  * @param {object} req Cloud Function request context.
  * @param {object} res Cloud Function response context.
  */
-exports.helloSimpleError = function helloSimpleError (req, res) {
+exports.helloSimpleError = (req, res) => {
   try {
     if (req.method !== 'GET') {
       const error = new Error('Only GET requests are accepted!');
@@ -98,7 +98,7 @@ exports.helloSimpleError = function helloSimpleError (req, res) {
  * @param {string} req.body.message Message provided in the request.
  * @param {object} res Cloud Function response context.
  */
-exports.helloHttpError = function helloHttpError (req, res) {
+exports.helloHttpError = (req, res) => {
   try {
     if (req.method !== 'POST' && req.method !== 'GET') {
       const error = new Error('Only POST and GET requests are accepted!');
@@ -126,9 +126,9 @@ exports.helloHttpError = function helloHttpError (req, res) {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The event data.
  * @param {string} event.data.message Message, provided by the trigger.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
-exports.helloBackgroundError = function helloBackgroundError (event, callback) {
+exports.helloBackgroundError = (event, callback) => {
   try {
     if (!event.data.message) {
       throw new Error('"message" is required!');

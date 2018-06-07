@@ -23,6 +23,7 @@ const Buffer = require('safe-buffer').Buffer;
 
 const app = express();
 
+app.set('case sensitive routing', true);
 app.use(bodyParser.json());
 // [END setup]
 

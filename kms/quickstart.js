@@ -17,7 +17,7 @@
 
 // [START kms_quickstart]
 // Imports the Google APIs client library
-const google = require('googleapis').google;
+const {google} = require('googleapis');
 
 // Your Google Cloud Platform project ID
 const projectId = process.env.GCLOUD_PROJECT;

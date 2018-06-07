@@ -33,4 +33,4 @@ will need to set environment variables before starting your application:
     export SENDGRID_SENDER=<your-sendgrid-sender-email-address>
     npm start
 
-[1]: https://cloud.google.com/nodejs/resources/tools/sendgrid
+[1]: https://cloud.google.com/community/tutorials/send-email-with-sendgrid-and-nodejs-on-google-app-engine

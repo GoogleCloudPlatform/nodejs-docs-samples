@@ -32,11 +32,11 @@ Functions for your project.
 
 1. Deploy the "wordCount" function with an HTTP trigger:
 
-        gcloud beta functions deploy wordCount --trigger-http
+        gcloud functions deploy wordCount --trigger-http
 
 1. Call the "wordCount" function using the sample file:
 
-        gcloud beta functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
+        gcloud functions call wordCount --data '{"bucket":"YOUR_BUCKET_NAME","file":"sample.txt"}'
 
     * Replace `YOUR_BUCKET_NAME` with the name of your Cloud Storage Bucket.
 

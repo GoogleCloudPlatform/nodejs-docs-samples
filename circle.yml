@@ -18,7 +18,7 @@
 
 machine:
   node:
-    version: 6.14.1
+    version: 6.14.2
 
 # Use for broader build-related configuration
 general:
@@ -31,7 +31,7 @@ dependencies:
   override:
     - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
     - gcloud auth activate-service-account --key-file /home/ubuntu/nodejs-docs-samples/key.json || true
-    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17 @google-cloud/functions-emulator@1.0.0-alpha.29
+    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17 @google-cloud/functions-emulator@1.0.0-beta.4
     - yarn install
     - yarn run lint
     - samples test install -l=functions/background
@@ -72,8 +72,9 @@ dependencies:
 # Run your tests
 test:
   override:
-    - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/datastore && npm run system-test && functions-emulator stop
-    - functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/helloworld && npm run test && functions-emulator stop
+    - export GCLOUD_PROJECT=nodejs-docs-samples-tests && functions-emulator start && cd functions/datastore && npm test && functions-emulator stop
+    # Only run if the PR is not coming from a fork.
+    - if [[ -z $CIRCLE_PR_USERNAME ]] ; then functions-emulator config set projectId $GCLOUD_PROJECT && functions-emulator start && cd functions/helloworld && npm test && functions-emulator stop; fi
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/background/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/concepts/test/**/*.test.js'
     - samples test run --cmd nyc -- --cache ava --verbose -T 30s 'functions/gcs/test/**/*.test.js'
@@ -99,11 +100,14 @@ deployment:
       - node scripts/build "appengine/datastore"
       - node scripts/build "appengine/endpoints"
       - node scripts/build "appengine/errorreporting"
-      - node scripts/build "appengine/hello-world"
+      - node scripts/build "appengine/hello-world/flexible"
+      - node scripts/build "appengine/hello-world/standard"
       - node scripts/build "appengine/mailjet"
-      - node scripts/build "appengine/metadata"
+      - node scripts/build "appengine/metadata/flexible"
+      - node scripts/build "appengine/metadata/standard"
       - node scripts/build "appengine/static-files"
-      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage"
+      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage/flexible"
+      - GCLOUD_STORAGE_BUCKET=docs-samples-gae-test-$(uuid); node scripts/build "appengine/storage/standard"
       - node scripts/build "auth"
       - node scripts/build "appengine/pubsub"
       - export GCP_QUEUE=nodejs-test-queue-do-not-delete; node scripts/build "cloudtasks"

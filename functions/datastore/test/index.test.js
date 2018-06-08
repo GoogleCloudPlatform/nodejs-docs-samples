@@ -109,7 +109,7 @@ test.serial.cb(`get: Fails when entity does not exist`, (t) => {
     })
     .expect(500)
     .expect((response) => {
-      t.regex(response.text, /No entity found for key/);
+      t.regex(response.text, /(Missing or insufficient permissions.)|(No entity found for key)/);
     })
     .end(() => {
       setTimeout(t.end, 50); // Subsequent test is flaky without this timeout

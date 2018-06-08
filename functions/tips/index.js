@@ -70,50 +70,17 @@ exports.lazyGlobals = (req, res) => {
 };
 // [END functions_tips_lazy_globals]
 
-// [START functions_tips_ephemeral_agent]
-// [START functions_tips_cached_agent]
+// [START functions_tips_connection_pooling]
 const http = require('http');
-// [END functions_tips_ephemeral_agent]
 const agent = new http.Agent({keepAlive: true});
-// [END functions_tips_cached_agent]
-
-// [START functions_tips_ephemeral_agent]
 
 /**
- * HTTP Cloud Function that uses an ephemeral HTTP agent
+ * HTTP Cloud Function that caches an HTTP agent to pool HTTP connections.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.ephemeralAgent = (req, res) => {
-  req = http.request({
-    host: '<HOST>',
-    port: 80,
-    path: '<PATH>',
-    method: 'GET'
-  }, resInner => {
-    let rawData = '';
-    resInner.setEncoding('utf8');
-    resInner.on('data', chunk => { rawData += chunk; });
-    resInner.on('end', () => {
-      res.status(200).send(`Data: ${rawData}`);
-    });
-  });
-  req.on('error', (e) => {
-    res.status(500).send(`Error: ${e.message}`);
-  });
-  req.end();
-};
-// [END functions_tips_ephemeral_agent]
-
-// [START functions_tips_cached_agent]
-/**
- * HTTP Cloud Function that uses a cached HTTP agent
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
- */
-exports.cachedAgent = (req, res) => {
+exports.connectionPooling = (req, res) => {
   req = http.request({
     host: '',
     port: 80,
@@ -133,7 +100,7 @@ exports.cachedAgent = (req, res) => {
   });
   req.end();
 };
-// [END functions_tips_cached_agent]
+// [END functions_tips_connection_pooling]
 
 // [START functions_tips_infinite_retries]
 /**

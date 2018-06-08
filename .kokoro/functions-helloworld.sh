@@ -14,14 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "some info"
-
-
-whoami
-pwd
-
-EXIT 0;
-
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 STAGE_BUCKET=$GCLOUD_PROJECT
 export GCP_REGION=us-central1

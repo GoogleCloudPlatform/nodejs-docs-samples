@@ -102,7 +102,6 @@ const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
 
       // Handle a single Pub/Sub message
       const messageHandler = (msg) => {
-        console.error('DATA', Buffer.from(msg.data, 'base64').toString());
         const data = JSON.parse(Buffer.from(msg.data, 'base64').toString());
         gcfFn({ data: data }, () => {
           msg.ack();

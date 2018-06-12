@@ -15,7 +15,6 @@
 # limitations under the License.
       
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
-
 export NODE_ENV=development
 
 cd github/nodejs-docs-samples/${PROJECT}
@@ -28,7 +27,6 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
-# Test the deployed app
 npm test
 
 exit $?

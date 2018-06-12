@@ -16,15 +16,18 @@
 
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 STAGE_BUCKET=$GCLOUD_PROJECT
-GCP_REGION=us-central1
-FUNCTIONS_TOPIC=integration-test-functions
-FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC
+export GCP_REGION=us-central1
+export FUNCTIONS_TOPIC=integration-test-functions
+export FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC
 export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
 cd github/nodejs-docs-samples/functions/helloworld
 
 # Install dependencies
 npm install
+
+# Install global dependencies used in some integration tests.
+npm install -g @google-cloud/functions-emulator@1.0.0-beta.4
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json

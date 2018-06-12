@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,8 @@ const Buffer = require('safe-buffer').Buffer;
 // [START functions_helloworld_get]
 /**
  * HTTP Cloud Function.
+ * This function is exported by index.js, and is executed when
+ * you make an HTTP request to the deployed function's endpoint.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
@@ -56,6 +58,8 @@ exports.helloBackground = (event, callback) => {
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
+ * This function is exported by index.js, and executed when
+ * the trigger topic receives a message.
  *
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
@@ -103,10 +107,9 @@ exports.helloGCS = (event, callback) => {
  */
 exports.helloGCSGeneric = (event, callback) => {
   const file = event.data;
-  const context = event.context;
 
-  console.log(`Event ${context.eventId}`);
-  console.log(`  Event Type: ${context.eventType}`);
+  console.log(`  Event ${event.eventId}`);
+  console.log(`  Event Type: ${event.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
   console.log(`  File: ${file.name}`);
   console.log(`  Metageneration: ${file.metageneration}`);

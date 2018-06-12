@@ -25,9 +25,9 @@ const localFileName = `test.txt`;
 // Use unique GCS filename to avoid conflicts between concurrent test runs
 const gcsFileName = `test-${uuid.v4()}.txt`;
 
-const bucketName = process.env.BUCKET_NAME;
+const bucketName = process.env.FUNCTIONS_BUCKET;
 const bucket = storage.bucket(bucketName);
-const baseCmd = `gcloud beta functions`;
+const baseCmd = `gcloud functions`;
 
 test.serial(`helloGCS: should print uploaded message`, async (t) => {
   t.plan(1);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,29 +45,35 @@ app.get('/', function (req, res) {
 // [START hello]
 app.post('/hello', function (req, res, next) {
   var options = {
-    // From
-    FromEmail: 'no-reply@appengine-mailjet-demo.com',
-    FromName: 'Mailjet Demo',
-    // To
-    Recipients: [{ Email: req.body.email }],
-    // Subject
-    Subject: 'Hello World!',
-    // Body
-    'Text-part': 'Mailjet on Google App Engine with Node.js',
-    'Html-part': '<h3>Mailjet on Google App Engine with Node.js</h3>'
+    'Messages': [
+      {
+        'From': {
+          'Email': 'no-reply@appengine-mailjet-demo.com',
+          'Name': 'Mailjet Pilot'
+        },
+        'To': [
+          {
+            'Email': req.body.email
+          }
+        ],
+        'Subject': 'Your email flight plan!',
+        'TextPart': 'Mailjet on Google App Engine with Node.js',
+        'HTMLPart': '<h3>Mailjet on Google App Engine with Node.js</h3>'
+      }
+    ]
   };
 
-  var request = Mailjet.post('send').request(options);
+  var request = Mailjet.post('send', {'version': 'v3.1'}).request(options);
 
   request
-    .on('success', function (response, body) {
+    .then(function (response, body) {
       console.log(response.statusCode, body);
       // Render the index route on success
       return res.render('index', {
         sent: true
       });
     })
-    .on('error', function (err) {
+    .catch(function (err) {
       return next(err);
     });
 });

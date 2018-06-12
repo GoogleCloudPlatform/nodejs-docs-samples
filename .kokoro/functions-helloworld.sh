@@ -16,15 +16,18 @@
 
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 STAGE_BUCKET=$GCLOUD_PROJECT
-GCP_REGION=us-central1
-FUNCTIONS_TOPIC=integration-test-functions
-FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC
+export GCP_REGION=us-central1
+export FUNCTIONS_TOPIC=integration-test-functions
+export FUNCTIONS_BUCKET=$FUNCTIONS_TOPIC
 export BASE_URL=https://${GCP_REGION}-${GCLOUD_PROJECT}.cloudfunctions.net
 
 cd github/nodejs-docs-samples/functions/helloworld
 
 # Install dependencies
 npm install
+
+# Install global dependencies used in some integration tests.
+npm install -g @google-cloud/functions-emulator@1.0.0-beta.4
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
@@ -34,15 +37,15 @@ gcloud config set project $GCLOUD_PROJECT
 function cleanup {
   CODE=$?
 
-  gcloud beta functions delete helloHttp -q
-  gcloud beta functions delete helloGET -q
-  gcloud beta functions delete helloBackground -q
-  gcloud beta functions delete helloPubSub -q
-  gcloud beta functions delete helloGCS -q
-  gcloud beta functions delete helloError -q
-  gcloud beta functions delete helloError2 -q
-  gcloud beta functions delete helloError3 -q
-  gcloud beta functions delete helloTemplate -q
+  gcloud functions delete helloHttp -q
+  gcloud functions delete helloGET -q
+  gcloud functions delete helloBackground -q
+  gcloud functions delete helloPubSub -q
+  gcloud functions delete helloGCS -q
+  gcloud functions delete helloError -q
+  gcloud functions delete helloError2 -q
+  gcloud functions delete helloError3 -q
+  gcloud functions delete helloTemplate -q
 }
 trap cleanup EXIT
 

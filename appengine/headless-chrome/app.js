@@ -29,7 +29,7 @@ app.use(async (req, res) => {
 
   // [START browser]
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox']
   });
   // [END browser]
   const page = await browser.newPage();

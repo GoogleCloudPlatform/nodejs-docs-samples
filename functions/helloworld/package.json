@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCF_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js",
+    "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCP_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js",
     "test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose -c 1 test/index.test.js test/*unit*test.js test/*integration*test.js",
     "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/*.test.js"
   },
@@ -29,6 +29,7 @@
     "@google-cloud/storage": "^1.5.0",
     "ava": "0.25.0",
     "proxyquire": "2.0.1",
+    "semistandard": "^12.0.1",
     "sinon": "4.4.8",
     "supertest": "^3.0.0",
     "uuid": "^3.1.0"

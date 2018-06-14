@@ -104,7 +104,13 @@ function renameImageForSave (filename, lang) {
 
 // [START functions_ocr_process]
 /**
- * Cloud Function triggered by Cloud Storage when a file is uploaded.
+ * This function is exported by index.js, and is executed when
+ * a file is uploaded to the Cloud Storage bucket you created
+ * for uploading images.
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {object} event.data A Google Cloud Storage File object.
+ */
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data A Google Cloud Storage File object.
@@ -136,8 +142,10 @@ exports.processImage = (event) => {
 
 // [START functions_ocr_translate]
 /**
- * Translates text using the Google Translate API. Triggered from a message on
- * a Pub/Sub topic.
+ * This function is exported by index.js, and is executed when
+ * a message is published to the Cloud Pub/Sub topic specified
+ * by the TRANSLATE_TOPIC value in the config.json file. The
+ * function translates text using the Google Translate API.
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The Cloud Pub/Sub Message object.
@@ -186,8 +194,10 @@ exports.translateText = (event) => {
 
 // [START functions_ocr_save]
 /**
- * Saves the data packet to a file in GCS. Triggered from a message on a Pub/Sub
- * topic.
+ * This function is exported by index.js, and is executed when
+ * a message is published to the Cloud Pub/Sub topic specified
+ * by the RESULT_TOPIC value in the config.json file. The
+ * function saves the data packet to a file in GCS.
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The Cloud Pub/Sub Message object.

@@ -31,7 +31,7 @@ dependencies:
   override:
     - echo $KEYFILE > /home/ubuntu/nodejs-docs-samples/key.json
     - gcloud auth activate-service-account --key-file /home/ubuntu/nodejs-docs-samples/key.json || true
-    - yarn global add ava nyc codecov semistandard @google-cloud/nodejs-repo-tools@1.4.17 @google-cloud/functions-emulator@1.0.0-beta.4
+    - yarn global add ava nyc codecov @google-cloud/nodejs-repo-tools@1.4.17 @google-cloud/functions-emulator@1.0.0-beta.4
     - yarn install
     - yarn run lint
     - samples test install -l=functions/background
@@ -120,6 +120,5 @@ deployment:
       - node scripts/build "iot/manager"
       - node scripts/build "kms"
       - node scripts/build "language/slackbot"
-      - node scripts/build "prediction"
       - node scripts/build "storage-transfer"
       - node scripts/build "trace"

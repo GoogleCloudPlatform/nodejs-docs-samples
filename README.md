@@ -39,7 +39,6 @@ on Google Cloud Platform.
     * [Google Cloud Pub/Sub](#google-cloud-pubsub)
   * [**Machine Learning**](#machine-learning)
     * [Google Cloud Natural Language API](#google-cloud-natural-language-api)
-    * [Google Cloud Prediction API](#google-cloud-prediction-api)
     * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
     * [Google Translate API](#google-translate-api)
     * [Google Video Intelligence API](#google-video-intelligence-api)
@@ -305,16 +304,6 @@ View the [Cloud Natural Language API Node.js Client samples][language_samples].
 
 [language_docs]: https://cloud.google.com/natural-language/docs/
 [language_samples]: language
-
-#### Google Cloud Prediction API
-
-The [Cloud Prediction API][prediction_docs] provides a RESTful API to build
-Machine Learning models.
-
-View the [Cloud Prediction API Node.js samples][prediction_samples].
-
-[prediction_docs]: https://cloud.google.com/prediction/docs/
-[prediction_samples]: prediction
 
 #### Google Cloud Speech API (Beta)
 

@@ -21,9 +21,9 @@
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The event data.
- * @param {function} The callback function.
+ * @param {function} callback The callback function.
  */
-exports.helloWorld = function helloWorld (event, callback) {
+exports.helloWorld = (event, callback) => {
   if (!event.data.myMessage) {
     // This is an error case, "myMessage" is required
     callback(new Error('No message defined!'));
@@ -44,7 +44,7 @@ exports.helloWorld = function helloWorld (event, callback) {
  * @param {object} event.data The event data.
  * @returns {Promise}
  */
-exports.helloPromise = function helloPromise (event) {
+exports.helloPromise = (event) => {
   const request = require('request-promise');
 
   return request({
@@ -61,7 +61,7 @@ exports.helloPromise = function helloPromise (event) {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The event data.
  */
-exports.helloSynchronous = function helloSynchronous (event) {
+exports.helloSynchronous = (event) => {
   // This function returns synchronously
   if (event.data.something === true) {
     return 'Something is true!';

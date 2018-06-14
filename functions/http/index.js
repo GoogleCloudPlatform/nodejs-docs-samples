@@ -22,7 +22,7 @@
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloWorld = function helloWorld (req, res) {
+exports.helloWorld = (req, res) => {
   if (req.body.message === undefined) {
     // This is an error case, as "message" is required
     res.status(400).send('No message defined!');
@@ -42,7 +42,7 @@ exports.helloWorld = function helloWorld (req, res) {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloContent = function helloContent (req, res) {
+exports.helloContent = (req, res) => {
   let name;
 
   switch (req.get('content-type')) {
@@ -61,7 +61,7 @@ exports.helloContent = function helloContent (req, res) {
       name = req.body;
       break;
 
-    // 'name=John'
+    // 'name=John' in the body of a POST request (not the URL)
     case 'application/x-www-form-urlencoded':
       name = req.body.name;
       break;
@@ -91,7 +91,7 @@ function handlePUT (req, res) {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloHttp = function helloHttp (req, res) {
+exports.helloHttp = (req, res) => {
   switch (req.method) {
     case 'GET':
       handleGET(req, res);
@@ -105,3 +105,127 @@ exports.helloHttp = function helloHttp (req, res) {
   }
 };
 // [END functions_http_method]
+
+// [START functions_http_xml]
+/**
+ * Parses a document of type 'text/xml'
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.parseXML = (req, res) => {
+  // Convert the request to a Buffer and a string
+  // Use whichever one is accepted by your XML parser
+  let data = req.rawBody;
+  let xmlData = data.toString();
+
+  const parseString = require('xml2js').parseString;
+
+  parseString(xmlData, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).end();
+      return;
+    }
+    res.send(result);
+  });
+};
+// [END functions_http_xml]
+
+// [START functions_http_form_data]
+/**
+ * Parses a 'multipart/form-data' upload request
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
+const Busboy = require('busboy');
+
+exports.uploadFile = (req, res) => {
+  if (req.method === 'POST') {
+    const busboy = new Busboy({ headers: req.headers });
+    const tmpdir = os.tmpdir();
+
+    // This object will accumulate all the fields, keyed by their name
+    const fields = {};
+
+    // This object will accumulate all the uploaded files, keyed by their name.
+    const uploads = {};
+
+    // This code will process each non-file field in the form.
+    busboy.on('field', (fieldname, val) => {
+      // TODO(developer): Process submitted field values here
+      console.log(`Processed field ${fieldname}: ${val}.`);
+      fields[fieldname] = val;
+    });
+
+    // This code will process each file uploaded.
+    busboy.on('file', (fieldname, file, filename) => {
+      // Note: os.tmpdir() points to an in-memory file system on GCF
+      // Thus, any files in it must fit in the instance's memory.
+      console.log(`Processed file ${filename}`);
+      const filepath = path.join(tmpdir, filename);
+      uploads[fieldname] = filepath;
+      file.pipe(fs.createWriteStream(filepath));
+    });
+
+    // This event will be triggered after all uploaded files are saved.
+    busboy.on('finish', () => {
+      // TODO(developer): Process uploaded files here
+      for (const name in uploads) {
+        const file = uploads[name];
+        fs.unlinkSync(file);
+      }
+      res.send();
+    });
+
+    req.pipe(busboy);
+  } else {
+    // Return a "method not allowed" error
+    res.status(405).end();
+  }
+};
+// [END functions_http_form_data]
+
+// [START functions_http_signed_url]
+const storage = require('@google-cloud/storage')();
+
+/**
+ * HTTP function that generates a signed URL
+ * The signed URL can be used to upload files to Google Cloud Storage (GCS)
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.getSignedUrl = (req, res) => {
+  if (req.method === 'POST') {
+    // TODO(developer) check that the user is authorized to upload
+
+    // Get a reference to the destination file in GCS
+    const file = storage.bucket('my-bucket').file(req.body.filename);
+
+    // Create a temporary upload URL
+    const expiresAtMs = Date.now() + 300000; // Link expires in 5 minutes
+    const config = {
+      action: 'write',
+      expires: expiresAtMs,
+      contentType: req.body.contentType
+    };
+
+    file.getSignedUrl(config, function (err, url) {
+      if (err) {
+        console.error(err);
+        res.status(500).end();
+        return;
+      }
+      res.send(url);
+    });
+  } else {
+    // Return a "method not allowed" error
+    res.status(405).end();
+  }
+};
+// [END functions_http_signed_url]

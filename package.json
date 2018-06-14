@@ -2,31 +2,17 @@
   "name": "nodejs-docs-samples",
   "description": "Node.js samples found on https://cloud.google.com",
   "version": "0.0.1",
-  "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",
-  "contributors": [
-    {
-      "name": "Ace Nassri",
-      "email": "anassri@google.com"
-    },
-    {
-      "name": "Jerjou",
-      "email": "jerjou@google.com"
-    },
-    {
-      "name": "Jason Dobry",
-      "email": "jason.dobry@gmail.com"
-    },
-    {
-      "name": "Jon Wayne Parrott",
-      "email": "jonwayne@google.com"
-    }
-  ],
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
+  "main": "src/index.js",
+  "private": true,
   "semistandard": {
     "globals": [
       "rm",
@@ -43,7 +29,7 @@
   },
   "scripts": {
     "check": "yarn check --strict-semver --integrity",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "generate": "node ./scripts/generate",
     "pretest": "npm run lint && node ./scripts/clean coverage",
     "unit-cover": "nyc --cache npm test && nyc report --reporter=html",
@@ -53,11 +39,11 @@
     "update-dependencies": "./scripts/update-dependencies.sh"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "@google-cloud/storage": "1.2.1",
-    "ava": "0.21.0",
-    "nyc": "11.1.0",
-    "semistandard": "^11.0.0",
-    "shelljs": "0.7.8"
+    "@google-cloud/nodejs-repo-tools": "^2.3.0",
+    "@google-cloud/storage": "1.6.0",
+    "ava": "0.25.0",
+    "nyc": "11.6.0",
+    "semistandard": "^12.0.1",
+    "shelljs": "0.8.1"
   }
 }

@@ -19,9 +19,8 @@ const mongodb = require('mongodb');
 const http = require('http');
 const nconf = require('nconf');
 
-// read in keys and secrets.  You can store these in a variety of ways.
-// I like to use a keys.json  file that is in the .gitignore file,
-// but you can also store them in environment variables
+// Read in keys and secrets. You can store these in
+// a keys.json file, or in environment variables
 nconf.argv().env().file('keys.json');
 
 // Connect to a MongoDB server provisioned over at
@@ -38,14 +37,23 @@ if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
 }
 
-mongodb.MongoClient.connect(uri, (err, db) => {
+mongodb.MongoClient.connect(uri, (err, client) => {
   if (err) {
     throw err;
   }
 
   // Create a simple little server.
   http.createServer((req, res) => {
+    if (req.url === '/_ah/health') {
+      res.writeHead(200, {
+        'Content-Type': 'text/plain'
+      });
+      res.write('OK');
+      res.end();
+      return;
+    }
     // Track every IP that has visited this site
+    const db = client.db(nconf.get('mongoDatabase'));
     const collection = db.collection('IPs');
 
     const ip = {

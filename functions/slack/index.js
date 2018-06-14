@@ -137,7 +137,7 @@ function makeSearchRequest (query) {
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
-exports.kgSearch = function kgSearch (req, res) {
+exports.kgSearch = (req, res) => {
   return Promise.resolve()
     .then(() => {
       if (req.method !== 'POST') {

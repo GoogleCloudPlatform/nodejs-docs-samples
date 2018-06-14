@@ -1,0 +1,39 @@
+{
+  "name": "nodejs-docs-samples-functions-tips",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=6.14.0"
+  },
+  "scripts": {
+    "lint": "repo-tools lint",
+    "pretest": "npm run lint"
+  },
+  "dependencies": {
+    "@google-cloud/pubsub": "^0.18.0",
+    "safe-buffer": "5.1.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.2.5",
+    "ava": "0.25.0",
+    "semistandard": "^12.0.1",
+    "sinon": "^4.5.0"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "BASE_URL",
+      "GCF_REGION",
+      "TOPIC",
+      "BUCKET",
+      "FUNCTIONS_CMD"
+    ]
+  }
+}

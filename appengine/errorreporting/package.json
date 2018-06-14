@@ -1,6 +1,6 @@
 {
   "name": "appengine-error-reporting",
-  "description": "Node.js error reporting sample for Google App Engine Flexible Environment.",
+  "description": "Node.js error reporting sample for Google App Engine.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -10,27 +10,26 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4.3.2"
+    "node": "8.x.x"
   },
   "scripts": {
-    "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "unit-test": "ava --verbose test/*.test.js",
-    "system-test": "samples test app",
-    "test": "npm run unit-test && npm run system-test",
-    "e2e-test": "samples test deploy"
+    "system-test": "repo-tools test app",
+    "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/error-reporting": "0.2.1",
-    "express": "4.15.4"
+    "@google-cloud/error-reporting": "0.2.3",
+    "express": "4.16.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.21.0",
-    "proxyquire": "1.8.0",
-    "sinon": "3.2.0"
+    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "ava": "0.25.0",
+    "proxyquire": "2.0.0",
+    "semistandard": "^12.0.1",
+    "sinon": "4.4.2"
   },
   "cloud-repo-tools": {
     "test": {

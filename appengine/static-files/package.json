@@ -6,11 +6,11 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=4.3.2"
+    "node": "8.x.x"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "samples test app --url localhost:8080/static/main.css"
+    "test": "repo-tools test app --url localhost:8080/static/main.css"
   },
   "cloud-repo-tools": {
     "test": {
@@ -21,10 +21,10 @@
     }
   },
   "dependencies": {
-    "express": "4.15.4",
-    "pug": "2.0.0-rc.3"
+    "express": "4.16.2",
+    "pug": "2.0.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17"
+    "@google-cloud/nodejs-repo-tools": "2.2.1"
   }
 }

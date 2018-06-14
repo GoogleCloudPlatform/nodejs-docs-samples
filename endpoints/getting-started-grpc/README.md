@@ -35,21 +35,27 @@ To update `gcloud`, use the `gcloud components update` command.
 
 1. Compile the proto file using protoc.
 ```
-$ protoc --include_imports --include_source_info protos/helloworld.proto --descriptor_set_out out.pb
+$ protoc \
+    --include_imports \
+    --include_source_info \
+    protos/helloworld.proto \
+    --descriptor_set_out api.pb
 ```
 
 1. In `api_config.yaml`, replace `MY_PROJECT_ID` and `SERVICE-ACCOUNT-ID` with your Project ID and your service account's email address respectively.
 
-1. Deploy your service's configuration to Endpoints. Take note of your service's config ID and name once the deployment completes.
+1. Deploy your service's configuration to Endpoints. Take note of your service's name once the deployment completes.
 ```
-$ gcloud service-management deploy out.pb api_config.yaml
+$ gcloud endpoints services deploy api.pb api_config.yaml
 ...
-Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
+
 ```
 
 1. Build a Docker image for later use using the following command. Make sure to replace `[YOUR_PROJECT_ID]` with your Project ID.
 ```
 $ gcloud container builds submit --tag gcr.io/[YOUR_PROJECT_ID]/endpoints-example:1.0 .
+...
+Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
 ```
 
 ### Running your service
@@ -66,20 +72,22 @@ $ sudo apt-get update
 $ sudo apt-get install docker.io
 ```
 
-1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_GCLOUD_PROJECT]`, `[YOUR_SERVICE_NAME]` and `[YOUR_SERVICE_CONFIG_ID]` with your GCloud Project ID, your service's name and your service's config ID respectively.
+1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_GCLOUD_PROJECT]` and `[YOUR_SERVICE_NAME]` with your GCloud Project ID and your service's name respectively.
 ```
-$ sudo docker run -d --name=helloworld gcr.io/[YOUR_GCLOUD_PROJECT]/endpoints-example:1.0
+$ sudo docker run --detach --name=helloworld gcr.io/[YOUR_GCLOUD_PROJECT]/endpoints-example:1.0
 ```
 
 ```
-$ sudo docker run --detach --name=esp \
-    -p 80:9000 \
+$ sudo docker run \
+    --detach \
+    --name=esp \
+    --publish=80:9000 \
     --link=helloworld:helloworld \
     gcr.io/endpoints-release/endpoints-runtime:1 \
-    -s [YOUR_SERVICE_NAME] \
-    -v [YOUR_SERVICE_CONFIG_ID] \
-    -P 9000 \
-    -a grpc://helloworld:50051
+    --service=[YOUR_SERVICE_NAME] \
+    --rollout_strategy=managed \
+    --http2_port=9000 \
+    --backend=grpc://helloworld:50051
 ```
 
 1. On your local machine, use the client to test your Endpoints deployment. Replace `[YOUR_INSTANCE_IP_ADDRESS]` with your instance's external IP address, and `[YOUR_API_KEY]` with a [valid Google Cloud Platform API key][gcp_api_key].
@@ -101,11 +109,11 @@ $ gcloud components install kubectl
 $ gcloud container clusters get-credentials [YOUR_CLUSTER_NAME] --zone [YOUR_CLUSTER_ZONE]
 ```
 
-1. Edit the `container_engine.yaml` file, and replace `GCLOUD_PROJECT`, `SERVICE_NAME`, and `SERVICE_CONFIG` with your Project ID and your Endpoints service's name and config ID respectively.
+1. Edit the `container_engine.yaml` file, and replace `GCLOUD_PROJECT` and `SERVICE_NAME` with your GCloud Project ID and your service's name.
 
 1. Add a [Kubernetes service][docs_k8s_services] to the cluster you created. Note that Kubernetes services should not be confused with [Endpoints services][docs_endpoints_services].
 ```
-$ kubectl create -f container-engine.yaml
+$ kubectl create -f deployment.yaml
 ```
 
 1. Get the external IP of your service. This may take a few minutes to be provisioned.
@@ -134,6 +142,51 @@ You can use the included client to test your Endpoints deployment.
     $ node client.js -h [YOUR_CLUSTER_IP_ADDRESS]:80 -j [YOUR_JWT_AUTHTOKEN]
     ```
 
+## gRPC HTTP/JSON Transcoding
+
+In order to enable HTTP/JSON transcoding, use the `protos/http_helloworld.proto` definition and the `http_deployment.yaml` Kubernetes deployment.
+
+1. In order to compile the gRPC definition with HTTP annotations, you need a copy of the [googleapis][googleapis] proto definitions.
+
+```
+$ GOOGLEAPIS=...
+$ git clone https://github.com/googleapis/googleapis $GOOGLEAPIS
+```
+
+1. Compile the gRPC definition with HTTP annotations:
+
+```
+$ protoc \
+    --proto_path=protos \
+    --proto_path=$GOOGLEAPIS \
+    --include_imports \
+    --include_source_info \
+    --descriptor_set_out api.pb \
+    helloworld.proto
+```
+
+1. Deploy the API definition with HTTP annotations:
+
+```
+$ gcloud endpoints services deploy api.pb api_config.yaml
+
+```
+
+1. Deploy the Endpoints Proxy (ESP) with the HTTP 1.1 port enabled.
+Make sure to update the content of `http_deployment.yaml` and replace the placeholder `[SERVICE_NAME]` and `[GCLOUD_PROJECT]`.
+```
+$ kubectl apply -f http_deployment.yaml
+```
+
+1. Test the HTTP 1.1 Transcoding interface
+
+```
+$ curl "http://[SERVICE_IP_ADDRESS]/v1/sayHello?key=${API_KEY}&name=World"
+
+{"message":"Hello World"}
+```
+
+
 ## Cleanup
 If you do not intend to use the resources you created for this tutorial in the future, delete your [VM instances][console_gce_instances] and/or [container clusters][console_gke_instances] to prevent additional charges.
 
@@ -151,6 +204,7 @@ If those suggestions don't solve your problem, please [let us know][github_issue
 [gcp_api_key]: https://support.google.com/cloud/answer/6158862?hl=en
 [github_issues]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues
 [github_pulls]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/pulls
+[googleapis]: https://github.com/googleapis/googleapis
 [console_gce_instances]: https://console.cloud.google.com/compute/instances
 [console_gce_create]: https://console.cloud.google.com/compute/instancesAdd
 [console_gke_instances]: https://console.cloud.google.com/kubernetes/list

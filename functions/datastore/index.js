@@ -44,7 +44,7 @@ function getKeyFromRequestData (requestData) {
  * Creates and/or updates a record.
  *
  * @example
- * gcloud beta functions call set --data '{"kind":"Task","key":"sampletask1","value":{"description": "Buy milk"}}'
+ * gcloud functions call set --data '{"kind":"Task","key":"sampletask1","value":{"description": "Buy milk"}}'
  *
  * @param {object} req Cloud Function request context.
  * @param {object} req.body The request body.
@@ -53,7 +53,7 @@ function getKeyFromRequestData (requestData) {
  * @param {object} req.body.value Value to save to Cloud Datastore, e.g. {"description":"Buy milk"}
  * @param {object} res Cloud Function response context.
  */
-exports.set = function set (req, res) {
+exports.set = (req, res) => {
   // The value contains a JSON document representing the entity we want to save
   if (!req.body.value) {
     throw new Error('Value not provided. Make sure you have a "value" property in your request');
@@ -69,7 +69,7 @@ exports.set = function set (req, res) {
     .then(() => res.status(200).send(`Entity ${key.path.join('/')} saved.`))
     .catch((err) => {
       console.error(err);
-      res.status(500).send(err);
+      res.status(500).send(err.message);
       return Promise.reject(err);
     });
 };
@@ -78,7 +78,7 @@ exports.set = function set (req, res) {
  * Retrieves a record.
  *
  * @example
- * gcloud beta functions call get --data '{"kind":"Task","key":"sampletask1"}'
+ * gcloud functions call get --data '{"kind":"Task","key":"sampletask1"}'
  *
  * @param {object} req Cloud Function request context.
  * @param {object} req.body The request body.
@@ -86,13 +86,13 @@ exports.set = function set (req, res) {
  * @param {string} req.body.key Key at which to retrieve the data, e.g. "sampletask1".
  * @param {object} res Cloud Function response context.
  */
-exports.get = function get (req, res) {
+exports.get = (req, res) => {
   const key = getKeyFromRequestData(req.body);
 
   return datastore.get(key)
     .then(([entity]) => {
       // The get operation will not fail for a non-existent entity, it just
-      // returns null.
+      // returns an empty dictionary.
       if (!entity) {
         throw new Error(`No entity found for key ${key.path.join('/')}.`);
       }
@@ -101,7 +101,7 @@ exports.get = function get (req, res) {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send(err);
+      res.status(500).send(err.message);
       return Promise.reject(err);
     });
 };
@@ -110,7 +110,7 @@ exports.get = function get (req, res) {
  * Deletes a record.
  *
  * @example
- * gcloud beta functions call del --data '{"kind":"Task","key":"sampletask1"}'
+ * gcloud functions call del --data '{"kind":"Task","key":"sampletask1"}'
  *
  * @param {object} req Cloud Function request context.
  * @param {object} req.body The request body.
@@ -118,15 +118,17 @@ exports.get = function get (req, res) {
  * @param {string} req.body.key Key at which to delete data, e.g. "sampletask1".
  * @param {object} res Cloud Function response context.
  */
-exports.del = function del (req, res) {
+exports.del = (req, res) => {
   const key = getKeyFromRequestData(req.body);
 
   // Deletes the entity
+  // The delete operation will not fail for a non-existent entity, it just
+  // doesn't delete anything
   return datastore.delete(key)
     .then(() => res.status(200).send(`Entity ${key.path.join('/')} deleted.`))
     .catch((err) => {
       console.error(err);
       res.status(500).send(err);
-      return Promise.reject(err);
+      return Promise.reject(err.message);
     });
 };

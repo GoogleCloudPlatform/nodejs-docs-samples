@@ -77,7 +77,16 @@ var sampleTests = [
     msg: 'This is a static file serving example.'
   },
   {
-    dir: 'appengine/storage',
+    dir: 'appengine/storage/flexible',
+    cmd: 'node',
+    args: ['app.js'],
+    msg: '<title>Static Files</title>',
+    env: {
+      GCLOUD_STORAGE_BUCKET: 'nodejs-docs-samples'
+    }
+  },
+  {
+    dir: 'appengine/storage/standard',
     cmd: 'node',
     args: ['app.js'],
     msg: '<title>Static Files</title>',

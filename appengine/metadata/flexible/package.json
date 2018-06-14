@@ -23,7 +23,7 @@
     "got": "8.2.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1"
+    "@google-cloud/nodejs-repo-tools": "^2.3.0"
   },
   "cloud-repo-tools": {
     "test": {

@@ -14,7 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -e;
+
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
+
+# Configure gcloud
+export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
+gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+gcloud config set project $GCLOUD_PROJECT
 
 export NODE_ENV=development
 export GAE_VERSION=doc-sample-${PROJECT}-flex
@@ -27,7 +34,7 @@ function cleanup {
   fi
 }
 trap cleanup EXIT
-set -e;
+
 
 cd github/nodejs-docs-samples/${PROJECT}
 

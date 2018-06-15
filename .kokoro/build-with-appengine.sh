@@ -24,7 +24,7 @@ gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS
 gcloud config set project $GCLOUD_PROJECT
 
 export NODE_ENV=development
-export GAE_VERSION=doc-sample-${PROJECT}-${APPENGINE_ENVIRONMENT}
+export GAE_VERSION=doc-sample-$(echo $PROJECT | sed 's_/_-_g')
 
 # Register post-test cleanup
 function cleanup {

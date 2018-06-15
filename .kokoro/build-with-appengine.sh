@@ -24,7 +24,7 @@ gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS
 gcloud config set project $GCLOUD_PROJECT
 
 export NODE_ENV=development
-export GAE_VERSION=doc-sample-${PROJECT}-${APPENGINE_ENVIRONMENT}
+export GAE_VERSION=doc-sample-$(echo $PROJECT | sed 's_/_-_g')
 
 # Register post-test cleanup
 function cleanup {
@@ -48,7 +48,7 @@ gcloud config set project $GCLOUD_PROJECT
 
 
 # Deploy the app
-gcloud app deploy ${APPENGINE_ENVIRONMENT}.yaml --version $GAE_VERSION --no-promote --quiet
+gcloud app deploy --version $GAE_VERSION --no-promote --quiet
 if [ -e "worker.yaml" ]; then
   gcloud app deploy worker.yaml --version ${GAE_VERSION} --no-promote --quiet
 fi

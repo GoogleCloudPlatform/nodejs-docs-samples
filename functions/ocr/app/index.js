@@ -111,10 +111,6 @@ function renameImageForSave (filename, lang) {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data A Google Cloud Storage File object.
  */
- *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data A Google Cloud Storage File object.
- */
 exports.processImage = (event) => {
   let file = event.data;
 

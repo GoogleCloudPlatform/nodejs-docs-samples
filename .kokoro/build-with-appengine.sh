@@ -24,7 +24,12 @@ gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS
 gcloud config set project $GCLOUD_PROJECT
 
 export NODE_ENV=development
-export GAE_VERSION=doc-sample-$(echo $PROJECT | sed 's_/_-_g')
+
+# Strip appengine and flexible/standard from version string.
+VERSION=$(echo $PROJECT | sed 's_appengine/__')
+VERSION=$(echo $VERSION | sed 's_/flexible\|standard__')
+
+export GAE_VERSION=$VERSION
 
 # Register post-test cleanup
 function cleanup {

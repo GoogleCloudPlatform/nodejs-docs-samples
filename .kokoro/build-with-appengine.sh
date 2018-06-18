@@ -29,7 +29,7 @@ export NODE_ENV=development
 VERSION=$(echo $PROJECT | sed 's_appengine/__')
 VERSION=$(echo $VERSION | sed 's_/flexible\|standard__')
 
-export GAE_VERSION=VERSION
+export GAE_VERSION=$VERSION
 
 # Register post-test cleanup
 function cleanup {

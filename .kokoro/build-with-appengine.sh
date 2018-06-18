@@ -24,35 +24,32 @@ gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS
 gcloud config set project $GCLOUD_PROJECT
 
 export NODE_ENV=development
-export GAE_VERSION=doc-sample-$(echo $PROJECT | sed 's_/_-_g')
+
+# Strip appengine and flexible/standard from version string.
+VERSION=$(echo $PROJECT | sed 's_appengine/__')
+VERSION=$(echo $VERSION | sed 's_/flexible\|standard__')
+
+export GAE_VERSION=$VERSION
 
 # Register post-test cleanup
 function cleanup {
   gcloud app versions delete $GAE_VERSION --quiet
-  if [ -e "worker.yaml" ]; then
-    gcloud app versions delete ${GAE_VERSION}-worker --quiet
-  fi
 }
 trap cleanup EXIT
 
 
 cd github/nodejs-docs-samples/${PROJECT}
 
-# Install dependencies
-npm install
-
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
-
 # Deploy the app
 gcloud app deploy --version $GAE_VERSION --no-promote --quiet
-if [ -e "worker.yaml" ]; then
-  gcloud app deploy worker.yaml --version ${GAE_VERSION} --no-promote --quiet
-fi
 
+# Install dependencies
+npm install
 
 # Test the deployed app
 npm test

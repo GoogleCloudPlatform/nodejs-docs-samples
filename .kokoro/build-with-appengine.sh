@@ -29,17 +29,12 @@ export GAE_VERSION=doc-sample-$(echo $PROJECT | sed 's_/_-_g')
 # Register post-test cleanup
 function cleanup {
   gcloud app versions delete $GAE_VERSION --quiet
-  if [ -e "worker.yaml" ]; then
-    gcloud app versions delete ${GAE_VERSION}-worker --quiet
-  fi
 }
 trap cleanup EXIT
 
 
 cd github/nodejs-docs-samples/${PROJECT}
 
-# Install dependencies
-npm install
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
@@ -49,12 +44,10 @@ gcloud config set project $GCLOUD_PROJECT
 
 # Deploy the app
 gcloud app deploy --version $GAE_VERSION --no-promote --quiet
-if [ -e "worker.yaml" ]; then
-  gcloud app deploy worker.yaml --version ${GAE_VERSION} --no-promote --quiet
-fi
 
 
-# Test the deployed app
+# Install dependencies and run tests
+npm install
 npm test
 
 exit $?

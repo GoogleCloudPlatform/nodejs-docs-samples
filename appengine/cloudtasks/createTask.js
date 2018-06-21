@@ -59,51 +59,51 @@ function createTask (project, location, queue, options) {
   }).catch(err => {
     console.error(`Error in createTask: ${err.message || err}`);
   });
-// [END cloud_tasks_appengine_create_task]
+  // [END cloud_tasks_appengine_create_task]
 }
 
 const cli = require(`yargs`)
-.options({
-  location: {
-    alias: 'l',
-    description: 'Location of the queue to add the task to.',
-    type: 'string',
-    requiresArg: true,
-    required: true
-  },
-  queue: {
-    alias: 'q',
-    description: 'ID (short name) of the queue to add the task to.',
-    type: 'string',
-    requiresArg: true,
-    required: true
-  },
-  project: {
-    alias: 'p',
-    description: 'Project of the queue to add the task to.',
-    default: process.env.GCLOUD_PROJECT,
-    type: 'string',
-    requiresArg: true,
-    required: true
-  },
-  payload: {
-    alias: 'd',
-    description: '(Optional) Payload to attach to the push queue.',
-    type: 'string',
-    requiresArg: true
-  },
-  inSeconds: {
-    alias: 's',
-    description: '(Optional) The number of seconds from now to schedule task attempt.',
-    type: 'number',
-    requiresArg: true
-  }
-})
-.example(`node $0 --project my-project-id`)
-.wrap(120)
-.recommendCommands()
-.epilogue(`For more information, see https://cloud.google.com/cloud-tasks`)
-.strict();
+  .options({
+    location: {
+      alias: 'l',
+      description: 'Location of the queue to add the task to.',
+      type: 'string',
+      requiresArg: true,
+      required: true
+    },
+    queue: {
+      alias: 'q',
+      description: 'ID (short name) of the queue to add the task to.',
+      type: 'string',
+      requiresArg: true,
+      required: true
+    },
+    project: {
+      alias: 'p',
+      description: 'Project of the queue to add the task to.',
+      default: process.env.GCLOUD_PROJECT,
+      type: 'string',
+      requiresArg: true,
+      required: true
+    },
+    payload: {
+      alias: 'd',
+      description: '(Optional) Payload to attach to the push queue.',
+      type: 'string',
+      requiresArg: true
+    },
+    inSeconds: {
+      alias: 's',
+      description: '(Optional) The number of seconds from now to schedule task attempt.',
+      type: 'number',
+      requiresArg: true
+    }
+  })
+  .example(`node $0 --project my-project-id`)
+  .wrap(120)
+  .recommendCommands()
+  .epilogue(`For more information, see https://cloud.google.com/cloud-tasks`)
+  .strict();
 
 if (module === require.main) {
   const opts = cli.help().parse(process.argv.slice(2));

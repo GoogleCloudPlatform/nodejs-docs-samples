@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,7 +28,7 @@ app.use(bodyParser.text());
 
 app.get('/', (req, res, next) => {
   // Basic index to verify app is serving
-  res.send('Hello, world!').end();
+  res.send('Hello, World!').end();
 });
 
 app.post('/log_payload', (req, res, next) => {

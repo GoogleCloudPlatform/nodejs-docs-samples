@@ -32,7 +32,7 @@
     "requiresProjectId": true,
     "test": {
       "app": {
-        "msg": "Hello, world!",
+        "msg": "Hello, World!",
         "args": [
           "server.js"
         ]

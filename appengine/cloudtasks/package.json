@@ -18,15 +18,14 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "body-parser": "1.18.2",
-    "express": "4.16.2",
-    "googleapis": "29.0.0",
+    "body-parser": "^1.18.3",
+    "express": "4.16.3",
     "yargs": "11.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1",
-    "proxyquire": "2.0.0",
-    "sinon": "4.4.2"
+    "@google-cloud/nodejs-repo-tools": "2.3.0",
+    "proxyquire": "2.0.1",
+    "sinon": "6.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

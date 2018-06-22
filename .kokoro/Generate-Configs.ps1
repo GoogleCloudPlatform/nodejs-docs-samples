@@ -1,5 +1,7 @@
 # A script for inspecting the source tree and generating test configs.
 
+# Given a list of files, converts their paths into names of config files.
+# Example: foo/bar/package.json => foo-bar.cfg.
 function Collect-Names {
     # Use a dictionary to de-duplicate the directories.
     $names = @{}

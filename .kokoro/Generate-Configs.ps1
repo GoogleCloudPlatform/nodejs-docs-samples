@@ -45,6 +45,6 @@ env_vars: {
 '@
 
 foreach ($name in $names) {
-    $template.Replace('cloudtasks', $name) `
+    $template.Replace('cloudtasks', $name.Replace('-', '/')) `
         | Out-File -FilePath "$name.cfg" -Encoding utf8 
 }

@@ -1,6 +1,4 @@
 # A script for inspecting the source tree and generating test configs.
-$packageJsons = Get-ChildItem -Recurse package.json
-$testDirs = Get-ChildItem -Recurse *test | Where-Object { Test-Path -Path $_ -PathType Container}
 
 function Collect-Names {
     # Use a dictionary to de-duplicate the directories.
@@ -17,7 +15,15 @@ function Collect-Names {
     return $names.Keys
 }
 
-$names = ($packageJsons + $testDirs | Collect-Names)
+Push-Location
+try {
+    Set-Location ..
+    $packageJsons = Get-ChildItem -Recurse package.json
+    $testDirs = Get-ChildItem -Recurse *test | Where-Object { Test-Path -Path $_ -PathType Container}
+    $names = ($packageJsons + $testDirs | Collect-Names)
+} finally {
+    Pop-Location
+}
 
 # Replace cloudtasks with "foo/bar"
 $template = @'
@@ -38,5 +44,5 @@ env_vars: {
 
 foreach ($name in $names) {
     $template.Replace('cloudtasks', $name) `
-        | Out-File -FilePath ".kokoro/$name.cfg" -Encoding utf8 
+        | Out-File -FilePath "$name.cfg" -Encoding utf8 
 }

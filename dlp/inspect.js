@@ -15,8 +15,6 @@
 
 'use strict';
 
-const Buffer = require('safe-buffer').Buffer;
-
 function inspectString(
   callingProjectId,
   string,

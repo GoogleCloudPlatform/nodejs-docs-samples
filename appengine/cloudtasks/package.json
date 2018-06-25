@@ -18,6 +18,7 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
+    "@google-cloud/tasks": "0.1.0",
     "body-parser": "^1.18.3",
     "express": "4.16.3",
     "yargs": "11.0.0"

@@ -19,18 +19,16 @@ const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-const {
-  runAsync
-} = require(`@google-cloud/nodejs-repo-tools`);
+const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT;
-const QUEUE = process.env.GCP_QUEUE || 'my-appengine-queue';
+const QUEUE = process.env.QUEUE_ID || 'my-appengine-queue';
 const cmd = `node createTask.js`;
 const cwd = path.join(__dirname, `..`);
 
 test.before((t) => {
   if (!QUEUE) {
-    t.fail(`You must set the GCP_QUEUE environment variable!`);
+    t.fail(`You must set the QUEUE_ID environment variable!`);
   }
 });
 test.before(tools.checkCredentials);

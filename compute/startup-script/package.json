@@ -12,7 +12,7 @@
     "uuid": "^3.2.1"
   },
   "scripts": {
-    "test": "repo-tools test run --cmd ava -- -T 600s --verbose system-test/*.test.js",
+    "test": "ava -T 600s --verbose system-test/*.test.js",
     "start": "node -e 'require(\"./index.js\").create(\"vm-with-apache\", console.log)'",
     "delete": "node -e 'require(\"./index.js\").delete(\"vm-with-apache\", console.log)'",
     "list": "node -e 'require(\"./index.js\").list(console.log)'"

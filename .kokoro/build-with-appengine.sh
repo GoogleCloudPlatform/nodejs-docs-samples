@@ -27,9 +27,10 @@ export NODE_ENV=development
 
 # Strip appengine and flexible/standard from version string.
 VERSION=$(echo $PROJECT | sed 's_appengine/__')
-VERSION=$(echo $VERSION | sed 's_/flexible\|standard__')
+VERSION=$(echo $VERSION | sed 's_/flexible\|/standard__')
 
 export GAE_VERSION=$VERSION
+export GCLOUD_STORAGE_BUCKET=docs-samples-${VERSION}
 
 # Register post-test cleanup
 function cleanup {

@@ -1,4 +1,9 @@
-# A script for inspecting the source tree and generating test configs.
+# A powershell script for inspecting the source tree and generating test configs.
+
+# Given something like 'a\b\c', return ['a', 'b', 'c']
+function Explode-Path([string] $Path) {
+    return $Path.Replace('\', '/').Split('/')
+}
 
 # Given a list of files, converts their paths into names of config files.
 # Example: foo/bar/package.json => foo-bar.cfg.
@@ -7,14 +12,13 @@ function Collect-Names {
     $names = @{}
     foreach ($item in $input) {
         $relPath = [string] (Resolve-Path -Relative (Split-Path -Parent $item))
+        # Remove the '.\' at the beginning of the string.
+        $dir = $relPath.Substring(2)
         # replace slashes with hyphenes.
-        $name = $relPath.Replace('/', '-')
-        $name = $relPath.Replace('\', '-')
-        # Remove the '.-' at the beginning of the string.
-        $name = $name.Substring(2)
-        $names[$name] = $true
+        $name = $dir.Replace('/', '-').Replace('\', '-')
+        $names[$name] = Explode-Path($dir)
     }
-    return $names.Keys
+    return $names
 }
 
 Push-Location
@@ -44,7 +48,21 @@ env_vars: {
 }
 '@
 
-foreach ($name in $names) {
-    $template.Replace('cloudtasks', $name.Replace('-', '/')) `
-        | Out-File -FilePath "$name.cfg" -Encoding utf8 
+foreach ($name in $names.Keys) {
+    $pathFragments = $names[$name]
+    if (-not $pathFragments[0]) { continue }
+    # For some directories like appengine and functions, we put the configs
+    # in subdirectories.  For others, we do not.
+    $pathFragments -join '/'
+    $configPath = if (Test-Path $pathFragments[0]) {
+        $dir = $pathFragments[0]
+        $n = $pathFragments.Count - 1
+        $name = $pathFragments[1..$n] -join '-'
+        "$dir/$name.cfg"
+    } else {
+        "$name.cfg"
+    }
+    $srcDir = $pathFragments -join '/'
+    $template.Replace('cloudtasks', $srcDir) `
+        | Out-File -FilePath $configPath -Encoding utf8 
 }

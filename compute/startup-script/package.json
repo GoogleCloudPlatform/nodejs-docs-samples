@@ -7,8 +7,8 @@
     "@google-cloud/compute": "0.10.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.3",
-    "ava": "0.25.0",
+    "@google-cloud/nodejs-repo-tools": "^2.3.0",
+    "ava": "^0.25.0",
     "uuid": "^3.2.1"
   },
   "scripts": {

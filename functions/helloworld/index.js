@@ -128,7 +128,7 @@ exports.helloGCSGeneric = (event, callback) => {
  * @param {function} callback The callback function.
  */
 exports.helloError = (event, callback) => {
-  // This WILL be reported to Stackdriver errors
+  // This WILL be reported to Stackdriver Error Reporting
   throw new Error('I failed you');
 };
 // [END functions_helloworld_error]
@@ -142,7 +142,7 @@ exports.helloError = (event, callback) => {
  * @param {function} callback The callback function.
  */
 exports.helloError2 = (event, callback) => {
-  // This will NOT be reported to Stackdriver errors
+  // This will NOT be reported to Stackdriver Error Reporting
   throw 1;
 };
 // [END functions_helloworld_error_2]

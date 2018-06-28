@@ -7,7 +7,7 @@
  */
 
 // [START functions_tips_infinite_retries_node8]
-exports.avoidInfiniteRetries = async (event, context) => {
+exports.avoidInfiniteRetries = (event, context) => {
   const eventAge = Date.now() - Date.parse(context.timestamp);
   const eventMaxAge = 10000;
 
@@ -23,7 +23,7 @@ exports.avoidInfiniteRetries = async (event, context) => {
 // [END functions_tips_infinite_retries_node8]
 
 // [START functions_tips_retry_node8]
-exports.retryPromise = async (event, context) => {
+exports.retryPromise = (event, context) => {
   const tryAgain = !!event.attributes.retry;
 
   if (tryAgain) {

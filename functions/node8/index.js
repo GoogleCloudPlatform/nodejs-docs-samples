@@ -6,18 +6,30 @@
  * @param {function} callback The callback function.
  */
 
-// [START functions_tips_retry_node8]
-exports.avoidInfiniteRetries = async (event) => {
-  const eventAge = Date.now() - Date.parse(event.timestamp);
+// [START functions_tips_infinite_retries_node8]
+exports.avoidInfiniteRetries = async (event, context) => {
+  const eventAge = Date.now() - Date.parse(context.timestamp);
   const eventMaxAge = 10000;
 
   // Ignore events that are too old
   if (eventAge > eventMaxAge) {
-    console.log(`Dropping event ${event} with age ${eventAge} ms.`);
+    console.log(`Dropping event ${context.eventId} with age ${eventAge} ms.`);
     return;
   }
 
   // Do what the function is supposed to do
-  console.log(`Processing event ${event} with age ${eventAge} ms.`);
+  console.log(`Processing event ${context.eventId} with age ${eventAge} ms.`);
+};
+// [END functions_tips_infinite_retries_node8]
+
+// [START functions_tips_retry_node8]
+exports.retryPromise = async (event, context) => {
+  const tryAgain = !!event.attributes.retry;
+
+  if (tryAgain) {
+    throw new Error(`Retrying...`);
+  } else {
+    return new Error('Not retrying...');
+  }
 };
 // [END functions_tips_retry_node8]

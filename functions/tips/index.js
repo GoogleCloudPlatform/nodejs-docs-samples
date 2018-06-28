@@ -160,6 +160,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
 };
 // [END functions_tips_infinite_retries]
 
+// [START functions_tips_retry]
 /**
  * Background Cloud Function that demonstrates
  * how to toggle retries using a promise
@@ -203,6 +204,7 @@ exports.retryCallback = (event, callback) => {
   }
   // [END functions_tips_retry_callback]
 };
+// [END functions_tips_retry]
 
 // [START functions_tips_gcp_apis]
 const Pubsub = require('@google-cloud/pubsub');

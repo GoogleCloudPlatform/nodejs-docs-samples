@@ -7,7 +7,14 @@
  */
 
 // [START functions_tips_infinite_retries_node8]
-exports.avoidInfiniteRetries = (event, context) => {
+/**
+ * Background Cloud Function that only executes within
+ * a certain time period after the triggering event
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {function} context Information about the event.
+ */
+exports.avoidInfiniteRetries = (data, context) => {
   const eventAge = Date.now() - Date.parse(context.timestamp);
   const eventMaxAge = 10000;
 
@@ -23,8 +30,15 @@ exports.avoidInfiniteRetries = (event, context) => {
 // [END functions_tips_infinite_retries_node8]
 
 // [START functions_tips_retry_node8]
-exports.retryPromise = (event, context) => {
-  const tryAgain = !!event.data.retry;
+/**
+ * Background Cloud Function that only executes within
+ * a certain time period after the triggering event
+ *
+ * @param {object} event The Cloud Functions event.
+ * @param {function} context Information about the event.
+ */
+exports.retryPromise = (data, context) => {
+  const tryAgain = !!data.retry;
 
   if (tryAgain) {
     throw new Error(`Retrying...`);

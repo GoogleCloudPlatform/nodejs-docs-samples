@@ -24,7 +24,7 @@ exports.avoidInfiniteRetries = (event, context) => {
 
 // [START functions_tips_retry_node8]
 exports.retryPromise = (event, context) => {
-  const tryAgain = !!event.attributes.retry;
+  const tryAgain = !!event.data.retry;
 
   if (tryAgain) {
     throw new Error(`Retrying...`);

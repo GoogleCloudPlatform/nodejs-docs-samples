@@ -770,6 +770,67 @@ function detectFulltextGCS(bucketName, fileName) {
   // [END vision_fulltext_detection_gcs]
 }
 
+function detectPdfText(bucketName, fileName) {
+  // [START vision_async_detect_document_ocr]
+
+  // Imports the Google Cloud client libraries
+  const vision = require('@google-cloud/vision').v1;
+
+  // Creates a client
+  const client = new vision.ImageAnnotatorClient();
+
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // Bucket where the file resides
+  // const bucketName = 'my-bucket';
+  // Path to PDF file within bucket
+  // const fileName = 'path/to/document.pdf';
+
+  const gcsSourceUri = `gs://${bucketName}/${fileName}`;
+  const gcsDestinationUri = `gs://${bucketName}/${fileName}.json`;
+
+  const inputConfig = {
+    // Supported mime_types are: 'application/pdf' and 'image/tiff'
+    mimeType: 'application/pdf',
+    gcsSource: {
+      uri: gcsSourceUri,
+    },
+  };
+  const outputConfig = {
+    gcsDestination: {
+      uri: gcsDestinationUri,
+    },
+  };
+  const features = [{type: 'DOCUMENT_TEXT_DETECTION'}];
+  const request = {
+    requests: [
+      {
+        inputConfig: inputConfig,
+        features: features,
+        outputConfig: outputConfig,
+      },
+    ],
+  };
+
+  client
+    .asyncBatchAnnotateFiles(request)
+    .then(results => {
+      const operation = results[0];
+      // Get a Promise representation of the final result of the job
+      return operation.promise();
+    })
+    .then(filesResponse => {
+      let destinationUri =
+        filesResponse[0].responses[0].outputConfig.gcsDestination.uri;
+      console.log('Json saved to: ' + destinationUri);
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END vision_async_detect_document_ocr]
+}
+
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
@@ -901,6 +962,12 @@ require(`yargs`) // eslint-disable-line
     {},
     opts => detectFulltextGCS(opts.bucketName, opts.fileName)
   )
+  .command(
+    `pdf <bucketName> <fileName>`,
+    `Extracts full text from a pdf file`,
+    {},
+    opts => detectPdfText(opts.bucketName, opts.fileName)
+  )
   .example(`node $0 faces ./resources/face_no_surprise.jpg`)
   .example(`node $0 faces-gcs my-bucket your-image.jpg`)
   .example(`node $0 labels ./resources/wakeupcat.jpg`)
@@ -923,6 +990,7 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 web-geo-gcs my-bucket your-image.jpg`)
   .example(`node $0 fulltext ./resources/wakeupcat.jpg`)
   .example(`node $0 fulltext-gcs my-bucket your-image.jpg`)
+  .example(`node $0 pdf my-bucket my-pdf.pdf`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/vision/docs`)

@@ -32,6 +32,7 @@ const files = [
   `wakeupcat.jpg`,
   `faulkner.jpg`,
   `city.jpg`,
+  'pdf-ocr.pdf',
 ].map(name => {
   return {
     name,
@@ -251,4 +252,12 @@ test(`should read a document from a remote file`, async t => {
     cwd
   );
   t.true(output.includes('Google Cloud Platform'));
+});
+
+test(`should extract text from pdf file`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} pdf ${bucketName} ${files[7].name}`,
+    cwd
+  );
+  t.true(output.includes('pdf-ocr.pdf.json'));
 });

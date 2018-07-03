@@ -49,13 +49,6 @@ exports.retryPromise = (data, context) => {
 // [END functions_tips_retry_node8]
 
 // [START functions_helloworld_background_node8]
-
-// helloBackground
-// helloPubSub
-// helloGCS
-// helloGCSGeneric
-
-// [START functions_helloworld_background]
 /**
  * Background Cloud Function.
  *
@@ -64,9 +57,9 @@ exports.retryPromise = (data, context) => {
 exports.helloBackground = (data) => {
   return `Hello ${data.name || 'World'}!`;
 };
-// [END functions_helloworld_background]
+// [END functions_helloworld_background_node8]
 
-// [START functions_helloworld_pubsub]
+// [START functions_helloworld_pubsub_node8]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
  * This function is exported by index.js, and executed when
@@ -80,9 +73,9 @@ exports.helloPubSub = (event) => {
 
   console.log(`Hello, ${name}!`);
 };
-// [END functions_helloworld_pubsub]
+// [END functions_helloworld_pubsub_node8]
 
-// [START functions_helloworld_storage]
+// [START functions_helloworld_storage_node8]
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
@@ -99,9 +92,9 @@ exports.helloGCS = (file) => {
     console.log(`File ${file.name} metadata updated.`);
   }
 };
-// [END functions_helloworld_storage]
+// [END functions_helloworld_storage_node8]
 
-// [START functions_helloworld_storage_generic]
+// [START functions_helloworld_storage_generic_node8]
 /**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
@@ -116,4 +109,4 @@ exports.helloGCSGeneric = (file, context) => {
   console.log(`  Created: ${file.timeCreated}`);
   console.log(`  Updated: ${file.updated}`);
 };
-// [END functions_helloworld_storage_generic]
+// [END functions_helloworld_storage_generic_node8]

@@ -234,7 +234,7 @@ function deidentifyWithDateShift(
     .catch(err => {
       console.log(`Error in deidentifyWithDateShift: ${err.message || err}`);
     });
-  // [END deidentify_date_shift]
+  // [END dlp_deidentify_date_shift]
 }
 
 function deidentifyWithFpe(
@@ -319,7 +319,7 @@ function deidentifyWithFpe(
     .catch(err => {
       console.log(`Error in deidentifyWithFpe: ${err.message || err}`);
     });
-  // [END deidentify_fpe]
+  // [END dlp_deidentify_fpe]
 }
 
 function reidentifyWithFpe(

@@ -86,6 +86,51 @@ HTTP POST request and logs it. The log output can be viewed with:
 
 ## Running the Samples
 
+Set environment variables:
+
+First, your project ID:
+
+```
+export PROJECT_ID=my-project-id
+```
+
+Then the queue ID, as specified at queue creation time. Queue IDs already
+created can be listed with `gcloud alpha tasks queues list`.
+
+```
+export QUEUE_ID=my-appengine-queue
+```
+
+And finally the location ID, which can be discovered with
+`gcloud alpha tasks queues describe $QUEUE_ID`, with the location embedded in
+the "name" value (for instance, if the name is
+"projects/my-project/locations/us-central1/queues/my-appengine-queue", then the
+location is "us-central1").
+
+```
+export LOCATION_ID=us-central1
+```
+
+Create a task, targeted at the `log_payload` endpoint, with a payload specified:
+
+```
+node createTask.js --project=$PROJECT_ID --queue=$QUEUE_ID --location=$LOCATION_ID --payload=hello
+```
+
+Now view that the payload was received and verify the payload:
+
+```
+gcloud app logs read
+```
+
+Create a task that will be scheduled for a time in the future using the
+`--in_seconds` flag:
+
+```
+node createTask.js --project=$PROJECT_ID --queue=$QUEUE_ID --location=$LOCATION_ID --payload=hello --in_seconds=30
+```
+
+
 To get usage information: `node createTask.js --help`
 
 Which prints:

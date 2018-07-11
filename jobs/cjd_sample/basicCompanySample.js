@@ -15,36 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const {google} = require('googleapis');
-
-/**
- * Get authorized client.
- * @returns {Promise.Object} Promise containing instance of google.jobs module.
- */
-function getClient() {
-    return new Promise((resolve, reject) => {
-        google.auth.getApplicationDefault((err, authClient) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-          
-            if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-              authClient = authClient.createScoped([
-                "https://www.googleapis.com/auth/jobs"
-              ]);
-            }
-          
-            // Instantiates an authorized client
-            const jobs = google.jobs({
-              version: 'v2',
-              auth: authClient
-            });
-            resolve(jobs);
-        });
-    });
-}
-exports.getClient = getClient;
+const getClient = require('./jobsClient.js').getClient;
 
 // [START basic_company]
 /**
@@ -58,6 +29,7 @@ function generateCompany() {
         hqLocation: '1600 Amphitheatre Parkway Mountain View, CA 94043'
     };
 }
+exports.generateCompany = generateCompany;
 // [END basic_company]
 
 // [START create_company]
@@ -65,7 +37,7 @@ function generateCompany() {
  * Create a new company.
  * @param {Object} client Instance of google.jobs module.
  * @param {Object} companyInfo Object containing fields of 'Company' resource.
- * @returns {Promise.Object} Promise containing name of company that got created.
+ * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function createCompany(client, companyInfo) {
     assert(companyInfo, '\'companyInfo\' argument is required.');
@@ -90,6 +62,7 @@ exports.createCompany = createCompany;
  * Get a company.
  * @param {Object} client Instance of google.jobs module.
  * @param {string} companyName Name of company (value of 'name' field).
+ * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function getCompany(client, companyName) {
     assert(companyName, 'companyName argument is required.');
@@ -113,7 +86,7 @@ exports.getCompany = getCompany;
  */
 function updateCompany(client, companyName, companyInfo) {
     assert(companyName, '\'companyName\' argument is required.');
-    assert(companyInfo, '\'companyName\' argument is required.');
+    assert(companyInfo, '\'companyInfo\' argument is required.');
 
     return new Promise((resolve, reject) => {
         client.companies.patch({ name: companyName, resource: companyInfo }, {}, null).then((response) => {

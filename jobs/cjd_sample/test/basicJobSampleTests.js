@@ -15,7 +15,7 @@
 'use strict';
 
 /**
- * Unit tests for basicCompanySample.js
+ * Unit tests for basicJobSample.js
  * DEPENDENCIES:
  * You need to install mocha to run this test.
  * npm install mocha
@@ -24,52 +24,57 @@
  * export GOOGLE_APPLICATION_CREDENTIALS=<path to credentials json file>
  * 
  * Run test:
- * <path to node_modules>/mocha/bin/mocha basicCompanySampleTests.js
+ * <path to node_modules>/mocha/bin/mocha basicJobSampleTests.js
  */
 const assert = require('assert');
 const companySample = require('../basicCompanySample.js');
+const jobSample = require('../basicJobSample.js');
 const getClient = require('../jobsClient.js').getClient;
 
-describe('Company API', () => {
+describe('Job API', () => {
     let companyInfo = {
         displayName: 'Acme Inc',
         distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
         hqLocation: '1 Oak Street, Palo Alto, CA 94105'
     };
+    let jobInfo;
+
     // Client instance.
     let client;
-    let companyName;
+    let companyName, jobName;
+
     it('can get client instance', () => {
         return getClient().then((jobs) => {
             client = jobs;
         });
     });
-    
-    it('can create a company', () => {
+
+    it('create a company', () => {
         return companySample.createCompany(client, companyInfo).then((info) => {
-            assert(companyInfo.displayName === info.displayName);
-            assert(companyInfo.distributorCompanyId === info.distributorCompanyId);
-            assert(companyInfo.hqLocation === info.hqLocation);
             companyName = info.name;
+            jobInfo = jobSample.generateJob(companyName);
+        });
+    });
+    
+    it('can create a job', () => {
+        return jobSample.createJob(client, jobInfo).then((info) => {
+            assert(jobInfo.jobTitle === info.jobTitle);
+            assert(jobInfo.description === info.description);
+            assert(companyName === info.companyName);
+            jobName = info.name;
+        });
+    });
+    
+    it('can get a job', () => {
+        return jobSample.getJob(client, jobName).then((info) => {
+            assert(jobInfo.displayName === info.displayName);
+            assert(companyName === info.companyName);
+            assert(jobName === info.name);
         });
     });
 
-    it('can get a company', () => {
-        return companySample.getCompany(client, companyName).then((info) => {
-            assert(companyName === info.name);
-        });
-    });
-
-    it('can update a company', () => {
-        companyInfo.companySize = 'SMALL';
-        companyInfo.website = 'https://www.testabc.com';
-        return companySample.updateCompany(client, companyName, companyInfo).then((info) => {
-            assert(companyInfo.companySize === info.companySize);
-            assert(companyInfo.website === info.website);
-        });
-    });
-
-    it('can delete a company', () => {
-        return companySample.deleteCompany(client, companyName);
+    it('can delete a job', () => {
+        return jobSample.deleteJob(client, jobName);
     });
 });
+

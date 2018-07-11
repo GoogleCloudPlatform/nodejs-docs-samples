@@ -20,8 +20,11 @@
  * You need to install mocha to run this test.
  * npm install mocha
  * 
- * Run
+ * Before running test:
  * export GOOGLE_APPLICATION_CREDENTIALS=<path to credentials json file>
+ * 
+ * Run test:
+ * <path to node_modules>/mocha/bin/mocha basicCompanySampleTests.js
  */
 const assert = require('assert');
 const companySample = require('../basicCompanySample.js');
@@ -63,5 +66,9 @@ describe('Company API', () => {
             assert(companyInfo.companySize === info.companySize);
             assert(companyInfo.website === info.website);
         });
+    });
+
+    it('can delete a company', () => {
+        return companySample.deleteCompany(client, companyName);
     });
 });

@@ -16,6 +16,7 @@
 'use strict';
 
 // [START quickstart]
+
 // Imports the Google APIs client library
 const {google} = require('googleapis');
 
@@ -29,7 +30,7 @@ google.auth.getApplicationDefault((err, authClient) => {
 
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
     authClient = authClient.createScoped([
-      "https://www.googleapis.com/auth/jobs"
+      'https://www.googleapis.com/auth/jobs'
     ]);
   }
 

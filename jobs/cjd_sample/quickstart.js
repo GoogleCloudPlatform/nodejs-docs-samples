@@ -23,7 +23,7 @@ const {google} = require('googleapis');
 google.auth.getApplicationDefault((err, authClient) => {
   if (err) {
     console.error('Failed to acquire credentials');
-    console.error(err)
+    console.error(err);
     return;
   }
 
@@ -46,11 +46,13 @@ google.auth.getApplicationDefault((err, authClient) => {
       return;
     }
 
+    console.log("Request ID: " + result.data.metadata.requestId);
+
     const companies = result.data.companies || [];
 
     if (companies.length) {
       console.log('Companies:');
-      companies.forEach((company) => console.log(company));
+      companies.forEach((company) => console.log(company.name));
     } else {
       console.log(`No companies found.`);
     }

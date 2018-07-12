@@ -17,7 +17,9 @@
 // [START quickstart]
 const assert = require('assert');
 // Imports the Google APIs client library
-const {google} = require('googleapis');
+const {
+  google
+} = require('googleapis');
 
 // Acquires credentials
 google.auth.getApplicationDefault((err, authClient) => {
@@ -47,7 +49,7 @@ google.auth.getApplicationDefault((err, authClient) => {
     }
     assert(result.status === 200, 'Received response code: ' + result.status);
     assert(result.statusText === 'OK', 'Received status: ' + result.statusText);
-    
+
     const companies = result.data.companies || [];
 
     if (companies.length) {

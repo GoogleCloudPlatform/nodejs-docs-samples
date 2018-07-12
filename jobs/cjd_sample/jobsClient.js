@@ -14,33 +14,35 @@
  */
 'use strict';
 
-const {google} = require('googleapis');
+const {
+  google
+} = require('googleapis');
 
 /**
  * Get authorized client od google.jobs module.
  * @returns {Promise.Object} Promise containing instance of google.jobs module.
  */
 function getClient() {
-    return new Promise((resolve, reject) => {
-        google.auth.getApplicationDefault((err, authClient) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-          
-            if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-              authClient = authClient.createScoped([
-                "https://www.googleapis.com/auth/jobs"
-              ]);
-            }
-          
-            // Instantiates an authorized client
-            const jobs = google.jobs({
-              version: 'v2',
-              auth: authClient
-            });
-            resolve(jobs);
-        });
+  return new Promise((resolve, reject) => {
+    google.auth.getApplicationDefault((err, authClient) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+        authClient = authClient.createScoped([
+          "https://www.googleapis.com/auth/jobs"
+        ]);
+      }
+
+      // Instantiates an authorized client
+      const jobs = google.jobs({
+        version: 'v2',
+        auth: authClient
+      });
+      resolve(jobs);
     });
+  });
 }
 exports.getClient = getClient;

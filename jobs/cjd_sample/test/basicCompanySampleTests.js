@@ -31,45 +31,45 @@ const companySample = require('../basicCompanySample.js');
 const getClient = require('../jobsClient.js').getClient;
 
 describe('Company API', () => {
-    let companyInfo = {
-        displayName: 'Acme Inc',
-        distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
-        hqLocation: '1 Oak Street, Palo Alto, CA 94105'
-    };
-    // Client instance.
-    let client;
-    let companyName;
-    it('can get client instance', () => {
-        return getClient().then((jobs) => {
-            client = jobs;
-        });
+  let companyInfo = {
+    displayName: 'Acme Inc',
+    distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+    hqLocation: '1 Oak Street, Palo Alto, CA 94105'
+  };
+  // Client instance.
+  let client;
+  let companyName;
+  it('can get client instance', () => {
+    return getClient().then((jobs) => {
+      client = jobs;
     });
-    
-    it('can create a company', () => {
-        return companySample.createCompany(client, companyInfo).then((info) => {
-            assert(companyInfo.displayName === info.displayName);
-            assert(companyInfo.distributorCompanyId === info.distributorCompanyId);
-            assert(companyInfo.hqLocation === info.hqLocation);
-            companyName = info.name;
-        });
-    });
+  });
 
-    it('can get a company', () => {
-        return companySample.getCompany(client, companyName).then((info) => {
-            assert(companyName === info.name);
-        });
+  it('can create a company', () => {
+    return companySample.createCompany(client, companyInfo).then((info) => {
+      assert(companyInfo.displayName === info.displayName);
+      assert(companyInfo.distributorCompanyId === info.distributorCompanyId);
+      assert(companyInfo.hqLocation === info.hqLocation);
+      companyName = info.name;
     });
+  });
 
-    it('can update a company', () => {
-        companyInfo.companySize = 'SMALL';
-        companyInfo.website = 'https://www.testabc.com';
-        return companySample.updateCompany(client, companyName, companyInfo).then((info) => {
-            assert(companyInfo.companySize === info.companySize);
-            assert(companyInfo.website === info.website);
-        });
+  it('can get a company', () => {
+    return companySample.getCompany(client, companyName).then((info) => {
+      assert(companyName === info.name);
     });
+  });
 
-    it('can delete a company', () => {
-        return companySample.deleteCompany(client, companyName);
+  it('can update a company', () => {
+    companyInfo.companySize = 'SMALL';
+    companyInfo.website = 'https://www.testabc.com';
+    return companySample.updateCompany(client, companyName, companyInfo).then((info) => {
+      assert(companyInfo.companySize === info.companySize);
+      assert(companyInfo.website === info.website);
     });
+  });
+
+  it('can delete a company', () => {
+    return companySample.deleteCompany(client, companyName);
+  });
 });

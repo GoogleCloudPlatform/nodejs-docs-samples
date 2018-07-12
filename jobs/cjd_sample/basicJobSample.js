@@ -26,14 +26,14 @@ const getClient = require('./jobsClient.js').getClient;
  * @returns {Object} Object containing fields of 'Job' resource.
  */
 function generateJob(companyName) {
-    assert(companyName, '\'companyName\' argument is required.');
-    return {
-        requisitionId: 'jobWithRequiredFields:' + Math.floor(Math.random() * 100000).toString(),
-        jobTitle: 'System administrator',
-        description: 'Maintain IT network.',
-        companyName: companyName,
-        applicationUrls: [ 'https://www.foobar.com' ]
-    };
+  assert(companyName, '\'companyName\' argument is required.');
+  return {
+    requisitionId: 'jobWithRequiredFields:' + Math.floor(Math.random() * 100000).toString(),
+    jobTitle: 'System administrator',
+    description: 'Maintain IT network.',
+    companyName: companyName,
+    applicationUrls: ['https://www.foobar.com']
+  };
 }
 exports.generateJob = generateJob;
 // [END basic_job]
@@ -46,16 +46,20 @@ exports.generateJob = generateJob;
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function createJob(client, jobInfo) {
-    assert(jobInfo, '\'jobInfo\' argument is required.');
+  assert(jobInfo, '\'jobInfo\' argument is required.');
 
-    return new Promise((resolve, reject) => {
-        client.jobs.create({ resource: { job: jobInfo } }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            assert(response.data, '\'data\' field not populated in response.');
-            resolve(response.data);
-        });
+  return new Promise((resolve, reject) => {
+    client.jobs.create({
+      resource: {
+        job: jobInfo
+      }
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      assert(response.data, '\'data\' field not populated in response.');
+      resolve(response.data);
     });
+  });
 }
 exports.createJob = createJob;
 // [END create_job]
@@ -68,15 +72,17 @@ exports.createJob = createJob;
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function getJob(client, jobName) {
-    assert(jobName, '\'jobName\' argument is required.');
+  assert(jobName, '\'jobName\' argument is required.');
 
-    return new Promise((resolve, reject) => {
-        client.jobs.get({ name: jobName }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            resolve(response.data);
-        });
+  return new Promise((resolve, reject) => {
+    client.jobs.get({
+      name: jobName
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      resolve(response.data);
     });
+  });
 }
 exports.getJob = getJob;
 // [END create_job]
@@ -90,17 +96,22 @@ exports.getJob = getJob;
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function updateJob(client, jobName, jobInfo) {
-    assert(jobName, '\'jobName\' argument is required.');
-    assert(jobInfo, '\'jobInfo\' argument is required.');
+  assert(jobName, '\'jobName\' argument is required.');
+  assert(jobInfo, '\'jobInfo\' argument is required.');
 
-    return new Promise((resolve, reject) => {
-        client.jobs.patch({ name: jobName, resource: { job: jobInfo } }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            assert(response.data, '\'data\' field not populated in response.');
-            resolve(response.data);
-        });
+  return new Promise((resolve, reject) => {
+    client.jobs.patch({
+      name: jobName,
+      resource: {
+        job: jobInfo
+      }
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      assert(response.data, '\'data\' field not populated in response.');
+      resolve(response.data);
     });
+  });
 }
 exports.updateJob = updateJob;
 // [END update_job]
@@ -112,14 +123,16 @@ exports.updateJob = updateJob;
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function deleteJob(client, jobName) {
-    assert(jobName, '\'jobName\' argument is required.');
-    return new Promise((resolve, reject) => {
-        client.jobs.delete({ name: jobName }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            resolve(response.data);
-        });
+  assert(jobName, '\'jobName\' argument is required.');
+  return new Promise((resolve, reject) => {
+    client.jobs.delete({
+      name: jobName
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      resolve(response.data);
     });
+  });
 }
 exports.deleteJob = deleteJob;
 // [END delete_job]
@@ -128,39 +141,39 @@ exports.deleteJob = deleteJob;
  * Main entry point function.
  */
 function main() {
-    getClient().then((jobsClient) => {
-        assert(jobsClient, 'jobs instance not found.');
-        
-        companySample.createCompany(jobsClient, companySample.generateCompany()).then((companyInfo) => {
-            const companyName = companyInfo.name;
-            console.log('Company name:', companyName);
-            
-            let jobInfo = generateJob(companyName);
-            // Create job.
-            createJob(jobsClient, jobInfo).then((info) => {
-                const jobName = info.name;
-                console.log('Job name:', jobName);
-                
-                // Get job.
-                getJob(jobsClient, jobName).then((jobInfo) => {
-                    jobInfo.department = 'IT';
-                    jobInfo.description = 'Manage company network. Manage server infrastructure.';
-                    
-                    // Update job.
-                    updateJob(jobsClient, jobName, jobInfo).then((info) => {
-                        assert(jobInfo.department === info.department);
-                        assert(jobInfo.description === info.description);
+  getClient().then((jobsClient) => {
+    assert(jobsClient, 'jobs instance not found.');
 
-                        // Delete job.
-                        deleteJob(jobsClient, jobName);
-                    });
-                });
-            });
+    companySample.createCompany(jobsClient, companySample.generateCompany()).then((companyInfo) => {
+      const companyName = companyInfo.name;
+      console.log('Company name:', companyName);
+
+      let jobInfo = generateJob(companyName);
+      // Create job.
+      createJob(jobsClient, jobInfo).then((info) => {
+        const jobName = info.name;
+        console.log('Job name:', jobName);
+
+        // Get job.
+        getJob(jobsClient, jobName).then((jobInfo) => {
+          jobInfo.department = 'IT';
+          jobInfo.description = 'Manage company network. Manage server infrastructure.';
+
+          // Update job.
+          updateJob(jobsClient, jobName, jobInfo).then((info) => {
+            assert(jobInfo.department === info.department);
+            assert(jobInfo.description === info.description);
+
+            // Delete job.
+            deleteJob(jobsClient, jobName);
+          });
         });
+      });
     });
+  });
 }
 
 if (require.main === module) {
-    main();
+  main();
 }
 // [END basicJobSample]

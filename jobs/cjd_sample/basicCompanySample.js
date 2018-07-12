@@ -25,11 +25,11 @@ const getClient = require('./jobsClient.js').getClient;
  * @returns {Object} Object containing fields of 'Company' resource.
  */
 function generateCompany() {
-    return {
-        displayName: 'Google',
-        distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
-        hqLocation: '1600 Amphitheatre Parkway Mountain View, CA 94043'
-    };
+  return {
+    displayName: 'Google',
+    distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+    hqLocation: '1600 Amphitheatre Parkway Mountain View, CA 94043'
+  };
 }
 exports.generateCompany = generateCompany;
 // [END basic_company]
@@ -42,19 +42,21 @@ exports.generateCompany = generateCompany;
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function createCompany(client, companyInfo) {
-    assert(companyInfo, '\'companyInfo\' argument is required.');
-    // Check required fields.
-    assert(companyInfo.displayName, '\'displayName\' field is required.');
-    assert(companyInfo.distributorCompanyId, '\'distributorCompanyId\' field is required.');
+  assert(companyInfo, '\'companyInfo\' argument is required.');
+  // Check required fields.
+  assert(companyInfo.displayName, '\'displayName\' field is required.');
+  assert(companyInfo.distributorCompanyId, '\'distributorCompanyId\' field is required.');
 
-    return new Promise((resolve, reject) => {
-        client.companies.create({ resource: companyInfo }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            assert(response.data, '\'data\' field not populated in response.');
-            resolve(response.data);
-        });
-    });    
+  return new Promise((resolve, reject) => {
+    client.companies.create({
+      resource: companyInfo
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      assert(response.data, '\'data\' field not populated in response.');
+      resolve(response.data);
+    });
+  });
 }
 // [END create_company]
 exports.createCompany = createCompany;
@@ -67,14 +69,16 @@ exports.createCompany = createCompany;
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function getCompany(client, companyName) {
-    assert(companyName, 'companyName argument is required.');
-    return new Promise((resolve, reject) => {
-        client.companies.get({ name: companyName }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            resolve(response.data);
-        });
+  assert(companyName, 'companyName argument is required.');
+  return new Promise((resolve, reject) => {
+    client.companies.get({
+      name: companyName
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      resolve(response.data);
     });
+  });
 }
 // [END get_company]
 exports.getCompany = getCompany;
@@ -87,16 +91,19 @@ exports.getCompany = getCompany;
  * @param {*} companyInfo Object containing fields of 'Company' resource.
  */
 function updateCompany(client, companyName, companyInfo) {
-    assert(companyName, '\'companyName\' argument is required.');
-    assert(companyInfo, '\'companyInfo\' argument is required.');
+  assert(companyName, '\'companyName\' argument is required.');
+  assert(companyInfo, '\'companyInfo\' argument is required.');
 
-    return new Promise((resolve, reject) => {
-        client.companies.patch({ name: companyName, resource: companyInfo }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            resolve(response.data); 
-        });
+  return new Promise((resolve, reject) => {
+    client.companies.patch({
+      name: companyName,
+      resource: companyInfo
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      resolve(response.data);
     });
+  });
 }
 // [END update_company]
 exports.updateCompany = updateCompany;
@@ -108,14 +115,16 @@ exports.updateCompany = updateCompany;
  * @param {string} companyName Name of company (value of 'name' field).
  */
 function deleteCompany(client, companyName) {
-    assert(companyName, 'companyName argument is required.');
-    return new Promise((resolve, reject) => {
-        client.companies.delete({ name: companyName }, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            resolve(response.data);
-        });
+  assert(companyName, 'companyName argument is required.');
+  return new Promise((resolve, reject) => {
+    client.companies.delete({
+      name: companyName
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      resolve(response.data);
     });
+  });
 }
 // [END delete_company]
 exports.deleteCompany = deleteCompany;
@@ -124,37 +133,37 @@ exports.deleteCompany = deleteCompany;
  * Main entry point function.
  */
 function main() {
-    getClient().then((jobsClient) => {
-        assert(jobsClient, 'jobs instance not found.');
-        
-        let companyInfo = generateCompany();
-        // Create a company.
-        createCompany(jobsClient, companyInfo).then((info) => {
-            const companyName = info.name;
-            console.log('Company name:', companyName);
-            
-            // Get company.
-            getCompany(jobsClient, companyName).then((info) => {
-                // Set 'website' field.
-                companyInfo.website = 'https://www.foobar.com';
-                // Update company.
-                updateCompany(jobsClient, companyName, companyInfo).then((info) => {
-                    assert(companyInfo.website === info.website, '\'website\' field did not get added.');
-                    console.log(info);
+  getClient().then((jobsClient) => {
+      assert(jobsClient, 'jobs instance not found.');
 
-                    // Delete company.
-                    deleteCompany(jobsClient, companyName);
-                });
-            });
+      let companyInfo = generateCompany();
+      // Create a company.
+      createCompany(jobsClient, companyInfo).then((info) => {
+        const companyName = info.name;
+        console.log('Company name:', companyName);
+
+        // Get company.
+        getCompany(jobsClient, companyName).then((info) => {
+          // Set 'website' field.
+          companyInfo.website = 'https://www.foobar.com';
+          // Update company.
+          updateCompany(jobsClient, companyName, companyInfo).then((info) => {
+            assert(companyInfo.website === info.website, '\'website\' field did not get added.');
+            console.log(info);
+
+            // Delete company.
+            deleteCompany(jobsClient, companyName);
+          });
         });
+      });
     })
     .catch((err) => {
-        console.error(err);
-        throw err;
+      console.error(err);
+      throw err;
     });
 }
 
 if (require.main === module) {
-    main();
+  main();
 }
 // [END basicCompanySample]

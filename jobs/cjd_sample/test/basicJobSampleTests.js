@@ -32,49 +32,48 @@ const jobSample = require('../basicJobSample.js');
 const getClient = require('../jobsClient.js').getClient;
 
 describe('Job API', () => {
-    let companyInfo = {
-        displayName: 'Acme Inc',
-        distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
-        hqLocation: '1 Oak Street, Palo Alto, CA 94105'
-    };
-    let jobInfo;
+  let companyInfo = {
+    displayName: 'Acme Inc',
+    distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+    hqLocation: '1 Oak Street, Palo Alto, CA 94105'
+  };
+  let jobInfo;
 
-    // Client instance.
-    let client;
-    let companyName, jobName;
+  // Client instance.
+  let client;
+  let companyName, jobName;
 
-    it('can get client instance', () => {
-        return getClient().then((jobs) => {
-            client = jobs;
-        });
+  it('can get client instance', () => {
+    return getClient().then((jobs) => {
+      client = jobs;
     });
+  });
 
-    it('create a company', () => {
-        return companySample.createCompany(client, companyInfo).then((info) => {
-            companyName = info.name;
-            jobInfo = jobSample.generateJob(companyName);
-        });
+  it('create a company', () => {
+    return companySample.createCompany(client, companyInfo).then((info) => {
+      companyName = info.name;
+      jobInfo = jobSample.generateJob(companyName);
     });
-    
-    it('can create a job', () => {
-        return jobSample.createJob(client, jobInfo).then((info) => {
-            assert(jobInfo.jobTitle === info.jobTitle);
-            assert(jobInfo.description === info.description);
-            assert(companyName === info.companyName);
-            jobName = info.name;
-        });
-    });
-    
-    it('can get a job', () => {
-        return jobSample.getJob(client, jobName).then((info) => {
-            assert(jobInfo.displayName === info.displayName);
-            assert(companyName === info.companyName);
-            assert(jobName === info.name);
-        });
-    });
+  });
 
-    it('can delete a job', () => {
-        return jobSample.deleteJob(client, jobName);
+  it('can create a job', () => {
+    return jobSample.createJob(client, jobInfo).then((info) => {
+      assert(jobInfo.jobTitle === info.jobTitle);
+      assert(jobInfo.description === info.description);
+      assert(companyName === info.companyName);
+      jobName = info.name;
     });
+  });
+
+  it('can get a job', () => {
+    return jobSample.getJob(client, jobName).then((info) => {
+      assert(jobInfo.displayName === info.displayName);
+      assert(companyName === info.companyName);
+      assert(jobName === info.name);
+    });
+  });
+
+  it('can delete a job', () => {
+    return jobSample.deleteJob(client, jobName);
+  });
 });
-

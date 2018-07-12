@@ -29,27 +29,29 @@ const jobSample = require('./basicJobSample.js');
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
 function basicKeywordSearch(client, companyNames, query) {
-    const jobQuery = {
-        companyNames: companyNames,
-        query: query
-    };
-    const searchRequestMetadata = {
-        user_id: 'HashedUserId',
-        session_id: 'HashedSessionID',
-        domain: 'www.google.com'
-    };
-    
-    return new Promise((resolve, reject) => {
-        client.jobs.search({ resource: {
-            request_metadata: searchRequestMetadata,
-            query: jobQuery,
-            mode: 'JOB_SEARCH'
-        }}, {}, null).then((response) => {
-            assert(response.status === 200, 'Received response code: ' + response.status);
-            assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
-            resolve(response.data);
-        });
+  const jobQuery = {
+    companyNames: companyNames,
+    query: query
+  };
+  const searchRequestMetadata = {
+    user_id: 'HashedUserId',
+    session_id: 'HashedSessionID',
+    domain: 'www.google.com'
+  };
+
+  return new Promise((resolve, reject) => {
+    client.jobs.search({
+      resource: {
+        request_metadata: searchRequestMetadata,
+        query: jobQuery,
+        mode: 'JOB_SEARCH'
+      }
+    }, {}, null).then((response) => {
+      assert(response.status === 200, 'Received response code: ' + response.status);
+      assert(response.statusText === 'OK', 'Received status: ' + response.statusText);
+      resolve(response.data);
     });
+  });
 }
 exports.basicKeywordSearch = basicKeywordSearch;
 // [END basic_keyword_search]
@@ -58,26 +60,26 @@ exports.basicKeywordSearch = basicKeywordSearch;
  * Main entry point function.
  */
 function main() {
-    getClient().then((jobsClient) => {
-        assert(jobsClient, 'jobs instance not found.');
+  getClient().then((jobsClient) => {
+    assert(jobsClient, 'jobs instance not found.');
 
-        companySample.createCompany(jobsClient, companySample.generateCompany()).then((companyInfo) => {
-            const companyName = companyInfo.name;
-            console.log('Company name:', companyName);
-            
-            const jobInfo = jobSample.generateJob(companyName);
-            jobSample.createJob(jobsClient, jobInfo).then((info) => {
-                const jobName = info.name;
-                const query = 'System administrator';
-                basicKeywordSearch(jobsClient, [companyName], query).then((result) => {
-                    assert(result.spellResult.correctedText === 'System administrator');
-                });
-            });
+    companySample.createCompany(jobsClient, companySample.generateCompany()).then((companyInfo) => {
+      const companyName = companyInfo.name;
+      console.log('Company name:', companyName);
+
+      const jobInfo = jobSample.generateJob(companyName);
+      jobSample.createJob(jobsClient, jobInfo).then((info) => {
+        const jobName = info.name;
+        const query = 'System administrator';
+        basicKeywordSearch(jobsClient, [companyName], query).then((result) => {
+          assert(result.spellResult.correctedText === 'System administrator');
         });
+      });
     });
+  });
 }
 
 if (require.main === module) {
-    main();
+  main();
 }
 // [END generalSearchSample]

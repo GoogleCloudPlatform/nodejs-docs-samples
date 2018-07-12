@@ -69,11 +69,15 @@ function main() {
 
       const jobInfo = jobSample.generateJob(companyName);
       jobSample.createJob(jobsClient, jobInfo).then((info) => {
-        const jobName = info.name;
-        const query = 'System administrator';
-        basicKeywordSearch(jobsClient, [companyName], query).then((result) => {
-          assert(result.spellResult.correctedText === 'System administrator');
-        });
+        // Wait for 10 secs for job to get indexed.
+        setTimeout(() => {
+          const query = 'System administrator';
+          basicKeywordSearch(jobsClient, [companyName], query).then((result) => {
+            assert(result.spellResult.correctedText === query);
+            assert(result.matchingJobs.length === 1);
+            assert(result.matchingJobs[0].job.jobTitle === query);
+          });
+        }, 10 * 1000);
       });
     });
   });

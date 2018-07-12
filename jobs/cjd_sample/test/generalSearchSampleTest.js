@@ -66,12 +66,23 @@ describe('Search API', () => {
     });
   });
 
-  it('can search a job by keyword', () => {
-    const query = 'System administrator';
-    return generalSearchSample.basicKeywordSearch(client, [companyName], query).then((result) => {
-      assert(result.spellResult.correctedText === 'System administrator');
-      assert(result.metadata.mode === 'JOB_SEARCH');
-      assert(result.metadata.requestId);
-    });
+  it('wait for sometime for job to get indexed', () => {
+    return setTimeout(() => {
+      const query = 'System administrator';
+      return generalSearchSample(client, [companyName], query).then((result) => {
+        assert(result.spellResult.correctedText === query);
+        assert(result.matchingJobs.length === 1);
+        assert(result.matchingJobs[0].job.jobTitle === query);
+      });
+    }, 10 * 1000);
   });
+
+  // it('can search a job by keyword', () => {
+  //   const query = 'System administrator';
+  //   return generalSearchSample.basicKeywordSearch(client, [companyName], query).then((result) => {
+  //     assert(result.spellResult.correctedText === 'System administrator');
+  //     assert(result.metadata.mode === 'JOB_SEARCH');
+  //     assert(result.metadata.requestId);
+  //   });
+  // });
 });

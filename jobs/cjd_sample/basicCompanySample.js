@@ -14,6 +14,8 @@
  */
 'use strict';
 
+// [START basicCompanySample]
+
 const assert = require('assert');
 const getClient = require('./jobsClient.js').getClient;
 
@@ -155,3 +157,4 @@ function main() {
 if (require.main === module) {
     main();
 }
+// [END basicCompanySample]

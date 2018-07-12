@@ -14,8 +14,8 @@
  */
 
 'use strict';
-
 // [START quickstart]
+const assert = require('assert');
 // Imports the Google APIs client library
 const {google} = require('googleapis');
 
@@ -45,14 +45,21 @@ google.auth.getApplicationDefault((err, authClient) => {
       console.error(err);
       return;
     }
-
+    assert(result.status === 200, 'Received response code: ' + result.status);
+    assert(result.statusText === 'OK', 'Received status: ' + result.statusText);
+    
     const companies = result.data.companies || [];
 
     if (companies.length) {
       console.log('Companies:');
-      companies.forEach((company) => console.log(company));
+      companies.forEach((company) => {
+        assert(company.hasOwnProperty('name'), '\'name\' property not found.');
+        assert(company.hasOwnProperty('displayName'), '\'displayName\' property not found.');
+        assert(company.hasOwnProperty('distributorCompanyId'), '\'distributorCompanyId\' property not found.');
+        console.log(company);
+      });
     } else {
-      console.log(`No companies found.`);
+      console.log('No companies found.');
     }
   });
 });

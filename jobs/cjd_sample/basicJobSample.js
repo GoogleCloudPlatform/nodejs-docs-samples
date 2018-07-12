@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 'use strict';
+// [START basicJobSample]
 
 const assert = require('assert');
 const companySample = require('./basicCompanySample.js');
@@ -162,3 +163,4 @@ function main() {
 if (require.main === module) {
     main();
 }
+// [END basicJobSample]

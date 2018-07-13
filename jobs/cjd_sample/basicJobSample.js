@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018 Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 // [START basicJobSample]
 
 const assert = require('assert');
+const uuidv1 = require('uuid/v1');
 const companySample = require('./basicCompanySample.js');
 const getClient = require('./jobsClient.js').getClient;
 
@@ -28,7 +29,7 @@ const getClient = require('./jobsClient.js').getClient;
 function generateJob (companyName) {
   assert(companyName, '\'companyName\' argument is required.');
   return {
-    requisitionId: 'jobWithRequiredFields:' + Math.floor(Math.random() * 100000).toString(),
+    requisitionId: 'jobWithRequiredFields:' + uuidv1(),
     jobTitle: 'System administrator',
     description: 'Maintain IT network.',
     companyName: companyName,

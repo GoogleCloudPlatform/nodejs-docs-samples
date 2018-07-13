@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018 Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 'use strict';
 
+const uuidv1 = require('uuid/v1');
 const test = require('ava');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const companySample = require('../basicCompanySample.js');
@@ -26,7 +27,7 @@ test.afterEach.always(tools.restoreConsole);
 
 let companyInfo = {
   displayName: 'Acme Inc',
-  distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+  distributorCompanyId: 'company:' + uuidv1(),
   hqLocation: '1 Oak Street, Palo Alto, CA 94105'
 };
 let jobInfo;

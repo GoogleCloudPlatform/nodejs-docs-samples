@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018 Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,7 @@
 // [START basicCompanySample]
 
 const assert = require('assert');
+const uuidv1 = require('uuid/v1');
 const getClient = require('./jobsClient.js').getClient;
 
 // [START basic_company]
@@ -27,7 +28,7 @@ const getClient = require('./jobsClient.js').getClient;
 function generateCompany () {
   return {
     displayName: 'Google',
-    distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+    distributorCompanyId: 'company:' + uuidv1(),
     hqLocation: '1600 Amphitheatre Parkway Mountain View, CA 94043'
   };
 }

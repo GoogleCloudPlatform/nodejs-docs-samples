@@ -14,75 +14,62 @@
  */
 'use strict';
 
-/**
- * Unit tests for basicJobSample.js
- * DEPENDENCIES:
- * You need to install mocha to run this test.
- * npm install mocha
- * 
- * Before running test:
- * export GOOGLE_APPLICATION_CREDENTIALS=<path to credentials json file>
- * 
- * Run test:
- * <path to node_modules>/mocha/bin/mocha basicJobSampleTests.js
- */
-const assert = require('assert');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 const companySample = require('../basicCompanySample.js');
 const jobSample = require('../basicJobSample.js');
-const generalSearchSample = require('../generalSearchSample.js');
 const getClient = require('../jobsClient.js').getClient;
+const generalSearchSample = require('../generalSearchSample.js');
 
-describe('Search API', () => {
-  let companyInfo = {
-    displayName: 'Acme Inc',
-    distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
-    hqLocation: '1 Oak Street, Palo Alto, CA 94105'
-  };
-  let jobInfo;
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
-  // Client instance.
-  let client;
-  let companyName, jobName;
+let companyInfo = {
+  displayName: 'Acme Inc',
+  distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+  hqLocation: '1 Oak Street, Palo Alto, CA 94105'
+};
+let jobInfo;
+let client;
+let companyName;
 
-  it('can get client instance', () => {
-    return getClient().then((jobs) => {
-      client = jobs;
+test.serial('create client', (t) => {
+  return getClient().then((jobs) => {
+    client = jobs;
+    t.truthy(client);
+  });
+});
+
+test.serial('create a company', (t) => {
+  return companySample.createCompany(client, companyInfo).then((info) => {
+    t.is(info.displayName, companyInfo.displayName);
+    t.is(info.displayName, companyInfo.displayName);
+    t.is(info.hqLocation, companyInfo.hqLocation);
+    companyName = info.name;
+    t.truthy(companyName);
+    jobInfo = jobSample.generateJob(companyName);
+    t.truthy(jobInfo);
+  });
+});
+
+test.serial('create a job', (t) => {
+  t.truthy(jobInfo);
+  return jobSample.createJob(client, jobInfo).then((info) => {
+    t.is(info.jobTitle, jobInfo.jobTitle);
+    t.is(info.jobTitle, jobInfo.jobTitle);
+    t.is(info.companyName, companyName);
+  });
+});
+
+test.serial('search a job', (t) => {
+  t.truthy(companyName);
+  setTimeout(() => {
+    const query = 'System administrator';
+    return generalSearchSample.basicKeywordSearch(client, [companyName], query).then((result) => {
+      t.is(result.spellResult.correctedText, query);
+      t.is(result.metadata.mode, 'JOB_SEARCH');
+      t.is(result.matchingJobs.length, 1);
+      t.is(result.matchingJobs[0].job.jobTitle, query);
     });
-  });
-
-  it('create a company', () => {
-    return companySample.createCompany(client, companyInfo).then((info) => {
-      companyName = info.name;
-      jobInfo = jobSample.generateJob(companyName);
-    });
-  });
-
-  it('create a job', () => {
-    return jobSample.createJob(client, jobInfo).then((info) => {
-      assert(jobInfo.jobTitle === info.jobTitle);
-      assert(jobInfo.description === info.description);
-      assert(companyName === info.companyName);
-      jobName = info.name;
-    });
-  });
-
-  it('wait for sometime for job to get indexed', () => {
-    return setTimeout(() => {
-      const query = 'System administrator';
-      return generalSearchSample(client, [companyName], query).then((result) => {
-        assert(result.spellResult.correctedText === query);
-        assert(result.matchingJobs.length === 1);
-        assert(result.matchingJobs[0].job.jobTitle === query);
-      });
-    }, 10 * 1000);
-  });
-
-  // it('can search a job by keyword', () => {
-  //   const query = 'System administrator';
-  //   return generalSearchSample.basicKeywordSearch(client, [companyName], query).then((result) => {
-  //     assert(result.spellResult.correctedText === 'System administrator');
-  //     assert(result.metadata.mode === 'JOB_SEARCH');
-  //     assert(result.metadata.requestId);
-  //   });
-  // });
+  }, 10 * 1000);
 });

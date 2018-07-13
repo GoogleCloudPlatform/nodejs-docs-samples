@@ -34,14 +34,14 @@
     "pretest": "npm run lint && node ./scripts/clean coverage",
     "unit-cover": "nyc --cache npm test && nyc report --reporter=html",
     "system-cover": "nyc --cache npm run system-test && nyc report --reporter=html",
-    "test": "npm run unit-test && npm run system-test",
+    "test": "npm run unit-test && npm run system-test && ava",
     "cover": "nyc --cache npm run test && nyc report --reporter=html",
     "update-dependencies": "./scripts/update-dependencies.sh"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.0",
     "@google-cloud/storage": "1.6.0",
-    "ava": "0.25.0",
+    "ava": "1.0.0-beta.6",
     "nyc": "11.6.0",
     "semistandard": "^12.0.1",
     "shelljs": "0.8.1"

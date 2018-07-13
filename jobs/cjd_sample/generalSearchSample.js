@@ -28,7 +28,7 @@ const jobSample = require('./basicJobSample.js');
  * @param {string} query Search query.
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
-function basicKeywordSearch(client, companyNames, query) {
+function basicKeywordSearch (client, companyNames, query) {
   const jobQuery = {
     companyNames: companyNames,
     query: query
@@ -59,7 +59,7 @@ exports.basicKeywordSearch = basicKeywordSearch;
 /**
  * Main entry point function.
  */
-function main() {
+function main () {
   getClient().then((jobsClient) => {
     assert(jobsClient, 'jobs instance not found.');
 

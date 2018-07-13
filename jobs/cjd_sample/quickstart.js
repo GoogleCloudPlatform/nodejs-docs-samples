@@ -25,13 +25,13 @@ const {
 google.auth.getApplicationDefault((err, authClient) => {
   if (err) {
     console.error('Failed to acquire credentials');
-    console.error(err)
+    console.error(err);
     return;
   }
 
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
     authClient = authClient.createScoped([
-      "https://www.googleapis.com/auth/jobs"
+      'https://www.googleapis.com/auth/jobs'
     ]);
   }
 

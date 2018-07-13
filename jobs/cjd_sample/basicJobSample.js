@@ -25,7 +25,7 @@ const getClient = require('./jobsClient.js').getClient;
  * @param {string} companyName Name of company (value of 'name' field).
  * @returns {Object} Object containing fields of 'Job' resource.
  */
-function generateJob(companyName) {
+function generateJob (companyName) {
   assert(companyName, '\'companyName\' argument is required.');
   return {
     requisitionId: 'jobWithRequiredFields:' + Math.floor(Math.random() * 100000).toString(),
@@ -45,7 +45,7 @@ exports.generateJob = generateJob;
  * @param {Object} jobInfo Object containing fields of 'Job' resource.
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
-function createJob(client, jobInfo) {
+function createJob (client, jobInfo) {
   assert(jobInfo, '\'jobInfo\' argument is required.');
 
   return new Promise((resolve, reject) => {
@@ -71,7 +71,7 @@ exports.createJob = createJob;
  * @param {string} jobName Job name.
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
-function getJob(client, jobName) {
+function getJob (client, jobName) {
   assert(jobName, '\'jobName\' argument is required.');
 
   return new Promise((resolve, reject) => {
@@ -95,7 +95,7 @@ exports.getJob = getJob;
  * @param {Object} jobInfo Object containing fields of 'Job' resource.
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
-function updateJob(client, jobName, jobInfo) {
+function updateJob (client, jobName, jobInfo) {
   assert(jobName, '\'jobName\' argument is required.');
   assert(jobInfo, '\'jobInfo\' argument is required.');
 
@@ -122,7 +122,7 @@ exports.updateJob = updateJob;
  * @param {string} jobName Job name.
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
-function deleteJob(client, jobName) {
+function deleteJob (client, jobName) {
   assert(jobName, '\'jobName\' argument is required.');
   return new Promise((resolve, reject) => {
     client.jobs.delete({
@@ -140,7 +140,7 @@ exports.deleteJob = deleteJob;
 /**
  * Main entry point function.
  */
-function main() {
+function main () {
   getClient().then((jobsClient) => {
     assert(jobsClient, 'jobs instance not found.');
 

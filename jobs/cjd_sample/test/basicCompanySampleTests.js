@@ -14,62 +14,56 @@
  */
 'use strict';
 
-/**
- * Unit tests for basicCompanySample.js
- * DEPENDENCIES:
- * You need to install mocha to run this test.
- * npm install mocha
- * 
- * Before running test:
- * export GOOGLE_APPLICATION_CREDENTIALS=<path to credentials json file>
- * 
- * Run test:
- * <path to node_modules>/mocha/bin/mocha basicCompanySampleTests.js
- */
-const assert = require('assert');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 const companySample = require('../basicCompanySample.js');
 const getClient = require('../jobsClient.js').getClient;
 
-describe('Company API', () => {
-  let companyInfo = {
-    displayName: 'Acme Inc',
-    distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
-    hqLocation: '1 Oak Street, Palo Alto, CA 94105'
-  };
-  // Client instance.
-  let client;
-  let companyName;
-  it('can get client instance', () => {
-    return getClient().then((jobs) => {
-      client = jobs;
-    });
-  });
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
-  it('can create a company', () => {
-    return companySample.createCompany(client, companyInfo).then((info) => {
-      assert(companyInfo.displayName === info.displayName);
-      assert(companyInfo.distributorCompanyId === info.distributorCompanyId);
-      assert(companyInfo.hqLocation === info.hqLocation);
-      companyName = info.name;
-    });
-  });
+let client;
+let companyName;
+let companyInfo = {
+  displayName: 'Acme Inc',
+  distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+  hqLocation: '1 Oak Street, Palo Alto, CA 94020'
+};
 
-  it('can get a company', () => {
-    return companySample.getCompany(client, companyName).then((info) => {
-      assert(companyName === info.name);
-    });
+test.serial('create client', (t) => {
+  return getClient().then((jobs) => {
+    client = jobs;
+    t.truthy(client);
   });
+});
 
-  it('can update a company', () => {
-    companyInfo.companySize = 'SMALL';
-    companyInfo.website = 'https://www.testabc.com';
-    return companySample.updateCompany(client, companyName, companyInfo).then((info) => {
-      assert(companyInfo.companySize === info.companySize);
-      assert(companyInfo.website === info.website);
-    });
+test.serial('create a company', (t) => {
+  return companySample.createCompany(client, companyInfo).then((info) => {
+    t.is(info.displayName, companyInfo.displayName);
+    t.is(info.displayName, companyInfo.displayName);
+    t.is(info.hqLocation, companyInfo.hqLocation);
+    companyName = info.name;
+    t.truthy(companyName);
   });
+});
 
-  it('can delete a company', () => {
-    return companySample.deleteCompany(client, companyName);
+test.serial('get a company', (t) => {
+  return companySample.getCompany(client, companyName).then((info) => {
+    t.is(info.name, companyName);
+  });
+});
+
+test.serial('update a company', (t) => {
+  companyInfo.companySize = 'SMALL';
+  companyInfo.website = 'https://www.testabc.com';
+  return companySample.updateCompany(client, companyName, companyInfo).then((info) => {
+    t.is(info.companySize, companyInfo.companySize);
+    t.is(info.website, companyInfo.website);
+  });
+});
+
+test.serial('delete a company', (t) => {
+  return companySample.deleteCompany(client, companyName).then((info) => {
+    t.truthy(companyName);
   });
 });

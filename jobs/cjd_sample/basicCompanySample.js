@@ -24,7 +24,7 @@ const getClient = require('./jobsClient.js').getClient;
  * Generate data for a company.
  * @returns {Object} Object containing fields of 'Company' resource.
  */
-function generateCompany() {
+function generateCompany () {
   return {
     displayName: 'Google',
     distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
@@ -41,7 +41,7 @@ exports.generateCompany = generateCompany;
  * @param {Object} companyInfo Object containing fields of 'Company' resource.
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
-function createCompany(client, companyInfo) {
+function createCompany (client, companyInfo) {
   assert(companyInfo, '\'companyInfo\' argument is required.');
   // Check required fields.
   assert(companyInfo.displayName, '\'displayName\' field is required.');
@@ -68,7 +68,7 @@ exports.createCompany = createCompany;
  * @param {string} companyName Name of company (value of 'name' field).
  * @returns {Promise.Object} Promise containing 'data' field of response.
  */
-function getCompany(client, companyName) {
+function getCompany (client, companyName) {
   assert(companyName, 'companyName argument is required.');
   return new Promise((resolve, reject) => {
     client.companies.get({
@@ -90,7 +90,7 @@ exports.getCompany = getCompany;
  * @param {string} companyName Name of company (value of 'name' field).
  * @param {*} companyInfo Object containing fields of 'Company' resource.
  */
-function updateCompany(client, companyName, companyInfo) {
+function updateCompany (client, companyName, companyInfo) {
   assert(companyName, '\'companyName\' argument is required.');
   assert(companyInfo, '\'companyInfo\' argument is required.');
 
@@ -114,7 +114,7 @@ exports.updateCompany = updateCompany;
  * @param {Object} client Instance of google.jobs module.
  * @param {string} companyName Name of company (value of 'name' field).
  */
-function deleteCompany(client, companyName) {
+function deleteCompany (client, companyName) {
   assert(companyName, 'companyName argument is required.');
   return new Promise((resolve, reject) => {
     client.companies.delete({
@@ -132,35 +132,34 @@ exports.deleteCompany = deleteCompany;
 /**
  * Main entry point function.
  */
-function main() {
+function main () {
   getClient().then((jobsClient) => {
-      assert(jobsClient, 'jobs instance not found.');
+    assert(jobsClient, 'jobs instance not found.');
 
-      let companyInfo = generateCompany();
-      // Create a company.
-      createCompany(jobsClient, companyInfo).then((info) => {
-        const companyName = info.name;
-        console.log('Company name:', companyName);
+    let companyInfo = generateCompany();
+    // Create a company.
+    createCompany(jobsClient, companyInfo).then((info) => {
+      const companyName = info.name;
+      console.log('Company name:', companyName);
 
-        // Get company.
-        getCompany(jobsClient, companyName).then((info) => {
-          // Set 'website' field.
-          companyInfo.website = 'https://www.foobar.com';
-          // Update company.
-          updateCompany(jobsClient, companyName, companyInfo).then((info) => {
-            assert(companyInfo.website === info.website, '\'website\' field did not get added.');
-            console.log(info);
+      // Get company.
+      getCompany(jobsClient, companyName).then((info) => {
+        // Set 'website' field.
+        companyInfo.website = 'https://www.foobar.com';
+        // Update company.
+        updateCompany(jobsClient, companyName, companyInfo).then((info) => {
+          assert(companyInfo.website === info.website, '\'website\' field did not get added.');
+          console.log(info);
 
-            // Delete company.
-            deleteCompany(jobsClient, companyName);
-          });
+          // Delete company.
+          deleteCompany(jobsClient, companyName);
         });
       });
-    })
-    .catch((err) => {
-      console.error(err);
-      throw err;
     });
+  }).catch((err) => {
+    console.error(err);
+    throw err;
+  });
 }
 
 if (require.main === module) {

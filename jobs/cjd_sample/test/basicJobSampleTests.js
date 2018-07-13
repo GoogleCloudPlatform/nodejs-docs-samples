@@ -14,66 +14,63 @@
  */
 'use strict';
 
-/**
- * Unit tests for basicJobSample.js
- * DEPENDENCIES:
- * You need to install mocha to run this test.
- * npm install mocha
- * 
- * Before running test:
- * export GOOGLE_APPLICATION_CREDENTIALS=<path to credentials json file>
- * 
- * Run test:
- * <path to node_modules>/mocha/bin/mocha basicJobSampleTests.js
- */
-const assert = require('assert');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 const companySample = require('../basicCompanySample.js');
 const jobSample = require('../basicJobSample.js');
 const getClient = require('../jobsClient.js').getClient;
 
-describe('Job API', () => {
-  let companyInfo = {
-    displayName: 'Acme Inc',
-    distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
-    hqLocation: '1 Oak Street, Palo Alto, CA 94105'
-  };
-  let jobInfo;
+test.beforeEach(tools.stubConsole);
+test.afterEach.always(tools.restoreConsole);
 
-  // Client instance.
-  let client;
-  let companyName, jobName;
+let companyInfo = {
+  displayName: 'Acme Inc',
+  distributorCompanyId: 'company:' + Math.floor(Math.random() * 100000).toString(),
+  hqLocation: '1 Oak Street, Palo Alto, CA 94105'
+};
+let jobInfo;
+let client;
+let companyName, jobName;
 
-  it('can get client instance', () => {
-    return getClient().then((jobs) => {
-      client = jobs;
-    });
+test.serial('create client', (t) => {
+  return getClient().then((jobs) => {
+    client = jobs;
+    t.truthy(client);
   });
+});
 
-  it('create a company', () => {
-    return companySample.createCompany(client, companyInfo).then((info) => {
-      companyName = info.name;
-      jobInfo = jobSample.generateJob(companyName);
-    });
+test.serial('create a company', (t) => {
+  return companySample.createCompany(client, companyInfo).then((info) => {
+    t.is(info.displayName, companyInfo.displayName);
+    t.is(info.displayName, companyInfo.displayName);
+    t.is(info.hqLocation, companyInfo.hqLocation);
+    companyName = info.name;
+    t.truthy(companyName);
+    jobInfo = jobSample.generateJob(companyName);
+    t.truthy(jobInfo);
   });
+});
 
-  it('can create a job', () => {
-    return jobSample.createJob(client, jobInfo).then((info) => {
-      assert(jobInfo.jobTitle === info.jobTitle);
-      assert(jobInfo.description === info.description);
-      assert(companyName === info.companyName);
-      jobName = info.name;
-    });
+test.serial('create a job', (t) => {
+  t.truthy(jobInfo);
+  return jobSample.createJob(client, jobInfo).then((info) => {
+    t.is(info.jobTitle, jobInfo.jobTitle);
+    t.is(info.jobTitle, jobInfo.jobTitle);
+    t.is(info.companyName, companyName);
+    jobName = info.name;
   });
+});
 
-  it('can get a job', () => {
-    return jobSample.getJob(client, jobName).then((info) => {
-      assert(jobInfo.displayName === info.displayName);
-      assert(companyName === info.companyName);
-      assert(jobName === info.name);
-    });
+test.serial('get a job', (t) => {
+  return jobSample.getJob(client, jobName).then((info) => {
+    t.is(info.displayName, jobInfo.displayName);
+    t.is(info.companyName, companyName);
+    t.is(info.name, jobName);
   });
+});
 
-  it('can delete a job', () => {
-    return jobSample.deleteJob(client, jobName);
+test.serial('delete a job', (t) => {
+  return jobSample.deleteJob(client, jobName).then((info) => {
+    t.truthy(jobName);
   });
 });

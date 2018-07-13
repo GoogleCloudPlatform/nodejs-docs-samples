@@ -47,7 +47,7 @@ google.auth.getApplicationDefault((err, authClient) => {
       return;
     }
 
-    console.log('Request ID: ' + result.data.metadata.requestId);
+    console.log(`Request ID: ${result.data.metadata.requestId}`);
 
     const companies = result.data.companies || [];
 

@@ -65,11 +65,12 @@ exports.helloBackground = (data) => {
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} data The Cloud Functions event payload.
+ * @param {object} context The Cloud Functions metadata.
  */
-exports.helloPubSub = (event) => {
-  const pubsubMessage = event.data;
-  const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
+exports.helloPubSub = (data, context) => {
+  const pubsubMessage = data;
+  const name = pubsubMessage ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
 
   console.log(`Hello, ${name}!`);
 };

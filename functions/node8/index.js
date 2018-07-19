@@ -52,7 +52,7 @@ exports.retryPromise = (data, context) => {
 /**
  * Background Cloud Function.
  *
- * @param {object} event Data passed to the Cloud Function.
+ * @param {object} data Data passed to the Cloud Function.
  */
 exports.helloBackground = (data) => {
   return `Hello ${data.name || 'World'}!`;
@@ -98,7 +98,8 @@ exports.helloGCS = (file) => {
 /**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} file The Cloud Functions event.
+ * @param {object} context The Cloud Functions event metadata.
  */
 exports.helloGCSGeneric = (file, context) => {
   console.log(`  Event ${context.eventId}`);

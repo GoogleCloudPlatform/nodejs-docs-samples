@@ -68,9 +68,8 @@ exports.helloBackground = (data) => {
  * @param {object} data The Cloud Functions event payload.
  * @param {object} context The Cloud Functions metadata.
  */
-exports.helloPubSub = (data, context) => {
-  const pubsubMessage = data;
-  const name = pubsubMessage ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
+exports.helloPubSub = (pubsubMessage) => {
+  const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
 
   console.log(`Hello, ${name}!`);
 };

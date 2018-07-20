@@ -75,8 +75,8 @@ exports.helloBackground = (data) => {
  * @param {object} data The Cloud Functions event payload.
  * @param {object} context The Cloud Functions metadata.
  */
-exports.helloPubSub = (pubsubMessage) => {
-  const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
+exports.helloPubSub = (data) => {
+  const name = data.data ? Buffer.from(data.data, 'base64').toString() : 'World';
 
   console.log(`Hello, ${name}!`);
 };
@@ -86,17 +86,17 @@ exports.helloPubSub = (pubsubMessage) => {
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} file The Cloud Functions event payload.
+ * @param {object} data The Cloud Functions event payload.
  */
-exports.helloGCS = (file) => {
-  if (file.resourceState === 'not_exists') {
-    console.log(`File ${file.name} deleted.`);
-  } else if (file.metageneration === '1') {
+exports.helloGCS = (data) => {
+  if (data.resourceState === 'not_exists') {
+    console.log(`File ${data.name} deleted.`);
+  } else if (data.metageneration === '1') {
     // metageneration attribute is updated on metadata changes.
     // on create value is 1
-    console.log(`File ${file.name} uploaded.`);
+    console.log(`File ${data.name} uploaded.`);
   } else {
-    console.log(`File ${file.name} metadata updated.`);
+    console.log(`File ${data.name} metadata updated.`);
   }
 };
 // [END functions_helloworld_storage_node8]
@@ -105,16 +105,16 @@ exports.helloGCS = (file) => {
 /**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} file The Cloud Functions event payload.
+ * @param {object} data The Cloud Functions event payload.
  * @param {object} context The Cloud Functions event metadata.
  */
-exports.helloGCSGeneric = (file, context) => {
+exports.helloGCSGeneric = (data, context) => {
   console.log(`  Event ${context.eventId}`);
   console.log(`  Event Type: ${context.eventType}`);
-  console.log(`  Bucket: ${file.bucket}`);
-  console.log(`  File: ${file.name}`);
-  console.log(`  Metageneration: ${file.metageneration}`);
-  console.log(`  Created: ${file.timeCreated}`);
-  console.log(`  Updated: ${file.updated}`);
+  console.log(`  Bucket: ${data.bucket}`);
+  console.log(`  File: ${data.name}`);
+  console.log(`  Metageneration: ${data.metageneration}`);
+  console.log(`  Created: ${data.timeCreated}`);
+  console.log(`  Updated: ${data.updated}`);
 };
 // [END functions_helloworld_storage_generic_node8]

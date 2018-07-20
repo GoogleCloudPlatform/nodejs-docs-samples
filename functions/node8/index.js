@@ -15,10 +15,10 @@
 
 // [START functions_tips_infinite_retries_node8]
 /**
- * Background Cloud Function that only executes within
- * a certain time period after the triggering event
+ * Background Cloud Function that only executes within a certain time
+ * period after the triggering event to avoid infinite retry loops.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} event The Cloud Functions event payload.
  * @param {function} context Information about the event.
  */
 exports.avoidInfiniteRetries = (data, context) => {

@@ -1,9 +1,16 @@
 /**
- * Background Cloud Function that only executes within
- * a certain time period after the triggering event
+ * Copyright 2018, Google LLC.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 // [START functions_tips_infinite_retries_node8]
@@ -31,11 +38,11 @@ exports.avoidInfiniteRetries = (data, context) => {
 
 // [START functions_tips_retry_node8]
 /**
- * Background Cloud Function that only executes within
- * a certain time period after the triggering event
+ * Background Cloud Function that demonstrates
+ * how to toggle retries using a promise
  *
- * @param {object} event The Cloud Functions event.
- * @param {function} context Information about the event.
+ * @param {object} data The Cloud Functions event payload.
+ * @param {function} context The Cloud Functions metadata.
  */
 exports.retryPromise = (data, context) => {
   const tryAgain = !!data.retry;
@@ -79,7 +86,7 @@ exports.helloPubSub = (pubsubMessage) => {
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} file The Cloud Functions event.
+ * @param {object} file The Cloud Functions event payload.
  */
 exports.helloGCS = (file) => {
   if (file.resourceState === 'not_exists') {
@@ -98,7 +105,7 @@ exports.helloGCS = (file) => {
 /**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} file The Cloud Functions event.
+ * @param {object} file The Cloud Functions event payload.
  * @param {object} context The Cloud Functions event metadata.
  */
 exports.helloGCSGeneric = (file, context) => {

@@ -59,9 +59,10 @@ exports.retryPromise = (data, context) => {
 /**
  * Background Cloud Function.
  *
- * @param {object} data Data passed to the Cloud Function.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloBackground = (data) => {
+exports.helloBackground = (data, context) => {
   return `Hello ${data.name || 'World'}!`;
 };
 // [END functions_helloworld_background_node8]
@@ -76,10 +77,10 @@ exports.helloBackground = (data) => {
  * @param {object} context The event metadata.
  */
 exports.helloPubSub = (data, context) => {
-    const pubSubMessage = data;
-    const name = pubSubMessage.data ? Buffer.from(pubSubMessage.data, 'base64').toString() : 'World';
-  
-    console.log(`Hello, ${name}!`);
+  const pubSubMessage = data;
+  const name = pubSubMessage.data ? Buffer.from(pubSubMessage.data, 'base64').toString() : 'World';
+
+  console.log(`Hello, ${name}!`);
 };
 // [END functions_helloworld_pubsub_node8]
 

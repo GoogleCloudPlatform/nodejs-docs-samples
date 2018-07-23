@@ -162,7 +162,7 @@ exports.helloError2 = (event, callback) => {
  */
 /* eslint-disable */
 exports.helloError3 = (event, callback) => {
-  // This will NOT be reported to Stackdriver errors
+  // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   callback('I failed you');
   // [END functions_helloworld_error]
@@ -176,7 +176,7 @@ exports.helloError3 = (event, callback) => {
  * @param {Object} res Cloud Function response context.
  */
 exports.helloError4 = (req, res) => {
-  // This will NOT be reported to Stackdriver errors
+  // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   res.status(500).send('I failed you');
   // [END functions_helloworld_error]

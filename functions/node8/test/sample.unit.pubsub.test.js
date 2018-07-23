@@ -22,7 +22,6 @@ const helloPubSub = require(`..`).helloPubSub;
 const consoleLog = sinon.stub(console, 'log');
 
 test(`helloPubSub: should print a name`, async t => {
-
   // Initialize mocks
   const name = uuid.v4();
   const event = {
@@ -35,7 +34,6 @@ test(`helloPubSub: should print a name`, async t => {
 });
 
 test(`helloPubSub: should print hello world`, async t => {
-
   // Initialize mocks
   const event = {};
 

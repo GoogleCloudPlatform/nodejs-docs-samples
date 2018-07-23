@@ -22,7 +22,6 @@ const helloGCS = require(`..`).helloGCS;
 const consoleLog = sinon.stub(console, 'log');
 
 test(`helloGCS: should print uploaded message`, async t => {
-
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -37,7 +36,6 @@ test(`helloGCS: should print uploaded message`, async t => {
 });
 
 test(`helloGCS: should print metadata updated message`, async t => {
-
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -52,7 +50,6 @@ test(`helloGCS: should print metadata updated message`, async t => {
 });
 
 test(`helloGCS: should print deleted message`, async t => {
-
   // Initialize mocks
   const filename = uuid.v4();
   const event = {

@@ -1,16 +1,16 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Prediction API Node.js Samples
+# Google Cloud Job Discovery API Samples
 
-[![Build](https://storage.googleapis.com/cloud-docs-samples-badges/GoogleCloudPlatform/nodejs-docs-samples/nodejs-docs-samples-prediction.svg)]()
-
-The [Cloud Prediction API](https://cloud.google.com/prediction/docs) provides a RESTful API to build Machine Learning models.
+Cloud Job Discovery is part of Google for Jobs - a Google-wide commitment to help
+people find jobs more easily. Job Discovery provides plug and play access to 
+Google’s search and machine learning capabilities, enabling the entire recruiting
+ecosystem - company career sites, job boards, applicant tracking systems, and
+staffing agencies to improve job site engagement and candidate conversion.
 
 ## Table of Contents
 
 * [Setup](#setup)
-* [Samples](#samples)
-  * [Hosted Models](#hosted-models)
 * [Running the tests](#running-the-tests)
 
 ## Setup
@@ -28,21 +28,6 @@ The [Cloud Prediction API](https://cloud.google.com/prediction/docs) provides a 
 
 [prereq]: ../README.md#prerequisites
 [run]: ../README.md#how-to-run-a-sample
-
-## Samples
-
-### Hosted Models
-
-View the [documentation][hostedmodels_0_docs] or the [source code][hostedmodels_0_code].
-
-__Usage:__ `node hostedmodels <phrase>`
-
-```
-node hostedmodels "Hello world"
-```
-
-[hostedmodels_0_docs]: https://cloud.google.com/prediction/docs/developer-guide#predictionfromappengine
-[hostedmodels_0_code]: hostedmodels.js
 
 ## Running the tests
 

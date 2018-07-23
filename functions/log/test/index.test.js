@@ -57,14 +57,14 @@ test.afterEach.always(tools.restoreConsole);
 
 test.serial(`should write to log`, (t) => {
   const expectedMsg = `I am a log entry!`;
-  const callback = sinon.stub();
+  const res = { end: sinon.stub() };
 
-  getSample().program.helloWorld({}, callback);
+  getSample().program.helloWorld({}, res);
 
   t.is(console.log.callCount, 1);
   t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.is(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
+  t.is(res.end.callCount, 1);
+  t.deepEqual(res.end.firstCall.args, []);
 });
 
 test.serial(`getLogEntries: should retrieve logs`, (t) => {

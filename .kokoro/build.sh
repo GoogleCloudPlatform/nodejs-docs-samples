@@ -13,23 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+      
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
-
 export NODE_ENV=development
-export GAE_VERSION=appengine-datastore-flexible
 
-# Register post-test cleanup
-function cleanup {
-  gcloud app versions delete $GAE_VERSION --quiet
-  if [ -e "worker.yaml" ]; then
-    gcloud app versions delete ${GAE_VERSION}-worker --quiet
-  fi
-}
-trap cleanup EXIT
-set -e;
-
-cd github/nodejs-docs-samples/appengine/datastore
+cd github/nodejs-docs-samples/${PROJECT}
 
 # Install dependencies
 npm install
@@ -39,15 +27,6 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
-
-# Deploy the app
-gcloud app deploy app.flexible.yaml --version $GAE_VERSION --no-promote --quiet
-if [ -e "worker.yaml" ]; then
-  gcloud app deploy worker.yaml --version ${GAE_VERSION}-worker --no-promote --quiet
-fi
-
-
-# Test the deployed app
 npm test
 
 exit $?

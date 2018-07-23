@@ -39,8 +39,6 @@ const client = redis.createClient(
 
 // Create a simple little server.
 http.createServer((req, res) => {
-  client.on('error', (err) => console.log('Error', err));
-
   // Track every IP that has visited this site
   const listName = 'IPs';
   client.lpush(listName, req.connection.remoteAddress);

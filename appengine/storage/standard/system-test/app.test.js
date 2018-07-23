@@ -36,6 +36,7 @@ test.before(async () => {
 });
 test.after.always(async () => {
   try {
+    await bucket.deleteFiles();
     await bucket.delete();
   } catch (err) {} // ignore error
 });

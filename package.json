@@ -2,31 +2,17 @@
   "name": "nodejs-docs-samples",
   "description": "Node.js samples found on https://cloud.google.com",
   "version": "0.0.1",
-  "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",
-  "contributors": [
-    {
-      "name": "Ace Nassri",
-      "email": "anassri@google.com"
-    },
-    {
-      "name": "Jerjou",
-      "email": "jerjou@google.com"
-    },
-    {
-      "name": "Jason Dobry",
-      "email": "jason.dobry@gmail.com"
-    },
-    {
-      "name": "Jon Wayne Parrott",
-      "email": "jonwayne@google.com"
-    }
-  ],
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
+  "main": "src/index.js",
+  "private": true,
   "semistandard": {
     "globals": [
       "rm",
@@ -53,7 +39,7 @@
     "update-dependencies": "./scripts/update-dependencies.sh"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.5",
+    "@google-cloud/nodejs-repo-tools": "^2.3.0",
     "@google-cloud/storage": "1.6.0",
     "ava": "0.25.0",
     "nyc": "11.6.0",

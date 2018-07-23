@@ -3,8 +3,11 @@
   "version": "0.0.1",
   "description": "Google Cloud Functions samples for Node.js 8",
   "scripts": {
+    "test": "ava test/*"
   },
-  "engines": { "node": "^8"},
+  "engines": {
+    "node": "^8"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
@@ -13,5 +16,8 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues"
+  },
+  "dependencies": {
+    "ava": "^0.25.0"
   }
 }

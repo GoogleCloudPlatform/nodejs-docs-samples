@@ -108,7 +108,7 @@ exports.helloGCS = (event, callback) => {
 exports.helloGCSGeneric = (event, callback) => {
   const file = event.data;
 
-  console.log(`  Event ${event.eventId}`);
+  console.log(`  Event: ${event.eventId}`);
   console.log(`  Event Type: ${event.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
   console.log(`  File: ${file.name}`);

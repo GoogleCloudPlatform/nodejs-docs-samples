@@ -18,8 +18,8 @@
  * Background Cloud Function that only executes within a certain time
  * period after the triggering event to avoid infinite retry loops.
  *
- * @param {object} event The Cloud Functions event payload.
- * @param {function} context Information about the event.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
 exports.avoidInfiniteRetries = (data, context) => {
   const eventAge = Date.now() - Date.parse(context.timestamp);
@@ -41,8 +41,8 @@ exports.avoidInfiniteRetries = (data, context) => {
  * Background Cloud Function that demonstrates
  * how to toggle retries using a promise
  *
- * @param {object} data The Cloud Functions event payload.
- * @param {function} context The Cloud Functions metadata.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
 exports.retryPromise = (data, context) => {
   const tryAgain = !!data.retry;
@@ -59,9 +59,10 @@ exports.retryPromise = (data, context) => {
 /**
  * Background Cloud Function.
  *
- * @param {object} data Data passed to the Cloud Function.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloBackground = (data) => {
+exports.helloBackground = (data, context) => {
   return `Hello ${data.name || 'World'}!`;
 };
 // [END functions_helloworld_background_node8]
@@ -72,11 +73,12 @@ exports.helloBackground = (data) => {
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} data The Cloud Functions event payload.
- * @param {object} context The Cloud Functions metadata.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloPubSub = (data) => {
-  const name = data.data ? Buffer.from(data.data, 'base64').toString() : 'World';
+exports.helloPubSub = (data, context) => {
+  const pubSubMessage = data;
+  const name = pubSubMessage.data ? Buffer.from(pubSubMessage.data, 'base64').toString() : 'World';
 
   console.log(`Hello, ${name}!`);
 };
@@ -86,17 +88,19 @@ exports.helloPubSub = (data) => {
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} data The Cloud Functions event payload.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloGCS = (data) => {
-  if (data.resourceState === 'not_exists') {
-    console.log(`File ${data.name} deleted.`);
-  } else if (data.metageneration === '1') {
+exports.helloGCS = (data, context) => {
+  const file = data;
+  if (file.resourceState === 'not_exists') {
+    console.log(`File ${file.name} deleted.`);
+  } else if (file.metageneration === '1') {
     // metageneration attribute is updated on metadata changes.
     // on create value is 1
-    console.log(`File ${data.name} uploaded.`);
+    console.log(`File ${file.name} uploaded.`);
   } else {
-    console.log(`File ${data.name} metadata updated.`);
+    console.log(`File ${file.name} metadata updated.`);
   }
 };
 // [END functions_helloworld_storage_node8]
@@ -105,16 +109,17 @@ exports.helloGCS = (data) => {
 /**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} data The Cloud Functions event payload.
- * @param {object} context The Cloud Functions event metadata.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
 exports.helloGCSGeneric = (data, context) => {
+  const file = data;
   console.log(`  Event ${context.eventId}`);
   console.log(`  Event Type: ${context.eventType}`);
-  console.log(`  Bucket: ${data.bucket}`);
-  console.log(`  File: ${data.name}`);
-  console.log(`  Metageneration: ${data.metageneration}`);
-  console.log(`  Created: ${data.timeCreated}`);
-  console.log(`  Updated: ${data.updated}`);
+  console.log(`  Bucket: ${file.bucket}`);
+  console.log(`  File: ${file.name}`);
+  console.log(`  Metageneration: ${file.metageneration}`);
+  console.log(`  Created: ${file.timeCreated}`);
+  console.log(`  Updated: ${file.updated}`);
 };
 // [END functions_helloworld_storage_generic_node8]

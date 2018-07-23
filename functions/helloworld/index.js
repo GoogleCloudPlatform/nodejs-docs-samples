@@ -108,7 +108,7 @@ exports.helloGCS = (event, callback) => {
 exports.helloGCSGeneric = (event, callback) => {
   const file = event.data;
 
-  console.log(`  Event ${event.eventId}`);
+  console.log(`  Event: ${event.eventId}`);
   console.log(`  Event Type: ${event.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
   console.log(`  File: ${file.name}`);
@@ -129,7 +129,7 @@ exports.helloGCSGeneric = (event, callback) => {
 
 exports.helloError = (event, callback) => {
   // [START functions_helloworld_error]
-  // These WILL be reported to Stackdriver errors
+  // These WILL be reported to Stackdriver Error Reporting
   console.error(new Error('I failed you'));
   throw new Error('I failed you'); // Will cause a cold start if not caught
 
@@ -146,7 +146,7 @@ exports.helloError = (event, callback) => {
 
 exports.helloError2 = (event, callback) => {
   // [START functions_helloworld_error]
-  // These will NOT be reported to Stackdriver errors
+  // These will NOT be reported to Stackdriver Error Reporting
   console.info(new Error('I failed you')); // Logging an Error object at the info level
   console.error('I failed you'); // Logging something other than an Error object
   throw 1; // Throwing something other than an Error object

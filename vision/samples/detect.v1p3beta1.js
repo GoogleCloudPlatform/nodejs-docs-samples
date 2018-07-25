@@ -30,11 +30,11 @@ function localizeObjects(fileName) {
    * TODO(developer): Uncomment the following line before running the sample.
    */
   // const fileName = `/path/to/localImage.png`;
-  
+
   const request = {
     image: {content: fs.readFileSync(fileName)},
   };
-  
+
   client
     .objectLocalization(request)
     .then(results => {
@@ -60,7 +60,7 @@ function localizeObjectsGCS(uri) {
 
   // Creates a client
   const client = new vision.ImageAnnotatorClient();
-  
+
   /**
    * TODO(developer): Uncomment the following line before running the sample.
    */
@@ -98,7 +98,7 @@ function detectHandwritingOCR(fileName) {
 
   const request = {
     image: {
-      content: fs.readFileSync(fileName)
+      content: fs.readFileSync(fileName),
     },
     feature: {
       languageHints: ['en-t-i0-handwrit'],
@@ -123,7 +123,7 @@ function detectHandwritingGCS(uri) {
 
   // Creates a client
   const client = new vision.ImageAnnotatorClient();
-  
+
   /**
    * TODO(developer): Uncomment the following line before running the sample.
    */
@@ -131,7 +131,7 @@ function detectHandwritingGCS(uri) {
 
   const request = {
     image: {
-      content: fs.readFileSync(uri)
+      content: fs.readFileSync(uri),
     },
     feature: {
       languageHints: ['en-t-i0-handwrit'],

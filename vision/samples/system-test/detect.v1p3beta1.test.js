@@ -78,9 +78,7 @@ test(`should read handwriting in local handwritten.jpg sample`, async t => {
     `${cmd} detectHandwriting ${files[1]}`,
     cwd
   );
-  t.true(
-    output.includes(`hand written message`)
-  );
+  t.true(output.includes(`hand written message`));
 });
 
 test(`should read handwriting from handwritten.jpg in GCS bucket`, async t => {

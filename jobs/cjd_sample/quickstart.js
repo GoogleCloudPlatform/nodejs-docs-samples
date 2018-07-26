@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Google LLC.
+ * Copyright 2018, Google, LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,12 +14,11 @@
  */
 
 'use strict';
+
 // [START quickstart]
-const assert = require('assert');
+
 // Imports the Google APIs client library
-const {
-  google
-} = require('googleapis');
+const {google} = require('googleapis');
 
 // Acquires credentials
 google.auth.getApplicationDefault((err, authClient) => {
@@ -47,21 +46,16 @@ google.auth.getApplicationDefault((err, authClient) => {
       console.error(err);
       return;
     }
-    assert(result.status === 200, 'Received response code: ' + result.status);
-    assert(result.statusText === 'OK', 'Received status: ' + result.statusText);
+
+    console.log(`Request ID: ${result.data.metadata.requestId}`);
 
     const companies = result.data.companies || [];
 
     if (companies.length) {
       console.log('Companies:');
-      companies.forEach((company) => {
-        assert(company.hasOwnProperty('name'), '\'name\' property not found.');
-        assert(company.hasOwnProperty('displayName'), '\'displayName\' property not found.');
-        assert(company.hasOwnProperty('distributorCompanyId'), '\'distributorCompanyId\' property not found.');
-        console.log(company);
-      });
+      companies.forEach((company) => console.log(company.name));
     } else {
-      console.log('No companies found.');
+      console.log(`No companies found.`);
     }
   });
 });

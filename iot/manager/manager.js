@@ -453,7 +453,7 @@ function listRegistries (client, projectId, cloudRegion) {
       console.log('Could not list registries');
       console.log(err);
     } else {
-      data = res.data;
+      let data = res.data;
       console.log('Current registries in project:', data['deviceRegistries']);
     }
   });
@@ -748,22 +748,19 @@ function getRegistry (client, registryId, projectId, cloudRegion) {
 // the provided API key.
 function getClient (serviceAccountJson, cb) {
   google.auth.getClient({
-        scopes: ['https://www.googleapis.com/auth/cloud-platform']
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
   }).then(authClient => {
     const discoveryUrl =
         `${DISCOVERY_API}?version=${API_VERSION}`;
-
 
     google.options({
       auth: authClient
     });
 
-    google.discoverAPI(discoveryUrl).then((client, err) => {
-      if (err) {
-        console.log('Error during API discovery.', err);
-      } else {
-        cb(client);
-      }
+    google.discoverAPI(discoveryUrl).then((client) => {
+      cb(client);
+    }).catch((err) => {
+      console.log('Error during API discovery.', err);
     });
   });
 }

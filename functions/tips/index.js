@@ -70,50 +70,17 @@ exports.lazyGlobals = (req, res) => {
 };
 // [END functions_tips_lazy_globals]
 
-// [START functions_tips_ephemeral_agent]
-// [START functions_tips_cached_agent]
+// [START functions_tips_connection_pooling]
 const http = require('http');
-// [END functions_tips_ephemeral_agent]
 const agent = new http.Agent({keepAlive: true});
-// [END functions_tips_cached_agent]
-
-// [START functions_tips_ephemeral_agent]
 
 /**
- * HTTP Cloud Function that uses an ephemeral HTTP agent
+ * HTTP Cloud Function that caches an HTTP agent to pool HTTP connections.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.ephemeralAgent = (req, res) => {
-  req = http.request({
-    host: '<HOST>',
-    port: 80,
-    path: '<PATH>',
-    method: 'GET'
-  }, resInner => {
-    let rawData = '';
-    resInner.setEncoding('utf8');
-    resInner.on('data', chunk => { rawData += chunk; });
-    resInner.on('end', () => {
-      res.status(200).send(`Data: ${rawData}`);
-    });
-  });
-  req.on('error', (e) => {
-    res.status(500).send(`Error: ${e.message}`);
-  });
-  req.end();
-};
-// [END functions_tips_ephemeral_agent]
-
-// [START functions_tips_cached_agent]
-/**
- * HTTP Cloud Function that uses a cached HTTP agent
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
- */
-exports.cachedAgent = (req, res) => {
+exports.connectionPooling = (req, res) => {
   req = http.request({
     host: '',
     port: 80,
@@ -133,7 +100,7 @@ exports.cachedAgent = (req, res) => {
   });
   req.end();
 };
-// [END functions_tips_cached_agent]
+// [END functions_tips_connection_pooling]
 
 // [START functions_tips_infinite_retries]
 /**
@@ -160,7 +127,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
 };
 // [END functions_tips_infinite_retries]
 
-// [START functions_tips_retry_promise]
+// [START functions_tips_retry]
 /**
  * Background Cloud Function that demonstrates
  * how to toggle retries using a promise
@@ -172,15 +139,15 @@ exports.avoidInfiniteRetries = (event, callback) => {
 exports.retryPromise = (event) => {
   const tryAgain = !!event.data.retry;
 
+  // [START functions_tips_retry_promise]
   if (tryAgain) {
     throw new Error(`Retrying...`);
   } else {
     return Promise.reject(new Error('Not retrying...'));
   }
+  // [END functions_tips_retry_promise]
 };
-// [END functions_tips_retry_promise]
 
-// [START functions_tips_retry_callback]
 /**
  * Background Cloud Function that demonstrates
  * how to toggle retries using a callback
@@ -194,6 +161,7 @@ exports.retryCallback = (event, callback) => {
   const tryAgain = !!event.data.retry;
   const err = new Error('Error!');
 
+  // [START functions_tips_retry_callback]
   if (tryAgain) {
     console.error('Retrying:', err);
     callback(err);
@@ -201,8 +169,9 @@ exports.retryCallback = (event, callback) => {
     console.error('Not retrying:', err);
     callback();
   }
+  // [END functions_tips_retry_callback]
 };
-// [END functions_tips_retry_callback]
+// [END functions_tips_retry]
 
 // [START functions_tips_gcp_apis]
 const Pubsub = require('@google-cloud/pubsub');

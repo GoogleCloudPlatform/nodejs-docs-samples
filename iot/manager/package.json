@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "0.13.2",
-    "googleapis": "20.1.0",
+    "googleapis": "^32.0.0",
     "yargs": "8.0.2"
   },
   "devDependencies": {

@@ -20,7 +20,5 @@
     "uuid": "3.1.0",
     "yargs": "8.0.2"
   },
-  "testDependencies": {
-  },
   "devDependencies": {}
 }

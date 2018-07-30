@@ -6,13 +6,13 @@
   "main": "cloudiot_mqtt_example_nodejs.js",
   "name": "nodejs-docs-samples-iot-mqtt-example",
   "scripts": {
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "test": "samples test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
+    "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/pubsub": "0.16.4",
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "@google-cloud/nodejs-repo-tools": "2.2.5",
     "ava": "0.25.0",
     "jsonwebtoken": "8.2.0",
     "mqtt": "2.16.0",

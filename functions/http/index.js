@@ -19,15 +19,16 @@
 /**
  * Responds to any HTTP request that can provide a "message" field in the body.
  *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
+ * @param {Object} req ExpressJS object containing the received HTTP request.
+ * @param {Object} res ExpressJS object containing the HTTP response to send.
  */
 exports.helloWorld = (req, res) => {
   if (req.body.message === undefined) {
     // This is an error case, as "message" is required
     res.status(400).send('No message defined!');
   } else {
-    // Everything is ok
+    // Everything is ok - call request-terminating method to signal function
+    // completion. (Otherwise, the function may continue to run until timeout.)
     console.log(req.body.message);
     res.status(200).end();
   }
@@ -142,6 +143,9 @@ exports.parseXML = (req, res) => {
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+
+// Node.js doesn't have a built-in multipart/form-data parsing library.
+// Instead, we can use the 'busboy' library from NPM to parse these requests.
 const Busboy = require('busboy');
 
 exports.uploadFile = (req, res) => {

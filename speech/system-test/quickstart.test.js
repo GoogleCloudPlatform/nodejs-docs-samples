@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+/* eslint-disable */
+
 'use strict';
 
 const path = require(`path`);

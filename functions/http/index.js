@@ -186,7 +186,7 @@ exports.uploadFile = (req, res) => {
       res.send();
     });
 
-    req.pipe(busboy);
+    busboy.end(req.rawBody);
   } else {
     // Return a "method not allowed" error
     res.status(405).end();

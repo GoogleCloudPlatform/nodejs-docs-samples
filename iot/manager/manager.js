@@ -16,7 +16,7 @@
 'use strict';
 
 const fs = require('fs');
-const google = require('googleapis');
+const {google} = require('googleapis');
 
 const API_VERSION = 'v1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
@@ -98,13 +98,13 @@ function lookupRegistry (client, registryId, projectId, cloudRegion, cb) {
     name: registryName
   };
 
-  client.projects.locations.registries.get(request, (err, data) => {
+  client.projects.locations.registries.get(request, (err, res) => {
     if (err) {
       console.log('Could not look up registry');
       console.log(err);
     } else {
       console.log('Looked up existing registry');
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_lookup_registry]
@@ -138,7 +138,7 @@ function createRegistry (
     }
   };
 
-  client.projects.locations.registries.create(request, (err, data) => {
+  client.projects.locations.registries.create(request, (err, res) => {
     if (err) {
       if (err.code === 409) {
         // The registry already exists - look it up instead.
@@ -149,7 +149,7 @@ function createRegistry (
       }
     } else {
       console.log('Successfully created registry');
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_create_registry]
@@ -208,13 +208,13 @@ function createUnauthDevice (
     resource: {id: deviceId}
   };
 
-  client.projects.locations.registries.devices.create(request, (err, data) => {
+  client.projects.locations.registries.devices.create(request, (err, res) => {
     if (err) {
       console.log('Could not create device');
       console.log(err);
     } else {
       console.log('Created device');
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_create_unauth_device]
@@ -257,13 +257,13 @@ function createRsaDevice (
 
   console.log(JSON.stringify(request));
 
-  client.projects.locations.registries.devices.create(request, (err, data) => {
+  client.projects.locations.registries.devices.create(request, (err, res) => {
     if (err) {
       console.log('Could not create device');
       console.log(err);
     } else {
       console.log('Created device');
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_create_rsa_device]
@@ -304,13 +304,13 @@ function createEsDevice (
     resource: body
   };
 
-  client.projects.locations.registries.devices.create(request, (err, data) => {
+  client.projects.locations.registries.devices.create(request, (err, res) => {
     if (err) {
       console.log('Could not create device');
       console.log(err);
     } else {
       console.log('Created device');
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_create_es_device]
@@ -350,13 +350,13 @@ function patchRsa256ForAuth (
     }
   };
 
-  client.projects.locations.registries.devices.patch(request, (err, data) => {
+  client.projects.locations.registries.devices.patch(request, (err, res) => {
     if (err) {
       console.log('Error patching device:', deviceId);
       console.log(err);
     } else {
       console.log('Patched device:', deviceId);
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_patch_rsa]
@@ -396,13 +396,13 @@ function patchEs256ForAuth (
     }
   };
 
-  client.projects.locations.registries.devices.patch(request, (err, data) => {
+  client.projects.locations.registries.devices.patch(request, (err, res) => {
     if (err) {
       console.log('Error patching device:', deviceId);
       console.log(err);
     } else {
       console.log('Patched device:', deviceId);
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_patch_es]
@@ -423,11 +423,12 @@ function listDevices (client, registryId, projectId, cloudRegion) {
     parent: registryName
   };
 
-  client.projects.locations.registries.devices.list(request, (err, data) => {
+  client.projects.locations.registries.devices.list(request, (err, res) => {
     if (err) {
       console.log('Could not list devices');
       console.log(err);
     } else {
+      let data = res.data;
       console.log('Current devices in registry:', data['devices']);
     }
   });
@@ -447,11 +448,12 @@ function listRegistries (client, projectId, cloudRegion) {
     parent: parentName
   };
 
-  client.projects.locations.registries.list(request, (err, data) => {
+  client.projects.locations.registries.list(request, (err, res) => {
     if (err) {
       console.log('Could not list registries');
       console.log(err);
     } else {
+      let data = res.data;
       console.log('Current registries in project:', data['deviceRegistries']);
     }
   });
@@ -479,13 +481,13 @@ function deleteDevice (
     name: `${registryName}/devices/${deviceId}`
   };
 
-  client.projects.locations.registries.devices.delete(request, (err, data) => {
+  client.projects.locations.registries.devices.delete(request, (err, res) => {
     if (err) {
       console.log('Could not delete device:', deviceId);
       console.log(err);
     } else {
       console.log('Successfully deleted device:', deviceId);
-      console.log(data);
+      console.log(res.data);
       if (cb) {
         cb();
       }
@@ -503,13 +505,13 @@ function clearRegistry (client, registryId, projectId, cloudRegion) {
   };
 
   const after = function () {
-    client.projects.locations.registries.delete(requestDelete, (err, data) => {
+    client.projects.locations.registries.delete(requestDelete, (err, res) => {
       if (err) {
         console.log('Could not delete registry');
         console.log(err);
       } else {
         console.log(`Successfully deleted registry ${registryName}`);
-        console.log(data);
+        console.log(res.data);
       }
     });
   };
@@ -518,11 +520,12 @@ function clearRegistry (client, registryId, projectId, cloudRegion) {
     parent: registryName
   };
 
-  client.projects.locations.registries.devices.list(request, (err, data) => {
+  client.projects.locations.registries.devices.list(request, (err, res) => {
     if (err) {
       console.log('Could not list devices');
       console.log(err);
     } else {
+      let data = res.data;
       console.log('Current devices in registry:', data['devices']);
       let devices = data['devices'];
       if (devices) {
@@ -569,13 +572,13 @@ function deleteRegistry (client, registryId, projectId, cloudRegion) {
     name: registryName
   };
 
-  client.projects.locations.registries.delete(request, (err, data) => {
+  client.projects.locations.registries.delete(request, (err, res) => {
     if (err) {
       console.log('Could not delete registry');
       console.log(err);
     } else {
       console.log('Successfully deleted registry');
-      console.log(data);
+      console.log(res);
     }
   });
   // [END iot_delete_registry]
@@ -596,13 +599,13 @@ function getDevice (client, deviceId, registryId, projectId, cloudRegion) {
     name: `${registryName}/devices/${deviceId}`
   };
 
-  client.projects.locations.registries.devices.get(request, (err, data) => {
+  client.projects.locations.registries.devices.get(request, (err, res) => {
     if (err) {
       console.log('Could not find device:', deviceId);
       console.log(err);
     } else {
       console.log('Found device:', deviceId);
-      console.log(data);
+      console.log(res.data);
     }
   });
   // [END iot_get_device]
@@ -635,7 +638,7 @@ function getDeviceState (
         console.log('Could not find device:', deviceId);
         console.log(err);
       } else {
-        console.log('State:', data);
+        console.log('State:', data.data);
       }
     });
   // [END iot_get_device_state]
@@ -668,7 +671,7 @@ function getDeviceConfigs (
         console.log('Could not find device:', deviceId);
         console.log(err);
       } else {
-        console.log('Configs:', data);
+        console.log('Configs:', data.data);
       }
     });
   // [END iot_get_device_configs]
@@ -735,7 +738,7 @@ function getRegistry (client, registryId, projectId, cloudRegion) {
       console.log(err);
     } else {
       console.log('Found registry:', registryId);
-      console.log(data);
+      console.log(data.data);
     }
   });
   // [END iot_get_registry]
@@ -744,23 +747,21 @@ function getRegistry (client, registryId, projectId, cloudRegion) {
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
 function getClient (serviceAccountJson, cb) {
-  const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountJson));
-  const jwtAccess = new google.auth.JWT();
-  jwtAccess.fromJSON(serviceAccount);
-  // Note that if you require additional scopes, they should be specified as a
-  // string, separated by spaces.
-  jwtAccess.scopes = 'https://www.googleapis.com/auth/cloud-platform';
-  // Set the default authentication to the above JWT access.
-  google.options({ auth: jwtAccess });
+  google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
+  }).then(authClient => {
+    const discoveryUrl =
+        `${DISCOVERY_API}?version=${API_VERSION}`;
 
-  const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}`;
+    google.options({
+      auth: authClient
+    });
 
-  google.discoverAPI(discoveryUrl, {}, (err, client) => {
-    if (err) {
-      console.log('Error during API discovery', err);
-      return undefined;
-    }
-    cb(client);
+    google.discoverAPI(discoveryUrl).then((client) => {
+      cb(client);
+    }).catch((err) => {
+      console.log('Error during API discovery.', err);
+    });
   });
 }
 
@@ -783,6 +784,7 @@ function getIamPolicy (client, registryId, projectId, cloudRegion) {
       console.log('Could not find policy for: ', registryId);
       console.log('Trace: ', err);
     } else {
+      data = data.data;
       console.log(`ETAG: ${data.etag}`);
       data.bindings = data.bindings || [];
       data.bindings.forEach((_binding) => {

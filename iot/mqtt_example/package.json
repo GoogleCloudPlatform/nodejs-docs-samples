@@ -11,11 +11,13 @@
     "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },
   "dependencies": {
+    "googleapis": "^32.0.0",
     "@google-cloud/pubsub": "0.16.4",
     "@google-cloud/nodejs-repo-tools": "2.2.5",
     "ava": "0.25.0",
     "jsonwebtoken": "8.2.0",
     "mqtt": "2.16.0",
+    "semistandard": "^12.0.1",
     "uuid": "3.2.1",
     "yargs": "11.0.0"
   },

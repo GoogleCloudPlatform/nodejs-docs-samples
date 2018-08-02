@@ -11,6 +11,7 @@
     "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },
   "dependencies": {
+    "googleapis": "^32.0.0",
     "@google-cloud/pubsub": "0.13.2",
     "@google-cloud/nodejs-repo-tools": "2.2.5",
     "ava": "0.22.0",

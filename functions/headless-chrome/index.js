@@ -32,7 +32,7 @@ exports.screenshot = async (req, res) => {
 
   await page.goto(url);
   const imageBuffer = await page.screenshot();
-  browser.close();
+  await browser.close();
 
   res.set('Content-Type', 'image/png');
   res.send(imageBuffer);

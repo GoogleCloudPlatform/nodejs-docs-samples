@@ -56,7 +56,6 @@ function localizeObjectsGCS(uri) {
   // [START vision_localize_objects_uri]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
-  const fs = require(`fs`);
 
   // Creates a client
   const client = new vision.ImageAnnotatorClient();
@@ -87,6 +86,7 @@ function detectHandwritingOCR(fileName) {
   // [START vision_handwritten_ocr]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
+  const fs = require('fs');
 
   // Creates a client
   const client = new vision.ImageAnnotatorClient();
@@ -120,6 +120,7 @@ function detectHandwritingGCS(uri) {
   // [START vision_handwritten_ocr_uri]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
+  const fs = require('fs');
 
   // Creates a client
   const client = new vision.ImageAnnotatorClient();

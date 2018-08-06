@@ -15,6 +15,52 @@
 
 'use strict';
 
+function redactText(callingProjectId, string, minLikelihood, infoTypes) {
+  // [START dlp_redact_text]
+  // Imports the Google Cloud Data Loss Prevention library
+  const DLP = require('@google-cloud/dlp');
+
+  // Instantiates a client
+  const dlp = new DLP.DlpServiceClient();
+
+  // Construct transformation config which replaces sensitive info with its info type.
+  // E.g., "Her email is xxx@example.com" => "Her email is [EMAIL_ADDRESS]"
+  const replaceWithInfoTypeTransformation = {
+    primitiveTransformation: {
+      replaceWithInfoTypeConfig: {},
+    },
+  };
+
+  // Construct redaction request
+  const request = {
+    parent: dlp.projectPath(callingProjectId),
+    item: {
+      value: string,
+    },
+    deidentifyConfig: {
+      infoTypeTransformations: {
+        transformations: [replaceWithInfoTypeTransformation],
+      },
+    },
+    inspectConfig: {
+      minLikelihood: minLikelihood,
+      infoTypes: infoTypes,
+    },
+  };
+
+  // Run string redaction
+  dlp
+    .deidentifyContent(request)
+    .then(response => {
+      const resultString = response[0].item.value;
+      console.log(`Redacted text: ${resultString}`);
+    })
+    .catch(err => {
+      console.log(`Error in deidentifyContent: ${err.message || err}`);
+    });
+  // [END dlp_redact_text]
+}
+
 function redactImage(
   callingProjectId,
   filepath,
@@ -89,6 +135,18 @@ function redactImage(
 
 const cli = require(`yargs`)
   .demand(1)
+  .command(
+    `string <string>`,
+    `Redact a string using the Data Loss Prevention API.`,
+    {},
+    opts =>
+      redactText(
+        opts.callingProject,
+        opts.string,
+        opts.minLikelihood,
+        opts.infoTypes
+      )
+  )
   .command(
     `image <filepath> <outputPath>`,
     `Redact sensitive data from an image using the Data Loss Prevention API.`,

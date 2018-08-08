@@ -18,22 +18,28 @@
 // [START full_sample]
 const puppeteer = require('puppeteer');
 
-exports.screenshot = async (req, res) => {
-  const url = req.query.url;
+let page;
 
+async function getBrowserPage () {
   // [START start_browser]
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
   // [END start_browser]
-  const page = await browser.newPage();
+  return browser.newPage();
+}
+
+exports.screenshot = async (req, res) => {
+  const url = req.query.url;
 
   if (!url) {
     return res.send('Please provide URL as GET parameter, for example: <a href="?url=https://example.com">?url=https://example.com</a>');
   }
 
+  if (!page) {
+    page = await getBrowserPage();
+  }
+
   await page.goto(url);
   const imageBuffer = await page.screenshot();
-  await browser.close();
-
   res.set('Content-Type', 'image/png');
   res.send(imageBuffer);
 };

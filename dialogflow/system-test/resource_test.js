@@ -21,7 +21,7 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = 'node resource.js';
 const sessionId = require('uuid/v1')();
 
-test.before.serial('Remove all existing resources', async () => {
+test.after('Remove all existing resources', async () => {
   await tools.runAsync(`${cmd} clear-agent -f`);
 });
 

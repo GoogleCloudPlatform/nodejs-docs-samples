@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START app]
+// [START gae_flex_analytics_track_event]
 const express = require('express');
 const got = require('got');
 
@@ -69,4 +69,4 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]
+// [END gae_flex_analytics_track_event]

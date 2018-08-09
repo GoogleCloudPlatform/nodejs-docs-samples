@@ -29,9 +29,9 @@ async function init () {
   }); 
   // [END browser]
   page = await browser.newPage();
-  const server = app.listen(process.env.PORT || 8080, err => {
+  const server = app.listen(process.env.PORT || 8080, async err => {
     if (err) {
-      browser.close();
+      await browser.close();
       return console.error(err);
     }
     const port = server.address().port;

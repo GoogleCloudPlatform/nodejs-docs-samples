@@ -24,7 +24,7 @@ const nconf = require('nconf');
 // but you can also store them in environment variables
 nconf.argv().env().file('keys.json');
 
-// [START client]
+// [START gae_flex_node_redis]
 // Connect to a redis server provisioned over at
 // Redis Labs. See the README for more info.
 const client = redis.createClient(
@@ -35,7 +35,7 @@ const client = redis.createClient(
     'return_buffers': true
   }
 ).on('error', (err) => console.error('ERR:REDIS:', err));
-// [END client]
+// [END gae_flex_node_redis]]
 
 // Create a simple little server.
 http.createServer((req, res) => {

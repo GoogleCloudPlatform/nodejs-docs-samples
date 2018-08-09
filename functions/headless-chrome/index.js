@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START full_sample]
+// [START functions_headless_chrome]
 const puppeteer = require('puppeteer');
 
 let page;
@@ -43,4 +43,4 @@ exports.screenshot = async (req, res) => {
   res.set('Content-Type', 'image/png');
   res.send(imageBuffer);
 };
-// [END full_sample]
+// [END functions_headless_chrome]

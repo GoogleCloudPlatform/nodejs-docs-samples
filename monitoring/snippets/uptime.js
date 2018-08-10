@@ -243,6 +243,55 @@ function deleteUptimeCheckConfig(projectId, uptimeCheckConfigId) {
   // [END monitoring_uptime_check_delete]
 }
 
+function updateUptimeCheckConfigDisplayName(
+  projectId,
+  uptimeCheckConfigId,
+  displayName,
+  path
+) {
+  // [START monitoring_uptime_check_update]
+  // Imports the Google Cloud client library
+  const monitoring = require('@google-cloud/monitoring');
+
+  // Creates a client
+  const client = new monitoring.UptimeCheckServiceClient();
+
+  /**
+   * TODO(developer): Uncomment and edit the following lines of code.
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+  // const uptimeCheckConfigId = 'YOUR_UPTIME_CHECK_CONFIG_ID';
+  // const displayName = 'A New Display Name';
+  // const path = '/some/path';
+
+  const request = {
+    // i.e. name: 'projects/my-project-id/uptimeCheckConfigs/My-Uptime-Check
+    name: client.uptimeCheckConfigPath(projectId, uptimeCheckConfigId),
+  };
+
+  console.log(`Updating ${request.name} to ${displayName}`);
+
+  // Updates the display name and path on an uptime check config
+  request.uptimeCheckConfig = {
+    name: request.name,
+    displayName: displayName,
+    httpCheck: {path: path},
+  };
+
+  request.updateMask = {paths: ['display_name', 'http_check.path']};
+
+  client
+    .updateUptimeCheckConfig(request)
+    .then(responses => {
+      console.log(`${responses[0].name} config updated.`);
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+
+  // [END monitoring_uptime_check_update]
+}
+
 require(`yargs`)
   .demand(1)
   .command(
@@ -269,6 +318,18 @@ require(`yargs`)
     {},
     opts => deleteUptimeCheckConfig(opts.projectId, opts.uptimeCheckConfigId)
   )
+  .command(
+    `update <uptimeCheckConfigId> <displayName> <path> [projectId]`,
+    `Update the display name of an uptime check config.`,
+    {},
+    opts =>
+      updateUptimeCheckConfigDisplayName(
+        opts.projectId,
+        opts.uptimeCheckConfigId,
+        opts.displayName,
+        opts.path
+      )
+  )
   .options({
     projectId: {
       alias: 'p',
@@ -287,6 +348,7 @@ require(`yargs`)
   .example(`node $0 list-ips`)
   .example(`node $0 get My-Uptime-Check`)
   .example(`node $0 delete My-Uptime-Check`)
+  .example(`node $0 update My-Uptime-Check "My New Uptime Check" /some/path`)
   .wrap(120)
   .recommendCommands()
   .epilogue(

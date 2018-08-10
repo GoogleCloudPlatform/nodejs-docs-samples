@@ -87,6 +87,26 @@ test.serial(`should list uptime checks`, async t => {
     .start();
 });
 
+test.serial(`should update an uptime check`, async t => {
+  const newDisplayName = 'My New Display';
+  const path = '/';
+  const results = await tools.runAsyncWithIO(
+    `${cmd} update ${id} "${newDisplayName}" ${path}`,
+    cwd
+  );
+  const output = results.stdout + results.stderr;
+  t.regex(
+    output,
+    new RegExp(
+      `Updating projects/${projectId}/uptimeCheckConfigs/${id} to ${newDisplayName}`
+    )
+  );
+  t.regex(
+    output,
+    new RegExp(`projects/${projectId}/uptimeCheckConfigs/${id} config updated.`)
+  );
+});
+
 test.serial(`should delete an uptime check`, async t => {
   const results = await tools.runAsyncWithIO(`${cmd} delete ${id}`, cwd);
   const output = results.stdout + results.stderr;

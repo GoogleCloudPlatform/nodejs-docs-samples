@@ -26,7 +26,7 @@ function detectTextIntent(projectId, sessionId, queries, languageCode) {
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
 
-  // Instantiates a sessison client
+  // Instantiates a session client
   const sessionClient = new dialogflow.SessionsClient();
 
   if (!queries || !queries.length) {
@@ -97,7 +97,7 @@ function detectEventIntent(projectId, sessionId, eventName, languageCode) {
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
 
-  // Instantiates a sessison client
+  // Instantiates a session client
   const sessionClient = new dialogflow.SessionsClient();
 
   // The path to identify the agent that owns the created intent.
@@ -138,7 +138,7 @@ function detectAudioIntent(
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
 
-  // Instantiates a sessison client
+  // Instantiates a session client
   const sessionClient = new dialogflow.SessionsClient();
 
   // The path to identify the agent that owns the created intent.
@@ -186,7 +186,7 @@ function streamingDetectIntent(
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
 
-  // Instantiates a sessison client
+  // Instantiates a session client
   const sessionClient = new dialogflow.SessionsClient();
 
   // The path to the local file on which to perform speech recognition, e.g.

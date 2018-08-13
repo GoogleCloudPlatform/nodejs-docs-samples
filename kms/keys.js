@@ -747,8 +747,8 @@ function addMemberToCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKey
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
-  // The location of the crypto key's key ring, e.g. "global"
-  // const locationId = 'global';
+  // The location of the crypto key's key ring
+  // const locationId = 'my-key-ring-location';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
   // const keyRingId = 'my-key-ring';

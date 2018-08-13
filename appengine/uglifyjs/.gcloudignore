@@ -1,0 +1,2 @@
+# Exclude minified files, so they're built on GCP
+**/*.min.*

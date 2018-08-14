@@ -11,7 +11,8 @@
   "scripts": {
     "lint": "tslint index.ts",
     "start": "node ./index.js",
-    "gcp-build": "tsc index.ts"
+    "gcp-build": "tsc index.ts",
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "express": "^4.16.3",

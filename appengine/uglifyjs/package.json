@@ -16,7 +16,8 @@
     "lint": "npm run lint-css && npm run lint-html && npm run lint-js",
     "minify-css": "cleancss -o static/style.min.css static/style.css",
     "minify-js": "uglifyjs --compress --mangle -o static/message.min.js static/message.js",
-    "gcp-build": "npm run minify-js && npm run minify-css"
+    "gcp-build": "npm run minify-js && npm run minify-css",
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "clean-css-cli": "^4.2.1",

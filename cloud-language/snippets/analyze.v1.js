@@ -492,7 +492,7 @@ require(`yargs`)
     `Detects sentiment of entities in gs://my-bucket/file.txt`
   )
   .example(
-    `node $0 classify-text "Android is a mobile operating system developed by Google."`
+    `node $0 classify-text "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."`
   )
   .example(
     `node $0 classify-file my-bucket android_text.txt`,

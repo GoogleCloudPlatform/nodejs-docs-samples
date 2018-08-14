@@ -1,0 +1,7 @@
+runtime: nodejs8
+
+handlers:
+- url: /.*
+  secure: always
+  script: auto
+

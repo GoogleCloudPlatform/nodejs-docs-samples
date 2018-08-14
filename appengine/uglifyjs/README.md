@@ -1,6 +1,11 @@
 # App Engine minification sample
 
-This sample provides an example of how to minify static CSS and JS files while deploying to App Engine.
+This sample provides an example of how to minify static CSS and JS files while
+deploying to App Engine.
+
+The `gcp-build` NPM script is used to trigger the minification process. This
+step happens automatically when deploying to App Engine, but must be performed
+manually when developing locally.
 
 ## Setup
 
@@ -16,7 +21,7 @@ Install dependencies:
 
 ## Running locally
 
-1. Perform the build step:
+1. Perform the build step locally:
 
     With `npm`:
 

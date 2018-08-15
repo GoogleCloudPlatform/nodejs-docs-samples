@@ -11,11 +11,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// NOTE:
-// This app can only be fully tested when deployed, because
-// Pub/Sub requires a live endpoint URL to hit. Nevertheless,
-// these tests mock it and partially test it locally.
-
 'use strict';
 
 const test = require(`ava`);

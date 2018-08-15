@@ -53,7 +53,7 @@ function localizeObjects(fileName) {
 }
 
 function localizeObjectsGCS(uri) {
-  // [START vision_localize_objects_uri]
+  // [START vision_localize_objects_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
 
@@ -79,7 +79,7 @@ function localizeObjectsGCS(uri) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END vision_localize_objects_uri]
+  // [END vision_localize_objects_gcs]
 }
 
 function detectHandwritingOCR(fileName) {
@@ -117,7 +117,7 @@ function detectHandwritingOCR(fileName) {
 }
 
 function detectHandwritingGCS(uri) {
-  // [START vision_handwritten_ocr_uri]
+  // [START vision_handwritten_ocr_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
   const fs = require('fs');
@@ -148,7 +148,7 @@ function detectHandwritingGCS(uri) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END vision_handwritten_ocr_uri]
+  // [END vision_handwritten_ocr_gcs]
 }
 
 require(`yargs`)

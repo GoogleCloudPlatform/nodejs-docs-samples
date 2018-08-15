@@ -15,22 +15,24 @@
 
 'use strict';
 
-// [START auth]
+// [START vision_face_detection_tutorial_imports]
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 var vision = require('@google-cloud/vision');
-
+// [END vision_face_detection_tutorial_imports]
+// [START vision_face_detection_tutorial_client]
 // Creates a client
 var client = new vision.ImageAnnotatorClient();
-// [END auth]
 
 var fs = require('fs');
+// [END vision_face_detection_tutorial_client]
 
 /**
  * Uses the Vision API to detect faces in the given file.
  */
+// [START vision_face_detection_tutorial_send_request]
 function detectFaces(inputFile, callback) {
   // Make a call to the Vision API to detect the faces
   const request = {image: {source: {filename: inputFile}}};
@@ -47,10 +49,12 @@ function detectFaces(inputFile, callback) {
       callback(err);
     });
 }
+// [END vision_face_detection_tutorial_send_request]
 
 /**
  * Draws a polygon around the faces, then saves to outputFile.
  */
+// [START vision_face_detection_tutorial_process_response]
 function highlightFaces(inputFile, faces, outputFile, Canvas, callback) {
   fs.readFile(inputFile, (err, image) => {
     if (err) {
@@ -96,8 +100,10 @@ function highlightFaces(inputFile, faces, outputFile, Canvas, callback) {
     pngStream.on('end', callback);
   });
 }
+// [END vision_face_detection_tutorial_process_response]
 
 // Run the example
+// [START vision_face_detection_tutorial_run_application]
 function main(inputFile, outputFile, Canvas, callback) {
   outputFile = outputFile || 'out.png';
   detectFaces(inputFile, (err, faces) => {
@@ -115,6 +121,7 @@ function main(inputFile, outputFile, Canvas, callback) {
     });
   });
 }
+// [END vision_face_detection_tutorial_run_application]
 
 exports.main = main;
 

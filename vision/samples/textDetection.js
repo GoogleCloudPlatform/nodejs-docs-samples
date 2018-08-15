@@ -15,8 +15,6 @@
 
 'use strict';
 
-// [START app]
-// [START import_libraries]
 var async = require('async');
 var fs = require('fs');
 var path = require('path');
@@ -31,7 +29,6 @@ var redis = require('redis');
 
 // Instantiate a vision client
 var client = new vision.ImageAnnotatorClient();
-// [END import_libraries]
 
 function Index() {
   // Connect to a redis server.
@@ -130,7 +127,6 @@ function lookup(words, callback) {
   });
 }
 
-// [START extract_descrs]
 function extractDescription(texts) {
   var document = '';
   texts.forEach(function(text) {
@@ -147,9 +143,7 @@ function extractDescriptions(filename, index, response, callback) {
     index.setContainsNoText(filename, callback);
   }
 }
-// [END extract_descrs]
 
-// [START get_text]
 function getTextFromFiles(index, inputFiles, callback) {
   // Make a call to the Vision API to detect text
   let requests = [];
@@ -260,9 +254,7 @@ function main(inputDir, callback) {
     }
   );
 }
-// [END get_text]
 
-// [START run_application]
 if (module === require.main) {
   var generalError =
     'Usage: node textDetection <command> <arg> ...\n\n' +
@@ -294,8 +286,6 @@ if (module === require.main) {
     process.exit(1);
   }
 }
-// [END run_application]
-// [END app]
 
 exports.Index = Index;
 exports.lookup = lookup;

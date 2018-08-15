@@ -24,7 +24,9 @@ const Buffer = require('safe-buffer').Buffer;
  * you make an HTTP request to the deployed function's endpoint.
  *
  * @param {Object} req Cloud Function request context.
+ *                     More info: https://expressjs.com/en/api.html#req
  * @param {Object} res Cloud Function response context.
+ *                     More info: https://expressjs.com/en/api.html#res
  */
 exports.helloGET = (req, res) => {
   res.send('Hello World!');
@@ -36,7 +38,9 @@ exports.helloGET = (req, res) => {
  * HTTP Cloud Function.
  *
  * @param {Object} req Cloud Function request context.
+ *                     More info: https://expressjs.com/en/api.html#req
  * @param {Object} res Cloud Function response context.
+ *                     More info: https://expressjs.com/en/api.html#res
  */
 // [START functions_tips_terminate]
 exports.helloHttp = (req, res) => {

@@ -12,24 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* tslint:disable:no-console no-var-requires */
+/* tslint:disable:no-console */
 
-declare var require: any;
 declare var process: {
   env: {
       PORT: string,
   },
 };
 
-const PORT = process.env.PORT || 8080;
-const express = require("express");
+const PORT: number = Number(process.env.PORT) || 8080;
+import express = require("express");
 
-const app = express();
+const app: any = express();
 
-app.get("/", (req, res) => {
+app.get("/", (req: any, res: any) => {
   res.send("🎉 Hello TypeScript! 🎉");
 });
 
-const server = app.listen(PORT, () => {
+const server: object = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });

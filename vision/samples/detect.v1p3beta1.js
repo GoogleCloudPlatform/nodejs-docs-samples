@@ -18,7 +18,7 @@
 'use strict';
 
 function localizeObjects(fileName) {
-  // [START vision_localize_objects]
+  // [START vision_localize_objects_beta]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
   const fs = require('fs');
@@ -49,11 +49,11 @@ function localizeObjects(fileName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END vision_localize_objects]
+  // [END vision_localize_objects_beta]
 }
 
 function localizeObjectsGCS(uri) {
-  // [START vision_localize_objects_gcs]
+  // [START vision_localize_objects_gcs_beta]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
 
@@ -79,11 +79,11 @@ function localizeObjectsGCS(uri) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END vision_localize_objects_gcs]
+  // [END vision_localize_objects_gcs_beta]
 }
 
 function detectHandwritingOCR(fileName) {
-  // [START vision_handwritten_ocr]
+  // [START vision_handwritten_ocr_beta]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
   const fs = require('fs');
@@ -113,11 +113,11 @@ function detectHandwritingOCR(fileName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END vision_handwritten_ocr]
+  // [END vision_handwritten_ocr_beta]
 }
 
 function detectHandwritingGCS(uri) {
-  // [START vision_handwritten_ocr_gcs]
+  // [START vision_handwritten_ocr_gcs_beta]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision').v1p3beta1;
   const fs = require('fs');
@@ -148,7 +148,7 @@ function detectHandwritingGCS(uri) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END vision_handwritten_ocr_gcs]
+  // [END vision_handwritten_ocr_gcs_beta]
 }
 
 require(`yargs`)

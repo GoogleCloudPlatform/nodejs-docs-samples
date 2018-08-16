@@ -42,7 +42,7 @@ test.serial(`should create template`, async t => {
 });
 
 test(`should handle template creation errors`, async t => {
-  const output = await tools.runAsync(`${cmd} create -t BAD_INFOTYPE`);
+  const output = await tools.runAsync(`${cmd} create -i invalid_template#id`);
   t.regex(output, /Error in createInspectTemplate/);
 });
 

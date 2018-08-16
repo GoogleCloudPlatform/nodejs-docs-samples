@@ -33,7 +33,8 @@ const bucketName = process.env.BUCKET_NAME;
 
 test.serial(`should create a trigger`, async t => {
   const output = await tools.runAsync(
-    `${cmd} create ${bucketName} 1 -n ${triggerName} -m ${minLikelihood} -t ${infoType} -f ${maxFindings} -d "${triggerDisplayName}" -s "${triggerDescription}"`
+    `${cmd} create ${bucketName} 1 -n ${triggerName} --autoPopulateTimespan \
+    -m ${minLikelihood} -t ${infoType} -f ${maxFindings} -d "${triggerDisplayName}" -s "${triggerDescription}"`
   );
   t.true(output.includes(`Successfully created trigger ${fullTriggerName}`));
 });

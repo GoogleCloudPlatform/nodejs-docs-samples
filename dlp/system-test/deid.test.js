@@ -123,7 +123,7 @@ test(`should handle FPE decryption errors`, async t => {
 
 // deidentify_date_shift
 test(`should date-shift a CSV file`, async t => {
-  const outputCsvFile = path.join(__dirname, 'dates.result.csv');
+  const outputCsvFile = 'dates.actual.csv';
   const output = await tools.runAsync(
     `${cmd} deidDateShift "${csvFile}" "${outputCsvFile}" ${dateShiftAmount} ${dateShiftAmount} ${dateFields}`,
     cwd
@@ -138,9 +138,9 @@ test(`should date-shift a CSV file`, async t => {
 });
 
 test(`should date-shift a CSV file using a context field`, async t => {
-  const outputCsvFile = path.join(__dirname, 'dates-context.result.csv');
-  const correctResultFile =
-    'system-test/resources/date-shift-context.correct.csv';
+  const outputCsvFile = 'dates-context.actual.csv';
+  const expectedCsvFile =
+    'system-test/resources/date-shift-context.expected.csv';
   const output = await tools.runAsync(
     `${cmd} deidDateShift "${csvFile}" "${outputCsvFile}" ${dateShiftAmount} ${dateShiftAmount} ${dateFields} -f ${csvContextField} -n ${keyName} -w ${wrappedKey}`,
     cwd
@@ -150,7 +150,7 @@ test(`should date-shift a CSV file using a context field`, async t => {
   );
   t.is(
     fs.readFileSync(outputCsvFile).toString(),
-    fs.readFileSync(correctResultFile).toString()
+    fs.readFileSync(expectedCsvFile).toString()
   );
 });
 

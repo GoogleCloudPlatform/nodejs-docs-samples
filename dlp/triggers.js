@@ -21,6 +21,7 @@ function createTrigger(
   displayName,
   description,
   bucketName,
+  autoPopulateTimespan,
   scanPeriod,
   infoTypes,
   minLikelihood,
@@ -48,6 +49,9 @@ function createTrigger(
   // The name of the bucket to scan.
   // const bucketName = 'YOUR-BUCKET';
 
+  // Limit scan to new content only.
+  // const autoPopulateTimespan = true;
+
   // How often to wait between scans, in days (minimum = 1 day)
   // const scanPeriod = 1;
 
@@ -64,6 +68,9 @@ function createTrigger(
   const storageItem = {
     cloudStorageOptions: {
       fileSet: {url: `gs://${bucketName}/*`},
+    },
+    timeSpanConfig: {
+      enableAutoPopulationOfTimespanConfig: autoPopulateTimespan,
     },
   };
 
@@ -221,6 +228,10 @@ const cli = require(`yargs`) // eslint-disable-line
         default: '',
         type: 'string',
       },
+      autoPopulateTimespan: {
+        default: false,
+        type: 'boolean',
+      },
       minLikelihood: {
         alias: 'm',
         default: 'LIKELIHOOD_UNSPECIFIED',
@@ -249,6 +260,7 @@ const cli = require(`yargs`) // eslint-disable-line
         opts.displayName,
         opts.description,
         opts.bucketName,
+        opts.autoPopulateTimespan,
         opts.scanPeriod,
         opts.infoTypes,
         opts.minLikelihood,

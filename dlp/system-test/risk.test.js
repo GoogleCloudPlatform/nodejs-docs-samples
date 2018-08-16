@@ -29,7 +29,7 @@ const uniqueField = 'Name';
 const repeatedField = 'Mystery';
 const numericField = 'Age';
 const stringBooleanField = 'Gender';
-const testProjectId = 'nodejs-docs-samples';
+const testProjectId = process.env.GCLOUD_PROJECT;
 
 test.before(tools.checkCredentials);
 

@@ -11,45 +11,23 @@ be performed manually when developing locally.
 
 Install dependencies:
 
-    With `npm`:
-
-        npm install
-
-    or with `yarn`:
-
-        yarn install
+   npm install
 
 ## Running locally
 
 1. Perform the build step:
 
-    With `npm`:
-
-        npm run gcp-build
-
-    or with `yarn`:
-
-        yarn run gcp-build
+    npm run gcp-build
 
 1. Run the completed program
 
-    With `npm`:
-
-        npm start
-
-    or with `yarn`:
-
-        yarn start
+    npm start
 
 ## Deploying to App Engine
 
-With `npm`:
+Deploy your app:
 
     npm run deploy
-
-or with `yarn`:
-
-    yarn run deploy
 
 By default, this application deploys to [App Engine Standard][appengine]. _(Recommended)_
 Deploy to App Engine Flexible by [modifying `app.yaml`][app_yaml].

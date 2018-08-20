@@ -30,7 +30,7 @@ function syncRecognizeModelSelection(
   sampleRateHertz,
   languageCode
 ) {
-  // [START speech_transcribe_model_selection]
+  // [START speech_transcribe_model_selection_beta]
   // Imports the Google Cloud client library for Beta API
   /**
    * TODO(developer): Update client library import to use new
@@ -79,7 +79,7 @@ function syncRecognizeModelSelection(
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_transcribe_model_selection]
+  // [END speech_transcribe_model_selection_beta]
 }
 
 function syncRecognizeModelSelectionGCS(
@@ -89,7 +89,7 @@ function syncRecognizeModelSelectionGCS(
   sampleRateHertz,
   languageCode
 ) {
-  // [START speech_transcribe_model_selection_gcs]
+  // [START speech_transcribe_model_selection_gcs_beta]
   // Imports the Google Cloud client library for Beta API
   /**
    * TODO(developer): Update client library import to use new
@@ -137,7 +137,7 @@ function syncRecognizeModelSelectionGCS(
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_transcribe_model_selection_gcs]
+  // [END speech_transcribe_model_selection_gcs_beta]
 }
 
 function syncRecognizeWithAutoPunctuation(
@@ -146,7 +146,7 @@ function syncRecognizeWithAutoPunctuation(
   sampleRateHertz,
   languageCode
 ) {
-  // [START speech_transcribe_file_with_auto_punctuation]
+  // [START speech_transcribe_auto_punctuation_beta]
   // Imports the Google Cloud client library for Beta API
   /**
    * TODO(developer): Update client library import to use new
@@ -193,7 +193,7 @@ function syncRecognizeWithAutoPunctuation(
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_transcribe_file_with_auto_punctuation]
+  // [END speech_transcribe_auto_punctuation_beta]
 }
 
 function syncRecognizeWithMetaData(
@@ -202,7 +202,7 @@ function syncRecognizeWithMetaData(
   sampleRateHertz,
   languageCode
 ) {
-  // [START speech_transcribe_file_with_metadata]
+  // [START speech_transcribe_recognition_metadata_beta]
   // Imports the Google Cloud client library for Beta API
   /**
    * TODO(developer): Update client library import to use new
@@ -258,7 +258,7 @@ function syncRecognizeWithMetaData(
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_transcribe_file_with_metadata]
+  // [END speech_transcribe_recognition_metadata_beta]
 }
 
 function syncRecognizeWithEnhancedModel(
@@ -267,7 +267,7 @@ function syncRecognizeWithEnhancedModel(
   sampleRateHertz,
   languageCode
 ) {
-  // [START speech_transcribe_file_with_enhanced_model]
+  // [START speech_transcribe_enhanced_model_beta]
   // Imports the Google Cloud client library for Beta API
   /**
    * TODO(developer): Update client library import to use new
@@ -315,7 +315,7 @@ function syncRecognizeWithEnhancedModel(
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_transcribe_file_with_enhanced_model]
+  // [END speech_transcribe_enhanced_model_beta]
 }
 
 require(`yargs`)

@@ -24,7 +24,7 @@
 'use strict';
 
 function syncRecognize(filename, encoding, sampleRateHertz, languageCode) {
-  // [START speech_sync_recognize]
+  // [START speech_transcribe_sync]
   // Imports the Google Cloud client library
   const fs = require('fs');
   const speech = require('@google-cloud/speech');
@@ -67,11 +67,11 @@ function syncRecognize(filename, encoding, sampleRateHertz, languageCode) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_sync_recognize]
+  // [END speech_transcribe_sync]
 }
 
 function syncRecognizeGCS(gcsUri, encoding, sampleRateHertz, languageCode) {
-  // [START speech_sync_recognize_gcs]
+  // [START speech_transcribe_sync_gcs]
   // Imports the Google Cloud client library
   const speech = require('@google-cloud/speech');
 
@@ -113,7 +113,7 @@ function syncRecognizeGCS(gcsUri, encoding, sampleRateHertz, languageCode) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_sync_recognize_gcs]
+  // [END speech_transcribe_sync_gcs]
 }
 
 function syncRecognizeWords(filename, encoding, sampleRateHertz, languageCode) {
@@ -178,7 +178,7 @@ function syncRecognizeWords(filename, encoding, sampleRateHertz, languageCode) {
 }
 
 function asyncRecognize(filename, encoding, sampleRateHertz, languageCode) {
-  // [START speech_async_recognize]
+  // [START speech_transcribe_async]
   // Imports the Google Cloud client library
   const speech = require('@google-cloud/speech');
   const fs = require('fs');
@@ -228,11 +228,11 @@ function asyncRecognize(filename, encoding, sampleRateHertz, languageCode) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_async_recognize]
+  // [END speech_transcribe_async]
 }
 
 function asyncRecognizeGCS(gcsUri, encoding, sampleRateHertz, languageCode) {
-  // [START speech_async_recognize_gcs]
+  // [START speech_transcribe_async_gcs]
   // Imports the Google Cloud client library
   const speech = require('@google-cloud/speech');
 
@@ -281,7 +281,7 @@ function asyncRecognizeGCS(gcsUri, encoding, sampleRateHertz, languageCode) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_async_recognize_gcs]
+  // [END speech_transcribe_async_gcs]
 }
 
 function asyncRecognizeGCSWords(
@@ -290,7 +290,7 @@ function asyncRecognizeGCSWords(
   sampleRateHertz,
   languageCode
 ) {
-  // [START speech_async_recognize_gcs_words]
+  // [START speech_transcribe_async_time_offsets_gcs]
   // Imports the Google Cloud client library
   const speech = require('@google-cloud/speech');
 
@@ -353,11 +353,11 @@ function asyncRecognizeGCSWords(
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END speech_async_recognize_gcs_words]
+  // [END speech_transcribe_async_time_offsets_gcs]
 }
 
 function streamingRecognize(filename, encoding, sampleRateHertz, languageCode) {
-  // [START speech_streaming_recognize]
+  // [START speech_transcribe_streaming]
   const fs = require('fs');
 
   // Imports the Google Cloud client library
@@ -395,11 +395,11 @@ function streamingRecognize(filename, encoding, sampleRateHertz, languageCode) {
 
   // Stream an audio file from disk to the Speech API, e.g. "./resources/audio.raw"
   fs.createReadStream(filename).pipe(recognizeStream);
-  // [END speech_streaming_recognize]
+  // [END speech_transcribe_streaming]
 }
 
 function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
-  // [START speech_streaming_mic_recognize]
+  // [START speech_transcribe_streaming_mic]
   const record = require('node-record-lpcm16');
 
   // Imports the Google Cloud client library
@@ -450,7 +450,7 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
     .pipe(recognizeStream);
 
   console.log('Listening, press Ctrl+C to stop.');
-  // [END speech_streaming_mic_recognize]
+  // [END speech_transcribe_streaming_mic]
 }
 
 require(`yargs`)

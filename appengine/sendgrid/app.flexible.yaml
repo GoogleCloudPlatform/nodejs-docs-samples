@@ -11,16 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
 runtime: nodejs
 env: flex
 
-# [START env_variables]
+# [START gae_flex_sendgrid_yaml]
 # The following env variables may contain sensitive information that grants
 # anyone access to your Sendgrid account. Do not add this file to your source
 # control.
 env_variables:
   SENDGRID_API_KEY: <your-sendgrid-api-key>
   SENDGRID_SENDER: <your-sendgrid-sender>
-# [END env_variables]
-# [END app_yaml]
+# [END gae_flex_sendgrid_yaml]

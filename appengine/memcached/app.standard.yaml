@@ -11,10 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
 runtime: nodejs8
 
-# [START env_variables]
+# [START gae_flex_redislabs_memcache_yaml]
 # The following env variables may contain sensitive information that grants
 # anyone access to your memcached service. Do not add this file to your source
 # control.
@@ -24,5 +23,4 @@ env_variables:
   # fill in these values with your username and password.
   MEMCACHE_USERNAME: your-memcache-username
   MEMCACHE_PASSWORD: your-memcache-password
-# [END env_variables]
-# [END app_yaml]
+# [END gae_flex_redislabs_memcache_yaml]

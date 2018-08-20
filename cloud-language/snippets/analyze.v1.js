@@ -16,7 +16,7 @@
 'use strict';
 
 function analyzeSentimentOfText(text) {
-  // [START language_sentiment_string]
+  // [START language_sentiment_text]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -53,11 +53,11 @@ function analyzeSentimentOfText(text) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_sentiment_string]
+  // [END language_sentiment_text]
 }
 
 function analyzeSentimentInFile(bucketName, fileName) {
-  // [START language_sentiment_file]
+  // [START language_sentiment_file_gcs]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -95,11 +95,11 @@ function analyzeSentimentInFile(bucketName, fileName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_sentiment_file]
+  // [END language_sentiment_file_gcs]
 }
 
 function analyzeEntitiesOfText(text) {
-  // [START language_entities_string]
+  // [START language_entities_text]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -135,11 +135,11 @@ function analyzeEntitiesOfText(text) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_entities_string]
+  // [END language_entities_text]
 }
 
 function analyzeEntitiesInFile(bucketName, fileName) {
-  // [START language_entities_file]
+  // [START language_entities_file_gcs]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -176,11 +176,11 @@ function analyzeEntitiesInFile(bucketName, fileName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_entities_file]
+  // [END language_entities_file_gcs]
 }
 
 function analyzeSyntaxOfText(text) {
-  // [START language_syntax_string]
+  // [START language_syntax_text]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -213,11 +213,11 @@ function analyzeSyntaxOfText(text) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_syntax_string]
+  // [END language_syntax_text]
 }
 
 function analyzeSyntaxInFile(bucketName, fileName) {
-  // [START language_syntax_file]
+  // [START language_syntax_file_gcs]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -251,11 +251,11 @@ function analyzeSyntaxInFile(bucketName, fileName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_syntax_file]
+  // [END language_syntax_file_gcs]
 }
 
 function analyzeEntitySentimentOfText(text) {
-  // [START language_entity_sentiment_string]
+  // [START language_entity_sentiment_text]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -290,11 +290,11 @@ function analyzeEntitySentimentOfText(text) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_entity_sentiment_string]
+  // [END language_entity_sentiment_text]
 }
 
 function analyzeEntitySentimentInFile(bucketName, fileName) {
-  // [START language_entity_sentiment_file]
+  // [START language_entity_sentiment_file_gcs]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -330,11 +330,11 @@ function analyzeEntitySentimentInFile(bucketName, fileName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_entity_sentiment_file]
+  // [END language_entity_sentiment_file_gcs]
 }
 
 function classifyTextOfText(text) {
-  // [START language_classify_string]
+  // [START language_classify_text]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language');
 
@@ -368,11 +368,11 @@ function classifyTextOfText(text) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_classify_string]
+  // [END language_classify_text]
 }
 
 function classifyTextInFile(bucketName, fileName) {
-  // [START language_classify_file]
+  // [START language_classify_file_gcs]
   // Imports the Google Cloud client library.
   const language = require('@google-cloud/language');
 
@@ -407,7 +407,7 @@ function classifyTextInFile(bucketName, fileName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END language_classify_file]
+  // [END language_classify_file_gcs]
 }
 
 require(`yargs`)

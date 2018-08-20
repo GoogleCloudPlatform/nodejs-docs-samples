@@ -166,6 +166,8 @@ exports.uploadFile = (req, res) => {
       fields[fieldname] = val;
     });
 
+    let fileWrites = [];
+
     // This code will process each file uploaded.
     busboy.on('file', (fieldname, file, filename) => {
       // Note: os.tmpdir() points to an in-memory file system on GCF
@@ -173,17 +175,33 @@ exports.uploadFile = (req, res) => {
       console.log(`Processed file ${filename}`);
       const filepath = path.join(tmpdir, filename);
       uploads[fieldname] = filepath;
-      file.pipe(fs.createWriteStream(filepath));
+
+      const writeStream = fs.createWriteStream(filepath);
+      file.pipe(writeStream);
+
+      // File was processed by Busboy; wait for it to be written to disk.
+      const promise = new Promise((resolve, reject) => {
+        file.on('end', () => {
+          writeStream.end();
+        });
+        writeStream.on('finish', resolve);
+        writeStream.on('error', reject);
+      });
+      fileWrites.push(promise);
     });
 
-    // This event will be triggered after all uploaded files are saved.
+    // Triggered once all uploaded files are processed by Busboy.
+    // We still need to wait for the disk writes (saves) to complete.
     busboy.on('finish', () => {
-      // TODO(developer): Process uploaded files here
-      for (const name in uploads) {
-        const file = uploads[name];
-        fs.unlinkSync(file);
-      }
-      res.send();
+      Promise.all(fileWrites)
+        .then(() => {
+          // TODO(developer): Process saved files here
+          for (const name in uploads) {
+            const file = uploads[name];
+            fs.unlinkSync(file);
+          }
+          res.send();
+        });
     });
 
     busboy.end(req.rawBody);

@@ -22,7 +22,7 @@ function synthesizeText(
   languageCode,
   ssmlGender
 ) {
-  //[START tts_synthesize_text_with_audio_profile]
+  //[START tts_synthesize_text_audio_profile_beta]
 
   // Imports the Google Cloud client library
   const speech = require('@google-cloud/text-to-speech');
@@ -51,7 +51,7 @@ function synthesizeText(
       console.log(`Audio content written to file: ${outputFile}`);
     });
   });
-  // [END tts_synthesize_text_with_audio_profile]
+  // [END tts_synthesize_text_audio_profile_beta]
 }
 
 require(`yargs`)

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-// [START app]
+// [START gae_flex_node_static_files]
 'use strict';
 
 const express = require('express');
@@ -34,4 +34,4 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]
+// [END gae_flex_node_static_files]

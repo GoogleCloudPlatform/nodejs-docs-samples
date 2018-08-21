@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
 const express = require('express');
@@ -49,7 +48,7 @@ const PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
 const topic = pubsub.topic(process.env.PUBSUB_TOPIC);
 const publisher = topic.publisher();
 
-// [START index]
+// [START gae_flex_pubsub_index]
 app.get('/', (req, res) => {
   res.render('index', { messages: messages });
 });
@@ -68,9 +67,9 @@ app.post('/', formBodyParser, (req, res, next) => {
     res.status(200).send('Message sent');
   });
 });
-// [END index]
+// [END gae_flex_pubsub_index]
 
-// [START push]
+// [START gae_flex_pubsub_push]
 app.post('/pubsub/push', jsonBodyParser, (req, res) => {
   if (req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
     res.status(400).send();
@@ -84,7 +83,7 @@ app.post('/pubsub/push', jsonBodyParser, (req, res) => {
 
   res.status(200).send();
 });
-// [END push]
+// [END gae_flex_pubsub_push]
 
 // Start the server
 const PORT = process.env.PORT || 8080;
@@ -92,6 +91,5 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]
 
 module.exports = app;

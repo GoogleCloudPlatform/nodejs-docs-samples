@@ -72,7 +72,10 @@ exports.lazyGlobals = (req, res) => {
 
 // [START functions_tips_connection_pooling]
 const http = require('http');
-const agent = new http.Agent({keepAlive: true});
+const agent = new http.Agent({
+  keepAlive: true,
+  keepAliveMs: 0
+});
 
 /**
  * HTTP Cloud Function that caches an HTTP agent to pool HTTP connections.

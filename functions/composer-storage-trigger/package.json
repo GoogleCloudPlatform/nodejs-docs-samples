@@ -1,0 +1,23 @@
+{
+  "name": "nodejs-docs-samples-functions-composer-storage-trigger",
+  "version": "0.0.1",
+  "dependencies": {
+    "request": ">=2.83"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.2.5"
+  },
+  "scripts": {
+    "lint": "repo-tools lint"
+  }
+}

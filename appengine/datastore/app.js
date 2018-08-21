@@ -13,10 +13,9 @@
  * limitations under the License.
  */
 
-// [START app]
+// [START gae_flex_datastore_app]
 'use strict';
 
-// [START setup]
 const express = require('express');
 const crypto = require('crypto');
 
@@ -32,9 +31,7 @@ const Datastore = require('@google-cloud/datastore');
 
 // Instantiate a datastore client
 const datastore = Datastore();
-// [END setup]
 
-// [START insertVisit]
 /**
  * Insert a visit record into the database.
  *
@@ -46,9 +43,7 @@ function insertVisit (visit) {
     data: visit
   });
 }
-// [END insertVisit]
 
-// [START getVisits]
 /**
  * Retrieve the latest 10 visit records from the database.
  */
@@ -63,7 +58,6 @@ function getVisits () {
       return entities.map((entity) => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`);
     });
 }
-// [END getVisits]
 
 app.get('/', (req, res, next) => {
   // Create a visit record to be stored in the database
@@ -86,13 +80,11 @@ app.get('/', (req, res, next) => {
     .catch(next);
 });
 
-// [START listen]
 const PORT = process.env.PORT || 8080;
 app.listen(process.env.PORT || 8080, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END listen]
-// [END app]
+// [END gae_flex_datastore_app]
 
 module.exports = app;

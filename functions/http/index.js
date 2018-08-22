@@ -23,14 +23,14 @@
  * @param {Object} res ExpressJS object containing the HTTP response to send.
  */
 exports.helloWorld = (req, res) => {
-  if (req.body.message === undefined) {
+  if (req.body.message) {
     // This is an error case, as "message" is required
-    res.status(400).send('No message defined!');
-  } else {
-    // Everything is ok - call request-terminating method to signal function
-    // completion. (Otherwise, the function may continue to run until timeout.)
-    console.log(req.body.message);
-    res.status(200).end();
+    return res.status(400).send('No message defined!');
+  }
+  // Everything is ok - call request-terminating method to signal function
+  // completion. (Otherwise, the function may continue to run until timeout.)
+  console.log(req.body.message);
+  res.status(200).end();
   }
 };
 // [END functions_http_helloworld]
@@ -44,41 +44,28 @@ exports.helloWorld = (req, res) => {
  * @param {Object} res Cloud Function response context.
  */
 exports.helloContent = (req, res) => {
-  let name;
-
-  switch (req.get('content-type')) {
-    // '{"name":"John"}'
-    case 'application/json':
-      name = req.body.name;
-      break;
-
+  let name = {
+      // '{"name":"John"}'
+    'application/json': req.body.name,
     // 'John', stored in a Buffer
-    case 'application/octet-stream':
-      name = req.body.toString(); // Convert buffer to a string
-      break;
-
+    'application/octet-stream': req.body.toString(), // Convert buffer to a string
     // 'John'
-    case 'text/plain':
-      name = req.body;
-      break;
-
+    'text/plain': req.body,
     // 'name=John' in the body of a POST request (not the URL)
-    case 'application/x-www-form-urlencoded':
-      name = req.body.name;
-      break;
-  }
+    'application/x-www-form-urlencoded': req.body.name;
+  }[req.get('content-type')];
 
   res.status(200).send(`Hello ${name || 'World'}!`);
 };
 // [END functions_http_content]
 
 // [START functions_http_method]
-function handleGET (req, res) {
+function handleGET(req, res) {
   // Do something with the GET request
   res.status(200).send('Hello World!');
 }
 
-function handlePUT (req, res) {
+function handlePUT(req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
 }

@@ -57,32 +57,6 @@ function getMocks () {
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.serial(`http:helloworld: should error with no message`, (t) => {
-  const mocks = getMocks();
-  const httpSample = getSample();
-  mocks.req.body = {};
-  httpSample.sample.helloWorld(mocks.req, mocks.res);
-
-  t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 400);
-  t.true(mocks.res.send.calledOnce);
-  t.is(mocks.res.send.firstCall.args[0], `No message defined!`);
-});
-
-test.serial(`http:helloworld: should log message`, (t) => {
-  const mocks = getMocks();
-  const httpSample = getSample();
-  mocks.req.body = {
-    message: `hi`
-  };
-  httpSample.sample.helloWorld(mocks.req, mocks.res);
-
-  t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 200);
-  t.true(mocks.res.end.calledOnce);
-  t.true(console.log.calledWith(`hi`));
-});
-
 test.serial(`http:helloHttp: should handle GET`, (t) => {
   const mocks = getMocks();
   const httpSample = getSample();

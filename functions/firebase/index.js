@@ -61,24 +61,3 @@ exports.helloAuth = (event, callback) => {
   callback();
 };
 // [END functions_firebase_auth]
-
-// [START functions_firebase_analytics]
-/**
- * Triggered by a Firebase Mobile Analytics log event.
- *
- * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
- */
-exports.helloAnalytics = (event, callback) => {
-  try {
-    const triggerResource = event.resource;
-
-    console.log(`Function triggered by event: ${triggerResource}`);
-    console.log(JSON.stringify(event));
-  } catch (err) {
-    console.error(err);
-  }
-  // Don't forget to call the callback.
-  callback();
-};
-// [END functions_firebase_analytics]

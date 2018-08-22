@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
 const format = require('util').format;
@@ -24,7 +23,6 @@ const bodyParser = require('body-parser').urlencoded({
 
 const app = express();
 
-// [START config]
 const TWILIO_NUMBER = process.env.TWILIO_NUMBER;
 if (!TWILIO_NUMBER) {
   console.log('Please configure environment variables as described in README.md');
@@ -37,9 +35,8 @@ const twilio = require('twilio')(
 );
 
 const TwimlResponse = require('twilio').TwimlResponse;
-// [END config]
 
-// [START receive_call]
+// [START gae_flex_twilio_receive_call]
 app.post('/call/receive', (req, res) => {
   const resp = new TwimlResponse();
   resp.say('Hello from Google App Engine.');
@@ -48,9 +45,9 @@ app.post('/call/receive', (req, res) => {
     .contentType('text/xml')
     .send(resp.toString());
 });
-// [END receive_call]
+// [END gae_flex_twilio_receive_call]
 
-// [START send_sms]
+// [START gae_flex_twilio_send_sms]
 app.get('/sms/send', (req, res, next) => {
   const to = req.query.to;
   if (!to) {
@@ -70,9 +67,9 @@ app.get('/sms/send', (req, res, next) => {
     res.status(200).send('Message sent.');
   });
 });
-// [END send_sms]
+// [END gae_flex_twilio_send_sms]
 
-// [START receive_sms]
+// [START gae_flex_twilio_receive_sms]
 app.post('/sms/receive', bodyParser, (req, res) => {
   const sender = req.body.From;
   const body = req.body.Body;
@@ -84,7 +81,7 @@ app.post('/sms/receive', bodyParser, (req, res) => {
     .contentType('text/xml')
     .send(resp.toString());
 });
-// [END receive_sms]
+// [END gae_flex_twilio_receive_sms]
 
 // Start the server
 const PORT = process.env.PORT;
@@ -92,4 +89,3 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]

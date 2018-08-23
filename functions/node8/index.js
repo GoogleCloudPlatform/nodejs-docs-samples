@@ -163,14 +163,14 @@ exports.helloFirestore = (data, context) => {
 
 // [START functions_firebase_auth_node8]
 /**
- * Triggered by a change to a Firebase Auth user object.
+ * Triggered by creation or deletion of a Firebase Auth user object.
  *
  * @param {object} data The event payload.
  * @param {object} context The event metadata.
  */
 exports.helloAuth = (data, context) => {
   try {
-    console.log(`Function triggered by change to user: ${data.uid}`);
+    console.log(`Function triggered by creation or deletion of user: ${data.uid}`);
     console.log(`Created at: ${data.metadata.createdAt}`);
 
     if (data.email) {

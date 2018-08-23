@@ -19,7 +19,8 @@ const proxyquire = require(`proxyquire`).noPreserveCache();
 const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
-const translate = proxyquire(`@google-cloud/translate`, {})();
+const {Translate} = proxyquire(`@google-cloud/translate`, {});
+const translate = new Translate();
 
 test.before(tools.checkCredentials);
 test.before(tools.stubConsole);
@@ -58,6 +59,8 @@ test.cb(`should translate a string`, t => {
   };
 
   proxyquire(`../quickstart`, {
-    '@google-cloud/translate': sinon.stub().returns(translateMock),
+    '@google-cloud/translate': {
+      Translate: sinon.stub().returns(translateMock),
+    },
   });
 });

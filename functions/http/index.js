@@ -23,7 +23,7 @@
  * @param {Object} res ExpressJS object containing the HTTP response to send.
  */
 exports.helloWorld = (req, res) => {
-  if (req.body.message) {
+  if (!req.body.message) {
     // This is an error case, as "message" is required
     return res.status(400).send('No message defined!');
   }
@@ -60,12 +60,12 @@ exports.helloContent = (req, res) => {
 // [END functions_http_content]
 
 // [START functions_http_method]
-function handleGET(req, res) {
+function handleGET (req, res) {
   // Do something with the GET request
   res.status(200).send('Hello World!');
 }
 
-function handlePUT(req, res) {
+function handlePUT (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
 }

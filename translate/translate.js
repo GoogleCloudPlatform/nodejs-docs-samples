@@ -18,7 +18,7 @@
 function detectLanguage(text) {
   // [START translate_detect_language]
   // Imports the Google Cloud client library
-  const Translate = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate');
 
   // Creates a client
   const translate = new Translate();
@@ -51,7 +51,7 @@ function detectLanguage(text) {
 function listLanguages() {
   // [START translate_list_codes]
   // Imports the Google Cloud client library
-  const Translate = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate');
 
   // Creates a client
   const translate = new Translate();
@@ -74,7 +74,7 @@ function listLanguages() {
 function listLanguagesWithTarget(target) {
   // [START translate_list_language_names]
   // Imports the Google Cloud client library
-  const Translate = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate');
 
   // Creates a client
   const translate = new Translate();
@@ -102,7 +102,7 @@ function listLanguagesWithTarget(target) {
 function translateText(text, target) {
   // [START translate_translate_text]
   // Imports the Google Cloud client library
-  const Translate = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate');
 
   // Creates a client
   const translate = new Translate();
@@ -138,7 +138,7 @@ function translateText(text, target) {
 function translateTextWithModel(text, target, model) {
   // [START translate_text_with_model]
   // Imports the Google Cloud client library
-  const Translate = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate');
 
   // Creates a client
   const translate = new Translate();

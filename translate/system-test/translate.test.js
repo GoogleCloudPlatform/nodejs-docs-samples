@@ -18,7 +18,8 @@
 const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
-const translate = require(`@google-cloud/translate`)();
+const {Translate} = require(`@google-cloud/translate`);
+const translate = new Translate();
 
 const cwd = path.join(__dirname, `..`);
 const cmd = `node translate.js`;

@@ -1,0 +1,46 @@
+{
+  "name": "appengine-uglifyjs",
+  "description": "An example of minifying files with UglifyJS and Clean-CSS on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "8.x"
+  },
+  "scripts": {
+    "start": "node ./index.js",
+    "lint-css": "stylelint static/style.css",
+    "lint-html": "htmlhint index.html",
+    "lint-js": "semistandard index.js static/message.js",
+    "lint": "npm run lint-css && npm run lint-html && npm run lint-js",
+    "test": "npm run gcp-build && repo-tools test app -- index.js",
+    "minify-css": "cleancss -o static/style.min.css static/style.css",
+    "minify-js": "uglifyjs --compress --mangle -o static/message.min.js static/message.js",
+    "gcp-build": "npm run minify-js && npm run minify-css",
+    "deploy": "gcloud app deploy"
+  },
+  "dependencies": {
+    "clean-css-cli": "^4.2.1",
+    "express": "^4.16.3",
+    "uglify-js": "^3.4.7"
+  },
+  "repo-tools": {
+    "test": {
+      "app": {
+        "url": "/full",
+        "msg": "message.min.js"
+      }
+    }
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "htmlhint": "^0.9.13",
+    "semistandard": "^12.0.1",
+    "stylelint": "^9.4.0",
+    "stylelint-config-recommended": "^2.1.0"
+  },
+  "stylelint": {
+    "extends": "stylelint-config-recommended"
+  }
+}

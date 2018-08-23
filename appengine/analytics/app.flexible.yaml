@@ -11,12 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
 runtime: nodejs
 env: flex
 
-# [START env]
+# [START gae_flex_analytics_env_variables]
 env_variables:
   GA_TRACKING_ID: YOUR_TRACKING_ID
-# [END env]
-# [END app_yaml]
+# [END gae_flex_analytics_env_variables]

@@ -33,7 +33,7 @@ function getMocks () {
 
 test.serial(`should read env vars`, (t) => {
   const mocks = getMocks();
-  process.env['Foo'] = 'bar';
+  process.env['FOO'] = 'bar';
 
   functions.envVar(mocks.req, mocks.res);
 

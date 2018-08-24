@@ -18,6 +18,6 @@
 // [START functions_env_vars]
 exports.envVar = (req, res) => {
   // Sends 'bar' as response
-  res.send(process.env.Foo);
+  res.send(process.env.FOO);
 };
 // [END functions_env_vars]

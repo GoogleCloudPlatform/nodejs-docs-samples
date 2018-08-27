@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2016, Google, LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,9 @@
 
 'use strict';
 
-const express = require('express');
-const router = express.Router();
-
-router.get('/', (req, res) => {
-  res.render('index', {
-    title: 'Hello World! Express.js + Grunt.js on Google App Engine.'
-  });
-});
-
-module.exports = router;
+// [START functions_env_vars]
+exports.envVar = (req, res) => {
+  // Sends 'bar' as response
+  res.send(process.env.FOO);
+};
+// [END functions_env_vars]

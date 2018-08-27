@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2016, Google, LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,27 @@
 
 'use strict';
 
-const express = require('express');
-const router = express.Router();
+const sinon = require(`sinon`);
+const test = require(`ava`);
+const functions = require(`../`);
 
-router.get('/', (req, res) => {
-  res.render('index', {
-    title: 'Hello World! Express.js + Grunt.js on Google App Engine.'
-  });
+function getMocks () {
+  const req = {};
+  const res = {
+    send: sinon.stub().returnsThis()
+  };
+
+  return {
+    req: req,
+    res: res
+  };
+}
+
+test.serial(`should read env vars`, (t) => {
+  const mocks = getMocks();
+  process.env['FOO'] = 'bar';
+
+  functions.envVar(mocks.req, mocks.res);
+
+  t.true(mocks.res.send.calledWith('bar'));
 });
-
-module.exports = router;

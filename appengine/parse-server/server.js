@@ -15,7 +15,6 @@
 
 'use strict';
 
-// [START app]
 const express = require('express');
 const nconf = require('nconf');
 const ParseServer = require('parse-server').ParseServer;
@@ -46,4 +45,3 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]

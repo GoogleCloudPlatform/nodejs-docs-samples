@@ -31,7 +31,6 @@ const pass = nconf.get('mongoPass');
 const host = nconf.get('mongoHost');
 const port = nconf.get('mongoPort');
 
-// [START client]
 let uri = `mongodb://${user}:${pass}@${host}:${port}`;
 if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
@@ -86,4 +85,3 @@ mongodb.MongoClient.connect(uri, (err, client) => {
     console.log('started web process');
   });
 });
-// [END client]

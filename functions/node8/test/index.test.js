@@ -16,7 +16,7 @@
 'use strict';
 
 const uuid = require('uuid');
-const test = require(`ava`);
+const test = require('ava');
 const utils = require('@google-cloud/nodejs-repo-tools');
 
 const program = require('../');

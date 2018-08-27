@@ -31,7 +31,6 @@ exports.helloWorld = (req, res) => {
   // completion. (Otherwise, the function may continue to run until timeout.)
   console.log(req.body.message);
   res.status(200).end();
-  }
 };
 // [END functions_http_helloworld]
 

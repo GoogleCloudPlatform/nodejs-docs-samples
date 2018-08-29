@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+// [START composer_trigger]
 'use strict';
 
-// [START composer_trigger]
+const fetch = require('node-fetch');
+const FormData = require('form-data');
+
 /**
  * Triggered from a message on a Cloud Storage bucket.
  *
@@ -42,105 +45,84 @@ exports.triggerDag = function triggerDag (event, callback) {
   const DAG_NAME = 'composer_sample_trigger_response_dag';
 
   // Other constants
-  const WEBSERVER_URL = 'https://' + WEBSERVER_ID +
-        '.appspot.com/api/experimental/dags/' + DAG_NAME + '/dag_runs';
+  const WEBSERVER_URL = `https://${WEBSERVER_ID}.appspot.com/api/experimental/dags/${DAG_NAME}/dag_runs`;
   const USER_AGENT = 'gcf-event-trigger';
   const BODY = {'conf': JSON.stringify(event.data)};
 
   // Make the request
-  authorizeIap(
-    CLIENT_ID, PROJECT_ID, USER_AGENT,
-    function iapAuthorizationCallback (err, jwt, idToken) {
-      if (err) {
-        return callback(err);
-      }
-      makeIapPostRequest(
-        WEBSERVER_URL, BODY, idToken, USER_AGENT, jwt, callback);
-    });
+  authorizeIap(CLIENT_ID, PROJECT_ID, USER_AGENT)
+    .then(function iapAuthorizationCallback (iap) {
+      makeIapPostRequest(WEBSERVER_URL, BODY, iap.idToken, USER_AGENT, iap.jwt);
+    })
+    .then(_ => callback(null))
+    .catch(callback);
 };
 
 /**
    * @param {string} clientId The client id associated with the Composer webserver application.
    * @param {string} projectId The id for the project containing the Cloud Function.
    * @param {string} userAgent The user agent string which will be provided with the webserver request.
-   * @param {!Function} callback A callback accepting error, jwt, and idToken arguments.
    */
-function authorizeIap (clientId, projectId, userAgent, callback) {
-  const request = require('request');
+function authorizeIap (clientId, projectId, userAgent) {
+  const SERVICE_ACCOUNT = `${projectId}@appspot.gserviceaccount.com`;
+  const JWT_HEADER = Buffer.from(JSON.stringify({alg: 'RS256', typ: 'JWT'}))
+    .toString('base64');
 
-  const SERVICE_ACCOUNT = [projectId, '@appspot.gserviceaccount.com'].join('');
+  var jwt = '';
+  var jwtClaimset = '';
 
-  var options = {
-    url: [
-      'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/',
-      SERVICE_ACCOUNT, '/token'
-    ].join(''),
-    headers: {'User-Agent': userAgent, 'Metadata-Flavor': 'Google'}
-  };
-    // Obtain an Oauth2 access token for the appspot service account
-  request(options, function obtainAccessTokenCallback (err, res, body) {
-    if (err) {
-      return callback(err);
-    }
-    if (body.error) {
-      return callback(body);
-    }
-    var tokenResponse = JSON.parse(body);
-    var accessToken = tokenResponse.access_token;
-    var jwtHeader = Buffer.from(JSON.stringify({alg: 'RS256', typ: 'JWT'}))
-      .toString('base64');
-    var iat = Math.floor(new Date().getTime() / 1000);
-    var claims = {
-      iss: SERVICE_ACCOUNT,
-      aud: 'https://www.googleapis.com/oauth2/v4/token',
-      iat: iat,
-      exp: iat + 60,
-      target_audience: clientId
-    };
-    var jwtClaimset = Buffer.from(JSON.stringify(claims)).toString('base64');
-    var toSign = [jwtHeader, jwtClaimset].join('.');
-    var options = {
-      url: [
-        'https://iam.googleapis.com/v1/projects/', projectId,
-        '/serviceAccounts/', SERVICE_ACCOUNT, ':signBlob'
-      ].join(''),
-      method: 'POST',
-      json: {'bytesToSign': Buffer.from(toSign).toString('base64')},
-      headers: {
-        'User-Agent': userAgent,
-        'Authorization': ['Bearer', accessToken].join(' ')
-      }
-    };
-      // Request service account signature on header and claimset
-    request(options, function signJsonClaimCallback (err, res, body) {
-      if (err) {
-        return callback(err);
-      }
-      if (body.error) {
-        return callback(body);
-      }
-      var jwtSignature = body.signature;
-      var jwt = [jwtHeader, jwtClaimset, jwtSignature].join('.');
-      var options = {
-        url: 'https://www.googleapis.com/oauth2/v4/token',
-        form: {
-          grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-          assertion: jwt
-        }
+  // Obtain an Oauth2 access token for the appspot service account
+  return fetch(
+    `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/${SERVICE_ACCOUNT}/token`,
+    {
+      headers: {'User-Agent': userAgent, 'Metadata-Flavor': 'Google'}
+    })
+    .then(res => res.json())
+    .then(function obtainAccessTokenCallback (tokenResponse) {
+      var accessToken = tokenResponse.access_token;
+      var iat = Math.floor(new Date().getTime() / 1000);
+      var claims = {
+        iss: SERVICE_ACCOUNT,
+        aud: 'https://www.googleapis.com/oauth2/v4/token',
+        iat: iat,
+        exp: iat + 60,
+        target_audience: clientId
       };
-        // Request oauth id token with jwt header, claims, and signature
-      request.post(options, function getIdTokenCallback (err, res, body) {
-        if (err) {
-          return callback(err);
-        }
-        if (body.error) {
-          return callback(body);
-        }
-        var idToken = JSON.parse(body).id_token;
-        callback(null, jwt, idToken);
-      });
+      jwtClaimset = Buffer.from(JSON.stringify(claims)).toString('base64');
+      var toSign = [JWT_HEADER, jwtClaimset].join('.');
+
+      return fetch(
+        `https://iam.googleapis.com/v1/projects/${projectId}/serviceAccounts/${SERVICE_ACCOUNT}:signBlob`,
+        {
+          method: 'POST',
+          body: JSON.stringify({'bytesToSign': Buffer.from(toSign).toString('base64')}),
+          headers: {
+            'User-Agent': userAgent,
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+    })
+    .then(res => res.json())
+    .then(function signJsonClaimCallback (body) {
+      // Request service account signature on header and claimset
+      var jwtSignature = body.signature;
+      jwt = [JWT_HEADER, jwtClaimset, jwtSignature].join('.');
+      var form = new FormData();
+      form.append('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
+      form.append('assertion', jwt);
+      return fetch(
+        'https://www.googleapis.com/oauth2/v4/token', {
+          method: 'POST',
+          body: form
+        });
+    })
+    .then(res => res.json())
+    .then(function returnJwt (body) {
+      return {
+        jwt: jwt,
+        idToken: body.id_token
+      };
     });
-  });
 }
 
 /**
@@ -149,35 +131,25 @@ function authorizeIap (clientId, projectId, userAgent, callback) {
    * @param {string} idToken Bearer token used to authorize the iap request.
    * @param {string} userAgent The user agent to identify the requester.
    * @param {string} jwt A Json web token used to authenticate the request.
-   * @param {!Function} callback The Cloud Functions callback.
    */
-function makeIapPostRequest (url, body, idToken, userAgent, jwt, callback) {
-  const request = require('request');
+function makeIapPostRequest (url, body, idToken, userAgent, jwt) {
+  var form = new FormData();
+  form.append('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
+  form.append('assertion', jwt);
 
-  request.post(
-    {
-      url: url,
-      form: {
-        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-        assertion: jwt
-      }
-    },
-    function makeIapPostRequestCallback (err, res) {
-      if (err) {
-        return callback(err);
-      }
-
-      var options = {
-        url: url,
+  return fetch(
+    url, {
+      method: 'POST',
+      body: form
+    })
+    .then(function makeIapPostRequestCallback () {
+      return fetch(url, {
+        method: 'POST',
         headers: {
           'User-Agent': userAgent,
-          'Authorization': ['Bearer', idToken].join(' ')
+          'Authorization': `Bearer ${idToken}`
         },
-        method: 'POST',
-        json: body
-      };
-      request(options, function (err, res, body) {
-        callback(err);
+        body: JSON.stringify(body)
       });
     });
 }

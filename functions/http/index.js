@@ -251,3 +251,59 @@ exports.getSignedUrl = (req, res) => {
   }
 };
 // [END functions_http_signed_url]
+
+// [START functions_http_cors]
+/**
+ * HTTP function that supports CORS requests.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.corsEnabledFunction = (req, res) => {
+  // Set CORS headers for preflight requests
+  // e.g. allow GETs from any origin with the Content-Type header
+  // and cache preflight response for an 3600s
+
+  // Send response to OPTIONS requests and terminate the function execution
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+  }
+
+  // Set CORS headers for the main request
+  res.set('Access-Control-Allow-Origin', '*');
+
+  res.send('Hello World!');
+};
+// [END functions_http_cors]
+
+// [START functions_http_cors_auth]
+/**
+ * HTTP function that supports CORS requests with credentials.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.corsEnabledFunctionAuth = (req, res) => {
+  // Set CORS headers for preflight requests
+  // allows GETS from origin https://mydomain.com with Authorization header
+
+  // Send response to OPTIONS requests and terminate the function execution
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Origin', 'https://mydomain.com');
+    res.set('Access-Control-Allow-Methods', 'GET');
+    res.set('Access-Control-Allow-Headers', 'Authorization');
+    res.set('Access-Control-Allow-Credentials', 'true');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+  }
+
+  res.set('Access-Control-Allow-Origin', 'https://mydomain.com');
+  res.set('Access-Control-Allow-Credentials', 'true');
+
+  res.send('Hello World!');
+};
+// [END functions_http_cors_auth]

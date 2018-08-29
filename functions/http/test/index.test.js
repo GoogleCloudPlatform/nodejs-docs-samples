@@ -43,9 +43,20 @@ function getMocks () {
   };
   sinon.spy(req, `get`);
 
+  const corsPreflightReq = {
+    method: 'OPTIONS'
+  };
+
+  const corsMainReq = {
+    method: 'GET'
+  };
+
   return {
     req: req,
+    corsPreflightReq: corsPreflightReq,
+    corsMainReq: corsMainReq,
     res: {
+      set: sinon.stub().returnsThis(),
       send: sinon.stub().returnsThis(),
       json: sinon.stub().returnsThis(),
       end: sinon.stub().returnsThis(),
@@ -180,4 +191,42 @@ test.serial(`http:helloContent: should handle other`, (t) => {
   t.is(mocks.res.status.firstCall.args[0], 200);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], `Hello World!`);
+});
+
+test.serial(`http:cors: should respond to preflight request (no auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunction(mocks.corsPreflightReq, mocks.res);
+
+  t.true(mocks.res.status.calledOnceWith(204));
+  t.true(mocks.res.send.called);
+});
+
+test.serial(`http:cors: should respond to main request (no auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunction(mocks.corsMainReq, mocks.res);
+
+  t.true(mocks.res.send.calledOnceWith(`Hello World!`));
+});
+
+test.serial(`http:cors: should respond to preflight request (auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunctionAuth(mocks.corsPreflightReq, mocks.res);
+
+  t.true(mocks.res.status.calledOnceWith(204));
+  t.true(mocks.res.send.calledTwice);
+});
+
+test.serial(`http:cors: should respond to main request (auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunctionAuth(mocks.corsMainReq, mocks.res);
+
+  t.true(mocks.res.send.calledOnceWith(`Hello World!`));
 });

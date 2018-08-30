@@ -82,6 +82,6 @@ test.serial(
       `${cmd} transcription ${shortUrl}`,
       cwd
     );
-    t.regex(output, /over the past/);
+    t.regex(output, /over the pass/);
   }
 );

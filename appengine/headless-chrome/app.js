@@ -20,15 +20,15 @@ const express = require('express');
 const puppeteer = require('puppeteer');
 const app = express();
 
-let page;
+let browser;
 
 async function init () {
   // [START browser]
-  const browser = await puppeteer.launch({
+  browser = await puppeteer.launch({
     args: ['--no-sandbox']
   }); 
   // [END browser]
-  page = await browser.newPage();
+
   const server = app.listen(process.env.PORT || 8080, async err => {
     if (err) {
       await browser.close();
@@ -48,6 +48,7 @@ app.use(async (req, res) => {
     return res.send('Please provide URL as GET parameter, for example: <a href="/?url=https://example.com">?url=https://example.com</a>');
   }
 
+  let page = await browser.newPage();
   await page.goto(url);
   const imageBuffer = await page.screenshot();
 

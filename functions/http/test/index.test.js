@@ -219,7 +219,7 @@ test.serial(`http:cors: should respond to preflight request (auth)`, (t) => {
   httpSample.sample.corsEnabledFunctionAuth(mocks.corsPreflightReq, mocks.res);
 
   t.true(mocks.res.status.calledOnceWith(204));
-  t.true(mocks.res.send.calledTwice);
+  t.true(mocks.res.send.calledOnce);
 });
 
 test.serial(`http:cors: should respond to main request (auth)`, (t) => {

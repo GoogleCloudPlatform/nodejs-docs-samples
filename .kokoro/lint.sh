@@ -23,6 +23,6 @@ cd github/nodejs-docs-samples/
 npm install
 
 # Run lint
-npm lint
+npm run lint
 
 exit $?

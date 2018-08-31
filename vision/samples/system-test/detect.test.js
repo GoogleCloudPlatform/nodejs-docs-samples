@@ -21,6 +21,9 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
 
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient();
+
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node detect.js`;
 const cwd = path.join(__dirname, `..`);
@@ -195,12 +198,27 @@ test(`should detect crop hints in a remote file`, async t => {
 
 test(`should detect similar web images in a local file`, async t => {
   const output = await tools.runAsync(`${cmd} web ${files[5].localPath}`, cwd);
-  t.true(output.includes('Full matches found:'));
-  t.true(output.includes('Partial matches found:'));
-  t.true(output.includes('Web entities found:'));
-  t.true(output.includes('Description: Google Cloud Platform'));
-  t.true(output.includes('Best guess labels found'));
-  t.true(output.includes('Label:'));
+
+  const [results] = await client.webDetection(files[5].localPath);
+  const webDetection = results[0].webDetection;
+
+  if (webDetection.fullMatchingImages.length) {
+    t.true(output.includes('Full matches found:'));
+  }
+
+  if (webDetection.partialMatchingImages.length) {
+    t.true(output.includes('Partial matches found:'));
+  }
+
+  if (webDetection.webEntities.length) {
+    t.true(output.includes('Web entities found:'));
+    t.true(output.includes('Description: Google Cloud Platform'));
+  }
+
+  if (webDetection.bestGuessLabels.length) {  
+    t.true(output.includes('Best guess labels found'));
+    t.true(output.includes('Label:'));
+  }
 });
 
 test(`should detect similar web images in a remote file`, async t => {
@@ -208,12 +226,27 @@ test(`should detect similar web images in a remote file`, async t => {
     `${cmd} web-gcs ${bucketName} ${files[5].name}`,
     cwd
   );
-  t.true(output.includes('Full matches found:'));
-  t.true(output.includes('Partial matches found:'));
-  t.true(output.includes('Web entities found:'));
-  t.true(output.includes('Description: Google Cloud Platform'));
-  t.true(output.includes('Best guess labels found'));
-  t.true(output.includes('Label:'));
+
+  const [results] = await client.webDetection(`gs://${bucketName}/${files[5].name}`);
+  const webDetection = results[0].webDetection;
+
+  if (webDetection.fullMatchingImages.length) {
+    t.true(output.includes('Full matches found:'));
+  }
+
+  if (webDetection.partialMatchingImages.length) {
+    t.true(output.includes('Partial matches found:'));
+  }
+
+  if (webDetection.webEntities.length) {
+    t.true(output.includes('Web entities found:'));
+    t.true(output.includes('Description: Google Cloud Platform'));
+  }
+
+  if (webDetection.bestGuessLabels.length) {  
+    t.true(output.includes('Best guess labels found'));
+    t.true(output.includes('Label:'));
+  }
 });
 
 test(`should detect web entities with geo metadata in local file`, async t => {

@@ -17,7 +17,7 @@
 
 const process = require('process'); // Required to mock environment variables
 
-// [START app]
+// [START gae_storage_app]
 const format = require('util').format;
 const express = require('express');
 const Multer = require('multer');
@@ -37,7 +37,6 @@ const app = express();
 app.set('view engine', 'pug');
 app.use(bodyParser.json());
 
-// [START config]
 // Multer is required to process file uploads and make them available via
 // req.files.
 const multer = Multer({
@@ -49,16 +48,12 @@ const multer = Multer({
 
 // A bucket is a container for objects (files).
 const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
-// [END config]
 
-// [START form]
 // Display a form for uploading files.
 app.get('/', (req, res) => {
   res.render('form.pug');
 });
-// [END form]
 
-// [START process]
 // Process the file upload and upload to Google Cloud Storage.
 app.post('/upload', multer.single('file'), (req, res, next) => {
   if (!req.file) {
@@ -84,13 +79,12 @@ app.post('/upload', multer.single('file'), (req, res, next) => {
 
   blobStream.end(req.file.buffer);
 });
-// [END process]
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]
+// [END gae_storage_app]
 
 module.exports = app;

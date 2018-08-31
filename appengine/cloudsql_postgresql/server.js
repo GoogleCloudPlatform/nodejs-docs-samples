@@ -18,7 +18,7 @@
 // Require process, so we can mock environment variables
 const process = require('process');
 
-// [START app]
+// [START gae_flex_postgres_app]
 const express = require('express');
 const Knex = require('knex');
 const crypto = require('crypto');
@@ -29,7 +29,7 @@ app.enable('trust proxy');
 const knex = connect();
 
 function connect () {
-  // [START connect]
+  // [START gae_flex_postgres_connect]
   const config = {
     user: process.env.SQL_USER,
     password: process.env.SQL_PASSWORD,
@@ -45,7 +45,7 @@ function connect () {
     client: 'pg',
     connection: config
   });
-  // [END connect]
+  // [END gae_flex_postgres_connect]
 
   return knex;
 }
@@ -105,6 +105,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]
+// [END gae_flex_postgres_app]
 
 module.exports = app;

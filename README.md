@@ -444,16 +444,6 @@ View the [tutorial][bookshelf_docs] or the [source code][bookshelf_code].
 [bookshelf_docs]: https://cloud.google.com/nodejs/getting-started/tutorial-app
 [bookshelf_code]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
 
-### LabelCat
-
-[LabelCat][labelcat_docs] is a NodeJS app that uses the Google Cloud Prediction
-API to automatically label GitHub Issues as they are created.
-
-View the [tutorial][labelcat_docs] or the [source code][labelcat_code].
-
-[labelcat_docs]: https://cloud.google.com/nodejs/resources/examples/labelcat
-[labelcat_code]: https://github.com/GoogleCloudPlatform/LabelCat
-
 ### Node.js Codelab
 
 In the [Node.js Web App Google Cloud Platform][codelab_docs] codelab, you learn

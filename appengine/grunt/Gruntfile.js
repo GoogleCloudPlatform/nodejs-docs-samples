@@ -15,7 +15,6 @@
 
 module.exports = function (grunt) {
   grunt.initConfig({
-    // [START config]
     jshint: {
       files: ['Gruntfile.js', 'src/**/*.js'],
       options: {
@@ -31,7 +30,6 @@ module.exports = function (grunt) {
         dest: 'src/public/stylesheets/style.min.css'
       }
     },
-    // [END config]
     clean: ['src/public/stylesheets/style.min.css'],
     watch: {
       js: {
@@ -48,12 +46,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  // [START tasks]
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   grunt.registerTask('build', ['jshint', 'cssmin']);
-  // [END tasks]
 
   grunt.registerTask('default', ['watch']);
 };

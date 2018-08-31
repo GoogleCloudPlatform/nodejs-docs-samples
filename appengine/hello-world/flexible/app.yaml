@@ -11,11 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
+# [START gae_flex_quickstart_yaml]
 runtime: nodejs
 env: flex
 
-# This sample incurs costs to run on the App Engine flexible environment. 
+# This sample incurs costs to run on the App Engine flexible environment.
 # The settings below are to reduce costs during testing and are not appropriate
 # for production use. For more information, see:
 # https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
@@ -26,4 +26,4 @@ resources:
   memory_gb: 0.5
   disk_size_gb: 10
 
-# [END app_yaml]
+# [END gae_flex_quickstart_yaml]

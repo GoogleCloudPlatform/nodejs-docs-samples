@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
+# [START gae_flex_mailjet_yaml]
 runtime: nodejs
 env: flex
 
@@ -21,4 +21,4 @@ env: flex
 env_variables:
   MJ_APIKEY_PUBLIC: <your-mj-apikey-public>
   MJ_APIKEY_PRIVATE: <your-mj-apikey-private>
-# [END app_yaml]
+# [END gae_flex_mailjet_yaml]

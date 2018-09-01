@@ -19,6 +19,9 @@ Follow either of the two links above to access the appropriate CLA and
 instructions for how to sign and return it. Once we receive it, we'll be able to
 accept your pull requests.
 
+## Setting Up An Environment
+For instructions regarding development environment setup, please visit [the documentation](https://cloud.google.com/nodejs/docs/setup).
+
 ## Contributing A Patch
 
 1. Submit an issue describing your proposed change to the repo in question.

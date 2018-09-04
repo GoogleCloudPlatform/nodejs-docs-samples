@@ -16,6 +16,7 @@
       
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export NODE_ENV=development
+export FUNCTIONS_TOPIC=my-topic
 
 cd github/nodejs-docs-samples/${PROJECT}
 

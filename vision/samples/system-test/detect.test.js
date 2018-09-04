@@ -215,7 +215,7 @@ test(`should detect similar web images in a local file`, async t => {
     t.true(output.includes('Description: Google Cloud Platform'));
   }
 
-  if (webDetection.bestGuessLabels.length) {  
+  if (webDetection.bestGuessLabels.length) {
     t.true(output.includes('Best guess labels found'));
     t.true(output.includes('Label:'));
   }
@@ -227,7 +227,9 @@ test(`should detect similar web images in a remote file`, async t => {
     cwd
   );
 
-  const [results] = await client.webDetection(`gs://${bucketName}/${files[5].name}`);
+  const [results] = await client.webDetection(
+    `gs://${bucketName}/${files[5].name}`
+  );
   const webDetection = results[0].webDetection;
 
   if (webDetection.fullMatchingImages.length) {
@@ -243,7 +245,7 @@ test(`should detect similar web images in a remote file`, async t => {
     t.true(output.includes('Description: Google Cloud Platform'));
   }
 
-  if (webDetection.bestGuessLabels.length) {  
+  if (webDetection.bestGuessLabels.length) {
     t.true(output.includes('Best guess labels found'));
     t.true(output.includes('Label:'));
   }

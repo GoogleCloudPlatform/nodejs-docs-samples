@@ -39,11 +39,16 @@ function getSample () {
 }
 
 test.cb.serial(`Does nothing for deleted files`, (t) => {
+  const event = {
+    data: {
+      file: `some-file`
+    }
+  };
   const expectedMsg = `Something bad happened.`;
   const sample = getSample();
   sample.mocks.bodyJson.error = expectedMsg;
 
-  sample.program.triggerDag({data: { file: `some-file` } }, (err, message) => {
+  sample.program.triggerDag(event, (err, message) => {
     t.regex(err, /Something bad happened/);
     t.is(message, undefined);
     t.end();

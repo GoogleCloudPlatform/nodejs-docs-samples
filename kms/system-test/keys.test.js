@@ -106,8 +106,6 @@ test.serial(`should revoke access to a key ring`, async (t) => {
   t.regex(output, new RegExp(`${member}/${role} combo removed from policy for key ring ${keyRingName}.`));
 });
 
-
-
 // Crypto key tests
 test.serial(`should create a key`, async (t) => {
   const output = await tools.runAsync(`${cmd} create "${keyRingName}" "${keyNameOne}"`, cwd);

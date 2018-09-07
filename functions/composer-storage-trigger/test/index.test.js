@@ -38,7 +38,7 @@ function getSample () {
   };
 }
 
-test.cb.serial(`Does nothing for deleted files`, (t) => {
+test.cb(`Handles error in JSON body`, (t) => {
   const event = {
     data: {
       file: `some-file`

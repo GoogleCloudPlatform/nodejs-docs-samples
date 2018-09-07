@@ -17,6 +17,9 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export NODE_ENV=development
 
+export FUNCTIONS_TOPIC=my-topic
+export FUNCTIONS_BUCKET=my-bucket
+
 cd github/nodejs-docs-samples/${PROJECT}
 
 # Install dependencies
@@ -26,6 +29,11 @@ npm install
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
+
+# Start functions emulator, if appropriate
+if [[ $PROJECT == functions/* ]]; then
+  functions-emulator start
+fi
 
 npm test
 

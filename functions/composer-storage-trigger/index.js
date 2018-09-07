@@ -79,6 +79,9 @@ function authorizeIap (clientId, projectId, userAgent) {
     })
     .then(res => res.json())
     .then(function obtainAccessTokenCallback (tokenResponse) {
+      if (tokenResponse.error) {
+        return Promise.reject(tokenResponse.error);
+      }
       var accessToken = tokenResponse.access_token;
       var iat = Math.floor(new Date().getTime() / 1000);
       var claims = {
@@ -104,6 +107,9 @@ function authorizeIap (clientId, projectId, userAgent) {
     })
     .then(res => res.json())
     .then(function signJsonClaimCallback (body) {
+      if (body.error) {
+        return Promise.reject(body.error);
+      }
       // Request service account signature on header and claimset
       var jwtSignature = body.signature;
       jwt = [JWT_HEADER, jwtClaimset, jwtSignature].join('.');
@@ -118,6 +124,9 @@ function authorizeIap (clientId, projectId, userAgent) {
     })
     .then(res => res.json())
     .then(function returnJwt (body) {
+      if (body.error) {
+        return Promise.reject(body.error);
+      }
       return {
         jwt: jwt,
         idToken: body.id_token

@@ -39,7 +39,6 @@ on Google Cloud Platform.
     * [Google Cloud Pub/Sub](#google-cloud-pubsub)
   * [**Machine Learning**](#machine-learning)
     * [Google Cloud Natural Language API](#google-cloud-natural-language-api)
-    * [Google Cloud Prediction API](#google-cloud-prediction-api)
     * [Google Cloud Speech API (Beta)](#google-cloud-speech-api-beta)
     * [Google Translate API](#google-translate-api)
     * [Google Video Intelligence API](#google-video-intelligence-api)
@@ -306,16 +305,6 @@ View the [Cloud Natural Language API Node.js Client samples][language_samples].
 [language_docs]: https://cloud.google.com/natural-language/docs/
 [language_samples]: language
 
-#### Google Cloud Prediction API
-
-The [Cloud Prediction API][prediction_docs] provides a RESTful API to build
-Machine Learning models.
-
-View the [Cloud Prediction API Node.js samples][prediction_samples].
-
-[prediction_docs]: https://cloud.google.com/prediction/docs/
-[prediction_samples]: prediction
-
 #### Google Cloud Speech API (Beta)
 
 The [Cloud Speech API][speech_docs] enables easy integration of Google speech
@@ -454,16 +443,6 @@ View the [tutorial][bookshelf_docs] or the [source code][bookshelf_code].
 
 [bookshelf_docs]: https://cloud.google.com/nodejs/getting-started/tutorial-app
 [bookshelf_code]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
-
-### LabelCat
-
-[LabelCat][labelcat_docs] is a NodeJS app that uses the Google Cloud Prediction
-API to automatically label GitHub Issues as they are created.
-
-View the [tutorial][labelcat_docs] or the [source code][labelcat_code].
-
-[labelcat_docs]: https://cloud.google.com/nodejs/resources/examples/labelcat
-[labelcat_code]: https://github.com/GoogleCloudPlatform/LabelCat
 
 ### Node.js Codelab
 

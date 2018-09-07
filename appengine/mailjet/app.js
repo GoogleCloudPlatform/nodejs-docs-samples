@@ -19,12 +19,12 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 
-// [START setup]
+// [START gae_flex_mailjet_config]
 var Mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PUBLIC,
   process.env.MJ_APIKEY_PRIVATE
 );
-// [END setup]
+// [END gae_flex_mailjet_config]
 
 var app = express();
 
@@ -36,28 +36,32 @@ app.set('view engine', 'jade');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// [START index]
 app.get('/', function (req, res) {
   res.render('index');
 });
-// [END index]
 
-// [START hello]
+// [START gae_flex_mailjet_send_message]
 app.post('/hello', function (req, res, next) {
   var options = {
-    // From
-    FromEmail: 'no-reply@appengine-mailjet-demo.com',
-    FromName: 'Mailjet Demo',
-    // To
-    Recipients: [{ Email: req.body.email }],
-    // Subject
-    Subject: 'Hello World!',
-    // Body
-    'Text-part': 'Mailjet on Google App Engine with Node.js',
-    'Html-part': '<h3>Mailjet on Google App Engine with Node.js</h3>'
+    'Messages': [
+      {
+        'From': {
+          'Email': 'no-reply@appengine-mailjet-demo.com',
+          'Name': 'Mailjet Pilot'
+        },
+        'To': [
+          {
+            'Email': req.body.email
+          }
+        ],
+        'Subject': 'Your email flight plan!',
+        'TextPart': 'Mailjet on Google App Engine with Node.js',
+        'HTMLPart': '<h3>Mailjet on Google App Engine with Node.js</h3>'
+      }
+    ]
   };
 
-  var request = Mailjet.post('send').request(options);
+  var request = Mailjet.post('send', {'version': 'v3.1'}).request(options);
 
   request
     .then(function (response, body) {
@@ -71,11 +75,9 @@ app.post('/hello', function (req, res, next) {
       return next(err);
     });
 });
-// [END hello]
+// [END gae_flex_mailjet_send_message]
 
-// [START server]
 var server = app.listen(process.env.PORT || 8080, function () {
   console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });
-// [END server]

@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START app]
+// [START gae_flex_analytics_track_event]
 const express = require('express');
 const got = require('got');
 
@@ -26,7 +26,7 @@ app.enable('trust proxy');
 // Engine, but will need to be set manually when running locally. See README.md.
 const GA_TRACKING_ID = process.env.GA_TRACKING_ID;
 
-function trackEvent (category, action, label, value, cb) {
+function trackEvent (category, action, label, value) {
   const data = {
     // API Version.
     v: '1',
@@ -67,4 +67,4 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]
+// [END gae_flex_analytics_track_event]

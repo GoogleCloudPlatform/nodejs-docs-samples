@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START createTables]
+// [START gae_flex_postgres_create_tables]
 const Knex = require('knex');
 const prompt = require('prompt');
 
@@ -50,4 +50,4 @@ prompt.get(FIELDS, (err, config) => {
       }
     });
 });
-// [END createTables]
+// [END gae_flex_postgres_create_tables]

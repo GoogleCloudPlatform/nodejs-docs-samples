@@ -1,0 +1,27 @@
+{
+  "name": "nodejs-docs-samples-gcf-node8",
+  "version": "0.0.1",
+  "description": "Google Cloud Functions samples for Node.js 8",
+  "scripts": {
+    "pretest": "semistandard *.js test/*.js",
+    "test": "ava test/*"
+  },
+  "engines": {
+    "node": "^8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "ava": "^0.25.0",
+    "semistandard": "^12.0.1",
+    "uuid": "^3.3.2"
+  }
+}

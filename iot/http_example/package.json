@@ -6,20 +6,20 @@
   "author": "Google Inc.",
   "main": "cloudiot_http_example_nodejs.js",
   "scripts": {
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "test": "samples test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
+    "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },
   "dependencies": {
+    "googleapis": "^32.0.0",
     "@google-cloud/pubsub": "0.13.2",
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "@google-cloud/nodejs-repo-tools": "2.2.5",
     "ava": "0.22.0",
     "jsonwebtoken": "7.4.1",
     "retry-request": "3.3.1",
+    "semistandard": "^12.0.1",
     "uuid": "3.1.0",
     "yargs": "8.0.2"
-  },
-  "testDependencies": {
   },
   "devDependencies": {}
 }

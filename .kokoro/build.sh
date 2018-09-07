@@ -31,7 +31,7 @@ gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS
 gcloud config set project $GCLOUD_PROJECT
 
 # Start functions emulator, if appropriate
-if [[ $PROJECT == "functions/*" ]]; then
+if [[ $PROJECT == functions/* ]]; then
   functions-emulator start
 fi
 

@@ -24,6 +24,7 @@
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
+    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
     "@google-cloud/nodejs-repo-tools": "^2.2.5",
     "@google-cloud/pubsub": "^0.17.0",
     "@google-cloud/storage": "^1.5.0",

@@ -200,7 +200,7 @@ test(`should detect similar web images in a local file`, async t => {
   const output = await tools.runAsync(`${cmd} web ${files[5].localPath}`, cwd);
 
   const [results] = await client.webDetection(files[5].localPath);
-  const webDetection = results[0].webDetection;
+  const webDetection = results.webDetection;
 
   if (webDetection.fullMatchingImages.length) {
     t.true(output.includes('Full matches found:'));
@@ -230,7 +230,7 @@ test(`should detect similar web images in a remote file`, async t => {
   const [results] = await client.webDetection(
     `gs://${bucketName}/${files[5].name}`
   );
-  const webDetection = results[0].webDetection;
+  const webDetection = results.webDetection;
 
   if (webDetection.fullMatchingImages.length) {
     t.true(output.includes('Full matches found:'));

@@ -16,11 +16,12 @@
 'use strict';
 
 const path = require(`path`);
-const storage = require(`@google-cloud/storage`)();
+const {Storage} = require(`@google-cloud/storage`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
 
+const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node detect.v1p3beta1.js`;
 const cwd = path.join(__dirname, `..`);

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2018 Google Inc.
+# Copyright 2018 Google LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,24 +17,12 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export NODE_ENV=development
 
-export FUNCTIONS_TOPIC=my-topic
-export FUNCTIONS_BUCKET=my-bucket
-
-cd github/nodejs-docs-samples/${PROJECT}
+cd github/nodejs-docs-samples/
 
 # Install dependencies
 npm install
 
-# Configure gcloud
-export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
-gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-gcloud config set project $GCLOUD_PROJECT
-
-# Start functions emulator, if appropriate
-if [[ $PROJECT == functions/* ]]; then
-  functions-emulator start
-fi
-
-npm test
+# Run lint
+npm run lint
 
 exit $?

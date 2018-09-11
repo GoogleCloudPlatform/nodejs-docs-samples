@@ -33,6 +33,7 @@ const plaintext = path.join(__dirname, `../resources/plaintext.txt`);
 const ciphertext = path.join(__dirname, `../resources/plaintext.txt.encrypted`);
 const decrypted = path.join(__dirname, `../resources/plaintext.txt.decrypted`);
 
+const unspecifiedKeyRingName = `projects/${projectId}/locations/global/keyRings/`;
 const formattedKeyRingName = `projects/${projectId}/locations/global/keyRings/${keyRingName}`;
 const formattedKeyName = `${formattedKeyRingName}/cryptoKeys/${keyNameOne}`;
 
@@ -70,7 +71,7 @@ test.serial(`should create a key ring`, async (t) => {
 test.serial(`should list key rings`, async (t) => {
   await tools.tryTest(async () => {
     const output = await tools.runAsync(`${cmd} keyrings list`, cwd);
-    t.regex(output, new RegExp(formattedKeyRingName));
+    t.regex(output, new RegExp(unspecifiedKeyRingName));
   }).start();
 });
 

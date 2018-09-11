@@ -18,12 +18,13 @@
 'use strict';
 
 const path = require(`path`);
-const storage = require(`@google-cloud/storage`)();
+const {Storage} = require(`@google-cloud/storage`);
 const test = require(`ava`);
 const uuid = require(`uuid`);
 
 const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 
+const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node recognize.v1p1beta1.js`;
 const cwd = path.join(__dirname, `..`);

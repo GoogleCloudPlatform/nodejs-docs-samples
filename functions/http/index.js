@@ -44,14 +44,14 @@ exports.helloWorld = (req, res) => {
  */
 exports.helloContent = (req, res) => {
   let name = {
-      // '{"name":"John"}'
+    // '{"name":"John"}'
     'application/json': req.body.name,
     // 'John', stored in a Buffer
     'application/octet-stream': req.body.toString(), // Convert buffer to a string
     // 'John'
     'text/plain': req.body,
     // 'name=John' in the body of a POST request (not the URL)
-    'application/x-www-form-urlencoded': req.body.name;
+    'application/x-www-form-urlencoded': req.body.name
   }[req.get('content-type')];
 
   res.status(200).send(`Hello ${name || 'World'}!`);

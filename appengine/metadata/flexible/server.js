@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START appengine_metadata]
+// [START gae_flex_metadata]
 const express = require('express');
 const request = require('got');
 
@@ -57,4 +57,4 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END appengine_metadata]
+// [END gae_flex_metadata]

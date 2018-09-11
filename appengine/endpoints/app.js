@@ -15,15 +15,12 @@
 
 'use strict';
 
-// [START app]
-// [START setup]
 const express = require('express');
 const bodyParser = require('body-parser');
 const Buffer = require('safe-buffer').Buffer;
 
 const app = express();
 app.use(bodyParser.json());
-// [END setup]
 
 app.post('/echo', (req, res) => {
   res.status(200).json({ message: req.body.message });
@@ -42,14 +39,11 @@ app.get('/auth/info/googlejwt', authInfoHandler);
 app.get('/auth/info/googleidtoken', authInfoHandler);
 
 if (module === require.main) {
-  // [START listen]
   const PORT = process.env.PORT || 8080;
   app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
     console.log('Press Ctrl+C to quit.');
   });
-  // [END listen]
 }
-// [END app]
 
 module.exports = app;

@@ -13,15 +13,12 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
-// [START setup]
 const express = require('express');
 const errors = require('@google-cloud/error-reporting')();
 
 const app = express();
-// [END setup]
 
 app.get('/', (req, res, next) => {
   next(new Error('something is wrong!'));
@@ -32,13 +29,10 @@ app.use((err, req, res, next) => {
   res.status(500).send(err.message || 'Something broke!');
 });
 
-// [START listen]
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END listen]
-// [END app]
 
 module.exports = app;

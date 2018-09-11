@@ -123,3 +123,61 @@ exports.helloGCSGeneric = (data, context) => {
   console.log(`  Updated: ${file.updated}`);
 };
 // [END functions_helloworld_storage_generic_node8]
+
+// [START functions_firebase_rtdb_node8]
+/**
+ * Triggered by a change to a Firebase RTDB reference.
+ *
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
+ */
+exports.helloRTDB = (data, context) => {
+  const triggerResource = context.resource;
+
+  console.log(`Function triggered by change to: ${triggerResource}`);
+  console.log(`Admin?: ${!!data.admin}`);
+  console.log(`Delta:`);
+  console.log(JSON.stringify(data.delta, null, 2));
+};
+// [END functions_firebase_rtdb_node8]
+
+// [START functions_firebase_firestore_node8]
+/**
+ * Triggered by a change to a Firestore document.
+ *
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
+ */
+exports.helloFirestore = (data, context) => {
+  const triggerResource = context.resource;
+
+  console.log(`Function triggered by change to: ${triggerResource}`);
+
+  console.log(`\nOld value:`);
+  console.log(JSON.stringify(data.oldValue, null, 2));
+
+  console.log(`\nNew value:`);
+  console.log(JSON.stringify(data.value, null, 2));
+};
+// [END functions_firebase_firestore_node8]
+
+// [START functions_firebase_auth_node8]
+/**
+ * Triggered by creation or deletion of a Firebase Auth user object.
+ *
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
+ */
+exports.helloAuth = (data, context) => {
+  try {
+    console.log(`Function triggered by creation or deletion of user: ${data.uid}`);
+    console.log(`Created at: ${data.metadata.createdAt}`);
+
+    if (data.email) {
+      console.log(`Email: ${data.email}`);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+// [END functions_firebase_auth_node8]

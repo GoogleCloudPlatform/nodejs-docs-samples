@@ -15,25 +15,6 @@
 
 'use strict';
 
-// [START functions_http_helloworld]
-/**
- * Responds to any HTTP request that can provide a "message" field in the body.
- *
- * @param {Object} req ExpressJS object containing the received HTTP request.
- * @param {Object} res ExpressJS object containing the HTTP response to send.
- */
-exports.helloWorld = (req, res) => {
-  if (!req.body.message) {
-    // This is an error case, as "message" is required
-    return res.status(400).send('No message defined!');
-  }
-  // Everything is ok - call request-terminating method to signal function
-  // completion. (Otherwise, the function may continue to run until timeout.)
-  console.log(req.body.message);
-  res.status(200).end();
-};
-// [END functions_http_helloworld]
-
 // [START functions_http_content]
 /**
  * Responds to an HTTP request using data from the request body parsed according

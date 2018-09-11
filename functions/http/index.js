@@ -24,29 +24,16 @@
  * @param {Object} res Cloud Function response context.
  */
 exports.helloContent = (req, res) => {
-  let name;
-
-  switch (req.get('content-type')) {
+  let name = {
     // '{"name":"John"}'
-    case 'application/json':
-      name = req.body.name;
-      break;
-
+    'application/json': req.body && req.body.name,
     // 'John', stored in a Buffer
-    case 'application/octet-stream':
-      name = req.body.toString(); // Convert buffer to a string
-      break;
-
+    'application/octet-stream': req.body && req.body.toString(), // Convert buffer to a string
     // 'John'
-    case 'text/plain':
-      name = req.body;
-      break;
-
+    'text/plain': req.body,
     // 'name=John' in the body of a POST request (not the URL)
-    case 'application/x-www-form-urlencoded':
-      name = req.body.name;
-      break;
-  }
+    'application/x-www-form-urlencoded': req.body && req.body.name
+  }[req.get('content-type')];
 
   res.status(200).send(`Hello ${name || 'World'}!`);
 };

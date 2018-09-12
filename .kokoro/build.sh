@@ -23,7 +23,6 @@ export FUNCTIONS_BUCKET=my-bucket
 cd github/nodejs-docs-samples/${PROJECT}
 
 # Install dependencies
-npm install -g @google-cloud/functions-emulator
 npm install
 
 # Configure gcloud
@@ -33,6 +32,7 @@ gcloud config set project $GCLOUD_PROJECT
 
 # Start functions emulator, if appropriate
 if [[ $PROJECT == functions/* ]]; then
+  npm install -g @google-cloud/functions-emulator
   functions-emulator start
 fi
 

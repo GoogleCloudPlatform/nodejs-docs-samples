@@ -50,9 +50,18 @@ if (process.env.NODE_ENV === 'production') {
   mysqlConfig.socketPath = `/cloudsql/${connectionName}`;
 }
 
-const mysqlPool = mysql.createPool(mysqlConfig);
+// Connection pools reuse connections between invocations,
+// and handle dropped or expired connections automatically.
+let mysqlPool;
 
 exports.mysqlDemo = (req, res) => {
+  // Initialize the pool lazily, in case SQL access isn't needed for this
+  // GCF instance. Doing so minimizes the number of active SQL connections,
+  // which helps keep your GCF instances under SQL connection limits.
+  if (!mysqlPool) {
+    mysqlPool = mysql.createPool(mysqlConfig);
+  }
+
   mysqlPool.query('SELECT NOW() AS now', (err, results) => {
     if (err) {
       console.error(err);
@@ -61,6 +70,9 @@ exports.mysqlDemo = (req, res) => {
       res.send(JSON.stringify(results));
     }
   });
+
+  // Close any SQL resources that were declared inside this function.
+  // Keep any declared in global scope (e.g. mysqlPool) for later reuse.
 };
 // [END functions_sql_mysql]
 
@@ -76,9 +88,18 @@ if (process.env.NODE_ENV === 'production') {
   pgConfig.socketPath = `/cloudsql/${connectionName}`;
 }
 
-const pgPool = new pg.Pool(pgConfig);
+// Connection pools reuse connections between invocations,
+// and handle dropped or expired connections automatically.
+let pgPool;
 
 exports.postgresDemo = (req, res) => {
+  // Initialize the pool lazily, in case SQL access isn't needed for this
+  // GCF instance. Doing so minimizes the number of active SQL connections,
+  // which helps keep your GCF instances under SQL connection limits.
+  if (!pgPool) {
+    pgPool = new pg.Pool(pgConfig);
+  }
+
   pgPool.query('SELECT NOW() as now', (err, results) => {
     if (err) {
       console.error(err);
@@ -87,5 +108,8 @@ exports.postgresDemo = (req, res) => {
       res.send(JSON.stringify(results));
     }
   });
+
+  // Close any SQL resources that were declared inside this function.
+  // Keep any declared in global scope (e.g. mysqlPool) for later reuse.
 };
 // [END functions_sql_postgres]

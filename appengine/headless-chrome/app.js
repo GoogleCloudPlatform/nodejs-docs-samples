@@ -26,7 +26,7 @@ async function init () {
   // [START browser]
   browser = await puppeteer.launch({
     args: ['--no-sandbox']
-  }); 
+  });
   // [END browser]
 
   const server = app.listen(process.env.PORT || 8080, async err => {

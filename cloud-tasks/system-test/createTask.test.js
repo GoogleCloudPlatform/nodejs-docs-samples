@@ -22,49 +22,21 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT;
-const QUEUE = process.env.GCP_QUEUE || 'my-pull-queue';
-const cmd = `node tasks.js`;
+const QUEUE = process.env.QUEUE_ID || 'my-appengine-queue';
+const cmd = `node createTask.js`;
 const cwd = path.join(__dirname, `..`);
 
 test.before(t => {
   if (!QUEUE) {
-    t.fail(`You must set the GCP_QUEUE environment variable!`);
+    t.fail(`You must set the QUEUE_ID environment variable!`);
   }
 });
 test.before(tools.checkCredentials);
 
-let task;
-
 test.serial(`should create a task`, async t => {
   const output = await runAsync(
-    `${cmd} create ${PROJECT_ID} us-central1 "${QUEUE}"`,
+    `${cmd} --project=${PROJECT_ID} --location=us-central1 --queue=${QUEUE}`,
     cwd
   );
   t.true(output.includes('Created task'));
-});
-
-test.serial(`should pull a task`, async t => {
-  t.plan(0);
-  await tools
-    .tryTest(async assert => {
-      const output = await runAsync(
-        `${cmd} pull ${PROJECT_ID} us-central1 "${QUEUE}"`,
-        cwd
-      );
-      const matches = output.match(/^Leased task ({.+})$/);
-      if (matches && matches.length > 1) {
-        task = matches[1];
-      }
-      assert(output.includes(`Leased task`));
-    })
-    .start();
-});
-
-test.serial(`should acknowledge a task`, async t => {
-  if (task) {
-    const output = await runAsync(`${cmd} acknowledge '${task}'`, cwd);
-    t.true(output.includes(`Acknowledged task`));
-  } else {
-    t.fail(`no task to acknowledge`);
-  }
 });

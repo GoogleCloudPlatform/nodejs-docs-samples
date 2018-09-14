@@ -85,3 +85,31 @@ test.serial(`getMetrics: should retrieve metrics`, (t) => {
 
   t.is(callback.callCount, 1);
 });
+
+test(`processBigqueryLogEntry: should process log entry`, (t) => {
+  const sample = getSample();
+  const callback = sinon.stub();
+
+  const json = JSON.stringify({
+    protoPayload: {
+      methodName: 'method',
+      resourceName: 'resource',
+      authenticationInfo: {
+        principalEmail: 'me@example.com'
+      }
+    }
+  });
+
+  const data = {
+    data: {
+      data: Buffer.from(json, 'ascii')
+    }
+  };
+
+  sample.program.processBigqueryLogEntry(data, callback);
+
+  t.true(console.log.calledWith(`Method: method`));
+  t.true(console.log.calledWith(`Resource: resource`));
+  t.true(console.log.calledWith(`Initiator: me@example.com`));
+  t.is(callback.callCount, 1);
+});

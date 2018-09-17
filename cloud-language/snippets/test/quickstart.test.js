@@ -16,19 +16,18 @@
 'use strict';
 
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const cmd = `node quickstart.js`;
 const cwd = path.join(__dirname, `..`);
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(async () => tools.stubConsole);
+afterEach(async () => tools.restoreConsole);
 
-test(`should analyze sentiment in text`, async t => {
+it(`should analyze sentiment in text`, async () => {
   const output = await tools.runAsync(cmd, cwd);
-
-  t.regex(output, /Text: Hello, world!/);
-  t.regex(output, /Sentiment score: \d/);
-  t.regex(output, /Sentiment magnitude: \d/);
+  assert(RegExp('Text: Hello, world!').test(output));
+  assert(RegExp('Sentiment score: ').test(output));
+  assert(RegExp('Sentiment magnitude: ').test(output));
 });

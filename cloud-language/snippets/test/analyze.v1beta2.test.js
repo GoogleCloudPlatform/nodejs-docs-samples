@@ -19,7 +19,7 @@ const fs = require(`fs`);
 const path = require(`path`);
 const {Storage} = require(`@google-cloud/storage`);
 const storage = new Storage();
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
 
@@ -34,105 +34,105 @@ const text = fs.readFileSync(localFilePath, 'utf-8');
 const text2 = fs.readFileSync(localFilePath2, 'utf-8');
 const germanText = `Willkommen bei München`;
 
-test.before(async () => {
+before(async () => {
   tools.checkCredentials();
   const [bucket] = await storage.createBucket(bucketName);
   await bucket.upload(localFilePath);
   await bucket.upload(localFilePath2);
 });
 
-test.after.always(async () => {
+after(async () => {
   const bucket = storage.bucket(bucketName);
   await bucket.deleteFiles({force: true});
   await bucket.deleteFiles({force: true}); // Try a second time...
   await bucket.delete();
 });
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(async () => tools.stubConsole);
+afterEach(async () => tools.restoreConsole);
 
-test(`should analyze sentiment in text`, async t => {
+it(`should analyze sentiment in text`, async () => {
   const output = await tools.runAsync(`${cmd} sentiment-text "${text}"`, cwd);
-  t.regex(output, new RegExp(`Document sentiment:`));
-  t.regex(output, new RegExp(`Sentence: ${text}`));
-  t.regex(output, new RegExp(`Score: 0`));
-  t.regex(output, new RegExp(`Magnitude: 0`));
+  assert(RegExp(`Document sentiment:`).test(output));
+  assert(RegExp(`Sentence: ${text}`).test(output));
+  assert(RegExp(`Score: 0`).test(output));
+  assert(RegExp(`Magnitude: 0`).test(output));
 });
 
-test(`should analyze sentiment in a file`, async t => {
+it(`should analyze sentiment in a file`, async () => {
   const output = await tools.runAsync(
     `${cmd} sentiment-file ${bucketName} ${fileName}`,
     cwd
   );
-  t.regex(output, new RegExp(`Document sentiment:`));
-  t.regex(output, new RegExp(`Sentence: ${text}`));
-  t.regex(output, new RegExp(`Score: 0`));
-  t.regex(output, new RegExp(`Magnitude: 0`));
+  assert(RegExp(`Document sentiment:`).test(output));
+  assert(RegExp(`Sentence: ${text}`).test(output));
+  assert(RegExp(`Score: 0`).test(output));
+  assert(RegExp(`Magnitude: 0`).test(output));
 });
 
-test(`should analyze entities in text`, async t => {
+it(`should analyze entities in text`, async () => {
   const output = await tools.runAsync(`${cmd} entities-text "${text}"`, cwd);
-  t.regex(output, new RegExp(`Obama`));
-  t.regex(output, new RegExp(`Type: PERSON`));
-  t.regex(output, new RegExp(`White House`));
-  t.regex(output, new RegExp(`Type: LOCATION`));
+  assert(RegExp(`Obama`).test(output));
+  assert(RegExp(`Type: PERSON`).test(output));
+  assert(RegExp(`White House`).test(output));
+  assert(RegExp(`Type: LOCATION`).test(output));
 });
 
-test('should analyze entities in a file', async t => {
+it('should analyze entities in a file', async () => {
   const output = await tools.runAsync(
     `${cmd} entities-file ${bucketName} ${fileName}`,
     cwd
   );
-  t.regex(output, new RegExp(`Entities:`));
-  t.regex(output, new RegExp(`Type: PERSON`));
-  t.regex(output, new RegExp(`White House`));
-  t.regex(output, new RegExp(`Type: LOCATION`));
+  assert(RegExp(`Entities:`).test(output));
+  assert(RegExp(`Type: PERSON`).test(output));
+  assert(RegExp(`White House`).test(output));
+  assert(RegExp(`Type: LOCATION`).test(output));
 });
 
-test(`should analyze syntax in text`, async t => {
+it(`should analyze syntax in text`, async () => {
   const output = await tools.runAsync(`${cmd} syntax-text "${text}"`, cwd);
-  t.regex(output, new RegExp(`Parts of speech:`));
-  t.regex(output, new RegExp(`NOUN:`));
-  t.regex(output, new RegExp(`President`));
-  t.regex(output, new RegExp(`Obama`));
-  t.regex(output, new RegExp(`Morphology:`));
-  t.regex(output, new RegExp(`tag: 'NOUN'`));
+  assert(RegExp(`Parts of speech:`).test(output));
+  assert(RegExp(`NOUN:`).test(output));
+  assert(RegExp(`President`).test(output));
+  assert(RegExp(`Obama`).test(output));
+  assert(RegExp(`Morphology:`).test(output));
+  assert(RegExp(`tag: 'NOUN'`).test(output));
 });
 
-test('should analyze syntax in a file', async t => {
+it('should analyze syntax in a file', async () => {
   const output = await tools.runAsync(
     `${cmd} syntax-file ${bucketName} ${fileName}`,
     cwd
   );
-  t.regex(output, new RegExp(`NOUN:`));
-  t.regex(output, new RegExp(`President`));
-  t.regex(output, new RegExp(`Obama`));
-  t.regex(output, new RegExp(`Morphology:`));
-  t.regex(output, new RegExp(`tag: 'NOUN'`));
+  assert(RegExp(`NOUN:`).test(output));
+  assert(RegExp(`President`).test(output));
+  assert(RegExp(`Obama`).test(output));
+  assert(RegExp(`Morphology:`).test(output));
+  assert(RegExp(`tag: 'NOUN'`).test(output));
 });
 
-test('should analyze syntax in a 1.1 language (German)', async t => {
+it('should analyze syntax in a 1.1 language (German)', async () => {
   const output = await tools.runAsync(
     `${cmd} syntax-text "${germanText}"`,
     cwd
   );
-  t.regex(output, new RegExp(`Parts of speech:`));
-  t.regex(output, new RegExp(`ADV: Willkommen`));
-  t.regex(output, new RegExp(`ADP: bei`));
-  t.regex(output, new RegExp(`NOUN: München`));
+  assert(RegExp(`Parts of speech:`).test(output));
+  assert(RegExp(`ADV: Willkommen`).test(output));
+  assert(RegExp(`ADP: bei`).test(output));
+  assert(RegExp(`NOUN: München`).test(output));
 });
 
-test('should classify text in a file', async t => {
+it('should classify text in a file', async () => {
   const output = await tools.runAsync(
     `${cmd} classify-file ${bucketName} ${fileName2}`,
     cwd
   );
-  t.regex(output, new RegExp(`Name:`));
-  t.regex(output, new RegExp(`Computers & Electronics`));
+  assert(RegExp(`Name:`).test(output));
+  assert(RegExp(`Computers & Electronics`).test(output));
 });
 
-test('should classify text in text', async t => {
+it('should classify text in text', async () => {
   const output = await tools.runAsync(`${cmd} classify-text "${text2}"`, cwd);
-  t.regex(output, new RegExp(`Name:`));
-  t.regex(output, new RegExp(`Computers & Electronics`));
+  assert(RegExp(`Name:`).test(output));
+  assert(RegExp(`Computers & Electronics`).test(output));
 });

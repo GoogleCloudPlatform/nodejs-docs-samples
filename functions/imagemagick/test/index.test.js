@@ -56,7 +56,7 @@ function getSample () {
     blur: sinon.stub().returnsThis(),
     write: sinon.stub().yields()
   });
-  gmMock.subClass = sinon.stub().returnsThis()
+  gmMock.subClass = sinon.stub().returnsThis();
 
   const fsMock = {
     unlink: sinon.stub().yields()

@@ -17,8 +17,8 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export NODE_ENV=development
 
-export FUNCTIONS_TOPIC=my-topic
-export FUNCTIONS_BUCKET=my-bucket
+export FUNCTIONS_TOPIC=integration-tests-instance
+export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
 
 cd github/nodejs-docs-samples/${PROJECT}
 

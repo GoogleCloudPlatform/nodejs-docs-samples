@@ -105,6 +105,6 @@ test(`should run word level confidence on a GCS bucket`, async t => {
   );
   t.true(
     output.includes(`Transcription: how old is the Brooklyn Bridge`) &&
-      output.includes(`Confidence: \d\.\d`)
+      /Confidence: \d\.\d/.test(output)
   );
 });

@@ -19,7 +19,7 @@ export NODE_ENV=development
 
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
-export BASE_URL="http://localhost:8010/nodejs-docs-samples/us-central1"
+export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/us-central1"
 
 cd github/nodejs-docs-samples/${PROJECT}
 

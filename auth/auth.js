@@ -86,7 +86,7 @@ const cli = require(`yargs`)
   )
   .command(
     `auth-cloud-explicit`,
-    `Loads credentials implicitly.`,
+    `Loads credentials explicitly.`,
     {},
     authCloudExplicit
   )

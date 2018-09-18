@@ -35,7 +35,7 @@ test.cb(`should list vms`, t => {
 });
 
 test.cb(`should create vm`, t => {
-  var TESTS_PREFIX = 'gcloud-tests-';
+  let TESTS_PREFIX = 'gcloud-tests-';
   const name = generateName('vm-with-apache');
 
   function generateName(customPrefix) {

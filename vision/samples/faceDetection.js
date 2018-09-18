@@ -20,13 +20,13 @@
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-var vision = require('@google-cloud/vision');
+let vision = require('@google-cloud/vision');
 // [END vision_face_detection_tutorial_imports]
 // [START vision_face_detection_tutorial_client]
 // Creates a client
-var client = new vision.ImageAnnotatorClient();
+let client = new vision.ImageAnnotatorClient();
 
-var fs = require('fs');
+let fs = require('fs');
 // [END vision_face_detection_tutorial_client]
 
 /**
@@ -40,7 +40,7 @@ function detectFaces(inputFile, callback) {
     .faceDetection(request)
     .then(results => {
       const faces = results[0].faceAnnotations;
-      var numFaces = faces.length;
+      let numFaces = faces.length;
       console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
       callback(null, faces);
     })
@@ -61,12 +61,12 @@ function highlightFaces(inputFile, faces, outputFile, Canvas, callback) {
       return callback(err);
     }
 
-    var Image = Canvas.Image;
+    let Image = Canvas.Image;
     // Open the original image into a canvas
-    var img = new Image();
+    let img = new Image();
     img.src = image;
-    var canvas = new Canvas(img.width, img.height);
-    var context = canvas.getContext('2d');
+    let canvas = new Canvas(img.width, img.height);
+    let context = canvas.getContext('2d');
     context.drawImage(img, 0, 0, img.width, img.height);
 
     // Now draw boxes around all the faces
@@ -90,8 +90,8 @@ function highlightFaces(inputFile, faces, outputFile, Canvas, callback) {
 
     // Write the result to a file
     console.log('Writing to file ' + outputFile);
-    var writeStream = fs.createWriteStream(outputFile);
-    var pngStream = canvas.pngStream();
+    let writeStream = fs.createWriteStream(outputFile);
+    let pngStream = canvas.pngStream();
 
     pngStream.on('data', chunk => {
       writeStream.write(chunk);
@@ -131,7 +131,7 @@ if (module === require.main) {
     // eslint-disable-next-line no-process-exit
     process.exit(1);
   }
-  var inputFile = process.argv[2];
-  var outputFile = process.argv[3];
+  let inputFile = process.argv[2];
+  let outputFile = process.argv[3];
   exports.main(inputFile, outputFile, require('canvas'), console.log);
 }

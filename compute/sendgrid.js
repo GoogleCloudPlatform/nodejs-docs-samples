@@ -15,11 +15,11 @@
 
 // [START send]
 // This sample is based off of https://www.npmjs.com/package/sendgrid#without-mail-helper-class
-var Sendgrid = require('sendgrid')(
+let Sendgrid = require('sendgrid')(
   process.env.SENDGRID_API_KEY || '<your-sendgrid-api-key>'
 );
 
-var request = Sendgrid.emptyRequest({
+let request = Sendgrid.emptyRequest({
   method: 'POST',
   path: '/v3/mail/send',
   body: {

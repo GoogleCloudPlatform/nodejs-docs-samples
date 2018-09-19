@@ -17,7 +17,7 @@
 
 const projectId = process.env.GCLOUD_PROJECT;
 const sessionId = require('uuid/v1')();
-const common = require('@google-cloud/common');
+const util = require('util');
 const structjson = require('./structjson.js');
 
 function createKnowledgeBase(projectId, displayName) {
@@ -530,7 +530,7 @@ function detectIntentwithModelSelection(
   // Define session path
   const sessionPath = sessionClient.sessionPath(projectId, sessionId);
   // Read the content of the audio file and send it as part of the request.
-  const readFile = common.util.promisify(fs.readFile, {singular: true});
+  const readFile = util.promisify(fs.readFile);
   readFile(audioFilePath)
     .then(inputAudio => {
       // The audio query request

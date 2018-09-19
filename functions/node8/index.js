@@ -152,12 +152,17 @@ exports.helloFirestore = (data, context) => {
   const triggerResource = context.resource;
 
   console.log(`Function triggered by change to: ${triggerResource}`);
+  console.log(`Event type: ${context.eventType}`);
 
-  console.log(`\nOld value:`);
-  console.log(JSON.stringify(data.oldValue, null, 2));
+  if (data.oldValue && Object.keys(data.oldValue).length) {
+    console.log(`\nOld value:`);
+    console.log(JSON.stringify(data.oldValue, null, 2));
+  }
 
-  console.log(`\nNew value:`);
-  console.log(JSON.stringify(data.value, null, 2));
+  if (data.value && Object.keys(data.value).length) {
+    console.log(`\nNew value:`);
+    console.log(JSON.stringify(data.value, null, 2));
+  }
 };
 // [END functions_firebase_firestore_node8]
 

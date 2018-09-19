@@ -1418,7 +1418,7 @@ function verifyCommand(callback, force, projectId, arg2, arg3) {
       },
     },
     function(err, result) {
-      var input = result.confirm.toLowerCase();
+      let input = result.confirm.toLowerCase();
       // If the user didn't say yes/y, abort
       if (input !== 'y' && input !== 'yes') {
         console.log('Operation aborted.');

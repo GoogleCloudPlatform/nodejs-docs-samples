@@ -49,7 +49,7 @@ function analyzeLabelsGCS(gcsUri) {
       labels.forEach(label => {
         console.log(`Label ${label.entity.description} occurs at:`);
         label.segments.forEach(segment => {
-          let time = segment.segment;
+          const time = segment.segment;
           if (time.startTimeOffset.seconds === undefined) {
             time.startTimeOffset.seconds = 0;
           }
@@ -120,7 +120,7 @@ function analyzeLabelsLocal(path) {
       labels.forEach(label => {
         console.log(`Label ${label.entity.description} occurs at:`);
         label.segments.forEach(segment => {
-          let time = segment.segment;
+          const time = segment.segment;
           if (time.startTimeOffset.seconds === undefined) {
             time.startTimeOffset.seconds = 0;
           }
@@ -329,9 +329,10 @@ function analyzeVideoTranscription(gcsUri) {
       const alternative =
         results[0].annotationResults[0].speechTranscriptions[0].alternatives[0];
       alternative.words.forEach(wordInfo => {
-        let start_time =
+        const start_time =
           wordInfo.startTime.seconds + wordInfo.startTime.nanos * 1e-9;
-        let end_time = wordInfo.endTime.seconds + wordInfo.endTime.nanos * 1e-9;
+        const end_time =
+          wordInfo.endTime.seconds + wordInfo.endTime.nanos * 1e-9;
         console.log(
           '\t' + start_time + 's - ' + end_time + 's: ' + wordInfo.word
         );

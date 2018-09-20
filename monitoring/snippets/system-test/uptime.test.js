@@ -25,8 +25,8 @@ const projectId = process.env.GCLOUD_PROJECT;
 const hostname = 'mydomain.com';
 
 function getResourceObjects(output) {
-  let regex = new RegExp(/^\s*Resource: (.*)$/gm);
-  let result = [];
+  const regex = new RegExp(/^\s*Resource: (.*)$/gm);
+  const result = [];
   let match;
   while ((match = regex.exec(output)) !== null) {
     result.push(JSON.parse(match[1]));
@@ -50,7 +50,7 @@ test.serial(`should create an uptime check`, async t => {
   );
   id = matches[1];
   t.regex(output, /Uptime check created:/);
-  let resources = getResourceObjects(output);
+  const resources = getResourceObjects(output);
   t.is(resources[0]['type'], 'uptime_url');
   t.is(resources[0]['labels']['host'], hostname);
   t.regex(output, /Display Name: My Uptime Check/);
@@ -63,7 +63,7 @@ test.serial(`should get an uptime check`, async t => {
     output,
     new RegExp(`Retrieving projects/${projectId}/uptimeCheckConfigs/${id}`)
   );
-  let resources = getResourceObjects(output);
+  const resources = getResourceObjects(output);
   t.is(resources[0]['type'], 'uptime_url');
   t.is(resources[0]['labels']['host'], hostname);
 });
@@ -74,7 +74,7 @@ test.serial(`should list uptime checks`, async t => {
     .tryTest(async assert => {
       const results = await tools.runAsyncWithIO(`${cmd} list`, cwd);
       const output = results.stdout + results.stderr;
-      let resources = getResourceObjects(output);
+      const resources = getResourceObjects(output);
       assert(
         resources.filter(
           resource =>

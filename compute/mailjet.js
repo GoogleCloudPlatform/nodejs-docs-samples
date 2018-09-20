@@ -16,10 +16,10 @@
 'use strict';
 
 // [START send]
-let mailer = require('nodemailer');
-let smtp = require('nodemailer-smtp-transport');
+const mailer = require('nodemailer');
+const smtp = require('nodemailer-smtp-transport');
 
-let transport = mailer.createTransport(
+const transport = mailer.createTransport(
   smtp({
     host: 'in.mailjet.com',
     port: 2525,

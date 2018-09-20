@@ -1068,7 +1068,7 @@ function logContext(context) {
   console.log(`  Lifespan: ${context.lifespanCount}`);
   console.log(`  Parameters:`);
   const parameters = structjson.structProtoToJson(context.parameters);
-  for (let k in parameters) {
+  for (const k in parameters) {
     console.log(`    ${k}: ${parameters[k]}`);
   }
   console.log('');
@@ -1426,7 +1426,7 @@ function verifyCommand(callback, force, projectId, arg2, arg3) {
       },
     },
     function(err, result) {
-      let input = result.confirm.toLowerCase();
+      const input = result.confirm.toLowerCase();
       // If the user didn't say yes/y, abort
       if (input !== 'y' && input !== 'yes') {
         console.log('Operation aborted.');

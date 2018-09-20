@@ -26,7 +26,7 @@ function createKnowledgeBase(projectId, displayName) {
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow client.
-  let client = new dialogflow.KnowledgeBasesClient();
+  const client = new dialogflow.KnowledgeBasesClient();
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -34,11 +34,11 @@ function createKnowledgeBase(projectId, displayName) {
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const displayName = `your knowledge base display name, e.g. myKnowledgeBase`;
 
-  let formattedParent = client.projectPath(projectId);
-  let knowledgeBase = {
+  const formattedParent = client.projectPath(projectId);
+  const knowledgeBase = {
     displayName: displayName,
   };
-  let request = {
+  const request = {
     parent: formattedParent,
     knowledgeBase: knowledgeBase,
   };
@@ -62,7 +62,7 @@ function getKnowledgeBase(projectId, knowledgeBaseId) {
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow client.
-  let client = new dialogflow.KnowledgeBasesClient({
+  const client = new dialogflow.KnowledgeBasesClient({
     projectId: projectId,
   });
 
@@ -71,7 +71,7 @@ function getKnowledgeBase(projectId, knowledgeBaseId) {
    */
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
-  let formattedName = client.knowledgeBasePath(projectId, knowledgeBaseId);
+  const formattedName = client.knowledgeBasePath(projectId, knowledgeBaseId);
   client
     .getKnowledgeBase({
       name: formattedName,
@@ -93,7 +93,7 @@ function listKnowledgeBases(projectId) {
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow KnowledgeBasesClient.
-  let client = new dialogflow.KnowledgeBasesClient({
+  const client = new dialogflow.KnowledgeBasesClient({
     projectPath: projectId,
   });
 
@@ -102,12 +102,12 @@ function listKnowledgeBases(projectId) {
    */
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
 
-  let formattedParent = client.projectPath(projectId);
+  const formattedParent = client.projectPath(projectId);
 
   client
     .listKnowledgeBases({parent: formattedParent})
     .then(responses => {
-      let resources = responses[0];
+      const resources = responses[0];
       resources.forEach(r => {
         console.log(`displayName: ${r.displayName}`);
         console.log(`name: ${r.name}`);
@@ -125,7 +125,7 @@ function deleteKnowledgeBase(projectId, knowledgeBaseFullName) {
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow KnowledgeBasesClient.
-  let client = new dialogflow.KnowledgeBasesClient();
+  const client = new dialogflow.KnowledgeBasesClient();
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -160,7 +160,7 @@ function createDocument(
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow Documents client.
-  let client = new dialogflow.DocumentsClient({
+  const client = new dialogflow.DocumentsClient({
     projectId: projectId,
   });
 
@@ -174,7 +174,7 @@ function createDocument(
   // const knowledgeTypes = `The Knowledge type of the Document. e.g. FAQ`;
   // const mimeType = `The mime_type of the Document. e.g. text/csv, text/html,text/plain, text/pdf etc.`;
 
-  let request = {
+  const request = {
     parent: knowledgeBaseFullName,
     document: {
       knowledgeTypes: [knowledgeTypes],
@@ -212,7 +212,7 @@ function listDocuments(projectId, knowledgeBaseFullName) {
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow Documents client.
-  let client = new dialogflow.DocumentsClient({
+  const client = new dialogflow.DocumentsClient({
     projectId: projectId,
   });
 
@@ -225,7 +225,7 @@ function listDocuments(projectId, knowledgeBaseFullName) {
   client
     .listDocuments({parent: knowledgeBaseFullName})
     .then(responses => {
-      let resources = responses[0];
+      const resources = responses[0];
       console.log(
         `There are ${resources.length} documents in ${knowledgeBaseFullName}`
       );
@@ -250,7 +250,7 @@ function getDocument(documentId) {
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow Documents client.
-  let client = new dialogflow.DocumentsClient({
+  const client = new dialogflow.DocumentsClient({
     projectId: projectId,
   });
 
@@ -262,7 +262,7 @@ function getDocument(documentId) {
   client
     .getDocument({name: documentId})
     .then(responses => {
-      let r = responses[0];
+      const r = responses[0];
       console.log(` KnowledgeType: ${r.knowledgeType}`);
       console.log(` displayName: ${r.displayName}`);
       console.log(` mimeType: ${r.mimeType}`);
@@ -282,7 +282,7 @@ function deleteDocument(projectId, documentId) {
   const dialogflow = require('dialogflow').v2beta1;
 
   // Instantiate a DialogFlow Documents client.
-  let client = new dialogflow.DocumentsClient({
+  const client = new dialogflow.DocumentsClient({
     projectId: projectId,
   });
 
@@ -295,7 +295,7 @@ function deleteDocument(projectId, documentId) {
   client
     .deleteDocument({name: documentId})
     .then(responses => {
-      let operation = responses[0];
+      const operation = responses[0];
       return operation.promise();
     })
     .then(responses => {

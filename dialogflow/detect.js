@@ -200,7 +200,7 @@ function streamingDetectIntent(
 
   // The BCP-47 language code to use, e.g. 'en-US'
   // const languageCode = 'en-US';
-  let sessionPath = sessionClient.sessionPath(projectId, sessionId);
+  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
 
   const initialStreamRequest = {
     session: sessionPath,

@@ -59,7 +59,7 @@ test.after.always(tools.restoreConsole);
 
 test.cb(`should detect faces`, t => {
   let done = false;
-  let timeout = setTimeout(() => {
+  const timeout = setTimeout(() => {
     if (!done) {
       console.warn('Face detection timed out!');
       t.end();

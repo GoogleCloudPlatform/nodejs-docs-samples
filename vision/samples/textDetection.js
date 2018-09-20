@@ -15,27 +15,27 @@
 
 'use strict';
 
-let async = require('async');
-let fs = require('fs');
-let path = require('path');
+const async = require('async');
+const fs = require('fs');
+const path = require('path');
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-let vision = require('@google-cloud/vision');
-let natural = require('natural');
-let redis = require('redis');
+const vision = require('@google-cloud/vision');
+const natural = require('natural');
+const redis = require('redis');
 
 // Instantiate a vision client
-let client = new vision.ImageAnnotatorClient();
+const client = new vision.ImageAnnotatorClient();
 
 function Index() {
   // Connect to a redis server.
-  let TOKEN_DB = 0;
-  let DOCS_DB = 1;
-  let PORT = process.env.REDIS_PORT || '6379';
-  let HOST = process.env.REDIS_HOST || '127.0.0.1';
+  const TOKEN_DB = 0;
+  const DOCS_DB = 1;
+  const PORT = process.env.REDIS_PORT || '6379';
+  const HOST = process.env.REDIS_HOST || '127.0.0.1';
 
   this.tokenClient = redis
     .createClient(PORT, HOST, {
@@ -59,12 +59,12 @@ Index.prototype.quit = function() {
 };
 
 Index.prototype.add = function(filename, document, callback) {
-  let self = this;
-  let PUNCTUATION = ['.', ',', ':', ''];
-  let tokenizer = new natural.WordTokenizer();
-  let tokens = tokenizer.tokenize(document);
+  const self = this;
+  const PUNCTUATION = ['.', ',', ':', ''];
+  const tokenizer = new natural.WordTokenizer();
+  const tokens = tokenizer.tokenize(document);
 
-  let tasks = tokens
+  const tasks = tokens
     .filter(function(token) {
       return PUNCTUATION.indexOf(token) === -1;
     })
@@ -82,8 +82,8 @@ Index.prototype.add = function(filename, document, callback) {
 };
 
 Index.prototype.lookup = function(words, callback) {
-  let self = this;
-  let tasks = words.map(function(word) {
+  const self = this;
+  const tasks = words.map(function(word) {
     word = word.toLowerCase();
     return function(cb) {
       self.tokenClient.smembers(word, cb);
@@ -114,7 +114,7 @@ Index.prototype.setContainsNoText = function(filename, callback) {
 };
 
 function lookup(words, callback) {
-  let index = new Index();
+  const index = new Index();
   index.lookup(words, function(err, hits) {
     index.quit();
     if (err) {
@@ -146,9 +146,9 @@ function extractDescriptions(filename, index, response, callback) {
 
 function getTextFromFiles(index, inputFiles, callback) {
   // Make a call to the Vision API to detect text
-  let requests = [];
+  const requests = [];
   inputFiles.forEach(filename => {
-    let request = {
+    const request = {
       image: {content: fs.readFileSync(filename).toString('base64')},
       features: [{type: 'TEXT_DETECTION'}],
     };
@@ -157,11 +157,11 @@ function getTextFromFiles(index, inputFiles, callback) {
   client
     .batchAnnotateImages({requests: requests})
     .then(results => {
-      let detections = results[0].responses;
-      let textResponse = {};
-      let tasks = [];
+      const detections = results[0].responses;
+      const textResponse = {};
+      const tasks = [];
       inputFiles.forEach(function(filename, i) {
-        let response = detections[i];
+        const response = detections[i];
         if (response.error) {
           console.log('API Error for ' + filename, response.error);
           return;
@@ -186,7 +186,7 @@ function getTextFromFiles(index, inputFiles, callback) {
 
 // Run the example
 function main(inputDir, callback) {
-  let index = new Index();
+  const index = new Index();
 
   async.waterfall(
     [
@@ -198,7 +198,7 @@ function main(inputDir, callback) {
       function(files, cb) {
         async.parallel(
           files.map(function(file) {
-            let filename = path.join(inputDir, file);
+            const filename = path.join(inputDir, file);
             return function(cb) {
               fs.stat(filename, function(err, stats) {
                 if (err) {
@@ -216,7 +216,7 @@ function main(inputDir, callback) {
       },
       // Figure out which files have already been processed
       function(allImageFiles, cb) {
-        let tasks = allImageFiles
+        const tasks = allImageFiles
           .filter(function(filename) {
             return filename;
           })
@@ -256,7 +256,7 @@ function main(inputDir, callback) {
 }
 
 if (module === require.main) {
-  let generalError =
+  const generalError =
     'Usage: node textDetection <command> <arg> ...\n\n' +
     '\tCommands: analyze, lookup';
   if (process.argv.length < 3) {
@@ -264,8 +264,8 @@ if (module === require.main) {
     // eslint-disable-next-line no-process-exit
     process.exit(1);
   }
-  let args = process.argv.slice(2);
-  let command = args.shift();
+  const args = process.argv.slice(2);
+  const command = args.shift();
   if (command === 'analyze') {
     if (!args.length) {
       console.log('Usage: node textDetection analyze <dir>');

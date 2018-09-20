@@ -53,7 +53,7 @@ function importProductSets(projectId, location, gcsUri) {
       console.log('Processing done.');
       console.log('Results of the processing:');
 
-      for (let i in responses[0].statuses) {
+      for (const i in responses[0].statuses) {
         console.log(
           'Status of processing ',
           i,

@@ -821,7 +821,7 @@ function detectPdfText(bucketName, fileName) {
       return operation.promise();
     })
     .then(filesResponse => {
-      let destinationUri =
+      const destinationUri =
         filesResponse[0].responses[0].outputConfig.gcsDestination.uri;
       console.log('Json saved to: ' + destinationUri);
     })

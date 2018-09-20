@@ -98,7 +98,7 @@ function listVms(callback) {
     .getVMs()
     .then(data => {
       const vms = data[0];
-      let results = vms.map(vm => vm.getMetadata());
+      const results = vms.map(vm => vm.getMetadata());
       return Promise.all(results);
     })
     .then(res =>

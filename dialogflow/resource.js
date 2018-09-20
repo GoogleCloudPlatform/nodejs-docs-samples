@@ -400,16 +400,18 @@ function createIntents(projectId) {
   ];
 
   // The intent to be created.
-  const pizzaIntent = {
-    displayName: 'Pizza',
-    events: ['order_pizza'],
-    // Webhook is disabled because we are not ready to call the webhook yet.
-    webhookState: 'WEBHOOK_STATE_DISABLED',
-    trainingPhrases: pizzaPhrases,
-    mlEnabled: true,
-    priority: 500000,
-    result: pizzaResult,
-  };
+  const pizzaIntent = Object.assign(
+    {
+      displayName: 'Pizza',
+      events: ['order_pizza'],
+      // Webhook is disabled because we are not ready to call the webhook yet.
+      webhookState: 'WEBHOOK_STATE_DISABLED',
+      trainingPhrases: pizzaPhrases,
+      mlEnabled: true,
+      priority: 500000,
+    },
+    pizzaResult
+  );
 
   const pizzaRequest = {
     parent: agentPath,
@@ -520,15 +522,17 @@ function createIntents(projectId) {
     },
   ];
 
-  const changeDeliveryAddressIntent = {
-    displayName: 'ChangeDeliveryAddress',
-    webhookState: 'WEBHOOK_STATE_DISABLED',
-    trainingPhrases: changeDeliveryAddressPhrases,
-    inputContexts: changeDeliveryAddressInputContexts,
-    mlEnabled: true,
-    priority: 500000,
-    result: changeDeliveryAddressResult,
-  };
+  const changeDeliveryAddressIntent = Object.assign(
+    {
+      displayName: 'ChangeDeliveryAddress',
+      webhookState: 'WEBHOOK_STATE_DISABLED',
+      trainingPhrases: changeDeliveryAddressPhrases,
+      inputContexts: changeDeliveryAddressInputContexts,
+      mlEnabled: true,
+      priority: 500000,
+    },
+    changeDeliveryAddressResult
+  );
 
   const changeDeliveryAddressRequest = {
     parent: agentPath,
@@ -598,15 +602,17 @@ function createIntents(projectId) {
     {type: 'EXAMPLE', parts: [{text: 'place order'}]},
   ];
 
-  const placeOrderIntent = {
-    displayName: 'PlaceOrder',
-    webhookState: 'WEBHOOK_STATE_ENABLED',
-    trainingPhrases: placeOrderPhrases,
-    inputContexts: placeOrderInputContexts,
-    mlEnabled: true,
-    priority: 500000,
-    result: placeOrderResult,
-  };
+  const placeOrderIntent = Object.assign(
+    {
+      displayName: 'PlaceOrder',
+      webhookState: 'WEBHOOK_STATE_ENABLED',
+      trainingPhrases: placeOrderPhrases,
+      inputContexts: placeOrderInputContexts,
+      mlEnabled: true,
+      priority: 500000,
+    },
+    placeOrderResult
+  );
 
   const placeOrderRequest = {
     parent: agentPath,
@@ -642,15 +648,17 @@ function createIntents(projectId) {
     {type: 'EXAMPLE', parts: [{text: "I don't want it any more"}]},
   ];
 
-  const cancelOrderIntent = {
-    displayName: 'CancelOrder',
-    webhookState: 'WEBHOOK_STATE_DISABLED',
-    trainingPhrases: cancelOrderPhrases,
-    inputContexts: cancelOrderInputContexts,
-    mlEnabled: true,
-    priority: 500000,
-    result: cancelOrderResult,
-  };
+  const cancelOrderIntent = Object.assign(
+    {
+      displayName: 'CancelOrder',
+      webhookState: 'WEBHOOK_STATE_DISABLED',
+      trainingPhrases: cancelOrderPhrases,
+      inputContexts: cancelOrderInputContexts,
+      mlEnabled: true,
+      priority: 500000,
+    },
+    cancelOrderResult
+  );
 
   const cancelOrderRequest = {
     parent: agentPath,

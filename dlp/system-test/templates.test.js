@@ -20,7 +20,7 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require(`uuid`);
 
 const cmd = `node templates.js`;
-let templateName = '';
+const templateName = '';
 
 const INFO_TYPE = `PERSON_NAME`;
 const MIN_LIKELIHOOD = `VERY_LIKELY`;

@@ -42,9 +42,9 @@ function readImage(filePath) {
 }
 
 async function getImageDiffPercentage(image1Path, image2Path) {
-  let image1 = await readImage(image1Path);
-  let image2 = await readImage(image2Path);
-  let diff = new PNG({width: image1.width, height: image1.height});
+  const image1 = await readImage(image1Path);
+  const image2 = await readImage(image2Path);
+  const diff = new PNG({width: image1.width, height: image1.height});
 
   const diffPixels = pixelmatch(
     image1.data,

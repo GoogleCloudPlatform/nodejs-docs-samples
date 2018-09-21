@@ -192,8 +192,8 @@ function streamingDetectIntent(
   // The path to the local file on which to perform speech recognition, e.g.
   // /path/to/audio.raw const filename = '/path/to/audio.raw';
 
-  // The encoding of the audio file, e.g. 'AUDIO_ENCODING_LINEAR16'
-  // const encoding = 'AUDIO_ENCODING_LINEAR16';
+  // The encoding of the audio file, e.g. 'AUDIO_ENCODING_LINEAR_16'
+  // const encoding = 'AUDIO_ENCODING_LINEAR_16';
 
   // The sample rate of the audio file in hertz, e.g. 16000
   // const sampleRateHertz = 16000;

@@ -55,7 +55,7 @@ test.before(async () => {
               },
             ],
             duration: {
-              seconds: 60,
+              seconds: 120,
             },
             trigger: {
               count: 1,
@@ -86,7 +86,7 @@ test.before(async () => {
               },
             ],
             duration: {
-              seconds: 60,
+              seconds: 120,
             },
             trigger: {
               count: 1,

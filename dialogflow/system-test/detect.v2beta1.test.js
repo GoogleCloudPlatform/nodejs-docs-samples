@@ -91,7 +91,6 @@ test.serial(`It should create a knowledge base`, async t => {
 });
 
 test(`It should detect Intent with Model Selection`, async t => {
-  await runAsync(`node resource.js restore-room-agent -f`);
   const output = await runAsync(`${cmd} detectIntentwithModelSelection`);
   t.true(
     output.includes(

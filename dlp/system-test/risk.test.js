@@ -18,7 +18,8 @@
 const path = require('path');
 const test = require('ava');
 const uuid = require('uuid');
-const pubsub = require(`@google-cloud/pubsub`)();
+const PubSub = require(`@google-cloud/pubsub`);
+const pubsub = new PubSub();
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const cmd = 'node risk.js';

@@ -683,7 +683,7 @@ function syncRecognizeWithEnhancedModel(
   // [END speech_transcribe_enhanced_model]
 }
 
-require(`yargs`)  // eslint-disable-line
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
     `sync <filename>`,

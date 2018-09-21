@@ -831,6 +831,70 @@ function detectPdfText(bucketName, fileName) {
   // [END vision_text_detection_pdf_gcs]
 }
 
+function localizeObjects(fileName) {
+  // [START vision_localize_objects]
+  // Imports the Google Cloud client libraries
+  const vision = require('@google-cloud/vision');
+  const fs = require('fs');
+
+  // Creates a client
+  const client = new vision.ImageAnnotatorClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const fileName = `/path/to/localImage.png`;
+  const request = {
+    image: {content: fs.readFileSync(fileName)},
+  };
+
+  client
+    .objectLocalization(request)
+    .then(results => {
+      const objects = results[0].localizedObjectAnnotations;
+      objects.forEach(object => {
+        console.log(`Name: ${object.name}`);
+        console.log(`Confidence: ${object.score}`);
+        const vertices = object.boundingPoly.normalizedVertices;
+        vertices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
+      });
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END vision_localize_objects]
+}
+
+function localizeObjectsGCS(gcsUri) {
+  // [START vision_localize_objects_gcs]
+  // Imports the Google Cloud client libraries
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ImageAnnotatorClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = `gs://bucket/bucketImage.png`;
+
+  client
+    .objectLocalization(gcsUri)
+    .then(results => {
+      const objects = results[0].localizedObjectAnnotations;
+      objects.forEach(object => {
+        console.log(`Name: ${object.name}`);
+        console.log(`Confidence: ${object.score}`);
+        const veritices = object.boundingPoly.normalizedVertices;
+        veritices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
+      });
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+  // [END vision_localize_objects_gcs]
+}
+
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
@@ -968,6 +1032,18 @@ require(`yargs`) // eslint-disable-line
     {},
     opts => detectPdfText(opts.bucketName, opts.fileName)
   )
+  .command(
+    `localize-objects <fileName>`,
+    `Detects Objects in a local image file`,
+    {},
+    opts => localizeObjects(opts.fileName)
+  )
+  .command(
+    `localize-objects-gcs <gcsUri>`,
+    `Detects Objects Google Cloud Storage Bucket`,
+    {},
+    opts => localizeObjectsGCS(opts.gcsUri)
+  )
   .example(`node $0 faces ./resources/face_no_surprise.jpg`)
   .example(`node $0 faces-gcs my-bucket your-image.jpg`)
   .example(`node $0 labels ./resources/wakeupcat.jpg`)
@@ -991,6 +1067,8 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 fulltext ./resources/wakeupcat.jpg`)
   .example(`node $0 fulltext-gcs my-bucket your-image.jpg`)
   .example(`node $0 pdf my-bucket my-pdf.pdf`)
+  .example(`node $0 localize-objects ./resources/duck_and_truck.jpg`)
+  .example(`node $0 localize-objects-gcs gs://bucket/bucketImage.png`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/vision/docs`)

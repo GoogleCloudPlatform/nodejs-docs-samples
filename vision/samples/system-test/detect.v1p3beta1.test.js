@@ -50,30 +50,6 @@ test.after.always(async () => {
 
 test.before(tools.checkCredentials);
 
-test("ObjectLocalizer should detect 'Duck', 'Bird' and 'Toy' in duck_and_truck.jpg", async t => {
-  const output = await tools.runAsync(
-    `${cmd} localizeObjects ${files[0]}`,
-    cwd
-  );
-  t.true(
-    output.includes(`Name: Bird`) &&
-      output.includes(`Name: Duck`) &&
-      output.includes(`Name: Toy`)
-  );
-});
-
-test(`ObjectLocalizerGCS should detect 'Bird'in duck_and_truck.jpg in GCS bucket`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} localizeObjectsGCS -u gs://${bucketName}/${files[0].name}`,
-    cwd
-  );
-  t.true(
-    output.includes(`Name: Bird`) &&
-      output.includes(`Name: Duck`) &&
-      output.includes(`Name: Toy`)
-  );
-});
-
 test(`should read handwriting in local handwritten.jpg sample`, async t => {
   const output = await tools.runAsync(
     `${cmd} detectHandwriting ${files[1]}`,

@@ -37,6 +37,7 @@ const files = [
   `faulkner.jpg`,
   `city.jpg`,
   'pdf-ocr.pdf',
+  'duck_and_truck.jpg',
 ].map(name => {
   return {
     name,
@@ -296,4 +297,28 @@ test(`should extract text from pdf file`, async t => {
     cwd
   );
   t.true(output.includes('pdf-ocr.pdf.json'));
+});
+
+test(`should detect objects in a local file`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} localize-objects ${files[8].localPath}`,
+    cwd
+  );
+  t.true(
+    output.includes(`Name: Bird`) &&
+      output.includes(`Name: Duck`) &&
+      output.includes(`Name: Toy`)
+  );
+});
+
+test(`should detect objects in a remote file`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} localize-objects-gcs gs://${bucketName}/${files[8].name}`,
+    cwd
+  );
+  t.true(
+    output.includes(`Name: Bird`) &&
+      output.includes(`Name: Duck`) &&
+      output.includes(`Name: Toy`)
+  );
 });

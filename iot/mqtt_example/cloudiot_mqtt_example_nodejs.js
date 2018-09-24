@@ -180,6 +180,9 @@ function publishAsync (messagesSent, numMessages) {
 
         client.end();
         connectionArgs.password = createJwt(argv.projectId, argv.privateKeyFile, argv.algorithm);
+        connectionArgs.protocolId = 'MQTT';
+        connectionArgs.protocolVersion = 4;
+        connectionArgs.clean = true;
         client = mqtt.connect(connectionArgs);
 
         client.on('connect', (success) => {
@@ -239,7 +242,7 @@ let iatTime = parseInt(Date.now() / 1000);
 let client = mqtt.connect(connectionArgs);
 
 // Subscribe to the /devices/{device-id}/config topic to receive config updates.
-client.subscribe(`/devices/${argv.deviceId}/config`);
+client.subscribe(`/devices/${argv.deviceId}/config`, {qos: 1});
 
 // The MQTT topic that this device will publish data to. The MQTT
 // topic name is required to be in the format below. The topic name must end in

@@ -16,7 +16,7 @@
 'use strict';
 
 // [START functions_imagemagick_setup]
-const exec = require('child_process').exec;
+const gm = require('gm').subClass({imageMagick: true});
 const fs = require('fs');
 const path = require('path');
 const storage = require('@google-cloud/storage')();
@@ -66,20 +66,20 @@ exports.blurOffensiveImages = (event) => {
 // [START functions_imagemagick_blur]
 // Blurs the given file using ImageMagick.
 function blurImage (file) {
-  const tempLocalFilename = `/tmp/${path.parse(file.name).base}`;
+  const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
 
   // Download file from bucket.
-  return file.download({ destination: tempLocalFilename })
+  return file.download({ destination: tempLocalPath })
     .catch((err) => {
       console.error('Failed to download file.', err);
       return Promise.reject(err);
     })
     .then(() => {
-      console.log(`Image ${file.name} has been downloaded to ${tempLocalFilename}.`);
+      console.log(`Image ${file.name} has been downloaded to ${tempLocalPath}.`);
 
       // Blur the image using ImageMagick.
       return new Promise((resolve, reject) => {
-        exec(`convert ${tempLocalFilename} -channel RGBA -blur 0x24 ${tempLocalFilename}`, { stdio: 'ignore' }, (err, stdout) => {
+        gm(tempLocalPath).blur(16).write((tempLocalPath), (err, stdout) => {
           if (err) {
             console.error('Failed to blur image.', err);
             reject(err);
@@ -93,7 +93,7 @@ function blurImage (file) {
       console.log(`Image ${file.name} has been blurred.`);
 
       // Upload the Blurred image back into the bucket.
-      return file.bucket.upload(tempLocalFilename, { destination: file.name })
+      return file.bucket.upload(tempLocalPath, { destination: file.name })
         .catch((err) => {
           console.error('Failed to upload blurred image.', err);
           return Promise.reject(err);
@@ -104,7 +104,7 @@ function blurImage (file) {
 
       // Delete the temporary file.
       return new Promise((resolve, reject) => {
-        fs.unlink(tempLocalFilename, (err) => {
+        fs.unlink(tempLocalPath, (err) => {
           if (err) {
             reject(err);
           } else {

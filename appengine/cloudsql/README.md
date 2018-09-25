@@ -1,6 +1,6 @@
 # Cloud SQL for MySQL Node.js sample on App Engine flexible environment
 
-This sample application shows how to use [Google Cloud SQL[[sql] for [MySQL][mysql]
+This sample application shows how to use [Google Cloud SQL][sql] for [MySQL][mysql]
 on Google App Engine.
 
 [App Engine standard environment][appengine-std] users: See tutorial [Using Cloud SQL for MySQL (App Engine Standard Environment)][std-tutorial] for more information on running and deploying this app.

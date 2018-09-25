@@ -31,9 +31,9 @@ const CHANNEL = 'general';
 
 exports.notifySlack = async (data, context) => {
   const pubsubMessage = data;
-  const budgetNotificationText = JSON.stringify(pubsubMessage.attributes) +
-    ', ' +
-    Buffer.from(pubsubMessage.data, 'base64').toString();
+  const pubsubAttrs = JSON.stringify(pubsubMessage.attributes);
+  const pubsubData = Buffer.from(pubsubMessage.data, 'base64').toString();
+  const budgetNotificationText = `${pubsubAttrs}, ${pubsubData}`;
 
   const res = await slack.chat.postMessage({
     token: BOT_ACCESS_TOKEN,

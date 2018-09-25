@@ -51,9 +51,13 @@ function getSample () {
     bucket: sinon.stub().returns(bucket)
   };
   const StorageMock = sinon.stub().returns(storageMock);
-  const childProcessMock = {
-    exec: sinon.stub().yields()
-  };
+
+  const gmMock = sinon.stub().returns({
+    blur: sinon.stub().returnsThis(),
+    write: sinon.stub().yields()
+  });
+  gmMock.subClass = sinon.stub().returnsThis();
+
   const fsMock = {
     unlink: sinon.stub().yields()
   };
@@ -61,12 +65,12 @@ function getSample () {
   return {
     program: proxyquire(`../`, {
       '@google-cloud/storage': StorageMock,
-      'child_process': childProcessMock,
+      'gm': gmMock,
       'fs': fsMock
     }),
     mocks: {
       fs: fsMock,
-      childProcess: childProcessMock,
+      gm: gmMock,
       storage: storageMock,
       bucket,
       file

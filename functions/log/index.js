@@ -94,18 +94,17 @@ function getMetrics (callback) {
   // [END functions_log_get_metrics]
 }
 
-// [START functions_log_bigquery_stackdriver]
-exports.processBigqueryLogEntry = (data, callback) => {
+// [START functions_log_stackdriver]
+exports.processLogEntry = (data, callback) => {
   const dataBuffer = Buffer.from(data.data.data, 'base64');
-  const logEntry = JSON.parse(dataBuffer.toString('ascii'));
-  const bqData = logEntry.protoPayload;
+  const logEntry = JSON.parse(dataBuffer.toString('ascii')).protoPayload;
 
-  console.log(`Method: ${bqData.methodName}`);
-  console.log(`Resource: ${bqData.resourceName}`);
-  console.log(`Initiator: ${bqData.authenticationInfo.principalEmail}`);
+  console.log(`Method: ${logEntry.methodName}`);
+  console.log(`Resource: ${logEntry.resourceName}`);
+  console.log(`Initiator: ${logEntry.authenticationInfo.principalEmail}`);
   callback();
 };
-// [END functions_log_bigquery_stackdriver]
+// [END functions_log_stackdriver]
 
 exports.getLogEntries = getLogEntries;
 exports.getMetrics = getMetrics;

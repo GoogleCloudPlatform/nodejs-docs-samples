@@ -86,7 +86,7 @@ test.serial(`getMetrics: should retrieve metrics`, (t) => {
   t.is(callback.callCount, 1);
 });
 
-test(`processBigqueryLogEntry: should process log entry`, (t) => {
+test(`processLogEntry: should process log entry`, (t) => {
   const sample = getSample();
   const callback = sinon.stub();
 
@@ -106,7 +106,7 @@ test(`processBigqueryLogEntry: should process log entry`, (t) => {
     }
   };
 
-  sample.program.processBigqueryLogEntry(data, callback);
+  sample.program.processLogEntry(data, callback);
 
   t.true(console.log.calledWith(`Method: method`));
   t.true(console.log.calledWith(`Resource: resource`));

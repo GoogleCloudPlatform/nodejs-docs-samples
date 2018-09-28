@@ -133,7 +133,7 @@ function listDatasets(projectId, computeRegion, filter) {
     .catch(err => {
       console.error(err);
     });
-  // [START automl_translation_list_datasets]
+  // [END automl_translation_list_datasets]
 }
 
 function getDataset(projectId, computeRegion, datasetId) {

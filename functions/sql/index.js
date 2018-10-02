@@ -85,7 +85,7 @@ const pgConfig = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  pgConfig.socketPath = `/cloudsql/${connectionName}`;
+  pgConfig.host = `/cloudsql/${connectionName}`;
 }
 
 // Connection pools reuse connections between invocations,

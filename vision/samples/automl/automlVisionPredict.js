@@ -73,7 +73,7 @@ function predict(projectId, computeRegion, modelId, filePath, scoreThreshold) {
   // [END automl_vision_predict]
 }
 
-require(`yargs`)  // eslint-disable-line
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .options({
     computeRegion: {

@@ -293,7 +293,7 @@ function deleteDataset(projectId, computeRegion, datasetId) {
   // [END automl_vision_delete_dataset]
 }
 
-require(`yargs`)  // eslint-disable-line
+require(`yargs`) // eslint-disable-line
   .demand(1)
   .options({
     computeRegion: {

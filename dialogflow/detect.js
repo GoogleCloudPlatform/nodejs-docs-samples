@@ -309,9 +309,9 @@ const cli = require(`yargs`)
     },
     encoding: {
       alias: 'e',
-      default: 'AUDIO_ENCODING_LINEAR16',
+      default: 'AUDIO_ENCODING_LINEAR_16',
       choices: [
-        'AUDIO_ENCODING_LINEAR16',
+        'AUDIO_ENCODING_LINEAR_16',
         'AUDIO_ENCODING_FLAC',
         'AUDIO_ENCODING_MULAW',
         'AUDIO_ENCODING_AMR',

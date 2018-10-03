@@ -538,7 +538,7 @@ function detectIntentwithModelSelection(
         session: sessionPath,
         queryInput: {
           audioConfig: {
-            audioEncoding: `LINEAR16`,
+            audioEncoding: `AUDIO_ENCODING_LINEAR_16`,
             sampleRateHertz: 16000,
             languageCode: languageCode,
             model: model,
@@ -615,9 +615,9 @@ const cli = require(`yargs`)
     },
     encoding: {
       alias: 'e',
-      default: 'AUDIO_ENCODING_LINEAR16',
+      default: 'AUDIO_ENCODING_LINEAR_16',
       choices: [
-        'AUDIO_ENCODING_LINEAR16',
+        'AUDIO_ENCODING_LINEAR_16',
         'AUDIO_ENCODING_FLAC',
         'AUDIO_ENCODING_MULAW',
         'AUDIO_ENCODING_AMR',

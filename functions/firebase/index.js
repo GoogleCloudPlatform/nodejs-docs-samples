@@ -85,7 +85,7 @@ exports.helloAuth = (event, callback) => {
 };
 // [END functions_firebase_auth]
 
-// [START functions_firebase_modify_existing]
+// [START functions_firebase_reactive]
 const Firestore = require('@google-cloud/firestore');
 
 const firestore = new Firestore({
@@ -105,4 +105,4 @@ exports.makeUpperCase = (event, callback) => {
     'original': newValue
   });
 };
-// [END functions_firebase_modify_existing]
+// [END functions_firebase_reactive]

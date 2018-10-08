@@ -15,9 +15,6 @@
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
-  "engines": {
-    "node": "8.x.x"
-  },
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {

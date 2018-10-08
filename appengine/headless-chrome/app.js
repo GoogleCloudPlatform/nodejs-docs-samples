@@ -22,30 +22,19 @@ const app = express();
 
 let browser;
 
-async function init () {
-  // [START browser]
-  browser = await puppeteer.launch({
-    args: ['--no-sandbox']
-  });
-  // [END browser]
-
-  const server = app.listen(process.env.PORT || 8080, async err => {
-    if (err) {
-      await browser.close();
-      return console.error(err);
-    }
-    const port = server.address().port;
-    console.info(`App listening on port ${port}`);
-  });
-}
-
-init();
-
 app.use(async (req, res) => {
   const url = req.query.url;
 
   if (!url) {
     return res.send('Please provide URL as GET parameter, for example: <a href="/?url=https://example.com">?url=https://example.com</a>');
+  }
+
+  if (!browser) {
+    // [START browser]
+    browser = await puppeteer.launch({
+      args: ['--no-sandbox']
+    });
+    // [END browser]
   }
 
   let page = await browser.newPage();
@@ -54,6 +43,14 @@ app.use(async (req, res) => {
 
   res.set('Content-Type', 'image/png');
   res.send(imageBuffer);
+});
+
+const server = app.listen(process.env.PORT || 8080, err => {
+  if (err) {
+    return console.error(err);
+  }
+  const port = server.address().port;
+  console.info(`App listening on port ${port}`);
 });
 // [END full_sample]
 

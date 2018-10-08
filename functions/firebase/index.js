@@ -106,3 +106,26 @@ exports.makeUpperCase = (event, callback) => {
   });
 };
 // [END functions_firebase_reactive]
+
+// [START functions_firebase_analytics]
+/**
+ * Triggered by a Google Analytics for Firebase log event.
+ *
+ * @param {!Object} event The Cloud Functions event.
+ * @param {!Function} The callback function.
+ */
+exports.helloAnalytics = (event, callback) => {
+  const resource = event.resource;
+  console.log(`Function triggered by the following event: ${resource}`);
+
+  const analyticsEvent = event.data.eventDim[0];
+  console.log(`Name: ${analyticsEvent.name}`);
+  console.log(`Timestamp: ${new Date(analyticsEvent.timestampMicros / 1000)}`);
+
+  const userObj = event.data.userDim;
+  console.log(`Device Model: ${userObj.deviceInfo.deviceModel}`);
+  console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
+
+  callback();
+};
+// [END functions_firebase_analytics]

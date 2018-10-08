@@ -59,7 +59,7 @@ Functions for your project.
 
 1. Call the "del" function to delete the entity:
 
-        gcloud alpha functions call del --data '{"kind":"Task","key":"sampletask1"}'
+        gcloud functions call del --data '{"kind":"Task","key":"sampletask1"}'
 
     or
 

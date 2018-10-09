@@ -28,10 +28,8 @@ const cmd = `node cloudiot_mqtt_example_nodejs.js `;
 const cmdSuffix = ` --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`;
 const cwd = path.join(__dirname, `..`);
 const installDeps = `npm install`;
-const linkDeps = `npm link`;
 
 test.todo(tools.run(installDeps, `${cwd}/../manager`));
-test.todo(tools.run(linkDeps, `${cwd}/../manager`));
 test.before(tools.checkCredentials);
 test.before(async () => {
   const pubsub = PubSub();

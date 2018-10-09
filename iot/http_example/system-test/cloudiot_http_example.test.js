@@ -28,10 +28,8 @@ const helper = `node ../manager/manager.js`;
 const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --deviceId="${deviceId}" `;
 const cwd = path.join(__dirname, `..`);
 const installDeps = `npm install`;
-const linkDeps = `npm link`;
 
 test.todo(tools.run(installDeps, `${cwd}/../manager`));
-test.todo(tools.run(linkDeps, `${cwd}/../manager`));
 test.before(tools.checkCredentials);
 test.before(async () => {
   const pubsub = PubSub();

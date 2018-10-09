@@ -15,10 +15,12 @@
 # limitations under the License.
       
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
+export GCF_REGION=us-central1
 export NODE_ENV=development
 
-export FUNCTIONS_TOPIC=my-topic
-export FUNCTIONS_BUCKET=my-bucket
+export FUNCTIONS_TOPIC=integration-tests-instance
+export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
+export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
 
 cd github/nodejs-docs-samples/${PROJECT}
 
@@ -32,6 +34,10 @@ gcloud config set project $GCLOUD_PROJECT
 
 # Start functions emulator, if appropriate
 if [[ $PROJECT == functions/* ]]; then
+  export FUNCTIONS_LOG_PATH=$(pwd)/logs/cloud-functions-emulator.log
+  npm install -g @google-cloud/functions-emulator
+  touch "$FUNCTIONS_LOG_PATH"
+  functions config set logFile "$FUNCTIONS_LOG_PATH"
   functions-emulator start
 fi
 

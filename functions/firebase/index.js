@@ -84,3 +84,25 @@ exports.helloAuth = (event, callback) => {
   callback();
 };
 // [END functions_firebase_auth]
+
+// [START functions_firebase_reactive]
+const Firestore = require('@google-cloud/firestore');
+
+const firestore = new Firestore({
+  projectId: process.env.GCP_PROJECT
+});
+
+// Converts strings added to /messages/{pushId}/original to uppercase
+exports.makeUpperCase = (event, callback) => {
+  const resource = event.resource;
+  const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
+
+  const curValue = event.data.value.fields.original.stringValue;
+  const newValue = curValue.toUpperCase();
+  console.log(`Replacing value: ${curValue} --> ${newValue}`);
+
+  return affectedDoc.set({
+    'original': newValue
+  });
+};
+// [END functions_firebase_reactive]

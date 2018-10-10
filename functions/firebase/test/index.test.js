@@ -52,14 +52,12 @@ test(`should listen to RTDB`, t => {
     },
     delta: delta
   };
-  const cb = sinon.stub();
 
-  sample.program.helloRTDB(event, cb);
+  sample.program.helloRTDB(event);
 
   t.true(console.log.calledWith(`Function triggered by change to: resource`));
   t.true(console.log.calledWith(`Admin?: true`));
   t.true(console.log.calledWith(JSON.stringify(delta, null, 2)));
-  t.true(cb.calledOnce);
 });
 
 test(`should listen to Firestore`, t => {
@@ -79,15 +77,13 @@ test(`should listen to Firestore`, t => {
       value: value
     }
   };
-  const cb = sinon.stub();
 
-  sample.program.helloFirestore(event, cb);
+  sample.program.helloFirestore(event);
 
   t.true(console.log.calledWith(`Function triggered by event on: resource`));
   t.true(console.log.calledWith(`Event type: type`));
   t.true(console.log.calledWith(JSON.stringify(oldValue, null, 2)));
   t.true(console.log.calledWith(JSON.stringify(value, null, 2)));
-  t.true(cb.calledOnce);
 });
 
 test(`should listen to Auth events`, t => {
@@ -103,14 +99,12 @@ test(`should listen to Auth events`, t => {
       }
     }
   };
-  const cb = sinon.stub();
 
-  sample.program.helloAuth(event, cb);
+  sample.program.helloAuth(event);
 
   t.true(console.log.calledWith(`Function triggered by change to user: me`));
   t.true(console.log.calledWith(`Created at: ${date}`));
   t.true(console.log.calledWith(`Email: me@example.com`));
-  t.true(cb.calledOnce);
 });
 
 test(`should update data in response to Firestore events`, t => {
@@ -133,9 +127,8 @@ test(`should update data in response to Firestore events`, t => {
       }
     }
   };
-  const cb = sinon.stub();
 
-  sample.program.makeUpperCase(event, cb);
+  sample.program.makeUpperCase(event);
 
   t.true(sample.mocks.firestore.doc.calledWith('some/path'));
   t.true(console.log.calledWith(`Replacing value: foobar --> FOOBAR`));

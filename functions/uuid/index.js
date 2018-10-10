@@ -19,7 +19,7 @@
 const uuid = require('uuid');
 
 // Return a newly generated UUID in the HTTP response.
-exports.getUuid = (req, res) => {
+exports.uuid = (req, res) => {
   res.send(uuid.v4());
 };
 // [END functions_uuid]

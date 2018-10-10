@@ -93,7 +93,7 @@ const firestore = new Firestore({
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
-exports.makeUpperCase = (event, callback) => {
+exports.makeUpperCase = (event) => {
   const resource = event.resource;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 

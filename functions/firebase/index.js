@@ -18,18 +18,14 @@
  * Triggered by a change to a Firebase RTDB reference.
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
  */
-exports.helloRTDB = (event, callback) => {
+exports.helloRTDB = (event) => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!event.auth.admin}`);
   console.log(`Delta:`);
   console.log(JSON.stringify(event.delta, null, 2));
-
-  // Don't forget to call the callback.
-  callback();
 };
 // [END functions_firebase_rtdb]
 
@@ -38,9 +34,8 @@ exports.helloRTDB = (event, callback) => {
  * Triggered by a change to a Firestore document.
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
  */
-exports.helloFirestore = (event, callback) => {
+exports.helloFirestore = (event) => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by event on: ${triggerResource}`);
@@ -55,9 +50,6 @@ exports.helloFirestore = (event, callback) => {
     console.log(`\nNew value:`);
     console.log(JSON.stringify(event.data.value, null, 2));
   }
-
-  // Don't forget to call the callback.
-  callback();
 };
 // [END functions_firebase_firestore]
 
@@ -66,9 +58,8 @@ exports.helloFirestore = (event, callback) => {
  * Triggered by a change to a Firebase Auth user object.
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
  */
-exports.helloAuth = (event, callback) => {
+exports.helloAuth = (event) => {
   try {
     const data = event.data;
     console.log(`Function triggered by change to user: ${data.uid}`);
@@ -80,8 +71,6 @@ exports.helloAuth = (event, callback) => {
   } catch (err) {
     console.error(err);
   }
-  // Don't forget to call the callback.
-  callback();
 };
 // [END functions_firebase_auth]
 
@@ -93,7 +82,7 @@ const firestore = new Firestore({
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
-exports.makeUpperCase = (event, callback) => {
+exports.makeUpperCase = (event) => {
   const resource = event.resource;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 

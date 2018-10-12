@@ -112,9 +112,8 @@ exports.makeUpperCase = (event) => {
  * Triggered by a Google Analytics for Firebase log event.
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
  */
-exports.helloAnalytics = (event, callback) => {
+exports.helloAnalytics = (event) => {
   const resource = event.resource;
   console.log(`Function triggered by the following event: ${resource}`);
 
@@ -125,7 +124,5 @@ exports.helloAnalytics = (event, callback) => {
   const userObj = event.data.userDim;
   console.log(`Device Model: ${userObj.deviceInfo.deviceModel}`);
   console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
-
-  callback();
 };
 // [END functions_firebase_analytics]

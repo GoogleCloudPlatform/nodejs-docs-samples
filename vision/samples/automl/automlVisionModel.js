@@ -541,7 +541,7 @@ require(`yargs`) // eslint-disable-line
     },
     projectId: {
       alias: `z`,
-      type: `number`,
+      type: `string`,
       default: process.env.GCLOUD_PROJECT,
       requiresArg: true,
       description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,

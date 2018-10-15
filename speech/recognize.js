@@ -243,7 +243,7 @@ function asyncRecognizeGCS(gcsUri, encoding, sampleRateHertz, languageCode) {
    * TODO(developer): Uncomment the following lines before running the sample.
    */
   // const gcsUri = 'gs://my-bucket/audio.raw';
-  // const encoding = 'Eencoding of the audio file, e.g. LINEAR16';
+  // const encoding = 'Encoding of the audio file, e.g. LINEAR16';
   // const sampleRateHertz = 16000;
   // const languageCode = 'BCP-47 language code, e.g. en-US';
 

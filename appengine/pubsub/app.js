@@ -29,7 +29,7 @@ const process = require('process'); // Required for mocking environment variable
 const PubSub = require('@google-cloud/pubsub');
 
 // Instantiate a pubsub client
-const pubsub = PubSub();
+const pubsub = new PubSub();
 
 const app = express();
 app.set('view engine', 'pug');

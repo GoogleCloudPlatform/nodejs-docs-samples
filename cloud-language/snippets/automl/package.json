@@ -22,6 +22,6 @@
     "@google-cloud/nodejs-repo-tools": "^2.3.0",
     "mocha": "^5.2.0",
     "proxyquire": "^2.0.1",
-    "sinon": "^6.0.1"
+    "sinon": "^7.0.0"
   }
 }

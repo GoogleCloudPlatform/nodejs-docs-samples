@@ -27,8 +27,9 @@ const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const helper = `node ../manager/manager.js`;
 const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --deviceId="${deviceId}" `;
 const cwd = path.join(__dirname, `..`);
-const installDeps = `pushd ../manager && npm install`;
+const installDeps = `npm install`;
 
+test.todo(tools.run(installDeps, `${cwd}/../manager`));
 test.before(tools.checkCredentials);
 test.before(async () => {
   const pubsub = PubSub();
@@ -53,7 +54,6 @@ test(`should receive configuration message`, async (t) => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
 
-  await tools.runAsync(installDeps, cwd);
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
     `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
@@ -75,7 +75,6 @@ test(`should send event message`, async (t) => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
 
-  await tools.runAsync(installDeps, cwd);
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
     `${helper} createRegistry ${localRegName} ${topicName}`, cwd);
@@ -96,7 +95,6 @@ test(`should send event message`, async (t) => {
 test(`should send event message`, async (t) => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
-  await tools.runAsync(installDeps, cwd);
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
     `${helper} createRegistry ${localRegName} ${topicName}`, cwd);

@@ -107,6 +107,36 @@ test(`should listen to Auth events`, t => {
   t.true(console.log.calledWith(`Email: me@example.com`));
 });
 
+test.serial('should monitor Analytics', t => {
+  const date = new Date();
+  const event = {
+    data: {
+      eventDim: [{
+        name: 'my-event',
+        timestampMicros: `${date.valueOf()}000`
+      }],
+      userDim: {
+        deviceInfo: {
+          deviceModel: 'Pixel'
+        },
+        geoInfo: {
+          city: 'London',
+          country: 'UK'
+        }
+      }
+    },
+    resource: 'my-resource'
+  };
+
+  const sample = getSample();
+  sample.program.helloAnalytics(event);
+  t.is(console.log.args[0][0], `Function triggered by the following event: my-resource`);
+  t.is(console.log.args[1][0], `Name: my-event`);
+  t.is(console.log.args[2][0], `Timestamp: ${date}`);
+  t.is(console.log.args[3][0], `Device Model: Pixel`);
+  t.is(console.log.args[4][0], `Location: London, UK`);
+});
+
 test(`should update data in response to Firestore events`, t => {
   const sample = getSample();
 

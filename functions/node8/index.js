@@ -186,3 +186,24 @@ exports.helloAuth = (data, context) => {
   }
 };
 // [END functions_firebase_auth_node8]
+
+// [START functions_firebase_analytics]
+/**
+ * Triggered by a Google Analytics for Firebase log event.
+ *
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
+ */
+exports.helloAnalytics = (data, context) => {
+  const resource = context.resource;
+  console.log(`Function triggered by the following event: ${resource}`);
+
+  const analyticsEvent = data.eventDim[0];
+  console.log(`Name: ${analyticsEvent.name}`);
+  console.log(`Timestamp: ${new Date(analyticsEvent.timestampMicros / 1000)}`);
+
+  const userObj = data.userDim;
+  console.log(`Device Model: ${userObj.deviceInfo.deviceModel}`);
+  console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
+};
+// [END functions_firebase_analytics]

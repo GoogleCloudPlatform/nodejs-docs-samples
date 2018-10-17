@@ -18,7 +18,7 @@ See the [Cloud Functions Hello World tutorial][tutorial].
 
 1. Read and follow the [prerequisites](../../../../#prerequisites).
 
-1. Install [Google Cloud Functions Emulator][https://github.com/GoogleCloudPlatform/cloud-functions-emulator] globally, and then run it
+1. Install and run the [Google Cloud Functions Emulator](https://github.com/GoogleCloudPlatform/cloud-functions-emulator)
 
         npm install -g @google-cloud/functions-emulator
         functions start
@@ -27,13 +27,11 @@ See the [Cloud Functions Hello World tutorial][tutorial].
 
         npm install
 
-1. Set the following environment variables, note GCF_REGION is the default for the Cloud Functions Emulator.
+1. Set the following environment variables:
 
-        GCLOUD_PROJECT
-        GCF_REGION=us-central1
-        FUNCTIONS_TOPIC
-        FUNCTIONS_BUCKET
-        GOOGLE_APPLICATION_CREDENTIALS
+        export GCF_REGION=us-central1
+        export FUNCTIONS_TOPIC=[YOUR_PUBSUB_TOPIC]
+        export FUNCTIONS_BUCKET=[YOUR_CLOUD_STORAGE_BUCKET]
 
 1. Run the tests:
 

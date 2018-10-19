@@ -28,7 +28,7 @@ const client = new vision.ImageAnnotatorClient();
 // [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
 exports.blurOffensiveImages = (event) => {
-  const object = event.data;
+  const object = event.data || event;
 
   // Exit if this is a deletion or a deploy event.
   if (object.resourceState === 'not_exists') {
@@ -41,6 +41,12 @@ exports.blurOffensiveImages = (event) => {
 
   const file = storage.bucket(object.bucket).file(object.name);
   const filePath = `gs://${object.bucket}/${object.name}`;
+
+  // Ignore already-blurred files (to prevent re-invoking this function)
+  if (file.name.startsWith('blurred-')) {
+    console.log(`The image ${file.name} is already blurred.`);
+    return;
+  }
 
   console.log(`Analyzing ${file.name}.`);
 
@@ -92,8 +98,11 @@ function blurImage (file) {
     .then(() => {
       console.log(`Image ${file.name} has been blurred.`);
 
+      // Mark result as blurred, to avoid re-triggering this function.
+      const newName = `blurred-${file.name}`;
+
       // Upload the Blurred image back into the bucket.
-      return file.bucket.upload(tempLocalPath, { destination: file.name })
+      return file.bucket.upload(tempLocalPath, { destination: newName })
         .catch((err) => {
           console.error('Failed to upload blurred image.', err);
           return Promise.reject(err);

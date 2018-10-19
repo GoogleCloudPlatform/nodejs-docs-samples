@@ -95,14 +95,13 @@ function getMetrics (callback) {
 }
 
 // [START functions_log_stackdriver]
-exports.processLogEntry = (data, callback) => {
-  const dataBuffer = Buffer.from(data.data.data, 'base64');
+exports.processLogEntry = (data) => {
+  const dataBuffer = Buffer.from(data.data.data || data.data, 'base64');
   const logEntry = JSON.parse(dataBuffer.toString('ascii')).protoPayload;
 
   console.log(`Method: ${logEntry.methodName}`);
   console.log(`Resource: ${logEntry.resourceName}`);
   console.log(`Initiator: ${logEntry.authenticationInfo.principalEmail}`);
-  callback();
 };
 // [END functions_log_stackdriver]
 

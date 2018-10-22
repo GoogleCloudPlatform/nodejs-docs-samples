@@ -19,21 +19,13 @@ const proxyquire = require(`proxyquire`).noCallThru();
 const sinon = require(`sinon`);
 const test = require(`ava`);
 
-function getSample () {
-  const bodyJson = {};
-  const body = {
-    json: sinon.stub().resolves(bodyJson)
-  };
-  const FetchMock = sinon.stub().resolves(body);
-
+function getSample (FetchStub) {
   return {
     program: proxyquire(`../`, {
-      'node-fetch': FetchMock
+      'node-fetch': FetchStub
     }),
     mocks: {
-      fetch: FetchMock,
-      body: body,
-      bodyJson: bodyJson
+      fetch: FetchStub
     }
   };
 }
@@ -45,12 +37,41 @@ test.cb(`Handles error in JSON body`, (t) => {
     }
   };
   const expectedMsg = `Something bad happened.`;
-  const sample = getSample();
-  sample.mocks.bodyJson.error = expectedMsg;
+  const bodyJson = {'error': expectedMsg};
+  const body = {
+    json: sinon.stub().resolves(bodyJson)
+  };
+  const sample = getSample(sinon.stub().resolves(body));
 
-  sample.program.triggerDag(event, (err, message) => {
+  sample.program.triggerDag(event).catch(function (err) {
     t.regex(err, /Something bad happened/);
-    t.is(message, undefined);
+    t.end();
+  });
+});
+
+test.cb(`Handles error in IAP response.`, (t) => {
+  const event = {
+    data: {
+      file: `some-file`
+    }
+  };
+  const expectedMsg = 'Default IAP Error Message.';
+
+  const serviceAccountAccessTokenRes = {
+    json: sinon.stub().resolves({'access_token': 'default-access-token'})
+  };
+  const signJsonClaimRes = {json: sinon.stub().resolves({'signature': 'default-jwt-signature'})};
+  const getTokenRes = {json: sinon.stub().resolves({'id_token': 'default-id-token'})};
+  const makeIapPostRequestRes = {ok: false, text: sinon.stub().resolves(expectedMsg)};
+  const FetchStub = sinon.stub()
+    .onCall(0).resolves(serviceAccountAccessTokenRes)
+    .onCall(1).resolves(signJsonClaimRes)
+    .onCall(2).resolves(getTokenRes)
+    .onCall(3).resolves(makeIapPostRequestRes);
+  const sample = getSample(FetchStub);
+
+  sample.program.triggerDag(event).catch(function (err) {
+    t.is(err, expectedMsg);
     t.end();
   });
 });

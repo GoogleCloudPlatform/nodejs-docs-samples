@@ -187,7 +187,7 @@ exports.helloAuth = (data, context) => {
 };
 // [END functions_firebase_auth_node8]
 
-// [START functions_firebase_analytics]
+// [START functions_firebase_analytics_node8]
 /**
  * Triggered by a Google Analytics for Firebase log event.
  *
@@ -206,4 +206,4 @@ exports.helloAnalytics = (data, context) => {
   console.log(`Device Model: ${userObj.deviceInfo.deviceModel}`);
   console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
 };
-// [END functions_firebase_analytics]
+// [END functions_firebase_analytics_node8]

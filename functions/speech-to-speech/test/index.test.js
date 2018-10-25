@@ -13,150 +13,118 @@
  * limitations under the License.
  */
 
-const test = require('ava');
+/* eslint-env node, mocha */
+
 const supertest = require('supertest');
 const request = supertest(process.env.BASE_URL);
 
-test.cb('speechTranslate: No encoding field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      // encoding: 'LINEAR16',
-      sampleRateHertz: 16000,
-      languageCode: 'en',
-      audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Invalid encoding.');
-    })
-    .end(t.end);
+describe('Validate encoding field', function () {
+  it('should fail if encoding field is missing.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        // encoding: 'LINEAR16',
+        sampleRateHertz: 16000,
+        languageCode: 'en',
+        audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Invalid encoding.', done);
+  });
+  it('should fail if encoding field is empty.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: '',
+        sampleRateHertz: 16000,
+        languageCode: 'en',
+        audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Invalid encoding.', done);
+  });
 });
 
-test.cb('speechTranslate: Empty encoding field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: '',
-      sampleRateHertz: 16000,
-      languageCode: 'en',
-      audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Invalid encoding.');
-    })
-    .end(t.end);
+describe('Validate sampleRateHertz field', function () {
+  it('should fail if sampleRateHertz field is missing.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: 'LINEAR16',
+        // sampleRateHertz: 16000,
+        languageCode: 'en',
+        audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Sample rate hertz must be numeric.', done);
+  });
+  it('should fail if sampleRateHertz field is empty.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: 'LINEAR16',
+        sampleRateHertz: '',
+        languageCode: 'en',
+        audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Sample rate hertz must be numeric.', done);
+  });
+  it('should fail if sampleRateHertz field is not numeric.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: 'LINEAR16',
+        sampleRateHertz: 'NaN',
+        languageCode: 'en',
+        audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Sample rate hertz must be numeric.', done);
+  });
 });
 
-test.cb('speechTranslate: No sampleRateHertz field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: 'LINEAR16',
-      // sampleRateHertz: 16000,
-      languageCode: 'en',
-      audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Sample rate hertz must be numeric.');
-    })
-    .end(t.end);
+describe('Validate languageCode field', function () {
+  it('should fail if languageCode field is missing.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: 'LINEAR16',
+        sampleRateHertz: 16000,
+        // languageCode: 'en',
+        audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Invalid language code.', done);
+  });
+  it('should fail if languageCode field is empty.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: 'LINEAR16',
+        sampleRateHertz: 16000,
+        languageCode: '',
+        audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Invalid language code.', done);
+  });
 });
 
-test.cb('speechTranslate: Empty sampleRateHertz field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: 'LINEAR16',
-      sampleRateHertz: '',
-      languageCode: 'en',
-      audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Sample rate hertz must be numeric.');
-    })
-    .end(t.end);
-});
-
-test.cb('speechTranslate: SampleRateHertz field is not a number', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: 'LINEAR16',
-      sampleRateHertz: 'Not a number',
-      languageCode: 'en',
-      audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Sample rate hertz must be numeric.');
-    })
-    .end(t.end);
-});
-
-test.cb('speechTranslate: No languageCode field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: 'LINEAR16',
-      sampleRateHertz: 16000,
-      // languageCode: 'en',
-      audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Invalid language code.');
-    })
-    .end(t.end);
-});
-
-test.cb('speechTranslate: Empty languageCode field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: 'LINEAR16',
-      sampleRateHertz: 16000,
-      languageCode: '',
-      audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Invalid language code.');
-    })
-    .end(t.end);
-});
-
-test.cb('speechTranslate: No audioContent field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: 'LINEAR16',
-      sampleRateHertz: 16000,
-      languageCode: 'en'
-      // audioContent: 'base64-audio-content'
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Invalid audio content.');
-    })
-    .end(t.end);
-});
-
-test.cb('speechTranslate: Empty audioContent field', t => {
-  request
-    .post('/speechTranslate')
-    .send({
-      encoding: 'LINEAR16',
-      sampleRateHertz: 16000,
-      languageCode: 'en',
-      audioContent: ''
-    })
-    .expect(400)
-    .expect((response) => {
-      t.is(response.text, 'Invalid audio content.');
-    })
-    .end(t.end);
+describe('Validate audioContent field', function () {
+  it('should fail if audioContent field is missing.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: 'LINEAR16',
+        sampleRateHertz: 16000,
+        languageCode: 'en'
+        // audioContent: 'base64-audio-content'
+      })
+      .expect(400, 'Invalid audio content.', done);
+  });
+  it('should fail if audioContent field is empty.', function (done) {
+    request
+      .post('/speechTranslate')
+      .send({
+        encoding: 'LINEAR16',
+        sampleRateHertz: 16000,
+        languageCode: 'en',
+        audioContent: ''
+      })
+      .expect(400, 'Invalid audio content.', done);
+  });
 });

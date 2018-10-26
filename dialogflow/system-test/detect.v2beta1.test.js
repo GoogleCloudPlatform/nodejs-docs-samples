@@ -17,12 +17,11 @@
 
 const test = require(`ava`);
 const {runAsync} = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid/v4');
 
 const cmd = 'node detect.v2beta1.js';
 const testQuery = `Where is my data stored?`;
-
-const testKnowledgeBaseName = 'TestKnowledgeBase';
-
+const testKnowledgeBaseName = `${uuid().split('-')[0]}-TestKnowledgeBase`;
 const testDocName = `TestDoc`;
 const testDocumentPath = `https://cloud.google.com/storage/docs/faq`;
 

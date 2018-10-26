@@ -156,9 +156,12 @@ async function speechTranscribeMultiChannel(fileName) {
 
   const [response] = await client.recognize(request);
   const transcription = response.results
-    .map(result => {
-      ` Channel Tag: ${result.channelTag} ${result.alternatives[0].transcript}`;
-    })
+    .map(
+      result =>
+        ` Channel Tag: ${result.channelTag} ${
+          result.alternatives[0].transcript
+        }`
+    )
     .join('\n');
   console.log(`Transcription: \n${transcription}`);
   // [END speech_transcribe_multichannel_beta]

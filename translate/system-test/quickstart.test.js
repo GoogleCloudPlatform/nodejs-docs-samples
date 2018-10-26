@@ -28,7 +28,7 @@ test.after.always(tools.restoreConsole);
 
 test.cb(`should translate a string`, t => {
   const string = `Hello, world!`;
-  const expectedTranslation = `Привет мир!`;
+  const expectedTranslation = `Привет, мир!`;
   const targetLanguage = `ru`;
   const translateMock = {
     translate: (_string, _targetLanguage) => {

@@ -29,9 +29,9 @@ Options:
                                                            [string]
   --cloudRegion, -c                                                                    [string] [default: "us-central1"]
   --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
-                        environment variables.                                    [string] [default: "noero-healthcare"]
+                        environment variables.                                    [string]
   --serviceAccount, -s  The path to your service credentials JSON.
-                                     [string] [default: "/usr/local/google/home/noero/serviceacct/service_account.json"]
+                                     [string]
   --help                Show help                                                                              [boolean]
 
 For more information, see https://cloud.google.com/healthcare/docs

@@ -25,6 +25,6 @@
     "pug": "2.0.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1"
+    "@google-cloud/nodejs-repo-tools": "2.3.5"
   }
 }

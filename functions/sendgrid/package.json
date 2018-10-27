@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@google-cloud/bigquery": "0.10.0",
-    "@google-cloud/storage": "1.4.0",
+    "@google-cloud/storage": "1.7.0",
     "safe-buffer": "5.1.1",
     "sendgrid": "5.2.3",
     "uuid": "3.1.0"

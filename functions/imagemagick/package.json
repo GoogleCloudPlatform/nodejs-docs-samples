@@ -17,7 +17,7 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/storage": "1.6.0",
+    "@google-cloud/storage": "1.7.0",
     "@google-cloud/vision": "0.16.0",
     "gm": "^1.23.1"
   },

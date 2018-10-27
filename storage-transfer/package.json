@@ -19,7 +19,7 @@
     "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/storage": "1.6.0",
+    "@google-cloud/storage": "1.7.0",
     "googleapis": "27.0.0",
     "moment": "2.21.0",
     "safe-buffer": "5.1.1",

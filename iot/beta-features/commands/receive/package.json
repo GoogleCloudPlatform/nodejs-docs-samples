@@ -11,7 +11,7 @@
     "test": "repo-tools test run --cmd ava -- -T 3m --verbose receiveTest.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.13.2",
+    "@google-cloud/pubsub": "0.20.1",
     "jsonwebtoken": "^8.3.0",
     "mqtt": "2.15.0",
     "yargs": "8.0.2"

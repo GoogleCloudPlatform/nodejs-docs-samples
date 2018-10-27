@@ -17,7 +17,7 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.16.4",
+    "@google-cloud/pubsub": "0.20.1",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {

@@ -16,7 +16,7 @@
     "pretest": "npm run lint"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.18.0",
+    "@google-cloud/pubsub": "^0.20.0",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {

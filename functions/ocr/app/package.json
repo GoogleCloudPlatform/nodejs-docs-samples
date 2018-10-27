@@ -17,7 +17,7 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.13.2",
+    "@google-cloud/pubsub": "0.20.1",
     "@google-cloud/storage": "1.2.1",
     "@google-cloud/translate": "1.0.0",
     "@google-cloud/vision": "0.12.0",

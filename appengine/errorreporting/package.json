@@ -21,7 +21,7 @@
     "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/error-reporting": "0.2.3",
+    "@google-cloud/error-reporting": "0.5.1",
     "express": "4.16.2"
   },
   "devDependencies": {

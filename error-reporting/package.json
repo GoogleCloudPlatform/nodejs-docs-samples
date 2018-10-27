@@ -21,7 +21,7 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "@google-cloud/error-reporting": "0.2.3",
+    "@google-cloud/error-reporting": "0.5.1",
     "express": "4.16.2",
     "yargs": "11.0.0"
   },

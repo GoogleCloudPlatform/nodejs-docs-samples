@@ -19,7 +19,7 @@
     "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "2.4.0",
+    "@google-cloud/debug-agent": "2.6.0",
     "pug": "2.0.3",
     "safe-buffer": "5.1.1"
   },

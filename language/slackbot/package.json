@@ -23,7 +23,7 @@
     "test": "repo-tools test run --cmd ava -- -T 20s --verbose system-test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/language": "0.11.0",
+    "@google-cloud/language": "0.13.0",
     "botkit": "0.5.7",
     "sqlite3": "3.1.9"
   },

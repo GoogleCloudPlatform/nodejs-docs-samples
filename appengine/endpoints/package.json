@@ -24,7 +24,7 @@
     "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
-    "body-parser": "1.18.2",
+    "body-parser": "1.18.3",
     "express": "4.16.2",
     "safe-buffer": "5.1.1"
   },

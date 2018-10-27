@@ -20,7 +20,7 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "body-parser": "1.18.2",
+    "body-parser": "1.18.3",
     "express": "4.16.2",
     "jade": "1.11.0",
     "node-mailjet": "3.2.1"

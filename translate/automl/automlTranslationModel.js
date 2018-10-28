@@ -23,7 +23,7 @@
 
 `use strict`;
 
-function createModel(projectId, computeRegion, datasetId, modelName) {
+async function createModel(projectId, computeRegion, datasetId, modelName) {
   // [START automl_translation_create_model]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -48,44 +48,37 @@ function createModel(projectId, computeRegion, datasetId, modelName) {
   };
 
   // Create a model with the model metadata in the region.
-  client
-    .createModel({parent: projectLocation, model: myModel})
-    .then(responses => {
-      const operation = responses[0];
-      const initialApiResponse = responses[1];
+  const [operation, response] = await client.createModel({
+    parent: projectLocation,
+    model: myModel,
+  });
+  const initialApiResponse = response;
+  console.log(`Training operation name: `, initialApiResponse.name);
+  console.log(`Training started...`);
+  const [model] = await operation.promise();
+  // The final result of the operation.
+  console.log(model);
+  // Retrieve deployment state.
+  let deploymentState = ``;
+  if (model.deploymentState === 1) {
+    deploymentState = `deployed`;
+  } else if (model.deploymentState === 2) {
+    deploymentState = `undeployed`;
+  }
 
-      console.log(`Training operation name: `, initialApiResponse.name);
-      console.log(`Training started...`);
-      return operation.promise();
-    })
-    .then(responses => {
-      // The final result of the operation.
-      const model = responses[0];
-      console.log(model);
-      // Retrieve deployment state.
-      let deploymentState = ``;
-      if (model.deploymentState === 1) {
-        deploymentState = `deployed`;
-      } else if (model.deploymentState === 2) {
-        deploymentState = `undeployed`;
-      }
+  // Display the model information.
+  console.log(`Model name: ${model.name}`);
+  console.log(`Model id: ${model.name.split(`/`).pop(-1)}`);
+  console.log(`Model display name: ${model.displayName}`);
+  console.log(`Model create time:`);
+  console.log(`\tseconds: ${model.createTime.seconds}`);
+  console.log(`\tnanos: ${model.createTime.nanos}`);
+  console.log(`Model deployment state: ${deploymentState}`);
 
-      // Display the model information.
-      console.log(`Model name: ${model.name}`);
-      console.log(`Model id: ${model.name.split(`/`).pop(-1)}`);
-      console.log(`Model display name: ${model.displayName}`);
-      console.log(`Model create time:`);
-      console.log(`\tseconds: ${model.createTime.seconds}`);
-      console.log(`\tnanos: ${model.createTime.nanos}`);
-      console.log(`Model deployment state: ${deploymentState}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
   // [END automl_translation_create_model]
 }
 
-function listModels(projectId, computeRegion, filter) {
+async function listModels(projectId, computeRegion, filter) {
   // [START automl_translation_list_models]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -102,35 +95,32 @@ function listModels(projectId, computeRegion, filter) {
   const projectLocation = client.locationPath(projectId, computeRegion);
 
   // List all the models available in the region by applying filter.
-  client
-    .listModels({parent: projectLocation, filter: filter})
-    .then(responses => {
-      const models = responses[0];
+  const [models] = await client.listModels({
+    parent: projectLocation,
+    filter: filter,
+  });
 
-      // Display the model information.
-      console.log(`List of models:`);
-      models.forEach(model => {
-        console.log(`Model name: ${model.name}`);
-        console.log(`Model id: ${model.name.split(`/`).pop(-1)}`);
-        console.log(`Model display name: ${model.displayName}`);
-        console.log(`Model dataset id: ${model.datasetId}`);
-        console.log(`Model create time:`);
-        console.log(`\tseconds: ${model.createTime.seconds}`);
-        console.log(`\tnanos: ${model.createTime.nanos}`);
-        console.log(`Model update time:`);
-        console.log(`\tseconds: ${model.updateTime.seconds}`);
-        console.log(`\tnanos: ${model.updateTime.nanos}`);
-        console.log(`Model deployment state: ${model.deploymentState}`);
-        console.log(`\n`);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Display the model information.
+  console.log(`List of models:`);
+  models.forEach(model => {
+    console.log(`Model name: ${model.name}`);
+    console.log(`Model id: ${model.name.split(`/`).pop(-1)}`);
+    console.log(`Model display name: ${model.displayName}`);
+    console.log(`Model dataset id: ${model.datasetId}`);
+    console.log(`Model create time:`);
+    console.log(`\tseconds: ${model.createTime.seconds}`);
+    console.log(`\tnanos: ${model.createTime.nanos}`);
+    console.log(`Model update time:`);
+    console.log(`\tseconds: ${model.updateTime.seconds}`);
+    console.log(`\tnanos: ${model.updateTime.nanos}`);
+    console.log(`Model deployment state: ${model.deploymentState}`);
+    console.log(`\n`);
+  });
+
   // [END automl_translation_list_models]
 }
 
-function getModel(projectId, computeRegion, modelId) {
+async function getModel(projectId, computeRegion, modelId) {
   // [START automl_translation_get_model]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -147,71 +137,59 @@ function getModel(projectId, computeRegion, modelId) {
   const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
   // Get complete detail of the model.
-  client
-    .getModel({name: modelFullId})
-    .then(responses => {
-      const model = responses[0];
+  const [model] = await client.getModel({name: modelFullId});
 
-      // Display the model information.
-      console.log(`Model name: ${model.name}`);
-      console.log(`Model id: ${model.name.split(`/`).pop(-1)}`);
-      console.log(`Model display name: ${model.displayName}`);
-      console.log(`Model dataset id: ${model.datasetId}`);
-      if (model.modelMetadata === `translationModelMetadata`) {
-        console.log(`Translation model metadata:`);
-        console.log(
-          `\tBase model: ${model.translationModelMetadata.baseModel}`
-        );
-        console.log(
-          `\tSource language code: ${
-            model.translationModelMetadata.sourceLanguageCode
-          }`
-        );
-        console.log(
-          `\tTarget language code: ${
-            model.translationModelMetadata.targetLanguageCode
-          }`
-        );
-      } else if (model.modelMetadata === `textClassificationModelMetadata`) {
-        console.log(
-          `Text classification model metadata: ${
-            model.textClassificationModelMetadata
-          }`
-        );
-      } else if (model.modelMetadata === `imageClassificationModelMetadata`) {
-        console.log(`Image classification model metadata:`);
-        console.log(
-          `\tBase model id: ${
-            model.imageClassificationModelMetadata.baseModelId
-          }`
-        );
-        console.log(
-          `\tTrain budget: ${
-            model.imageClassificationModelMetadata.trainBudget
-          }`
-        );
-        console.log(
-          `\tTrain cost: ${model.imageClassificationModelMetadata.trainCost}`
-        );
-        console.log(
-          `\tStop reason: ${model.imageClassificationModelMetadata.stopReason}`
-        );
-      }
-      console.log(`Model create time:`);
-      console.log(`\tseconds: ${model.createTime.seconds}`);
-      console.log(`\tnanos: ${model.createTime.nanos}`);
-      console.log(`Model update time:`);
-      console.log(`\tseconds: ${model.updateTime.seconds}`);
-      console.log(`\tnanos: ${model.updateTime.nanos}`);
-      console.log(`Model deployment state: ${model.deploymentState}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Display the model information.
+  console.log(`Model name: ${model.name}`);
+  console.log(`Model id: ${model.name.split(`/`).pop(-1)}`);
+  console.log(`Model display name: ${model.displayName}`);
+  console.log(`Model dataset id: ${model.datasetId}`);
+  if (model.modelMetadata === `translationModelMetadata`) {
+    console.log(`Translation model metadata:`);
+    console.log(`\tBase model: ${model.translationModelMetadata.baseModel}`);
+    console.log(
+      `\tSource language code: ${
+        model.translationModelMetadata.sourceLanguageCode
+      }`
+    );
+    console.log(
+      `\tTarget language code: ${
+        model.translationModelMetadata.targetLanguageCode
+      }`
+    );
+  } else if (model.modelMetadata === `textClassificationModelMetadata`) {
+    console.log(
+      `Text classification model metadata: ${
+        model.textClassificationModelMetadata
+      }`
+    );
+  } else if (model.modelMetadata === `imageClassificationModelMetadata`) {
+    console.log(`Image classification model metadata:`);
+    console.log(
+      `\tBase model id: ${model.imageClassificationModelMetadata.baseModelId}`
+    );
+    console.log(
+      `\tTrain budget: ${model.imageClassificationModelMetadata.trainBudget}`
+    );
+    console.log(
+      `\tTrain cost: ${model.imageClassificationModelMetadata.trainCost}`
+    );
+    console.log(
+      `\tStop reason: ${model.imageClassificationModelMetadata.stopReason}`
+    );
+  }
+  console.log(`Model create time:`);
+  console.log(`\tseconds: ${model.createTime.seconds}`);
+  console.log(`\tnanos: ${model.createTime.nanos}`);
+  console.log(`Model update time:`);
+  console.log(`\tseconds: ${model.updateTime.seconds}`);
+  console.log(`\tnanos: ${model.updateTime.nanos}`);
+  console.log(`Model deployment state: ${model.deploymentState}`);
+
   // [END automl_translation_get_model]
 }
 
-function listModelEvaluations(projectId, computeRegion, modelId, filter) {
+async function listModelEvaluations(projectId, computeRegion, modelId, filter) {
   // [START automl_translation_list_model_evaluations]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -226,25 +204,22 @@ function listModelEvaluations(projectId, computeRegion, modelId, filter) {
   // const filter = `filter expressions, must specify field, e.g. “imageClassificationModelMetadata:*”`;
 
   // Get the full path of the model.
-  const modelFullId = client.modelPath(projectId, computeRegion, modelId);
+  const modelFullId = await client.modelPath(projectId, computeRegion, modelId);
 
   // List all the model evaluations in the model by applying filter.
-  client
-    .listModelEvaluations({parent: modelFullId, filter: filter})
-    .then(responses => {
-      const elements = responses[0];
-      console.log(`List of model evaluations:`);
-      elements.forEach(element => {
-        console.log(element);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [elements] = client.listModelEvaluations({
+    parent: modelFullId,
+    filter: filter,
+  });
+  console.log(`List of model evaluations:`);
+  elements.forEach(element => {
+    console.log(element);
+  });
+
   // [END automl_translation_list_model_evaluations]
 }
 
-function getModelEvaluation(
+async function getModelEvaluation(
   projectId,
   computeRegion,
   modelId,
@@ -272,19 +247,15 @@ function getModelEvaluation(
   );
 
   // Get complete detail of the model evaluation.
-  client
-    .getModelEvaluation({name: modelEvaluationFullId})
-    .then(responses => {
-      const response = responses[0];
-      console.log(response);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [response] = await client.getModelEvaluation({
+    name: modelEvaluationFullId,
+  });
+  console.log(response);
+
   // [END automl_translation_get_model_evaluation]
 }
 
-function deleteModel(projectId, computeRegion, modelId) {
+async function deleteModel(projectId, computeRegion, modelId) {
   // [START automl_translation_delete_model]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -301,23 +272,15 @@ function deleteModel(projectId, computeRegion, modelId) {
   const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
   // Delete a model.
-  client
-    .deleteModel({name: modelFullId})
-    .then(responses => {
-      const operation = responses[0];
-      return operation.promise();
-    })
-    .then(responses => {
-      // The final result of the operation.
-      if (responses[2].done === true) console.log(`Model deleted.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [operation] = await client.deleteModel({name: modelFullId});
+  const operationResponse = await operation.promise();
+  // The final result of the operation.
+  if (operationResponse[2].done === true) console.log(`Model deleted.`);
+
   // [END automl_translation_delete_model]
 }
 
-function getOperationStatus(operationFullId) {
+async function getOperationStatus(operationFullId) {
   // [START automl_translation_get_operation_status]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -329,10 +292,10 @@ function getOperationStatus(operationFullId) {
   // const operationFullId = `Full name of an operation, eg. “Projects/<projectId>/locations/us-central1/operations/<operationId>
 
   // Get the latest state of a long-running operation.
-  client.operationsClient.getOperation(operationFullId).then(responses => {
-    const response = responses[0];
-    console.log(`Operation status: ${response}`);
-  });
+  const [responses] = await client.operationsClient.getOperation(
+    operationFullId
+  );
+  console.log(`Operation status: ${responses}`);
   // [END automl_translation_get_operation_status]
 }
 
@@ -407,32 +370,51 @@ require(`yargs`)
     `get-operation-status`,
     `Gets status of current operation`,
     {},
-    opts => getOperationStatus(opts.operationFullId)
+    async opts =>
+      await getOperationStatus(opts.operationFullId).catch(console.error)
   )
-  .command(`list-models`, `list all Models`, {}, opts =>
-    listModels(opts.projectId, opts.computeRegion, opts.filter)
+  .command(
+    `list-models`,
+    `list all Models`,
+    {},
+    async opts =>
+      await listModels(opts.projectId, opts.computeRegion, opts.filter).catch(
+        console.error
+      )
   )
   .command(`get-model`, `Get a Model`, {}, opts =>
     getModel(opts.projectId, opts.computeRegion, opts.modelId)
   )
-  .command(`list-model-evaluations`, `List model evaluations`, {}, opts =>
-    listModelEvaluations(
-      opts.projectId,
-      opts.computeRegion,
-      opts.modelId,
-      opts.filter
-    )
+  .command(
+    `list-model-evaluations`,
+    `List model evaluations`,
+    {},
+    async opts =>
+      await listModelEvaluations(
+        opts.projectId,
+        opts.computeRegion,
+        opts.modelId,
+        opts.filter
+      ).catch(console.error)
   )
-  .command(`get-model-evaluation`, `Get model evaluation`, {}, opts =>
-    getModelEvaluation(
-      opts.projectId,
-      opts.computeRegion,
-      opts.modelId,
-      opts.modelEvaluationId
-    )
+  .command(
+    `get-model-evaluation`,
+    `Get model evaluation`,
+    {},
+    async opts =>
+      await getModelEvaluation(
+        opts.projectId,
+        opts.computeRegion,
+        opts.modelId,
+        opts.modelEvaluationId
+      )
   )
-  .command(`delete-model`, `Delete a Model`, {}, opts =>
-    deleteModel(opts.projectId, opts.computeRegion, opts.modelId)
+  .command(
+    `delete-model`,
+    `Delete a Model`,
+    {},
+    async opts =>
+      await deleteModel(opts.projectId, opts.computeRegion, opts.modelId)
   )
   .example(`node $0 create-model -i "DatasetID" -m "myModelName"`)
   .example(`node $0 get-operation-status -i "datasetId" -o "OperationFullID"`)

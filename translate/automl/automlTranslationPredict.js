@@ -23,7 +23,7 @@
 
 `use strict`;
 
-function predict(
+async function predict(
   projectId,
   computeRegion,
   modelId,
@@ -68,22 +68,18 @@ function predict(
     };
   }
 
-  client
-    .predict({
-      name: modelFullId,
-      payload: payload,
-      params: params,
-    })
-    .then(responses => {
-      const response = responses[0];
-      console.log(
-        `Translated Content: `,
-        response.payload[0].translation.translatedContent.content
-      );
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const responses = await client.predict({
+    name: modelFullId,
+    payload: payload,
+    params: params,
+  });
+
+  const response = responses[0];
+  console.log(
+    `Translated Content: `,
+    response.payload[0].translation.translatedContent.content
+  );
+
   // [END automl_translation_predict]
 }
 
@@ -128,14 +124,18 @@ require(`yargs`)
         `serve the request. Use false to not use Google translation model.`,
     },
   })
-  .command(`predict`, `classify the content`, {}, opts =>
-    predict(
-      opts.projectId,
-      opts.computeRegion,
-      opts.modelId,
-      opts.filePath,
-      opts.translationAllowFallback
-    )
+  .command(
+    `predict`,
+    `classify the content`,
+    {},
+    async opts =>
+      await predict(
+        opts.projectId,
+        opts.computeRegion,
+        opts.modelId,
+        opts.filePath,
+        opts.translationAllowFallback
+      )
   )
   .example(
     `node $0 predict -i "modelId" -f "./resources/testInput.txt" -t "False"`

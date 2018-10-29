@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@google-cloud/trace-agent": "2.5.0",
-    "express": "4.16.2",
+    "express": "4.16.4",
     "got": "8.2.0"
   },
   "devDependencies": {

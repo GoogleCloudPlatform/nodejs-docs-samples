@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "express": "4.16.2",
-    "got": "8.2.0"
+    "got": "8.3.2"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.0",

@@ -30,9 +30,9 @@ test.before(tools.checkCredentials);
 test.after.always(async () => {
   try {
     await tools.runAsync(
-        `${cmd} deleteDataset ${destinationDatasetId}`, cwd);
+      `${cmd} deleteDataset ${destinationDatasetId}`, cwd);
   } catch (err) { } // Ignore error
-})
+});
 
 test.serial(`should create a dataset`, async t => {
   const output = await tools.runAsync(
@@ -58,7 +58,7 @@ test.serial(`should list datasets`, async t => {
   const output = await tools.runAsync(
     `${cmd} listDatasets`, cwd);
   t.regex(output, /datasets/);
-})
+});
 
 test.serial(`should de-identify data in a dataset and write to a new dataset`, async t => {
   const output = await tools.runAsync(

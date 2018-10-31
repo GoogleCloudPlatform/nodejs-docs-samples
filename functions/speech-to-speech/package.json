@@ -28,7 +28,7 @@
     "local-test": "mocha test/index.test.js",
     "system-test": "mocha --timeout 20000 test/sample.integration.http.test.js",
     "pretest": "npm run lint && sh test/updateFunctions.sh",
-    "test": "npm run local-test && npm run system-test"
+    "test": "export OUTPUT_BUCKET=speech-to-speech-test-$(uuidgen) && functions restart && npm run local-test && npm run system-test"
   },
   "dependencies": {
     "@google-cloud/speech": "^2.1.0",

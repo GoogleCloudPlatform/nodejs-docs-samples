@@ -12,6 +12,8 @@
     "node": ">=6.0"
   },
   "scripts": {
+    "lint": "repo-tools lint",
+    "pretest": "npm run lint",
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "devDependencies": {
@@ -21,6 +23,7 @@
     "sinon": "4.4.2"
   },
   "dependencies": {
-    "@google-cloud/compute": "^0.10.0"
+    "@google-cloud/compute": "^0.10.0",
+    "safe-buffer": "5.1.1"
   }
 }

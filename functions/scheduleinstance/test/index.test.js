@@ -74,7 +74,7 @@ test(`startInstance: should accept application/octect-stream`, async (t) => {
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/octet-stream`;
-  mocks.req.body = {zone:`test-zone`, instance:`test-instance`};
+  mocks.req.body = Buffer.from(`{'zone':'test-zone', 'instance':'test-instance'}`);
   sample.program.startInstance(mocks.req, mocks.res);
 
   sample.mocks.requestPromise()
@@ -186,7 +186,7 @@ test(`stopInstance: should accept application/octect-stream`, async (t) => {
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/octet-stream`;
-  mocks.req.body = {zone:`test-zone`, instance:`test-instance`};
+  mocks.req.body = Buffer.from(`{'zone':'test-zone', 'instance':'test-instance'}`);
   sample.program.stopInstance(mocks.req, mocks.res);
 
   sample.mocks.requestPromise()

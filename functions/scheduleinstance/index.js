@@ -20,29 +20,28 @@ exports.startInstance = (req, res) => {
   try {
     const reqBody = _validateReqBody(_parseReqBody(_validateReq(req)));
     compute.zone(reqBody.zone)
-        .vm(reqBody.instance)
-        .start()
-        .then(data => {
-          // Operation pending.
-          const operation = data[0];
-          return operation.promise();
-        })
-        .then(() => {
-          // Operation complete. Instance successfully started.
-          const message = 'Successfully started instance ' + reqBody.instance;
-          console.log(message);
-          res.status(200).send(message);
-        })
-        .catch(err => {
-          console.log(err);
-          res.status(500).send({error: err.message});
-        });
+      .vm(reqBody.instance)
+      .start()
+      .then(data => {
+        // Operation pending.
+        const operation = data[0];
+        return operation.promise();
+      })
+      .then(() => {
+        // Operation complete. Instance successfully started.
+        const message = 'Successfully started instance ' + reqBody.instance;
+        console.log(message);
+        res.status(200).send(message);
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).send({error: err.message});
+      });
   } catch (err) {
     console.log(err);
     res.status(400).send({error: err.message});
-  } finally {
-    return res;
   }
+  return res;
 };
 // [END functions_start_instance_http]
 
@@ -63,29 +62,28 @@ exports.stopInstance = (req, res) => {
   try {
     const reqBody = _validateReqBody(_parseReqBody(_validateReq(req)));
     compute.zone(reqBody.zone)
-        .vm(reqBody.instance)
-        .stop()
-        .then(data => {
-          // Operation pending.
-          const operation = data[0];
-          return operation.promise();
-        })
-        .then(() => {
-          // Operation complete. Instance successfully stopped.
-          const message = 'Successfully stopped instance ' + reqBody.instance;
-          console.log(message);
-          res.status(200).send(message);
-        })
-        .catch(err => {
-          console.log(err);
-          res.status(500).send({error: err.message});
-        });
+      .vm(reqBody.instance)
+      .stop()
+      .then(data => {
+        // Operation pending.
+        const operation = data[0];
+        return operation.promise();
+      })
+      .then(() => {
+        // Operation complete. Instance successfully stopped.
+        const message = 'Successfully stopped instance ' + reqBody.instance;
+        console.log(message);
+        res.status(200).send(message);
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).send({error: err.message});
+      });
   } catch (err) {
     console.log(err);
     res.status(400).send({error: err.message});
-  } finally {
-    return res;
   }
+  return res;
 };
 // [START functions_start_instance_http]
 
@@ -95,7 +93,7 @@ exports.stopInstance = (req, res) => {
  * @param {!object} req a Cloud Functions HTTP request object.
  * @returns {!object} an object with attributes matching the HTTP request body.
  */
-function _parseReqBody(req) {
+function _parseReqBody (req) {
   const contentType = req.get('content-type');
   if (contentType === 'application/json') {
     // Request.body automatically parsed as an object.
@@ -115,7 +113,7 @@ function _parseReqBody(req) {
  * @param {!object} reqBody the request body to validate.
  * @returns {!object} the request body object.
  */
-function _validateReqBody(reqBody) {
+function _validateReqBody (reqBody) {
   if (!reqBody.zone) {
     throw new Error(`Attribute 'zone' missing from POST request`);
   } else if (!reqBody.instance) {
@@ -130,10 +128,10 @@ function _validateReqBody(reqBody) {
  * @param {!object} req the request to validate.
  * @returns {!object} the request object.
  */
-function _validateReq(req) {
+function _validateReq (req) {
   if (req.method !== 'POST') {
-    throw new Error(
-        'Unsupported HTTP method ' + req.method + '; use method POST');
+    throw new Error('Unsupported HTTP method ' + req.method +
+        '; use method POST');
   } else if (typeof req.get('content-type') === 'undefined') {
     throw new Error('HTTP content-type missing');
   }

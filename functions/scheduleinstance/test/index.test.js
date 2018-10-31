@@ -92,7 +92,7 @@ test(`startInstance: should fail missing HTTP request method`, async (t) => {
   sample.program.startInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'Unsupported HTTP method undefined; use method POST'});
 });
@@ -106,7 +106,7 @@ test(`startInstance: should reject HTTP GET request`, async (t) => {
   sample.program.startInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'Unsupported HTTP method GET; use method POST'});
 });
@@ -119,7 +119,7 @@ test(`startInstance: should fail missing content-type header`, async (t) => {
   sample.program.startInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'HTTP content-type missing'});
 });
@@ -133,7 +133,7 @@ test(`startInstance: should reject unsupported HTTP content-type`, async (t) => 
   sample.program.startInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'Unsupported HTTP content-type text/plain; use application/json or application/octet-stream'});
 });
@@ -147,7 +147,7 @@ test(`startInstance: should fail with missing 'zone' attribute`, async (t) => {
   sample.program.startInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:`Attribute 'zone' missing from POST request`});
 });
@@ -161,7 +161,7 @@ test(`startInstance: should fail with missing 'instance' attribute`, async (t) =
   sample.program.startInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:`Attribute 'instance' missing from POST request`});
 });
@@ -204,7 +204,7 @@ test(`stopInstance: should fail missing HTTP request method`, async (t) => {
   sample.program.stopInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'Unsupported HTTP method undefined; use method POST'});
 });
@@ -218,7 +218,7 @@ test(`stopInstance: should reject HTTP GET request`, async (t) => {
   sample.program.stopInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'Unsupported HTTP method GET; use method POST'});
 });
@@ -231,7 +231,7 @@ test(`stopInstance: should fail missing content-type header`, async (t) => {
   sample.program.stopInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'HTTP content-type missing'});
 });
@@ -245,7 +245,7 @@ test(`stopInstance: should reject unsupported HTTP content-type`, async (t) => {
   sample.program.stopInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:'Unsupported HTTP content-type text/plain; use application/json or application/octet-stream'});
 });
@@ -259,7 +259,7 @@ test(`stopInstance: should fail with missing 'zone' attribute`, async (t) => {
   sample.program.stopInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:`Attribute 'zone' missing from POST request`});
 });
@@ -273,7 +273,7 @@ test(`stopInstance: should fail with missing 'instance' attribute`, async (t) =>
   sample.program.stopInstance(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], {error:`Attribute 'instance' missing from POST request`});
 });

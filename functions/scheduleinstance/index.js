@@ -39,7 +39,7 @@ exports.startInstance = (req, res) => {
         });
   } catch (err) {
     console.log(err);
-    res.status(500).send({error: err.message});
+    res.status(400).send({error: err.message});
   } finally {
     return res;
   }
@@ -82,7 +82,7 @@ exports.stopInstance = (req, res) => {
         });
   } catch (err) {
     console.log(err);
-    res.status(500).send({error: err.message});
+    res.status(400).send({error: err.message});
   } finally {
     return res;
   }

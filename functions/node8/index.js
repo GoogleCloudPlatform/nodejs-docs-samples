@@ -209,6 +209,8 @@ exports.helloAnalytics = (data, context) => {
 // [END functions_firebase_analytics_node8]
 
 // [START functions_background_promise_node8]
+const requestPromiseNative = require('request-promise-native');
+
 /**
  * Background Cloud Function that returns a Promise. Note that we don't pass
  * a "callback" argument to the function.
@@ -217,9 +219,7 @@ exports.helloAnalytics = (data, context) => {
  * @returns {Promise}
  */
 exports.helloPromise = (data) => {
-  const request = require('request-promise');
-
-  return request({
+  return requestPromiseNative({
     uri: data.endpoint
   });
 };

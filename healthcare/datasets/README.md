@@ -6,7 +6,7 @@ This sample app demonstrates dataset management for the Cloud Healthcare API.
 
 # Setup
 
-Run the following command to install the library dependencies for NodeJS:
+Run the following command to install the library dependencies for Node.js:
 
     npm install
 

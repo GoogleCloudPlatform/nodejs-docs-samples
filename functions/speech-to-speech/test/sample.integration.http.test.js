@@ -61,19 +61,22 @@ describe('Tests that do not require a GCS bucket', function () {
 });
 
 describe('Tests that require a GCS bucket', function () {
-  // Create the Google Cloud Storage bucket to run the tests.
-  // Caution: The 'after' hook deletes the bucket. To prevent deleting user data, the 'before' hook
-  // fails if the bucket already exists.
-  let bucketCreated = false;
+  // Create the Google Cloud Storage bucket if it doesn't exist.
   before('Create GCS bucket.', function (done) {
-    bucket.create({
-      location: storageLocation,
-      storageClass: storageClass
-    }).then(function (data) {
-      bucketCreated = true;
-      done();
-    }).catch(error => {
-      done(error);
+    bucket.exists().then(function (data) {
+      const exists = data[0];
+      if (!exists) {
+        bucket.create({
+          location: storageLocation,
+          storageClass: storageClass
+        }).then(function (data) {
+          done();
+        }).catch(error => {
+          done(error);
+        });
+      } else {
+        done();
+      }
     });
   });
   it('should return a successful response.', function (done) {
@@ -100,10 +103,7 @@ describe('Tests that require a GCS bucket', function () {
       })
       .expect(/"transcription":"this is a test please translate this message"/, done);
   });
-  after('Delete GCS bucket, files, and other test artifacts.', function (done) {
-    if (!bucketCreated) {
-      done(new Error('The before hook did not create the bucket, abort cleanup'));
-    }
+  after('Delete created files in the bucket and other test artifacts.', function (done) {
     // Load the response from the successful test.
     const responseBody = JSON.parse(fs.readFileSync('responseBody.test.json'));
 
@@ -116,9 +116,6 @@ describe('Tests that require a GCS bucket', function () {
     }
 
     Promise.all(deletedFiles).then(() => {
-      // Delete the empty bucket.
-      return bucket.delete();
-    }).then(() => {
       // Delete the file that stores the response from the successful test.
       fs.unlinkSync('responseBody.test.json');
       done();

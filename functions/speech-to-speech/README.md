@@ -34,7 +34,8 @@ The sample requires the following environment variables:
   regions, see [Cloud Functions Locations][11] in the Functions documentation.
 * `GOOGLE_CLOUD_PROJECT`: The project id of your GCP project.
 * `BASE_URL`: The URL that the Cloud Functions emulator uses to serve requests.
-* `OUTPUT_BUCKET`: A bucket that the sample uses to drop translated files.
+* `OUTPUT_BUCKET`: A bucket that the sample uses to drop translated files. The
+  test script creates this buckt if it doesn't exist.
 * `GOOGLE_APPLICATION_CREDENTIALS`: The path to your API key file.
 * `SUPPORTED_LANGUAGE_CODES`: Comma-separated list of languages that the sample
   translates messages to.
@@ -73,11 +74,10 @@ The test script performs the following tasks:
 1. Runs the linter.
 1. Deploys the function to the emulator.
 1. Runs tests that don't perform any calls to the Google Cloud APIs.
-1. Creates a temporary Google Cloud Storage bucket with a random name.
+1. Creates the output bucket if it doesn't exist.
 1. Runs tests that perform calls to the Google Cloud APIs and drop the
    translated messages to the bucket.
 1. Deletes the files created during the tests.
-1. Deletes the temporary bucket.
 
 To run the tests, use the following commands from the
 `functions/speech-to-speech` folder:

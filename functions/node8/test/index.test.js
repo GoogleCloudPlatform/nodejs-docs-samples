@@ -15,6 +15,7 @@
 
 'use strict';
 
+const sinon = require('sinon');
 const uuid = require('uuid');
 const test = require('ava');
 const utils = require('@google-cloud/nodejs-repo-tools');
@@ -23,6 +24,21 @@ const program = require('../');
 
 test.beforeEach(utils.stubConsole);
 test.afterEach.always(utils.restoreConsole);
+
+test.serial('should respond to HTTP requests', t => {
+  const reqMock = {
+    body: {
+      name: 'foo'
+    }
+  };
+
+  const resMock = {
+    send: sinon.stub()
+  };
+
+  program.helloHttp(reqMock, resMock);
+  t.true(resMock.send.calledWith('Hello foo!'));
+});
 
 test.serial('should monitor Firebase RTDB', t => {
   const dataId = uuid.v4();

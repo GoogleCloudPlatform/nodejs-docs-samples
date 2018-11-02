@@ -13,6 +13,20 @@
  * limitations under the License.
  */
 
+/**
+ * HTTP Cloud Function (same signature as other Node runtimes)
+ *
+ * @param {Object} req Cloud Function request context.
+ *                     More info: https://expressjs.com/en/api.html#req
+ * @param {Object} res Cloud Function response context.
+ *                     More info: https://expressjs.com/en/api.html#res
+ */
+// [START functions_tips_terminate_node8]
+exports.helloHttp = (req, res) => {
+  res.send(`Hello ${req.body.name || 'World'}!`);
+};
+// [END functions_tips_terminate_node8]
+
 // [START functions_tips_infinite_retries_node8]
 /**
  * Background Cloud Function that only executes within a certain time
@@ -62,9 +76,11 @@ exports.retryPromise = (data, context) => {
  * @param {object} data The event payload.
  * @param {object} context The event metadata.
  */
+// [START functions_tips_terminate_node8]
 exports.helloBackground = (data, context) => {
   return `Hello ${data.name || 'World'}!`;
 };
+// [END functions_tips_terminate_node8]
 // [END functions_helloworld_background_node8]
 
 // [START functions_helloworld_pubsub_node8]

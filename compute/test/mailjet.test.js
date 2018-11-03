@@ -16,44 +16,45 @@
 'use strict';
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
-const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
 
 process.env.MAILJET_API_KEY = `foo`;
 process.env.MAILJET_API_SECRET = `bar`;
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+describe('mailjet', () => {
+  beforeEach(tools.stubConsole);
+  afterEach(tools.restoreConsole);
 
-test.cb(`should send an email`, t => {
-  proxyquire(`../mailjet`, {
-    nodemailer: {
-      createTransport: arg => {
-        t.is(arg, `test`);
-        return {
-          sendMail: (payload, cb) => {
-            t.deepEqual(payload, {
-              from: `ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM`,
-              to: `EMAIL@EXAMPLE.COM`,
-              subject: `test email from Node.js on Google Cloud Platform`,
-              text: `Hello!\n\nThis a test email from Node.js.`,
-            });
-            cb(null, `done`);
-            t.end();
-          },
-        };
-      },
-    },
-    'nodemailer-smtp-transport': options => {
-      t.deepEqual(options, {
-        host: `in.mailjet.com`,
-        port: 2525,
-        auth: {
-          user: `foo`,
-          pass: `bar`,
+  it('should send an email', () => {
+    proxyquire(`../mailjet`, {
+      nodemailer: {
+        createTransport: arg => {
+          assert.strictEqual(arg, `test`);
+          return {
+            sendMail: payload => {
+              assert.deepStrictEqual(payload, {
+                from: `ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM`,
+                to: `EMAIL@EXAMPLE.COM`,
+                subject: `test email from Node.js on Google Cloud Platform`,
+                text: `Hello!\n\nThis a test email from Node.js.`,
+              });
+              return `done`;
+            },
+          };
         },
-      });
-      return `test`;
-    },
+      },
+      'nodemailer-smtp-transport': options => {
+        assert.deepStrictEqual(options, {
+          host: `in.mailjet.com`,
+          port: 2525,
+          auth: {
+            user: `foo`,
+            pass: `bar`,
+          },
+        });
+        return `test`;
+      },
+    });
   });
 });

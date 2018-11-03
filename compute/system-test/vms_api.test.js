@@ -15,19 +15,17 @@
 
 'use strict';
 
-const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const path = require(`path`);
+const assert = require('assert');
 
-const vmsExample = require(`../vms_api`);
+const cmd = `node vms_api.js`;
+const cwd = path.join(__dirname, `..`);
 
-test.before(tools.checkCredentials);
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+describe('should retrieve list of vms via api', function() {
+  it('vms_api_inspect_string', async function() {
+    const output = await tools.runAsync(cmd, cwd);
 
-test.cb('should retrieve vms', t => {
-  vmsExample.main((err, result) => {
-    t.ifError(err);
-    t.truthy(result);
-    t.end();
+    assert.strictEqual(output.includes('VMs:'), true);
   });
 });

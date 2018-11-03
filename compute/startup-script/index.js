@@ -16,16 +16,16 @@
 'use strict';
 
 const Compute = require('@google-cloud/compute');
-const http = require('http');
+const fetch = require('node-fetch');
 
 const compute = new Compute();
 
 const zone = compute.zone('us-central1-a');
 
-// callback(error, externalIp)
-function createVm(name, callback) {
+async function createVm(name) {
   // Create a new VM, using default ubuntu image. The startup script
   // installs apache and a custom homepage.
+
   const config = {
     os: 'ubuntu',
     http: true,
@@ -34,112 +34,91 @@ function createVm(name, callback) {
         {
           key: 'startup-script',
           value: `#! /bin/bash
-
-        # Installs apache and a custom homepage
-        apt-get update
-        apt-get install -y apache2
-        cat <<EOF > /var/www/html/index.html
-        <!doctype html>
-        <h1>Hello World</h1>
-        <p>This page was created from a simple start-up script!</p>`,
+    
+            # Installs apache and a custom homepage
+            apt-get update
+            apt-get install -y apache2
+            cat <<EOF > /var/www/html/index.html
+            <!doctype html>
+            <h1>Hello World</h1>
+            <p>This page was created from a simple start-up script!</p>`,
         },
       ],
     },
   };
+  const vmObj = zone.vm(name);
+  console.log('Creating VM ...');
+  const [vm, operation] = await vmObj.create(config);
+  await operation.promise();
+  const [metadata] = await vm.getMetadata();
 
-  const vm = zone.vm(name);
+  // External IP of the VM.
+  const ip = metadata.networkInterfaces[0].accessConfigs[0].natIP;
+  console.log(`Booting new VM with IP http://${ip}...`);
 
-  vm.create(config)
-    .then(data => {
-      const operation = data[1];
-      return operation.promise();
-    })
-    .then(() => {
-      return vm.getMetadata();
-    })
-    .then(data => {
-      const metadata = data[0];
-
-      // External IP of the VM.
-      const ip = metadata.networkInterfaces[0].accessConfigs[0].natIP;
-      console.log(`Booting new VM with IP http://${ip}...`);
-
-      // Ping the VM to determine when the HTTP server is ready.
-      let waiting = true;
-      const timer = setInterval(
-        ip => {
-          http
-            .get('http://' + ip, res => {
-              const statusCode = res.statusCode;
-              if (statusCode === 200 && waiting) {
-                waiting = false;
-                clearTimeout(timer);
-                // HTTP server is ready.
-                console.log('Ready!');
-                callback(null, ip);
-              }
-            })
-            .on('error', () => {
-              // HTTP server is not ready yet.
-              process.stdout.write('.');
-            });
-        },
-        2000,
-        ip
-      );
-    })
-    .catch(err => callback(err));
+  // Ping the VM to determine when the HTTP server is ready.
+  await pingVM(ip);
+  return ip;
 }
 
+async function pingVM(ip) {
+  let waiting = true;
+  while (waiting) {
+    await new Promise(r => setTimeout(r, 2000));
+    try {
+      const res = await fetch(`http://${ip}`);
+      const statusCode = res.status;
+      if (statusCode === 200) {
+        waiting = false;
+        console.log('Ready!');
+        return;
+      } else {
+        process.stdout.write('.');
+      }
+    } catch (err) {
+      process.stdout.write('.');
+    }
+  }
+}
 // List all VMs and their external IPs in a given zone.
-// callback(error, [[name, ip], [name, ip], ...])
-function listVms(callback) {
-  zone
-    .getVMs()
-    .then(data => {
-      const vms = data[0];
-      const results = vms.map(vm => vm.getMetadata());
-      return Promise.all(results);
+async function listVms() {
+  const [vms] = await zone.getVMs();
+  return await Promise.all(
+    vms.map(async vm => {
+      const [metadata] = await vm.getMetadata();
+      return {
+        ip: metadata['networkInterfaces'][0]['accessConfigs']
+          ? metadata['networkInterfaces'][0]['accessConfigs'][0]['natIP']
+          : 'no external ip',
+        name: metadata.name,
+      };
     })
-    .then(res =>
-      callback(
-        null,
-        res.map(data => {
-          return {
-            ip: data[0]['networkInterfaces'][0]['accessConfigs']
-              ? data[0]['networkInterfaces'][0]['accessConfigs'][0]['natIP']
-              : 'no external ip',
-            name: data[0].name,
-          };
-        })
-      )
-    )
-    .catch(err => callback(err));
+  );
 }
 
-function deleteVm(name, callback) {
+async function deleteVm(name) {
   const vm = zone.vm(name);
-  vm.delete()
-    .then(data => {
-      console.log('Deleting ...');
-      const operation = data[0];
-      return operation.promise();
-    })
-    .then(() => {
-      // VM deleted
-      callback(null, name);
-    })
-    .catch(err => callback(err));
+  console.log('Deleting ...');
+  const [operation] = await vm.delete();
+  await operation.promise();
+  // VM deleted
+  return name;
 }
 
-exports.create = (name, cb) => {
-  createVm(name, cb);
+exports.create = async name => {
+  const ip = await createVm(name);
+  console.log(`${name} created succesfully`);
+  return ip;
 };
 
-exports.list = cb => {
-  listVms(cb);
+exports.list = async () => {
+  const vms = await listVms();
+  console.log(vms);
+  return vms;
 };
 
-exports.delete = (name, cb) => {
-  deleteVm(name, cb);
+exports.delete = async name => {
+  const result = await deleteVm(name);
+  console.log(`${name} deleted succesfully`);
+  return result;
 };

@@ -22,32 +22,29 @@ const compute = google.compute('v1');
 // [END initialize]
 
 // [START auth]
-function auth(callback) {
-  google.auth.getApplicationDefault(function(err, authClient) {
-    if (err) {
-      return callback(err);
-    }
+async function auth() {
+  const data = await google.auth.getApplicationDefault();
+  let authClient = data.credential;
+  const projectId = authClient.projectId;
 
-    const projectId = authClient.projectId;
+  // The createScopedRequired method returns true when running on GAE or a
+  // local developer machine. In that case, the desired scopes must be passed
+  // in manually. When the code is  running in GCE or GAE Flexible, the scopes
+  // are pulled from the GCE metadata server.
+  // See https://cloud.google.com/compute/docs/authentication for more
+  // information.
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    // Scopes can be specified either as an array or as a single,
+    // space-delimited string.
+    authClient = authClient.createScoped([
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/compute',
+      'https://www.googleapis.com/auth/compute.readonly',
+    ]);
+    authClient.projectId = projectId;
+  }
 
-    // The createScopedRequired method returns true when running on GAE or a
-    // local developer machine. In that case, the desired scopes must be passed
-    // in manually. When the code is  running in GCE or GAE Flexible, the scopes
-    // are pulled from the GCE metadata server.
-    // See https://cloud.google.com/compute/docs/authentication for more
-    // information.
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      // Scopes can be specified either as an array or as a single,
-      // space-delimited string.
-      authClient = authClient.createScoped([
-        'https://www.googleapis.com/auth/cloud-platform',
-        'https://www.googleapis.com/auth/compute',
-        'https://www.googleapis.com/auth/compute.readonly',
-      ]);
-      authClient.projectId = projectId;
-    }
-    callback(null, authClient);
-  });
+  return authClient;
 }
 // [END auth]
 
@@ -55,38 +52,21 @@ function auth(callback) {
 /**
  * @param {Function} callback Callback function.
  */
-function getVmsExample(callback) {
-  auth(function(err, authClient) {
-    if (err) {
-      return callback(err);
-    }
-    // Retrieve the vms
-    compute.instances.aggregatedList(
-      {
-        auth: authClient,
-        project: authClient.projectId,
-        // In this example we only want one VM per page
-        maxResults: 1,
-      },
-      function(err, vms) {
-        if (err) {
-          return callback(err);
-        }
+async function getVmsExample() {
+  const authClient = await auth();
 
-        console.log('VMs:', vms);
-        callback(null, vms);
-      }
-    );
+  // Retrieve the vms
+  const vms = await compute.instances.aggregatedList({
+    auth: authClient,
+    project: authClient.projectId,
+    // In this example we only want one VM per page
+    maxResults: 1,
   });
+  console.log('VMs:', vms);
+  return vms;
 }
 // [END list]
 // [END complete]
 
 // Run the examples
-exports.main = function(cb) {
-  getVmsExample(cb);
-};
-
-if (module === require.main) {
-  exports.main(console.log);
-}
+getVmsExample().catch(console.error);

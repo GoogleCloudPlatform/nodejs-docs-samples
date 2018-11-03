@@ -16,43 +16,44 @@
 'use strict';
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
-const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
 
 process.env.SENDGRID_API_KEY = `foo`;
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+describe('sendgrid', () => {
+  beforeEach(tools.stubConsole);
+  afterEach(tools.restoreConsole);
 
-test.cb(`should send an email`, t => {
-  proxyquire(`../sendgrid`, {
-    sendgrid: key => {
-      t.is(key, `foo`);
-      return {
-        emptyRequest: x => x,
-        API: request => {
-          t.deepEqual(request, {
-            method: `POST`,
-            path: `/v3/mail/send`,
-            body: {
-              personalizations: [
-                {
-                  to: [{email: `to_email@example.com`}],
-                  subject: `Sendgrid test email from Node.js on Google Cloud Platform`,
-                },
-              ],
-              from: {email: `from_email@example.com`},
-              content: [
-                {
-                  type: `text/plain`,
-                  value: `Hello!\n\nThis a Sendgrid test email from Node.js on Google Cloud Platform.`,
-                },
-              ],
-            },
-          });
-          t.end();
-        },
-      };
-    },
+  it('should send an email', () => {
+    proxyquire(`../sendgrid`, {
+      sendgrid: key => {
+        assert.strictEqual(key, `foo`);
+        return {
+          emptyRequest: x => x,
+          API: request => {
+            assert.deepStrictEqual(request, {
+              method: `POST`,
+              path: `/v3/mail/send`,
+              body: {
+                personalizations: [
+                  {
+                    to: [{email: `to_email@example.com`}],
+                    subject: `Sendgrid test email from Node.js on Google Cloud Platform`,
+                  },
+                ],
+                from: {email: `from_email@example.com`},
+                content: [
+                  {
+                    type: `text/plain`,
+                    value: `Hello!\n\nThis a Sendgrid test email from Node.js on Google Cloud Platform.`,
+                  },
+                ],
+              },
+            });
+          },
+        };
+      },
+    });
   });
 });

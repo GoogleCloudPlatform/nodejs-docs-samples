@@ -30,29 +30,23 @@ const compute = new Compute();
 // [END initialize]
 
 // [START list]
-/**
- * @param {Function} callback Callback function.
- */
-function getVmsExample(callback) {
+
+async function getVmsExample() {
   // In this example we only want one VM per page
   const options = {
     maxResults: 1,
   };
-  compute.getVMs(options, (err, vms) => {
-    if (err) {
-      return callback(err);
-    }
-
-    console.log('VMs:', vms);
-    callback(null, vms);
-  });
+  const vms = await compute.getVMs(options);
+  return vms;
 }
 // [END list]
 // [END complete]
 
 // Run the examples
-exports.main = cb => {
-  getVmsExample(cb);
+exports.main = async () => {
+  const vms = await getVmsExample().catch(console.error);
+  if (vms) console.log('VMs:', vms);
+  return vms;
 };
 
 if (module === require.main) {

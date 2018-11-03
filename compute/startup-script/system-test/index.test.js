@@ -15,26 +15,17 @@
 
 'use strict';
 
-const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require('uuid');
+const assert = require('assert');
 
 const example = require(`../index`);
 
-test.before(tools.checkCredentials);
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+describe('start-up script', async () => {
+  before(tools.checkCredentials);
+  beforeEach(tools.stubConsole);
+  afterEach(tools.restoreConsole);
 
-test.cb(`should list vms`, t => {
-  example.list((err, result) => {
-    t.ifError(err);
-    t.truthy(result);
-    t.true(Array.isArray(result));
-    t.end();
-  });
-});
-
-test.cb(`should create vm`, t => {
   const TESTS_PREFIX = 'gcloud-tests-';
   const name = generateName('vm-with-apache');
 
@@ -43,16 +34,17 @@ test.cb(`should create vm`, t => {
       .join('')
       .substr(0, 61);
   }
-
-  example.create(name, (err, result) => {
-    t.ifError(err);
-    t.truthy(result);
-
-    // Clean up newly created vm.
-    example.delete(name, (err, result) => {
-      t.ifError(err);
-      t.truthy(result);
-      t.end();
-    });
+  it('should create vm', async () => {
+    const ip = await example.create(name);
+    assert.ok(ip);
+  });
+  it('should list vms', async () => {
+    const vms = await example.list();
+    assert.ok(vms);
+    assert.strictEqual(Array.isArray(vms), true);
+  });
+  it('should delete vm', async () => {
+    const result = await example.delete(name);
+    assert.strictEqual(result, name);
   });
 });

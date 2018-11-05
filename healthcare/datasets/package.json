@@ -13,12 +13,9 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.1",
-    "ava": "^0.25.0",
-    "proxyquire": "^2.0.1",
-    "sinon": "^6.0.1"
+    "ava": "^0.25.0"
   },
   "dependencies": {
-    "btoa": "^1.2.1",
     "googleapis": "^32.0.0",
     "uuid": "^3.3.2",
     "yargs": "^12.0.1"
@@ -29,7 +26,8 @@
     "test": {
       "build": {
         "requiredEnvVars": [
-          "API_KEY"
+          "API_KEY",
+          "GCLOUD_PROJECT"
         ]
       }
     }

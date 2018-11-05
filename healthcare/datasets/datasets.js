@@ -33,7 +33,7 @@ function createDataset (client, projectId, cloudRegion, datasetId) {
       console.log(`Created dataset: ${datasetId}`);
     })
     .catch(err => {
-      console.log('ERROR:', err);
+      console.error(err);
     });
 }
 // [END healthcare_create_dataset]
@@ -55,7 +55,7 @@ function deleteDataset (client, projectId, cloudRegion, datasetId, cb) {
       console.log(`Deleted dataset: ${datasetId}`);
     })
     .catch(err => {
-      console.log('ERROR:', err);
+      console.error(err);
     });
 }
 // [END healthcare_delete_dataset]
@@ -77,7 +77,7 @@ function getDataset (client, projectId, cloudRegion, datasetId) {
       console.log('Got dataset:\n', results.data);
     })
     .catch(err => {
-      console.log('ERROR:', err);
+      console.error(err);
     });
 }
 // [END healthcare_get_dataset]
@@ -97,7 +97,7 @@ function listDatasets (client, projectId, cloudRegion) {
       console.log('Datasets:', results.data);
     })
     .catch(err => {
-      console.log('ERROR:', err);
+      console.error(err);
     });
 }
 // [END healthcare_list_datasets]
@@ -126,7 +126,7 @@ function patchDataset (client, projectId, cloudRegion, datasetId, timeZone) {
           results.data.timeZone}`);
     })
     .catch(err => {
-      console.log('ERROR:', err);
+      console.error(err);
     });
 }
 // [END healthcare_patch_dataset]
@@ -159,7 +159,7 @@ function deidentifyDataset (
             ${sourceDatasetId} to dataset ${destinationDatasetId}`);
     })
     .catch(err => {
-      console.log('ERROR:', err);
+      console.error(err);
     });
 }
 // [END healthcare_deidentify_dataset]

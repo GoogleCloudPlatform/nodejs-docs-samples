@@ -17,6 +17,7 @@
 // [START functions_stop_instance_http]
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
+const Buffer = require('safe-buffer').Buffer;
 const Compute = require('@google-cloud/compute');
 const compute = new Compute();
 

@@ -80,7 +80,7 @@ function getMocks () {
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-/////////////////////////// startInstanceHttp //////////////////////////////
+/** Tests for startInstanceHttp */
 
 test(`startInstanceHttp: should accept application/json`, async (t) => {
   const mocks = getMocks();
@@ -208,7 +208,7 @@ test(`startInstanceHttp: should fail with empty request body`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from payload`});
 });
 
-/////////////////////////// stopInstanceHttp //////////////////////////////
+/** Tests for stopInstanceHttp */
 
 test(`stopInstanceHttp: should accept application/json`, async (t) => {
   const mocks = getMocks();
@@ -336,7 +336,7 @@ test(`stopInstanceHttp: should fail with empty request body`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from payload`});
 });
 
-/////////////////////////// startInstancePubSub //////////////////////////////
+/** Tests for startInstancePubSub */
 
 test(`startInstancePubSub: should accept JSON-formatted event payload`, async (t) => {
   const mocks = getMocks();
@@ -382,7 +382,7 @@ test(`startInstancePubSub: should fail with empty event payload`, async (t) => {
   t.deepEqual(mocks.callback.firstCall.args[0], new Error(`Attribute 'zone' missing from payload`));
 });
 
-/////////////////////////// stopInstancePubSub //////////////////////////////
+/** Tests for stopInstancePubSub */
 
 test(`stopInstancePubSub: should accept JSON-formatted event payload`, async (t) => {
   const mocks = getMocks();

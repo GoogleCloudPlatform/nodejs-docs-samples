@@ -207,3 +207,25 @@ exports.helloAnalytics = (data, context) => {
   console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
 };
 // [END functions_firebase_analytics_node8]
+
+// [START functions_firebase_reactive_node8]
+const Firestore = require('@google-cloud/firestore');
+
+const firestore = new Firestore({
+  projectId: process.env.GCP_PROJECT
+});
+
+// Converts strings added to /messages/{pushId}/original to uppercase
+exports.makeUpperCase = (data, context) => {
+  const resource = context.resource;
+  const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
+
+  const curValue = data.value.fields.original.stringValue;
+  const newValue = curValue.toUpperCase();
+  console.log(`Replacing value: ${curValue} --> ${newValue}`);
+
+  return affectedDoc.set({
+    'original': newValue
+  });
+};
+// [END functions_firebase_reactive_node8]

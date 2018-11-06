@@ -41,6 +41,8 @@ test.beforeEach(utils.stubConsole);
 test.afterEach.always(utils.restoreConsole);
 
 test.serial('should respond to HTTP requests', t => {
+  const sample = getSample();
+
   const reqMock = {
     body: {
       name: 'foo'
@@ -51,7 +53,7 @@ test.serial('should respond to HTTP requests', t => {
     send: sinon.stub()
   };
 
-  program.helloHttp(reqMock, resMock);
+  sample.program.helloHttp(reqMock, resMock);
   t.true(resMock.send.calledWith('Hello foo!'));
 });
 

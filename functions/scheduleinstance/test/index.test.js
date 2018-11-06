@@ -61,22 +61,34 @@ function getMocks () {
   sinon.spy(res, 'status');
   sinon.spy(res, 'send');
 
+  const event = {
+    data: {
+      data: {}
+    }
+  };
+
+  const callback = sinon.spy();
+
   return {
     req: req,
-    res: res
+    res: res,
+    event: event,
+    callback: callback
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`startInstance: should accept application/json`, async (t) => {
+/** Tests for startInstanceHttp */
+
+test(`startInstanceHttp: should accept application/json`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {zone: `test-zone`, instance: `test-instance`};
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   sample.mocks.requestPromise()
     .then((data) => {
@@ -85,13 +97,13 @@ test(`startInstance: should accept application/json`, async (t) => {
     });
 });
 
-test(`startInstance: should accept application/octect-stream`, async (t) => {
+test(`startInstanceHttp: should accept application/octect-stream`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/octet-stream`;
   mocks.req.body = Buffer.from(`{'zone': 'test-zone', 'instance': 'test-instance'}`);
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   sample.mocks.requestPromise()
     .then((data) => {
@@ -100,12 +112,12 @@ test(`startInstance: should accept application/octect-stream`, async (t) => {
     });
 });
 
-test(`startInstance: should fail missing HTTP request method`, async (t) => {
+test(`startInstanceHttp: should fail missing HTTP request method`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -113,13 +125,13 @@ test(`startInstance: should fail missing HTTP request method`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'Unsupported HTTP method undefined; use method POST'});
 });
 
-test(`startInstance: should reject HTTP GET request`, async (t) => {
+test(`startInstanceHttp: should reject HTTP GET request`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `GET`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -127,12 +139,12 @@ test(`startInstance: should reject HTTP GET request`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'Unsupported HTTP method GET; use method POST'});
 });
 
-test(`startInstance: should fail missing content-type header`, async (t) => {
+test(`startInstanceHttp: should fail missing content-type header`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -140,13 +152,13 @@ test(`startInstance: should fail missing content-type header`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'HTTP content-type missing'});
 });
 
-test(`startInstance: should reject unsupported HTTP content-type`, async (t) => {
+test(`startInstanceHttp: should reject unsupported HTTP content-type`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `text/plain`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -154,41 +166,57 @@ test(`startInstance: should reject unsupported HTTP content-type`, async (t) => 
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'Unsupported HTTP content-type text/plain; use application/json or application/octet-stream'});
 });
 
-test(`startInstance: should fail with missing 'zone' attribute`, async (t) => {
+test(`startInstanceHttp: should fail with missing 'zone' attribute`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'instance': 'test-instance'};
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
-  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from POST request`});
+  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from payload`});
 });
 
-test(`startInstance: should fail with missing 'instance' attribute`, async (t) => {
+test(`startInstanceHttp: should fail with missing 'instance' attribute`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'zone': 'test-zone'};
-  sample.program.startInstance(mocks.req, mocks.res);
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
-  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'instance' missing from POST request`});
+  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'instance' missing from payload`});
 });
 
-test(`stopInstance: should accept application/json`, async (t) => {
+test(`startInstanceHttp: should fail with empty request body`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  mocks.req.method = `POST`;
+  mocks.req.headers[`content-type`] = `application/json`;
+  mocks.req.body = {};
+  sample.program.startInstanceHttp(mocks.req, mocks.res);
+
+  t.true(mocks.res.status.calledOnce);
+  t.is(mocks.res.status.firstCall.args[0], 400);
+  t.true(mocks.res.send.calledOnce);
+  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from payload`});
+});
+
+/** Tests for stopInstanceHttp */
+
+test(`stopInstanceHttp: should accept application/json`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {zone: `test-zone`, instance: `test-instance`};
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   sample.mocks.requestPromise()
     .then((data) => {
@@ -197,13 +225,13 @@ test(`stopInstance: should accept application/json`, async (t) => {
     });
 });
 
-test(`stopInstance: should accept application/octect-stream`, async (t) => {
+test(`stopInstanceHttp: should accept application/octect-stream`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/octet-stream`;
   mocks.req.body = Buffer.from(`{'zone': 'test-zone', 'instance': 'test-instance'}`);
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   sample.mocks.requestPromise()
     .then((data) => {
@@ -212,12 +240,12 @@ test(`stopInstance: should accept application/octect-stream`, async (t) => {
     });
 });
 
-test(`stopInstance: should fail missing HTTP request method`, async (t) => {
+test(`stopInstanceHttp: should fail missing HTTP request method`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -225,13 +253,13 @@ test(`stopInstance: should fail missing HTTP request method`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'Unsupported HTTP method undefined; use method POST'});
 });
 
-test(`stopInstance: should reject HTTP GET request`, async (t) => {
+test(`stopInstanceHttp: should reject HTTP GET request`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `GET`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -239,12 +267,12 @@ test(`stopInstance: should reject HTTP GET request`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'Unsupported HTTP method GET; use method POST'});
 });
 
-test(`stopInstance: should fail missing content-type header`, async (t) => {
+test(`stopInstanceHttp: should fail missing content-type header`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -252,13 +280,13 @@ test(`stopInstance: should fail missing content-type header`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'HTTP content-type missing'});
 });
 
-test(`stopInstance: should reject unsupported HTTP content-type`, async (t) => {
+test(`stopInstanceHttp: should reject unsupported HTTP content-type`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `text/plain`;
   mocks.req.body = {'zone': 'test-zone', 'instance': 'test-instance'};
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
@@ -266,30 +294,136 @@ test(`stopInstance: should reject unsupported HTTP content-type`, async (t) => {
   t.deepEqual(mocks.res.send.firstCall.args[0], {error: 'Unsupported HTTP content-type text/plain; use application/json or application/octet-stream'});
 });
 
-test(`stopInstance: should fail with missing 'zone' attribute`, async (t) => {
+test(`stopInstanceHttp: should fail with missing 'zone' attribute`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'instance': 'test-instance'};
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
-  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from POST request`});
+  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from payload`});
 });
 
-test(`stopInstance: should fail with missing 'instance' attribute`, async (t) => {
+test(`stopInstanceHttp: should fail with missing 'instance' attribute`, async (t) => {
   const mocks = getMocks();
   const sample = getSample();
   mocks.req.method = `POST`;
   mocks.req.headers[`content-type`] = `application/json`;
   mocks.req.body = {'zone': 'test-zone'};
-  sample.program.stopInstance(mocks.req, mocks.res);
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
   t.is(mocks.res.status.firstCall.args[0], 400);
   t.true(mocks.res.send.calledOnce);
-  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'instance' missing from POST request`});
+  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'instance' missing from payload`});
+});
+
+test(`stopInstanceHttp: should fail with empty request body`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  mocks.req.method = `POST`;
+  mocks.req.headers[`content-type`] = `application/json`;
+  mocks.req.body = {};
+  sample.program.stopInstanceHttp(mocks.req, mocks.res);
+
+  t.true(mocks.res.status.calledOnce);
+  t.is(mocks.res.status.firstCall.args[0], 400);
+  t.true(mocks.res.send.calledOnce);
+  t.deepEqual(mocks.res.send.firstCall.args[0], {error: `Attribute 'zone' missing from payload`});
+});
+
+/** Tests for startInstancePubSub */
+
+test(`startInstancePubSub: should accept JSON-formatted event payload`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {'zone': 'test-zone', 'instance': 'test-instance'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(mocks.event, mocks.callback);
+
+  sample.mocks.requestPromise()
+    .then((data) => {
+      // The request was successfully sent.
+      t.deepEqual(data, 'request sent');
+    });
+});
+
+test(`startInstancePubSub: should fail with missing 'zone' attribute`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {'instance': 'test-instance'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(mocks.event, mocks.callback);
+
+  t.deepEqual(mocks.callback.firstCall.args[0], new Error(`Attribute 'zone' missing from payload`));
+});
+
+test(`startInstancePubSub: should fail with missing 'instance' attribute`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {'zone': 'test-zone'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(mocks.event, mocks.callback);
+
+  t.deepEqual(mocks.callback.firstCall.args[0], new Error(`Attribute 'instance' missing from payload`));
+});
+
+test(`startInstancePubSub: should fail with empty event payload`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(mocks.event, mocks.callback);
+
+  t.deepEqual(mocks.callback.firstCall.args[0], new Error(`Attribute 'zone' missing from payload`));
+});
+
+/** Tests for stopInstancePubSub */
+
+test(`stopInstancePubSub: should accept JSON-formatted event payload`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {'zone': 'test-zone', 'instance': 'test-instance'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.stopInstancePubSub(mocks.event, mocks.callback);
+
+  sample.mocks.requestPromise()
+    .then((data) => {
+      // The request was successfully sent.
+      t.deepEqual(data, 'request sent');
+    });
+});
+
+test(`stopInstancePubSub: should fail with missing 'zone' attribute`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {'instance': 'test-instance'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.stopInstancePubSub(mocks.event, mocks.callback);
+
+  t.deepEqual(mocks.callback.firstCall.args[0], new Error(`Attribute 'zone' missing from payload`));
+});
+
+test(`stopInstancePubSub: should fail with missing 'instance' attribute`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {'zone': 'test-zone'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.stopInstancePubSub(mocks.event, mocks.callback);
+
+  t.deepEqual(mocks.callback.firstCall.args[0], new Error(`Attribute 'instance' missing from payload`));
+});
+
+test(`stopInstancePubSub: should fail with empty event payload`, async (t) => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.stopInstancePubSub(mocks.event, mocks.callback);
+
+  t.deepEqual(mocks.callback.firstCall.args[0], new Error(`Attribute 'zone' missing from payload`));
 });

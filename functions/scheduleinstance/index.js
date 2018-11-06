@@ -15,15 +15,20 @@
 
 // [START functions_start_instance_http]
 // [START functions_stop_instance_http]
+// [START functions_start_instance_pubsub]
+// [START functions_stop_instance_pubsub]
+const Buffer = require('safe-buffer').Buffer;
 const Compute = require('@google-cloud/compute');
 const compute = new Compute();
 
 // [END functions_stop_instance_http]
+// [END functions_start_instance_pubsub]
+// [END functions_stop_instance_pubsub]
 /**
  * Starts a Compute Engine instance.
  *
- * Expects an HTTP POST request with a request body containing the following
- * attributes:
+ * Expects an HTTP POST request with a JSON-formatted request body containing
+ * the following attributes:
  *  zone - the GCP zone the instance is located in.
  *  instance - the name of the instance.
  *
@@ -31,11 +36,11 @@ const compute = new Compute();
  * @param {!object} res Cloud Function HTTP response data.
  * @returns {!object} Cloud Function response data with status code and message.
  */
-exports.startInstance = (req, res) => {
+exports.startInstanceHttp = (req, res) => {
   try {
-    const reqBody = _validateReqBody(_parseReqBody(_validateReq(req)));
-    compute.zone(reqBody.zone)
-      .vm(reqBody.instance)
+    const payload = _validatePayload(_parseHttpPayload(_validateHttpReq(req)));
+    compute.zone(payload.zone)
+      .vm(payload.instance)
       .start()
       .then(data => {
         // Operation pending.
@@ -44,7 +49,7 @@ exports.startInstance = (req, res) => {
       })
       .then(() => {
         // Operation complete. Instance successfully started.
-        const message = 'Successfully started instance ' + reqBody.instance;
+        const message = 'Successfully started instance ' + payload.instance;
         console.log(message);
         res.status(200).send(message);
       })
@@ -58,14 +63,14 @@ exports.startInstance = (req, res) => {
   }
   return res;
 };
-// [END functions_start_instance_http]
 
+// [END functions_start_instance_http]
 // [START functions_stop_instance_http]
 /**
  * Stops a Compute Engine instance.
  *
- * Expects an HTTP POST request with a request body containing the following
- * attributes:
+ * Expects an HTTP POST request with a JSON-formatted request body containing
+ * the following attributes:
  *  zone - the GCP zone the instance is located in.
  *  instance - the name of the instance.
  *
@@ -73,11 +78,11 @@ exports.startInstance = (req, res) => {
  * @param {!object} res Cloud Function HTTP response data.
  * @returns {!object} Cloud Function response data with status code and message.
  */
-exports.stopInstance = (req, res) => {
+exports.stopInstanceHttp = (req, res) => {
   try {
-    const reqBody = _validateReqBody(_parseReqBody(_validateReq(req)));
-    compute.zone(reqBody.zone)
-      .vm(reqBody.instance)
+    const payload = _validatePayload(_parseHttpPayload(_validateHttpReq(req)));
+    compute.zone(payload.zone)
+      .vm(payload.instance)
       .stop()
       .then(data => {
         // Operation pending.
@@ -86,7 +91,7 @@ exports.stopInstance = (req, res) => {
       })
       .then(() => {
         // Operation complete. Instance successfully stopped.
-        const message = 'Successfully stopped instance ' + reqBody.instance;
+        const message = 'Successfully stopped instance ' + payload.instance;
         console.log(message);
         res.status(200).send(message);
       })
@@ -100,15 +105,116 @@ exports.stopInstance = (req, res) => {
   }
   return res;
 };
+
+// [END functions_stop_instance_http]
+// [START functions_start_instance_pubsub]
+/**
+ * Starts a Compute Engine instance.
+ *
+ * Expects a PubSub message with JSON-formatted event data containing the
+ * following attributes:
+ *  zone - the GCP zone the instance is located in.
+ *  instance - the name of the instance.
+ *
+ * @param {!object} event Cloud Function PubSub message event.
+ * @param {!object} callback Cloud Function PubSub callback indicating completion.
+ */
+exports.startInstancePubSub = (event, callback) => {
+  try {
+    const pubsubMessage = event.data;
+    const payload = _validatePayload(JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString()));
+    compute.zone(payload.zone)
+      .vm(payload.instance)
+      .start()
+      .then(data => {
+        // Operation pending.
+        const operation = data[0];
+        return operation.promise();
+      })
+      .then(() => {
+        // Operation complete. Instance successfully started.
+        const message = 'Successfully started instance ' + payload.instance;
+        console.log(message);
+        callback(null, message);
+      })
+      .catch(err => {
+        console.log(err);
+        callback(err);
+      });
+  } catch (err) {
+    console.log(err);
+    callback(err);
+  }
+};
+
+// [END functions_start_instance_pubsub]
+// [START functions_stop_instance_pubsub]
+/**
+ * Stops a Compute Engine instance.
+ *
+ * Expects a PubSub message with JSON-formatted event data containing the
+ * following attributes:
+ *  zone - the GCP zone the instance is located in.
+ *  instance - the name of the instance.
+ *
+ * @param {!object} event Cloud Function PubSub message event.
+ * @param {!object} callback Cloud Function PubSub callback indicating completion.
+ */
+exports.stopInstancePubSub = (event, callback) => {
+  try {
+    const pubsubMessage = event.data;
+    const payload = _validatePayload(JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString()));
+    compute.zone(payload.zone)
+      .vm(payload.instance)
+      .stop()
+      .then(data => {
+        // Operation pending.
+        const operation = data[0];
+        return operation.promise();
+      })
+      .then(() => {
+        // Operation complete. Instance successfully stopped.
+        const message = 'Successfully stopped instance ' + payload.instance;
+        console.log(message);
+        callback(null, message);
+      })
+      .catch(err => {
+        console.log(err);
+        callback(err);
+      });
+  } catch (err) {
+    console.log(err);
+    callback(err);
+  }
+};
+
 // [START functions_start_instance_http]
+// [START functions_stop_instance_http]
+// [START functions_start_instance_pubsub]
+/**
+ * Validates that a request payload contains the expected fields.
+ *
+ * @param {!object} payload the request payload to validate.
+ * @returns {!object} the payload object.
+ */
+function _validatePayload (payload) {
+  if (!payload.zone) {
+    throw new Error(`Attribute 'zone' missing from payload`);
+  } else if (!payload.instance) {
+    throw new Error(`Attribute 'instance' missing from payload`);
+  }
+  return payload;
+}
+// [END functions_start_instance_pubsub]
+// [END functions_stop_instance_pubsub]
 
 /**
- * Parses the request body attributes of an HTTP request based on content-type.
+ * Parses the request payload of an HTTP request based on content-type.
  *
  * @param {!object} req a Cloud Functions HTTP request object.
- * @returns {!object} an object with attributes matching the HTTP request body.
+ * @returns {!object} an object with attributes matching the request payload.
  */
-function _parseReqBody (req) {
+function _parseHttpPayload (req) {
   const contentType = req.get('content-type');
   if (contentType === 'application/json') {
     // Request.body automatically parsed as an object.
@@ -123,27 +229,12 @@ function _parseReqBody (req) {
 }
 
 /**
- * Validates that a request body contains the expected fields.
- *
- * @param {!object} reqBody the request body to validate.
- * @returns {!object} the request body object.
- */
-function _validateReqBody (reqBody) {
-  if (!reqBody.zone) {
-    throw new Error(`Attribute 'zone' missing from POST request`);
-  } else if (!reqBody.instance) {
-    throw new Error(`Attribute 'instance' missing from POST request`);
-  }
-  return reqBody;
-}
-
-/**
  * Validates that a HTTP request contains the expected fields.
  *
  * @param {!object} req the request to validate.
  * @returns {!object} the request object.
  */
-function _validateReq (req) {
+function _validateHttpReq (req) {
   if (req.method !== 'POST') {
     throw new Error('Unsupported HTTP method ' + req.method +
         '; use method POST');

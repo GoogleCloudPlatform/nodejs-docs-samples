@@ -20,15 +20,23 @@ const sinon = require(`sinon`);
 const uuid = require('uuid');
 const test = require('ava');
 const utils = require('@google-cloud/nodejs-repo-tools');
+const proxyquire = require(`proxyquire`).noCallThru();
 
 function getSample () {
   const requestPromiseNative = sinon.stub().returns(Promise.resolve(`test`));
 
+  const firestoreMock = {
+    doc: sinon.stub().returnsThis(),
+    set: sinon.stub()
+  };
+ 
   return {
     program: proxyquire(`../`, {
-      'request-promise-native': requestPromiseNative
+      'request-promise-native': requestPromiseNative,
+      '@google-cloud/firestore': sinon.stub().returns(firestoreMock)
     }),
     mocks: {
+      firestore: firestoreMock,
       requestPromiseNative: requestPromiseNative
     }
   };
@@ -36,6 +44,23 @@ function getSample () {
 
 test.beforeEach(utils.stubConsole);
 test.afterEach.always(utils.restoreConsole);
+
+test.serial('should respond to HTTP requests', t => {
+  const sample = getSample();
+
+  const reqMock = {
+    body: {
+      name: 'foo'
+    }
+  };
+
+  const resMock = {
+    send: sinon.stub()
+  };
+
+  sample.program.helloHttp(reqMock, resMock);
+  t.true(resMock.send.calledWith('Hello foo!'));
+});
 
 test.serial('should monitor Firebase RTDB', t => {
   const sample = getSample();
@@ -127,6 +152,7 @@ test.serial('should monitor Analytics', t => {
   };
 
   sample.program.helloAnalytics(data, context);
+
   t.is(console.log.args[0][0], `Function triggered by the following event: my-resource`);
   t.is(console.log.args[1][0], `Name: my-event`);
   t.is(console.log.args[2][0], `Timestamp: ${date}`);
@@ -159,4 +185,33 @@ test.serial(`should throw an error`, (t) => {
       something: false
     });
   }, Error, `Something was not true!`);
+});
+
+test(`should update data in response to Firestore events`, t => {
+  const sample = getSample();
+
+  const date = Date.now();
+  const data = {
+    email: 'me@example.com',
+    metadata: {
+      createdAt: date
+    },
+    value: {
+      fields: {
+        original: {
+          stringValue: 'foobar'
+        }
+      }
+    }
+  };
+
+  const context = {
+    resource: '/documents/some/path'
+  };
+
+  sample.program.makeUpperCase(data, context);
+
+  t.true(sample.mocks.firestore.doc.calledWith('some/path'));
+  t.true(console.log.calledWith(`Replacing value: foobar --> FOOBAR`));
+  t.true(sample.mocks.firestore.set.calledWith({'original': 'FOOBAR'}));
 });

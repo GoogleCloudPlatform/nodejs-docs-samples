@@ -40,6 +40,23 @@ function getSample () {
 test.beforeEach(utils.stubConsole);
 test.afterEach.always(utils.restoreConsole);
 
+test.serial('should respond to HTTP requests', t => {
+  const sample = getSample();
+
+  const reqMock = {
+    body: {
+      name: 'foo'
+    }
+  };
+
+  const resMock = {
+    send: sinon.stub()
+  };
+
+  sample.program.helloHttp(reqMock, resMock);
+  t.true(resMock.send.calledWith('Hello foo!'));
+});
+
 test.serial('should monitor Firebase RTDB', t => {
   const sample = getSample();
 

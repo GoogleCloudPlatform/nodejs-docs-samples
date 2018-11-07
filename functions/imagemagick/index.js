@@ -28,7 +28,7 @@ const client = new vision.ImageAnnotatorClient();
 // [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
 exports.blurOffensiveImages = (event) => {
-  const object = event.data || event;
+  const object = event.data || event; // Node 6: event.data === Node 8+: event
 
   // Exit if this is a deletion or a deploy event.
   if (object.resourceState === 'not_exists') {

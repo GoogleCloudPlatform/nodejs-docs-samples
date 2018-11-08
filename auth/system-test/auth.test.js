@@ -31,5 +31,5 @@ test.serial(`should load credentials implicitly`, async (t) => {
 
 test.serial(`should load credentials explicitly`, async (t) => {
   const output = await tools.runAsync(`${cmd} auth-cloud-explicit`, cwd);
-  t.is(!!output, false);
+  t.is(output.includes(`Buckets:`), true);
 });

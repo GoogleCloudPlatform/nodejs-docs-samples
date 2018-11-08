@@ -13,6 +13,6 @@
   },
   "dependencies": {
     "express": "4.16.2",
-    "memjs": "1.1.0"
+    "memjs": "^1.2.0"
   }
 }

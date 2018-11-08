@@ -1,0 +1,24 @@
+{
+  "name": "cloud-functions-billing",
+  "version": "0.0.1",
+  "description": "Examples of integrating Cloud Functions with billing",
+  "main": "index.js",
+  "scripts": {
+    "lint": "repo-tools lint",
+    "pretest": "npm run lint",
+    "test": "ava test/*"
+  },
+  "author": "Ace Nassri <anassri@google.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "google-auth-library": "^2.0.0",
+    "googleapis": "^33.0.0",
+    "slack": "^11.0.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.2.5",
+    "ava": "^0.25.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^6.3.4"
+  }
+}

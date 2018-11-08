@@ -6,13 +6,13 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "8.x.x"
+    "node": ">=8"
   },
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
     "express": "4.16.2",
-    "memjs": "1.1.0"
+    "memjs": "^1.2.0"
   }
 }

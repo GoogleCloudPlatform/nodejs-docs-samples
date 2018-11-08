@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "8.x.x"
+    "node": ">=8"
   },
   "main": "server/server.js",
   "scripts": {
@@ -27,6 +27,7 @@
     "loopback": "3.18.2"
   },
   "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.5",
     "eslint": "4.18.2",
     "eslint-config-loopback": "10.0.0",
     "nsp": "3.2.1"

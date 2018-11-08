@@ -6,23 +6,23 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "8.x.x"
+    "node": ">=8"
   },
   "scripts": {
     "start": "node app.js",
     "test": "repo-tools test app && ava -T 30s */*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.16.4",
-    "body-parser": "1.18.2",
-    "express": "4.16.2",
-    "pug": "2.0.1",
-    "safe-buffer": "5.1.1"
+    "@google-cloud/pubsub": "^0.20.1",
+    "body-parser": "1.18.3",
+    "express": "^4.16.3",
+    "pug": "^2.0.1",
+    "safe-buffer": "5.1.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "@google-cloud/nodejs-repo-tools": "^2.3.0",
     "ava": "0.25.0",
-    "uuid": "3.2.1"
+    "uuid": "3.3.2"
   },
   "cloud-repo-tools": {
     "requiresProjectId": true,

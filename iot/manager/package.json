@@ -13,18 +13,19 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "test": "samples test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
+    "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/pubsub": "0.13.2",
-    "googleapis": "20.1.0",
+    "googleapis": "^32.0.0",
     "yargs": "8.0.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
-    "ava": "0.22.0",
+    "@google-cloud/nodejs-repo-tools": "2.2.5",
+    "ava": "0.25.0",
+    "semistandard": "^12.0.1",
     "uuid": "3.1.0"
   },
   "cloud-repo-tools": {

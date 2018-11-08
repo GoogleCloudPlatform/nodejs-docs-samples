@@ -104,13 +104,15 @@ function renameImageForSave (filename, lang) {
 
 // [START functions_ocr_process]
 /**
- * Cloud Function triggered by Cloud Storage when a file is uploaded.
+ * This function is exported by index.js, and is executed when
+ * a file is uploaded to the Cloud Storage bucket you created
+ * for uploading images.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data A Google Cloud Storage File object.
+ * @param {object} event.data (Node 6) A Google Cloud Storage File object.
+ * @param {object} event (Node 8+) A Google Cloud Storage File object.
  */
 exports.processImage = (event) => {
-  let file = event.data;
+  let file = event.data || event;
 
   return Promise.resolve()
     .then(() => {
@@ -136,17 +138,19 @@ exports.processImage = (event) => {
 
 // [START functions_ocr_translate]
 /**
- * Translates text using the Google Translate API. Triggered from a message on
- * a Pub/Sub topic.
+ * This function is exported by index.js, and is executed when
+ * a message is published to the Cloud Pub/Sub topic specified
+ * by the TRANSLATE_TOPIC value in the config.json file. The
+ * function translates text using the Google Translate API.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The Cloud Pub/Sub Message object.
- * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
+ * @param {object} event.data (Node 6) The Cloud Pub/Sub Message object.
+ * @param {object} event (Node 8+) The Cloud Pub/Sub Message object.
+ * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
 exports.translateText = (event) => {
-  const pubsubMessage = event.data;
-  const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
+  const pubsubData = event.data.data || event.data;
+  const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const payload = JSON.parse(jsonStr);
 
   return Promise.resolve()
@@ -186,17 +190,19 @@ exports.translateText = (event) => {
 
 // [START functions_ocr_save]
 /**
- * Saves the data packet to a file in GCS. Triggered from a message on a Pub/Sub
- * topic.
+ * This function is exported by index.js, and is executed when
+ * a message is published to the Cloud Pub/Sub topic specified
+ * by the RESULT_TOPIC value in the config.json file. The
+ * function saves the data packet to a file in GCS.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The Cloud Pub/Sub Message object.
- * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
+ * @param {object} event.data (Node 6) The Cloud Pub/Sub Message object.
+ * @param {object} event (Node 8+) The Cloud Pub/Sub Message object.
+ * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
 exports.saveResult = (event) => {
-  const pubsubMessage = event.data;
-  const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
+  const pubsubData = event.data.data || event.data;
+  const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const payload = JSON.parse(jsonStr);
 
   return Promise.resolve()

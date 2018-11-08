@@ -14,9 +14,9 @@
   },
   "scripts": {
     "start": "node app.js",
-    "lint": "samples lint",
+    "lint": "repo-tools lint",
     "pretest": "npm run lint",
-    "test": "samples test run --cmd ava -- -T 20s --verbose test/*.test.js"
+    "test": "repo-tools test run --cmd ava -- -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
     "body-parser": "1.18.2",
@@ -24,9 +24,10 @@
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "@google-cloud/nodejs-repo-tools": "^2.3.0",
     "ava": "0.25.0",
     "proxyquire": "2.0.0",
+    "semistandard": "^12.0.1",
     "sinon": "4.4.2",
     "supertest": "3.0.0"
   }

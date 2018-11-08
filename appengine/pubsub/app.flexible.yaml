@@ -11,15 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
 runtime: nodejs
 env: flex
 
-# [START env]
+# [START gae_flex_pubsub_yaml]
 env_variables:
   PUBSUB_TOPIC: YOUR_TOPIC_NAME
   # This token is used to verify that requests originate from your
   # application. It can be any sufficiently random string.
   PUBSUB_VERIFICATION_TOKEN: YOUR_VERIFICATION_TOKEN
-# [END env]
-# [END app_yaml]
+# [END gae_flex_pubsub_yaml]

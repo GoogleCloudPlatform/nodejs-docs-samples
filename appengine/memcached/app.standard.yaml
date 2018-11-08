@@ -11,23 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
 runtime: nodejs8
 
-# [START env_variables]
+# [START gae_redislabs_memcache_yaml]
 # The following env variables may contain sensitive information that grants
 # anyone access to your memcached service. Do not add this file to your source
 # control.
 env_variables:
-  # If you are using the App Engine Memcache service,
-  # uncomment this section and comment out the other Memcache variables.
-  #USE_GAE_MEMCACHE: 1
-  #GAE_MEMCACHE_HOST: 35.190.255.1
-  #GAE_MEMCACHE_PORT: 11211
   MEMCACHE_URL: your-memcache-url
   # If you are using a Memcached server with SASL authentiation enabled,
   # fill in these values with your username and password.
   MEMCACHE_USERNAME: your-memcache-username
   MEMCACHE_PASSWORD: your-memcache-password
-# [END env_variables]
-# [END app_yaml]
+# [END gae_redislabs_memcache_yaml]

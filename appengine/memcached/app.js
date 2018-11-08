@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-// [START app]
 'use strict';
 
 const express = require('express');
@@ -21,18 +20,13 @@ const memjs = require('memjs');
 
 const app = express();
 
-// [START client]
+// [START gae_flex_redislabs_memcache]
 // Environment variables are defined in app.yaml.
-let MEMCACHE_URL = process.env.MEMCACHE_URL || '127.0.0.1:11211';
-
-if (process.env.USE_GAE_MEMCACHE) {
-  MEMCACHE_URL = `${process.env.GAE_MEMCACHE_HOST}:${process.env.GAE_MEMCACHE_PORT}`;
-}
+let MEMCACHE_URL = process.env.MEMCACHE_URL;
 
 const mc = memjs.Client.create(MEMCACHE_URL);
-// [END client]
+// [END gae_flex_redislabs_memcache]
 
-// [START example]
 app.get('/', (req, res, next) => {
   mc.get('foo', (err, value) => {
     if (err) {
@@ -53,11 +47,9 @@ app.get('/', (req, res, next) => {
     }, 60);
   });
 });
-// [END example]
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]

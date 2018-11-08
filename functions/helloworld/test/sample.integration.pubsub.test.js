@@ -18,7 +18,7 @@ const childProcess = require(`child_process`);
 const test = require(`ava`);
 const uuid = require(`uuid`);
 
-test(`helloPubSub: should print a name`, async (t) => {
+test.serial(`helloPubSub: should print a name`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
   const name = uuid.v4();
@@ -33,7 +33,7 @@ test(`helloPubSub: should print a name`, async (t) => {
   t.true(logs.includes(`Hello, ${name}!`));
 });
 
-test(`helloPubSub: should print hello world`, async (t) => {
+test.serial(`helloPubSub: should print hello world`, async (t) => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
 

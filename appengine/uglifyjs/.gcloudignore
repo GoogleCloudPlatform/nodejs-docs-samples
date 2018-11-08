@@ -1,0 +1,5 @@
+# Minify files on GCP
+**/*.min.*
+
+# Exclude dependencies
+node_modules/

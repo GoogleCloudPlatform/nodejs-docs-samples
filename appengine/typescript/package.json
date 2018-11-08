@@ -1,0 +1,27 @@
+{
+  "name": "appengine-typescript",
+  "description": "An example TypeScript app running on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": "8.x"
+  },
+  "scripts": {
+    "test": "npm run gcp-build && npm run lint && repo-tools test app -- index.js",
+    "lint": "tslint index.ts",
+    "start": "node ./index.js",
+    "gcp-build": "tsc index.ts",
+    "deploy": "gcloud app deploy"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "typescript": "^3.0.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "semistandard": "^12.0.1",
+    "tslint": "^5.11.0"
+  }
+}

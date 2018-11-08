@@ -56,13 +56,13 @@ Run the following command to install the library dependencies for Node.js:
         dicomweb.js dicomWebDeleteStudy <datasetId> <dicomStoreId>    Handles DELETE requests.
         <studyUid>
 
-Options:
-  --version             Show version number                                                                    [boolean]
-  --cloudRegion, -c                                                                    [string] [default: "us-central1"]
-  --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
-                        environment variables.                                                                  [string]
-  --serviceAccount, -s  The path to your service credentials JSON.
-                                                                                                                [string]
-  --help                Show help                                                                              [boolean]
+    Options:
+    --version             Show version number                                                                    [boolean]
+    --cloudRegion, -c                                                                    [string] [default: "us-central1"]
+    --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+                          environment variables.                                                                  [string]
+    --serviceAccount, -s  The path to your service credentials JSON.
+                                                                                                                  [string]
+    --help                Show help                                                                              [boolean]
 
 For more information, see https://cloud.google.com/healthcare/docs

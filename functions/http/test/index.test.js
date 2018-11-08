@@ -99,7 +99,7 @@ test.serial(`http:helloHttp: should handle other methods`, (t) => {
   httpSample.sample.helloHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 405);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], { error: `Something blew up!` });
 });

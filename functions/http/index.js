@@ -83,7 +83,7 @@ exports.helloHttp = (req, res) => {
       handlePUT(req, res);
       break;
     default:
-      res.status(500).send({ error: 'Something blew up!' });
+      res.status(405).send({ error: 'Something blew up!' });
       break;
   }
 };

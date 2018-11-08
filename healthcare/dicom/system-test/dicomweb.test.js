@@ -29,7 +29,7 @@ const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
 const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(/-/gi, '_');
 
 const dcmFile = `resources/IM-0002-0001-JPEG-BASELINE-edited.dcm`;
-const boundary = `DICOMwebBoundary`
+const boundary = `DICOMwebBoundary`;
 // The studyUid is not assigned by the server and is part of the metadata
 // of dcmFile.
 const studyUid = `1.2.840.113619.2.176.3596.3364818.7819.1259708454.105`;
@@ -51,7 +51,7 @@ test.after.always(async () => {
 test.serial(`should store a DICOM instance`, async t => {
   await tools.runAsync(`${cmdDicomStore} createDicomStore ${datasetId} ${dicomStoreId}`, cwd);
   const output = await tools.runAsync(
-      `${cmd} dicomWebStoreInstance ${datasetId} ${dicomStoreId} ${dcmFile} ${boundary}`, cwd);
+    `${cmd} dicomWebStoreInstance ${datasetId} ${dicomStoreId} ${dcmFile} ${boundary}`, cwd);
   t.regex(output, /Stored instance/);
 });
 

@@ -1,0 +1,38 @@
+{
+  "name": "nodejs-docs-samples-healthcare",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": "GoogleCloudPlatform/nodejs-docs-samples",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "test": "ava -T 1m --verbose system-test/*.test.js"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.1",
+    "ava": "^0.25.0"
+  },
+  "dependencies": {
+    "googleapis": "^32.0.0",
+    "uuid": "^3.3.2",
+    "yargs": "^12.0.1",
+    "gtoken": "^2.3.0",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "test": {
+      "build": {
+        "requiredEnvVars": [
+          "API_KEY",
+          "GCLOUD_PROJECT"
+        ]
+      }
+    }
+  }
+}

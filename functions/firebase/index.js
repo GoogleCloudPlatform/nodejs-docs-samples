@@ -18,18 +18,14 @@
  * Triggered by a change to a Firebase RTDB reference.
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
  */
-exports.helloRTDB = (event, callback) => {
+exports.helloRTDB = (event) => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!event.auth.admin}`);
   console.log(`Delta:`);
   console.log(JSON.stringify(event.delta, null, 2));
-
-  // Don't forget to call the callback.
-  callback();
 };
 // [END functions_firebase_rtdb]
 
@@ -38,18 +34,22 @@ exports.helloRTDB = (event, callback) => {
  * Triggered by a change to a Firestore document.
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
  */
-exports.helloFirestore = (event, callback) => {
+exports.helloFirestore = (event) => {
   const triggerResource = event.resource;
 
-  // We're just going to log the resource string and the
-  // full event to prove that it worked.
-  console.log(`Function triggered by change to: ${triggerResource}`);
-  console.log(JSON.stringify(event));
+  console.log(`Function triggered by event on: ${triggerResource}`);
+  console.log(`Event type: ${event.eventType}`);
 
-  // Don't forget to call the callback.
-  callback();
+  if (event.data.oldValue && Object.keys(event.data.oldValue).length) {
+    console.log(`\nOld value:`);
+    console.log(JSON.stringify(event.data.oldValue, null, 2));
+  }
+
+  if (event.data.value && Object.keys(event.data.value).length) {
+    console.log(`\nNew value:`);
+    console.log(JSON.stringify(event.data.value, null, 2));
+  }
 };
 // [END functions_firebase_firestore]
 
@@ -58,9 +58,8 @@ exports.helloFirestore = (event, callback) => {
  * Triggered by a change to a Firebase Auth user object.
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
  */
-exports.helloAuth = (event, callback) => {
+exports.helloAuth = (event) => {
   try {
     const data = event.data;
     console.log(`Function triggered by change to user: ${data.uid}`);
@@ -72,7 +71,47 @@ exports.helloAuth = (event, callback) => {
   } catch (err) {
     console.error(err);
   }
-  // Don't forget to call the callback.
-  callback();
 };
 // [END functions_firebase_auth]
+
+// [START functions_firebase_reactive]
+const Firestore = require('@google-cloud/firestore');
+
+const firestore = new Firestore({
+  projectId: process.env.GCP_PROJECT
+});
+
+// Converts strings added to /messages/{pushId}/original to uppercase
+exports.makeUpperCase = (event) => {
+  const resource = event.resource;
+  const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
+
+  const curValue = event.data.value.fields.original.stringValue;
+  const newValue = curValue.toUpperCase();
+  console.log(`Replacing value: ${curValue} --> ${newValue}`);
+
+  return affectedDoc.set({
+    'original': newValue
+  });
+};
+// [END functions_firebase_reactive]
+
+// [START functions_firebase_analytics]
+/**
+ * Triggered by a Google Analytics for Firebase log event.
+ *
+ * @param {!Object} event The Cloud Functions event.
+ */
+exports.helloAnalytics = (event) => {
+  const resource = event.resource;
+  console.log(`Function triggered by the following event: ${resource}`);
+
+  const analyticsEvent = event.data.eventDim[0];
+  console.log(`Name: ${analyticsEvent.name}`);
+  console.log(`Timestamp: ${new Date(analyticsEvent.timestampMicros / 1000)}`);
+
+  const userObj = event.data.userDim;
+  console.log(`Device Model: ${userObj.deviceInfo.deviceModel}`);
+  console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
+};
+// [END functions_firebase_analytics]

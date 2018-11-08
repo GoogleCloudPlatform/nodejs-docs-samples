@@ -20,13 +20,13 @@ Functions for your project.
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
         cd nodejs-docs-samples/functions/uuid
 
-1. Deploy the `uuid` function with an HTTP trigger:
+1. Deploy the `getUuid` function with an HTTP trigger:
 
-        gcloud functions deploy uuid --trigger-http
+        gcloud functions deploy getUuid --trigger-http
 
-1. Call the `uuid` function:
+1. Call the `getUuid` function:
 
-        gcloud functions call uuid
+        gcloud functions call getUuid
 
     You should see something like this in your console:
 

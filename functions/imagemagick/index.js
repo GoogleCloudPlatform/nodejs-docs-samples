@@ -16,7 +16,7 @@
 'use strict';
 
 // [START functions_imagemagick_setup]
-const exec = require('child_process').exec;
+const gm = require('gm').subClass({imageMagick: true});
 const fs = require('fs');
 const path = require('path');
 const storage = require('@google-cloud/storage')();
@@ -28,7 +28,7 @@ const client = new vision.ImageAnnotatorClient();
 // [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
 exports.blurOffensiveImages = (event) => {
-  const object = event.data;
+  const object = event.data || event; // Node 6: event.data === Node 8+: event
 
   // Exit if this is a deletion or a deploy event.
   if (object.resourceState === 'not_exists') {
@@ -41,6 +41,12 @@ exports.blurOffensiveImages = (event) => {
 
   const file = storage.bucket(object.bucket).file(object.name);
   const filePath = `gs://${object.bucket}/${object.name}`;
+
+  // Ignore already-blurred files (to prevent re-invoking this function)
+  if (file.name.startsWith('blurred-')) {
+    console.log(`The image ${file.name} is already blurred.`);
+    return;
+  }
 
   console.log(`Analyzing ${file.name}.`);
 
@@ -66,20 +72,20 @@ exports.blurOffensiveImages = (event) => {
 // [START functions_imagemagick_blur]
 // Blurs the given file using ImageMagick.
 function blurImage (file) {
-  const tempLocalFilename = `/tmp/${path.parse(file.name).base}`;
+  const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
 
   // Download file from bucket.
-  return file.download({ destination: tempLocalFilename })
+  return file.download({ destination: tempLocalPath })
     .catch((err) => {
       console.error('Failed to download file.', err);
       return Promise.reject(err);
     })
     .then(() => {
-      console.log(`Image ${file.name} has been downloaded to ${tempLocalFilename}.`);
+      console.log(`Image ${file.name} has been downloaded to ${tempLocalPath}.`);
 
       // Blur the image using ImageMagick.
       return new Promise((resolve, reject) => {
-        exec(`convert ${tempLocalFilename} -channel RGBA -blur 0x24 ${tempLocalFilename}`, { stdio: 'ignore' }, (err, stdout) => {
+        gm(tempLocalPath).blur(16).write((tempLocalPath), (err, stdout) => {
           if (err) {
             console.error('Failed to blur image.', err);
             reject(err);
@@ -92,8 +98,11 @@ function blurImage (file) {
     .then(() => {
       console.log(`Image ${file.name} has been blurred.`);
 
+      // Mark result as blurred, to avoid re-triggering this function.
+      const newName = `blurred-${file.name}`;
+
       // Upload the Blurred image back into the bucket.
-      return file.bucket.upload(tempLocalFilename, { destination: file.name })
+      return file.bucket.upload(tempLocalPath, { destination: newName })
         .catch((err) => {
           console.error('Failed to upload blurred image.', err);
           return Promise.reject(err);
@@ -104,7 +113,7 @@ function blurImage (file) {
 
       // Delete the temporary file.
       return new Promise((resolve, reject) => {
-        fs.unlink(tempLocalFilename, (err) => {
+        fs.unlink(tempLocalPath, (err) => {
           if (err) {
             reject(err);
           } else {

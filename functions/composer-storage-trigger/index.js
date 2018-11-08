@@ -29,9 +29,9 @@ const FormData = require('form-data');
  * https://cloud.google.com/iap/docs/authentication-howto
  *
  * @param {!Object} event The Cloud Functions event.
- * @param {!Function} callback The callback function.
+ * @returns {Promise}
  */
-exports.triggerDag = function triggerDag (event, callback) {
+exports.triggerDag = function triggerDag (event) {
   // Fill in your Composer environment information here.
 
   // The project that holds your function
@@ -50,12 +50,10 @@ exports.triggerDag = function triggerDag (event, callback) {
   const BODY = {'conf': JSON.stringify(event.data)};
 
   // Make the request
-  authorizeIap(CLIENT_ID, PROJECT_ID, USER_AGENT)
+  return authorizeIap(CLIENT_ID, PROJECT_ID, USER_AGENT)
     .then(function iapAuthorizationCallback (iap) {
-      makeIapPostRequest(WEBSERVER_URL, BODY, iap.idToken, USER_AGENT, iap.jwt);
-    })
-    .then(_ => callback(null))
-    .catch(callback);
+      return makeIapPostRequest(WEBSERVER_URL, BODY, iap.idToken, USER_AGENT, iap.jwt);
+    });
 };
 
 /**
@@ -79,6 +77,9 @@ function authorizeIap (clientId, projectId, userAgent) {
     })
     .then(res => res.json())
     .then(function obtainAccessTokenCallback (tokenResponse) {
+      if (tokenResponse.error) {
+        return Promise.reject(tokenResponse.error);
+      }
       var accessToken = tokenResponse.access_token;
       var iat = Math.floor(new Date().getTime() / 1000);
       var claims = {
@@ -104,6 +105,9 @@ function authorizeIap (clientId, projectId, userAgent) {
     })
     .then(res => res.json())
     .then(function signJsonClaimCallback (body) {
+      if (body.error) {
+        return Promise.reject(body.error);
+      }
       // Request service account signature on header and claimset
       var jwtSignature = body.signature;
       jwt = [JWT_HEADER, jwtClaimset, jwtSignature].join('.');
@@ -118,6 +122,9 @@ function authorizeIap (clientId, projectId, userAgent) {
     })
     .then(res => res.json())
     .then(function returnJwt (body) {
+      if (body.error) {
+        return Promise.reject(body.error);
+      }
       return {
         jwt: jwt,
         idToken: body.id_token
@@ -133,24 +140,17 @@ function authorizeIap (clientId, projectId, userAgent) {
    * @param {string} jwt A Json web token used to authenticate the request.
    */
 function makeIapPostRequest (url, body, idToken, userAgent, jwt) {
-  var form = new FormData();
-  form.append('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
-  form.append('assertion', jwt);
-
-  return fetch(
-    url, {
-      method: 'POST',
-      body: form
-    })
-    .then(function makeIapPostRequestCallback () {
-      return fetch(url, {
-        method: 'POST',
-        headers: {
-          'User-Agent': userAgent,
-          'Authorization': `Bearer ${idToken}`
-        },
-        body: JSON.stringify(body)
-      });
-    });
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'User-Agent': userAgent,
+      'Authorization': `Bearer ${idToken}`
+    },
+    body: JSON.stringify(body)
+  }).then(function checkIapRequestStatus (res) {
+    if (!res.ok) {
+      return res.text().then(body => Promise.reject(body));
+    }
+  });
 }
 // [END composer_trigger]

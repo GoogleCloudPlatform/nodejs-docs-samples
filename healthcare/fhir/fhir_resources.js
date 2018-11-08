@@ -35,7 +35,7 @@ function getToken (serviceAccountJson, cb) {
 }
 // [END healthcare_get_token]
 
-// [START healthcare_create_resource]
+// [START healthcare_create_fhir_resource]
 function createResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -71,9 +71,9 @@ function createResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
       console.error(err);
     });
 }
-// [END healthcare_create_resource]
+// [END healthcare_create_fhir_resource]
 
-// [START healthcare_update_resource]
+// [START healthcare_update_fhir_resource]
 function updateResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -112,9 +112,9 @@ function updateResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
       console.error(err);
     });
 }
-// [END healthcare_update_resource]
+// [END healthcare_update_fhir_resource]
 
-// [START healthcare_patch_resource]
+// [START healthcare_patch_fhir_resource]
 function patchResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -149,9 +149,9 @@ function patchResource (token, projectId, cloudRegion, datasetId, fhirStoreId, r
       console.log('ERROR:', err.message);
     });
 }
-// [END healthcare_patch_resource]
+// [END healthcare_patch_fhir_resource]
 
-// [START healthcare_delete_resource]
+// [START healthcare_delete_fhir_resource]
 function deleteResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -183,9 +183,9 @@ function deleteResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
       console.error(err);
     });
 }
-// [END healthcare_delete_resource]
+// [END healthcare_delete_fhir_resource]
 
-// [START healthcare_get_resource]
+// [START healthcare_get_fhir_resource]
 function getResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -216,9 +216,9 @@ function getResource (token, projectId, cloudRegion, datasetId, fhirStoreId, res
       console.error(err);
     });
 }
-// [END healthcare_get_resource]
+// [END healthcare_get_fhir_resource]
 
-// [START healthcare_search_resources_get]
+// [START healthcare_search_fhir_resources_get]
 function searchResourcesGet (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -248,9 +248,9 @@ function searchResourcesGet (token, projectId, cloudRegion, datasetId, fhirStore
       console.error(err);
     });
 }
-// [END healthcare_search_resources_get]
+// [END healthcare_search_fhir_resources_get]
 
-// [START healthcare_search_resources_post]
+// [START healthcare_search_fhir_resources_post]
 function searchResourcesPost (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -281,9 +281,9 @@ function searchResourcesPost (token, projectId, cloudRegion, datasetId, fhirStor
       console.error(err);
     });
 }
-// [END healthcare_search_resources_post]
+// [END healthcare_search_fhir_resources_post]
 
-// [START healthcare_get_patient_everything]
+// [START healthcare_fhir_get_patient_everything]
 function getPatientEverything (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceId) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -313,38 +313,7 @@ function getPatientEverything (token, projectId, cloudRegion, datasetId, fhirSto
       console.error(err);
     });
 }
-// [END healthcare_get_patient_everything]
-
-// [START healthcare_get_metadata]
-function getMetadata (token, projectId, cloudRegion, datasetId, fhirStoreId) {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const fhirStoreId = 'my-fhir-store';
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const fhirStorePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/metadata`;
-
-  const options = {
-    url: fhirStorePath,
-    headers: {
-      'authorization': `Bearer ${token}`
-    },
-    json: true
-  };
-
-  request(options)
-    .then(results => {
-      console.log(`Capabilities statement for FHIR Store ${fhirStoreId}:`);
-      console.log(results);
-    })
-    .catch(err => {
-      console.log('ERROR', err);
-    });
-}
-// [END healthcare_get_metadata]
+// [END healthcare_fhir_get_patient_everything]
 
 require(`yargs`) // eslint-disable-line
   .demand(1)
@@ -454,17 +423,6 @@ require(`yargs`) // eslint-disable-line
     (opts) => {
       const cb = function (token) {
         getPatientEverything(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceId);
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `getMetadata <datasetId> <fhirStoreId>`,
-    `Gets the capabilities statement for the FHIR store.`,
-    {},
-    (opts) => {
-      const cb = function (token) {
-        getMetadata(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId);
       };
       getToken(opts.serviceAccount, cb);
     }

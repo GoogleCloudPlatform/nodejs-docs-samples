@@ -135,6 +135,30 @@ function patchFhirStore (client, projectId, cloudRegion, datasetId, fhirStoreId,
 }
 // [END healthcare_patch_fhir_store]
 
+// [START healthcare_get_fhir_store_metadata]
+function getMetadata (client, projectId, cloudRegion, datasetId, fhirStoreId) {
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(cb) {...});
+  // const cloudRegion = 'us-central1';
+  // const projectId = 'adjective-noun-123';
+  // const datasetId = 'my-dataset';
+  // const fhirStoreId = 'my-fhir-store';
+  const fhirStoreName =
+      `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
+
+  const request = {name: fhirStoreName};
+
+  client.projects.locations.datasets.fhirStores.getMetadata(request)
+    .then(results => {
+      console.log(`Capabilities statement for FHIR store ${fhirStoreId}:`);
+      console.log(results);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+// [END healthcare_get_fhir_store_metadata]
+
 // Returns an authorized API client by discovering the Healthcare API with
 // the provided API key.
 // [START healthcare_get_client]
@@ -243,6 +267,17 @@ require(`yargs`) // eslint-disable-line
     (opts) => {
       const cb = function (client) {
         patchFhirStore(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.pubsubTopic);
+      };
+      getClient(opts.apiKey, opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `getMetadata <datasetId> <fhirStoreId>`,
+    `Gets the capabilities statement for a FHIR store.`,
+    {},
+    (opts) => {
+      const cb = function (client) {
+        getMetadata(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId);
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }

@@ -25,6 +25,7 @@ Run the following command to install the library dependencies for Node.js:
         fhir_stores.js listFhirStores <datasetId>                     Lists the FHIR stores in the given dataset.
         fhir_stores.js patchFhirStore <datasetId> <fhirStoreId>       Updates the FHIR store.
         <pubsubTopic>
+        fhir_stores.js getMetadata <datasetId> <fhirStoreId>          Gets the capabilities statement for the FHIR store.
 
     Options:
     --version             Show version number                                                                    [boolean]
@@ -39,8 +40,6 @@ Run the following command to install the library dependencies for Node.js:
 
 
 ## FHIR resources
-
-    fhir_resources.js <command>
 
     Commands:
         fhir_resources.js createResource <datasetId> <fhirStoreId>    Creates a new resource in a FHIR store.
@@ -59,7 +58,6 @@ Run the following command to install the library dependencies for Node.js:
         <fhirStoreId> <resourceType>                                  _search POST method.
         fhir_resources.js getPatientEverything <datasetId>            Gets all the resources in the patient compartment.
         <fhirStoreId> <resourceId>
-        fhir_resources.js getMetadata <datasetId> <fhirStoreId>       Gets the capabilities statement for the FHIR store.
 
     Options:
     --version             Show version number                                                                    [boolean]

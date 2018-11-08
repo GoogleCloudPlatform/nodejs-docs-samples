@@ -45,31 +45,37 @@ test.after.always(async () => {
   } // Ignore error
 });
 
-test.serial(`should create a FHIR Store`, async t => {
+test.serial(`should create a FHIR store`, async t => {
   const output = await tools.runAsync(
     `${cmd} createFhirStore ${datasetId} ${fhirStoreId}`, cwd);
   t.regex(output, /Created FHIR store/);
 });
 
-test.serial(`should get a FHIR Store`, async t => {
+test.serial(`should get a FHIR store`, async t => {
   const output = await tools.runAsync(
     `${cmd} getFhirStore ${datasetId} ${fhirStoreId}`, cwd);
   t.regex(output, /Got FHIR store/);
 });
 
-test.serial(`should list FHIR Stores`, async t => {
+test.serial(`should list FHIR stores`, async t => {
   const output =
       await tools.runAsync(`${cmd} listFhirStores ${datasetId}`, cwd);
   t.regex(output, /FHIR stores/);
 });
 
-test.serial(`should patch a FHIR Store`, async t => {
+test.serial(`should patch a FHIR store`, async t => {
   const output = await tools.runAsync(
     `${cmd} patchFhirStore ${datasetId} ${fhirStoreId} ${pubsubTopic}`, cwd);
   t.regex(output, /Patched FHIR store/);
 });
 
-test(`should delete a FHIR Store`, async t => {
+test.serial(`should get FHIR store metadata`, async t => {
+  const output = await tools.runAsync(
+    `${cmd} getMetadata ${datasetId} ${fhirStoreId}`, cwd);
+  t.regex(output, /Capabilities statement for FHIR store/);
+});
+
+test(`should delete a FHIR store`, async t => {
   const output = await tools.runAsync(
     `${cmd} deleteFhirStore ${datasetId} ${fhirStoreId}`, cwd);
   t.regex(output, /Deleted FHIR store/);

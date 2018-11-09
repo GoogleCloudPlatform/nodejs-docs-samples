@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "automl_natural_language_dataset.js",
+  "files": [
+    "*.js",
+    "resources"
+  ],
   "scripts": {
     "test": "mocha system-test/*.test.js --opts system-test/mocha.opts"
   },

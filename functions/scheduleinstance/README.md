@@ -23,9 +23,7 @@ See the [Scheduling Instances with Cloud Scheduler tutorial][tutorial].
 ## Additional resources
 
 * [GCE NodeJS Client Library documentation][compute_nodejs_docs]
-* [HTTP Cloud Functions documentation][http_functions_docs]
 * [Background Cloud Functions documentation][background_functions_docs]
 
 [compute_nodejs_docs]: https://cloud.google.com/compute/docs/tutorials/nodejs-guide
-[http_functions_docs]: https://cloud.google.com/functions/docs/writing/http
 [background_functions_docs]: https://cloud.google.com/functions/docs/writing/background

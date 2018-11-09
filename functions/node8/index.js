@@ -245,3 +245,30 @@ exports.makeUpperCase = (data, context) => {
   });
 };
 // [END functions_firebase_reactive_node8]
+
+// [START functions_async_pubsub_node8]
+const PubSub = require('@google-cloud/pubsub');
+let ps;
+
+/**
+ * Triggered from a message on a Cloud Pub/Sub topic.
+ *
+ * @param {object} data The payload for the Pub/Sub message.
+ * @param {object} context The context object for the event.
+ */
+exports.helloPubSub = async (data, context) => {
+  ps = ps || new PubSub();
+  try {
+    const topicName = context.resource.name;
+    const topic = ps.topic(topicName);
+
+    // Get metadata for the topic
+    // This will call the Pub/Sub API
+    const data = await topic.getMetadata();
+    const metadata = data[0];
+    console.log(`Metadata: ${JSON.stringify(metadata)}`);
+  } catch(err) {
+    console.error(err);
+  }
+};
+// [END functions_async_pubsub_node8]

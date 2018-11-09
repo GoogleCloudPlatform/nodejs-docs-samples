@@ -27,6 +27,7 @@
     "uuid": "^3.3.2"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^0.18.0"
+    "@google-cloud/firestore": "^0.18.0",
+    "@google-cloud/pubsub": "^0.20.1"
   }
 }

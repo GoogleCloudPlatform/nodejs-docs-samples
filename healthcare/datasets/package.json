@@ -9,7 +9,7 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "test": "ava -T 1m --verbose system-test/*.test.js",
+    "test": "npm run lint && ava -T 1m --verbose system-test/*.test.js",
     "lint": "eslint ./ system-test"
   },
   "devDependencies": {

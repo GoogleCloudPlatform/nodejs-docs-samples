@@ -26,67 +26,76 @@ const cmd = 'node fhir_resources.js';
 const cwd = path.join(__dirname, '..');
 const cwdDatasets = path.join(__dirname, `../../datasets`);
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const fhirStoreId =
-    `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(/-/gi, '_');
+const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
+  /-/gi,
+  '_'
+);
 const resourceType = 'Patient';
 let resourceId;
 
 test.before(tools.checkCredentials);
 test.before(async () => {
-  return tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
-    .then((results) => {
+  return tools
+    .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
+    .then(results => {
       console.log(results);
       return results;
     });
 });
 test.after.always(async () => {
-  try {
-    await tools.runAsync(`${cmdDataset} deleteDataset ${datasetId}`, cwdDatasets);
-  } catch (err) {
-  } // Ignore error
+  await tools.runAsync(`${cmdDataset} deleteDataset ${datasetId}`, cwdDatasets);
 });
 
-test.serial(`should create a FHIR resource`, async (t) => {
-  await tools.runAsync(`${cmdFhirStores} createFhirStore ${datasetId} ${fhirStoreId}`, cwd);
+test.serial(`should create a FHIR resource`, async t => {
+  await tools.runAsync(
+    `${cmdFhirStores} createFhirStore ${datasetId} ${fhirStoreId}`,
+    cwd
+  );
   const output = await tools.runAsync(
-    `${cmd} createResource ${datasetId} ${fhirStoreId} ${resourceType}`, cwd);
-  const createdMessage =
-      new RegExp(`Created resource ${resourceType} with ID (.*).`);
+    `${cmd} createResource ${datasetId} ${fhirStoreId} ${resourceType}`,
+    cwd
+  );
+  const createdMessage = new RegExp(
+    `Created resource ${resourceType} with ID (.*).`
+  );
   t.regex(output, createdMessage);
   resourceId = createdMessage.exec(output)[1];
 });
 
-test.serial(`should get a FHIR resource`, async (t) => {
+test.serial(`should get a FHIR resource`, async t => {
   const output = await tools.runAsync(
-    `${cmd} getResource ${datasetId} ${fhirStoreId} ${resourceType} ${
-      resourceId}`,
-    cwd);
+    `${cmd} getResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
+    cwd
+  );
   t.regex(output, new RegExp(`Got ${resourceType} resource`));
 });
 
-test.serial(`should update a FHIR resource`, async (t) => {
+test.serial(`should update a FHIR resource`, async t => {
   const output = await tools.runAsync(
-    `${cmd} updateResource ${datasetId} ${fhirStoreId} ${resourceType} ${
-      resourceId}`,
-    cwd);
+    `${cmd} updateResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
+    cwd
+  );
   t.is(output, `Updated ${resourceType} with ID ${resourceId}`);
 });
 
-test.serial(`should patch a FHIR resource`, async (t) => {
+test.serial(`should patch a FHIR resource`, async t => {
   const output = await tools.runAsync(
-    `${cmd} patchResource ${datasetId} ${fhirStoreId} ${resourceType} ${
-      resourceId}`,
-    cwd);
+    `${cmd} patchResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
+    cwd
+  );
   t.is(output, `Patched ${resourceType} with ID ${resourceId}`);
 });
 
-test.serial(`should delete a FHIR resource`, async (t) => {
+test.serial(`should delete a FHIR resource`, async t => {
   const output = await tools.runAsync(
-    `${cmd} deleteResource ${datasetId} ${fhirStoreId} ${resourceType} ${
-      resourceId}`,
-    cwd);
+    `${cmd} deleteResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
+    cwd
+  );
   t.is(output, `Deleted ${resourceType} with ID ${resourceId}.`);
 
   // Clean up
-  await tools.runAsync(`${cmdFhirStores} deleteFhirStore ${datasetId} ${fhirStoreId}`, cwd);
+  await tools.runAsync(
+    `${cmdFhirStores} deleteFhirStore ${datasetId} ${fhirStoreId}`,
+    cwd
+  );
 });

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Start a Google Compute Engine and run the startup script.",
   "main": "index.js",
+  "files": [
+    "*.js"
+  ],
   "dependencies": {
     "@google-cloud/compute": "0.10.0",
     "node-fetch": "^2.2.0"

@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@google-cloud/debug-agent": "2.4.0",
+    "escape-html": "^1.0.3",
     "pug": "2.0.3",
     "safe-buffer": "5.1.1"
   },

@@ -9,11 +9,17 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "test": "ava -T 1m --verbose system-test/*.test.js"
+    "test": "ava -T 1m --verbose system-test/*.test.js",
+    "lint": "eslint ./ system-test"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.1",
-    "ava": "^0.25.0"
+    "ava": "^0.25.0",
+    "eslint": "^5.8.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "prettier": "^1.15.1"
   },
   "dependencies": {
     "googleapis": "^32.0.0",

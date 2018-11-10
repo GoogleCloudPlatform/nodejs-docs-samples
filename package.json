@@ -28,7 +28,6 @@
     ]
   },
   "scripts": {
-    "check": "yarn check --strict-semver --integrity",
     "lint": "semistandard '**/*.js'",
     "generate": "node ./scripts/generate",
     "pretest": "npm run lint && node ./scripts/clean coverage",

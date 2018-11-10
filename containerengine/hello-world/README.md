@@ -16,23 +16,11 @@ View the [documentation][docs] or the [source code][code].
 
 1.  Install dependencies:
 
-    With `npm`:
-
         npm install
-
-    or with `yarn`:
-
-        yarn install
 
 1.  Start the server:
 
-    With `npm`:
-
         npm start
-
-    or with `yarn`:
-
-        yarn start
 
 ## Running the tests
 

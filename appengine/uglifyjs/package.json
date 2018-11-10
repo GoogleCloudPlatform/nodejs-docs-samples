@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.3",
-    "htmlhint": "^0.9.13",
+    "htmlhint": "^0.10.0",
     "semistandard": "^12.0.1",
     "stylelint": "^9.4.0",
     "stylelint-config-recommended": "^2.1.0"

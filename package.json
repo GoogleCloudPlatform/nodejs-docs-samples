@@ -29,13 +29,11 @@
   },
   "scripts": {
     "lint": "semistandard '**/*.js'",
-    "generate": "node ./scripts/generate",
-    "pretest": "npm run lint && node ./scripts/clean coverage",
+    "pretest": "npm run lint",
     "unit-cover": "nyc --cache npm test && nyc report --reporter=html",
     "system-cover": "nyc --cache npm run system-test && nyc report --reporter=html",
     "test": "npm run unit-test && npm run system-test",
-    "cover": "nyc --cache npm run test && nyc report --reporter=html",
-    "update-dependencies": "./scripts/update-dependencies.sh"
+    "cover": "nyc --cache npm run test && nyc report --reporter=html"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.6",

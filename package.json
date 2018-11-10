@@ -29,7 +29,7 @@
   },
   "scripts": {
     "check": "yarn check --strict-semver --integrity",
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "generate": "node ./scripts/generate",
     "pretest": "npm run lint && node ./scripts/clean coverage",
     "unit-cover": "nyc --cache npm test && nyc report --reporter=html",

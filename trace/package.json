@@ -10,12 +10,12 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4.3.2"
+    "node": ">=6"
   },
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "test": "repo-tools test app",
     "e2e-test": "repo-tools test deploy"
@@ -26,7 +26,7 @@
     "got": "8.2.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "semistandard": "^12.0.1"
   },
   "cloud-repo-tools": {

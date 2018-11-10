@@ -6,7 +6,7 @@
   "main": "cloudiot_mqtt_example_nodejs.js",
   "name": "nodejs-docs-samples-iot-mqtt-example",
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },

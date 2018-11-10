@@ -9,10 +9,10 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "unit-test": "repo-tools test run --cmd ava -- -T 20s --verbose test/*.test.js",
     "system-test": "repo-tools test run --cmd ava -- -T 20s --verbose system-test/*.test.js",

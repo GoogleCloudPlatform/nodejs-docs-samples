@@ -10,12 +10,12 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4.3.2"
+    "node": ">=6"
   },
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "system-test": "repo-tools test app",
     "test": "npm run system-test",

@@ -13,7 +13,7 @@
     "node": ">=8"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "unit-test": "ava --verbose test/*.test.js",
     "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME=tcp:$SQL_PORT &",

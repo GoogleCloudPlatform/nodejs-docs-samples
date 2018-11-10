@@ -1,6 +1,6 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Platform Node.js Samples [![Slack][slack_badge]][slack_link] [![Build][build_badge]][build_link] [![Coverage][cov_badge]][cov_link]
+# Google Cloud Platform Node.js Samples [![Slack][slack_badge]][slack_link] [![Coverage][cov_badge]][cov_link]
 
 Node.js samples for [Google Cloud Platform products][cloud].
 
@@ -9,8 +9,6 @@ on Google Cloud Platform.
 
 [slack_badge]: https://img.shields.io/badge/slack-nodejs%20on%20gcp-E01563.svg
 [slack_link]: https://gcp-slack.appspot.com/
-[build_badge]: https://img.shields.io/circleci/project/github/GoogleCloudPlatform/nodejs-docs-samples/master.svg?style=flat
-[build_link]: https://circleci.com/gh/GoogleCloudPlatform/nodejs-docs-samples
 [cov_badge]: https://img.shields.io/codecov/c/github/GoogleCloudPlatform/nodejs-docs-samples/master.svg?style=flat
 [cov_link]: https://codecov.io/github/GoogleCloudPlatform/nodejs-docs-samples?branch=master
 [cloud]: https://cloud.google.com/

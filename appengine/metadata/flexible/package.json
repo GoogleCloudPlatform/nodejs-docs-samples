@@ -19,7 +19,7 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "express": "4.16.2",
+    "express": "4.16.4",
     "got": "8.2.0"
   },
   "devDependencies": {

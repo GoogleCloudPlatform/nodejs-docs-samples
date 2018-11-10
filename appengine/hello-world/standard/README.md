@@ -18,33 +18,15 @@ Before you can run or deploy the sample, you need to do the following:
     running and deploying.
 1.  Install dependencies:
 
-    With `npm`:
-
         npm install
-
-    or with `yarn`:
-
-        yarn install
 
 ## Running locally
 
-With `npm`:
-
     npm start
-
-or with `yarn`:
-
-    yarn start
 
 ## Deploying to App Engine
 
-With `npm`:
-
     npm run deploy
-
-or with `yarn`:
-
-    yarn run deploy
 
 ## Running the tests
 

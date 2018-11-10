@@ -150,12 +150,6 @@ on Google Cloud Platform.
 
         npm install
 
-    or
-
-        yarn install
-
-    **Note:** Use `npm` *or* `yarn` exclusively, don't mix them.
-
 1. Run the sample:
 
         node sample_file.js [args]...

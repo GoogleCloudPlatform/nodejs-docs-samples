@@ -13,7 +13,7 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },

@@ -12,7 +12,7 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "pretest": "repo-tools lint",
+    "pretest": "semistandard '**/*.js'",
     "test": "ava -T 30s test/*.test.js"
   },
   "devDependencies": {

@@ -13,7 +13,7 @@
     "node": ">=8"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "system-test": "repo-tools test app -- ./server.js",
     "test": "npm run system-test"

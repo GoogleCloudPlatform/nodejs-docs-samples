@@ -12,7 +12,7 @@
     "node": ">=6.0"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "test": "ava -T 20s --verbose test/*.test.js"
   },

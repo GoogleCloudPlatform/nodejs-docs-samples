@@ -44,11 +44,17 @@ See the README.md in this directory for more information about setup and usage.
 
 const Botkit = require('botkit');
 const fs = require('fs');
-const Language = require('@google-cloud/language');
+const language = require('@google-cloud/language');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-const controller = Botkit.slackbot({ debug: false });
+if (!process.env.SLACK_TOKEN_PATH) {
+  throw new Error('Please set the SLACK_TOKEN_PATH environment variable!');
+}
+
+var token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
+token = token.replace(/\s/g, '');
+const controller = new Botkit.slackbot({clientSigningSecret: token});
 
 // create our database if it does not already exist.
 const db = new sqlite3.cached.Database(path.join(__dirname, './slackDB.db'));
@@ -80,12 +86,6 @@ const TABLE_SQL = `CREATE TABLE if not exists entities (
 );`;
 
 function startController () {
-  if (!process.env.SLACK_TOKEN_PATH) {
-    throw new Error('Please set the SLACK_TOKEN_PATH environment variable!');
-  }
-
-  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
-  token = token.replace(/\s/g, '');
 
   // Create the table that will store entity information if it does not already
   // exist.
@@ -125,8 +125,6 @@ function startController () {
 
 function startBot (bot, cerr) {
   console.error('RTM closed');
-  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
-  token = token.replace(/\s/g, '');
 
   bot
     .spawn({ token: token })
@@ -170,7 +168,7 @@ function handleEntitiesReply (bot, message) {
 
 function analyzeEntities (text, ts) {
   // Instantiates a client
-  const language = Language();
+  const client = new language.LanguageServiceClient();
 
   // Instantiates a Document, representing the provided text
   const document = {
@@ -181,7 +179,7 @@ function analyzeEntities (text, ts) {
   };
 
   // Detects entities in the document
-  return language.analyzeEntities({ document: document })
+  return client.analyzeEntities({ document: document })
     .then((results) => {
       const entities = results[0].entities;
       entities.forEach((entity) => {
@@ -208,7 +206,7 @@ function analyzeEntities (text, ts) {
 
 function analyzeSentiment (text) {
   // Instantiates a client
-  const language = Language();
+  const client = new language.LanguageServiceClient();
 
   // Instantiates a Document, representing the provided text
   const document = {
@@ -219,12 +217,14 @@ function analyzeSentiment (text) {
   };
 
   // Detects the 'sentiment' of some text using the NL API
-  return language.analyzeSentiment({ document: document })
+  return client.analyzeSentiment({ document: document })
     .then((results) => {
-      const sentiment = results[0];
+      const sentiment = results[0].documentSentiment;
 
       // Uncomment the following lines to log the sentiment to the console:
       // console.log(`Sentiment: ${sentiment}`)
+      // console.log(`Sentiment score: ${sentiment.score}`)
+      // console.log(`Magnitude: ${sentiment.magnitude}`);
       // if (sentiment.score >= SENTIMENT_THRESHOLD) {
       //   console.log('Sentiment: positive.');
       // } else if (sentiment.score <= -SENTIMENT_THRESHOLD) {

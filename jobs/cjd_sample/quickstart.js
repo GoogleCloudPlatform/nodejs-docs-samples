@@ -18,26 +18,13 @@
 // [START quickstart]
 
 // Imports the Google APIs client library
-const {google} = require('googleapis');
+const { google } = require('googleapis');
 
-// Acquires credentials
-google.auth.getApplicationDefault((err, authClient) => {
-  if (err) {
-    console.error('Failed to acquire credentials');
-    console.error(err);
-    return;
-  }
-
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    authClient = authClient.createScoped([
-      'https://www.googleapis.com/auth/jobs'
-    ]);
-  }
-
+google.auth.getClient({ scopes: ['https://www.googleapis.com/auth/jobs'] }).then((auth) => {
   // Instantiates an authorized client
   const jobs = google.jobs({
     version: 'v2',
-    auth: authClient
+    auth
   });
 
   // Lists companies

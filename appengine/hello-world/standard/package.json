@@ -15,7 +15,7 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "system-test": "repo-tools test app",
     "test": "npm run system-test",

@@ -71,6 +71,17 @@ test.cb(`helloHttp: should print hello world`, (t) => {
     .end(t.end);
 });
 
+test.cb.serial(`helloHttp: should escape XSS`, (t) => {
+  supertest(BASE_URL)
+    .post(`/helloHttp`)
+    .send({ name: '<script>alert(1)</script>' })
+    .expect(200)
+    .expect((response) => {
+      t.false(response.text.includes('<script>'));
+    })
+    .end(t.end);
+});
+
 test(`helloBackground: should print a name`, async (t) => {
   const data = JSON.stringify({name: 'John'});
   const output = await tools.runAsync(`${baseCmd} call helloBackground --data '${data}'`);

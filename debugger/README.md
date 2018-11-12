@@ -47,33 +47,17 @@ appropriate, replace `YOUR_PROJECT_ID` with the ID of your Cloud project):
 
 1.  Install dependencies:
 
-    With `npm`:
-
         npm install
-
-    or with `yarn`:
-
-        yarn install
 
 ## Running locally
 
-With `npm`:
-
     npm start
 
-or with `yarn`:
-
-    yarn start
 
 ## Deploying to App Engine
 
-With `npm`:
-
     npm run deploy
 
-or with `yarn`:
-
-    yarn run deploy
 
 Use the [Stackdriver Debugger dashboard](https://console.cloud.google.com/debug) to inspect runtime data of the app.
 

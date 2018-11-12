@@ -12,7 +12,7 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "repo-tools lint"
+    "lint": "semistandard '**/*.js'"
   },
   "dependencies": {
     "request": "^2.85.0"

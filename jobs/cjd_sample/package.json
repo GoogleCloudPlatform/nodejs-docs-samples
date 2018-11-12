@@ -17,15 +17,11 @@
     "test": "repo-tools test run --cmd ava -- -T 20s --verbose system-test/*.test.js"
   },
   "dependencies": {
-    "googleapis": "27.0.0",
-    "safe-buffer": "5.1.1",
-    "uuid": "^3.2.1",
-    "yargs": "11.0.0"
+    "googleapis": "^35.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
-    "proxyquire": "2.0.1",
-    "semistandard": "^12.0.1"
+    "semistandard": "^13.0.1"
   }
 }

@@ -22,23 +22,11 @@ Before you can run or deploy the sample, you need to do the following:
 1.  Add your tracking ID to `app.yaml`.
 1.  Install dependencies:
 
-    With `npm`:
-
         npm install
-
-    or with `yarn`:
-
-        yarn install
 
 ## Running locally
 
-With `npm`:
-
     GA_TRACKING_ID=YOUR_TRACKING_ID npm start
-
-or with `yarn`:
-
-    GA_TRACKING_ID=YOUR_TRACKING_ID yarn start
 
 ## Deploying to App Engine standard Environment
 

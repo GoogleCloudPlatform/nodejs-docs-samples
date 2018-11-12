@@ -14,14 +14,14 @@
   },
   "scripts": {
     "start": "node app.js",
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "system-test": "repo-tools test app",
     "test": "npm run system-test"
   },
   "dependencies": {
     "body-parser": "1.18.2",
-    "express": "4.16.2",
+    "express": "4.16.4",
     "jade": "1.11.0",
     "node-mailjet": "3.2.1"
   },

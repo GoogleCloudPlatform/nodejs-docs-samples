@@ -23,7 +23,7 @@
     "sinon": "4.4.2"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "test": "ava -T 20s --verbose test/*.test.js"
   }
 }

@@ -24,7 +24,7 @@
     "storage"
   ],
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "local-test": "mocha test/index.test.js",
     "system-test": "mocha --timeout 20000 test/sample.integration.http.test.js",
     "pretest": "npm run lint && sh test/updateFunctions.sh",

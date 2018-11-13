@@ -18,7 +18,7 @@ const path = require(`path`);
 const utils = require(`@google-cloud/nodejs-repo-tools`);
 
 const cwd = path.join(__dirname, `../`);
-const requestObj = utils.getRequest({ cwd: cwd });
+const requestObj = utils.getRequest({cwd: cwd});
 
 test.serial.cb(`should return a screenshot`, t => {
   requestObj

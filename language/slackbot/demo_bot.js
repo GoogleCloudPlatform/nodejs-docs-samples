@@ -48,7 +48,7 @@ const Language = require('@google-cloud/language');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-const controller = Botkit.slackbot({ debug: false });
+const controller = Botkit.slackbot({debug: false});
 
 // create our database if it does not already exist.
 const db = new sqlite3.cached.Database(path.join(__dirname, './slackDB.db'));
@@ -79,71 +79,69 @@ const TABLE_SQL = `CREATE TABLE if not exists entities (
   ts integer
 );`;
 
-function startController () {
+function startController() {
   if (!process.env.SLACK_TOKEN_PATH) {
     throw new Error('Please set the SLACK_TOKEN_PATH environment variable!');
   }
 
-  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
+  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, {encoding: 'utf8'});
   token = token.replace(/\s/g, '');
 
   // Create the table that will store entity information if it does not already
   // exist.
   db.run(TABLE_SQL);
 
-  controller
-    .spawn({ token: token })
-    .startRTM((err) => {
-      if (err) {
-        console.error('Failed to start controller!');
-        console.error(err);
-        process.exit(1);
-      }
-    });
+  controller.spawn({token: token}).startRTM(err => {
+    if (err) {
+      console.error('Failed to start controller!');
+      console.error(err);
+      throw err;
+    }
+  });
 
-  return controller
-    // If the bot gets a DM or mention with 'hello' or 'hi', it will reply.  You
-    // can use this to sanity-check your app without needing to use the NL API.
-    .hears(
-      ['hello', 'hi'],
-      ['direct_message', 'direct_mention', 'mention'],
-      handleSimpleReply
-    )
-    // If the bot gets a DM or mention including "top entities", it will reply with
-    // a list of the top N most frequent entities used in this channel, as derived
-    // by the NL API.
-    .hears(
-      ['top entities'],
-      ['direct_message', 'direct_mention', 'mention'],
-      handleEntitiesReply
-    )
-    // For any posted message, the bot will send the text to the NL API for
-    // analysis.
-    .on('ambient', handleAmbientMessage)
-    .on('rtm_close', startBot);
+  return (
+    controller
+      // If the bot gets a DM or mention with 'hello' or 'hi', it will reply.  You
+      // can use this to sanity-check your app without needing to use the NL API.
+      .hears(
+        ['hello', 'hi'],
+        ['direct_message', 'direct_mention', 'mention'],
+        handleSimpleReply
+      )
+      // If the bot gets a DM or mention including "top entities", it will reply with
+      // a list of the top N most frequent entities used in this channel, as derived
+      // by the NL API.
+      .hears(
+        ['top entities'],
+        ['direct_message', 'direct_mention', 'mention'],
+        handleEntitiesReply
+      )
+      // For any posted message, the bot will send the text to the NL API for
+      // analysis.
+      .on('ambient', handleAmbientMessage)
+      .on('rtm_close', startBot)
+  );
 }
 
-function startBot (bot, cerr) {
+function startBot(bot) {
   console.error('RTM closed');
-  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
+  let token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, {encoding: 'utf8'});
   token = token.replace(/\s/g, '');
 
-  bot
-    .spawn({ token: token })
-    .startRTM((err) => {
-      if (err) {
-        console.error('Failed to start controller!');
-        console.error(err);
-        process.exit(1);
-      }
-    });
+  bot.spawn({token: token}).startRTM(err => {
+    if (err) {
+      console.error('Failed to start controller!');
+      console.error(err);
+      throw err;
+    }
+  });
 }
 
-function handleSimpleReply (bot, message) {
+function handleSimpleReply(bot, message) {
   bot.reply(message, 'Hello.');
 }
 
-function handleEntitiesReply (bot, message) {
+function handleEntitiesReply(bot, message) {
   bot.reply(message, 'Top entities: ');
 
   // Query the database for the top N entities in the past week
@@ -160,15 +158,17 @@ function handleEntitiesReply (bot, message) {
     // Uncomment this to see the query results logged to console:
     // console.log(topEntities);
 
-    topEntities.forEach((entity) => {
-      entityInfo += `entity: *${entity.name}*, type: ${entity.type}, count: ${entity.wc}\n`;
+    topEntities.forEach(entity => {
+      entityInfo += `entity: *${entity.name}*, type: ${entity.type}, count: ${
+        entity.wc
+      }\n`;
     });
 
     bot.reply(message, entityInfo);
   });
 }
 
-function analyzeEntities (text, ts) {
+function analyzeEntities(text, ts) {
   // Instantiates a client
   const language = Language();
 
@@ -177,36 +177,38 @@ function analyzeEntities (text, ts) {
     // The document text, e.g. "Hello, world!"
     content: text,
     // The type of content to analyze
-    type: 'PLAIN_TEXT'
+    type: 'PLAIN_TEXT',
   };
 
   // Detects entities in the document
-  return language.analyzeEntities({ document: document })
-    .then((results) => {
-      const entities = results[0].entities;
-      entities.forEach((entity) => {
-        const name = entity.name;
-        const type = entity.type;
-        const salience = entity.salience;
-        let wikiUrl = '';
-        if (entity.metadata.wikipedia_url) {
-          wikiUrl = entity.metadata.wikipedia_url;
-        }
+  return language.analyzeEntities({document: document}).then(results => {
+    const entities = results[0].entities;
+    entities.forEach(entity => {
+      const name = entity.name;
+      const type = entity.type;
+      const salience = entity.salience;
+      let wikiUrl = '';
+      if (entity.metadata.wikipedia_url) {
+        wikiUrl = entity.metadata.wikipedia_url;
+      }
 
-        // Uncomment this to see the entity info logged to console:
-        // console.log(`${name}, type: ${type}, w url: ${wikiUrl}, salience: ${salience}, ts: ${ts}`);
+      // Uncomment this to see the entity info logged to console:
+      // console.log(`${name}, type: ${type}, w url: ${wikiUrl}, salience: ${salience}, ts: ${ts}`);
 
-        db.run(
-          'INSERT INTO entities VALUES (?, ?, ?, ?, ?);',
-          [name, type, salience, wikiUrl, Math.round(ts)]
-        );
-      });
-
-      return entities;
+      db.run('INSERT INTO entities VALUES (?, ?, ?, ?, ?);', [
+        name,
+        type,
+        salience,
+        wikiUrl,
+        Math.round(ts),
+      ]);
     });
+
+    return entities;
+  });
 }
 
-function analyzeSentiment (text) {
+function analyzeSentiment(text) {
   // Instantiates a client
   const language = Language();
 
@@ -215,33 +217,32 @@ function analyzeSentiment (text) {
     // The document text, e.g. "Hello, world!"
     content: text,
     // The type of content to analyze
-    type: 'PLAIN_TEXT'
+    type: 'PLAIN_TEXT',
   };
 
   // Detects the 'sentiment' of some text using the NL API
-  return language.analyzeSentiment({ document: document })
-    .then((results) => {
-      const sentiment = results[0];
+  return language.analyzeSentiment({document: document}).then(results => {
+    const sentiment = results[0];
 
-      // Uncomment the following lines to log the sentiment to the console:
-      // console.log(`Sentiment: ${sentiment}`)
-      // if (sentiment.score >= SENTIMENT_THRESHOLD) {
-      //   console.log('Sentiment: positive.');
-      // } else if (sentiment.score <= -SENTIMENT_THRESHOLD) {
-      //   console.log('Sentiment: negative.');
-      // }
+    // Uncomment the following lines to log the sentiment to the console:
+    // console.log(`Sentiment: ${sentiment}`)
+    // if (sentiment.score >= SENTIMENT_THRESHOLD) {
+    //   console.log('Sentiment: positive.');
+    // } else if (sentiment.score <= -SENTIMENT_THRESHOLD) {
+    //   console.log('Sentiment: negative.');
+    // }
 
-      return sentiment;
-    });
+    return sentiment;
+  });
 }
 
-function handleAmbientMessage (bot, message) {
+function handleAmbientMessage(bot, message) {
   // Note: for purposes of this example, we're making two separate calls to the
   // API, one to extract the entities from the message, and one to analyze the
   // 'sentiment' of the message. These could be combined into one call.
   return analyzeEntities(message.text, message.ts)
     .then(() => analyzeSentiment(message.text))
-    .then((sentiment) => {
+    .then(sentiment => {
       if (sentiment.score >= SENTIMENT_THRESHOLD) {
         // We have a positive sentiment score larger than the threshold.
         bot.reply(message, ':thumbsup:');

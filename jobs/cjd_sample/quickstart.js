@@ -18,32 +18,34 @@
 // [START quickstart]
 
 // Imports the Google APIs client library
-const { google } = require('googleapis');
+const {google} = require('googleapis');
 
-google.auth.getClient({ scopes: ['https://www.googleapis.com/auth/jobs'] }).then((auth) => {
-  // Instantiates an authorized client
-  const jobs = google.jobs({
-    version: 'v2',
-    auth
+google.auth
+  .getClient({scopes: ['https://www.googleapis.com/auth/jobs']})
+  .then(auth => {
+    // Instantiates an authorized client
+    const jobs = google.jobs({
+      version: 'v2',
+      auth,
+    });
+
+    // Lists companies
+    jobs.companies.list((err, result) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      console.log(`Request ID: ${result.data.metadata.requestId}`);
+
+      const companies = result.data.companies || [];
+
+      if (companies.length) {
+        console.log('Companies:');
+        companies.forEach(company => console.log(company.name));
+      } else {
+        console.log(`No companies found.`);
+      }
+    });
   });
-
-  // Lists companies
-  jobs.companies.list((err, result) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-
-    console.log(`Request ID: ${result.data.metadata.requestId}`);
-
-    const companies = result.data.companies || [];
-
-    if (companies.length) {
-      console.log('Companies:');
-      companies.forEach((company) => console.log(company.name));
-    } else {
-      console.log(`No companies found.`);
-    }
-  });
-});
 // [END quickstart]

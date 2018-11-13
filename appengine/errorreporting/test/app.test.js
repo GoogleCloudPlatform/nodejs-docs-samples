@@ -25,24 +25,25 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, `../app.js`);
 
-function getSample () {
+function getSample() {
   const testApp = express();
   sinon.stub(testApp, `listen`).callsArg(1);
   const expressMock = sinon.stub().returns(testApp);
-  const resultsMock = JSON.stringify({
-    timestamp: `1234`,
-    userIp: `abcd`
-  }) + `\n`;
+  const resultsMock =
+    JSON.stringify({
+      timestamp: `1234`,
+      userIp: `abcd`,
+    }) + `\n`;
   const reportMock = sinon.stub();
-  const errorsMock = sinon.stub().callsFake(function ErrorReporting () {
+  const errorsMock = sinon.stub().callsFake(function ErrorReporting() {
     return {
-      report: reportMock
+      report: reportMock,
     };
   });
 
   const app = proxyquire(SAMPLE_PATH, {
     express: expressMock,
-    '@google-cloud/error-reporting': errorsMock
+    '@google-cloud/error-reporting': errorsMock,
   });
   return {
     app: app,
@@ -50,15 +51,15 @@ function getSample () {
       errors: errorsMock,
       express: expressMock,
       report: reportMock,
-      results: resultsMock
-    }
+      results: resultsMock,
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`sets up the sample`, (t) => {
+test(`sets up the sample`, t => {
   const sample = getSample();
 
   t.true(sample.mocks.express.calledOnce);
@@ -68,14 +69,14 @@ test(`sets up the sample`, (t) => {
   t.is(sample.app.listen.firstCall.args[0], process.env.PORT || 8080);
 });
 
-test.cb(`should throw an error`, (t) => {
+test.cb(`should throw an error`, t => {
   const sample = getSample();
   const expectedResult = `something is wrong!`;
 
   request(sample.app)
     .get(`/`)
     .expect(500)
-    .expect((response) => {
+    .expect(response => {
       t.true(sample.mocks.report.calledOnce);
       t.is(response.text, expectedResult);
     })

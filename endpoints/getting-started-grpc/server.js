@@ -22,14 +22,14 @@ const grpc = require('grpc');
 const helloProto = grpc.load(PROTO_PATH).helloworld;
 
 // Implement the SayHello RPC method.
-function sayHello (call, callback) {
-  callback(null, { message: `Hello ${call.request.name}` });
+function sayHello(call, callback) {
+  callback(null, {message: `Hello ${call.request.name}`});
 }
 
 // Start an RPC server to handle Greeter service requests
-function startServer (PORT) {
+function startServer(PORT) {
   const server = new grpc.Server();
-  server.addProtoService(helloProto.Greeter.service, { sayHello: sayHello });
+  server.addProtoService(helloProto.Greeter.service, {sayHello: sayHello});
   server.bind(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure());
   server.start();
 }
@@ -41,7 +41,7 @@ const argv = require('yargs')
     alias: 'p',
     type: 'number',
     default: 50051,
-    global: true
+    global: true,
   })
   .wrap(120)
   .epilogue(`For more information, see https://cloud.google.com/endpoints/docs`)

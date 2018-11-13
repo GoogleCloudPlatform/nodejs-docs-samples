@@ -37,26 +37,28 @@ const datastore = Datastore();
  *
  * @param {object} visit The visit record to insert.
  */
-function insertVisit (visit) {
+function insertVisit(visit) {
   return datastore.save({
     key: datastore.key('visit'),
-    data: visit
+    data: visit,
   });
 }
 
 /**
  * Retrieve the latest 10 visit records from the database.
  */
-function getVisits () {
-  const query = datastore.createQuery('visit')
-    .order('timestamp', { descending: true })
+function getVisits() {
+  const query = datastore
+    .createQuery('visit')
+    .order('timestamp', {descending: true})
     .limit(10);
 
-  return datastore.runQuery(query)
-    .then((results) => {
-      const entities = results[0];
-      return entities.map((entity) => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`);
-    });
+  return datastore.runQuery(query).then(results => {
+    const entities = results[0];
+    return entities.map(
+      entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
+    );
+  });
 }
 
 app.get('/', (req, res, next) => {
@@ -64,13 +66,17 @@ app.get('/', (req, res, next) => {
   const visit = {
     timestamp: new Date(),
     // Store a hash of the visitor's ip address
-    userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
+    userIp: crypto
+      .createHash('sha256')
+      .update(req.ip)
+      .digest('hex')
+      .substr(0, 7),
   };
 
   insertVisit(visit)
     // Query the last 10 visits from Datastore.
     .then(() => getVisits())
-    .then((visits) => {
+    .then(visits => {
       res
         .status(200)
         .set('Content-Type', 'text/plain')

@@ -24,12 +24,12 @@ const cmd = `node auth.js`;
 
 test.before(tools.checkCredentials);
 
-test.serial(`should load credentials implicitly`, async (t) => {
+test.serial(`should load credentials implicitly`, async t => {
   const output = await tools.runAsync(`${cmd} auth-cloud-implicit`, cwd);
   t.is(output.includes(`Buckets:`), true);
 });
 
-test.serial(`should load credentials explicitly`, async (t) => {
+test.serial(`should load credentials explicitly`, async t => {
   const output = await tools.runAsync(`${cmd} auth-cloud-explicit`, cwd);
   t.is(output.includes(`Buckets:`), true);
 });

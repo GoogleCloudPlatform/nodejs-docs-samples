@@ -26,7 +26,10 @@ const cmd = `node dicomweb.js`;
 const cwdDatasets = path.join(__dirname, `../../datasets`);
 const cwd = path.join(__dirname, `..`);
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(/-/gi, '_');
+const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
+  /-/gi,
+  '_'
+);
 
 const dcmFile = `resources/IM-0002-0001-JPEG-BASELINE-edited.dcm`;
 const boundary = `DICOMwebBoundary`;
@@ -36,42 +39,60 @@ const studyUid = `1.2.840.113619.2.176.3596.3364818.7819.1259708454.105`;
 
 test.before(tools.checkCredentials);
 test.before(async () => {
-  return tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
-    .then((results) => {
+  return tools
+    .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
+    .then(results => {
       console.log(results);
       return results;
     });
 });
 test.after.always(async () => {
   try {
-    await tools.runAsync(`${cmdDataset} deleteDataset ${datasetId}`, cwdDatasets);
-  } catch (err) { } // Ignore error
+    await tools.runAsync(
+      `${cmdDataset} deleteDataset ${datasetId}`,
+      cwdDatasets
+    );
+  } catch (err) {} // Ignore error
 });
 
 test.serial(`should store a DICOM instance`, async t => {
-  await tools.runAsync(`${cmdDicomStore} createDicomStore ${datasetId} ${dicomStoreId}`, cwd);
+  await tools.runAsync(
+    `${cmdDicomStore} createDicomStore ${datasetId} ${dicomStoreId}`,
+    cwd
+  );
   const output = await tools.runAsync(
-    `${cmd} dicomWebStoreInstance ${datasetId} ${dicomStoreId} ${dcmFile} ${boundary}`, cwd);
+    `${cmd} dicomWebStoreInstance ${datasetId} ${dicomStoreId} ${dcmFile} ${boundary}`,
+    cwd
+  );
   t.regex(output, /Stored instance/);
 });
 
 test.serial(`should search DICOM instances`, async t => {
   const output = await tools.runAsync(
-    `${cmd} dicomWebSearchInstances ${datasetId} ${dicomStoreId}`, cwd);
+    `${cmd} dicomWebSearchInstances ${datasetId} ${dicomStoreId}`,
+    cwd
+  );
   t.regex(output, /Instances/);
 });
 
 test.serial(`should retrieve a DICOM study`, async t => {
   const output = await tools.runAsync(
-    `${cmd} dicomWebRetrieveStudy ${datasetId} ${dicomStoreId} ${studyUid}`, cwd);
+    `${cmd} dicomWebRetrieveStudy ${datasetId} ${dicomStoreId} ${studyUid}`,
+    cwd
+  );
   t.regex(output, /Retrieved study/);
 });
 
 test.serial(`should delete a DICOM study`, async t => {
   const output = await tools.runAsync(
-    `${cmd} dicomWebDeleteStudy ${datasetId} ${dicomStoreId} ${studyUid}`, cwd);
+    `${cmd} dicomWebDeleteStudy ${datasetId} ${dicomStoreId} ${studyUid}`,
+    cwd
+  );
   t.regex(output, /Deleted study/);
 
   // Clean up
-  await tools.runAsync(`${cmdDicomStore} deleteDicomStore ${datasetId} ${dicomStoreId}`, cwd);
+  await tools.runAsync(
+    `${cmdDicomStore} deleteDicomStore ${datasetId} ${dicomStoreId}`,
+    cwd
+  );
 });

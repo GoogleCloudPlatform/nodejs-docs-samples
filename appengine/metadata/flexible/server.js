@@ -22,22 +22,25 @@ const request = require('got');
 const app = express();
 app.enable('trust proxy');
 
-const METADATA_NETWORK_INTERFACE_URL = 'http://metadata/computeMetadata/v1/' +
-'/instance/network-interfaces/0/access-configs/0/external-ip';
+const METADATA_NETWORK_INTERFACE_URL =
+  'http://metadata/computeMetadata/v1/' +
+  '/instance/network-interfaces/0/access-configs/0/external-ip';
 
-function getExternalIp () {
+function getExternalIp() {
   const options = {
     headers: {
-      'Metadata-Flavor': 'Google'
+      'Metadata-Flavor': 'Google',
     },
-    json: true
+    json: true,
   };
 
   return request(METADATA_NETWORK_INTERFACE_URL, options)
-    .then((response) => response.body)
-    .catch((err) => {
+    .then(response => response.body)
+    .catch(err => {
       if (err || err.statusCode !== 200) {
-        console.log('Error while talking to metadata server, assuming localhost');
+        console.log(
+          'Error while talking to metadata server, assuming localhost'
+        );
         return 'localhost';
       }
       return Promise.reject(err);
@@ -46,8 +49,11 @@ function getExternalIp () {
 
 app.get('/', (req, res, next) => {
   getExternalIp()
-    .then((externalIp) => {
-      res.status(200).send(`External IP: ${externalIp}`).end();
+    .then(externalIp => {
+      res
+        .status(200)
+        .send(`External IP: ${externalIp}`)
+        .end();
     })
     .catch(next);
 });

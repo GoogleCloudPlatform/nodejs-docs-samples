@@ -27,6 +27,8 @@
     "uuid": "^3.3.2"
   },
   "dependencies": {
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
     "@google-cloud/firestore": "^0.18.0"
   }
 }

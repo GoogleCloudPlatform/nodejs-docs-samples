@@ -21,18 +21,19 @@ const request = require('got');
 const app = express();
 app.enable('trust proxy');
 
-const METADATA_PROJECT_ID_URL = 'http://metadata.google.internal/computeMetadata/v1/project/project-id';
+const METADATA_PROJECT_ID_URL =
+  'http://metadata.google.internal/computeMetadata/v1/project/project-id';
 
-function getProjectId () {
+function getProjectId() {
   const options = {
     headers: {
-      'Metadata-Flavor': 'Google'
-    }
+      'Metadata-Flavor': 'Google',
+    },
   };
 
   return request(METADATA_PROJECT_ID_URL, options)
-    .then((response) => response.body)
-    .catch((err) => {
+    .then(response => response.body)
+    .catch(err => {
       if (err && err.statusCode !== 200) {
         console.log('Error while talking to metadata server.');
         return 'Unknown_Project_ID';
@@ -43,8 +44,11 @@ function getProjectId () {
 
 app.get('/', (req, res, next) => {
   getProjectId()
-    .then((projectId) => {
-      res.status(200).send(`Project ID: ${projectId}`).end();
+    .then(projectId => {
+      res
+        .status(200)
+        .send(`Project ID: ${projectId}`)
+        .end();
     })
     .catch(next);
 });

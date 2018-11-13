@@ -23,7 +23,7 @@ const path = require(`path`);
 const app = express();
 
 // [START enable_parser]
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 // [END enable_parser]
 
 app.get('/', (req, res) => {
@@ -40,7 +40,7 @@ app.get('/submit', (req, res) => {
 app.post('/submit', (req, res) => {
   console.log({
     name: req.body.name,
-    message: req.body.message
+    message: req.body.message,
   });
   res.send('Thanks for your message!');
 });

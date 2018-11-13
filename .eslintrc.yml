@@ -1,0 +1,19 @@
+---
+extends:
+  - 'eslint:recommended'
+  - 'plugin:node/recommended'
+  - prettier
+env: 
+  mocha: true 
+plugins:
+  - node
+  - prettier
+rules:
+  prettier/prettier: error
+  block-scoped-var: error
+  eqeqeq: error
+  no-warning-comments: warn
+  no-console: off
+  node/no-missing-require: off
+  node/no-unpublished-require: off
+

@@ -279,4 +279,3 @@ exports.makeUpperCase = (data, context) => {
   });
 };
 // [END functions_firebase_reactive_node8]
-

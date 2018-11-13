@@ -15,7 +15,6 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
 const sinon = require(`sinon`);
 const uuid = require('uuid');
 const test = require('ava');
@@ -29,7 +28,7 @@ function getSample () {
     doc: sinon.stub().returnsThis(),
     set: sinon.stub()
   };
- 
+
   return {
     program: proxyquire(`../`, {
       'request-promise-native': requestPromiseNative,

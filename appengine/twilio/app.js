@@ -18,14 +18,16 @@
 const format = require('util').format;
 const express = require('express');
 const bodyParser = require('body-parser').urlencoded({
-  extended: false
+  extended: false,
 });
 
 const app = express();
 
 const TWILIO_NUMBER = process.env.TWILIO_NUMBER;
 if (!TWILIO_NUMBER) {
-  console.log('Please configure environment variables as described in README.md');
+  console.log(
+    'Please configure environment variables as described in README.md'
+  );
   process.exit(1);
 }
 
@@ -41,7 +43,8 @@ app.post('/call/receive', (req, res) => {
   const resp = new TwimlResponse();
   resp.say('Hello from Google App Engine.');
 
-  res.status(200)
+  res
+    .status(200)
     .contentType('text/xml')
     .send(resp.toString());
 });
@@ -51,21 +54,26 @@ app.post('/call/receive', (req, res) => {
 app.get('/sms/send', (req, res, next) => {
   const to = req.query.to;
   if (!to) {
-    res.status(400).send('Please provide an number in the "to" query string parameter.');
+    res
+      .status(400)
+      .send('Please provide an number in the "to" query string parameter.');
     return;
   }
 
-  twilio.sendMessage({
-    to: to,
-    from: TWILIO_NUMBER,
-    body: 'Hello from Google App Engine'
-  }, (err) => {
-    if (err) {
-      next(err);
-      return;
+  twilio.sendMessage(
+    {
+      to: to,
+      from: TWILIO_NUMBER,
+      body: 'Hello from Google App Engine',
+    },
+    err => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.status(200).send('Message sent.');
     }
-    res.status(200).send('Message sent.');
-  });
+  );
 });
 // [END gae_flex_twilio_send_sms]
 
@@ -77,7 +85,8 @@ app.post('/sms/receive', bodyParser, (req, res) => {
   const resp = new TwimlResponse();
   resp.message(format('Hello, %s, you said: %s', sender, body));
 
-  res.status(200)
+  res
+    .status(200)
     .contentType('text/xml')
     .send(resp.toString());
 });

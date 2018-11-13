@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/* eslint no-empty: 0 */
 'use strict';
 
 const storage = require(`@google-cloud/storage`)();
@@ -37,18 +38,16 @@ test.before(async () => {
 
   const bucketOptions = {
     entity: 'allUsers',
-    role: storage.acl.WRITER_ROLE
+    role: storage.acl.WRITER_ROLE,
   };
-  await storage.createBucket(firstBucketName)
-    .then((data) => {
-      const bucket = data[0];
-      return bucket.acl.add(bucketOptions);
-    });
-  await storage.createBucket(secondBucketName)
-    .then((data) => {
-      const bucket = data[0];
-      return bucket.acl.add(bucketOptions);
-    });
+  await storage.createBucket(firstBucketName).then(data => {
+    const bucket = data[0];
+    return bucket.acl.add(bucketOptions);
+  });
+  await storage.createBucket(secondBucketName).then(data => {
+    const bucket = data[0];
+    return bucket.acl.add(bucketOptions);
+  });
 });
 
 test.after.always(async () => {
@@ -56,32 +55,32 @@ test.after.always(async () => {
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);
   try {
-    bucketOne.deleteFiles({ force: true });
+    bucketOne.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    bucketOne.deleteFiles({ force: true });
+    bucketOne.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
     bucketOne.delete();
   } catch (err) {} // ignore error
   try {
-    bucketTwo.deleteFiles({ force: true });
+    bucketTwo.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    bucketTwo.deleteFiles({ force: true });
+    bucketTwo.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
     bucketTwo.delete();
   } catch (err) {} // ignore error
 });
 
-test.cb.serial(`should create a storage transfer job`, (t) => {
+test.cb.serial(`should create a storage transfer job`, t => {
   const options = {
     srcBucket: firstBucketName,
     destBucket: secondBucketName,
     date: date,
     time: time,
-    description: description
+    description: description,
   };
 
   program.createTransferJob(options, (err, transferJob) => {
@@ -90,12 +89,14 @@ test.cb.serial(`should create a storage transfer job`, (t) => {
     t.is(transferJob.name.indexOf(`transferJobs/`), 0);
     t.is(transferJob.description, description);
     t.is(transferJob.status, `ENABLED`);
-    t.true(console.log.calledWith(`Created transfer job: %s`, transferJob.name));
+    t.true(
+      console.log.calledWith(`Created transfer job: %s`, transferJob.name)
+    );
     setTimeout(t.end, 2000);
   });
 });
 
-test.cb.serial(`should get a transferJob`, (t) => {
+test.cb.serial(`should get a transferJob`, t => {
   program.getTransferJob(jobName, (err, transferJob) => {
     t.ifError(err);
     t.is(transferJob.name, jobName);
@@ -106,11 +107,11 @@ test.cb.serial(`should get a transferJob`, (t) => {
   });
 });
 
-test.cb.serial(`should update a transferJob`, (t) => {
+test.cb.serial(`should update a transferJob`, t => {
   var options = {
     job: jobName,
     field: `status`,
-    value: status
+    value: status,
   };
 
   program.updateTransferJob(options, (err, transferJob) => {
@@ -118,23 +119,27 @@ test.cb.serial(`should update a transferJob`, (t) => {
     t.is(transferJob.name, jobName);
     t.is(transferJob.description, description);
     t.is(transferJob.status, status);
-    t.true(console.log.calledWith(`Updated transfer job: %s`, transferJob.name));
+    t.true(
+      console.log.calledWith(`Updated transfer job: %s`, transferJob.name)
+    );
     setTimeout(t.end, 2000);
   });
 });
 
-test.cb.serial(`should list transferJobs`, (t) => {
+test.cb.serial(`should list transferJobs`, t => {
   program.listTransferJobs((err, transferJobs) => {
     t.ifError(err);
-    t.true(transferJobs.some((transferJob) => transferJob.name === jobName));
-    t.true(transferJobs.some((transferJob) => transferJob.description === description));
-    t.true(transferJobs.some((transferJob) => transferJob.status === status));
+    t.true(transferJobs.some(transferJob => transferJob.name === jobName));
+    t.true(
+      transferJobs.some(transferJob => transferJob.description === description)
+    );
+    t.true(transferJobs.some(transferJob => transferJob.status === status));
     t.true(console.log.calledWith(`Found %d jobs!`, transferJobs.length));
     setTimeout(t.end, 2000);
   });
 });
 
-test.cb.serial(`should list transferJobs`, (t) => {
+test.cb.serial(`should list transferJobs`, t => {
   program.listTransferOperations(jobName, (err, operations) => {
     t.ifError(err);
     t.true(Array.isArray(operations));

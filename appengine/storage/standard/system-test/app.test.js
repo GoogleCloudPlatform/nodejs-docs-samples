@@ -23,14 +23,14 @@ const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, `../`);
-const requestObj = utils.getRequest({ cwd: cwd });
+const requestObj = utils.getRequest({cwd: cwd});
 
 test.before(async () => {
   utils.checkCredentials();
-  await bucket.create(bucket).then((data) => {
+  await bucket.create(bucket).then(data => {
     return bucket.acl.add({
       entity: 'allUsers',
-      role: Storage.acl.READER_ROLE
+      role: Storage.acl.READER_ROLE,
     });
   });
 });
@@ -41,23 +41,26 @@ test.after.always(async () => {
   } catch (err) {} // ignore error
 });
 
-test.cb.serial(`should load`, (t) => {
+test.cb.serial(`should load`, t => {
   requestObj
     .get(`/`)
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.regex(response.text, /<input type="file" name="file">/);
     })
     .end(t.end);
 });
 
-test.cb.serial(`should upload a file`, (t) => {
+test.cb.serial(`should upload a file`, t => {
   requestObj
     .post(`/upload`)
     .attach(`file`, path.join(__dirname, `resources/test.txt`))
     .expect(200)
-    .expect((response) => {
-      t.is(response.text, `https://storage.googleapis.com/${bucketName}/test.txt`);
+    .expect(response => {
+      t.is(
+        response.text,
+        `https://storage.googleapis.com/${bucketName}/test.txt`
+      );
     })
     .end(t.end);
 });

@@ -21,7 +21,10 @@ const nconf = require('nconf');
 
 // Read in keys and secrets. You can store these in
 // a keys.json file, or in environment variables
-nconf.argv().env().file('keys.json');
+nconf
+  .argv()
+  .env()
+  .file('keys.json');
 
 // Connect to a MongoDB server provisioned over at
 // MongoLab.  See the README for more info.
@@ -36,52 +39,57 @@ if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
 }
 
-mongodb.MongoClient.connect(uri, (err, client) => {
-  if (err) {
-    throw err;
-  }
-
-  // Create a simple little server.
-  http.createServer((req, res) => {
-    if (req.url === '/_ah/health') {
-      res.writeHead(200, {
-        'Content-Type': 'text/plain'
-      });
-      res.write('OK');
-      res.end();
-      return;
+mongodb.MongoClient.connect(
+  uri,
+  (err, client) => {
+    if (err) {
+      throw err;
     }
-    // Track every IP that has visited this site
-    const db = client.db(nconf.get('mongoDatabase'));
-    const collection = db.collection('IPs');
 
-    const ip = {
-      address: req.connection.remoteAddress
-    };
-
-    collection.insert(ip, (err) => {
-      if (err) {
-        throw err;
-      }
-
-      // push out a range
-      let iplist = '';
-      collection.find().toArray((err, data) => {
-        if (err) {
-          throw err;
+    // Create a simple little server.
+    http
+      .createServer((req, res) => {
+        if (req.url === '/_ah/health') {
+          res.writeHead(200, {
+            'Content-Type': 'text/plain',
+          });
+          res.write('OK');
+          res.end();
+          return;
         }
-        data.forEach((ip) => {
-          iplist += `${ip.address}; `;
-        });
+        // Track every IP that has visited this site
+        const db = client.db(nconf.get('mongoDatabase'));
+        const collection = db.collection('IPs');
 
-        res.writeHead(200, {
-          'Content-Type': 'text/plain'
+        const ip = {
+          address: req.connection.remoteAddress,
+        };
+
+        collection.insert(ip, err => {
+          if (err) {
+            throw err;
+          }
+
+          // push out a range
+          let iplist = '';
+          collection.find().toArray((err, data) => {
+            if (err) {
+              throw err;
+            }
+            data.forEach(ip => {
+              iplist += `${ip.address}; `;
+            });
+
+            res.writeHead(200, {
+              'Content-Type': 'text/plain',
+            });
+            res.write('IPs:\n');
+            res.end(iplist);
+          });
         });
-        res.write('IPs:\n');
-        res.end(iplist);
+      })
+      .listen(process.env.PORT || 8080, () => {
+        console.log('started web process');
       });
-    });
-  }).listen(process.env.PORT || 8080, () => {
-    console.log('started web process');
-  });
-});
+  }
+);

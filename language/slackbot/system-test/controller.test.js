@@ -25,16 +25,16 @@ const SLACK_TOKEN_PATH = path.join(__dirname, `../.token`);
 
 let controllerMock, botkitMock, program, originalToken;
 
-test.before((t) => {
+test.before(() => {
   originalToken = process.env.SLACK_TOKEN_PATH;
   controllerMock = {
     spawn: sinon.stub().returnsThis(),
     startRTM: sinon.stub().returnsThis(),
     hears: sinon.stub().returnsThis(),
-    on: sinon.stub().returnsThis()
+    on: sinon.stub().returnsThis(),
   };
   botkitMock = {
-    slackbot: sinon.stub().returns(controllerMock)
+    slackbot: sinon.stub().returns(controllerMock),
   };
   program = proxyquire(`../demo_bot`, {
     botkit: botkitMock,
@@ -42,15 +42,15 @@ test.before((t) => {
       verbose: sinon.stub().returns({
         cached: {
           Database: sinon.stub().returns({
-            run: sinon.stub()
-          })
-        }
-      })
-    }
+            run: sinon.stub(),
+          }),
+        },
+      }),
+    },
   });
 });
 
-test.after.always((t) => {
+test.after.always(() => {
   process.env.SLACK_TOKEN_PATH = originalToken;
   try {
     fs.unlinkSync(SLACK_TOKEN_PATH);
@@ -59,18 +59,22 @@ test.after.always((t) => {
   }
 });
 
-test(`should check SLACK_TOKEN_PATH`, (t) => {
+test(`should check SLACK_TOKEN_PATH`, t => {
   process.env.SLACK_TOKEN_PATH = ``;
 
-  t.throws(() => {
-    program.startController();
-  }, Error, `Please set the SLACK_TOKEN_PATH environment variable!`);
+  t.throws(
+    () => {
+      program.startController();
+    },
+    Error,
+    `Please set the SLACK_TOKEN_PATH environment variable!`
+  );
 });
 
-test(`should start the controller`, (t) => {
+test(`should start the controller`, t => {
   let controller;
 
-  fs.writeFileSync(SLACK_TOKEN_PATH, `test`, { encoding: `utf8` });
+  fs.writeFileSync(SLACK_TOKEN_PATH, `test`, {encoding: `utf8`});
   process.env.SLACK_TOKEN_PATH = SLACK_TOKEN_PATH;
 
   controller = program.startController();

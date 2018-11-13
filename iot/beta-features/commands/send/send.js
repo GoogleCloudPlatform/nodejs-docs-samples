@@ -19,28 +19,28 @@ const {google} = require('googleapis');
 const API_VERSION = 'v1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
-function sendCommand (deviceId, registryId, projectId, region, command) {
+function sendCommand(deviceId, registryId, projectId, region, command) {
   // [START iot_send_command]
   const parentName = `projects/${projectId}/locations/${region}`;
   const registryName = `${parentName}/registries/${registryId}`;
   const binaryData = Buffer.from(command).toString('base64');
   const request = {
     name: `${registryName}/devices/${deviceId}`,
-    binaryData: binaryData
+    binaryData: binaryData,
   };
 
-  google.auth.getClient().then((authClient) => {
+  google.auth.getClient().then(authClient => {
     const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}`;
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
       // Scopes can be specified either as an array or as a single,
       // space-delimited string.
       authClient = authClient.createScoped([
-        'https://www.googleapis.com/auth/cloud-platform'
+        'https://www.googleapis.com/auth/cloud-platform',
       ]);
     }
 
     google.options({
-      auth: authClient
+      auth: authClient,
     });
 
     google.discoverAPI(discoveryUrl).then((client, err) => {
@@ -48,7 +48,8 @@ function sendCommand (deviceId, registryId, projectId, region, command) {
         console.log('Error during API discovery', err);
         return undefined;
       }
-      client.projects.locations.registries.devices.sendCommandToDevice(request,
+      client.projects.locations.registries.devices.sendCommandToDevice(
+        request,
         (err, data) => {
           if (err) {
             console.log('Could not send command:', request);
@@ -56,7 +57,8 @@ function sendCommand (deviceId, registryId, projectId, region, command) {
           } else {
             console.log('Success :', data.statusText);
           }
-        });
+        }
+      );
     });
   });
   // [END iot_send_command]
@@ -69,7 +71,7 @@ require(`yargs`) // eslint-disable-line
       alias: 'c',
       default: 'us-central1',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     projectId: {
       alias: 'p',
@@ -77,23 +79,28 @@ require(`yargs`) // eslint-disable-line
       description: `The Project ID to use. Defaults to the value of
         the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.`,
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     serviceAccount: {
       alias: 's',
       default: process.env.GOOGLE_APPLICATION_CREDENTIALS,
       description: 'The path to your service credentials JSON.',
       requiresArg: true,
-      type: 'string'
-    }
+      type: 'string',
+    },
   })
   .command(
     `sendCommand <deviceId> <registryId> <command>`,
     `Sends a command to a device.`,
     {},
-    (opts) => {
-      sendCommand(opts.deviceId, opts.registryId, opts.projectId,
-        opts.cloudRegion, opts.command);
+    opts => {
+      sendCommand(
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.command
+      );
     }
   )
   .example(`node $0 sendCommand my-device my-registry "test"`)
@@ -101,5 +108,4 @@ require(`yargs`) // eslint-disable-line
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
   .help()
-  .strict()
-  .argv;
+  .strict().argv;

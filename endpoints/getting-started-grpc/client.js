@@ -15,7 +15,7 @@
 
 'use strict';
 
-function makeGrpcRequest (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
+function makeGrpcRequest(JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
   // Uncomment these lines to set their values
   // const JWT_AUTH_TOKEN = 'YOUR_JWT_AUTH_TOKEN';
   // const API_KEY = 'YOUR_API_KEY';
@@ -42,7 +42,7 @@ function makeGrpcRequest (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
   }
 
   // Execute gRPC request
-  client.sayHello({ name: GREETEE }, metadata, (err, response) => {
+  client.sayHello({name: GREETEE}, metadata, (err, response) => {
     if (err) {
       console.error(err);
     }
@@ -55,32 +55,34 @@ function makeGrpcRequest (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
 
 // The command-line program
 const argv = require('yargs')
-  .usage('Usage: node $0 {-k YOUR_API_KEY>, <-j YOUR_JWT_AUTH_TOKEN} [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]')
+  .usage(
+    'Usage: node $0 {-k YOUR_API_KEY>, <-j YOUR_JWT_AUTH_TOKEN} [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]'
+  )
   .option('jwtAuthToken', {
     alias: 'j',
     type: 'string',
     global: true,
-    default: ''
+    default: '',
   })
   .option('apiKey', {
     alias: 'k',
     type: 'string',
     global: true,
-    default: ''
+    default: '',
   })
   .option('host', {
     alias: 'h',
     type: 'string',
     default: 'localhost:50051',
-    global: true
+    global: true,
   })
   .option('greetee', {
     alias: 'g',
     type: 'string',
     default: 'world',
-    global: true
+    global: true,
   })
-  .check((argv) => {
+  .check(argv => {
     const valid = !!(argv.jwtAuthToken || argv.apiKey);
     if (!valid) {
       console.error('One of API_KEY or JWT_AUTH_TOKEN must be set.');

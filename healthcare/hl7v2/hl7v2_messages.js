@@ -19,7 +19,14 @@ const fs = require('fs');
 const {google} = require('googleapis');
 
 // [START healthcare_create_hl7v2_message]
-function createHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2StoreId, messageFile) {
+function createHl7v2Message(
+  client,
+  projectId,
+  cloudRegion,
+  datasetId,
+  hl7v2StoreId,
+  messageFile
+) {
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -27,18 +34,18 @@ function createHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Sto
   // const datasetId = 'my-dataset';
   // const hl7v2StoreId = 'my-hl7v2-store';
   // const messageFile = './hl7-sample-ingest.json';
-  const hl7v2MessageParent =
-      `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
+  const hl7v2MessageParent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
 
   const hl7v2Message = fs.readFileSync(messageFile);
   const hl7v2MessageJson = JSON.parse(hl7v2Message);
 
   const request = {
     parent: hl7v2MessageParent,
-    resource: hl7v2MessageJson
+    resource: hl7v2MessageJson,
   };
 
-  client.projects.locations.datasets.hl7V2Stores.messages.create(request)
+  client.projects.locations.datasets.hl7V2Stores.messages
+    .create(request)
     .then(() => {
       console.log(`Created HL7v2 message`);
     })
@@ -49,7 +56,14 @@ function createHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Sto
 // [END healthcare_create_hl7v2_message]
 
 // [START healthcare_ingest_hl7v2_message]
-function ingestHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2StoreId, messageFile) {
+function ingestHl7v2Message(
+  client,
+  projectId,
+  cloudRegion,
+  datasetId,
+  hl7v2StoreId,
+  messageFile
+) {
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -57,18 +71,18 @@ function ingestHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Sto
   // const datasetId = 'my-dataset';
   // const hl7v2StoreId = 'my-hl7v2-store';
   // const messageFile = './hl7-sample-ingest.json';
-  const hl7v2MessageParent =
-      `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
+  const hl7v2MessageParent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
 
   const hl7v2Message = fs.readFileSync(messageFile);
   const hl7v2MessageJson = JSON.parse(hl7v2Message);
 
   const request = {
     parent: hl7v2MessageParent,
-    resource: hl7v2MessageJson
+    resource: hl7v2MessageJson,
   };
 
-  client.projects.locations.datasets.hl7V2Stores.messages.ingest(request)
+  client.projects.locations.datasets.hl7V2Stores.messages
+    .ingest(request)
     .then(() => {
       console.log(`Ingested HL7v2 message`);
     })
@@ -79,7 +93,14 @@ function ingestHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Sto
 // [END healthcare_ingest_hl7v2_message]
 
 // [START healthcare_delete_hl7v2_message]
-function deleteHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2StoreId, messageId) {
+function deleteHl7v2Message(
+  client,
+  projectId,
+  cloudRegion,
+  datasetId,
+  hl7v2StoreId,
+  messageId
+) {
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -87,12 +108,12 @@ function deleteHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Sto
   // const datasetId = 'my-dataset';
   // const hl7v2StoreId = 'my-hl7v2-store';
   // const messageId = 'E9_pxOBKhmlxiFxE4cg8zwJKUHMlOzIfeLBrZPf0Zg=';
-  const hl7v2Message =
-      `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}/messages/${messageId}`;
+  const hl7v2Message = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}/messages/${messageId}`;
 
   const request = {name: hl7v2Message};
 
-  client.projects.locations.datasets.hl7V2Stores.messages.delete(request)
+  client.projects.locations.datasets.hl7V2Stores.messages
+    .delete(request)
     .then(() => {
       console.log(`Deleted HL7v2 message with ID ${messageId}`);
     })
@@ -103,7 +124,14 @@ function deleteHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Sto
 // [END healthcare_delete_hl7v2_message]
 
 // [START healthcare_get_hl7v2_message]
-function getHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2StoreId, messageId) {
+function getHl7v2Message(
+  client,
+  projectId,
+  cloudRegion,
+  datasetId,
+  hl7v2StoreId,
+  messageId
+) {
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -111,12 +139,12 @@ function getHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2StoreI
   // const datasetId = 'my-dataset';
   // const hl7v2StoreId = 'my-hl7v2-store';
   // const messageId = 'E9_pxOBKhmlxiFxE4cg8zwJKUHMlOzIfeLBrZPf0Zg=';
-  const hl7v2Message =
-      `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}/messages/${messageId}`;
+  const hl7v2Message = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}/messages/${messageId}`;
 
   const request = {name: hl7v2Message};
 
-  client.projects.locations.datasets.hl7V2Stores.messages.get(request)
+  client.projects.locations.datasets.hl7V2Stores.messages
+    .get(request)
     .then(results => {
       console.log('Got HL7v2 message:');
       console.log(JSON.stringify(results.data, null, 2));
@@ -128,7 +156,13 @@ function getHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2StoreI
 // [END healthcare_get_hl7v2_message]
 
 // [START healthcare_list_hl7v2_messages]
-function listHl7v2Messages (client, projectId, cloudRegion, datasetId, hl7v2StoreId) {
+function listHl7v2Messages(
+  client,
+  projectId,
+  cloudRegion,
+  datasetId,
+  hl7v2StoreId
+) {
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -139,7 +173,8 @@ function listHl7v2Messages (client, projectId, cloudRegion, datasetId, hl7v2Stor
 
   const request = {parent: hl7v2StoreName};
 
-  client.projects.locations.datasets.hl7V2Stores.messages.list(request)
+  client.projects.locations.datasets.hl7V2Stores.messages
+    .list(request)
     .then(results => {
       console.log('HL7v2 messages:\n', results['data']['messages']);
     })
@@ -150,7 +185,16 @@ function listHl7v2Messages (client, projectId, cloudRegion, datasetId, hl7v2Stor
 // [END healthcare_list_hl7v2_messages]
 
 // [START healthcare_patch_hl7v2_message]
-function patchHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2StoreId, messageId, labelKey, labelValue) {
+function patchHl7v2Message(
+  client,
+  projectId,
+  cloudRegion,
+  datasetId,
+  hl7v2StoreId,
+  messageId,
+  labelKey,
+  labelValue
+) {
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -160,21 +204,20 @@ function patchHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Stor
   // const messageId = 'E9_pxOBKhmlxiFxE4cg8zwJKUHMlOzIfeLBrZPf0Zg=';
   // const labelKey = 'my-key';
   // const labelValue = 'my-value';
-  const hl7v2Message =
-      `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}/messages/${messageId}`;
+  const hl7v2Message = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}/messages/${messageId}`;
 
   const request = {
     name: hl7v2Message,
     updateMask: 'labels',
     labels: {
-      labelKey: labelValue
-    }
+      labelKey: labelValue,
+    },
   };
 
-  client.projects.locations.datasets.hl7V2Stores.messages.patch(request)
+  client.projects.locations.datasets.hl7V2Stores.messages
+    .patch(request)
     .then(() => {
-      console.log(
-        'Patched HL7v2 message');
+      console.log('Patched HL7v2 message');
     })
     .catch(err => {
       console.error(err);
@@ -185,23 +228,23 @@ function patchHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Stor
 // Returns an authorized API client by discovering the Healthcare API with
 // the provided API key.
 // [START healthcare_get_client]
-function getClient (apiKey, serviceAccountJson, cb) {
+function getClient(apiKey, serviceAccountJson, cb) {
   const API_VERSION = 'v1alpha';
   const DISCOVERY_API = 'https://healthcare.googleapis.com/$discovery/rest';
 
   google.auth
     .getClient({scopes: ['https://www.googleapis.com/auth/cloud-platform']})
     .then(authClient => {
-      const discoveryUrl = `${DISCOVERY_API}?labels=CHC_ALPHA&version=${
-        API_VERSION}&key=${apiKey}`;
+      const discoveryUrl = `${DISCOVERY_API}?labels=CHC_ALPHA&version=${API_VERSION}&key=${apiKey}`;
 
       google.options({auth: authClient});
 
-      google.discoverAPI(discoveryUrl)
-        .then((client) => {
+      google
+        .discoverAPI(discoveryUrl)
+        .then(client => {
           cb(client);
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
         });
     });
@@ -216,36 +259,44 @@ require(`yargs`) // eslint-disable-line
       default: process.env.API_KEY,
       description: 'The API key used for discovering the API.',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     cloudRegion: {
       alias: 'c',
       default: 'us-central1',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     projectId: {
       alias: 'p',
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
-      description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      description:
+        'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     serviceAccount: {
       alias: 's',
       default: process.env.GOOGLE_APPLICATION_CREDENTIALS,
       description: 'The path to your service credentials JSON.',
       requiresArg: true,
-      type: 'string'
-    }
+      type: 'string',
+    },
   })
   .command(
     `createHl7v2Message <datasetId> <hl7v2StoreId> <messageFile>`,
     `Creates a new HL7v2 message and, if configured, sends a notification to the parent store's Cloud Pub/Sub topic.`,
     {},
-    (opts) => {
-      const cb = function (client) {
-        createHl7v2Message(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.hl7v2StoreId, opts.messageFile);
+    opts => {
+      const cb = function(client) {
+        createHl7v2Message(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.hl7v2StoreId,
+          opts.messageFile
+        );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
@@ -254,9 +305,16 @@ require(`yargs`) // eslint-disable-line
     `ingestHl7v2Message <datasetId> <hl7v2StoreId> <messageFile>`,
     `Ingests a new HL7v2 message from the hospital and, if configured, sends a notification to the Cloud Pub/Sub topic.`,
     {},
-    (opts) => {
-      const cb = function (client) {
-        ingestHl7v2Message(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.hl7v2StoreId, opts.messageFile);
+    opts => {
+      const cb = function(client) {
+        ingestHl7v2Message(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.hl7v2StoreId,
+          opts.messageFile
+        );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
@@ -265,9 +323,16 @@ require(`yargs`) // eslint-disable-line
     `deleteHl7v2Message <datasetId> <hl7v2StoreId> <messageId>`,
     `Deletes the specified HL7v2 message.`,
     {},
-    (opts) => {
-      const cb = function (client) {
-        deleteHl7v2Message(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.hl7v2StoreId, opts.messageId);
+    opts => {
+      const cb = function(client) {
+        deleteHl7v2Message(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.hl7v2StoreId,
+          opts.messageId
+        );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
@@ -276,9 +341,16 @@ require(`yargs`) // eslint-disable-line
     `getHl7v2Message <datasetId> <hl7v2StoreId> <messageId>`,
     `Gets the specified HL7v2 message.`,
     {},
-    (opts) => {
-      const cb = function (client) {
-        getHl7v2Message(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.hl7v2StoreId, opts.messageId);
+    opts => {
+      const cb = function(client) {
+        getHl7v2Message(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.hl7v2StoreId,
+          opts.messageId
+        );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
@@ -287,9 +359,15 @@ require(`yargs`) // eslint-disable-line
     `listHl7v2Messages <datasetId> <hl7v2StoreId>`,
     `Lists all the messages in the given HL7v2 store.`,
     {},
-    (opts) => {
-      const cb = function (client) {
-        listHl7v2Messages(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.hl7v2StoreId);
+    opts => {
+      const cb = function(client) {
+        listHl7v2Messages(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.hl7v2StoreId
+        );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
@@ -298,16 +376,25 @@ require(`yargs`) // eslint-disable-line
     `patchHl7v2Message <datasetId> <hl7v2StoreId> <labelKey> <labelValue>`,
     `Updates the specified HL7v2 message.`,
     {},
-    (opts) => {
-      const cb = function (client) {
-        patchHl7v2Message(client, opts.projectId, opts.cloudRegion, opts.datasetId, opts.hl7v2StoreId, opts.labelKey, opts.labelValue);
+    opts => {
+      const cb = function(client) {
+        patchHl7v2Message(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.hl7v2StoreId,
+          opts.labelKey,
+          opts.labelValue
+        );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);
     }
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/healthcare/docs`)
+  .epilogue(
+    `For more information, see https://cloud.google.com/healthcare/docs`
+  )
   .help()
-  .strict()
-  .argv;
+  .strict().argv;

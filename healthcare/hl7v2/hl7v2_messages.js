@@ -172,7 +172,7 @@ function patchHl7v2Message (client, projectId, cloudRegion, datasetId, hl7v2Stor
   };
 
   client.projects.locations.datasets.hl7V2Stores.messages.patch(request)
-    .then(results => {
+    .then(() => {
       console.log(
         'Patched HL7v2 message');
     })

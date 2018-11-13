@@ -21,14 +21,14 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 function getSample () {
-  const requestPromise = sinon.stub().returns(Promise.resolve(`test`));
+  const requestPromiseNative = sinon.stub().returns(Promise.resolve(`test`));
 
   return {
     program: proxyquire(`../`, {
-      'request-promise': requestPromise
+      'request-promise-native': requestPromiseNative
     }),
     mocks: {
-      requestPromise: requestPromise
+      requestPromiseNative: requestPromiseNative
     }
   };
 }
@@ -73,7 +73,7 @@ test.serial(`should make a promise request`, (t) => {
 
   return sample.program.helloPromise(event)
     .then((result) => {
-      t.deepEqual(sample.mocks.requestPromise.firstCall.args, [{ uri: `foo.com` }]);
+      t.deepEqual(sample.mocks.requestPromiseNative.firstCall.args, [{ uri: `foo.com` }]);
       t.is(result, `test`);
     });
 });

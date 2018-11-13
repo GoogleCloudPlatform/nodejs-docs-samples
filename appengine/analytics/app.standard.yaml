@@ -11,11 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
-runtime: nodejs8
+runtime: nodejs10
 
-# [START env]
+# [START gae_analytics_env_variables]
 env_variables:
   GA_TRACKING_ID: YOUR_TRACKING_ID
-# [END env]
-# [END app_yaml]
+# [END gae_analytics_env_variables]

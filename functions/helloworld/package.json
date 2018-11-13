@@ -12,7 +12,7 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCP_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js",
     "test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose -c 1 test/index.test.js test/*unit*test.js test/*integration*test.js",
@@ -20,10 +20,12 @@
   },
   "dependencies": {
     "@google-cloud/debug-agent": "2.4.0",
+    "escape-html": "^1.0.3",
     "pug": "2.0.3",
     "safe-buffer": "5.1.1"
   },
   "devDependencies": {
+    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
     "@google-cloud/nodejs-repo-tools": "^2.2.5",
     "@google-cloud/pubsub": "^0.17.0",
     "@google-cloud/storage": "^1.5.0",

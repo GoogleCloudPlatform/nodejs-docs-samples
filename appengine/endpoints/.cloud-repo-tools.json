@@ -1,0 +1,11 @@
+{
+  "test": {
+    "app": {
+      "port": 12345,
+      "url": "http://localhost:12345/auth/info/googlejwt",
+      "msg": "{\"id\":\"anonymous\"}"
+    }
+  },
+  "requiresKeyFile": true,
+  "requiresProjectId": true
+}

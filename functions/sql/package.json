@@ -1,0 +1,47 @@
+{
+  "name": "nodejs-docs-samples-functions-sql",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "scripts": {
+    "start-proxy-mysql": "cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME-mysql=tcp:3306 &",
+    "start-proxy-pg": "cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME-pg=tcp:5432 &",
+    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && npm run start-proxy-pg && npm run start-proxy-mysql || exit 0",
+    "kill-proxy": "killall cloud_sql_proxy",
+    "lint": "semistandard '**/*.js'",
+    "pretest": "npm run lint",
+    "ava": "ava -T 20s --verbose test/*.test.js",
+    "test": "npm run start-proxy && npm run ava && npm run kill-proxy"
+  },
+  "dependencies": {
+    "mysql": "^2.16.0",
+    "pg": "^7.4.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "ava": "0.25.0",
+    "proxyquire": "^2.1.0",
+    "semistandard": "^12.0.1",
+    "sinon": "4.4.2"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "MYSQL_USER",
+      "MYSQL_PASSWORD",
+      "MYSQL_DATABASE",
+      "POSTGRES_USER",
+      "POSTGRES_PASSWORD",
+      "POSTGRES_DATABASE"
+    ]
+  }
+}

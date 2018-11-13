@@ -18,13 +18,7 @@ staffing agencies to improve job site engagement and candidate conversion.
 1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
 1.  Install dependencies:
 
-    With **npm**:
-
         npm install
-
-    With **yarn**:
-
-        yarn install
 
 [prereq]: ../README.md#prerequisites
 [run]: ../README.md#how-to-run-a-sample
@@ -35,10 +29,4 @@ staffing agencies to improve job site engagement and candidate conversion.
 
 1.  Run the tests:
 
-    With **npm**:
-
         npm test
-
-    With **yarn**:
-
-        yarn test

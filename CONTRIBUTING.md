@@ -19,6 +19,9 @@ Follow either of the two links above to access the appropriate CLA and
 instructions for how to sign and return it. Once we receive it, we'll be able to
 accept your pull requests.
 
+## Setting Up An Environment
+For instructions regarding development environment setup, please visit [the documentation](https://cloud.google.com/nodejs/docs/setup).
+
 ## Contributing A Patch
 
 1. Submit an issue describing your proposed change to the repo in question.
@@ -32,15 +35,9 @@ accept your pull requests.
 ### How to run the tests
 
 1. You must install dependencies at the root of the `nodejs-docs-samples`
-directory. You can do so with `yarn` or `npm`:
+directory.
 
         npm install
-
-    or
-
-        yarn install
-
-    **Note:** Use `npm` *or* `yarn` exclusively, don't mix them.
 
 1. In a terminal, start Redis:
 
@@ -54,60 +51,32 @@ directory. You can do so with `yarn` or `npm`:
 
         npm test
 
-    or
-
-        yarn test
-
     With code coverage:
 
         npm run cover
-
-    or
-
-        yarn run cover
 
 1. Then run the system tests from the root of the project:
 
         npm run system-test
 
-    or
-
-        yarn run system-test
-
     With code coverage:
 
         npm run system-cover
-
-    or
-
-        yarn run system-cover
 
 1. Or run all the tests at once:
 
         npm run all-test
 
-    or
-
-        yarn run all-test
-
     With code coverage:
 
         npm run all-cover
 
-    or
-
-        yarn run all-cover
-
 ### Run the tests for a single sample
 
 1. You must install dependencies at the root of the `nodejs-docs-samples`
-directory. You can do so with `yarn` or `npm`:
+directory.
 
         npm install
-
-    or
-
-        yarn install
 
 1. Change directory to one of the sample folders, e.g. `bigquery`:
 
@@ -118,21 +87,11 @@ directory. You can do so with `yarn` or `npm`:
         npm test
 
     or
-
-        yarn test
-
-    or
-
+      
         npm run system-test
 
-    or
-
-        yarn run system-test
 
 ## Style
-
-Samples in this repository follow the [JavaScript Semi-Standard
-Style](https://github.com/Flet/semistandard).
 
 You can run `npm run lint` to match our JavaScript coding standards.
 

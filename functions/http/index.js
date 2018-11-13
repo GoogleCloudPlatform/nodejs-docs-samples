@@ -15,27 +15,9 @@
 
 'use strict';
 
-// [START functions_http_helloworld]
-/**
- * Responds to any HTTP request that can provide a "message" field in the body.
- *
- * @param {Object} req ExpressJS object containing the received HTTP request.
- * @param {Object} res ExpressJS object containing the HTTP response to send.
- */
-exports.helloWorld = (req, res) => {
-  if (req.body.message === undefined) {
-    // This is an error case, as "message" is required
-    res.status(400).send('No message defined!');
-  } else {
-    // Everything is ok - call request-terminating method to signal function
-    // completion. (Otherwise, the function may continue to run until timeout.)
-    console.log(req.body.message);
-    res.status(200).end();
-  }
-};
-// [END functions_http_helloworld]
-
 // [START functions_http_content]
+const escapeHtml = require('escape-html');
+
 /**
  * Responds to an HTTP request using data from the request body parsed according
  * to the "content-type" header.
@@ -68,7 +50,7 @@ exports.helloContent = (req, res) => {
       break;
   }
 
-  res.status(200).send(`Hello ${name || 'World'}!`);
+  res.status(200).send(`Hello ${escapeHtml(name || 'World')}!`);
 };
 // [END functions_http_content]
 
@@ -101,7 +83,7 @@ exports.helloHttp = (req, res) => {
       handlePUT(req, res);
       break;
     default:
-      res.status(500).send({ error: 'Something blew up!' });
+      res.status(405).send({ error: 'Something blew up!' });
       break;
   }
 };
@@ -166,6 +148,8 @@ exports.uploadFile = (req, res) => {
       fields[fieldname] = val;
     });
 
+    let fileWrites = [];
+
     // This code will process each file uploaded.
     busboy.on('file', (fieldname, file, filename) => {
       // Note: os.tmpdir() points to an in-memory file system on GCF
@@ -173,20 +157,36 @@ exports.uploadFile = (req, res) => {
       console.log(`Processed file ${filename}`);
       const filepath = path.join(tmpdir, filename);
       uploads[fieldname] = filepath;
-      file.pipe(fs.createWriteStream(filepath));
+
+      const writeStream = fs.createWriteStream(filepath);
+      file.pipe(writeStream);
+
+      // File was processed by Busboy; wait for it to be written to disk.
+      const promise = new Promise((resolve, reject) => {
+        file.on('end', () => {
+          writeStream.end();
+        });
+        writeStream.on('finish', resolve);
+        writeStream.on('error', reject);
+      });
+      fileWrites.push(promise);
     });
 
-    // This event will be triggered after all uploaded files are saved.
+    // Triggered once all uploaded files are processed by Busboy.
+    // We still need to wait for the disk writes (saves) to complete.
     busboy.on('finish', () => {
-      // TODO(developer): Process uploaded files here
-      for (const name in uploads) {
-        const file = uploads[name];
-        fs.unlinkSync(file);
-      }
-      res.send();
+      Promise.all(fileWrites)
+        .then(() => {
+          // TODO(developer): Process saved files here
+          for (const name in uploads) {
+            const file = uploads[name];
+            fs.unlinkSync(file);
+          }
+          res.send();
+        });
     });
 
-    req.pipe(busboy);
+    busboy.end(req.rawBody);
   } else {
     // Return a "method not allowed" error
     res.status(405).end();
@@ -233,3 +233,57 @@ exports.getSignedUrl = (req, res) => {
   }
 };
 // [END functions_http_signed_url]
+
+// [START functions_http_cors]
+/**
+ * HTTP function that supports CORS requests.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.corsEnabledFunction = (req, res) => {
+  // Set CORS headers for preflight requests
+  // Allows GETs from any origin with the Content-Type header
+  // and caches preflight response for 3600s
+
+  res.set('Access-Control-Allow-Origin', '*');
+
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    res.set('Access-Control-Allow-Methods', 'GET');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+  } else {
+    // Set CORS headers for the main request
+    res.set('Access-Control-Allow-Origin', '*');
+    res.send('Hello World!');
+  }
+};
+// [END functions_http_cors]
+
+// [START functions_http_cors_auth]
+/**
+ * HTTP function that supports CORS requests with credentials.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.corsEnabledFunctionAuth = (req, res) => {
+  // Set CORS headers for preflight requests
+  // Allows GETs from origin https://mydomain.com with Authorization header
+
+  res.set('Access-Control-Allow-Origin', 'https://mydomain.com');
+  res.set('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    res.set('Access-Control-Allow-Methods', 'GET');
+    res.set('Access-Control-Allow-Headers', 'Authorization');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+  } else {
+    res.send('Hello World!');
+  }
+};
+// [END functions_http_cors_auth]

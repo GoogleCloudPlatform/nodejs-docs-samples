@@ -94,5 +94,17 @@ function getMetrics (callback) {
   // [END functions_log_get_metrics]
 }
 
+// [START functions_log_stackdriver]
+exports.processLogEntry = (data) => {
+  // Node 6: data.data === Node 8+: data
+  const dataBuffer = Buffer.from(data.data.data || data.data, 'base64');
+
+  const logEntry = JSON.parse(dataBuffer.toString('ascii')).protoPayload;
+  console.log(`Method: ${logEntry.methodName}`);
+  console.log(`Resource: ${logEntry.resourceName}`);
+  console.log(`Initiator: ${logEntry.authenticationInfo.principalEmail}`);
+};
+// [END functions_log_stackdriver]
+
 exports.getLogEntries = getLogEntries;
 exports.getMetrics = getMetrics;

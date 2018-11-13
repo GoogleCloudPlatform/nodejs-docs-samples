@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START app]
+// [START gae_flex_analytics_track_event]
 const express = require('express');
 const got = require('got');
 
@@ -47,9 +47,7 @@ function trackEvent (category, action, label, value) {
     ev: value
   };
 
-  return got.post('http://www.google-analytics.com/collect', {
-    form: data
-  });
+  return got.post('http://www.google-analytics.com/collect', data);
 }
 
 app.get('/', (req, res, next) => {
@@ -69,4 +67,4 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END app]
+// [END gae_flex_analytics_track_event]

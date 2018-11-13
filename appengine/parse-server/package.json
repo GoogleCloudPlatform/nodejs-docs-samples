@@ -6,10 +6,10 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "8.x.x"
+    "node": ">=8"
   },
   "dependencies": {
-    "express": "4.16.2",
+    "express": "4.16.4",
     "parse-server": "2.7.2",
     "nconf": "0.10.0"
   }

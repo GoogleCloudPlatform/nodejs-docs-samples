@@ -17,7 +17,7 @@
 
 // [START kms_quickstart]
 // Imports the Google APIs client library
-const {google} = require('googleapis');
+const { google } = require('googleapis');
 
 // Your Google Cloud Platform project ID
 const projectId = process.env.GCLOUD_PROJECT;
@@ -26,22 +26,11 @@ const projectId = process.env.GCLOUD_PROJECT;
 const location = 'global';
 
 // Acquires credentials
-google.auth.getApplicationDefault((err, authClient) => {
-  if (err) {
-    console.error('Failed to acquire credentials');
-    return;
-  }
-
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    authClient = authClient.createScoped([
-      'https://www.googleapis.com/auth/cloud-platform'
-    ]);
-  }
-
+google.auth.getClient({ scopes: ['https://www.googleapis.com/auth/cloud-platform'] }).then(auth => {
   // Instantiates an authorized client
   const cloudkms = google.cloudkms({
     version: 'v1',
-    auth: authClient
+    auth
   });
   const request = {
     parent: `projects/${projectId}/locations/${location}`

@@ -11,10 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
-runtime: nodejs8
+runtime: nodejs10
 
-# [START env_variables]
+# [START gae_twilio_env]
 # The following env variables may contain sensitive information that grants
 # anyone access to your Twilio account. Do not add this file to your source
 # control.
@@ -22,5 +21,4 @@ env_variables:
   TWILIO_ACCOUNT_SID: <your-account-sid>
   TWILIO_AUTH_TOKEN: <your-auth-token>
   TWILIO_NUMBER: <your-twilio-number>
-# [END env_variables]
-# [END app_yaml]
+# [END gae_twilio_env]

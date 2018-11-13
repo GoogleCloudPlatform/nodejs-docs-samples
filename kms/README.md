@@ -18,13 +18,8 @@
 1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
 1.  Install dependencies:
 
-    With **npm**:
-
         npm install
 
-    With **yarn**:
-
-        yarn install
 
 [prereq]: ../README.md#prerequisites
 [run]: ../README.md#how-to-run-a-sample
@@ -91,10 +86,4 @@ For more information, see https://cloud.google.com/kms/docs
 
 1.  Run the tests:
 
-    With **npm**:
-
         npm test
-
-    With **yarn**:
-
-        yarn test

@@ -747,8 +747,8 @@ function addMemberToCryptoKeyPolicy (projectId, locationId, keyRingId, cryptoKey
   // Your Google Cloud Platform project ID
   // const projectId = 'YOUR_PROJECT_ID';
 
-  // The location of the crypto key's key ring, e.g. "global"
-  // const locationId = 'global';
+  // The location of the crypto key's key ring
+  // const locationId = 'my-key-ring-location';
 
   // The name of the crypto key's key ring, e.g. "my-key-ring"
   // const keyRingId = 'my-key-ring';
@@ -1249,25 +1249,14 @@ function disableCryptoKeyVersion (projectId, locationId, keyRingId, cryptoKeyId,
 
   function buildAndAuthorizeService (callback) {
     // Imports the Google APIs client library
-    const {google} = require('googleapis');
+    const { google } = require('googleapis');
 
     // Acquires credentials
-    google.auth.getApplicationDefault((err, authClient) => {
-      if (err) {
-        callback(err);
-        return;
-      }
-
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        authClient = authClient.createScoped([
-          'https://www.googleapis.com/auth/cloud-platform'
-        ]);
-      }
-
+    google.auth.getClient({ scopes: ['https://www.googleapis.com/auth/cloud-platform'] }).then(auth => {
       // Instantiates an authorized client
       const cloudkms = google.cloudkms({
         version: 'v1',
-        auth: authClient
+        auth
       });
 
       callback(null, cloudkms);

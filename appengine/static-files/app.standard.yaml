@@ -11,8 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START app_yaml]
-runtime: nodejs8
+runtime: nodejs10
 
 handlers:
   - url: /static
@@ -20,4 +19,3 @@ handlers:
 
   - url: /.*
     script: auto
-# [END app_yaml]

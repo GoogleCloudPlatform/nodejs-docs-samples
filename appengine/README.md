@@ -36,22 +36,15 @@ The App Engine Node.js samples typically that you do the following:
 
         cd appengine/sample-folder/
 
-1.  Install depedencies using `npm` or `yarn`:
+1.  Install depedencies:
 
         npm install
 
-    or
-
-        yarn install
-
-1.  Run the sample with `npm` or `yarn` (See the sample's `README.md` file for
+1.  Run the sample with `npm` (See the sample's `README.md` file for
     any additional setup):
 
         npm start
 
-    or
-
-        yarn start
 
 1.  Visit the application at [http://localhost:8080][].
 
@@ -92,9 +85,6 @@ Generally speaking, to deploy a sample application:
         gcloud app deploy
 
     to deploy the app to its compatible environment.
-
-    Note: If there is a `yarn.lock` file then `yarn install` will be used during
-    deployment. Delete the `yarn.lock` file to fall back to `npm install`.
 
 1.  View your deployed application at `https://YOUR_PROJECT_ID.appspot.com`.
 

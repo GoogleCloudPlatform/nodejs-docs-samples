@@ -28,22 +28,19 @@
     ]
   },
   "scripts": {
-    "check": "yarn check --strict-semver --integrity",
-    "lint": "repo-tools lint",
-    "generate": "node ./scripts/generate",
-    "pretest": "npm run lint && node ./scripts/clean coverage",
+    "lint": "semistandard '**/*.js'",
+    "pretest": "npm run lint",
     "unit-cover": "nyc --cache npm test && nyc report --reporter=html",
     "system-cover": "nyc --cache npm run system-test && nyc report --reporter=html",
     "test": "npm run unit-test && npm run system-test",
-    "cover": "nyc --cache npm run test && nyc report --reporter=html",
-    "update-dependencies": "./scripts/update-dependencies.sh"
+    "cover": "nyc --cache npm run test && nyc report --reporter=html"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.0",
-    "@google-cloud/storage": "1.6.0",
+    "@google-cloud/nodejs-repo-tools": "^2.3.6",
+    "@google-cloud/storage": "1.7.0",
     "ava": "0.25.0",
-    "nyc": "11.6.0",
+    "nyc": "13.0.1",
     "semistandard": "^12.0.1",
-    "shelljs": "0.8.1"
+    "shelljs": "0.8.2"
   }
 }

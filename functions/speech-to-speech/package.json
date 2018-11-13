@@ -1,0 +1,59 @@
+{
+  "name": "speech-to-speech",
+  "version": "0.0.1",
+  "description": "Speech-to-Speech Translation API",
+  "homepage": "https://cloud.google.com/solutions/mobile/",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "npm": ">= 4.0.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "keywords": [
+    "speech",
+    "text",
+    "translation",
+    "functions",
+    "storage"
+  ],
+  "scripts": {
+    "lint": "semistandard '**/*.js'",
+    "local-test": "mocha test/index.test.js",
+    "system-test": "mocha --timeout 20000 test/sample.integration.http.test.js",
+    "pretest": "npm run lint && sh test/updateFunctions.sh",
+    "test": "npm run local-test && npm run system-test"
+  },
+  "dependencies": {
+    "@google-cloud/speech": "^2.1.0",
+    "@google-cloud/storage": "^2.0.3",
+    "@google-cloud/text-to-speech": "^0.3.0",
+    "@google-cloud/translate": "^2.1.2",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
+    "@google-cloud/nodejs-repo-tools": "^2.3.5",
+    "mocha": "^5.2.0",
+    "semistandard": "^12.0.1",
+    "supertest": "^3.3.0"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "BASE_URL",
+      "FUNCTIONS_CMD",
+      "GCF_REGION",
+      "GOOGLE_CLOUD_PROJECT",
+      "OUTPUT_BUCKET",
+      "SUPPORTED_LANGUAGE_CODES"
+    ]
+  }
+}

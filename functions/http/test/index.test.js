@@ -43,9 +43,20 @@ function getMocks () {
   };
   sinon.spy(req, `get`);
 
+  const corsPreflightReq = {
+    method: 'OPTIONS'
+  };
+
+  const corsMainReq = {
+    method: 'GET'
+  };
+
   return {
     req: req,
+    corsPreflightReq: corsPreflightReq,
+    corsMainReq: corsMainReq,
     res: {
+      set: sinon.stub().returnsThis(),
       send: sinon.stub().returnsThis(),
       json: sinon.stub().returnsThis(),
       end: sinon.stub().returnsThis(),
@@ -56,32 +67,6 @@ function getMocks () {
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
-
-test.serial(`http:helloworld: should error with no message`, (t) => {
-  const mocks = getMocks();
-  const httpSample = getSample();
-  mocks.req.body = {};
-  httpSample.sample.helloWorld(mocks.req, mocks.res);
-
-  t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 400);
-  t.true(mocks.res.send.calledOnce);
-  t.is(mocks.res.send.firstCall.args[0], `No message defined!`);
-});
-
-test.serial(`http:helloworld: should log message`, (t) => {
-  const mocks = getMocks();
-  const httpSample = getSample();
-  mocks.req.body = {
-    message: `hi`
-  };
-  httpSample.sample.helloWorld(mocks.req, mocks.res);
-
-  t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 200);
-  t.true(mocks.res.end.calledOnce);
-  t.true(console.log.calledWith(`hi`));
-});
 
 test.serial(`http:helloHttp: should handle GET`, (t) => {
   const mocks = getMocks();
@@ -114,7 +99,7 @@ test.serial(`http:helloHttp: should handle other methods`, (t) => {
   httpSample.sample.helloHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 405);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], { error: `Something blew up!` });
 });
@@ -180,4 +165,55 @@ test.serial(`http:helloContent: should handle other`, (t) => {
   t.is(mocks.res.status.firstCall.args[0], 200);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], `Hello World!`);
+});
+
+test.serial(`http:helloContent: should escape XSS`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+  mocks.req.headers[`content-type`] = `text/plain`;
+  mocks.req.body = { name: `<script>alert(1)</script>` };
+  httpSample.sample.helloContent(mocks.req, mocks.res);
+
+  t.true(mocks.res.status.calledOnce);
+  t.is(mocks.res.status.firstCall.args[0], 200);
+  t.true(mocks.res.send.calledOnce);
+  t.false(mocks.res.send.firstCall.args[0].includes('<script>'));
+});
+
+test.serial(`http:cors: should respond to preflight request (no auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunction(mocks.corsPreflightReq, mocks.res);
+
+  t.true(mocks.res.status.calledOnceWith(204));
+  t.true(mocks.res.send.called);
+});
+
+test.serial(`http:cors: should respond to main request (no auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunction(mocks.corsMainReq, mocks.res);
+
+  t.true(mocks.res.send.calledOnceWith(`Hello World!`));
+});
+
+test.serial(`http:cors: should respond to preflight request (auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunctionAuth(mocks.corsPreflightReq, mocks.res);
+
+  t.true(mocks.res.status.calledOnceWith(204));
+  t.true(mocks.res.send.calledOnce);
+});
+
+test.serial(`http:cors: should respond to main request (auth)`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  httpSample.sample.corsEnabledFunctionAuth(mocks.corsMainReq, mocks.res);
+
+  t.true(mocks.res.send.calledOnceWith(`Hello World!`));
 });

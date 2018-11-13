@@ -1,0 +1,36 @@
+{
+  "name": "nodejs-docs-samples-functions-headless-chrome",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "scripts": {
+    "lint": "semistandard '**/*.js'",
+    "pretest": "npm run lint",
+    "e2e-test": "export FUNCTIONS_CMD='gcloud beta functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCF_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js"
+  },
+  "dependencies": {
+    "puppeteer": "^1.6.2"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.2.5",
+    "ava": "0.25.0",
+    "supertest": "^3.0.0"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "BASE_URL",
+      "GCF_REGION",
+      "FUNCTIONS_CMD"
+    ]
+  }
+}

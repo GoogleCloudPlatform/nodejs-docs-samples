@@ -45,7 +45,7 @@ exports.helloGET = (req, res) => {
  */
 // [START functions_tips_terminate]
 exports.helloHttp = (req, res) => {
-  res.send(`Hello ${escapeHtml(req.body.name || 'World')}!`);
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 };
 // [END functions_helloworld_http]
 

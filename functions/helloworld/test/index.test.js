@@ -50,7 +50,17 @@ test.cb(`helloGET: should print hello world`, (t) => {
     .end(t.end);
 });
 
-test.cb(`helloHttp: should print a name`, (t) => {
+test.cb(`helloHttp: should print a name via GET`, (t) => {
+  supertest(BASE_URL)
+    .get(`/helloHttp?name=John`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, 'Hello John!');
+    })
+    .end(t.end);
+});
+
+test.cb(`helloHttp: should print a name via POST`, (t) => {
   supertest(BASE_URL)
     .post(`/helloHttp`)
     .send({ name: 'John' })

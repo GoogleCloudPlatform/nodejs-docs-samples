@@ -131,14 +131,10 @@ on Google Cloud Platform.
 
     Read more about [Google Cloud Platform Authentication][gcp_auth].
 
-    __Note for running unit tests:__
-
-    Install [semistandard][] (lint tool)
 
 [node]: https://nodejs.org/
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
 [gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
-[semistandard]: https://www.npmjs.com/package/semistandard
 
 ### How to run a sample
 

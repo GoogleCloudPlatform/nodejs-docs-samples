@@ -44,10 +44,11 @@ function getSample () {
 test.beforeEach(utils.stubConsole);
 test.afterEach.always(utils.restoreConsole);
 
-test.serial('should respond to HTTP requests', t => {
+test.serial('should respond to HTTP POST', t => {
   const sample = getSample();
 
   const reqMock = {
+    query: {},
     body: {
       name: 'foo'
     }
@@ -59,6 +60,43 @@ test.serial('should respond to HTTP requests', t => {
 
   sample.program.helloHttp(reqMock, resMock);
   t.true(resMock.send.calledWith('Hello foo!'));
+});
+
+test.serial('should respond to HTTP GET', t => {
+  const sample = getSample();
+
+  const reqMock = {
+    query: {
+      name: 'foo'
+    },
+    body: {}
+  };
+
+  const resMock = {
+    send: sinon.stub()
+  };
+
+  sample.program.helloHttp(reqMock, resMock);
+  t.true(resMock.send.calledWith('Hello foo!'));
+});
+
+test.serial('should escape XSS', t => {
+  const sample = getSample();
+
+  const xssQuery = '<script></script>';
+  const reqMock = {
+    query: {},
+    body: {
+      name: xssQuery
+    }
+  };
+
+  const resMock = {
+    send: sinon.stub()
+  };
+
+  sample.program.helloHttp(reqMock, resMock);
+  t.false(resMock.send.calledWith(xssQuery));
 });
 
 test.serial('should monitor Firebase RTDB', t => {

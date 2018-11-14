@@ -28,7 +28,9 @@ if (!TWILIO_NUMBER) {
   console.log(
     'Please configure environment variables as described in README.md'
   );
-  process.exit(1);
+  throw new Error(
+    'Please configure environment variables as described in README.md'
+  );
 }
 
 const twilio = require('twilio')(

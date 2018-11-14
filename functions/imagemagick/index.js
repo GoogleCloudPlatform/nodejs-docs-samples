@@ -85,7 +85,7 @@ function blurImage (file) {
 
       // Blur the image using ImageMagick.
       return new Promise((resolve, reject) => {
-        gm(tempLocalPath).blur(16).write((tempLocalPath), (err, stdout) => {
+        gm(tempLocalPath).blur(0,16).write((tempLocalPath), (err, stdout) => {
           if (err) {
             console.error('Failed to blur image.', err);
             reject(err);

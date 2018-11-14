@@ -50,7 +50,17 @@ test.cb(`helloGET: should print hello world`, (t) => {
     .end(t.end);
 });
 
-test.cb(`helloHttp: should print a name`, (t) => {
+test.cb(`helloHttp: should print a name via GET`, (t) => {
+  supertest(BASE_URL)
+    .get(`/helloHttp?name=John`)
+    .expect(200)
+    .expect((response) => {
+      t.is(response.text, 'Hello John!');
+    })
+    .end(t.end);
+});
+
+test.cb(`helloHttp: should print a name via POST`, (t) => {
   supertest(BASE_URL)
     .post(`/helloHttp`)
     .send({ name: 'John' })
@@ -67,6 +77,17 @@ test.cb(`helloHttp: should print hello world`, (t) => {
     .expect(200)
     .expect((response) => {
       t.is(response.text, `Hello World!`);
+    })
+    .end(t.end);
+});
+
+test.cb.serial(`helloHttp: should escape XSS`, (t) => {
+  supertest(BASE_URL)
+    .post(`/helloHttp`)
+    .send({ name: '<script>alert(1)</script>' })
+    .expect(200)
+    .expect((response) => {
+      t.false(response.text.includes('<script>'));
     })
     .end(t.end);
 });

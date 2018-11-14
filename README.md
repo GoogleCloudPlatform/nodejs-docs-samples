@@ -1,6 +1,6 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud Platform Node.js Samples [![Slack][slack_badge]][slack_link] [![Build][build_badge]][build_link] [![Coverage][cov_badge]][cov_link]
+# Google Cloud Platform Node.js Samples [![Slack][slack_badge]][slack_link] [![Coverage][cov_badge]][cov_link]
 
 Node.js samples for [Google Cloud Platform products][cloud].
 
@@ -9,8 +9,6 @@ on Google Cloud Platform.
 
 [slack_badge]: https://img.shields.io/badge/slack-nodejs%20on%20gcp-E01563.svg
 [slack_link]: https://gcp-slack.appspot.com/
-[build_badge]: https://img.shields.io/circleci/project/github/GoogleCloudPlatform/nodejs-docs-samples/master.svg?style=flat
-[build_link]: https://circleci.com/gh/GoogleCloudPlatform/nodejs-docs-samples
 [cov_badge]: https://img.shields.io/codecov/c/github/GoogleCloudPlatform/nodejs-docs-samples/master.svg?style=flat
 [cov_link]: https://codecov.io/github/GoogleCloudPlatform/nodejs-docs-samples?branch=master
 [cloud]: https://cloud.google.com/
@@ -133,14 +131,10 @@ on Google Cloud Platform.
 
     Read more about [Google Cloud Platform Authentication][gcp_auth].
 
-    __Note for running unit tests:__
-
-    Install [semistandard][] (lint tool)
 
 [node]: https://nodejs.org/
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
 [gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
-[semistandard]: https://www.npmjs.com/package/semistandard
 
 ### How to run a sample
 
@@ -151,12 +145,6 @@ on Google Cloud Platform.
 1. Install the sample's dependencies (see the sample's README for details):
 
         npm install
-
-    or
-
-        yarn install
-
-    **Note:** Use `npm` *or* `yarn` exclusively, don't mix them.
 
 1. Run the sample:
 

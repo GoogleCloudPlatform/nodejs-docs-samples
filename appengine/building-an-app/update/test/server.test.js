@@ -20,39 +20,42 @@ const utils = require(`@google-cloud/nodejs-repo-tools`);
 const cwd = path.join(__dirname, `../`);
 const requestObj = utils.getRequest({
   cwd: cwd,
-  cmd: `server` });
+  cmd: `server`,
+});
 
 test.beforeEach(utils.stubConsole);
 test.afterEach.always(utils.restoreConsole);
 
-test.cb.serial(`should send greetings`, (t) => {
+test.cb.serial(`should send greetings`, t => {
   requestObj
     .get(`/`)
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.text, `Hello from App Engine!`);
     })
     .end(t.end);
 });
 
-test.cb.serial(`should display form`, (t) => {
+test.cb.serial(`should display form`, t => {
   requestObj
     .get(`/submit`)
     .expect(200)
-    .expect((response) => {
-      t.true(response.text.includes('textarea name="message" placeholder="Message"'));
+    .expect(response => {
+      t.true(
+        response.text.includes('textarea name="message" placeholder="Message"')
+      );
     })
     .end(t.end);
 });
 
-test.cb.serial(`should record message`, (t) => {
+test.cb.serial(`should record message`, t => {
   requestObj
     .post(`/submit`, {
       name: `sample-user`,
-      message: `sample-message`
+      message: `sample-message`,
     })
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.text, `Thanks for your message!`);
     })
     .end(t.end);

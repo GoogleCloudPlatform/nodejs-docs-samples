@@ -16,6 +16,8 @@
 'use strict';
 
 // [START functions_http_content]
+const escapeHtml = require('escape-html');
+
 /**
  * Responds to an HTTP request using data from the request body parsed according
  * to the "content-type" header.
@@ -48,7 +50,7 @@ exports.helloContent = (req, res) => {
       break;
   }
 
-  res.status(200).send(`Hello ${name || 'World'}!`);
+  res.status(200).send(`Hello ${escapeHtml(name || 'World')}!`);
 };
 // [END functions_http_content]
 
@@ -81,7 +83,7 @@ exports.helloHttp = (req, res) => {
       handlePUT(req, res);
       break;
     default:
-      res.status(500).send({ error: 'Something blew up!' });
+      res.status(405).send({ error: 'Something blew up!' });
       break;
   }
 };

@@ -20,7 +20,10 @@ const nconf = require('nconf');
 const ParseServer = require('parse-server').ParseServer;
 const path = require('path');
 
-nconf.argv().env().file({ file: 'config.json' });
+nconf
+  .argv()
+  .env()
+  .file({file: 'config.json'});
 
 const app = express();
 
@@ -30,7 +33,7 @@ const parseServer = new ParseServer({
   appId: nconf.get('APP_ID'),
   masterKey: nconf.get('MASTER_KEY'),
   fileKey: nconf.get('FILE_KEY'),
-  serverURL: nconf.get('SERVER_URL')
+  serverURL: nconf.get('SERVER_URL'),
 });
 
 // Mount the Parse API server middleware to /parse

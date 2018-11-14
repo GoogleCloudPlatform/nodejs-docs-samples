@@ -139,13 +139,11 @@ exports.avoidInfiniteRetries = (event, callback) => {
 exports.retryPromise = (event) => {
   const tryAgain = !!event.data.retry;
 
-  // [START functions_tips_retry_promise]
   if (tryAgain) {
     throw new Error(`Retrying...`);
   } else {
     return Promise.reject(new Error('Not retrying...'));
   }
-  // [END functions_tips_retry_promise]
 };
 
 /**
@@ -161,7 +159,6 @@ exports.retryCallback = (event, callback) => {
   const tryAgain = !!event.data.retry;
   const err = new Error('Error!');
 
-  // [START functions_tips_retry_callback]
   if (tryAgain) {
     console.error('Retrying:', err);
     callback(err);
@@ -169,7 +166,6 @@ exports.retryCallback = (event, callback) => {
     console.error('Not retrying:', err);
     callback();
   }
-  // [END functions_tips_retry_callback]
 };
 // [END functions_tips_retry]
 

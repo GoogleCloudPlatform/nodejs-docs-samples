@@ -22,8 +22,10 @@
  *                     More info: https://expressjs.com/en/api.html#res
  */
 // [START functions_tips_terminate_node8]
+const escapeHtml = require('escape-html');
+
 exports.helloHttp = (req, res) => {
-  res.send(`Hello ${req.body.name || 'World'}!`);
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 };
 // [END functions_tips_terminate_node8]
 

@@ -26,7 +26,8 @@
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
     "proxyquire": "2.0.0",
-    "sinon": "4.4.2"
+    "sinon": "4.4.2",
+    "supertest": "^3.3.0"
   },
   "cloud-repo-tools": {
     "test": {

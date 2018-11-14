@@ -26,7 +26,7 @@ var sampleTests = [
     msg: 'Hello World! Express.js + Grunt.js on Google App Engine.',
     TRAVIS_NODE_VERSION: '0.12',
   },
-  // TODO: Investigate flaky test
+  // Investigate flaky test
   // {
   //   dir: 'appengine/loopback',
   //   cmd: 'node',

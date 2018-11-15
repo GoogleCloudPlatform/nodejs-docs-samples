@@ -1,0 +1,5 @@
+---
+rules:
+  node/no-unsupported-features/es-syntax: off
+  no-empty: off
+

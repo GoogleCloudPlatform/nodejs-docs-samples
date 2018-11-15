@@ -13,18 +13,15 @@
     "node": ">=8"
   },
   "scripts": {
-    "lint": "repo-tools lint",
-    "pretest": "npm run lint",
     "system-test": "repo-tools test app -- ./server.js",
     "test": "npm run system-test"
   },
   "dependencies": {
-    "express": "4.16.2",
-    "got": "8.2.0"
+    "express": "4.16.4",
+    "got": "8.3.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.0",
-    "semistandard": "^12.0.1"
+    "@google-cloud/nodejs-repo-tools": "^2.3.0"
   },
   "cloud-repo-tools": {
     "test": {

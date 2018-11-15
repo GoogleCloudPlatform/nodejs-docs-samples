@@ -26,7 +26,7 @@ const process = require('process'); // Required for mocking environment variable
 // the project specified by the GOOGLE_CLOUD_PROJECT environment variable. See
 // https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/docs/authentication.md
 // These environment variables are set automatically on Google App Engine
-const PubSub = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 
 // Instantiate a pubsub client
 const pubsub = new PubSub();
@@ -35,7 +35,7 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-const formBodyParser = bodyParser.urlencoded({ extended: false });
+const formBodyParser = bodyParser.urlencoded({extended: false});
 const jsonBodyParser = bodyParser.json();
 
 // List of all messages received by this instance
@@ -50,7 +50,7 @@ const publisher = topic.publisher();
 
 // [START gae_flex_pubsub_index]
 app.get('/', (req, res) => {
-  res.render('index', { messages: messages });
+  res.render('index', {messages: messages});
 });
 
 app.post('/', formBodyParser, (req, res, next) => {
@@ -59,7 +59,7 @@ app.post('/', formBodyParser, (req, res, next) => {
     return;
   }
 
-  publisher.publish(Buffer.from(req.body.payload), (err) => {
+  publisher.publish(Buffer.from(req.body.payload), err => {
     if (err) {
       next(err);
       return;
@@ -77,7 +77,9 @@ app.post('/pubsub/push', jsonBodyParser, (req, res) => {
   }
 
   // The message is a unicode string encoded in base64.
-  const message = Buffer.from(req.body.message.data, 'base64').toString('utf-8');
+  const message = Buffer.from(req.body.message.data, 'base64').toString(
+    'utf-8'
+  );
 
   messages.push(message);
 

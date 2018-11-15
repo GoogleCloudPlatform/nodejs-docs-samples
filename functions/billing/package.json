@@ -4,7 +4,7 @@
   "description": "Examples of integrating Cloud Functions with billing",
   "main": "index.js",
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "test": "ava test/*"
   },

@@ -38,13 +38,18 @@ app.get('/', (req, res, next) => {
       return;
     }
 
-    mc.set('foo', `${Math.random()}`, (err) => {
-      if (err) {
-        next(err);
-        return;
-      }
-      res.redirect('/');
-    }, 60);
+    mc.set(
+      'foo',
+      `${Math.random()}`,
+      err => {
+        if (err) {
+          next(err);
+          return;
+        }
+        res.redirect('/');
+      },
+      60
+    );
   });
 });
 

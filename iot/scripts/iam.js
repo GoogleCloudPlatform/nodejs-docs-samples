@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Copyright 2017, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +20,7 @@
  * For more information, see https://cloud.google.com/iot.
  */
 
-function setTopicPolicy (topicName) {
+function setTopicPolicy(topicName) {
   // Imports the Google Cloud client library
   const PubSub = require('@google-cloud/pubsub');
 
@@ -35,8 +33,9 @@ function setTopicPolicy (topicName) {
   // The new IAM policy
   const serviceAccount = 'serviceAccount:cloud-iot@system.gserviceaccount.com';
 
-  topic.iam.getPolicy()
-    .then((results) => {
+  topic.iam
+    .getPolicy()
+    .then(results => {
       const policy = results[0] || {};
       policy.bindings || (policy.bindings = []);
       console.log(JSON.stringify(policy, null, 2));
@@ -44,10 +43,10 @@ function setTopicPolicy (topicName) {
       let hasRole = false;
       let binding = {
         role: 'roles/pubsub.publisher',
-        members: [serviceAccount]
+        members: [serviceAccount],
       };
 
-      policy.bindings.forEach((_binding) => {
+      policy.bindings.forEach(_binding => {
         if (_binding.role === binding.role) {
           binding = _binding;
           hasRole = true;
@@ -67,12 +66,12 @@ function setTopicPolicy (topicName) {
       // Updates the IAM policy for the topic
       return topic.iam.setPolicy(policy);
     })
-    .then((results) => {
+    .then(results => {
       const updatedPolicy = results[0];
 
       console.log(JSON.stringify(updatedPolicy, null, 2));
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
 }

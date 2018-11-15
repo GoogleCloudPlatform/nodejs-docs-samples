@@ -15,11 +15,9 @@
   },
   "main": "demo_bot.js",
   "engines": {
-    "node": ">=4.3.2"
+    "node": ">=8.0.0"
   },
   "scripts": {
-    "lint": "repo-tools lint",
-    "pretest": "npm run lint",
     "test": "repo-tools test run --cmd ava -- -T 20s --verbose system-test/*.test.js"
   },
   "dependencies": {
@@ -28,10 +26,9 @@
     "sqlite3": "3.1.9"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.3.0",
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
     "proxyquire": "1.8.0",
-    "semistandard": "^12.0.1",
     "sinon": "3.2.0"
   }
 }

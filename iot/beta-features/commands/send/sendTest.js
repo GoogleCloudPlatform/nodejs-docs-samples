@@ -50,27 +50,39 @@ test.after.always(async () => {
   console.log(`Topic ${topic.name} deleted.`);
 });
 
-test(`should send command message`, async (t) => {
+test(`should send command message`, async t => {
   // Create topic, registry, and device
   await tools.runAsync(installDeps, cwdHelper);
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwdHelper);
   await tools.runAsync(
-    `${helper} createRegistry ${localRegName} ${topicName}`, cwdHelper);
+    `${helper} createRegistry ${localRegName} ${topicName}`,
+    cwdHelper
+  );
   await tools.runAsync(
-    `${helper} createRsa256Device ${localDevice} ${localRegName} ./resources/rsa_cert.pem`, cwdHelper);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} ./resources/rsa_cert.pem`,
+    cwdHelper
+  );
 
   // Let the client run asynchronously since we don't need to test the output here
   tools.runAsync(
-    `${receiveCmd} --deviceId=${localDevice} --registryId=${localRegName} ${receiveCmdSuffix}`, cwdRcv);
+    `${receiveCmd} --deviceId=${localDevice} --registryId=${localRegName} ${receiveCmdSuffix}`,
+    cwdRcv
+  );
 
   let out = await tools.runAsync(
-    `${sendCmd} sendCommand ${localDevice} ${localRegName} "me want cookies"`, cwdSend);
+    `${sendCmd} sendCommand ${localDevice} ${localRegName} "me want cookies"`,
+    cwdSend
+  );
 
   t.regex(out, new RegExp(`Success : OK`));
 
   await tools.runAsync(
-    `${helper} getDeviceState ${localDevice} ${localRegName}`, cwdHelper);
+    `${helper} getDeviceState ${localDevice} ${localRegName}`,
+    cwdHelper
+  );
   await tools.runAsync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`, cwdHelper);
+    `${helper} deleteDevice ${localDevice} ${localRegName}`,
+    cwdHelper
+  );
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwdHelper);
 });

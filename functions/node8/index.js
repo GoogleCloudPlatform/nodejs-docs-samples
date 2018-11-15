@@ -22,8 +22,10 @@
  *                     More info: https://expressjs.com/en/api.html#res
  */
 // [START functions_tips_terminate_node8]
+const escapeHtml = require('escape-html');
+
 exports.helloHttp = (req, res) => {
-  res.send(`Hello ${req.body.name || 'World'}!`);
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 };
 // [END functions_tips_terminate_node8]
 
@@ -223,6 +225,40 @@ exports.helloAnalytics = (data, context) => {
   console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
 };
 // [END functions_firebase_analytics_node8]
+
+// [START functions_background_promise_node8]
+const requestPromiseNative = require('request-promise-native');
+
+/**
+ * Background Cloud Function that returns a Promise. Note that we don't pass
+ * a "callback" argument to the function.
+ *
+ * @param {object} data The Cloud Functions event data.
+ * @returns {Promise}
+ */
+exports.helloPromise = (data) => {
+  return requestPromiseNative({
+    uri: data.endpoint
+  });
+};
+// [END functions_background_promise_node8]
+
+// [START functions_background_synchronous_node8]
+/**
+ * Background Cloud Function that returns synchronously. Note that we don't pass
+ * a "callback" argument to the function.
+ *
+ * @param {object} data The Cloud Functions event data.
+ */
+exports.helloSynchronous = (data) => {
+  // This function returns synchronously
+  if (data.something === true) {
+    return 'Something is true!';
+  } else {
+    throw new Error('Something was not true!');
+  }
+};
+// [END functions_background_synchronous_node8]
 
 // [START functions_firebase_reactive_node8]
 const Firestore = require('@google-cloud/firestore');

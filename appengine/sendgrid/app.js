@@ -34,7 +34,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Parse form data
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -45,26 +45,30 @@ app.post('/hello', (req, res, next) => {
     method: 'POST',
     path: '/v3/mail/send',
     body: {
-      personalizations: [{
-        to: [{ email: req.body.email }],
-        subject: 'Hello World!'
-      }],
-      from: { email: SENDGRID_SENDER },
-      content: [{
-        type: 'text/plain',
-        value: 'Sendgrid on Google App Engine with Node.js.'
-      }]
-    }
+      personalizations: [
+        {
+          to: [{email: req.body.email}],
+          subject: 'Hello World!',
+        },
+      ],
+      from: {email: SENDGRID_SENDER},
+      content: [
+        {
+          type: 'text/plain',
+          value: 'Sendgrid on Google App Engine with Node.js.',
+        },
+      ],
+    },
   });
 
-  Sendgrid.API(sgReq, (err) => {
+  Sendgrid.API(sgReq, err => {
     if (err) {
       next(err);
       return;
     }
     // Render the index route on success
     res.render('index', {
-      sent: true
+      sent: true,
     });
   });
 });

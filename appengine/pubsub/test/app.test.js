@@ -26,46 +26,49 @@ const message = `This is a test message sent at: `;
 const payload = message + Date.now();
 
 const cwd = path.join(__dirname, `../`);
-const requestObj = utils.getRequest({ cwd: cwd });
+const requestObj = utils.getRequest({cwd: cwd});
 
-test.serial.cb(`should send a message to Pub/Sub`, (t) => {
+test.serial.cb(`should send a message to Pub/Sub`, t => {
   requestObj
     .post(`/`)
     .type('form')
-    .send({ payload: payload })
+    .send({payload: payload})
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.text, `Message sent`);
     })
     .end(t.end);
 });
 
-test.serial.cb(`should receive incoming Pub/Sub messages`, (t) => {
+test.serial.cb(`should receive incoming Pub/Sub messages`, t => {
   requestObj
     .post(`/pubsub/push`)
-    .query({ token: process.env.PUBSUB_VERIFICATION_TOKEN })
+    .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
     .send({
       message: {
-        data: payload
-      }
+        data: payload,
+      },
     })
     .expect(200)
     .end(t.end);
 });
 
-test.serial.cb(`should check for verification token on incoming Pub/Sub messages`, (t) => {
-  requestObj
-    .post(`/pubsub/push`)
-    .field(`payload`, payload)
-    .expect(400)
-    .end(t.end);
-});
+test.serial.cb(
+  `should check for verification token on incoming Pub/Sub messages`,
+  t => {
+    requestObj
+      .post(`/pubsub/push`)
+      .field(`payload`, payload)
+      .expect(400)
+      .end(t.end);
+  }
+);
 
-test.serial.cb(`should list sent Pub/Sub messages`, (t) => {
+test.serial.cb(`should list sent Pub/Sub messages`, t => {
   requestObj
     .get(`/`)
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.regex(response.text, /Messages received by this instance/);
     })
     .end(t.end);

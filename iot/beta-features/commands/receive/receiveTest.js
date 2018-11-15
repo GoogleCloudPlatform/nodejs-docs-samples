@@ -50,28 +50,39 @@ test.after.always(async () => {
   console.log(`Topic ${topic.name} deleted.`);
 });
 
-test(`should receive command message`, async (t) => {
+test(`should receive command message`, async t => {
   await tools.runAsync(installDeps, cwdHelper);
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwdHelper);
   await tools.runAsync(
-    `${helper} createRegistry ${localRegName} ${topicName}`, cwdHelper);
+    `${helper} createRegistry ${localRegName} ${topicName}`,
+    cwdHelper
+  );
   await tools.runAsync(
-    `${helper} createRsa256Device ${localDevice} ${localRegName} ./resources/rsa_cert.pem`, cwdHelper);
+    `${helper} createRsa256Device ${localDevice} ${localRegName} ./resources/rsa_cert.pem`,
+    cwdHelper
+  );
 
   // This command needs to run asynchronously without await to ensure the send comand happens while
   // mqtt client is available. Limit client to last only 15 seconds (0.25 minutes)
   let out = tools.runAsync(
-    `${receiveCmd} --deviceId=${localDevice} --registryId=${localRegName} --maxDuration=0.25 ${receiveCmdSuffix}`);
+    `${receiveCmd} --deviceId=${localDevice} --registryId=${localRegName} --maxDuration=0.25 ${receiveCmdSuffix}`
+  );
 
   await tools.runAsync(
-    `${sendCmd} sendCommand ${localDevice} ${localRegName} "me want cookies"`, cwdSend);
+    `${sendCmd} sendCommand ${localDevice} ${localRegName} "me want cookies"`,
+    cwdSend
+  );
 
   // await for original command to resolve before checking regex
   t.regex(await out, new RegExp(`me want cookies`));
 
   await tools.runAsync(
-    `${helper} getDeviceState ${localDevice} ${localRegName}`, cwdHelper);
+    `${helper} getDeviceState ${localDevice} ${localRegName}`,
+    cwdHelper
+  );
   await tools.runAsync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`, cwdHelper);
+    `${helper} deleteDevice ${localDevice} ${localRegName}`,
+    cwdHelper
+  );
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwdHelper);
 });

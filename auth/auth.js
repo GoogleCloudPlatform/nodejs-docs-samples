@@ -20,7 +20,7 @@
 
 'use strict';
 
-function authCloudImplicit () {
+function authCloudImplicit() {
   // [START auth_cloud_implicit]
   // Imports the Google Cloud client library.
   const {Storage} = require('@google-cloud/storage');
@@ -33,21 +33,21 @@ function authCloudImplicit () {
   // Makes an authenticated API request.
   storage
     .getBuckets()
-    .then((results) => {
+    .then(results => {
       const buckets = results[0];
 
       console.log('Buckets:');
-      buckets.forEach((bucket) => {
+      buckets.forEach(bucket => {
         console.log(bucket.name);
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END auth_cloud_implicit]
 }
 
-function authCloudExplicit () {
+function authCloudExplicit() {
   // [START auth_cloud_explicit]
   // Imports the Google Cloud client library.
   const {Storage} = require('@google-cloud/storage');
@@ -57,21 +57,21 @@ function authCloudExplicit () {
   // helper, see https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/docs/authentication.md
   const storage = new Storage({
     projectId: 'project-id',
-    keyFilename: '/path/to/keyfile.json'
+    keyFilename: '/path/to/keyfile.json',
   });
 
   // Makes an authenticated API request.
   storage
     .getBuckets()
-    .then((results) => {
+    .then(results => {
       const buckets = results[0];
 
       console.log('Buckets:');
-      buckets.forEach((bucket) => {
+      buckets.forEach(bucket => {
         console.log(bucket.name);
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('ERROR:', err);
     });
   // [END auth_cloud_explicit]
@@ -95,7 +95,9 @@ const cli = require(`yargs`)
   .example(`node $0 explicit`, `Loads credentials explicitly.`)
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/docs/authentication`)
+  .epilogue(
+    `For more information, see https://cloud.google.com/docs/authentication`
+  )
   .help()
   .strict();
 

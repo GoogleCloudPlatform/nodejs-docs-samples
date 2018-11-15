@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-const { GoogleToken } = require('gtoken');
+const {GoogleToken} = require('gtoken');
 const request = require('request-promise');
 
 const BASE_URL = 'https://healthcare.googleapis.com/v1alpha';
 
 // [START healthcare_get_token]
-function getToken (serviceAccountJson, cb) {
+function getToken(serviceAccountJson, cb) {
   const gtoken = new GoogleToken({
     keyFile: `${serviceAccountJson}`,
-    scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
+    scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
   });
 
-  gtoken.getToken(function (err, token) {
+  gtoken.getToken(function(err, token) {
     if (err) {
       console.log('ERROR: ', err);
       return;
@@ -36,7 +36,14 @@ function getToken (serviceAccountJson, cb) {
 // [END healthcare_get_token]
 
 // [START healthcare_create_fhir_resource]
-function createResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType) {
+function createResource(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceType
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -49,18 +56,18 @@ function createResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
   const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}`;
 
   const postData = {
-    'resourceType': resourceType
+    resourceType: resourceType,
   };
 
   const options = {
     url: resourcePath,
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/fhir+json; charset=utf-8',
     },
     body: postData,
     json: true,
-    method: 'POST'
+    method: 'POST',
   };
 
   request(options)
@@ -74,7 +81,15 @@ function createResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
 // [END healthcare_create_fhir_resource]
 
 // [START healthcare_update_fhir_resource]
-function updateResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
+function updateResource(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceType,
+  resourceId
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -88,20 +103,20 @@ function updateResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
   const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}/${resourceId}`;
 
   const patientData = {
-    'resourceType': resourceType,
-    'id': resourceId,
-    'active': true
+    resourceType: resourceType,
+    id: resourceId,
+    active: true,
   };
 
   const options = {
     url: resourcePath,
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/fhir+json; charset=utf-8',
     },
     body: patientData,
     json: true,
-    method: 'PUT'
+    method: 'PUT',
   };
 
   request(options)
@@ -115,7 +130,15 @@ function updateResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
 // [END healthcare_update_fhir_resource]
 
 // [START healthcare_patch_fhir_resource]
-function patchResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
+function patchResource(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceType,
+  resourceId
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -128,17 +151,17 @@ function patchResource (token, projectId, cloudRegion, datasetId, fhirStoreId, r
 
   const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}/${resourceId}`;
 
-  const patchOperations = [{ 'op': 'replace', 'path': '/active', 'value': false }];
+  const patchOperations = [{op: 'replace', path: '/active', value: false}];
 
   const options = {
     url: resourcePath,
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json-patch+json'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json-patch+json',
     },
     body: patchOperations,
     json: true,
-    method: 'PATCH'
+    method: 'PATCH',
   };
 
   request(options)
@@ -152,7 +175,15 @@ function patchResource (token, projectId, cloudRegion, datasetId, fhirStoreId, r
 // [END healthcare_patch_fhir_resource]
 
 // [START healthcare_delete_fhir_resource]
-function deleteResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
+function deleteResource(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceType,
+  resourceId
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -168,11 +199,11 @@ function deleteResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
   const options = {
     url: resourcePath,
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/fhir+json; charset=utf-8',
     },
     json: true,
-    method: 'DELETE'
+    method: 'DELETE',
   };
 
   request(options)
@@ -186,7 +217,15 @@ function deleteResource (token, projectId, cloudRegion, datasetId, fhirStoreId, 
 // [END healthcare_delete_fhir_resource]
 
 // [START healthcare_get_fhir_resource]
-function getResource (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType, resourceId) {
+function getResource(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceType,
+  resourceId
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -202,15 +241,17 @@ function getResource (token, projectId, cloudRegion, datasetId, fhirStoreId, res
   const options = {
     url: resourcePath,
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/fhir+json; charset=utf-8',
     },
-    json: true
+    json: true,
   };
 
   request(options)
     .then(results => {
-      console.log(`Got ${resourceType} resource:\n${JSON.stringify(results, null, 2)}`);
+      console.log(
+        `Got ${resourceType} resource:\n${JSON.stringify(results, null, 2)}`
+      );
     })
     .catch(err => {
       console.error(err);
@@ -219,7 +260,14 @@ function getResource (token, projectId, cloudRegion, datasetId, fhirStoreId, res
 // [END healthcare_get_fhir_resource]
 
 // [START healthcare_search_fhir_resources_get]
-function searchResourcesGet (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType) {
+function searchResourcesGet(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceType
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -234,10 +282,10 @@ function searchResourcesGet (token, projectId, cloudRegion, datasetId, fhirStore
   const options = {
     url: resourcesPath,
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/fhir+json; charset=utf-8',
     },
-    json: true
+    json: true,
   };
 
   request(options)
@@ -251,7 +299,14 @@ function searchResourcesGet (token, projectId, cloudRegion, datasetId, fhirStore
 // [END healthcare_search_fhir_resources_get]
 
 // [START healthcare_search_fhir_resources_post]
-function searchResourcesPost (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceType) {
+function searchResourcesPost(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceType
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -266,11 +321,11 @@ function searchResourcesPost (token, projectId, cloudRegion, datasetId, fhirStor
   const options = {
     url: resourcesPath,
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/fhir+json; charset=utf-8',
     },
     json: true,
-    method: 'POST'
+    method: 'POST',
   };
 
   request(options)
@@ -284,7 +339,14 @@ function searchResourcesPost (token, projectId, cloudRegion, datasetId, fhirStor
 // [END healthcare_search_fhir_resources_post]
 
 // [START healthcare_fhir_get_patient_everything]
-function getPatientEverything (token, projectId, cloudRegion, datasetId, fhirStoreId, resourceId) {
+function getPatientEverything(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  fhirStoreId,
+  resourceId
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -299,9 +361,9 @@ function getPatientEverything (token, projectId, cloudRegion, datasetId, fhirSto
   const options = {
     url: fhirStorePath,
     headers: {
-      'authorization': `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     },
-    json: true
+    json: true,
   };
 
   request(options)
@@ -322,30 +384,38 @@ require(`yargs`) // eslint-disable-line
       alias: 'c',
       default: 'us-central1',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     projectId: {
       alias: 'p',
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
-      description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      description:
+        'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     serviceAccount: {
       alias: 's',
       default: process.env.GOOGLE_APPLICATION_CREDENTIALS,
       description: 'The path to your service credentials JSON.',
       requiresArg: true,
-      type: 'string'
-    }
+      type: 'string',
+    },
   })
   .command(
     `createResource <datasetId> <fhirStoreId> <resourceType>`,
     `Creates a new resource in a FHIR store.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        createResource(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceType);
+    opts => {
+      const cb = function(token) {
+        createResource(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceType
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -354,9 +424,17 @@ require(`yargs`) // eslint-disable-line
     `updateResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
     `Updates an existing resource in a FHIR store.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        updateResource(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceType, opts.resourceId);
+    opts => {
+      const cb = function(token) {
+        updateResource(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceType,
+          opts.resourceId
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -365,9 +443,17 @@ require(`yargs`) // eslint-disable-line
     `patchResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
     `Patches an existing resource in a FHIR store.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        patchResource(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceType, opts.resourceId);
+    opts => {
+      const cb = function(token) {
+        patchResource(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceType,
+          opts.resourceId
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -376,9 +462,17 @@ require(`yargs`) // eslint-disable-line
     `deleteResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
     `Deletes a FHIR resource or returns NOT_FOUND if it doesn't exist.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        deleteResource(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceType, opts.resourceId);
+    opts => {
+      const cb = function(token) {
+        deleteResource(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceType,
+          opts.resourceId
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -387,9 +481,17 @@ require(`yargs`) // eslint-disable-line
     `getResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
     `Gets a FHIR resource.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        getResource(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceType, opts.resourceId);
+    opts => {
+      const cb = function(token) {
+        getResource(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceType,
+          opts.resourceId
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -398,9 +500,16 @@ require(`yargs`) // eslint-disable-line
     `searchResourcesGet <datasetId> <fhirStoreId> <resourceType>`,
     `Searches resources in the given FHIR store using the searchResources GET method.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        searchResourcesGet(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceType);
+    opts => {
+      const cb = function(token) {
+        searchResourcesGet(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceType
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -409,9 +518,16 @@ require(`yargs`) // eslint-disable-line
     `searchResourcesPost <datasetId> <fhirStoreId> <resourceType>`,
     `Searches resources in the given FHIR store using the _search POST method.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        searchResourcesPost(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceType);
+    opts => {
+      const cb = function(token) {
+        searchResourcesPost(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceType
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -420,16 +536,24 @@ require(`yargs`) // eslint-disable-line
     `getPatientEverything <datasetId> <fhirStoreId> <resourceId>`,
     `Gets all the resources in the patient compartment.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        getPatientEverything(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.fhirStoreId, opts.resourceId);
+    opts => {
+      const cb = function(token) {
+        getPatientEverything(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.fhirStoreId,
+          opts.resourceId
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/healthcare/docs`)
+  .epilogue(
+    `For more information, see https://cloud.google.com/healthcare/docs`
+  )
   .help()
-  .strict()
-  .argv;
+  .strict().argv;

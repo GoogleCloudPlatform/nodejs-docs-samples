@@ -42,8 +42,8 @@ app.use(bodyParser.json());
 const multer = Multer({
   storage: Multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
-  }
+    fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
+  },
 });
 
 // A bucket is a container for objects (files).
@@ -65,13 +65,15 @@ app.post('/upload', multer.single('file'), (req, res, next) => {
   const blob = bucket.file(req.file.originalname);
   const blobStream = blob.createWriteStream();
 
-  blobStream.on('error', (err) => {
+  blobStream.on('error', err => {
     next(err);
   });
 
   blobStream.on('finish', () => {
     // The public URL can be used to directly access the file via HTTP.
-    const publicUrl = format(`https://storage.googleapis.com/${bucket.name}/${blob.name}`);
+    const publicUrl = format(
+      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+    );
     res.status(200).send(publicUrl);
   });
 

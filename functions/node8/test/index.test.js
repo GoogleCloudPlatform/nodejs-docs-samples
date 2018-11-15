@@ -15,13 +15,15 @@
 
 'use strict';
 
-const sinon = require('sinon');
+const sinon = require(`sinon`);
 const uuid = require('uuid');
 const test = require('ava');
 const utils = require('@google-cloud/nodejs-repo-tools');
 const proxyquire = require(`proxyquire`).noCallThru();
 
 function getSample () {
+  const requestPromiseNative = sinon.stub().returns(Promise.resolve(`test`));
+
   const firestoreMock = {
     doc: sinon.stub().returnsThis(),
     set: sinon.stub()
@@ -29,10 +31,12 @@ function getSample () {
 
   return {
     program: proxyquire(`../`, {
+      'request-promise-native': requestPromiseNative,
       '@google-cloud/firestore': sinon.stub().returns(firestoreMock)
     }),
     mocks: {
-      firestore: firestoreMock
+      firestore: firestoreMock,
+      requestPromiseNative: requestPromiseNative
     }
   };
 }
@@ -40,10 +44,11 @@ function getSample () {
 test.beforeEach(utils.stubConsole);
 test.afterEach.always(utils.restoreConsole);
 
-test.serial('should respond to HTTP requests', t => {
+test.serial('should respond to HTTP POST', t => {
   const sample = getSample();
 
   const reqMock = {
+    query: {},
     body: {
       name: 'foo'
     }
@@ -55,6 +60,43 @@ test.serial('should respond to HTTP requests', t => {
 
   sample.program.helloHttp(reqMock, resMock);
   t.true(resMock.send.calledWith('Hello foo!'));
+});
+
+test.serial('should respond to HTTP GET', t => {
+  const sample = getSample();
+
+  const reqMock = {
+    query: {
+      name: 'foo'
+    },
+    body: {}
+  };
+
+  const resMock = {
+    send: sinon.stub()
+  };
+
+  sample.program.helloHttp(reqMock, resMock);
+  t.true(resMock.send.calledWith('Hello foo!'));
+});
+
+test.serial('should escape XSS', t => {
+  const sample = getSample();
+
+  const xssQuery = '<script></script>';
+  const reqMock = {
+    query: {},
+    body: {
+      name: xssQuery
+    }
+  };
+
+  const resMock = {
+    send: sinon.stub()
+  };
+
+  sample.program.helloHttp(reqMock, resMock);
+  t.false(resMock.send.calledWith(xssQuery));
 });
 
 test.serial('should monitor Firebase RTDB', t => {
@@ -153,6 +195,33 @@ test.serial('should monitor Analytics', t => {
   t.is(console.log.args[2][0], `Timestamp: ${date}`);
   t.is(console.log.args[3][0], `Device Model: Pixel`);
   t.is(console.log.args[4][0], `Location: London, UK`);
+});
+
+test.serial(`should make a promise request`, (t) => {
+  const sample = getSample();
+  const data = {
+    endpoint: `foo.com`
+  };
+
+  return sample.program.helloPromise(data)
+    .then((result) => {
+      t.deepEqual(sample.mocks.requestPromiseNative.firstCall.args, [{ uri: `foo.com` }]);
+      t.is(result, `test`);
+    });
+});
+
+test.serial(`should return synchronously`, (t) => {
+  t.is(getSample().program.helloSynchronous({
+    something: true
+  }), `Something is true!`);
+});
+
+test.serial(`should throw an error`, (t) => {
+  t.throws(() => {
+    getSample().program.helloSynchronous({
+      something: false
+    });
+  }, Error, `Something was not true!`);
 });
 
 test(`should update data in response to Firestore events`, t => {

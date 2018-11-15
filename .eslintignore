@@ -1,0 +1,5 @@
+**/node_modules/*
+appengine/loopback/*
+functions/**
+iot/*
+appengine/parse-server/cloud/main.js

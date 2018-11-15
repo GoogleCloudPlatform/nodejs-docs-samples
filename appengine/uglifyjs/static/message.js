@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-window.onload = function () {
+window.onload = function() {
   window.messageDiv = document.getElementById('message');
   window.buttonClicks = 0;
 };
 
-window.buttonClick = function () {
+window.buttonClick = function() {
   window.buttonClicks++;
 
   var buttonClickTimes;

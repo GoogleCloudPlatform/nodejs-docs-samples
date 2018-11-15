@@ -25,25 +25,25 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const SAMPLE_PATH = path.join(__dirname, `../server.js`);
 
-function getSample () {
+function getSample() {
   const testApp = express();
   sinon.stub(testApp, `listen`).yields();
   const expressMock = sinon.stub().returns(testApp);
   const resultsMock = [
     {
       timestamp: `1234`,
-      userIp: `abcd`
-    }
+      userIp: `abcd`,
+    },
   ];
 
   const knexMock = sinon.stub().returns({
-    insert: sinon.stub().returns(Promise.resolve())
+    insert: sinon.stub().returns(Promise.resolve()),
   });
   Object.assign(knexMock, {
     select: sinon.stub().returnsThis(),
     from: sinon.stub().returnsThis(),
     orderBy: sinon.stub().returnsThis(),
-    limit: sinon.stub().returns(Promise.resolve(resultsMock))
+    limit: sinon.stub().returns(Promise.resolve(resultsMock)),
   });
 
   const KnexMock = sinon.stub().returns(knexMock);
@@ -52,14 +52,14 @@ function getSample () {
     env: {
       SQL_USER: 'user',
       SQL_PASSWORD: 'password',
-      SQL_DATABASE: 'database'
-    }
+      SQL_DATABASE: 'database',
+    },
   };
 
   const app = proxyquire(SAMPLE_PATH, {
     knex: KnexMock,
     express: expressMock,
-    process: processMock
+    process: processMock,
   });
 
   return {
@@ -69,43 +69,45 @@ function getSample () {
       results: resultsMock,
       knex: knexMock,
       Knex: KnexMock,
-      process: processMock
-    }
+      process: processMock,
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`should set up sample in Postgres`, (t) => {
+test(`should set up sample in Postgres`, t => {
   const sample = getSample();
 
   t.true(sample.mocks.express.calledOnce);
   t.true(sample.mocks.Knex.calledOnce);
-  t.deepEqual(sample.mocks.Knex.firstCall.args, [{
-    client: 'pg',
-    connection: {
-      user: sample.mocks.process.env.SQL_USER,
-      password: sample.mocks.process.env.SQL_PASSWORD,
-      database: sample.mocks.process.env.SQL_DATABASE
-    }
-  }]);
+  t.deepEqual(sample.mocks.Knex.firstCall.args, [
+    {
+      client: 'pg',
+      connection: {
+        user: sample.mocks.process.env.SQL_USER,
+        password: sample.mocks.process.env.SQL_PASSWORD,
+        database: sample.mocks.process.env.SQL_DATABASE,
+      },
+    },
+  ]);
 });
 
-test.cb(`should record a visit`, (t) => {
+test.cb(`should record a visit`, t => {
   const sample = getSample();
   const expectedResult = `Last 10 visits:\nTime: 1234, AddrHash: abcd`;
 
   request(sample.app)
     .get(`/`)
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.text, expectedResult);
     })
     .end(t.end);
 });
 
-test.cb(`should handle insert error`, (t) => {
+test.cb(`should handle insert error`, t => {
   const sample = getSample();
   const expectedResult = `insert_error`;
 
@@ -114,13 +116,13 @@ test.cb(`should handle insert error`, (t) => {
   request(sample.app)
     .get(`/`)
     .expect(500)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.text.includes(expectedResult), true);
     })
     .end(t.end);
 });
 
-test.cb(`should handle read error`, (t) => {
+test.cb(`should handle read error`, t => {
   const sample = getSample();
   const expectedResult = `read_error`;
 
@@ -129,7 +131,7 @@ test.cb(`should handle read error`, (t) => {
   request(sample.app)
     .get(`/`)
     .expect(500)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.text.includes(expectedResult), true);
     })
     .end(t.end);

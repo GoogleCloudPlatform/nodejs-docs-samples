@@ -15,14 +15,17 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const cmd = `node quickstart.js`;
-const cwd = path.join(__dirname, `..`);
+const cmd = 'node quickstart.js';
+const cwd = path.join(__dirname, '..');
 
-test(`should analyze a hardcoded video`, async t => {
+it('should analyze a hardcoded video', async () => {
   const output = await tools.runAsync(cmd, cwd);
-  t.regex(output, /Label standing occurs at:/);
+  assert.strictEqual(
+    new RegExp(/Label standing occurs at:/).test(output),
+    true
+  );
 });

@@ -4,7 +4,7 @@
   "description": "Examples of integrating Cloud Functions with billing",
   "main": "index.js",
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "test": "ava test/*"
   },
@@ -19,6 +19,7 @@
     "@google-cloud/nodejs-repo-tools": "^2.2.5",
     "ava": "^0.25.0",
     "proxyquire": "^2.1.0",
+    "semistandard": "^13.0.0",
     "sinon": "^6.3.4"
   }
 }

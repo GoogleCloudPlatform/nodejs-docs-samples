@@ -24,9 +24,9 @@ var sampleTests = [
     cmd: 'node',
     args: ['./src/bin/www'],
     msg: 'Hello World! Express.js + Grunt.js on Google App Engine.',
-    TRAVIS_NODE_VERSION: '0.12'
+    TRAVIS_NODE_VERSION: '0.12',
   },
-  // TODO: Investigate flaky test
+  // Investigate flaky test
   // {
   //   dir: 'appengine/loopback',
   //   cmd: 'node',
@@ -39,14 +39,14 @@ var sampleTests = [
     cmd: 'node',
     args: ['app.js'],
     msg: 'Value:',
-    test: /Value: \d\.\d+/
+    test: /Value: \d\.\d+/,
   },
   {
     dir: 'appengine/mongodb',
     cmd: 'node',
     args: ['server.js'],
     msg: 'IPs:',
-    TRAVIS: true
+    TRAVIS: true,
   },
   {
     dir: 'appengine/pubsub',
@@ -55,26 +55,26 @@ var sampleTests = [
     msg: 'Messages received by this instance:',
     env: {
       PUBSUB_TOPIC: 'test',
-      PUBSUB_VERIFICATION_TOKEN: 'foo'
-    }
+      PUBSUB_VERIFICATION_TOKEN: 'foo',
+    },
   },
   {
     dir: 'appengine/redis',
     cmd: 'node',
     args: ['server.js'],
-    msg: '127.0.0.1'
+    msg: '127.0.0.1',
   },
   {
     dir: 'appengine/sendgrid',
     cmd: 'node',
     args: ['app.js'],
-    msg: 'Express.js + Sendgrid on Google App Engine.'
+    msg: 'Express.js + Sendgrid on Google App Engine.',
   },
   {
     dir: 'appengine/static-files',
     cmd: 'node',
     args: ['app.js'],
-    msg: 'This is a static file serving example.'
+    msg: 'This is a static file serving example.',
   },
   {
     dir: 'appengine/storage/flexible',
@@ -82,8 +82,8 @@ var sampleTests = [
     args: ['app.js'],
     msg: '<title>Static Files</title>',
     env: {
-      GCLOUD_STORAGE_BUCKET: 'nodejs-docs-samples'
-    }
+      GCLOUD_STORAGE_BUCKET: 'nodejs-docs-samples',
+    },
   },
   {
     dir: 'appengine/storage/standard',
@@ -91,8 +91,8 @@ var sampleTests = [
     args: ['app.js'],
     msg: '<title>Static Files</title>',
     env: {
-      GCLOUD_STORAGE_BUCKET: 'nodejs-docs-samples'
-    }
+      GCLOUD_STORAGE_BUCKET: 'nodejs-docs-samples',
+    },
   },
   {
     dir: 'appengine/parse-server',
@@ -103,11 +103,11 @@ var sampleTests = [
     env: {
       APP_ID: 'foo',
       MASTER_KEY: 'bar',
-      SERVER_URL: 'http://localhost:'
-    }
-  }
+      SERVER_URL: 'http://localhost:',
+    },
+  },
 ];
 
-test((t) => {
+test(t => {
   t.truthy(sampleTests);
 });

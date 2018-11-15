@@ -34,50 +34,50 @@ app.set('view engine', 'jade');
 
 // Parse form data
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
   res.render('index');
 });
 
 // [START gae_flex_mailjet_send_message]
-app.post('/hello', function (req, res, next) {
+app.post('/hello', function(req, res, next) {
   var options = {
-    'Messages': [
+    Messages: [
       {
-        'From': {
-          'Email': 'no-reply@appengine-mailjet-demo.com',
-          'Name': 'Mailjet Pilot'
+        From: {
+          Email: 'no-reply@appengine-mailjet-demo.com',
+          Name: 'Mailjet Pilot',
         },
-        'To': [
+        To: [
           {
-            'Email': req.body.email
-          }
+            Email: req.body.email,
+          },
         ],
-        'Subject': 'Your email flight plan!',
-        'TextPart': 'Mailjet on Google App Engine with Node.js',
-        'HTMLPart': '<h3>Mailjet on Google App Engine with Node.js</h3>'
-      }
-    ]
+        Subject: 'Your email flight plan!',
+        TextPart: 'Mailjet on Google App Engine with Node.js',
+        HTMLPart: '<h3>Mailjet on Google App Engine with Node.js</h3>',
+      },
+    ],
   };
 
-  var request = Mailjet.post('send', {'version': 'v3.1'}).request(options);
+  var request = Mailjet.post('send', {version: 'v3.1'}).request(options);
 
   request
-    .then(function (response, body) {
+    .then(function(response, body) {
       console.log(response.statusCode, body);
       // Render the index route on success
       return res.render('index', {
-        sent: true
+        sent: true,
       });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       return next(err);
     });
 });
 // [END gae_flex_mailjet_send_message]
 
-var server = app.listen(process.env.PORT || 8080, function () {
+var server = app.listen(process.env.PORT || 8080, function() {
   console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });

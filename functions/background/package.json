@@ -12,16 +12,16 @@
     "node": ">=4.3.2"
   },
   "scripts": {
-    "lint": "repo-tools lint",
+    "lint": "semistandard '**/*.js'",
     "pretest": "npm run lint",
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
     "request": "2.83.0",
-    "request-promise": "4.2.2"
+    "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "2.2.1",
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
     "proxyquire": "2.0.0",
     "semistandard": "^12.0.1",

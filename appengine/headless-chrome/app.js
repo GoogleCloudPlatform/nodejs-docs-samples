@@ -26,13 +26,15 @@ app.use(async (req, res) => {
   const url = req.query.url;
 
   if (!url) {
-    return res.send('Please provide URL as GET parameter, for example: <a href="/?url=https://example.com">?url=https://example.com</a>');
+    return res.send(
+      'Please provide URL as GET parameter, for example: <a href="/?url=https://example.com">?url=https://example.com</a>'
+    );
   }
 
   if (!browser) {
     // [START browser]
     browser = await puppeteer.launch({
-      args: ['--no-sandbox']
+      args: ['--no-sandbox'],
     });
     // [END browser]
   }

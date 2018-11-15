@@ -25,62 +25,62 @@ const destBucketName = `bar`;
 const jobName = `transferJobs/123456789012345678`;
 const transferOperationName = `transferOperations/123456789012345678`;
 
-function getSample () {
+function getSample() {
   const transferJobMock = {
-    name: jobName
+    name: jobName,
   };
   const transferOperationMock = {};
   const storagetransferMock = {
     transferJobs: {
-      create: sinon.stub().yields(null, { data: transferJobMock }),
-      get: sinon.stub().yields(null, { data: transferJobMock }),
-      patch: sinon.stub().yields(null, { data: transferJobMock }),
+      create: sinon.stub().yields(null, {data: transferJobMock}),
+      get: sinon.stub().yields(null, {data: transferJobMock}),
+      patch: sinon.stub().yields(null, {data: transferJobMock}),
       list: sinon.stub().yields(null, {
         data: {
-          transferJobs: [transferJobMock]
-        }
-      })
+          transferJobs: [transferJobMock],
+        },
+      }),
     },
     transferOperations: {
-      get: sinon.stub().yields(null, { data: transferOperationMock }),
-      pause: sinon.stub().yields(null, { data: transferOperationMock }),
-      resume: sinon.stub().yields(null, { data: transferOperationMock }),
+      get: sinon.stub().yields(null, {data: transferOperationMock}),
+      pause: sinon.stub().yields(null, {data: transferOperationMock}),
+      resume: sinon.stub().yields(null, {data: transferOperationMock}),
       list: sinon.stub().yields(null, {
         data: {
-          operations: [transferOperationMock]
-        }
-      })
-    }
+          operations: [transferOperationMock],
+        },
+      }),
+    },
   };
   const googleMock = {
     storagetransfer: sinon.stub().returns(storagetransferMock),
     auth: {
-      getApplicationDefault: sinon.stub().yields(null, {})
-    }
+      getApplicationDefault: sinon.stub().yields(null, {}),
+    },
   };
 
   const googleapisMock = {
-    google: googleMock
+    google: googleMock,
   };
 
   return {
     program: proxyquire(`../transfer`, {
       googleapis: googleapisMock,
-      yargs: proxyquire(`yargs`, {})
+      yargs: proxyquire(`yargs`, {}),
     }),
     mocks: {
       googleapis: googleapisMock,
       storagetransfer: storagetransferMock,
       transferJob: transferJobMock,
-      transferOperation: transferOperationMock
-    }
+      transferOperation: transferOperationMock,
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.serial(`should create a transfer job`, (t) => {
+test.serial(`should create a transfer job`, t => {
   const description = `description`;
   const sample = getSample();
   const callback = sinon.stub();
@@ -90,30 +90,44 @@ test.serial(`should create a transfer job`, (t) => {
     srcBucket: srcBucketName,
     destBucket: destBucketName,
     date: date,
-    time: time
+    time: time,
   };
 
   sample.program.createTransferJob(options, callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.create.calledOnce);
-  t.is(sample.mocks.storagetransfer.transferJobs.create.firstCall.args[0].resource.description, undefined);
+  t.is(
+    sample.mocks.storagetransfer.transferJobs.create.firstCall.args[0].resource
+      .description,
+    undefined
+  );
   t.true(callback.calledOnce);
   t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
   t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Created transfer job: %s`, sample.mocks.transferJob.name]);
+  t.deepEqual(console.log.firstCall.args, [
+    `Created transfer job: %s`,
+    sample.mocks.transferJob.name,
+  ]);
 
   options.description = description;
   sample.program.createTransferJob(options, callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.create.calledTwice);
-  t.is(sample.mocks.storagetransfer.transferJobs.create.secondCall.args[0].resource.description, description);
+  t.is(
+    sample.mocks.storagetransfer.transferJobs.create.secondCall.args[0].resource
+      .description,
+    description
+  );
   t.true(callback.calledTwice);
   t.deepEqual(callback.secondCall.args, [null, sample.mocks.transferJob]);
   t.true(console.log.calledTwice);
-  t.deepEqual(console.log.secondCall.args, [`Created transfer job: %s`, sample.mocks.transferJob.name]);
+  t.deepEqual(console.log.secondCall.args, [
+    `Created transfer job: %s`,
+    sample.mocks.transferJob.name,
+  ]);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -125,7 +139,7 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle create error`, (t) => {
+test.serial(`should handle create error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -137,25 +151,33 @@ test.serial(`should handle create error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should get a transfer job`, (t) => {
+test.serial(`should get a transfer job`, t => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.getTransferJob(jobName, callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.get.calledOnce);
-  t.deepEqual(sample.mocks.storagetransfer.transferJobs.get.firstCall.args.slice(0, -1), [{
-    auth: {},
-    projectId: process.env.GCLOUD_PROJECT,
-    jobName: jobName
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferJobs.get.firstCall.args.slice(0, -1),
+    [
+      {
+        auth: {},
+        projectId: process.env.GCLOUD_PROJECT,
+        jobName: jobName,
+      },
+    ]
+  );
   t.true(callback.calledOnce);
   t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
   t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Found transfer job: %s`, sample.mocks.transferJob.name]);
+  t.deepEqual(console.log.firstCall.args, [
+    `Found transfer job: %s`,
+    sample.mocks.transferJob.name,
+  ]);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -167,7 +189,7 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle get error`, (t) => {
+test.serial(`should handle get error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -179,34 +201,42 @@ test.serial(`should handle get error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should update a transfer job`, (t) => {
+test.serial(`should update a transfer job`, t => {
   const sample = getSample();
   const callback = sinon.stub();
   const options = {
     job: jobName,
     field: `status`,
-    value: `DISABLED`
+    value: `DISABLED`,
   };
 
   sample.program.updateTransferJob(options, callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.patch.calledOnce);
-  t.deepEqual(sample.mocks.storagetransfer.transferJobs.patch.firstCall.args.slice(0, -1), [{
-    auth: {},
-    jobName: jobName,
-    resource: {
-      projectId: process.env.GCLOUD_PROJECT,
-      transferJob: {
-        name: jobName,
-        status: options.value
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferJobs.patch.firstCall.args.slice(0, -1),
+    [
+      {
+        auth: {},
+        jobName: jobName,
+        resource: {
+          projectId: process.env.GCLOUD_PROJECT,
+          transferJob: {
+            name: jobName,
+            status: options.value,
+          },
+          updateTransferJobFieldMask: options.field,
+        },
       },
-      updateTransferJobFieldMask: options.field
-    }
-  }]);
+    ]
+  );
   t.true(callback.calledOnce);
   t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
   t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Updated transfer job: %s`, jobName]);
+  t.deepEqual(console.log.firstCall.args, [
+    `Updated transfer job: %s`,
+    jobName,
+  ]);
 
   options.field = `description`;
   options.value = `description`;
@@ -214,22 +244,33 @@ test.serial(`should update a transfer job`, (t) => {
   sample.program.updateTransferJob(options, callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.patch.calledTwice);
-  t.deepEqual(sample.mocks.storagetransfer.transferJobs.patch.secondCall.args.slice(0, -1), [{
-    auth: {},
-    jobName: jobName,
-    resource: {
-      projectId: process.env.GCLOUD_PROJECT,
-      transferJob: {
-        name: jobName,
-        description: options.value
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferJobs.patch.secondCall.args.slice(
+      0,
+      -1
+    ),
+    [
+      {
+        auth: {},
+        jobName: jobName,
+        resource: {
+          projectId: process.env.GCLOUD_PROJECT,
+          transferJob: {
+            name: jobName,
+            description: options.value,
+          },
+          updateTransferJobFieldMask: options.field,
+        },
       },
-      updateTransferJobFieldMask: options.field
-    }
-  }]);
+    ]
+  );
   t.true(callback.calledTwice);
   t.deepEqual(callback.secondCall.args, [null, sample.mocks.transferJob]);
   t.true(console.log.calledTwice);
-  t.deepEqual(console.log.secondCall.args, [`Updated transfer job: %s`, jobName]);
+  t.deepEqual(console.log.secondCall.args, [
+    `Updated transfer job: %s`,
+    jobName,
+  ]);
 
   options.field = `transferSpec`;
   options.value = `{"foo":"bar"}`;
@@ -237,32 +278,40 @@ test.serial(`should update a transfer job`, (t) => {
   sample.program.updateTransferJob(options, callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.patch.calledThrice);
-  t.deepEqual(sample.mocks.storagetransfer.transferJobs.patch.thirdCall.args.slice(0, -1), [{
-    auth: {},
-    jobName: jobName,
-    resource: {
-      projectId: process.env.GCLOUD_PROJECT,
-      transferJob: {
-        name: jobName,
-        transferSpec: JSON.parse(options.value)
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferJobs.patch.thirdCall.args.slice(0, -1),
+    [
+      {
+        auth: {},
+        jobName: jobName,
+        resource: {
+          projectId: process.env.GCLOUD_PROJECT,
+          transferJob: {
+            name: jobName,
+            transferSpec: JSON.parse(options.value),
+          },
+          updateTransferJobFieldMask: options.field,
+        },
       },
-      updateTransferJobFieldMask: options.field
-    }
-  }]);
+    ]
+  );
   t.true(callback.calledThrice);
   t.deepEqual(callback.thirdCall.args, [null, sample.mocks.transferJob]);
   t.true(console.log.calledThrice);
-  t.deepEqual(console.log.thirdCall.args, [`Updated transfer job: %s`, jobName]);
+  t.deepEqual(console.log.thirdCall.args, [
+    `Updated transfer job: %s`,
+    jobName,
+  ]);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
   const options = {
     job: jobName,
     field: `status`,
-    value: `DISABLED`
+    value: `DISABLED`,
   };
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
@@ -272,14 +321,14 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle patch error`, (t) => {
+test.serial(`should handle patch error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
   const options = {
     job: jobName,
     field: `status`,
-    value: `DISABLED`
+    value: `DISABLED`,
   };
   sample.mocks.storagetransfer.transferJobs.patch.yields(error);
 
@@ -289,17 +338,22 @@ test.serial(`should handle patch error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should list transfer jobs`, (t) => {
+test.serial(`should list transfer jobs`, t => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.listTransferJobs(callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.list.calledOnce);
-  t.deepEqual(sample.mocks.storagetransfer.transferJobs.list.firstCall.args.slice(0, -1), [{
-    auth: {},
-    filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT })
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferJobs.list.firstCall.args.slice(0, -1),
+    [
+      {
+        auth: {},
+        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+      },
+    ]
+  );
   t.true(callback.calledOnce);
   t.deepEqual(callback.firstCall.args, [null, [sample.mocks.transferJob]]);
   t.true(console.log.calledOnce);
@@ -309,16 +363,21 @@ test.serial(`should list transfer jobs`, (t) => {
   sample.program.listTransferJobs(callback);
 
   t.true(sample.mocks.storagetransfer.transferJobs.list.calledTwice);
-  t.deepEqual(sample.mocks.storagetransfer.transferJobs.list.secondCall.args.slice(0, -1), [{
-    auth: {},
-    filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT })
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferJobs.list.secondCall.args.slice(0, -1),
+    [
+      {
+        auth: {},
+        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+      },
+    ]
+  );
   t.true(callback.calledTwice);
   t.deepEqual(callback.secondCall.args, [null, []]);
   t.true(console.log.calledOnce);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -330,7 +389,7 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle list error`, (t) => {
+test.serial(`should handle list error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -342,7 +401,7 @@ test.serial(`should handle list error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should list transfer operations`, (t) => {
+test.serial(`should list transfer operations`, t => {
   const sample = getSample();
   const callback = sinon.stub();
 
@@ -350,13 +409,24 @@ test.serial(`should list transfer operations`, (t) => {
   sample.program.listTransferOperations(undefined, callback);
 
   t.true(sample.mocks.storagetransfer.transferOperations.list.calledOnce);
-  t.deepEqual(sample.mocks.storagetransfer.transferOperations.list.firstCall.args.slice(0, -1), [{
-    name: `transferOperations`,
-    auth: {},
-    filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT })
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferOperations.list.firstCall.args.slice(
+      0,
+      -1
+    ),
+    [
+      {
+        name: `transferOperations`,
+        auth: {},
+        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+      },
+    ]
+  );
   t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null, [sample.mocks.transferOperation]]);
+  t.deepEqual(callback.firstCall.args, [
+    null,
+    [sample.mocks.transferOperation],
+  ]);
   t.true(console.log.calledOnce);
   t.deepEqual(console.log.firstCall.args, [`Found %d operations!`, 1]);
 
@@ -364,13 +434,27 @@ test.serial(`should list transfer operations`, (t) => {
   sample.program.listTransferOperations(jobName, callback);
 
   t.true(sample.mocks.storagetransfer.transferOperations.list.calledTwice);
-  t.deepEqual(sample.mocks.storagetransfer.transferOperations.list.secondCall.args.slice(0, -1), [{
-    name: `transferOperations`,
-    auth: {},
-    filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT, job_names: [jobName] })
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferOperations.list.secondCall.args.slice(
+      0,
+      -1
+    ),
+    [
+      {
+        name: `transferOperations`,
+        auth: {},
+        filter: JSON.stringify({
+          project_id: process.env.GCLOUD_PROJECT,
+          job_names: [jobName],
+        }),
+      },
+    ]
+  );
   t.true(callback.calledTwice);
-  t.deepEqual(callback.secondCall.args, [null, [sample.mocks.transferOperation]]);
+  t.deepEqual(callback.secondCall.args, [
+    null,
+    [sample.mocks.transferOperation],
+  ]);
   t.true(console.log.calledTwice);
   t.deepEqual(console.log.secondCall.args, [`Found %d operations!`, 1]);
 
@@ -379,17 +463,28 @@ test.serial(`should list transfer operations`, (t) => {
   sample.program.listTransferOperations(jobName, callback);
 
   t.true(sample.mocks.storagetransfer.transferOperations.list.calledThrice);
-  t.deepEqual(sample.mocks.storagetransfer.transferOperations.list.thirdCall.args.slice(0, -1), [{
-    name: `transferOperations`,
-    auth: {},
-    filter: JSON.stringify({ project_id: process.env.GCLOUD_PROJECT, job_names: [jobName] })
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferOperations.list.thirdCall.args.slice(
+      0,
+      -1
+    ),
+    [
+      {
+        name: `transferOperations`,
+        auth: {},
+        filter: JSON.stringify({
+          project_id: process.env.GCLOUD_PROJECT,
+          job_names: [jobName],
+        }),
+      },
+    ]
+  );
   t.true(callback.calledThrice);
   t.deepEqual(callback.thirdCall.args, [null, []]);
   t.true(console.log.calledTwice);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -401,7 +496,7 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle list error`, (t) => {
+test.serial(`should handle list error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -413,7 +508,7 @@ test.serial(`should handle list error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should get a transfer operation`, (t) => {
+test.serial(`should get a transfer operation`, t => {
   const sample = getSample();
   const callback = sinon.stub();
 
@@ -425,17 +520,28 @@ test.serial(`should get a transfer operation`, (t) => {
   t.true(callback.firstCall.args[1] === sample.mocks.transferOperation);
 
   t.true(sample.mocks.storagetransfer.transferOperations.get.calledOnce);
-  t.deepEqual(sample.mocks.storagetransfer.transferOperations.get.firstCall.args.slice(0, -1), [{
-    name: transferOperationName,
-    auth: {}
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferOperations.get.firstCall.args.slice(
+      0,
+      -1
+    ),
+    [
+      {
+        name: transferOperationName,
+        auth: {},
+      },
+    ]
+  );
   t.true(callback.calledOnce);
   t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferOperation]);
   t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Found transfer operation: %s`, sample.mocks.transferOperation]);
+  t.deepEqual(console.log.firstCall.args, [
+    `Found transfer operation: %s`,
+    sample.mocks.transferOperation,
+  ]);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -447,7 +553,7 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle get error`, (t) => {
+test.serial(`should handle get error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -459,7 +565,7 @@ test.serial(`should handle get error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should pause a transfer operation`, (t) => {
+test.serial(`should pause a transfer operation`, t => {
   const sample = getSample();
   const callback = sinon.stub();
 
@@ -470,17 +576,28 @@ test.serial(`should pause a transfer operation`, (t) => {
   t.ifError(callback.firstCall.args[0], `callback did not receive error`);
 
   t.true(sample.mocks.storagetransfer.transferOperations.pause.calledOnce);
-  t.deepEqual(sample.mocks.storagetransfer.transferOperations.pause.firstCall.args.slice(0, -1), [{
-    name: transferOperationName,
-    auth: {}
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferOperations.pause.firstCall.args.slice(
+      0,
+      -1
+    ),
+    [
+      {
+        name: transferOperationName,
+        auth: {},
+      },
+    ]
+  );
   t.true(callback.calledOnce);
   t.deepEqual(callback.firstCall.args, [null]);
   t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Paused transfer operation: %s`, transferOperationName]);
+  t.deepEqual(console.log.firstCall.args, [
+    `Paused transfer operation: %s`,
+    transferOperationName,
+  ]);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -492,7 +609,7 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle pause error`, (t) => {
+test.serial(`should handle pause error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -504,7 +621,7 @@ test.serial(`should handle pause error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should resume a transfer operation`, (t) => {
+test.serial(`should resume a transfer operation`, t => {
   const sample = getSample();
   const callback = sinon.stub();
 
@@ -515,17 +632,28 @@ test.serial(`should resume a transfer operation`, (t) => {
   t.ifError(callback.firstCall.args[0], `callback did not receive error`);
 
   t.true(sample.mocks.storagetransfer.transferOperations.resume.calledOnce);
-  t.deepEqual(sample.mocks.storagetransfer.transferOperations.resume.firstCall.args.slice(0, -1), [{
-    name: transferOperationName,
-    auth: {}
-  }]);
+  t.deepEqual(
+    sample.mocks.storagetransfer.transferOperations.resume.firstCall.args.slice(
+      0,
+      -1
+    ),
+    [
+      {
+        name: transferOperationName,
+        auth: {},
+      },
+    ]
+  );
   t.true(callback.calledOnce);
   t.deepEqual(callback.firstCall.args, [null]);
   t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Resumed transfer operation: %s`, transferOperationName]);
+  t.deepEqual(console.log.firstCall.args, [
+    `Resumed transfer operation: %s`,
+    transferOperationName,
+  ]);
 });
 
-test.serial(`should handle auth error`, (t) => {
+test.serial(`should handle auth error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -537,7 +665,7 @@ test.serial(`should handle auth error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle resume error`, (t) => {
+test.serial(`should handle resume error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   const callback = sinon.stub();
@@ -549,22 +677,31 @@ test.serial(`should handle resume error`, (t) => {
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should call createTransferJob`, (t) => {
+test.serial(`should call createTransferJob`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `createTransferJob`);
-  program.main([`jobs`, `create`, srcBucketName, destBucketName, `time`, `date`]);
+  program.main([
+    `jobs`,
+    `create`,
+    srcBucketName,
+    destBucketName,
+    `time`,
+    `date`,
+  ]);
   t.true(program.createTransferJob.calledOnce);
-  t.deepEqual(program.createTransferJob.firstCall.args.slice(0, -1), [{
-    srcBucket: srcBucketName,
-    destBucket: destBucketName,
-    time: `time`,
-    date: `date`,
-    description: undefined
-  }]);
+  t.deepEqual(program.createTransferJob.firstCall.args.slice(0, -1), [
+    {
+      srcBucket: srcBucketName,
+      destBucket: destBucketName,
+      time: `time`,
+      date: `date`,
+      description: undefined,
+    },
+  ]);
 });
 
-test.serial(`should call getTransferJob`, (t) => {
+test.serial(`should call getTransferJob`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `getTransferJob`);
@@ -573,7 +710,7 @@ test.serial(`should call getTransferJob`, (t) => {
   t.deepEqual(program.getTransferJob.firstCall.args.slice(0, -1), [jobName]);
 });
 
-test.serial(`should call listTransferJobs`, (t) => {
+test.serial(`should call listTransferJobs`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `listTransferJobs`);
@@ -582,60 +719,72 @@ test.serial(`should call listTransferJobs`, (t) => {
   t.deepEqual(program.listTransferJobs.firstCall.args.slice(0, -1), []);
 });
 
-test.serial(`should call updateTransferJob`, (t) => {
+test.serial(`should call updateTransferJob`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `updateTransferJob`);
   program.main([`jobs`, `set`, jobName, `status`, `DISABLED`]);
   t.true(program.updateTransferJob.calledOnce);
-  t.deepEqual(program.updateTransferJob.firstCall.args.slice(0, -1), [{
-    job: jobName,
-    field: `status`,
-    value: `DISABLED`
-  }]);
+  t.deepEqual(program.updateTransferJob.firstCall.args.slice(0, -1), [
+    {
+      job: jobName,
+      field: `status`,
+      value: `DISABLED`,
+    },
+  ]);
 });
 
-test.serial(`should call listTransferOperations`, (t) => {
+test.serial(`should call listTransferOperations`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `listTransferOperations`);
   program.main([`operations`, `list`]);
   t.true(program.listTransferOperations.calledOnce);
-  t.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [undefined]);
+  t.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [
+    undefined,
+  ]);
 });
 
-test.serial(`should call listTransferOperations and filter`, (t) => {
+test.serial(`should call listTransferOperations and filter`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `listTransferOperations`);
   program.main([`operations`, `list`, jobName]);
   t.true(program.listTransferOperations.calledOnce);
-  t.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [jobName]);
+  t.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [
+    jobName,
+  ]);
 });
 
-test.serial(`should call getTransferOperation`, (t) => {
+test.serial(`should call getTransferOperation`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `getTransferOperation`);
   program.main([`operations`, `get`, transferOperationName]);
   t.true(program.getTransferOperation.calledOnce);
-  t.deepEqual(program.getTransferOperation.firstCall.args.slice(0, -1), [transferOperationName]);
+  t.deepEqual(program.getTransferOperation.firstCall.args.slice(0, -1), [
+    transferOperationName,
+  ]);
 });
 
-test.serial(`should call pauseTransferOperation`, (t) => {
+test.serial(`should call pauseTransferOperation`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `pauseTransferOperation`);
   program.main([`operations`, `pause`, transferOperationName]);
   t.true(program.pauseTransferOperation.calledOnce);
-  t.deepEqual(program.pauseTransferOperation.firstCall.args.slice(0, -1), [transferOperationName]);
+  t.deepEqual(program.pauseTransferOperation.firstCall.args.slice(0, -1), [
+    transferOperationName,
+  ]);
 });
 
-test.serial(`should call resumeTransferOperation`, (t) => {
+test.serial(`should call resumeTransferOperation`, t => {
   const program = getSample().program;
 
   sinon.stub(program, `resumeTransferOperation`);
   program.main([`operations`, `resume`, transferOperationName]);
   t.true(program.resumeTransferOperation.calledOnce);
-  t.deepEqual(program.resumeTransferOperation.firstCall.args.slice(0, -1), [transferOperationName]);
+  t.deepEqual(program.resumeTransferOperation.firstCall.args.slice(0, -1), [
+    transferOperationName,
+  ]);
 });

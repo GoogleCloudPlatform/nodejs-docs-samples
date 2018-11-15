@@ -13,6 +13,22 @@
  * limitations under the License.
  */
 
+/**
+ * HTTP Cloud Function (same signature as other Node runtimes)
+ *
+ * @param {Object} req Cloud Function request context.
+ *                     More info: https://expressjs.com/en/api.html#req
+ * @param {Object} res Cloud Function response context.
+ *                     More info: https://expressjs.com/en/api.html#res
+ */
+// [START functions_tips_terminate_node8]
+const escapeHtml = require('escape-html');
+
+exports.helloHttp = (req, res) => {
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
+};
+// [END functions_tips_terminate_node8]
+
 // [START functions_tips_infinite_retries_node8]
 /**
  * Background Cloud Function that only executes within a certain time
@@ -62,9 +78,11 @@ exports.retryPromise = (data, context) => {
  * @param {object} data The event payload.
  * @param {object} context The event metadata.
  */
+// [START functions_tips_terminate_node8]
 exports.helloBackground = (data, context) => {
   return `Hello ${data.name || 'World'}!`;
 };
+// [END functions_tips_terminate_node8]
 // [END functions_helloworld_background_node8]
 
 // [START functions_helloworld_pubsub_node8]
@@ -207,3 +225,59 @@ exports.helloAnalytics = (data, context) => {
   console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
 };
 // [END functions_firebase_analytics_node8]
+
+// [START functions_background_promise_node8]
+const requestPromiseNative = require('request-promise-native');
+
+/**
+ * Background Cloud Function that returns a Promise. Note that we don't pass
+ * a "callback" argument to the function.
+ *
+ * @param {object} data The Cloud Functions event data.
+ * @returns {Promise}
+ */
+exports.helloPromise = (data) => {
+  return requestPromiseNative({
+    uri: data.endpoint
+  });
+};
+// [END functions_background_promise_node8]
+
+// [START functions_background_synchronous_node8]
+/**
+ * Background Cloud Function that returns synchronously. Note that we don't pass
+ * a "callback" argument to the function.
+ *
+ * @param {object} data The Cloud Functions event data.
+ */
+exports.helloSynchronous = (data) => {
+  // This function returns synchronously
+  if (data.something === true) {
+    return 'Something is true!';
+  } else {
+    throw new Error('Something was not true!');
+  }
+};
+// [END functions_background_synchronous_node8]
+
+// [START functions_firebase_reactive_node8]
+const Firestore = require('@google-cloud/firestore');
+
+const firestore = new Firestore({
+  projectId: process.env.GCP_PROJECT
+});
+
+// Converts strings added to /messages/{pushId}/original to uppercase
+exports.makeUpperCase = (data, context) => {
+  const resource = context.resource;
+  const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
+
+  const curValue = data.value.fields.original.stringValue;
+  const newValue = curValue.toUpperCase();
+  console.log(`Replacing value: ${curValue} --> ${newValue}`);
+
+  return affectedDoc.set({
+    'original': newValue
+  });
+};
+// [END functions_firebase_reactive_node8]

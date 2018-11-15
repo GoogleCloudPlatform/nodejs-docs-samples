@@ -106,7 +106,7 @@ test.serial(`processImage fails without a name`, async (t) => {
   t.deepEqual(err, error);
 });
 
-test.serial(`processImage processes an image`, async (t) => {
+test.serial(`processImage processes an image with Node 6 arguments`, async (t) => {
   const event = {
     data: {
       bucket: bucketName,
@@ -121,6 +121,21 @@ test.serial(`processImage processes an image`, async (t) => {
   t.deepEqual(console.log.getCall(1).args, [`Extracted text from image (${text.length} chars)`]);
   t.deepEqual(console.log.getCall(2).args, [`Detected language "ja" for ${filename}`]);
   t.deepEqual(console.log.getCall(3).args, [`File ${event.data.name} processed.`]);
+});
+
+test.serial(`processImage processes an image with Node 8 arguments`, async (t) => {
+  const data = {
+    bucket: bucketName,
+    name: filename
+  };
+  const sample = getSample();
+
+  await sample.program.processImage(data);
+  t.is(console.log.callCount, 4);
+  t.deepEqual(console.log.getCall(0).args, [`Looking for text in image ${filename}`]);
+  t.deepEqual(console.log.getCall(1).args, [`Extracted text from image (${text.length} chars)`]);
+  t.deepEqual(console.log.getCall(2).args, [`Detected language "ja" for ${filename}`]);
+  t.deepEqual(console.log.getCall(3).args, [`File ${data.name} processed.`]);
 });
 
 test.serial(`translateText fails without text`, async (t) => {
@@ -157,7 +172,7 @@ test.serial(`translateText fails without a lang`, async (t) => {
   t.deepEqual(err, error);
 });
 
-test.serial(`translateText translates and publishes text`, async (t) => {
+test.serial(`translateText translates and publishes text with Node 6 arguments`, async (t) => {
   const event = {
     data: {
       data: Buffer.from(
@@ -174,6 +189,26 @@ test.serial(`translateText translates and publishes text`, async (t) => {
   sample.mocks.translate.translate.returns(Promise.resolve([translation]));
 
   await sample.program.translateText(event);
+  t.is(console.log.callCount, 2);
+  t.deepEqual(console.log.firstCall.args, [`Translating text into ${lang}`]);
+  t.deepEqual(console.log.secondCall.args, [`Text translated to ${lang}`]);
+});
+
+test.serial(`translateText translates and publishes text with Node 8 arguments`, async (t) => {
+  const data = {
+    data: Buffer.from(
+      JSON.stringify({
+        text,
+        filename,
+        lang
+      })
+    ).toString(`base64`)
+  };
+  const sample = getSample();
+
+  sample.mocks.translate.translate.returns(Promise.resolve([translation]));
+
+  await sample.program.translateText(data);
   t.is(console.log.callCount, 2);
   t.deepEqual(console.log.firstCall.args, [`Translating text into ${lang}`]);
   t.deepEqual(console.log.secondCall.args, [`Text translated to ${lang}`]);
@@ -215,7 +250,7 @@ test.serial(`saveResult fails without a lang`, async (t) => {
   t.deepEqual(err, error);
 });
 
-test.serial(`saveResult translates and publishes text`, async (t) => {
+test.serial(`saveResult translates and publishes text with Node 6 arguments`, async (t) => {
   const event = {
     data: {
       data: Buffer.from(JSON.stringify({ text, filename, lang })).toString(`base64`)
@@ -224,6 +259,19 @@ test.serial(`saveResult translates and publishes text`, async (t) => {
   const sample = getSample();
 
   await sample.program.saveResult(event);
+  t.is(console.log.callCount, 3);
+  t.deepEqual(console.log.getCall(0).args, [`Received request to save file ${filename}`]);
+  t.deepEqual(console.log.getCall(1).args, [`Saving result to ${filename}_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`]);
+  t.deepEqual(console.log.getCall(2).args, [`File saved.`]);
+});
+
+test.serial(`saveResult translates and publishes text with Node 8 arguments`, async (t) => {
+  const data = {
+    data: Buffer.from(JSON.stringify({ text, filename, lang })).toString(`base64`)
+  };
+  const sample = getSample();
+
+  await sample.program.saveResult(data);
   t.is(console.log.callCount, 3);
   t.deepEqual(console.log.getCall(0).args, [`Received request to save file ${filename}`]);
   t.deepEqual(console.log.getCall(1).args, [`Saving result to ${filename}_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`]);

@@ -99,7 +99,7 @@ test.serial(`http:helloHttp: should handle other methods`, (t) => {
   httpSample.sample.helloHttp(mocks.req, mocks.res);
 
   t.true(mocks.res.status.calledOnce);
-  t.is(mocks.res.status.firstCall.args[0], 500);
+  t.is(mocks.res.status.firstCall.args[0], 405);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], { error: `Something blew up!` });
 });
@@ -165,6 +165,19 @@ test.serial(`http:helloContent: should handle other`, (t) => {
   t.is(mocks.res.status.firstCall.args[0], 200);
   t.true(mocks.res.send.calledOnce);
   t.deepEqual(mocks.res.send.firstCall.args[0], `Hello World!`);
+});
+
+test.serial(`http:helloContent: should escape XSS`, (t) => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+  mocks.req.headers[`content-type`] = `text/plain`;
+  mocks.req.body = { name: `<script>alert(1)</script>` };
+  httpSample.sample.helloContent(mocks.req, mocks.res);
+
+  t.true(mocks.res.status.calledOnce);
+  t.is(mocks.res.status.firstCall.args[0], 200);
+  t.true(mocks.res.send.calledOnce);
+  t.false(mocks.res.send.firstCall.args[0].includes('<script>'));
 });
 
 test.serial(`http:cors: should respond to preflight request (no auth)`, (t) => {

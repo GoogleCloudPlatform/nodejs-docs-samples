@@ -15,8 +15,6 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "repo-tools lint",
-    "pretest": "npm run lint",
     "system-test": "repo-tools test app",
     "test": "npm run system-test",
     "e2e-test": "repo-tools test deploy"
@@ -25,8 +23,7 @@
     "express": "^4.16.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.0",
-    "semistandard": "^12.0.1"
+    "@google-cloud/nodejs-repo-tools": "^2.3.0"
   },
   "cloud-repo-tools": {
     "test": {

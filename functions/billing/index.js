@@ -15,8 +15,8 @@
 
 // [START functions_billing_limit]
 // [START functions_billing_stop]
-const {google} = require('googleapis');
-const {auth} = require('google-auth-library');
+const { google } = require('googleapis');
+const { auth } = require('google-auth-library');
 
 const PROJECT_ID = process.env.GCP_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;

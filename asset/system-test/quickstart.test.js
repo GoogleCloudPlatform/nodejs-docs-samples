@@ -35,9 +35,7 @@ test.before(async () => {
 });
 
 test.after.always(async () => {
-  try {
-    await bucket.delete();
-  } catch (err) {} // ignore error
+  await bucket.delete();
 });
 
 test.beforeEach(tools.stubConsole);
@@ -49,6 +47,8 @@ test.serial(`should export assets to specified path`, async t => {
     `${cmd} export-assets ${dumpFilePath}`,
     cwd
   );
-  const [exists] = await bucket.file();
+  var file = await bucket.file('my-assets.txt');
+  const [exists] = await file.exists();
   t.true(exists);
+  file.delete();
 });

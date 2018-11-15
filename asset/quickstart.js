@@ -78,5 +78,5 @@ const cli = require('yargs')
   .strict();
 
 if (module === require.main) {
-  cli.parse(process.argv.slice(1));
+  cli.parse(process.argv.slice(2));
 }

@@ -14,11 +14,11 @@
  */
 
 'use strict';
-
-function synthesizeText(text, outputFile) {
+async function synthesizeText(text, outputFile) {
   // [START tts_synthesize_text]
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
+  const util = require('util');
 
   const client = new textToSpeech.TextToSpeechClient();
 
@@ -33,28 +33,18 @@ function synthesizeText(text, outputFile) {
     voice: {languageCode: 'en-US', ssmlGender: 'FEMALE'},
     audioConfig: {audioEncoding: 'MP3'},
   };
-
-  client.synthesizeSpeech(request, (err, response) => {
-    if (err) {
-      console.error('ERROR:', err);
-      return;
-    }
-
-    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-      if (err) {
-        console.error('ERROR:', err);
-        return;
-      }
-      console.log(`Audio content written to file: ${outputFile}`);
-    });
-  });
+  const [response] = await client.synthesizeSpeech(request);
+  const writeFile = util.promisify(fs.writeFile);
+  await writeFile(outputFile, response.audioContent, 'binary');
+  console.log(`Audio content written to file: ${outputFile}`);
   // [END tts_synthesize_text]
 }
 
-function synthesizeSsml(ssml, outputFile) {
+async function synthesizeSsml(ssml, outputFile) {
   // [START tts_synthesize_ssml]
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
+  const util = require('util');
 
   const client = new textToSpeech.TextToSpeechClient();
 
@@ -70,27 +60,18 @@ function synthesizeSsml(ssml, outputFile) {
     audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client.synthesizeSpeech(request, (err, response) => {
-    if (err) {
-      console.error('ERROR:', err);
-      return;
-    }
-
-    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-      if (err) {
-        console.error('ERROR:', err);
-        return;
-      }
-      console.log(`Audio content written to file: ${outputFile}`);
-    });
-  });
+  const [response] = await client.synthesizeSpeech(request);
+  const writeFile = util.promisify(fs.writeFile);
+  await writeFile(outputFile, response.audioContent, 'binary');
+  console.log(`Audio content written to file: ${outputFile}`);
   // [END tts_synthesize_ssml]
 }
 
-function synthesizeTextFile(textFile, outputFile) {
+async function synthesizeTextFile(textFile, outputFile) {
   // [START tts_synthesize_text_file]
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
+  const util = require('util');
 
   const client = new textToSpeech.TextToSpeechClient();
 
@@ -106,27 +87,18 @@ function synthesizeTextFile(textFile, outputFile) {
     audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client.synthesizeSpeech(request, (err, response) => {
-    if (err) {
-      console.error('ERROR:', err);
-      return;
-    }
-
-    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-      if (err) {
-        console.error('ERROR:', err);
-        return;
-      }
-      console.log(`Audio content written to file: ${outputFile}`);
-    });
-  });
+  const [response] = await client.synthesizeSpeech(request);
+  const writeFile = util.promisify(fs.writeFile);
+  await writeFile(outputFile, response.audioContent, 'binary');
+  console.log(`Audio content written to file: ${outputFile}`);
   // [END tts_synthesize_text_file]
 }
 
-function synthesizeSsmlFile(ssmlFile, outputFile) {
+async function synthesizeSsmlFile(ssmlFile, outputFile) {
   // [START tts_synthesize_ssml_file]
   const textToSpeech = require('@google-cloud/text-to-speech');
   const fs = require('fs');
+  const util = require('util');
 
   const client = new textToSpeech.TextToSpeechClient();
 
@@ -142,60 +114,54 @@ function synthesizeSsmlFile(ssmlFile, outputFile) {
     audioConfig: {audioEncoding: 'MP3'},
   };
 
-  client.synthesizeSpeech(request, (err, response) => {
-    if (err) {
-      console.error('ERROR:', err);
-      return;
-    }
-
-    fs.writeFile(outputFile, response.audioContent, 'binary', err => {
-      if (err) {
-        console.error('ERROR:', err);
-        return;
-      }
-      console.log(`Audio content written to file: ${outputFile}`);
-    });
-  });
+  const [response] = await client.synthesizeSpeech(request);
+  const writeFile = util.promisify(fs.writeFile);
+  await writeFile(outputFile, response.audioContent, 'binary');
+  console.log(`Audio content written to file: ${outputFile}`);
   // [END tts_synthesize_ssml_file]
 }
 
+async function main() {
 require(`yargs`) // eslint-disable-line
-  .demand(1)
-  .command(`text <text>`, `Synthesizes audio file from text`, {}, opts =>
-    synthesizeText(opts.text, opts.outputFile)
-  )
-  .command(`ssml <ssml>`, `Synthesizes audio file from SSML`, {}, opts =>
-    synthesizeSsml(opts.ssml, opts.outputFile)
-  )
-  .command(
-    `text-file <textFile>`,
-    `Synthesizes audio file from text in a file`,
-    {},
-    opts => synthesizeTextFile(opts.textFile, opts.outputFile)
-  )
-  .command(
-    `ssml-file <ssmlFile>`,
-    `Synthesizes audio file from SSML in a file`,
-    {},
-    opts => synthesizeSsmlFile(opts.ssmlFile, opts.outputFile)
-  )
-  .options({
-    outputFile: {
-      alias: 'o',
-      default: 'output.mp3',
-      global: true,
-      requiresArg: true,
-      type: 'string',
-    },
-  })
-  .example(`node $0 text "hello" -o hello.mp3`)
-  .example(`node $0 ssml "<speak>Hello there.</speak>" -o hello.mp3`)
-  .example(`node $0 text-file resources/hello.txt -o output.mp3`)
-  .example(`node $0 ssml-file resources/hello.ssml -o output.mp3`)
-  .wrap(120)
-  .recommendCommands()
-  .epilogue(
-    `For more information, see https://cloud.google.com/text-to-speech/docs`
-  )
-  .help()
-  .strict().argv;
+    .demand(1)
+    .command(`text <text>`, `Synthesizes audio file from text`, {}, opts =>
+      synthesizeText(opts.text, opts.outputFile)
+    )
+    .command(`ssml <ssml>`, `Synthesizes audio file from SSML`, {}, opts =>
+      synthesizeSsml(opts.ssml, opts.outputFile)
+    )
+    .command(
+      `text-file <textFile>`,
+      `Synthesizes audio file from text in a file`,
+      {},
+      opts => synthesizeTextFile(opts.textFile, opts.outputFile)
+    )
+    .command(
+      `ssml-file <ssmlFile>`,
+      `Synthesizes audio file from SSML in a file`,
+      {},
+      opts => synthesizeSsmlFile(opts.ssmlFile, opts.outputFile)
+    )
+    .options({
+      outputFile: {
+        alias: 'o',
+        default: 'output.mp3',
+        global: true,
+        requiresArg: true,
+        type: 'string',
+      },
+    })
+    .example(`node $0 text "hello" -o hello.mp3`)
+    .example(`node $0 ssml "<speak>Hello there.</speak>" -o hello.mp3`)
+    .example(`node $0 text-file resources/hello.txt -o output.mp3`)
+    .example(`node $0 ssml-file resources/hello.ssml -o output.mp3`)
+    .wrap(120)
+    .recommendCommands()
+    .epilogue(
+      `For more information, see https://cloud.google.com/text-to-speech/docs`
+    )
+    .help()
+    .strict().argv;
+}
+
+main().catch(console.error);

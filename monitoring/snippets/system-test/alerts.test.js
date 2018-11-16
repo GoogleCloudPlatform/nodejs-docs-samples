@@ -20,6 +20,7 @@ const monitoring = require(`@google-cloud/monitoring`);
 const path = require(`path`);
 const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const uuid = require('uuid');
 
 const client = new monitoring.AlertPolicyServiceClient();
 const channelClient = new monitoring.NotificationChannelServiceClient();
@@ -28,15 +29,16 @@ const projectId = process.env.GCLOUD_PROJECT;
 
 let policyOneName, policyTwoName, channelName;
 
-before(tools.checkCredentials);
+const testPrefix = `gcloud-test-${uuid.v4().split('-')[0]}`;
 
+before(tools.checkCredentials);
 before(async () => {
   try {
     tools.checkCredentials;
     let results = await client.createAlertPolicy({
       name: client.projectPath(projectId),
       alertPolicy: {
-        displayName: 'first_policy',
+        displayName: `${testPrefix}-first-policy`,
         combiner: 1,
         documentation: {
           content: 'Test',
@@ -71,7 +73,7 @@ before(async () => {
     results = await client.createAlertPolicy({
       name: client.projectPath(projectId),
       alertPolicy: {
-        displayName: 'second',
+        displayName: `${testPrefix}-second`,
         combiner: 1,
         conditions: [
           {
@@ -110,7 +112,9 @@ before(async () => {
       },
     });
     channelName = results[0].name;
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
 });
 
 async function deletePolicies() {
@@ -147,7 +151,7 @@ it(`should replace notification channels`, async () => {
 it(`should disable policies`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
-    [`alerts.js`, `disable`, projectId, `'display_name.size < 7'`],
+    [`alerts.js`, `disable`, projectId, `'display_name.size < 28'`],
     cwd
   );
   assert.strictEqual(results.output.includes('Disabled projects'), true);
@@ -158,7 +162,7 @@ it(`should disable policies`, async () => {
 it(`should enable policies`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
-    [`alerts.js`, `enable`, projectId, `'display_name.size < 7'`],
+    [`alerts.js`, `enable`, projectId, `'display_name.size < 28'`],
     cwd
   );
   assert.strictEqual(results.output.includes('Enabled projects'), true);
@@ -173,7 +177,7 @@ it(`should list policies`, async () => {
     cwd
   );
   assert.strictEqual(results.output.includes('Policies:'), true);
-  assert.strictEqual(results.output.includes('first_policy'), true);
+  assert.strictEqual(results.output.includes('first-policy'), true);
   assert.strictEqual(results.output.includes('Test'), true);
   assert.strictEqual(results.output.includes('second'), true);
 });

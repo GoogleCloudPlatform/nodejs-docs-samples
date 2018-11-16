@@ -41,7 +41,12 @@ async function backupPolicies(projectId) {
     name: client.projectPath(projectId),
   };
 
-  const [policies] = await client.listAlertPolicies(listAlertPoliciesRequest);
+  let [policies] = await client.listAlertPolicies(listAlertPoliciesRequest);
+
+  // filter out any policies created by tests for this sample
+  policies = policies.filter(policy => {
+    return !policy.displayName.startsWith('gcloud-tests-');
+  });
 
   fs.writeFileSync(
     './policies_backup.json',

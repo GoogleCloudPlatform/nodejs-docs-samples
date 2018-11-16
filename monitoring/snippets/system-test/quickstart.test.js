@@ -18,13 +18,9 @@
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const sinon = require(`sinon`);
 const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const monitoring = proxyquire(`@google-cloud/monitoring`, {});
 const client = new monitoring.MetricServiceClient();
-
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
 
 it(`should list time series`, async () => {
   const clientMock = {
@@ -42,7 +38,9 @@ it(`should list time series`, async () => {
             `Done writing time series data.`,
             {},
           ]);
-        } catch (err) {}
+        } catch (err) {
+          // ignore error
+        }
       }, 200);
 
       return result;

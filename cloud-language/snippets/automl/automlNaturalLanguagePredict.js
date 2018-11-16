@@ -23,7 +23,7 @@
 
 `use strict`;
 
-function predict(projectId, computeRegion, modelId, filePath) {
+async function predict(projectId, computeRegion, modelId, filePath) {
   // [START automl_natural_language_predict]
   const automl = require(`@google-cloud/automl`);
   const fs = require(`fs`);
@@ -55,72 +55,74 @@ function predict(projectId, computeRegion, modelId, filePath) {
 
   // Params is additional domain-specific parameters.
   // Currently there is no additional parameters supported.
-  client
-    .predict({name: modelFullId, payload: payload, params: {}})
-    .then(responses => {
-      console.log(`Prediction results:`);
-      responses[0].payload.forEach(result => {
-        console.log(`Predicted class name: ${result.displayName}`);
-        console.log(`Predicted class score: ${result.classification.score}`);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [response] = await client.predict({
+    name: modelFullId,
+    payload: payload,
+    params: {},
+  });
+  console.log(`Prediction results:`);
+  response[0].payload.forEach(result => {
+    console.log(`Predicted class name: ${result.displayName}`);
+    console.log(`Predicted class score: ${result.classification.score}`);
+  });
   // [END automl_natural_language_predict]
 }
 
-require(`yargs`)
-  .demand(1)
-  .options({
-    computeRegion: {
-      alias: `c`,
-      type: `string`,
-      default: process.env.REGION_NAME,
-      requiresArg: true,
-      description: `region name e.g. "us-central1"`,
-    },
-    filePath: {
-      alias: `f`,
-      default: `./resources/test.txt`,
-      type: `string`,
-      requiresArg: true,
-      description: `local text file path of the content to be classified`,
-    },
-    modelId: {
-      alias: `i`,
-      type: `string`,
-      requiresArg: true,
-      description: `Id of the model which will be used for text classification`,
-    },
-    projectId: {
-      alias: `z`,
-      type: `number`,
-      default: process.env.GCLOUD_PROJECT,
-      requiresArg: true,
-      description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
-    },
-    scoreThreshold: {
-      alias: `s`,
-      type: `string`,
-      default: `0.5`,
-      requiresArg: true,
-      description:
-        `A value from 0.0 to 1.0.  When the model makes predictions for an image it will` +
-        `only produce results that have at least this confidence score threshold.  Default is .5`,
-    },
-  })
-  .command(`predict`, `classify the content`, {}, opts =>
-    predict(
-      opts.projectId,
-      opts.computeRegion,
-      opts.modelId,
-      opts.filePath,
-      opts.scoreThreshold
+async function main() {
+  require(`yargs`)
+    .demand(1)
+    .options({
+      computeRegion: {
+        alias: `c`,
+        type: `string`,
+        default: process.env.REGION_NAME,
+        requiresArg: true,
+        description: `region name e.g. "us-central1"`,
+      },
+      filePath: {
+        alias: `f`,
+        default: `./resources/test.txt`,
+        type: `string`,
+        requiresArg: true,
+        description: `local text file path of the content to be classified`,
+      },
+      modelId: {
+        alias: `i`,
+        type: `string`,
+        requiresArg: true,
+        description: `Id of the model which will be used for text classification`,
+      },
+      projectId: {
+        alias: `z`,
+        type: `number`,
+        default: process.env.GCLOUD_PROJECT,
+        requiresArg: true,
+        description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
+      },
+      scoreThreshold: {
+        alias: `s`,
+        type: `string`,
+        default: `0.5`,
+        requiresArg: true,
+        description:
+          `A value from 0.0 to 1.0.  When the model makes predictions for an image it will` +
+          `only produce results that have at least this confidence score threshold.  Default is .5`,
+      },
+    })
+    .command(`predict`, `classify the content`, {}, opts =>
+      predict(
+        opts.projectId,
+        opts.computeRegion,
+        opts.modelId,
+        opts.filePath,
+        opts.scoreThreshold
+      )
     )
-  )
-  .example(`node $0 predict -i "modelId" -f "./resources/test.txt" -s "0.5"`)
-  .wrap(120)
-  .recommendCommands()
-  .help()
-  .strict().argv;
+    .example(`node $0 predict -i "modelId" -f "./resources/test.txt" -s "0.5"`)
+    .wrap(120)
+    .recommendCommands()
+    .help()
+    .strict().argv;
+}
+
+main().catch(console.error);

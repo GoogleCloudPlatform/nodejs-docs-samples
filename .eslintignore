@@ -2,4 +2,4 @@
 appengine/loopback/*
 functions/**
 iot/*
-appengine/*
+appengine/parse-server/cloud/main.js

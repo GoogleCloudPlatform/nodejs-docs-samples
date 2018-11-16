@@ -98,7 +98,7 @@ function getSample () {
 }
 
 test(`should notify Slack when budget is exceeded`, async t => {
-  const {program, mocks} = getSample();
+  const { program, mocks } = getSample();
 
   const jsonData = { cost: 500, budget: 400 };
   const pubsubData = {
@@ -112,7 +112,7 @@ test(`should notify Slack when budget is exceeded`, async t => {
 });
 
 test(`should disable billing when budget is exceeded`, async t => {
-  const {program, mocks} = getSample();
+  const { program, mocks } = getSample();
 
   const jsonData = { cost: 500, budget: 400 };
   const pubsubData = {
@@ -128,7 +128,7 @@ test(`should disable billing when budget is exceeded`, async t => {
 });
 
 test(`should shut down GCE instances when budget is exceeded`, async t => {
-  const {program, mocks} = getSample();
+  const { program, mocks } = getSample();
 
   const jsonData = { cost: 500, budget: 400 };
   const pubsubData = {

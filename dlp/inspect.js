@@ -190,11 +190,11 @@ function inspectGCSFile(
   // [START dlp_inspect_gcs]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;
@@ -337,11 +337,11 @@ function inspectDatastore(
   // [START dlp_inspect_datastore]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;
@@ -494,11 +494,11 @@ function inspectBigquery(
   // [START dlp_inspect_bigquery]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;

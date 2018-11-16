@@ -27,11 +27,11 @@ function numericalRiskAnalysis(
   // [START dlp_numerical_stats]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;
@@ -180,11 +180,11 @@ function categoricalRiskAnalysis(
   // [START dlp_categorical_stats]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;
@@ -337,11 +337,11 @@ function kAnonymityAnalysis(
   // [START dlp_k_anonymity]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;
@@ -485,11 +485,11 @@ function lDiversityAnalysis(
   // [START dlp_l_diversity]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;
@@ -647,11 +647,11 @@ function kMapEstimationAnalysis(
   // [START dlp_k_map]
   // Import the Google Cloud client libraries
   const DLP = require('@google-cloud/dlp');
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();
-  const pubsub = new Pubsub();
+  const pubsub = new PubSub();
 
   // The project ID to run the API call under
   // const callingProjectId = process.env.GCLOUD_PROJECT;

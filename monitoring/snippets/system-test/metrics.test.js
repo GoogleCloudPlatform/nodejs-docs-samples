@@ -18,7 +18,7 @@
 const monitoring = require(`@google-cloud/monitoring`);
 const client = new monitoring.MetricServiceClient();
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const cmd = `node metrics.js`;
@@ -29,31 +29,26 @@ const filter = `metric.type="${computeMetricId}"`;
 const projectId = process.env.GCLOUD_PROJECT;
 const resourceId = `cloudsql_database`;
 
-test.before(tools.checkCredentials);
+before(tools.checkCredentials);
 
-test.serial(`should create a metric descriptors`, async t => {
+it(`should create a metric descriptors`, async () => {
   const output = await tools.runAsync(`${cmd} create`, cwd);
-  t.true(output.includes(`Created custom Metric`));
-  t.true(output.includes(`Type: ${customMetricId}`));
+  assert.strictEqual(output.includes(`Created custom Metric`), true);
+  assert.strictEqual(output.includes(`Type: ${customMetricId}`), true);
 });
 
-test.serial(
-  `should list metric descriptors, including the new custom one`,
-  async t => {
-    t.plan(0);
-    const attempt = tools.tryTest(async assert => {
-      const output = await tools.runAsync(`${cmd} list`, cwd);
-      assert(output.includes(customMetricId));
-      assert(output.includes(computeMetricId));
-    });
-    attempt.tries(30);
-    attempt.timeout(120000);
-    await attempt.start();
-  }
-);
+it(`should list metric descriptors, including the new custom one`, async () => {
+  const attempt = tools.tryTest(async assert => {
+    const output = await tools.runAsync(`${cmd} list`, cwd);
+    assert(output.includes(customMetricId));
+    assert(output.includes(computeMetricId));
+  });
+  attempt.tries(30);
+  attempt.timeout(120000);
+  await attempt.start();
+});
 
-test.serial(`should get a metric descriptor`, async t => {
-  t.plan(0);
+it(`should get a metric descriptor`, async () => {
   const attempt = tools.tryTest(async assert => {
     const output = await tools.runAsync(`${cmd} get ${customMetricId}`, cwd);
     assert(output.includes(`Type: ${customMetricId}`));
@@ -63,31 +58,32 @@ test.serial(`should get a metric descriptor`, async t => {
   await attempt.start();
 });
 
-test.serial(`should write time series data`, async t => {
+it(`should write time series data`, async () => {
   const output = await tools.runAsync(`${cmd} write`, cwd);
-  t.true(output.includes(`Done writing time series data.`));
+  assert.strictEqual(output.includes(`Done writing time series data.`), true);
 });
 
-test.serial(`should delete a metric descriptor`, async t => {
+it(`should delete a metric descriptor`, async () => {
   const output = await tools.runAsync(`${cmd} delete ${customMetricId}`, cwd);
-  t.true(output.includes(`Deleted ${customMetricId}`));
+  assert.strictEqual(output.includes(`Deleted ${customMetricId}`), true);
 });
 
-test(`should list monitored resource descriptors`, async t => {
+it(`should list monitored resource descriptors`, async () => {
   const output = await tools.runAsync(`${cmd} list-resources`, cwd);
-  t.true(
+  assert.strictEqual(
     output.includes(
       `projects/${projectId}/monitoredResourceDescriptors/${resourceId}`
-    )
+    ),
+    true
   );
 });
 
-test(`should get a monitored resource descriptor`, async t => {
+it(`should get a monitored resource descriptor`, async () => {
   const output = await tools.runAsync(`${cmd} get-resource ${resourceId}`, cwd);
-  t.true(output.includes(`Type: ${resourceId}`));
+  assert.strictEqual(output.includes(`Type: ${resourceId}`), true);
 });
 
-test(`should read time series data`, async t => {
+it(`should read time series data`, async () => {
   const [timeSeries] = await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
@@ -102,16 +98,19 @@ test(`should read time series data`, async t => {
     },
   });
   const output = await tools.runAsync(`${cmd} read '${filter}'`, cwd);
-  t.true(true); // Do not fail if there is simply no data to return.
+  //t.true(true); // Do not fail if there is simply no data to return.
   timeSeries.forEach(data => {
-    t.true(output.includes(`${data.metric.labels.instance_name}:`));
+    assert.strictEqual(
+      output.includes(`${data.metric.labels.instance_name}:`),
+      true
+    );
     data.points.forEach(point => {
-      t.true(output.includes(JSON.stringify(point.value)));
+      assert.strictEqual(output.includes(JSON.stringify(point.value)), true);
     });
   });
 });
 
-test(`should read time series data fields`, async t => {
+it(`should read time series data fields`, async () => {
   const [timeSeries] = await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
@@ -129,13 +128,16 @@ test(`should read time series data fields`, async t => {
     view: `HEADERS`,
   });
   const output = await tools.runAsync(`${cmd} read-fields`, cwd);
-  t.true(output.includes(`Found data points for the following instances:`));
+  assert.strictEqual(
+    output.includes(`Found data points for the following instances:`),
+    true
+  );
   timeSeries.forEach(data => {
-    t.true(output.includes(data.metric.labels.instance_name));
+    assert.strictEqual(output.includes(data.metric.labels.instance_name), true);
   });
 });
 
-test(`should read time series data aggregated`, async t => {
+it(`should read time series data aggregated`, async () => {
   const [timeSeries] = await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
@@ -157,15 +159,18 @@ test(`should read time series data aggregated`, async t => {
     },
   });
   const output = await tools.runAsync(`${cmd} read-aggregate`, cwd);
-  t.regex(output, /CPU utilization:/);
+  assert.strictEqual(output.includes('CPU utilization:'), true);
   timeSeries.forEach(data => {
-    t.regex(output, new RegExp(data.metric.labels.instance_name));
-    t.regex(output, / Now: 0\.\d+/);
-    t.regex(output, / 10 min ago: 0\.\d+/);
+    assert.strictEqual(
+      new RegExp(data.metric.labels.instance_name).test(output),
+      true
+    );
+    assert.strictEqual(output.includes(' Now: 0.'), true);
+    assert.strictEqual(output.includes(' 10 min ago: 0.'), true);
   });
 });
 
-test(`should read time series data reduced`, async t => {
+it(`should read time series data reduced`, async () => {
   await client.listTimeSeries({
     name: client.projectPath(projectId),
     filter: filter,
@@ -190,12 +195,13 @@ test(`should read time series data reduced`, async t => {
   const output = await tools.runAsync(`${cmd} read-reduce`, cwd);
   // Special case: No output.
   if (output === 'No data') {
-    t.true(output.includes('No data'));
+    assert.strictEqual(output.includes('No data'), true);
   } else {
-    t.true(
-      output.includes(`Average CPU utilization across all GCE instances:`)
+    assert.strictEqual(
+      output.includes(`Average CPU utilization across all GCE instances:`),
+      true
     );
-    t.true(output.includes(`  Last 10 min`));
-    t.true(output.includes(`  10-20 min ago`));
+    assert.strictEqual(output.includes(`  Last 10 min`), true);
+    assert.strictEqual(output.includes(`  10-20 min ago`), true);
   }
 });

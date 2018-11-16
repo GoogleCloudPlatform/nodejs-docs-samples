@@ -17,39 +17,35 @@
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
 const sinon = require(`sinon`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const monitoring = proxyquire(`@google-cloud/monitoring`, {});
 const client = new monitoring.MetricServiceClient();
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test.cb(`should list time series`, t => {
+it(`should list time series`, async () => {
   const clientMock = {
     projectPath: projectId => client.projectPath(projectId),
-    createTimeSeries: _request => {
+    createTimeSeries: async _request => {
       _request.name = client.projectPath(process.env.GCLOUD_PROJECT);
       _request.timeSeries[0].resource.labels.project_id =
         process.env.GCLOUD_PROJECT;
 
-      return client.createTimeSeries(_request).then(result => {
-        setTimeout(() => {
-          try {
-            t.is(console.log.callCount, 1);
-            t.deepEqual(console.log.getCall(0).args, [
-              `Done writing time series data.`,
-              {},
-            ]);
-            t.end();
-          } catch (err) {
-            t.end(err);
-          }
-        }, 200);
+      const result = await client.createTimeSeries(_request);
+      setTimeout(() => {
+        try {
+          assert.strictEqual(console.log.callCount, 1);
+          assert.deepStrictEqual(console.log.getCall(0).args, [
+            `Done writing time series data.`,
+            {},
+          ]);
+        } catch (err) {}
+      }, 200);
 
-        return result;
-      });
+      return result;
     },
   };
 

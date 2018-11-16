@@ -23,7 +23,7 @@
 
 'use strict';
 
-function createUptimeCheckConfig(projectId, hostname) {
+async function createUptimeCheckConfig(projectId, hostname) {
   // [START monitoring_uptime_check_create]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -54,36 +54,29 @@ function createUptimeCheckConfig(projectId, hostname) {
   };
 
   // Creates an uptime check config for a GCE instance
-  client
-    .createUptimeCheckConfig(request)
-    .then(results => {
-      const uptimeCheckConfig = results[0];
+  const [uptimeCheckConfig] = await client.createUptimeCheckConfig(request);
+  console.log('Uptime check created:');
+  console.log(`ID: ${uptimeCheckConfig.name}`);
+  console.log(`Display Name: ${uptimeCheckConfig.displayName}`);
+  console.log(`Resource: %j`, uptimeCheckConfig.monitoredResource);
+  console.log(`Period: %j`, uptimeCheckConfig.period);
+  console.log(`Timeout: %j`, uptimeCheckConfig.timeout);
+  console.log(`Check type: ${uptimeCheckConfig.check_request_type}`);
+  console.log(
+    `Check: %j`,
+    uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
+  );
+  console.log(
+    `Content matchers: ${uptimeCheckConfig.contentMatchers
+      .map(matcher => matcher.content)
+      .join(', ')}`
+  );
+  console.log(`Regions: ${uptimeCheckConfig.selectedRegions.join(', ')}`);
 
-      console.log('Uptime check created:');
-      console.log(`ID: ${uptimeCheckConfig.name}`);
-      console.log(`Display Name: ${uptimeCheckConfig.displayName}`);
-      console.log(`Resource: %j`, uptimeCheckConfig.monitoredResource);
-      console.log(`Period: %j`, uptimeCheckConfig.period);
-      console.log(`Timeout: %j`, uptimeCheckConfig.timeout);
-      console.log(`Check type: ${uptimeCheckConfig.check_request_type}`);
-      console.log(
-        `Check: %j`,
-        uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
-      );
-      console.log(
-        `Content matchers: ${uptimeCheckConfig.contentMatchers
-          .map(matcher => matcher.content)
-          .join(', ')}`
-      );
-      console.log(`Regions: ${uptimeCheckConfig.selectedRegions.join(', ')}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
   // [END monitoring_uptime_check_create]
 }
 
-function listUptimeCheckConfigs(projectId) {
+async function listUptimeCheckConfigs(projectId) {
   // [START monitoring_uptime_check_list_configs]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -101,39 +94,31 @@ function listUptimeCheckConfigs(projectId) {
   };
 
   // Retrieves an uptime check config
-  client
-    .listUptimeCheckConfigs(request)
-    .then(results => {
-      const uptimeCheckConfigs = results[0];
+  const [uptimeCheckConfigs] = await client.listUptimeCheckConfigs(request);
 
-      uptimeCheckConfigs.forEach(uptimeCheckConfig => {
-        console.log(`ID: ${uptimeCheckConfig.name}`);
-        console.log(`  Display Name: ${uptimeCheckConfig.displayName}`);
-        console.log(`  Resource: %j`, uptimeCheckConfig.monitoredResource);
-        console.log(`  Period: %j`, uptimeCheckConfig.period);
-        console.log(`  Timeout: %j`, uptimeCheckConfig.timeout);
-        console.log(`  Check type: ${uptimeCheckConfig.check_request_type}`);
-        console.log(
-          `  Check: %j`,
-          uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
-        );
-        console.log(
-          `  Content matchers: ${uptimeCheckConfig.contentMatchers
-            .map(matcher => matcher.content)
-            .join(', ')}`
-        );
-        console.log(
-          `  Regions: ${uptimeCheckConfig.selectedRegions.join(', ')}`
-        );
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  uptimeCheckConfigs.forEach(uptimeCheckConfig => {
+    console.log(`ID: ${uptimeCheckConfig.name}`);
+    console.log(`  Display Name: ${uptimeCheckConfig.displayName}`);
+    console.log(`  Resource: %j`, uptimeCheckConfig.monitoredResource);
+    console.log(`  Period: %j`, uptimeCheckConfig.period);
+    console.log(`  Timeout: %j`, uptimeCheckConfig.timeout);
+    console.log(`  Check type: ${uptimeCheckConfig.check_request_type}`);
+    console.log(
+      `  Check: %j`,
+      uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
+    );
+    console.log(
+      `  Content matchers: ${uptimeCheckConfig.contentMatchers
+        .map(matcher => matcher.content)
+        .join(', ')}`
+    );
+    console.log(`  Regions: ${uptimeCheckConfig.selectedRegions.join(', ')}`);
+  });
+
   // [END monitoring_uptime_check_list_configs]
 }
 
-function listUptimeCheckIps() {
+async function listUptimeCheckIps() {
   // [START monitoring_uptime_check_list_ips]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -142,25 +127,19 @@ function listUptimeCheckIps() {
   const client = new monitoring.UptimeCheckServiceClient();
 
   // List uptime check IPs
-  client
-    .listUptimeCheckIps()
-    .then(results => {
-      const uptimeCheckIps = results[0];
-      uptimeCheckIps.forEach(uptimeCheckIp => {
-        console.log(
-          uptimeCheckIp.region,
-          uptimeCheckIp.location,
-          uptimeCheckIp.ipAddress
-        );
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [uptimeCheckIps] = await client.listUptimeCheckIps();
+  uptimeCheckIps.forEach(uptimeCheckIp => {
+    console.log(
+      uptimeCheckIp.region,
+      uptimeCheckIp.location,
+      uptimeCheckIp.ipAddress
+    );
+  });
+
   // [END monitoring_uptime_check_list_ips]
 }
 
-function getUptimeCheckConfig(projectId, uptimeCheckConfigId) {
+async function getUptimeCheckConfig(projectId, uptimeCheckConfigId) {
   // [START monitoring_uptime_check_get]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -182,35 +161,28 @@ function getUptimeCheckConfig(projectId, uptimeCheckConfigId) {
   console.log(`Retrieving ${request.name}`);
 
   // Retrieves an uptime check config
-  client
-    .getUptimeCheckConfig(request)
-    .then(results => {
-      const uptimeCheckConfig = results[0];
+  const [uptimeCheckConfig] = await client.getUptimeCheckConfig(request);
+  console.log(`ID: ${uptimeCheckConfig.name}`);
+  console.log(`Display Name: ${uptimeCheckConfig.displayName}`);
+  console.log(`Resource: %j`, uptimeCheckConfig.monitoredResource);
+  console.log(`Period: %j`, uptimeCheckConfig.period);
+  console.log(`Timeout: %j`, uptimeCheckConfig.timeout);
+  console.log(`Check type: ${uptimeCheckConfig.check_request_type}`);
+  console.log(
+    `Check: %j`,
+    uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
+  );
+  console.log(
+    `Content matchers: ${uptimeCheckConfig.contentMatchers
+      .map(matcher => matcher.content)
+      .join(', ')}`
+  );
+  console.log(`Regions: ${uptimeCheckConfig.selectedRegions.join(', ')}`);
 
-      console.log(`ID: ${uptimeCheckConfig.name}`);
-      console.log(`Display Name: ${uptimeCheckConfig.displayName}`);
-      console.log(`Resource: %j`, uptimeCheckConfig.monitoredResource);
-      console.log(`Period: %j`, uptimeCheckConfig.period);
-      console.log(`Timeout: %j`, uptimeCheckConfig.timeout);
-      console.log(`Check type: ${uptimeCheckConfig.check_request_type}`);
-      console.log(
-        `Check: %j`,
-        uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
-      );
-      console.log(
-        `Content matchers: ${uptimeCheckConfig.contentMatchers
-          .map(matcher => matcher.content)
-          .join(', ')}`
-      );
-      console.log(`Regions: ${uptimeCheckConfig.selectedRegions.join(', ')}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
   // [END monitoring_uptime_check_get]
 }
 
-function deleteUptimeCheckConfig(projectId, uptimeCheckConfigId) {
+async function deleteUptimeCheckConfig(projectId, uptimeCheckConfigId) {
   // [START monitoring_uptime_check_delete]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -232,18 +204,13 @@ function deleteUptimeCheckConfig(projectId, uptimeCheckConfigId) {
   console.log(`Deleting ${request.name}`);
 
   // Delete an uptime check config
-  client
-    .deleteUptimeCheckConfig(request)
-    .then(() => {
-      console.log(`${request.name} deleted.`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  await client.deleteUptimeCheckConfig(request);
+  console.log(`${request.name} deleted.`);
+
   // [END monitoring_uptime_check_delete]
 }
 
-function updateUptimeCheckConfigDisplayName(
+async function updateUptimeCheckConfigDisplayName(
   projectId,
   uptimeCheckConfigId,
   displayName,
@@ -280,14 +247,8 @@ function updateUptimeCheckConfigDisplayName(
 
   request.updateMask = {paths: ['display_name', 'http_check.path']};
 
-  client
-    .updateUptimeCheckConfig(request)
-    .then(responses => {
-      console.log(`${responses[0].name} config updated.`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [response] = await client.updateUptimeCheckConfig(request);
+  console.log(`${response.name} config updated.`);
 
   // [END monitoring_uptime_check_update]
 }

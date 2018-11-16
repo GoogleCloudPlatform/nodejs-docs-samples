@@ -22,7 +22,7 @@
 
 'use strict';
 
-function backupPolicies(projectId) {
+async function backupPolicies(projectId) {
   // [START monitoring_alert_backup_policies]
   const fs = require('fs');
 
@@ -41,26 +41,19 @@ function backupPolicies(projectId) {
     name: client.projectPath(projectId),
   };
 
-  client
-    .listAlertPolicies(listAlertPoliciesRequest)
-    .then(results => {
-      const policies = results[0];
+  const [policies] = await client.listAlertPolicies(listAlertPoliciesRequest);
 
-      fs.writeFileSync(
-        './policies_backup.json',
-        JSON.stringify(policies, null, 2),
-        'utf-8'
-      );
+  fs.writeFileSync(
+    './policies_backup.json',
+    JSON.stringify(policies, null, 2),
+    'utf-8'
+  );
 
-      console.log('Saved policies to ./policies_backup.json');
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  console.log('Saved policies to ./policies_backup.json');
   // [END monitoring_alert_backup_policies]
 }
 
-function restorePolicies(projectId) {
+async function restorePolicies(projectId) {
   // Note: The policies are restored one at a time because I get 'service
   //       unavailable' when I try to create multiple alerts simultaneously.
   // [START monitoring_alert_restore_policies]
@@ -82,55 +75,43 @@ function restorePolicies(projectId) {
   const fileContent = fs.readFileSync('./policies_backup.json', 'utf-8');
   const policies = JSON.parse(fileContent);
 
-  let promise = Promise.resolve();
-
-  policies.forEach(policy => {
+  for (const index in policies) {
     // Restore each policy one at a time
-    promise = promise
-      .then(() => doesAlertPolicyExist(policy.name))
-      .then(exists => {
-        if (exists) {
-          return client.updateAlertPolicy({alertPolicy: policy});
-        }
+    let policy = policies[index];
+    if (await doesAlertPolicyExist(policy.name)) {
+      policy = await client.updateAlertPolicy({alertPolicy: policy});
+    } else {
+      // Clear away output-only fields
+      delete policy.name;
+      delete policy.creationRecord;
+      delete policy.mutationRecord;
+      policy.conditions.forEach(condition => delete condition.name);
 
-        // Clear away output-only fields
-        delete policy.name;
-        delete policy.creationRecord;
-        delete policy.mutationRecord;
-        policy.conditions.forEach(condition => delete condition.name);
-
-        return client.createAlertPolicy({
-          name: client.projectPath(projectId),
-          alertPolicy: policy,
-        });
-      })
-      .then(response => {
-        const policy = response[0];
-        console.log(`Restored ${policy.name}.`);
+      policy = await client.createAlertPolicy({
+        name: client.projectPath(projectId),
+        alertPolicy: policy,
       });
-  });
+    }
 
-  promise.catch(err => {
-    console.error('ERROR:', err);
-  });
-
-  function doesAlertPolicyExist(name) {
-    return client
-      .getAlertPolicy({name: name})
-      .then(() => true)
-      .catch(err => {
-        if (err && err.code === 5) {
-          // Error code 5 comes from the google.rpc.code.NOT_FOUND protobuf
-          return false;
-        }
-        return Promise.reject(err);
-      });
+    console.log(`Restored ${policy[0].name}.`);
+  }
+  async function doesAlertPolicyExist(name) {
+    try {
+      const [policy] = await client.getAlertPolicy({name});
+      return policy ? true : false;
+    } catch (err) {
+      if (err && err.code === 5) {
+        // Error code 5 comes from the google.rpc.code.NOT_FOUND protobuf
+        return false;
+      }
+      throw err;
+    }
   }
   // [END monitoring_alert_create_policy]
   // [END monitoring_alert_restore_policies]
 }
 
-function replaceChannels(projectId, alertPolicyId, channelIds) {
+async function replaceChannels(projectId, alertPolicyId, channelIds) {
   // [START monitoring_alert_replace_channels]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -161,20 +142,14 @@ function replaceChannels(projectId, alertPolicyId, channelIds) {
       notificationChannels: notificationChannels,
     },
   };
-
-  alertClient
-    .updateAlertPolicy(updateAlertPolicyRequest)
-    .then(results => {
-      const alertPolicy = results[0];
-      console.log(`Updated ${alertPolicy.name}.`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [alertPolicy] = await alertClient.updateAlertPolicy(
+    updateAlertPolicyRequest
+  );
+  console.log(`Updated ${alertPolicy.name}.`);
   // [END monitoring_alert_replace_channels]
 }
 
-function enablePolicies(projectId, enabled, filter) {
+async function enablePolicies(projectId, enabled, filter) {
   // [START monitoring_alert_enable_policies]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -195,41 +170,30 @@ function enablePolicies(projectId, enabled, filter) {
     filter: filter,
   };
 
-  client
-    .listAlertPolicies(listAlertPoliciesRequest)
-    .then(results => {
-      const policies = results[0];
-
-      const tasks = policies
-        .map(policy => {
-          return {
-            updateMask: {paths: ['disabled']},
-            alertPolicy: {
-              name: policy.name,
-              disabled: enabled ? false : true,
-            },
-          };
-        })
-        .map(updateAlertPolicyRequest =>
-          client.updateAlertPolicy(updateAlertPolicyRequest)
-        );
-
-      // Wait for all policies to be enabled
-      return Promise.all(tasks);
-    })
-    .then(responses => {
-      responses.forEach(response => {
-        const alertPolicy = response[0];
-        console.log(`${enabled ? 'Enabled' : 'Disabled'} ${alertPolicy.name}.`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [policies] = await client.listAlertPolicies(listAlertPoliciesRequest);
+  const tasks = await Promise.all(
+    policies
+      .map(policy => {
+        return {
+          updateMask: {paths: ['disabled']},
+          alertPolicy: {
+            name: policy.name,
+            disabled: enabled ? false : true,
+          },
+        };
+      })
+      .map(updateAlertPolicyRequest =>
+        client.updateAlertPolicy(updateAlertPolicyRequest)
+      )
+  );
+  tasks.forEach(response => {
+    const alertPolicy = response[0];
+    console.log(`${enabled ? 'Enabled' : 'Disabled'} ${alertPolicy.name}.`);
+  });
   // [END monitoring_alert_enable_policies]
 }
 
-function listPolicies(projectId) {
+async function listPolicies(projectId) {
   // [START monitoring_alert_list_policies]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -245,23 +209,15 @@ function listPolicies(projectId) {
   const listAlertPoliciesRequest = {
     name: client.projectPath(projectId),
   };
+  const [policies] = await client.listAlertPolicies(listAlertPoliciesRequest);
+  console.log('Policies:');
+  policies.forEach(policy => {
+    console.log(`  Display name: ${policy.displayName}`);
+    if (policy.documentation && policy.documentation.content) {
+      console.log(`     Documentation: ${policy.documentation.content}`);
+    }
+  });
 
-  client
-    .listAlertPolicies(listAlertPoliciesRequest)
-    .then(results => {
-      const policies = results[0];
-
-      console.log('Policies:');
-      policies.forEach(policy => {
-        console.log(`  Display name: ${policy.displayName}`);
-        if (policy.documentation && policy.documentation.content) {
-          console.log(`     Documentation: ${policy.documentation.content}`);
-        }
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
   // [END monitoring_alert_list_policies]
 }
 

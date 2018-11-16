@@ -18,7 +18,7 @@
 const fs = require(`fs`);
 const monitoring = require(`@google-cloud/monitoring`);
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const client = new monitoring.AlertPolicyServiceClient();
@@ -28,179 +28,187 @@ const projectId = process.env.GCLOUD_PROJECT;
 
 let policyOneName, policyTwoName, channelName;
 
-test.before(tools.checkCredentials);
+before(tools.checkCredentials);
 
-test.before(async () => {
-  let results = await client.createAlertPolicy({
-    name: client.projectPath(projectId),
-    alertPolicy: {
-      displayName: 'first_policy',
-      combiner: 1,
-      documentation: {
-        content: 'Test',
-        mimeType: 'text/markdown',
-      },
-      conditions: [
-        {
-          displayName: 'Condition 1',
-          conditionAbsent: {
-            filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
-            aggregations: [
-              {
-                alignmentPeriod: {
-                  seconds: 60,
+before(async () => {
+  try {
+    tools.checkCredentials;
+    let results = await client.createAlertPolicy({
+      name: client.projectPath(projectId),
+      alertPolicy: {
+        displayName: 'first_policy',
+        combiner: 1,
+        documentation: {
+          content: 'Test',
+          mimeType: 'text/markdown',
+        },
+        conditions: [
+          {
+            displayName: 'Condition 1',
+            conditionAbsent: {
+              filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
+              aggregations: [
+                {
+                  alignmentPeriod: {
+                    seconds: 60,
+                  },
+                  perSeriesAligner: 1,
+                  crossSeriesReducer: 0,
                 },
-                perSeriesAligner: 1,
-                crossSeriesReducer: 0,
+              ],
+              duration: {
+                seconds: 120,
               },
-            ],
-            duration: {
-              seconds: 120,
-            },
-            trigger: {
-              count: 1,
+              trigger: {
+                count: 1,
+              },
             },
           },
-        },
-      ],
-    },
-  });
-  policyOneName = results[0].name;
-  results = await client.createAlertPolicy({
-    name: client.projectPath(projectId),
-    alertPolicy: {
-      displayName: 'second',
-      combiner: 1,
-      conditions: [
-        {
-          displayName: 'Condition 2',
-          conditionAbsent: {
-            filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
-            aggregations: [
-              {
-                alignmentPeriod: {
-                  seconds: 60,
+        ],
+      },
+    });
+    policyOneName = results[0].name;
+    results = await client.createAlertPolicy({
+      name: client.projectPath(projectId),
+      alertPolicy: {
+        displayName: 'second',
+        combiner: 1,
+        conditions: [
+          {
+            displayName: 'Condition 2',
+            conditionAbsent: {
+              filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
+              aggregations: [
+                {
+                  alignmentPeriod: {
+                    seconds: 60,
+                  },
+                  perSeriesAligner: 1,
+                  crossSeriesReducer: 0,
                 },
-                perSeriesAligner: 1,
-                crossSeriesReducer: 0,
+              ],
+              duration: {
+                seconds: 120,
               },
-            ],
-            duration: {
-              seconds: 120,
-            },
-            trigger: {
-              count: 1,
+              trigger: {
+                count: 1,
+              },
             },
           },
-        },
-      ],
-    },
-  });
-  policyTwoName = results[0].name;
-  results = await channelClient.createNotificationChannel({
-    name: channelClient.projectPath(projectId),
-    notificationChannel: {
-      displayName: 'Channel 1',
-      type: 'email',
-      labels: {
-        email_address: 'test@test.com',
+        ],
       },
-    },
-  });
-  channelName = results[0].name;
+    });
+    policyTwoName = results[0].name;
+    results = await channelClient.createNotificationChannel({
+      name: channelClient.projectPath(projectId),
+      notificationChannel: {
+        displayName: 'Channel 1',
+        type: 'email',
+        labels: {
+          email_address: 'test@test.com',
+        },
+      },
+    });
+    channelName = results[0].name;
+  } catch (err) {} // ignore error
 });
 
-function deletePolicies() {
-  return Promise.all([
-    client.deleteAlertPolicy({
-      name: policyOneName,
-    }),
-    client.deleteAlertPolicy({
-      name: policyTwoName,
-    }),
-  ]);
+async function deletePolicies() {
+  await client.deleteAlertPolicy({
+    name: policyOneName,
+  });
+  await client.deleteAlertPolicy({
+    name: policyTwoName,
+  });
 }
 
-function deleteChannels() {
-  return Promise.all([
-    channelClient.deleteNotificationChannel({
-      name: channelName,
-    }),
-  ]);
+async function deleteChannels() {
+  await channelClient.deleteNotificationChannel({
+    name: channelName,
+  });
 }
 
-test.after.always(async () => {
+after(async () => {
   await deletePolicies();
   // has to be done after policies are deleted
   await deleteChannels();
 });
 
-test.serial(`should replace notification channels`, async t => {
+it(`should replace notification channels`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
     [`alerts.js`, `replace`, policyOneName, channelName],
     cwd
   );
-  t.regex(results.output, /Updated projects\//);
-  t.true(results.output.includes(policyOneName));
+  assert.strictEqual(results.output.includes('Updated projects'), true);
+  assert.strictEqual(results.output.includes(policyOneName), true);
 });
 
-test.serial(`should disable policies`, async t => {
+it(`should disable policies`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
     [`alerts.js`, `disable`, projectId, `'display_name.size < 7'`],
     cwd
   );
-  t.regex(results.output, /Disabled projects\//);
-  t.false(results.output.includes(policyOneName));
-  t.true(results.output.includes(policyTwoName));
+  assert.strictEqual(results.output.includes('Disabled projects'), true);
+  assert.strictEqual(results.output.includes(policyOneName), false);
+  assert.strictEqual(results.output.includes(policyTwoName), true);
 });
 
-test.serial(`should enable policies`, async t => {
+it(`should enable policies`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
     [`alerts.js`, `enable`, projectId, `'display_name.size < 7'`],
     cwd
   );
-  t.regex(results.output, /Enabled projects\//);
-  t.false(results.output.includes(policyOneName));
-  t.true(results.output.includes(policyTwoName));
+  assert.strictEqual(results.output.includes('Enabled projects'), true);
+  assert.strictEqual(results.output.includes(policyOneName), false);
+  assert.strictEqual(results.output.includes(policyTwoName), true);
 });
 
-test.serial(`should list policies`, async t => {
+it(`should list policies`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
     [`alerts.js`, `list`, projectId],
     cwd
   );
-  t.regex(results.output, /Policies:/);
-  t.true(results.output.includes('first_policy'));
-  t.true(results.output.includes('Test'));
-  t.true(results.output.includes('second'));
+  assert.strictEqual(results.output.includes('Policies:'), true);
+  assert.strictEqual(results.output.includes('first_policy'), true);
+  assert.strictEqual(results.output.includes('Test'), true);
+  assert.strictEqual(results.output.includes('second'), true);
 });
 
-test.serial(`should backup all policies`, async t => {
+it(`should backup all policies`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
     [`alerts.js`, `backup`, projectId],
     cwd
   );
-  t.regex(results.output, /Saved policies to \.\/policies_backup.json/);
-  t.true(fs.existsSync(path.join(cwd, `policies_backup.json`)));
+  assert.strictEqual(
+    results.output.includes('Saved policies to ./policies_backup.json'),
+    true
+  );
+  assert.strictEqual(
+    fs.existsSync(path.join(cwd, `policies_backup.json`)),
+    true
+  );
   await client.deleteAlertPolicy({name: policyOneName});
 });
 
-test.serial(`should restore policies`, async t => {
+it(`should restore policies`, async () => {
   const results = await tools.spawnAsyncWithIO(
     `node`,
     [`alerts.js`, `restore`, projectId],
     cwd
   );
-  t.regex(results.output, /Loading policies from .\/policies_backup.json/);
+  assert.strictEqual(
+    results.output.includes('Loading policies from ./policies_backup.json'),
+    true
+  );
   const nameRegexp = /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi;
   const matches = results.output.match(nameRegexp);
-  t.true(Array.isArray(matches));
-  t.is(matches.length, 2);
+  assert.strictEqual(Array.isArray(matches), true);
+  assert.strictEqual(matches.length, 2);
   policyOneName = matches[0];
   policyTwoName = matches[1];
 });

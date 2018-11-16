@@ -23,7 +23,7 @@
 
 'use strict';
 
-function createMetricDescriptor(projectId) {
+async function createMetricDescriptor(projectId) {
   // [START monitoring_create_metric]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -56,32 +56,23 @@ function createMetricDescriptor(projectId) {
   };
 
   // Creates a custom metric descriptor
-  client
-    .createMetricDescriptor(request)
-    .then(results => {
-      const descriptor = results[0];
+  const [descriptor] = await client.createMetricDescriptor(request);
+  console.log('Created custom Metric:\n');
+  console.log(`Name: ${descriptor.displayName}`);
+  console.log(`Description: ${descriptor.description}`);
+  console.log(`Type: ${descriptor.type}`);
+  console.log(`Kind: ${descriptor.metricKind}`);
+  console.log(`Value Type: ${descriptor.valueType}`);
+  console.log(`Unit: ${descriptor.unit}`);
+  console.log('Labels:');
+  descriptor.labels.forEach(label => {
+    console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
+  });
 
-      console.log('Created custom Metric:\n');
-      console.log(`Name: ${descriptor.displayName}`);
-      console.log(`Description: ${descriptor.description}`);
-      console.log(`Type: ${descriptor.type}`);
-      console.log(`Kind: ${descriptor.metricKind}`);
-      console.log(`Value Type: ${descriptor.valueType}`);
-      console.log(`Unit: ${descriptor.unit}`);
-      console.log('Labels:');
-      descriptor.labels.forEach(label => {
-        console.log(
-          `  ${label.key} (${label.valueType}) - ${label.description}`
-        );
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
   // [END monitoring_create_metric]
 }
 
-function listMetricDescriptors(projectId) {
+async function listMetricDescriptors(projectId) {
   // [START monitoring_list_descriptors]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -99,21 +90,14 @@ function listMetricDescriptors(projectId) {
   };
 
   // Lists metric descriptors
-  client
-    .listMetricDescriptors(request)
-    .then(results => {
-      const descriptors = results[0];
+  const [descriptors] = await client.listMetricDescriptors(request);
+  console.log('Metric Descriptors:');
+  descriptors.forEach(descriptor => console.log(descriptor.name));
 
-      console.log('Metric Descriptors:');
-      descriptors.forEach(descriptor => console.log(descriptor.name));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
   // [END monitoring_list_descriptors]
 }
 
-function getMetricDescriptor(projectId, metricId) {
+async function getMetricDescriptor(projectId, metricId) {
   // [START monitoring_get_descriptor]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -132,31 +116,21 @@ function getMetricDescriptor(projectId, metricId) {
   };
 
   // Retrieves a metric descriptor
-  client
-    .getMetricDescriptor(request)
-    .then(results => {
-      const descriptor = results[0];
-
-      console.log(`Name: ${descriptor.displayName}`);
-      console.log(`Description: ${descriptor.description}`);
-      console.log(`Type: ${descriptor.type}`);
-      console.log(`Kind: ${descriptor.metricKind}`);
-      console.log(`Value Type: ${descriptor.valueType}`);
-      console.log(`Unit: ${descriptor.unit}`);
-      console.log('Labels:');
-      descriptor.labels.forEach(label => {
-        console.log(
-          `  ${label.key} (${label.valueType}) - ${label.description}`
-        );
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [descriptor] = await client.getMetricDescriptor(request);
+  console.log(`Name: ${descriptor.displayName}`);
+  console.log(`Description: ${descriptor.description}`);
+  console.log(`Type: ${descriptor.type}`);
+  console.log(`Kind: ${descriptor.metricKind}`);
+  console.log(`Value Type: ${descriptor.valueType}`);
+  console.log(`Unit: ${descriptor.unit}`);
+  console.log('Labels:');
+  descriptor.labels.forEach(label => {
+    console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
+  });
   // [END monitoring_get_descriptor]
 }
 
-function deleteMetricDescriptor(projectId, metricId) {
+async function deleteMetricDescriptor(projectId, metricId) {
   // [START monitoring_delete_metric]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -175,18 +149,13 @@ function deleteMetricDescriptor(projectId, metricId) {
   };
 
   // Deletes a metric descriptor
-  client
-    .deleteMetricDescriptor(request)
-    .then(results => {
-      console.log(`Deleted ${metricId}`, results[0]);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.deleteMetricDescriptor(request);
+  console.log(`Deleted ${metricId}`, result);
+
   // [END monitoring_delete_metric]
 }
 
-function writeTimeSeriesData(projectId) {
+async function writeTimeSeriesData(projectId) {
   // [START monitoring_write_timeseries]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -232,18 +201,13 @@ function writeTimeSeriesData(projectId) {
   };
 
   // Writes time series data
-  client
-    .createTimeSeries(request)
-    .then(results => {
-      console.log(`Done writing time series data.`, results[0]);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const result = await client.createTimeSeries(request);
+  console.log(`Done writing time series data.`, result);
+
   // [END monitoring_write_timeseries]
 }
 
-function readTimeSeriesData(projectId, filter) {
+async function readTimeSeriesData(projectId, filter) {
   // [START monitoring_read_timeseries_simple]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -272,25 +236,18 @@ function readTimeSeriesData(projectId, filter) {
   };
 
   // Writes time series data
-  client
-    .listTimeSeries(request)
-    .then(results => {
-      const timeSeries = results[0];
-
-      timeSeries.forEach(data => {
-        console.log(`${data.metric.labels.instance_name}:`);
-        data.points.forEach(point => {
-          console.log(JSON.stringify(point.value));
-        });
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
+  const [timeSeries] = await client.listTimeSeries(request);
+  timeSeries.forEach(data => {
+    console.log(`${data.metric.labels.instance_name}:`);
+    data.points.forEach(point => {
+      console.log(JSON.stringify(point.value));
     });
+  });
+
   // [END monitoring_read_timeseries_simple]
 }
 
-function readTimeSeriesFields(projectId) {
+async function readTimeSeriesFields(projectId) {
   // [START monitoring_read_timeseries_fields]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -321,23 +278,16 @@ function readTimeSeriesFields(projectId) {
   };
 
   // Writes time series data
-  client
-    .listTimeSeries(request)
-    .then(results => {
-      const timeSeries = results[0];
+  const [timeSeries] = await client.listTimeSeries(request);
+  console.log('Found data points for the following instances:');
+  timeSeries.forEach(data => {
+    console.log(data.metric.labels.instance_name);
+  });
 
-      console.log('Found data points for the following instances:');
-      timeSeries.forEach(data => {
-        console.log(data.metric.labels.instance_name);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
   // [END monitoring_read_timeseries_fields]
 }
 
-function readTimeSeriesAggregate(projectId) {
+async function readTimeSeriesAggregate(projectId) {
   // [START monitoring_read_timeseries_align]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -372,25 +322,17 @@ function readTimeSeriesAggregate(projectId) {
   };
 
   // Writes time series data
-  client
-    .listTimeSeries(request)
-    .then(results => {
-      const timeSeries = results[0];
-
-      console.log('CPU utilization:');
-      timeSeries.forEach(data => {
-        console.log(data.metric.labels.instance_name);
-        console.log(`  Now: ${data.points[0].value.doubleValue}`);
-        console.log(`  10 min ago: ${data.points[1].value.doubleValue}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [timeSeries] = await client.listTimeSeries(request);
+  console.log('CPU utilization:');
+  timeSeries.forEach(data => {
+    console.log(data.metric.labels.instance_name);
+    console.log(`  Now: ${data.points[0].value.doubleValue}`);
+    console.log(`  10 min ago: ${data.points[1].value.doubleValue}`);
+  });
   // [END monitoring_read_timeseries_align]
 }
 
-function readTimeSeriesReduce(projectId) {
+async function readTimeSeriesReduce(projectId) {
   // [START monitoring_read_timeseries_reduce]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -426,26 +368,21 @@ function readTimeSeriesReduce(projectId) {
   };
 
   // Writes time series data
-  client
-    .listTimeSeries(request)
-    .then(results => {
-      if (results[0].length === 0) {
-        console.log('No data');
-        return;
-      }
-      const reductions = results[0][0].points;
+  const [result] = await client.listTimeSeries(request);
+  if (result.length === 0) {
+    console.log('No data');
+    return;
+  }
+  const reductions = result[0].points;
 
-      console.log('Average CPU utilization across all GCE instances:');
-      console.log(`  Last 10 min: ${reductions[0].value.doubleValue}`);
-      console.log(`  10-20 min ago: ${reductions[0].value.doubleValue}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  console.log('Average CPU utilization across all GCE instances:');
+  console.log(`  Last 10 min: ${reductions[0].value.doubleValue}`);
+  console.log(`  10-20 min ago: ${reductions[0].value.doubleValue}`);
+
   // [END monitoring_read_timeseries_reduce]
 }
 
-function listMonitoredResourceDescriptors(projectId) {
+async function listMonitoredResourceDescriptors(projectId) {
   // [START monitoring_list_resources]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -463,33 +400,26 @@ function listMonitoredResourceDescriptors(projectId) {
   };
 
   // Lists monitored resource descriptors
-  client
-    .listMonitoredResourceDescriptors(request)
-    .then(results => {
-      const descriptors = results[0];
-
-      console.log('Monitored Resource Descriptors:');
-      descriptors.forEach(descriptor => {
-        console.log(descriptor.name);
-        console.log(`  Type: ${descriptor.type}`);
-        if (descriptor.labels) {
-          console.log(`  Labels:`);
-          descriptor.labels.forEach(label => {
-            console.log(
-              `    ${label.key} (${label.valueType}): ${label.description}`
-            );
-          });
-        }
-        console.log();
+  const [descriptors] = await client.listMonitoredResourceDescriptors(request);
+  console.log('Monitored Resource Descriptors:');
+  descriptors.forEach(descriptor => {
+    console.log(descriptor.name);
+    console.log(`  Type: ${descriptor.type}`);
+    if (descriptor.labels) {
+      console.log(`  Labels:`);
+      descriptor.labels.forEach(label => {
+        console.log(
+          `    ${label.key} (${label.valueType}): ${label.description}`
+        );
       });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+    }
+    console.log();
+  });
+
   // [END monitoring_list_resources]
 }
 
-function getMonitoredResourceDescriptor(projectId, resourceType) {
+async function getMonitoredResourceDescriptor(projectId, resourceType) {
   // [START monitoring_get_resource]
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -508,24 +438,15 @@ function getMonitoredResourceDescriptor(projectId, resourceType) {
   };
 
   // Lists monitored resource descriptors
-  client
-    .getMonitoredResourceDescriptor(request)
-    .then(results => {
-      const descriptor = results[0];
+  const [descriptor] = await client.getMonitoredResourceDescriptor(request);
 
-      console.log(`Name: ${descriptor.displayName}`);
-      console.log(`Description: ${descriptor.description}`);
-      console.log(`Type: ${descriptor.type}`);
-      console.log('Labels:');
-      descriptor.labels.forEach(label => {
-        console.log(
-          `  ${label.key} (${label.valueType}) - ${label.description}`
-        );
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  console.log(`Name: ${descriptor.displayName}`);
+  console.log(`Description: ${descriptor.description}`);
+  console.log(`Type: ${descriptor.type}`);
+  console.log('Labels:');
+  descriptor.labels.forEach(label => {
+    console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
+  });
   // [END monitoring_get_resource]
 }
 

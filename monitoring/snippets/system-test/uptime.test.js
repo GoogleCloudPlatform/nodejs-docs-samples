@@ -16,7 +16,7 @@
 'use strict';
 
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const cmd = `node uptime.js`;
@@ -34,42 +34,46 @@ function getResourceObjects(output) {
   return result;
 }
 
-test.before(tools.checkCredentials);
+before(tools.checkCredentials);
 
-test(`should list uptime-check ips`, async t => {
-  t.regex(await tools.runAsync(`${cmd} list-ips`, cwd), /USA/);
+it(`should list uptime-check ips`, async () => {
+  assert.strictEqual(
+    (await tools.runAsync(`${cmd} list-ips`, cwd)).includes('USA'),
+    true
+  );
 });
 
 let id;
 
-test.serial(`should create an uptime check`, async t => {
+it(`should create an uptime check`, async () => {
   const results = await tools.runAsyncWithIO(`${cmd} create ${hostname}`, cwd);
   const output = results.stdout + results.stderr;
   const matches = output.match(
     new RegExp(`ID: projects/${projectId}/uptimeCheckConfigs/(.+)`)
   );
   id = matches[1];
-  t.regex(output, /Uptime check created:/);
+  assert.strictEqual(output.includes('Uptime check created:'), true);
   const resources = getResourceObjects(output);
-  t.is(resources[0]['type'], 'uptime_url');
-  t.is(resources[0]['labels']['host'], hostname);
-  t.regex(output, /Display Name: My Uptime Check/);
+  assert.strictEqual(resources[0]['type'], 'uptime_url');
+  assert.strictEqual(resources[0]['labels']['host'], hostname);
+  assert.strictEqual(output.includes('Display Name: My Uptime Check'), true);
 });
 
-test.serial(`should get an uptime check`, async t => {
+it(`should get an uptime check`, async () => {
   const results = await tools.runAsyncWithIO(`${cmd} get ${id}`, cwd);
   const output = results.stdout + results.stderr;
-  t.regex(
-    output,
-    new RegExp(`Retrieving projects/${projectId}/uptimeCheckConfigs/${id}`)
+  assert.strictEqual(
+    new RegExp(
+      `Retrieving projects/${projectId}/uptimeCheckConfigs/${id}`
+    ).test(output),
+    true
   );
   const resources = getResourceObjects(output);
-  t.is(resources[0]['type'], 'uptime_url');
-  t.is(resources[0]['labels']['host'], hostname);
+  assert.strictEqual(resources[0]['type'], 'uptime_url');
+  assert.strictEqual(resources[0]['labels']['host'], hostname);
 });
 
-test.serial(`should list uptime checks`, async t => {
-  t.plan(0);
+it(`should list uptime checks`, async () => {
   await tools
     .tryTest(async assert => {
       const results = await tools.runAsyncWithIO(`${cmd} list`, cwd);
@@ -87,7 +91,7 @@ test.serial(`should list uptime checks`, async t => {
     .start();
 });
 
-test.serial(`should update an uptime check`, async t => {
+it(`should update an uptime check`, async () => {
   const newDisplayName = 'My New Display';
   const path = '/';
   const results = await tools.runAsyncWithIO(
@@ -95,27 +99,33 @@ test.serial(`should update an uptime check`, async t => {
     cwd
   );
   const output = results.stdout + results.stderr;
-  t.regex(
-    output,
+  assert.strictEqual(
     new RegExp(
       `Updating projects/${projectId}/uptimeCheckConfigs/${id} to ${newDisplayName}`
-    )
+    ).test(output),
+    true
   );
-  t.regex(
-    output,
-    new RegExp(`projects/${projectId}/uptimeCheckConfigs/${id} config updated.`)
+  assert.strictEqual(
+    new RegExp(
+      `projects/${projectId}/uptimeCheckConfigs/${id} config updated.`
+    ).test(output),
+    true
   );
 });
 
-test.serial(`should delete an uptime check`, async t => {
+it(`should delete an uptime check`, async () => {
   const results = await tools.runAsyncWithIO(`${cmd} delete ${id}`, cwd);
   const output = results.stdout + results.stderr;
-  t.regex(
-    output,
-    new RegExp(`Deleting projects/${projectId}/uptimeCheckConfigs/${id}`)
+  assert.strictEqual(
+    new RegExp(`Deleting projects/${projectId}/uptimeCheckConfigs/${id}`).test(
+      output
+    ),
+    true
   );
-  t.regex(
-    output,
-    new RegExp(`projects/${projectId}/uptimeCheckConfigs/${id} deleted.`)
+  assert.strictEqual(
+    new RegExp(`projects/${projectId}/uptimeCheckConfigs/${id} deleted.`).test(
+      output
+    ),
+    true
   );
 });

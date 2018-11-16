@@ -9,7 +9,7 @@
     "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },
   "dependencies": {
-    "jsonwebtoken": "8.2.0",
+    "jsonwebtoken": "8.4.0",
     "mqtt": "2.16.0",
     "yargs": "11.0.0"
   },

@@ -17,7 +17,7 @@
 
 const path = require(`path`);
 const {Storage} = require(`@google-cloud/storage`);
-const test = require(`ava`);
+const assert = require(`assert`);
 const uuid = require(`uuid`);
 const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 const storage = new Storage();
@@ -31,19 +31,21 @@ const filepath2 = path.join(__dirname, `../resources/${filename2}`);
 
 const text = `Chrome`;
 
-test.before(async () => {
-  const [bucket] = await storage.createBucket(bucketName);
-  await bucket.upload(filepath1);
-});
+describe(`Recognize v1p1beta1`, () => {
+  before(async () => {
+    const [bucket] = await storage.createBucket(bucketName);
+    await bucket.upload(filepath1);
+  });
 
-test.after.always(async () => {
-  const bucket = storage.bucket(bucketName);
-  await bucket.deleteFiles({force: true});
-  await bucket.deleteFiles({force: true}); // Try a second time...
-  await bucket.delete();
-});
+  after(async () => {
+    const bucket = storage.bucket(bucketName);
+    await bucket.deleteFiles({force: true});
+    await bucket.deleteFiles({force: true}); // Try a second time...
+    await bucket.delete();
+  });
 
-test(`should run sync recognize with metadata`, async t => {
-  const output = await runAsync(`${cmd} sync-metadata ${filepath2}`, cwd);
-  t.true(output.includes(text));
+  it(`should run sync recognize with metadata`, async () => {
+    const output = await runAsync(`${cmd} sync-metadata ${filepath2}`, cwd);
+    assert.ok(output.includes(text));
+  });
 });

@@ -18,7 +18,7 @@
 'use strict';
 
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require(`assert`);
 
 const cmd = `node quickstart.js`;
 const cwd = path.join(__dirname, `..`);
@@ -26,9 +26,9 @@ const text = `how old is the Brooklyn Bridge`;
 
 const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
 
-test.before(async () => {});
-
-test(`should run quickstart`, async t => {
-  const output = await runAsync(`${cmd}`, cwd);
-  t.true(output.includes(`Transcription: ${text}`));
+describe(`Quickstart`, () => {
+  it(`should run quickstart`, async () => {
+    const output = await runAsync(`${cmd}`, cwd);
+    assert.ok(output.includes(`Transcription: ${text}`));
+  });
 });

@@ -17,7 +17,7 @@
 
 const path = require(`path`);
 const {Storage} = require(`@google-cloud/storage`);
-const test = require(`ava`);
+const assert = require(`assert`);
 const uuid = require(`uuid`);
 
 const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
@@ -37,92 +37,100 @@ const text1 = `the weather outside is sunny`;
 const text2 = `Terrific. It's on the way.`;
 const text3 = `Chrome`;
 
-test.before(async () => {
-  const [bucket] = await storage.createBucket(bucketName);
-  await bucket.upload(filepath);
-  await bucket.upload(filepath1);
-});
+describe(`Recognize`, () => {
+  before(async () => {
+    const [bucket] = await storage.createBucket(bucketName);
+    await bucket.upload(filepath);
+    await bucket.upload(filepath1);
+  });
 
-test.after.always(async () => {
-  const bucket = storage.bucket(bucketName);
-  await bucket.deleteFiles({force: true});
-  await bucket.deleteFiles({force: true}); // Try a second time...
-  await bucket.delete();
-});
+  after(async () => {
+    const bucket = storage.bucket(bucketName);
+    await bucket.deleteFiles({force: true});
+    await bucket.deleteFiles({force: true}); // Try a second time...
+    await bucket.delete();
+  });
 
-test(`should run sync recognize`, async t => {
-  const output = await runAsync(`${cmd} sync ${filepath}`, cwd);
-  t.true(output.includes(`Transcription:  ${text}`));
-});
+  it(`should run sync recognize`, async () => {
+    const output = await runAsync(`${cmd} sync ${filepath}`, cwd);
+    assert.ok(output.includes(`Transcription:  ${text}`));
+  });
 
-test(`should run sync recognize on a GCS file`, async t => {
-  const output = await runAsync(
-    `${cmd} sync-gcs gs://${bucketName}/${filename}`,
-    cwd
-  );
-  t.true(output.includes(`Transcription:  ${text}`));
-});
+  it(`should run sync recognize on a GCS file`, async () => {
+    const output = await runAsync(
+      `${cmd} sync-gcs gs://${bucketName}/${filename}`,
+      cwd
+    );
+    assert.ok(output.includes(`Transcription:  ${text}`));
+  });
 
-test(`should run sync recognize with word time offset`, async t => {
-  const output = await runAsync(`${cmd} sync-words ${filepath}`, cwd);
-  t.true(output.includes(`Transcription:  ${text}`));
-  t.true(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
-});
+  it(`should run sync recognize with word time offset`, async () => {
+    const output = await runAsync(`${cmd} sync-words ${filepath}`, cwd);
+    assert.ok(output.includes(`Transcription:  ${text}`));
+    assert.ok(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
+  });
 
-test(`should run async recognize on a local file`, async t => {
-  const output = await runAsync(`${cmd} async ${filepath}`, cwd);
-  t.true(output.includes(`Transcription: ${text}`));
-});
+  it(`should run async recognize on a local file`, async () => {
+    const output = await runAsync(`${cmd} async ${filepath}`, cwd);
+    assert.ok(output.includes(`Transcription: ${text}`));
+  });
 
-test(`should run async recognize on a GCS file`, async t => {
-  const output = await runAsync(
-    `${cmd} async-gcs gs://${bucketName}/${filename}`,
-    cwd
-  );
-  t.true(output.includes(`Transcription: ${text}`));
-});
+  it(`should run async recognize on a GCS file`, async () => {
+    const output = await runAsync(
+      `${cmd} async-gcs gs://${bucketName}/${filename}`,
+      cwd
+    );
+    assert.ok(output.includes(`Transcription: ${text}`));
+  });
 
-test(`should run async recognize on a GCS file with word time offset`, async t => {
-  const output = await runAsync(
-    `${cmd} async-gcs-words gs://${bucketName}/${filename}`,
-    cwd
-  );
-  t.true(output.includes(`Transcription: ${text}`));
-  // Check for word time offsets
-  t.true(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
-});
+  it(`should run async recognize on a GCS file with word time offset`, async () => {
+    const output = await runAsync(
+      `${cmd} async-gcs-words gs://${bucketName}/${filename}`,
+      cwd
+    );
+    assert.ok(output.includes(`Transcription: ${text}`));
+    // Check for word time offsets
+    assert.ok(new RegExp(`\\d+\\.\\d+ secs - \\d+\\.\\d+ secs`).test(output));
+  });
 
-test(`should run streaming recognize`, async t => {
-  const output = await runAsync(`${cmd} stream ${filepath}`, cwd);
-  t.true(output.includes(`Transcription: ${text}`));
-});
+  it(`should run streaming recognize`, async () => {
+    const output = await runAsync(`${cmd} stream ${filepath}`, cwd);
+    assert.ok(output.includes(`Transcription: ${text}`));
+  });
 
-test(`should run sync recognize with model selection`, async t => {
-  const model = `video`;
-  const output = await runAsync(`${cmd} sync-model ${filepath1} ${model}`, cwd);
-  t.true(output.includes(`Transcription:`));
-  t.true(output.includes(text1));
-});
+  it(`should run sync recognize with model selection`, async () => {
+    const model = `video`;
+    const output = await runAsync(
+      `${cmd} sync-model ${filepath1} ${model}`,
+      cwd
+    );
+    assert.ok(output.includes(`Transcription:`));
+    assert.ok(output.includes(text1));
+  });
 
-test(`should run sync recognize on a GCS file with model selection`, async t => {
-  const model = `video`;
-  const output = await runAsync(
-    `${cmd} sync-model-gcs gs://${bucketName}/${filename1} ${model}`,
-    cwd
-  );
-  t.true(output.includes(`Transcription:`));
-  t.true(output.includes(text1));
-});
+  it(`should run sync recognize on a GCS file with model selection`, async () => {
+    const model = `video`;
+    const output = await runAsync(
+      `${cmd} sync-model-gcs gs://${bucketName}/${filename1} ${model}`,
+      cwd
+    );
+    assert.ok(output.includes(`Transcription:`));
+    assert.ok(output.includes(text1));
+  });
 
-test(`should run sync recognize with auto punctuation`, async t => {
-  const output = await runAsync(
-    `${cmd} sync-auto-punctuation ${filepath2}`,
-    cwd
-  );
-  t.true(output.includes(text2));
-});
+  it(`should run sync recognize with auto punctuation`, async () => {
+    const output = await runAsync(
+      `${cmd} sync-auto-punctuation ${filepath2}`,
+      cwd
+    );
+    assert.ok(output.includes(text2));
+  });
 
-test(`should run sync recognize with enhanced model`, async t => {
-  const output = await runAsync(`${cmd} sync-enhanced-model ${filepath2}`, cwd);
-  t.true(output.includes(text3));
+  it(`should run sync recognize with enhanced model`, async () => {
+    const output = await runAsync(
+      `${cmd} sync-enhanced-model ${filepath2}`,
+      cwd
+    );
+    assert.ok(output.includes(text3));
+  });
 });

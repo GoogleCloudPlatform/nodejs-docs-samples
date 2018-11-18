@@ -18,7 +18,7 @@
 const path = require(`path`);
 const vision = require('@google-cloud/vision').v1p3beta1;
 const productSearch = new vision.ProductSearchClient();
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node similarProducts.v1p3beta1.js`;
 const cwd = path.join(__dirname, `..`);
@@ -38,72 +38,83 @@ testSimilarProducts.productPath = productSearch.productSetPath(
   testSimilarProducts.location,
   testSimilarProducts.productSetId
 );
-test(`should check if similar product exists to one provided in local file with no filter`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${
-      testSimilarProducts.location
-    }" "${testSimilarProducts.productSetId}" "${
-      testSimilarProducts.productCategory
-    }" "${localPath}" "${filter[0]}"`,
-    cwd
-  );
 
-  t.true(output.includes(`Similar product information:`));
-  t.true(
-    output.includes(`Product category: ${testSimilarProducts.productCategory}`)
-  );
-  t.true(output.includes(`Product id: indexed_product_id_for_testing_1`));
-  t.true(output.includes(`Product id: indexed_product_id_for_testing_2`));
-});
+describe(`similar products`, () => {
+  it(`should check if similar product exists to one provided in local file with no filter`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${
+        testSimilarProducts.location
+      }" "${testSimilarProducts.productSetId}" "${
+        testSimilarProducts.productCategory
+      }" "${localPath}" "${filter[0]}"`,
+      cwd
+    );
 
-test(`should check if similar product exists to one provided in local file with filter`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${
-      testSimilarProducts.location
-    }" "${testSimilarProducts.productSetId}" "${
-      testSimilarProducts.productCategory
-    }" "${localPath}" "${filter[1]}"`,
-    cwd
-  );
+    assert.ok(output.includes(`Similar product information:`));
+    assert.ok(
+      output.includes(
+        `Product category: ${testSimilarProducts.productCategory}`
+      )
+    );
+    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
+    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_2`));
+  });
 
-  t.true(output.includes(`Similar product information:`));
-  t.true(
-    output.includes(`Product category: ${testSimilarProducts.productCategory}`)
-  );
-  t.true(output.includes(`Product id: indexed_product_id_for_testing_1`));
-});
+  it(`should check if similar product exists to one provided in local file with filter`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${
+        testSimilarProducts.location
+      }" "${testSimilarProducts.productSetId}" "${
+        testSimilarProducts.productCategory
+      }" "${localPath}" "${filter[1]}"`,
+      cwd
+    );
 
-test(`should check if similar product exists to one provided in GCS file with no filter`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${
-      testSimilarProducts.location
-    }" "${testSimilarProducts.productSetId}" "${
-      testSimilarProducts.productCategory
-    }" "${gcsUri}" "${filter[0]}"`,
-    cwd
-  );
+    assert.ok(output.includes(`Similar product information:`));
+    assert.ok(
+      output.includes(
+        `Product category: ${testSimilarProducts.productCategory}`
+      )
+    );
+    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
+  });
 
-  t.true(output.includes(`Similar product information:`));
-  t.true(
-    output.includes(`Product category: ${testSimilarProducts.productCategory}`)
-  );
-  t.true(output.includes(`Product id: indexed_product_id_for_testing_1`));
-  t.true(output.includes(`Product id: indexed_product_id_for_testing_2`));
-});
+  it(`should check if similar product exists to one provided in GCS file with no filter`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${
+        testSimilarProducts.location
+      }" "${testSimilarProducts.productSetId}" "${
+        testSimilarProducts.productCategory
+      }" "${gcsUri}" "${filter[0]}"`,
+      cwd
+    );
 
-test(`should check if similar product exists to one provided in GCS file with filter`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${
-      testSimilarProducts.location
-    }" "${testSimilarProducts.productSetId}" "${
-      testSimilarProducts.productCategory
-    }" "${gcsUri}" "${filter[1]}"`,
-    cwd
-  );
+    assert.ok(output.includes(`Similar product information:`));
+    assert.ok(
+      output.includes(
+        `Product category: ${testSimilarProducts.productCategory}`
+      )
+    );
+    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
+    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_2`));
+  });
 
-  t.true(output.includes(`Similar product information:`));
-  t.true(
-    output.includes(`Product category: ${testSimilarProducts.productCategory}`)
-  );
-  t.true(output.includes(`Product id: indexed_product_id_for_testing_1`));
+  it(`should check if similar product exists to one provided in GCS file with filter`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${
+        testSimilarProducts.location
+      }" "${testSimilarProducts.productSetId}" "${
+        testSimilarProducts.productCategory
+      }" "${gcsUri}" "${filter[1]}"`,
+      cwd
+    );
+
+    assert.ok(output.includes(`Similar product information:`));
+    assert.ok(
+      output.includes(
+        `Product category: ${testSimilarProducts.productCategory}`
+      )
+    );
+    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
+  });
 });

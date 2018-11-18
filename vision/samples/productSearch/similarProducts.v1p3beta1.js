@@ -15,7 +15,7 @@
 
 'use strict';
 // [START vision_product_search_get_similar_products]
-function getSimilarProductsFile(
+async function getSimilarProductsFile(
   projectId,
   location,
   productSetId,
@@ -62,31 +62,23 @@ function getSimilarProductsFile(
       },
     },
   };
-  imageAnnotatorClient
-    .batchAnnotateImages({requests: [request]})
-    .then(responses => {
-      const response = responses[0];
-
-      console.log('Search Image:', filePath);
-
-      const results =
-        response['responses'][0]['productSearchResults']['results'];
-      console.log('\nSimilar product information:');
-      results.forEach(result => {
-        console.log('Product id:', result['product'].name.split('/').pop(-1));
-        console.log('Product display name:', result['product'].displayName);
-        console.log('Product description:', result['product'].description);
-        console.log('Product category:', result['product'].productCategory);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [response] = await imageAnnotatorClient.batchAnnotateImages({
+    requests: [request],
+  });
+  console.log('Search Image:', filePath);
+  const results = response['responses'][0]['productSearchResults']['results'];
+  console.log('\nSimilar product information:');
+  results.forEach(result => {
+    console.log('Product id:', result['product'].name.split('/').pop(-1));
+    console.log('Product display name:', result['product'].displayName);
+    console.log('Product description:', result['product'].description);
+    console.log('Product category:', result['product'].productCategory);
+  });
 }
 // [END vision_product_search_get_similar_products]
 
 // [START vision_product_search_get_similar_products_gcs]
-function getSimilarProductsGcs(
+async function getSimilarProductsGcs(
   projectId,
   location,
   productSetId,
@@ -133,24 +125,20 @@ function getSimilarProductsGcs(
     },
   };
   console.log(request.image);
-  imageAnnotatorClient
-    .batchAnnotateImages({requests: [request]})
-    .then(responses => {
-      const response = responses[0];
-      console.log('Search Image:', filePath);
-      console.log('\nSimilar product information:');
-      const results =
-        response['responses'][0]['productSearchResults']['results'];
-      results.forEach(result => {
-        console.log('Product id:', result['product'].name.split('/').pop(-1));
-        console.log('Product display name:', result['product'].displayName);
-        console.log('Product description:', result['product'].description);
-        console.log('Product category:', result['product'].productCategory);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+
+  const [response] = await imageAnnotatorClient.batchAnnotateImages({
+    requests: [request],
+  });
+  console.log('Search Image:', filePath);
+  console.log('\nSimilar product information:');
+
+  const results = response['responses'][0]['productSearchResults']['results'];
+  results.forEach(result => {
+    console.log('Product id:', result['product'].name.split('/').pop(-1));
+    console.log('Product display name:', result['product'].displayName);
+    console.log('Product description:', result['product'].description);
+    console.log('Product category:', result['product'].productCategory);
+  });
 }
 // [END vision_product_search_get_similar_products_gcs]
 require(`yargs`) // eslint-disable-line

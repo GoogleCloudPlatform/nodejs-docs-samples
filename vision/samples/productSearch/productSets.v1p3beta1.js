@@ -15,7 +15,7 @@
 
 'use strict';
 
-function createProductSet(
+async function createProductSet(
   projectId,
   location,
   productSetId,
@@ -49,20 +49,12 @@ function createProductSet(
     productSetId: productSetId,
   };
 
-  client
-    .createProductSet(request)
-    .then(results => {
-      // The response is the product set with the `name` field populated
-      const createdProductSet = results[0];
-      console.log(`Product Set name: ${createdProductSet.name}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [createdProductSet] = await client.createProductSet(request);
+  console.log(`Product Set name: ${createdProductSet.name}`);
   // [END vision_product_search_create_product_set]
 }
 
-function getProductSet(projectId, location, productSetId) {
+async function getProductSet(projectId, location, productSetId) {
   // [START vision_product_search_get_product_set]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -84,20 +76,13 @@ function getProductSet(projectId, location, productSetId) {
     productSetId
   );
 
-  client
-    .getProductSet({name: productSetPath})
-    .then(results => {
-      const productSet = results[0];
-      console.log(`Product Set name: ${productSet.name}`);
-      console.log(`Product Set display name: ${productSet.displayName}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [productSet] = await client.getProductSet({name: productSetPath});
+  console.log(`Product Set name: ${productSet.name}`);
+  console.log(`Product Set display name: ${productSet.displayName}`);
   // [END vision_product_search_get_product_set]
 }
 
-function listProductSets(projectId, location) {
+async function listProductSets(projectId, location) {
   // [START vision_product_search_list_product_sets]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -114,22 +99,15 @@ function listProductSets(projectId, location) {
   // Resource path that represents Google Cloud Platform location.
   const locationPath = client.locationPath(projectId, location);
 
-  client
-    .listProductSets({parent: locationPath})
-    .then(results => {
-      const productSets = results[0];
-      productSets.forEach(productSet => {
-        console.log(`Product Set name: ${productSet.name}`);
-        console.log(`Product Set display name: ${productSet.displayName}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [productSets] = await client.listProductSets({parent: locationPath});
+  productSets.forEach(productSet => {
+    console.log(`Product Set name: ${productSet.name}`);
+    console.log(`Product Set display name: ${productSet.displayName}`);
+  });
   // [END vision_product_search_list_product_sets]
 }
 
-function deleteProductSet(projectId, location, productSetId) {
+async function deleteProductSet(projectId, location, productSetId) {
   // [START vision_product_search_delete_product_set]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -151,14 +129,8 @@ function deleteProductSet(projectId, location, productSetId) {
     productSetId
   );
 
-  client
-    .deleteProductSet({name: productSetPath})
-    .then(() => {
-      console.log('Product set deleted.');
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  await client.deleteProductSet({name: productSetPath});
+  console.log('Product set deleted.');
   // [END vision_product_search_delete_product_set]
 }
 

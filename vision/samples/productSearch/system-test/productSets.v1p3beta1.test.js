@@ -19,7 +19,7 @@ const path = require(`path`);
 const uuid = require(`uuid`);
 const vision = require('@google-cloud/vision').v1p3beta1;
 const productSearch = new vision.ProductSearchClient();
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node productSets.v1p3beta1.js`;
 const cwd = path.join(__dirname, `..`);
@@ -52,109 +52,119 @@ async function getProductSetOrFalse(productSetPath) {
   }
 }
 
-test.before(tools.checkCredentials);
-test.before(async () => {
-  // Create a test product set for each test
-  try {
-    await productSearch.createProductSet({
-      parent: productSearch.locationPath(
-        testProductSet.projectId,
-        testProductSet.location
-      ),
-      productSetId: testProductSet.productSetId,
-      productSet: {
-        displayName: testProductSet.productSetDisplayName,
-      },
-    });
-    testProductSet.createdProductSetPaths.push(
-      testProductSet.createdProductSetPaths
-    );
-  } catch (err) {} // ignore error
-});
-test.after(async () => {
-  // Delete products sets after each test
-  testProductSet.createdProductSetPaths.forEach(async path => {
+describe(`product sets`, () => {
+  before(tools.checkCredentials);
+
+  before(async () => {
+    // Create a test product set for each test
     try {
-      await productSearch.deleteProductSet({name: path});
+      await productSearch.createProductSet({
+        parent: productSearch.locationPath(
+          testProductSet.projectId,
+          testProductSet.location
+        ),
+        productSetId: testProductSet.productSetId,
+        productSet: {
+          displayName: testProductSet.productSetDisplayName,
+        },
+      });
+      testProductSet.createdProductSetPaths.push(
+        testProductSet.createdProductSetPaths
+      );
     } catch (err) {} // ignore error
   });
-});
 
-test(`should create product set`, async t => {
-  const newProductSetId = `ProductSetId${uuid.v4()}`;
-  const newProductSetPath = productSearch.productSetPath(
-    testProductSet.projectId,
-    testProductSet.location,
-    newProductSetId
-  );
-  t.falsy(await getProductSetOrFalse(newProductSetPath));
-  testProductSet.createdProductSetPaths.push(newProductSetPath);
-
-  const output = await tools.runAsync(
-    `${cmd} createProductSet "${testProductSet.projectId}" "${
-      testProductSet.location
-    }" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`,
-    cwd
-  );
-
-  t.true(output.includes(`Product Set name: ${newProductSetPath}`));
-
-  const newProductSet = await getProductSetOrFalse(newProductSetPath);
-  t.true(newProductSet.displayName === testProductSet.productSetDisplayName);
-});
-
-test(`should get product set`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} getProductSet "${testProductSet.projectId}" "${
-      testProductSet.location
-    }" "${testProductSet.productSetId}"`,
-    cwd
-  );
-
-  t.true(output.includes(`Product Set name: ${testProductSet.productSetPath}`));
-  t.true(
-    output.includes(
-      `Product Set display name: ${testProductSet.productSetDisplayName}`
-    )
-  );
-});
-
-test(`should list product sets`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} listProductSets "${testProductSet.projectId}" "${
-      testProductSet.location
-    }"`,
-    cwd
-  );
-
-  t.true(output.includes(`Product Set name: ${testProductSet.productSetPath}`));
-  t.true(
-    output.includes(
-      `Product Set display name: ${testProductSet.productSetDisplayName}`
-    )
-  );
-});
-
-test(`should delete product sets`, async t => {
-  const productSet = await productSearch.getProductSet({
-    name: `${testProductSet.productSetPath}`,
+  after(async () => {
+    // Delete products sets after each test
+    testProductSet.createdProductSetPaths.forEach(async path => {
+      try {
+        await productSearch.deleteProductSet({name: path});
+      } catch (err) {} // ignore error
+    });
   });
-  t.truthy(productSet);
 
-  const output = await tools.runAsync(
-    `${cmd} deleteProductSet "${testProductSet.projectId}" "${
-      testProductSet.location
-    }" "${testProductSet.productSetId}"`,
-    cwd
-  );
+  it(`should create product set`, async () => {
+    const newProductSetId = `ProductSetId${uuid.v4()}`;
+    const newProductSetPath = productSearch.productSetPath(
+      testProductSet.projectId,
+      testProductSet.location,
+      newProductSetId
+    );
+    assert.strictEqual(await getProductSetOrFalse(newProductSetPath), false);
+    testProductSet.createdProductSetPaths.push(newProductSetPath);
 
-  t.true(output.includes('deleted'));
-  try {
-    await productSearch.getProductSet({
+    const output = await tools.runAsync(
+      `${cmd} createProductSet "${testProductSet.projectId}" "${
+        testProductSet.location
+      }" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`,
+      cwd
+    );
+
+    assert.ok(output.includes(`Product Set name: ${newProductSetPath}`));
+
+    const newProductSet = await getProductSetOrFalse(newProductSetPath);
+    assert.ok(
+      newProductSet.displayName === testProductSet.productSetDisplayName
+    );
+  });
+
+  it(`should get product set`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} getProductSet "${testProductSet.projectId}" "${
+        testProductSet.location
+      }" "${testProductSet.productSetId}"`,
+      cwd
+    );
+
+    assert.ok(
+      output.includes(`Product Set name: ${testProductSet.productSetPath}`)
+    );
+    assert.ok(
+      output.includes(
+        `Product Set display name: ${testProductSet.productSetDisplayName}`
+      )
+    );
+  });
+
+  it(`should list product sets`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} listProductSets "${testProductSet.projectId}" "${
+        testProductSet.location
+      }"`,
+      cwd
+    );
+
+    assert.ok(
+      output.includes(`Product Set name: ${testProductSet.productSetPath}`)
+    );
+    assert.ok(
+      output.includes(
+        `Product Set display name: ${testProductSet.productSetDisplayName}`
+      )
+    );
+  });
+
+  it(`should delete product sets`, async () => {
+    const productSet = await productSearch.getProductSet({
       name: `${testProductSet.productSetPath}`,
     });
-    t.fail('Product set was not deleted');
-  } catch (err) {
-    t.true(err.message.includes('Not found'));
-  }
+    assert.ok(productSet);
+
+    const output = await tools.runAsync(
+      `${cmd} deleteProductSet "${testProductSet.projectId}" "${
+        testProductSet.location
+      }" "${testProductSet.productSetId}"`,
+      cwd
+    );
+
+    assert.ok(output.includes('deleted'));
+    try {
+      await productSearch.getProductSet({
+        name: `${testProductSet.productSetPath}`,
+      });
+      assert.fail('Product set was not deleted');
+    } catch (err) {
+      assert.ok(err.message.includes('Not found'));
+    }
+  });
 });

@@ -17,8 +17,8 @@
 
 const path = require(`path`);
 const {Storage} = require(`@google-cloud/storage`);
-const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
 const uuid = require(`uuid`);
 
 const storage = new Storage();
@@ -35,33 +35,33 @@ const files = [`duck_and_truck.jpg`, `handwritten.jpg`, `bicycle.jpg`].map(
   }
 );
 
-test.before(tools.checkCredentials);
-test.before(async () => {
-  const [bucket] = await storage.createBucket(bucketName);
-  await Promise.all(files.map(file => bucket.upload(file.localPath)));
-});
+describe(`detect v1 p3 beta1`, () => {
+  before(async () => {
+    tools.checkCredentials;
+    const [bucket] = await storage.createBucket(bucketName);
+    await Promise.all(files.map(file => bucket.upload(file.localPath)));
+  });
 
-test.after.always(async () => {
-  const bucket = storage.bucket(bucketName);
-  await bucket.deleteFiles({force: true});
-  await bucket.deleteFiles({force: true}); // Try a second time...
-  await bucket.delete();
-});
+  after(async () => {
+    const bucket = storage.bucket(bucketName);
+    await bucket.deleteFiles({force: true});
+    await bucket.deleteFiles({force: true}); // Try a second time...
+    await bucket.delete();
+  });
 
-test.before(tools.checkCredentials);
+  it(`should read handwriting in local handwritten.jpg sample`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} detectHandwriting ${files[1]}`,
+      cwd
+    );
+    assert.strictEqual(output.includes(`hand written message`), true);
+  });
 
-test(`should read handwriting in local handwritten.jpg sample`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} detectHandwriting ${files[1]}`,
-    cwd
-  );
-  t.true(output.includes(`hand written message`));
-});
-
-test(`should read handwriting from handwritten.jpg in GCS bucket`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} detectHandwritingGCS gs://${bucketName}/${files[1].name}`,
-    cwd
-  );
-  t.true(output.includes(`hand written message`));
+  it(`should read handwriting from handwritten.jpg in GCS bucket`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} detectHandwritingGCS gs://${bucketName}/${files[1].name}`,
+      cwd
+    );
+    assert.strictEqual(output.includes(`hand written message`), true);
+  });
 });

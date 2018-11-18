@@ -113,17 +113,19 @@ Index.prototype.setContainsNoText = function(filename, callback) {
   this.docsClient.set(filename, '', callback);
 };
 
-function lookup(words, callback) {
-  const index = new Index();
-  index.lookup(words, function(err, hits) {
-    index.quit();
-    if (err) {
-      return callback(err);
-    }
-    words.forEach(function(word, i) {
-      console.log('hits for "' + word + '":', hits[i].join(', '));
+function lookup(words) {
+  return new Promise((resolve, reject) => {
+    const index = new Index();
+    index.lookup(words, function(err, hits) {
+      index.quit();
+      if (err) {
+        return reject(err);
+      }
+      words.forEach(function(word, i) {
+        console.log('hits for "' + word + '":', hits[i].join(', '));
+      });
+      resolve(hits);
     });
-    callback(null, hits);
   });
 }
 
@@ -185,74 +187,79 @@ function getTextFromFiles(index, inputFiles, callback) {
 }
 
 // Run the example
-function main(inputDir, callback) {
-  const index = new Index();
+function main(inputDir) {
+  return new Promise((resolve, reject) => {
+    const index = new Index();
 
-  async.waterfall(
-    [
-      // Scan the specified directory for files
-      function(cb) {
-        fs.readdir(inputDir, cb);
-      },
-      // Separate directories from files
-      function(files, cb) {
-        async.parallel(
-          files.map(function(file) {
-            const filename = path.join(inputDir, file);
-            return function(cb) {
-              fs.stat(filename, function(err, stats) {
-                if (err) {
-                  return cb(err);
-                }
-                if (!stats.isDirectory()) {
-                  return cb(null, filename);
-                }
-                cb();
-              });
-            };
-          }),
-          cb
-        );
-      },
-      // Figure out which files have already been processed
-      function(allImageFiles, cb) {
-        const tasks = allImageFiles
-          .filter(function(filename) {
+    async.waterfall(
+      [
+        // Scan the specified directory for files
+        function(cb) {
+          fs.readdir(inputDir, cb);
+        },
+        // Separate directories from files
+        function(files, cb) {
+          async.parallel(
+            files.map(function(file) {
+              const filename = path.join(inputDir, file);
+              return function(cb) {
+                fs.stat(filename, function(err, stats) {
+                  if (err) {
+                    return cb(err);
+                  }
+                  if (!stats.isDirectory()) {
+                    return cb(null, filename);
+                  }
+                  cb();
+                });
+              };
+            }),
+            cb
+          );
+        },
+        // Figure out which files have already been processed
+        function(allImageFiles, cb) {
+          const tasks = allImageFiles
+            .filter(function(filename) {
+              return filename;
+            })
+            .map(function(filename) {
+              return function(cb) {
+                index.documentIsProcessed(filename, function(err, processed) {
+                  if (err) {
+                    return cb(err);
+                  }
+                  if (!processed) {
+                    // Forward this filename on for further processing
+                    return cb(null, filename);
+                  }
+                  cb();
+                });
+              };
+            });
+          async.parallel(tasks, cb);
+        },
+        // Analyze any remaining unprocessed files
+        function(imageFilesToProcess, cb) {
+          imageFilesToProcess = imageFilesToProcess.filter(function(filename) {
             return filename;
-          })
-          .map(function(filename) {
-            return function(cb) {
-              index.documentIsProcessed(filename, function(err, processed) {
-                if (err) {
-                  return cb(err);
-                }
-                if (!processed) {
-                  // Forward this filename on for further processing
-                  return cb(null, filename);
-                }
-                cb();
-              });
-            };
           });
-        async.parallel(tasks, cb);
-      },
-      // Analyze any remaining unprocessed files
-      function(imageFilesToProcess, cb) {
-        imageFilesToProcess = imageFilesToProcess.filter(function(filename) {
-          return filename;
-        });
-        if (imageFilesToProcess.length) {
-          return getTextFromFiles(index, imageFilesToProcess, cb);
+          if (imageFilesToProcess.length) {
+            return getTextFromFiles(index, imageFilesToProcess, cb);
+          }
+          console.log('All files processed!');
+          cb();
+        },
+      ],
+      function(err, result) {
+        index.quit();
+        if (err) {
+          return reject(err);
         }
-        console.log('All files processed!');
-        cb();
-      },
-    ],
-    function(err, result) {
-      index.quit();
-      callback(err, result);
-    }
-  );
+        resolve(result);
+      }
+    );
+  });
 }
 
 if (module === require.main) {

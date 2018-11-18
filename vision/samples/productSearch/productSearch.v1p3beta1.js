@@ -15,7 +15,12 @@
 
 'use strict';
 
-function addProductToProductSet(projectId, location, productId, productSetId) {
+async function addProductToProductSet(
+  projectId,
+  location,
+  productId,
+  productSetId
+) {
   // [START vision_product_search_add_product_to_product_set]
 
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -42,18 +47,12 @@ function addProductToProductSet(projectId, location, productId, productSetId) {
     product: productPath,
   };
 
-  client
-    .addProductToProductSet(request)
-    .then(() => {
-      console.log(`Product added to product set.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  await client.addProductToProductSet(request);
+  console.log(`Product added to product set.`);
   // [END vision_product_search_add_product_to_product_set]
 }
 
-function listProductsInProductSet(projectId, location, productSetId) {
+async function listProductsInProductSet(projectId, location, productSetId) {
   // [START vision_product_search_list_products_in_product_set]
 
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -75,17 +74,15 @@ function listProductsInProductSet(projectId, location, productSetId) {
     name: productSetPath,
   };
 
-  client.listProductsInProductSet(request).then(results => {
-    const products = results[0];
-    products.forEach(product => {
-      console.log(`Product name: ${product.name}`);
-      console.log(`Product display name: ${product.displayName}`);
-    });
+  const [products] = await client.listProductsInProductSet(request);
+  products.forEach(product => {
+    console.log(`Product name: ${product.name}`);
+    console.log(`Product display name: ${product.displayName}`);
   });
   // [END vision_product_search_list_products_in_product_set]
 }
 
-function removeProductFromProductSet(
+async function removeProductFromProductSet(
   projectId,
   location,
   productId,
@@ -113,14 +110,8 @@ function removeProductFromProductSet(
     product: productPath,
   };
 
-  client
-    .removeProductFromProductSet(request)
-    .then(() => {
-      console.log(`Product removed from product set.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  await client.removeProductFromProductSet(request);
+  console.log(`Product removed from product set.`);
   // [END vision_product_search_remove_product_from_product_set]
 }
 

@@ -15,7 +15,7 @@
 
 'use strict';
 
-function createReferenceImage(
+async function createReferenceImage(
   projectId,
   location,
   productId,
@@ -49,21 +49,13 @@ function createReferenceImage(
     referenceImageId: referenceImageId,
   };
 
-  client
-    .createReferenceImage(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(`response.name: ${response.name}`);
-      console.log(`response.uri: ${response.uri}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-
+  const [response] = await client.createReferenceImage(request);
+  console.log(`response.name: ${response.name}`);
+  console.log(`response.uri: ${response.uri}`);
   // [END vision_product_search_create_reference_image]
 }
 
-function listReferenceImage(projectId, location, productId) {
+async function listReferenceImage(projectId, location, productId) {
   // [START vision_product_search_list_reference_images]
 
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -83,23 +75,20 @@ function listReferenceImage(projectId, location, productId) {
     parent: formattedParent,
   };
 
-  client
-    .listReferenceImages(request)
-    .then(responses => {
-      const response = responses[0];
-      response.forEach(image => {
-        console.log(`image.name: ${image.name}`);
-        console.log(`image.uri: ${image.uri}`);
-      });
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
+  const [response] = await client.listReferenceImages(request);
+  response.forEach(image => {
+    console.log(`image.name: ${image.name}`);
+    console.log(`image.uri: ${image.uri}`);
+  });
   // [END vision_product_search_list_reference_images]
 }
 
-function getReferenceImage(projectId, location, productId, referenceImageId) {
+async function getReferenceImage(
+  projectId,
+  location,
+  productId,
+  referenceImageId
+) {
   // [START vision_product_search_get_reference_image]
 
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -125,21 +114,13 @@ function getReferenceImage(projectId, location, productId, referenceImageId) {
     name: formattedName,
   };
 
-  client
-    .getReferenceImage(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(`response.name: ${response.name}`);
-      console.log(`response.uri: ${response.uri}`);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
+  const response = await client.getReferenceImage(request);
+  console.log(`response.name: ${response.name}`);
+  console.log(`response.uri: ${response.uri}`);
   // [END vision_product_search_get_reference_image]
 }
 
-function deleteReferenceImage(
+async function deleteReferenceImage(
   projectId,
   location,
   productId,
@@ -170,15 +151,8 @@ function deleteReferenceImage(
     name: formattedName,
   };
 
-  client
-    .deleteReferenceImage(request)
-    .then(() => {
-      console.log(`Reference image deleted from product.`);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
+  await client.deleteReferenceImage(request);
+  console.log(`Reference image deleted from product.`);
   // [END vision_product_search_delete_reference_image]
 }
 

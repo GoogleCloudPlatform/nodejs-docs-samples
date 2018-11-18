@@ -16,7 +16,7 @@
 'use strict';
 
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node importProductSets.v1p3beta1.js`;
 const cwd = path.join(__dirname, `..`);
@@ -27,12 +27,15 @@ const testImportProductSets = {
   location: 'us-west1',
   gcsUri: 'gs://nodejs-docs-samples/product-search/product_sets.csv',
 };
-test(`Should import a Product Set`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} importProductSets "${testImportProductSets.projectId}" "${
-      testImportProductSets.location
-    }" "${testImportProductSets.gcsUri}"`,
-    cwd
-  );
-  t.true(output.includes(`Processing done.`));
+
+describe(`import product sets`, () => {
+  it(`Should import a Product Set`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} importProductSets "${testImportProductSets.projectId}" "${
+        testImportProductSets.location
+      }" "${testImportProductSets.gcsUri}"`,
+      cwd
+    );
+    assert.ok(output.includes(`Processing done.`));
+  });
 });

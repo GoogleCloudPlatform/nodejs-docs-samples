@@ -17,7 +17,7 @@
 
 const fs = require(`fs`);
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 class MockCanvas {
@@ -53,28 +53,36 @@ const faceDetectionExample = require(`../faceDetection`);
 const inputFile = path.join(__dirname, `../resources`, `face.png`);
 const outputFile = path.join(__dirname, `../../vision`, `out.png`);
 
-test.before(tools.checkCredentials);
-test.before(tools.stubConsole);
-test.after.always(tools.restoreConsole);
+describe(`face detection`, () => {
+  before(tools.checkCredentials);
+  before(tools.stubConsole);
 
-test.cb(`should detect faces`, t => {
-  let done = false;
-  const timeout = setTimeout(() => {
-    if (!done) {
-      console.warn('Face detection timed out!');
-      t.end();
-    }
-  }, 30);
-  faceDetectionExample.main(inputFile, outputFile, MockCanvas, (err, faces) => {
-    t.ifError(err);
-    t.is(faces.length, 1);
-    const image = fs.readFileSync(outputFile);
-    t.is(image.toString(`utf8`), `testfoobar`);
-    t.true(console.log.calledWith(`Found 1 face`));
-    t.true(console.log.calledWith(`Highlighting...`));
-    t.true(console.log.calledWith(`Finished!`));
-    done = true;
-    clearTimeout(timeout);
-    t.end();
+  after(tools.restoreConsole);
+
+  it(`should detect faces`, async () => {
+    let done = false;
+    const timeout = setTimeout(() => {
+      if (!done) {
+        console.warn('Face detection timed out!');
+      }
+    }, 60);
+
+    faceDetectionExample.main(
+      inputFile,
+      outputFile,
+      MockCanvas,
+      (err, faces) => {
+        assert.ifError(err);
+        assert.strictEqual(faces.length, 1);
+
+        const image = fs.readFileSync(outputFile);
+        assert.strictEqual(image.toString(`utf8`), `testfoobar`);
+        assert.ok(console.log.calledWith(`Found 1 face`));
+        assert.ok(console.log.calledWith(`Highlighting...`));
+        assert.ok(console.log.calledWith(`Finished!`));
+        done = true;
+        clearTimeout(timeout);
+      }
+    );
   });
 });

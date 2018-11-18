@@ -15,7 +15,7 @@
 
 'use strict';
 // [START vision_product_search_import_product_images]
-function importProductSets(projectId, location, gcsUri) {
+async function importProductSets(projectId, location, gcsUri) {
   // Imports the Google Cloud client library
   // [START vision_product_search_tutorial_import]
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -41,39 +41,28 @@ function importProductSets(projectId, location, gcsUri) {
   };
 
   // Import the product sets from the input URI.
-  client
-    .importProductSets({parent: projectLocation, inputConfig: inputConfig})
-    .then(responses => {
-      const response = responses[0];
-      const operation = responses[1];
-      console.log('Processing operation name: ', operation.name);
+  const [response, operation] = await client.importProductSets({
+    parent: projectLocation,
+    inputConfig: inputConfig,
+  });
 
-      // synchronous check of operation status
-      return response.promise();
-    })
-    .then(responses => {
-      console.log('Processing done.');
-      console.log('Results of the processing:');
+  console.log('Processing operation name: ', operation.name);
 
-      for (const i in responses[0].statuses) {
-        console.log(
-          'Status of processing ',
-          i,
-          'of the csv:',
-          responses[0].statuses[i]
-        );
+  // synchronous check of operation status
+  const [result] = await response.promise();
+  console.log('Processing done.');
+  console.log('Results of the processing:');
 
-        // Check the status of reference image
-        if (responses[0].statuses[i].code === 0) {
-          console.log(responses[0].referenceImages[i]);
-        } else {
-          console.log('No reference image.');
-        }
-      }
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  for (const i in result.statuses) {
+    console.log('Status of processing ', i, 'of the csv:', result.statuses[i]);
+
+    // Check the status of reference image
+    if (result.statuses[i].code === 0) {
+      console.log(result.referenceImages[i]);
+    } else {
+      console.log('No reference image.');
+    }
+  }
   // [END vision_product_search_import_product_images]
 }
 // [END vision_product_search_import_product_set]

@@ -16,37 +16,50 @@
 'use strict';
 
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-test.before(tools.checkCredentials);
+describe(`Text Detection`, () => {
+  before(async () => {
+    tools.checkCredentials;
+  });
 
-test.cb(`should detect texts`, t => {
-  const redis = require('redis');
-  const client = redis.createClient();
-  client
-    .on('error', err => {
-      if (err && err.code === 'ECONNREFUSED') {
-        console.error(
-          'Redis is unavailable. Skipping vision textDetection test.'
-        );
-        t.end();
-      } else {
-        t.end(err);
-      }
-    })
-    .on('ready', () => {
-      const inputDir = path.join(__dirname, `../resources`);
-      const textDetectionSample = require(`../textDetection`);
-      textDetectionSample.main(inputDir, (err, textResponse) => {
-        t.ifError(err);
-        t.true(Object.keys(textResponse).length > 0);
-        textDetectionSample.lookup(['the', 'sunbeams', 'in'], (err, hits) => {
-          t.ifError(err);
-          t.true(hits.length > 0);
-          t.true(hits[0].length > 0);
-          t.end();
-        });
+  it(`should detect texts`, done => {
+    const redis = require('redis');
+    const client = redis.createClient();
+
+    client
+      .on('error', err => {
+        if (err && err.code === 'ECONNREFUSED') {
+          console.error(
+            'Redis is unavailable. Skipping vision textDetection test.'
+          );
+          client.end(true);
+          done();
+        } else {
+          client.end(true);
+          done(err);
+        }
+      })
+      .on('ready', async () => {
+        const inputDir = path.join(__dirname, `../resources`);
+        const textDetectionSample = require(`../textDetection`);
+
+        const textResponse = await textDetectionSample
+          .main(inputDir)
+          .catch(err => {
+            console.log(`Error at 46: ${err}`);
+          });
+        assert.ok(Object.keys(textResponse).length > 0);
+
+        const hits = await textDetectionSample
+          .lookup(['the', 'sunbeams', 'in'])
+          .catch(err => {
+            console.log(`Error at 51: ${err}`);
+          });
+        assert.ok(hits.length > 0);
+        assert.ok(hits.length > 0);
+        assert.ok(hits[0].length > 0);
       });
-    });
+  });
 });

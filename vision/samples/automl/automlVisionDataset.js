@@ -23,7 +23,12 @@
 
 `use strict`;
 
-function createDataset(projectId, computeRegion, datasetName, multiLabel) {
+async function createDataset(
+  projectId,
+  computeRegion,
+  datasetName,
+  multiLabel
+) {
   // [START automl_vision_create_dataset]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -58,31 +63,26 @@ function createDataset(projectId, computeRegion, datasetName, multiLabel) {
   };
 
   // Create a dataset with the dataset metadata in the region.
-  client
-    .createDataset({parent: projectLocation, dataset: myDataset})
-    .then(responses => {
-      const dataset = responses[0];
-
-      // Display the dataset information.
-      console.log(`Dataset name: ${dataset.name}`);
-      console.log(`Dataset id: ${dataset.name.split(`/`).pop(-1)}`);
-      console.log(`Dataset display name: ${dataset.displayName}`);
-      console.log(`Dataset example count: ${dataset.exampleCount}`);
-      console.log(`Image Classification type:`);
-      console.log(
-        `\t ${dataset.imageClassificationDatasetMetadata.classificationType}`
-      );
-      console.log(`Dataset create time:`);
-      console.log(`\tseconds: ${dataset.createTime.seconds}`);
-      console.log(`\tnanos: ${dataset.createTime.nanos}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [dataset] = await client.createDataset({
+    parent: projectLocation,
+    dataset: myDataset,
+  });
+  // Display the dataset information.
+  console.log(`Dataset name: ${dataset.name}`);
+  console.log(`Dataset id: ${dataset.name.split(`/`).pop(-1)}`);
+  console.log(`Dataset display name: ${dataset.displayName}`);
+  console.log(`Dataset example count: ${dataset.exampleCount}`);
+  console.log(`Image Classification type:`);
+  console.log(
+    `\t ${dataset.imageClassificationDatasetMetadata.classificationType}`
+  );
+  console.log(`Dataset create time:`);
+  console.log(`\tseconds: ${dataset.createTime.seconds}`);
+  console.log(`\tnanos: ${dataset.createTime.nanos}`);
   // [END automl_vision_create_dataset]
 }
 
-function listDatasets(projectId, computeRegion, filter) {
+async function listDatasets(projectId, computeRegion, filter) {
   // [START automl_vision_list_datasets]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -98,36 +98,30 @@ function listDatasets(projectId, computeRegion, filter) {
   const projectLocation = client.locationPath(projectId, computeRegion);
 
   // List all the datasets available in the region by applying filter.
-  client
-    .listDatasets({parent: projectLocation, filter: filter})
-    .then(responses => {
-      const datasets = responses[0];
-
-      // Display the dataset information.
-      console.log(`List of datasets:`);
-      datasets.forEach(dataset => {
-        console.log(`Dataset name: ${dataset.name}`);
-        console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
-        console.log(`Dataset display name: ${dataset.displayName}`);
-        console.log(`Dataset example count: ${dataset.exampleCount}`);
-        console.log(`Image Classification type:`);
-        console.log(
-          `\t`,
-          dataset.imageClassificationDatasetMetadata.classificationType
-        );
-        console.log(`Dataset create time: `);
-        console.log(`\tseconds: ${dataset.createTime.seconds}`);
-        console.log(`\tnanos: ${dataset.createTime.nanos}`);
-        console.log(`\n`);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [datasets] = await client.listDatasets({
+    parent: projectLocation,
+    filter: filter,
+  });
+  console.log(`List of datasets:`);
+  datasets.forEach(dataset => {
+    console.log(`Dataset name: ${dataset.name}`);
+    console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
+    console.log(`Dataset display name: ${dataset.displayName}`);
+    console.log(`Dataset example count: ${dataset.exampleCount}`);
+    console.log(`Image Classification type:`);
+    console.log(
+      `\t`,
+      dataset.imageClassificationDatasetMetadata.classificationType
+    );
+    console.log(`Dataset create time: `);
+    console.log(`\tseconds: ${dataset.createTime.seconds}`);
+    console.log(`\tnanos: ${dataset.createTime.nanos}`);
+    console.log(`\n`);
+  });
   // [END automl_vision_list_datasets]
 }
 
-function getDataset(projectId, computeRegion, datasetId) {
+async function getDataset(projectId, computeRegion, datasetId) {
   // [START automl_vision_get_dataset]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -144,32 +138,24 @@ function getDataset(projectId, computeRegion, datasetId) {
   const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
 
   // Get complete detail of the dataset.
-  client
-    .getDataset({name: datasetFullId})
-    .then(responses => {
-      const dataset = responses[0];
-
-      // Display the dataset information.
-      console.log(`Dataset name: ${dataset.name}`);
-      console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
-      console.log(`Dataset display name: ${dataset.displayName}`);
-      console.log(`Dataset example count: ${dataset.exampleCount}`);
-      console.log(
-        `Classification type: ${
-          dataset.imageClassificationDatasetMetadata.classificationType
-        }`
-      );
-      console.log(`Dataset create time: `);
-      console.log(`\tseconds: ${dataset.createTime.seconds}`);
-      console.log(`\tnanos: ${dataset.createTime.nanos}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [dataset] = await client.getDataset({name: datasetFullId});
+  // Display the dataset information.
+  console.log(`Dataset name: ${dataset.name}`);
+  console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
+  console.log(`Dataset display name: ${dataset.displayName}`);
+  console.log(`Dataset example count: ${dataset.exampleCount}`);
+  console.log(
+    `Classification type: ${
+      dataset.imageClassificationDatasetMetadata.classificationType
+    }`
+  );
+  console.log(`Dataset create time: `);
+  console.log(`\tseconds: ${dataset.createTime.seconds}`);
+  console.log(`\tnanos: ${dataset.createTime.nanos}`);
   // [END automl_vision_get_dataset]
 }
 
-function importData(projectId, computeRegion, datasetId, path) {
+async function importData(projectId, computeRegion, datasetId, path) {
   // [START automl_vision_import_data]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -195,26 +181,22 @@ function importData(projectId, computeRegion, datasetId, path) {
   };
 
   // Import the dataset from the input URI.
-  client
-    .importData({name: datasetFullId, inputConfig: inputConfig})
-    .then(responses => {
-      const operation = responses[0];
-      console.log(`Processing import...`);
-      return operation.promise();
-    })
-    .then(responses => {
-      // The final result of the operation.
-      if (responses[2].done) {
-        console.log(`Data imported.`);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [operation] = await client.importData({
+    name: datasetFullId,
+    inputConfig: inputConfig,
+  });
+  console.log(`Processing import...`);
+
+  const [, , response] = await operation.promise();
+
+  // The final result of the operation.
+  if (response.done) {
+    console.log(`Data imported.`);
+  }
   // [END automl_vision_import_data]
 }
 
-function exportData(projectId, computeRegion, datasetId, outputUri) {
+async function exportData(projectId, computeRegion, datasetId, outputUri) {
   // [START automl_vision_export_data]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -239,26 +221,20 @@ function exportData(projectId, computeRegion, datasetId, outputUri) {
   };
 
   // Export the data to the output URI.
-  client
-    .exportData({name: datasetFullId, outputConfig: outputConfig})
-    .then(responses => {
-      const operation = responses[0];
-      console.log(`Processing export...`);
-      return operation.promise();
-    })
-    .then(responses => {
-      // The final result of the operation.
-      if (responses[2].done) {
-        console.log(`Data exported.`);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [operation] = await client.exportData({
+    name: datasetFullId,
+    outputConfig: outputConfig,
+  });
+  const [, , response] = await operation.promise();
+
+  // The final result of the operation.
+  if (response.done) {
+    console.log(`Data exported.`);
+  }
   // [END automl_vision_export_data]
 }
 
-function deleteDataset(projectId, computeRegion, datasetId) {
+async function deleteDataset(projectId, computeRegion, datasetId) {
   // [START automl_vision_delete_dataset]
   const automl = require(`@google-cloud/automl`).v1beta1;
 
@@ -275,21 +251,12 @@ function deleteDataset(projectId, computeRegion, datasetId) {
   const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
 
   // Delete a dataset.
-  client
-    .deleteDataset({name: datasetFullId})
-    .then(responses => {
-      const operation = responses[0];
-      return operation.promise();
-    })
-    .then(responses => {
-      // The final result of the operation.
-      if (responses[2].done) {
-        console.log(`Dataset deleted.`);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [operation] = await client.deleteDataset({name: datasetFullId});
+  const [, , response] = await operation.promise();
+  // The final result of the operation.
+  if (response.done) {
+    console.log(`Dataset deleted.`);
+  }
   // [END automl_vision_delete_dataset]
 }
 

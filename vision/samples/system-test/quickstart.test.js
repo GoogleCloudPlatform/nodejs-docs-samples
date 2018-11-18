@@ -16,17 +16,19 @@
 'use strict';
 
 const path = require(`path`);
-const test = require(`ava`);
+const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const cmd = `node quickstart.js`;
 const cwd = path.join(__dirname, `..`);
 
-test.before(tools.stubConsole);
-test.after.always(tools.restoreConsole);
+describe(`quickstart`, () => {
+  before(tools.stubConsole);
+  after(tools.restoreConsole);
 
-test(`should detect labels in a remote file`, async t => {
-  const output = await tools.runAsync(`${cmd}`, cwd);
-  t.true(output.includes(`Labels:`));
-  t.true(output.includes(`cat`));
+  it(`should detect labels in a remote file`, async () => {
+    const output = await tools.runAsync(`${cmd}`, cwd);
+    assert.ok(output.includes(`Labels:`));
+    assert.ok(output.includes(`cat`));
+  });
 });

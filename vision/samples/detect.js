@@ -15,7 +15,7 @@
 
 'use strict';
 
-function detectFaces(fileName) {
+async function detectFaces(fileName) {
   // [START vision_face_detection]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision');
@@ -28,27 +28,20 @@ function detectFaces(fileName) {
    */
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
-  client
-    .faceDetection(fileName)
-    .then(results => {
-      const faces = results[0].faceAnnotations;
-
-      console.log('Faces:');
-      faces.forEach((face, i) => {
-        console.log(`  Face #${i + 1}:`);
-        console.log(`    Joy: ${face.joyLikelihood}`);
-        console.log(`    Anger: ${face.angerLikelihood}`);
-        console.log(`    Sorrow: ${face.sorrowLikelihood}`);
-        console.log(`    Surprise: ${face.surpriseLikelihood}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.faceDetection(fileName);
+  const faces = result.faceAnnotations;
+  console.log('Faces:');
+  faces.forEach((face, i) => {
+    console.log(`  Face #${i + 1}:`);
+    console.log(`    Joy: ${face.joyLikelihood}`);
+    console.log(`    Anger: ${face.angerLikelihood}`);
+    console.log(`    Sorrow: ${face.sorrowLikelihood}`);
+    console.log(`    Surprise: ${face.surpriseLikelihood}`);
+  });
   // [END vision_face_detection]
 }
 
-function detectFacesGCS(bucketName, fileName) {
+async function detectFacesGCS(bucketName, fileName) {
   // [START vision_face_detection_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -63,27 +56,20 @@ function detectFacesGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Performs face detection on the gcs file
-  client
-    .faceDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const faces = results[0].faceAnnotations;
-
-      console.log('Faces:');
-      faces.forEach((face, i) => {
-        console.log(`  Face #${i + 1}:`);
-        console.log(`    Joy: ${face.joyLikelihood}`);
-        console.log(`    Anger: ${face.angerLikelihood}`);
-        console.log(`    Sorrow: ${face.sorrowLikelihood}`);
-        console.log(`    Surprise: ${face.surpriseLikelihood}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.faceDetection(`gs://${bucketName}/${fileName}`);
+  const faces = result.faceAnnotations;
+  console.log('Faces:');
+  faces.forEach((face, i) => {
+    console.log(`  Face #${i + 1}:`);
+    console.log(`    Joy: ${face.joyLikelihood}`);
+    console.log(`    Anger: ${face.angerLikelihood}`);
+    console.log(`    Sorrow: ${face.sorrowLikelihood}`);
+    console.log(`    Surprise: ${face.surpriseLikelihood}`);
+  });
   // [END vision_face_detection_gcs]
 }
 
-function detectLabels(fileName) {
+async function detectLabels(fileName) {
   // [START vision_label_detection]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision');
@@ -97,20 +83,14 @@ function detectLabels(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Performs label detection on the local file
-  client
-    .labelDetection(fileName)
-    .then(results => {
-      const labels = results[0].labelAnnotations;
-      console.log('Labels:');
-      labels.forEach(label => console.log(label.description));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.labelDetection(fileName);
+  const labels = result.labelAnnotations;
+  console.log('Labels:');
+  labels.forEach(label => console.log(label.description));
   // [END vision_label_detection]
 }
 
-function detectLabelsGCS(bucketName, fileName) {
+async function detectLabelsGCS(bucketName, fileName) {
   // [START vision_label_detection_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -125,20 +105,16 @@ function detectLabelsGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Performs label detection on the gcs file
-  client
-    .labelDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const labels = results[0].labelAnnotations;
-      console.log('Labels:');
-      labels.forEach(label => console.log(label.description));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.labelDetection(
+    `gs://${bucketName}/${fileName}`
+  );
+  const labels = result.labelAnnotations;
+  console.log('Labels:');
+  labels.forEach(label => console.log(label.description));
   // [END vision_label_detection_gcs]
 }
 
-function detectLandmarks(fileName) {
+async function detectLandmarks(fileName) {
   // [START vision_landmark_detection]
   const vision = require('@google-cloud/vision');
 
@@ -151,20 +127,14 @@ function detectLandmarks(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Performs landmark detection on the local file
-  client
-    .landmarkDetection(fileName)
-    .then(results => {
-      const landmarks = results[0].landmarkAnnotations;
-      console.log('Landmarks:');
-      landmarks.forEach(landmark => console.log(landmark));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.landmarkDetection(fileName);
+  const landmarks = result.landmarkAnnotations;
+  console.log('Landmarks:');
+  landmarks.forEach(landmark => console.log(landmark));
   // [END vision_landmark_detection]
 }
 
-function detectLandmarksGCS(bucketName, fileName) {
+async function detectLandmarksGCS(bucketName, fileName) {
   // [START vision_landmark_detection_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -179,20 +149,16 @@ function detectLandmarksGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Performs landmark detection on the gcs file
-  client
-    .landmarkDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const landmarks = results[0].landmarkAnnotations;
-      console.log('Landmarks:');
-      landmarks.forEach(landmark => console.log(landmark));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.landmarkDetection(
+    `gs://${bucketName}/${fileName}`
+  );
+  const landmarks = result.landmarkAnnotations;
+  console.log('Landmarks:');
+  landmarks.forEach(landmark => console.log(landmark));
   // [END vision_landmark_detection_gcs]
 }
 
-function detectText(fileName) {
+async function detectText(fileName) {
   // [START vision_text_detection]
   const vision = require('@google-cloud/vision');
 
@@ -205,20 +171,14 @@ function detectText(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Performs text detection on the local file
-  client
-    .textDetection(fileName)
-    .then(results => {
-      const detections = results[0].textAnnotations;
-      console.log('Text:');
-      detections.forEach(text => console.log(text));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.textDetection(fileName);
+  const detections = result.textAnnotations;
+  console.log('Text:');
+  detections.forEach(text => console.log(text));
   // [END vision_text_detection]
 }
 
-function detectTextGCS(bucketName, fileName) {
+async function detectTextGCS(bucketName, fileName) {
   // [START vision_text_detection_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -233,20 +193,14 @@ function detectTextGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Performs text detection on the gcs file
-  client
-    .textDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const detections = results[0].textAnnotations;
-      console.log('Text:');
-      detections.forEach(text => console.log(text));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.textDetection(`gs://${bucketName}/${fileName}`);
+  const detections = result.textAnnotations;
+  console.log('Text:');
+  detections.forEach(text => console.log(text));
   // [END vision_text_detection_gcs]
 }
 
-function detectLogos(fileName) {
+async function detectLogos(fileName) {
   // [START vision_logo_detection]
   const vision = require('@google-cloud/vision');
 
@@ -259,20 +213,14 @@ function detectLogos(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Performs logo detection on the local file
-  client
-    .logoDetection(fileName)
-    .then(results => {
-      const logos = results[0].logoAnnotations;
-      console.log('Logos:');
-      logos.forEach(logo => console.log(logo));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.logoDetection(fileName);
+  const logos = result.logoAnnotations;
+  console.log('Logos:');
+  logos.forEach(logo => console.log(logo));
   // [END vision_logo_detection]
 }
 
-function detectLogosGCS(bucketName, fileName) {
+async function detectLogosGCS(bucketName, fileName) {
   // [START vision_logo_detection_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -287,20 +235,14 @@ function detectLogosGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Performs logo detection on the gcs file
-  client
-    .logoDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const logos = results[0].logoAnnotations;
-      console.log('Logos:');
-      logos.forEach(logo => console.log(logo));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.logoDetection(`gs://${bucketName}/${fileName}`);
+  const logos = result.logoAnnotations;
+  console.log('Logos:');
+  logos.forEach(logo => console.log(logo));
   // [END vision_logo_detection_gcs]
 }
 
-function detectProperties(fileName) {
+async function detectProperties(fileName) {
   // [START vision_image_property_detection]
   const vision = require('@google-cloud/vision');
 
@@ -313,20 +255,13 @@ function detectProperties(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Performs property detection on the local file
-  client
-    .imageProperties(fileName)
-    .then(results => {
-      const properties = results[0].imagePropertiesAnnotation;
-      const colors = properties.dominantColors.colors;
-      colors.forEach(color => console.log(color));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.imageProperties(fileName);
+  const colors = result.imagePropertiesAnnotation.dominantColors.colors;
+  colors.forEach(color => console.log(color));
   // [END vision_image_property_detection]
 }
 
-function detectPropertiesGCS(bucketName, fileName) {
+async function detectPropertiesGCS(bucketName, fileName) {
   // [START vision_image_property_detection_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -341,20 +276,15 @@ function detectPropertiesGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Performs property detection on the gcs file
-  client
-    .imageProperties(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const properties = results[0].imagePropertiesAnnotation;
-      const colors = properties.dominantColors.colors;
-      colors.forEach(color => console.log(color));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.imageProperties(
+    `gs://${bucketName}/${fileName}`
+  );
+  const colors = result.imagePropertiesAnnotation.dominantColors.colors;
+  colors.forEach(color => console.log(color));
   // [END vision_image_property_detection_gcs]
 }
 
-function detectSafeSearch(fileName) {
+async function detectSafeSearch(fileName) {
   // [START vision_safe_search_detection]
   const vision = require('@google-cloud/vision');
 
@@ -367,25 +297,18 @@ function detectSafeSearch(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Performs safe search detection on the local file
-  client
-    .safeSearchDetection(fileName)
-    .then(results => {
-      const detections = results[0].safeSearchAnnotation;
-
-      console.log('Safe search:');
-      console.log(`Adult: ${detections.adult}`);
-      console.log(`Medical: ${detections.medical}`);
-      console.log(`Spoof: ${detections.spoof}`);
-      console.log(`Violence: ${detections.violence}`);
-      console.log(`Racy: ${detections.racy}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.safeSearchDetection(fileName);
+  const detections = result.safeSearchAnnotation;
+  console.log('Safe search:');
+  console.log(`Adult: ${detections.adult}`);
+  console.log(`Medical: ${detections.medical}`);
+  console.log(`Spoof: ${detections.spoof}`);
+  console.log(`Violence: ${detections.violence}`);
+  console.log(`Racy: ${detections.racy}`);
   // [END vision_safe_search_detection]
 }
 
-function detectSafeSearchGCS(bucketName, fileName) {
+async function detectSafeSearchGCS(bucketName, fileName) {
   // [START vision_safe_search_detection_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -400,23 +323,18 @@ function detectSafeSearchGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Performs safe search property detection on the remote file
-  client
-    .safeSearchDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const detections = results[0].safeSearchAnnotation;
-
-      console.log(`Adult: ${detections.adult}`);
-      console.log(`Spoof: ${detections.spoof}`);
-      console.log(`Medical: ${detections.medical}`);
-      console.log(`Violence: ${detections.violence}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.safeSearchDetection(
+    `gs://${bucketName}/${fileName}`
+  );
+  const detections = result.safeSearchAnnotation;
+  console.log(`Adult: ${detections.adult}`);
+  console.log(`Spoof: ${detections.spoof}`);
+  console.log(`Medical: ${detections.medical}`);
+  console.log(`Violence: ${detections.violence}`);
   // [END vision_safe_search_detection_gcs]
 }
 
-function detectCropHints(fileName) {
+async function detectCropHints(fileName) {
   // [START vision_crop_hint_detection]
 
   // Imports the Google Cloud client library
@@ -431,25 +349,18 @@ function detectCropHints(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Find crop hints for the local file
-  client
-    .cropHints(fileName)
-    .then(results => {
-      const cropHints = results[0].cropHintsAnnotation;
-
-      cropHints.cropHints.forEach((hintBounds, hintIdx) => {
-        console.log(`Crop Hint ${hintIdx}:`);
-        hintBounds.boundingPoly.vertices.forEach((bound, boundIdx) => {
-          console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
-        });
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
+  const [result] = await client.cropHints(fileName);
+  const cropHints = result.cropHintsAnnotation;
+  cropHints.cropHints.forEach((hintBounds, hintIdx) => {
+    console.log(`Crop Hint ${hintIdx}:`);
+    hintBounds.boundingPoly.vertices.forEach((bound, boundIdx) => {
+      console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
     });
+  });
   // [END vision_crop_hint_detection]
 }
 
-function detectCropHintsGCS(bucketName, fileName) {
+async function detectCropHintsGCS(bucketName, fileName) {
   // [START vision_crop_hint_detection_gcs]
 
   // Imports the Google Cloud client libraries
@@ -465,25 +376,18 @@ function detectCropHintsGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Find crop hints for the remote file
-  client
-    .cropHints(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const cropHints = results[0].cropHintsAnnotation;
-
-      cropHints.cropHints.forEach((hintBounds, hintIdx) => {
-        console.log(`Crop Hint ${hintIdx}:`);
-        hintBounds.boundingPoly.vertices.forEach((bound, boundIdx) => {
-          console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
-        });
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
+  const [result] = await client.cropHints(`gs://${bucketName}/${fileName}`);
+  const cropHints = result.cropHintsAnnotation;
+  cropHints.cropHints.forEach((hintBounds, hintIdx) => {
+    console.log(`Crop Hint ${hintIdx}:`);
+    hintBounds.boundingPoly.vertices.forEach((bound, boundIdx) => {
+      console.log(`  Bound ${boundIdx}: (${bound.x}, ${bound.y})`);
     });
+  });
   // [END vision_crop_hint_detection_gcs]
 }
 
-function detectWeb(fileName) {
+async function detectWeb(fileName) {
   // [START vision_web_detection]
 
   // Imports the Google Cloud client library
@@ -498,55 +402,48 @@ function detectWeb(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Detect similar images on the web to a local file
-  client
-    .webDetection(fileName)
-    .then(results => {
-      const webDetection = results[0].webDetection;
-
-      if (webDetection.fullMatchingImages.length) {
-        console.log(
-          `Full matches found: ${webDetection.fullMatchingImages.length}`
-        );
-        webDetection.fullMatchingImages.forEach(image => {
-          console.log(`  URL: ${image.url}`);
-          console.log(`  Score: ${image.score}`);
-        });
-      }
-
-      if (webDetection.partialMatchingImages.length) {
-        console.log(
-          `Partial matches found: ${webDetection.partialMatchingImages.length}`
-        );
-        webDetection.partialMatchingImages.forEach(image => {
-          console.log(`  URL: ${image.url}`);
-          console.log(`  Score: ${image.score}`);
-        });
-      }
-
-      if (webDetection.webEntities.length) {
-        console.log(`Web entities found: ${webDetection.webEntities.length}`);
-        webDetection.webEntities.forEach(webEntity => {
-          console.log(`  Description: ${webEntity.description}`);
-          console.log(`  Score: ${webEntity.score}`);
-        });
-      }
-
-      if (webDetection.bestGuessLabels.length) {
-        console.log(
-          `Best guess labels found: ${webDetection.bestGuessLabels.length}`
-        );
-        webDetection.bestGuessLabels.forEach(label => {
-          console.log(`  Label: ${label.label}`);
-        });
-      }
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
+  const [result] = await client.webDetection(fileName);
+  const webDetection = result.webDetection;
+  if (webDetection.fullMatchingImages.length) {
+    console.log(
+      `Full matches found: ${webDetection.fullMatchingImages.length}`
+    );
+    webDetection.fullMatchingImages.forEach(image => {
+      console.log(`  URL: ${image.url}`);
+      console.log(`  Score: ${image.score}`);
     });
+  }
+
+  if (webDetection.partialMatchingImages.length) {
+    console.log(
+      `Partial matches found: ${webDetection.partialMatchingImages.length}`
+    );
+    webDetection.partialMatchingImages.forEach(image => {
+      console.log(`  URL: ${image.url}`);
+      console.log(`  Score: ${image.score}`);
+    });
+  }
+
+  if (webDetection.webEntities.length) {
+    console.log(`Web entities found: ${webDetection.webEntities.length}`);
+    webDetection.webEntities.forEach(webEntity => {
+      console.log(`  Description: ${webEntity.description}`);
+      console.log(`  Score: ${webEntity.score}`);
+    });
+  }
+
+  if (webDetection.bestGuessLabels.length) {
+    console.log(
+      `Best guess labels found: ${webDetection.bestGuessLabels.length}`
+    );
+    webDetection.bestGuessLabels.forEach(label => {
+      console.log(`  Label: ${label.label}`);
+    });
+  }
   // [END vision_web_detection]
 }
 
-function detectWebGCS(bucketName, fileName) {
+async function detectWebGCS(bucketName, fileName) {
   // [START vision_web_detection_gcs]
 
   // Imports the Google Cloud client libraries
@@ -562,55 +459,48 @@ function detectWebGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Detect similar images on the web to a remote file
-  client
-    .webDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const webDetection = results[0].webDetection;
-
-      if (webDetection.fullMatchingImages.length) {
-        console.log(
-          `Full matches found: ${webDetection.fullMatchingImages.length}`
-        );
-        webDetection.fullMatchingImages.forEach(image => {
-          console.log(`  URL: ${image.url}`);
-          console.log(`  Score: ${image.score}`);
-        });
-      }
-
-      if (webDetection.partialMatchingImages.length) {
-        console.log(
-          `Partial matches found: ${webDetection.partialMatchingImages.length}`
-        );
-        webDetection.partialMatchingImages.forEach(image => {
-          console.log(`  URL: ${image.url}`);
-          console.log(`  Score: ${image.score}`);
-        });
-      }
-
-      if (webDetection.webEntities.length) {
-        console.log(`Web entities found: ${webDetection.webEntities.length}`);
-        webDetection.webEntities.forEach(webEntity => {
-          console.log(`  Description: ${webEntity.description}`);
-          console.log(`  Score: ${webEntity.score}`);
-        });
-      }
-
-      if (webDetection.bestGuessLabels.length) {
-        console.log(
-          `Best guess labels found: ${webDetection.bestGuessLabels.length}`
-        );
-        webDetection.bestGuessLabels.forEach(label => {
-          console.log(`  Label: ${label.label}`);
-        });
-      }
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
+  const [result] = await client.webDetection(`gs://${bucketName}/${fileName}`);
+  const webDetection = result.webDetection;
+  if (webDetection.fullMatchingImages.length) {
+    console.log(
+      `Full matches found: ${webDetection.fullMatchingImages.length}`
+    );
+    webDetection.fullMatchingImages.forEach(image => {
+      console.log(`  URL: ${image.url}`);
+      console.log(`  Score: ${image.score}`);
     });
+  }
+
+  if (webDetection.partialMatchingImages.length) {
+    console.log(
+      `Partial matches found: ${webDetection.partialMatchingImages.length}`
+    );
+    webDetection.partialMatchingImages.forEach(image => {
+      console.log(`  URL: ${image.url}`);
+      console.log(`  Score: ${image.score}`);
+    });
+  }
+
+  if (webDetection.webEntities.length) {
+    console.log(`Web entities found: ${webDetection.webEntities.length}`);
+    webDetection.webEntities.forEach(webEntity => {
+      console.log(`  Description: ${webEntity.description}`);
+      console.log(`  Score: ${webEntity.score}`);
+    });
+  }
+
+  if (webDetection.bestGuessLabels.length) {
+    console.log(
+      `Best guess labels found: ${webDetection.bestGuessLabels.length}`
+    );
+    webDetection.bestGuessLabels.forEach(label => {
+      console.log(`  Label: ${label.label}`);
+    });
+  }
   // [END vision_web_detection_gcs]
 }
 
-function detectWebGeo(fileName) {
+async function detectWebGeo(fileName) {
   // [START vision_web_detection_include_geo]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision');
@@ -637,23 +527,16 @@ function detectWebGeo(fileName) {
   };
 
   // Detect similar images on the web to a local file
-  client
-    .webDetection(request)
-    .then(results => {
-      const webDetection = results[0].webDetection;
-
-      webDetection.webEntities.forEach(entity => {
-        console.log(`Score: ${entity.score}`);
-        console.log(`Description: ${entity.description}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.webDetection(request);
+  const webDetection = result.webDetection;
+  webDetection.webEntities.forEach(entity => {
+    console.log(`Score: ${entity.score}`);
+    console.log(`Description: ${entity.description}`);
+  });
   // [END vision_web_detection_include_geo]
 }
 
-function detectWebGeoGCS(bucketName, fileName) {
+async function detectWebGeoGCS(bucketName, fileName) {
   // [START vision_web_detection_include_geo_gcs]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision');
@@ -681,23 +564,16 @@ function detectWebGeoGCS(bucketName, fileName) {
   };
 
   // Detect similar images on the web to a remote file
-  client
-    .webDetection(request)
-    .then(results => {
-      const webDetection = results[0].webDetection;
-
-      webDetection.webEntities.forEach(entity => {
-        console.log(`Score: ${entity.score}`);
-        console.log(`Description: ${entity.description}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.webDetection(request);
+  const webDetection = result.webDetection;
+  webDetection.webEntities.forEach(entity => {
+    console.log(`Score: ${entity.score}`);
+    console.log(`Description: ${entity.description}`);
+  });
   // [END vision_web_detection_include_geo_gcs]
 }
 
-function detectFulltext(fileName) {
+async function detectFulltext(fileName) {
   // [START vision_fulltext_detection]
 
   // Imports the Google Cloud client library
@@ -712,37 +588,30 @@ function detectFulltext(fileName) {
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
   // Read a local image as a text document
-  client
-    .documentTextDetection(fileName)
-    .then(results => {
-      const fullTextAnnotation = results[0].fullTextAnnotation;
-      console.log(`Full text: ${fullTextAnnotation.text}`);
-
-      fullTextAnnotation.pages.forEach(page => {
-        page.blocks.forEach(block => {
-          console.log(`Block confidence: ${block.confidence}`);
-          block.paragraphs.forEach(paragraph => {
-            console.log(`Paragraph confidence: ${paragraph.confidence}`);
-            paragraph.words.forEach(word => {
-              const wordText = word.symbols.map(s => s.text).join('');
-              console.log(`Word text: ${wordText}`);
-              console.log(`Word confidence: ${word.confidence}`);
-              word.symbols.forEach(symbol => {
-                console.log(`Symbol text: ${symbol.text}`);
-                console.log(`Symbol confidence: ${symbol.confidence}`);
-              });
-            });
+  const [result] = await client.documentTextDetection(fileName);
+  const fullTextAnnotation = result.fullTextAnnotation;
+  console.log(`Full text: ${fullTextAnnotation.text}`);
+  fullTextAnnotation.pages.forEach(page => {
+    page.blocks.forEach(block => {
+      console.log(`Block confidence: ${block.confidence}`);
+      block.paragraphs.forEach(paragraph => {
+        console.log(`Paragraph confidence: ${paragraph.confidence}`);
+        paragraph.words.forEach(word => {
+          const wordText = word.symbols.map(s => s.text).join('');
+          console.log(`Word text: ${wordText}`);
+          console.log(`Word confidence: ${word.confidence}`);
+          word.symbols.forEach(symbol => {
+            console.log(`Symbol text: ${symbol.text}`);
+            console.log(`Symbol confidence: ${symbol.confidence}`);
           });
         });
       });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
     });
+  });
   // [END vision_fulltext_detection]
 }
 
-function detectFulltextGCS(bucketName, fileName) {
+async function detectFulltextGCS(bucketName, fileName) {
   // [START vision_fulltext_detection_gcs]
 
   // Imports the Google Cloud client libraries
@@ -758,19 +627,15 @@ function detectFulltextGCS(bucketName, fileName) {
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
   // Read a remote image as a text document
-  client
-    .documentTextDetection(`gs://${bucketName}/${fileName}`)
-    .then(results => {
-      const fullTextAnnotation = results[0].fullTextAnnotation;
-      console.log(fullTextAnnotation.text);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.documentTextDetection(
+    `gs://${bucketName}/${fileName}`
+  );
+  const fullTextAnnotation = result.fullTextAnnotation;
+  console.log(fullTextAnnotation.text);
   // [END vision_fulltext_detection_gcs]
 }
 
-function detectPdfText(bucketName, fileName) {
+async function detectPdfText(bucketName, fileName) {
   // [START vision_text_detection_pdf_gcs]
 
   // Imports the Google Cloud client libraries
@@ -813,25 +678,15 @@ function detectPdfText(bucketName, fileName) {
     ],
   };
 
-  client
-    .asyncBatchAnnotateFiles(request)
-    .then(results => {
-      const operation = results[0];
-      // Get a Promise representation of the final result of the job
-      return operation.promise();
-    })
-    .then(filesResponse => {
-      const destinationUri =
-        filesResponse[0].responses[0].outputConfig.gcsDestination.uri;
-      console.log('Json saved to: ' + destinationUri);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [operation] = await client.asyncBatchAnnotateFiles(request);
+  const [filesResponse] = await operation.promise();
+  const destinationUri =
+    filesResponse.responses[0].outputConfig.gcsDestination.uri;
+  console.log('Json saved to: ' + destinationUri);
   // [END vision_text_detection_pdf_gcs]
 }
 
-function localizeObjects(fileName) {
+async function localizeObjects(fileName) {
   // [START vision_localize_objects]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -848,24 +703,18 @@ function localizeObjects(fileName) {
     image: {content: fs.readFileSync(fileName)},
   };
 
-  client
-    .objectLocalization(request)
-    .then(results => {
-      const objects = results[0].localizedObjectAnnotations;
-      objects.forEach(object => {
-        console.log(`Name: ${object.name}`);
-        console.log(`Confidence: ${object.score}`);
-        const vertices = object.boundingPoly.normalizedVertices;
-        vertices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.objectLocalization(request);
+  const objects = result.localizedObjectAnnotations;
+  objects.forEach(object => {
+    console.log(`Name: ${object.name}`);
+    console.log(`Confidence: ${object.score}`);
+    const vertices = object.boundingPoly.normalizedVertices;
+    vertices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
+  });
   // [END vision_localize_objects]
 }
 
-function localizeObjectsGCS(gcsUri) {
+async function localizeObjectsGCS(gcsUri) {
   // [START vision_localize_objects_gcs]
   // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
@@ -878,20 +727,14 @@ function localizeObjectsGCS(gcsUri) {
    */
   // const gcsUri = `gs://bucket/bucketImage.png`;
 
-  client
-    .objectLocalization(gcsUri)
-    .then(results => {
-      const objects = results[0].localizedObjectAnnotations;
-      objects.forEach(object => {
-        console.log(`Name: ${object.name}`);
-        console.log(`Confidence: ${object.score}`);
-        const veritices = object.boundingPoly.normalizedVertices;
-        veritices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.objectLocalization(gcsUri);
+  const objects = result.localizedObjectAnnotations;
+  objects.forEach(object => {
+    console.log(`Name: ${object.name}`);
+    console.log(`Confidence: ${object.score}`);
+    const veritices = object.boundingPoly.normalizedVertices;
+    veritices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
+  });
   // [END vision_localize_objects_gcs]
 }
 

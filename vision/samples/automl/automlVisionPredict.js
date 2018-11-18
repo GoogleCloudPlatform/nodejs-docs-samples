@@ -23,7 +23,13 @@
 
 'use strict';
 
-function predict(projectId, computeRegion, modelId, filePath, scoreThreshold) {
+async function predict(
+  projectId,
+  computeRegion,
+  modelId,
+  filePath,
+  scoreThreshold
+) {
   // [START automl_vision_predict]
   const automl = require('@google-cloud/automl').v1beta1;
   const fs = require('fs');
@@ -58,18 +64,16 @@ function predict(projectId, computeRegion, modelId, filePath, scoreThreshold) {
 
   // params is additional domain-specific parameters.
   // currently there is no additional parameters supported.
-  client
-    .predict({name: modelFullId, payload: payload, params: params})
-    .then(responses => {
-      console.log(`Prediction results:`);
-      responses[0].payload.forEach(result => {
-        console.log(`Predicted class name: ${result.displayName}`);
-        console.log(`Predicted class score: ${result.classification.score}`);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [response] = await client.predict({
+    name: modelFullId,
+    payload: payload,
+    params: params,
+  });
+  console.log(`Prediction results:`);
+  response.payload.forEach(result => {
+    console.log(`Predicted class name: ${result.displayName}`);
+    console.log(`Predicted class score: ${result.classification.score}`);
+  });
   // [END automl_vision_predict]
 }
 

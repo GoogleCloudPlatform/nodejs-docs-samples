@@ -15,7 +15,7 @@
 
 'use strict';
 
-function createProduct(
+async function createProduct(
   projectId,
   location,
   productId,
@@ -52,20 +52,12 @@ function createProduct(
     productId: productId,
   };
 
-  client
-    .createProduct(request)
-    .then(results => {
-      // The response is the product with the `name` field populated
-      const createdProduct = results[0];
-      console.log(`Product name: ${createdProduct.name}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [createdProduct] = await client.createProduct(request);
+  console.log(`Product name: ${createdProduct.name}`);
   // [END vision_product_search_create_product]
 }
 
-function getProduct(projectId, location, productId) {
+async function getProduct(projectId, location, productId) {
   // [START vision_product_search_get_product]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -83,24 +75,17 @@ function getProduct(projectId, location, productId) {
   // Resource path that represents Google Cloud Platform location.
   const productPath = client.productPath(projectId, location, productId);
 
-  client
-    .getProduct({name: productPath})
-    .then(results => {
-      const product = results[0];
-      console.log(`Product name: ${product.name}`);
-      console.log(`Product id: ${product.name.split('/').pop()}`);
-      console.log(`Product display name: ${product.displayName}`);
-      console.log(`Product description: ${product.description}`);
-      console.log(`Product category: ${product.productCategory}`);
-      console.log(`Product labels: ${product.productLabels}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [product] = await client.getProduct({name: productPath});
+  console.log(`Product name: ${product.name}`);
+  console.log(`Product id: ${product.name.split('/').pop()}`);
+  console.log(`Product display name: ${product.displayName}`);
+  console.log(`Product description: ${product.description}`);
+  console.log(`Product category: ${product.productCategory}`);
+  console.log(`Product labels: ${product.productLabels}`);
   // [END vision_product_search_get_product]
 }
 
-function listProducts(projectId, location) {
+async function listProducts(projectId, location) {
   // [START vision_product_search_list_products]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -117,31 +102,24 @@ function listProducts(projectId, location) {
   // Resource path that represents Google Cloud Platform location.
   const locationPath = client.locationPath(projectId, location);
 
-  client
-    .listProducts({parent: locationPath})
-    .then(results => {
-      const products = results[0];
-      products.forEach(product => {
-        console.log(`Product name: ${product.name}`);
-        console.log(`Product id: ${product.name.split('/').pop()}`);
-        console.log(`Product display name: ${product.displayName}`);
-        console.log(`Product description: ${product.description}`);
-        console.log(`Product category: ${product.productCategory}`);
-        if (product.productLabels.length) {
-          console.log(`Product labels:`);
-          product.productLabels.forEach(productLabel => {
-            console.log(`${productLabel.key}: ${productLabel.value}`);
-          });
-        }
+  const [products] = client.listProducts({parent: locationPath});
+  products.forEach(product => {
+    console.log(`Product name: ${product.name}`);
+    console.log(`Product id: ${product.name.split('/').pop()}`);
+    console.log(`Product display name: ${product.displayName}`);
+    console.log(`Product description: ${product.description}`);
+    console.log(`Product category: ${product.productCategory}`);
+    if (product.productLabels.length) {
+      console.log(`Product labels:`);
+      product.productLabels.forEach(productLabel => {
+        console.log(`${productLabel.key}: ${productLabel.value}`);
       });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+    }
+  });
   // [END vision_product_search_list_products]
 }
 
-function deleteProduct(projectId, location, productId) {
+async function deleteProduct(projectId, location, productId) {
   // [START vision_product_search_delete_product]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -159,18 +137,12 @@ function deleteProduct(projectId, location, productId) {
   // Resource path that represents full path to the product.
   const productPath = client.productPath(projectId, location, productId);
 
-  client
-    .deleteProduct({name: productPath})
-    .then(() => {
-      console.log('Product deleted.');
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  await client.deleteProduct({name: productPath});
+  console.log('Product deleted.');
   // [END vision_product_search_delete_product]
 }
 
-function updateProductLabels(projectId, location, productId, key, value) {
+async function updateProductLabels(projectId, location, productId, key, value) {
   // [START vision_product_search_update_product_labels]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision').v1p3beta1;
@@ -209,23 +181,16 @@ function updateProductLabels(projectId, location, productId, key, value) {
     updateMask: updateMask,
   };
 
-  client
-    .updateProduct(request)
-    .then(results => {
-      const product = results[0];
-      console.log(`Product name: ${product.name}`);
-      console.log(`Product display name: ${product.displayName}`);
-      console.log(`Product description: ${product.description}`);
-      console.log(`Product category: ${product.productCategory}`);
-      console.log(
-        `Product Labels: ${product.productLabels[0].key}: ${
-          product.productLabels[0].value
-        }`
-      );
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [updatedProduct] = await client.updateProduct(request);
+  console.log(`Product name: ${updatedProduct.name}`);
+  console.log(`Product display name: ${updatedProduct.displayName}`);
+  console.log(`Product description: ${updatedProduct.description}`);
+  console.log(`Product category: ${updatedProduct.productCategory}`);
+  console.log(
+    `Product Labels: ${updatedProduct.productLabels[0].key}: ${
+      updatedProduct.productLabels[0].value
+    }`
+  );
   // [END vision_product_search_update_product_labels]
 }
 

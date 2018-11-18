@@ -17,9 +17,9 @@
 
 const path = require(`path`);
 const {Storage} = require(`@google-cloud/storage`);
-const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
+const assert = require('assert');
 
 const vision = require('@google-cloud/vision');
 const client = new vision.ImageAnnotatorClient();
@@ -45,280 +45,284 @@ const files = [
   };
 });
 
-test.before(tools.checkCredentials);
-test.before(async () => {
-  const [bucket] = await storage.createBucket(bucketName);
-  await Promise.all(files.map(file => bucket.upload(file.localPath)));
-});
+describe(`detect`, () => {
+  before(async () => {
+    tools.checkCredentials;
+    const [bucket] = await storage.createBucket(bucketName);
+    await Promise.all(files.map(file => bucket.upload(file.localPath)));
+  });
 
-test.after.always(async () => {
-  const bucket = storage.bucket(bucketName);
-  await bucket.deleteFiles({force: true});
-  await bucket.deleteFiles({force: true}); // Try a second time...
-  await bucket.delete();
-});
+  after(async () => {
+    const bucket = storage.bucket(bucketName);
+    await bucket.deleteFiles({force: true});
+    await bucket.deleteFiles({force: true}); // Try a second time...
+    await bucket.delete();
+  });
 
-test(`should detect faces in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} faces ${files[0].localPath}`,
-    cwd
-  );
-  t.true(output.includes(`Faces:`));
-  t.true(output.includes(`Face #1:`));
-});
+  it(`should detect faces in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} faces ${files[0].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Faces:`));
+    assert.ok(output.includes(`Face #1:`));
+  });
 
-test(`should detect faces in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} faces-gcs ${bucketName} ${files[0].name}`,
-    cwd
-  );
-  t.true(output.includes(`Faces:`));
-  t.true(output.includes(`Face #1:`));
-});
+  it(`should detect faces in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} faces-gcs ${bucketName} ${files[0].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Faces:`));
+    assert.ok(output.includes(`Face #1:`));
+  });
 
-test(`should detect labels in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} labels ${files[4].localPath}`,
-    cwd
-  );
-  t.true(output.includes(`Labels:`));
-  t.true(output.includes(`cat`));
-});
+  it(`should detect labels in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} labels ${files[4].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Labels:`));
+    assert.ok(output.includes(`cat`));
+  });
 
-test(`should detect labels in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} labels-gcs ${bucketName} ${files[4].name}`,
-    cwd
-  );
-  t.true(output.includes(`Labels:`));
-  t.true(output.includes(`cat`));
-});
+  it(`should detect labels in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} labels-gcs ${bucketName} ${files[4].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Labels:`));
+    assert.ok(output.includes(`cat`));
+  });
 
-test(`should detect landmarks in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} landmarks ${files[1].localPath}`,
-    cwd
-  );
-  t.true(output.includes(`Landmarks:`));
-  t.true(output.includes(`Palace of Fine Arts`));
-});
+  it(`should detect landmarks in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} landmarks ${files[1].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Landmarks:`));
+    assert.ok(output.includes(`Palace of Fine Arts`));
+  });
 
-test(`should detect landmarks in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} landmarks-gcs ${bucketName} ${files[1].name}`,
-    cwd
-  );
-  t.true(output.includes(`Landmarks:`));
-  t.true(output.includes(`Palace of Fine Arts`));
-});
+  it(`should detect landmarks in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} landmarks-gcs ${bucketName} ${files[1].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Landmarks:`));
+    assert.ok(output.includes(`Palace of Fine Arts`));
+  });
 
-test(`should detect text in a local file`, async t => {
-  const output = await tools.runAsync(`${cmd} text ${files[3].localPath}`, cwd);
-  t.true(output.includes(`Text:`));
-  t.true(output.includes(`System Software Update`));
-});
+  it(`should detect text in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} text ${files[3].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Text:`));
+    assert.ok(output.includes(`System Software Update`));
+  });
 
-test(`should detect text in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} text-gcs ${bucketName} ${files[3].name}`,
-    cwd
-  );
-  t.true(output.includes(`Text:`));
-  t.true(output.includes(`System Software Update`));
-});
+  it(`should detect text in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} text-gcs ${bucketName} ${files[3].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Text:`));
+    assert.ok(output.includes(`System Software Update`));
+  });
 
-test(`should detect logos in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} logos ${files[2].localPath}`,
-    cwd
-  );
-  t.true(output.includes(`Logos:`));
-  t.true(output.includes(`Google`));
-});
+  it(`should detect logos in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} logos ${files[2].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Logos:`));
+    assert.ok(output.includes(`Google`));
+  });
 
-test(`should detect logos in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} logos-gcs ${bucketName} ${files[2].name}`,
-    cwd
-  );
-  t.true(output.includes(`Logos:`));
-  t.true(output.includes(`Google`));
-});
+  it(`should detect logos in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} logos-gcs ${bucketName} ${files[2].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Logos:`));
+    assert.ok(output.includes(`Google`));
+  });
 
-test(`should detect properties in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} properties ${files[1].localPath}`,
-    cwd
-  );
-  t.true(output.includes(`{ color: { red: 69, green: 42, blue: 27`));
-  t.true(output.split(`\n`).length > 4, `Multiple colors were detected.`);
-});
+  it(`should detect properties in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} properties ${files[1].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`{ color: { red: 69, green: 42, blue: 27`));
+    assert.ok(output.split(`\n`).length > 4, `Multiple colors were detected.`);
+  });
 
-test(`should detect properties in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} properties-gcs ${bucketName} ${files[1].name}`,
-    cwd
-  );
-  t.true(output.includes(`{ color: { red: 69, green: 42, blue: 27`));
-  t.true(output.split(`\n`).length > 4, `Multiple colors were detected.`);
-});
+  it(`should detect properties in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} properties-gcs ${bucketName} ${files[1].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`{ color: { red: 69, green: 42, blue: 27`));
+    assert.ok(output.split(`\n`).length > 4, `Multiple colors were detected.`);
+  });
 
-test(`should detect safe-search in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} safe-search ${files[4].localPath}`,
-    cwd
-  );
-  t.true(output.includes('VERY_LIKELY'));
-  t.true(output.includes('Racy:'));
-});
+  it(`should detect safe-search in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} safe-search ${files[4].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`VERY_LIKELY`));
+    assert.ok(output.includes(`Racy:`));
+  });
 
-test(`should detect safe-search in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} safe-search-gcs ${bucketName} ${files[4].name}`,
-    cwd
-  );
-  t.true(output.includes(`Medical:`));
-});
+  it(`should detect safe-search in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} safe-search-gcs ${bucketName} ${files[4].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Medical:`));
+  });
 
-test(`should detect crop hints in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} crops ${files[2].localPath}`,
-    cwd
-  );
-  t.true(output.includes(`Crop Hint 0:`));
-  t.true(output.includes(`Bound 2: (280, 43)`));
-});
+  it(`should detect crop hints in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} crops ${files[2].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Crop Hint 0:`));
+    assert.ok(output.includes(`Bound 2: (280, 43)`));
+  });
 
-test(`should detect crop hints in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} crops-gcs ${bucketName} ${files[2].name}`,
-    cwd
-  );
-  t.true(output.includes(`Crop Hint 0:`));
-  t.true(output.includes(`Bound 2: (280, 43)`));
-});
+  it(`should detect crop hints in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} crops-gcs ${bucketName} ${files[2].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Crop Hint 0:`));
+    assert.ok(output.includes(`Bound 2: (280, 43)`));
+  });
 
-test(`should detect similar web images in a local file`, async t => {
-  const output = await tools.runAsync(`${cmd} web ${files[5].localPath}`, cwd);
+  it(`should detect similar web images in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} web ${files[5].localPath}`,
+      cwd
+    );
 
-  const [results] = await client.webDetection(files[5].localPath);
-  const webDetection = results.webDetection;
+    const [results] = await client.webDetection(files[5].localPath);
+    const webDetection = results.webDetection;
 
-  if (webDetection.fullMatchingImages.length) {
-    t.true(output.includes('Full matches found:'));
-  }
+    if (webDetection.fullMatchingImages.length) {
+      assert.ok(output.includes(`Full matches found:`));
+    }
 
-  if (webDetection.partialMatchingImages.length) {
-    t.true(output.includes('Partial matches found:'));
-  }
+    if (webDetection.partialMatchingImages.length) {
+      assert.ok(output.includes(`Partial matches found:`));
+    }
 
-  if (webDetection.webEntities.length) {
-    t.true(output.includes('Web entities found:'));
-    t.true(output.includes('Description: Google Cloud Platform'));
-  }
+    if (webDetection.webEntities.length) {
+      assert.ok(output.includes(`Web entities found:`));
+      assert.ok(output.includes(`Description: Google Cloud Platform`));
+    }
 
-  if (webDetection.bestGuessLabels.length) {
-    t.true(output.includes('Best guess labels found'));
-    t.true(output.includes('Label:'));
-  }
-});
+    if (webDetection.bestGuessLabels.length) {
+      assert.ok(output.includes(`Best guess labels found`));
+      assert.ok(output.includes(`Label:`));
+    }
+  });
 
-test(`should detect similar web images in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} web-gcs ${bucketName} ${files[5].name}`,
-    cwd
-  );
+  it(`should detect similar web images in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} web-gcs ${bucketName} ${files[5].name}`,
+      cwd
+    );
 
-  const [results] = await client.webDetection(
-    `gs://${bucketName}/${files[5].name}`
-  );
-  const webDetection = results.webDetection;
+    const [results] = await client.webDetection(
+      `gs://${bucketName}/${files[5].name}`
+    );
+    const webDetection = results.webDetection;
 
-  if (webDetection.fullMatchingImages.length) {
-    t.true(output.includes('Full matches found:'));
-  }
+    if (webDetection.fullMatchingImages.length) {
+      assert.ok(output.includes(`Full matches found:`));
+    }
 
-  if (webDetection.partialMatchingImages.length) {
-    t.true(output.includes('Partial matches found:'));
-  }
+    if (webDetection.partialMatchingImages.length) {
+      assert.ok(output.includes(`Partial matches found:`));
+    }
 
-  if (webDetection.webEntities.length) {
-    t.true(output.includes('Web entities found:'));
-    t.true(output.includes('Description: Google Cloud Platform'));
-  }
+    if (webDetection.webEntities.length) {
+      assert.ok(output.includes(`Web entities found:`));
+      assert.ok(output.includes(`Description: Google Cloud Platform`));
+    }
 
-  if (webDetection.bestGuessLabels.length) {
-    t.true(output.includes('Best guess labels found'));
-    t.true(output.includes('Label:'));
-  }
-});
+    if (webDetection.bestGuessLabels.length) {
+      assert.ok(output.includes(`Best guess labels found`));
+      assert.ok(output.includes(`Label:`));
+    }
+  });
 
-test(`should detect web entities with geo metadata in local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} web-geo ${files[1].localPath}`,
-    cwd
-  );
-  t.true(output.includes('Description:'));
-  t.true(output.includes('Score:'));
-  t.true(output.includes('Rome'));
-});
+  it(`should detect web entities with geo metadata in local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} web-geo ${files[1].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Description:`));
+    assert.ok(output.includes(`Score:`));
+    assert.ok(output.includes(`Rome`));
+  });
 
-test(`should detect web entities with geo metadata in remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} web-geo-gcs ${bucketName} ${files[1].name}`,
-    cwd
-  );
-  t.true(output.includes('Description:'));
-  t.true(output.includes('Score:'));
-  t.true(output.includes('Rome'));
-});
+  it(`should detect web entities with geo metadata in remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} web-geo-gcs ${bucketName} ${files[1].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Description:`));
+    assert.ok(output.includes(`Score:`));
+    assert.ok(output.includes(`Rome`));
+  });
 
-test(`should read a document from a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} fulltext ${files[2].localPath}`,
-    cwd
-  );
-  t.true(output.includes('Google Cloud Platform'));
-  t.true(output.includes('Word text: Cloud'));
-  t.true(output.includes('Word confidence: 0.9'));
-});
+  it(`should read a document from a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} fulltext ${files[2].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Google Cloud Platform`));
+    assert.ok(output.includes(`Word text: Cloud`));
+    assert.ok(output.includes(`Word confidence: 0.9`));
+  });
 
-test(`should read a document from a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} fulltext-gcs ${bucketName} ${files[2].name}`,
-    cwd
-  );
-  t.true(output.includes('Google Cloud Platform'));
-});
+  it(`should read a document from a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} fulltext-gcs ${bucketName} ${files[2].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Google Cloud Platform`));
+  });
 
-test(`should extract text from pdf file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} pdf ${bucketName} ${files[7].name}`,
-    cwd
-  );
-  t.true(output.includes('pdf-ocr.pdf.json'));
-});
+  it(`should extract text from pdf file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} pdf ${bucketName} ${files[7].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`pdf-ocr.pdf.json`));
+  });
 
-test(`should detect objects in a local file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} localize-objects ${files[8].localPath}`,
-    cwd
-  );
-  t.true(
-    output.includes(`Name: Bird`) &&
-      output.includes(`Name: Duck`) &&
-      output.includes(`Name: Toy`)
-  );
-});
+  it(`should detect objects in a local file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} localize-objects ${files[8].localPath}`,
+      cwd
+    );
+    assert.ok(output.includes(`Name: Bird`));
+    assert.ok(output.includes(`Name: Duck`));
+    assert.ok(output.includes(`Name: Toy`));
+  });
 
-test(`should detect objects in a remote file`, async t => {
-  const output = await tools.runAsync(
-    `${cmd} localize-objects-gcs gs://${bucketName}/${files[8].name}`,
-    cwd
-  );
-  t.true(
-    output.includes(`Name: Bird`) &&
-      output.includes(`Name: Duck`) &&
-      output.includes(`Name: Toy`)
-  );
+  it(`should detect objects in a remote file`, async () => {
+    const output = await tools.runAsync(
+      `${cmd} localize-objects-gcs gs://${bucketName}/${files[8].name}`,
+      cwd
+    );
+    assert.ok(output.includes(`Name: Bird`));
+    assert.ok(output.includes(`Name: Duck`));
+    assert.ok(output.includes(`Name: Toy`));
+  });
 });

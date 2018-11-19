@@ -16,34 +16,37 @@
 'use strict';
 
 const path = require('path');
-const test = require('ava');
+const assert = require('assert');
 const {runAsync} = require('@google-cloud/nodejs-repo-tools');
 
 const cmd = 'node detect.js';
+const cwd = path.join(__dirname, '..');
 const audioFilepathBookARoom = path
-  .join(__dirname, `../resources/book_a_room.wav`)
+  .join(__dirname, '../resources/book_a_room.wav')
   .replace(/(\s+)/g, '\\$1');
 
-test('Should detect text queries', async t => {
-  const output = await runAsync(`${cmd} text -q "hello"`);
-  t.true(output.includes('Detected intent'));
+it('Should detect text queries', async () => {
+  const output = await runAsync(`${cmd} text -q "hello"`, cwd);
+  assert.strictEqual(output.includes('Detected intent'), true);
 });
 
-test('Should detect event query', async t => {
-  const output = await runAsync(`${cmd} event WELCOME`);
-  t.true(output.includes('Query: WELCOME'));
+it('Should detect event query', async () => {
+  const output = await runAsync(`${cmd} event WELCOME`, cwd);
+  assert.strictEqual(output.includes('Query: WELCOME'), true);
 });
 
-test('Should detect audio query', async t => {
+it('Should detect audio query', async () => {
   const output = await runAsync(
-    `${cmd} audio ${audioFilepathBookARoom} -r 16000`
+    `${cmd} audio ${audioFilepathBookARoom} -r 16000`,
+    cwd
   );
-  t.true(output.includes('Detected intent'));
+  assert.strictEqual(output.includes('Detected intent'), true);
 });
 
-test('Should detect audio query in streaming fashion', async t => {
+it('Should detect audio query in streaming fashion', async () => {
   const output = await runAsync(
-    `${cmd} stream ${audioFilepathBookARoom} -r 16000`
+    `${cmd} stream ${audioFilepathBookARoom} -r 16000`,
+    cwd
   );
-  t.true(output.includes('Detected intent'));
+  assert.strictEqual(output.includes('Detected intent'), true);
 });

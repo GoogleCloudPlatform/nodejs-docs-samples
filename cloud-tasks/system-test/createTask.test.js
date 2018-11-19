@@ -15,28 +15,28 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
+const {runAsync} = require('@google-cloud/nodejs-repo-tools');
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT;
 const QUEUE = process.env.QUEUE_ID || 'my-appengine-queue';
-const cmd = `node createTask.js`;
-const cwd = path.join(__dirname, `..`);
+const cmd = 'node createTask.js';
+const cwd = path.join(__dirname, '..');
 
-test.before(t => {
+before(() => {
   if (!QUEUE) {
-    t.fail(`You must set the QUEUE_ID environment variable!`);
+    assert.fail('You must set the QUEUE_ID environment variable!');
   }
+  tools.checkCredentials();
 });
-test.before(tools.checkCredentials);
 
-test.serial(`should create a task`, async t => {
+it('should create a task', async () => {
   const output = await runAsync(
     `${cmd} --project=${PROJECT_ID} --location=us-central1 --queue=${QUEUE}`,
     cwd
   );
-  t.true(output.includes('Created task'));
+  assert.strictEqual(output.includes('Created task'), true);
 });

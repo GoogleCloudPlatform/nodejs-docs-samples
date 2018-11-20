@@ -30,22 +30,23 @@ prompt.get(FIELDS, (err, config) => {
   }
 
   // Connect to the database
-  const knex = Knex({ client: 'pg', connection: config });
+  const knex = Knex({client: 'pg', connection: config});
 
   // Create the "votes" table
-  knex.schema.createTable('votes', (table) => {
-    table.bigIncrements('vote_id').notNull();
-    table.timestamp('time_cast').notNull();
-    table.specificType('candidate', 'CHAR(6) NOT NULL');
-  })
+  knex.schema
+    .createTable('votes', table => {
+      table.bigIncrements('vote_id').notNull();
+      table.timestamp('time_cast').notNull();
+      table.specificType('candidate', 'CHAR(6) NOT NULL');
+    })
     .then(() => {
       console.log(`Successfully created 'votes' table.`);
       return knex.destroy();
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(`Failed to create 'votes' table:`, err);
       if (knex) {
-          knex.destroy();
+        knex.destroy();
       }
     });
 });

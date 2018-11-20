@@ -23,31 +23,29 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const SAMPLE_PATH = path.join(__dirname, `../createTables.js`);
 
-const exampleConfig = [
-  `user`,
-  `password`,
-  `database`
-];
+const exampleConfig = [`user`, `password`, `database`];
 
-function getSample () {
+function getSample() {
   const configMock = exampleConfig;
   const promptMock = {
     start: sinon.stub(),
-    get: sinon.stub().yields(null, configMock)
+    get: sinon.stub().yields(null, configMock),
   };
   const tableMock = {
     increments: sinon.stub(),
     timestamp: sinon.stub(),
-    string: sinon.stub()
+    string: sinon.stub(),
   };
   const knexMock = {
     schema: {
-      createTable: sinon.stub()
+      createTable: sinon.stub(),
     },
-    destroy: sinon.stub().returns(Promise.resolve())
+    destroy: sinon.stub().returns(Promise.resolve()),
   };
 
-  knexMock.schema.createTable.returns(Promise.resolve(knexMock)).yields(tableMock);
+  knexMock.schema.createTable
+    .returns(Promise.resolve(knexMock))
+    .yields(tableMock);
   const KnexMock = sinon.stub().returns(knexMock);
 
   return {
@@ -55,21 +53,21 @@ function getSample () {
       Knex: KnexMock,
       knex: knexMock,
       config: configMock,
-      prompt: promptMock
-    }
+      prompt: promptMock,
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb.serial(`should create a table`, (t) => {
+test.cb.serial(`should create a table`, t => {
   const sample = getSample();
   const expectedResult = `Successfully created 'votes' table.`;
 
   proxyquire(SAMPLE_PATH, {
     knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt
+    prompt: sample.mocks.prompt,
   });
 
   t.true(sample.mocks.prompt.start.calledOnce);
@@ -78,10 +76,12 @@ test.cb.serial(`should create a table`, (t) => {
 
   setTimeout(() => {
     t.true(sample.mocks.Knex.calledOnce);
-    t.deepEqual(sample.mocks.Knex.firstCall.args, [{
-      client: 'pg',
-      connection: exampleConfig
-    }]);
+    t.deepEqual(sample.mocks.Knex.firstCall.args, [
+      {
+        client: 'pg',
+        connection: exampleConfig,
+      },
+    ]);
 
     t.true(sample.mocks.knex.schema.createTable.calledOnce);
     t.is(sample.mocks.knex.schema.createTable.firstCall.args[0], 'votes');
@@ -92,14 +92,14 @@ test.cb.serial(`should create a table`, (t) => {
   }, 10);
 });
 
-test.cb.serial(`should handle prompt error`, (t) => {
+test.cb.serial(`should handle prompt error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
   sample.mocks.prompt.get = sinon.stub().yields(error);
 
   proxyquire(SAMPLE_PATH, {
     knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt
+    prompt: sample.mocks.prompt,
   });
 
   setTimeout(() => {
@@ -110,14 +110,16 @@ test.cb.serial(`should handle prompt error`, (t) => {
   }, 10);
 });
 
-test.cb.serial(`should handle knex creation error`, (t) => {
+test.cb.serial(`should handle knex creation error`, t => {
   const error = new Error(`error`);
   const sample = getSample();
-  sample.mocks.knex.schema.createTable = sinon.stub().returns(Promise.reject(error));
+  sample.mocks.knex.schema.createTable = sinon
+    .stub()
+    .returns(Promise.reject(error));
 
   proxyquire(SAMPLE_PATH, {
     knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt
+    prompt: sample.mocks.prompt,
   });
 
   setTimeout(() => {

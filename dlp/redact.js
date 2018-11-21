@@ -15,7 +15,7 @@
 
 'use strict';
 
-function redactText(callingProjectId, string, minLikelihood, infoTypes) {
+async function redactText(callingProjectId, string, minLikelihood, infoTypes) {
   // [START dlp_redact_text]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -49,19 +49,18 @@ function redactText(callingProjectId, string, minLikelihood, infoTypes) {
   };
 
   // Run string redaction
-  dlp
-    .deidentifyContent(request)
-    .then(response => {
-      const resultString = response[0].item.value;
-      console.log(`Redacted text: ${resultString}`);
-    })
-    .catch(err => {
-      console.log(`Error in deidentifyContent: ${err.message || err}`);
-    });
+  try {
+    const [response] = await dlp.deidentifyContent(request);
+    const resultString = response.item.value;
+    console.log(`Redacted text: ${resultString}`);
+  } catch (err) {
+    console.log(`Error in deidentifyContent: ${err.message || err}`);
+  }
+
   // [END dlp_redact_text]
 }
 
-function redactImage(
+async function redactImage(
   callingProjectId,
   filepath,
   minLikelihood,
@@ -120,16 +119,15 @@ function redactImage(
   };
 
   // Run image redaction request
-  dlp
-    .redactImage(request)
-    .then(response => {
-      const image = response[0].redactedImage;
-      fs.writeFileSync(outputPath, image);
-      console.log(`Saved image redaction results to path: ${outputPath}`);
-    })
-    .catch(err => {
-      console.log(`Error in redactImage: ${err.message || err}`);
-    });
+  try {
+    const [response] = await dlp.redactImage(request);
+    const image = response.redactedImage;
+    fs.writeFileSync(outputPath, image);
+    console.log(`Saved image redaction results to path: ${outputPath}`);
+  } catch (err) {
+    console.log(`Error in redactImage: ${err.message || err}`);
+  }
+
   // [END dlp_redact_image]
 }
 

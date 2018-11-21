@@ -15,7 +15,7 @@
 
 'use strict';
 
-function listJobs(callingProjectId, filter, jobType) {
+async function listJobs(callingProjectId, filter, jobType) {
   // [START dlp_list_jobs]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -40,18 +40,16 @@ function listJobs(callingProjectId, filter, jobType) {
     type: jobType,
   };
 
-  // Run job-listing request
-  dlp
-    .listDlpJobs(request)
-    .then(response => {
-      const jobs = response[0];
-      jobs.forEach(job => {
-        console.log(`Job ${job.name} status: ${job.state}`);
-      });
-    })
-    .catch(err => {
-      console.log(`Error in listJobs: ${err.message || err}`);
+  try {
+    // Run job-listing request
+    const [jobs] = await dlp.listDlpJobs(request);
+    jobs.forEach(job => {
+      console.log(`Job ${job.name} status: ${job.state}`);
     });
+  } catch (err) {
+    console.log(`Error in listJobs: ${err.message || err}`);
+  }
+
   // [END dlp_list_jobs]
 }
 

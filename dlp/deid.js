@@ -15,7 +15,7 @@
 
 'use strict';
 
-function deidentifyWithMask(
+async function deidentifyWithMask(
   callingProjectId,
   string,
   maskingCharacter,
@@ -62,20 +62,19 @@ function deidentifyWithMask(
     item: item,
   };
 
-  // Run deidentification request
-  dlp
-    .deidentifyContent(request)
-    .then(response => {
-      const deidentifiedItem = response[0].item;
-      console.log(deidentifiedItem.value);
-    })
-    .catch(err => {
-      console.log(`Error in deidentifyWithMask: ${err.message || err}`);
-    });
+  try {
+    // Run deidentification request
+    const [response] = await dlp.deidentifyContent(request);
+    const deidentifiedItem = response.item;
+    console.log(deidentifiedItem.value);
+  } catch (err) {
+    console.log(`Error in deidentifyWithMask: ${err.message || err}`);
+  }
+
   // [END dlp_deidentify_masking]
 }
 
-function deidentifyWithDateShift(
+async function deidentifyWithDateShift(
   callingProjectId,
   inputCsvFile,
   outputCsvFile,
@@ -208,36 +207,35 @@ function deidentifyWithDateShift(
     item: tableItem,
   };
 
-  // Run deidentification request
-  dlp
-    .deidentifyContent(request)
-    .then(response => {
-      const tableRows = response[0].item.table.rows;
+  try {
+    // Run deidentification request
+    const [response] = await dlp.deidentifyContent(request);
+    const tableRows = response.item.table.rows;
 
-      // Write results to a CSV file
-      tableRows.forEach((row, rowIndex) => {
-        const rowValues = row.values.map(
-          value =>
-            value.stringValue ||
-            `${value.dateValue.month}/${value.dateValue.day}/${
-              value.dateValue.year
-            }`
-        );
-        csvLines[rowIndex + 1] = rowValues.join(',');
-      });
-      csvLines.push('');
-      fs.writeFileSync(outputCsvFile, csvLines.join('\n'));
-
-      // Print status
-      console.log(`Successfully saved date-shift output to ${outputCsvFile}`);
-    })
-    .catch(err => {
-      console.log(`Error in deidentifyWithDateShift: ${err.message || err}`);
+    // Write results to a CSV file
+    tableRows.forEach((row, rowIndex) => {
+      const rowValues = row.values.map(
+        value =>
+          value.stringValue ||
+          `${value.dateValue.month}/${value.dateValue.day}/${
+            value.dateValue.year
+          }`
+      );
+      csvLines[rowIndex + 1] = rowValues.join(',');
     });
+    csvLines.push('');
+    fs.writeFileSync(outputCsvFile, csvLines.join('\n'));
+
+    // Print status
+    console.log(`Successfully saved date-shift output to ${outputCsvFile}`);
+  } catch (err) {
+    console.log(`Error in deidentifyWithDateShift: ${err.message || err}`);
+  }
+
   // [END dlp_deidentify_date_shift]
 }
 
-function deidentifyWithFpe(
+async function deidentifyWithFpe(
   callingProjectId,
   string,
   alphabet,
@@ -309,20 +307,19 @@ function deidentifyWithFpe(
     item: item,
   };
 
-  // Run deidentification request
-  dlp
-    .deidentifyContent(request)
-    .then(response => {
-      const deidentifiedItem = response[0].item;
-      console.log(deidentifiedItem.value);
-    })
-    .catch(err => {
-      console.log(`Error in deidentifyWithFpe: ${err.message || err}`);
-    });
+  try {
+    // Run deidentification request
+    const [response] = await dlp.deidentifyContent(request);
+    const deidentifiedItem = response.item;
+    console.log(deidentifiedItem.value);
+  } catch (err) {
+    console.log(`Error in deidentifyWithFpe: ${err.message || err}`);
+  }
+
   // [END dlp_deidentify_fpe]
 }
 
-function reidentifyWithFpe(
+async function reidentifyWithFpe(
   callingProjectId,
   string,
   alphabet,
@@ -396,16 +393,15 @@ function reidentifyWithFpe(
     item: item,
   };
 
-  // Run reidentification request
-  dlp
-    .reidentifyContent(request)
-    .then(response => {
-      const reidentifiedItem = response[0].item;
-      console.log(reidentifiedItem.value);
-    })
-    .catch(err => {
-      console.log(`Error in reidentifyWithFpe: ${err.message || err}`);
-    });
+  try {
+    // Run reidentification request
+    const [response] = await dlp.reidentifyContent(request);
+    const reidentifiedItem = response.item;
+    console.log(reidentifiedItem.value);
+  } catch (err) {
+    console.log(`Error in reidentifyWithFpe: ${err.message || err}`);
+  }
+
   // [END dlp_reidentify_fpe]
 }
 

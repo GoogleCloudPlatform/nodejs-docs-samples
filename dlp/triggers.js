@@ -15,7 +15,7 @@
 
 'use strict';
 
-function createTrigger(
+async function createTrigger(
   callingProjectId,
   triggerId,
   displayName,
@@ -107,20 +107,18 @@ function createTrigger(
     triggerId: triggerId,
   };
 
-  // Run trigger creation request
-  dlp
-    .createJobTrigger(request)
-    .then(response => {
-      const trigger = response[0];
-      console.log(`Successfully created trigger ${trigger.name}.`);
-    })
-    .catch(err => {
-      console.log(`Error in createTrigger: ${err.message || err}`);
-    });
+  try {
+    // Run trigger creation request
+    const [trigger] = await dlp.createJobTrigger(request);
+    console.log(`Successfully created trigger ${trigger.name}.`);
+  } catch (err) {
+    console.log(`Error in createTrigger: ${err.message || err}`);
+  }
+
   // [END dlp_create_trigger]
 }
 
-function listTriggers(callingProjectId) {
+async function listTriggers(callingProjectId) {
   // [START dlp_list_triggers]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -142,33 +140,30 @@ function listTriggers(callingProjectId) {
     return new Date(msSinceEpoch).toLocaleString('en-US');
   };
 
-  // Run trigger listing request
-  dlp
-    .listJobTriggers(request)
-    .then(response => {
-      const triggers = response[0];
-      triggers.forEach(trigger => {
-        // Log trigger details
-        console.log(`Trigger ${trigger.name}:`);
-        console.log(`  Created: ${formatDate(trigger.createTime)}`);
-        console.log(`  Updated: ${formatDate(trigger.updateTime)}`);
-        if (trigger.displayName) {
-          console.log(`  Display Name: ${trigger.displayName}`);
-        }
-        if (trigger.description) {
-          console.log(`  Description: ${trigger.description}`);
-        }
-        console.log(`  Status: ${trigger.status}`);
-        console.log(`  Error count: ${trigger.errors.length}`);
-      });
-    })
-    .catch(err => {
-      console.log(`Error in listTriggers: ${err.message || err}`);
+  try {
+    // Run trigger listing request
+    const [triggers] = await dlp.listJobTriggers(request);
+    triggers.forEach(trigger => {
+      // Log trigger details
+      console.log(`Trigger ${trigger.name}:`);
+      console.log(`  Created: ${formatDate(trigger.createTime)}`);
+      console.log(`  Updated: ${formatDate(trigger.updateTime)}`);
+      if (trigger.displayName) {
+        console.log(`  Display Name: ${trigger.displayName}`);
+      }
+      if (trigger.description) {
+        console.log(`  Description: ${trigger.description}`);
+      }
+      console.log(`  Status: ${trigger.status}`);
+      console.log(`  Error count: ${trigger.errors.length}`);
     });
+  } catch (err) {
+    console.log(`Error in listTriggers: ${err.message || err}`);
+  }
   // [END dlp_list_trigger]
 }
 
-function deleteTrigger(triggerId) {
+async function deleteTrigger(triggerId) {
   // [START dlp_delete_trigger]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -184,16 +179,14 @@ function deleteTrigger(triggerId) {
   const request = {
     name: triggerId,
   };
+  try {
+    // Run trigger deletion request
+    await dlp.deleteJobTrigger(request);
+    console.log(`Successfully deleted trigger ${triggerId}.`);
+  } catch (err) {
+    console.log(`Error in deleteTrigger: ${err.message || err}`);
+  }
 
-  // Run trigger deletion request
-  dlp
-    .deleteJobTrigger(request)
-    .then(() => {
-      console.log(`Successfully deleted trigger ${triggerId}.`);
-    })
-    .catch(err => {
-      console.log(`Error in deleteTrigger: ${err.message || err}`);
-    });
   // [END dlp_delete_trigger]
 }
 

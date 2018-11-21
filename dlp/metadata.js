@@ -15,7 +15,7 @@
 
 'use strict';
 
-function listInfoTypes(languageCode, filter) {
+async function listInfoTypes(languageCode, filter) {
   // [START dlp_list_info_types]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -29,21 +29,16 @@ function listInfoTypes(languageCode, filter) {
   // The filter to use
   // const filter = 'supported_by=INSPECT'
 
-  dlp
-    .listInfoTypes({
-      languageCode: languageCode,
-      filter: filter,
-    })
-    .then(body => {
-      const infoTypes = body[0].infoTypes;
-      console.log(`Info types:`);
-      infoTypes.forEach(infoType => {
-        console.log(`\t${infoType.name} (${infoType.displayName})`);
-      });
-    })
-    .catch(err => {
-      console.log(`Error in listInfoTypes: ${err.message || err}`);
-    });
+  const [response] = await dlp.listInfoTypes({
+    languageCode: languageCode,
+    filter: filter,
+  });
+  const infoTypes = response.infoTypes;
+  console.log(`Info types:`);
+  infoTypes.forEach(infoType => {
+    console.log(`\t${infoType.name} (${infoType.displayName})`);
+  });
+
   // [END dlp_list_info_types]
 }
 

@@ -15,7 +15,7 @@
 
 'use strict';
 
-function inspectString(
+async function inspectString(
   callingProjectId,
   string,
   minLikelihood,
@@ -66,30 +66,29 @@ function inspectString(
   };
 
   // Run request
-  dlp
-    .inspectContent(request)
-    .then(response => {
-      const findings = response[0].result.findings;
-      if (findings.length > 0) {
-        console.log(`Findings:`);
-        findings.forEach(finding => {
-          if (includeQuote) {
-            console.log(`\tQuote: ${finding.quote}`);
-          }
-          console.log(`\tInfo type: ${finding.infoType.name}`);
-          console.log(`\tLikelihood: ${finding.likelihood}`);
-        });
-      } else {
-        console.log(`No findings.`);
-      }
-    })
-    .catch(err => {
-      console.log(`Error in inspectString: ${err.message || err}`);
-    });
+  try {
+    const [response] = await dlp.inspectContent(request);
+    const findings = response.result.findings;
+    if (findings.length > 0) {
+      console.log(`Findings:`);
+      findings.forEach(finding => {
+        if (includeQuote) {
+          console.log(`\tQuote: ${finding.quote}`);
+        }
+        console.log(`\tInfo type: ${finding.infoType.name}`);
+        console.log(`\tLikelihood: ${finding.likelihood}`);
+      });
+    } else {
+      console.log(`No findings.`);
+    }
+  } catch (err) {
+    console.log(`Error in inspectString: ${err.message || err}`);
+  }
+
   // [END dlp_inspect_string]
 }
 
-function inspectFile(
+async function inspectFile(
   callingProjectId,
   filepath,
   minLikelihood,
@@ -154,30 +153,28 @@ function inspectFile(
   };
 
   // Run request
-  dlp
-    .inspectContent(request)
-    .then(response => {
-      const findings = response[0].result.findings;
-      if (findings.length > 0) {
-        console.log(`Findings:`);
-        findings.forEach(finding => {
-          if (includeQuote) {
-            console.log(`\tQuote: ${finding.quote}`);
-          }
-          console.log(`\tInfo type: ${finding.infoType.name}`);
-          console.log(`\tLikelihood: ${finding.likelihood}`);
-        });
-      } else {
-        console.log(`No findings.`);
-      }
-    })
-    .catch(err => {
-      console.log(`Error in inspectFile: ${err.message || err}`);
-    });
+  try {
+    const [response] = await dlp.inspectContent(request);
+    const findings = response.result.findings;
+    if (findings.length > 0) {
+      console.log(`Findings:`);
+      findings.forEach(finding => {
+        if (includeQuote) {
+          console.log(`\tQuote: ${finding.quote}`);
+        }
+        console.log(`\tInfo type: ${finding.infoType.name}`);
+        console.log(`\tLikelihood: ${finding.likelihood}`);
+      });
+    } else {
+      console.log(`No findings.`);
+    }
+  } catch (err) {
+    console.log(`Error in inspectFile: ${err.message || err}`);
+  }
   // [END dlp_inspect_file]
 }
 
-function inspectGCSFile(
+async function inspectGCSFile(
   callingProjectId,
   bucketName,
   fileName,
@@ -253,77 +250,64 @@ function inspectGCSFile(
     },
   };
 
-  // Create a GCS File inspection job and wait for it to complete
-  let subscription;
-  pubsub
-    .topic(topicId)
-    .get()
-    .then(topicResponse => {
-      // Verify the Pub/Sub topic and listen for job notifications via an
-      // existing subscription.
-      return topicResponse[0].subscription(subscriptionId);
-    })
-    .then(subscriptionResponse => {
-      subscription = subscriptionResponse;
-      return dlp.createDlpJob(request);
-    })
-    .then(jobsResponse => {
-      // Get the job's ID
-      return jobsResponse[0].name;
-    })
-    .then(jobName => {
-      // Watch the Pub/Sub topic until the DLP job finishes
-      return new Promise((resolve, reject) => {
-        const messageHandler = message => {
-          if (message.attributes && message.attributes.DlpJobName === jobName) {
-            message.ack();
-            subscription.removeListener('message', messageHandler);
-            subscription.removeListener('error', errorHandler);
-            resolve(jobName);
-          } else {
-            message.nack();
-          }
-        };
-
-        const errorHandler = err => {
+  try {
+    // Create a GCS File inspection job and wait for it to complete
+    const [topicResponse] = await pubsub.topic(topicId).get();
+    // Verify the Pub/Sub topic and listen for job notifications via an
+    // existing subscription.
+    const subscription = await topicResponse.subscription(subscriptionId);
+    const [jobsResponse] = await dlp.createDlpJob(request);
+    // Get the job's ID
+    const jobName = jobsResponse.name;
+    // Watch the Pub/Sub topic until the DLP job finishes
+    await new Promise((resolve, reject) => {
+      const messageHandler = message => {
+        if (message.attributes && message.attributes.DlpJobName === jobName) {
+          message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
-          reject(err);
-        };
+          resolve(jobName);
+        } else {
+          message.nack();
+        }
+      };
 
-        subscription.on('message', messageHandler);
-        subscription.on('error', errorHandler);
-      });
-    })
-    .then(jobName => {
-      // Wait for DLP job to fully complete
-      return new Promise(resolve => setTimeout(resolve(jobName), 500));
-    })
-    .then(jobName => dlp.getDlpJob({name: jobName}))
-    .then(wrappedJob => {
-      const job = wrappedJob[0];
-      console.log(`Job ${job.name} status: ${job.state}`);
+      const errorHandler = err => {
+        subscription.removeListener('message', messageHandler);
+        subscription.removeListener('error', errorHandler);
+        reject(err);
+      };
 
-      const infoTypeStats = job.inspectDetails.result.infoTypeStats;
-      if (infoTypeStats.length > 0) {
-        infoTypeStats.forEach(infoTypeStat => {
-          console.log(
-            `  Found ${infoTypeStat.count} instance(s) of infoType ${
-              infoTypeStat.infoType.name
-            }.`
-          );
-        });
-      } else {
-        console.log(`No findings.`);
-      }
-    })
-    .catch(err => {
-      console.log(`Error in inspectGCSFile: ${err.message || err}`);
+      subscription.on('message', messageHandler);
+      subscription.on('error', errorHandler);
     });
+
+    setTimeout(() => {
+      console.log(`Waiting for DLP job to fully complete`);
+    }, 500);
+    const [job] = await dlp.getDlpJob({name: jobName});
+    console.log(`Job ${job.name} status: ${job.state}`);
+
+    const infoTypeStats = job.inspectDetails.result.infoTypeStats;
+    if (infoTypeStats.length > 0) {
+      infoTypeStats.forEach(infoTypeStat => {
+        console.log(
+          `  Found ${infoTypeStat.count} instance(s) of infoType ${
+            infoTypeStat.infoType.name
+          }.`
+        );
+      });
+    } else {
+      console.log(`No findings.`);
+    }
+  } catch (err) {
+    console.log(`Error in inspectGCSFile: ${err.message || err}`);
+  }
+
   // [END dlp_inspect_gcs]
 }
 
-function inspectDatastore(
+async function inspectDatastore(
   callingProjectId,
   dataProjectId,
   namespaceId,
@@ -409,78 +393,63 @@ function inspectDatastore(
       ],
     },
   };
-
-  // Run inspect-job creation request
-  let subscription;
-  pubsub
-    .topic(topicId)
-    .get()
-    .then(topicResponse => {
-      // Verify the Pub/Sub topic and listen for job notifications via an
-      // existing subscription.
-      return topicResponse[0].subscription(subscriptionId);
-    })
-    .then(subscriptionResponse => {
-      subscription = subscriptionResponse;
-      return dlp.createDlpJob(request);
-    })
-    .then(jobsResponse => {
-      // Get the job's ID
-      return jobsResponse[0].name;
-    })
-    .then(jobName => {
-      // Watch the Pub/Sub topic until the DLP job finishes
-      return new Promise((resolve, reject) => {
-        const messageHandler = message => {
-          if (message.attributes && message.attributes.DlpJobName === jobName) {
-            message.ack();
-            subscription.removeListener('message', messageHandler);
-            subscription.removeListener('error', errorHandler);
-            resolve(jobName);
-          } else {
-            message.nack();
-          }
-        };
-
-        const errorHandler = err => {
+  try {
+    // Run inspect-job creation request
+    const [topicResponse] = await pubsub.topic(topicId).get();
+    // Verify the Pub/Sub topic and listen for job notifications via an
+    // existing subscription.
+    const subscription = await topicResponse.subscription(subscriptionId);
+    const [jobsResponse] = await dlp.createDlpJob(request);
+    const jobName = jobsResponse.name;
+    // Watch the Pub/Sub topic until the DLP job finishes
+    await new Promise((resolve, reject) => {
+      const messageHandler = message => {
+        if (message.attributes && message.attributes.DlpJobName === jobName) {
+          message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
-          reject(err);
-        };
+          resolve(jobName);
+        } else {
+          message.nack();
+        }
+      };
 
-        subscription.on('message', messageHandler);
-        subscription.on('error', errorHandler);
-      });
-    })
-    .then(jobName => {
-      // Wait for DLP job to fully complete
-      return new Promise(resolve => setTimeout(resolve(jobName), 500));
-    })
-    .then(jobName => dlp.getDlpJob({name: jobName}))
-    .then(wrappedJob => {
-      const job = wrappedJob[0];
-      console.log(`Job ${job.name} status: ${job.state}`);
+      const errorHandler = err => {
+        subscription.removeListener('message', messageHandler);
+        subscription.removeListener('error', errorHandler);
+        reject(err);
+      };
 
-      const infoTypeStats = job.inspectDetails.result.infoTypeStats;
-      if (infoTypeStats.length > 0) {
-        infoTypeStats.forEach(infoTypeStat => {
-          console.log(
-            `  Found ${infoTypeStat.count} instance(s) of infoType ${
-              infoTypeStat.infoType.name
-            }.`
-          );
-        });
-      } else {
-        console.log(`No findings.`);
-      }
-    })
-    .catch(err => {
-      console.log(`Error in inspectDatastore: ${err.message || err}`);
+      subscription.on('message', messageHandler);
+      subscription.on('error', errorHandler);
     });
+    // Wait for DLP job to fully complete
+    setTimeout(() => {
+      console.log(`Waiting for DLP job to fully complete`);
+    }, 500);
+    const [job] = await dlp.getDlpJob({name: jobName});
+    console.log(`Job ${job.name} status: ${job.state}`);
+
+    const infoTypeStats = job.inspectDetails.result.infoTypeStats;
+    if (infoTypeStats.length > 0) {
+      infoTypeStats.forEach(infoTypeStat => {
+        console.log(
+          `  Found ${infoTypeStat.count} instance(s) of infoType ${
+            infoTypeStat.infoType.name
+          }.`
+        );
+      });
+    } else {
+      console.log(`No findings.`);
+    }
+  } catch (err) {
+    console.log(`Error in inspectDatastore: ${err.message || err}`);
+  }
+
   // [END dlp_inspect_datastore]
 }
 
-function inspectBigquery(
+async function inspectBigquery(
   callingProjectId,
   dataProjectId,
   datasetId,
@@ -564,74 +533,59 @@ function inspectBigquery(
     },
   };
 
-  // Run inspect-job creation request
-  let subscription;
-  pubsub
-    .topic(topicId)
-    .get()
-    .then(topicResponse => {
-      // Verify the Pub/Sub topic and listen for job notifications via an
-      // existing subscription.
-      return topicResponse[0].subscription(subscriptionId);
-    })
-    .then(subscriptionResponse => {
-      subscription = subscriptionResponse;
-      return dlp.createDlpJob(request);
-    })
-    .then(jobsResponse => {
-      // Get the job's ID
-      return jobsResponse[0].name;
-    })
-    .then(jobName => {
-      // Watch the Pub/Sub topic until the DLP job finishes
-      return new Promise((resolve, reject) => {
-        const messageHandler = message => {
-          if (message.attributes && message.attributes.DlpJobName === jobName) {
-            message.ack();
-            subscription.removeListener('message', messageHandler);
-            subscription.removeListener('error', errorHandler);
-            resolve(jobName);
-          } else {
-            message.nack();
-          }
-        };
-
-        const errorHandler = err => {
-          console.error(err);
+  try {
+    // Run inspect-job creation request
+    const [topicResponse] = await pubsub.topic(topicId).get();
+    // Verify the Pub/Sub topic and listen for job notifications via an
+    // existing subscription.
+    const subscription = await topicResponse.subscription(subscriptionId);
+    const [jobsResponse] = await dlp.createDlpJob(request);
+    const jobName = jobsResponse.name;
+    // Watch the Pub/Sub topic until the DLP job finishes
+    await new Promise((resolve, reject) => {
+      const messageHandler = message => {
+        if (message.attributes && message.attributes.DlpJobName === jobName) {
+          message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
-          reject(err);
-        };
+          resolve(jobName);
+        } else {
+          message.nack();
+        }
+      };
 
-        subscription.on('message', messageHandler);
-        subscription.on('error', errorHandler);
-      });
-    })
-    .then(jobName => {
-      // Wait for DLP job to fully complete
-      return new Promise(resolve => setTimeout(resolve(jobName), 500));
-    })
-    .then(jobName => dlp.getDlpJob({name: jobName}))
-    .then(wrappedJob => {
-      const job = wrappedJob[0];
-      console.log(`Job ${job.name} state: ${job.state}`);
+      const errorHandler = err => {
+        subscription.removeListener('message', messageHandler);
+        subscription.removeListener('error', errorHandler);
+        reject(err);
+      };
 
-      const infoTypeStats = job.inspectDetails.result.infoTypeStats;
-      if (infoTypeStats.length > 0) {
-        infoTypeStats.forEach(infoTypeStat => {
-          console.log(
-            `  Found ${infoTypeStat.count} instance(s) of infoType ${
-              infoTypeStat.infoType.name
-            }.`
-          );
-        });
-      } else {
-        console.log(`No findings.`);
-      }
-    })
-    .catch(err => {
-      console.log(`Error in inspectBigquery: ${err.message || err}`);
+      subscription.on('message', messageHandler);
+      subscription.on('error', errorHandler);
     });
+    // Wait for DLP job to fully complete
+    setTimeout(() => {
+      console.log(`Waiting for DLP job to fully complete`);
+    }, 500);
+    const [job] = await dlp.getDlpJob({name: jobName});
+    console.log(`Job ${job.name} status: ${job.state}`);
+
+    const infoTypeStats = job.inspectDetails.result.infoTypeStats;
+    if (infoTypeStats.length > 0) {
+      infoTypeStats.forEach(infoTypeStat => {
+        console.log(
+          `  Found ${infoTypeStat.count} instance(s) of infoType ${
+            infoTypeStat.infoType.name
+          }.`
+        );
+      });
+    } else {
+      console.log(`No findings.`);
+    }
+  } catch (err) {
+    console.log(`Error in inspectBigquery: ${err.message || err}`);
+  }
+
   // [END dlp_inspect_bigquery]
 }
 

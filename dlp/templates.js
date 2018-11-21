@@ -15,7 +15,7 @@
 
 'use strict';
 
-function createInspectTemplate(
+async function createInspectTemplate(
   callingProjectId,
   templateId,
   displayName,
@@ -72,19 +72,18 @@ function createInspectTemplate(
     templateId: templateId,
   };
 
-  dlp
-    .createInspectTemplate(request)
-    .then(response => {
-      const templateName = response[0].name;
-      console.log(`Successfully created template ${templateName}.`);
-    })
-    .catch(err => {
-      console.log(`Error in createInspectTemplate: ${err.message || err}`);
-    });
+  try {
+    const [response] = await dlp.createInspectTemplate(request);
+    const templateName = response.name;
+    console.log(`Successfully created template ${templateName}.`);
+  } catch (err) {
+    console.log(`Error in createInspectTemplate: ${err.message || err}`);
+  }
+
   // [END dlp_create_inspect_template]
 }
 
-function listInspectTemplates(callingProjectId) {
+async function listInspectTemplates(callingProjectId) {
   // [START dlp_list_inspect_templates]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -106,40 +105,36 @@ function listInspectTemplates(callingProjectId) {
     parent: dlp.projectPath(callingProjectId),
   };
 
-  // Run template-deletion request
-  dlp
-    .listInspectTemplates(request)
-    .then(response => {
-      const templates = response[0];
-      templates.forEach(template => {
-        console.log(`Template ${template.name}`);
-        if (template.displayName) {
-          console.log(`  Display name: ${template.displayName}`);
-        }
+  try {
+    // Run template-deletion request
+    const [templates] = await dlp.listInspectTemplates(request);
 
-        console.log(`  Created: ${formatDate(template.createTime)}`);
-        console.log(`  Updated: ${formatDate(template.updateTime)}`);
+    templates.forEach(template => {
+      console.log(`Template ${template.name}`);
+      if (template.displayName) {
+        console.log(`  Display name: ${template.displayName}`);
+      }
 
-        const inspectConfig = template.inspectConfig;
-        const infoTypes = inspectConfig.infoTypes.map(x => x.name);
-        console.log(`  InfoTypes:`, infoTypes.join(' '));
-        console.log(`  Minimum likelihood:`, inspectConfig.minLikelihood);
-        console.log(`  Include quotes:`, inspectConfig.includeQuote);
+      console.log(`  Created: ${formatDate(template.createTime)}`);
+      console.log(`  Updated: ${formatDate(template.updateTime)}`);
 
-        const limits = inspectConfig.limits;
-        console.log(
-          `  Max findings per request:`,
-          limits.maxFindingsPerRequest
-        );
-      });
-    })
-    .catch(err => {
-      console.log(`Error in listInspectTemplates: ${err.message || err}`);
+      const inspectConfig = template.inspectConfig;
+      const infoTypes = inspectConfig.infoTypes.map(x => x.name);
+      console.log(`  InfoTypes:`, infoTypes.join(' '));
+      console.log(`  Minimum likelihood:`, inspectConfig.minLikelihood);
+      console.log(`  Include quotes:`, inspectConfig.includeQuote);
+
+      const limits = inspectConfig.limits;
+      console.log(`  Max findings per request:`, limits.maxFindingsPerRequest);
     });
+  } catch (err) {
+    console.log(`Error in listInspectTemplates: ${err.message || err}`);
+  }
+
   // [END dlp_list_inspect_templates]
 }
 
-function deleteInspectTemplate(templateName) {
+async function deleteInspectTemplate(templateName) {
   // [START dlp_delete_inspect_template]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -156,15 +151,14 @@ function deleteInspectTemplate(templateName) {
     name: templateName,
   };
 
-  // Run template-deletion request
-  dlp
-    .deleteInspectTemplate(request)
-    .then(() => {
-      console.log(`Successfully deleted template ${templateName}.`);
-    })
-    .catch(err => {
-      console.log(`Error in deleteInspectTemplate: ${err.message || err}`);
-    });
+  try {
+    // Run template-deletion request
+    await dlp.deleteInspectTemplate(request);
+    console.log(`Successfully deleted template ${templateName}.`);
+  } catch (err) {
+    console.log(`Error in deleteInspectTemplate: ${err.message || err}`);
+  }
+
   // [END dlp_delete_inspect_template]
 }
 

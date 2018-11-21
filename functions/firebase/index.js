@@ -117,6 +117,11 @@ exports.helloAnalytics = (event) => {
 // [END functions_firebase_analytics]
 
 // [START functions_firebase_remote_config]
+/**
+ * Triggered by a change to a Firebase Remote Config value.
+ *
+ * @param {object} data The Cloud Functions event data.
+ */
 exports.helloRemoteConfig = (event) => {
   const data = event.data;
 

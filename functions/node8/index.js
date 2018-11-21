@@ -283,6 +283,11 @@ exports.makeUpperCase = (data, context) => {
 // [END functions_firebase_reactive_node8]
 
 // [START functions_firebase_remote_config_node8]
+/**
+ * Triggered by a change to a Firebase Remote Config value.
+ *
+ * @param {object} data The Cloud Functions event data.
+ */
 exports.helloRemoteConfig = (data) => {
   console.log(`Update type: ${data.updateType}`);
   console.log(`Origin: ${data.updateOrigin}`);

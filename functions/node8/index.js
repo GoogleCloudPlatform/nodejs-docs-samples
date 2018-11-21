@@ -281,3 +281,11 @@ exports.makeUpperCase = (data, context) => {
   });
 };
 // [END functions_firebase_reactive_node8]
+
+// [START functions_firebase_remote_config_node8]
+exports.helloRemoteConfig = (data) => {
+  console.log(`Update type: ${data.updateType}`);
+  console.log(`Origin: ${data.updateOrigin}`);
+  console.log(`Version: ${data.versionNumber}`);
+};
+// [END functions_firebase_remote_config_node8]

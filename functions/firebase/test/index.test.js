@@ -107,7 +107,7 @@ test(`should listen to Auth events`, t => {
   t.true(console.log.calledWith(`Email: me@example.com`));
 });
 
-test.serial('should monitor Analytics', t => {
+test.serial('should listen to Analytics events', t => {
   const date = new Date();
   const event = {
     data: {
@@ -137,30 +137,20 @@ test.serial('should monitor Analytics', t => {
   t.is(console.log.args[4][0], `Location: London, UK`);
 });
 
-test(`should update data in response to Firestore events`, t => {
+test(`should listen to Remote Config events`, t => {
   const sample = getSample();
 
-  const date = Date.now();
   const event = {
-    resource: '/documents/some/path',
     data: {
-      email: 'me@example.com',
-      metadata: {
-        createdAt: date
-      },
-      value: {
-        fields: {
-          original: {
-            stringValue: 'foobar'
-          }
-        }
-      }
+      updateOrigin: 'CONSOLE',
+      updateType: 'INCREMENTAL_UPDATE',
+      versionNumber: '1'
     }
   };
 
-  sample.program.makeUpperCase(event);
+  sample.program.helloRemoteConfig(event);
 
-  t.true(sample.mocks.firestore.doc.calledWith('some/path'));
-  t.true(console.log.calledWith(`Replacing value: foobar --> FOOBAR`));
-  t.true(sample.mocks.firestore.set.calledWith({'original': 'FOOBAR'}));
+  t.true(console.log.calledWith(`Update type: INCREMENTAL_UPDATE`));
+  t.true(console.log.calledWith(`Origin: CONSOLE`));
+  t.true(console.log.calledWith(`Version: 1`));
 });

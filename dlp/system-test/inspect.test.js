@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,24 +16,23 @@
 'use strict';
 
 const path = require('path');
-const test = require('ava');
+const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 const uuid = require('uuid');
 
 const cmd = 'node inspect.js';
-const cwd = path.join(__dirname, `..`);
-const bucket = `nodejs-docs-samples-dlp`;
-const dataProject = `nodejs-docs-samples`;
-
-test.before(tools.checkCredentials);
+const cwd = path.join(__dirname, '..');
+const bucket = 'nodejs-docs-samples-dlp';
+const dataProject = 'nodejs-docs-samples';
 
 // Create new custom topic/subscription
 let topic, subscription;
 const topicName = `dlp-inspect-topic-${uuid.v4()}`;
 const subscriptionName = `dlp-inspect-subscription-${uuid.v4()}`;
-test.before(async () => {
+before(async () => {
+  tools.checkCredentials();
   await pubsub
     .createTopic(topicName)
     .then(response => {
@@ -46,147 +45,166 @@ test.before(async () => {
 });
 
 // Delete custom topic/subscription
-test.after.always(async () => {
-  await subscription.delete().then(() => topic.delete());
-});
+after(async () => await subscription.delete().then(() => topic.delete()));
 
 // inspect_string
-test(`should inspect a string`, async t => {
+it('should inspect a string', async () => {
   const output = await tools.runAsync(
     `${cmd} string "I'm Gary and my email is gary@example.com"`,
     cwd
   );
-  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  assert.strictEqual(new RegExp(/Info type: EMAIL_ADDRESS/).test(output), true);
 });
 
-test(`should handle a string with no sensitive data`, async t => {
+it('should handle a string with no sensitive data', async () => {
   const output = await tools.runAsync(`${cmd} string "foo"`, cwd);
-  t.is(output, 'No findings.');
+  assert.strictEqual(output, 'No findings.');
 });
 
-test(`should report string inspection handling errors`, async t => {
+it('should report string inspection handling errors', async () => {
   const output = await tools.runAsync(
     `${cmd} string "I'm Gary and my email is gary@example.com" -t BAD_TYPE`,
     cwd
   );
-  t.regex(output, /Error in inspectString/);
+  assert.strictEqual(new RegExp(/Error in inspectString/).test(output), true);
 });
 
 // inspect_file
-test(`should inspect a local text file`, async t => {
+it('should inspect a local text file', async () => {
   const output = await tools.runAsync(`${cmd} file resources/test.txt`, cwd);
-  t.regex(output, /Info type: PHONE_NUMBER/);
-  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  assert.strictEqual(new RegExp(/Info type: PHONE_NUMBER/).test(output), true);
+  assert.strictEqual(new RegExp(/Info type: EMAIL_ADDRESS/).test(output), true);
 });
 
-test(`should inspect a local image file`, async t => {
+it('should inspect a local image file', async () => {
   const output = await tools.runAsync(`${cmd} file resources/test.png`, cwd);
-  t.regex(output, /Info type: EMAIL_ADDRESS/);
+  assert.strictEqual(new RegExp(/Info type: EMAIL_ADDRESS/).test(output), true);
 });
 
-test(`should handle a local file with no sensitive data`, async t => {
+it('should handle a local file with no sensitive data', async () => {
   const output = await tools.runAsync(
     `${cmd} file resources/harmless.txt`,
     cwd
   );
-  t.regex(output, /No findings/);
+  assert.strictEqual(new RegExp(/No findings/).test(output), true);
 });
 
-test(`should report local file handling errors`, async t => {
+it('should report local file handling errors', async () => {
   const output = await tools.runAsync(
     `${cmd} file resources/harmless.txt -t BAD_TYPE`,
     cwd
   );
-  t.regex(output, /Error in inspectFile/);
+  assert.strictEqual(new RegExp(/Error in inspectFile/).test(output), true);
 });
 
 // inspect_gcs_file_promise
-test.skip(`should inspect a GCS text file`, async t => {
+it.skip('should inspect a GCS text file', async () => {
   const output = await tools.runAsync(
     `${cmd} gcsFile ${bucket} test.txt ${topicName} ${subscriptionName}`,
     cwd
   );
-  t.regex(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
-  t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
+  assert.strictEqual(
+    new RegExp(/Found \d instance\(s\) of infoType PHONE_NUMBER/).test(output),
+    true
+  );
+  assert.strictEqual(
+    new RegExp(/Found \d instance\(s\) of infoType EMAIL_ADDRESS/).test(output),
+    true
+  );
 });
 
-test.skip(`should inspect multiple GCS text files`, async t => {
+it.skip('should inspect multiple GCS text files', async () => {
   const output = await tools.runAsync(
     `${cmd} gcsFile ${bucket} "*.txt" ${topicName} ${subscriptionName}`,
     cwd
   );
-  t.regex(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
-  t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
+  assert.strictEqual(
+    new RegExp(/Found \d instance\(s\) of infoType PHONE_NUMBER/).test(output),
+    true
+  );
+  assert.strictEqual(
+    new RegExp(/Found \d instance\(s\) of infoType EMAIL_ADDRESS/).test(output),
+    true
+  );
 });
 
-test.skip(`should handle a GCS file with no sensitive data`, async t => {
+it.skip('should handle a GCS file with no sensitive data', async () => {
   const output = await tools.runAsync(
     `${cmd} gcsFile ${bucket} harmless.txt ${topicName} ${subscriptionName}`,
     cwd
   );
-  t.regex(output, /No findings/);
+  assert.strictEqual(new RegExp(/No findings/).test(output), true);
 });
 
-test(`should report GCS file handling errors`, async t => {
+it('should report GCS file handling errors', async () => {
   const output = await tools.runAsync(
     `${cmd} gcsFile ${bucket} harmless.txt ${topicName} ${subscriptionName} -t BAD_TYPE`,
     cwd
   );
-  t.regex(output, /Error in inspectGCSFile/);
+  assert.strictEqual(new RegExp(/Error in inspectGCSFile/).test(output), true);
 });
 
 // inspect_datastore
-test.skip(`should inspect Datastore`, async t => {
+it.skip('should inspect Datastore', async () => {
   const output = await tools.runAsync(
     `${cmd} datastore Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
+  assert.strictEqual(
+    new RegExp(/Found \d instance\(s\) of infoType EMAIL_ADDRESS/).test(output),
+    true
+  );
 });
 
-test.skip(`should handle Datastore with no sensitive data`, async t => {
+it.skip('should handle Datastore with no sensitive data', async () => {
   const output = await tools.runAsync(
     `${cmd} datastore Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /No findings/);
+  assert.strictEqual(new RegExp(/No findings/).test(output), true);
 });
 
-test(`should report Datastore errors`, async t => {
+it('should report Datastore errors', async () => {
   const output = await tools.runAsync(
     `${cmd} datastore Harmless ${topicName} ${subscriptionName} --namespaceId DLP -t BAD_TYPE -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /Error in inspectDatastore/);
+  assert.strictEqual(
+    new RegExp(/Error in inspectDatastore/).test(output),
+    true
+  );
 });
 
 // inspect_bigquery
-test.skip(`should inspect a Bigquery table`, async t => {
+it.skip('should inspect a Bigquery table', async () => {
   const output = await tools.runAsync(
     `${cmd} bigquery integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
+  assert.strictEqual(
+    new RegExp(/Found \d instance\(s\) of infoType PHONE_NUMBER/).test(output),
+    true
+  );
 });
 
-test.skip(`should handle a Bigquery table with no sensitive data`, async t => {
+it.skip('should handle a Bigquery table with no sensitive data', async () => {
   const output = await tools.runAsync(
     `${cmd} bigquery integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /No findings/);
+  assert.strictEqual(new RegExp(/No findings/).test(output), true);
 });
 
-test(`should report Bigquery table handling errors`, async t => {
+it('should report Bigquery table handling errors', async () => {
   const output = await tools.runAsync(
     `${cmd} bigquery integration_tests_dlp harmless ${topicName} ${subscriptionName} -t BAD_TYPE -p ${dataProject}`,
     cwd
   );
-  t.regex(output, /Error in inspectBigquery/);
+  assert.strictEqual(new RegExp(/Error in inspectBigquery/).test(output), true);
 });
 
 // CLI options
-test(`should have a minLikelihood option`, async t => {
+it('should have a minLikelihood option', async () => {
   const promiseA = tools.runAsync(
     `${cmd} string "My phone number is (123) 456-7890." -m LIKELY`,
     cwd
@@ -197,14 +215,14 @@ test(`should have a minLikelihood option`, async t => {
   );
 
   const outputA = await promiseA;
-  t.truthy(outputA);
-  t.notRegex(outputA, /PHONE_NUMBER/);
+  assert.ok(outputA);
+  assert.strictEqual(new RegExp(/PHONE_NUMBER/).test(outputA), false);
 
   const outputB = await promiseB;
-  t.regex(outputB, /PHONE_NUMBER/);
+  assert.strictEqual(new RegExp(/PHONE_NUMBER/).test(outputB), true);
 });
 
-test(`should have a maxFindings option`, async t => {
+it('should have a maxFindings option', async () => {
   const promiseA = tools.runAsync(
     `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 1`,
     cwd
@@ -215,14 +233,17 @@ test(`should have a maxFindings option`, async t => {
   );
 
   const outputA = await promiseA;
-  t.not(outputA.includes('PHONE_NUMBER'), outputA.includes('EMAIL_ADDRESS')); // Exactly one of these should be included
+  assert.notStrictEqual(
+    outputA.includes('PHONE_NUMBER'),
+    outputA.includes('EMAIL_ADDRESS')
+  ); // Exactly one of these should be included
 
   const outputB = await promiseB;
-  t.regex(outputB, /PHONE_NUMBER/);
-  t.regex(outputB, /EMAIL_ADDRESS/);
+  assert.strictEqual(new RegExp(/PHONE_NUMBER/).test(outputB), true);
+  assert.strictEqual(new RegExp(/EMAIL_ADDRESS/).test(outputB), true);
 });
 
-test(`should have an option to include quotes`, async t => {
+it('should have an option to include quotes', async () => {
   const promiseA = tools.runAsync(
     `${cmd} string "My phone number is (223) 456-7890." -q false`,
     cwd
@@ -233,14 +254,14 @@ test(`should have an option to include quotes`, async t => {
   );
 
   const outputA = await promiseA;
-  t.truthy(outputA);
-  t.notRegex(outputA, /\(223\) 456-7890/);
+  assert.ok(outputA);
+  assert.strictEqual(new RegExp(/\(223\) 456-7890/).test(outputA), false);
 
   const outputB = await promiseB;
-  t.regex(outputB, /\(223\) 456-7890/);
+  assert.strictEqual(new RegExp(/\(223\) 456-7890/).test(outputB), true);
 });
 
-test(`should have an option to filter results by infoType`, async t => {
+it('should have an option to filter results by infoType', async () => {
   const promiseA = tools.runAsync(
     `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890."`,
     cwd
@@ -251,10 +272,10 @@ test(`should have an option to filter results by infoType`, async t => {
   );
 
   const outputA = await promiseA;
-  t.regex(outputA, /EMAIL_ADDRESS/);
-  t.regex(outputA, /PHONE_NUMBER/);
+  assert.strictEqual(new RegExp(/EMAIL_ADDRESS/).test(outputA), true);
+  assert.strictEqual(new RegExp(/PHONE_NUMBER/).test(outputA), true);
 
   const outputB = await promiseB;
-  t.notRegex(outputB, /EMAIL_ADDRESS/);
-  t.regex(outputB, /PHONE_NUMBER/);
+  assert.strictEqual(new RegExp(/EMAIL_ADDRESS/).test(outputB), false);
+  assert.strictEqual(new RegExp(/PHONE_NUMBER/).test(outputB), true);
 });

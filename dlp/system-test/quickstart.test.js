@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,15 +16,15 @@
 'use strict';
 
 const path = require('path');
-const test = require('ava');
+const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const cmd = 'node quickstart.js';
-const cwd = path.join(__dirname, `..`);
+const cwd = path.join(__dirname, '..');
 
-test.before(tools.checkCredentials);
+before(tools.checkCredentials);
 
-test(`should run`, async t => {
+it('should run', async () => {
   const output = await tools.runAsync(cmd, cwd);
-  t.regex(output, /Info type: PERSON_NAME/);
+  assert.strictEqual(new RegExp(/Info type: PERSON_NAME/).test(output), true);
 });

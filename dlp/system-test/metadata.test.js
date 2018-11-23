@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,23 +16,29 @@
 'use strict';
 
 const path = require('path');
-const test = require('ava');
+const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const cmd = 'node metadata.js';
-const cwd = path.join(__dirname, `..`);
+const cwd = path.join(__dirname, '..');
 
-test.before(tools.checkCredentials);
+before(tools.checkCredentials);
 
-test(`should list info types`, async t => {
+it('should list info types', async () => {
   const output = await tools.runAsync(`${cmd} infoTypes`, cwd);
-  t.regex(output, /US_DRIVERS_LICENSE_NUMBER/);
+  assert.strictEqual(
+    new RegExp(/US_DRIVERS_LICENSE_NUMBER/).test(output),
+    true
+  );
 });
 
-test(`should filter listed info types`, async t => {
+it('should filter listed info types', async () => {
   const output = await tools.runAsync(
     `${cmd} infoTypes "supported_by=RISK_ANALYSIS"`,
     cwd
   );
-  t.notRegex(output, /US_DRIVERS_LICENSE_NUMBER/);
+  assert.strictEqual(
+    new RegExp(/US_DRIVERS_LICENSE_NUMBER/).test(output),
+    false
+  );
 });

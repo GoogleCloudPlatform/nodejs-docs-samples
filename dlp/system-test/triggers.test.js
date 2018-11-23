@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,55 +14,76 @@
  */
 
 'use strict';
-
-const test = require(`ava`);
+const path = require('path');
+const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const uuid = require(`uuid`);
+const uuid = require('uuid');
 
 const projectId = process.env.GCLOUD_PROJECT;
-const cmd = `node triggers.js`;
+const cmd = 'node triggers.js';
+const cwd = path.join(__dirname, '..');
 const triggerName = `my-trigger-${uuid.v4()}`;
 const fullTriggerName = `projects/${projectId}/jobTriggers/${triggerName}`;
 const triggerDisplayName = `My Trigger Display Name: ${uuid.v4()}`;
 const triggerDescription = `My Trigger Description: ${uuid.v4()}`;
 
-const infoType = `US_CENSUS_NAME`;
-const minLikelihood = `VERY_LIKELY`;
+const infoType = 'US_CENSUS_NAME';
+const minLikelihood = 'VERY_LIKELY';
 const maxFindings = 5;
 const bucketName = process.env.BUCKET_NAME;
 
-test.serial(`should create a trigger`, async t => {
+it('should create a trigger', async () => {
   const output = await tools.runAsync(
     `${cmd} create ${bucketName} 1 -n ${triggerName} --autoPopulateTimespan \
-    -m ${minLikelihood} -t ${infoType} -f ${maxFindings} -d "${triggerDisplayName}" -s "${triggerDescription}"`
+    -m ${minLikelihood} -t ${infoType} -f ${maxFindings} -d "${triggerDisplayName}" -s "${triggerDescription}"`,
+    cwd
   );
-  t.true(output.includes(`Successfully created trigger ${fullTriggerName}`));
+  assert.strictEqual(
+    output.includes(`Successfully created trigger ${fullTriggerName}`),
+    true
+  );
 });
 
-test.serial(`should list triggers`, async t => {
-  const output = await tools.runAsync(`${cmd} list`);
-  t.true(output.includes(`Trigger ${fullTriggerName}`));
-  t.true(output.includes(`Display Name: ${triggerDisplayName}`));
-  t.true(output.includes(`Description: ${triggerDescription}`));
-  t.regex(output, /Created: \d{1,2}\/\d{1,2}\/\d{4}/);
-  t.regex(output, /Updated: \d{1,2}\/\d{1,2}\/\d{4}/);
-  t.regex(output, /Status: HEALTHY/);
-  t.regex(output, /Error count: 0/);
+it('should list triggers', async () => {
+  const output = await tools.runAsync(`${cmd} list`, cwd);
+  assert.strictEqual(output.includes(`Trigger ${fullTriggerName}`), true);
+  assert.strictEqual(
+    output.includes(`Display Name: ${triggerDisplayName}`),
+    true
+  );
+  assert.strictEqual(
+    output.includes(`Description: ${triggerDescription}`),
+    true
+  );
+  assert.strictEqual(
+    new RegExp(/Created: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
+    true
+  );
+  assert.strictEqual(
+    new RegExp(/Updated: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
+    true
+  );
+  assert.strictEqual(new RegExp(/Status: HEALTHY/).test(output), true);
+  assert.strictEqual(new RegExp(/Error count: 0/).test(output), true);
 });
 
-test.serial(`should delete a trigger`, async t => {
-  const output = await tools.runAsync(`${cmd} delete ${fullTriggerName}`);
-  t.true(output.includes(`Successfully deleted trigger ${fullTriggerName}.`));
+it('should delete a trigger', async () => {
+  const output = await tools.runAsync(`${cmd} delete ${fullTriggerName}`, cwd);
+  assert.strictEqual(
+    output.includes(`Successfully deleted trigger ${fullTriggerName}.`),
+    true
+  );
 });
 
-test(`should handle trigger creation errors`, async t => {
+it('should handle trigger creation errors', async () => {
   const output = await tools.runAsync(
-    `${cmd} create ${bucketName} 1 -n "@@@@@" -m ${minLikelihood} -t ${infoType} -f ${maxFindings}`
+    `${cmd} create ${bucketName} 1 -n "@@@@@" -m ${minLikelihood} -t ${infoType} -f ${maxFindings}`,
+    cwd
   );
-  t.regex(output, /Error in createTrigger/);
+  assert.strictEqual(new RegExp(/Error in createTrigger/).test(output), true);
 });
 
-test(`should handle trigger deletion errors`, async t => {
-  const output = await tools.runAsync(`${cmd} delete bad-trigger-path`);
-  t.regex(output, /Error in deleteTrigger/);
+it('should handle trigger deletion errors', async () => {
+  const output = await tools.runAsync(`${cmd} delete bad-trigger-path`, cwd);
+  assert.strictEqual(new RegExp(/Error in deleteTrigger/).test(output), true);
 });

@@ -520,7 +520,7 @@ const cli = require(`yargs`)
         opts.contextFieldId,
         opts.wrappedKey,
         opts.keyName
-      )
+      ).catch(console.log)
   )
   .option('c', {
     type: 'string',

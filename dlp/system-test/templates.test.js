@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,15 +15,17 @@
 
 'use strict';
 
-const test = require(`ava`);
+const path = require('path');
+const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const uuid = require(`uuid`);
+const uuid = require('uuid');
 
-const cmd = `node templates.js`;
+const cmd = 'node templates.js';
+const cwd = path.join(__dirname, '..');
 const templateName = '';
 
-const INFO_TYPE = `PERSON_NAME`;
-const MIN_LIKELIHOOD = `VERY_LIKELY`;
+const INFO_TYPE = 'PERSON_NAME';
+const MIN_LIKELIHOOD = 'VERY_LIKELY';
 const MAX_FINDINGS = 5;
 const INCLUDE_QUOTE = false;
 const DISPLAY_NAME = `My Template ${uuid.v4()}`;
@@ -34,43 +36,71 @@ const fullTemplateName = `projects/${
 }/inspectTemplates/${TEMPLATE_NAME}`;
 
 // create_inspect_template
-test.serial(`should create template`, async t => {
+it('should create template', async () => {
   const output = await tools.runAsync(
-    `${cmd} create -m ${MIN_LIKELIHOOD} -t ${INFO_TYPE} -f ${MAX_FINDINGS} -q ${INCLUDE_QUOTE} -d "${DISPLAY_NAME}" -i "${TEMPLATE_NAME}"`
+    `${cmd} create -m ${MIN_LIKELIHOOD} -t ${INFO_TYPE} -f ${MAX_FINDINGS} -q ${INCLUDE_QUOTE} -d "${DISPLAY_NAME}" -i "${TEMPLATE_NAME}"`,
+    cwd
   );
-  t.true(output.includes(`Successfully created template ${fullTemplateName}`));
+  assert.strictEqual(
+    output.includes(`Successfully created template ${fullTemplateName}`),
+    true
+  );
 });
 
-test(`should handle template creation errors`, async t => {
-  const output = await tools.runAsync(`${cmd} create -i invalid_template#id`);
-  t.regex(output, /Error in createInspectTemplate/);
+it('should handle template creation errors', async () => {
+  const output = await tools.runAsync(
+    `${cmd} create -i invalid_template#id`,
+    cwd
+  );
+  assert.strictEqual(
+    new RegExp(/Error in createInspectTemplate/).test(output),
+    true
+  );
 });
 
 // list_inspect_templates
-test.serial(`should list templates`, async t => {
-  const output = await tools.runAsync(`${cmd} list`);
-  t.true(output.includes(`Template ${templateName}`));
-  t.regex(output, /Created: \d{1,2}\/\d{1,2}\/\d{4}/);
-  t.regex(output, /Updated: \d{1,2}\/\d{1,2}\/\d{4}/);
+it('should list templates', async () => {
+  const output = await tools.runAsync(`${cmd} list`, cwd);
+  assert.strictEqual(output.includes(`Template ${templateName}`), true);
+  assert.strictEqual(
+    new RegExp(/Created: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
+    true
+  );
+  assert.strictEqual(
+    new RegExp(/Updated: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
+    true
+  );
 });
 
-test.serial(`should pass creation settings to template`, async t => {
-  const output = await tools.runAsync(`${cmd} list`);
-  t.true(output.includes(`Template ${fullTemplateName}`));
-  t.true(output.includes(`Display name: ${DISPLAY_NAME}`));
-  t.true(output.includes(`InfoTypes: ${INFO_TYPE}`));
-  t.true(output.includes(`Minimum likelihood: ${MIN_LIKELIHOOD}`));
-  t.true(output.includes(`Include quotes: ${INCLUDE_QUOTE}`));
-  t.true(output.includes(`Max findings per request: ${MAX_FINDINGS}`));
+it('should pass creation settings to template', async () => {
+  const output = await tools.runAsync(`${cmd} list`, cwd);
+  assert.strictEqual(output.includes(`Template ${fullTemplateName}`), true);
+  assert.strictEqual(output.includes(`Display name: ${DISPLAY_NAME}`), true);
+  assert.strictEqual(output.includes(`InfoTypes: ${INFO_TYPE}`), true);
+  assert.strictEqual(
+    output.includes(`Minimum likelihood: ${MIN_LIKELIHOOD}`),
+    true
+  );
+  assert.strictEqual(output.includes(`Include quotes: ${INCLUDE_QUOTE}`), true);
+  assert.strictEqual(
+    output.includes(`Max findings per request: ${MAX_FINDINGS}`),
+    true
+  );
 });
 
 // delete_inspect_template
-test.serial(`should delete template`, async t => {
-  const output = await tools.runAsync(`${cmd} delete ${fullTemplateName}`);
-  t.true(output.includes(`Successfully deleted template ${fullTemplateName}.`));
+it('should delete template', async () => {
+  const output = await tools.runAsync(`${cmd} delete ${fullTemplateName}`, cwd);
+  assert.strictEqual(
+    output.includes(`Successfully deleted template ${fullTemplateName}.`),
+    true
+  );
 });
 
-test(`should handle template deletion errors`, async t => {
-  const output = await tools.runAsync(`${cmd} delete BAD_TEMPLATE`);
-  t.regex(output, /Error in deleteInspectTemplate/);
+it('should handle template deletion errors', async () => {
+  const output = await tools.runAsync(`${cmd} delete BAD_TEMPLATE`, cwd);
+  assert.strictEqual(
+    new RegExp(/Error in deleteInspectTemplate/).test(output),
+    true
+  );
 });

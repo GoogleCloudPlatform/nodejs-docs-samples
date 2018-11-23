@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 
 'use strict';
 
-const test = require('ava');
+const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const cmd = `node jobs.js`;
@@ -26,8 +26,6 @@ const testTableProjectId = `bigquery-public-data`;
 const testDatasetId = `san_francisco`;
 const testTableId = `bikeshare_trips`;
 const testColumnName = `zip_code`;
-
-test.before(tools.checkCredentials);
 
 // Helper function for creating test jobs
 const createTestJob = async () => {
@@ -62,35 +60,46 @@ const createTestJob = async () => {
 
 // Create a test job
 let testJobName;
-test.before(async () => {
+before(async () => {
+  tools.checkCredentials();
   testJobName = await createTestJob();
 });
 
 // dlp_list_jobs
-test(`should list jobs`, async t => {
+it('should list jobs', async () => {
   const output = await tools.runAsync(`${cmd} list 'state=DONE'`);
-  t.regex(output, /Job projects\/(\w|-)+\/dlpJobs\/\w-\d+ status: DONE/);
+  assert.strictEqual(
+    new RegExp(/Job projects\/(\w|-)+\/dlpJobs\/\w-\d+ status: DONE/).test(
+      output
+    ),
+    true
+  );
 });
 
-test(`should list jobs of a given type`, async t => {
+it('should list jobs of a given type', async () => {
   const output = await tools.runAsync(
     `${cmd} list 'state=DONE' -t RISK_ANALYSIS_JOB`
   );
-  t.regex(output, /Job projects\/(\w|-)+\/dlpJobs\/r-\d+ status: DONE/);
+  assert.strictEqual(
+    new RegExp(/Job projects\/(\w|-)+\/dlpJobs\/r-\d+ status: DONE/).test(
+      output
+    ),
+    true
+  );
 });
 
-test(`should handle job listing errors`, async t => {
+it('should handle job listing errors', async () => {
   const output = await tools.runAsync(`${cmd} list 'state=NOPE'`);
-  t.regex(output, /Error in listJobs/);
+  assert.strictEqual(new RegExp(/Error in listJobs/).test(output), true);
 });
 
 // dlp_delete_job
-test(`should delete job`, async t => {
+it('should delete job', async () => {
   const output = await tools.runAsync(`${cmd} delete ${testJobName}`);
-  t.is(output, `Successfully deleted job ${testJobName}.`);
+  assert.strictEqual(output, `Successfully deleted job ${testJobName}.`);
 });
 
-test(`should handle job deletion errors`, async t => {
+it('should handle job deletion errors', async () => {
   const output = await tools.runAsync(`${cmd} delete ${badJobName}`);
-  t.regex(output, /Error in deleteJob/);
+  assert.strictEqual(new RegExp(/Error in deleteJob/).test(output), true);
 });

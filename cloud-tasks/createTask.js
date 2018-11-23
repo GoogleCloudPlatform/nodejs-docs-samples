@@ -18,7 +18,7 @@
 /**
  * Create a task for a given queue with an arbitrary payload.
  */
-function createTask(project, location, queue, options) {
+async function createTask(project, location, queue, options) {
   // [START cloud_tasks_appengine_create_task]
   // [START tasks_quickstart]
   // Imports the Google Cloud Tasks library.
@@ -62,15 +62,10 @@ function createTask(project, location, queue, options) {
 
   console.log('Sending task %j', task);
   // Send create task request.
-  client
-    .createTask(request)
-    .then(response => {
-      const task = response[0].name;
-      console.log(`Created task ${task}`);
-    })
-    .catch(err => {
-      console.error(`Error in createTask: ${err.message || err}`);
-    });
+  const [response] = await client.createTask(request);
+  const name = response.name;
+  console.log(`Created task ${name}`);
+
   // [END cloud_tasks_appengine_create_task]
   // [END tasks_quickstart]
 }
@@ -122,7 +117,9 @@ const cli = require(`yargs`)
 if (module === require.main) {
   const opts = cli.help().parse(process.argv.slice(2));
   process.env.GCLOUD_PROJECT = opts.project;
-  createTask(opts.project, opts.location, opts.queue, opts);
+  createTask(opts.project, opts.location, opts.queue, opts).catch(
+    console.error
+  );
 }
 
 exports.createTask = createTask;

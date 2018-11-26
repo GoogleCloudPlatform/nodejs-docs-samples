@@ -10,10 +10,8 @@
   },
   "main": "server/server.js",
   "scripts": {
-    "lint": "eslint .",
     "start": "node .",
-    "test": "repo-tools test app -- .",
-    "posttest": "npm run lint && nsp check"
+    "test": "repo-tools test app -- ."
   },
   "dependencies": {
     "compression": "1.7.2",
@@ -27,7 +25,6 @@
     "loopback": "3.18.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.5",
-    "nsp": "3.2.1"
+    "@google-cloud/nodejs-repo-tools": "^2.3.5"
   }
 }

@@ -28,8 +28,6 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.5",
-    "eslint": "4.18.2",
-    "eslint-config-loopback": "10.0.0",
     "nsp": "3.2.1"
   }
 }

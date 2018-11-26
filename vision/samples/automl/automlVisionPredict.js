@@ -55,7 +55,7 @@ async function predict(
   const params = {};
 
   if (scoreThreshold) {
-    params.scoreThreshold = scoreThreshold;
+    params.score_threshold = scoreThreshold;
   }
 
   // Set the payload by giving the content and type of the file.

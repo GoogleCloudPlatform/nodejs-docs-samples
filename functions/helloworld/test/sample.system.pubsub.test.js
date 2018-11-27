@@ -17,8 +17,8 @@
 const childProcess = require(`child_process`);
 const test = require(`ava`);
 const uuid = require(`uuid`);
-const Pubsub = require(`@google-cloud/pubsub`);
-const pubsub = Pubsub();
+const {PubSub} = require(`@google-cloud/pubsub`);
+const pubsub = new PubSub();
 
 const topicName = process.env.FUNCTIONS_TOPIC;
 const baseCmd = `gcloud functions`;

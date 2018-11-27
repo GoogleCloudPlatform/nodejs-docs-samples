@@ -45,8 +45,8 @@ const httpShim = (PORT) => {
 const pubsubShim = (gcfFn, topicName, subscriptionName) => {
   // [START functions_testing_shim_pubsub]
   // Import dependencies
-  const Pubsub = require('@google-cloud/pubsub');
-  const pubsub = Pubsub();
+  const {PubSub} = require('@google-cloud/pubsub');
+  const pubsub = new PubSub();
 
   // TODO(developer): specify a function to test
   // const gcfCode = require('./index.js');

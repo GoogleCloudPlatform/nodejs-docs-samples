@@ -22,10 +22,10 @@
 
 function setTopicPolicy(topicName) {
   // Imports the Google Cloud client library
-  const PubSub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates a client
-  const pubsub = PubSub();
+  const pubsub = new PubSub();
 
   // References an existing topic, e.g. "my-topic"
   const topic = pubsub.topic(topicName);

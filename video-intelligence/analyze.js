@@ -258,10 +258,9 @@ async function analyzeSafeSearch(gcsUri) {
 }
 
 async function analyzeVideoTranscription(gcsUri) {
-  // [START video_speech_transcription_gcs_beta]
+  // [START video_speech_transcription_gcs]
   // Imports the Google Cloud Video Intelligence library
-  const videoIntelligence = require('@google-cloud/video-intelligence')
-    .v1p1beta1;
+  const videoIntelligence = require('@google-cloud/video-intelligence');
 
   // Creates a client
   const client = new videoIntelligence.VideoIntelligenceServiceClient();
@@ -299,7 +298,7 @@ async function analyzeVideoTranscription(gcsUri) {
   });
   console.log('Transcription: ' + alternative.transcript);
 
-  // [END video_speech_transcription_gcs_beta]
+  // [END video_speech_transcription_gcs]
 }
 
 async function main() {

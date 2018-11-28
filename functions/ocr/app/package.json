@@ -21,7 +21,7 @@
     "@google-cloud/storage": "1.7.0",
     "@google-cloud/translate": "1.0.0",
     "@google-cloud/vision": "0.23.0",
-    "safe-buffer": "5.1.1"
+    "safe-buffer": "5.1.2"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.17",

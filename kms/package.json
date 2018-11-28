@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "googleapis": "^35.0.0",
-    "safe-buffer": "5.1.1",
+    "safe-buffer": "5.1.2",
     "yargs": "11.0.0"
   },
   "devDependencies": {

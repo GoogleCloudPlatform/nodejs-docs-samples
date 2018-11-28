@@ -12,7 +12,7 @@
     "lint": "^1.1.2"
   },
   "dependencies": {
-    "redis": "2.6.5"
+    "redis": "2.8.0"
   }
 }
 

@@ -20,7 +20,7 @@
     "@google-cloud/storage": "1.7.0",
     "googleapis": "27.0.0",
     "moment": "2.22.2",
-    "safe-buffer": "5.1.1",
+    "safe-buffer": "5.1.2",
     "yargs": "11.0.0"
   },
   "devDependencies": {

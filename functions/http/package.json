@@ -27,7 +27,7 @@
     "@google-cloud/storage": "1.7.0",
     "busboy": "^0.2.14",
     "escape-html": "^1.0.3",
-    "safe-buffer": "5.1.1"
+    "safe-buffer": "5.1.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

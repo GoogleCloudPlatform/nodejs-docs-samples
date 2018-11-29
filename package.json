@@ -29,7 +29,7 @@
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-prettier": "^3.0.0",
-    "nyc": "13.0.1",
+    "nyc": "13.1.0",
     "prettier": "^1.15.2"
   }
 }

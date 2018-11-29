@@ -22,17 +22,17 @@ const productSearchClient = new vision.ProductSearchClient();
 const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node referenceImages.v1p3beta1.js`;
-const cwd = path.join(__dirname, `..`);
+const cwd = path.join(__dirname, `..`, `productSearch`);
 
 // Shared fixture data for product tests
 const testProduct = {
   projectId: process.env.GCLOUD_PROJECT,
   location: 'us-west1',
-  productId: 'test_product_id_1',
+  productId: 'test_product_ref_image_id_1',
   productDisplayName: 'test_product_display_name_1',
   productCategory: 'homegoods',
   productReferenceImageId: `ReferenceImage${uuid.v4()}`,
-  productImageUri: 'gs://python-docs-samples-tests/product_search/shoes_1.jpg',
+  productImageUri: 'gs://nodejs-docs-samples/product-search/shoes_1.jpg',
 };
 testProduct.productPath = productSearchClient.productPath(
   testProduct.projectId,
@@ -46,20 +46,19 @@ describe(`reference images`, () => {
 
   before(async () => {
     // Create a test product for each test
-    try {
-      await productSearchClient.createProduct({
-        parent: productSearchClient.locationPath(
-          testProduct.projectId,
-          testProduct.location
-        ),
-        productId: testProduct.productId,
-        product: {
-          displayName: testProduct.productDisplayName,
-          productCategory: testProduct.productCategory,
-        },
-      });
-      testProduct.createdProductPaths.push(testProduct.productPath);
-    } catch (err) {} // ignore error
+
+    await productSearchClient.createProduct({
+      parent: productSearchClient.locationPath(
+        testProduct.projectId,
+        testProduct.location
+      ),
+      productId: testProduct.productId,
+      product: {
+        displayName: testProduct.productDisplayName,
+        productCategory: testProduct.productCategory,
+      },
+    });
+    testProduct.createdProductPaths.push(testProduct.productPath);
   });
 
   after(async () => {

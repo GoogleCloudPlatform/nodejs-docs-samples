@@ -22,13 +22,13 @@ const productSearch = new vision.ProductSearchClient();
 const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node productSets.v1p3beta1.js`;
-const cwd = path.join(__dirname, `..`);
+const cwd = path.join(__dirname, `..`, `productSearch`);
 
 // Shared fixture data for product tests
 const testProductSet = {
   projectId: process.env.GCLOUD_PROJECT,
   location: 'us-west1',
-  productSetId: 'test_product_set_id_1',
+  productSetId: `test_product_set_id${uuid.v4()}`,
   productSetDisplayName: 'test_product_set_display_name_1',
 };
 testProductSet.productSetPath = productSearch.productSetPath(
@@ -57,21 +57,19 @@ describe(`product sets`, () => {
 
   before(async () => {
     // Create a test product set for each test
-    try {
-      await productSearch.createProductSet({
-        parent: productSearch.locationPath(
-          testProductSet.projectId,
-          testProductSet.location
-        ),
-        productSetId: testProductSet.productSetId,
-        productSet: {
-          displayName: testProductSet.productSetDisplayName,
-        },
-      });
-      testProductSet.createdProductSetPaths.push(
-        testProductSet.createdProductSetPaths
-      );
-    } catch (err) {} // ignore error
+    await productSearch.createProductSet({
+      parent: productSearch.locationPath(
+        testProductSet.projectId,
+        testProductSet.location
+      ),
+      productSetId: testProductSet.productSetId,
+      productSet: {
+        displayName: testProductSet.productSetDisplayName,
+      },
+    });
+    testProductSet.createdProductSetPaths.push(
+      testProductSet.createdProductSetPaths
+    );
   });
 
   after(async () => {

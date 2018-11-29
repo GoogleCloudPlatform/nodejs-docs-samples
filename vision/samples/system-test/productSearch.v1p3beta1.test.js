@@ -16,20 +16,22 @@
 'use strict';
 
 const path = require(`path`);
+const uuid = require(`uuid`);
 const vision = require('@google-cloud/vision').v1p3beta1;
 const productSearchClient = new vision.ProductSearchClient();
 const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const cmd = `node productSearch.v1p3beta1.js`;
-const cwd = path.join(__dirname, `..`);
+const cwd = path.join(__dirname, `..`, `productSearch`);
 
 // Shared fixture data for product tests
 const testProductSet = {
   projectId: process.env.GCLOUD_PROJECT,
   location: 'us-west1',
   productCategory: 'homegoods',
-  productId: 'test_product_id_1',
-  productSetId: 'test_product_set_id_1',
+  productId: `test_product_id${uuid.v4()}`,
+  productDisplayName: 'test_product_display_name_1',
+  productSetId: `test_product_set_id${uuid.v4()}`,
   productSetDisplayName: 'test_product_set_display_name_1',
 };
 
@@ -47,36 +49,32 @@ describe(`product search`, () => {
 
   before(async () => {
     // Create a test product set for each test
-    try {
-      await productSearchClient.createProduct({
-        parent: productSearchClient.locationPath(
-          testProductSet.projectId,
-          testProductSet.location
-        ),
-        productId: testProductSet.productId,
-        product: {
-          displayName: testProductSet.productDisplayName,
-          productCategory: testProductSet.productCategory,
-        },
-      });
-      testProductSet.createdProductPaths.push(testProductSet.productPath);
-    } catch (err) {} // ignore error
+    await productSearchClient.createProduct({
+      parent: productSearchClient.locationPath(
+        testProductSet.projectId,
+        testProductSet.location
+      ),
+      productId: testProductSet.productId,
+      product: {
+        displayName: testProductSet.productDisplayName,
+        productCategory: testProductSet.productCategory,
+      },
+    });
+    testProductSet.createdProductPaths.push(testProductSet.productPath);
 
-    try {
-      await productSearchClient.createProductSet({
-        parent: productSearchClient.locationPath(
-          testProductSet.projectId,
-          testProductSet.location
-        ),
-        productSetId: testProductSet.productSetId,
-        productSet: {
-          displayName: testProductSet.productSetDisplayName,
-        },
-      });
-      testProductSet.createdProductSetPaths.push(
-        testProductSet.createdProductSetPaths
-      );
-    } catch (err) {} // ignore error
+    await productSearchClient.createProductSet({
+      parent: productSearchClient.locationPath(
+        testProductSet.projectId,
+        testProductSet.location
+      ),
+      productSetId: testProductSet.productSetId,
+      productSet: {
+        displayName: testProductSet.productSetDisplayName,
+      },
+    });
+    testProductSet.createdProductSetPaths.push(
+      testProductSet.createdProductSetPaths
+    );
   });
 
   after(async () => {
@@ -84,6 +82,10 @@ describe(`product search`, () => {
     testProductSet.createdProductSetPaths.forEach(async path => {
       try {
         await productSearchClient.deleteProductSet({name: path});
+      } catch (err) {} // ignore error
+    });
+    testProductSet.createdProductPaths.forEach(async path => {
+      try {
         await productSearchClient.deleteProduct({name: path});
       } catch (err) {} // ignore error
     });
@@ -100,17 +102,13 @@ describe(`product search`, () => {
     assert.ok(output.includes(`Product added to product set.`));
   });
 
-  test(`remove a product from a product set`, async () => {
+  it(`should remove a product from a product set`, async () => {
     const output = await tools.runAsync(
       `${cmd} removeProductFromProductSet "${testProductSet.projectId}" "${
         testProductSet.location
       }" "${testProductSet.productId}" "${testProductSet.productSetId}"`,
       cwd
     );
-
-    console.log('---------------');
-    console.log(output);
-    console.log('---------------');
 
     assert.ok(output.includes(`Product removed from product set.`));
   });

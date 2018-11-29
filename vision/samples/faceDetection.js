@@ -65,7 +65,7 @@ function highlightFaces(inputFile, faces, outputFile, Canvas, callback) {
     // Open the original image into a canvas
     const img = new Image();
     img.src = image;
-    const canvas = new Canvas(img.width, img.height);
+    const canvas = new Canvas.Canvas(img.width, img.height);
     const context = canvas.getContext('2d');
     context.drawImage(img, 0, 0, img.width, img.height);
 

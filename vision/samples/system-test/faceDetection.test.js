@@ -15,43 +15,13 @@
 
 'use strict';
 
-const fs = require(`fs`);
-const path = require(`path`);
+const path = require('path');
 const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-
-class MockCanvas {
-  getContext() {
-    return {
-      drawImage: () => {},
-      beginPath: () => {},
-      lineTo: () => {},
-      stroke: () => {},
-    };
-  }
-
-  pngStream() {
-    return {
-      on: (event, cb) => {
-        if (event === 'end') {
-          setTimeout(cb, 1000);
-        } else if (event === `data`) {
-          /* eslint-disable */
-          cb(`test`);
-          cb(`foo`);
-          cb(`bar`);
-          /* eslint-enable */
-        }
-      },
-    };
-  }
-}
-
-MockCanvas.Image = class Image {};
-
-const faceDetectionExample = require(`../faceDetection`);
-const inputFile = path.join(__dirname, `../resources`, `face.png`);
-const outputFile = path.join(__dirname, `../../vision`, `out.png`);
+const tools = require('@google-cloud/nodejs-repo-tools');
+const cmd = `node faceDetection.js`;
+const cwd = path.join(__dirname, `..`);
+const inputFile = path.join(__dirname, '../resources', 'face.png');
+const outputFile = path.join(__dirname, '../../', 'out.png');
 
 describe(`face detection`, () => {
   before(tools.checkCredentials);
@@ -66,23 +36,14 @@ describe(`face detection`, () => {
         console.warn('Face detection timed out!');
       }
     }, 60);
-
-    faceDetectionExample.main(
-      inputFile,
-      outputFile,
-      MockCanvas,
-      (err, faces) => {
-        assert.ifError(err);
-        assert.strictEqual(faces.length, 1);
-
-        const image = fs.readFileSync(outputFile);
-        assert.strictEqual(image.toString(`utf8`), `testfoobar`);
-        assert.ok(console.log.calledWith(`Found 1 face`));
-        assert.ok(console.log.calledWith(`Highlighting...`));
-        assert.ok(console.log.calledWith(`Finished!`));
-        done = true;
-        clearTimeout(timeout);
-      }
+    const output = await tools.runAsync(
+      `${cmd}  ${inputFile} ${outputFile}`,
+      cwd
     );
+    assert.ok(output.includes('Found 1 face'));
+    assert.ok(output.includes('Highlighting...'));
+    assert.ok(output.includes('Finished!'));
+    done = true;
+    clearTimeout(timeout);
   });
 });

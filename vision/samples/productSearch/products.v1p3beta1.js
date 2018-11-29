@@ -102,7 +102,7 @@ async function listProducts(projectId, location) {
   // Resource path that represents Google Cloud Platform location.
   const locationPath = client.locationPath(projectId, location);
 
-  const [products] = client.listProducts({parent: locationPath});
+  const [products] = await client.listProducts({parent: locationPath});
   products.forEach(product => {
     console.log(`Product name: ${product.name}`);
     console.log(`Product id: ${product.name.split('/').pop()}`);

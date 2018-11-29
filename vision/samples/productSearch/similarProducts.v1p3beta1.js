@@ -33,7 +33,7 @@ async function getSimilarProductsFile(
   /**
    * TODO(developer): Uncomment the following line before running the sample.
    */
-  // const projectId = 'java-docs-samples-testing';
+  // const projectId = 'nodejs-docs-samples';
   // const location = 'us-west1';
   // const productSetId = 'indexed_product_set_id_for_testing';
   // const productCategory = 'apparel';

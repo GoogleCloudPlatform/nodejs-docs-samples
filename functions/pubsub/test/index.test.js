@@ -35,7 +35,7 @@ function getSample () {
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/pubsub': PubSubMock
+      '@google-cloud/pubsub': {PubSub: PubSubMock}
     }),
     mocks: {
       PubSub: PubSubMock,

@@ -16,10 +16,10 @@
 'use strict';
 
 // [START functions_pubsub_setup]
-const PubSub = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 
 // Instantiates a client
-const pubsub = PubSub();
+const pubsub = new PubSub();
 // [END functions_pubsub_setup]
 
 const Buffer = require('safe-buffer').Buffer;

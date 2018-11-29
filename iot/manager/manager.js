@@ -23,9 +23,9 @@ const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
 // Configures the topic for Cloud IoT Core.
 function setupIotTopic(topicName) {
-  const PubSub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
-  const pubsub = PubSub();
+  const pubsub = new PubSub();
   const topic = pubsub.topic(topicName);
   const serviceAccount = `serviceAccount:cloud-iot@system.gserviceaccount.com`;
 
@@ -74,10 +74,10 @@ function setupIotTopic(topicName) {
 
 function createIotTopic(topicName) {
   // Imports the Google Cloud client library
-  const PubSub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates a client
-  const pubsub = PubSub();
+  const pubsub = new PubSub();
 
   pubsub.createTopic(topicName).then(results => {
     setupIotTopic(topicName);

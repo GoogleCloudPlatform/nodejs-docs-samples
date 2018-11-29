@@ -16,7 +16,7 @@
 'use strict';
 
 const path = require(`path`);
-const PubSub = require(`@google-cloud/pubsub`);
+const {PubSub} = require(`@google-cloud/pubsub`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
@@ -35,7 +35,7 @@ const cwdHelper = path.join(__dirname, `../../../manager`);
 const cwdSend = path.join(__dirname, `../send`);
 const installDeps = `npm install`;
 
-const pubsub = PubSub();
+const pubsub = new PubSub();
 
 test.before(tools.checkCredentials);
 test.before(async () => {

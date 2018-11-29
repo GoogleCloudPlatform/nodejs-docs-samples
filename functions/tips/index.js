@@ -170,8 +170,8 @@ exports.retryCallback = (event, callback) => {
 // [END functions_tips_retry]
 
 // [START functions_tips_gcp_apis]
-const Pubsub = require('@google-cloud/pubsub');
-const pubsub = Pubsub();
+const {PubSub} = require('@google-cloud/pubsub');
+const pubsub = new PubSub();
 
 /**
  * HTTP Cloud Function that uses a cached client library instance to

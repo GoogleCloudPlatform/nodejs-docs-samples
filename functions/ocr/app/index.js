@@ -19,7 +19,8 @@
 const config = require('./config.json');
 
 // Get a reference to the Pub/Sub component
-const pubsub = require('@google-cloud/pubsub')();
+const {PubSub} = require('@google-cloud/pubsub');
+const pubsub = new PubSub();
 // Get a reference to the Cloud Storage component
 const storage = require('@google-cloud/storage')();
 // Get a reference to the Cloud Vision API component

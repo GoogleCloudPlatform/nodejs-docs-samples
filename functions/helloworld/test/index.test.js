@@ -20,7 +20,8 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 const supertest = require(`supertest`);
 const uuid = require(`uuid`);
 
-const pubsub = require(`@google-cloud/pubsub`)();
+const {PubSub} = require(`@google-cloud/pubsub`);
+const pubsub = new PubSub();
 const storage = require(`@google-cloud/storage`)();
 
 const baseCmd = process.env.FUNCTIONS_CMD;

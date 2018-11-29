@@ -252,3 +252,19 @@ test(`should update data in response to Firestore events`, t => {
   t.true(console.log.calledWith(`Replacing value: foobar --> FOOBAR`));
   t.true(sample.mocks.firestore.set.calledWith({'original': 'FOOBAR'}));
 });
+
+test(`should listen to Firebase Remote Config events`, t => {
+  const sample = getSample();
+
+  const data = {
+    updateOrigin: 'CONSOLE',
+    updateType: 'INCREMENTAL_UPDATE',
+    versionNumber: '1'
+  };
+
+  sample.program.helloRemoteConfig(data);
+
+  t.true(console.log.calledWith(`Update type: INCREMENTAL_UPDATE`));
+  t.true(console.log.calledWith(`Origin: CONSOLE`));
+  t.true(console.log.calledWith(`Version: 1`));
+});

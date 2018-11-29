@@ -24,7 +24,7 @@ async function createReferenceImage(
 ) {
   // [START vision_product_search_create_reference_image]
 
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   const client = new vision.ProductSearchClient();
 
@@ -58,7 +58,7 @@ async function createReferenceImage(
 async function listReferenceImage(projectId, location, productId) {
   // [START vision_product_search_list_reference_images]
 
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   const client = new vision.ProductSearchClient();
 
@@ -91,7 +91,7 @@ async function getReferenceImage(
 ) {
   // [START vision_product_search_get_reference_image]
 
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   const client = new vision.ProductSearchClient();
 
@@ -103,7 +103,7 @@ async function getReferenceImage(
   // const productId = 'Id of the product';
   // const referenceImageId = 'Id of the reference image';
 
-  const formattedName = client.referenceImagePath(
+  const formattedName = client.imagePath(
     projectId,
     location,
     productId,
@@ -128,7 +128,7 @@ async function deleteReferenceImage(
 ) {
   // [START vision_product_search_delete_reference_image]
 
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   const client = new vision.ProductSearchClient();
 
@@ -140,7 +140,7 @@ async function deleteReferenceImage(
   // const productId = 'Id of the product';
   // const referenceImageId = 'Id of the reference image';
 
-  const formattedName = client.referenceImagePath(
+  const formattedName = client.imagePath(
     projectId,
     location,
     productId,

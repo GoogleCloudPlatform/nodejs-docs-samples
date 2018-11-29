@@ -17,11 +17,11 @@
 
 const path = require(`path`);
 const uuid = require(`uuid`);
-const vision = require('@google-cloud/vision').v1p3beta1;
+const vision = require('@google-cloud/vision');
 const productSearchClient = new vision.ProductSearchClient();
 const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node referenceImages.v1p3beta1.js`;
+const cmd = `node referenceImages.js`;
 const cwd = path.join(__dirname, `..`, `productSearch`);
 
 // Shared fixture data for product tests

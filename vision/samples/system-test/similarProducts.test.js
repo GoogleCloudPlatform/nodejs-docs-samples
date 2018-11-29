@@ -16,11 +16,11 @@
 'use strict';
 
 const path = require(`path`);
-const vision = require('@google-cloud/vision').v1p3beta1;
+const vision = require('@google-cloud/vision');
 const productSearch = new vision.ProductSearchClient();
 const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node similarProducts.v1p3beta1.js`;
+const cmd = `node similarProducts.js`;
 const cwd = path.join(__dirname, `..`, `productSearch`);
 const filter = ['', 'style=womens'];
 const localPath = './../resources/shoes_1.jpg';
@@ -28,7 +28,7 @@ const gcsUri = 'gs://nodejs-docs-samples/product-search/shoes_1.jpg';
 
 // Shared fixture data for product tests
 //Need to have a product set already imported and indexed
-// (gs://nodejs-docs-samples/product-search/indexed_product_set.csv)
+// (gs://nodejs-docs-samples/product-search/indexed_product_sets.csv)
 const testSimilarProducts = {
   projectId: process.env.GCLOUD_PROJECT,
   location: 'us-west1',

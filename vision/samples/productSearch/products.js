@@ -24,7 +24,7 @@ async function createProduct(
 ) {
   // [START vision_product_search_create_product]
   // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   // Creates a client
   const client = new vision.ProductSearchClient();
@@ -60,7 +60,7 @@ async function createProduct(
 async function getProduct(projectId, location, productId) {
   // [START vision_product_search_get_product]
   // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   // Creates a client
   const client = new vision.ProductSearchClient();
@@ -88,7 +88,7 @@ async function getProduct(projectId, location, productId) {
 async function listProducts(projectId, location) {
   // [START vision_product_search_list_products]
   // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   // Creates a client
   const client = new vision.ProductSearchClient();
@@ -122,7 +122,7 @@ async function listProducts(projectId, location) {
 async function deleteProduct(projectId, location, productId) {
   // [START vision_product_search_delete_product]
   // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   // Creates a client
   const client = new vision.ProductSearchClient();
@@ -145,7 +145,7 @@ async function deleteProduct(projectId, location, productId) {
 async function updateProductLabels(projectId, location, productId, key, value) {
   // [START vision_product_search_update_product_labels]
   // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   // Creates a client
   const client = new vision.ProductSearchClient();

@@ -24,7 +24,7 @@ async function getSimilarProductsFile(
   filter
 ) {
   // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
   const fs = require('fs');
   // Creates a client
   const productSearchClient = new vision.ProductSearchClient();
@@ -87,7 +87,7 @@ async function getSimilarProductsGcs(
   filter
 ) {
   // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
   // Creates a client
   const productSearchClient = new vision.ProductSearchClient();
   const imageAnnotatorClient = new vision.ImageAnnotatorClient();

@@ -18,7 +18,7 @@
 const path = require(`path`);
 const assert = require('assert');
 const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node importProductSets.v1p3beta1.js`;
+const cmd = `node importProductSets.js`;
 const cwd = path.join(__dirname, `..`, `productSearch`);
 
 //Shared fixture data for product tests

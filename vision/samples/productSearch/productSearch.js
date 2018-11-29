@@ -23,7 +23,7 @@ async function addProductToProductSet(
 ) {
   // [START vision_product_search_add_product_to_product_set]
 
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   const client = new vision.ProductSearchClient();
 
@@ -55,7 +55,7 @@ async function addProductToProductSet(
 async function listProductsInProductSet(projectId, location, productSetId) {
   // [START vision_product_search_list_products_in_product_set]
 
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   const client = new vision.ProductSearchClient();
 
@@ -90,7 +90,7 @@ async function removeProductFromProductSet(
 ) {
   // [START vision_product_search_remove_product_from_product_set]
 
-  const vision = require('@google-cloud/vision').v1p3beta1;
+  const vision = require('@google-cloud/vision');
 
   const client = new vision.ProductSearchClient();
 

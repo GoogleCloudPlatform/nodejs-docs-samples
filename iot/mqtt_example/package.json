@@ -16,7 +16,7 @@
   "devDependencies": {
     "manager": "../manager",
     "googleapis": "^32.0.0",
-    "@google-cloud/pubsub": "0.16.4",
+    "@google-cloud/pubsub": "0.21.1",
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
     "uuid": "3.3.2"

@@ -15,7 +15,7 @@
 
 'use strict';
 
-// Require process, so we can mock environment variables
+// Require process, so we can mock environment variables.
 const process = require('process');
 
 const express = require('express');
@@ -26,17 +26,17 @@ const app = express();
 app.set('view engine', 'pug');
 app.enable('trust proxy');
 
-// Automatically parse request body as form data
+// Automatically parse request body as form data.
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-// Set Content-Type for all responses for these routes
+// Set Content-Type for all responses for these routes.
 app.use((req, res, next) => {
   res.set('Content-Type', 'text/html');
   next();
 });
 
-// Create a Winston logger that streams to Stackdriver Logging
+// Create a Winston logger that streams to Stackdriver Logging.
 const winston = require('winston');
 const {LoggingWinston} = require('@google-cloud/logging-winston');
 const loggingWinston = new LoggingWinston();
@@ -45,24 +45,25 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
-// [START cloud_sql_postgreSQL_connection_pool]
-// Initialize Knex, a Node.js SQL query builder library with built-in connection pooling
+// [START cloud_sql_postgres_connection_pool]
+// Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
 const knex = connect();
 
 function connect() {
   // Configure which instance and what database user to connect with.
-  // Note: saving credentials in environment variables is convenient, but not secure - consider a more
-  // secure solution such as https://cloud.google.com/kms/ to help keep secrets safe.
+  // Remember - storing secrets in plaintext is potentially unsafe. Consider using
+  // something like https://cloud.google.com/kms/ to help keep secrets secret.
   const config = {
-    user: process.env.SQL_USER,
-    password: process.env.SQL_PASSWORD,
-    database: process.env.SQL_DATABASE,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
   };
+  // If running on App Engine add connection path to 'config.host' setting.
   if (
-    process.env.INSTANCE_CONNECTION_NAME &&
+    process.env.CLOUD_SQL_CONNECTION_NAME &&
     process.env.NODE_ENV === 'production'
   ) {
-    config.host = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
+    config.host = `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`;
   }
 
   // Establish a connection to the database
@@ -70,6 +71,9 @@ function connect() {
     client: 'pg',
     connection: config,
   });
+
+  // ... Specify additional properties here.
+  // [START_EXCLUDE]
 
   // [START cloud_sql_limit_connections]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
@@ -100,8 +104,9 @@ function connect() {
   knex.client.pool.acquireTimeoutMillis = 600000; // 10 minutes
   // [START cloud_sql_connection_lifetime]
 
+  // [END_EXCLUDE]
   return knex;
-  // [END cloud_sql_postgreSQL_connection_pool]
+  // [END cloud_sql_postgres_connection_pool]
 }
 
 // [START cloud_sql_example_statement]
@@ -112,8 +117,12 @@ function connect() {
  * @param {object} vote The vote record to insert.
  * @returns {Promise}
  */
-function insertVote(knex, vote) {
-  return knex('votes').insert(vote);
+async function insertVote(knex, vote) {
+  try {
+    return await knex('votes').insert(vote);
+  } catch (err) {
+    throw Error(err);
+  }
 }
 // [END cloud_sql_example_statement]
 
@@ -123,15 +132,12 @@ function insertVote(knex, vote) {
  * @param {object} knex The Knex connection object.
  * @returns {Promise}
  */
-function getVotes(knex) {
-  return knex
+async function getVotes(knex) {
+  return await knex
     .select('candidate', 'time_cast')
     .from('votes')
     .orderBy('time_cast', 'desc')
-    .limit(5)
-    .then(results => {
-      return results;
-    });
+    .limit(5);
 }
 
 /**
@@ -142,54 +148,49 @@ function getVotes(knex) {
  * @param {object} candidate The candidate for which to get the total vote count
  * @returns {Promise}
  */
-function getVoteCount(knex, candidate) {
-  return knex('votes')
+async function getVoteCount(knex, candidate) {
+  return await knex('votes')
     .count('vote_id')
-    .where('candidate', candidate)
-    .then(result => {
-      return result;
-    });
+    .where('candidate', candidate);
 }
 
 app.get('/', (req, res) => {
-  var tabsTotalVotes;
-  var spacesTotalVotes;
-  // Query the total count of "TABS" from the database.
-  getVoteCount(knex, 'TABS').then(tabsResult => {
-    tabsTotalVotes = parseInt(tabsResult[0].count);
+  (async function() {
+    // Query the total count of "TABS" from the database.
+    let tabsResult = await getVoteCount(knex, 'TABS');
+    let tabsTotalVotes = parseInt(tabsResult[0].count);
     // Query the total count of "SPACES" from the database.
-    getVoteCount(knex, 'SPACES').then(spacesResult => {
-      spacesTotalVotes = parseInt(spacesResult[0].count);
-      // Query the last 5 votes from the database.
-      getVotes(knex).then(votes => {
-        // Calculate and set leader values.
-        var leadTeam = '';
-        var voteDiff = 0;
-        var leaderMessage = '';
-        if (tabsTotalVotes !== spacesTotalVotes) {
-          if (tabsTotalVotes > spacesTotalVotes) {
-            leadTeam = 'TABS';
-            voteDiff = tabsTotalVotes - spacesTotalVotes;
-          } else {
-            leadTeam = 'SPACES';
-            voteDiff = spacesTotalVotes - tabsTotalVotes;
-          }
-          leaderMessage = leadTeam + ' are winning by ' + voteDiff;
-          leaderMessage += voteDiff > 1 ? ' votes.' : ' vote.';
-        } else {
-          leaderMessage = 'TABS and SPACES are evenly matched!';
-        }
-        res.render('index.pug', {
-          votes: votes,
-          tabsCount: tabsTotalVotes,
-          spacesCount: spacesTotalVotes,
-          leadTeam: leadTeam,
-          voteDiff: voteDiff,
-          leaderMessage: leaderMessage,
-        });
-      });
+    let spacesResult = await getVoteCount(knex, 'SPACES');
+    let spacesTotalVotes = parseInt(spacesResult[0].count);
+    // Query the last 5 votes from the database.
+    let votes = await getVotes(knex);
+    // Calculate and set leader values.
+    let leadTeam = '';
+    let voteDiff = 0;
+    let leaderMessage = '';
+    if (tabsTotalVotes !== spacesTotalVotes) {
+      if (tabsTotalVotes > spacesTotalVotes) {
+        leadTeam = 'TABS';
+        voteDiff = tabsTotalVotes - spacesTotalVotes;
+      } else {
+        leadTeam = 'SPACES';
+        voteDiff = spacesTotalVotes - tabsTotalVotes;
+      }
+      leaderMessage = `${leadTeam} are winning by ${voteDiff} vote${
+        voteDiff > 1 ? 's' : ''
+      }.`;
+    } else {
+      leaderMessage = 'TABS and SPACES are evenly matched!';
+    }
+    res.render('index.pug', {
+      votes: votes,
+      tabsCount: tabsTotalVotes,
+      spacesCount: spacesTotalVotes,
+      leadTeam: leadTeam,
+      voteDiff: voteDiff,
+      leaderMessage: leaderMessage,
     });
-  });
+  })();
 });
 
 app.post('/', (req, res) => {
@@ -205,7 +206,7 @@ app.post('/', (req, res) => {
       .end();
   }
 
-  // Create a vote record to be stored in the database
+  // Create a vote record to be stored in the database.
   const vote = {
     candidate: team,
     time_cast: timestamp,
@@ -213,23 +214,21 @@ app.post('/', (req, res) => {
 
   // Save the data to the database.
   insertVote(knex, vote)
-    .then(() => {
-      var msg = 'Successfully voted for ' + team + ' at ' + timestamp;
-      res
-        .status(200)
-        .send(msg)
-        .end();
-    })
     // [END cloud_sql_example_statement]
     .catch(err => {
       logger.error('Error while attempting to submit vote. Error:' + err);
-      var msg = 'Unable to successfully cast vote!';
+      let msg = 'Unable to successfully cast vote!';
       msg += 'Please check the application logs for more details.';
       res
         .status(500)
         .send(msg)
         .end();
     });
+  let msg = 'Successfully voted for ' + team + ' at ' + timestamp;
+  res
+    .status(200)
+    .send(msg)
+    .end();
 });
 
 const PORT = process.env.PORT || 8080;

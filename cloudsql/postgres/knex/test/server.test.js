@@ -51,9 +51,9 @@ function getSample() {
 
   const processMock = {
     env: {
-      SQL_USER: 'user',
-      SQL_PASSWORD: 'password',
-      SQL_DATABASE: 'database',
+      DB_USER: 'user',
+      DB_PASS: 'password',
+      DB_NAME: 'database',
     },
   };
 
@@ -87,9 +87,9 @@ test(`should set up sample in Postgres`, t => {
     {
       client: 'pg',
       connection: {
-        user: sample.mocks.process.env.SQL_USER,
-        password: sample.mocks.process.env.SQL_PASSWORD,
-        database: sample.mocks.process.env.SQL_DATABASE,
+        user: sample.mocks.process.env.DB_USER,
+        password: sample.mocks.process.env.DB_PASS,
+        database: sample.mocks.process.env.DB_NAME,
       },
     },
   ]);

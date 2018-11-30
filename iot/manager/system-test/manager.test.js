@@ -16,7 +16,7 @@
 'use strict';
 
 const path = require(`path`);
-const PubSub = require(`@google-cloud/pubsub`);
+const {PubSub} = require(`@google-cloud/pubsub`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
@@ -28,7 +28,7 @@ const cwd = path.join(__dirname, `..`);
 
 test.before(tools.checkCredentials);
 test.before(async () => {
-  const pubsub = PubSub();
+  const pubsub = new PubSub();
   return pubsub.createTopic(topicName).then(results => {
     const topic = results[0];
     console.log(`Topic ${topic.name} created.`);
@@ -37,7 +37,7 @@ test.before(async () => {
 });
 
 test.after.always(async () => {
-  const pubsub = PubSub();
+  const pubsub = new PubSub();
   const topic = pubsub.topic(topicName);
   return topic.delete().then(() => {
     console.log(`Topic ${topic.name} deleted.`);

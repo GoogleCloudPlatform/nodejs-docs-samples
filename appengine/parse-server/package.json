@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "express": "4.16.4",
-    "parse-server": "2.7.2",
+    "parse-server": "3.1.2",
     "nconf": "0.10.0"
   }
 }

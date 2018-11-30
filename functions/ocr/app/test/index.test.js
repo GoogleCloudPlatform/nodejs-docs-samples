@@ -32,7 +32,6 @@ function getSample () {
     RESULT_TOPIC: `result-topic`,
     RESULT_BUCKET: `result-bucket`,
     TRANSLATE_TOPIC: `translate-topic`,
-    TRANSLATE: true,
     TO_LANG: [`en`, `fr`, `es`, `ja`, `ru`]
   };
   const topic = {
@@ -69,7 +68,7 @@ function getSample () {
     program: proxyquire(`../`, {
       '@google-cloud/translate': TranslateMock,
       '@google-cloud/vision': VisionMock,
-      '@google-cloud/pubsub': PubsubMock,
+      '@google-cloud/pubsub': {PubSub: PubsubMock},
       '@google-cloud/storage': StorageMock,
       './config.json': config
     }),

@@ -10,26 +10,21 @@
   },
   "main": "server/server.js",
   "scripts": {
-    "lint": "eslint .",
     "start": "node .",
-    "test": "repo-tools test app -- .",
-    "posttest": "npm run lint && nsp check"
+    "test": "repo-tools test app -- ."
   },
   "dependencies": {
     "compression": "1.7.2",
     "cors": "2.8.5",
     "helmet": "3.15.0",
     "loopback-boot": "2.27.1",
-    "loopback-component-explorer": "5.3.0",
-    "serve-favicon": "2.4.5",
+    "loopback-component-explorer": "5.4.0",
+    "serve-favicon": "2.5.0",
     "strong-error-handler": "2.3.2",
-    "loopback-datasource-juggler": "3.15.4",
-    "loopback": "3.18.2"
+    "loopback-datasource-juggler": "3.28.0",
+    "loopback": "3.24.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.5",
-    "eslint": "4.18.2",
-    "eslint-config-loopback": "10.0.0",
-    "nsp": "3.2.1"
+    "@google-cloud/nodejs-repo-tools": "^2.3.5"
   }
 }

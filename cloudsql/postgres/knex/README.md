@@ -25,7 +25,6 @@ export CLOUD_SQL_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>'
 export DB_USER='my-db-user'
 export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
-export DB_PORT='5432'
 ```
 Note: Saving credentials in environment variables is convenient, but not secure - consider a more
 secure solution such as [Cloud KMS](https://cloud.google.com/kms/) to help keep secrets safe.
@@ -38,7 +37,7 @@ following the instructions [here](https://cloud.google.com/sql/docs/postgres/sql
     Once the proxy is ready, use the following command to start the proxy in the
     background:
     ```bash
-    ./cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_CONNECTION_NAME=tcp:$DB_PORT -credential_file=$GOOGLE_APPLICATION_CREDENTIALS
+    ./cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_CONNECTION_NAME -credential_file=$GOOGLE_APPLICATION_CREDENTIALS
     ```
     Note: Make sure to run the command under a user with write access in the 
     `/cloudsql` directory. This proxy will use this folder to create a unix socket

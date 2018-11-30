@@ -14,7 +14,6 @@
 runtime: nodejs
 env: flex
 
-# [START gae_flex_postgres_env]
 # The following env variables may contain sensitive information that grants
 # anyone access to your database. Do not add this file to your source control.
 env_variables:
@@ -23,7 +22,6 @@ env_variables:
   DB_NAME: MY_DATABASE
   # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
   CLOUD_SQL_INSTANCE_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>
-# [END gae_flex_postgres_env]
 
 beta_settings:
   # The connection name of your instance, available by using

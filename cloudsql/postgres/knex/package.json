@@ -14,7 +14,7 @@
   },
   "scripts": {
     "unit-test": "ava --verbose test/*.test.js",
-    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -instances=$CLOUD_SQL_INSTANCE_NAME=tcp:$DB_PORT &",
+    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_INSTANCE_NAME &",
     "system-test": "repo-tools test app -- server.js",
     "system-test-proxy": "npm run start-proxy; npm run system-test",
     "all-test": "npm run unit-test && npm run system-test",
@@ -47,7 +47,6 @@
           "DB_USER",
           "DB_PASS",
           "DB_NAME",
-          "DB_PORT",
           "CLOUD_SQL_INSTANCE_NAME"
         ],
         "args": [
@@ -59,7 +58,6 @@
           "DB_USER",
           "DB_PASS",
           "DB_NAME",
-          "DB_PORT",
           "CLOUD_SQL_INSTANCE_NAME"
         ]
       }

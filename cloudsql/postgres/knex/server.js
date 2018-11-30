@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Google, Inc.
+ * Copyright 2018 Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -54,17 +54,12 @@ function connect() {
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
   const config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
+    user: process.env.DB_USER, // e.g. 'my-user'
+    password: process.env.DB_PASS, // e.g. 'my-user-password'
+    database: process.env.DB_NAME, // e.g. 'my-database'
   };
-  // If running on App Engine add connection path to 'config.host' setting.
-  if (
-    process.env.CLOUD_SQL_CONNECTION_NAME &&
-    process.env.NODE_ENV === 'production'
-  ) {
-    config.host = `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`;
-  }
+
+  config.host = `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`;
 
   // Establish a connection to the database
   const knex = Knex({

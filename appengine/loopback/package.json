@@ -22,7 +22,7 @@
     "serve-favicon": "2.5.0",
     "strong-error-handler": "2.3.2",
     "loopback-datasource-juggler": "3.28.0",
-    "loopback": "3.18.2"
+    "loopback": "3.24.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.5"

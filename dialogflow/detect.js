@@ -93,7 +93,12 @@ function detectTextIntent(projectId, sessionId, queries, languageCode) {
   // [END dialogflow_detect_intent_text]
 }
 
-function detectEventIntent(projectId, sessionId, eventName, languageCode) {
+async function detectEventIntent(
+  projectId,
+  sessionId,
+  eventName,
+  languageCode
+) {
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
 
@@ -115,18 +120,12 @@ function detectEventIntent(projectId, sessionId, eventName, languageCode) {
     },
   };
 
-  sessionClient
-    .detectIntent(request)
-    .then(responses => {
-      console.log('Detected intent');
-      logQueryResult(sessionClient, responses[0].queryResult);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [response] = await sessionClient.detectIntent(request);
+  console.log('Detected intent');
+  logQueryResult(sessionClient, response.queryResult);
 }
 
-function detectAudioIntent(
+async function detectAudioIntent(
   projectId,
   sessionId,
   filename,
@@ -146,31 +145,24 @@ function detectAudioIntent(
 
   // Read the content of the audio file and send it as part of the request.
   const readFile = util.promisify(fs.readFile);
-  readFile(filename)
-    .then(inputAudio => {
-      // The audio query request
-      const request = {
-        session: sessionPath,
-        queryInput: {
-          audioConfig: {
-            audioEncoding: encoding,
-            sampleRateHertz: sampleRateHertz,
-            languageCode: languageCode,
-          },
-        },
-        inputAudio: inputAudio,
-      };
-      // Recognizes the speech in the audio and detects its intent.
-      return sessionClient.detectIntent(request);
-    })
-    .then(responses => {
-      console.log('Detected intent:');
-      logQueryResult(sessionClient, responses[0].queryResult);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const inputAudio = await readFile(filename);
+  const request = {
+    session: sessionPath,
+    queryInput: {
+      audioConfig: {
+        audioEncoding: encoding,
+        sampleRateHertz: sampleRateHertz,
+        languageCode: languageCode,
+      },
+    },
+    inputAudio: inputAudio,
+  };
 
+  // Recognizes the speech in the audio and detects its intent.
+  const [response] = await sessionClient.detectIntent(request);
+
+  console.log('Detected intent:');
+  logQueryResult(sessionClient, response.queryResult);
   // [END dialogflow_detect_intent_audio]
 }
 

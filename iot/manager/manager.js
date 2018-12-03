@@ -79,13 +79,13 @@ function createIotTopic(topicName) {
   // Instantiates a client
   const pubsub = new PubSub();
 
-  pubsub.createTopic(topicName).then(results => {
+  pubsub.createTopic(topicName).then(() => {
     setupIotTopic(topicName);
   });
 }
 
 // Lookup the registry, assuming that it exists.
-function lookupRegistry(client, registryId, projectId, cloudRegion, cb) {
+function lookupRegistry(client, registryId, projectId, cloudRegion) {
   // [START iot_lookup_registry]
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(client) {...});
@@ -191,8 +191,7 @@ function createUnauthDevice(
   deviceId,
   registryId,
   projectId,
-  cloudRegion,
-  body
+  cloudRegion
 ) {
   // [START iot_create_unauth_device]
   // Client retrieved in callback
@@ -712,6 +711,46 @@ function setDeviceConfig(
   // [END iot_set_device_config]
 }
 
+// sends a command to a specified device subscribed to the commands topic
+function sendCommand(
+  client,
+  deviceId,
+  registryId,
+  projectId,
+  cloudRegion,
+  commandMessage
+) {
+  // [START iot_send_command]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+
+  const binaryData = Buffer.from(commandMessage).toString('base64');
+
+  const request = {
+    name: `${registryName}/devices/${deviceId}`,
+    binaryData: binaryData,
+  };
+
+  client.projects.locations.registries.devices.sendCommandToDevice(
+    request,
+    (err, data) => {
+      if (err) {
+        console.log('Could not send command:', request);
+        console.log('Error: ', err);
+      } else {
+        console.log('Success:', data.statusText);
+      }
+    }
+  );
+  // [END iot_send_command]
+}
+
 // Retrieve the given device from the registry.
 function getRegistry(client, registryId, projectId, cloudRegion) {
   // [START iot_get_registry]
@@ -1139,6 +1178,24 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
+    `sendCommand <deviceId> <registryId> <commandMsg>`,
+    `Sends a command message to a device subscribed to the commands topic`,
+    {},
+    opts => {
+      const cb = client => {
+        sendCommand(
+          client,
+          opts.deviceId,
+          opts.registryId,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.commandMsg
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
     `getIamPolicy <registryId>`,
     `Gets the IAM permissions for a given registry`,
     {},
@@ -1192,6 +1249,7 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
   .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
   .example(`node $0 setConfig my-device my-registry "test" 0`)
+  .example(`node $0 sendCommand my-device my-registry test`)
   .example(
     `node $0 setIamPolicy my-registry user:example@example.com roles/viewer`
   )

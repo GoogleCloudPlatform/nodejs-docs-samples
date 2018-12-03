@@ -146,7 +146,6 @@ client.on('connect', success => {
   if (!success) {
     console.log('Client not connected...');
   } else {
-    // TODO: wait for commands
     console.log('Client connected, waiting for commands');
   }
 });
@@ -159,7 +158,7 @@ client.on('error', err => {
   console.log('error', err);
 });
 
-client.on('message', (topic, message, packet) => {
+client.on('message', (topic, message) => {
   console.log(
     'message received: ',
     Buffer.from(message, 'base64').toString('ascii')

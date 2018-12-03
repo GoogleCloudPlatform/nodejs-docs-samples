@@ -255,7 +255,12 @@ let iatTime = parseInt(Date.now() / 1000);
 let client = mqtt.connect(connectionArgs);
 
 // Subscribe to the /devices/{device-id}/config topic to receive config updates.
+// Config updates are recommended to use QoS 1 (at least once delivery)
 client.subscribe(`/devices/${argv.deviceId}/config`, {qos: 1});
+
+// Subscribe to the /devices/{device-id}/commands/# topic to receive commands
+// commands is recommended to use QoS 0 (at most once delivery)
+client.subscribe(`/devices/${argv.deviceId}/commands/#`, {qos: 0});
 
 // The MQTT topic that this device will publish data to. The MQTT
 // topic name is required to be in the format below. The topic name must end in
@@ -282,10 +287,15 @@ client.on('error', err => {
 });
 
 client.on('message', (topic, message) => {
-  console.log(
-    'message received: ',
-    Buffer.from(message, 'base64').toString('ascii')
-  );
+  let messageStr = 'Message received: ';
+  if (topic === `/devices/${argv.deviceId}/config`) {
+    messageStr = 'Config message received: ';
+  } else if (topic === `/devices/${argv.deviceId}/commands`) {
+    messageStr = 'Command message received: ';
+  }
+
+  messageStr += Buffer.from(message, 'base64').toString('ascii');
+  console.log(messageStr);
 });
 
 client.on('packetsend', () => {

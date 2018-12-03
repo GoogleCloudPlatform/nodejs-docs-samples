@@ -5,6 +5,13 @@
   "main": "cloudiot_mqtt_example_nodejs.js",
   "license": "Apache-2.0",
   "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "scripts": {
     "lint": "repo-tools lint",
     "pretest": "npm run lint",

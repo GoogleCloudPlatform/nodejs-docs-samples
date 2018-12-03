@@ -1,0 +1,14 @@
+# [START appengine_websockets_yaml]
+runtime: nodejs
+env: flex
+
+# Use only a single instance, so that this local-memory-only chat app will work
+# consistently with multiple users. To work across multiple instances, an
+# extra-instance messaging system or data store would be needed.
+manual_scaling:
+  instances: 1
+
+network:
+  session_affinity: true
+# [END appengine_websockets_yaml]
+

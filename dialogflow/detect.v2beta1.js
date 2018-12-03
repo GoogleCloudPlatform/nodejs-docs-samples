@@ -20,7 +20,7 @@ const sessionId = require('uuid/v1')();
 const util = require('util');
 const structjson = require('./structjson.js');
 
-function createKnowledgeBase(projectId, displayName) {
+async function createKnowledgeBase(projectId, displayName) {
   // [START dialogflow_create_knowledge_base]
   // Imports the Dialogflow client library
   const dialogflow = require('dialogflow').v2beta1;
@@ -43,20 +43,14 @@ function createKnowledgeBase(projectId, displayName) {
     knowledgeBase: knowledgeBase,
   };
 
-  client
-    .createKnowledgeBase(request)
-    .then(responses => {
-      const result = responses[0];
-      console.log(`Name: ${result.name}`);
-      console.log(`displayName: ${result.displayName}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.createKnowledgeBase(request);
+  console.log(`Name: ${result.name}`);
+  console.log(`displayName: ${result.displayName}`);
+
   // [END dialogflow_create_knowledge_base]
 }
 
-function getKnowledgeBase(projectId, knowledgeBaseId) {
+async function getKnowledgeBase(projectId, knowledgeBaseId) {
   // [START dialogflow_get_knowledge_base]
   // Imports the Dialogflow client library
   const dialogflow = require('dialogflow').v2beta1;
@@ -72,22 +66,14 @@ function getKnowledgeBase(projectId, knowledgeBaseId) {
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
   const formattedName = client.knowledgeBasePath(projectId, knowledgeBaseId);
-  client
-    .getKnowledgeBase({
-      name: formattedName,
-    })
-    .then(responses => {
-      const result = responses[0];
-      console.log(`displayName: ${result.displayName}`);
-      console.log(`name: ${result.name}`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+
+  const [result] = await client.getKnowledgeBase({name: formattedName});
+  console.log(`displayName: ${result.displayName}`);
+  console.log(`name: ${result.name}`);
   // [END dialogflow_get_knowledge_base]
 }
 
-function listKnowledgeBases(projectId) {
+async function listKnowledgeBases(projectId) {
   // [START dialogflow_list_knowledge_base]
   // Imports the Dialogflow client library
   const dialogflow = require('dialogflow').v2beta1;
@@ -104,22 +90,17 @@ function listKnowledgeBases(projectId) {
 
   const formattedParent = client.projectPath(projectId);
 
-  client
-    .listKnowledgeBases({parent: formattedParent})
-    .then(responses => {
-      const resources = responses[0];
-      resources.forEach(r => {
-        console.log(`displayName: ${r.displayName}`);
-        console.log(`name: ${r.name}`);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [resources] = await client.listKnowledgeBases({
+    parent: formattedParent,
+  });
+  resources.forEach(r => {
+    console.log(`displayName: ${r.displayName}`);
+    console.log(`name: ${r.name}`);
+  });
   // [END dialogflow_list_knowledge_base]
 }
 
-function deleteKnowledgeBase(projectId, knowledgeBaseFullName) {
+async function deleteKnowledgeBase(projectId, knowledgeBaseFullName) {
   // [START dialogflow_delete_knowledge_base]
   // Instantiate a DialogFlow client.
   const dialogflow = require('dialogflow').v2beta1;
@@ -133,21 +114,15 @@ function deleteKnowledgeBase(projectId, knowledgeBaseFullName) {
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
 
-  client
-    .deleteKnowledgeBase({
-      name: knowledgeBaseFullName,
-    })
-    .then(responses => {
-      const result = responses[0];
-      if (result.name === 'undefined') console.log(`Knowledge Base deleted`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [result] = await client.deleteKnowledgeBase({
+    name: knowledgeBaseFullName,
+  });
+
+  if (result.name === 'undefined') console.log(`Knowledge Base deleted`);
   // [END dialogflow_delete_knowledge_base]
 }
 
-function createDocument(
+async function createDocument(
   projectId,
   knowledgeBaseFullName,
   documentPath,
@@ -185,28 +160,19 @@ function createDocument(
     },
   };
 
-  client
-    .createDocument(request)
-    .then(data => {
-      const operation = data[0];
-      return operation.promise();
-    })
-    .then(data => {
-      console.log(`Document created`);
-      const response = data[0];
-      console.log(`Content URI...${response.contentUri}`);
-      console.log(`displayName...${response.displayName}`);
-      console.log(`mimeType...${response.mimeType}`);
-      console.log(`name...${response.name}`);
-      console.log(`source...${response.source}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [operation] = await client.createDocument(request);
+  const [response] = await operation.promise();
+  console.log(`Document created`);
+  console.log(`Content URI...${response.contentUri}`);
+  console.log(`displayName...${response.displayName}`);
+  console.log(`mimeType...${response.mimeType}`);
+  console.log(`name...${response.name}`);
+  console.log(`source...${response.source}`);
+
   // [END dialogflow_create_document]
 }
 
-function listDocuments(projectId, knowledgeBaseFullName) {
+async function listDocuments(projectId, knowledgeBaseFullName) {
   // [START dialogflow_list_document]
   // Imports the Dialogflow client library
   const dialogflow = require('dialogflow').v2beta1;
@@ -222,29 +188,24 @@ function listDocuments(projectId, knowledgeBaseFullName) {
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
 
-  client
-    .listDocuments({parent: knowledgeBaseFullName})
-    .then(responses => {
-      const resources = responses[0];
-      console.log(
-        `There are ${resources.length} documents in ${knowledgeBaseFullName}`
-      );
-      resources.forEach(resource => {
-        console.log(`KnowledgeType: ${resource.knowledgeType}`);
-        console.log(`displayName: ${resource.displayName}`);
-        console.log(`mimeType: ${resource.mimeType}`);
-        console.log(`contentUri: ${resource.contentUri}`);
-        console.log(`source: ${resource.source}`);
-        console.log(`name: ${resource.name}`);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [resources] = await client.listDocuments({
+    parent: knowledgeBaseFullName,
+  });
+  console.log(
+    `There are ${resources.length} documents in ${knowledgeBaseFullName}`
+  );
+  resources.forEach(resource => {
+    console.log(`KnowledgeType: ${resource.knowledgeType}`);
+    console.log(`displayName: ${resource.displayName}`);
+    console.log(`mimeType: ${resource.mimeType}`);
+    console.log(`contentUri: ${resource.contentUri}`);
+    console.log(`source: ${resource.source}`);
+    console.log(`name: ${resource.name}`);
+  });
   // [END dialogflow_list_document]
 }
 
-function getDocument(documentId) {
+async function getDocument(documentId) {
   // [START dialogflow_get_document]
   // Imports the Dialogflow client library
   const dialogflow = require('dialogflow').v2beta1;
@@ -259,24 +220,17 @@ function getDocument(documentId) {
    */
   // const documentId = `full path to document in knowledge base, e.g. myKnowledgeBase/documents/myDoc`;
 
-  client
-    .getDocument({name: documentId})
-    .then(responses => {
-      const r = responses[0];
-      console.log(` KnowledgeType: ${r.knowledgeType}`);
-      console.log(` displayName: ${r.displayName}`);
-      console.log(` mimeType: ${r.mimeType}`);
-      console.log(` contentUri: ${r.contentUri}`);
-      console.log(` source: ${r.source}`);
-      console.log(` name: ${r.name}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [r] = await client.getDocument({name: documentId});
+  console.log(` KnowledgeType: ${r.knowledgeType}`);
+  console.log(` displayName: ${r.displayName}`);
+  console.log(` mimeType: ${r.mimeType}`);
+  console.log(` contentUri: ${r.contentUri}`);
+  console.log(` source: ${r.source}`);
+  console.log(` name: ${r.name}`);
   // [END dialogflow_get_document]
 }
 
-function deleteDocument(projectId, documentId) {
+async function deleteDocument(projectId, documentId) {
   // [START dialogflow_delete_document]
   // Imports the Dialogflow client library
   const dialogflow = require('dialogflow').v2beta1;
@@ -292,22 +246,18 @@ function deleteDocument(projectId, documentId) {
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const documentId = `full path to document in knowledge base, e.g. myKnowledgeBase/documents/myDoc`;
 
-  client
-    .deleteDocument({name: documentId})
-    .then(responses => {
-      const operation = responses[0];
-      return operation.promise();
-    })
-    .then(responses => {
-      if (responses[2].done === true) console.log(`document deleted`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  const [operation] = await client.deleteDocument({name: documentId});
+  const responses = await operation.promise();
+  if (responses[2].done === true) console.log(`document deleted`);
   // [END dialogflow_delete_document]
 }
 
-function detectIntentandSentiment(projectId, sessionId, query, languageCode) {
+async function detectIntentandSentiment(
+  projectId,
+  sessionId,
+  query,
+  languageCode
+) {
   // [START dialogflow_detect_intent_with_sentiment_analysis]
   // Imports the Dialogflow client library
   const dialogflow = require('dialogflow').v2beta1;
@@ -343,39 +293,33 @@ function detectIntentandSentiment(projectId, sessionId, query, languageCode) {
   };
 
   // Send request and log result
-  sessionClient
-    .detectIntent(request)
-    .then(responses => {
-      console.log('Detected intent');
-      const result = responses[0].queryResult;
-      console.log(`  Query: ${result.queryText}`);
-      console.log(`  Response: ${result.fulfillmentText}`);
-      if (result.intent) {
-        console.log(`  Intent: ${result.intent.displayName}`);
-      } else {
-        console.log(`  No intent matched.`);
-      }
-      if (result.sentimentAnalysisResult) {
-        console.log(`Detected sentiment`);
-        console.log(
-          `  Score: ${result.sentimentAnalysisResult.queryTextSentiment.score}`
-        );
-        console.log(
-          `  Magnitude: ${
-            result.sentimentAnalysisResult.queryTextSentiment.magnitude
-          }`
-        );
-      } else {
-        console.log(`No sentiment Analysis Found`);
-      }
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const responses = await sessionClient.detectIntent(request);
+  console.log('Detected intent');
+  const result = responses[0].queryResult;
+  console.log(`  Query: ${result.queryText}`);
+  console.log(`  Response: ${result.fulfillmentText}`);
+  if (result.intent) {
+    console.log(`  Intent: ${result.intent.displayName}`);
+  } else {
+    console.log(`  No intent matched.`);
+  }
+  if (result.sentimentAnalysisResult) {
+    console.log(`Detected sentiment`);
+    console.log(
+      `  Score: ${result.sentimentAnalysisResult.queryTextSentiment.score}`
+    );
+    console.log(
+      `  Magnitude: ${
+        result.sentimentAnalysisResult.queryTextSentiment.magnitude
+      }`
+    );
+  } else {
+    console.log(`No sentiment Analysis Found`);
+  }
   // [END dialogflow_detect_intent_with_sentiment_analysis]
 }
 
-function detectIntentwithTexttoSpeechResponse(
+async function detectIntentwithTexttoSpeechResponse(
   projectId,
   sessionId,
   query,
@@ -416,26 +360,15 @@ function detectIntentwithTexttoSpeechResponse(
     },
   };
 
-  sessionClient
-    .detectIntent(request)
-    .then(responses => {
-      console.log('Detected intent:');
-      const audioFile = responses[0].outputAudio;
-      fs.writeFile(outputFile, audioFile, 'binary', err => {
-        if (err) {
-          console.error('ERROR:', err);
-          return;
-        }
-        console.log(`Audio content written to file: ${outputFile}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const responses = await sessionClient.detectIntent(request);
+  console.log('Detected intent:');
+  const audioFile = responses[0].outputAudio;
+  await util.promisify(fs.writeFile)(outputFile, audioFile, 'binary');
+  console.log(`Audio content written to file: ${outputFile}`);
   // [END dialogflow_detect_intent_with_texttospeech_response]
 }
 
-function detectIntentKnowledge(
+async function detectIntentKnowledge(
   projectId,
   sessionId,
   languageCode,
@@ -480,29 +413,23 @@ function detectIntentKnowledge(
     },
   };
 
-  sessionClient
-    .detectIntent(request)
-    .then(responses => {
-      const result = responses[0].queryResult;
-      console.log(`Query text: ${result.queryText}`);
-      console.log(`Detected Intent: ${result.intent.displayName}`);
-      console.log(`Confidence: ${result.intentDetectionConfidence}`);
-      console.log(`Query Result: ${result.fulfillmentText}`);
-      const answers = result.knowledgeAnswers.answers;
-      console.log(`There are ${answers.length} anwser(s);`);
-      answers.forEach(a => {
-        console.log(`   answer: ${a.answer}`);
-        console.log(`   confidence: ${a.matchConfidence}`);
-        console.log(`   match confidence level: ${a.matchConfidenceLevel}`);
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const responses = await sessionClient.detectIntent(request);
+  const result = responses[0].queryResult;
+  console.log(`Query text: ${result.queryText}`);
+  console.log(`Detected Intent: ${result.intent.displayName}`);
+  console.log(`Confidence: ${result.intentDetectionConfidence}`);
+  console.log(`Query Result: ${result.fulfillmentText}`);
+  const answers = result.knowledgeAnswers.answers;
+  console.log(`There are ${answers.length} anwser(s);`);
+  answers.forEach(a => {
+    console.log(`   answer: ${a.answer}`);
+    console.log(`   confidence: ${a.matchConfidence}`);
+    console.log(`   match confidence level: ${a.matchConfidenceLevel}`);
+  });
   // [END dialogflow_detect_intent_knowledge]
 }
 
-function detectIntentwithModelSelection(
+async function detectIntentwithModelSelection(
   projectId,
   sessionId,
   audioFilePath,
@@ -531,56 +458,46 @@ function detectIntentwithModelSelection(
   const sessionPath = sessionClient.sessionPath(projectId, sessionId);
   // Read the content of the audio file and send it as part of the request.
   const readFile = util.promisify(fs.readFile);
-  readFile(audioFilePath)
-    .then(inputAudio => {
-      // The audio query request
-      const request = {
-        session: sessionPath,
-        queryInput: {
-          audioConfig: {
-            audioEncoding: `AUDIO_ENCODING_LINEAR_16`,
-            sampleRateHertz: 16000,
-            languageCode: languageCode,
-            model: model,
-          },
-        },
-        inputAudio: inputAudio,
-      };
-      // Recognizes the speech in the audio and detects its intent.
-      return sessionClient.detectIntent(request);
-    })
-    .then(responses => {
-      const contextClient = new dialogflow.ContextsClient();
-      const result = responses[0].queryResult;
-      console.log(`  Query: ${result.queryText}`);
-      console.log(`  Response: ${result.fulfillmentText}`);
-      if (result.intent) {
-        console.log(`  Intent: ${result.intent.displayName}`);
-      } else {
-        console.log(`  No intent matched.`);
-      }
-      const parameters = JSON.stringify(
-        structjson.structProtoToJson(result.parameters)
+  const inputAudio = await readFile(audioFilePath);
+  const request = {
+    session: sessionPath,
+    queryInput: {
+      audioConfig: {
+        audioEncoding: `AUDIO_ENCODING_LINEAR_16`,
+        sampleRateHertz: 16000,
+        languageCode: languageCode,
+        model: model,
+      },
+    },
+    inputAudio: inputAudio,
+  };
+  // Recognizes the speech in the audio and detects its intent.
+  const responses = await sessionClient.detectIntent(request);
+  const contextClient = new dialogflow.ContextsClient();
+  const result = responses[0].queryResult;
+  console.log(`  Query: ${result.queryText}`);
+  console.log(`  Response: ${result.fulfillmentText}`);
+  if (result.intent) {
+    console.log(`  Intent: ${result.intent.displayName}`);
+  } else {
+    console.log(`  No intent matched.`);
+  }
+  const parameters = JSON.stringify(
+    structjson.structProtoToJson(result.parameters)
+  );
+  console.log(`  Parameters: ${parameters}`);
+  if (result.outputContexts && result.outputContexts.length) {
+    console.log(`  Output contexts:`);
+    result.outputContexts.forEach(context => {
+      const contextId = contextClient.matchContextFromContextName(context.name);
+      const contextParameters = JSON.stringify(
+        structjson.structProtoToJson(context.parameters)
       );
-      console.log(`  Parameters: ${parameters}`);
-      if (result.outputContexts && result.outputContexts.length) {
-        console.log(`  Output contexts:`);
-        result.outputContexts.forEach(context => {
-          const contextId = contextClient.matchContextFromContextName(
-            context.name
-          );
-          const contextParameters = JSON.stringify(
-            structjson.structProtoToJson(context.parameters)
-          );
-          console.log(`    ${contextId}`);
-          console.log(`      lifespan: ${context.lifespanCount}`);
-          console.log(`      parameters: ${contextParameters}`);
-        });
-      }
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
+      console.log(`    ${contextId}`);
+      console.log(`      lifespan: ${context.lifespanCount}`);
+      console.log(`      parameters: ${contextParameters}`);
     });
+  }
   // [END dialogflow_detect_intent_with_model_selection]
 }
 

@@ -1,0 +1,37 @@
+{
+  "name": "appengine-websockets",
+  "description": "Node.js websockets sample for Google App Engine",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "deploy": "gcloud app deploy",
+    "start": "node app.js",
+    "lint": "samples lint",
+    "pretest": "npm run lint",
+    "test": "node app.js & ava -T 30s test/*.js; killall node",
+    "e2e-test": "samples test deploy"
+  },
+  "dependencies": {
+    "express": "4.15.4",
+    "pug": "2.0.0-rc.3",
+    "socket.io": "2.0.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "puppeteer": "^1.11.0"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "messages"
+      }
+    },
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  }
+}

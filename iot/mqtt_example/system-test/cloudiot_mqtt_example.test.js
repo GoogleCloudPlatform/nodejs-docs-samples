@@ -156,7 +156,7 @@ test(`should receive command message`, async t => {
   await tools.runAsync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await tools.runAsync(`${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
 
-  let output = tools.runAsync(`${cmd} --registryId=${localRegName} --deviceId=${localDevice} --numMessages=10 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`, cwd);
+  let output = tools.runAsync(`${cmd} --registryId=${localRegName} --deviceId=${localDevice} --numMessages=30 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --mqttBridgePort=443`, cwd);
 
   await tools.runAsync(`${helper} sendCommand ${localDevice} ${localRegName} "${message}"`, cwd);
 

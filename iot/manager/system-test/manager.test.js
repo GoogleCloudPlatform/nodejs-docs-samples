@@ -274,3 +274,30 @@ test(`should create and delete a registry`, async t => {
   output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
   t.regex(output, new RegExp(`Successfully deleted registry`));
 });
+
+test(`should send command message to device`, async t => {
+  const deviceId = `test-device-command`;
+  const registryId = `${registryName}-rsa256`;
+  const commandMessage = 'rotate 180 degrees';
+
+  await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  await tools.runAsync(`${cmd} createRegistry ${registryId} ${topicName}`, cwd);
+  await tools.runAsync(
+    `${cmd} createRsa256Device ${deviceId} ${registryId} resources/rsa_cert.pem`,
+    cwd
+  );
+
+  tools.runAsync(
+    `node cloudiot_mqtt_example_nodejs.js --deviceId=${deviceId} --registryId=${registryId} --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --numMessages=20`,
+    path.join(__dirname, '../../mqtt_example')
+  );
+
+  const output = await tools.runAsync(
+    `${cmd} sendCommand ${deviceId} ${registryId} ${commandMessage}`
+  );
+
+  t.regex(output, new RegExp('Success: OK'));
+
+  await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryId}`, cwd);
+  await tools.runAsync(`${cmd} deleteRegistry ${registryId}`, cwd);
+});

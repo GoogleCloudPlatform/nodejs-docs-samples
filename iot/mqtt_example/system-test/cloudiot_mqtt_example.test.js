@@ -48,7 +48,7 @@ test.after.always(async () => {
   });
 });
 
-test(`should receive configuration message`, async t => {
+test.only(`should receive configuration message`, async t => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
 
@@ -69,8 +69,9 @@ test(`should receive configuration message`, async t => {
     `${cmd}  --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
     cwd
   );
-  // TODO: Figure out how to guarantee configuration update happens on connect
-  t.regex(output, new RegExp(`connect`));
+
+  t.regex(output, new RegExp('connect'));
+  t.regex(output, new RegExp('Config message received:'));
 
   // Check / cleanup
   await tools.runAsync(
@@ -153,16 +154,31 @@ test(`should receive command message`, async t => {
   const message = 'rotate 180 degrees';
 
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
-  await tools.runAsync(`${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+  await tools.runAsync(
+    `${helper} createRegistry ${localRegName} ${topicName}`,
+    cwd
+  );
+  await tools.runAsync(
+    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
+    cwd
+  );
 
-  let output = tools.runAsync(`${cmd} --registryId=${localRegName} --deviceId=${localDevice} --numMessages=30 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --mqttBridgePort=443`, cwd);
+  let output = tools.runAsync(
+    `${cmd} --registryId=${localRegName} --deviceId=${localDevice} --numMessages=30 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --mqttBridgePort=443`,
+    cwd
+  );
 
-  await tools.runAsync(`${helper} sendCommand ${localDevice} ${localRegName} "${message}"`, cwd);
+  await tools.runAsync(
+    `${helper} sendCommand ${localDevice} ${localRegName} "${message}"`,
+    cwd
+  );
 
   t.regex(await output, new RegExp(`Command message received: ${message}`));
 
   // Cleanup
-  await tools.runAsync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
+  await tools.runAsync(
+    `${helper} deleteDevice ${localDevice} ${localRegName}`,
+    cwd
+  );
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });

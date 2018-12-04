@@ -294,7 +294,7 @@ client.on('message', (topic, message) => {
     messageStr = 'Command message received: ';
   }
 
-  messageStr += Buffer.from(message, 'base64').toString('ascii')
+  messageStr += Buffer.from(message, 'base64').toString('ascii');
   console.log(messageStr);
 });
 

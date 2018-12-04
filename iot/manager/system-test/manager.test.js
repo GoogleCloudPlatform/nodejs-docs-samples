@@ -26,6 +26,9 @@ const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const cmd = `node manager.js`;
 const cwd = path.join(__dirname, `..`);
 
+const installDeps = `npm install`;
+
+test.todo(tools.run(installDeps, `${cwd}/../mqtt_example`));
 test.before(tools.checkCredentials);
 test.before(async () => {
   const pubsub = new PubSub();
@@ -293,7 +296,7 @@ test(`should send command message to device`, async t => {
   );
 
   const output = await tools.runAsync(
-    `${cmd} sendCommand ${deviceId} ${registryId} ${commandMessage}`
+    `${cmd} sendCommand ${deviceId} ${registryId} "${commandMessage}"`
   );
 
   t.regex(output, new RegExp('Success: OK'));

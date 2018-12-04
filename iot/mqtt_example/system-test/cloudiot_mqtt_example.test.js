@@ -48,7 +48,7 @@ test.after.always(async () => {
   });
 });
 
-test.only(`should receive configuration message`, async t => {
+test(`should receive configuration message`, async t => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
 

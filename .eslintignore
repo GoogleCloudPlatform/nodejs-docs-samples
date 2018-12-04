@@ -1,4 +1,3 @@
 **/node_modules/*
 functions/**
-iot/*
 appengine/parse-server/cloud/main.js

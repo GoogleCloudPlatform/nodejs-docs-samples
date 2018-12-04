@@ -288,7 +288,7 @@ test(`should send command message to device`, async t => {
   );
 
   tools.runAsync(
-    `node cloudiot_mqtt_example_nodejs.js --deviceId=${deviceId} --registryId=${registryId} --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --numMessages=20`,
+    `node cloudiot_mqtt_example_nodejs.js --deviceId=${deviceId} --registryId=${registryId} --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --numMessages=20 --mqttBridgePort=443`,
     path.join(__dirname, '../../mqtt_example')
   );
 

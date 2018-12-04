@@ -146,3 +146,23 @@ test(`should send state message`, async t => {
   );
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
+
+test(`should receive command message`, async t => {
+  const localDevice = `test-rsa-device`;
+  const localRegName = `${registryName}-rsa256`;
+  const message = 'rotate 180 degrees';
+
+  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await tools.runAsync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+  await tools.runAsync(`${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`, cwd);
+
+  let output = tools.runAsync(`${cmd} --registryId=${localRegName} --deviceId=${localDevice} --numMessages=30 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --mqttBridgePort=443`, cwd);
+
+  await tools.runAsync(`${helper} sendCommand ${localDevice} ${localRegName} "${message}"`, cwd);
+
+  t.regex(await output, new RegExp(`Command message received: ${message}`));
+
+  // Cleanup
+  await tools.runAsync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
+  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+});

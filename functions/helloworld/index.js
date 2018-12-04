@@ -16,7 +16,11 @@
 'use strict';
 
 const Buffer = require('safe-buffer').Buffer;
+
+// [START functions_helloworld_http]
 const escapeHtml = require('escape-html');
+
+// [END functions_helloworld_http]
 
 // [START functions_helloworld_get]
 /**

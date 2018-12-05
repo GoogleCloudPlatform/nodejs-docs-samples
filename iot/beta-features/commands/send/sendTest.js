@@ -29,7 +29,6 @@ const helper = `node manager.js`;
 const receiveCmd = `node receive.js`;
 const sendCmd = `node send.js`;
 const receiveCmdSuffix = `--privateKeyFile=resources/rsa_private.pem --algorithm=RS256`;
-// TODO: update manager path when going from beta->GA
 const cwdHelper = path.join(__dirname, `../../../manager`);
 const cwdRcv = path.join(__dirname, `../receive`);
 const cwdSend = path.join(__dirname, `../send`);

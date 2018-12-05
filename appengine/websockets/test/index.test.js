@@ -15,9 +15,11 @@
 
 'use strict';
 
-const test = require('ava');
+/* eslint node/no-extraneous-require: "off" */
 
+const test = require('ava');
 const puppeteer = require('puppeteer');
+/* global document */
 
 let browser, browserPage;
 
@@ -30,7 +32,7 @@ test.after.always(async () => {
   await browser.close();
 });
 
-test('should process chat message', async (t) => {
+test('should process chat message', async t => {
   await browserPage.goto('http://localhost:8080');
 
   await browserPage.evaluate(() => {
@@ -40,7 +42,9 @@ test('should process chat message', async (t) => {
 
   await new Promise(resolve => setTimeout(resolve, 100));
 
-  const itemText = await browserPage.evaluate(() => document.querySelector('li').textContent);
+  const itemText = await browserPage.evaluate(
+    () => document.querySelector('li').textContent
+  );
 
   t.is(itemText, 'test');
 });

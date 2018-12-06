@@ -14,32 +14,31 @@
 
 'use strict';
 
-// [START kms_quickstart]
-async function quickstart(
-  projectId = 'your-project-id' // Your GCP projectId
+// [START kms_list_keyrings]
+async function listKeyRings(
+  projectId = 'your-project-id' // Your GCP Project ID
 ) {
-  // Imports the @google-cloud/kms client library
-  const kms = require('@google-cloud/kms');
-
-  // Instantiates an authorized client
-  const client = new kms.KeyManagementServiceClient();
-
-  // Lists keys in the "global" location.
+  // The location from which to list key rings, e.g. "global"
   const locationId = 'global';
+
+  // Import the library and create a client
+  const kms = require('@google-cloud/kms');
+  const client = new kms.KeyManagementServiceClient();
 
   // Lists key rings
   const parent = client.locationPath(projectId, locationId);
   const [keyRings] = await client.listKeyRings({parent});
 
-  // Display the results
   if (keyRings.length) {
-    console.log('Key rings:');
-    keyRings.forEach(keyRing => console.log(keyRing.name));
+    keyRings.forEach(keyRing => {
+      console.log(`${keyRing.name}:`);
+      console.log(`  Created: ${new Date(keyRing.createTime.seconds * 1000)}`);
+    });
   } else {
-    console.log(`No key rings found.`);
+    console.log('No key rings found.');
   }
 }
-// [END kms_quickstart]
+// [END kms_list_keyrings]
 
 const args = process.argv.slice(2);
-quickstart(...args).catch(console.error);
+listKeyRings(...args).catch(console.error);

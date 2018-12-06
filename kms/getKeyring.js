@@ -14,32 +14,27 @@
 
 'use strict';
 
-// [START kms_quickstart]
-async function quickstart(
-  projectId = 'your-project-id' // Your GCP projectId
+// [START kms_get_keyring]
+async function getKeyRing(
+  projectId = 'your-project-id', // Your GCP projectId
+  keyRingId = 'my-key-ring' // Name of the crypto key's key ring
 ) {
-  // Imports the @google-cloud/kms client library
+  // Import the library and create a client
   const kms = require('@google-cloud/kms');
-
-  // Instantiates an authorized client
   const client = new kms.KeyManagementServiceClient();
 
-  // Lists keys in the "global" location.
+  // The location of the key ring, e.g. "global"
   const locationId = 'global';
 
-  // Lists key rings
-  const parent = client.locationPath(projectId, locationId);
-  const [keyRings] = await client.listKeyRings({parent});
+  // Get the full path to the keyring
+  const name = client.keyRingPath(projectId, locationId, keyRingId);
 
-  // Display the results
-  if (keyRings.length) {
-    console.log('Key rings:');
-    keyRings.forEach(keyRing => console.log(keyRing.name));
-  } else {
-    console.log(`No key rings found.`);
-  }
+  // Get the keyring
+  const [keyRing] = await client.getKeyRing({name});
+  console.log(`Name: ${keyRing.name}`);
+  console.log(`Created: ${new Date(keyRing.createTime.seconds * 1000)}`);
 }
-// [END kms_quickstart]
+// [END kms_get_keyring]
 
 const args = process.argv.slice(2);
-quickstart(...args).catch(console.error);
+getKeyRing(...args).catch(console.error);

@@ -1,3 +1,4 @@
+
 # Copyright 2015-2016, Google, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,5 +22,5 @@ env_variables:
   PUBSUB_TOPIC: sample-topic
   # This token is used to verify that requests originate from your
   # application. It can be any sufficiently random string.
-  PUBSUB_VERIFICATION_TOKEN: 123
+  PUBSUB_VERIFICATION_TOKEN: YOUR_VERIFICATION_TOKEN
 # [END gae_pubsub_yaml]

@@ -639,7 +639,7 @@ function decrypt(
         },
       };
 
-      // Dencrypts the file using the specified crypto key
+      // Decrypts the file using the specified crypto key
       cloudkms.projects.locations.keyRings.cryptoKeys.decrypt(
         request,
         (err, response) => {
@@ -648,7 +648,7 @@ function decrypt(
             return;
           }
 
-          // Writes the dencrypted file to disk
+          // Writes the decrypted file to disk
           const result = response.data;
           fs.writeFile(
             plaintextFileName,

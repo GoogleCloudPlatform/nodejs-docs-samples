@@ -18,8 +18,7 @@ instance_class: F2
 
 # [START gae_pubsub_yaml]
 env_variables:
-  #PUBSUB_TOPIC: YOUR_TOPIC_NAME
-  PUBSUB_TOPIC: sample-topic
+  PUBSUB_TOPIC: YOUR_TOPIC_NAME
   # This token is used to verify that requests originate from your
   # application. It can be any sufficiently random string.
   PUBSUB_VERIFICATION_TOKEN: YOUR_VERIFICATION_TOKEN

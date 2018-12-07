@@ -37,7 +37,7 @@ const datastore = Datastore();
  *
  * @param {object} visit The visit record to insert.
  */
-async function insertVisit(visit) {
+function insertVisit(visit) {
   return datastore.save({
     key: datastore.key('visit'),
     data: visit,
@@ -47,7 +47,7 @@ async function insertVisit(visit) {
 /**
  * Retrieve the latest 10 visit records from the database.
  */
-async function getVisits() {
+function getVisits() {
   const query = datastore
     .createQuery('visit')
     .order('timestamp', {descending: true})
@@ -70,9 +70,9 @@ app.get('/', async (req, res, next) => {
 
   try {
     await insertVisit(visit);
-    let results = await getVisits();
-    let entities = results[0];
-    let visits = entities.map(
+    const results = await getVisits();
+    const entities = results[0];
+    const visits = entities.map(
       entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
     );
     res

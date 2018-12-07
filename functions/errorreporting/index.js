@@ -32,7 +32,7 @@ const reportDetailedError = require('./report');
  * @param {Error} err The Error object to report.
  * @param {Function} callback Callback function.
  */
-function reportError (err, callback) {
+function reportError(err, callback) {
   // This is the name of the StackDriver log stream that will receive the log
   // entry. This name can be any valid log stream name, but must contain "err"
   // in order for the error to be picked up by StackDriver Error Reporting.
@@ -44,9 +44,9 @@ function reportError (err, callback) {
     resource: {
       type: 'cloud_function',
       labels: {
-        function_name: process.env.FUNCTION_NAME
-      }
-    }
+        function_name: process.env.FUNCTION_NAME,
+      },
+    },
   };
 
   // https://cloud.google.com/error-reporting/reference/rest/v1beta1/ErrorEvent
@@ -54,8 +54,8 @@ function reportError (err, callback) {
     message: err.stack,
     serviceContext: {
       service: `cloud_function:${process.env.FUNCTION_NAME}`,
-      version: require('./package.json').version || 'unknown'
-    }
+      version: require('./package.json').version || 'unknown',
+    },
   };
 
   // Write the error log entry

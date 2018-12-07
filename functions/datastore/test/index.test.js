@@ -27,89 +27,105 @@ const request = supertest(process.env.BASE_URL);
 const NAME = `sampletask1`;
 const KIND = `Task-${uuid.v4()}`;
 const VALUE = {
-  description: `Buy milk`
+  description: `Buy milk`,
 };
 
-const errorMsg = msg => `${msg} not provided. Make sure you have a "${msg.toLowerCase()}" property in your request`;
+const errorMsg = msg =>
+  `${msg} not provided. Make sure you have a "${msg.toLowerCase()}" property in your request`;
 
-test.serial(`set: Fails without a value`, (t) => {
+test.serial(`set: Fails without a value`, t => {
   const req = {
-    body: {}
+    body: {},
   };
   t.throws(() => {
     program.set(req, null);
   }, errorMsg(`Value`));
 });
 
-test.serial(`set: Fails without a key`, (t) => {
+test.serial(`set: Fails without a key`, t => {
   const req = {
     body: {
-      value: VALUE
-    }
+      value: VALUE,
+    },
   };
   t.throws(() => {
     program.set(req, null);
   }, errorMsg(`Key`));
 });
 
-test.serial(`set: Fails without a kind`, (t) => {
+test.serial(`set: Fails without a kind`, t => {
   const req = {
     body: {
       key: NAME,
-      value: VALUE
-    }
+      value: VALUE,
+    },
   };
-  t.throws(() => {
-    program.set(req, null);
-  }, Error, errorMsg(`Kind`));
+  t.throws(
+    () => {
+      program.set(req, null);
+    },
+    Error,
+    errorMsg(`Kind`)
+  );
 });
 
 // TODO: @ace-n figure out why these tests started failing
-test.skip.serial.cb(`set: Saves an entity`, (t) => {
+test.skip.serial.cb(`set: Saves an entity`, t => {
   request
     .post(`/set`)
     .send({
       kind: KIND,
       key: NAME,
-      value: VALUE
+      value: VALUE,
     })
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.true(response.text.includes(`Entity ${KIND}/${NAME} saved`));
     })
     .end(t.end);
 });
 
-test.serial(`get: Fails without a key`, (t) => {
+test.serial(`get: Fails without a key`, t => {
   const req = {
-    body: {}
+    body: {},
   };
-  t.throws(() => {
-    program.get(req, null);
-  }, Error, errorMsg(`Key`));
+  t.throws(
+    () => {
+      program.get(req, null);
+    },
+    Error,
+    errorMsg(`Key`)
+  );
 });
 
-test.serial(`get: Fails without a kind`, (t) => {
+test.serial(`get: Fails without a kind`, t => {
   const req = {
     body: {
-      key: NAME
-    }
+      key: NAME,
+    },
   };
-  t.throws(() => {
-    program.get(req, null);
-  }, Error, errorMsg(`Kind`));
+  t.throws(
+    () => {
+      program.get(req, null);
+    },
+    Error,
+    errorMsg(`Kind`)
+  );
 });
 
-test.serial.cb(`get: Fails when entity does not exist`, (t) => {
+test.serial.cb(`get: Fails when entity does not exist`, t => {
   request
     .post(`/get`)
     .send({
       kind: KIND,
-      key: 'nonexistent'
+      key: 'nonexistent',
     })
     .expect(500)
-    .expect((response) => {
-      t.regex(response.text, /(Missing or insufficient permissions.)|(No entity found for key)/);
+    .expect(response => {
+      t.regex(
+        response.text,
+        /(Missing or insufficient permissions.)|(No entity found for key)/
+      );
     })
     .end(() => {
       setTimeout(t.end, 50); // Subsequent test is flaky without this timeout
@@ -117,69 +133,74 @@ test.serial.cb(`get: Fails when entity does not exist`, (t) => {
 });
 
 // TODO: ace-n Figure out why this test started failing, remove skip
-test.skip.serial.cb(`get: Finds an entity`, (t) => {
+test.skip.serial.cb(`get: Finds an entity`, t => {
   request
     .post(`/get`)
     .send({
       kind: KIND,
-      key: NAME
+      key: NAME,
     })
     .expect(200)
-    .expect((response) => {
-      t.deepEqual(
-        JSON.parse(response.text),
-        { description: 'Buy milk' }
-      );
+    .expect(response => {
+      t.deepEqual(JSON.parse(response.text), {description: 'Buy milk'});
     })
     .end(t.end);
 });
 
-test.serial(`del: Fails without a key`, (t) => {
+test.serial(`del: Fails without a key`, t => {
   const req = {
-    body: {}
+    body: {},
   };
-  t.throws(() => {
-    program.del(req, null);
-  }, Error, errorMsg(`Kind`));
+  t.throws(
+    () => {
+      program.del(req, null);
+    },
+    Error,
+    errorMsg(`Kind`)
+  );
 });
 
-test.serial(`del: Fails without a kind`, (t) => {
+test.serial(`del: Fails without a kind`, t => {
   const req = {
     body: {
-      key: NAME
-    }
+      key: NAME,
+    },
   };
-  t.throws(() => {
-    program.del(req, null);
-  }, Error, errorMsg(`Kind`));
+  t.throws(
+    () => {
+      program.del(req, null);
+    },
+    Error,
+    errorMsg(`Kind`)
+  );
 });
 
 // TODO: ace-n Figure out why this test started failing
-test.skip.serial.cb(`del: Doesn't fail when entity does not exist`, (t) => {
+test.skip.serial.cb(`del: Doesn't fail when entity does not exist`, t => {
   request
     .post(`/del`)
     .send({
       kind: KIND,
-      key: 'nonexistent'
+      key: 'nonexistent',
     })
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.text, `Entity ${KIND}/nonexistent deleted.`);
     })
     .end(t.end);
 });
 
 // TODO: ace-n Figure out why this test started failing
-test.skip.serial(`del: Deletes an entity`, async (t) => {
+test.skip.serial(`del: Deletes an entity`, async t => {
   await new Promise(resolve => {
     request
       .post(`/del`)
       .send({
         kind: KIND,
-        key: NAME
+        key: NAME,
       })
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         t.is(response.text, `Entity ${KIND}/${NAME} deleted.`);
       })
       .end(resolve);

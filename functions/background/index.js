@@ -46,9 +46,9 @@ const requestPromiseNative = require('request-promise-native');
  * @param {object} event.data The event data.
  * @returns {Promise}
  */
-exports.helloPromise = (event) => {
+exports.helloPromise = event => {
   return requestPromiseNative({
-    uri: event.data.endpoint
+    uri: event.data.endpoint,
   });
 };
 // [END functions_background_promise]
@@ -61,7 +61,7 @@ exports.helloPromise = (event) => {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The event data.
  */
-exports.helloSynchronous = (event) => {
+exports.helloSynchronous = event => {
   // This function returns synchronously
   if (event.data.something === true) {
     return 'Something is true!';

@@ -9,11 +9,9 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4.3.2"
+    "node": ">=8"
   },
   "scripts": {
-    "lint": "semistandard '**/*.js'",
-    "pretest": "npm run lint",
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
@@ -22,7 +20,6 @@
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
-    "semistandard": "^12.0.1",
     "sinon": "4.4.2"
   },
   "cloud-repo-tools": {

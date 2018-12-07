@@ -34,9 +34,11 @@ const bigquery = require('@google-cloud/bigquery')();
  * @param {string} key Your SendGrid API key.
  * @returns {object} SendGrid client.
  */
-function getClient (key) {
+function getClient(key) {
   if (!key) {
-    const error = new Error('SendGrid API key not provided. Make sure you have a "sg_key" property in your request querystring');
+    const error = new Error(
+      'SendGrid API key not provided. Make sure you have a "sg_key" property in your request querystring'
+    );
     error.code = 401;
     throw error;
   }
@@ -57,21 +59,29 @@ function getClient (key) {
  * @param {string} data.body Body of the email subject line.
  * @returns {object} Payload object.
  */
-function getPayload (requestBody) {
+function getPayload(requestBody) {
   if (!requestBody.to) {
-    const error = new Error('To email address not provided. Make sure you have a "to" property in your request');
+    const error = new Error(
+      'To email address not provided. Make sure you have a "to" property in your request'
+    );
     error.code = 400;
     throw error;
   } else if (!requestBody.from) {
-    const error = new Error('From email address not provided. Make sure you have a "from" property in your request');
+    const error = new Error(
+      'From email address not provided. Make sure you have a "from" property in your request'
+    );
     error.code = 400;
     throw error;
   } else if (!requestBody.subject) {
-    const error = new Error('Email subject line not provided. Make sure you have a "subject" property in your request');
+    const error = new Error(
+      'Email subject line not provided. Make sure you have a "subject" property in your request'
+    );
     error.code = 400;
     throw error;
   } else if (!requestBody.body) {
-    const error = new Error('Email content not provided. Make sure you have a "body" property in your request');
+    const error = new Error(
+      'Email content not provided. Make sure you have a "body" property in your request'
+    );
     error.code = 400;
     throw error;
   }
@@ -81,21 +91,21 @@ function getPayload (requestBody) {
       {
         to: [
           {
-            email: requestBody.to
-          }
+            email: requestBody.to,
+          },
         ],
-        subject: requestBody.subject
-      }
+        subject: requestBody.subject,
+      },
     ],
     from: {
-      email: requestBody.from
+      email: requestBody.from,
     },
     content: [
       {
         type: 'text/plain',
-        value: requestBody.body
-      }
-    ]
+        value: requestBody.body,
+      },
+    ],
   };
 }
 // [END functions_get_payload]
@@ -136,14 +146,14 @@ exports.sendgridEmail = (req, res) => {
       const request = client.emptyRequest({
         method: 'POST',
         path: '/v3/mail/send',
-        body: getPayload(req.body)
+        body: getPayload(req.body),
       });
 
       // Make the request to SendGrid's API
       console.log(`Sending email to: ${req.body.to}`);
       return client.API(request);
     })
-    .then((response) => {
+    .then(response => {
       if (response.statusCode < 200 || response.statusCode >= 400) {
         const error = Error(response.body);
         error.code = response.statusCode;
@@ -166,9 +176,10 @@ exports.sendgridEmail = (req, res) => {
         res.end();
       }
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
-      const code = err.code || (err.response ? err.response.statusCode : 500) || 500;
+      const code =
+        err.code || (err.response ? err.response.statusCode : 500) || 500;
       res.status(code).send(err);
       return Promise.reject(err);
     });
@@ -181,8 +192,11 @@ exports.sendgridEmail = (req, res) => {
  *
  * @param {string} authorization The authorization header of the request, e.g. "Basic ZmdvOhJhcg=="
  */
-function verifyWebhook (authorization) {
-  const basicAuth = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString();
+function verifyWebhook(authorization) {
+  const basicAuth = Buffer.from(
+    authorization.replace('Basic ', ''),
+    'base64'
+  ).toString();
   const parts = basicAuth.split(':');
   if (parts[0] !== config.USERNAME || parts[1] !== config.PASSWORD) {
     const error = new Error('Invalid credentials');
@@ -198,11 +212,11 @@ function verifyWebhook (authorization) {
  *
  * @param {*} obj Value to examine.
  */
-function fixNames (obj) {
+function fixNames(obj) {
   if (Array.isArray(obj)) {
     obj.forEach(fixNames);
   } else if (obj && typeof obj === 'object') {
-    Object.keys(obj).forEach((key) => {
+    Object.keys(obj).forEach(key => {
       const value = obj[key];
       fixNames(value);
       const fixedKey = key.replace('-', '_');
@@ -242,7 +256,7 @@ exports.sendgridWebhook = (req, res) => {
 
       // Generate newline-delimited JSON
       // See https://cloud.google.com/bigquery/data-formats#json_format
-      const json = events.map((event) => JSON.stringify(event)).join('\n');
+      const json = events.map(event => JSON.stringify(event)).join('\n');
 
       // Upload a new file to Cloud Storage if we have events to save
       if (json.length) {
@@ -259,7 +273,7 @@ exports.sendgridWebhook = (req, res) => {
       }
     })
     .then(() => res.status(200).end())
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       res.status(err.code || 500).send(err);
       return Promise.reject(err);
@@ -272,11 +286,12 @@ exports.sendgridWebhook = (req, res) => {
  * Helper method to get a handle on a BigQuery table. Automatically creates the
  * dataset and table if necessary.
  */
-function getTable () {
+function getTable() {
   const dataset = bigquery.dataset(config.DATASET);
 
-  return dataset.get({ autoCreate: true })
-    .then(([dataset]) => dataset.table(config.TABLE).get({ autoCreate: true }));
+  return dataset
+    .get({autoCreate: true})
+    .then(([dataset]) => dataset.table(config.TABLE).get({autoCreate: true}));
 }
 // [END functions_sendgrid_get_table]
 
@@ -291,7 +306,7 @@ function getTable () {
  * @param {string} [event.data.timeDeleted] Time the file was deleted if this is a deletion event.
  * @see https://cloud.google.com/storage/docs/json_api/v1/objects#resource
  */
-exports.sendgridLoad = (event) => {
+exports.sendgridLoad = event => {
   const file = event.data;
 
   if (file.resourceState === 'not_exists') {
@@ -302,9 +317,13 @@ exports.sendgridLoad = (event) => {
   return Promise.resolve()
     .then(() => {
       if (!file.bucket) {
-        throw new Error('Bucket not provided. Make sure you have a "bucket" property in your request');
+        throw new Error(
+          'Bucket not provided. Make sure you have a "bucket" property in your request'
+        );
       } else if (!file.name) {
-        throw new Error('Filename not provided. Make sure you have a "name" property in your request');
+        throw new Error(
+          'Filename not provided. Make sure you have a "name" property in your request'
+        );
       }
 
       return getTable();
@@ -314,13 +333,13 @@ exports.sendgridLoad = (event) => {
       console.log(`Starting job for ${file.name}`);
       const metadata = {
         autodetect: true,
-        sourceFormat: 'NEWLINE_DELIMITED_JSON'
+        sourceFormat: 'NEWLINE_DELIMITED_JSON',
       };
       return table.import(fileObj, metadata);
     })
     .then(([job]) => job.promise())
     .then(() => console.log(`Job complete for ${file.name}`))
-    .catch((err) => {
+    .catch(err => {
       console.log(`Job failed for ${file.name}`);
       return Promise.reject(err);
     });

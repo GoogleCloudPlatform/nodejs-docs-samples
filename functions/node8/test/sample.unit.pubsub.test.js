@@ -25,7 +25,7 @@ test(`helloPubSub: should print a name`, async t => {
   // Initialize mocks
   const name = uuid.v4();
   const event = {
-    data: Buffer.from(name).toString(`base64`)
+    data: Buffer.from(name).toString(`base64`),
   };
 
   // Call tested function and verify its behavior

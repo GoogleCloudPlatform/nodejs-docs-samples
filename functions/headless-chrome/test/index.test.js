@@ -25,7 +25,7 @@ test.before(`Must specify BASE_URL`, t => {
 
 test.before(tools.checkCredentials);
 
-test.cb(`screenshot: should return a screenshot`, (t) => {
+test.cb(`screenshot: should return a screenshot`, t => {
   supertest(BASE_URL)
     .get(`/screenshot?url=https://example.com`)
     .send()

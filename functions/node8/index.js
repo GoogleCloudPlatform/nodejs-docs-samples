@@ -96,7 +96,9 @@ exports.helloBackground = (data, context) => {
  */
 exports.helloPubSub = (data, context) => {
   const pubSubMessage = data;
-  const name = pubSubMessage.data ? Buffer.from(pubSubMessage.data, 'base64').toString() : 'World';
+  const name = pubSubMessage.data
+    ? Buffer.from(pubSubMessage.data, 'base64').toString()
+    : 'World';
 
   console.log(`Hello, ${name}!`);
 };
@@ -193,7 +195,9 @@ exports.helloFirestore = (data, context) => {
  */
 exports.helloAuth = (data, context) => {
   try {
-    console.log(`Function triggered by creation or deletion of user: ${data.uid}`);
+    console.log(
+      `Function triggered by creation or deletion of user: ${data.uid}`
+    );
     console.log(`Created at: ${data.metadata.createdAt}`);
 
     if (data.email) {
@@ -236,9 +240,9 @@ const requestPromiseNative = require('request-promise-native');
  * @param {object} data The Cloud Functions event data.
  * @returns {Promise}
  */
-exports.helloPromise = (data) => {
+exports.helloPromise = data => {
   return requestPromiseNative({
-    uri: data.endpoint
+    uri: data.endpoint,
   });
 };
 // [END functions_background_promise_node8]
@@ -250,7 +254,7 @@ exports.helloPromise = (data) => {
  *
  * @param {object} data The Cloud Functions event data.
  */
-exports.helloSynchronous = (data) => {
+exports.helloSynchronous = data => {
   // This function returns synchronously
   if (data.something === true) {
     return 'Something is true!';
@@ -264,7 +268,7 @@ exports.helloSynchronous = (data) => {
 const Firestore = require('@google-cloud/firestore');
 
 const firestore = new Firestore({
-  projectId: process.env.GCP_PROJECT
+  projectId: process.env.GCP_PROJECT,
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
@@ -277,7 +281,7 @@ exports.makeUpperCase = (data, context) => {
   console.log(`Replacing value: ${curValue} --> ${newValue}`);
 
   return affectedDoc.set({
-    'original': newValue
+    original: newValue,
   });
 };
 // [END functions_firebase_reactive_node8]
@@ -288,7 +292,7 @@ exports.makeUpperCase = (data, context) => {
  *
  * @param {object} data The Cloud Functions event data.
  */
-exports.helloRemoteConfig = (data) => {
+exports.helloRemoteConfig = data => {
   console.log(`Update type: ${data.updateType}`);
   console.log(`Origin: ${data.updateOrigin}`);
   console.log(`Version: ${data.versionNumber}`);

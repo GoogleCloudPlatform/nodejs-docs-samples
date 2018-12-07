@@ -20,19 +20,19 @@ const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-function getSample () {
+function getSample() {
   const results = [[{}], {}];
   const stream = {
-    on: sinon.stub().returnsThis()
+    on: sinon.stub().returnsThis(),
   };
   stream.on.withArgs('end').yields();
 
   const monitoring = {
     projectPath: sinon.stub(),
-    listTimeSeries: sinon.stub().returns(stream)
+    listTimeSeries: sinon.stub().returns(stream),
   };
   const logging = {
-    getEntries: sinon.stub().returns(Promise.resolve(results))
+    getEntries: sinon.stub().returns(Promise.resolve(results)),
   };
 
   return {
@@ -40,24 +40,24 @@ function getSample () {
       '@google-cloud/logging': sinon.stub().returns(logging),
       '@google-cloud/monitoring': {
         v3: sinon.stub().returns({
-          metricServiceApi: sinon.stub().returns(monitoring)
-        })
-      }
+          metricServiceApi: sinon.stub().returns(monitoring),
+        }),
+      },
     }),
     mocks: {
       monitoring: monitoring,
       logging: logging,
-      results: results
-    }
+      results: results,
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.serial(`should write to log`, (t) => {
+test.serial(`should write to log`, t => {
   const expectedMsg = `I am a log entry!`;
-  const res = { end: sinon.stub() };
+  const res = {end: sinon.stub()};
 
   getSample().program.helloWorld({}, res);
 
@@ -67,17 +67,16 @@ test.serial(`should write to log`, (t) => {
   t.deepEqual(res.end.firstCall.args, []);
 });
 
-test.serial(`getLogEntries: should retrieve logs`, (t) => {
+test.serial(`getLogEntries: should retrieve logs`, t => {
   const sample = getSample();
 
-  return sample.program.getLogEntries()
-    .then((entries) => {
-      t.true(console.log.calledWith(`Entries:`));
-      t.true(entries === sample.mocks.results[0]);
-    });
+  return sample.program.getLogEntries().then(entries => {
+    t.true(console.log.calledWith(`Entries:`));
+    t.true(entries === sample.mocks.results[0]);
+  });
 });
 
-test.serial(`getMetrics: should retrieve metrics`, (t) => {
+test.serial(`getMetrics: should retrieve metrics`, t => {
   const sample = getSample();
   const callback = sinon.stub();
 
@@ -86,22 +85,22 @@ test.serial(`getMetrics: should retrieve metrics`, (t) => {
   t.is(callback.callCount, 1);
 });
 
-test(`processLogEntry: should process log entry`, (t) => {
+test(`processLogEntry: should process log entry`, t => {
   const sample = getSample();
   const json = JSON.stringify({
     protoPayload: {
       methodName: 'method',
       resourceName: 'resource',
       authenticationInfo: {
-        principalEmail: 'me@example.com'
-      }
-    }
+        principalEmail: 'me@example.com',
+      },
+    },
   });
 
   const data = {
     data: {
-      data: Buffer.from(json, 'ascii')
-    }
+      data: Buffer.from(json, 'ascii'),
+    },
   };
 
   sample.program.processLogEntry(data);
@@ -111,20 +110,20 @@ test(`processLogEntry: should process log entry`, (t) => {
   t.true(console.log.calledWith(`Initiator: me@example.com`));
 });
 
-test(`processLogEntry: should work in Node 8`, (t) => {
+test(`processLogEntry: should work in Node 8`, t => {
   const sample = getSample();
   const json = JSON.stringify({
     protoPayload: {
       methodName: 'method',
       resourceName: 'resource',
       authenticationInfo: {
-        principalEmail: 'me@example.com'
-      }
-    }
+        principalEmail: 'me@example.com',
+      },
+    },
   });
 
   const data = {
-    data: Buffer.from(json, 'ascii')
+    data: Buffer.from(json, 'ascii'),
   };
 
   sample.program.processLogEntry(data);

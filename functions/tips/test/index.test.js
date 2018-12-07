@@ -24,32 +24,36 @@ const sample = require(`../`);
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`should demonstrate retry behavior for a promise`, async (t) => {
+test(`should demonstrate retry behavior for a promise`, async t => {
   // Retry by throwing an error
   t.throws(() => {
-    sample.retryPromise({ data: {
-      retry: true }
+    sample.retryPromise({
+      data: {
+        retry: true,
+      },
     });
   }, 'Retrying...');
 
   // Terminate by returning a rejected promise
-  await t.throws(
-    sample.retryPromise({ data: {} }),
-    'Not retrying...'
-  );
+  await t.throws(sample.retryPromise({data: {}}), 'Not retrying...');
 });
 
-test(`should demonstrate retry behavior for a callback`, (t) => {
+test(`should demonstrate retry behavior for a callback`, t => {
   const cb = sinon.stub();
   const err = new Error('Error!');
 
   // Retry by passing an error to the callback
-  sample.retryCallback({ data: {
-    retry: true }
-  }, cb);
+  sample.retryCallback(
+    {
+      data: {
+        retry: true,
+      },
+    },
+    cb
+  );
   t.deepEqual(cb.firstCall.args, [err]);
 
   // Terminate by passing nothing to the callback
-  sample.retryCallback({ data: {} }, cb);
+  sample.retryCallback({data: {}}, cb);
   t.deepEqual(cb.secondCall.args, []);
 });

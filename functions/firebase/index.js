@@ -19,7 +19,7 @@
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloRTDB = (event) => {
+exports.helloRTDB = event => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by change to: ${triggerResource}`);
@@ -35,7 +35,7 @@ exports.helloRTDB = (event) => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloFirestore = (event) => {
+exports.helloFirestore = event => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by event on: ${triggerResource}`);
@@ -59,7 +59,7 @@ exports.helloFirestore = (event) => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAuth = (event) => {
+exports.helloAuth = event => {
   try {
     const data = event.data;
     console.log(`Function triggered by change to user: ${data.uid}`);
@@ -78,11 +78,11 @@ exports.helloAuth = (event) => {
 const Firestore = require('@google-cloud/firestore');
 
 const firestore = new Firestore({
-  projectId: process.env.GCP_PROJECT
+  projectId: process.env.GCP_PROJECT,
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
-exports.makeUpperCase = (event) => {
+exports.makeUpperCase = event => {
   const resource = event.resource;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
@@ -91,7 +91,7 @@ exports.makeUpperCase = (event) => {
   console.log(`Replacing value: ${curValue} --> ${newValue}`);
 
   return affectedDoc.set({
-    'original': newValue
+    original: newValue,
   });
 };
 // [END functions_firebase_reactive]
@@ -102,7 +102,7 @@ exports.makeUpperCase = (event) => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAnalytics = (event) => {
+exports.helloAnalytics = event => {
   const resource = event.resource;
   console.log(`Function triggered by the following event: ${resource}`);
 
@@ -122,7 +122,7 @@ exports.helloAnalytics = (event) => {
  *
  * @param {object} data The Cloud Functions event data.
  */
-exports.helloRemoteConfig = (event) => {
+exports.helloRemoteConfig = event => {
   const data = event.data;
 
   console.log(`Update type: ${data.updateType}`);

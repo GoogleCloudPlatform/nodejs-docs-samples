@@ -9,10 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=4.3.2"
-  },
-  "scripts": {
-    "lint": "semistandard '**/*.js'"
+    "node": ">=8"
   },
   "dependencies": {
     "request": "^2.85.0"

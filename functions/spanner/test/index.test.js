@@ -21,40 +21,40 @@ const test = require(`ava`);
 
 const entities = [
   {
-    SingerId: { value: 1 },
-    AlbumId: { value: 1 },
-    AlbumTitle: 'Go, Go, Go'
+    SingerId: {value: 1},
+    AlbumId: {value: 1},
+    AlbumTitle: 'Go, Go, Go',
   },
   {
-    SingerId: { value: 1 },
-    AlbumId: { value: 2 },
-    AlbumTitle: 'Total Junk'
-  }
+    SingerId: {value: 1},
+    AlbumId: {value: 2},
+    AlbumTitle: 'Total Junk',
+  },
 ];
 
 const query = {
-  sql: 'SELECT * FROM Albums'
+  sql: 'SELECT * FROM Albums',
 };
 
-function getSample () {
-  const resultsMock = entities.map((row) => {
-    return { toJSON: sinon.stub().returns(row) };
+function getSample() {
+  const resultsMock = entities.map(row => {
+    return {toJSON: sinon.stub().returns(row)};
   });
   const databaseMock = {
-    run: sinon.stub().returns(Promise.resolve([resultsMock]))
+    run: sinon.stub().returns(Promise.resolve([resultsMock])),
   };
   const instanceMock = {
-    database: sinon.stub().returns(databaseMock)
+    database: sinon.stub().returns(databaseMock),
   };
   const spannerMock = {
-    instance: sinon.stub().returns(instanceMock)
+    instance: sinon.stub().returns(instanceMock),
   };
 
   const SpannerMock = sinon.stub().returns(spannerMock);
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/spanner': SpannerMock
+      '@google-cloud/spanner': SpannerMock,
     }),
     mocks: {
       spanner: spannerMock,
@@ -65,13 +65,13 @@ function getSample () {
         status: sinon.stub().returnsThis(),
         send: sinon.stub().returnsThis(),
         end: sinon.stub().returnsThis(),
-        write: sinon.stub().returnsThis()
-      }
-    }
+        write: sinon.stub().returnsThis(),
+      },
+    },
   };
 }
 
-test(`get: Gets albums`, async (t) => {
+test(`get: Gets albums`, async t => {
   const sample = getSample();
   const mocks = sample.mocks;
 
@@ -80,6 +80,10 @@ test(`get: Gets albums`, async (t) => {
   t.true(mocks.instance.database.called);
   t.true(mocks.database.run.calledWith(query));
   t.true(mocks.results[0].toJSON.called);
-  t.true(mocks.res.write.calledWith(`SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n`));
+  t.true(
+    mocks.res.write.calledWith(
+      `SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n`
+    )
+  );
   t.true(mocks.res.end.called);
 });

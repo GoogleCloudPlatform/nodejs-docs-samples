@@ -18,7 +18,7 @@ const childProcess = require(`child_process`);
 const test = require(`ava`);
 const uuid = require(`uuid`);
 
-test.serial(`helloGCS: should print uploaded message`, async (t) => {
+test.serial(`helloGCS: should print uploaded message`, async t => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
@@ -27,17 +27,19 @@ test.serial(`helloGCS: should print uploaded message`, async (t) => {
   const data = JSON.stringify({
     name: filename,
     resourceState: 'exists',
-    metageneration: '1'
+    metageneration: '1',
   });
 
   childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
 
   // Check the emulator's logs
-  const logs = childProcess.execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`).toString();
+  const logs = childProcess
+    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
+    .toString();
   t.true(logs.includes(`File ${filename} uploaded.`));
 });
 
-test.serial(`helloGCS: should print metadata updated message`, async (t) => {
+test.serial(`helloGCS: should print metadata updated message`, async t => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
@@ -46,17 +48,19 @@ test.serial(`helloGCS: should print metadata updated message`, async (t) => {
   const data = JSON.stringify({
     name: filename,
     resourceState: 'exists',
-    metageneration: '2'
+    metageneration: '2',
   });
 
   childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
 
   // Check the emulator's logs
-  const logs = childProcess.execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`).toString();
+  const logs = childProcess
+    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
+    .toString();
   t.true(logs.includes(`File ${filename} metadata updated.`));
 });
 
-test.serial(`helloGCS: should print deleted message`, async (t) => {
+test.serial(`helloGCS: should print deleted message`, async t => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
@@ -65,13 +69,15 @@ test.serial(`helloGCS: should print deleted message`, async (t) => {
   const data = JSON.stringify({
     name: filename,
     resourceState: 'not_exists',
-    metageneration: '3'
+    metageneration: '3',
   });
 
   childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
 
   // Check the emulator's logs
-  const logs = childProcess.execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`).toString();
+  const logs = childProcess
+    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
+    .toString();
   t.true(logs.includes(`File ${filename} deleted.`));
 });
 // [END functions_storage_integration_test]

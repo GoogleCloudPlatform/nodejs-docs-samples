@@ -35,7 +35,7 @@ test.serial.cb(`should send a message to Pub/Sub`, t => {
     .send({payload: payload})
     .expect(200)
     .expect(response => {
-      t.is(response.text, `Message sent`);
+      t.regex(response.text, /Message [0-9]* sent/);
     })
     .end(t.end);
 });

@@ -26,7 +26,7 @@ app.enable('trust proxy');
 // Engine, but will need to be set manually when running locally. See README.md.
 const GA_TRACKING_ID = process.env.GA_TRACKING_ID;
 
-async function trackEvent (category, action, label, value) {
+async function trackEvent(category, action, label, value) {
   const data = {
     // API Version.
     v: '1',
@@ -44,7 +44,7 @@ async function trackEvent (category, action, label, value) {
     // Event label.
     el: label,
     // Event value.
-    ev: value
+    ev: value,
   };
 
   return got.post('http://www.google-analytics.com/collect', data);
@@ -53,7 +53,12 @@ async function trackEvent (category, action, label, value) {
 app.get('/', async (req, res, next) => {
   // Event value must be numeric.
   try {
-    await trackEvent('Example category', 'Example action', 'Example label', '100');
+    await trackEvent(
+      'Example category',
+      'Example action',
+      'Example label',
+      '100'
+    );
     res
       .status(200)
       .send('Event tracked.')

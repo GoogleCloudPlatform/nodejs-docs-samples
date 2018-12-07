@@ -60,8 +60,12 @@ app.post('/', formBodyParser, async (req, res, next) => {
   }
 
   let data = Buffer.from(req.body.payload);
-  let messageId = await publisher.publish(data);
-  res.status(200).send(`Message ${messageId} sent.`);
+  try {
+    let messageId = await publisher.publish(data);
+    res.status(200).send(`Message ${messageId} sent.`);
+  } catch (error) {
+    next(error);
+  }
 });
 // [END gae_flex_pubsub_index]
 

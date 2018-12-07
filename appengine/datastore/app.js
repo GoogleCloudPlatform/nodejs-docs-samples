@@ -37,17 +37,17 @@ const datastore = Datastore();
  *
  * @param {object} visit The visit record to insert.
  */
-async function insertVisit (visit) {
+async function insertVisit(visit) {
   return datastore.save({
     key: datastore.key('visit'),
-    data: visit
+    data: visit,
   });
 }
 
 /**
  * Retrieve the latest 10 visit records from the database.
  */
-async function getVisits () {
+async function getVisits() {
   const query = datastore
     .createQuery('visit')
     .order('timestamp', {descending: true})
@@ -65,7 +65,7 @@ app.get('/', async (req, res, next) => {
       .createHash('sha256')
       .update(req.ip)
       .digest('hex')
-      .substr(0, 7)
+      .substr(0, 7),
   };
 
   try {

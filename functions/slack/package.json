@@ -17,7 +17,7 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "googleapis": "22.2.0"
+    "googleapis": "35.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",

@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "1.7.0",
-    "googleapis": "27.0.0",
+    "googleapis": "35.0.0",
     "moment": "2.22.2",
     "safe-buffer": "5.1.2",
     "yargs": "11.1.0"

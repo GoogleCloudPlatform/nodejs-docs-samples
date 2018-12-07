@@ -41,21 +41,24 @@ exports.get = (req, res) => {
 
   // The query to execute
   const query = {
-    sql: 'SELECT * FROM Albums'
+    sql: 'SELECT * FROM Albums',
   };
 
   // Execute the query
-  return database.run(query)
-    .then((results) => {
-      const rows = results[0].map((row) => row.toJSON());
-      rows.forEach((row) => {
-        res.write(`SingerId: ${row.SingerId.value}, AlbumId: ${row.AlbumId.value}, AlbumTitle: ${row.AlbumTitle}\n`);
+  return database
+    .run(query)
+    .then(results => {
+      const rows = results[0].map(row => row.toJSON());
+      rows.forEach(row => {
+        res.write(
+          `SingerId: ${row.SingerId.value}, AlbumId: ${
+            row.AlbumId.value
+          }, AlbumTitle: ${row.AlbumTitle}\n`
+        );
       });
-      res
-        .status(200)
-        .end();
+      res.status(200).end();
     })
-    .catch((err) => {
+    .catch(err => {
       res
         .status(500)
         .send(`Error querying Spanner: ${err}`)

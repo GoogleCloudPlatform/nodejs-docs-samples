@@ -21,31 +21,33 @@ const proxyquire = require(`proxyquire`);
 
 const INSTANCE_PREFIX = `nodejs-docs-samples:us-central1:integration-tests-instance`;
 
-const getProgram = (env) => {
+const getProgram = env => {
   return proxyquire(`../`, {
     process: {
-      env: env
-    }
+      env: env,
+    },
   });
 };
 
-test(`should query MySQL`, async (t) => {
+test(`should query MySQL`, async t => {
   const program = getProgram({
     INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-mysql`,
     SQL_USER: process.env.MYSQL_USER,
     SQL_PASSWORD: process.env.MYSQL_PASSWORD,
-    SQL_NAME: process.env.MYSQL_DATABASE
+    SQL_NAME: process.env.MYSQL_DATABASE,
   });
 
   const resMock = {
     status: sinon.stub().returnsThis(),
-    send: sinon.stub()
+    send: sinon.stub(),
   };
 
   program.mysqlDemo(null, resMock);
 
   // Give the query time to complete
-  await new Promise(resolve => { setTimeout(resolve, 1500); });
+  await new Promise(resolve => {
+    setTimeout(resolve, 1500);
+  });
 
   t.false(resMock.status.called);
   t.true(resMock.send.calledOnce);
@@ -54,23 +56,25 @@ test(`should query MySQL`, async (t) => {
   t.regex(response, /\d{4}-\d{1,2}-\d{1,2}/);
 });
 
-test(`should query Postgres`, async (t) => {
+test(`should query Postgres`, async t => {
   const program = getProgram({
     INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-pg`,
     SQL_USER: process.env.POSTGRES_USER,
     SQL_PASSWORD: process.env.POSTGRES_PASSWORD,
-    SQL_NAME: process.env.POSTGRES_DATABASE
+    SQL_NAME: process.env.POSTGRES_DATABASE,
   });
 
   const resMock = {
     status: sinon.stub().returnsThis(),
-    send: sinon.stub()
+    send: sinon.stub(),
   };
 
   program.postgresDemo(null, resMock);
 
   // Give the query time to complete
-  await new Promise(resolve => { setTimeout(resolve, 1500); });
+  await new Promise(resolve => {
+    setTimeout(resolve, 1500);
+  });
 
   t.false(resMock.status.called);
   t.true(resMock.send.calledOnce);

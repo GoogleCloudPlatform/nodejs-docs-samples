@@ -9,11 +9,9 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=6.0"
+    "node": ">=8"
   },
   "scripts": {
-    "lint": "semistandard '**/*.js'",
-    "pretest": "npm run lint",
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "devDependencies": {

@@ -44,28 +44,24 @@ const messages = [];
 // The following environment variables are set by app.yaml when running on GAE,
 // but will need to be manually set when running locally.
 const PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
+const TOPIC = process.env.PUBSUB_TOPIC;
 
-const topic = pubsub.topic(process.env.PUBSUB_TOPIC);
-const publisher = topic.publisher();
+const publisher = pubsub.topic(TOPIC).publisher();
 
 // [START gae_flex_pubsub_index]
 app.get('/', (req, res) => {
   res.render('index', {messages: messages});
 });
 
-app.post('/', formBodyParser, (req, res, next) => {
+app.post('/', formBodyParser, async (req, res, next) => {
   if (!req.body.payload) {
     res.status(400).send('Missing payload');
     return;
   }
 
-  publisher.publish(Buffer.from(req.body.payload), err => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.status(200).send('Message sent');
-  });
+  let data = Buffer.from(req.body.payload);
+  let messageId = await publisher.publish(data);
+  res.status(200).send(`Message ${messageId} sent.`);
 });
 // [END gae_flex_pubsub_index]
 

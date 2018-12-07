@@ -37,31 +37,26 @@ const datastore = Datastore();
  *
  * @param {object} visit The visit record to insert.
  */
-function insertVisit(visit) {
+async function insertVisit (visit) {
   return datastore.save({
     key: datastore.key('visit'),
-    data: visit,
+    data: visit
   });
 }
 
 /**
  * Retrieve the latest 10 visit records from the database.
  */
-function getVisits() {
+async function getVisits () {
   const query = datastore
     .createQuery('visit')
     .order('timestamp', {descending: true})
     .limit(10);
 
-  return datastore.runQuery(query).then(results => {
-    const entities = results[0];
-    return entities.map(
-      entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
-    );
-  });
+  return datastore.runQuery(query);
 }
 
-app.get('/', (req, res, next) => {
+app.get('/', async (req, res, next) => {
   // Create a visit record to be stored in the database
   const visit = {
     timestamp: new Date(),
@@ -70,20 +65,24 @@ app.get('/', (req, res, next) => {
       .createHash('sha256')
       .update(req.ip)
       .digest('hex')
-      .substr(0, 7),
+      .substr(0, 7)
   };
 
-  insertVisit(visit)
-    // Query the last 10 visits from Datastore.
-    .then(() => getVisits())
-    .then(visits => {
-      res
-        .status(200)
-        .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${visits.join('\n')}`)
-        .end();
-    })
-    .catch(next);
+  try {
+    await insertVisit(visit);
+    let results = await getVisits();
+    let entities = results[0];
+    let visits = entities.map(
+      entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
+    );
+    res
+      .status(200)
+      .set('Content-Type', 'text/plain')
+      .send(`Last 10 visits:\n${visits.join('\n')}`)
+      .end();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const PORT = process.env.PORT || 8080;

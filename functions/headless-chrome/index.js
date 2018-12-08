@@ -20,7 +20,7 @@ const puppeteer = require('puppeteer');
 
 let page;
 
-async function getBrowserPage () {
+async function getBrowserPage() {
   // [START start_browser]
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
   // [END start_browser]
@@ -31,7 +31,9 @@ exports.screenshot = async (req, res) => {
   const url = req.query.url;
 
   if (!url) {
-    return res.send('Please provide URL as GET parameter, for example: <a href="?url=https://example.com">?url=https://example.com</a>');
+    return res.send(
+      'Please provide URL as GET parameter, for example: <a href="?url=https://example.com">?url=https://example.com</a>'
+    );
   }
 
   if (!page) {

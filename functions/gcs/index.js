@@ -23,15 +23,22 @@ const readline = require('readline');
 const storage = Storage();
 // [END functions_word_count_setup]
 
-function getFileStream (file) {
+function getFileStream(file) {
   if (!file.bucket) {
-    throw new Error('Bucket not provided. Make sure you have a "bucket" property in your request');
+    throw new Error(
+      'Bucket not provided. Make sure you have a "bucket" property in your request'
+    );
   }
   if (!file.name) {
-    throw new Error('Filename not provided. Make sure you have a "name" property in your request');
+    throw new Error(
+      'Filename not provided. Make sure you have a "name" property in your request'
+    );
   }
 
-  return storage.bucket(file.bucket).file(file.name).createReadStream();
+  return storage
+    .bucket(file.bucket)
+    .file(file.name)
+    .createReadStream();
 }
 
 // [START functions_word_count_read]
@@ -58,12 +65,13 @@ exports.wordCount = (event, callback) => {
 
   let count = 0;
   const options = {
-    input: getFileStream(file)
+    input: getFileStream(file),
   };
 
   // Use the readline module to read the stream line by line.
-  readline.createInterface(options)
-    .on('line', (line) => {
+  readline
+    .createInterface(options)
+    .on('line', line => {
       count += line.trim().split(/\s+/).length;
     })
     .on('close', () => {

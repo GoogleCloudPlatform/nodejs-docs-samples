@@ -53,15 +53,10 @@ function getVisits() {
     .order('timestamp', {descending: true})
     .limit(10);
 
-  return datastore.runQuery(query).then(results => {
-    const entities = results[0];
-    return entities.map(
-      entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
-    );
-  });
+  return datastore.runQuery(query);
 }
 
-app.get('/', (req, res, next) => {
+app.get('/', async (req, res, next) => {
   // Create a visit record to be stored in the database
   const visit = {
     timestamp: new Date(),
@@ -73,17 +68,21 @@ app.get('/', (req, res, next) => {
       .substr(0, 7),
   };
 
-  insertVisit(visit)
-    // Query the last 10 visits from Datastore.
-    .then(() => getVisits())
-    .then(visits => {
-      res
-        .status(200)
-        .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${visits.join('\n')}`)
-        .end();
-    })
-    .catch(next);
+  try {
+    await insertVisit(visit);
+    const results = await getVisits();
+    const entities = results[0];
+    const visits = entities.map(
+      entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
+    );
+    res
+      .status(200)
+      .set('Content-Type', 'text/plain')
+      .send(`Last 10 visits:\n${visits.join('\n')}`)
+      .end();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const PORT = process.env.PORT || 8080;

@@ -31,7 +31,8 @@ const pg = require('pg');
 /**
  * TODO(developer): specify SQL connection details
  */
-const connectionName = process.env.INSTANCE_CONNECTION_NAME || '<YOUR INSTANCE CONNECTION NAME>';
+const connectionName =
+  process.env.INSTANCE_CONNECTION_NAME || '<YOUR INSTANCE CONNECTION NAME>';
 const dbUser = process.env.SQL_USER || '<YOUR DB USER>';
 const dbPassword = process.env.SQL_PASSWORD || '<YOUR DB PASSWORD>';
 const dbName = process.env.SQL_NAME || '<YOUR DB NAME>';
@@ -44,7 +45,7 @@ const mysqlConfig = {
   connectionLimit: 1,
   user: dbUser,
   password: dbPassword,
-  database: dbName
+  database: dbName,
 };
 if (process.env.NODE_ENV === 'production') {
   mysqlConfig.socketPath = `/cloudsql/${connectionName}`;
@@ -81,7 +82,7 @@ const pgConfig = {
   max: 1,
   user: dbUser,
   password: dbPassword,
-  database: dbName
+  database: dbName,
 };
 
 if (process.env.NODE_ENV === 'production') {

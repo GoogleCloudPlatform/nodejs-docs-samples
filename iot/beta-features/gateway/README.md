@@ -2,8 +2,7 @@
 
 # Google Cloud IoT Core NodeJS Gateway sample
 
-This sample app demonstrates sending telemetry data on behalf of device using
-the a Cloud IoT Core gateway.
+This sample app demonstrates sending telemetry data on behalf of a device using the Cloud IoT Core gateways.
 
 # Setup
 
@@ -14,17 +13,27 @@ Run the following command to install the library dependencies for NodeJS:
 # Running the sample
 
     Commands:
-      relayData <deviceId> <registryId> <data>  Sends data on behalf of a device.
+      createGateway <registryId> <gatewayId> <algorithm> <publicKeyFile>
+      listGateways <registryId>
+      bindDeviceToGateway <registryId> <gatewayId> <deviceId>
+      unbindDeviceFromGateway <registryId> <gatewayId> <deviceId>
+      listDevicesForGateway <registryId> <gatewayId>
+
+      listen <deviceId> <gatewayId> <registryId> <privateKeyFile> Listen for config messages on a gateway and device
+      relayData <deviceId> <registryId> <privateKeyFile>  Sends data on behalf of a device.
 
     Options:
       --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                             environment variables.                                                                  [string]
-      --serviceAccount, -s  The path to your service credentials JSON.   [string] [default: "/Users/class/creds_cloud.json"]
-      --help                Show help                                                                              [boolean]
+      --serviceAccount, -s  The path to your service credentials JSON.                                              [string]
       --cloudRegion, -c                                                                    [string] [default: "us-central1"]
-      --data, -d                                                                           [string] [default: "us-central1"]
+      --help                Show help                                                                              [boolean]
 
     Examples:
       node hub.js relayData my-device my-registry "test"
 
     For more information, see https://cloud.google.com/iot-core/docs
+
+# Notes
+
+By default, gateways use the "Association only" method for authentication, which means the device does not have to store its own JWT. For other authentication methods, check [here for more information](https://cloud.google.com/iot/docs/how-tos/gateways/manage-gateways#authentication_methods).

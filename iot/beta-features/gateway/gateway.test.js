@@ -28,8 +28,8 @@ const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const helper = `node manager.js`;
 const cwdHelper = path.join(__dirname, `../../manager`);
 const installDeps = `npm install`;
-const publicKeyParam = `--publicKeyFile=./resources/rsa_cert.pem`;
-const privateKeyParam = `--privateKeyFile=./resources/rsa_private.pem`;
+const publicKeyParam = `./resources/rsa_cert.pem`;
+const privateKeyParam = `./resources/rsa_private.pem`;
 
 const pubsub = PubSub();
 
@@ -97,7 +97,7 @@ test(`should bind existing device to gateway`, async t => {
   // create device
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${helper} createRsa256Device ${deviceId} ${registryName} ./resources/rsa_cert.pem`,
+    `${helper} createRsa256Device ${deviceId} ${registryName} ${publicKeyParam}`,
     cwdHelper
   );
 
@@ -232,7 +232,7 @@ test(`should listen for error topic messages`, async t => {
   // create a device but don't associate it with the gateway
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${helper} createRsa256Device ${deviceId} ${registryName} ./resources/rsa_cert.pem`,
+    `${helper} createRsa256Device ${deviceId} ${registryName} ${publicKeyParam}`,
     cwdHelper
   );
 
@@ -273,7 +273,7 @@ test(`should send data from bound device`, async t => {
 
   // relay telemetry on behalf of device
   let out = await tools.runAsync(
-    `${cmd} relayData ${deviceId} ${gatewayId} ${registryName} test ${privateKeyParam} --numMessages=5`
+    `${cmd} relayData ${deviceId} ${gatewayId} ${registryName} ${privateKeyParam} --numMessages=5`
   );
 
   t.regex(out, new RegExp('Publishing message 5/5'));

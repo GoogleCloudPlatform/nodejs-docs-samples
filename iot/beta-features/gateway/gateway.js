@@ -383,7 +383,6 @@ function attachDevice(deviceId, client) {
   // const deviceId = 'my-unauth-device';
   const attachTopic = `/devices/${deviceId}/attach`;
   console.log(`Attaching: ${attachTopic}`);
-  // TODO {'authorization': '<JWT_TOKEN>'}
   const attachPayload = '{}';
   client.publish(attachTopic, attachPayload, {qos: 1}, err => {
     if (!err) {
@@ -401,7 +400,6 @@ function detachDevice(deviceId, client) {
   // [START detach_device]
   const detachTopic = `/devices/${deviceId}/detach`;
   console.log(`Detaching: ${detachTopic}`);
-  // TODO {'authorization': '<JWT_TOKEN>'}
   const detachPayload = '{}';
   client.publish(detachTopic, detachPayload, {qos: 1}, err => {
     if (!err) {
@@ -451,7 +449,6 @@ function listenForConfigMessages(
     if (!success) {
       console.log('Client not connected...');
     } else {
-      // TODO: wait for commands
       console.log('Client connected: Gateway is listening, attaching device');
       attachDevice(deviceId, client);
 
@@ -577,7 +574,6 @@ function sendDataFromBoundDevice(
   privateKeyFile,
   mqttBridgeHostname,
   mqttBridgePort,
-  data,
   numMessages,
   tokenExpMins
 ) {
@@ -759,19 +755,13 @@ let argv = require(`yargs`) // eslint-disable-line
     },
     clientDuration: {
       default: 60000,
-      description: 'Duration in milliseconds for MQTT client to last',
+      description: 'Duration in milliseconds for MQTT client to run',
       requiresArg: true,
-      type: 'number'
+      type: 'number',
     },
     cloudRegion: {
       alias: 'c',
       default: 'us-central1',
-      requiresArg: true,
-      type: 'string',
-    },
-    data: {
-      alias: 'd',
-      default: 'Test data',
       requiresArg: true,
       type: 'string',
     },
@@ -826,81 +816,35 @@ let argv = require(`yargs`) // eslint-disable-line
       type: 'number',
     },
   })
+
   .command(
-    `listen <deviceId> <gatewayId> <registryId>`,
-    `Listens for configuration changes on a gateway and bound device.`,
-    {
-      privateKeyFile: {
-        demandOption: true,
-      },
-    },
+    `createGateway <registryId> <gatewayId> <algorithm> <publicKeyFile>`,
+    `Creates a gateway`,
+    {},
     opts => {
-      listenForConfigMessages(
-        opts.gatewayId,
-        opts.deviceId,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion,
-        opts.algorithm,
-        opts.privateKeyFile,
-        opts.mqttBridgeHostname,
-        opts.mqttBridgePort,
-        opts.clientDuration
-      );
+      const cb = function(client) {
+        createGateway(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.gatewayId,
+          opts.publicKeyFile,
+          opts.algorithm
+        );
+      };
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
-    `listenForErrors <gatewayId> <registryId> <deviceId>`,
-    `Listens for error messages on a gateway.`,
-    {
-      privateKeyFile: {
-        demandOption: true,
-      },
-    },
+    `listGateways <registryId>`,
+    `Lists gateways in a registry.`,
+    {},
     opts => {
-      listenForErrorMessages(
-        opts.gatewayId,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion,
-        opts.algorithm,
-        opts.privateKeyFile,
-        opts.mqttBridgeHostname,
-        opts.mqttBridgePort,
-        opts.clientDuration,
-        opts.deviceId
-      );
-    }
-  )
-  .command(
-    `relayData <deviceId> <gatewayId> <registryId> <data>`,
-    `Sends data on behalf of a bound device.`,
-    {
-      numMessages: {
-        default: 5,
-        description: 'Number of messages to publish.',
-        requiresArg: true,
-        type: 'number',
-      },
-      privateKeyFile: {
-        demandOption: true,
-      },
-    },
-    opts => {
-      sendDataFromBoundDevice(
-        opts.gatewayId,
-        opts.deviceId,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion,
-        opts.algorithm,
-        opts.privateKeyFile,
-        opts.mqttBridgeHostname,
-        opts.mqttBridgePort,
-        opts.data,
-        opts.numMessages,
-        opts.tokenExpMins
-      );
+      const cb = function(client) {
+        listGateways(client, opts.projectId, opts.cloudRegion, opts.registryId);
+      };
+      getClient(opts.serviceAccount, cb);
     }
   )
   .command(
@@ -922,23 +866,18 @@ let argv = require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createGateway <registryId> <gatewayId> <algorithm>`,
-    `Creates a gateway`,
-    {
-      publicKeyFile: {
-        demandOption: true,
-      },
-    },
+    `unbindDeviceFromGateway <registryId> <gatewayId> <deviceId>`,
+    `Unbinds a device from a gateway`,
+    {},
     opts => {
       const cb = function(client) {
-        createGateway(
+        unbindDeviceFromGateway(
           client,
           opts.projectId,
           opts.cloudRegion,
           opts.registryId,
-          opts.gatewayId,
-          opts.publicKeyFile,
-          opts.algorithm
+          opts.deviceId,
+          opts.gatewayId
         );
       };
       getClient(opts.serviceAccount, cb);
@@ -962,32 +901,68 @@ let argv = require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `listGateways <registryId>`,
-    `Lists gateways in a registry.`,
+    `listen <deviceId> <gatewayId> <registryId> <privateKeyFile>`,
+    `Listens for configuration changes on a gateway and bound device.`,
     {},
     opts => {
-      const cb = function(client) {
-        listGateways(client, opts.projectId, opts.cloudRegion, opts.registryId);
-      };
-      getClient(opts.serviceAccount, cb);
+      listenForConfigMessages(
+        opts.gatewayId,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.algorithm,
+        opts.privateKeyFile,
+        opts.mqttBridgeHostname,
+        opts.mqttBridgePort,
+        opts.clientDuration
+      );
     }
   )
   .command(
-    `unbindDeviceFromGateway <registryId> <gatewayId> <deviceId>`,
-    `Unbinds a device from a gateway`,
+    `listenForErrors <gatewayId> <registryId> <deviceId> <privateKeyFile>`,
+    `Listens for error messages on a gateway.`,
     {},
     opts => {
-      const cb = function(client) {
-        unbindDeviceFromGateway(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId,
-          opts.deviceId,
-          opts.gatewayId
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+      listenForErrorMessages(
+        opts.gatewayId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.algorithm,
+        opts.privateKeyFile,
+        opts.mqttBridgeHostname,
+        opts.mqttBridgePort,
+        opts.clientDuration,
+        opts.deviceId
+      );
+    }
+  )
+  .command(
+    `relayData <deviceId> <gatewayId> <registryId> <privateKeyFile>`,
+    `Sends data on behalf of a bound device.`,
+    {
+      numMessages: {
+        default: 5,
+        description: 'Number of messages to publish.',
+        requiresArg: true,
+        type: 'number',
+      },
+    },
+    opts => {
+      sendDataFromBoundDevice(
+        opts.gatewayId,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.algorithm,
+        opts.privateKeyFile,
+        opts.mqttBridgeHostname,
+        opts.mqttBridgePort,
+        opts.numMessages,
+        opts.tokenExpMins
+      );
     }
   )
   .example(`node $0 relayData my-device my-registry "test"`)

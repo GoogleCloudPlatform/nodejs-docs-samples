@@ -34,8 +34,11 @@ const compute = new Compute();
 exports.startInstancePubSub = (event, callback) => {
   try {
     const pubsubMessage = event.data;
-    const payload = _validatePayload(JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString()));
-    compute.zone(payload.zone)
+    const payload = _validatePayload(
+      JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
+    );
+    compute
+      .zone(payload.zone)
       .vm(payload.instance)
       .start()
       .then(data => {
@@ -75,8 +78,11 @@ exports.startInstancePubSub = (event, callback) => {
 exports.stopInstancePubSub = (event, callback) => {
   try {
     const pubsubMessage = event.data;
-    const payload = _validatePayload(JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString()));
-    compute.zone(payload.zone)
+    const payload = _validatePayload(
+      JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
+    );
+    compute
+      .zone(payload.zone)
       .vm(payload.instance)
       .stop()
       .then(data => {
@@ -107,7 +113,7 @@ exports.stopInstancePubSub = (event, callback) => {
  * @param {!object} payload the request payload to validate.
  * @returns {!object} the payload object.
  */
-function _validatePayload (payload) {
+function _validatePayload(payload) {
   if (!payload.zone) {
     throw new Error(`Attribute 'zone' missing from payload`);
   } else if (!payload.instance) {

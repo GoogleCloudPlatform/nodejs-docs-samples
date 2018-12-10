@@ -19,19 +19,19 @@ const sinon = require(`sinon`);
 const test = require(`ava`);
 const functions = require(`../`);
 
-function getMocks () {
+function getMocks() {
   const req = {};
   const res = {
-    send: sinon.stub().returnsThis()
+    send: sinon.stub().returnsThis(),
   };
 
   return {
     req: req,
-    res: res
+    res: res,
   };
 }
 
-test.serial(`should read env vars`, (t) => {
+test.serial(`should read env vars`, t => {
   const mocks = getMocks();
   process.env['FOO'] = 'bar';
 

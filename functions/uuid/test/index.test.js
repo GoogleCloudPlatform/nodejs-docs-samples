@@ -20,10 +20,10 @@ const test = require(`ava`);
 
 const uuidSample = require('../');
 
-test(`should generate a uuid`, (t) => {
+test(`should generate a uuid`, t => {
   const req = {};
   const res = {
-    send: sinon.stub()
+    send: sinon.stub(),
   };
   uuidSample.getUuid(req, res);
 

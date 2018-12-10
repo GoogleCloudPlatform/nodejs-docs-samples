@@ -30,8 +30,8 @@ test.cb(`helloGCS: should print uploaded message`, t => {
     data: {
       name: filename,
       resourceState: 'exists',
-      metageneration: '1'
-    }
+      metageneration: '1',
+    },
   };
 
   // Call tested function and verify its behavior
@@ -50,8 +50,8 @@ test.cb(`helloGCS: should print metadata updated message`, t => {
     data: {
       name: filename,
       resourceState: 'exists',
-      metageneration: '2'
-    }
+      metageneration: '2',
+    },
   };
 
   // Call tested function and verify its behavior
@@ -70,8 +70,8 @@ test.cb(`helloGCS: should print deleted message`, t => {
     data: {
       name: filename,
       resourceState: 'not_exists',
-      metageneration: '3'
-    }
+      metageneration: '3',
+    },
   };
 
   // Call tested function and verify its behavior

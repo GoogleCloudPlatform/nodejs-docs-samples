@@ -28,8 +28,8 @@ test.cb(`helloPubSub: should print a name`, t => {
   const name = uuid.v4();
   const event = {
     data: {
-      data: Buffer.from(name).toString(`base64`)
-    }
+      data: Buffer.from(name).toString(`base64`),
+    },
   };
 
   // Call tested function and verify its behavior
@@ -44,7 +44,7 @@ test.cb(`helloPubSub: should print hello world`, t => {
 
   // Initialize mocks
   const event = {
-    data: {}
+    data: {},
   };
 
   // Call tested function and verify its behavior

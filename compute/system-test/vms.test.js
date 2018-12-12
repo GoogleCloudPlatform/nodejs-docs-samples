@@ -15,17 +15,16 @@
 
 'use strict';
 
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const execa = require('execa');
 const path = require(`path`);
-const assert = require('assert');
+const {assert} = require('chai');
 
 const cmd = `node vms.js`;
 const cwd = path.join(__dirname, `..`);
 
-describe('should retrieve list of vms', function() {
-  it('vms_inspect_string', async function() {
-    const output = await tools.runAsync(cmd, cwd);
-
-    assert.strictEqual(output.includes('VMs:'), true);
+describe('should retrieve list of vms', () => {
+  it('vms_inspect_string', async () => {
+    const {stdout} = await execa.shell(cmd, {cwd});
+    assert.match(stdout, /^VMs:/);
   });
 });

@@ -43,10 +43,10 @@ async function decrypt(
   );
   const ciphertext = contentsBuffer.toString('base64');
 
-  // Dencrypts the file using the specified crypto key
+  // Decrypts the file using the specified crypto key
   const [result] = await client.decrypt({name, ciphertext});
 
-  // Writes the dencrypted file to disk
+  // Writes the decrypted file to disk
   const writeFile = promisify(fs.writeFile);
   await writeFile(plaintextFileName, Buffer.from(result.plaintext, 'base64'));
   console.log(

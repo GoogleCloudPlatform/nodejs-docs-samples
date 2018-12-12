@@ -17,51 +17,32 @@
 
 // [START complete]
 // [START initialize]
-const google = require('googleapis').google;
+const {google} = require('googleapis');
 const compute = google.compute('v1');
 // [END initialize]
-
-// [START auth]
-async function auth() {
-  const data = await google.auth.getApplicationDefault();
-  let authClient = data.credential;
-  const projectId = authClient.projectId;
-
-  // The createScopedRequired method returns true when running on GAE or a
-  // local developer machine. In that case, the desired scopes must be passed
-  // in manually. When the code is  running in GCE or GAE Flexible, the scopes
-  // are pulled from the GCE metadata server.
-  // See https://cloud.google.com/compute/docs/authentication for more
-  // information.
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    // Scopes can be specified either as an array or as a single,
-    // space-delimited string.
-    authClient = authClient.createScoped([
-      'https://www.googleapis.com/auth/cloud-platform',
-      'https://www.googleapis.com/auth/compute',
-      'https://www.googleapis.com/auth/compute.readonly',
-    ]);
-    authClient.projectId = projectId;
-  }
-
-  return authClient;
-}
-// [END auth]
 
 // [START list]
 /**
  * @param {Function} callback Callback function.
  */
 async function getVmsExample() {
-  const authClient = await auth();
+  const authClient = await google.auth.getClient({
+    scopes: [
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/compute',
+      'https://www.googleapis.com/auth/compute.readonly',
+    ],
+  });
+  const projectId = await google.auth.getProjectId();
 
   // Retrieve the vms
-  const vms = await compute.instances.aggregatedList({
+  const result = await compute.instances.aggregatedList({
     auth: authClient,
-    project: authClient.projectId,
+    project: projectId,
     // In this example we only want one VM per page
     maxResults: 1,
   });
+  const vms = result.data;
   console.log('VMs:', vms);
   return vms;
 }

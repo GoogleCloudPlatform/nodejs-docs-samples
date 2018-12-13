@@ -16,179 +16,183 @@
 'use strict';
 
 const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
+const uuid = require('uuid');
 
-const cmd = 'node resource.js';
 const cwd = path.join(__dirname, '..');
-const sessionId = require('uuid/v1')();
-const contextName = 'fake_context_name';
-const displayName = 'fake_display_name';
-const entityName = 'fake_entity';
-const synonym1 = 'synonym_1';
-const synonym2 = 'synonym_2';
-const phrase1 = 'training_phrase_1';
-const phrase2 = 'training_phrase_2';
-const message1 = 'message_1';
-const message2 = 'message_2';
+const exec = async cmd => {
+  const {stdout} = await execa.shell(cmd, {cwd});
+  return stdout;
+};
 
-it('Test creating / listing / deleting a context.', async () => {
-  let output = await tools.runAsync(
-    `${cmd} create-context -s ${sessionId} -c ${contextName} -l 3`,
-    cwd
-  );
-  assert.strictEqual(output.includes(sessionId), true);
-  assert.strictEqual(output.includes(contextName), true);
+describe('resources', () => {
+  const cmd = 'node resource.js';
+  const sessionId = uuid.v1();
+  const contextName = 'fake_context_name';
+  const displayName = `fake_display_name_${uuid.v4().split('-')[0]}`;
+  const entityName = 'fake_entity';
+  const synonym1 = 'synonym_1';
+  const synonym2 = 'synonym_2';
+  const phrase1 = 'training_phrase_1';
+  const phrase2 = 'training_phrase_2';
+  const message1 = 'message_1';
+  const message2 = 'message_2';
+  let entityTypeId;
+  let intentId;
 
-  output = await tools.runAsync(`${cmd} list-contexts -s ${sessionId}`, cwd);
-  assert.strictEqual(output.includes(sessionId), true);
-  assert.strictEqual(output.includes(contextName), true);
-  assert.strictEqual(output.includes('3'), true);
+  it('should create a context', async () => {
+    const output = await exec(
+      `${cmd} create-context -s ${sessionId} -c ${contextName} -l 3`
+    );
+    assert.include(output, sessionId);
+    assert.include(output, contextName);
+  });
 
-  output = await tools.runAsync(
-    `${cmd} delete-context -s ${sessionId} -c ${contextName}`,
-    cwd
-  );
-  assert.strictEqual(output.includes(sessionId), true);
-  assert.strictEqual(output.includes(contextName), true);
+  it('should list contexts', async () => {
+    const output = await exec(`${cmd} list-contexts -s ${sessionId}`);
+    assert.include(output, sessionId);
+    assert.include(output, contextName);
+    assert.include(output, '3');
+  });
 
-  output = await tools.runAsync(`${cmd} list-contexts -s ${sessionId}`, cwd);
-  assert.strictEqual(output.includes(sessionId), false);
-  assert.strictEqual(output.includes(contextName), false);
-});
+  it('should delete a context', async () => {
+    let output = await exec(
+      `${cmd} delete-context -s ${sessionId} -c ${contextName}`
+    );
+    assert.include(output, sessionId);
+    assert.include(output, contextName);
 
-it('Test creating / listing / deleting a entity type and entity.', async () => {
-  // Create the Entity Type
-  let output = await tools.runAsync(
-    `${cmd} create-entity-type -d ${displayName} -k KIND_MAP`,
-    cwd
-  );
-  assert.strictEqual(output.includes('entityTypes'), true);
+    output = await exec(`${cmd} list-contexts -s ${sessionId}`);
+    assert.notInclude(output, sessionId);
+    assert.notInclude(output, contextName);
+  });
 
-  const entityTypeId = output.split(' ')[1].split('/')[4];
+  it('should create an entity type and entity', async () => {
+    const output = await exec(
+      `${cmd} create-entity-type -d ${displayName} -k KIND_MAP`
+    );
+    assert.include(output, 'entityTypes');
+    entityTypeId = output.split(' ')[1].split('/')[4];
+  });
 
-  // List the Entity Type
-  output = await tools.runAsync(`${cmd} list-entity-types`, cwd);
-  assert.strictEqual(output.includes(displayName), true);
-  assert.strictEqual(output.includes(entityTypeId), true);
+  it('should List the Entity Type', async () => {
+    const output = await exec(`${cmd} list-entity-types`);
+    assert.include(output, displayName);
+    assert.include(output, entityTypeId);
+  });
 
-  // Create an Entity for the Entity Type
-  output = await tools.runAsync(
-    `${cmd} create-entity -e ${entityTypeId} -v ${entityName} -s ${synonym1} -s ${synonym2}`,
-    cwd
-  );
+  it('should Create an Entity for the Entity Type', async () => {
+    await exec(
+      `${cmd} create-entity -e ${entityTypeId} -v ${entityName} -s ${synonym1} -s ${synonym2}`
+    );
+  });
 
-  // List the Entity
-  output = await tools.runAsync(`${cmd} list-entities -e ${entityTypeId}`, cwd);
-  assert.strictEqual(output.includes(entityName), true);
-  assert.strictEqual(output.includes(synonym1), true);
-  assert.strictEqual(output.includes(synonym2), true);
+  it('should List the Entity', async () => {
+    const output = await exec(`${cmd} list-entities -e ${entityTypeId}`);
+    assert.include(output, entityName);
+    assert.include(output, synonym1);
+    assert.include(output, synonym2);
+  });
 
-  // Delete the Entity
-  output = await tools.runAsync(
-    `${cmd} delete-entity -e ${entityTypeId} -v ${entityName}`,
-    cwd
-  );
-  assert.strictEqual(output.includes(entityName), true);
+  it('should Delete the Entity', async () => {
+    let output = await exec(
+      `${cmd} delete-entity -e ${entityTypeId} -v ${entityName}`
+    );
+    assert.include(output, entityName);
 
-  // Verify the Entity is Deleted
-  output = await tools.runAsync(`${cmd} list-entities -e ${entityTypeId}`, cwd);
-  assert.strictEqual(output.includes(entityName), false);
-  assert.strictEqual(output.includes(synonym1), false);
-  assert.strictEqual(output.includes(synonym2), false);
+    // Verify the Entity is Deleted
+    output = await exec(`${cmd} list-entities -e ${entityTypeId}`);
+    assert.notInclude(output, entityName);
+    assert.notInclude(output, synonym1);
+    assert.notInclude(output, synonym2);
+  });
 
-  // Delete the Entity Type
-  output = await tools.runAsync(
-    `${cmd} delete-entity-type -e ${entityTypeId}`,
-    cwd
-  );
-  assert.strictEqual(output.includes(entityTypeId), true);
+  it('should Delete the Entity Type', async () => {
+    let output = await exec(`${cmd} delete-entity-type -e ${entityTypeId}`);
+    assert.include(output, entityTypeId);
 
-  // Verify the Entity Type is Deleted
-  output = await tools.runAsync(`${cmd} list-entity-types`, cwd);
-  assert.strictEqual(output.includes(displayName), false);
-  assert.strictEqual(output.includes(entityTypeId), false);
-});
+    // Verify the Entity Type is Deleted
+    output = await exec(`${cmd} list-entity-types`);
+    assert.notInclude(output, displayName);
+    assert.notInclude(output, entityTypeId);
+  });
 
-it('Test creating / listing / deleting a intent.', async () => {
-  let output = await tools.runAsync(
-    `${cmd} create-intent -d ${displayName} -t ${phrase1} -t ${phrase2} -m ${message1} -m ${message2}`,
-    cwd
-  );
-  assert.strictEqual(output.includes('intents'), true);
-  const intentId = output.split(' ')[1].split('/')[4];
+  it('should create an intent', async () => {
+    const output = await exec(
+      `${cmd} create-intent -d ${displayName} -t ${phrase1} -t ${phrase2} -m ${message1} -m ${message2}`
+    );
+    assert.include(output, 'intents');
+    intentId = output.split(' ')[1].split('/')[4];
+  });
 
-  output = await tools.runAsync(`${cmd} list-intents`, cwd);
-  assert.strictEqual(output.includes(intentId), true);
-  assert.strictEqual(output.includes(displayName), true);
+  it('should list the intents', async () => {
+    const output = await exec(`${cmd} list-intents`);
+    assert.include(output, intentId);
+    assert.include(output, displayName);
+  });
 
-  output = await tools.runAsync(`${cmd} delete-intent -i ${intentId}`, cwd);
-  assert.strictEqual(output.includes(intentId), true);
+  it('should delete the intent', async () => {
+    let output = await exec(`${cmd} delete-intent -i ${intentId}`);
+    assert.include(output, intentId);
+    output = await exec(`${cmd} list-intents`);
+    assert.notInclude(output, intentId);
+    assert.notInclude(output, displayName);
+  });
 
-  output = await tools.runAsync(`${cmd} list-intents`, cwd);
-  assert.strictEqual(output.includes(intentId), false);
-  assert.strictEqual(output.includes(displayName), false);
-});
+  it('should create a session entity type', async () => {
+    const output = await exec(
+      `${cmd} create-entity-type -d ${displayName} -k KIND_MAP`
+    );
+    assert.include(output, 'entityTypes');
+    entityTypeId = output.split(' ')[1].split('/')[4];
+  });
 
-it('Test creating / listing / deleting a session entity type', async () => {
-  // Create the Entity Type
-  let output = await tools.runAsync(
-    `${cmd} create-entity-type -d ${displayName} -k KIND_MAP`,
-    cwd
-  );
-  assert.strictEqual(output.includes('entityTypes'), true);
+  it('should List the Entity Type', async () => {
+    const output = await exec(`${cmd} list-entity-types`);
+    assert.include(output, displayName);
+    assert.include(output, entityTypeId);
+  });
 
-  const entityTypeId = output.split(' ')[1].split('/')[4];
+  it('should Create a Session Entity Type', async () => {
+    const output = await exec(
+      `${cmd} create-session-entity-type -s ${sessionId} -e ${synonym1} -e ${synonym2} -d ${displayName} -o ENTITY_OVERRIDE_MODE_OVERRIDE`
+    );
+    assert.include(output, sessionId);
+    assert.include(output, displayName);
+    assert.include(output, synonym1);
+    assert.include(output, synonym2);
+  });
 
-  // List the Entity Type
-  output = await tools.runAsync(`${cmd} list-entity-types`, cwd);
-  assert.strictEqual(output.includes(displayName), true);
-  assert.strictEqual(output.includes(entityTypeId), true);
+  it('should List the Session Entity Type', async () => {
+    const output = await exec(
+      `${cmd} list-session-entity-types -s ${sessionId}`
+    );
+    assert.include(output, sessionId);
+    assert.include(output, displayName);
+    assert.include(output, '2');
+  });
 
-  // Create a Session Entity Type
-  output = await tools.runAsync(
-    `${cmd} create-session-entity-type -s ${sessionId} -e ${synonym1} -e ${synonym2} -d ${displayName} -o ENTITY_OVERRIDE_MODE_OVERRIDE`,
-    cwd
-  );
-  assert.strictEqual(output.includes(sessionId), true);
-  assert.strictEqual(output.includes(displayName), true);
-  assert.strictEqual(output.includes(synonym1), true);
-  assert.strictEqual(output.includes(synonym2), true);
+  it('should Delete the Session Entity Type', async () => {
+    let output = await exec(
+      `${cmd} delete-session-entity-type -s ${sessionId} -d ${displayName}`
+    );
+    assert.include(output, displayName);
 
-  // List the Session Entity Type
-  output = await tools.runAsync(
-    `${cmd} list-session-entity-types -s ${sessionId}`,
-    cwd
-  );
-  assert.strictEqual(output.includes(sessionId), true);
-  assert.strictEqual(output.includes(displayName), true);
-  assert.strictEqual(output.includes('2'), true);
+    // Verify the Session Entity Type is Deleted
+    output = await exec(`${cmd} list-session-entity-types -s ${sessionId}`);
+    assert.notInclude(output, sessionId);
+    assert.notInclude(output, displayName);
+    assert.notInclude(output, '2');
+  });
 
-  // Delete the Session Entity Type
-  output = await tools.runAsync(
-    `${cmd} delete-session-entity-type -s ${sessionId} -d ${displayName}`,
-    cwd
-  );
-  assert.strictEqual(output.includes(displayName), true);
+  it('should Delete the Entity Type', async () => {
+    let output = await exec(`${cmd} delete-entity-type -e ${entityTypeId}`);
+    assert.include(output, entityTypeId);
 
-  // Verify the Session Entity Type is Deleted
-  output = await tools.runAsync(
-    `${cmd} list-session-entity-types -s ${sessionId}`,
-    cwd
-  );
-  assert.strictEqual(output.includes(sessionId), false);
-  assert.strictEqual(output.includes(displayName), false);
-  assert.strictEqual(output.includes('2'), false);
-
-  // Delete the Entity Type
-  output = await tools.runAsync(
-    `${cmd} delete-entity-type -e ${entityTypeId}`,
-    cwd
-  );
-  assert.strictEqual(output.includes(entityTypeId), true);
-
-  // Verify the Entity Type is Deleted
-  output = await tools.runAsync(`${cmd} list-entity-types`, cwd);
-  assert.strictEqual(output.includes(displayName), false);
-  assert.strictEqual(output.includes(entityTypeId), false);
+    // Verify the Entity Type is Deleted
+    output = await exec(`${cmd} list-entity-types`);
+    assert.notInclude(output, displayName);
+    assert.notInclude(output, entityTypeId);
+  });
 });

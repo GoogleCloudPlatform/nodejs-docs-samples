@@ -145,8 +145,8 @@ async function deleteChannels(projectId, filter) {
       // ignore error
     }
   }
-  // [END monitoring_alert_create_policy]
-  // [END monitoring_alert_restore_policies]
+  // [END monitoring_alert_delete_channel]
+  // [END monitoring_alert_list_channel]
 }
 
 async function replaceChannels(projectId, alertPolicyId, channelIds) {
@@ -213,6 +213,9 @@ async function replaceChannels(projectId, alertPolicyId, channelIds) {
   );
   console.log(`Updated ${alertPolicy.name}.`);
   // [END monitoring_alert_replace_channels]
+  // [END monitoring_alert_enable_channel]
+  // [END monitoring_alert_update_channel]
+  // [END monitoring_alert_create_channel]
 }
 
 async function enablePolicies(projectId, enabled, filter) {

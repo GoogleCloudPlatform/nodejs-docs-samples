@@ -116,8 +116,45 @@ async function restorePolicies(projectId) {
   // [END monitoring_alert_restore_policies]
 }
 
+async function deleteChannels(projectId, filter) {
+  // [START monitoring_alert_delete_channel]
+  // [START monitoring_alert_list_channel]
+
+  // Imports the Google Cloud client library
+  const monitoring = require('@google-cloud/monitoring');
+
+  // Creates a client
+  const client = new monitoring.NotificationChannelServiceClient();
+
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+  // const filter = 'A filter for selecting policies, e.g. description:"cloud"';
+
+  const request = {name: client.projectPath(projectId), filter};
+  const channels = await client.listNotificationChannels(request);
+  console.log(channels);
+  for (const channel of channels[0]) {
+    console.log(`Deleting channel ${channel.displayName}`);
+    try {
+      await client.deleteNotificationChannel({
+        name: channel.name,
+      });
+    } catch (err) {
+      // ignore error
+    }
+  }
+  // [END monitoring_alert_create_policy]
+  // [END monitoring_alert_restore_policies]
+}
+
 async function replaceChannels(projectId, alertPolicyId, channelIds) {
   // [START monitoring_alert_replace_channels]
+  // [START monitoring_alert_enable_channel]
+  // [START monitoring_alert_update_channel]
+  // [START monitoring_alert_create_channel]
+
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
 
@@ -139,6 +176,30 @@ async function replaceChannels(projectId, alertPolicyId, channelIds) {
   const notificationChannels = channelIds.map(id =>
     notificationClient.notificationChannelPath(projectId, id)
   );
+
+  for (const channel of notificationChannels) {
+    const updateChannelRequest = {
+      updateMask: {paths: ['enabled']},
+      notificationChannel: {
+        name: channel,
+        enabled: {value: true},
+      },
+    };
+    try {
+      await notificationClient.updateNotificationChannel(updateChannelRequest);
+    } catch (err) {
+      const createChannelRequest = {
+        notificationChannel: {
+          name: channel,
+          notificationChannel: {type: 'email'},
+        },
+      };
+      const newChannel = await notificationClient.createNotificationChannel(
+        createChannelRequest
+      );
+      notificationChannels.push(newChannel);
+    }
+  }
 
   const updateAlertPolicyRequest = {
     updateMask: {paths: ['notification_channels']},
@@ -267,6 +328,12 @@ require(`yargs`)
     `Lists alert policies in the specified project.`,
     {},
     opts => listPolicies(opts.projectId)
+  )
+  .command(
+    `deleteChannels <projectId> [filter]`,
+    `Lists and deletes all channels in the specified project.`,
+    {},
+    opts => deleteChannels(opts.projectId, opts.filter || ``)
   )
   .options({
     alertPolicyName: {

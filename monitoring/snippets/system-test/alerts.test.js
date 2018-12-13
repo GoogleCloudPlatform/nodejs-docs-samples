@@ -129,6 +129,7 @@ async function deletePolicies() {
 async function deleteChannels() {
   await channelClient.deleteNotificationChannel({
     name: channelName,
+    force: true,
   });
 }
 
@@ -212,7 +213,7 @@ it(`should restore policies`, async () => {
   const nameRegexp = /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi;
   const matches = results.output.match(nameRegexp);
   assert.strictEqual(Array.isArray(matches), true);
-  assert.strictEqual(matches.length, 2);
+  assert(matches.length > 1);
   policyOneName = matches[0];
   policyTwoName = matches[1];
 });

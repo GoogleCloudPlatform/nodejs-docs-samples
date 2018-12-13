@@ -24,18 +24,18 @@ const Buffer = require('safe-buffer').Buffer;
 const TOPIC = `topic`;
 const MESSAGE = `Hello, world!`;
 
-function getSample () {
+function getSample() {
   const topicMock = {
-    publish: sinon.stub().returns(Promise.resolve())
+    publish: sinon.stub().returns(Promise.resolve()),
   };
   const pubsubMock = {
-    topic: sinon.stub().returns(topicMock)
+    topic: sinon.stub().returns(topicMock),
   };
   const PubSubMock = sinon.stub().returns(pubsubMock);
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/pubsub': PubSubMock
+      '@google-cloud/pubsub': {PubSub: PubSubMock},
     }),
     mocks: {
       PubSub: PubSubMock,
@@ -44,21 +44,21 @@ function getSample () {
       req: {
         body: {
           topic: TOPIC,
-          message: MESSAGE
-        }
+          message: MESSAGE,
+        },
       },
       res: {
         status: sinon.stub().returnsThis(),
-        send: sinon.stub().returnsThis()
-      }
-    }
+        send: sinon.stub().returnsThis(),
+      },
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.serial(`Publish fails without a topic`, (t) => {
+test.serial(`Publish fails without a topic`, t => {
   const expectedMsg = `Topic not provided. Make sure you have a "topic" property in your request`;
   const sample = getSample();
 
@@ -71,7 +71,7 @@ test.serial(`Publish fails without a topic`, (t) => {
   t.is(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
 });
 
-test.serial(`Publish fails without a message`, (t) => {
+test.serial(`Publish fails without a message`, t => {
   const expectedMsg = `Message not provided. Make sure you have a "message" property in your request`;
   const sample = getSample();
 
@@ -84,29 +84,33 @@ test.serial(`Publish fails without a message`, (t) => {
   t.is(sample.mocks.res.send.firstCall.args[0].message, expectedMsg);
 });
 
-test.serial(`Publishes the message to the topic and calls success`, async (t) => {
+test.serial(`Publishes the message to the topic and calls success`, async t => {
   const expectedMsg = `Message published.`;
   const sample = getSample();
 
   await sample.program.publish(sample.mocks.req, sample.mocks.res);
   t.deepEqual(sample.mocks.topic.publish.callCount, 1);
-  t.deepEqual(sample.mocks.topic.publish.firstCall.args, [{
-    data: {
-      message: MESSAGE
-    }
-  }]);
+  t.deepEqual(sample.mocks.topic.publish.firstCall.args, [
+    {
+      data: {
+        message: MESSAGE,
+      },
+    },
+  ]);
   t.deepEqual(sample.mocks.res.status.callCount, 1);
   t.deepEqual(sample.mocks.res.status.firstCall.args, [200]);
   t.deepEqual(sample.mocks.res.send.callCount, 1);
   t.deepEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
 });
 
-test.serial(`Fails to publish the message and calls failure`, async (t) => {
+test.serial(`Fails to publish the message and calls failure`, async t => {
   const error = new Error(`error`);
   const sample = getSample();
   sample.mocks.topic.publish.returns(Promise.reject(error));
 
-  const err = await t.throws(sample.program.publish(sample.mocks.req, sample.mocks.res));
+  const err = await t.throws(
+    sample.program.publish(sample.mocks.req, sample.mocks.res)
+  );
   t.deepEqual(err, error);
   t.deepEqual(console.error.callCount, 1);
   t.deepEqual(console.error.firstCall.args, [error]);
@@ -116,13 +120,13 @@ test.serial(`Fails to publish the message and calls failure`, async (t) => {
   t.deepEqual(sample.mocks.res.send.firstCall.args, [error]);
 });
 
-test.serial(`Subscribes to a message`, (t) => {
+test.serial(`Subscribes to a message`, t => {
   const callback = sinon.stub();
-  const json = JSON.stringify({ data: MESSAGE });
+  const json = JSON.stringify({data: MESSAGE});
   const event = {
     data: {
-      data: Buffer.from(json).toString('base64')
-    }
+      data: Buffer.from(json).toString('base64'),
+    },
   };
 
   const sample = getSample();

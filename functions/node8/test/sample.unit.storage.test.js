@@ -27,7 +27,7 @@ test(`helloGCS: should print uploaded message`, async t => {
   const event = {
     name: filename,
     resourceState: 'exists',
-    metageneration: '1'
+    metageneration: '1',
   };
 
   // Call tested function and verify its behavior
@@ -41,7 +41,7 @@ test(`helloGCS: should print metadata updated message`, async t => {
   const event = {
     name: filename,
     resourceState: 'exists',
-    metageneration: '2'
+    metageneration: '2',
   };
 
   // Call tested function and verify its behavior
@@ -55,7 +55,7 @@ test(`helloGCS: should print deleted message`, async t => {
   const event = {
     name: filename,
     resourceState: 'not_exists',
-    metageneration: '3'
+    metageneration: '3',
   };
 
   // Call tested function and verify its behavior

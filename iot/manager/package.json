@@ -4,7 +4,7 @@
   "description": "Example of Cloud IoT device administration",
   "main": "manager.js",
   "license": "Apache-2.0",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
@@ -16,7 +16,7 @@
     "test": "repo-tools test run --cmd ava -- -T 3m --verbose system-test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "0.13.2",
+    "@google-cloud/pubsub": "0.21.1",
     "googleapis": "^32.0.0",
     "yargs": "8.0.2"
   },

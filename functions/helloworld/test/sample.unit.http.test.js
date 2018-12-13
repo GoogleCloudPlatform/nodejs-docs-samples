@@ -25,10 +25,10 @@ test(`helloHttp: should print a name`, t => {
   const name = uuid.v4();
   const req = {
     body: {
-      name: name
-    }
+      name: name,
+    },
   };
-  const res = { send: sinon.stub() };
+  const res = {send: sinon.stub()};
 
   // Call tested function
   helloHttp(req, res);
@@ -41,9 +41,9 @@ test(`helloHttp: should print a name`, t => {
 test(`helloHttp: should print hello world`, t => {
   // Mock ExpressJS 'req' and 'res' parameters
   const req = {
-    body: {}
+    body: {},
   };
-  const res = { send: sinon.stub() };
+  const res = {send: sinon.stub()};
 
   // Call tested function
   helloHttp(req, res);

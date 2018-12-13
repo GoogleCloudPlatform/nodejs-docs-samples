@@ -30,23 +30,22 @@ exports.helloWorld = (req, res) => {
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 const Logging = require('@google-cloud/logging');
 
-function getLogEntries () {
+function getLogEntries() {
   // Instantiates a client
   const logging = Logging();
 
   const options = {
     pageSize: 10,
-    filter: 'resource.type="cloud_function"'
+    filter: 'resource.type="cloud_function"',
   };
 
   // Retrieve the latest Cloud Function log entries
   // See https://googlecloudplatform.github.io/gcloud-node/#/docs/logging
-  return logging.getEntries(options)
-    .then(([entries]) => {
-      console.log('Entries:');
-      entries.forEach((entry) => console.log(entry));
-      return entries;
-    });
+  return logging.getEntries(options).then(([entries]) => {
+    console.log('Entries:');
+    entries.forEach(entry => console.log(entry));
+    return entries;
+  });
 }
 // [END functions_log_retrieve]
 
@@ -57,27 +56,28 @@ function getLogEntries () {
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 const Monitoring = require('@google-cloud/monitoring');
 
-function getMetrics (callback) {
+function getMetrics(callback) {
   // Instantiates a client
   const monitoring = Monitoring.v3().metricServiceApi();
 
   // Create two datestrings, a start and end range
   let oneWeekAgo = new Date();
-  oneWeekAgo.setHours(oneWeekAgo.getHours() - (7 * 24));
+  oneWeekAgo.setHours(oneWeekAgo.getHours() - 7 * 24);
 
   const options = {
     name: monitoring.projectPath(process.env.GCLOUD_PROJECT),
     // There is also: cloudfunctions.googleapis.com/function/execution_count
-    filter: 'metric.type="cloudfunctions.googleapis.com/function/execution_times"',
+    filter:
+      'metric.type="cloudfunctions.googleapis.com/function/execution_times"',
     interval: {
       startTime: {
-        seconds: oneWeekAgo.getTime() / 1000
+        seconds: oneWeekAgo.getTime() / 1000,
       },
       endTime: {
-        seconds: Date.now() / 1000
-      }
+        seconds: Date.now() / 1000,
+      },
     },
-    view: 1
+    view: 1,
   };
 
   console.log('Data:');
@@ -85,17 +85,18 @@ function getMetrics (callback) {
   let error;
 
   // Iterate over all elements.
-  monitoring.listTimeSeries(options)
-    .on('error', (err) => {
+  monitoring
+    .listTimeSeries(options)
+    .on('error', err => {
       error = err;
     })
-    .on('data', (element) => console.log(element))
+    .on('data', element => console.log(element))
     .on('end', () => callback(error));
   // [END functions_log_get_metrics]
 }
 
 // [START functions_log_stackdriver]
-exports.processLogEntry = (data) => {
+exports.processLogEntry = data => {
   // Node 6: data.data === Node 8+: data
   const dataBuffer = Buffer.from(data.data.data || data.data, 'base64');
 

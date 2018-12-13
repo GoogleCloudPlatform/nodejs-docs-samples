@@ -31,7 +31,7 @@ const logging = Logging();
  * @param {object} [options] Additional context, if any.
  * @param {function} callback Callback function.
  */
-function reportDetailedError (err, req, res, options, callback) {
+function reportDetailedError(err, req, res, options, callback) {
   if (typeof req === 'function') {
     callback = req;
     req = null;
@@ -54,9 +54,9 @@ function reportDetailedError (err, req, res, options, callback) {
       type: 'cloud_function',
       // MonitoredResource.labels
       labels: {
-        function_name: FUNCTION_NAME
-      }
-    }
+        function_name: FUNCTION_NAME,
+      },
+    },
   };
 
   if (typeof options.region === 'string') {
@@ -76,9 +76,10 @@ function reportDetailedError (err, req, res, options, callback) {
     context.httpRequest = {
       method: req.method,
       url: req.originalUrl,
-      userAgent: typeof req.get === 'function' ? req.get('user-agent') : 'unknown',
+      userAgent:
+        typeof req.get === 'function' ? req.get('user-agent') : 'unknown',
       referrer: '',
-      remoteIp: req.ip
+      remoteIp: req.ip,
     };
     if (typeof res.statusCode === 'number') {
       context.httpRequest.responseStatusCode = res.statusCode;
@@ -87,9 +88,14 @@ function reportDetailedError (err, req, res, options, callback) {
   if (!(err instanceof Error) || typeof err.stack !== 'string') {
     // ErrorEvent.context.reportLocation
     context.reportLocation = {
-      filePath: typeof options.filePath === 'string' ? options.filePath : 'unknown',
-      lineNumber: typeof options.lineNumber === 'number' ? options.lineNumber : 0,
-      functionName: typeof options.functionName === 'string' ? options.functionName : 'unknown'
+      filePath:
+        typeof options.filePath === 'string' ? options.filePath : 'unknown',
+      lineNumber:
+        typeof options.lineNumber === 'number' ? options.lineNumber : 0,
+      functionName:
+        typeof options.functionName === 'string'
+          ? options.functionName
+          : 'unknown',
     };
   }
 
@@ -111,10 +117,10 @@ function reportDetailedError (err, req, res, options, callback) {
       // ErrorEvent.serviceContext.service
       service: `cloud_function:${FUNCTION_NAME}`,
       // ErrorEvent.serviceContext.version
-      version: `${options.version}`
+      version: `${options.version}`,
     },
     // ErrorEvent.context
-    context: context
+    context: context,
   };
 
   // ErrorEvent.message

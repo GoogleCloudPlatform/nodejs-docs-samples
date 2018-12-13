@@ -24,7 +24,7 @@
     "async": "2.6.0",
     "express": "4.16.4",
     "knex": "0.15.2",
-    "pg": "7.4.1",
+    "pg": "7.7.1",
     "prompt": "1.0.0"
   },
   "devDependencies": {

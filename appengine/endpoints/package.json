@@ -24,7 +24,7 @@
   "dependencies": {
     "body-parser": "1.18.2",
     "express": "4.16.4",
-    "safe-buffer": "5.1.1"
+    "safe-buffer": "5.1.2"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",

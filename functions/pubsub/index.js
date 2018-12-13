@@ -16,10 +16,10 @@
 'use strict';
 
 // [START functions_pubsub_setup]
-const PubSub = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 
 // Instantiates a client
-const pubsub = PubSub();
+const pubsub = new PubSub();
 // [END functions_pubsub_setup]
 
 const Buffer = require('safe-buffer').Buffer;
@@ -41,10 +41,22 @@ const Buffer = require('safe-buffer').Buffer;
  */
 exports.publish = (req, res) => {
   if (!req.body.topic) {
-    res.status(500).send(new Error('Topic not provided. Make sure you have a "topic" property in your request'));
+    res
+      .status(500)
+      .send(
+        new Error(
+          'Topic not provided. Make sure you have a "topic" property in your request'
+        )
+      );
     return;
   } else if (!req.body.message) {
-    res.status(500).send(new Error('Message not provided. Make sure you have a "message" property in your request'));
+    res
+      .status(500)
+      .send(
+        new Error(
+          'Message not provided. Make sure you have a "message" property in your request'
+        )
+      );
     return;
   }
 
@@ -55,14 +67,15 @@ exports.publish = (req, res) => {
 
   const message = {
     data: {
-      message: req.body.message
-    }
+      message: req.body.message,
+    },
   };
 
   // Publishes a message
-  return topic.publish(message)
+  return topic
+    .publish(message)
     .then(() => res.status(200).send('Message published.'))
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       res.status(500).send(err);
       return Promise.reject(err);

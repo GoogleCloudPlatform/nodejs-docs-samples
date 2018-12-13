@@ -16,7 +16,7 @@
 'use strict';
 
 const path = require(`path`);
-const PubSub = require(`@google-cloud/pubsub`);
+const {PubSub} = require(`@google-cloud/pubsub`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
@@ -26,9 +26,12 @@ const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const cmd = `node manager.js`;
 const cwd = path.join(__dirname, `..`);
 
+const installDeps = `npm install`;
+
+test.todo(tools.run(installDeps, `${cwd}/../mqtt_example`));
 test.before(tools.checkCredentials);
 test.before(async () => {
-  const pubsub = PubSub();
+  const pubsub = new PubSub();
   return pubsub.createTopic(topicName).then(results => {
     const topic = results[0];
     console.log(`Topic ${topic.name} created.`);
@@ -37,7 +40,7 @@ test.before(async () => {
 });
 
 test.after.always(async () => {
-  const pubsub = PubSub();
+  const pubsub = new PubSub();
   const topic = pubsub.topic(topicName);
   return topic.delete().then(() => {
     console.log(`Topic ${topic.name} deleted.`);
@@ -273,4 +276,31 @@ test(`should create and delete a registry`, async t => {
   t.regex(output, new RegExp(`Successfully created registry`));
   output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
   t.regex(output, new RegExp(`Successfully deleted registry`));
+});
+
+test(`should send command message to device`, async t => {
+  const deviceId = `test-device-command`;
+  const registryId = `${registryName}-rsa256`;
+  const commandMessage = 'rotate 180 degrees';
+
+  await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  await tools.runAsync(`${cmd} createRegistry ${registryId} ${topicName}`, cwd);
+  await tools.runAsync(
+    `${cmd} createRsa256Device ${deviceId} ${registryId} resources/rsa_cert.pem`,
+    cwd
+  );
+
+  tools.runAsync(
+    `node cloudiot_mqtt_example_nodejs.js --deviceId=${deviceId} --registryId=${registryId} --privateKeyFile=resources/rsa_private.pem --algorithm=RS256 --numMessages=30 --mqttBridgePort=443`,
+    path.join(__dirname, '../../mqtt_example')
+  );
+
+  const output = await tools.runAsync(
+    `${cmd} sendCommand ${deviceId} ${registryId} "${commandMessage}"`
+  );
+
+  t.regex(output, new RegExp('Success: OK'));
+
+  await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryId}`, cwd);
+  await tools.runAsync(`${cmd} deleteRegistry ${registryId}`, cwd);
 });

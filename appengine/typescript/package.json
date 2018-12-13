@@ -9,10 +9,13 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "test": "npm run gcp-build && npm run lint && repo-tools test app -- index.js",
-    "lint": "tslint index.ts",
+    "prepare": "npm run gcp-build",
+    "pretest": "npm run gcp-build",
+    "test": "repo-tools test app -- index.js",
+    "posttest": "npm run lint",
+    "lint": "tslint -p .",
     "start": "node ./index.js",
-    "gcp-build": "tsc index.ts",
+    "gcp-build": "tsc -p .",
     "deploy": "gcloud app deploy"
   },
   "dependencies": {
@@ -21,6 +24,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "@types/express": "^4.16.0",
     "tslint": "^5.11.0"
   }
 }

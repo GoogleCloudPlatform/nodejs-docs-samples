@@ -81,20 +81,25 @@ const agent = new http.Agent({keepAlive: true});
  * @param {Object} res Cloud Function response context.
  */
 exports.connectionPooling = (req, res) => {
-  req = http.request({
-    host: '',
-    port: 80,
-    path: '',
-    method: 'GET',
-    agent: agent
-  }, resInner => {
-    let rawData = '';
-    resInner.setEncoding('utf8');
-    resInner.on('data', chunk => { rawData += chunk; });
-    resInner.on('end', () => {
-      res.status(200).send(`Data: ${rawData}`);
-    });
-  });
+  req = http.request(
+    {
+      host: '',
+      port: 80,
+      path: '',
+      method: 'GET',
+      agent: agent,
+    },
+    resInner => {
+      let rawData = '';
+      resInner.setEncoding('utf8');
+      resInner.on('data', chunk => {
+        rawData += chunk;
+      });
+      resInner.on('end', () => {
+        res.status(200).send(`Data: ${rawData}`);
+      });
+    }
+  );
   req.on('error', e => {
     res.status(500).send(`Error: ${e.message}`);
   });
@@ -136,7 +141,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
  * @param {object} event.data Data included with the event.
  * @param {object} event.data.retry Whether or not to retry the function.
  */
-exports.retryPromise = (event) => {
+exports.retryPromise = event => {
   const tryAgain = !!event.data.retry;
 
   if (tryAgain) {
@@ -170,8 +175,8 @@ exports.retryCallback = (event, callback) => {
 // [END functions_tips_retry]
 
 // [START functions_tips_gcp_apis]
-const Pubsub = require('@google-cloud/pubsub');
-const pubsub = Pubsub();
+const {PubSub} = require('@google-cloud/pubsub');
+const pubsub = new PubSub();
 
 /**
  * HTTP Cloud Function that uses a cached client library instance to

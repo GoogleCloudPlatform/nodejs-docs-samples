@@ -16,7 +16,11 @@
 'use strict';
 
 const Buffer = require('safe-buffer').Buffer;
+
+// [START functions_helloworld_http]
 const escapeHtml = require('escape-html');
+
+// [END functions_helloworld_http]
 
 // [START functions_helloworld_get]
 /**
@@ -76,7 +80,9 @@ exports.helloBackground = (event, callback) => {
  */
 exports.helloPubSub = (event, callback) => {
   const pubsubMessage = event.data;
-  const name = pubsubMessage.data ? Buffer.from(pubsubMessage.data, 'base64').toString() : 'World';
+  const name = pubsubMessage.data
+    ? Buffer.from(pubsubMessage.data, 'base64').toString()
+    : 'World';
 
   console.log(`Hello, ${name}!`);
 
@@ -98,7 +104,7 @@ exports.helloGCS = (event, callback) => {
     console.log(`File ${file.name} deleted.`);
   } else if (file.metageneration === '1') {
     // metageneration attribute is updated on metadata changes.
-    // on create value is 1
+    // value is 1 if file was newly created or overwritten
     console.log(`File ${file.name} uploaded.`);
   } else {
     console.log(`File ${file.name} metadata updated.`);

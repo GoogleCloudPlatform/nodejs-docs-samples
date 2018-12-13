@@ -24,14 +24,12 @@ const sample = require(`../`);
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`should demonstrate error type behavior`, (t) => {
+test(`should demonstrate error type behavior`, t => {
   const objError = new Error('Error object!');
   const strError = new Error('Error string!');
 
-  const req = { body:
-    { throwAsString: true }
-  };
-  const res = { end: sinon.stub() };
+  const req = {body: {throwAsString: true}};
+  const res = {end: sinon.stub()};
 
   // Test throwing both objects and strings
   sample.errorTypes(req, res);

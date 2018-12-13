@@ -16,37 +16,40 @@
 'use strict';
 
 const path = require('path');
-const assert = require('assert');
-const {runAsync} = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
 
 const cmd = 'node detect.js';
 const cwd = path.join(__dirname, '..');
+
 const audioFilepathBookARoom = path
   .join(__dirname, '../resources/book_a_room.wav')
   .replace(/(\s+)/g, '\\$1');
 
-it('Should detect text queries', async () => {
-  const output = await runAsync(`${cmd} text -q "hello"`, cwd);
-  assert.strictEqual(output.includes('Detected intent'), true);
-});
+describe('basic detection', () => {
+  it('should detect text queries', async () => {
+    const {stdout} = await execa.shell(`${cmd} text -q "hello"`, {cwd});
+    assert.include(stdout, 'Detected intent');
+  });
 
-it('Should detect event query', async () => {
-  const output = await runAsync(`${cmd} event WELCOME`, cwd);
-  assert.strictEqual(output.includes('Query: WELCOME'), true);
-});
+  it('should detect event query', async () => {
+    const {stdout} = await execa.shell(`${cmd} event WELCOME`, {cwd});
+    assert.include(stdout, 'Query: WELCOME');
+  });
 
-it('Should detect audio query', async () => {
-  const output = await runAsync(
-    `${cmd} audio ${audioFilepathBookARoom} -r 16000`,
-    cwd
-  );
-  assert.strictEqual(output.includes('Detected intent'), true);
-});
+  it('should detect audio query', async () => {
+    const {stdout} = await execa.shell(
+      `${cmd} audio ${audioFilepathBookARoom} -r 16000`,
+      {cwd}
+    );
+    assert.include(stdout, 'Detected intent');
+  });
 
-it('Should detect audio query in streaming fashion', async () => {
-  const output = await runAsync(
-    `${cmd} stream ${audioFilepathBookARoom} -r 16000`,
-    cwd
-  );
-  assert.strictEqual(output.includes('Detected intent'), true);
+  it('should detect audio query in streaming fashion', async () => {
+    const {stdout} = await execa.shell(
+      `${cmd} stream ${audioFilepathBookARoom} -r 16000`,
+      {cwd}
+    );
+    assert.include(stdout, 'Detected intent');
+  });
 });

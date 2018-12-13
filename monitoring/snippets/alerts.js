@@ -118,7 +118,7 @@ async function restorePolicies(projectId) {
 
 async function deleteChannels(projectId, filter) {
   // [START monitoring_alert_delete_channel]
-  // [START monitoring_alert_list_channel]
+  // [START monitoring_alert_list_channels]
 
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
@@ -146,7 +146,7 @@ async function deleteChannels(projectId, filter) {
     }
   }
   // [END monitoring_alert_delete_channel]
-  // [END monitoring_alert_list_channel]
+  // [END monitoring_alert_list_channels]
 }
 
 async function replaceChannels(projectId, alertPolicyId, channelIds) {

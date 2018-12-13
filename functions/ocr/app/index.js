@@ -23,10 +23,14 @@ const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 // Get a reference to the Cloud Storage component
 const storage = require('@google-cloud/storage')();
+
 // Get a reference to the Cloud Vision API component
-const vision = require('@google-cloud/vision')();
+const Vision = require('@google-cloud/vision');
+const vision = new Vision.ImageAnnotatorClient();
+
 // Get a reference to the Translate API component
-const translate = require('@google-cloud/translate')();
+const {Translate} = require('@google-cloud/translate');
+const translate = new Translate();
 
 const Buffer = require('safe-buffer').Buffer;
 // [END functions_ocr_setup]
@@ -38,11 +42,13 @@ const Buffer = require('safe-buffer').Buffer;
  * @param {string} topicName Name of the topic on which to publish.
  * @param {object} data The message data to publish.
  */
-function publishResult(topicName, data) {
+function publishResult (topicName, data) {
+  const dataBuffer = Buffer.from(JSON.stringify(data));
+
   return pubsub
     .topic(topicName)
     .get({autoCreate: true})
-    .then(([topic]) => topic.publish(data));
+    .then(([topic]) => topic.publisher().publish(dataBuffer));
 }
 // [END functions_ocr_publish]
 
@@ -54,12 +60,12 @@ function publishResult(topicName, data) {
  * @param {string} filename Cloud Storage file name.
  * @returns {Promise}
  */
-function detectText(bucketName, filename) {
+function detectText (bucketName, filename) {
   let text;
 
   console.log(`Looking for text in image ${filename}`);
   return vision
-    .textDetection({source: {imageUri: `gs://${bucketName}/${filename}`}})
+    .textDetection(`gs://${bucketName}/${filename}`)
     .then(([detections]) => {
       const annotation = detections.textAnnotations[0];
       text = annotation ? annotation.description : '';
@@ -81,8 +87,7 @@ function detectText(bucketName, filename) {
         const messageData = {
           text: text,
           filename: filename,
-          lang: lang,
-          from: detection.language,
+          lang: lang
         };
 
         return publishResult(topicName, messageData);
@@ -101,7 +106,7 @@ function detectText(bucketName, filename) {
  * @param {string} lang Language to append.
  * @returns {string} The new filename.
  */
-function renameImageForSave(filename, lang) {
+function renameImageForSave (filename, lang) {
   return `${filename}_to_${lang}.txt`;
 }
 // [END functions_ocr_rename]
@@ -179,19 +184,14 @@ exports.translateText = event => {
         );
       }
 
-      const options = {
-        from: payload.from,
-        to: payload.lang,
-      };
-
       console.log(`Translating text into ${payload.lang}`);
-      return translate.translate(payload.text, options);
+      return translate.translate(payload.text, payload.lang);
     })
     .then(([translation]) => {
       const messageData = {
         text: translation,
         filename: payload.filename,
-        lang: payload.lang,
+        lang: payload.lang
       };
 
       return publishResult(config.RESULT_TOPIC, messageData);

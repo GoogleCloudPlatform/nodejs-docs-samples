@@ -27,52 +27,65 @@ const text = `text`;
 const lang = `lang`;
 const translation = `translation`;
 
-function getSample() {
+function getSample () {
   const config = {
     RESULT_TOPIC: `result-topic`,
     RESULT_BUCKET: `result-bucket`,
     TRANSLATE_TOPIC: `translate-topic`,
-    TO_LANG: [`en`, `fr`, `es`, `ja`, `ru`],
+    TO_LANG: [`en`, `fr`, `es`, `ja`, `ru`]
   };
   const topic = {
-    publish: sinon.stub().returns(Promise.resolve([])),
+    publish: sinon.stub().returns(Promise.resolve([]))
   };
   topic.get = sinon.stub().returns(Promise.resolve([topic]));
+  topic.publisher = sinon.stub().returns(topic);
+
   const file = {
     save: sinon.stub().returns(Promise.resolve([])),
     bucket: bucketName,
-    name: filename,
+    name: filename
   };
   const bucket = {
-    file: sinon.stub().returns(file),
+    file: sinon.stub().returns(file)
   };
   const pubsubMock = {
-    topic: sinon.stub().returns(topic),
+    topic: sinon.stub().returns(topic)
   };
   const storageMock = {
-    bucket: sinon.stub().returns(bucket),
+    bucket: sinon.stub().returns(bucket)
   };
   const visionMock = {
     textDetection: sinon
       .stub()
-      .returns(Promise.resolve([{textAnnotations: [{description: text}]}])),
+      .returns(Promise.resolve([{textAnnotations: [{description: text}]}]))
   };
   const translateMock = {
     detect: sinon.stub().returns(Promise.resolve([{language: `ja`}])),
-    translate: sinon.stub().returns(Promise.resolve([translation])),
+    translate: sinon.stub().returns(Promise.resolve([translation]))
   };
+
   const PubsubMock = sinon.stub().returns(pubsubMock);
   const StorageMock = sinon.stub().returns(storageMock);
-  const VisionMock = sinon.stub().returns(visionMock);
-  const TranslateMock = sinon.stub().returns(translateMock);
+
+  const stubConstructor = (packageName, property, mocks) => {
+    let stubInstance = sinon.createStubInstance(require(packageName)[property], mocks);
+    stubInstance = Object.assign(stubInstance, mocks);
+
+    let out = {};
+    out[property] = sinon.stub().returns(stubInstance);
+    return out;
+  };
+
+  const visionStub = stubConstructor('@google-cloud/vision', 'ImageAnnotatorClient', visionMock);
+  const translateStub = stubConstructor('@google-cloud/translate', 'Translate', translateMock);
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/translate': TranslateMock,
-      '@google-cloud/vision': VisionMock,
+      '@google-cloud/translate': translateStub,
+      '@google-cloud/vision': visionStub,
       '@google-cloud/pubsub': {PubSub: PubsubMock},
       '@google-cloud/storage': StorageMock,
-      './config.json': config,
+      './config.json': config
     }),
     mocks: {
       config,
@@ -82,8 +95,8 @@ function getSample() {
       file,
       vision: visionMock,
       translate: translateMock,
-      topic,
-    },
+      topic
+    }
   };
 }
 
@@ -119,24 +132,24 @@ test.serial(
     const event = {
       data: {
         bucket: bucketName,
-        name: filename,
-      },
+        name: filename
+      }
     };
     const sample = getSample();
 
     await sample.program.processImage(event);
     t.is(console.log.callCount, 4);
     t.deepEqual(console.log.getCall(0).args, [
-      `Looking for text in image ${filename}`,
+      `Looking for text in image ${filename}`
     ]);
     t.deepEqual(console.log.getCall(1).args, [
-      `Extracted text from image (${text.length} chars)`,
+      `Extracted text from image (${text.length} chars)`
     ]);
     t.deepEqual(console.log.getCall(2).args, [
-      `Detected language "ja" for ${filename}`,
+      `Detected language "ja" for ${filename}`
     ]);
     t.deepEqual(console.log.getCall(3).args, [
-      `File ${event.data.name} processed.`,
+      `File ${event.data.name} processed.`
     ]);
   }
 );
@@ -146,20 +159,20 @@ test.serial(
   async t => {
     const data = {
       bucket: bucketName,
-      name: filename,
+      name: filename
     };
     const sample = getSample();
 
     await sample.program.processImage(data);
     t.is(console.log.callCount, 4);
     t.deepEqual(console.log.getCall(0).args, [
-      `Looking for text in image ${filename}`,
+      `Looking for text in image ${filename}`
     ]);
     t.deepEqual(console.log.getCall(1).args, [
-      `Extracted text from image (${text.length} chars)`,
+      `Extracted text from image (${text.length} chars)`
     ]);
     t.deepEqual(console.log.getCall(2).args, [
-      `Detected language "ja" for ${filename}`,
+      `Detected language "ja" for ${filename}`
     ]);
     t.deepEqual(console.log.getCall(3).args, [`File ${data.name} processed.`]);
   }
@@ -171,8 +184,8 @@ test.serial(`translateText fails without text`, async t => {
   );
   const event = {
     data: {
-      data: Buffer.from(JSON.stringify({})).toString(`base64`),
-    },
+      data: Buffer.from(JSON.stringify({})).toString(`base64`)
+    }
   };
   const err = await t.throws(getSample().program.translateText(event));
   t.deepEqual(err, error);
@@ -184,8 +197,8 @@ test.serial(`translateText fails without a filename`, async t => {
   );
   const event = {
     data: {
-      data: Buffer.from(JSON.stringify({text})).toString(`base64`),
-    },
+      data: Buffer.from(JSON.stringify({text})).toString(`base64`)
+    }
   };
   const err = await t.throws(getSample().program.translateText(event));
   t.deepEqual(err, error);
@@ -197,8 +210,8 @@ test.serial(`translateText fails without a lang`, async t => {
   );
   const event = {
     data: {
-      data: Buffer.from(JSON.stringify({text, filename})).toString(`base64`),
-    },
+      data: Buffer.from(JSON.stringify({text, filename})).toString(`base64`)
+    }
   };
 
   const err = await t.throws(getSample().program.translateText(event));
@@ -214,10 +227,10 @@ test.serial(
           JSON.stringify({
             text,
             filename,
-            lang,
+            lang
           })
-        ).toString(`base64`),
-      },
+        ).toString(`base64`)
+      }
     };
     const sample = getSample();
 
@@ -238,9 +251,9 @@ test.serial(
         JSON.stringify({
           text,
           filename,
-          lang,
+          lang
         })
-      ).toString(`base64`),
+      ).toString(`base64`)
     };
     const sample = getSample();
 
@@ -259,8 +272,8 @@ test.serial(`saveResult fails without text`, async t => {
   );
   const event = {
     data: {
-      data: Buffer.from(JSON.stringify({})).toString(`base64`),
-    },
+      data: Buffer.from(JSON.stringify({})).toString(`base64`)
+    }
   };
 
   const err = await t.throws(getSample().program.saveResult(event));
@@ -273,8 +286,8 @@ test.serial(`saveResult fails without a filename`, async t => {
   );
   const event = {
     data: {
-      data: Buffer.from(JSON.stringify({text})).toString(`base64`),
-    },
+      data: Buffer.from(JSON.stringify({text})).toString(`base64`)
+    }
   };
 
   const err = await t.throws(getSample().program.saveResult(event));
@@ -287,8 +300,8 @@ test.serial(`saveResult fails without a lang`, async t => {
   );
   const event = {
     data: {
-      data: Buffer.from(JSON.stringify({text, filename})).toString(`base64`),
-    },
+      data: Buffer.from(JSON.stringify({text, filename})).toString(`base64`)
+    }
   };
 
   const err = await t.throws(getSample().program.saveResult(event));
@@ -302,20 +315,20 @@ test.serial(
       data: {
         data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
           `base64`
-        ),
-      },
+        )
+      }
     };
     const sample = getSample();
 
     await sample.program.saveResult(event);
     t.is(console.log.callCount, 3);
     t.deepEqual(console.log.getCall(0).args, [
-      `Received request to save file ${filename}`,
+      `Received request to save file ${filename}`
     ]);
     t.deepEqual(console.log.getCall(1).args, [
       `Saving result to ${filename}_to_${lang}.txt in bucket ${
         sample.mocks.config.RESULT_BUCKET
-      }`,
+      }`
     ]);
     t.deepEqual(console.log.getCall(2).args, [`File saved.`]);
   }
@@ -327,19 +340,19 @@ test.serial(
     const data = {
       data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
         `base64`
-      ),
+      )
     };
     const sample = getSample();
 
     await sample.program.saveResult(data);
     t.is(console.log.callCount, 3);
     t.deepEqual(console.log.getCall(0).args, [
-      `Received request to save file ${filename}`,
+      `Received request to save file ${filename}`
     ]);
     t.deepEqual(console.log.getCall(1).args, [
       `Saving result to ${filename}_to_${lang}.txt in bucket ${
         sample.mocks.config.RESULT_BUCKET
-      }`,
+      }`
     ]);
     t.deepEqual(console.log.getCall(2).args, [`File saved.`]);
   }
@@ -352,20 +365,20 @@ test.serial(
       data: {
         data: Buffer.from(
           JSON.stringify({text, filename: `${filename}.jpg`, lang})
-        ).toString(`base64`),
-      },
+        ).toString(`base64`)
+      }
     };
     const sample = getSample();
 
     await sample.program.saveResult(event);
     t.is(console.log.callCount, 3);
     t.deepEqual(console.log.getCall(0).args, [
-      `Received request to save file ${filename}.jpg`,
+      `Received request to save file ${filename}.jpg`
     ]);
     t.deepEqual(console.log.getCall(1).args, [
       `Saving result to ${filename}.jpg_to_${lang}.txt in bucket ${
         sample.mocks.config.RESULT_BUCKET
-      }`,
+      }`
     ]);
     t.deepEqual(console.log.getCall(2).args, [`File saved.`]);
   }

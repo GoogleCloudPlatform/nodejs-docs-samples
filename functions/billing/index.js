@@ -15,8 +15,8 @@
 
 // [START functions_billing_limit]
 // [START functions_billing_stop]
-const { google } = require('googleapis');
-const { auth } = require('google-auth-library');
+const {google} = require('googleapis');
+const {auth} = require('google-auth-library');
 
 const PROJECT_ID = process.env.GCP_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
@@ -38,7 +38,7 @@ exports.notifySlack = async (data, context) => {
   const res = await slack.chat.postMessage({
     token: BOT_ACCESS_TOKEN,
     channel: CHANNEL,
-    text: budgetNotificationText
+    text: budgetNotificationText,
   });
   console.log(res);
 };
@@ -71,13 +71,13 @@ const _setAuthCredential = async () => {
   if (client.hasScopes && !client.hasScopes()) {
     client = client.createScoped([
       'https://www.googleapis.com/auth/cloud-billing',
-      'https://www.googleapis.com/auth/cloud-platform'
+      'https://www.googleapis.com/auth/cloud-platform',
     ]);
   }
 
   // Set credential globally for all requests
   google.options({
-    auth: client
+    auth: client,
   });
 };
 
@@ -86,8 +86,8 @@ const _setAuthCredential = async () => {
  * @param {string} projectName Name of project to check if billing is enabled
  * @return {bool} Whether project has billing enabled or not
  */
-const _isBillingEnabled = async (projectName) => {
-  const res = await billing.getBillingInfo({ name: projectName });
+const _isBillingEnabled = async projectName => {
+  const res = await billing.getBillingInfo({name: projectName});
   return res.data.billingEnabled;
 };
 
@@ -96,10 +96,10 @@ const _isBillingEnabled = async (projectName) => {
  * @param {string} projectName Name of project disable billing on
  * @return {string} Text containing response from disabling billing
  */
-const _disableBillingForProject = async (projectName) => {
+const _disableBillingForProject = async projectName => {
   const res = await billing.updateBillingInfo({
     name: projectName,
-    resource: { 'billingAccountName': '' } // Disable billing
+    resource: {billingAccountName: ''}, // Disable billing
   });
   return `Billing disabled: ${JSON.stringify(res.data)}`;
 };
@@ -126,7 +126,7 @@ exports.limitUse = async (data, context) => {
 const _listRunningInstances = async (projectId, zone) => {
   const res = await compute.instances.list({
     project: projectId,
-    zone: zone
+    zone: zone,
   });
 
   const instances = res.data.items || [];
@@ -142,15 +142,19 @@ const _stopInstances = async (projectId, zone, instanceNames) => {
   if (!instanceNames.length) {
     return 'No running instances were found.';
   }
-  await Promise.all(instanceNames.map(instanceName => {
-    return compute.instances.stop({
-      project: projectId,
-      zone: zone,
-      instance: instanceName
-    }).then((res) => {
-      console.log('Instance stopped successfully: ' + instanceName);
-      return res.data;
-    });
-  }));
+  await Promise.all(
+    instanceNames.map(instanceName => {
+      return compute.instances
+        .stop({
+          project: projectId,
+          zone: zone,
+          instance: instanceName,
+        })
+        .then(res => {
+          console.log('Instance stopped successfully: ' + instanceName);
+          return res.data;
+        });
+    })
+  );
 };
 // [END functions_billing_limit]

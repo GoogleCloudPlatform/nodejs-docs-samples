@@ -79,13 +79,13 @@ function createIotTopic(topicName) {
   // Instantiates a client
   const pubsub = new PubSub();
 
-  pubsub.createTopic(topicName).then(results => {
+  pubsub.createTopic(topicName).then(() => {
     setupIotTopic(topicName);
   });
 }
 
 // Lookup the registry, assuming that it exists.
-function lookupRegistry(client, registryId, projectId, cloudRegion, cb) {
+function lookupRegistry(client, registryId, projectId, cloudRegion) {
   // [START iot_lookup_registry]
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(client) {...});
@@ -191,8 +191,7 @@ function createUnauthDevice(
   deviceId,
   registryId,
   projectId,
-  cloudRegion,
-  body
+  cloudRegion
 ) {
   // [START iot_create_unauth_device]
   // Client retrieved in callback
@@ -713,7 +712,14 @@ function setDeviceConfig(
 }
 
 // sends a command to a specified device subscribed to the commands topic
-function sendCommand(client, deviceId, registryId, projectId, cloudRegion, commandMessage) {
+function sendCommand(
+  client,
+  deviceId,
+  registryId,
+  projectId,
+  cloudRegion,
+  commandMessage
+) {
   // [START iot_send_command]
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(client) {...});

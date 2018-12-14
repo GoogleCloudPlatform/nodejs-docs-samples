@@ -17,72 +17,72 @@ const proxyquire = require(`proxyquire`).noCallThru();
 const sinon = require(`sinon`);
 const test = require(`ava`);
 
-function getSample () {
+function getSample() {
   const instanceListMock = [
-    { name: 'test-instance-1', status: 'RUNNING' },
-    { name: 'test-instance-2', status: 'RUNNING' }
+    {name: 'test-instance-1', status: 'RUNNING'},
+    {name: 'test-instance-2', status: 'RUNNING'},
   ];
 
   const listInstancesResponseMock = {
     data: {
-      items: instanceListMock
-    }
+      items: instanceListMock,
+    },
   };
 
   const computeMock = {
     instances: {
       list: sinon.stub().returns(listInstancesResponseMock),
-      stop: sinon.stub().resolves({ data: {} })
-    }
+      stop: sinon.stub().resolves({data: {}}),
+    },
   };
 
   const cloudbillingMock = {
     projects: {
       getBillingInfo: sinon.stub().resolves({
         data: {
-          billingEnabled: true
-        }
+          billingEnabled: true,
+        },
       }),
       updateBillingInfo: sinon.stub().returns({
-        data: {}
-      })
-    }
+        data: {},
+      }),
+    },
   };
 
   const googleMock = {
     cloudbilling: sinon.stub().returns(cloudbillingMock),
     compute: sinon.stub().returns(computeMock),
-    options: sinon.stub()
+    options: sinon.stub(),
   };
 
   const googleapisMock = {
-    google: googleMock
+    google: googleMock,
   };
 
   const slackMock = {
     chat: {
-      postMessage: sinon.stub().returns({ data: {} })
-    }
+      postMessage: sinon.stub().returns({data: {}}),
+    },
   };
 
   const credentialMock = {
-    hasScopes: sinon.stub().returns(false)
+    hasScopes: sinon.stub().returns(false),
   };
   credentialMock.createScoped = sinon.stub().returns(credentialMock);
 
   const googleAuthMock = {
     auth: {
       getApplicationDefault: sinon.stub().resolves({
-        credential: credentialMock
-      })
-    }
+        credential: credentialMock,
+      }),
+    },
   };
 
   return {
     program: proxyquire(`../`, {
       'google-auth-library': googleAuthMock,
-      'googleapis': googleapisMock,
-      'slack': slackMock
+      googleapis: googleapisMock,
+      slack: slackMock,
     }),
     mocks: {
       google: googleMock,
@@ -92,18 +92,18 @@ function getSample () {
       cloudbilling: cloudbillingMock,
       credential: credentialMock,
       slack: slackMock,
-      instanceList: instanceListMock
-    }
+      instanceList: instanceListMock,
+    },
   };
 }
 
 test(`should notify Slack when budget is exceeded`, async t => {
-  const { program, mocks } = getSample();
+  const {program, mocks} = getSample();
 
-  const jsonData = { cost: 500, budget: 400 };
+  const jsonData = {cost: 500, budget: 400};
   const pubsubData = {
     data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
-    attributes: {}
+    attributes: {},
   };
 
   await program.notifySlack(pubsubData, null);
@@ -112,12 +112,12 @@ test(`should notify Slack when budget is exceeded`, async t => {
 });
 
 test(`should disable billing when budget is exceeded`, async t => {
-  const { program, mocks } = getSample();
+  const {program, mocks} = getSample();
 
-  const jsonData = { cost: 500, budget: 400 };
+  const jsonData = {cost: 500, budget: 400};
   const pubsubData = {
     data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
-    attributes: {}
+    attributes: {},
   };
 
   await program.stopBilling(pubsubData, null);
@@ -128,12 +128,12 @@ test(`should disable billing when budget is exceeded`, async t => {
 });
 
 test(`should shut down GCE instances when budget is exceeded`, async t => {
-  const { program, mocks } = getSample();
+  const {program, mocks} = getSample();
 
-  const jsonData = { cost: 500, budget: 400 };
+  const jsonData = {cost: 500, budget: 400};
   const pubsubData = {
     data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
-    attributes: {}
+    attributes: {},
   };
 
   await program.limitUse(pubsubData, null);

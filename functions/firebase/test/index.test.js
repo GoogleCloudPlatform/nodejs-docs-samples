@@ -20,19 +20,19 @@ const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-function getSample () {
+function getSample() {
   const firestoreMock = {
     doc: sinon.stub().returnsThis(),
-    set: sinon.stub()
+    set: sinon.stub(),
   };
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/firestore': sinon.stub().returns(firestoreMock)
+      '@google-cloud/firestore': sinon.stub().returns(firestoreMock),
     }),
     mocks: {
-      firestore: firestoreMock
-    }
+      firestore: firestoreMock,
+    },
   };
 }
 
@@ -43,14 +43,14 @@ test(`should listen to RTDB`, t => {
   const sample = getSample();
 
   const delta = {
-    foo: 'bar'
+    foo: 'bar',
   };
   const event = {
     resource: 'resource',
     auth: {
-      admin: true
+      admin: true,
     },
-    delta: delta
+    delta: delta,
   };
 
   sample.program.helloRTDB(event);
@@ -64,18 +64,18 @@ test(`should listen to Firestore`, t => {
   const sample = getSample();
 
   const oldValue = {
-    foo: 'bar'
+    foo: 'bar',
   };
   const value = {
-    bar: 'baz'
+    bar: 'baz',
   };
   const event = {
     resource: 'resource',
     eventType: 'type',
     data: {
       oldValue: oldValue,
-      value: value
-    }
+      value: value,
+    },
   };
 
   sample.program.helloFirestore(event);
@@ -95,9 +95,9 @@ test(`should listen to Auth events`, t => {
       uid: 'me',
       email: 'me@example.com',
       metadata: {
-        createdAt: date
-      }
-    }
+        createdAt: date,
+      },
+    },
   };
 
   sample.program.helloAuth(event);
@@ -111,26 +111,31 @@ test.serial('should listen to Analytics events', t => {
   const date = new Date();
   const event = {
     data: {
-      eventDim: [{
-        name: 'my-event',
-        timestampMicros: `${date.valueOf()}000`
-      }],
+      eventDim: [
+        {
+          name: 'my-event',
+          timestampMicros: `${date.valueOf()}000`,
+        },
+      ],
       userDim: {
         deviceInfo: {
-          deviceModel: 'Pixel'
+          deviceModel: 'Pixel',
         },
         geoInfo: {
           city: 'London',
-          country: 'UK'
-        }
-      }
+          country: 'UK',
+        },
+      },
     },
-    resource: 'my-resource'
+    resource: 'my-resource',
   };
 
   const sample = getSample();
   sample.program.helloAnalytics(event);
-  t.is(console.log.args[0][0], `Function triggered by the following event: my-resource`);
+  t.is(
+    console.log.args[0][0],
+    `Function triggered by the following event: my-resource`
+  );
   t.is(console.log.args[1][0], `Name: my-event`);
   t.is(console.log.args[2][0], `Timestamp: ${date}`);
   t.is(console.log.args[3][0], `Device Model: Pixel`);
@@ -144,8 +149,8 @@ test(`should listen to Remote Config events`, t => {
     data: {
       updateOrigin: 'CONSOLE',
       updateType: 'INCREMENTAL_UPDATE',
-      versionNumber: '1'
-    }
+      versionNumber: '1',
+    },
   };
 
   sample.program.helloRemoteConfig(event);

@@ -29,41 +29,45 @@ const bucketName = process.env.FUNCTIONS_BUCKET;
 const bucket = storage.bucket(bucketName);
 const baseCmd = `gcloud functions`;
 
-test.serial(`helloGCS: should print uploaded message`, async (t) => {
+test.serial(`helloGCS: should print uploaded message`, async t => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
 
   // Upload file
   const filepath = path.join(__dirname, localFileName);
   await bucket.upload(filepath, {
-    destination: gcsFileName
+    destination: gcsFileName,
   });
 
   // Wait for consistency
   await new Promise(resolve => setTimeout(resolve, 15000));
 
   // Check logs
-  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
+  const logs = childProcess
+    .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
+    .toString();
   t.true(logs.includes(`File ${gcsFileName} uploaded`));
 });
 
-test.serial(`helloGCS: should print metadata updated message`, async (t) => {
+test.serial(`helloGCS: should print metadata updated message`, async t => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
 
   // Update file metadata
   const file = bucket.file(gcsFileName);
-  await file.setMetadata(gcsFileName, { foo: `bar` });
+  await file.setMetadata(gcsFileName, {foo: `bar`});
 
   // Wait for consistency
   await new Promise(resolve => setTimeout(resolve, 15000));
 
   // Check logs
-  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
+  const logs = childProcess
+    .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
+    .toString();
   t.true(logs.includes(`File ${gcsFileName} metadata updated`));
 });
 
-test.serial(`helloGCS: should print deleted message`, async (t) => {
+test.serial(`helloGCS: should print deleted message`, async t => {
   t.plan(1);
   const startTime = new Date(Date.now()).toISOString();
 
@@ -74,7 +78,9 @@ test.serial(`helloGCS: should print deleted message`, async (t) => {
   await new Promise(resolve => setTimeout(resolve, 15000));
 
   // Check logs
-  const logs = childProcess.execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`).toString();
+  const logs = childProcess
+    .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
+    .toString();
   t.true(logs.includes(`File ${gcsFileName} deleted`));
 });
 // [END functions_storage_system_test]

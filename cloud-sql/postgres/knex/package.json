@@ -21,7 +21,7 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "body-parser": "1.18.2",
+    "body-parser": "1.18.3",
     "express": "4.16.2",
     "knex": "0.16.2",
     "prompt": "1.0.0",

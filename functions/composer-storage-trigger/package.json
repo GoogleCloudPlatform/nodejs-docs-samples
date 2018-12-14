@@ -19,7 +19,7 @@
     "@google-cloud/nodejs-repo-tools": "^2.2.5",
     "ava": "0.25.0",
     "proxyquire": "2.1.0",
-    "sinon": "4.4.2"
+    "sinon": "4.5.0"
   },
   "scripts": {
     "test": "ava -T 20s --verbose test/*.test.js"

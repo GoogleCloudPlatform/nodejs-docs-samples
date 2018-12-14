@@ -24,7 +24,8 @@ const uuid = require('uuid');
 // Get a reference to the Cloud Storage component
 const storage = require('@google-cloud/storage')();
 // Get a reference to the BigQuery component
-const bigquery = require('@google-cloud/bigquery')();
+const {BigQuery} = require('@google-cloud/bigquery');
+const bigquery = new BigQuery();
 // [END functions_sendgrid_setup]
 
 // [START functions_sendgrid_get_client]

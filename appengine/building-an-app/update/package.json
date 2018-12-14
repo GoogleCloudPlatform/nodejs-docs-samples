@@ -23,7 +23,7 @@
     "express": "^4.16.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17",
+    "@google-cloud/nodejs-repo-tools": "3.1.0",
     "ava": "0.25.0"
   }
 }

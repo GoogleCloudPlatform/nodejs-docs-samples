@@ -87,7 +87,7 @@ exports.connectionPooling = (req, res) => {
       port: 80,
       path: '',
       method: 'GET',
-      agent: agent
+      agent: agent,
     },
     resInner => {
       let rawData = '';

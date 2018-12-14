@@ -69,7 +69,7 @@ function handlePUT (req, res) {
  * Responds to a GET request with "Hello World!". Forbids a PUT request.
  *
  * @example
- * gcloud alpha functions call helloHttp
+ * gcloud functions call helloHttp
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.

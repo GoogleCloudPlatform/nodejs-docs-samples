@@ -55,12 +55,12 @@ exports.helloContent = (req, res) => {
 // [END functions_http_content]
 
 // [START functions_http_method]
-function handleGET(req, res) {
+function handleGET (req, res) {
   // Do something with the GET request
   res.status(200).send('Hello World!');
 }
 
-function handlePUT(req, res) {
+function handlePUT (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
 }
@@ -194,7 +194,8 @@ exports.uploadFile = (req, res) => {
 // [END functions_http_form_data]
 
 // [START functions_http_signed_url]
-const storage = require('@google-cloud/storage')();
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 
 /**
  * HTTP function that generates a signed URL
@@ -208,17 +209,17 @@ exports.getSignedUrl = (req, res) => {
     // TODO(developer) check that the user is authorized to upload
 
     // Get a reference to the destination file in GCS
-    const file = storage.bucket('my-bucket').file(req.body.filename);
+    const file = storage.bucket(req.body.bucket).file(req.body.filename);
 
     // Create a temporary upload URL
     const expiresAtMs = Date.now() + 300000; // Link expires in 5 minutes
     const config = {
       action: 'write',
       expires: expiresAtMs,
-      contentType: req.body.contentType,
+      contentType: req.body.contentType
     };
 
-    file.getSignedUrl(config, function(err, url) {
+    file.getSignedUrl(config, function (err, url) {
       if (err) {
         console.error(err);
         res.status(500).end();

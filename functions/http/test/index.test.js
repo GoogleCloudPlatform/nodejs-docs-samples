@@ -19,38 +19,39 @@ const Buffer = require('safe-buffer').Buffer;
 const proxyquire = require(`proxyquire`).noCallThru();
 const sinon = require(`sinon`);
 const test = require(`ava`);
+const uuid = require(`uuid`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-function getSample() {
+function getSample () {
   const requestPromise = sinon
     .stub()
     .returns(new Promise(resolve => resolve(`test`)));
 
   return {
     sample: proxyquire(`../`, {
-      'request-promise': requestPromise,
+      'request-promise': requestPromise
     }),
     mocks: {
-      requestPromise: requestPromise,
-    },
+      requestPromise: requestPromise
+    }
   };
 }
 
-function getMocks() {
+function getMocks () {
   const req = {
     headers: {},
-    get: function(header) {
+    get: function (header) {
       return this.headers[header];
-    },
+    }
   };
   sinon.spy(req, `get`);
 
   const corsPreflightReq = {
-    method: 'OPTIONS',
+    method: 'OPTIONS'
   };
 
   const corsMainReq = {
-    method: 'GET',
+    method: 'GET'
   };
 
   return {
@@ -62,8 +63,8 @@ function getMocks() {
       send: sinon.stub().returnsThis(),
       json: sinon.stub().returnsThis(),
       end: sinon.stub().returnsThis(),
-      status: sinon.stub().returnsThis(),
-    },
+      status: sinon.stub().returnsThis()
+    }
   };
 }
 
@@ -221,4 +222,27 @@ test.serial(`http:cors: should respond to main request (auth)`, t => {
   httpSample.sample.corsEnabledFunctionAuth(mocks.corsMainReq, mocks.res);
 
   t.true(mocks.res.send.calledOnceWith(`Hello World!`));
+});
+
+test.serial(`http:getSignedUrl: should process example request`, async t => {
+  const mocks = getMocks();
+  const httpSample = getSample();
+
+  const reqMock = {
+    method: 'POST',
+    body: {
+      bucket: 'nodejs-docs-samples',
+      filename: `gcf-gcs-url-${uuid.v4}`,
+      contentType: 'application/octet-stream'
+    }
+  };
+
+  httpSample.sample.getSignedUrl(reqMock, mocks.res);
+
+  // Instead of modifying the sample to return a promise,
+  // use a delay here and keep the sample idiomatic
+  await new Promise(resolve => setTimeout(resolve, 300));
+
+  t.false(mocks.res.status.called);
+  t.true(mocks.res.send.calledOnce);
 });

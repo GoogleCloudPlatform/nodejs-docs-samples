@@ -6,6 +6,6 @@
   "author": "Google Inc.",
   "main": "./index.js",
   "dependencies": {
-    "@google-cloud/logging": "4.1.0"
+    "@google-cloud/logging": "4.1.1"
   }
 }

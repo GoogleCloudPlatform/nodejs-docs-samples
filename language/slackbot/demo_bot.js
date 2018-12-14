@@ -42,7 +42,7 @@ See the README.md in this directory for more information about setup and usage.
 
 'use strict';
 
-const Botkit = require('botkit');
+const Slackbot = require('botkit').slackbot;
 const fs = require('fs');
 const language = require('@google-cloud/language');
 const path = require('path');
@@ -54,7 +54,7 @@ if (!process.env.SLACK_TOKEN_PATH) {
 
 var token = fs.readFileSync(process.env.SLACK_TOKEN_PATH, { encoding: 'utf8' });
 token = token.replace(/\s/g, '');
-const controller = new Botkit.slackbot({clientSigningSecret: token});
+const controller = new Slackbot({clientSigningSecret: token});
 
 // create our database if it does not already exist.
 const db = new sqlite3.cached.Database(path.join(__dirname, './slackDB.db'));

@@ -21,7 +21,7 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "async": "2.6.0",
+    "async": "2.6.1",
     "express": "4.16.4",
     "knex": "0.15.2",
     "mysql": "2.16.0",

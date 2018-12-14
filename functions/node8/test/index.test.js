@@ -286,5 +286,7 @@ test.serial('should make async HTTP request', t => {
   const sample = getSample();
 
   sample.program.helloAsync();
-  t.true(sample.mocks.requestPromiseNative.calledWith('https://www.example.com'));
+  t.true(
+    sample.mocks.requestPromiseNative.calledWith('https://www.example.com')
+  );
 });

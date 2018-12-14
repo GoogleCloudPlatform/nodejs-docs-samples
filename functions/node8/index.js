@@ -310,8 +310,8 @@ exports.helloRemoteConfig = data => {
  *
  * @param {object} data The event payload.
  */
-exports.helloAsync = async (data) => {
+exports.helloAsync = async data => {
   const result = await requestPromiseNative('https://www.example.com');
-  return result
-}
+  return result;
+};
 // [END functions_background_async]

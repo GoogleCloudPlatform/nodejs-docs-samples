@@ -21,11 +21,9 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "async": "2.6.0",
     "body-parser": "1.18.2",
     "express": "4.16.2",
     "knex": "0.14.4",
-    "pg": "7.4.1",
     "prompt": "1.0.0",
     "pug": "2.0.0-rc.4",
     "@google-cloud/logging-winston": "^0.10.2",

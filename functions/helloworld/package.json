@@ -23,7 +23,7 @@
     "safe-buffer": "5.1.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.2.5",
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "@google-cloud/pubsub": "^0.22.0",
     "@google-cloud/storage": "^1.5.0",
     "ava": "0.25.0",

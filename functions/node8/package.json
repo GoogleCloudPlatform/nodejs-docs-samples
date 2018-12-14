@@ -18,7 +18,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "^0.25.0",
     "proxyquire": "^2.1.0",
     "sinon": "^7.0.0",

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-const httpShim = (PORT) => {
+const httpShim = PORT => {
   // [START functions_testing_shim_http]
   // Import dependencies
   const gcfCode = require('./index.js');
@@ -45,8 +45,8 @@ const httpShim = (PORT) => {
 const pubsubShim = (gcfFn, topicName, subscriptionName) => {
   // [START functions_testing_shim_pubsub]
   // Import dependencies
-  const Pubsub = require('@google-cloud/pubsub');
-  const pubsub = Pubsub();
+  const {PubSub} = require('@google-cloud/pubsub');
+  const pubsub = new PubSub();
 
   // TODO(developer): specify a function to test
   // const gcfCode = require('./index.js');
@@ -60,8 +60,8 @@ const pubsubShim = (gcfFn, topicName, subscriptionName) => {
   const subscription = pubsub.topic(topicName).subscription(subscriptionName);
 
   // Handle a single Pub/Sub message
-  const messageHandler = (msg) => {
-    gcfFn({ data: msg }, () => {
+  const messageHandler = msg => {
+    gcfFn({data: msg}, () => {
       msg.ack();
       subscription.removeListener(`message`, messageHandler);
     });
@@ -92,25 +92,29 @@ const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
   // Create notification on target bucket
   // Further info: https://cloud.google.com/storage/docs/reporting-changes
   const bucket = storage.bucket(bucketName);
-  return bucket.createNotification(topicName)
+  return bucket
+    .createNotification(topicName)
     .then(data => data[0])
-    .then((notification) => new Promise(resolve => {
-      // Subscribe to Pub/Sub topic
-      const subscription = pubsub
-        .topic(topicName)
-        .subscription(subscriptionName);
+    .then(
+      notification =>
+        new Promise(resolve => {
+          // Subscribe to Pub/Sub topic
+          const subscription = pubsub
+            .topic(topicName)
+            .subscription(subscriptionName);
 
-      // Handle a single Pub/Sub message
-      const messageHandler = (msg) => {
-        const data = JSON.parse(Buffer.from(msg.data, 'base64').toString());
-        gcfFn({ data: data }, () => {
-          msg.ack();
-          subscription.removeListener(`message`, messageHandler);
-          resolve(notification);
-        });
-      };
-      subscription.on(`message`, messageHandler);
-    }))
+          // Handle a single Pub/Sub message
+          const messageHandler = msg => {
+            const data = JSON.parse(Buffer.from(msg.data, 'base64').toString());
+            gcfFn({data: data}, () => {
+              msg.ack();
+              subscription.removeListener(`message`, messageHandler);
+              resolve(notification);
+            });
+          };
+          subscription.on(`message`, messageHandler);
+        })
+    )
     .then(notification => notification.delete()); // Delete notification
   // [END functions_testing_shim_storage]
 };
@@ -118,34 +122,32 @@ const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
 const gcfCodeGlobal = require('./index.js');
 require(`yargs`) // eslint-disable-line
   .demandCommand(1)
-  .command(
-    'http <port>',
-    'HTTP-triggered-function shim',
-    {},
-    opts => httpShim(opts.port)
+  .command('http <port>', 'HTTP-triggered-function shim', {}, opts =>
+    httpShim(opts.port)
   )
   .command(
     'pubsub <functionName> <topic> <subscription>',
     'PubSub-triggered-function shim',
     {},
-    opts => pubsubShim(
-      gcfCodeGlobal[opts.functionName],
-      opts.topic,
-      opts.subscription
-    )
+    opts =>
+      pubsubShim(
+        gcfCodeGlobal[opts.functionName],
+        opts.topic,
+        opts.subscription
+      )
   )
   .command(
     'storage <functionName> <bucket> <topic> <subscription>',
     'Storage-triggered-function shim',
     {},
-    opts => storageShim(
-      gcfCodeGlobal[opts.functionName],
-      opts.bucket,
-      opts.topic,
-      opts.subscription
-    )
+    opts =>
+      storageShim(
+        gcfCodeGlobal[opts.functionName],
+        opts.bucket,
+        opts.topic,
+        opts.subscription
+      )
   )
   .wrap(120)
   .help()
-  .strict()
-  .argv;
+  .strict().argv;

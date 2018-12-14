@@ -21,19 +21,21 @@ const REDISHOST = process.env.REDISHOST || 'localhost';
 const REDISPORT = process.env.REDISPORT || 6379;
 
 const client = redis.createClient(REDISPORT, REDISHOST);
-client.on('error', (err) => console.error('ERR:REDIS:', err));
+client.on('error', err => console.error('ERR:REDIS:', err));
 
 // create a server
-http.createServer((req, res) => {
-// increment the visit counter
-  client.incr('visits', (err, reply) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send(err.message);
-      return;
-    }
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end(`Visitor number: ${reply}\n`);
-  });
-}).listen(8080);
+http
+  .createServer((req, res) => {
+    // increment the visit counter
+    client.incr('visits', (err, reply) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+        return;
+      }
+      res.writeHead(200, {'Content-Type': 'text/plain'});
+      res.end(`Visitor number: ${reply}\n`);
+    });
+  })
+  .listen(8080);
 // [END memorystore_server_js]

@@ -86,7 +86,6 @@ const TABLE_SQL = `CREATE TABLE if not exists entities (
 );`;
 
 function startController () {
-
   // Create the table that will store entity information if it does not already
   // exist.
   db.run(TABLE_SQL);
@@ -137,11 +136,11 @@ function startBot (bot, cerr) {
     });
 }
 
-function handleSimpleReply (bot, message) {
+function handleSimpleReply(bot, message) {
   bot.reply(message, 'Hello.');
 }
 
-function handleEntitiesReply (bot, message) {
+function handleEntitiesReply(bot, message) {
   bot.reply(message, 'Top entities: ');
 
   // Query the database for the top N entities in the past week
@@ -158,8 +157,10 @@ function handleEntitiesReply (bot, message) {
     // Uncomment this to see the query results logged to console:
     // console.log(topEntities);
 
-    topEntities.forEach((entity) => {
-      entityInfo += `entity: *${entity.name}*, type: ${entity.type}, count: ${entity.wc}\n`;
+    topEntities.forEach(entity => {
+      entityInfo += `entity: *${entity.name}*, type: ${entity.type}, count: ${
+        entity.wc
+      }\n`;
     });
 
     bot.reply(message, entityInfo);
@@ -235,13 +236,13 @@ function analyzeSentiment (text) {
     });
 }
 
-function handleAmbientMessage (bot, message) {
+function handleAmbientMessage(bot, message) {
   // Note: for purposes of this example, we're making two separate calls to the
   // API, one to extract the entities from the message, and one to analyze the
   // 'sentiment' of the message. These could be combined into one call.
   return analyzeEntities(message.text, message.ts)
     .then(() => analyzeSentiment(message.text))
-    .then((sentiment) => {
+    .then(sentiment => {
       if (sentiment.score >= SENTIMENT_THRESHOLD) {
         // We have a positive sentiment score larger than the threshold.
         bot.reply(message, ':thumbsup:');

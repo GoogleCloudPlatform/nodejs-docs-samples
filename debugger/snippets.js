@@ -18,6 +18,6 @@
 // [START debugger_setup_explicit]
 require('@google-cloud/debug-agent').start({
   projectId: 'your-project-id',
-  keyFilename: '/path/to/key.json'
+  keyFilename: '/path/to/key.json',
 });
 // [END debugger_setup_explicity]

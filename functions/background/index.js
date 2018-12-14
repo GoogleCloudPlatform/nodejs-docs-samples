@@ -36,6 +36,8 @@ exports.helloWorld = (event, callback) => {
 // [END functions_background_helloworld]
 
 // [START functions_background_promise]
+const requestPromiseNative = require('request-promise-native');
+
 /**
  * Background Cloud Function that returns a Promise. Note that we don't pass
  * a "callback" argument to the function.
@@ -44,11 +46,9 @@ exports.helloWorld = (event, callback) => {
  * @param {object} event.data The event data.
  * @returns {Promise}
  */
-exports.helloPromise = (event) => {
-  const request = require('request-promise');
-
-  return request({
-    uri: event.data.endpoint
+exports.helloPromise = event => {
+  return requestPromiseNative({
+    uri: event.data.endpoint,
   });
 };
 // [END functions_background_promise]
@@ -61,7 +61,7 @@ exports.helloPromise = (event) => {
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data The event data.
  */
-exports.helloSynchronous = (event) => {
+exports.helloSynchronous = event => {
   // This function returns synchronously
   if (event.data.something === true) {
     return 'Something is true!';

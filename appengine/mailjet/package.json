@@ -14,8 +14,6 @@
   },
   "scripts": {
     "start": "node app.js",
-    "lint": "semistandard '**/*.js'",
-    "pretest": "npm run lint",
     "system-test": "repo-tools test app",
     "test": "npm run system-test"
   },
@@ -23,11 +21,10 @@
     "body-parser": "1.18.2",
     "express": "4.16.4",
     "jade": "1.11.0",
-    "node-mailjet": "3.2.1"
+    "node-mailjet": "3.3.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.0",
-    "semistandard": "^12.0.1"
+    "@google-cloud/nodejs-repo-tools": "^2.3.0"
   },
   "cloud-repo-tools": {
     "test": {

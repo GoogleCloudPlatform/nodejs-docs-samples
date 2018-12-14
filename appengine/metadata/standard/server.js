@@ -21,32 +21,33 @@ const request = require('got');
 const app = express();
 app.enable('trust proxy');
 
-const METADATA_PROJECT_ID_URL = 'http://metadata.google.internal/computeMetadata/v1/project/project-id';
+const METADATA_PROJECT_ID_URL =
+  'http://metadata.google.internal/computeMetadata/v1/project/project-id';
 
-function getProjectId () {
+function getProjectId() {
   const options = {
     headers: {
-      'Metadata-Flavor': 'Google'
-    }
+      'Metadata-Flavor': 'Google',
+    },
   };
 
-  return request(METADATA_PROJECT_ID_URL, options)
-    .then((response) => response.body)
-    .catch((err) => {
-      if (err && err.statusCode !== 200) {
-        console.log('Error while talking to metadata server.');
-        return 'Unknown_Project_ID';
-      }
-      return Promise.reject(err);
-    });
+  return request(METADATA_PROJECT_ID_URL, options);
 }
 
-app.get('/', (req, res, next) => {
-  getProjectId()
-    .then((projectId) => {
-      res.status(200).send(`Project ID: ${projectId}`).end();
-    })
-    .catch(next);
+app.get('/', async (req, res, next) => {
+  try {
+    let response = await getProjectId();
+    let projectId = response.body;
+    res
+      .status(200)
+      .send(`Project ID: ${projectId}`)
+      .end();
+  } catch (error) {
+    if (error && error.statusCode && error.statusCode !== 200) {
+      console.log('Error while talking to metadata server.');
+    }
+    next(error);
+  }
 });
 
 const PORT = process.env.PORT || 8080;

@@ -24,106 +24,125 @@ const storageLocation = 'US';
 const storageClass = 'MULTI_REGIONAL';
 const bucket = storageClient.bucket(process.env.OUTPUT_BUCKET);
 
-describe('Tests that do not require a GCS bucket', function () {
-  it('should fail if sampleRateHertz field is invalid.', function (done) {
+describe('Tests that do not require a GCS bucket', function() {
+  it('should fail if sampleRateHertz field is invalid.', function(done) {
     request
       .post('/speechTranslate')
       .send({
         encoding: 'LINEAR16',
         sampleRateHertz: -24000,
         languageCode: 'en',
-        audioContent: fs.readFileSync('test/speech-recording.b64', 'utf8')
+        audioContent: fs.readFileSync('test/speech-recording.b64', 'utf8'),
       })
       .expect(400, /INVALID_ARGUMENT: sample_rate_hertz/, done);
   });
-  it('should fail if languageCode field is invalid.', function (done) {
+  it('should fail if languageCode field is invalid.', function(done) {
     request
       .post('/speechTranslate')
       .send({
         encoding: 'LINEAR16',
         sampleRateHertz: 24000,
         languageCode: 'xx',
-        audioContent: fs.readFileSync('test/speech-recording.b64', 'utf8')
+        audioContent: fs.readFileSync('test/speech-recording.b64', 'utf8'),
       })
-      .expect(400, /INVALID_ARGUMENT.*Invalid recognition.*bad language code/, done);
+      .expect(
+        400,
+        /INVALID_ARGUMENT.*Invalid recognition.*bad language code/,
+        done
+      );
   });
-  it('should fail if audioContent field is invalid.', function (done) {
+  it('should fail if audioContent field is invalid.', function(done) {
     request
       .post('/speechTranslate')
       .send({
         encoding: 'LINEAR16',
         sampleRateHertz: 24000,
         languageCode: 'en',
-        audioContent: 'invalid-base64-audio-content'
+        audioContent: 'invalid-base64-audio-content',
       })
       .expect(400, 'invalid encoding', done);
   });
 });
 
-describe('Tests that require a GCS bucket', function () {
+describe('Tests that require a GCS bucket', function() {
   // Create the Google Cloud Storage bucket if it doesn't exist.
-  before('Create GCS bucket.', function (done) {
-    bucket.exists().then(function (data) {
+  before('Create GCS bucket.', function(done) {
+    bucket.exists().then(function(data) {
       const exists = data[0];
       if (!exists) {
-        bucket.create({
-          location: storageLocation,
-          storageClass: storageClass
-        }).then(function (data) {
-          done();
-        }).catch(error => {
-          done(error);
-        });
+        bucket
+          .create({
+            location: storageLocation,
+            storageClass: storageClass,
+          })
+          .then(function() {
+            done();
+          })
+          .catch(error => {
+            done(error);
+          });
       } else {
         done();
       }
     });
   });
-  it('should return a successful response.', function (done) {
+  it('should return a successful response.', function(done) {
     request
       .post('/speechTranslate')
       .send({
         encoding: 'LINEAR16',
         sampleRateHertz: 24000,
         languageCode: 'en',
-        audioContent: fs.readFileSync('test/speech-recording.b64', 'utf8')
+        audioContent: fs.readFileSync('test/speech-recording.b64', 'utf8'),
       })
       .expect(200)
       .expect(response => {
         const responseBody = JSON.parse(response.text);
         // Write the results to a file so the 'after' hook can use them for cleanup.
         fs.writeFileSync('responseBody.test.json', response.text);
-        responseBody.translations.forEach(function (translation) {
+        responseBody.translations.forEach(function(translation) {
           if (translation.error) {
             throw new Error(
-              `Partial error in translation to ${translation.languageCode}: ${translation.error}`
+              `Partial error in translation to ${translation.languageCode}: ${
+                translation.error
+              }`
             );
           }
         });
       })
-      .expect(/"transcription":"this is a test please translate this message"/, done);
+      .expect(
+        /"transcription":"this is a test please translate this message"/,
+        done
+      );
   });
-  after('Delete created files in the bucket and other test artifacts.', function (done) {
-    // Load the response from the successful test.
-    const responseBody = JSON.parse(fs.readFileSync('responseBody.test.json'));
+  after(
+    'Delete created files in the bucket and other test artifacts.',
+    function(done) {
+      // Load the response from the successful test.
+      const responseBody = JSON.parse(
+        fs.readFileSync('responseBody.test.json')
+      );
 
-    let deletedFiles = [];
-    // Delete the files created in the successful test.
-    for (let i = 0; i < responseBody.translations.length; i++) {
-      if (responseBody.translations[i].gcsPath) {
-        deletedFiles.push(bucket.file(responseBody.translations[i].gcsPath).delete());
+      let deletedFiles = [];
+      // Delete the files created in the successful test.
+      for (let i = 0; i < responseBody.translations.length; i++) {
+        if (responseBody.translations[i].gcsPath) {
+          deletedFiles.push(
+            bucket.file(responseBody.translations[i].gcsPath).delete()
+          );
+        }
       }
-    }
 
-    Promise.all(deletedFiles).then(() => {
-      // Delete the file that stores the response from the successful test.
-      fs.unlinkSync('responseBody.test.json');
-      done();
-    });
-  });
+      Promise.all(deletedFiles).then(() => {
+        // Delete the file that stores the response from the successful test.
+        fs.unlinkSync('responseBody.test.json');
+        done();
+      });
+    }
+  );
 });
 
-function getStorageClient () {
-  const { Storage } = require('@google-cloud/storage');
-  return new Storage({ projectId: googleCloudProject });
+function getStorageClient() {
+  const {Storage} = require('@google-cloud/storage');
+  return new Storage({projectId: googleCloudProject});
 }

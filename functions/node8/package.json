@@ -3,11 +3,10 @@
   "version": "0.0.1",
   "description": "Google Cloud Functions samples for Node.js 8",
   "scripts": {
-    "pretest": "semistandard *.js test/*.js",
     "test": "ava test/*"
   },
   "engines": {
-    "node": "^8"
+    "node": ">=8"
   },
   "repository": {
     "type": "git",
@@ -22,11 +21,14 @@
     "@google-cloud/nodejs-repo-tools": "^2.3.3",
     "ava": "^0.25.0",
     "proxyquire": "^2.1.0",
-    "semistandard": "^12.0.1",
     "sinon": "^7.0.0",
     "uuid": "^3.3.2"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^0.18.0"
+
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
+    "@google-cloud/firestore": "^0.19.0",
+    "escape-html": "^1.0.3"
   }
 }

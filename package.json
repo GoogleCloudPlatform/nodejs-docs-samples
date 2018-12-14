@@ -13,22 +13,8 @@
   },
   "main": "src/index.js",
   "private": true,
-  "semistandard": {
-    "globals": [
-      "rm",
-      "exec",
-      "cd",
-      "ls"
-    ],
-    "ignore": [
-      "appengine/loopback",
-      "appengine/parse-server/cloud/main.js",
-      "**/node_modules/**",
-      "coverage"
-    ]
-  },
   "scripts": {
-    "lint": "semistandard '**/*.js'",
+    "lint": "eslint '**/*.js'",
     "pretest": "npm run lint",
     "unit-cover": "nyc --cache npm test && nyc report --reporter=html",
     "system-cover": "nyc --cache npm run system-test && nyc report --reporter=html",
@@ -39,8 +25,11 @@
     "@google-cloud/nodejs-repo-tools": "^2.3.6",
     "@google-cloud/storage": "1.7.0",
     "ava": "0.25.0",
-    "nyc": "13.0.1",
-    "semistandard": "^12.0.1",
-    "shelljs": "0.8.2"
+    "eslint": "^5.9.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "nyc": "13.1.0",
+    "prettier": "^1.15.2"
   }
 }

@@ -1,0 +1,29 @@
+# Copyright 2018, Google, Inc.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+runtime: nodejs8
+
+# The following env variables may contain sensitive information that grants
+# anyone access to your database. Do not add this file to your source control.
+env_variables:
+  DB_USER: MY_DB_USER
+  DB_PASS: MY_DB_PASSWORD
+  DB_NAME: MY_DATABASE
+  # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
+  CLOUD_SQL_INSTANCE_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>
+
+beta_settings:
+  # The connection name of your instance, available by using
+  # 'gcloud beta sql instances describe [INSTANCE_NAME]' or from
+  # the Instance details page in the Google Cloud Platform Console.
+  cloud_sql_instances: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>

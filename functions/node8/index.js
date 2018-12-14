@@ -22,8 +22,10 @@
  *                     More info: https://expressjs.com/en/api.html#res
  */
 // [START functions_tips_terminate_node8]
+const escapeHtml = require('escape-html');
+
 exports.helloHttp = (req, res) => {
-  res.send(`Hello ${req.body.name || 'World'}!`);
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 };
 // [END functions_tips_terminate_node8]
 
@@ -94,7 +96,9 @@ exports.helloBackground = (data, context) => {
  */
 exports.helloPubSub = (data, context) => {
   const pubSubMessage = data;
-  const name = pubSubMessage.data ? Buffer.from(pubSubMessage.data, 'base64').toString() : 'World';
+  const name = pubSubMessage.data
+    ? Buffer.from(pubSubMessage.data, 'base64').toString()
+    : 'World';
 
   console.log(`Hello, ${name}!`);
 };
@@ -191,7 +195,9 @@ exports.helloFirestore = (data, context) => {
  */
 exports.helloAuth = (data, context) => {
   try {
-    console.log(`Function triggered by creation or deletion of user: ${data.uid}`);
+    console.log(
+      `Function triggered by creation or deletion of user: ${data.uid}`
+    );
     console.log(`Created at: ${data.metadata.createdAt}`);
 
     if (data.email) {
@@ -224,11 +230,45 @@ exports.helloAnalytics = (data, context) => {
 };
 // [END functions_firebase_analytics_node8]
 
+// [START functions_background_promise_node8]
+const requestPromiseNative = require('request-promise-native');
+
+/**
+ * Background Cloud Function that returns a Promise. Note that we don't pass
+ * a "callback" argument to the function.
+ *
+ * @param {object} data The Cloud Functions event data.
+ * @returns {Promise}
+ */
+exports.helloPromise = data => {
+  return requestPromiseNative({
+    uri: data.endpoint,
+  });
+};
+// [END functions_background_promise_node8]
+
+// [START functions_background_synchronous_node8]
+/**
+ * Background Cloud Function that returns synchronously. Note that we don't pass
+ * a "callback" argument to the function.
+ *
+ * @param {object} data The Cloud Functions event data.
+ */
+exports.helloSynchronous = data => {
+  // This function returns synchronously
+  if (data.something === true) {
+    return 'Something is true!';
+  } else {
+    throw new Error('Something was not true!');
+  }
+};
+// [END functions_background_synchronous_node8]
+
 // [START functions_firebase_reactive_node8]
 const Firestore = require('@google-cloud/firestore');
 
 const firestore = new Firestore({
-  projectId: process.env.GCP_PROJECT
+  projectId: process.env.GCP_PROJECT,
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
@@ -241,7 +281,20 @@ exports.makeUpperCase = (data, context) => {
   console.log(`Replacing value: ${curValue} --> ${newValue}`);
 
   return affectedDoc.set({
-    'original': newValue
+    original: newValue,
   });
 };
 // [END functions_firebase_reactive_node8]
+
+// [START functions_firebase_remote_config_node8]
+/**
+ * Triggered by a change to a Firebase Remote Config value.
+ *
+ * @param {object} data The Cloud Functions event data.
+ */
+exports.helloRemoteConfig = data => {
+  console.log(`Update type: ${data.updateType}`);
+  console.log(`Origin: ${data.updateOrigin}`);
+  console.log(`Version: ${data.versionNumber}`);
+};
+// [END functions_firebase_remote_config_node8]

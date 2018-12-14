@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-const { GoogleToken } = require('gtoken');
+const {GoogleToken} = require('gtoken');
 const request = require('request-promise');
 const fs = require('fs');
 
 const BASE_URL = 'https://healthcare.googleapis.com/v1alpha';
 
-function getToken (serviceAccountJson, cb) {
+function getToken(serviceAccountJson, cb) {
   const gtoken = new GoogleToken({
     keyFile: `${serviceAccountJson}`,
-    scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
+    scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
   });
 
-  gtoken.getToken(function (err, token) {
+  gtoken.getToken(function(err, token) {
     if (err) {
       console.log('ERROR: ', err);
       return;
@@ -35,7 +35,15 @@ function getToken (serviceAccountJson, cb) {
 }
 
 // [START healthcare_dicomweb_store_instance]
-function dicomWebStoreInstance (token, projectId, cloudRegion, datasetId, dicomStoreId, dcmFile, boundary) {
+function dicomWebStoreInstance(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  dicomStoreId,
+  dcmFile,
+  boundary
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -53,11 +61,11 @@ function dicomWebStoreInstance (token, projectId, cloudRegion, datasetId, dicomS
   const options = {
     url: dicomWebPath,
     headers: {
-      'authorization': `Bearer ${token}`,
-      'Content-Type': `multipart/related; type=application/dicom; boundary=${boundary}`
+      authorization: `Bearer ${token}`,
+      'Content-Type': `multipart/related; type=application/dicom; boundary=${boundary}`,
     },
     body: binaryData,
-    method: 'POST'
+    method: 'POST',
   };
 
   request(options)
@@ -72,7 +80,13 @@ function dicomWebStoreInstance (token, projectId, cloudRegion, datasetId, dicomS
 // [END healthcare_dicomweb_store_instance]
 
 // [START healthcare_dicomweb_search_instances]
-function dicomWebSearchInstances (token, projectId, cloudRegion, datasetId, dicomStoreId) {
+function dicomWebSearchInstances(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  dicomStoreId
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -86,10 +100,10 @@ function dicomWebSearchInstances (token, projectId, cloudRegion, datasetId, dico
   const options = {
     url: dicomWebPath,
     headers: {
-      'authorization': `Bearer ${token}`,
-      'Content-Type': 'application/dicom+json; charset=utf-8'
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/dicom+json; charset=utf-8',
     },
-    method: 'GET'
+    method: 'GET',
   };
 
   request(options)
@@ -104,7 +118,14 @@ function dicomWebSearchInstances (token, projectId, cloudRegion, datasetId, dico
 // [END healthcare_dicomweb_search_instances]
 
 // [START healthcare_dicomweb_retrieve_study]
-function dicomWebRetrieveStudy (token, projectId, cloudRegion, datasetId, dicomStoreId, studyUid) {
+function dicomWebRetrieveStudy(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  dicomStoreId,
+  studyUid
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -119,14 +140,14 @@ function dicomWebRetrieveStudy (token, projectId, cloudRegion, datasetId, dicomS
   const options = {
     url: dicomWebPath,
     headers: {
-      'authorization': `Bearer ${token}`,
-      'Content-Type': 'application/dicom+json; charset=utf-8'
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/dicom+json; charset=utf-8',
     },
-    method: 'GET'
+    method: 'GET',
   };
 
   request(options)
-    .then(results => {
+    .then(() => {
       console.log(`Retrieved study with UID: ${studyUid}`);
     })
     .catch(err => {
@@ -136,7 +157,14 @@ function dicomWebRetrieveStudy (token, projectId, cloudRegion, datasetId, dicomS
 // [END healthcare_dicomweb_retrieve_study]
 
 // [START healthcare_dicomweb_delete_study]
-function dicomWebDeleteStudy (token, projectId, cloudRegion, datasetId, dicomStoreId, studyUid) {
+function dicomWebDeleteStudy(
+  token,
+  projectId,
+  cloudRegion,
+  datasetId,
+  dicomStoreId,
+  studyUid
+) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -151,14 +179,14 @@ function dicomWebDeleteStudy (token, projectId, cloudRegion, datasetId, dicomSto
   const options = {
     url: dicomWebPath,
     headers: {
-      'authorization': `Bearer ${token}`,
-      'Content-Type': 'application/dicom+json; charset=utf-8'
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/dicom+json; charset=utf-8',
     },
-    method: 'DELETE'
+    method: 'DELETE',
   };
 
   request(options)
-    .then(results => {
+    .then(() => {
       console.log('Deleted study.');
     })
     .catch(err => {
@@ -174,30 +202,39 @@ require(`yargs`) // eslint-disable-line
       alias: 'c',
       default: 'us-central1',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     projectId: {
       alias: 'p',
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
-      description: 'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      description:
+        'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
-      type: 'string'
+      type: 'string',
     },
     serviceAccount: {
       alias: 's',
       default: process.env.GOOGLE_APPLICATION_CREDENTIALS,
       description: 'The path to your service credentials JSON.',
       requiresArg: true,
-      type: 'string'
-    }
+      type: 'string',
+    },
   })
   .command(
     `dicomWebStoreInstance <datasetId> <dicomStoreId> <dcmFile> <boundary>`,
     `Handles the POST requests specified in the DICOMweb standard.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        dicomWebStoreInstance(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.dicomStoreId, opts.dcmFile, opts.boundary);
+    opts => {
+      const cb = function(token) {
+        dicomWebStoreInstance(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.dicomStoreId,
+          opts.dcmFile,
+          opts.boundary
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -206,9 +243,15 @@ require(`yargs`) // eslint-disable-line
     `dicomWebSearchInstances <datasetId> <dicomStoreId>`,
     `Handles the GET requests specified in the DICOMweb standard.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        dicomWebSearchInstances(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.dicomStoreId);
+    opts => {
+      const cb = function(token) {
+        dicomWebSearchInstances(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.dicomStoreId
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -217,9 +260,16 @@ require(`yargs`) // eslint-disable-line
     `dicomWebRetrieveStudy <datasetId> <dicomStoreId> <studyUid>`,
     `Handles the GET requests specified in the DICOMweb standard.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        dicomWebRetrieveStudy(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.dicomStoreId, opts.studyUid);
+    opts => {
+      const cb = function(token) {
+        dicomWebRetrieveStudy(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.dicomStoreId,
+          opts.studyUid
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
@@ -228,16 +278,24 @@ require(`yargs`) // eslint-disable-line
     `dicomWebDeleteStudy <datasetId> <dicomStoreId> <studyUid>`,
     `Handles DELETE requests.`,
     {},
-    (opts) => {
-      const cb = function (token) {
-        dicomWebDeleteStudy(token, opts.projectId, opts.cloudRegion, opts.datasetId, opts.dicomStoreId, opts.studyUid);
+    opts => {
+      const cb = function(token) {
+        dicomWebDeleteStudy(
+          token,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.datasetId,
+          opts.dicomStoreId,
+          opts.studyUid
+        );
       };
       getToken(opts.serviceAccount, cb);
     }
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/healthcare/docs`)
+  .epilogue(
+    `For more information, see https://cloud.google.com/healthcare/docs`
+  )
   .help()
-  .strict()
-  .argv;
+  .strict().argv;

@@ -31,11 +31,15 @@ const kgsearch = googleapis.kgsearch('v1');
  * @param {object} response The response from the Knowledge Graph API.
  * @returns {object} The formatted message.
  */
-function formatSlackMessage (query, response) {
+function formatSlackMessage(query, response) {
   let entity;
 
   // Extract the first entity from the result list, if any
-  if (response && response.itemListElement && response.itemListElement.length > 0) {
+  if (
+    response &&
+    response.itemListElement &&
+    response.itemListElement.length > 0
+  ) {
     entity = response.itemListElement[0].result;
   }
 
@@ -44,12 +48,12 @@ function formatSlackMessage (query, response) {
   const slackMessage = {
     response_type: 'in_channel',
     text: `Query: ${query}`,
-    attachments: []
+    attachments: [],
   };
 
   if (entity) {
     const attachment = {
-      color: '#3367d6'
+      color: '#3367d6',
     };
     if (entity.name) {
       attachment.title = entity.name;
@@ -71,7 +75,7 @@ function formatSlackMessage (query, response) {
     slackMessage.attachments.push(attachment);
   } else {
     slackMessage.attachments.push({
-      text: 'No results match your query...'
+      text: 'No results match your query...',
     });
   }
 
@@ -86,7 +90,7 @@ function formatSlackMessage (query, response) {
  * @param {object} body The body of the request.
  * @param {string} body.token The Slack token to be verified.
  */
-function verifyWebhook (body) {
+function verifyWebhook(body) {
   if (!body || body.token !== config.SLACK_TOKEN) {
     const error = new Error('Invalid credentials');
     error.code = 401;
@@ -101,22 +105,25 @@ function verifyWebhook (body) {
  *
  * @param {string} query The user's search query.
  */
-function makeSearchRequest (query) {
+function makeSearchRequest(query) {
   return new Promise((resolve, reject) => {
-    kgsearch.entities.search({
-      auth: config.KG_API_KEY,
-      query: query,
-      limit: 1
-    }, (err, response) => {
-      console.log(err);
-      if (err) {
-        reject(err);
-        return;
-      }
+    kgsearch.entities.search(
+      {
+        auth: config.KG_API_KEY,
+        query: query,
+        limit: 1,
+      },
+      (err, response) => {
+        console.log(err);
+        if (err) {
+          reject(err);
+          return;
+        }
 
-      // Return a formatted message
-      resolve(formatSlackMessage(query, response));
-    });
+        // Return a formatted message
+        resolve(formatSlackMessage(query, response));
+      }
+    );
   });
 }
 // [END functions_slack_request]
@@ -152,11 +159,11 @@ exports.kgSearch = (req, res) => {
       // Make the request to the Knowledge Graph Search API
       return makeSearchRequest(req.body.text);
     })
-    .then((response) => {
+    .then(response => {
       // Send the formatted message back to Slack
       res.json(response);
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       res.status(err.code || 500).send(err);
       return Promise.reject(err);

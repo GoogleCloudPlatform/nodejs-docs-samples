@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-docs-samples-jobs",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "repo-tools test run --cmd ava -- -T 20s --verbose system-test/*.test.js"
+  },
+  "dependencies": {
+    "googleapis": "^35.0.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",
+    "ava": "0.25.0"
+  }
+}

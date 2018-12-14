@@ -12,20 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* tslint:disable:no-console */
+const PORT = Number(process.env.PORT) || 8080;
+import * as express from "express";
 
-declare var process: {
-  env: {
-      PORT: string,
-  },
-};
+const app = express();
 
-const PORT: number = Number(process.env.PORT) || 8080;
-import express = require("express");
-
-const app: any = express();
-
-app.get("/", (req: any, res: any) => {
+app.get("/", (req, res) => {
   res.send("🎉 Hello TypeScript! 🎉");
 });
 

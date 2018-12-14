@@ -28,13 +28,17 @@ const datastore = Datastore();
  * @param {string} requestData.kind Datastore kind.
  * @returns {object} Datastore key object.
  */
-function getKeyFromRequestData (requestData) {
+function getKeyFromRequestData(requestData) {
   if (!requestData.key) {
-    throw new Error('Key not provided. Make sure you have a "key" property in your request');
+    throw new Error(
+      'Key not provided. Make sure you have a "key" property in your request'
+    );
   }
 
   if (!requestData.kind) {
-    throw new Error('Kind not provided. Make sure you have a "kind" property in your request');
+    throw new Error(
+      'Kind not provided. Make sure you have a "kind" property in your request'
+    );
   }
 
   return datastore.key([requestData.kind, requestData.key]);
@@ -56,18 +60,21 @@ function getKeyFromRequestData (requestData) {
 exports.set = (req, res) => {
   // The value contains a JSON document representing the entity we want to save
   if (!req.body.value) {
-    throw new Error('Value not provided. Make sure you have a "value" property in your request');
+    throw new Error(
+      'Value not provided. Make sure you have a "value" property in your request'
+    );
   }
 
   const key = getKeyFromRequestData(req.body);
   const entity = {
     key: key,
-    data: req.body.value
+    data: req.body.value,
   };
 
-  return datastore.save(entity)
+  return datastore
+    .save(entity)
     .then(() => res.status(200).send(`Entity ${key.path.join('/')} saved.`))
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       res.status(500).send(err.message);
       return Promise.reject(err);
@@ -89,7 +96,8 @@ exports.set = (req, res) => {
 exports.get = (req, res) => {
   const key = getKeyFromRequestData(req.body);
 
-  return datastore.get(key)
+  return datastore
+    .get(key)
     .then(([entity]) => {
       // The get operation will not fail for a non-existent entity, it just
       // returns an empty dictionary.
@@ -99,7 +107,7 @@ exports.get = (req, res) => {
 
       res.status(200).send(entity);
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       res.status(500).send(err.message);
       return Promise.reject(err);
@@ -124,9 +132,10 @@ exports.del = (req, res) => {
   // Deletes the entity
   // The delete operation will not fail for a non-existent entity, it just
   // doesn't delete anything
-  return datastore.delete(key)
+  return datastore
+    .delete(key)
     .then(() => res.status(200).send(`Entity ${key.path.join('/')} deleted.`))
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       res.status(500).send(err);
       return Promise.reject(err.message);

@@ -25,7 +25,7 @@
     "express": "4.16.2",
     "knex": "0.16.2",
     "prompt": "1.0.0",
-    "pug": "2.0.0-rc.4",
+    "pug": "2.0.3",
     "@google-cloud/logging-winston": "^0.10.2",
     "winston": "^3.1.0"
   },

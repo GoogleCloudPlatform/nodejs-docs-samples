@@ -12,7 +12,7 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.21.0",
+    "@google-cloud/pubsub": "^0.22.0",
     "safe-buffer": "5.1.2"
   },
   "devDependencies": {

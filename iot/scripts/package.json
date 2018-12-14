@@ -5,6 +5,6 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "@google-cloud/pubsub": "0.21.1"
+    "@google-cloud/pubsub": "0.22.2"
   }
 }

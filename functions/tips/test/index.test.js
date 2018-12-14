@@ -29,8 +29,8 @@ test(`should demonstrate retry behavior for a promise`, async t => {
   t.throws(() => {
     sample.retryPromise({
       data: {
-        retry: true,
-      },
+        retry: true
+      }
     });
   }, 'Retrying...');
 
@@ -46,8 +46,8 @@ test(`should demonstrate retry behavior for a callback`, t => {
   sample.retryCallback(
     {
       data: {
-        retry: true,
-      },
+        retry: true
+      }
     },
     cb
   );
@@ -56,4 +56,26 @@ test(`should demonstrate retry behavior for a callback`, t => {
   // Terminate by passing nothing to the callback
   sample.retryCallback({data: {}}, cb);
   t.deepEqual(cb.secondCall.args, []);
+});
+
+test(`should call a GCP API`, async t => {
+  const reqMock = {
+    body: {
+      topic: process.env.FUNCTIONS_TOPIC
+    }
+  };
+
+  const resMock = {
+    send: sinon.stub().returnsThis(),
+    status: sinon.stub().returnsThis()
+  };
+
+  sample.gcpApiCall(reqMock, resMock);
+
+  // Instead of modifying the sample to return a promise,
+  // use a delay here and keep the sample idiomatic
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  t.true(resMock.status.calledOnce);
+  t.true(resMock.status.calledWith(200));
 });

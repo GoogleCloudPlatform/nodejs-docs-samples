@@ -55,12 +55,12 @@ exports.helloContent = (req, res) => {
 // [END functions_http_content]
 
 // [START functions_http_method]
-function handleGET (req, res) {
+function handleGET(req, res) {
   // Do something with the GET request
   res.status(200).send('Hello World!');
 }
 
-function handlePUT (req, res) {
+function handlePUT(req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
 }
@@ -216,10 +216,10 @@ exports.getSignedUrl = (req, res) => {
     const config = {
       action: 'write',
       expires: expiresAtMs,
-      contentType: req.body.contentType
+      contentType: req.body.contentType,
     };
 
-    file.getSignedUrl(config, function (err, url) {
+    file.getSignedUrl(config, function(err, url) {
       if (err) {
         console.error(err);
         res.status(500).end();

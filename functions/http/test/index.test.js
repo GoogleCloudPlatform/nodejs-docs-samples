@@ -22,36 +22,36 @@ const test = require(`ava`);
 const uuid = require(`uuid`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-function getSample () {
+function getSample() {
   const requestPromise = sinon
     .stub()
     .returns(new Promise(resolve => resolve(`test`)));
 
   return {
     sample: proxyquire(`../`, {
-      'request-promise': requestPromise
+      'request-promise': requestPromise,
     }),
     mocks: {
-      requestPromise: requestPromise
-    }
+      requestPromise: requestPromise,
+    },
   };
 }
 
-function getMocks () {
+function getMocks() {
   const req = {
     headers: {},
-    get: function (header) {
+    get: function(header) {
       return this.headers[header];
-    }
+    },
   };
   sinon.spy(req, `get`);
 
   const corsPreflightReq = {
-    method: 'OPTIONS'
+    method: 'OPTIONS',
   };
 
   const corsMainReq = {
-    method: 'GET'
+    method: 'GET',
   };
 
   return {
@@ -63,8 +63,8 @@ function getMocks () {
       send: sinon.stub().returnsThis(),
       json: sinon.stub().returnsThis(),
       end: sinon.stub().returnsThis(),
-      status: sinon.stub().returnsThis()
-    }
+      status: sinon.stub().returnsThis(),
+    },
   };
 }
 
@@ -233,8 +233,8 @@ test.serial(`http:getSignedUrl: should process example request`, async t => {
     body: {
       bucket: 'nodejs-docs-samples',
       filename: `gcf-gcs-url-${uuid.v4}`,
-      contentType: 'application/octet-stream'
-    }
+      contentType: 'application/octet-stream',
+    },
   };
 
   httpSample.sample.getSignedUrl(reqMock, mocks.res);

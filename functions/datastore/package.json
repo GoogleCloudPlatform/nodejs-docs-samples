@@ -17,7 +17,7 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/datastore": "1.4.2",
+    "@google-cloud/datastore": "2.0.0",
     "supertest": "^3.0.0"
   },
   "devDependencies": {

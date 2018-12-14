@@ -38,6 +38,8 @@ function getSample() {
     publish: sinon.stub().returns(Promise.resolve([])),
   };
   topic.get = sinon.stub().returns(Promise.resolve([topic]));
+  topic.publisher = sinon.stub().returns(topic);
+
   const file = {
     save: sinon.stub().returns(Promise.resolve([])),
     bucket: bucketName,
@@ -61,15 +63,37 @@ function getSample() {
     detect: sinon.stub().returns(Promise.resolve([{language: `ja`}])),
     translate: sinon.stub().returns(Promise.resolve([translation])),
   };
+
   const PubsubMock = sinon.stub().returns(pubsubMock);
   const StorageMock = sinon.stub().returns(storageMock);
-  const VisionMock = sinon.stub().returns(visionMock);
-  const TranslateMock = sinon.stub().returns(translateMock);
+
+  const stubConstructor = (packageName, property, mocks) => {
+    let stubInstance = sinon.createStubInstance(
+      require(packageName)[property],
+      mocks
+    );
+    stubInstance = Object.assign(stubInstance, mocks);
+
+    let out = {};
+    out[property] = sinon.stub().returns(stubInstance);
+    return out;
+  };
+
+  const visionStub = stubConstructor(
+    '@google-cloud/vision',
+    'ImageAnnotatorClient',
+    visionMock
+  );
+  const translateStub = stubConstructor(
+    '@google-cloud/translate',
+    'Translate',
+    translateMock
+  );
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/translate': {Translate: TranslateMock},
-      '@google-cloud/vision': VisionMock,
+      '@google-cloud/translate': translateStub,
+      '@google-cloud/vision': visionStub,
       '@google-cloud/pubsub': {PubSub: PubsubMock},
       '@google-cloud/storage': StorageMock,
       './config.json': config,

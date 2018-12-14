@@ -15,7 +15,7 @@
 
 // [START functions_background_promise_node8]
 // [START functions_background_async]
-const requestPromiseNative = require('request-promise-native');
+const fetch = require('node-fetch');
 
 // [END functions_background_promise_node8]
 // [END functions_background_async]
@@ -246,9 +246,7 @@ exports.helloAnalytics = (data, context) => {
  * @returns {Promise}
  */
 exports.helloPromise = data => {
-  return requestPromiseNative({
-    uri: data.endpoint,
-  });
+  return fetch(data.endpoint);
 };
 // [END functions_background_promise_node8]
 
@@ -311,7 +309,7 @@ exports.helloRemoteConfig = data => {
  * @param {object} data The event payload.
  */
 exports.helloAsync = async data => {
-  const result = await requestPromiseNative('https://www.example.com');
+  const result = await fetch('https://www.example.com');
   return result;
 };
 // [END functions_background_async]

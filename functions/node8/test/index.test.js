@@ -22,7 +22,7 @@ const utils = require('@google-cloud/nodejs-repo-tools');
 const proxyquire = require(`proxyquire`).noCallThru();
 
 function getSample() {
-  const requestPromiseNative = sinon.stub().returns(Promise.resolve(`test`));
+  const nodeFetch = sinon.stub().returns(Promise.resolve(`test`));
 
   const firestoreMock = {
     doc: sinon.stub().returnsThis(),
@@ -31,12 +31,12 @@ function getSample() {
 
   return {
     program: proxyquire(`../`, {
-      'request-promise-native': requestPromiseNative,
+      'node-fetch': nodeFetch,
       '@google-cloud/firestore': sinon.stub().returns(firestoreMock),
     }),
     mocks: {
       firestore: firestoreMock,
-      requestPromiseNative: requestPromiseNative,
+      nodeFetch: nodeFetch,
     },
   };
 }
@@ -209,9 +209,7 @@ test.serial(`should make a promise request`, t => {
   };
 
   return sample.program.helloPromise(data).then(result => {
-    t.deepEqual(sample.mocks.requestPromiseNative.firstCall.args, [
-      {uri: `foo.com`},
-    ]);
+    t.deepEqual(sample.mocks.nodeFetch.firstCall.args, [`foo.com`]);
     t.is(result, `test`);
   });
 });
@@ -286,7 +284,5 @@ test.serial('should make async HTTP request', t => {
   const sample = getSample();
 
   sample.program.helloAsync();
-  t.true(
-    sample.mocks.requestPromiseNative.calledWith('https://www.example.com')
-  );
+  t.true(sample.mocks.nodeFetch.calledWith('https://www.example.com'));
 });

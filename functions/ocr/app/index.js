@@ -42,7 +42,7 @@ const Buffer = require('safe-buffer').Buffer;
  * @param {string} topicName Name of the topic on which to publish.
  * @param {object} data The message data to publish.
  */
-function publishResult (topicName, data) {
+function publishResult(topicName, data) {
   const dataBuffer = Buffer.from(JSON.stringify(data));
 
   return pubsub
@@ -60,7 +60,7 @@ function publishResult (topicName, data) {
  * @param {string} filename Cloud Storage file name.
  * @returns {Promise}
  */
-function detectText (bucketName, filename) {
+function detectText(bucketName, filename) {
   let text;
 
   console.log(`Looking for text in image ${filename}`);
@@ -87,7 +87,7 @@ function detectText (bucketName, filename) {
         const messageData = {
           text: text,
           filename: filename,
-          lang: lang
+          lang: lang,
         };
 
         return publishResult(topicName, messageData);
@@ -106,7 +106,7 @@ function detectText (bucketName, filename) {
  * @param {string} lang Language to append.
  * @returns {string} The new filename.
  */
-function renameImageForSave (filename, lang) {
+function renameImageForSave(filename, lang) {
   return `${filename}_to_${lang}.txt`;
 }
 // [END functions_ocr_rename]
@@ -191,7 +191,7 @@ exports.translateText = event => {
       const messageData = {
         text: translation,
         filename: payload.filename,
-        lang: payload.lang
+        lang: payload.lang,
       };
 
       return publishResult(config.RESULT_TOPIC, messageData);

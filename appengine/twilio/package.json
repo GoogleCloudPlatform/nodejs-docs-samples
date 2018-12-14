@@ -14,6 +14,6 @@
   "dependencies": {
     "body-parser": "1.18.2",
     "express": "4.16.4",
-    "twilio": "3.13.0"
+    "twilio": "3.25.0"
   }
 }

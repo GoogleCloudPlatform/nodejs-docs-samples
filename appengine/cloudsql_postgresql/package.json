@@ -21,7 +21,6 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "async": "2.6.0",
     "express": "4.16.4",
     "knex": "0.15.2",
     "pg": "7.7.1",

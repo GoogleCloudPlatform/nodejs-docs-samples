@@ -68,7 +68,7 @@ function getSample() {
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/translate': TranslateMock,
+      '@google-cloud/translate': {Translate: TranslateMock},
       '@google-cloud/vision': VisionMock,
       '@google-cloud/pubsub': {PubSub: PubsubMock},
       '@google-cloud/storage': StorageMock,

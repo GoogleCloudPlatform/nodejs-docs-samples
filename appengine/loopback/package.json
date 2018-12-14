@@ -21,7 +21,7 @@
     "loopback-component-explorer": "5.4.0",
     "serve-favicon": "2.5.0",
     "strong-error-handler": "2.3.2",
-    "loopback-datasource-juggler": "3.28.0",
+    "loopback-datasource-juggler": "4.4.0",
     "loopback": "3.24.0"
   },
   "devDependencies": {

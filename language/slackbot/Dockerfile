@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:5.4
+FROM node:5.12
 
 RUN apt-get update
 RUN apt-get install -y sqlite3

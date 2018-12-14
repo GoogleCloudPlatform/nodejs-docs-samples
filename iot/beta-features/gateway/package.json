@@ -18,7 +18,7 @@
   "dependencies": {
     "googleapis": "^32.0.0",
     "jsonwebtoken": "^8.3.0",
-    "mqtt": "2.15.0",
+    "mqtt": "2.18.8",
     "yargs": "8.0.2"
   },
   "devDependencies": {

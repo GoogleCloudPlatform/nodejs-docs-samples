@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "jsonwebtoken": "8.4.0",
-    "retry-request": "3.3.2",
+    "retry-request": "4.0.0",
     "yargs": "8.0.2"
   },
   "devDependencies": {

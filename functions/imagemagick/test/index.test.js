@@ -68,7 +68,7 @@ function getSample(filename) {
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/storage': StorageMock,
+      '@google-cloud/storage': {Storage: StorageMock},
       gm: gmMock,
       fs: fsMock,
     }),

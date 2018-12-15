@@ -28,10 +28,10 @@ const bodyParser = require('body-parser');
 // the project specified by the GOOGLE_CLOUD_PROJECT environment variable. See
 // https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/docs/authentication.md
 // These environment variables are set automatically on Google App Engine
-const Storage = require('@google-cloud/storage');
+const {Storage} = require('@google-cloud/storage');
 
 // Instantiate a storage client
-const storage = Storage();
+const storage = new Storage();
 
 const app = express();
 app.set('view engine', 'pug');

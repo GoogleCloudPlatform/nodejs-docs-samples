@@ -95,7 +95,7 @@ function getSample() {
       '@google-cloud/translate': translateStub,
       '@google-cloud/vision': visionStub,
       '@google-cloud/pubsub': {PubSub: PubsubMock},
-      '@google-cloud/storage': StorageMock,
+      '@google-cloud/storage': {Storage: StorageMock},
       './config.json': config,
     }),
     mocks: {

@@ -26,7 +26,7 @@
     "ava": "0.25.0",
     "proxyquire": "2.1.0",
     "sinon": "4.5.0",
-    "@google-cloud/storage": "2.3.3",
+    "@google-cloud/storage": "^2.3.3",
     "uuid": "3.3.2"
   },
   "cloud-repo-tools": {

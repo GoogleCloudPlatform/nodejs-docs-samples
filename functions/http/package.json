@@ -16,16 +16,16 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "ava": "0.25.0",
-    "proxyquire": "2.1.0",
-    "sinon": "4.5.0",
+    "ava": "^0.25.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^4.5.0",
     "uuid": "^3.3.2"
   },
   "dependencies": {
-    "@google-cloud/storage": "2.3.3",
+    "@google-cloud/storage": "^2.3.3",
     "busboy": "^0.2.14",
     "escape-html": "^1.0.3",
-    "safe-buffer": "5.1.2"
+    "safe-buffer": "^5.1.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

@@ -14,17 +14,17 @@
     "test": "repo-tools test app -- ."
   },
   "dependencies": {
-    "compression": "1.7.2",
+    "compression": "1.7.3",
     "cors": "2.8.5",
     "helmet": "3.15.0",
     "loopback-boot": "2.27.1",
     "loopback-component-explorer": "5.4.0",
     "serve-favicon": "2.5.0",
     "strong-error-handler": "2.3.2",
-    "loopback-datasource-juggler": "3.28.0",
+    "loopback-datasource-juggler": "4.5.0",
     "loopback": "3.24.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.3.5"
+    "@google-cloud/nodejs-repo-tools": "^3.0.0"
   }
 }

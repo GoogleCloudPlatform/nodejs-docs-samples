@@ -13,11 +13,11 @@
   "license": "Apache-2.0",
   "dependencies": {
     "google-auth-library": "^2.0.0",
-    "googleapis": "^33.0.0",
+    "googleapis": "^36.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.2.5",
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "^0.25.0",
     "proxyquire": "^2.1.0",
     "sinon": "^6.3.4"

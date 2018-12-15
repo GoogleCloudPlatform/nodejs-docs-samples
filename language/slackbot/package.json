@@ -22,13 +22,13 @@
   },
   "dependencies": {
     "@google-cloud/language": "0.11.0",
-    "botkit": "0.6.21",
-    "sqlite3": "3.1.13"
+    "botkit": "0.7.0",
+    "sqlite3": "4.0.4"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
     "proxyquire": "2.1.0",
-    "sinon": "3.2.0"
+    "sinon": "3.3.0"
   }
 }

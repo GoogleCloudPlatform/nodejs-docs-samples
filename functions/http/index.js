@@ -194,7 +194,8 @@ exports.uploadFile = (req, res) => {
 // [END functions_http_form_data]
 
 // [START functions_http_signed_url]
-const storage = require('@google-cloud/storage')();
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 
 /**
  * HTTP function that generates a signed URL
@@ -208,7 +209,7 @@ exports.getSignedUrl = (req, res) => {
     // TODO(developer) check that the user is authorized to upload
 
     // Get a reference to the destination file in GCS
-    const file = storage.bucket('my-bucket').file(req.body.filename);
+    const file = storage.bucket(req.body.bucket).file(req.body.filename);
 
     // Create a temporary upload URL
     const expiresAtMs = Date.now() + 300000; // Link expires in 5 minutes

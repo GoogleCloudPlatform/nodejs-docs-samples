@@ -13,6 +13,13 @@
  * limitations under the License.
  */
 
+// [START functions_background_promise_node8]
+// [START functions_background_async]
+const fetch = require('node-fetch');
+
+// [END functions_background_promise_node8]
+// [END functions_background_async]
+
 /**
  * HTTP Cloud Function (same signature as other Node runtimes)
  *
@@ -231,8 +238,6 @@ exports.helloAnalytics = (data, context) => {
 // [END functions_firebase_analytics_node8]
 
 // [START functions_background_promise_node8]
-const requestPromiseNative = require('request-promise-native');
-
 /**
  * Background Cloud Function that returns a Promise. Note that we don't pass
  * a "callback" argument to the function.
@@ -241,9 +246,7 @@ const requestPromiseNative = require('request-promise-native');
  * @returns {Promise}
  */
 exports.helloPromise = data => {
-  return requestPromiseNative({
-    uri: data.endpoint,
-  });
+  return fetch(data.endpoint);
 };
 // [END functions_background_promise_node8]
 
@@ -298,3 +301,15 @@ exports.helloRemoteConfig = data => {
   console.log(`Version: ${data.versionNumber}`);
 };
 // [END functions_firebase_remote_config_node8]
+
+// [START functions_background_async]
+/**
+ * Background Cloud Function demonstrates use of async/await.
+ *
+ * @param {object} data The event payload.
+ */
+exports.helloAsync = async data => {
+  const result = await fetch('https://www.example.com');
+  return result;
+};
+// [END functions_background_async]

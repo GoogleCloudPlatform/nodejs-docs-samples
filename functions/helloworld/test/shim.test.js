@@ -18,8 +18,8 @@ const Supertest = require(`supertest`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const {PubSub} = require(`@google-cloud/pubsub`);
 const pubsub = new PubSub();
-const Storage = require(`@google-cloud/storage`);
-const storage = Storage();
+const {Storage} = require(`@google-cloud/storage`);
+const storage = new Storage();
 const uuid = require(`uuid`);
 const path = require(`path`);
 

@@ -92,8 +92,8 @@ function getSample() {
   return {
     program: proxyquire(`../`, {
       sendgrid: sendgrid,
-      '@google-cloud/bigquery': BigQueryMock,
-      '@google-cloud/storage': StorageMock,
+      '@google-cloud/bigquery': {BigQuery: BigQueryMock},
+      '@google-cloud/storage': {Storage: StorageMock},
       './config.json': config,
       uuid: uuid,
     }),

@@ -17,7 +17,7 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/datastore": "1.4.2",
+    "@google-cloud/datastore": "2.0.0",
     "supertest": "^3.0.0"
   },
   "devDependencies": {
@@ -25,7 +25,7 @@
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
     "ava": "0.25.0",
     "proxyquire": "2.1.0",
-    "sinon": "4.4.2",
+    "sinon": "4.5.0",
     "uuid": "^3.3.2"
   },
   "cloud-repo-tools": {

@@ -16,16 +16,12 @@
 'use strict';
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
-const tools = require(`@google-cloud/nodejs-repo-tools`);
 const assert = require('assert');
 
 process.env.MAILJET_API_KEY = `foo`;
 process.env.MAILJET_API_SECRET = `bar`;
 
 describe('mailjet', () => {
-  beforeEach(tools.stubConsole);
-  afterEach(tools.restoreConsole);
-
   it('should send an email', () => {
     proxyquire(`../mailjet`, {
       nodemailer: {

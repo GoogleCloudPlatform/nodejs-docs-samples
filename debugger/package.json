@@ -20,7 +20,7 @@
     "e2e-test": "repo-tools test deploy"
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "2.6.0",
+    "@google-cloud/debug-agent": "3.0.1",
     "express": "4.16.4"
   },
   "devDependencies": {

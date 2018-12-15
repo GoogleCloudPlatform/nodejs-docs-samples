@@ -16,15 +16,11 @@
 'use strict';
 
 const proxyquire = require(`proxyquire`).noPreserveCache();
-const tools = require(`@google-cloud/nodejs-repo-tools`);
 const assert = require('assert');
 
 process.env.SENDGRID_API_KEY = `foo`;
 
 describe('sendgrid', () => {
-  beforeEach(tools.stubConsole);
-  afterEach(tools.restoreConsole);
-
   it('should send an email', () => {
     proxyquire(`../sendgrid`, {
       sendgrid: key => {

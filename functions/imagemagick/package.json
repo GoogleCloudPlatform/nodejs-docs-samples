@@ -15,15 +15,15 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/storage": "1.7.0",
-    "@google-cloud/vision": "0.23.0",
+    "@google-cloud/storage": "^2.3.3",
+    "@google-cloud/vision": "^0.23.0",
     "gm": "^1.23.1"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "ava": "0.25.0",
-    "proxyquire": "2.1.0",
-    "sinon": "4.5.0"
+    "ava": "^0.25.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^4.5.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

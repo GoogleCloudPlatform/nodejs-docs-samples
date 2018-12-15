@@ -22,7 +22,8 @@ const config = require('./config.json');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 // Get a reference to the Cloud Storage component
-const storage = require('@google-cloud/storage')();
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 
 // Get a reference to the Cloud Vision API component
 const Vision = require('@google-cloud/vision');

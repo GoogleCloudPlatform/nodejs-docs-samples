@@ -16,7 +16,8 @@
 /* eslint no-empty: 0 */
 'use strict';
 
-const storage = require(`@google-cloud/storage`)();
+const {Storage} = require(`@google-cloud/storage`);
+const storage = new Storage();
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);

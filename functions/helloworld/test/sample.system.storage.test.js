@@ -14,8 +14,8 @@
  */
 
 // [START functions_storage_system_test]
-const Storage = require(`@google-cloud/storage`);
-const storage = Storage();
+const {Storage} = require(`@google-cloud/storage`);
+const storage = new Storage();
 const uuid = require(`uuid`);
 const test = require(`ava`);
 const path = require(`path`);

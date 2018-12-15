@@ -22,7 +22,8 @@ const config = require('./config.json');
 const uuid = require('uuid');
 
 // Get a reference to the Cloud Storage component
-const storage = require('@google-cloud/storage')();
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 // Get a reference to the BigQuery component
 const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();

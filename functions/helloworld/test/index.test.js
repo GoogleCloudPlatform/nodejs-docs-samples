@@ -22,7 +22,8 @@ const uuid = require(`uuid`);
 
 const {PubSub} = require(`@google-cloud/pubsub`);
 const pubsub = new PubSub();
-const storage = require(`@google-cloud/storage`)();
+const {Storage} = require(`@google-cloud/storage`);
+const storage = new Storage();
 
 const baseCmd = process.env.FUNCTIONS_CMD;
 const topicName = process.env.FUNCTIONS_TOPIC;

@@ -20,7 +20,7 @@
     "loopback-boot": "2.27.1",
     "loopback-component-explorer": "5.4.0",
     "serve-favicon": "2.5.0",
-    "strong-error-handler": "2.3.2",
+    "strong-error-handler": "3.2.0",
     "loopback-datasource-juggler": "4.5.0",
     "loopback": "3.24.0"
   },

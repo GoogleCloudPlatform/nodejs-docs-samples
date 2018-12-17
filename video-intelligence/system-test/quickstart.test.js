@@ -16,16 +16,15 @@
 'use strict';
 
 const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
 
 const cmd = 'node quickstart.js';
 const cwd = path.join(__dirname, '..');
 
-it('should analyze a hardcoded video', async () => {
-  const output = await tools.runAsync(cmd, cwd);
-  assert.strictEqual(
-    new RegExp(/Label standing occurs at:/).test(output),
-    true
-  );
+describe('quickstart samples', () => {
+  it('should analyze a hardcoded video', async () => {
+    const {stdout} = await execa.shell(cmd, {cwd});
+    assert.match(stdout, /Label standing occurs at:/);
+  });
 });

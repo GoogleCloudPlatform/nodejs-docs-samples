@@ -15,286 +15,287 @@
 
 'use strict';
 
-const async = require('async');
 const fs = require('fs');
 const path = require('path');
+const {promisify} = require('util');
+const vision = require('@google-cloud/vision');
+const natural = require('natural');
+const redis = require('redis');
+
+const readFile = promisify(fs.readFile);
+const stat = promisify(fs.stat);
+const readdir = promisify(fs.readdir);
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-const vision = require('@google-cloud/vision');
-const natural = require('natural');
-const redis = require('redis');
 
 // Instantiate a vision client
 const client = new vision.ImageAnnotatorClient();
 
-function Index() {
-  // Connect to a redis server.
-  const TOKEN_DB = 0;
-  const DOCS_DB = 1;
-  const PORT = process.env.REDIS_PORT || '6379';
-  const HOST = process.env.REDIS_HOST || '127.0.0.1';
+/**
+ * State manager for text processing.  Stores and reads results from Redis.
+ */
+class Index {
+  /**
+   * Create a new Index object.
+   */
+  constructor() {
+    // Connect to a redis server.
+    const TOKEN_DB = 0;
+    const DOCS_DB = 1;
+    const PORT = process.env.REDIS_PORT || '6379';
+    const HOST = process.env.REDIS_HOST || '127.0.0.1';
 
-  this.tokenClient = redis
-    .createClient(PORT, HOST, {
-      db: TOKEN_DB,
-    })
-    .on('error', function(err) {
-      console.error('ERR:REDIS: ' + err);
-    });
-  this.docsClient = redis
-    .createClient(PORT, HOST, {
-      db: DOCS_DB,
-    })
-    .on('error', function(err) {
-      console.error('ERR:REDIS: ' + err);
-    });
-}
-
-Index.prototype.quit = function() {
-  this.tokenClient.quit();
-  this.docsClient.quit();
-};
-
-Index.prototype.add = function(filename, document, callback) {
-  const self = this;
-  const PUNCTUATION = ['.', ',', ':', ''];
-  const tokenizer = new natural.WordTokenizer();
-  const tokens = tokenizer.tokenize(document);
-
-  const tasks = tokens
-    .filter(function(token) {
-      return PUNCTUATION.indexOf(token) === -1;
-    })
-    .map(function(token) {
-      return function(cb) {
-        self.tokenClient.sadd(token, filename, cb);
-      };
-    });
-
-  tasks.push(function(cb) {
-    self.tokenClient.set(filename, document, cb);
-  });
-
-  async.parallel(tasks, callback);
-};
-
-Index.prototype.lookup = function(words, callback) {
-  const self = this;
-  const tasks = words.map(function(word) {
-    word = word.toLowerCase();
-    return function(cb) {
-      self.tokenClient.smembers(word, cb);
-    };
-  });
-  async.parallel(tasks, callback);
-};
-
-Index.prototype.documentIsProcessed = function(filename, callback) {
-  this.docsClient.GET(filename, function(err, value) {
-    if (err) {
-      return callback(err);
-    }
-    if (value) {
-      console.log(filename + ' already added to index.');
-      callback(null, true);
-    } else if (value === '') {
-      console.log(filename + ' was already checked, and contains no text.');
-      callback(null, true);
-    } else {
-      callback(null, false);
-    }
-  });
-};
-
-Index.prototype.setContainsNoText = function(filename, callback) {
-  this.docsClient.set(filename, '', callback);
-};
-
-function lookup(words) {
-  return new Promise((resolve, reject) => {
-    const index = new Index();
-    index.lookup(words, function(err, hits) {
-      index.quit();
-      if (err) {
-        return reject(err);
-      }
-      words.forEach(function(word, i) {
-        console.log('hits for "' + word + '":', hits[i].join(', '));
+    this.tokenClient = redis
+      .createClient(PORT, HOST, {
+        db: TOKEN_DB,
+      })
+      .on('error', err => {
+        console.error('ERR:REDIS: ' + err);
+        throw err;
       });
-      resolve(hits);
-    });
-  });
+    this.docsClient = redis
+      .createClient(PORT, HOST, {
+        db: DOCS_DB,
+      })
+      .on('error', err => {
+        console.error('ERR:REDIS: ' + err);
+        throw err;
+      });
+  }
+
+  /**
+   * Close all active redis server connections.
+   */
+  quit() {
+    this.tokenClient.quit();
+    this.docsClient.quit();
+  }
+
+  /**
+   * Tokenize the given document.
+   * @param {string} filename - key for the storage in redis
+   * @param {string} document - Collection of words to be tokenized
+   * @returns {Promise<void>}
+   */
+  async add(filename, document) {
+    const PUNCTUATION = ['.', ',', ':', ''];
+    const tokenizer = new natural.WordTokenizer();
+    const tokens = tokenizer.tokenize(document);
+    // filter out punctuation, then add all tokens to a redis set.
+    await Promise.all(
+      tokens
+        .filter(token => PUNCTUATION.indexOf(token) === -1)
+        .map(token => {
+          const sadd = promisify(this.tokenClient.sadd).bind(this.tokenClient);
+          return sadd(token, filename);
+        })
+    );
+    const set = promisify(this.docsClient.set).bind(this.docsClient);
+    await set(filename, document);
+  }
+
+  /**
+   * Lookup files that contain a given set of words in redis
+   * @param {string[]} words An array of words to lookup
+   * @returns {Promise<string[][]>} Words and their arrays of matching filenames
+   */
+  async lookup(words) {
+    return Promise.all(
+      words
+        .map(word => word.toLowerCase())
+        .map(word => {
+          const smembers = promisify(this.tokenClient.smembers).bind(
+            this.tokenClient
+          );
+          return smembers(word);
+        })
+    );
+  }
+
+  /**
+   * Check to see if a Document is already stored in redis.
+   * @param {string} filename
+   * @returns {Promise<boolean>}
+   */
+  async documentIsProcessed(filename) {
+    const get = promisify(this.docsClient.get).bind(this.docsClient);
+    const value = await get(filename);
+    if (value) {
+      console.log(`${filename} already added to index.`);
+      return true;
+    }
+    if (value === '') {
+      console.log(`${filename} was already checked, and contains no text.`);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Updates a given doc to have no text in redis.
+   * @param {string} filename
+   */
+  async setContainsNoText(filename) {
+    const set = promisify(this.docsClient.set).bind(this.docsClient);
+    await set(filename, '');
+  }
 }
 
+/**
+ * Given a list of words, lookup any matches in the database.
+ * @param {string[]} words
+ * @returns {Promise<string[][]>}
+ */
+async function lookup(words) {
+  const index = new Index();
+  const hits = await index.lookup(words);
+  index.quit();
+  words.forEach((word, i) => {
+    console.log(`hits for "${word}":`, hits[i].join(', '));
+  });
+  return hits;
+}
+
+/**
+ * Provide a joined string with all descriptions from the response data
+ * @param {TextAnnotation[]} texts Response data from the Vision API
+ * @returns {string} A joined string containing al descriptions
+ */
 function extractDescription(texts) {
   let document = '';
-  texts.forEach(function(text) {
+  texts.forEach(text => {
     document += text.description || '';
   });
-  return document;
+  return document.toLowerCase();
 }
 
-function extractDescriptions(filename, index, response, callback) {
+/**
+ * Grab the description, and push it into redis.
+ * @param {string} filename Name of the file being processed
+ * @param {Index} index The Index object that wraps Redis
+ * @param {*} response Individual response from the Cloud Vision API
+ * @returns {Promise<void>}
+ */
+async function extractDescriptions(filename, index, response) {
   if (response.textAnnotations.length) {
-    index.add(filename, extractDescription(response.textAnnotations), callback);
+    const words = extractDescription(response.textAnnotations);
+    await index.add(filename, words);
   } else {
-    console.log(filename + ' had no discernable text.');
-    index.setContainsNoText(filename, callback);
+    console.log(`${filename} had no discernable text.`);
+    await index.setContainsNoText(filename);
   }
 }
 
-function getTextFromFiles(index, inputFiles, callback) {
-  // Make a call to the Vision API to detect text
-  const requests = [];
-  inputFiles.forEach(filename => {
-    const request = {
-      image: {content: fs.readFileSync(filename).toString('base64')},
-      features: [{type: 'TEXT_DETECTION'}],
-    };
-    requests.push(request);
-  });
-  client
-    .batchAnnotateImages({requests: requests})
-    .then(results => {
-      const detections = results[0].responses;
-      const textResponse = {};
-      const tasks = [];
-      inputFiles.forEach(function(filename, i) {
-        const response = detections[i];
-        if (response.error) {
-          console.log('API Error for ' + filename, response.error);
-          return;
-        } else if (Array.isArray(response)) {
-          textResponse[filename] = 1;
-        } else {
-          textResponse[filename] = 0;
-        }
-        tasks.push(function(cb) {
-          extractDescriptions(filename, index, response, cb);
-        });
-      });
-      async.parallel(tasks, function(err) {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, textResponse);
-      });
+/**
+ * Given a set of image file paths, extract the text and run them through the
+ * Cloud Vision API.
+ * @param {Index} index The stateful `Index` Object.
+ * @param {string[]} inputFiles The list of files to process.
+ * @returns {Promise<void>}
+ */
+async function getTextFromFiles(index, inputFiles) {
+  // Read all of the given files and provide request objects that will be
+  // passed to the Cloud Vision API in a batch request.
+  const requests = await Promise.all(
+    inputFiles.map(async filename => {
+      const content = await readFile(filename);
+      console.log(` 👉 ${filename}`);
+      return {
+        image: {
+          content: content.toString('base64'),
+        },
+        features: [{type: 'TEXT_DETECTION'}],
+      };
     })
-    .catch(callback);
-}
+  );
 
-// Run the example
-function main(inputDir) {
-  return new Promise((resolve, reject) => {
-    const index = new Index();
-
-    async.waterfall(
-      [
-        // Scan the specified directory for files
-        function(cb) {
-          fs.readdir(inputDir, cb);
-        },
-        // Separate directories from files
-        function(files, cb) {
-          async.parallel(
-            files.map(function(file) {
-              const filename = path.join(inputDir, file);
-              return function(cb) {
-                fs.stat(filename, function(err, stats) {
-                  if (err) {
-                    return cb(err);
-                  }
-                  if (!stats.isDirectory()) {
-                    return cb(null, filename);
-                  }
-                  cb();
-                });
-              };
-            }),
-            cb
-          );
-        },
-        // Figure out which files have already been processed
-        function(allImageFiles, cb) {
-          const tasks = allImageFiles
-            .filter(function(filename) {
-              return filename;
-            })
-            .map(function(filename) {
-              return function(cb) {
-                index.documentIsProcessed(filename, function(err, processed) {
-                  if (err) {
-                    return cb(err);
-                  }
-                  if (!processed) {
-                    // Forward this filename on for further processing
-                    return cb(null, filename);
-                  }
-                  cb();
-                });
-              };
-            });
-          async.parallel(tasks, cb);
-        },
-        // Analyze any remaining unprocessed files
-        function(imageFilesToProcess, cb) {
-          imageFilesToProcess = imageFilesToProcess.filter(function(filename) {
-            return filename;
-          });
-          if (imageFilesToProcess.length) {
-            return getTextFromFiles(index, imageFilesToProcess, cb);
-          }
-          console.log('All files processed!');
-          cb();
-        },
-      ],
-      function(err, result) {
-        index.quit();
-        if (err) {
-          return reject(err);
-        }
-        resolve(result);
+  // Make a call to the Vision API to detect text
+  const results = await client.batchAnnotateImages({requests});
+  const detections = results[0].responses;
+  await Promise.all(
+    inputFiles.map(async (filename, i) => {
+      const response = detections[i];
+      if (response.error) {
+        console.info(`API Error for ${filename}`, response.error);
+        return;
       }
-    );
-  });
+      await extractDescriptions(filename, index, response);
+    })
+  );
 }
 
-if (module === require.main) {
-  const generalError =
-    'Usage: node textDetection <command> <arg> ...\n\n' +
-    '\tCommands: analyze, lookup';
-  if (process.argv.length < 3) {
-    console.log(generalError);
-    // eslint-disable-next-line no-process-exit
-    process.exit(1);
-  }
-  const args = process.argv.slice(2);
-  const command = args.shift();
-  if (command === 'analyze') {
-    if (!args.length) {
-      console.log('Usage: node textDetection analyze <dir>');
-      // eslint-disable-next-line no-process-exit
-      process.exit(1);
+/**
+ * Main entry point for the program.
+ * @param {string} inputDir The directory in which to run the sample.
+ * @returns {Promise<void>}
+ */
+async function main(inputDir) {
+  const index = new Index();
+  try {
+    const files = await readdir(inputDir);
+
+    // Get a list of all files in the directory (filter out other directories)
+    const allImageFiles = (await Promise.all(
+      files.map(async file => {
+        const filename = path.join(inputDir, file);
+        const stats = await stat(filename);
+        if (!stats.isDirectory()) {
+          return filename;
+        }
+      })
+    )).filter(f => !!f);
+
+    // Figure out which files have already been processed
+    let imageFilesToProcess = (await Promise.all(
+      allImageFiles.map(async filename => {
+        const processed = await index.documentIsProcessed(filename);
+        if (!processed) {
+          // Forward this filename on for further processing
+          return filename;
+        }
+      })
+    )).filter(file => !!file);
+
+    // The batch endpoint won't handle
+    if (imageFilesToProcess.length > 15) {
+      console.log(
+        'Maximum of 15 images allowed. Analyzing the first 15 found.'
+      );
+      imageFilesToProcess = imageFilesToProcess.slice(0, 15);
     }
-    main(args[0], console.log);
-  } else if (command === 'lookup') {
-    if (!args.length) {
-      console.log('Usage: node textDetection lookup <word> ...');
-      // eslint-disable-next-line no-process-exit
-      process.exit(1);
+
+    // Analyze any remaining unprocessed files
+    if (imageFilesToProcess.length > 0) {
+      console.log('Files to process: ');
+      await getTextFromFiles(index, imageFilesToProcess);
     }
-    lookup(args, console.log);
-  } else {
-    console.log(generalError);
-    // eslint-disable-next-line no-process-exit
-    process.exit(1);
+    console.log('All files processed!');
+  } catch (e) {
+    console.error(e);
   }
+  index.quit();
 }
 
-exports.Index = Index;
-exports.lookup = lookup;
-exports.getTextFromFiles = getTextFromFiles;
-exports.main = main;
+const usage =
+  'Usage: node textDetection <command> <arg> ... \n\n  Commands: analyze, lookup';
+if (process.argv.length < 3) {
+  throw new Error(usage);
+}
+const args = process.argv.slice(2);
+const command = args.shift();
+if (command === 'analyze') {
+  if (!args.length) {
+    throw new Error('Usage: node textDetection analyze <dir>');
+  }
+  main(args[0]).catch(console.error);
+} else if (command === 'lookup') {
+  if (!args.length) {
+    throw new Error('Usage: node textDetection lookup <word> ...');
+  }
+  lookup(args).catch(console.error);
+} else {
+  throw new Error(usage);
+}

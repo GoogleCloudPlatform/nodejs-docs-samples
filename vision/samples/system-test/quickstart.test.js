@@ -15,20 +15,13 @@
 
 'use strict';
 
-const path = require(`path`);
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-
-const cmd = `node quickstart.js`;
-const cwd = path.join(__dirname, `..`);
+const {assert} = require('chai');
+const execa = require('execa');
 
 describe(`quickstart`, () => {
-  before(tools.stubConsole);
-  after(tools.restoreConsole);
-
   it(`should detect labels in a remote file`, async () => {
-    const output = await tools.runAsync(`${cmd}`, cwd);
-    assert.ok(output.includes(`Labels:`));
-    assert.ok(output.includes(`cat`));
+    const {stdout} = await execa.shell('node quickstart.js');
+    assert.match(stdout, /Labels:/);
+    assert.match(stdout, /cat/);
   });
 });

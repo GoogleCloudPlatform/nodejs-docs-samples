@@ -16,34 +16,19 @@
 'use strict';
 
 const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
+
+const exec = async cmd => (await execa.shell(cmd)).stdout;
 const cmd = `node faceDetection.js`;
-const cwd = path.join(__dirname, `..`);
 const inputFile = path.join(__dirname, '../resources', 'face.png');
 const outputFile = path.join(__dirname, '../../', 'out.png');
 
 describe(`face detection`, () => {
-  before(tools.checkCredentials);
-  before(tools.stubConsole);
-
-  after(tools.restoreConsole);
-
   it(`should detect faces`, async () => {
-    let done = false;
-    const timeout = setTimeout(() => {
-      if (!done) {
-        console.warn('Face detection timed out!');
-      }
-    }, 60);
-    const output = await tools.runAsync(
-      `${cmd}  ${inputFile} ${outputFile}`,
-      cwd
-    );
-    assert.ok(output.includes('Found 1 face'));
-    assert.ok(output.includes('Highlighting...'));
-    assert.ok(output.includes('Finished!'));
-    done = true;
-    clearTimeout(timeout);
+    const output = await exec(`${cmd} ${inputFile} ${outputFile}`);
+    assert.match(output, /Found 1 face/);
+    assert.match(output, /Highlighting.../);
+    assert.match(output, /Finished!/);
   });
 });

@@ -15,16 +15,18 @@
 
 'use strict';
 
-const path = require(`path`);
 const vision = require('@google-cloud/vision');
-const productSearch = new vision.ProductSearchClient();
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node similarProducts.js`;
-const cwd = path.join(__dirname, `..`, `productSearch`);
+const {assert} = require('chai');
+const execa = require('execa');
+const path = require('path');
+
+const exec = async cmd => (await execa.shell(cmd)).stdout;
+const cmd = `node productSearch/similarProducts.js`;
 const filter = ['', 'style=womens'];
-const localPath = './../resources/shoes_1.jpg';
+const localPath = path.join(__dirname, '../resources/shoes_1.jpg');
 const gcsUri = 'gs://nodejs-docs-samples/product-search/shoes_1.jpg';
+
+const productSearch = new vision.ProductSearchClient();
 
 // Shared fixture data for product tests
 //Need to have a product set already imported and indexed
@@ -43,76 +45,68 @@ testSimilarProducts.productPath = productSearch.productSetPath(
 
 describe(`similar products`, () => {
   it(`should check if similar product exists to one provided in local file with no filter`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${
         testSimilarProducts.location
       }" "${testSimilarProducts.productSetId}" "${
         testSimilarProducts.productCategory
-      }" "${localPath}" "${filter[0]}"`,
-      cwd
+      }" "${localPath}" "${filter[0]}"`
     );
-    assert.ok(output.includes(`Similar product information:`));
-    assert.ok(
-      output.includes(
-        `Product category: ${testSimilarProducts.productCategory}`
-      )
+    assert.match(output, /Similar product information:/);
+    assert.match(
+      output,
+      new RegExp(`Product category: ${testSimilarProducts.productCategory}`)
     );
-    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
-    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_2`));
+    assert.match(output, /Product id: indexed_product_id_for_testing_1/);
+    assert.match(output, /Product id: indexed_product_id_for_testing_2/);
   });
 
   it(`should check if similar product exists to one provided in local file with filter`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${
         testSimilarProducts.location
       }" "${testSimilarProducts.productSetId}" "${
         testSimilarProducts.productCategory
-      }" "${localPath}" "${filter[1]}"`,
-      cwd
+      }" "${localPath}" "${filter[1]}"`
     );
-    assert.ok(output.includes(`Similar product information:`));
-    assert.ok(
-      output.includes(
-        `Product category: ${testSimilarProducts.productCategory}`
-      )
+    assert.match(output, /Similar product information:/);
+    assert.match(
+      output,
+      new RegExp(`Product category: ${testSimilarProducts.productCategory}`)
     );
-    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
+    assert.match(output, /Product id: indexed_product_id_for_testing_1/);
   });
 
   it(`should check if similar product exists to one provided in GCS file with no filter`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${
         testSimilarProducts.location
       }" "${testSimilarProducts.productSetId}" "${
         testSimilarProducts.productCategory
-      }" "${gcsUri}" "${filter[0]}"`,
-      cwd
+      }" "${gcsUri}" "${filter[0]}"`
     );
-    assert.ok(output.includes(`Similar product information:`));
-    assert.ok(
-      output.includes(
-        `Product category: ${testSimilarProducts.productCategory}`
-      )
+    assert.match(output, /Similar product information:/);
+    assert.match(
+      output,
+      new RegExp(`Product category: ${testSimilarProducts.productCategory}`)
     );
-    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
-    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_2`));
+    assert.match(output, /Product id: indexed_product_id_for_testing_1/);
+    assert.match(output, /Product id: indexed_product_id_for_testing_2/);
   });
 
   it(`should check if similar product exists to one provided in GCS file with filter`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${
         testSimilarProducts.location
       }" "${testSimilarProducts.productSetId}" "${
         testSimilarProducts.productCategory
-      }" "${gcsUri}" "${filter[1]}"`,
-      cwd
+      }" "${gcsUri}" "${filter[1]}"`
     );
-    assert.ok(output.includes(`Similar product information:`));
-    assert.ok(
-      output.includes(
-        `Product category: ${testSimilarProducts.productCategory}`
-      )
+    assert.match(output, /Similar product information:/);
+    assert.match(
+      output,
+      new RegExp(`Product category: ${testSimilarProducts.productCategory}`)
     );
-    assert.ok(output.includes(`Product id: indexed_product_id_for_testing_1`));
+    assert.match(output, /Product id: indexed_product_id_for_testing_1/);
   });
 });

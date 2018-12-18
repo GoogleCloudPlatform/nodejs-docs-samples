@@ -15,51 +15,26 @@
 
 'use strict';
 
-const path = require(`path`);
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const {assert} = require('chai');
+const execa = require('execa');
 
 describe(`Text Detection`, () => {
-  before(async () => {
-    tools.checkCredentials;
-  });
-
-  it(`should detect texts`, done => {
-    const redis = require('redis');
-    const client = redis.createClient();
-
-    client
-      .on('error', err => {
-        if (err && err.code === 'ECONNREFUSED') {
-          console.error(
-            'Redis is unavailable. Skipping vision textDetection test.'
-          );
-          client.end(true);
-          done();
-        } else {
-          client.end(true);
-          done(err);
-        }
-      })
-      .on('ready', async () => {
-        const inputDir = path.join(__dirname, `../resources`);
-        const textDetectionSample = require(`../textDetection`);
-
-        const textResponse = await textDetectionSample
-          .main(inputDir)
-          .catch(err => {
-            console.log(`Error at 46: ${err}`);
-          });
-        assert.ok(Object.keys(textResponse).length > 0);
-
-        const hits = await textDetectionSample
-          .lookup(['the', 'sunbeams', 'in'])
-          .catch(err => {
-            console.log(`Error at 51: ${err}`);
-          });
-        assert.ok(hits.length > 0);
-        assert.ok(hits.length > 0);
-        assert.ok(hits[0].length > 0);
-      });
+  it(`should detect texts`, async () => {
+    const inputDir = path.join(__dirname, `../resources`);
+    const result = await execa.shell(`node textDetection analyze ${inputDir}`, {
+      reject: false,
+    });
+    if (result.stderr) {
+      if (result.stderr.match(/connect ECONNREFUSED/)) {
+        console.error(
+          '☣️ Redis is unavailable. Skipping vision textDetection test.'
+        );
+        return true;
+      }
+      throw new Error(result.stderr);
+    }
+    const {stdout} = await execa.shell('node textDetection lookup sunbeams');
+    assert.match(stdout, /sunbeamkitties/);
   });
 });

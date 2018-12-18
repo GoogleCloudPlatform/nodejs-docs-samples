@@ -15,14 +15,14 @@
 
 'use strict';
 
-const path = require(`path`);
-const uuid = require(`uuid`);
+const uuid = require('uuid');
 const vision = require('@google-cloud/vision');
+const {assert} = require('chai');
+const execa = require('execa');
+
 const productSearch = new vision.ProductSearchClient();
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node productSets.js`;
-const cwd = path.join(__dirname, `..`, `productSearch`);
+const exec = async cmd => (await execa.shell(cmd)).stdout;
+const cmd = `node productSearch/productSets.js`;
 
 // Shared fixture data for product tests
 const testProductSet = {
@@ -53,8 +53,6 @@ async function getProductSetOrFalse(productSetPath) {
 }
 
 describe(`product sets`, () => {
-  before(tools.checkCredentials);
-
   before(async () => {
     // Create a test product set for each test
     await productSearch.createProductSet({
@@ -77,7 +75,9 @@ describe(`product sets`, () => {
     testProductSet.createdProductSetPaths.forEach(async path => {
       try {
         await productSearch.deleteProductSet({name: path});
-      } catch (err) {} // ignore error
+      } catch (err) {
+        // ignore error
+      }
     });
   });
 
@@ -91,52 +91,54 @@ describe(`product sets`, () => {
     assert.strictEqual(await getProductSetOrFalse(newProductSetPath), false);
     testProductSet.createdProductSetPaths.push(newProductSetPath);
 
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} createProductSet "${testProductSet.projectId}" "${
         testProductSet.location
-      }" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`,
-      cwd
+      }" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`
     );
 
-    assert.ok(output.includes(`Product Set name: ${newProductSetPath}`));
+    assert.match(output, new RegExp(`Product Set name: ${newProductSetPath}`));
 
     const newProductSet = await getProductSetOrFalse(newProductSetPath);
-    assert.ok(
-      newProductSet.displayName === testProductSet.productSetDisplayName
+    assert.strictEqual(
+      newProductSet.displayName,
+      testProductSet.productSetDisplayName
     );
   });
 
   it(`should get product set`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} getProductSet "${testProductSet.projectId}" "${
         testProductSet.location
-      }" "${testProductSet.productSetId}"`,
-      cwd
+      }" "${testProductSet.productSetId}"`
     );
 
-    assert.ok(
-      output.includes(`Product Set name: ${testProductSet.productSetPath}`)
+    assert.match(
+      output,
+      new RegExp(`Product Set name: ${testProductSet.productSetPath}`)
     );
-    assert.ok(
-      output.includes(
+    assert.match(
+      output,
+      new RegExp(
         `Product Set display name: ${testProductSet.productSetDisplayName}`
       )
     );
   });
 
   it(`should list product sets`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} listProductSets "${testProductSet.projectId}" "${
         testProductSet.location
-      }"`,
-      cwd
+      }"`
     );
 
-    assert.ok(
-      output.includes(`Product Set name: ${testProductSet.productSetPath}`)
+    assert.match(
+      output,
+      new RegExp(`Product Set name: ${testProductSet.productSetPath}`)
     );
-    assert.ok(
-      output.includes(
+    assert.match(
+      output,
+      new RegExp(
         `Product Set display name: ${testProductSet.productSetDisplayName}`
       )
     );
@@ -148,14 +150,13 @@ describe(`product sets`, () => {
     });
     assert.ok(productSet);
 
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} deleteProductSet "${testProductSet.projectId}" "${
         testProductSet.location
-      }" "${testProductSet.productSetId}"`,
-      cwd
+      }" "${testProductSet.productSetId}"`
     );
 
-    assert.ok(output.includes('deleted'));
+    assert.match(output, /deleted/);
     try {
       await productSearch.getProductSet({
         name: `${testProductSet.productSetPath}`,

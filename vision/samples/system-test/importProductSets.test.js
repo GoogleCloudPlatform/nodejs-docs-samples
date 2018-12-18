@@ -15,11 +15,11 @@
 
 'use strict';
 
-const path = require(`path`);
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node importProductSets.js`;
-const cwd = path.join(__dirname, `..`, `productSearch`);
+const {assert} = require('chai');
+const execa = require('execa');
+
+const exec = async cmd => (await execa.shell(cmd)).stdout;
+const cmd = `node productSearch/importProductSets.js`;
 
 //Shared fixture data for product tests
 const testImportProductSets = {
@@ -29,13 +29,12 @@ const testImportProductSets = {
 };
 
 describe(`import product sets`, () => {
-  it(`Should import a Product Set`, async () => {
-    const output = await tools.runAsync(
+  it(`should import a Product Set`, async () => {
+    const output = await exec(
       `${cmd} importProductSets "${testImportProductSets.projectId}" "${
         testImportProductSets.location
-      }" "${testImportProductSets.gcsUri}"`,
-      cwd
+      }" "${testImportProductSets.gcsUri}"`
     );
-    assert.ok(output.includes(`Processing done.`));
+    assert.match(output, /Processing done./);
   });
 });

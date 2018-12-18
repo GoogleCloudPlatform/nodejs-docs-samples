@@ -15,14 +15,14 @@
 
 'use strict';
 
-const path = require(`path`);
-const uuid = require(`uuid`);
+const uuid = require('uuid');
 const vision = require('@google-cloud/vision');
+const {assert} = require('chai');
+const execa = require('execa');
+
 const productSearchClient = new vision.ProductSearchClient();
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node referenceImages.js`;
-const cwd = path.join(__dirname, `..`, `productSearch`);
+const exec = async cmd => (await execa.shell(cmd)).stdout;
+const cmd = `node productSearch/referenceImages.js`;
 
 // Shared fixture data for product tests
 const testProduct = {
@@ -42,8 +42,6 @@ testProduct.productPath = productSearchClient.productPath(
 testProduct.createdProductPaths = [];
 
 describe(`reference images`, () => {
-  before(tools.checkCredentials);
-
   before(async () => {
     // Create a test product for each test
 
@@ -66,31 +64,30 @@ describe(`reference images`, () => {
     testProduct.createdProductPaths.forEach(async path => {
       try {
         await productSearchClient.deleteProduct({name: path});
-      } catch (err) {} // ignore error
+      } catch (err) {
+        // ignore error
+      }
     });
   });
 
   it(`should create reference image`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} createReferenceImage "${testProduct.projectId}" "${
         testProduct.location
       }" "${testProduct.productId}" "${testProduct.productReferenceImageId}" "${
         testProduct.productImageUri
-      }"`,
-      cwd
+      }"`
     );
-
-    assert.ok(output.includes(`response.uri: gs://`));
+    assert.match(output, /response.uri: gs:\/\//);
   });
 
   it(`should delete reference image`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} deleteReferenceImage "${testProduct.projectId}" "${
         testProduct.location
-      }" "${testProduct.productId}" "${testProduct.productReferenceImageId}"`,
-      cwd
+      }" "${testProduct.productId}" "${testProduct.productReferenceImageId}"`
     );
 
-    assert.ok(output.includes(`Reference image deleted from product.`));
+    assert.match(output, /Reference image deleted from product./);
   });
 });

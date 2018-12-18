@@ -266,7 +266,7 @@ require(`yargs`) // eslint-disable-line
     computeRegion: {
       alias: `c`,
       type: `string`,
-      default: process.env.REGION_NAME,
+      default: 'us-central1',
       requiresArg: true,
       description: `region name e.g. "us-central1"`,
     },

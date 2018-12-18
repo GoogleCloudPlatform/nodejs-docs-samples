@@ -15,14 +15,14 @@
 
 'use strict';
 
-const path = require(`path`);
-const uuid = require(`uuid`);
+const uuid = require('uuid');
 const vision = require('@google-cloud/vision');
+const {assert} = require('chai');
+const execa = require('execa');
+
 const productSearchClient = new vision.ProductSearchClient();
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node productSearch.js`;
-const cwd = path.join(__dirname, `..`, `productSearch`);
+const exec = async cmd => (await execa.shell(cmd)).stdout;
+const cmd = `node productSearch/productSearch.js`;
 
 // Shared fixture data for product tests
 const testProductSet = {
@@ -45,8 +45,6 @@ testProductSet.createdProductPaths = [];
 testProductSet.createdProductSetPaths = [];
 
 describe(`product search`, () => {
-  before(tools.checkCredentials);
-
   before(async () => {
     // Create a test product set for each test
     await productSearchClient.createProduct({
@@ -82,34 +80,34 @@ describe(`product search`, () => {
     testProductSet.createdProductSetPaths.forEach(async path => {
       try {
         await productSearchClient.deleteProductSet({name: path});
-      } catch (err) {} // ignore error
+      } catch (err) {
+        // ignore error
+      }
     });
     testProductSet.createdProductPaths.forEach(async path => {
       try {
         await productSearchClient.deleteProduct({name: path});
-      } catch (err) {} // ignore error
+      } catch (err) {
+        // ignore error
+      }
     });
   });
 
   it(`should add product to product set`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} addProductToProductSet "${testProductSet.projectId}" "${
         testProductSet.location
-      }" "${testProductSet.productId}" "${testProductSet.productSetId}"`,
-      cwd
+      }" "${testProductSet.productId}" "${testProductSet.productSetId}"`
     );
-
-    assert.ok(output.includes(`Product added to product set.`));
+    assert.match(output, /Product added to product set./);
   });
 
   it(`should remove a product from a product set`, async () => {
-    const output = await tools.runAsync(
+    const output = await exec(
       `${cmd} removeProductFromProductSet "${testProductSet.projectId}" "${
         testProductSet.location
-      }" "${testProductSet.productId}" "${testProductSet.productSetId}"`,
-      cwd
+      }" "${testProductSet.productId}" "${testProductSet.productSetId}"`
     );
-
-    assert.ok(output.includes(`Product removed from product set.`));
+    assert.match(output, /Product removed from product set./);
   });
 });

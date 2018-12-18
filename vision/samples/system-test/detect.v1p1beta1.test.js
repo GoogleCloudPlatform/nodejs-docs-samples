@@ -15,12 +15,12 @@
 
 'use strict';
 
-const path = require(`path`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const assert = require('assert');
+const path = require('path');
+const execa = require('execa');
+const {assert} = require('chai');
 
+const exec = async cmd => (await execa.shell(cmd)).stdout;
 const cmd = `node detect.v1p1beta1.js`;
-const cwd = path.join(__dirname, `..`);
 const files = [`text.jpg`, `wakeupcat.jpg`, `landmark.jpg`, `city.jpg`].map(
   name => {
     return {
@@ -31,42 +31,26 @@ const files = [`text.jpg`, `wakeupcat.jpg`, `landmark.jpg`, `city.jpg`].map(
 );
 
 describe(`detect v1 p1 beta1`, () => {
-  before(async () => {
-    tools.checkCredentials;
-  });
-
   it(`should extract text from image file and print confidence`, async () => {
-    const output = await tools.runAsync(
-      `${cmd} fulltext ${files[0].localPath}`,
-      cwd
-    );
-    assert.ok(output.includes(`Word text: class`));
-    assert.ok(output.includes(`Word confidence:`));
+    const output = await exec(`${cmd} fulltext ${files[0].localPath}`);
+    assert.match(output, /Word text: class/);
+    assert.match(output, /Word confidence:/);
   });
 
   it(`should detect safe search properties from image file`, async () => {
-    const output = await tools.runAsync(
-      `${cmd} safe-search ${files[1].localPath}`,
-      cwd
-    );
-    assert.ok(output.includes(`VERY_LIKELY`));
-    assert.ok(output.includes(`Racy:`));
+    const output = await exec(`${cmd} safe-search ${files[1].localPath}`);
+    assert.match(output, /VERY_LIKELY/);
+    assert.match(output, /Racy:/);
   });
 
   it(`should detect web entities including best guess labels`, async () => {
-    const output = await tools.runAsync(
-      `${cmd} web ${files[2].localPath}`,
-      cwd
-    );
-    assert.ok(output.includes(`Description: Palace of Fine Arts Theatre`));
-    assert.ok(output.includes(`Best guess label: palace of fine arts`));
+    const output = await exec(`${cmd} web ${files[2].localPath}`);
+    assert.match(output, /Description: Palace Of Fine Arts/);
+    assert.match(output, /Best guess label: palace of fine arts/);
   });
 
   it(`should detect web entities using geographical metadata`, async () => {
-    const output = await tools.runAsync(
-      `${cmd} web-entities-geo ${files[3].localPath}`,
-      cwd
-    );
-    assert.ok(output.includes(`Electra`));
+    const output = await exec(`${cmd} web-entities-geo ${files[3].localPath}`);
+    assert.match(output, /Electra/);
   });
 });

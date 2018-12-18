@@ -15,14 +15,15 @@
 
 'use strict';
 
-const path = require(`path`);
-const uuid = require(`uuid`);
+const uuid = require('uuid');
 const vision = require('@google-cloud/vision');
+const {assert} = require('chai');
+const execa = require('execa');
+
+const exec = async cmd => (await execa.shell(cmd)).stdout;
+const cmd = `node productSearch/products.js`;
+
 const productSearch = new vision.ProductSearchClient();
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node products.js`;
-const cwd = path.join(__dirname, `..`, `productSearch`);
 
 // Shared fixture data for product tests
 const testProduct = {
@@ -53,7 +54,6 @@ async function getProductOrFalse(productPath) {
 }
 
 describe(`products`, () => {
-  before(tools.checkCredentials);
   before(async () => {
     // Create a test product set for each test
     await productSearch.createProduct({
@@ -75,7 +75,9 @@ describe(`products`, () => {
     testProduct.createdProductPaths.forEach(async path => {
       try {
         await productSearch.deleteProduct({name: path});
-      } catch (err) {} // ignore error
+      } catch (err) {
+        // ignore error
+      }
     });
   });
   it(`should create product`, async () => {
@@ -85,30 +87,29 @@ describe(`products`, () => {
       testProduct.location,
       newProductId
     );
-    assert.strictEqual(await getProductOrFalse(newProductPath), false);
+    const maybeProduct = await getProductOrFalse(newProductPath);
+    assert.strictEqual(maybeProduct, false);
 
-    let output = await tools.runAsync(
+    let output = await exec(
       `${cmd} createProduct "${testProduct.projectId}" "${
         testProduct.location
       }" "${newProductId}" "${testProduct.productDisplayName}" "${
         testProduct.productCategory
-      }"`,
-      cwd
+      }"`
     );
 
-    assert.ok(output.includes(`Product name: ${newProductPath}`));
+    assert.match(output, new RegExp(`Product name: ${newProductPath}`));
 
     const newProduct = await getProductOrFalse(newProductPath);
     assert.ok(newProduct.displayName === testProduct.productDisplayName);
     assert.ok(newProduct.productCategory === testProduct.productCategory);
 
-    output = await tools.runAsync(
+    output = await exec(
       `${cmd} deleteProduct "${testProduct.projectId}" "${
         testProduct.location
-      }" "${newProductId}"`,
-      cwd
+      }" "${newProductId}"`
     );
-    assert.ok(output.includes(`Product deleted.`));
+    assert.match(output, /Product deleted./);
   });
 
   it(`should get product`, async () => {
@@ -119,52 +120,46 @@ describe(`products`, () => {
       newProductId
     );
     assert.strictEqual(await getProductOrFalse(newProductPath), false);
-    let output = await tools.runAsync(
+    let output = await exec(
       `${cmd} createProduct "${testProduct.projectId}" "${
         testProduct.location
       }" "${newProductId}" "${testProduct.productDisplayName}" "${
         testProduct.productCategory
-      }"`,
-      cwd
+      }"`
     );
 
-    assert.ok(output.includes(`Product name: ${newProductPath}`));
+    assert.match(output, new RegExp(`Product name: ${newProductPath}`));
 
-    output = await tools.runAsync(
+    output = await exec(
       `${cmd} getProduct "${testProduct.projectId}" "${
         testProduct.location
-      }" "${newProductId}"`,
-      cwd
+      }" "${newProductId}"`
     );
 
-    assert.ok(output.includes(`Product name: ${newProductPath}`));
-    assert.ok(output.includes(`Product id: ${newProductId}`));
-    assert.ok(output.includes(`Product display name:`));
-    assert.ok(output.includes(`Product description:`));
-    assert.ok(
-      output.includes(`Product category: ${testProduct.productCategory}`)
+    assert.match(output, new RegExp(`Product name: ${newProductPath}`));
+    assert.match(output, new RegExp(`Product id: ${newProductId}`));
+    assert.match(output, /Product display name:/);
+    assert.match(output, /Product description:/);
+    assert.match(
+      output,
+      new RegExp(`Product category: ${testProduct.productCategory}`)
     );
-    assert.ok(output.includes(`Product labels:`));
+    assert.match(output, /Product labels:/);
 
-    output = await tools.runAsync(
+    output = await exec(
       `${cmd} deleteProduct "${testProduct.projectId}" "${
         testProduct.location
-      }" "${newProductId}"`,
-      cwd
+      }" "${newProductId}"`
     );
-    assert.ok(output.includes(`Product deleted.`));
+    assert.match(output, /Product deleted./);
   });
 
   it(`should list products`, async () => {
-    const output = await tools.runAsync(
-      `${cmd} listProducts "${testProduct.projectId}" "${
-        testProduct.location
-      }"`,
-      cwd
+    const output = await exec(
+      `${cmd} listProducts "${testProduct.projectId}" "${testProduct.location}"`
     );
-
-    assert.ok(output.includes(`Product id: ${testProduct.productId}`));
-    assert.ok(output.includes(`Product labels:`));
+    assert.match(output, new RegExp(`Product id: ${testProduct.productId}`));
+    assert.match(output, /Product labels:/);
   });
 
   it(`should update product label`, async () => {
@@ -174,36 +169,37 @@ describe(`products`, () => {
       testProduct.location,
       newProductId
     );
-    let output = await tools.runAsync(
+    let output = await exec(
       `${cmd} createProduct "${testProduct.projectId}" "${
         testProduct.location
       }" "${newProductId}" "${testProduct.productDisplayName}" "${
         testProduct.productCategory
-      }"`,
-      cwd
+      }"`
     );
 
-    assert.ok(output.includes(`Product name: ${newProductPath}`));
-    output = await tools.runAsync(
+    assert.match(output, new RegExp(`Product name: ${newProductPath}`));
+    output = await exec(
       `${cmd} updateProductLabels "${testProduct.projectId}" "${
         testProduct.location
       }" "${newProductId}" "${testProduct.productKey}" "${
         testProduct.productValue
-      }"`,
-      cwd
+      }"`
     );
 
-    assert.ok(
-      output.includes(
+    assert.match(
+      output,
+      new RegExp(
         `Product Labels: ${testProduct.productKey}: ${testProduct.productValue}`
       )
     );
-    assert.ok(
-      output.includes(`Product display name: ${testProduct.productDisplayName}`)
+    assert.match(
+      output,
+      new RegExp(`Product display name: ${testProduct.productDisplayName}`)
     );
-    assert.ok(output.includes(`Product description:`));
-    assert.ok(
-      output.includes(`Product category: ${testProduct.productCategory}`)
+    assert.match(output, /Product description:/);
+    assert.match(
+      output,
+      new RegExp(`Product category: ${testProduct.productCategory}`)
     );
   });
 
@@ -215,24 +211,22 @@ describe(`products`, () => {
       newProductId
     );
     assert.strictEqual(await getProductOrFalse(newProductPath), false);
-    let output = await tools.runAsync(
+    let output = await exec(
       `${cmd} createProduct "${testProduct.projectId}" "${
         testProduct.location
       }" "${newProductId}" "${testProduct.productDisplayName}" "${
         testProduct.productCategory
-      }"`,
-      cwd
+      }"`
     );
 
-    assert.ok(output.includes(`Product name: ${newProductPath}`));
+    assert.match(output, new RegExp(`Product name: ${newProductPath}`));
 
-    output = await tools.runAsync(
+    output = await exec(
       `${cmd} deleteProduct "${testProduct.projectId}" "${
         testProduct.location
-      }" "${newProductId}"`,
-      cwd
+      }" "${newProductId}"`
     );
-    assert.ok(output.includes(`Product deleted.`));
+    assert.match(output, /Product deleted./);
 
     try {
       await productSearch.getProduct({name: `${newProductPath}`});

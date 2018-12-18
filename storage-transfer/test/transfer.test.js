@@ -163,7 +163,7 @@ test.serial(`should get a transfer job`, t => {
     [
       {
         auth: {},
-        projectId: process.env.GCLOUD_PROJECT,
+        projectId: process.env.GOOGLE_CLOUD_PROJECT,
         jobName: jobName,
       },
     ]
@@ -220,7 +220,7 @@ test.serial(`should update a transfer job`, t => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             status: options.value,
@@ -254,7 +254,7 @@ test.serial(`should update a transfer job`, t => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             description: options.value,
@@ -285,7 +285,7 @@ test.serial(`should update a transfer job`, t => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             transferSpec: JSON.parse(options.value),
@@ -350,7 +350,7 @@ test.serial(`should list transfer jobs`, t => {
     [
       {
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -368,7 +368,7 @@ test.serial(`should list transfer jobs`, t => {
     [
       {
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -418,7 +418,7 @@ test.serial(`should list transfer operations`, t => {
       {
         name: `transferOperations`,
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -444,7 +444,7 @@ test.serial(`should list transfer operations`, t => {
         name: `transferOperations`,
         auth: {},
         filter: JSON.stringify({
-          project_id: process.env.GCLOUD_PROJECT,
+          project_id: process.env.GOOGLE_CLOUD_PROJECT,
           job_names: [jobName],
         }),
       },
@@ -473,7 +473,7 @@ test.serial(`should list transfer operations`, t => {
         name: `transferOperations`,
         auth: {},
         filter: JSON.stringify({
-          project_id: process.env.GCLOUD_PROJECT,
+          project_id: process.env.GOOGLE_CLOUD_PROJECT,
           job_names: [jobName],
         }),
       },

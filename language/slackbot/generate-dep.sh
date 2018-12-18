@@ -70,7 +70,7 @@ spec:
         env:
         - name: SLACK_TOKEN_PATH
           value: /etc/slack-token/slack-token
-        - name: GCLOUD_PROJECT
+        - name: GOOGLE_CLOUD_PROJECT
           value: ${cloud_project}
       volumes:
       - name: slack-token

@@ -26,7 +26,7 @@ exports.helloWorld = (req, res) => {
 // [START functions_log_retrieve]
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
+// the project specified by the GOOGLE_CLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 const Logging = require('@google-cloud/logging');
 
@@ -52,7 +52,7 @@ function getLogEntries() {
 // [START functions_log_get_metrics]
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
+// the project specified by the GOOGLE_CLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
 const Monitoring = require('@google-cloud/monitoring');
 
@@ -65,7 +65,7 @@ function getMetrics(callback) {
   oneWeekAgo.setHours(oneWeekAgo.getHours() - 7 * 24);
 
   const options = {
-    name: monitoring.projectPath(process.env.GCLOUD_PROJECT),
+    name: monitoring.projectPath(process.env.GOOGLE_CLOUD_PROJECT),
     // There is also: cloudfunctions.googleapis.com/function/execution_count
     filter:
       'metric.type="cloudfunctions.googleapis.com/function/execution_times"',

@@ -30,7 +30,7 @@
       "build": {
         "requiredEnvVars": [
           "API_KEY",
-          "GCLOUD_PROJECT"
+          "GOOGLE_CLOUD_PROJECT"
         ]
       }
     }

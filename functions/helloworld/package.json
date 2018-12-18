@@ -12,9 +12,9 @@
     "node": ">=8"
   },
   "scripts": {
-    "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCP_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js",
-    "test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose -c 1 test/index.test.js",
-    "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/*.test.js"
+    "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCP_REGION-$GOOGLE_CLOUD_PROJECT.cloudfunctions.net/\" ava -T 20s --verbose test/*.test.js",
+    "test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GOOGLE_CLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose -c 1 test/index.test.js",
+    "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GOOGLE_CLOUD_PROJECT/$GCF_REGION\" && ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^3.0.0",
@@ -39,7 +39,7 @@
     "requiresProjectId": true,
     "requiredEnvVars": [
       "BASE_URL",
-      "GCLOUD_PROJECT",
+      "GOOGLE_CLOUD_PROJECT",
       "GCF_REGION",
       "FUNCTIONS_TOPIC",
       "FUNCTIONS_BUCKET",

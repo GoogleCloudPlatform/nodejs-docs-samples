@@ -50,7 +50,7 @@ For more information, see https://cloud.google.com/storage/transfer
 
 ## Running the tests
 
-1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
+1.  Set the **GOOGLE_CLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
 
 1.  Run the tests:
 

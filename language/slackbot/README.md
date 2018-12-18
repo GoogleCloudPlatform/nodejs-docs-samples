@@ -143,10 +143,10 @@ this, first run:
 npm install
 ```
 
-Then, set GCLOUD_PROJECT to your project id:
+Then, set GOOGLE_CLOUD_PROJECT to your project id:
 
 ```bash
-export GCLOUD_PROJECT=my-cloud-project-id
+export GOOGLE_CLOUD_PROJECT=my-cloud-project-id
 ```
 
 Then, create a file containing your Slack token, and point `SLACK_TOKEN_PATH` to that file when you run the script

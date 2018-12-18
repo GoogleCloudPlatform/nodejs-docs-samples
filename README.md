@@ -71,19 +71,19 @@ on Google Cloud Platform.
 
         cd nodejs-docs-samples
 
-1. Set the `GCLOUD_PROJECT` environment variable:
+1. Set the `GOOGLE_CLOUD_PROJECT` environment variable:
 
     Linux:
 
-        export GCLOUD_PROJECT=your-project-id
+        export GOOGLE_CLOUD_PROJECT=your-project-id
 
     Windows:
 
-        set GCLOUD_PROJECT=your-project-id
+        set GOOGLE_CLOUD_PROJECT=your-project-id
 
     Windows (PowerShell):
 
-        $env:GCLOUD_PROJECT="your-project-id"
+        $env:GOOGLE_CLOUD_PROJECT="your-project-id"
 
 1. Obtain authentication credentials.
 

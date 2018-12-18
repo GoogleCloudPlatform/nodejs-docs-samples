@@ -14,13 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
       
-export GCLOUD_PROJECT=nodejs-docs-samples-tests
+export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 export GCF_REGION=us-central1
 export NODE_ENV=development
 
 export FUNCTIONS_TOPIC=integration-tests-instance
-export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
-export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
+export FUNCTIONS_BUCKET=$GOOGLE_CLOUD_PROJECT
+export BASE_URL="http://localhost:8010/${GOOGLE_CLOUD_PROJECT}/${GCF_REGION}"
 
 cd github/nodejs-docs-samples/${PROJECT}
 
@@ -30,7 +30,7 @@ npm install
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-gcloud config set project $GCLOUD_PROJECT
+gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 # Start functions emulator, if appropriate
 if [[ $PROJECT == functions/* ]]; then

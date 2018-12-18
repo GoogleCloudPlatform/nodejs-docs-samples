@@ -35,7 +35,7 @@ Run the following command to install the library dependencies for Node.js:
     --apiKey, -a          The API key used for discovering the API.
                                                                                                                   [string]
     --cloudRegion, -c                                                                    [string] [default: "us-central1"]
-    --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+    --projectId, -p       The Project ID to use. Defaults to the value of the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                           environment variables.                                                                  [string]
     --serviceAccount, -s  The path to your service credentials JSON.
                                                                                                                   [string]
@@ -59,7 +59,7 @@ Run the following command to install the library dependencies for Node.js:
     Options:
     --version             Show version number                                                                    [boolean]
     --cloudRegion, -c                                                                    [string] [default: "us-central1"]
-    --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+    --projectId, -p       The Project ID to use. Defaults to the value of the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                           environment variables.                                                                  [string]
     --serviceAccount, -s  The path to your service credentials JSON.
                                                                                                                   [string]

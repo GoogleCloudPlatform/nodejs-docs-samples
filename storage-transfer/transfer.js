@@ -71,7 +71,7 @@ function createTransferJob(options, callback) {
     }
 
     var transferJob = {
-      projectId: process.env.GCLOUD_PROJECT,
+      projectId: process.env.GOOGLE_CLOUD_PROJECT,
       status: 'ENABLED',
       transferSpec: {
         gcsDataSource: {
@@ -136,7 +136,7 @@ function getTransferJob(jobName, callback) {
     storagetransfer.transferJobs.get(
       {
         auth: authClient,
-        projectId: process.env.GCLOUD_PROJECT,
+        projectId: process.env.GOOGLE_CLOUD_PROJECT,
         jobName: jobName,
       },
       function(err, response) {
@@ -170,7 +170,7 @@ function updateTransferJob(options, callback) {
     }
 
     var patchRequest = {
-      projectId: process.env.GCLOUD_PROJECT,
+      projectId: process.env.GOOGLE_CLOUD_PROJECT,
       transferJob: {
         name: options.job,
       },
@@ -220,7 +220,7 @@ function listTransferJobs(callback) {
     storagetransfer.transferJobs.list(
       {
         auth: authClient,
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
       function(err, response) {
         if (err) {
@@ -251,7 +251,7 @@ function listTransferOperations(jobName, callback) {
     }
 
     var filter = {
-      project_id: process.env.GCLOUD_PROJECT,
+      project_id: process.env.GOOGLE_CLOUD_PROJECT,
     };
 
     if (jobName) {

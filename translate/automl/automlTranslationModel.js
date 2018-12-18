@@ -25,7 +25,7 @@
 
 async function createModel(projectId, computeRegion, datasetId, modelName) {
   // [START automl_translation_create_model]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  const automl = require(`@google-cloud/automl`);
 
   const client = new automl.AutoMlClient();
 
@@ -80,7 +80,7 @@ async function createModel(projectId, computeRegion, datasetId, modelName) {
 
 async function listModels(projectId, computeRegion, filter) {
   // [START automl_translation_list_models]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  const automl = require(`@google-cloud/automl`);
 
   const client = new automl.AutoMlClient();
 
@@ -122,7 +122,7 @@ async function listModels(projectId, computeRegion, filter) {
 
 async function getModel(projectId, computeRegion, modelId) {
   // [START automl_translation_get_model]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  const automl = require(`@google-cloud/automl`);
 
   const client = new automl.AutoMlClient();
 
@@ -191,7 +191,7 @@ async function getModel(projectId, computeRegion, modelId) {
 
 async function listModelEvaluations(projectId, computeRegion, modelId, filter) {
   // [START automl_translation_list_model_evaluations]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  const automl = require(`@google-cloud/automl`);
 
   const client = new automl.AutoMlClient();
 
@@ -227,8 +227,7 @@ async function getModelEvaluation(
 ) {
   // [START automl_translation_get_model_evaluation]
   const automl = require(`@google-cloud/automl`);
-
-  const client = new automl.v1beta1.AutoMlClient();
+  const client = new automl.AutoMlClient();
 
   /**
    * TODO(developer): Uncomment the following line before running the sample.
@@ -257,7 +256,7 @@ async function getModelEvaluation(
 
 async function deleteModel(projectId, computeRegion, modelId) {
   // [START automl_translation_delete_model]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  const automl = require(`@google-cloud/automl`);
 
   const client = new automl.AutoMlClient();
 
@@ -282,7 +281,7 @@ async function deleteModel(projectId, computeRegion, modelId) {
 
 async function getOperationStatus(operationFullId) {
   // [START automl_translation_get_operation_status]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  const automl = require(`@google-cloud/automl`);
 
   const client = new automl.AutoMlClient();
 
@@ -305,7 +304,7 @@ require(`yargs`)
     computeRegion: {
       alias: `c`,
       type: `string`,
-      default: process.env.REGION_NAME,
+      default: 'us-central1',
       requiresArg: true,
       description: `region name e.g. "us-central1"`,
     },
@@ -370,51 +369,32 @@ require(`yargs`)
     `get-operation-status`,
     `Gets status of current operation`,
     {},
-    async opts =>
-      await getOperationStatus(opts.operationFullId).catch(console.error)
+    opts => getOperationStatus(opts.operationFullId)
   )
-  .command(
-    `list-models`,
-    `list all Models`,
-    {},
-    async opts =>
-      await listModels(opts.projectId, opts.computeRegion, opts.filter).catch(
-        console.error
-      )
+  .command(`list-models`, `list all Models`, {}, opts =>
+    listModels(opts.projectId, opts.computeRegion, opts.filter)
   )
   .command(`get-model`, `Get a Model`, {}, opts =>
     getModel(opts.projectId, opts.computeRegion, opts.modelId)
   )
-  .command(
-    `list-model-evaluations`,
-    `List model evaluations`,
-    {},
-    async opts =>
-      await listModelEvaluations(
-        opts.projectId,
-        opts.computeRegion,
-        opts.modelId,
-        opts.filter
-      ).catch(console.error)
+  .command(`list-model-evaluations`, `List model evaluations`, {}, opts =>
+    listModelEvaluations(
+      opts.projectId,
+      opts.computeRegion,
+      opts.modelId,
+      opts.filter
+    )
   )
-  .command(
-    `get-model-evaluation`,
-    `Get model evaluation`,
-    {},
-    async opts =>
-      await getModelEvaluation(
-        opts.projectId,
-        opts.computeRegion,
-        opts.modelId,
-        opts.modelEvaluationId
-      )
+  .command(`get-model-evaluation`, `Get model evaluation`, {}, opts =>
+    getModelEvaluation(
+      opts.projectId,
+      opts.computeRegion,
+      opts.modelId,
+      opts.modelEvaluationId
+    )
   )
-  .command(
-    `delete-model`,
-    `Delete a Model`,
-    {},
-    async opts =>
-      await deleteModel(opts.projectId, opts.computeRegion, opts.modelId)
+  .command(`delete-model`, `Delete a Model`, {}, opts =>
+    deleteModel(opts.projectId, opts.computeRegion, opts.modelId)
   )
   .example(`node $0 create-model -i "DatasetID" -m "myModelName"`)
   .example(`node $0 get-operation-status -i "datasetId" -o "OperationFullID"`)

@@ -15,47 +15,16 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noPreserveCache();
-const sinon = require('sinon');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
-const {Translate} = proxyquire('@google-cloud/translate', {});
-const translate = new Translate();
+const {assert} = require('chai');
+const execa = require('execa');
+const path = require('path');
 
-before(tools.checkCredentials);
-before(tools.stubConsole);
-after(tools.restoreConsole);
+const cwd = path.join(__dirname, '..');
+const projectId = process.env.GCLOUD_PROJECT;
 
-it('should translate a string', () => {
-  const string = 'Hello, world!';
-  const expectedTranslation = 'Привет, мир!';
-  const targetLanguage = 'ru';
-  const translateMock = {
-    translate: (_string, _targetLanguage) => {
-      assert.strictEqual(_string, string);
-      assert.strictEqual(_targetLanguage, targetLanguage);
-
-      return translate
-        .translate(_string, _targetLanguage)
-        .then(async ([translation]) => {
-          assert.strictEqual(translation, expectedTranslation);
-          await new Promise(r => setTimeout(r, 200));
-          assert.strictEqual(console.log.callCount, 2);
-          assert.deepStrictEqual(console.log.getCall(0).args, [
-            `Text: ${string}`,
-          ]);
-          assert.deepStrictEqual(console.log.getCall(1).args, [
-            `Translation: ${expectedTranslation}`,
-          ]);
-
-          return [translation];
-        });
-    },
-  };
-
-  proxyquire('../quickstart', {
-    '@google-cloud/translate': {
-      Translate: sinon.stub().returns(translateMock),
-    },
+describe('quickstart sample tests', () => {
+  it('should translate a string', async () => {
+    const {stdout} = await execa.shell(`node quickstart ${projectId}`, {cwd});
+    assert.match(stdout, new RegExp('Translation: Привет, мир!'));
   });
 });

@@ -31,7 +31,7 @@ async function predict(
   translationAllowFallback
 ) {
   // [START automl_translation_predict]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  const automl = require(`@google-cloud/automl`);
   const fs = require(`fs`);
 
   // Create client for prediction service.
@@ -89,7 +89,7 @@ require(`yargs`)
     computeRegion: {
       alias: `c`,
       type: `string`,
-      default: process.env.REGION_NAME,
+      default: 'us-central1',
       requiresArg: true,
       description: `region name e.g. "us-central1"`,
     },
@@ -124,18 +124,14 @@ require(`yargs`)
         `serve the request. Use false to not use Google translation model.`,
     },
   })
-  .command(
-    `predict`,
-    `classify the content`,
-    {},
-    async opts =>
-      await predict(
-        opts.projectId,
-        opts.computeRegion,
-        opts.modelId,
-        opts.filePath,
-        opts.translationAllowFallback
-      )
+  .command(`predict`, `classify the content`, {}, opts =>
+    predict(
+      opts.projectId,
+      opts.computeRegion,
+      opts.modelId,
+      opts.filePath,
+      opts.translationAllowFallback
+    )
   )
   .example(
     `node $0 predict -i "modelId" -f "./resources/testInput.txt" -t "False"`

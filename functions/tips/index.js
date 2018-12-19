@@ -157,7 +157,7 @@ exports.retryPromise = event => {
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data Data included with the event.
- * @param {object} event.data.retry Whether or not to retry the function.
+ * @param {object} event.data.retry User-supplied parameter that tells the function whether to auto-retry.
  * @param {function} callback The callback function.
  */
 exports.retryCallback = (event, callback) => {

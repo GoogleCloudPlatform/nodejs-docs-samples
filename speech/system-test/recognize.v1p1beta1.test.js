@@ -15,23 +15,26 @@
 
 'use strict';
 
-const path = require(`path`);
-const {Storage} = require(`@google-cloud/storage`);
-const assert = require(`assert`);
-const uuid = require(`uuid`);
-const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const {Storage} = require('@google-cloud/storage');
+const {assert} = require('chai');
+const uuid = require('uuid');
+const execa = require('execa');
+
+const exec = async cmd => (await execa.shell(cmd, {cwd})).stdout;
 const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
-const cmd = `node recognize.v1p1beta1.js`;
-const cwd = path.join(__dirname, `..`);
-const filename1 = `Google_Gnome.wav`;
-const filename2 = `commercial_mono.wav`;
-const filepath1 = path.join(__dirname, `../resources/${filename1}`);
-const filepath2 = path.join(__dirname, `../resources/${filename2}`);
+const cmd = 'node recognize.v1p1beta1.js';
+const cwd = path.join(__dirname, '..');
+const filepath1 = path.join(__dirname, '..', 'resources', 'Google_Gnome.wav');
+const filepath2 = path.join(
+  __dirname,
+  '..',
+  'resources',
+  'commercial_mono.wav'
+);
 
-const text = `Chrome`;
-
-describe(`Recognize v1p1beta1`, () => {
+describe('Recognize v1p1beta1', () => {
   before(async () => {
     const [bucket] = await storage.createBucket(bucketName);
     await bucket.upload(filepath1);
@@ -44,8 +47,8 @@ describe(`Recognize v1p1beta1`, () => {
     await bucket.delete();
   });
 
-  it(`should run sync recognize with metadata`, async () => {
-    const output = await runAsync(`${cmd} sync-metadata ${filepath2}`, cwd);
-    assert.ok(output.includes(text));
+  it('should run sync recognize with metadata', async () => {
+    const output = await exec(`${cmd} sync-metadata ${filepath2}`);
+    assert.match(output, /Chrome/);
   });
 });

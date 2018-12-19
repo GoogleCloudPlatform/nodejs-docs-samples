@@ -15,18 +15,19 @@
 
 'use strict';
 
-const path = require(`path`);
-const assert = require(`assert`);
+const path = require('path');
+const {assert} = require('chai');
+const execa = require('execa');
 
-const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
-const cmd = `node MicrophoneStream.js`;
-const cwd = path.join(__dirname, `..`);
+const cmd = 'node MicrophoneStream.js';
+const cwd = path.join(__dirname, '..');
 
-describe(`MicrophoneStream`, () => {
-  it(`MicrophoneStream.js Should load and display Yaaaarghs(!) correctly`, async () => {
-    const output = await runAsync(`${cmd} --help`, cwd);
-    assert.ok(
-      output.includes('Streams audio input from microphone, translates to text')
+describe('MicrophoneStream', () => {
+  it('should load and display Yaaaarghs(!) correctly', async () => {
+    const {stdout} = await execa.shell(`${cmd} --help`, {cwd});
+    assert.match(
+      stdout,
+      /Streams audio input from microphone, translates to text/
     );
   });
 });

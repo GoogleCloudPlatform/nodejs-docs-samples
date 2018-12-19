@@ -17,18 +17,16 @@
 
 'use strict';
 
-const path = require(`path`);
-const assert = require(`assert`);
+const path = require('path');
+const {assert} = require('chai');
+const execa = require('execa');
 
-const cmd = `node quickstart.js`;
-const cwd = path.join(__dirname, `..`);
-const text = `how old is the Brooklyn Bridge`;
+const cwd = path.join(__dirname, '..');
+const text = 'how old is the Brooklyn Bridge';
 
-const {runAsync} = require(`@google-cloud/nodejs-repo-tools`);
-
-describe(`Quickstart`, () => {
-  it(`should run quickstart`, async () => {
-    const output = await runAsync(`${cmd}`, cwd);
-    assert.ok(output.includes(`Transcription: ${text}`));
+describe('Quickstart', () => {
+  it('should run quickstart', async () => {
+    const {stdout} = await execa.shell('node quickstart.js', {cwd});
+    assert.match(stdout, new RegExp(`Transcription: ${text}`));
   });
 });

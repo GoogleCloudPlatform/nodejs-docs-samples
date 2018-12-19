@@ -103,7 +103,7 @@ async function getReferenceImage(
   // const productId = 'Id of the product';
   // const referenceImageId = 'Id of the reference image';
 
-  const formattedName = client.imagePath(
+  const formattedName = client.referenceImagePath(
     projectId,
     location,
     productId,
@@ -140,7 +140,7 @@ async function deleteReferenceImage(
   // const productId = 'Id of the product';
   // const referenceImageId = 'Id of the reference image';
 
-  const formattedName = client.imagePath(
+  const formattedName = client.referenceImagePath(
     projectId,
     location,
     productId,

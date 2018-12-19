@@ -68,7 +68,6 @@ async function createMetricDescriptor(projectId) {
   descriptor.labels.forEach(label => {
     console.log(`  ${label.key} (${label.valueType}) - ${label.description}`);
   });
-
   // [END monitoring_create_metric]
 }
 

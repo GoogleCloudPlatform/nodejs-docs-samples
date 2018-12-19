@@ -15,193 +15,182 @@
 
 'use strict';
 
-const monitoring = require(`@google-cloud/monitoring`);
-const client = new monitoring.MetricServiceClient();
-const path = require(`path`);
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const monitoring = require('@google-cloud/monitoring');
+const {assert} = require('chai');
+const execa = require('execa');
+const retry = require('p-retry');
 
+const exec = async cmd => (await execa.shell(cmd)).stdout;
+const client = new monitoring.MetricServiceClient();
 const cmd = `node metrics.js`;
-const cwd = path.join(__dirname, `..`);
 const customMetricId = `custom.googleapis.com/stores/daily_sales`;
 const computeMetricId = `compute.googleapis.com/instance/cpu/utilization`;
 const filter = `metric.type="${computeMetricId}"`;
 const projectId = process.env.GCLOUD_PROJECT;
 const resourceId = `cloudsql_database`;
 
-before(tools.checkCredentials);
-
-it(`should create a metric descriptors`, async () => {
-  const output = await tools.runAsync(`${cmd} create`, cwd);
-  assert.strictEqual(output.includes(`Created custom Metric`), true);
-  assert.strictEqual(output.includes(`Type: ${customMetricId}`), true);
-});
-
-it(`should list metric descriptors, including the new custom one`, async () => {
-  const attempt = tools.tryTest(async assert => {
-    const output = await tools.runAsync(`${cmd} list`, cwd);
-    assert(output.includes(customMetricId));
-    assert(output.includes(computeMetricId));
+describe('metrics', () => {
+  it('should create a metric descriptors', async () => {
+    const output = await exec(`${cmd} create`);
+    assert.match(output, /Created custom Metric/);
+    assert.match(output, new RegExp(`Type: ${customMetricId}`));
   });
-  attempt.tries(30);
-  attempt.timeout(120000);
-  await attempt.start();
-});
 
-it(`should get a metric descriptor`, async () => {
-  const attempt = tools.tryTest(async assert => {
-    const output = await tools.runAsync(`${cmd} get ${customMetricId}`, cwd);
-    assert(output.includes(`Type: ${customMetricId}`));
-  });
-  attempt.tries(30);
-  attempt.timeout(120000);
-  await attempt.start();
-});
-
-it(`should write time series data`, async () => {
-  const output = await tools.runAsync(`${cmd} write`, cwd);
-  assert.strictEqual(output.includes(`Done writing time series data.`), true);
-});
-
-it(`should delete a metric descriptor`, async () => {
-  const output = await tools.runAsync(`${cmd} delete ${customMetricId}`, cwd);
-  assert.strictEqual(output.includes(`Deleted ${customMetricId}`), true);
-});
-
-it(`should list monitored resource descriptors`, async () => {
-  const output = await tools.runAsync(`${cmd} list-resources`, cwd);
-  assert.strictEqual(
-    output.includes(
-      `projects/${projectId}/monitoredResourceDescriptors/${resourceId}`
-    ),
-    true
-  );
-});
-
-it(`should get a monitored resource descriptor`, async () => {
-  const output = await tools.runAsync(`${cmd} get-resource ${resourceId}`, cwd);
-  assert.strictEqual(output.includes(`Type: ${resourceId}`), true);
-});
-
-it(`should read time series data`, async () => {
-  const [timeSeries] = await client.listTimeSeries({
-    name: client.projectPath(projectId),
-    filter: filter,
-    interval: {
-      startTime: {
-        // Limit results to the last 20 minutes
-        seconds: Date.now() / 1000 - 60 * 20,
+  it('should list metric descriptors, including the new custom one', async () => {
+    // The write above appears to be eventually consistent. This retry should
+    // not be needed.  The tracking bug is here:
+    // https://github.com/googleapis/nodejs-monitoring/issues/190
+    await retry(
+      async () => {
+        const output = await exec(`${cmd} list`);
+        assert.match(output, new RegExp(customMetricId));
+        assert.match(output, new RegExp(computeMetricId));
       },
-      endTime: {
-        seconds: Date.now() / 1000,
-      },
-    },
-  });
-  const output = await tools.runAsync(`${cmd} read '${filter}'`, cwd);
-  //t.true(true); // Do not fail if there is simply no data to return.
-  timeSeries.forEach(data => {
-    assert.strictEqual(
-      output.includes(`${data.metric.labels.instance_name}:`),
-      true
+      {
+        retries: 10,
+        onFailedAttempt: () => console.warn('Read failed, retrying...'),
+      }
     );
-    data.points.forEach(point => {
-      assert.strictEqual(output.includes(JSON.stringify(point.value)), true);
+  });
+
+  it('should get a metric descriptor', async () => {
+    const output = await exec(`${cmd} get ${customMetricId}`);
+    assert.match(output, new RegExp(`Type: ${customMetricId}`));
+  });
+
+  it('should write time series data', async () => {
+    const output = await exec(`${cmd} write`);
+    assert.match(output, /Done writing time series data./);
+  });
+
+  it('should delete a metric descriptor', async () => {
+    const output = await exec(`${cmd} delete ${customMetricId}`);
+    assert.match(output, new RegExp(`Deleted ${customMetricId}`));
+  });
+
+  it('should list monitored resource descriptors', async () => {
+    const output = await exec(`${cmd} list-resources`);
+    assert.match(
+      output,
+      new RegExp(
+        `projects/${projectId}/monitoredResourceDescriptors/${resourceId}`
+      )
+    );
+  });
+
+  it('should get a monitored resource descriptor', async () => {
+    const output = await exec(`${cmd} get-resource ${resourceId}`);
+    assert.match(output, new RegExp(`Type: ${resourceId}`));
+  });
+
+  it('should read time series data', async () => {
+    const [timeSeries] = await client.listTimeSeries({
+      name: client.projectPath(projectId),
+      filter: filter,
+      interval: {
+        startTime: {
+          // Limit results to the last 20 minutes
+          seconds: Date.now() / 1000 - 60 * 20,
+        },
+        endTime: {
+          seconds: Date.now() / 1000,
+        },
+      },
+    });
+    const output = await exec(`${cmd} read '${filter}'`);
+    //t.true(true); // Do not fail if there is simply no data to return.
+    timeSeries.forEach(data => {
+      assert.match(output, new RegExp(`${data.metric.labels.instance_name}:`));
+      data.points.forEach(point => {
+        assert.match(output, new RegExp(JSON.stringify(point.value)));
+      });
     });
   });
-});
 
-it(`should read time series data fields`, async () => {
-  const [timeSeries] = await client.listTimeSeries({
-    name: client.projectPath(projectId),
-    filter: filter,
-    interval: {
-      startTime: {
-        // Limit results to the last 20 minutes
-        seconds: Date.now() / 1000 - 60 * 20,
+  it('should read time series data fields', async () => {
+    const [timeSeries] = await client.listTimeSeries({
+      name: client.projectPath(projectId),
+      filter: filter,
+      interval: {
+        startTime: {
+          // Limit results to the last 20 minutes
+          seconds: Date.now() / 1000 - 60 * 20,
+        },
+        endTime: {
+          seconds: Date.now() / 1000,
+        },
       },
-      endTime: {
-        seconds: Date.now() / 1000,
-      },
-    },
-    // Don't return time series data, instead just return information about
-    // the metrics that match the filter
-    view: `HEADERS`,
+      // Don't return time series data, instead just return information about
+      // the metrics that match the filter
+      view: `HEADERS`,
+    });
+    const output = await exec(`${cmd} read-fields`);
+    assert.match(output, /Found data points for the following instances/);
+    timeSeries.forEach(data => {
+      assert.match(output, new RegExp(data.metric.labels.instance_name));
+    });
   });
-  const output = await tools.runAsync(`${cmd} read-fields`, cwd);
-  assert.strictEqual(
-    output.includes(`Found data points for the following instances:`),
-    true
-  );
-  timeSeries.forEach(data => {
-    assert.strictEqual(output.includes(data.metric.labels.instance_name), true);
-  });
-});
 
-it(`should read time series data aggregated`, async () => {
-  const [timeSeries] = await client.listTimeSeries({
-    name: client.projectPath(projectId),
-    filter: filter,
-    interval: {
-      startTime: {
-        // Limit results to the last 20 minutes
-        seconds: Date.now() / 1000 - 60 * 20,
+  it('should read time series data aggregated', async () => {
+    const [timeSeries] = await client.listTimeSeries({
+      name: client.projectPath(projectId),
+      filter: filter,
+      interval: {
+        startTime: {
+          // Limit results to the last 20 minutes
+          seconds: Date.now() / 1000 - 60 * 20,
+        },
+        endTime: {
+          seconds: Date.now() / 1000,
+        },
       },
-      endTime: {
-        seconds: Date.now() / 1000,
+      // Aggregate results per matching instance
+      aggregation: {
+        alignmentPeriod: {
+          seconds: 600,
+        },
+        perSeriesAligner: `ALIGN_MEAN`,
       },
-    },
-    // Aggregate results per matching instance
-    aggregation: {
-      alignmentPeriod: {
-        seconds: 600,
-      },
-      perSeriesAligner: `ALIGN_MEAN`,
-    },
+    });
+    const output = await exec(`${cmd} read-aggregate`);
+    assert.match(output, /CPU utilization:/);
+    timeSeries.forEach(data => {
+      assert.match(output, new RegExp(data.metric.labels.instance_name));
+      assert.match(output, / Now: 0./);
+      assert.match(output, / 10 min ago: 0./);
+    });
   });
-  const output = await tools.runAsync(`${cmd} read-aggregate`, cwd);
-  assert.strictEqual(output.includes('CPU utilization:'), true);
-  timeSeries.forEach(data => {
-    assert.strictEqual(
-      new RegExp(data.metric.labels.instance_name).test(output),
-      true
-    );
-    assert.strictEqual(output.includes(' Now: 0.'), true);
-    assert.strictEqual(output.includes(' 10 min ago: 0.'), true);
-  });
-});
 
-it(`should read time series data reduced`, async () => {
-  await client.listTimeSeries({
-    name: client.projectPath(projectId),
-    filter: filter,
-    interval: {
-      startTime: {
-        // Limit results to the last 20 minutes
-        seconds: Date.now() / 1000 - 60 * 20,
+  it('should read time series data reduced', async () => {
+    await client.listTimeSeries({
+      name: client.projectPath(projectId),
+      filter: filter,
+      interval: {
+        startTime: {
+          // Limit results to the last 20 minutes
+          seconds: Date.now() / 1000 - 60 * 20,
+        },
+        endTime: {
+          seconds: Date.now() / 1000,
+        },
       },
-      endTime: {
-        seconds: Date.now() / 1000,
+      // Aggregate results per matching instance
+      aggregation: {
+        alignmentPeriod: {
+          seconds: 600,
+        },
+        crossSeriesReducer: `REDUCE_MEAN`,
+        perSeriesAligner: `ALIGN_MEAN`,
       },
-    },
-    // Aggregate results per matching instance
-    aggregation: {
-      alignmentPeriod: {
-        seconds: 600,
-      },
-      crossSeriesReducer: `REDUCE_MEAN`,
-      perSeriesAligner: `ALIGN_MEAN`,
-    },
+    });
+    const output = await exec(`${cmd} read-reduce`);
+    // Special case: No output.
+    if (output === 'No data') {
+      assert.match(output, /No data/);
+    } else {
+      assert.match(output, /Average CPU utilization across all GCE instances:/);
+      assert.match(output, / {2}Last 10 min/);
+      assert.match(output, / {2}10-20 min ago/);
+    }
   });
-  const output = await tools.runAsync(`${cmd} read-reduce`, cwd);
-  // Special case: No output.
-  if (output === 'No data') {
-    assert.strictEqual(output.includes('No data'), true);
-  } else {
-    assert.strictEqual(
-      output.includes(`Average CPU utilization across all GCE instances:`),
-      true
-    );
-    assert.strictEqual(output.includes(`  Last 10 min`), true);
-    assert.strictEqual(output.includes(`  10-20 min ago`), true);
-  }
 });

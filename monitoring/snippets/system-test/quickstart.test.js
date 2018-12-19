@@ -15,41 +15,24 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const sinon = require(`sinon`);
-const assert = require('assert');
+const {assert} = require('chai');
+const execa = require('execa');
+const retry = require('p-retry');
 
-const monitoring = proxyquire(`@google-cloud/monitoring`, {});
-const client = new monitoring.MetricServiceClient();
-
-it(`should list time series`, async () => {
-  const clientMock = {
-    projectPath: projectId => client.projectPath(projectId),
-    createTimeSeries: async _request => {
-      _request.name = client.projectPath(process.env.GCLOUD_PROJECT);
-      _request.timeSeries[0].resource.labels.project_id =
-        process.env.GCLOUD_PROJECT;
-
-      const result = await client.createTimeSeries(_request);
-      setTimeout(() => {
-        try {
-          assert.strictEqual(console.log.callCount, 1);
-          assert.deepStrictEqual(console.log.getCall(0).args, [
-            `Done writing time series data.`,
-            {},
-          ]);
-        } catch (err) {
-          // ignore error
-        }
-      }, 200);
-
-      return result;
-    },
-  };
-
-  proxyquire(`../quickstart`, {
-    '@google-cloud/monitoring': {
-      MetricServiceClient: sinon.stub().returns(clientMock),
-    },
+describe('quickstart', () => {
+  it('should run the quickstart', async () => {
+    // The write in the quickstart appears to be very, very flaky.
+    // This should not be needed.  The tracking bug is here:
+    // https://github.com/googleapis/nodejs-monitoring/issues/191
+    await retry(
+      async () => {
+        const result = await execa.shell('node quickstart');
+        assert.match(result.stdout, /Done writing time series data/);
+      },
+      {
+        retries: 10,
+        onFailedAttempt: () => console.warn('Write failed, retrying...'),
+      }
+    );
   });
 });

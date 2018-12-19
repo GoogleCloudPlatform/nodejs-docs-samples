@@ -15,26 +15,25 @@
 
 'use strict';
 
-const fs = require(`fs`);
-const monitoring = require(`@google-cloud/monitoring`);
-const path = require(`path`);
-const assert = require('assert');
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const monitoring = require('@google-cloud/monitoring');
+const {assert} = require('chai');
+const execa = require('execa');
 const uuid = require('uuid');
+const path = require('path');
+const fs = require('fs');
 
 const client = new monitoring.AlertPolicyServiceClient();
 const channelClient = new monitoring.NotificationChannelServiceClient();
-const cwd = path.join(__dirname, `..`);
 const projectId = process.env.GCLOUD_PROJECT;
+const cmd = 'node alerts';
+const exec = async cmd => (await execa.shell(cmd)).stdout;
 
 let policyOneName, policyTwoName, channelName;
-
 const testPrefix = `gcloud-test-${uuid.v4().split('-')[0]}`;
 
-before(tools.checkCredentials);
-before(async () => {
-  try {
-    tools.checkCredentials;
+describe('alerts', () => {
+  before(async () => {
+    await reapPolicies();
     let results = await client.createAlertPolicy({
       name: client.projectPath(projectId),
       alertPolicy: {
@@ -48,7 +47,8 @@ before(async () => {
           {
             displayName: 'Condition 1',
             conditionAbsent: {
-              filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
+              filter:
+                'resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"',
               aggregations: [
                 {
                   alignmentPeriod: {
@@ -79,7 +79,8 @@ before(async () => {
           {
             displayName: 'Condition 2',
             conditionAbsent: {
-              filter: `resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"`,
+              filter:
+                'resource.type = "cloud_function" AND metric.type = "cloudfunctions.googleapis.com/function/execution_count"',
               aggregations: [
                 {
                   alignmentPeriod: {
@@ -112,108 +113,102 @@ before(async () => {
       },
     });
     channelName = results[0].name;
-  } catch (err) {
-    // ignore error
+  });
+
+  /**
+   * Delete any policies created by a test that's older than 2 minutes.
+   */
+  async function reapPolicies() {
+    const [policies] = await client.listAlertPolicies({
+      name: client.projectPath(projectId),
+    });
+    const crustyPolicies = policies
+      .filter(p => p.displayName.match(/^gcloud-test-/))
+      .filter(p => {
+        const minutesOld =
+          (Date.now() - p.creationRecord.mutateTime.seconds * 1000) / 1000 / 60;
+        return minutesOld > 2;
+      });
+    // This is serial on purpose.  When trying to delete all alert policies in
+    // parallel, all of the promises return successful, but then only 2?
+    // get deleted.  Super, super bizarre.
+    // https://github.com/googleapis/nodejs-monitoring/issues/192
+    for (const p of crustyPolicies) {
+      console.log(`\tReaping ${p.name}...`);
+      await client.deleteAlertPolicy({name: p.name});
+    }
   }
-});
 
-async function deletePolicies() {
-  await client.deleteAlertPolicy({
-    name: policyOneName,
+  async function deletePolicies() {
+    await client.deleteAlertPolicy({
+      name: policyOneName,
+    });
+    await client.deleteAlertPolicy({
+      name: policyTwoName,
+    });
+  }
+
+  async function deleteChannels() {
+    await channelClient.deleteNotificationChannel({
+      name: channelName,
+      force: true,
+    });
+  }
+
+  after(async () => {
+    await deletePolicies();
+    // has to be done after policies are deleted
+    await deleteChannels();
   });
-  await client.deleteAlertPolicy({
-    name: policyTwoName,
+
+  it('should replace notification channels', async () => {
+    const stdout = await exec(`${cmd} replace ${policyOneName} ${channelName}`);
+    assert.match(stdout, /Updated projects/);
+    assert.match(stdout, new RegExp(policyOneName));
   });
-}
 
-async function deleteChannels() {
-  await channelClient.deleteNotificationChannel({
-    name: channelName,
-    force: true,
+  it('should disable policies', async () => {
+    const stdout = await exec(
+      `${cmd} disable ${projectId} 'display_name.size < 28'`
+    );
+    assert.match(stdout, /Disabled projects/);
+    assert.notMatch(stdout, new RegExp(policyOneName));
+    assert.match(stdout, new RegExp(policyTwoName));
   });
-}
 
-after(async () => {
-  await deletePolicies();
-  // has to be done after policies are deleted
-  await deleteChannels();
-});
+  it('should enable policies', async () => {
+    const stdout = await exec(
+      `${cmd} enable ${projectId} 'display_name.size < 28'`
+    );
+    assert.match(stdout, /Enabled projects/);
+    assert.notMatch(stdout, new RegExp(policyOneName));
+    assert.match(stdout, new RegExp(policyTwoName));
+  });
 
-it(`should replace notification channels`, async () => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `replace`, policyOneName, channelName],
-    cwd
-  );
-  assert.strictEqual(results.output.includes('Updated projects'), true);
-  assert.strictEqual(results.output.includes(policyOneName), true);
-});
+  it('should list policies', async () => {
+    const stdout = await exec(`${cmd} list ${projectId}`);
+    assert.match(stdout, /Policies:/);
+    assert.match(stdout, /first-policy/);
+    assert.match(stdout, /Test/);
+    assert.match(stdout, /second/);
+  });
 
-it(`should disable policies`, async () => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `disable`, projectId, `'display_name.size < 28'`],
-    cwd
-  );
-  assert.strictEqual(results.output.includes('Disabled projects'), true);
-  assert.strictEqual(results.output.includes(policyOneName), false);
-  assert.strictEqual(results.output.includes(policyTwoName), true);
-});
+  it('should backup all policies', async () => {
+    const output = await exec(`${cmd} backup ${projectId}`);
+    assert.match(output, /Saved policies to .\/policies_backup.json/);
+    assert.ok(fs.existsSync(path.join(__dirname, '../policies_backup.json')));
+    await client.deleteAlertPolicy({name: policyOneName});
+  });
 
-it(`should enable policies`, async () => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `enable`, projectId, `'display_name.size < 28'`],
-    cwd
-  );
-  assert.strictEqual(results.output.includes('Enabled projects'), true);
-  assert.strictEqual(results.output.includes(policyOneName), false);
-  assert.strictEqual(results.output.includes(policyTwoName), true);
-});
-
-it(`should list policies`, async () => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `list`, projectId],
-    cwd
-  );
-  assert.strictEqual(results.output.includes('Policies:'), true);
-  assert.strictEqual(results.output.includes('first-policy'), true);
-  assert.strictEqual(results.output.includes('Test'), true);
-  assert.strictEqual(results.output.includes('second'), true);
-});
-
-it(`should backup all policies`, async () => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `backup`, projectId],
-    cwd
-  );
-  assert.strictEqual(
-    results.output.includes('Saved policies to ./policies_backup.json'),
-    true
-  );
-  assert.strictEqual(
-    fs.existsSync(path.join(cwd, `policies_backup.json`)),
-    true
-  );
-  await client.deleteAlertPolicy({name: policyOneName});
-});
-
-it(`should restore policies`, async () => {
-  const results = await tools.spawnAsyncWithIO(
-    `node`,
-    [`alerts.js`, `restore`, projectId],
-    cwd
-  );
-  assert.strictEqual(
-    results.output.includes('Loading policies from ./policies_backup.json'),
-    true
-  );
-  const nameRegexp = /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi;
-  const matches = results.output.match(nameRegexp);
-  assert.strictEqual(Array.isArray(matches), true);
-  assert(matches.length > 1);
-  policyOneName = matches[0];
-  policyTwoName = matches[1];
+  it('should restore policies', async () => {
+    const output = await exec(`${cmd} restore ${projectId}`);
+    assert.match(output, /Loading policies from .\/policies_backup.json/);
+    const matches = output.match(
+      /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi
+    );
+    assert.ok(Array.isArray(matches));
+    assert(matches.length > 1);
+    policyOneName = matches[0];
+    policyTwoName = matches[1];
+  });
 });

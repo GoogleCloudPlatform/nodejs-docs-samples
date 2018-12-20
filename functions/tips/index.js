@@ -139,7 +139,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
  *
  * @param {object} event The Cloud Functions event.
  * @param {object} event.data Data included with the event.
- * @param {object} event.data.retry Whether or not to retry the function.
+ * @param {object} event.data.retry User-supplied parameter that tells the function whether to retry.
  */
 exports.retryPromise = event => {
   const tryAgain = !!event.data.retry;

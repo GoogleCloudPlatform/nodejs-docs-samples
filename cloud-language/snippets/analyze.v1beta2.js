@@ -248,7 +248,7 @@ async function classifyTextOfText(text) {
   // [END language_classify_string]
 }
 
-function classifyTextInFile(bucketName, fileName) {
+async function classifyTextInFile(bucketName, fileName) {
   // [START language_classify_file]
   // Imports the Google Cloud client library
   const language = require('@google-cloud/language').v1beta2;
@@ -269,105 +269,87 @@ function classifyTextInFile(bucketName, fileName) {
   };
 
   // Classifies text in the document
-  client
-    .classifyText({document})
-    .then(results => {
-      const classification = results[0];
-
-      console.log('Categories:');
-      classification.categories.forEach(category => {
-        console.log(
-          `Name: ${category.name}, Confidence: ${category.confidence}`
-        );
-      });
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  const [classification] = await client.classifyText({document});
+  console.log('Categories:');
+  classification.categories.forEach(category => {
+    console.log(`Name: ${category.name}, Confidence: ${category.confidence}`);
+  });
   // [END language_classify_file]
 }
 
-async function main() {
-  require(`yargs`)
-    .demand(1)
-    .command(
-      `sentiment-text <text>`,
-      `Detects sentiment of a string.`,
-      {},
-      opts => analyzeSentimentOfText(opts.text)
-    )
-    .command(
-      `sentiment-file <bucketName> <fileName>`,
-      `Detects sentiment in a file in Google Cloud Storage.`,
-      {},
-      opts => analyzeSentimentInFile(opts.bucketName, opts.fileName)
-    )
-    .command(
-      `entities-text <text>`,
-      `Detects entities in a string.`,
-      {},
-      opts => analyzeEntitiesOfText(opts.text)
-    )
-    .command(
-      `entities-file <bucketName> <fileName>`,
-      `Detects entities in a file in Google Cloud Storage.`,
-      {},
-      opts => analyzeEntitiesInFile(opts.bucketName, opts.fileName)
-    )
-    .command(`syntax-text <text>`, `Detects syntax of a string.`, {}, opts =>
-      analyzeSyntaxOfText(opts.text)
-    )
-    .command(
-      `syntax-file <bucketName> <fileName>`,
-      `Detects syntax in a file in Google Cloud Storage.`,
-      {},
-      opts => analyzeSyntaxInFile(opts.bucketName, opts.fileName)
-    )
-    .command(`classify-text <text>`, `Classifies text of a string.`, {}, opts =>
-      classifyTextOfText(opts.text)
-    )
-    .command(
-      `classify-file <bucketName> <fileName>`,
-      `Classifies text in a file in Google Cloud Storage.`,
-      {},
-      opts =>
-        classifyTextInFile(opts.bucketName, opts.fileName).catch(console.error)
-    )
-    .example(
-      `node $0 sentiment-text "President Obama is speaking at the White House."`
-    )
-    .example(
-      `node $0 sentiment-file my-bucket file.txt`,
-      `Detects sentiment in gs://my-bucket/file.txt`
-    )
-    .example(
-      `node $0 entities-text "President Obama is speaking at the White House."`
-    )
-    .example(
-      `node $0 entities-file my-bucket file.txt`,
-      `Detects entities in gs://my-bucket/file.txt`
-    )
-    .example(
-      `node $0 syntax-text "President Obama is speaking at the White House."`
-    )
-    .example(
-      `node $0 syntax-file my-bucket file.txt`,
-      `Detects syntax in gs://my-bucket/file.txt`
-    )
-    .example(
-      `node $0 classify-text "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."`
-    )
-    .example(
-      `node $0 classify-file my-bucket android_text.txt`,
-      `Detects syntax in gs://my-bucket/android_text.txt`
-    )
-    .wrap(120)
-    .recommendCommands()
-    .epilogue(
-      `For more information, see https://cloud.google.com/natural-language/docs`
-    )
-    .help()
-    .strict().argv;
-}
-
-main().catch(console.error);
+require(`yargs`)
+  .demand(1)
+  .command(
+    `sentiment-text <text>`,
+    `Detects sentiment of a string.`,
+    {},
+    opts => analyzeSentimentOfText(opts.text)
+  )
+  .command(
+    `sentiment-file <bucketName> <fileName>`,
+    `Detects sentiment in a file in Google Cloud Storage.`,
+    {},
+    opts => analyzeSentimentInFile(opts.bucketName, opts.fileName)
+  )
+  .command(`entities-text <text>`, `Detects entities in a string.`, {}, opts =>
+    analyzeEntitiesOfText(opts.text)
+  )
+  .command(
+    `entities-file <bucketName> <fileName>`,
+    `Detects entities in a file in Google Cloud Storage.`,
+    {},
+    opts => analyzeEntitiesInFile(opts.bucketName, opts.fileName)
+  )
+  .command(`syntax-text <text>`, `Detects syntax of a string.`, {}, opts =>
+    analyzeSyntaxOfText(opts.text)
+  )
+  .command(
+    `syntax-file <bucketName> <fileName>`,
+    `Detects syntax in a file in Google Cloud Storage.`,
+    {},
+    opts => analyzeSyntaxInFile(opts.bucketName, opts.fileName)
+  )
+  .command(`classify-text <text>`, `Classifies text of a string.`, {}, opts =>
+    classifyTextOfText(opts.text)
+  )
+  .command(
+    `classify-file <bucketName> <fileName>`,
+    `Classifies text in a file in Google Cloud Storage.`,
+    {},
+    opts => classifyTextInFile(opts.bucketName, opts.fileName)
+  )
+  .example(
+    `node $0 sentiment-text "President Obama is speaking at the White House."`
+  )
+  .example(
+    `node $0 sentiment-file my-bucket file.txt`,
+    `Detects sentiment in gs://my-bucket/file.txt`
+  )
+  .example(
+    `node $0 entities-text "President Obama is speaking at the White House."`
+  )
+  .example(
+    `node $0 entities-file my-bucket file.txt`,
+    `Detects entities in gs://my-bucket/file.txt`
+  )
+  .example(
+    `node $0 syntax-text "President Obama is speaking at the White House."`
+  )
+  .example(
+    `node $0 syntax-file my-bucket file.txt`,
+    `Detects syntax in gs://my-bucket/file.txt`
+  )
+  .example(
+    `node $0 classify-text "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."`
+  )
+  .example(
+    `node $0 classify-file my-bucket android_text.txt`,
+    `Detects syntax in gs://my-bucket/android_text.txt`
+  )
+  .wrap(120)
+  .recommendCommands()
+  .epilogue(
+    `For more information, see https://cloud.google.com/natural-language/docs`
+  )
+  .help()
+  .strict().argv;

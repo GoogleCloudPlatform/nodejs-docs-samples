@@ -251,114 +251,110 @@ async function deleteDataset(projectId, computeRegion, datasetId) {
   // [END automl_natural_language_deleteDataset]
 }
 
-async function main() {
-  require(`yargs`)
-    .demand(1)
-    .options({
-      computeRegion: {
-        alias: `c`,
-        type: `string`,
-        default: process.env.REGION_NAME,
-        requiresArg: true,
-        description: `region name e.g. "us-central1"`,
-      },
-      datasetName: {
-        alias: `n`,
-        type: `string`,
-        default: `testDataSet`,
-        requiresArg: true,
-        description: `Name of the Dataset`,
-      },
-      datasetId: {
-        alias: `i`,
-        type: `string`,
-        requiresArg: true,
-        description: `Id of the dataset`,
-      },
-      filter: {
-        alias: `f`,
-        default: `text_classification_dataset_metadata:*`,
-        type: `string`,
-        requiresArg: false,
-        description: `filter expression`,
-      },
-      multilabel: {
-        alias: `m`,
-        type: `string`,
-        default: false,
-        requiresArg: true,
-        description:
-          `Type of the classification problem, ` +
-          `False - MULTICLASS, True - MULTILABEL.`,
-      },
-      outputUri: {
-        alias: `o`,
-        type: `string`,
-        requiresArg: true,
-        description: `URI (or local path) to export dataset`,
-      },
-      path: {
-        alias: `p`,
-        type: `string`,
-        global: true,
-        default: `gs://nodejs-docs-samples-vcm/flowerTraindataMini.csv`,
-        requiresArg: true,
-        description: `URI or local path to input .csv, or array of .csv paths`,
-      },
-      projectId: {
-        alias: `z`,
-        type: `number`,
-        default: process.env.GCLOUD_PROJECT,
-        requiresArg: true,
-        description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
-      },
-    })
-    .command(`create-dataset`, `creates a new Dataset`, {}, opts =>
-      createDataset(
+require(`yargs`)
+  .demand(1)
+  .options({
+    computeRegion: {
+      alias: `c`,
+      type: `string`,
+      default: process.env.REGION_NAME,
+      requiresArg: true,
+      description: `region name e.g. "us-central1"`,
+    },
+    datasetName: {
+      alias: `n`,
+      type: `string`,
+      default: `testDataSet`,
+      requiresArg: true,
+      description: `Name of the Dataset`,
+    },
+    datasetId: {
+      alias: `i`,
+      type: `string`,
+      requiresArg: true,
+      description: `Id of the dataset`,
+    },
+    filter: {
+      alias: `f`,
+      default: `text_classification_dataset_metadata:*`,
+      type: `string`,
+      requiresArg: false,
+      description: `filter expression`,
+    },
+    multilabel: {
+      alias: `m`,
+      type: `string`,
+      default: false,
+      requiresArg: true,
+      description:
+        `Type of the classification problem, ` +
+        `False - MULTICLASS, True - MULTILABEL.`,
+    },
+    outputUri: {
+      alias: `o`,
+      type: `string`,
+      requiresArg: true,
+      description: `URI (or local path) to export dataset`,
+    },
+    path: {
+      alias: `p`,
+      type: `string`,
+      global: true,
+      default: `gs://nodejs-docs-samples-vcm/flowerTraindataMini.csv`,
+      requiresArg: true,
+      description: `URI or local path to input .csv, or array of .csv paths`,
+    },
+    projectId: {
+      alias: `z`,
+      type: `number`,
+      default: process.env.GCLOUD_PROJECT,
+      requiresArg: true,
+      description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
+    },
+  })
+  .command(`create-dataset`, `creates a new Dataset`, {}, opts =>
+    createDataset(
+      opts.projectId,
+      opts.computeRegion,
+      opts.datasetName,
+      opts.multilabel
+    )
+  )
+  .command(`list-datasets`, `list all Datasets`, {}, opts =>
+    listDatasets(opts.projectId, opts.computeRegion, opts.filter)
+  )
+  .command(`get-dataset`, `Get a Dataset`, {}, opts =>
+    getDataset(opts.projectId, opts.computeRegion, opts.datasetId)
+  )
+  .command(`delete-dataset`, `Delete a dataset`, {}, opts =>
+    deleteDataset(opts.projectId, opts.computeRegion, opts.datasetId)
+  )
+  .command(`import-data`, `Import labeled items into dataset`, {}, opts =>
+    importData(opts.projectId, opts.computeRegion, opts.datasetId, opts.path)
+  )
+  .command(
+    `export-data`,
+    `Export a dataset to a Google Cloud Storage Bucket`,
+    {},
+    opts =>
+      exportData(
         opts.projectId,
         opts.computeRegion,
-        opts.datasetName,
-        opts.multilabel
+        opts.datasetId,
+        opts.outputUri
       )
-    )
-    .command(`list-datasets`, `list all Datasets`, {}, opts =>
-      listDatasets(opts.projectId, opts.computeRegion, opts.filter)
-    )
-    .command(`get-dataset`, `Get a Dataset`, {}, opts =>
-      getDataset(opts.projectId, opts.computeRegion, opts.datasetId)
-    )
-    .command(`delete-dataset`, `Delete a dataset`, {}, opts =>
-      deleteDataset(opts.projectId, opts.computeRegion, opts.datasetId)
-    )
-    .command(`import-data`, `Import labeled items into dataset`, {}, opts =>
-      importData(opts.projectId, opts.computeRegion, opts.datasetId, opts.path)
-    )
-    .command(
-      `export-data`,
-      `Export a dataset to a Google Cloud Storage Bucket`,
-      {},
-      opts =>
-        exportData(
-          opts.projectId,
-          opts.computeRegion,
-          opts.datasetId,
-          opts.outputUri
-        )
-    )
-    .example(`node $0 create-dataset -n "newDataSet"`)
-    .example(`node $0 list-datasets -f "imageClassificationDatasetMetadata:*"`)
-    .example(`node $0 get-dataset -i "DATASETID"`)
-    .example(`node $0 delete-dataset -i "DATASETID"`)
-    .example(
-      `node $0 import-data -i "dataSetId" -p "gs://myproject/mytraindata.csv"`
-    )
-    .example(
-      `node $0 export-data -i "dataSetId" -o "gs://myproject/outputdestination.csv"`
-    )
-    .wrap(120)
-    .recommendCommands()
-    .help()
-    .strict().argv;
-}
-
-main().catch(console.error);
+  )
+  .example(`node $0 create-dataset -n "newDataSet"`)
+  .example(`node $0 list-datasets -f "imageClassificationDatasetMetadata:*"`)
+  .example(`node $0 get-dataset -i "DATASETID"`)
+  .example(`node $0 delete-dataset -i "DATASETID"`)
+  .example(
+    `node $0 import-data -i "dataSetId" -p "gs://myproject/mytraindata.csv"`
+  )
+  .example(
+    `node $0 export-data -i "dataSetId" -o "gs://myproject/outputdestination.csv"`
+  )
+  .wrap(120)
+  .recommendCommands()
+  .help()
+  .strict().argv;

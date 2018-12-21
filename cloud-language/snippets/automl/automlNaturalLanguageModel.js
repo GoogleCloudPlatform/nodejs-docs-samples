@@ -419,133 +419,129 @@ async function deleteModel(projectId, computeRegion, modelId) {
   // [END automl_natural_language_deleteModel]
 }
 
-async function main() {
-  require(`yargs`)
-    .demand(1)
-    .options({
-      computeRegion: {
-        alias: `c`,
-        type: `string`,
-        default: process.env.REGION_NAME,
-        requiresArg: true,
-        description: `region name e.g. "us-central1"`,
-      },
-      datasetId: {
-        alias: `i`,
-        type: `string`,
-        requiresArg: true,
-        description: `Id of the dataset`,
-      },
-      filter: {
-        alias: `f`,
-        default: ``,
-        type: `string`,
-        requiresArg: true,
-        description: `Name of the Dataset to search for`,
-      },
-      modelName: {
-        alias: `m`,
-        type: `string`,
-        default: false,
-        requiresArg: true,
-        description: `Name of the model`,
-      },
-      modelId: {
-        alias: `a`,
-        type: `string`,
-        default: ``,
-        requiresArg: true,
-        description: `Id of the model`,
-      },
-      modelEvaluationId: {
-        alias: `e`,
-        type: `string`,
-        default: ``,
-        requiresArg: true,
-        description: `Id of the model evaluation`,
-      },
-      operationFullId: {
-        alias: `o`,
-        type: `string`,
-        default: ``,
-        requiresArg: true,
-        description: `Full name of an operation`,
-      },
-      projectId: {
-        alias: `z`,
-        type: `number`,
-        default: process.env.GCLOUD_PROJECT,
-        requiresArg: true,
-        description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
-      },
-      trainBudget: {
-        alias: `t`,
-        type: `string`,
-        default: ``,
-        requiresArg: true,
-        description: `Budget for training the model`,
-      },
-    })
-    .command(`create-model`, `creates a new Model`, {}, opts =>
-      createModel(
-        opts.projectId,
-        opts.computeRegion,
-        opts.datasetId,
-        opts.modelName,
-        opts.trainBudget
-      )
+require(`yargs`)
+  .demand(1)
+  .options({
+    computeRegion: {
+      alias: `c`,
+      type: `string`,
+      default: process.env.REGION_NAME,
+      requiresArg: true,
+      description: `region name e.g. "us-central1"`,
+    },
+    datasetId: {
+      alias: `i`,
+      type: `string`,
+      requiresArg: true,
+      description: `Id of the dataset`,
+    },
+    filter: {
+      alias: `f`,
+      default: ``,
+      type: `string`,
+      requiresArg: true,
+      description: `Name of the Dataset to search for`,
+    },
+    modelName: {
+      alias: `m`,
+      type: `string`,
+      default: false,
+      requiresArg: true,
+      description: `Name of the model`,
+    },
+    modelId: {
+      alias: `a`,
+      type: `string`,
+      default: ``,
+      requiresArg: true,
+      description: `Id of the model`,
+    },
+    modelEvaluationId: {
+      alias: `e`,
+      type: `string`,
+      default: ``,
+      requiresArg: true,
+      description: `Id of the model evaluation`,
+    },
+    operationFullId: {
+      alias: `o`,
+      type: `string`,
+      default: ``,
+      requiresArg: true,
+      description: `Full name of an operation`,
+    },
+    projectId: {
+      alias: `z`,
+      type: `number`,
+      default: process.env.GCLOUD_PROJECT,
+      requiresArg: true,
+      description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
+    },
+    trainBudget: {
+      alias: `t`,
+      type: `string`,
+      default: ``,
+      requiresArg: true,
+      description: `Budget for training the model`,
+    },
+  })
+  .command(`create-model`, `creates a new Model`, {}, opts =>
+    createModel(
+      opts.projectId,
+      opts.computeRegion,
+      opts.datasetId,
+      opts.modelName,
+      opts.trainBudget
     )
-    .command(
-      `get-operation-status`,
-      `Gets status of current operation`,
-      {},
-      opts => getOperationStatus(opts.operationFullId)
+  )
+  .command(
+    `get-operation-status`,
+    `Gets status of current operation`,
+    {},
+    opts => getOperationStatus(opts.operationFullId)
+  )
+  .command(`list-models`, `list all Models`, {}, opts =>
+    listModels(opts.projectId, opts.computeRegion, opts.filter)
+  )
+  .command(`get-model`, `Get a Model`, {}, opts =>
+    getModel(opts.projectId, opts.computeRegion, opts.modelId)
+  )
+  .command(`list-model-evaluations`, `List model evaluations`, {}, opts =>
+    listModelEvaluations(
+      opts.projectId,
+      opts.computeRegion,
+      opts.modelId,
+      opts.filter
     )
-    .command(`list-models`, `list all Models`, {}, opts =>
-      listModels(opts.projectId, opts.computeRegion, opts.filter)
+  )
+  .command(`get-model-evaluation`, `Get model evaluation`, {}, opts =>
+    getModelEvaluation(
+      opts.projectId,
+      opts.computeRegion,
+      opts.modelId,
+      opts.modelEvaluationId
     )
-    .command(`get-model`, `Get a Model`, {}, opts =>
-      getModel(opts.projectId, opts.computeRegion, opts.modelId)
+  )
+  .command(`display-evaluation`, `Display evaluation`, {}, opts =>
+    displayEvaluation(
+      opts.projectId,
+      opts.computeRegion,
+      opts.modelId,
+      opts.filter
     )
-    .command(`list-model-evaluations`, `List model evaluations`, {}, opts =>
-      listModelEvaluations(
-        opts.projectId,
-        opts.computeRegion,
-        opts.modelId,
-        opts.filter
-      )
-    )
-    .command(`get-model-evaluation`, `Get model evaluation`, {}, opts =>
-      getModelEvaluation(
-        opts.projectId,
-        opts.computeRegion,
-        opts.modelId,
-        opts.modelEvaluationId
-      )
-    )
-    .command(`display-evaluation`, `Display evaluation`, {}, opts =>
-      displayEvaluation(
-        opts.projectId,
-        opts.computeRegion,
-        opts.modelId,
-        opts.filter
-      )
-    )
-    .command(`delete-model`, `Delete a Model`, {}, opts =>
-      deleteModel(opts.projectId, opts.computeRegion, opts.modelId)
-    )
-    .example(`node $0 create-model -i "DatasetID" -m "myModelName" -t "2"`)
-    .example(`node $0 get-operation-status -i "datasetId" -o "OperationFullID"`)
-    .example(`node $0 list-models -f "textClassificationModelMetadata:*"`)
-    .example(`node $0 get-model -a "ModelID"`)
-    .example(`node $0 list-model-evaluations -a "ModelID"`)
-    .example(`node $0 get-model-evaluation -a "ModelId" -e "ModelEvaluationID"`)
-    .example(`node $0 display-evaluation -a "ModelId"`)
-    .example(`node $0 delete-model -a "ModelID"`)
-    .wrap(120)
-    .recommendCommands()
-    .help()
-    .strict().argv;
-}
-
-main().catch(console.error);
+  )
+  .command(`delete-model`, `Delete a Model`, {}, opts =>
+    deleteModel(opts.projectId, opts.computeRegion, opts.modelId)
+  )
+  .example(`node $0 create-model -i "DatasetID" -m "myModelName" -t "2"`)
+  .example(`node $0 get-operation-status -i "datasetId" -o "OperationFullID"`)
+  .example(`node $0 list-models -f "textClassificationModelMetadata:*"`)
+  .example(`node $0 get-model -a "ModelID"`)
+  .example(`node $0 list-model-evaluations -a "ModelID"`)
+  .example(`node $0 get-model-evaluation -a "ModelId" -e "ModelEvaluationID"`)
+  .example(`node $0 display-evaluation -a "ModelId"`)
+  .example(`node $0 delete-model -a "ModelID"`)
+  .wrap(120)
+  .recommendCommands()
+  .help()
+  .strict().argv;

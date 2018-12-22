@@ -15,16 +15,16 @@
 
 'use strict';
 
-const execa = require(`execa`);
-const path = require(`path`);
-const {assert} = require('chai');
-
-const cmd = `node vms_api.js`;
-const cwd = path.join(__dirname, `..`);
-
-describe('should retrieve list of vms via api', () => {
-  it('vms_api_inspect_string', async () => {
-    const {stdout} = await execa.shell(cmd, {cwd});
-    assert.match(stdout, /^VMs:/);
+// [START list]
+async function listVMs() {
+  const Compute = require('@google-cloud/compute');
+  const compute = new Compute();
+  const vms = await compute.getVMs({
+    maxResults: 10,
   });
-});
+  console.log(`Found ${vms.length} VMs!`);
+  vms.forEach(vm => console.log(vm));
+}
+// [END list]
+
+listVMs().catch(console.error);

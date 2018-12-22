@@ -19,16 +19,15 @@ const Compute = require('@google-cloud/compute');
 const fetch = require('node-fetch');
 
 const compute = new Compute();
-const zone = compute.zone('us-central1-a');
+const zone = compute.zone('us-central1-c');
 
 /**
  * Create a new virtual machine with Ubuntu and Apache
  * @param {string} name Name of the virtual machine
  */
-async function createVM(name) {
+async function createVMWithStartupScript(name) {
   // Create a new VM, using default ubuntu image. The startup script
   // installs apache and a custom homepage.
-
   const config = {
     os: 'ubuntu',
     http: true,
@@ -60,18 +59,16 @@ async function createVM(name) {
 
   console.log('Acquiring VM metadata...');
   const [metadata] = await vm.getMetadata();
-  console.log(metadata);
 
   // External IP of the VM.
   const ip = metadata.networkInterfaces[0].accessConfigs[0].natIP;
   console.log(`Booting new VM with IP http://${ip}...`);
 
   // Ping the VM to determine when the HTTP server is ready.
-  console.log(`Operation complete. Waiting for IP ...`);
+  console.log('Operation complete. Waiting for IP');
   await pingVM(ip);
 
-  console.log(`${name} created succesfully`);
-  return ip;
+  console.log(`\n${name} created succesfully`);
 }
 
 /**
@@ -79,60 +76,20 @@ async function createVM(name) {
  * @param {string} ip IP address to poll
  */
 async function pingVM(ip) {
-  let waiting = true;
-  while (waiting) {
+  let exit = false;
+  while (!exit) {
     await new Promise(r => setTimeout(r, 2000));
     try {
       const res = await fetch(`http://${ip}`);
-      const statusCode = res.status;
-      if (statusCode === 200) {
-        waiting = false;
-        console.log('Ready!');
-        return;
-      } else {
-        process.stdout.write('.');
+      if (res.status !== 200) {
+        throw new Error(res.status);
       }
+      exit = true;
     } catch (err) {
       process.stdout.write('.');
     }
   }
 }
-/**
- * List all VMs and their external IPs in a given zone.
- */
-async function listVMs() {
-  const [vms] = await zone.getVMs();
-  const results = await Promise.all(
-    vms.map(async vm => {
-      const [metadata] = await vm.getMetadata();
-      return {
-        ip: metadata['networkInterfaces'][0]['accessConfigs']
-          ? metadata['networkInterfaces'][0]['accessConfigs'][0]['natIP']
-          : 'no external ip',
-        name: metadata.name,
-      };
-    })
-  );
-  console.log(results);
-  return results;
-}
 
-/**
- * Delete a VM with a given name.
- * @param {string} name
- */
-async function deleteVM(name) {
-  const vm = zone.vm(name);
-  console.log(`Deleting ${name} ...`);
-  const [operation] = await vm.delete();
-  console.log(`Polling operation ${operation.id} ...`);
-  await operation.promise();
-  console.log(`${name} deleted succesfully!`);
-  return name;
-}
-
-module.exports = {
-  createVM,
-  deleteVM,
-  listVMs,
-};
+const args = process.argv.slice(2);
+createVMWithStartupScript(...args).catch(console.error);

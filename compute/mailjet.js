@@ -39,6 +39,6 @@ async function mailjet() {
   });
   console.log(json);
 }
-mailjet().catch(console.error);
-
 // [END send]
+
+mailjet().catch(console.error);

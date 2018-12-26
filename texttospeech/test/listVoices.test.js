@@ -13,21 +13,17 @@
  * limitations under the License.
  */
 
-/* eslint-disable */
-
 'use strict';
 
-const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
 
 const cmd = 'node listVoices.js';
-const cwd = path.join(__dirname, '..');
 
-before(tools.checkCredentials);
-
-it('should list voices', async () => {
-  const output = await tools.runAsync(`${cmd} list-voices`, cwd);
-  assert.ok(output.includes('SSML Voice Gender: FEMALE'));
-  assert.ok(output.includes('Natural Sample Rate Hertz: 24000'));
+describe('list voices', () => {
+  it('should list voices', async () => {
+    const {stdout} = await execa.shell(`${cmd} list-voices`);
+    assert.match(stdout, /SSML Voice Gender: FEMALE/);
+    assert.match(stdout, /Natural Sample Rate Hertz: 24000/);
+  });
 });

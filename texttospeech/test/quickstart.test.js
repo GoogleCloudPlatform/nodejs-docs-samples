@@ -13,32 +13,27 @@
  * limitations under the License.
  */
 
-/* eslint-disable */
-
 'use strict';
 
 const fs = require('fs');
-const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
 
 const outputFile = 'output.mp3';
-const cmd = 'node quickstart.js';
-const cwd = path.join(__dirname, '..');
 
-before(tools.stubConsole);
-after(() => {
-  tools.restoreConsole();
-  try {
-    fs.unlinkSync(outputFile);
-  } catch(err) {
-    // Ignore error
-  }
-});
+describe('quickstart', () => {
+  after(() => {
+    try {
+      fs.unlinkSync(outputFile);
+    } catch (err) {
+      // Ignore error
+    }
+  });
 
-it('should synthesize speech to local mp3 file', async () => {
-  assert.strictEqual(fs.existsSync(outputFile), false);
-  const output = await tools.runAsync(`${cmd}`, cwd);
-  assert.ok(output.includes('Audio content written to file: output.mp3'));
-  assert.ok(fs.existsSync(outputFile));
+  it('should synthesize speech to local mp3 file', async () => {
+    assert.strictEqual(fs.existsSync(outputFile), false);
+    const {stdout} = await execa.shell('node quickstart');
+    assert.match(stdout, /Audio content written to file: output.mp3/);
+    assert.ok(fs.existsSync(outputFile));
+  });
 });

@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^2.3.3",
-    "@google-cloud/vision": "^0.23.0",
+    "@google-cloud/vision": "^0.24.0",
     "gm": "^1.23.1"
   },
   "devDependencies": {

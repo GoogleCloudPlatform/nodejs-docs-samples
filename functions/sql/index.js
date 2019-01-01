@@ -41,7 +41,7 @@ const dbName = process.env.SQL_NAME || '<YOUR DB NAME>';
 // [END functions_sql_mysql]
 
 // [START functions_sql_mysql]
-const mysqlConfig = {
+let mysqlConfig = {
   connectionLimit: 1,
   user: dbUser,
   password: dbPassword,

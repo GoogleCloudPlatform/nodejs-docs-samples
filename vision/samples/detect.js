@@ -635,7 +635,7 @@ async function detectFulltextGCS(bucketName, fileName) {
   // [END vision_fulltext_detection_gcs]
 }
 
-async function detectPdfText(bucketName, fileName) {
+async function detectPdfText(bucketName, fileName, outputPrefix) {
   // [START vision_text_detection_pdf_gcs]
 
   // Imports the Google Cloud client libraries
@@ -651,9 +651,11 @@ async function detectPdfText(bucketName, fileName) {
   // const bucketName = 'my-bucket';
   // Path to PDF file within bucket
   // const fileName = 'path/to/document.pdf';
+  // The folder to store the results
+  // const outputPrefix = 'results'
 
   const gcsSourceUri = `gs://${bucketName}/${fileName}`;
-  const gcsDestinationUri = `gs://${bucketName}/${fileName}.json`;
+  const gcsDestinationUri = `gs://${bucketName}/${outputPrefix}/`;
 
   const inputConfig = {
     // Supported mime_types are: 'application/pdf' and 'image/tiff'
@@ -870,10 +872,10 @@ require(`yargs`) // eslint-disable-line
     opts => detectFulltextGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `pdf <bucketName> <fileName>`,
+    `pdf <bucketName> <fileName> <outputPrefix>`,
     `Extracts full text from a pdf file`,
     {},
-    opts => detectPdfText(opts.bucketName, opts.fileName)
+    opts => detectPdfText(opts.bucketName, opts.fileName, opts.outputPrefix)
   )
   .command(
     `localize-objects <fileName>`,
@@ -909,7 +911,7 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 web-geo-gcs my-bucket your-image.jpg`)
   .example(`node $0 fulltext ./resources/wakeupcat.jpg`)
   .example(`node $0 fulltext-gcs my-bucket your-image.jpg`)
-  .example(`node $0 pdf my-bucket my-pdf.pdf`)
+  .example(`node $0 pdf my-bucket my-pdf.pdf results`)
   .example(`node $0 localize-objects ./resources/duck_and_truck.jpg`)
   .example(`node $0 localize-objects-gcs gs://bucket/bucketImage.png`)
   .wrap(120)

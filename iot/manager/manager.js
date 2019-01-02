@@ -732,9 +732,12 @@ function sendCommand(
 
   const binaryData = Buffer.from(commandMessage).toString('base64');
 
+  // NOTE: The device must be subscribed to the wildcard subfolder
+  // or you should pass a subfolder
   const request = {
     name: `${registryName}/devices/${deviceId}`,
     binaryData: binaryData,
+    //subfolder: <your-subfolder>
   };
 
   client.projects.locations.registries.devices.sendCommandToDevice(

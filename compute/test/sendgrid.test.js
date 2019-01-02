@@ -15,40 +15,28 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const assert = require('assert');
+const proxyquire = require('proxyquire');
+const {assert} = require('chai');
 
 process.env.SENDGRID_API_KEY = `foo`;
 
 describe('sendgrid', () => {
   it('should send an email', () => {
     proxyquire(`../sendgrid`, {
-      sendgrid: key => {
-        assert.strictEqual(key, `foo`);
-        return {
-          emptyRequest: x => x,
-          API: request => {
-            assert.deepStrictEqual(request, {
-              method: `POST`,
-              path: `/v3/mail/send`,
-              body: {
-                personalizations: [
-                  {
-                    to: [{email: `to_email@example.com`}],
-                    subject: `Sendgrid test email from Node.js on Google Cloud Platform`,
-                  },
-                ],
-                from: {email: `from_email@example.com`},
-                content: [
-                  {
-                    type: `text/plain`,
-                    value: `Hello!\n\nThis a Sendgrid test email from Node.js on Google Cloud Platform.`,
-                  },
-                ],
-              },
-            });
-          },
-        };
+      '@sendgrid/mail': {
+        setApiKey: key => {
+          assert.strictEqual(key, `foo`);
+        },
+        send: msg => {
+          assert.deepStrictEqual(msg, {
+            to: 'to_email@example.com',
+            from: 'from_email@example.com',
+            subject:
+              'Sendgrid test email from Node.js on Google Cloud Platform',
+            text:
+              'Well hello! This is a Sendgrid test email from Node.js on Google Cloud Platform.',
+          });
+        },
       },
     });
   });

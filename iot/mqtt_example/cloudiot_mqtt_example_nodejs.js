@@ -258,14 +258,16 @@ let client = mqtt.connect(connectionArgs);
 // Config updates are recommended to use QoS 1 (at least once delivery)
 client.subscribe(`/devices/${argv.deviceId}/config`, {qos: 1});
 
-// Subscribe to the /devices/{device-id}/commands/# topic to receive commands
-// commands is recommended to use QoS 0 (at most once delivery)
+// Subscribe to the /devices/{device-id}/commands/# topic to receive all
+// commands or to the /devices/{device-id}/commands/<subfolder> to just receive
+// messages published to a specific commands folder; we recommend you use
+// QoS 0 (at most once delivery)
 client.subscribe(`/devices/${argv.deviceId}/commands/#`, {qos: 0});
 
-// The MQTT topic that this device will publish data to. The MQTT
-// topic name is required to be in the format below. The topic name must end in
-// 'state' to publish state and 'events' to publish telemetry. Note that this is
-// not the same as the device registry's Cloud Pub/Sub topic.
+// The MQTT topic that this device will publish data to. The MQTT topic name is
+// required to be in the format below. The topic name must end in 'state' to
+// publish state and 'events' to publish telemetry. Note that this is not the
+// same as the device registry's Cloud Pub/Sub topic.
 const mqttTopic = `/devices/${argv.deviceId}/${argv.messageType}`;
 
 client.on('connect', success => {

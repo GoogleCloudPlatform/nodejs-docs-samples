@@ -264,7 +264,7 @@ client.subscribe(`/devices/${argv.deviceId}/config`, {qos: 1});
 // QoS 0 (at most once delivery)
 client.subscribe(`/devices/${argv.deviceId}/commands/#`, {qos: 0});
 
-// The MQTT topic that this device will publish data to. The MQTT topic name is k
+// The MQTT topic that this device will publish data to. The MQTT topic name is
 // required to be in the format below. The topic name must end in 'state' to
 // publish state and 'events' to publish telemetry. Note that this is not the
 // same as the device registry's Cloud Pub/Sub topic.

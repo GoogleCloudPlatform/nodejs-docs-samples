@@ -453,7 +453,7 @@ function listRegistries(client, projectId, cloudRegion) {
       console.log(err);
     } else {
       let data = res.data;
-      console.log('Current registries in project:', data['deviceRegistries']);
+      console.log('Current registries in project:\n', data['deviceRegistries']);
     }
   });
   // [END iot_list_registries]
@@ -783,8 +783,11 @@ function getRegistry(client, registryId, projectId, cloudRegion) {
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
 function getClient(serviceAccountJson, cb) {
+  // the getClient method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
+  // environment variables if serviceAccountJson is not passed in
   google.auth
     .getClient({
+      keyFilename: serviceAccountJson,
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     })
     .then(authClient => {

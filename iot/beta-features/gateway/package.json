@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "ava": "0.25.0",
+    "ava": "1.0.1",
     "@google-cloud/pubsub": "0.22.2",
     "uuid": "3.1.0"
   },

@@ -38,7 +38,6 @@ const batchDelete = async (jobServiceClient, companyName, jobs) => {
     // // Construct the batch delete query string
     // let batchDeleteQuery = `companyName = "${companyName}"`;
     // jobs.forEach(job => {
-    //   console.log('------ requisition ID: ', job.requisitionId);
     //   batchDeleteQuery += ` AND requisitionId = "${
     //     /([0-9])\w+/.exec(job.requisitionId)[0]
     //   }"`;

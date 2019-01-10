@@ -24,7 +24,7 @@ const sleep = require('./sleep');
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 
 /**
- * The sample in this file introduces how to perform a jobs batchDelete.
+ * The sample in this file introduces how to perform a batch delete of jobs.
  * NOTE: Both company name and requisition ID are required to perform batchDelete.
  */
 
@@ -61,7 +61,7 @@ const batchDelete = async (jobServiceClient, companyName, jobs) => {
 // [START list_jobs]
 
 /**
- * List Jobs
+ * List Jobs.
  * NOTE: @property [filter] formatting is strict. Do not change.
  */
 const listJobs = async (jobServiceClient, companyName) => {

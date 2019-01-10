@@ -34,21 +34,51 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
  */
 const batchDelete = async (jobServiceClient, companyName, jobs) => {
   try {
+    //! Solution #1: All reqId's in one query
+    // // Construct the batch delete query string
+    // let batchDeleteQuery = `companyName = "${companyName}"`;
+    // jobs.forEach(job => {
+    //   console.log('------ requisition ID: ', job.requisitionId);
+    //   batchDeleteQuery += ` AND requisitionId = "${
+    //     /([0-9])\w+/.exec(job.requisitionId)[0]
+    //   }"`;
+    // });
+
+    // const request = {
+    //   parent: `projects/${PROJECT_ID}`,
+    //   requestBody: {
+    //     filter: batchDeleteQuery,
+    //   },
+    // };
+
+    // const result = await jobServiceClient.projects.jobs.batchDelete(request);
+    // console.log(JSON.stringify(result.data));
+
+    //! Solution #2: One reqId per query, multiple queries
     // Construct the batch delete query string
-    let batchDeleteQuery = `'companyName = "${companyName}"`;
+    let batchDeleteBase = `companyName = "${companyName}"`;
     jobs.forEach(job => {
-      batchDeleteQuery += ` AND requisitionId = "${job.requisitionId}"`;
+      try {
+        console.log(
+          '------ requisition ID: ',
+          /([0-9])\w+/.exec(job.requisitionId)[0]
+        );
+        let batchDeleteQuery =
+          batchDeleteBase +
+          ` AND requisitionId = "${/([0-9])\w+/.exec(job.requisitionId)[0]}"`;
+        const request = {
+          parent: `projects/${PROJECT_ID}`,
+          requestBody: {
+            filter: batchDeleteQuery,
+          },
+        };
+
+        jobServiceClient.projects.jobs.batchDelete(request);
+      } catch (error) {
+        console.log(/([0-9])\w+/.exec(job.requisitionId)[0], ' failed');
+      }
     });
 
-    const request = {
-      parent: `projects/${PROJECT_ID}`,
-      requestBody: {
-        filter: batchDeleteQuery,
-      },
-    };
-
-    const result = await jobServiceClient.projects.jobs.batchDelete(request);
-    console.log(JSON.stringify(result.data));
   } catch (e) {
     console.error(e);
     throw e;
@@ -65,13 +95,12 @@ const listJobs = async (jobServiceClient, companyName) => {
   try {
     const request = {
       parent: `projects/${PROJECT_ID}`,
-      filter: `'companyName = "projects/${PROJECT_ID}/companies/${companyName}"'`,
+      filter: `companyName = "${companyName}"`,
     };
+    const jobsObj = await jobServiceClient.projects.jobs.list(request);
 
-    const jobs = await jobServiceClient.projects.jobs.list(request);
-
-    console.log(JSON.stringify(jobs.data));
-    return jobs;
+    console.log(JSON.stringify(jobsObj.data));
+    return jobsObj.data.jobs;
   } catch (e) {
     console.error(e);
     throw e;
@@ -94,17 +123,16 @@ const listJobs = async (jobServiceClient, companyName) => {
     const companyName = companyCreated.name;
 
     // Create multiple jobs
-    for (let i = 0; i < 100; i += 1) {
+    for (let i = 0; i < 5; i += 1) {
       const jobToBeCreated = customAttributeSample.generateJobWithACustomAttribute(
         companyName
       );
-      // Re-assigning reqId to make quick batch creation possible in sample
-      jobToBeCreated.requisitionId = Math.floor(Math.random() * (5000 - 1) + 1);
       await basicJobSample.createJob(jobServiceClient, jobToBeCreated);
+      console.log(`-----------------${i + 1}-------------------`);
     }
 
     // Wait several seconds for post processing
-    await sleep(100000);
+    await sleep(10000);
 
     // Get a list of jobs
     const jobs = await listJobs(jobServiceClient, companyName);

@@ -19,13 +19,9 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const runSample = `'require("./basic-job-sample").runSample()'`;
 
-test(`Should create a company, create 20 jobs, list jobs in created company, and batch delete jobs using previously received list.`, async t => {
+test(`Should batchDelete jobs.`, async t => {
   const output = await tools.runAsync(`node -e ${runSample}`);
-  const pattern =
-    `.*Company generated:.*\n` +
-    `.*Job created:.*\n` +
-    `.*Job existed:.*\n` + //! Needs changing, looks like it's using the return string for success
-    `.*Job deleted.*`;
+  const pattern = `.*Batch deleted.*\n` + `.*{}*`;
 
   t.regex(output, new RegExp(pattern));
 });

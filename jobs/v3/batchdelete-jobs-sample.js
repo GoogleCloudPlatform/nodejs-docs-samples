@@ -25,59 +25,32 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 
 /**
  * The sample in this file introduces how to perform a jobs batchDelete.
+ * NOTE: Both company name and requisition ID are required to perform batchDelete.
  */
 
 // [START jobs_batchDelete]
 
 /**
- * Job batchDelete
+ * Batch delete jobs.
+ * NOTE: @property [filter] formatting is strict. Do not change.
  */
 const batchDelete = async (jobServiceClient, companyName, jobs) => {
   try {
-    //! Solution #1: All reqId's in one query
-    // // Construct the batch delete query string
-    // let batchDeleteQuery = `companyName = "${companyName}"`;
-    // jobs.forEach(job => {
-    //   batchDeleteQuery += ` AND requisitionId = "${
-    //     /([0-9])\w+/.exec(job.requisitionId)[0]
-    //   }"`;
-    // });
-
-    // const request = {
-    //   parent: `projects/${PROJECT_ID}`,
-    //   requestBody: {
-    //     filter: batchDeleteQuery,
-    //   },
-    // };
-
-    // const result = await jobServiceClient.projects.jobs.batchDelete(request);
-    // console.log(JSON.stringify(result.data));
-
-    //! Solution #2: One reqId per query, multiple queries
-    // Construct the batch delete query string
-    let batchDeleteBase = `companyName = "${companyName}"`;
+    let batchDeleteQuery = `companyName = "${companyName}"`;
     jobs.forEach(job => {
-      try {
-        console.log(
-          '------ requisition ID: ',
-          /([0-9])\w+/.exec(job.requisitionId)[0]
-        );
-        let batchDeleteQuery =
-          batchDeleteBase +
-          ` AND requisitionId = "${/([0-9])\w+/.exec(job.requisitionId)[0]}"`;
-        const request = {
-          parent: `projects/${PROJECT_ID}`,
-          requestBody: {
-            filter: batchDeleteQuery,
-          },
-        };
-
-        jobServiceClient.projects.jobs.batchDelete(request);
-      } catch (error) {
-        console.log(/([0-9])\w+/.exec(job.requisitionId)[0], ' failed');
-      }
+      batchDeleteQuery += ` AND requisitionId = "${job.requisitionId}"`;
     });
 
+    const request = {
+      parent: `projects/${PROJECT_ID}`,
+      requestBody: {
+        filter: batchDeleteQuery,
+      },
+    };
+
+    const result = await jobServiceClient.projects.jobs.batchDelete(request);
+    console.log(JSON.stringify('Batch deleted.', result));
+    return;
   } catch (e) {
     console.error(e);
     throw e;
@@ -89,6 +62,7 @@ const batchDelete = async (jobServiceClient, companyName, jobs) => {
 
 /**
  * List Jobs
+ * NOTE: @property [filter] formatting is strict. Do not change.
  */
 const listJobs = async (jobServiceClient, companyName) => {
   try {
@@ -127,7 +101,6 @@ const listJobs = async (jobServiceClient, companyName) => {
         companyName
       );
       await basicJobSample.createJob(jobServiceClient, jobToBeCreated);
-      console.log(`-----------------${i + 1}-------------------`);
     }
 
     // Wait several seconds for post processing

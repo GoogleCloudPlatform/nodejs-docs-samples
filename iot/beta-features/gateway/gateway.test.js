@@ -16,7 +16,7 @@
 'use strict';
 
 const path = require(`path`);
-const PubSub = require(`@google-cloud/pubsub`);
+const {PubSub} = require(`@google-cloud/pubsub`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
@@ -31,7 +31,7 @@ const installDeps = `npm install`;
 const publicKeyParam = `./resources/rsa_cert.pem`;
 const privateKeyParam = `./resources/rsa_private.pem`;
 
-const pubsub = PubSub();
+const pubsub = new PubSub();
 
 test.before(tools.checkCredentials);
 test.before(async () => {
@@ -175,7 +175,40 @@ test(`should list devices bound to gateway`, async t => {
   );
 
   t.regex(devices, new RegExp(deviceId));
-  t.notRegex(devices, new RegExp('No devices bound'));
+  t.notRegex(devices, new RegExp('No devices bound to this gateway.'));
+
+  // cleanup
+  await tools.runAsync(
+    `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
+  );
+  await tools.runAsync(
+    `${helper} deleteDevice ${gatewayId} ${registryName}`,
+    cwdHelper
+  );
+  await tools.runAsync(
+    `${helper} deleteDevice ${deviceId} ${registryName}`,
+    cwdHelper
+  );
+});
+
+test(`should list gateways for bound device`, async t => {
+  const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
+  await tools.runAsync(
+    `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
+  );
+
+  // binding a non-existing device should create it
+  const deviceId = `nodejs-test-device-iot-${uuid.v4 ()}`;
+  await tools.runAsync(
+    `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
+  );
+
+  let devices = await tools.runAsync(
+    `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`
+  );
+
+  t.regex(devices, new RegExp(gatewayId));
+  t.notRegex(devices, new RegExp('No gateways associated with this device'));
 
   // cleanup
   await tools.runAsync(

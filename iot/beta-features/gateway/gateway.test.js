@@ -198,7 +198,7 @@ test(`should list gateways for bound device`, async t => {
   );
 
   // binding a non-existing device should create it
-  const deviceId = `nodejs-test-device-iot-${uuid.v4 ()}`;
+  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );

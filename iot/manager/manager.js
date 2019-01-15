@@ -527,6 +527,7 @@ function clearRegistry(client, registryId, projectId, cloudRegion) {
       let data = res.data;
       console.log('Current devices in registry:', data['devices']);
       let devices = data['devices'];
+
       if (devices) {
         devices.forEach((device, index) => {
           console.log(`${device.id} [${index}/${devices.length}] removed`);

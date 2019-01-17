@@ -51,7 +51,7 @@ exports.speechTranslate = (request, response) => {
       );
     })
     .then(data => {
-      // [START chain-cloud-calls]
+      // [START chain_cloud_calls]
       const sttResponse = data[0];
       // The data object contains one or more recognition
       // alternatives ordered by accuracy.
@@ -99,7 +99,7 @@ exports.speechTranslate = (request, response) => {
             }
           });
       });
-      // [END chain-cloud-calls]
+      // [END chain_cloud_calls]
     })
     .catch(error => {
       console.error(error);
@@ -107,7 +107,7 @@ exports.speechTranslate = (request, response) => {
     });
 };
 
-// [START callSpeechToText]
+// [START call_speech_to_text]
 function callSpeechToText(
   audioContent,
   encoding,
@@ -127,17 +127,17 @@ function callSpeechToText(
 
   return speechToTextClient.recognize(request);
 }
-// [END callSpeechToText]
+// [END call_speech_to_text]
 
-// [START callTextTranslation]
+// [START call_text_translation]
 function callTextTranslation(targetLangCode, data) {
   console.log(`Translating text to ${targetLangCode}: ${data}`);
 
   return textTranslationClient.translate(data, targetLangCode);
 }
-// [END callTextTranslation]
+// [END call_text_translation]
 
-// [START callTextToSpeech]
+// [START call_text_to_speech]
 function callTextToSpeech(targetLocale, data) {
   console.log(`Converting to speech in ${targetLocale}: ${data}`);
 
@@ -149,9 +149,9 @@ function callTextToSpeech(targetLocale, data) {
 
   return textToSpeechClient.synthesizeSpeech(request);
 }
-// [END callTextToSpeech]
+// [END call_text_to_speech]
 
-// [START uploadToCloudStorage]
+// [START upload_to_cloud_storage]
 function uploadToCloudStorage(path, contents) {
   console.log(`Uploading audio file to ${path}`);
 
@@ -160,9 +160,9 @@ function uploadToCloudStorage(path, contents) {
     .file(path)
     .save(contents);
 }
-// [END uploadToCloudStorage]
+// [END upload_to_cloud_storage]
 
-// [START validateRequest]
+// [START validate_request]
 function validateRequest(request) {
   return new Promise(function(resolve, reject) {
     if (!request.body.encoding) {
@@ -181,7 +181,7 @@ function validateRequest(request) {
     resolve();
   });
 }
-// [END validateRequest]
+// [END validate_request]
 
 function getSpeechToTextClient() {
   const speech = require('@google-cloud/speech');

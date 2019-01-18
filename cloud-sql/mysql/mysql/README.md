@@ -31,8 +31,6 @@ secure solution such as [Cloud KMS](https://cloud.google.com/kms/) to help keep 
 
 ## Running locally
 
-## Running locally
-
 To run this application locally, download and install the `cloud_sql_proxy` by
 following the instructions [here](https://cloud.google.com/sql/docs/mysql/sql-proxy#install).
 
@@ -78,12 +76,12 @@ gcloud app browse
 
 ## Deploy to Google App Engine Flexible
 
-First, update `app.standard.yaml` with the correct values to pass the environment 
+First, update `app.flexible.yaml` with the correct values to pass the environment 
 variables into the runtime.
 
 Next, the following command will deploy the application to your Google Cloud project:
 ```bash
-gcloud app deploy app.standard.yaml
+gcloud app deploy app.flexible.yaml
 ```
 
 To launch your browser and view the app at https://[YOUR_PROJECT_ID].appspot.com, run the following

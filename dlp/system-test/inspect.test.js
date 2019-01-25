@@ -244,7 +244,7 @@ it('should report Bigquery table handling errors', async () => {
 // CLI options
 it('should have a minLikelihood option', async () => {
   const promiseA = tools.runAsync(
-    `${cmd} string "My phone number is (123) 456-7890." -m LIKELY`,
+    `${cmd} string "My phone number is (123) 456-7890." -m VERY_LIKELY`,
     cwd
   );
   const promiseB = tools.runAsync(

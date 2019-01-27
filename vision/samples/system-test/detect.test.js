@@ -39,6 +39,7 @@ const files = [
   `city.jpg`,
   'pdf-ocr.pdf',
   'duck_and_truck.jpg',
+  'google.png',
 ].map(name => {
   return {
     name,
@@ -114,17 +115,17 @@ describe(`detect`, () => {
   });
 
   it(`should detect logos in a local file`, async () => {
-    const output = await exec(`${cmd} logos ${files[2].localPath}`);
+    const output = await exec(`${cmd} logos ${files[9].localPath}`);
     assert.match(output, /Logos:/);
-    assert.match(output, /Google/);
+    assert.match(output, /google/);
   });
 
   it(`should detect logos in a remote file`, async () => {
     const output = await exec(
-      `${cmd} logos-gcs ${bucketName} ${files[2].name}`
+      `${cmd} logos-gcs ${bucketName} ${files[9].name}`
     );
     assert.match(output, /Logos:/);
-    assert.match(output, /Google/);
+    assert.match(output, /google/);
   });
 
   it(`should detect properties in a local file`, async () => {

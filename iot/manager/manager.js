@@ -453,7 +453,7 @@ function listRegistries(client, projectId, cloudRegion) {
       console.log(err);
     } else {
       let data = res.data;
-      console.log('Current registries in project:', data['deviceRegistries']);
+      console.log('Current registries in project:\n', data['deviceRegistries']);
     }
   });
   // [END iot_list_registries]
@@ -527,6 +527,7 @@ function clearRegistry(client, registryId, projectId, cloudRegion) {
       let data = res.data;
       console.log('Current devices in registry:', data['devices']);
       let devices = data['devices'];
+
       if (devices) {
         devices.forEach((device, index) => {
           console.log(`${device.id} [${index}/${devices.length}] removed`);
@@ -732,9 +733,12 @@ function sendCommand(
 
   const binaryData = Buffer.from(commandMessage).toString('base64');
 
+  // NOTE: The device must be subscribed to the wildcard subfolder
+  // or you should pass a subfolder
   const request = {
     name: `${registryName}/devices/${deviceId}`,
     binaryData: binaryData,
+    //subfolder: <your-subfolder>
   };
 
   client.projects.locations.registries.devices.sendCommandToDevice(
@@ -780,8 +784,11 @@ function getRegistry(client, registryId, projectId, cloudRegion) {
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
 function getClient(serviceAccountJson, cb) {
+  // the getClient method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
+  // environment variables if serviceAccountJson is not passed in
   google.auth
     .getClient({
+      keyFilename: serviceAccountJson,
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     })
     .then(authClient => {

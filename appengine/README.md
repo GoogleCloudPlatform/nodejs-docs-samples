@@ -20,7 +20,7 @@ Some samples have specific instructions. If there is a `README.md` file in the
 sample folder, please refer to it for any additional steps required to run the
 sample.
 
-The App Engine Node.js samples typically that you do the following:
+The App Engine Node.js samples typically require that you do the following:
 
 1.  [Setup your environment for Node.js developement][nodejs_dev].
 1.  [Install the Google Cloud SDK][sdk].

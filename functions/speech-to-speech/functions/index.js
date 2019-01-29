@@ -17,10 +17,16 @@
 
 // This sample uses the UUID library to generate the output filename.
 const uuid = require('uuid/v4');
+const functions = require('firebase-functions');
 
 const googleCloudProject = process.env.GOOGLE_CLOUD_PROJECT;
-const supportedLanguageCodes = process.env.SUPPORTED_LANGUAGE_CODES.split(',');
-const outputBucket = process.env.OUTPUT_BUCKET;
+// The supportedLanguageCodes and outputBucket parameters take the value from
+// environment variables by default.
+const languageCodesParam = functions.config().playchat.supported_language_codes ||
+  process.env.SUPPORTED_LANGUAGE_CODES;
+const supportedLanguageCodes = languageCodesParam.split(',');
+const outputBucket = functions.config().playchat.output_bucket ||
+  process.env.OUTPUT_BUCKET;
 const outputAudioEncoding = 'MP3';
 const voiceSsmlGender = 'NEUTRAL';
 // Declare the API clients as global variables to allow them to initiaze at cold start.
@@ -29,7 +35,7 @@ const textTranslationClient = getTextTranslationClient();
 const textToSpeechClient = getTextToSpeechClient();
 const storageClient = getStorageClient();
 
-exports.speechTranslate = (request, response) => {
+exports.speechTranslate = functions.https.onRequest((request, response) => {
   let responseBody = {};
 
   validateRequest(request)
@@ -105,7 +111,7 @@ exports.speechTranslate = (request, response) => {
       console.error(error);
       response.status(400).send(error.message);
     });
-};
+});
 
 // [START call_speech_to_text]
 function callSpeechToText(

@@ -15,63 +15,31 @@
 
 'use strict';
 
-const express = require(`express`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noCallThru();
 const request = require(`supertest`);
 const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-const SAMPLE_PATH = path.join(__dirname, `../server.js`);
+// Stub out MySQL calls
+const stubMysql = sinon.stub(require('promise-mysql'));
+const poolStub = sinon.stub();
+const queryStub = sinon.stub();
+queryStub.withArgs(sinon.match('SELECT COUNT(vote_id)')).resolves([{count: 1}]);
+queryStub.withArgs(sinon.match('SELECT candidate, time_cast')).resolves([]);
+poolStub['query'] = queryStub;
+stubMysql.createPool.returns(poolStub);
 
-function getSample() {
-  const testApp = express();
-  sinon.stub(testApp, `listen`).yields();
-  const expressMock = sinon.stub().returns(testApp);
-  const timestamp = new Date();
-  const resultsMock = [
-    {
-      candidate: 'TABS',
-      time_cast: timestamp,
-    },
-  ];
-
-  const processMock = {
-    env: {
-      DB_USER: 'user',
-      DB_PASS: 'password',
-      DB_NAME: 'database',
-    },
-  };
-
-  const app = proxyquire(SAMPLE_PATH, {
-    express: expressMock,
-    process: processMock,
-  });
-
-  return {
-    app: app,
-    mocks: {
-      express: expressMock,
-      results: resultsMock,
-      process: processMock,
-    },
-  };
-}
+const server = require('../server.js');
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb(`should display the default page`, t => {
-  const sample = getSample();
-  const expectedResult = `Tabs VS Spaces`;
+test(`check index page`, async t => {
+  const response = await request(server)
+    .get('/')
+    .timeout(1000);
 
-  request(sample.app)
-    .get(`/`)
-    .expect(200)
-    .expect(response => {
-      t.is(response.text, expectedResult);
-    })
-    .end(t.end);
+  t.is(response.status, 200);
 });
+
+server.close();

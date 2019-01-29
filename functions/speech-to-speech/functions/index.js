@@ -22,11 +22,14 @@ const functions = require('firebase-functions');
 const googleCloudProject = process.env.GOOGLE_CLOUD_PROJECT;
 // The supportedLanguageCodes and outputBucket parameters take the value from
 // environment variables by default.
-const languageCodesParam = functions.config().playchat.supported_language_codes ||
-  process.env.SUPPORTED_LANGUAGE_CODES;
+const firebaseConfigured = typeof functions.config().playchat !== 'undefined';
+const languageCodesParam = firebaseConfigured
+  ? functions.config().playchat.supported_language_codes
+  : process.env.SUPPORTED_LANGUAGE_CODES;
 const supportedLanguageCodes = languageCodesParam.split(',');
-const outputBucket = functions.config().playchat.output_bucket ||
-  process.env.OUTPUT_BUCKET;
+const outputBucket = firebaseConfigured
+  ? functions.config().playchat.output_bucket
+  : process.env.OUTPUT_BUCKET;
 const outputAudioEncoding = 'MP3';
 const voiceSsmlGender = 'NEUTRAL';
 // Declare the API clients as global variables to allow them to initiaze at cold start.

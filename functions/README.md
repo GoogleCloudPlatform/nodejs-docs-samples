@@ -25,7 +25,6 @@ environment.
 * [Cloud Datastore](datastore/)
 * [Cloud Pub/Sub](pubsub/)
 * [Cloud Spanner](spanner/)
-* [Cloud Storage](gcs/)
 * [Dependencies](uuid/)
 * [Error Reporting](errorreporting/)
 * [HTTP](http/)

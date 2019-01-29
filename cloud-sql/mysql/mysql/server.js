@@ -15,9 +15,6 @@
 
 'use strict';
 
-// Require process, so we can mock environment variables.
-const process = require('process');
-
 const express = require('express');
 const mysql = require('promise-mysql');
 const bodyParser = require('body-parser');
@@ -167,9 +164,9 @@ app.post('/', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 
-module.exports = app;
+module.exports = server;

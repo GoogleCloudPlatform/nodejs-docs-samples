@@ -15,7 +15,6 @@
 
 'use strict';
 
-const express = require(`express`);
 const request = require(`supertest`);
 const sinon = require(`sinon`);
 const test = require(`ava`);
@@ -25,10 +24,8 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 const stubMysql = sinon.stub(require('promise-mysql'));
 const poolStub = sinon.stub();
 const queryStub = sinon.stub();
-queryStub.withArgs(sinon.match('SELECT COUNT(vote_id)'))
-    .resolves([{count: 1}]);
-queryStub.withArgs(sinon.match('SELECT candidate, time_cast'))
-    .resolves([]);
+queryStub.withArgs(sinon.match('SELECT COUNT(vote_id)')).resolves([{count: 1}]);
+queryStub.withArgs(sinon.match('SELECT candidate, time_cast')).resolves([]);
 poolStub['query'] = queryStub;
 stubMysql.createPool.returns(poolStub);
 
@@ -39,8 +36,8 @@ test.afterEach.always(tools.restoreConsole);
 
 test(`check index page`, async t => {
   const response = await request(server)
-      .get('/')
-      .timeout(1000);
+    .get('/')
+    .timeout(1000);
 
   t.is(response.status, 200);
 });

@@ -246,11 +246,11 @@ function bindDeviceToGateway(
 
     client.projects.locations.registries.bindDeviceToGateway(
       bindRequest,
-      (err, res) => {
+      err => {
         if (err) {
           console.log('Could not bind device', err);
         } else {
-          console.log('Bound device', res.data);
+          console.log('Bound device to', gatewayId);
         }
       }
     );
@@ -286,23 +286,136 @@ function unbindDeviceFromGateway(
   console.log(`Unbinding device: ${deviceId}`);
   const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
 
-  const bindRequest = {
+  const unbindRequest = {
     parent: parentName,
     deviceId: deviceId,
     gatewayId: gatewayId,
   };
 
   client.projects.locations.registries.unbindDeviceFromGateway(
-    bindRequest,
-    (err, res) => {
+    unbindRequest,
+    err => {
       if (err) {
         console.log('Could not unbind device', err);
       } else {
-        console.log('Device no longer bound: ', res.data);
+        console.log('Device no longer bound.');
       }
     }
   );
   // [END unbind_device_to_gateway]
+}
+
+// Unbinds the given device from all gateways
+function unbindDeviceFromAllGateways(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  deviceId
+) {
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    name: `${registryName}/devices/${deviceId}`,
+  };
+
+  // get information about this device
+  client.projects.locations.registries.devices.get(request, (err, res) => {
+    if (err) {
+      console.error('Could not get device', err);
+      return;
+    }
+
+    let device = res.data;
+    if (device) {
+      let isGateway = device.gatewayConfig.gatewayType === 'GATEWAY';
+
+      if (!isGateway) {
+        const listGatewaysForDeviceRequest = {
+          parent: registryName,
+          'gatewayListOptions.associationsDeviceId': deviceId,
+        };
+
+        // get list of all gateways this non-gateway device is bound to
+        client.projects.locations.registries.devices.list(
+          listGatewaysForDeviceRequest,
+          (err, res) => {
+            if (err) {
+              console.error('Could not list gateways', err);
+              return;
+            }
+
+            let data = res.data;
+            if (data.devices && data.devices.length > 0) {
+              let gateways = data.devices;
+
+              gateways.forEach(gateway => {
+                const unbindRequest = {
+                  parent: registryName,
+                  deviceId: device.id,
+                  gatewayId: gateway.id,
+                };
+
+                // for each gateway, make the call to unbind it
+                client.projects.locations.registries.unbindDeviceFromGateway(
+                  unbindRequest,
+                  err => {
+                    if (err) {
+                      console.log('Could not unbind device', err);
+                    } else {
+                      console.log('Unbound device from gateways', gateway.id);
+                    }
+                  }
+                );
+              });
+            }
+          }
+        );
+      }
+    }
+  });
+}
+
+function unbindAllDevices(client, projectId, cloudRegion, registryId) {
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    parent: registryName,
+  };
+
+  // get information about this device
+  client.projects.locations.registries.devices.list(request, (err, res) => {
+    if (err) {
+      console.error('Could not list devices', err);
+      return;
+    }
+    let data = res.data;
+    if (!data) {
+      return;
+    }
+
+    let devices = data.devices;
+
+    if (devices && devices.length > 0) {
+      devices.forEach(device => {
+        if (device) {
+          let isGateway =
+            device.gatewayConfig &&
+            device.gatewayConfig.gatewayType === 'GATEWAY';
+
+          if (!isGateway) {
+            unbindDeviceFromAllGateways(
+              client,
+              projectId,
+              cloudRegion,
+              registryId,
+              device.id
+            );
+          }
+        }
+      });
+    }
+  });
 }
 
 // Lists gateways in a registry.
@@ -370,11 +483,49 @@ function listDevicesForGateway(
           console.log(`\tDevice: ${device.numId} : ${device.id}`);
         });
       } else {
-        console.log('No devices bound.');
+        console.log('No devices bound to this gateway.');
       }
     }
   });
   // [END list_devices_for_gateway]
+}
+
+// Lists gateways a given device is bound to.
+function listGatewaysForDevice(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  deviceId
+) {
+  // [START list_gateways_for_device]
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+  const request = {
+    parent: parentName,
+    'gatewayListOptions.associationsDeviceId': deviceId,
+  };
+
+  client.projects.locations.registries.devices.list(request, (err, res) => {
+    if (err) {
+      console.log('Could not list gateways for device');
+      console.log(err);
+    } else {
+      console.log('Current gateways for device:', deviceId);
+      let data = res.data;
+      if (data.devices && data.devices.length > 0) {
+        data.devices.forEach(gateway => {
+          console.log(`\tDevice: ${gateway.numId} : ${gateway.id}`);
+        });
+      } else {
+        console.log('No gateways associated with this device.');
+      }
+    }
+  });
+  // [END list_gateways_for_device]
 }
 
 // Attaches a device to a gateway.
@@ -884,6 +1035,39 @@ let argv = require(`yargs`) // eslint-disable-line
     }
   )
   .command(
+    `unbindDeviceFromAllGateways <registryId> <deviceId>`,
+    `Unbinds a device from all gateways`,
+    {},
+    opts => {
+      const cb = function(client) {
+        unbindDeviceFromAllGateways(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.deviceId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `unbindAllDevices <registryId>`,
+    `Unbinds all devices in a given registry. Mainly for clearing registries`,
+    {},
+    opts => {
+      const cb = client => {
+        unbindAllDevices(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
     `listDevicesForGateway <registryId> <gatewayId>`,
     `Lists devices in a gateway.`,
     {},
@@ -895,6 +1079,23 @@ let argv = require(`yargs`) // eslint-disable-line
           opts.cloudRegion,
           opts.registryId,
           opts.gatewayId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `listGatewaysForDevice <registryId> <deviceId>`,
+    `Lists gateways for a given device.`,
+    {},
+    opts => {
+      const cb = function(client) {
+        listGatewaysForDevice(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.deviceId
         );
       };
       getClient(opts.serviceAccount, cb);

@@ -17,7 +17,7 @@
     "test": "repo-tools test run --cmd ava -- -T 1m --verbose system-test/*.test.js"
   },
   "dependencies": {
-    "google-auth-library": "^2.0.0",
+    "google-auth-library": "^3.0.0",
     "grpc": "1.17.0",
     "jsonwebtoken": "^8.2.0",
     "yargs": "12.0.5"

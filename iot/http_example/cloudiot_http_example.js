@@ -88,7 +88,7 @@ var argv = require(`yargs`)
     },
   })
   .example(
-    `node $0 cloudiotHttp_example_nodejs.js --projectId=blue-jet-123 --registryId=my-registry --deviceId=my-node-device --privateKeyFile=../rsaPrivate.pem --algorithm=RS256`
+    `node $0 cloudiot_http_example.js --projectId=blue-jet-123 --registryId=my-registry --deviceId=my-node-device --privateKeyFile=../rsaPrivate.pem --algorithm=RS256`
   )
   .wrap(120)
   .recommendCommands()

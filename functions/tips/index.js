@@ -35,10 +35,10 @@ const fileWideComputation = lightComputation;
 const instanceVar = heavyComputation();
 
 /**
- * HTTP Cloud Function that declares a variable.
+ * HTTP function that declares a variable.
  *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
+ * @param {Object} req request context.
+ * @param {Object} res response context.
  */
 exports.scopeDemo = (req, res) => {
   // Per-function scope
@@ -57,10 +57,10 @@ const nonLazyGlobal = fileWideComputation();
 let lazyGlobal;
 
 /**
- * HTTP Cloud Function that uses lazy-initialized globals
+ * HTTP function that uses lazy-initialized globals
  *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
+ * @param {Object} req request context.
+ * @param {Object} res response context.
  */
 exports.lazyGlobals = (req, res) => {
   // This value is initialized only if (and when) the function is called

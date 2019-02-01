@@ -16,7 +16,7 @@
     "ava": "^0.25.0"
   },
   "dependencies": {
-    "googleapis": "^36.0.0",
+    "googleapis": "^37.0.0",
     "uuid": "^3.3.2",
     "yargs": "^12.0.1"
   },

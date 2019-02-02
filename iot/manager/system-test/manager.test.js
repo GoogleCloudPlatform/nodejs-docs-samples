@@ -28,7 +28,8 @@ const pubSubClient = new PubSub();
 const topicName = `nodejs-iot-test-topic`;
 const registryName = `nodejs-iot-test-registry`;
 const region = 'us-central1';
-const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
+const projectId =
+  process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
 
 const cmd = `node manager.js`;
 const cwd = path.join(__dirname, `..`);
@@ -63,7 +64,6 @@ test.before(async () => {
 test.after.always(async () => {
   await pubSubClient.topic(topicName).delete();
   console.log(`Topic ${topicName} deleted.`);
-  
 
   const deleteRegistryRequest = {
     name: iotClient.registryPath(projectId, region, registryName),
@@ -295,15 +295,18 @@ test(`should create and get an iam policy`, async t => {
 });
 
 test(`should create and delete a registry`, async t => {
-  let createRegistryId = registryName + "create";
-  
+  let createRegistryId = registryName + 'create';
+
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(
     `${cmd} createRegistry ${createRegistryId} ${topicName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully created registry`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${createRegistryId}`, cwd);
+  output = await tools.runAsync(
+    `${cmd} deleteRegistry ${createRegistryId}`,
+    cwd
+  );
   t.regex(output, new RegExp(`Successfully deleted registry`));
 });
 
@@ -334,13 +337,12 @@ test(`should send command message to device`, async t => {
   await tools.runAsync(`${cmd} deleteRegistry ${registryId}`, cwd);
 });
 
-
 test(`should create a new gateway`, async t => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   let gatewayOut = await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256_X509_PEM ${rsaPublicCert}`
-  ); 
-  
+  );
+
   // test no error on create gateway.
   t.regex(gatewayOut, new RegExp('Created device'));
 
@@ -375,7 +377,7 @@ test(`should bind existing device to gateway`, async t => {
   await iotClient.createDevice({
     parent: iotClient.registryPath(projectId, region, registryName),
     device: {
-      id: deviceId
+      id: deviceId,
     },
   });
 
@@ -392,7 +394,6 @@ test(`should bind existing device to gateway`, async t => {
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
   t.regex(unbind, new RegExp(`Unbound ${deviceId} from ${gatewayId}`));
-
 
   await iotClient.deleteDevice({
     name: iotClient.devicePath(projectId, region, registryName, gatewayId),
@@ -413,7 +414,7 @@ test(`should list devices bound to gateway`, async t => {
   await iotClient.createDevice({
     parent: iotClient.registryPath(projectId, region, registryName),
     device: {
-      id: deviceId
+      id: deviceId,
     },
   });
 
@@ -432,7 +433,7 @@ test(`should list devices bound to gateway`, async t => {
   await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
-  
+
   await iotClient.deleteDevice({
     name: iotClient.devicePath(projectId, region, registryName, gatewayId),
   });
@@ -453,7 +454,7 @@ test(`should list gateways for bound device`, async t => {
   await iotClient.createDevice({
     parent: iotClient.registryPath(projectId, region, registryName),
     device: {
-      id: deviceId
+      id: deviceId,
     },
   });
 

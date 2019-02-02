@@ -20,7 +20,7 @@
 const {Spanner} = require('@google-cloud/spanner');
 
 // Instantiates a client
-const spanner = new Spanner;
+const spanner = new Spanner({});
 
 // Your Cloud Spanner instance ID
 const instanceId = 'test-instance';

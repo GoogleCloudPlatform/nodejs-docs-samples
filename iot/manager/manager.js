@@ -555,8 +555,7 @@ function clearRegistry(client, registryId, projectId, cloudRegion) {
   const after = function() {
     client.projects.locations.registries.delete(requestDelete, (err, res) => {
       if (err) {
-        console.log('Could not delete registry');
-        console.log(err);
+        console.log('Could not delete registry', err);
       } else {
         console.log(`Successfully deleted registry ${registryName}`);
         console.log(res.data);
@@ -570,32 +569,32 @@ function clearRegistry(client, registryId, projectId, cloudRegion) {
 
   client.projects.locations.registries.devices.list(request, (err, res) => {
     if (err) {
-      console.log('Could not list devices');
-      console.log(err);
-    } else {
-      let data = res.data;
-      console.log('Current devices in registry:', data['devices']);
-      let devices = data['devices'];
+      console.log('Could not list devices', err);
+      return;
+    } 
+      
+    let data = res.data;
+    console.log('Current devices in registry:', data['devices']);
+    let devices = data['devices'];
 
-      if (devices) {
-        devices.forEach((device, index) => {
-          console.log(`${device.id} [${index}/${devices.length}] removed`);
-          if (index === devices.length - 1) {
-            deleteDevice(
-              client,
-              device.id,
-              registryId,
-              projectId,
-              cloudRegion,
-              after
-            );
-          } else {
-            deleteDevice(client, device.id, registryId, projectId, cloudRegion);
-          }
-        });
-      } else {
-        after();
-      }
+    if (devices) {
+      devices.forEach((device, index) => {
+        console.log(`${device.id} [${index}/${devices.length}] removed`);
+        if (index === devices.length - 1) {
+          deleteDevice(
+            client,
+            device.id,
+            registryId,
+            projectId,
+            cloudRegion,
+            after
+          );
+        } else {
+          deleteDevice(client, device.id, registryId, projectId, cloudRegion);
+        }
+      });
+    } else {
+      after();
     }
   });
 }
@@ -1092,7 +1091,7 @@ function bindDeviceToGateway(
 
   const bindRequest = {
     parent: parentName,
-    deviceId: device.id,
+    deviceId: deviceId,
     gatewayId: gatewayId,
   };
 
@@ -1227,9 +1226,10 @@ function unbindAllDevices(client, projectId, cloudRegion, registryId) {
   // get information about this device
   client.projects.locations.registries.devices.list(request, (err, res) => {
     if (err) {
-      console.error('Could not list devices', err);
+      console.log('Could not list devices', err);
       return;
     }
+
     let data = res.data;
     if (!data) {
       return;

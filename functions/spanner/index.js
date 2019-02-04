@@ -19,14 +19,19 @@
 // Imports the Google Cloud client library
 const {Spanner} = require('@google-cloud/spanner');
 
-// Instantiates a client
-const spanner = new Spanner({});
+// Your Google Cloud project ID
+const projectId = 'your-project-id'
 
 // Your Cloud Spanner instance ID
 const instanceId = 'test-instance';
 
 // Your Cloud Spanner database ID
 const databaseId = 'example-db';
+
+// Instantiates a client
+const spanner = new Spanner({
+  projectId: projectId,
+});
 
 /**
  * HTTP Cloud Function.

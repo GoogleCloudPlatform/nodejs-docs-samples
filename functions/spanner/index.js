@@ -20,7 +20,7 @@
 const {Spanner} = require('@google-cloud/spanner');
 
 // Your Google Cloud project ID
-const projectId = 'your-project-id'
+const projectId = 'your-project-id';
 
 // Your Cloud Spanner instance ID
 const instanceId = 'test-instance';

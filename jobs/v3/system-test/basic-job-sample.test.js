@@ -15,11 +15,11 @@
 
 'use strict';
 
-const test = require(`ava`);
+const assert = require(`assert`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
-const runSample = `'require("./basic-job-sample").runSample()'`;
+const runSample = `require('./basic-job-sample').runSample()`;
 
-test(`Should create a job, get a job, update a job, update a job with field mask and delete a job`, async t => {
+it(`Should create a job, get a job, update a job, update a job with field mask and delete a job`, async () => {
   const output = await tools.runAsync(`node -e ${runSample}`);
   const pattern =
     `.*Job generated:.*\n` +
@@ -29,5 +29,5 @@ test(`Should create a job, get a job, update a job, update a job with field mask
     `.*Job updated:.*changedJobTitle.*\n` +
     `.*Job deleted.*`;
 
-  t.regex(output, new RegExp(pattern));
+  assert.strictEqual(new RegExp(pattern).test(output), true);
 });

@@ -15,19 +15,19 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const runSample = `'require("./basic-company-sample").runSample()'`;
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const runSample = `require('./basic-company-sample').runSample()`;
 
-test(`Should create a company, get a company, update a company, update a company with field mask and delete a company`, async t => {
+it('Should create a company, get a company, update a company, update a company with field mask and delete a company', async () => {
   const output = await tools.runAsync(`node -e ${runSample}`);
   const pattern =
-    `.*Company generated:.*\n` +
-    `.*Company created:.*\n` +
-    `.*Company existed:.*\n` +
-    `.*Company updated:.*elgoog.*\n` +
-    `.*Company updated:.*changedTitle.*\n` +
-    `.*Company deleted.*`;
+    '.*Company generated:.*\n' +
+    '.*Company created:.*\n' +
+    '.*Company existed:.*\n' +
+    '.*Company updated:.*elgoog.*\n' +
+    '.*Company updated:.*changedTitle.*\n' +
+    '.*Company deleted.*';
 
-  t.regex(output, new RegExp(pattern));
+  assert.strictEqual(new RegExp(pattern).test(output), true);
 });

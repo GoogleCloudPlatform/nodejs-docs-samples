@@ -28,8 +28,8 @@ const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const helper = `node manager.js`;
 const cwdHelper = path.join(__dirname, `../../manager`);
 const installDeps = `npm install`;
-const publicKeyParam = `./resources/rsa_cert.pem`;
-const privateKeyParam = `./resources/rsa_private.pem`;
+const publicKeyParam = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
+const privateKeyParam = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
 const pubsub = new PubSub();
 

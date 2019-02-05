@@ -21,13 +21,13 @@ const test = require(`ava`);
 
 const entities = [
   {
-    SingerId: {value: 1},
-    AlbumId: {value: 1},
+    SingerId: 1,
+    AlbumId: 1,
     AlbumTitle: 'Go, Go, Go',
   },
   {
-    SingerId: {value: 1},
-    AlbumId: {value: 2},
+    SingerId: 1,
+    AlbumId: 2,
     AlbumTitle: 'Total Junk',
   },
 ];
@@ -54,7 +54,7 @@ function getSample() {
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/spanner': SpannerMock,
+      '@google-cloud/spanner': {Spanner: SpannerMock},
     }),
     mocks: {
       spanner: spannerMock,

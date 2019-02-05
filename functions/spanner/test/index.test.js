@@ -54,7 +54,7 @@ function getSample() {
 
   return {
     program: proxyquire(`../`, {
-      '@google-cloud/spanner': SpannerMock,
+      '@google-cloud/spanner': {Spanner: SpannerMock},
     }),
     mocks: {
       spanner: spannerMock,

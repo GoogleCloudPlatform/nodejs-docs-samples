@@ -15,15 +15,15 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const cmdDataset = `node datasets.js`;
-const cmd = `node dicom_stores.js`;
-const cwdDatasets = path.join(__dirname, `../../datasets`);
-const cwd = path.join(__dirname, `..`);
+const cmdDataset = 'node datasets.js';
+const cmd = 'node dicom_stores.js';
+const cwdDatasets = path.join(__dirname, '../../datasets');
+const cwd = path.join(__dirname, '..');
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
 const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
   /-/gi,
@@ -35,11 +35,11 @@ const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
 );
 
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
-const dcmFileName = `IM-0002-0001-JPEG-BASELINE.dcm`;
+const dcmFileName = 'IM-0002-0001-JPEG-BASELINE.dcm';
 const contentUri = bucketName + '/' + dcmFileName;
 
-test.before(tools.checkCredentials);
-test.before(async () => {
+before(async () => {
+  tools.checkCredentials();
   return tools
     .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
     .then(results => {
@@ -47,7 +47,7 @@ test.before(async () => {
       return results;
     });
 });
-test.after.always(async () => {
+after(async () => {
   try {
     await tools.runAsync(
       `${cmdDataset} deleteDataset ${datasetId}`,
@@ -56,58 +56,67 @@ test.after.always(async () => {
   } catch (err) {} // Ignore error
 });
 
-test.serial(`should create a DICOM store`, async t => {
+it('should create a DICOM store', async () => {
   const output = await tools.runAsync(
     `${cmd} createDicomStore ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  t.regex(output, /Created DICOM store/);
+  assert.strictEqual(new RegExp(/Created DICOM store/).test(output), true);
 });
 
-test.serial(`should get a DICOM store`, async t => {
+it('should get a DICOM store', async () => {
   const output = await tools.runAsync(
     `${cmd} getDicomStore ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  t.regex(output, /Got DICOM store/);
+  assert.strictEqual(new RegExp(/Got DICOM store/).test(output), true);
 });
 
-test.serial(`should patch a DICOM store`, async t => {
+it('should patch a DICOM store', async () => {
   const output = await tools.runAsync(
     `${cmd} patchDicomStore ${datasetId} ${dicomStoreId} ${pubsubTopic}`,
     cwd
   );
-  t.regex(output, /Patched DICOM store with Cloud Pub\/Sub topic/);
+  assert.strictEqual(
+    new RegExp(/Patched DICOM store with Cloud Pub\/Sub topic/).test(output),
+    true
+  );
 });
 
-test.serial(`should list DICOM stores`, async t => {
+it('should list DICOM stores', async () => {
   const output = await tools.runAsync(
     `${cmd} listDicomStores ${datasetId}`,
     cwd
   );
-  t.regex(output, /DICOM stores/);
+  assert.strictEqual(new RegExp(/DICOM stores/).test(output), true);
 });
 
-test.serial(`should export a DICOM instance`, async t => {
+it('should export a DICOM instance', async () => {
   const output = await tools.runAsync(
     `${cmd} exportDicomInstanceGcs ${datasetId} ${dicomStoreId} ${bucketName}`,
     cwd
   );
-  t.regex(output, /Exported DICOM instances to bucket/);
+  assert.strictEqual(
+    new RegExp(/Exported DICOM instances to bucket/).test(output),
+    true
+  );
 });
 
-test.serial(`should import a DICOM object from GCS`, async t => {
+it('should import a DICOM object from GCS', async () => {
   const output = await tools.runAsync(
     `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${contentUri}`,
     cwd
   );
-  t.regex(output, /Imported DICOM objects from bucket/);
+  assert.strictEqual(
+    new RegExp(/Imported DICOM objects from bucket/).test(output),
+    true
+  );
 });
 
-test(`should delete a DICOM store`, async t => {
+it('should delete a DICOM store', async () => {
   const output = await tools.runAsync(
     `${cmd} deleteDicomStore ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  t.regex(output, /Deleted DICOM store/);
+  assert.strictEqual(new RegExp(/Deleted DICOM store/).test(output), true);
 });

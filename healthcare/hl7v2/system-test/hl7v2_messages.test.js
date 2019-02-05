@@ -15,29 +15,29 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const cmdDataset = `node datasets.js`;
-const cmd = `node hl7v2_messages.js`;
-const cmdHl7v2Store = `node hl7v2_stores.js`;
-const cwdDatasets = path.join(__dirname, `../../datasets`);
-const cwd = path.join(__dirname, `..`);
+const cmdDataset = 'node datasets.js';
+const cmd = 'node hl7v2_messages.js';
+const cmdHl7v2Store = 'node hl7v2_stores.js';
+const cwdDatasets = path.join(__dirname, '../../datasets');
+const cwd = path.join(__dirname, '..');
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
 const hl7v2StoreId = `nodejs-docs-samples-test-hl7v2-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
 
-const messageFile = `resources/hl7v2-sample-ingest.json`;
-const messageId = `2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw=`;
-const labelKey = `my-key`;
-const labelValue = `my-value`;
+const messageFile = 'resources/hl7v2-sample-ingest.json';
+const messageId = '2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw=';
+const labelKey = 'my-key';
+const labelValue = 'my-value';
 
-test.before(tools.checkCredentials);
-test.before(async () => {
+before(async () => {
+  tools.checkCredentials();
   return tools
     .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
     .then(results => {
@@ -45,7 +45,7 @@ test.before(async () => {
       return results;
     });
 });
-test.after.always(async () => {
+after(async () => {
   try {
     await tools.runAsync(
       `${cmdDataset} deleteDataset ${datasetId}`,
@@ -54,7 +54,7 @@ test.after.always(async () => {
   } catch (err) {} // Ignore error
 });
 
-test.serial(`should create an HL7v2 message`, async t => {
+it('should create an HL7v2 message', async () => {
   await tools.runAsync(
     `${cmdHl7v2Store} createHl7v2Store ${datasetId} ${hl7v2StoreId}`,
     cwd
@@ -63,47 +63,47 @@ test.serial(`should create an HL7v2 message`, async t => {
     `${cmd} createHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
-  t.regex(output, /Created HL7v2 message/);
+  assert.strictEqual(new RegExp(/Created HL7v2 message/).test(output), true);
 });
 
-test.serial(`should ingest an HL7v2 message`, async t => {
+it('should ingest an HL7v2 message', async () => {
   const output = await tools.runAsync(
     `${cmd} ingestHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
-  t.regex(output, /Ingested HL7v2 message/);
+  assert.strictEqual(new RegExp(/Ingested HL7v2 message/).test(output), true);
 });
 
-test.serial(`should get an HL7v2 message`, async t => {
+it('should get an HL7v2 message', async () => {
   const output = await tools.runAsync(
     `${cmd} getHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
-  t.regex(output, /Got HL7v2 message/);
+  assert.strictEqual(new RegExp(/Got HL7v2 message/).test(output), true);
 });
 
-test.serial(`should list HL7v2 messages`, async t => {
+it('should list HL7v2 messages', async () => {
   const output = await tools.runAsync(
     `${cmd} listHl7v2Messages ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  t.regex(output, /HL7v2 messages/);
+  assert.strictEqual(new RegExp(/HL7v2 messages/).test(output), true);
 });
 
-test.serial(`should patch an HL7v2 message`, async t => {
+it('should patch an HL7v2 message', async () => {
   const output = await tools.runAsync(
     `${cmd} patchHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId} ${labelKey} ${labelValue}`,
     cwd
   );
-  t.regex(output, /Patched HL7v2 message/);
+  assert.strictEqual(new RegExp(/Patched HL7v2 message/).test(output), true);
 });
 
-test(`should delete an HL7v2 message`, async t => {
+it('should delete an HL7v2 message', async () => {
   const output = await tools.runAsync(
     `${cmd} deleteHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
-  t.regex(output, /Deleted HL7v2 message/);
+  assert.strictEqual(new RegExp(/Deleted HL7v2 message/).test(output), true);
 
   // Clean up
   tools.runAsync(

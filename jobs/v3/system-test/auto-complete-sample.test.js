@@ -15,15 +15,15 @@
 
 'use strict';
 
-const test = require(`ava`);
+const assert = require(`assert`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-test(`should auto complete job titles within given companyName`, async t => {
+it(`should auto complete job titles within given companyName`, async () => {
   const output = await tools.runAsync(`node auto-complete-sample.js`);
   const pattern =
     `.*completionResults.*"suggestion":"Google","type":"COMPANY_NAME"}.*\n` +
     `.*completionResults.*"suggestion":"Software Engineer","type":"JOB_TITLE".*\n` +
     `.*completionResults.*"suggestion":"Software Engineer","type":"JOB_TITLE".*\n`;
 
-  t.regex(output, new RegExp(pattern));
+  assert.strictEqual(new RegExp(pattern).test(output), true);
 });

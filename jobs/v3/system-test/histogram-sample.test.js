@@ -15,12 +15,12 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-test(`should do a histogram search`, async t => {
-  const output = await tools.runAsync(`node histogram-sample.js`);
+it('should do a histogram search', async () => {
+  const output = await tools.runAsync('node histogram-sample.js');
 
-  t.true(output.includes(`COMPANY_ID`));
-  t.true(output.includes(`someFieldName1`));
+  assert.strictEqual(output.includes('COMPANY_ID'), true);
+  assert.strictEqual(output.includes('someFieldName1'), true);
 });

@@ -15,20 +15,20 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-test(`should do a general search`, async t => {
-  const output = await tools.runAsync(`node general-search-sample.js`);
+it('should do a general search', async () => {
+  const output = await tools.runAsync('node general-search-sample.js');
 
   const pattern =
-    `.*matchingJobs.*\n` +
-    `.*matchingJobs.*\n` +
-    `.*matchingJobs.*\n` +
-    `.*matchingJobs.*\n` +
-    `.*matchingJobs.*\n` +
-    `.*matchingJobs.*\n` +
-    `.*matchingJobs.*\n`;
+    '.*matchingJobs.*\n' +
+    '.*matchingJobs.*\n' +
+    '.*matchingJobs.*\n' +
+    '.*matchingJobs.*\n' +
+    '.*matchingJobs.*\n' +
+    '.*matchingJobs.*\n' +
+    '.*matchingJobs.*\n';
 
-  t.regex(output, new RegExp(pattern));
+  assert.strictEqual(new RegExp(pattern).test(output), true);
 });

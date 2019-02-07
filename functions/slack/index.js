@@ -17,10 +17,10 @@
 
 // [START functions_slack_setup]
 const config = require('./config.json');
-const googleapis = require('googleapis');
+const {google} = require('googleapis');
 
 // Get a reference to the Knowledge Graph Search component
-const kgsearch = googleapis.kgsearch('v1');
+const kgsearch = google.kgsearch('v1');
 // [END functions_slack_setup]
 
 // [START functions_slack_format]
@@ -37,10 +37,11 @@ function formatSlackMessage(query, response) {
   // Extract the first entity from the result list, if any
   if (
     response &&
-    response.itemListElement &&
-    response.itemListElement.length > 0
+    response.data &&
+    response.data.itemListElement &&
+    response.data.itemListElement.length > 0
   ) {
-    entity = response.itemListElement[0].result;
+    entity = response.data.itemListElement[0].result;
   }
 
   // Prepare a rich Slack message

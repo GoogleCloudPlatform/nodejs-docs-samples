@@ -36,12 +36,7 @@ const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
 
 before(async () => {
   tools.checkCredentials();
-  return tools
-    .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
-    .then(results => {
-      console.log(results);
-      return results;
-    });
+  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
 });
 after(async () => {
   try {

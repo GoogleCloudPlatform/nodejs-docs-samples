@@ -35,12 +35,7 @@ let resourceId;
 
 before(async () => {
   tools.checkCredentials();
-  return tools
-    .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
-    .then(results => {
-      console.log(results);
-      return results;
-    });
+  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
 });
 after(async () => {
   try {

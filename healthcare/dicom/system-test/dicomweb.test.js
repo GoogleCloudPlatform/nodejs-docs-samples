@@ -39,12 +39,7 @@ const studyUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.105';
 
 before(async () => {
   tools.checkCredentials();
-  return tools
-    .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
-    .then(results => {
-      console.log(results);
-      return results;
-    });
+  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
 });
 after(async () => {
   try {

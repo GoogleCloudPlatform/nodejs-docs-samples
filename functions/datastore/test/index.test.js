@@ -15,13 +15,13 @@
 
 'use strict';
 
-const test = require(`ava`);
-const Datastore = require(`@google-cloud/datastore`);
+const test = require('ava');
+const Datastore = require('@google-cloud/datastore');
 const datastore = Datastore();
-const program = require(`../`);
-const uuid = require(`uuid`);
+const program = require('../');
+const uuid = require('uuid');
 
-const supertest = require(`supertest`);
+const supertest = require('supertest');
 const request = supertest(process.env.BASE_URL);
 
 const NAME = `sampletask1`;

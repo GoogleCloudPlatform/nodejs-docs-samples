@@ -16,13 +16,13 @@
 /* eslint no-empty: 0 */
 'use strict';
 
-const {Storage} = require(`@google-cloud/storage`);
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const program = require(`../transfer`);
+const program = require('../transfer');
 
 const firstBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const secondBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;

@@ -15,8 +15,8 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const test = require(`ava`);
+const sinon = require('sinon');
+const test = require('ava');
 
 const uuidSample = require('../');
 

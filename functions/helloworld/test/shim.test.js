@@ -13,15 +13,15 @@
  * limitations under the License.
  */
 
-const test = require(`ava`);
-const Supertest = require(`supertest`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const {PubSub} = require(`@google-cloud/pubsub`);
+const test = require('ava');
+const Supertest = require('supertest');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
-const {Storage} = require(`@google-cloud/storage`);
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const uuid = require(`uuid`);
-const path = require(`path`);
+const uuid = require('uuid');
+const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const supertest = Supertest(`http://localhost:${PORT}`);

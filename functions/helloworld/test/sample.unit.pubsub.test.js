@@ -14,11 +14,11 @@
  */
 
 // [START functions_pubsub_unit_test]
-const test = require(`ava`);
-const uuid = require(`uuid`);
-const sinon = require(`sinon`);
+const test = require('ava');
+const uuid = require('uuid');
+const sinon = require('sinon');
 
-const helloPubSub = require(`..`).helloPubSub;
+const helloPubSub = require('..').helloPubSub;
 const consoleLog = sinon.stub(console, 'log');
 
 test.cb(`helloPubSub: should print a name`, t => {

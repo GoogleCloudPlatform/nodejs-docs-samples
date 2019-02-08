@@ -15,8 +15,8 @@
 
 'use strict';
 
-const basicCompanySample = require(`./basic-company-sample`);
-const createAuthCredential = require(`./create-auth-credential`);
+const basicCompanySample = require('./basic-company-sample');
+const createAuthCredential = require('./create-auth-credential');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 

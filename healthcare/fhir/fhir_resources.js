@@ -377,7 +377,7 @@ function getPatientEverything(
 }
 // [END healthcare_fhir_get_patient_everything]
 
-require(`yargs`) // eslint-disable-line
+require('yargs') // eslint-disable-line
   .demand(1)
   .options({
     cloudRegion: {

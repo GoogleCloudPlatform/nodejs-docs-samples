@@ -74,7 +74,7 @@ exports.speechTranslate = functions.https.onRequest((request, response) => {
       supportedLanguageCodes.forEach(languageCode => {
         let translation = {languageCode: languageCode};
         const filenameUUID = uuid();
-        const filename = filenameUUID + '.' + outputAudioEncoding.toLowerCase();
+        const filename = `${filenameUUID}.${outputAudioEncoding.toLowerCase()}`;
         callTextTranslation(languageCode, transcription)
           .then(data => {
             const textTranslation = data[0];
@@ -82,12 +82,12 @@ exports.speechTranslate = functions.https.onRequest((request, response) => {
             return callTextToSpeech(languageCode, textTranslation);
           })
           .then(data => {
-            const path = languageCode + '/' + filename;
+            const path = `${languageCode}/${filename}`;
             return uploadToCloudStorage(path, data[0].audioContent);
           })
           .then(() => {
             console.log(`Successfully translated input to ${languageCode}.`);
-            translation.gcsPath = languageCode + '/' + filename;
+            translation.gcsPath = `${languageCode}/${filename}`;
             translations.push(translation);
             if (translations.length === supportedLanguageCodes.length) {
               responseBody.translations = translations;

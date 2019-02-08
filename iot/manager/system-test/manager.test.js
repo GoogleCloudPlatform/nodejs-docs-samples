@@ -16,11 +16,11 @@
 'use strict';
 
 const iot = require('@google-cloud/iot');
-const path = require(`path`);
-const {PubSub} = require(`@google-cloud/pubsub`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const {PubSub} = require('@google-cloud/pubsub');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub();
@@ -295,7 +295,7 @@ test(`should create and get an iam policy`, async t => {
 });
 
 test(`should create and delete a registry`, async t => {
-  let createRegistryId = registryName + 'create';
+  let createRegistryId = `${registryName}create`;
 
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(

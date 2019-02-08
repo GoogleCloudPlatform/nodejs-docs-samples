@@ -14,9 +14,9 @@
  */
 
 // [START functions_pubsub_integration_test]
-const childProcess = require(`child_process`);
-const test = require(`ava`);
-const uuid = require(`uuid`);
+const childProcess = require('child_process');
+const test = require('ava');
+const uuid = require('uuid');
 
 test.serial(`helloPubSub: should print a name`, async t => {
   t.plan(1);

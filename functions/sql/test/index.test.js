@@ -15,9 +15,9 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const proxyquire = require(`proxyquire`);
+const sinon = require('sinon');
+const test = require('ava');
+const proxyquire = require('proxyquire');
 
 const INSTANCE_PREFIX = `nodejs-docs-samples:us-central1:integration-tests-instance`;
 

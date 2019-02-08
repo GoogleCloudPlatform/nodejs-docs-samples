@@ -14,11 +14,11 @@
  */
 
 // [START functions_http_unit_test]
-const test = require(`ava`);
-const sinon = require(`sinon`);
-const uuid = require(`uuid`);
+const test = require('ava');
+const sinon = require('sinon');
+const uuid = require('uuid');
 
-const helloHttp = require(`..`).helloHttp;
+const helloHttp = require('..').helloHttp;
 
 test(`helloHttp: should print a name`, t => {
   // Mock ExpressJS 'req' and 'res' parameters

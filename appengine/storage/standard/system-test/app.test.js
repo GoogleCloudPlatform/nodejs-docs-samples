@@ -13,11 +13,11 @@
 
 'use strict';
 
-const path = require(`path`);
-const {Storage} = require(`@google-cloud/storage`);
+const path = require('path');
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const test = require(`ava`);
-const utils = require(`@google-cloud/nodejs-repo-tools`);
+const test = require('ava');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const bucket = storage.bucket(bucketName);

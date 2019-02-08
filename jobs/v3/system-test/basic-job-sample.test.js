@@ -15,8 +15,8 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 const runSample = `'require("./basic-job-sample").runSample()'`;
 
 test(`Should create a job, get a job, update a job, update a job with field mask and delete a job`, async t => {

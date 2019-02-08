@@ -15,10 +15,10 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 const vision = require('@google-cloud/vision').v1p1beta1;
 
 const bucketName = `my-bucket`;

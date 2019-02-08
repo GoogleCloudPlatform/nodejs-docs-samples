@@ -14,10 +14,10 @@
  */
 
 // [START functions_pubsub_system_test]
-const childProcess = require(`child_process`);
-const test = require(`ava`);
-const uuid = require(`uuid`);
-const {PubSub} = require(`@google-cloud/pubsub`);
+const childProcess = require('child_process');
+const test = require('ava');
+const uuid = require('uuid');
+const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 
 const topicName = process.env.FUNCTIONS_TOPIC;

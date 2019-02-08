@@ -15,10 +15,10 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
 const cmdDataset = `node datasets.js`;
 const cmd = `node dicom_stores.js`;
@@ -36,7 +36,7 @@ const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
 
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const dcmFileName = `IM-0002-0001-JPEG-BASELINE.dcm`;
-const contentUri = bucketName + '/' + dcmFileName;
+const contentUri = `${bucketName}/${dcmFileName}`;
 
 test.before(tools.checkCredentials);
 test.before(async () => {

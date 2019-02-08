@@ -14,12 +14,12 @@
  */
 
 // [START functions_storage_system_test]
-const {Storage} = require(`@google-cloud/storage`);
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const uuid = require(`uuid`);
-const test = require(`ava`);
-const path = require(`path`);
-const childProcess = require(`child_process`);
+const uuid = require('uuid');
+const test = require('ava');
+const path = require('path');
+const childProcess = require('child_process');
 const localFileName = `test.txt`;
 
 // Use unique GCS filename to avoid conflicts between concurrent test runs

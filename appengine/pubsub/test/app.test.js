@@ -18,9 +18,9 @@
 
 'use strict';
 
-const test = require(`ava`);
-const path = require(`path`);
-const utils = require(`@google-cloud/nodejs-repo-tools`);
+const test = require('ava');
+const path = require('path');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
 const message = `This is a test message sent at: `;
 const payload = message + Date.now();

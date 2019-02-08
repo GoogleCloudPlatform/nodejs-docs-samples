@@ -195,7 +195,7 @@ function dicomWebDeleteStudy(
 }
 // [END healthcare_dicomweb_delete_study]
 
-require(`yargs`) // eslint-disable-line
+require('yargs') // eslint-disable-line
   .demand(1)
   .options({
     cloudRegion: {

@@ -15,9 +15,9 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const test = require('ava');
 
 const entities = [
   {

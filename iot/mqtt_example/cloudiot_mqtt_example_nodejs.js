@@ -37,7 +37,7 @@ var backoffTime = 1;
 var publishChainInProgress = false;
 
 console.log('Google Cloud IoT Core MQTT example.');
-var argv = require(`yargs`)
+var argv = require('yargs')
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,

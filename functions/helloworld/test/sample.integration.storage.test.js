@@ -14,9 +14,9 @@
  */
 
 // [START functions_storage_integration_test]
-const childProcess = require(`child_process`);
-const test = require(`ava`);
-const uuid = require(`uuid`);
+const childProcess = require('child_process');
+const test = require('ava');
+const uuid = require('uuid');
 
 test.serial(`helloGCS: should print uploaded message`, async t => {
   t.plan(1);

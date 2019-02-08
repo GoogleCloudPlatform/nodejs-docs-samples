@@ -14,11 +14,11 @@
  */
 
 // [START functions_storage_unit_test]
-const test = require(`ava`);
-const uuid = require(`uuid`);
-const sinon = require(`sinon`);
+const test = require('ava');
+const uuid = require('uuid');
+const sinon = require('sinon');
 
-const helloGCS = require(`..`).helloGCS;
+const helloGCS = require('..').helloGCS;
 const consoleLog = sinon.stub(console, 'log');
 
 test.cb(`helloGCS: should print uploaded message`, t => {

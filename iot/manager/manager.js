@@ -1298,7 +1298,7 @@ function listGatewaysForDevice(
   // [END iot_list_gateways_for_device]
 }
 
-require(`yargs`) // eslint-disable-line
+require('yargs') // eslint-disable-line
   .demand(1)
   .options({
     cloudRegion: {

@@ -14,8 +14,8 @@
  */
 
 // [START functions_http_system_test]
-const test = require(`ava`);
-const Supertest = require(`supertest`);
+const test = require('ava');
+const Supertest = require('supertest');
 const supertest = Supertest(process.env.BASE_URL);
 
 test.cb(`helloHttp: should print a name`, t => {

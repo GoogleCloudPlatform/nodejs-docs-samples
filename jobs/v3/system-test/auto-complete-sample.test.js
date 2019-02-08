@@ -15,8 +15,8 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 test(`should auto complete job titles within given companyName`, async t => {
   const output = await tools.runAsync(`node auto-complete-sample.js`);

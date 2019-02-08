@@ -15,11 +15,11 @@
 
 'use strict';
 
-const test = require(`ava`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const sinon = require(`sinon`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const test = require('ava');
+const path = require('path');
+const proxyquire = require('proxyquire').noPreserveCache();
+const sinon = require('sinon');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, `../createTables.js`);
 

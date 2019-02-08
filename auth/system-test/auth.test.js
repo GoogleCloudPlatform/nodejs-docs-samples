@@ -15,9 +15,9 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const cwd = path.join(__dirname, `..`);
 const cmd = `node auth.js`;

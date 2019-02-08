@@ -15,14 +15,14 @@
 
 const Buffer = require('safe-buffer').Buffer;
 const path = require('path');
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const supertest = require(`supertest`);
-const uuid = require(`uuid`);
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const supertest = require('supertest');
+const uuid = require('uuid');
 
-const {PubSub} = require(`@google-cloud/pubsub`);
+const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
-const {Storage} = require(`@google-cloud/storage`);
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
 const baseCmd = process.env.FUNCTIONS_CMD;

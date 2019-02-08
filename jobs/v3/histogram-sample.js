@@ -15,9 +15,9 @@
 
 'use strict';
 
-const basicCompanySample = require(`./basic-company-sample`);
-const basicJobSample = require(`./basic-job-sample`);
-const createAuthCredential = require(`./create-auth-credential`);
+const basicCompanySample = require('./basic-company-sample');
+const basicJobSample = require('./basic-job-sample');
+const createAuthCredential = require('./create-auth-credential');
 const customAttributeSample = require('./custom-attribute-sample');
 const sleep = require('./sleep');
 

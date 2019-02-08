@@ -15,9 +15,9 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const functions = require(`../`);
+const sinon = require('sinon');
+const test = require('ava');
+const functions = require('../');
 
 function getMocks() {
   const req = {};

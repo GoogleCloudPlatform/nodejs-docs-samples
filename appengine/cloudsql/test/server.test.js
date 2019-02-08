@@ -15,13 +15,13 @@
 
 'use strict';
 
-const express = require(`express`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noCallThru();
-const request = require(`supertest`);
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const express = require('express');
+const path = require('path');
+const proxyquire = require('proxyquire').noCallThru();
+const request = require('supertest');
+const sinon = require('sinon');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, `../server.js`);
 

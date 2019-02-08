@@ -274,7 +274,7 @@ function getClient(apiKey, serviceAccountJson, cb) {
 }
 // [END healthcare_get_client]
 
-require(`yargs`) // eslint-disable-line
+require('yargs') // eslint-disable-line
   .demand(1)
   .options({
     apiKey: {

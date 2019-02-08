@@ -15,8 +15,8 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 test(`should do a general search`, async t => {
   const output = await tools.runAsync(`node general-search-sample.js`);

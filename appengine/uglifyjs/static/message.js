@@ -26,8 +26,8 @@ window.buttonClick = function() {
   } else if (window.buttonClicks === 2) {
     buttonClickTimes = 'twice';
   } else {
-    buttonClickTimes = window.buttonClicks + ' times';
+    buttonClickTimes = `${window.buttonClicks} times`;
   }
 
-  window.messageDiv.innerHTML = 'You clicked the button ' + buttonClickTimes;
+  window.messageDiv.innerHTML = `You clicked the button ${buttonClickTimes}`;
 };

@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const test = require('ava');
 
 function getSample() {
   const instanceListMock = [

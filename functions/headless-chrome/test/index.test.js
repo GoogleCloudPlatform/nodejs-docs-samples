@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const supertest = require(`supertest`);
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const supertest = require('supertest');
 
 const BASE_URL = process.env.BASE_URL;
 

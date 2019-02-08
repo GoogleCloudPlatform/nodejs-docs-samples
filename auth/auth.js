@@ -77,7 +77,7 @@ function authCloudExplicit() {
   // [END auth_cloud_explicit]
 }
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .command(
     `auth-cloud-implicit`,

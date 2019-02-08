@@ -15,8 +15,8 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 const runSample = `'require("./custom-attribute-sample").runSample()'`;
 
 test(`should search job with custom attribute filter`, async t => {

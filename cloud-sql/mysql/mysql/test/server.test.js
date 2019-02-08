@@ -15,10 +15,10 @@
 
 'use strict';
 
-const request = require(`supertest`);
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const request = require('supertest');
+const sinon = require('sinon');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 // Stub out MySQL calls
 const stubMysql = sinon.stub(require('promise-mysql'));

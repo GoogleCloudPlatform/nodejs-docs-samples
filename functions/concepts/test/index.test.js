@@ -15,11 +15,11 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const sinon = require('sinon');
+const test = require('ava');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const sample = require(`../`);
+const sample = require('../');
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);

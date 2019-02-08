@@ -24,7 +24,7 @@ const httpShim = PORT => {
 
   // Start local HTTP server
   const app = express();
-  const server = require(`http`).createServer(app);
+  const server = require('http').createServer(app);
   server.on('connection', socket => socket.unref());
   server.listen(PORT);
 
@@ -74,7 +74,7 @@ const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
   // [START functions_testing_shim_storage]
   // Import dependencies
   const Pubsub = require('@google-cloud/pubsub');
-  const {Storage} = require(`@google-cloud/storage`);
+  const {Storage} = require('@google-cloud/storage');
   const pubsub = Pubsub();
   const storage = new Storage();
 
@@ -120,7 +120,7 @@ const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
 };
 
 const gcfCodeGlobal = require('./index.js');
-require(`yargs`) // eslint-disable-line
+require('yargs') // eslint-disable-line
   .demandCommand(1)
   .command('http <port>', 'HTTP-triggered-function shim', {}, opts =>
     httpShim(opts.port)

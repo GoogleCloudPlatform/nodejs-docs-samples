@@ -211,7 +211,7 @@ app.post('/', (req, res) => {
   insertVote(knex, vote)
     // [END cloud_sql_example_statement]
     .catch(err => {
-      logger.error('Error while attempting to submit vote. Error:' + err);
+      logger.error(`Error while attempting to submit vote. Error:${err}`);
       let msg = 'Unable to successfully cast vote!';
       msg += 'Please check the application logs for more details.';
       res
@@ -219,7 +219,7 @@ app.post('/', (req, res) => {
         .send(msg)
         .end();
     });
-  let msg = 'Successfully voted for ' + team + ' at ' + timestamp;
+  let msg = `Successfully voted for ${team} at ${timestamp}`;
   res
     .status(200)
     .send(msg)

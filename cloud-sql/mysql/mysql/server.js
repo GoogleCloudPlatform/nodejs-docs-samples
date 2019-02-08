@@ -159,7 +159,7 @@ app.post('/', async (req, res) => {
 
   res
     .status(200)
-    .send('Successfully voted for ' + team + ' at ' + timestamp)
+    .send(`Successfully voted for ${team} at ${timestamp}`)
     .end();
 });
 

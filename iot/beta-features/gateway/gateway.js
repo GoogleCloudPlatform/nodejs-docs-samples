@@ -758,6 +758,7 @@ function sendDataFromBoundDevice(
     if (!success) {
       console.log('Client not connected...');
     } else if (!publishChainInProgress) {
+      // eslint-disable-next-line no-warning-comments
       // TODO: wait for commands
       console.log('Client connected: Attaching device');
       attachDevice(deviceId, client);
@@ -893,7 +894,7 @@ function publishAsync(
   // [END iot_mqtt_publish]
 }
 
-let argv = require(`yargs`) // eslint-disable-line
+let argv = require('yargs') // eslint-disable-line
   .demandCommand(1, 'You need at least one command before moving on')
   .options({
     algorithm: {

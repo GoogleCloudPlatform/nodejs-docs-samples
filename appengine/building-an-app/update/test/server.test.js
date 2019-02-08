@@ -13,9 +13,9 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const utils = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const test = require('ava');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
 const cwd = path.join(__dirname, `../`);
 const requestObj = utils.getRequest({

@@ -29,5 +29,5 @@ window.buttonClick = function() {
     buttonClickTimes = window.buttonClicks + ' times'; // eslint-disable-line prefer-template
   }
 
-  window.messageDiv.innerHTML = `You clicked the button ${buttonClickTimes}`;
+  window.messageDiv.innerHTML = 'You clicked the button ' + buttonClickTimes; // eslint-disable-line prefer-template
 };

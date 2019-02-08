@@ -26,7 +26,7 @@ window.buttonClick = function() {
   } else if (window.buttonClicks === 2) {
     buttonClickTimes = 'twice';
   } else {
-    buttonClickTimes = `${window.buttonClicks} times`;
+    buttonClickTimes = window.buttonClicks + ' times'; // eslint-disable-line prefer-template
   }
 
   window.messageDiv.innerHTML = `You clicked the button ${buttonClickTimes}`;

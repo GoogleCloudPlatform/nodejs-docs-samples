@@ -12,9 +12,9 @@
     "node": ">=8"
   },
   "scripts": {
-    "unit-test": "repo-tools test run --cmd ava -- -T 20s --verbose test/*.test.js",
-    "system-test": "repo-tools test run --cmd ava -- -T 20s --verbose system-test/*.test.js",
-    "test": "npm run unit-test && npm run system-test"
+    "unit-test": "mocha test/*.test.js --timeout=60000",
+    "system-test": "mocha system-test/*.test.js --timeout=60000",
+    "test": "repo-tools test install --cmd=npm -- run unit-test && repo-tools test install --cmd=npm -- run system-test"
   },
   "dependencies": {
     "googleapis": "37.2.0",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "ava": "0.25.0",
+    "mocha": "^5.2.0",
     "proxyquire": "2.1.0",
     "sinon": "7.2.7",
     "@google-cloud/storage": "^2.3.3",

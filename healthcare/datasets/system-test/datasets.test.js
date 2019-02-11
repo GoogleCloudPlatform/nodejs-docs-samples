@@ -24,7 +24,7 @@ const cmd = `node datasets.js`;
 const cwd = path.join(__dirname, `..`);
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
-const whitelistTags = 'PatientID';
+const keeplistTags = 'PatientID';
 
 test.before(tools.checkCredentials);
 test.after.always(async () => {
@@ -62,7 +62,7 @@ test.serial(
   `should de-identify data in a dataset and write to a new dataset`,
   async t => {
     const output = await tools.runAsync(
-      `${cmd} deidentifyDataset ${datasetId} ${destinationDatasetId} ${whitelistTags}`,
+      `${cmd} deidentifyDataset ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
       cwd
     );
     t.is(

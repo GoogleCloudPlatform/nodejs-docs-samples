@@ -16,66 +16,62 @@
 /* eslint no-empty: 0 */
 'use strict';
 
-const {Storage} = require(`@google-cloud/storage`);
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const program = require(`../transfer`);
+const program = require('../transfer');
 
 const firstBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const secondBucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 
 let jobName;
-const date = `2222/08/11`;
-const time = `15:30`;
-const description = `this is a test`;
-const status = `DISABLED`;
+const date = '2222/08/11';
+const time = '15:30';
+const description = 'this is a test';
+const status = 'DISABLED';
 
-test.before(tools.checkCredentials);
-test.before(async () => {
+before(async () => {
+  tools.checkCredentials();
   tools.stubConsole();
 
   const bucketOptions = {
     entity: 'allUsers',
     role: storage.acl.WRITER_ROLE,
   };
-  await storage.createBucket(firstBucketName).then(data => {
-    const bucket = data[0];
-    return bucket.acl.add(bucketOptions);
-  });
-  await storage.createBucket(secondBucketName).then(data => {
-    const bucket = data[0];
-    return bucket.acl.add(bucketOptions);
-  });
+  const [bucket1] = await storage.createBucket(firstBucketName);
+  bucket1.acl.add(bucketOptions);
+  const [bucket2] = await storage.createBucket(secondBucketName);
+  bucket2.acl.add(bucketOptions);
 });
 
-test.after.always(async () => {
+after(async () => {
   tools.restoreConsole();
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);
   try {
-    bucketOne.deleteFiles({force: true});
+    await bucketOne.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    bucketOne.deleteFiles({force: true});
+    await bucketOne.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    bucketOne.delete();
+    await bucketOne.delete();
   } catch (err) {} // ignore error
   try {
-    bucketTwo.deleteFiles({force: true});
+    await bucketTwo.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    bucketTwo.deleteFiles({force: true});
+    await bucketTwo.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    bucketTwo.delete();
+    await bucketTwo.delete();
   } catch (err) {} // ignore error
 });
 
-test.cb.serial(`should create a storage transfer job`, t => {
+it('should create a storage transfer job', done => {
   const options = {
     srcBucket: firstBucketName,
     destBucket: secondBucketName,
@@ -85,65 +81,67 @@ test.cb.serial(`should create a storage transfer job`, t => {
   };
 
   program.createTransferJob(options, (err, transferJob) => {
-    t.ifError(err);
+    assert.ifError(err);
     jobName = transferJob.name;
-    t.is(transferJob.name.indexOf(`transferJobs/`), 0);
-    t.is(transferJob.description, description);
-    t.is(transferJob.status, `ENABLED`);
-    t.true(
-      console.log.calledWith(`Created transfer job: %s`, transferJob.name)
+    assert.strictEqual(transferJob.name.indexOf('transferJobs/'), 0);
+    assert.strictEqual(transferJob.description, description);
+    assert.strictEqual(transferJob.status, 'ENABLED');
+    assert.ok(
+      console.log.calledWith('Created transfer job: %s', transferJob.name)
     );
-    setTimeout(t.end, 2000);
+    done();
   });
 });
 
-test.cb.serial(`should get a transferJob`, t => {
+it('should get a transferJob', done => {
   program.getTransferJob(jobName, (err, transferJob) => {
-    t.ifError(err);
-    t.is(transferJob.name, jobName);
-    t.is(transferJob.description, description);
-    t.is(transferJob.status, `ENABLED`);
-    t.true(console.log.calledWith(`Found transfer job: %s`, transferJob.name));
-    setTimeout(t.end, 2000);
+    assert.ifError(err);
+    assert.strictEqual(transferJob.name, jobName);
+    assert.strictEqual(transferJob.description, description);
+    assert.strictEqual(transferJob.status, 'ENABLED');
+    assert.ok(
+      console.log.calledWith('Found transfer job: %s', transferJob.name)
+    );
+    done();
   });
 });
 
-test.cb.serial(`should update a transferJob`, t => {
+it('should update a transferJob', done => {
   var options = {
     job: jobName,
-    field: `status`,
+    field: 'status',
     value: status,
   };
 
   program.updateTransferJob(options, (err, transferJob) => {
-    t.ifError(err);
-    t.is(transferJob.name, jobName);
-    t.is(transferJob.description, description);
-    t.is(transferJob.status, status);
-    t.true(
-      console.log.calledWith(`Updated transfer job: %s`, transferJob.name)
+    assert.ifError(err);
+    assert.strictEqual(transferJob.name, jobName);
+    assert.strictEqual(transferJob.description, description);
+    assert.strictEqual(transferJob.status, status);
+    assert.ok(
+      console.log.calledWith('Updated transfer job: %s', transferJob.name)
     );
-    setTimeout(t.end, 2000);
+    done();
   });
 });
 
-test.cb.serial(`should list transferJobs`, t => {
+it('should list transferJobs', done => {
   program.listTransferJobs((err, transferJobs) => {
-    t.ifError(err);
-    t.true(transferJobs.some(transferJob => transferJob.name === jobName));
-    t.true(
+    assert.ifError(err);
+    assert.ok(transferJobs.some(transferJob => transferJob.name === jobName));
+    assert.ok(
       transferJobs.some(transferJob => transferJob.description === description)
     );
-    t.true(transferJobs.some(transferJob => transferJob.status === status));
-    t.true(console.log.calledWith(`Found %d jobs!`, transferJobs.length));
-    setTimeout(t.end, 2000);
+    assert.ok(transferJobs.some(transferJob => transferJob.status === status));
+    assert.ok(console.log.calledWith('Found %d jobs!', transferJobs.length));
+    done();
   });
 });
 
-test.cb.serial(`should list transferJobs`, t => {
+it('should list transferJobs', done => {
   program.listTransferOperations(jobName, (err, operations) => {
-    t.ifError(err);
-    t.true(Array.isArray(operations));
-    t.end();
+    assert.ifError(err);
+    assert.ok(Array.isArray(operations));
+    done();
   });
 });

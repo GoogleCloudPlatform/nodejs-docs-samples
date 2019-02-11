@@ -177,12 +177,12 @@ function deidentifyDataset(
               'StudyInstanceUID',
               'SeriesInstanceUID',
               'PixelData',
-              keeplistTags
-            ]
-          }
-        }
-      }
-    }
+              keeplistTags,
+            ],
+          },
+        },
+      },
+    },
   };
 
   client.projects.locations.datasets

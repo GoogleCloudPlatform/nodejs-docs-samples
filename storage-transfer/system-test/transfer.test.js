@@ -86,8 +86,9 @@ it('should create a storage transfer job', done => {
     assert.strictEqual(transferJob.name.indexOf('transferJobs/'), 0);
     assert.strictEqual(transferJob.description, description);
     assert.strictEqual(transferJob.status, 'ENABLED');
-    assert.ok(
-      console.log.calledWith('Created transfer job: %s', transferJob.name)
+    assert.strictEqual(
+      console.log.calledWith('Created transfer job: %s', transferJob.name),
+      true
     );
     done();
   });
@@ -99,8 +100,9 @@ it('should get a transferJob', done => {
     assert.strictEqual(transferJob.name, jobName);
     assert.strictEqual(transferJob.description, description);
     assert.strictEqual(transferJob.status, 'ENABLED');
-    assert.ok(
-      console.log.calledWith('Found transfer job: %s', transferJob.name)
+    assert.strictEqual(
+      console.log.calledWith('Found transfer job: %s', transferJob.name),
+      true
     );
     done();
   });
@@ -118,8 +120,9 @@ it('should update a transferJob', done => {
     assert.strictEqual(transferJob.name, jobName);
     assert.strictEqual(transferJob.description, description);
     assert.strictEqual(transferJob.status, status);
-    assert.ok(
-      console.log.calledWith('Updated transfer job: %s', transferJob.name)
+    assert.strictEqual(
+      console.log.calledWith('Updated transfer job: %s', transferJob.name),
+      true
     );
     done();
   });
@@ -128,12 +131,22 @@ it('should update a transferJob', done => {
 it('should list transferJobs', done => {
   program.listTransferJobs((err, transferJobs) => {
     assert.ifError(err);
-    assert.ok(transferJobs.some(transferJob => transferJob.name === jobName));
-    assert.ok(
-      transferJobs.some(transferJob => transferJob.description === description)
+    assert.strictEqual(
+      transferJobs.some(transferJob => transferJob.name === jobName),
+      true
     );
-    assert.ok(transferJobs.some(transferJob => transferJob.status === status));
-    assert.ok(console.log.calledWith('Found %d jobs!', transferJobs.length));
+    assert.strictEqual(
+      transferJobs.some(transferJob => transferJob.description === description),
+      true
+    );
+    assert.strictEqual(
+      transferJobs.some(transferJob => transferJob.status === status),
+      true
+    );
+    assert.strictEqual(
+      console.log.calledWith('Found %d jobs!', transferJobs.length),
+      true
+    );
     done();
   });
 });
@@ -141,7 +154,7 @@ it('should list transferJobs', done => {
 it('should list transferJobs', done => {
   program.listTransferOperations(jobName, (err, operations) => {
     assert.ifError(err);
-    assert.ok(Array.isArray(operations));
+    assert.strictEqual(Array.isArray(operations), true);
     done();
   });
 });

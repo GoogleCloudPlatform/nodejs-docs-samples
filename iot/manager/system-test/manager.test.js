@@ -22,9 +22,6 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const uuid = require(`uuid`);
 
-const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub();
-
 const topicName = `nodejs-iot-test-topic`;
 const registryName = `nodejs-iot-test-registry`;
 const region = 'us-central1';
@@ -37,6 +34,9 @@ const installDeps = `npm install`;
 const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const ecPublicKey = process.env.NODEJS_IOT_EC_PUBLIC_KEY;
+
+const iotClient = new iot.v1.DeviceManagerClient();
+const pubSubClient = new PubSub({projectId});
 
 test.todo(tools.run(installDeps, `${cwd}/../mqtt_example`));
 test.before(tools.checkCredentials);
@@ -55,10 +55,16 @@ test.before(async () => {
     parent: iotClient.locationPath(projectId, region),
     deviceRegistry: {
       id: registryName,
+      eventNotificationConfigs: [
+        {
+          pubsubTopicName: topic.name,
+        },
+      ],
     },
   };
+  await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
 
-  await iotClient.createDeviceRegistry(createRegistryRequest);
+ await iotClient.createDeviceRegistry(createRegistryRequest);
 });
 
 test.after.always(async () => {
@@ -76,188 +82,135 @@ test.after.always(async () => {
 });
 
 test(`should create and delete an unauthorized device`, async t => {
-  const localDevice = `test-device`;
-  const localRegName = `${registryName}-unauth`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} createUnauthDevice ${localDevice} ${localRegName}`,
+  const localDevice = `test-device-unauth-delete`;
+
+  let output = await tools.runAsync(
+    `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
-    `${cmd} deleteDevice ${localDevice} ${localRegName}`,
+    `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should list configs for a device`, async t => {
   const localDevice = `test-device-configs`;
-  const localRegName = `${registryName}-unauth`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} createUnauthDevice ${localDevice} ${localRegName}`,
+  let output = await tools.runAsync(
+    `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
-    `${cmd} getDeviceConfigs ${localDevice} ${localRegName}`,
+    `${cmd} getDeviceConfigs ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Configs`));
   output = await tools.runAsync(
-    `${cmd} deleteDevice ${localDevice} ${localRegName}`,
+    `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should create and delete an RSA256 device`, async t => {
   const localDevice = `test-rsa-device`;
-  const localRegName = `${registryName}-rsa256`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} createRsa256Device ${localDevice} ${localRegName} ${rsaPublicCert}`,
+  let output = await tools.runAsync(
+    `${cmd} createRsa256Device ${localDevice} ${registryName} ${rsaPublicCert}`,
     cwd
   );
   t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
-    `${cmd} getDeviceState ${localDevice} ${localRegName}`,
+    `${cmd} getDeviceState ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`State`));
   output = await tools.runAsync(
-    `${cmd} deleteDevice ${localDevice} ${localRegName}`,
+    `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should create and delete an ES256 device`, async t => {
   const localDevice = `test-es256-device`;
-  const localRegName = `${registryName}-es256`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} createEs256Device ${localDevice} ${localRegName} ${ecPublicKey}`,
+  let output = await tools.runAsync(
+    `${cmd} createEs256Device ${localDevice} ${registryName} ${ecPublicKey}`,
     cwd
   );
   t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
-    `${cmd} getDeviceState ${localDevice} ${localRegName}`,
+    `${cmd} getDeviceState ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`State`));
   output = await tools.runAsync(
-    `${cmd} deleteDevice ${localDevice} ${localRegName}`,
+    `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should patch an unauthorized device with RSA256`, async t => {
-  const localDevice = `patchme`;
-  const localRegName = `${registryName}-patchRSA`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} createUnauthDevice ${localDevice} ${localRegName}`,
+  const localDevice = `test-device-patch-rs256`;
+  let output = await tools.runAsync(
+    `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
-    `${cmd} patchRsa256 ${localDevice} ${localRegName} ${rsaPublicCert}`,
+    `${cmd} patchRsa256 ${localDevice} ${registryName} ${rsaPublicCert}`,
     cwd
   );
   t.regex(output, new RegExp(`Patched device:`));
   output = await tools.runAsync(
-    `${cmd} deleteDevice ${localDevice} ${localRegName}`,
+    `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should patch an unauthorized device with ES256`, async t => {
-  const localDevice = `patchme`;
-  const localRegName = `${registryName}-patchES`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} createUnauthDevice ${localDevice} ${localRegName}`,
+  const localDevice = `test-device-patch-es256`;
+  let output = await tools.runAsync(
+    `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Created device`));
   output = await tools.runAsync(
-    `${cmd} patchEs256 ${localDevice} ${localRegName} ${ecPublicKey}`,
+    `${cmd} patchEs256 ${localDevice} ${registryName} ${ecPublicKey}`,
     cwd
   );
   t.regex(output, new RegExp(`Patched device:`));
   output = await tools.runAsync(
-    `${cmd} deleteDevice ${localDevice} ${localRegName}`,
+    `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should create and list devices`, async t => {
-  const localDevice = `test-device`;
-  const localRegName = `${registryName}-list`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} createUnauthDevice ${localDevice} ${localRegName}`,
+  const localDevice = `test-device-list`;
+  let output = await tools.runAsync(
+    `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Created device`));
-  output = await tools.runAsync(`${cmd} listDevices ${localRegName}`, cwd);
+  output = await tools.runAsync(`${cmd} listDevices ${registryName}`, cwd);
   t.regex(output, /Current devices in registry:/);
   t.regex(output, new RegExp(localDevice));
   output = await tools.runAsync(
-    `${cmd} deleteDevice ${localDevice} ${localRegName}`,
+    `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   t.regex(output, new RegExp(`Successfully deleted device`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
 });
 
 test(`should create and get a device`, async t => {
-  const localDevice = `test-device`;
+  const localDevice = `test-device-get`;
 
-  await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
-    `${cmd} createRegistry ${registryName} ${topicName}`,
-    cwd
-  );
   let output = await tools.runAsync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
@@ -272,26 +225,20 @@ test(`should create and get a device`, async t => {
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  t.regex(output, new RegExp(`Successfully deleted device`));
 });
 
 test(`should create and get an iam policy`, async t => {
   const localMember = `group:dpebot@google.com`;
   const localRole = `roles/viewer`;
-  const localRegName = `${registryName}-get`;
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
-    `${cmd} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  output = await tools.runAsync(
-    `${cmd} setIamPolicy ${localRegName} ${localMember} ${localRole}`,
+  
+  let output = await tools.runAsync(
+    `${cmd} setIamPolicy ${registryName} ${localMember} ${localRole}`,
     cwd
   );
   t.regex(output, new RegExp(`ETAG`));
-  output = await tools.runAsync(`${cmd} getIamPolicy ${localRegName}`, cwd);
+  output = await tools.runAsync(`${cmd} getIamPolicy ${registryName}`, cwd);
   t.regex(output, new RegExp(`dpebot`));
-  output = await tools.runAsync(`${cmd} deleteRegistry ${localRegName}`, cwd);
+  output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
 });
 
 test(`should create and delete a registry`, async t => {
@@ -312,29 +259,25 @@ test(`should create and delete a registry`, async t => {
 
 test(`should send command message to device`, async t => {
   const deviceId = `test-device-command`;
-  const registryId = `${registryName}-rsa256`;
   const commandMessage = 'rotate 180 degrees';
 
-  await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(`${cmd} createRegistry ${registryId} ${topicName}`, cwd);
   await tools.runAsync(
-    `${cmd} createRsa256Device ${deviceId} ${registryId} ${rsaPublicCert}`,
+    `${cmd} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
     cwd
   );
 
   tools.runAsync(
-    `node cloudiot_mqtt_example_nodejs.js --deviceId=${deviceId} --registryId=${registryId} --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=30 --mqttBridgePort=443`,
+    `node cloudiot_mqtt_example_nodejs.js --deviceId=${deviceId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=443`,
     path.join(__dirname, '../../mqtt_example')
   );
 
   const output = await tools.runAsync(
-    `${cmd} sendCommand ${deviceId} ${registryId} "${commandMessage}"`
+    `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
 
   t.regex(output, new RegExp('Success: OK'));
 
-  await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryId}`, cwd);
-  await tools.runAsync(`${cmd} deleteRegistry ${registryId}`, cwd);
+  await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
 
 test(`should create a new gateway`, async t => {

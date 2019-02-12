@@ -15,30 +15,20 @@
 
 'use strict';
 
-const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
 
 const cmd = 'node metadata.js';
-const cwd = path.join(__dirname, '..');
+const exec = async cmd => (await execa.shell(cmd)).stdout;
 
-before(tools.checkCredentials);
+describe('metadata', () => {
+  it('should list info types', async () => {
+    const output = await exec(`${cmd} infoTypes`);
+    assert.match(output, /US_DRIVERS_LICENSE_NUMBER/);
+  });
 
-it('should list info types', async () => {
-  const output = await tools.runAsync(`${cmd} infoTypes`, cwd);
-  assert.strictEqual(
-    new RegExp(/US_DRIVERS_LICENSE_NUMBER/).test(output),
-    true
-  );
-});
-
-it('should filter listed info types', async () => {
-  const output = await tools.runAsync(
-    `${cmd} infoTypes "supported_by=RISK_ANALYSIS"`,
-    cwd
-  );
-  assert.strictEqual(
-    new RegExp(/US_DRIVERS_LICENSE_NUMBER/).test(output),
-    false
-  );
+  it('should filter listed info types', async () => {
+    const output = await exec(`${cmd} infoTypes "supported_by=RISK_ANALYSIS"`);
+    assert.notMatch(output, /US_DRIVERS_LICENSE_NUMBER/);
+  });
 });

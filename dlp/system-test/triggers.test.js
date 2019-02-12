@@ -14,76 +14,63 @@
  */
 
 'use strict';
-const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+
+const {assert} = require('chai');
+const execa = require('execa');
 const uuid = require('uuid');
 
-const projectId = process.env.GCLOUD_PROJECT;
-const cmd = 'node triggers.js';
-const cwd = path.join(__dirname, '..');
-const triggerName = `my-trigger-${uuid.v4()}`;
-const fullTriggerName = `projects/${projectId}/jobTriggers/${triggerName}`;
-const triggerDisplayName = `My Trigger Display Name: ${uuid.v4()}`;
-const triggerDescription = `My Trigger Description: ${uuid.v4()}`;
+describe('triggers', () => {
+  const projectId = process.env.GCLOUD_PROJECT;
+  const cmd = 'node triggers.js';
+  const triggerName = `my-trigger-${uuid.v4()}`;
+  const fullTriggerName = `projects/${projectId}/jobTriggers/${triggerName}`;
+  const triggerDisplayName = `My Trigger Display Name: ${uuid.v4()}`;
+  const triggerDescription = `My Trigger Description: ${uuid.v4()}`;
+  const infoType = 'US_CENSUS_NAME';
+  const minLikelihood = 'VERY_LIKELY';
+  const maxFindings = 5;
+  const bucketName = process.env.BUCKET_NAME;
+  const exec = async cmd => (await execa.shell(cmd)).stdout;
 
-const infoType = 'US_CENSUS_NAME';
-const minLikelihood = 'VERY_LIKELY';
-const maxFindings = 5;
-const bucketName = process.env.BUCKET_NAME;
+  it('should create a trigger', async () => {
+    const output = await exec(
+      `${cmd} create ${bucketName} 1 -n ${triggerName} --autoPopulateTimespan \
+      -m ${minLikelihood} -t ${infoType} -f ${maxFindings} -d "${triggerDisplayName}" -s "${triggerDescription}"`
+    );
+    assert.match(
+      output,
+      new RegExp(`Successfully created trigger ${fullTriggerName}`)
+    );
+  });
 
-it('should create a trigger', async () => {
-  const output = await tools.runAsync(
-    `${cmd} create ${bucketName} 1 -n ${triggerName} --autoPopulateTimespan \
-    -m ${minLikelihood} -t ${infoType} -f ${maxFindings} -d "${triggerDisplayName}" -s "${triggerDescription}"`,
-    cwd
-  );
-  assert.strictEqual(
-    output.includes(`Successfully created trigger ${fullTriggerName}`),
-    true
-  );
-});
+  it('should list triggers', async () => {
+    const output = await exec(`${cmd} list`);
+    assert.match(output, new RegExp(`Trigger ${fullTriggerName}`), true);
+    assert.match(output, new RegExp(`Display Name: ${triggerDisplayName}`));
+    assert.match(output, new RegExp(`Description: ${triggerDescription}`));
+    assert.match(output, /Created: \d{1,2}\/\d{1,2}\/\d{4}/);
+    assert.match(output, /Updated: \d{1,2}\/\d{1,2}\/\d{4}/);
+    assert.match(output, /Status: HEALTHY/);
+    assert.match(output, /Error count: 0/);
+  });
 
-it('should list triggers', async () => {
-  const output = await tools.runAsync(`${cmd} list`, cwd);
-  assert.strictEqual(output.includes(`Trigger ${fullTriggerName}`), true);
-  assert.strictEqual(
-    output.includes(`Display Name: ${triggerDisplayName}`),
-    true
-  );
-  assert.strictEqual(
-    output.includes(`Description: ${triggerDescription}`),
-    true
-  );
-  assert.strictEqual(
-    new RegExp(/Created: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
-    true
-  );
-  assert.strictEqual(
-    new RegExp(/Updated: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
-    true
-  );
-  assert.strictEqual(new RegExp(/Status: HEALTHY/).test(output), true);
-  assert.strictEqual(new RegExp(/Error count: 0/).test(output), true);
-});
+  it('should delete a trigger', async () => {
+    const output = await exec(`${cmd} delete ${fullTriggerName}`);
+    assert.match(
+      output,
+      new RegExp(`Successfully deleted trigger ${fullTriggerName}.`)
+    );
+  });
 
-it('should delete a trigger', async () => {
-  const output = await tools.runAsync(`${cmd} delete ${fullTriggerName}`, cwd);
-  assert.strictEqual(
-    output.includes(`Successfully deleted trigger ${fullTriggerName}.`),
-    true
-  );
-});
+  it('should handle trigger creation errors', async () => {
+    const output = await exec(
+      `${cmd} create ${bucketName} 1 -n "@@@@@" -m ${minLikelihood} -t ${infoType} -f ${maxFindings}`
+    );
+    assert.match(output, /Error in createTrigger/);
+  });
 
-it('should handle trigger creation errors', async () => {
-  const output = await tools.runAsync(
-    `${cmd} create ${bucketName} 1 -n "@@@@@" -m ${minLikelihood} -t ${infoType} -f ${maxFindings}`,
-    cwd
-  );
-  assert.strictEqual(new RegExp(/Error in createTrigger/).test(output), true);
-});
-
-it('should handle trigger deletion errors', async () => {
-  const output = await tools.runAsync(`${cmd} delete bad-trigger-path`, cwd);
-  assert.strictEqual(new RegExp(/Error in deleteTrigger/).test(output), true);
+  it('should handle trigger deletion errors', async () => {
+    const output = await exec(`${cmd} delete bad-trigger-path`);
+    assert.match(output, /Error in deleteTrigger/);
+  });
 });

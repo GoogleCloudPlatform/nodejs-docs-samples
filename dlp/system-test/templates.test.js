@@ -15,92 +15,80 @@
 
 'use strict';
 
-const path = require('path');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {assert} = require('chai');
+const execa = require('execa');
 const uuid = require('uuid');
 
 const cmd = 'node templates.js';
-const cwd = path.join(__dirname, '..');
 const templateName = '';
+const exec = async cmd => (await execa.shell(cmd)).stdout;
 
-const INFO_TYPE = 'PERSON_NAME';
-const MIN_LIKELIHOOD = 'VERY_LIKELY';
-const MAX_FINDINGS = 5;
-const INCLUDE_QUOTE = false;
-const DISPLAY_NAME = `My Template ${uuid.v4()}`;
-const TEMPLATE_NAME = `my-template-${uuid.v4()}`;
+describe('templates', () => {
+  const INFO_TYPE = 'PERSON_NAME';
+  const MIN_LIKELIHOOD = 'VERY_LIKELY';
+  const MAX_FINDINGS = 5;
+  const INCLUDE_QUOTE = false;
+  const DISPLAY_NAME = `My Template ${uuid.v4()}`;
+  const TEMPLATE_NAME = `my-template-${uuid.v4()}`;
 
-const fullTemplateName = `projects/${
-  process.env.GCLOUD_PROJECT
-}/inspectTemplates/${TEMPLATE_NAME}`;
+  const fullTemplateName = `projects/${
+    process.env.GCLOUD_PROJECT
+  }/inspectTemplates/${TEMPLATE_NAME}`;
 
-// create_inspect_template
-it('should create template', async () => {
-  const output = await tools.runAsync(
-    `${cmd} create -m ${MIN_LIKELIHOOD} -t ${INFO_TYPE} -f ${MAX_FINDINGS} -q ${INCLUDE_QUOTE} -d "${DISPLAY_NAME}" -i "${TEMPLATE_NAME}"`,
-    cwd
-  );
-  assert.strictEqual(
-    output.includes(`Successfully created template ${fullTemplateName}`),
-    true
-  );
-});
+  // create_inspect_template
+  it('should create template', async () => {
+    const output = await exec(
+      `${cmd} create -m ${MIN_LIKELIHOOD} -t ${INFO_TYPE} -f ${MAX_FINDINGS} -q ${INCLUDE_QUOTE} -d "${DISPLAY_NAME}" -i "${TEMPLATE_NAME}"`
+    );
+    assert.match(
+      output,
+      new RegExp(`Successfully created template ${fullTemplateName}`)
+    );
+  });
 
-it('should handle template creation errors', async () => {
-  const output = await tools.runAsync(
-    `${cmd} create -i invalid_template#id`,
-    cwd
-  );
-  assert.strictEqual(
-    new RegExp(/Error in createInspectTemplate/).test(output),
-    true
-  );
-});
+  it('should handle template creation errors', async () => {
+    const output = await exec(`${cmd} create -i invalid_template#id`);
+    assert.match(output, /Error in createInspectTemplate/);
+  });
 
-// list_inspect_templates
-it('should list templates', async () => {
-  const output = await tools.runAsync(`${cmd} list`, cwd);
-  assert.strictEqual(output.includes(`Template ${templateName}`), true);
-  assert.strictEqual(
-    new RegExp(/Created: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
-    true
-  );
-  assert.strictEqual(
-    new RegExp(/Updated: \d{1,2}\/\d{1,2}\/\d{4}/).test(output),
-    true
-  );
-});
+  // list_inspect_templates
+  it('should list templates', async () => {
+    const output = await exec(`${cmd} list`);
+    assert.match(output, new RegExp(`Template ${templateName}`));
+    assert.match(output, /Created: \d{1,2}\/\d{1,2}\/\d{4}/);
+    assert.match(output, /Updated: \d{1,2}\/\d{1,2}\/\d{4}/);
+  });
 
-it('should pass creation settings to template', async () => {
-  const output = await tools.runAsync(`${cmd} list`, cwd);
-  assert.strictEqual(output.includes(`Template ${fullTemplateName}`), true);
-  assert.strictEqual(output.includes(`Display name: ${DISPLAY_NAME}`), true);
-  assert.strictEqual(output.includes(`InfoTypes: ${INFO_TYPE}`), true);
-  assert.strictEqual(
-    output.includes(`Minimum likelihood: ${MIN_LIKELIHOOD}`),
-    true
-  );
-  assert.strictEqual(output.includes(`Include quotes: ${INCLUDE_QUOTE}`), true);
-  assert.strictEqual(
-    output.includes(`Max findings per request: ${MAX_FINDINGS}`),
-    true
-  );
-});
+  it('should pass creation settings to template', async () => {
+    const output = await exec(`${cmd} list`);
+    assert.strictEqual(output.includes(`Template ${fullTemplateName}`), true);
+    assert.strictEqual(output.includes(`Display name: ${DISPLAY_NAME}`), true);
+    assert.strictEqual(output.includes(`InfoTypes: ${INFO_TYPE}`), true);
+    assert.strictEqual(
+      output.includes(`Minimum likelihood: ${MIN_LIKELIHOOD}`),
+      true
+    );
+    assert.strictEqual(
+      output.includes(`Include quotes: ${INCLUDE_QUOTE}`),
+      true
+    );
+    assert.strictEqual(
+      output.includes(`Max findings per request: ${MAX_FINDINGS}`),
+      true
+    );
+  });
 
-// delete_inspect_template
-it('should delete template', async () => {
-  const output = await tools.runAsync(`${cmd} delete ${fullTemplateName}`, cwd);
-  assert.strictEqual(
-    output.includes(`Successfully deleted template ${fullTemplateName}.`),
-    true
-  );
-});
+  // delete_inspect_template
+  it('should delete template', async () => {
+    const output = await exec(`${cmd} delete ${fullTemplateName}`);
+    assert.strictEqual(
+      output.includes(`Successfully deleted template ${fullTemplateName}.`),
+      true
+    );
+  });
 
-it('should handle template deletion errors', async () => {
-  const output = await tools.runAsync(`${cmd} delete BAD_TEMPLATE`, cwd);
-  assert.strictEqual(
-    new RegExp(/Error in deleteInspectTemplate/).test(output),
-    true
-  );
+  it('should handle template deletion errors', async () => {
+    const output = await exec(`${cmd} delete BAD_TEMPLATE`);
+    assert.match(output, /Error in deleteInspectTemplate/);
+  });
 });

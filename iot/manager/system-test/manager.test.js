@@ -64,7 +64,7 @@ test.before(async () => {
   };
   await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
 
- await iotClient.createDeviceRegistry(createRegistryRequest);
+  await iotClient.createDeviceRegistry(createRegistryRequest);
 });
 
 test.after.always(async () => {
@@ -230,7 +230,7 @@ test(`should create and get a device`, async t => {
 test(`should create and get an iam policy`, async t => {
   const localMember = `group:dpebot@google.com`;
   const localRole = `roles/viewer`;
-  
+
   let output = await tools.runAsync(
     `${cmd} setIamPolicy ${registryName} ${localMember} ${localRole}`,
     cwd
@@ -275,7 +275,7 @@ test(`should send command message to device`, async t => {
     `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
 
-  t.regex(output, new RegExp('Success: OK'));
+  t.regex(output, new RegExp('Success: 200'));
 
   await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
 });

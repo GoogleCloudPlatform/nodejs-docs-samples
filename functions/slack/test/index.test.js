@@ -41,7 +41,7 @@ function getSample() {
 
   return {
     program: proxyquire(`../`, {
-      googleapis: googleapis,
+      googleapis: {google: googleapis},
       './config.json': config,
     }),
     mocks: {
@@ -148,7 +148,9 @@ test.serial(`Makes search request, receives empty results`, async t => {
   mocks.req.method = method;
   mocks.req.body.token = SLACK_TOKEN;
   mocks.req.body.text = query;
-  sample.mocks.kgsearch.entities.search.yields(null, {itemListElement: []});
+  sample.mocks.kgsearch.entities.search.yields(null, {
+    data: {itemListElement: []},
+  });
 
   await sample.program.kgSearch(mocks.req, mocks.res);
   t.is(mocks.res.json.callCount, 1);
@@ -173,21 +175,23 @@ test.serial(`Makes search request, receives non-empty results`, async t => {
   mocks.req.body.token = SLACK_TOKEN;
   mocks.req.body.text = query;
   sample.mocks.kgsearch.entities.search.yields(null, {
-    itemListElement: [
-      {
-        result: {
-          name: `Giraffe`,
-          description: `Animal`,
-          detailedDescription: {
-            url: `http://domain.com/giraffe`,
-            articleBody: `giraffe is a tall animal`,
-          },
-          image: {
-            contentUrl: `http://domain.com/image.jpg`,
+    data: {
+      itemListElement: [
+        {
+          result: {
+            name: `Giraffe`,
+            description: `Animal`,
+            detailedDescription: {
+              url: `http://domain.com/giraffe`,
+              articleBody: `giraffe is a tall animal`,
+            },
+            image: {
+              contentUrl: `http://domain.com/image.jpg`,
+            },
           },
         },
-      },
-    ],
+      ],
+    },
   });
 
   await sample.program.kgSearch(mocks.req, mocks.res);
@@ -219,15 +223,17 @@ test.serial(
     mocks.req.body.token = SLACK_TOKEN;
     mocks.req.body.text = query;
     sample.mocks.kgsearch.entities.search.yields(null, {
-      itemListElement: [
-        {
-          result: {
-            name: `Giraffe`,
-            detailedDescription: {},
-            image: {},
+      data: {
+        itemListElement: [
+          {
+            result: {
+              name: `Giraffe`,
+              detailedDescription: {},
+              image: {},
+            },
           },
-        },
-      ],
+        ],
+      },
     });
 
     await sample.program.kgSearch(mocks.req, mocks.res);

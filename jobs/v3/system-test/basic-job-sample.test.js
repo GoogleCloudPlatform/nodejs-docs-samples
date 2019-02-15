@@ -19,7 +19,7 @@ const assert = require(`assert`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 const runSample = `require('./basic-job-sample').runSample()`;
 
-it(`Should create a job, get a job, update a job, update a job with field mask and delete a job`, async () => {
+it(`Should create a job, get a job, update a job, update a job with field mask, and delete a job`, async () => {
   const output = await tools.runAsync(`node -e ${runSample}`);
   const pattern =
     `.*Job generated:.*\n` +

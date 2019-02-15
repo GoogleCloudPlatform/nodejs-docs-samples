@@ -796,7 +796,7 @@ function sendCommand(
         console.log('Could not send command:', request);
         console.log('Error: ', err);
       } else {
-        console.log('Success:', data.statusText);
+        console.log('Success:', data.status);
       }
     }
   );

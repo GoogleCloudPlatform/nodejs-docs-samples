@@ -15,23 +15,23 @@
 
 'use strict';
 
-const path = require(`path`);
-const {PubSub} = require(`@google-cloud/pubsub`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const {PubSub} = require('@google-cloud/pubsub');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const deviceId = `test-node-device`;
+const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
-const helper = `node ../manager/manager.js`;
+const helper = 'node ../manager/manager.js';
 const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --deviceId="${deviceId}" `;
-const cwd = path.join(__dirname, `..`);
-const installDeps = `npm install`;
+const cwd = path.join(__dirname, '..');
+const installDeps = 'npm install';
 
-test.todo(tools.run(installDeps, `${cwd}/../manager`));
-test.before(tools.checkCredentials);
-test.before(async () => {
+assert.ok(tools.run(installDeps, `${cwd}/../manager`));
+before(async () => {
+  tools.checkCredentials();
   const pubsub = new PubSub();
   return pubsub.createTopic(topicName).then(results => {
     const topic = results[0];
@@ -40,7 +40,7 @@ test.before(async () => {
   });
 });
 
-test.after.always(async () => {
+after(async () => {
   const pubsub = new PubSub();
   const topic = pubsub.topic(topicName);
   return topic.delete().then(() => {
@@ -48,8 +48,8 @@ test.after.always(async () => {
   });
 });
 
-test(`should receive configuration message`, async t => {
-  const localDevice = `test-rsa-device`;
+it('should receive configuration message', async () => {
+  const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
@@ -67,7 +67,7 @@ test(`should receive configuration message`, async t => {
     cwd
   );
 
-  t.regex(output, new RegExp(/Getting config/));
+  assert.strictEqual(new RegExp(/Getting config/).test(output), true);
 
   // Check / cleanup
   await tools.runAsync(
@@ -81,8 +81,8 @@ test(`should receive configuration message`, async t => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-test(`should send event message`, async t => {
-  const localDevice = `test-rsa-device`;
+it('should send event message', async () => {
+  const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
@@ -100,7 +100,7 @@ test(`should send event message`, async t => {
     cwd
   );
 
-  t.regex(output, new RegExp(/Publishing message/));
+  assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 
   // Check / cleanup
   await tools.runAsync(
@@ -114,8 +114,8 @@ test(`should send event message`, async t => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-test(`should send event message`, async t => {
-  const localDevice = `test-rsa-device`;
+it('should send event messagei', async () => {
+  const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
@@ -131,7 +131,7 @@ test(`should send event message`, async t => {
     `${cmd} --messageType=state --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
     cwd
   );
-  t.regex(output, new RegExp(/Publishing message/));
+  assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 
   // Check / cleanup
   await tools.runAsync(

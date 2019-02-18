@@ -13,27 +13,25 @@
  * limitations under the License.
  */
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const supertest = require(`supertest`);
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const supertest = require('supertest');
 
 const BASE_URL = process.env.BASE_URL;
 
-test.before(`Must specify BASE_URL`, t => {
-  t.truthy(BASE_URL);
+before('Must specify BASE_URL', () => {
+  assert.ok(BASE_URL);
+  tools.checkCredentials();
 });
 
-test.before(tools.checkCredentials);
-
-test.cb(`screenshot: should return a screenshot`, t => {
-  supertest(BASE_URL)
-    .get(`/screenshot?url=https://example.com`)
+it('screenshot: should return a screenshot', async () => {
+  await supertest(BASE_URL)
+    .get('/screenshot?url=https://example.com')
     .send()
     .expect(200)
     .expect(response => {
-      t.is(response.type, `image/png`);
-      t.true(response.body instanceof Buffer);
-      t.true(response.body.length > 0);
-    })
-    .end(t.end);
+      assert.strictEqual(response.type, 'image/png');
+      assert.strictEqual(response.body instanceof Buffer, true);
+      assert.strictEqual(response.body.length > 0, true);
+    });
 });

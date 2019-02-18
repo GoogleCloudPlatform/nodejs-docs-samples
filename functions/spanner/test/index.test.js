@@ -15,9 +15,9 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
 
 const entities = [
   {
@@ -53,7 +53,7 @@ function getSample() {
   const SpannerMock = sinon.stub().returns(spannerMock);
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       '@google-cloud/spanner': {Spanner: SpannerMock},
     }),
     mocks: {
@@ -71,19 +71,20 @@ function getSample() {
   };
 }
 
-test(`get: Gets albums`, async t => {
+it('get: Gets albums', async () => {
   const sample = getSample();
   const mocks = sample.mocks;
 
   await sample.program.get(mocks.req, mocks.res);
-  t.true(mocks.spanner.instance.called);
-  t.true(mocks.instance.database.called);
-  t.true(mocks.database.run.calledWith(query));
-  t.true(mocks.results[0].toJSON.called);
-  t.true(
+  assert.strictEqual(mocks.spanner.instance.called, true);
+  assert.strictEqual(mocks.instance.database.called, true);
+  assert.strictEqual(mocks.database.run.calledWith(query), true);
+  assert.strictEqual(mocks.results[0].toJSON.called, true);
+  assert.strictEqual(
     mocks.res.write.calledWith(
-      `SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n`
-    )
+      'SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n'
+    ),
+    true
   );
-  t.true(mocks.res.end.called);
+  assert.strictEqual(mocks.res.end.called, true);
 });

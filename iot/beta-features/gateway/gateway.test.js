@@ -189,7 +189,7 @@ it('should list devices bound to gateway', async () => {
   );
 });
 
-it(`should list gateways for bound device`, async () => {
+it('should list gateways for bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`

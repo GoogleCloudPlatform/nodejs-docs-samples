@@ -22,8 +22,8 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const topicName = `nodejs-iot-test-topic`;
-const registryName = `nodejs-iot-test-registry`;
+const topicName = 'nodejs-iot-test-topic';
+const registryName = 'nodejs-iot-test-registry';
 const region = 'us-central1';
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
@@ -93,7 +93,7 @@ it('should create and delete an unauthorized device', async () => {
     cwd
   );
   assert.strictEqual(
-    new RegExp(`Successfully deleted device`).test(output),
+    new RegExp('Successfully deleted device').test(output),
     true
   );
 });
@@ -214,7 +214,7 @@ it('should create and list devices', async () => {
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp(`Created device`).test(output), true);
+  assert.strictEqual(new RegExp('Created device').test(output), true);
   output = await tools.runAsync(`${cmd} listDevices ${registryName}`, cwd);
   assert.strictEqual(
     new RegExp(/Current devices in registry:/).test(output),
@@ -226,7 +226,7 @@ it('should create and list devices', async () => {
     cwd
   );
   assert.strictEqual(
-    new RegExp(`Successfully deleted device`).test(output),
+    new RegExp('Successfully deleted device').test(output),
     true
   );
 });
@@ -261,9 +261,9 @@ it('should create and get an iam policy', async () => {
     `${cmd} setIamPolicy ${registryName} ${localMember} ${localRole}`,
     cwd
   );
-  assert.strictEqual(new RegExp(`ETAG`).test(output), true);
+  assert.strictEqual(new RegExp('ETAG').test(output), true);
   output = await tools.runAsync(`${cmd} getIamPolicy ${registryName}`, cwd);
-  assert.strictEqual(new RegExp(`dpebot`).test(output), true);
+  assert.strictEqual(new RegExp('dpebot').test(output), true);
   output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
 });
 

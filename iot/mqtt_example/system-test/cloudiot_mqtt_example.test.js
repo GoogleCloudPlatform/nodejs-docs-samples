@@ -34,19 +34,15 @@ assert.ok(tools.run(installDeps, `${cwd}/../manager`));
 before(async () => {
   tools.checkCredentials();
   const pubsub = new PubSub();
-  return pubsub.createTopic(topicName).then(results => {
-    const topic = results[0];
-    console.log(`Topic ${topic.name} created.`);
-    return topic;
-  });
+  const [topic] = pubsub.createTopic(topicName);
+  console.log(`Topic ${topic.name} created.`);
 });
 
 after(async () => {
   const pubsub = new PubSub();
   const topic = pubsub.topic(topicName);
-  return topic.delete().then(() => {
-    console.log(`Topic ${topic.name} deleted.`);
-  });
+  await topic.delete();
+  console.log(`Topic ${topic.name} deleted.`);
 });
 
 it('should receive configuration message', async () => {

@@ -42,8 +42,7 @@ assert.ok(tools.run(installDeps, `${cwd}/../mqtt_example`));
 before(async () => {
   tools.checkCredentials();
   // Create a single topic to be used for testing.
-  let createTopicRes = await pubSubClient.createTopic(topicName);
-  let topic = createTopicRes[0];
+  const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
 
   // Cleans up and creates a single registry to be used for tests.

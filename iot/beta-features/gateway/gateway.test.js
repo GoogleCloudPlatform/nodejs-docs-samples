@@ -35,8 +35,7 @@ const pubsub = new PubSub();
 
 before(async () => {
   tools.checkCredentials();
-  let pubsubRes = await pubsub.createTopic(topicName);
-  const topic = pubsubRes[0];
+  const [topic] = await pubsub.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
 
   await tools.runAsync(installDeps, cwdHelper);

@@ -15,19 +15,19 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const test = require(`ava`);
+const sinon = require('sinon');
+const assert = require('assert');
 
 const uuidSample = require('../');
 
-test(`should generate a uuid`, t => {
+it('should generate a uuid', () => {
   const req = {};
   const res = {
     send: sinon.stub(),
   };
   uuidSample.getUuid(req, res);
 
-  t.is(res.send.callCount, 1);
-  t.is(typeof res.send.firstCall.args[0], `string`);
-  t.is(res.send.firstCall.args[0].length, 36);
+  assert.strictEqual(res.send.callCount, 1);
+  assert.strictEqual(typeof res.send.firstCall.args[0], 'string');
+  assert.strictEqual(res.send.firstCall.args[0].length, 36);
 });

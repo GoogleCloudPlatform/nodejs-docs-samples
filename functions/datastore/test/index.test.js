@@ -192,7 +192,7 @@ it.skip(`del: Doesn't fail when entity does not exist`, async () => {
 });
 
 // TODO: ace-n Figure out why this test started failing
-it.skip(`del: Deletes an entity`, async () => {
+it.skip('del: Deletes an entity', async () => {
   await request
     .post(`/del`)
     .send({

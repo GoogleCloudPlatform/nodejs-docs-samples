@@ -115,7 +115,18 @@ var argv = require(`yargs`)
       },
     },
     opts => {
-      mqttDeviceDemo(opts);
+      mqttDeviceDemo(
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.algorithm,
+        opts.privateKeyFile,
+        opts.mqttBridgeHostname,
+        opts.mqttBridgePort,
+        opts.messageType,
+        opts.numMessages
+      );
     }
   )
   .command(
@@ -365,24 +376,44 @@ function publishAsync(
 }
 // [END iot_mqtt_publish]
 
-function mqttDeviceDemo(argv) {
+function mqttDeviceDemo(
+  deviceId,
+  registryId,
+  projectId,
+  region,
+  algorithm,
+  privateKeyFile,
+  mqttBridgeHostname,
+  mqttBridgePort,
+  messageType,
+  numMessages
+) {
   // [START iot_mqtt_run]
+
+  // const deviceId = `myDevice`;
+  // const registryId = `myRegistry`;
+  // const region = `us-central1`;
+  // const algorithm = `RS256`;
+  // const privateKeyFile = `./rsa_private.pem`;
+  // const mqttBridgeHostname = `mqtt.googleapis.com`;
+  // const mqttBridgePort = 8883;
+  // const messageType = `events`;
+  // const numMessages = 5;
+
   // The mqttClientId is a unique string that identifies this device. For Google
   // Cloud IoT Core, it must be in the format below.
-  const mqttClientId = `projects/${argv.projectId}/locations/${
-    argv.cloudRegion
-  }/registries/${argv.registryId}/devices/${argv.deviceId}`;
+  const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceId}`;
 
   // With Google Cloud IoT Core, the username field is ignored, however it must be
   // non-empty. The password field is used to transmit a JWT to authorize the
   // device. The "mqtts" protocol causes the library to connect using SSL, which
   // is required for Cloud IoT Core.
   let connectionArgs = {
-    host: argv.mqttBridgeHostname,
-    port: argv.mqttBridgePort,
+    host: mqttBridgeHostname,
+    port: mqttBridgePort,
     clientId: mqttClientId,
     username: 'unused',
-    password: createJwt(argv.projectId, argv.privateKeyFile, argv.algorithm),
+    password: createJwt(projectId, privateKeyFile, algorithm),
     protocol: 'mqtts',
     secureProtocol: 'TLSv1_2_method',
   };
@@ -393,33 +424,26 @@ function mqttDeviceDemo(argv) {
 
   // Subscribe to the /devices/{device-id}/config topic to receive config updates.
   // Config updates are recommended to use QoS 1 (at least once delivery)
-  client.subscribe(`/devices/${argv.deviceId}/config`, {qos: 1});
+  client.subscribe(`/devices/${deviceId}/config`, {qos: 1});
 
   // Subscribe to the /devices/{device-id}/commands/# topic to receive all
   // commands or to the /devices/{device-id}/commands/<subfolder> to just receive
   // messages published to a specific commands folder; we recommend you use
   // QoS 0 (at most once delivery)
-  client.subscribe(`/devices/${argv.deviceId}/commands/#`, {qos: 0});
+  client.subscribe(`/devices/${deviceId}/commands/#`, {qos: 0});
 
   // The MQTT topic that this device will publish data to. The MQTT topic name is
   // required to be in the format below. The topic name must end in 'state' to
   // publish state and 'events' to publish telemetry. Note that this is not the
   // same as the device registry's Cloud Pub/Sub topic.
-  const mqttTopic = `/devices/${argv.deviceId}/${argv.messageType}`;
+  const mqttTopic = `/devices/${deviceId}/${messageType}`;
 
   client.on('connect', success => {
     console.log('connect');
     if (!success) {
       console.log('Client not connected...');
     } else if (!publishChainInProgress) {
-      publishAsync(
-        mqttTopic,
-        client,
-        iatTime,
-        1,
-        argv.numMessages,
-        connectionArgs
-      );
+      publishAsync(mqttTopic, client, iatTime, 1, numMessages, connectionArgs);
     }
   });
 
@@ -434,9 +458,9 @@ function mqttDeviceDemo(argv) {
 
   client.on('message', (topic, message) => {
     let messageStr = 'Message received: ';
-    if (topic === `/devices/${argv.deviceId}/config`) {
+    if (topic === `/devices/${deviceId}/config`) {
       messageStr = 'Config message received: ';
-    } else if (topic === `/devices/${argv.deviceId}/commands`) {
+    } else if (topic === `/devices/${deviceId}/commands`) {
       messageStr = 'Command message received: ';
     }
 

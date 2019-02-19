@@ -17,10 +17,10 @@
 
 // [START spanner_functions_quickstart]
 // Imports the Google Cloud client library
-const Spanner = require('@google-cloud/spanner');
+const {Spanner} = require('@google-cloud/spanner');
 
 // Instantiates a client
-const spanner = Spanner();
+const spanner = new Spanner();
 
 // Your Cloud Spanner instance ID
 const instanceId = 'test-instance';
@@ -51,9 +51,9 @@ exports.get = (req, res) => {
       const rows = results[0].map(row => row.toJSON());
       rows.forEach(row => {
         res.write(
-          `SingerId: ${row.SingerId.value}, AlbumId: ${
-            row.AlbumId.value
-          }, AlbumTitle: ${row.AlbumTitle}\n`
+          `SingerId: ${row.SingerId}, AlbumId: ${row.AlbumId}, AlbumTitle: ${
+            row.AlbumTitle
+          }\n`
         );
       });
       res.status(200).end();

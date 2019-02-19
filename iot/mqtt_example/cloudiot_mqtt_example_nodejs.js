@@ -137,8 +137,8 @@ var argv = require(`yargs`)
     },
     opts => {
       sendDataFromBoundDevice(
-        opts.gatewayId,
         opts.deviceId,
+        opts.gatewayId,
         opts.registryId,
         opts.projectId,
         opts.cloudRegion,
@@ -170,8 +170,8 @@ var argv = require(`yargs`)
     },
     opts => {
       listenForConfigMessages(
-        opts.gatewayId,
         opts.deviceId,
+        opts.gatewayId,
         opts.registryId,
         opts.projectId,
         opts.cloudRegion,
@@ -202,6 +202,7 @@ var argv = require(`yargs`)
     },
     opts => {
       listenForErrorMessages(
+        opts.deviceId,
         opts.gatewayId,
         opts.registryId,
         opts.projectId,
@@ -210,8 +211,7 @@ var argv = require(`yargs`)
         opts.privateKeyFile,
         opts.mqttBridgeHostname,
         opts.mqttBridgePort,
-        opts.clientDuration,
-        opts.deviceId
+        opts.clientDuration
       );
     }
   )
@@ -497,7 +497,7 @@ function detachDevice(deviceId, client, jwt) {
 }
 
 // Publish numMessages messages asynchronously through a gateway client connection
-function publishAsyncGateways(
+function publishAsyncGateway(
   client,
   iatTime,
   tokenExpMins,
@@ -567,7 +567,7 @@ function publishAsyncGateways(
         );
         client = mqtt.connect(connectionArgs);
       }
-      publishAsyncGateways(
+      publishAsyncGateway(
         client,
         iatTime,
         tokenExpMins,
@@ -583,8 +583,8 @@ function publishAsyncGateways(
 
 // Sends data from a gateway on behalf of a device that is bound to that gateway.
 function sendDataFromBoundDevice(
-  gatewayId,
   deviceId,
+  gatewayId,
   registryId,
   projectId,
   region,
@@ -596,13 +596,16 @@ function sendDataFromBoundDevice(
   tokenExpMins
 ) {
   // [START iot_send_data_from_bound_device]
-  // const parentName = `projects/${projectId}/locations/${region}`;
-  // const registryName = `${parentName}/registries/${registryId}`;
-  // const binaryData = Buffer.from(data).toString('base64');
-  // const request = {
-  //   name: `${registryName}/devices/${deviceId}`,
-  //   binaryData: binaryData
-  // };
+  // const deviceId = `myDevice`;
+  // const gatewayId = `mygateway`;
+  // const registryId = `myRegistry`;
+  // const region = `us-central1`;
+  // const algorithm = `RS256`;
+  // const privateKeyFile = `./rsa_private.pem`;
+  // const mqttBridgeHostname = `mqtt.googleapis.com`;
+  // const mqttBridgePort = 8883;
+  // const numMessages = 5;
+  // const tokenExpMins = 60;
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(`MQTT client id: ${mqttClientId}`);
@@ -629,7 +632,7 @@ function sendDataFromBoundDevice(
       attachDevice(deviceId, client);
       setTimeout(() => {
         console.log('Client connected: Gateway is ready to relay');
-        publishAsyncGateways(
+        publishAsyncGateway(
           client,
           iatTime,
           tokenExpMins,
@@ -671,8 +674,8 @@ function sendDataFromBoundDevice(
 
 // Listen for configuration messages on a gateway and bound device.
 function listenForConfigMessages(
-  gatewayId,
   deviceId,
+  gatewayId,
   registryId,
   projectId,
   region,
@@ -683,8 +686,15 @@ function listenForConfigMessages(
   clientDuration
 ) {
   // [START iot_listen_for_config_messages]
-  // const parentName = `projects/${projectId}/locations/${region}`;
-  // const registryName = `${parentName}/registries/${registryId}`;
+  // const deviceId = `myDevice`;
+  // const gatewayId = `mygateway`;
+  // const registryId = `myRegistry`;
+  // const region = `us-central1`;
+  // const algorithm = `RS256`;
+  // const privateKeyFile = `./rsa_private.pem`;
+  // const mqttBridgeHostname = `mqtt.googleapis.com`;
+  // const mqttBridgePort = 8883;
+  // const clientDuration = 60000;
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(mqttClientId);
@@ -750,6 +760,7 @@ function listenForConfigMessages(
 
 // Listen for error messages on a gateway.
 function listenForErrorMessages(
+  deviceId,
   gatewayId,
   registryId,
   projectId,
@@ -758,12 +769,19 @@ function listenForErrorMessages(
   privateKeyFile,
   mqttBridgeHostname,
   mqttBridgePort,
-  clientDuration,
-  deviceId
+  clientDuration
 ) {
   // [START iot_listen_for_error_messages]
-  // const parentName = `projects/${projectId}/locations/${region}`;
-  // const registryName = `${parentName}/registries/${registryId}`;
+  // const deviceId = `myDevice`;
+  // const gatewayId = `mygateway`;
+  // const registryId = `myRegistry`;
+  // const projectId = `my-project-123`;
+  // const region = `us-central1`;
+  // const algorithm = `RS256`;
+  // const privateKeyFile = `./rsa_private.pem`;
+  // const mqttBridgeHostname = `mqtt.googleapis.com`;
+  // const mqttBridgePort = 8883;
+  // const clientDuration = 60000;
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(mqttClientId);

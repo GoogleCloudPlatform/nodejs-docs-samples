@@ -197,7 +197,7 @@ it('should receive command message', async () => {
     cwd
   );
 
-  let output = tools.runAsync(
+  let output = await tools.runAsync(
     `${cmd} mqttDeviceDemo --registryId=${localRegName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
     cwd
   );

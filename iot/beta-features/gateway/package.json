@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "repo-tools test install --cmd=npm -- run unit-test",
-    "unit-test": "mocha *.test.js --timeout=60000"
+    "unit-test": "mocha *.test.js --timeout=600000"
   },
   "dependencies": {
     "googleapis": "^37.0.0",

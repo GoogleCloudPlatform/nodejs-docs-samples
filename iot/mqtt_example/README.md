@@ -25,7 +25,7 @@ The following command summarizes the sample usage:
         mqttDeviceDemo              Example Google Cloud IoT Core MQTT device connection demo.
         sendDataFromBoundDevice     Demonstrates sending data from a gateway on behalf of a bound device.
         listenForConfigMessages     Demonstrates listening for config messages on a gateway client of a bound device.
-        listenForErrorMessages      Demonstrates listening for error messages on a gateway or 
+        listenForErrorMessages      Demonstrates listening for error messages on a gateway.
 
     Options:
 

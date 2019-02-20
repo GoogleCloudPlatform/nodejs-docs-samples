@@ -114,7 +114,7 @@ test(`should send event message`, async t => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-test(`should send event message`, async t => {
+test(`should send state message`, async t => {
   const localDevice = `test-rsa-device`;
   const localRegName = `${registryName}-rsa256`;
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);

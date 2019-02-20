@@ -635,6 +635,86 @@ async function syncRecognizeWithEnhancedModel(
   // [END speech_transcribe_enhanced_model]
 }
 
+async function syncRecognizeWithMultiChannel(fileName) {
+  // [START speech_transcribe_multichannel]
+  const fs = require('fs');
+
+  // Imports the Google Cloud client library
+  const speech = require('@google-cloud/speech').v1;
+
+  // Creates a client
+  const client = new speech.SpeechClient();
+
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // const fileName = 'Local path to audio file, e.g. /path/to/audio.raw';
+
+  const config = {
+    encoding: `LINEAR16`,
+    languageCode: `en-US`,
+    audioChannelCount: 2,
+    enableSeparateRecognitionPerChannel: true,
+  };
+
+  const audio = {
+    content: fs.readFileSync(fileName).toString('base64'),
+  };
+
+  const request = {
+    config: config,
+    audio: audio,
+  };
+
+  const [response] = await client.recognize(request);
+  const transcription = response.results
+    .map(
+      result =>
+        ` Channel Tag: ${result.channelTag} ${
+          result.alternatives[0].transcript
+        }`
+    )
+    .join('\n');
+  console.log(`Transcription: \n${transcription}`);
+  // [END speech_transcribe_multichannel]
+}
+
+async function syncRecognizeWithMultiChannelGCS(gcsUri) {
+  // [START speech_transcribe_multichannel_gcs]
+  const speech = require('@google-cloud/speech').v1;
+
+  // Creates a client
+  const client = new speech.SpeechClient();
+
+  const config = {
+    encoding: 'LINEAR16',
+    languageCode: `en-US`,
+    audioChannelCount: 2,
+    enableSeparateRecognitionPerChannel: true,
+  };
+
+  const audio = {
+    uri: gcsUri,
+  };
+
+  const request = {
+    config: config,
+    audio: audio,
+  };
+
+  const [response] = await client.recognize(request);
+  const transcription = response.results
+    .map(
+      result =>
+        ` Channel Tag: ${result.channelTag} ${
+          result.alternatives[0].transcript
+        }`
+    )
+    .join('\n');
+  console.log(`Transcription: \n${transcription}`);
+  // [END speech_transcribe_multichannel_gcs]
+}
+
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
@@ -782,6 +862,30 @@ require(`yargs`) // eslint-disable-line
         opts.languageCode
       )
   )
+  .command(
+    `sync-multi-channel <filename>`,
+    `Differentiates input by audio channel in local audio file.`,
+    {},
+    opts =>
+      syncRecognizeWithMultiChannel(
+        opts.filename,
+        opts.encoding,
+        opts.sampleRateHertz,
+        opts.languageCode
+      )
+  )
+  .command(
+    `sync-multi-channel-gcs <gcsUri>`,
+    `Differentiates input by audio channel in an audio file located in a Google Cloud Storage bucket.`,
+    {},
+    opts =>
+      syncRecognizeWithMultiChannelGCS(
+        opts.gcsUri,
+        opts.encoding,
+        opts.sampleRateHertz,
+        opts.languageCode
+      )
+  )
   .options({
     encoding: {
       alias: 'e',
@@ -817,6 +921,7 @@ require(`yargs`) // eslint-disable-line
   )
   .example(`node $0 sync-auto-punctuation ./resources/commercial_mono.wav`)
   .example(`node $0 sync-enhanced-model ./resources/commercial_mono.wav`)
+  .example(`node $0 sync-multi-channel ./resources/commercial_stereo.wav`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/speech/docs`)

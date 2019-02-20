@@ -29,9 +29,11 @@ const resourcePath = path.join(__dirname, '..', 'resources');
 const filename = `audio.raw`;
 const filename1 = `Google_Gnome.wav`;
 const filename2 = `commercial_mono.wav`;
+const filename3 = `commercial_stereo.wav`;
 const filepath = path.join(resourcePath, filename);
 const filepath1 = path.join(resourcePath, filename1);
 const filepath2 = path.join(resourcePath, filename2);
+const filepath3 = path.join(resourcePath, filename3);
 const text = 'how old is the Brooklyn Bridge';
 const text1 = 'the weather outside is sunny';
 const text2 = `Terrific. It's on the way.`;
@@ -43,6 +45,7 @@ describe('Recognize', () => {
     const [bucket] = await storage.createBucket(bucketName);
     await bucket.upload(filepath);
     await bucket.upload(filepath1);
+    await bucket.upload(filepath3);
   });
 
   after(async () => {
@@ -118,5 +121,17 @@ describe('Recognize', () => {
   it('should run sync recognize with enhanced model', async () => {
     const output = await exec(`${cmd} sync-enhanced-model ${filepath2}`);
     assert.match(output, new RegExp(text3));
+  });
+
+  it('should run multi channel transcription on a local file', async () => {
+    const output = await exec(`${cmd} sync-multi-channel ${filepath3}`);
+    assert.match(output, /Channel Tag: 2/);
+  });
+
+  it('should run multi channel transcription on GCS file', async () => {
+    const output = await exec(
+      `${cmd} sync-multi-channel-gcs gs://${bucketName}/${filename3}`
+    );
+    assert.match(output, /Channel Tag: 2/);
   });
 });

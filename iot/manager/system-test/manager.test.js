@@ -267,7 +267,7 @@ test(`should send command message to device`, async t => {
   );
 
   tools.runAsync(
-    `node cloudiot_mqtt_example_nodejs.js --deviceId=${deviceId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=443`,
+    `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=443`,
     path.join(__dirname, '../../mqtt_example')
   );
 
@@ -283,7 +283,7 @@ test(`should send command message to device`, async t => {
 test(`should create a new gateway`, async t => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   let gatewayOut = await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RS256_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
 
   // test no error on create gateway.
@@ -297,7 +297,7 @@ test(`should create a new gateway`, async t => {
 test(`should list gateways`, async t => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RS256_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
 
   // look for output in list gateway
@@ -312,7 +312,7 @@ test(`should list gateways`, async t => {
 test(`should bind existing device to gateway`, async t => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RS256_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
 
   // create device
@@ -350,7 +350,7 @@ test(`should bind existing device to gateway`, async t => {
 test(`should list devices bound to gateway`, async t => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RS256_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
 
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
@@ -389,7 +389,7 @@ test(`should list devices bound to gateway`, async t => {
 test(`should list gateways for bound device`, async t => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RS256_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
 
   // create device

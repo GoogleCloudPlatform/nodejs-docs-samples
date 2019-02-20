@@ -184,7 +184,7 @@ test(`should send state message`, async t => {
 });
 
 test(`should receive command message`, async t => {
-  const deviceId = `nodejs-test-device-iot-${uuid.v4 ()}`;
+  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   const localRegName = `${registryName}-rsa256`;
   const message = 'rotate 180 degrees';
 

@@ -1,0 +1,27 @@
+{
+  "name": "opencensus-samples",
+  "description": "An example of exporting a custom metric from OpenCensus Node to Stackdriver.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=6.0"
+  },
+  "scripts": {
+    "start": "node metrics-quickstart.js"
+  },
+  "dependencies": {
+    "@opencensus/core": "^0.0.9",
+    "@opencensus/exporter-stackdriver": "^0.0.9"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  }
+}
+

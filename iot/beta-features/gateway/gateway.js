@@ -758,7 +758,6 @@ function sendDataFromBoundDevice(
     if (!success) {
       console.log('Client not connected...');
     } else if (!publishChainInProgress) {
-      // TODO: wait for commands
       console.log('Client connected: Attaching device');
       attachDevice(deviceId, client);
       setTimeout(() => {

@@ -18,58 +18,57 @@
 
 'use strict';
 
-const test = require(`ava`);
-const path = require(`path`);
-const utils = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const path = require('path');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
-const message = `This is a test message sent at: `;
+const message = 'This is a test message sent at: ';
 const payload = message + Date.now();
 
-const cwd = path.join(__dirname, `../`);
+const cwd = path.join(__dirname, '../');
 const requestObj = utils.getRequest({cwd: cwd});
 
-test.serial.cb(`should send a message to Pub/Sub`, t => {
-  requestObj
-    .post(`/`)
+it('should send a message to Pub/Sub', async () => {
+  await requestObj
+    .post('/')
     .type('form')
     .send({payload: payload})
     .expect(200)
     .expect(response => {
-      t.regex(response.text, /Message \d* sent/);
-    })
-    .end(t.end);
+      assert.strictEqual(
+        new RegExp(/Message \d* sent/).test(response.text),
+        true
+      );
+    });
 });
 
-test.serial.cb(`should receive incoming Pub/Sub messages`, t => {
-  requestObj
-    .post(`/pubsub/push`)
+it('should receive incoming Pub/Sub messages', async () => {
+  await requestObj
+    .post('/pubsub/push')
     .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
     .send({
       message: {
         data: payload,
       },
     })
-    .expect(200)
-    .end(t.end);
+    .expect(200);
 });
 
-test.serial.cb(
-  `should check for verification token on incoming Pub/Sub messages`,
-  t => {
-    requestObj
-      .post(`/pubsub/push`)
-      .field(`payload`, payload)
-      .expect(400)
-      .end(t.end);
-  }
-);
+it('should check for verification token on incoming Pub/Sub messages', async () => {
+  await requestObj
+    .post('/pubsub/push')
+    .field('payload', payload)
+    .expect(400);
+});
 
-test.serial.cb(`should list sent Pub/Sub messages`, t => {
-  requestObj
-    .get(`/`)
+it('should list sent Pub/Sub messages', async () => {
+  await requestObj
+    .get('/')
     .expect(200)
     .expect(response => {
-      t.regex(response.text, /Messages received by this instance/);
-    })
-    .end(t.end);
+      assert.strictEqual(
+        new RegExp(/Messages received by this instance/).test(response.text),
+        true
+      );
+    });
 });

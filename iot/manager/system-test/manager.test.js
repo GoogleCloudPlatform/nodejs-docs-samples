@@ -22,7 +22,7 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const topicName = 'nodejs-iot-test-mqtt-topic';
+const topicName = 'nodejs-iot-test-topic';
 const registryName = 'nodejs-iot-test-registry';
 const region = 'us-central1';
 const projectId =

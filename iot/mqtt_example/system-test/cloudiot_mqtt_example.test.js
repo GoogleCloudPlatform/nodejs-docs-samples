@@ -183,7 +183,7 @@ it('should send state message', async () => {
 });
 
 it('should receive command message', async () => {
-  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
+  const deviceId = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
   const message = 'rotate 180 degrees';
 
@@ -208,7 +208,7 @@ it('should receive command message', async () => {
   );
 
   assert.strictEqual(
-    new RegExp(`Command message received: ${message}`).test(await output),
+    new RegExp(`Command message received: ${message}`).test(output),
     true
   );
 

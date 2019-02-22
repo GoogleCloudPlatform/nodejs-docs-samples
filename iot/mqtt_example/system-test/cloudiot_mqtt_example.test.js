@@ -183,7 +183,7 @@ it('should send state message', async () => {
 });
 
 it('should receive command message', async () => {
-  const deviceId = 'test-rsa-device';
+  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   const localRegName = `${registryName}-rsa256`;
   const message = 'rotate 180 degrees';
 
@@ -197,7 +197,7 @@ it('should receive command message', async () => {
     cwd
   );
 
-  let output = await tools.runAsync(
+  let output = tools.runAsync(
     `${cmd} mqttDeviceDemo --registryId=${localRegName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
     cwd
   );
@@ -208,7 +208,7 @@ it('should receive command message', async () => {
   );
 
   assert.strictEqual(
-    new RegExp(`Command message received: ${message}`).test(output),
+    new RegExp(`Command message received: ${message}`).test(await output),
     true
   );
 

@@ -38,7 +38,7 @@ const ecPublicKey = process.env.NODEJS_IOT_EC_PUBLIC_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
-it.skip(tools.run(installDeps, `${cwd}/../mqtt_example`));
+assert.ok(tools.run(installDeps, `${cwd}/../mqtt_example`));
 before(async () => {
   tools.checkCredentials();
   // Create a single topic to be used for testing.
@@ -306,7 +306,8 @@ it('should send command message to device', async () => {
   const output = await tools.runAsync(
     `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
-  await new Promise(r => setTimeout(r, 100));
+  console.log('========output=========');
+  console.log(output);
   assert.strictEqual(new RegExp('Success: 200').test(output), true);
 
   await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
@@ -317,7 +318,8 @@ it('should create a new gateway', async () => {
   let gatewayOut = await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
-
+  console.log('========gatewayOut=========');
+  console.log(gatewayOut);
   // test no error on create gateway.
   assert.strictEqual(new RegExp('Created device').test(gatewayOut), true);
 
@@ -334,6 +336,8 @@ it('should list gateways', async () => {
 
   // look for output in list gateway
   let gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
+  console.log('========gateways=========');
+  console.log(gateways);
   assert.strictEqual(new RegExp(`${gatewayId}`).test(gateways), true);
 
   await iotClient.deleteDevice({

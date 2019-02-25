@@ -267,7 +267,7 @@ it('should create and get an iam policy', async () => {
   output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
 });
 
-it('should create and delete a registry', async () => {
+it.skip('should create and delete a registry', async () => {
   let createRegistryId = registryName + 'create';
 
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
@@ -306,8 +306,6 @@ it('should send command message to device', async () => {
   const output = await tools.runAsync(
     `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
-  console.log('========output=========');
-  console.log(output);
   assert.strictEqual(new RegExp('Success: 200').test(output), true);
 
   await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
@@ -318,8 +316,7 @@ it('should create a new gateway', async () => {
   let gatewayOut = await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
-  console.log('========gatewayOut=========');
-  console.log(gatewayOut);
+
   // test no error on create gateway.
   assert.strictEqual(new RegExp('Created device').test(gatewayOut), true);
 
@@ -336,8 +333,6 @@ it('should list gateways', async () => {
 
   // look for output in list gateway
   let gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
-  console.log('========gateways=========');
-  console.log(gateways);
   assert.strictEqual(new RegExp(`${gatewayId}`).test(gateways), true);
 
   await iotClient.deleteDevice({

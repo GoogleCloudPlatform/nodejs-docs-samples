@@ -46,8 +46,8 @@ before(async () => {
   console.log(`Topic ${topic.name} created.`);
 
   // Cleans up and creates a single registry to be used for tests.
-  await tools.runAsync(`${cmd} unbindAllDevices ${registryName}`, cwd);
-  await tools.runAsync(`${cmd} clearRegistry ${registryName}`, cwd);
+  tools.run(`${cmd} unbindAllDevices ${registryName}`);
+  tools.run(`${cmd} clearRegistry ${registryName}`);
 
   console.log('Cleaned up existing registry.');
   let createRegistryRequest = {

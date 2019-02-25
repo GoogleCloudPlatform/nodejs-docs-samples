@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "repo-tools test install --cmd=npm -- run system-test",
-    "system-test": "mocha system-test/*.test.js --timeout=60000"
+    "system-test": "mocha system-test/*.test.js --timeout=600000"
   },
   "dependencies": {
     "@google-cloud/iot": "^0.2.0",

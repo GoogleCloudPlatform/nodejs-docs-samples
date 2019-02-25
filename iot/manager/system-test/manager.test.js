@@ -267,8 +267,8 @@ it('should create and get an iam policy', async () => {
   output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
 });
 
-it.skip('should create and delete a registry', async () => {
-  let createRegistryId = registryName + 'create';
+it('should create and delete a registry', async () => {
+  let createRegistryId = 'nodejs-iot-test-registry-create';
 
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(

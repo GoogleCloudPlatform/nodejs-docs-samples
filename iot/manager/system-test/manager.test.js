@@ -46,8 +46,8 @@ before(async () => {
   console.log(`Topic ${topic.name} created.`);
 
   // Cleans up and creates a single registry to be used for tests.
-  tools.run(`${cmd} unbindAllDevices ${registryName}`);
-  tools.run(`${cmd} clearRegistry ${registryName}`);
+  await tools.runAsync(`${cmd} unbindAllDevices ${registryName}`, cwd);
+  await tools.runAsync(`${cmd} clearRegistry ${registryName}`, cwd);
 
   console.log('Cleaned up existing registry.');
   let createRegistryRequest = {
@@ -268,7 +268,7 @@ it('should create and get an iam policy', async () => {
 });
 
 it('should create and delete a registry', async () => {
-  let createRegistryId = 'nodejs-iot-test-registry-create';
+  let createRegistryId = registryName + 'create';
 
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(

@@ -19,6 +19,7 @@ const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 test('Should throw an error without projectId', async t => {
+  process.env.GOOGLE_PROJECT_ID = '';
   const error = new Error(`Unable to proceed without a Project ID`);
   await t.throws(tools.runAsync(`node metrics-quickstart.js`), Error, error);
 });

@@ -38,8 +38,8 @@ const ecPublicKey = process.env.NODEJS_IOT_EC_PUBLIC_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
-assert.ok(tools.run(installDeps, `${cwd}/../mqtt_example`));
 before(async () => {
+  tools.run(installDeps, `${cwd}/../mqtt_example`);
   tools.checkCredentials();
   // Create a single topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
@@ -264,7 +264,6 @@ it('should create and get an iam policy', async () => {
   assert.strictEqual(new RegExp('ETAG').test(output), true);
   output = await tools.runAsync(`${cmd} getIamPolicy ${registryName}`, cwd);
   assert.strictEqual(new RegExp('dpebot').test(output), true);
-  output = await tools.runAsync(`${cmd} deleteRegistry ${registryName}`, cwd);
 });
 
 it('should create and delete a registry', async () => {
@@ -298,7 +297,7 @@ it('should send command message to device', async () => {
     cwd
   );
 
-  await tools.runAsync(
+  tools.runAsync(
     `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=443`,
     path.join(__dirname, '../../mqtt_example')
   );

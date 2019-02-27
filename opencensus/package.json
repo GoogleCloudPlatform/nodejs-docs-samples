@@ -1,5 +1,6 @@
 {
-  "name": "nodejs-docs-samples-env-vars",
+  "name": "opencensus-samples",
+  "description": "An example of exporting a custom metric from OpenCensus Node to Stackdriver.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -9,16 +10,19 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0"
   },
   "scripts": {
-    "test": "ava -T 20s --verbose test/*.test.js"
+    "start": "node metrics-quickstart.js",
+    "test": "repo-tools test run --cmd ava -- -T 65s --verbose system-test/*.test.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@opencensus/core": "^0.0.9",
+    "@opencensus/exporter-stackdriver": "^0.0.9"
+  },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "ava": "0.25.0",
-    "sinon": "7.2.4"
+    "ava": "0.25.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
 
 function getSample() {
   const instanceListMock = [
@@ -79,7 +79,7 @@ function getSample() {
   };
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       'google-auth-library': googleAuthMock,
       googleapis: googleapisMock,
       slack: slackMock,
@@ -97,7 +97,7 @@ function getSample() {
   };
 }
 
-test(`should notify Slack when budget is exceeded`, async t => {
+it('should notify Slack when budget is exceeded', async () => {
   const {program, mocks} = getSample();
 
   const jsonData = {cost: 500, budget: 400};
@@ -108,10 +108,10 @@ test(`should notify Slack when budget is exceeded`, async t => {
 
   await program.notifySlack(pubsubData, null);
 
-  t.true(mocks.slack.chat.postMessage.calledOnce);
+  assert.strictEqual(mocks.slack.chat.postMessage.calledOnce, true);
 });
 
-test(`should disable billing when budget is exceeded`, async t => {
+it('should disable billing when budget is exceeded', async () => {
   const {program, mocks} = getSample();
 
   const jsonData = {cost: 500, budget: 400};
@@ -122,12 +122,18 @@ test(`should disable billing when budget is exceeded`, async t => {
 
   await program.stopBilling(pubsubData, null);
 
-  t.true(mocks.credential.createScoped.calledOnce);
-  t.true(mocks.cloudbilling.projects.getBillingInfo.calledOnce);
-  t.true(mocks.cloudbilling.projects.updateBillingInfo.calledOnce);
+  assert.strictEqual(mocks.credential.createScoped.calledOnce, true);
+  assert.strictEqual(
+    mocks.cloudbilling.projects.getBillingInfo.calledOnce,
+    true
+  );
+  assert.strictEqual(
+    mocks.cloudbilling.projects.updateBillingInfo.calledOnce,
+    true
+  );
 });
 
-test(`should shut down GCE instances when budget is exceeded`, async t => {
+it('should shut down GCE instances when budget is exceeded', async () => {
   const {program, mocks} = getSample();
 
   const jsonData = {cost: 500, budget: 400};
@@ -138,7 +144,10 @@ test(`should shut down GCE instances when budget is exceeded`, async t => {
 
   await program.limitUse(pubsubData, null);
 
-  t.true(mocks.credential.createScoped.calledOnce);
-  t.true(mocks.compute.instances.list.calledOnce);
-  t.is(mocks.compute.instances.stop.callCount, mocks.instanceList.length);
+  assert.strictEqual(mocks.credential.createScoped.calledOnce, true);
+  assert.strictEqual(mocks.compute.instances.list.calledOnce, true);
+  assert.strictEqual(
+    mocks.compute.instances.stop.callCount,
+    mocks.instanceList.length
+  );
 });

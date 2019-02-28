@@ -16,11 +16,11 @@
 'use strict';
 
 const iot = require('@google-cloud/iot');
-const path = require(`path`);
-const {PubSub} = require(`@google-cloud/pubsub`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const {PubSub} = require('@google-cloud/pubsub');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
@@ -30,21 +30,20 @@ const region = `us-central1`;
 const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
-const helper = `node ../manager/manager.js`;
-const cmd = `node cloudiot_mqtt_example_nodejs.js `;
+const helper = 'node ../manager/manager.js';
+const cmd = 'node cloudiot_mqtt_example_nodejs.js ';
 const cmdSuffix = ` --numMessages=1 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256`;
-const cwd = path.join(__dirname, `..`);
-const installDeps = `npm install`;
+const cwd = path.join(__dirname, '..');
+const installDeps = 'npm install';
 
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
-test.todo(tools.run(installDeps, `${cwd}/../manager`));
-test.before(tools.checkCredentials);
-test.before(async () => {
+assert.ok(tools.run(installDeps, `${cwd}/../manager`));
+before(async () => {
+  tools.checkCredentials();
   // Create a single topic to be used for testing.
-  let createTopicRes = await pubSubClient.createTopic(topicName);
-  let topic = createTopicRes[0];
+  const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
 
   // Cleans up and creates a single registry to be used for tests.
@@ -69,7 +68,7 @@ test.before(async () => {
   console.log(`Created registry: ${registryName}`);
 });
 
-test.after.always(async () => {
+after(async () => {
   await pubSubClient.topic(topicName).delete();
   console.log(`Topic ${topicName} deleted.`);
 
@@ -83,8 +82,8 @@ test.after.always(async () => {
   console.log('Deleted test registry.');
 });
 
-test(`should receive configuration message`, async t => {
-  const localDevice = `test-rsa-device`;
+it('should receive configuration message', async () => {
+  const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
   let output = await tools.runAsync(
@@ -105,8 +104,8 @@ test(`should receive configuration message`, async t => {
     cwd
   );
 
-  t.regex(output, new RegExp('connect'));
-  t.regex(output, new RegExp('Config message received:'));
+  assert.strictEqual(new RegExp('connect').test(output), true);
+  assert.strictEqual(new RegExp('Config message received:').test(output), true);
 
   // Check / cleanup
   await tools.runAsync(
@@ -120,8 +119,8 @@ test(`should receive configuration message`, async t => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-test(`should send event message`, async t => {
-  const localDevice = `test-rsa-device`;
+it('should send event message', async () => {
+  const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
@@ -138,7 +137,7 @@ test(`should send event message`, async t => {
     `${cmd} mqttDeviceDemo --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
     cwd
   );
-  t.regex(output, new RegExp(`Publishing message:`));
+  assert.strictEqual(new RegExp('Publishing message:').test(output), true);
 
   // Check / cleanup
   await tools.runAsync(
@@ -152,8 +151,8 @@ test(`should send event message`, async t => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-test(`should send state message`, async t => {
-  const localDevice = `test-rsa-device`;
+it('should send state message', async () => {
+  const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
   await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
   await tools.runAsync(
@@ -169,7 +168,7 @@ test(`should send state message`, async t => {
     `${cmd} mqttDeviceDemo --messageType=state --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
     cwd
   );
-  t.regex(output, new RegExp(`Publishing message:`));
+  assert.strictEqual(new RegExp('Publishing message:').test(output), true);
 
   // Check / cleanup
   await tools.runAsync(
@@ -183,7 +182,7 @@ test(`should send state message`, async t => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-test(`should receive command message`, async t => {
+it('should receive command message', async () => {
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   const localRegName = `${registryName}-rsa256`;
   const message = 'rotate 180 degrees';
@@ -208,7 +207,10 @@ test(`should receive command message`, async t => {
     cwd
   );
 
-  t.regex(await output, new RegExp(`Command message received: ${message}`));
+  assert.strictEqual(
+    new RegExp(`Command message received: ${message}`).test(await output),
+    true
+  );
 
   // Cleanup
   await tools.runAsync(
@@ -218,7 +220,7 @@ test(`should receive command message`, async t => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-test(`should listen for bound device config message`, async t => {
+it('should listen for bound device config message', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
@@ -237,7 +239,7 @@ test(`should listen for bound device config message`, async t => {
     `${cmd} listenForConfigMessages --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --clientDuration=10000 --algorithm=RS256`
   );
 
-  t.regex(out, new RegExp('message received'));
+  assert.strictEqual(new RegExp('message received').test(out), true);
 
   // cleanup
   await tools.runAsync(
@@ -254,7 +256,7 @@ test(`should listen for bound device config message`, async t => {
   );
 });
 
-test(`should listen for error topic messages`, async t => {
+it('should listen for error topic messages', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
@@ -273,9 +275,9 @@ test(`should listen for error topic messages`, async t => {
     `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --privateKeyFile=${rsaPrivateKey} --clientDuration=30000 --algorithm=RS256`
   );
 
-  t.regex(
-    out,
-    new RegExp(`DeviceId ${deviceId} is not associated with Gateway`)
+  assert.strictEqual(
+    new RegExp(`DeviceId ${deviceId} is not associated with Gateway`).test(out),
+    true
   );
 
   // cleanup
@@ -293,7 +295,7 @@ test(`should listen for error topic messages`, async t => {
   );
 });
 
-test(`should send data from bound device`, async t => {
+it('should send data from bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
@@ -318,8 +320,8 @@ test(`should send data from bound device`, async t => {
     `${cmd} sendDataFromBoundDevice --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --numMessages=5 --algorithm=RS256`
   );
 
-  t.regex(out, new RegExp('Publishing message 5/5'));
-  t.notRegex(out, new RegExp('Error: Connection refused'));
+  assert.strictEqual(new RegExp('Publishing message 5/5').test(out), true);
+  assert.strictEqual(new RegExp('Error: Connection refused').test(out), false);
 
   await tools.runAsync(
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,

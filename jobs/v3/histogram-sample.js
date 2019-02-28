@@ -24,7 +24,7 @@ const sleep = require('./sleep');
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 
 /**
- * The sample in this file introduce how to do a histogram search.
+ * The sample in this file introduces how to do a histogram search.
  */
 
 // [START histogram_search]

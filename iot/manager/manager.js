@@ -796,7 +796,7 @@ function sendCommand(
         console.log('Could not send command:', request);
         console.log('Error: ', err);
       } else {
-        console.log('Success:', data.statusText);
+        console.log('Success:', data.status);
       }
     }
   );
@@ -1381,10 +1381,10 @@ require('yargs') // eslint-disable-line
     `Creates a device with the given public key. Public key can be ommitted and added later on.`,
     {
       publicKeyFormat: {
-        default: 'RS256_X509_PEM',
+        default: 'RSA_X509_PEM',
         description: 'Public key format for devices.',
         requiresArg: true,
-        choices: ['RS256_PEM', 'RS256_X509_PEM', 'ES256_PEM', 'ES256_X509_PEM'],
+        choices: ['RSA_PEM', 'RSA_X509_PEM', 'ES256_PEM', 'ES256_X509_PEM'],
         type: 'string',
       },
       publicKeyFile: {
@@ -1671,7 +1671,21 @@ require('yargs') // eslint-disable-line
   .command(
     `createGateway <registryId> <gatewayId>`,
     `Creates a gateway`,
-    {},
+    {
+      publicKeyFormat: {
+        default: 'RSA_X509_PEM',
+        description: 'Public key format for devices.',
+        requiresArg: true,
+        choices: ['RSA_PEM', 'RSA_X509_PEM', 'ES256_PEM', 'ES256_X509_PEM'],
+        type: 'string',
+      },
+      publicKeyFile: {
+        description:
+          'Path to the public key file used for device authentication.',
+        requiresArg: true,
+        type: 'string',
+      },
+    },
     opts => {
       const cb = function(client) {
         createGateway(
@@ -1680,8 +1694,8 @@ require('yargs') // eslint-disable-line
           opts.cloudRegion,
           opts.registryId,
           opts.gatewayId,
-          opts.publicKeyFile,
-          opts.publicKeyFormat
+          opts.publicKeyFormat,
+          opts.publicKeyFile
         );
       };
       getClient(opts.serviceAccount, cb);

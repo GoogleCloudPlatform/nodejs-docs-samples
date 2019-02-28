@@ -41,7 +41,7 @@ const REQUEST_META_DATA = {
  * Generate a job with a custom attribute.
  */
 const generateJobWithACustomAttribute = companyName => {
-  const requisitionId = `"jobWithACustomAttribute: ${new Date().getTime()}}`;
+  const requisitionId = `jobWithACustomAttribute: ${new Date().getTime()}`;
   const jobTitle = 'Software Engineer';
   const applicationUrls = ['http://careers.google.com'];
   const description =

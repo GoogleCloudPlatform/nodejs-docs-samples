@@ -17,12 +17,12 @@
 
 const sinon = require('sinon');
 const uuid = require('uuid');
-const test = require('ava');
+const assert = require('assert');
 const utils = require('@google-cloud/nodejs-repo-tools');
 const proxyquire = require('proxyquire').noCallThru();
 
 function getSample() {
-  const nodeFetch = sinon.stub().returns(Promise.resolve(`test`));
+  const nodeFetch = sinon.stub().returns(Promise.resolve('test'));
 
   const firestoreMock = {
     doc: sinon.stub().returnsThis(),
@@ -30,7 +30,7 @@ function getSample() {
   };
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       'node-fetch': nodeFetch,
       '@google-cloud/firestore': sinon.stub().returns(firestoreMock),
     }),
@@ -41,10 +41,10 @@ function getSample() {
   };
 }
 
-test.beforeEach(utils.stubConsole);
-test.afterEach.always(utils.restoreConsole);
+beforeEach(utils.stubConsole);
+afterEach(utils.restoreConsole);
 
-test.serial('should respond to HTTP POST', t => {
+it('should respond to HTTP POST', () => {
   const sample = getSample();
 
   const reqMock = {
@@ -59,10 +59,10 @@ test.serial('should respond to HTTP POST', t => {
   };
 
   sample.program.helloHttp(reqMock, resMock);
-  t.true(resMock.send.calledWith('Hello foo!'));
+  assert.strictEqual(resMock.send.calledWith('Hello foo!'), true);
 });
 
-test.serial('should respond to HTTP GET', t => {
+it('should respond to HTTP GET', () => {
   const sample = getSample();
 
   const reqMock = {
@@ -77,10 +77,10 @@ test.serial('should respond to HTTP GET', t => {
   };
 
   sample.program.helloHttp(reqMock, resMock);
-  t.true(resMock.send.calledWith('Hello foo!'));
+  assert.strictEqual(resMock.send.calledWith('Hello foo!'), true);
 });
 
-test.serial('should escape XSS', t => {
+it('should escape XSS', () => {
   const sample = getSample();
 
   const xssQuery = '<script></script>';
@@ -96,10 +96,10 @@ test.serial('should escape XSS', t => {
   };
 
   sample.program.helloHttp(reqMock, resMock);
-  t.false(resMock.send.calledWith(xssQuery));
+  assert.strictEqual(resMock.send.calledWith(xssQuery), false);
 });
 
-test.serial('should monitor Firebase RTDB', t => {
+it('should monitor Firebase RTDB', () => {
   const sample = getSample();
 
   const dataId = uuid.v4();
@@ -117,12 +117,12 @@ test.serial('should monitor Firebase RTDB', t => {
 
   sample.program.helloRTDB(data, context);
 
-  t.true(console.log.firstCall.args[0].includes(resourceId));
-  t.deepEqual(console.log.secondCall.args, ['Admin?: true']);
-  t.true(console.log.getCall(3).args[0].includes(dataId));
+  assert.strictEqual(console.log.firstCall.args[0].includes(resourceId), true);
+  assert.deepStrictEqual(console.log.secondCall.args, ['Admin?: true']);
+  assert.strictEqual(console.log.getCall(3).args[0].includes(dataId), true);
 });
 
-test.serial('should monitor Firestore', t => {
+it('should monitor Firestore', () => {
   const sample = getSample();
 
   const resourceId = uuid.v4();
@@ -137,12 +137,18 @@ test.serial('should monitor Firestore', t => {
 
   sample.program.helloFirestore(data, context);
 
-  t.true(console.log.firstCall.args[0].includes(resourceId));
-  t.true(console.log.calledWith(JSON.stringify(data.oldValue, null, 2)));
-  t.true(console.log.calledWith(JSON.stringify(data.value, null, 2)));
+  assert.strictEqual(console.log.firstCall.args[0].includes(resourceId), true);
+  assert.strictEqual(
+    console.log.calledWith(JSON.stringify(data.oldValue, null, 2)),
+    true
+  );
+  assert.strictEqual(
+    console.log.calledWith(JSON.stringify(data.value, null, 2)),
+    true
+  );
 });
 
-test.serial('should monitor Auth', t => {
+it('should monitor Auth', () => {
   const sample = getSample();
 
   const userId = uuid.v4();
@@ -159,12 +165,12 @@ test.serial('should monitor Auth', t => {
 
   sample.program.helloAuth(data, null);
 
-  t.true(console.log.firstCall.args[0].includes(userId));
-  t.true(console.log.secondCall.args[0].includes(dateString));
-  t.true(console.log.thirdCall.args[0].includes(emailString));
+  assert.strictEqual(console.log.firstCall.args[0].includes(userId), true);
+  assert.strictEqual(console.log.secondCall.args[0].includes(dateString), true);
+  assert.strictEqual(console.log.thirdCall.args[0].includes(emailString), true);
 });
 
-test.serial('should monitor Analytics', t => {
+it('should monitor Analytics', () => {
   const sample = getSample();
 
   const date = new Date();
@@ -192,50 +198,49 @@ test.serial('should monitor Analytics', t => {
 
   sample.program.helloAnalytics(data, context);
 
-  t.is(
+  assert.strictEqual(
     console.log.args[0][0],
-    `Function triggered by the following event: my-resource`
+    'Function triggered by the following event: my-resource'
   );
-  t.is(console.log.args[1][0], `Name: my-event`);
-  t.is(console.log.args[2][0], `Timestamp: ${date}`);
-  t.is(console.log.args[3][0], `Device Model: Pixel`);
-  t.is(console.log.args[4][0], `Location: London, UK`);
+  assert.strictEqual(console.log.args[1][0], 'Name: my-event');
+  assert.strictEqual(console.log.args[2][0], `Timestamp: ${date}`);
+  assert.strictEqual(console.log.args[3][0], 'Device Model: Pixel');
+  assert.strictEqual(console.log.args[4][0], 'Location: London, UK');
 });
 
-test.serial(`should make a promise request`, t => {
+it('should make a promise request', async () => {
   const sample = getSample();
   const data = {
-    endpoint: `foo.com`,
+    endpoint: 'foo.com',
   };
 
-  return sample.program.helloPromise(data).then(result => {
-    t.deepEqual(sample.mocks.nodeFetch.firstCall.args, [`foo.com`]);
-    t.is(result, `test`);
-  });
+  const result = await sample.program.helloPromise(data);
+  assert.deepStrictEqual(sample.mocks.nodeFetch.firstCall.args, ['foo.com']);
+  assert.strictEqual(result, 'test');
 });
 
-test.serial(`should return synchronously`, t => {
-  t.is(
+it('should return synchronously', () => {
+  assert.strictEqual(
     getSample().program.helloSynchronous({
       something: true,
     }),
-    `Something is true!`
+    'Something is true!'
   );
 });
 
-test.serial(`should throw an error`, t => {
-  t.throws(
+it('should throw an error', () => {
+  assert.throws(
     () => {
       getSample().program.helloSynchronous({
         something: false,
       });
     },
     Error,
-    `Something was not true!`
+    'Something was not true!'
   );
 });
 
-test(`should update data in response to Firestore events`, t => {
+it('should update data in response to Firestore events', () => {
   const sample = getSample();
 
   const date = Date.now();
@@ -259,12 +264,18 @@ test(`should update data in response to Firestore events`, t => {
 
   sample.program.makeUpperCase(data, context);
 
-  t.true(sample.mocks.firestore.doc.calledWith('some/path'));
-  t.true(console.log.calledWith(`Replacing value: foobar --> FOOBAR`));
-  t.true(sample.mocks.firestore.set.calledWith({original: 'FOOBAR'}));
+  assert.strictEqual(sample.mocks.firestore.doc.calledWith('some/path'), true);
+  assert.strictEqual(
+    console.log.calledWith('Replacing value: foobar --> FOOBAR'),
+    true
+  );
+  assert.strictEqual(
+    sample.mocks.firestore.set.calledWith({original: 'FOOBAR'}),
+    true
+  );
 });
 
-test(`should listen to Firebase Remote Config events`, t => {
+it('should listen to Firebase Remote Config events', () => {
   const sample = getSample();
 
   const data = {
@@ -275,14 +286,20 @@ test(`should listen to Firebase Remote Config events`, t => {
 
   sample.program.helloRemoteConfig(data);
 
-  t.true(console.log.calledWith(`Update type: INCREMENTAL_UPDATE`));
-  t.true(console.log.calledWith(`Origin: CONSOLE`));
-  t.true(console.log.calledWith(`Version: 1`));
+  assert.strictEqual(
+    console.log.calledWith('Update type: INCREMENTAL_UPDATE'),
+    true
+  );
+  assert.strictEqual(console.log.calledWith('Origin: CONSOLE'), true);
+  assert.strictEqual(console.log.calledWith('Version: 1'), true);
 });
 
-test.serial('should make async HTTP request', t => {
+it('should make async HTTP request', () => {
   const sample = getSample();
 
   sample.program.helloAsync();
-  t.true(sample.mocks.nodeFetch.calledWith('https://www.example.com'));
+  assert.strictEqual(
+    sample.mocks.nodeFetch.calledWith('https://www.example.com'),
+    true
+  );
 });

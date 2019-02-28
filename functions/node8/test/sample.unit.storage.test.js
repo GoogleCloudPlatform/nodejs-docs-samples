@@ -14,14 +14,16 @@
  */
 
 // [START functions_storage_unit_test]
-const test = require(`ava`);
-const uuid = require(`uuid`);
-const sinon = require(`sinon`);
+const assert = require('assert');
+const uuid = require('uuid');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
-const helloGCS = require(`..`).helloGCS;
-const consoleLog = sinon.stub(console, 'log');
+const helloGCS = require('..').helloGCS;
 
-test(`helloGCS: should print uploaded message`, async t => {
+beforeEach(utils.stubConsole);
+afterEach(utils.restoreConsole);
+
+it('helloGCS: should print uploaded message', async () => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -32,10 +34,13 @@ test(`helloGCS: should print uploaded message`, async t => {
 
   // Call tested function and verify its behavior
   await helloGCS(event);
-  t.true(consoleLog.calledWith(`File ${filename} uploaded.`));
+  assert.strictEqual(
+    console.log.calledWith(`File ${filename} uploaded.`),
+    true
+  );
 });
 
-test(`helloGCS: should print metadata updated message`, async t => {
+it('helloGCS: should print metadata updated message', async () => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -46,10 +51,13 @@ test(`helloGCS: should print metadata updated message`, async t => {
 
   // Call tested function and verify its behavior
   await helloGCS(event);
-  t.true(consoleLog.calledWith(`File ${filename} metadata updated.`));
+  assert.strictEqual(
+    console.log.calledWith(`File ${filename} metadata updated.`),
+    true
+  );
 });
 
-test(`helloGCS: should print deleted message`, async t => {
+it('helloGCS: should print deleted message', async () => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -60,6 +68,6 @@ test(`helloGCS: should print deleted message`, async t => {
 
   // Call tested function and verify its behavior
   await helloGCS(event);
-  t.true(consoleLog.calledWith(`File ${filename} deleted.`));
+  assert.strictEqual(console.log.calledWith(`File ${filename} deleted.`), true);
 });
 // [END functions_storage_unit_test]

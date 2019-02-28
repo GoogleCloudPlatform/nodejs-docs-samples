@@ -17,7 +17,7 @@
     "all-test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/logging-winston": "^0.10.2",
+    "@google-cloud/logging-winston": "^0.11.0",
     "body-parser": "1.18.3",
     "express": "4.16.2",
     "promise-mysql": "^3.3.1",

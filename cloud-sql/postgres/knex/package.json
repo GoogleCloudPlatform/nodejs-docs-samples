@@ -26,7 +26,7 @@
     "knex": "0.16.3",
     "prompt": "1.0.0",
     "pug": "2.0.3",
-    "@google-cloud/logging-winston": "^0.10.2",
+    "@google-cloud/logging-winston": "^0.11.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {

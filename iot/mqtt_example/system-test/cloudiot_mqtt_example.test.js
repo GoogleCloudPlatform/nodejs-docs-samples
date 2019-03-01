@@ -24,8 +24,8 @@ const uuid = require('uuid');
 
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
-const topicName = `nodejs-iot-test-mqtt-topic`;
-const registryName = `nodejs-iot-test-mqtt-registry`;
+const topicName = `nodejs-iot-test-mqtt-topic-${uuid.v4()}`;
+const registryName = `nodejs-iot-test-mqtt-registry-${uuid.v4()}`;
 const region = `us-central1`;
 const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
@@ -42,15 +42,11 @@ const pubSubClient = new PubSub({projectId});
 assert.ok(tools.run(installDeps, `${cwd}/../manager`));
 before(async () => {
   tools.checkCredentials();
-  // Create a single topic to be used for testing.
+  // Create a unique topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
 
-  // Cleans up and creates a single registry to be used for tests.
-  tools.run(`${helper} unbindAllDevices ${registryName}`, cwd);
-  tools.run(`${helper} clearRegistry ${registryName}`, cwd);
-
-  console.log('Cleaned up existing registry.');
+  // Creates a registry to be used for tests.
   let createRegistryRequest = {
     parent: iotClient.locationPath(projectId, region),
     deviceRegistry: {

@@ -15,16 +15,16 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 function getSample() {
-  const requestPromiseNative = sinon.stub().returns(Promise.resolve(`test`));
+  const requestPromiseNative = sinon.stub().returns(Promise.resolve('test'));
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       'request-promise-native': requestPromiseNative,
     }),
     mocks: {
@@ -33,13 +33,13 @@ function getSample() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test.serial(`should echo message`, t => {
+it('should echo message', () => {
   const event = {
     data: {
-      myMessage: `hi`,
+      myMessage: 'hi',
     },
   };
   const sample = getSample();
@@ -47,51 +47,51 @@ test.serial(`should echo message`, t => {
 
   sample.program.helloWorld(event, callback);
 
-  t.is(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [event.data.myMessage]);
-  t.is(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, []);
+  assert.strictEqual(console.log.callCount, 1);
+  assert.deepStrictEqual(console.log.firstCall.args, [event.data.myMessage]);
+  assert.strictEqual(callback.callCount, 1);
+  assert.deepStrictEqual(callback.firstCall.args, []);
 });
 
-test.serial(`should say no message was provided`, t => {
-  const error = new Error(`No message defined!`);
+it('should say no message was provided', () => {
+  const error = new Error('No message defined!');
   const callback = sinon.stub();
   const sample = getSample();
   sample.program.helloWorld({data: {}}, callback);
 
-  t.is(callback.callCount, 1);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.callCount, 1);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should make a promise request`, t => {
+it('should make a promise request', () => {
   const sample = getSample();
   const event = {
     data: {
-      endpoint: `foo.com`,
+      endpoint: 'foo.com',
     },
   };
 
   return sample.program.helloPromise(event).then(result => {
-    t.deepEqual(sample.mocks.requestPromiseNative.firstCall.args, [
-      {uri: `foo.com`},
+    assert.deepStrictEqual(sample.mocks.requestPromiseNative.firstCall.args, [
+      {uri: 'foo.com'},
     ]);
-    t.is(result, `test`);
+    assert.strictEqual(result, 'test');
   });
 });
 
-test.serial(`should return synchronously`, t => {
-  t.is(
+it('should return synchronously', () => {
+  assert.strictEqual(
     getSample().program.helloSynchronous({
       data: {
         something: true,
       },
     }),
-    `Something is true!`
+    'Something is true!'
   );
 });
 
-test.serial(`should throw an error`, t => {
-  t.throws(
+it('should throw an error', () => {
+  assert.throws(
     () => {
       getSample().program.helloSynchronous({
         data: {
@@ -100,6 +100,6 @@ test.serial(`should throw an error`, t => {
       });
     },
     Error,
-    `Something was not true!`
+    'Something was not true!'
   );
 });

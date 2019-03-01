@@ -16,8 +16,10 @@
 // [START monitoring_opencensus_metrics_quickstart]
 'use strict';
 
+// [START monitoring_opencensus_metrics_dependencies]
 const {globalStats, MeasureUnit, AggregationType} = require('@opencensus/core');
 const {StackdriverStatsExporter} = require('@opencensus/exporter-stackdriver');
+// [END monitoring_opencensus_metrics_dependencies]
 
 const EXPORT_INTERVAL = 60;
 const LATENCY_MS = globalStats.createMeasureInt64(

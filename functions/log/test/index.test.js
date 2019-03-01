@@ -15,10 +15,10 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 function getSample() {
   const results = [[{}], {}];
@@ -36,7 +36,7 @@ function getSample() {
   };
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       '@google-cloud/logging': sinon.stub().returns(logging),
       '@google-cloud/monitoring': {
         v3: sinon.stub().returns({
@@ -52,40 +52,39 @@ function getSample() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test.serial(`should write to log`, t => {
-  const expectedMsg = `I am a log entry!`;
+it('should write to log', () => {
+  const expectedMsg = 'I am a log entry!';
   const res = {end: sinon.stub()};
 
   getSample().program.helloWorld({}, res);
 
-  t.is(console.log.callCount, 1);
-  t.deepEqual(console.log.firstCall.args, [expectedMsg]);
-  t.is(res.end.callCount, 1);
-  t.deepEqual(res.end.firstCall.args, []);
+  assert.strictEqual(console.log.callCount, 1);
+  assert.deepStrictEqual(console.log.firstCall.args, [expectedMsg]);
+  assert.strictEqual(res.end.callCount, 1);
+  assert.deepStrictEqual(res.end.firstCall.args, []);
 });
 
-test.serial(`getLogEntries: should retrieve logs`, t => {
+it('getLogEntries: should retrieve logs', async () => {
   const sample = getSample();
 
-  return sample.program.getLogEntries().then(entries => {
-    t.true(console.log.calledWith(`Entries:`));
-    t.true(entries === sample.mocks.results[0]);
-  });
+  const entries = await sample.program.getLogEntries();
+  assert.strictEqual(console.log.calledWith('Entries:'), true);
+  assert.strictEqual(entries === sample.mocks.results[0], true);
 });
 
-test.serial(`getMetrics: should retrieve metrics`, t => {
+it('getMetrics: should retrieve metrics', () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.getMetrics(callback);
 
-  t.is(callback.callCount, 1);
+  assert.strictEqual(callback.callCount, 1);
 });
 
-test(`processLogEntry: should process log entry`, t => {
+it('processLogEntry: should process log entry', () => {
   const sample = getSample();
   const json = JSON.stringify({
     protoPayload: {
@@ -105,12 +104,12 @@ test(`processLogEntry: should process log entry`, t => {
 
   sample.program.processLogEntry(data);
 
-  t.true(console.log.calledWith(`Method: method`));
-  t.true(console.log.calledWith(`Resource: resource`));
-  t.true(console.log.calledWith(`Initiator: me@example.com`));
+  assert.strictEqual(console.log.calledWith('Method: method'), true);
+  assert.strictEqual(console.log.calledWith('Resource: resource'), true);
+  assert.strictEqual(console.log.calledWith('Initiator: me@example.com'), true);
 });
 
-test(`processLogEntry: should work in Node 8`, t => {
+it('processLogEntry: should work in Node 8', () => {
   const sample = getSample();
   const json = JSON.stringify({
     protoPayload: {
@@ -128,7 +127,7 @@ test(`processLogEntry: should work in Node 8`, t => {
 
   sample.program.processLogEntry(data);
 
-  t.true(console.log.calledWith(`Method: method`));
-  t.true(console.log.calledWith(`Resource: resource`));
-  t.true(console.log.calledWith(`Initiator: me@example.com`));
+  assert.strictEqual(console.log.calledWith('Method: method'), true);
+  assert.strictEqual(console.log.calledWith('Resource: resource'), true);
+  assert.strictEqual(console.log.calledWith('Initiator: me@example.com'), true);
 });

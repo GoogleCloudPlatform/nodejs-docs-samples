@@ -25,7 +25,10 @@ const cmd = 'node analyze.js';
 const cwd = path.join(__dirname, '..');
 const url = 'gs://nodejs-docs-samples-video/quickstart.mp4';
 const shortUrl = 'gs://nodejs-docs-samples-video/quickstart_short.mp4';
+const catUrl = 'gs://nodejs-docs-samples/video/cat.mp4';
 const file = 'resources/cat.mp4';
+const file2 = 'resources/googlework_short.mp4';
+const possibleTexts = /Google|GOOGLE|SUR|OMAR|ROTO|Vice President|58oo9|LONDRES|PARIS|METRO|RUE|CARLO/;
 
 const exec = async cmd => (await execa.shell(cmd, {cwd})).stdout;
 
@@ -74,5 +77,31 @@ describe('analyze samples', () => {
   it('should analyze video transcription results in a GCS file', async () => {
     const output = await exec(`${cmd} transcription ${shortUrl}`);
     assert.match(output, /over the pass/);
+  });
+
+  //detect_text_gcs
+  it('should detect text in a GCS file', async () => {
+    const output = await exec(`${cmd} video-text-gcs ${shortUrl}`);
+    assert.match(output, possibleTexts);
+  });
+
+  //detect_text
+  it('should detect text in a local file', async () => {
+    const output = await exec(`${cmd} video-text ${file2}`);
+    assert.match(output, possibleTexts);
+  });
+
+  //object_tracking_gcs
+  it('should track objects in a GCS file', async () => {
+    const output = await exec(`${cmd} track-objects-gcs ${catUrl}`);
+    assert.match(output, /cat/);
+    assert.match(output, /Confidence: \d+\.\d+/);
+  });
+
+  //object_tracking
+  it('should track objects in a local file', async () => {
+    const output = await exec(`${cmd} track-objects ${file}`);
+    assert.match(output, /cat/);
+    assert.match(output, /Confidence: \d+\.\d+/);
   });
 });

@@ -15,28 +15,27 @@
 
 'use strict';
 
-const path = require(`path`);
-const {PubSub} = require(`@google-cloud/pubsub`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const {PubSub} = require('@google-cloud/pubsub');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const cmd = `node gateway.js`;
+const cmd = 'node gateway.js';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 
-const helper = `node manager.js`;
-const cwdHelper = path.join(__dirname, `../../manager`);
-const installDeps = `npm install`;
+const helper = 'node manager.js';
+const cwdHelper = path.join(__dirname, '../../manager');
+const installDeps = 'npm install';
 const publicKeyParam = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const privateKeyParam = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
 const pubsub = new PubSub();
 
-test.before(tools.checkCredentials);
-test.before(async () => {
-  let pubsubRes = await pubsub.createTopic(topicName);
-  const topic = pubsubRes[0];
+before(async () => {
+  tools.checkCredentials();
+  const [topic] = await pubsub.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
 
   await tools.runAsync(installDeps, cwdHelper);
@@ -48,7 +47,7 @@ test.before(async () => {
   console.log(`Registry ${registryName} created`);
 });
 
-test.after.always(async () => {
+after(async () => {
   await tools.runAsync(`${helper} deleteRegistry ${registryName}`, cwdHelper);
   console.log(`Registry ${registryName} was deleted`);
 
@@ -57,22 +56,22 @@ test.after.always(async () => {
   console.log(`Topic ${topic.name} deleted.`);
 });
 
-test(`should create a new gateway`, async t => {
+it('should create a new gateway', async () => {
   // create gateway
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   let gatewayOut = await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
   ); // test no error on create gateway
-  t.regex(gatewayOut, new RegExp('Created device'));
+  assert.strictEqual(new RegExp('Created device').test(gatewayOut), true);
 
   // delete gateway with deleteDevice
-  tools.runAsync(
+  await tools.runAsync(
     `${helper} deleteDevice ${gatewayId} ${registryName}`,
     cwdHelper
   );
 });
 
-test(`should list gateways`, async t => {
+it('should list gateways', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -80,15 +79,15 @@ test(`should list gateways`, async t => {
 
   // look for output in list gateway
   let gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
-  t.regex(gateways, new RegExp(`${gatewayId}`));
+  assert.strictEqual(new RegExp(`${gatewayId}`).test(gateways), true);
 
-  tools.runAsync(
+  await tools.runAsync(
     `${helper} deleteDevice ${gatewayId} ${registryName}`,
     cwdHelper
   );
 });
 
-test(`should bind existing device to gateway`, async t => {
+it('should bind existing device to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -106,15 +105,15 @@ test(`should bind existing device to gateway`, async t => {
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  t.regex(bind, new RegExp('Device exists'));
-  t.regex(bind, new RegExp('Bound device'));
-  t.notRegex(bind, new RegExp('Could not bind device'));
+  assert.strictEqual(new RegExp('Device exists').test(bind), true);
+  assert.strictEqual(new RegExp('Bound device').test(bind), true);
+  assert.strictEqual(new RegExp('Could not bind device').test(bind), false);
 
   // test unbind
   let unbind = await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
-  t.regex(unbind, new RegExp('Device no longer bound'));
+  assert.strictEqual(new RegExp('Device no longer bound').test(unbind), true);
 
   await tools.runAsync(
     `${helper} deleteDevice ${gatewayId} ${registryName}`,
@@ -126,7 +125,7 @@ test(`should bind existing device to gateway`, async t => {
   );
 });
 
-test(`should bind new device to gateway`, async t => {
+it('should bind new device to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -138,15 +137,15 @@ test(`should bind new device to gateway`, async t => {
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  t.regex(bind, new RegExp('Created device'));
-  t.regex(bind, new RegExp('Bound device'));
-  t.notRegex(bind, new RegExp('Could not bind device'));
+  assert.strictEqual(new RegExp('Created device').test(bind), true);
+  assert.strictEqual(new RegExp('Bound device').test(bind), true);
+  assert.strictEqual(new RegExp('Could not bind device').test(bind), false);
 
   // unbind and delete device and gateway
   let unbind = await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
-  t.regex(unbind, new RegExp('Device no longer bound'));
+  assert.strictEqual(new RegExp('Device no longer bound').test(unbind), true);
 
   await tools.runAsync(
     `${helper} deleteDevice ${gatewayId} ${registryName}`,
@@ -158,7 +157,7 @@ test(`should bind new device to gateway`, async t => {
   );
 });
 
-test(`should list devices bound to gateway`, async t => {
+it('should list devices bound to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -174,9 +173,8 @@ test(`should list devices bound to gateway`, async t => {
     `${cmd} listDevicesForGateway ${registryName} ${gatewayId}`
   );
 
-  t.regex(devices, new RegExp(deviceId));
-  t.notRegex(devices, new RegExp('No devices bound to this gateway.'));
-
+  assert.strictEqual(new RegExp(deviceId).test(devices), true);
+  assert.strictEqual(new RegExp('No devices bound').test(devices), false);
   // cleanup
   await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
@@ -191,7 +189,7 @@ test(`should list devices bound to gateway`, async t => {
   );
 });
 
-test(`should list gateways for bound device`, async t => {
+it('should list gateways for bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -207,8 +205,11 @@ test(`should list gateways for bound device`, async t => {
     `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`
   );
 
-  t.regex(devices, new RegExp(gatewayId));
-  t.notRegex(devices, new RegExp('No gateways associated with this device'));
+  assert.strictEqual(new RegExp(gatewayId).test(devices), true);
+  assert.strictEqual(
+    new RegExp('No gateways associated with this device').test(devices),
+    false
+  );
 
   // cleanup
   await tools.runAsync(
@@ -224,7 +225,7 @@ test(`should list gateways for bound device`, async t => {
   );
 });
 
-test(`should listen for bound device config message`, async t => {
+it('should listen for bound device config message', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -240,7 +241,7 @@ test(`should listen for bound device config message`, async t => {
     `${cmd} listen ${deviceId} ${gatewayId} ${registryName} ${privateKeyParam} --clientDuration=30000`
   );
 
-  t.regex(out, new RegExp('message received'));
+  assert.strictEqual(new RegExp('message received').test(out), true);
 
   // cleanup
   await tools.runAsync(
@@ -256,7 +257,7 @@ test(`should listen for bound device config message`, async t => {
   );
 });
 
-test(`should listen for error topic messages`, async t => {
+it('should listen for error topic messages', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -274,9 +275,9 @@ test(`should listen for error topic messages`, async t => {
     `${cmd} listenForErrors ${gatewayId} ${registryName} ${deviceId} ${privateKeyParam} --clientDuration=30000`
   );
 
-  t.regex(
-    out,
-    new RegExp(`DeviceId ${deviceId} is not associated with Gateway`)
+  assert.strictEqual(
+    new RegExp(`DeviceId ${deviceId} is not associated with Gateway`).test(out),
+    true
   );
 
   // cleanup
@@ -293,7 +294,7 @@ test(`should listen for error topic messages`, async t => {
   );
 });
 
-test(`should send data from bound device`, async t => {
+it('should send data from bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
@@ -309,8 +310,8 @@ test(`should send data from bound device`, async t => {
     `${cmd} relayData ${deviceId} ${gatewayId} ${registryName} ${privateKeyParam} --numMessages=5`
   );
 
-  t.regex(out, new RegExp('Publishing message 5/5'));
-  t.notRegex(out, new RegExp('Error: Connection refused'));
+  assert.strictEqual(new RegExp('Publishing message 5/5').test(out), true);
+  assert.strictEqual(new RegExp('Error: Connection refused').test(out), false);
 
   await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`

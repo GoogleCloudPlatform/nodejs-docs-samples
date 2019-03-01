@@ -12,7 +12,7 @@
     "node": ">=8"
   },
   "scripts": {
-    "test": "ava -T 20s --verbose test/*.test.js"
+    "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
     "@google-cloud/pubsub": "0.22.2",
@@ -22,10 +22,10 @@
     "safe-buffer": "5.1.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "3.1.0",
-    "ava": "0.25.0",
+     "@google-cloud/nodejs-repo-tools": "3.2.0",
+    "mocha": "^5.2.0",
     "proxyquire": "2.1.0",
-    "sinon": "7.2.3"
+    "sinon": "7.2.5"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

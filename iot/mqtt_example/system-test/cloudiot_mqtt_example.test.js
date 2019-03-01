@@ -68,13 +68,10 @@ after(async () => {
   await pubSubClient.topic(topicName).delete();
   console.log(`Topic ${topicName} deleted.`);
 
-  const deleteRegistryRequest = {
-    name: iotClient.registryPath(projectId, region, registryName),
-  };
+  // Cleans up the registry by removing all associations and deleting all devices.
+  tools.run(`${helper} unbindAllDevices ${registryName}`, cwd);
+  tools.run(`${helper} clearRegistry ${registryName}`, cwd);
 
-  await iotClient.deleteDeviceRegistry(deleteRegistryRequest).catch(err => {
-    console.log(err);
-  });
   console.log('Deleted test registry.');
 });
 

@@ -301,6 +301,241 @@ async function analyzeVideoTranscription(gcsUri) {
   // [END video_speech_transcription_gcs]
 }
 
+async function analyzeTextGCS(gcsUri) {
+  //gcsUri - GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4
+  //[START video_detect_text_gcs]
+  // Imports the Google Cloud Video Intelligence library
+  const Video = require('@google-cloud/video-intelligence');
+  // Creates a client
+  const video = new Video.VideoIntelligenceServiceClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = 'GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4';
+
+  const request = {
+    inputUri: gcsUri,
+    features: ['TEXT_DETECTION'],
+  };
+  // Detects text in a video
+  const [operation] = await video.annotateVideo(request);
+  const results = await operation.promise();
+  console.log('Waiting for operation to complete...');
+  // Gets annotations for video
+  const textAnnotations = results[0].annotationResults[0].textAnnotations;
+  textAnnotations.forEach(textAnnotation => {
+    console.log(`Text ${textAnnotation.text} occurs at:`);
+    textAnnotation.segments.forEach(segment => {
+      const time = segment.segment;
+      console.log(
+        ` Start: ${time.startTimeOffset.seconds || 0}.${(
+          time.startTimeOffset.nanos / 1e6
+        ).toFixed(0)}s`
+      );
+      console.log(
+        ` End: ${time.endTimeOffset.seconds || 0}.${(
+          time.endTimeOffset.nanos / 1e6
+        ).toFixed(0)}s`
+      );
+      console.log(` Confidence: ${segment.confidence}`);
+      segment.frames.forEach(frame => {
+        const timeOffset = frame.timeOffset;
+        console.log(
+          `Time offset for the frame: ${timeOffset.seconds || 0}` +
+            `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
+        );
+        console.log(`Rotated Bounding Box Vertices:`);
+        frame.rotatedBoundingBox.vertices.forEach(vertex => {
+          console.log(`Vertex.x:${vertex.x}, Vertex.y:${vertex.y}`);
+        });
+      });
+    });
+  });
+  // [END video_detect_text_gcs]
+}
+
+async function analyzeObjectTrackingGCS(gcsUri) {
+  //gcsUri - GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4
+  //[START video_object_tracking_gcs]
+  // Imports the Google Cloud Video Intelligence library
+  const Video = require('@google-cloud/video-intelligence');
+
+  // Creates a client
+  const video = new Video.VideoIntelligenceServiceClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const gcsUri = 'GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4';
+
+  const request = {
+    inputUri: gcsUri,
+    features: ['OBJECT_TRACKING'],
+    //recommended to use us-east1 for the best latency due to different types of processors used in this region and others
+    locationId: 'us-east1',
+  };
+  // Detects objects in a video
+  const [operation] = await video.annotateVideo(request);
+  const results = await operation.promise();
+  console.log('Waiting for operation to complete...');
+  //Gets annotations for video
+  const annotations = results[0].annotationResults[0];
+  const objects = annotations.objectAnnotations;
+  objects.forEach(object => {
+    console.log(`Entity description:  ${object.entity.description}`);
+    console.log(`Entity id: ${object.entity.entityId}`);
+    const time = object.segment;
+    console.log(
+      `Segment: ${time.startTimeOffset.seconds || 0}` +
+        `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${time
+          .endTimeOffset.seconds || 0}.` +
+        `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`
+    );
+    console.log(`Confidence: ${object.confidence}`);
+    const frame = object.frames[0];
+    const box = frame.normalizedBoundingBox;
+    const timeOffset = frame.timeOffset;
+    console.log(
+      `Time offset for the first frame: ${timeOffset.seconds || 0}` +
+        `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
+    );
+    console.log(`Bounding box position:`);
+    console.log(` left   :${box.left}`);
+    console.log(` top    :${box.top}`);
+    console.log(` right  :${box.right}`);
+    console.log(` bottom :${box.bottom}`);
+  });
+  // [END video_object_tracking_gcs]
+}
+
+async function analyzeText(path) {
+  //[START video_detect_text]
+  // Imports the Google Cloud Video Intelligence library + Node's fs library
+  const Video = require('@google-cloud/video-intelligence');
+  const fs = require('fs');
+  const util = require('util');
+  // Creates a client
+  const video = new Video.VideoIntelligenceServiceClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const path = 'Local file to analyze, e.g. ./my-file.mp4';
+
+  // Reads a local video file and converts it to base64
+  const file = await util.promisify(fs.readFile)(path);
+  const inputContent = file.toString('base64');
+
+  const request = {
+    inputContent: inputContent,
+    features: ['TEXT_DETECTION'],
+  };
+  // Detects text in a video
+  const [operation] = await video.annotateVideo(request);
+  const results = await operation.promise();
+  console.log('Waiting for operation to complete...');
+
+  // Gets annotations for video
+  const textAnnotations = results[0].annotationResults[0].textAnnotations;
+  textAnnotations.forEach(textAnnotation => {
+    console.log(`Text ${textAnnotation.text} occurs at:`);
+    textAnnotation.segments.forEach(segment => {
+      const time = segment.segment;
+      if (time.startTimeOffset.seconds === undefined) {
+        time.startTimeOffset.seconds = 0;
+      }
+      if (time.startTimeOffset.nanos === undefined) {
+        time.startTimeOffset.nanos = 0;
+      }
+      if (time.endTimeOffset.seconds === undefined) {
+        time.endTimeOffset.seconds = 0;
+      }
+      if (time.endTimeOffset.nanos === undefined) {
+        time.endTimeOffset.nanos = 0;
+      }
+      console.log(
+        `\tStart: ${time.startTimeOffset.seconds || 0}` +
+          `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s`
+      );
+      console.log(
+        `\tEnd: ${time.endTimeOffset.seconds || 0}.` +
+          `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`
+      );
+      console.log(`\tConfidence: ${segment.confidence}`);
+      segment.frames.forEach(frame => {
+        const timeOffset = frame.timeOffset;
+        console.log(
+          `Time offset for the frame: ${timeOffset.seconds || 0}` +
+            `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
+        );
+        console.log(`Rotated Bounding Box Vertices:`);
+        frame.rotatedBoundingBox.vertices.forEach(vertex => {
+          console.log(`Vertex.x:${vertex.x}, Vertex.y:${vertex.y}`);
+        });
+      });
+    });
+  });
+  // [END video_detect_text]
+}
+
+async function analyzeObjectTracking(path) {
+  //[START video_object_tracking]
+  // Imports the Google Cloud Video Intelligence library
+  const Video = require('@google-cloud/video-intelligence');
+  const fs = require('fs');
+  const util = require('util');
+  // Creates a client
+  const video = new Video.VideoIntelligenceServiceClient();
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const path = 'Local file to analyze, e.g. ./my-file.mp4';
+
+  // Reads a local video file and converts it to base64
+  const file = await util.promisify(fs.readFile)(path);
+  const inputContent = file.toString('base64');
+
+  const request = {
+    inputContent: inputContent,
+    features: ['OBJECT_TRACKING'],
+    //recommended to use us-east1 for the best latency due to different types of processors used in this region and others
+    locationId: 'us-east1',
+  };
+  // Detects objects in a video
+  const [operation] = await video.annotateVideo(request);
+  const results = await operation.promise();
+  console.log('Waiting for operation to complete...');
+  //Gets annotations for video
+  const annotations = results[0].annotationResults[0];
+  const objects = annotations.objectAnnotations;
+  objects.forEach(object => {
+    console.log(`Entity description:  ${object.entity.description}`);
+    console.log(`Entity id: ${object.entity.entityId}`);
+    const time = object.segment;
+    console.log(
+      `Segment: ${time.startTimeOffset.seconds || 0}` +
+        `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${time
+          .endTimeOffset.seconds || 0}.` +
+        `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`
+    );
+    console.log(`Confidence: ${object.confidence}`);
+    const frame = object.frames[0];
+    const box = frame.normalizedBoundingBox;
+    const timeOffset = frame.timeOffset;
+    console.log(
+      `Time offset for the first frame: ${timeOffset.seconds || 0}` +
+        `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
+    );
+    console.log(`Bounding box position:`);
+    console.log(` left   :${box.left}`);
+    console.log(` top    :${box.top}`);
+    console.log(` right  :${box.right}`);
+    console.log(` bottom :${box.bottom}`);
+  });
+  // [END video_object_tracking]
+}
+
 async function main() {
   require(`yargs`)
     .demand(1)
@@ -334,11 +569,41 @@ async function main() {
       {},
       opts => analyzeVideoTranscription(opts.gcsUri)
     )
+    .command(
+      `video-text-gcs <gcsUri>`,
+      `Analyzes text in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
+      {},
+      opts => analyzeTextGCS(opts.gcsUri)
+    )
+    .command(
+      `track-objects-gcs <gcsUri>`,
+      `Analyzes objects in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
+      {},
+      opts => analyzeObjectTrackingGCS(opts.gcsUri)
+    )
+    .command(
+      `video-text <path>`,
+      `Analyzes text in a video stored in a local file using the Cloud Video Intelligence API.`,
+      {},
+      opts => analyzeText(opts.path)
+    )
+    .command(
+      `track-objects <path>`,
+      `Analyzes objects in a video stored in a local file using the Cloud Video Intelligence API.`,
+      {},
+      opts => analyzeObjectTracking(opts.path)
+    )
     .example(`node $0 shots gs://demomaker/sushi.mp4`)
     .example(`node $0 labels-gcs gs://demomaker/tomatoes.mp4`)
     .example(`node $0 labels-file cat.mp4`)
     .example(`node $0 safe-search gs://demomaker/tomatoes.mp4`)
     .example(`node $0 transcription gs://demomaker/tomatoes.mp4`)
+    .example(`node $0 video-text ./resources/googlework_short.mp4`)
+    .example(
+      `node $0 video-text-gcs gs://nodejs-docs-samples/videos/googlework_short.mp4`
+    )
+    .example(`node $0 track-objects ./resources/cat.mp4`)
+    .example(`node $0 track-objects-gcs gs://nodejs-docs-samples/video/cat.mp4`)
     .wrap(120)
     .recommendCommands()
     .epilogue(

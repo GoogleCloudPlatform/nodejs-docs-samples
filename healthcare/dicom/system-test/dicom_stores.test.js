@@ -36,7 +36,7 @@ const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
 
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const dcmFileName = `IM-0002-0001-JPEG-BASELINE.dcm`;
-const contentUri = bucketName + '/' + dcmFileName;
+const gcsUri = bucketName + '/' + dcmFileName;
 
 test.before(tools.checkCredentials);
 test.before(async () => {
@@ -98,7 +98,7 @@ test.serial(`should export a DICOM instance`, async t => {
 
 test.serial(`should import a DICOM object from GCS`, async t => {
   const output = await tools.runAsync(
-    `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${contentUri}`,
+    `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${gcsUri}`,
     cwd
   );
   t.regex(output, /Imported DICOM objects from bucket/);

@@ -15,10 +15,10 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 function getSample() {
   const firestoreMock = {
@@ -27,7 +27,7 @@ function getSample() {
   };
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       '@google-cloud/firestore': sinon.stub().returns(firestoreMock),
     }),
     mocks: {
@@ -36,10 +36,10 @@ function getSample() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test(`should listen to RTDB`, t => {
+it('should listen to RTDB', () => {
   const sample = getSample();
 
   const delta = {
@@ -55,12 +55,18 @@ test(`should listen to RTDB`, t => {
 
   sample.program.helloRTDB(event);
 
-  t.true(console.log.calledWith(`Function triggered by change to: resource`));
-  t.true(console.log.calledWith(`Admin?: true`));
-  t.true(console.log.calledWith(JSON.stringify(delta, null, 2)));
+  assert.strictEqual(
+    console.log.calledWith('Function triggered by change to: resource'),
+    true
+  );
+  assert.strictEqual(console.log.calledWith('Admin?: true'), true);
+  assert.strictEqual(
+    console.log.calledWith(JSON.stringify(delta, null, 2)),
+    true
+  );
 });
 
-test(`should listen to Firestore`, t => {
+it('should listen to Firestore', () => {
   const sample = getSample();
 
   const oldValue = {
@@ -80,13 +86,22 @@ test(`should listen to Firestore`, t => {
 
   sample.program.helloFirestore(event);
 
-  t.true(console.log.calledWith(`Function triggered by event on: resource`));
-  t.true(console.log.calledWith(`Event type: type`));
-  t.true(console.log.calledWith(JSON.stringify(oldValue, null, 2)));
-  t.true(console.log.calledWith(JSON.stringify(value, null, 2)));
+  assert.strictEqual(
+    console.log.calledWith('Function triggered by event on: resource'),
+    true
+  );
+  assert.strictEqual(console.log.calledWith('Event type: type'), true);
+  assert.strictEqual(
+    console.log.calledWith(JSON.stringify(oldValue, null, 2)),
+    true
+  );
+  assert.strictEqual(
+    console.log.calledWith(JSON.stringify(value, null, 2)),
+    true
+  );
 });
 
-test(`should listen to Auth events`, t => {
+it('should listen to Auth events', () => {
   const sample = getSample();
   const date = Date.now();
   const event = {
@@ -102,12 +117,15 @@ test(`should listen to Auth events`, t => {
 
   sample.program.helloAuth(event);
 
-  t.true(console.log.calledWith(`Function triggered by change to user: me`));
-  t.true(console.log.calledWith(`Created at: ${date}`));
-  t.true(console.log.calledWith(`Email: me@example.com`));
+  assert.strictEqual(
+    console.log.calledWith('Function triggered by change to user: me'),
+    true
+  );
+  assert.strictEqual(console.log.calledWith(`Created at: ${date}`), true);
+  assert.strictEqual(console.log.calledWith('Email: me@example.com'), true);
 });
 
-test.serial('should listen to Analytics events', t => {
+it('should listen to Analytics events', () => {
   const date = new Date();
   const event = {
     data: {
@@ -132,17 +150,17 @@ test.serial('should listen to Analytics events', t => {
 
   const sample = getSample();
   sample.program.helloAnalytics(event);
-  t.is(
+  assert.strictEqual(
     console.log.args[0][0],
-    `Function triggered by the following event: my-resource`
+    'Function triggered by the following event: my-resource'
   );
-  t.is(console.log.args[1][0], `Name: my-event`);
-  t.is(console.log.args[2][0], `Timestamp: ${date}`);
-  t.is(console.log.args[3][0], `Device Model: Pixel`);
-  t.is(console.log.args[4][0], `Location: London, UK`);
+  assert.strictEqual(console.log.args[1][0], 'Name: my-event');
+  assert.strictEqual(console.log.args[2][0], `Timestamp: ${date}`);
+  assert.strictEqual(console.log.args[3][0], 'Device Model: Pixel');
+  assert.strictEqual(console.log.args[4][0], 'Location: London, UK');
 });
 
-test(`should listen to Remote Config events`, t => {
+it('should listen to Remote Config events', () => {
   const sample = getSample();
 
   const event = {
@@ -155,7 +173,10 @@ test(`should listen to Remote Config events`, t => {
 
   sample.program.helloRemoteConfig(event);
 
-  t.true(console.log.calledWith(`Update type: INCREMENTAL_UPDATE`));
-  t.true(console.log.calledWith(`Origin: CONSOLE`));
-  t.true(console.log.calledWith(`Version: 1`));
+  assert.strictEqual(
+    console.log.calledWith('Update type: INCREMENTAL_UPDATE'),
+    true
+  );
+  assert.strictEqual(console.log.calledWith('Origin: CONSOLE'), true);
+  assert.strictEqual(console.log.calledWith('Version: 1'), true);
 });

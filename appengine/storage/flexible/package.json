@@ -3,7 +3,7 @@
   "description": "Node.js Google Cloud Storage sample for Google App Engine",
   "scripts": {
     "start": "node app.js",
-    "test": "ava system-test/*.test.js -T 30s"
+    "test": "mocha system-test/*.test.js --timeout=30000"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "ava": "^0.25.0"
+    "mocha": "^5.2.0"
   },
   "cloud-repo-tools": {
     "requiresProjectId": true,

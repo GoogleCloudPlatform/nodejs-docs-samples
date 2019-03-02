@@ -15,16 +15,16 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const sample = require(`../`);
+const sample = require('../');
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test(`should demonstrate error type behavior`, t => {
+it('should demonstrate error type behavior', () => {
   const objError = new Error('Error object!');
   const strError = new Error('Error string!');
 
@@ -33,12 +33,12 @@ test(`should demonstrate error type behavior`, t => {
 
   // Test throwing both objects and strings
   sample.errorTypes(req, res);
-  t.deepEqual(console.error.getCall(0).args, [objError]);
-  t.deepEqual(console.error.getCall(1).args, [strError]);
+  assert.deepStrictEqual(console.error.getCall(0).args, [objError]);
+  assert.deepStrictEqual(console.error.getCall(1).args, [strError]);
 
   // Test throwing objects only
   req.body.throwAsString = false;
   sample.errorTypes(req, res);
-  t.deepEqual(console.error.getCall(2).args, [objError]);
-  t.deepEqual(console.error.getCall(3).args, [objError]);
+  assert.deepStrictEqual(console.error.getCall(2).args, [objError]);
+  assert.deepStrictEqual(console.error.getCall(3).args, [objError]);
 });

@@ -172,7 +172,7 @@ function patchHl7v2Store(
 // the provided API key.
 // [START healthcare_get_client]
 function getClient(apiKey, serviceAccountJson, cb) {
-  const API_VERSION = 'v1alpha';
+  const API_VERSION = 'v1alpha2';
   const DISCOVERY_API = 'https://healthcare.googleapis.com/$discovery/rest';
 
   google.auth

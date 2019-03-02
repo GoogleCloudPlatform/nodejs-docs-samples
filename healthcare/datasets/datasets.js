@@ -140,7 +140,7 @@ function deidentifyDataset(
   cloudRegion,
   sourceDatasetId,
   destinationDatasetId,
-  whitelistTags
+  keeplistTags
 ) {
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(client) {...});
@@ -148,14 +148,41 @@ function deidentifyDataset(
   // const projectId = 'adjective-noun-123';
   // const sourceDatasetId = 'my-dataset';
   // const destinationDatasetId = 'my-destination-dataset';
-  // const whitelistTags = 'PatientID';
+  // const keeplistTags = 'PatientID';
   const sourceDatasetName = `projects/${projectId}/locations/${cloudRegion}/datasets/${sourceDatasetId}`;
   const destinationDatasetName = `projects/${projectId}/locations/${cloudRegion}/datasets/${destinationDatasetId}`;
 
   const request = {
     sourceDataset: sourceDatasetName,
     destinationDataset: destinationDatasetName,
-    resource: {config: {dicom: {whitelistTags: whitelistTags}}},
+    resource: {
+      config: {
+        dicom: {
+          keepList: {
+            tags: [
+              'Columns',
+              'NumberOfFrames',
+              'PixelRepresentation',
+              'MediaStorageSOPClassUID',
+              'MediaStorageSOPInstanceUID',
+              'Rows',
+              'SamplesPerPixel',
+              'BitsAllocated',
+              'HighBit',
+              'PhotometricInterpretation',
+              'BitsStored',
+              'PatientID',
+              'TransferSyntaxUID',
+              'SOPInstanceUID',
+              'StudyInstanceUID',
+              'SeriesInstanceUID',
+              'PixelData',
+              keeplistTags,
+            ],
+          },
+        },
+      },
+    },
   };
 
   client.projects.locations.datasets
@@ -174,7 +201,7 @@ function deidentifyDataset(
 // Returns an authorized API client by discovering the Healthcare API with
 // the provided API key.
 function getClient(apiKey, serviceAccountJson, cb) {
-  const API_VERSION = 'v1alpha';
+  const API_VERSION = 'v1alpha2';
   const DISCOVERY_API = 'https://healthcare.googleapis.com/$discovery/rest';
 
   google.auth
@@ -295,7 +322,7 @@ require(`yargs`)  // eslint-disable-line
   )
   .command(
     `deidentifyDataset <sourceDatasetId> <destinationDatasetId>
-        <whitelistTags>`,
+        <keeplistTags>`,
     `Creates a new dataset containing de-identified data from the
         source dataset.`,
     {},
@@ -307,7 +334,7 @@ require(`yargs`)  // eslint-disable-line
           opts.cloudRegion,
           opts.sourceDatasetId,
           opts.destinationDatasetId,
-          opts.whitelistTags
+          opts.keeplistTags
         );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);

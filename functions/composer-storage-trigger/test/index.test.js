@@ -15,13 +15,13 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
 
 function getSample(FetchStub) {
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       'node-fetch': FetchStub,
     }),
     mocks: {
@@ -30,29 +30,30 @@ function getSample(FetchStub) {
   };
 }
 
-test.cb(`Handles error in JSON body`, t => {
+it('Handles error in JSON body', async () => {
   const event = {
     data: {
-      file: `some-file`,
+      file: 'some-file',
     },
   };
-  const expectedMsg = `Something bad happened.`;
+  const expectedMsg = 'Something bad happened.';
   const bodyJson = {error: expectedMsg};
   const body = {
     json: sinon.stub().resolves(bodyJson),
   };
   const sample = getSample(sinon.stub().resolves(body));
 
-  sample.program.triggerDag(event).catch(function(err) {
-    t.regex(err, /Something bad happened/);
-    t.end();
-  });
+  try {
+    await sample.program.triggerDag(event);
+  } catch (err) {
+    assert.strictEqual(new RegExp(/Something bad happened/).test(err), true);
+  }
 });
 
-test.cb(`Handles error in IAP response.`, t => {
+it('Handles error in IAP response.', async () => {
   const event = {
     data: {
-      file: `some-file`,
+      file: 'some-file',
     },
   };
   const expectedMsg = 'Default IAP Error Message.';
@@ -81,9 +82,9 @@ test.cb(`Handles error in IAP response.`, t => {
     .onCall(3)
     .resolves(makeIapPostRequestRes);
   const sample = getSample(FetchStub);
-
-  sample.program.triggerDag(event).catch(function(err) {
-    t.is(err, expectedMsg);
-    t.end();
-  });
+  try {
+    await sample.program.triggerDag(event);
+  } catch (err) {
+    assert.strictEqual(err, expectedMsg);
+  }
 });

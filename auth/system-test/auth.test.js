@@ -15,21 +15,21 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const cwd = path.join(__dirname, `..`);
-const cmd = `node auth.js`;
+const cwd = path.join(__dirname, '..');
+const cmd = 'node auth.js';
 
-test.before(tools.checkCredentials);
+before(tools.checkCredentials);
 
-test.serial(`should load credentials implicitly`, async t => {
+it('should load credentials implicitly', async () => {
   const output = await tools.runAsync(`${cmd} auth-cloud-implicit`, cwd);
-  t.is(output.includes(`Buckets:`), true);
+  assert.strictEqual(output.includes('Buckets:'), true);
 });
 
-test.serial(`should load credentials explicitly`, async t => {
+it('should load credentials explicitly', async () => {
   const output = await tools.runAsync(`${cmd} auth-cloud-explicit`, cwd);
-  t.is(output.includes(`Buckets:`), true);
+  assert.strictEqual(output.includes('Buckets:'), true);
 });

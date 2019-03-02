@@ -15,9 +15,9 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const functions = require(`../`);
+const sinon = require('sinon');
+const assert = require('assert');
+const functions = require('../');
 
 function getMocks() {
   const req = {};
@@ -31,11 +31,11 @@ function getMocks() {
   };
 }
 
-test.serial(`should read env vars`, t => {
+it('should read env vars', () => {
   const mocks = getMocks();
   process.env['FOO'] = 'bar';
 
   functions.envVar(mocks.req, mocks.res);
 
-  t.true(mocks.res.send.calledWith('bar'));
+  assert.strictEqual(mocks.res.send.calledWith('bar'), true);
 });

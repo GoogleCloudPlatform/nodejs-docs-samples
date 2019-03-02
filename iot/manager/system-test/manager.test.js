@@ -22,8 +22,8 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const topicName = 'nodejs-iot-test-topic';
-const registryName = 'nodejs-iot-test-registry';
+const topicName = `nodejs-iot-test-topic-${uuid.v4()}`;
+const registryName = `nodejs-iot-test-registry-${uuid.v4()}`;
 const region = 'us-central1';
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
@@ -41,15 +41,11 @@ const pubSubClient = new PubSub({projectId});
 before(async () => {
   tools.run(installDeps, `${cwd}/../mqtt_example`);
   tools.checkCredentials();
-  // Create a single topic to be used for testing.
+  // Create a topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
 
-  // Cleans up and creates a single registry to be used for tests.
-  tools.run(`${cmd} unbindAllDevices ${registryName}`);
-  tools.run(`${cmd} clearRegistry ${registryName}`);
-
-  console.log('Cleaned up existing registry.');
+  // Creates a registry to be used for tests.
   let createRegistryRequest = {
     parent: iotClient.locationPath(projectId, region),
     deviceRegistry: {
@@ -64,19 +60,17 @@ before(async () => {
   await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
+  console.log(`Created registry: ${registryName}`);
 });
 
 after(async () => {
   await pubSubClient.topic(topicName).delete();
   console.log(`Topic ${topicName} deleted.`);
 
-  const deleteRegistryRequest = {
-    name: iotClient.registryPath(projectId, region, registryName),
-  };
+  // Cleans up the registry by removing all associations and deleting all devices.
+  tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
+  tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
 
-  await iotClient.deleteDeviceRegistry(deleteRegistryRequest).catch(err => {
-    console.log(err);
-  });
   console.log('Deleted test registry.');
 });
 

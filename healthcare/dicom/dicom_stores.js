@@ -175,7 +175,7 @@ function importDicomObject(
   cloudRegion,
   datasetId,
   dicomStoreId,
-  contentUri
+  gcsUri
 ) {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -183,16 +183,14 @@ function importDicomObject(
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
   // const dicomStoreId = 'my-dicom-store';
-  // const contentUri = 'my-bucket'
+  // const gcsUri = 'my-bucket'
   const dicomStoreName = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
 
   const request = {
     name: dicomStoreName,
     resource: {
-      inputConfig: {
-        gcsSource: {
-          contentUri: `gs://${contentUri}`,
-        },
+      gcsSource: {
+        gcsUri: `gs://${gcsUri}`,
       },
     },
   };
@@ -200,7 +198,7 @@ function importDicomObject(
   client.projects.locations.datasets.dicomStores
     .import(request)
     .then(() => {
-      console.log(`Imported DICOM objects from bucket ${contentUri}`);
+      console.log(`Imported DICOM objects from bucket ${gcsUri}`);
     })
     .catch(err => {
       console.error(err);
@@ -229,10 +227,8 @@ function exportDicomInstanceGcs(
   const request = {
     name: dicomStoreName,
     resource: {
-      outputConfig: {
-        gcsDestination: {
-          uriPrefix: `gs://${uriPrefix}`,
-        },
+      gcsDestination: {
+        uriPrefix: `gs://${uriPrefix}`,
       },
     },
   };
@@ -252,7 +248,7 @@ function exportDicomInstanceGcs(
 // the provided API key.
 // [START healthcare_get_client]
 function getClient(apiKey, serviceAccountJson, cb) {
-  const API_VERSION = 'v1alpha';
+  const API_VERSION = 'v1alpha2';
   const DISCOVERY_API = 'https://healthcare.googleapis.com/$discovery/rest';
 
   google.auth
@@ -392,7 +388,7 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `importDicomObject <datasetId> <dicomStoreId> <contentUri>`,
+    `importDicomObject <datasetId> <dicomStoreId> <gcsUri>`,
     `Imports data into the DICOM store by copying it from the specified source.`,
     {},
     opts => {
@@ -403,7 +399,7 @@ require(`yargs`) // eslint-disable-line
           opts.cloudRegion,
           opts.datasetId,
           opts.dicomStoreId,
-          opts.contentUri
+          opts.gcsUri
         );
       };
       getClient(opts.apiKey, opts.serviceAccount, cb);

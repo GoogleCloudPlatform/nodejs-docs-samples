@@ -20,7 +20,7 @@
     "google-auth-library": "^3.0.0",
     "grpc": "^1.18.0",
     "jsonwebtoken": "^8.2.0",
-    "yargs": "12.0.5"
+    "yargs": "13.2.1"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",

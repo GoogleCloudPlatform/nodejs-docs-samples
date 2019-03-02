@@ -15,14 +15,14 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 const vision = require('@google-cloud/vision').v1p1beta1;
 
-const bucketName = `my-bucket`;
-const defaultFileName = `image.jpg`;
+const bucketName = 'my-bucket';
+const defaultFileName = 'image.jpg';
 
 var VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
 VisionStub.returns({
@@ -67,7 +67,7 @@ function getSample(filename) {
   };
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       '@google-cloud/storage': {Storage: StorageMock},
       gm: gmMock,
       fs: fsMock,
@@ -82,92 +82,90 @@ function getSample(filename) {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test.serial(`blurOffensiveImages does nothing on delete`, async t => {
+it('blurOffensiveImages does nothing on delete', async () => {
   await getSample(defaultFileName).program.blurOffensiveImages({
-    data: {resourceState: `not_exists`},
+    data: {resourceState: 'not_exists'},
   });
-  t.is(console.log.callCount, 1);
-  t.deepEqual(console.log.getCall(0).args, ['This is a deletion event.']);
+  assert.strictEqual(console.log.callCount, 1);
+  assert.deepStrictEqual(console.log.getCall(0).args, [
+    'This is a deletion event.',
+  ]);
 });
 
-test.serial(`blurOffensiveImages does nothing on deploy`, async t => {
+it('blurOffensiveImages does nothing on deploy', async () => {
   await getSample(defaultFileName).program.blurOffensiveImages({data: {}});
-  t.is(console.log.callCount, 1);
-  t.deepEqual(console.log.getCall(0).args, ['This is a deploy event.']);
+  assert.strictEqual(console.log.callCount, 1);
+  assert.deepStrictEqual(console.log.getCall(0).args, [
+    'This is a deploy event.',
+  ]);
 });
 
-test.serial(
-  `blurOffensiveImages blurs unblurred images (Node 6 syntax)`,
-  async t => {
-    const sample = getSample(defaultFileName);
-    await sample.program.blurOffensiveImages({
-      data: {bucket: bucketName, name: defaultFileName},
-    });
-    t.is(console.log.callCount, 5);
-    t.deepEqual(console.log.getCall(0).args, [
-      `Analyzing ${sample.mocks.file.name}.`,
-    ]);
-    t.deepEqual(console.log.getCall(1).args, [
-      `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
-    ]);
-    t.deepEqual(console.log.getCall(2).args, [
-      `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
-        sample.mocks.file.name
-      }.`,
-    ]);
-    t.deepEqual(console.log.getCall(3).args, [
-      `Image ${sample.mocks.file.name} has been blurred.`,
-    ]);
-    t.deepEqual(console.log.getCall(4).args, [
-      `Blurred image has been uploaded to ${sample.mocks.file.name}.`,
-    ]);
-  }
-);
+it('blurOffensiveImages blurs unblurred images (Node 6 syntax)', async () => {
+  const sample = getSample(defaultFileName);
+  await sample.program.blurOffensiveImages({
+    data: {bucket: bucketName, name: defaultFileName},
+  });
+  assert.strictEqual(console.log.callCount, 5);
+  assert.deepStrictEqual(console.log.getCall(0).args, [
+    `Analyzing ${sample.mocks.file.name}.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(1).args, [
+    `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(2).args, [
+    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
+      sample.mocks.file.name
+    }.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(3).args, [
+    `Image ${sample.mocks.file.name} has been blurred.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(4).args, [
+    `Blurred image has been uploaded to ${sample.mocks.file.name}.`,
+  ]);
+});
 
-test.serial(
-  `blurOffensiveImages blurs unblurred images (Node 8 syntax)`,
-  async t => {
-    const sample = getSample(defaultFileName);
-    await sample.program.blurOffensiveImages({
-      bucket: bucketName,
-      name: defaultFileName,
-    });
-    t.is(console.log.callCount, 5);
-    t.deepEqual(console.log.getCall(0).args, [
-      `Analyzing ${sample.mocks.file.name}.`,
-    ]);
-    t.deepEqual(console.log.getCall(1).args, [
-      `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
-    ]);
-    t.deepEqual(console.log.getCall(2).args, [
-      `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
-        sample.mocks.file.name
-      }.`,
-    ]);
-    t.deepEqual(console.log.getCall(3).args, [
-      `Image ${sample.mocks.file.name} has been blurred.`,
-    ]);
-    t.deepEqual(console.log.getCall(4).args, [
-      `Blurred image has been uploaded to ${sample.mocks.file.name}.`,
-    ]);
-  }
-);
+it('blurOffensiveImages blurs unblurred images (Node 8 syntax)', async () => {
+  const sample = getSample(defaultFileName);
+  await sample.program.blurOffensiveImages({
+    bucket: bucketName,
+    name: defaultFileName,
+  });
+  assert.strictEqual(console.log.callCount, 5);
+  assert.deepStrictEqual(console.log.getCall(0).args, [
+    `Analyzing ${sample.mocks.file.name}.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(1).args, [
+    `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(2).args, [
+    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
+      sample.mocks.file.name
+    }.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(3).args, [
+    `Image ${sample.mocks.file.name} has been blurred.`,
+  ]);
+  assert.deepStrictEqual(console.log.getCall(4).args, [
+    `Blurred image has been uploaded to ${sample.mocks.file.name}.`,
+  ]);
+});
 
-test.serial(`blurOffensiveImages ignores already-blurred images`, async t => {
-  const sample = getSample(`blurred-${defaultFileName}`);
+it('blurOffensiveImages ignores already-blurred images', async () => {
+  const sample = getSample('blurred-${defaultFileName}');
   await sample.program.blurOffensiveImages({
     data: {bucket: bucketName, name: `blurred-${defaultFileName}`},
   });
-  t.is(console.log.callCount, 1);
-  t.deepEqual(console.log.getCall(0).args, [
+  assert.strictEqual(console.log.callCount, 1);
+  assert.deepStrictEqual(console.log.getCall(0).args, [
     `The image ${sample.mocks.file.name} is already blurred.`,
   ]);
 });
 
-test.serial(`blurOffensiveImages ignores safe images`, async t => {
+it('blurOffensiveImages ignores safe images', async () => {
   VisionStub.restore();
   VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
   VisionStub.returns({
@@ -186,11 +184,11 @@ test.serial(`blurOffensiveImages ignores safe images`, async t => {
   await sample.program.blurOffensiveImages({
     data: {bucket: bucketName, name: defaultFileName},
   });
-  t.is(console.log.callCount, 2);
-  t.deepEqual(console.log.getCall(0).args, [
+  assert.strictEqual(console.log.callCount, 2);
+  assert.deepStrictEqual(console.log.getCall(0).args, [
     `Analyzing ${sample.mocks.file.name}.`,
   ]);
-  t.deepEqual(console.log.getCall(1).args, [
+  assert.deepStrictEqual(console.log.getCall(1).args, [
     `The image ${sample.mocks.file.name} has been detected as OK.`,
   ]);
 });

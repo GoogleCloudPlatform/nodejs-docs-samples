@@ -24,12 +24,13 @@ const cmd = 'node datasets.js';
 const cwd = path.join(__dirname, '..');
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
-const whitelistTags = 'PatientID';
+const keeplistTags = 'PatientID';
 
 before(tools.checkCredentials);
 after(async () => {
   try {
     await tools.runAsync(`${cmd} deleteDataset ${destinationDatasetId}`, cwd);
+    // eslint-disable-next-line no-empty
   } catch (err) {} // Ignore error
 });
 
@@ -63,7 +64,7 @@ it('should list datasets', async () => {
 
 it('should de-identify data in a dataset and write to a new dataset', async () => {
   const output = await tools.runAsync(
-    `${cmd} deidentifyDataset ${datasetId} ${destinationDatasetId} ${whitelistTags}`,
+    `${cmd} deidentifyDataset ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
     cwd
   );
   assert.strictEqual(

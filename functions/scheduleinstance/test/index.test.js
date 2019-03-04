@@ -16,18 +16,18 @@
 'use strict';
 
 const Buffer = require('safe-buffer').Buffer;
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 function getSample() {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise(resolve => resolve(`request sent`)));
+    .returns(new Promise(resolve => resolve('request sent')));
 
   return {
-    program: proxyquire(`../`, {
+    program: proxyquire('../', {
       'request-promise': requestPromise,
     }),
     mocks: {
@@ -51,12 +51,12 @@ function getMocks() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
 /** Tests for startInstancePubSub */
 
-test(`startInstancePubSub: should accept JSON-formatted event payload`, async t => {
+it('startInstancePubSub: should accept JSON-formatted event payload', async () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone', instance: 'test-instance'};
@@ -65,13 +65,12 @@ test(`startInstancePubSub: should accept JSON-formatted event payload`, async t 
   );
   sample.program.startInstancePubSub(mocks.event, mocks.callback);
 
-  sample.mocks.requestPromise().then(data => {
-    // The request was successfully sent.
-    t.deepEqual(data, 'request sent');
-  });
+  const data = await sample.mocks.requestPromise();
+  // The request was successfully sent.
+  assert.strictEqual(data, 'request sent');
 });
 
-test(`startInstancePubSub: should fail with missing 'zone' attribute`, async t => {
+it(`startInstancePubSub: should fail with missing 'zone' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {instance: 'test-instance'};
@@ -80,13 +79,13 @@ test(`startInstancePubSub: should fail with missing 'zone' attribute`, async t =
   );
   sample.program.startInstancePubSub(mocks.event, mocks.callback);
 
-  t.deepEqual(
+  assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
     new Error(`Attribute 'zone' missing from payload`)
   );
 });
 
-test(`startInstancePubSub: should fail with missing 'instance' attribute`, async t => {
+it(`startInstancePubSub: should fail with missing 'instance' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone'};
@@ -95,13 +94,13 @@ test(`startInstancePubSub: should fail with missing 'instance' attribute`, async
   );
   sample.program.startInstancePubSub(mocks.event, mocks.callback);
 
-  t.deepEqual(
+  assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
     new Error(`Attribute 'instance' missing from payload`)
   );
 });
 
-test(`startInstancePubSub: should fail with empty event payload`, async t => {
+it('startInstancePubSub: should fail with empty event payload', () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {};
@@ -110,7 +109,7 @@ test(`startInstancePubSub: should fail with empty event payload`, async t => {
   );
   sample.program.startInstancePubSub(mocks.event, mocks.callback);
 
-  t.deepEqual(
+  assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
     new Error(`Attribute 'zone' missing from payload`)
   );
@@ -118,7 +117,7 @@ test(`startInstancePubSub: should fail with empty event payload`, async t => {
 
 /** Tests for stopInstancePubSub */
 
-test(`stopInstancePubSub: should accept JSON-formatted event payload`, async t => {
+it('stopInstancePubSub: should accept JSON-formatted event payload', async () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone', instance: 'test-instance'};
@@ -127,13 +126,12 @@ test(`stopInstancePubSub: should accept JSON-formatted event payload`, async t =
   );
   sample.program.stopInstancePubSub(mocks.event, mocks.callback);
 
-  sample.mocks.requestPromise().then(data => {
-    // The request was successfully sent.
-    t.deepEqual(data, 'request sent');
-  });
+  const data = await sample.mocks.requestPromise();
+  // The request was successfully sent.
+  assert.strictEqual(data, 'request sent');
 });
 
-test(`stopInstancePubSub: should fail with missing 'zone' attribute`, async t => {
+it(`stopInstancePubSub: should fail with missing 'zone' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {instance: 'test-instance'};
@@ -142,13 +140,13 @@ test(`stopInstancePubSub: should fail with missing 'zone' attribute`, async t =>
   );
   sample.program.stopInstancePubSub(mocks.event, mocks.callback);
 
-  t.deepEqual(
+  assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
     new Error(`Attribute 'zone' missing from payload`)
   );
 });
 
-test(`stopInstancePubSub: should fail with missing 'instance' attribute`, async t => {
+it(`stopInstancePubSub: should fail with missing 'instance' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone'};
@@ -157,13 +155,13 @@ test(`stopInstancePubSub: should fail with missing 'instance' attribute`, async 
   );
   sample.program.stopInstancePubSub(mocks.event, mocks.callback);
 
-  t.deepEqual(
+  assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
     new Error(`Attribute 'instance' missing from payload`)
   );
 });
 
-test(`stopInstancePubSub: should fail with empty event payload`, async t => {
+it('stopInstancePubSub: should fail with empty event payload', () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {};
@@ -172,7 +170,7 @@ test(`stopInstancePubSub: should fail with empty event payload`, async t => {
   );
   sample.program.stopInstancePubSub(mocks.event, mocks.callback);
 
-  t.deepEqual(
+  assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
     new Error(`Attribute 'zone' missing from payload`)
   );

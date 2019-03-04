@@ -35,8 +35,9 @@ const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
 );
 
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
-const dcmFileName = 'IM-0002-0001-JPEG-BASELINE.dcm';
-const contentUri = bucketName + '/' + dcmFileName;
+
+const dcmFileName = `IM-0002-0001-JPEG-BASELINE.dcm`;
+const gcsUri = bucketName + '/' + dcmFileName;
 
 before(async () => {
   tools.checkCredentials();
@@ -99,7 +100,7 @@ it('should export a DICOM instance', async () => {
 
 it('should import a DICOM object from GCS', async () => {
   const output = await tools.runAsync(
-    `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${contentUri}`,
+    `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${gcsUri}`,
     cwd
   );
   assert.strictEqual(

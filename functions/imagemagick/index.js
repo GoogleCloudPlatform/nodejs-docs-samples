@@ -27,8 +27,8 @@ const client = new vision.ImageAnnotatorClient();
 
 // [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
-exports.blurOffensiveImages = (event) => {
-  const object = event.data || event;
+exports.blurOffensiveImages = event => {
+  const object = event.data || event; // Node 6: event.data === Node 8+: event
 
   // Exit if this is a deletion or a deploy event.
   if (object.resourceState === 'not_exists') {
@@ -50,17 +50,22 @@ exports.blurOffensiveImages = (event) => {
 
   console.log(`Analyzing ${file.name}.`);
 
-  return client.safeSearchDetection(filePath)
-    .catch((err) => {
+  return client
+    .safeSearchDetection(filePath)
+    .catch(err => {
       console.error(`Failed to analyze ${file.name}.`, err);
       return Promise.reject(err);
     })
     .then(([result]) => {
       const detections = result.safeSearchAnnotation;
 
-      if (detections.adult === 'VERY_LIKELY' ||
-          detections.violence === 'VERY_LIKELY') {
-        console.log(`The image ${file.name} has been detected as inappropriate.`);
+      if (
+        detections.adult === 'VERY_LIKELY' ||
+        detections.violence === 'VERY_LIKELY'
+      ) {
+        console.log(
+          `The image ${file.name} has been detected as inappropriate.`
+        );
         return blurImage(file);
       } else {
         console.log(`The image ${file.name} has been detected as OK.`);
@@ -71,28 +76,33 @@ exports.blurOffensiveImages = (event) => {
 
 // [START functions_imagemagick_blur]
 // Blurs the given file using ImageMagick.
-function blurImage (file) {
+function blurImage(file) {
   const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
 
   // Download file from bucket.
-  return file.download({ destination: tempLocalPath })
-    .catch((err) => {
+  return file
+    .download({destination: tempLocalPath})
+    .catch(err => {
       console.error('Failed to download file.', err);
       return Promise.reject(err);
     })
     .then(() => {
-      console.log(`Image ${file.name} has been downloaded to ${tempLocalPath}.`);
+      console.log(
+        `Image ${file.name} has been downloaded to ${tempLocalPath}.`
+      );
 
       // Blur the image using ImageMagick.
       return new Promise((resolve, reject) => {
-        gm(tempLocalPath).blur(16).write((tempLocalPath), (err, stdout) => {
-          if (err) {
-            console.error('Failed to blur image.', err);
-            reject(err);
-          } else {
-            resolve(stdout);
-          }
-        });
+        gm(tempLocalPath)
+          .blur(0, 16)
+          .write(tempLocalPath, (err, stdout) => {
+            if (err) {
+              console.error('Failed to blur image.', err);
+              reject(err);
+            } else {
+              resolve(stdout);
+            }
+          });
       });
     })
     .then(() => {
@@ -102,8 +112,9 @@ function blurImage (file) {
       const newName = `blurred-${file.name}`;
 
       // Upload the Blurred image back into the bucket.
-      return file.bucket.upload(tempLocalPath, { destination: newName })
-        .catch((err) => {
+      return file.bucket
+        .upload(tempLocalPath, {destination: newName})
+        .catch(err => {
           console.error('Failed to upload blurred image.', err);
           return Promise.reject(err);
         });
@@ -113,7 +124,7 @@ function blurImage (file) {
 
       // Delete the temporary file.
       return new Promise((resolve, reject) => {
-        fs.unlink(tempLocalPath, (err) => {
+        fs.unlink(tempLocalPath, err => {
           if (err) {
             reject(err);
           } else {

@@ -17,33 +17,15 @@ Before you can run or deploy the sample, you need to do the following:
 1.  Add your tracking ID to `app.yaml`.
 1.  Install dependencies:
 
-    With `npm`:
-
         npm install
-
-    or with `yarn`:
-
-        yarn install
 
 ## Running locally
 
-With `npm`:
-
     npm start
-
-or with `yarn`:
-
-    yarn start
 
 ## Deploying to App Engine
 
-With `npm`:
-
     npm run deploy
-
-or with `yarn`:
-
-    yarn run deploy
 
 Use the [Stackdriver Trace dashboard](https://console.cloud.google.com/traces/traces) to inspect recorded traces.
 

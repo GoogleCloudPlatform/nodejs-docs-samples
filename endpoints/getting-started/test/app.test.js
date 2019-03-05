@@ -26,53 +26,56 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../app.js');
 
-function getSample () {
+function getSample() {
   const testApp = express();
   sinon.stub(testApp, 'listen').callsArg(1);
   const expressMock = sinon.stub().returns(testApp);
 
   const app = proxyquire(SAMPLE_PATH, {
-    express: expressMock
+    express: expressMock,
   });
   return {
     app: app,
     mocks: {
-      express: expressMock
-    }
+      express: expressMock,
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.cb('should echo a message', (t) => {
+test.cb('should echo a message', t => {
   request(getSample().app)
     .post('/echo')
-    .send({ message: 'foo' })
+    .send({message: 'foo'})
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       t.is(response.body.message, 'foo');
     })
     .end(t.end);
 });
 
-test.cb('should try to parse encoded info', (t) => {
+test.cb('should try to parse encoded info', t => {
   request(getSample().app)
     .get('/auth/info/googlejwt')
     .expect(200)
-    .expect((response) => {
-      t.deepEqual(response.body, { id: 'anonymous' });
+    .expect(response => {
+      t.deepEqual(response.body, {id: 'anonymous'});
     })
     .end(t.end);
 });
 
-test.cb('should successfully parse encoded info', (t) => {
+test.cb('should successfully parse encoded info', t => {
   request(getSample().app)
     .get('/auth/info/googlejwt')
-    .set('X-Endpoint-API-UserInfo', Buffer.from(JSON.stringify({ id: 'foo' })).toString('base64'))
+    .set(
+      'X-Endpoint-API-UserInfo',
+      Buffer.from(JSON.stringify({id: 'foo'})).toString('base64')
+    )
     .expect(200)
-    .expect((response) => {
-      t.deepEqual(response.body, { id: 'foo' });
+    .expect(response => {
+      t.deepEqual(response.body, {id: 'foo'});
     })
     .end(t.end);
 });

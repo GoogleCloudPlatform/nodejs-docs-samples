@@ -26,42 +26,33 @@ const projectId = process.env.GCLOUD_PROJECT;
 const location = 'global';
 
 // Acquires credentials
-google.auth.getApplicationDefault((err, authClient) => {
-  if (err) {
-    console.error('Failed to acquire credentials');
-    return;
-  }
+google.auth
+  .getClient({scopes: ['https://www.googleapis.com/auth/cloud-platform']})
+  .then(auth => {
+    // Instantiates an authorized client
+    const cloudkms = google.cloudkms({
+      version: 'v1',
+      auth,
+    });
+    const request = {
+      parent: `projects/${projectId}/locations/${location}`,
+    };
 
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    authClient = authClient.createScoped([
-      'https://www.googleapis.com/auth/cloud-platform'
-    ]);
-  }
+    // Lists key rings
+    cloudkms.projects.locations.keyRings.list(request, (err, result) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
 
-  // Instantiates an authorized client
-  const cloudkms = google.cloudkms({
-    version: 'v1',
-    auth: authClient
+      const keyRings = result.data.keyRings || [];
+
+      if (keyRings.length) {
+        console.log('Key rings:');
+        keyRings.forEach(keyRing => console.log(keyRing.name));
+      } else {
+        console.log(`No key rings found.`);
+      }
+    });
   });
-  const request = {
-    parent: `projects/${projectId}/locations/${location}`
-  };
-
-  // Lists key rings
-  cloudkms.projects.locations.keyRings.list(request, (err, result) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-
-    const keyRings = result.data.keyRings || [];
-
-    if (keyRings.length) {
-      console.log('Key rings:');
-      keyRings.forEach((keyRing) => console.log(keyRing.name));
-    } else {
-      console.log(`No key rings found.`);
-    }
-  });
-});
 // [END kms_quickstart]

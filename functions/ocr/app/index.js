@@ -19,7 +19,8 @@
 const config = require('./config.json');
 
 // Get a reference to the Pub/Sub component
-const pubsub = require('@google-cloud/pubsub')();
+const {PubSub} = require('@google-cloud/pubsub');
+const pubsub = new PubSub();
 // Get a reference to the Cloud Storage component
 const storage = require('@google-cloud/storage')();
 // Get a reference to the Cloud Vision API component
@@ -37,8 +38,10 @@ const Buffer = require('safe-buffer').Buffer;
  * @param {string} topicName Name of the topic on which to publish.
  * @param {object} data The message data to publish.
  */
-function publishResult (topicName, data) {
-  return pubsub.topic(topicName).get({ autoCreate: true })
+function publishResult(topicName, data) {
+  return pubsub
+    .topic(topicName)
+    .get({autoCreate: true})
     .then(([topic]) => topic.publish(data));
 }
 // [END functions_ocr_publish]
@@ -51,11 +54,12 @@ function publishResult (topicName, data) {
  * @param {string} filename Cloud Storage file name.
  * @returns {Promise}
  */
-function detectText (bucketName, filename) {
+function detectText(bucketName, filename) {
   let text;
 
   console.log(`Looking for text in image ${filename}`);
-  return vision.textDetection({ source: { imageUri: `gs://${bucketName}/${filename}` } })
+  return vision
+    .textDetection({source: {imageUri: `gs://${bucketName}/${filename}`}})
     .then(([detections]) => {
       const annotation = detections.textAnnotations[0];
       text = annotation ? annotation.description : '';
@@ -69,7 +73,7 @@ function detectText (bucketName, filename) {
       console.log(`Detected language "${detection.language}" for ${filename}`);
 
       // Submit a message to the bus for each language we're going to translate to
-      const tasks = config.TO_LANG.map((lang) => {
+      const tasks = config.TO_LANG.map(lang => {
         let topicName = config.TRANSLATE_TOPIC;
         if (detection.language === lang) {
           topicName = config.RESULT_TOPIC;
@@ -78,7 +82,7 @@ function detectText (bucketName, filename) {
           text: text,
           filename: filename,
           lang: lang,
-          from: detection.language
+          from: detection.language,
         };
 
         return publishResult(topicName, messageData);
@@ -97,7 +101,7 @@ function detectText (bucketName, filename) {
  * @param {string} lang Language to append.
  * @returns {string} The new filename.
  */
-function renameImageForSave (filename, lang) {
+function renameImageForSave(filename, lang) {
   return `${filename}_to_${lang}.txt`;
 }
 // [END functions_ocr_rename]
@@ -108,11 +112,11 @@ function renameImageForSave (filename, lang) {
  * a file is uploaded to the Cloud Storage bucket you created
  * for uploading images.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data A Google Cloud Storage File object.
+ * @param {object} event.data (Node 6) A Google Cloud Storage File object.
+ * @param {object} event (Node 8+) A Google Cloud Storage File object.
  */
-exports.processImage = (event) => {
-  let file = event.data;
+exports.processImage = event => {
+  let file = event.data || event;
 
   return Promise.resolve()
     .then(() => {
@@ -122,10 +126,14 @@ exports.processImage = (event) => {
       }
 
       if (!file.bucket) {
-        throw new Error('Bucket not provided. Make sure you have a "bucket" property in your request');
+        throw new Error(
+          'Bucket not provided. Make sure you have a "bucket" property in your request'
+        );
       }
       if (!file.name) {
-        throw new Error('Filename not provided. Make sure you have a "name" property in your request');
+        throw new Error(
+          'Filename not provided. Make sure you have a "name" property in your request'
+        );
       }
 
       return detectText(file.bucket, file.name);
@@ -143,31 +151,37 @@ exports.processImage = (event) => {
  * by the TRANSLATE_TOPIC value in the config.json file. The
  * function translates text using the Google Translate API.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The Cloud Pub/Sub Message object.
- * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
+ * @param {object} event.data (Node 6) The Cloud Pub/Sub Message object.
+ * @param {object} event (Node 8+) The Cloud Pub/Sub Message object.
+ * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.translateText = (event) => {
-  const pubsubMessage = event.data;
-  const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
+exports.translateText = event => {
+  const pubsubData = event.data.data || event.data;
+  const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const payload = JSON.parse(jsonStr);
 
   return Promise.resolve()
     .then(() => {
       if (!payload.text) {
-        throw new Error('Text not provided. Make sure you have a "text" property in your request');
+        throw new Error(
+          'Text not provided. Make sure you have a "text" property in your request'
+        );
       }
       if (!payload.filename) {
-        throw new Error('Filename not provided. Make sure you have a "filename" property in your request');
+        throw new Error(
+          'Filename not provided. Make sure you have a "filename" property in your request'
+        );
       }
       if (!payload.lang) {
-        throw new Error('Language not provided. Make sure you have a "lang" property in your request');
+        throw new Error(
+          'Language not provided. Make sure you have a "lang" property in your request'
+        );
       }
 
       const options = {
         from: payload.from,
-        to: payload.lang
+        to: payload.lang,
       };
 
       console.log(`Translating text into ${payload.lang}`);
@@ -177,7 +191,7 @@ exports.translateText = (event) => {
       const messageData = {
         text: translation,
         filename: payload.filename,
-        lang: payload.lang
+        lang: payload.lang,
       };
 
       return publishResult(config.RESULT_TOPIC, messageData);
@@ -195,26 +209,32 @@ exports.translateText = (event) => {
  * by the RESULT_TOPIC value in the config.json file. The
  * function saves the data packet to a file in GCS.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The Cloud Pub/Sub Message object.
- * @param {string} event.data.data The "data" property of the Cloud Pub/Sub
+ * @param {object} event.data (Node 6) The Cloud Pub/Sub Message object.
+ * @param {object} event (Node 8+) The Cloud Pub/Sub Message object.
+ * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.saveResult = (event) => {
-  const pubsubMessage = event.data;
-  const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
+exports.saveResult = event => {
+  const pubsubData = event.data.data || event.data;
+  const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const payload = JSON.parse(jsonStr);
 
   return Promise.resolve()
     .then(() => {
       if (!payload.text) {
-        throw new Error('Text not provided. Make sure you have a "text" property in your request');
+        throw new Error(
+          'Text not provided. Make sure you have a "text" property in your request'
+        );
       }
       if (!payload.filename) {
-        throw new Error('Filename not provided. Make sure you have a "filename" property in your request');
+        throw new Error(
+          'Filename not provided. Make sure you have a "filename" property in your request'
+        );
       }
       if (!payload.lang) {
-        throw new Error('Language not provided. Make sure you have a "lang" property in your request');
+        throw new Error(
+          'Language not provided. Make sure you have a "lang" property in your request'
+        );
       }
 
       console.log(`Received request to save file ${payload.filename}`);

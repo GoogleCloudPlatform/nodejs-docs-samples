@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "description": "Examples of integrating Cloud Functions with billing",
   "main": "index.js",
+  "engines": {
+    "node": ">=8"
+  },
   "scripts": {
-    "lint": "repo-tools lint",
-    "pretest": "npm run lint",
     "test": "ava test/*"
   },
   "author": "Ace Nassri <anassri@google.com>",

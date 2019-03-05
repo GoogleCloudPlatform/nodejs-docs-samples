@@ -16,6 +16,8 @@
 'use strict';
 
 // [START functions_http_content]
+const escapeHtml = require('escape-html');
+
 /**
  * Responds to an HTTP request using data from the request body parsed according
  * to the "content-type" header.
@@ -48,17 +50,17 @@ exports.helloContent = (req, res) => {
       break;
   }
 
-  res.status(200).send(`Hello ${name || 'World'}!`);
+  res.status(200).send(`Hello ${escapeHtml(name || 'World')}!`);
 };
 // [END functions_http_content]
 
 // [START functions_http_method]
-function handleGET (req, res) {
+function handleGET(req, res) {
   // Do something with the GET request
   res.status(200).send('Hello World!');
 }
 
-function handlePUT (req, res) {
+function handlePUT(req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
 }
@@ -81,7 +83,7 @@ exports.helloHttp = (req, res) => {
       handlePUT(req, res);
       break;
     default:
-      res.status(500).send({ error: 'Something blew up!' });
+      res.status(405).send({error: 'Something blew up!'});
       break;
   }
 };
@@ -130,7 +132,7 @@ const Busboy = require('busboy');
 
 exports.uploadFile = (req, res) => {
   if (req.method === 'POST') {
-    const busboy = new Busboy({ headers: req.headers });
+    const busboy = new Busboy({headers: req.headers});
     const tmpdir = os.tmpdir();
 
     // This object will accumulate all the fields, keyed by their name
@@ -173,15 +175,14 @@ exports.uploadFile = (req, res) => {
     // Triggered once all uploaded files are processed by Busboy.
     // We still need to wait for the disk writes (saves) to complete.
     busboy.on('finish', () => {
-      Promise.all(fileWrites)
-        .then(() => {
-          // TODO(developer): Process saved files here
-          for (const name in uploads) {
-            const file = uploads[name];
-            fs.unlinkSync(file);
-          }
-          res.send();
-        });
+      Promise.all(fileWrites).then(() => {
+        // TODO(developer): Process saved files here
+        for (const name in uploads) {
+          const file = uploads[name];
+          fs.unlinkSync(file);
+        }
+        res.send();
+      });
     });
 
     busboy.end(req.rawBody);
@@ -214,10 +215,10 @@ exports.getSignedUrl = (req, res) => {
     const config = {
       action: 'write',
       expires: expiresAtMs,
-      contentType: req.body.contentType
+      contentType: req.body.contentType,
     };
 
-    file.getSignedUrl(config, function (err, url) {
+    file.getSignedUrl(config, function(err, url) {
       if (err) {
         console.error(err);
         res.status(500).end();

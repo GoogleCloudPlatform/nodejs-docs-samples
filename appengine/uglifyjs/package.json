@@ -12,8 +12,7 @@
     "start": "node ./index.js",
     "lint-css": "stylelint static/style.css",
     "lint-html": "htmlhint index.html",
-    "lint-js": "semistandard index.js static/message.js",
-    "lint": "npm run lint-css && npm run lint-html && npm run lint-js",
+    "lint": "npm run lint-css && npm run lint-html",
     "test": "npm run gcp-build && repo-tools test app -- index.js",
     "minify-css": "cleancss -o static/style.min.css static/style.css",
     "minify-js": "uglifyjs --compress --mangle -o static/message.min.js static/message.js",
@@ -35,8 +34,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^2.3.3",
-    "htmlhint": "^0.9.13",
-    "semistandard": "^12.0.1",
+    "htmlhint": "^0.10.0",
     "stylelint": "^9.4.0",
     "stylelint-config-recommended": "^2.1.0"
   },

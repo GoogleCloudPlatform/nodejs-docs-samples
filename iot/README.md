@@ -19,10 +19,10 @@ Cloud IoT Core platform.
 
 1.  Create a registry:
 
-        gcloud beta iot registries create my-registry \
-            --project=my-iot-project \
-            --region=us-central1 \
-            --event-pubsub-topic=projects/my-iot-project/topics/device-events
+        gcloud iot registries create "your-registry-id" \
+          --project=<your-project-id> \
+          --region=us-central1 \
+          --event-notification-config=topic=projects/<your-project-id>/topics/<pubsub-topic-name>
 
 1.  Use the `generate_keys.sh` script to generate your signing keys:
 
@@ -30,7 +30,7 @@ Cloud IoT Core platform.
 
 1.  Create a device.
 
-        gcloud beta iot devices create my-node-device \
+        gcloud iot devices create my-node-device \
             --project=my-iot-project \
             --region=us-central1 \
             --registry=my-registry \

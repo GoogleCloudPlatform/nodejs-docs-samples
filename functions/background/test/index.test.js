@@ -20,27 +20,27 @@ const sinon = require(`sinon`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
-function getSample () {
-  const requestPromise = sinon.stub().returns(Promise.resolve(`test`));
+function getSample() {
+  const requestPromiseNative = sinon.stub().returns(Promise.resolve(`test`));
 
   return {
     program: proxyquire(`../`, {
-      'request-promise': requestPromise
+      'request-promise-native': requestPromiseNative,
     }),
     mocks: {
-      requestPromise: requestPromise
-    }
+      requestPromiseNative: requestPromiseNative,
+    },
   };
 }
 
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test.serial(`should echo message`, (t) => {
+test.serial(`should echo message`, t => {
   const event = {
     data: {
-      myMessage: `hi`
-    }
+      myMessage: `hi`,
+    },
   };
   const sample = getSample();
   const callback = sinon.stub();
@@ -53,45 +53,53 @@ test.serial(`should echo message`, (t) => {
   t.deepEqual(callback.firstCall.args, []);
 });
 
-test.serial(`should say no message was provided`, (t) => {
+test.serial(`should say no message was provided`, t => {
   const error = new Error(`No message defined!`);
   const callback = sinon.stub();
   const sample = getSample();
-  sample.program.helloWorld({ data: {} }, callback);
+  sample.program.helloWorld({data: {}}, callback);
 
   t.is(callback.callCount, 1);
   t.deepEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should make a promise request`, (t) => {
+test.serial(`should make a promise request`, t => {
   const sample = getSample();
   const event = {
     data: {
-      endpoint: `foo.com`
-    }
+      endpoint: `foo.com`,
+    },
   };
 
-  return sample.program.helloPromise(event)
-    .then((result) => {
-      t.deepEqual(sample.mocks.requestPromise.firstCall.args, [{ uri: `foo.com` }]);
-      t.is(result, `test`);
-    });
+  return sample.program.helloPromise(event).then(result => {
+    t.deepEqual(sample.mocks.requestPromiseNative.firstCall.args, [
+      {uri: `foo.com`},
+    ]);
+    t.is(result, `test`);
+  });
 });
 
-test.serial(`should return synchronously`, (t) => {
-  t.is(getSample().program.helloSynchronous({
-    data: {
-      something: true
-    }
-  }), `Something is true!`);
-});
-
-test.serial(`should throw an error`, (t) => {
-  t.throws(() => {
+test.serial(`should return synchronously`, t => {
+  t.is(
     getSample().program.helloSynchronous({
       data: {
-        something: false
-      }
-    });
-  }, Error, `Something was not true!`);
+        something: true,
+      },
+    }),
+    `Something is true!`
+  );
+});
+
+test.serial(`should throw an error`, t => {
+  t.throws(
+    () => {
+      getSample().program.helloSynchronous({
+        data: {
+          something: false,
+        },
+      });
+    },
+    Error,
+    `Something was not true!`
+  );
 });

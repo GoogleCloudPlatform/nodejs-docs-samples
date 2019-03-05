@@ -30,8 +30,8 @@ const text = `President Obama is speaking at the White House. He is announcing a
 let db, controllerMock, botkitMock, botMock, program;
 
 test.before(tools.checkCredentials);
-test.before.cb((t) => {
-  fs.unlink(DB_PATH, (err) => {
+test.before.cb(t => {
+  fs.unlink(DB_PATH, err => {
     if (err && err.code !== `ENOENT`) {
       t.end(err);
       return;
@@ -42,27 +42,27 @@ test.before.cb((t) => {
       spawn: sinon.stub().returnsThis(),
       startRTM: sinon.stub().returnsThis(),
       hears: sinon.stub().returnsThis(),
-      on: sinon.stub().returnsThis()
+      on: sinon.stub().returnsThis(),
     };
 
     botkitMock = {
-      slackbot: sinon.stub().returns(controllerMock)
+      slackbot: sinon.stub().returns(controllerMock),
     };
 
     botMock = {
-      reply: sinon.stub()
+      reply: sinon.stub(),
     };
 
     program = proxyquire(`../demo_bot`, {
-      botkit: botkitMock
+      botkit: botkitMock,
     });
 
     db.run(program.TABLE_SQL, t.end);
   });
 });
 
-test.after.cb.always((t) => {
-  fs.unlink(DB_PATH, (err) => {
+test.after.cb.always(t => {
+  fs.unlink(DB_PATH, err => {
     if (err) {
       t.end(err);
       return;
@@ -76,15 +76,15 @@ test.after.cb.always((t) => {
   });
 });
 
-test.serial(`should analyze sentiment in text`, async (t) => {
+test.serial(`should analyze sentiment in text`, async t => {
   const results = await program.analyzeSentiment(text);
   t.is(results.documentSentiment.score > 0, true);
 });
 
-test.serial(`should analyze entities in text`, async (t) => {
+test.serial(`should analyze entities in text`, async t => {
   const entities = await program.analyzeEntities(text, Date.now());
-  t.is(entities.some((entity) => entity.name === `Obama`), true);
-  t.is(entities.some((entity) => entity.name === `White House`), true);
+  t.is(entities.some(entity => entity.name === `Obama`), true);
+  t.is(entities.some(entity => entity.name === `White House`), true);
 
   await new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -93,15 +93,15 @@ test.serial(`should analyze entities in text`, async (t) => {
           reject(err);
           return;
         }
-        t.is(entities.some((entity) => entity.name === `Obama`), true);
-        t.is(entities.some((entity) => entity.name === `White House`), true);
+        t.is(entities.some(entity => entity.name === `Obama`), true);
+        t.is(entities.some(entity => entity.name === `White House`), true);
         resolve();
       });
     }, 1000);
   });
 });
 
-test.serial(`should reply to simple hello message`, (t) => {
+test.serial(`should reply to simple hello message`, t => {
   const message = {};
 
   program.handleSimpleReply(botMock, message);
@@ -110,7 +110,7 @@ test.serial(`should reply to simple hello message`, (t) => {
   t.deepEqual(botMock.reply.getCall(0).args, [message, `Hello.`]);
 });
 
-test.cb.serial(`should reply to entities message`, (t) => {
+test.cb.serial(`should reply to entities message`, t => {
   const message = {};
 
   program.handleEntitiesReply(botMock, message);
@@ -119,7 +119,10 @@ test.cb.serial(`should reply to entities message`, (t) => {
     try {
       t.is(botMock.reply.callCount, 3);
       t.deepEqual(botMock.reply.getCall(1).args, [message, `Top entities: `]);
-      t.deepEqual(botMock.reply.getCall(2).args, [message, `entity: *Obama*, type: PERSON, count: 1\nentity: *White House*, type: LOCATION, count: 1\nentity: *cookie recipe*, type: WORK_OF_ART, count: 1\n`]);
+      t.deepEqual(botMock.reply.getCall(2).args, [
+        message,
+        `entity: *Obama*, type: PERSON, count: 1\nentity: *White House*, type: LOCATION, count: 1\nentity: *cookie recipe*, type: WORK_OF_ART, count: 1\n`,
+      ]);
       t.end();
     } catch (err) {
       t.end(err);

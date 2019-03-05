@@ -188,9 +188,10 @@ describe('inspect', () => {
   });
 
   // CLI options
+  // This test is potentially flaky, possibly because of model changes.
   it('should have a minLikelihood option', async () => {
     const outputA = await exec(
-      `${cmd} string "My phone number is (123) 456-7890." -m LIKELY`
+      `${cmd} string "My phone number is (123) 456-7890." -m VERY_LIKELY`
     );
     const outputB = await exec(
       `${cmd} string "My phone number is (123) 456-7890." -m UNLIKELY`

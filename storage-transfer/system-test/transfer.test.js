@@ -80,8 +80,11 @@ it('should create a storage transfer job', done => {
     description: description,
   };
 
-  program.createTransferJob(options, (err, transferJob) => {
-    assert.ifError(err);
+  return program.createTransferJob(options, (err, transferJob) => {
+    //assert.ifError(err);
+    if (err) {
+      return done(err);
+    }
     jobName = transferJob.name;
     assert.strictEqual(transferJob.name.indexOf('transferJobs/'), 0);
     assert.strictEqual(transferJob.description, description);

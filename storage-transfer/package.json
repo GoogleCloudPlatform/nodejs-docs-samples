@@ -13,7 +13,7 @@
   },
   "scripts": {
     "unit-test": "mocha test/*.test.js --timeout=60000",
-    "system-test": "mocha system-test/*.test.js --timeout=60000",
+    "system-test": "mocha system-test/*.test.js --timeout=600000",
     "test": "repo-tools test install --cmd=npm -- run unit-test && repo-tools test install --cmd=npm -- run system-test"
   },
   "dependencies": {

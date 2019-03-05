@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2019, Google, LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,13 @@
 
 'use strict';
 
-// [START debugger_setup_explicit]
-require('@google-cloud/debug-agent').start({
-  projectId: 'your-project-id',
-  keyFilename: '/path/to/key.json',
+const test = require(`ava`);
+const tools = require(`@google-cloud/nodejs-repo-tools`);
+const runSample = `'require("./basic-job-sample").runSample()'`;
+
+test(`Should batchDelete jobs.`, async t => {
+  const output = await tools.runAsync(`node -e ${runSample}`);
+  const pattern = `.*Batch deleted.*\n` + `.*{}*`;
+
+  t.regex(output, new RegExp(pattern));
 });
-// [END debugger_setup_explicity]

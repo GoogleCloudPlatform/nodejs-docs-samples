@@ -13,22 +13,21 @@
 
 'use strict';
 
-const test = require(`ava`);
-const path = require(`path`);
-const utils = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const path = require('path');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
-const cwd = path.join(__dirname, `../`);
+const cwd = path.join(__dirname, '../');
 const requestObj = utils.getRequest({cwd: cwd});
 
-test.serial.cb(`should return a screenshot`, t => {
-  requestObj
-    .get(`/?url=https://example.com`)
+it('should return a screenshot', async () => {
+  await requestObj
+    .get('/?url=https://example.com')
     .send()
     .expect(200)
     .expect(response => {
-      t.is(response.type, `image/png`);
-      t.true(response.body instanceof Buffer);
-      t.true(response.body.length > 0);
-    })
-    .end(t.end);
+      assert.strictEqual(response.type, 'image/png');
+      assert.strictEqual(response.body instanceof Buffer, true);
+      assert.strictEqual(response.body.length > 0, true);
+    });
 });

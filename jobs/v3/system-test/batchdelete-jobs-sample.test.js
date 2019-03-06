@@ -15,13 +15,12 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const runSample = `'require("./basic-job-sample").runSample()'`;
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const runSample = `require('./batchdelete-jobs-sample')`;
 
-test(`Should batchDelete jobs.`, async t => {
+it('Should batchDelete jobs.', async () => {
   const output = await tools.runAsync(`node -e ${runSample}`);
-  const pattern = `.*Batch deleted.*\n` + `.*{}*`;
-
-  t.regex(output, new RegExp(pattern));
+  const pattern = '.*Batch deleted.*';
+  assert.strictEqual(new RegExp(pattern).test(output), true);
 });

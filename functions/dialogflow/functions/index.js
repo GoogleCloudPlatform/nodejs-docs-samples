@@ -139,7 +139,6 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
 
   return docRef.get().then((doc) => {
     if (doc.exists === false) {
-      console.log("There is no token. Create one");
       return retrieveCredentials(context).then((result) => {
         console.log("Received a new token when there was none", result);
         return result;

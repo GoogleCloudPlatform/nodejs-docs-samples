@@ -15,12 +15,18 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-test(`should do a commute search`, async t => {
-  const output = await tools.runAsync(`node commute-search-sample.js`);
+it('should do a commute search', async () => {
+  const output = await tools.runAsync('node commute-search-sample.js');
 
-  t.regex(output, new RegExp(`.*matchingJobs.*commuteInfo.*`));
-  t.regex(output, new RegExp(`.*matchingJobs.*1600 Amphitheatre Pkwy.*`));
+  assert.strictEqual(
+    new RegExp('.*matchingJobs.*commuteInfo.*').test(output),
+    true
+  );
+  assert.strictEqual(
+    new RegExp('.*matchingJobs.*1600 Amphitheatre Pkwy.*').test(output),
+    true
+  );
 });

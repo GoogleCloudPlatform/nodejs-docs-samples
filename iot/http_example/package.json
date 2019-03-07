@@ -19,7 +19,7 @@
   "dependencies": {
     "jsonwebtoken": "8.5.0",
     "retry-request": "3.3.2",
-    "yargs": "13.2.1"
+    "yargs": "13.2.2"
   },
   "devDependencies": {
     "googleapis": "^37.0.0",

@@ -39,6 +39,8 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
+  console.log(rsaPublicCert);
+
   tools.run(installDeps, `${cwd}/../mqtt_example`);
   tools.checkCredentials();
   // Create a topic to be used for testing.

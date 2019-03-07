@@ -15,10 +15,10 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-test(`should search featured job`, async t => {
-  const output = await tools.runAsync(`node featured-job-search-sample.js`);
-  t.true(output.includes(`matchingJobs`));
+it('should search featured job', async () => {
+  const output = await tools.runAsync('node featured-job-search-sample.js');
+  assert.strictEqual(output.includes('matchingJobs'), true);
 });

@@ -15,17 +15,16 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const runSample = `'require("./custom-attribute-sample").runSample()'`;
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const runSample = `require('./custom-attribute-sample').runSample()`;
 
-test(`should search job with custom attribute filter`, async t => {
+it('should search job with custom attribute filter', async () => {
   const output = await tools.runAsync(`node -e ${runSample}`);
   const pattern =
-    `.*Job created:.*jobWithACustomAttribute.*\n` +
-    `.*matchingJobs.*jobWithACustomAttribute.*\n` +
-    `.*matchingJobs.*jobWithACustomAttribute.*\n` +
-    `.*matchingJobs.*jobWithACustomAttribute*`;
-
-  t.regex(output, new RegExp(pattern));
+    '.*Job created:.*jobWithACustomAttribute.*\n' +
+    '.*matchingJobs.*jobWithACustomAttribute.*\n' +
+    '.*matchingJobs.*jobWithACustomAttribute.*\n' +
+    '.*matchingJobs.*jobWithACustomAttribute*';
+  assert.strictEqual(new RegExp(pattern).test(output), true);
 });

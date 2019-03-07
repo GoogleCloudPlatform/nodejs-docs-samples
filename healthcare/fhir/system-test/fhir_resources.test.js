@@ -15,16 +15,16 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const cmdDataset = `node datasets.js`;
-const cmdFhirStores = `node fhir_stores.js`;
+const cmdDataset = 'node datasets.js';
+const cmdFhirStores = 'node fhir_stores.js';
 const cmd = 'node fhir_resources.js';
 const cwd = path.join(__dirname, '..');
-const cwdDatasets = path.join(__dirname, `../../datasets`);
+const cwdDatasets = path.join(__dirname, '../../datasets');
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
 const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
   /-/gi,
@@ -33,16 +33,11 @@ const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
 const resourceType = 'Patient';
 let resourceId;
 
-test.before(tools.checkCredentials);
-test.before(async () => {
-  return tools
-    .runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets)
-    .then(results => {
-      console.log(results);
-      return results;
-    });
+before(async () => {
+  tools.checkCredentials();
+  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
 });
-test.after.always(async () => {
+after(async () => {
   try {
     await tools.runAsync(
       `${cmdDataset} deleteDataset ${datasetId}`,
@@ -51,7 +46,7 @@ test.after.always(async () => {
   } catch (err) {} // Ignore error
 });
 
-test.serial(`should create a FHIR resource`, async t => {
+it('should create a FHIR resource', async () => {
   await tools.runAsync(
     `${cmdFhirStores} createFhirStore ${datasetId} ${fhirStoreId}`,
     cwd
@@ -63,40 +58,43 @@ test.serial(`should create a FHIR resource`, async t => {
   const createdMessage = new RegExp(
     `Created resource ${resourceType} with ID (.*).`
   );
-  t.regex(output, createdMessage);
+  assert.strictEqual(createdMessage.test(output), true);
   resourceId = createdMessage.exec(output)[1];
 });
 
-test.serial(`should get a FHIR resource`, async t => {
+it('should get a FHIR resource', async () => {
   const output = await tools.runAsync(
     `${cmd} getResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
-  t.regex(output, new RegExp(`Got ${resourceType} resource`));
+  assert.strictEqual(
+    new RegExp(`Got ${resourceType} resource`).test(output),
+    true
+  );
 });
 
-test.serial(`should update a FHIR resource`, async t => {
+it('should update a FHIR resource', async () => {
   const output = await tools.runAsync(
     `${cmd} updateResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
-  t.is(output, `Updated ${resourceType} with ID ${resourceId}`);
+  assert.strictEqual(output, `Updated ${resourceType} with ID ${resourceId}`);
 });
 
-test.serial(`should patch a FHIR resource`, async t => {
+it('should patch a FHIR resource', async () => {
   const output = await tools.runAsync(
     `${cmd} patchResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
-  t.is(output, `Patched ${resourceType} with ID ${resourceId}`);
+  assert.strictEqual(output, `Patched ${resourceType} with ID ${resourceId}`);
 });
 
-test.serial(`should delete a FHIR resource`, async t => {
+it('should delete a FHIR resource', async () => {
   const output = await tools.runAsync(
     `${cmd} deleteResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
-  t.is(output, `Deleted ${resourceType} with ID ${resourceId}.`);
+  assert.strictEqual(output, `Deleted ${resourceType} with ID ${resourceId}.`);
 
   // Clean up
   await tools.runAsync(

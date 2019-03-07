@@ -116,12 +116,13 @@ it('should list configs for a device', async () => {
   );
 });
 
-it('should create and delete an RSA256 device', async () => {
+it.only('should create and delete an RSA256 device', async () => {
   const localDevice = 'test-rsa-device';
   let output = await tools.runAsync(
     `${cmd} createRsa256Device ${localDevice} ${registryName} ${rsaPublicCert}`,
     cwd
   );
+  console.log('Create RSA256 device', output);
   assert.strictEqual(new RegExp('Created device').test(output), true);
   output = await tools.runAsync(
     `${cmd} getDeviceState ${localDevice} ${registryName}`,

@@ -27,9 +27,7 @@ var db = admin.firestore();
  
 function saveOAuthToken(context, oauthToken) {
   var docRef = db.collection('DialogflowTokens').doc("OauthToken");
-  var setToken = docRef.set({
-    token: oauthToken
-  });
+  docRef.set(oauthToken);
 }
  
  
@@ -50,7 +48,6 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
     // Set up the request
     var oauthToken = '';
     var post_req = https.request(post_options, (res) => {
-      console.log('Got OAuth Token');
       res.setEncoding('utf8');
       res.on('data', (chunk) => {
         oauthToken += chunk;
@@ -59,7 +56,7 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
         // Next step in pipeline
         saveOAuthToken(context, JSON.parse(oauthToken));
         return resolve(JSON.parse(oauthToken));
-      })
+      });
     });
  
     post_req.on('error', (e) => {
@@ -136,25 +133,16 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
   }
   // Retrieve the token from the database
   var docRef = db.collection('DialogflowTokens').doc("OauthToken");
-
+ 
   return docRef.get().then((doc) => {
-    if (doc.exists === false) {
-      return retrieveCredentials(context).then((result) => {
-        console.log("Received a new token when there was none", result);
-        return result;
-      });
-    }
-    // Check if the token is expired 
-    if (isValid(doc.data().token.expireTime)) {
-      return doc.data().token;
-    } else { // Generate a new token
-      // eslint-disable-next-line promise/no-nesting
+    if (doc.exists && isValid(doc.data().expireTime)) {
+      return doc.data();
+    } else {
       return retrieveCredentials(context).then((result) => {
         return result;
       });
     }    
-  })
-    .catch((err) => {
+  }).catch((err) => {
       console.log('Error retrieving token', err);
       return "Error retrieving token";
     });

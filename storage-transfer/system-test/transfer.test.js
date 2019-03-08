@@ -81,7 +81,7 @@ it('should create a storage transfer job', done => {
     description: description,
   };
 
-  return program.createTransferJob(options, (err, transferJob) => {
+  program.createTransferJob(options, (err, transferJob) => {
     assert.ifError(err);
     jobName = transferJob.name;
     assert.strictEqual(transferJob.name.indexOf('transferJobs/'), 0);
@@ -91,7 +91,7 @@ it('should create a storage transfer job', done => {
       console.log.calledWith('Created transfer job: %s', transferJob.name),
       true
     );
-    done();
+    setTimeout(done, 2000);
   });
 });
 
@@ -105,7 +105,7 @@ it('should get a transferJob', done => {
       console.log.calledWith('Found transfer job: %s', transferJob.name),
       true
     );
-    done();
+    setTimeout(done, 2000);
   });
 });
 
@@ -125,7 +125,7 @@ it('should update a transferJob', done => {
       console.log.calledWith('Updated transfer job: %s', transferJob.name),
       true
     );
-    done();
+    setTimeout(done, 2000);
   });
 });
 
@@ -148,11 +148,11 @@ it('should list transferJobs', done => {
       console.log.calledWith('Found %d jobs!', transferJobs.length),
       true
     );
-    done();
+    setTimeout(done, 2000);
   });
 });
 
-it('should list transferJobs', done => {
+it('should list transferOperations', done => {
   program.listTransferOperations(jobName, (err, operations) => {
     assert.ifError(err);
     assert.strictEqual(Array.isArray(operations), true);

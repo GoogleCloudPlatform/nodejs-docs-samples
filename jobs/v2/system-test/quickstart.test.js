@@ -15,10 +15,10 @@
 
 'use strict';
 
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-test(`should list companies`, async t => {
-  const output = await tools.runAsync(`node quickstart.js`);
-  t.true(output.includes(`Request ID`));
+it('should list companies', async () => {
+  const output = await tools.runAsync('node quickstart.js');
+  assert.strictEqual(output.includes('Request ID'), true);
 });

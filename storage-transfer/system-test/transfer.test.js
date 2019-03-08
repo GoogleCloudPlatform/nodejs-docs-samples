@@ -52,22 +52,23 @@ after(async () => {
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);
   try {
-    await bucketOne.deleteFiles({force: true});
+    bucketOne.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    await bucketOne.deleteFiles({force: true});
+    // Intentially, try a second time.
+    bucketOne.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    await bucketOne.delete();
+    bucketOne.delete();
   } catch (err) {} // ignore error
   try {
-    await bucketTwo.deleteFiles({force: true});
+    bucketTwo.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    await bucketTwo.deleteFiles({force: true});
+    bucketTwo.deleteFiles({force: true});
   } catch (err) {} // ignore error
   try {
-    await bucketTwo.delete();
+    bucketTwo.delete();
   } catch (err) {} // ignore error
 });
 

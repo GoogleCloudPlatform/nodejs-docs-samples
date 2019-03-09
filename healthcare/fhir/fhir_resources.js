@@ -16,7 +16,7 @@
 const {GoogleToken} = require('gtoken');
 const request = require('request-promise');
 
-const BASE_URL = 'https://healthcare.googleapis.com/v1alpha';
+const BASE_URL = 'https://healthcare.googleapis.com/v1alpha2';
 
 // [START healthcare_get_token]
 function getToken(serviceAccountJson, cb) {
@@ -53,7 +53,7 @@ function createResource(
   // const resourceType = 'Patient';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}`;
+  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}`;
 
   const postData = {
     resourceType: resourceType,
@@ -100,7 +100,7 @@ function updateResource(
   // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}/${resourceId}`;
+  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
 
   const patientData = {
     resourceType: resourceType,
@@ -149,7 +149,7 @@ function patchResource(
   // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}/${resourceId}`;
+  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
 
   const patchOperations = [{op: 'replace', path: '/active', value: false}];
 
@@ -194,7 +194,7 @@ function deleteResource(
   // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}/${resourceId}`;
+  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
 
   const options = {
     url: resourcePath,
@@ -236,7 +236,7 @@ function getResource(
   // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}/${resourceId}`;
+  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
 
   const options = {
     url: resourcePath,
@@ -277,7 +277,7 @@ function searchResourcesGet(
   // const resourceType = 'Patient';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcesPath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}`;
+  const resourcesPath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}`;
 
   const options = {
     url: resourcesPath,
@@ -316,7 +316,7 @@ function searchResourcesPost(
   // const resourceType = 'Patient';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcesPath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/${resourceType}/_search`;
+  const resourcesPath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/_search`;
 
   const options = {
     url: resourcesPath,
@@ -356,7 +356,7 @@ function getPatientEverything(
   // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const fhirStorePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/resources/Patient/${resourceId}/$everything`;
+  const fhirStorePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/Patient/${resourceId}/$everything`;
 
   const options = {
     url: fhirStorePath,

@@ -19,7 +19,8 @@
 const gm = require('gm').subClass({imageMagick: true});
 const fs = require('fs');
 const path = require('path');
-const storage = require('@google-cloud/storage')();
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 const vision = require('@google-cloud/vision').v1p1beta1;
 
 const client = new vision.ImageAnnotatorClient();

@@ -22,11 +22,16 @@ const config = require('./config.json');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 // Get a reference to the Cloud Storage component
-const storage = require('@google-cloud/storage')();
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
+
 // Get a reference to the Cloud Vision API component
-const vision = require('@google-cloud/vision')();
+const Vision = require('@google-cloud/vision');
+const vision = new Vision.ImageAnnotatorClient();
+
 // Get a reference to the Translate API component
-const translate = require('@google-cloud/translate')();
+const {Translate} = require('@google-cloud/translate');
+const translate = new Translate();
 
 const Buffer = require('safe-buffer').Buffer;
 // [END functions_ocr_setup]
@@ -39,10 +44,12 @@ const Buffer = require('safe-buffer').Buffer;
  * @param {object} data The message data to publish.
  */
 function publishResult(topicName, data) {
+  const dataBuffer = Buffer.from(JSON.stringify(data));
+
   return pubsub
     .topic(topicName)
     .get({autoCreate: true})
-    .then(([topic]) => topic.publish(data));
+    .then(([topic]) => topic.publisher().publish(dataBuffer));
 }
 // [END functions_ocr_publish]
 
@@ -59,7 +66,7 @@ function detectText(bucketName, filename) {
 
   console.log(`Looking for text in image ${filename}`);
   return vision
-    .textDetection({source: {imageUri: `gs://${bucketName}/${filename}`}})
+    .textDetection(`gs://${bucketName}/${filename}`)
     .then(([detections]) => {
       const annotation = detections.textAnnotations[0];
       text = annotation ? annotation.description : '';
@@ -82,7 +89,6 @@ function detectText(bucketName, filename) {
           text: text,
           filename: filename,
           lang: lang,
-          from: detection.language,
         };
 
         return publishResult(topicName, messageData);
@@ -179,13 +185,8 @@ exports.translateText = event => {
         );
       }
 
-      const options = {
-        from: payload.from,
-        to: payload.lang,
-      };
-
       console.log(`Translating text into ${payload.lang}`);
-      return translate.translate(payload.text, options);
+      return translate.translate(payload.text, payload.lang);
     })
     .then(([translation]) => {
       const messageData = {

@@ -15,65 +15,66 @@
 
 'use strict';
 
-const path = require(`path`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const uuid = require(`uuid`);
+const path = require('path');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const uuid = require('uuid');
 
-const cmd = `node datasets.js`;
-const cwd = path.join(__dirname, `..`);
+const cmd = 'node datasets.js';
+const cwd = path.join(__dirname, '..');
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
-const whitelistTags = 'PatientID';
+const keeplistTags = 'PatientID';
 
-test.before(tools.checkCredentials);
-test.after.always(async () => {
+before(tools.checkCredentials);
+after(async () => {
   try {
     await tools.runAsync(`${cmd} deleteDataset ${destinationDatasetId}`, cwd);
+    // eslint-disable-next-line no-empty
   } catch (err) {} // Ignore error
 });
 
-test.serial(`should create a dataset`, async t => {
+it('should create a dataset', async () => {
   const output = await tools.runAsync(`${cmd} createDataset ${datasetId}`, cwd);
-  t.is(output, `Created dataset: ${datasetId}`);
+  assert.strictEqual(output, `Created dataset: ${datasetId}`);
 });
 
-test.serial(`should get a dataset`, async t => {
+it('should get a dataset', async () => {
   const output = await tools.runAsync(`${cmd} getDataset ${datasetId}`, cwd);
-  t.regex(output, /name/);
-  t.regex(output, /timeZone/);
+  assert.strictEqual(new RegExp(/name/).test(output), true);
+  assert.strictEqual(new RegExp(/timeZone/).test(output), true);
 });
 
-test.serial(`should patch a dataset`, async t => {
+it('should patch a dataset', async () => {
   const patchTimeZone = 'GMT';
   const output = await tools.runAsync(
     `${cmd} patchDataset ${datasetId} ${patchTimeZone}`,
     cwd
   );
-  t.is(output, `Dataset ${datasetId} patched with time zone ${patchTimeZone}`);
+  assert.strictEqual(
+    output,
+    `Dataset ${datasetId} patched with time zone ${patchTimeZone}`
+  );
 });
 
-test.serial(`should list datasets`, async t => {
+it('should list datasets', async () => {
   const output = await tools.runAsync(`${cmd} listDatasets`, cwd);
-  t.regex(output, /datasets/);
+  assert.strictEqual(new RegExp(/datasets/).test(output), true);
 });
 
-test.serial(
-  `should de-identify data in a dataset and write to a new dataset`,
-  async t => {
-    const output = await tools.runAsync(
-      `${cmd} deidentifyDataset ${datasetId} ${destinationDatasetId} ${whitelistTags}`,
-      cwd
-    );
-    t.is(
-      output,
-      `De-identified data written from dataset
+it('should de-identify data in a dataset and write to a new dataset', async () => {
+  const output = await tools.runAsync(
+    `${cmd} deidentifyDataset ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
+    cwd
+  );
+  assert.strictEqual(
+    output,
+    `De-identified data written from dataset
             ${datasetId} to dataset ${destinationDatasetId}`
-    );
-  }
-);
+  );
+});
 
-test.serial(`should delete a dataset`, async t => {
+it('should delete a dataset', async () => {
   const output = await tools.runAsync(`${cmd} deleteDataset ${datasetId}`, cwd);
-  t.is(output, `Deleted dataset: ${datasetId}`);
+  assert.strictEqual(output, `Deleted dataset: ${datasetId}`);
 });

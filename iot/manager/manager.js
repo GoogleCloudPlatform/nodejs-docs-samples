@@ -184,6 +184,55 @@ function lookupOrCreateRegistry(
   // [END iot_lookup_or_create_registry]
 }
 
+// Create a new device with a given public key format
+function createDevice(
+  client,
+  deviceId,
+  registryId,
+  projectId,
+  cloudRegion,
+  publicKeyFormat,
+  publicKeyFile
+) {
+  // [START iot_create_device]
+  // Client retrieved in callback
+  // getClient(serviceAccountJson, function(client) {...});
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const body = {
+    id: deviceId,
+    credentials: [
+      {
+        publicKey: {
+          format: publicKeyFormat,
+          key: fs.readFileSync(publicKeyFile).toString(),
+        },
+      },
+    ],
+  };
+
+  const request = {
+    parent: registryName,
+    resource: body,
+  };
+
+  client.projects.locations.registries.devices.create(request, (err, res) => {
+    if (err) {
+      console.log('Could not create device');
+      console.log(err);
+    } else {
+      console.log('Created device');
+      console.log(res.data);
+    }
+  });
+  // [END iot_create_device]
+}
+
 // Create a new device with the given id. The body defines the parameters for
 // the device, such as authentication.
 function createUnauthDevice(
@@ -453,7 +502,7 @@ function listRegistries(client, projectId, cloudRegion) {
       console.log(err);
     } else {
       let data = res.data;
-      console.log('Current registries in project:', data['deviceRegistries']);
+      console.log('Current registries in project:\n', data['deviceRegistries']);
     }
   });
   // [END iot_list_registries]
@@ -506,8 +555,7 @@ function clearRegistry(client, registryId, projectId, cloudRegion) {
   const after = function() {
     client.projects.locations.registries.delete(requestDelete, (err, res) => {
       if (err) {
-        console.log('Could not delete registry');
-        console.log(err);
+        console.log('Could not delete registry', err);
       } else {
         console.log(`Successfully deleted registry ${registryName}`);
         console.log(res.data);
@@ -521,31 +569,32 @@ function clearRegistry(client, registryId, projectId, cloudRegion) {
 
   client.projects.locations.registries.devices.list(request, (err, res) => {
     if (err) {
-      console.log('Could not list devices');
-      console.log(err);
+      console.log('Could not list devices', err);
+      return;
+    }
+
+    let data = res.data;
+    console.log('Current devices in registry:', data['devices']);
+    let devices = data['devices'];
+
+    if (devices) {
+      devices.forEach((device, index) => {
+        console.log(`${device.id} [${index}/${devices.length}] removed`);
+        if (index === devices.length - 1) {
+          deleteDevice(
+            client,
+            device.id,
+            registryId,
+            projectId,
+            cloudRegion,
+            after
+          );
+        } else {
+          deleteDevice(client, device.id, registryId, projectId, cloudRegion);
+        }
+      });
     } else {
-      let data = res.data;
-      console.log('Current devices in registry:', data['devices']);
-      let devices = data['devices'];
-      if (devices) {
-        devices.forEach((device, index) => {
-          console.log(`${device.id} [${index}/${devices.length}] removed`);
-          if (index === devices.length - 1) {
-            deleteDevice(
-              client,
-              device.id,
-              registryId,
-              projectId,
-              cloudRegion,
-              after
-            );
-          } else {
-            deleteDevice(client, device.id, registryId, projectId, cloudRegion);
-          }
-        });
-      } else {
-        after();
-      }
+      after();
     }
   });
 }
@@ -732,9 +781,12 @@ function sendCommand(
 
   const binaryData = Buffer.from(commandMessage).toString('base64');
 
+  // NOTE: The device must be subscribed to the wildcard subfolder
+  // or you should pass a subfolder
   const request = {
     name: `${registryName}/devices/${deviceId}`,
     binaryData: binaryData,
+    //subfolder: <your-subfolder>
   };
 
   client.projects.locations.registries.devices.sendCommandToDevice(
@@ -744,7 +796,7 @@ function sendCommand(
         console.log('Could not send command:', request);
         console.log('Error: ', err);
       } else {
-        console.log('Success:', data.statusText);
+        console.log('Success:', data.status);
       }
     }
   );
@@ -780,8 +832,11 @@ function getRegistry(client, registryId, projectId, cloudRegion) {
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
 function getClient(serviceAccountJson, cb) {
+  // the getClient method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
+  // environment variables if serviceAccountJson is not passed in
   google.auth
     .getClient({
+      keyFilename: serviceAccountJson,
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     })
     .then(authClient => {
@@ -887,6 +942,362 @@ function setIamPolicy(
   // [END iot_set_iam_policy]
 }
 
+// Creates a gateway.
+function createGateway(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  gatewayId,
+  publicKeyFormat,
+  publicKeyFile
+) {
+  // [START iot_create_gateway]
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-unauth-device';
+  // const gatewayId = 'my-gateway';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+  console.log('Creating gateway:', gatewayId);
+
+  let credentials = [];
+
+  // if public key format and path are specified, use those
+  if (publicKeyFormat && publicKeyFile) {
+    credentials = [
+      {
+        publicKey: {
+          format: publicKeyFormat,
+          key: fs.readFileSync(publicKeyFile).toString(),
+        },
+      },
+    ];
+  }
+
+  const createRequest = {
+    parent: parentName,
+    resource: {
+      id: gatewayId,
+      credentials: credentials,
+      gatewayConfig: {
+        gatewayType: 'GATEWAY',
+        gatewayAuthMethod: 'ASSOCIATION_ONLY',
+      },
+    },
+  };
+
+  client.projects.locations.registries.devices.create(
+    createRequest,
+    (err, res) => {
+      if (err) {
+        console.log('Could not create device');
+        console.log(err);
+      } else {
+        console.log('Created device');
+        console.log(res.data);
+      }
+    }
+  );
+  // [END iot_create_gateway]
+}
+
+// Binds a device to a gateway so that it can be attached.
+function bindDeviceToGateway(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  deviceId,
+  gatewayId
+) {
+  // [START iot_bind_device_to_gateway]
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-unauth-device';
+  // const gatewayId = 'my-gateway';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+
+  console.log(`Binding device: ${deviceId}`);
+  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+
+  const bindRequest = {
+    parent: parentName,
+    deviceId: deviceId,
+    gatewayId: gatewayId,
+  };
+
+  client.projects.locations.registries.bindDeviceToGateway(bindRequest, err => {
+    if (err) {
+      console.log('Could not bind device', err);
+    } else {
+      console.log(`Bound ${deviceId} to`, gatewayId);
+    }
+  });
+  // [END iot_bind_device_to_gateway]
+}
+
+// Unbinds a device from a gateway.
+function unbindDeviceFromGateway(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  deviceId,
+  gatewayId
+) {
+  // [START iot_unbind_device_to_gateway]
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-unauth-device';
+  // const gatewayId = 'my-gateway';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  console.log(`Unbinding device: ${deviceId}`);
+  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+
+  const unbindRequest = {
+    parent: parentName,
+    deviceId: deviceId,
+    gatewayId: gatewayId,
+  };
+
+  client.projects.locations.registries.unbindDeviceFromGateway(
+    unbindRequest,
+    err => {
+      if (err) {
+        console.log('Could not unbind device', err);
+      } else {
+        console.log(`Unbound ${deviceId} from`, gatewayId);
+      }
+    }
+  );
+  // [END iot_unbind_device_to_gateway]
+}
+
+// Unbinds the given device from all gateways
+function unbindDeviceFromAllGateways(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  deviceId
+) {
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    name: `${registryName}/devices/${deviceId}`,
+  };
+
+  // get information about this device
+  client.projects.locations.registries.devices.get(request, (err, res) => {
+    if (err) {
+      console.error('Could not get device', err);
+      return;
+    }
+
+    let device = res.data;
+    if (device) {
+      let isGateway = device.gatewayConfig.gatewayType === 'GATEWAY';
+
+      if (!isGateway) {
+        const listGatewaysForDeviceRequest = {
+          parent: registryName,
+          'gatewayListOptions.associationsDeviceId': deviceId,
+        };
+
+        // get list of all gateways this non-gateway device is bound to
+        client.projects.locations.registries.devices.list(
+          listGatewaysForDeviceRequest,
+          (err, res) => {
+            if (err) {
+              console.error('Could not list gateways', err);
+              return;
+            }
+
+            let data = res.data;
+            if (data.devices && data.devices.length > 0) {
+              let gateways = data.devices;
+
+              gateways.forEach(gateway => {
+                const unbindRequest = {
+                  parent: registryName,
+                  deviceId: device.id,
+                  gatewayId: gateway.id,
+                };
+
+                // for each gateway, make the call to unbind it
+                client.projects.locations.registries.unbindDeviceFromGateway(
+                  unbindRequest,
+                  err => {
+                    if (err) {
+                      console.log('Could not unbind device', err);
+                    } else {
+                      console.log('Unbound device from gateways', gateway.id);
+                    }
+                  }
+                );
+              });
+            }
+          }
+        );
+      }
+    }
+  });
+}
+
+function unbindAllDevices(client, projectId, cloudRegion, registryId) {
+  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const registryName = `${parentName}/registries/${registryId}`;
+  const request = {
+    parent: registryName,
+  };
+
+  // get information about this device
+  client.projects.locations.registries.devices.list(request, (err, res) => {
+    if (err) {
+      console.log('Could not list devices', err);
+      return;
+    }
+
+    let data = res.data;
+    if (!data) {
+      return;
+    }
+
+    let devices = data.devices;
+
+    if (devices && devices.length > 0) {
+      devices.forEach(device => {
+        if (device) {
+          let isGateway =
+            device.gatewayConfig &&
+            device.gatewayConfig.gatewayType === 'GATEWAY';
+
+          if (!isGateway) {
+            unbindDeviceFromAllGateways(
+              client,
+              projectId,
+              cloudRegion,
+              registryId,
+              device.id
+            );
+          }
+        }
+      });
+    }
+  });
+}
+
+// Lists gateways in a registry.
+function listGateways(client, projectId, cloudRegion, registryId) {
+  // [START iot_list_gateways]
+  // const cloudRegion = 'us-central1';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+  const request = {
+    parent: parentName,
+    fieldMask: 'config,gatewayConfig',
+  };
+
+  client.projects.locations.registries.devices.list(request, (err, res) => {
+    if (err) {
+      console.log('Could not list devices');
+      console.log(err);
+    } else {
+      let data = res.data;
+      console.log('Current gateways in registry:');
+      data.devices.forEach(function(device) {
+        if (
+          device.gatewayConfig !== undefined &&
+          device.gatewayConfig.gatewayType === 'GATEWAY'
+        ) {
+          console.log('----\n', device);
+        } else {
+          console.log('\t', device);
+        }
+      });
+    }
+  });
+  // [END iot_list_gateways]
+}
+
+// Lists devices bound to a gateway.
+function listDevicesForGateway(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  gatewayId
+) {
+  // [START iot_list_devices_for_gateway]
+  // const cloudRegion = 'us-central1';
+  // const gatewayId = 'my-gateway';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+  const request = {
+    parent: parentName,
+    'gatewayListOptions.associationsGatewayId': gatewayId,
+  };
+
+  client.projects.locations.registries.devices.list(request, (err, res) => {
+    if (err) {
+      console.log('Could not list devices');
+      console.log(err);
+    } else {
+      console.log('Current devices bound to gateway: ', gatewayId);
+      let data = res.data;
+      if (data.devices && data.devices.length > 0) {
+        data.devices.forEach(device => {
+          console.log(`\tDevice: ${device.numId} : ${device.id}`);
+        });
+      } else {
+        console.log('No devices bound to this gateway.');
+      }
+    }
+  });
+  // [END iot_list_devices_for_gateway]
+}
+
+// Lists gateways a given device is bound to.
+function listGatewaysForDevice(
+  client,
+  projectId,
+  cloudRegion,
+  registryId,
+  deviceId
+) {
+  // [START iot_list_gateways_for_device]
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+  const request = {
+    parent: parentName,
+    'gatewayListOptions.associationsDeviceId': deviceId,
+  };
+
+  client.projects.locations.registries.devices.list(request, (err, res) => {
+    if (err) {
+      console.log('Could not list gateways for device');
+      console.log(err);
+    } else {
+      console.log('Current gateways for device:', deviceId);
+      let data = res.data;
+      if (data.devices && data.devices.length > 0) {
+        data.devices.forEach(gateway => {
+          console.log(`\tDevice: ${gateway.numId} : ${gateway.id}`);
+        });
+      } else {
+        console.log('No gateways associated with this device.');
+      }
+    }
+  });
+  // [END iot_list_gateways_for_device]
+}
+
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .options({
@@ -960,6 +1371,39 @@ require(`yargs`) // eslint-disable-line
           opts.registryId,
           opts.projectId,
           opts.cloudRegion
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `createDevice <deviceId> <registryId>`,
+    `Creates a device with the given public key. Public key can be ommitted and added later on.`,
+    {
+      publicKeyFormat: {
+        default: 'RSA_X509_PEM',
+        description: 'Public key format for devices.',
+        requiresArg: true,
+        choices: ['RSA_PEM', 'RSA_X509_PEM', 'ES256_PEM', 'ES256_X509_PEM'],
+        type: 'string',
+      },
+      publicKeyFile: {
+        description:
+          'Path to the public key file used for device authentication.',
+        requiresArg: true,
+        type: 'string',
+      },
+    },
+    opts => {
+      const cb = client => {
+        createDevice(
+          client,
+          opts.deviceId,
+          opts.registryId,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.publicKeyFormat,
+          opts.publicKeyFile
         );
       };
       getClient(opts.serviceAccount, cb);
@@ -1223,6 +1667,156 @@ require(`yargs`) // eslint-disable-line
       };
       getClient(opts.serviceAccount, cb);
     }
+  )
+  .command(
+    `createGateway <registryId> <gatewayId>`,
+    `Creates a gateway`,
+    {
+      publicKeyFormat: {
+        default: 'RSA_X509_PEM',
+        description: 'Public key format for devices.',
+        requiresArg: true,
+        choices: ['RSA_PEM', 'RSA_X509_PEM', 'ES256_PEM', 'ES256_X509_PEM'],
+        type: 'string',
+      },
+      publicKeyFile: {
+        description:
+          'Path to the public key file used for device authentication.',
+        requiresArg: true,
+        type: 'string',
+      },
+    },
+    opts => {
+      const cb = function(client) {
+        createGateway(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.gatewayId,
+          opts.publicKeyFormat,
+          opts.publicKeyFile
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `listGateways <registryId>`,
+    `Lists gateways in a registry.`,
+    {},
+    opts => {
+      const cb = function(client) {
+        listGateways(client, opts.projectId, opts.cloudRegion, opts.registryId);
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `bindDeviceToGateway <registryId> <gatewayId> <deviceId>`,
+    `Binds a device to a gateway`,
+    {},
+    opts => {
+      const cb = function(client) {
+        bindDeviceToGateway(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.deviceId,
+          opts.gatewayId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `unbindDeviceFromGateway <registryId> <gatewayId> <deviceId>`,
+    `Unbinds a device from a gateway`,
+    {},
+    opts => {
+      const cb = function(client) {
+        unbindDeviceFromGateway(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.deviceId,
+          opts.gatewayId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `unbindDeviceFromAllGateways <registryId> <deviceId>`,
+    `Unbinds a device from all gateways`,
+    {},
+    opts => {
+      const cb = function(client) {
+        unbindDeviceFromAllGateways(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.deviceId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `unbindAllDevices <registryId>`,
+    `Unbinds all devices in a given registry. Mainly for clearing registries`,
+    {},
+    opts => {
+      const cb = client => {
+        unbindAllDevices(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `listDevicesForGateway <registryId> <gatewayId>`,
+    `Lists devices in a gateway.`,
+    {},
+    opts => {
+      const cb = function(client) {
+        listDevicesForGateway(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.gatewayId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .command(
+    `listGatewaysForDevice <registryId> <deviceId>`,
+    `Lists gateways for a given device.`,
+    {},
+    opts => {
+      const cb = function(client) {
+        listGatewaysForDevice(
+          client,
+          opts.projectId,
+          opts.cloudRegion,
+          opts.registryId,
+          opts.deviceId
+        );
+      };
+      getClient(opts.serviceAccount, cb);
+    }
+  )
+  .example(
+    `node $0 createDevice my-device my-registry RS256_X509_PEM ./rsa_cert.pem`
   )
   .example(
     `node $0 createEs256Device my-es-device my-registry ../ec_public.pem`

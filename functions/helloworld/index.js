@@ -16,7 +16,11 @@
 'use strict';
 
 const Buffer = require('safe-buffer').Buffer;
+
+// [START functions_helloworld_http]
 const escapeHtml = require('escape-html');
+
+// [END functions_helloworld_http]
 
 // [START functions_helloworld_get]
 /**
@@ -143,6 +147,7 @@ exports.helloError = (event, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver Error Reporting
   console.error(new Error('I failed you'));
+  console.error('I failed you', new Error('I failed you too'));
   throw new Error('I failed you'); // Will cause a cold start if not caught
 
   // [END functions_helloworld_error]

@@ -24,13 +24,14 @@ const https = require('https');
 admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
  
- 
+// [START save_token_to_firebase]
 function saveOAuthToken(context, oauthToken) {
   var docRef = db.collection('DialogflowTokens').doc("OauthToken");
   docRef.set(oauthToken);
 }
- 
- 
+// [END save_token_to_firebase] 
+
+// [START generate_token]
 function generateAccessToken(context, serviceAccountAccessToken, serviceAccountTokenType) {
   // With the service account's credentials, we can make a request to generate
   // a new token for a 2nd service account that only has the permission to 
@@ -78,8 +79,9 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
     post_req.end();
   });
 }
+// [END generate_token]
  
- 
+// [START retrieve_credentials] 
 function retrieveCredentials(context) {
   return new Promise((resolve, reject) => {
     // To create a new access token, we first have to retrieve the credentials
@@ -113,8 +115,9 @@ function retrieveCredentials(context) {
     get_req.end();
   });
 }
+// [END retrieve_credentials]
  
- 
+// [START validate_token] 
 // This method verifies the token expiry by validating against current time
 function isValid(expiryTime) {
   var currentDate = new Date();
@@ -122,8 +125,9 @@ function isValid(expiryTime) {
   // If within 5 minutes of expiration, return false
   return currentDate <= (expirationDate - 1000 * 60 * 5);
 }
- 
- 
+// [END validate_token]
+
+// [START function_get_token]
 exports.getOAuthToken = functions.https.onCall((data, context) => {
   // Checking that the user is authenticated.
   if (!context.auth) {
@@ -147,3 +151,4 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
       return "Error retrieving token";
     });
 });
+// [END function_get_token]

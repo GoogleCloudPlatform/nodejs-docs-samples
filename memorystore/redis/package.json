@@ -9,7 +9,7 @@
     "node": ">=8"
   },
   "dependencies": {
-    "redis": "2.8.0"
+    "redis": "^2.8.0"
   }
 }
 

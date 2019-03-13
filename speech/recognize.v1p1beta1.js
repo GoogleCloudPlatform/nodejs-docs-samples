@@ -59,6 +59,7 @@ async function syncRecognizeWithMetaData(
 
   const config = {
     encoding: encoding,
+    sampleRateHertz: sampleRateHertz,
     languageCode: languageCode,
     metadata: recognitionMetadata,
   };

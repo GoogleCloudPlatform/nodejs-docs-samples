@@ -15,10 +15,10 @@
 
 'use strict';
 
-const Datastore = require('@google-cloud/datastore');
+const {Datastore} = require('@google-cloud/datastore');
 
 // Instantiates a client
-const datastore = Datastore();
+const datastore = new Datastore();
 
 /**
  * Gets a Datastore key from the kind/key pair in the request.

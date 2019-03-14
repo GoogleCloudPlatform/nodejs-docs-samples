@@ -27,10 +27,10 @@ app.enable('trust proxy');
 // the project specified by the GOOGLE_CLOUD_PROJECT environment variable. See
 // https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/docs/authentication.md
 // These environment variables are set automatically on Google App Engine
-const Datastore = require('@google-cloud/datastore');
+const {Datastore} = require('@google-cloud/datastore');
 
 // Instantiate a datastore client
-const datastore = Datastore();
+const datastore = new Datastore();
 
 /**
  * Insert a visit record into the database.

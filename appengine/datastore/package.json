@@ -18,7 +18,7 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^2.0.0",
+    "@google-cloud/datastore": "^3.0.0",
     "express": "^4.16.4"
   },
   "devDependencies": {

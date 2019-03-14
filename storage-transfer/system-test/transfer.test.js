@@ -35,20 +35,20 @@ const status = 'DISABLED';
 
 before(async () => {
   tools.checkCredentials();
-  // tools.stubConsole();
+  tools.stubConsole();
 
   const bucketOptions = {
     entity: 'allUsers',
     role: storage.acl.WRITER_ROLE,
   };
   const [bucket1] = await storage.createBucket(firstBucketName);
-  bucket1.acl.add(bucketOptions);
+  await bucket1.acl.add(bucketOptions);
   const [bucket2] = await storage.createBucket(secondBucketName);
-  bucket2.acl.add(bucketOptions);
+  await bucket2.acl.add(bucketOptions);
 });
 
-afterEach(async () => {
-  // tools.restoreConsole();
+after(async () => {
+  tools.restoreConsole();
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);
   try {
@@ -87,15 +87,15 @@ it('should create a storage transfer job', done => {
     assert.strictEqual(transferJob.name.indexOf('transferJobs/'), 0);
     assert.strictEqual(transferJob.description, description);
     assert.strictEqual(transferJob.status, 'ENABLED');
-    // assert.strictEqual(
-    //   console.log.calledWith('Created transfer job: %s', transferJob.name),
-    //   true
-    // );
-    setTimeout(done, 2000);
+    assert.strictEqual(
+      console.log.calledWith('Created transfer job: %s', transferJob.name),
+      true
+    );
+    done();
   });
 });
 
-it.skip('should get a transferJob', done => {
+it('should get a transferJob', done => {
   program.getTransferJob(jobName, (err, transferJob) => {
     assert.ifError(err);
     assert.strictEqual(transferJob.name, jobName);
@@ -105,11 +105,11 @@ it.skip('should get a transferJob', done => {
       console.log.calledWith('Found transfer job: %s', transferJob.name),
       true
     );
-    setTimeout(done, 2000);
+    done();
   });
 });
 
-it.skip('should update a transferJob', done => {
+it('should update a transferJob', done => {
   var options = {
     job: jobName,
     field: 'status',
@@ -125,11 +125,11 @@ it.skip('should update a transferJob', done => {
       console.log.calledWith('Updated transfer job: %s', transferJob.name),
       true
     );
-    setTimeout(done, 2000);
+    done();
   });
 });
 
-it.skip('should list transferJobs', done => {
+it('should list transferJobs', done => {
   program.listTransferJobs((err, transferJobs) => {
     assert.ifError(err);
     assert.strictEqual(
@@ -148,11 +148,11 @@ it.skip('should list transferJobs', done => {
       console.log.calledWith('Found %d jobs!', transferJobs.length),
       true
     );
-    setTimeout(done, 2000);
+    done();
   });
 });
 
-it.skip('should list transferOperations', done => {
+it('should list transferOperations', done => {
   program.listTransferOperations(jobName, (err, operations) => {
     assert.ifError(err);
     assert.strictEqual(Array.isArray(operations), true);

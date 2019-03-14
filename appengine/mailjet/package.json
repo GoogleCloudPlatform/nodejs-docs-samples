@@ -18,10 +18,10 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "body-parser": "1.18.3",
-    "express": "4.16.4",
-    "jade": "1.11.0",
-    "node-mailjet": "3.3.1"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "jade": "^1.11.0",
+    "node-mailjet": "^3.3.1"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0"

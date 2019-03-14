@@ -18,14 +18,14 @@
   },
   "dependencies": {
     "@google-cloud/iot": "^0.2.0",
-    "jsonwebtoken": "8.5.0",
-    "mqtt": "2.18.8",
-    "yargs": "13.2.2"
+    "jsonwebtoken": "^8.5.0",
+    "mqtt": "^2.18.8",
+    "yargs": "^13.2.2"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.2.0",
-    "@google-cloud/pubsub": "0.22.2",
+    "@google-cloud/pubsub": "^0.22.2",
     "mocha": "^6.0.0",
-    "uuid": "3.3.2"
+    "uuid": "^3.3.2"
   }
 }

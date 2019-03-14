@@ -21,13 +21,13 @@
     "body-parser": "1.18.3",
     "express": "4.16.2",
     "promise-mysql": "^3.3.1",
-    "prompt": "1.0.0",
-    "pug": "2.0.3",
+    "prompt": "^1.0.0",
+    "pug": "^2.0.3",
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "3.2.0",
-    "ava": "0.25.0",
+    "@google-cloud/nodejs-repo-tools": "^3.2.0",
+    "ava": "^0.25.0",
     "proxyquire": "^2.1.0",
     "supertest": "^3.3.0",
     "sinon": "^7.1.1"

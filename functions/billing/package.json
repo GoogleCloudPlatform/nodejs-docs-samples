@@ -13,7 +13,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "google-auth-library": "^3.0.0",
-    "googleapis": "^37.0.0",
+    "googleapis": "^38.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {

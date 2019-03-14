@@ -19,7 +19,7 @@
   "dependencies": {
     "@google-cloud/iot": "^0.2.0",
     "@google-cloud/pubsub": "^0.22.2",
-    "googleapis": "^37.0.0",
+    "googleapis": "^38.0.0",
     "yargs": "^13.2.2"
   },
   "devDependencies": {

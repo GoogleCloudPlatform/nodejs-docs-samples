@@ -47,7 +47,7 @@ before(async () => {
   bucket2.acl.add(bucketOptions);
 });
 
-after(async () => {
+afterEach(async () => {
   tools.restoreConsole();
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);

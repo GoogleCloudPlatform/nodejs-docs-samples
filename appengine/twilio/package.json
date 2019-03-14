@@ -12,8 +12,8 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "body-parser": "1.18.3",
-    "express": "4.16.4",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
     "twilio": "^3.28.0"
   }
 }

@@ -17,12 +17,12 @@
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
-    "express": "4.15.4",
-    "pug": "2.0.3",
-    "socket.io": "2.2.0"
+    "express": "^4.15.4",
+    "pug": "^2.0.3",
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "3.2.0",
+    "@google-cloud/nodejs-repo-tools": "^3.2.0",
     "puppeteer": "^1.11.0"
   },
   "cloud-repo-tools": {

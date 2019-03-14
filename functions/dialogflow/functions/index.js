@@ -38,7 +38,7 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
   return new Promise((resolve, reject) => {
     const post_options = {
       host: 'iamcredentials.googleapis.com',
-      path: '/v1/projects/-/serviceAccounts/dialogflow-client@dialogflowsamples-santhosh-2.iam.gserviceaccount.com:generateAccessToken',
+      path: '/v1/projects/-/serviceAccounts/SERVICE-ACCOUNT-NAME@YOUR_PROJECT_ID.iam.gserviceaccount.com:generateAccessToken',
       method: 'POST',
       headers: {  // Set Service Account Credentials
         'Authorization': serviceAccountTokenType + ' ' + serviceAccountAccessToken

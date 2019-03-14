@@ -21,10 +21,10 @@
     "test": "repo-tools test run --cmd npm -- run all-test"
   },
   "dependencies": {
-    "express": "4.16.4",
-    "knex": "0.16.3",
+    "express": "^4.16.4",
+    "knex": "^0.16.3",
     "pg": "^7.8.0",
-    "prompt": "1.0.0"
+    "prompt": "^1.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",

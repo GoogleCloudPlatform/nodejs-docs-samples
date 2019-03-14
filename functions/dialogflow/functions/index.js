@@ -1,4 +1,3 @@
-/* eslint-disable promise/no-nesting */
 /**
 * Copyright 2019 Google LLC
 *
@@ -22,11 +21,11 @@ const functions = require('firebase-functions');
 const http = require('http');
 const https = require('https');
 admin.initializeApp(functions.config().firebase);
-var db = admin.firestore();
+const db = admin.firestore();
  
 // [START save_token_to_firebase]
 function saveOAuthToken(context, oauthToken) {
-  var docRef = db.collection('DialogflowTokens').doc("OauthToken");
+  let docRef = db.collection('DialogflowTokens').doc("OauthToken");
   docRef.set(oauthToken);
 }
 // [END save_token_to_firebase] 
@@ -37,9 +36,9 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
   // a new token for a 2nd service account that only has the permission to 
   // act as a Dialogflow Client
   return new Promise((resolve, reject) => {
-    var post_options = {
+    const post_options = {
       host: 'iamcredentials.googleapis.com',
-      path: '/v1/projects/-/serviceAccounts/SERVICE-ACCOUNT-NAME@YOUR_PROJECT_ID.iam.gserviceaccount.com:generateAccessToken',
+      path: '/v1/projects/-/serviceAccounts/dialogflow-client@dialogflowsamples-santhosh-2.iam.gserviceaccount.com:generateAccessToken',
       method: 'POST',
       headers: {  // Set Service Account Credentials
         'Authorization': serviceAccountTokenType + ' ' + serviceAccountAccessToken
@@ -47,8 +46,8 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
     };
  
     // Set up the request
-    var oauthToken = '';
-    var post_req = https.request(post_options, (res) => {
+    let oauthToken = '';
+    const post_req = https.request(post_options, (res) => {
       res.setEncoding('utf8');
       res.on('data', (chunk) => {
         oauthToken += chunk;
@@ -87,15 +86,15 @@ function retrieveCredentials(context) {
     // To create a new access token, we first have to retrieve the credentials
     // of the service account that will make the generateTokenRequest(). 
     // To do that, we will use the App Engine Default Service Account.
-    var options = {
+    const options = {
       host: 'metadata.google.internal',
       path: '/computeMetadata/v1/instance/service-accounts/default/token',
       method: 'GET',
       headers: { 'Metadata-Flavor': 'Google' }
     };
  
-    var get_req = http.get(options, (res) => {
-      var body = '';
+    let get_req = http.get(options, (res) => {
+      let body = '';
  
       res.on('data', (chunk) => {
         body += chunk;
@@ -120,8 +119,8 @@ function retrieveCredentials(context) {
 // [START validate_token] 
 // This method verifies the token expiry by validating against current time
 function isValid(expiryTime) {
-  var currentDate = new Date();
-  var expirationDate = new Date(expiryTime);
+  let currentDate = new Date();
+  let expirationDate = new Date(expiryTime);
   // If within 5 minutes of expiration, return false
   return currentDate <= (expirationDate - 1000 * 60 * 5);
 }
@@ -136,7 +135,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
       'while authenticated.');
   }
   // Retrieve the token from the database
-  var docRef = db.collection('DialogflowTokens').doc("OauthToken");
+  let docRef = db.collection('DialogflowTokens').doc("OauthToken");
  
   return docRef.get().then((doc) => {
     if (doc.exists && isValid(doc.data().expireTime)) {

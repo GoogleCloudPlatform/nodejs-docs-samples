@@ -16,8 +16,8 @@
 'use strict';
 
 const assert = require('assert');
-const Datastore = require('@google-cloud/datastore');
-const datastore = Datastore();
+const {Datastore} = require('@google-cloud/datastore');
+const datastore = new Datastore();
 const program = require('../');
 const uuid = require('uuid');
 

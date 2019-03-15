@@ -74,16 +74,16 @@ function generateAccessToken(
     });
 
     // Sets up the scope that we want the end user to have.
-    const body = `{ 
+    const body = { 
       'delegates': [],
       'scope': [
         'https://www.googleapis.com/auth/dialogflow'
       ],
         'lifetime': '3599s'
-    }`;
+    };
 
     // post the data
-    post_req.write(body);
+    post_req.write(JSON.stringify(body));
     post_req.end();
   });
 }

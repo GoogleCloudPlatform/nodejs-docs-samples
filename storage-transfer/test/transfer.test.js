@@ -15,15 +15,15 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noCallThru();
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const srcBucketName = `foo`;
-const destBucketName = `bar`;
-const jobName = `transferJobs/123456789012345678`;
-const transferOperationName = `transferOperations/123456789012345678`;
+const srcBucketName = 'foo';
+const destBucketName = 'bar';
+const jobName = 'transferJobs/123456789012345678';
+const transferOperationName = 'transferOperations/123456789012345678';
 
 function getSample() {
   const transferJobMock = {
@@ -64,9 +64,9 @@ function getSample() {
   };
 
   return {
-    program: proxyquire(`../transfer`, {
+    program: proxyquire('../transfer', {
       googleapis: googleapisMock,
-      yargs: proxyquire(`yargs`, {}),
+      yargs: proxyquire('yargs', {}),
     }),
     mocks: {
       googleapis: googleapisMock,
@@ -77,15 +77,15 @@ function getSample() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test.serial(`should create a transfer job`, t => {
-  const description = `description`;
+it('should create a transfer job', () => {
+  const description = 'description';
   const sample = getSample();
   const callback = sinon.stub();
-  const date = `2016/08/11`;
-  const time = `15:30`;
+  const date = '2016/08/11';
+  const time = '15:30';
   const options = {
     srcBucket: srcBucketName,
     destBucket: destBucketName,
@@ -95,70 +95,85 @@ test.serial(`should create a transfer job`, t => {
 
   sample.program.createTransferJob(options, callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.create.calledOnce);
-  t.is(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.create.calledOnce,
+    true
+  );
+  assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.create.firstCall.args[0].resource
       .description,
     undefined
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [
-    `Created transfer job: %s`,
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [
+    null,
+    sample.mocks.transferJob,
+  ]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, [
+    'Created transfer job: %s',
     sample.mocks.transferJob.name,
   ]);
 
   options.description = description;
   sample.program.createTransferJob(options, callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.create.calledTwice);
-  t.is(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.create.calledTwice,
+    true
+  );
+  assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.create.secondCall.args[0].resource
       .description,
     description
   );
-  t.true(callback.calledTwice);
-  t.deepEqual(callback.secondCall.args, [null, sample.mocks.transferJob]);
-  t.true(console.log.calledTwice);
-  t.deepEqual(console.log.secondCall.args, [
-    `Created transfer job: %s`,
+  assert.strictEqual(callback.calledTwice, true);
+  assert.deepStrictEqual(callback.secondCall.args, [
+    null,
+    sample.mocks.transferJob,
+  ]);
+  assert.strictEqual(console.log.calledTwice, true);
+  assert.deepStrictEqual(console.log.secondCall.args, [
+    'Created transfer job: %s',
     sample.mocks.transferJob.name,
   ]);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.createTransferJob({}, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle create error`, t => {
-  const error = new Error(`error`);
+it('should handle create error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferJobs.create.yields(error);
 
   sample.program.createTransferJob({}, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should get a transfer job`, t => {
+it('should get a transfer job', () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.getTransferJob(jobName, callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.get.calledOnce);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.get.calledOnce,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferJobs.get.firstCall.args.slice(0, -1),
     [
       {
@@ -168,52 +183,58 @@ test.serial(`should get a transfer job`, t => {
       },
     ]
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [
-    `Found transfer job: %s`,
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [
+    null,
+    sample.mocks.transferJob,
+  ]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, [
+    'Found transfer job: %s',
     sample.mocks.transferJob.name,
   ]);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.getTransferJob(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle get error`, t => {
-  const error = new Error(`error`);
+it('should handle get error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferJobs.get.yields(error);
 
   sample.program.getTransferJob(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should update a transfer job`, t => {
+it('should update a transfer job', () => {
   const sample = getSample();
   const callback = sinon.stub();
   const options = {
     job: jobName,
-    field: `status`,
-    value: `DISABLED`,
+    field: 'status',
+    value: 'DISABLED',
   };
 
   sample.program.updateTransferJob(options, callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.patch.calledOnce);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.patch.calledOnce,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferJobs.patch.firstCall.args.slice(0, -1),
     [
       {
@@ -230,21 +251,27 @@ test.serial(`should update a transfer job`, t => {
       },
     ]
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferJob]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [
-    `Updated transfer job: %s`,
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [
+    null,
+    sample.mocks.transferJob,
+  ]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, [
+    'Updated transfer job: %s',
     jobName,
   ]);
 
-  options.field = `description`;
-  options.value = `description`;
+  options.field = 'description';
+  options.value = 'description';
 
   sample.program.updateTransferJob(options, callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.patch.calledTwice);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.patch.calledTwice,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferJobs.patch.secondCall.args.slice(
       0,
       -1
@@ -264,21 +291,27 @@ test.serial(`should update a transfer job`, t => {
       },
     ]
   );
-  t.true(callback.calledTwice);
-  t.deepEqual(callback.secondCall.args, [null, sample.mocks.transferJob]);
-  t.true(console.log.calledTwice);
-  t.deepEqual(console.log.secondCall.args, [
-    `Updated transfer job: %s`,
+  assert.strictEqual(callback.calledTwice, true);
+  assert.deepStrictEqual(callback.secondCall.args, [
+    null,
+    sample.mocks.transferJob,
+  ]);
+  assert.strictEqual(console.log.calledTwice, true);
+  assert.deepStrictEqual(console.log.secondCall.args, [
+    'Updated transfer job: %s',
     jobName,
   ]);
 
-  options.field = `transferSpec`;
-  options.value = `{"foo":"bar"}`;
+  options.field = 'transferSpec';
+  options.value = '{"foo":"bar"}';
 
   sample.program.updateTransferJob(options, callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.patch.calledThrice);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.patch.calledThrice,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferJobs.patch.thirdCall.args.slice(0, -1),
     [
       {
@@ -295,57 +328,63 @@ test.serial(`should update a transfer job`, t => {
       },
     ]
   );
-  t.true(callback.calledThrice);
-  t.deepEqual(callback.thirdCall.args, [null, sample.mocks.transferJob]);
-  t.true(console.log.calledThrice);
-  t.deepEqual(console.log.thirdCall.args, [
-    `Updated transfer job: %s`,
+  assert.strictEqual(callback.calledThrice, true);
+  assert.deepStrictEqual(callback.thirdCall.args, [
+    null,
+    sample.mocks.transferJob,
+  ]);
+  assert.strictEqual(console.log.calledThrice, true);
+  assert.deepStrictEqual(console.log.thirdCall.args, [
+    'Updated transfer job: %s',
     jobName,
   ]);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   const options = {
     job: jobName,
-    field: `status`,
-    value: `DISABLED`,
+    field: 'status',
+    value: 'DISABLED',
   };
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.updateTransferJob(options, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle patch error`, t => {
-  const error = new Error(`error`);
+it('should handle patch error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   const options = {
     job: jobName,
-    field: `status`,
-    value: `DISABLED`,
+    field: 'status',
+    value: 'DISABLED',
   };
   sample.mocks.storagetransfer.transferJobs.patch.yields(error);
 
   sample.program.updateTransferJob(options, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should list transfer jobs`, t => {
+it('should list transfer jobs', () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.listTransferJobs(callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.list.calledOnce);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.list.calledOnce,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferJobs.list.firstCall.args.slice(0, -1),
     [
       {
@@ -354,16 +393,22 @@ test.serial(`should list transfer jobs`, t => {
       },
     ]
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null, [sample.mocks.transferJob]]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Found %d jobs!`, 1]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [
+    null,
+    [sample.mocks.transferJob],
+  ]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, ['Found %d jobs!', 1]);
 
   sample.mocks.storagetransfer.transferJobs.list.yields(null, {});
   sample.program.listTransferJobs(callback);
 
-  t.true(sample.mocks.storagetransfer.transferJobs.list.calledTwice);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferJobs.list.calledTwice,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferJobs.list.secondCall.args.slice(0, -1),
     [
       {
@@ -372,76 +417,85 @@ test.serial(`should list transfer jobs`, t => {
       },
     ]
   );
-  t.true(callback.calledTwice);
-  t.deepEqual(callback.secondCall.args, [null, []]);
-  t.true(console.log.calledOnce);
+  assert.strictEqual(callback.calledTwice, true);
+  assert.deepStrictEqual(callback.secondCall.args, [null, []]);
+  assert.strictEqual(console.log.calledOnce, true);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.listTransferJobs(callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle list error`, t => {
-  const error = new Error(`error`);
+it('should handle list error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferJobs.list.yields(error);
 
   sample.program.listTransferJobs(callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should list transfer operations`, t => {
+it('should list transfer operations', () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   // Test that all operations get listed
   sample.program.listTransferOperations(undefined, callback);
 
-  t.true(sample.mocks.storagetransfer.transferOperations.list.calledOnce);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferOperations.list.calledOnce,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferOperations.list.firstCall.args.slice(
       0,
       -1
     ),
     [
       {
-        name: `transferOperations`,
+        name: 'transferOperations',
         auth: {},
         filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
       },
     ]
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [
     null,
     [sample.mocks.transferOperation],
   ]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [`Found %d operations!`, 1]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, [
+    'Found %d operations!',
+    1,
+  ]);
 
   // Test that operations for a specific job get listed
   sample.program.listTransferOperations(jobName, callback);
 
-  t.true(sample.mocks.storagetransfer.transferOperations.list.calledTwice);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferOperations.list.calledTwice,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferOperations.list.secondCall.args.slice(
       0,
       -1
     ),
     [
       {
-        name: `transferOperations`,
+        name: 'transferOperations',
         auth: {},
         filter: JSON.stringify({
           project_id: process.env.GCLOUD_PROJECT,
@@ -450,27 +504,33 @@ test.serial(`should list transfer operations`, t => {
       },
     ]
   );
-  t.true(callback.calledTwice);
-  t.deepEqual(callback.secondCall.args, [
+  assert.strictEqual(callback.calledTwice, true);
+  assert.deepStrictEqual(callback.secondCall.args, [
     null,
     [sample.mocks.transferOperation],
   ]);
-  t.true(console.log.calledTwice);
-  t.deepEqual(console.log.secondCall.args, [`Found %d operations!`, 1]);
+  assert.strictEqual(console.log.calledTwice, true);
+  assert.deepStrictEqual(console.log.secondCall.args, [
+    'Found %d operations!',
+    1,
+  ]);
 
   // Test that operations for a specific job get listed when the API response with just an object
   sample.mocks.storagetransfer.transferOperations.list.yields(null, {});
   sample.program.listTransferOperations(jobName, callback);
 
-  t.true(sample.mocks.storagetransfer.transferOperations.list.calledThrice);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferOperations.list.calledThrice,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferOperations.list.thirdCall.args.slice(
       0,
       -1
     ),
     [
       {
-        name: `transferOperations`,
+        name: 'transferOperations',
         auth: {},
         filter: JSON.stringify({
           project_id: process.env.GCLOUD_PROJECT,
@@ -479,48 +539,58 @@ test.serial(`should list transfer operations`, t => {
       },
     ]
   );
-  t.true(callback.calledThrice);
-  t.deepEqual(callback.thirdCall.args, [null, []]);
-  t.true(console.log.calledTwice);
+  assert.strictEqual(callback.calledThrice, true);
+  assert.deepStrictEqual(callback.thirdCall.args, [null, []]);
+  assert.strictEqual(console.log.calledTwice, true);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.listTransferOperations(undefined, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle list error`, t => {
-  const error = new Error(`error`);
+it('should handle list error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.list.yields(error);
 
   sample.program.listTransferOperations(undefined, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should get a transfer operation`, t => {
+it('should get a transfer operation', () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.getTransferOperation(transferOperationName, callback);
 
-  t.true(callback.calledOnce);
-  t.is(callback.firstCall.args.length, 2, `callback received 2 arguments`);
-  t.ifError(callback.firstCall.args[0], `callback did not receive error`);
-  t.true(callback.firstCall.args[1] === sample.mocks.transferOperation);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.strictEqual(
+    callback.firstCall.args.length,
+    2,
+    'callback received 2 arguments'
+  );
+  assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
+  assert.strictEqual(
+    callback.firstCall.args[1] === sample.mocks.transferOperation,
+    true
+  );
 
-  t.true(sample.mocks.storagetransfer.transferOperations.get.calledOnce);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferOperations.get.calledOnce,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferOperations.get.firstCall.args.slice(
       0,
       -1
@@ -532,51 +602,61 @@ test.serial(`should get a transfer operation`, t => {
       },
     ]
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null, sample.mocks.transferOperation]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [
-    `Found transfer operation: %s`,
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [
+    null,
+    sample.mocks.transferOperation,
+  ]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, [
+    'Found transfer operation: %s',
     sample.mocks.transferOperation,
   ]);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.getTransferOperation(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle get error`, t => {
-  const error = new Error(`error`);
+it('should handle get error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.get.yields(error);
 
   sample.program.getTransferOperation(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should pause a transfer operation`, t => {
+it('should pause a transfer operation', () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.pauseTransferOperation(transferOperationName, callback);
 
-  t.true(callback.calledOnce);
-  t.is(callback.firstCall.args.length, 1, `callback received 1 argument`);
-  t.ifError(callback.firstCall.args[0], `callback did not receive error`);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.strictEqual(
+    callback.firstCall.args.length,
+    1,
+    'callback received 1 argument'
+  );
+  assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
 
-  t.true(sample.mocks.storagetransfer.transferOperations.pause.calledOnce);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferOperations.pause.calledOnce,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferOperations.pause.firstCall.args.slice(
       0,
       -1
@@ -588,51 +668,58 @@ test.serial(`should pause a transfer operation`, t => {
       },
     ]
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [
-    `Paused transfer operation: %s`,
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [null]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, [
+    'Paused transfer operation: %s',
     transferOperationName,
   ]);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.pauseTransferOperation(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle pause error`, t => {
-  const error = new Error(`error`);
+it('should handle pause error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.pause.yields(error);
 
   sample.program.pauseTransferOperation(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should resume a transfer operation`, t => {
+it('should resume a transfer operation', () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   sample.program.resumeTransferOperation(transferOperationName, callback);
 
-  t.true(callback.calledOnce);
-  t.is(callback.firstCall.args.length, 1, `callback received 1 argument`);
-  t.ifError(callback.firstCall.args[0], `callback did not receive error`);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.strictEqual(
+    callback.firstCall.args.length,
+    1,
+    'callback received 1 argument'
+  );
+  assert.ifError(callback.firstCall.args[0], 'callback did not receive error');
 
-  t.true(sample.mocks.storagetransfer.transferOperations.resume.calledOnce);
-  t.deepEqual(
+  assert.strictEqual(
+    sample.mocks.storagetransfer.transferOperations.resume.calledOnce,
+    true
+  );
+  assert.deepStrictEqual(
     sample.mocks.storagetransfer.transferOperations.resume.firstCall.args.slice(
       0,
       -1
@@ -644,147 +731,163 @@ test.serial(`should resume a transfer operation`, t => {
       },
     ]
   );
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [null]);
-  t.true(console.log.calledOnce);
-  t.deepEqual(console.log.firstCall.args, [
-    `Resumed transfer operation: %s`,
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [null]);
+  assert.strictEqual(console.log.calledOnce, true);
+  assert.deepStrictEqual(console.log.firstCall.args, [
+    'Resumed transfer operation: %s',
     transferOperationName,
   ]);
 });
 
-test.serial(`should handle auth error`, t => {
-  const error = new Error(`error`);
+it('should handle auth error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
 
   sample.program.resumeTransferOperation(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should handle resume error`, t => {
-  const error = new Error(`error`);
+it('should handle resume error', () => {
+  const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.resume.yields(error);
 
   sample.program.resumeTransferOperation(jobName, callback);
 
-  t.true(callback.calledOnce);
-  t.deepEqual(callback.firstCall.args, [error]);
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-test.serial(`should call createTransferJob`, t => {
+it('should call createTransferJob', () => {
   const program = getSample().program;
 
-  sinon.stub(program, `createTransferJob`);
+  sinon.stub(program, 'createTransferJob');
   program.main([
-    `jobs`,
-    `create`,
+    'jobs',
+    'create',
     srcBucketName,
     destBucketName,
-    `time`,
-    `date`,
+    'time',
+    'date',
   ]);
-  t.true(program.createTransferJob.calledOnce);
-  t.deepEqual(program.createTransferJob.firstCall.args.slice(0, -1), [
-    {
-      srcBucket: srcBucketName,
-      destBucket: destBucketName,
-      time: `time`,
-      date: `date`,
-      description: undefined,
-    },
-  ]);
+  assert.strictEqual(program.createTransferJob.calledOnce, true);
+  assert.deepStrictEqual(
+    program.createTransferJob.firstCall.args.slice(0, -1),
+    [
+      {
+        srcBucket: srcBucketName,
+        destBucket: destBucketName,
+        time: 'time',
+        date: 'date',
+        description: undefined,
+      },
+    ]
+  );
 });
 
-test.serial(`should call getTransferJob`, t => {
+it('should call getTransferJob', () => {
   const program = getSample().program;
 
-  sinon.stub(program, `getTransferJob`);
-  program.main([`jobs`, `get`, jobName]);
-  t.true(program.getTransferJob.calledOnce);
-  t.deepEqual(program.getTransferJob.firstCall.args.slice(0, -1), [jobName]);
-});
-
-test.serial(`should call listTransferJobs`, t => {
-  const program = getSample().program;
-
-  sinon.stub(program, `listTransferJobs`);
-  program.main([`jobs`, `list`]);
-  t.true(program.listTransferJobs.calledOnce);
-  t.deepEqual(program.listTransferJobs.firstCall.args.slice(0, -1), []);
-});
-
-test.serial(`should call updateTransferJob`, t => {
-  const program = getSample().program;
-
-  sinon.stub(program, `updateTransferJob`);
-  program.main([`jobs`, `set`, jobName, `status`, `DISABLED`]);
-  t.true(program.updateTransferJob.calledOnce);
-  t.deepEqual(program.updateTransferJob.firstCall.args.slice(0, -1), [
-    {
-      job: jobName,
-      field: `status`,
-      value: `DISABLED`,
-    },
-  ]);
-});
-
-test.serial(`should call listTransferOperations`, t => {
-  const program = getSample().program;
-
-  sinon.stub(program, `listTransferOperations`);
-  program.main([`operations`, `list`]);
-  t.true(program.listTransferOperations.calledOnce);
-  t.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [
-    undefined,
-  ]);
-});
-
-test.serial(`should call listTransferOperations and filter`, t => {
-  const program = getSample().program;
-
-  sinon.stub(program, `listTransferOperations`);
-  program.main([`operations`, `list`, jobName]);
-  t.true(program.listTransferOperations.calledOnce);
-  t.deepEqual(program.listTransferOperations.firstCall.args.slice(0, -1), [
+  sinon.stub(program, 'getTransferJob');
+  program.main(['jobs', 'get', jobName]);
+  assert.strictEqual(program.getTransferJob.calledOnce, true);
+  assert.deepStrictEqual(program.getTransferJob.firstCall.args.slice(0, -1), [
     jobName,
   ]);
 });
 
-test.serial(`should call getTransferOperation`, t => {
+it('should call listTransferJobs', () => {
   const program = getSample().program;
 
-  sinon.stub(program, `getTransferOperation`);
-  program.main([`operations`, `get`, transferOperationName]);
-  t.true(program.getTransferOperation.calledOnce);
-  t.deepEqual(program.getTransferOperation.firstCall.args.slice(0, -1), [
-    transferOperationName,
-  ]);
+  sinon.stub(program, 'listTransferJobs');
+  program.main(['jobs', 'list']);
+  assert.strictEqual(program.listTransferJobs.calledOnce, true);
+  assert.deepStrictEqual(
+    program.listTransferJobs.firstCall.args.slice(0, -1),
+    []
+  );
 });
 
-test.serial(`should call pauseTransferOperation`, t => {
+it('should call updateTransferJob', () => {
   const program = getSample().program;
 
-  sinon.stub(program, `pauseTransferOperation`);
-  program.main([`operations`, `pause`, transferOperationName]);
-  t.true(program.pauseTransferOperation.calledOnce);
-  t.deepEqual(program.pauseTransferOperation.firstCall.args.slice(0, -1), [
-    transferOperationName,
-  ]);
+  sinon.stub(program, 'updateTransferJob');
+  program.main(['jobs', 'set', jobName, 'status', 'DISABLED']);
+  assert.strictEqual(program.updateTransferJob.calledOnce, true);
+  assert.deepStrictEqual(
+    program.updateTransferJob.firstCall.args.slice(0, -1),
+    [
+      {
+        job: jobName,
+        field: 'status',
+        value: 'DISABLED',
+      },
+    ]
+  );
 });
 
-test.serial(`should call resumeTransferOperation`, t => {
+it('should call listTransferOperations', () => {
   const program = getSample().program;
 
-  sinon.stub(program, `resumeTransferOperation`);
-  program.main([`operations`, `resume`, transferOperationName]);
-  t.true(program.resumeTransferOperation.calledOnce);
-  t.deepEqual(program.resumeTransferOperation.firstCall.args.slice(0, -1), [
-    transferOperationName,
-  ]);
+  sinon.stub(program, 'listTransferOperations');
+  program.main(['operations', 'list']);
+  assert.strictEqual(program.listTransferOperations.calledOnce, true);
+  assert.deepStrictEqual(
+    program.listTransferOperations.firstCall.args.slice(0, -1),
+    [undefined]
+  );
+});
+
+it('should call listTransferOperations and filter', () => {
+  const program = getSample().program;
+
+  sinon.stub(program, 'listTransferOperations');
+  program.main(['operations', 'list', jobName]);
+  assert.strictEqual(program.listTransferOperations.calledOnce, true);
+  assert.deepStrictEqual(
+    program.listTransferOperations.firstCall.args.slice(0, -1),
+    [jobName]
+  );
+});
+
+it('should call getTransferOperation', () => {
+  const program = getSample().program;
+
+  sinon.stub(program, 'getTransferOperation');
+  program.main(['operations', 'get', transferOperationName]);
+  assert.strictEqual(program.getTransferOperation.calledOnce, true);
+  assert.deepStrictEqual(
+    program.getTransferOperation.firstCall.args.slice(0, -1),
+    [transferOperationName]
+  );
+});
+
+it('should call pauseTransferOperation', () => {
+  const program = getSample().program;
+
+  sinon.stub(program, 'pauseTransferOperation');
+  program.main(['operations', 'pause', transferOperationName]);
+  assert.strictEqual(program.pauseTransferOperation.calledOnce, true);
+  assert.deepStrictEqual(
+    program.pauseTransferOperation.firstCall.args.slice(0, -1),
+    [transferOperationName]
+  );
+});
+
+it('should call resumeTransferOperation', () => {
+  const program = getSample().program;
+
+  sinon.stub(program, 'resumeTransferOperation');
+  program.main(['operations', 'resume', transferOperationName]);
+  assert.strictEqual(program.resumeTransferOperation.calledOnce, true);
+  assert.deepStrictEqual(
+    program.resumeTransferOperation.firstCall.args.slice(0, -1),
+    [transferOperationName]
+  );
 });

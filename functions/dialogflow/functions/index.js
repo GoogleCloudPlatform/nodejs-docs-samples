@@ -13,19 +13,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
- 
+/*jshint esversion: 6 */
+/* jshint node: true */
+
 'use strict';
- 
+
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const http = require('http');
 const https = require('https');
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
- 
+
 // [START save_token_to_firebase]
 function saveOAuthToken(context, oauthToken) {
-  let docRef = db.collection('DialogflowTokens').doc("OauthToken");
+  let docRef = db.collection('DialogflowTokens').doc('OauthToken');
   docRef.set(oauthToken);
 }
 // [END save_token_to_firebase] 
@@ -61,16 +63,16 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
  
     post_req.on('error', (e) => {
       console.log('ERROR generating new token', e.message);
-      return "Error retrieving token";
+      return 'Error retrieving token';
     });
  
     // Sets up the scope that we want the end user to have.
     const body = `{ 
-      "delegates": [],
-      "scope": [
-        "https://www.googleapis.com/auth/dialogflow"
+      'delegates': [],
+      'scope': [
+        'https://www.googleapis.com/auth/dialogflow'
       ],
-        "lifetime": "3599s"
+        'lifetime': '3599s'
     }`;
  
     // post the data
@@ -108,8 +110,8 @@ function retrieveCredentials(context) {
       });
     });
     get_req.on('error', (e) => {
-      console.log("Error retrieving credentials", e.message);
-      return "Error retrieving token";
+      console.log('Error retrieving credentials', e.message);
+      return 'Error retrieving token';
     });
     get_req.end();
   });
@@ -135,7 +137,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
       'while authenticated.');
   }
   // Retrieve the token from the database
-  let docRef = db.collection('DialogflowTokens').doc("OauthToken");
+  let docRef = db.collection('DialogflowTokens').doc('OauthToken');
  
   return docRef.get().then((doc) => {
     if (doc.exists && isValid(doc.data().expireTime)) {
@@ -147,7 +149,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     }    
   }).catch((err) => {
       console.log('Error retrieving token', err);
-      return "Error retrieving token";
+      return 'Error retrieving token';
     });
 });
 // [END function_get_token]

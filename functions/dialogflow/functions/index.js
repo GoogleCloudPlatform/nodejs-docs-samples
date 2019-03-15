@@ -1,18 +1,18 @@
 /**
-* Copyright 2019 Google LLC
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /*jshint esversion: 6 */
 /* jshint node: true */
 
@@ -30,28 +30,35 @@ function saveOAuthToken(context, oauthToken) {
   let docRef = db.collection('DialogflowTokens').doc('OauthToken');
   docRef.set(oauthToken);
 }
-// [END save_token_to_firebase] 
+// [END save_token_to_firebase]
 
 // [START generate_token]
-function generateAccessToken(context, serviceAccountAccessToken, serviceAccountTokenType) {
+function generateAccessToken(
+  context,
+  serviceAccountAccessToken,
+  serviceAccountTokenType
+) {
   // With the service account's credentials, we can make a request to generate
-  // a new token for a 2nd service account that only has the permission to 
+  // a new token for a 2nd service account that only has the permission to
   // act as a Dialogflow Client
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     const post_options = {
       host: 'iamcredentials.googleapis.com',
-      path: '/v1/projects/-/serviceAccounts/SERVICE-ACCOUNT-NAME@YOUR_PROJECT_ID.iam.gserviceaccount.com:generateAccessToken',
+      path:
+        '/v1/projects/-/serviceAccounts/SERVICE-ACCOUNT-NAME@YOUR_PROJECT_ID.iam.gserviceaccount.com:generateAccessToken',
       method: 'POST',
-      headers: {  // Set Service Account Credentials
-        'Authorization': serviceAccountTokenType + ' ' + serviceAccountAccessToken
-      }
+      headers: {
+        // Set Service Account Credentials
+        Authorization:
+          serviceAccountTokenType + ' ' + serviceAccountAccessToken,
+      },
     };
- 
+
     // Set up the request
     let oauthToken = '';
-    const post_req = https.request(post_options, (res) => {
+    const post_req = https.request(post_options, res => {
       res.setEncoding('utf8');
-      res.on('data', (chunk) => {
+      res.on('data', chunk => {
         oauthToken += chunk;
       });
       res.on('end', () => {
@@ -60,12 +67,12 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
         return resolve(JSON.parse(oauthToken));
       });
     });
- 
-    post_req.on('error', (e) => {
+
+    post_req.on('error', e => {
       console.log('ERROR generating new token', e.message);
       return 'Error retrieving token';
     });
- 
+
     // Sets up the scope that we want the end user to have.
     const body = `{ 
       'delegates': [],
@@ -74,42 +81,46 @@ function generateAccessToken(context, serviceAccountAccessToken, serviceAccountT
       ],
         'lifetime': '3599s'
     }`;
- 
+
     // post the data
     post_req.write(body);
     post_req.end();
   });
 }
 // [END generate_token]
- 
-// [START retrieve_credentials] 
+
+// [START retrieve_credentials]
 function retrieveCredentials(context) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     // To create a new access token, we first have to retrieve the credentials
-    // of the service account that will make the generateTokenRequest(). 
+    // of the service account that will make the generateTokenRequest().
     // To do that, we will use the App Engine Default Service Account.
     const options = {
       host: 'metadata.google.internal',
       path: '/computeMetadata/v1/instance/service-accounts/default/token',
       method: 'GET',
-      headers: { 'Metadata-Flavor': 'Google' }
+      headers: {'Metadata-Flavor': 'Google'},
     };
- 
-    let get_req = http.get(options, (res) => {
+
+    let get_req = http.get(options, res => {
       let body = '';
- 
-      res.on('data', (chunk) => {
+
+      res.on('data', chunk => {
         body += chunk;
       });
- 
+
       res.on('end', () => {
         const response = JSON.parse(body);
-        return generateAccessToken(context, response.access_token, response.token_type).then((result) => {
+        return generateAccessToken(
+          context,
+          response.access_token,
+          response.token_type
+        ).then(result => {
           return resolve(result);
         });
       });
     });
-    get_req.on('error', (e) => {
+    get_req.on('error', e => {
       console.log('Error retrieving credentials', e.message);
       return 'Error retrieving token';
     });
@@ -117,14 +128,14 @@ function retrieveCredentials(context) {
   });
 }
 // [END retrieve_credentials]
- 
-// [START validate_token] 
+
+// [START validate_token]
 // This method verifies the token expiry by validating against current time
 function isValid(expiryTime) {
   let currentDate = new Date();
   let expirationDate = new Date(expiryTime);
   // If within 5 minutes of expiration, return false
-  return currentDate <= (expirationDate - 1000 * 60 * 5);
+  return currentDate <= expirationDate - 1000 * 60 * 5;
 }
 // [END validate_token]
 
@@ -133,21 +144,26 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
   // Checking that the user is authenticated.
   if (!context.auth) {
     // Throwing an HttpsError so that the client gets the error details.
-    throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
-      'while authenticated.');
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'The function must be called ' + 'while authenticated.'
+    );
   }
   // Retrieve the token from the database
   let docRef = db.collection('DialogflowTokens').doc('OauthToken');
- 
-  return docRef.get().then((doc) => {
-    if (doc.exists && isValid(doc.data().expireTime)) {
-      return doc.data();
-    } else {
-      return retrieveCredentials(context).then((result) => {
-        return result;
-      });
-    }    
-  }).catch((err) => {
+
+  return docRef
+    .get()
+    .then(doc => {
+      if (doc.exists && isValid(doc.data().expireTime)) {
+        return doc.data();
+      } else {
+        return retrieveCredentials(context).then(result => {
+          return result;
+        });
+      }
+    })
+    .catch(err => {
       console.log('Error retrieving token', err);
       return 'Error retrieving token';
     });

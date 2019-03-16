@@ -22,6 +22,6 @@
   },
   "dependencies": {
     "@google-cloud/compute": "^0.11.0",
-    "safe-buffer": "5.1.2"
+    "safe-buffer": "^5.1.2"
   }
 }

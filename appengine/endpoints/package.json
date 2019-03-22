@@ -31,6 +31,6 @@
     "ava": "^0.25.0",
     "proxyquire": "^2.1.0",
     "sinon": "^7.1.1",
-    "supertest": "^3.3.0"
+    "supertest": "^4.0.0"
   }
 }

@@ -30,7 +30,7 @@
     "express": "^4.16.3",
     "proxyquire": "^2.1.0",
     "sinon": "^7.0.0",
-    "supertest": "^3.0.0",
+    "supertest": "^4.0.0",
     "uuid": "^3.1.0",
     "yargs": "^13.0.0"
   },

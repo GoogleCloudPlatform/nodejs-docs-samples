@@ -100,7 +100,7 @@ function getSample() {
 it('should notify Slack when budget is exceeded', async () => {
   const {program, mocks} = getSample();
 
-  const jsonData = {cost: 500, budget: 400};
+  const jsonData = {costAmount: 500, budgetAmount: 400};
   const pubsubData = {
     data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
     attributes: {},
@@ -114,7 +114,7 @@ it('should notify Slack when budget is exceeded', async () => {
 it('should disable billing when budget is exceeded', async () => {
   const {program, mocks} = getSample();
 
-  const jsonData = {cost: 500, budget: 400};
+  const jsonData = {costAmount: 500, budgetAmount: 400};
   const pubsubData = {
     data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
     attributes: {},
@@ -136,7 +136,7 @@ it('should disable billing when budget is exceeded', async () => {
 it('should shut down GCE instances when budget is exceeded', async () => {
   const {program, mocks} = getSample();
 
-  const jsonData = {cost: 500, budget: 400};
+  const jsonData = {costAmount: 500, budgetAmount: 400};
   const pubsubData = {
     data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
     attributes: {},

@@ -99,8 +99,8 @@ exports.helloHttp = (req, res) => {
 exports.parseXML = (req, res) => {
   // Convert the request to a Buffer and a string
   // Use whichever one is accepted by your XML parser
-  let data = req.rawBody;
-  let xmlData = data.toString();
+  const data = req.rawBody;
+  const xmlData = data.toString();
 
   const parseString = require('xml2js').parseString;
 
@@ -151,7 +151,7 @@ exports.uploadFile = (req, res) => {
     fields[fieldname] = val;
   });
 
-  let fileWrites = [];
+  const fileWrites = [];
 
   // This code will process each file uploaded.
   busboy.on('file', (fieldname, file, filename) => {

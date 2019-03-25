@@ -59,9 +59,9 @@ app.post('/', formBodyParser, async (req, res, next) => {
     return;
   }
 
-  let data = Buffer.from(req.body.payload);
+  const data = Buffer.from(req.body.payload);
   try {
-    let messageId = await publisher.publish(data);
+    const messageId = await publisher.publish(data);
     res.status(200).send(`Message ${messageId} sent.`);
   } catch (error) {
     next(error);

@@ -101,7 +101,11 @@ var argv = require(`yargs`)
 // must be in the format below.
 
 let iatTime = parseInt(Date.now() / 1000);
-let authToken = createJwt(argv.projectId, argv.privateKeyFile, argv.algorithm);
+const authToken = createJwt(
+  argv.projectId,
+  argv.privateKeyFile,
+  argv.algorithm
+);
 const devicePath = `projects/${argv.projectId}/locations/${
   argv.cloudRegion
 }/registries/${argv.registryId}/devices/${argv.deviceId}`;
@@ -180,7 +184,7 @@ function publishAsync(authToken, messageCount, numMessages) {
       // If we have published fewer than numMessage messages, publish payload
       // messageCount + 1.
       setTimeout(function() {
-        let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
+        const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
         if (secsFromIssue > argv.tokenExpMins * 60) {
           iatTime = parseInt(Date.now() / 1000);
           console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);

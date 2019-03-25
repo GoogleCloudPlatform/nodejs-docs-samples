@@ -476,7 +476,7 @@ function listDevices(client, registryId, projectId, cloudRegion) {
       console.log('Could not list devices');
       console.log(err);
     } else {
-      let data = res.data;
+      const data = res.data;
       console.log('Current devices in registry:', data['devices']);
     }
   });
@@ -501,7 +501,7 @@ function listRegistries(client, projectId, cloudRegion) {
       console.log('Could not list registries');
       console.log(err);
     } else {
-      let data = res.data;
+      const data = res.data;
       console.log('Current registries in project:\n', data['deviceRegistries']);
     }
   });
@@ -573,9 +573,9 @@ function clearRegistry(client, registryId, projectId, cloudRegion) {
       return;
     }
 
-    let data = res.data;
+    const data = res.data;
     console.log('Current devices in registry:', data['devices']);
-    let devices = data['devices'];
+    const devices = data['devices'];
 
     if (devices) {
       devices.forEach((device, index) => {
@@ -1095,9 +1095,9 @@ function unbindDeviceFromAllGateways(
       return;
     }
 
-    let device = res.data;
+    const device = res.data;
     if (device) {
-      let isGateway = device.gatewayConfig.gatewayType === 'GATEWAY';
+      const isGateway = device.gatewayConfig.gatewayType === 'GATEWAY';
 
       if (!isGateway) {
         const listGatewaysForDeviceRequest = {
@@ -1114,9 +1114,9 @@ function unbindDeviceFromAllGateways(
               return;
             }
 
-            let data = res.data;
+            const data = res.data;
             if (data.devices && data.devices.length > 0) {
-              let gateways = data.devices;
+              const gateways = data.devices;
 
               gateways.forEach(gateway => {
                 const unbindRequest = {
@@ -1159,17 +1159,17 @@ function unbindAllDevices(client, projectId, cloudRegion, registryId) {
       return;
     }
 
-    let data = res.data;
+    const data = res.data;
     if (!data) {
       return;
     }
 
-    let devices = data.devices;
+    const devices = data.devices;
 
     if (devices && devices.length > 0) {
       devices.forEach(device => {
         if (device) {
-          let isGateway =
+          const isGateway =
             device.gatewayConfig &&
             device.gatewayConfig.gatewayType === 'GATEWAY';
 
@@ -1205,7 +1205,7 @@ function listGateways(client, projectId, cloudRegion, registryId) {
       console.log('Could not list devices');
       console.log(err);
     } else {
-      let data = res.data;
+      const data = res.data;
       console.log('Current gateways in registry:');
       data.devices.forEach(function(device) {
         if (
@@ -1247,7 +1247,7 @@ function listDevicesForGateway(
       console.log(err);
     } else {
       console.log('Current devices bound to gateway: ', gatewayId);
-      let data = res.data;
+      const data = res.data;
       if (data.devices && data.devices.length > 0) {
         data.devices.forEach(device => {
           console.log(`\tDevice: ${device.numId} : ${device.id}`);
@@ -1285,7 +1285,7 @@ function listGatewaysForDevice(
       console.log(err);
     } else {
       console.log('Current gateways for device:', deviceId);
-      let data = res.data;
+      const data = res.data;
       if (data.devices && data.devices.length > 0) {
         data.devices.forEach(gateway => {
           console.log(`\tDevice: ${gateway.numId} : ${gateway.id}`);

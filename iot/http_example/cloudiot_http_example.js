@@ -21,7 +21,7 @@ const request = require('retry-request');
 // [END iot_http_includes]
 
 console.log('Google Cloud IoT Core HTTP example.');
-var argv = require(`yargs`)
+const argv = require(`yargs`)
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,

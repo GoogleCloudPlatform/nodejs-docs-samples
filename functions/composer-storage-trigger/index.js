@@ -74,8 +74,8 @@ function authorizeIap(clientId, projectId, userAgent) {
     JSON.stringify({alg: 'RS256', typ: 'JWT'})
   ).toString('base64');
 
-  var jwt = '';
-  var jwtClaimset = '';
+  let jwt = '';
+  let jwtClaimset = '';
 
   // Obtain an Oauth2 access token for the appspot service account
   return fetch(
@@ -89,9 +89,9 @@ function authorizeIap(clientId, projectId, userAgent) {
       if (tokenResponse.error) {
         return Promise.reject(tokenResponse.error);
       }
-      var accessToken = tokenResponse.access_token;
-      var iat = Math.floor(new Date().getTime() / 1000);
-      var claims = {
+      const accessToken = tokenResponse.access_token;
+      const iat = Math.floor(new Date().getTime() / 1000);
+      const claims = {
         iss: SERVICE_ACCOUNT,
         aud: 'https://www.googleapis.com/oauth2/v4/token',
         iat: iat,
@@ -99,7 +99,7 @@ function authorizeIap(clientId, projectId, userAgent) {
         target_audience: clientId,
       };
       jwtClaimset = Buffer.from(JSON.stringify(claims)).toString('base64');
-      var toSign = [JWT_HEADER, jwtClaimset].join('.');
+      const toSign = [JWT_HEADER, jwtClaimset].join('.');
 
       return fetch(
         `https://iam.googleapis.com/v1/projects/${projectId}/serviceAccounts/${SERVICE_ACCOUNT}:signBlob`,
@@ -121,9 +121,9 @@ function authorizeIap(clientId, projectId, userAgent) {
         return Promise.reject(body.error);
       }
       // Request service account signature on header and claimset
-      var jwtSignature = body.signature;
+      const jwtSignature = body.signature;
       jwt = [JWT_HEADER, jwtClaimset, jwtSignature].join('.');
-      var form = new FormData();
+      const form = new FormData();
       form.append('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
       form.append('assertion', jwt);
       return fetch('https://www.googleapis.com/oauth2/v4/token', {

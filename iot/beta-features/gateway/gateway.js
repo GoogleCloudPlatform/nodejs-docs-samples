@@ -835,7 +835,7 @@ function publishAsync(
 
   // Publish and schedule the next publish.
   publishChainInProgress = true;
-  var publishDelayMs = 0;
+  let publishDelayMs = 0;
   if (shouldBackoff) {
     publishDelayMs = 1000 * (backoffTime + Math.random());
     backoffTime *= 2;
@@ -860,7 +860,7 @@ function publishAsync(
       }
     });
 
-    var schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
+    const schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
     setTimeout(function() {
       // [START iot_mqtt_jwt_refresh]
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;

@@ -152,13 +152,13 @@ async function getVoteCount(knex, candidate) {
 app.get('/', (req, res) => {
   (async function() {
     // Query the total count of "TABS" from the database.
-    let tabsResult = await getVoteCount(knex, 'TABS');
-    let tabsTotalVotes = parseInt(tabsResult[0].count);
+    const tabsResult = await getVoteCount(knex, 'TABS');
+    const tabsTotalVotes = parseInt(tabsResult[0].count);
     // Query the total count of "SPACES" from the database.
-    let spacesResult = await getVoteCount(knex, 'SPACES');
-    let spacesTotalVotes = parseInt(spacesResult[0].count);
+    const spacesResult = await getVoteCount(knex, 'SPACES');
+    const spacesTotalVotes = parseInt(spacesResult[0].count);
     // Query the last 5 votes from the database.
-    let votes = await getVotes(knex);
+    const votes = await getVotes(knex);
     // Calculate and set leader values.
     let leadTeam = '';
     let voteDiff = 0;
@@ -219,7 +219,7 @@ app.post('/', (req, res) => {
         .send(msg)
         .end();
     });
-  let msg = 'Successfully voted for ' + team + ' at ' + timestamp;
+  const msg = 'Successfully voted for ' + team + ' at ' + timestamp;
   res
     .status(200)
     .send(msg)

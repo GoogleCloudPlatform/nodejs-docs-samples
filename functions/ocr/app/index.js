@@ -122,7 +122,7 @@ function renameImageForSave(filename, lang) {
  * @param {object} event (Node 8+) A Google Cloud Storage File object.
  */
 exports.processImage = event => {
-  let file = event.data || event;
+  const file = event.data || event;
 
   return Promise.resolve()
     .then(() => {

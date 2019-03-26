@@ -310,7 +310,7 @@ function publishAsync(
     var schedulePublishDelayMs = argv.messageType === 'events' ? 1000 : 2000;
     setTimeout(function() {
       // [START iot_mqtt_jwt_refresh]
-      let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
+      const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > argv.tokenExpMins * 60) {
         iatTime = parseInt(Date.now() / 1000);
         console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
@@ -408,7 +408,7 @@ function mqttDeviceDemo(
   // non-empty. The password field is used to transmit a JWT to authorize the
   // device. The "mqtts" protocol causes the library to connect using SSL, which
   // is required for Cloud IoT Core.
-  let connectionArgs = {
+  const connectionArgs = {
     host: mqttBridgeHostname,
     port: mqttBridgePort,
     clientId: mqttClientId,
@@ -419,8 +419,8 @@ function mqttDeviceDemo(
   };
 
   // Create a client, and connect to the Google MQTT bridge.
-  let iatTime = parseInt(Date.now() / 1000);
-  let client = mqtt.connect(connectionArgs);
+  const iatTime = parseInt(Date.now() / 1000);
+  const client = mqtt.connect(connectionArgs);
 
   // Subscribe to the /devices/{device-id}/config topic to receive config updates.
   // Config updates are recommended to use QoS 1 (at least once delivery)
@@ -578,7 +578,7 @@ function publishAsyncGateway(
 
     var schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
     setTimeout(function() {
-      let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
+      const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > tokenExpMins * 60) {
         iatTime = parseInt(Date.now() / 1000);
         console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
@@ -633,7 +633,7 @@ function sendDataFromBoundDevice(
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(`MQTT client id: ${mqttClientId}`);
-  let connectionArgs = {
+  const connectionArgs = {
     host: mqttBridgeHostname,
     port: mqttBridgePort,
     clientId: mqttClientId,
@@ -645,8 +645,8 @@ function sendDataFromBoundDevice(
   };
 
   // Create a client, and connect to the Google MQTT bridge.
-  let iatTime = parseInt(Date.now() / 1000);
-  let client = mqtt.connect(connectionArgs);
+  const iatTime = parseInt(Date.now() / 1000);
+  const client = mqtt.connect(connectionArgs);
 
   client.on('connect', success => {
     if (!success) {
@@ -722,7 +722,7 @@ function listenForConfigMessages(
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(mqttClientId);
-  let connectionArgs = {
+  const connectionArgs = {
     host: mqttBridgeHostname,
     port: mqttBridgePort,
     clientId: mqttClientId,
@@ -734,7 +734,7 @@ function listenForConfigMessages(
   };
 
   // Create a client, and connect to the Google MQTT bridge.
-  let client = mqtt.connect(connectionArgs);
+  const client = mqtt.connect(connectionArgs);
 
   client.on('connect', success => {
     if (!success) {
@@ -767,7 +767,7 @@ function listenForConfigMessages(
   });
 
   client.on('message', (topic, message) => {
-    let decodedMessage = Buffer.from(message, 'base64').toString('ascii');
+    const decodedMessage = Buffer.from(message, 'base64').toString('ascii');
 
     if (topic === `/devices/${gatewayId}/errors`) {
       console.log(`message received on error topic: ${decodedMessage}`);
@@ -809,7 +809,7 @@ function listenForErrorMessages(
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(mqttClientId);
-  let connectionArgs = {
+  const connectionArgs = {
     host: mqttBridgeHostname,
     port: mqttBridgePort,
     clientId: mqttClientId,
@@ -821,7 +821,7 @@ function listenForErrorMessages(
   };
 
   // Create a client, and connect to the Google MQTT bridge.
-  let client = mqtt.connect(connectionArgs);
+  const client = mqtt.connect(connectionArgs);
 
   client.on('connect', success => {
     if (!success) {
@@ -851,7 +851,7 @@ function listenForErrorMessages(
   });
 
   client.on('message', (topic, message) => {
-    let decodedMessage = Buffer.from(message, 'base64').toString('ascii');
+    const decodedMessage = Buffer.from(message, 'base64').toString('ascii');
 
     console.log(`message received on error topic ${topic}: ${decodedMessage}`);
   });

@@ -36,8 +36,8 @@ function getProjectId() {
 
 app.get('/', async (req, res, next) => {
   try {
-    let response = await getProjectId();
-    let projectId = response.body;
+    const response = await getProjectId();
+    const projectId = response.body;
     res
       .status(200)
       .send(`Project ID: ${projectId}`)

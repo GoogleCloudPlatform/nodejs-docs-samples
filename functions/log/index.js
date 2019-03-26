@@ -61,7 +61,7 @@ function getMetrics(callback) {
   const monitoring = Monitoring.v3().metricServiceApi();
 
   // Create two datestrings, a start and end range
-  let oneWeekAgo = new Date();
+  const oneWeekAgo = new Date();
   oneWeekAgo.setHours(oneWeekAgo.getHours() - 7 * 24);
 
   const options = {

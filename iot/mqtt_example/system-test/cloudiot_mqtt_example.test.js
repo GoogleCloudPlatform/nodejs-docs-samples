@@ -47,7 +47,7 @@ before(async () => {
   console.log(`Topic ${topic.name} created.`);
 
   // Creates a registry to be used for tests.
-  let createRegistryRequest = {
+  const createRegistryRequest = {
     parent: iotClient.locationPath(projectId, region),
     deviceRegistry: {
       id: registryName,
@@ -190,7 +190,7 @@ it('should receive command message', async () => {
     cwd
   );
 
-  let output = tools.runAsync(
+  const output = tools.runAsync(
     `${cmd} mqttDeviceDemo --registryId=${localRegName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
     cwd
   );
@@ -228,7 +228,7 @@ it('should listen for bound device config message', async () => {
   );
 
   // listen for configuration changes
-  let out = await tools.runAsync(
+  const out = await tools.runAsync(
     `${cmd} listenForConfigMessages --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --clientDuration=10000 --algorithm=RS256`
   );
 
@@ -264,7 +264,7 @@ it('should listen for error topic messages', async () => {
   );
 
   // check error topic contains error of attaching a device that is not bound
-  let out = await tools.runAsync(
+  const out = await tools.runAsync(
     `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --privateKeyFile=${rsaPrivateKey} --clientDuration=30000 --algorithm=RS256`
   );
 
@@ -309,7 +309,7 @@ it('should send data from bound device', async () => {
   );
 
   // relay telemetry on behalf of device
-  let out = await tools.runAsync(
+  const out = await tools.runAsync(
     `${cmd} sendDataFromBoundDevice --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --numMessages=5 --algorithm=RS256`
   );
 

@@ -39,7 +39,7 @@ const textToSpeechClient = getTextToSpeechClient();
 const storageClient = getStorageClient();
 
 exports.speechTranslate = functions.https.onRequest((request, response) => {
-  let responseBody = {};
+  const responseBody = {};
 
   validateRequest(request)
     .then(() => {
@@ -70,9 +70,9 @@ exports.speechTranslate = functions.https.onRequest((request, response) => {
       responseBody.transcription = transcription;
       responseBody.gcsBucket = outputBucket;
 
-      let translations = [];
+      const translations = [];
       supportedLanguageCodes.forEach(languageCode => {
-        let translation = {languageCode: languageCode};
+        const translation = {languageCode: languageCode};
         const filenameUUID = uuid();
         const filename = filenameUUID + '.' + outputAudioEncoding.toLowerCase();
         callTextTranslation(languageCode, transcription)

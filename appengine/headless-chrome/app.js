@@ -39,7 +39,7 @@ app.use(async (req, res) => {
     // [END browser]
   }
 
-  let page = await browser.newPage();
+  const page = await browser.newPage();
   await page.goto(url);
   const imageBuffer = await page.screenshot();
 

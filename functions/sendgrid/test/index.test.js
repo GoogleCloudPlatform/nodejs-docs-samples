@@ -115,7 +115,7 @@ function getSample() {
 }
 
 function getMocks() {
-  let req = {
+  const req = {
     headers: {},
     query: {},
     body: {},
@@ -124,7 +124,7 @@ function getMocks() {
     },
   };
   sinon.spy(req, 'get');
-  let res = {
+  const res = {
     headers: {},
     send: sinon.stub().returnsThis(),
     json: sinon.stub().returnsThis(),

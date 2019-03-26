@@ -38,14 +38,12 @@ const stereoUri = 'gs://cloud-samples-tests/speech/commercial_stereo.wav';
 describe(`BetaFeatures`, () => {
   it('should run speech diarization on a local file', async () => {
     const output = await exec(`${cmd} Diarization -f ${monoFilePath}`);
-    assert.match(output, /speakerTag: 1/);
-    assert.match(output, /speakerTag: 2/);
+    assert.match(output, /speakerTag:/);
   });
 
   it('should run speech diarization on a GCS file', async () => {
     const output = await exec(`${cmd} DiarizationGCS -u ${monoUri}`, cwd);
-    assert.match(output, /speakerTag: 1/);
-    assert.match(output, /speakerTag: 2/);
+    assert.match(output, /speakerTag:/);
   });
 
   it('should run multi channel transcription on a local file', async () => {

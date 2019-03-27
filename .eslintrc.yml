@@ -3,8 +3,8 @@ extends:
   - 'eslint:recommended'
   - 'plugin:node/recommended'
   - prettier
-env: 
-  mocha: true 
+env:
+  mocha: true
 plugins:
   - node
   - prettier
@@ -16,4 +16,5 @@ rules:
   no-console: off
   node/no-missing-require: off
   node/no-unpublished-require: off
-
+  prefer-const: error
+  no-var: error

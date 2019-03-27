@@ -21,6 +21,6 @@ app.get("/", (req, res) => {
   res.send("🎉 Hello TypeScript! 🎉");
 });
 
-const server: object = app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });

@@ -326,9 +326,9 @@ function unbindDeviceFromAllGateways(
       return;
     }
 
-    let device = res.data;
+    const device = res.data;
     if (device) {
-      let isGateway = device.gatewayConfig.gatewayType === 'GATEWAY';
+      const isGateway = device.gatewayConfig.gatewayType === 'GATEWAY';
 
       if (!isGateway) {
         const listGatewaysForDeviceRequest = {
@@ -345,9 +345,9 @@ function unbindDeviceFromAllGateways(
               return;
             }
 
-            let data = res.data;
+            const data = res.data;
             if (data.devices && data.devices.length > 0) {
-              let gateways = data.devices;
+              const gateways = data.devices;
 
               gateways.forEach(gateway => {
                 const unbindRequest = {
@@ -389,17 +389,17 @@ function unbindAllDevices(client, projectId, cloudRegion, registryId) {
       console.error('Could not list devices', err);
       return;
     }
-    let data = res.data;
+    const data = res.data;
     if (!data) {
       return;
     }
 
-    let devices = data.devices;
+    const devices = data.devices;
 
     if (devices && devices.length > 0) {
       devices.forEach(device => {
         if (device) {
-          let isGateway =
+          const isGateway =
             device.gatewayConfig &&
             device.gatewayConfig.gatewayType === 'GATEWAY';
 
@@ -435,7 +435,7 @@ function listGateways(client, projectId, cloudRegion, registryId) {
       console.log('Could not list devices');
       console.log(err);
     } else {
-      let data = res.data;
+      const data = res.data;
       console.log('Current gateways in registry:');
       data.devices.forEach(function(device) {
         if (
@@ -477,7 +477,7 @@ function listDevicesForGateway(
       console.log(err);
     } else {
       console.log('Current devices bound to gateway: ', gatewayId);
-      let data = res.data;
+      const data = res.data;
       if (data.devices && data.devices.length > 0) {
         data.devices.forEach(device => {
           console.log(`\tDevice: ${device.numId} : ${device.id}`);
@@ -515,7 +515,7 @@ function listGatewaysForDevice(
       console.log(err);
     } else {
       console.log('Current gateways for device:', deviceId);
-      let data = res.data;
+      const data = res.data;
       if (data.devices && data.devices.length > 0) {
         data.devices.forEach(gateway => {
           console.log(`\tDevice: ${gateway.numId} : ${gateway.id}`);
@@ -582,7 +582,7 @@ function listenForConfigMessages(
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(mqttClientId);
-  let connectionArgs = {
+  const connectionArgs = {
     host: mqttBridgeHostname,
     port: mqttBridgePort,
     clientId: mqttClientId,
@@ -594,7 +594,7 @@ function listenForConfigMessages(
   };
 
   // Create a client, and connect to the Google MQTT bridge.
-  let client = mqtt.connect(connectionArgs);
+  const client = mqtt.connect(connectionArgs);
 
   client.on('connect', success => {
     if (!success) {
@@ -627,7 +627,7 @@ function listenForConfigMessages(
   });
 
   client.on('message', (topic, message) => {
-    let decodedMessage = Buffer.from(message, 'base64').toString('ascii');
+    const decodedMessage = Buffer.from(message, 'base64').toString('ascii');
 
     if (topic === `/devices/${gatewayId}/errors`) {
       console.log(`message received on error topic: ${decodedMessage}`);
@@ -661,7 +661,7 @@ function listenForErrorMessages(
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(mqttClientId);
-  let connectionArgs = {
+  const connectionArgs = {
     host: mqttBridgeHostname,
     port: mqttBridgePort,
     clientId: mqttClientId,
@@ -673,7 +673,7 @@ function listenForErrorMessages(
   };
 
   // Create a client, and connect to the Google MQTT bridge.
-  let client = mqtt.connect(connectionArgs);
+  const client = mqtt.connect(connectionArgs);
 
   client.on('connect', success => {
     if (!success) {
@@ -703,7 +703,7 @@ function listenForErrorMessages(
   });
 
   client.on('message', (topic, message) => {
-    let decodedMessage = Buffer.from(message, 'base64').toString('ascii');
+    const decodedMessage = Buffer.from(message, 'base64').toString('ascii');
 
     console.log(`message received on error topic ${topic}: ${decodedMessage}`);
   });
@@ -739,7 +739,7 @@ function sendDataFromBoundDevice(
 
   const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${gatewayId}`;
   console.log(`MQTT client id: ${mqttClientId}`);
-  let connectionArgs = {
+  const connectionArgs = {
     host: mqttBridgeHostname,
     port: mqttBridgePort,
     clientId: mqttClientId,
@@ -751,8 +751,8 @@ function sendDataFromBoundDevice(
   };
 
   // Create a client, and connect to the Google MQTT bridge.
-  let iatTime = parseInt(Date.now() / 1000);
-  let client = mqtt.connect(connectionArgs);
+  const iatTime = parseInt(Date.now() / 1000);
+  const client = mqtt.connect(connectionArgs);
 
   client.on('connect', success => {
     if (!success) {
@@ -835,7 +835,7 @@ function publishAsync(
 
   // Publish and schedule the next publish.
   publishChainInProgress = true;
-  var publishDelayMs = 0;
+  let publishDelayMs = 0;
   if (shouldBackoff) {
     publishDelayMs = 1000 * (backoffTime + Math.random());
     backoffTime *= 2;
@@ -860,10 +860,10 @@ function publishAsync(
       }
     });
 
-    var schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
+    const schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
     setTimeout(function() {
       // [START iot_mqtt_jwt_refresh]
-      let secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
+      const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > tokenExpMins * 60) {
         iatTime = parseInt(Date.now() / 1000);
         console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);

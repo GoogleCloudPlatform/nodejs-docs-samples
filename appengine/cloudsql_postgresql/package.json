@@ -31,7 +31,7 @@
     "mocha": "^5.2.0",
     "proxyquire": "^2.1.0",
     "sinon": "^7.1.1",
-    "supertest": "^3.3.0"
+    "supertest": "^4.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

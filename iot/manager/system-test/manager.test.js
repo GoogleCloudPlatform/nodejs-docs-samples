@@ -46,7 +46,7 @@ before(async () => {
   console.log(`Topic ${topic.name} created.`);
 
   // Creates a registry to be used for tests.
-  let createRegistryRequest = {
+  const createRegistryRequest = {
     parent: iotClient.locationPath(projectId, region),
     deviceRegistry: {
       id: registryName,
@@ -261,7 +261,7 @@ it('should create and get an iam policy', async () => {
 });
 
 it('should create and delete a registry', async () => {
-  let createRegistryId = registryName + 'create';
+  const createRegistryId = registryName + 'create';
 
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(
@@ -306,7 +306,7 @@ it('should send command message to device', async () => {
 
 it('should create a new gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  let gatewayOut = await tools.runAsync(
+  const gatewayOut = await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
 
@@ -325,7 +325,7 @@ it('should list gateways', async () => {
   );
 
   // look for output in list gateway
-  let gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
+  const gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
   assert.strictEqual(new RegExp(`${gatewayId}`).test(gateways), true);
 
   await iotClient.deleteDevice({
@@ -349,7 +349,7 @@ it('should bind existing device to gateway', async () => {
   });
 
   // bind device to gateway
-  let bind = await tools.runAsync(
+  const bind = await tools.runAsync(
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
@@ -360,7 +360,7 @@ it('should bind existing device to gateway', async () => {
   assert.strictEqual(new RegExp('Could not bind device').test(bind), false);
 
   // test unbind
-  let unbind = await tools.runAsync(
+  const unbind = await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
   assert.strictEqual(
@@ -395,7 +395,7 @@ it('should list devices bound to gateway', async () => {
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  let devices = await tools.runAsync(
+  const devices = await tools.runAsync(
     `${cmd} listDevicesForGateway ${registryName} ${gatewayId}`
   );
 
@@ -438,7 +438,7 @@ it('should list gateways for bound device', async () => {
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  let devices = await tools.runAsync(
+  const devices = await tools.runAsync(
     `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`
   );
 

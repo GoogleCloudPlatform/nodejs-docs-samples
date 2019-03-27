@@ -123,7 +123,7 @@ describe('Tests that require a GCS bucket', function() {
         fs.readFileSync('responseBody.test.json')
       );
 
-      let deletedFiles = [];
+      const deletedFiles = [];
       // Delete the files created in the successful test.
       for (let i = 0; i < responseBody.translations.length; i++) {
         if (responseBody.translations[i].gcsPath) {

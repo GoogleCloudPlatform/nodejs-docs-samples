@@ -74,7 +74,7 @@ function getSample() {
     );
     stubInstance = Object.assign(stubInstance, mocks);
 
-    let out = {};
+    const out = {};
     out[property] = sinon.stub().returns(stubInstance);
     return out;
   };

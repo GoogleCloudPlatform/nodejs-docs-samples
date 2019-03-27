@@ -22,22 +22,22 @@ const mqtt = require('mqtt');
 // [END iot_mqtt_include]
 
 // The initial backoff time after a disconnection occurs, in seconds.
-var MINIMUM_BACKOFF_TIME = 1;
+const MINIMUM_BACKOFF_TIME = 1;
 
 // The maximum backoff time before giving up, in seconds.
-var MAXIMUM_BACKOFF_TIME = 32;
+const MAXIMUM_BACKOFF_TIME = 32;
 
 // Whether to wait with exponential backoff before publishing.
-var shouldBackoff = false;
+let shouldBackoff = false;
 
 // The current backoff time.
-var backoffTime = 1;
+let backoffTime = 1;
 
 // Whether an asynchronous publish chain is in progress.
-var publishChainInProgress = false;
+let publishChainInProgress = false;
 
 console.log('Google Cloud IoT Core MQTT example.');
-var argv = require(`yargs`)
+const argv = require(`yargs`)
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
@@ -285,7 +285,7 @@ function publishAsync(
 
   // Publish and schedule the next publish.
   publishChainInProgress = true;
-  var publishDelayMs = 0;
+  let publishDelayMs = 0;
   if (shouldBackoff) {
     publishDelayMs = 1000 * (backoffTime + Math.random());
     backoffTime *= 2;
@@ -307,7 +307,7 @@ function publishAsync(
       }
     });
 
-    var schedulePublishDelayMs = argv.messageType === 'events' ? 1000 : 2000;
+    const schedulePublishDelayMs = argv.messageType === 'events' ? 1000 : 2000;
     setTimeout(function() {
       // [START iot_mqtt_jwt_refresh]
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
@@ -551,7 +551,7 @@ function publishAsyncGateway(
 
   // Publish and schedule the next publish.
   publishChainInProgress = true;
-  var publishDelayMs = 0;
+  let publishDelayMs = 0;
   if (shouldBackoff) {
     publishDelayMs = 1000 * (backoffTime + Math.random());
     backoffTime *= 2;
@@ -576,7 +576,7 @@ function publishAsyncGateway(
       }
     });
 
-    var schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
+    const schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
     setTimeout(function() {
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > tokenExpMins * 60) {

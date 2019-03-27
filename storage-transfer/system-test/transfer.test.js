@@ -110,7 +110,7 @@ it('should get a transferJob', done => {
 });
 
 it('should update a transferJob', done => {
-  var options = {
+  const options = {
     job: jobName,
     field: 'status',
     value: status,

@@ -27,7 +27,7 @@ const db = admin.firestore();
 
 // [START save_token_to_firebase]
 function saveOAuthToken(context, oauthToken) {
-  let docRef = db.collection('DialogflowTokens').doc('OauthToken');
+  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
   docRef.set(oauthToken);
 }
 // [END save_token_to_firebase]
@@ -100,7 +100,7 @@ function retrieveCredentials(context) {
       headers: {'Metadata-Flavor': 'Google'},
     };
 
-    let get_req = http.get(options, res => {
+    const get_req = http.get(options, res => {
       let body = '';
 
       res.on('data', chunk => {
@@ -131,8 +131,8 @@ exports.retrieveCredentials = retrieveCredentials;
 // [START validate_token]
 // This method verifies the token expiry by validating against current time
 function isValid(expiryTime) {
-  let currentDate = new Date();
-  let expirationDate = new Date(expiryTime);
+  const currentDate = new Date();
+  const expirationDate = new Date(expiryTime);
   // If within 5 minutes of expiration, return false
   return currentDate <= expirationDate - 1000 * 60 * 5;
 }
@@ -149,7 +149,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     );
   }
   // Retrieve the token from the database
-  let docRef = db.collection('DialogflowTokens').doc('OauthToken');
+  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
 
   return docRef
     .get()

@@ -119,12 +119,13 @@ function retrieveCredentials(context) {
       });
     });
     get_req.on('error', e => {
-      console.log('Error retrieving credentials', e.message);
-      return 'Error retrieving token';
+      //console.log('Error retrieving credentials', e.message);
+      return 'Error retrieving token' + e.message;
     });
     get_req.end();
   });
 }
+exports.retrieveCredentials = retrieveCredentials;
 // [END retrieve_credentials]
 
 // [START validate_token]

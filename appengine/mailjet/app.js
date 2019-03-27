@@ -36,12 +36,12 @@ app.set('view engine', 'jade');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.render('index');
 });
 
 // [START gae_flex_mailjet_send_message]
-app.post('/hello', function(req, res, next) {
+app.post('/hello', (req, res, next) => {
   const options = {
     Messages: [
       {
@@ -64,20 +64,20 @@ app.post('/hello', function(req, res, next) {
   const request = Mailjet.post('send', {version: 'v3.1'}).request(options);
 
   request
-    .then(function(response, body) {
+    .then((response, body) => {
       console.log(response.statusCode, body);
       // Render the index route on success
       return res.render('index', {
         sent: true,
       });
     })
-    .catch(function(err) {
+    .catch(err => {
       return next(err);
     });
 });
 // [END gae_flex_mailjet_send_message]
 
-const server = app.listen(process.env.PORT || 8080, function() {
+const server = app.listen(process.env.PORT || 8080, () => {
   console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });

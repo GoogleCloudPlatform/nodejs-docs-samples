@@ -437,7 +437,7 @@ function listGateways(client, projectId, cloudRegion, registryId) {
     } else {
       const data = res.data;
       console.log('Current gateways in registry:');
-      data.devices.forEach(function(device) {
+      data.devices.forEach(device => {
         if (
           device.gatewayConfig !== undefined &&
           device.gatewayConfig.gatewayType === 'GATEWAY'
@@ -849,11 +849,11 @@ function publishAsync(
     payload = `${registryId}/${deviceId}-payload-${messagesSent}`;
   }
 
-  setTimeout(function() {
+  setTimeout(() => {
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.
     console.log(`Publishing message: ${payload} to ${mqttTopic}`);
-    client.publish(mqttTopic, payload, {qos: 1}, function(err) {
+    client.publish(mqttTopic, payload, {qos: 1}, err => {
       if (!err) {
         shouldBackoff = false;
         backoffTime = MINIMUM_BACKOFF_TIME;
@@ -861,7 +861,7 @@ function publishAsync(
     });
 
     const schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
-    setTimeout(function() {
+    setTimeout(() => {
       // [START iot_mqtt_jwt_refresh]
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > tokenExpMins * 60) {

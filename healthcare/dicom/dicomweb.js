@@ -25,7 +25,7 @@ function getToken(serviceAccountJson, cb) {
     scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
   });
 
-  gtoken.getToken(function(err, token) {
+  gtoken.getToken((err, token) => {
     if (err) {
       console.log('ERROR: ', err);
       return;

@@ -87,7 +87,7 @@ const pool = mysql.createPool({
 // [END cloud_sql_mysql_mysql_create]
 
 // When the server starts, check for tables in the database.
-app.on('listening', async function() {
+app.on('listening', async () => {
   // Wait for tables to be created (if they don't already exist).
   await pool.query(
     `CREATE TABLE IF NOT EXISTS votes

@@ -50,17 +50,15 @@ exports.triggerDag = function triggerDag(event) {
   const BODY = {conf: JSON.stringify(event.data)};
 
   // Make the request
-  return authorizeIap(CLIENT_ID, PROJECT_ID, USER_AGENT).then(
-    function iapAuthorizationCallback(iap) {
-      return makeIapPostRequest(
-        WEBSERVER_URL,
-        BODY,
-        iap.idToken,
-        USER_AGENT,
-        iap.jwt
-      );
-    }
-  );
+  return authorizeIap(CLIENT_ID, PROJECT_ID, USER_AGENT).then(iap => {
+    return makeIapPostRequest(
+      WEBSERVER_URL,
+      BODY,
+      iap.idToken,
+      USER_AGENT,
+      iap.jwt
+    );
+  });
 };
 
 /**
@@ -85,7 +83,7 @@ function authorizeIap(clientId, projectId, userAgent) {
     }
   )
     .then(res => res.json())
-    .then(function obtainAccessTokenCallback(tokenResponse) {
+    .then(tokenResponse => {
       if (tokenResponse.error) {
         return Promise.reject(tokenResponse.error);
       }
@@ -116,7 +114,7 @@ function authorizeIap(clientId, projectId, userAgent) {
       );
     })
     .then(res => res.json())
-    .then(function signJsonClaimCallback(body) {
+    .then(body => {
       if (body.error) {
         return Promise.reject(body.error);
       }
@@ -132,7 +130,7 @@ function authorizeIap(clientId, projectId, userAgent) {
       });
     })
     .then(res => res.json())
-    .then(function returnJwt(body) {
+    .then(body => {
       if (body.error) {
         return Promise.reject(body.error);
       }
@@ -157,7 +155,7 @@ function makeIapPostRequest(url, body, idToken, userAgent) {
       Authorization: `Bearer ${idToken}`,
     },
     body: JSON.stringify(body),
-  }).then(function checkIapRequestStatus(res) {
+  }).then(res => {
     if (!res.ok) {
       return res.text().then(body => Promise.reject(body));
     }

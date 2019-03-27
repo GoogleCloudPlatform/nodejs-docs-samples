@@ -14,6 +14,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint '**/*.js'",
+    "fix": "eslint --fix '**/*.js'",
     "test": "echo 'Please run tests in each sample directory.' && exit 1"
   },
   "devDependencies": {

@@ -15,18 +15,18 @@
 
 'use strict';
 
-var express = require('express');
-var path = require('path');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
 
 // [START gae_flex_mailjet_config]
-var Mailjet = require('node-mailjet').connect(
+const Mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PUBLIC,
   process.env.MJ_APIKEY_PRIVATE
 );
 // [END gae_flex_mailjet_config]
 
-var app = express();
+const app = express();
 
 // Setup view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -42,7 +42,7 @@ app.get('/', function(req, res) {
 
 // [START gae_flex_mailjet_send_message]
 app.post('/hello', function(req, res, next) {
-  var options = {
+  const options = {
     Messages: [
       {
         From: {
@@ -61,7 +61,7 @@ app.post('/hello', function(req, res, next) {
     ],
   };
 
-  var request = Mailjet.post('send', {version: 'v3.1'}).request(options);
+  const request = Mailjet.post('send', {version: 'v3.1'}).request(options);
 
   request
     .then(function(response, body) {
@@ -77,7 +77,7 @@ app.post('/hello', function(req, res, next) {
 });
 // [END gae_flex_mailjet_send_message]
 
-var server = app.listen(process.env.PORT || 8080, function() {
+const server = app.listen(process.env.PORT || 8080, function() {
   console.log('App listening on port %s', server.address().port);
   console.log('Press Ctrl+C to quit.');
 });

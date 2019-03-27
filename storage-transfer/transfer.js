@@ -17,11 +17,11 @@
 
 // [START all]
 // [START setup]
-var moment = require('moment');
-var google = require('googleapis').google;
+const moment = require('moment');
+const google = require('googleapis').google;
 
 // Instantiate a storage client
-var storagetransfer = google.storagetransfer('v1');
+const storagetransfer = google.storagetransfer('v1');
 // [END setup]
 
 // [START auth]
@@ -62,15 +62,15 @@ function auth(callback) {
  * @param {function} callback The callback function.
  */
 function createTransferJob(options, callback) {
-  var startDate = moment(options.date, 'YYYY/MM/DD');
-  var transferTime = moment(options.time, 'HH:mm');
+  const startDate = moment(options.date, 'YYYY/MM/DD');
+  const transferTime = moment(options.time, 'HH:mm');
 
   auth(function(err, authClient) {
     if (err) {
       return callback(err);
     }
 
-    var transferJob = {
+    const transferJob = {
       projectId: process.env.GCLOUD_PROJECT,
       status: 'ENABLED',
       transferSpec: {
@@ -169,7 +169,7 @@ function updateTransferJob(options, callback) {
       return callback(err);
     }
 
-    var patchRequest = {
+    const patchRequest = {
       projectId: process.env.GCLOUD_PROJECT,
       transferJob: {
         name: options.job,
@@ -250,7 +250,7 @@ function listTransferOperations(jobName, callback) {
       return callback(err);
     }
 
-    var filter = {
+    const filter = {
       project_id: process.env.GCLOUD_PROJECT,
     };
 
@@ -375,9 +375,9 @@ function resumeTransferOperation(transferOperationName, callback) {
 // [END all]
 
 // The command-line program
-var cli = require('yargs');
+const cli = require('yargs');
 
-var program = (module.exports = {
+const program = (module.exports = {
   createTransferJob: createTransferJob,
   getTransferJob: getTransferJob,
   listTransferJobs: listTransferJobs,

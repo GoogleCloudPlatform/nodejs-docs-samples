@@ -59,7 +59,7 @@ after(async () => {
 it('should create a new gateway', async () => {
   // create gateway
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  let gatewayOut = await tools.runAsync(
+  const gatewayOut = await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RS256 ${publicKeyParam}`
   ); // test no error on create gateway
   assert.strictEqual(new RegExp('Created device').test(gatewayOut), true);
@@ -78,7 +78,7 @@ it('should list gateways', async () => {
   );
 
   // look for output in list gateway
-  let gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
+  const gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
   assert.strictEqual(new RegExp(`${gatewayId}`).test(gateways), true);
 
   await tools.runAsync(
@@ -101,7 +101,7 @@ it('should bind existing device to gateway', async () => {
   );
 
   // bind device to gateway
-  let bind = await tools.runAsync(
+  const bind = await tools.runAsync(
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
@@ -110,7 +110,7 @@ it('should bind existing device to gateway', async () => {
   assert.strictEqual(new RegExp('Could not bind device').test(bind), false);
 
   // test unbind
-  let unbind = await tools.runAsync(
+  const unbind = await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
   assert.strictEqual(new RegExp('Device no longer bound').test(unbind), true);
@@ -133,7 +133,7 @@ it('should bind new device to gateway', async () => {
 
   // binding a non-existing device should create it
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
-  let bind = await tools.runAsync(
+  const bind = await tools.runAsync(
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
@@ -142,7 +142,7 @@ it('should bind new device to gateway', async () => {
   assert.strictEqual(new RegExp('Could not bind device').test(bind), false);
 
   // unbind and delete device and gateway
-  let unbind = await tools.runAsync(
+  const unbind = await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
   assert.strictEqual(new RegExp('Device no longer bound').test(unbind), true);
@@ -169,7 +169,7 @@ it('should list devices bound to gateway', async () => {
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  let devices = await tools.runAsync(
+  const devices = await tools.runAsync(
     `${cmd} listDevicesForGateway ${registryName} ${gatewayId}`
   );
 
@@ -201,7 +201,7 @@ it('should list gateways for bound device', async () => {
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  let devices = await tools.runAsync(
+  const devices = await tools.runAsync(
     `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`
   );
 
@@ -237,7 +237,7 @@ it('should listen for bound device config message', async () => {
   );
 
   // listen for configuration changes
-  let out = await tools.runAsync(
+  const out = await tools.runAsync(
     `${cmd} listen ${deviceId} ${gatewayId} ${registryName} ${privateKeyParam} --clientDuration=30000`
   );
 
@@ -271,7 +271,7 @@ it('should listen for error topic messages', async () => {
   );
 
   // check error topic contains error of attaching a device that is not bound
-  let out = await tools.runAsync(
+  const out = await tools.runAsync(
     `${cmd} listenForErrors ${gatewayId} ${registryName} ${deviceId} ${privateKeyParam} --clientDuration=30000`
   );
 
@@ -306,7 +306,7 @@ it('should send data from bound device', async () => {
   );
 
   // relay telemetry on behalf of device
-  let out = await tools.runAsync(
+  const out = await tools.runAsync(
     `${cmd} relayData ${deviceId} ${gatewayId} ${registryName} ${privateKeyParam} --numMessages=5`
   );
 

@@ -24,7 +24,7 @@ const vision = require('@google-cloud/vision').v1p1beta1;
 const bucketName = 'my-bucket';
 const defaultFileName = 'image.jpg';
 
-var VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
+let VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
 VisionStub.returns({
   safeSearchDetection: sinon.stub().returns(
     Promise.resolve([

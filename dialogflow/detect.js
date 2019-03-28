@@ -17,7 +17,7 @@
 
 const util = require('util');
 const fs = require('fs');
-const structjson = require('./structjson.js');
+const {struct} = require('pb-util');
 const pump = require('pump');
 const through2 = require('through2');
 
@@ -67,9 +67,7 @@ function detectTextIntent(projectId, sessionId, queries, languageCode) {
           // value contains fields with value of null, which causes error
           // when encoding it back. Converting to JSON and back to proto
           // removes those values.
-          context.parameters = structjson.jsonToStructProto(
-            structjson.structProtoToJson(context.parameters)
-          );
+          context.parameters = struct.encode(struct.decode(context.parameters));
         });
         request.queryParams = {
           contexts: response.queryResult.outputContexts,
@@ -114,7 +112,7 @@ async function detectEventIntent(
     queryInput: {
       event: {
         name: eventName,
-        parameters: structjson.jsonToStructProto({foo: 'bar'}),
+        parameters: struct.encode({foo: 'bar'}),
         languageCode: languageCode,
       },
     },
@@ -254,16 +252,14 @@ function logQueryResult(sessionClient, result) {
   } else {
     console.log(`  No intent matched.`);
   }
-  const parameters = JSON.stringify(
-    structjson.structProtoToJson(result.parameters)
-  );
+  const parameters = JSON.stringify(struct.decode(result.parameters));
   console.log(`  Parameters: ${parameters}`);
   if (result.outputContexts && result.outputContexts.length) {
     console.log(`  Output contexts:`);
     result.outputContexts.forEach(context => {
       const contextId = contextClient.matchContextFromContextName(context.name);
       const contextParameters = JSON.stringify(
-        structjson.structProtoToJson(context.parameters)
+        struct.decode(context.parameters)
       );
       console.log(`    ${contextId}`);
       console.log(`      lifespan: ${context.lifespanCount}`);

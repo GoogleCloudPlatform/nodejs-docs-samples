@@ -16,9 +16,9 @@
 'use strict';
 
 const projectId = process.env.GCLOUD_PROJECT;
+const {struct} = require('pb-util');
 const sessionId = require('uuid/v1')();
 const util = require('util');
-const structjson = require('./structjson.js');
 
 async function createKnowledgeBase(projectId, displayName) {
   // [START dialogflow_create_knowledge_base]
@@ -482,16 +482,14 @@ async function detectIntentwithModelSelection(
   } else {
     console.log(`  No intent matched.`);
   }
-  const parameters = JSON.stringify(
-    structjson.structProtoToJson(result.parameters)
-  );
+  const parameters = JSON.stringify(struct.decode(result.parameters));
   console.log(`  Parameters: ${parameters}`);
   if (result.outputContexts && result.outputContexts.length) {
     console.log(`  Output contexts:`);
     result.outputContexts.forEach(context => {
       const contextId = contextClient.matchContextFromContextName(context.name);
       const contextParameters = JSON.stringify(
-        structjson.structProtoToJson(context.parameters)
+        struct.decode(context.parameters)
       );
       console.log(`    ${contextId}`);
       console.log(`      lifespan: ${context.lifespanCount}`);

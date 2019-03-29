@@ -221,7 +221,7 @@ exports.getSignedUrl = (req, res) => {
     contentType: req.body.contentType,
   };
 
-  file.getSignedUrl(config, function(err, url) {
+  file.getSignedUrl(config, (err, url) => {
     if (err) {
       console.error(err);
       res.status(500).end();

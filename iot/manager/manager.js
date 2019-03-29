@@ -1207,7 +1207,7 @@ function listGateways(client, projectId, cloudRegion, registryId) {
     } else {
       const data = res.data;
       console.log('Current gateways in registry:');
-      data.devices.forEach(function(device) {
+      data.devices.forEach(device => {
         if (
           device.gatewayConfig !== undefined &&
           device.gatewayConfig.gatewayType === 'GATEWAY'

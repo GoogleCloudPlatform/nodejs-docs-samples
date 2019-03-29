@@ -3,8 +3,8 @@ const index = require('../index.js');
 const supertest = require('supertest');
 const request = supertest(process.env.BASE_URL);
 
-describe('Firebase OAuth Token', function() {
-  it('should give 400 if no argument is provided.', function(done) {
+describe('Firebase OAuth Token', () => {
+  it('should give 400 if no argument is provided.', done => {
     request
       .get('/getOAuthToken')
       .send()

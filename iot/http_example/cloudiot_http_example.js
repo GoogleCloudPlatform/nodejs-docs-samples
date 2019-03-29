@@ -172,7 +172,7 @@ function publishAsync(authToken, messageCount, numMessages) {
   // Send events for high-frequency updates, update state only occasionally.
   const delayMs = argv.messageType === 'events' ? 1000 : 2000;
   console.log(JSON.stringify(request));
-  request(options, function(error, response) {
+  request(options, (error, response) => {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {
@@ -183,7 +183,7 @@ function publishAsync(authToken, messageCount, numMessages) {
     if (messageCount < numMessages) {
       // If we have published fewer than numMessage messages, publish payload
       // messageCount + 1.
-      setTimeout(function() {
+      setTimeout(() => {
         const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
         if (secsFromIssue > argv.tokenExpMins * 60) {
           iatTime = parseInt(Date.now() / 1000);
@@ -221,7 +221,7 @@ function getConfig(authToken, version) {
     },
   };
   console.log(JSON.stringify(request.RetryStrategies));
-  request(options, function(error, response, body) {
+  request(options, (error, response, body) => {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {

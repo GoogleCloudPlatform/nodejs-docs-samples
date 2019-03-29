@@ -26,7 +26,7 @@ const storagetransfer = google.storagetransfer('v1');
 
 // [START auth]
 function auth(callback) {
-  google.auth.getApplicationDefault(function(err, authClient) {
+  google.auth.getApplicationDefault((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -65,7 +65,7 @@ function createTransferJob(options, callback) {
   const startDate = moment(options.date, 'YYYY/MM/DD');
   const transferTime = moment(options.time, 'HH:mm');
 
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -106,7 +106,7 @@ function createTransferJob(options, callback) {
         auth: authClient,
         resource: transferJob,
       },
-      function(err, response) {
+      (err, response) => {
         if (err) {
           return callback(err);
         }
@@ -128,7 +128,7 @@ function createTransferJob(options, callback) {
  * @param {function} callback The callback function.
  */
 function getTransferJob(jobName, callback) {
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -139,7 +139,7 @@ function getTransferJob(jobName, callback) {
         projectId: process.env.GCLOUD_PROJECT,
         jobName: jobName,
       },
-      function(err, response) {
+      (err, response) => {
         if (err) {
           return callback(err);
         }
@@ -164,7 +164,7 @@ function getTransferJob(jobName, callback) {
  * @param {function} callback The callback function.
  */
 function updateTransferJob(options, callback) {
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -191,7 +191,7 @@ function updateTransferJob(options, callback) {
         jobName: options.job,
         resource: patchRequest,
       },
-      function(err, response) {
+      (err, response) => {
         if (err) {
           return callback(err);
         }
@@ -212,7 +212,7 @@ function updateTransferJob(options, callback) {
  * @param {function} callback The callback function.
  */
 function listTransferJobs(callback) {
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -222,7 +222,7 @@ function listTransferJobs(callback) {
         auth: authClient,
         filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
       },
-      function(err, response) {
+      (err, response) => {
         if (err) {
           return callback(err);
         } else if (!response.data || !response.data.transferJobs) {
@@ -245,7 +245,7 @@ function listTransferJobs(callback) {
  * @param {function} callback The callback function.
  */
 function listTransferOperations(jobName, callback) {
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -264,7 +264,7 @@ function listTransferOperations(jobName, callback) {
         filter: JSON.stringify(filter),
         auth: authClient,
       },
-      function(err, response) {
+      (err, response) => {
         if (err) {
           return callback(err);
         } else if (!response.data || !response.data.operations) {
@@ -287,7 +287,7 @@ function listTransferOperations(jobName, callback) {
  * @param {function} callback The callback function.
  */
 function getTransferOperation(transferOperationName, callback) {
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -297,7 +297,7 @@ function getTransferOperation(transferOperationName, callback) {
         name: transferOperationName,
         auth: authClient,
       },
-      function(err, response) {
+      (err, response) => {
         if (err) {
           return callback(err);
         }
@@ -319,7 +319,7 @@ function getTransferOperation(transferOperationName, callback) {
  * @param {function} callback The callback function.
  */
 function pauseTransferOperation(transferOperationName, callback) {
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -329,7 +329,7 @@ function pauseTransferOperation(transferOperationName, callback) {
         name: transferOperationName,
         auth: authClient,
       },
-      function(err) {
+      err => {
         if (err) {
           return callback(err);
         }
@@ -350,7 +350,7 @@ function pauseTransferOperation(transferOperationName, callback) {
  * @param {function} callback The callback function.
  */
 function resumeTransferOperation(transferOperationName, callback) {
-  auth(function(err, authClient) {
+  auth((err, authClient) => {
     if (err) {
       return callback(err);
     }
@@ -360,7 +360,7 @@ function resumeTransferOperation(transferOperationName, callback) {
         name: transferOperationName,
         auth: authClient,
       },
-      function(err) {
+      err => {
         if (err) {
           return callback(err);
         }

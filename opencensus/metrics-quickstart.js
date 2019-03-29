@@ -87,7 +87,7 @@ for (let i = 0; i < 100; i++) {
  * metrics that must be collected, or some risk being lost if they are recorded
  * after the last export.
  */
-setTimeout(function() {
+setTimeout(() => {
   console.log('Done recording metrics.');
 }, EXPORT_INTERVAL * 1000);
 

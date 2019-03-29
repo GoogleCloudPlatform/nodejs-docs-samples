@@ -173,7 +173,7 @@ function uploadToCloudStorage(path, contents) {
 
 // [START validate_request]
 function validateRequest(request) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if (!request.body.encoding) {
       reject(new Error('Invalid encoding.'));
     }

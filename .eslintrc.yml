@@ -18,3 +18,4 @@ rules:
   node/no-unpublished-require: off
   prefer-const: error
   no-var: error
+  prefer-arrow-callback: error

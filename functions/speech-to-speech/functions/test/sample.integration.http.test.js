@@ -24,8 +24,8 @@ const storageLocation = 'US';
 const storageClass = 'MULTI_REGIONAL';
 const bucket = storageClient.bucket(process.env.OUTPUT_BUCKET);
 
-describe('Tests that do not require a GCS bucket', function() {
-  it('should fail if sampleRateHertz field is invalid.', function(done) {
+describe('Tests that do not require a GCS bucket', () => {
+  it('should fail if sampleRateHertz field is invalid.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -36,7 +36,7 @@ describe('Tests that do not require a GCS bucket', function() {
       })
       .expect(400, /INVALID_ARGUMENT: sample_rate_hertz/, done);
   });
-  it('should fail if languageCode field is invalid.', function(done) {
+  it('should fail if languageCode field is invalid.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -51,7 +51,7 @@ describe('Tests that do not require a GCS bucket', function() {
         done
       );
   });
-  it('should fail if audioContent field is invalid.', function(done) {
+  it('should fail if audioContent field is invalid.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -64,10 +64,10 @@ describe('Tests that do not require a GCS bucket', function() {
   });
 });
 
-describe('Tests that require a GCS bucket', function() {
+describe('Tests that require a GCS bucket', () => {
   // Create the Google Cloud Storage bucket if it doesn't exist.
-  before('Create GCS bucket.', function(done) {
-    bucket.exists().then(function(data) {
+  before('Create GCS bucket.', done => {
+    bucket.exists().then(data => {
       const exists = data[0];
       if (!exists) {
         bucket
@@ -75,7 +75,7 @@ describe('Tests that require a GCS bucket', function() {
             location: storageLocation,
             storageClass: storageClass,
           })
-          .then(function() {
+          .then(() => {
             done();
           })
           .catch(error => {
@@ -86,7 +86,7 @@ describe('Tests that require a GCS bucket', function() {
       }
     });
   });
-  it('should return a successful response.', function(done) {
+  it('should return a successful response.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -100,7 +100,7 @@ describe('Tests that require a GCS bucket', function() {
         const responseBody = JSON.parse(response.text);
         // Write the results to a file so the 'after' hook can use them for cleanup.
         fs.writeFileSync('responseBody.test.json', response.text);
-        responseBody.translations.forEach(function(translation) {
+        responseBody.translations.forEach(translation => {
           if (translation.error) {
             throw new Error(
               `Partial error in translation to ${translation.languageCode}: ${
@@ -117,7 +117,7 @@ describe('Tests that require a GCS bucket', function() {
   });
   after(
     'Delete created files in the bucket and other test artifacts.',
-    function(done) {
+    done => {
       // Load the response from the successful test.
       const responseBody = JSON.parse(
         fs.readFileSync('responseBody.test.json')

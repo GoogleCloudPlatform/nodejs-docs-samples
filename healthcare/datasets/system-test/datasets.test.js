@@ -35,7 +35,10 @@ after(async () => {
 });
 
 it('should create a dataset', async () => {
-  const output = await tools.runAsync(`${cmd} createDataset ${datasetId}`, cwd);
+  const output = await tools.runAsync(
+    `$node createDataset.js ${datasetId}`,
+    cwd
+  );
   assert.strictEqual(output, `Created dataset: ${datasetId}`);
 });
 

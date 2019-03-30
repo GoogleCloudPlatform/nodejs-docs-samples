@@ -17,28 +17,6 @@
 
 const {google} = require('googleapis');
 
-// [START healthcare_create_dataset]
-function createDataset(client, projectId, cloudRegion, datasetId) {
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-
-  const request = {parent: parentName, datasetId: datasetId};
-
-  client.projects.locations.datasets
-    .create(request)
-    .then(() => {
-      console.log(`Created dataset: ${datasetId}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-// [END healthcare_create_dataset]
-
 // [START healthcare_delete_dataset]
 function deleteDataset(client, projectId, cloudRegion, datasetId) {
   // Client retrieved in callback
@@ -258,17 +236,6 @@ require(`yargs`)  // eslint-disable-line
       type: 'string',
     },
   })
-  .command(
-    `createDataset <datasetId>`,
-    `Creates a new health dataset.`,
-    {},
-    opts => {
-      const cb = function(client) {
-        createDataset(client, opts.projectId, opts.cloudRegion, opts.datasetId);
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
-    }
-  )
   .command(
     `deleteDataset <datasetId>`,
     `Deletes the specified health dataset and all data contained

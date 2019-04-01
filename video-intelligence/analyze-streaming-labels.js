@@ -16,6 +16,7 @@
 'use strict';
 
 async function main(path = 'YOUR_LOCAL_FILE') {
+  // [START video_streaming_label_detection_beta]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */

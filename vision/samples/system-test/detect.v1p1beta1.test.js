@@ -51,6 +51,6 @@ describe(`detect v1 p1 beta1`, () => {
 
   it(`should detect web entities using geographical metadata`, async () => {
     const output = await exec(`${cmd} web-entities-geo ${files[3].localPath}`);
-    assert.match(output, /Electra/);
+    assert.match(output, /Score:/);
   });
 });

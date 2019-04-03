@@ -46,7 +46,7 @@ const messages = [];
 const PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
 const TOPIC = process.env.PUBSUB_TOPIC;
 
-const publisher = pubsub.topic(TOPIC).publisher();
+const topic = pubsub.topic(TOPIC);
 
 // [START gae_flex_pubsub_index]
 app.get('/', (req, res) => {
@@ -61,7 +61,7 @@ app.post('/', formBodyParser, async (req, res, next) => {
 
   const data = Buffer.from(req.body.payload);
   try {
-    const messageId = await publisher.publish(data);
+    const messageId = await topic.publish(data);
     res.status(200).send(`Message ${messageId} sent.`);
   } catch (error) {
     next(error);

@@ -56,10 +56,24 @@ afterEach(tools.restoreConsole);
 
 /** Tests for startInstancePubSub */
 
-it('startInstancePubSub: should accept JSON-formatted event payload', async () => {
+it('startInstancePubSub: should accept JSON-formatted event payload with instance', async () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone', instance: 'test-instance'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
+    'base64'
+  );
+  sample.program.startInstancePubSub(mocks.event, mocks.callback);
+
+  const data = await sample.mocks.requestPromise();
+  // The request was successfully sent.
+  assert.strictEqual(data, 'request sent');
+});
+
+it('startInstancePubSub: should accept JSON-formatted event payload with label', async () => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {zone: 'test-zone', label: 'testkey=value'};
   mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
     'base64'
   );
@@ -96,7 +110,22 @@ it(`startInstancePubSub: should fail with missing 'instance' attribute`, () => {
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
-    new Error(`Attribute 'instance' missing from payload`)
+    new Error(`Attribute 'instance' or 'label' must be specified in payload`)
+  );
+});
+
+it(`startInstancePubSub: should fail when both 'instance' and 'label' attributes specified`, () => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {zone: 'test-zone', instance: 'test-instance', label: 'test-label'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
+    'base64'
+  );
+  sample.program.startInstancePubSub(mocks.event, mocks.callback);
+
+  assert.deepStrictEqual(
+    mocks.callback.firstCall.args[0],
+    new Error(`Only one of attributes 'instance' and 'label' can be specified in payload`)
   );
 });
 
@@ -117,10 +146,24 @@ it('startInstancePubSub: should fail with empty event payload', () => {
 
 /** Tests for stopInstancePubSub */
 
-it('stopInstancePubSub: should accept JSON-formatted event payload', async () => {
+it('stopInstancePubSub: should accept JSON-formatted event payloa with instance', async () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone', instance: 'test-instance'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
+    'base64'
+  );
+  sample.program.stopInstancePubSub(mocks.event, mocks.callback);
+
+  const data = await sample.mocks.requestPromise();
+  // The request was successfully sent.
+  assert.strictEqual(data, 'request sent');
+});
+
+it('startInstancePubSub: should accept JSON-formatted event payload with label', async () => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {zone: 'test-zone', label: 'testkey=value'};
   mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
     'base64'
   );
@@ -157,7 +200,22 @@ it(`stopInstancePubSub: should fail with missing 'instance' attribute`, () => {
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
-    new Error(`Attribute 'instance' missing from payload`)
+    new Error(`Attribute 'instance' or 'label' must be specified in payload`)
+  );
+});
+
+it(`stopInstancePubSub: should fail when both 'instance' and 'label' attributes specified`, () => {
+  const mocks = getMocks();
+  const sample = getSample();
+  const pubsubData = {zone: 'test-zone', instance: 'test-instance', label: 'test-label'};
+  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
+    'base64'
+  );
+  sample.program.stopInstancePubSub(mocks.event, mocks.callback);
+
+  assert.deepStrictEqual(
+    mocks.callback.firstCall.args[0],
+    new Error(`Only one of attributes 'instance' and 'label' can be specified in payload`)
   );
 });
 

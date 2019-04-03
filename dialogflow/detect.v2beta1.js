@@ -754,7 +754,7 @@ const cli = require(`yargs`)
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/conversation/docs`
+    `For more information, see https://cloud.google.com/dialogflow-enterprise/docs`
   )
   .help()
   .strict();

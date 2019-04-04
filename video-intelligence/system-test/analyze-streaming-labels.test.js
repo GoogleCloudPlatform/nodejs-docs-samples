@@ -15,19 +15,15 @@
 
 'use strict';
 
-const path = require('path');
-const execa = require('execa');
+const {execSync} = require('child_process');
 const {assert} = require('chai');
 
 const cmd = `node analyze-streaming-labels.js`;
-const cwd = path.join(__dirname, '..');
-const exec = async cmd => (await execa.shell(cmd, {cwd})).stdout;
-
 const file = 'resources/cat.mp4';
 
 describe('streaming label', () => {
   it('should analyze labels in a streaming video', async () => {
-    const output = await exec(`${cmd} ${file}`);
+    const output = execSync(`${cmd} ${file}`);
     assert.match(output, /cat/);
     assert.match(output, /Confidence: \d+\.\d+/);
   });

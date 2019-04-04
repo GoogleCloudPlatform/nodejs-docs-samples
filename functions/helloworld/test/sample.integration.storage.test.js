@@ -14,12 +14,11 @@
  */
 
 // [START functions_storage_integration_test]
-const childProcess = require(`child_process`);
-const test = require(`ava`);
-const uuid = require(`uuid`);
+const childProcess = require('child_process');
+const assert = require('assert');
+const uuid = require('uuid');
 
-test.serial(`helloGCS: should print uploaded message`, async t => {
-  t.plan(1);
+it('helloGCS: should print uploaded message', done => {
   const startTime = new Date(Date.now()).toISOString();
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
@@ -36,11 +35,11 @@ test.serial(`helloGCS: should print uploaded message`, async t => {
   const logs = childProcess
     .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
     .toString();
-  t.true(logs.includes(`File ${filename} uploaded.`));
+  assert.ok(logs.includes(`File ${filename} uploaded.`));
+  done();
 });
 
-test.serial(`helloGCS: should print metadata updated message`, async t => {
-  t.plan(1);
+it('helloGCS: should print metadata updated message', done => {
   const startTime = new Date(Date.now()).toISOString();
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
@@ -57,11 +56,11 @@ test.serial(`helloGCS: should print metadata updated message`, async t => {
   const logs = childProcess
     .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
     .toString();
-  t.true(logs.includes(`File ${filename} metadata updated.`));
+  assert.ok(logs.includes(`File ${filename} metadata updated.`));
+  done();
 });
 
-test.serial(`helloGCS: should print deleted message`, async t => {
-  t.plan(1);
+it('helloGCS: should print deleted message', done => {
   const startTime = new Date(Date.now()).toISOString();
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
@@ -78,6 +77,6 @@ test.serial(`helloGCS: should print deleted message`, async t => {
   const logs = childProcess
     .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
     .toString();
-  t.true(logs.includes(`File ${filename} deleted.`));
+  assert.ok(logs.includes(`File ${filename} deleted.`));
 });
 // [END functions_storage_integration_test]

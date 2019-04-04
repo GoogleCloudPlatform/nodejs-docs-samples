@@ -14,13 +14,13 @@
  */
 
 // [START functions_http_unit_test]
-const test = require(`ava`);
-const sinon = require(`sinon`);
-const uuid = require(`uuid`);
+const assert = require('assert');
+const sinon = require('sinon');
+const uuid = require('uuid');
 
-const helloHttp = require(`..`).helloHttp;
+const helloHttp = require('..').helloHttp;
 
-test(`helloHttp: should print a name`, t => {
+it('helloHttp: should print a name', () => {
   // Mock ExpressJS 'req' and 'res' parameters
   const name = uuid.v4();
   const req = {
@@ -34,11 +34,11 @@ test(`helloHttp: should print a name`, t => {
   helloHttp(req, res);
 
   // Verify behavior of tested function
-  t.true(res.send.calledOnce);
-  t.deepEqual(res.send.firstCall.args, [`Hello ${name}!`]);
+  assert.ok(res.send.calledOnce);
+  assert.deepStrictEqual(res.send.firstCall.args, [`Hello ${name}!`]);
 });
 
-test(`helloHttp: should print hello world`, t => {
+it('helloHttp: should print hello world', () => {
   // Mock ExpressJS 'req' and 'res' parameters
   const req = {
     body: {},
@@ -49,7 +49,7 @@ test(`helloHttp: should print hello world`, t => {
   helloHttp(req, res);
 
   // Verify behavior of tested function
-  t.true(res.send.calledOnce);
-  t.deepEqual(res.send.firstCall.args, [`Hello World!`]);
+  assert.ok(res.send.calledOnce);
+  assert.deepStrictEqual(res.send.firstCall.args, ['Hello World!']);
 });
 // [END functions_http_unit_test]

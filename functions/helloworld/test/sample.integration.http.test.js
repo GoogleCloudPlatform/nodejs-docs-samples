@@ -14,28 +14,26 @@
  */
 
 // [START functions_http_integration_test]
-const test = require(`ava`);
-const Supertest = require(`supertest`);
+const assert = require('assert');
+const Supertest = require('supertest');
 const supertest = Supertest(process.env.BASE_URL);
 
-test.cb(`helloHttp: should print a name`, t => {
-  supertest
-    .post(`/helloHttp`)
+it('helloHttp: should print a name', async () => {
+  await supertest
+    .post('/helloHttp')
     .send({name: 'John'})
     .expect(200)
     .expect(response => {
-      t.is(response.text, 'Hello John!');
-    })
-    .end(t.end);
+      assert.strictEqual(response.text, 'Hello John!');
+    });
 });
 
-test.cb(`helloHttp: should print hello world`, t => {
-  supertest
-    .get(`/helloHttp`)
+it('helloHttp: should print hello world', async () => {
+  await supertest
+    .get('/helloHttp')
     .expect(200)
     .expect(response => {
-      t.is(response.text, `Hello World!`);
-    })
-    .end(t.end);
+      assert.strictEqual(response.text, 'Hello World!');
+    });
 });
 // [END functions_http_integration_test]

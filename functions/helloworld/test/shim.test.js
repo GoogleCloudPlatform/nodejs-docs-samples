@@ -13,15 +13,15 @@
  * limitations under the License.
  */
 
-const test = require(`ava`);
-const Supertest = require(`supertest`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
-const {PubSub} = require(`@google-cloud/pubsub`);
+const assert = require('assert');
+const Supertest = require('supertest');
+const tools = require('@google-cloud/nodejs-repo-tools');
+const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
-const {Storage} = require(`@google-cloud/storage`);
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const uuid = require(`uuid`);
-const path = require(`path`);
+const uuid = require('uuid');
+const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const supertest = Supertest(`http://localhost:${PORT}`);
@@ -29,8 +29,8 @@ const topicName = `gcf-shim-topic-${uuid.v4()}`;
 const subscriptionName = `gcf-shim-sub-${uuid.v4()}`;
 const bucketName = `gcf-shim-bucket-${uuid.v4()}`;
 
-const cmd = `node shim.js`;
-const cwd = path.join(__dirname, `..`);
+const cmd = 'node shim.js';
+const cwd = path.join(__dirname, '..');
 
 const bucket = storage.bucket(bucketName);
 let topic;
@@ -40,7 +40,7 @@ let subscription;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 // Create test resources
-test.before(() => {
+before(() => {
   return bucket
     .create()
     .then(() => {
@@ -58,7 +58,7 @@ test.before(() => {
 });
 
 // Tear down test resources
-test.after.always(() => {
+after(() => {
   return bucket
     .deleteFiles({force: true})
     .then(subscription.delete())
@@ -73,16 +73,16 @@ test.after.always(() => {
     .catch(console.error);
 });
 
-test(`shim: should handle HTTP`, async t => {
+it('shim: should handle HTTP', async () => {
   const shim = tools.runAsync(`${cmd} http ${PORT}`, cwd);
   await delay(1000)
     .then(() => {
       // Send HTTP request
       return supertest
-        .get(`/helloGET`)
+        .get('/helloGET')
         .expect(200)
         .expect(response => {
-          t.is(response.text, 'Hello World!');
+          assert.strictEqual(response.text, 'Hello World!');
         });
     })
     .then(() => {
@@ -90,7 +90,7 @@ test(`shim: should handle HTTP`, async t => {
     }); // Stop shim
 });
 
-test(`shim: should handle PubSub`, async t => {
+it('shim: should handle PubSub', async () => {
   const name = uuid.v4();
   const publisher = topic.publisher();
   const shim = tools.runAsync(
@@ -106,11 +106,11 @@ test(`shim: should handle PubSub`, async t => {
       return shim;
     })
     .then(output => {
-      t.true(output.includes(`Hello, ${name}!`));
+      assert.ok(output.includes(`Hello, ${name}!`));
     });
 });
 
-test(`shim: should handle GCS`, async t => {
+it('shim: should handle GCS', async () => {
   const shim = tools.runAsync(
     `${cmd} storage helloGCS "${bucketName}" "${topicName}" "${subscriptionName}"`,
     cwd
@@ -119,12 +119,12 @@ test(`shim: should handle GCS`, async t => {
   // Upload file to bucket
   await delay(10000)
     .then(() => {
-      return bucket.upload(path.join(cwd, `test/test.txt`));
+      return bucket.upload(path.join(cwd, 'test/test.txt'));
     })
     .then(() => {
       return shim;
     })
     .then(output => {
-      t.true(output.includes(`File test.txt uploaded.`));
+      assert.ok(output.includes('File test.txt uploaded.'));
     });
 });

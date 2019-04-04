@@ -18,13 +18,8 @@
 const fs = require('fs');
 const path = require('path');
 const {assert} = require('chai');
-const execa = require('execa');
+const {execSync} = require('child_process');
 
-const exec = async cmd => {
-  const res = await execa.shell(cmd);
-  assert.isEmpty(res.stderr);
-  return res.stdout;
-};
 const cmd = 'node synthesize.js';
 const text = 'Hello there.';
 const ssml = '<speak>Hello there.</speak>';
@@ -47,9 +42,7 @@ describe('synthesize', () => {
 
   it('should synthesize audio from text', async () => {
     assert.strictEqual(fs.existsSync(outputFile), false);
-    const output = await exec(
-      `${cmd} text '${text}' --outputFile ${outputFile}`
-    );
+    const output = execSync(`${cmd} text '${text}' --outputFile ${outputFile}`);
     assert.match(
       output,
       new RegExp(`Audio content written to file: ${outputFile}`)
@@ -59,9 +52,7 @@ describe('synthesize', () => {
 
   it('should synthesize audio from ssml', async () => {
     assert.strictEqual(fs.existsSync(outputFile), false);
-    const output = await exec(
-      `${cmd} ssml "${ssml}" --outputFile ${outputFile}`
-    );
+    const output = execSync(`${cmd} ssml "${ssml}" --outputFile ${outputFile}`);
     assert.match(
       output,
       new RegExp(`Audio content written to file: ${outputFile}`)
@@ -71,7 +62,7 @@ describe('synthesize', () => {
 
   it('should synthesize audio from text file', async () => {
     assert.strictEqual(fs.existsSync(outputFile), false);
-    const output = await exec(
+    const output = execSync(
       `${cmd} text-file ${files[0].localPath} --outputFile ${outputFile}`
     );
     assert.match(
@@ -83,7 +74,7 @@ describe('synthesize', () => {
 
   it('should synthesize audio from ssml file', async () => {
     assert.strictEqual(fs.existsSync(outputFile), false);
-    const output = await exec(
+    const output = execSync(
       `${cmd} ssml-file ${files[1].localPath} --outputFile ${outputFile}`
     );
     assert.match(

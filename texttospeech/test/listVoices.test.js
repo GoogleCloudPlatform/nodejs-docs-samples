@@ -16,13 +16,13 @@
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
+const {execSync} = require('child_process');
 
 const cmd = 'node listVoices.js';
 
 describe('list voices', () => {
   it('should list voices', async () => {
-    const {stdout} = await execa.shell(`${cmd} list-voices`);
+    const stdout = execSync(`${cmd} list-voices`);
     assert.match(stdout, /SSML Voice Gender: FEMALE/);
     assert.match(stdout, /Natural Sample Rate Hertz: 24000/);
   });

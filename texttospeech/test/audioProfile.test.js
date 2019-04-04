@@ -17,14 +17,9 @@
 
 const fs = require('fs');
 const {assert} = require('chai');
-const execa = require('execa');
+const {execSync} = require('child_process');
 
 const cmd = 'node audioProfile.js';
-const exec = async cmd => {
-  const res = await execa.shell(cmd);
-  assert.isEmpty(res.stderr);
-  return res.stdout;
-};
 const text = 'Hello Everybody!  This is an Audio Profile Optimized Sound Byte.';
 const outputFile1 = 'phonetest.mp3';
 const outputFile2 = 'homeTheatreTest.mp3';
@@ -45,7 +40,7 @@ describe('audio profile', () => {
 
   it('should synthesize Speech for Telephone Audio Profile', async () => {
     assert.strictEqual(fs.existsSync(outputFile1), false);
-    const output = await exec(
+    const output = execSync(
       `${cmd} synthesize '${text}' -f ${outputFile1} -e telephony-class-application`
     );
     assert.match(
@@ -57,7 +52,7 @@ describe('audio profile', () => {
 
   it('should synthesize Speech for Home Theatre Audio Profile', async () => {
     assert.strictEqual(fs.existsSync(outputFile2), false);
-    const output = await exec(
+    const output = execSync(
       `${cmd} synthesize '${text}' -f ${outputFile2} -e large-home-entertainment-class-device`
     );
     assert.match(
@@ -69,7 +64,7 @@ describe('audio profile', () => {
 
   it('should synthesize Speech for Car Audio Audio Profile', async () => {
     assert.strictEqual(fs.existsSync(outputFile3), false);
-    const output = await exec(
+    const output = execSync(
       `${cmd} synthesize '${text}' -f ${outputFile3} -e large-automotive-class-device`
     );
     assert.match(
@@ -81,7 +76,7 @@ describe('audio profile', () => {
 
   it('should synthesize Speech for Watch Audio Profile', async () => {
     assert.strictEqual(fs.existsSync(outputFile4), false);
-    const output = await exec(
+    const output = execSync(
       `${cmd} synthesize '${text}' -f ${outputFile4} -e wearable-class-device`
     );
     assert.match(

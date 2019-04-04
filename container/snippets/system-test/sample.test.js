@@ -16,11 +16,11 @@
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
+const {execSync} = require('child_process');
 
 describe('container samples', () => {
   it('should run the quickstart', async () => {
-    const {stdout} = await execa.shell('node quickstart');
+    const stdout = execSync('node quickstart');
     assert.match(stdout, /Clusters:/);
   });
 });

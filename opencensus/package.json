@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node metrics-quickstart.js",
-    "test": "repo-tools test run --cmd ava -- -T 65s --verbose system-test/*.test.js"
+    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000"
   },
   "dependencies": {
     "@opencensus/core": "^0.0.9",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "ava": "^0.25.0"
+    "mocha": "^6.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

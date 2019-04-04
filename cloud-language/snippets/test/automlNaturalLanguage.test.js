@@ -16,7 +16,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
+const {execSync} = require('child_process');
 
 const cmdDataset = 'node automl/automlNaturalLanguageDataset.js';
 const cmdModel = 'node automl/automlNaturalLanguageModel.js';
@@ -28,24 +28,22 @@ const testModelName = 'dummyModel';
 const sampleText = './resources/test.txt';
 const projectId = process.env.GCLOUD_PROJECT;
 
-const exec = async cmd => (await execa.shell(cmd)).stdout;
-
 describe.skip('automl', () => {
   // Skipped because it's been taking too long to delete datasets
   it('should create a create, list, and delete a dataset', async () => {
     // Check to see that this dataset does not yet exist
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     //t.false(output.includes(testDataSetName));
     assert.notMatch(output, /testDataset/);
 
     // Create dataset
-    output = await exec(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
+    output = execSync(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
     const parsedOut = output.split('\n');
     const dataSetId = parsedOut[1].split(':')[1].trim();
     assert.match(output, /Dataset display name: {2}testDataset/);
 
     // Delete dataset
-    output = await exec(`${cmdDataset} delete-dataset -i "${dataSetId}"`);
+    output = execSync(`${cmdDataset} delete-dataset -i "${dataSetId}"`);
     assert.match(output, /Dataset deleted./);
   });
 
@@ -53,11 +51,11 @@ describe.skip('automl', () => {
   // We make two models running this test, see hard-coded workaround below
   it('should create a dataset, import data, and start making a model', async () => {
     // Check to see that this dataset does not yet exist
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     assert.notMatch(output, /dummyDataset/);
 
     // Create dataset
-    output = await exec(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
+    output = execSync(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
 
     const dataSetId = output
       .split('\n')[1]
@@ -66,17 +64,17 @@ describe.skip('automl', () => {
     assert.match(output, /Dataset display name: {2}dummyDataSet/);
 
     // Import Data
-    output = await exec(
+    output = execSync(
       `${cmdDataset} import-data -i "${dataSetId}" -p "gs://nodejs-docs-samples-vcm/happiness.csv"`
     );
     assert.match(output, /Data imported./);
 
     // Check to make sure model doesn't already exist
-    output = await exec(`${cmdModel} list-models`);
+    output = execSync(`${cmdModel} list-models`);
     assert.notMatch(output, /dummyModel/);
 
     // Begin training dataset, getting operation ID for next operation
-    output = await exec(
+    output = execSync(
       `${cmdModel} create-model -i "${dataSetId}" -m "${testModelName}" -t "2"`
     );
     const operationName = output
@@ -86,7 +84,7 @@ describe.skip('automl', () => {
     assert.match(output, /Training started.../);
 
     // Poll operation status, here confirming that operation is not complete yet
-    output = await exec(
+    output = execSync(
       `${cmdModel} get-operation-status -i "${dataSetId}" -o "${operationName}"`
     );
     assert.match(output, /done: false/);
@@ -96,16 +94,16 @@ describe.skip('automl', () => {
     const donotdeleteModelId = `TCN4740161257642267869`;
 
     // Confirm dataset exists
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, /dummyDb/);
 
     // List model evaluations, confirm model exists
-    output = await exec(
+    output = execSync(
       `${cmdModel} list-model-evaluations -a "${donotdeleteModelId}"`
     );
 
     // Display evaluation
-    output = await exec(
+    output = execSync(
       `${cmdModel} display-evaluation -a "${donotdeleteModelId}"`
     );
     assert.match(output, /Model Precision:/);
@@ -115,17 +113,17 @@ describe.skip('automl', () => {
     const donotdeleteModelId = `TCN4740161257642267869`;
 
     // Confirm dataset exists
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, /do_not_delete_me/);
 
     // List model evaluations, confirm model exists
-    output = await exec(
+    output = execSync(
       `${cmdModel} list-model-evaluations -a "${donotdeleteModelId}"`
     );
     assert.match(output, /classificationEvaluationMetrics:/);
 
     // Run prediction on 'test.txt' in resources folder
-    output = await exec(
+    output = execSync(
       `${cmdPredict} predict -i "${donotdeleteModelId}" -f "${sampleText}" -s "0.5"`
     );
     assert.match(output, /Firm_Cheese/);
@@ -133,7 +131,7 @@ describe.skip('automl', () => {
 
   // List datasets
   it('should list datasets', async () => {
-    const output = await exec(`${cmdDataset} list-datasets ${projectId}`);
+    const output = execSync(`${cmdDataset} list-datasets ${projectId}`);
     assert.match(output, /List of datasets:/);
   });
 });

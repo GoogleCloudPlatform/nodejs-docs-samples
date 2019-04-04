@@ -17,14 +17,14 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const execa = require('execa');
+const {execSync} = require('child_process');
 
 const cmd = 'node quickstart.js';
 const cwd = path.join(__dirname, '..');
 
 describe('quickstart samples', () => {
   it('should analyze a hardcoded video', async () => {
-    const {stdout} = await execa.shell(cmd, {cwd});
+    const stdout = execSync(cmd, {cwd});
     assert.match(stdout, /Label standing occurs at:/);
   });
 });

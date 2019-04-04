@@ -15,21 +15,17 @@
 
 'use strict';
 
-const path = require('path');
-const execa = require('execa');
+const {execSync} = require('child_process');
 const {assert} = require('chai');
 
 const cmd = `node analyze-streaming-annotation-to-storage.js`;
-const cwd = path.join(__dirname, '..');
 const project = process.env.GLCOUD_PROJECT;
-const exec = async cmd => (await execa.shell(cmd, {cwd})).stdout;
-
 const file = 'resources/cat.mp4';
 const outputUri = 'gs://' + project + '/VIDEO_STREAMING_OUTPUT';
 
 describe('streaming annotation to storage', () => {
   it('should store the annotation results in GCS', async () => {
-    const output = await exec(`${cmd} ${file} ${outputUri}`);
+    const output = execSync(`${cmd} ${file} ${outputUri}`);
     assert.match(output, /The annotation is stored at:/);
   });
 });

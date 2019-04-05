@@ -17,9 +17,10 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
 
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
 const cmdDataset = `node vision/automlVisionDataset.js`;
 const cmdModel = `node vision/automlVisionModel.js`;
 const cmdPredict = `node vision/automlVisionPredict.js`;
@@ -33,11 +34,11 @@ const sampleImage2 = path.join(testImgPath, `testImage2.jpg`);
 describe(`auto ml vision`, () => {
   it.skip(`should create, list, and delete a dataset`, async () => {
     // Check to see that this dataset does not yet exist
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     assert.strictEqual(output.includes(testDataSetName), false);
 
     // Create dataset
-    output = await exec(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
+    output = execSync(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
     const dataSetId = output
       .split(`\n`)[1]
       .split(`:`)[1]
@@ -45,7 +46,7 @@ describe(`auto ml vision`, () => {
     assert.match(output, new RegExp(testDataSetName));
 
     // Delete dataset
-    output = await exec(`${cmdDataset} delete-dataset -i "${dataSetId}"`);
+    output = execSync(`${cmdDataset} delete-dataset -i "${dataSetId}"`);
     assert.match(output, /Dataset deleted./);
   });
 
@@ -53,11 +54,11 @@ describe(`auto ml vision`, () => {
   // We make two models running this test, see hard-coded workaround below
   it.skip(`should create a dataset, import data, and start making a model`, async () => {
     // Check to see that this dataset does not yet exist
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     assert.strictEqual(output.includes(dummyDataSet), false);
 
     // Create dataset
-    output = await exec(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
+    output = execSync(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
     const dataSetId = output
       .split(`\n`)[1]
       .split(`:`)[1]
@@ -65,17 +66,17 @@ describe(`auto ml vision`, () => {
     assert.match(output, new RegExp(dummyDataSet));
 
     // Import Data
-    output = await exec(
+    output = execSync(
       `${cmdDataset} import-data -i "${dataSetId}" -p "gs://nodejs-docs-samples-vcm/flowerTraindata20lines.csv"`
     );
     assert.match(output, /Data imported./);
 
     // Check to make sure model doesn't already exist
-    output = await exec(`${cmdModel} list-models`);
+    output = execSync(`${cmdModel} list-models`);
     assert.notMatch(output, new RegExp(testModelName));
 
     // begin training dataset, getting operation ID for next operation
-    output = await exec(`
+    output = execSync(`
       ${cmdModel} create-model -i "${dataSetId}" -m "${testModelName}" -t "2"`);
     const operationName = output
       .split(`\n`)[0]
@@ -86,7 +87,7 @@ describe(`auto ml vision`, () => {
     assert.match(output, /Training started.../);
 
     // poll operation status, here confirming that operation is not complete yet
-    output = await exec(
+    output = execSync(
       `${cmdModel} get-operation-status -i "${dataSetId}" -o "${operationName}"`
     );
     assert.match(output, /done: false/);
@@ -97,18 +98,16 @@ describe(`auto ml vision`, () => {
     const flowersDisplayName = `flowersTest`;
 
     // Confirm dataset exists
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, new RegExp(flowersDisplayName));
 
     // List model evaluations, confirm model exists
-    output = await exec(
+    output = execSync(
       `${cmdModel} list-model-evaluations -a "${flowersModelId}"`
     );
 
     // Display evaluation
-    output = await exec(
-      `${cmdModel} display-evaluation -a "${flowersModelId}"`
-    );
+    output = execSync(`${cmdModel} display-evaluation -a "${flowersModelId}"`);
     assert.match(output, /Model Precision/);
   });
 
@@ -117,15 +116,15 @@ describe(`auto ml vision`, () => {
     const flowersDisplayName = `flowers`;
 
     // Confirm dataset exists
-    let output = await exec(`${cmdDataset} list-datasets`);
+    let output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, new RegExp(flowersDisplayName));
 
     // List model evaluations, confirm model exists
-    output = await exec(
+    output = execSync(
       `${cmdModel} list-model-evaluations -a "${donotdeleteModelId}"`
     );
     // Run prediction on 'testImage.jpg' in resources folder
-    output = await exec(
+    output = execSync(
       `${cmdPredict} predict -i "${donotdeleteModelId}" -f "${sampleImage2}" -s "0.5"`
     );
     assert.match(output, /dandelion/);
@@ -133,7 +132,7 @@ describe(`auto ml vision`, () => {
 
   // List datasets
   it(`should list datasets`, async () => {
-    const output = await exec(`${cmdDataset} list-datasets`);
+    const output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, /List of datasets:/);
   });
 });

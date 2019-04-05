@@ -18,9 +18,10 @@
 const {assert} = require('chai');
 const {TranslationServiceClient} = require('@google-cloud/translate').v3beta1;
 const {Storage} = require('@google-cloud/storage');
-const execa = require('execa');
+const cp = require('child_process');
 const uuid = require('uuid');
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_batch_translate_text_beta';
 
@@ -53,7 +54,7 @@ describe(REGION_TAG, () => {
     const inputUri = `gs://cloud-samples-data/translation/text.txt`;
 
     const outputUri = `gs://${projectId}/${bucketName}`;
-    const output = await exec(
+    const output = execSync(
       `node v3beta1/${REGION_TAG}.js ${projectId} ${location} ${inputUri} ${outputUri}`
     );
     assert.match(output, /Total Characters: 13/);

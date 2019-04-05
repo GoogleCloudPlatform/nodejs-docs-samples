@@ -17,10 +17,11 @@
 
 const {assert} = require('chai');
 const {TranslationServiceClient} = require('@google-cloud/translate').v3beta1;
-const execa = require('execa');
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const cp = require('child_process');
 
-const REGION_TAG = 'translate_list_glossary_beta';
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
+const REGION_TAG = 'translate_get_glossary_beta';
 
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
@@ -28,9 +29,8 @@ describe(REGION_TAG, () => {
   const glossaryId = 'test-glossary';
 
   before(async function() {
-    // Add a glossary to be deleted
+    // Add a glossary to get
     const projectId = await translationClient.getProjectId();
-
     const glossary = {
       languageCodesSet: {
         languageCodes: ['en', 'es'],
@@ -57,18 +57,17 @@ describe(REGION_TAG, () => {
     await operation.promise();
   });
 
-  it('should list glossaries in project', async () => {
+  it('should get a glossary', async () => {
     const projectId = await translationClient.getProjectId();
-    const output = await exec(
-      `node v3beta1/${REGION_TAG}.js ${projectId} ${location}`
+
+    const output = execSync(
+      `node v3beta1/${REGION_TAG}.js ${projectId} ${location} ${glossaryId}`
     );
-    assert.match(
-      output,
-      /gs:\/\/cloud-samples-data\/translation\/glossary.csv/
-    );
+    assert.match(output, /test-glossary/);
   });
 
   after(async function() {
+    //delete the glossary we created
     const projectId = await translationClient.getProjectId();
     const name = translationClient.glossaryPath(
       projectId,

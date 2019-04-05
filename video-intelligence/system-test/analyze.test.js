@@ -18,7 +18,9 @@
 'use strict';
 
 const {assert} = require('chai');
-const {execSync} = require('child_process');
+const cp = require('child_process');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node analyze.js';
 const url = 'gs://nodejs-docs-samples-video/quickstart.mp4';

@@ -17,17 +17,15 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
 
-const cwd = path.join(__dirname, '..');
-const exec = async cmd => (await execa.shell(cmd, {cwd})).stdout;
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = 'node recognize.v1p1beta1.js';
 const filepath = path.join(__dirname, '..', 'resources', 'audio.raw');
-const text = 'how old is the Brooklyn Bridge';
 
 describe('Recognize v1p1beta1', () => {
   it('should run sync recognize with metadata', async () => {
-    const output = await exec(`${cmd} sync-metadata ${filepath}`);
-    assert.match(output, new RegExp(text));
+    const output = execSync(`${cmd} sync-metadata ${filepath}`);
+    assert.match(output, /how old is the Brooklyn Bridge/);
   });
 });

@@ -17,11 +17,12 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node betaFeatures.js';
 const cwd = path.join(__dirname, `..`);
-const exec = async cmd => (await execa.shell(cmd, {cwd})).stdout;
 
 //audio file paths
 const resourcePath = path.join(__dirname, '..', 'resources');
@@ -37,45 +38,41 @@ const stereoUri = 'gs://cloud-samples-tests/speech/commercial_stereo.wav';
 
 describe(`BetaFeatures`, () => {
   it('should run speech diarization on a local file', async () => {
-    const output = await exec(`${cmd} Diarization -f ${monoFilePath}`);
+    const output = execSync(`${cmd} Diarization -f ${monoFilePath}`);
     assert.match(output, /speakerTag:/);
   });
 
   it('should run speech diarization on a GCS file', async () => {
-    const output = await exec(`${cmd} DiarizationGCS -u ${monoUri}`, cwd);
+    const output = execSync(`${cmd} DiarizationGCS -u ${monoUri}`, cwd);
     assert.match(output, /speakerTag:/);
   });
 
   it('should run multi channel transcription on a local file', async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} multiChannelTranscribe -f ${stereoFilePath}`
     );
     assert.match(output, /Channel Tag: 2/);
   });
 
   it('should run multi channel transcription on GCS file', async () => {
-    const output = await exec(
-      `${cmd} multiChannelTranscribeGCS -u ${stereoUri}`
-    );
+    const output = execSync(`${cmd} multiChannelTranscribeGCS -u ${stereoUri}`);
     assert.match(output, /Channel Tag: 2/);
   });
 
   it('should transcribe multi-language on a local file', async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} multiLanguageTranscribe -f ${multiLanguageFile}`
     );
     assert.match(output, /Transcription: how are you doing estoy bien e tu/);
   });
 
   it('should transcribe multi-language on a GCS bucket', async () => {
-    const output = await exec(
-      `${cmd} multiLanguageTranscribeGCS -u ${multiUri}`
-    );
+    const output = execSync(`${cmd} multiLanguageTranscribeGCS -u ${multiUri}`);
     assert.match(output, /Transcription: how are you doing estoy bien e tu/);
   });
 
   it('should run word Level Confience on a local file', async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} wordLevelConfidence -f ${BrooklynFilePath}`
     );
     assert.match(output, /Transcription: how old is the Brooklyn Bridge/);
@@ -83,9 +80,7 @@ describe(`BetaFeatures`, () => {
   });
 
   it('should run word level confidence on a GCS bucket', async () => {
-    const output = await exec(
-      `${cmd} wordLevelConfidenceGCS -u ${brooklynUri}`
-    );
+    const output = execSync(`${cmd} wordLevelConfidenceGCS -u ${brooklynUri}`);
     assert.match(output, /Transcription: how old is the Brooklyn Bridge/);
     assert.match(output, /Confidence: \d\.\d/);
   });

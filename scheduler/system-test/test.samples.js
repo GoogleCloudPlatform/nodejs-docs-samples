@@ -15,10 +15,12 @@
 'use strict';
 
 const {assert} = require('chai');
-const {execSync} = require('child_process');
+const cp = require('child_process');
 const supertest = require('supertest');
 const app = require('../app.js');
 const request = supertest(app);
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT;
 const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
@@ -32,10 +34,7 @@ describe('Cloud Scheduler Sample Tests', () => {
       `node createJob.js ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
     );
     assert.match(stdout, /Created job/);
-    jobName = stdout
-      .toString()
-      .split('/')
-      .pop();
+    jobName = stdout.split('/').pop();
   });
 
   it('should delete a scheduler job', async () => {

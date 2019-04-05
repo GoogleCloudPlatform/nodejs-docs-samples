@@ -18,10 +18,11 @@
 const uuid = require('uuid');
 const vision = require('@google-cloud/vision');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const productSearch = new vision.ProductSearchClient();
-const exec = async cmd => (await execa.shell(cmd)).stdout;
 const cmd = `node productSearch/productSets.js`;
 
 // Shared fixture data for product tests
@@ -91,7 +92,7 @@ describe(`product sets`, () => {
     assert.strictEqual(await getProductSetOrFalse(newProductSetPath), false);
     testProductSet.createdProductSetPaths.push(newProductSetPath);
 
-    const output = await exec(
+    const output = execSync(
       `${cmd} createProductSet "${testProductSet.projectId}" "${
         testProductSet.location
       }" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`
@@ -107,7 +108,7 @@ describe(`product sets`, () => {
   });
 
   it(`should get product set`, async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} getProductSet "${testProductSet.projectId}" "${
         testProductSet.location
       }" "${testProductSet.productSetId}"`
@@ -126,7 +127,7 @@ describe(`product sets`, () => {
   });
 
   it(`should list product sets`, async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} listProductSets "${testProductSet.projectId}" "${
         testProductSet.location
       }"`
@@ -150,7 +151,7 @@ describe(`product sets`, () => {
     });
     assert.ok(productSet);
 
-    const output = await exec(
+    const output = execSync(
       `${cmd} deleteProductSet "${testProductSet.projectId}" "${
         testProductSet.location
       }" "${testProductSet.productSetId}"`

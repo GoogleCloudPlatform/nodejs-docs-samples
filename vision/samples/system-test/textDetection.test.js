@@ -17,24 +17,26 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe(`Text Detection`, () => {
   it(`should detect texts`, async () => {
     const inputDir = path.join(__dirname, `../resources`);
-    const result = await execa.shell(`node textDetection analyze ${inputDir}`, {
-      reject: false,
-    });
-    if (result.stderr) {
-      if (result.stderr.match(/connect ECONNREFUSED/)) {
+    try {
+      execSync(`node textDetection analyze ${inputDir}`);
+    } catch (err) {
+      if (err.stderr.match(/connect ECONNREFUSED/)) {
         console.error(
           '☣️ Redis is unavailable. Skipping vision textDetection test.'
         );
-        return true;
+        return;
       }
-      throw new Error(result.stderr);
+      throw new Error(err.stderr);
     }
-    const {stdout} = await execa.shell('node textDetection lookup sunbeams');
+
+    const stdout = execSync('node textDetection lookup sunbeams');
     assert.match(stdout, /sunbeamkitties/);
   });
 });

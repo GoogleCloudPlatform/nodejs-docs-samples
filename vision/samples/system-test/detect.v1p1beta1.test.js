@@ -16,10 +16,11 @@
 'use strict';
 
 const path = require('path');
-const execa = require('execa');
+const cp = require('child_process');
 const {assert} = require('chai');
 
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
 const cmd = `node detect.v1p1beta1.js`;
 const files = [`text.jpg`, `wakeupcat.jpg`, `landmark.jpg`, `city.jpg`].map(
   name => {
@@ -32,25 +33,25 @@ const files = [`text.jpg`, `wakeupcat.jpg`, `landmark.jpg`, `city.jpg`].map(
 
 describe(`detect v1 p1 beta1`, () => {
   it(`should extract text from image file and print confidence`, async () => {
-    const output = await exec(`${cmd} fulltext ${files[0].localPath}`);
+    const output = execSync(`${cmd} fulltext ${files[0].localPath}`);
     assert.match(output, /Word text: class/);
     assert.match(output, /Word confidence:/);
   });
 
   it(`should detect safe search properties from image file`, async () => {
-    const output = await exec(`${cmd} safe-search ${files[1].localPath}`);
+    const output = execSync(`${cmd} safe-search ${files[1].localPath}`);
     assert.match(output, /VERY_LIKELY/);
     assert.match(output, /Racy:/);
   });
 
   it(`should detect web entities including best guess labels`, async () => {
-    const output = await exec(`${cmd} web ${files[2].localPath}`);
+    const output = execSync(`${cmd} web ${files[2].localPath}`);
     assert.match(output, /Description: Palace Of Fine Arts/);
     assert.match(output, /Best guess label: palace of fine arts/);
   });
 
   it(`should detect web entities using geographical metadata`, async () => {
-    const output = await exec(`${cmd} web-entities-geo ${files[3].localPath}`);
+    const output = execSync(`${cmd} web-entities-geo ${files[3].localPath}`);
     assert.match(output, /Score:/);
   });
 });

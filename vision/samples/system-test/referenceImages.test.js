@@ -18,10 +18,11 @@
 const uuid = require('uuid');
 const vision = require('@google-cloud/vision');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const productSearchClient = new vision.ProductSearchClient();
-const exec = async cmd => (await execa.shell(cmd)).stdout;
 const cmd = `node productSearch/referenceImages.js`;
 
 // Shared fixture data for product tests
@@ -71,7 +72,7 @@ describe(`reference images`, () => {
   });
 
   it(`should create reference image`, async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} createReferenceImage "${testProduct.projectId}" "${
         testProduct.location
       }" "${testProduct.productId}" "${testProduct.productReferenceImageId}" "${
@@ -82,7 +83,7 @@ describe(`reference images`, () => {
   });
 
   it(`should delete reference image`, async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} deleteReferenceImage "${testProduct.projectId}" "${
         testProduct.location
       }" "${testProduct.productId}" "${testProduct.productReferenceImageId}"`

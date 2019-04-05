@@ -17,11 +17,12 @@
 
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
-const execa = require('execa');
+const cp = require('child_process');
 const {assert} = require('chai');
 const uuid = require('uuid');
 
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
 const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cmd = `node detect.v1p3beta1.js`;
@@ -49,12 +50,12 @@ describe(`detect v1 p3 beta1`, () => {
   });
 
   it(`should read handwriting in local handwritten.jpg sample`, async () => {
-    const output = await exec(`${cmd} detectHandwriting ${files[1]}`);
+    const output = execSync(`${cmd} detectHandwriting ${files[1]}`);
     assert.match(output, /hand written message/);
   });
 
   it(`should read handwriting from handwritten.jpg in GCS bucket`, async () => {
-    const output = await exec(
+    const output = execSync(
       `${cmd} detectHandwritingGCS gs://${bucketName}/${files[1].name}`
     );
     assert.match(output, /hand written message/);

@@ -17,16 +17,17 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
 
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
 const cmd = `node faceDetection.js`;
 const inputFile = path.join(__dirname, '../resources', 'face.png');
 const outputFile = path.join(__dirname, '../../', 'out.png');
 
 describe(`face detection`, () => {
   it(`should detect faces`, async () => {
-    const output = await exec(`${cmd} ${inputFile} ${outputFile}`);
+    const output = execSync(`${cmd} ${inputFile} ${outputFile}`);
     assert.match(output, /Found 1 face/);
     assert.match(output, /Highlighting.../);
     assert.match(output, /Finished!/);

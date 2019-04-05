@@ -15,8 +15,10 @@
 'use strict';
 
 const {assert} = require('chai');
-const {execSync} = require('child_process');
+const cp = require('child_process');
 const uuid = require('uuid');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT;
 const queueName = `gcloud-${uuid.v4().split('-')[0]}`;

@@ -17,10 +17,12 @@
 const fs = require(`fs`);
 const path = require(`path`);
 const {assert} = require('chai');
-const {execSync} = require('child_process');
+const cp = require('child_process');
 const uuid = require(`uuid`);
 const {promisify} = require('util');
 const unlink = promisify(fs.unlink);
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const keyRingName = `test-ring-${uuid.v4()}`;
 const keyNameOne = `test-key-${uuid.v4()}`;

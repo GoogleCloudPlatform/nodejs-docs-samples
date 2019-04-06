@@ -15,10 +15,10 @@
 
 'use strict';
 
-const request = require(`supertest`);
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const request = require('supertest');
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 // Stub out MySQL calls
 const stubMysql = sinon.stub(require('promise-mysql'));
@@ -31,15 +31,15 @@ stubMysql.createPool.returns(poolStub);
 
 const server = require('../server.js');
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test(`check index page`, async t => {
+it('check index page', async () => {
   const response = await request(server)
     .get('/')
     .timeout(1000);
 
-  t.is(response.status, 200);
+  assert.strictEqual(response.status, 200);
 });
 
 server.close();

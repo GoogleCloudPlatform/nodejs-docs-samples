@@ -15,15 +15,15 @@
 
 'use strict';
 
-const test = require(`ava`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const sinon = require(`sinon`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const path = require('path');
+const proxyquire = require('proxyquire').noPreserveCache();
+const sinon = require('sinon');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const SAMPLE_PATH = path.join(__dirname, `../createTables.js`);
+const SAMPLE_PATH = path.join(__dirname, '../createTable.js');
 
-const exampleConfig = [`user`, `password`, `database`];
+const exampleConfig = ['user', 'password', 'database'];
 
 function getSample() {
   const configMock = exampleConfig;
@@ -58,10 +58,10 @@ function getSample() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test.cb.serial(`should create a table`, t => {
+it('should create a table', async () => {
   const sample = getSample();
   const expectedResult = `Successfully created 'votes' table.`;
 
@@ -70,30 +70,34 @@ test.cb.serial(`should create a table`, t => {
     prompt: sample.mocks.prompt,
   });
 
-  t.true(sample.mocks.prompt.start.calledOnce);
-  t.true(sample.mocks.prompt.get.calledOnce);
-  t.deepEqual(sample.mocks.prompt.get.firstCall.args[0], exampleConfig);
+  assert.ok(sample.mocks.prompt.start.calledOnce);
+  assert.ok(sample.mocks.prompt.get.calledOnce);
+  assert.deepStrictEqual(
+    sample.mocks.prompt.get.firstCall.args[0],
+    exampleConfig
+  );
 
-  setTimeout(() => {
-    t.true(sample.mocks.Knex.calledOnce);
-    t.deepEqual(sample.mocks.Knex.firstCall.args, [
-      {
-        client: 'pg',
-        connection: exampleConfig,
-      },
-    ]);
+  await new Promise(r => setTimeout(r, 10));
+  assert.ok(sample.mocks.Knex.calledOnce);
+  assert.deepStrictEqual(sample.mocks.Knex.firstCall.args, [
+    {
+      client: 'pg',
+      connection: exampleConfig,
+    },
+  ]);
 
-    t.true(sample.mocks.knex.schema.createTable.calledOnce);
-    t.is(sample.mocks.knex.schema.createTable.firstCall.args[0], 'votes');
+  assert.ok(sample.mocks.knex.schema.createTable.calledOnce);
+  assert.strictEqual(
+    sample.mocks.knex.schema.createTable.firstCall.args[0],
+    'votes'
+  );
 
-    t.true(console.log.calledWith(expectedResult));
-    t.true(sample.mocks.knex.destroy.calledOnce);
-    t.end();
-  }, 10);
+  assert.ok(console.log.calledWith(expectedResult));
+  assert.ok(sample.mocks.knex.destroy.calledOnce);
 });
 
-test.cb.serial(`should handle prompt error`, t => {
-  const error = new Error(`error`);
+it('should handle prompt error', async () => {
+  const error = new Error('error');
   const sample = getSample();
   sample.mocks.prompt.get = sinon.stub().yields(error);
 
@@ -102,16 +106,14 @@ test.cb.serial(`should handle prompt error`, t => {
     prompt: sample.mocks.prompt,
   });
 
-  setTimeout(() => {
-    t.true(console.error.calledOnce);
-    t.true(console.error.calledWith(error));
-    t.true(sample.mocks.Knex.notCalled);
-    t.end();
-  }, 10);
+  await new Promise(r => setTimeout(r, 10));
+  assert.ok(console.error.calledOnce);
+  assert.ok(console.error.calledWith(error));
+  assert.ok(sample.mocks.Knex.notCalled);
 });
 
-test.cb.serial(`should handle knex creation error`, t => {
-  const error = new Error(`error`);
+it('should handle knex creation error', async () => {
+  const error = new Error('error');
   const sample = getSample();
   sample.mocks.knex.schema.createTable = sinon
     .stub()
@@ -122,10 +124,8 @@ test.cb.serial(`should handle knex creation error`, t => {
     prompt: sample.mocks.prompt,
   });
 
-  setTimeout(() => {
-    t.true(console.error.calledOnce);
-    t.true(console.error.calledWith(`Failed to create 'votes' table:`, error));
-    t.true(sample.mocks.knex.destroy.calledOnce);
-    t.end();
-  }, 10);
+  await new Promise(r => setTimeout(r, 10));
+  assert.ok(console.error.calledOnce);
+  assert.ok(console.error.calledWith(`Failed to create 'votes' table:`, error));
+  assert.ok(sample.mocks.knex.destroy.calledOnce);
 });

@@ -11,9 +11,9 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "samples lint",
-    "pretest": "npm run lint",
-    "test": "node app.js & ava -T 30s test/*.js; killall node",
+    "lint": "eslint .",
+    "fix": "eslint --fix .",
+    "test": "repo-tools test app & mocha */*.test.js --timeout=30000 --exit",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
@@ -23,6 +23,11 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.2.0",
+    "eslint": "^5.4.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "mocha": "^6.0.0",
     "puppeteer": "^1.11.0"
   },
   "cloud-repo-tools": {

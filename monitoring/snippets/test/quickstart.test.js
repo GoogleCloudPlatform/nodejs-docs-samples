@@ -16,8 +16,10 @@
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
 const retry = require('p-retry');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('quickstart', () => {
   it('should run the quickstart', async () => {
@@ -26,8 +28,8 @@ describe('quickstart', () => {
     // https://github.com/googleapis/nodejs-monitoring/issues/191
     await retry(
       async () => {
-        const result = await execa.shell('node quickstart');
-        assert.match(result.stdout, /Done writing time series data/);
+        const result = execSync('node quickstart');
+        assert.match(result, /Done writing time series data/);
       },
       {
         retries: 10,

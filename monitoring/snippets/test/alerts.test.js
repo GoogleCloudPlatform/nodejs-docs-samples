@@ -17,16 +17,17 @@
 
 const monitoring = require('@google-cloud/monitoring');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
 const uuid = require('uuid');
 const path = require('path');
 const fs = require('fs');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new monitoring.AlertPolicyServiceClient();
 const channelClient = new monitoring.NotificationChannelServiceClient();
 const projectId = process.env.GCLOUD_PROJECT;
 const cmd = 'node alerts';
-const exec = async cmd => (await execa.shell(cmd)).stdout;
 
 let policyOneName, policyTwoName, channelName;
 const testPrefix = `gcloud-test-${uuid.v4().split('-')[0]}`;
@@ -161,48 +162,48 @@ describe('alerts', () => {
     await deleteChannels();
   });
 
-  it('should replace notification channels', async () => {
-    const stdout = await exec(`${cmd} replace ${policyOneName} ${channelName}`);
-    assert.match(stdout, /Updated projects/);
-    assert.match(stdout, new RegExp(policyOneName));
+  it('should replace notification channels', () => {
+    const stdout = execSync(`${cmd} replace ${policyOneName} ${channelName}`);
+    assert.include(stdout, 'Updated projects');
+    assert.include(stdout, policyOneName);
   });
 
-  it('should disable policies', async () => {
-    const stdout = await exec(
+  it('should disable policies', () => {
+    const stdout = execSync(
       `${cmd} disable ${projectId} 'display_name.size < 28'`
     );
-    assert.match(stdout, /Disabled projects/);
-    assert.notMatch(stdout, new RegExp(policyOneName));
-    assert.match(stdout, new RegExp(policyTwoName));
+    assert.include(stdout, 'Disabled projects');
+    assert.notInclude(stdout, policyOneName);
+    assert.include(stdout, policyTwoName);
   });
 
-  it('should enable policies', async () => {
-    const stdout = await exec(
+  it('should enable policies', () => {
+    const stdout = execSync(
       `${cmd} enable ${projectId} 'display_name.size < 28'`
     );
-    assert.match(stdout, /Enabled projects/);
-    assert.notMatch(stdout, new RegExp(policyOneName));
-    assert.match(stdout, new RegExp(policyTwoName));
+    assert.include(stdout, 'Enabled projects');
+    assert.notInclude(stdout, policyOneName);
+    assert.include(stdout, policyTwoName);
   });
 
-  it('should list policies', async () => {
-    const stdout = await exec(`${cmd} list ${projectId}`);
-    assert.match(stdout, /Policies:/);
-    assert.match(stdout, /first-policy/);
-    assert.match(stdout, /Test/);
-    assert.match(stdout, /second/);
+  it('should list policies', () => {
+    const stdout = execSync(`${cmd} list ${projectId}`);
+    assert.include(stdout, 'Policies:');
+    assert.include(stdout, 'first-policy');
+    assert.include(stdout, 'Test');
+    assert.include(stdout, 'second');
   });
 
   it('should backup all policies', async () => {
-    const output = await exec(`${cmd} backup ${projectId}`);
-    assert.match(output, /Saved policies to .\/policies_backup.json/);
+    const output = execSync(`${cmd} backup ${projectId}`);
+    assert.include(output, 'Saved policies to ./policies_backup.json');
     assert.ok(fs.existsSync(path.join(__dirname, '../policies_backup.json')));
     await client.deleteAlertPolicy({name: policyOneName});
   });
 
-  it('should restore policies', async () => {
-    const output = await exec(`${cmd} restore ${projectId}`);
-    assert.match(output, /Loading policies from .\/policies_backup.json/);
+  it('should restore policies', () => {
+    const output = execSync(`${cmd} restore ${projectId}`);
+    assert.include(output, 'Loading policies from ./policies_backup.json');
     const matches = output.match(
       /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi
     );

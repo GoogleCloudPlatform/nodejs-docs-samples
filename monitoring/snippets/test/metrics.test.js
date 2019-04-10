@@ -17,10 +17,11 @@
 
 const monitoring = require('@google-cloud/monitoring');
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
 const retry = require('p-retry');
 
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
 const client = new monitoring.MetricServiceClient();
 const cmd = `node metrics.js`;
 const customMetricId = `custom.googleapis.com/stores/daily_sales`;
@@ -30,10 +31,10 @@ const projectId = process.env.GCLOUD_PROJECT;
 const resourceId = `cloudsql_database`;
 
 describe('metrics', () => {
-  it('should create a metric descriptors', async () => {
-    const output = await exec(`${cmd} create`);
-    assert.match(output, /Created custom Metric/);
-    assert.match(output, new RegExp(`Type: ${customMetricId}`));
+  it('should create a metric descriptors', () => {
+    const output = execSync(`${cmd} create`);
+    assert.include(output, 'Created custom Metric');
+    assert.include(output, `Type: ${customMetricId}`);
   });
 
   it('should list metric descriptors, including the new custom one', async () => {
@@ -42,9 +43,9 @@ describe('metrics', () => {
     // https://github.com/googleapis/nodejs-monitoring/issues/190
     await retry(
       async () => {
-        const output = await exec(`${cmd} list`);
-        assert.match(output, new RegExp(customMetricId));
-        assert.match(output, new RegExp(computeMetricId));
+        const output = execSync(`${cmd} list`);
+        assert.include(output, customMetricId);
+        assert.include(output, computeMetricId);
       },
       {
         retries: 10,
@@ -53,34 +54,32 @@ describe('metrics', () => {
     );
   });
 
-  it('should get a metric descriptor', async () => {
-    const output = await exec(`${cmd} get ${customMetricId}`);
-    assert.match(output, new RegExp(`Type: ${customMetricId}`));
+  it('should get a metric descriptor', () => {
+    const output = execSync(`${cmd} get ${customMetricId}`);
+    assert.include(output, `Type: ${customMetricId}`);
   });
 
-  it('should write time series data', async () => {
-    const output = await exec(`${cmd} write`);
-    assert.match(output, /Done writing time series data./);
+  it('should write time series data', () => {
+    const output = execSync(`${cmd} write`);
+    assert.include(output, 'Done writing time series data.');
   });
 
-  it('should delete a metric descriptor', async () => {
-    const output = await exec(`${cmd} delete ${customMetricId}`);
-    assert.match(output, new RegExp(`Deleted ${customMetricId}`));
+  it('should delete a metric descriptor', () => {
+    const output = execSync(`${cmd} delete ${customMetricId}`);
+    assert.include(output, `Deleted ${customMetricId}`);
   });
 
-  it('should list monitored resource descriptors', async () => {
-    const output = await exec(`${cmd} list-resources`);
-    assert.match(
+  it('should list monitored resource descriptors', () => {
+    const output = execSync(`${cmd} list-resources`);
+    assert.include(
       output,
-      new RegExp(
-        `projects/${projectId}/monitoredResourceDescriptors/${resourceId}`
-      )
+      `projects/${projectId}/monitoredResourceDescriptors/${resourceId}`
     );
   });
 
-  it('should get a monitored resource descriptor', async () => {
-    const output = await exec(`${cmd} get-resource ${resourceId}`);
-    assert.match(output, new RegExp(`Type: ${resourceId}`));
+  it('should get a monitored resource descriptor', () => {
+    const output = execSync(`${cmd} get-resource ${resourceId}`);
+    assert.include(output, `Type: ${resourceId}`);
   });
 
   it('should read time series data', async () => {
@@ -97,12 +96,12 @@ describe('metrics', () => {
         },
       },
     });
-    const output = await exec(`${cmd} read '${filter}'`);
+    const output = execSync(`${cmd} read '${filter}'`);
     //t.true(true); // Do not fail if there is simply no data to return.
     timeSeries.forEach(data => {
-      assert.match(output, new RegExp(`${data.metric.labels.instance_name}:`));
+      assert.include(output, `${data.metric.labels.instance_name}:`);
       data.points.forEach(point => {
-        assert.match(output, new RegExp(JSON.stringify(point.value)));
+        assert.include(output, JSON.stringify(point.value));
       });
     });
   });
@@ -124,10 +123,10 @@ describe('metrics', () => {
       // the metrics that match the filter
       view: `HEADERS`,
     });
-    const output = await exec(`${cmd} read-fields`);
-    assert.match(output, /Found data points for the following instances/);
+    const output = execSync(`${cmd} read-fields`);
+    assert.include(output, 'Found data points for the following instances');
     timeSeries.forEach(data => {
-      assert.match(output, new RegExp(data.metric.labels.instance_name));
+      assert.include(output, data.metric.labels.instance_name);
     });
   });
 
@@ -152,12 +151,12 @@ describe('metrics', () => {
         perSeriesAligner: `ALIGN_MEAN`,
       },
     });
-    const output = await exec(`${cmd} read-aggregate`);
-    assert.match(output, /CPU utilization:/);
+    const output = execSync(`${cmd} read-aggregate`);
+    assert.include(output, 'CPU utilization:');
     timeSeries.forEach(data => {
-      assert.match(output, new RegExp(data.metric.labels.instance_name));
-      assert.match(output, / Now: 0./);
-      assert.match(output, / 10 min ago: 0./);
+      assert.include(output, data.metric.labels.instance_name);
+      assert.include(output, ' Now: 0.');
+      assert.include(output, ' 10 min ago: 0.');
     });
   });
 
@@ -183,14 +182,15 @@ describe('metrics', () => {
         perSeriesAligner: `ALIGN_MEAN`,
       },
     });
-    const output = await exec(`${cmd} read-reduce`);
+    const output = execSync(`${cmd} read-reduce`);
     // Special case: No output.
-    if (output === 'No data') {
-      assert.match(output, /No data/);
-    } else {
-      assert.match(output, /Average CPU utilization across all GCE instances:/);
-      assert.match(output, / {2}Last 10 min/);
-      assert.match(output, / {2}10-20 min ago/);
+    if (output.indexOf('No data') < 0) {
+      assert.include(
+        output,
+        'Average CPU utilization across all GCE instances:'
+      );
+      assert.include(output, 'Last 10 min');
+      assert.include(output, '10-20 min ago');
     }
   });
 });

@@ -16,35 +16,42 @@
 'use strict';
 
 /**
- * Create a task for a given queue with an arbitrary payload.
+ * Create a task with an HTTP target for a given queue with an arbitrary payload.
  */
-async function createTask(project, location, queue, payload, inSeconds) {
-  // [START cloud_tasks_appengine_create_task]
-  // [START tasks_quickstart]
+async function createHttpTask(
+  project,
+  location,
+  queue,
+  url,
+  payload,
+  inSeconds
+) {
+  // [START cloud_tasks_create_http_task]
   // Imports the Google Cloud Tasks library.
-  const {CloudTasksClient} = require('@google-cloud/tasks');
+  const {v2beta3} = require('@google-cloud/tasks');
 
   // Instantiates a client.
-  const client = new CloudTasksClient();
+  const client = new v2beta3.CloudTasksClient();
 
   // TODO(developer): Uncomment these lines and replace with your values.
   // const project = 'my-project-id';
   // const queue = 'my-appengine-queue';
   // const location = 'us-central1';
+  // const url = 'https://<project-id>.appspot.com/log_payload'
   // const options = {payload: 'hello'};
 
   // Construct the fully qualified queue name.
   const parent = client.queuePath(project, location, queue);
 
   const task = {
-    appEngineHttpRequest: {
+    httpRequest: {
       httpMethod: 'POST',
-      relativeUri: '/log_payload',
+      url, //The full url path that the request will be sent to.
     },
   };
 
   if (payload) {
-    task.appEngineHttpRequest.body = Buffer.from(payload).toString('base64');
+    task.httpRequest.body = Buffer.from(payload).toString('base64');
   }
 
   if (inSeconds) {
@@ -65,8 +72,7 @@ async function createTask(project, location, queue, payload, inSeconds) {
   const name = response.name;
   console.log(`Created task ${name}`);
 
-  // [END cloud_tasks_appengine_create_task]
-  // [END tasks_quickstart]
+  // [END cloud_tasks_create_http_task]
 }
 
-createTask(...process.argv.slice(2)).catch(console.error);
+createHttpTask(...process.argv.slice(2)).catch(console.error);

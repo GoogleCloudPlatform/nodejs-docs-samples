@@ -16,19 +16,20 @@
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node metadata.js';
-const exec = async cmd => (await execa.shell(cmd)).stdout;
 
 describe('metadata', () => {
-  it('should list info types', async () => {
-    const output = await exec(`${cmd} infoTypes`);
+  it('should list info types', () => {
+    const output = execSync(`${cmd} infoTypes`);
     assert.match(output, /US_DRIVERS_LICENSE_NUMBER/);
   });
 
-  it('should filter listed info types', async () => {
-    const output = await exec(`${cmd} infoTypes "supported_by=RISK_ANALYSIS"`);
+  it('should filter listed info types', () => {
+    const output = execSync(`${cmd} infoTypes "supported_by=RISK_ANALYSIS"`);
     assert.notMatch(output, /US_DRIVERS_LICENSE_NUMBER/);
   });
 });

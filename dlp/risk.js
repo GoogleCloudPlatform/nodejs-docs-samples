@@ -792,6 +792,7 @@ const cli = require(`yargs`) // eslint-disable-line
         console.error(
           'Number of infoTypes and number of quasi-identifiers must be equal!'
         );
+        process.exitCode = 1;
       } else {
         return kMapEstimationAnalysis(
           opts.callingProjectId,

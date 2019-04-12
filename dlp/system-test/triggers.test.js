@@ -16,8 +16,10 @@
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
+const cp = require('child_process');
 const uuid = require('uuid');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('triggers', () => {
   const projectId = process.env.GCLOUD_PROJECT;
@@ -30,47 +32,40 @@ describe('triggers', () => {
   const minLikelihood = 'VERY_LIKELY';
   const maxFindings = 5;
   const bucketName = process.env.BUCKET_NAME;
-  const exec = async cmd => (await execa.shell(cmd)).stdout;
 
-  it('should create a trigger', async () => {
-    const output = await exec(
+  it('should create a trigger', () => {
+    const output = execSync(
       `${cmd} create ${bucketName} 1 -n ${triggerName} --autoPopulateTimespan \
       -m ${minLikelihood} -t ${infoType} -f ${maxFindings} -d "${triggerDisplayName}" -s "${triggerDescription}"`
     );
-    assert.match(
-      output,
-      new RegExp(`Successfully created trigger ${fullTriggerName}`)
-    );
+    assert.include(output, `Successfully created trigger ${fullTriggerName}`);
   });
 
-  it('should list triggers', async () => {
-    const output = await exec(`${cmd} list`);
-    assert.match(output, new RegExp(`Trigger ${fullTriggerName}`), true);
-    assert.match(output, new RegExp(`Display Name: ${triggerDisplayName}`));
-    assert.match(output, new RegExp(`Description: ${triggerDescription}`));
+  it('should list triggers', () => {
+    const output = execSync(`${cmd} list`);
+    assert.include(output, `Trigger ${fullTriggerName}`);
+    assert.include(output, `Display Name: ${triggerDisplayName}`);
+    assert.include(output, `Description: ${triggerDescription}`);
     assert.match(output, /Created: \d{1,2}\/\d{1,2}\/\d{4}/);
     assert.match(output, /Updated: \d{1,2}\/\d{1,2}\/\d{4}/);
     assert.match(output, /Status: HEALTHY/);
     assert.match(output, /Error count: 0/);
   });
 
-  it('should delete a trigger', async () => {
-    const output = await exec(`${cmd} delete ${fullTriggerName}`);
-    assert.match(
-      output,
-      new RegExp(`Successfully deleted trigger ${fullTriggerName}.`)
-    );
+  it('should delete a trigger', () => {
+    const output = execSync(`${cmd} delete ${fullTriggerName}`);
+    assert.include(output, `Successfully deleted trigger ${fullTriggerName}.`);
   });
 
-  it('should handle trigger creation errors', async () => {
-    const output = await exec(
+  it('should handle trigger creation errors', () => {
+    const output = execSync(
       `${cmd} create ${bucketName} 1 -n "@@@@@" -m ${minLikelihood} -t ${infoType} -f ${maxFindings}`
     );
     assert.match(output, /Error in createTrigger/);
   });
 
-  it('should handle trigger deletion errors', async () => {
-    const output = await exec(`${cmd} delete bad-trigger-path`);
+  it('should handle trigger deletion errors', () => {
+    const output = execSync(`${cmd} delete bad-trigger-path`);
     assert.match(output, /Error in deleteTrigger/);
   });
 });

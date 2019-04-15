@@ -253,8 +253,6 @@ exports.corsEnabledFunction = (req, res) => {
     res.set('Access-Control-Max-Age', '3600');
     res.status(204).send('');
   } else {
-    // Set CORS headers for the main request
-    res.set('Access-Control-Allow-Origin', '*');
     res.send('Hello World!');
   }
 };

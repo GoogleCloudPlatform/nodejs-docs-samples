@@ -17,7 +17,7 @@
 
 const childProcess = require('child_process');
 const path = require('path');
-const test = require('ava');
+const assert = require('assert');
 const fs = require(`fs`);
 const jwt = require('jsonwebtoken');
 const tools = require('@google-cloud/nodejs-repo-tools');
@@ -35,23 +35,23 @@ const SERVICE_NAME = process.env.ENDPOINTS_SERVICE_NAME;
 const GCE_HOST = process.env.ENDPOINTS_GCE_HOST;
 const GKE_HOST = process.env.ENDPOINTS_GKE_HOST;
 
-test.before(t => {
-  t.truthy(API_KEY, 'Must set ENDPOINTS_API_KEY environment variable!');
-  t.truthy(GCE_HOST, 'Must set ENDPOINTS_GCE_HOST environment variable!');
-  t.truthy(GKE_HOST, 'Must set ENDPOINTS_GKE_HOST environment variable!');
-  t.truthy(
+before(() => {
+  assert.ok(API_KEY, 'Must set ENDPOINTS_API_KEY environment variable!');
+  assert.ok(GCE_HOST, 'Must set ENDPOINTS_GCE_HOST environment variable!');
+  assert.ok(GKE_HOST, 'Must set ENDPOINTS_GKE_HOST environment variable!');
+  assert.ok(
     SERVICE_NAME,
     'Must set ENDPOINTS_SERVICE_NAME environment variable!'
   );
-  t.truthy(
+  assert.ok(
     GOOGLE_KEYFILE,
     'GOOGLE_APPLICATION_CREDENTIALS environment variable must point to a service account keyfile!'
   );
-  t.truthy(
+  assert.ok(
     GOOGLE_KEYFILE.client_email,
     'Service account keyfile must contain a "client_email" field!'
   );
-  t.truthy(
+  assert.ok(
     GOOGLE_KEYFILE.private_key,
     'Service account keyfile must contain a "private_key" field!'
   );
@@ -76,75 +76,74 @@ const delay = mSec => {
 };
 
 // API key
-test(`should request a greeting from a remote Compute Engine instance using an API key`, async t => {
+it(`should request a greeting from a remote Compute Engine instance using an API key`, async () => {
   const output = await tools.runAsync(
     `${clientCmd} -h ${GCE_HOST} -k ${API_KEY}`,
     cwd
   );
-  t.regex(output, /Hello world/);
+  assert.ok(new RegExp('Hello world').test(output));
 });
 
-test(`should request a greeting from a remote Container Engine cluster using an API key`, async t => {
+it(`should request a greeting from a remote Container Engine cluster using an API key`, async () => {
   const output = await tools.runAsync(
     `${clientCmd} -h ${GKE_HOST} -k ${API_KEY}`,
     cwd
   );
-  t.regex(output, /Hello world/);
+  assert.ok(new RegExp('Hello world').test(output));
 });
 
-test.serial(
-  `should request and handle a greeting locally using an API key`,
-  async t => {
-    const PORT = 50051;
-    const server = childProcess.exec(`${serverCmd} -p ${PORT}`, {cwd: cwd});
+it('should request and handle a greeting locally using an API key', async () => {
+  const PORT = 50051;
+  const server = childProcess.exec(`${serverCmd} -p ${PORT}`, {cwd: cwd});
 
-    await delay(1000);
-    const clientOutput = await tools.runAsync(
-      `${clientCmd} -h localhost:${PORT} -k ${API_KEY}`,
-      cwd
-    );
-    t.regex(clientOutput, /Hello world/);
-    server.kill();
-  }
-);
+  await delay(1000);
+  const clientOutput = await tools.runAsync(
+    `${clientCmd} -h localhost:${PORT} -k ${API_KEY}`,
+    cwd
+  );
+  assert.ok(new RegExp('Hello world').test(clientOutput));
+  server.kill();
+});
 
 // Authtoken
-test(`should request a greeting from a remote Compute Engine instance using a JWT Auth Token`, async t => {
+it(`should request a greeting from a remote Compute Engine instance using a JWT Auth Token`, async () => {
   const output = await tools.runAsync(
     `${clientCmd} -h ${GCE_HOST} -j ${JWT_AUTH_TOKEN}`,
     cwd
   );
-  t.regex(output, /Hello world/);
+  assert.ok(new RegExp('Hello world').test(output));
 });
 
-test(`should request a greeting from a remote Container Engine cluster using a JWT Auth Token`, async t => {
+it(`should request a greeting from a remote Container Engine cluster using a JWT Auth Token`, async () => {
   const output = await tools.runAsync(
     `${clientCmd} -h ${GKE_HOST} -j ${JWT_AUTH_TOKEN}`,
     cwd
   );
-  t.regex(output, /Hello world/);
+  assert.ok(new RegExp('Hello world').test(output));
 });
 
-test.serial(
-  `should request and handle a greeting locally using a JWT Auth Token`,
-  async t => {
-    const PORT = 50051;
-    const server = childProcess.exec(`${serverCmd} -p ${PORT}`, {cwd: cwd});
+it(`should request and handle a greeting locally using a JWT Auth Token`, async () => {
+  const PORT = 50051;
+  const server = childProcess.exec(`${serverCmd} -p ${PORT}`, {cwd: cwd});
 
-    await delay(1000);
-    const clientOutput = await tools.runAsync(
-      `${clientCmd} -h localhost:${PORT} -j ${JWT_AUTH_TOKEN}`,
-      cwd
-    );
-    t.regex(clientOutput, /Hello world/);
-    server.kill();
-  }
-);
+  await delay(1000);
+  const clientOutput = await tools.runAsync(
+    `${clientCmd} -h localhost:${PORT} -j ${JWT_AUTH_TOKEN}`,
+    cwd
+  );
+  assert.ok(new RegExp('Hello world').test(clientOutput));
+  server.kill();
+});
 
 // Misc
-test('should require either an API key or a JWT Auth Token', async t => {
-  await t.throws(
-    tools.runAsync(`${clientCmd} -h ${GCE_HOST}`, cwd),
-    /One of API_KEY or JWT_AUTH_TOKEN must be set/
+it('should require either an API key or a JWT Auth Token', done => {
+  tools.runAsync(`${clientCmd} -h ${GCE_HOST}`, cwd).then(
+    () => {},
+    error => {
+      assert.ok(
+        error.message.includes('One of API_KEY or JWT_AUTH_TOKEN must be set')
+      );
+      done();
+    }
   );
 });

@@ -14,16 +14,16 @@
  */
 
 // [START functions_storage_unit_test]
-const test = require(`ava`);
-const uuid = require(`uuid`);
-const sinon = require(`sinon`);
+const assert = require('assert');
+const uuid = require('uuid');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
-const helloGCS = require(`..`).helloGCS;
-const consoleLog = sinon.stub(console, 'log');
+const helloGCS = require('..').helloGCS;
 
-test.cb(`helloGCS: should print uploaded message`, t => {
-  t.plan(1);
+beforeEach(utils.stubConsole);
+afterEach(utils.restoreConsole);
 
+it('helloGCS: should print uploaded message', done => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -36,14 +36,12 @@ test.cb(`helloGCS: should print uploaded message`, t => {
 
   // Call tested function and verify its behavior
   helloGCS(event, () => {
-    t.true(consoleLog.calledWith(`File ${filename} uploaded.`));
-    t.end();
+    assert.ok(console.log.calledWith(`File ${filename} uploaded.`));
+    done();
   });
 });
 
-test.cb(`helloGCS: should print metadata updated message`, t => {
-  t.plan(1);
-
+it('helloGCS: should print metadata updated message', done => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -56,14 +54,12 @@ test.cb(`helloGCS: should print metadata updated message`, t => {
 
   // Call tested function and verify its behavior
   helloGCS(event, () => {
-    t.true(consoleLog.calledWith(`File ${filename} metadata updated.`));
-    t.end();
+    assert.ok(console.log.calledWith(`File ${filename} metadata updated.`));
+    done();
   });
 });
 
-test.cb(`helloGCS: should print deleted message`, t => {
-  t.plan(1);
-
+it('helloGCS: should print deleted message', done => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
@@ -76,8 +72,8 @@ test.cb(`helloGCS: should print deleted message`, t => {
 
   // Call tested function and verify its behavior
   helloGCS(event, () => {
-    t.true(consoleLog.calledWith(`File ${filename} deleted.`));
-    t.end();
+    assert.ok(console.log.calledWith(`File ${filename} deleted.`));
+    done();
   });
 });
 // [END functions_storage_unit_test]

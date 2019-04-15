@@ -15,19 +15,19 @@
 
 'use strict';
 
-const express = require(`express`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noCallThru();
-const request = require(`supertest`);
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const express = require('express');
+const path = require('path');
+const proxyquire = require('proxyquire').noCallThru();
+const request = require('supertest');
+const sinon = require('sinon');
+const assert = require('assert');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const SAMPLE_PATH = path.join(__dirname, `../server.js`);
+const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
 function getSample() {
   const testApp = express();
-  sinon.stub(testApp, `listen`).yields();
+  sinon.stub(testApp, 'listen').yields();
   const expressMock = sinon.stub().returns(testApp);
   const timestamp = new Date();
   const resultsMock = [
@@ -75,15 +75,15 @@ function getSample() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test(`should set up sample in Postgres`, t => {
+it('should set up sample in Postgres', () => {
   const sample = getSample();
 
-  t.true(sample.mocks.express.calledOnce);
-  t.true(sample.mocks.Knex.calledOnce);
-  t.deepEqual(sample.mocks.Knex.firstCall.args, [
+  assert.ok(sample.mocks.express.calledOnce);
+  assert.ok(sample.mocks.Knex.calledOnce);
+  assert.deepStrictEqual(sample.mocks.Knex.firstCall.args, [
     {
       client: 'pg',
       connection: {
@@ -95,30 +95,28 @@ test(`should set up sample in Postgres`, t => {
   ]);
 });
 
-test.cb(`should display the default page`, t => {
+it('should display the default page', async () => {
   const sample = getSample();
-  const expectedResult = `Tabs VS Spaces`;
+  const expectedResult = 'Tabs VS Spaces';
 
-  request(sample.app)
-    .get(`/`)
+  await request(sample.app)
+    .get('/')
     .expect(200)
     .expect(response => {
-      t.is(response.text, expectedResult);
-    })
-    .end(t.end);
+      assert.strictEqual(response.text, expectedResult);
+    });
 });
 
-test.cb(`should handle insert error`, t => {
+it('should handle insert error', async () => {
   const sample = getSample();
   const expectedResult = 'Invalid team specified';
 
   sample.mocks.knex.limit.returns(Promise.reject());
 
-  request(sample.app)
-    .post(`/`)
+  await request(sample.app)
+    .post('/')
     .expect(400)
     .expect(response => {
-      t.is(response.text.includes(expectedResult), true);
-    })
-    .end(t.end);
+      assert.ok(response.text.includes(expectedResult));
+    });
 });

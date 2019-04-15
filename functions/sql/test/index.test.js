@@ -16,7 +16,7 @@
 'use strict';
 
 const sinon = require(`sinon`);
-const test = require(`ava`);
+const assert = require(`assert`);
 const proxyquire = require(`proxyquire`);
 
 const INSTANCE_PREFIX = `nodejs-docs-samples:us-central1:integration-tests-instance`;
@@ -29,7 +29,7 @@ const getProgram = env => {
   });
 };
 
-test(`should query MySQL`, async t => {
+it('should query MySQL', async () => {
   const program = getProgram({
     INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-mysql`,
     SQL_USER: process.env.MYSQL_USER,
@@ -49,14 +49,14 @@ test(`should query MySQL`, async t => {
     setTimeout(resolve, 1500);
   });
 
-  t.false(resMock.status.called);
-  t.true(resMock.send.calledOnce);
+  assert.strictEqual(resMock.status.called, false);
+  assert.ok(resMock.send.calledOnce);
 
   const response = resMock.send.firstCall.args[0];
-  t.regex(response, /\d{4}-\d{1,2}-\d{1,2}/);
+  assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
 });
 
-test(`should query Postgres`, async t => {
+it('should query Postgres', async () => {
   const program = getProgram({
     INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-pg`,
     SQL_USER: process.env.POSTGRES_USER,
@@ -76,9 +76,9 @@ test(`should query Postgres`, async t => {
     setTimeout(resolve, 1500);
   });
 
-  t.false(resMock.status.called);
-  t.true(resMock.send.calledOnce);
+  assert.strictEqual(resMock.status.called, false);
+  assert.ok(resMock.send.calledOnce);
 
   const response = resMock.send.firstCall.args[0];
-  t.regex(response, /\d{4}-\d{1,2}-\d{1,2}/);
+  assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
 });

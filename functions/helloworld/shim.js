@@ -73,9 +73,9 @@ const pubsubShim = (gcfFn, topicName, subscriptionName) => {
 const storageShim = (gcfFn, bucketName, topicName, subscriptionName) => {
   // [START functions_testing_shim_storage]
   // Import dependencies
-  const Pubsub = require('@google-cloud/pubsub');
+  const {PubSub} = require('@google-cloud/pubsub');
   const {Storage} = require(`@google-cloud/storage`);
-  const pubsub = Pubsub();
+  const pubsub = new PubSub();
   const storage = new Storage();
 
   // TODO(developer): specify a function to test

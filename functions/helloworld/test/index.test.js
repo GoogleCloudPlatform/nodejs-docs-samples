@@ -111,8 +111,7 @@ it('helloPubSub: should print a name', async () => {
 
   // Publish to pub/sub topic
   const topic = pubsub.topic(topicName);
-  const publisher = topic.publisher();
-  await publisher.publish(Buffer.from(name));
+  await topic.publish(Buffer.from(name));
 
   // Check logs
   await tools.tryTest(async assert => {
@@ -128,8 +127,7 @@ it('helloPubSub: should print hello world', async () => {
 
   // Publish to pub/sub topic
   const topic = pubsub.topic(topicName);
-  const publisher = topic.publisher();
-  await publisher.publish(Buffer.from(''), {a: 'b'});
+  await topic.publish(Buffer.from(''), {a: 'b'});
 
   // Check logs
   await tools.tryTest(async assert => {
@@ -216,8 +214,7 @@ it('helloError: should throw an error', async () => {
 
   // Publish to pub/sub topic
   const topic = pubsub.topic(topicName);
-  const publisher = topic.publisher();
-  await publisher.publish(Buffer.from(''), {a: 'b'});
+  await topic.publish(Buffer.from(''), {a: 'b'});
 
   // Check logs
   await tools.tryTest(async assert => {
@@ -233,8 +230,7 @@ it('helloError2: should throw a value', async () => {
 
   // Publish to pub/sub topic
   const topic = pubsub.topic(topicName);
-  const publisher = topic.publisher();
-  await publisher.publish(Buffer.from(''), {a: 'b'});
+  await topic.publish(Buffer.from(''), {a: 'b'});
 
   // Check logs
   await tools.tryTest(async assert => {
@@ -250,8 +246,7 @@ it('helloError3: callback should return an errback value', async () => {
 
   // Publish to pub/sub topic
   const topic = pubsub.topic(topicName);
-  const publisher = topic.publisher();
-  await publisher.publish(Buffer.from(''), {a: 'b'});
+  await topic.publish(Buffer.from(''), {a: 'b'});
 
   // Check logs
   await tools.tryTest(async assert => {

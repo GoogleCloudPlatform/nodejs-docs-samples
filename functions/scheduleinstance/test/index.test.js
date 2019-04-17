@@ -99,7 +99,7 @@ it(`startInstancePubSub: should fail with missing 'zone' attribute`, () => {
   );
 });
 
-it(`startInstancePubSub: should fail with missing 'instance' attribute`, () => {
+it(`startInstancePubSub: should fail with missing 'label' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone'};
@@ -110,22 +110,7 @@ it(`startInstancePubSub: should fail with missing 'instance' attribute`, () => {
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
-    new Error(`Attribute 'instance' or 'label' must be specified in payload`)
-  );
-});
-
-it(`startInstancePubSub: should fail when both 'instance' and 'label' attributes specified`, () => {
-  const mocks = getMocks();
-  const sample = getSample();
-  const pubsubData = {zone: 'test-zone', instance: 'test-instance', label: 'test-label'};
-  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
-  );
-  sample.program.startInstancePubSub(mocks.event, mocks.callback);
-
-  assert.deepStrictEqual(
-    mocks.callback.firstCall.args[0],
-    new Error(`Only one of attributes 'instance' and 'label' can be specified in payload`)
+    new Error(`Attribute 'label' missing from payload`)
   );
 });
 
@@ -189,7 +174,7 @@ it(`stopInstancePubSub: should fail with missing 'zone' attribute`, () => {
   );
 });
 
-it(`stopInstancePubSub: should fail with missing 'instance' attribute`, () => {
+it(`stopInstancePubSub: should fail with missing 'label' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone'};
@@ -200,22 +185,7 @@ it(`stopInstancePubSub: should fail with missing 'instance' attribute`, () => {
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
-    new Error(`Attribute 'instance' or 'label' must be specified in payload`)
-  );
-});
-
-it(`stopInstancePubSub: should fail when both 'instance' and 'label' attributes specified`, () => {
-  const mocks = getMocks();
-  const sample = getSample();
-  const pubsubData = {zone: 'test-zone', instance: 'test-instance', label: 'test-label'};
-  mocks.event.data.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
-  );
-  sample.program.stopInstancePubSub(mocks.event, mocks.callback);
-
-  assert.deepStrictEqual(
-    mocks.callback.firstCall.args[0],
-    new Error(`Only one of attributes 'instance' and 'label' can be specified in payload`)
+    new Error(`Attribute 'label' missing from payload`)
   );
 });
 

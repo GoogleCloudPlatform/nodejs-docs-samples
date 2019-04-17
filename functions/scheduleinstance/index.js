@@ -26,10 +26,7 @@ const compute = new Compute();
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
  *  zone - the GCP zone the instances are located in.
- *  instance - the name of a single instance.
  *  label - the label of instances to start.
- *
- * Exactly one of instance or label must be specified.
  *
  * @param {!object} event Cloud Function PubSub message event.
  * @param {!object} callback Cloud Function PubSub callback indicating completion.
@@ -40,13 +37,8 @@ exports.startInstancePubSub = (event, callback) => {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );
-    if(payload.instance) {
-      var filter = 'name eq ' + payload.instance
-    } else if(payload.label) {
-      var filter = 'labels.' + payload.label
-    }
     var options = {
-      filter: filter
+      filter: 'labels.' + payload.label
     }
     compute.getVMs(options).then(function(vms) {
       vms[0].forEach(function(instance) {
@@ -101,13 +93,8 @@ exports.stopInstancePubSub = (event, callback) => {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );
-    if(payload.instance) {
-      var filter = 'name eq ' + payload.instance
-    } else if(payload.label) {
-      var filter = 'labels.' + payload.label
-    }
     var options = {
-      filter: filter
+      filter: 'labels.' + payload.label
     }
     compute.getVMs(options).then(function(vms) {
       vms[0].forEach(function(instance) {
@@ -150,10 +137,8 @@ exports.stopInstancePubSub = (event, callback) => {
 function _validatePayload(payload) {
   if (!payload.zone) {
     throw new Error(`Attribute 'zone' missing from payload`);
-  } else if (!payload.instance && !payload.label) {
-    throw new Error(`Attribute 'instance' or 'label' must be specified in payload`);
-  } else if (payload.instance && payload.label) {
-    throw new Error(`Only one of attributes 'instance' and 'label' can be specified in payload`);
+  } else if (!payload.label) {
+    throw new Error(`Attribute 'label' missing from payload`);
   }
   return payload;
 }

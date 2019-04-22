@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.2.0",
-    "@google-cloud/pubsub": "^0.22.2",
+    "@google-cloud/pubsub": "^0.28.0",
     "mocha": "^6.0.0",
     "uuid": "^3.3.2"
   }

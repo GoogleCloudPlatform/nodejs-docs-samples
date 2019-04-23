@@ -23,7 +23,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const PROJECT_ID = process.env.GCLOUD_PROJECT;
 const queueName = `gcloud-${uuid.v4().split('-')[0]}`;
 const URL = `https://${PROJECT_ID}.appspot.com/log_payload`;
-const SERVICE_ACCOUNT = process.env.CLOUD_RUN_INVOKER_SERVICE_ACCOUNT;
+const SERVICE_ACCOUNT =
+  'test-run-invoker@long-door-651.iam.gserviceaccount.com';
 
 describe('Cloud Task Sample Tests', () => {
   it('should create a queue', () => {

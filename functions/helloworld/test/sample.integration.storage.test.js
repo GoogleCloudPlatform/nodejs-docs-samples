@@ -14,69 +14,100 @@
  */
 
 // [START functions_storage_integration_test]
-const childProcess = require('child_process');
 const assert = require('assert');
+const delay = require('delay');
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
+const supertest = require('supertest');
 const uuid = require('uuid');
 
-it('helloGCS: should print uploaded message', done => {
-  const startTime = new Date(Date.now()).toISOString();
+const request = supertest(process.env.BASE_URL || 'http://localhost:8080');
+const cwd = path.join(__dirname, '..');
+
+it('helloGCS: should print uploaded message', async () => {
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '1',
-  });
+  const data = {
+    data: {
+      name: filename,
+      resourceState: 'exists',
+      metageneration: '1',
+    },
+  };
 
-  childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
+  const proc = execPromise(
+    `functions-framework --target=helloGCS --signature-type=event`,
+    {timeout: 800, shell: true, cwd: cwd}
+  );
 
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${filename} uploaded.`));
-  done();
+  await delay(600);
+
+  // Send HTTP request simulating GCS change notification
+  // (GCF translates GCS notifications to HTTP requests internally)
+  await request
+    .post('/')
+    .send(data)
+    .expect(204);
+
+  const {stdout} = await proc;
+  assert.ok(stdout.includes(`File ${filename} uploaded.`));
 });
 
-it('helloGCS: should print metadata updated message', done => {
-  const startTime = new Date(Date.now()).toISOString();
+it('helloGCS: should print metadata updated message', async () => {
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '2',
-  });
+  const data = {
+    data: {
+      name: filename,
+      resourceState: 'exists',
+      metageneration: '2',
+    },
+  };
 
-  childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
+  const proc = execPromise(
+    `functions-framework --target=helloGCS --signature-type=event`,
+    {timeout: 800, shell: true, cwd: cwd}
+  );
 
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${filename} metadata updated.`));
-  done();
+  await delay(600);
+
+  // Send HTTP request simulating GCS change notification
+  // (GCF translates GCS notifications to HTTP requests internally)
+  await request
+    .post('/')
+    .send(data)
+    .expect(204);
+
+  const {stdout} = await proc;
+  assert.ok(stdout.includes(`File ${filename} metadata updated.`));
 });
 
-it('helloGCS: should print deleted message', done => {
-  const startTime = new Date(Date.now()).toISOString();
+it('helloGCS: should print deleted message', async () => {
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'not_exists',
-    metageneration: '3',
-  });
+  const data = {
+    data: {
+      name: filename,
+      resourceState: 'not_exists',
+      metageneration: '3',
+    },
+  };
 
-  childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
+  const proc = execPromise(
+    `functions-framework --target=helloGCS --signature-type=event`,
+    {timeout: 800, shell: true, cwd: cwd}
+  );
 
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${filename} deleted.`));
+  await delay(600);
+
+  // Send HTTP request simulating GCS change notification
+  // (GCF translates GCS notifications to HTTP requests internally)
+  await request
+    .post('/')
+    .send(data)
+    .expect(204);
+
+  const {stdout} = await proc;
+  assert.ok(stdout.includes(`File ${filename} deleted.`));
 });
 // [END functions_storage_integration_test]

@@ -14,38 +14,58 @@
  */
 
 // [START functions_pubsub_integration_test]
-const childProcess = require('child_process');
 const assert = require('assert');
+const execPromise = require('child-process-promise').exec;
+const delay = require('delay');
+const path = require('path');
+const supertest = require('supertest');
 const uuid = require('uuid');
 
-it('helloPubSub: should print a name', done => {
-  const startTime = new Date(Date.now()).toISOString();
+const request = supertest(process.env.BASE_URL || 'http://localhost:8080');
+const cwd = path.join(__dirname, '..');
+
+it('helloPubSub: should print a name', async () => {
   const name = uuid.v4();
 
-  // Mock Pub/Sub call, as the emulator doesn't listen to Pub/Sub topics
   const encodedName = Buffer.from(name).toString('base64');
-  const data = JSON.stringify({data: encodedName});
-  childProcess.execSync(`functions call helloPubSub --data ${data}`);
+  const pubsubMessage = {data: {data: encodedName}};
 
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions logs read helloPubSub --start-time ${startTime}`)
-    .toString();
-  assert.strictEqual(logs.includes(`Hello, ${name}!`), true);
-  done();
-});
+  const proc = execPromise(
+    `functions-framework --target=helloPubSub --signature-type=event`,
+    {timeout: 800, shell: true, cwd: cwd}
+  );
 
-it('helloPubSub: should print hello world', done => {
-  const startTime = new Date(Date.now()).toISOString();
+  await delay(600);
 
-  // Mock Pub/Sub call, as the emulator doesn't listen to Pub/Sub topics
-  childProcess.execSync('functions call helloPubSub --data {}');
+  // Send HTTP request simulating Pub/Sub message
+  // (GCF translates Pub/Sub messages to HTTP requests internally)
+  await request
+    .post('/')
+    .send(pubsubMessage)
+    .expect(204);
 
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions logs read helloPubSub --start-time ${startTime}`)
-    .toString();
-  assert.strictEqual(logs.includes('Hello, World!'), true);
-  done();
-});
+  const {stdout} = await proc;
+  assert(stdout.includes(`Hello, ${name}!`));
+}).timeout(1000);
+
+it('helloPubSub: should print hello world', async () => {
+  const pubsubMessage = {};
+
+  const proc = execPromise(
+    `functions-framework --target=helloPubSub --signature-type=event`,
+    {timeout: 800, shell: true, cwd: cwd}
+  );
+
+  await delay(600);
+
+  // Send HTTP request simulating Pub/Sub message
+  // (GCF translates Pub/Sub messages to HTTP requests internally)
+  await request
+    .post('/')
+    .send({data: pubsubMessage})
+    .expect(204);
+
+  const {stdout} = await proc;
+  assert(stdout.includes('Hello, World!'));
+}).timeout(1000);
 // [END functions_pubsub_integration_test]

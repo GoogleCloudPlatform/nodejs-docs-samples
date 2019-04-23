@@ -81,18 +81,16 @@ exports.helloBackground = (event, callback) => {
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloPubSub = (event, callback) => {
-  const pubsubMessage = event.data;
-  const name = pubsubMessage.data
-    ? Buffer.from(pubsubMessage.data, 'base64').toString()
+exports.helloPubSub = (data, context) => {
+  const pubSubMessage = data;
+  const name = pubSubMessage.data
+    ? Buffer.from(pubSubMessage.data, 'base64').toString()
     : 'World';
 
   console.log(`Hello, ${name}!`);
-
-  callback();
 };
 // [END functions_helloworld_pubsub]
 
@@ -100,23 +98,20 @@ exports.helloPubSub = (event, callback) => {
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloGCS = (event, callback) => {
-  const file = event.data;
-
+exports.helloGCS = (data, context) => {
+  const file = data;
   if (file.resourceState === 'not_exists') {
     console.log(`File ${file.name} deleted.`);
   } else if (file.metageneration === '1') {
     // metageneration attribute is updated on metadata changes.
-    // value is 1 if file was newly created or overwritten
+    // on create value is 1
     console.log(`File ${file.name} uploaded.`);
   } else {
     console.log(`File ${file.name} metadata updated.`);
   }
-
-  callback();
 };
 // [END functions_helloworld_storage]
 

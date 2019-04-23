@@ -15,25 +15,48 @@
 
 // [START functions_http_integration_test]
 const assert = require('assert');
-const Supertest = require('supertest');
-const supertest = Supertest(process.env.BASE_URL);
+const delay = require('delay');
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
+const supertest = require('supertest');
+const uuid = require('uuid');
 
-it('helloHttp: should print a name', async () => {
-  await supertest
-    .post('/helloHttp')
-    .send({name: 'John'})
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello John!');
-    });
+const request = supertest(process.env.BASE_URL || 'http://localhost:8080');
+const cwd = path.join(__dirname, '..');
+
+let ffProc;
+
+before(async () => {
+  ffProc = execPromise(
+    `functions-framework --target=helloHttp --signature-type=http`,
+    {timeout: 1000, shell: true, cwd: cwd}
+  );
+
+  await delay(600);
 });
 
+after(async () => {
+  await ffProc;
+});
+
+it('helloHttp: should print a name', async () => {
+  const name = uuid.v4();
+
+  await request
+    .post('/helloHttp')
+    .send({name: name})
+    .expect(200)
+    .expect(response => {
+      assert.strictEqual(response.text, `Hello ${name}!`);
+    });
+}).timeout(1000);
+
 it('helloHttp: should print hello world', async () => {
-  await supertest
+  await request
     .get('/helloHttp')
     .expect(200)
     .expect(response => {
       assert.strictEqual(response.text, 'Hello World!');
     });
-});
+}).timeout(1000);
 // [END functions_http_integration_test]

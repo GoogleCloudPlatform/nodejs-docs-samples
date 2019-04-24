@@ -17,6 +17,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const {OAuth2Client} = require('google-auth-library');
 const path = require('path');
 const Buffer = require('safe-buffer').Buffer;
 const process = require('process'); // Required for mocking environment variables
@@ -29,6 +30,7 @@ const process = require('process'); // Required for mocking environment variable
 const {PubSub} = require('@google-cloud/pubsub');
 
 // Instantiate a pubsub client
+const authClient = new OAuth2Client();
 const pubsub = new PubSub();
 
 const app = express();
@@ -40,6 +42,8 @@ const jsonBodyParser = bodyParser.json();
 
 // List of all messages received by this instance
 const messages = [];
+const claims = [];
+const tokens = [];
 
 // The following environment variables are set by app.yaml when running on GAE,
 // but will need to be manually set when running locally.
@@ -50,7 +54,7 @@ const topic = pubsub.topic(TOPIC);
 
 // [START gae_flex_pubsub_index]
 app.get('/', (req, res) => {
-  res.render('index', {messages: messages});
+  res.render('index', {messages, tokens, claims});
 });
 
 app.post('/', formBodyParser, async (req, res, next) => {
@@ -70,9 +74,37 @@ app.post('/', formBodyParser, async (req, res, next) => {
 // [END gae_flex_pubsub_index]
 
 // [START gae_flex_pubsub_push]
-app.post('/pubsub/push', jsonBodyParser, (req, res) => {
+app.post('/pubsub/push', jsonBodyParser, async (req, res) => {
+  // Verify that the request originates from the application.
   if (req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
-    res.status(400).send();
+    res.status(400).send('Invalid request');
+    return;
+  }
+
+  // Verify that the push request originates from Cloud Pub/Sub.
+  try {
+    // Get the Cloud Pub/Sub-generated JWT in the "Authorization" header.
+    const bearer = req.header('Authorization');
+    const token = bearer.split(' ').pop();
+    tokens.push(token);
+
+    // Verify and decode the JWT.
+    const ticket = await authClient.verifyIdToken({
+      idToken: token,
+      audience: 'example.com',
+    });
+    const claim = ticket.getPayload();
+
+    // Must also verify the `iss` claim
+    const issuers = ['accounts.google.com', 'https://accounts.google.com'];
+
+    if (!issuers.includes(claim.iss)) {
+      throw new Error('Wrong issuer');
+    }
+
+    claims.push(claim);
+  } catch (e) {
+    res.status(400).send(`Invalid token: ${e.message}`);
     return;
   }
 

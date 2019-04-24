@@ -13,6 +13,11 @@
  * limitations under the License.
  */
 
+// sample-metadata:
+//   title: Create Job
+//   description: Create a job that posts to /log_payload on an App Engine service.
+//   usage: node createJob.js [project-id] [location-id] [app-engine-service-id]
+
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
  */
@@ -57,4 +62,7 @@ async function createJob(projectId, locationId, serviceId) {
 }
 
 const args = process.argv.slice(2);
-createJob(...args).catch(console.error);
+createJob(...args).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

@@ -13,6 +13,11 @@
  * limitations under the License.
  */
 
+// sample-metadata:
+//   title: Delete Job
+//   description: Delete a job by its ID.
+//   usage: node deleteJob.js [project-id] [location-id] [job-id]
+
 /**
  * Delete a job via the Cloud Scheduler API
  */
@@ -38,4 +43,7 @@ async function deleteJob(projectId, locationId, jobId) {
 }
 
 const args = process.argv.slice(2);
-deleteJob(...args).catch(console.error);
+deleteJob(...args).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

@@ -15,7 +15,7 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^2.0.0",
+    "@google-cloud/bigquery": "^3.0.0",
     "@google-cloud/storage": "^2.0.0",
     "safe-buffer": "^5.1.2",
     "sendgrid": "^5.2.3",

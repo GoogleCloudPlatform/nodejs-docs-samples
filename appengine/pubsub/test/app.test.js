@@ -76,6 +76,18 @@ it('should send a message to Pub/Sub', async () => {
 });
 
 it('should receive incoming Pub/Sub messages', async () => {
+  await requestObj
+    .post('/pubsub/push')
+    .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
+    .send({
+      message: {
+        data: payload,
+      },
+    })
+    .expect(200);
+});
+
+it('should verify incoming Pub/Sub push requests', async () => {
   sandbox
     .stub(OAuth2Client.prototype, 'getFederatedSignonCertsAsync')
     .resolves({
@@ -85,7 +97,7 @@ it('should receive incoming Pub/Sub messages', async () => {
     });
 
   await requestObj
-    .post('/pubsub/push')
+    .post('/pubsub/authenticated-push')
     .set('Authorization', `Bearer ${createFakeToken()}`)
     .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
     .send({

@@ -75,6 +75,24 @@ app.post('/', formBodyParser, async (req, res, next) => {
 
 // [START gae_flex_pubsub_push]
 app.post('/pubsub/push', jsonBodyParser, async (req, res) => {
+  if (req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
+    res.status(400).send();
+    return;
+  }
+
+  // The message is a unicode string encoded in base64.
+  const message = Buffer.from(req.body.message.data, 'base64').toString(
+    'utf-8'
+  );
+
+  messages.push(message);
+
+  res.status(200).send();
+});
+// [END gae_flex_pubsub_push]
+
+// [START gae_flex_pubsub_auth_push]
+app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
   // Verify that the request originates from the application.
   if (req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
     res.status(400).send('Invalid request');
@@ -97,7 +115,7 @@ app.post('/pubsub/push', jsonBodyParser, async (req, res) => {
     const claim = ticket.getPayload();
     claims.push(claim);
   } catch (e) {
-    res.status(400).send(`Invalid token: ${e.message}`);
+    res.status(400).send('Invalid token');
     return;
   }
 
@@ -110,7 +128,7 @@ app.post('/pubsub/push', jsonBodyParser, async (req, res) => {
 
   res.status(200).send();
 });
-// [END gae_flex_pubsub_push]
+// [END gae_flex_pubsub_auth_push]
 
 // Start the server
 const PORT = process.env.PORT || 8080;

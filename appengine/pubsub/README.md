@@ -11,7 +11,7 @@ Before you can run or deploy the sample, you will need to do the following:
 1. Enable the Cloud Pub/Sub API in the [Google Developers Console](https://console.developers.google.com/project/_/apiui/apiview/pubsub/overview).
 1. Create a topic and subscription. The push auth service account must have Service Account Token Creator Role assigned, which can be done in the Cloud Console [IAM & admin](https://console.cloud.google.com/iam-admin/iam) UI. `--push-auth-token-audience` is optional. If set, remember to modify the audience field check in `app.js` (line 112).
 
-        gcloud beta pubsub topics create <your-topic-name>
+        gcloud pubsub topics create <your-topic-name>
         gcloud beta pubsub subscriptions create <your-subscription-name> \
           --topic <your-topic-name> \
           --push-endpoint \

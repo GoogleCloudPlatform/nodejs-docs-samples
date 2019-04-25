@@ -9,13 +9,21 @@ and [flexible environment](https://cloud.google.com/appengine/docs/flexible/node
 Before you can run or deploy the sample, you will need to do the following:
 
 1. Enable the Cloud Pub/Sub API in the [Google Developers Console](https://console.developers.google.com/project/_/apiui/apiview/pubsub/overview).
-1. Create a topic and subscription. The push auth service account must have Service Account Token Creator Role assigned, which can be done in the Cloud Console [IAM & admin](https://console.cloud.google.com/iam-admin/iam) UI. `--push-auth-token-audience` is optional. If set, remember to modify the audience field check in `app.js` (line 112).
+1. Create a topic and subscription.
 
         gcloud pubsub topics create <your-topic-name>
-        gcloud beta pubsub subscriptions create <your-subscription-name> \
+        gcloud pubsub subscriptions create <your-subscription-name> \
           --topic <your-topic-name> \
           --push-endpoint \
             https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
+          --ack-deadline 30
+
+1. Create a subscription for authenticated pushes. The push auth service account must have Service Account Token Creator Role assigned, which can be done in the Cloud Console [IAM & admin](https://console.cloud.google.com/iam-admin/iam) UI. `--push-auth-token-audience` is optional. If set, remember to modify the audience field check in `app.js` (line 112).
+
+        gcloud beta pubsub subscriptions create <your-subscription-name> \
+          --topic <your-topic-name> \
+          --push-endpoint \
+            https://<your-project-id>.appspot.com/pubsub/authenticated-push?token=<your-verification-token> \
           --ack-deadline 30 \
           --push-auth-service-account=[your-service-account-email] \
           --push-auth-token-audience=example.com

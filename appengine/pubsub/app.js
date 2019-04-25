@@ -74,7 +74,7 @@ app.post('/', formBodyParser, async (req, res, next) => {
 // [END gae_flex_pubsub_index]
 
 // [START gae_flex_pubsub_push]
-app.post('/pubsub/push', jsonBodyParser, async (req, res) => {
+app.post('/pubsub/push', jsonBodyParser, (req, res) => {
   if (req.query.token !== PUBSUB_VERIFICATION_TOKEN) {
     res.status(400).send();
     return;

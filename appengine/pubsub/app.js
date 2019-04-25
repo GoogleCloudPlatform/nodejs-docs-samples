@@ -93,15 +93,8 @@ app.post('/pubsub/push', jsonBodyParser, async (req, res) => {
       idToken: token,
       audience: 'example.com',
     });
+
     const claim = ticket.getPayload();
-
-    // Must also verify the `iss` claim
-    const issuers = ['accounts.google.com', 'https://accounts.google.com'];
-
-    if (!issuers.includes(claim.iss)) {
-      throw new Error('Wrong issuer');
-    }
-
     claims.push(claim);
   } catch (e) {
     res.status(400).send(`Invalid token: ${e.message}`);

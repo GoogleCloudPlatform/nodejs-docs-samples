@@ -87,3 +87,17 @@ Response:
     X-Powered-By: Express
 
     Invalid token
+
+## Running on App Engine
+
+Note: Not all the files in the current directory are needed to run your code on App Engine. Specifically, the `test` directory, which is for testing purposes only. It SHOULD NOT be included in when deploying your app. When your app is up and running, Cloud Pub/Sub creates tokens using a private key, then the Google Auth Node.js library takes care of verifying and decoding the token using Google's public certs, to confirm that the push requests indeed come from Cloud Pub/Sub.
+
+In the current directory, deploy using `gcloud`:
+
+        gcloud app deploy app.standard.yaml
+
+To deploy to App Engine Node.js Flexible Environment, run
+
+        gcloud app deploy app.flexible.yaml
+
+You can now access the application at https://[your-app-id].appspot.com. You can use the form to submit messages, but it's non-deterministic which instance of your application will receive the notification. You can send multiple messages and refresh the page to see the received message.

@@ -11,18 +11,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// sample-metadata:
+//  title: Create VM
+//  usage: node createVM <vmName>
+
 'use strict';
 
-async function createVM(
+async function main(
   vmName = 'new_virtual_machine' // VM name of your choice
 ) {
+  // [START gce_create_vm]
   const Compute = require('@google-cloud/compute');
   const compute = new Compute();
   const zone = compute.zone('us-central1-c');
-  const [vm, operation] = await zone.createVM(vmName, {os: 'ubuntu'});
-  console.log(vm);
-  await operation.promise();
-  console.log('Virtual machine created!');
+
+  async function createVM() {
+    // TODO(developer): provide a name for your VM
+    // const vmName = 'new-virutal-machine';
+    const [vm, operation] = await zone.createVM(vmName, {os: 'ubuntu'});
+    console.log(vm);
+    await operation.promise();
+    console.log('Virtual machine created!');
+  }
+  createVM();
+  // [END gce_create_vm]
 }
 
-createVM(...process.argv.slice(2)).catch(console.error);
+main(...process.argv.slice(2));

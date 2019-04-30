@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 
+// sample-metadata:
+//  title: Mailjet
+//  usage: node mailjet
+
 'use strict';
 
 // [START send]
@@ -39,6 +43,5 @@ async function mailjet() {
   });
   console.log(json);
 }
+mailjet();
 // [END send]
-
-mailjet().catch(console.error);

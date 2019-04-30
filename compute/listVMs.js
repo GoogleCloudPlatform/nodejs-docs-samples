@@ -13,18 +13,24 @@
  * limitations under the License.
  */
 
+// sample-metadata:
+//  title: List VMs
+//  usage: node listVMs
+
 'use strict';
 
-// [START list]
-async function listVMs() {
+async function main() {
+  // [START gce_list_vms]
   const Compute = require('@google-cloud/compute');
   const compute = new Compute();
-  const vms = await compute.getVMs({
-    maxResults: 10,
-  });
-  console.log(`Found ${vms.length} VMs!`);
-  vms.forEach(vm => console.log(vm));
+  async function listVMs() {
+    const vms = await compute.getVMs({
+      maxResults: 10,
+    });
+    console.log(`Found ${vms.length} VMs!`);
+    vms.forEach(vm => console.log(vm));
+  }
+  listVMs();
+  // [END gce_list_vms]
 }
-// [END list]
-
-listVMs().catch(console.error);
+main().catch(console.error);

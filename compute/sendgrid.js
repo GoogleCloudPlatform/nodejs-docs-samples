@@ -28,5 +28,5 @@ async function sendgridExample() {
       'Well hello! This is a Sendgrid test email from Node.js on Google Cloud Platform.',
   });
 }
-sendgridExample().catch(console.error);
+sendgridExample();
 // [END send]

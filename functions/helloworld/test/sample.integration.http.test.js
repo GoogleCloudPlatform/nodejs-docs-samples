@@ -26,16 +26,18 @@ const cwd = path.join(__dirname, '..');
 
 let ffProc;
 
+// Run the functions-framework instance to host functions locally
 before(async () => {
   ffProc = execPromise(
     `functions-framework --target=helloHttp --signature-type=http`,
-    {timeout: 1000, shell: true, cwd: cwd}
+    {timeout: 1000, shell: true, cwd}
   );
 
+  // Wait for functions-framework to start up
   await delay(600);
 });
 
-after(async () => {
+after.always(async () => {
   await ffProc;
 });
 
@@ -44,7 +46,7 @@ it('helloHttp: should print a name', async () => {
 
   await request
     .post('/helloHttp')
-    .send({name: name})
+    .send({name})
     .expect(200)
     .expect(response => {
       assert.strictEqual(response.text, `Hello ${name}!`);

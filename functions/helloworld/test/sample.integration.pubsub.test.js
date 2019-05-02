@@ -32,9 +32,10 @@ it('helloPubSub: should print a name', async () => {
 
   const proc = execPromise(
     `functions-framework --target=helloPubSub --signature-type=event`,
-    {timeout: 800, shell: true, cwd: cwd}
+    {timeout: 800, shell: true, cwd}
   );
 
+  // Wait for functions-framework to start up
   await delay(600);
 
   // Send HTTP request simulating Pub/Sub message
@@ -53,9 +54,10 @@ it('helloPubSub: should print hello world', async () => {
 
   const proc = execPromise(
     `functions-framework --target=helloPubSub --signature-type=event`,
-    {timeout: 800, shell: true, cwd: cwd}
+    {timeout: 800, shell: true, cwd}
   );
 
+  // Wait for functions-framework to start up
   await delay(600);
 
   // Send HTTP request simulating Pub/Sub message

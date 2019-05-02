@@ -35,11 +35,13 @@ it('helloGCS: should print uploaded message', async () => {
     },
   };
 
+  // Run the functions-framework instance to host functions locally
   const proc = execPromise(
     `functions-framework --target=helloGCS --signature-type=event`,
-    {timeout: 800, shell: true, cwd: cwd}
+    {timeout: 800, shell: true, cwd}
   );
 
+  // Wait for functions-framework to start up
   await delay(600);
 
   // Send HTTP request simulating GCS change notification
@@ -64,11 +66,13 @@ it('helloGCS: should print metadata updated message', async () => {
     },
   };
 
+  // Run the functions-framework instance to host functions locally
   const proc = execPromise(
     `functions-framework --target=helloGCS --signature-type=event`,
-    {timeout: 800, shell: true, cwd: cwd}
+    {timeout: 800, shell: true, cwd}
   );
 
+  // Wait for functions-framework to start up
   await delay(600);
 
   // Send HTTP request simulating GCS change notification
@@ -93,11 +97,13 @@ it('helloGCS: should print deleted message', async () => {
     },
   };
 
+  // Run the functions-framework instance to host functions locally
   const proc = execPromise(
     `functions-framework --target=helloGCS --signature-type=event`,
-    {timeout: 800, shell: true, cwd: cwd}
+    {timeout: 800, shell: true, cwd}
   );
 
+  // Wait for functions-framework to start up
   await delay(600);
 
   // Send HTTP request simulating GCS change notification

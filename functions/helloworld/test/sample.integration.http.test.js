@@ -41,16 +41,6 @@ after.always(async () => {
   await ffProc;
 });
 
-it('helloHttp: should print hello world', async () => {
-  await request
-    .get('/helloHttp')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello World!');
-    });
-});
-// [END functions_http_integration_test]
-
 it('helloHttp: should print a name', async () => {
   const name = uuid.v4();
 
@@ -60,5 +50,16 @@ it('helloHttp: should print a name', async () => {
     .expect(200)
     .expect(response => {
       assert.strictEqual(response.text, `Hello ${name}!`);
+    });
+});
+
+// [END functions_http_integration_test]
+
+it('helloHttp: should print hello world', async () => {
+  await request
+    .get('/helloHttp')
+    .expect(200)
+    .expect(response => {
+      assert.strictEqual(response.text, 'Hello World!');
     });
 });

@@ -27,6 +27,7 @@ it('helloHttp: should print a name', async () => {
       assert.strictEqual(response.text, 'Hello John!');
     });
 });
+// [END functions_http_system_test]
 
 it('helloHttp: should print hello world', async () => {
   await supertest
@@ -36,4 +37,3 @@ it('helloHttp: should print hello world', async () => {
       assert.strictEqual(response.text, 'Hello World!');
     });
 });
-// [END functions_http_system_test]

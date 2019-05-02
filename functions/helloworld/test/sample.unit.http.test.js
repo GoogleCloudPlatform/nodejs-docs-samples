@@ -37,6 +37,7 @@ it('helloHttp: should print a name', () => {
   assert.ok(res.send.calledOnce);
   assert.deepStrictEqual(res.send.firstCall.args, [`Hello ${name}!`]);
 });
+// [END functions_http_unit_test]
 
 it('helloHttp: should print hello world', () => {
   // Mock ExpressJS 'req' and 'res' parameters
@@ -52,4 +53,3 @@ it('helloHttp: should print hello world', () => {
   assert.ok(res.send.calledOnce);
   assert.deepStrictEqual(res.send.firstCall.args, ['Hello World!']);
 });
-// [END functions_http_unit_test]

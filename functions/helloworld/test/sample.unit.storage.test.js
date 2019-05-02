@@ -40,6 +40,7 @@ it('helloGCS: should print uploaded message', done => {
     done();
   });
 });
+// [END functions_storage_unit_test]
 
 it('helloGCS: should print metadata updated message', done => {
   // Initialize mocks
@@ -76,4 +77,3 @@ it('helloGCS: should print deleted message', done => {
     done();
   });
 });
-// [END functions_storage_unit_test]

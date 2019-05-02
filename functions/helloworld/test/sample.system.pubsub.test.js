@@ -15,6 +15,7 @@
 
 // [START functions_pubsub_system_test]
 const childProcess = require('child_process');
+const delay = require('delay');
 const assert = require('assert');
 const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
@@ -33,7 +34,7 @@ it('helloPubSub: should print a name', async () => {
   await publisher.publish(Buffer.from(name));
 
   // Wait for logs to become consistent
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  await delay(15000);
 
   // Check logs after a delay
   const logs = childProcess
@@ -41,6 +42,7 @@ it('helloPubSub: should print a name', async () => {
     .toString();
   assert.ok(logs.includes(`Hello, ${name}!`));
 });
+// [END functions_pubsub_system_test]
 
 it('helloPubSub: should print hello world', async () => {
   const startTime = new Date(Date.now()).toISOString();
@@ -51,7 +53,7 @@ it('helloPubSub: should print hello world', async () => {
   await publisher.publish(Buffer.from(''), {a: 'b'});
 
   // Wait for logs to become consistent
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  await delay(15000);
 
   // Check logs after a delay
   const logs = childProcess
@@ -59,4 +61,3 @@ it('helloPubSub: should print hello world', async () => {
     .toString();
   assert.ok(logs.includes('Hello, World!'));
 });
-// [END functions_pubsub_system_test]

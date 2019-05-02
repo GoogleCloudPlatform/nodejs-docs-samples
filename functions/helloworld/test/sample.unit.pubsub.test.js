@@ -38,6 +38,7 @@ it('helloPubSub: should print a name', done => {
     done();
   });
 });
+// [END functions_pubsub_unit_test]
 
 it('helloPubSub: should print hello world', done => {
   // Initialize mocks
@@ -51,4 +52,3 @@ it('helloPubSub: should print hello world', done => {
     done();
   });
 });
-// [END functions_pubsub_unit_test]

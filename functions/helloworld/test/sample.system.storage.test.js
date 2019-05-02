@@ -47,6 +47,7 @@ it('helloGCS: should print uploaded message', async () => {
     .toString();
   assert.ok(logs.includes(`File ${gcsFileName} uploaded`));
 });
+// [END functions_storage_system_test]
 
 it('helloGCS: should print metadata updated message', async () => {
   const startTime = new Date(Date.now()).toISOString();
@@ -80,4 +81,3 @@ it('helloGCS: should print deleted message', async () => {
     .toString();
   assert.ok(logs.includes(`File ${gcsFileName} deleted`));
 });
-// [END functions_storage_system_test]

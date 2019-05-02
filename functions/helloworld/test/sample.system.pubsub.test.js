@@ -20,8 +20,6 @@ const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 
-process.env.FUNCTIONS_TOPIC =
-  'projects/grass-clump-479/topics/gcloud-logging-test0165b071-1325-11e9-bc58-d3b6d1def78e';
 const topicName = process.env.FUNCTIONS_TOPIC;
 const baseCmd = 'gcloud functions';
 

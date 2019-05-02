@@ -47,7 +47,8 @@ it('helloPubSub: should print a name', async () => {
 
   const {stdout} = await proc;
   assert(stdout.includes(`Hello, ${name}!`));
-}).timeout(1000);
+});
+// [END functions_pubsub_integration_test]
 
 it('helloPubSub: should print hello world', async () => {
   const pubsubMessage = {};
@@ -69,5 +70,4 @@ it('helloPubSub: should print hello world', async () => {
 
   const {stdout} = await proc;
   assert(stdout.includes('Hello, World!'));
-}).timeout(1000);
-// [END functions_pubsub_integration_test]
+});

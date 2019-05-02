@@ -54,6 +54,7 @@ it('helloGCS: should print uploaded message', async () => {
   const {stdout} = await proc;
   assert.ok(stdout.includes(`File ${filename} uploaded.`));
 });
+// [END functions_storage_integration_test]
 
 it('helloGCS: should print metadata updated message', async () => {
   const filename = uuid.v4(); // Use a unique filename to avoid conflicts
@@ -116,4 +117,3 @@ it('helloGCS: should print deleted message', async () => {
   const {stdout} = await proc;
   assert.ok(stdout.includes(`File ${filename} deleted.`));
 });
-// [END functions_storage_integration_test]

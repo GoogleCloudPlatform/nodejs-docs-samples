@@ -46,7 +46,6 @@ describe(`detect v1 p1 beta1`, () => {
 
   it(`should detect web entities including best guess labels`, async () => {
     const output = execSync(`${cmd} web ${files[2].localPath}`);
-    assert.match(output, /Description: Palace Of Fine Arts/);
     assert.match(output, /Best guess label: palace of fine arts/);
   });
 

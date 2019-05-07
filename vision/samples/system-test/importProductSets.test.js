@@ -26,7 +26,7 @@ const cmd = `node productSearch/importProductSets.js`;
 const testImportProductSets = {
   projectId: process.env.GCLOUD_PROJECT,
   location: 'us-west1',
-  gcsUri: 'gs://nodejs-docs-samples/product-search/product_sets.csv',
+  gcsUri: 'gs://cloud-samples-data/vision/product_search/product_sets.csv',
 };
 
 describe(`import product sets`, () => {

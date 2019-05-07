@@ -9,12 +9,36 @@
     "node": ">=8"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha test/app.test.js",
+    "lint": "eslint *.js test/*.js"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "Value:"
+      }
+    },
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "SENDGRID_SENDER",
+      "SENDGRID_API_KEY"
+    ]
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.19.0",
     "express": "^4.16.4",
     "pug": "^2.0.3",
-    "sendgrid": "^5.2.3"
+    "@sendgrid/client": "^6.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-node": "^4.0.0",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-plugin-node": "^9.0.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.17.0",
+    "supertest": "^4.0.2"
   }
 }

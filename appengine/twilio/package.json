@@ -9,11 +9,25 @@
     "node": ">=8"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "lint": "eslint *.js test/*.js",
+    "test": "mocha test/*.test.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "twilio": "^3.28.0"
+    "twilio": "^3.30.3"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "mocha": "^6.1.4",
+    "prettier": "^1.17.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^7.3.2",
+    "supertest": "^4.0.2"
   }
 }

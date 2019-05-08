@@ -10,8 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "repo-tools test app",
-    "lint": "eslint *.js"
+    "test": "repo-tools test app"
   },
   "cloud-repo-tools": {
     "test": {
@@ -30,13 +29,5 @@
   "dependencies": {
     "express": "^4.16.4",
     "memjs": "^1.2.0"
-  },
-  "devDependencies": {
-    "eslint": "^5.16.0",
-    "eslint-config-node": "^4.0.0",
-    "eslint-config-prettier": "^4.2.0",
-    "eslint-plugin-node": "^9.0.1",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.17.0"
   }
 }

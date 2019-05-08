@@ -10,8 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha test/app.test.js",
-    "lint": "eslint *.js test/*.js"
+    "test": "mocha test/app.test.js"
   },
   "cloud-repo-tools": {
     "test": {
@@ -34,13 +33,7 @@
   },
   "devDependencies": {
     "assert": "^1.4.1",
-    "eslint": "^5.16.0",
-    "eslint-config-node": "^4.0.0",
-    "eslint-config-prettier": "^4.2.0",
-    "eslint-plugin-node": "^9.0.1",
-    "eslint-plugin-prettier": "^3.0.1",
     "mocha": "^6.1.4",
-    "prettier": "^1.17.0",
     "supertest": "^4.0.2"
   }
 }

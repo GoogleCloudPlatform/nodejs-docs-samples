@@ -31,9 +31,9 @@ const compute = new Compute();
  * @param {!object} event Cloud Function PubSub message event.
  * @param {!object} callback Cloud Function PubSub callback indicating completion.
  */
-exports.startInstancePubSub = (event, callback) => {
+exports.startInstancePubSub = (data, context, callback) => {
   try {
-    const pubsubMessage = event.data;
+    const pubsubMessage = data;
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );
@@ -75,9 +75,9 @@ exports.startInstancePubSub = (event, callback) => {
  * @param {!object} event Cloud Function PubSub message event.
  * @param {!object} callback Cloud Function PubSub callback indicating completion.
  */
-exports.stopInstancePubSub = (event, callback) => {
+exports.stopInstancePubSub = (data, context, callback) => {
   try {
-    const pubsubMessage = event.data;
+    const pubsubMessage = data;
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );

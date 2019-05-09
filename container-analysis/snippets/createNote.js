@@ -1,9 +1,9 @@
 // [START containeranalysis_create_note]
 // Creates and returns a new Note
-const createNote = async (
+async function createNote(
     projectId = 'your-project-id', // Your GCP Project ID
     noteId = 'my-note-id', // Id of the note
-) => {
+) {
     // Import the library and create a client
     const grafeas = require('@google-cloud/grafeas');
     const client = new grafeas.v1.GrafeasClient();
@@ -18,12 +18,7 @@ const createNote = async (
         parent: formattedParent,
         noteId: noteId,
         note: {
-            noteKind: 'ATTESTATION',
-            attestationAuthority: {
-                hint: {
-                    humanReadableName: 'my-authority'
-                }
-            }
+            vulnerability: {}
         }
     });
 

@@ -15,12 +15,18 @@ const createOccurence = async(
         const formattedNote = client.notePath(noteProjectId, noteId);
 
         // Attach the occurence to the associated image url
-        const [occ] = await client.createOccurrence({
+        const [occurrence] = await client.createOccurrence({
             parent: formattedParent,
             occurrence: {
                 noteName: formattedNote,
+                vulnerability: {},
+                resource: {
+                    uri: imageUrl
+                }
             }
         });
+
+        console.log(`Occurrence created for image ${occurrence.resource.uri}.`);
 
 };
 // [END containeranalysis_create_occurrence]

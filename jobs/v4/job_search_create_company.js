@@ -6,7 +6,12 @@
 
 const talent = require('@google-cloud/talent').v4beta1;
 
-/** Create Company */
+/**
+ * Create Company
+ *
+ * @param projectId {string} Your Google Cloud Project ID
+ * @param tenantId {string} Identifier of the Tenant
+ */
 function sampleCreateCompany(projectId, tenantId, displayName, externalId) {
   const client = new talent.CompanyServiceClient();
   // const projectId = 'Your Google Cloud Project ID';

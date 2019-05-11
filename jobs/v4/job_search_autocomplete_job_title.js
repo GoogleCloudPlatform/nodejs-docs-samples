@@ -6,7 +6,12 @@
 
 const talent = require('@google-cloud/talent').v4beta1;
 
-/** Complete job title given partial text (autocomplete) */
+/**
+ * Complete job title given partial text (autocomplete)
+ *
+ * @param projectId {string} Your Google Cloud Project ID
+ * @param tenantId {string} Identifier of the Tenantd
+ */
 function sampleCompleteQuery(projectId, tenantId, query, numResults, languageCode) {
   const client = new talent.CompletionClient();
   // const projectId = 'Your Google Cloud Project ID';

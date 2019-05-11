@@ -6,7 +6,12 @@
 
 const talent = require('@google-cloud/talent').v4beta1;
 
-/** Create Job */
+/**
+ * Create Job
+ *
+ * @param projectId {string} Your Google Cloud Project ID
+ * @param tenantId {string} Identifier of the Tenant
+ */
 function sampleCreateJob(projectId, tenantId, companyName, requisitionId, title, description, jobApplicationUrl, addressOne, addressTwo, languageCode) {
   const client = new talent.JobServiceClient();
   // const projectId = 'Your Google Cloud Project ID';

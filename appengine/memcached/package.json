@@ -9,7 +9,22 @@
     "node": ">=8"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "repo-tools test app"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "Value:"
+      }
+    },
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "requiredEnvVars": [
+      "MEMCACHE_URL",
+      "MEMCACHE_USERNAME",
+      "MEMCACHE_PASSWORD"
+    ]
   },
   "dependencies": {
     "express": "^4.16.4",

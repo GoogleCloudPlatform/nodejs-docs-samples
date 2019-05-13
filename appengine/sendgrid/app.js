@@ -66,7 +66,6 @@ app.post('/hello', async (req, res, next) => {
   // [END gae_flex_sendgrid]
 
   if (req.query.test) {
-    console.log('TEST!', req.body.email);
     request.mailSettings = {
       sandboxMode: {
         enable: true,

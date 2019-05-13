@@ -69,7 +69,6 @@ app.get('/sms/send', async (req, res, next) => {
       from: TWILIO_NUMBER,
       body: 'Hello from Google App Engine',
     });
-    console.log('BAZ!');
     res.status(200).send('Message sent.');
   } catch (err) {
     next(err);

@@ -61,8 +61,7 @@ exports.triggerDag = async event => {
       iap.jwt
     );
   } catch (err) {
-    console.log('baz', err);
-    return Promise.reject(err);
+    throw new Error(err);
   }
 };
 
@@ -161,7 +160,8 @@ const makeIapPostRequest = async (url, body, idToken, userAgent) => {
   });
 
   if (!res.ok) {
-    return res.text().then(body => Promise.reject(body));
+    const err = await res.text();
+    throw new Error(err);
   }
 };
 // [END composer_trigger]

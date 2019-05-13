@@ -47,7 +47,7 @@ it('Handles error in JSON body', async () => {
     await sample.program.triggerDag(event);
     assert.fail('No error thrown');
   } catch (err) {
-    assert.strictEqual(err, 'Something bad happened.');
+    assert.deepStrictEqual(err, new Error('Something bad happened.'));
   }
 });
 
@@ -86,6 +86,6 @@ it('Handles error in IAP response.', async () => {
   try {
     await sample.program.triggerDag(event);
   } catch (err) {
-    assert.strictEqual(err, expectedMsg);
+    assert.deepStrictEqual(err, new Error(expectedMsg));
   }
 });

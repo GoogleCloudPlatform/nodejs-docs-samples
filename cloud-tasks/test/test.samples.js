@@ -39,6 +39,13 @@ describe('Cloud Task Sample Tests', () => {
     assert.match(stdout, /Created task/);
   });
 
+  it('quickstart sample should create a task', () => {
+    const stdout = execSync(
+      `node quickstart ${PROJECT_ID} us-central1 ${queueName}`
+    );
+    assert.match(stdout, /Created task/);
+  });
+
   it('should create a HTTP task', () => {
     const stdout = execSync(
       `node createHttpTask ${PROJECT_ID} us-central1 my-appengine-queue ${URL}`

@@ -1,0 +1,13 @@
+{
+  "test": {
+    "app": {
+      "msg": "Hello World!"
+    }
+  },
+  "requiresKeyFile": true,
+  "requiresProjectId": true,
+  "requiredEnvVars": [
+    "SENDGRID_SENDER",
+    "SENDGRID_API_KEY"
+  ]
+}

@@ -22,7 +22,7 @@
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.2.0",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "eslint": "^5.4.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-node": "^9.0.0",

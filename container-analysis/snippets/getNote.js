@@ -2,7 +2,7 @@
 // Retrieves and prints a specified Note from the server
 const getNote = async (
     projectId = 'your-project-id', // Your GCP Project ID
-    noteId = 'my-note-id', // Id of the not
+    noteId = 'my-note-id', // Id of the note
 ) => {
     // Import the library and create a client
     const grafeas = require('@google-cloud/grafeas');

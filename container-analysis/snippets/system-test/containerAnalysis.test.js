@@ -23,7 +23,6 @@ describe('Note tests', async function () {
         );
     });
 
-
     it('should get note', async function () {
         const output = execSync(`node getNote.js "${projectId}" "${noteId}"`);
         assert.match(
@@ -32,7 +31,7 @@ describe('Note tests', async function () {
         );
     });
 
-    it('should create occurrence', async function() {
+    it('should create occurrence', async function () {
         const output = execSync(`node createOccurrence.js "${projectId}" "${noteId}" "${projectId}" "${resourceUrl}"`);
         assert.match(
             output,
@@ -41,7 +40,7 @@ describe('Note tests', async function () {
 
     });
 
-    it('should get occurrence', async function() {
+    it('should get occurrence', async function () {
         const [occurrences] = await client.listOccurrences({
             parent: formattedParent
         });
@@ -56,23 +55,30 @@ describe('Note tests', async function () {
             new RegExp(`Occurrence name: ${occurrence.name}`)
         );
     });
-    // TODO: 
-    it('should delete occurrence', async function() {
+
+    // TODO:
+    it('should get occurences for note', async function () {
+        const output = execSync(`node occurrencesForNote.js "${projectId}" "${noteId}"`);
+        assert.match(output, /Occurrences:/);
+    })
+
+    it('should delete occurrence', async function () {
         const [occurrences] = await client.listOccurrences({
             parent: formattedParent
         });
         assert(occurrences.length > 0);
         const occurrence = occurrences[0];
-        const occurrenceId = occurrence.name.split("/")[3]; 
-        
+        const occurrenceId = occurrence.name.split("/")[3];
+
         const output = execSync(`node deleteOccurrence.js "${projectId}" "${occurrenceId}"`);
         assert.match(
             output,
             new RegExp(`Occurrence deleted.`)
         );
-    })
+    });
+    ;
 
-    it('should delete note', async function() {
+    it('should delete note', async function () {
         const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
         assert.match(
             output,

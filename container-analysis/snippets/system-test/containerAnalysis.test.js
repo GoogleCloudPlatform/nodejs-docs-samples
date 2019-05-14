@@ -7,7 +7,6 @@ const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
 const projectId = process.env.GCLOUD_PROJECT;
 const noteId = `test-note-${uuid.v4()}`;
 const formattedNoteName = `projects/${projectId}/notes/${noteId}`
-const formattedOccName = `projects/${projectId}/occurences`
 const resourceUrl = `gcr.io/project/image`;
 
 
@@ -33,7 +32,27 @@ describe('Note tests', async function () {
         const output = execSync(`node createOccurrence.js "${projectId}" "${noteId}" "${projectId}" "${resourceUrl}"`);
         assert.match(
             output,
-            new RegExp(`Occurrence created for image ${resourceUrl}.`)
+            new RegExp(`Occurrence created`)
+        )
+
+    });
+
+    it('should get occurrence', async function() {
+        const grafeas = require('@google-cloud/grafeas');
+        const client = new grafeas.v1.GrafeasClient();
+        const formattedParent = client.projectPath(projectId);
+        const [occurrences] = await client.listOccurrences({
+            parent: formattedParent
+        });
+        assert(occurrences.length > 0);
+
+        const occurrence = occurrences[0];
+        const occurrenceId = occurrence.name.split("/")[3];
+
+        const output = execSync(`node getOccurrence.js "${projectId}" "${occurrenceId}"`);
+        assert.match(
+            output,
+            new RegExp(`Occurrence name: ${occurrence.name}`)
         )
     });
 
@@ -56,13 +75,7 @@ describe('Note tests', async function () {
 //         )
 //     });
 //     // TODO: finalize inputs
-//     it('should get occurrence', async function() {
-//         const output = execSync(`node getOccurrence.js`);
-//         assert.match(
-//             output,
-//             new RegExp(`Occurrence name: `)
-//         )
-//     });
+
 //     // TODO: 
 //     it('should delete occurrence', async function() {
 //         const output = execSync(`node deleteOccurrence.js`);

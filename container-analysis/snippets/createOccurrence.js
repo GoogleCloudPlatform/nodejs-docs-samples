@@ -25,9 +25,8 @@ const createOccurence = async(
                 }
             }
         });
-
-        console.log(`Occurrence created for image ${occurrence.resource.uri}.`);
-
+        console.log(`Occurrence created ${occurrence.name}.`);
+        return occurrence;
 };
 // [END containeranalysis_create_occurrence]
 

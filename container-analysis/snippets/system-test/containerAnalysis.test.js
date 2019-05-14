@@ -60,7 +60,15 @@ describe('Note tests', async function () {
     it('should get occurences for note', async function () {
         const output = execSync(`node occurrencesForNote.js "${projectId}" "${noteId}"`);
         assert.match(output, /Occurrences:/);
-    })
+    });
+
+    it('should get occurrences for image', async function() {
+        const output = execSync(`node occurrencesForImage.js "${projectId}" "${resourceUrl}"`);
+        assert.match(
+            output,
+            new RegExp(`Occurrences for ${resourceUrl}`)
+        );
+    });
 
     it('should delete occurrence', async function () {
         const [occurrences] = await client.listOccurrences({

@@ -2,7 +2,8 @@
 // Retrieves and prints the Discovery Occurrence created for a specified image
 // The Discovery Occurrence contains information about the initial scan on the image
 const getDiscoveryInfo = async (
-
+    projectId = 'your-project-id', // Your GCP Project ID
+    imageUrl = 'my-url.io/project/image' // Image to attach metadata to
 ) => {
     // Import the library and create a client
     const grafeas = require('@google-cloud/grafeas');
@@ -10,14 +11,13 @@ const getDiscoveryInfo = async (
 
     const formattedParent = client.projectPath(projectId);
 
-    const [occurences] = await client.listOccurrences({
+    const [occurrences] = await client.listOccurrences({
         parent: formattedParent,
-        // TODO: filter throws invalid argument
-        filter: `resourceUrl`
+        filter: `kind = \"DISCOVERY\" AND resourceUrl = \"${imageUrl}\"`
     });
 
     if (occurrences.length) {
-        console.log('Occurrences:');
+        console.log(`Discovery Occurrences for ${imageUrl}`);
         occurrences.forEach(occurrence => {
             console.log(`${occurrence.name}:`);
             console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`)

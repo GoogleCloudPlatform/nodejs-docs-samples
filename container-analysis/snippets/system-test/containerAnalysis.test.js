@@ -56,7 +56,6 @@ describe('Note tests', async function () {
         );
     });
 
-    // TODO:
     it('should get occurences for note', async function () {
         const output = execSync(`node occurrencesForNote.js "${projectId}" "${noteId}"`);
         assert.match(output, /Occurrences:/);
@@ -67,6 +66,43 @@ describe('Note tests', async function () {
         assert.match(
             output,
             new RegExp(`Occurrences for ${resourceUrl}`)
+        );
+    });
+
+    // TODO:
+    it('should get discovery info for image', async function() {
+        // TODO: create discovery note and occurrence
+        const discoveryNoteRequest = {
+            parent: formattedParent,
+            noteId: `${noteId}-discovery`,
+            note: {
+                discovery: {}
+            }
+        };
+
+        const [discoveryNote] = await client.createNote(discoveryNoteRequest);
+
+        const occurrenceRequest = {
+            parent: formattedParent,
+            occurrence: {
+                noteName: `${formattedNoteName}-discovery`,
+                discovered: {
+                    discovered: {
+                        analysis_status: 'FINISHED_SUCCESS'
+                    },
+                },
+                resource: {
+                    uri: resourceUrl
+                }
+            }
+        }
+
+        const [discoveryOccurrence] = await client.createOccurrence(occurrenceRequest)
+
+        const output = execSync(`node getDiscoveryInfo "${projectId}" "${resourceUrl}"`);
+        assert.match(
+            output,
+            new RegExp(`Discovery Occurrences for ${resourceUrl}`)
         );
     });
 

@@ -40,6 +40,7 @@ describe('Note tests', async function () {
 
     });
 
+    // TODO: sometimes fails, should try again if no images are found
     it('should get occurrence', async function () {
         const [occurrences] = await client.listOccurrences({
             parent: formattedParent
@@ -69,9 +70,7 @@ describe('Note tests', async function () {
         );
     });
 
-    // TODO:
     it('should get discovery info for image', async function() {
-        // TODO: create discovery note and occurrence
         const discoveryNoteRequest = {
             parent: formattedParent,
             noteId: `${noteId}-discovery`,
@@ -103,6 +102,14 @@ describe('Note tests', async function () {
         assert.match(
             output,
             new RegExp(`Discovery Occurrences for ${resourceUrl}`)
+        );
+    });
+
+    it('should get high vulnerabilities for image', async function() {
+        const output = execSync(`node highVulnerabilitiesForImage "${projectId}" "${resourceUrl}"`);
+        assert.match(
+            output,
+            new RegExp(`High Severity Vulnerabilities for ${resourceUrl}`)
         );
     });
 

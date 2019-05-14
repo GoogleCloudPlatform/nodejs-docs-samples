@@ -1,7 +1,8 @@
 // [START containeranalysis_filter_vulnerability_occurrences]
 // Retrieve a list of vulnerability occurrences with a severity level of 'HIGH' or greater
 const highVulnerabilitiesForImage = async (
-
+    projectId = 'your-project-id', // Your GCP Project ID
+    imageUrl = 'my-url.io/project/image' // Image to attach metadata to
 ) => {
         // Import the library and create a client
         const grafeas = require('@google-cloud/grafeas');
@@ -9,14 +10,13 @@ const highVulnerabilitiesForImage = async (
 
         const formattedParent = client.projectPath(projectId);
 
-        const [occurences] = await client.listOccurrences({
+        const [occurrences] = await client.listOccurrences({
                 parent: formattedParent,
-                // TODO: filter throws invalid argument
-                filter: `resourceUrl`
+                filter: `kind = \"VULNERABILITY\" AND resourceUrl = \"${imageUrl}\"`
         });
 
         if (occurrences.length) {
-                console.log('Occurrences:');
+                console.log(`High Severity Vulnerabilities for ${imageUrl}`);
                 occurrences.forEach(occurrence => {
                         console.log(`${occurrence.name}:`);
                         console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`)

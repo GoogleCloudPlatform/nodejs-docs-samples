@@ -299,7 +299,7 @@ it('should send command message to device', async () => {
   const output = await tools.runAsync(
     `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
-  assert.strictEqual(new RegExp('Success: 200').test(output), true);
+  assert.strictEqual(new RegExp('Sent command').test(output), true);
 
   await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
 });

@@ -18,7 +18,7 @@
     "twilio": "^3.30.3"
   },
   "devDependencies": {
-    "assert": "^1.4.1",
+    "assert": "^2.0.0",
     "mocha": "^6.1.4",
     "proxyquire": "^2.1.0",
     "sinon": "^7.3.2",

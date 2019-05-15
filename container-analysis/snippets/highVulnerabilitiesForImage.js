@@ -18,8 +18,10 @@ const highVulnerabilitiesForImage = async (
         if (occurrences.length) {
                 console.log(`High Severity Vulnerabilities for ${imageUrl}`);
                 occurrences.forEach(occurrence => {
+                        if (occurrence.vulnerability.severity == 'HIGH' || occurrence.vulnerability.severity == 'CRITICAL') {
                         console.log(`${occurrence.name}:`);
                         console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`)
+                        }
                 });
         } else {
                 console.log('No occurrences found.');

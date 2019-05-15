@@ -106,7 +106,37 @@ describe('Note tests', async function () {
     });
 
     it('should get high vulnerabilities for image', async function() {
+        const criticalNoteReq= {
+            parent: formattedParent,
+            noteId: `${noteId}-critical`,
+            note: {
+                vulnerability: {
+                    severity: 'CRITICAL'
+                }
+            }
+        }
+
+        const [criticalNote] = await client.createNote(criticalNoteReq);
+
+        const criticalOccurrenceReq = {
+            parent: formattedParent,
+            occurrence: {
+                noteName: `${formattedNoteName}-critical`,
+                vulnerability: {
+                    vulnerability: {
+                        severity: 'CRITICAL'
+                    }
+                },
+                resource: {
+                    uri: resourceUrl
+                }
+            }
+        }
+
+        const [criticalOccurrence] = await client.createOccurrence(criticalOccurrenceReq);
+
         const output = execSync(`node highVulnerabilitiesForImage "${projectId}" "${resourceUrl}"`);
+        
         assert.match(
             output,
             new RegExp(`High Severity Vulnerabilities for ${resourceUrl}`)
@@ -180,7 +210,7 @@ describe('Note tests', async function () {
 //             new RegExp(``)
 //         );
 //     });
-
+// // TODO: what is difference between "all" and "high severity"
 //     it('should get all vulnerabilites for image', async function() {
 //         const output = execSync(`node vulnerabilityOccurrencesForImage`);
 //         assert.match(

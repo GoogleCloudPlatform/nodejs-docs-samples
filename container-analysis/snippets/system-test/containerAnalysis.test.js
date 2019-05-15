@@ -105,7 +105,7 @@ describe('Note tests', async function () {
         );
     });
 
-    it('should get high vulnerabilities for image', async function() {
+    it('should get high severity vulnerabilities for image', async function() {
         const criticalNoteReq= {
             parent: formattedParent,
             noteId: `${noteId}-critical`,
@@ -143,6 +143,14 @@ describe('Note tests', async function () {
         );
     });
 
+    it('should get all vulnerabilites for image', async function() {
+        const output = execSync(`node vulnerabilityOccurrencesForImage "${projectId}" "${resourceUrl}"`);
+        assert.match(
+            output,
+            new RegExp(`All Vulnerabilities for ${resourceUrl}`)
+        );
+    });
+
     it('should delete occurrence', async function () {
         const [occurrences] = await client.listOccurrences({
             parent: formattedParent
@@ -169,30 +177,6 @@ describe('Note tests', async function () {
 
 });
 
-// describe('Occurrence tests', async function() {
-//     it('should create occurrence', async function() {
-//         const output = execSync(`node createOccurrence.js "${projectId}" "${noteId}"`);
-//         assert.match(
-//             output,
-//             new RegExp(`Occurrence created.`)
-//         )
-//     });
-//     // TODO: finalize inputs
-
-//     // TODO: 
-//     it('should delete occurrence', async function() {
-//         const output = execSync(`node deleteOccurrence.js`);
-//         assert.match(
-//             output,
-//             new RegExp(`Occurrence deleted.`)
-//         )
-//     });
-//     // TODO:
-//     it('should get occurences for note', async function() {
-//         const output = execSync(`node occurrencesForNote.js`);
-//         assert.match(output, /Occurrences:/);
-//     });
-// });
 // // TODO:
 // describe('image queries', async function() {
 //     it('should get occurrences for image', async function() {

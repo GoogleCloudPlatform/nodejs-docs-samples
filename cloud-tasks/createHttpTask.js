@@ -35,10 +35,10 @@ async function createHttpTask(
 
   // TODO(developer): Uncomment these lines and replace with your values.
   // const project = 'my-project-id';
-  // const queue = 'my-appengine-queue';
+  // const queue = 'my-queue';
   // const location = 'us-central1';
-  // const url = 'https://<project-id>.appspot.com/log_payload'
-  // const options = {payload: 'hello'};
+  // const url = 'https://example.com/taskhandler'
+  // const payload = 'hello';
 
   // Construct the fully qualified queue name.
   const parent = client.queuePath(project, location, queue);

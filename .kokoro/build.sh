@@ -23,6 +23,10 @@ export TWILIO_NUMBER="+15005550006" # public placeholder value
 export TWILIO_ACCOUNT_SID=$(cat $KOKORO_GFILE_DIR/secrets-twilio-sid.txt)
 export TWILIO_AUTH_TOKEN=$(cat $KOKORO_GFILE_DIR/secrets-twilio-auth-token.txt)
 
+# Configure Sendgrid variables
+export SENDGRID_SENDER="test@google.com"
+export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
+
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
@@ -51,6 +55,10 @@ if [[ $PROJECT == functions/* ]]; then
   functions config set logFile "$FUNCTIONS_LOG_PATH"
   functions-emulator start
 fi
+
+export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
+export NODEJS_IOT_RSA_PRIVATE_KEY=${KOKORO_GFILE_DIR}/rsa_private.pem
+export NODEJS_IOT_RSA_PUBLIC_CERT=${KOKORO_GFILE_DIR}/rsa_cert.pem
 
 npm test
 

@@ -178,25 +178,24 @@ it('should send state message', async () => {
 });
 
 it.only('should receive command message', async () => {
-  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
-  const localRegName = `${registryName}-rsa256`;
+  const deviceId = `commands-device`;
   const message = 'rotate 180 degrees';
 
   childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd: cwd});
   childProcess.execSync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
+    `${helper} createRegistry ${registryName} ${topicName}`,
     {cwd: cwd}
   );
 
   childProcess.execSync(
-    `${helper} createRsa256Device ${deviceId} ${localRegName} ${rsaPublicCert}`,
+    `${helper} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
     {cwd: cwd}
   );
 
   const exec = util.promisify(childProcess.exec);
 
   const output = exec(
-    `${cmd} mqttDeviceDemo --registryId=${localRegName} --deviceId=${deviceId} --numMessages=10 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
+    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
     {cwd: cwd}
   );
 
@@ -206,11 +205,11 @@ it.only('should receive command message', async () => {
   });
 
   childProcess.execSync(
-    `${helper} sendCommand ${deviceId} ${localRegName} "${message}"`,
+    `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
     {cwd: cwd}
   );
 
-  const {stdout, stderr} = await output;
+  const {stdout} = await output;
 
   console.log(stdout);
 
@@ -221,11 +220,7 @@ it.only('should receive command message', async () => {
 
   // Cleanup
   await iotClient.deleteDevice({
-    name: iotClient.devicePath(projectId, region, localRegName, deviceId),
-  });
-
-  await iotClient.deleteDeviceRegistry({
-    name: iotClient.registryPath(projectId, region, localRegName),
+    name: iotClient.devicePath(projectId, region, registryName, deviceId),
   });
 });
 

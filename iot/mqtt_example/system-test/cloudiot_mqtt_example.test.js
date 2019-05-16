@@ -200,6 +200,11 @@ it.only('should receive command message', async () => {
     {cwd: cwd}
   );
 
+  // Let MQTT client run for 1 second before sending command.
+  await new Promise(resolve => {
+    setTimeout(resolve, 1000);
+  });
+
   childProcess.execSync(
     `${helper} sendCommand ${deviceId} ${localRegName} "${message}"`,
     {cwd: cwd}
@@ -222,7 +227,7 @@ it.only('should receive command message', async () => {
   await iotClient.deleteDeviceRegistry({
     name: iotClient.registryPath(projectId, region, localRegName),
   });
-}).timeout(30000);
+});
 
 it('should listen for bound device config message', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;

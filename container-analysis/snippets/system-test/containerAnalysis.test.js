@@ -14,6 +14,7 @@ const uuidVal = uuid.v4();
 const noteId = `test-note-${uuidVal}`;
 const formattedNoteName = `projects/${projectId}/notes/${noteId}`;
 const resourceUrl = `gcr.io/project/image`;
+const urlWithoutOccurrences = `gcr.io/project/nooccurrences`;
 const subscriptionId = `occurrence-subscription-${uuidVal}`;
 const timeoutSeconds = 5;
 const tryLimit = 10;
@@ -185,26 +186,26 @@ describe('Note tests', async function () {
 
 });
 
-// // TODO:
-// describe('polling', async function() {
-//     it('should poll api until timeout', async function() {
-//         const output = execSync(`node pollDiscoveryOccurrenceFinished.js`);
-//         assert.match(
-//             output,
-//             new RegExp(`Timeout reached, no discovery occurrences found.`)
-//         );
-//     });
+// TODO:
+describe('polling', async function() {
+    // it('should poll api until timeout', async function() {
+    //     const output = execSync(`node pollDiscoveryOccurrenceFinished.js "${projectId}" "${urlWithoutOccurrences}" "${timeoutSeconds}"`);
+    //     assert.match(
+    //         output,
+    //         new RegExp(`'Timeout while retrieving discovery occurrence.`)
+    //     );
+    // });
 
-//     it('should successfully poll latest discovery occurrence', async function() {
-//         const output = execSync(`node pollDiscoveryOccurrenceFinished.js`);
-//         assert.match(
-//             output,
-//             new RegExp(`Latest discovery occurrence: `)
-//         );
-//     });
+    it('should successfully poll latest discovery occurrence', async function() {
+        const output = execSync(`node pollDiscoveryOccurrenceFinished.js "${projectId}" "${resourceUrl}" "${timeoutSeconds}"`);
+        assert.match(
+            output,
+            new RegExp(`Polled Discovery Occurrences for ${resourceUrl}`)
+        );
+    });
 
-// });
-// // TODO: 
+});
+// TODO: 
 describe('pubsub', async function() {
     beforeEach(async function() {
         const [subscription] = await topic.createSubscription(subscriptionId);

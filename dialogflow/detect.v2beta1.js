@@ -420,7 +420,7 @@ async function detectIntentKnowledge(
   console.log(`Confidence: ${result.intentDetectionConfidence}`);
   console.log(`Query Result: ${result.fulfillmentText}`);
   const answers = result.knowledgeAnswers.answers;
-  console.log(`There are ${answers.length} anwser(s);`);
+  console.log(`There are ${answers.length} answer(s);`);
   answers.forEach(a => {
     console.log(`   answer: ${a.answer}`);
     console.log(`   confidence: ${a.matchConfidence}`);
@@ -697,7 +697,7 @@ const cli = require(`yargs`)
   )
   .command(
     `detectIntentKnowledge`,
-    `Detects anwsers from knowledge base queries`,
+    `Detects answers from knowledge base queries`,
     {},
     opts =>
       detectIntentKnowledge(

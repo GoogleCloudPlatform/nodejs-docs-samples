@@ -15,11 +15,13 @@
 
 'use strict';
 
+const assert = require('assert');
+const childProcess = require('child_process');
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
-const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
+const util = require('util');
 const uuid = require('uuid');
 
 const projectId =
@@ -180,32 +182,46 @@ it.only('should receive command message', async () => {
   const localRegName = `${registryName}-rsa256`;
   const message = 'rotate 180 degrees';
 
-  tools.run(`${helper} setupIotTopic ${topicName}`, cwd);
-  tools.run(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd: cwd});
+  childProcess.execSync(
+    `${helper} createRegistry ${localRegName} ${topicName}`,
+    {cwd: cwd}
+  );
 
-  tools.run(
+  childProcess.execSync(
     `${helper} createRsa256Device ${deviceId} ${localRegName} ${rsaPublicCert}`,
-    cwd
+    {cwd: cwd}
   );
 
-  const output = tools.runAsync(
+  const exec = util.promisify(childProcess.exec);
+
+  const output = exec(
     `${cmd} mqttDeviceDemo --registryId=${localRegName} --deviceId=${deviceId} --numMessages=10 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
-    cwd
+    {cwd: cwd}
   );
 
-  tools.run(
+  childProcess.execSync(
     `${helper} sendCommand ${deviceId} ${localRegName} "${message}"`,
-    cwd
+    {cwd: cwd}
   );
+
+  const {stdout, stderr} = await output;
+
+  console.log(stdout);
 
   assert.strictEqual(
-    new RegExp(`Command message received: ${message}`).test(await output),
+    new RegExp(`Command message received: ${message}`).test(await stdout),
     true
   );
 
   // Cleanup
-  tools.run(`${helper} deleteDevice ${deviceId} ${localRegName}`, cwd);
-  tools.run(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await iotClient.deleteDevice({
+    name: iotClient.devicePath(projectId, region, localRegName, deviceId),
+  });
+
+  await iotClient.deleteDeviceRegistry({
+    name: iotClient.registryPath(projectId, region, localRegName),
+  });
 }).timeout(30000);
 
 it('should listen for bound device config message', async () => {

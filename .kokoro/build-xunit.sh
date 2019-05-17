@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+cd github/nodejs-docs-samples/${PROJECT}
+
 if [ ! -f './.mocharc.yml' ]
 then
 
@@ -35,7 +37,7 @@ cat .mocharc.yml
 
 # Store XUnit configs
 export XUNIT_BUCKET="nodejs-docs-samples-kokoro-test"
-gsutil cp test.xml gs://${XUNIT_BUCKET}/test_${KOKORO_BUILD_ID}.xml
+gsutil cp ./test.xml gs://${XUNIT_BUCKET}/test_${KOKORO_BUILD_ID}.xml
 
 # Return captured code
 exit $CODE

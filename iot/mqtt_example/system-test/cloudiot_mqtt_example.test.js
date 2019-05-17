@@ -186,30 +186,19 @@ it.only('should receive command message', async () => {
     {cwd: cwd}
   );
 
-  // const exec = util.promisify(childProcess.exec);
+  const exec = util.promisify(childProcess.exec);
 
-  const output = childProcess.exec(
+  const output = exec(
     `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
     {cwd: cwd}
   );
-
-  output.stdout.pipe(process.stdout);
-  output.stderr.pipe(process.stderr);
-
-  // Let MQTT client run for 2 second before sending command.
-  await new Promise(resolve => {
-    setTimeout(resolve, 30000);
-  });
 
   childProcess.execSync(
     `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
     {cwd: cwd}
   );
 
-  const {stdout, stderr} = await output;
-
-  console.log(stdout);
-  console.log(stderr);
+  const {stdout} = await output;
 
   assert.strictEqual(
     new RegExp(`Command message received: ${message}`).test(stdout),

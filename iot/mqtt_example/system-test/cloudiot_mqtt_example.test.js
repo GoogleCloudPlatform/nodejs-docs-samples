@@ -181,26 +181,17 @@ it.only('should receive command message', async () => {
   const deviceId = `commands-device`;
   const message = 'rotate 180 degrees';
 
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd: cwd});
-  childProcess.execSync(
-    `${helper} createRegistry ${registryName} ${topicName}`,
-    {cwd: cwd}
-  );
-
   childProcess.execSync(
     `${helper} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
     {cwd: cwd}
   );
 
-  // const exec = util.promisify(childProcess.exec);
+  const exec = util.promisify(childProcess.exec);
 
-  const output = childProcess.spawn(
+  const output = exec(
     `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
     {cwd: cwd}
   );
-
-  output.stdout.pipe(process.stdout);
-  output.stderr.pipe(process.stderr);
 
   // Let MQTT client run for 2 second before sending command.
   await new Promise(resolve => {
@@ -212,10 +203,15 @@ it.only('should receive command message', async () => {
     {cwd: cwd}
   );
 
-  // assert.strictEqual(
-  //   new RegExp(`Command message received: ${message}`).test(await stdout),
-  //   true
-  // );
+  const {stdout, stderr} = await output;
+
+  console.log(stdout);
+  console.log(stderr);
+
+  assert.strictEqual(
+    new RegExp(`Command message received: ${message}`).test(stdout),
+    true
+  );
 
   // Cleanup
   await iotClient.deleteDevice({

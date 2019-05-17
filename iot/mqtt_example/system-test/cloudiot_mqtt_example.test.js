@@ -198,10 +198,10 @@ it.only('should receive command message', async () => {
     setTimeout(resolve, 2000);
   });
 
-  childProcess.execSync(
-    `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
-    {cwd: cwd}
-  );
+  // childProcess.execSync(
+  //   `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
+  //   {cwd: cwd}
+  // );
 
   const {stdout, stderr} = await output;
 

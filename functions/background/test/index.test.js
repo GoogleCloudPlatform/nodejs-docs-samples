@@ -36,70 +36,76 @@ function getSample() {
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should echo message', () => {
-  const event = {
-    data: {
-      myMessage: 'hi',
-    },
-  };
-  const sample = getSample();
-  const callback = sinon.stub();
+describe('functions_background_helloworld', () => {
+  it('should echo message', () => {
+    const event = {
+      data: {
+        myMessage: 'hi',
+      },
+    };
+    const sample = getSample();
+    const callback = sinon.stub();
 
-  sample.program.helloWorld(event, callback);
+    sample.program.helloWorld(event, callback);
 
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.firstCall.args, [event.data.myMessage]);
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, []);
-});
+    assert.strictEqual(console.log.callCount, 1);
+    assert.deepStrictEqual(console.log.firstCall.args, [event.data.myMessage]);
+    assert.strictEqual(callback.callCount, 1);
+    assert.deepStrictEqual(callback.firstCall.args, []);
+  });
 
-it('should say no message was provided', () => {
-  const error = new Error('No message defined!');
-  const callback = sinon.stub();
-  const sample = getSample();
-  sample.program.helloWorld({data: {}}, callback);
+  it('should say no message was provided', () => {
+    const error = new Error('No message defined!');
+    const callback = sinon.stub();
+    const sample = getSample();
+    sample.program.helloWorld({data: {}}, callback);
 
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should make a promise request', () => {
-  const sample = getSample();
-  const event = {
-    data: {
-      endpoint: 'foo.com',
-    },
-  };
-
-  return sample.program.helloPromise(event).then(result => {
-    assert.deepStrictEqual(sample.mocks.requestPromiseNative.firstCall.args, [
-      {uri: 'foo.com'},
-    ]);
-    assert.strictEqual(result, 'test');
+    assert.strictEqual(callback.callCount, 1);
+    assert.deepStrictEqual(callback.firstCall.args, [error]);
   });
 });
 
-it('should return synchronously', () => {
-  assert.strictEqual(
-    getSample().program.helloSynchronous({
+describe('functions_background_promise', () => {
+  it('should make a promise request', () => {
+    const sample = getSample();
+    const event = {
       data: {
-        something: true,
+        endpoint: 'foo.com',
       },
-    }),
-    'Something is true!'
-  );
+    };
+
+    return sample.program.helloPromise(event).then(result => {
+      assert.deepStrictEqual(sample.mocks.requestPromiseNative.firstCall.args, [
+        {uri: 'foo.com'},
+      ]);
+      assert.strictEqual(result, 'test');
+    });
+  });
 });
 
-it('should throw an error', () => {
-  assert.throws(
-    () => {
+describe('functions_background_synchronous', () => {
+  it('should return synchronously', () => {
+    assert.strictEqual(
       getSample().program.helloSynchronous({
         data: {
-          something: false,
+          something: true,
         },
-      });
-    },
-    Error,
-    'Something was not true!'
-  );
+      }),
+      'Something is true!'
+    );
+  });
+
+  it('should throw an error', () => {
+    assert.throws(
+      () => {
+        getSample().program.helloSynchronous({
+          data: {
+            something: false,
+          },
+        });
+      },
+      Error,
+      'Something was not true!'
+    );
+  });
 });

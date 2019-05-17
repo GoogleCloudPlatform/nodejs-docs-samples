@@ -27,7 +27,7 @@ fi
 
 # Run build script + capture exit code
 sh $(dirname $0)/build.sh
-CODE = $?
+CODE=$?
 
 # Store XUnit configs
 export XUNIT_BUCKET="nodejs-docs-samples-kokoro-test"

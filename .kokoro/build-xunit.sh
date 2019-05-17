@@ -25,8 +25,13 @@ reporterOptions:
 REPORTER
 fi
 
+# Run build script + capture exit code
 sh $(dirname $0)/build.sh
+CODE = $?
 
 # Store XUnit configs
 export XUNIT_BUCKET="nodejs-docs-samples-kokoro-test"
 gsutil cp test.xml gs://${XUNIT_BUCKET}/test_${KOKORO_BUILD_ID}.xml
+
+# Return captured code
+exit $CODE

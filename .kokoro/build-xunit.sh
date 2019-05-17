@@ -29,6 +29,10 @@ fi
 sh $(dirname $0)/build.sh
 CODE=$?
 
+# Debug
+ls
+cat .mocharc.yml
+
 # Store XUnit configs
 export XUNIT_BUCKET="nodejs-docs-samples-kokoro-test"
 gsutil cp test.xml gs://${XUNIT_BUCKET}/test_${KOKORO_BUILD_ID}.xml

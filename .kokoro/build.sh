@@ -56,10 +56,6 @@ if [[ $PROJECT == functions/* ]]; then
   functions-emulator start
 fi
 
-export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
-export NODEJS_IOT_RSA_PRIVATE_KEY=${KOKORO_GFILE_DIR}/rsa_private.pem
-export NODEJS_IOT_RSA_PUBLIC_CERT=${KOKORO_GFILE_DIR}/rsa_cert.pem
-
 npm test
 
 exit $?

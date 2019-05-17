@@ -20,8 +20,8 @@ then
 # Note: since this a "heredoc", it must be un-indented
 cat << REPORTER > .mocharc.yml
 reporter: xunit
-reporterOptions:
-  output: ./test.xml
+reporter-option:
+  - output=./test.xml
 REPORTER
 fi
 

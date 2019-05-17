@@ -15,11 +15,13 @@
 
 'use strict';
 
+const assert = require('assert');
+const childProcess = require('child_process');
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
-const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
+const util = require('util');
 const uuid = require('uuid');
 
 const projectId =
@@ -175,42 +177,38 @@ it('should send state message', async () => {
   await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-it('should receive command message', async () => {
-  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
-  const localRegName = `${registryName}-rsa256`;
+it.only('should receive command message', async () => {
+  const deviceId = `commands-device`;
   const message = 'rotate 180 degrees';
 
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  await tools.runAsync(
-    `${helper} createRsa256Device ${deviceId} ${localRegName} ${rsaPublicCert}`,
-    cwd
+  childProcess.execSync(
+    `${helper} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
+    {cwd: cwd}
   );
 
-  const output = tools.runAsync(
-    `${cmd} mqttDeviceDemo --registryId=${localRegName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
-    cwd
+  const exec = util.promisify(childProcess.exec);
+
+  const output = exec(
+    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
+    {cwd: cwd}
   );
 
-  await tools.runAsync(
-    `${helper} sendCommand ${deviceId} ${localRegName} "${message}"`,
-    cwd
+  childProcess.execSync(
+    `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
+    {cwd: cwd}
   );
+
+  const {stdout} = await output;
 
   assert.strictEqual(
-    new RegExp(`Command message received: ${message}`).test(await output),
+    new RegExp(`Command message received: ${message}`).test(stdout),
     true
   );
 
   // Cleanup
-  await tools.runAsync(
-    `${helper} deleteDevice ${deviceId} ${localRegName}`,
-    cwd
-  );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await iotClient.deleteDevice({
+    name: iotClient.devicePath(projectId, region, registryName, deviceId),
+  });
 });
 
 it('should listen for bound device config message', async () => {

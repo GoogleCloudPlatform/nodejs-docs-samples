@@ -17,9 +17,12 @@
 
 const fs = require('fs');
 const {google} = require('googleapis');
+const iot = require('@google-cloud/iot');
 
 const API_VERSION = 'v1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
+
+const client = new iot.v1.DeviceManagerClient();
 
 // Configures the topic for Cloud IoT Core.
 function setupIotTopic(topicName) {
@@ -762,7 +765,6 @@ function setDeviceConfig(
 
 // sends a command to a specified device subscribed to the commands topic
 function sendCommand(
-  client,
   deviceId,
   registryId,
   projectId,
@@ -770,36 +772,38 @@ function sendCommand(
   commandMessage
 ) {
   // [START iot_send_command]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
+  // const iot = require('@google-cloud/iot');
+  // const client = new iot.v1.DeviceManagerClient();
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
 
   const binaryData = Buffer.from(commandMessage).toString('base64');
 
+  const formattedName = client.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+
   // NOTE: The device must be subscribed to the wildcard subfolder
-  // or you should pass a subfolder
+  // or you should specify a subfolder.
   const request = {
-    name: `${registryName}/devices/${deviceId}`,
+    name: formattedName,
     binaryData: binaryData,
     //subfolder: <your-subfolder>
   };
 
-  client.projects.locations.registries.devices.sendCommandToDevice(
-    request,
-    (err, data) => {
-      if (err) {
-        console.log('Could not send command:', request);
-        console.log('Error: ', err);
-      } else {
-        console.log('Success:', data.status);
-      }
-    }
-  );
+  client
+    .sendCommandToDevice(request)
+    .then(() => {
+      console.log('Sent command');
+    })
+    .catch(err => {
+      console.error(err);
+    });
   // [END iot_send_command]
 }
 
@@ -1626,17 +1630,13 @@ require(`yargs`) // eslint-disable-line
     `Sends a command message to a device subscribed to the commands topic`,
     {},
     opts => {
-      const cb = client => {
-        sendCommand(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.commandMsg
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+      sendCommand(
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.commandMsg
+      );
     }
   )
   .command(

@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "assert": "^1.4.1",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2"
   }

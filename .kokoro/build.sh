@@ -18,9 +18,24 @@ export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export GCF_REGION=us-central1
 export NODE_ENV=development
 
+# Configure GAE variables
+export TWILIO_NUMBER="+15005550006" # public placeholder value
+export TWILIO_ACCOUNT_SID=$(cat $KOKORO_GFILE_DIR/secrets-twilio-sid.txt)
+export TWILIO_AUTH_TOKEN=$(cat $KOKORO_GFILE_DIR/secrets-twilio-auth-token.txt)
+
+# Configure Sendgrid variables
+export SENDGRID_SENDER="test@google.com"
+export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
+
+# Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
 export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
+
+# Configure IoT variables
+export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
+export NODEJS_IOT_RSA_PRIVATE_KEY=${KOKORO_GFILE_DIR}/rsa_private.pem
+export NODEJS_IOT_RSA_PUBLIC_CERT=${KOKORO_GFILE_DIR}/rsa_cert.pem
 
 cd github/nodejs-docs-samples/${PROJECT}
 

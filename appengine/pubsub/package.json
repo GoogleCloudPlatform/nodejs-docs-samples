@@ -13,15 +13,18 @@
     "test": "repo-tools test app && mocha */*.test.js --timeout=30000 --exit"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.22.0",
+    "@google-cloud/pubsub": "^0.28.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "google-auth-library": "^4.0.0",
     "pug": "^2.0.1",
     "safe-buffer": "^5.1.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "jsonwebtoken": "^8.5.1",
     "mocha": "^6.0.0",
+    "sinon": "^7.3.1",
     "uuid": "^3.3.2"
   },
   "cloud-repo-tools": {

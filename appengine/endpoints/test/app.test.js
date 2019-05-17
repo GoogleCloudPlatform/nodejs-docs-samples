@@ -21,7 +21,7 @@ const path = require('path');
 const proxyquire = require('proxyquire').noCallThru();
 const request = require('supertest');
 const sinon = require('sinon');
-const test = require('ava');
+const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../app.js');
@@ -41,41 +41,40 @@ function getSample() {
   };
 }
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test(`sets up the sample`, t => {
+it(`sets up the sample`, done => {
   const sample = getSample();
 
-  t.true(sample.mocks.express.calledOnce);
+  assert.ok(sample.mocks.express.calledOnce);
+  done();
 });
 
-test.cb(`should echo a message`, t => {
+it(`should echo a message`, async () => {
   const sample = getSample();
-  request(sample.app)
+  await request(sample.app)
     .post('/echo')
     .send({message: 'foo'})
     .expect(200)
     .expect(response => {
-      t.is(response.body.message, 'foo');
-    })
-    .end(t.end);
+      assert.strictEqual(response.body.message, 'foo');
+    });
 });
 
-test.cb(`should try to parse encoded info`, t => {
+it(`should try to parse encoded info`, async () => {
   const sample = getSample();
-  request(sample.app)
+  await request(sample.app)
     .get('/auth/info/googlejwt')
     .expect(200)
     .expect(response => {
-      t.deepEqual(response.body, {id: 'anonymous'});
-    })
-    .end(t.end);
+      assert.deepStrictEqual(response.body, {id: 'anonymous'});
+    });
 });
 
-test.cb(`should successfully parse encoded info`, t => {
+it(`should successfully parse encoded info`, async () => {
   const sample = getSample();
-  request(sample.app)
+  await request(sample.app)
     .get('/auth/info/googlejwt')
     .set(
       'X-Endpoint-API-UserInfo',
@@ -83,7 +82,6 @@ test.cb(`should successfully parse encoded info`, t => {
     )
     .expect(200)
     .expect(response => {
-      t.deepEqual(response.body, {id: 'foo'});
-    })
-    .end(t.end);
+      assert.deepStrictEqual(response.body, {id: 'foo'});
+    });
 });

@@ -25,7 +25,9 @@ const bodyParser = require('body-parser');
 // but will need to be manually set when running locally.
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const SENDGRID_SENDER = process.env.SENDGRID_SENDER;
-const Sendgrid = require('sendgrid')(SENDGRID_API_KEY);
+const Sendgrid = require('@sendgrid/client');
+
+Sendgrid.setApiKey(SENDGRID_API_KEY);
 
 const app = express();
 
@@ -40,10 +42,10 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.post('/hello', (req, res, next) => {
-  const sgReq = Sendgrid.emptyRequest({
+app.post('/hello', async (req, res, next) => {
+  const request = {
     method: 'POST',
-    path: '/v3/mail/send',
+    url: '/v3/mail/send',
     body: {
       personalizations: [
         {
@@ -59,19 +61,32 @@ app.post('/hello', (req, res, next) => {
         },
       ],
     },
-  });
+  };
 
-  Sendgrid.API(sgReq, err => {
-    if (err) {
-      next(err);
-      return;
-    }
-    // Render the index route on success
-    res.render('index', {
-      sent: true,
-    });
+  // [END gae_flex_sendgrid]
+
+  if (req.query.test) {
+    request.mailSettings = {
+      sandboxMode: {
+        enable: true,
+      },
+    };
+  }
+
+  // [START gae_flex_sendgrid]
+  try {
+    await Sendgrid.request(request);
+  } catch (err) {
+    next(err);
+    return;
+  }
+
+  // Render the index route on success
+  res.render('index', {
+    sent: true,
   });
 });
+// [END gae_flex_sendgrid]
 
 if (module === require.main) {
   const PORT = process.env.PORT || 8080;
@@ -82,4 +97,3 @@ if (module === require.main) {
 }
 
 module.exports = app;
-// [END gae_flex_sendgrid]

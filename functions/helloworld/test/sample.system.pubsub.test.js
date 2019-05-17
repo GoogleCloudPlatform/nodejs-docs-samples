@@ -14,17 +14,18 @@
  */
 
 // [START functions_pubsub_system_test]
-const childProcess = require(`child_process`);
-const test = require(`ava`);
-const uuid = require(`uuid`);
-const {PubSub} = require(`@google-cloud/pubsub`);
+const childProcess = require('child_process');
+const assert = require('assert');
+const uuid = require('uuid');
+const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 
+process.env.FUNCTIONS_TOPIC =
+  'projects/grass-clump-479/topics/gcloud-logging-test0165b071-1325-11e9-bc58-d3b6d1def78e';
 const topicName = process.env.FUNCTIONS_TOPIC;
-const baseCmd = `gcloud functions`;
+const baseCmd = 'gcloud functions';
 
-test(`helloPubSub: should print a name`, async t => {
-  t.plan(1);
+it('helloPubSub: should print a name', async () => {
   const startTime = new Date(Date.now()).toISOString();
   const name = uuid.v4();
 
@@ -40,11 +41,10 @@ test(`helloPubSub: should print a name`, async t => {
   const logs = childProcess
     .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
     .toString();
-  t.true(logs.includes(`Hello, ${name}!`));
+  assert.ok(logs.includes(`Hello, ${name}!`));
 });
 
-test(`helloPubSub: should print hello world`, async t => {
-  t.plan(1);
+it('helloPubSub: should print hello world', async () => {
   const startTime = new Date(Date.now()).toISOString();
 
   // Publish to pub/sub topic
@@ -59,6 +59,6 @@ test(`helloPubSub: should print hello world`, async t => {
   const logs = childProcess
     .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
     .toString();
-  t.true(logs.includes('Hello, World!'));
+  assert.ok(logs.includes('Hello, World!'));
 });
 // [END functions_pubsub_system_test]

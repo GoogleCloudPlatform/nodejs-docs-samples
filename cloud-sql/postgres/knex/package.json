@@ -13,7 +13,7 @@
     "node": ">=8"
   },
   "scripts": {
-    "unit-test": "ava --verbose test/*.test.js",
+    "unit-test": "mocha test/*.test.js --timeout=60000 --exit",
     "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_INSTANCE_NAME &",
     "system-test": "repo-tools test app -- server.js",
     "system-test-proxy": "npm run start-proxy; npm run system-test",
@@ -30,8 +30,8 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.2.0",
-    "ava": "^0.25.0",
+    "@google-cloud/nodejs-repo-tools": "3.2.0",
+    "mocha": "^6.0.0",
     "proxyquire": "^2.1.0",
     "supertest": "^4.0.0",
     "sinon": "^7.1.1"

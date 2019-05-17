@@ -189,7 +189,7 @@ it.only('should receive command message', async () => {
   // const exec = util.promisify(childProcess.exec);
 
   const output = childProcess.exec(
-    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
+    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
     {cwd: cwd}
   );
 
@@ -201,20 +201,20 @@ it.only('should receive command message', async () => {
     setTimeout(resolve, 30000);
   });
 
-  // childProcess.execSync(
-  //   `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
-  //   {cwd: cwd}
-  // );
+  childProcess.execSync(
+    `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
+    {cwd: cwd}
+  );
 
-  // const {stdout, stderr} = await output;
+  const {stdout, stderr} = await output;
 
-  // console.log(stdout);
-  // console.log(stderr);
+  console.log(stdout);
+  console.log(stderr);
 
-  // assert.strictEqual(
-  //   new RegExp(`Command message received: ${message}`).test(stdout),
-  //   true
-  // );
+  assert.strictEqual(
+    new RegExp(`Command message received: ${message}`).test(stdout),
+    true
+  );
 
   // Cleanup
   await iotClient.deleteDevice({

@@ -10,20 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha test/app.test.js"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Value:"
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "SENDGRID_SENDER",
-      "SENDGRID_API_KEY"
-    ]
+    "test": "repo-tools test app && mocha test/*.test.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -32,7 +19,7 @@
     "@sendgrid/client": "^6.3.0"
   },
   "devDependencies": {
-    "assert": "^1.4.1",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2"
   }

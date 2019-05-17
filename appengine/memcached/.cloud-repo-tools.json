@@ -1,0 +1,14 @@
+{
+  "test": {
+    "app": {
+      "msg": "Value:"
+    }
+  },
+  "requiresKeyFile": true,
+  "requiresProjectId": true,
+  "requiredEnvVars": [
+    "MEMCACHE_URL",
+    "MEMCACHE_USERNAME",
+    "MEMCACHE_PASSWORD"
+  ]
+}

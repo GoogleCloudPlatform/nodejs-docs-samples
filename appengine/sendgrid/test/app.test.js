@@ -1,9 +1,12 @@
 const assert = require('assert');
-const Supertest = require('supertest');
-const supertest = Supertest('http://localhost:8080');
+const path = require('path');
+const utils = require('@google-cloud/nodejs-repo-tools');
+
+const cwd = path.join(__dirname, '../');
+const request = utils.getRequest({cwd: cwd});
 
 it('GET /: should show homepage template', async () => {
-  await supertest
+  await request
     .get('/')
     .expect(200)
     .expect(response => {
@@ -12,7 +15,7 @@ it('GET /: should show homepage template', async () => {
 });
 
 it('POST /hello: should send an email', async () => {
-  await supertest
+  await request
     .post('/hello?test=true')
     .type('form')
     .send({email: 'testuser@google.com'})

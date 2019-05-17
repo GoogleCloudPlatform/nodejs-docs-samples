@@ -6,7 +6,7 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.13.0"
   },
   "repository": {
     "type": "git",

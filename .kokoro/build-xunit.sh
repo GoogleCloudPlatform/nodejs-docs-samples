@@ -32,7 +32,7 @@ REPORTER
 fi
 
 # Run build script + capture exit code
-sh $(dirname $0)/build.sh
+sh build.sh
 CODE=$?
 
 # Store XUnit configs

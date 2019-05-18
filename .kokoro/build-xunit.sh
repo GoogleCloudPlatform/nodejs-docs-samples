@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+BUILD_SH=$(pwd)/$(dirname $0)/build.sh
+
 # Setup
 cd github/nodejs-docs-samples/${PROJECT}
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
@@ -32,7 +34,7 @@ REPORTER
 fi
 
 # Run build script + capture exit code
-sh build.sh
+sh BUILD_SH
 CODE=$?
 
 # Store XUnit configs

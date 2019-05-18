@@ -14,7 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Setup
 cd github/nodejs-docs-samples/${PROJECT}
+export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
+gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+gcloud config set project $GCLOUD_PROJECT
 
 if [ ! -f './.mocharc.yml' ]
 then
@@ -30,10 +34,6 @@ fi
 # Run build script + capture exit code
 sh $(dirname $0)/build.sh
 CODE=$?
-
-# Debug
-ls
-cat .mocharc.yml
 
 # Store XUnit configs
 export XUNIT_BUCKET="nodejs-docs-samples-kokoro-test"

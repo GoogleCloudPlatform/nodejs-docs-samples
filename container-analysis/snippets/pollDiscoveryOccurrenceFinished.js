@@ -3,7 +3,7 @@
 // either in a terminal state, or the timeout value has been exceeded
 const pollDiscoveryOccurrenceFinished = async (
     projectId = 'your-project-id', // Your GCP Project ID
-    imageUrl = 'my-url.io/project/image', // Image to attach metadata to
+    imageUrl = 'https://gcr.io/my-project/my-image:123', // Image to attach metadata to
     timeoutSeconds = 'timeout-in-seconds', // The number of seconds to listen for the new Pub/Sub messages
 ) => {
     // Import the library and create a client

@@ -4,7 +4,7 @@ const createOccurence = async(
     noteProjectId = 'your-project-id', // Your GCP Project Id
     noteId = 'my-note-id', // Id of the note
     occurenceProjectId = 'your-project-id', // GCP Project Id of Occurence
-    imageUrl = 'my-url.io/project/image' // Image to attach metadata to
+    imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
 ) => {
         // Import the library and create a client
         const grafeas = require('@google-cloud/grafeas');

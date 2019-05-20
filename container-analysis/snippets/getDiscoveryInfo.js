@@ -3,7 +3,7 @@
 // The Discovery Occurrence contains information about the initial scan on the image
 const getDiscoveryInfo = async (
     projectId = 'your-project-id', // Your GCP Project ID
-    imageUrl = 'my-url.io/project/image' // Image to attach metadata to
+    imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
 ) => {
     // Import the library and create a client
     const grafeas = require('@google-cloud/grafeas');

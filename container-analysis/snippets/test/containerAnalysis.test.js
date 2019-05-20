@@ -19,7 +19,7 @@ const timeoutSeconds = 5;
 const tryLimit = 10;
 
 const {PubSub} = require('@google-cloud/pubsub');
-const pubsub = new PubSub({projectId});
+const pubsub = new PubSub();
 const topicName = 'container-analysis-occurrences-v1beta1';
 const topic = pubsub.topic(topicName);
 

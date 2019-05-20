@@ -24,8 +24,8 @@ const pubsub = new PubSub({projectId});
 const topicName = 'container-analysis-occurrences-v1beta1';
 const topic = pubsub.topic(topicName);
 
-describe('Note tests', async function () {
-    it('should create a note', async function () {
+describe('Note tests', function () {
+    it('should create a note', function () {
         const output = execSync(`node createNote.js "${projectId}" "${noteId}"`);
         assert.match(
             output,
@@ -33,7 +33,7 @@ describe('Note tests', async function () {
         );
     });
 
-    it('should get note', async function () {
+    it('should get note', function () {
         const output = execSync(`node getNote.js "${projectId}" "${noteId}"`);
         assert.match(
             output,
@@ -41,7 +41,7 @@ describe('Note tests', async function () {
         );
     });
 
-    it('should create occurrence', async function () {
+    it('should create occurrence', function () {
         const output = execSync(`node createOccurrence.js "${projectId}" "${noteId}" "${projectId}" "${resourceUrl}"`);
         assert.match(
             output,
@@ -66,12 +66,12 @@ describe('Note tests', async function () {
         );
     });
 
-    it('should get occurences for note', async function () {
+    it('should get occurences for note', function () {
         const output = execSync(`node occurrencesForNote.js "${projectId}" "${noteId}"`);
         assert.match(output, /Occurrences:/);
     });
 
-    it('should get occurrences for image', async function() {
+    it('should get occurrences for image', function() {
         const output = execSync(`node occurrencesForImage.js "${projectId}" "${resourceUrl}"`);
         assert.match(
             output,
@@ -152,7 +152,7 @@ describe('Note tests', async function () {
         );
     });
 
-    it('should get all vulnerabilites for image', async function() {
+    it('should get all vulnerabilites for image', function() {
         const output = execSync(`node vulnerabilityOccurrencesForImage "${projectId}" "${resourceUrl}"`);
         assert.match(
             output,
@@ -160,7 +160,7 @@ describe('Note tests', async function () {
         );
     });
 
-    it('should delete occurrence', async function () {
+    it('should delete occurrence', async function() {
         const [occurrences] = await client.listOccurrences({
             parent: formattedParent
         });
@@ -176,7 +176,7 @@ describe('Note tests', async function () {
     });
     ;
 
-    it('should delete note', async function () {
+    it('should delete note', function () {
         const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
         assert.match(
             output,
@@ -187,8 +187,8 @@ describe('Note tests', async function () {
 });
 
 // TODO:
-describe('polling', async function() {
-    // it('should poll api until timeout', async function() {
+describe('polling', function() {
+    // it('should poll api until timeout', function() {
     //     const output = execSync(`node pollDiscoveryOccurrenceFinished.js "${projectId}" "${urlWithoutOccurrences}" "${timeoutSeconds}"`);
     //     assert.match(
     //         output,
@@ -196,7 +196,7 @@ describe('polling', async function() {
     //     );
     // });
 
-    it('should successfully poll latest discovery occurrence', async function() {
+    it('should successfully poll latest discovery occurrence', function() {
         const output = execSync(`node pollDiscoveryOccurrenceFinished.js "${projectId}" "${resourceUrl}" "${timeoutSeconds}"`);
         assert.match(
             output,
@@ -206,7 +206,7 @@ describe('polling', async function() {
 
 });
 // TODO: 
-describe('pubsub', async function() {
+describe('pubsub', function() {
     beforeEach(async function() {
         const [subscription] = await topic.createSubscription(subscriptionId);
         const pubSubNoteReq = {

@@ -13,7 +13,7 @@ const getDiscoveryInfo = async (
 
     const [occurrences] = await client.listOccurrences({
         parent: formattedParent,
-        filter: `kind = \"DISCOVERY\" AND resourceUrl = \"${imageUrl}\"`
+        filter: `kind = "DISCOVERY" AND resourceUrl = "${imageUrl}"`
     });
 
     if (occurrences.length) {

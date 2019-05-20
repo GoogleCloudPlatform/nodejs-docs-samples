@@ -13,7 +13,7 @@ const occurrencesForImage = async (
 
     const [occurrences] = await client.listOccurrences({
         parent: formattedParent,
-        filter: `resourceUrl = \"${imageUrl}\"`
+        filter: `resourceUrl = "${imageUrl}"`
     });
 
     if (occurrences.length) {

@@ -12,7 +12,7 @@ const highVulnerabilitiesForImage = async (
 
         const [occurrences] = await client.listOccurrences({
                 parent: formattedParent,
-                filter: `kind = \"VULNERABILITY\" AND resourceUrl = \"${imageUrl}\"`
+                filter: `kind = "VULNERABILITY" AND resourceUrl = "${imageUrl}"`
         });
 
         if (occurrences.length) {

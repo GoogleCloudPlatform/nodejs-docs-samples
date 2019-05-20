@@ -16,7 +16,7 @@ const getDiscoveryInfo = async (
         filter: `kind = "DISCOVERY" AND resourceUrl = "${imageUrl}"`
     });
 
-    if (occurrences.length) {
+    if (occurrences.length > 0) {
         console.log(`Discovery Occurrences for ${imageUrl}`);
         occurrences.forEach(occurrence => {
             console.log(`${occurrence.name}:`);

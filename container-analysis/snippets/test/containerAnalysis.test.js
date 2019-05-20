@@ -6,7 +6,6 @@ const grafeas = require('@google-cloud/grafeas');
 const client = new grafeas.v1.GrafeasClient();
 
 const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
-const exec = cmd => cp.exec(cmd, {encoding: 'utf-8'})
 
 const projectId = process.env.GCLOUD_PROJECT;
 const formattedParent = `projects/${projectId}`;

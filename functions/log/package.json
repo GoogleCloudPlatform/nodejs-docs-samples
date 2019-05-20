@@ -15,7 +15,7 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "@google-cloud/logging": "^4.4.0",
+    "@google-cloud/logging": "^5.0.0",
     "@google-cloud/monitoring": "^0.7.1"
   },
   "devDependencies": {

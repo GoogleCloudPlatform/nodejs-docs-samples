@@ -209,8 +209,10 @@ function patchHl7v2Message(
   const request = {
     name: hl7v2Message,
     updateMask: 'labels',
-    labels: {
-      labelKey: labelValue,
+    resource: {
+      labels: {
+        labelKey: labelValue,
+      }
     },
   };
 

@@ -20,7 +20,12 @@ const {assert} = require('chai');
 const execa = require('execa');
 
 const cmd = 'node detect.js';
+const cmd_tts = 'node detect-intent-TTS-response.v2.js';
+const cmd_sentiment = 'node detect-intent-sentiment.v2.js';
 const cwd = path.join(__dirname, '..');
+const projectId =
+  process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+const testQuery = 'Where is my data stored?';
 
 const audioFilepathBookARoom = path
   .join(__dirname, '../resources/book_a_room.wav')
@@ -51,5 +56,24 @@ describe('basic detection', () => {
       {cwd}
     );
     assert.include(stdout, 'Detected intent');
+  });
+
+  it('should detect Intent with Text to Speech Response', async () => {
+    const {stdout} = await execa.shell(
+      `${cmd_tts} ${projectId} 'SESSION_ID' '${testQuery}' 'en-US' './resources/output.wav'`,
+      {cwd}
+    );
+    assert.include(
+      stdout,
+      'Audio content written to file: ./resources/output.wav'
+    );
+  });
+
+  it('should detect sentiment with intent', async () => {
+    const {stdout} = await execa.shell(
+      `${cmd_sentiment} ${projectId} 'SESSION_ID' '${testQuery}' 'en-US'`,
+      {cwd}
+    );
+    assert.include(stdout, 'Detected sentiment');
   });
 });

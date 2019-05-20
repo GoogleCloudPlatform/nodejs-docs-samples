@@ -2,7 +2,7 @@
 // Retrieves and prints a specified Occurrence from the server
 const getOccurrence = async(
     projectId = 'your-project-id', // Your GCP Project ID
-    occurrenceId = 'my-occurrence' // Your Occurrence name
+    occurrenceId = 'my-occurrence' // The API-generated identifier associated with the occurrence
 ) => {
     // Import the library and create a client
     const grafeas = require('@google-cloud/grafeas');

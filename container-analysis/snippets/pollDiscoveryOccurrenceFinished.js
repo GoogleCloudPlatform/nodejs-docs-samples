@@ -14,6 +14,8 @@ const pollDiscoveryOccurrenceFinished = async (
 
     let filter = `resourceUrl=\"${imageUrl}\" AND noteProjectId=\"goog-analysis\" AND noteId=\"PACKAGE_VULNERABILITY\"`;
     // [END containeranalysis_poll_discovery_occurrence_finished]
+    // The above filter isn't testable, since it looks for occurrences in a locked down project
+    // Fall back to a more permissive filter for testing
     filter = `kind = \"DISCOVERY\" AND resourceUrl = \"${imageUrl}\"`;
     // [START containeranalysis_poll_discovery_occurrence_finished]
 

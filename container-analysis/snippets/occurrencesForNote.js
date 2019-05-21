@@ -1,10 +1,14 @@
-// [START containeranalysis_occurrences_for_note]
-// Retrieves all the Occurrences associated with a specified Note
-// Here, all Occurrences are printed and counted
-const occurrencesForNote = async (
+async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   noteId = 'my-note-id' // Id of the note
-) => {
+) {
+  // [START containeranalysis_occurrences_for_note]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample
+   */
+  // const projectId = 'your-project-id', // Your GCP Project ID
+  // const noteId = 'my-note-id' // Id of the note
+
   // Import the library and create a client
   const grafeas = require('@google-cloud/grafeas');
   const client = new grafeas.v1.GrafeasClient();
@@ -12,7 +16,7 @@ const occurrencesForNote = async (
   // Get path to Note
   const formattedNote = client.notePath(projectId, noteId);
 
-  // Get occurrences
+  // Retrieves all the Occurrences associated with a specified Note
   const [occurrences] = await client.listNoteOccurrences({
     name: formattedNote,
   });
@@ -27,8 +31,7 @@ const occurrencesForNote = async (
   } else {
     console.log('No occurrences found.');
   }
-};
+}
 // [END containeranalysis_occurrences_for_note]
 
-const args = process.argv.slice(2);
-occurrencesForNote(...args).catch(console.error);
+main(...process.argv.slice(2));

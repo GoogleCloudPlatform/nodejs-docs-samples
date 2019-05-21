@@ -1,11 +1,16 @@
-// [START containeranalysis_poll_discovery_occurrence_finished]
-// Repeatedly query the Container Analysis API for the latest discovery occurrence until it is
-// either in a terminal state, or the timeout value has been exceeded
-const pollDiscoveryOccurrenceFinished = async (
+async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   imageUrl = 'https://gcr.io/my-project/my-image:123', // Image to attach metadata to
   timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub messages
-) => {
+) {
+  // [START containeranalysis_poll_discovery_occurrence_finished]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample
+   */
+  // const projectId = 'your-project-id', // Your GCP Project ID
+  // const imageUrl = 'https://gcr.io/my-project/my-image:123', // Image to attach metadata to
+  // const timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub messages
+
   // Import the library and create a client
   const grafeas = require('@google-cloud/grafeas');
   const client = new grafeas.v1.GrafeasClient();
@@ -19,6 +24,8 @@ const pollDiscoveryOccurrenceFinished = async (
   filter = `kind = "DISCOVERY" AND resourceUrl = "${imageUrl}"`;
   // [START containeranalysis_poll_discovery_occurrence_finished]
 
+  // Repeatedly query the Container Analysis API for the latest discovery occurrence until it is
+  // either in a terminal state, or the timeout value has been exceeded
   const pRetry = require('p-retry');
   const discoveryOccurrences = await pRetry(
     async () => {
@@ -41,8 +48,7 @@ const pollDiscoveryOccurrenceFinished = async (
     console.log(`${occurrence.name}:`);
     console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`);
   });
-};
+}
 // [END containeranalysis_poll_discovery_occurrence_finished]
 
-const args = process.argv.slice(2);
-pollDiscoveryOccurrenceFinished(...args).catch(console.error);
+main(...process.argv.slice(2));

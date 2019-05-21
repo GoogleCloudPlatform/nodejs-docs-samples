@@ -1,9 +1,14 @@
-// [START containeranalysis_delete_occurrence]
-// Deletes an existing Occurrence from the server
-async function deleteOccurrence(
+async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   occurrenceId = 'my-occurrence' // Your Occurrence name
 ) {
+  // [START containeranalysis_delete_occurrence]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample
+   */
+  // const projectId = 'your-project-id', // Your GCP Project ID
+  // const occurrenceId = 'my-occurrence' // Your Occurrence name
+
   // Import the library and create a client
   const grafeas = require('@google-cloud/grafeas');
   const client = new grafeas.v1.GrafeasClient();
@@ -11,7 +16,8 @@ async function deleteOccurrence(
   // Get full path to occurrence
   const formattedName = client.occurrencePath(projectId, occurrenceId);
 
-  const result = await client.deleteOccurrence({
+  // Deletes an existing Occurrence from the server
+  await client.deleteOccurrence({
     name: formattedName,
   });
 
@@ -19,5 +25,4 @@ async function deleteOccurrence(
 }
 // [END containeranalysis_delete_occurrence]
 
-const args = process.argv.slice(2);
-deleteOccurrence(...args).catch(console.error);
+main(...process.argv.slice(2));

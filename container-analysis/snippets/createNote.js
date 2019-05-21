@@ -1,9 +1,14 @@
-// [START containeranalysis_create_note]
-// Creates and returns a new Note
-async function createNote(
+async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   noteId = 'my-note-id' // Id of the note
 ) {
+  // [START containeranalysis_create_note]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample
+   */
+  // const projectId = 'your-project-id', // Your GCP Project ID
+  // const noteId = 'my-note-id' // Id of the note
+
   // Import the library and create a client
   const grafeas = require('@google-cloud/grafeas');
   const client = new grafeas.v1.GrafeasClient();
@@ -11,9 +16,10 @@ async function createNote(
   // Construct request
   // Associate the Note with a metadata type
   // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
-  // Here, we use the type "attestation"
+  // Here, we use the type "vulnerabiltity"
   const formattedParent = client.projectPath(projectId);
 
+  // Creates and returns a new Note
   const [note] = await client.createNote({
     parent: formattedParent,
     noteId: noteId,
@@ -26,5 +32,4 @@ async function createNote(
 }
 // [END containeranalysis_create_note]
 
-const args = process.argv.slice(2);
-createNote(...args).catch(console.error);
+main(...process.argv.slice(2));

@@ -24,6 +24,26 @@ const topicName = 'container-analysis-occurrences-v1beta1';
 const topic = pubsub.topic(topicName);
 
 describe('Note tests', function() {
+  after(async function() {
+    const [allOccurrences] = await client.listOccurrences({
+      parent: formattedParent,
+      filter: `resourceUrl = "${resourceUrl}"`,
+    });
+
+    allOccurrences.forEach(async occurrence => {
+      await client.deleteOccurrence({name: occurrence.name});
+      console.log(`deleted occurrence ${occurrence.name}`);
+    });
+
+    const [allNotes] = await client.listNotes({
+      parent: formattedParent,
+    });
+
+    allNotes.forEach(async note => {
+      await client.deleteNote({name: note.name});
+      console.log(`deleted note ${note.name}`);
+    });
+  });
   it('should create a note', function() {
     const output = execSync(`node createNote.js "${projectId}" "${noteId}"`);
     assert.match(output, new RegExp(`Note ${formattedNoteName} created.`));

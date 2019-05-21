@@ -2,6 +2,7 @@
 extends:
   - 'eslint:recommended'
   - 'plugin:node/recommended'
+  - 'plugin:promise'
   - prettier
 env:
   mocha: true
@@ -19,3 +20,7 @@ rules:
   prefer-const: error
   no-var: error
   prefer-arrow-callback: error
+  no-throw-literal: error
+  require-await: error
+  prefer-await-to-then: error
+  prefer-destructuring: error

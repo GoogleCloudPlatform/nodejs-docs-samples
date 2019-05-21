@@ -12,45 +12,35 @@ const pollDiscoveryOccurrenceFinished = async (
 
   const formattedParent = client.projectPath(projectId);
 
-  let filter = `resourceUrl=\"${imageUrl}\" AND noteProjectId=\"goog-analysis\" AND noteId=\"PACKAGE_VULNERABILITY\"`;
+  let filter = `resourceUrl="${imageUrl}" AND noteProjectId="goog-analysis" AND noteId="PACKAGE_VULNERABILITY"`;
   // [END containeranalysis_poll_discovery_occurrence_finished]
   // The above filter isn't testable, since it looks for occurrences in a locked down project
   // Fall back to a more permissive filter for testing
-  filter = `kind = \"DISCOVERY\" AND resourceUrl = \"${imageUrl}\"`;
+  filter = `kind = "DISCOVERY" AND resourceUrl = "${imageUrl}"`;
   // [START containeranalysis_poll_discovery_occurrence_finished]
 
-  const pollDiscoveryOccurrence = () => {
-    return new Promise(async (resolve, reject) => {
-      setTimeout(() => {
-        reject('Timeout while retrieving discovery occurrence.');
-      }, timeoutSeconds * 1000);
-      let found = false;
-      while (found == false) {
-        const [discoveryOccurrences] = await client.listOccurrences({
-          parent: formattedParent,
-          filter: filter,
-        });
-        if (discoveryOccurrences.length > 0) {
-          found = true;
-          clearTimeout();
-          resolve(discoveryOccurrences);
-        }
-      }
-    });
-  };
-  pollDiscoveryOccurrence()
-    .then(result => {
-      console.log(`Polled Discovery Occurrences for ${imageUrl}`);
-      result.forEach(occurrence => {
-        console.log(`${occurrence.name}:`);
-        console.log(
-          `  Created: ${new Date(occurrence.createTime.seconds * 1000)}`
-        );
+  const pRetry = require('p-retry');
+  const discoveryOccurrences = await pRetry(
+    async () => {
+      const [occurrences] = await client.listOccurrences({
+        parent: formattedParent,
+        filter: filter,
       });
-    })
-    .catch(err => {
-      console.log(err);
-    });
+      if (occurrences.length < 0) {
+        throw new Error('No occurrences found for ' + imageUrl);
+      }
+      return occurrences;
+    },
+    {
+      retries: 5,
+    }
+  );
+
+  console.log(`Polled Discovery Occurrences for ${imageUrl}`);
+  discoveryOccurrences.forEach(occurrence => {
+    console.log(`${occurrence.name}:`);
+    console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`);
+  });
 };
 // [END containeranalysis_poll_discovery_occurrence_finished]
 

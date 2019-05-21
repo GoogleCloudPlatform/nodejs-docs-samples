@@ -13,10 +13,8 @@ const uuidVal = uuid.v4();
 const noteId = `test-note-${uuidVal}`;
 const formattedNoteName = `projects/${projectId}/notes/${noteId}`;
 const resourceUrl = `gcr.io/project/image`;
-const urlWithoutOccurrences = `gcr.io/project/nooccurrences`;
 const subscriptionId = `occurrence-subscription-${uuidVal}`;
 const timeoutSeconds = 5;
-const tryLimit = 10;
 
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
@@ -99,7 +97,7 @@ describe('Note tests', function() {
       },
     };
 
-    const [discoveryNote] = await client.createNote(discoveryNoteRequest);
+    await client.createNote(discoveryNoteRequest);
 
     const occurrenceRequest = {
       parent: formattedParent,
@@ -107,19 +105,16 @@ describe('Note tests', function() {
         noteName: `${formattedNoteName}-discovery`,
         discovered: {
           discovered: {
-              analysisStatus: 'FINISHED_SUCCESS',
-            },
+            analysisStatus: 'FINISHED_SUCCESS',
           },
         },
-        resource: {
-          uri: resourceUrl,
-        },
+      },
+      resource: {
+        uri: resourceUrl,
       },
     };
 
-    const [discoveryOccurrence] = await client.createOccurrence(
-      occurrenceRequest
-    );
+    await client.createOccurrence(occurrenceRequest);
 
     const output = execSync(
       `node getDiscoveryInfo "${projectId}" "${resourceUrl}"`
@@ -141,7 +136,7 @@ describe('Note tests', function() {
       },
     };
 
-    const [criticalNote] = await client.createNote(criticalNoteReq);
+    await client.createNote(criticalNoteReq);
 
     const criticalOccurrenceReq = {
       parent: formattedParent,
@@ -158,9 +153,7 @@ describe('Note tests', function() {
       },
     };
 
-    const [criticalOccurrence] = await client.createOccurrence(
-      criticalOccurrenceReq
-    );
+    await client.createOccurrence(criticalOccurrenceReq);
 
     const output = execSync(
       `node highVulnerabilitiesForImage "${projectId}" "${resourceUrl}"`
@@ -211,7 +204,7 @@ xdescribe('polling', function() {
       },
     };
 
-    const [discoveryNote] = await client.createNote(discoveryNoteRequest);
+    await client.createNote(discoveryNoteRequest);
 
     const occurrenceRequest = {
       parent: formattedParent,
@@ -228,9 +221,7 @@ xdescribe('polling', function() {
       },
     };
 
-    const [discoveryOccurrence] = await client.createOccurrence(
-      occurrenceRequest
-    );
+    await client.createOccurrence(occurrenceRequest);
   });
 
   after(async function() {
@@ -260,10 +251,10 @@ xdescribe('polling', function() {
     );
   });
 });
-// TODO:
+
 describe('pubsub', function() {
   beforeEach(async function() {
-    const [subscription] = await topic.createSubscription(subscriptionId);
+    await topic.createSubscription(subscriptionId);
     const pubSubNoteReq = {
       parent: formattedParent,
       noteId: `${noteId}-pubsub`,
@@ -271,7 +262,7 @@ describe('pubsub', function() {
         vulnerability: {},
       },
     };
-    const [pubSubNote] = await client.createNote(pubSubNoteReq);
+    await client.createNote(pubSubNoteReq);
   });
   afterEach(async function() {
     await client.deleteNote({name: `${formattedNoteName}-pubsub`});
@@ -292,7 +283,7 @@ describe('pubsub', function() {
       },
     };
     // empty subscription
-    const initial = execSync(
+    execSync(
       `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`
     );
 
@@ -303,7 +294,7 @@ describe('pubsub', function() {
 
     assert.match(empty, new RegExp(`Polled 0 occurrences`));
     // create test occurrences
-    for (i = 0; i < expectedNum; i++) {
+    for (let i = 0; i < expectedNum; i++) {
       const [pubSubOccurrence] = await client.createOccurrence(
         pubSubOccurrenceReq
       );

@@ -27,7 +27,7 @@ async function main(
   // Repeatedly query the Container Analysis API for the latest discovery occurrence until it is
   // either in a terminal state, or the timeout value has been exceeded
   const pRetry = require('p-retry');
-  const discoveryOccurrences = await pRetry(
+  const discoveryOccurrence = await pRetry(
     async () => {
       const [occurrences] = await client.listOccurrences({
         parent: formattedParent,
@@ -36,7 +36,7 @@ async function main(
       if (occurrences.length < 0) {
         throw new Error('No occurrences found for ' + imageUrl);
       }
-      return occurrences;
+      return occurrences[0];
     },
     {
       retries: 5,
@@ -44,10 +44,36 @@ async function main(
   );
 
   console.log(`Polled Discovery Occurrences for ${imageUrl}`);
-  discoveryOccurrences.forEach(occurrence => {
-    console.log(`${occurrence.name}:`);
-    console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`);
-  });
+  // Wait for discovery occurrence to enter a terminal state
+  const finishedOccurrence = await pRetry(
+    async () => {
+      let status = 'PENDING';
+      const [updated] = await client.getOccurrence({
+        name: discoveryOccurrence.name,
+      });
+      status = updated.discovered.discovered.analysisStatus;
+      if (
+        status !== 'FINISHED_SUCCESS' &&
+        status !== 'FINISHED_FAILED' &&
+        status !== 'FINISHED_UNSUPPORTED'
+      ) {
+        throw new Error('Timeout while retrieving discovery occurrence');
+      }
+      return updated;
+    },
+    {
+      retries: 5,
+    }
+  );
+  console.log(
+    `Found discovery occurrence ${finishedOccurrence.name}.  Status: ${
+      finishedOccurrence.discovered.discovered.analysisStatus
+    }`
+  );
+  // discoveryOccurrences.forEach(occurrence => {
+  //   console.log(`${occurrence.name}:`);
+  //   console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`);
+  // });
 }
 // [END containeranalysis_poll_discovery_occurrence_finished]
 

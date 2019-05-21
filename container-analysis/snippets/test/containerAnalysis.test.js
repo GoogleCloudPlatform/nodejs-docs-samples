@@ -107,7 +107,8 @@ describe('Note tests', function() {
         noteName: `${formattedNoteName}-discovery`,
         discovered: {
           discovered: {
-            analysis_status: 'FINISHED_SUCCESS',
+              analysisStatus: 'FINISHED_SUCCESS',
+            },
           },
         },
         resource: {
@@ -198,7 +199,49 @@ describe('Note tests', function() {
 });
 
 // TODO:
-describe('polling', function() {
+xdescribe('polling', function() {
+  before(async function() {
+    const discoveryNoteRequest = {
+      parent: formattedParent,
+      noteId: `${noteId}-discovery-polling`,
+      note: {
+        discovery: {
+          continuousAnalysis: 'INACTIVE',
+        },
+      },
+    };
+
+    const [discoveryNote] = await client.createNote(discoveryNoteRequest);
+
+    const occurrenceRequest = {
+      parent: formattedParent,
+      occurrence: {
+        noteName: `${formattedNoteName}-discovery-polling`,
+        discovered: {
+          discovered: {
+            analysisStatus: 'FINISHED_SUCCESS',
+          },
+        },
+      },
+      resource: {
+        uri: resourceUrl,
+      },
+    };
+
+    const [discoveryOccurrence] = await client.createOccurrence(
+      occurrenceRequest
+    );
+  });
+
+  after(async function() {
+    const [discoveryOccurrences] = await client.listNoteOccurrences({
+      name: `${formattedNoteName}-discovery-polling`,
+    });
+    discoveryOccurrences.forEach(async occurrence => {
+      await client.deleteOccurrence({name: occurrence.name});
+    });
+    await client.deleteNote({name: `${formattedNoteName}-discovery-polling`});
+  });
   // it('should poll api until timeout', function() {
   //     const output = execSync(`node pollDiscoveryOccurrenceFinished.js "${projectId}" "${urlWithoutOccurrences}" "${timeoutSeconds}"`);
   //     assert.match(

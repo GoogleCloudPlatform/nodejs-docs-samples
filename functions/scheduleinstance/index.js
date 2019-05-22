@@ -29,7 +29,8 @@ const compute = new Compute();
  *  label - the label of instances to start.
  *
  * @param {!object} event Cloud Function PubSub message event.
- * @param {!object} callback Cloud Function PubSub callback indicating completion.
+ * @param {!object} callback Cloud Function PubSub callback indicating
+ *  completion.
  */
 exports.startInstancePubSub = (event, callback) => {
   try {
@@ -37,12 +38,12 @@ exports.startInstancePubSub = (event, callback) => {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );
-    var options = {
-      filter: 'labels.' + payload.label
-    }
-    compute.getVMs(options).then(function(vms) {
-      vms[0].forEach(function(instance) {
-        if (payload.zone == instance.zone.id) {
+    const options = {
+      filter: 'labels.' + payload.label,
+    };
+    compute.getVMs(options).then(vms => {
+      vms[0].forEach(instance => {
+        if (payload.zone === instance.zone.id) {
           compute
             .zone(payload.zone)
             .vm(instance.name)
@@ -93,12 +94,12 @@ exports.stopInstancePubSub = (event, callback) => {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );
-    var options = {
-      filter: 'labels.' + payload.label
-    }
-    compute.getVMs(options).then(function(vms) {
-      vms[0].forEach(function(instance) {
-        if (payload.zone == instance.zone.id) {
+    const options = {
+      filter: 'labels.' + payload.label,
+    };
+    compute.getVMs(options).then(vms => {
+      vms[0].forEach(instance => {
+        if (payload.zone === instance.zone.id) {
           compute
             .zone(payload.zone)
             .vm(instance.name)
@@ -132,7 +133,7 @@ exports.stopInstancePubSub = (event, callback) => {
  * Validates that a request payload contains the expected fields.
  *
  * @param {!object} payload the request payload to validate.
- * @returns {!object} the payload object.
+ * @return {!object} the payload object.
  */
 function _validatePayload(payload) {
   if (!payload.zone) {

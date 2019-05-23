@@ -7,12 +7,9 @@ const client = new grafeas.v1.GrafeasClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.GCLOUD_PROJECT;
-const formattedParent = `projects/${projectId}`;
 const uuidVal = uuid.v4();
 const noteId = `test-note-${uuidVal}`;
-const formattedNoteName = `projects/${projectId}/notes/${noteId}`;
-const resourceUrl = `gcr.io/project/image`;
+const resourceUrl = `gcr.io/test-project/test-image-${uuidVal}`;
 const subscriptionId = `occurrence-subscription-${uuidVal}`;
 const timeoutSeconds = 5;
 
@@ -21,7 +18,17 @@ const pubsub = new PubSub();
 const topicName = 'container-analysis-occurrences-v1beta1';
 const topic = pubsub.topic(topicName);
 
+let projectId;
+let formattedParent;
+let formattedNoteName;
+
 describe('Note tests', function() {
+  before(async function() {
+    // define projectId and related vars
+    projectId = await client.getProjectId();
+    formattedParent = `projects/${projectId}`;
+    formattedNoteName = `projects/${projectId}/notes/${noteId}`;
+  });
   after(async function() {
     const [allOccurrences] = await client.listOccurrences({
       parent: formattedParent,
@@ -194,6 +201,11 @@ describe('Note tests', function() {
 // TODO:
 xdescribe('polling', function() {
   before(async function() {
+    // define project id and related vars
+    projectId = await client.getProjectId();
+    formattedParent = `projects/${projectId}`;
+    formattedNoteName = `projects/${projectId}/notes/${noteId}`;
+
     const discoveryNoteRequest = {
       parent: formattedParent,
       noteId: `${noteId}-discovery-polling`,
@@ -253,6 +265,13 @@ xdescribe('polling', function() {
 });
 
 describe('pubsub', function() {
+  before(async function() {
+    // define project id and related vars
+    projectId = await client.getProjectId();
+    formattedParent = `projects/${projectId}`;
+    formattedNoteName = `projects/${projectId}/notes/${noteId}`;
+  });
+
   beforeEach(async function() {
     await topic.createSubscription(subscriptionId);
     const pubSubNoteReq = {
@@ -264,10 +283,12 @@ describe('pubsub', function() {
     };
     await client.createNote(pubSubNoteReq);
   });
+
   afterEach(async function() {
     await client.deleteNote({name: `${formattedNoteName}-pubsub`});
     await pubsub.subscription(subscriptionId).delete();
   });
+
   it('should get accurate count of occurrences from pubsub topic', async function() {
     const expectedNum = 3;
     const pubSubOccurrenceReq = {
@@ -282,6 +303,7 @@ describe('pubsub', function() {
         },
       },
     };
+
     // empty subscription
     execSync(
       `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`

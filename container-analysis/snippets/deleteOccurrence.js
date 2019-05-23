@@ -1,13 +1,13 @@
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
-  occurrenceId = 'my-occurrence' // Your Occurrence name
+  occurrenceId = 'my-occurrence' // The API-generated identifier associated with the occurrence
 ) {
   // [START containeranalysis_delete_occurrence]
   /**
    * TODO(developer): Uncomment these variables before running the sample
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
-  // const occurrenceId = 'my-occurrence' // Your Occurrence name
+  // const occurrenceId = 'my-occurrence' // The API-generated identifier associated with the occurrence
 
   // Import the library and create a client
   const grafeas = require('@google-cloud/grafeas');

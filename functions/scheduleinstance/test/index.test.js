@@ -131,7 +131,7 @@ it('startInstancePubSub: should fail with empty event payload', () => {
 
 /** Tests for stopInstancePubSub */
 
-it('stopInstancePubSub: should accept JSON-formatted event payloa with instance', async () => {
+it('stopInstancePubSub: should accept JSON-formatted event payload with instance', async () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone', instance: 'test-instance'};

@@ -38,9 +38,7 @@ exports.startInstancePubSub = (event, callback) => {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );
-    const options = {
-      filter: 'labels.' + payload.label,
-    };
+    const options = {filter: `labels.${payload.label}`};
     compute.getVMs(options).then(vms => {
       vms[0].forEach(instance => {
         if (payload.zone === instance.zone.id) {
@@ -94,9 +92,7 @@ exports.stopInstancePubSub = (event, callback) => {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
     );
-    const options = {
-      filter: 'labels.' + payload.label,
-    };
+    const options = {filter: `labels.${payload.label}`};
     compute.getVMs(options).then(vms => {
       vms[0].forEach(instance => {
         if (payload.zone === instance.zone.id) {

@@ -2,13 +2,13 @@
 extends:
   - 'eslint:recommended'
   - 'plugin:node/recommended'
-  - 'plugin:promise'
-  - prettier
+  - 'prettier'
 env:
   mocha: true
 plugins:
   - node
   - prettier
+  - promise
 rules:
   prettier/prettier: error
   block-scoped-var: error
@@ -22,5 +22,6 @@ rules:
   prefer-arrow-callback: error
   no-throw-literal: error
   require-await: error
-  prefer-await-to-then: error
+  promise/prefer-await-to-then: error
+  promise/no-nesting: error
   prefer-destructuring: error

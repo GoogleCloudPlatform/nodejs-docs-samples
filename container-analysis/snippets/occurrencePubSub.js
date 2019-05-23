@@ -34,7 +34,7 @@ async function main(
     subscription.removeListener(`message`, messageHandler);
     console.log(`Polled ${count} occurrences`);
   }, timeoutSeconds * 1000);
+  // [END containeranalysis_pubsub]
 }
-// [END containeranalysis_pubsub]
 
 main(...process.argv.slice(2));

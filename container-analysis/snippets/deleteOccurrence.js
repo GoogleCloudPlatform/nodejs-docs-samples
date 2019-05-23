@@ -22,7 +22,7 @@ async function main(
   });
 
   console.log(`Occurrence deleted:  ${formattedName}`);
+  // [END containeranalysis_delete_occurrence]
 }
-// [END containeranalysis_delete_occurrence]
 
 main(...process.argv.slice(2));

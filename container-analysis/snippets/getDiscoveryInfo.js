@@ -32,7 +32,7 @@ async function main(
   } else {
     console.log('No occurrences found.');
   }
+  // [END containeranalysis_discovery_info]
 }
-// [END containeranalysis_discovery_info]
 
 main(...process.argv.slice(2));

@@ -34,7 +34,7 @@ async function main(
   });
   console.log(`Occurrence created ${occurrence.name}.`);
   return occurrence;
+  // [END containeranalysis_create_occurrence]
 }
-// [END containeranalysis_create_occurrence]
 
 main(...process.argv.slice(2));

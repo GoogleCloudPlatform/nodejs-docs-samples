@@ -23,7 +23,7 @@ async function main(
   });
 
   console.log(`Occurrence name: ${occurrence.name}`);
+  // [END containeranalysis_get_occurrence]
 }
-// [END containeranalysis_get_occurrence]
 
 main(...process.argv.slice(2));

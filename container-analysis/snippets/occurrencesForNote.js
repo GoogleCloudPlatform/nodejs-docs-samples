@@ -31,7 +31,7 @@ async function main(
   } else {
     console.log('No occurrences found.');
   }
+  // [END containeranalysis_occurrences_for_note]
 }
-// [END containeranalysis_occurrences_for_note]
 
 main(...process.argv.slice(2));

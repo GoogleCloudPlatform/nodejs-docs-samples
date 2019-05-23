@@ -20,7 +20,7 @@ async function main(
   // Delete the note
   await client.deleteNote({name: formattedName});
   console.log(`Note ${formattedName} deleted.`);
+  // [END containeranalysis_delete_note]
 }
-// [END containeranalysis_delete_note]
 
 main(...process.argv.slice(2));

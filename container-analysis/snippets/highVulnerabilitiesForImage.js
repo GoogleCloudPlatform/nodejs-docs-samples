@@ -37,7 +37,7 @@ async function main(
   } else {
     console.log('No occurrences found.');
   }
+  // [END containeranalysis_filter_vulnerability_occurrences]
 }
-// [END containeranalysis_filter_vulnerability_occurrences]
 
 main(...process.argv.slice(2));

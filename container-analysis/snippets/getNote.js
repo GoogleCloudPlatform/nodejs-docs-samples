@@ -19,7 +19,7 @@ async function main(
   const [note] = await client.getNote({name: formattedName});
 
   console.log(`Note name: ${note.name}`);
+  // [END containeranalysis_get_note]
 }
-// [END containeranalysis_get_note]
 
 main(...process.argv.slice(2));

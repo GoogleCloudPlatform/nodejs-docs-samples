@@ -29,7 +29,7 @@ async function main(
   });
 
   console.log(`Note ${note.name} created.`);
+  // [END containeranalysis_create_note]
 }
-// [END containeranalysis_create_note]
 
 main(...process.argv.slice(2));

@@ -70,10 +70,6 @@ async function main(
       finishedOccurrence.discovered.discovered.analysisStatus
     }`
   );
-  // discoveryOccurrences.forEach(occurrence => {
-  //   console.log(`${occurrence.name}:`);
-  //   console.log(`  Created: ${new Date(occurrence.createTime.seconds * 1000)}`);
-  // });
 }
 // [END containeranalysis_poll_discovery_occurrence_finished]
 

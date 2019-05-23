@@ -108,9 +108,9 @@ describe('Note tests', function() {
             analysisStatus: 'FINISHED_SUCCESS',
           },
         },
-      },
-      resource: {
-        uri: resourceUrl,
+        resource: {
+          uri: resourceUrl,
+        },
       },
     };
 

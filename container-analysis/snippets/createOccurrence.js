@@ -14,8 +14,8 @@ async function main(
   // const imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
 
   // Import the library and create a client
-  const grafeas = require('@google-cloud/grafeas');
-  const client = new grafeas.v1.GrafeasClient();
+  const containerAnalysis = require('@google-cloud/containeranalysis');
+  const client = new containerAnalysis.v1beta1.ContainerAnalysisV1Beta1Client();
 
   // Construct request
   const formattedParent = client.projectPath(occurenceProjectId);

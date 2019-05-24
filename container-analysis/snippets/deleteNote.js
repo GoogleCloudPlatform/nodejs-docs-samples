@@ -11,8 +11,8 @@ async function main(
   // const noteId = 'my-note-id' // Id of the note
 
   // Import the library and create a client
-  const grafeas = require('@google-cloud/grafeas');
-  const client = new grafeas.v1.GrafeasClient();
+  const containerAnalysis = require('@google-cloud/containeranalysis');
+  const client = new containerAnalysis.v1beta1.ContainerAnalysisV1Beta1Client();
 
   // Get the full path to the note
   const formattedName = client.notePath(projectId, noteId);

@@ -12,8 +12,8 @@ async function main(
   // const timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub messages
 
   // Import the library and create a client
-  const grafeas = require('@google-cloud/grafeas');
-  const client = new grafeas.v1.GrafeasClient();
+  const containerAnalysis = require('@google-cloud/containeranalysis');
+  const client = new containerAnalysis.v1beta1.ContainerAnalysisV1Beta1Client();
 
   const formattedParent = client.projectPath(projectId);
 

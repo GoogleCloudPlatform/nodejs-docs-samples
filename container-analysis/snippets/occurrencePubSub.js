@@ -11,10 +11,6 @@ async function main(
   // const subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1beta' topic
   // const timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub Messages
 
-  // Import the library and create a client
-  const grafeas = require('@google-cloud/grafeas');
-  const client = new grafeas.v1.GrafeasClient();
-
   // Import the pubsub library and create a client, topic and subscription
   const {PubSub} = require('@google-cloud/pubsub');
   const pubsub = new PubSub({projectId});

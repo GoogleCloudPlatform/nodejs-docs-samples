@@ -3,7 +3,7 @@ const cp = require('child_process');
 const uuid = require(`uuid`);
 
 const containerAnalysis = require('@google-cloud/containeranalysis');
-const client = new containerAnalysis.v1beta1.ContainerAnalysisV1Beta1Client();
+const client = new containerAnalysis.v1beta1.GrafeasV1Beta1Client();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -313,7 +313,6 @@ describe('pubsub', function() {
       const [pubSubOccurrence] = await client.createOccurrence(
         pubSubOccurrenceReq
       );
-      // const pubSubOccurrenceId = pubSubOccurrence.name.split("/")[3];
       await client.deleteOccurrence({name: pubSubOccurrence.name});
     }
     const output = execSync(

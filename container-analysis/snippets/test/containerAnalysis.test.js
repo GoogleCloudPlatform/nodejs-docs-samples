@@ -198,7 +198,7 @@ describe('Note tests', function() {
   });
 });
 
-// TODO:
+// TODO: complete polling sample
 xdescribe('polling', function() {
   before(async function() {
     // define project id and related vars
@@ -245,13 +245,6 @@ xdescribe('polling', function() {
     });
     await client.deleteNote({name: `${formattedNoteName}-discovery-polling`});
   });
-  // it('should poll api until timeout', function() {
-  //     const output = execSync(`node pollDiscoveryOccurrenceFinished.js "${projectId}" "${urlWithoutOccurrences}" "${timeoutSeconds}"`);
-  //     assert.match(
-  //         output,
-  //         new RegExp(`'Timeout while retrieving discovery occurrence.`)
-  //     );
-  // });
 
   it('should successfully poll latest discovery occurrence', function() {
     const output = execSync(

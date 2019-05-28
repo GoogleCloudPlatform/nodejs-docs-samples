@@ -12,6 +12,7 @@ const noteId = `test-note-${uuidVal}`;
 const resourceUrl = `gcr.io/test-project/test-image-${uuidVal}`;
 const subscriptionId = `occurrence-subscription-${uuidVal}`;
 const timeoutSeconds = 5;
+const retries = 5;
 
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
@@ -66,7 +67,6 @@ describe('Note tests', function() {
     assert.match(output, new RegExp(`Occurrence created`));
   });
 
-  // TODO: sometimes fails, should try again if no images are found
   it('should get occurrence', async function() {
     const [occurrences] = await client.listOccurrences({
       parent: formattedParent,
@@ -75,9 +75,16 @@ describe('Note tests', function() {
 
     const occurrence = occurrences[0];
     const occurrenceId = occurrence.name.split('/')[3];
-    const output = execSync(
-      `node getOccurrence.js "${projectId}" "${occurrenceId}"`
-    );
+    let output;
+    for (let i = 0; i < retries; i++) {
+      output = execSync(
+        `node getOccurrence.js "${projectId}" "${occurrenceId}"`
+      );
+      if (output.includes('Occurrence name:')) {
+        break;
+      }
+    }
+
     assert.match(output, new RegExp(`Occurrence name: ${occurrence.name}`));
   });
 

@@ -15,6 +15,8 @@
 
 'use strict';
 
+// sample-metadata:
+//  title: Job Triggers
 async function createTrigger(
   callingProjectId,
   triggerId,

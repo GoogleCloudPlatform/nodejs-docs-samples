@@ -15,6 +15,8 @@
 
 'use strict';
 
+// sample-metadata:
+//  title: Risk Analysis
 async function numericalRiskAnalysis(
   callingProjectId,
   tableProjectId,

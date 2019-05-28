@@ -15,6 +15,8 @@
 
 'use strict';
 
+// sample-metadata:
+//  title: Inspect Templates
 async function createInspectTemplate(
   callingProjectId,
   templateId,

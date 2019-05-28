@@ -15,6 +15,8 @@
 
 'use strict';
 
+// sample-metadata:
+//  title: Job Management
 async function listJobs(callingProjectId, filter, jobType) {
   // [START dlp_list_jobs]
   // Imports the Google Cloud Data Loss Prevention library

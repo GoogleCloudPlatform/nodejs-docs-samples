@@ -89,9 +89,15 @@ describe('Note tests', () => {
   });
 
   it('should get occurences for note', () => {
-    const output = execSync(
-      `node occurrencesForNote.js "${projectId}" "${noteId}"`
-    );
+    let output;
+    for (let i = 0; i < retries; i++) {
+      output = execSync(
+        `node occurrencesForNote.js "${projectId}" "${noteId}"`
+      );
+      if (!output.includes('No occurrences found.')) {
+        break;
+      }
+    }
     assert.include(output, 'Occurrences:');
   });
 
@@ -191,7 +197,7 @@ describe('Note tests', () => {
     const output = execSync(
       `node deleteOccurrence.js "${projectId}" "${occurrenceId}"`
     );
-    assert.include(output, `Occurrence deleted.`);
+    assert.include(output, `Occurrence deleted:`);
   });
   it('should delete note', () => {
     const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
@@ -262,8 +268,12 @@ describe('pubsub', () => {
     projectId = await client.getProjectId();
     formattedParent = `projects/${projectId}`;
     formattedNoteName = `projects/${projectId}/notes/${noteId}`;
-    await pubsub.createTopic(topicName);
-    topic = pubsub.topic(topicName);
+    try {
+      topic = pubsub.topic(topicName);
+    } catch (err) {
+      await pubsub.createTopic(topicName);
+      topic = pubsub.topic(topicName);
+    }
   });
 
   beforeEach(async () => {

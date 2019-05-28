@@ -23,14 +23,14 @@ let projectId;
 let formattedParent;
 let formattedNoteName;
 
-describe('Note tests', function() {
-  before(async function() {
+describe('Note tests', () => {
+  before(async () => {
     // define projectId and related vars
     projectId = await client.getProjectId();
     formattedParent = `projects/${projectId}`;
     formattedNoteName = `projects/${projectId}/notes/${noteId}`;
   });
-  after(async function() {
+  after(async () => {
     const [allOccurrences] = await client.listOccurrences({
       parent: formattedParent,
       filter: `resourceUrl = "${resourceUrl}"`,
@@ -50,24 +50,24 @@ describe('Note tests', function() {
       console.log(`deleted note ${note.name}`);
     });
   });
-  it('should create a note', function() {
+  it('should create a note', () => {
     const output = execSync(`node createNote.js "${projectId}" "${noteId}"`);
     assert.include(output, `Note ${formattedNoteName} created.`);
   });
 
-  it('should get note', function() {
+  it('should get note', () => {
     const output = execSync(`node getNote.js "${projectId}" "${noteId}"`);
     assert.include(output, `Note name: ${formattedNoteName}`);
   });
 
-  it('should create occurrence', function() {
+  it('should create occurrence', () => {
     const output = execSync(
       `node createOccurrence.js "${projectId}" "${noteId}" "${projectId}" "${resourceUrl}"`
     );
     assert.include(output, `Occurrence created`);
   });
 
-  it('should get occurrence', async function() {
+  it('should get occurrence', async () => {
     const [occurrences] = await client.listOccurrences({
       parent: formattedParent,
     });
@@ -88,21 +88,21 @@ describe('Note tests', function() {
     assert.include(output, `Occurrence name: ${occurrence.name}`);
   });
 
-  it('should get occurences for note', function() {
+  it('should get occurences for note', () => {
     const output = execSync(
       `node occurrencesForNote.js "${projectId}" "${noteId}"`
     );
     assert.include(output, 'Occurrences:');
   });
 
-  it('should get occurrences for image', function() {
+  it('should get occurrences for image', () => {
     const output = execSync(
       `node occurrencesForImage.js "${projectId}" "${resourceUrl}"`
     );
     assert.include(output, `Occurrences for ${resourceUrl}`);
   });
 
-  it('should get discovery info for image', async function() {
+  it('should get discovery info for image', async () => {
     const discoveryNoteRequest = {
       parent: formattedParent,
       noteId: `${noteId}-discovery`,
@@ -136,7 +136,7 @@ describe('Note tests', function() {
     assert.include(output, `Discovery Occurrences for ${resourceUrl}`);
   });
 
-  it('should get high severity vulnerabilities for image', async function() {
+  it('should get high severity vulnerabilities for image', async () => {
     const criticalNoteReq = {
       parent: formattedParent,
       noteId: `${noteId}-critical`,
@@ -173,14 +173,14 @@ describe('Note tests', function() {
     assert.include(output, `High Severity Vulnerabilities for ${resourceUrl}`);
   });
 
-  it('should get all vulnerabilites for image', function() {
+  it('should get all vulnerabilites for image', () => {
     const output = execSync(
       `node vulnerabilityOccurrencesForImage "${projectId}" "${resourceUrl}"`
     );
     assert.include(output, `All Vulnerabilities for ${resourceUrl}`);
   });
 
-  it('should delete occurrence', async function() {
+  it('should delete occurrence', async () => {
     const [occurrences] = await client.listOccurrences({
       parent: formattedParent,
     });
@@ -193,7 +193,7 @@ describe('Note tests', function() {
     );
     assert.include(output, `Occurrence deleted.`);
   });
-  it('should delete note', function() {
+  it('should delete note', () => {
     const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
     assert.include(output, `Note ${formattedNoteName} deleted.`);
   });
@@ -201,8 +201,8 @@ describe('Note tests', function() {
 
 // eslint-disable-next-line no-warning-comments
 // TODO: complete polling sample
-xdescribe('polling', function() {
-  before(async function() {
+xdescribe('polling', () => {
+  before(async () => {
     // define project id and related vars
     projectId = await client.getProjectId();
     formattedParent = `projects/${projectId}`;
@@ -238,7 +238,7 @@ xdescribe('polling', function() {
     await client.createOccurrence(occurrenceRequest);
   });
 
-  after(async function() {
+  after(async () => {
     const [discoveryOccurrences] = await client.listNoteOccurrences({
       name: `${formattedNoteName}-discovery-polling`,
     });
@@ -248,7 +248,7 @@ xdescribe('polling', function() {
     await client.deleteNote({name: `${formattedNoteName}-discovery-polling`});
   });
 
-  it('should successfully poll latest discovery occurrence', function() {
+  it('should successfully poll latest discovery occurrence', () => {
     const output = execSync(
       `node pollDiscoveryOccurrenceFinished.js "${projectId}" "${resourceUrl}" "${timeoutSeconds}"`
     );
@@ -256,8 +256,8 @@ xdescribe('polling', function() {
   });
 });
 
-describe('pubsub', function() {
-  before(async function() {
+describe('pubsub', () => {
+  before(async () => {
     // define project id and related vars
     projectId = await client.getProjectId();
     formattedParent = `projects/${projectId}`;
@@ -266,7 +266,7 @@ describe('pubsub', function() {
     topic = pubsub.topic(topicName);
   });
 
-  beforeEach(async function() {
+  beforeEach(async () => {
     await topic.createSubscription(subscriptionId);
     const pubSubNoteReq = {
       parent: formattedParent,
@@ -278,12 +278,12 @@ describe('pubsub', function() {
     await client.createNote(pubSubNoteReq);
   });
 
-  afterEach(async function() {
+  afterEach(async () => {
     await client.deleteNote({name: `${formattedNoteName}-pubsub`});
     await pubsub.subscription(subscriptionId).delete();
   });
 
-  it('should get accurate count of occurrences from pubsub topic', async function() {
+  it('should get accurate count of occurrences from pubsub topic', async () => {
     const expectedNum = 3;
     const pubSubOccurrenceReq = {
       parent: formattedParent,

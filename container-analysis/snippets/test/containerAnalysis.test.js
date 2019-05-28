@@ -52,19 +52,19 @@ describe('Note tests', function() {
   });
   it('should create a note', function() {
     const output = execSync(`node createNote.js "${projectId}" "${noteId}"`);
-    assert.match(output, new RegExp(`Note ${formattedNoteName} created.`));
+    assert.include(output, new RegExp(`Note ${formattedNoteName} created.`));
   });
 
   it('should get note', function() {
     const output = execSync(`node getNote.js "${projectId}" "${noteId}"`);
-    assert.match(output, new RegExp(`Note name: ${formattedNoteName}`));
+    assert.include(output, new RegExp(`Note name: ${formattedNoteName}`));
   });
 
   it('should create occurrence', function() {
     const output = execSync(
       `node createOccurrence.js "${projectId}" "${noteId}" "${projectId}" "${resourceUrl}"`
     );
-    assert.match(output, new RegExp(`Occurrence created`));
+    assert.include(output, new RegExp(`Occurrence created`));
   });
 
   it('should get occurrence', async function() {
@@ -85,21 +85,21 @@ describe('Note tests', function() {
       }
     }
 
-    assert.match(output, new RegExp(`Occurrence name: ${occurrence.name}`));
+    assert.include(output, new RegExp(`Occurrence name: ${occurrence.name}`));
   });
 
   it('should get occurences for note', function() {
     const output = execSync(
       `node occurrencesForNote.js "${projectId}" "${noteId}"`
     );
-    assert.match(output, /Occurrences:/);
+    assert.include(output, /Occurrences:/);
   });
 
   it('should get occurrences for image', function() {
     const output = execSync(
       `node occurrencesForImage.js "${projectId}" "${resourceUrl}"`
     );
-    assert.match(output, new RegExp(`Occurrences for ${resourceUrl}`));
+    assert.include(output, new RegExp(`Occurrences for ${resourceUrl}`));
   });
 
   it('should get discovery info for image', async function() {
@@ -133,7 +133,7 @@ describe('Note tests', function() {
     const output = execSync(
       `node getDiscoveryInfo "${projectId}" "${resourceUrl}"`
     );
-    assert.match(
+    assert.include(
       output,
       new RegExp(`Discovery Occurrences for ${resourceUrl}`)
     );
@@ -173,7 +173,7 @@ describe('Note tests', function() {
       `node highVulnerabilitiesForImage "${projectId}" "${resourceUrl}"`
     );
 
-    assert.match(
+    assert.include(
       output,
       new RegExp(`High Severity Vulnerabilities for ${resourceUrl}`)
     );
@@ -183,7 +183,7 @@ describe('Note tests', function() {
     const output = execSync(
       `node vulnerabilityOccurrencesForImage "${projectId}" "${resourceUrl}"`
     );
-    assert.match(output, new RegExp(`All Vulnerabilities for ${resourceUrl}`));
+    assert.include(output, new RegExp(`All Vulnerabilities for ${resourceUrl}`));
   });
 
   it('should delete occurrence', async function() {
@@ -197,14 +197,15 @@ describe('Note tests', function() {
     const output = execSync(
       `node deleteOccurrence.js "${projectId}" "${occurrenceId}"`
     );
-    assert.match(output, new RegExp(`Occurrence deleted.`));
+    assert.include(output, new RegExp(`Occurrence deleted.`));
   });
   it('should delete note', function() {
     const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
-    assert.match(output, new RegExp(`Note ${formattedNoteName} deleted.`));
+    assert.include(output, new RegExp(`Note ${formattedNoteName} deleted.`));
   });
 });
 
+// eslint-disable-next-line no-warning-comments
 // TODO: complete polling sample
 xdescribe('polling', function() {
   before(async function() {
@@ -257,7 +258,7 @@ xdescribe('polling', function() {
     const output = execSync(
       `node pollDiscoveryOccurrenceFinished.js "${projectId}" "${resourceUrl}" "${timeoutSeconds}"`
     );
-    assert.match(
+    assert.include(
       output,
       new RegExp(`Polled Discovery Occurrences for ${resourceUrl}`)
     );
@@ -314,7 +315,7 @@ describe('pubsub', function() {
       `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`
     );
 
-    assert.match(empty, new RegExp(`Polled 0 occurrences`));
+    assert.include(empty, new RegExp(`Polled 0 occurrences`));
     // create test occurrences
     for (let i = 0; i < expectedNum; i++) {
       const [pubSubOccurrence] = await client.createOccurrence(
@@ -327,6 +328,6 @@ describe('pubsub', function() {
     );
 
     // make sure pubsub number matches
-    assert.match(output, new RegExp(`Polled ${expectedNum} occurrences`));
+    assert.include(output, new RegExp(`Polled ${expectedNum} occurrences`));
   });
 });

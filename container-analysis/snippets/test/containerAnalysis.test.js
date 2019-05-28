@@ -17,7 +17,7 @@ const retries = 5;
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 const topicName = 'container-analysis-occurrences-v1beta1';
-const topic = pubsub.topic(topicName);
+let topic;
 
 let projectId;
 let formattedParent;
@@ -271,6 +271,8 @@ describe('pubsub', function() {
     projectId = await client.getProjectId();
     formattedParent = `projects/${projectId}`;
     formattedNoteName = `projects/${projectId}/notes/${noteId}`;
+    await pubsub.createTopic(topicName);
+    topic = pubsub.topic(topicName);
   });
 
   beforeEach(async function() {

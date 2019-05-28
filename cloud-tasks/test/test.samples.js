@@ -15,53 +15,60 @@
 'use strict';
 
 const {assert} = require('chai');
-const cp = require('child_process');
+const {execSync} = require('child_process');
 const uuid = require('uuid');
+const {CloudTasksClient} = require('@google-cloud/tasks');
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
-const PROJECT_ID = process.env.GCLOUD_PROJECT;
+const exec = cmd => execSync(cmd, {encoding: 'utf-8'});
 const queueName = `gcloud-${uuid.v4().split('-')[0]}`;
-const URL = `https://${PROJECT_ID}.appspot.com/log_payload`;
 const SERVICE_ACCOUNT =
   'test-run-invoker@long-door-651.iam.gserviceaccount.com';
 
 describe('Cloud Task Sample Tests', () => {
+  let url;
+  let projectId;
+
+  before(async () => {
+    const client = new CloudTasksClient();
+    projectId = await client.getProjectId();
+    url = `https://${projectId}.appspot.com/log_payload`;
+  });
+
   it('should create a queue', () => {
-    const stdout = execSync(`node createQueue ${PROJECT_ID} ${queueName}`);
+    const stdout = exec(`node createQueue ${projectId} ${queueName}`);
     assert.match(stdout, /Created queue/);
   });
 
   it('should create a task', () => {
-    const stdout = execSync(
-      `node createTask ${PROJECT_ID} us-central1 ${queueName}`
+    const stdout = exec(
+      `node createTask ${projectId} us-central1 ${queueName}`
     );
     assert.match(stdout, /Created task/);
   });
 
   it('quickstart sample should create a task', () => {
-    const stdout = execSync(
-      `node quickstart ${PROJECT_ID} us-central1 ${queueName}`
+    const stdout = exec(
+      `node quickstart ${projectId} us-central1 ${queueName}`
     );
     assert.match(stdout, /Created task/);
   });
 
   it('should create a HTTP task', () => {
-    const stdout = execSync(
-      `node createHttpTask ${PROJECT_ID} us-central1 my-appengine-queue ${URL}`
+    const stdout = exec(
+      `node createHttpTask ${projectId} us-central1 my-appengine-queue ${url}`
     );
     assert.match(stdout, /Created task/);
   });
 
   it('should create a HTTP task with token', () => {
-    const stdout = execSync(
-      `node createHttpTaskWithToken ${PROJECT_ID} us-central1 my-appengine-queue ${URL} ${SERVICE_ACCOUNT}`
+    const stdout = exec(
+      `node createHttpTaskWithToken ${projectId} us-central1 my-appengine-queue ${url} ${SERVICE_ACCOUNT}`
     );
     assert.match(stdout, /Created task/);
   });
 
   it('should delete a queue', () => {
-    const stdout = execSync(`node deleteQueue ${PROJECT_ID} ${queueName}`);
+    const stdout = exec(`node deleteQueue ${projectId} ${queueName}`);
     assert.match(stdout, /Deleted queue/);
   });
 });

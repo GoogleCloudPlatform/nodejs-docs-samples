@@ -23,14 +23,14 @@ function main(
   keeplistTags
 ) {
   // [START healthcare_dicom_keeplist_deidentify_dataset]
-  const {google} = require('googleapis');
+  const { google } = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
   async function deidentifyDataset() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
-    google.options({auth});
+    google.options({ auth });
 
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
@@ -47,17 +47,17 @@ function main(
         config: {
           dicom: {
             keepList: {
-              tags: [
-                keeplistTags
-              ]
-            }
-          }
-        }
-      }
+              tags: [keeplistTags],
+            },
+          },
+        },
+      },
     };
 
     await healthcare.projects.locations.datasets.deidentify(request);
-    console.log(`De-identified data written from dataset ${sourceDatasetId} to dataset ${destinationDatasetId}`)
+    console.log(
+      `De-identified data written from dataset ${sourceDatasetId} to dataset ${destinationDatasetId}`
+    );
   }
 
   deidentifyDataset();

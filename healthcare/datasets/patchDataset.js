@@ -38,13 +38,13 @@ function main(
     // const timeZone = 'UTC';
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
     const request = {
-        name,
-        updateMask: 'timeZone',
-        resource: {timeZone: timeZone}
+      name,
+      updateMask: 'timeZone',
+      resource: {timeZone: timeZone},
     };
 
     await healthcare.projects.locations.datasets.patch(request);
-    console.log(`Dataset ${datasetId} patched with time zone ${timeZone}`)
+    console.log(`Dataset ${datasetId} patched with time zone ${timeZone}`);
   }
 
   patchDataset();

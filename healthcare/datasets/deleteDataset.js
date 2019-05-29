@@ -35,7 +35,7 @@ function main(
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
-    const request = {'name': parent}
+    const request = {'name': parent};
 
     await healthcare.projects.locations.datasets.delete(request);
     console.log(`Deleted dataset: ${datasetId}`);

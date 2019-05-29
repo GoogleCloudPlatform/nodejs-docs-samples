@@ -88,7 +88,7 @@ describe('Note tests', () => {
     assert.include(output, `Occurrence name: ${occurrence.name}`);
   });
 
-  it('should get occurences for note', () => {
+  it('should get occurrences for note', () => {
     let output;
     for (let i = 0; i < retries; i++) {
       output = execSync(

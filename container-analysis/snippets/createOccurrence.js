@@ -5,7 +5,7 @@
 async function main(
   noteProjectId = 'your-project-id', // Your GCP Project Id
   noteId = 'my-note-id', // Id of the note
-  occurenceProjectId = 'your-project-id', // GCP Project Id of Occurence
+  occurrenceProjectId = 'your-project-id', // GCP Project Id of Occurrence
   imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
 ) {
   // [START containeranalysis_create_occurrence]
@@ -14,7 +14,7 @@ async function main(
    */
   // const noteProjectId = 'your-project-id', // Your GCP Project Id
   // const noteId = 'my-note-id', // Id of the note
-  // const occurenceProjectId = 'your-project-id', // GCP Project Id of Occurence
+  // const occurrenceProjectId = 'your-project-id', // GCP Project Id of Occurrence
   // const imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
 
   // Import the library and create a client
@@ -22,7 +22,7 @@ async function main(
   const client = new containerAnalysis.v1beta1.GrafeasV1Beta1Client();
 
   // Construct request
-  const formattedParent = client.projectPath(occurenceProjectId);
+  const formattedParent = client.projectPath(occurrenceProjectId);
   const formattedNote = client.notePath(noteProjectId, noteId);
 
   // Creates and returns a new Occurrence associated with an existing Note

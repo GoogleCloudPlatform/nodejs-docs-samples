@@ -21,21 +21,21 @@ function main(
   datasetId
 ) {
   // [START healthcare_delete_dataset]
-  const {google} = require('googleapis');
+  const { google } = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
   async function deleteDataset() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
-    google.options({auth});
+    google.options({ auth });
 
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
-    const request = {'name': parent};
+    const request = { name: parent };
 
     await healthcare.projects.locations.datasets.delete(request);
     console.log(`Deleted dataset: ${datasetId}`);

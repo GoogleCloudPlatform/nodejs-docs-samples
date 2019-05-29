@@ -1,7 +1,7 @@
 // sample-metadata:
 //   title: Delete Occurrence
 //   description: Deletes a specified Occurrence
-//   usage: node deleteOccurrence.js
+//   usage: node deleteOccurrence.js "project-id" "occurrence-id"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   occurrenceId = 'my-occurrence' // The API-generated identifier associated with the occurrence

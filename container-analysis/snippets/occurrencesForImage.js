@@ -1,7 +1,7 @@
 // sample-metadata:
 //   title: Occurrences for Image
 //   description: Retrieves all Occurrences attached to the metadata of a specified image
-//   usage: node occurrencesForImage.js
+//   usage: node occurrencesForImage.js "project-id" "image-url"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to

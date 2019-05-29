@@ -1,7 +1,7 @@
 // sample-metadata:
 //   title: Get Note
 //   description: Retrieves and prints a specified note
-//   usage: node getNote.js
+//   usage: node getNote.js "project-id" "note-id"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   noteId = 'my-note-id' // Id of the note

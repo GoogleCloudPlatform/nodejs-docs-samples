@@ -1,7 +1,7 @@
 // sample-metadata:
 //   title: Create Occurrence
 //   description: Creates an Occurrence of a Note and attaches it as a metadata to an image
-//   usage: node createOccurrence.js
+//   usage: node createOccurrence.js "note-project-id" "note-id" "occurrence-project-id" "image url"
 async function main(
   noteProjectId = 'your-project-id', // Your GCP Project Id
   noteId = 'my-note-id', // Id of the note

@@ -1,7 +1,7 @@
 // sample-metadata:
 //   title: Get Occurrence
 //   description: Retrieves and prints a specified Occurrence
-//   usage: node getOccurrence.js
+//   usage: node getOccurrence.js "project-id" "occurrence-id"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   occurrenceId = 'my-occurrence' // The API-generated identifier associated with the occurrence

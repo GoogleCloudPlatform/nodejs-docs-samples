@@ -1,7 +1,7 @@
 // sample-metadata:
 //   title: Get High Vulnerabilities for Image
 //   description: Retrieves all Vulnerability Occurrences of High Severity from Specified Image
-//   usage: node highVulnerabilitiesForImage.js
+//   usage: node highVulnerabilitiesForImage.js "project-id" "image-url"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to

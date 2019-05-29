@@ -1,7 +1,7 @@
 // sample-metadata:
 //   title: Delete Note
 //   description: Deletes a specified Note
-//   usage: node deleteNote.js
+//   usage: node deleteNote.js "project-id" "note-id"
 async function main(
   projectId = 'your-project-id', // Your GCP Project Id
   noteId = 'my-note-id' // Id of the note

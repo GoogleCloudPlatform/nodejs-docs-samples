@@ -1,3 +1,7 @@
+// sample-metadata:
+//   title: Get Discovery Info
+//   description: Gets all Discovery Occurrences attached to specified image
+//   usage: node getDiscoveryInfo.js
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to

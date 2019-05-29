@@ -1,4 +1,7 @@
-// Deletes an existing Note from the server
+// sample-metadata:
+//   title: Delete Note
+//   description: Deletes a specified Note
+//   usage: node deleteNote.js
 async function main(
   projectId = 'your-project-id', // Your GCP Project Id
   noteId = 'my-note-id' // Id of the note

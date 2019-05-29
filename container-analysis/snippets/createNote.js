@@ -1,3 +1,7 @@
+// sample-metadata:
+//   title: Create Note
+//   description: Creates a Note with specified ID
+//   usage: node createNote.js
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   noteId = 'my-note-id' // Id of the note

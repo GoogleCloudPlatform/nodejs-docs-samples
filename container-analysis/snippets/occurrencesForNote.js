@@ -1,3 +1,7 @@
+// sample-metadata:
+//   title: Occurrences for Note
+//   description: Retrieves all Occurrences of a specified Note
+//   usage: node occurrencesForNote.js
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   noteId = 'my-note-id' // Id of the note

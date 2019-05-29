@@ -1,3 +1,7 @@
+// sample-metadata:
+//   title: Occurrence PubSub
+//   description: Polls a specified PubSub subscription for Occurrences.  Requires a subscription to a topic named 'container-analysis-occurrences-v1beta'
+//   usage: node occurrencePubSub.js
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1beta' topic

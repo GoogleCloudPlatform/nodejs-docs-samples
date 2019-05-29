@@ -1,7 +1,11 @@
+// sample-metadata:
+//   title: Poll Discovery Occurrence Finished
+//   description: Waits for a Discovery Occurrence to reach a terminal state
+//   usage: node pollDiscoveryOccurrenceFinished.js "project-id" "image-url" "retries"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   imageUrl = 'https://gcr.io/my-project/my-image:123', // Image to attach metadata to
-  timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub messages
+  retries = 'num-of-retries' // The number of retries to listen for the new Pub/Sub messages
 ) {
   // [START containeranalysis_poll_discovery_occurrence_finished]
   /**
@@ -9,7 +13,7 @@ async function main(
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
   // const imageUrl = 'https://gcr.io/my-project/my-image:123', // Image to attach metadata to
-  // const timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub messages
+  // const retries = 'num-of-retries' // The number of retries to listen for the new Pub/Sub messages
 
   // Import the library and create a client
   const containerAnalysis = require('@google-cloud/containeranalysis');
@@ -39,7 +43,7 @@ async function main(
       return occurrences[0];
     },
     {
-      retries: 5,
+      retries: retries,
     }
   );
 
@@ -62,7 +66,7 @@ async function main(
       return updated;
     },
     {
-      retries: 5,
+      retries: retries,
     }
   );
   console.log(

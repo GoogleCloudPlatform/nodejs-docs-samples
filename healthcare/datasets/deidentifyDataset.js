@@ -26,7 +26,7 @@ function main(
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function patchDataset() {
+  async function deidentifyDataset() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -41,26 +41,26 @@ function main(
     const sourceDataset = `projects/${projectId}/locations/${cloudRegion}/datasets/${sourceDatasetId}`;
     const destinationDataset = `projects/${projectId}/locations/${cloudRegion}/datasets/${destinationDatasetId}`;
     const request = {
-        sourceDataset: sourceDataset,
-        destinationDataset: destinationDataset,
-        resource: {
-            config: {
-                dicom: {
-                    keepList: {
-                        tags: [
-                            keeplistTags
-                        ]
-                    }
-                }
+      sourceDataset: sourceDataset,
+      destinationDataset: destinationDataset,
+      resource: {
+        config: {
+          dicom: {
+            keepList: {
+              tags: [
+                keeplistTags
+              ]
             }
+          }
         }
+      }
     };
 
     await healthcare.projects.locations.datasets.deidentify(request);
     console.log(`De-identified data written from dataset ${sourceDatasetId} to dataset ${destinationDatasetId}`)
   }
 
-  patchDataset();
+  deidentifyDataset();
   // [END healthcare_dicom_keeplist_deidentify_dataset]
 }
 

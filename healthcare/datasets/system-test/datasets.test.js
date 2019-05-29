@@ -30,7 +30,10 @@ const cloudRegion = 'us-central1';
 before(tools.checkCredentials);
 after(async () => {
   try {
-    await tools.runAsync(`node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`, cwd);
+    await tools.runAsync(
+      `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`,
+      cwd
+    );
     // eslint-disable-next-line no-empty
   } catch (err) {} // Ignore error
 });
@@ -46,7 +49,8 @@ it('should create a dataset', async () => {
 it('should get a dataset', async () => {
   const output = await tools.runAsync(
     `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd);
+    cwd
+  );
   assert.strictEqual(new RegExp(/name/).test(output), true);
 });
 
@@ -65,7 +69,8 @@ it('should patch a dataset', async () => {
 it('should list datasets', async () => {
   const output = await tools.runAsync(
     `node listDatasets.js ${projectId} ${cloudRegion}`,
-    cwd);
+    cwd
+  );
   assert.strictEqual(new RegExp(/datasets/).test(output), true);
 });
 
@@ -83,6 +88,7 @@ it('should de-identify data in a dataset and write to a new dataset', async () =
 it('should delete a dataset', async () => {
   const output = await tools.runAsync(
     `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd);
+    cwd
+  );
   assert.strictEqual(output, `Deleted dataset: ${datasetId}`);
 });

@@ -5,7 +5,7 @@
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   imageUrl = 'https://gcr.io/my-project/my-image:123', // Image to attach metadata to
-  retries = 'num-of-retries' // The number of retries to listen for the new Pub/Sub messages
+  retries = 5 // The number of retries to listen for the new Pub/Sub messages
 ) {
   // [START containeranalysis_poll_discovery_occurrence_finished]
   /**
@@ -13,7 +13,7 @@ async function main(
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
   // const imageUrl = 'https://gcr.io/my-project/my-image:123', // Image to attach metadata to
-  // const retries = 'num-of-retries' // The number of retries to listen for the new Pub/Sub messages
+  // const retries = 5 // The number of retries to listen for the new Pub/Sub messages
 
   // Import the library and create a client
   const containerAnalysis = require('@google-cloud/containeranalysis');

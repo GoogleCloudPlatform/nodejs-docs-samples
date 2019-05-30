@@ -5,7 +5,7 @@
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1beta' topic
-  timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub messages
+  timeoutSeconds = 30 // The number of seconds to listen for the new Pub/Sub messages
 ) {
   // [START containeranalysis_pubsub]
   /**
@@ -13,7 +13,7 @@ async function main(
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
   // const subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1beta' topic
-  // const timeoutSeconds = 'timeout-in-seconds' // The number of seconds to listen for the new Pub/Sub Messages
+  // const timeoutSeconds = 30 // The number of seconds to listen for the new Pub/Sub Messages
 
   // Import the pubsub library and create a client, topic and subscription
   const {PubSub} = require('@google-cloud/pubsub');

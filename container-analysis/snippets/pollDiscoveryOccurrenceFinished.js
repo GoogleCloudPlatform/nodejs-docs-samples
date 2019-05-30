@@ -47,8 +47,7 @@ async function main(
     }
   );
 
-  console.log(`Polled Discovery Occurrences for ${imageUrl}`);
-  // Wait for discovery occurrence to enter a terminal state
+  // Wait for discovery occurrence to enter a terminal state or the timeout value has been exceeded
   const finishedOccurrence = await pRetry(
     async () => {
       let status = 'PENDING';
@@ -74,7 +73,7 @@ async function main(
       finishedOccurrence.discovered.discovered.analysisStatus
     }`
   );
+  // [END containeranalysis_poll_discovery_occurrence_finished]
 }
-// [END containeranalysis_poll_discovery_occurrence_finished]
 
 main(...process.argv.slice(2));

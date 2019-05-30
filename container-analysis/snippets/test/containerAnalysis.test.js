@@ -205,9 +205,7 @@ describe('Note tests', () => {
   });
 });
 
-// eslint-disable-next-line no-warning-comments
-// TODO: complete polling sample
-xdescribe('polling', () => {
+describe('polling', () => {
   before(async () => {
     // define project id and related vars
     projectId = await client.getProjectId();
@@ -218,9 +216,7 @@ xdescribe('polling', () => {
       parent: formattedParent,
       noteId: `${noteId}-discovery-polling`,
       note: {
-        discovery: {
-          continuousAnalysis: 'INACTIVE',
-        },
+        discovery: {},
       },
     };
 
@@ -232,12 +228,12 @@ xdescribe('polling', () => {
         noteName: `${formattedNoteName}-discovery-polling`,
         discovered: {
           discovered: {
-            analysisStatus: 'FINISHED_SUCCESS',
+            analysisStatus: 3,
           },
         },
-      },
-      resource: {
-        uri: resourceUrl,
+        resource: {
+          uri: resourceUrl,
+        },
       },
     };
 
@@ -258,7 +254,7 @@ xdescribe('polling', () => {
     const output = execSync(
       `node pollDiscoveryOccurrenceFinished.js "${projectId}" "${resourceUrl}" "${timeoutSeconds}"`
     );
-    assert.include(output, `Polled Discovery Occurrences for ${resourceUrl}`);
+    assert.include(output, `Found discovery occurrence`);
   });
 });
 

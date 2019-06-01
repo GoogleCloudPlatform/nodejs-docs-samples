@@ -17,6 +17,7 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export GCF_REGION=us-central1
 export NODE_ENV=development
+export BUCKET_NAME=$GCLOUD_PROJECT
 
 # Configure GAE variables
 export TWILIO_NUMBER="+15005550006" # public placeholder value

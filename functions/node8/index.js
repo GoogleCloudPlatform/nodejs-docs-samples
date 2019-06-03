@@ -20,7 +20,6 @@ const fetch = require('node-fetch');
 // [END functions_background_promise_node8]
 // [END functions_background_async]
 
-
 // [START functions_tips_infinite_retries_node8]
 /**
  * Background Cloud Function that only executes within a certain time

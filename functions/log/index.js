@@ -49,7 +49,6 @@ function getLogEntries() {
 }
 // [END functions_log_retrieve]
 
-
 // [START functions_log_stackdriver]
 exports.processLogEntry = data => {
   // Node 6: data.data === Node 8+: data

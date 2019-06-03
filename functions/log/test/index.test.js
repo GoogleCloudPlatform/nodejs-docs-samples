@@ -75,15 +75,6 @@ it('getLogEntries: should retrieve logs', async () => {
   assert.strictEqual(entries === sample.mocks.results[0], true);
 });
 
-it('getMetrics: should retrieve metrics', () => {
-  const sample = getSample();
-  const callback = sinon.stub();
-
-  sample.program.getMetrics(callback);
-
-  assert.strictEqual(callback.callCount, 1);
-});
-
 it('processLogEntry: should process log entry', () => {
   const sample = getSample();
   const json = JSON.stringify({

@@ -112,7 +112,6 @@ exports.listFiles = (req, res) => {
 };
 // [END functions_concepts_filesystem]
 
-
 // [START functions_concepts_requests]
 const request = require('request');
 

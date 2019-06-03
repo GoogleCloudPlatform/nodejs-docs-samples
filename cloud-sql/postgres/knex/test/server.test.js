@@ -15,7 +15,6 @@
 
 'use strict';
 
-const delay = require('delay');
 const path = require('path');
 const request = require('supertest');
 const assert = require('assert');

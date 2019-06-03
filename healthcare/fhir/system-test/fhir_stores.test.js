@@ -16,12 +16,10 @@
 'use strict';
 
 const path = require('path');
+const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
-
-const cmdDataset = 'node datasets.js';
-const cmd = 'node fhir_stores.js';
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
@@ -33,15 +31,28 @@ const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
+const projectId = process.env.GCLOUD_PROJECT;
+const cloudRegion = 'us-central1';
+
+const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  // Create a Pub/Sub topic to be used for testing.
+  const [topic] = await pubSubClient.createTopic(pubsubTopic);
+  console.log(`Topic ${topic.name} created.`);
+  await tools.runAsync(
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
+    cwdDatasets
+  );
 });
+
 after(async () => {
   try {
+    await pubSubClient.topic(pubsubTopic).delete();
+    console.log(`Topic ${pubsubTopic} deleted.`);
     await tools.runAsync(
-      `${cmdDataset} deleteDataset ${datasetId}`,
+      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
   } catch (err) {} // Ignore error
@@ -49,7 +60,7 @@ after(async () => {
 
 it('should create a FHIR store', async () => {
   const output = await tools.runAsync(
-    `${cmd} createFhirStore ${datasetId} ${fhirStoreId}`,
+    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
   assert.strictEqual(new RegExp(/Created FHIR store/).test(output), true);
@@ -57,42 +68,31 @@ it('should create a FHIR store', async () => {
 
 it('should get a FHIR store', async () => {
   const output = await tools.runAsync(
-    `${cmd} getFhirStore ${datasetId} ${fhirStoreId}`,
+    `node getFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Got FHIR store/).test(output), true);
+  assert.strictEqual(new RegExp(/name/).test(output), true);
 });
 
 it('should list FHIR stores', async () => {
   const output = await tools.runAsync(
-    `${cmd} listFhirStores ${datasetId}`,
+    `node listFhirStores.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/FHIR stores/).test(output), true);
+  assert.strictEqual(new RegExp(/fhirStores/).test(output), true);
 });
 
 it('should patch a FHIR store', async () => {
   const output = await tools.runAsync(
-    `${cmd} patchFhirStore ${datasetId} ${fhirStoreId} ${pubsubTopic}`,
+    `node patchFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${pubsubTopic}`,
     cwd
   );
   assert.strictEqual(new RegExp(/Patched FHIR store/).test(output), true);
 });
 
-it('should get FHIR store metadata', async () => {
-  const output = await tools.runAsync(
-    `${cmd} getMetadata ${datasetId} ${fhirStoreId}`,
-    cwd
-  );
-  assert.strictEqual(
-    new RegExp(/Capabilities statement for FHIR store/).test(output),
-    true
-  );
-});
-
 it('should delete a FHIR store', async () => {
   const output = await tools.runAsync(
-    `${cmd} deleteFhirStore ${datasetId} ${fhirStoreId}`,
+    `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
   assert.strictEqual(new RegExp(/Deleted FHIR store/).test(output), true);

@@ -99,14 +99,20 @@ app.on('listening', async () => {
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {
   // Get the 5 most recent votes.
-  const recentVotes = await pool.query(
+  const recentVotesQuery = pool.query(
     'SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5'
   );
 
   // Get votes
   const stmt = 'SELECT COUNT(vote_id) as count FROM votes WHERE candidate=?';
-  const [tabsVotes] = await pool.query(stmt, ['TABS']);
-  const [spacesVotes] = await pool.query(stmt, ['SPACES']);
+  const tabsQuery = pool.query(stmt, ['TABS']);
+  const spacesQuery = pool.query(stmt, ['SPACES']);
+
+  // Run queries concurrently, and wait for them to complete
+  // This is faster than await-ing each query object as it is created
+  const recentVotes = await recentVotesQuery;
+  const [tabsVotes] = await tabsQuery;
+  const [spacesVotes] = await spacesQuery;
 
   res.render('index.pug', {
     recentVotes,

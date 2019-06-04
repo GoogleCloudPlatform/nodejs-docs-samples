@@ -21,6 +21,7 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
 const cwd = path.join(__dirname, '..');
+const projectId = process.env.GCLOUD_PROJECT;
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
 const keeplistTags = 'PatientID';
@@ -51,7 +52,7 @@ it('should get a dataset', async () => {
     `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/name/).test(output), true);
+  assert.ok(output.includes('name'));
 });
 
 it('should patch a dataset', async () => {
@@ -71,7 +72,7 @@ it('should list datasets', async () => {
     `node listDatasets.js ${projectId} ${cloudRegion}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/datasets/).test(output), true);
+  assert.ok(output.includes('datasets'));
 });
 
 it('should de-identify data in a dataset and write to a new dataset', async () => {

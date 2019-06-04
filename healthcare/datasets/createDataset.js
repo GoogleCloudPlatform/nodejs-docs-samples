@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+/* eslint-disable no-warning-comments */
+
 'use strict';
 
 function main(

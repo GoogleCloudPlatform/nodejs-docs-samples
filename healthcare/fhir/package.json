@@ -6,7 +6,7 @@
   "author": "Google LLC",
   "repository": "GoogleCloudPlatform/nodejs-docs-samples",
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "mocha system-test/*.test.js --timeout=60000"

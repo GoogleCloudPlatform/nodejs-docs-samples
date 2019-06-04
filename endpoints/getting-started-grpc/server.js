@@ -35,7 +35,7 @@ function startServer(PORT) {
 }
 
 // The command-line program
-const argv = require('yargs')
+const {argv} = require('yargs')
   .usage('Usage: node $0 [-p PORT]')
   .option('port', {
     alias: 'p',
@@ -44,7 +44,8 @@ const argv = require('yargs')
     global: true,
   })
   .wrap(120)
-  .epilogue(`For more information, see https://cloud.google.com/endpoints/docs`)
-  .argv;
+  .epilogue(
+    `For more information, see https://cloud.google.com/endpoints/docs`
+  );
 
 startServer(argv.port);

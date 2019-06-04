@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-node": "^9.0.0",
     "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-promise": "^4.1.1",
     "prettier": "^1.15.2"
   }
 }

@@ -4,7 +4,7 @@
   "description": "Examples of integrating Cloud Functions with billing",
   "main": "index.js",
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"

@@ -28,10 +28,10 @@ const FormData = require('form-data');
  * and
  * https://cloud.google.com/iap/docs/authentication-howto
  *
- * @param {!Object} event The Cloud Functions event.
+ * @param {!Object} data The Cloud Functions event data.
  * @returns {Promise}
  */
-exports.triggerDag = async event => {
+exports.triggerDag = async data => {
   // Fill in your Composer environment information here.
 
   // The project that holds your function
@@ -47,7 +47,7 @@ exports.triggerDag = async event => {
   // Other constants
   const WEBSERVER_URL = `https://${WEBSERVER_ID}.appspot.com/api/experimental/dags/${DAG_NAME}/dag_runs`;
   const USER_AGENT = 'gcf-event-trigger';
-  const BODY = {conf: JSON.stringify(event.data)};
+  const BODY = {conf: JSON.stringify(data)};
 
   // Make the request
   try {
@@ -86,7 +86,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
       headers: {'User-Agent': userAgent, 'Metadata-Flavor': 'Google'},
     }
   );
-  const tokenResponse = res.json();
+  const tokenResponse = await res.json();
   if (tokenResponse.error) {
     return Promise.reject(tokenResponse.error);
   }
@@ -116,7 +116,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
       },
     }
   );
-  const blobJson = blob.json();
+  const blobJson = await blob.json();
   if (blobJson.error) {
     return Promise.reject(blobJson.error);
   }
@@ -132,7 +132,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
     method: 'POST',
     body: form,
   });
-  const tokenJson = token.json();
+  const tokenJson = await token.json();
   if (tokenJson.error) {
     return Promise.reject(tokenJson.error);
   }

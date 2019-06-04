@@ -17,11 +17,22 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export GCF_REGION=us-central1
 export NODE_ENV=development
+export BUCKET_NAME=$GCLOUD_PROJECT
 
 # Configure GAE variables
 export TWILIO_NUMBER="+15005550006" # public placeholder value
 export TWILIO_ACCOUNT_SID=$(cat $KOKORO_GFILE_DIR/secrets-twilio-sid.txt)
 export TWILIO_AUTH_TOKEN=$(cat $KOKORO_GFILE_DIR/secrets-twilio-auth-token.txt)
+
+# Configure Cloud SQL variables
+export DB_NAME="kokoro_ci"
+export DB_USER="kokoro_ci"
+export DB_PASS=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
+if [[ $SQL_CLIENT == 'pg' ]]; then
+	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
+else
+	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
+fi
 
 # Configure Sendgrid variables
 export SENDGRID_SENDER="test@google.com"

@@ -1,6 +1,6 @@
 {
   "name": "cloud-functions-schedule-instance",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",

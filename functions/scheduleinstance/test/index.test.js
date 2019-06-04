@@ -59,10 +59,12 @@ it('startInstancePubSub: should accept JSON-formatted event payload with label',
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone', label: 'testkey=value'};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(
+    mocks.event,
+    mocks.context,
+    mocks.callback
   );
-  sample.program.startInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   const data = await sample.mocks.requestPromise();
   // The request was successfully sent.
@@ -73,10 +75,12 @@ it(`startInstancePubSub: should fail with missing 'zone' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {label: 'testkey=value'};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(
+    mocks.event,
+    mocks.context,
+    mocks.callback
   );
-  sample.program.startInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
@@ -88,10 +92,12 @@ it(`startInstancePubSub: should fail with missing 'label' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone'};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(
+    mocks.event,
+    mocks.context,
+    mocks.callback
   );
-  sample.program.startInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
@@ -103,10 +109,12 @@ it('startInstancePubSub: should fail with empty event payload', () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.startInstancePubSub(
+    mocks.event,
+    mocks.context,
+    mocks.callback
   );
-  sample.program.startInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],
@@ -120,9 +128,7 @@ it('startInstancePubSub: should accept JSON-formatted event payload with label',
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone', label: 'testkey=value'};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
-  );
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
   sample.program.stopInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   const data = await sample.mocks.requestPromise();
@@ -134,9 +140,7 @@ it(`stopInstancePubSub: should fail with missing 'zone' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {label: 'testkey=value'};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
-  );
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
   sample.program.stopInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   assert.deepStrictEqual(
@@ -149,9 +153,7 @@ it(`stopInstancePubSub: should fail with missing 'label' attribute`, () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {zone: 'test-zone'};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
-  );
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
   sample.program.stopInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   assert.deepStrictEqual(
@@ -164,10 +166,8 @@ it('stopInstancePubSub: should fail with empty event payload', () => {
   const mocks = getMocks();
   const sample = getSample();
   const pubsubData = {};
-  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-    'base64'
-  );
-  sample.program.stopInstancePubSub(mocks.event,mocks.context, mocks.callback);
+  mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString('base64');
+  sample.program.stopInstancePubSub(mocks.event, mocks.context, mocks.callback);
 
   assert.deepStrictEqual(
     mocks.callback.firstCall.args[0],

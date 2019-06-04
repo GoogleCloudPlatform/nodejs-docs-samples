@@ -42,10 +42,7 @@ before(async () => {
 });
 after(async () => {
   try {
-    await tools.runAsync(
-      `node deleteDataset.js ${datasetId}`,
-      cwdDatasets
-    );
+    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 

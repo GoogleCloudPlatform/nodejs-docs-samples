@@ -197,7 +197,7 @@ const getMetadata = async (
 // Returns an authorized API client by discovering the Healthcare API with
 // the provided API key.
 // [START healthcare_get_client]
-const getClient = async (apiKey) => {
+const getClient = async apiKey => {
   const API_VERSION = 'v1alpha2';
   const DISCOVERY_API = 'https://healthcare.googleapis.com/$discovery/rest';
 
@@ -239,7 +239,7 @@ require(`yargs`) // eslint-disable-line
         'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
       type: 'string',
-    }
+    },
   })
   .command(
     `createFhirStore <datasetId> <fhirStoreId>`,

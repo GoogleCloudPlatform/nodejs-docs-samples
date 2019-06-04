@@ -60,10 +60,7 @@ after(async () => {
       `${cmdDicomStore} deleteDicomStore ${datasetId} ${dicomStoreId}`,
       cwd
     );
-    await tools.runAsync(
-      `node deleteDataset.js ${datasetId}`,
-      cwdDatasets
-    );
+    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 

@@ -25,7 +25,6 @@ const projectId = process.env.GCLOUD_PROJECT;
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
 const keeplistTags = 'PatientID';
-const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
 
 before(tools.checkCredentials);

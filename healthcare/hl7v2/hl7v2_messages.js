@@ -212,7 +212,7 @@ function patchHl7v2Message(
     resource: {
       labels: {
         labelKey: labelValue,
-      }
+      },
     },
   };
 

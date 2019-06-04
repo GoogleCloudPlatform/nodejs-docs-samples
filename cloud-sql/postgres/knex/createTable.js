@@ -16,37 +16,35 @@
 'use strict';
 
 const Knex = require('knex');
-const prompt = require('prompt');
 
-const FIELDS = ['user', 'password', 'database'];
-
-prompt.start();
-
-// Prompt the user for connection details
-prompt.get(FIELDS, (err, config) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-
+const createTable = async config => {
   // Connect to the database
+  config.host = `/cloudsql/${config.connectionName}`;
   const knex = Knex({client: 'pg', connection: config});
 
   // Create the "votes" table
-  knex.schema
-    .createTable('votes', table => {
+  try {
+    await knex.schema.createTable('votes', table => {
       table.bigIncrements('vote_id').notNull();
       table.timestamp('time_cast').notNull();
       table.specificType('candidate', 'CHAR(6) NOT NULL');
-    })
-    .then(() => {
-      console.log(`Successfully created 'votes' table.`);
-      return knex.destroy();
-    })
-    .catch(err => {
-      console.error(`Failed to create 'votes' table:`, err);
-      if (knex) {
-        knex.destroy();
-      }
     });
-});
+
+    console.log(`Successfully created 'votes' table.`);
+    return knex.destroy();
+  } catch (err) {
+    console.error(`Failed to create 'votes' table:`, err);
+    if (knex) {
+      knex.destroy();
+    }
+  }
+};
+
+require('yargs')
+  .command(
+    '* <user> <password> <database> <connectionName>',
+    'Create a "votes" table',
+    {},
+    createTable
+  )
+  .help().argv;

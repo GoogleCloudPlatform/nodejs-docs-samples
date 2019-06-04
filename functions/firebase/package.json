@@ -9,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "ava -T 30s test/*.test.js"
@@ -23,6 +23,6 @@
     "uuid": "^3.1.0"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^1.0.0"
+    "@google-cloud/firestore": "^2.0.0"
   }
 }

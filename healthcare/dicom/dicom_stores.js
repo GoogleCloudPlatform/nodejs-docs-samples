@@ -18,15 +18,15 @@
 const {google} = require('googleapis');
 
 // [START healthcare_create_dicom_store]
-function createDicomStore(
+const createDicomStore = async (
   client,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId
-) {
+) => {
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(cb) {...});
+  // getClient(apiKey);
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
@@ -35,27 +35,25 @@ function createDicomStore(
 
   const request = {parent: parentName, dicomStoreId: dicomStoreId};
 
-  client.projects.locations.datasets.dicomStores
-    .create(request)
-    .then(() => {
-      console.log(`Created DICOM store: ${dicomStoreId}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await client.projects.locations.datasets.dicomStores.create(request);
+    console.log(`Created DICOM store: ${dicomStoreId}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_create_dicom_store]
 
 // [START healthcare_delete_dicom_store]
-function deleteDicomStore(
+const deleteDicomStore = async (
   client,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId
-) {
+) => {
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(cb) {...});
+  // getClient(apiKey);
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
@@ -64,27 +62,25 @@ function deleteDicomStore(
 
   const request = {name: dicomStoreName};
 
-  client.projects.locations.datasets.dicomStores
-    .delete(request)
-    .then(() => {
-      console.log(`Deleted DICOM store: ${dicomStoreId}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await client.projects.locations.datasets.dicomStores.delete(request);
+    console.log(`Deleted DICOM store: ${dicomStoreId}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_delete_dicom_store]
 
 // [START healthcare_get_dicom_store]
-function getDicomStore(
+const getDicomStore = async (
   client,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId
-) {
+) => {
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(cb) {...});
+  // getClient(apiKey);
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
@@ -93,21 +89,21 @@ function getDicomStore(
 
   const request = {name: dicomStoreName};
 
-  client.projects.locations.datasets.dicomStores
-    .get(request)
-    .then(results => {
-      console.log('Got DICOM store:\n', results['data']);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await client.projects.locations.datasets.dicomStores.get(
+      request
+    );
+    console.log('Got DICOM store:\n', results['data']);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_get_dicom_store]
 
 // [START healthcare_list_dicom_stores]
-function listDicomStores(client, projectId, cloudRegion, datasetId) {
+const listDicomStores = async (client, projectId, cloudRegion, datasetId) => {
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(cb) {...});
+  // getClient(apiKey);
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
@@ -115,28 +111,28 @@ function listDicomStores(client, projectId, cloudRegion, datasetId) {
 
   const request = {parent: parentName};
 
-  client.projects.locations.datasets.dicomStores
-    .list(request)
-    .then(results => {
-      console.log('DICOM stores:\n', results['data']['dicomStores']);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await client.projects.locations.datasets.dicomStores.list(
+      request
+    );
+    console.log('DICOM stores:\n', results['data']['dicomStores']);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_list_dicom_stores]
 
 // [START healthcare_patch_dicom_store]
-function patchDicomStore(
+const patchDicomStore = async (
   client,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId,
   pubsubTopic
-) {
+) => {
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(cb) {...});
+  // getClient(apiKey);
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
@@ -154,31 +150,31 @@ function patchDicomStore(
     },
   };
 
-  client.projects.locations.datasets.dicomStores
-    .patch(request)
-    .then(results => {
-      console.log(
-        'Patched DICOM store with Cloud Pub/Sub topic',
-        results['data']['notificationConfig']['pubsubTopic']
-      );
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await client.projects.locations.datasets.dicomStores.patch(
+      request
+    );
+    console.log(
+      'Patched DICOM store with Cloud Pub/Sub topic',
+      results['data']['notificationConfig']['pubsubTopic']
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_patch_dicom_store]
 
 // [START healthcare_import_dicom_object]
-function importDicomObject(
+const importDicomObject = async (
   client,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId,
   gcsUri
-) {
+) => {
   // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
+  // getToken(apiKey);
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
@@ -190,33 +186,31 @@ function importDicomObject(
     name: dicomStoreName,
     resource: {
       gcsSource: {
-        gcsUri: `gs://${gcsUri}`,
+        uri: `gs://${gcsUri}`,
       },
     },
   };
 
-  client.projects.locations.datasets.dicomStores
-    .import(request)
-    .then(() => {
-      console.log(`Imported DICOM objects from bucket ${gcsUri}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await client.projects.locations.datasets.dicomStores.import(request);
+    console.log(`Imported DICOM objects from bucket ${gcsUri}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_import_dicom_object]
 
 // [START healthcare_export_dicom_instance_gcs]
-function exportDicomInstanceGcs(
+const exportDicomInstanceGcs = async (
   client,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId,
   uriPrefix
-) {
+) => {
   // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
+  // getToken(apiKey);
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
@@ -233,41 +227,35 @@ function exportDicomInstanceGcs(
     },
   };
 
-  client.projects.locations.datasets.dicomStores
-    .export(request)
-    .then(() => {
-      console.log(`Exported DICOM instances to bucket ${uriPrefix}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await client.projects.locations.datasets.dicomStores.export(request);
+    console.log(`Exported DICOM instances to bucket ${uriPrefix}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_export_dicom_instance_gcs]
 
 // Returns an authorized API client by discovering the Healthcare API with
 // the provided API key.
 // [START healthcare_get_client]
-function getClient(apiKey, serviceAccountJson, cb) {
+const getClient = async apiKey => {
   const API_VERSION = 'v1alpha2';
   const DISCOVERY_API = 'https://healthcare.googleapis.com/$discovery/rest';
 
-  google.auth
-    .getClient({scopes: ['https://www.googleapis.com/auth/cloud-platform']})
-    .then(authClient => {
-      const discoveryUrl = `${DISCOVERY_API}?labels=CHC_ALPHA&version=${API_VERSION}&key=${apiKey}`;
+  const authClient = await google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+  });
+  const discoveryUrl = `${DISCOVERY_API}?labels=CHC_ALPHA&version=${API_VERSION}&key=${apiKey}`;
 
-      google.options({auth: authClient});
+  google.options({auth: authClient});
 
-      google
-        .discoverAPI(discoveryUrl)
-        .then(client => {
-          cb(client);
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    });
-}
+  try {
+    return google.discoverAPI(discoveryUrl);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_get_client]
 
 require(`yargs`) // eslint-disable-line
@@ -306,121 +294,107 @@ require(`yargs`) // eslint-disable-line
     `createDicomStore <datasetId> <dicomStoreId>`,
     `Creates a new DICOM store within the parent dataset.`,
     {},
-    opts => {
-      const cb = function(client) {
-        createDicomStore(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId
-        );
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+    async opts => {
+      const client = await getClient(opts.apiKey, opts.serviceAccount);
+      await createDicomStore(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.datasetId,
+        opts.dicomStoreId
+      );
     }
   )
   .command(
     `deleteDicomStore <datasetId> <dicomStoreId>`,
     `Deletes the DICOM store and removes all resources that are contained within it.`,
     {},
-    opts => {
-      const cb = function(client) {
-        deleteDicomStore(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId
-        );
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+    async opts => {
+      const client = await getClient(opts.apiKey, opts.serviceAccount);
+      await deleteDicomStore(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.datasetId,
+        opts.dicomStoreId
+      );
     }
   )
   .command(
     `getDicomStore <datasetId> <dicomStoreId>`,
     `Gets the specified DICOM store or returns NOT_FOUND if it doesn't exist.`,
     {},
-    opts => {
-      const cb = function(client) {
-        getDicomStore(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId
-        );
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+    async opts => {
+      const client = await getClient(opts.apiKey, opts.serviceAccount);
+      await getDicomStore(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.datasetId,
+        opts.dicomStoreId
+      );
     }
   )
   .command(
     `listDicomStores <datasetId>`,
     `Lists the DICOM stores in the given dataset.`,
     {},
-    opts => {
-      const cb = function(client) {
-        listDicomStores(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId
-        );
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+    async opts => {
+      const client = await getClient(opts.apiKey, opts.serviceAccount);
+      await listDicomStores(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.datasetId
+      );
     }
   )
   .command(
     `patchDicomStore <datasetId> <dicomStoreId> <pubsubTopic>`,
     `Updates the DICOM store.`,
     {},
-    opts => {
-      const cb = function(client) {
-        patchDicomStore(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId,
-          opts.pubsubTopic
-        );
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+    async opts => {
+      const client = await getClient(opts.apiKey, opts.serviceAccount);
+      await patchDicomStore(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.datasetId,
+        opts.dicomStoreId,
+        opts.pubsubTopic
+      );
     }
   )
   .command(
     `importDicomObject <datasetId> <dicomStoreId> <gcsUri>`,
     `Imports data into the DICOM store by copying it from the specified source.`,
     {},
-    opts => {
-      const cb = function(client) {
-        importDicomObject(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId,
-          opts.gcsUri
-        );
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+    async opts => {
+      const client = await getClient(opts.apiKey, opts.serviceAccount);
+      await importDicomObject(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.datasetId,
+        opts.dicomStoreId,
+        opts.gcsUri
+      );
     }
   )
   .command(
     `exportDicomInstanceGcs <datasetId> <dicomStoreId> <uriPrefix>`,
     `Exports data to a Cloud Storage bucket by copying it from the DICOM store.`,
     {},
-    opts => {
-      const cb = function(client) {
-        exportDicomInstanceGcs(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId,
-          opts.uriPrefix
-        );
-      };
-      getClient(opts.apiKey, opts.serviceAccount, cb);
+    async opts => {
+      const client = await getClient(opts.apiKey, opts.serviceAccount);
+      await exportDicomInstanceGcs(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.datasetId,
+        opts.dicomStoreId,
+        opts.uriPrefix
+      );
     }
   )
   .wrap(120)

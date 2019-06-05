@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node metrics-quickstart.js",
-    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000"
+    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
     "@opencensus/core": "^0.0.13",

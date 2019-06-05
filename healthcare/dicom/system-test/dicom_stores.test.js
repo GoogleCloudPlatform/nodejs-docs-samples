@@ -20,35 +20,36 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const cmdDataset = 'node datasets.js';
+const projectId = process.env.GCLOUD_PROJECT;
+const bucketName = process.env.BUCKET_NAME;
+const region = 'us-central1';
+
 const cmd = 'node dicom_stores.js';
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
+const dicomStoreId = `nodejs-docs-samples-test-dicom-store-${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
-const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
+const pubsubTopic = `nodejs-docs-samples-test-pubsub-${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
-
-const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 
 const dcmFileName = `IM-0002-0001-JPEG-BASELINE.dcm`;
-const gcsUri = bucketName + '/' + dcmFileName;
+const gcsUri = `${bucketName}/${dcmFileName}`;
 
 before(async () => {
   tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  await tools.runAsync(
+    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    cwdDatasets
+  );
 });
 after(async () => {
   try {
-    await tools.runAsync(
-      `${cmdDataset} deleteDataset ${datasetId}`,
-      cwdDatasets
-    );
+    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 
@@ -57,7 +58,7 @@ it('should create a DICOM store', async () => {
     `${cmd} createDicomStore ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Created DICOM store/).test(output), true);
+  assert.ok(output.includes('Created DICOM store'));
 });
 
 it('should get a DICOM store', async () => {
@@ -65,7 +66,7 @@ it('should get a DICOM store', async () => {
     `${cmd} getDicomStore ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Got DICOM store/).test(output), true);
+  assert.ok(output.includes('Got DICOM store'));
 });
 
 it('should patch a DICOM store', async () => {
@@ -73,10 +74,7 @@ it('should patch a DICOM store', async () => {
     `${cmd} patchDicomStore ${datasetId} ${dicomStoreId} ${pubsubTopic}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp(/Patched DICOM store with Cloud Pub\/Sub topic/).test(output),
-    true
-  );
+  assert.ok(output.includes('Patched DICOM store with Cloud Pub/Sub topic'));
 });
 
 it('should list DICOM stores', async () => {
@@ -84,7 +82,7 @@ it('should list DICOM stores', async () => {
     `${cmd} listDicomStores ${datasetId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/DICOM stores/).test(output), true);
+  assert.ok(output.includes('DICOM stores'));
 });
 
 it('should export a DICOM instance', async () => {
@@ -92,10 +90,7 @@ it('should export a DICOM instance', async () => {
     `${cmd} exportDicomInstanceGcs ${datasetId} ${dicomStoreId} ${bucketName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp(/Exported DICOM instances to bucket/).test(output),
-    true
-  );
+  assert.ok(output.includes('Exported DICOM instances to bucket'));
 });
 
 it('should import a DICOM object from GCS', async () => {
@@ -103,10 +98,7 @@ it('should import a DICOM object from GCS', async () => {
     `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${gcsUri}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp(/Imported DICOM objects from bucket/).test(output),
-    true
-  );
+  assert.ok(output.includes('Imported DICOM objects from bucket'));
 });
 
 it('should delete a DICOM store', async () => {
@@ -114,5 +106,5 @@ it('should delete a DICOM store', async () => {
     `${cmd} deleteDicomStore ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Deleted DICOM store/).test(output), true);
+  assert.ok(output.includes('Deleted DICOM store'));
 });

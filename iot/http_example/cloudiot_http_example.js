@@ -17,7 +17,7 @@
 // [START iot_http_includes]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const request = require('retry-request');
+const request = require('retry-request', {request: require('request')});
 // [END iot_http_includes]
 
 console.log('Google Cloud IoT Core HTTP example.');

@@ -9,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"

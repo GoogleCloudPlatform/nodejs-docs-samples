@@ -24,7 +24,7 @@ app.enable('trust proxy');
 
 // The following environment variable is set by app.yaml when running on App
 // Engine, but will need to be set manually when running locally. See README.md.
-const GA_TRACKING_ID = process.env.GA_TRACKING_ID;
+const {GA_TRACKING_ID} = process.env;
 
 function trackEvent(category, action, label, value) {
   const data = {

@@ -22,7 +22,7 @@ const app = express();
 
 // [START gae_flex_redislabs_memcache]
 // Environment variables are defined in app.yaml.
-const MEMCACHE_URL = process.env.MEMCACHE_URL;
+const {MEMCACHE_URL} = process.env;
 
 const mc = memjs.Client.create(MEMCACHE_URL);
 // [END gae_flex_redislabs_memcache]

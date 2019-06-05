@@ -19,7 +19,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {OAuth2Client} = require('google-auth-library');
 const path = require('path');
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 const process = require('process'); // Required for mocking environment variables
 
 // By default, the client will authenticate using the service account file
@@ -47,7 +47,7 @@ const tokens = [];
 
 // The following environment variables are set by app.yaml when running on GAE,
 // but will need to be manually set when running locally.
-const PUBSUB_VERIFICATION_TOKEN = process.env.PUBSUB_VERIFICATION_TOKEN;
+const {PUBSUB_VERIFICATION_TOKEN} = process.env;
 const TOPIC = process.env.PUBSUB_TOPIC;
 
 const topic = pubsub.topic(TOPIC);

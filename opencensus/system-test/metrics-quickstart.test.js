@@ -32,8 +32,9 @@ it('Should throw an error without projectId', async () => {
 it('Should capture stats data and export it to backend', async () => {
   process.env.GOOGLE_PROJECT_ID = 'fake-id';
   process.env.KUBERNETES_SERVICE_HOST = 'localhost';
+  process.env.EXPORT_INTERVAL = 1;
 
   const output = await tools.runAsync('node metrics-quickstart.js');
   assert.ok(new RegExp('Latency *:*').test(output));
-  assert.ok(output.contains('Done recording metrics.'));
+  assert.ok(output.includes('Done recording metrics.'));
 });

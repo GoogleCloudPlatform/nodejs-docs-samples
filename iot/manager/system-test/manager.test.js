@@ -81,15 +81,12 @@ it('should create and delete an unauthorized device', async () => {
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted device').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted device'));
 });
 
 it('should list configs for a device', async () => {
@@ -98,20 +95,17 @@ it('should list configs for a device', async () => {
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(
     `${cmd} getDeviceConfigs ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Configs').test(output), true);
+  assert.ok(output.includes('Configs'));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted device').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted device'));
 });
 
 it('should create and delete an RSA256 device', async () => {
@@ -120,20 +114,17 @@ it('should create and delete an RSA256 device', async () => {
     `${cmd} createRsa256Device ${localDevice} ${registryName} ${rsaPublicCert}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(
     `${cmd} getDeviceState ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('State').test(output), true);
+  assert.ok(output.includes('State'));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted device').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted device'));
 });
 
 it('should create and delete an ES256 device', async () => {
@@ -142,20 +133,17 @@ it('should create and delete an ES256 device', async () => {
     `${cmd} createEs256Device ${localDevice} ${registryName} ${ecPublicKey}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(
     `${cmd} getDeviceState ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('State').test(output), true);
+  assert.ok(output.includes('State'));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted device').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted device'));
 });
 
 it('should patch an unauthorized device with RSA256', async () => {
@@ -164,20 +152,17 @@ it('should patch an unauthorized device with RSA256', async () => {
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(
     `${cmd} patchRsa256 ${localDevice} ${registryName} ${rsaPublicCert}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Patched device:').test(output), true);
+  assert.ok(output.includes('Patched device:'));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted device').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted device'));
 });
 
 it('should patch an unauthorized device with ES256', async () => {
@@ -186,20 +171,17 @@ it('should patch an unauthorized device with ES256', async () => {
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(
     `${cmd} patchEs256 ${localDevice} ${registryName} ${ecPublicKey}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Patched device:').test(output), true);
+  assert.ok(output.includes('Patched device:'));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted device').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted device'));
 });
 
 it('should create and list devices', async () => {
@@ -208,21 +190,15 @@ it('should create and list devices', async () => {
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(`${cmd} listDevices ${registryName}`, cwd);
-  assert.strictEqual(
-    new RegExp(/Current devices in registry:/).test(output),
-    true
-  );
-  assert.strictEqual(new RegExp(localDevice).test(output), true);
+  assert.ok(output.includes('Current devices in registry:'));
+  assert.ok(output.includes(localDevice));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted device').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted device'));
 });
 
 it('should create and get a device', async () => {
@@ -232,15 +208,12 @@ it('should create and get a device', async () => {
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(new RegExp('Created device').test(output), true);
+  assert.ok(output.includes('Created device'));
   output = await tools.runAsync(
     `${cmd} getDevice ${localDevice} ${registryName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp(`Found device: ${localDevice}`).test(output),
-    true
-  );
+  assert.ok(output.includes(`Found device: ${localDevice}`));
   output = await tools.runAsync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
@@ -255,9 +228,10 @@ it('should create and get an iam policy', async () => {
     `${cmd} setIamPolicy ${registryName} ${localMember} ${localRole}`,
     cwd
   );
-  assert.strictEqual(new RegExp('ETAG').test(output), true);
+  assert.ok(output.includes('ETAG'));
+
   output = await tools.runAsync(`${cmd} getIamPolicy ${registryName}`, cwd);
-  assert.strictEqual(new RegExp('dpebot').test(output), true);
+  assert.ok(output.includes('dpebot'));
 });
 
 it('should create and delete a registry', async () => {
@@ -268,18 +242,12 @@ it('should create and delete a registry', async () => {
     `${cmd} createRegistry ${createRegistryId} ${topicName}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully created registry').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully created registry'));
   output = await tools.runAsync(
     `${cmd} deleteRegistry ${createRegistryId}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp('Successfully deleted registry').test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully deleted registry'));
 });
 
 it('should send command message to device', async () => {
@@ -299,7 +267,7 @@ it('should send command message to device', async () => {
   const output = await tools.runAsync(
     `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
-  assert.strictEqual(new RegExp('Sent command').test(output), true);
+  assert.ok(output.includes('Sent command'));
 
   await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
@@ -311,7 +279,7 @@ it('should create a new gateway', async () => {
   );
 
   // test no error on create gateway.
-  assert.strictEqual(new RegExp('Created device').test(gatewayOut), true);
+  assert.ok(gatewayOut.includes('Created device'));
 
   await iotClient.deleteDevice({
     name: iotClient.devicePath(projectId, region, registryName, gatewayId),
@@ -326,7 +294,7 @@ it('should list gateways', async () => {
 
   // look for output in list gateway
   const gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
-  assert.strictEqual(new RegExp(`${gatewayId}`).test(gateways), true);
+  assert.ok(gateways.includes(`${gatewayId}`));
 
   await iotClient.deleteDevice({
     name: iotClient.devicePath(projectId, region, registryName, gatewayId),
@@ -353,20 +321,14 @@ it('should bind existing device to gateway', async () => {
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  assert.strictEqual(
-    new RegExp(`Binding device: ${deviceId}`).test(bind),
-    true
-  );
-  assert.strictEqual(new RegExp('Could not bind device').test(bind), false);
+  assert.ok(bind.includes(`Binding device: ${deviceId}`));
+  assert.strictEqual(bind.includes('Could not bind device'), false);
 
   // test unbind
   const unbind = await tools.runAsync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
-  assert.strictEqual(
-    new RegExp(`Unbound ${deviceId} from ${gatewayId}`).test(unbind),
-    true
-  );
+  assert.ok(unbind.includes(`Unbound ${deviceId} from ${gatewayId}`));
 
   await iotClient.deleteDevice({
     name: iotClient.devicePath(projectId, region, registryName, gatewayId),
@@ -399,9 +361,9 @@ it('should list devices bound to gateway', async () => {
     `${cmd} listDevicesForGateway ${registryName} ${gatewayId}`
   );
 
-  assert.strictEqual(new RegExp(deviceId).test(devices), true);
+  assert.ok(devices.includes(deviceId));
   assert.strictEqual(
-    new RegExp('No devices bound to this gateway.').test(devices),
+    devices.includes('No devices bound to this gateway.'),
     false
   );
 
@@ -442,9 +404,9 @@ it('should list gateways for bound device', async () => {
     `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`
   );
 
-  assert.strictEqual(new RegExp(gatewayId).test(devices), true);
+  assert.ok(devices.includes(gatewayId));
   assert.strictEqual(
-    new RegExp('No gateways associated with this device').test(devices),
+    devices.includes('No gateways associated with this device'),
     false
   );
 

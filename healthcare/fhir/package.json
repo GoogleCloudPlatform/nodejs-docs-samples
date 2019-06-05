@@ -30,7 +30,8 @@
       "build": {
         "requiredEnvVars": [
           "API_KEY",
-          "GCLOUD_PROJECT"
+          "GCLOUD_PROJECT",
+          "PUBSUB_TOPIC"
         ]
       }
     }

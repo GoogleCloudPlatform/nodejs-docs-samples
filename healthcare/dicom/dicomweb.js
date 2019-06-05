@@ -19,7 +19,7 @@ const fs = require('fs');
 
 const BASE_URL = 'https://healthcare.googleapis.com/v1alpha2';
 
-function getToken(serviceAccountJson, cb) {
+const getToken = (serviceAccountJson, cb) => {
   const gtoken = new GoogleToken({
     keyFile: `${serviceAccountJson}`,
     scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
@@ -32,10 +32,10 @@ function getToken(serviceAccountJson, cb) {
     }
     cb(token);
   });
-}
+};
 
 // [START healthcare_dicomweb_store_instance]
-function dicomWebStoreInstance(
+const dicomWebStoreInstance = async (
   token,
   projectId,
   cloudRegion,
@@ -43,7 +43,7 @@ function dicomWebStoreInstance(
   dicomStoreId,
   dcmFile,
   boundary
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -68,25 +68,24 @@ function dicomWebStoreInstance(
     method: 'POST',
   };
 
-  request(options)
-    .then(results => {
-      console.log('Stored instance:\n');
-      console.log(results);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await request(options);
+    console.log('Stored instance:\n');
+    console.log(results);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_dicomweb_store_instance]
 
 // [START healthcare_dicomweb_search_instances]
-function dicomWebSearchInstances(
+const dicomWebSearchInstances = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -106,26 +105,25 @@ function dicomWebSearchInstances(
     method: 'GET',
   };
 
-  request(options)
-    .then(results => {
-      console.log('Instances:\n');
-      console.log(results);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await request(options);
+    console.log('Instances:\n');
+    console.log(results);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_dicomweb_search_instances]
 
 // [START healthcare_dicomweb_retrieve_study]
-function dicomWebRetrieveStudy(
+const dicomWebRetrieveStudy = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId,
   studyUid
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -146,25 +144,24 @@ function dicomWebRetrieveStudy(
     method: 'GET',
   };
 
-  request(options)
-    .then(() => {
-      console.log(`Retrieved study with UID: ${studyUid}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await request(options);
+    console.log(`Retrieved study with UID: ${studyUid}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_dicomweb_retrieve_study]
 
 // [START healthcare_dicomweb_delete_study]
-function dicomWebDeleteStudy(
+const dicomWebDeleteStudy = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   dicomStoreId,
   studyUid
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -185,14 +182,13 @@ function dicomWebDeleteStudy(
     method: 'DELETE',
   };
 
-  request(options)
-    .then(() => {
-      console.log('Deleted study.');
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await request(options);
+    console.log('Deleted study.');
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_dicomweb_delete_study]
 
 require(`yargs`) // eslint-disable-line

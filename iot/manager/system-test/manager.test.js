@@ -303,7 +303,7 @@ it('should list gateways', async () => {
 
 it('should bind existing device to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsyncWithIO(
+  await tools.runAsync(
     `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
   );
 

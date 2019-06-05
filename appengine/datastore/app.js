@@ -37,24 +37,24 @@ const datastore = new Datastore();
  *
  * @param {object} visit The visit record to insert.
  */
-function insertVisit(visit) {
+const insertVisit = visit => {
   return datastore.save({
     key: datastore.key('visit'),
     data: visit,
   });
-}
+};
 
 /**
  * Retrieve the latest 10 visit records from the database.
  */
-function getVisits() {
+const getVisits = () => {
   const query = datastore
     .createQuery('visit')
     .order('timestamp', {descending: true})
     .limit(10);
 
   return datastore.runQuery(query);
-}
+};
 
 app.get('/', async (req, res, next) => {
   // Create a visit record to be stored in the database
@@ -70,8 +70,7 @@ app.get('/', async (req, res, next) => {
 
   try {
     await insertVisit(visit);
-    const results = await getVisits();
-    const entities = results[0];
+    const [entities] = await getVisits();
     const visits = entities.map(
       entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
     );

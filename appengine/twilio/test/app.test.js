@@ -45,7 +45,7 @@ const getSample = () => {
   };
 };
 
-it('should send an SMS message', async () => {
+it('should send an SMS message', () => {
   const {supertest} = getSample();
 
   return supertest
@@ -57,7 +57,7 @@ it('should send an SMS message', async () => {
     });
 });
 
-it('should receive an SMS message', async () => {
+it('should receive an SMS message', () => {
   const {supertest, mocks} = getSample();
 
   return supertest
@@ -70,7 +70,7 @@ it('should receive an SMS message', async () => {
     });
 });
 
-it('should receive a call', async () => {
+it('should receive a call', () => {
   const {supertest, mocks} = getSample();
 
   return supertest

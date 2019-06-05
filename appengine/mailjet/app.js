@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 // [START gae_flex_mailjet_send_message]
-app.post('/hello', (req, res, next) => {
+app.post('/hello', async (req, res, next) => {
   const options = {
     Messages: [
       {
@@ -61,19 +61,18 @@ app.post('/hello', (req, res, next) => {
     ],
   };
 
-  const request = Mailjet.post('send', {version: 'v3.1'}).request(options);
-
-  request
-    .then((response, body) => {
-      console.log(response.statusCode, body);
-      // Render the index route on success
-      return res.render('index', {
-        sent: true,
-      });
-    })
-    .catch(err => {
-      return next(err);
+  try {
+    const [response, body] = await Mailjet.post('send', {
+      version: 'v3.1',
+    }).request(options);
+    console.log(response.statusCode, body);
+    // Render the index route on success
+    return res.render('index', {
+      sent: true,
     });
+  } catch (err) {
+    return next(err);
+  }
 });
 // [END gae_flex_mailjet_send_message]
 

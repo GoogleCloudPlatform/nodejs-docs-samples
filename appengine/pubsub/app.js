@@ -103,7 +103,7 @@ app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
   try {
     // Get the Cloud Pub/Sub-generated JWT in the "Authorization" header.
     const bearer = req.header('Authorization');
-    const token = bearer.match(/Bearer (.*)/)[1];
+    const [, token] = bearer.match(/Bearer (.*)/);
     tokens.push(token);
 
     // Verify and decode the JWT.

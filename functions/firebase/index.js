@@ -115,3 +115,18 @@ exports.helloAnalytics = event => {
   console.log(`Location: ${userObj.geoInfo.city}, ${userObj.geoInfo.country}`);
 };
 // [END functions_firebase_analytics]
+
+// [START functions_firebase_remote_config]
+/**
+ * Triggered by a change to a Firebase Remote Config value.
+ *
+ * @param {object} data The Cloud Functions event data.
+ */
+exports.helloRemoteConfig = event => {
+  const data = event.data;
+
+  console.log(`Update type: ${data.updateType}`);
+  console.log(`Origin: ${data.updateOrigin}`);
+  console.log(`Version: ${data.versionNumber}`);
+};
+// [END functions_firebase_remote_config]

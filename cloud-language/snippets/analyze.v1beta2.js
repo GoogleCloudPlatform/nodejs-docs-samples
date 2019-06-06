@@ -15,6 +15,8 @@
 
 'use strict';
 
+// sample-metadata:
+//  title: Analyze v1beta2
 async function analyzeSentimentOfText(text) {
   // [START language_sentiment_string]
   // Imports the Google Cloud client library

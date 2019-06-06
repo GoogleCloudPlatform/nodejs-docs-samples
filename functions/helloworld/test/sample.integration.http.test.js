@@ -15,51 +15,58 @@
 
 // [START functions_http_integration_test]
 const assert = require('assert');
-const delay = require('delay');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
-const supertest = require('supertest');
+const requestRetry = require('requestretry');
 const uuid = require('uuid');
 
-const request = supertest(process.env.BASE_URL || 'http://localhost:8080');
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
-let ffProc;
+describe('HTTP integration test', () => {
+  let ffProc;
 
-// Run the functions-framework instance to host functions locally
-before(async () => {
-  ffProc = execPromise(
-    `functions-framework --target=helloHttp --signature-type=http`,
-    {timeout: 1000, shell: true, cwd}
-  );
+  // Run the functions-framework instance to host functions locally
+  before(async () => {
+    ffProc = execPromise(
+      `functions-framework --target=helloHttp --signature-type=http`,
+      {timeout: 1000, shell: true, cwd}
+    );
+  });
 
-  // Wait for functions-framework to start up
-  await delay(600);
-});
+  after(async () => {
+    await ffProc;
+  });
 
-after.always(async () => {
-  await ffProc;
-});
+  it('helloHttp: should print a name', async () => {
+    const name = uuid.v4();
 
-it('helloHttp: should print a name', async () => {
-  const name = uuid.v4();
-
-  await request
-    .post('/helloHttp')
-    .send({name})
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, `Hello ${name}!`);
+    const response = await requestRetry({
+      url: `${BASE_URL}/helloHttp`,
+      method: 'POST',
+      body: {name},
+      retryDelay: 200,
+      json: true
     });
-});
 
+    assert.strictEqual(response.statusCode, 200);
+    assert.strictEqual(response.body, `Hello ${name}!`);
+
+  });
+  // [END functions_http_integration_test]
+
+  it('helloHttp: should print hello world', async () => {
+    const response = await requestRetry({
+      url: `${BASE_URL}/helloHttp`,
+      method: 'POST',
+      body: {},
+      retryDelay: 200,
+      json: true
+    });
+
+    assert.strictEqual(response.statusCode, 200);
+    assert.strictEqual(response.body, `Hello World!`);
+  });
+  // [START functions_http_integration_test]
+});
 // [END functions_http_integration_test]
-
-it('helloHttp: should print hello world', async () => {
-  await request
-    .get('/helloHttp')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello World!');
-    });
-});

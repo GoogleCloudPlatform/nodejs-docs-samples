@@ -15,105 +15,117 @@
 
 // [START functions_storage_integration_test]
 const assert = require('assert');
-const delay = require('delay');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
-const supertest = require('supertest');
 const uuid = require('uuid');
 
-const request = supertest(process.env.BASE_URL || 'http://localhost:8080');
+const requestRetry = require('requestretry');
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
-it('helloGCS: should print uploaded message', async () => {
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+describe('GCS integration test', () => {
+  it('helloGCS: should print uploaded message', async () => {
+    const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  const data = {
-    data: {
-      name: filename,
-      resourceState: 'exists',
-      metageneration: '1',
-    },
-  };
+    const data = {
+      data: {
+        name: filename,
+        resourceState: 'exists',
+        metageneration: '1',
+      },
+    };
 
-  // Run the functions-framework instance to host functions locally
-  const proc = execPromise(
-    `functions-framework --target=helloGCS --signature-type=event`,
-    {timeout: 800, shell: true, cwd}
-  );
+    // Run the functions-framework instance to host functions locally
+    const proc = execPromise(
+      `functions-framework --target=helloGCS --signature-type=event`,
+      {timeout: 800, shell: true, cwd}
+    );
 
-  // Wait for functions-framework to start up
-  await delay(600);
+    // Send HTTP request simulating GCS change notification
+    // (GCF translates GCS notifications to HTTP requests internally)
+    const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: data,
+      retryDelay: 200,
+      json: true
+    });
 
-  // Send HTTP request simulating GCS change notification
-  // (GCF translates GCS notifications to HTTP requests internally)
-  await request
-    .post('/')
-    .send(data)
-    .expect(204);
+    assert.strictEqual(response.statusCode, 204);
 
-  const {stdout} = await proc;
-  assert.ok(stdout.includes(`File ${filename} uploaded.`));
-});
+    // Wait for functions-framework process to exit
+    const {stdout} = await proc;
+    assert.ok(stdout.includes(`File ${filename} uploaded.`));
+  });
 // [END functions_storage_integration_test]
 
-it('helloGCS: should print metadata updated message', async () => {
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+  it('helloGCS: should print metadata updated message', async () => {
+    const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
-  const data = {
-    data: {
-      name: filename,
-      resourceState: 'exists',
-      metageneration: '2',
-    },
-  };
+    const data = {
+      data: {
+        name: filename,
+        resourceState: 'exists',
+        metageneration: '2',
+      },
+    };
 
-  // Run the functions-framework instance to host functions locally
-  const proc = execPromise(
-    `functions-framework --target=helloGCS --signature-type=event`,
-    {timeout: 800, shell: true, cwd}
-  );
+    // Run the functions-framework instance to host functions locally
+    const proc = execPromise(
+      `functions-framework --target=helloGCS --signature-type=event`,
+      {timeout: 800, shell: true, cwd}
+    );
 
-  // Wait for functions-framework to start up
-  await delay(600);
+    // Send HTTP request simulating GCS change notification
+    // (GCF translates GCS notifications to HTTP requests internally)
+      const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: data,
+      retryDelay: 200,
+      json: true
+    });
 
-  // Send HTTP request simulating GCS change notification
-  // (GCF translates GCS notifications to HTTP requests internally)
-  await request
-    .post('/')
-    .send(data)
-    .expect(204);
+    assert.strictEqual(response.statusCode, 204);
 
-  const {stdout} = await proc;
-  assert.ok(stdout.includes(`File ${filename} metadata updated.`));
+    // Wait for functions-framework process to exit
+    const {stdout} = await proc;
+    assert.ok(stdout.includes(`File ${filename} metadata updated.`));
+  });
+
+  it('helloGCS: should print deleted message', async () => {
+    const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+
+    const data = {
+      data: {
+        name: filename,
+        resourceState: 'not_exists',
+        metageneration: '3',
+      },
+    };
+
+    // Run the functions-framework instance to host functions locally
+    const proc = execPromise(
+      `functions-framework --target=helloGCS --signature-type=event`,
+      {timeout: 800, shell: true, cwd}
+    );
+
+    // Send HTTP request simulating GCS change notification
+    // (GCF translates GCS notifications to HTTP requests internally)
+    const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: data,
+      retryDelay: 200,
+      json: true
+    });
+
+    assert.strictEqual(response.statusCode, 204);
+
+    // Wait for functions-framework process to exit
+    const {stdout} = await proc;
+    assert.ok(stdout.includes(`File ${filename} deleted.`));
+  });
+// [START functions_storage_integration_test]
 });
-
-it('helloGCS: should print deleted message', async () => {
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
-
-  const data = {
-    data: {
-      name: filename,
-      resourceState: 'not_exists',
-      metageneration: '3',
-    },
-  };
-
-  // Run the functions-framework instance to host functions locally
-  const proc = execPromise(
-    `functions-framework --target=helloGCS --signature-type=event`,
-    {timeout: 800, shell: true, cwd}
-  );
-
-  // Wait for functions-framework to start up
-  await delay(600);
-
-  // Send HTTP request simulating GCS change notification
-  // (GCF translates GCS notifications to HTTP requests internally)
-  await request
-    .post('/')
-    .send(data)
-    .expect(204);
-
-  const {stdout} = await proc;
-  assert.ok(stdout.includes(`File ${filename} deleted.`));
-});
+// [END functions_storage_integration_test]

@@ -16,58 +16,67 @@
 // [START functions_pubsub_integration_test]
 const assert = require('assert');
 const execPromise = require('child-process-promise').exec;
-const delay = require('delay');
 const path = require('path');
-const supertest = require('supertest');
+const requestRetry = require('requestretry');
 const uuid = require('uuid');
 
-const request = supertest(process.env.BASE_URL || 'http://localhost:8080');
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
-it('helloPubSub: should print a name', async () => {
-  const name = uuid.v4();
+describe('Pub/Sub integration test', () => {
+  it('helloPubSub: should print a name', async () => {
+    const name = uuid.v4();
 
-  const encodedName = Buffer.from(name).toString('base64');
-  const pubsubMessage = {data: {data: encodedName}};
+    const encodedName = Buffer.from(name).toString('base64');
+    const pubsubMessage = {data: {data: encodedName}};
 
-  const proc = execPromise(
-    `functions-framework --target=helloPubSub --signature-type=event`,
-    {timeout: 800, shell: true, cwd}
-  );
+    const proc = execPromise(
+      `functions-framework --target=helloPubSub --signature-type=event`,
+      {timeout: 800, shell: true, cwd}
+    );
 
-  // Wait for functions-framework to start up
-  await delay(600);
+    // Send HTTP request simulating Pub/Sub message
+    // (GCF translates Pub/Sub messages to HTTP requests internally)
+    const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: pubsubMessage,
+      retryDelay: 200,
+      json: true
+    });
 
-  // Send HTTP request simulating Pub/Sub message
-  // (GCF translates Pub/Sub messages to HTTP requests internally)
-  await request
-    .post('/')
-    .send(pubsubMessage)
-    .expect(204);
+    assert.strictEqual(response.statusCode, 204);
 
-  const {stdout} = await proc;
-  assert(stdout.includes(`Hello, ${name}!`));
+    // Wait for functions-framework process to exit
+    const {stdout} = await proc;
+    assert(stdout.includes(`Hello, ${name}!`));
+  });
+  // [END functions_pubsub_integration_test]
+
+  it('helloPubSub: should print hello world', async () => {
+    const pubsubMessage = {data: {}};
+
+    const proc = execPromise(
+      `functions-framework --target=helloPubSub --signature-type=event`,
+      {timeout: 800, shell: true, cwd}
+    );
+
+    // Send HTTP request simulating Pub/Sub message
+    // (GCF translates Pub/Sub messages to HTTP requests internally)
+    const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: pubsubMessage,
+      retryDelay: 200,
+      json: true
+    });
+
+    assert.strictEqual(response.statusCode, 204);
+
+    // Wait for functions-framework process to exit
+    const {stdout, stderr} = await proc;
+    assert(stdout.includes('Hello, World!'));
+  });
+// [START functions_pubsub_integration_test]
 });
 // [END functions_pubsub_integration_test]
-
-it('helloPubSub: should print hello world', async () => {
-  const pubsubMessage = {};
-
-  const proc = execPromise(
-    `functions-framework --target=helloPubSub --signature-type=event`,
-    {timeout: 800, shell: true, cwd}
-  );
-
-  // Wait for functions-framework to start up
-  await delay(600);
-
-  // Send HTTP request simulating Pub/Sub message
-  // (GCF translates Pub/Sub messages to HTTP requests internally)
-  await request
-    .post('/')
-    .send({data: pubsubMessage})
-    .expect(204);
-
-  const {stdout} = await proc;
-  assert(stdout.includes('Hello, World!'));
-});

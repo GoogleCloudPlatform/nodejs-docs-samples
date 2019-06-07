@@ -41,9 +41,7 @@ describe('translate sample tests', () => {
     const output = execSync(`${cmd} detect "${text}" "${text2}"`);
     const [detections] = await translate.detect([text, text2]);
     const expected = new RegExp(
-      `Detections:\n${text} => ${detections[0].language}\n${text2} => ${
-        detections[1].language
-      }`
+      `Detections:\n${text} => ${detections[0].language}\n${text2} => ${detections[1].language}`
     );
     assert.match(output, expected);
   });

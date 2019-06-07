@@ -266,14 +266,10 @@ async function categoricalRiskAnalysis(
 
       // Print bucket stats
       console.log(
-        `  Most common value occurs ${
-          histogramBucket.valueFrequencyUpperBound
-        } time(s)`
+        `  Most common value occurs ${histogramBucket.valueFrequencyUpperBound} time(s)`
       );
       console.log(
-        `  Least common value occurs ${
-          histogramBucket.valueFrequencyLowerBound
-        } time(s)`
+        `  Least common value occurs ${histogramBucket.valueFrequencyLowerBound} time(s)`
       );
 
       // Print bucket values
@@ -403,9 +399,7 @@ async function kAnonymityAnalysis(
     histogramBuckets.forEach((histogramBucket, histogramBucketIdx) => {
       console.log(`Bucket ${histogramBucketIdx}:`);
       console.log(
-        `  Bucket size range: [${
-          histogramBucket.equivalenceClassSizeLowerBound
-        }, ${histogramBucket.equivalenceClassSizeUpperBound}]`
+        `  Bucket size range: [${histogramBucket.equivalenceClassSizeLowerBound}, ${histogramBucket.equivalenceClassSizeUpperBound}]`
       );
 
       histogramBucket.bucketValues.forEach(valueBucket => {
@@ -541,9 +535,7 @@ async function lDiversityAnalysis(
       console.log(`Bucket ${histogramBucketIdx}:`);
 
       console.log(
-        `Bucket size range: [${
-          histogramBucket.sensitiveValueFrequencyLowerBound
-        }, ${histogramBucket.sensitiveValueFrequencyUpperBound}]`
+        `Bucket size range: [${histogramBucket.sensitiveValueFrequencyLowerBound}, ${histogramBucket.sensitiveValueFrequencyUpperBound}]`
       );
       histogramBucket.bucketValues.forEach(valueBucket => {
         const quasiIdValues = valueBucket.quasiIdsValues
@@ -684,9 +676,7 @@ async function kMapEstimationAnalysis(
     histogramBuckets.forEach((histogramBucket, histogramBucketIdx) => {
       console.log(`Bucket ${histogramBucketIdx}:`);
       console.log(
-        `  Anonymity range: [${histogramBucket.minAnonymity}, ${
-          histogramBucket.maxAnonymity
-        }]`
+        `  Anonymity range: [${histogramBucket.minAnonymity}, ${histogramBucket.maxAnonymity}]`
       );
       console.log(`  Size: ${histogramBucket.bucketSize}`);
       histogramBucket.bucketValues.forEach(valueBucket => {

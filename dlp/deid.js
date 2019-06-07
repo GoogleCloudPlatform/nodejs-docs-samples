@@ -217,9 +217,7 @@ async function deidentifyWithDateShift(
       const rowValues = row.values.map(
         value =>
           value.stringValue ||
-          `${value.dateValue.month}/${value.dateValue.day}/${
-            value.dateValue.year
-          }`
+          `${value.dateValue.month}/${value.dateValue.day}/${value.dateValue.year}`
       );
       csvLines[rowIndex + 1] = rowValues.join(',');
     });

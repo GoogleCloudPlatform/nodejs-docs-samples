@@ -62,19 +62,13 @@ async function main(
           `\tPredicted text extract entity type: ${result.displayName}`
         );
         console.log(
-          `\tPredicted text extract entity content: ${
-            result.textExtraction.textSegment.content
-          }`
+          `\tPredicted text extract entity content: ${result.textExtraction.textSegment.content}`
         );
         console.log(
-          `\tPredicted text start offset: ${
-            result.textExtraction.textSegment.startOffset
-          }`
+          `\tPredicted text start offset: ${result.textExtraction.textSegment.startOffset}`
         );
         console.log(
-          `\tPredicted text end offset: ${
-            result.textExtraction.textSegment.endOffset
-          }`
+          `\tPredicted text end offset: ${result.textExtraction.textSegment.endOffset}`
         );
         console.log(
           `\tPredicted text score: ${result.textExtraction.score} \n`

@@ -47,9 +47,7 @@ async function main(
       console.log(`Dataset Id: ${model.datasetId}`);
       console.log(`Tables model metadata: `);
       console.log(
-        `\tTraining budget: ${
-          model.tablesModelMetadata.trainBudgetMilliNodeHours
-        }`
+        `\tTraining budget: ${model.tablesModelMetadata.trainBudgetMilliNodeHours}`
       );
       console.log(
         `\tTraining cost: ${model.tablesModelMetadata.trainCostMilliNodeHours}`

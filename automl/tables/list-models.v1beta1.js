@@ -49,14 +49,10 @@ async function main(
         console.log(`Dataset Id: ${model[i].datasetId}`);
         console.log(`Tables model metadata:`);
         console.log(
-          `\tTraining budget: ${
-            model[i].tablesModelMetadata.trainBudgetMilliNodeHours
-          }`
+          `\tTraining budget: ${model[i].tablesModelMetadata.trainBudgetMilliNodeHours}`
         );
         console.log(
-          `\tTraining cost: ${
-            model[i].tablesModelMetadata.trainCostMilliNodeHours
-          }`
+          `\tTraining cost: ${model[i].tablesModelMetadata.trainCostMilliNodeHours}`
         );
         console.log(`Model deployment state: ${model[i].deploymentState}`);
       }

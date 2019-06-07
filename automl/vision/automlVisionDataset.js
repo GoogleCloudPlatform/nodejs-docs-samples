@@ -145,9 +145,7 @@ async function getDataset(projectId, computeRegion, datasetId) {
   console.log(`Dataset display name: ${dataset.displayName}`);
   console.log(`Dataset example count: ${dataset.exampleCount}`);
   console.log(
-    `Classification type: ${
-      dataset.imageClassificationDatasetMetadata.classificationType
-    }`
+    `Classification type: ${dataset.imageClassificationDatasetMetadata.classificationType}`
   );
   console.log(`Dataset create time: `);
   console.log(`\tseconds: ${dataset.createTime.seconds}`);

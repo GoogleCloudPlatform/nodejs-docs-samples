@@ -74,9 +74,7 @@ function main(
       );
       console.log(`Image object detection evaluation metrics:`);
       console.log(
-        `Evaluated bounding box count:  ${
-          detectMetrics.evaluatedBoundingBoxCount
-        }`
+        `Evaluated bounding box count:  ${detectMetrics.evaluatedBoundingBoxCount}`
       );
       console.log(
         `Bounding box mean average precision:  ${math.round(

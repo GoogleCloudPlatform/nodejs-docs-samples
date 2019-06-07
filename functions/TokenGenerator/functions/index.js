@@ -24,17 +24,20 @@ const http = require('http');
 const https = require('https');
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
+let tokenCollection = 'Tokens';
+const token = 'OauthToken';
+let scope = 'cloud-platform';
 
 // [START save_token_to_firebase]
-function saveOAuthToken(context, oauthToken) {
-  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
+function saveOAuthToken(oauthToken) {
+  const docRef = db.collection(tokenCollection).doc(token);
   docRef.set(oauthToken);
 }
 // [END save_token_to_firebase]
 
 // [START generate_token]
 function generateAccessToken(
-  context,
+  projectID,
   serviceAccountAccessToken,
   serviceAccountTokenType
 ) {
@@ -45,7 +48,7 @@ function generateAccessToken(
     const post_options = {
       host: 'iamcredentials.googleapis.com',
       path:
-        '/v1/projects/-/serviceAccounts/SERVICE-ACCOUNT-NAME@YOUR_PROJECT_ID.iam.gserviceaccount.com:generateAccessToken',
+        '/v1/projects/-/serviceAccounts/' + projectID + ':generateAccessToken',
       method: 'POST',
       headers: {
         // Set Service Account Credentials
@@ -63,7 +66,7 @@ function generateAccessToken(
       });
       res.on('end', () => {
         // Next step in pipeline
-        saveOAuthToken(context, JSON.parse(oauthToken));
+        saveOAuthToken(JSON.parse(oauthToken));
         return resolve(JSON.parse(oauthToken));
       });
     });
@@ -76,7 +79,7 @@ function generateAccessToken(
     // Sets up the scope that we want the end user to have.
     const body = {
       delegates: [],
-      scope: ['https://www.googleapis.com/auth/dialogflow'],
+      scope: ['https://www.googleapis.com/auth/' + scope],
       lifetime: '3599s',
     };
 
@@ -88,7 +91,7 @@ function generateAccessToken(
 // [END generate_token]
 
 // [START retrieve_credentials]
-function retrieveCredentials(context) {
+function retrieveCredentials(projectID) {
   return new Promise(resolve => {
     // To create a new access token, we first have to retrieve the credentials
     // of the service account that will make the generateTokenRequest().
@@ -110,7 +113,7 @@ function retrieveCredentials(context) {
       res.on('end', () => {
         const response = JSON.parse(body);
         return generateAccessToken(
-          context,
+          projectID,
           response.access_token,
           response.token_type
         ).then(result => {
@@ -148,8 +151,11 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
       'The function must be called ' + 'while authenticated.'
     );
   }
+  const projectID = data["projectID"];
+  scope = data["scope"];
+  tokenCollection = data["tokenCollection"];
   // Retrieve the token from the database
-  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
+  const docRef = db.collection(tokenCollection).doc(token);
 
   return docRef
     .get()
@@ -157,7 +163,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
       if (doc.exists && isValid(doc.data().expireTime)) {
         return doc.data();
       } else {
-        return retrieveCredentials(context).then(result => {
+        return retrieveCredentials(projectID).then(result => {
           return result;
         });
       }
@@ -168,3 +174,6 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     });
 });
 // [END function_get_token]
+
+       
+      

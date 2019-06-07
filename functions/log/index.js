@@ -49,6 +49,52 @@ function getLogEntries() {
 }
 // [END functions_log_retrieve]
 
+// [START functions_log_get_metrics]
+// By default, the client will authenticate using the service account file
+// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
+// the project specified by the GCLOUD_PROJECT environment variable. See
+// https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
+const Monitoring = require('@google-cloud/monitoring');
+
+function getMetrics(callback) {
+  // Instantiates a client
+  const monitoring = Monitoring.v3().metricServiceApi();
+
+  // Create two datestrings, a start and end range
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setHours(oneWeekAgo.getHours() - 7 * 24);
+
+  const options = {
+    name: monitoring.projectPath(process.env.GCLOUD_PROJECT),
+    // There is also: cloudfunctions.googleapis.com/function/execution_count
+    filter:
+      'metric.type="cloudfunctions.googleapis.com/function/execution_times"',
+    interval: {
+      startTime: {
+        seconds: oneWeekAgo.getTime() / 1000,
+      },
+      endTime: {
+        seconds: Date.now() / 1000,
+      },
+    },
+    view: 1,
+  };
+
+  console.log('Data:');
+
+  let error;
+
+  // Iterate over all elements.
+  monitoring
+    .listTimeSeries(options)
+    .on('error', err => {
+      error = err;
+    })
+    .on('data', element => console.log(element))
+    .on('end', () => callback(error));
+  // [END functions_log_get_metrics]
+}
+
 // [START functions_log_stackdriver]
 exports.processLogEntry = data => {
   // Node 6: data.data === Node 8+: data
@@ -62,3 +108,4 @@ exports.processLogEntry = data => {
 // [END functions_log_stackdriver]
 
 exports.getLogEntries = getLogEntries;
+exports.getMetrics = getMetrics;

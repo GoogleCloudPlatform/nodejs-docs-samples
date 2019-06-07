@@ -73,20 +73,14 @@ describe(`reference images`, () => {
 
   it(`should create reference image`, async () => {
     const output = execSync(
-      `${cmd} createReferenceImage "${testProduct.projectId}" "${
-        testProduct.location
-      }" "${testProduct.productId}" "${testProduct.productReferenceImageId}" "${
-        testProduct.productImageUri
-      }"`
+      `${cmd} createReferenceImage "${testProduct.projectId}" "${testProduct.location}" "${testProduct.productId}" "${testProduct.productReferenceImageId}" "${testProduct.productImageUri}"`
     );
     assert.match(output, /response.uri: gs:\/\//);
   });
 
   it(`should delete reference image`, async () => {
     const output = execSync(
-      `${cmd} deleteReferenceImage "${testProduct.projectId}" "${
-        testProduct.location
-      }" "${testProduct.productId}" "${testProduct.productReferenceImageId}"`
+      `${cmd} deleteReferenceImage "${testProduct.projectId}" "${testProduct.location}" "${testProduct.productId}" "${testProduct.productReferenceImageId}"`
     );
 
     assert.match(output, /Reference image deleted from product./);

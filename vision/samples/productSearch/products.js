@@ -187,9 +187,7 @@ async function updateProductLabels(projectId, location, productId, key, value) {
   console.log(`Product description: ${updatedProduct.description}`);
   console.log(`Product category: ${updatedProduct.productCategory}`);
   console.log(
-    `Product Labels: ${updatedProduct.productLabels[0].key}: ${
-      updatedProduct.productLabels[0].value
-    }`
+    `Product Labels: ${updatedProduct.productLabels[0].key}: ${updatedProduct.productLabels[0].value}`
   );
   // [END vision_product_search_update_product_labels]
 }

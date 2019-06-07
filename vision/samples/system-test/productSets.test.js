@@ -93,9 +93,7 @@ describe(`product sets`, () => {
     testProductSet.createdProductSetPaths.push(newProductSetPath);
 
     const output = execSync(
-      `${cmd} createProductSet "${testProductSet.projectId}" "${
-        testProductSet.location
-      }" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`
+      `${cmd} createProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`
     );
 
     assert.match(output, new RegExp(`Product Set name: ${newProductSetPath}`));
@@ -109,9 +107,7 @@ describe(`product sets`, () => {
 
   it(`should get product set`, async () => {
     const output = execSync(
-      `${cmd} getProductSet "${testProductSet.projectId}" "${
-        testProductSet.location
-      }" "${testProductSet.productSetId}"`
+      `${cmd} getProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
     );
 
     assert.match(
@@ -128,9 +124,7 @@ describe(`product sets`, () => {
 
   it(`should list product sets`, async () => {
     const output = execSync(
-      `${cmd} listProductSets "${testProductSet.projectId}" "${
-        testProductSet.location
-      }"`
+      `${cmd} listProductSets "${testProductSet.projectId}" "${testProductSet.location}"`
     );
 
     assert.match(
@@ -152,9 +146,7 @@ describe(`product sets`, () => {
     assert.ok(productSet);
 
     const output = execSync(
-      `${cmd} deleteProductSet "${testProductSet.projectId}" "${
-        testProductSet.location
-      }" "${testProductSet.productSetId}"`
+      `${cmd} deleteProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
     );
 
     assert.match(output, /deleted/);

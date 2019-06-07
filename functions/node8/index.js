@@ -68,6 +68,7 @@ exports.avoidInfiniteRetries = (data, context) => {
  * @param {object} context The event metadata.
  */
 exports.retryPromise = (data, context) => {
+  // Retry based on a user-defined parameter
   const tryAgain = !!data.retry;
 
   if (tryAgain) {

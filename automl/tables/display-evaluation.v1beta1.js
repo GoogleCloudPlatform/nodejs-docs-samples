@@ -125,19 +125,13 @@ async function main(
               const regressionMetrics =
                 modelEvaluation.regressionEvaluationMetrics;
               console.log(
-                `\tModel root mean squared error: ${
-                  regressionMetrics.rootMeanSquaredError
-                }`
+                `\tModel root mean squared error: ${regressionMetrics.rootMeanSquaredError}`
               );
               console.log(
-                `\tModel mean absolute error: ${
-                  regressionMetrics.meanAbsoluteError
-                }`
+                `\tModel mean absolute error: ${regressionMetrics.meanAbsoluteError}`
               );
               console.log(
-                `\tModel mean absolute percentage error: ${
-                  regressionMetrics.meanAbsolutePercentageError
-                }`
+                `\tModel mean absolute percentage error: ${regressionMetrics.meanAbsolutePercentageError}`
               );
               console.log(`\tModel rsquared: ${regressionMetrics.rSquared}`);
             }

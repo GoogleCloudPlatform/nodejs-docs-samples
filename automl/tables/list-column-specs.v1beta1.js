@@ -59,9 +59,7 @@ async function main(
         console.log(`Column display name: ${column[i].displayName}`);
         console.log(`Column datatype: ${column[i].dataType.typeCode}`);
         console.log(
-          `Column distinct value count: ${
-            column[i].dataStats.distinctValueCount
-          }`
+          `Column distinct value count: ${column[i].dataStats.distinctValueCount}`
         );
         console.log(`\n`);
       }

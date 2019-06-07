@@ -57,32 +57,22 @@ function main(
         `\tBase model: ${response.translationModelMetadata.baseModel}`
       );
       console.log(
-        `\tSource language code: ${
-          response.translationModelMetadata.sourceLanguageCode
-        }`
+        `\tSource language code: ${response.translationModelMetadata.sourceLanguageCode}`
       );
       console.log(
-        `\tTarget language code: ${
-          response.translationModelMetadata.targetLanguageCode
-        }`
+        `\tTarget language code: ${response.translationModelMetadata.targetLanguageCode}`
       );
     } else if (response.modelMetadata === `textClassificationModelMetadata`) {
       console.log(
-        `Text classification model metadata: , ${
-          response.textClassificationModelMetadata
-        }`
+        `Text classification model metadata: , ${response.textClassificationModelMetadata}`
       );
     } else if (response.modelMetadata === `imageClassificationModelMetadata`) {
       console.log(`Image classification model metadata:`);
       console.log(
-        `\tBase model Id: ${
-          response.imageClassificationModelMetadata.baseModelId
-        }`
+        `\tBase model Id: ${response.imageClassificationModelMetadata.baseModelId}`
       );
       console.log(
-        `\tTrain budget: ${
-          response.imageClassificationModelMetadata.trainBudget
-        }`
+        `\tTrain budget: ${response.imageClassificationModelMetadata.trainBudget}`
       );
       console.log(
         `\tTrain cost: ${response.imageClassificationModelMetadata.trainCost}`

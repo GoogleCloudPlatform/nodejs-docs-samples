@@ -69,9 +69,7 @@ async function main(
     }
   );
   console.log(
-    `Found discovery occurrence ${finishedOccurrence.name}.  Status: ${
-      finishedOccurrence.discovered.discovered.analysisStatus
-    }`
+    `Found discovery occurrence ${finishedOccurrence.name}.  Status: ${finishedOccurrence.discovered.discovered.analysisStatus}`
   );
   // [END containeranalysis_poll_discovery_occurrence_finished]
 }

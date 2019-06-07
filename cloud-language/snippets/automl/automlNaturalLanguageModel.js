@@ -128,20 +128,14 @@ async function listModels(projectId, computeRegion, filter) {
       console.log(`Translation model metadata:`);
       console.log(`\tBase model: ${model.translationModelMetadata.baseModel}`);
       console.log(
-        `\tSource language code: ${
-          model.translationModelMetadata.sourceLanguageCode
-        }`
+        `\tSource language code: ${model.translationModelMetadata.sourceLanguageCode}`
       );
       console.log(
-        `\tTarget language code: ${
-          model.translationModelMetadata.targetLanguageCode
-        }`
+        `\tTarget language code: ${model.translationModelMetadata.targetLanguageCode}`
       );
     } else if (model.modelMetadata === `textClassificationModelMetadata`) {
       console.log(
-        `Text classification model metadata: ${
-          model.textClassificationModelMetadata
-        }`
+        `Text classification model metadata: ${model.textClassificationModelMetadata}`
       );
     } else if (model.modelMetadata === `imageClassificationModelMetadata`) {
       console.log(`Image classification model metadata:`);
@@ -198,20 +192,14 @@ async function getModel(projectId, computeRegion, modelId) {
     console.log(`Translation model metadata:`);
     console.log(`\tBase model: ${model.translationModelMetadata.baseModel}`);
     console.log(
-      `\tSource language code: ${
-        model.translationModelMetadata.sourceLanguageCode
-      }`
+      `\tSource language code: ${model.translationModelMetadata.sourceLanguageCode}`
     );
     console.log(
-      `\tTarget language code: ${
-        model.translationModelMetadata.targetLanguageCode
-      }`
+      `\tTarget language code: ${model.translationModelMetadata.targetLanguageCode}`
     );
   } else if (model.modelMetadata === `textClassificationModelMetadata`) {
     console.log(
-      `Text classification model metadata: ${
-        model.textClassificationModelMetadata
-      }`
+      `Text classification model metadata: ${model.textClassificationModelMetadata}`
     );
   } else if (model.modelMetadata === `imageClassificationModelMetadata`) {
     console.log(`Image classification model metadata:`);

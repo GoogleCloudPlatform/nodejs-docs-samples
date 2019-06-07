@@ -33,7 +33,7 @@ const vision = new Vision.ImageAnnotatorClient();
 const {Translate} = require('@google-cloud/translate');
 const translate = new Translate();
 
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 // [END functions_ocr_setup]
 
 // [START functions_ocr_publish]

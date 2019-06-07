@@ -15,7 +15,7 @@
 
 'use strict';
 
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 
 // [START functions_helloworld_http]
 const escapeHtml = require('escape-html');

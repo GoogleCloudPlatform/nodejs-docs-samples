@@ -223,7 +223,7 @@ exports.helloAuth = (data, context) => {
  * @param {object} context The event metadata.
  */
 exports.helloAnalytics = (data, context) => {
-  const resource = context.resource;
+  const {resource} = context;
   console.log(`Function triggered by the following event: ${resource}`);
 
   const analyticsEvent = data.eventDim[0];
@@ -275,7 +275,7 @@ const firestore = new Firestore({
 
 // Converts strings added to /messages/{pushId}/original to uppercase
 exports.makeUpperCase = (data, context) => {
-  const resource = context.resource;
+  const {resource} = context;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
   const curValue = data.value.fields.original.stringValue;

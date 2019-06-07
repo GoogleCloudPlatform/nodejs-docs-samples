@@ -61,14 +61,10 @@ async function createDataset(projectId) {
   console.log(`Dataset example count: ${dataset.exampleCount}`);
   console.log(`Translation dataset specification:`);
   console.log(
-    `\tSource language code: ${
-      dataset.translationDatasetMetadata.sourceLanguageCode
-    }`
+    `\tSource language code: ${dataset.translationDatasetMetadata.sourceLanguageCode}`
   );
   console.log(
-    `\tTarget language code: ${
-      dataset.translationDatasetMetadata.targetLanguageCode
-    }`
+    `\tTarget language code: ${dataset.translationDatasetMetadata.targetLanguageCode}`
   );
   console.log(`Dataset create time:`);
   console.log(`\tseconds: ${dataset.createTime.seconds}`);
@@ -110,14 +106,10 @@ async function listDatasets(projectId, computeRegion, filter) {
     console.log(`Dataset example count: ${dataset.exampleCount}`);
     console.log(`Translation dataset specification:`);
     console.log(
-      `\tSource language code: ${
-        dataset.translationDatasetMetadata.sourceLanguageCode
-      }`
+      `\tSource language code: ${dataset.translationDatasetMetadata.sourceLanguageCode}`
     );
     console.log(
-      `\tTarget language code: ${
-        dataset.translationDatasetMetadata.targetLanguageCode
-      }`
+      `\tTarget language code: ${dataset.translationDatasetMetadata.targetLanguageCode}`
     );
     console.log(`Dataset create time:`);
     console.log(`\tseconds: ${dataset.createTime.seconds}`);
@@ -151,14 +143,10 @@ async function getDataset(projectId, computeRegion, datasetId) {
   console.log(`Dataset example count: ${dataset.exampleCount}`);
   console.log(`Translation dataset specification:`);
   console.log(
-    `\tSource language code: ${
-      dataset.translationDatasetMetadata.sourceLanguageCode
-    }`
+    `\tSource language code: ${dataset.translationDatasetMetadata.sourceLanguageCode}`
   );
   console.log(
-    `\tTarget language code: ${
-      dataset.translationDatasetMetadata.targetLanguageCode
-    }`
+    `\tTarget language code: ${dataset.translationDatasetMetadata.targetLanguageCode}`
   );
   console.log(`Dataset create time:`);
   console.log(`\tseconds: ${dataset.createTime.seconds}`);

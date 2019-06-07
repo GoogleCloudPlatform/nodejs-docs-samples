@@ -670,9 +670,7 @@ async function syncRecognizeWithMultiChannel(fileName) {
   const transcription = response.results
     .map(
       result =>
-        ` Channel Tag: ${result.channelTag} ${
-          result.alternatives[0].transcript
-        }`
+        ` Channel Tag: ${result.channelTag} ${result.alternatives[0].transcript}`
     )
     .join('\n');
   console.log(`Transcription: \n${transcription}`);
@@ -706,9 +704,7 @@ async function syncRecognizeWithMultiChannelGCS(gcsUri) {
   const transcription = response.results
     .map(
       result =>
-        ` Channel Tag: ${result.channelTag} ${
-          result.alternatives[0].transcript
-        }`
+        ` Channel Tag: ${result.channelTag} ${result.alternatives[0].transcript}`
     )
     .join('\n');
   console.log(`Transcription: \n${transcription}`);

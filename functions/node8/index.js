@@ -65,6 +65,7 @@ exports.avoidInfiniteRetries = (data, context) => {
  * how to toggle retries using a promise
  *
  * @param {object} data The event payload.
+ * @param {object} data.retry User-supplied parameter that tells the function whether to retry.
  * @param {object} context The event metadata.
  */
 exports.retryPromise = (data, context) => {

@@ -24,7 +24,7 @@ const FIELDS = ['user', 'password', 'database'];
 prompt.start();
 
 // Prompt the user for connection details
-prompt.get(FIELDS, (err, config) => {
+prompt.get(FIELDS, async (err, config) => {
   if (err) {
     console.error(err);
     return;
@@ -34,21 +34,20 @@ prompt.get(FIELDS, (err, config) => {
   const knex = Knex({client: 'mysql', connection: config});
 
   // Create the "visits" table
-  knex.schema
-    .createTable('visits', table => {
+  try {
+    await knex.schema.createTable('visits', table => {
       table.increments();
       table.timestamp('timestamp');
       table.string('userIp');
-    })
-    .then(() => {
-      console.log(`Successfully created 'visits' table.`);
-      return knex.destroy();
-    })
-    .catch(err => {
-      console.error(`Failed to create 'visits' table:`, err);
-      if (knex) {
-        knex.destroy();
-      }
     });
+
+    console.log(`Successfully created 'visits' table.`);
+  } catch (err) {
+    console.error(`Failed to create 'visits' table:`, err);
+  } finally {
+    if (knex) {
+      knex.destroy();
+    }
+  }
 });
 // [END gae_flex_mysql_create_tables]

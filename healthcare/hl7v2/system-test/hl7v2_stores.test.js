@@ -20,6 +20,9 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
+const projectId = process.env.GCLOUD_PROJECT;
+const region = 'us-central1';
+
 const cmdDataset = 'node datasets.js';
 const cmd = 'node hl7v2_stores.js';
 const cwdDatasets = path.join(__dirname, '../../datasets');
@@ -29,14 +32,14 @@ const hl7v2StoreId = `nodejs-docs-samples-test-hl7v2-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
-const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
-  /-/gi,
-  '_'
-);
+const pubsubTopic = process.env.PUBSUB_TOPIC;
 
 before(async () => {
   tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  await tools.runAsync(
+    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    cwdDatasets
+  );
 });
 after(async () => {
   try {
@@ -52,7 +55,7 @@ it('should create an HL7v2 store', async () => {
     `${cmd} createHl7v2Store ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Created HL7v2 store/).test(output), true);
+  assert.ok(output.includes('Created HL7v2 store'));
 });
 
 it('should get an HL7v2 store', async () => {
@@ -60,7 +63,7 @@ it('should get an HL7v2 store', async () => {
     `${cmd} getHl7v2Store ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Got HL7v2 store/).test(output), true);
+  assert.ok(output.includes('Got HL7v2 store'));
 });
 
 it('should patch an HL7v2 store', async () => {
@@ -68,10 +71,7 @@ it('should patch an HL7v2 store', async () => {
     `${cmd} patchHl7v2Store ${datasetId} ${hl7v2StoreId} ${pubsubTopic}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp(/Patched HL7v2 store with Cloud Pub\/Sub topic/).test(output),
-    true
-  );
+  assert.ok(output.includes('Patched HL7v2 store with Cloud Pub/Sub topic'));
 });
 
 it('should list HL7v2 stores', async () => {
@@ -79,7 +79,7 @@ it('should list HL7v2 stores', async () => {
     `${cmd} listHl7v2Stores ${datasetId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/HL7v2 stores/).test(output), true);
+  assert.ok(output.includes('HL7v2 stores'));
 });
 
 it('should delete an HL7v2 Store', async () => {
@@ -87,5 +87,5 @@ it('should delete an HL7v2 Store', async () => {
     `${cmd} deleteHl7v2Store ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Deleted HL7v2 store/).test(output), true);
+  assert.ok(output.includes('Deleted HL7v2 store'));
 });

@@ -17,22 +17,22 @@
 
 /* eslint node/no-extraneous-require: "off" */
 
-const test = require('ava');
+const assert = require('assert');
 const puppeteer = require('puppeteer');
 /* global document */
 
 let browser, browserPage;
 
-test.before(async () => {
+before(async () => {
   browser = await puppeteer.launch();
   browserPage = await browser.newPage();
 });
 
-test.after.always(async () => {
+after(async () => {
   await browser.close();
 });
 
-test('should process chat message', async t => {
+it('should process chat message', async () => {
   await browserPage.goto('http://localhost:8080');
 
   await browserPage.evaluate(() => {
@@ -46,5 +46,5 @@ test('should process chat message', async t => {
     () => document.querySelector('li').textContent
   );
 
-  t.is(itemText, 'test');
+  assert.strictEqual(itemText, 'test');
 });

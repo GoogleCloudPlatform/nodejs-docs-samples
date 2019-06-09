@@ -14,34 +14,32 @@
  */
 
 // [START functions_pubsub_unit_test]
-const test = require(`ava`);
-const uuid = require(`uuid`);
-const sinon = require(`sinon`);
+const assert = require('assert');
+const uuid = require('uuid');
+const utils = require('@google-cloud/nodejs-repo-tools');
 
-const helloPubSub = require(`..`).helloPubSub;
-const consoleLog = sinon.stub(console, 'log');
+const helloPubSub = require('..').helloPubSub;
 
-test.cb(`helloPubSub: should print a name`, t => {
-  t.plan(1);
+beforeEach(utils.stubConsole);
+afterEach(utils.restoreConsole);
 
+it('helloPubSub: should print a name', done => {
   // Initialize mocks
   const name = uuid.v4();
   const event = {
     data: {
-      data: Buffer.from(name).toString(`base64`),
+      data: Buffer.from(name).toString('base64'),
     },
   };
 
   // Call tested function and verify its behavior
   helloPubSub(event, () => {
-    t.true(consoleLog.calledWith(`Hello, ${name}!`));
-    t.end();
+    assert.ok(console.log.calledWith(`Hello, ${name}!`));
+    done();
   });
 });
 
-test.cb(`helloPubSub: should print hello world`, t => {
-  t.plan(1);
-
+it('helloPubSub: should print hello world', done => {
   // Initialize mocks
   const event = {
     data: {},
@@ -49,8 +47,8 @@ test.cb(`helloPubSub: should print hello world`, t => {
 
   // Call tested function and verify its behavior
   helloPubSub(event, () => {
-    t.true(consoleLog.calledWith(`Hello, World!`));
-    t.end();
+    assert.ok(console.log.calledWith('Hello, World!'));
+    done();
   });
 });
 // [END functions_pubsub_unit_test]

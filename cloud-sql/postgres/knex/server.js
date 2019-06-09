@@ -188,10 +188,10 @@ app.get('/', (req, res) => {
   })();
 });
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
   // [START cloud_sql_example_statement]
   // Get the team from the request and record the time of the vote.
-  const team = req.body.team;
+  const {team} = req.body;
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
@@ -199,6 +199,7 @@ app.post('/', (req, res) => {
       .status(400)
       .send('Invalid team specified.')
       .end();
+    return;
   }
 
   // Create a vote record to be stored in the database.
@@ -208,28 +209,26 @@ app.post('/', (req, res) => {
   };
 
   // Save the data to the database.
-  insertVote(knex, vote)
-    // [END cloud_sql_example_statement]
-    .catch(err => {
-      logger.error('Error while attempting to submit vote. Error:' + err);
-      let msg = 'Unable to successfully cast vote!';
-      msg += 'Please check the application logs for more details.';
-      res
-        .status(500)
-        .send(msg)
-        .end();
-    });
-  const msg = 'Successfully voted for ' + team + ' at ' + timestamp;
+  try {
+    await insertVote(knex, vote);
+  } catch (err) {
+    logger.error('Error while attempting to submit vote:' + err);
+    res
+      .status(500)
+      .send('Unable to cast vote; see logs for more details.')
+      .end();
+    return;
+  }
   res
     .status(200)
-    .send(msg)
+    .send(`Successfully voted for ${team} at ${timestamp}`)
     .end();
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 
-module.exports = app;
+module.exports = server;

@@ -30,6 +30,7 @@ const functionSpecificComputation = heavyComputation;
 const fileWideComputation = lightComputation;
 
 // [START functions_tips_scopes]
+// [START run_tips_global_scope]
 // Global (instance-wide) scope
 // This computation runs at instance cold-start
 const instanceVar = heavyComputation();
@@ -47,9 +48,11 @@ exports.scopeDemo = (req, res) => {
 
   res.send(`Per instance: ${instanceVar}, per function: ${functionVar}`);
 };
+// [END run_tips_global_scope]
 // [END functions_tips_scopes]
 
 // [START functions_tips_lazy_globals]
+// [START run_tips_global_lazy]
 // Always initialized (at cold-start)
 const nonLazyGlobal = fileWideComputation();
 
@@ -68,6 +71,7 @@ exports.lazyGlobals = (req, res) => {
 
   res.send(`Lazy global: ${lazyGlobal}, non-lazy global: ${nonLazyGlobal}`);
 };
+// [END run_tips_global_lazy]
 // [END functions_tips_lazy_globals]
 
 // [START functions_tips_connection_pooling]
@@ -189,9 +193,8 @@ const pubsub = new PubSub();
  */
 exports.gcpApiCall = (req, res) => {
   const topic = pubsub.topic(req.body.topic);
-  const publisher = topic.publisher();
 
-  publisher.publish(Buffer.from('Test message'), err => {
+  topic.publish(Buffer.from('Test message'), err => {
     if (err) {
       res.status(500).send(`Error publishing the message: ${err}`);
     } else {

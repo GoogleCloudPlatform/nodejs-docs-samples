@@ -16,17 +16,16 @@
 'use strict';
 
 const sinon = require(`sinon`);
-const test = require(`ava`);
+const assert = require(`assert`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const sample = require(`../`);
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
-
-test(`should demonstrate retry behavior for a promise`, async t => {
+it('should demonstrate retry behavior for a promise', done => {
   // Retry by throwing an error
-  t.throws(() => {
+  assert.throws(() => {
     sample.retryPromise({
       data: {
         retry: true,
@@ -35,10 +34,16 @@ test(`should demonstrate retry behavior for a promise`, async t => {
   }, 'Retrying...');
 
   // Terminate by returning a rejected promise
-  await t.throws(sample.retryPromise({data: {}}), 'Not retrying...');
+  sample.retryPromise({data: {}}).then(
+    () => {},
+    error => {
+      assert.strictEqual(error.message, 'Not retrying...');
+      done();
+    }
+  );
 });
 
-test(`should demonstrate retry behavior for a callback`, t => {
+it('should demonstrate retry behavior for a callback', done => {
   const cb = sinon.stub();
   const err = new Error('Error!');
 
@@ -51,14 +56,15 @@ test(`should demonstrate retry behavior for a callback`, t => {
     },
     cb
   );
-  t.deepEqual(cb.firstCall.args, [err]);
+  assert.deepStrictEqual(cb.firstCall.args, [err]);
 
   // Terminate by passing nothing to the callback
   sample.retryCallback({data: {}}, cb);
-  t.deepEqual(cb.secondCall.args, []);
+  assert.deepStrictEqual(cb.secondCall.args, []);
+  done();
 });
 
-test(`should call a GCP API`, async t => {
+it('should call a GCP API', async () => {
   const reqMock = {
     body: {
       topic: process.env.FUNCTIONS_TOPIC,
@@ -76,6 +82,6 @@ test(`should call a GCP API`, async t => {
   // use a delay here and keep the sample idiomatic
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  t.true(resMock.status.calledOnce);
-  t.true(resMock.status.calledWith(200));
+  assert.ok(resMock.status.calledOnce);
+  assert.ok(resMock.status.calledWith(200));
 });

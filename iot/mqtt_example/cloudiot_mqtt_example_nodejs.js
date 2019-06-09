@@ -37,7 +37,7 @@ let backoffTime = 1;
 let publishChainInProgress = false;
 
 console.log('Google Cloud IoT Core MQTT example.');
-const argv = require(`yargs`)
+const {argv} = require(`yargs`)
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
@@ -242,7 +242,7 @@ const argv = require(`yargs`)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
   .help()
-  .strict().argv;
+  .strict();
 
 // Create a Cloud IoT Core JWT for the given project id, signed with the given
 // private key.
@@ -292,7 +292,7 @@ function publishAsync(
     console.log(`Backing off for ${publishDelayMs}ms before publishing.`);
   }
 
-  setTimeout(function() {
+  setTimeout(() => {
     const payload = `${argv.registryId}/${
       argv.deviceId
     }-payload-${messagesSent}`;
@@ -300,7 +300,7 @@ function publishAsync(
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.
     console.log('Publishing message:', payload);
-    client.publish(mqttTopic, payload, {qos: 1}, function(err) {
+    client.publish(mqttTopic, payload, {qos: 1}, err => {
       if (!err) {
         shouldBackoff = false;
         backoffTime = MINIMUM_BACKOFF_TIME;
@@ -308,7 +308,7 @@ function publishAsync(
     });
 
     const schedulePublishDelayMs = argv.messageType === 'events' ? 1000 : 2000;
-    setTimeout(function() {
+    setTimeout(() => {
       // [START iot_mqtt_jwt_refresh]
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > argv.tokenExpMins * 60) {
@@ -565,11 +565,11 @@ function publishAsyncGateway(
     payload = `${registryId}/${deviceId}-payload-${messagesSent}`;
   }
 
-  setTimeout(function() {
+  setTimeout(() => {
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.
     console.log(`Publishing message: ${payload} to ${mqttTopic}`);
-    client.publish(mqttTopic, payload, {qos: 1}, function(err) {
+    client.publish(mqttTopic, payload, {qos: 1}, err => {
       if (!err) {
         shouldBackoff = false;
         backoffTime = MINIMUM_BACKOFF_TIME;
@@ -577,7 +577,7 @@ function publishAsyncGateway(
     });
 
     const schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
-    setTimeout(function() {
+    setTimeout(() => {
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > tokenExpMins * 60) {
         iatTime = parseInt(Date.now() / 1000);

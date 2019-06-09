@@ -4,7 +4,10 @@
   "main": "iam.js",
   "author": "Google Inc.",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.22.2"
+    "@google-cloud/pubsub": "^0.28.0"
   }
 }

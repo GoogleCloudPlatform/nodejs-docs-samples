@@ -20,7 +20,9 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const cmdDataset = 'node datasets.js';
+const projectId = process.env.GCLOUD_PROJECT;
+const region = 'us-central1';
+
 const cmdFhirStores = 'node fhir_stores.js';
 const cmd = 'node fhir_resources.js';
 const cwd = path.join(__dirname, '..');
@@ -35,14 +37,14 @@ let resourceId;
 
 before(async () => {
   tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  await tools.runAsync(
+    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    cwdDatasets
+  );
 });
 after(async () => {
   try {
-    await tools.runAsync(
-      `${cmdDataset} deleteDataset ${datasetId}`,
-      cwdDatasets
-    );
+    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 
@@ -59,7 +61,7 @@ it('should create a FHIR resource', async () => {
     `Created resource ${resourceType} with ID (.*).`
   );
   assert.strictEqual(createdMessage.test(output), true);
-  resourceId = createdMessage.exec(output)[1];
+  [, resourceId] = createdMessage.exec(output);
 });
 
 it('should get a FHIR resource', async () => {

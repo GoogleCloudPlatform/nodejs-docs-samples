@@ -22,14 +22,22 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const cwd = path.join(__dirname, '..');
 const cmd = 'node auth.js';
 
+const {BUCKET_NAME} = process.env;
+
 before(tools.checkCredentials);
 
 it('should load credentials implicitly', async () => {
   const output = await tools.runAsync(`${cmd} auth-cloud-implicit`, cwd);
-  assert.strictEqual(output.includes('Buckets:'), true);
+  assert.strictEqual(output.includes(BUCKET_NAME), true);
 });
 
 it('should load credentials explicitly', async () => {
-  const output = await tools.runAsync(`${cmd} auth-cloud-explicit`, cwd);
-  assert.strictEqual(output.includes('Buckets:'), true);
+  const project = process.env.GCLOUD_PROJECT;
+  const keyfile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
+  const output = await tools.runAsync(
+    `${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`,
+    cwd
+  );
+  assert.strictEqual(output.includes(BUCKET_NAME), true);
 });

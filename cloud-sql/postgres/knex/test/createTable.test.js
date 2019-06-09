@@ -15,117 +15,47 @@
 
 'use strict';
 
-const test = require(`ava`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noPreserveCache();
-const sinon = require(`sinon`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const assert = require('assert');
+const path = require('path');
+const Knex = require('knex');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const SAMPLE_PATH = path.join(__dirname, `../createTables.js`);
+const cwd = path.join(__dirname, '..');
 
-const exampleConfig = [`user`, `password`, `database`];
+const {DB_USER, DB_PASS, DB_NAME} = process.env;
+const CONNECTION_NAME = process.env.CLOUD_SQL_CONNECTION_NAME;
 
-function getSample() {
-  const configMock = exampleConfig;
-  const promptMock = {
-    start: sinon.stub(),
-    get: sinon.stub().yields(null, configMock),
-  };
-  const tableMock = {
-    increments: sinon.stub(),
-    timestamp: sinon.stub(),
-    string: sinon.stub(),
-  };
-  const knexMock = {
-    schema: {
-      createTable: sinon.stub(),
-    },
-    destroy: sinon.stub().returns(Promise.resolve()),
-  };
-
-  knexMock.schema.createTable
-    .returns(Promise.resolve(knexMock))
-    .yields(tableMock);
-  const KnexMock = sinon.stub().returns(knexMock);
-
-  return {
-    mocks: {
-      Knex: KnexMock,
-      knex: knexMock,
-      config: configMock,
-      prompt: promptMock,
-    },
-  };
-}
-
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
-
-test.cb.serial(`should create a table`, t => {
-  const sample = getSample();
-  const expectedResult = `Successfully created 'votes' table.`;
-
-  proxyquire(SAMPLE_PATH, {
-    knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-  });
-
-  t.true(sample.mocks.prompt.start.calledOnce);
-  t.true(sample.mocks.prompt.get.calledOnce);
-  t.deepEqual(sample.mocks.prompt.get.firstCall.args[0], exampleConfig);
-
-  setTimeout(() => {
-    t.true(sample.mocks.Knex.calledOnce);
-    t.deepEqual(sample.mocks.Knex.firstCall.args, [
-      {
-        client: 'pg',
-        connection: exampleConfig,
+before(async () => {
+  try {
+    const knex = Knex({
+      client: 'pg',
+      connection: {
+        user: DB_USER,
+        password: DB_PASS,
+        database: DB_NAME,
+        host: `/cloudsql/${CONNECTION_NAME}`,
       },
-    ]);
-
-    t.true(sample.mocks.knex.schema.createTable.calledOnce);
-    t.is(sample.mocks.knex.schema.createTable.firstCall.args[0], 'votes');
-
-    t.true(console.log.calledWith(expectedResult));
-    t.true(sample.mocks.knex.destroy.calledOnce);
-    t.end();
-  }, 10);
+    });
+    await knex.schema.dropTable('votes');
+  } catch (err) {
+    console.log(err.message);
+  }
 });
 
-test.cb.serial(`should handle prompt error`, t => {
-  const error = new Error(`error`);
-  const sample = getSample();
-  sample.mocks.prompt.get = sinon.stub().yields(error);
-
-  proxyquire(SAMPLE_PATH, {
-    knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-  });
-
-  setTimeout(() => {
-    t.true(console.error.calledOnce);
-    t.true(console.error.calledWith(error));
-    t.true(sample.mocks.Knex.notCalled);
-    t.end();
-  }, 10);
+it('should create a table', async () => {
+  const output = await tools.runAsync(
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
+    cwd
+  );
+  assert.ok(output.includes(`Successfully created 'votes' table.`));
 });
 
-test.cb.serial(`should handle knex creation error`, t => {
-  const error = new Error(`error`);
-  const sample = getSample();
-  sample.mocks.knex.schema.createTable = sinon
-    .stub()
-    .returns(Promise.reject(error));
+it('should handle existing tables', async () => {
+  const {stderr} = await tools.runAsyncWithIO(
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
+    cwd
+  );
 
-  proxyquire(SAMPLE_PATH, {
-    knex: sample.mocks.Knex,
-    prompt: sample.mocks.prompt,
-  });
-
-  setTimeout(() => {
-    t.true(console.error.calledOnce);
-    t.true(console.error.calledWith(`Failed to create 'votes' table:`, error));
-    t.true(sample.mocks.knex.destroy.calledOnce);
-    t.end();
-  }, 10);
+  assert.ok(stderr.includes("Failed to create 'votes' table:"));
+  assert.ok(stderr.includes('already exists'));
 });

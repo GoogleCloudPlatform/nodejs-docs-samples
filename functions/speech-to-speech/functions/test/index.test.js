@@ -18,8 +18,8 @@
 const supertest = require('supertest');
 const request = supertest(process.env.BASE_URL);
 
-describe('Validate encoding field', function() {
-  it('should fail if encoding field is missing.', function(done) {
+describe('Validate encoding field', () => {
+  it('should fail if encoding field is missing.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -30,7 +30,7 @@ describe('Validate encoding field', function() {
       })
       .expect(400, 'Invalid encoding.', done);
   });
-  it('should fail if encoding field is empty.', function(done) {
+  it('should fail if encoding field is empty.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -43,8 +43,8 @@ describe('Validate encoding field', function() {
   });
 });
 
-describe('Validate sampleRateHertz field', function() {
-  it('should fail if sampleRateHertz field is missing.', function(done) {
+describe('Validate sampleRateHertz field', () => {
+  it('should fail if sampleRateHertz field is missing.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -55,7 +55,7 @@ describe('Validate sampleRateHertz field', function() {
       })
       .expect(400, 'Sample rate hertz must be numeric.', done);
   });
-  it('should fail if sampleRateHertz field is empty.', function(done) {
+  it('should fail if sampleRateHertz field is empty.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -66,7 +66,7 @@ describe('Validate sampleRateHertz field', function() {
       })
       .expect(400, 'Sample rate hertz must be numeric.', done);
   });
-  it('should fail if sampleRateHertz field is not numeric.', function(done) {
+  it('should fail if sampleRateHertz field is not numeric.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -79,8 +79,8 @@ describe('Validate sampleRateHertz field', function() {
   });
 });
 
-describe('Validate languageCode field', function() {
-  it('should fail if languageCode field is missing.', function(done) {
+describe('Validate languageCode field', () => {
+  it('should fail if languageCode field is missing.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -91,7 +91,7 @@ describe('Validate languageCode field', function() {
       })
       .expect(400, 'Invalid language code.', done);
   });
-  it('should fail if languageCode field is empty.', function(done) {
+  it('should fail if languageCode field is empty.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -104,8 +104,8 @@ describe('Validate languageCode field', function() {
   });
 });
 
-describe('Validate audioContent field', function() {
-  it('should fail if audioContent field is missing.', function(done) {
+describe('Validate audioContent field', () => {
+  it('should fail if audioContent field is missing.', done => {
     request
       .post('/speechTranslate')
       .send({
@@ -116,7 +116,7 @@ describe('Validate audioContent field', function() {
       })
       .expect(400, 'Invalid audio content.', done);
   });
-  it('should fail if audioContent field is empty.', function(done) {
+  it('should fail if audioContent field is empty.', done => {
     request
       .post('/speechTranslate')
       .send({

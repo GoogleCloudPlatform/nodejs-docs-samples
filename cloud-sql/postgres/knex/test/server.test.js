@@ -15,110 +15,34 @@
 
 'use strict';
 
-const express = require(`express`);
-const path = require(`path`);
-const proxyquire = require(`proxyquire`).noCallThru();
-const request = require(`supertest`);
-const sinon = require(`sinon`);
-const test = require(`ava`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
+const path = require('path');
+const request = require('supertest');
+const assert = require('assert');
 
-const SAMPLE_PATH = path.join(__dirname, `../server.js`);
+const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
-function getSample() {
-  const testApp = express();
-  sinon.stub(testApp, `listen`).yields();
-  const expressMock = sinon.stub().returns(testApp);
-  const timestamp = new Date();
-  const resultsMock = [
-    {
-      candidate: 'TABS',
-      time_cast: timestamp,
-    },
-  ];
+const server = require(SAMPLE_PATH);
 
-  const knexMock = sinon.stub().returns({
-    insert: sinon.stub().returns(Promise.resolve()),
-  });
-  Object.assign(knexMock, {
-    select: sinon.stub().returnsThis(),
-    from: sinon.stub().returnsThis(),
-    orderBy: sinon.stub().returnsThis(),
-    limit: sinon.stub().returns(Promise.resolve(resultsMock)),
-  });
-
-  const KnexMock = sinon.stub().returns(knexMock);
-
-  const processMock = {
-    env: {
-      DB_USER: 'user',
-      DB_PASS: 'password',
-      DB_NAME: 'database',
-    },
-  };
-
-  const app = proxyquire(SAMPLE_PATH, {
-    knex: KnexMock,
-    express: expressMock,
-    process: processMock,
-  });
-
-  return {
-    app: app,
-    mocks: {
-      express: expressMock,
-      results: resultsMock,
-      knex: knexMock,
-      Knex: KnexMock,
-      process: processMock,
-    },
-  };
-}
-
-test.beforeEach(tools.stubConsole);
-test.afterEach.always(tools.restoreConsole);
-
-test(`should set up sample in Postgres`, t => {
-  const sample = getSample();
-
-  t.true(sample.mocks.express.calledOnce);
-  t.true(sample.mocks.Knex.calledOnce);
-  t.deepEqual(sample.mocks.Knex.firstCall.args, [
-    {
-      client: 'pg',
-      connection: {
-        user: sample.mocks.process.env.DB_USER,
-        password: sample.mocks.process.env.DB_PASS,
-        database: sample.mocks.process.env.DB_NAME,
-      },
-    },
-  ]);
+after(() => {
+  server.close();
 });
 
-test.cb(`should display the default page`, t => {
-  const sample = getSample();
-  const expectedResult = `Tabs VS Spaces`;
-
-  request(sample.app)
-    .get(`/`)
+it('should display the default page', async () => {
+  await request(server)
+    .get('/')
     .expect(200)
     .expect(response => {
-      t.is(response.text, expectedResult);
-    })
-    .end(t.end);
+      assert.ok(response.text.includes('Tabs VS Spaces'));
+    });
 });
 
-test.cb(`should handle insert error`, t => {
-  const sample = getSample();
+it('should handle insert error', async () => {
   const expectedResult = 'Invalid team specified';
 
-  sample.mocks.knex.limit.returns(Promise.reject());
-
-  request(sample.app)
-    .post(`/`)
+  await request(server)
+    .post('/')
     .expect(400)
     .expect(response => {
-      t.is(response.text.includes(expectedResult), true);
-    })
-    .end(t.end);
+      assert.ok(response.text.includes(expectedResult));
+    });
 });

@@ -65,6 +65,7 @@ exports.avoidInfiniteRetries = (data, context) => {
  * how to toggle retries using a promise
  *
  * @param {object} data The event payload.
+ * @param {object} data.retry User-supplied parameter that tells the function whether to retry.
  * @param {object} context The event metadata.
  */
 exports.retryPromise = (data, context) => {
@@ -98,13 +99,12 @@ exports.helloBackground = (data, context) => {
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} data The event payload.
+ * @param {object} pubSubEvent The event payload.
  * @param {object} context The event metadata.
  */
-exports.helloPubSub = (data, context) => {
-  const pubSubMessage = data;
-  const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64').toString()
+exports.helloPubSub = (pubSubEvent, context) => {
+  const name = pubSubEvent.data
+    ? Buffer.from(pubSubEvent.data, 'base64').toString()
     : 'World';
 
   console.log(`Hello, ${name}!`);

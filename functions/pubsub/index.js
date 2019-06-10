@@ -22,7 +22,7 @@ const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 // [END functions_pubsub_setup]
 
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 
 // [START functions_pubsub_publish]
 /**

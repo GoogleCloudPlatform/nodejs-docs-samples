@@ -73,7 +73,7 @@ function getSample() {
 
 it('get: Gets albums', async () => {
   const sample = getSample();
-  const mocks = sample.mocks;
+  const {mocks} = sample;
 
   await sample.program.get(mocks.req, mocks.res);
   assert.strictEqual(mocks.spanner.instance.called, true);

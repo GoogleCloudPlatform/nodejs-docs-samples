@@ -42,7 +42,7 @@
  * audioInput file you're recording to.
  * 4. Get Node-Record-lpcm16 https://www.npmjs.com/package/node-record-lpcm16
  * More Info: https://cloud.google.com/speech-to-text/docs/streaming-recognize
- * 5. Set streamingLimit in ms. 10000 ms = 10 seconds.
+ * 5. Set streamingLimit in ms. 290000 ms = ~5 minutes.
  * Maximum streaming limit should be 1/2 of SpeechAPI Streaming Limit.
  */
 
@@ -271,7 +271,7 @@ require(`yargs`)
     },
     streamingLimit: {
       alias: 's',
-      default: 10000,
+      default: 290000,
       global: true,
       requiresArg: true,
       type: 'number',

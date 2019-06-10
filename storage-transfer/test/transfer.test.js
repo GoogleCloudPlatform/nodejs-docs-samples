@@ -765,7 +765,7 @@ it('should handle resume error', () => {
 });
 
 it('should call createTransferJob', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'createTransferJob');
   program.main([
@@ -792,7 +792,7 @@ it('should call createTransferJob', () => {
 });
 
 it('should call getTransferJob', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'getTransferJob');
   program.main(['jobs', 'get', jobName]);
@@ -803,7 +803,7 @@ it('should call getTransferJob', () => {
 });
 
 it('should call listTransferJobs', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'listTransferJobs');
   program.main(['jobs', 'list']);
@@ -815,7 +815,7 @@ it('should call listTransferJobs', () => {
 });
 
 it('should call updateTransferJob', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'updateTransferJob');
   program.main(['jobs', 'set', jobName, 'status', 'DISABLED']);
@@ -833,7 +833,7 @@ it('should call updateTransferJob', () => {
 });
 
 it('should call listTransferOperations', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'listTransferOperations');
   program.main(['operations', 'list']);
@@ -845,7 +845,7 @@ it('should call listTransferOperations', () => {
 });
 
 it('should call listTransferOperations and filter', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'listTransferOperations');
   program.main(['operations', 'list', jobName]);
@@ -857,7 +857,7 @@ it('should call listTransferOperations and filter', () => {
 });
 
 it('should call getTransferOperation', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'getTransferOperation');
   program.main(['operations', 'get', transferOperationName]);
@@ -869,7 +869,7 @@ it('should call getTransferOperation', () => {
 });
 
 it('should call pauseTransferOperation', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'pauseTransferOperation');
   program.main(['operations', 'pause', transferOperationName]);
@@ -881,7 +881,7 @@ it('should call pauseTransferOperation', () => {
 });
 
 it('should call resumeTransferOperation', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'resumeTransferOperation');
   program.main(['operations', 'resume', transferOperationName]);

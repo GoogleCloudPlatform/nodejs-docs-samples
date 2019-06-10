@@ -18,22 +18,23 @@
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-it('Should throw an error without projectId', done => {
+it('Should throw an error without projectId', async () => {
   process.env.GOOGLE_PROJECT_ID = '';
-  const error = new Error(`Unable to proceed without a Project ID`);
-  tools.runAsync('node metrics-quickstart.js').then(
-    () => {},
-    err => {
-      assert.ok(err.message.includes(error.message));
-      done();
-    }
-  );
+
+  try {
+    await tools.runAsync('node metrics-quickstart.js');
+    assert.fail('Did not throw an error.');
+  } catch (err) {
+    assert.ok(err.message.includes('Unable to proceed without a Project ID'));
+  }
 });
 
 it('Should capture stats data and export it to backend', async () => {
   process.env.GOOGLE_PROJECT_ID = 'fake-id';
   process.env.KUBERNETES_SERVICE_HOST = 'localhost';
+  process.env.EXPORT_INTERVAL = 1;
+
   const output = await tools.runAsync('node metrics-quickstart.js');
   assert.ok(new RegExp('Latency *:*').test(output));
-  assert.ok(new RegExp('Done recording metrics.').test(output));
+  assert.ok(output.includes('Done recording metrics.'));
 });

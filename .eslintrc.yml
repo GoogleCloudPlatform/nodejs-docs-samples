@@ -2,12 +2,13 @@
 extends:
   - 'eslint:recommended'
   - 'plugin:node/recommended'
-  - prettier
+  - 'prettier'
 env:
   mocha: true
 plugins:
   - node
   - prettier
+  - promise
 rules:
   prettier/prettier: error
   block-scoped-var: error
@@ -19,3 +20,12 @@ rules:
   prefer-const: error
   no-var: error
   prefer-arrow-callback: error
+  no-throw-literal: warn
+  require-await: warn
+  promise/prefer-await-to-then: warn
+  promise/no-nesting: warn
+  prefer-destructuring: warn
+  func-style:
+    - 1
+    - expression
+    - allowArrowFunctions: true

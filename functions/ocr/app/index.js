@@ -33,7 +33,7 @@ const vision = new Vision.ImageAnnotatorClient();
 const {Translate} = require('@google-cloud/translate');
 const translate = new Translate();
 
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 // [END functions_ocr_setup]
 
 // [START functions_ocr_publish]
@@ -49,7 +49,7 @@ function publishResult(topicName, data) {
   return pubsub
     .topic(topicName)
     .get({autoCreate: true})
-    .then(([topic]) => topic.publisher().publish(dataBuffer));
+    .then(([topic]) => topic.publish(dataBuffer));
 }
 // [END functions_ocr_publish]
 

@@ -1,0 +1,25 @@
+{
+  "requiresKeyFile": true,
+  "requiresProjectId": true,
+  "test": {
+    "app": {
+      "requiredEnvVars": [
+        "DB_USER",
+        "DB_PASS",
+        "DB_NAME",
+        "CLOUD_SQL_INSTANCE_NAME"
+      ],
+      "args": [
+        "server.js"
+      ]
+    },
+    "build": {
+      "requiredEnvVars": [
+        "DB_USER",
+        "DB_PASS",
+        "DB_NAME",
+        "CLOUD_SQL_INSTANCE_NAME"
+      ]
+    }
+  }
+}

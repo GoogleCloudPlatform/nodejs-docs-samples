@@ -23,7 +23,7 @@ const app = express();
 let browser;
 
 app.use(async (req, res) => {
-  const url = req.query.url;
+  const {url} = req.query;
 
   if (!url) {
     return res.send(
@@ -51,7 +51,7 @@ const server = app.listen(process.env.PORT || 8080, err => {
   if (err) {
     return console.error(err);
   }
-  const port = server.address().port;
+  const {port} = server.address();
   console.info(`App listening on port ${port}`);
 });
 // [END full_sample]

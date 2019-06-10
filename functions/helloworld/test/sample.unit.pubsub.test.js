@@ -18,7 +18,7 @@ const assert = require('assert');
 const uuid = require('uuid');
 const utils = require('@google-cloud/nodejs-repo-tools');
 
-const helloPubSub = require('..').helloPubSub;
+const {helloPubSub} = require('..');
 
 beforeEach(utils.stubConsole);
 afterEach(utils.restoreConsole);

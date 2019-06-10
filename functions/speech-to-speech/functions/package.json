@@ -6,7 +6,9 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "private": true,
-  "node": "6",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
@@ -37,14 +39,14 @@
     "@google-cloud/speech": "^2.1.0",
     "@google-cloud/storage": "^2.0.3",
     "@google-cloud/text-to-speech": "^0.5.0",
-    "@google-cloud/translate": "^2.1.2",
+    "@google-cloud/translate": "^3.0.0",
     "uuid": "^3.3.2",
-    "firebase-admin": "^7.2.0",
+    "firebase-admin": "^8.0.0",
     "firebase-functions": "^2.1.0"
   },
   "devDependencies": {
     "@google-cloud/functions-emulator": "^1.0.0-beta.5",
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^6.0.0",
     "supertest": "^4.0.0"
   },

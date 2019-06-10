@@ -116,9 +116,7 @@ it('blurOffensiveImages blurs unblurred images (Node 6 syntax)', async () => {
     `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
-      sample.mocks.file.name
-    }.`,
+    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${sample.mocks.file.name}.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(3).args, [
     `Image ${sample.mocks.file.name} has been blurred.`,
@@ -142,9 +140,7 @@ it('blurOffensiveImages blurs unblurred images (Node 8 syntax)', async () => {
     `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
-      sample.mocks.file.name
-    }.`,
+    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${sample.mocks.file.name}.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(3).args, [
     `Image ${sample.mocks.file.name} has been blurred.`,

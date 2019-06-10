@@ -15,7 +15,7 @@
 
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 const Compute = require('@google-cloud/compute');
 const compute = new Compute();
 // [END functions_stop_instance_pubsub]
@@ -25,37 +25,44 @@ const compute = new Compute();
  *
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
- *  zone - the GCP zone the instance is located in.
- *  instance - the name of the instance.
+ *  zone - the GCP zone the instances are located in.
+ *  label - the label of instances to start.
  *
  * @param {!object} event Cloud Function PubSub message event.
- * @param {!object} callback Cloud Function PubSub callback indicating completion.
+ * @param {!object} callback Cloud Function PubSub callback indicating
+ *  completion.
  */
-exports.startInstancePubSub = (event, callback) => {
+exports.startInstancePubSub = (event, context, callback) => {
   try {
-    const pubsubMessage = event.data;
     const payload = _validatePayload(
-      JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
+      JSON.parse(Buffer.from(event.data, 'base64').toString())
     );
-    compute
-      .zone(payload.zone)
-      .vm(payload.instance)
-      .start()
-      .then(data => {
-        // Operation pending.
-        const operation = data[0];
-        return operation.promise();
-      })
-      .then(() => {
-        // Operation complete. Instance successfully started.
-        const message = 'Successfully started instance ' + payload.instance;
-        console.log(message);
-        callback(null, message);
-      })
-      .catch(err => {
-        console.log(err);
-        callback(err);
+    const options = {filter: `labels.${payload.label}`};
+    compute.getVMs(options).then(vms => {
+      vms[0].forEach(instance => {
+        if (payload.zone === instance.zone.id) {
+          compute
+            .zone(payload.zone)
+            .vm(instance.name)
+            .start()
+            .then(data => {
+              // Operation pending.
+              const operation = data[0];
+              return operation.promise();
+            })
+            .then(() => {
+              // Operation complete. Instance successfully started.
+              const message = 'Successfully started instance ' + instance.name;
+              console.log(message);
+              callback(null, message);
+            })
+            .catch(err => {
+              console.log(err);
+              callback(err);
+            });
+        }
       });
+    });
   } catch (err) {
     console.log(err);
     callback(err);
@@ -69,37 +76,46 @@ exports.startInstancePubSub = (event, callback) => {
  *
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
- *  zone - the GCP zone the instance is located in.
- *  instance - the name of the instance.
+ *  zone - the GCP zone the instances are located in.
+ *  instance - the name of a single instance.
+ *  label - the label of instances to start.
+ *
+ * Exactly one of instance or label must be specified.
  *
  * @param {!object} event Cloud Function PubSub message event.
  * @param {!object} callback Cloud Function PubSub callback indicating completion.
  */
-exports.stopInstancePubSub = (event, callback) => {
+exports.stopInstancePubSub = (event, context, callback) => {
   try {
-    const pubsubMessage = event.data;
     const payload = _validatePayload(
-      JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
+      JSON.parse(Buffer.from(event.data, 'base64').toString())
     );
-    compute
-      .zone(payload.zone)
-      .vm(payload.instance)
-      .stop()
-      .then(data => {
-        // Operation pending.
-        const operation = data[0];
-        return operation.promise();
-      })
-      .then(() => {
-        // Operation complete. Instance successfully stopped.
-        const message = 'Successfully stopped instance ' + payload.instance;
-        console.log(message);
-        callback(null, message);
-      })
-      .catch(err => {
-        console.log(err);
-        callback(err);
+    const options = {filter: `labels.${payload.label}`};
+    compute.getVMs(options).then(vms => {
+      vms[0].forEach(instance => {
+        if (payload.zone === instance.zone.id) {
+          compute
+            .zone(payload.zone)
+            .vm(instance.name)
+            .stop()
+            .then(data => {
+              // Operation pending.
+              const operation = data[0];
+              return operation.promise();
+            })
+            .then(() => {
+              // Operation complete. Instance successfully stopped.
+              const message = 'Successfully stopped instance ' + instance.name;
+              console.log(message);
+              callback(null, message);
+            })
+            .catch(err => {
+              console.log(err);
+              callback(err);
+            });
+        }
       });
+    });
   } catch (err) {
     console.log(err);
     callback(err);
@@ -111,13 +127,13 @@ exports.stopInstancePubSub = (event, callback) => {
  * Validates that a request payload contains the expected fields.
  *
  * @param {!object} payload the request payload to validate.
- * @returns {!object} the payload object.
+ * @return {!object} the payload object.
  */
 function _validatePayload(payload) {
   if (!payload.zone) {
     throw new Error(`Attribute 'zone' missing from payload`);
-  } else if (!payload.instance) {
-    throw new Error(`Attribute 'instance' missing from payload`);
+  } else if (!payload.label) {
+    throw new Error(`Attribute 'label' missing from payload`);
   }
   return payload;
 }

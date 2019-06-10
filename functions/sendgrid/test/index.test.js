@@ -462,9 +462,7 @@ it('Saves files', async () => {
   assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
   assert.strictEqual(mocks.res.end.callCount, 1);
   assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Saving events to ${filename} in bucket ${
-      sample.mocks.config.EVENT_BUCKET
-    }`,
+    `Saving events to ${filename} in bucket ${sample.mocks.config.EVENT_BUCKET}`,
   ]);
   assert.deepStrictEqual(console.log.getCall(1).args, [
     `JSON written to ${filename}`,

@@ -20,64 +20,75 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const cmd = 'node datasets.js';
 const cwd = path.join(__dirname, '..');
+const projectId = process.env.GCLOUD_PROJECT;
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
 const keeplistTags = 'PatientID';
+const cloudRegion = 'us-central1';
 
 before(tools.checkCredentials);
 after(async () => {
   try {
-    await tools.runAsync(`${cmd} deleteDataset ${destinationDatasetId}`, cwd);
+    await tools.runAsync(
+      `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`,
+      cwd
+    );
     // eslint-disable-next-line no-empty
   } catch (err) {} // Ignore error
 });
 
 it('should create a dataset', async () => {
   const output = await tools.runAsync(
-    `$node createDataset.js ${datasetId}`,
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
   assert.strictEqual(output, `Created dataset: ${datasetId}`);
 });
 
 it('should get a dataset', async () => {
-  const output = await tools.runAsync(`${cmd} getDataset ${datasetId}`, cwd);
-  assert.strictEqual(new RegExp(/name/).test(output), true);
-  assert.strictEqual(new RegExp(/timeZone/).test(output), true);
+  const output = await tools.runAsync(
+    `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
+    cwd
+  );
+  assert.ok(output.includes('name'));
 });
 
 it('should patch a dataset', async () => {
-  const patchTimeZone = 'GMT';
+  const timeZone = 'GMT';
   const output = await tools.runAsync(
-    `${cmd} patchDataset ${datasetId} ${patchTimeZone}`,
+    `node patchDataset.js ${projectId} ${cloudRegion} ${datasetId} ${timeZone}`,
     cwd
   );
   assert.strictEqual(
     output,
-    `Dataset ${datasetId} patched with time zone ${patchTimeZone}`
+    `Dataset ${datasetId} patched with time zone ${timeZone}`
   );
 });
 
 it('should list datasets', async () => {
-  const output = await tools.runAsync(`${cmd} listDatasets`, cwd);
-  assert.strictEqual(new RegExp(/datasets/).test(output), true);
+  const output = await tools.runAsync(
+    `node listDatasets.js ${projectId} ${cloudRegion}`,
+    cwd
+  );
+  assert.ok(output.includes('datasets'));
 });
 
 it('should de-identify data in a dataset and write to a new dataset', async () => {
   const output = await tools.runAsync(
-    `${cmd} deidentifyDataset ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
+    `node deidentifyDataset.js ${projectId} ${cloudRegion} ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
     cwd
   );
   assert.strictEqual(
     output,
-    `De-identified data written from dataset
-            ${datasetId} to dataset ${destinationDatasetId}`
+    `De-identified data written from dataset ${datasetId} to dataset ${destinationDatasetId}`
   );
 });
 
 it('should delete a dataset', async () => {
-  const output = await tools.runAsync(`${cmd} deleteDataset ${datasetId}`, cwd);
+  const output = await tools.runAsync(
+    `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
+    cwd
+  );
   assert.strictEqual(output, `Deleted dataset: ${datasetId}`);
 });

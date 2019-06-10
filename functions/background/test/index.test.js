@@ -36,33 +36,6 @@ function getSample() {
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should echo message', () => {
-  const event = {
-    data: {
-      myMessage: 'hi',
-    },
-  };
-  const sample = getSample();
-  const callback = sinon.stub();
-
-  sample.program.helloWorld(event, callback);
-
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.firstCall.args, [event.data.myMessage]);
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, []);
-});
-
-it('should say no message was provided', () => {
-  const error = new Error('No message defined!');
-  const callback = sinon.stub();
-  const sample = getSample();
-  sample.program.helloWorld({data: {}}, callback);
-
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
 it('should make a promise request', () => {
   const sample = getSample();
   const event = {

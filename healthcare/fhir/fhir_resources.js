@@ -19,7 +19,7 @@ const request = require('request-promise');
 const BASE_URL = 'https://healthcare.googleapis.com/v1alpha2';
 
 // [START healthcare_get_token]
-function getToken(serviceAccountJson, cb) {
+const getToken = (serviceAccountJson, cb) => {
   const gtoken = new GoogleToken({
     keyFile: `${serviceAccountJson}`,
     scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
@@ -32,18 +32,18 @@ function getToken(serviceAccountJson, cb) {
     }
     cb(token);
   });
-}
+};
 // [END healthcare_get_token]
 
 // [START healthcare_create_fhir_resource]
-function createResource(
+const createResource = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   fhirStoreId,
   resourceType
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -70,18 +70,17 @@ function createResource(
     method: 'POST',
   };
 
-  request(options)
-    .then(resource => {
-      console.log(`Created resource ${resourceType} with ID ${resource.id}.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const resource = await request(options);
+    console.log(`Created resource ${resourceType} with ID ${resource.id}.`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_create_fhir_resource]
 
 // [START healthcare_update_fhir_resource]
-function updateResource(
+const updateResource = async (
   token,
   projectId,
   cloudRegion,
@@ -89,7 +88,7 @@ function updateResource(
   fhirStoreId,
   resourceType,
   resourceId
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -119,18 +118,17 @@ function updateResource(
     method: 'PUT',
   };
 
-  request(options)
-    .then(() => {
-      console.log(`Updated ${resourceType} with ID ${resourceId}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await request(options);
+    console.log(`Updated ${resourceType} with ID ${resourceId}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_update_fhir_resource]
 
 // [START healthcare_patch_fhir_resource]
-function patchResource(
+const patchResource = async (
   token,
   projectId,
   cloudRegion,
@@ -138,7 +136,7 @@ function patchResource(
   fhirStoreId,
   resourceType,
   resourceId
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -164,18 +162,17 @@ function patchResource(
     method: 'PATCH',
   };
 
-  request(options)
-    .then(() => {
-      console.log(`Patched ${resourceType} with ID ${resourceId}`);
-    })
-    .catch(err => {
-      console.log('ERROR:', err.message);
-    });
-}
+  try {
+    await request(options);
+    console.log(`Patched ${resourceType} with ID ${resourceId}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_patch_fhir_resource]
 
 // [START healthcare_delete_fhir_resource]
-function deleteResource(
+const deleteResource = async (
   token,
   projectId,
   cloudRegion,
@@ -183,7 +180,7 @@ function deleteResource(
   fhirStoreId,
   resourceType,
   resourceId
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -206,18 +203,17 @@ function deleteResource(
     method: 'DELETE',
   };
 
-  request(options)
-    .then(() => {
-      console.log(`Deleted ${resourceType} with ID ${resourceId}.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    await request(options);
+    console.log(`Deleted ${resourceType} with ID ${resourceId}.`);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_delete_fhir_resource]
 
 // [START healthcare_get_fhir_resource]
-function getResource(
+const getResource = async (
   token,
   projectId,
   cloudRegion,
@@ -225,7 +221,7 @@ function getResource(
   fhirStoreId,
   resourceType,
   resourceId
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -247,27 +243,26 @@ function getResource(
     json: true,
   };
 
-  request(options)
-    .then(results => {
-      console.log(
-        `Got ${resourceType} resource:\n${JSON.stringify(results, null, 2)}`
-      );
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await request(options);
+    console.log(
+      `Got ${resourceType} resource:\n${JSON.stringify(results, null, 2)}`
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_get_fhir_resource]
 
 // [START healthcare_search_fhir_resources_get]
-function searchResourcesGet(
+const searchResourcesGet = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   fhirStoreId,
   resourceType
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -288,25 +283,24 @@ function searchResourcesGet(
     json: true,
   };
 
-  request(options)
-    .then(results => {
-      console.log(JSON.stringify(results, null, 2));
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await request(options);
+    console.log(JSON.stringify(results, null, 2));
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_search_fhir_resources_get]
 
 // [START healthcare_search_fhir_resources_post]
-function searchResourcesPost(
+const searchResourcesPost = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   fhirStoreId,
   resourceType
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -328,25 +322,24 @@ function searchResourcesPost(
     method: 'POST',
   };
 
-  request(options)
-    .then(results => {
-      console.log(JSON.stringify(results, null, 2));
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await request(options);
+    console.log(JSON.stringify(results, null, 2));
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_search_fhir_resources_post]
 
 // [START healthcare_fhir_get_patient_everything]
-function getPatientEverything(
+const getPatientEverything = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   fhirStoreId,
   resourceId
-) {
+) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
@@ -366,15 +359,14 @@ function getPatientEverything(
     json: true,
   };
 
-  request(options)
-    .then(results => {
-      console.log(`Got all resources in patient ${resourceId} compartment:`);
-      console.log(results);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  try {
+    const results = await request(options);
+    console.log(`Got all resources in patient ${resourceId} compartment:`);
+    console.log(results);
+  } catch (err) {
+    console.error(err);
+  }
+};
 // [END healthcare_fhir_get_patient_everything]
 
 require(`yargs`) // eslint-disable-line
@@ -407,7 +399,7 @@ require(`yargs`) // eslint-disable-line
     `Creates a new resource in a FHIR store.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         createResource(
           token,
           opts.projectId,
@@ -425,7 +417,7 @@ require(`yargs`) // eslint-disable-line
     `Updates an existing resource in a FHIR store.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         updateResource(
           token,
           opts.projectId,
@@ -444,7 +436,7 @@ require(`yargs`) // eslint-disable-line
     `Patches an existing resource in a FHIR store.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         patchResource(
           token,
           opts.projectId,
@@ -463,7 +455,7 @@ require(`yargs`) // eslint-disable-line
     `Deletes a FHIR resource or returns NOT_FOUND if it doesn't exist.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         deleteResource(
           token,
           opts.projectId,
@@ -482,7 +474,7 @@ require(`yargs`) // eslint-disable-line
     `Gets a FHIR resource.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         getResource(
           token,
           opts.projectId,
@@ -501,7 +493,7 @@ require(`yargs`) // eslint-disable-line
     `Searches resources in the given FHIR store using the searchResources GET method.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         searchResourcesGet(
           token,
           opts.projectId,
@@ -519,7 +511,7 @@ require(`yargs`) // eslint-disable-line
     `Searches resources in the given FHIR store using the _search POST method.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         searchResourcesPost(
           token,
           opts.projectId,
@@ -537,7 +529,7 @@ require(`yargs`) // eslint-disable-line
     `Gets all the resources in the patient compartment.`,
     {},
     opts => {
-      const cb = function(token) {
+      const cb = token => {
         getPatientEverything(
           token,
           opts.projectId,

@@ -600,7 +600,7 @@ async function main() {
     .example(`node $0 transcription gs://demomaker/tomatoes.mp4`)
     .example(`node $0 video-text ./resources/googlework_short.mp4`)
     .example(
-      `node $0 video-text-gcs gs://nodejs-docs-samples/videos/googlework_short.mp4`
+      `node $0 video-text-gcs gs://nodejs-docs-samples/video/googlework_short.mp4`
     )
     .example(`node $0 track-objects ./resources/cat.mp4`)
     .example(`node $0 track-objects-gcs gs://nodejs-docs-samples/video/cat.mp4`)

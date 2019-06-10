@@ -15,49 +15,52 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const requestRetry = require('requestretry');
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
 
-function getSample() {
-  const requestPromiseNative = sinon.stub().returns(Promise.resolve('test'));
+const program = require('..');
 
-  return {
-    program: proxyquire('../', {
-      'request-promise-native': requestPromiseNative,
-    }),
-    mocks: {
-      requestPromiseNative: requestPromiseNative,
-    },
-  };
-}
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+const cwd = path.join(__dirname, '..');
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+let ffProc;
 
-it('should make a promise request', () => {
-  const sample = getSample();
+before(() => {
+  ffProc = execPromise(
+    `functions-framework --target=helloPromise --signature-type=event`,
+    {timeout: 1000, shell: true, cwd}
+  );
+});
+
+after(async () => {
+  await ffProc;
+});
+
+it('should make a promise request', async () => {
   const event = {
     data: {
-      endpoint: 'foo.com',
+      endpoint: 'https://example.com',
     },
   };
 
-  return sample.program.helloPromise(event).then(result => {
-    assert.deepStrictEqual(sample.mocks.requestPromiseNative.firstCall.args, [
-      {uri: 'foo.com'},
-    ]);
-    assert.strictEqual(result, 'test');
+  const response = await requestRetry({
+    url: `${BASE_URL}/`,
+    method: 'POST',
+    body: event,
+    retryDelay: 200,
+    json: true,
   });
+
+  assert.strictEqual(response.statusCode, 200);
+  assert.ok(response.body.includes(`Example Domain`));
 });
 
 it('should return synchronously', () => {
   assert.strictEqual(
-    getSample().program.helloSynchronous({
-      data: {
-        something: true,
-      },
+    program.helloSynchronous({
+      something: true,
     }),
     'Something is true!'
   );
@@ -66,10 +69,8 @@ it('should return synchronously', () => {
 it('should throw an error', () => {
   assert.throws(
     () => {
-      getSample().program.helloSynchronous({
-        data: {
-          something: false,
-        },
+      program.helloSynchronous({
+        something: false,
       });
     },
     Error,

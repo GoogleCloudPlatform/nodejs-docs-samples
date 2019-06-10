@@ -49,7 +49,7 @@ function publishResult(topicName, data) {
   return pubsub
     .topic(topicName)
     .get({autoCreate: true})
-    .then(([topic]) => topic.publisher().publish(dataBuffer));
+    .then(([topic]) => topic.publish(dataBuffer));
 }
 // [END functions_ocr_publish]
 

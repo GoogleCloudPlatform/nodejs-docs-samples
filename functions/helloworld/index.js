@@ -48,13 +48,7 @@ exports.helloGET = (req, res) => {
  *                     More info: https://expressjs.com/en/api.html#res
  */
 exports.helloHttp = (req, res) => {
-  const name =
-    req.query && req.query.name
-      ? req.query.name
-      : req.body && req.body.name
-      ? req.body.name
-      : 'World';
-  res.send(`Hello ${escapeHtml(name)}!`);
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 };
 // [END functions_helloworld_http]
 

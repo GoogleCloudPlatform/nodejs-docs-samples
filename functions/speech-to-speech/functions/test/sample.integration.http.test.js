@@ -103,9 +103,7 @@ describe('Tests that require a GCS bucket', () => {
         responseBody.translations.forEach(translation => {
           if (translation.error) {
             throw new Error(
-              `Partial error in translation to ${translation.languageCode}: ${
-                translation.error
-              }`
+              `Partial error in translation to ${translation.languageCode}: ${translation.error}`
             );
           }
         });

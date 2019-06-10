@@ -15,26 +15,6 @@
 
 'use strict';
 
-// [START functions_background_helloworld]
-/**
- * Background Cloud Function.
- *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The event data.
- * @param {function} callback The callback function.
- */
-exports.helloWorld = (event, callback) => {
-  if (!event.data.myMessage) {
-    // This is an error case, "myMessage" is required
-    callback(new Error('No message defined!'));
-  } else {
-    // Everything is ok
-    console.log(event.data.myMessage);
-    callback();
-  }
-};
-// [END functions_background_helloworld]
-
 // [START functions_background_promise]
 const requestPromiseNative = require('request-promise-native');
 

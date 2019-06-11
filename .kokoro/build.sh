@@ -58,10 +58,10 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
-# Start functions emulator, if appropriate
-if [[ $PROJECT == functions/* ]]; then
-  npm install -g @google-cloud/functions-framework
+npm install -g @google-cloud/functions-framework
 
+# Start functions emulator, if appropriate
+if [[ $PROJECT == functions/* ]] && grep --quiet functions-emulator **/package.json; then
   export FUNCTIONS_LOG_PATH=$(pwd)/logs/cloud-functions-emulator.log
   npm install -g @google-cloud/functions-emulator
   touch "$FUNCTIONS_LOG_PATH"

@@ -61,6 +61,12 @@ gcloud config set project $GCLOUD_PROJECT
 # Start functions emulator, if appropriate
 if [[ $PROJECT == functions/* ]]; then
   npm install -g @google-cloud/functions-framework
+
+  export FUNCTIONS_LOG_PATH=$(pwd)/logs/cloud-functions-emulator.log
+  npm install -g @google-cloud/functions-emulator
+  touch "$FUNCTIONS_LOG_PATH"
+  functions config set logFile "$FUNCTIONS_LOG_PATH"
+  functions-emulator start
 fi
 
 npm test

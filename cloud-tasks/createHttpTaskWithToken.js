@@ -18,18 +18,19 @@
 // sample-metadata:
 //   title: Cloud Tasks Create HTTP Target with Token
 //   description: Create Cloud Tasks with a HTTP Target with Token
+//   usage: node createHttpTaskWithToken.js <projectId> <queueName> <location> <url> <serviceAccountEmail> <payload> <delayInSeconds>
 
 /**
  * Create a task with an HTTP target for a given queue with an arbitrary payload.
  */
 async function createHttpTaskWithToken(
-  project,
-  location,
-  queue,
-  url,
-  email,
-  payload,
-  inSeconds
+  project = 'my-project-id', // Your GCP Project id
+  queue = 'my-queue', // Name of your Queue
+  location = 'us-central1', // The GCP region of your queue
+  url = 'https://example.com/taskhandler', // The full url path that the request will be sent to
+  email = 'client@<project-id>.iam.gserviceaccount.com', // Cloud IAM service account
+  payload = 'Hello, World!', // The task HTTP request body
+  inSeconds = 0 // Delay in task execution
 ) {
   // [START cloud_tasks_create_http_task_with_token]
   // Imports the Google Cloud Tasks library.
@@ -42,9 +43,9 @@ async function createHttpTaskWithToken(
   // const project = 'my-project-id';
   // const queue = 'my-queue';
   // const location = 'us-central1';
-  // const url = 'https://example.com/taskhandler'
-  // const email = 'client@<project-id>.iam.gserviceaccount.com'
-  // const payload = 'hello';
+  // const url = 'https://example.com/taskhandler';
+  // email = 'client@<project-id>.iam.gserviceaccount.com';
+  // const payload = 'Hello, World!';
 
   // Construct the fully qualified queue name.
   const parent = client.queuePath(project, location, queue);
@@ -52,7 +53,7 @@ async function createHttpTaskWithToken(
   const task = {
     httpRequest: {
       httpMethod: 'POST',
-      url, //The full url path that the request will be sent to.
+      url,
       oidcToken: {
         serviceAccountEmail: email,
       },
@@ -64,6 +65,7 @@ async function createHttpTaskWithToken(
   }
 
   if (inSeconds) {
+    // The time when the task is scheduled to be attempted.
     task.scheduleTime = {
       seconds: inSeconds + Date.now() / 1000,
     };

@@ -15,10 +15,21 @@
 
 'use strict';
 
+// sample-metadata:
+//   title: Cloud Tasks Create App Engine Target
+//   description: Create Cloud Tasks with a Google App Engine Target
+//   usage: node createTask.js <projectId> <queueName> <location> <payload> <delayInSeconds>
+
 /**
  * Create a task for a given queue with an arbitrary payload.
  */
-async function createTask(project, location, queue, payload, inSeconds) {
+async function createTask(
+  project = 'my-project-id', // Your GCP Project id
+  queue = 'my-appengine-queue', // Name of your Queue
+  location = 'us-central1', // The GCP region of your queue
+  payload = 'Hello, World!', // The task HTTP request body
+  inSeconds = 0 // Delay in task execution
+) {
   // [START cloud_tasks_appengine_create_task]
   // [START tasks_quickstart]
   // Imports the Google Cloud Tasks library.
@@ -31,8 +42,7 @@ async function createTask(project, location, queue, payload, inSeconds) {
   // const project = 'my-project-id';
   // const queue = 'my-appengine-queue';
   // const location = 'us-central1';
-  // const payload = 'hello';
-  // const inSeconds = 30;
+  // const payload = 'Hello, World!';
 
   // Construct the fully qualified queue name.
   const parent = client.queuePath(project, location, queue);
@@ -49,6 +59,7 @@ async function createTask(project, location, queue, payload, inSeconds) {
   }
 
   if (inSeconds) {
+    // The time when the task is scheduled to be attempted.
     task.scheduleTime = {
       seconds: inSeconds + Date.now() / 1000,
     };

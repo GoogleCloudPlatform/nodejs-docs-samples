@@ -23,6 +23,7 @@ async function main(
   // [START automl_tables_predict]
   const automl = require(`@google-cloud/automl`);
   const fs = require(`fs`);
+  const csv = require(`csv`);
 
   // Create client for prediction service.
   const client = new automl.v1beta1.PredictionServiceClient();
@@ -42,36 +43,40 @@ async function main(
   const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
   // Read the csv file content for prediction.
-  const stream = fs.createReadStream(filePath).on(`data`, function(data) {
-    const values = [];
-    for (const val of data) {
-      values.push({string_value: val});
-    }
+  const stream = fs
+    .createReadStream(filePath)
+    .pipe(csv.parse())
+    .on(`data`, function(data) {
+      const values = [];
 
-    // Set the payload by giving the row values.
-    const payload = {
-      row: {
-        values: values,
-      },
-    };
+      for (const val of data) {
+        values.push({stringValue: val});
+      }
 
-    // Params is additional domain-specific parameters.
-    // Currently there is no additional parameters supported.
-    client
-      .predict({name: modelFullId, payload: payload, params: {}})
-      .then(responses => {
-        console.log(responses);
-        console.log(`Prediction results:`);
+      // Set the payload by giving the row values.
+      const payload = {
+        row: {
+          values: values,
+        },
+      };
 
-        for (const result of responses[0].payload) {
-          console.log(`Predicted class name: ${result.displayName}`);
-          console.log(`Predicted class score: ${result.classification.score}`);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  });
+      // Params is additional domain-specific parameters.
+      // Currently there is no additional parameters supported.
+      client
+        .predict({name: modelFullId, payload: payload, params: {}})
+        .then(responses => {
+          console.log(responses);
+          console.log(`Prediction results:`);
+
+          for (const result of responses[0].payload) {
+            console.log(`Predicted class name: ${result.displayName}`);
+            console.log(`Predicted class score: ${result.tables.score}`);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
   stream.read();
   // [END automl_tables_predict]
 }

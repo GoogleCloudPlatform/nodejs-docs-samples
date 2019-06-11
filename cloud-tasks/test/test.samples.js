@@ -31,7 +31,7 @@ describe('Cloud Task Sample Tests', () => {
   before(async () => {
     const client = new CloudTasksClient();
     projectId = await client.getProjectId();
-    url = `https://${projectId}.appspot.com/log_payload`;
+    url = `https://example.com/taskhandler`;
   });
 
   it('should create a queue', () => {
@@ -41,7 +41,7 @@ describe('Cloud Task Sample Tests', () => {
 
   it('should create a task', () => {
     const stdout = exec(
-      `node createTask ${projectId} us-central1 ${queueName}`
+      `node createTask ${projectId} ${queueName} us-central1`
     );
     assert.match(stdout, /Created task/);
   });
@@ -55,14 +55,14 @@ describe('Cloud Task Sample Tests', () => {
 
   it('should create a HTTP task', () => {
     const stdout = exec(
-      `node createHttpTask ${projectId} us-central1 my-appengine-queue ${url}`
+      `node createHttpTask ${projectId} my-queue us-central1 ${url}`
     );
     assert.match(stdout, /Created task/);
   });
 
   it('should create a HTTP task with token', () => {
     const stdout = exec(
-      `node createHttpTaskWithToken ${projectId} us-central1 my-appengine-queue ${url} ${SERVICE_ACCOUNT}`
+      `node createHttpTaskWithToken ${projectId} my-queue us-central1 ${url} ${SERVICE_ACCOUNT}`
     );
     assert.match(stdout, /Created task/);
   });

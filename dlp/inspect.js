@@ -118,7 +118,7 @@ async function inspectFile(
   // const callingProjectId = process.env.GCLOUD_PROJECT;
 
   // The path to a local file to inspect. Can be a text, JPG, or PNG file.
-  // const fileName = 'path/to/image.png';
+  // const filepath = 'path/to/image.png';
 
   // The minimum likelihood required before returning a match
   // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';

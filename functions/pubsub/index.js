@@ -44,7 +44,7 @@ exports.publish = async (req, res) => {
     res
       .status(500)
       .send(
-        'Missing parameter(s); include "topic" and "subscription" properties in your request'
+        'Missing parameter(s); include "topic" and "subscription" properties in your request.'
       );
     return;
   }
@@ -54,15 +54,16 @@ exports.publish = async (req, res) => {
   // References an existing topic
   const topic = pubsub.topic(req.body.topic);
 
-  const message = {
+  const messageObject = {
     data: {
       message: req.body.message,
     },
   };
+  const messageBuffer = Buffer.from(JSON.stringify(messageObject), 'base64');
 
   // Publishes a message
   try {
-    await topic.publish(message);
+    await topic.publish(messageBuffer);
     res.status(200).send('Message published.');
   } catch (err) {
     console.error(err);

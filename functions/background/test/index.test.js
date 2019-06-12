@@ -37,8 +37,16 @@ before(() => {
 });
 
 after(async () => {
-  const dbg = await ffProc;
-  console.log(dbg);
+  try {
+    await ffProc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    if (err.name && err.name === 'ChildProcessError') {
+      return;
+    }
+
+    throw err;
+  }
 });
 
 it('should make a promise request', async () => {

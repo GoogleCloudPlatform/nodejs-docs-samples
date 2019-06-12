@@ -30,7 +30,7 @@ let ffProc;
 before(() => {
   ffProc = execPromise(
     `functions-framework --target=helloPromise --signature-type=event`,
-    {timeout: 1000, shell: true, cwd}
+    {timeout: 2000, shell: true, cwd}
   );
 });
 

@@ -19,6 +19,7 @@
     "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
+    "@google-cloud/functions-framework": "^1.1.1",
     "child-process-promise": "^2.2.1",
     "mocha": "^6.0.0",
     "requestretry": "^4.0.0"

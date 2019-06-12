@@ -39,23 +39,12 @@ const {Buffer} = require('safe-buffer');
  * @param {string} req.body.message Message to publish.
  * @param {object} res Cloud Function response context.
  */
-exports.publish = (req, res) => {
-  if (!req.body.topic) {
+exports.publish = async (req, res) => {
+  if (!req.body.topic || !req.body.message) {
     res
       .status(500)
       .send(
-        new Error(
-          'Topic not provided. Make sure you have a "topic" property in your request'
-        )
-      );
-    return;
-  } else if (!req.body.message) {
-    res
-      .status(500)
-      .send(
-        new Error(
-          'Message not provided. Make sure you have a "message" property in your request'
-        )
+        'Missing parameter(s); include "topic" and "subscription" properties in your request'
       );
     return;
   }
@@ -72,14 +61,14 @@ exports.publish = (req, res) => {
   };
 
   // Publishes a message
-  return topic
-    .publish(message)
-    .then(() => res.status(200).send('Message published.'))
-    .catch(err => {
-      console.error(err);
-      res.status(500).send(err);
-      return Promise.reject(err);
-    });
+  try {
+    await topic.publish(message);
+    res.status(200).send('Message published.');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+    return Promise.reject(err);
+  }
 };
 // [END functions_pubsub_publish]
 
@@ -87,18 +76,11 @@ exports.publish = (req, res) => {
 /**
  * Triggered from a message on a Cloud Pub/Sub topic.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The Cloud Pub/Sub Message object.
- * @param {string} event.data.data The "data" property of the Cloud Pub/Sub Message.
- * @param {function} callback The callback function.
+ * @param {object} pubsubMessage The Cloud Pub/Sub Message object.
+ * @param {string} pubsubMessage.data The "data" property of the Cloud Pub/Sub Message.
  */
-exports.subscribe = (event, callback) => {
-  const pubsubMessage = event.data;
-
-  // We're just going to log the message to prove that it worked!
+exports.subscribe = pubsubMessage => {
+  // Print out the data from Pub/Sub, to prove that it worked
   console.log(Buffer.from(pubsubMessage.data, 'base64').toString());
-
-  // Don't forget to call the callback!
-  callback();
 };
 // [END functions_pubsub_subscribe]

@@ -9,7 +9,7 @@ See:
 * [Background functions sample source code][code]
 
 [docs]: https://cloud.google.com/functions/docs/writing/background
-[tutorial]: https://cloud.google.com/functions/docs/tutorials/background
+[tutorial]: https://cloud.google.com/functions/docs/writing/background
 [code]: index.js
 
 ## Deploy and run the sample

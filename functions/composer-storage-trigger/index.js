@@ -88,6 +88,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
   );
   const tokenResponse = await res.json();
   if (tokenResponse.error) {
+    console.error(JSON.stringify(tokenResponse.error));
     return Promise.reject(tokenResponse.error);
   }
 
@@ -118,6 +119,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
   );
   const blobJson = await blob.json();
   if (blobJson.error) {
+    console.error(JSON.stringify(blobJson.error));
     return Promise.reject(blobJson.error);
   }
 
@@ -134,6 +136,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
   });
   const tokenJson = await token.json();
   if (tokenJson.error) {
+    console.error(JSON.stringify(tokenJson.error));
     return Promise.reject(tokenJson.error);
   }
 
@@ -161,6 +164,7 @@ const makeIapPostRequest = async (url, body, idToken, userAgent) => {
 
   if (!res.ok) {
     const err = await res.text();
+    console.error(JSON.stringify(err));
     throw new Error(err);
   }
 };

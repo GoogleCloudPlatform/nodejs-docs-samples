@@ -126,9 +126,7 @@ function blurImage(file, blurredBucketName) {
     })
     .then(() => {
       console.log(
-        `Blurred image has been uploaded to: gs://${blurredBucketName}/${
-          file.name
-        }`
+        `Blurred image has been uploaded to: gs://${blurredBucketName}/${file.name}`
       );
 
       // Delete the temporary file.

@@ -21,9 +21,6 @@ export GOOGLE_CLOUD_PROJECT=$GCLOUD_PROJECT
 export GCF_REGION=us-central1
 export NODE_ENV=development
 
-# Configure GCF variables
-export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
-
 # Configure Slack variables
 export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt

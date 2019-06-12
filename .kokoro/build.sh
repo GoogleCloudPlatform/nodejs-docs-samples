@@ -41,7 +41,6 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
-export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
 
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
@@ -58,8 +57,12 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
+npm install -g @google-cloud/functions-framework
+
 # Start functions emulator, if appropriate
-if [[ $PROJECT == functions/* ]]; then
+if [[ $PROJECT == functions/* ]] && grep --quiet functions-emulator package.json; then
+  export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
+
   export FUNCTIONS_LOG_PATH=$(pwd)/logs/cloud-functions-emulator.log
   npm install -g @google-cloud/functions-emulator
   touch "$FUNCTIONS_LOG_PATH"

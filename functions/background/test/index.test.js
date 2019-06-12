@@ -23,6 +23,8 @@ const path = require('path');
 const program = require('..');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+console.log('DBG BASE URL', BASE_URL);
+
 const cwd = path.join(__dirname, '..');
 
 let ffProc;

@@ -35,7 +35,8 @@ before(() => {
 });
 
 after(async () => {
-  await ffProc;
+  const dbg = await ffProc;
+  console.log(dbg);
 });
 
 it('should make a promise request', async () => {

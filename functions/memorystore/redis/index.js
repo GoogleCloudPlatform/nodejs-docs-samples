@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 // [START functions_memorystore_redis]
 
 const redis = require('redis');
@@ -27,8 +29,7 @@ exports.visitCount = (req, res) => {
   redisClient.incr('visits', (err, reply) => {
     if (err) {
       console.log(err);
-      res.status(500).send(err.message);
-      return;
+      return res.status(500).send(err.message);
     }
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end(`Visit count: ${reply}`);

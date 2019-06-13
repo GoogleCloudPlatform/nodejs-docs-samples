@@ -28,8 +28,8 @@
   "cloud-repo-tools": {
     "requiresKeyFile": true,
     "requiresProjectId": true,
-    "requiredEnvVars": {
+    "requiredEnvVars": [
       "FUNCTIONS_TOPIC"
-    }
+    ]
   }
 }

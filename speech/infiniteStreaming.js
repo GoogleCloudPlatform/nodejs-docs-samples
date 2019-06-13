@@ -277,7 +277,7 @@ require(`yargs`)
       type: 'number',
     },
   })
-  .example(`node $0 infinteStream`)
+  .example(`node $0 infiniteStream`)
   .wrap(120)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/speech/docs`)

@@ -24,7 +24,7 @@ exports.helloRTDB = event => {
 
   const pathParams = event.params;
   if (pathParams) {
-    console.log(`Parameters:`);
+    console.log(`Path parameters:`);
     Object.keys(pathParams).forEach(key => {
       console.log(`  ${key}: ${pathParams[key]}`);
     });

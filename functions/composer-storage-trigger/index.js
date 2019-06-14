@@ -61,7 +61,7 @@ exports.triggerDag = async data => {
       iap.jwt
     );
   } catch (err) {
-    console.error('Error authorizing IAP: ' + err.message);
+    console.error('Error authorizing IAP: ', err.message);
     throw new Error(err);
   }
 };
@@ -89,7 +89,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
   );
   const tokenResponse = await res.json();
   if (tokenResponse.error) {
-    console.error('Error in token reponse:' + tokenResponse.error.message);
+    console.error('Error in token reponse:', tokenResponse.error.message);
     return Promise.reject(tokenResponse.error);
   }
 
@@ -120,7 +120,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
   );
   const blobJson = await blob.json();
   if (blobJson.error) {
-    console.error('Error in blob signing: ' + blobJson.error.message);
+    console.error('Error in blob signing: ', blobJson.error.message);
     return Promise.reject(blobJson.error);
   }
 
@@ -137,7 +137,7 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
   });
   const tokenJson = await token.json();
   if (tokenJson.error) {
-    console.error('Error fetching token: ' + tokenJson.error.message);
+    console.error('Error fetching token: ', tokenJson.error.message);
     return Promise.reject(tokenJson.error);
   }
 
@@ -165,7 +165,7 @@ const makeIapPostRequest = async (url, body, idToken, userAgent) => {
 
   if (!res.ok) {
     const err = await res.text();
-    console.error('Error making IAP post request: ' + err.message);
+    console.error('Error making IAP post request: ', err.message);
     throw new Error(err);
   }
 };

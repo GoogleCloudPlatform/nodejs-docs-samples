@@ -51,10 +51,14 @@ it('should listen to RTDB', () => {
       admin: true,
     },
     delta: delta,
+    params: {
+      baz: 'quux',
+    },
   };
 
   sample.program.helloRTDB(event);
 
+  assert.strictEqual(console.log.calledWith('  baz: quux'), true);
   assert.strictEqual(
     console.log.calledWith('Function triggered by change to: resource'),
     true

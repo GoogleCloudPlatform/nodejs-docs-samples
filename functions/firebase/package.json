@@ -12,11 +12,11 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "test": "ava -T 30s test/*.test.js"
+    "test": "mocha -T 30s test/*.test.js"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "ava": "^2.0.0",
+    "mocha": "^6.1.4",
     "proxyquire": "^2.1.0",
     "sinon": "^7.2.7",
     "supertest": "^4.0.0",

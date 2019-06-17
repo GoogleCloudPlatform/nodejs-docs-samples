@@ -43,7 +43,16 @@ describe('functions/pubsub', () => {
   });
 
   after(async () => {
-    await ffProc;
+    try {
+      await ffProc;
+    } catch (err) {
+      // Timeouts always cause errors on Linux, so catch them
+      if (err.name && err.name === 'ChildProcessError') {
+        return;
+      }
+
+      throw err;
+    }
   });
 
   it('publish fails without parameters', async () => {

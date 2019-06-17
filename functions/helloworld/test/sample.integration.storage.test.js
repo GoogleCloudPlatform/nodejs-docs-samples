@@ -23,7 +23,23 @@ const requestRetry = require('requestretry');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
+const handleLinuxFailures = async proc => {
+  try {
+    return await proc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    if (!err.name || err.name !== 'ChildProcessError') {
+      throw err;
+    } else {
+      return proc;
+    }
+  }
+};
+
+// [END functions_storage_integration_test]
+
 describe('GCS integration test', () => {
+  // [START functions_storage_integration_test]
   it('helloGCS: should print uploaded message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
 
@@ -48,16 +64,16 @@ describe('GCS integration test', () => {
       method: 'POST',
       body: data,
       retryDelay: 200,
-      json: true
+      json: true,
     });
 
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await proc;
+    const {stdout} = await handleLinuxFailures(proc);
     assert.ok(stdout.includes(`File ${filename} uploaded.`));
   });
-// [END functions_storage_integration_test]
+  // [END functions_storage_integration_test]
 
   it('helloGCS: should print metadata updated message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
@@ -78,12 +94,12 @@ describe('GCS integration test', () => {
 
     // Send HTTP request simulating GCS change notification
     // (GCF translates GCS notifications to HTTP requests internally)
-      const response = await requestRetry({
+    const response = await requestRetry({
       url: `${BASE_URL}/`,
       method: 'POST',
       body: data,
       retryDelay: 200,
-      json: true
+      json: true,
     });
 
     assert.strictEqual(response.statusCode, 204);
@@ -117,15 +133,15 @@ describe('GCS integration test', () => {
       method: 'POST',
       body: data,
       retryDelay: 200,
-      json: true
+      json: true,
     });
 
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await proc;
+    const {stdout} = await handleLinuxFailures(proc);
     assert.ok(stdout.includes(`File ${filename} deleted.`));
   });
-// [START functions_storage_integration_test]
+  // [START functions_storage_integration_test]
 });
 // [END functions_storage_integration_test]

@@ -23,7 +23,23 @@ const uuid = require('uuid');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
+const handleLinuxFailures = async proc => {
+  try {
+    return await proc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    if (!err.name || err.name !== 'ChildProcessError') {
+      throw err;
+    } else {
+      return proc;
+    }
+  }
+};
+
+// [END functions_http_integration_test]
+
 describe('HTTP integration test', () => {
+  // [START functions_http_integration_test]
   let ffProc;
 
   // Run the functions-framework instance to host functions locally
@@ -35,7 +51,8 @@ describe('HTTP integration test', () => {
   });
 
   after(async () => {
-    await ffProc;
+    // Wait for the functions framework to stop
+    await handleLinuxFailures(ffProc);
   });
 
   it('helloHttp: should print a name', async () => {
@@ -46,12 +63,11 @@ describe('HTTP integration test', () => {
       method: 'POST',
       body: {name},
       retryDelay: 200,
-      json: true
+      json: true,
     });
 
     assert.strictEqual(response.statusCode, 200);
     assert.strictEqual(response.body, `Hello ${name}!`);
-
   });
   // [END functions_http_integration_test]
 
@@ -61,7 +77,7 @@ describe('HTTP integration test', () => {
       method: 'POST',
       body: {},
       retryDelay: 200,
-      json: true
+      json: true,
     });
 
     assert.strictEqual(response.statusCode, 200);

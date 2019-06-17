@@ -39,6 +39,8 @@ after(async () => {
   const encodedData = Buffer.from(JSON.stringify(jsonData)).toString('base64');
   const pubsubMessage = {data: encodedData, attributes: {}};
 
+  console.log(`Attempting to set PROJECT_NAME: ${PROJECT_NAME}`);
+
   await require('../').startBilling(pubsubMessage);
 });
 
@@ -71,11 +73,9 @@ describe('functions/billing tests', () => {
       await ffProc;
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
-      if (err.name && err.name === 'ChildProcessError') {
-        return;
+      if (!err.name || err.name !== 'ChildProcessError') {
+        throw err;
       }
-
-      throw err;
     }
 
     assert.strictEqual(response.statusCode, 200);
@@ -110,11 +110,9 @@ describe('functions/billing tests', () => {
       await ffProc;
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
-      if (err.name && err.name === 'ChildProcessError') {
-        return;
+      if (!err.name || err.name !== 'ChildProcessError') {
+        throw err;
       }
-
-      throw err;
     }
 
     assert.strictEqual(response.statusCode, 200);

@@ -113,9 +113,13 @@ const _disableBillingForProject = async projectName => {
 
 // Helper function to restart billing (used in tests)
 exports.startBilling = async (pubsubEvent, context) => {
+  console.log(`[DBG] INDEX project name: ${PROJECT_NAME}`);
+
   const pubsubData = JSON.parse(
     Buffer.from(pubsubEvent.data, 'base64').toString()
   );
+
+  console.log(`[DBG] INDEX PUBSUB project name`, pubsubData.projectName);
 
   await _setAuthCredential();
   if (!(await _isBillingEnabled(PROJECT_NAME))) {

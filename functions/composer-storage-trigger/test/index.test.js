@@ -39,14 +39,15 @@ it('Handles error in JSON body', async () => {
   const expectedMsg = 'Something bad happened.';
   const bodyJson = {error: expectedMsg};
   const body = {
-    json: sinon.stub().resolves(bodyJson),
+    json: sinon.stub().returns(bodyJson),
   };
   const sample = getSample(sinon.stub().resolves(body));
 
   try {
     await sample.program.triggerDag(event);
+    assert.fail('No error thrown');
   } catch (err) {
-    assert.strictEqual(new RegExp(/Something bad happened/).test(err), true);
+    assert.deepStrictEqual(err, new Error('Something bad happened.'));
   }
 });
 
@@ -85,6 +86,6 @@ it('Handles error in IAP response.', async () => {
   try {
     await sample.program.triggerDag(event);
   } catch (err) {
-    assert.strictEqual(err, expectedMsg);
+    assert.deepStrictEqual(err, new Error(expectedMsg));
   }
 });

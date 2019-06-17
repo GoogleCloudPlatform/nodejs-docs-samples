@@ -6,7 +6,7 @@
     "test": "mocha system-test/*.test.js --timeout=30000"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "dependencies": {
     "@google-cloud/storage": "^2.3.3",
@@ -16,8 +16,8 @@
     "pug": "^2.0.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "mocha": "^5.2.0"
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^6.0.0"
   },
   "cloud-repo-tools": {
     "requiresProjectId": true,

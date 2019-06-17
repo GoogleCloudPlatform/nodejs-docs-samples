@@ -18,7 +18,7 @@
 const process = require('process'); // Required to mock environment variables
 
 // [START gae_flex_storage_app]
-const format = require('util').format;
+const {format} = require('util');
 const express = require('express');
 const Multer = require('multer');
 const bodyParser = require('body-parser');

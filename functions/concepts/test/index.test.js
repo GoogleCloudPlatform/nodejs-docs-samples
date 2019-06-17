@@ -26,19 +26,10 @@ afterEach(tools.restoreConsole);
 
 it('should demonstrate error type behavior', () => {
   const objError = new Error('Error object!');
-  const strError = new Error('Error string!');
 
   const req = {body: {throwAsString: true}};
   const res = {end: sinon.stub()};
 
-  // Test throwing both objects and strings
   sample.errorTypes(req, res);
   assert.deepStrictEqual(console.error.getCall(0).args, [objError]);
-  assert.deepStrictEqual(console.error.getCall(1).args, [strError]);
-
-  // Test throwing objects only
-  req.body.throwAsString = false;
-  sample.errorTypes(req, res);
-  assert.deepStrictEqual(console.error.getCall(2).args, [objError]);
-  assert.deepStrictEqual(console.error.getCall(3).args, [objError]);
 });

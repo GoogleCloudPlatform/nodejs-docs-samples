@@ -102,7 +102,7 @@ exports.parseXML = (req, res) => {
   const data = req.rawBody;
   const xmlData = data.toString();
 
-  const parseString = require('xml2js').parseString;
+  const {parseString} = require('xml2js');
 
   parseString(xmlData, (err, result) => {
     if (err) {

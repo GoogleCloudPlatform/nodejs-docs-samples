@@ -10,7 +10,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "system-test": "repo-tools test app -- server.js",
@@ -21,7 +21,7 @@
     "got": "^9.6.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0"
+    "@google-cloud/nodejs-repo-tools": "^3.3.0"
   },
   "cloud-repo-tools": {
     "test": {

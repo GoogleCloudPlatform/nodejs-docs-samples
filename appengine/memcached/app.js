@@ -22,35 +22,25 @@ const app = express();
 
 // [START gae_flex_redislabs_memcache]
 // Environment variables are defined in app.yaml.
-const MEMCACHE_URL = process.env.MEMCACHE_URL;
+const {MEMCACHE_URL} = process.env;
 
 const mc = memjs.Client.create(MEMCACHE_URL);
 // [END gae_flex_redislabs_memcache]
 
-app.get('/', (req, res, next) => {
-  mc.get('foo', (err, value) => {
-    if (err) {
-      next(err);
-      return;
-    }
+app.get('/', async (req, res, next) => {
+  try {
+    const {value} = await mc.get('foo');
     if (value) {
       res.status(200).send(`Value: ${value.toString('utf-8')}`);
       return;
     }
 
-    mc.set(
-      'foo',
-      `${Math.random()}`,
-      err => {
-        if (err) {
-          next(err);
-          return;
-        }
-        res.redirect('/');
-      },
-      60
-    );
-  });
+    await mc.set('foo', `${Math.random()}`, {});
+    res.redirect('/');
+  } catch (err) {
+    next(err);
+    return;
+  }
 });
 
 const PORT = process.env.PORT || 8080;

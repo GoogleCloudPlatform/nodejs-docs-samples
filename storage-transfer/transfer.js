@@ -18,7 +18,7 @@
 // [START all]
 // [START setup]
 const moment = require('moment');
-const google = require('googleapis').google;
+const {google} = require('googleapis');
 
 // Instantiate a storage client
 const storagetransfer = google.storagetransfer('v1');

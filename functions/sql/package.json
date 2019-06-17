@@ -9,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "start-proxy-mysql": "cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME-mysql=tcp:3306 &",
@@ -24,7 +24,7 @@
     "pg": "^7.4.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^6.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^7.3.0"

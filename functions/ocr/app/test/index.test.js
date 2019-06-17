@@ -19,7 +19,7 @@ const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 
 const bucketName = 'my-bucket';
 const filename = 'image.jpg';
@@ -355,9 +355,7 @@ it('saveResult translates and publishes text with Node 6 arguments', async () =>
     `Received request to save file ${filename}`,
   ]);
   assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Saving result to ${filename}_to_${lang}.txt in bucket ${
-      sample.mocks.config.RESULT_BUCKET
-    }`,
+    `Saving result to ${filename}_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`,
   ]);
   assert.deepStrictEqual(console.log.getCall(2).args, ['File saved.']);
 });
@@ -376,9 +374,7 @@ it('saveResult translates and publishes text with Node 8 arguments', async () =>
     `Received request to save file ${filename}`,
   ]);
   assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Saving result to ${filename}_to_${lang}.txt in bucket ${
-      sample.mocks.config.RESULT_BUCKET
-    }`,
+    `Saving result to ${filename}_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`,
   ]);
   assert.deepStrictEqual(console.log.getCall(2).args, ['File saved.']);
 });
@@ -399,9 +395,7 @@ it('saveResult translates and publishes text with dot in filename', async () => 
     `Received request to save file ${filename}.jpg`,
   ]);
   assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Saving result to ${filename}.jpg_to_${lang}.txt in bucket ${
-      sample.mocks.config.RESULT_BUCKET
-    }`,
+    `Saving result to ${filename}.jpg_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`,
   ]);
   assert.deepStrictEqual(console.log.getCall(2).args, ['File saved.']);
 });

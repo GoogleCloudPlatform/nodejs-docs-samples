@@ -1,0 +1,83 @@
+/**
+ * Copyright 2019, Google LLC.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+'use strict';
+
+const assert = require('assert');
+const Supertest = require('supertest');
+const sinon = require('sinon');
+const proxyquire = require('proxyquire').noCallThru();
+
+const getSample = () => {
+  const twilioMock = {
+    messages: {
+      create: sinon.stub().resolves(),
+    },
+    message: sinon.stub(),
+    say: sinon.stub(),
+    toString: sinon.stub(),
+  };
+
+  const twilioStub = sinon.stub().returns(twilioMock);
+  twilioStub.TwimlResponse = sinon.stub().returns(twilioMock);
+
+  const {app} = proxyquire('../app', {twilio: twilioStub});
+
+  return {
+    supertest: Supertest(app, {
+      twilio: twilioStub,
+    }),
+    mocks: {
+      twilio: twilioMock,
+    },
+  };
+};
+
+it('should send an SMS message', () => {
+  const {supertest} = getSample();
+
+  return supertest
+    .get('/sms/send')
+    .query({to: 1234})
+    .expect(200)
+    .expect(response => {
+      assert.strictEqual(response.text, 'Message sent.');
+    });
+});
+
+it('should receive an SMS message', () => {
+  const {supertest, mocks} = getSample();
+
+  return supertest
+    .post('/sms/receive')
+    .send({From: 'Bob', Body: 'hi'})
+    .type('form')
+    .expect(200)
+    .expect(() => {
+      assert(mocks.twilio.message.calledWith('Hello, Bob, you said: hi'));
+    });
+});
+
+it('should receive a call', () => {
+  const {supertest, mocks} = getSample();
+
+  return supertest
+    .post('/call/receive')
+    .send()
+    .expect(200)
+    .expect(() => {
+      assert(mocks.twilio.say.calledWith('Hello from Google App Engine.'));
+    });
+});

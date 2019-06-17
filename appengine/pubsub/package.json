@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "start": "node app.js",
@@ -16,12 +16,12 @@
     "@google-cloud/pubsub": "^0.28.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "google-auth-library": "^3.1.2",
+    "google-auth-library": "^4.0.0",
     "pug": "^2.0.1",
     "safe-buffer": "^5.1.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^6.0.0",
     "sinon": "^7.3.1",

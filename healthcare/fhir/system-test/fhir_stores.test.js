@@ -20,7 +20,9 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const cmdDataset = 'node datasets.js';
+const projectId = process.env.GCLOUD_PROJECT;
+const region = 'us-central1';
+
 const cmd = 'node fhir_stores.js';
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
@@ -29,21 +31,18 @@ const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
-const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
-  /-/gi,
-  '_'
-);
+const pubsubTopic = process.env.PUBSUB_TOPIC;
 
 before(async () => {
   tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  await tools.runAsync(
+    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    cwdDatasets
+  );
 });
 after(async () => {
   try {
-    await tools.runAsync(
-      `${cmdDataset} deleteDataset ${datasetId}`,
-      cwdDatasets
-    );
+    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 
@@ -52,7 +51,7 @@ it('should create a FHIR store', async () => {
     `${cmd} createFhirStore ${datasetId} ${fhirStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Created FHIR store/).test(output), true);
+  assert.ok(output.includes('Created FHIR store'));
 });
 
 it('should get a FHIR store', async () => {
@@ -60,7 +59,7 @@ it('should get a FHIR store', async () => {
     `${cmd} getFhirStore ${datasetId} ${fhirStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Got FHIR store/).test(output), true);
+  assert.ok(output.includes('Got FHIR store'));
 });
 
 it('should list FHIR stores', async () => {
@@ -68,7 +67,7 @@ it('should list FHIR stores', async () => {
     `${cmd} listFhirStores ${datasetId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/FHIR stores/).test(output), true);
+  assert.ok(output.includes('FHIR stores'));
 });
 
 it('should patch a FHIR store', async () => {
@@ -76,7 +75,7 @@ it('should patch a FHIR store', async () => {
     `${cmd} patchFhirStore ${datasetId} ${fhirStoreId} ${pubsubTopic}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Patched FHIR store/).test(output), true);
+  assert.ok(output.includes('Patched FHIR store'));
 });
 
 it('should get FHIR store metadata', async () => {
@@ -84,10 +83,7 @@ it('should get FHIR store metadata', async () => {
     `${cmd} getMetadata ${datasetId} ${fhirStoreId}`,
     cwd
   );
-  assert.strictEqual(
-    new RegExp(/Capabilities statement for FHIR store/).test(output),
-    true
-  );
+  assert.ok(output.includes('Capabilities statement for FHIR store'));
 });
 
 it('should delete a FHIR store', async () => {
@@ -95,5 +91,5 @@ it('should delete a FHIR store', async () => {
     `${cmd} deleteFhirStore ${datasetId} ${fhirStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Deleted FHIR store/).test(output), true);
+  assert.ok(output.includes('Deleted FHIR store'));
 });

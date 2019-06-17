@@ -6,20 +6,20 @@
   "author": "Google LLC",
   "repository": "GoogleCloudPlatform/nodejs-docs-samples",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "mocha system-test/*.test.js --timeout=60000"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "mocha": "^5.2.0"
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^6.0.0"
   },
   "dependencies": {
-    "googleapis": "^39.0.0",
+    "googleapis": "^40.0.0",
     "uuid": "^3.3.2",
     "yargs": "^13.0.0",
-    "gtoken": "^2.3.0",
+    "gtoken": "^3.0.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
   },

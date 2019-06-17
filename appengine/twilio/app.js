@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2019, Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,6 @@
 
 'use strict';
 
-const format = require('util').format;
 const express = require('express');
 const bodyParser = require('body-parser').urlencoded({
   extended: false,
@@ -23,7 +22,7 @@ const bodyParser = require('body-parser').urlencoded({
 
 const app = express();
 
-const TWILIO_NUMBER = process.env.TWILIO_NUMBER;
+const {TWILIO_NUMBER} = process.env;
 if (!TWILIO_NUMBER) {
   console.log(
     'Please configure environment variables as described in README.md'
@@ -33,12 +32,14 @@ if (!TWILIO_NUMBER) {
   );
 }
 
-const twilio = require('twilio')(
+const Twilio = require('twilio');
+
+const twilioClient = Twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
 
-const TwimlResponse = require('twilio').TwimlResponse;
+const {TwimlResponse} = Twilio;
 
 // [START gae_flex_twilio_receive_call]
 app.post('/call/receive', (req, res) => {
@@ -53,8 +54,8 @@ app.post('/call/receive', (req, res) => {
 // [END gae_flex_twilio_receive_call]
 
 // [START gae_flex_twilio_send_sms]
-app.get('/sms/send', (req, res, next) => {
-  const to = req.query.to;
+app.get('/sms/send', async (req, res, next) => {
+  const {to} = req.query;
   if (!to) {
     res
       .status(400)
@@ -62,20 +63,17 @@ app.get('/sms/send', (req, res, next) => {
     return;
   }
 
-  twilio.sendMessage(
-    {
+  try {
+    await twilioClient.messages.create({
       to: to,
       from: TWILIO_NUMBER,
       body: 'Hello from Google App Engine',
-    },
-    err => {
-      if (err) {
-        next(err);
-        return;
-      }
-      res.status(200).send('Message sent.');
-    }
-  );
+    });
+    res.status(200).send('Message sent.');
+  } catch (err) {
+    next(err);
+    return;
+  }
 });
 // [END gae_flex_twilio_send_sms]
 
@@ -85,7 +83,7 @@ app.post('/sms/receive', bodyParser, (req, res) => {
   const body = req.body.Body;
 
   const resp = new TwimlResponse();
-  resp.message(format('Hello, %s, you said: %s', sender, body));
+  resp.message(`Hello, ${sender}, you said: ${body}`);
 
   res
     .status(200)
@@ -95,8 +93,12 @@ app.post('/sms/receive', bodyParser, (req, res) => {
 // [END gae_flex_twilio_receive_sms]
 
 // Start the server
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
+if (module === require.main) {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
+  });
+}
+
+exports.app = app;

@@ -15,76 +15,62 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const requestRetry = require('requestretry');
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
 
-function getSample() {
-  const requestPromiseNative = sinon.stub().returns(Promise.resolve('test'));
+const program = require('..');
 
-  return {
-    program: proxyquire('../', {
-      'request-promise-native': requestPromiseNative,
-    }),
-    mocks: {
-      requestPromiseNative: requestPromiseNative,
-    },
-  };
-}
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+const cwd = path.join(__dirname, '..');
 
-it('should echo message', () => {
-  const event = {
-    data: {
-      myMessage: 'hi',
-    },
-  };
-  const sample = getSample();
-  const callback = sinon.stub();
+let ffProc;
 
-  sample.program.helloWorld(event, callback);
-
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.firstCall.args, [event.data.myMessage]);
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, []);
+before(() => {
+  ffProc = execPromise(
+    `functions-framework --target=helloPromise --signature-type=event`,
+    {timeout: 2000, shell: true, cwd}
+  );
 });
 
-it('should say no message was provided', () => {
-  const error = new Error('No message defined!');
-  const callback = sinon.stub();
-  const sample = getSample();
-  sample.program.helloWorld({data: {}}, callback);
+after(async () => {
+  try {
+    await ffProc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    if (err.name && err.name === 'ChildProcessError') {
+      return;
+    }
 
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
+    throw err;
+  }
 });
 
-it('should make a promise request', () => {
-  const sample = getSample();
+it('should make a promise request', async () => {
   const event = {
     data: {
-      endpoint: 'foo.com',
+      endpoint: 'https://example.com',
     },
   };
 
-  return sample.program.helloPromise(event).then(result => {
-    assert.deepStrictEqual(sample.mocks.requestPromiseNative.firstCall.args, [
-      {uri: 'foo.com'},
-    ]);
-    assert.strictEqual(result, 'test');
+  const response = await requestRetry({
+    url: `${BASE_URL}/`,
+    method: 'POST',
+    body: event,
+    retryDelay: 200,
+    json: true,
   });
+
+  assert.strictEqual(response.statusCode, 200);
+  assert.ok(response.body.includes(`Example Domain`));
 });
 
 it('should return synchronously', () => {
   assert.strictEqual(
-    getSample().program.helloSynchronous({
-      data: {
-        something: true,
-      },
+    program.helloSynchronous({
+      something: true,
     }),
     'Something is true!'
   );
@@ -93,10 +79,8 @@ it('should return synchronously', () => {
 it('should throw an error', () => {
   assert.throws(
     () => {
-      getSample().program.helloSynchronous({
-        data: {
-          something: false,
-        },
+      program.helloSynchronous({
+        something: false,
       });
     },
     Error,

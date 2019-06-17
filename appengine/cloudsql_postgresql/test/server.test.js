@@ -25,7 +25,7 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
-function getSample() {
+const getSample = () => {
   const testApp = express();
   sinon.stub(testApp, 'listen').yields();
   const expressMock = sinon.stub().returns(testApp);
@@ -72,7 +72,7 @@ function getSample() {
       process: processMock,
     },
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);

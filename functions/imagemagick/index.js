@@ -24,6 +24,8 @@ const storage = new Storage();
 const vision = require('@google-cloud/vision').v1p1beta1;
 
 const client = new vision.ImageAnnotatorClient();
+
+const {BLURRED_BUCKET_NAME} = process.env;
 // [END functions_imagemagick_setup]
 
 // [START functions_imagemagick_analyze]
@@ -67,7 +69,7 @@ exports.blurOffensiveImages = event => {
         console.log(
           `The image ${file.name} has been detected as inappropriate.`
         );
-        return blurImage(file);
+        return blurImage(file, BLURRED_BUCKET_NAME);
       } else {
         console.log(`The image ${file.name} has been detected as OK.`);
       }
@@ -76,8 +78,8 @@ exports.blurOffensiveImages = event => {
 // [END functions_imagemagick_analyze]
 
 // [START functions_imagemagick_blur]
-// Blurs the given file using ImageMagick.
-function blurImage(file) {
+// Blurs the given file using ImageMagick, and uploads it to another bucket.
+function blurImage(file, blurredBucketName) {
   const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
 
   // Download file from bucket.
@@ -109,19 +111,23 @@ function blurImage(file) {
     .then(() => {
       console.log(`Image ${file.name} has been blurred.`);
 
-      // Mark result as blurred, to avoid re-triggering this function.
-      const newName = `blurred-${file.name}`;
+      // Upload result to a different bucket, to avoid re-triggering this function.
+      // You can also re-upload it to the same bucket + tell your Cloud Function to
+      // ignore files marked as blurred (e.g. those with a "blurred" prefix)
+      const blurredBucket = storage.bucket(blurredBucketName);
 
       // Upload the Blurred image back into the bucket.
-      return file.bucket
-        .upload(tempLocalPath, {destination: newName})
+      return blurredBucket
+        .upload(tempLocalPath, {destination: file.name})
         .catch(err => {
           console.error('Failed to upload blurred image.', err);
           return Promise.reject(err);
         });
     })
     .then(() => {
-      console.log(`Blurred image has been uploaded to ${file.name}.`);
+      console.log(
+        `Blurred image has been uploaded to: gs://${blurredBucketName}/${file.name}`
+      );
 
       // Delete the temporary file.
       return new Promise((resolve, reject) => {

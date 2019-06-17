@@ -65,21 +65,19 @@ describe('functions/billing tests', () => {
       json: true,
     });
 
+    assert.strictEqual(response.statusCode, 200);
+    assert.strictEqual(response.body, 'Slack notification sent successfully');
+
     // Wait for the functions framework to stop
     // Must be BEFORE assertions, in case they fail
     try {
       await ffProc;
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
-      if (err.name && err.name === 'ChildProcessError') {
-        return;
+      if (!err.name || !err.name === 'ChildProcessError') {
+        throw err;
       }
-
-      throw err;
     }
-
-    assert.strictEqual(response.statusCode, 200);
-    assert.strictEqual(response.body, 'Slack notification sent successfully');
   });
 
   it('should disable billing when budget is exceeded', async () => {
@@ -104,21 +102,19 @@ describe('functions/billing tests', () => {
       json: true,
     });
 
+    assert.strictEqual(response.statusCode, 200);
+    assert.ok(response.body.includes('Billing disabled'));
+
     // Wait for the functions framework to stop
     // Must be BEFORE assertions, in case they fail
     try {
       await ffProc;
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
-      if (err.name && err.name === 'ChildProcessError') {
-        return;
+      if (!err.name || !err.name === 'ChildProcessError') {
+        throw err;
       }
-
-      throw err;
     }
-
-    assert.strictEqual(response.statusCode, 200);
-    assert.ok(response.body.includes('Billing disabled'));
   });
 
   it('should attempt to shut down GCE instances when budget is exceeded', async () => {

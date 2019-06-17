@@ -65,6 +65,7 @@ exports.avoidInfiniteRetries = (data, context) => {
  * how to toggle retries using a promise
  *
  * @param {object} data The event payload.
+ * @param {object} data.retry User-supplied parameter that tells the function whether to retry.
  * @param {object} context The event metadata.
  */
 exports.retryPromise = (data, context) => {
@@ -160,6 +161,14 @@ exports.helloGCSGeneric = (data, context) => {
 exports.helloRTDB = (data, context) => {
   const triggerResource = context.resource;
 
+  const pathParams = data.params;
+  if (pathParams) {
+    console.log(`Parameters:`);
+    Object.entries(pathParams).forEach(([param, value]) => {
+      console.log(`  ${param}: ${value}`);
+    });
+  }
+
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!data.admin}`);
   console.log(`Delta:`);
@@ -223,7 +232,7 @@ exports.helloAuth = (data, context) => {
  * @param {object} context The event metadata.
  */
 exports.helloAnalytics = (data, context) => {
-  const resource = context.resource;
+  const {resource} = context;
   console.log(`Function triggered by the following event: ${resource}`);
 
   const analyticsEvent = data.eventDim[0];
@@ -275,7 +284,7 @@ const firestore = new Firestore({
 
 // Converts strings added to /messages/{pushId}/original to uppercase
 exports.makeUpperCase = (data, context) => {
-  const resource = context.resource;
+  const {resource} = context;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
   const curValue = data.value.fields.original.stringValue;

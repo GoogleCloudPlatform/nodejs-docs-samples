@@ -25,3 +25,7 @@ rules:
   promise/prefer-await-to-then: warn
   promise/no-nesting: warn
   prefer-destructuring: warn
+  func-style:
+    - 1
+    - expression
+    - allowArrowFunctions: true

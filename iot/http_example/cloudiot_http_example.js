@@ -106,9 +106,7 @@ const authToken = createJwt(
   argv.privateKeyFile,
   argv.algorithm
 );
-const devicePath = `projects/${argv.projectId}/locations/${
-  argv.cloudRegion
-}/registries/${argv.registryId}/devices/${argv.deviceId}`;
+const devicePath = `projects/${argv.projectId}/locations/${argv.cloudRegion}/registries/${argv.registryId}/devices/${argv.deviceId}`;
 
 // The request path, set accordingly depending on the message type.
 const pathSuffix =

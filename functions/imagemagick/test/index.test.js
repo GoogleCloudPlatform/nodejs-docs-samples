@@ -22,7 +22,10 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const vision = require('@google-cloud/vision').v1p1beta1;
 
 const bucketName = 'my-bucket';
+const blurredBucketName = 'my-blurred-bucket';
 const defaultFileName = 'image.jpg';
+
+process.env.BLURRED_BUCKET_NAME = blurredBucketName;
 
 let VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
 VisionStub.returns({
@@ -116,20 +119,19 @@ it('blurOffensiveImages blurs unblurred images (Node 6 syntax)', async () => {
     `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
-      sample.mocks.file.name
-    }.`,
+    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${sample.mocks.file.name}.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(3).args, [
     `Image ${sample.mocks.file.name} has been blurred.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(4).args, [
-    `Blurred image has been uploaded to ${sample.mocks.file.name}.`,
+    `Blurred image has been uploaded to: gs://${blurredBucketName}/${sample.mocks.file.name}`,
   ]);
 });
 
 it('blurOffensiveImages blurs unblurred images (Node 8 syntax)', async () => {
   const sample = getSample(defaultFileName);
+
   await sample.program.blurOffensiveImages({
     bucket: bucketName,
     name: defaultFileName,
@@ -142,26 +144,13 @@ it('blurOffensiveImages blurs unblurred images (Node 8 syntax)', async () => {
     `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${
-      sample.mocks.file.name
-    }.`,
+    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${sample.mocks.file.name}.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(3).args, [
     `Image ${sample.mocks.file.name} has been blurred.`,
   ]);
   assert.deepStrictEqual(console.log.getCall(4).args, [
-    `Blurred image has been uploaded to ${sample.mocks.file.name}.`,
-  ]);
-});
-
-it('blurOffensiveImages ignores already-blurred images', async () => {
-  const sample = getSample('blurred-${defaultFileName}');
-  await sample.program.blurOffensiveImages({
-    data: {bucket: bucketName, name: `blurred-${defaultFileName}`},
-  });
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `The image ${sample.mocks.file.name} is already blurred.`,
+    `Blurred image has been uploaded to: gs://${blurredBucketName}/${sample.mocks.file.name}`,
   ]);
 });
 

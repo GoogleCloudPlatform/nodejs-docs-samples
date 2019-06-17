@@ -293,9 +293,7 @@ function publishAsync(
   }
 
   setTimeout(() => {
-    const payload = `${argv.registryId}/${
-      argv.deviceId
-    }-payload-${messagesSent}`;
+    const payload = `${argv.registryId}/${argv.deviceId}-payload-${messagesSent}`;
 
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.

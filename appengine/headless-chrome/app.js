@@ -15,7 +15,7 @@ limitations under the License.
 */
 'use strict';
 
-// [START full_sample]
+// [START gae_std_headless_chrome_full_sample]
 const express = require('express');
 const puppeteer = require('puppeteer');
 const app = express();
@@ -32,11 +32,11 @@ app.use(async (req, res) => {
   }
 
   if (!browser) {
-    // [START browser]
+    // [START gae_std_headless_chrome_full_sample_browser]
     browser = await puppeteer.launch({
       args: ['--no-sandbox'],
     });
-    // [END browser]
+    // [END gae_std_headless_chrome_full_sample_browser]
   }
 
   const page = await browser.newPage();
@@ -54,6 +54,6 @@ const server = app.listen(process.env.PORT || 8080, err => {
   const {port} = server.address();
   console.info(`App listening on port ${port}`);
 });
-// [END full_sample]
+// [END gae_std_headless_chrome_full_sample]
 
 module.exports = app;

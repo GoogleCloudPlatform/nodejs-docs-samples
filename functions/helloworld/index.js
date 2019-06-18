@@ -59,8 +59,8 @@ exports.helloHttp = (req, res) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloBackground = (event, callback) => {
-  callback(null, `Hello ${event.data.name || 'World'}!`);
+exports.helloBackground = (data, context, callback) => {
+  callback(null, `Hello ${data.name || 'World'}!`);
 };
 // [END functions_helloworld_background]
 
@@ -111,11 +111,11 @@ exports.helloGCS = (data, context) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloGCSGeneric = (event, callback) => {
-  const file = event.data;
+exports.helloGCSGeneric = (data, context, callback) => {
+  const file = data;
 
-  console.log(`  Event: ${event.eventId}`);
-  console.log(`  Event Type: ${event.eventType}`);
+  console.log(`  Event: ${context.eventId}`);
+  console.log(`  Event Type: ${context.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
   console.log(`  File: ${file.name}`);
   console.log(`  Metageneration: ${file.metageneration}`);
@@ -133,7 +133,7 @@ exports.helloGCSGeneric = (event, callback) => {
  * @param {function} callback The callback function.
  */
 
-exports.helloError = (event, callback) => {
+exports.helloError = (data, context, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver Error Reporting
   console.error(new Error('I failed you'));
@@ -151,7 +151,7 @@ exports.helloError = (event, callback) => {
  */
 /* eslint-disable no-throw-literal */
 
-exports.helloError2 = (event, callback) => {
+exports.helloError2 = (data, context, callback) => {
   // [START functions_helloworld_error]
   // These will NOT be reported to Stackdriver Error Reporting
   console.info(new Error('I failed you')); // Logging an Error object at the info level
@@ -168,7 +168,7 @@ exports.helloError2 = (event, callback) => {
  * @param {function} callback The callback function.
  */
 /* eslint-disable */
-exports.helloError3 = (event, callback) => {
+exports.helloError3 = (data, context, callback) => {
   // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   callback('I failed you');

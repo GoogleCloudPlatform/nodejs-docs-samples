@@ -23,57 +23,45 @@ const {helloGCS} = require('..');
 beforeEach(utils.stubConsole);
 afterEach(utils.restoreConsole);
 
-it('helloGCS: should print uploaded message', done => {
+it('helloGCS: should print uploaded message', () => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
-    data: {
-      name: filename,
-      resourceState: 'exists',
-      metageneration: '1',
-    },
+    name: filename,
+    resourceState: 'exists',
+    metageneration: '1',
   };
 
   // Call tested function and verify its behavior
-  helloGCS(event, () => {
-    assert.ok(console.log.calledWith(`File ${filename} uploaded.`));
-    done();
-  });
+  helloGCS(event);
+  assert.ok(console.log.calledWith(`File ${filename} uploaded.`));
 });
 // [END functions_storage_unit_test]
 
-it('helloGCS: should print metadata updated message', done => {
+it('helloGCS: should print metadata updated message', () => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
-    data: {
-      name: filename,
-      resourceState: 'exists',
-      metageneration: '2',
-    },
+    name: filename,
+    resourceState: 'exists',
+    metageneration: '2',
   };
 
   // Call tested function and verify its behavior
-  helloGCS(event, () => {
-    assert.ok(console.log.calledWith(`File ${filename} metadata updated.`));
-    done();
-  });
+  helloGCS(event);
+  assert.ok(console.log.calledWith(`File ${filename} metadata updated.`));
 });
 
-it('helloGCS: should print deleted message', done => {
+it('helloGCS: should print deleted message', () => {
   // Initialize mocks
   const filename = uuid.v4();
   const event = {
-    data: {
-      name: filename,
-      resourceState: 'not_exists',
-      metageneration: '3',
-    },
+    name: filename,
+    resourceState: 'not_exists',
+    metageneration: '3',
   };
 
   // Call tested function and verify its behavior
-  helloGCS(event, () => {
-    assert.ok(console.log.calledWith(`File ${filename} deleted.`));
-    done();
-  });
+  helloGCS(event);
+  assert.ok(console.log.calledWith(`File ${filename} deleted.`));
 });

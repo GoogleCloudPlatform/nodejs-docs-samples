@@ -12,9 +12,7 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCP_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" mocha test/*.test.js --timeout=60000 --exit",
-    "test": "export BASE_URL=\"http://localhost:8080/$GCLOUD_PROJECT/$GCF_REGION\" && mocha test/*.test.js --timeout=2000 --exit",
-    "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && mocha test/*.test.js --timeout=60000 --exit"
+    "test": "mocha test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^4.0.0",

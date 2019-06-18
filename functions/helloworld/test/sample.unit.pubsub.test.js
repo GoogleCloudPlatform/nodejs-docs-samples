@@ -23,32 +23,24 @@ const {helloPubSub} = require('..');
 beforeEach(utils.stubConsole);
 afterEach(utils.restoreConsole);
 
-it('helloPubSub: should print a name', done => {
-  // Initialize mocks
+it('helloPubSub: should print a name', () => {
+  // Create mock Pub/Sub event
   const name = uuid.v4();
   const event = {
-    data: {
-      data: Buffer.from(name).toString('base64'),
-    },
+    data: Buffer.from(name).toString('base64'),
   };
 
   // Call tested function and verify its behavior
-  helloPubSub(event, () => {
-    assert.ok(console.log.calledWith(`Hello, ${name}!`));
-    done();
-  });
+  helloPubSub(event);
+  assert.ok(console.log.calledWith(`Hello, ${name}!`));
 });
 // [END functions_pubsub_unit_test]
 
-it('helloPubSub: should print hello world', done => {
-  // Initialize mocks
-  const event = {
-    data: {},
-  };
+it('helloPubSub: should print hello world', () => {
+  // Create mock Pub/Sub event
+  const event = {};
 
   // Call tested function and verify its behavior
-  helloPubSub(event, () => {
-    assert.ok(console.log.calledWith('Hello, World!'));
-    done();
-  });
+  helloPubSub(event);
+  assert.ok(console.log.calledWith('Hello, World!'));
 });

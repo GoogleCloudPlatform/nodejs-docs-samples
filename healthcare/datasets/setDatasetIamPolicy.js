@@ -38,6 +38,8 @@ function main(
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
+    // const member = 'user:example@gmail.com';
+    // const role = 'roles/healthcare.datasetViewer';
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
     const request = {
       resource_,

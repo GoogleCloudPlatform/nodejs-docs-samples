@@ -41,6 +41,7 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
+export BASE_URL="http://localhost:8080" # For functions-framework based tests
 
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem

@@ -1,0 +1,26 @@
+{
+  "name": "logging-manual",
+  "version": "1.0.0",
+  "description": "Demonstrates logging on Cloud Run",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "system-test": "mocha test/system.test.js --timeout=20000"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.17.1",
+    "got": "^9.6.0"
+  },
+  "devDependencies": {
+    "@google-cloud/logging": "^5.1.2",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^6.1.4"
+  }
+}

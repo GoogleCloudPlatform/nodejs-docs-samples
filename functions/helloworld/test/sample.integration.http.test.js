@@ -43,7 +43,7 @@ describe('HTTP integration test', () => {
   let ffProc;
 
   // Run the functions-framework instance to host functions locally
-  before(async () => {
+  before(() => {
     ffProc = execPromise(
       `functions-framework --target=helloHttp --signature-type=http`,
       {timeout: 1000, shell: true, cwd}

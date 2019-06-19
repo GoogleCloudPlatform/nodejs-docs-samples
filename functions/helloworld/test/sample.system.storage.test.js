@@ -21,6 +21,7 @@ const assert = require('assert');
 const path = require('path');
 const childProcess = require('child_process');
 const localFileName = 'test.txt';
+const delay = require('delay');
 
 // Use unique GCS filename to avoid conflicts between concurrent test runs
 const gcsFileName = `test-${uuid.v4()}.txt`;
@@ -39,7 +40,7 @@ it('helloGCS: should print uploaded message', async () => {
   });
 
   // Wait for consistency
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  await delay(15000);
 
   // Check logs
   const logs = childProcess
@@ -57,7 +58,7 @@ it('helloGCS: should print metadata updated message', async () => {
   await file.setMetadata(gcsFileName, {foo: 'bar'});
 
   // Wait for consistency
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  await delay(15000);
 
   // Check logs
   const logs = childProcess
@@ -73,7 +74,7 @@ it('helloGCS: should print deleted message', async () => {
   bucket.deleteFiles();
 
   // Wait for consistency
-  await new Promise(resolve => setTimeout(resolve, 15000));
+  await delay(15000);
 
   // Check logs
   const logs = childProcess

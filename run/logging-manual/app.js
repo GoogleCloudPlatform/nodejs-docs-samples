@@ -6,7 +6,7 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  let project = process.env.GOOGLE_CLOUD_PROJECT;
+  const project = process.env.GOOGLE_CLOUD_PROJECT;
 
   // [START run_manual_logging]
 
@@ -14,30 +14,34 @@ app.get('/', (req, res) => {
   // $project = 'The project ID of your Cloud Run service';
 
   // Build structured log messages as an object.
-  let globalLogFields = {};
+  const globalLogFields = {};
 
   // Add log correlation to nest all log messages beneath request log in Log Viewer.
   const traceHeader = req.header('X-Cloud-Trace-Context');
   if (traceHeader && project) {
-    let trace = traceHeader.split('/')[0];
-    globalLogFields['logging.googleapis.com/trace'] = `projects/${project}/traces/${trace}`;
+    const [trace] = traceHeader.split('/');
+    globalLogFields[
+      'logging.googleapis.com/trace'
+    ] = `projects/${project}/traces/${trace}`;
   }
 
   // Complete a structured log entry.
-  let entry = Object.assign({
-    severity: "NOTICE",
-    message: "This is the default display field.",
-    // Log viewer accesses 'component' as 'jsonPayload.component'.
-    component: "arbitrary-property"
-  }, globalLogFields);
+  const entry = Object.assign(
+    {
+      severity: 'NOTICE',
+      message: 'This is the default display field.',
+      // Log viewer accesses 'component' as 'jsonPayload.component'.
+      component: 'arbitrary-property',
+    },
+    globalLogFields
+  );
 
   // Serialize to a JSON string and output.
   console.log(JSON.stringify(entry));
 
   // [END run_manual_logging]
 
-  res.send("Hello Logger!");
+  res.send('Hello Logger!');
 });
 
 module.exports = app;
-

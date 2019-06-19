@@ -9,10 +9,11 @@ const SERVICE = require('./package').name;
 
 const startServer = () => {
   app.listen(PORT, () => console.log(`${SERVICE} listening on port ${PORT}`));
-}
+};
 
 if (!process.env.GOOGLE_CLOUD_PROJECT) {
-  metadata.getProjectId()
+  metadata
+    .getProjectId()
     .then(project => {
       process.env.GOOGLE_CLOUD_PROJECT = project;
       startServer();
@@ -23,4 +24,3 @@ if (!process.env.GOOGLE_CLOUD_PROJECT) {
 } else {
   startServer();
 }
-

@@ -2,16 +2,18 @@
 
 # Google Cloud Run Node.js Samples
 
-[Cloud Run][run_docs] stateless containers on a fully managed environment or in your own GKE cluster.
+[Cloud Run][run_docs] runs stateless [containers](https://cloud.google.com/containers/) on a fully managed environment or in your own GKE cluster.
+
+
 
 ## Samples
 
 |           Sample                |        Description       |     Deploy    |
 | ------------------------------- | ------------------------ | ------------- |
 |[Hello World][helloworld]&nbsp;&#10149; | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
-|[Manual Logging][manual_logging] | Structured loggin without client library | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_manual_logging] |
+|[Manual Logging][manual_logging] | Structured logging without client library | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_manual_logging] |
 
-For more Cloud Run samples beyond Nodejs, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
+For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
 ## Setup
 
@@ -89,7 +91,7 @@ For more Cloud Run samples beyond Nodejs, see the main list in the [Cloud Run Sa
     written to the host's local filesystem. Once you exit the container you can
     add the file to version control.
 
-    4. Exit the container: ^D
+    4. Exit the container: `Ctrl-D`
 
 ## Testing
 

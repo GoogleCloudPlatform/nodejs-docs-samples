@@ -25,7 +25,7 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
-function getSample() {
+const getSample = () => {
   const testApp = express();
   sinon.stub(testApp, 'listen').yields();
   const expressMock = sinon.stub().returns(testApp);
@@ -72,7 +72,7 @@ function getSample() {
       process: processMock,
     },
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
@@ -80,8 +80,8 @@ afterEach(tools.restoreConsole);
 it('should set up sample in Postgres', () => {
   const sample = getSample();
 
-  assert.strictEqual(sample.mocks.express.calledOnce, true);
-  assert.strictEqual(sample.mocks.Knex.calledOnce, true);
+  assert.ok(sample.mocks.express.calledOnce);
+  assert.ok(sample.mocks.Knex.calledOnce);
   assert.deepStrictEqual(sample.mocks.Knex.firstCall.args, [
     {
       client: 'mysql',
@@ -116,7 +116,7 @@ it('should handle insert error', async () => {
     .get('/')
     .expect(500)
     .expect(response => {
-      assert.strictEqual(response.text.includes(expectedResult), true);
+      assert.ok(response.text.includes(expectedResult));
     });
 });
 
@@ -130,6 +130,6 @@ it('should handle read error', async () => {
     .get('/')
     .expect(500)
     .expect(response => {
-      assert.strictEqual(response.text.includes(expectedResult), true);
+      assert.ok(response.text.includes(expectedResult));
     });
 });

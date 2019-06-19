@@ -17,11 +17,22 @@
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 export GCF_REGION=us-central1
 export NODE_ENV=development
+export BUCKET_NAME=$GCLOUD_PROJECT
 
 # Configure GAE variables
 export TWILIO_NUMBER="+15005550006" # public placeholder value
 export TWILIO_ACCOUNT_SID=$(cat $KOKORO_GFILE_DIR/secrets-twilio-sid.txt)
 export TWILIO_AUTH_TOKEN=$(cat $KOKORO_GFILE_DIR/secrets-twilio-auth-token.txt)
+
+# Configure Cloud SQL variables
+export DB_NAME="kokoro_ci"
+export DB_USER="kokoro_ci"
+export DB_PASS=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
+if [[ $SQL_CLIENT == 'pg' ]]; then
+	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
+else
+	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
+fi
 
 # Configure Sendgrid variables
 export SENDGRID_SENDER="test@google.com"
@@ -30,7 +41,6 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
-export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
 
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
@@ -47,8 +57,12 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
+npm install -g @google-cloud/functions-framework
+
 # Start functions emulator, if appropriate
-if [[ $PROJECT == functions/* ]]; then
+if [[ $PROJECT == functions/* ]] && grep --quiet functions-emulator package.json; then
+  export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
+
   export FUNCTIONS_LOG_PATH=$(pwd)/logs/cloud-functions-emulator.log
   npm install -g @google-cloud/functions-emulator
   touch "$FUNCTIONS_LOG_PATH"

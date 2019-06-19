@@ -24,7 +24,7 @@ app.enable('trust proxy');
 const METADATA_PROJECT_ID_URL =
   'http://metadata.google.internal/computeMetadata/v1/project/project-id';
 
-function getProjectId() {
+const getProjectId = () => {
   const options = {
     headers: {
       'Metadata-Flavor': 'Google',
@@ -32,7 +32,7 @@ function getProjectId() {
   };
 
   return request(METADATA_PROJECT_ID_URL, options);
-}
+};
 
 app.get('/', async (req, res, next) => {
   try {

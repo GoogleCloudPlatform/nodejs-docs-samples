@@ -20,6 +20,9 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
+const projectId = process.env.GCLOUD_PROJECT;
+const region = 'us-central1';
+
 const cmdDataset = 'node datasets.js';
 const cmd = 'node hl7v2_messages.js';
 const cmdHl7v2Store = 'node hl7v2_stores.js';
@@ -38,7 +41,10 @@ const labelValue = 'my-value';
 
 before(async () => {
   tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  await tools.runAsync(
+    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    cwdDatasets
+  );
 });
 after(async () => {
   try {
@@ -58,7 +64,7 @@ it('should create an HL7v2 message', async () => {
     `${cmd} createHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Created HL7v2 message/).test(output), true);
+  assert.ok(output.includes('Created HL7v2 message'));
 });
 
 it('should ingest an HL7v2 message', async () => {
@@ -66,7 +72,7 @@ it('should ingest an HL7v2 message', async () => {
     `${cmd} ingestHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Ingested HL7v2 message/).test(output), true);
+  assert.ok(output.includes('Ingested HL7v2 message'));
 });
 
 it('should get an HL7v2 message', async () => {
@@ -74,7 +80,7 @@ it('should get an HL7v2 message', async () => {
     `${cmd} getHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Got HL7v2 message/).test(output), true);
+  assert.ok(output.includes('Got HL7v2 message'));
 });
 
 it('should list HL7v2 messages', async () => {
@@ -82,7 +88,7 @@ it('should list HL7v2 messages', async () => {
     `${cmd} listHl7v2Messages ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/HL7v2 messages/).test(output), true);
+  assert.ok(output.includes('HL7v2 messages'));
 });
 
 it('should patch an HL7v2 message', async () => {
@@ -90,7 +96,7 @@ it('should patch an HL7v2 message', async () => {
     `${cmd} patchHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId} ${labelKey} ${labelValue}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Patched HL7v2 message/).test(output), true);
+  assert.ok(output.includes('Patched HL7v2 message'));
 });
 
 it('should delete an HL7v2 message', async () => {
@@ -98,7 +104,7 @@ it('should delete an HL7v2 message', async () => {
     `${cmd} deleteHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Deleted HL7v2 message/).test(output), true);
+  assert.ok(output.includes('Deleted HL7v2 message'));
 
   // Clean up
   tools.runAsync(

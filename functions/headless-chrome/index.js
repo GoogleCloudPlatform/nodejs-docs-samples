@@ -28,7 +28,7 @@ async function getBrowserPage() {
 }
 
 exports.screenshot = async (req, res) => {
-  const url = req.query.url;
+  const {url} = req.query;
 
   if (!url) {
     return res.send(

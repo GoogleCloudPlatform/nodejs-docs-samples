@@ -38,7 +38,7 @@ const publicCert = fs.readFileSync(path.join(fixtures, 'public_cert.pem'));
 
 const sandbox = sinon.createSandbox();
 
-function createFakeToken() {
+const createFakeToken = () => {
   const now = Date.now() / 1000;
 
   const payload = {
@@ -58,7 +58,7 @@ function createFakeToken() {
   };
 
   return jwt.sign(payload, privateKey, options);
-}
+};
 
 afterEach(() => {
   sandbox.restore();

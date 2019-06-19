@@ -23,8 +23,8 @@ const bodyParser = require('body-parser');
 // The following environment variables are set by app.yaml (app.flexible.yaml or
 // app.standard.yaml) when running on Google App Engine,
 // but will need to be manually set when running locally.
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-const SENDGRID_SENDER = process.env.SENDGRID_SENDER;
+const {SENDGRID_API_KEY} = process.env;
+const {SENDGRID_SENDER} = process.env;
 const Sendgrid = require('@sendgrid/client');
 
 Sendgrid.setApiKey(SENDGRID_API_KEY);

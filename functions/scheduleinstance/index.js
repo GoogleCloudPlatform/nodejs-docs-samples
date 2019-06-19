@@ -15,7 +15,7 @@
 
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 const Compute = require('@google-cloud/compute');
 const compute = new Compute();
 // [END functions_stop_instance_pubsub]
@@ -32,11 +32,10 @@ const compute = new Compute();
  * @param {!object} callback Cloud Function PubSub callback indicating
  *  completion.
  */
-exports.startInstancePubSub = (event, callback) => {
+exports.startInstancePubSub = (event, context, callback) => {
   try {
-    const pubsubMessage = event.data;
     const payload = _validatePayload(
-      JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
+      JSON.parse(Buffer.from(event.data, 'base64').toString())
     );
     const options = {filter: `labels.${payload.label}`};
     compute.getVMs(options).then(vms => {
@@ -86,11 +85,10 @@ exports.startInstancePubSub = (event, callback) => {
  * @param {!object} event Cloud Function PubSub message event.
  * @param {!object} callback Cloud Function PubSub callback indicating completion.
  */
-exports.stopInstancePubSub = (event, callback) => {
+exports.stopInstancePubSub = (event, context, callback) => {
   try {
-    const pubsubMessage = event.data;
     const payload = _validatePayload(
-      JSON.parse(Buffer.from(pubsubMessage.data, 'base64').toString())
+      JSON.parse(Buffer.from(event.data, 'base64').toString())
     );
     const options = {filter: `labels.${payload.label}`};
     compute.getVMs(options).then(vms => {

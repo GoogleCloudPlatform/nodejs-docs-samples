@@ -19,45 +19,60 @@ const delay = require('delay');
 const assert = require('assert');
 const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
-const pubsub = new PubSub();
+const moment = require('moment');
+const promiseRetry = require('promise-retry');
 
+const pubsub = new PubSub();
 const topicName = process.env.FUNCTIONS_TOPIC;
 const baseCmd = 'gcloud functions';
 
 it('helloPubSub: should print a name', async () => {
-  const startTime = new Date(Date.now()).toISOString();
   const name = uuid.v4();
+
+  // Subtract time to work-around local-GCF clock difference
+  const startTime = moment()
+    .subtract(2, 'minutes')
+    .toISOString();
 
   // Publish to pub/sub topic
   const topic = pubsub.topic(topicName);
-  const publisher = topic.publisher();
-  await publisher.publish(Buffer.from(name));
+  await topic.publish(Buffer.from(name));
 
   // Wait for logs to become consistent
-  await delay(15000);
+  await promiseRetry(retry => {
+    const logs = childProcess
+      .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
+      .toString();
 
-  // Check logs after a delay
-  const logs = childProcess
-    .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`Hello, ${name}!`));
+    try {
+      assert.ok(logs.includes(`Hello, ${name}!`));
+    } catch (err) {
+      retry(err);
+    }
+  });
 });
 // [END functions_pubsub_system_test]
 
 it('helloPubSub: should print hello world', async () => {
-  const startTime = new Date(Date.now()).toISOString();
+  // Subtract time to work-around local-GCF clock difference
+  const startTime = moment()
+    .subtract(2, 'minutes')
+    .toISOString();
 
   // Publish to pub/sub topic
   const topic = pubsub.topic(topicName);
-  const publisher = topic.publisher();
-  await publisher.publish(Buffer.from(''), {a: 'b'});
+  await topic.publish(Buffer.from(''), {a: 'b'});
 
   // Wait for logs to become consistent
-  await delay(15000);
+  await promiseRetry(retry => {
+    const logs = childProcess
+      .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
+      .toString();
 
-  // Check logs after a delay
-  const logs = childProcess
-    .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes('Hello, World!'));
+    try {
+      assert.ok(logs.includes(`Hello, World!`));
+    } catch (err) {
+      retry(err);
+    }
+  });
 });

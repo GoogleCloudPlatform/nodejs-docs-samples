@@ -20,18 +20,23 @@ const uuid = require('uuid');
 const assert = require('assert');
 const path = require('path');
 const childProcess = require('child_process');
-const localFileName = 'test.txt';
 const delay = require('delay');
+const moment = require('moment');
+const promiseRetry = require('promise-retry');
 
 // Use unique GCS filename to avoid conflicts between concurrent test runs
 const gcsFileName = `test-${uuid.v4()}.txt`;
 
+const localFileName = 'test.txt';
 const bucketName = process.env.FUNCTIONS_BUCKET;
 const bucket = storage.bucket(bucketName);
 const baseCmd = 'gcloud functions';
 
 it('helloGCS: should print uploaded message', async () => {
-  const startTime = new Date(Date.now()).toISOString();
+  // Subtract time to work-around local-GCF clock difference
+  const startTime = moment()
+    .subtract(2, 'minutes')
+    .toISOString();
 
   // Upload file
   const filepath = path.join(__dirname, localFileName);
@@ -39,46 +44,64 @@ it('helloGCS: should print uploaded message', async () => {
     destination: gcsFileName,
   });
 
-  // Wait for consistency
-  await delay(15000);
+  // Wait for logs to become consistent
+  await promiseRetry(retry => {
+    const logs = childProcess
+      .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
+      .toString();
 
-  // Check logs
-  const logs = childProcess
-    .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${gcsFileName} uploaded`));
+    try {
+      assert.ok(logs.includes(`File ${gcsFileName} uploaded`));
+    } catch (err) {
+      retry(err);
+    }
+  });
 });
 // [END functions_storage_system_test]
 
 it('helloGCS: should print metadata updated message', async () => {
-  const startTime = new Date(Date.now()).toISOString();
+  // Subtract time to work-around local-GCF clock difference
+  const startTime = moment()
+    .subtract(2, 'minutes')
+    .toISOString();
 
   // Update file metadata
   const file = bucket.file(gcsFileName);
   await file.setMetadata(gcsFileName, {foo: 'bar'});
 
-  // Wait for consistency
-  await delay(15000);
+  // Wait for logs to become consistent
+  await promiseRetry(retry => {
+    const logs = childProcess
+      .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
+      .toString();
 
-  // Check logs
-  const logs = childProcess
-    .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.strictEqual(logs.ok(`File ${gcsFileName} metadata updated`));
+    try {
+      assert.ok(logs.includes(`File ${gcsFileName} metadata updated`));
+    } catch (err) {
+      retry(err);
+    }
+  });
 });
 
 it('helloGCS: should print deleted message', async () => {
-  const startTime = new Date(Date.now()).toISOString();
+  // Subtract time to work-around local-GCF clock difference
+  const startTime = moment()
+    .subtract(2, 'minutes')
+    .toISOString();
 
   // Delete file
   bucket.deleteFiles();
 
-  // Wait for consistency
-  await delay(15000);
+  // Wait for logs to become consistent
+  await promiseRetry(retry => {
+    const logs = childProcess
+      .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
+      .toString();
 
-  // Check logs
-  const logs = childProcess
-    .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${gcsFileName} deleted`));
+    try {
+      assert.ok(logs.includes(`File ${gcsFileName} deleted`));
+    } catch (err) {
+      retry(err);
+    }
+  });
 });

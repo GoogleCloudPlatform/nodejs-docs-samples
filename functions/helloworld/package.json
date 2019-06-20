@@ -22,6 +22,7 @@
     "supertest": "^4.0.2"
   },
   "devDependencies": {
+    "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "@google-cloud/pubsub": "^0.30.0",
     "@google-cloud/storage": "^2.0.0",

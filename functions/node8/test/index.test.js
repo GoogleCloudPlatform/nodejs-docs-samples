@@ -110,6 +110,9 @@ it('should monitor Firebase RTDB', () => {
     delta: {
       id: dataId,
     },
+    params: {
+      baz: 'quux',
+    },
   };
   const context = {
     resource: resourceId,
@@ -117,9 +120,10 @@ it('should monitor Firebase RTDB', () => {
 
   sample.program.helloRTDB(data, context);
 
-  assert.strictEqual(console.log.firstCall.args[0].includes(resourceId), true);
-  assert.deepStrictEqual(console.log.secondCall.args, ['Admin?: true']);
-  assert.strictEqual(console.log.getCall(3).args[0].includes(dataId), true);
+  assert.deepStrictEqual(console.log.getCall(1).args, ['  baz: quux']);
+  assert.strictEqual(console.log.getCall(2).args[0].includes(resourceId), true);
+  assert.deepStrictEqual(console.log.getCall(3).args, ['Admin?: true']);
+  assert.strictEqual(console.log.getCall(5).args[0].includes(dataId), true);
 });
 
 it('should monitor Firestore', () => {

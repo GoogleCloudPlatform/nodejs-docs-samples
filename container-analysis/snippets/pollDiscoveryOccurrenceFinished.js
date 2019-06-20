@@ -16,10 +16,10 @@ async function main(
   // const retries = 5 // The number of retries to listen for the new Pub/Sub messages
 
   // Import the library and create a client
-  const containerAnalysis = require('@google-cloud/containeranalysis');
-  const client = new containerAnalysis.v1beta1.GrafeasV1Beta1Client();
+  const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');
+  const client = new ContainerAnalysisClient();
 
-  const formattedParent = client.projectPath(projectId);
+  const formattedParent = client.getGrafeasClient().projectPath(projectId);
 
   let filter = `resourceUrl="${imageUrl}" AND noteProjectId="goog-analysis" AND noteId="PACKAGE_VULNERABILITY"`;
   // [END containeranalysis_poll_discovery_occurrence_finished]
@@ -33,7 +33,7 @@ async function main(
   const pRetry = require('p-retry');
   const discoveryOccurrence = await pRetry(
     async () => {
-      const [occurrences] = await client.listOccurrences({
+      const [occurrences] = await client.getGrafeasClient().listOccurrences({
         parent: formattedParent,
         filter: filter,
       });
@@ -51,10 +51,10 @@ async function main(
   const finishedOccurrence = await pRetry(
     async () => {
       let status = 'PENDING';
-      const [updated] = await client.getOccurrence({
+      const [updated] = await client.getGrafeasClient().getOccurrence({
         name: discoveryOccurrence.name,
       });
-      status = updated.discovered.discovered.analysisStatus;
+      status = updated.discovery.analysisStatus;
       if (
         status !== 'FINISHED_SUCCESS' &&
         status !== 'FINISHED_FAILED' &&
@@ -69,7 +69,7 @@ async function main(
     }
   );
   console.log(
-    `Found discovery occurrence ${finishedOccurrence.name}.  Status: ${finishedOccurrence.discovered.discovered.analysisStatus}`
+    `Found discovery occurrence ${finishedOccurrence.name}.  Status: ${finishedOccurrence.discovery.analysisStatus}`
   );
   // [END containeranalysis_poll_discovery_occurrence_finished]
 }

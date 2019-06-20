@@ -2,8 +2,8 @@ const {assert} = require('chai');
 const cp = require('child_process');
 const uuid = require(`uuid`);
 
-const containerAnalysis = require('@google-cloud/containeranalysis');
-const client = new containerAnalysis.v1beta1.GrafeasV1Beta1Client();
+const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');
+const client = new ContainerAnalysisClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -31,22 +31,22 @@ describe('Note tests', () => {
     formattedNoteName = `projects/${projectId}/notes/${noteId}`;
   });
   after(async () => {
-    const [allOccurrences] = await client.listOccurrences({
+    const [allOccurrences] = await client.getGrafeasClient().listOccurrences({
       parent: formattedParent,
       filter: `resourceUrl = "${resourceUrl}"`,
     });
 
     allOccurrences.forEach(async occurrence => {
-      await client.deleteOccurrence({name: occurrence.name});
+      await client.getGrafeasClient().deleteOccurrence({name: occurrence.name});
       console.log(`deleted occurrence ${occurrence.name}`);
     });
 
-    const [allNotes] = await client.listNotes({
+    const [allNotes] = await client.getGrafeasClient().listNotes({
       parent: formattedParent,
     });
 
     allNotes.forEach(async note => {
-      await client.deleteNote({name: note.name});
+      await client.getGrafeasClient().deleteNote({name: note.name});
       console.log(`deleted note ${note.name}`);
     });
   });
@@ -68,8 +68,9 @@ describe('Note tests', () => {
   });
 
   it('should get occurrence', async () => {
-    const [occurrences] = await client.listOccurrences({
+    const [occurrences] = await client.getGrafeasClient().listOccurrences({
       parent: formattedParent,
+      filter: `resourceUrl = "${resourceUrl}"`,
     });
     assert(occurrences.length > 0);
 
@@ -84,7 +85,6 @@ describe('Note tests', () => {
         break;
       }
     }
-
     assert.include(output, `Occurrence name: ${occurrence.name}`);
   });
 
@@ -113,28 +113,26 @@ describe('Note tests', () => {
       parent: formattedParent,
       noteId: `${noteId}-discovery`,
       note: {
-        discovery: {},
+        discovery: {
+          analysisKind: 'DISCOVERY',
+        },
       },
     };
 
-    await client.createNote(discoveryNoteRequest);
+    await client.getGrafeasClient().createNote(discoveryNoteRequest);
 
     const occurrenceRequest = {
       parent: formattedParent,
       occurrence: {
         noteName: `${formattedNoteName}-discovery`,
-        discovered: {
-          discovered: {
-            analysisStatus: 'FINISHED_SUCCESS',
-          },
-        },
-        resource: {
-          uri: resourceUrl,
+        resourceUri: resourceUrl,
+        discovery: {
+          analysisStatus: 'FINISHED_SUCCESS',
         },
       },
     };
 
-    await client.createOccurrence(occurrenceRequest);
+    await client.getGrafeasClient().createOccurrence(occurrenceRequest);
 
     const output = execSync(
       `node getDiscoveryInfo "${projectId}" "${resourceUrl}"`
@@ -149,28 +147,48 @@ describe('Note tests', () => {
       note: {
         vulnerability: {
           severity: 'CRITICAL',
+          details: [
+            {
+              affectedCpeUri: 'foo.uri',
+              affectedPackage: 'foo',
+              minAffectedVersion: {
+                kind: 'MINIMUM',
+              },
+              fixedVersion: {
+                kind: 'MAXIMUM',
+              },
+            },
+          ],
         },
       },
     };
 
-    await client.createNote(criticalNoteReq);
+    await client.getGrafeasClient().createNote(criticalNoteReq);
 
     const criticalOccurrenceReq = {
       parent: formattedParent,
       occurrence: {
         noteName: `${formattedNoteName}-critical`,
+        resourceUri: resourceUrl,
         vulnerability: {
-          vulnerability: {
-            severity: 'CRITICAL',
-          },
-        },
-        resource: {
-          uri: resourceUrl,
+          severity: 'CRITICAL',
+          packageIssue: [
+            {
+              affectedCpeUri: 'foo.uri',
+              affectedPackage: 'foo',
+              minAffectedVersion: {
+                kind: 'MINIMUM',
+              },
+              fixedVersion: {
+                kind: 'MAXIMUM',
+              },
+            },
+          ],
         },
       },
     };
 
-    await client.createOccurrence(criticalOccurrenceReq);
+    await client.getGrafeasClient().createOccurrence(criticalOccurrenceReq);
 
     const output = execSync(
       `node highVulnerabilitiesForImage "${projectId}" "${resourceUrl}"`
@@ -187,8 +205,9 @@ describe('Note tests', () => {
   });
 
   it('should delete occurrence', async () => {
-    const [occurrences] = await client.listOccurrences({
+    const [occurrences] = await client.getGrafeasClient().listOccurrences({
       parent: formattedParent,
+      filter: `resourceUrl = "${resourceUrl}"`,
     });
     assert(occurrences.length > 0);
     const occurrence = occurrences[0];
@@ -216,38 +235,40 @@ describe('polling', () => {
       parent: formattedParent,
       noteId: `${noteId}-discovery-polling`,
       note: {
-        discovery: {},
+        discovery: {
+          analysisKind: 'DISCOVERY',
+        },
       },
     };
 
-    await client.createNote(discoveryNoteRequest);
+    await client.getGrafeasClient().createNote(discoveryNoteRequest);
 
     const occurrenceRequest = {
       parent: formattedParent,
       occurrence: {
         noteName: `${formattedNoteName}-discovery-polling`,
-        discovered: {
-          discovered: {
-            analysisStatus: 3,
-          },
-        },
-        resource: {
-          uri: resourceUrl,
+        resourceUri: resourceUrl,
+        discovery: {
+          analysisStatus: 'FINISHED_SUCCESS',
         },
       },
     };
 
-    await client.createOccurrence(occurrenceRequest);
+    await client.getGrafeasClient().createOccurrence(occurrenceRequest);
   });
 
   after(async () => {
-    const [discoveryOccurrences] = await client.listNoteOccurrences({
+    const [
+      discoveryOccurrences,
+    ] = await client.getGrafeasClient().listNoteOccurrences({
       name: `${formattedNoteName}-discovery-polling`,
     });
     discoveryOccurrences.forEach(async occurrence => {
-      await client.deleteOccurrence({name: occurrence.name});
+      await client.getGrafeasClient().deleteOccurrence({name: occurrence.name});
     });
-    await client.deleteNote({name: `${formattedNoteName}-discovery-polling`});
+    await client
+      .getGrafeasClient()
+      .deleteNote({name: `${formattedNoteName}-discovery-polling`});
   });
 
   it('should successfully poll latest discovery occurrence', () => {
@@ -278,14 +299,29 @@ describe('pubsub', () => {
       parent: formattedParent,
       noteId: `${noteId}-pubsub`,
       note: {
-        vulnerability: {},
+        vulnerability: {
+          details: [
+            {
+              affectedCpeUri: 'foo.uri',
+              affectedPackage: 'foo',
+              minAffectedVersion: {
+                kind: 'MINIMUM',
+              },
+              fixedVersion: {
+                kind: 'MAXIMUM',
+              },
+            },
+          ],
+        },
       },
     };
-    await client.createNote(pubSubNoteReq);
+    await client.getGrafeasClient().createNote(pubSubNoteReq);
   });
 
   afterEach(async () => {
-    await client.deleteNote({name: `${formattedNoteName}-pubsub`});
+    await client
+      .getGrafeasClient()
+      .deleteNote({name: `${formattedNoteName}-pubsub`});
     await pubsub.subscription(subscriptionId).delete();
   });
 
@@ -295,11 +331,20 @@ describe('pubsub', () => {
       parent: formattedParent,
       occurrence: {
         noteName: `${formattedNoteName}-pubsub`,
+        resourceUri: resourceUrl,
         vulnerability: {
-          vulnerability: {},
-        },
-        resource: {
-          uri: resourceUrl,
+          packageIssue: [
+            {
+              affectedCpeUri: 'foo.uri',
+              affectedPackage: 'foo',
+              minAffectedVersion: {
+                kind: 'MINIMUM',
+              },
+              fixedVersion: {
+                kind: 'MAXIMUM',
+              },
+            },
+          ],
         },
       },
     };
@@ -317,10 +362,12 @@ describe('pubsub', () => {
     assert.include(empty, `Polled 0 occurrences`);
     // create test occurrences
     for (let i = 0; i < expectedNum; i++) {
-      const [pubSubOccurrence] = await client.createOccurrence(
-        pubSubOccurrenceReq
-      );
-      await client.deleteOccurrence({name: pubSubOccurrence.name});
+      const [
+        pubSubOccurrence,
+      ] = await client.getGrafeasClient().createOccurrence(pubSubOccurrenceReq);
+      await client
+        .getGrafeasClient()
+        .deleteOccurrence({name: pubSubOccurrence.name});
     }
     const output = execSync(
       `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`

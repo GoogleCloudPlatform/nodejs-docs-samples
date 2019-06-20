@@ -14,23 +14,20 @@ async function main(
   // const noteId = 'my-note-id' // Id of the note
 
   // Import the library and create a client
-  const containerAnalysis = require('@google-cloud/containeranalysis');
-  const client = new containerAnalysis.v1beta1.GrafeasV1Beta1Client();
+  const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');
+  const client = new ContainerAnalysisClient();
 
   // Get path to Note
   const formattedNote = client.notePath(projectId, noteId);
 
   // Retrieves all the Occurrences associated with a specified Note
-  const [occurrences] = await client.listNoteOccurrences({
+  const [occurrences] = await client.getGrafeasClient().listNoteOccurrences({
     name: formattedNote,
   });
   if (occurrences.length) {
     console.log('Occurrences:');
     occurrences.forEach(occurrence => {
       console.log(`${occurrence.name}:`);
-      console.log(
-        `  Created: ${new Date(occurrence.createTime.seconds * 1000)}`
-      );
     });
   } else {
     console.log('No occurrences found.');

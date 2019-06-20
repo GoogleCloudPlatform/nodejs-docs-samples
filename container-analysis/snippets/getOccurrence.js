@@ -14,14 +14,16 @@ async function main(
   // const occurrenceId = 'my-occurrence' // The API-generated identifier associated with the occurrence
 
   // Import the library and create a client
-  const containerAnalysis = require('@google-cloud/containeranalysis');
-  const client = new containerAnalysis.v1beta1.GrafeasV1Beta1Client();
+  const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');
+  const client = new ContainerAnalysisClient();
 
   // Get full path to occurrence
-  const formattedName = client.occurrencePath(projectId, occurrenceId);
+  const formattedName = client
+    .getGrafeasClient()
+    .occurrencePath(projectId, occurrenceId);
 
   // Retrieves the specified occurrence
-  const [occurrence] = await client.getOccurrence({
+  const [occurrence] = await client.getGrafeasClient().getOccurrence({
     name: formattedName,
   });
 

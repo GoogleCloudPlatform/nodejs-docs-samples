@@ -22,9 +22,9 @@ export GCF_REGION=us-central1
 export NODE_ENV=development
 
 # Configure Slack variables
-export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
-export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
-export BILLING_ACCOUNT=${KOKORO_GFILE_DIR}/secrets-billing-account-id.txt
+export BOT_ACCESS_TOKEN=$(cat ${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt)
+export CHANNEL=$(cat ${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt)
+export BILLING_ACCOUNT=$(cat ${KOKORO_GFILE_DIR}/secrets-billing-account-id.txt)
 
 cd github/nodejs-docs-samples/${PROJECT}
 

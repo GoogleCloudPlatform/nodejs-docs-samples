@@ -21,6 +21,9 @@ Run the following command to install the library dependencies for Node.js:
         patchDataset.js <projectId> <cloudRegion> <datasetId> <timeZone>                        Updates dataset details.
         deidentifyDataset.js <projectId> <cloudRegion> <sourceDatasetId>                        Creates a new dataset containing de-identified data from
         <destinationDatasetId> <keeplistTags>                                                   the source dataset.
+        getDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId>                            Gets the IAM policy for the dataset.
+        setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member>                   Sets the IAM policy for the dataset.
+        <role>
 
         Options:
         --version             Show version number                                                                    [boolean]

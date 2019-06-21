@@ -78,7 +78,6 @@ describe('functions/datastore', () => {
       const req = {
         body: {},
       };
-
       const res = {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),
@@ -96,7 +95,6 @@ describe('functions/datastore', () => {
           value: VALUE,
         },
       };
-
       const res = {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),
@@ -115,7 +113,6 @@ describe('functions/datastore', () => {
           value: VALUE,
         },
       };
-
       const res = {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),
@@ -198,7 +195,6 @@ describe('functions/datastore', () => {
       const req = {
         body: {},
       };
-
       const res = {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),
@@ -216,7 +212,6 @@ describe('functions/datastore', () => {
           key: NAME,
         },
       };
-
       const res = {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),
@@ -247,7 +242,6 @@ describe('functions/datastore', () => {
       const req = {
         body: {},
       };
-
       const res = {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),
@@ -265,7 +259,6 @@ describe('functions/datastore', () => {
           key: NAME,
         },
       };
-
       const res = {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),

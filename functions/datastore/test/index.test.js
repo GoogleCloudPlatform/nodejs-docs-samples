@@ -25,7 +25,6 @@ const execPromise = require('child-process-promise').exec;
 const sinon = require('sinon');
 
 const FF_TIMEOUT = 3000;
-const BASE_URL = `http://localhost:8080`;
 
 let requestRetry = require('requestretry');
 requestRetry = requestRetry.defaults({
@@ -62,10 +61,12 @@ const handleLinuxFailures = async proc => {
 describe('functions/datastore', () => {
   describe('set', () => {
     let ffProc;
+    const PORT = 8080;
+    const BASE_URL = `http://localhost:${PORT}`;
 
     before(() => {
       ffProc = execPromise(
-        `functions-framework --target=set --signature-type=http`,
+        `functions-framework --target=set --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
     });
@@ -143,10 +144,12 @@ describe('functions/datastore', () => {
 
   describe('get', () => {
     let ffProc;
+    const PORT = 8081;
+    const BASE_URL = `http://localhost:${PORT}`;
 
     before(() => {
       ffProc = execPromise(
-        `functions-framework --target=get --signature-type=http`,
+        `functions-framework --target=get --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
     });
@@ -226,10 +229,12 @@ describe('functions/datastore', () => {
 
   describe('del', () => {
     let ffProc;
+    const PORT = 8082;
+    const BASE_URL = `http://localhost:${PORT}`;
 
     before(() => {
       ffProc = execPromise(
-        `functions-framework --target=del --signature-type=http`,
+        `functions-framework --target=del --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
     });

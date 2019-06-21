@@ -29,6 +29,8 @@ const PROJECT_NAME = process.env.GCP_PROJECT;
 
 const {BILLING_ACCOUNT} = process.env;
 
+
+
 after(async () => {
   // Re-enable billing using the sample file itself
   // Invoking the file directly is more concise vs. re-implementing billing setup here
@@ -74,7 +76,7 @@ describe('functions/billing tests', () => {
       await ffProc;
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
-      if (!err.name || !err.name === 'ChildProcessError') {
+      if (!err.name || err.name !== 'ChildProcessError') {
         throw err;
       }
     }
@@ -111,7 +113,7 @@ describe('functions/billing tests', () => {
       await ffProc;
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
-      if (!err.name || !err.name === 'ChildProcessError') {
+      if (!err.name || err.name !== 'ChildProcessError') {
         throw err;
       }
     }

@@ -45,15 +45,12 @@ const errorMsg = msg =>
 
 const handleLinuxFailures = async proc => {
   try {
-    // Terminate the FF if it hasn't timed out
-    // WARNING: mangles returned stdout/stderr values
     return await proc;
   } catch (err) {
     // Timeouts always cause errors on Linux, so catch them
+    // Don't return proc, as await-ing it re-throws the error
     if (!err.name || err.name !== 'ChildProcessError') {
       throw err;
-    } else {
-      return proc;
     }
   }
 };

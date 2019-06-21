@@ -70,8 +70,8 @@ if [[ $PROJECT == functions/* ]] && grep --quiet functions-emulator package.json
   functions-emulator start
 fi
 
-npm test
-
 docker version
+
+npm test
 
 exit $?

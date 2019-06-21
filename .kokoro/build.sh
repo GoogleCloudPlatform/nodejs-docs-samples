@@ -72,4 +72,6 @@ fi
 
 npm test
 
+docker version
+
 exit $?

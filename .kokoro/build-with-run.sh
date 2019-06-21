@@ -53,7 +53,7 @@ gcloud builds submit --tag="${CONTAINER_IMAGE}"
 gcloud beta --quiet run deploy "${CLOUD_RUN_SERVICE_NAME}" --image="${CONTAINER_IMAGE}" --region=us-central1 --allow-unauthenticated
 
 # Capture the URL
-export CLOUD_RUN_SERVICE_URL=$(gcloud beta run services describe "${CLOUD_RUN_SERVICE_NAME}" --format='value(status.domain)')
+export BASE_URL=$(gcloud beta run services describe "${CLOUD_RUN_SERVICE_NAME}" --format='value(status.domain)')
 
 # Install dependencies and run Nodejs tests.
 npm install

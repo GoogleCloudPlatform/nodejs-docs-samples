@@ -52,13 +52,13 @@ describe('Logging', () => {
 
   describe('Live Service', () => {
     it('can be reached by an HTTP request', async () => {
-      const url = process.env.CLOUD_RUN_SERVICE_URL;
-      if (!url) {
+      const {BASE_URL} = process.env;
+      if (!BASE_URL) {
         throw Error(
-          '"$CLOUD_RUN_SERVICE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app.'
+          '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app.'
         );
       }
-      await request(url);
+      await request(`${BASE_URL}/`);
     });
 
     it('generates Stackdriver logs', async () => {

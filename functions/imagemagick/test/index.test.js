@@ -15,169 +15,111 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const vision = require('@google-cloud/vision').v1p1beta1;
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
+const {Storage} = require('@google-cloud/storage');
 
-const bucketName = 'my-bucket';
-const blurredBucketName = 'my-blurred-bucket';
-const defaultFileName = 'image.jpg';
+const storage = new Storage();
 
-process.env.BLURRED_BUCKET_NAME = blurredBucketName;
+let requestRetry = require('requestretry');
+requestRetry = requestRetry.defaults({
+  retryStrategy: requestRetry.RetryStrategies.NetworkError,
+  method: 'POST',
+  json: true,
+  url: 'http://localhost:8080/blurOffensiveImages',
+});
 
-let VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
-VisionStub.returns({
-  safeSearchDetection: sinon.stub().returns(
-    Promise.resolve([
-      {
-        safeSearchAnnotation: {
-          adult: 'VERY_LIKELY',
-          violence: 'VERY_LIKELY',
+const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
+const {BLURRED_BUCKET_NAME} = process.env;
+
+const safeFileName = 'bicycle.jpg';
+const offensiveFileName = 'zombie.jpg';
+
+const cwd = path.join(__dirname, '..');
+
+const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
+
+describe('functions/imagemagick tests', () => {
+  const startFF = () => {
+    return execPromise(
+      `functions-framework --target=blurOffensiveImages --signature-type=event`,
+      {timeout: 10000, shell: true, cwd}
+    );
+  };
+
+  const stopFF = async ffProc => {
+    try {
+      return await ffProc;
+    } catch (err) {
+      // Timeouts always cause errors on Linux, so catch them
+      if (err.name && err.name === 'ChildProcessError') {
+        return;
+      }
+
+      throw err;
+    }
+  };
+
+  beforeEach(tools.stubConsole);
+  afterEach(tools.restoreConsole);
+
+  it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
+    const ffProc = startFF();
+
+    await requestRetry({
+      body: {
+        data: {
+          bucket: BUCKET_NAME,
+          name: safeFileName,
         },
       },
-    ])
-  ),
-});
+    });
 
-function getSample(filename) {
-  const file = {
-    getMetadata: sinon.stub().returns(Promise.resolve([{}])),
-    setMetadata: sinon.stub().returns(Promise.resolve()),
-    download: sinon.stub().returns(Promise.resolve()),
-    bucket: bucketName,
-    name: filename,
-  };
-  const bucket = {
-    file: sinon.stub().returns(file),
-    upload: sinon.stub().returns(Promise.resolve()),
-  };
-  file.bucket = bucket;
-  const storageMock = {
-    bucket: sinon.stub().returns(bucket),
-  };
-  const StorageMock = sinon.stub().returns(storageMock);
+    const {stdout} = await stopFF(ffProc);
 
-  const gmMock = sinon.stub().returns({
-    blur: sinon.stub().returnsThis(),
-    write: sinon.stub().yields(),
+    assert.ok(
+      stdout.includes(`The image ${safeFileName} has been detected as OK.`)
+    );
   });
-  gmMock.subClass = sinon.stub().returnsThis();
 
-  const fsMock = {
-    unlink: sinon.stub().yields(),
-  };
+  it('blurOffensiveImages successfully blurs offensive images', async () => {
+    const ffProc = startFF();
 
-  return {
-    program: proxyquire('../', {
-      '@google-cloud/storage': {Storage: StorageMock},
-      gm: gmMock,
-      fs: fsMock,
-    }),
-    mocks: {
-      fs: fsMock,
-      gm: gmMock,
-      storage: storageMock,
-      bucket,
-      file,
-    },
-  };
-}
-
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
-
-it('blurOffensiveImages does nothing on delete', async () => {
-  await getSample(defaultFileName).program.blurOffensiveImages({
-    data: {resourceState: 'not_exists'},
-  });
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    'This is a deletion event.',
-  ]);
-});
-
-it('blurOffensiveImages does nothing on deploy', async () => {
-  await getSample(defaultFileName).program.blurOffensiveImages({data: {}});
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    'This is a deploy event.',
-  ]);
-});
-
-it('blurOffensiveImages blurs unblurred images (Node 6 syntax)', async () => {
-  const sample = getSample(defaultFileName);
-  await sample.program.blurOffensiveImages({
-    data: {bucket: bucketName, name: defaultFileName},
-  });
-  assert.strictEqual(console.log.callCount, 5);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Analyzing ${sample.mocks.file.name}.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${sample.mocks.file.name}.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(3).args, [
-    `Image ${sample.mocks.file.name} has been blurred.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(4).args, [
-    `Blurred image has been uploaded to: gs://${blurredBucketName}/${sample.mocks.file.name}`,
-  ]);
-});
-
-it('blurOffensiveImages blurs unblurred images (Node 8 syntax)', async () => {
-  const sample = getSample(defaultFileName);
-
-  await sample.program.blurOffensiveImages({
-    bucket: bucketName,
-    name: defaultFileName,
-  });
-  assert.strictEqual(console.log.callCount, 5);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Analyzing ${sample.mocks.file.name}.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `The image ${sample.mocks.file.name} has been detected as inappropriate.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Image ${sample.mocks.file.name} has been downloaded to /tmp/${sample.mocks.file.name}.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(3).args, [
-    `Image ${sample.mocks.file.name} has been blurred.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(4).args, [
-    `Blurred image has been uploaded to: gs://${blurredBucketName}/${sample.mocks.file.name}`,
-  ]);
-});
-
-it('blurOffensiveImages ignores safe images', async () => {
-  VisionStub.restore();
-  VisionStub = sinon.stub(vision, 'ImageAnnotatorClient');
-  VisionStub.returns({
-    safeSearchDetection: sinon.stub().returns(
-      Promise.resolve([
-        {
-          safeSearchAnnotation: {
-            adult: 'VERY_UNLIKELY',
-            violence: 'VERY_UNLIKELY',
-          },
+    await requestRetry({
+      body: {
+        data: {
+          bucket: BUCKET_NAME,
+          name: offensiveFileName,
         },
-      ])
-    ),
+      },
+    });
+
+    const {stdout, stderr} = await stopFF(ffProc);
+    console.info(stdout, stderr);
+
+    assert.ok(stdout.includes(`Image ${offensiveFileName} has been blurred.`));
+    assert.ok(
+      stdout.includes(
+        `Blurred image has been uploaded to: gs://${BLURRED_BUCKET_NAME}/${offensiveFileName}`
+      )
+    );
+
+    assert.ok(
+      storage
+        .bucket(BLURRED_BUCKET_NAME)
+        .file(offensiveFileName)
+        .exists(),
+      'File uploaded'
+    );
   });
-  const sample = getSample(defaultFileName);
-  await sample.program.blurOffensiveImages({
-    data: {bucket: bucketName, name: defaultFileName},
+
+  after(async () => {
+    try {
+      await blurredBucket.file(offensiveFileName).delete();
+    } catch (err) {
+      console.log('Error deleting uploaded file:', err);
+    }
   });
-  assert.strictEqual(console.log.callCount, 2);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Analyzing ${sample.mocks.file.name}.`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `The image ${sample.mocks.file.name} has been detected as OK.`,
-  ]);
 });

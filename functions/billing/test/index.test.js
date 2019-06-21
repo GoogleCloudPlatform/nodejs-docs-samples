@@ -19,17 +19,13 @@ const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const requestRetry = require('requestretry');
 const assert = require('assert');
-
 const sinon = require('sinon');
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
 const PROJECT_NAME = process.env.GCP_PROJECT;
 
 const {BILLING_ACCOUNT} = process.env;
-
-
 
 after(async () => {
   // Re-enable billing using the sample file itself
@@ -44,81 +40,95 @@ after(async () => {
   await require('../').startBilling(pubsubMessage);
 });
 
+const handleLinuxFailures = async proc => {
+  try {
+    return await proc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    // Don't return proc, as await-ing it re-throws the error
+    if (!err.name || err.name !== 'ChildProcessError') {
+      throw err;
+    }
+  }
+};
+
 describe('functions/billing tests', () => {
-  it('should notify Slack when budget is exceeded', async () => {
-    // Use functions framework to ensure sample follows GCF specification
-    // (Invoking it directly works too, but DOES NOT ensure GCF compatibility)
-    const ffProc = execPromise(
-      `functions-framework --target=notifySlack --signature-type=event`,
-      {timeout: 1000, shell: true, cwd}
-    );
+  describe('notifies Slack', () => {
+    let ffProc;
+    const PORT = 8080;
+    const BASE_URL = `http://localhost:${PORT}`;
 
-    const jsonData = {costAmount: 500, budgetAmount: 400};
-    const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
-      'base64'
-    );
-    const pubsubMessage = {data: encodedData, attributes: {}};
-
-    const response = await requestRetry({
-      url: `${BASE_URL}/`,
-      method: 'POST',
-      body: {data: pubsubMessage},
-      retryDelay: 200,
-      json: true,
+    before(() => {
+      const ffProc = execPromise(
+        `functions-framework --target=notifySlack --signature-type=event --port ${PORT}`,
+        {timeout: 1000, shell: true, cwd}
+      );
     });
 
-    assert.strictEqual(response.statusCode, 200);
-    assert.strictEqual(response.body, 'Slack notification sent successfully');
-
-    // Wait for the functions framework to stop
-    // Must be BEFORE assertions, in case they fail
-    try {
-      await ffProc;
-    } catch (err) {
-      // Timeouts always cause errors on Linux, so catch them
-      if (!err.name || err.name !== 'ChildProcessError') {
-        throw err;
-      }
-    }
-  });
-
-  it('should disable billing when budget is exceeded', async () => {
-    // Use functions framework to ensure sample follows GCF specification
-    // (Invoking it directly works too, but DOES NOT ensure GCF compatibility)
-    const ffProc = execPromise(
-      `functions-framework --target=stopBilling --signature-type=event`,
-      {timeout: 1000, shell: true, cwd}
-    );
-
-    const jsonData = {costAmount: 500, budgetAmount: 400};
-    const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
-      'base64'
-    );
-    const pubsubMessage = {data: encodedData, attributes: {}};
-
-    const response = await requestRetry({
-      url: `${BASE_URL}/`,
-      method: 'POST',
-      body: {data: pubsubMessage},
-      retryDelay: 200,
-      json: true,
+    after(async () => {
+      await handleLinuxFailures(ffProc);
     });
 
-    assert.strictEqual(response.statusCode, 200);
-    assert.ok(response.body.includes('Billing disabled'));
+    it('should notify Slack when budget is exceeded', async () => {
+      const jsonData = {costAmount: 500, budgetAmount: 400};
+      const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+        'base64'
+      );
+      const pubsubMessage = {data: encodedData, attributes: {}};
 
-    // Wait for the functions framework to stop
-    // Must be BEFORE assertions, in case they fail
-    try {
-      await ffProc;
-    } catch (err) {
-      // Timeouts always cause errors on Linux, so catch them
-      if (!err.name || err.name !== 'ChildProcessError') {
-        throw err;
-      }
-    }
+      const response = await requestRetry({
+        url: `${BASE_URL}/notifySlack`,
+        method: 'POST',
+        body: {data: pubsubMessage},
+        retryDelay: 200,
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, 'Slack notification sent successfully');
+    });
   });
 
+  describe('disables billing', () => {
+    let ffProc;
+    const PORT = 8081;
+    const BASE_URL = `http://localhost:${PORT}`;
+
+    before(() => {
+      const ffProc = execPromise(
+        `functions-framework --target=stopBilling --signature-type=event --port ${PORT}`,
+        {timeout: 1000, shell: true, cwd}
+      );
+    });
+
+    after(async () => {
+      await handleLinuxFailures(ffProc);
+    });
+
+    it('should disable billing when budget is exceeded', async () => {
+      // Use functions framework to ensure sample follows GCF specification
+      // (Invoking it directly works too, but DOES NOT ensure GCF compatibility)
+      const jsonData = {costAmount: 500, budgetAmount: 400};
+      const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+        'base64'
+      );
+      const pubsubMessage = {data: encodedData, attributes: {}};
+
+      const response = await requestRetry({
+        url: `${BASE_URL}/stopBilling`,
+        method: 'POST',
+        body: {data: pubsubMessage},
+        retryDelay: 200,
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.ok(response.body.includes('Billing disabled'));
+    });
+  });
+});
+
+describe('shuts down GCE instances', () => {
   it('should attempt to shut down GCE instances when budget is exceeded', async () => {
     // Mock GCE (because real GCE instances take too long to start/stop)
     const listInstancesResponseMock = {

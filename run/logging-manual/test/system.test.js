@@ -1,3 +1,7 @@
+// Copyright 2019 Google LLC. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 const assert = require('assert');
 const {Logging} = require('@google-cloud/logging');
 const request = require('got');
@@ -8,7 +12,7 @@ const setTimeoutPromise = promisify(setTimeout);
 // Support concurrency by setting the service name to something unique.
 // The service name must be the same used to deploy to Cloud Run.
 const service_name =
-  process.env.CLOUD_RUN_SERVICE_NAME || require('../package').name;
+  process.env.SERVICE_NAME || require('../package').name;
 
 const logging = new Logging({
   projectId: process.env.GOOGLE_CLOUD_PROJECT,
@@ -58,7 +62,7 @@ describe('Logging', () => {
           '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app.'
         );
       }
-      await request(`${BASE_URL}/`);
+      await request(`${BASE_URL.trim()}/`);
     });
 
     it('generates Stackdriver logs', async () => {
@@ -96,9 +100,13 @@ describe('Logging', () => {
         "'severity' lifted to official property"
       );
     });
+  });
 
-    it('uses "trace" property as valid entry trace ID', () => {
+  describe('Log Correlation', () => {
+    it('uses "trace" property as entry trace', () => {
       assert(sampleLog.metadata.trace, "'trace' lifted to official property");
+    });
+    it('uses a correlated trace ID with the request log', () => {
       assert(
         sampleLog.metadata.trace === requestLog.metadata.trace,
         '`trace` property matches request log trace ID'

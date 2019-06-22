@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "deploy": "gcloud app deploy",
-    "test": "mocha test/*.test.js --timeout=20000"
+    "test": "mocha test/*.test.js --exit --timeout=20000"
   },
   "repository": {
     "type": "git",

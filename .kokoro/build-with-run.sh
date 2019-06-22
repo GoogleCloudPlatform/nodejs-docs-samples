@@ -38,7 +38,6 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE_NAME}:${SAMPLE_V
 
 # Register post-test cleanup
 function cleanup {
-  gcloud beta --quiet run services delete "${CLOUD_RUN_SERVICE_NAME}"
   gcloud --quiet container images delete "${CONTAINER_IMAGE}"
 }
 trap cleanup EXIT
@@ -49,15 +48,9 @@ docker run --rm -i hadolint/hadolint < Dockerfile
 # Build the service
 gcloud builds submit --tag="${CONTAINER_IMAGE}"
 
-# Deploy the service
-gcloud beta --quiet run deploy "${CLOUD_RUN_SERVICE_NAME}" --image="${CONTAINER_IMAGE}" --region=us-central1 --allow-unauthenticated
-
-# Capture the URL
-export BASE_URL=$(gcloud beta run services describe "${CLOUD_RUN_SERVICE_NAME}" --format='value(status.domain)')
-
 # Install dependencies and run Nodejs tests.
 npm install
 npm test
-npm run system-test
+npm run e2e-test
 
 exit $?

@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "system-test": "mocha test/system.test.js --timeout=20000"
+    "system-test": "echo \"Error: no test specified\" && exit 0",
+    "e2e-test": "set -ex; ../test/deploy.sh; BASE_URL=$(../test/url.sh); mocha test/system.test.js --timeout=20000"
   },
   "author": "",
   "license": "Apache-2.0",

@@ -19,7 +19,7 @@ if (!process.env.GOOGLE_CLOUD_PROJECT) {
       startServer();
     })
     .catch(error => {
-      console.error(`Could not identify $GOOGLE_CLOUD_PROJECT: ${error}`);
+      console.error(`error: Identify project from metadata server: ${error}`);
     });
 } else {
   startServer();

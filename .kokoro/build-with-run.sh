@@ -48,6 +48,6 @@ gcloud builds submit --tag="${CONTAINER_IMAGE}"
 # Install dependencies and run Nodejs tests.
 npm install
 npm test
-npm run e2e-test
+npm run | grep e2e-test && npm run e2e-test
 
 exit $?

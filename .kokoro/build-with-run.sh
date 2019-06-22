@@ -42,9 +42,6 @@ function cleanup {
 }
 trap cleanup EXIT
 
-# Run Dockerfile linting
-docker run --rm -i hadolint/hadolint < Dockerfile
-
 # Build the service
 gcloud builds submit --tag="${CONTAINER_IMAGE}"
 

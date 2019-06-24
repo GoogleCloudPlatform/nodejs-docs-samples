@@ -11,8 +11,7 @@ const setTimeoutPromise = promisify(setTimeout);
 
 // Support concurrency by setting the service name to something unique.
 // The service name must be the same used to deploy to Cloud Run.
-const service_name =
-  process.env.SERVICE_NAME || require('../package').name;
+const service_name = process.env.SERVICE_NAME || require('../package').name;
 
 const logging = new Logging({
   projectId: process.env.GOOGLE_CLOUD_PROJECT,

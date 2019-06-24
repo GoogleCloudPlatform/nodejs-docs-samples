@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "local-test": "mocha test/index.test.js",
-    "system-test": "mocha --timeout 20000 test/sample.integration.http.test.js",
+    "system-test": "mocha --timeout 20000 system-test/*.test.js",
     "pretest": "sh test/updateFunctions.sh",
     "test": "npm run local-test && npm run system-test",
     "serve": "firebase serve --only functions",

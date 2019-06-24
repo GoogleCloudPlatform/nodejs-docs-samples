@@ -341,18 +341,9 @@ const unbindDeviceFromAllGateways = async (
         };
 
         // for each gateway, make the call to unbind it
-        return new Promise(async (resolve, reject) => {
-          try {
-            await client.projects.locations.registries.unbindDeviceFromGateway(
-              unbindRequest
-            );
-            console.log('Unbound device from gateways', gateway.id);
-            resolve();
-          } catch (err) {
-            console.log('Could not unbind device', err);
-            reject();
-          }
-        });
+        return client.projects.locations.registries.unbindDeviceFromGateway(
+          unbindRequest
+        );
       });
 
       await Promise.all(promises);

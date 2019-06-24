@@ -161,6 +161,14 @@ exports.helloGCSGeneric = (data, context) => {
 exports.helloRTDB = (data, context) => {
   const triggerResource = context.resource;
 
+  const pathParams = data.params;
+  if (pathParams) {
+    console.log(`Parameters:`);
+    Object.entries(pathParams).forEach(([param, value]) => {
+      console.log(`  ${param}: ${value}`);
+    });
+  }
+
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!data.admin}`);
   console.log(`Delta:`);

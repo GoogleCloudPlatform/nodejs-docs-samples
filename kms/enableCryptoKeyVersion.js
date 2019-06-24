@@ -39,11 +39,10 @@ async function enableCryptoKeyVersion(
 
   // Gets a crypto key version
   const [cryptoKeyVersion] = await client.getCryptoKeyVersion({name});
-  cryptoKeyVersion.state = 'ENABLED';
 
   // enables a crypto key version
   const [result] = await client.updateCryptoKeyVersion({
-    cryptoKeyVersion,
+    cryptoKeyVersion: {state: 'ENABLED', name: cryptoKeyVersion.name},
     updateMask: ['state'],
   });
   console.log(`Crypto key version ${result.name} enabled.`);

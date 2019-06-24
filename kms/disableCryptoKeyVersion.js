@@ -39,11 +39,10 @@ async function disableCryptoKeyVersion(
 
   // Gets a crypto key version
   const [cryptoKeyVersion] = await client.getCryptoKeyVersion({name});
-  cryptoKeyVersion.state = 'DISABLED';
 
   // Disables a crypto key version
   const [result] = await client.updateCryptoKeyVersion({
-    cryptoKeyVersion,
+    cryptoKeyVersion: {state: 'DISABLED', name: cryptoKeyVersion.name},
     updateMask: ['state'],
   });
   console.log(`Crypto key version ${result.name} disabled.`);

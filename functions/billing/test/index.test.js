@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Google LLC.
+ * Copyright 2019, Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,141 +13,152 @@
  * limitations under the License.
  */
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
+const googleapis = require('googleapis');
+const proxyquire = require('proxyquire');
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
+const requestRetry = require('requestretry');
 const assert = require('assert');
+const sinon = require('sinon');
 
-function getSample() {
-  const instanceListMock = [
-    {name: 'test-instance-1', status: 'RUNNING'},
-    {name: 'test-instance-2', status: 'RUNNING'},
-  ];
+const cwd = path.join(__dirname, '..');
 
-  const listInstancesResponseMock = {
-    data: {
-      items: instanceListMock,
-    },
+const PROJECT_NAME = process.env.GCP_PROJECT;
+
+const {BILLING_ACCOUNT} = process.env;
+
+after(async () => {
+  // Re-enable billing using the sample file itself
+  // Invoking the file directly is more concise vs. re-implementing billing setup here
+  const jsonData = {
+    billingAccountName: `billingAccounts/${BILLING_ACCOUNT}`,
+    projectName: `projects/${PROJECT_NAME}`,
   };
+  const encodedData = Buffer.from(JSON.stringify(jsonData)).toString('base64');
+  const pubsubMessage = {data: encodedData, attributes: {}};
 
-  const computeMock = {
-    instances: {
-      list: sinon.stub().returns(listInstancesResponseMock),
-      stop: sinon.stub().resolves({data: {}}),
-    },
-  };
-
-  const cloudbillingMock = {
-    projects: {
-      getBillingInfo: sinon.stub().resolves({
-        data: {
-          billingEnabled: true,
-        },
-      }),
-      updateBillingInfo: sinon.stub().returns({
-        data: {},
-      }),
-    },
-  };
-
-  const googleMock = {
-    cloudbilling: sinon.stub().returns(cloudbillingMock),
-    compute: sinon.stub().returns(computeMock),
-    options: sinon.stub(),
-  };
-
-  const googleapisMock = {
-    google: googleMock,
-  };
-
-  const slackMock = {
-    chat: {
-      postMessage: sinon.stub().returns({data: {}}),
-    },
-  };
-
-  const credentialMock = {
-    hasScopes: sinon.stub().returns(false),
-  };
-  credentialMock.createScoped = sinon.stub().returns(credentialMock);
-
-  const googleAuthMock = {
-    auth: {
-      getApplicationDefault: sinon.stub().resolves({
-        credential: credentialMock,
-      }),
-    },
-  };
-
-  return {
-    program: proxyquire('../', {
-      'google-auth-library': googleAuthMock,
-      googleapis: googleapisMock,
-      slack: slackMock,
-    }),
-    mocks: {
-      google: googleMock,
-      googleAuth: googleAuthMock,
-      googleapis: googleapisMock,
-      compute: computeMock,
-      cloudbilling: cloudbillingMock,
-      credential: credentialMock,
-      slack: slackMock,
-      instanceList: instanceListMock,
-    },
-  };
-}
-
-it('should notify Slack when budget is exceeded', async () => {
-  const {program, mocks} = getSample();
-
-  const jsonData = {costAmount: 500, budgetAmount: 400};
-  const pubsubData = {
-    data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
-    attributes: {},
-  };
-
-  await program.notifySlack(pubsubData, null);
-
-  assert.strictEqual(mocks.slack.chat.postMessage.calledOnce, true);
+  await require('../').startBilling(pubsubMessage);
 });
 
-it('should disable billing when budget is exceeded', async () => {
-  const {program, mocks} = getSample();
+const handleLinuxFailures = async proc => {
+  try {
+    return await proc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    // Don't return proc, as await-ing it re-throws the error
+    if (!err.name || err.name !== 'ChildProcessError') {
+      throw err;
+    }
+  }
+};
 
-  const jsonData = {costAmount: 500, budgetAmount: 400};
-  const pubsubData = {
-    data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
-    attributes: {},
-  };
+describe('functions/billing tests', () => {
+  describe('notifies Slack', () => {
+    let ffProc;
+    const PORT = 8080;
+    const BASE_URL = `http://localhost:${PORT}`;
 
-  await program.stopBilling(pubsubData, null);
+    before(() => {
+      const ffProc = execPromise(
+        `functions-framework --target=notifySlack --signature-type=event --port ${PORT}`,
+        {timeout: 1000, shell: true, cwd}
+      );
+    });
 
-  assert.strictEqual(mocks.credential.createScoped.calledOnce, true);
-  assert.strictEqual(
-    mocks.cloudbilling.projects.getBillingInfo.calledOnce,
-    true
-  );
-  assert.strictEqual(
-    mocks.cloudbilling.projects.updateBillingInfo.calledOnce,
-    true
-  );
+    after(async () => {
+      await handleLinuxFailures(ffProc);
+    });
+
+    it('should notify Slack when budget is exceeded', async () => {
+      const jsonData = {costAmount: 500, budgetAmount: 400};
+      const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+        'base64'
+      );
+      const pubsubMessage = {data: encodedData, attributes: {}};
+
+      const response = await requestRetry({
+        url: `${BASE_URL}/notifySlack`,
+        method: 'POST',
+        body: {data: pubsubMessage},
+        retryDelay: 200,
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, 'Slack notification sent successfully');
+    });
+  });
+
+  describe('disables billing', () => {
+    let ffProc;
+    const PORT = 8081;
+    const BASE_URL = `http://localhost:${PORT}`;
+
+    before(() => {
+      const ffProc = execPromise(
+        `functions-framework --target=stopBilling --signature-type=event --port ${PORT}`,
+        {timeout: 1000, shell: true, cwd}
+      );
+    });
+
+    after(async () => {
+      await handleLinuxFailures(ffProc);
+    });
+
+    it('should disable billing when budget is exceeded', async () => {
+      // Use functions framework to ensure sample follows GCF specification
+      // (Invoking it directly works too, but DOES NOT ensure GCF compatibility)
+      const jsonData = {costAmount: 500, budgetAmount: 400};
+      const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+        'base64'
+      );
+      const pubsubMessage = {data: encodedData, attributes: {}};
+
+      const response = await requestRetry({
+        url: `${BASE_URL}/stopBilling`,
+        method: 'POST',
+        body: {data: pubsubMessage},
+        retryDelay: 200,
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.ok(response.body.includes('Billing disabled'));
+    });
+  });
 });
 
-it('should shut down GCE instances when budget is exceeded', async () => {
-  const {program, mocks} = getSample();
+describe('shuts down GCE instances', () => {
+  it('should attempt to shut down GCE instances when budget is exceeded', async () => {
+    // Mock GCE (because real GCE instances take too long to start/stop)
+    const listInstancesResponseMock = {
+      data: {
+        items: [{name: 'test-instance-1', status: 'RUNNING'}],
+      },
+    };
 
-  const jsonData = {costAmount: 500, budgetAmount: 400};
-  const pubsubData = {
-    data: Buffer.from(JSON.stringify(jsonData)).toString('base64'),
-    attributes: {},
-  };
+    const computeMock = {
+      instances: {
+        list: sinon.stub().returns(listInstancesResponseMock),
+        stop: sinon.stub().resolves({data: {}}),
+      },
+    };
 
-  await program.limitUse(pubsubData, null);
+    const googleapisMock = Object.assign({}, googleapis);
+    googleapisMock.google.compute = sinon.stub().returns(computeMock);
 
-  assert.strictEqual(mocks.credential.createScoped.calledOnce, true);
-  assert.strictEqual(mocks.compute.instances.list.calledOnce, true);
-  assert.strictEqual(
-    mocks.compute.instances.stop.callCount,
-    mocks.instanceList.length
-  );
+    // Run test
+    const jsonData = {costAmount: 500, budgetAmount: 400};
+    const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+      'base64'
+    );
+    const pubsubMessage = {data: encodedData, attributes: {}};
+
+    const sample = proxyquire('../', {googleapis: googleapisMock}); // kokoro-allow-mock
+
+    await sample.limitUse(pubsubMessage);
+
+    assert.strictEqual(computeMock.instances.list.calledOnce, true);
+    assert.ok(computeMock.instances.stop.calledOnce);
+  });
 });

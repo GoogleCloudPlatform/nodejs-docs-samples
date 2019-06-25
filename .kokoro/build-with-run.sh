@@ -29,6 +29,9 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 cd github/nodejs-docs-samples/${PROJECT}
 
+# TEMPORARY: Do we have env vars with the commit info or other unique information?
+env
+
 export SERVICE_VERSION="$GITHUB_COMMIT_SHA"
 export SAMPLE_NAME="$(basename $(dirname $(pwd)))"
 export CLOUD_RUN_SERVICE_NAME="${SAMPLE_NAME}-${SERVICE_VERSION}"

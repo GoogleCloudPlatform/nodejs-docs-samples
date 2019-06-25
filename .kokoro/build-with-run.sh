@@ -14,9 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e;
+set -eo pipefail
 
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
+pushd github/nodejs-docs-samples/${PROJECT}
 
 # Update gcloud
 gcloud --quiet components update
@@ -27,12 +28,10 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
-cd github/nodejs-docs-samples/${PROJECT}
-
 # Version is in the format <PR#>-<GIT COMMIT SHA>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently.
-export SAMPLE_VERSION="${KOKORO_GIT_COMMIT}"
+export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 export SAMPLE_NAME="$(basename $(dirname $(pwd)))"
 export SERVICE_NAME="${SAMPLE_NAME}-${KOKORO_GITHUB_PULL_REQUEST_NUMBER}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE_NAME}:${SAMPLE_VERSION}"

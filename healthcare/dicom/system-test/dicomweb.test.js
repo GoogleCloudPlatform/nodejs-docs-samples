@@ -21,10 +21,9 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
 const projectId = process.env.GCLOUD_PROJECT;
-const region = 'us-central1';
+const cloudRegion = 'us-central1';
 
 const cmd = 'node dicomweb.js';
-const cmdDicomStore = 'node dicom_stores.js';
 
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
@@ -46,18 +45,18 @@ const studyUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.105';
 before(async () => {
   tools.checkCredentials();
   await tools.runAsync(
-    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
   await tools.runAsync(
-    `${cmdDicomStore} createDicomStore ${datasetId} ${dicomStoreId}`,
+    `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
 });
 after(async () => {
   try {
     await tools.runAsync(
-      `${cmdDicomStore} deleteDicomStore ${datasetId} ${dicomStoreId}`,
+      `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
       cwd
     );
     await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);

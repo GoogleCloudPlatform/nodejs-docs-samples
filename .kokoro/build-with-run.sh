@@ -16,6 +16,8 @@
 
 set -eo pipefail
 
+# TEMPORARY: Do we have $PROJECT?
+env
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 pushd github/nodejs-docs-samples/${PROJECT}
 
@@ -36,7 +38,7 @@ export SAMPLE_NAME="$(basename $(dirname $(pwd)))"
 export SERVICE_NAME="${SAMPLE_NAME}-${KOKORO_GITHUB_PULL_REQUEST_NUMBER}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
-# Register post-test cleanup
+# Register post-test cleanup.
 function cleanup {
   gcloud --quiet container images delete "${CONTAINER_IMAGE}"
 }

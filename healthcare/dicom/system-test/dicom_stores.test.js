@@ -20,42 +20,65 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const projectId = process.env.GCLOUD_PROJECT;
-const bucketName = process.env.BUCKET_NAME;
-const region = 'us-central1';
+const {PubSub} = require('@google-cloud/pubsub');
+const {Storage} = require('@google-cloud/storage');
 
-const cmd = 'node dicom_stores.js';
+const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const cloudRegion = 'us-central1';
+const projectId = process.env.GCLOUD_PROJECT;
+const pubSubClient = new PubSub({projectId});
+const storage = new Storage();
+const topicName = `nodejs-healthcare-test-topic-${uuid.v4()}`;
+
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
-const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-dicom-store-${uuid.v4()}`.replace(
-  /-/gi,
-  '_'
-);
-const pubsubTopic = `nodejs-docs-samples-test-pubsub-${uuid.v4()}`.replace(
-  /-/gi,
-  '_'
-);
 
-const dcmFileName = `IM-0002-0001-JPEG-BASELINE.dcm`;
+const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
+const dicomStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
+  /-/gi,
+  '_'
+);
+const dcmFileName = 'IM-0002-0001-JPEG-BASELINE.dcm';
+
+const resourceFile = `resources/${dcmFileName}`;
 const gcsUri = `${bucketName}/${dcmFileName}`;
 
 before(async () => {
   tools.checkCredentials();
+  // Create a Cloud Storage bucket to be used for testing.
+  await storage.createBucket(bucketName);
+  console.log(`Bucket ${bucketName} created.`);
+  await storage.bucket(bucketName).upload(resourceFile);
+
+  // Create a Pub/Sub topic to be used for testing.
+  const [topic] = await pubSubClient.createTopic(topicName);
+  console.log(`Topic ${topic.name} created.`);
   await tools.runAsync(
-    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
+
 after(async () => {
   try {
-    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
+    const bucket = storage.bucket(bucketName);
+    await bucket.deleteFiles({force: true});
+    await bucket.deleteFiles({force: true}); // Try a second time...
+    await bucket.delete();
+    console.log(`Bucket ${bucketName} deleted.`);
+
+    await pubSubClient.topic(topicName).delete();
+    console.log(`Topic ${topicName} deleted.`);
+    await tools.runAsync(
+      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
+      cwdDatasets
+    );
   } catch (err) {} // Ignore error
 });
 
 it('should create a DICOM store', async () => {
   const output = await tools.runAsync(
-    `${cmd} createDicomStore ${datasetId} ${dicomStoreId}`,
+    `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
   assert.ok(output.includes('Created DICOM store'));
@@ -63,47 +86,47 @@ it('should create a DICOM store', async () => {
 
 it('should get a DICOM store', async () => {
   const output = await tools.runAsync(
-    `${cmd} getDicomStore ${datasetId} ${dicomStoreId}`,
+    `node getDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  assert.ok(output.includes('Got DICOM store'));
+  assert.ok(output.includes('name'));
 });
 
 it('should patch a DICOM store', async () => {
   const output = await tools.runAsync(
-    `${cmd} patchDicomStore ${datasetId} ${dicomStoreId} ${pubsubTopic}`,
+    `node patchDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${topicName}`,
     cwd
   );
-  assert.ok(output.includes('Patched DICOM store with Cloud Pub/Sub topic'));
+  assert.ok(output.includes('Patched DICOM store'));
 });
 
 it('should list DICOM stores', async () => {
   const output = await tools.runAsync(
-    `${cmd} listDicomStores ${datasetId}`,
+    `node listDicomStores.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
-  assert.ok(output.includes('DICOM stores'));
-});
-
-it('should export a DICOM instance', async () => {
-  const output = await tools.runAsync(
-    `${cmd} exportDicomInstanceGcs ${datasetId} ${dicomStoreId} ${bucketName}`,
-    cwd
-  );
-  assert.ok(output.includes('Exported DICOM instances to bucket'));
+  assert.ok(output.includes('dicomStores'));
 });
 
 it('should import a DICOM object from GCS', async () => {
   const output = await tools.runAsync(
-    `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${gcsUri}`,
+    `node importDicomInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${gcsUri}`,
     cwd
   );
-  assert.ok(output.includes('Imported DICOM objects from bucket'));
+  assert.ok(output.includes('Successfully imported DICOM instances'));
+});
+
+it('should export a DICOM instance', async () => {
+  const output = await tools.runAsync(
+    `node exportDicomInstanceGcs.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${bucketName}`,
+    cwd
+  );
+  assert.ok(output.includes('Exported DICOM instances'));
 });
 
 it('should delete a DICOM store', async () => {
   const output = await tools.runAsync(
-    `${cmd} deleteDicomStore ${datasetId} ${dicomStoreId}`,
+    `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
   assert.ok(output.includes('Deleted DICOM store'));

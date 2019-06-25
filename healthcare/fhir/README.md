@@ -23,8 +23,6 @@ Run the following command to install the library dependencies for Node.js:
         listFhirStores.js <projectId> <cloudRegion> <datasetId>                     Lists the FHIR stores in the given dataset.
         patchFhirStore.js <projectId> <cloudRegion> <datasetId> <fhirStoreId>       Updates the FHIR store.
         <pubsubTopic>
-        getFhirStoreCapabilities.js <projectId> <cloudRegion> <datasetId>           Gets the capabilities statement for the FHIR store.
-        <fhirStoreId>
 
     Options:
     --version             Show version number                                                                    [boolean]

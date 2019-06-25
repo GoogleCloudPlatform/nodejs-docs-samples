@@ -4,8 +4,6 @@
 
 [Cloud Run][run_docs] runs stateless [containers](https://cloud.google.com/containers/) on a fully managed environment or in your own GKE cluster.
 
-
-
 ## Samples
 
 |           Sample                |        Description       |     Deploy    |

@@ -19,15 +19,13 @@ set -e;
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 
 # Update gcloud
-gcloud components update --quiet
+gcloud --quiet components update
+gcloud --quiet components install beta
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GOOGLE_CLOUD_PROJECT
-
-export NODE_ENV=development
-export GCLOUD_STORAGE_BUCKET=docs-samples-${VERSION}
 
 cd github/nodejs-docs-samples/${PROJECT}
 
@@ -46,6 +44,7 @@ trap cleanup EXIT
 gcloud builds submit --tag="${CONTAINER_IMAGE}"
 
 # Install dependencies and run Nodejs tests.
+export NODE_ENV=development
 npm install
 npm test
 npm run | grep e2e-test && npm run e2e-test

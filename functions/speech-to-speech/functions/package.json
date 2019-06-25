@@ -25,10 +25,7 @@
     "storage"
   ],
   "scripts": {
-    "local-test": "mocha test/index.test.js",
-    "system-test": "mocha --timeout 20000 system-test/*.test.js",
-    "pretest": "sh test/updateFunctions.sh",
-    "test": "npm run local-test && npm run system-test",
+    "test": "mocha --timeout 20000 test/*.test.js",
     "serve": "firebase serve --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
@@ -45,10 +42,12 @@
     "firebase-functions": "^3.0.0"
   },
   "devDependencies": {
-    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
+    "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "child-process-promise": "^2.2.1",
     "mocha": "^6.0.0",
-    "supertest": "^4.0.0"
+    "request": "^2.88.0",
+    "requestretry": "^4.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

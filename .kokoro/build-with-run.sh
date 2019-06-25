@@ -32,9 +32,9 @@ cd github/nodejs-docs-samples/${PROJECT}
 # Version is in the format <PR#>-<GIT COMMIT SHA>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently.
-export SERVICE_VERSION="${KOKORO_GITHUB_PULL_REQUEST_NUMBER}-${KOKORO_GIT_COMMIT}"
+export SAMPLE_VERSION="${KOKORO_GIT_COMMIT}"
 export SAMPLE_NAME="$(basename $(dirname $(pwd)))"
-export CLOUD_RUN_SERVICE_NAME="${SAMPLE_NAME}-${SERVICE_VERSION}"
+export SERVICE_NAME="${SAMPLE_NAME}-${KOKORO_GITHUB_PULL_REQUEST_NUMBER}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
 # Register post-test cleanup
@@ -44,7 +44,9 @@ function cleanup {
 trap cleanup EXIT
 
 # Build the service
+set -x
 gcloud builds submit --tag="${CONTAINER_IMAGE}"
+set +x
 
 # Install dependencies and run Nodejs tests.
 export NODE_ENV=development

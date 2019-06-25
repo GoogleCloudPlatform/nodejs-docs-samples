@@ -59,7 +59,7 @@ exports.publish = async (req, res) => {
       message: req.body.message,
     },
   };
-  const messageBuffer = Buffer.from(JSON.stringify(messageObject), 'base64');
+  const messageBuffer = Buffer.from(JSON.stringify(messageObject), 'utf8');
 
   // Publishes a message
   try {

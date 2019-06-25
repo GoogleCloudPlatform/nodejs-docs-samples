@@ -24,7 +24,8 @@ requireEnv SERVICE_NAME
 requireEnv CONTAINER_IMAGE
 
 # Deploy the service
-# gcloud beta --quiet run deploy "${SERVICE_NAME}" \
-#   --image="${CONTAINER_IMAGE}" \
-#   --region="${REGION:-us-central1}" \
-#   --allow-unauthenticated
+gcloud beta --quiet run deploy "${SERVICE_NAME}" \
+  --image="${CONTAINER_IMAGE}" \
+  --region="${REGION:-us-central1}" \
+  --platform=managed
+  --allow-unauthenticated

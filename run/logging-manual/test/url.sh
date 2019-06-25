@@ -26,3 +26,4 @@ gcloud beta run services \
   describe "${SERVICE_NAME}" \
   --region="${REGION:-us-central1}" \
   --format='value(status.domain)'
+  --platform=managed

@@ -148,4 +148,3 @@ it('should delete a FHIR store', async () => {
   );
   assert.ok(output.includes('Deleted FHIR store'));
 });
-

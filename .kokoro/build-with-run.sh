@@ -29,10 +29,10 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 cd github/nodejs-docs-samples/${PROJECT}
 
-# TEMPORARY: Do we have env vars with the commit info or other unique information?
-env
-
-export SERVICE_VERSION="$GITHUB_COMMIT_SHA"
+# Version is in the format <PR#>-<GIT COMMIT SHA>.
+# Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
+# to run them concurrently.
+export SERVICE_VERSION="${KOKORO_GITHUB_PULL_REQUEST_NUMBER}-${KOKORO_GIT_COMMIT}"
 export SAMPLE_NAME="$(basename $(dirname $(pwd)))"
 export CLOUD_RUN_SERVICE_NAME="${SAMPLE_NAME}-${SERVICE_VERSION}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE_NAME}:${SAMPLE_VERSION}"

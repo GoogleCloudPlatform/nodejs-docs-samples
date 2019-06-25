@@ -16,8 +16,6 @@
 
 set -eo pipefail
 
-# TEMPORARY: Do we have $PROJECT?
-env
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 pushd github/nodejs-docs-samples/${PROJECT}
 
@@ -34,7 +32,7 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently.
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
-export SAMPLE_NAME="$(basename $(dirname $(pwd)))"
+export SAMPLE_NAME="$(basename $(pwd))"
 export SERVICE_NAME="${SAMPLE_NAME}-${KOKORO_GITHUB_PULL_REQUEST_NUMBER}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE_NAME}:${SAMPLE_VERSION}"
 

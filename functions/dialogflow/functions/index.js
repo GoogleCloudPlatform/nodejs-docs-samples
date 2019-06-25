@@ -27,7 +27,7 @@ const db = admin.firestore();
 
 // [START save_token_to_firebase]
 function saveOAuthToken(context, oauthToken) {
-  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
+  const docRef = db.collection('ShotLivedAuthTokens').doc('OauthToken');
   docRef.set(oauthToken);
 }
 // [END save_token_to_firebase]
@@ -149,7 +149,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     );
   }
   // Retrieve the token from the database
-  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
+  const docRef = db.collection('ShotLivedAuthTokens').doc('OauthToken');
 
   return docRef
     .get()
@@ -168,3 +168,19 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     });
 });
 // [END function_get_token]
+
+//[START pushNotification]
+function pushNotification(deviceID, accessToken, expiryDate) {
+  let tokens = [deviceID];
+      let payload = {
+          notification: {
+              title: expiryDate,
+              body: accessToken,
+              sound: 'default',
+              badge: '1'
+          }
+      };
+
+      return admin.messaging().sendToDevice(tokens, payload);
+}
+//[END pushNotification]

@@ -27,12 +27,13 @@ test/deploy.sh
 # Only needed if deploy completed.
 function cleanup {
   set -x
-  gcloud --quiet beta run services delete ${SERVICE_NAME}
+  gcloud --quiet beta run services delete ${SERVICE_NAME} --platform=managed
 }
 trap cleanup EXIT
 
 # TODO: Perform authentication inside the test.
 export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
-exec "$@"
-exit $?
+# Do not use exec to preserve trap behavior.
+"$@"
+

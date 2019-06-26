@@ -63,16 +63,14 @@ describe('Logging', () => {
       }
 
       if (!ID_TOKEN) {
-        throw Error(
-          '"ID_TOKEN" environment variable is required.'
-        );
+        throw Error('"ID_TOKEN" environment variable is required.');
       }
 
       await request('/', {
         baseUrl: BASE_URL.trim(),
         headers: {
-          Authorization: `Bearer ${ID_TOKEN.trim()}`
-        }
+          Authorization: `Bearer ${ID_TOKEN.trim()}`,
+        },
       });
     });
 

@@ -171,8 +171,11 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
 
 //[START pushNotification]
 function pushNotification(deviceID, accessToken, expiryDate) {
-  let tokens = [deviceID];
-      let payload = {
+  //Passing the device id of the requested device which hase requested for PN
+  const tokens = [deviceID];
+  //Push notification payload with expiry date as title and access token as body. 
+  //Though payload can be consructed in different ways just for simplicity we had choosen this 
+      const payload = {
           notification: {
               title: expiryDate,
               body: accessToken,
@@ -180,7 +183,7 @@ function pushNotification(deviceID, accessToken, expiryDate) {
               badge: '1'
           }
       };
-
+//triggers push notification to the targeted devices.
       return admin.messaging().sendToDevice(tokens, payload);
 }
 //[END pushNotification]

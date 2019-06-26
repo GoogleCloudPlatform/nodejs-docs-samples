@@ -55,13 +55,25 @@ describe('Logging', () => {
 
   describe('Live Service', () => {
     it('can be reached by an HTTP request', async () => {
-      const {BASE_URL} = process.env;
+      const {BASE_URL, ID_TOKEN} = process.env;
       if (!BASE_URL) {
         throw Error(
           '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app.'
         );
       }
-      await request(`${BASE_URL.trim()}/`);
+
+      if (!ID_TOKEN) {
+        throw Error(
+          '"ID_TOKEN" environment variable is required.'
+        );
+      }
+
+      await request('/', {
+        baseUrl: BASE_URL.trim(),
+        headers: {
+          Authorization: `Bearer ${ID_TOKEN.trim()}`
+        }
+      });
     });
 
     it('generates Stackdriver logs', async () => {

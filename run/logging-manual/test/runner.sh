@@ -26,9 +26,13 @@ test/deploy.sh
 # Register post-test cleanup.
 # Only needed if deploy completed.
 function cleanup {
+  set -x
   gcloud --quiet beta run services delete ${SERVICE_NAME}
 }
 trap cleanup EXIT
 
+# TODO: Perform authentication inside the test.
+export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
 exec "$@"
+exit $?

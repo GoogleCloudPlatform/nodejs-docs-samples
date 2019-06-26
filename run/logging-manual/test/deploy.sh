@@ -28,5 +28,4 @@ set -x
 gcloud beta --quiet run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
-  --platform=managed \
-  --allow-unauthenticated
+  --platform=managed

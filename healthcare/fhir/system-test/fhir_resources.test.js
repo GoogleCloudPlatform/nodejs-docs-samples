@@ -21,9 +21,8 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
 const projectId = process.env.GCLOUD_PROJECT;
-const region = 'us-central1';
+const cloudRegion = 'us-central1';
 
-const cmdFhirStores = 'node fhir_stores.js';
 const cmd = 'node fhir_resources.js';
 const cwd = path.join(__dirname, '..');
 const cwdDatasets = path.join(__dirname, '../../datasets');
@@ -38,7 +37,7 @@ let resourceId;
 before(async () => {
   tools.checkCredentials();
   await tools.runAsync(
-    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
@@ -50,7 +49,7 @@ after(async () => {
 
 it('should create a FHIR resource', async () => {
   await tools.runAsync(
-    `${cmdFhirStores} createFhirStore ${datasetId} ${fhirStoreId}`,
+    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
   const output = await tools.runAsync(
@@ -100,7 +99,7 @@ it('should delete a FHIR resource', async () => {
 
   // Clean up
   await tools.runAsync(
-    `${cmdFhirStores} deleteFhirStore ${datasetId} ${fhirStoreId}`,
+    `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
 });

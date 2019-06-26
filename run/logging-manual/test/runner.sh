@@ -27,7 +27,9 @@ test/deploy.sh
 # Only needed if deploy completed.
 function cleanup {
   set -x
-  gcloud --quiet beta run services delete ${SERVICE_NAME} --platform=managed
+  gcloud --quiet beta run services delete ${SERVICE_NAME} \
+    --platform=managed \
+    --region="${REGION:-us-central1}"
 }
 trap cleanup EXIT
 

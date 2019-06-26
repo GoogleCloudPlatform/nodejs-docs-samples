@@ -34,7 +34,7 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 export SAMPLE_NAME="$(basename $(pwd))"
 export SERVICE_NAME="${SAMPLE_NAME}-${KOKORO_GITHUB_PULL_REQUEST_NUMBER}"
-export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE_NAME}:${SAMPLE_VERSION}"
+export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
 # Register post-test cleanup.
 function cleanup {

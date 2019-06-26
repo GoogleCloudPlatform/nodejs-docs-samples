@@ -156,20 +156,28 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     .then(doc => {
       if (doc.exists && isValid(doc.data().expireTime)) {
         //push notification
-        pushNotification(data['deviceID'], doc.data().accessToken, doc.data().expireTime);
+        pushNotification(
+          data['deviceID'],
+          doc.data().accessToken,
+          doc.data().expireTime
+        );
         return doc.data();
       } else {
         return retrieveCredentials(context).then(result => {
-          console.log("Print result from retrieveCredentials functions");
+          console.log('Print result from retrieveCredentials functions');
           console.log(result);
-          pushNotification(data['deviceID'], result['accessToken'], result['expireTime']);
+          pushNotification(
+            data['deviceID'],
+            result['accessToken'],
+            result['expireTime']
+          );
           return result;
         });
       }
     })
     .catch(err => {
       console.log('Error retrieving token', err);
-      pushNotification(data['deviceID'], 'Error retrieving token', 'Error')
+      pushNotification(data['deviceID'], 'Error retrieving token', 'Error');
       // return 'Error retrieving token';
       return 'Error retrieving token';
     });
@@ -180,17 +188,17 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
 function pushNotification(deviceID, accessToken, expiryDate) {
   //Passing the device id of the requested device which hase requested for PN
   const tokens = [deviceID];
-  //Push notification payload with expiry date as title and access token as body. 
-  //Though payload can be consructed in different ways just for simplicity we had choosen this 
-      const payload = {
-          notification: {
-              title: expiryDate,
-              body: accessToken,
-              sound: 'default',
-              badge: '1'
-          }
-      };
-//triggers push notification to the targeted devices.
-      return admin.messaging().sendToDevice(tokens, payload);
+  //Push notification payload with expiry date as title and access token as body
+  //Though payload can be consructed in different ways just for simplicity we had choosen this
+  const payload = {
+    notification: {
+      title: expiryDate,
+      body: accessToken,
+      sound: 'default',
+      badge: '1',
+    },
+  };
+  //triggers push notification to the targeted devices.
+  return admin.messaging().sendToDevice(tokens, payload);
 }
 //[END pushNotification]

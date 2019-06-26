@@ -155,15 +155,22 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     .get()
     .then(doc => {
       if (doc.exists && isValid(doc.data().expireTime)) {
+        //push notification
+        pushNotification(data['deviceID'], doc.data().accessToken, doc.data().expireTime);
         return doc.data();
       } else {
         return retrieveCredentials(context).then(result => {
+          console.log("Print result from retrieveCredentials functions");
+          console.log(result);
+          pushNotification(data['deviceID'], result['accessToken'], result['expireTime']);
           return result;
         });
       }
     })
     .catch(err => {
       console.log('Error retrieving token', err);
+      pushNotification(data['deviceID'], 'Error retrieving token', 'Error')
+      // return 'Error retrieving token';
       return 'Error retrieving token';
     });
 });

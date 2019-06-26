@@ -21,11 +21,8 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
 const projectId = process.env.GCLOUD_PROJECT;
-const region = 'us-central1';
+const cloudRegion = 'us-central1';
 
-const cmdDataset = 'node datasets.js';
-const cmd = 'node hl7v2_messages.js';
-const cmdHl7v2Store = 'node hl7v2_stores.js';
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
@@ -34,7 +31,7 @@ const hl7v2StoreId = `nodejs-docs-samples-test-hl7v2-store${uuid.v4()}`.replace(
   '_'
 );
 
-const messageFile = 'resources/hl7v2-sample-ingest.json';
+const messageFile = 'resources/hl7v2-sample.json';
 const messageId = '2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw=';
 const labelKey = 'my-key';
 const labelValue = 'my-value';
@@ -42,14 +39,14 @@ const labelValue = 'my-value';
 before(async () => {
   tools.checkCredentials();
   await tools.runAsync(
-    `node createDataset.js ${projectId} ${region} ${datasetId}`,
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
 after(async () => {
   try {
     await tools.runAsync(
-      `${cmdDataset} deleteDataset ${datasetId}`,
+      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
   } catch (err) {} // Ignore error
@@ -57,11 +54,11 @@ after(async () => {
 
 it('should create an HL7v2 message', async () => {
   await tools.runAsync(
-    `${cmdHl7v2Store} createHl7v2Store ${datasetId} ${hl7v2StoreId}`,
+    `node createHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
   const output = await tools.runAsync(
-    `${cmd} createHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageFile}`,
+    `node createHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
   assert.ok(output.includes('Created HL7v2 message'));
@@ -69,7 +66,7 @@ it('should create an HL7v2 message', async () => {
 
 it('should ingest an HL7v2 message', async () => {
   const output = await tools.runAsync(
-    `${cmd} ingestHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageFile}`,
+    `node ingestHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
   assert.ok(output.includes('Ingested HL7v2 message'));
@@ -77,7 +74,7 @@ it('should ingest an HL7v2 message', async () => {
 
 it('should get an HL7v2 message', async () => {
   const output = await tools.runAsync(
-    `${cmd} getHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId}`,
+    `node getHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
   assert.ok(output.includes('Got HL7v2 message'));
@@ -85,7 +82,7 @@ it('should get an HL7v2 message', async () => {
 
 it('should list HL7v2 messages', async () => {
   const output = await tools.runAsync(
-    `${cmd} listHl7v2Messages ${datasetId} ${hl7v2StoreId}`,
+    `node listHl7v2Messages.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
   assert.ok(output.includes('HL7v2 messages'));
@@ -93,7 +90,7 @@ it('should list HL7v2 messages', async () => {
 
 it('should patch an HL7v2 message', async () => {
   const output = await tools.runAsync(
-    `${cmd} patchHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId} ${labelKey} ${labelValue}`,
+    `node patchHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId} ${labelKey} ${labelValue}`,
     cwd
   );
   assert.ok(output.includes('Patched HL7v2 message'));
@@ -101,14 +98,14 @@ it('should patch an HL7v2 message', async () => {
 
 it('should delete an HL7v2 message', async () => {
   const output = await tools.runAsync(
-    `${cmd} deleteHl7v2Message ${datasetId} ${hl7v2StoreId} ${messageId}`,
+    `node deleteHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
   assert.ok(output.includes('Deleted HL7v2 message'));
 
   // Clean up
   tools.runAsync(
-    `${cmdHl7v2Store} deleteHl7v2Store ${datasetId} ${hl7v2StoreId}`,
+    `node deleteHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
 });

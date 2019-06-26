@@ -53,9 +53,6 @@
     "requiresKeyFile": true,
     "requiresProjectId": true,
     "requiredEnvVars": [
-      "BASE_URL",
-      "FUNCTIONS_CMD",
-      "GCF_REGION",
       "GOOGLE_CLOUD_PROJECT",
       "OUTPUT_BUCKET",
       "SUPPORTED_LANGUAGE_CODES"

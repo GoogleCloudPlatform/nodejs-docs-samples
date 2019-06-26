@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -exo pipefail;
+set -eo pipefail;
 
 requireEnv() {
   test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
@@ -24,8 +24,9 @@ requireEnv SERVICE_NAME
 requireEnv CONTAINER_IMAGE
 
 # Deploy the service
+set -x
 gcloud beta --quiet run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
-  --platform=managed
+  --platform=managed \
   --allow-unauthenticated

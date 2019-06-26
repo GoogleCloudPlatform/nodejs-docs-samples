@@ -22,8 +22,9 @@ requireEnv() {
 
 requireEnv SERVICE_NAME
 
+set -x
 gcloud beta run services \
   describe "${SERVICE_NAME}" \
   --region="${REGION:-us-central1}" \
-  --format='value(status.domain)'
+  --format='value(status.domain)' \
   --platform=managed

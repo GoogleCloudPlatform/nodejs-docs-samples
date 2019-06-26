@@ -30,10 +30,7 @@ up NVM, and install the [Cloud Functions Node.js emulator][7].
 
 The sample requires the following environment variables:
 
-* `GCF_REGION`: The region where your Cloud Function is deployed. For available
-  regions, see [Cloud Functions Locations][11] in the Functions documentation.
 * `GOOGLE_CLOUD_PROJECT`: The project id of your GCP project.
-* `BASE_URL`: The URL that the Cloud Functions emulator uses to serve requests.
 * `OUTPUT_BUCKET`: A bucket that the sample uses to drop translated files. The
   test script creates this buckt if it doesn't exist.
 * `GOOGLE_APPLICATION_CREDENTIALS`: The path to your API key file.
@@ -43,9 +40,7 @@ The sample requires the following environment variables:
 Use the following commands to declare the required environment variables:
 
 ```
-export GCF_REGION=us-central1
 export GOOGLE_CLOUD_PROJECT=[your-GCP-project-id]
-export BASE_URL=http://localhost:8010/$GOOGLE_CLOUD_PROJECT/$GCF_REGION
 export OUTPUT_BUCKET=[your-Google-Cloud-Storage-bucket]
 export GOOGLE_APPLICATION_CREDENTIALS=[path-to-your-API-key-file]
 export SUPPORTED_LANGUAGE_CODES=en,es,fr

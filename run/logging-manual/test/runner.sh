@@ -21,7 +21,12 @@ requireEnv() {
 }
 requireEnv SERVICE_NAME
 
+echo '---'
 test/deploy.sh
+
+echo
+echo '---'
+echo
 
 # Register post-test cleanup.
 # Only needed if deploy completed.
@@ -38,4 +43,3 @@ export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
 # Do not use exec to preserve trap behavior.
 "$@"
-

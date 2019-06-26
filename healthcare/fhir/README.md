@@ -14,23 +14,20 @@ Run the following command to install the library dependencies for Node.js:
 
 ## FHIR stores
 
-    fhir_stores.js <command>
-
     Commands:
-        fhir_stores.js createFhirStore <datasetId> <fhirStoreId>      Creates a new FHIR store within the parent dataset.
-        fhir_stores.js deleteFhirStore <datasetId> <fhirStoreId>      Deletes the FHIR store and removes all resources that
-                                                                      are contained within it.
-        fhir_stores.js getFhirStore <datasetId> <fhirStoreId>         Gets the specified FHIR store or returns NOT_FOUND if it
-                                                                      doesn't exist.
-        fhir_stores.js listFhirStores <datasetId>                     Lists the FHIR stores in the given dataset.
-        fhir_stores.js patchFhirStore <datasetId> <fhirStoreId>       Updates the FHIR store.
+        createFhirStore.js <projectId> <cloudRegion> <datasetId> <fhirStoreId>      Creates a new FHIR store within the parent dataset.
+        deleteFhirStore.js <projectId> <cloudRegion> <datasetId> <fhirStoreId>      Deletes the FHIR store and removes all resources that
+                                                                                    are contained within it.
+        getFhirStore.js <projectId> <cloudRegion> <datasetId> <fhirStoreId>         Gets the specified FHIR store or returns NOT_FOUND if it
+                                                                                    doesn't exist.
+        listFhirStores.js <projectId> <cloudRegion> <datasetId>                     Lists the FHIR stores in the given dataset.
+        patchFhirStore.js <projectId> <cloudRegion> <datasetId> <fhirStoreId>       Updates the FHIR store.
         <pubsubTopic>
-        fhir_stores.js getMetadata <datasetId> <fhirStoreId>          Gets the capabilities statement for the FHIR store.
+        getFhirStoreCapabilities.js <projectId> <cloudRegion> <datasetId>           Gets the capabilities statement for the FHIR store.
+        <fhirStoreId>
 
     Options:
     --version             Show version number                                                                    [boolean]
-    --apiKey, -a          The API key used for discovering the API.
-                                                                                                                  [string]
     --cloudRegion, -c                                                                    [string] [default: "us-central1"]
     --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                           environment variables.                                                                  [string]

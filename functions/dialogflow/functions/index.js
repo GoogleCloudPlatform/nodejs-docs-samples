@@ -149,7 +149,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     );
   }
   // Retrieve the token from the database
-  const docRef = db.collection('ShotLivedAuthTokens').doc('OauthToken');
+  const docRef = db.collection('ShortLivedAuthTokens').doc('OauthToken');
 
   return docRef
     .get()

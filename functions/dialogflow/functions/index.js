@@ -27,7 +27,7 @@ const db = admin.firestore();
 
 // [START save_token_to_firebase]
 function saveOAuthToken(context, oauthToken) {
-  const docRef = db.collection('ShotLivedAuthTokens').doc('OauthToken');
+  const docRef = db.collection('ShortLivedAuthTokens').doc('OauthToken');
   docRef.set(oauthToken);
 }
 // [END save_token_to_firebase]
@@ -186,7 +186,7 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
 
 //[START pushNotification]
 function pushNotification(deviceID, accessToken, expiryDate) {
-  //Passing the device id of the requested device which hase requested for PN
+  //Passing the device id of the requested device which has requested for PN
   const tokens = [deviceID];
   //Push notification payload with expiry date as title and access token as body
   //Though payload can be consructed in different ways just for simplicity we had choosen this

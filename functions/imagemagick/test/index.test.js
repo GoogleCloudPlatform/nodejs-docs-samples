@@ -55,7 +55,8 @@ describe('functions/imagemagick tests', () => {
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
       if (err.name && err.name === 'ChildProcessError') {
-        return;
+        const {stdout, stderr} = ffProc;
+        return {stdout, stderr};
       }
 
       throw err;

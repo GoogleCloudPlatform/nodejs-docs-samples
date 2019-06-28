@@ -73,7 +73,7 @@ describe('functions/imagemagick tests', () => {
     const ffProc = startFF(PORT);
 
     await requestRetry({
-      url: `https://localhost:${PORT}/blurOffensiveImages`,
+      url: `http://localhost:${PORT}/blurOffensiveImages`,
       body: {
         data: {
           bucket: BUCKET_NAME,
@@ -94,7 +94,7 @@ describe('functions/imagemagick tests', () => {
     const ffProc = startFF(PORT);
 
     await requestRetry({
-      url: `https://localhost:${PORT}/blurOffensiveImages`,
+      url: `http://localhost:${PORT}/blurOffensiveImages`,
       body: {
         data: {
           bucket: BUCKET_NAME,

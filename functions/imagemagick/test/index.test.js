@@ -44,7 +44,7 @@ describe('functions/imagemagick tests', () => {
   const startFF = port => {
     return execPromise(
       `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
-      {timeout: 10000, shell: true, cwd}
+      {timeout: 15000, shell: true, cwd}
     );
   };
 
@@ -52,6 +52,9 @@ describe('functions/imagemagick tests', () => {
     try {
       return await ffProc;
     } catch (err) {
+      console.info('DBG ERR', err);
+      console.info('DBG PROC', ffProc);
+
       // Timeouts always cause errors on Linux, so catch them
       if (err.name && err.name === 'ChildProcessError') {
         const {stdout, stderr} = ffProc.childProcess;

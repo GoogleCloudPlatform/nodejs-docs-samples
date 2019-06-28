@@ -12,7 +12,7 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "test": "mocha test/*.test.js --timeout=20000"
+    "test": "mocha test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
     "@google-cloud/storage": "^2.3.3",

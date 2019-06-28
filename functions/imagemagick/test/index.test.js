@@ -55,7 +55,7 @@ describe('functions/imagemagick tests', () => {
     } catch (err) {
       // Timeouts always cause errors on Linux, so catch them
       if (err.name && err.name === 'ChildProcessError') {
-        const {stdout, stderr} = ffProc;
+        const {stdout, stderr} = ffProc.childProcess;
         return {stdout, stderr};
       }
 
@@ -98,7 +98,6 @@ describe('functions/imagemagick tests', () => {
     });
 
     const {stdout, stderr} = await stopFF(ffProc);
-    console.info(stdout, stderr);
 
     assert.ok(stdout.includes(`Image ${offensiveFileName} has been blurred.`));
     assert.ok(

@@ -28,7 +28,6 @@ requestRetry = requestRetry.defaults({
   retryStrategy: requestRetry.RetryStrategies.NetworkError,
   method: 'POST',
   json: true,
-  url: 'http://localhost:8080/blurOffensiveImages',
 });
 
 const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
@@ -42,9 +41,9 @@ const cwd = path.join(__dirname, '..');
 const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
 
 describe('functions/imagemagick tests', () => {
-  const startFF = () => {
+  const startFF = port => {
     return execPromise(
-      `functions-framework --target=blurOffensiveImages --signature-type=event`,
+      `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
       {timeout: 10000, shell: true, cwd}
     );
   };
@@ -53,8 +52,6 @@ describe('functions/imagemagick tests', () => {
     try {
       return await ffProc;
     } catch (err) {
-      console.info('DBG ERR', err);
-      console.info('DBG PROC', ffProc);
       // Timeouts always cause errors on Linux, so catch them
       if (err.name && err.name === 'ChildProcessError') {
         const {stdout, stderr} = ffProc.childProcess;
@@ -69,9 +66,11 @@ describe('functions/imagemagick tests', () => {
   afterEach(tools.restoreConsole);
 
   it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
-    const ffProc = startFF();
+    const PORT = 8080;
+    const ffProc = startFF(PORT);
 
     await requestRetry({
+      url: `https://localhost:${PORT}/blurOffensiveImages`,
       body: {
         data: {
           bucket: BUCKET_NAME,
@@ -88,9 +87,11 @@ describe('functions/imagemagick tests', () => {
   });
 
   it('blurOffensiveImages successfully blurs offensive images', async () => {
-    const ffProc = startFF();
+    const PORT = 8081;
+    const ffProc = startFF(PORT);
 
     await requestRetry({
+      url: `https://localhost:${PORT}/blurOffensiveImages`,
       body: {
         data: {
           bucket: BUCKET_NAME,
@@ -99,7 +100,7 @@ describe('functions/imagemagick tests', () => {
       },
     });
 
-    const {stdout, stderr} = await stopFF(ffProc);
+    const {stdout} = await stopFF(ffProc);
 
     assert.ok(stdout.includes(`Image ${offensiveFileName} has been blurred.`));
     assert.ok(

@@ -91,24 +91,6 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
     4. Exit the container: `Ctrl-D`
 
-## Testing
-
-### Running Unit Tests
-
-```
-export SAMPLE=$sample
-cd $sample
-docker build --tag $sample .
-docker build --file test.Dockerfile --tag $sample:test .
-docker run --rm npm test
-```
-
-### Running System Tests
-
-```
-npm run system-tests
-```
-
 ## Deploying
 
 ```

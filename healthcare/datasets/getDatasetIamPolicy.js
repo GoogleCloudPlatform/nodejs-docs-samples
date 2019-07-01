@@ -22,7 +22,7 @@ function main(
   cloudRegion = 'us-central1',
   datasetId
 ) {
-  // [START healthcare_get_dataset_iam_policy]
+  // [START healthcare_dataset_get_iam_policy]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
@@ -49,7 +49,7 @@ function main(
   }
 
   getDatasetIamPolicy();
-  // [END healthcare_get_dataset_iam_policy]
+  // [END healthcare_dataset_get_iam_policy]
 }
 
 // node getDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId>

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2019, Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,232 +15,72 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const {Buffer} = require('safe-buffer');
 
-const bucketName = 'my-bucket';
-const filename = 'image.jpg';
-const text = 'text';
-const lang = 'lang';
-const translation = 'translation';
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 
-function getSample() {
-  const config = {
-    RESULT_TOPIC: 'result-topic',
-    RESULT_BUCKET: 'result-bucket',
-    TRANSLATE_TOPIC: 'translate-topic',
-    TO_LANG: ['en', 'fr', 'es', 'ja', 'ru'],
-  };
-  const topic = {
-    publish: sinon.stub().returns(Promise.resolve([])),
-  };
-  topic.get = sinon.stub().returns(Promise.resolve([topic]));
-  topic.publisher = sinon.stub().returns(topic);
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-  const file = {
-    save: sinon.stub().returns(Promise.resolve([])),
-    bucket: bucketName,
-    name: filename,
-  };
-  const bucket = {
-    file: sinon.stub().returns(file),
-  };
-  const pubsubMock = {
-    topic: sinon.stub().returns(topic),
-  };
-  const storageMock = {
-    bucket: sinon.stub().returns(bucket),
-  };
-  const visionMock = {
-    textDetection: sinon
-      .stub()
-      .returns(Promise.resolve([{textAnnotations: [{description: text}]}])),
-  };
-  const translateMock = {
-    detect: sinon.stub().returns(Promise.resolve([{language: 'ja'}])),
-    translate: sinon.stub().returns(Promise.resolve([translation])),
-  };
+const bucketName = process.env.FUNCTIONS_BUCKET;
+const filename = 'wakeupcat.jpg';
+const text = 'Wake up human!';
+const lang = 'en';
 
-  const PubsubMock = sinon.stub().returns(pubsubMock);
-  const StorageMock = sinon.stub().returns(storageMock);
+const {RESULT_BUCKET} = process.env;
 
-  const stubConstructor = (packageName, property, mocks) => {
-    let stubInstance = sinon.createStubInstance(
-      require(packageName)[property],
-      mocks
-    );
-    stubInstance = Object.assign(stubInstance, mocks);
+const program = require('..');
 
-    const out = {};
-    out[property] = sinon.stub().returns(stubInstance);
-    return out;
-  };
+const errorMsg = (name, propertyName) => {
+  propertyName = propertyName || name.toLowerCase();
+  return `${name} not provided. Make sure you have a "${propertyName}" property in your request`;
+};
 
-  const visionStub = stubConstructor(
-    '@google-cloud/vision',
-    'ImageAnnotatorClient',
-    visionMock
-  );
-  const translateStub = stubConstructor(
-    '@google-cloud/translate',
-    'Translate',
-    translateMock
-  );
+before(tools.stubConsole);
+after(tools.restoreConsole);
 
-  return {
-    program: proxyquire('../', {
-      '@google-cloud/translate': translateStub,
-      '@google-cloud/vision': visionStub,
-      '@google-cloud/pubsub': {PubSub: PubsubMock},
-      '@google-cloud/storage': {Storage: StorageMock},
-      './config.json': config,
-    }),
-    mocks: {
-      config,
-      pubsub: pubsubMock,
-      storage: storageMock,
-      bucket: bucket,
-      file,
-      vision: visionMock,
-      translate: translateMock,
-      topic,
-    },
-  };
-}
+describe('processImage', () => {
+  it('processImage validates parameters', async () => {
+    try {
+      await program.processImage({data: {}});
+      assert.fail('no error thrown');
+    } catch (err) {
+      assert.strictEqual(err.message, errorMsg('Bucket'));
+    }
+  });
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
-
-it('processImage does nothing on delete', async () => {
-  await getSample().program.processImage({data: {resourceState: 'not_exists'}});
-});
-
-it('processImage fails without a bucket', async () => {
-  const error = new Error(
-    'Bucket not provided. Make sure you have a "bucket" property in your request'
-  );
-  try {
-    await getSample().program.processImage({data: {}});
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
-
-it('processImage fails without a name', async () => {
-  const error = new Error(
-    'Filename not provided. Make sure you have a "name" property in your request'
-  );
-  try {
-    await getSample().program.processImage({data: {bucket: bucketName}});
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
-
-it('processImage processes an image with Node 6 arguments', async () => {
-  const event = {
-    data: {
+  it('processImage detects text', async () => {
+    const data = {
       bucket: bucketName,
       name: filename,
-    },
-  };
-  const sample = getSample();
+    };
 
-  await sample.program.processImage(event);
-  assert.strictEqual(console.log.callCount, 4);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Looking for text in image ${filename}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Extracted text from image (${text.length} chars)`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Detected language "ja" for ${filename}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(3).args, [
-    `File ${event.data.name} processed.`,
-  ]);
+    await program.processImage(data);
+    assert.ok(console.log.calledWith(`Detected language "en" for ${filename}`));
+    assert.ok(
+      console.log.calledWith(`Extracted text from image:`, `${text}\n`)
+    );
+    assert.ok(console.log.calledWith(`Detected language "en" for ${filename}`));
+    assert.ok(console.log.calledWith(`File ${filename} processed.`));
+  });
 });
 
-it('processImage processes an image with Node 8 arguments', async () => {
-  const data = {
-    bucket: bucketName,
-    name: filename,
-  };
-  const sample = getSample();
-
-  await sample.program.processImage(data);
-  assert.strictEqual(console.log.callCount, 4);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Looking for text in image ${filename}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Extracted text from image (${text.length} chars)`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(2).args, [
-    `Detected language "ja" for ${filename}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(3).args, [
-    `File ${data.name} processed.`,
-  ]);
-});
-
-it('translateText fails without text', async () => {
-  const error = new Error(
-    'Text not provided. Make sure you have a "text" property in your request'
-  );
-  const event = {
-    data: {
+describe('translateText', () => {
+  it('translateText validates parameters', async () => {
+    const event = {
       data: Buffer.from(JSON.stringify({})).toString('base64'),
-    },
-  };
-  try {
-    await getSample().program.translateText(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
+    };
+    try {
+      await program.translateText(event);
+      assert.fail('no error thrown');
+    } catch (err) {
+      assert.deepStrictEqual(err.message, errorMsg('Text'));
+    }
+  });
 
-it('translateText fails without a filename', async () => {
-  const error = new Error(
-    'Filename not provided. Make sure you have a "filename" property in your request'
-  );
-  const event = {
-    data: {
-      data: Buffer.from(JSON.stringify({text})).toString('base64'),
-    },
-  };
-
-  try {
-    await getSample().program.translateText(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
-
-it('translateText fails without a lang', async () => {
-  const error = new Error(
-    'Language not provided. Make sure you have a "lang" property in your request'
-  );
-  const event = {
-    data: {
-      data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
-    },
-  };
-
-  try {
-    await getSample().program.translateText(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
-
-it('translateText translates and publishes text with Node 6 arguments', async () => {
-  const event = {
-    data: {
+  it('translateText translates and publishes text', async () => {
+    const data = {
       data: Buffer.from(
         JSON.stringify({
           text,
@@ -248,154 +88,54 @@ it('translateText translates and publishes text with Node 6 arguments', async ()
           lang,
         })
       ).toString('base64'),
-    },
-  };
-  const sample = getSample();
+    };
 
-  sample.mocks.translate.translate.returns(Promise.resolve([translation]));
-
-  await sample.program.translateText(event);
-  assert.strictEqual(console.log.callCount, 2);
-  assert.deepStrictEqual(console.log.firstCall.args, [
-    `Translating text into ${lang}`,
-  ]);
-  assert.deepStrictEqual(console.log.secondCall.args, [
-    `Text translated to ${lang}`,
-  ]);
+    await program.translateText(data);
+    assert.ok(console.log.calledWith(`Translating text into ${lang}`));
+    assert.ok(console.log.calledWith(`Text translated to ${lang}`));
+  });
 });
 
-it('translateText translates and publishes text with Node 8 arguments', async () => {
-  const data = {
-    data: Buffer.from(
-      JSON.stringify({
-        text,
-        filename,
-        lang,
-      })
-    ).toString('base64'),
-  };
-  const sample = getSample();
-
-  sample.mocks.translate.translate.returns(Promise.resolve([translation]));
-
-  await sample.program.translateText(data);
-  assert.strictEqual(console.log.callCount, 2);
-  assert.deepStrictEqual(console.log.firstCall.args, [
-    `Translating text into ${lang}`,
-  ]);
-  assert.deepStrictEqual(console.log.secondCall.args, [
-    `Text translated to ${lang}`,
-  ]);
-});
-
-it('saveResult fails without text', async () => {
-  const error = new Error(
-    'Text not provided. Make sure you have a "text" property in your request'
-  );
-  const event = {
-    data: {
-      data: Buffer.from(JSON.stringify({})).toString('base64'),
-    },
-  };
-
-  try {
-    await getSample().program.saveResult(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
-
-it('saveResult fails without a filename', async () => {
-  const error = new Error(
-    'Filename not provided. Make sure you have a "filename" property in your request'
-  );
-  const event = {
-    data: {
-      data: Buffer.from(JSON.stringify({text})).toString('base64'),
-    },
-  };
-
-  try {
-    await getSample().program.saveResult(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
-
-it('saveResult fails without a lang', async () => {
-  const error = new Error(
-    'Language not provided. Make sure you have a "lang" property in your request'
-  );
-  const event = {
-    data: {
+describe('saveResult', () => {
+  it('saveResult validates parameters', async () => {
+    const event = {
       data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
-    },
-  };
+    };
 
-  try {
-    await getSample().program.saveResult(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
+    try {
+      await program.saveResult(event);
+      assert.fail('no error thrown');
+    } catch (err) {
+      assert.deepStrictEqual(err.message, errorMsg('Language', 'lang'));
+    }
+  });
 
-it('saveResult translates and publishes text with Node 6 arguments', async () => {
-  const event = {
-    data: {
+  it('saveResult translates and publishes text', async () => {
+    const data = {
       data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
         'base64'
       ),
-    },
-  };
-  const sample = getSample();
+    };
 
-  await sample.program.saveResult(event);
-  assert.strictEqual(console.log.callCount, 3);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Received request to save file ${filename}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Saving result to ${filename}_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(2).args, ['File saved.']);
-});
+    const newFilename = `${filename}_to_${lang}.txt`;
 
-it('saveResult translates and publishes text with Node 8 arguments', async () => {
-  const data = {
-    data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
-      'base64'
-    ),
-  };
-  const sample = getSample();
+    await program.saveResult(data);
+    assert.ok(
+      console.log.calledWith(`Received request to save file ${filename}`)
+    );
+    assert.ok(
+      console.log.calledWith(
+        `Saving result to ${newFilename} in bucket ${RESULT_BUCKET}`
+      )
+    );
+    assert.ok(console.log.calledWith('File saved.'));
 
-  await sample.program.saveResult(data);
-  assert.strictEqual(console.log.callCount, 3);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Received request to save file ${filename}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Saving result to ${filename}_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(2).args, ['File saved.']);
-});
-
-it('saveResult translates and publishes text with dot in filename', async () => {
-  const event = {
-    data: {
-      data: Buffer.from(
-        JSON.stringify({text, filename: `${filename}.jpg`, lang})
-      ).toString('base64'),
-    },
-  };
-  const sample = getSample();
-
-  await sample.program.saveResult(event);
-  assert.strictEqual(console.log.callCount, 3);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Received request to save file ${filename}.jpg`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Saving result to ${filename}.jpg_to_${lang}.txt in bucket ${sample.mocks.config.RESULT_BUCKET}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(2).args, ['File saved.']);
+    // Check file was actually saved
+    assert.ok(
+      storage
+        .bucket(RESULT_BUCKET)
+        .file(newFilename)
+        .exists()
+    );
+  });
 });

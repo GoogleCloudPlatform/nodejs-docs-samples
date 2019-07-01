@@ -23,10 +23,10 @@ Run the following command to install the library dependencies for Node.js:
         node listHl7v2Stores.js <datasetId>                   Lists the HL7v2 stores in the given dataset.
         node patchHl7v2Store.js <datasetId> <hl7v2StoreId>    Updates the HL7v2 store.
         <pubsubTopic>
-        getHl7v2StoreIamPolicy.js <projectId> <cloudRegion> <datasetId>   Gets the IAM policy for the HL7v2 store.
-        <hl7v2StoreId>
-        setHl7v2StoreIamPolicy.js <projectId> <cloudRegion> <datasetId>   Sets the IAM policy for the HL7v2store.
-        <hl7v2StoreId> <member> <role>
+        node getHl7v2StoreIamPolicy.js <projectId>            Gets the IAM policy for the HL7v2 store.
+        <cloudRegion> <datasetId> <hl7v2StoreId>
+        node setHl7v2StoreIamPolicy.js <projectId>            Sets the IAM policy for the HL7v2store.
+        <cloudRegion> <datasetId> <hl7v2StoreId> <member> <role>
 
     Options:
     --version             Show version number                                                                    [boolean]

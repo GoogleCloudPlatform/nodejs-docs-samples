@@ -108,6 +108,22 @@ it('should list DICOM stores', async () => {
   assert.ok(output.includes('dicomStores'));
 });
 
+it('should create and get a DICOM store IAM policy', async () => {
+  const localMember = 'group:dpebot@google.com';
+  const localRole = 'roles/viewer';
+
+  let output = await tools.runAsync(
+    `node setDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${localMember} ${localRole}`,
+    cwd
+  );
+  assert.ok(output.includes, 'ETAG');
+
+  output = await tools.runAsync(
+    `node getDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`
+  );
+  assert.ok(output.includes('dpebot'));
+});
+
 it('should import a DICOM object from GCS', async () => {
   const output = await tools.runAsync(
     `node importDicomInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${gcsUri}`,

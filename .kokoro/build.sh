@@ -47,7 +47,12 @@ export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
 
 #  functions/speech-to-speech
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
+
+#  functions/translate
 export SUPPORTED_LANGUAGE_CODES="en,es"
+export TRANSLATE_TOPIC=$FUNCTIONS_TOPIC
+export RESULT_TOPIC=$FUNCTIONS_TOPIC
+export RESULT_BUCKET=$FUNCTIONS_BUCKET
 
 #  functions/imagemagick
 export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-functions

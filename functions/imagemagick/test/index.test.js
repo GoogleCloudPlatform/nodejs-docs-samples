@@ -58,6 +58,12 @@ describe('functions/imagemagick tests', () => {
       // Timeouts always cause errors on Linux, so catch them
       if (err.name && err.name === 'ChildProcessError') {
         const {stdout, stderr} = err;
+
+        console.log('DBG2 Keys', Object.getOwnPropertyNames(err));
+
+        console.log('DBG2 S/O', stdout);
+        console.log('DBG2 T/O', typeof stdout);
+
         return {stdout, stderr};
       }
 

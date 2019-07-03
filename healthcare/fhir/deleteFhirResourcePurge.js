@@ -25,11 +25,11 @@ function main(
   resourceType,
   resourceId
 ) {
-  // [START healthcare_delete_fhir_resource]
+  // [START healthcare_delete_resource_purge]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function deleteFhirResource() {
+  async function deleteFhirResourcePurge() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -51,9 +51,9 @@ function main(
     console.log(`Deleted all historical versions of ${resourceType} resource`);
   }
 
-  deleteFhirResource();
-  // [END healthcare_delete_fhir_resource]
+  deleteFhirResourcePurge();
+  // [END healthcare_delete_resource_purge]
 }
 
-// node deleteFhirResource.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType> <resourceId>
+// node deleteFhirResourcePurge.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType> <resourceId>
 main(...process.argv.slice(2));

@@ -72,60 +72,14 @@ const createResource = async (
 
   try {
     const resource = await request(options);
-    console.log(`Created resource ${resourceType} with ID ${resource.id}.`);
+    console.log(
+      `Created FHIR resource ${resourceType} with ID ${resource.id}.`
+    );
   } catch (err) {
     console.error(err);
   }
 };
 // [END healthcare_create_fhir_resource]
-
-// [START healthcare_update_fhir_resource]
-const updateResource = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  fhirStoreId,
-  resourceType,
-  resourceId
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const fhirStoreId = 'my-fhir-store';
-  // const resourceType = 'Patient';
-  // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
-
-  const patientData = {
-    resourceType: resourceType,
-    id: resourceId,
-    active: true,
-  };
-
-  const options = {
-    url: resourcePath,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8',
-    },
-    body: patientData,
-    json: true,
-    method: 'PUT',
-  };
-
-  try {
-    await request(options);
-    console.log(`Updated ${resourceType} with ID ${resourceId}`);
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_update_fhir_resource]
 
 // [START healthcare_patch_fhir_resource]
 const patchResource = async (
@@ -149,7 +103,7 @@ const patchResource = async (
 
   const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
 
-  const patchOperations = [{op: 'replace', path: '/active', value: false}];
+  const patchOperations = [{op: 'replace', path: '/active', value: true}];
 
   const options = {
     url: resourcePath,
@@ -164,115 +118,35 @@ const patchResource = async (
 
   try {
     await request(options);
-    console.log(`Patched ${resourceType} with ID ${resourceId}`);
+    console.log(`Patched ${resourceType} resource`);
   } catch (err) {
     console.error(err);
   }
 };
 // [END healthcare_patch_fhir_resource]
 
-// [START healthcare_delete_fhir_resource]
-const deleteResource = async (
+// [START healthcare_fhir_execute_bundle]
+const executeBundle = async (
   token,
   projectId,
   cloudRegion,
   datasetId,
   fhirStoreId,
-  resourceType,
-  resourceId
+  bundleFile
 ) => {
+  const fs = require('fs');
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const datasetId = 'my-dataset';
   // const fhirStoreId = 'my-fhir-store';
-  // const resourceType = 'Patient';
-  // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
+  // const bundleFile = 'bundle.json';
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
+  const resourcesPath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir`;
 
-  const options = {
-    url: resourcePath,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8',
-    },
-    json: true,
-    method: 'DELETE',
-  };
-
-  try {
-    await request(options);
-    console.log(`Deleted ${resourceType} with ID ${resourceId}.`);
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_delete_fhir_resource]
-
-// [START healthcare_get_fhir_resource]
-const getResource = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  fhirStoreId,
-  resourceType,
-  resourceId
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const fhirStoreId = 'my-fhir-store';
-  // const resourceType = 'Patient';
-  // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const resourcePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
-
-  const options = {
-    url: resourcePath,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8',
-    },
-    json: true,
-  };
-
-  try {
-    const results = await request(options);
-    console.log(
-      `Got ${resourceType} resource:\n${JSON.stringify(results, null, 2)}`
-    );
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_get_fhir_resource]
-
-// [START healthcare_search_fhir_resources_get]
-const searchResourcesGet = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  fhirStoreId,
-  resourceType
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const fhirStoreId = 'my-fhir-store';
-  // const resourceType = 'Patient';
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const resourcesPath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}`;
+  const bundle = fs.readFileSync(bundleFile);
 
   const options = {
     url: resourcesPath,
@@ -280,94 +154,19 @@ const searchResourcesGet = async (
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/fhir+json; charset=utf-8',
     },
-    json: true,
-  };
-
-  try {
-    const results = await request(options);
-    console.log(JSON.stringify(results, null, 2));
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_search_fhir_resources_get]
-
-// [START healthcare_search_fhir_resources_post]
-const searchResourcesPost = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  fhirStoreId,
-  resourceType
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const fhirStoreId = 'my-fhir-store';
-  // const resourceType = 'Patient';
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const resourcesPath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/_search`;
-
-  const options = {
-    url: resourcesPath,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/fhir+json; charset=utf-8',
-    },
-    json: true,
+    body: bundle,
     method: 'POST',
   };
 
   try {
     const results = await request(options);
+    console.log('Executed Bundle\n');
     console.log(JSON.stringify(results, null, 2));
   } catch (err) {
     console.error(err);
   }
 };
-// [END healthcare_search_fhir_resources_post]
-
-// [START healthcare_fhir_get_patient_everything]
-const getPatientEverything = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  fhirStoreId,
-  resourceId
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const fhirStoreId = 'my-fhir-store';
-  // const resourceId = 'd64a85ae-da1b-4a10-0eb8-cfaf55bdbe3f';
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const fhirStorePath = `${parentName}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/Patient/${resourceId}/$everything`;
-
-  const options = {
-    url: fhirStorePath,
-    headers: {
-      authorization: `Bearer ${token}`,
-    },
-    json: true,
-  };
-
-  try {
-    const results = await request(options);
-    console.log(`Got all resources in patient ${resourceId} compartment:`);
-    console.log(results);
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_fhir_get_patient_everything]
+// [END healthcare_fhir_execute_bundle]
 
 require(`yargs`) // eslint-disable-line
   .demand(1)
@@ -413,25 +212,6 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `updateResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
-    `Updates an existing resource in a FHIR store.`,
-    {},
-    opts => {
-      const cb = token => {
-        updateResource(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.fhirStoreId,
-          opts.resourceType,
-          opts.resourceId
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
     `patchResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
     `Patches an existing resource in a FHIR store.`,
     {},
@@ -451,92 +231,18 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `deleteResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
-    `Deletes a FHIR resource or returns NOT_FOUND if it doesn't exist.`,
+    `executeBundle <datasetId> <fhirStoreId> <bundleFile>`,
+    `Executes all the requests in the given Bundle.`,
     {},
     opts => {
       const cb = token => {
-        deleteResource(
+        executeBundle(
           token,
           opts.projectId,
           opts.cloudRegion,
           opts.datasetId,
           opts.fhirStoreId,
-          opts.resourceType,
-          opts.resourceId
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `getResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
-    `Gets a FHIR resource.`,
-    {},
-    opts => {
-      const cb = token => {
-        getResource(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.fhirStoreId,
-          opts.resourceType,
-          opts.resourceId
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `searchResourcesGet <datasetId> <fhirStoreId> <resourceType>`,
-    `Searches resources in the given FHIR store using the searchResources GET method.`,
-    {},
-    opts => {
-      const cb = token => {
-        searchResourcesGet(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.fhirStoreId,
-          opts.resourceType
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `searchResourcesPost <datasetId> <fhirStoreId> <resourceType>`,
-    `Searches resources in the given FHIR store using the _search POST method.`,
-    {},
-    opts => {
-      const cb = token => {
-        searchResourcesPost(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.fhirStoreId,
-          opts.resourceType
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `getPatientEverything <datasetId> <fhirStoreId> <resourceId>`,
-    `Gets all the resources in the patient compartment.`,
-    {},
-    opts => {
-      const cb = token => {
-        getPatientEverything(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.fhirStoreId,
-          opts.resourceId
+          opts.bundleFile
         );
       };
       getToken(opts.serviceAccount, cb);

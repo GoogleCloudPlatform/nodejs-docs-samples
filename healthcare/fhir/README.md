@@ -37,22 +37,34 @@ Run the following command to install the library dependencies for Node.js:
 ## FHIR resources
 
     Commands:
+        deleteFhirResource.js <projectId> <cloudRegion> <datasetId>           Deletes a FHIR resource.
+        <fhirStoreId> <resourceType> <resourceId>
+        deleteFhirResourcePurge.js <projectId> <cloudRegion> <datasetId>      Deletes all historical versions of a FHIR resource.
+        <fhirStoreId> <resourceType> <resourceId>
+        getFhirResourceHistory.js <projectId> <cloudRegion> <datasetId>       Gets the contents of a version of a FHIR resource by version ID.
+        <fhirStoreId> <resourceType> <resourceId> <versionId>
+        getFhirResource.js <projectId> <cloudRegion> <datasetId>              Gets a FHIR resource.
+        <fhirStoreId> <resourceType> <resourceId>
+        getFhirStoreCapabilities.js <projectId> <cloudRegion> <datasetId>     Gets the capabilities statement for a FHIR store.
+        <fhirStoreId>
+        getPatientEverything.js <projectId> <cloudRegion> <datasetId>         Retrieves all resources in the patient compartment for a Patient resource.
+        <fhirStoreId> <patientId>
+        listFhirResourceHistory.js <projectId> <cloudRegion> <datasetId>      Lists all the versions of a resource
+        <fhirStoreId> <resourceType> <resourceId>                             (including the current version and deleted versions) from the FHIR store.
+        searchFhirResourcesGet.js <projectId> <cloudRegion> <datasetId>       Searches for FHIR resources using GET methods.
+        <fhirStoreId> <resourceType>
+        searchFhirResourcesPost.js <projectId> <cloudRegion> <datasetId>      Searches for FHIR resources using the POST method.
+        <fhirStoreId> <resourceType>
+        updateFhirResource.js <projectId> <cloudRegion> <datasetId>           Updates the entire contents of a resource.
+        <fhirStoreId> <resourceType> <resourceId>
+
+    Commands:
         fhir_resources.js createResource <datasetId> <fhirStoreId>    Creates a new resource in a FHIR store.
         <resourceType>
-        fhir_resources.js updateResource <datasetId> <fhirStoreId>    Updates an existing resource in a FHIR store.
-        <resourceType> <resourceId>
         fhir_resources.js patchResource <datasetId> <fhirStoreId>     Patches an existing resource in a FHIR store.
         <resourceType> <resourceId>
-        fhir_resources.js deleteResource <datasetId> <fhirStoreId>    Deletes a FHIR resource or returns NOT_FOUND if it
-        <resourceType> <resourceId>                                   doesn't exist.
-        fhir_resources.js getResource <datasetId> <fhirStoreId>       Gets a FHIR resource.
-        <resourceType> <resourceId>
-        fhir_resources.js searchResourcesGet <datasetId>              Searches resources in the given FHIR store using the
-        <fhirStoreId> <resourceType>                                  searchResources GET method.
-        fhir_resources.js searchResourcesPost <datasetId>             Searches resources in the given FHIR store using the
-        <fhirStoreId> <resourceType>                                  _search POST method.
-        fhir_resources.js getPatientEverything <datasetId>            Gets all the resources in the patient compartment.
-        <fhirStoreId> <resourceId>
+        fhir_resources.js executeBundle <datasetId> <fhirStoreId>     Executes all the requests in the given Bundle.
+        <bundleFile>
 
     Options:
     --version             Show version number                                                                    [boolean]
@@ -64,3 +76,4 @@ Run the following command to install the library dependencies for Node.js:
     --help                Show help                                                                              [boolean]
 
 For more information, see https://cloud.google.com/healthcare/docs
+

@@ -27,7 +27,7 @@ const db = admin.firestore();
 
 // [START save_token_to_firebase]
 function saveOAuthToken(context, oauthToken) {
-  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
+  const docRef = db.collection('ShortLivedAuthTokens').doc('OauthToken');
   docRef.set(oauthToken);
 }
 // [END save_token_to_firebase]
@@ -149,22 +149,56 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
     );
   }
   // Retrieve the token from the database
-  const docRef = db.collection('DialogflowTokens').doc('OauthToken');
+  const docRef = db.collection('ShortLivedAuthTokens').doc('OauthToken');
 
   return docRef
     .get()
     .then(doc => {
       if (doc.exists && isValid(doc.data().expireTime)) {
+        //push notification
+        pushNotification(
+          data['deviceID'],
+          doc.data().accessToken,
+          doc.data().expireTime
+        );
         return doc.data();
       } else {
         return retrieveCredentials(context).then(result => {
+          console.log('Print result from retrieveCredentials functions');
+          console.log(result);
+          pushNotification(
+            data['deviceID'],
+            result['accessToken'],
+            result['expireTime']
+          );
           return result;
         });
       }
     })
     .catch(err => {
       console.log('Error retrieving token', err);
+      pushNotification(data['deviceID'], 'Error retrieving token', 'Error');
+      // return 'Error retrieving token';
       return 'Error retrieving token';
     });
 });
 // [END function_get_token]
+
+//[START pushNotification]
+function pushNotification(deviceID, accessToken, expiryDate) {
+  //Passing the device id of the requested device which has requested for PN
+  const tokens = [deviceID];
+  //Push notification payload with expiry date as title and access token as body
+  //Though payload can be consructed in different ways just for simplicity we had choosen this
+  const payload = {
+    notification: {
+      title: expiryDate,
+      body: accessToken,
+      sound: 'default',
+      badge: '1',
+    },
+  };
+  //triggers push notification to the targeted devices.
+  return admin.messaging().sendToDevice(tokens, payload);
+}
+//[END pushNotification]

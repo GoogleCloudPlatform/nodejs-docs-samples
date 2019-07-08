@@ -15,6 +15,9 @@
 # limitations under the License.
       
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
+export GCP_PROJECT=$GCLOUD_PROJECT
+export GOOGLE_CLOUD_PROJECT=$GCLOUD_PROJECT
+
 export GCF_REGION=us-central1
 export NODE_ENV=development
 export BUCKET_NAME=$GCLOUD_PROJECT
@@ -41,11 +44,22 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
+export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
+
+#  functions/translate
+export SUPPORTED_LANGUAGE_CODES="en,es"
+export TRANSLATE_TOPIC=$FUNCTIONS_TOPIC
+export RESULT_TOPIC=$FUNCTIONS_TOPIC
+export RESULT_BUCKET=$FUNCTIONS_BUCKET
 
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
 export NODEJS_IOT_RSA_PRIVATE_KEY=${KOKORO_GFILE_DIR}/rsa_private.pem
 export NODEJS_IOT_RSA_PUBLIC_CERT=${KOKORO_GFILE_DIR}/rsa_cert.pem
+
+# Configure Slack variables (for functions/slack sample)
+export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
+export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
 cd github/nodejs-docs-samples/${PROJECT}
 

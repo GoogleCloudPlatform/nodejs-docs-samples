@@ -40,7 +40,7 @@ async function main(
           {
             affectedCpeUri: 'foo.uri',
             affectedPackage: 'foo',
-            minAffectedVersion: {
+            affectedVersion: {
               kind: 'MINIMUM',
             },
             fixedVersion: {

@@ -33,10 +33,10 @@ async function main(
           {
             affectedCpeUri: 'foo.uri',
             affectedPackage: 'foo',
-            minAffectedVersion: {
+            affectedVersionStart: {
               kind: 'MINIMUM',
             },
-            fixedVersion: {
+            affectedVersionEnd: {
               kind: 'MAXIMUM',
             },
           },

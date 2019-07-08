@@ -1,10 +1,10 @@
 // sample-metadata:
 //   title: Occurrence PubSub
-//   description: Polls a specified PubSub subscription for Occurrences.  Requires a subscription to a topic named 'container-analysis-occurrences-v1beta'
+//   description: Polls a specified PubSub subscription for Occurrences.  Requires a subscription to a topic named 'container-analysis-occurrences-v1'
 //   usage: node occurrencePubSub.js "project-id" "subscription-id" "timeout-in-seconds"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
-  subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1beta' topic
+  subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1' topic
   timeoutSeconds = 30 // The number of seconds to listen for the new Pub/Sub messages
 ) {
   // [START containeranalysis_pubsub]
@@ -12,7 +12,7 @@ async function main(
    * TODO(developer): Uncomment these variables before running the sample
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
-  // const subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1beta' topic
+  // const subscriptionId = 'my-sub-id', // A user-specified subscription to the 'container-analysis-occurrences-v1' topic
   // const timeoutSeconds = 30 // The number of seconds to listen for the new Pub/Sub Messages
 
   // Import the pubsub library and create a client, topic and subscription

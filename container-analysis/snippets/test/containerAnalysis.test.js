@@ -16,7 +16,7 @@ const retries = 5;
 
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
-const topicName = 'container-analysis-occurrences-v1beta1';
+const topicName = 'container-analysis-occurrences-v1';
 let topic;
 
 let projectId;
@@ -151,10 +151,10 @@ describe('Note tests', () => {
             {
               affectedCpeUri: 'foo.uri',
               affectedPackage: 'foo',
-              minAffectedVersion: {
+              affectedVersionStart: {
                 kind: 'MINIMUM',
               },
-              fixedVersion: {
+              affectedVersionEnd: {
                 kind: 'MAXIMUM',
               },
             },
@@ -176,7 +176,7 @@ describe('Note tests', () => {
             {
               affectedCpeUri: 'foo.uri',
               affectedPackage: 'foo',
-              minAffectedVersion: {
+              affectedVersion: {
                 kind: 'MINIMUM',
               },
               fixedVersion: {
@@ -286,11 +286,12 @@ describe('pubsub', () => {
     formattedParent = `projects/${projectId}`;
     formattedNoteName = `projects/${projectId}/notes/${noteId}`;
     try {
-      topic = pubsub.topic(topicName);
-    } catch (err) {
+      // attempt to create topic if missing
       await pubsub.createTopic(topicName);
-      topic = pubsub.topic(topicName);
+    } catch (err) {
+      console.log(`topic creation failed: ${topicName}`);
     }
+    topic = pubsub.topic(topicName);
   });
 
   beforeEach(async () => {
@@ -304,10 +305,10 @@ describe('pubsub', () => {
             {
               affectedCpeUri: 'foo.uri',
               affectedPackage: 'foo',
-              minAffectedVersion: {
+              affectedVersionStart: {
                 kind: 'MINIMUM',
               },
-              fixedVersion: {
+              affectedVersionEnd: {
                 kind: 'MAXIMUM',
               },
             },
@@ -337,7 +338,7 @@ describe('pubsub', () => {
             {
               affectedCpeUri: 'foo.uri',
               affectedPackage: 'foo',
-              minAffectedVersion: {
+              affectedVersion: {
                 kind: 'MINIMUM',
               },
               fixedVersion: {

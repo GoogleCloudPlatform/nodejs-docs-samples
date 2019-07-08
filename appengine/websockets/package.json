@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "deploy": "gcloud app deploy",
@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "eslint": "^5.4.0",
-    "eslint-config-prettier": "^4.0.0",
+    "eslint": "^6.0.0",
+    "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-node": "^9.0.0",
     "eslint-plugin-prettier": "^3.0.0",
     "mocha": "^6.0.0",

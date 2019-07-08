@@ -15,7 +15,7 @@
 
 'use strict';
 
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 
 // [START functions_helloworld_http]
 const escapeHtml = require('escape-html');
@@ -47,19 +47,10 @@ exports.helloGET = (req, res) => {
  * @param {Object} res Cloud Function response context.
  *                     More info: https://expressjs.com/en/api.html#res
  */
-// [START functions_tips_terminate]
 exports.helloHttp = (req, res) => {
-  const name =
-    req.query && req.query.name
-      ? req.query.name
-      : req.body && req.body.name
-      ? req.body.name
-      : 'World';
-  res.send(`Hello ${escapeHtml(name)}!`);
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 };
 // [END functions_helloworld_http]
-
-// [END functions_tips_terminate]
 
 // [START functions_helloworld_background]
 /**
@@ -68,11 +59,9 @@ exports.helloHttp = (req, res) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-// [START functions_tips_terminate]
 exports.helloBackground = (event, callback) => {
   callback(null, `Hello ${event.data.name || 'World'}!`);
 };
-// [END functions_tips_terminate]
 // [END functions_helloworld_background]
 
 // [START functions_helloworld_pubsub]

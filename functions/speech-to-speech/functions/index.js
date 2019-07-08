@@ -32,17 +32,25 @@ const outputBucket = firebaseConfigured
   : process.env.OUTPUT_BUCKET;
 const outputAudioEncoding = 'MP3';
 const voiceSsmlGender = 'NEUTRAL';
+
 // Declare the API clients as global variables to allow them to initiaze at cold start.
-const speechToTextClient = getSpeechToTextClient();
-const textTranslationClient = getTextTranslationClient();
-const textToSpeechClient = getTextToSpeechClient();
-const storageClient = getStorageClient();
+const {SpeechClient} = require('@google-cloud/speech');
+const {Translate} = require('@google-cloud/translate');
+const {TextToSpeechClient} = require('@google-cloud/text-to-speech');
+const {Storage} = require('@google-cloud/storage');
 
-exports.speechTranslate = functions.https.onRequest((request, response) => {
-  const responseBody = {};
+const speechToTextClient = new SpeechClient();
+const textTranslationClient = new Translate({projectId: googleCloudProject});
+const textToSpeechClient = new TextToSpeechClient();
+const storageClient = new Storage({projectId: googleCloudProject});
 
-  validateRequest(request)
-    .then(() => {
+exports.speechTranslate = functions.https.onRequest(
+  async (request, response) => {
+    const responseBody = {};
+
+    try {
+      await validateRequest(request);
+
       const inputEncoding = request.body.encoding;
       const inputSampleRateHertz = request.body.sampleRateHertz;
       const inputLanguageCode = request.body.languageCode;
@@ -52,16 +60,14 @@ exports.speechTranslate = functions.https.onRequest((request, response) => {
       console.log(`Input sample rate hertz: ${inputSampleRateHertz}`);
       console.log(`Input language code: ${inputLanguageCode}`);
 
-      return callSpeechToText(
+      // [START chain_cloud_calls]
+      const [sttResponse] = await callSpeechToText(
         inputAudioContent,
         inputEncoding,
         inputSampleRateHertz,
         inputLanguageCode
       );
-    })
-    .then(data => {
-      // [START chain_cloud_calls]
-      const sttResponse = data[0];
+
       // The data object contains one or more recognition
       // alternatives ordered by accuracy.
       const transcription = sttResponse.results
@@ -71,58 +77,65 @@ exports.speechTranslate = functions.https.onRequest((request, response) => {
       responseBody.gcsBucket = outputBucket;
 
       const translations = [];
-      supportedLanguageCodes.forEach(languageCode => {
+      supportedLanguageCodes.forEach(async languageCode => {
         const translation = {languageCode: languageCode};
-        const filenameUUID = uuid();
-        const filename = filenameUUID + '.' + outputAudioEncoding.toLowerCase();
-        callTextTranslation(languageCode, transcription)
-          .then(data => {
-            const textTranslation = data[0];
-            translation.text = textTranslation;
-            return callTextToSpeech(languageCode, textTranslation);
-          })
-          .then(data => {
-            const path = languageCode + '/' + filename;
-            return uploadToCloudStorage(path, data[0].audioContent);
-          })
-          .then(() => {
-            console.log(`Successfully translated input to ${languageCode}.`);
-            translation.gcsPath = languageCode + '/' + filename;
-            translations.push(translation);
-            if (translations.length === supportedLanguageCodes.length) {
-              responseBody.translations = translations;
-              console.log(`Response: ${JSON.stringify(responseBody)}`);
-              response.status(200).send(responseBody);
-            }
-          })
-          .catch(error => {
-            console.error(
-              `Partial error in translation to ${languageCode}: ${error}`
-            );
-            translation.error = error.message;
-            translations.push(translation);
-            if (translations.length === supportedLanguageCodes.length) {
-              responseBody.translations = translations;
-              console.log(`Response: ${JSON.stringify(responseBody)}`);
-              response.status(200).send(responseBody);
-            }
-          });
+        const outputFilename =
+          request.body.outputFilename ||
+          `${uuid()}.${outputAudioEncoding.toLowerCase()}`;
+
+        try {
+          const [textTranslation] = await callTextTranslation(
+            languageCode,
+            transcription
+          );
+          translation.text = textTranslation;
+
+          const [{audioContent}] = await callTextToSpeech(
+            languageCode,
+            textTranslation
+          );
+          const path = `${languageCode}/${outputFilename}`;
+
+          console.log('zzx', audioContent);
+
+          await uploadToCloudStorage(path, audioContent);
+
+          console.log(`Successfully translated input to ${languageCode}.`);
+          translation.gcsPath = path;
+          translations.push(translation);
+          if (translations.length === supportedLanguageCodes.length) {
+            responseBody.translations = translations;
+            console.log(`Response: ${JSON.stringify(responseBody)}`);
+            response.status(200).send(responseBody);
+          }
+        } catch (error) {
+          console.error(
+            `Partial error in translation to ${languageCode}: ${error}`
+          );
+          translation.error = error.message;
+          translations.push(translation);
+          if (translations.length === supportedLanguageCodes.length) {
+            responseBody.translations = translations;
+            console.log(`Response: ${JSON.stringify(responseBody)}`);
+            response.status(200).send(responseBody);
+          }
+        }
       });
       // [END chain_cloud_calls]
-    })
-    .catch(error => {
+    } catch (error) {
       console.error(error);
       response.status(400).send(error.message);
-    });
-});
+    }
+  }
+);
 
 // [START call_speech_to_text]
-function callSpeechToText(
+const callSpeechToText = (
   audioContent,
   encoding,
   sampleRateHertz,
   languageCode
-) {
+) => {
   console.log(`Processing speech from audio content in ${languageCode}.`);
 
   const request = {
@@ -135,19 +148,19 @@ function callSpeechToText(
   };
 
   return speechToTextClient.recognize(request);
-}
+};
 // [END call_speech_to_text]
 
 // [START call_text_translation]
-function callTextTranslation(targetLangCode, data) {
+const callTextTranslation = (targetLangCode, data) => {
   console.log(`Translating text to ${targetLangCode}: ${data}`);
 
   return textTranslationClient.translate(data, targetLangCode);
-}
+};
 // [END call_text_translation]
 
 // [START call_text_to_speech]
-function callTextToSpeech(targetLocale, data) {
+const callTextToSpeech = (targetLocale, data) => {
   console.log(`Converting to speech in ${targetLocale}: ${data}`);
 
   const request = {
@@ -157,22 +170,22 @@ function callTextToSpeech(targetLocale, data) {
   };
 
   return textToSpeechClient.synthesizeSpeech(request);
-}
+};
 // [END call_text_to_speech]
 
 // [START upload_to_cloud_storage]
-function uploadToCloudStorage(path, contents) {
+const uploadToCloudStorage = (path, contents) => {
   console.log(`Uploading audio file to ${path}`);
 
   return storageClient
     .bucket(outputBucket)
     .file(path)
     .save(contents);
-}
+};
 // [END upload_to_cloud_storage]
 
 // [START validate_request]
-function validateRequest(request) {
+const validateRequest = request => {
   return new Promise((resolve, reject) => {
     if (!request.body.encoding) {
       reject(new Error('Invalid encoding.'));
@@ -189,25 +202,5 @@ function validateRequest(request) {
 
     resolve();
   });
-}
+};
 // [END validate_request]
-
-function getSpeechToTextClient() {
-  const speech = require('@google-cloud/speech');
-  return new speech.SpeechClient();
-}
-
-function getTextTranslationClient() {
-  const {Translate} = require('@google-cloud/translate');
-  return new Translate({projectId: googleCloudProject});
-}
-
-function getTextToSpeechClient() {
-  const textToSpeech = require('@google-cloud/text-to-speech');
-  return new textToSpeech.TextToSpeechClient();
-}
-
-function getStorageClient() {
-  const {Storage} = require('@google-cloud/storage');
-  return new Storage({projectId: googleCloudProject});
-}

@@ -21,7 +21,7 @@ const {globalStats, MeasureUnit, AggregationType} = require('@opencensus/core');
 const {StackdriverStatsExporter} = require('@opencensus/exporter-stackdriver');
 // [END monitoring_opencensus_metrics_dependencies]
 
-const EXPORT_INTERVAL = 60;
+const EXPORT_INTERVAL = process.env.EXPORT_INTERVAL || 60;
 const LATENCY_MS = globalStats.createMeasureInt64(
   'task_latency',
   MeasureUnit.MS,
@@ -89,6 +89,7 @@ for (let i = 0; i < 100; i++) {
  */
 setTimeout(() => {
   console.log('Done recording metrics.');
+  globalStats.unregisterExporter(exporter);
 }, EXPORT_INTERVAL * 1000);
 
 // [END monitoring_opencensus_metrics_quickstart]

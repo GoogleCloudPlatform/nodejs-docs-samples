@@ -27,17 +27,19 @@ async function getBrowserPage() {
   return browser.newPage();
 }
 
+async function main() {
+  page = await getBrowserPage();
+}
+
+main();
+
 exports.screenshot = async (req, res) => {
-  const url = req.query.url;
+  const {url} = req.query;
 
   if (!url) {
     return res.send(
       'Please provide URL as GET parameter, for example: <a href="?url=https://example.com">?url=https://example.com</a>'
     );
-  }
-
-  if (!page) {
-    page = await getBrowserPage();
   }
 
   await page.goto(url);

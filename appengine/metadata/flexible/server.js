@@ -26,7 +26,7 @@ const METADATA_NETWORK_INTERFACE_URL =
   'http://metadata/computeMetadata/v1/' +
   '/instance/network-interfaces/0/access-configs/0/external-ip';
 
-function getExternalIp() {
+const getExternalIp = async () => {
   const options = {
     headers: {
       'Metadata-Flavor': 'Google',
@@ -34,28 +34,25 @@ function getExternalIp() {
     json: true,
   };
 
-  return request(METADATA_NETWORK_INTERFACE_URL, options)
-    .then(response => response.body)
-    .catch(err => {
-      if (err || err.statusCode !== 200) {
-        console.log(
-          'Error while talking to metadata server, assuming localhost'
-        );
-        return 'localhost';
-      }
-      return Promise.reject(err);
-    });
-}
+  try {
+    const {body} = await request(METADATA_NETWORK_INTERFACE_URL, options);
+    return body;
+  } catch (err) {
+    console.log('Error while talking to metadata server, assuming localhost');
+    return 'localhost';
+  }
+};
 
-app.get('/', (req, res, next) => {
-  getExternalIp()
-    .then(externalIp => {
-      res
-        .status(200)
-        .send(`External IP: ${externalIp}`)
-        .end();
-    })
-    .catch(next);
+app.get('/', async (req, res, next) => {
+  try {
+    const externalIp = await getExternalIp();
+    res
+      .status(200)
+      .send(`External IP: ${externalIp}`)
+      .end();
+  } catch (err) {
+    next(err);
+  }
 });
 
 const PORT = process.env.PORT || 8080;

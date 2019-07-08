@@ -10,7 +10,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "start": "node server.js",
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "delay": "^4.2.0",
     "mocha": "^6.0.0"
   },
   "cloud-repo-tools": {

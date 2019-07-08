@@ -10,15 +10,15 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "start": "node metrics-quickstart.js",
-    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000"
+    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
-    "@opencensus/core": "^0.0.12",
-    "@opencensus/exporter-stackdriver": "^0.0.12"
+    "@opencensus/core": "^0.0.14",
+    "@opencensus/exporter-stackdriver": "^0.0.14"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

@@ -21,14 +21,13 @@ function main(
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
-  member,
-  role
+  dicomStoreId
 ) {
-  // [START healthcare_dataset_set_iam_policy]
+  // [START healthcare_dicom_store_get_iam_policy]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function setDatasetIamPolicy() {
+  async function getDicomStoreIamPolicy() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -38,35 +37,22 @@ function main(
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
-    // const member = 'user:example@gmail.com';
-    // const role = 'roles/healthcare.datasetViewer';
-    const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
-    const request = {
-      resource_,
-      resource: {
-        policy: {
-          bindings: [
-            {
-              members: member,
-              role: role,
-            },
-          ],
-        },
-      },
-    };
+    // const dicomStoreId = 'my-dicom-store';
+    const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
+    const request = {resource_};
 
-    const dataset = await healthcare.projects.locations.datasets.setIamPolicy(
+    const dicomStore = await healthcare.projects.locations.datasets.dicomStores.getIamPolicy(
       request
     );
     console.log(
-      'Set dataset IAM policy:',
-      JSON.stringify(dataset.data, null, 2)
+      'Got DICOM store IAM policy:',
+      JSON.stringify(dicomStore.data, null, 2)
     );
   }
 
-  setDatasetIamPolicy();
-  // [END healthcare_dataset_set_iam_policy]
+  getDicomStoreIamPolicy();
+  // [END healthcare_dicom_store_get_iam_policy]
 }
 
-// node setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member> <role>
+// node getDicomStoreIamPolicy.js <projectId> <cloudRegion> <datasetId> <dicomStoreId>
 main(...process.argv.slice(2));

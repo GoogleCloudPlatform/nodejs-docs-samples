@@ -21,14 +21,14 @@ function main(
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
-  member,
-  role
+  fhirStoreId,
+  patientId
 ) {
-  // [START healthcare_dataset_set_iam_policy]
+  // [START healthcare_get_patient_everything]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function setDatasetIamPolicy() {
+  async function getPatientEverything() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -38,35 +38,23 @@ function main(
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
-    // const member = 'user:example@gmail.com';
-    // const role = 'roles/healthcare.datasetViewer';
-    const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
-    const request = {
-      resource_,
-      resource: {
-        policy: {
-          bindings: [
-            {
-              members: member,
-              role: role,
-            },
-          ],
-        },
-      },
-    };
+    // const fhirStoreId = 'my-fhir-store';
+    // const patientId = '16e8a860-33b3-49be-9b03-de979feed14a';
+    const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/Patient/${patientId}`;
+    const request = {name};
 
-    const dataset = await healthcare.projects.locations.datasets.setIamPolicy(
+    const patientEverything = await healthcare.projects.locations.datasets.fhirStores.fhir.PatientEverything(
       request
     );
     console.log(
-      'Set dataset IAM policy:',
-      JSON.stringify(dataset.data, null, 2)
+      `Got all resources in patient ${patientId} compartment:\n`,
+      JSON.stringify(patientEverything)
     );
   }
 
-  setDatasetIamPolicy();
-  // [END healthcare_dataset_set_iam_policy]
+  getPatientEverything();
+  // [END healthcare_get_patient_everything]
 }
 
-// node setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member> <role>
+// node getPatientEverything.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <patientId>
 main(...process.argv.slice(2));

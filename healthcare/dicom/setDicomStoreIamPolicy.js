@@ -21,14 +21,15 @@ function main(
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
+  dicomStoreId,
   member,
   role
 ) {
-  // [START healthcare_dataset_set_iam_policy]
+  // [START healthcare_dicom_store_set_iam_policy]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function setDatasetIamPolicy() {
+  async function setDicomStoreIamPolicy() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -38,9 +39,10 @@ function main(
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
+    // const dicomStoreId = 'my-dicom-store';
     // const member = 'user:example@gmail.com';
-    // const role = 'roles/healthcare.datasetViewer';
-    const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
+    // const role = 'roles/healthcare.dicomStoreViewer';
+    const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const request = {
       resource_,
       resource: {
@@ -55,18 +57,18 @@ function main(
       },
     };
 
-    const dataset = await healthcare.projects.locations.datasets.setIamPolicy(
+    const dicomStore = await healthcare.projects.locations.datasets.dicomStores.setIamPolicy(
       request
     );
     console.log(
-      'Set dataset IAM policy:',
-      JSON.stringify(dataset.data, null, 2)
+      'Set DICOM store IAM policy:',
+      JSON.stringify(dicomStore.data, null, 2)
     );
   }
 
-  setDatasetIamPolicy();
-  // [END healthcare_dataset_set_iam_policy]
+  setDicomStoreIamPolicy();
+  // [END healthcare_dicom_store_set_iam_policy]
 }
 
-// node setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member> <role>
+// node setDicomStoreIamPolicy.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <member> <role>
 main(...process.argv.slice(2));

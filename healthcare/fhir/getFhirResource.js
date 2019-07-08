@@ -21,14 +21,15 @@ function main(
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
-  member,
-  role
+  fhirStoreId,
+  resourceType,
+  resourceId
 ) {
-  // [START healthcare_dataset_set_iam_policy]
+  // [START healthcare_get_fhir_resource]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function setDatasetIamPolicy() {
+  async function getFhirResource() {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -38,35 +39,21 @@ function main(
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
-    // const member = 'user:example@gmail.com';
-    // const role = 'roles/healthcare.datasetViewer';
-    const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
-    const request = {
-      resource_,
-      resource: {
-        policy: {
-          bindings: [
-            {
-              members: member,
-              role: role,
-            },
-          ],
-        },
-      },
-    };
+    // const fhirStoreId = 'my-fhir-store';
+    // const resourceType = 'Patient';
+    // const resourceId = '16e8a860-33b3-49be-9b03-de979feed14a';
+    const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
+    const request = {name};
 
-    const dataset = await healthcare.projects.locations.datasets.setIamPolicy(
+    const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.read(
       request
     );
-    console.log(
-      'Set dataset IAM policy:',
-      JSON.stringify(dataset.data, null, 2)
-    );
+    console.log(`Got ${resourceType} resource:\n`, resource.data);
   }
 
-  setDatasetIamPolicy();
-  // [END healthcare_dataset_set_iam_policy]
+  getFhirResource();
+  // [END healthcare_get_fhir_resource]
 }
 
-// node setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member> <role>
+// node getFhirResource.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType> <resourceId>
 main(...process.argv.slice(2));

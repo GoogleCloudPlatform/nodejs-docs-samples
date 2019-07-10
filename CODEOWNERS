@@ -18,6 +18,7 @@ run @grayside
 functions/composer-storage-trigger @leahecole
 functions/scheduleinstance @djmailhot
 functions/speech-to-speech @ricalo
+functions/dialogflow @nnegrey
 
 # One-offs
 cloud-sql @kurtisvg

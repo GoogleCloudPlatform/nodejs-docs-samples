@@ -1,0 +1,26 @@
+# See https://help.github.com/articles/about-codeowners/
+# for more info about CODEOWNERS file
+
+# Repo owner
+* @fhinkel
+
+# Kokoro
+.kokoro @fhinkel @SurferJeffAtGoogle
+.kokoro/appengine @michaelawyu
+.kokoro/functions @ace-n @grant
+
+# Serverless/CBR
+appengine @michaelawyu
+functions @ace-n @grant
+run @grayside
+
+# Other functions samples
+functions/composer-storage-trigger @leahecole
+functions/scheduleinstance @djmailhot
+functions/speech-to-speech @ricalo
+
+# One-offs
+cloud-sql @kurtisvg
+healthcare @noerog
+iot @gguuss
+jobs @happyhuman

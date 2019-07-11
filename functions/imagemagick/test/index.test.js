@@ -28,6 +28,7 @@ requestRetry = requestRetry.defaults({
   retryStrategy: requestRetry.RetryStrategies.NetworkError,
   method: 'POST',
   json: true,
+  retryDelay: 1000,
 });
 
 const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
@@ -88,7 +89,9 @@ describe('functions/imagemagick tests', () => {
       },
     });
 
-    const {stdout} = await stopFF(ffProc);
+    const {stdout, stderr} = await stopFF(ffProc);
+
+    console.error('STDERR A', stderr);
 
     assert.ok(
       stdout.includes(`The image ${safeFileName} has been detected as OK.`)
@@ -109,7 +112,9 @@ describe('functions/imagemagick tests', () => {
       },
     });
 
-    const {stdout} = await stopFF(ffProc);
+    const {stdout, stderr} = await stopFF(ffProc);
+
+    console.error('STDERR B', stderr);
 
     assert.ok(stdout.includes(`Image ${offensiveFileName} has been blurred.`));
     assert.ok(

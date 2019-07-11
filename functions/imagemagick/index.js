@@ -40,7 +40,7 @@ exports.blurOffensiveImages = async event => {
 
   try {
     const [result] = await client.safeSearchDetection(filePath);
-    const detections = result.safeSearchAnnotation;
+    const detections = result.safeSearchAnnotation || {};
 
     if (
       detections.adult === 'VERY_LIKELY' ||

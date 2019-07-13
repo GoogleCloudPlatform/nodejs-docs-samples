@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "^0.28.1",
-    "safe-buffer": "5.1.2"
+    "safe-buffer": "^5.2.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

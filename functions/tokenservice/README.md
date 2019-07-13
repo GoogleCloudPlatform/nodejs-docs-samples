@@ -56,14 +56,17 @@ firebase use --add
 
 1. Clone this repository:
 
-  `git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git`
-  ` nodejs-docs-samples/functions/tokenService`
+```
+git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+cd nodejs-docs-samples/functions/tokenService
+
+```
   
-2. Deploy the "getOAuthToken" function with an HTTP trigger:
+1. Deploy the "getOAuthToken" function with an HTTP trigger:
 
   `functions deploy getOAuthToken --trigger--http`
 
-3. To run the tests, use the following commands from the
+1. To run the tests, use the following commands from the
 
   `functions/tokenservice` folder:
 
@@ -79,9 +82,9 @@ npm install && npm test
  
  AuthLibrary [FCMTokenProvider.swift][1] has implemented how to call getOAuthToken API 
  
-  `google-auth-library-swift/Sources/OAuth2/FirebaseFunctionTokenProvider/`
+  `cd google-auth-library-swift/Sources/OAuth2/FirebaseFunctionTokenProvider/`
  
- Please refer [ios-docs-samples][3]`https://github.com/GoogleCloudPlatform/ios-docs-samples.git` 
+ Please refer [ios-docs-samples][3] 
 
  
  ### Android

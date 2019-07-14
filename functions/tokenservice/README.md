@@ -4,7 +4,7 @@ This sample will show you how to connect your mobile app to Google Cloud Platfor
 
 To do this, you will set up the token service which will be implemented on Cloud Functions for Firebase. The token service handles requests from the client app and retrieves from cloud firestore database or creates the OAuth2.0 token credentials via the Cloud IAM API. These tokens are then stored in a Cloud Firestore database so that they can be used for future requests from a client, until they expire. To ensure clients don’t receive an expired token, the service validates that credentials haven't expired before triggering a push notification from Firebase Cloud Messaging back to the calling client.
 
-View the [source code][9]
+View the [source code][8]
 
 
 ## Prerequisites
@@ -12,9 +12,9 @@ View the [source code][9]
 Before using the sample app, make sure that you have the following
 prerequisites:
 
-* [Node.js 8][7]
+* [Node.js 8][5]
 * [Firebase Command Line Interface (CLI) Tool][6]
-* Create a project (or use an existing one) in the [Google Cloud Console][8]
+* Create a project (or use an existing one) in the [Google Cloud Console][7]
 
 ## Configuring the sample
 
@@ -80,10 +80,7 @@ npm install && npm test
 
 ### iOS 
  
- AuthLibrary [FCMTokenProvider.swift][1] has implemented how to call getOAuthToken API 
- 
-  `cd google-auth-library-swift/Sources/OAuth2/FirebaseFunctionTokenProvider/`
- 
+ In AuthLibrary [FCMTokenProvider.swift][1] has implemented how to call getOAuthToken API 
  Please refer [ios-docs-samples][3] 
 
  
@@ -94,12 +91,12 @@ npm install && npm test
  
   
 [0]: https://cloud.google.com
-[1]: https://github.com/googleapis/google-auth-library-swift
+[1]: https://github.com/googleapis/google-auth-library-swift/tree/master/Sources/OAuth2/FirebaseFunctionTokenProvider
 [2]: https://cloud.google.com/functions/docs/emulator
 [3]: https://github.com/GoogleCloudPlatform/ios-docs-samples.git
 [4]: https://github.com/GoogleCloudPlatform/android-docs-samples
 [5]: https://nodejs.org/en/
 [6]: https://firebase.google.com/docs/cli
-[8]: https://console.cloud.google.com
-[9]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/functions/dialogflow/functions/index.js
+[7]: https://console.cloud.google.com
+[8]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/functions/dialogflow/functions/index.js
 

@@ -53,18 +53,9 @@ describe('functions/imagemagick tests', () => {
     try {
       return await ffProc;
     } catch (err) {
-      console.info('DBG ERR', err);
-      console.info('DBG PROC', ffProc);
-
       // Timeouts always cause errors on Linux, so catch them
       if (err.name && err.name === 'ChildProcessError') {
         const {stdout, stderr} = err;
-
-        console.log('DBG2 Keys', Object.getOwnPropertyNames(err));
-
-        console.log('DBG2 S/O', stdout);
-        console.log('DBG2 T/O', typeof stdout);
-
         return {stdout, stderr};
       }
 
@@ -89,9 +80,7 @@ describe('functions/imagemagick tests', () => {
       },
     });
 
-    const {stdout, stderr} = await stopFF(ffProc);
-
-    console.error('STDERR A', stderr);
+    const {stdout} = await stopFF(ffProc);
 
     assert.ok(
       stdout.includes(`The image ${safeFileName} has been detected as OK.`)
@@ -112,9 +101,7 @@ describe('functions/imagemagick tests', () => {
       },
     });
 
-    const {stdout, stderr} = await stopFF(ffProc);
-
-    console.error('STDERR B', stderr);
+    const {stdout} = await stopFF(ffProc);
 
     assert.ok(stdout.includes(`Image ${offensiveFileName} has been blurred.`));
     assert.ok(

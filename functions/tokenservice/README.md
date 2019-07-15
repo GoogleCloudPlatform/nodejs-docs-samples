@@ -62,7 +62,7 @@ Run the following command which prompts you to choose from one of your existing 
 
   `functions/tokenservice` folder:
   
-          npm install && npm test
+         npm install && npm test
 
 ## How to call exported API from client 
  

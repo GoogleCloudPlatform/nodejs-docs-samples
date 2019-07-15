@@ -27,42 +27,51 @@ The sample requires the following environment variables:
 
 Use the following commands to declare the required environment variables:
 
-    export GCF_REGION=us-central1
-    export GOOGLE_CLOUD_PROJECT=[your-GCP-project-id]
-    export BASE_URL=http://localhost:8010/$GOOGLE_CLOUD_PROJECT/$GCF_REGION
-    export GOOGLE_APPLICATION_CREDENTIALS=[path-to-your-API-key-file]
-
+```
+export GCF_REGION=us-central1
+export GOOGLE_CLOUD_PROJECT=[your-GCP-project-id]
+export BASE_URL=http://localhost:8010/$GOOGLE_CLOUD_PROJECT/$GCF_REGION
+export GOOGLE_APPLICATION_CREDENTIALS=[path-to-your-API-key-file]
+```
 Run the following commands to install and start the Cloud Functions emulator:
 
-    npm install -g @google-cloud/functions-emulator
-    functions-emulator start
-
+```
+npm install -g @google-cloud/functions-emulator
+functions-emulator start
+```
 
 Run the following command to set the gcloud projectID and sign in to firebase  :
 
-    functions config set projectId $GOOGLE_CLOUD_PROJECT
-    firebase login
-
+```
+functions config set projectId $GOOGLE_CLOUD_PROJECT
+firebase login
+```
 Run the following command which prompts you to choose from one of your existing projects:
 
-    firebase use --add
-
+```
+firebase use --add
+```
 ## Deploy and Test
 
   1. Clone this repository:
   
-          git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
-          cd nodejs-docs-samples/functions/tokenService
+  ```
+      git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git 
+      cd nodejs-docs-samples/functions/tokenService
+  ```
     
   1. Run the following command to deploy the "getOAuthToken" function:
-
-          firebase deploy --only functions
-    
+  
+  ```
+      firebase deploy --only functions
+  ```
   1. To run the tests, use the following commands from the
 
   `functions/tokenservice` folder:
   
-          npm install && npm test
+  ```
+      npm install && npm test
+  ```
 
 ## How to call exported API from client 
  

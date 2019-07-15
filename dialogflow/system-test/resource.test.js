@@ -159,9 +159,7 @@ describe('resources', () => {
   });
 
   it('should List the Session Entity Type', async () => {
-    const output = exec(
-      `${cmd} list-session-entity-types -s ${sessionId}`
-    );
+    const output = exec(`${cmd} list-session-entity-types -s ${sessionId}`);
     assert.include(output, sessionId);
     assert.include(output, displayName);
     assert.include(output, '2');

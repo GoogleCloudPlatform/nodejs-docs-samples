@@ -16,8 +16,9 @@
 'use strict';
 
 const {assert} = require('chai');
-const execSync = require('child_process').execSync;
+const {execSync} = require('child_process');
 const uuid = require('uuid/v4');
+
 const cmd = 'node detect.v2beta1.js';
 const testQuery = 'Where is my data stored?';
 const testKnowledgeBaseName = `${uuid().split('-')[0]}-TestKnowledgeBase`;
@@ -31,15 +32,13 @@ describe('v2beta1 detection', () => {
   let knowbaseId;
   let documentFullPath;
 
-  it('should create a knowledge base', async () => {
+  it('should create a knowledge base', () => {
     // Check that the knowledge base does not yet exist
     let output = exec(`${cmd} listKnowledgeBases`);
     assert.notInclude(output, testKnowledgeBaseName);
 
     // Creates a knowledge base
-    output = exec(
-      `${cmd} createKnowledgeBase -k ${testKnowledgeBaseName}`
-    );
+    output = exec(`${cmd} createKnowledgeBase -k ${testKnowledgeBaseName}`);
     assert.include(output, `displayName: ${testKnowledgeBaseName}`);
 
     knowbaseFullName = output
@@ -52,58 +51,59 @@ describe('v2beta1 detection', () => {
       .trim();
   });
 
-  it('should list the knowledge bases', async () => {
+  it('should list the knowledge bases', () => {
     const output = exec(`${cmd} listKnowledgeBases`);
     assert.include(output, testKnowledgeBaseName);
   });
 
-  it('should get a knowledge base', async () => {
+  it('should get a knowledge base', () => {
     const output = exec(`${cmd} getKnowledgeBase -b "${knowbaseId}"`);
     assert.include(output, `displayName: ${testKnowledgeBaseName}`);
     assert.include(output, `name: ${knowbaseFullName}`);
   });
 
-  it('should create a document', async () => {
+  it('should create a document', () => {
     const output = exec(
       `${cmd} createDocument -n "${knowbaseFullName}" -z "${testDocumentPath}" -m "${testDocName}"`
     );
     assert.include(output, 'Document created');
   });
 
-  it('should list documents', async () => {
+  it('should list documents', () => {
     const output = exec(`${cmd} listDocuments -n "${knowbaseFullName}"`);
-    const parsedOut = output.split('\n');
+    const parsedOut = output.split('\n').filter(x => !!x.trim());
     documentFullPath = parsedOut[parsedOut.length - 1].split(':')[1];
+    assert.isDefined(documentFullPath);
     assert.include(output, `There are 1 documents in ${knowbaseFullName}`);
   });
 
-  it('should detect intent with a knowledge base', async () => {
+  it('should detect intent with a knowledge base', () => {
     const output = exec(
       `${cmd} detectIntentKnowledge -q "${testQuery}" -n "${knowbaseId}"`
     );
     assert.include(output, 'Detected Intent:');
   });
 
-  it('should delete a document', async () => {
+  it('should delete a document', () => {
     const output = exec(`${cmd} deleteDocument -d ${documentFullPath}`);
     assert.include(output, 'document deleted');
   });
 
-  it('should list the document', async () => {
+  it('should list the document', () => {
     const output = exec(`${cmd} listDocuments -n "${knowbaseFullName}"`);
     assert.notInclude(output, documentFullPath);
   });
 
-  it('should delete the Knowledge Base', async () => {
+  it('should delete the Knowledge Base', () => {
     exec(`${cmd} deleteKnowledgeBase -n "${knowbaseFullName}"`);
   });
 
-  it('should list the Knowledge Base', async () => {
+  it('should list the Knowledge Base', () => {
     const output = exec(`${cmd} listKnowledgeBases`);
     assert.notInclude(output, testKnowledgeBaseName);
   });
 
-  it('should detect Intent with Model Selection', async () => {
+  it('should detect Intent with Model Selection', () => {
     const output = exec(`${cmd} detectIntentwithModelSelection`);
     assert.include(
       output,
@@ -111,7 +111,7 @@ describe('v2beta1 detection', () => {
     );
   });
 
-  it('should detect Intent with Text to Speech Response', async () => {
+  it('should detect Intent with Text to Speech Response', () => {
     const output = exec(
       `${cmd} detectIntentwithTexttoSpeechResponse -q "${testQuery}"`
     );
@@ -121,10 +121,8 @@ describe('v2beta1 detection', () => {
     );
   });
 
-  it('should detect sentiment with intent', async () => {
-    const output = exec(
-      `${cmd} detectIntentandSentiment -q "${testQuery}"`
-    );
+  it('should detect sentiment with intent', () => {
+    const output = exec(`${cmd} detectIntentandSentiment -q "${testQuery}"`);
     assert.include(output, 'Detected sentiment');
   });
 });

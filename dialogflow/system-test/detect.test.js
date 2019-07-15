@@ -43,20 +43,19 @@ describe('basic detection', () => {
   });
 
   it('should detect audio query', async () => {
-    const stdout = exec(
-      `${cmd} audio ${audioFilepathBookARoom} -r 16000`);
+    const stdout = exec(`${cmd} audio ${audioFilepathBookARoom} -r 16000`);
     assert.include(stdout, 'Detected intent');
   });
 
   it('should detect audio query in streaming fashion', async () => {
-    const stdout = exec(
-      `${cmd} stream ${audioFilepathBookARoom} -r 16000`);
+    const stdout = exec(`${cmd} stream ${audioFilepathBookARoom} -r 16000`);
     assert.include(stdout, 'Detected intent');
   });
 
   it('should detect Intent with Text to Speech Response', async () => {
     const stdout = exec(
-      `${cmd_tts} ${projectId} 'SESSION_ID' '${testQuery}' 'en-US' './resources/output.wav'`);
+      `${cmd_tts} ${projectId} 'SESSION_ID' '${testQuery}' 'en-US' './resources/output.wav'`
+    );
     assert.include(
       stdout,
       'Audio content written to file: ./resources/output.wav'

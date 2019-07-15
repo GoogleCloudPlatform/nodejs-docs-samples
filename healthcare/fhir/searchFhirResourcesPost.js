@@ -24,7 +24,7 @@ function main(
   fhirStoreId,
   resourceType
 ) {
-  // [START healthcare_search_fhir_resources_post]
+  // [START healthcare_search_resources_post]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
@@ -52,7 +52,7 @@ function main(
   }
 
   searchFhirResourcesPost();
-  // [END healthcare_search_fhir_resources_post]
+  // [END healthcare_search_resources_post]
 }
 
 // node searchFhirResourcesPost.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType>

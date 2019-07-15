@@ -25,7 +25,7 @@ function main(
   resourceType,
   resourceId
 ) {
-  // [START healthcare_update_fhir_resource]
+  // [START healthcare_update_resource]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
@@ -56,7 +56,7 @@ function main(
   }
 
   updateFhirResource();
-  // [END healthcare_update_fhir_resource]
+  // [END healthcare_update_resource]
 }
 
 // node updateFhirResource.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType> <resourceId>

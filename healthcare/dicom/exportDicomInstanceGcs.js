@@ -24,7 +24,7 @@ function main(
   dicomStoreId,
   gcsUri
 ) {
-  // [START healthcare_export_dicom_instances_gcs]
+  // [START healthcare_export_dicom_instance_gcs]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
@@ -58,7 +58,7 @@ function main(
   }
 
   exportDicomInstanceGcs();
-  // [END healthcare_export_dicom_instances_gcs]
+  // [END healthcare_export_dicom_instance_gcs]
 }
 
 // node exportDicomInstanceGcs.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <gcsUri>

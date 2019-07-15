@@ -417,13 +417,15 @@ async function detectIntentKnowledge(
   console.log(`Detected Intent: ${result.intent.displayName}`);
   console.log(`Confidence: ${result.intentDetectionConfidence}`);
   console.log(`Query Result: ${result.fulfillmentText}`);
-  const answers = result.knowledgeAnswers.answers;
-  console.log(`There are ${answers.length} answer(s);`);
-  answers.forEach(a => {
-    console.log(`   answer: ${a.answer}`);
-    console.log(`   confidence: ${a.matchConfidence}`);
-    console.log(`   match confidence level: ${a.matchConfidenceLevel}`);
-  });
+  if (result.knowledgeAnswers && result.knowledgeAnswers.answers) {
+    const answers = result.knowledgeAnswers.answers;
+    console.log(`There are ${answers.length} answer(s);`);
+    answers.forEach(a => {
+      console.log(`   answer: ${a.answer}`);
+      console.log(`   confidence: ${a.matchConfidence}`);
+      console.log(`   match confidence level: ${a.matchConfidenceLevel}`);
+    });
+  }
   // [END dialogflow_detect_intent_knowledge]
 }
 

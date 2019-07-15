@@ -29,7 +29,7 @@ const {Buffer} = require('safe-buffer');
  * Publishes a message to a Cloud Pub/Sub Topic.
  *
  * @example
- * gcloud alpha functions call publish --data '{"topic":"[YOUR_TOPIC_NAME]","message":"Hello, world!"}'
+ * gcloud functions call publish --data '{"topic":"[YOUR_TOPIC_NAME]","message":"Hello, world!"}'
  *
  *   - Replace `[YOUR_TOPIC_NAME]` with your Cloud Pub/Sub topic name.
  *
@@ -59,7 +59,7 @@ exports.publish = async (req, res) => {
       message: req.body.message,
     },
   };
-  const messageBuffer = Buffer.from(JSON.stringify(messageObject), 'base64');
+  const messageBuffer = Buffer.from(JSON.stringify(messageObject), 'utf8');
 
   // Publishes a message
   try {

@@ -38,9 +38,9 @@ on Google Cloud Platform.
 
 ### How to run a sample
 
-1. Change directory to one of the sample folders, e.g. `bigquery`:
+1. Change directory to one of the sample folders, e.g. `storage-transfer`:
 
-        cd bigquery/
+        cd storage-transfer/
 
 1. Install the sample's dependencies (see the sample's README for details):
 

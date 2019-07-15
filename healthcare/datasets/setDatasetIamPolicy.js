@@ -24,7 +24,7 @@ function main(
   member,
   role
 ) {
-  // [START healthcare_set_dataset_iam_policy]
+  // [START healthcare_dataset_set_iam_policy]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
@@ -65,7 +65,7 @@ function main(
   }
 
   setDatasetIamPolicy();
-  // [END healthcare_set_dataset_iam_policy]
+  // [END healthcare_dataset_set_iam_policy]
 }
 
 // node setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member> <role>

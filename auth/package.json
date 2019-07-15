@@ -16,7 +16,7 @@
     "system-test": "mocha system-test/*.test.js --timeout=30000"
   },
   "dependencies": {
-    "@google-cloud/storage": "^2.0.3",
+    "@google-cloud/storage": "^3.0.0",
     "yargs": "^13.2.2"
   },
   "devDependencies": {

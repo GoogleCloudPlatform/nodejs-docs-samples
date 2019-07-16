@@ -5,19 +5,19 @@
     "lint": "eslint .",
     "serve": "firebase serve --only functions",
     "shell": "firebase functions:shell",
-    "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "local-test": "mocha test/index.test.js",
     "pretest": "sh test/updateFunctions.sh",
-    "test": "npm run local-test"
+    "test": "npm run local-test",
+    "start": "functions-framework --target=getOAuthToken"
   },
   "dependencies": {
     "firebase-admin": "^8.0.0",
     "firebase-functions": "^3.0.0"
   },
   "devDependencies": {
-    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
+    "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "eslint": "^6.0.0",
     "eslint-config-prettier": "^6.0.0",

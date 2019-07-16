@@ -38,7 +38,7 @@ function main(
     });
     google.options({
       auth,
-      headers: {Accept: 'type="application/dicom",multipart/related'},
+      headers: {Accept: 'multipart/related; type=application/dicom; transfer-syntax=*'},
       responseType: 'arraybuffer',
     });
 

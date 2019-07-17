@@ -48,7 +48,7 @@ Run the following command to install the library dependencies for Node.js:
         dicomweb.js dicomWebStoreInstance <datasetId> <dicomStoreId>  Handles the POST requests specified in the DICOMweb
         <dcmFile>                                                     standard.
         
-        node dicomWebSearchInstances.js <projectId> <cloudRegion>     Handles the GET requests specified in the DICOMweb
+        node dicomWebSearchForInstances.js <projectId> <cloudRegion>  Handles the GET requests specified in the DICOMweb
         <datasetId> <dicomStoreId>                                    standard.
         
         node dicomWebRetrieveStudy.js <projectId> <cloudRegion>       Handles the GET requests specified in the DICOMweb

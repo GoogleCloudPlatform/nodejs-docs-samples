@@ -15,7 +15,7 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "system-test": "repo-tools test app",
+    "system-test": "mocha --exit test/*.test.js",
     "test": "npm run system-test",
     "e2e-test": "repo-tools test deploy"
   },
@@ -23,7 +23,9 @@
     "express": "^4.16.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0"
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^6.1.4",
+    "supertest": "^4.0.2"
   },
   "cloud-repo-tools": {
     "test": {

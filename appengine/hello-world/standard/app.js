@@ -34,3 +34,5 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 // [END gae_node_request_example]
+
+module.exports = app;

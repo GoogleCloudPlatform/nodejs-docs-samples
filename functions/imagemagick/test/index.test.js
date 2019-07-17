@@ -82,9 +82,7 @@ describe('functions/imagemagick tests', () => {
 
     const {stdout} = await stopFF(ffProc);
 
-    assert.ok(
-      stdout.includes(`The image ${safeFileName} has been detected as OK.`)
-    );
+    assert.ok(stdout.includes(`Detected ${safeFileName} as OK.`));
   });
 
   it('blurOffensiveImages successfully blurs offensive images', async () => {
@@ -103,10 +101,10 @@ describe('functions/imagemagick tests', () => {
 
     const {stdout} = await stopFF(ffProc);
 
-    assert.ok(stdout.includes(`Image ${offensiveFileName} has been blurred.`));
+    assert.ok(stdout.includes(`Blurred image: ${offensiveFileName}`));
     assert.ok(
       stdout.includes(
-        `Blurred image has been uploaded to: gs://${BLURRED_BUCKET_NAME}/${offensiveFileName}`
+        `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${offensiveFileName}`
       )
     );
 

@@ -46,10 +46,10 @@ exports.blurOffensiveImages = async event => {
       detections.adult === 'VERY_LIKELY' ||
       detections.violence === 'VERY_LIKELY'
     ) {
-      console.log(`The image ${file.name} has been detected as inappropriate.`);
+      console.log(`Detected ${file.name} as inappropriate.`);
       return blurImage(file, BLURRED_BUCKET_NAME);
     } else {
-      console.log(`The image ${file.name} has been detected as OK.`);
+      console.log(`Detected ${file.name} as OK.`);
     }
   } catch (err) {
     console.error(`Failed to analyze ${file.name}.`, err);
@@ -67,9 +67,9 @@ const blurImage = async (file, blurredBucketName) => {
   try {
     await file.download({destination: tempLocalPath});
 
-    console.log(`Image ${file.name} has been downloaded to ${tempLocalPath}.`);
+    console.log(`Downloaded ${file.name} to ${tempLocalPath}.`);
   } catch (err) {
-    console.error('Failed to download file.', err);
+    console.error('File download failed.', err);
     return Promise.reject(err);
   }
 
@@ -80,16 +80,16 @@ const blurImage = async (file, blurredBucketName) => {
         .blur(0, 16)
         .write(tempLocalPath, (err, stdout) => {
           if (err) {
-            console.error('Failed to blur image.', err);
+            console.error('Image blurring failed.', err);
             return reject(err);
           } else {
             resolve(stdout);
           }
         });
     });
-    console.log(`Image ${file.name} has been blurred.`);
+    console.log(`Blurred image: ${file.name}`);
   } catch (err) {
-    console.error('Failed to blur image.', err);
+    console.error('Image blurring failed.', err);
     return Promise.reject(err);
   }
 
@@ -102,10 +102,10 @@ const blurImage = async (file, blurredBucketName) => {
   try {
     await blurredBucket.upload(tempLocalPath, {destination: file.name});
     console.log(
-      `Blurred image has been uploaded to: gs://${blurredBucketName}/${file.name}`
+      `Uploaded blurred image to: gs://${blurredBucketName}/${file.name}`
     );
   } catch (err) {
-    console.error('Failed to upload blurred image.', err);
+    console.error('Unable to upload blurred image.', err);
     return Promise.reject(err);
   }
 

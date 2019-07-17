@@ -41,8 +41,7 @@ const dicomWebStoreInstance = async (
   cloudRegion,
   datasetId,
   dicomStoreId,
-  dcmFile,
-  boundary
+  dcmFile
 ) => {
   // Token retrieved in callback
   // getToken(serviceAccountJson, function(cb) {...});
@@ -51,7 +50,6 @@ const dicomWebStoreInstance = async (
   // const datasetId = 'my-dataset';
   // const dicomStoreId = 'my-dicom-store';
   // const dcmFile = 'IMG.dcm'
-  // const boundary = 'DICOMwebBoundary'
   const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
 
   const dicomWebPath = `${parentName}/datasets/${datasetId}/dicomStores/${dicomStoreId}/dicomWeb/studies`;
@@ -62,7 +60,7 @@ const dicomWebStoreInstance = async (
     url: dicomWebPath,
     headers: {
       authorization: `Bearer ${token}`,
-      'Content-Type': `multipart/related; type=application/dicom; boundary=${boundary}`,
+      'Content-Type': `multipart/related; type=application/dicom`,
     },
     body: binaryData,
     method: 'POST',
@@ -77,119 +75,6 @@ const dicomWebStoreInstance = async (
   }
 };
 // [END healthcare_dicomweb_store_instance]
-
-// [START healthcare_dicomweb_search_instances]
-const dicomWebSearchInstances = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  dicomStoreId
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const dicomStoreId = 'my-dicom-store';
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const dicomWebPath = `${parentName}/datasets/${datasetId}/dicomStores/${dicomStoreId}/dicomWeb/instances`;
-
-  const options = {
-    url: dicomWebPath,
-    headers: {
-      authorization: `Bearer ${token}`,
-      'Content-Type': 'application/dicom+json; charset=utf-8',
-    },
-    method: 'GET',
-  };
-
-  try {
-    const results = await request(options);
-    console.log('Instances:\n');
-    console.log(results);
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_dicomweb_search_instances]
-
-// [START healthcare_dicomweb_retrieve_study]
-const dicomWebRetrieveStudy = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  dicomStoreId,
-  studyUid
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const dicomStoreId = 'my-dicom-store';
-  // const studyUid = '1.2.345.678901.2.345.6789.0123456.7890.1234567890.123'
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const dicomWebPath = `${parentName}/datasets/${datasetId}/dicomStores/${dicomStoreId}/dicomWeb/studies/${studyUid}`;
-
-  const options = {
-    url: dicomWebPath,
-    headers: {
-      authorization: `Bearer ${token}`,
-      'Content-Type': 'application/dicom+json; charset=utf-8',
-    },
-    method: 'GET',
-  };
-
-  try {
-    await request(options);
-    console.log(`Retrieved study with UID: ${studyUid}`);
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_dicomweb_retrieve_study]
-
-// [START healthcare_dicomweb_delete_study]
-const dicomWebDeleteStudy = async (
-  token,
-  projectId,
-  cloudRegion,
-  datasetId,
-  dicomStoreId,
-  studyUid
-) => {
-  // Token retrieved in callback
-  // getToken(serviceAccountJson, function(cb) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const datasetId = 'my-dataset';
-  // const dicomStoreId = 'my-dicom-store';
-  // const studyUid = '1.2.345.678901.2.345.6789.0123456.7890.1234567890.123'
-  const parentName = `${BASE_URL}/projects/${projectId}/locations/${cloudRegion}`;
-
-  const dicomWebPath = `${parentName}/datasets/${datasetId}/dicomStores/${dicomStoreId}/dicomWeb/studies/${studyUid}`;
-
-  const options = {
-    url: dicomWebPath,
-    headers: {
-      authorization: `Bearer ${token}`,
-      'Content-Type': 'application/dicom+json; charset=utf-8',
-    },
-    method: 'DELETE',
-  };
-
-  try {
-    await request(options);
-    console.log('Deleted study.');
-  } catch (err) {
-    console.error(err);
-  }
-};
-// [END healthcare_dicomweb_delete_study]
 
 require(`yargs`) // eslint-disable-line
   .demand(1)
@@ -217,7 +102,7 @@ require(`yargs`) // eslint-disable-line
     },
   })
   .command(
-    `dicomWebStoreInstance <datasetId> <dicomStoreId> <dcmFile> <boundary>`,
+    `dicomWebStoreInstance <datasetId> <dicomStoreId> <dcmFile>`,
     `Handles the POST requests specified in the DICOMweb standard.`,
     {},
     opts => {
@@ -228,61 +113,7 @@ require(`yargs`) // eslint-disable-line
           opts.cloudRegion,
           opts.datasetId,
           opts.dicomStoreId,
-          opts.dcmFile,
-          opts.boundary
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `dicomWebSearchInstances <datasetId> <dicomStoreId>`,
-    `Handles the GET requests specified in the DICOMweb standard.`,
-    {},
-    opts => {
-      const cb = function(token) {
-        dicomWebSearchInstances(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `dicomWebRetrieveStudy <datasetId> <dicomStoreId> <studyUid>`,
-    `Handles the GET requests specified in the DICOMweb standard.`,
-    {},
-    opts => {
-      const cb = function(token) {
-        dicomWebRetrieveStudy(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId,
-          opts.studyUid
-        );
-      };
-      getToken(opts.serviceAccount, cb);
-    }
-  )
-  .command(
-    `dicomWebDeleteStudy <datasetId> <dicomStoreId> <studyUid>`,
-    `Handles DELETE requests.`,
-    {},
-    opts => {
-      const cb = function(token) {
-        dicomWebDeleteStudy(
-          token,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.datasetId,
-          opts.dicomStoreId,
-          opts.studyUid
+          opts.dcmFile
         );
       };
       getToken(opts.serviceAccount, cb);

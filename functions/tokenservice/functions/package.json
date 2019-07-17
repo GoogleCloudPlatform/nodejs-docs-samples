@@ -8,7 +8,6 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "local-test": "mocha test/index.test.js",
-    "pretest": "sh test/updateFunctions.sh",
     "test": "npm run local-test",
     "start": "functions-framework --target=getOAuthToken"
   },

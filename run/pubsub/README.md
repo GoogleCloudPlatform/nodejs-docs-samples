@@ -4,28 +4,10 @@ This sample shows how to create a service that processes Pub/Sub messages.
 
 Use it with the [Cloud Pub/Sub with Cloud Run tutorial](http://cloud.google.com/run/docs/tutorials/pubsub).
 
-## Build
+For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/run).
 
-```
-docker build --tag pubsub-tutorial:nodejs .
-```
+## Dependencies
 
-## Run
+* **express**: Web server framework.
+* **body-parser**: express middleware for request payload processing.
 
-```
-docker run --rm -p 9090:8080 pubsub-tutorial:nodejs
-```
-
-## Test
-
-```
-npm install
-npm test
-```
-
-## Deploy
-
-```
-gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/pubsub-tutorial
-gcloud alpha run deploy pubsub-tutorial --image gcr.io/${GOOGLE_CLOUD_PROJECT}/pubsub-tutorial
-```

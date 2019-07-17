@@ -44,17 +44,27 @@ Run the following command to install the library dependencies for Node.js:
 
 ## DICOMweb
 
-    dicomweb.js <command>
-
     Commands:
         dicomweb.js dicomWebStoreInstance <datasetId> <dicomStoreId>  Handles the POST requests specified in the DICOMweb
-        <dcmFile> <boundary>                                          standard.
-        dicomweb.js dicomWebSearchInstances <datasetId>               Handles the GET requests specified in the DICOMweb
-        <dicomStoreId>                                                standard.
-        dicomweb.js dicomWebRetrieveStudy <datasetId> <dicomStoreId>  Handles the GET requests specified in the DICOMweb
-        <studyUid>                                                    standard.
-        dicomweb.js dicomWebDeleteStudy <datasetId> <dicomStoreId>    Handles DELETE requests.
-        <studyUid>
+        <dcmFile>                                                     standard.
+        
+        node dicomWebSearchForInstances.js <projectId> <cloudRegion>  Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId>                                    standard.
+        
+        node dicomWebRetrieveStudy.js <projectId> <cloudRegion>       Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId> <studyUid>                         standard.
+        
+        node dicomWebRetrieveInstance.js <projectId> <cloudRegion>    Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId> <studyUid> <seriesUid>             standard.
+        <instanceUid>                        
+        
+        node dicomWebRetrieveRendered.js <projectId> <cloudRegion>    Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId> <studyUid> <seriesUid>             standard.
+        <instanceUid>                       
+        
+        node dicomWebDeleteStudy.js <projectId> <cloudRegion>         Handles DELETE requests.
+        <datasetId> <dicomStoreId>  <studyUid>       
+       
 
     Options:
     --version             Show version number                                                                    [boolean]

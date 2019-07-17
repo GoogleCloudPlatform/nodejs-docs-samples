@@ -12,7 +12,7 @@
 # Serverless/CBR
 appengine @michaelawyu
 functions @ace-n @grant
-run @grayside
+run @GoogleCloudPlatform/cdpe-cbr-containers
 
 # Other functions samples
 functions/composer-storage-trigger @leahecole

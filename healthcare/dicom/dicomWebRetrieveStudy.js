@@ -58,8 +58,6 @@ function main(
       request
     );
 
-    console.log(study);
-
     const fileBytes = Buffer.from(study.data);
 
     await writeFile(fileName, fileBytes);

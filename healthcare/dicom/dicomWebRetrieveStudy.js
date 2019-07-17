@@ -38,7 +38,9 @@ function main(
     });
     google.options({
       auth,
-      headers: {Accept: 'type="application/dicom",multipart/related'},
+      headers: {
+        Accept: 'multipart/related; type=application/dicom; transfer-syntax=*',
+      },
       responseType: 'arraybuffer',
     });
 
@@ -55,6 +57,8 @@ function main(
     const study = await healthcare.projects.locations.datasets.dicomStores.studies.retrieveStudy(
       request
     );
+
+    console.log(study);
 
     const fileBytes = Buffer.from(study.data);
 

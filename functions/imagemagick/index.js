@@ -75,21 +75,12 @@ const blurImage = async (file, blurredBucketName) => {
 
   try {
     // Blur the image using ImageMagick.
-    await new Promise((resolve, reject) => {
-      gm(tempLocalPath)
-        .blur(0, 16)
-        .write(tempLocalPath, (err, stdout) => {
-          if (err) {
-            console.error('Image blurring failed.', err);
-            return reject(err);
-          } else {
-            resolve(stdout);
-          }
-        });
-    });
+    await util.promisify(
+      gm(tempLocalPath).blur(0, 16).write(tempLocalPath)
+    );
     console.log(`Blurred image: ${file.name}`);
   } catch (err) {
-    console.error('Image blurring failed.', err);
+    console.error(`Failed to blur image ${file.name}`, err);
     return Promise.reject(err);
   }
 
@@ -99,25 +90,16 @@ const blurImage = async (file, blurredBucketName) => {
   const blurredBucket = storage.bucket(blurredBucketName);
 
   // Upload the Blurred image back into the bucket.
+  const gcsPath = `gs://${blurredBucketName}/${file.name}`;
   try {
     await blurredBucket.upload(tempLocalPath, {destination: file.name});
-    console.log(
-      `Uploaded blurred image to: gs://${blurredBucketName}/${file.name}`
-    );
+    console.log(`Uploaded blurred image to: ${gcsPath}`);
   } catch (err) {
-    console.error('Unable to upload blurred image.', err);
+    console.error(`Unable to upload blurred image to ${gcsPath}:`, err);
     return Promise.reject(err);
   }
 
   // Delete the temporary file.
-  return new Promise((resolve, reject) => {
-    fs.unlink(tempLocalPath, err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  return util.promisify(fs.unlink(tempLocalPath));
 };
 // [END functions_imagemagick_blur]

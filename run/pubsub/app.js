@@ -3,17 +3,14 @@
 // license that can be found in the LICENSE file.
 
 // [START run_pubsub_server_setup]
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json());
-
 // [END run_pubsub_server_setup]
 
 // [START run_pubsub_handler]
-
 app.post('/', (req, res) => {
   if (!req.body) {
     const msg = 'no Pub/Sub message received';
@@ -38,7 +35,6 @@ app.post('/', (req, res) => {
   console.log(`Hello ${name}!`);
   res.status(204).send();
 });
-
 // [END run_pubsub_handler]
 
 module.exports = app;

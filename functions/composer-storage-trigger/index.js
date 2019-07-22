@@ -53,13 +53,7 @@ exports.triggerDag = async data => {
   try {
     const iap = await authorizeIap(CLIENT_ID, PROJECT_ID, USER_AGENT);
 
-    return makeIapPostRequest(
-      WEBSERVER_URL,
-      BODY,
-      iap.idToken,
-      USER_AGENT,
-      iap.jwt
-    );
+    return makeIapPostRequest(WEBSERVER_URL, BODY, iap.idToken, USER_AGENT);
   } catch (err) {
     console.error('Error authorizing IAP:', err.message);
     throw new Error(err);
@@ -142,7 +136,6 @@ const authorizeIap = async (clientId, projectId, userAgent) => {
   }
 
   return {
-    jwt: jwt,
     idToken: tokenJson.id_token,
   };
 };

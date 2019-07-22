@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@opencensus/core": "^0.0.15",
-    "@opencensus/exporter-stackdriver": "^0.0.15"
+    "@opencensus/exporter-stackdriver": "^0.0.16"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

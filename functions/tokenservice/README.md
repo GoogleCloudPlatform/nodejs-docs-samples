@@ -85,7 +85,7 @@ firebase use --add
  
   
 [0]: https://cloud.google.com
-[1]: https://github.com/googleapis/google-auth-library-swift/tree/master/Sources/OAuth2/FirebaseFunctionTokenProvider
+[1]: https://github.com/googleapis/google-auth-library-swift/tree/master/Sources/OAuth2/FCMTokenProvider
 [2]: https://github.com/GoogleCloudPlatform/ios-docs-samples.git
 [3]: https://github.com/GoogleCloudPlatform/android-docs-samples
 [4]: https://nodejs.org/en/

@@ -12,12 +12,16 @@
     "start": "functions-framework --target=getOAuthToken"
   },
   "dependencies": {
+    "child-process-promise": "^2.2.1",
     "firebase-admin": "^8.0.0",
-    "firebase-functions": "^3.0.0"
+    "firebase-functions": "^3.0.0",
+    "request": "^2.88.0",
+    "requestretry": "^4.0.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "babel-eslint": "^10.0.2",
     "eslint": "^6.0.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-node": "^9.1.0",

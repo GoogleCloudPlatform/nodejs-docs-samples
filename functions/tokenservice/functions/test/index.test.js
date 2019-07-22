@@ -1,58 +1,80 @@
 const assert = require('assert');
 const index = require('../index.js');
-const supertest = require('supertest');
-const request = supertest(process.env.BASE_URL);
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
+const cwd = path.join(__dirname, '..');
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+const FF_TIMEOUT = 3000;
+let requestRetry = require('requestretry');
 
-describe('Firebase OAuth Token', () => {
-  it('should give 400 if no argument is provided.', done => {
-    request
-      .get('/getOAuthToken')
-      .send()
-      .expect(
-        400,
-        '{"error":{"status":"INVALID_ARGUMENT","message":"Bad Request"}}',
-        done
-      );
-  });
-  it('should hit retrieve credentials API', done => {
-    const context = (uid = 'test-uid', email_verified = true) => ({
-      auth: {
-        uid,
-        token: {
-          firebase: {
-            email_verified,
-          },
-        },
+// let requestRetryForCredentials = require('requestretry');
+
+const defaults = {
+  uri: `${BASE_URL}/getOAuthToken`,
+  maxAttempts: 1,
+  fullResponse: true,
+};
+
+requestRetry = requestRetry.defaults({
+  retryStrategy: requestRetry.RetryStrategies.NetworkError,
+  method: 'GET',
+  json: true,
+  url: `${BASE_URL}/getOAuthToken`,
+});
+
+const contextValue = (uid = 'test-uid', email_verified = true) => ({
+  auth: {
+    uid,
+    token: {
+      firebase: {
+        email_verified,
       },
-    });
-    const result = index.retrieveCredentials(context);
-    result
-      .then(doc => {
-        return doc;
-      })
-      .catch(err => {
-        console.log('Error in retrieve credentials', err);
-        return 'Error retrieving token';
+    },
+  },
+});
+
+describe('getOAuthToken tests', () => {
+  let ffProc;
+  before(() => {
+    ffProc = execPromise(
+      `functions-framework --target=getOAuthToken --signature-type=http`,
+      {timeout: FF_TIMEOUT, shell: true, cwd}
+    );
+  });
+  after(async () => {
+    try {
+      await ffProc;
+    } catch (err) {
+      // Timeouts always cause errors on Linux, so catch them
+      if (err.name && err.name === 'ChildProcessError') {
+        return;
+      }
+      throw err;
+    }
+  });
+
+  describe('Firebase OAuth Token', () => {
+    // no argument 400 error
+    it('should give 400 if no Context is provided', async () => {
+      //new requestRetry(defaults, (error, response, body) => done())
+      const response = await requestRetry({
+        body: {
+          deviceID: '',
+        },
       });
-    done();
-  });
-  it('Should throw on no auth', () => {
-    assert.throws(() => index.getOAuthToken({}), Error);
-  });
-  it('Should return token', () => {
-    const context = (uid = 'test-uid', email_verified = true) => ({
-      auth: {
-        uid,
-        token: {
-          firebase: {
-            email_verified,
-          },
-        },
-      },
+      //Context is missing in the input parameter.
+      assert.strictEqual(response.statusCode, 400);
+      assert.strictEqual(response.statusMessage, 'Bad Request');
     });
-    request
-      .get('/getOAuthToken')
-      .send(context)
-      .expect(200);
+
+    it('should give 400 if no deviceID is provided', async () => {
+      //new requestRetry(defaults, (error, response, body) => done())
+      const response = await requestRetry({
+        contextValue,
+      });
+      //Context is missing in the input parameter.
+      assert.strictEqual(response.statusCode, 400);
+      assert.strictEqual(response.statusMessage, 'Bad Request');
+    });
   });
 });

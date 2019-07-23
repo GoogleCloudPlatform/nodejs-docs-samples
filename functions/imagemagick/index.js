@@ -18,6 +18,7 @@
 // [START functions_imagemagick_setup]
 const gm = require('gm').subClass({imageMagick: true});
 const fs = require('fs');
+const {promisify} = require('util');
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
@@ -75,8 +76,10 @@ const blurImage = async (file, blurredBucketName) => {
 
   try {
     // Blur the image using ImageMagick.
-    await util.promisify(
-      gm(tempLocalPath).blur(0, 16).write(tempLocalPath)
+    await promisify(
+      gm(tempLocalPath)
+        .blur(0, 16)
+        .write(tempLocalPath)
     );
     console.log(`Blurred image: ${file.name}`);
   } catch (err) {
@@ -100,6 +103,6 @@ const blurImage = async (file, blurredBucketName) => {
   }
 
   // Delete the temporary file.
-  return util.promisify(fs.unlink(tempLocalPath));
+  return promisify(fs.unlink(tempLocalPath));
 };
 // [END functions_imagemagick_blur]

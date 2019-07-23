@@ -24,7 +24,6 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const FF_TIMEOUT = 3000;
 const PORT = 8080;
 let requestRetry = require('requestretry');
-
 const defaults = {
   uri: `${BASE_URL}/getOAuthToken`,
   maxAttempts: 1,
@@ -89,7 +88,9 @@ describe('getOAuthToken tests', () => {
     });
 
     it('should give 400 if no deviceID is provided', async () => {
-      const response = await requestRetry(contextValue);
+      const response = await requestRetry({
+        contextValue,
+      });
       //Context is missing in the input parameter.
       assert.strictEqual(response.statusCode, 400);
       assert.strictEqual(response.statusMessage, 'Bad Request');

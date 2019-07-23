@@ -16,7 +16,6 @@
 /* eslint-env node, mocha */
 
 const assert = require('assert');
-const index = require('../index.js');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const cwd = path.join(__dirname, '..');
@@ -24,11 +23,6 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const FF_TIMEOUT = 3000;
 const PORT = 8080;
 let requestRetry = require('requestretry');
-const defaults = {
-  uri: `${BASE_URL}/getOAuthToken`,
-  maxAttempts: 1,
-  fullResponse: true,
-};
 
 requestRetry = requestRetry.defaults({
   retryDelay: 500,

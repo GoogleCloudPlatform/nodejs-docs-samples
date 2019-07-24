@@ -63,7 +63,7 @@ function infiniteStream(
   const {Transform} = require('stream');
 
   // Node-Record-lpcm16
-  const record = require('node-record-lpcm16');
+  const recorder = require('node-record-lpcm16');
 
   // Imports the Google Cloud client library
   // Currently, only v1p1beta1 contains result-end-time
@@ -210,14 +210,15 @@ function infiniteStream(
     startStream();
   }
   // Start recording and send the microphone input to the Speech API
-  record
-    .start({
+  recorder
+    .record({
       sampleRateHertz: sampleRateHertz,
       threshold: 0, // Silence threshold
       silence: 1000,
       keepSilence: true,
       recordProgram: 'rec', // Try also "arecord" or "sox"
     })
+    .stream()
     .on('error', err => {
       console.error('Audio recording error ' + err);
     })

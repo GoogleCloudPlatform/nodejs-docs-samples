@@ -380,7 +380,7 @@ async function streamingRecognize(
 
 function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
   // [START speech_transcribe_streaming_mic]
-  const record = require('node-record-lpcm16');
+  const recorder = require('node-record-lpcm16');
 
   // Imports the Google Cloud client library
   const speech = require('@google-cloud/speech');
@@ -417,8 +417,8 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
     );
 
   // Start recording and send the microphone input to the Speech API
-  record
-    .start({
+  recorder
+    .record({
       sampleRateHertz: sampleRateHertz,
       threshold: 0,
       // Other options, see https://www.npmjs.com/package/node-record-lpcm16#options
@@ -426,6 +426,7 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
       recordProgram: 'rec', // Try also "arecord" or "sox"
       silence: '10.0',
     })
+    .stream()
     .on('error', console.error)
     .pipe(recognizeStream);
 

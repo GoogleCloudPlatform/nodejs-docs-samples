@@ -74,18 +74,19 @@ const blurImage = async (file, blurredBucketName) => {
     return Promise.reject(err);
   }
 
-  try {
-    // Blur the image using ImageMagick.
-    await promisify(
-      gm(tempLocalPath)
-        .blur(0, 16)
-        .write(tempLocalPath)
-    );
-    console.log(`Blurred image: ${file.name}`);
-  } catch (err) {
-    console.error(`Failed to blur image ${file.name}`, err);
-    return Promise.reject(err);
-  }
+  await new Promise((resolve, reject) => {
+    gm(tempLocalPath)
+      .blur(0, 16)
+      .write(tempLocalPath, (err, stdout) => {
+        if (err) {
+          console.error('Failed to blur image.', err);
+          reject(err);
+        } else {
+          console.log(`Blurred image: ${file.name}`);
+          resolve(stdout);
+        }
+      });
+  });
 
   // Upload result to a different bucket, to avoid re-triggering this function.
   // You can also re-upload it to the same bucket + tell your Cloud Function to

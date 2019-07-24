@@ -46,6 +46,10 @@ export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
 
+#  functions/memorystore/redis
+export REDISHOST=$(cat $KOKORO_GFILE_DIR/secrets-memorystore-redis-ip.txt)
+export REDISPORT=6379
+
 #  functions/translate
 export SUPPORTED_LANGUAGE_CODES="en,es"
 export TRANSLATE_TOPIC=$FUNCTIONS_TOPIC

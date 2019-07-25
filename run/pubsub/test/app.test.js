@@ -20,16 +20,21 @@
 
 const assert = require('assert');
 const path = require('path');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const supertest = require('supertest');
+const sinon = require('sinon');
 const uuid = require('uuid');
 
-const cwd = path.join(__dirname, '../');
-const requestObj = tools.getRequest({cwd});
+let request;
 
 describe('Unit Tests', () => {
+  before(() => {
+    const app = require(path.join(__dirname, '..', 'app'));
+    request = supertest(app);
+  });
+
   describe('should fail', () => {
     it(`on a Bad Request with an empty payload`, async () => {
-      await requestObj
+      await request
         .post('/')
         .type('json')
         .send('')
@@ -37,7 +42,7 @@ describe('Unit Tests', () => {
     });
 
     it(`on a Bad Request with an invalid payload`, async () => {
-      await requestObj
+      await request
         .post('/')
         .type('json')
         .send({nomessage: 'invalid'})
@@ -45,7 +50,7 @@ describe('Unit Tests', () => {
     });
 
     it(`on a Bad Request with an invalid mimetype`, async () => {
-      await requestObj
+      await request
         .post('/')
         .type('text')
         .send('{message: true}')
@@ -54,11 +59,17 @@ describe('Unit Tests', () => {
   });
 
   describe('should succeed', () => {
-    beforeEach(tools.stubConsole);
-    afterEach(tools.restoreConsole);
+    beforeEach(() => {
+      sinon.spy(console, 'error');
+      sinon.spy(console, 'log');
+    });
+    afterEach(() => {
+      console.error.restore();
+      console.log.restore();
+    });
 
     it(`with a minimally valid Pub/Sub Message`, async () => {
-      await requestObj
+      await request
         .post('/')
         .type('json')
         .send({message: true})
@@ -70,7 +81,7 @@ describe('Unit Tests', () => {
       const name = uuid.v4();
       const data = Buffer.from(name).toString(`base64`);
 
-      await requestObj
+      await request
         .post('/')
         .type('json')
         .send({message: {data}})

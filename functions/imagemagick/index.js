@@ -89,8 +89,6 @@ const blurImage = async (file, blurredBucketName) => {
   });
 
   // Upload result to a different bucket, to avoid re-triggering this function.
-  // You can also re-upload it to the same bucket + tell your Cloud Function to
-  // ignore files marked as blurred (e.g. those with a "blurred" prefix)
   const blurredBucket = storage.bucket(blurredBucketName);
 
   // Upload the Blurred image back into the bucket.

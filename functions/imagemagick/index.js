@@ -32,6 +32,7 @@ const {BLURRED_BUCKET_NAME} = process.env;
 // [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
 exports.blurOffensiveImages = async event => {
+  // This event represents the triggering Cloud Storage object.
   const object = event;
 
   const file = storage.bucket(object.bucket).file(object.name);
@@ -89,8 +90,6 @@ const blurImage = async (file, blurredBucketName) => {
   });
 
   // Upload result to a different bucket, to avoid re-triggering this function.
-  // You can also re-upload it to the same bucket + tell your Cloud Function to
-  // ignore files marked as blurred (e.g. those with a "blurred" prefix)
   const blurredBucket = storage.bucket(blurredBucketName);
 
   // Upload the Blurred image back into the bucket.

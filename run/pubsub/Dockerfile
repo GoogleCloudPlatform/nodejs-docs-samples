@@ -17,8 +17,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies.
-RUN npm install
-# For production deploys, add a package-lock.json and use 'npm ci'.
+RUN npm install --production
+# If you add a package-lock.json, speed your build by switching to 'npm ci'.
 # RUN npm ci --only=production
 
 # Copy local code to the container image.

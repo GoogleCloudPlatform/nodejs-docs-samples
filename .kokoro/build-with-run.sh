@@ -40,7 +40,7 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 
 # Register post-test cleanup.
 function cleanup {
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}"
+  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
 }
 trap cleanup EXIT
 

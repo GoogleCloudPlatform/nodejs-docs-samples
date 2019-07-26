@@ -14,8 +14,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "system-test": "mocha --exit test/*.test.js",
-    "test": "npm run system-test"
+    "test": "mocha --exit test/*.test.js"
   },
   "dependencies": {
     "express": "^4.16.3"

@@ -85,6 +85,22 @@ it('should de-identify data in a dataset and write to a new dataset', async () =
   );
 });
 
+it('should create and get a dataset IAM policy', async () => {
+  const localMember = 'group:dpebot@google.com';
+  const localRole = 'roles/viewer';
+
+  let output = await tools.runAsync(
+    `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`,
+    cwd
+  );
+  assert.ok(output.includes, 'ETAG');
+
+  output = await tools.runAsync(
+    `node getDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId}`
+  );
+  assert.ok(output.includes('dpebot'));
+});
+
 it('should delete a dataset', async () => {
   const output = await tools.runAsync(
     `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,

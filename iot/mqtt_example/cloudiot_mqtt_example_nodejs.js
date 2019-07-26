@@ -37,7 +37,7 @@ let backoffTime = 1;
 let publishChainInProgress = false;
 
 console.log('Google Cloud IoT Core MQTT example.');
-const argv = require(`yargs`)
+const {argv} = require(`yargs`)
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
@@ -242,7 +242,7 @@ const argv = require(`yargs`)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
   .help()
-  .strict().argv;
+  .strict();
 
 // Create a Cloud IoT Core JWT for the given project id, signed with the given
 // private key.
@@ -293,9 +293,7 @@ function publishAsync(
   }
 
   setTimeout(() => {
-    const payload = `${argv.registryId}/${
-      argv.deviceId
-    }-payload-${messagesSent}`;
+    const payload = `${argv.registryId}/${argv.deviceId}-payload-${messagesSent}`;
 
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.

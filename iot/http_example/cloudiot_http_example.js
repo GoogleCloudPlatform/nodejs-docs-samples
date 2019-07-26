@@ -21,7 +21,7 @@ const request = require('retry-request', {request: require('request')});
 // [END iot_http_includes]
 
 console.log('Google Cloud IoT Core HTTP example.');
-const argv = require(`yargs`)
+const {argv} = require(`yargs`)
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
@@ -94,7 +94,7 @@ const argv = require(`yargs`)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
   .help()
-  .strict().argv;
+  .strict();
 
 // [START iot_http_variables]
 // A unique string that identifies this device. For Google Cloud IoT Core, it
@@ -106,9 +106,7 @@ const authToken = createJwt(
   argv.privateKeyFile,
   argv.algorithm
 );
-const devicePath = `projects/${argv.projectId}/locations/${
-  argv.cloudRegion
-}/registries/${argv.registryId}/devices/${argv.deviceId}`;
+const devicePath = `projects/${argv.projectId}/locations/${argv.cloudRegion}/registries/${argv.registryId}/devices/${argv.deviceId}`;
 
 // The request path, set accordingly depending on the message type.
 const pathSuffix =

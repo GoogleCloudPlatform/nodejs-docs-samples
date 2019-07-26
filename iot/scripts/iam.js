@@ -20,7 +20,7 @@
  * For more information, see https://cloud.google.com/iot.
  */
 
-function setTopicPolicy(topicName) {
+const setTopicPolicy = async topicName => {
   // Imports the Google Cloud client library
   const {PubSub} = require('@google-cloud/pubsub');
 
@@ -33,48 +33,43 @@ function setTopicPolicy(topicName) {
   // The new IAM policy
   const serviceAccount = 'serviceAccount:cloud-iot@system.gserviceaccount.com';
 
-  topic.iam
-    .getPolicy()
-    .then(results => {
-      const policy = results[0] || {};
-      policy.bindings || (policy.bindings = []);
-      console.log(JSON.stringify(policy, null, 2));
+  let policy = await topic.iam.getPolicy();
+  policy = policy[0] || {};
 
-      let hasRole = false;
-      let binding = {
-        role: 'roles/pubsub.publisher',
-        members: [serviceAccount],
-      };
+  policy.bindings || (policy.bindings = []);
+  console.log(JSON.stringify(policy, null, 2));
 
-      policy.bindings.forEach(_binding => {
-        if (_binding.role === binding.role) {
-          binding = _binding;
-          hasRole = true;
-          return false;
-        }
-      });
+  let hasRole = false;
+  let binding = {
+    role: 'roles/pubsub.publisher',
+    members: [serviceAccount],
+  };
 
-      if (hasRole) {
-        binding.members || (binding.members = []);
-        if (binding.members.indexOf(serviceAccount) === -1) {
-          binding.members.push(serviceAccount);
-        }
-      } else {
-        policy.bindings.push(binding);
-      }
+  policy.bindings.forEach(_binding => {
+    if (_binding.role === binding.role) {
+      binding = _binding;
+      hasRole = true;
+      return false;
+    }
+  });
 
-      // Updates the IAM policy for the topic
-      return topic.iam.setPolicy(policy);
-    })
-    .then(results => {
-      const updatedPolicy = results[0];
+  if (hasRole) {
+    binding.members || (binding.members = []);
+    if (binding.members.indexOf(serviceAccount) === -1) {
+      binding.members.push(serviceAccount);
+    }
+  } else {
+    policy.bindings.push(binding);
+  }
 
-      console.log(JSON.stringify(updatedPolicy, null, 2));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
-}
+  // Updates the IAM policy for the topic
+  try {
+    const [updatedPolicy] = await topic.iam.setPolicy(policy);
+    console.log(JSON.stringify(updatedPolicy, null, 2));
+  } catch (err) {
+    console.error('ERROR:', err);
+  }
+};
 
 if (module === require.main) {
   setTopicPolicy(process.argv[2]);

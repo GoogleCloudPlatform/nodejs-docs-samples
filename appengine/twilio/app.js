@@ -22,7 +22,7 @@ const bodyParser = require('body-parser').urlencoded({
 
 const app = express();
 
-const TWILIO_NUMBER = process.env.TWILIO_NUMBER;
+const {TWILIO_NUMBER} = process.env;
 if (!TWILIO_NUMBER) {
   console.log(
     'Please configure environment variables as described in README.md'
@@ -39,7 +39,7 @@ const twilioClient = Twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-const TwimlResponse = Twilio.TwimlResponse;
+const {TwimlResponse} = Twilio;
 
 // [START gae_flex_twilio_receive_call]
 app.post('/call/receive', (req, res) => {
@@ -55,7 +55,7 @@ app.post('/call/receive', (req, res) => {
 
 // [START gae_flex_twilio_send_sms]
 app.get('/sms/send', async (req, res, next) => {
-  const to = req.query.to;
+  const {to} = req.query;
   if (!to) {
     res
       .status(400)

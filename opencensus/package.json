@@ -14,11 +14,11 @@
   },
   "scripts": {
     "start": "node metrics-quickstart.js",
-    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000"
+    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
-    "@opencensus/core": "^0.0.14",
-    "@opencensus/exporter-stackdriver": "^0.0.14"
+    "@opencensus/core": "^0.0.16",
+    "@opencensus/exporter-stackdriver": "^0.0.16"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

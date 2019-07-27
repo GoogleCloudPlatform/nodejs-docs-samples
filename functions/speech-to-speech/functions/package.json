@@ -33,7 +33,7 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "@google-cloud/speech": "^2.1.0",
+    "@google-cloud/speech": "^3.0.0",
     "@google-cloud/storage": "^3.0.0",
     "@google-cloud/text-to-speech": "^0.5.0",
     "@google-cloud/translate": "^3.0.0",

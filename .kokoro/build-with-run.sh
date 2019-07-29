@@ -54,5 +54,3 @@ export NODE_ENV=development
 npm install
 npm test
 npm run | grep e2e-test && npm run e2e-test
-
-exit $?

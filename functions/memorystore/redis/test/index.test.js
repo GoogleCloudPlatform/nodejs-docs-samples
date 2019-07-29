@@ -35,12 +35,7 @@ describe('visitCount', () => {
     const program = require('../');
     const mocks = getMocks();
 
-    program.visitCount(mocks.req, mocks.res);
-
-    // Give the operation time to complete
-    await new Promise(resolve => {
-      setTimeout(resolve, 1500);
-    });
+    await program.visitCount(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.called, false);
     assert.strictEqual(mocks.res.send.called, false);

@@ -19,17 +19,8 @@
     "redis": "^2.8.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^6.1.4",
     "proxyquire": "^2.1.0",
     "sinon": "^7.3.2"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "REDISHOST",
-      "REDISPORT"
-    ]
   }
 }

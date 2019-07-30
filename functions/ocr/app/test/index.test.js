@@ -37,8 +37,8 @@ const errorMsg = (name, propertyName) => {
   return `${name} not provided. Make sure you have a "${propertyName}" property in your request`;
 };
 
-before(tools.stubConsole);
-after(tools.restoreConsole);
+// before(tools.stubConsole);
+// after(tools.restoreConsole);
 
 describe('processImage', () => {
   it('processImage validates parameters', async () => {
@@ -50,7 +50,7 @@ describe('processImage', () => {
     }
   });
 
-  it('processImage detects text', async () => {
+  it.only('processImage detects text', async () => {
     const data = {
       bucket: bucketName,
       name: filename,

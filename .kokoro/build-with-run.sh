@@ -40,7 +40,7 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 
 # Register post-test cleanup.
 function cleanup {
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}"
+  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
 }
 trap cleanup EXIT
 
@@ -53,6 +53,4 @@ set +x
 export NODE_ENV=development
 npm install
 npm test
-npm run | grep e2e-test && npm run e2e-test
-
-exit $?
+npm run --if-present e2e-test

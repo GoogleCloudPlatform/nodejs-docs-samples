@@ -5,7 +5,7 @@
 * @fhinkel
 
 # Kokoro
-.kokoro @fhinkel @SurferJeffAtGoogle
+.kokoro @fhinkel
 .kokoro/appengine @michaelawyu
 .kokoro/functions @ace-n @grant
 

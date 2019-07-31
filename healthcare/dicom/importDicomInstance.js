@@ -24,7 +24,7 @@ function main(
   dicomStoreId,
   gcsUri
 ) {
-  // [START healthcare_import_dicom_instances]
+  // [START healthcare_import_dicom_instance]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
   const sleep = require('../sleep');
@@ -89,7 +89,7 @@ function main(
   }
 
   importDicomInstance();
-  // [END healthcare_import_dicom_instances]
+  // [END healthcare_import_dicom_instance]
 }
 
 // node importDicomInstance.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <gcsUri>

@@ -25,7 +25,7 @@ function main(
   resourceType,
   resourceId
 ) {
-  // [START healthcare_delete_fhir_resource]
+  // [START healthcare_delete_resource]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
@@ -52,7 +52,7 @@ function main(
   }
 
   deleteFhirResource();
-  // [END healthcare_delete_fhir_resource]
+  // [END healthcare_delete_resource]
 }
 
 // node deleteFhirResource.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType> <resourceId>

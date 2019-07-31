@@ -30,7 +30,7 @@ const incrAsync = promisify(redisClient.incr).bind(redisClient);
 
 exports.visitCount = async (req, res) => {
   try {
-    let response = await incrAsync('visits');
+    const response = await incrAsync('visits');
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end(`Visit count: ${response}`);
   } catch (err) {

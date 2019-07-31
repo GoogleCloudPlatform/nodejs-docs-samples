@@ -37,12 +37,12 @@ describe('visitCount', () => {
 
     await program.visitCount(mocks.req, mocks.res);
 
-    assert.strictEqual(mocks.res.status.called, false);
-    assert.strictEqual(mocks.res.send.called, false);
-    assert.strictEqual(mocks.res.writeHead.calledWith(200), true);
-    assert.strictEqual(mocks.res.end.calledOnce, true);
+    assert(!mocks.res.status.called);
+    assert(!mocks.res.send.called);
+    assert(mocks.res.writeHead.calledWith(200));
+    assert(mocks.res.end.calledOnce);
 
     const response = mocks.res.end.firstCall.args[0];
-    assert.strictEqual(response.startsWith('Visit count:'), true);
+    assert(response.startsWith('Visit count:'));
   });
 });

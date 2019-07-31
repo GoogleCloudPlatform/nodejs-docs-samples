@@ -35,7 +35,7 @@ const getToken = (serviceAccountJson, cb) => {
 };
 // [END healthcare_get_token]
 
-// [START healthcare_create_fhir_resource]
+// [START healthcare_create_resource]
 const createResource = async (
   token,
   projectId,
@@ -79,9 +79,9 @@ const createResource = async (
     console.error(err);
   }
 };
-// [END healthcare_create_fhir_resource]
+// [END healthcare_create_resource]
 
-// [START healthcare_patch_fhir_resource]
+// [START healthcare_patch_resource]
 const patchResource = async (
   token,
   projectId,
@@ -123,7 +123,7 @@ const patchResource = async (
     console.error(err);
   }
 };
-// [END healthcare_patch_fhir_resource]
+// [END healthcare_patch_resource]
 
 // [START healthcare_fhir_execute_bundle]
 const executeBundle = async (

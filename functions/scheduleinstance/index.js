@@ -21,7 +21,7 @@ const compute = new Compute();
 // [END functions_stop_instance_pubsub]
 
 /**
- * Starts a Compute Engine instance.
+ * Starts Compute Engine instances.
  *
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
@@ -72,15 +72,12 @@ exports.startInstancePubSub = (event, context, callback) => {
 // [START functions_stop_instance_pubsub]
 
 /**
- * Stops a Compute Engine instance.
+ * Stops Compute Engine instances.
  *
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
  *  zone - the GCP zone the instances are located in.
- *  instance - the name of a single instance.
- *  label - the label of instances to start.
- *
- * Exactly one of instance or label must be specified.
+ *  label - the label of instances to stop.
  *
  * @param {!object} event Cloud Function PubSub message event.
  * @param {!object} callback Cloud Function PubSub callback indicating completion.

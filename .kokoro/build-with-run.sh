@@ -33,12 +33,14 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 # to run them concurrently.
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 export SAMPLE_NAME="$(basename $(pwd))"
-export SERVICE_NAME="${SAMPLE_NAME}-${KOKORO_GITHUB_PULL_REQUEST_NUMBER}"
+# Builds not triggered by a PR will fall back to the commit hash then "latest".
+SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
+export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
 # Register post-test cleanup.
 function cleanup {
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}"
+  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
 }
 trap cleanup EXIT
 
@@ -51,6 +53,4 @@ set +x
 export NODE_ENV=development
 npm install
 npm test
-npm run | grep e2e-test && npm run e2e-test
-
-exit $?
+npm run --if-present e2e-test

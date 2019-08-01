@@ -35,28 +35,6 @@ exports.errorTypes = (req, res) => {
   }
   // [END functions_concepts_error_object]
 
-  const someCondition = !!req.body.throwAsString;
-
-  /* eslint-disable no-throw-literal */
-  // [START functions_concepts_error_unknown]
-  try {
-    // Throw an unknown error type
-    if (someCondition) {
-      throw 'Error string!';
-    } else {
-      throw new Error('Error object!');
-    }
-  } catch (err) {
-    // Determine the error type
-    if (err instanceof Error) {
-      console.error(err);
-    } else {
-      console.error(new Error(err));
-    }
-  }
-  // [END functions_concepts_error_unknown]
-  /* eslint-enable no-throw-literal */
-
   res.end();
 };
 

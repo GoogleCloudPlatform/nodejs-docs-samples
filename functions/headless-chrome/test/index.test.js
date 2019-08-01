@@ -17,7 +17,7 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const supertest = require('supertest');
 
-const BASE_URL = process.env.BASE_URL;
+const {BASE_URL} = process.env;
 
 before('Must specify BASE_URL', () => {
   assert.ok(BASE_URL);

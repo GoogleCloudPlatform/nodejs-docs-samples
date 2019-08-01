@@ -1,0 +1,58 @@
+/**
+ * Copyright 2019, Google, LLC
+ * Licensed under the Apache License, Version 2.0 (the `License`);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an `AS IS` BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* eslint-disable no-warning-comments */
+
+'use strict';
+
+function main(
+  projectId = process.env.GCLOUD_PROJECT,
+  cloudRegion = 'us-central1',
+  datasetId,
+  hl7v2StoreId
+) {
+  // [START healthcare_hl7v2_store_get_iam_policy]
+  const {google} = require('googleapis');
+  const healthcare = google.healthcare('v1beta1');
+
+  async function getHl7v2StoreIamPolicy() {
+    const auth = await google.auth.getClient({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    });
+    google.options({auth});
+
+    // TODO(developer): uncomment these lines before running the sample
+    // const cloudRegion = 'us-central1';
+    // const projectId = 'adjective-noun-123';
+    // const datasetId = 'my-dataset';
+    // const hl7v2StoreId = 'my-hl7v2-store';
+    const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
+    const request = {resource_};
+
+    const hl7v2Store = await healthcare.projects.locations.datasets.hl7V2Stores.getIamPolicy(
+      request
+    );
+    console.log(
+      'Got HL7v2 store IAM policy:',
+      JSON.stringify(hl7v2Store.data, null, 2)
+    );
+  }
+
+  getHl7v2StoreIamPolicy();
+  // [END healthcare_hl7v2_store_get_iam_policy]
+}
+
+// node getHl7v2StoreIamPolicy.js <projectId> <cloudRegion> <datasetId> <hl7v2StoreId>
+main(...process.argv.slice(2));

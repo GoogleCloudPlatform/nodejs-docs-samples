@@ -20,74 +20,93 @@ const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 
-const cmdDataset = 'node datasets.js';
-const cmdDicomStore = 'node dicom_stores.js';
-const cmd = 'node dicomweb.js';
+const projectId = process.env.GCLOUD_PROJECT;
+const cloudRegion = 'us-central1';
+
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
-const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
+const datasetId = `nodejs-docs-samples-test-dicomweb-${uuid.v4()}`.replace(
+  /-/gi,
+  '_'
+);
+const dicomStoreId = `nodejs-docs-samples-test-dicomweb-dicom-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
 
-const dcmFile = 'resources/IM-0002-0001-JPEG-BASELINE-edited.dcm';
-const boundary = 'DICOMwebBoundary';
-// The studyUid is not assigned by the server and is part of the metadata
+const dcmFile = 'resources/IM-0002-0001-JPEG-BASELINE.dcm';
+
+// The Uids are not assigned by the server and are part of the metadata
 // of dcmFile.
 const studyUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.105';
+const seriesUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.108';
+const instanceUid = '1.2.840.113619.2.176.3596.3364818.7271.1259708501.876';
 
 before(async () => {
   tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  await tools.runAsync(
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
+    cwdDatasets
+  );
+  await tools.runAsync(
+    `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
+    cwd
+  );
 });
 after(async () => {
   try {
     await tools.runAsync(
-      `${cmdDataset} deleteDataset ${datasetId}`,
-      cwdDatasets
+      `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
+      cwd
     );
+    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 
 it('should store a DICOM instance', async () => {
-  await tools.runAsync(
-    `${cmdDicomStore} createDicomStore ${datasetId} ${dicomStoreId}`,
-    cwd
-  );
   const output = await tools.runAsync(
-    `${cmd} dicomWebStoreInstance ${datasetId} ${dicomStoreId} ${dcmFile} ${boundary}`,
+    `node dicomweb.js dicomWebStoreInstance ${datasetId} ${dicomStoreId} ${dcmFile}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Stored instance/).test(output), true);
+  assert.ok(output.includes('Stored instance'));
 });
 
 it('should search DICOM instances', async () => {
   const output = await tools.runAsync(
-    `${cmd} dicomWebSearchInstances ${datasetId} ${dicomStoreId}`,
+    `node dicomWebSearchForInstances.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Instances/).test(output), true);
+  assert.ok(output.includes('Found'));
 });
 
 it('should retrieve a DICOM study', async () => {
   const output = await tools.runAsync(
-    `${cmd} dicomWebRetrieveStudy ${datasetId} ${dicomStoreId} ${studyUid}`,
+    `node dicomWebRetrieveStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Retrieved study/).test(output), true);
+  assert.ok(output.includes('Retrieved study'));
+});
+
+it('should retrieve a DICOM instance', async () => {
+  const output = await tools.runAsync(
+    `node dicomWebRetrieveInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
+    cwd
+  );
+  assert.ok(output.includes('Retrieved DICOM instance'));
+});
+
+it('should retrieve a DICOM rendered PNG image', async () => {
+  const output = await tools.runAsync(
+    `node dicomWebRetrieveRendered.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
+    cwd
+  );
+  assert.ok(output.includes('Retrieved rendered image'));
 });
 
 it('should delete a DICOM study', async () => {
   const output = await tools.runAsync(
-    `${cmd} dicomWebDeleteStudy ${datasetId} ${dicomStoreId} ${studyUid}`,
+    `node dicomWebDeleteStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
     cwd
   );
-  assert.strictEqual(new RegExp(/Deleted study/).test(output), true);
-
-  // Clean up
-  await tools.runAsync(
-    `${cmdDicomStore} deleteDicomStore ${datasetId} ${dicomStoreId}`,
-    cwd
-  );
+  assert.ok(output.includes('Deleted study'));
 });

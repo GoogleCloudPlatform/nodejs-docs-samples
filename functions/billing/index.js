@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Google LLC.
+ * Copyright 2019, Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-warning-comments */
 
 // [START functions_billing_limit]
 // [START functions_billing_stop]
@@ -26,29 +28,33 @@ const PROJECT_NAME = `projects/${PROJECT_ID}`;
 // [START functions_billing_slack]
 const slack = require('slack');
 
-const BOT_ACCESS_TOKEN = 'xxxx-111111111111-abcdefghidklmnopq';
-const CHANNEL = 'general';
+// TODO(developer) replace these with your own values
+const BOT_ACCESS_TOKEN =
+  process.env.BOT_ACCESS_TOKEN || 'xxxx-111111111111-abcdefghidklmnopq';
+const CHANNEL = process.env.SLACK_CHANNEL || 'general';
 
-exports.notifySlack = async (data, context) => {
-  const pubsubMessage = data;
-  const pubsubAttrs = JSON.stringify(pubsubMessage.attributes);
-  const pubsubData = Buffer.from(pubsubMessage.data, 'base64').toString();
+exports.notifySlack = async (pubsubEvent, context) => {
+  const pubsubAttrs = pubsubEvent.attributes;
+  const pubsubData = Buffer.from(pubsubEvent.data, 'base64').toString();
   const budgetNotificationText = `${pubsubAttrs}, ${pubsubData}`;
 
-  const res = await slack.chat.postMessage({
+  await slack.chat.postMessage({
     token: BOT_ACCESS_TOKEN,
     channel: CHANNEL,
     text: budgetNotificationText,
   });
-  console.log(res);
+
+  return 'Slack notification sent successfully';
 };
 // [END functions_billing_slack]
 
 // [START functions_billing_stop]
 const billing = google.cloudbilling('v1').projects;
 
-exports.stopBilling = async (data, context) => {
-  const pubsubData = JSON.parse(Buffer.from(data.data, 'base64').toString());
+exports.stopBilling = async (pubsubEvent, context) => {
+  const pubsubData = JSON.parse(
+    Buffer.from(pubsubEvent.data, 'base64').toString()
+  );
   if (pubsubData.costAmount <= pubsubData.budgetAmount) {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
   }
@@ -105,19 +111,50 @@ const _disableBillingForProject = async projectName => {
 };
 // [END functions_billing_stop]
 
+// Helper function to restart billing (used in tests)
+exports.startBilling = async (pubsubEvent, context) => {
+  const pubsubData = JSON.parse(
+    Buffer.from(pubsubEvent.data, 'base64').toString()
+  );
+
+  await _setAuthCredential();
+  if (!(await _isBillingEnabled(PROJECT_NAME))) {
+    // Enable billing
+
+    const res = await billing.updateBillingInfo({
+      name: pubsubData.projectName,
+      resource: {
+        billingAccountName: pubsubData.billingAccountName,
+        billingEnabled: true,
+      },
+    });
+    return `Billing enabled: ${JSON.stringify(res.data)}`;
+  } else {
+    return 'Billing already enabled';
+  }
+};
+
 // [START functions_billing_limit]
 const compute = google.compute('v1');
-const ZONE = 'us-west1-b';
+const ZONE = 'us-west1-a';
 
-exports.limitUse = async (data, context) => {
-  const pubsubData = JSON.parse(Buffer.from(data.data, 'base64').toString());
+exports.limitUse = async (pubsubEvent, context) => {
+  const pubsubData = JSON.parse(
+    Buffer.from(pubsubEvent.data, 'base64').toString()
+  );
   if (pubsubData.costAmount <= pubsubData.budgetAmount) {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
   }
 
   await _setAuthCredential();
+
   const instanceNames = await _listRunningInstances(PROJECT_ID, ZONE);
+  if (!instanceNames.length) {
+    return 'No running instances were found.';
+  }
+
   await _stopInstances(PROJECT_ID, ZONE, instanceNames);
+  return `${instanceNames.length} instance(s) stopped successfully.`;
 };
 
 /**
@@ -139,9 +176,6 @@ const _listRunningInstances = async (projectId, zone) => {
  * @return {Promise} Response from stopping instances
  */
 const _stopInstances = async (projectId, zone, instanceNames) => {
-  if (!instanceNames.length) {
-    return 'No running instances were found.';
-  }
   await Promise.all(
     instanceNames.map(instanceName => {
       return compute.instances
@@ -158,3 +192,56 @@ const _stopInstances = async (projectId, zone, instanceNames) => {
   );
 };
 // [END functions_billing_limit]
+
+// Helper function to restart instances (used in tests)
+exports.startInstances = async (pubsubEvent, context) => {
+  await _setAuthCredential();
+  const instanceNames = await _listStoppedInstances(PROJECT_ID, ZONE);
+
+  if (!instanceNames.length) {
+    return 'No stopped instances were found.';
+  }
+
+  await _startInstances(PROJECT_ID, ZONE, instanceNames);
+  return `${instanceNames.length} instance(s) started successfully.`;
+};
+
+/**
+ * @return {Promise} Array of names of running instances
+ */
+const _listStoppedInstances = async (projectId, zone) => {
+  const res = await compute.instances.list({
+    project: projectId,
+    zone: zone,
+  });
+
+  const instances = res.data.items || [];
+  const stoppedInstances = instances.filter(item => item.status !== 'RUNNING');
+  return stoppedInstances.map(item => item.name);
+};
+
+/**
+ * @param {Array} instanceNames Names of instance to stop
+ * @return {Promise} Response from stopping instances
+ */
+const _startInstances = async (projectId, zone, instanceNames) => {
+  if (!instanceNames.length) {
+    return 'No stopped instances were found.';
+  }
+  await Promise.all(
+    instanceNames.map(instanceName => {
+      return compute.instances.start({
+        project: projectId,
+        zone: zone,
+        instance: instanceName,
+      });
+    })
+  );
+};
+
+// Helper function used in tests
+exports.listRunningInstances = async (pubsubEvent, context) => {
+  await _setAuthCredential();
+  console.log(PROJECT_ID, ZONE);
+  return _listRunningInstances(PROJECT_ID, ZONE);
+};

@@ -7,14 +7,14 @@
   "scripts": {
     "start": "node server.js",
     "deploy": "gcloud app deploy",
-    "test": "mocha test/*.test.js --timeout=20000"
+    "test": "mocha test/*.test.js --exit --timeout=20000"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "author": "Google Inc.",
   "license": "Apache-2.0",

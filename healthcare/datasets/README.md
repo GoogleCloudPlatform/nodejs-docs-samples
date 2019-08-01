@@ -13,23 +13,23 @@ Run the following command to install the library dependencies for Node.js:
 # Running the sample
 
     Commands:
-        datasets.js createDataset <datasetId>                         Creates a new health dataset.
-        datasets.js deleteDataset <datasetId>                         Deletes the specified health dataset and all data
-                                                                contained in the dataset.
-        datasets.js getDataset <datasetId>                            Gets any metadata associated with a dataset.
-        datasets.js listDatasets                                      Lists the datasets in the given GCP project.
-        datasets.js patchDataset <datasetId> <timeZone>               Updates dataset metadata.
-        datasets.js deidentifyDataset <sourceDatasetId>               Creates a new dataset containing de-identified data from
-        <destinationDatasetId> <whitelistTags>                        the source dataset.
+        createDataset.js <projectId> <cloudRegion> <datasetId>                                  Creates a new health dataset.
+        deleteDataset.js <projectId> <cloudRegion> <datasetId>                                  Deletes the specified health dataset and all data
+                                                                                                contained in the dataset.
+        getDataset.js <projectId> <cloudRegion> <datasetId>                                     Gets details about a dataset.
+        listDatasets.js <projectId> <cloudRegion>                                               Lists the datasets in the given GCP project.
+        patchDataset.js <projectId> <cloudRegion> <datasetId> <timeZone>                        Updates dataset details.
+        deidentifyDataset.js <projectId> <cloudRegion> <sourceDatasetId>                        Creates a new dataset containing de-identified data from
+        <destinationDatasetId> <keeplistTags>                                                   the source dataset.
+        getDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId>                            Gets the IAM policy for the dataset.
+        setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member>                   Sets the IAM policy for the dataset.
+        <role>
 
         Options:
         --version             Show version number                                                                    [boolean]
-         --apiKey, -a          The API key used for discovering the API. Defaults to
-                               the value of API_KEY environment variable.
-                                                                   [string]
         --cloudRegion, -c                                                                    [string] [default: "us-central1"]
         --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
-                                environment variables.                                    [string]
+                              environment variables.                                                                  [string]
         --serviceAccount, -s  The path to your service credentials JSON.
                                              [string]
         --help                Show help                                                                              [boolean]

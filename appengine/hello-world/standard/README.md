@@ -26,7 +26,7 @@ Before you can run or deploy the sample, you need to do the following:
 
 ## Deploying to App Engine
 
-    npm run deploy
+    gcloud app deploy
 
 ## Running the tests
 

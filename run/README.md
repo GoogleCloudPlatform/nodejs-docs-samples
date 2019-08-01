@@ -6,10 +6,11 @@
 
 ## Samples
 
-|           Sample                |        Description       |     Deploy    |
-| ------------------------------- | ------------------------ | ------------- |
-|[Hello World][helloworld]&nbsp;&#10149; | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
-|[Manual Logging][manual_logging] | Structured logging without client library | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_manual_logging] |
+|                 Sample                  |        Description       |     Deploy    |
+| --------------------------------------- | ------------------------ | ------------- |
+|[Hello World][helloworld]&nbsp;&#10149;  | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
+|[Manual Logging][manual_logging]         | Structured logging without client library | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_manual_logging] |
+|[Pub/Sub][pubsub] | Pub/Sub push Handler | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_pubsub] |
 
 For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
@@ -109,5 +110,7 @@ for more information.
 [run_deploy]: https://cloud.google.com/run/docs/deploying
 [helloworld]: https://github.com/knative/docs/tree/master/docs/serving/samples/hello-world/helloworld-nodejs
 [manual_logging]: logging-manual/
+[pubsub]: pubsub/
 [run_button_helloworld]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/knative/docs&cloudshell_working_dir=docs/serving/samples/hello-world/helloworld-nodejs
 [run_button_manual_logging]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&cloudshell_working_dir=run/logging-manual
+[run_button_pubsub]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&cloudshell_working_dir=run/pubsub

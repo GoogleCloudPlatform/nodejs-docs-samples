@@ -2,6 +2,8 @@
 # Use of this source code is governed by the Apache 2.0
 # license that can be found in the LICENSE file.
 
+# [START run_pubsub_dockerfile]
+
 # Use the official Node.js 10 image.
 # https://hub.docker.com/_/node
 FROM node:10
@@ -15,8 +17,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies.
-RUN npm install
-# For production deploys, add a package-lock.json and use 'npm ci'.
+RUN npm install --production
+# If you add a package-lock.json, speed your build by switching to 'npm ci'.
 # RUN npm ci --only=production
 
 # Copy local code to the container image.
@@ -24,3 +26,5 @@ COPY . .
 
 # Run the web service on container startup.
 CMD [ "npm", "start" ]
+
+# [END run_pubsub_dockerfile]

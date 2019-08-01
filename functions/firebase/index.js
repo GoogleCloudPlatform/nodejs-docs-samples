@@ -22,6 +22,14 @@
 exports.helloRTDB = event => {
   const triggerResource = event.resource;
 
+  const pathParams = event.params;
+  if (pathParams) {
+    console.log(`Path parameters:`);
+    Object.keys(pathParams).forEach(key => {
+      console.log(`  ${key}: ${pathParams[key]}`);
+    });
+  }
+
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!event.auth.admin}`);
   console.log(`Delta:`);
@@ -61,7 +69,7 @@ exports.helloFirestore = event => {
  */
 exports.helloAuth = event => {
   try {
-    const data = event.data;
+    const {data} = event;
     console.log(`Function triggered by change to user: ${data.uid}`);
     console.log(`Created at: ${data.metadata.createdAt}`);
 
@@ -83,7 +91,7 @@ const firestore = new Firestore({
 
 // Converts strings added to /messages/{pushId}/original to uppercase
 exports.makeUpperCase = event => {
-  const resource = event.resource;
+  const {resource} = event;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
   const curValue = event.data.value.fields.original.stringValue;
@@ -103,7 +111,7 @@ exports.makeUpperCase = event => {
  * @param {!Object} event The Cloud Functions event.
  */
 exports.helloAnalytics = event => {
-  const resource = event.resource;
+  const {resource} = event;
   console.log(`Function triggered by the following event: ${resource}`);
 
   const analyticsEvent = event.data.eventDim[0];
@@ -123,7 +131,7 @@ exports.helloAnalytics = event => {
  * @param {object} data The Cloud Functions event data.
  */
 exports.helloRemoteConfig = event => {
-  const data = event.data;
+  const {data} = event;
 
   console.log(`Update type: ${data.updateType}`);
   console.log(`Origin: ${data.updateOrigin}`);

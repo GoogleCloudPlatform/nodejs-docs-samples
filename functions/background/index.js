@@ -15,26 +15,6 @@
 
 'use strict';
 
-// [START functions_background_helloworld]
-/**
- * Background Cloud Function.
- *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The event data.
- * @param {function} callback The callback function.
- */
-exports.helloWorld = (event, callback) => {
-  if (!event.data.myMessage) {
-    // This is an error case, "myMessage" is required
-    callback(new Error('No message defined!'));
-  } else {
-    // Everything is ok
-    console.log(event.data.myMessage);
-    callback();
-  }
-};
-// [END functions_background_helloworld]
-
 // [START functions_background_promise]
 const requestPromiseNative = require('request-promise-native');
 
@@ -42,13 +22,13 @@ const requestPromiseNative = require('request-promise-native');
  * Background Cloud Function that returns a Promise. Note that we don't pass
  * a "callback" argument to the function.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The event data.
+ * @param {object} data The event data
+ * @param {object} data.endpoint The URL to send the request to.
  * @returns {Promise}
  */
-exports.helloPromise = event => {
+exports.helloPromise = data => {
   return requestPromiseNative({
-    uri: event.data.endpoint,
+    uri: data.endpoint,
   });
 };
 // [END functions_background_promise]
@@ -58,12 +38,11 @@ exports.helloPromise = event => {
  * Background Cloud Function that returns synchronously. Note that we don't pass
  * a "callback" argument to the function.
  *
- * @param {object} event The Cloud Functions event.
- * @param {object} event.data The event data.
+ * @param {object} data The event data
  */
-exports.helloSynchronous = event => {
+exports.helloSynchronous = data => {
   // This function returns synchronously
-  if (event.data.something === true) {
+  if (data.something === true) {
     return 'Something is true!';
   } else {
     throw new Error('Something was not true!');

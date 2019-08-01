@@ -1,7 +1,7 @@
 {
   "name": "headless-chrome-sample",
   "engines": {
-    "node": "8.x"
+    "node": ">=8.0.0"
   },
   "version": "1.0.0",
   "description": "An example of taking screenshot with Puppeteer (Headless Chrome) in Node.js on Google App Engine.",

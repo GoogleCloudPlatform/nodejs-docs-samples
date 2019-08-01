@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, Inc.
+ * Copyright 2019, Google LLC.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,12 @@
 'use strict';
 
 // [START functions_ocr_setup]
-const config = require('./config.json');
+const config = require('nconf')
+  .env()
+  .file('./config.json')
+  .defaults({
+    TO_LANG: ['en', 'es'],
+  });
 
 // Get a reference to the Pub/Sub component
 const {PubSub} = require('@google-cloud/pubsub');
@@ -33,7 +38,7 @@ const vision = new Vision.ImageAnnotatorClient();
 const {Translate} = require('@google-cloud/translate');
 const translate = new Translate();
 
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 // [END functions_ocr_setup]
 
 // [START functions_ocr_publish]
@@ -43,14 +48,12 @@ const Buffer = require('safe-buffer').Buffer;
  * @param {string} topicName Name of the topic on which to publish.
  * @param {object} data The message data to publish.
  */
-function publishResult(topicName, data) {
+const publishResult = async (topicName, data) => {
   const dataBuffer = Buffer.from(JSON.stringify(data));
 
-  return pubsub
-    .topic(topicName)
-    .get({autoCreate: true})
-    .then(([topic]) => topic.publisher().publish(dataBuffer));
-}
+  const [topic] = await pubsub.topic(topicName).get({autoCreate: true});
+  topic.publish(dataBuffer);
+};
 // [END functions_ocr_publish]
 
 // [START functions_ocr_detect]
@@ -61,42 +64,38 @@ function publishResult(topicName, data) {
  * @param {string} filename Cloud Storage file name.
  * @returns {Promise}
  */
-function detectText(bucketName, filename) {
-  let text;
-
+const detectText = async (bucketName, filename) => {
   console.log(`Looking for text in image ${filename}`);
-  return vision
-    .textDetection(`gs://${bucketName}/${filename}`)
-    .then(([detections]) => {
-      const annotation = detections.textAnnotations[0];
-      text = annotation ? annotation.description : '';
-      console.log(`Extracted text from image (${text.length} chars)`);
-      return translate.detect(text);
-    })
-    .then(([detection]) => {
-      if (Array.isArray(detection)) {
-        detection = detection[0];
-      }
-      console.log(`Detected language "${detection.language}" for ${filename}`);
+  const [textDetections] = await vision.textDetection(
+    `gs://${bucketName}/${filename}`
+  );
+  const [annotation] = textDetections.textAnnotations;
+  const text = annotation ? annotation.description : '';
+  console.log(`Extracted text from image:`, text);
 
-      // Submit a message to the bus for each language we're going to translate to
-      const tasks = config.TO_LANG.map(lang => {
-        let topicName = config.TRANSLATE_TOPIC;
-        if (detection.language === lang) {
-          topicName = config.RESULT_TOPIC;
-        }
-        const messageData = {
-          text: text,
-          filename: filename,
-          lang: lang,
-        };
+  let [translateDetection] = await translate.detect(text);
+  if (Array.isArray(translateDetection)) {
+    [translateDetection] = translateDetection;
+  }
+  console.log(
+    `Detected language "${translateDetection.language}" for ${filename}`
+  );
 
-        return publishResult(topicName, messageData);
-      });
+  // Submit a message to the bus for each language we're going to translate to
+  const topicName = config.get('TRANSLATE_TOPIC');
 
-      return Promise.all(tasks);
-    });
-}
+  const tasks = config.get('TO_LANG').map(lang => {
+    const messageData = {
+      text: text,
+      filename: filename,
+      lang: lang,
+    };
+
+    return publishResult(topicName, messageData);
+  });
+
+  return Promise.all(tasks);
+};
 // [END functions_ocr_detect]
 
 // [START functions_ocr_rename]
@@ -107,9 +106,9 @@ function detectText(bucketName, filename) {
  * @param {string} lang Language to append.
  * @returns {string} The new filename.
  */
-function renameImageForSave(filename, lang) {
+const renameImageForSave = (filename, lang) => {
   return `${filename}_to_${lang}.txt`;
-}
+};
 // [END functions_ocr_rename]
 
 // [START functions_ocr_process]
@@ -118,35 +117,24 @@ function renameImageForSave(filename, lang) {
  * a file is uploaded to the Cloud Storage bucket you created
  * for uploading images.
  *
- * @param {object} event.data (Node 6) A Google Cloud Storage File object.
- * @param {object} event (Node 8+) A Google Cloud Storage File object.
+ * @param {object} event A Google Cloud Storage File object.
  */
-exports.processImage = event => {
-  const file = event.data || event;
+exports.processImage = async event => {
+  const {bucket, name} = event;
 
-  return Promise.resolve()
-    .then(() => {
-      if (file.resourceState === 'not_exists') {
-        // This was a deletion event, we don't want to process this
-        return;
-      }
+  if (!bucket) {
+    throw new Error(
+      'Bucket not provided. Make sure you have a "bucket" property in your request'
+    );
+  }
+  if (!name) {
+    throw new Error(
+      'Filename not provided. Make sure you have a "name" property in your request'
+    );
+  }
 
-      if (!file.bucket) {
-        throw new Error(
-          'Bucket not provided. Make sure you have a "bucket" property in your request'
-        );
-      }
-      if (!file.name) {
-        throw new Error(
-          'Filename not provided. Make sure you have a "name" property in your request'
-        );
-      }
-
-      return detectText(file.bucket, file.name);
-    })
-    .then(() => {
-      console.log(`File ${file.name} processed.`);
-    });
+  await detectText(bucket, name);
+  console.log(`File ${name} processed.`);
 };
 // [END functions_ocr_process]
 
@@ -157,49 +145,44 @@ exports.processImage = event => {
  * by the TRANSLATE_TOPIC value in the config.json file. The
  * function translates text using the Google Translate API.
  *
- * @param {object} event.data (Node 6) The Cloud Pub/Sub Message object.
- * @param {object} event (Node 8+) The Cloud Pub/Sub Message object.
+ * @param {object} event The Cloud Pub/Sub Message object.
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.translateText = event => {
-  const pubsubData = event.data.data || event.data;
+exports.translateText = async event => {
+  const pubsubData = event.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
-  const payload = JSON.parse(jsonStr);
+  const {text, filename, lang} = JSON.parse(jsonStr);
 
-  return Promise.resolve()
-    .then(() => {
-      if (!payload.text) {
-        throw new Error(
-          'Text not provided. Make sure you have a "text" property in your request'
-        );
-      }
-      if (!payload.filename) {
-        throw new Error(
-          'Filename not provided. Make sure you have a "filename" property in your request'
-        );
-      }
-      if (!payload.lang) {
-        throw new Error(
-          'Language not provided. Make sure you have a "lang" property in your request'
-        );
-      }
+  if (!text) {
+    throw new Error(
+      'Text not provided. Make sure you have a "text" property in your request'
+    );
+  }
+  if (!filename) {
+    throw new Error(
+      'Filename not provided. Make sure you have a "filename" property in your request'
+    );
+  }
+  if (!lang) {
+    throw new Error(
+      'Language not provided. Make sure you have a "lang" property in your request'
+    );
+  }
 
-      console.log(`Translating text into ${payload.lang}`);
-      return translate.translate(payload.text, payload.lang);
-    })
-    .then(([translation]) => {
-      const messageData = {
-        text: translation,
-        filename: payload.filename,
-        lang: payload.lang,
-      };
+  console.log(`Translating text into ${lang}`);
+  const [translation] = await translate.translate(text, lang);
 
-      return publishResult(config.RESULT_TOPIC, messageData);
-    })
-    .then(() => {
-      console.log(`Text translated to ${payload.lang}`);
-    });
+  console.log(`Translated text:`, translation);
+
+  const messageData = {
+    text: translation,
+    filename: filename,
+    lang: lang,
+  };
+
+  await publishResult(config.get('RESULT_TOPIC'), messageData);
+  console.log(`Text translated to ${lang}`);
 };
 // [END functions_ocr_translate]
 
@@ -210,46 +193,40 @@ exports.translateText = event => {
  * by the RESULT_TOPIC value in the config.json file. The
  * function saves the data packet to a file in GCS.
  *
- * @param {object} event.data (Node 6) The Cloud Pub/Sub Message object.
- * @param {object} event (Node 8+) The Cloud Pub/Sub Message object.
+ * @param {object} event The Cloud Pub/Sub Message object.
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.saveResult = event => {
-  const pubsubData = event.data.data || event.data;
+exports.saveResult = async event => {
+  const pubsubData = event.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
-  const payload = JSON.parse(jsonStr);
+  const {text, filename, lang} = JSON.parse(jsonStr);
 
-  return Promise.resolve()
-    .then(() => {
-      if (!payload.text) {
-        throw new Error(
-          'Text not provided. Make sure you have a "text" property in your request'
-        );
-      }
-      if (!payload.filename) {
-        throw new Error(
-          'Filename not provided. Make sure you have a "filename" property in your request'
-        );
-      }
-      if (!payload.lang) {
-        throw new Error(
-          'Language not provided. Make sure you have a "lang" property in your request'
-        );
-      }
+  if (!text) {
+    throw new Error(
+      'Text not provided. Make sure you have a "text" property in your request'
+    );
+  }
+  if (!filename) {
+    throw new Error(
+      'Filename not provided. Make sure you have a "filename" property in your request'
+    );
+  }
+  if (!lang) {
+    throw new Error(
+      'Language not provided. Make sure you have a "lang" property in your request'
+    );
+  }
 
-      console.log(`Received request to save file ${payload.filename}`);
+  console.log(`Received request to save file ${filename}`);
 
-      const bucketName = config.RESULT_BUCKET;
-      const filename = renameImageForSave(payload.filename, payload.lang);
-      const file = storage.bucket(bucketName).file(filename);
+  const bucketName = config.get('RESULT_BUCKET');
+  const newFilename = renameImageForSave(filename, lang);
+  const file = storage.bucket(bucketName).file(newFilename);
 
-      console.log(`Saving result to ${filename} in bucket ${bucketName}`);
+  console.log(`Saving result to ${newFilename} in bucket ${bucketName}`);
 
-      return file.save(payload.text);
-    })
-    .then(() => {
-      console.log(`File saved.`);
-    });
+  await file.save(text);
+  console.log(`File saved.`);
 };
 // [END functions_ocr_save]

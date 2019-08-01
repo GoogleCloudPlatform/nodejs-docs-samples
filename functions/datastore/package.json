@@ -9,32 +9,27 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
-    "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCF_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" mocha test/*.test.js --timeout=60000",
-    "system-test": "export FUNCTIONS_CMD='functions' && sh test/updateFunctions.sh && BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && mocha test/*.test.js --timeout=60000",
-    "test": "npm run system-test"
+    "test": "mocha test/*.test.js --timeout=5000"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^4.0.0",
+    "@google-cloud/datastore": "^4.1.1",
     "supertest": "^4.0.0"
   },
   "devDependencies": {
-    "@google-cloud/functions-emulator": "^1.0.0-beta.4",
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "@google-cloud/functions-framework": "^1.1.1",
+    "child-process-promise": "^2.2.1",
     "mocha": "^6.0.0",
     "proxyquire": "^2.1.0",
+    "request": "^2.88.0",
+    "requestretry": "^4.0.0",
     "sinon": "^7.2.7",
     "uuid": "^3.3.2"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "BASE_URL",
-      "GCF_REGION",
-      "FUNCTIONS_CMD"
-    ]
+    "requiresProjectId": true
   }
 }

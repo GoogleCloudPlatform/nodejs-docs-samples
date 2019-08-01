@@ -9,14 +9,14 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^3.0.0",
-    "@google-cloud/storage": "^2.0.0",
+    "@google-cloud/bigquery": "^4.0.0",
+    "@google-cloud/storage": "^3.0.0",
     "safe-buffer": "^5.1.2",
     "sendgrid": "^5.2.3",
     "uuid": "^3.3.2"

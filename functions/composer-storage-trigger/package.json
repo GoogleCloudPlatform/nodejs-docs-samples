@@ -6,7 +6,7 @@
     "node-fetch": "^2.2.0"
   },
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "private": true,
   "license": "Apache-2.0",

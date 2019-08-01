@@ -10,20 +10,21 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "start": "node server.js",
     "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=60000"
   },
   "dependencies": {
-    "google-auth-library": "^4.0.0",
+    "google-auth-library": "^5.0.0",
     "grpc": "^1.18.0",
     "jsonwebtoken": "^8.2.0",
     "yargs": "^13.2.2"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "delay": "^4.2.0",
     "mocha": "^6.0.0"
   },
   "cloud-repo-tools": {

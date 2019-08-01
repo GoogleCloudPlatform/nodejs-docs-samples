@@ -55,16 +55,6 @@ exports.helloContent = (req, res) => {
 // [END functions_http_content]
 
 // [START functions_http_method]
-function handleGET(req, res) {
-  // Do something with the GET request
-  res.status(200).send('Hello World!');
-}
-
-function handlePUT(req, res) {
-  // Do something with the PUT request
-  res.status(403).send('Forbidden!');
-}
-
 /**
  * Responds to a GET request with "Hello World!". Forbids a PUT request.
  *
@@ -77,10 +67,10 @@ function handlePUT(req, res) {
 exports.helloHttp = (req, res) => {
   switch (req.method) {
     case 'GET':
-      handleGET(req, res);
+      res.status(200).send('Hello World!');
       break;
     case 'PUT':
-      handlePUT(req, res);
+      res.status(403).send('Forbidden!');
       break;
     default:
       res.status(405).send({error: 'Something blew up!'});
@@ -102,7 +92,7 @@ exports.parseXML = (req, res) => {
   const data = req.rawBody;
   const xmlData = data.toString();
 
-  const parseString = require('xml2js').parseString;
+  const {parseString} = require('xml2js');
 
   parseString(xmlData, (err, result) => {
     if (err) {

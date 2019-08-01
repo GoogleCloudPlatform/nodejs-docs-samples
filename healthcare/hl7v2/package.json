@@ -6,17 +6,18 @@
   "author": "Google LLC",
   "repository": "GoogleCloudPlatform/nodejs-docs-samples",
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "mocha system-test/*.test.js --timeout=60000"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "@google-cloud/pubsub": "^0.28.0",
     "mocha": "^6.0.0"
   },
   "dependencies": {
-    "googleapis": "^40.0.0",
+    "googleapis": "^42.0.0",
     "uuid": "^3.3.2",
     "yargs": "^13.0.0"
   },
@@ -27,7 +28,8 @@
       "build": {
         "requiredEnvVars": [
           "API_KEY",
-          "GCLOUD_PROJECT"
+          "GCLOUD_PROJECT",
+          "PUBSUB_TOPIC"
         ]
       }
     }

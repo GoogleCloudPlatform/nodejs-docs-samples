@@ -15,134 +15,86 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
+const path = require('path');
 
-const TOPIC = 'topic';
+const execPromise = require('child-process-promise').exec;
+const requestRetry = require('requestretry');
+
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+const cwd = path.join(__dirname, '..');
+
+const TOPIC = process.env.FUNCTIONS_TOPIC;
 const MESSAGE = 'Hello, world!';
 
-function getSample() {
-  const topicMock = {
-    publish: sinon.stub().returns(Promise.resolve()),
-  };
-  const pubsubMock = {
-    topic: sinon.stub().returns(topicMock),
-  };
-  const PubSubMock = sinon.stub().returns(pubsubMock);
+describe('functions/pubsub', () => {
+  beforeEach(tools.stubConsole);
+  afterEach(tools.restoreConsole);
 
-  return {
-    program: proxyquire('../', {
-      '@google-cloud/pubsub': {PubSub: PubSubMock},
-    }),
-    mocks: {
-      PubSub: PubSubMock,
-      pubsub: pubsubMock,
-      topic: topicMock,
-      req: {
-        body: {
-          topic: TOPIC,
-          message: MESSAGE,
-        },
+  let ffProc;
+
+  before(() => {
+    ffProc = execPromise(
+      `functions-framework --target=publish --signature-type=http`,
+      {timeout: 1000, shell: true, cwd}
+    );
+  });
+
+  after(async () => {
+    try {
+      await ffProc;
+    } catch (err) {
+      // Timeouts always cause errors on Linux, so catch them
+      if (err.name && err.name === 'ChildProcessError') {
+        return;
+      }
+
+      throw err;
+    }
+  });
+
+  it('publish fails without parameters', async () => {
+    const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: {},
+      retryDelay: 200,
+      json: true,
+    });
+
+    assert.strictEqual(response.statusCode, 500);
+    assert.strictEqual(
+      response.body,
+      'Missing parameter(s); include "topic" and "subscription" properties in your request.'
+    );
+  });
+
+  it('publishes a message', async () => {
+    const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: {
+        topic: TOPIC,
+        message: 'Pub/Sub from Cloud Functions',
       },
-      res: {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub().returnsThis(),
-      },
-    },
-  };
-}
+      retryDelay: 200,
+      json: true,
+    });
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+    assert.strictEqual(response.statusCode, 200);
+    assert.strictEqual(response.body, 'Message published.');
+  });
 
-it('Publish fails without a topic', () => {
-  const expectedMsg =
-    'Topic not provided. Make sure you have a "topic" property in your request';
-  const sample = getSample();
+  it('prints out a message', () => {
+    const jsonObject = JSON.stringify({data: MESSAGE});
+    const jsonBuffer = Buffer.from(jsonObject).toString('base64');
+    const pubsubMessage = {data: jsonBuffer, attributes: {}};
 
-  delete sample.mocks.req.body.topic;
-  sample.program.publish(sample.mocks.req, sample.mocks.res);
+    require('..').subscribe(pubsubMessage);
 
-  assert.strictEqual(sample.mocks.res.status.callCount, 1);
-  assert.deepStrictEqual(sample.mocks.res.status.firstCall.args, [500]);
-  assert.strictEqual(sample.mocks.res.send.callCount, 1);
-  assert.strictEqual(
-    sample.mocks.res.send.firstCall.args[0].message,
-    expectedMsg
-  );
-});
-
-it('Publish fails without a message', () => {
-  const expectedMsg =
-    'Message not provided. Make sure you have a "message" property in your request';
-  const sample = getSample();
-
-  delete sample.mocks.req.body.message;
-  sample.program.publish(sample.mocks.req, sample.mocks.res);
-
-  assert.strictEqual(sample.mocks.res.status.callCount, 1);
-  assert.deepStrictEqual(sample.mocks.res.status.firstCall.args, [500]);
-  assert.strictEqual(sample.mocks.res.send.callCount, 1);
-  assert.strictEqual(
-    sample.mocks.res.send.firstCall.args[0].message,
-    expectedMsg
-  );
-});
-
-it('Publishes the message to the topic and calls success', async () => {
-  const expectedMsg = 'Message published.';
-  const sample = getSample();
-
-  await sample.program.publish(sample.mocks.req, sample.mocks.res);
-  assert.strictEqual(sample.mocks.topic.publish.callCount, 1);
-  assert.deepStrictEqual(sample.mocks.topic.publish.firstCall.args, [
-    {
-      data: {
-        message: MESSAGE,
-      },
-    },
-  ]);
-  assert.strictEqual(sample.mocks.res.status.callCount, 1);
-  assert.deepStrictEqual(sample.mocks.res.status.firstCall.args, [200]);
-  assert.strictEqual(sample.mocks.res.send.callCount, 1);
-  assert.deepStrictEqual(sample.mocks.res.send.firstCall.args, [expectedMsg]);
-});
-
-it('Fails to publish the message and calls failure', async () => {
-  const error = new Error('error');
-  const sample = getSample();
-  sample.mocks.topic.publish.returns(Promise.reject(error));
-
-  try {
-    await sample.program.publish(sample.mocks.req, sample.mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-    assert.strictEqual(sample.mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(sample.mocks.res.status.firstCall.args, [500]);
-    assert.strictEqual(sample.mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(sample.mocks.res.send.firstCall.args, [error]);
-  }
-});
-
-it('Subscribes to a message', () => {
-  const callback = sinon.stub();
-  const json = JSON.stringify({data: MESSAGE});
-  const event = {
-    data: {
-      data: Buffer.from(json).toString('base64'),
-    },
-  };
-
-  const sample = getSample();
-  sample.program.subscribe(event, callback);
-
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.firstCall.args, [json]);
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, []);
+    assert.strictEqual(console.log.callCount, 1);
+    assert.deepStrictEqual(console.log.firstCall.args, [jsonObject]);
+  });
 });

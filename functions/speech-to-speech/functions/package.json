@@ -7,7 +7,7 @@
   "author": "Google LLC",
   "private": true,
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "repository": {
     "type": "git",
@@ -25,10 +25,7 @@
     "storage"
   ],
   "scripts": {
-    "local-test": "mocha test/index.test.js",
-    "system-test": "mocha --timeout 20000 test/sample.integration.http.test.js",
-    "pretest": "sh test/updateFunctions.sh",
-    "test": "npm run local-test && npm run system-test",
+    "test": "mocha --timeout 20000 test/*.test.js",
     "serve": "firebase serve --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
@@ -36,27 +33,26 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "@google-cloud/speech": "^2.1.0",
-    "@google-cloud/storage": "^2.0.3",
+    "@google-cloud/speech": "^3.0.0",
+    "@google-cloud/storage": "^3.0.0",
     "@google-cloud/text-to-speech": "^1.0.0",
-    "@google-cloud/translate": "^3.0.0",
+    "@google-cloud/translate": "^4.0.0",
     "uuid": "^3.3.2",
-    "firebase-admin": "^7.2.0",
-    "firebase-functions": "^2.1.0"
+    "firebase-admin": "^8.0.0",
+    "firebase-functions": "^3.0.0"
   },
   "devDependencies": {
-    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
+    "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "child-process-promise": "^2.2.1",
     "mocha": "^6.0.0",
-    "supertest": "^4.0.0"
+    "request": "^2.88.0",
+    "requestretry": "^4.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,
     "requiresProjectId": true,
     "requiredEnvVars": [
-      "BASE_URL",
-      "FUNCTIONS_CMD",
-      "GCF_REGION",
       "GOOGLE_CLOUD_PROJECT",
       "OUTPUT_BUCKET",
       "SUPPORTED_LANGUAGE_CODES"

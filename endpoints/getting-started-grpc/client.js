@@ -54,7 +54,7 @@ function makeGrpcRequest(JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
 }
 
 // The command-line program
-const argv = require('yargs')
+const {argv} = require('yargs')
   .usage(
     'Usage: node $0 {-k YOUR_API_KEY>, <-j YOUR_JWT_AUTH_TOKEN} [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]'
   )
@@ -92,7 +92,8 @@ const argv = require('yargs')
   .wrap(120)
   .help()
   .strict()
-  .epilogue(`For more information, see https://cloud.google.com/endpoints/docs`)
-  .argv;
+  .epilogue(
+    `For more information, see https://cloud.google.com/endpoints/docs`
+  );
 
 makeGrpcRequest(argv.jwtAuthToken, argv.apiKey, argv.host, argv.greetee);

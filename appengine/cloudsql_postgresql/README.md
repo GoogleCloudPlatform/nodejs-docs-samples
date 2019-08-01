@@ -1,6 +1,6 @@
 # Cloud SQL for PostgreSQL Node.js sample on App Engine flexible environment
 
-This sample application shows how to use [Google Cloud SQL[[sql] for [PostgreSQL][postgres]
+This sample application shows how to use [Google Cloud SQL][sql] for [PostgreSQL][postgres]
 on Google App Engine.
 
 [App Engine standard environment][appengine-std] users: See tutorial [

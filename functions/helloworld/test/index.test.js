@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-const Buffer = require('safe-buffer').Buffer;
+const {Buffer} = require('safe-buffer');
 const path = require('path');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
@@ -31,7 +31,7 @@ const topicName = process.env.FUNCTIONS_TOPIC;
 const localFileName = 'test.txt';
 const fileName = `test-${uuid.v4()}.txt`;
 
-const BASE_URL = process.env.BASE_URL;
+const {BASE_URL} = process.env;
 
 const bucketName = process.env.FUNCTIONS_BUCKET;
 const bucket = storage.bucket(bucketName);

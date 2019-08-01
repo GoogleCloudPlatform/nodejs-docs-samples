@@ -21,6 +21,7 @@ const assert = require('assert');
 const fs = require(`fs`);
 const jwt = require('jsonwebtoken');
 const tools = require('@google-cloud/nodejs-repo-tools');
+const delay = require('delay');
 
 const clientCmd = `node client.js`;
 const serverCmd = `node server.js`;
@@ -70,10 +71,6 @@ const JWT_AUTH_TOKEN = jwt.sign(
   GOOGLE_KEYFILE.private_key,
   {algorithm: 'RS256'}
 );
-
-const delay = mSec => {
-  return new Promise(resolve => setTimeout(resolve, mSec));
-};
 
 // API key
 it(`should request a greeting from a remote Compute Engine instance using an API key`, async () => {
@@ -136,14 +133,10 @@ it(`should request and handle a greeting locally using a JWT Auth Token`, async 
 });
 
 // Misc
-it('should require either an API key or a JWT Auth Token', done => {
-  tools.runAsync(`${clientCmd} -h ${GCE_HOST}`, cwd).then(
-    () => {},
-    error => {
-      assert.ok(
-        error.message.includes('One of API_KEY or JWT_AUTH_TOKEN must be set')
-      );
-      done();
-    }
+it('should require either an API key or a JWT Auth Token', async () => {
+  const {stderr} = await tools.runAsyncWithIO(
+    `${clientCmd} -h ${GCE_HOST}`,
+    cwd
   );
+  assert.ok(stderr.includes('One of API_KEY or JWT_AUTH_TOKEN must be set'));
 });

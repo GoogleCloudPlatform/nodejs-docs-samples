@@ -9,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.13.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCP_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" mocha test/*.test.js --timeout=60000 --exit",
@@ -17,7 +17,7 @@
     "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && mocha test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "^3.0.0",
+    "@google-cloud/debug-agent": "^4.0.0",
     "escape-html": "^1.0.3",
     "pug": "^2.0.3",
     "safe-buffer": "^5.1.2"
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "@google-cloud/pubsub": "^0.28.0",
-    "@google-cloud/storage": "^2.0.0",
+    "@google-cloud/storage": "^3.0.0",
     "mocha": "^6.0.0",
     "express": "^4.16.3",
     "proxyquire": "^2.1.0",

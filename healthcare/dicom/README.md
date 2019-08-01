@@ -14,26 +14,26 @@ Run the following command to install the library dependencies for Node.js:
 
 ## DICOM stores
 
-    dicom_stores.js <command>
-
     Commands:
-        dicom_stores.js createDicomStore <datasetId> <dicomStoreId>   Creates a new DICOM store within the parent dataset.
-        dicom_stores.js deleteDicomStore <datasetId> <dicomStoreId>   Deletes the DICOM store and removes all resources that
-                                                                      are contained within it.
-        dicom_stores.js getDicomStore <datasetId> <dicomStoreId>      Gets the specified DICOM store or returns NOT_FOUND if
-                                                                      it doesn't exist.
-        dicom_stores.js listDicomStores <datasetId>                   Lists the DICOM stores in the given dataset.
-        dicom_stores.js patchDicomStore <datasetId> <dicomStoreId>    Updates the DICOM store.
+        node createDicomStore.js <projectId> <cloudRegion> <datasetId> <dicomStoreId>   Creates a new DICOM store within the parent dataset.
+        node deleteDicomStore.js <projectId> <cloudRegion> <datasetId> <dicomStoreId>   Deletes the DICOM store and removes all resources that
+                                                                                        are contained within it.
+        node getDicomStore.js <projectId> <cloudRegion> <datasetId> <dicomStoreId>      Gets the specified DICOM store or returns NOT_FOUND if
+                                                                                        it doesn't exist.
+        node listDicomStores.js <projectId> <cloudRegion> <datasetId>                   Lists the DICOM stores in the given dataset.
+        node patchDicomStore.js <projectId> <cloudRegion> <datasetId> <dicomStoreId>    Updates the DICOM store.
         <pubsubTopic>
-        dicom_stores.js importDicomObject <datasetId> <dicomStoreId>  Imports data into the DICOM store by copying it from the
-        <contentUri>                                                  specified source.
-        dicom_stores.js exportDicomInstanceGcs <datasetId>            Exports data to a Cloud Storage bucket by copying it
-        <dicomStoreId> <uriPrefix>                                    from the DICOM store.
+        node importDicomInstance.js <projectId> <cloudRegion> <datasetId>               Imports data into the DICOM store by copying it from the
+        <dicomStoreId> <gcsUri>                                                         specified source.
+        node exportDicomInstanceGcs.js <projectId> <cloudRegion> <datasetId>            Exports data to a Cloud Storage bucket by copying it
+        <dicomStoreId> <uriPrefix>                                                      from the DICOM store.
+        node getDicomStoreIamPolicy.js <projectId>                                      Gets the IAM policy for the HL7v2 store.
+        <cloudRegion> <datasetId> <dicomStoreId>
+        node setDicomStoreIamPolicy.js <projectId>                                      Sets the IAM policy for the HL7v2store.
+        <cloudRegion> <datasetId> <dicomStoreId> <member> <role>
 
     Options:
     --version             Show version number                                                                    [boolean]
-    --apiKey, -a          The API key used for discovering the API.
-                                                                                                                  [string]
     --cloudRegion, -c                                                                    [string] [default: "us-central1"]
     --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                           environment variables.                                                                  [string]
@@ -44,17 +44,27 @@ Run the following command to install the library dependencies for Node.js:
 
 ## DICOMweb
 
-    dicomweb.js <command>
-
     Commands:
         dicomweb.js dicomWebStoreInstance <datasetId> <dicomStoreId>  Handles the POST requests specified in the DICOMweb
-        <dcmFile> <boundary>                                          standard.
-        dicomweb.js dicomWebSearchInstances <datasetId>               Handles the GET requests specified in the DICOMweb
-        <dicomStoreId>                                                standard.
-        dicomweb.js dicomWebRetrieveStudy <datasetId> <dicomStoreId>  Handles the GET requests specified in the DICOMweb
-        <studyUid>                                                    standard.
-        dicomweb.js dicomWebDeleteStudy <datasetId> <dicomStoreId>    Handles DELETE requests.
-        <studyUid>
+        <dcmFile>                                                     standard.
+        
+        node dicomWebSearchForInstances.js <projectId> <cloudRegion>  Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId>                                    standard.
+        
+        node dicomWebRetrieveStudy.js <projectId> <cloudRegion>       Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId> <studyUid>                         standard.
+        
+        node dicomWebRetrieveInstance.js <projectId> <cloudRegion>    Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId> <studyUid> <seriesUid>             standard.
+        <instanceUid>                        
+        
+        node dicomWebRetrieveRendered.js <projectId> <cloudRegion>    Handles the GET requests specified in the DICOMweb
+        <datasetId> <dicomStoreId> <studyUid> <seriesUid>             standard.
+        <instanceUid>                       
+        
+        node dicomWebDeleteStudy.js <projectId> <cloudRegion>         Handles DELETE requests.
+        <datasetId> <dicomStoreId>  <studyUid>       
+       
 
     Options:
     --version             Show version number                                                                    [boolean]

@@ -16,7 +16,6 @@
 'use strict';
 
 // [START functions_sendgrid_setup]
-const {Buffer} = require('safe-buffer');
 const sendgrid = require('sendgrid');
 const config = require('./config.json');
 const uuid = require('uuid');

@@ -19,7 +19,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {OAuth2Client} = require('google-auth-library');
 const path = require('path');
-const {Buffer} = require('safe-buffer');
 const process = require('process'); // Required for mocking environment variables
 
 // By default, the client will authenticate using the service account file

@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "googleapis": "^42.0.0",
-    "safe-buffer": "^5.1.2",
     "uuid": "^3.3.2",
     "yargs": "^13.2.2"
   },

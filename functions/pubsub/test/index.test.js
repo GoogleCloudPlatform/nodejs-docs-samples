@@ -17,7 +17,6 @@
 
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const {Buffer} = require('safe-buffer');
 const path = require('path');
 
 const execPromise = require('child-process-promise').exec;

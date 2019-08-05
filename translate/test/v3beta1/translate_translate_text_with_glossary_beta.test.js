@@ -64,7 +64,7 @@ describe(REGION_TAG, () => {
     const output = execSync(
       `node v3beta1/${REGION_TAG}.js ${projectId} ${location} ${glossaryId} ${input}`
     );
-    assert.match(output, /direcciones/);
+    assert.match(output, /indicaciones/);
   });
 
   after(async function() {

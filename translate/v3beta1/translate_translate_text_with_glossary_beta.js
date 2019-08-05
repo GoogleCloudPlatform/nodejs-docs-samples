@@ -55,7 +55,7 @@ function main(
     // Run request
     const [response] = await translationClient.translateText(request);
 
-    for (const translation of response.translations) {
+    for (const translation of response.glossaryTranslations) {
       console.log(`Translation: ${translation.translatedText}`);
     }
   }

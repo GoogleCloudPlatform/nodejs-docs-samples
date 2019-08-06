@@ -32,6 +32,3 @@ environment.
 * [OCR (Optical Character Recognition)](ocr/)
 * [SendGrid](sendgrid/)
 * [Slack](slack/)
-
-## Notes:
-The samples in the `node8` directory are designed for use with Node.js `8.x.x` only. Unless otherwise noted, all other samples are designed for _both_ Node.js `6.x.x` _and_ Node.js `8.x.x`.

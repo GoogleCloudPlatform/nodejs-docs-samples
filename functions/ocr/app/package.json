@@ -17,10 +17,9 @@
   "dependencies": {
     "@google-cloud/pubsub": "^0.28.1",
     "@google-cloud/storage": "^3.0.0",
-    "@google-cloud/translate": "^3.0.0",
-    "@google-cloud/vision": "^0.25.0",
-    "nconf": "^0.10.0",
-    "safe-buffer": "^5.1.2"
+    "@google-cloud/translate": "^4.0.0",
+    "@google-cloud/vision": "^1.0.0",
+    "nconf": "^0.10.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

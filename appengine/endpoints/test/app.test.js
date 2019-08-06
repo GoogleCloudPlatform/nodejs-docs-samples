@@ -15,7 +15,6 @@
 
 'use strict';
 
-const {Buffer} = require('safe-buffer');
 const express = require('express');
 const path = require('path');
 const proxyquire = require('proxyquire').noCallThru();

@@ -15,7 +15,6 @@
 
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
-const {Buffer} = require('safe-buffer');
 const Compute = require('@google-cloud/compute');
 const compute = new Compute();
 // [END functions_stop_instance_pubsub]

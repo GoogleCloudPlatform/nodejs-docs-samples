@@ -28,11 +28,12 @@ app.post('/', async (req, res) => {
   // Decode the Pub/Sub message.
   const pubSubMessage = req.body.message;
   pubSubMessage.data = Buffer.from(pubSubMessage.data, 'base64')
-    .toString().trim();
+    .toString()
+    .trim();
   let data;
   try {
     data = JSON.parse(pubSubMessage.data);
-  } catch(err) {
+  } catch (err) {
     const msg = 'invalid Pub/Sub message: data property is not valid JSON';
     console.error(`error: ${msg}`);
     res.status(400).send(`Bad Request: ${msg}`);
@@ -41,7 +42,8 @@ app.post('/', async (req, res) => {
 
   // Validate the message is a Cloud Storage event.
   if (!data.name || !data.bucket) {
-    const msg = 'invalid Cloud Storage notification: expected name and bucket properties';
+    const msg =
+      'invalid Cloud Storage notification: expected name and bucket properties';
     console.error(`error: ${msg}`);
     res.status(400).send(`Bad Request: ${msg}`);
     return;
@@ -50,8 +52,8 @@ app.post('/', async (req, res) => {
   try {
     await image.blurOffensiveImages(data);
     res.status(204).send();
-  } catch(err) {
-    console.error("error: Blurring image:", err)
+  } catch (err) {
+    console.error('error: Blurring image:', err);
     res.status(500).send();
   }
 });

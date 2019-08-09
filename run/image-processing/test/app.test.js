@@ -38,9 +38,11 @@ describe('Unit Tests', () => {
       await request
         .post('/')
         .type('json')
-        .send({message: {
-          data: 'non-JSON value'
-        }})
+        .send({
+          message: {
+            data: 'non-JSON value',
+          },
+        })
         .expect(400);
     });
 
@@ -49,27 +51,33 @@ describe('Unit Tests', () => {
         await request
           .post('/')
           .type('json')
-          .send({message: {
-            data: Buffer.from('{ "json": "value" }').toString(`base64`)
-          }})
+          .send({
+            message: {
+              data: Buffer.from('{ "json": "value" }').toString(`base64`),
+            },
+          })
           .expect(400);
       });
       it('missing just the "name" property', async () => {
         await request
           .post('/')
           .type('json')
-          .send({message: {
-            data: Buffer.from('{ "name": "value" }').toString(`base64`)
-          }})
+          .send({
+            message: {
+              data: Buffer.from('{ "name": "value" }').toString(`base64`),
+            },
+          })
           .expect(400);
       });
       it('missing just the "bucket" property', async () => {
         await request
           .post('/')
           .type('json')
-          .send({message: {
-            data: Buffer.from('{ "bucket": "value" }').toString(`base64`)
-          }})
+          .send({
+            message: {
+              data: Buffer.from('{ "bucket": "value" }').toString(`base64`),
+            },
+          })
           .expect(400);
       });
     });
@@ -81,10 +89,13 @@ describe('should succeed', () => {
     await request
       .post('/')
       .type('json')
-      .send({message: {
-        data: Buffer.from(`{ "bucket": "---", "name": "does-not-exist" }`).toString(`base64`)
-      }})
+      .send({
+        message: {
+          data: Buffer.from(
+            `{ "bucket": "---", "name": "does-not-exist" }`
+          ).toString(`base64`),
+        },
+      })
       .expect(204);
   });
-
 });

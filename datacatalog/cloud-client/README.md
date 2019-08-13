@@ -4,25 +4,34 @@
 
 This directory contains samples for Google Cloud Data Catalog. Google Cloud Data Catalog is a fully managed and scalable metadata management service that empowers organizations to quickly discover, manage, and understand all their data in Google Cloud.
 
-## Table of Contents
+# Setup
 
-* [Setup](#setup)
-* [Running the tests](#running-the-tests)
+Run the following command to install the library dependencies for Node.js:
 
-## Setup
+    npm install
 
-1.  Read [Prerequisites][prereq] and [How to run a sample][run] first.
-1.  Install dependencies:
+# Running the sample
 
-        npm install
+    Commands:
+        createDataset.js <projectId> <cloudRegion> <datasetId>                                  Creates a new health dataset.
+        deleteDataset.js <projectId> <cloudRegion> <datasetId>                                  Deletes the specified health dataset and all data
+                                                                                                contained in the dataset.
+        getDataset.js <projectId> <cloudRegion> <datasetId>                                     Gets details about a dataset.
+        listDatasets.js <projectId> <cloudRegion>                                               Lists the datasets in the given GCP project.
+        patchDataset.js <projectId> <cloudRegion> <datasetId> <timeZone>                        Updates dataset details.
+        deidentifyDataset.js <projectId> <cloudRegion> <sourceDatasetId>                        Creates a new dataset containing de-identified data from
+        <destinationDatasetId> <keeplistTags>                                                   the source dataset.
+        getDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId>                            Gets the IAM policy for the dataset.
+        setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member>                   Sets the IAM policy for the dataset.
+        <role>
 
-[prereq]: ../../README.md#prerequisites
-[run]: ../../README.md#how-to-run-a-sample
+        Options:
+        --version             Show version number                                                                    [boolean]
+        --cloudRegion, -c                                                                    [string] [default: "us-central1"]
+        --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+                              environment variables.                                                                  [string]
+        --serviceAccount, -s  The path to your service credentials JSON.
+                                             [string]
+        --help                Show help                                                                              [boolean]
 
-## Running the tests
-
-1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
-
-1.  Run all tests:
-
-        npm test
+For more information, see https://cloud.google.com/data-catalog/docs/

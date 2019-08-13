@@ -13,25 +13,7 @@ Run the following command to install the library dependencies for Node.js:
 # Running the sample
 
     Commands:
-        createDataset.js <projectId> <cloudRegion> <datasetId>                                  Creates a new health dataset.
-        deleteDataset.js <projectId> <cloudRegion> <datasetId>                                  Deletes the specified health dataset and all data
-                                                                                                contained in the dataset.
-        getDataset.js <projectId> <cloudRegion> <datasetId>                                     Gets details about a dataset.
-        listDatasets.js <projectId> <cloudRegion>                                               Lists the datasets in the given GCP project.
-        patchDataset.js <projectId> <cloudRegion> <datasetId> <timeZone>                        Updates dataset details.
-        deidentifyDataset.js <projectId> <cloudRegion> <sourceDatasetId>                        Creates a new dataset containing de-identified data from
-        <destinationDatasetId> <keeplistTags>                                                   the source dataset.
-        getDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId>                            Gets the IAM policy for the dataset.
-        setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member>                   Sets the IAM policy for the dataset.
-        <role>
+        lookupEntry.js <projectId> <datasetId>                                  Lookup a dataset entry.
 
-        Options:
-        --version             Show version number                                                                    [boolean]
-        --cloudRegion, -c                                                                    [string] [default: "us-central1"]
-        --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
-                              environment variables.                                                                  [string]
-        --serviceAccount, -s  The path to your service credentials JSON.
-                                             [string]
-        --help                Show help                                                                              [boolean]
 
 For more information, see https://cloud.google.com/data-catalog/docs/

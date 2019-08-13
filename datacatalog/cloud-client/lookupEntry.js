@@ -22,10 +22,9 @@
  * For more information, see the README.md under /datacatalog and the
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
-
 function main(
   projectId = process.env.GCLOUD_PROJECT,
-  datasetId
+  datasetId = process.env.GCLOUD_DATASET_ID
 ) {
 
   // [START datacatalog_lookup_dataset]

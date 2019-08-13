@@ -43,10 +43,10 @@ function main(
     const request = { linkedResource: resourceName };
     const [result] = await datacatalog.lookupEntry(request);
     return result;
-    // [END datacatalog_lookup_dataset]
   }
 
   lookup().then(response => { console.log(response) });
+  // [END datacatalog_lookup_dataset]
 }
 
 // node lookupEntry.js <projectId> <datasetID>

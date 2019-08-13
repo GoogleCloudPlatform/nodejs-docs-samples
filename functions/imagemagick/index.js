@@ -103,6 +103,7 @@ const blurImage = async (file, blurredBucketName) => {
   }
 
   // Delete the temporary file.
-  return promisify(fs.unlink(tempLocalPath));
+  const unlink = promisify(fs.unlink);
+  return unlink(tempLocalPath);
 };
 // [END functions_imagemagick_blur]

@@ -1,0 +1,34 @@
+{
+  "name": "@google-cloud/datacatalog-samples",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Samples for the Cloud Data Catalog client library for Node.js",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": "GoogleCloudPlatform/nodejs-docs-samples",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "mocha system-test/*.test.js --timeout=60000"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^6.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/datacatalog": "^1.0.1"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "test": {
+      "build": {
+        "requiredEnvVars": [
+          "GCLOUD_PROJECT",
+          "GCLOUD_DATASET_ID"
+        ]
+      }
+    }
+  }
+}

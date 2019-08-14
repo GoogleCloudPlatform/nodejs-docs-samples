@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright 2019 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,11 @@ function main(
   projectId = process.env.GCLOUD_PROJECT,
   datasetId = process.env.GCLOUD_DATASET_ID
 ) {
-
   // [START datacatalog_lookup_dataset]
   // -------------------------------
   // Import required modules.
   // -------------------------------
-  const { DataCatalogClient } = require('@google-cloud/datacatalog').v1beta1;
+  const {DataCatalogClient} = require('@google-cloud/datacatalog').v1beta1;
   const datacatalog = new DataCatalogClient();
 
   async function lookup() {
@@ -39,12 +38,14 @@ function main(
     // const projectId = 'my-project'
     // const datasetId = 'my_dataset'
     const resourceName = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;
-    const request = { linkedResource: resourceName };
+    const request = {linkedResource: resourceName};
     const [result] = await datacatalog.lookupEntry(request);
     return result;
   }
 
-  lookup().then(response => { console.log(response) });
+  lookup().then(response => {
+    console.log(response);
+  });
   // [END datacatalog_lookup_dataset]
 }
 

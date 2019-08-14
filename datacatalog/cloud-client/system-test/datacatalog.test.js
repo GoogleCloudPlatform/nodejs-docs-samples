@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright 2019 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,6 @@ it('should lookup a dataset entry', async () => {
     `node lookupEntry.js ${projectId} ${datasetId}`,
     cwd
   );
-  const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`
+  const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;
   assert.ok(output.includes(expectedLinkedResource));
 });

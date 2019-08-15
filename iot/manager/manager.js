@@ -758,6 +758,7 @@ const sendCommand = async (
   // const client = new iot.v1.DeviceManagerClient();
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
+  // const commandMessage = 'message for device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
 

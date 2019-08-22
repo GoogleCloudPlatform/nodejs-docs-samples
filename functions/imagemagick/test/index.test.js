@@ -31,7 +31,6 @@ requestRetry = requestRetry.defaults({
   retryDelay: 1000,
 });
 
-
 const safeFileName = 'bicycle.jpg';
 const offensiveFileName = 'zombie.jpg';
 const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
@@ -74,7 +73,9 @@ describe('functions/imagemagick tests', () => {
       .file(offensiveFileName)
       .exists();
     if (!exists[0]) {
-      throw Error(`Missing required file: gs://${BUCKET_NAME}/${offensiveFileName}`);
+      throw Error(
+        `Missing required file: gs://${BUCKET_NAME}/${offensiveFileName}`
+      );
     }
 
     exists = await storage
@@ -86,9 +87,8 @@ describe('functions/imagemagick tests', () => {
     }
   });
 
-
-//  beforeEach(tools.stubConsole);
-//  afterEach(tools.restoreConsole);
+  beforeEach(tools.stubConsole);
+  afterEach(tools.restoreConsole);
 
   it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
     const PORT = 8080;
@@ -134,7 +134,7 @@ describe('functions/imagemagick tests', () => {
     const exists = storage
       .bucket(BLURRED_BUCKET_NAME)
       .file(offensiveFileName)
-      .exists()
+      .exists();
 
     assert.ok(exists, 'File uploaded');
     cleanupRequired |= exists;

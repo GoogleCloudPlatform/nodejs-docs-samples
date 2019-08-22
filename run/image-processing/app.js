@@ -2,13 +2,14 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
+// [START run_imageproc_controller]
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json());
 
-// [START run_imageproc_controller]
 const image = require('./image');
 
 app.post('/', async (req, res) => {
@@ -27,15 +28,16 @@ app.post('/', async (req, res) => {
 
   // Decode the Pub/Sub message.
   const pubSubMessage = req.body.message;
-  pubSubMessage.data = Buffer.from(pubSubMessage.data, 'base64')
-    .toString()
-    .trim();
   let data;
   try {
-    data = JSON.parse(pubSubMessage.data);
+    data = Buffer.from(pubSubMessage.data, 'base64')
+      .toString()
+      .trim();
+    data = JSON.parse(data);
   } catch (err) {
-    const msg = 'invalid Pub/Sub message: data property is not valid JSON';
-    console.error(`error: ${msg}`);
+    const msg =
+      'Invalid Pub/Sub message: data property is not valid base64 encoded JSON';
+    console.error(`error: ${msg}: ${err}`);
     res.status(400).send(`Bad Request: ${msg}`);
     return;
   }
@@ -53,7 +55,7 @@ app.post('/', async (req, res) => {
     await image.blurOffensiveImages(data);
     res.status(204).send();
   } catch (err) {
-    console.error('error: Blurring image:', err);
+    console.error(`error: Blurring image: ${err}`);
     res.status(500).send();
   }
 });

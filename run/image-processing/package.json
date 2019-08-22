@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/*.test.js --check-leaks"
+    "test": "mocha test/*.test.js --check-leaks --timeout=5000"
   },
   "dependencies": {
     "@google-cloud/storage": "^3.0.4",

@@ -84,8 +84,8 @@ describe('Unit Tests', () => {
   });
 });
 
-describe('should succeed', () => {
-  it(`if the image analysis can proceed`, async () => {
+describe('Integration Tests', () => {
+  it(`Image analysis can proceed to Vision API scan`, async () => {
     await request
       .post('/')
       .type('json')

@@ -21,9 +21,9 @@ const fs = require('fs');
 const {promisify} = require('util');
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
-const vision = require('@google-cloud/vision').v1p1beta1;
+const vision = require('@google-cloud/vision');
 
+const storage = new Storage();
 const client = new vision.ImageAnnotatorClient();
 
 const {BLURRED_BUCKET_NAME} = process.env;
@@ -45,6 +45,7 @@ exports.blurOffensiveImages = async event => {
     const detections = result.safeSearchAnnotation || {};
 
     if (
+      // Levels are defined in https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.Likelihood
       detections.adult === 'VERY_LIKELY' ||
       detections.violence === 'VERY_LIKELY'
     ) {
@@ -55,7 +56,7 @@ exports.blurOffensiveImages = async event => {
     }
   } catch (err) {
     console.error(`Failed to analyze ${file.name}.`, err);
-    return Promise.reject(err);
+    throw err;
   }
 };
 // [END functions_imagemagick_analyze]
@@ -71,8 +72,7 @@ const blurImage = async (file, blurredBucketName) => {
 
     console.log(`Downloaded ${file.name} to ${tempLocalPath}.`);
   } catch (err) {
-    console.error('File download failed.', err);
-    return Promise.reject(err);
+    throw new Error(`File download failed: ${err}`);
   }
 
   await new Promise((resolve, reject) => {
@@ -98,8 +98,7 @@ const blurImage = async (file, blurredBucketName) => {
     await blurredBucket.upload(tempLocalPath, {destination: file.name});
     console.log(`Uploaded blurred image to: ${gcsPath}`);
   } catch (err) {
-    console.error(`Unable to upload blurred image to ${gcsPath}:`, err);
-    return Promise.reject(err);
+    throw new Error(`Unable to upload blurred image to ${gcsPath}: ${err}`);
   }
 
   // Delete the temporary file.

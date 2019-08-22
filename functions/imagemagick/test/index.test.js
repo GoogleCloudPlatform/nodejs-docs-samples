@@ -31,40 +31,64 @@ requestRetry = requestRetry.defaults({
   retryDelay: 1000,
 });
 
-const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
-const {BLURRED_BUCKET_NAME} = process.env;
 
 const safeFileName = 'bicycle.jpg';
 const offensiveFileName = 'zombie.jpg';
-
+const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
+const {BLURRED_BUCKET_NAME} = process.env;
+const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
 const cwd = path.join(__dirname, '..');
 
-const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
+// Successfully generated images require cleanup.
+let cleanupRequired = false;
 
 describe('functions/imagemagick tests', () => {
-  const startFF = port => {
-    return execPromise(
-      `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
-      {timeout: 15000, shell: true, cwd}
-    );
-  };
+  let startFF, stopFF;
 
-  const stopFF = async ffProc => {
-    try {
-      return await ffProc;
-    } catch (err) {
-      // Timeouts always cause errors on Linux, so catch them
-      if (err.name && err.name === 'ChildProcessError') {
-        const {stdout, stderr} = err;
-        return {stdout, stderr};
+  before(() => {
+    startFF = port => {
+      return execPromise(
+        `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
+        {timeout: 15000, shell: true, cwd}
+      );
+    };
+
+    stopFF = async ffProc => {
+      try {
+        return await ffProc;
+      } catch (err) {
+        // Timeouts always cause errors on Linux, so catch them
+        if (err.name && err.name === 'ChildProcessError') {
+          const {stdout, stderr} = err;
+          return {stdout, stderr};
+        }
+
+        throw err;
       }
+    };
+  });
 
-      throw err;
+  before(async () => {
+    let exists = await storage
+      .bucket(BUCKET_NAME)
+      .file(offensiveFileName)
+      .exists();
+    if (!exists[0]) {
+      throw Error(`Missing required file: gs://${BUCKET_NAME}/${offensiveFileName}`);
     }
-  };
 
-  beforeEach(tools.stubConsole);
-  afterEach(tools.restoreConsole);
+    exists = await storage
+      .bucket(BUCKET_NAME)
+      .file(safeFileName)
+      .exists();
+    if (!exists[0]) {
+      throw Error(`Missing required file: gs://${BUCKET_NAME}/${safeFileName}`);
+    }
+  });
+
+
+//  beforeEach(tools.stubConsole);
+//  afterEach(tools.restoreConsole);
 
   it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
     const PORT = 8080;
@@ -81,7 +105,6 @@ describe('functions/imagemagick tests', () => {
     });
 
     const {stdout} = await stopFF(ffProc);
-
     assert.ok(stdout.includes(`Detected ${safeFileName} as OK.`));
   });
 
@@ -108,16 +131,19 @@ describe('functions/imagemagick tests', () => {
       )
     );
 
-    assert.ok(
-      storage
-        .bucket(BLURRED_BUCKET_NAME)
-        .file(offensiveFileName)
-        .exists(),
-      'File uploaded'
-    );
+    const exists = storage
+      .bucket(BLURRED_BUCKET_NAME)
+      .file(offensiveFileName)
+      .exists()
+
+    assert.ok(exists, 'File uploaded');
+    cleanupRequired |= exists;
   });
 
   after(async () => {
+    if (!cleanupRequired) {
+      return;
+    }
     try {
       await blurredBucket.file(offensiveFileName).delete();
     } catch (err) {

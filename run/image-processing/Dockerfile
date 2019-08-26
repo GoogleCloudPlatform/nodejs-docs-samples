@@ -2,11 +2,11 @@
 # Use of this source code is governed by the Apache 2.0
 # license that can be found in the LICENSE file.
 
-# [START run_pubsub_dockerfile]
-
 # Use the official Node.js 10 image.
 # https://hub.docker.com/_/node
 FROM node:10
+
+# [START run_imageproc_imagemagick_ubuntu]
 
 # Install Imagemagick into the container image.
 # For more on system packages review the system packages tutorial.
@@ -15,6 +15,8 @@ RUN set -ex; \
   apt-get -y update; \
   apt-get -y install imagemagick; \
   rm -rf /var/lib/apt/lists/*
+
+# [END run_imageproc_imagemagick_ubuntu]
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -34,5 +36,3 @@ COPY . .
 
 # Run the web service on container startup.
 CMD [ "npm", "start" ]
-
-# [END run_pubsub_dockerfile]

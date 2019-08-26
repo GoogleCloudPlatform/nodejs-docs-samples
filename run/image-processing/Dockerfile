@@ -6,7 +6,7 @@
 # https://hub.docker.com/_/node
 FROM node:10
 
-# [START run_imageproc_imagemagick_ubuntu]
+# [START run_imageproc_dockerfile_imagemagick]
 
 # Install Imagemagick into the container image.
 # For more on system packages review the system packages tutorial.
@@ -16,7 +16,7 @@ RUN set -ex; \
   apt-get -y install imagemagick; \
   rm -rf /var/lib/apt/lists/*
 
-# [END run_imageproc_imagemagick_ubuntu]
+# [END run_imageproc_dockerfile_imagemagick]
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app

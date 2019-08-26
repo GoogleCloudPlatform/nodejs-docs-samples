@@ -38,11 +38,10 @@ const {BLURRED_BUCKET_NAME} = process.env;
 const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
 const cwd = path.join(__dirname, '..');
 
-// Successfully generated images require cleanup.
-let cleanupRequired = false;
-
 describe('functions/imagemagick tests', () => {
   let startFF, stopFF;
+  // Successfully generated images require cleanup.
+  let cleanupRequired = false;
 
   before(() => {
     startFF = port => {
@@ -68,21 +67,21 @@ describe('functions/imagemagick tests', () => {
   });
 
   before(async () => {
-    let exists = await storage
+    let [exists] = await storage
       .bucket(BUCKET_NAME)
       .file(offensiveFileName)
       .exists();
-    if (!exists[0]) {
+    if (!exists) {
       throw Error(
         `Missing required file: gs://${BUCKET_NAME}/${offensiveFileName}`
       );
     }
 
-    exists = await storage
+    [exists] = await storage
       .bucket(BUCKET_NAME)
       .file(safeFileName)
       .exists();
-    if (!exists[0]) {
+    if (!exists) {
       throw Error(`Missing required file: gs://${BUCKET_NAME}/${safeFileName}`);
     }
   });

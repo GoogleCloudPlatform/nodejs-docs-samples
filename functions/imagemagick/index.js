@@ -45,7 +45,7 @@ exports.blurOffensiveImages = async event => {
     const detections = result.safeSearchAnnotation || {};
 
     if (
-      // Levels are defined in https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.Likelihood
+      // Levels are defined in https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse#likelihood
       detections.adult === 'VERY_LIKELY' ||
       detections.violence === 'VERY_LIKELY'
     ) {

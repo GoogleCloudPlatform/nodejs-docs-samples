@@ -11,28 +11,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const {execSync} = require('child_process');
+const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
 
-describe('client with organization settings', async () => {
-  it('client can enable asset discovery', async () => {
-    const output = await exec(
-      `node v1/enableAssetDiscovery.js ${organizationId}`
-    );
+describe('client with organization settings', () => {
+  it('client can enable asset discovery', () => {
+    const output = exec(`node v1/enableAssetDiscovery.js ${organizationId}`);
     assert.match(output, new RegExp(organizationId));
     assert.match(output, /true/);
     assert.notMatch(output, /undefined/);
   });
 
-  it('client can get organization settings', async () => {
-    const output = await exec(
-      `node v1/getOrganizationSettings.js ${organizationId}`
-    );
+  it('client can get organization settings', () => {
+    const output = exec(`node v1/getOrganizationSettings.js ${organizationId}`);
     assert.match(output, new RegExp(organizationId));
   });
 });

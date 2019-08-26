@@ -11,22 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 'use strict';
 
+const {SecurityCenterClient} = require('@google-cloud/security-center');
 const {assert} = require('chai');
-const execa = require('execa');
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const {execSync} = require('child_process');
+const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
 
 describe('Client with SourcesAndFindings', async () => {
   let data;
   before(async () => {
-    const {SecurityCenterClient} = require('@google-cloud/security-center');
-
     // Creates a new client.
     const client = new SecurityCenterClient();
-
     const [source] = await client
       .createSource({
         source: {
@@ -69,40 +68,46 @@ describe('Client with SourcesAndFindings', async () => {
     };
     console.log('my data %j', data);
   });
-  it('client can create source', async () => {
-    const output = await exec(`node v1/createSource.js ${data.orgId}`);
+
+  it('client can create source', () => {
+    const output = exec(`node v1/createSource.js ${data.orgId}`);
     assert.match(output, new RegExp(data.orgId));
     assert.match(output, /New Source/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can get source', async () => {
-    const output = await exec(`node v1/getSource.js ${data.sourceName}`);
+
+  it('client can get source', () => {
+    const output = exec(`node v1/getSource.js ${data.sourceName}`);
     assert.match(output, new RegExp(data.sourceName));
     assert.match(output, /Source/);
     assert.match(output, /"description":"A new custom source that does X"/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can list all sources', async () => {
-    const output = await exec(`node v1/listAllSources.js ${data.orgId}`);
+
+  it('client can list all sources', () => {
+    const output = exec(`node v1/listAllSources.js ${data.orgId}`);
     assert.match(output, new RegExp(data.sourceName));
     assert.match(output, /Sources/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can update a source', async () => {
-    const output = await exec(`node v1/updateSource.js ${data.sourceName}`);
+
+  it('client can update a source', () => {
+    const output = exec(`node v1/updateSource.js ${data.sourceName}`);
     assert.match(output, new RegExp(data.sourceName));
     assert.match(output, /New Display Name/);
     assert.match(output, /source that does X/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can create a finding', async () => {
-    const output = await exec(`node v1/createFinding.js ${data.sourceName}`);
+
+  it('client can create a finding', () => {
+    const output = exec(`node v1/createFinding.js ${data.sourceName}`);
     assert.match(output, new RegExp(data.sourceName));
     assert.match(output, /New finding created/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can create a finding with source properties', async () => {
-    const output = await exec(
+
+  it('client can create a finding with source properties', () => {
+    const output = exec(
       `node v1/createFindingSourceProperties.js ${data.sourceName}`
     );
     assert.match(output, new RegExp(data.sourceName));
@@ -110,8 +115,9 @@ describe('Client with SourcesAndFindings', async () => {
     assert.match(output, /n_value/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can update a findings source properties', async () => {
-    const output = await exec(
+
+  it('client can update a findings source properties', () => {
+    const output = exec(
       `node v1/updateFindingSourceProperties.js ${data.findingName}`
     );
     assert.match(output, new RegExp(data.findingName));
@@ -119,14 +125,16 @@ describe('Client with SourcesAndFindings', async () => {
     assert.match(output, /new_string_example/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can set finding state', async () => {
-    const output = await exec(`node v1/setFindingState.js ${data.findingName}`);
+
+  it('client can set finding state', () => {
+    const output = exec(`node v1/setFindingState.js ${data.findingName}`);
     assert.match(output, new RegExp(data.findingName));
     assert.match(output, /INACTIVE/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can test IAM privileges', async () => {
-    const output = await exec(`node v1/testIam.js ${data.sourceName}`);
+
+  it('client can test IAM privileges', () => {
+    const output = exec(`node v1/testIam.js ${data.sourceName}`);
     assert.equal(
       (output.match(/true/g) || []).length,
       2,
@@ -134,30 +142,30 @@ describe('Client with SourcesAndFindings', async () => {
     );
     assert.notMatch(output, /undefined/);
   });
-  it('client can list all findings', async () => {
-    const output = await exec(`node v1/listAllFindings.js ${data.orgId}`);
+
+  it('client can list all findings', () => {
+    const output = exec(`node v1/listAllFindings.js ${data.orgId}`);
     assert.match(output, new RegExp(data.findingName));
     assert.match(output, new RegExp(data.untouchedFindingName));
     assert.notMatch(output, /undefined/);
   });
-  it('client can list only some findings', async () => {
-    const output = await exec(
-      `node v1/listFilteredFindings.js ${data.sourceName}`
-    );
+
+  it('client can list only some findings', () => {
+    const output = exec(`node v1/listFilteredFindings.js ${data.sourceName}`);
     assert.match(output, new RegExp(data.findingName));
     assert.notMatch(output, new RegExp(data.untouchedFindingName));
     assert.notMatch(output, /undefined/);
   });
-  it('client can list findings at a time.', async () => {
-    const output = await exec(
-      `node v1/listFindingsAtTime.js ${data.sourceName}`
-    );
+
+  it('client can list findings at a time.', () => {
+    const output = exec(`node v1/listFindingsAtTime.js ${data.sourceName}`);
     // Nothing was created for the source more then a few minutes ago, so
     // days ago should return nothing.
     assert.equal(output, '');
   });
-  it('client can add security marks to finding', async () => {
-    const output = await exec(
+
+  it('client can add security marks to finding', () => {
+    const output = exec(
       `node v1/addFindingSecurityMarks.js ${data.findingName}`
     );
     assert.match(output, new RegExp(data.findingName));
@@ -167,29 +175,29 @@ describe('Client with SourcesAndFindings', async () => {
     assert.match(output, /value_b/);
     assert.notMatch(output, /undefined/);
   });
-  it('client can list findings withe security marks', async () => {
-    // Ensure marks are set.
-    await exec(`node v1/addFindingSecurityMarks.js ${data.findingName}`);
 
-    const output = await exec(
+  it('client can list findings withe security marks', () => {
+    // Ensure marks are set.
+    exec(`node v1/addFindingSecurityMarks.js ${data.findingName}`);
+    const output = exec(
       `node v1/listFindingsWithSecurityMarks.js ${data.sourceName}`
     );
     assert.notMatch(output, new RegExp(data.findingName));
     assert.match(output, new RegExp(data.untouchedFindingName));
     assert.notMatch(output, /undefined/);
   });
-  it('client can get a sources policy', async () => {
-    const output = await exec(`node v1/getSourceIam.js ${data.sourceName}`);
+
+  it('client can get a sources policy', () => {
+    const output = exec(`node v1/getSourceIam.js ${data.sourceName}`);
     assert.match(output, /Current policy/);
     assert.notMatch(output, /undefined/);
   });
-  it('client set a sources policy', async () => {
+
+  it('client set a sources policy', () => {
     const user = 'csccclienttest@gmail.com';
-    const output = await exec(
-      `node v1/setSourceIam.js ${data.sourceName} ${user}`
-    );
+    const output = exec(`node v1/setSourceIam.js ${data.sourceName} ${user}`);
     assert.match(output, /Updated policy/);
-    assert.match(output, new RegExp(user));
+    assert.include(output, user);
     assert.notMatch(output, /undefined/);
   });
 });

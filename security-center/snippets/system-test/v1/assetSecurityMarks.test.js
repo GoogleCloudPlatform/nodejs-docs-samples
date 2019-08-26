@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2019, Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,19 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 'use strict';
 
+const {SecurityCenterClient} = require('@google-cloud/security-center');
 const {assert} = require('chai');
-const execa = require('execa');
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const {execSync} = require('child_process');
+const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
 
 describe('client with security marks for assets', async () => {
   let data;
   before(async () => {
-    const {SecurityCenterClient} = require('@google-cloud/security-center');
-
     // Creates a new client.
     const client = new SecurityCenterClient();
 
@@ -39,9 +39,9 @@ describe('client with security marks for assets', async () => {
     };
     console.log('data %j', data);
   });
-  it('client can add security marks to asset.', async () => {
-    const output = await exec(`node v1/addSecurityMarks.js ${data.assetName}`);
-    assert.match(output, new RegExp(data.assetName));
+  it('client can add security marks to asset.', () => {
+    const output = exec(`node v1/addSecurityMarks.js ${data.assetName}`);
+    assert.include(output, data.assetName);
     assert.match(output, /key_a/);
     assert.match(output, /value_a/);
     assert.match(output, /key_b/);
@@ -49,43 +49,37 @@ describe('client with security marks for assets', async () => {
     assert.notMatch(output, /undefined/);
   });
 
-  it('client can add and delete security marks', async () => {
+  it('client can add and delete security marks', () => {
     // Ensure marks are set.
-    await exec(`node v1/addSecurityMarks.js ${data.assetName}`);
+    exec(`node v1/addSecurityMarks.js ${data.assetName}`);
 
-    const output = await exec(
-      `node v1/addDeleteSecurityMarks.js ${data.assetName}`
-    );
+    const output = exec(`node v1/addDeleteSecurityMarks.js ${data.assetName}`);
     assert.match(output, /key_a/);
     assert.match(output, /new_value_a/);
     assert.notMatch(output, /key_b/);
     assert.notMatch(output, /undefined/);
   });
 
-  it('client can delete security marks', async () => {
+  it('client can delete security marks', () => {
     // Ensure marks are set.
-    await exec(`node v1/addSecurityMarks.js ${data.assetName}`);
+    exec(`node v1/addSecurityMarks.js ${data.assetName}`);
 
-    const output = await exec(
-      `node v1/deleteSecurityMarks.js ${data.assetName}`
-    );
+    const output = exec(`node v1/deleteSecurityMarks.js ${data.assetName}`);
     assert.notMatch(output, /key_a/);
     assert.notMatch(output, /value_a/);
     assert.notMatch(output, /key_b/);
     assert.notMatch(output, /value_b/);
-    assert.match(output, new RegExp(data.assetName));
-    assert.match(output, new RegExp(data.assetName));
+    assert.include(output, data.assetName);
+    assert.include(output, data.assetName);
     assert.notMatch(output, /undefined/);
   });
 
-  it('client can list assets with security marks', async () => {
+  it('client can list assets with security marks', () => {
     // Ensure marks are set.
-    await exec(`node v1/addSecurityMarks.js ${data.assetName}`);
+    exec(`node v1/addSecurityMarks.js ${data.assetName}`);
 
-    const output = await exec(
-      `node v1/listAssetsWithSecurityMarks.js ${data.orgId}`
-    );
-    assert.match(output, new RegExp(data.assetName));
+    const output = exec(`node v1/listAssetsWithSecurityMarks.js ${data.orgId}`);
+    assert.include(output, data.assetName);
     assert.notMatch(output, /undefined/);
   });
 });

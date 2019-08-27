@@ -43,8 +43,6 @@ const testFiles = {
 
 describe('functions/imagemagick tests', async () => {
   let startFF, stopFF;
-  // Successfully generated images require cleanup.
-  let cleanupRequired = false;
 
   before(async () => {
     let exists;
@@ -134,9 +132,7 @@ describe('functions/imagemagick tests', async () => {
       .bucket(BLURRED_BUCKET_NAME)
       .file(testFiles.offensive)
       .exists();
-
     assert.ok(exists, 'File uploaded');
-    cleanupRequired |= exists;
   });
 
   it('blurOffensiveImages detects missing images as safe using Cloud Vision', async () => {
@@ -159,13 +155,10 @@ describe('functions/imagemagick tests', async () => {
   });
 
   after(async () => {
-    if (!cleanupRequired) {
-      return;
-    }
     try {
       await blurredBucket.file(testFiles.offensive).delete();
     } catch (err) {
-      console.log('Error deleting uploaded file:', err);
+      console.log('Error deleting uploaded file:', err.message);
     }
   });
 });

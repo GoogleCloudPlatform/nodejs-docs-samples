@@ -1,0 +1,308 @@
+/**
+ * Copyright 2017, Google, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+'use strict';
+
+const assert = require('assert');
+const {Datastore} = require('@google-cloud/datastore');
+const datastore = new Datastore();
+const program = require('../');
+const uuid = require('uuid');
+const path = require('path');
+const execPromise = require('child-process-promise').exec;
+const sinon = require('sinon');
+
+const FF_TIMEOUT = 3000;
+
+let requestRetry = require('requestretry');
+requestRetry = requestRetry.defaults({
+  retryDelay: 500,
+  retryStrategy: requestRetry.RetryStrategies.NetworkError,
+});
+
+const cwd = path.join(__dirname, '..');
+
+const NAME = 'sampletask1';
+const KIND = `Task-${uuid.v4()}`;
+const VALUE = {
+  description: 'Buy milk',
+};
+
+const errorMsg = msg =>
+  `${msg} not provided. Make sure you have a "${msg.toLowerCase()}" property in your request`;
+
+const handleLinuxFailures = async proc => {
+  try {
+    return await proc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    // Don't return proc, as await-ing it re-throws the error
+    if (!err.name || err.name !== 'ChildProcessError') {
+      throw err;
+    }
+  }
+};
+
+describe('functions/datastore', () => {
+  describe('set', () => {
+    let ffProc;
+    const PORT = 8080;
+    const BASE_URL = `http://localhost:${PORT}`;
+
+    before(() => {
+      ffProc = execPromise(
+        `functions-framework --target=set --signature-type=http --port=${PORT}`,
+        {timeout: FF_TIMEOUT, shell: true, cwd}
+      );
+    });
+
+    after(async () => {
+      await handleLinuxFailures(ffProc);
+    });
+
+    it('set: Fails without a value', async () => {
+      const req = {
+        body: {},
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        send: sinon.stub(),
+      };
+
+      await program.set(req, res);
+
+      assert.ok(res.status.calledWith(500));
+      assert.ok(res.send.calledWith(errorMsg('Value')));
+    });
+
+    it('set: Fails without a key', async () => {
+      const req = {
+        body: {
+          value: VALUE,
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        send: sinon.stub(),
+      };
+
+      await program.set(req, res);
+
+      assert.ok(res.status.calledWith(500));
+      assert.ok(res.send.calledWith(errorMsg('Key')));
+    });
+
+    it('set: Fails without a kind', async () => {
+      const req = {
+        body: {
+          key: NAME,
+          value: VALUE,
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        send: sinon.stub(),
+      };
+
+      await program.set(req, res);
+
+      assert.ok(res.status.calledWith(500));
+      assert.ok(res.send.calledWith(errorMsg('Kind')));
+    });
+
+    it('set: Saves an entity', async () => {
+      const response = await requestRetry({
+        url: `${BASE_URL}/set`,
+        method: 'POST',
+        body: {
+          kind: KIND,
+          key: NAME,
+          value: VALUE,
+        },
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.ok(response.body.includes(`Entity ${KIND}/${NAME} saved`));
+    });
+  });
+
+  describe('get', () => {
+    let ffProc;
+    const PORT = 8081;
+    const BASE_URL = `http://localhost:${PORT}`;
+
+    before(() => {
+      ffProc = execPromise(
+        `functions-framework --target=get --signature-type=http --port=${PORT}`,
+        {timeout: FF_TIMEOUT, shell: true, cwd}
+      );
+    });
+
+    after(async () => {
+      await handleLinuxFailures(ffProc);
+    });
+
+    it('get: Fails when entity does not exist', async () => {
+      const response = await requestRetry({
+        url: `${BASE_URL}/get`,
+        method: 'POST',
+        body: {
+          kind: KIND,
+          key: 'nonexistent',
+        },
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 500);
+      assert.ok(
+        new RegExp(
+          /(Missing or insufficient permissions.)|(No entity found for key)/
+        ).test(response.body)
+      );
+    });
+
+    it('get: Finds an entity', async () => {
+      const response = await requestRetry({
+        method: 'POST',
+        url: `${BASE_URL}/get`,
+        body: {
+          kind: KIND,
+          key: NAME,
+        },
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.deepStrictEqual(response.body, {
+        description: 'Buy milk',
+      });
+    });
+
+    it('get: Fails without a key', async () => {
+      const req = {
+        body: {},
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        send: sinon.stub(),
+      };
+
+      await program.get(req, res);
+
+      assert.ok(res.status.calledWith(500));
+      assert.ok(res.send.calledWith(errorMsg('Key')));
+    });
+
+    it('get: Fails without a kind', async () => {
+      const req = {
+        body: {
+          key: NAME,
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        send: sinon.stub(),
+      };
+
+      await program.get(req, res);
+
+      assert.ok(res.status.calledWith(500));
+      assert.ok(res.send.calledWith(errorMsg('Kind')));
+    });
+  });
+
+  describe('del', () => {
+    let ffProc;
+    const PORT = 8082;
+    const BASE_URL = `http://localhost:${PORT}`;
+
+    before(() => {
+      ffProc = execPromise(
+        `functions-framework --target=del --signature-type=http --port=${PORT}`,
+        {timeout: FF_TIMEOUT, shell: true, cwd}
+      );
+    });
+
+    after(async () => {
+      await handleLinuxFailures(ffProc);
+    });
+
+    it('del: Fails without a key', async () => {
+      const req = {
+        body: {},
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        send: sinon.stub(),
+      };
+
+      await program.del(req, res);
+
+      assert.ok(res.status.calledWith(500));
+      assert.ok(res.send.calledWith(errorMsg('Key')));
+    });
+
+    it('del: Fails without a kind', async () => {
+      const req = {
+        body: {
+          key: NAME,
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        send: sinon.stub(),
+      };
+
+      await program.del(req, res);
+
+      assert.ok(res.status.calledWith(500));
+      assert.ok(res.send.calledWith(errorMsg('Kind')));
+    });
+
+    it(`del: Doesn't fail when entity does not exist`, async () => {
+      const response = await requestRetry({
+        method: 'POST',
+        url: `${BASE_URL}/del`,
+        body: {
+          kind: KIND,
+          key: 'nonexistent',
+        },
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, `Entity ${KIND}/nonexistent deleted.`);
+    });
+
+    it('del: Deletes an entity', async () => {
+      const response = await requestRetry({
+        method: 'POST',
+        url: `${BASE_URL}/del`,
+        body: {
+          kind: KIND,
+          key: NAME,
+        },
+        json: true,
+      });
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, `Entity ${KIND}/${NAME} deleted.`);
+
+      const key = datastore.key([KIND, NAME]);
+      const [entity] = await datastore.get(key);
+      assert.ok(!entity);
+    });
+  });
+});

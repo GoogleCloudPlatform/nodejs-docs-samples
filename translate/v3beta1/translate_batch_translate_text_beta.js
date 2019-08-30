@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Google, Inc.
+ * Copyright 2019 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,7 @@ function main(
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
-  // const location = 'global';
+  // const location = 'us-central1';
   // const text = 'text to translate';
 
   // Imports the Google Cloud Translation library

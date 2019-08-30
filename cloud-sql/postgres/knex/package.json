@@ -28,7 +28,7 @@
     "pg": "^7.11.0",
     "pug": "^2.0.3",
     "winston": "^3.1.0",
-    "yargs": "^13.2.4"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "3.3.0",

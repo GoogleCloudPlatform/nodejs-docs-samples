@@ -30,7 +30,10 @@ function main(
   const fs = require('fs');
   const util = require('util');
   const writeFile = util.promisify(fs.writeFile);
-  const fileName = 'study_file.dcm';
+  // When specifying the output file, use an extension like ".multipart."
+  // Then, parse the downloaded multipart file to get each individual
+  // DICOM file.
+  const fileName = 'study_file.multipart';
 
   async function dicomWebRetrieveStudy() {
     const auth = await google.auth.getClient({

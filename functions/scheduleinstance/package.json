@@ -21,7 +21,6 @@
     "sinon": "^7.0.0"
   },
   "dependencies": {
-    "@google-cloud/compute": "^1.0.0",
-    "safe-buffer": "^5.1.2"
+    "@google-cloud/compute": "^1.0.0"
   }
 }

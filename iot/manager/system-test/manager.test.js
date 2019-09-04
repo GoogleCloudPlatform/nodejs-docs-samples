@@ -235,7 +235,7 @@ it('should create and get an iam policy', async () => {
 });
 
 it('should create and delete a registry', async () => {
-  const createRegistryId = registryName + 'create';
+  const createRegistryId = `${registryName}-create`;
 
   let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
   output = await tools.runAsync(
@@ -252,7 +252,7 @@ it('should create and delete a registry', async () => {
 
 it('should send command message to device', async () => {
   const deviceId = 'test-device-command';
-  const commandMessage = 'rotate 180 degrees';
+  const commandMessage = 'rotate:180_degrees';
 
   await tools.runAsync(
     `${cmd} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
@@ -260,13 +260,15 @@ it('should send command message to device', async () => {
   );
 
   tools.runAsync(
-    `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
+    `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
+    --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
     path.join(__dirname, '../../mqtt_example')
   );
 
   const output = await tools.runAsync(
     `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
+  console.log(output);
   assert.ok(output.includes('Sent command'));
 
   await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
@@ -275,7 +277,8 @@ it('should send command message to device', async () => {
 it('should create a new gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   const gatewayOut = await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
+    --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
 
   // test no error on create gateway.
@@ -289,7 +292,8 @@ it('should create a new gateway', async () => {
 it('should list gateways', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
+    --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
 
   // look for output in list gateway
@@ -304,7 +308,8 @@ it('should list gateways', async () => {
 it('should bind existing device to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
+    --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
 
   // create device
@@ -342,7 +347,8 @@ it('should bind existing device to gateway', async () => {
 it('should list devices bound to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
+    --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
 
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
@@ -384,7 +390,8 @@ it('should list devices bound to gateway', async () => {
 it('should list gateways for bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   await tools.runAsync(
-    `${cmd} createGateway ${registryName} ${gatewayId} RSA_X509_PEM ${rsaPublicCert}`
+    `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
+    --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
 
   // create device

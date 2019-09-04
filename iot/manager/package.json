@@ -20,7 +20,7 @@
     "@google-cloud/iot": "^1.0.0",
     "@google-cloud/pubsub": "^0.28.0",
     "googleapis": "^42.0.0",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

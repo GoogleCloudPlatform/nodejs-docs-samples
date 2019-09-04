@@ -758,6 +758,7 @@ const sendCommand = async (
   // const client = new iot.v1.DeviceManagerClient();
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
+  // const commandMessage = 'message for device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
 
@@ -941,7 +942,8 @@ const createGateway = async (
   registryId,
   gatewayId,
   publicKeyFormat,
-  publicKeyFile
+  publicKeyFile,
+  gatewayAuthMethod
 ) => {
   // [START iot_create_gateway]
   // const cloudRegion = 'us-central1';
@@ -949,6 +951,7 @@ const createGateway = async (
   // const gatewayId = 'my-gateway';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
+  // const gatewayAuthMethod = 'ASSOCIATION_ONLY';
   const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
   console.log('Creating gateway:', gatewayId);
 
@@ -973,7 +976,7 @@ const createGateway = async (
       credentials: credentials,
       gatewayConfig: {
         gatewayType: 'GATEWAY',
-        gatewayAuthMethod: 'ASSOCIATION_ONLY',
+        gatewayAuthMethod: gatewayAuthMethod,
       },
     },
   };
@@ -1668,10 +1671,23 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createGateway <registryId> <gatewayId>`,
+    `createGateway`,
     `Creates a gateway`,
     {
+      registryId: {
+        description:
+          'Enter a permanent ID that starts with a lower case letter. Must end in a letter or number.',
+        requiresArg: true,
+        type: 'string',
+      },
+      gatewayId: {
+        description:
+          'Enter a permanent ID that starts with a lowercase letter. Must end in a letter or number',
+        requiresArg: true,
+        type: 'string',
+      },
       publicKeyFormat: {
+        alias: 'format',
         default: 'RSA_X509_PEM',
         description: 'Public key format for devices.',
         requiresArg: true,
@@ -1679,9 +1695,23 @@ require(`yargs`) // eslint-disable-line
         type: 'string',
       },
       publicKeyFile: {
+        alias: 'key',
         description:
           'Path to the public key file used for device authentication.',
         requiresArg: true,
+        type: 'string',
+      },
+      gatewayAuthMethod: {
+        default: 'ASSOCIATION_ONLY',
+        description:
+          'Determines how Cloud IoT Core verifies and trusts devices associated with this gateway.',
+        requiresArg: true,
+        choices: [
+          'ASSOCIATION_ONLY',
+          'DEVICE_AUTH_TOKEN_ONLY',
+          'ASSOCIATION_AND_DEVICE_AUTH_TOKEN',
+          'GATEWAY_AUTH_METHOD_UNSPECIFIED',
+        ],
         type: 'string',
       },
     },
@@ -1814,6 +1844,10 @@ require(`yargs`) // eslint-disable-line
   )
   .example(
     `node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`
+  )
+  .example(
+    `node $0 createGateway --registryId=my-registry --gatewayId=my-gateway\
+    --format=RS256_X509_PEM --key=./rsa_cert.pem`
   )
   .example(`node $0 createUnauthDevice my-device my-registry`)
   .example(`node $0 deleteDevice my-device my-registry`)

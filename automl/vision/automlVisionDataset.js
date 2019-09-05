@@ -1,17 +1,16 @@
-/**
- * Copyright 2018, Google, LLC
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * This application demonstrates how to perform basic operations on dataset
@@ -23,238 +22,273 @@
 
 `use strict`;
 
-async function createDataset(
-  projectId,
-  computeRegion,
-  datasetName,
-  multiLabel
-) {
+function createDataset(projectId, computeRegion, datasetName, multiLabel) {
   // [START automl_vision_create_dataset]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  async function automlVisionCreateDataset() {
+    const automl = require(`@google-cloud/automl`).v1beta1;
 
-  const client = new automl.AutoMlClient();
+    const client = new automl.AutoMlClient();
 
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-  // const computeRegion = `region-name, e.g. "us-central1"`;
-  // const datasetName = `name of the dataset to create, e.g. “myDataset”`;
-  // const multiLabel = `type of classification problem, true for multilabel and false for multiclass e.g. "false"`;
+    /**
+     * TODO(developer): Uncomment the following line before running the sample.
+     */
+    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
+    // const computeRegion = `region-name, e.g. "us-central1"`;
+    // const datasetName = `name of the dataset to create, e.g. “myDataset”`;
+    // const multiLabel = `type of classification problem, true for multilabel and false for multiclass e.g. "false"`;
 
-  // A resource that represents Google Cloud Platform location.
-  const projectLocation = client.locationPath(projectId, computeRegion);
+    // A resource that represents Google Cloud Platform location.
+    const projectLocation = client.locationPath(projectId, computeRegion);
 
-  // Classification type is assigned based on multilabel value.
-  let classificationType = `MULTICLASS`;
-  if (multiLabel) {
-    classificationType = `MULTILABEL`;
-  }
+    // Classification type is assigned based on multilabel value.
+    let classificationType = `MULTICLASS`;
+    if (multiLabel) {
+      classificationType = `MULTILABEL`;
+    }
 
-  // Specify the text classification type for the dataset.
-  const datasetMetadata = {
-    classificationType: classificationType,
-  };
+    // Specify the text classification type for the dataset.
+    const datasetMetadata = {
+      classificationType: classificationType,
+    };
 
-  // Set dataset name and metadata.
-  const myDataset = {
-    displayName: datasetName,
-    imageClassificationDatasetMetadata: datasetMetadata,
-  };
+    // Set dataset name and metadata.
+    const myDataset = {
+      displayName: datasetName,
+      imageClassificationDatasetMetadata: datasetMetadata,
+    };
 
-  // Create a dataset with the dataset metadata in the region.
-  const [dataset] = await client.createDataset({
-    parent: projectLocation,
-    dataset: myDataset,
-  });
-  // Display the dataset information.
-  console.log(`Dataset name: ${dataset.name}`);
-  console.log(`Dataset id: ${dataset.name.split(`/`).pop(-1)}`);
-  console.log(`Dataset display name: ${dataset.displayName}`);
-  console.log(`Dataset example count: ${dataset.exampleCount}`);
-  console.log(`Image Classification type:`);
-  console.log(
-    `\t ${dataset.imageClassificationDatasetMetadata.classificationType}`
-  );
-  console.log(`Dataset create time:`);
-  console.log(`\tseconds: ${dataset.createTime.seconds}`);
-  console.log(`\tnanos: ${dataset.createTime.nanos}`);
-  // [END automl_vision_create_dataset]
-}
-
-async function listDatasets(projectId, computeRegion, filter) {
-  // [START automl_vision_list_datasets]
-  const automl = require(`@google-cloud/automl`).v1beta1;
-
-  const client = new automl.AutoMlClient();
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-  // const computeRegion = `region-name, e.g. "us-central1"`;
-  // const filter = `filter expressions, must specify field e.g. “imageClassificationModelMetadata:*”`;
-
-  // A resource that represents Google Cloud Platform location.
-  const projectLocation = client.locationPath(projectId, computeRegion);
-
-  // List all the datasets available in the region by applying filter.
-  const [datasets] = await client.listDatasets({
-    parent: projectLocation,
-    filter: filter,
-  });
-  console.log(`List of datasets:`);
-  datasets.forEach(dataset => {
+    // Create a dataset with the dataset metadata in the region.
+    const [dataset] = await client.createDataset({
+      parent: projectLocation,
+      dataset: myDataset,
+    });
+    // Display the dataset information.
     console.log(`Dataset name: ${dataset.name}`);
-    console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
+    console.log(`Dataset id: ${dataset.name.split(`/`).pop(-1)}`);
     console.log(`Dataset display name: ${dataset.displayName}`);
     console.log(`Dataset example count: ${dataset.exampleCount}`);
     console.log(`Image Classification type:`);
     console.log(
-      `\t`,
-      dataset.imageClassificationDatasetMetadata.classificationType
+      `\t ${dataset.imageClassificationDatasetMetadata.classificationType}`
+    );
+    console.log(`Dataset create time:`);
+    console.log(`\tseconds: ${dataset.createTime.seconds}`);
+    console.log(`\tnanos: ${dataset.createTime.nanos}`);
+  }
+
+  automlVisionCreateDataset().catch(console.error);
+  // [END automl_vision_create_dataset]
+}
+
+function listDatasets(projectId, computeRegion, filter) {
+  // [START automl_vision_list_datasets]
+  async function automlVisionListDatasets() {
+    const automl = require(`@google-cloud/automl`).v1beta1;
+
+    const client = new automl.AutoMlClient();
+    /**
+     * TODO(developer): Uncomment the following line before running the sample.
+     */
+    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
+    // const computeRegion = `region-name, e.g. "us-central1"`;
+    // const filter = `filter expressions, must specify field e.g. “imageClassificationModelMetadata:*”`;
+
+    // A resource that represents Google Cloud Platform location.
+    const projectLocation = client.locationPath(projectId, computeRegion);
+
+    // List all the datasets available in the region by applying filter.
+    const [datasets] = await client.listDatasets({
+      parent: projectLocation,
+      filter: filter,
+    });
+    console.log(`List of datasets:`);
+    datasets.forEach(dataset => {
+      console.log(`Dataset name: ${dataset.name}`);
+      console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
+      console.log(`Dataset display name: ${dataset.displayName}`);
+      console.log(`Dataset example count: ${dataset.exampleCount}`);
+      console.log(`Image Classification type:`);
+      console.log(
+        `\t`,
+        dataset.imageClassificationDatasetMetadata.classificationType
+      );
+      console.log(`Dataset create time: `);
+      console.log(`\tseconds: ${dataset.createTime.seconds}`);
+      console.log(`\tnanos: ${dataset.createTime.nanos}`);
+      console.log(`\n`);
+    });
+  }
+
+  automlVisionListDatasets().catch(console.error);
+  // [END automl_vision_list_datasets]
+}
+
+function getDataset(projectId, computeRegion, datasetId) {
+  // [START automl_vision_get_dataset]
+  async function automlVisionGetDataset() {
+    const automl = require(`@google-cloud/automl`).v1beta1;
+
+    const client = new automl.AutoMlClient();
+
+    /**
+     * TODO(developer): Uncomment the following line before running the sample.
+     */
+    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
+    // const computeRegion = `region-name, e.g. "us-central1"`;
+    // const datasetId = `Id of the dataset`;
+
+    // Get the full path of the dataset.
+    const datasetFullId = client.datasetPath(
+      projectId,
+      computeRegion,
+      datasetId
+    );
+
+    // Get complete detail of the dataset.
+    const [dataset] = await client.getDataset({name: datasetFullId});
+    // Display the dataset information.
+    console.log(`Dataset name: ${dataset.name}`);
+    console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
+    console.log(`Dataset display name: ${dataset.displayName}`);
+    console.log(`Dataset example count: ${dataset.exampleCount}`);
+    console.log(
+      `Classification type: ${dataset.imageClassificationDatasetMetadata.classificationType}`
     );
     console.log(`Dataset create time: `);
     console.log(`\tseconds: ${dataset.createTime.seconds}`);
     console.log(`\tnanos: ${dataset.createTime.nanos}`);
-    console.log(`\n`);
-  });
-  // [END automl_vision_list_datasets]
-}
+  }
 
-async function getDataset(projectId, computeRegion, datasetId) {
-  // [START automl_vision_get_dataset]
-  const automl = require(`@google-cloud/automl`).v1beta1;
-
-  const client = new automl.AutoMlClient();
-
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-  // const computeRegion = `region-name, e.g. "us-central1"`;
-  // const datasetId = `Id of the dataset`;
-
-  // Get the full path of the dataset.
-  const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
-
-  // Get complete detail of the dataset.
-  const [dataset] = await client.getDataset({name: datasetFullId});
-  // Display the dataset information.
-  console.log(`Dataset name: ${dataset.name}`);
-  console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
-  console.log(`Dataset display name: ${dataset.displayName}`);
-  console.log(`Dataset example count: ${dataset.exampleCount}`);
-  console.log(
-    `Classification type: ${dataset.imageClassificationDatasetMetadata.classificationType}`
-  );
-  console.log(`Dataset create time: `);
-  console.log(`\tseconds: ${dataset.createTime.seconds}`);
-  console.log(`\tnanos: ${dataset.createTime.nanos}`);
+  automlVisionGetDataset().catch(console.error);
   // [END automl_vision_get_dataset]
 }
 
-async function importData(projectId, computeRegion, datasetId, path) {
+function importData(projectId, computeRegion, datasetId, path) {
   // [START automl_vision_import_data]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  async function automlVisionImportData() {
+    const automl = require(`@google-cloud/automl`).v1beta1;
 
-  const client = new automl.AutoMlClient();
+    const client = new automl.AutoMlClient();
 
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-  // const computeRegion = `region-name, e.g. "us-central1"`;
-  // const datasetId = `Id of the dataset`;
-  // const path = `string or array of .csv paths in AutoML Vision CSV format, e.g. “gs://myproject/traindata.csv”;`
+    /**
+     * TODO(developer): Uncomment the following line before running the sample.
+     */
+    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
+    // const computeRegion = `region-name, e.g. "us-central1"`;
+    // const datasetId = `Id of the dataset`;
+    // const path = `string or array of .csv paths in AutoML Vision CSV format, e.g. “gs://myproject/traindata.csv”;`
 
-  // Get the full path of the dataset.
-  const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
+    // Get the full path of the dataset.
+    const datasetFullId = client.datasetPath(
+      projectId,
+      computeRegion,
+      datasetId
+    );
 
-  // Get one or more Google Cloud Storage URI(s).
-  const inputUris = path.split(`,`);
-  const inputConfig = {
-    gcsSource: {
-      inputUris: inputUris,
-    },
-  };
+    // Get one or more Google Cloud Storage URI(s).
+    const inputUris = path.split(`,`);
+    const inputConfig = {
+      gcsSource: {
+        inputUris: inputUris,
+      },
+    };
 
-  // Import the dataset from the input URI.
-  const [operation] = await client.importData({
-    name: datasetFullId,
-    inputConfig: inputConfig,
-  });
-  console.log(`Processing import...`);
+    // Import the dataset from the input URI.
+    const [operation] = await client.importData({
+      name: datasetFullId,
+      inputConfig: inputConfig,
+    });
+    console.log(`Processing import...`);
 
-  const [, , response] = await operation.promise();
+    const [, , response] = await operation.promise();
 
-  // The final result of the operation.
-  if (response.done) {
-    console.log(`Data imported.`);
+    // The final result of the operation.
+    if (response.done) {
+      console.log(`Data imported.`);
+    }
   }
+
+  automlVisionImportData().catch(console.error);
   // [END automl_vision_import_data]
 }
 
-async function exportData(projectId, computeRegion, datasetId, outputUri) {
+function exportData(projectId, computeRegion, datasetId, outputUri) {
   // [START automl_vision_export_data]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  async function automlVisionExportData() {
+    const automl = require(`@google-cloud/automl`).v1beta1;
 
-  const client = new automl.AutoMlClient();
+    const client = new automl.AutoMlClient();
 
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-  // const computeRegion = `region-name, e.g. "us-central1"`;
-  // const datasetId = `Id of the dataset`;
-  // const outputUri = `Google Cloud Storage URI for the export directory, e.g. “gs://myproject/output”;`
+    /**
+     * TODO(developer): Uncomment the following line before running the sample.
+     */
+    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
+    // const computeRegion = `region-name, e.g. "us-central1"`;
+    // const datasetId = `Id of the dataset`;
+    // const outputUri = `Google Cloud Storage URI for the export directory, e.g. “gs://myproject/output”;`
 
-  // Get the full path of the dataset.
-  const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
+    // Get the full path of the dataset.
+    const datasetFullId = client.datasetPath(
+      projectId,
+      computeRegion,
+      datasetId
+    );
 
-  // Set the output URI
-  const outputConfig = {
-    gcsDestination: {
-      outputUriPrefix: outputUri,
-    },
-  };
+    // Set the output URI
+    const outputConfig = {
+      gcsDestination: {
+        outputUriPrefix: outputUri,
+      },
+    };
 
-  // Export the data to the output URI.
-  const [operation] = await client.exportData({
-    name: datasetFullId,
-    outputConfig: outputConfig,
-  });
-  const [, , response] = await operation.promise();
+    // Export the data to the output URI.
+    const [operation] = await client.exportData({
+      name: datasetFullId,
+      outputConfig: outputConfig,
+    });
+    const [, , response] = await operation.promise();
 
-  // The final result of the operation.
-  if (response.done) {
-    console.log(`Data exported.`);
+    // The final result of the operation.
+    if (response.done) {
+      console.log(`Data exported.`);
+    }
   }
+
+  automlVisionExportData().catch(console.error);
   // [END automl_vision_export_data]
 }
 
-async function deleteDataset(projectId, computeRegion, datasetId) {
+function deleteDataset(projectId, computeRegion, datasetId) {
   // [START automl_vision_delete_dataset]
-  const automl = require(`@google-cloud/automl`).v1beta1;
+  async function automlVisionDeleteDataset() {
+    const automl = require(`@google-cloud/automl`).v1beta1;
 
-  const client = new automl.AutoMlClient();
+    const client = new automl.AutoMlClient();
 
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-  // const computeRegion = `region-name, e.g. "us-central1"`;
-  // const datasetId = `Id of the dataset`;
+    /**
+     * TODO(developer): Uncomment the following line before running the sample.
+     */
+    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
+    // const computeRegion = `region-name, e.g. "us-central1"`;
+    // const datasetId = `Id of the dataset`;
 
-  // Get the full path of the dataset.
-  const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
+    // Get the full path of the dataset.
+    const datasetFullId = client.datasetPath(
+      projectId,
+      computeRegion,
+      datasetId
+    );
 
-  // Delete a dataset.
-  const [operation] = await client.deleteDataset({name: datasetFullId});
-  const [, , response] = await operation.promise();
-  // The final result of the operation.
-  if (response.done) {
-    console.log(`Dataset deleted.`);
+    // Delete a dataset.
+    const [operation] = await client.deleteDataset({name: datasetFullId});
+    const [, , response] = await operation.promise();
+    // The final result of the operation.
+    if (response.done) {
+      console.log(`Dataset deleted.`);
+    }
   }
+
+  automlVisionDeleteDataset().catch(console.error);
   // [END automl_vision_delete_dataset]
 }
 

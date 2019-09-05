@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2017 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -114,18 +114,18 @@ describe(`detect`, () => {
   it(`should detect logos in a local file`, async () => {
     const output = execSync(`${cmd} logos ${files[9].localPath}`);
     assert.match(output, /Logos:/);
-    assert.match(output, /google/);
+    assert.match(output, /google/i);
   });
 
   it(`should detect logos in a remote file`, async () => {
     const output = execSync(`${cmd} logos-gcs ${bucketName} ${files[9].name}`);
     assert.match(output, /Logos:/);
-    assert.match(output, /google/);
+    assert.match(output, /google/i);
   });
 
   it(`should detect properties in a local file`, async () => {
     const output = execSync(`${cmd} properties ${files[1].localPath}`);
-    assert.match(output, /{ color: { red: 69, green: 42, blue: 27/);
+    assert.match(output, /color: { red: 69, green: 42, blue: 27/);
     assert.ok(output.split(`\n`).length > 4, `Multiple colors were detected.`);
   });
 
@@ -133,7 +133,7 @@ describe(`detect`, () => {
     const output = execSync(
       `${cmd} properties-gcs ${bucketName} ${files[1].name}`
     );
-    assert.match(output, /{ color: { red: 69, green: 42, blue: 27/);
+    assert.match(output, /color: { red: 69, green: 42, blue: 27/);
     assert.ok(output.split(`\n`).length > 4, `Multiple colors were detected.`);
   });
 
@@ -153,13 +153,13 @@ describe(`detect`, () => {
   it(`should detect crop hints in a local file`, async () => {
     const output = execSync(`${cmd} crops ${files[2].localPath}`);
     assert.match(output, /Crop Hint 0:/);
-    assert.match(output, /Bound 2: \(280, 43\)/);
+    assert.match(output, /Bound 2:/);
   });
 
   it(`should detect crop hints in a remote file`, async () => {
     const output = execSync(`${cmd} crops-gcs ${bucketName} ${files[2].name}`);
     assert.match(output, /Crop Hint 0:/);
-    assert.match(output, /Bound 2: \(280, 43\)/);
+    assert.match(output, /Bound 2:/);
   });
 
   it(`should detect similar web images in a local file`, async () => {
@@ -253,8 +253,6 @@ describe(`detect`, () => {
 
   it(`should detect objects in a local file`, async () => {
     const output = execSync(`${cmd} localize-objects ${files[8].localPath}`);
-    assert.match(output, /Name: Bird/);
-    assert.match(output, /Name: Duck/);
     assert.match(output, /Name: Toy/);
   });
 
@@ -262,8 +260,6 @@ describe(`detect`, () => {
     const output = execSync(
       `${cmd} localize-objects-gcs gs://${bucketName}/${files[8].name}`
     );
-    assert.match(output, /Name: Bird/);
-    assert.match(output, /Name: Duck/);
     assert.match(output, /Name: Toy/);
   });
 });

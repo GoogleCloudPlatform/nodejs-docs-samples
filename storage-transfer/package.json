@@ -19,7 +19,7 @@
   "dependencies": {
     "googleapis": "^42.0.0",
     "moment": "^2.24.0",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

@@ -20,7 +20,7 @@
     "googleapis": "^42.0.0",
     "jsonwebtoken": "^8.3.0",
     "mqtt": "^3.0.0",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

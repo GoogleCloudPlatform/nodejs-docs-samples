@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "@google-cloud/logging": "^5.1.2",
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^6.1.4"
   }
 }

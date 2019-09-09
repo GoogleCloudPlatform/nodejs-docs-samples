@@ -17,7 +17,7 @@
     "unit-test": "mocha *.test.js --timeout=600000"
   },
   "dependencies": {
-    "googleapis": "^42.0.0",
+    "googleapis": "^43.0.0",
     "jsonwebtoken": "^8.3.0",
     "mqtt": "^3.0.0",
     "yargs": "^14.0.0"

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Google, Inc.
+ * Copyright 2018 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,12 +30,19 @@ const execSync = cmd => {
 const cmd = 'node risk.js';
 const dataset = 'integration_tests_dlp';
 const uniqueField = 'Name';
-const repeatedField = 'Mystery';
 const numericField = 'Age';
-const stringBooleanField = 'Gender';
 const testProjectId = process.env.GCLOUD_PROJECT;
 const pubsub = new PubSub();
 
+/*
+ * The tests in this file rely on a table in BigQuery entitled
+ * "integration_tests_dlp.harmful" with the following fields:
+ *
+ * Age NUMERIC NULLABLE
+ * Name STRING NULLABLE
+ *
+ * Insert into this table a few rows of Age/Name pairs.
+ */
 describe('risk', () => {
   // Create new custom topic/subscription
   let topic, subscription;
@@ -57,8 +64,9 @@ describe('risk', () => {
     const output = execSync(
       `${cmd} numerical ${dataset} harmful ${numericField} ${topicName} ${subscriptionName} -p ${testProjectId}`
     );
-    assert.match(output, /Value at 0% quantile: \d{2}/);
-    assert.match(output, /Value at \d{2}% quantile: \d{2}/);
+    console.info(output);
+    assert.match(output, /Value at 0% quantile:/);
+    assert.match(output, /Value at \d+% quantile:/);
   });
 
   it('should handle numerical risk analysis errors', () => {
@@ -95,15 +103,7 @@ describe('risk', () => {
     const output = execSync(
       `${cmd} kAnonymity ${dataset} harmful ${topicName} ${subscriptionName} ${numericField} -p ${testProjectId}`
     );
-    assert.match(output, /Quasi-ID values: \{\d{2}\}/);
-    assert.match(output, /Class size: \d/);
-  });
-
-  it('should perform k-anonymity analysis on multiple fields', () => {
-    const output = execSync(
-      `${cmd} kAnonymity ${dataset} harmful ${topicName} ${subscriptionName} ${numericField} ${repeatedField} -p ${testProjectId}`
-    );
-    assert.match(output, /Quasi-ID values: \{\d{2}, \d{4} \d{4} \d{4} \d{4}\}/);
+    assert.match(output, /Quasi-ID values:/);
     assert.match(output, /Class size: \d/);
   });
 
@@ -122,15 +122,6 @@ describe('risk', () => {
     assert.match(output, /Anonymity range: \[\d+, \d+\]/);
     assert.match(output, /Size: \d/);
     assert.match(output, /Values: \d{2}/);
-  });
-
-  it('should perform k-map analysis on multiple fields', () => {
-    const output = execSync(
-      `${cmd} kMap ${dataset} harmful ${topicName} ${subscriptionName} ${numericField} ${stringBooleanField} -t AGE GENDER -p ${testProjectId}`
-    );
-    assert.match(output, /Anonymity range: \[\d+, \d+\]/);
-    assert.match(output, /Size: \d/);
-    assert.match(output, /Values: \d{2} Female/);
   });
 
   it('should handle k-map analysis errors', () => {
@@ -153,18 +144,9 @@ describe('risk', () => {
     const output = execSync(
       `${cmd} lDiversity ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName} ${numericField} -p ${testProjectId}`
     );
-    assert.match(output, /Quasi-ID values: \{\d{2}\}/);
+    assert.match(output, /Quasi-ID values:/);
     assert.match(output, /Class size: \d/);
-    assert.match(output, /Sensitive value James occurs \d time\(s\)/);
-  });
-
-  it('should perform l-diversity analysis on multiple fields', () => {
-    const output = execSync(
-      `${cmd} lDiversity ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName} ${numericField} ${repeatedField} -p ${testProjectId}`
-    );
-    assert.match(output, /Quasi-ID values: \{\d{2}, \d{4} \d{4} \d{4} \d{4}\}/);
-    assert.match(output, /Class size: \d/);
-    assert.match(output, /Sensitive value James occurs \d time\(s\)/);
+    assert.match(output, /Sensitive value/);
   });
 
   it('should handle l-diversity analysis errors', () => {

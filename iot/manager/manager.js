@@ -18,6 +18,8 @@
 'use strict';
 
 const fs = require('fs');
+
+// [START iot_get_client]
 const {google} = require('googleapis');
 const iot = require('@google-cloud/iot');
 
@@ -25,6 +27,8 @@ const API_VERSION = 'v1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
 const client = new iot.v1.DeviceManagerClient();
+// [END iot_get_client]
+
 
 // Configures the topic for Cloud IoT Core.
 const setupIotTopic = async topicName => {
@@ -815,6 +819,7 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [END iot_get_registry]
 };
 
+// [START iot_get_client]
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
 const getClient = async serviceAccountJson => {
@@ -837,6 +842,7 @@ const getClient = async serviceAccountJson => {
     console.log('Error during API discovery.', err);
   }
 };
+// [END iot_get_client]
 
 // Retrieves the IAM policy for a given registry.
 const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {

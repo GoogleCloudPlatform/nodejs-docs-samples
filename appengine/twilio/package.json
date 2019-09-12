@@ -15,7 +15,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "twilio": "^3.30.3"
+    "twilio": "^3.34.0"
   },
   "devDependencies": {
     "mocha": "^6.1.4",

@@ -113,22 +113,6 @@ exports.listFiles = (req, res) => {
 };
 // [END functions_concepts_filesystem]
 
-// [START functions_concepts_modules]
-const path = require('path');
-const loadedModule = require(path.join(__dirname, 'loadable.js'));
-
-/**
- * HTTP Cloud Function that runs a function loaded from another Node.js file
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
- */
-exports.runLoadedModule = (req, res) => {
-  console.log(`Loaded function from file ${loadedModule.getFileName()}`);
-  res.end();
-};
-// [END functions_concepts_modules]
-
 // [START functions_concepts_requests]
 const request = require('request');
 

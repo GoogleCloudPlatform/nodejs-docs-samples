@@ -4,9 +4,9 @@
 
 # [START run_pubsub_dockerfile]
 
-# Use the official Node.js 10 image.
+# Use the official lightweight Node.js 10 image.
 # https://hub.docker.com/_/node
-FROM node:10
+FROM node:10-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -17,9 +17,9 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies.
-RUN npm install --production
-# If you add a package-lock.json, speed your build by switching to 'npm ci'.
+# If you add a package-lock.json speed your build by switching to 'npm ci'.
 # RUN npm ci --only=production
+RUN npm install --production
 
 # Copy local code to the container image.
 COPY . .

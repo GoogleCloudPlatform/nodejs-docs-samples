@@ -10,6 +10,9 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 
 * **express**: Web server framework
 * **body-parser**: express middleware for request payload processing
+* **[gm](https://github.com/aheckmann/gm#readme)**: ImageMagick integration library.
+* **@google-cloud/storage**: Google Cloud Storage client library.
+* **@google-cloud/vision**: Cloud Vision API client library.
 
 ## Environment Variables
 

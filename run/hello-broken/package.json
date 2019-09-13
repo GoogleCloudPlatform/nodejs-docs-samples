@@ -1,0 +1,23 @@
+{
+  "name": "hello-broken",
+  "private": true,
+  "description": "Broken Cloud Run service for troubleshooting practice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "e2e-test": "TARGET=Cloud test/runner.sh mocha test/system.test.js --timeout=20000"
+  },
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "got": "^9.6.0"
+  }
+}

@@ -20,22 +20,6 @@ const fetch = require('node-fetch');
 // [END functions_background_promise_node8]
 // [END functions_background_async]
 
-/**
- * HTTP Cloud Function (same signature as other Node runtimes)
- *
- * @param {Object} req Cloud Function request context.
- *                     More info: https://expressjs.com/en/api.html#req
- * @param {Object} res Cloud Function response context.
- *                     More info: https://expressjs.com/en/api.html#res
- */
-// [START functions_tips_terminate_node8]
-const escapeHtml = require('escape-html');
-
-exports.helloHttp = (req, res) => {
-  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
-};
-// [END functions_tips_terminate_node8]
-
 // [START functions_tips_infinite_retries_node8]
 /**
  * Background Cloud Function that only executes within a certain time

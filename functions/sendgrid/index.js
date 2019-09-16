@@ -336,9 +336,9 @@ exports.sendgridLoad = event => {
         autodetect: true,
         sourceFormat: 'NEWLINE_DELIMITED_JSON',
       };
-      return table.import(fileObj, metadata);
+      return table.load(fileObj, metadata);
     })
-    .then(([job]) => job.promise())
+    .then(([job]) => job)
     .then(() => console.log(`Job complete for ${file.name}`))
     .catch(err => {
       console.log(`Job failed for ${file.name}`);

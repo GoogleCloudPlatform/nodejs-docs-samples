@@ -15,29 +15,6 @@
 
 'use strict';
 
-/**
- * HTTP Cloud Function that demonstrates
- * how to catch errors of different types.
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} req.body Cloud Function request context body.
- * @param {String} req.body.topic The Cloud Pub/Sub topic to publish to.
- * @param {Object} res Cloud Function response context.
- */
-exports.errorTypes = (req, res) => {
-  // [START functions_concepts_error_object]
-  try {
-    // Throw an Error object (to simulate a GCP API failure)
-    throw new Error('Error object!');
-  } catch (err) {
-    // err is already an Error object
-    console.error(err);
-  }
-  // [END functions_concepts_error_object]
-
-  res.end();
-};
-
 // [START functions_concepts_stateless]
 // Global variable, but only shared within function instance.
 let count = 0;

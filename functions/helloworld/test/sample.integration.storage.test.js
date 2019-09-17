@@ -20,7 +20,6 @@ const path = require('path');
 const uuid = require('uuid');
 
 const requestRetry = require('requestretry');
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
 const handleLinuxFailures = async proc => {
@@ -42,6 +41,7 @@ describe('GCS integration test', () => {
   // [START functions_storage_integration_test]
   it('helloGCS: should print uploaded message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+    const PORT = 9000; // Each running framework instance needs a unique port
 
     const data = {
       data: {
@@ -53,14 +53,14 @@ describe('GCS integration test', () => {
 
     // Run the functions-framework instance to host functions locally
     const proc = execPromise(
-      `functions-framework --target=helloGCS --signature-type=event`,
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
       {timeout: 800, shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification
     // (GCF translates GCS notifications to HTTP requests internally)
     const response = await requestRetry({
-      url: `${BASE_URL}/`,
+      url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: data,
       retryDelay: 200,
@@ -77,6 +77,7 @@ describe('GCS integration test', () => {
 
   it('helloGCS: should print metadata updated message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+    const PORT = 9001; // Each running framework instance needs a unique port
 
     const data = {
       data: {
@@ -88,14 +89,14 @@ describe('GCS integration test', () => {
 
     // Run the functions-framework instance to host functions locally
     const proc = execPromise(
-      `functions-framework --target=helloGCS --signature-type=event`,
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
       {timeout: 800, shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification
     // (GCF translates GCS notifications to HTTP requests internally)
     const response = await requestRetry({
-      url: `${BASE_URL}/`,
+      url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: data,
       retryDelay: 200,
@@ -111,6 +112,7 @@ describe('GCS integration test', () => {
 
   it('helloGCS: should print deleted message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+    const PORT = 9002; // Each running framework instance needs a unique port
 
     const data = {
       data: {
@@ -122,14 +124,14 @@ describe('GCS integration test', () => {
 
     // Run the functions-framework instance to host functions locally
     const proc = execPromise(
-      `functions-framework --target=helloGCS --signature-type=event`,
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
       {timeout: 800, shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification
     // (GCF translates GCS notifications to HTTP requests internally)
     const response = await requestRetry({
-      url: `${BASE_URL}/`,
+      url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: data,
       retryDelay: 200,

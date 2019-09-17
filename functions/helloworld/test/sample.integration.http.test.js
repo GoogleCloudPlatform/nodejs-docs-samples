@@ -20,7 +20,8 @@ const path = require('path');
 const requestRetry = require('requestretry');
 const uuid = require('uuid');
 
-const BASE_URL = 'http://localhost:8080';
+const PORT = 8090;
+const BASE_URL = `http://localhost:${PORT}`;
 const cwd = path.join(__dirname, '..');
 
 const handleLinuxFailures = async proc => {
@@ -45,7 +46,7 @@ describe('HTTP integration test', () => {
   // Run the functions-framework instance to host functions locally
   before(() => {
     ffProc = execPromise(
-      `functions-framework --target=helloHttp --signature-type=http`,
+      `functions-framework --target=helloHttp --signature-type=http --port ${PORT}`,
       {timeout: 1000, shell: true, cwd}
     );
   });

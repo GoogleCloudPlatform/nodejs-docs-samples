@@ -20,7 +20,6 @@ const path = require('path');
 const requestRetry = require('requestretry');
 const uuid = require('uuid');
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
 const handleLinuxFailures = async proc => {
@@ -42,19 +41,20 @@ describe('Pub/Sub integration test', () => {
   // [START functions_pubsub_integration_test]
   it('helloPubSub: should print a name', async () => {
     const name = uuid.v4();
+    const PORT = 8088; // Each running framework instance needs a unique port
 
     const encodedName = Buffer.from(name).toString('base64');
     const pubsubMessage = {data: {data: encodedName}};
 
     const proc = execPromise(
-      `functions-framework --target=helloPubSub --signature-type=event`,
+      `functions-framework --target=helloPubSub --signature-type=event --port=${PORT}`,
       {timeout: 800, shell: true, cwd}
     );
 
     // Send HTTP request simulating Pub/Sub message
     // (GCF translates Pub/Sub messages to HTTP requests internally)
     const response = await requestRetry({
-      url: `${BASE_URL}/`,
+      url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: pubsubMessage,
       retryDelay: 200,
@@ -72,16 +72,17 @@ describe('Pub/Sub integration test', () => {
 
   it('helloPubSub: should print hello world', async () => {
     const pubsubMessage = {data: {}};
+    const PORT = 8089; // Each running framework instance needs a unique port
 
     const proc = execPromise(
-      `functions-framework --target=helloPubSub --signature-type=event`,
+      `functions-framework --target=helloPubSub --signature-type=event --port=${PORT}`,
       {timeout: 800, shell: true, cwd}
     );
 
     // Send HTTP request simulating Pub/Sub message
     // (GCF translates Pub/Sub messages to HTTP requests internally)
     const response = await requestRetry({
-      url: `${BASE_URL}/`,
+      url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: pubsubMessage,
       retryDelay: 200,

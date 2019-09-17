@@ -33,15 +33,13 @@ const topicName = process.env.FUNCTIONS_TOPIC;
 const localFileName = 'test.txt';
 const fileName = `test-${uuid.v4()}.txt`;
 
-const BASE_URL = 'http://localhost:8080';
-
 const bucketName = process.env.FUNCTIONS_BUCKET;
 const bucket = storage.bucket(bucketName);
 
-const startFF = (target, signature) => {
+const startFF = (target, signature, port) => {
   const cwd = path.join(__dirname, '..');
   return execPromise(
-    `functions-framework --target=${target} --signature-type=${signature}`,
+    `functions-framework --target=${target} --signature-type=${signature} --port=${port}`,
     {timeout: 1000, shell: true, cwd}
   );
 };
@@ -59,11 +57,13 @@ const handleFFTermination = async proc => {
   }
 };
 
-const httpInvocation = (fnUrl, body) => {
+const httpInvocation = (fnUrl, port, body) => {
+  const baseUrl = `http://localhost:${port}`;
+
   if (body) {
     // POST request
     return requestRetry.post({
-      url: `${BASE_URL}/${fnUrl}`,
+      url: `${baseUrl}/${fnUrl}`,
       retryDelay: 400,
       body: body,
       json: true,
@@ -72,7 +72,7 @@ const httpInvocation = (fnUrl, body) => {
     // GET request
     console.log('URL:', fnUrl);
     return requestRetry.get({
-      url: `${BASE_URL}/${fnUrl}`,
+      url: `${baseUrl}/${fnUrl}`,
       retryDelay: 400,
     });
   }
@@ -82,10 +82,11 @@ describe('index.test.js', () => {
   before(tools.checkCredentials);
 
   describe('helloGET', () => {
+    const PORT = 8081;
     let ffProc;
 
     before(() => {
-      ffProc = startFF('helloGET', 'http');
+      ffProc = startFF('helloGET', 'http', PORT);
     });
 
     after(async () => {
@@ -93,7 +94,7 @@ describe('index.test.js', () => {
     });
 
     it('helloGET: should print hello world', async () => {
-      const response = await httpInvocation('helloGET');
+      const response = await httpInvocation('helloGET', PORT);
 
       assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(response.body, 'Hello World!');
@@ -101,10 +102,11 @@ describe('index.test.js', () => {
   });
 
   describe('helloHttp', () => {
+    const PORT = 8082;
     let ffProc;
 
     before(() => {
-      ffProc = startFF('helloHttp', 'http');
+      ffProc = startFF('helloHttp', 'http', PORT);
     });
 
     after(async () => {
@@ -112,28 +114,28 @@ describe('index.test.js', () => {
     });
 
     it('helloHttp: should print a name via GET', async () => {
-      const response = await httpInvocation('helloHttp?name=John');
+      const response = await httpInvocation('helloHttp?name=John', PORT);
 
       assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(response.body, 'Hello John!');
     });
 
     it('helloHttp: should print a name via POST', async () => {
-      const response = await httpInvocation('helloHttp', {name: 'John'});
+      const response = await httpInvocation('helloHttp', PORT, {name: 'John'});
 
       assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(response.body, 'Hello John!');
     });
 
     it('helloHttp: should print hello world', async () => {
-      const response = await httpInvocation('helloHttp');
+      const response = await httpInvocation('helloHttp', PORT);
 
       assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(response.body, 'Hello World!');
     });
 
     it('helloHttp: should escape XSS', async () => {
-      const response = await httpInvocation('helloHttp', {
+      const response = await httpInvocation('helloHttp', PORT, {
         name: '<script>alert(1)</script>',
       });
 
@@ -143,10 +145,11 @@ describe('index.test.js', () => {
   });
 
   describe('helloBackground', () => {
+    const PORT = 8083;
     let ffProc;
 
     before(() => {
-      ffProc = startFF('helloBackground', 'event');
+      ffProc = startFF('helloBackground', 'event', PORT);
     });
 
     after(async () => {
@@ -157,7 +160,7 @@ describe('index.test.js', () => {
     it('helloBackground: should print a name', async () => {
       const data = {data: {name: 'John'}};
 
-      const response = await httpInvocation('helloBackground', data);
+      const response = await httpInvocation('helloBackground', PORT, data);
 
       assert.ok(response.body.includes('Hello John!'));
     });
@@ -165,7 +168,7 @@ describe('index.test.js', () => {
     it('helloBackground: should print hello world', async () => {
       const data = {data: {}};
 
-      const response = await httpInvocation('helloBackground', data);
+      const response = await httpInvocation('helloBackground', PORT, data);
 
       assert.ok(response.body.includes('Hello World!'));
     });
@@ -181,7 +184,8 @@ describe('index.test.js', () => {
 
   describe('helloGCSGeneric', () => {
     it('helloGCSGeneric: should print event details', async () => {
-      const ffProc = startFF('helloGCSGeneric', 'event');
+      const PORT = 8084;
+      const ffProc = startFF('helloGCSGeneric', 'event', PORT);
 
       // Update file metadata
       const data = {
@@ -197,7 +201,10 @@ describe('index.test.js', () => {
         eventType: 'google.storage.object.metadataUpdate',
       };
 
-      const response = await httpInvocation('helloGCSGeneric', {data, context});
+      const response = await httpInvocation('helloGCSGeneric', PORT, {
+        data,
+        context,
+      });
       const {stdout} = await handleFFTermination(ffProc);
 
       assert.ok(stdout.includes(`Bucket: ${bucketName}`));
@@ -232,10 +239,11 @@ describe('index.test.js', () => {
   });
 
   describe('helloTemplate', () => {
+    const PORT = 8085;
     let ffProc;
 
     before(() => {
-      ffProc = startFF('helloTemplate', 'http');
+      ffProc = startFF('helloTemplate', 'http', PORT);
     });
 
     after(async () => {
@@ -243,7 +251,7 @@ describe('index.test.js', () => {
     });
 
     it('helloTemplate: should render the html', async () => {
-      const response = await httpInvocation('helloTemplate');
+      const response = await httpInvocation('helloTemplate', PORT);
 
       assert.strictEqual(response.statusCode, 200);
       assert.ok(

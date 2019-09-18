@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Google, LLC.
+ * Copyright 2018 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -137,6 +137,14 @@ describe(`product sets`, () => {
         `Product Set display name: ${testProductSet.productSetDisplayName}`
       )
     );
+  });
+
+  it(`should purge a product set`, async () => {
+    const output = execSync(
+      `${cmd} purgeProductsInProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
+    );
+
+    assert.match(output, new RegExp(`Products removed from product set.`));
   });
 
   it(`should delete product sets`, async () => {

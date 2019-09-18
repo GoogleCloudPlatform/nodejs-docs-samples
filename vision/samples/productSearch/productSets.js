@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Google, Inc.
+ * Copyright 2018 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -134,6 +134,45 @@ async function deleteProductSet(projectId, location, productSetId) {
   // [END vision_product_search_delete_product_set]
 }
 
+// [START vision_product_search_purge_products_in_product_set]
+async function purgeProductsInProductSet(projectId, location, productSetId) {
+  // Deletes all products in a product set.
+
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ProductSearchClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const projectId = 'Your Google Cloud project Id';
+  // const location = 'A compute region name';
+  // const productSetId = 'Id of the product set';
+
+  const formattedParent = client.locationPath(projectId, location);
+  const purgeConfig = {productSetId: productSetId};
+
+  // The operation is irreversible and removes multiple products.
+  // The user is required to pass in force=true to actually perform the purge.
+  // If force is not set to True, the service raises an error.
+  const force = true;
+
+  try {
+    const [operation] = await client.purgeProducts({
+      parent: formattedParent,
+      productSetPurgeConfig: purgeConfig,
+      force: force,
+    });
+    await operation.promise();
+    console.log('Products removed from product set.');
+  } catch (err) {
+    console.log(err);
+  }
+}
+// [END vision_product_search_purge_products_in_product_set]
+
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
@@ -159,6 +198,17 @@ require(`yargs`) // eslint-disable-line
     `List product sets`,
     {},
     opts => listProductSets(opts.projectId, opts.location)
+  )
+  .command(
+    `purgeProductsInProductSet <projectId> <location> <productSetId>`,
+    `Get product set`,
+    {},
+    opts =>
+      purgeProductsInProductSet(
+        opts.projectId,
+        opts.location,
+        opts.productSetId
+      )
   )
   .command(
     `deleteProductSet <projectId> <location> <productSetId>`,

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -114,13 +114,13 @@ describe(`detect`, () => {
   it(`should detect logos in a local file`, async () => {
     const output = execSync(`${cmd} logos ${files[9].localPath}`);
     assert.match(output, /Logos:/);
-    assert.match(output, /google/i);
+    assert.match(output, /Google/);
   });
 
   it(`should detect logos in a remote file`, async () => {
     const output = execSync(`${cmd} logos-gcs ${bucketName} ${files[9].name}`);
     assert.match(output, /Logos:/);
-    assert.match(output, /google/i);
+    assert.match(output, /Google/);
   });
 
   it(`should detect properties in a local file`, async () => {

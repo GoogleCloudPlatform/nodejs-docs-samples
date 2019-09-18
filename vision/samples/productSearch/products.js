@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Google, LLC.
+ * Copyright 2018 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -192,6 +192,43 @@ async function updateProductLabels(projectId, location, productId, key, value) {
   // [END vision_product_search_update_product_labels]
 }
 
+// [START vision_product_search_purge_orphan_products]
+async function purgeOrphanProducts(projectId, location) {
+  // Deletes all products not in any product sets.
+
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ProductSearchClient();
+
+  /**
+   * TODO(developer): Uncomment the following line before running the sample.
+   */
+  // const projectId = 'Your Google Cloud project Id';
+  // const location = 'A compute region name';
+
+  const formattedParent = client.locationPath(projectId, location);
+
+  // The operation is irreversible and removes multiple products.
+  // The user is required to pass in force=true to actually perform the purge.
+  // If force is not set to True, the service raises an error.
+  const force = true;
+
+  try {
+    const [operation] = await client.purgeProducts({
+      parent: formattedParent,
+      deleteOrphanProducts: true,
+      force: force,
+    });
+    await operation.promise();
+    console.log('Orphan products deleted.');
+  } catch (err) {
+    console.log(err);
+  }
+}
+// [END vision_product_search_purge_orphan_products]
+
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
@@ -215,6 +252,12 @@ require(`yargs`) // eslint-disable-line
   )
   .command(`listProducts <projectId> <location>`, `List products`, {}, opts =>
     listProducts(opts.projectId, opts.location)
+  )
+  .command(
+    `purgeOrphanProducts <projectId> <location>`,
+    `Delete all products not in any product sets.`,
+    {},
+    opts => purgeOrphanProducts(opts.projectId, opts.location)
   )
   .command(
     `deleteProduct <projectId> <location> <productId>`,

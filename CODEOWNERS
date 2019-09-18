@@ -30,3 +30,4 @@ cloud-sql @kurtisvg
 healthcare @noerog
 iot @gguuss
 jobs @happyhuman
+firestore/schedule-export @jlara310

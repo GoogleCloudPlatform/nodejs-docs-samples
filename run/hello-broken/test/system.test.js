@@ -16,38 +16,11 @@ const get = (route, base_url) => {
     headers: {
       Authorization: `Bearer ${ID_TOKEN.trim()}`,
     },
-    throwHttpErrors: false
+    throwHttpErrors: false,
   });
-}
+};
 
-describe('Default Service', () => {
-  const {BASE_URL} = process.env;
-  if (!BASE_URL) {
-    throw Error(
-      '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
-    );
-  }
-
-  it('Broken resource fails on any request', async () => {
-    const response = await get('/', BASE_URL);
-    assert.strictEqual(response.statusCode, 500, 'Internal service error not found');
-  });
-
-  it('Fixed resource successfully falls back to a default value', async () => {
-    const response = await get('/improved', BASE_URL);
-    assert.strictEqual(response.statusCode, 200, 'Did not fallback to default as expected');
-    assert.strictEqual(response.body, `Hello ${TARGET}!`, `Expected fallback "World" not found`);
-  });
-});
-
-describe('Overridden Service', () => {
-  const {BASE_URL_OVERRIDE} = process.env;
-  if (!BASE_URL_OVERRIDE) {
-    throw Error(
-      '"BASE_URL_OVERRIDE" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
-    );
-  }
-
+describe('End-to-End Tests', () => {
   const {TARGET} = process.env;
   if (!TARGET) {
     throw Error(
@@ -55,15 +28,72 @@ describe('Overridden Service', () => {
     );
   }
 
-  it('Broken resource uses the TARGET override', async () => {
-    const response = await get('/', BASE_URL);
-    assert.strictEqual(response.statusCode, 200, 'Did not use the TARGET override');
-    assert.strictEqual(response.body, `Hello ${TARGET}!`, `Expected override "${TARGET}" not found`);
+  describe('Default Service', () => {
+    const {BASE_URL} = process.env;
+    if (!BASE_URL) {
+      throw Error(
+        '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
+      );
+    }
+
+    it('Broken resource fails on any request', async () => {
+      const response = await get('/', BASE_URL);
+      assert.strictEqual(
+        response.statusCode,
+        500,
+        'Internal service error not found'
+      );
+    });
+
+    it('Fixed resource successfully falls back to a default value', async () => {
+      const response = await get('/improved', BASE_URL);
+      assert.strictEqual(
+        response.statusCode,
+        200,
+        'Did not fallback to default as expected'
+      );
+      assert.strictEqual(
+        response.body,
+        `Hello ${TARGET}!`,
+        `Expected fallback "World" not found`
+      );
+    });
   });
 
-  it('Fixed resource uses the TARGET override', async () => {
-    const response = await get('/improved', BASE_URL_OVERRIDE);
-    assert.strictEqual(response.statusCode, 200, 'Did not fallback to default as expected');
-    assert.strictEqual(response.body, `Hello ${TARGET}!`, `Expected override "${TARGET}" not found`);
+  describe('Overridden Service', () => {
+    const {BASE_URL_OVERRIDE} = process.env;
+    if (!BASE_URL_OVERRIDE) {
+      throw Error(
+        '"BASE_URL_OVERRIDE" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
+      );
+    }
+
+    it('Broken resource uses the TARGET override', async () => {
+      const response = await get('/', BASE_URL_OVERRIDE);
+      assert.strictEqual(
+        response.statusCode,
+        200,
+        'Did not use the TARGET override'
+      );
+      assert.strictEqual(
+        response.body,
+        `Hello ${TARGET}!`,
+        `Expected override "${TARGET}" not found`
+      );
+    });
+
+    it('Fixed resource uses the TARGET override', async () => {
+      const response = await get('/improved', BASE_URL_OVERRIDE);
+      assert.strictEqual(
+        response.statusCode,
+        200,
+        'Did not fallback to default as expected'
+      );
+      assert.strictEqual(
+        response.body,
+        `Hello ${TARGET}!`,
+        `Expected override "${TARGET}" not found`
+      );
+    });
   });
 });

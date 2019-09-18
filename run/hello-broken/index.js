@@ -29,10 +29,12 @@ app.get('/improved', (req, res) => {
   // [START run_broken_service_upgrade]
   const TARGET = process.env.TARGET || 'World';
   if (!process.env.TARGET) {
-    console.log(JSON.stringify({
-       severity: 'WARNING',
-       message: `TARGET not set, default to '${TARGET}'`
-    }));
+    console.log(
+      JSON.stringify({
+        severity: 'WARNING',
+        message: `TARGET not set, default to '${TARGET}'`,
+      })
+    );
   }
   // [END run_broken_service_upgrade]
   res.send(`Hello ${TARGET}!`);

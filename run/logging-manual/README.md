@@ -42,7 +42,7 @@ test/deploy.sh
 
 ### runner.sh
 
-The `runner.sh` script is a helper that facilitates:
+The `runner.sh` script will:
 
 * Deploy the service to Cloud Run based on the `deploy.sh` script.
 * Set the `BASE_URL` and `ID_TOKEN` environment variables.
@@ -55,11 +55,13 @@ test/runner.sh sleep 20
 
 ## Environment Variables (Testing)
 
-* `BASE_URL`: Used to designate the URL of the Cloud Run service under system test. The URL is not deterministic, so the options are to record it at deploy time or use the Cloud Run API to retrieve the value.
-* `ID_TOKEN`: Used for authenticated HTTP requests to the Cloud Run service.
+* `BASE_URL`: Specifies the Cloud Run service URL for end-to-end tests.
+  The default assigned URL of a Cloud Run service must be derived after deployment.
+* `ID_TOKEN`: JWT token used to authenticate with Cloud Run's IAM-based authentication.
 * `REGION`: [`us-central1`] Optional override region for the location of the Cloud Run service.
-* `SERVICE_NAME`: Used in testing to specify the name of the service. The name may be included in API calls and test conditions.
-* `GOOGLE_CLOUD_PROJECT`: Used in production as an override to determination of the GCP Project from the GCP metadata server. Used in testing to configure the Logging client library.
+* `SERVICE_NAME`: Specify the name of the deployed service, used in some API calls and test assertions.
+* `GOOGLE_CLOUD_PROJECT`: Required for local testing, overrides use of the GCP metadata server to determine the current GCP project.
+  Required by the logging client library.
 
 ## Dependencies
 

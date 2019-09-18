@@ -20,7 +20,7 @@ const path = require('path');
 const requestRetry = require('requestretry');
 const uuid = require('uuid');
 
-const PORT = 8090;
+const PORT = 9010;
 const BASE_URL = `http://localhost:${PORT}`;
 const cwd = path.join(__dirname, '..');
 

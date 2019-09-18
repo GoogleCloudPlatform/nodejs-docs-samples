@@ -40,7 +40,7 @@ const startFF = (target, signature, port) => {
   const cwd = path.join(__dirname, '..');
   return execPromise(
     `functions-framework --target=${target} --signature-type=${signature} --port=${port}`,
-    {timeout: 2000, shell: true, cwd}
+    {timeout: 1000, shell: true, cwd}
   );
 };
 

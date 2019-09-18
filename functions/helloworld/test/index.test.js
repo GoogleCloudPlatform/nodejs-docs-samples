@@ -49,6 +49,9 @@ const handleFFTermination = async proc => {
     return await proc;
   } catch (err) {
     // Timeouts always cause errors on Linux, so catch them
+    console.log('ERR A', err)
+    console.log('ERR B', err && err.name)
+    console.log('ERR C', err && err.name && err.message)
     if (!err.name || err.name !== 'ChildProcessError') {
       throw err;
     } else {

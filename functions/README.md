@@ -22,7 +22,6 @@ environment.
 * [Hello World](helloworld/)
 * [Background](background/)
 * [Callbacks](messages/)
-* [Cloud Datastore](datastore/)
 * [Cloud Pub/Sub](pubsub/)
 * [Cloud Spanner](spanner/)
 * [Dependencies](uuid/)

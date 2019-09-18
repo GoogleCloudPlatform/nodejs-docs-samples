@@ -15,7 +15,7 @@
 
 'use strict';
 
-// [START functions_imagemagick_setup]
+// [START run_imageproc_handler_setup]
 const gm = require('gm').subClass({imageMagick: true});
 const fs = require('fs');
 const {promisify} = require('util');
@@ -27,9 +27,9 @@ const storage = new Storage();
 const client = new vision.ImageAnnotatorClient();
 
 const {BLURRED_BUCKET_NAME} = process.env;
-// [END functions_imagemagick_setup]
+// [END run_imageproc_handler_setup]
 
-// [START functions_imagemagick_analyze]
+// [START run_imageproc_handler_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
 exports.blurOffensiveImages = async event => {
   // This event represents the triggering Cloud Storage object.
@@ -59,9 +59,9 @@ exports.blurOffensiveImages = async event => {
     throw err;
   }
 };
-// [END functions_imagemagick_analyze]
+// [END run_imageproc_handler_analyze]
 
-// [START functions_imagemagick_blur]
+// [START run_imageproc_handler_blur]
 // Blurs the given file using ImageMagick, and uploads it to another bucket.
 const blurImage = async (file, blurredBucketName) => {
   const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
@@ -105,4 +105,4 @@ const blurImage = async (file, blurredBucketName) => {
   const unlink = promisify(fs.unlink);
   return unlink(tempLocalPath);
 };
-// [END functions_imagemagick_blur]
+// [END run_imageproc_handler_blur]

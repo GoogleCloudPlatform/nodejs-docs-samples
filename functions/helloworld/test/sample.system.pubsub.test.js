@@ -26,53 +26,55 @@ const pubsub = new PubSub();
 const topicName = process.env.FUNCTIONS_TOPIC;
 const baseCmd = 'gcloud functions';
 
-it('helloPubSub: should print a name', async () => {
-  const name = uuid.v4();
+describe('system tests', () => {
+  it('helloPubSub: should print a name', async () => {
+    const name = uuid.v4();
 
-  // Subtract time to work-around local-GCF clock difference
-  const startTime = moment()
-    .subtract(2, 'minutes')
-    .toISOString();
+    // Subtract time to work-around local-GCF clock difference
+    const startTime = moment()
+      .subtract(2, 'minutes')
+      .toISOString();
 
-  // Publish to pub/sub topic
-  const topic = pubsub.topic(topicName);
-  await topic.publish(Buffer.from(name));
+    // Publish to pub/sub topic
+    const topic = pubsub.topic(topicName);
+    await topic.publish(Buffer.from(name));
 
-  // Wait for logs to become consistent
-  await promiseRetry(retry => {
-    const logs = childProcess
-      .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
-      .toString();
+    // Wait for logs to become consistent
+    await promiseRetry(retry => {
+      const logs = childProcess
+        .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
+        .toString();
 
-    try {
-      assert.ok(logs.includes(`Hello, ${name}!`));
-    } catch (err) {
-      retry(err);
-    }
+      try {
+        assert.ok(logs.includes(`Hello, ${name}!`));
+      } catch (err) {
+        retry(err);
+      }
+    });
   });
-});
-// [END functions_pubsub_system_test]
+  // [END functions_pubsub_system_test]
 
-it('helloPubSub: should print hello world', async () => {
-  // Subtract time to work-around local-GCF clock difference
-  const startTime = moment()
-    .subtract(2, 'minutes')
-    .toISOString();
+  it('helloPubSub: should print hello world', async () => {
+    // Subtract time to work-around local-GCF clock difference
+    const startTime = moment()
+      .subtract(2, 'minutes')
+      .toISOString();
 
-  // Publish to pub/sub topic
-  const topic = pubsub.topic(topicName);
-  await topic.publish(Buffer.from(''), {a: 'b'});
+    // Publish to pub/sub topic
+    const topic = pubsub.topic(topicName);
+    await topic.publish(Buffer.from(''), {a: 'b'});
 
-  // Wait for logs to become consistent
-  await promiseRetry(retry => {
-    const logs = childProcess
-      .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
-      .toString();
+    // Wait for logs to become consistent
+    await promiseRetry(retry => {
+      const logs = childProcess
+        .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
+        .toString();
 
-    try {
-      assert.ok(logs.includes(`Hello, World!`));
-    } catch (err) {
-      retry(err);
-    }
+      try {
+        assert.ok(logs.includes(`Hello, World!`));
+      } catch (err) {
+        retry(err);
+      }
+    });
   });
 });

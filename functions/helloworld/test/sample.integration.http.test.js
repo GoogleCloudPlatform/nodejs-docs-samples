@@ -32,7 +32,8 @@ const handleLinuxFailures = async proc => {
     if (!err.name || err.name !== 'ChildProcessError') {
       throw err;
     } else {
-      return proc;
+      const {stdout, stderr} = err; // ChildProcessPromise stores stdout here
+      return {stdout, stderr};
     }
   }
 };

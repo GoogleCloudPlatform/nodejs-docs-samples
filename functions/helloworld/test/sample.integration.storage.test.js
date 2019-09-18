@@ -55,7 +55,7 @@ describe('GCS integration test', () => {
     // Run the functions-framework instance to host functions locally
     const proc = execPromise(
       `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
-      {timeout: 800, shell: true, cwd}
+      {timeout: 1000, shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification
@@ -91,7 +91,7 @@ describe('GCS integration test', () => {
     // Run the functions-framework instance to host functions locally
     const proc = execPromise(
       `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
-      {timeout: 800, shell: true, cwd}
+      {timeout: 1000, shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification
@@ -126,7 +126,7 @@ describe('GCS integration test', () => {
     // Run the functions-framework instance to host functions locally
     const proc = execPromise(
       `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
-      {timeout: 800, shell: true, cwd}
+      {timeout: 1000, shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification

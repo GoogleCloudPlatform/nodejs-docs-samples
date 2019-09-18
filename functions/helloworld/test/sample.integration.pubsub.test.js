@@ -49,7 +49,7 @@ describe('Pub/Sub integration test', () => {
 
     const proc = execPromise(
       `functions-framework --target=helloPubSub --signature-type=event --port=${PORT}`,
-      {timeout: 800, shell: true, cwd}
+      {timeout: 1000, shell: true, cwd}
     );
 
     // Send HTTP request simulating Pub/Sub message
@@ -77,7 +77,7 @@ describe('Pub/Sub integration test', () => {
 
     const proc = execPromise(
       `functions-framework --target=helloPubSub --signature-type=event --port=${PORT}`,
-      {timeout: 800, shell: true, cwd}
+      {timeout: 1000, shell: true, cwd}
     );
 
     // Send HTTP request simulating Pub/Sub message

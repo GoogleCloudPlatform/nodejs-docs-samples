@@ -66,18 +66,12 @@ async function createHttpTask(
     };
   }
 
-  const request = {
-    parent: parent,
-    task: task,
-  };
-
+  // Send create task request.
   console.log('Sending task:');
   console.log(task);
-  // Send create task request.
+  const request = {parent, task};
   const [response] = await client.createTask(request);
-  const name = response.name;
-  console.log(`Created task ${name}`);
-
+  console.log(`Created task ${response.name}`);
   // [END cloud_tasks_create_http_task]
 }
 

@@ -1,0 +1,23 @@
+{
+  "name": "postcard-function",
+  "version": "1.0.0",
+  "description": "Sends postcard when triggered by Cloud Task",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "mocha test/*.test.js --timeout=60000"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^6.4.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^6.0.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^7.0.0"
+  }
+}

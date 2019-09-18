@@ -1,0 +1,21 @@
+{
+  "name": "postcard-app",
+  "version": "1.0.0",
+  "description": "Sends postcard when triggered by a Cloud Task",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha",
+    "lint": "eslint '**/*.js'"
+  },
+  "dependencies": {
+    "@google-cloud/tasks": "^1.2.1",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.3"
+  }
+}

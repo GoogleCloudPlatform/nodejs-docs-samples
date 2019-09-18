@@ -17,11 +17,11 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  console.log('hello-broken: received request.');
+  console.log('hello: received request.');
 
   // [START run_broken_service_problem]
-  const {TARGET} = process.env;
-  if (!TARGET) {
+  const {NAME} = process.env;
+  if (!NAME) {
     // Plain error logs do not appear in Stackdriver Error Reporting.
     console.error('Environment validation failed.');
     console.error(new Error('Missing required server parameter'));
@@ -29,30 +29,30 @@ app.get('/', (req, res) => {
     return;
   }
   // [END run_broken_service_problem]
-  res.send(`Hello ${TARGET}!`);
+  res.send(`Hello ${NAME}!`);
 });
 // [END run_broken_service]
 
 app.get('/improved', (req, res) => {
-  console.log('hello-broken: received request.');
+  console.log('hello: received request.');
 
   // [START run_broken_service_upgrade]
-  const TARGET = process.env.TARGET || 'World';
-  if (!process.env.TARGET) {
+  const NAME = process.env.NAME || 'World';
+  if (!process.env.NAME) {
     console.log(
       JSON.stringify({
         severity: 'WARNING',
-        message: `TARGET not set, default to '${TARGET}'`,
+        message: `NAME not set, default to '${NAME}'`,
       })
     );
   }
   // [END run_broken_service_upgrade]
-  res.send(`Hello ${TARGET}!`);
+  res.send(`Hello ${NAME}!`);
 });
 
 // [START run_broken_service]
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-  console.log(`hello-broken: listening on port ${port}`);
+  console.log(`hello: listening on port ${port}`);
 });
 // [END run_broken_service]

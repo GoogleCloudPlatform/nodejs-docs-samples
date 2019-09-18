@@ -21,13 +21,13 @@ requireEnv() {
 }
 requireEnv SERVICE_NAME
 
-# The hello-broken sample needs to be tested with the TARGET environment variable
+# The hello-broken sample needs to be tested with the NAME environment variable
 # both set and unset.
 SERVICE_OVERRIDE="${SERVICE_NAME}-override"
 
 echo '---'
 test/deploy.sh
-FLAGS="--set-env-vars TARGET=$TARGET" SERVICE_NAME=${SERVICE_OVERRIDE} test/deploy.sh
+FLAGS="--set-env-vars NAME=$NAME" SERVICE_NAME=${SERVICE_OVERRIDE} test/deploy.sh
 
 echo
 echo '---'

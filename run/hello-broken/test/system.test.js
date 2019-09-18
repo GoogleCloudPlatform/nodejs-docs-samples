@@ -31,10 +31,10 @@ const get = (route, base_url) => {
 };
 
 describe('End-to-End Tests', () => {
-  const {TARGET} = process.env;
-  if (!TARGET) {
+  const {NAME} = process.env;
+  if (!NAME) {
     throw Error(
-      '"TARGET" environment variable is required. For example: Cosmos'
+      '"NAME" environment variable is required. For example: Cosmos'
     );
   }
 
@@ -64,7 +64,7 @@ describe('End-to-End Tests', () => {
       );
       assert.strictEqual(
         response.body,
-        `Hello ${TARGET}!`,
+        `Hello ${NAME}!`,
         `Expected fallback "World" not found`
       );
     });
@@ -78,21 +78,21 @@ describe('End-to-End Tests', () => {
       );
     }
 
-    it('Broken resource uses the TARGET override', async () => {
+    it('Broken resource uses the NAME override', async () => {
       const response = await get('/', BASE_URL_OVERRIDE);
       assert.strictEqual(
         response.statusCode,
         200,
-        'Did not use the TARGET override'
+        'Did not use the NAME override'
       );
       assert.strictEqual(
         response.body,
-        `Hello ${TARGET}!`,
-        `Expected override "${TARGET}" not found`
+        `Hello ${NAME}!`,
+        `Expected override "${NAME}" not found`
       );
     });
 
-    it('Fixed resource uses the TARGET override', async () => {
+    it('Fixed resource uses the NAME override', async () => {
       const response = await get('/improved', BASE_URL_OVERRIDE);
       assert.strictEqual(
         response.statusCode,
@@ -101,8 +101,8 @@ describe('End-to-End Tests', () => {
       );
       assert.strictEqual(
         response.body,
-        `Hello ${TARGET}!`,
-        `Expected override "${TARGET}" not found`
+        `Hello ${NAME}!`,
+        `Expected override "${NAME}" not found`
       );
     });
   });

@@ -61,7 +61,7 @@ exports.sendPostcard = async (req, res) => {
     await sgMail.send(msg);
     // Send OK to Cloud Task queue to delete task.
     res.status(200).send('Postcard Sent!');
-  } catch(error) {
+  } catch (error) {
     // Any status code other than 2xx or 503 will trigger the task to retry.
     res.status(error.code).send(error.message);
   }

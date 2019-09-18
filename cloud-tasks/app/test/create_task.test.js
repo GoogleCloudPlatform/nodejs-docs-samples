@@ -23,7 +23,6 @@ const SERVICE_ACCOUNT =
   'test-run-invoker@long-door-651.iam.gserviceaccount.com';
 
 describe('Cloud Task Sample Tests', () => {
-
   it('should create a task', async () => {
     const queue = 'my-appengine-queue';
     const location = 'us-central1';
@@ -35,8 +34,7 @@ describe('Cloud Task Sample Tests', () => {
       location,
       url,
       SERVICE_ACCOUNT
-    )
-    console.log(response);
+    );
     assert.match(response, /projects/);
   });
 });

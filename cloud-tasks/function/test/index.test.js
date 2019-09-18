@@ -18,10 +18,9 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
-const uuid = require('uuid');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const sg_key = process.env.SENDGRID_API_KEY
+const sg_key = process.env.SENDGRID_API_KEY;
 
 function getSample() {
   const requestPromise = sinon
@@ -40,7 +39,7 @@ function getSample() {
 
 function getMocks() {
   const req = {
-    body: {}
+    body: {},
   };
 
   const res = {
@@ -57,26 +56,28 @@ function getMocks() {
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it ('send fails without API key', async () => {
+it('send fails without API key', async () => {
   process.env = {
-    SENDGRID_API_KEY: undefined
-  }
+    SENDGRID_API_KEY: undefined,
+  };
   const mocks = getMocks();
   const sample = getSample();
-  const error = new Error('SendGrid API key not provided as environment variable.');
+  const error = new Error(
+    'SendGrid API key not provided as environment variable.'
+  );
   error.code = 401;
 
   try {
-     await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendPostcard(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
 });
 
-it ('send fails without message', async () => {
+it('send fails without message', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key
-  }
+    SENDGRID_API_KEY: sg_key,
+  };
   const mocks = getMocks();
   mocks.req.body.to_email = 'to@gmail.com';
   mocks.req.body.from_email = 'from@gmail.com';
@@ -86,16 +87,16 @@ it ('send fails without message', async () => {
   error.code = 400;
 
   try {
-     await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendPostcard(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
 });
 
-it ('send fails without to email', async () => {
+it('send fails without to email', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key
-  }
+    SENDGRID_API_KEY: sg_key,
+  };
   const mocks = getMocks();
   mocks.req.body.from_email = 'from@gmail.com';
   mocks.req.body.message = 'Hello, World!';
@@ -105,38 +106,38 @@ it ('send fails without to email', async () => {
   error.code = 400;
 
   try {
-     await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendPostcard(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
 });
 
-it ('send fails without from email', async () => {
+it('send fails without from email', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key
-  }
+    SENDGRID_API_KEY: sg_key,
+  };
   const mocks = getMocks();
   mocks.req.body.to_email = 'to@gmail.com';
   mocks.req.body.message = 'Hello, World!';
 
   const sample = getSample({
-    SENDGRID_API_KEY: sg_key
+    SENDGRID_API_KEY: sg_key,
   });
 
   const error = new Error('From email address not provided.');
   error.code = 400;
 
   try {
-     await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendPostcard(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
 });
 
-it ('send succeeds', async () => {
+it('send succeeds', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key
-  }
+    SENDGRID_API_KEY: sg_key,
+  };
   const mocks = getMocks();
   mocks.req.body.to_email = 'to@gmail.com';
   mocks.req.body.from_email = 'from@gmail.com';

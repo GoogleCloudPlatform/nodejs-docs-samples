@@ -22,10 +22,12 @@ const app = express();
 
 const QUEUE_NAME = process.env.QUEUE_NAME || 'my-queue';
 const QUEUE_LOCATION = process.env.QUEUE_LOCATION || 'us-central1';
-const FUNCTION_URL = process.env.FUNCTION_URL ||
-    'https://<region>-<project_id>.cloudfunctions.net/sendPostcard';
-const SERVICE_ACCOUNT_EMAIL = process.env.SERVICE_ACCOUNT_EMAIL ||
-    '<member>@<project_id>.iam.gserviceaccount.com';
+const FUNCTION_URL =
+  process.env.FUNCTION_URL ||
+  'https://<region>-<project_id>.cloudfunctions.net/sendPostcard';
+const SERVICE_ACCOUNT_EMAIL =
+  process.env.SERVICE_ACCOUNT_EMAIL ||
+  '<member>@<project_id>.iam.gserviceaccount.com';
 
 app.use(express.urlencoded());
 
@@ -34,8 +36,8 @@ app.post('/send-email', (req, res) => {
   const payload = {
     to_email: req.body.to_email,
     from_email: req.body.from_email,
-    message: req.body.message
-  }
+    message: req.body.message,
+  };
 
   createHttpTaskWithToken(
     process.env.GOOGLE_CLOUD_PROJECT,
@@ -48,7 +50,7 @@ app.post('/send-email', (req, res) => {
   );
 
   res.status(202).send('📫 Your postcard is in the mail! 💌');
-})
+});
 
 app.get('*', (req, res) => {
   res.send('OK').end();

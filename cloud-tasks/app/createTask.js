@@ -38,7 +38,6 @@ async function createHttpTaskWithToken(
   const body = Buffer.from(converted_payload).toString('base64');
 
   const task = {
-    // name: client.taskPath(project, location, queue, 'new'),
     httpRequest: {
       httpMethod: 'POST',
       url,
@@ -46,10 +45,10 @@ async function createHttpTaskWithToken(
         serviceAccountEmail: email,
       },
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body,
-    },
+    }
   };
 
   // Calculate time to send message
@@ -57,15 +56,14 @@ async function createHttpTaskWithToken(
   const current_date = new Date(Date.now());
 
   if (converted_date < current_date) {
-    console.error('Scheduled date in the past.');
+    console.error('Scheduled date in the past.')
   } else if (converted_date > current_date) {
     const seconds_diff = (converted_date - current_date) / 1000;
     // 30 day maximum for schedule time
-    const add_seconds =
-      Math.min(seconds_diff, 30 * 60 * 60 * 24) + Date.now() / 1000;
+    const add_seconds = Math.min(seconds_diff, 30*60*60*24) + Date.now() / 1000;
     // Add schedule time if after current date
     task.scheduleTime = {
-      seconds: add_seconds,
+      seconds: add_seconds
     };
   }
 
@@ -79,9 +77,10 @@ async function createHttpTaskWithToken(
     const [response] = await client.createTask(request);
     console.log(`Created task ${response.name}`);
     return response.name;
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error.message);
   }
 }
 
-module.exports = createHttpTaskWithToken;
+module.exports = createHttpTaskWithToken

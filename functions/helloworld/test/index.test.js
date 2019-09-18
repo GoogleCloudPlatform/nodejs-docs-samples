@@ -55,7 +55,8 @@ const handleFFTermination = async proc => {
     if (!err.name || err.name !== 'ChildProcessError') {
       throw err;
     } else {
-      return proc;
+      const {stdout, stderr} = proc;
+      return {stdout, stderr};
     }
   }
 };

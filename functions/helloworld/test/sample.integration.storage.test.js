@@ -22,20 +22,6 @@ const uuid = require('uuid');
 const requestRetry = require('requestretry');
 const cwd = path.join(__dirname, '..');
 
-const handleLinuxFailures = async proc => {
-  try {
-    return await proc;
-  } catch (err) {
-    // Timeouts always cause errors on Linux, so catch them
-    if (!err.name || err.name !== 'ChildProcessError') {
-      throw err;
-    } else {
-      const {stdout, stderr} = err; // ChildProcessPromise stores stdout here
-      return {stdout, stderr};
-    }
-  }
-};
-
 // [END functions_storage_integration_test]
 
 describe('GCS integration test', () => {
@@ -73,7 +59,7 @@ describe('GCS integration test', () => {
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await handleLinuxFailures(proc);
+    const {stdout} = await proc;
     assert.ok(stdout.includes(`File ${filename} uploaded.`));
   });
   // [END functions_storage_integration_test]
@@ -111,7 +97,7 @@ describe('GCS integration test', () => {
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await handleLinuxFailures(proc);
+    const {stdout} = await proc;
     assert.ok(stdout.includes(`File ${filename} metadata updated.`));
   });
 
@@ -148,7 +134,7 @@ describe('GCS integration test', () => {
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await handleLinuxFailures(proc);
+    const {stdout} = await proc;
     assert.ok(stdout.includes(`File ${filename} deleted.`));
   });
   // [START functions_storage_integration_test]

@@ -24,20 +24,6 @@ const PORT = 9010;
 const BASE_URL = `http://localhost:${PORT}`;
 const cwd = path.join(__dirname, '..');
 
-const handleLinuxFailures = async proc => {
-  try {
-    return await proc;
-  } catch (err) {
-    // Timeouts always cause errors on Linux, so catch them
-    if (!err.name || err.name !== 'ChildProcessError') {
-      throw err;
-    } else {
-      const {stdout, stderr} = err; // ChildProcessPromise stores stdout here
-      return {stdout, stderr};
-    }
-  }
-};
-
 // [END functions_http_integration_test]
 
 describe('HTTP integration test', () => {
@@ -56,7 +42,7 @@ describe('HTTP integration test', () => {
 
   after(async () => {
     // Wait for the functions framework to stop
-    await handleLinuxFailures(ffProc);
+    await ffProc;
   });
 
   it('helloHttp: should print a name', async () => {

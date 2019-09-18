@@ -22,20 +22,6 @@ const uuid = require('uuid');
 
 const cwd = path.join(__dirname, '..');
 
-const handleLinuxFailures = async proc => {
-  try {
-    return await proc;
-  } catch (err) {
-    // Timeouts always cause errors on Linux, so catch them
-    if (!err.name || err.name !== 'ChildProcessError') {
-      throw err;
-    } else {
-      const {stdout, stderr} = err; // ChildProcessPromise stores stdout here
-      return {stdout, stderr};
-    }
-  }
-};
-
 // [END functions_pubsub_integration_test]
 
 describe('Pub/Sub integration test', () => {
@@ -67,7 +53,7 @@ describe('Pub/Sub integration test', () => {
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for the functions framework to stop
-    const {stdout} = await handleLinuxFailures(proc);
+    const {stdout} = await proc;
 
     assert(stdout.includes(`Hello, ${name}!`));
   });
@@ -97,7 +83,7 @@ describe('Pub/Sub integration test', () => {
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout, stderr} = await handleLinuxFailures(proc);
+    const {stdout, stderr} = await proc;
     assert(stdout.includes('Hello, World!'));
   });
   // [START functions_pubsub_integration_test]

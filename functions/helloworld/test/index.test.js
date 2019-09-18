@@ -46,20 +46,6 @@ const startFF = (target, signature, port) => {
   );
 };
 
-const handleFFTermination = async proc => {
-  try {
-    return await proc;
-  } catch (err) {
-    // Timeouts always cause errors on Linux, so catch them
-    if (!err.name || err.name !== 'ChildProcessError') {
-      throw err;
-    } else {
-      const {stdout, stderr} = err; // ChildProcessPromise stores stdout here
-      return {stdout, stderr};
-    }
-  }
-};
-
 const httpInvocation = (fnUrl, port, body) => {
   const baseUrl = `http://localhost:${port}`;
 
@@ -92,7 +78,7 @@ describe('index.test.js', () => {
     });
 
     after(async () => {
-      await handleFFTermination(ffProc);
+      await ffProc;
     });
 
     it('helloGET: should print hello world', async () => {
@@ -112,7 +98,7 @@ describe('index.test.js', () => {
     });
 
     after(async () => {
-      await handleFFTermination(ffProc);
+      await ffProc;
     });
 
     it('helloHttp: should print a name via GET', async () => {
@@ -155,7 +141,7 @@ describe('index.test.js', () => {
     });
 
     after(async () => {
-      await handleFFTermination(ffProc);
+      await ffProc;
     });
 
     it('helloBackground: should print a name', async () => {
@@ -206,7 +192,7 @@ describe('index.test.js', () => {
         data,
         context,
       });
-      const {stdout} = await handleFFTermination(ffProc);
+      const {stdout} = await ffProc;
 
       assert.ok(stdout.includes(`Bucket: ${bucketName}`));
       assert.ok(stdout.includes(`File: ${fileName}`));
@@ -248,7 +234,7 @@ describe('index.test.js', () => {
     });
 
     after(async () => {
-      await handleFFTermination(ffProc);
+      await ffProc;
     });
 
     it('helloTemplate: should render the html', async () => {

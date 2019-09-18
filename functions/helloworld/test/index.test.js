@@ -40,7 +40,7 @@ const startFF = (target, signature, port) => {
   const cwd = path.join(__dirname, '..');
   return execPromise(
     `functions-framework --target=${target} --signature-type=${signature} --port=${port}`,
-    {timeout: 1000, shell: true, cwd}
+    {timeout: 2000, shell: true, cwd}
   );
 };
 
@@ -70,7 +70,6 @@ const httpInvocation = (fnUrl, port, body) => {
     });
   } else {
     // GET request
-    console.log('URL:', fnUrl);
     return requestRetry.get({
       url: `${baseUrl}/${fnUrl}`,
       retryDelay: 400,
@@ -153,8 +152,7 @@ describe('index.test.js', () => {
     });
 
     after(async () => {
-      const {stdout} = await handleFFTermination(ffProc);
-      console.log(stdout);
+      await handleFFTermination(ffProc);
     });
 
     it('helloBackground: should print a name', async () => {

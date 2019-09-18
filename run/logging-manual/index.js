@@ -12,15 +12,14 @@ const startServer = () => {
 };
 
 if (!process.env.GOOGLE_CLOUD_PROJECT) {
-  metadata
-    .getProjectId()
-    .then(project => {
-      process.env.GOOGLE_CLOUD_PROJECT = project;
-      startServer();
-    })
-    .catch(error => {
-      console.error(`error: Identify project from metadata server: ${error}`);
-    });
+  try {
+    const project = await metadata.getProjectId();
+
+    process.env.GOOGLE_CLOUD_PROJECT = project;
+    startServer();
+  } catch (err) {
+    console.error(`error: Identify project from metadata server: ${error}`);
+  }
 } else {
   startServer();
 }

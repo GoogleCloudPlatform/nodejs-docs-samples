@@ -22,10 +22,10 @@
  * For more information, see the README.md under /datacatalog and the
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
-function main(
+const main = async (
   projectId = process.env.GCLOUD_PROJECT,
   datasetId = process.env.GCLOUD_DATASET_ID
-) {
+) => {
   // [START datacatalog_lookup_dataset]
   // -------------------------------
   // Import required modules.
@@ -33,7 +33,7 @@ function main(
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1beta1;
   const datacatalog = new DataCatalogClient();
 
-  async function lookup() {
+  const lookup = async () => {
     // TODO(developer): Uncomment the following lines before running the sample.
     // const projectId = 'my-project'
     // const datasetId = 'my_dataset'
@@ -41,13 +41,12 @@ function main(
     const request = {linkedResource: resourceName};
     const [result] = await datacatalog.lookupEntry(request);
     return result;
-  }
+  };
 
-  lookup().then(response => {
-    console.log(response);
-  });
+  const response = await lookup();
+  console.log(response);
   // [END datacatalog_lookup_dataset]
-}
+};
 
 // node lookupEntry.js <projectId> <datasetID>
 main(...process.argv.slice(2));

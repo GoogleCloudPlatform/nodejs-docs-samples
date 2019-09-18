@@ -47,9 +47,7 @@ const logger = winston.createLogger({
 
 // [START cloud_sql_postgres_connection_pool]
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
-const knex = connect();
-
-function connect() {
+const connect = () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
@@ -101,8 +99,10 @@ function connect() {
 
   // [END_EXCLUDE]
   return knex;
-  // [END cloud_sql_postgres_connection_pool]
-}
+};
+
+const knex = connect();
+// [END cloud_sql_postgres_connection_pool]
 
 // [START cloud_sql_example_statement]
 /**
@@ -112,13 +112,13 @@ function connect() {
  * @param {object} vote The vote record to insert.
  * @returns {Promise}
  */
-async function insertVote(knex, vote) {
+const insertVote = async (knex, vote) => {
   try {
     return await knex('votes').insert(vote);
   } catch (err) {
     throw Error(err);
   }
-}
+};
 // [END cloud_sql_example_statement]
 
 /**
@@ -127,13 +127,13 @@ async function insertVote(knex, vote) {
  * @param {object} knex The Knex connection object.
  * @returns {Promise}
  */
-async function getVotes(knex) {
+const getVotes = async knex => {
   return await knex
     .select('candidate', 'time_cast')
     .from('votes')
     .orderBy('time_cast', 'desc')
     .limit(5);
-}
+};
 
 /**
  * Retrieve the total count of records for a given candidate
@@ -143,11 +143,11 @@ async function getVotes(knex) {
  * @param {object} candidate The candidate for which to get the total vote count
  * @returns {Promise}
  */
-async function getVoteCount(knex, candidate) {
+const getVoteCount = async (knex, candidate) => {
   return await knex('votes')
     .count('vote_id')
     .where('candidate', candidate);
-}
+};
 
 app.get('/', (req, res) => {
   (async function() {

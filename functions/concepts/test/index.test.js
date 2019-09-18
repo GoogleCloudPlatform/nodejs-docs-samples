@@ -15,21 +15,7 @@
 
 'use strict';
 
-const sinon = require('sinon');
-const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-
-const sample = require('../');
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
-
-it('should demonstrate error type behavior', () => {
-  const objError = new Error('Error object!');
-
-  const req = {body: {throwAsString: true}};
-  const res = {end: sinon.stub()};
-
-  sample.errorTypes(req, res);
-  assert.deepStrictEqual(console.error.getCall(0).args, [objError]);
-});

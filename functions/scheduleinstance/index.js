@@ -51,7 +51,7 @@ exports.startInstancePubSub = (event, context, callback) => {
             })
             .then(() => {
               // Operation complete. Instance successfully started.
-              const message = 'Successfully started instance ' + instance.name;
+              const message = `Successfully started instance ${instance.name}`;
               console.log(message);
               callback(null, message);
             })
@@ -101,7 +101,7 @@ exports.stopInstancePubSub = (event, context, callback) => {
             })
             .then(() => {
               // Operation complete. Instance successfully stopped.
-              const message = 'Successfully stopped instance ' + instance.name;
+              const message = `Successfully stopped instance ${instance.name}`;
               console.log(message);
               callback(null, message);
             })

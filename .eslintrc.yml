@@ -27,6 +27,6 @@ rules:
   prefer-destructuring: warn
   prefer-template: warn
   func-style:
-    - 1
+    - error
     - expression
     - allowArrowFunctions: true

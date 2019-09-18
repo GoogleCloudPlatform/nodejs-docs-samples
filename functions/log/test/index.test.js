@@ -97,9 +97,7 @@ it('processLogEntry: should process log entry', () => {
   });
 
   const data = {
-    data: {
-      data: Buffer.from(json, 'ascii'),
-    },
+    data: Buffer.from(json, 'ascii'),
   };
 
   sample.program.processLogEntry(data);

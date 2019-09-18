@@ -458,7 +458,7 @@ function mqttDeviceDemo(
     let messageStr = 'Message received: ';
     if (topic === `/devices/${deviceId}/config`) {
       messageStr = 'Config message received: ';
-    } else if (topic === `/devices/${deviceId}/commands`) {
+    } else if (topic.startsWith(`/devices/${deviceId}/commands`)) {
       messageStr = 'Command message received: ';
     }
 

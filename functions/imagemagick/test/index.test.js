@@ -33,35 +33,56 @@ requestRetry = requestRetry.defaults({
 
 const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
 const {BLURRED_BUCKET_NAME} = process.env;
-
-const safeFileName = 'bicycle.jpg';
-const offensiveFileName = 'zombie.jpg';
-
+const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
 const cwd = path.join(__dirname, '..');
 
-const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
+const testFiles = {
+  safe: 'bicycle.jpg',
+  offensive: 'zombie.jpg',
+};
 
-describe('functions/imagemagick tests', () => {
-  const startFF = port => {
-    return execPromise(
-      `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
-      {timeout: 15000, shell: true, cwd}
-    );
-  };
+describe('functions/imagemagick tests', async () => {
+  let startFF, stopFF;
 
-  const stopFF = async ffProc => {
-    try {
-      return await ffProc;
-    } catch (err) {
-      // Timeouts always cause errors on Linux, so catch them
-      if (err.name && err.name === 'ChildProcessError') {
-        const {stdout, stderr} = err;
-        return {stdout, stderr};
+  before(async () => {
+    let exists;
+
+    const names = Object.keys(testFiles);
+    for (let i = 0; i < names.length; i++) {
+      [exists] = await storage
+        .bucket(BUCKET_NAME)
+        .file(testFiles[names[i]])
+        .exists();
+      if (!exists) {
+        throw Error(
+          `Missing required file: gs://${BUCKET_NAME}/${testFiles[names[i]]}`
+        );
       }
-
-      throw err;
     }
-  };
+  });
+
+  before(() => {
+    startFF = port => {
+      return execPromise(
+        `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
+        {timeout: 15000, shell: true, cwd}
+      );
+    };
+
+    stopFF = async ffProc => {
+      try {
+        return await ffProc;
+      } catch (err) {
+        // Timeouts always cause errors on Linux, so catch them
+        if (err.name && err.name === 'ChildProcessError') {
+          const {stdout, stderr} = err;
+          return {stdout, stderr};
+        }
+
+        throw err;
+      }
+    };
+  });
 
   beforeEach(tools.stubConsole);
   afterEach(tools.restoreConsole);
@@ -75,14 +96,13 @@ describe('functions/imagemagick tests', () => {
       body: {
         data: {
           bucket: BUCKET_NAME,
-          name: safeFileName,
+          name: testFiles.safe,
         },
       },
     });
 
     const {stdout} = await stopFF(ffProc);
-
-    assert.ok(stdout.includes(`Detected ${safeFileName} as OK.`));
+    assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
   });
 
   it('blurOffensiveImages successfully blurs offensive images', async () => {
@@ -94,34 +114,51 @@ describe('functions/imagemagick tests', () => {
       body: {
         data: {
           bucket: BUCKET_NAME,
-          name: offensiveFileName,
+          name: testFiles.offensive,
         },
       },
     });
 
     const {stdout} = await stopFF(ffProc);
 
-    assert.ok(stdout.includes(`Blurred image: ${offensiveFileName}`));
+    assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
     assert.ok(
       stdout.includes(
-        `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${offensiveFileName}`
+        `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
       )
     );
 
-    assert.ok(
-      storage
-        .bucket(BLURRED_BUCKET_NAME)
-        .file(offensiveFileName)
-        .exists(),
-      'File uploaded'
-    );
+    const exists = await storage
+      .bucket(BLURRED_BUCKET_NAME)
+      .file(testFiles.offensive)
+      .exists();
+    assert.ok(exists, 'File uploaded');
+  });
+
+  it('blurOffensiveImages detects missing images as safe using Cloud Vision', async () => {
+    const PORT = 8082;
+    const ffProc = startFF(PORT);
+    const missingFileName = 'file-does-not-exist.jpg';
+
+    await requestRetry({
+      url: `http://localhost:${PORT}/blurOffensiveImages`,
+      body: {
+        data: {
+          bucket: BUCKET_NAME,
+          name: missingFileName,
+        },
+      },
+    });
+
+    const {stdout} = await stopFF(ffProc);
+    assert.ok(stdout.includes(`Detected ${missingFileName} as OK.`));
   });
 
   after(async () => {
     try {
-      await blurredBucket.file(offensiveFileName).delete();
+      await blurredBucket.file(testFiles.offensive).delete();
     } catch (err) {
-      console.log('Error deleting uploaded file:', err);
+      console.log('Error deleting uploaded file:', err.message);
     }
   });
 });

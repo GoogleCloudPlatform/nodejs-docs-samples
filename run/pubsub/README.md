@@ -10,4 +10,3 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 
 * **express**: Web server framework.
 * **body-parser**: express middleware for request payload processing.
-

@@ -1,9 +1,10 @@
-// Copyright 2019, Google LLC.
+// Copyright 2019 Google LLC
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +15,7 @@
 'use strict';
 
 const path = require('path');
-const supertest = require('supertest')
+const supertest = require('supertest');
 
 describe('Unit Tests', () => {
   const app = require(path.join(__dirname, '..', 'app'));
@@ -29,13 +30,13 @@ describe('Unit Tests', () => {
         .type('text')
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect((res) => {
+        .expect(res => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }
         });
     });
-    
+
     it(`should fail on a Bad Request with an invalid payload`, async () => {
       await request
         .get(`/diagram.png`)
@@ -43,7 +44,7 @@ describe('Unit Tests', () => {
         .query({dot: `digraph`})
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect((res) => {
+        .expect(res => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }

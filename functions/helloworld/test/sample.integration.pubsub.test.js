@@ -47,9 +47,11 @@ describe('Pub/Sub integration test', () => {
     const encodedName = Buffer.from(name).toString('base64');
     const pubsubMessage = {data: {data: encodedName}};
 
+    // exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     const proc = execPromise(
-      `functions-framework --target=helloPubSub --signature-type=event --port=${PORT}`,
-      {timeout: 1000, shell: true, cwd}
+      `functions-framework --target=helloPubSub --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
     );
 
     // Send HTTP request simulating Pub/Sub message
@@ -75,9 +77,11 @@ describe('Pub/Sub integration test', () => {
     const pubsubMessage = {data: {}};
     const PORT = 8089; // Each running framework instance needs a unique port
 
+    // exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     const proc = execPromise(
-      `functions-framework --target=helloPubSub --signature-type=event --port=${PORT}`,
-      {timeout: 1000, shell: true, cwd}
+      `functions-framework --target=helloPubSub --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
     );
 
     // Send HTTP request simulating Pub/Sub message

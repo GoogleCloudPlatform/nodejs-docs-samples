@@ -46,9 +46,11 @@ describe('HTTP integration test', () => {
 
   // Run the functions-framework instance to host functions locally
   before(() => {
+    // exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     ffProc = execPromise(
-      `functions-framework --target=helloHttp --signature-type=http --port ${PORT}`,
-      {timeout: 1000, shell: true, cwd}
+      `functions-framework --target=helloHttp --signature-type=http --port ${PORT} & sleep 2; kill $!`,
+      {shell: true, cwd}
     );
   });
 

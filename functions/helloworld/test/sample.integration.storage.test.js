@@ -53,9 +53,11 @@ describe('GCS integration test', () => {
     };
 
     // Run the functions-framework instance to host functions locally
+    //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     const proc = execPromise(
-      `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
-      {timeout: 1000, shell: true, cwd}
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification
@@ -89,9 +91,11 @@ describe('GCS integration test', () => {
     };
 
     // Run the functions-framework instance to host functions locally
+    //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     const proc = execPromise(
-      `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
-      {timeout: 1000, shell: true, cwd}
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification
@@ -107,7 +111,7 @@ describe('GCS integration test', () => {
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await proc;
+    const {stdout} = await handleLinuxFailures(proc);
     assert.ok(stdout.includes(`File ${filename} metadata updated.`));
   });
 
@@ -124,9 +128,11 @@ describe('GCS integration test', () => {
     };
 
     // Run the functions-framework instance to host functions locally
+    //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     const proc = execPromise(
-      `functions-framework --target=helloGCS --signature-type=event --port=${PORT}`,
-      {timeout: 1000, shell: true, cwd}
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
     );
 
     // Send HTTP request simulating GCS change notification

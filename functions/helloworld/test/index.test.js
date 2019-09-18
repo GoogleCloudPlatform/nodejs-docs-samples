@@ -38,9 +38,11 @@ const bucket = storage.bucket(bucketName);
 
 const startFF = (target, signature, port) => {
   const cwd = path.join(__dirname, '..');
+  // exec's 'timeout' param won't kill children of "shim" /bin/sh process
+  // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
   return execPromise(
-    `functions-framework --target=${target} --signature-type=${signature} --port=${port}`,
-    {timeout: 1000, shell: true, cwd}
+    `functions-framework --target=${target} --signature-type=${signature} --port=${port} & sleep 1; kill $!`,
+    {shell: true, cwd}
   );
 };
 

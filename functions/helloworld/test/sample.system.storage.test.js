@@ -28,7 +28,7 @@ const promiseRetry = require('promise-retry');
 const gcsFileName = `test-${uuid.v4()}.txt`;
 
 const localFileName = 'test.txt';
-const bucketName = process.env.FUNCTIONS_BUCKET;
+const bucketName = process.env.FUNCTIONS_DELETABLE_BUCKET;
 const bucket = storage.bucket(bucketName);
 const baseCmd = 'gcloud functions';
 

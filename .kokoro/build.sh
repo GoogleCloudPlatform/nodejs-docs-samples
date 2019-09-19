@@ -43,7 +43,8 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
-export FUNCTIONS_BUCKET=$GCLOUD_PROJECT-functions
+export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
+export FUNCTIONS_DELETABLE_BUCKET=$GCLOUD_PROJECT-functions
 
 #  functions/speech-to-speech
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET

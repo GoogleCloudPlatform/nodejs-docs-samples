@@ -35,6 +35,8 @@ describe('system tests', () => {
       .subtract(4, 'minutes')
       .toISOString();
 
+    console.log(`DBG uuid ${name} time ${startTime} topicName ${topicName}`)
+
     // Publish to pub/sub topic
     const topic = pubsub.topic(topicName);
     await topic.publish(Buffer.from(name));

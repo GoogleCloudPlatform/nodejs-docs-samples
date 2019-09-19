@@ -14,6 +14,14 @@ See:
 
 See the [Cloud Functions Hello World tutorial][tutorial].
 
+**Note:** in order for the tests to run properly, you'll have to deploy some of the sample functions:
+
+```
+gcloud functions deploy helloHttp --runtime nodejs8 --trigger-http
+gcloud functions deploy helloPubSub --trigger-topic $FUNCTIONS_TOPIC --runtime nodejs8
+gcloud functions deploy helloGCS --runtime nodejs8 --trigger-resource $FUNCTIONS_BUCKET --trigger-event providers/cloud.storage/eventTypes/object.change
+```
+
 ## Run the tests
 
 1. Read and follow the [prerequisites](../../../../#prerequisites).

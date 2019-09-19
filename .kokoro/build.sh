@@ -43,7 +43,7 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
-export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
+export FUNCTIONS_BUCKET=$GCLOUD_PROJECT-functions
 
 #  functions/speech-to-speech
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
@@ -59,7 +59,7 @@ export RESULT_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_BUCKET=$FUNCTIONS_BUCKET
 
 #  functions/imagemagick
-export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-functions
+export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-imagick
 
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem

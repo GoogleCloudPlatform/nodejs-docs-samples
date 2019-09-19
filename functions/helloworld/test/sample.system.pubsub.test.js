@@ -32,7 +32,7 @@ describe('system tests', () => {
 
     // Subtract time to work-around local-GCF clock difference
     const startTime = moment()
-      .subtract(2, 'minutes')
+      .subtract(4, 'minutes')
       .toISOString();
 
     // Publish to pub/sub topic
@@ -57,7 +57,7 @@ describe('system tests', () => {
   it('helloPubSub: should print hello world', async () => {
     // Subtract time to work-around local-GCF clock difference
     const startTime = moment()
-      .subtract(2, 'minutes')
+      .subtract(4, 'minutes')
       .toISOString();
 
     // Publish to pub/sub topic

@@ -23,7 +23,6 @@ const app = express();
 fs.accessSync('/usr/bin/dot', fs.constants.X_OK);
 
 // [START run_system_package_handler]
-
 app.get('/diagram.png', (req, res) => {
   try {
     const image = createDiagram(req.query.dot);
@@ -41,30 +40,29 @@ app.get('/diagram.png', (req, res) => {
     }
   }
 });
-
 // [END run_system_package_handler]
 
 // [START run_system_package_exec]
-
 // Generate a diagram based on a graphviz DOT diagram description.
 const createDiagram = dot => {
-  if (!dot || (dot.constructor === Object && Object.keys(dot).length === 0)) {
+  if (!dot) {
     throw new Error('syntax: no graphviz definition provided');
   }
 
-  const watermark = ` \
-    -Glabel="Made on Cloud Run" \
-    -Gfontsize=10 \
-    -Glabeljust=right \
-    -Glabelloc=bottom \
-    -Gfontcolor=gray \
-  `;
-  const image = execSync(`/usr/bin/dot ${watermark} -Tpng`, {
+  // Adds a watermark to the dot graphic.
+  const dotFlags = [
+    '-Glabel="Made on Cloud Run"',
+    '-Gfontsize=10',
+    '-Glabeljust=right',
+    '-Glabelloc=bottom',
+    '-Gfontcolor=gray',
+  ].join(' ');
+
+  const image = execSync(`/usr/bin/dot ${dotFlags} -Tpng`, {
     input: dot,
   });
   return image;
 };
-
 // [END run_system_package_exec]
 
 module.exports = app;

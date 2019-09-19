@@ -1,4 +1,4 @@
-# Cloud Run System Package sample
+# Cloud Run System Package Sample
 
 This sample shows how to use a CLI tool installed as a system package as part of a web service.
 

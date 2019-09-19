@@ -4,18 +4,12 @@
   "description": "Demonstrates a Cloud Run service which provides a CLI tool over HTTP.",
   "main": "index.js",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
-  },
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/app.test.js"
   },
-  "author": "",
-  "license": "Apache-2.0",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "mocha": "^6.2.0",

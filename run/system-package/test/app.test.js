@@ -24,10 +24,24 @@ describe('Unit Tests', () => {
   describe('should fail', () => {
     const errorContentType = 'text/html; charset=utf-8';
 
-    it(`should fail on a Bad Request with an empty payload`, async () => {
+    it(`should fail on a Bad Request with an empty query string`, async () => {
       await request
         .get('/diagram.png')
         .type('text')
+        .expect(400)
+        .expect('Content-Type', errorContentType)
+        .expect(res => {
+          if (res.headers['cache-control']) {
+            throw new Error('Found cache header on uncached response');
+          }
+        });
+    });
+
+    it(`should fail on a Bad Request with an empty dot parameter`, async () => {
+      await request
+        .get('/diagram.png')
+        .type('text')
+        .query({dot: ''})
         .expect(400)
         .expect('Content-Type', errorContentType)
         .expect(res => {

@@ -23,7 +23,7 @@ const execPromise = require('child-process-promise').exec;
 const requestRetry = require('requestretry');
 
 const PORT = 9020;
-const BASE_URL = process.env.BASE_URL || 'http://localhost:${PORT}';
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const cwd = path.join(__dirname, '..');
 
 const TOPIC = process.env.FUNCTIONS_TOPIC;
@@ -39,7 +39,7 @@ describe('functions/pubsub', () => {
     // exec's 'timeout' param won't kill children of "shim" /bin/sh process
     // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     ffProc = execPromise(
-      `functions-framework --target=publish --signature-type=http --port ${PORT} & sleep <TIMEOUT>; kill $!`,
+      `functions-framework --target=publish --signature-type=http --port ${PORT} & sleep 1; kill $!`,
       {shell: true, cwd}
     );
   });

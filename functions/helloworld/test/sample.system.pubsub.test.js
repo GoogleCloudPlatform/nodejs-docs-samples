@@ -36,6 +36,7 @@ describe('system tests', () => {
       .toISOString();
 
     console.log(`DBG uuid ${name} time ${startTime} topicName ${topicName}`)
+    console.log(`DBG CMD ${baseCmd} logs read helloPubSub --start-time ${startTime}`)
 
     // Publish to pub/sub topic
     const topic = pubsub.topic(topicName);
@@ -43,9 +44,14 @@ describe('system tests', () => {
 
     // Wait for logs to become consistent
     await promiseRetry(retry => {
+      console.log('DBG TIME', moment());
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
         .toString();
+
+      console.log('DBG LOGS ------')
+      console.log(logs);
+      console.log('DBG LOGS ------')
 
       try {
         assert.ok(logs.includes(`Hello, ${name}!`));

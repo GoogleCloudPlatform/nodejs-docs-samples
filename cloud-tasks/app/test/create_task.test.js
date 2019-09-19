@@ -20,7 +20,7 @@ const {assert} = require('chai');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const SERVICE_ACCOUNT =
-  'test-run-invoker@long-door-651.iam.gserviceaccount.com';
+  'test-invoker@nodejs-docs-samples-tests.iam.gserviceaccount.com';
 
 describe('Cloud Task Sample Tests', () => {
   it('should create a task', async () => {

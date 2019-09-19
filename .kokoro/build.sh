@@ -75,7 +75,6 @@ cd github/nodejs-docs-samples/${PROJECT}
 
 # Install dependencies
 npm install
-npm install -g @google-cloud/functions-framework
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json

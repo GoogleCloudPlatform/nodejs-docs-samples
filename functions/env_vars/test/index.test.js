@@ -19,7 +19,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const functions = require('../');
 
-function getMocks() {
+const getMocks = () => {
   const req = {};
   const res = {
     send: sinon.stub().returnsThis(),
@@ -29,7 +29,7 @@ function getMocks() {
     req: req,
     res: res,
   };
-}
+};
 
 it('should read env vars', () => {
   const mocks = getMocks();

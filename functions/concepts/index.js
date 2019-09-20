@@ -58,22 +58,6 @@ exports.executionCount = (req, res) => {
 };
 // [END functions_concepts_stateless]
 
-// [START functions_concepts_after_response]
-/**
- * HTTP Cloud Function that may not completely
- * execute due to early HTTP response
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
- */
-exports.afterResponse = (req, res) => {
-  res.end();
-
-  // This statement may not execute
-  console.log('Function complete!');
-};
-// [END functions_concepts_after_response]
-
 // [START functions_concepts_after_timeout]
 /**
  * HTTP Cloud Function that may not completely

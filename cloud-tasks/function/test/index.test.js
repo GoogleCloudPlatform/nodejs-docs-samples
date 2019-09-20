@@ -20,7 +20,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const sg_key = process.env.SENDGRID_API_KEY;
+const key = process.env.SENDGRID_API_KEY;
 
 function getSample() {
   const requestPromise = sinon
@@ -74,16 +74,16 @@ it('send fails without API key', async () => {
   }
 });
 
-it('send fails without message', async () => {
+it('send fails without sender name', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key,
+    SENDGRID_API_KEY: key,
   };
   const mocks = getMocks();
   mocks.req.body.to_email = 'to@gmail.com';
-  mocks.req.body.from_email = 'from@gmail.com';
+  mocks.req.body.to_name = 'testA';
 
   const sample = getSample();
-  const error = new Error('Email message not provided.');
+  const error = new Error('Sender name not provided.');
   error.code = 400;
 
   try {
@@ -93,16 +93,16 @@ it('send fails without message', async () => {
   }
 });
 
-it('send fails without to email', async () => {
+it('send fails without recipient email', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key,
+    SENDGRID_API_KEY: key,
   };
   const mocks = getMocks();
-  mocks.req.body.from_email = 'from@gmail.com';
-  mocks.req.body.message = 'Hello, World!';
+  mocks.req.body.to_name = 'testA';
+  mocks.req.body.from_name = 'testB';
 
   const sample = getSample();
-  const error = new Error('To email address not provided.');
+  const error = new Error('Email address not provided.');
   error.code = 400;
 
   try {
@@ -112,19 +112,19 @@ it('send fails without to email', async () => {
   }
 });
 
-it('send fails without from email', async () => {
+it('send fails without recipient name', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key,
+    SENDGRID_API_KEY: key,
   };
   const mocks = getMocks();
   mocks.req.body.to_email = 'to@gmail.com';
-  mocks.req.body.message = 'Hello, World!';
+  mocks.req.body.from_name = 'testB';
 
   const sample = getSample({
-    SENDGRID_API_KEY: sg_key,
+    SENDGRID_API_KEY: key,
   });
 
-  const error = new Error('From email address not provided.');
+  const error = new Error('Recipient name not provided.');
   error.code = 400;
 
   try {
@@ -136,12 +136,12 @@ it('send fails without from email', async () => {
 
 it('send succeeds', async () => {
   process.env = {
-    SENDGRID_API_KEY: sg_key,
+    SENDGRID_API_KEY: key,
   };
   const mocks = getMocks();
   mocks.req.body.to_email = 'to@gmail.com';
-  mocks.req.body.from_email = 'from@gmail.com';
-  mocks.req.body.message = 'Hello, World!';
+  mocks.req.body.to_name = 'testA';
+  mocks.req.body.from_name = 'testB';
 
   const sample = getSample();
   await sample.program.sendPostcard(mocks.req, mocks.res);

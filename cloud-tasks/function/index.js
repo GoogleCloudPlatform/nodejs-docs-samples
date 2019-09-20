@@ -15,6 +15,7 @@
 
 'use strict';
 
+// [START cloud_tasks_func]
 /**
  * Responds to an HTTP request from Cloud Tasks and sends an email using data
  * from the request body.
@@ -34,27 +35,27 @@ exports.sendPostcard = async (req, res) => {
   sgMail.setApiKey(key);
 
   // Get the body from the Cloud Task request.
-  const postcardBody = req.body;
-  if (!postcardBody.to_email) {
-    const error = new Error('To email address not provided.');
+  const {to_email, to_name, from_name} = req.body;
+  if (!to_email) {
+    const error = new Error('Email address not provided.');
     error.code = 400;
     throw error;
-  } else if (!postcardBody.from_email) {
-    const error = new Error('From email address not provided.');
+  } else if (!to_name) {
+    const error = new Error('Recipient name not provided.');
     error.code = 400;
     throw error;
-  } else if (!postcardBody.message) {
-    const error = new Error('Email message not provided.');
+  } else if (!from_name) {
+    const error = new Error('Sender name not provided.');
     error.code = 400;
     throw error;
   }
 
   // Construct the email request.
   const msg = {
-    to: postcardBody.to_email,
-    from: postcardBody.from_email,
+    to: to_email,
+    from: 'postcard@example.com',
     subject: 'A Postcard Just for You!',
-    html: postcardHTML(postcardBody.message),
+    html: postcardHTML(to_name, from_name),
   };
 
   try {
@@ -66,37 +67,62 @@ exports.sendPostcard = async (req, res) => {
     res.status(error.code).send(error.message);
   }
 };
+// [END cloud_tasks_func]
 
 // Function creates an HTML postcard with message.
-function postcardHTML(message) {
-  const converted_message = message.replace(/\n/g, '<br>');
+function postcardHTML(to_name, from_name) {
   return `<html>
   <head>
     <style>
-    .card-wrapper {
-      overflow: hidden;
-      box-shadow: 0px 5px 30px rgba(0,0,0,0.25);
-      border: 20px solid #ffffff;
-      outline: 1px solid #000;
-      width: 800px;
-      height: 500px;
-      background: linear-gradient(172deg, #FFE3EF 50%, #6dd5ed 100%);
-      margin: 10px;
-    }
-    .greeting {
-      margin: 10px 0 0 20px;
-      font-size: 36px;
-      font-family: 'Courier', monospace;
-      color: #222222;
-    }
+      .postcard {
+        width: 600px;
+        height: 400px;
+        background: #4285F4;
+        text-align: center;
+      }
+
+      .postcard-text {
+        font-family: Arial, sans-serif;
+        font-size: 60px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #FFF;
+        padding: 40px 0px;
+      }
+
+      .postcard-names {
+        font-family: Monaco, monospace;
+        font-size: 30px;
+        text-align: left;
+        color: #FFF;
+        margin: 15px;
+        padding-top: 5px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .postcard-footer {
+        font-family: Monaco, monospace;
+        font-size: 14px;
+        color: #FFF;
+        padding-top: 50px;
+      }
     </style>
   </head>
   <body>
-    <div class="card-wrapper">
-      <div class="greeting">
-        ${converted_message}
+    <div class="postcard">
+      <div class="postcard-names">
+        To: ${to_name}
+        <br>
+        From: ${from_name}
       </div>
-    </div>
+      <div class="postcard-text">
+          Hello,<br>World!
+      </div>
+      <div class="postcard-footer">
+        powered by Google
+      </div>
+      </div>
   </body>
-  </html>`;
+</html>`;
 }

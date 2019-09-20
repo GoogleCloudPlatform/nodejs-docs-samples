@@ -1,10 +1,11 @@
 {
-  "name": "postcard-function",
+  "name": "email-function",
+  "description": "Cloud Function sends an email when triggered by Cloud Task",
   "version": "1.0.0",
-  "description": "Sends postcard when triggered by Cloud Task",
   "main": "index.js",
   "license": "Apache-2.0",
   "author": "Google LLC",
+  "private": true,
   "engines": {
     "node": ">=8.0.0"
   },

@@ -15,29 +15,23 @@
 
 'use strict';
 
+// [START cloud_tasks_app]
 const createHttpTaskWithToken = require('./createTask');
 const express = require('express');
 
 const app = express();
 
-const QUEUE_NAME = process.env.QUEUE_NAME || 'my-queue';
-const QUEUE_LOCATION = process.env.QUEUE_LOCATION || 'us-central1';
-const FUNCTION_URL =
-  process.env.FUNCTION_URL ||
-  'https://<region>-<project_id>.cloudfunctions.net/sendPostcard';
-const SERVICE_ACCOUNT_EMAIL =
-  process.env.SERVICE_ACCOUNT_EMAIL ||
-  '<member>@<project_id>.iam.gserviceaccount.com';
+const {QUEUE_NAME} = process.env;
+const {QUEUE_LOCATION} = process.env;
+const {FUNCTION_URL} = process.env;
+const {SERVICE_ACCOUNT_EMAIL} = process.env;
 
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 
 app.post('/send-email', (req, res) => {
-  // Construct Task payload
-  const payload = {
-    to_email: req.body.to_email,
-    from_email: req.body.from_email,
-    message: req.body.message,
-  };
+  // Set the task payload to the form submission.
+  const {to_name, from_name, to_email, date} = req.body;
+  const payload = {to_name, from_name, to_email};
 
   createHttpTaskWithToken(
     process.env.GOOGLE_CLOUD_PROJECT,
@@ -46,7 +40,7 @@ app.post('/send-email', (req, res) => {
     FUNCTION_URL,
     SERVICE_ACCOUNT_EMAIL,
     payload,
-    req.body.date
+    date
   );
 
   res.status(202).send('📫 Your postcard is in the mail! 💌');
@@ -57,7 +51,8 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(process.env.PORT || 8080, () => {
+app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
+// [END cloud_tasks_app]

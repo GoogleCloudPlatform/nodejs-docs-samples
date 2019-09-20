@@ -15,6 +15,9 @@
 
 'use strict';
 
+// [START cloud_tasks_app_create_task]
+const MAX_SCHEDULE_LIMIT = 30 * 60 * 60 * 24; // Represents 30 days in seconds.
+
 async function createHttpTaskWithToken(
   project = 'my-project-id', // Your GCP Project id
   queue = 'my-queue', // Name of your Queue
@@ -22,7 +25,7 @@ async function createHttpTaskWithToken(
   url = 'https://example.com/taskhandler', // The full url path that the request will be sent to
   email = '<member>@<project-id>.iam.gserviceaccount.com', // Cloud IAM service account
   payload = 'Hello, World!', // The task HTTP request body
-  date = Date.now() // Date to schedule task
+  date = new Date() // Intended date to schedule task
 ) {
   // Imports the Google Cloud Tasks library.
   const {v2beta3} = require('@google-cloud/tasks');
@@ -34,8 +37,8 @@ async function createHttpTaskWithToken(
   const parent = client.queuePath(project, location, queue);
 
   // Convert message to buffer
-  const converted_payload = JSON.stringify(payload);
-  const body = Buffer.from(converted_payload).toString('base64');
+  const convertedPayload = JSON.stringify(payload);
+  const body = Buffer.from(convertedPayload).toString('base64');
 
   const task = {
     httpRequest: {
@@ -51,36 +54,37 @@ async function createHttpTaskWithToken(
     },
   };
 
-  // Calculate time to send message
-  const converted_date = new Date(date);
-  const current_date = new Date(Date.now());
+  const convertedDate = new Date(date);
+  const currentDate = new Date();
 
-  if (converted_date < current_date) {
+  // Schedule time can not be in the past
+  if (convertedDate < currentDate) {
     console.error('Scheduled date in the past.');
-  } else if (converted_date > current_date) {
-    const seconds_diff = (converted_date - current_date) / 1000;
-    // 30 day maximum for schedule time
-    const add_seconds =
-      Math.min(seconds_diff, 30 * 60 * 60 * 24) + Date.now() / 1000;
-    // Add schedule time if after current date
+  } else if (convertedDate > currentDate) {
+    // Restrict schedule time to the 30 day maximum
+    const date_diff_in_seconds = (convertedDate - currentDate) / 1000;
+    if (date_diff_in_seconds > MAX_SCHEDULE_LIMIT) {
+      console.error('Schedule time is over 30 day maximum.');
+    }
+    const date_in_seconds =
+      Math.min(date_diff_in_seconds, MAX_SCHEDULE_LIMIT) + Date.now() / 1000;
+    // Add schedule time to request in Timestamp format
+    // https://googleapis.dev/nodejs/tasks/latest/google.protobuf.html#.Timestamp
     task.scheduleTime = {
-      seconds: add_seconds,
+      seconds: date_in_seconds,
     };
   }
 
-  const request = {
-    parent: parent,
-    task: task,
-  };
-
-  // Send create task request.
   try {
-    const [response] = await client.createTask(request);
+    // Send create task request.
+    const [response] = await client.createTask({parent, task});
     console.log(`Created task ${response.name}`);
     return response.name;
   } catch (error) {
-    console.error(error.message);
+    // Construct error for Stackdriver Error Reporting
+    console.error(new Error(error.message));
   }
 }
 
 module.exports = createHttpTaskWithToken;
+// [END cloud_tasks_app_create_task]

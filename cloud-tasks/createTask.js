@@ -65,14 +65,10 @@ async function createTask(
     };
   }
 
-  const request = {
-    parent: parent,
-    task: task,
-  };
-
   console.log('Sending task:');
   console.log(task);
   // Send create task request.
+  const request = {parent, task};
   const [response] = await client.createTask(request);
   const name = response.name;
   console.log(`Created task ${name}`);

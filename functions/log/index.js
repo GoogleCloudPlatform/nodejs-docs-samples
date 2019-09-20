@@ -97,8 +97,7 @@ function getMetrics(callback) {
 
 // [START functions_log_stackdriver]
 exports.processLogEntry = data => {
-  // Node 6: data.data === Node 8+: data
-  const dataBuffer = Buffer.from(data.data.data || data.data, 'base64');
+  const dataBuffer = Buffer.from(data.data, 'base64');
 
   const logEntry = JSON.parse(dataBuffer.toString('ascii')).protoPayload;
   console.log(`Method: ${logEntry.methodName}`);

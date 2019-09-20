@@ -28,7 +28,7 @@ async function createHttpTaskWithToken(
   queue = 'my-queue', // Name of your Queue
   location = 'us-central1', // The GCP region of your queue
   url = 'https://example.com/taskhandler', // The full url path that the request will be sent to
-  email = 'client@<project-id>.iam.gserviceaccount.com', // Cloud IAM service account
+  serviceAccountEmail = 'client@<project-id>.iam.gserviceaccount.com', // Cloud IAM service account
   payload = 'Hello, World!', // The task HTTP request body
   inSeconds = 0 // Delay in task execution
 ) {
@@ -44,7 +44,7 @@ async function createHttpTaskWithToken(
   // const queue = 'my-queue';
   // const location = 'us-central1';
   // const url = 'https://example.com/taskhandler';
-  // email = 'client@<project-id>.iam.gserviceaccount.com';
+  // const serviceAccountEmail = 'client@<project-id>.iam.gserviceaccount.com';
   // const payload = 'Hello, World!';
 
   // Construct the fully qualified queue name.
@@ -55,7 +55,7 @@ async function createHttpTaskWithToken(
       httpMethod: 'POST',
       url,
       oidcToken: {
-        serviceAccountEmail: email,
+        serviceAccountEmail,
       },
     },
   };
@@ -71,14 +71,10 @@ async function createHttpTaskWithToken(
     };
   }
 
-  const request = {
-    parent: parent,
-    task: task,
-  };
-
   console.log('Sending task:');
   console.log(task);
   // Send create task request.
+  const request = {parent, task};
   const [response] = await client.createTask(request);
   const name = response.name;
   console.log(`Created task ${name}`);

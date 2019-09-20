@@ -31,7 +31,7 @@ exports.helloContent = (req, res) => {
   switch (req.get('content-type')) {
     // '{"name":"John"}'
     case 'application/json':
-      name = req.body.name;
+      name = req.body;
       break;
 
     // 'John', stored in a Buffer
@@ -46,7 +46,7 @@ exports.helloContent = (req, res) => {
 
     // 'name=John' in the body of a POST request (not the URL)
     case 'application/x-www-form-urlencoded':
-      name = req.body.name;
+      name = req.body;
       break;
   }
 
@@ -167,15 +167,15 @@ exports.uploadFile = (req, res) => {
 
   // Triggered once all uploaded files are processed by Busboy.
   // We still need to wait for the disk writes (saves) to complete.
-  busboy.on('finish', () => {
-    Promise.all(fileWrites).then(() => {
-      // TODO(developer): Process saved files here
-      for (const name in uploads) {
-        const file = uploads[name];
-        fs.unlinkSync(file);
-      }
-      res.send();
-    });
+  busboy.on('finish', async () => {
+    await Promise.all(fileWrites);
+
+    // TODO(developer): Process saved files here
+    for (const name in uploads) {
+      const file = uploads[name];
+      fs.unlinkSync(file);
+    }
+    res.send();
   });
 
   busboy.end(req.rawBody);

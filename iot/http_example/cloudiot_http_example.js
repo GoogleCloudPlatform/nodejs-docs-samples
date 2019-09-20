@@ -174,7 +174,7 @@ function publishAsync(authToken, messageCount, numMessages) {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {
-      console.error('Received error: ' + JSON.stringify(response.body.error));
+      console.error(`Received error: ${JSON.stringify(response.body.error)}`);
     } else {
       console.log('Message sent.');
     }
@@ -205,7 +205,7 @@ function getConfig(authToken, version) {
   console.log(`Getting config from URL: ${urlBase}`);
 
   const options = {
-    url: urlBase + '/config?local_version=' + version,
+    url: `${urlBase}/config?local_version=${version}`,
     headers: {
       authorization: `Bearer ${authToken}`,
       'content-type': 'application/json',

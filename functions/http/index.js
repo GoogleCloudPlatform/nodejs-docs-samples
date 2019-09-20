@@ -31,7 +31,7 @@ exports.helloContent = (req, res) => {
   switch (req.get('content-type')) {
     // '{"name":"John"}'
     case 'application/json':
-      name = req.body;
+      name = req.body.name;
       break;
 
     // 'John', stored in a Buffer
@@ -171,8 +171,7 @@ exports.uploadFile = (req, res) => {
     await Promise.all(fileWrites);
 
     // TODO(developer): Process saved files here
-    for (const name in uploads) {
-      const file = uploads[name];
+    for (const file of uploads) {
       fs.unlinkSync(file);
     }
     res.send();

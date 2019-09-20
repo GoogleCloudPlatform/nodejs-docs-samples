@@ -50,15 +50,16 @@ exports.get = async (req, res) => {
     const rows = results[0].map(row => row.toJSON());
     rows.forEach(row => {
       res.write(
-        `SingerId: ${row.SingerId}, AlbumId: ${row.AlbumId}, AlbumTitle: ${row.AlbumTitle}\n`
+        `SingerId: ${row.SingerId},` +
+        `AlbumId: ${row.AlbumId},` +
+        `AlbumTitle: ${row.AlbumTitle}\n`
       );
     });
     res.status(200).end();
   } catch (err) {
     res
       .status(500)
-      .send(`Error querying Spanner: ${err}`)
-      .end();
+      .send(`Error querying Spanner: ${err}`);
   }
 };
 // [END spanner_functions_quickstart]

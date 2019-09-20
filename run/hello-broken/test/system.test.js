@@ -33,9 +33,7 @@ const get = (route, base_url) => {
 describe('End-to-End Tests', () => {
   const {NAME} = process.env;
   if (!NAME) {
-    throw Error(
-      '"NAME" environment variable is required. For example: Cosmos'
-    );
+    throw Error('"NAME" environment variable is required. For example: Cosmos');
   }
 
   describe('Default Service', () => {

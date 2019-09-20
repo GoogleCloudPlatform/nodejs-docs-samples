@@ -16,256 +16,234 @@
 const path = require('path');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const supertest = require('supertest');
+const requestRetry = require('requestretry');
 const uuid = require('uuid');
+const sinon = require('sinon');
+const execPromise = require('child-process-promise').exec;
+
+const program = require('..');
 
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-const baseCmd = process.env.FUNCTIONS_CMD;
 const topicName = process.env.FUNCTIONS_TOPIC;
 
 const localFileName = 'test.txt';
 const fileName = `test-${uuid.v4()}.txt`;
 
-const {BASE_URL} = process.env;
-
 const bucketName = process.env.FUNCTIONS_BUCKET;
 const bucket = storage.bucket(bucketName);
 
-before('Must specify BASE_URL', () => {
-  assert.ok(BASE_URL);
-  tools.checkCredentials();
-});
-
-it('helloGET: should print hello world', async () => {
-  await supertest(BASE_URL)
-    .get('/helloGET')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello World!');
-    });
-});
-
-it('helloHttp: should print a name via GET', async () => {
-  await supertest(BASE_URL)
-    .get('/helloHttp?name=John')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello John!');
-    });
-});
-
-it('helloHttp: should print a name via POST', async () => {
-  await supertest(BASE_URL)
-    .post('/helloHttp')
-    .send({name: 'John'})
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello John!');
-    });
-});
-
-it('helloHttp: should print hello world', async () => {
-  await supertest(BASE_URL)
-    .get('/helloHttp')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello World!');
-    });
-});
-
-it('helloHttp: should escape XSS', async () => {
-  await supertest(BASE_URL)
-    .post('/helloHttp')
-    .send({name: '<script>alert(1)</script>'})
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text.includes('<script>'), false);
-    });
-});
-
-it.only('helloBackground: should print a name', async () => {
-  const data = JSON.stringify({name: 'John'});
-  const output = await tools.runAsync(
-    `${baseCmd} call helloBackground --data '${data}'`
+const startFF = (target, signature, port) => {
+  const cwd = path.join(__dirname, '..');
+  // exec's 'timeout' param won't kill children of "shim" /bin/sh process
+  // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
+  return execPromise(
+    `functions-framework --target=${target} --signature-type=${signature} --port=${port} & sleep 1; kill $!`,
+    {shell: true, cwd}
   );
+};
 
-  assert.strictEqual(output.includes('Hello John!'), true);
-});
+const httpInvocation = (fnUrl, port, body) => {
+  const baseUrl = `http://localhost:${port}`;
 
-it('helloBackground: should print hello world', async () => {
-  const output = await tools.runAsync(
-    `${baseCmd} call helloBackground --data '{}'`
-  );
+  if (body) {
+    // POST request
+    return requestRetry.post({
+      url: `${baseUrl}/${fnUrl}`,
+      retryDelay: 400,
+      body: body,
+      json: true,
+    });
+  } else {
+    // GET request
+    return requestRetry.get({
+      url: `${baseUrl}/${fnUrl}`,
+      retryDelay: 400,
+    });
+  }
+};
 
-  assert.strictEqual(output.includes('Hello World!'), true);
-});
+describe('index.test.js', () => {
+  before(tools.checkCredentials);
 
-it('helloPubSub: should print a name', async () => {
-  const startTime = new Date(Date.now()).toISOString();
-  const name = uuid.v4();
+  describe('helloGET', () => {
+    const PORT = 8081;
+    let ffProc;
 
-  // Publish to pub/sub topic
-  const topic = pubsub.topic(topicName);
-  await topic.publish(Buffer.from(name));
+    before(() => {
+      ffProc = startFF('helloGET', 'http', PORT);
+    });
 
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloPubSub --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes(`Hello, ${name}!`), true);
-  });
-});
+    after(async () => {
+      await ffProc;
+    });
 
-it('helloPubSub: should print hello world', async () => {
-  const startTime = new Date(Date.now()).toISOString();
+    it('helloGET: should print hello world', async () => {
+      const response = await httpInvocation('helloGET', PORT);
 
-  // Publish to pub/sub topic
-  const topic = pubsub.topic(topicName);
-  await topic.publish(Buffer.from(''), {a: 'b'});
-
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloPubSub --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes('Hello, World!'), true);
-  });
-});
-
-it('helloGCS: should print uploaded message', async () => {
-  const startTime = new Date(Date.now()).toISOString();
-
-  // Upload file
-  const filepath = path.join(__dirname, localFileName);
-  await bucket.upload(filepath, {
-    destination: fileName,
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, 'Hello World!');
+    });
   });
 
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloGCS --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes(`File ${fileName} uploaded`), true);
+  describe('helloHttp', () => {
+    const PORT = 8082;
+    let ffProc;
+
+    before(() => {
+      ffProc = startFF('helloHttp', 'http', PORT);
+    });
+
+    after(async () => {
+      await ffProc;
+    });
+
+    it('helloHttp: should print a name via GET', async () => {
+      const response = await httpInvocation('helloHttp?name=John', PORT);
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, 'Hello John!');
+    });
+
+    it('helloHttp: should print a name via POST', async () => {
+      const response = await httpInvocation('helloHttp', PORT, {name: 'John'});
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, 'Hello John!');
+    });
+
+    it('helloHttp: should print hello world', async () => {
+      const response = await httpInvocation('helloHttp', PORT);
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, 'Hello World!');
+    });
+
+    it('helloHttp: should escape XSS', async () => {
+      const response = await httpInvocation('helloHttp', PORT, {
+        name: '<script>alert(1)</script>',
+      });
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body.includes('<script>'), false);
+    });
   });
-});
 
-it('helloGCS: should print metadata updated message', async () => {
-  const startTime = new Date(Date.now()).toISOString();
+  describe('helloBackground', () => {
+    const PORT = 8083;
+    let ffProc;
 
-  // Update file metadata
-  await bucket.setMetadata(fileName, {foo: 'bar'});
+    before(() => {
+      ffProc = startFF('helloBackground', 'event', PORT);
+    });
 
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloGCS --start-time ${startTime}`
-    );
-    assert.strictEqual(
-      logs.includes(`File ${fileName} metadata updated`),
-      true
-    );
+    after(async () => {
+      await ffProc;
+    });
+
+    it('helloBackground: should print a name', async () => {
+      const data = {data: {name: 'John'}};
+
+      const response = await httpInvocation('helloBackground', PORT, data);
+
+      assert.ok(response.body.includes('Hello John!'));
+    });
+
+    it('helloBackground: should print hello world', async () => {
+      const data = {data: {}};
+
+      const response = await httpInvocation('helloBackground', PORT, data);
+
+      assert.ok(response.body.includes('Hello World!'));
+    });
   });
-});
 
-it('helloGCSGeneric: should print event details', async () => {
-  const startTime = new Date(Date.now()).toISOString();
-
-  // Update file metadata
-  await bucket.setMetadata(fileName, {foo: 'baz'});
-
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloGCSGeneric --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes(`Bucket: ${bucketName}`), true);
-    assert.strictEqual(logs.includes(`File: ${fileName}`), true);
-    assert.strictEqual(
-      logs.includes('Event type: google.storage.object.metadataUpdate'),
-      true
-    );
+  describe('helloPubSub', () => {
+    /* See sample.integration.pubsub.test.js */
   });
-});
 
-it('helloGCS: should print deleted message', async () => {
-  const startTime = new Date(Date.now()).toISOString();
-
-  // Delete file
-  bucket.deleteFiles();
-
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloGCS --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes(`File ${fileName} deleted`), true);
+  describe('helloGCS', () => {
+    /* See sample.integration.storage.test.js */
   });
-});
 
-it('helloError: should throw an error', async () => {
-  const startTime = new Date(Date.now()).toISOString();
+  describe('helloGCSGeneric', () => {
+    it('helloGCSGeneric: should print event details', async () => {
+      const PORT = 8084;
+      const ffProc = startFF('helloGCSGeneric', 'event', PORT);
 
-  // Publish to pub/sub topic
-  const topic = pubsub.topic(topicName);
-  await topic.publish(Buffer.from(''), {a: 'b'});
+      // Update file metadata
+      const data = {
+        name: fileName,
+        resourceState: 'exists',
+        metageneration: '2',
+        bucket: bucketName,
+        timeCreated: new Date(),
+        updated: new Date(),
+      };
+      const context = {
+        eventId: '12345',
+        eventType: 'google.storage.object.metadataUpdate',
+      };
 
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloError --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes('Error: I failed you'), true);
-  });
-});
+      const response = await httpInvocation('helloGCSGeneric', PORT, {
+        data,
+        context,
+      });
+      const {stdout} = await ffProc;
 
-it('helloError2: should throw a value', async () => {
-  const startTime = new Date(Date.now()).toISOString();
-
-  // Publish to pub/sub topic
-  const topic = pubsub.topic(topicName);
-  await topic.publish(Buffer.from(''), {a: 'b'});
-
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloError2 --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes(' 1\n'), true);
-  });
-});
-
-it('helloError3: callback should return an errback value', async () => {
-  const startTime = new Date(Date.now()).toISOString();
-
-  // Publish to pub/sub topic
-  const topic = pubsub.topic(topicName);
-  await topic.publish(Buffer.from(''), {a: 'b'});
-
-  // Check logs
-  await tools.tryTest(async assert => {
-    const logs = await tools.runAsync(
-      `${baseCmd} logs read helloError3 --start-time ${startTime}`
-    );
-    assert.strictEqual(logs.includes(' I failed you\n'), true);
-  });
-});
-
-it('helloTemplate: should render the html', async () => {
-  await supertest(BASE_URL)
-    .get('/helloTemplate')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(
-        new RegExp(/<h1>Cloud Functions Template Sample<\/h1>/).test(
-          response.text
-        ),
-        true
+      assert.ok(stdout.includes(`Bucket: ${bucketName}`));
+      assert.ok(stdout.includes(`File: ${fileName}`));
+      assert.ok(
+        stdout.includes('Event Type: google.storage.object.metadataUpdate')
       );
     });
+  });
+
+  describe('Error handling (unit tests)', () => {
+    // Silence dummy console calls in the samples
+    before(tools.stubConsole);
+    after(tools.restoreConsole);
+
+    it('helloError: should throw an error', () => {
+      assert.throws(program.helloError, 'I failed you');
+    });
+
+    it('helloError2: should throw a value', () => {
+      assert.throws(program.helloError2, '1');
+    });
+
+    it('helloError3: callback should return an errback value', () => {
+      const cb = sinon.stub();
+
+      program.helloError3(null, null, cb);
+
+      assert.ok(cb.calledOnce);
+      assert.ok(cb.calledWith('I failed you'));
+    });
+  });
+
+  describe('helloTemplate', () => {
+    const PORT = 8085;
+    let ffProc;
+
+    before(() => {
+      ffProc = startFF('helloTemplate', 'http', PORT);
+    });
+
+    after(async () => {
+      await ffProc;
+    });
+
+    it('helloTemplate: should render the html', async () => {
+      const response = await httpInvocation('helloTemplate', PORT);
+
+      assert.strictEqual(response.statusCode, 200);
+      assert.ok(
+        response.body.includes('<h1>Cloud Functions Template Sample</h1>')
+      );
+    });
+  });
 });

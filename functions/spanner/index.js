@@ -50,8 +50,8 @@ exports.get = async (req, res) => {
     const rows = results[0].map(row => row.toJSON());
     rows.forEach(row => {
       res.write(
-        `SingerId: ${row.SingerId},` +
-        `AlbumId: ${row.AlbumId},` +
+        `SingerId: ${row.SingerId}, ` +
+        `AlbumId: ${row.AlbumId}, ` +
         `AlbumTitle: ${row.AlbumTitle}\n`
       );
     });

@@ -247,7 +247,7 @@ const {argv} = require(`yargs`)
 // Create a Cloud IoT Core JWT for the given project id, signed with the given
 // private key.
 // [START iot_mqtt_jwt]
-function createJwt(projectId, privateKeyFile, algorithm) {
+const createJwt = (projectId, privateKeyFile, algorithm) => {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
   // audience field should always be set to the GCP project id.
@@ -258,20 +258,20 @@ function createJwt(projectId, privateKeyFile, algorithm) {
   };
   const privateKey = fs.readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, {algorithm: algorithm});
-}
+};
 // [END iot_mqtt_jwt]
 
 // Publish numMessages messages asynchronously, starting from message
 // messagesSent.
 // [START iot_mqtt_publish]
-function publishAsync(
+const publishAsync = (
   mqttTopic,
   client,
   iatTime,
   messagesSent,
   numMessages,
   connectionArgs
-) {
+) => {
   // If we have published enough messages or backed off too many times, stop.
   if (messagesSent > numMessages || backoffTime >= MAXIMUM_BACKOFF_TIME) {
     if (backoffTime >= MAXIMUM_BACKOFF_TIME) {
@@ -371,10 +371,10 @@ function publishAsync(
       );
     }, schedulePublishDelayMs);
   }, publishDelayMs);
-}
+};
 // [END iot_mqtt_publish]
 
-function mqttDeviceDemo(
+const mqttDeviceDemo = (
   deviceId,
   registryId,
   projectId,
@@ -385,7 +385,7 @@ function mqttDeviceDemo(
   mqttBridgePort,
   messageType,
   numMessages
-) {
+) => {
   // [START iot_mqtt_run]
 
   // const deviceId = `myDevice`;
@@ -473,10 +473,10 @@ function mqttDeviceDemo(
   // Once all of the messages have been published, the connection to Google Cloud
   // IoT will be closed and the process will exit. See the publishAsync method.
   // [END iot_mqtt_run]
-}
+};
 
 // Attaches a device to a gateway.
-function attachDevice(deviceId, client, jwt) {
+const attachDevice = (deviceId, client, jwt) => {
   // [START attach_device]
   // const deviceId = 'my-unauth-device';
   const attachTopic = `/devices/${deviceId}/attach`;
@@ -495,10 +495,10 @@ function attachDevice(deviceId, client, jwt) {
     }
   });
   // [END attach_device]
-}
+};
 
 // Detaches a device from a gateway.
-function detachDevice(deviceId, client, jwt) {
+const detachDevice = (deviceId, client, jwt) => {
   // [START detach_device]
   const detachTopic = `/devices/${deviceId}/detach`;
   console.log(`Detaching: ${detachTopic}`);
@@ -516,10 +516,10 @@ function detachDevice(deviceId, client, jwt) {
     }
   });
   // [END detach_device]
-}
+};
 
 // Publish numMessages messages asynchronously through a gateway client connection
-function publishAsyncGateway(
+const publishAsyncGateway = (
   client,
   iatTime,
   tokenExpMins,
@@ -532,7 +532,7 @@ function publishAsyncGateway(
   projectId,
   privateKeyFile,
   algorithm
-) {
+) => {
   // If we have published enough messages or backed off too many times, stop.
   if (messagesSent > numMessages || backoffTime >= MAXIMUM_BACKOFF_TIME) {
     if (backoffTime >= MAXIMUM_BACKOFF_TIME) {
@@ -601,10 +601,10 @@ function publishAsyncGateway(
       );
     }, schedulePublishDelayMs);
   }, publishDelayMs);
-}
+};
 
 // Sends data from a gateway on behalf of a device that is bound to that gateway.
-function sendDataFromBoundDevice(
+const sendDataFromBoundDevice = (
   deviceId,
   gatewayId,
   registryId,
@@ -616,7 +616,7 @@ function sendDataFromBoundDevice(
   mqttBridgePort,
   numMessages,
   tokenExpMins
-) {
+) => {
   // [START iot_send_data_from_bound_device]
   // const deviceId = `myDevice`;
   // const gatewayId = `mygateway`;
@@ -692,10 +692,10 @@ function sendDataFromBoundDevice(
     // Note: logging packet send is very verbose
   });
   // [END iot_send_data_from_bound_device]
-}
+};
 
 // Listen for configuration messages on a gateway and bound device.
-function listenForConfigMessages(
+const listenForConfigMessages = (
   deviceId,
   gatewayId,
   registryId,
@@ -706,7 +706,7 @@ function listenForConfigMessages(
   mqttBridgeHostname,
   mqttBridgePort,
   clientDuration
-) {
+) => {
   // [START iot_listen_for_config_messages]
   // const deviceId = `myDevice`;
   // const gatewayId = `mygateway`;
@@ -778,10 +778,10 @@ function listenForConfigMessages(
     // Note: logging packet send is very verbose
   });
   // [END iot_listen_for_config_messages]
-}
+};
 
 // Listen for error messages on a gateway.
-function listenForErrorMessages(
+const listenForErrorMessages = (
   deviceId,
   gatewayId,
   registryId,
@@ -792,7 +792,7 @@ function listenForErrorMessages(
   mqttBridgeHostname,
   mqttBridgePort,
   clientDuration
-) {
+) => {
   // [START iot_listen_for_error_messages]
   // const deviceId = `myDevice`;
   // const gatewayId = `mygateway`;
@@ -858,4 +858,4 @@ function listenForErrorMessages(
     // Note: logging packet send is very verbose
   });
   // [END iot_listen_for_error_messages]
-}
+};

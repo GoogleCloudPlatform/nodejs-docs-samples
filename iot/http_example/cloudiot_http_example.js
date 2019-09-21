@@ -118,7 +118,7 @@ const url = `${urlBase}${pathSuffix}`;
 // Create a Cloud IoT Core JWT for the given project ID, signed with the given
 // private key.
 // [START iot_http_jwt]
-function createJwt(projectId, privateKeyFile, algorithm) {
+const createJwt = (projectId, privateKeyFile, algorithm) => {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
   // audience field should always be set to the GCP project ID.
@@ -129,14 +129,14 @@ function createJwt(projectId, privateKeyFile, algorithm) {
   };
   const privateKey = fs.readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, {algorithm: algorithm});
-}
+};
 // [END iot_http_jwt]
 
 // Publish numMessages message asynchronously, starting from message
 // messageCount. Telemetry events are published at a rate of 1 per second and
 // states at a rate of 1 every 2 seconds.
 // [START iot_http_publish]
-function publishAsync(authToken, messageCount, numMessages) {
+const publishAsync = (authToken, messageCount, numMessages) => {
   const payload = `${argv.registryId}/${argv.deviceId}-payload-${messageCount}`;
   console.log('Publishing message:', payload);
   const binaryData = Buffer.from(payload).toString('base64');
@@ -197,11 +197,11 @@ function publishAsync(authToken, messageCount, numMessages) {
       }, delayMs);
     }
   });
-}
+};
 // [END iot_http_publish]
 
 // [START iot_http_getconfig]
-function getConfig(authToken, version) {
+const getConfig = (authToken, version) => {
   console.log(`Getting config from URL: ${urlBase}`);
 
   const options = {
@@ -228,7 +228,7 @@ function getConfig(authToken, version) {
       console.log('Received config', JSON.stringify(body));
     }
   });
-}
+};
 // [END iot_http_getconfig]
 
 // [START iot_run_http]

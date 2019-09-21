@@ -51,15 +51,13 @@ exports.get = async (req, res) => {
     rows.forEach(row => {
       res.write(
         `SingerId: ${row.SingerId}, ` +
-        `AlbumId: ${row.AlbumId}, ` +
-        `AlbumTitle: ${row.AlbumTitle}\n`
+          `AlbumId: ${row.AlbumId}, ` +
+          `AlbumTitle: ${row.AlbumTitle}\n`
       );
     });
     res.status(200).end();
   } catch (err) {
-    res
-      .status(500)
-      .send(`Error querying Spanner: ${err}`);
+    res.status(500).send(`Error querying Spanner: ${err}`);
   }
 };
 // [END spanner_functions_quickstart]

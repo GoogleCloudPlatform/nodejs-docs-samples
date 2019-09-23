@@ -10,6 +10,7 @@ plugins:
   - prettier
   - promise
 rules:
+  require-atomic-updates: warn
   prettier/prettier: error
   block-scoped-var: error
   eqeqeq: error

@@ -12,11 +12,11 @@ const startServer = () => {
 };
 
 const main = async () => {
-  if (!process.env['GOOGLE_CLOUD_PROJECT']) {
+  if (!process.env.GOOGLE_CLOUD_PROJECT) {
     try {
       const project = await metadata.getProjectId();
 
-      process.env['GOOGLE_CLOUD_PROJECT'] = project;
+      process.env.GOOGLE_CLOUD_PROJECT = project;
       startServer();
     } catch (err) {
       console.error(`error: Identify project from metadata server: ${err}`);

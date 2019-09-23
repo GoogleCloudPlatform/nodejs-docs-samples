@@ -25,8 +25,7 @@ app.get('/', (req, res) => {
     // Plain error logs do not appear in Stackdriver Error Reporting.
     console.error('Environment validation failed.');
     console.error(new Error('Missing required server parameter'));
-    res.status(500).send('Internal Server Error');
-    return;
+    return res.status(500).send('Internal Server Error');
   }
   // [END run_broken_service_problem]
   res.send(`Hello ${NAME}!`);

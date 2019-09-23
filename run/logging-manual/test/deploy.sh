@@ -25,10 +25,11 @@ requireEnv CONTAINER_IMAGE
 
 # Deploy the service
 set -x
-gcloud beta --quiet run deploy "${SERVICE_NAME}" \
+gcloud beta run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
-  --platform=managed
+  --platform=managed \
+  --quiet
 
 echo 'Cloud Run Links:'
 echo "- Logs: https://console.cloud.google.com/logs/viewer?project=${GOOGLE_CLOUD_PROJECT}&resource=cloud_run_revision%2Fservice_name%2F${SERVICE_NAME}"

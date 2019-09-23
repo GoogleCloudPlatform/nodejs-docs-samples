@@ -187,7 +187,7 @@ const _stopInstances = async (projectId, zone, instanceNames) => {
           instance: instanceName,
         })
         .then(res => {
-          console.log(`Instance stopped successfully: ${instanceName}`);
+          console.log('Instance stopped successfully: ' + instanceName);
           return res.data;
         });
     })

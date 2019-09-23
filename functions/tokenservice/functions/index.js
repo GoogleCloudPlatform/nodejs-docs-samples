@@ -49,7 +49,8 @@ function generateAccessToken(
       method: 'POST',
       headers: {
         // Set Service Account Credentials
-        Authorization: `${serviceAccountTokenType} ${serviceAccountAccessToken}`,
+        Authorization:
+          serviceAccountTokenType + ' ' + serviceAccountAccessToken,
       },
     };
 
@@ -119,7 +120,7 @@ function retrieveCredentials(context) {
     });
     get_req.on('error', e => {
       //console.log('Error retrieving credentials', e.message);
-      return `Error retrieving token${e.message}`;
+      return 'Error retrieving token' + e.message;
     });
     get_req.end();
   });

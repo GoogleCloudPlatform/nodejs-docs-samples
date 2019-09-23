@@ -21,8 +21,13 @@ requireEnv() {
 }
 requireEnv SERVICE_NAME
 
+# The hello-broken sample needs to be tested with the NAME environment variable
+# both set and unset.
+SERVICE_OVERRIDE="${SERVICE_NAME}-override"
+
 echo '---'
 test/deploy.sh
+FLAGS="--set-env-vars NAME=$NAME" SERVICE_NAME=${SERVICE_OVERRIDE} test/deploy.sh
 
 echo
 echo '---'
@@ -36,11 +41,16 @@ function cleanup {
     --platform=managed \
     --region="${REGION:-us-central1}" \
     --quiet
+  gcloud beta run services delete ${SERVICE_OVERRIDE} \
+    --platform=managed \
+    --region="${REGION:-us-central1}" \
+    --quiet
 }
 trap cleanup EXIT
 
 # TODO: Perform authentication inside the test.
 export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
+export BASE_URL_OVERRIDE=$(SERVICE_NAME=${SERVICE_OVERRIDE} test/url.sh)
 # Do not use exec to preserve trap behavior.
 "$@"

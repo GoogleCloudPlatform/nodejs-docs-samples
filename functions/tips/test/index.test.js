@@ -23,7 +23,7 @@ const sample = require(`../`);
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should demonstrate retry behavior for a promise', async done => {
+it('should demonstrate retry behavior for a promise', async () => {
   // Retry by throwing an error
   assert.throws(() => {
     sample.retryPromise({
@@ -38,7 +38,7 @@ it('should demonstrate retry behavior for a promise', async done => {
     await sample.retryPromise({data: {}});
   } catch (err) {
     assert.strictEqual(err.message, 'Not retrying...');
-    done();
+    return Promise.resolve();
   }
 });
 

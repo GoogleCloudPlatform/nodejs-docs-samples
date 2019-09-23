@@ -31,7 +31,7 @@ exports.helloContent = (req, res) => {
   switch (req.get('content-type')) {
     // '{"name":"John"}'
     case 'application/json':
-      name = req.body.name;
+      ({name} = req.body);
       break;
 
     // 'John', stored in a Buffer
@@ -46,7 +46,7 @@ exports.helloContent = (req, res) => {
 
     // 'name=John' in the body of a POST request (not the URL)
     case 'application/x-www-form-urlencoded':
-      name = req.body;
+      ({name} = req.body);
       break;
   }
 

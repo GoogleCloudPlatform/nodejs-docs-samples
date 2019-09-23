@@ -20,6 +20,23 @@ const jwt = require('jsonwebtoken');
 const request = require('retry-request', {request: require('request')});
 // [END iot_http_includes]
 
+// Create a Cloud IoT Core JWT for the given project ID, signed with the given
+// private key.
+// [START iot_http_jwt]
+const createJwt = (projectId, privateKeyFile, algorithm) => {
+  // Create a JWT to authenticate this device. The device will be disconnected
+  // after the token expires, and will have to reconnect with a new token. The
+  // audience field should always be set to the GCP project ID.
+  const token = {
+    iat: parseInt(Date.now() / 1000),
+    exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
+    aud: projectId,
+  };
+  const privateKey = fs.readFileSync(privateKeyFile);
+  return jwt.sign(token, privateKey, {algorithm: algorithm});
+};
+// [END iot_http_jwt]
+
 console.log('Google Cloud IoT Core HTTP example.');
 const {argv} = require(`yargs`)
   .options({
@@ -114,23 +131,6 @@ const pathSuffix =
 const urlBase = `https://${argv.httpBridgeAddress}/v1/${devicePath}`;
 const url = `${urlBase}${pathSuffix}`;
 // [END iot_http_variables]
-
-// Create a Cloud IoT Core JWT for the given project ID, signed with the given
-// private key.
-// [START iot_http_jwt]
-const createJwt = (projectId, privateKeyFile, algorithm) => {
-  // Create a JWT to authenticate this device. The device will be disconnected
-  // after the token expires, and will have to reconnect with a new token. The
-  // audience field should always be set to the GCP project ID.
-  const token = {
-    iat: parseInt(Date.now() / 1000),
-    exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
-    aud: projectId,
-  };
-  const privateKey = fs.readFileSync(privateKeyFile);
-  return jwt.sign(token, privateKey, {algorithm: algorithm});
-};
-// [END iot_http_jwt]
 
 // Publish numMessages message asynchronously, starting from message
 // messageCount. Telemetry events are published at a rate of 1 per second and

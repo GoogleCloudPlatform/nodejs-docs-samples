@@ -14,69 +14,129 @@
  */
 
 // [START functions_storage_integration_test]
-const childProcess = require('child_process');
 const assert = require('assert');
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
 const uuid = require('uuid');
 
-it('helloGCS: should print uploaded message', done => {
-  const startTime = new Date(Date.now()).toISOString();
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+const requestRetry = require('requestretry');
+const cwd = path.join(__dirname, '..');
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '1',
+// [END functions_storage_integration_test]
+
+describe('GCS integration test', () => {
+  // [START functions_storage_integration_test]
+  it('helloGCS: should print uploaded message', async () => {
+    const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+    const PORT = 9000; // Each running framework instance needs a unique port
+
+    const data = {
+      data: {
+        name: filename,
+        resourceState: 'exists',
+        metageneration: '1',
+      },
+    };
+
+    // Run the functions-framework instance to host functions locally
+    //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
+    const proc = execPromise(
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
+    );
+
+    // Send HTTP request simulating GCS change notification
+    // (GCF translates GCS notifications to HTTP requests internally)
+    const response = await requestRetry({
+      url: `http://localhost:${PORT}/`,
+      method: 'POST',
+      body: data,
+      retryDelay: 200,
+      json: true,
+    });
+
+    assert.strictEqual(response.statusCode, 204);
+
+    // Wait for functions-framework process to exit
+    const {stdout} = await proc;
+    assert.ok(stdout.includes(`File ${filename} uploaded.`));
+  });
+  // [END functions_storage_integration_test]
+
+  it('helloGCS: should print metadata updated message', async () => {
+    const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+    const PORT = 9001; // Each running framework instance needs a unique port
+
+    const data = {
+      data: {
+        name: filename,
+        resourceState: 'exists',
+        metageneration: '2',
+      },
+    };
+
+    // Run the functions-framework instance to host functions locally
+    //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
+    const proc = execPromise(
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
+    );
+
+    // Send HTTP request simulating GCS change notification
+    // (GCF translates GCS notifications to HTTP requests internally)
+    const response = await requestRetry({
+      url: `http://localhost:${PORT}/`,
+      method: 'POST',
+      body: data,
+      retryDelay: 200,
+      json: true,
+    });
+
+    assert.strictEqual(response.statusCode, 204);
+
+    // Wait for functions-framework process to exit
+    const {stdout} = await proc;
+    assert.ok(stdout.includes(`File ${filename} metadata updated.`));
   });
 
-  childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
+  it('helloGCS: should print deleted message', async () => {
+    const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+    const PORT = 9002; // Each running framework instance needs a unique port
 
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${filename} uploaded.`));
-  done();
-});
+    const data = {
+      data: {
+        name: filename,
+        resourceState: 'not_exists',
+        metageneration: '3',
+      },
+    };
 
-it('helloGCS: should print metadata updated message', done => {
-  const startTime = new Date(Date.now()).toISOString();
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
+    // Run the functions-framework instance to host functions locally
+    //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
+    const proc = execPromise(
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
+    );
 
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '2',
+    // Send HTTP request simulating GCS change notification
+    // (GCF translates GCS notifications to HTTP requests internally)
+    const response = await requestRetry({
+      url: `http://localhost:${PORT}/`,
+      method: 'POST',
+      body: data,
+      retryDelay: 200,
+      json: true,
+    });
+
+    assert.strictEqual(response.statusCode, 204);
+
+    // Wait for functions-framework process to exit
+    const {stdout} = await proc;
+    assert.ok(stdout.includes(`File ${filename} deleted.`));
   });
-
-  childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
-
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${filename} metadata updated.`));
-  done();
-});
-
-it('helloGCS: should print deleted message', done => {
-  const startTime = new Date(Date.now()).toISOString();
-  const filename = uuid.v4(); // Use a unique filename to avoid conflicts
-
-  // Mock GCS call, as the emulator doesn't listen to GCS buckets
-  const data = JSON.stringify({
-    name: filename,
-    resourceState: 'not_exists',
-    metageneration: '3',
-  });
-
-  childProcess.execSync(`functions-emulator call helloGCS --data '${data}'`);
-
-  // Check the emulator's logs
-  const logs = childProcess
-    .execSync(`functions-emulator logs read helloGCS --start-time ${startTime}`)
-    .toString();
-  assert.ok(logs.includes(`File ${filename} deleted.`));
+  // [START functions_storage_integration_test]
 });
 // [END functions_storage_integration_test]

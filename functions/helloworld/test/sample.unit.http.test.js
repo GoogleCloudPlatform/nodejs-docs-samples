@@ -24,6 +24,7 @@ it('helloHttp: should print a name', () => {
   // Mock ExpressJS 'req' and 'res' parameters
   const name = uuid.v4();
   const req = {
+    query: {},
     body: {
       name: name,
     },
@@ -37,10 +38,12 @@ it('helloHttp: should print a name', () => {
   assert.ok(res.send.calledOnce);
   assert.deepStrictEqual(res.send.firstCall.args, [`Hello ${name}!`]);
 });
+// [END functions_http_unit_test]
 
 it('helloHttp: should print hello world', () => {
   // Mock ExpressJS 'req' and 'res' parameters
   const req = {
+    query: {},
     body: {},
   };
   const res = {send: sinon.stub()};
@@ -52,4 +55,3 @@ it('helloHttp: should print hello world', () => {
   assert.ok(res.send.calledOnce);
   assert.deepStrictEqual(res.send.firstCall.args, ['Hello World!']);
 });
-// [END functions_http_unit_test]

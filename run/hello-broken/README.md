@@ -1,8 +1,10 @@
-# Cloud Run Manual Logging Sample
+# Cloud Run Broken Sample
 
-This sample shows how to send structured logs to Stackdriver Logging.
+This sample presents broken code in need of troubleshooting. An alternate
+resource at `/improved` shows a more stable implementation with more informative
+errors and default values.
 
-Read more about Cloud Run logging in the [Logging How-to Guide](http://cloud.google.com/run/docs/logging).
+Use it with the [Local Container Troubleshooting tutorial](http://cloud.google.com/run/docs/tutorials/local-troubleshooting).
 
 For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/run).
 
@@ -11,8 +13,8 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 ### `npm run e2e-test`
 
 ```
-export SERVICE_NAME=logging-manual
-export CONTAINER_IMAGE=gcr.io/${GOOGLE_CLOUD_PROJECT}/logging-manual
+export SERVICE_NAME=broken
+export CONTAINER_IMAGE=gcr.io/${GOOGLE_CLOUD_PROJECT}/broken
 npm run e2e-test
 ```
 
@@ -24,7 +26,7 @@ The `url.sh` script derives the automatically provisioned URL of a deployed
 Cloud Run service.
 
 ```sh
-export SERVICE_NAME=logging-manual
+export SERVICE_NAME=broken
 export REGION=us-central1
 test/url.sh
 ```
@@ -34,8 +36,8 @@ test/url.sh
 The `deploy.sh` script deploys a Cloud Run service.
 
 ```sh
-export SERVICE_NAME=logging-manual
-export CONTAINER_IMAGE=gcr.io/${GOOGLE_CLOUD_PROJECT}/logging-manual
+export SERVICE_NAME=broken
+export CONTAINER_IMAGE=gcr.io/${GOOGLE_CLOUD_PROJECT}/broken
 export REGION=us-central1
 test/deploy.sh
 ```
@@ -55,18 +57,12 @@ test/runner.sh sleep 20
 
 ## Environment Variables (Testing)
 
-* `BASE_URL`: The Cloud Run service URL for end-to-end tests.
+* `BASE_URL`: Specifies the Cloud Run service URL for end-to-end tests.
 * `ID_TOKEN`: JWT token used to authenticate with Cloud Run's IAM-based authentication.
 * `REGION`: [`us-central1`] Optional override region for the location of the Cloud Run service.
 * `SERVICE_NAME`: The name of the deployed service, used in some API calls and test assertions.
-* `GOOGLE_CLOUD_PROJECT`: If used, overrides GCP metadata server to determine
-  the current GCP project. Required by the logging client library.
 
 ## Dependencies
 
 * **express**: Web server framework.
-* **got**: Used to pull the project ID of the running service from the 
-  [compute metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata)
-  and make system test HTTP requests. This is required in production for log correlation without
-  manually setting the $GOOGLE_CLOUD_PROJECT environment variable.
-
+* **got**: [Testing] Used to make HTTP requests of the running service in end-to-end testing.

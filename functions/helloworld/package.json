@@ -12,24 +12,31 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "e2e-test": "export FUNCTIONS_CMD='gcloud functions' && sh test/updateFunctions.sh && BASE_URL=\"https://$GCP_REGION-$GCLOUD_PROJECT.cloudfunctions.net/\" mocha test/*.test.js --timeout=60000 --exit",
-    "test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && mocha test/*.test.js --timeout=60000 --exit",
-    "system-test": "export FUNCTIONS_CMD='functions-emulator' && sh test/updateFunctions.sh && export BASE_URL=\"http://localhost:8010/$GCLOUD_PROJECT/$GCF_REGION\" && mocha test/*.test.js --timeout=60000 --exit"
+    "unit-test": "mocha test/index.test.js test/*unit*test.js test/*integration*test.js --timeout=2000 --exit",
+    "system-test": "mocha test/*system*test.js --timeout=60000 --exit",
+    "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^4.0.0",
     "escape-html": "^1.0.3",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
+    "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "@google-cloud/pubsub": "^0.28.0",
+    "@google-cloud/pubsub": "^1.0.0",
     "@google-cloud/storage": "^3.0.0",
-    "mocha": "^6.0.0",
+    "child-process-promise": "^2.2.1",
+    "delay": "^4.3.0",
     "express": "^4.16.3",
+    "mocha": "^6.1.4",
+    "moment": "^2.24.0",
+    "promise-retry": "^1.1.1",
     "proxyquire": "^2.1.0",
+    "request": "^2.88.0",
+    "requestretry": "^4.0.0",
     "sinon": "^7.0.0",
-    "supertest": "^4.0.0",
     "uuid": "^3.1.0",
     "yargs": "^14.0.0"
   },

@@ -15,7 +15,6 @@
 
 'use strict';
 
-// [START cloud_tasks_app]
 const createHttpTaskWithToken = require('./createTask');
 const express = require('express');
 
@@ -28,6 +27,7 @@ const {SERVICE_ACCOUNT_EMAIL} = process.env;
 
 app.use(express.urlencoded({extended: true}));
 
+// [START cloud_tasks_app]
 app.post('/send-email', (req, res) => {
   // Set the task payload to the form submission.
   const {to_name, from_name, to_email, date} = req.body;
@@ -45,6 +45,7 @@ app.post('/send-email', (req, res) => {
 
   res.status(202).send('📫 Your postcard is in the mail! 💌');
 });
+// [END cloud_tasks_app]
 
 app.get('*', (req, res) => {
   res.send('OK').end();
@@ -55,4 +56,3 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END cloud_tasks_app]

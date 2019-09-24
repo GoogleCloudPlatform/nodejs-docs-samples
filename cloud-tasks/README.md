@@ -2,7 +2,7 @@
 
 This sample shows how to create [Cloud Tasks][cloud-tasks] on
 [Google App Engine Standard][gae-std] to trigger a [Cloud Function][cloud-func]
-in order to send an email postcard.
+in order to send an postcard email.
 
 * The App Engine application calls the Cloud Tasks API to add a scheduled task to
 the queue.

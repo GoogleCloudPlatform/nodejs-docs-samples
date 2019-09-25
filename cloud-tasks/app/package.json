@@ -2,8 +2,6 @@
   "name": "cloud-tasks-app",
   "description": "Creates Cloud Tasks from form submission",
   "main": "index.js",
-  "license": "Apache-2.0",
-  "author": "Google LLC",
   "private": true,
   "scripts": {
     "start": "node index.js",

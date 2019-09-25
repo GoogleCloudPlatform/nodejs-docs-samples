@@ -83,7 +83,7 @@ exports.stopInstancePubSub = async (event, context, callback) => {
     const options = {filter: `labels.${payload.label}`};
     const [vms] = await compute.getVMs(options);
     await Promise.all(
-      vms.forEach(async instance => {
+      vms.map(async instance => {
         if (payload.zone === instance.zone.id) {
           const [operation] = await compute
             .zone(payload.zone)
@@ -92,6 +92,8 @@ exports.stopInstancePubSub = async (event, context, callback) => {
 
           // Operation pending
           return operation.promise();
+        } else {
+          return Promise.resolve();
         }
       })
     );

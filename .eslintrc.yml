@@ -10,6 +10,7 @@ plugins:
   - prettier
   - promise
 rules:
+  require-atomic-updates: warn
   prettier/prettier: error
   block-scoped-var: error
   eqeqeq: error
@@ -20,13 +21,13 @@ rules:
   prefer-const: error
   no-var: error
   prefer-arrow-callback: error
-  no-throw-literal: warn
-  require-await: warn
-  promise/prefer-await-to-then: warn
-  promise/no-nesting: warn
-  prefer-destructuring: warn
-  prefer-template: warn
+  no-throw-literal: error
+  require-await: error
+  promise/prefer-await-to-then: error
+  promise/no-nesting: error
+  prefer-destructuring: error
+  prefer-template: error
   func-style:
-    - 1
+    - error
     - expression
     - allowArrowFunctions: true

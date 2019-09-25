@@ -41,7 +41,7 @@ const testFiles = {
   offensive: 'zombie.jpg',
 };
 
-describe('functions/imagemagick tests', async () => {
+describe('functions/imagemagick tests', () => {
   let startFF, stopFF;
 
   before(async () => {

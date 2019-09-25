@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   sourceDatasetId,
   destinationDatasetId,
   keeplistTags
-) {
+) => {
   // [START healthcare_dicom_keeplist_deidentify_dataset]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function deidentifyDataset() {
+  const deidentifyDataset = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -60,11 +60,11 @@ function main(
     console.log(
       `De-identified data written from dataset ${sourceDatasetId} to dataset ${destinationDatasetId}`
     );
-  }
+  };
 
   deidentifyDataset();
   // [END healthcare_dicom_keeplist_deidentify_dataset]
-}
+};
 
 // node deidentifyDataset.js <projectId> <cloudRegion> <sourceDatasetId> <destinationDatasetId> <keeplistTags>
 main(...process.argv.slice(2));

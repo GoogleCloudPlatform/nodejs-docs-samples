@@ -17,17 +17,17 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId
-) {
+) => {
   // [START healthcare_fhir_store_get_iam_policy]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function getFhirStoreIamPolicy() {
+  const getFhirStoreIamPolicy = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -48,11 +48,11 @@ function main(
       'Got FHIR store IAM policy:',
       JSON.stringify(fhirStore.data, null, 2)
     );
-  }
+  };
 
   getFhirStoreIamPolicy();
   // [END healthcare_fhir_store_get_iam_policy]
-}
+};
 
 // node getFhirStoreIamPolicy.js <projectId> <cloudRegion> <datasetId> <fhirStoreId>
 main(...process.argv.slice(2));

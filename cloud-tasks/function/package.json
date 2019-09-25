@@ -1,7 +1,6 @@
 {
   "name": "email-function",
   "description": "Cloud Function sends an email when triggered by Cloud Task",
-  "version": "1.0.0",
   "main": "index.js",
   "license": "Apache-2.0",
   "author": "Google LLC",

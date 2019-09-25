@@ -82,7 +82,7 @@ async function createHttpTaskWithToken(
     return response.name;
   } catch (error) {
     // Construct error for Stackdriver Error Reporting
-    console.error(new Error(error.message));
+    console.error(Error(error.message));
   }
 }
 

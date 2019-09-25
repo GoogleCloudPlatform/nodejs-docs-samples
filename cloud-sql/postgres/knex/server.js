@@ -212,7 +212,7 @@ app.post('/', async (req, res) => {
   try {
     await insertVote(knex, vote);
   } catch (err) {
-    logger.error(`Error while attempting to submit vote:${err}`);
+    logger.error(`Error while attempting to submit vote: ${err}`);
     res
       .status(500)
       .send('Unable to cast vote; see logs for more details.')

@@ -14,11 +14,11 @@
 'use strict';
 
 const path = require('path');
-const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 const assert = require('assert');
 const utils = require('@google-cloud/nodejs-repo-tools');
 
+const {Storage} = require('@google-cloud/storage');
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const bucket = storage.bucket(bucketName);
 
@@ -27,13 +27,13 @@ const requestObj = utils.getRequest({cwd: cwd});
 
 before(async () => {
   utils.checkCredentials();
-  await bucket.create(bucket).then(() => {
-    return bucket.acl.add({
-      entity: 'allUsers',
-      role: Storage.acl.READER_ROLE,
-    });
+  await bucket.create(bucket);
+  await bucket.acl.add({
+    entity: 'allUsers',
+    role: Storage.acl.READER_ROLE,
   });
 });
+
 after(async () => {
   try {
     await bucket.deleteFiles();

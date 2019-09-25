@@ -149,21 +149,17 @@ exports.getOAuthToken = functions.https.onCall(async (data, context) => {
   // Retrieve the token from the database
   const docRef = db.collection('ShortLivedAuthTokens').doc('OauthToken');
 
-  const doc = await docRef.get();
-
   try {
+    const doc = await docRef.get();
     if (doc.exists && isValid(doc.data().expireTime)) {
-      //push notification
       pushNotification(
         data['deviceID'],
         doc.data().accessToken,
         doc.data().expireTime
       );
-      return doc.data();
+      await doc.data();
     } else {
       const result = await retrieveCredentials(context);
-      console.log('Print result from retrieveCredentials functions');
-      console.log(result);
       pushNotification(
         data['deviceID'],
         result['accessToken'],
@@ -175,7 +171,7 @@ exports.getOAuthToken = functions.https.onCall(async (data, context) => {
     console.log('Error retrieving token', err);
     pushNotification(data['deviceID'], 'Error retrieving token', 'Error');
     // return 'Error retrieving token';
-    return 'Error retrieving token';
+    throw new Error('Error retrieving token');
   }
 });
 // [END function_get_token]

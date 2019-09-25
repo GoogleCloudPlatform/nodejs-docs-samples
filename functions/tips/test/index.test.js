@@ -36,9 +36,8 @@ it('should demonstrate retry behavior for a promise', async () => {
   // Terminate by returning a rejected promise
   try {
     await sample.retryPromise({data: {}});
-  } catch (err) {
-    assert.strictEqual(err.message, 'Not retrying...');
-    return Promise.resolve();
+  } catch (error) {
+    assert.strictEqual(error.message, 'Not retrying...');
   }
 });
 

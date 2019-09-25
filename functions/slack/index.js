@@ -106,26 +106,23 @@ const verifyWebhook = body => {
  *
  * @param {string} query The user's search query.
  */
-const makeSearchRequest = query => {
-  return new Promise((resolve, reject) => {
-    kgsearch.entities.search(
-      {
-        auth: config.KG_API_KEY,
-        query: query,
-        limit: 1,
-      },
-      (err, response) => {
-        console.log(err);
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        // Return a formatted message
-        resolve(formatSlackMessage(query, response));
+const makeSearchRequest = async query => {
+  await kgsearch.entities.search(
+    {
+      auth: config.KG_API_KEY,
+      query: query,
+      limit: 1,
+    },
+    (err, response) => {
+      console.log(err);
+      if (err) {
+        throw err;
       }
-    );
-  });
+
+      // Return a formatted message
+      return formatSlackMessage(query, response);
+    }
+  );
 };
 // [END functions_slack_request]
 
@@ -161,12 +158,10 @@ exports.kgSearch = async (req, res) => {
 
     // Send the formatted message back to Slack
     res.json(response);
-
-    return Promise.resolve();
   } catch (err) {
     console.error(err);
     res.status(err.code || 500).send(err);
-    return Promise.reject(err);
+    throw err;
   }
 };
 // [END functions_slack_search]

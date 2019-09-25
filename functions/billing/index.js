@@ -179,17 +179,14 @@ const _listRunningInstances = async (projectId, zone) => {
  */
 const _stopInstances = async (projectId, zone, instanceNames) => {
   await Promise.all(
-    instanceNames.map(instanceName => {
-      return compute.instances
-        .stop({
-          project: projectId,
-          zone: zone,
-          instance: instanceName,
-        })
-        .then(res => {
-          console.log(`Instance stopped successfully: ${instanceName}`);
-          return res.data;
-        });
+    instanceNames.map(async instanceName => {
+      const {data} = await compute.instances.stop({
+        project: projectId,
+        zone: zone,
+        instance: instanceName,
+      });
+      console.log(`Instance stopped successfully: ${instanceName}`);
+      return data;
     })
   );
 };

@@ -174,14 +174,12 @@ exports.sendgridEmail = async (req, res) => {
     } else {
       res.end();
     }
-
-    return Promise.resolve();
   } catch (err) {
     console.error(err);
     const code =
       err.code || (err.response ? err.response.statusCode : 500) || 500;
     res.status(code).send(err);
-    return Promise.reject(err);
+    throw err;
   }
 };
 // [END functions_sendgrid_email]
@@ -273,7 +271,7 @@ exports.sendgridWebhook = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(err.code || 500).send(err);
-    return Promise.reject(err);
+    throw err;
   }
 };
 // [END functions_sendgrid_webhook]
@@ -287,7 +285,8 @@ const getTable = async () => {
   let dataset = bigquery.dataset(config.DATASET);
 
   [dataset] = await dataset.get({autoCreate: true});
-  return dataset.table(config.TABLE).get({autoCreate: true});
+  const table = await dataset.table(config.TABLE).get({autoCreate: true});
+  return table;
 };
 // [END functions_sendgrid_get_table]
 
@@ -330,12 +329,11 @@ exports.sendgridLoad = async event => {
       sourceFormat: 'NEWLINE_DELIMITED_JSON',
     };
     const [job] = await table.import(fileObj, metadata);
-
     await job.promise();
     console.log(`Job complete for ${file.name}`);
   } catch (err) {
     console.log(`Job failed for ${file.name}`);
-    return Promise.reject(err);
+    throw err;
   }
 };
 // [END functions_sendgrid_load]

@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId,
   gcsUri
-) {
+) => {
   // [START healthcare_export_dicom_instance_gcs]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function exportDicomInstanceGcs() {
+  const exportDicomInstanceGcs = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -55,11 +55,11 @@ function main(
 
     await healthcare.projects.locations.datasets.dicomStores.export(request);
     console.log(`Exported DICOM instances to ${gcsUri}`);
-  }
+  };
 
   exportDicomInstanceGcs();
   // [END healthcare_export_dicom_instance_gcs]
-}
+};
 
 // node exportDicomInstanceGcs.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <gcsUri>
 main(...process.argv.slice(2));

@@ -17,17 +17,17 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   hl7v2StoreId
-) {
+) => {
   // [START healthcare_hl7v2_store_get_iam_policy]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function getHl7v2StoreIamPolicy() {
+  const getHl7v2StoreIamPolicy = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -48,11 +48,11 @@ function main(
       'Got HL7v2 store IAM policy:',
       JSON.stringify(hl7v2Store.data, null, 2)
     );
-  }
+  };
 
   getHl7v2StoreIamPolicy();
   // [END healthcare_hl7v2_store_get_iam_policy]
-}
+};
 
 // node getHl7v2StoreIamPolicy.js <projectId> <cloudRegion> <datasetId> <hl7v2StoreId>
 main(...process.argv.slice(2));

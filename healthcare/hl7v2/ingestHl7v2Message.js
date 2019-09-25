@@ -17,13 +17,13 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   hl7v2StoreId,
   hl7v2MessageFile
-) {
+) => {
   // [START healthcare_ingest_hl7v2_message]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
@@ -31,7 +31,7 @@ function main(
   const util = require('util');
   const readFile = util.promisify(fs.readFile);
 
-  async function ingestHl7v2Message() {
+  const ingestHl7v2Message = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -55,11 +55,11 @@ function main(
     const buff = new Buffer.from(data, 'base64');
     const hl7Ack = buff.toString('ascii');
     console.log(`Ingested HL7v2 message with ACK:\n`, hl7Ack);
-  }
+  };
 
   ingestHl7v2Message();
   // [END healthcare_ingest_hl7v2_message]
-}
+};
 
 // node ingestHl7v2Message.js <projectId> <cloudRegion> <datasetId> <hl7v2StoreId> <hl7v2MessageFile>
 main(...process.argv.slice(2));

@@ -21,7 +21,7 @@ const assert = require('assert');
 const utils = require('@google-cloud/nodejs-repo-tools');
 const proxyquire = require('proxyquire').noCallThru();
 
-function getSample() {
+const getSample = () => {
   const nodeFetch = sinon.stub().returns(Promise.resolve('test'));
 
   const firestoreMock = {
@@ -39,7 +39,7 @@ function getSample() {
       nodeFetch: nodeFetch,
     },
   };
-}
+};
 
 beforeEach(utils.stubConsole);
 afterEach(utils.restoreConsole);

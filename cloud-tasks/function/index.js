@@ -16,13 +16,20 @@
 'use strict';
 
 // [START cloud_tasks_func]
+const sendgrid = require('@sendgrid/mail');
+
 /**
  * Responds to an HTTP request from Cloud Tasks and sends an email using data
  * from the request body.
+ *
+ * @param {object} req Cloud Function request context.
+ * @param {object} req.body The request payload.
+ * @param {string} req.body.to_email Email address of the recipient.
+ * @param {string} req.body.to_name Name of the recipient.
+ * @param {string} req.body.from_name Name of the sender.
+ * @param {object} res Cloud Function response context.
  */
 exports.sendPostcard = async (req, res) => {
-  const sgMail = require('@sendgrid/mail');
-
   // Get the SendGrid API key from the environment variable.
   const key = process.env.SENDGRID_API_KEY;
   if (!key) {
@@ -32,7 +39,7 @@ exports.sendPostcard = async (req, res) => {
     error.code = 401;
     throw error;
   }
-  sgMail.setApiKey(key);
+  sendgrid.setApiKey(key);
 
   // Get the body from the Cloud Task request.
   const {to_email, to_name, from_name} = req.body;
@@ -59,7 +66,7 @@ exports.sendPostcard = async (req, res) => {
   };
 
   try {
-    await sgMail.send(msg);
+    await sendgrid.send(msg);
     // Send OK to Cloud Task queue to delete task.
     res.status(200).send('Postcard Sent!');
   } catch (error) {

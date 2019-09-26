@@ -17,19 +17,19 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
   gcsUri
-) {
+) => {
   // [START healthcare_export_fhir_resources_gcs]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
   const sleep = require('../sleep');
 
-  async function exportFhirResourcesGcs() {
+  const exportFhirResourcesGcs = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -70,11 +70,11 @@ function main(
     } else {
       console.log('Export failed');
     }
-  }
+  };
 
   exportFhirResourcesGcs();
   // [END healthcare_export_fhir_resources_gcs]
-}
+};
 
 // node exportFhirResources.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <gcsUri>
 main(...process.argv.slice(2));

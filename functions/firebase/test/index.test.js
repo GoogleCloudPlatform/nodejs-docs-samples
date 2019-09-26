@@ -20,7 +20,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-function getSample() {
+const getSample = () => {
   const firestoreMock = {
     doc: sinon.stub().returnsThis(),
     set: sinon.stub(),
@@ -34,7 +34,7 @@ function getSample() {
       firestore: firestoreMock,
     },
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);

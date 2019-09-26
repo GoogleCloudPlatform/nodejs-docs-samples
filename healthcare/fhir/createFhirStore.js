@@ -17,17 +17,17 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId
-) {
+) => {
   // [START healthcare_create_fhir_store]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function createFhirStore() {
+  const createFhirStore = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -43,11 +43,11 @@ function main(
 
     await healthcare.projects.locations.datasets.fhirStores.create(request);
     console.log(`Created FHIR store: ${fhirStoreId}`);
-  }
+  };
 
   createFhirStore();
   // [END healthcare_create_fhir_store]
-}
+};
 
 // node createFhirStore.js <projectId> <cloudRegion> <datasetId> <fhirStoreId>
 main(...process.argv.slice(2));

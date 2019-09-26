@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
   resourceType
-) {
+) => {
   // [START healthcare_search_resources_get]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function searchFhirResourcesGet() {
+  const searchFhirResourcesGet = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -48,11 +48,11 @@ function main(
     const resources = response.data.entry;
     console.log(`Resources found: ${resources.length}`);
     console.log(JSON.stringify(resources, null, 2));
-  }
+  };
 
   searchFhirResourcesGet();
   // [END healthcare_search_resources_get]
-}
+};
 
 // node searchFhirResourcesGet.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType>
 main(...process.argv.slice(2));

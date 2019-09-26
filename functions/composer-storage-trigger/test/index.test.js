@@ -19,7 +19,7 @@ const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
 
-function getSample(FetchStub) {
+const getSample = FetchStub => {
   return {
     program: proxyquire('../', {
       'node-fetch': FetchStub,
@@ -28,7 +28,7 @@ function getSample(FetchStub) {
       fetch: FetchStub,
     },
   };
-}
+};
 
 it('Handles error in JSON body', async () => {
   const event = {

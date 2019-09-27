@@ -18,7 +18,7 @@
 const sinon = require('sinon');
 const assert = require('assert');
 
-function getMocks() {
+const getMocks = () => {
   return {
     req: {},
     res: {
@@ -28,7 +28,7 @@ function getMocks() {
       writeHead: sinon.stub().returnsThis(),
     },
   };
-}
+};
 
 describe('visitCount', () => {
   it('should successfully increment the Redis counter', async () => {
@@ -42,7 +42,7 @@ describe('visitCount', () => {
     assert(mocks.res.writeHead.calledWith(200));
     assert(mocks.res.end.calledOnce);
 
-    const response = mocks.res.end.firstCall.args[0];
+    const [response] = mocks.res.end.firstCall.args;
     assert(response.startsWith('Visit count:'));
   });
 });

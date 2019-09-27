@@ -53,7 +53,7 @@ const events = [
   },
 ];
 
-function getSample() {
+const getSample = () => {
   const config = {
     EVENT_BUCKET: 'event-bucket',
     DATASET: 'datasets',
@@ -112,9 +112,9 @@ function getSample() {
       job,
     },
   };
-}
+};
 
-function getMocks() {
+const getMocks = () => {
   const req = {
     headers: {},
     query: {},
@@ -144,7 +144,7 @@ function getMocks() {
     req: req,
     res: res,
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
@@ -457,7 +457,7 @@ it('Saves files', async () => {
   sample.mocks.uuid.v4 = sinon.stub().returns('1357');
 
   await sample.program.sendgridWebhook(mocks.req, mocks.res);
-  const filename = sample.mocks.bucket.file.firstCall.args[0];
+  const [filename] = sample.mocks.bucket.file.firstCall.args;
   assert.strictEqual(mocks.res.status.callCount, 1);
   assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
   assert.strictEqual(mocks.res.end.callCount, 1);

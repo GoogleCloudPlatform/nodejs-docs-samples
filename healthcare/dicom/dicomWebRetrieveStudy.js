@@ -17,13 +17,13 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId,
   studyUid
-) {
+) => {
   // [START healthcare_dicomweb_retrieve_study]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
@@ -35,7 +35,7 @@ function main(
   // DICOM file.
   const fileName = 'study_file.multipart';
 
-  async function dicomWebRetrieveStudy() {
+  const dicomWebRetrieveStudy = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -67,11 +67,11 @@ function main(
     console.log(
       `Retrieved study and saved to ${fileName} in current directory`
     );
-  }
+  };
 
   dicomWebRetrieveStudy();
   // [END healthcare_dicomweb_retrieve_study]
-}
+};
 
 // node dicomWebRetrieveStudy.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <studyUid>
 main(...process.argv.slice(2));

@@ -13,8 +13,8 @@
   },
   "scripts": {
     "unit-test": "mocha test/index.test.js test/*unit*test.js test/*integration*test.js --timeout=2000 --exit",
-    "system-test": "mocha test/*system*test.js --timeout=60000 --exit",
-    "test": "npm run unit-test && npm run system-test"
+    "system-test": "mocha test/*system*test.js --timeout=600000 --exit",
+    "test": "npm run unit-test"
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^4.0.0",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "@google-cloud/pubsub": "^0.30.0",
+    "@google-cloud/pubsub": "^1.0.0",
     "@google-cloud/storage": "^3.0.0",
     "child-process-promise": "^2.2.1",
     "delay": "^4.3.0",

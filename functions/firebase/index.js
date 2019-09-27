@@ -114,7 +114,7 @@ exports.helloAnalytics = event => {
   const {resource} = event;
   console.log(`Function triggered by the following event: ${resource}`);
 
-  const analyticsEvent = event.data.eventDim[0];
+  const [analyticsEvent] = event.data.eventDim;
   console.log(`Name: ${analyticsEvent.name}`);
   console.log(`Timestamp: ${new Date(analyticsEvent.timestampMicros / 1000)}`);
 

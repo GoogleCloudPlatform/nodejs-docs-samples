@@ -20,7 +20,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-function getSample() {
+const getSample = () => {
   const requestPromise = sinon
     .stub()
     .returns(new Promise(resolve => resolve('request sent')));
@@ -33,9 +33,9 @@ function getSample() {
       requestPromise: requestPromise,
     },
   };
-}
+};
 
-function getMocks() {
+const getMocks = () => {
   const event = {
     data: {},
   };
@@ -47,7 +47,7 @@ function getMocks() {
     context: {},
     callback: callback,
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);

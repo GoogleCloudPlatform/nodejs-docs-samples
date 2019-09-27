@@ -17,17 +17,17 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   hl7v2StoreId
-) {
+) => {
   // [START healthcare_list_hl7v2_messages]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function listHl7v2Messages() {
+  const listHl7v2Messages = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -49,11 +49,11 @@ function main(
     for (const hl7v2Message of hl7v2Messages) {
       console.log(hl7v2Message);
     }
-  }
+  };
 
   listHl7v2Messages();
   // [END healthcare_list_hl7v2_messages]
-}
+};
 
 // node listHl7v2Messages.js <projectId> <cloudRegion> <datasetId> <hl7v2StoreId>
 main(...process.argv.slice(2));

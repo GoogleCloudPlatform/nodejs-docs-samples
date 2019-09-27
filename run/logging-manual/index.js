@@ -11,16 +11,19 @@ const startServer = () => {
   app.listen(PORT, () => console.log(`${SERVICE} listening on port ${PORT}`));
 };
 
-if (!process.env.GOOGLE_CLOUD_PROJECT) {
-  metadata
-    .getProjectId()
-    .then(project => {
+const main = async () => {
+  if (!process.env.GOOGLE_CLOUD_PROJECT) {
+    try {
+      const project = await metadata.getProjectId();
+
       process.env.GOOGLE_CLOUD_PROJECT = project;
       startServer();
-    })
-    .catch(error => {
-      console.error(`error: Identify project from metadata server: ${error}`);
-    });
-} else {
-  startServer();
-}
+    } catch (err) {
+      console.error(`error: Identify project from metadata server: ${err}`);
+    }
+  } else {
+    startServer();
+  }
+};
+
+main();

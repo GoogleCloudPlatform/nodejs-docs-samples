@@ -26,18 +26,18 @@ admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
 // [START save_token_to_firebase]
-function saveOAuthToken(context, oauthToken) {
+const saveOAuthToken = (context, oauthToken) => {
   const docRef = db.collection('ShortLivedAuthTokens').doc('OauthToken');
   docRef.set(oauthToken);
-}
+};
 // [END save_token_to_firebase]
 
 // [START generate_token]
-function generateAccessToken(
+const generateAccessToken = (
   context,
   serviceAccountAccessToken,
   serviceAccountTokenType
-) {
+) => {
   // With the service account's credentials, we can make a request to generate
   // a new token for a 2nd service account that only has the permission to
   // act as a Dialogflow Client
@@ -83,11 +83,11 @@ function generateAccessToken(
     post_req.write(JSON.stringify(body));
     post_req.end();
   });
-}
+};
 // [END generate_token]
 
 // [START retrieve_credentials]
-function retrieveCredentials(context) {
+const retrieveCredentials = context => {
   return new Promise(resolve => {
     // To create a new access token, we first have to retrieve the credentials
     // of the service account that will make the generateTokenRequest().
@@ -106,15 +106,14 @@ function retrieveCredentials(context) {
         body += chunk;
       });
 
-      res.on('end', () => {
+      res.on('end', async () => {
         const response = JSON.parse(body);
-        return generateAccessToken(
+        const result = await generateAccessToken(
           context,
           response.access_token,
           response.token_type
-        ).then(result => {
-          return resolve(result);
-        });
+        );
+        return resolve(result);
       });
     });
     get_req.on('error', e => {
@@ -123,22 +122,22 @@ function retrieveCredentials(context) {
     });
     get_req.end();
   });
-}
+};
 exports.retrieveCredentials = retrieveCredentials;
 // [END retrieve_credentials]
 
 // [START validate_token]
 // This method verifies the token expiry by validating against current time
-function isValid(expiryTime) {
+const isValid = expiryTime => {
   const currentDate = new Date();
   const expirationDate = new Date(expiryTime);
   // If within 5 minutes of expiration, return false
   return currentDate <= expirationDate - 1000 * 60 * 5;
-}
+};
 // [END validate_token]
 
 // [START function_get_token]
-exports.getOAuthToken = functions.https.onCall((data, context) => {
+exports.getOAuthToken = functions.https.onCall(async (data, context) => {
   // Checking that the user is authenticated.
   if (!context.auth) {
     // Throwing an HttpsError so that the client gets the error details.
@@ -150,41 +149,39 @@ exports.getOAuthToken = functions.https.onCall((data, context) => {
   // Retrieve the token from the database
   const docRef = db.collection('ShortLivedAuthTokens').doc('OauthToken');
 
-  return docRef
-    .get()
-    .then(doc => {
-      if (doc.exists && isValid(doc.data().expireTime)) {
-        //push notification
-        pushNotification(
-          data['deviceID'],
-          doc.data().accessToken,
-          doc.data().expireTime
-        );
-        return doc.data();
-      } else {
-        return retrieveCredentials(context).then(result => {
-          console.log('Print result from retrieveCredentials functions');
-          console.log(result);
-          pushNotification(
-            data['deviceID'],
-            result['accessToken'],
-            result['expireTime']
-          );
-          return result;
-        });
-      }
-    })
-    .catch(err => {
-      console.log('Error retrieving token', err);
-      pushNotification(data['deviceID'], 'Error retrieving token', 'Error');
-      // return 'Error retrieving token';
-      return 'Error retrieving token';
-    });
+  const doc = await docRef.get();
+
+  try {
+    if (doc.exists && isValid(doc.data().expireTime)) {
+      //push notification
+      pushNotification(
+        data['deviceID'],
+        doc.data().accessToken,
+        doc.data().expireTime
+      );
+      return doc.data();
+    } else {
+      const result = await retrieveCredentials(context);
+      console.log('Print result from retrieveCredentials functions');
+      console.log(result);
+      pushNotification(
+        data['deviceID'],
+        result['accessToken'],
+        result['expireTime']
+      );
+      return result;
+    }
+  } catch (err) {
+    console.log('Error retrieving token', err);
+    pushNotification(data['deviceID'], 'Error retrieving token', 'Error');
+    // return 'Error retrieving token';
+    return 'Error retrieving token';
+  }
 });
 // [END function_get_token]
 
 //[START pushNotification]
-function pushNotification(deviceID, accessToken, expiryDate) {
+const pushNotification = (deviceID, accessToken, expiryDate) => {
   //Passing the device id of the requested device which has requested for PN
   const tokens = [deviceID];
   //Push notification payload with expiry date as title and access token as body
@@ -199,5 +196,5 @@ function pushNotification(deviceID, accessToken, expiryDate) {
   };
   //triggers push notification to the targeted devices.
   return admin.messaging().sendToDevice(tokens, payload);
-}
+};
 //[END pushNotification]

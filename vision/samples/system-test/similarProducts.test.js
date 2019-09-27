@@ -25,7 +25,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = `node productSearch/similarProducts.js`;
 const filter = ['', 'style=womens'];
 const localPath = path.join(__dirname, '../resources/shoes_1.jpg');
-const gcsUri = 'gs://nodejs-docs-samples/product-search/shoes_1.jpg';
+const gcsUri = 'gs://cloud-samples-data/vision/product_search/shoes_1.jpg';
 
 const productSearch = new vision.ProductSearchClient();
 

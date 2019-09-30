@@ -29,7 +29,7 @@ const sendgrid = require('@sendgrid/mail');
  * @param {string} req.body.from_name Name of the sender.
  * @param {object} res Cloud Function response context.
  */
-exports.sendPostcard = async (req, res) => {
+exports.sendEmail = async (req, res) => {
   // Get the SendGrid API key from the environment variable.
   const key = process.env.SENDGRID_API_KEY;
   if (!key) {

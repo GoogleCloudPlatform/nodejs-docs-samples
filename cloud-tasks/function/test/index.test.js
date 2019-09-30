@@ -73,7 +73,7 @@ it('send fails without API key', async () => {
   error.code = 401;
 
   try {
-    await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendEmail(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
@@ -92,7 +92,7 @@ it('send fails without sender name', async () => {
   error.code = 400;
 
   try {
-    await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendEmail(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
@@ -111,7 +111,7 @@ it('send fails without recipient email', async () => {
   error.code = 400;
 
   try {
-    await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendEmail(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
@@ -133,7 +133,7 @@ it('send fails without recipient name', async () => {
   error.code = 400;
 
   try {
-    await sample.program.sendPostcard(mocks.req, mocks.res);
+    await sample.program.sendEmail(mocks.req, mocks.res);
   } catch (err) {
     assert.deepStrictEqual(err, error);
   }
@@ -149,7 +149,7 @@ it('send succeeds', async () => {
   mocks.req.body.from_name = 'testB';
 
   const sample = getSample();
-  await sample.program.sendPostcard(mocks.req, mocks.res);
+  await sample.program.sendEmail(mocks.req, mocks.res);
   assert.strictEqual(mocks.res.status.callCount, 1);
   assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
   assert.strictEqual(mocks.res.send.callCount, 1);

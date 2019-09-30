@@ -12,19 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloud_tasks_app_yaml]
 runtime: nodejs10
 
 # [START cloud_tasks_app_env_vars]
 env_variables:
   QUEUE_NAME: "my-queue"
   QUEUE_LOCATION: "us-central1"
-  FUNCTION_URL: "https://<region>-<project_id>.cloudfunctions.net/sendPostcard"
+  FUNCTION_URL: "https://<region>-<project_id>.cloudfunctions.net/sendEmail"
   SERVICE_ACCOUNT_EMAIL: "<member>@<project_id>.iam.gserviceaccount.com"
 # [END cloud_tasks_app_env_vars]
 
+# Handlers for serving the index page.
 handlers:
   - url: /static
     static_dir: static
-  - url: /.*
+  - url: /
     static_files: index.html
     upload: index.html
+# [END cloud_tasks_app_yaml]

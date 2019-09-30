@@ -17,7 +17,7 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
@@ -25,12 +25,12 @@ function main(
   hl7v2MessageId,
   labelKey,
   labelValue
-) {
+) => {
   // [START healthcare_patch_hl7v2_message]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function patchHl7v2Message() {
+  const patchHl7v2Message = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -59,11 +59,11 @@ function main(
       request
     );
     console.log('Patched HL7v2 message');
-  }
+  };
 
   patchHl7v2Message();
   // [END healthcare_patch_hl7v2_message]
-}
+};
 
 // node patchHl7v2Message.js <projectId> <cloudRegion> <datasetId> <hl7v2StoreId> <hl7v2MessageId> <labelKey> <labelValue>
 main(...process.argv.slice(2));

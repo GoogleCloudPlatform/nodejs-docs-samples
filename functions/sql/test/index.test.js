@@ -52,7 +52,7 @@ it('should query MySQL', async () => {
   assert.strictEqual(resMock.status.called, false);
   assert.ok(resMock.send.calledOnce);
 
-  const response = resMock.send.firstCall.args[0];
+  const [response] = resMock.send.firstCall.args;
   assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
 });
 
@@ -79,6 +79,6 @@ it('should query Postgres', async () => {
   assert.strictEqual(resMock.status.called, false);
   assert.ok(resMock.send.calledOnce);
 
-  const response = resMock.send.firstCall.args[0];
+  const [response] = resMock.send.firstCall.args;
   assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
 });

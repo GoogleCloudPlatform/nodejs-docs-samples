@@ -23,64 +23,17 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node analyze.js';
-const url = 'gs://nodejs-docs-samples-video/quickstart.mp4';
-const shortUrl = 'gs://nodejs-docs-samples-video/quickstart_short.mp4';
-const catUrl = 'gs://nodejs-docs-samples/video/cat.mp4';
+const catUrl = 'gs://cloud-samples-data/video/cat.mp4';
 const file = 'resources/cat.mp4';
 const file2 = 'resources/googlework_short.mp4';
 const possibleTexts = /Google|GOOGLE|SUR|OMAR|ROTO|Vice President|58oo9|LONDRES|PARIS|METRO|RUE|CARLO/;
 
 describe('analyze samples', () => {
-  // analyze_labels_gcs (one scene)
-  it('should analyze labels in a GCS file with one scene', async () => {
-    const output = execSync(`${cmd} labels-gcs ${shortUrl}`);
-    assert.match(output, /Label shirt occurs at:/);
-    assert.match(output, /Confidence: \d+\.\d+/);
-  });
-
-  // analyze_labels_gcs (multiple scenes)
-  it('should analyze labels in a GCS file with multiple scenes', async () => {
-    const output = execSync(`${cmd} labels-gcs ${url}`);
-    assert.match(output, /Label shirt occurs at:/);
-    assert.match(output, /Confidence: \d+\.\d+/);
-  });
-
   // analyze_labels_local
   it('should analyze labels in a local file', async () => {
     const output = execSync(`${cmd} labels-file ${file}`);
     assert.match(output, /Label whiskers occurs at:/);
     assert.match(output, /Confidence: \d+\.\d+/);
-  });
-
-  // analyze_shots (multiple shots)
-  it('should analyze shots in a GCS file with multiple shots', async () => {
-    const output = execSync(`${cmd} shots ${url}`);
-    assert.match(output, /Scene 0 occurs from:/);
-  });
-
-  // analyze_shots (one shot)
-  it('should analyze shots in a GCS file with one shot', async () => {
-    const output = execSync(`${cmd} shots ${shortUrl}`);
-    assert.match(output, /The entire video is one shot./);
-  });
-
-  // analyze_safe_search
-  it('should analyze safe search results in a GCS file', async () => {
-    const output = execSync(`${cmd} safe-search ${url}`);
-    assert.match(output, /Time: \d+\.\d+s/);
-    assert.match(output, /Explicit annotation results:/);
-  });
-
-  // analyze_video_transcription
-  it('should analyze video transcription results in a GCS file', async () => {
-    const output = execSync(`${cmd} transcription ${shortUrl}`);
-    assert.match(output, /over the pass/);
-  });
-
-  //detect_text_gcs
-  it('should detect text in a GCS file', async () => {
-    const output = execSync(`${cmd} video-text-gcs ${shortUrl}`);
-    assert.match(output, possibleTexts);
   });
 
   //detect_text

@@ -23,18 +23,12 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node analyze.v1p2beta1.js';
-const shortUrl = 'gs://nodejs-docs-samples/video/googlework_short.mp4';
-const url = 'gs://nodejs-docs-samples/video/cat.mp4';
+const url = 'gs://cloud-samples-data/video/cat.mp4';
 const file1 = 'resources/cat.mp4';
 const file2 = 'resources/googlework_short.mp4';
 const possibleTexts = /Google|GOOGLE|SUR|OMAR|ROTO|Vice President|58oo9|LONDRES|PARIS|METRO|RUE|CARLO/;
 
 describe('analyze v1p2beta1 samples', () => {
-  it('should detect text in a GCS file', async () => {
-    const output = execSync(`${cmd} video-text-gcs ${shortUrl}`);
-    assert.match(output, possibleTexts);
-  });
-
   it('should detect text in a local file', async () => {
     const output = execSync(`${cmd} video-text ${file2}`);
     assert.match(output, possibleTexts);

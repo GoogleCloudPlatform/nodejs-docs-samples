@@ -31,10 +31,8 @@ const stereoFilePath = path.join(resourcePath, 'commercial_stereo.wav');
 const multiLanguageFile = path.join(resourcePath, 'multi.wav');
 const BrooklynFilePath = path.join(resourcePath, 'brooklyn.flac');
 
-const monoUri = 'gs://cloud-samples-tests/speech/commercial_mono.wav';
-const multiUri = 'gs://nodejs-docs-samples/multi_mono.wav';
-const brooklynUri = 'gs://cloud-samples-tests/speech/brooklyn.flac';
-const stereoUri = 'gs://cloud-samples-tests/speech/commercial_stereo.wav';
+const monoUri = 'gs://cloud-samples-data/speech/commercial_mono.wav';
+const stereoUri = 'gs://cloud-samples-data/speech/commercial_stereo.wav';
 
 describe(`BetaFeatures`, () => {
   it('should run speech diarization on a local file', async () => {
@@ -66,21 +64,10 @@ describe(`BetaFeatures`, () => {
     assert.match(output, /Transcription: how are you doing estoy bien e tu/);
   });
 
-  it('should transcribe multi-language on a GCS bucket', async () => {
-    const output = execSync(`${cmd} multiLanguageTranscribeGCS -u ${multiUri}`);
-    assert.match(output, /Transcription: how are you doing estoy bien e tu/);
-  });
-
   it('should run word Level Confience on a local file', async () => {
     const output = execSync(
       `${cmd} wordLevelConfidence -f ${BrooklynFilePath}`
     );
-    assert.match(output, /Transcription: how old is the Brooklyn Bridge/);
-    assert.match(output, /Confidence: \d\.\d/);
-  });
-
-  it('should run word level confidence on a GCS bucket', async () => {
-    const output = execSync(`${cmd} wordLevelConfidenceGCS -u ${brooklynUri}`);
     assert.match(output, /Transcription: how old is the Brooklyn Bridge/);
     assert.match(output, /Confidence: \d\.\d/);
   });

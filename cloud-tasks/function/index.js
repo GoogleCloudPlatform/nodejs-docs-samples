@@ -34,7 +34,7 @@ exports.sendPostcard = async (req, res) => {
   const key = process.env.SENDGRID_API_KEY;
   if (!key) {
     const error = new Error(
-      'SendGrid API key not provided as environment variable.'
+      'SENDGRID_API_KEY was not provided as environment variable.'
     );
     error.code = 401;
     throw error;

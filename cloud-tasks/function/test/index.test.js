@@ -18,7 +18,6 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const key = process.env.SENDGRID_API_KEY;
 
@@ -53,8 +52,14 @@ function getMocks() {
   return {req, res};
 }
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+beforeEach(() => {
+  sinon.spy(console, 'error');
+  sinon.spy(console, 'log');
+});
+afterEach(() => {
+  console.error.restore();
+  console.log.restore();
+});
 
 it('send fails without API key', async () => {
   process.env = {
@@ -63,7 +68,7 @@ it('send fails without API key', async () => {
   const mocks = getMocks();
   const sample = getSample();
   const error = new Error(
-    'SendGrid API key not provided as environment variable.'
+    'SENDGRID_API_KEY was not provided as environment variable.'
   );
   error.code = 401;
 

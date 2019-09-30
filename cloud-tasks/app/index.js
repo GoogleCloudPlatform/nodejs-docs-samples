@@ -25,6 +25,7 @@ const {QUEUE_LOCATION} = process.env;
 const {FUNCTION_URL} = process.env;
 const {SERVICE_ACCOUNT_EMAIL} = process.env;
 
+// Parse form inputs from /index.html.
 app.use(express.urlencoded({extended: true}));
 
 // [START cloud_tasks_app]
@@ -46,10 +47,6 @@ app.post('/send-email', (req, res) => {
   res.status(202).send('📫 Your postcard is in the mail! 💌');
 });
 // [END cloud_tasks_app]
-
-app.get('*', (req, res) => {
-  res.send('OK').end();
-});
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

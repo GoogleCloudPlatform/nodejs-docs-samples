@@ -23,8 +23,8 @@ env_variables:
 # [END cloud_tasks_app_env_vars]
 
 handlers:
-  - url: /
-    static_files: static/index.html
-    upload: static/index.html
   - url: /static
     static_dir: static
+  - url: /.*
+    static_files: index.html
+    upload: index.html

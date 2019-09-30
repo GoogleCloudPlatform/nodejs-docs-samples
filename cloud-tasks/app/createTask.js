@@ -36,7 +36,7 @@ async function createHttpTaskWithToken(
   // Construct the fully qualified queue name.
   const parent = client.queuePath(project, location, queue);
 
-  // Convert message to buffer
+  // Convert message to buffer.
   const convertedPayload = JSON.stringify(payload);
   const body = Buffer.from(convertedPayload).toString('base64');
 
@@ -57,18 +57,19 @@ async function createHttpTaskWithToken(
   const convertedDate = new Date(date);
   const currentDate = new Date();
 
-  // Schedule time can not be in the past
+  // Schedule time can not be in the past.
   if (convertedDate < currentDate) {
     console.error('Scheduled date in the past.');
   } else if (convertedDate > currentDate) {
-    // Restrict schedule time to the 30 day maximum
     const date_diff_in_seconds = (convertedDate - currentDate) / 1000;
+    // Restrict schedule time to the 30 day maximum.
     if (date_diff_in_seconds > MAX_SCHEDULE_LIMIT) {
       console.error('Schedule time is over 30 day maximum.');
     }
+    // Construct future date in Unix time.
     const date_in_seconds =
       Math.min(date_diff_in_seconds, MAX_SCHEDULE_LIMIT) + Date.now() / 1000;
-    // Add schedule time to request in Timestamp format
+    // Add schedule time to request in Unix time using Timestamp structure.
     // https://googleapis.dev/nodejs/tasks/latest/google.protobuf.html#.Timestamp
     task.scheduleTime = {
       seconds: date_in_seconds,

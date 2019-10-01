@@ -17,16 +17,16 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId
-) {
+) => {
   // [START healthcare_create_dataset]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function createDataset() {
+  const createDataset = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -41,11 +41,11 @@ function main(
 
     await healthcare.projects.locations.datasets.create(request);
     console.log(`Created dataset: ${datasetId}`);
-  }
+  };
 
   createDataset();
   // [END healthcare_create_dataset]
-}
+};
 
 // node createDataset.js <projectId> <cloudRegion> <datasetId>
 main(...process.argv.slice(2));

@@ -17,7 +17,7 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
@@ -25,7 +25,7 @@ function main(
   studyUid,
   seriesUid,
   instanceUid
-) {
+) => {
   // [START healthcare_dicomweb_retrieve_instance]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
@@ -34,7 +34,7 @@ function main(
   const writeFile = util.promisify(fs.writeFile);
   const fileName = 'instance_file.dcm';
 
-  async function dicomWebRetrieveInstance() {
+  const dicomWebRetrieveInstance = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -65,11 +65,11 @@ function main(
     console.log(
       `Retrieved DICOM instance and saved to ${fileName} in current directory`
     );
-  }
+  };
 
   dicomWebRetrieveInstance();
   // [END healthcare_dicomweb_retrieve_instance]
-}
+};
 
 // node dicomWebRetrieveInstance.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <studyUid> <seriesUid> <instanceUid>
 main(...process.argv.slice(2));

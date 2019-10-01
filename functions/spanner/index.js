@@ -34,7 +34,7 @@ const databaseId = 'example-db';
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.get = (req, res) => {
+exports.get = async (req, res) => {
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -45,22 +45,19 @@ exports.get = (req, res) => {
   };
 
   // Execute the query
-  return database
-    .run(query)
-    .then(results => {
-      const rows = results[0].map(row => row.toJSON());
-      rows.forEach(row => {
-        res.write(
-          `SingerId: ${row.SingerId}, AlbumId: ${row.AlbumId}, AlbumTitle: ${row.AlbumTitle}\n`
-        );
-      });
-      res.status(200).end();
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send(`Error querying Spanner: ${err}`)
-        .end();
+  try {
+    const results = await database.run(query);
+    const rows = results[0].map(row => row.toJSON());
+    rows.forEach(row => {
+      res.write(
+        `SingerId: ${row.SingerId}, ` +
+          `AlbumId: ${row.AlbumId}, ` +
+          `AlbumTitle: ${row.AlbumTitle}\n`
+      );
     });
+    res.status(200).end();
+  } catch (err) {
+    res.status(500).send(`Error querying Spanner: ${err}`);
+  }
 };
 // [END spanner_functions_quickstart]

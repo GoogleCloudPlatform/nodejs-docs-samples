@@ -30,7 +30,7 @@ exports.helloWorld = (req, res) => {
 // https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
 const Logging = require('@google-cloud/logging');
 
-function getLogEntries() {
+const getLogEntries = async () => {
   // Instantiates a client
   const logging = Logging();
 
@@ -41,12 +41,12 @@ function getLogEntries() {
 
   // Retrieve the latest Cloud Function log entries
   // See https://googlecloudplatform.github.io/gcloud-node/#/docs/logging
-  return logging.getEntries(options).then(([entries]) => {
-    console.log('Entries:');
-    entries.forEach(entry => console.log(entry));
-    return entries;
-  });
-}
+  const [entries] = await logging.getEntries(options);
+
+  console.log('Entries:');
+  entries.forEach(entry => console.log(entry));
+  return entries;
+};
 // [END functions_log_retrieve]
 
 // [START functions_log_get_metrics]
@@ -56,7 +56,7 @@ function getLogEntries() {
 // https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
 const Monitoring = require('@google-cloud/monitoring');
 
-function getMetrics(callback) {
+const getMetrics = callback => {
   // Instantiates a client
   const monitoring = Monitoring.v3().metricServiceApi();
 
@@ -93,7 +93,7 @@ function getMetrics(callback) {
     .on('data', element => console.log(element))
     .on('end', () => callback(error));
   // [END functions_log_get_metrics]
-}
+};
 
 // [START functions_log_stackdriver]
 exports.processLogEntry = data => {

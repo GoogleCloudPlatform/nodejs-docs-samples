@@ -17,19 +17,19 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
   gcsUri
-) {
+) => {
   // [START healthcare_import_fhir_resources]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
   const sleep = require('../sleep');
 
-  async function importFhirResources() {
+  const importFhirResources = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -77,11 +77,11 @@ function main(
         operationStatus.data.error
       );
     }
-  }
+  };
 
   importFhirResources();
   // [END healthcare_import_fhir_resources]
-}
+};
 
 // node importFhirResources.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <gcsUri>
 main(...process.argv.slice(2));

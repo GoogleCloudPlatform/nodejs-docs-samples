@@ -22,17 +22,17 @@ const grpc = require('grpc');
 const helloProto = grpc.load(PROTO_PATH).helloworld;
 
 // Implement the SayHello RPC method.
-function sayHello(call, callback) {
+const sayHello = (call, callback) => {
   callback(null, {message: `Hello ${call.request.name}`});
-}
+};
 
 // Start an RPC server to handle Greeter service requests
-function startServer(PORT) {
+const startServer = PORT => {
   const server = new grpc.Server();
   server.addProtoService(helloProto.Greeter.service, {sayHello: sayHello});
   server.bind(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure());
   server.start();
-}
+};
 
 // The command-line program
 const {argv} = require('yargs')

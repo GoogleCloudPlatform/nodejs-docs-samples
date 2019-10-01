@@ -1,0 +1,84 @@
+.postcard {
+  margin: auto;
+  text-align: center;
+  position: relative;
+  width: 600px;
+  height: 400px;
+  background: #4285F4;
+  box-shadow: 0px 7px 20px 0px rgba(0, 0, 0, 0.5);
+}
+
+.postcard::after {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 30px;
+  bottom: 30px;
+  right: 30px;
+  border: 5px solid #FFF;
+}
+
+.postcard-text {
+  font-family: Arial, sans-serif;
+  font-size: 60px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #FFF;
+  background: #4285F4;
+  position: absolute;
+  left: 0;
+  padding-left: 27px;
+  bottom: 0;
+  padding-bottom: 15px;
+  z-index: 2;
+}
+
+.postcard-names {
+  font-family: Monaco, monospace;
+  font-size: 40px;
+  text-align: right;
+  color: #FFF;
+  background: #4285F4;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 15px 27px;
+  z-index: 2;
+  max-width: 546px;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.info {
+  margin: auto;
+  text-align: center;
+  position: relative;
+  margin-top: 3em;
+  font-family: Arial, sans-serif;
+}
+
+.info-line {
+  margin: 1em;
+}
+
+.postcard-names input {
+  font-family: Monaco, monospace;
+  font-size: 36px;
+  color: #FFF;
+  background: #4285F4;
+  border-bottom: 3px solid #FFF;
+  width: 200px;
+}
+
+.info-line input, label {
+  font-family: Monaco, monospace;
+  font-size: 24px;
+}
+
+button {
+  font-family: Monaco, monospace;
+  font-size: 24px;
+  color: #FFF;
+  text-transform: uppercase;
+  background: #4285F4;
+}

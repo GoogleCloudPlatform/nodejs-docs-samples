@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!-- Copyright 2019 Google LLC
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send a Postcard</title>
+  <link rel="stylesheet" href="static/index.css">
+</head>
+<body class="wrapper">
+  <form action="/send-email" method="post">
+    <div class="postcard">
+      <div class="postcard-names">
+          To:<input type="text" name="to_name" required></input>
+          <br>
+          From:<input type="text" name="from_name" required></input>
+      </div>
+      <div class="postcard-text">
+          Hello,<br>World!
+      </div>
+    </div>
+
+    <div class="info">
+      <div class="info-line">
+        <label for="to_email">Recipient's Email</label>
+        <input type="text" id="to_email" name="to_email" required></input>
+      </div>
+      <div class="info-line">
+        <label for="date">Schedule Postcard</label>
+        <input id="date-input" type="date" name="date">
+      </div>
+      <button>Send</button>
+    </div>
+  </form>
+
+  <script>
+    // Restrict date selector to dates: now - now + 30 days
+    const now = new Date();
+    const maxDate = new Date(now);
+    maxDate.setDate(now.getDate() + 30);
+
+    document.getElementById('date-input')
+      .setAttribute('min', now.toISOString().substring(0, 10));
+    document.getElementById('date-input')
+      .setAttribute('max', maxDate.toISOString().substring(0, 10));
+  </script>
+</body>
+</html>

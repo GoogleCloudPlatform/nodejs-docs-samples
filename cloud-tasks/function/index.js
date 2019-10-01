@@ -77,7 +77,7 @@ exports.sendEmail = async (req, res) => {
 // [END cloud_tasks_func]
 
 // Function creates an HTML postcard with message.
-function postcardHTML(to_name, from_name) {
+const postcardHTML = function(to_name, from_name) {
   return `<html>
   <head>
     <style>
@@ -132,4 +132,4 @@ function postcardHTML(to_name, from_name) {
       </div>
   </body>
 </html>`;
-}
+};

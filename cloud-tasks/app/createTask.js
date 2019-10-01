@@ -18,7 +18,7 @@
 // [START cloud_tasks_app_create_task]
 const MAX_SCHEDULE_LIMIT = 30 * 60 * 60 * 24; // Represents 30 days in seconds.
 
-async function createHttpTaskWithToken(
+const createHttpTaskWithToken = async function(
   project = 'my-project-id', // Your GCP Project id
   queue = 'my-queue', // Name of your Queue
   location = 'us-central1', // The GCP region of your queue
@@ -85,7 +85,7 @@ async function createHttpTaskWithToken(
     // Construct error for Stackdriver Error Reporting
     console.error(Error(error.message));
   }
-}
+};
 
 module.exports = createHttpTaskWithToken;
 // [END cloud_tasks_app_create_task]

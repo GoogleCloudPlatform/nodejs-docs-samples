@@ -21,7 +21,7 @@ const assert = require('assert');
 
 const key = process.env.SENDGRID_API_KEY;
 
-function getSample() {
+const getSample = function() {
   const requestPromise = sinon
     .stub()
     .returns(new Promise(resolve => resolve('test')));
@@ -34,9 +34,9 @@ function getSample() {
       requestPromise: requestPromise,
     },
   };
-}
+};
 
-function getMocks() {
+const getMocks = function() {
   const req = {
     body: {},
   };
@@ -50,7 +50,7 @@ function getMocks() {
   };
   sinon.spy(res, 'status');
   return {req, res};
-}
+};
 
 beforeEach(() => {
   sinon.spy(console, 'error');

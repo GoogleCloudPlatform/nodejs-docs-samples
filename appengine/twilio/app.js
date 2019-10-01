@@ -32,24 +32,23 @@ if (!TWILIO_NUMBER) {
   );
 }
 
-const Twilio = require('twilio');
+const twilio = require('twilio');
 
-const twilioClient = Twilio(
+const twilioClient = new twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
 
-const {TwimlResponse} = Twilio;
-
 // [START gae_flex_twilio_receive_call]
 app.post('/call/receive', (req, res) => {
-  const resp = new TwimlResponse();
-  resp.say('Hello from Google App Engine.');
+  const twiml = new twilio.twiml.VoiceResponse();
+
+  twiml.say('Hello from Google App Engine.');
 
   res
     .status(200)
     .contentType('text/xml')
-    .send(resp.toString());
+    .send(twiml.toString());
 });
 // [END gae_flex_twilio_receive_call]
 
@@ -82,13 +81,13 @@ app.post('/sms/receive', bodyParser, (req, res) => {
   const sender = req.body.From;
   const body = req.body.Body;
 
-  const resp = new TwimlResponse();
-  resp.message(`Hello, ${sender}, you said: ${body}`);
+  const twiml = new twilio.twiml.MessagingResponse();
+  twiml.message(`Hello, ${sender}, you said: ${body}`);
 
   res
     .status(200)
     .contentType('text/xml')
-    .send(resp.toString());
+    .send(twiml.toString());
 });
 // [END gae_flex_twilio_receive_sms]
 

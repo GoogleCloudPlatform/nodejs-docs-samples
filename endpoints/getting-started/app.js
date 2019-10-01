@@ -19,7 +19,6 @@
 // [START setup]
 const express = require('express');
 const bodyParser = require('body-parser');
-const {Buffer} = require('safe-buffer');
 
 const app = express();
 
@@ -34,7 +33,7 @@ app.post('/echo', (req, res) => {
     .end();
 });
 
-function authInfoHandler(req, res) {
+const authInfoHandler = (req, res) => {
   let authUser = {id: 'anonymous'};
   const encodedInfo = req.get('X-Endpoint-API-UserInfo');
   if (encodedInfo) {
@@ -44,7 +43,7 @@ function authInfoHandler(req, res) {
     .status(200)
     .json(authUser)
     .end();
-}
+};
 
 app.get('/auth/info/googlejwt', authInfoHandler);
 app.get('/auth/info/googleidtoken', authInfoHandler);

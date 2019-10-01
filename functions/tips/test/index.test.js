@@ -23,7 +23,7 @@ const sample = require(`../`);
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should demonstrate retry behavior for a promise', done => {
+it('should demonstrate retry behavior for a promise', async () => {
   // Retry by throwing an error
   assert.throws(() => {
     sample.retryPromise({
@@ -34,13 +34,12 @@ it('should demonstrate retry behavior for a promise', done => {
   }, 'Retrying...');
 
   // Terminate by returning a rejected promise
-  sample.retryPromise({data: {}}).then(
-    () => {},
-    error => {
-      assert.strictEqual(error.message, 'Not retrying...');
-      done();
-    }
-  );
+  try {
+    await sample.retryPromise({data: {}});
+  } catch (err) {
+    assert.strictEqual(err.message, 'Not retrying...');
+    return Promise.resolve();
+  }
 });
 
 it('should demonstrate retry behavior for a callback', done => {

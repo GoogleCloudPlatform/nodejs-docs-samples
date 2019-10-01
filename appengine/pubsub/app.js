@@ -19,7 +19,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {OAuth2Client} = require('google-auth-library');
 const path = require('path');
-const {Buffer} = require('safe-buffer');
 const process = require('process'); // Required for mocking environment variables
 
 // By default, the client will authenticate using the service account file
@@ -107,6 +106,12 @@ app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
     tokens.push(token);
 
     // Verify and decode the JWT.
+    // Note: For high volume push requests, it would save some network
+    // overhead if you verify the tokens offline by decoding them using
+    // Google's Public Cert; caching already seen tokens works best when
+    // a large volume of messsages have prompted a singple push server to
+    // handle them, in which case they would all share the same token for
+    // a limited time window.
     const ticket = await authClient.verifyIdToken({
       idToken: token,
       audience: 'example.com',

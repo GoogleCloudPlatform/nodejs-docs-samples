@@ -17,13 +17,13 @@
 
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const {Buffer} = require('safe-buffer');
 const path = require('path');
 
 const execPromise = require('child-process-promise').exec;
 const requestRetry = require('requestretry');
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+const PORT = 9020;
+const BASE_URL = `http://localhost:${PORT}`;
 const cwd = path.join(__dirname, '..');
 
 const TOPIC = process.env.FUNCTIONS_TOPIC;
@@ -36,23 +36,16 @@ describe('functions/pubsub', () => {
   let ffProc;
 
   before(() => {
+    // exec's 'timeout' param won't kill children of "shim" /bin/sh process
+    // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     ffProc = execPromise(
-      `functions-framework --target=publish --signature-type=http`,
-      {timeout: 1000, shell: true, cwd}
+      `functions-framework --target=publish --signature-type=http --port=${PORT} & sleep 1; kill $!`,
+      {shell: true, cwd}
     );
   });
 
   after(async () => {
-    try {
-      await ffProc;
-    } catch (err) {
-      // Timeouts always cause errors on Linux, so catch them
-      if (err.name && err.name === 'ChildProcessError') {
-        return;
-      }
-
-      throw err;
-    }
+    await ffProc;
   });
 
   it('publish fails without parameters', async () => {

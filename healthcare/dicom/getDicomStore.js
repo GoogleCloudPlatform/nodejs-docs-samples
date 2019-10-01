@@ -17,17 +17,17 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId
-) {
+) => {
   // [START healthcare_get_dicom_store]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function getDicomStore() {
+  const getDicomStore = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -45,11 +45,11 @@ function main(
       request
     );
     console.log(dicomStore.data);
-  }
+  };
 
   getDicomStore();
   // [END healthcare_get_dicom_store]
-}
+};
 
 // node getDicomStore.js <projectId> <cloudRegion> <datasetId> <dicomStoreId>
 main(...process.argv.slice(2));

@@ -17,17 +17,17 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   timeZone
-) {
+) => {
   // [START healthcare_patch_dataset]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function patchDataset() {
+  const patchDataset = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -47,11 +47,11 @@ function main(
 
     await healthcare.projects.locations.datasets.patch(request);
     console.log(`Dataset ${datasetId} patched with time zone ${timeZone}`);
-  }
+  };
 
   patchDataset();
   // [END healthcare_patch_dataset]
-}
+};
 
 // node patchDataset.js <projectId> <cloudRegion> <datasetId> <timeZone>
 main(...process.argv.slice(2));

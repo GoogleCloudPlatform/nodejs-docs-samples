@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
   patientId
-) {
+) => {
   // [START healthcare_get_patient_everything]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function getPatientEverything() {
+  const getPatientEverything = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -50,11 +50,11 @@ function main(
       `Got all resources in patient ${patientId} compartment:\n`,
       JSON.stringify(patientEverything)
     );
-  }
+  };
 
   getPatientEverything();
   // [END healthcare_get_patient_everything]
-}
+};
 
 // node getPatientEverything.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <patientId>
 main(...process.argv.slice(2));

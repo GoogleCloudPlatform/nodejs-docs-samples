@@ -17,15 +17,15 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1'
-) {
+) => {
   // [START healthcare_list_datasets]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function listDatasets() {
+  const listDatasets = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -39,11 +39,11 @@ function main(
 
     const dataset = await healthcare.projects.locations.datasets.list(request);
     console.log(dataset.data);
-  }
+  };
 
   listDatasets();
   // [END healthcare_list_datasets]
-}
+};
 
 // node listDatasets.js <projectId> <cloudRegion>
 main(...process.argv.slice(2));

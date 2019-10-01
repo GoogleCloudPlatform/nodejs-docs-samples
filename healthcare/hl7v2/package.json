@@ -13,13 +13,13 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "@google-cloud/pubsub": "^0.28.0",
+    "@google-cloud/pubsub": "^1.0.0",
     "mocha": "^6.0.0"
   },
   "dependencies": {
-    "googleapis": "^40.0.0",
+    "googleapis": "^43.0.0",
     "uuid": "^3.3.2",
-    "yargs": "^13.0.0"
+    "yargs": "^14.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

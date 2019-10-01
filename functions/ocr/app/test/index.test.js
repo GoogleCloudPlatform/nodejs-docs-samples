@@ -16,7 +16,6 @@
 'use strict';
 
 const assert = require('assert');
-const {Buffer} = require('safe-buffer');
 
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();

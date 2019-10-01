@@ -67,6 +67,7 @@ exports.stopBilling = async (pubsubEvent, context) => {
   }
 };
 
+// [START functions_billing_limit]
 /**
  * @return {Promise} Credentials set globally
  */
@@ -86,6 +87,7 @@ const _setAuthCredential = async () => {
     auth: client,
   });
 };
+// [END functions_billing_limit]
 
 /**
  * Determine whether billing is enabled for a project
@@ -185,7 +187,7 @@ const _stopInstances = async (projectId, zone, instanceNames) => {
           instance: instanceName,
         })
         .then(res => {
-          console.log('Instance stopped successfully: ' + instanceName);
+          console.log(`Instance stopped successfully: ${instanceName}`);
           return res.data;
         });
     })

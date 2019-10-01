@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId,
   pubsubTopic
-) {
+) => {
   // [START healthcare_patch_dicom_store]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function patchDicomStore() {
+  const patchDicomStore = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -55,11 +55,11 @@ function main(
     console.log(
       `Patched DICOM store ${dicomStoreId} with Cloud Pub/Sub topic ${pubsubTopic}`
     );
-  }
+  };
 
   patchDicomStore();
   // [END healthcare_patch_dicom_store]
-}
+};
 
 // node patchDicomStore.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <pubsubTopic>
 main(...process.argv.slice(2));

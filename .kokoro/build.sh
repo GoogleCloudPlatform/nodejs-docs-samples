@@ -44,13 +44,23 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
+export FUNCTIONS_DELETABLE_BUCKET=$GCLOUD_PROJECT-functions
+
+#  functions/speech-to-speech
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
+
+#  functions/memorystore/redis
+export REDISHOST=$(cat $KOKORO_GFILE_DIR/secrets-memorystore-redis-ip.txt)
+export REDISPORT=6379
 
 #  functions/translate
 export SUPPORTED_LANGUAGE_CODES="en,es"
 export TRANSLATE_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_BUCKET=$FUNCTIONS_BUCKET
+
+#  functions/imagemagick
+export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-imagick
 
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
@@ -70,19 +80,6 @@ npm install
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
-
-npm install -g @google-cloud/functions-framework
-
-# Start functions emulator, if appropriate
-if [[ $PROJECT == functions/* ]] && grep --quiet functions-emulator package.json; then
-  export BASE_URL="http://localhost:8010/${GCLOUD_PROJECT}/${GCF_REGION}"
-
-  export FUNCTIONS_LOG_PATH=$(pwd)/logs/cloud-functions-emulator.log
-  npm install -g @google-cloud/functions-emulator
-  touch "$FUNCTIONS_LOG_PATH"
-  functions config set logFile "$FUNCTIONS_LOG_PATH"
-  functions-emulator start
-fi
 
 npm test
 

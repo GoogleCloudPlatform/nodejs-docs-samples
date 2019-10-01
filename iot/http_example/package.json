@@ -20,12 +20,12 @@
     "jsonwebtoken": "^8.5.0",
     "request": "^2.88.0",
     "retry-request": "^4.0.0",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "@google-cloud/pubsub": "^0.28.0",
-    "googleapis": "^40.0.0",
+    "@google-cloud/pubsub": "^1.0.0",
+    "googleapis": "^43.0.0",
     "mocha": "^6.0.0",
     "uuid": "^3.3.2"
   }

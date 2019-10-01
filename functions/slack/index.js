@@ -31,7 +31,7 @@ const kgsearch = google.kgsearch('v1');
  * @param {object} response The response from the Knowledge Graph API.
  * @returns {object} The formatted message.
  */
-function formatSlackMessage(query, response) {
+const formatSlackMessage = (query, response) => {
   let entity;
 
   // Extract the first entity from the result list, if any
@@ -81,7 +81,7 @@ function formatSlackMessage(query, response) {
   }
 
   return slackMessage;
-}
+};
 // [END functions_slack_format]
 
 // [START functions_verify_webhook]
@@ -91,13 +91,13 @@ function formatSlackMessage(query, response) {
  * @param {object} body The body of the request.
  * @param {string} body.token The Slack token to be verified.
  */
-function verifyWebhook(body) {
+const verifyWebhook = body => {
   if (!body || body.token !== config.SLACK_TOKEN) {
     const error = new Error('Invalid credentials');
     error.code = 401;
     throw error;
   }
-}
+};
 // [END functions_verify_webhook]
 
 // [START functions_slack_request]
@@ -106,7 +106,7 @@ function verifyWebhook(body) {
  *
  * @param {string} query The user's search query.
  */
-function makeSearchRequest(query) {
+const makeSearchRequest = query => {
   return new Promise((resolve, reject) => {
     kgsearch.entities.search(
       {
@@ -126,7 +126,7 @@ function makeSearchRequest(query) {
       }
     );
   });
-}
+};
 // [END functions_slack_request]
 
 // [START functions_slack_search]
@@ -145,29 +145,28 @@ function makeSearchRequest(query) {
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
-exports.kgSearch = (req, res) => {
-  return Promise.resolve()
-    .then(() => {
-      if (req.method !== 'POST') {
-        const error = new Error('Only POST requests are accepted');
-        error.code = 405;
-        throw error;
-      }
+exports.kgSearch = async (req, res) => {
+  try {
+    if (req.method !== 'POST') {
+      const error = new Error('Only POST requests are accepted');
+      error.code = 405;
+      throw error;
+    }
 
-      // Verify that this request came from Slack
-      verifyWebhook(req.body);
+    // Verify that this request came from Slack
+    verifyWebhook(req.body);
 
-      // Make the request to the Knowledge Graph Search API
-      return makeSearchRequest(req.body.text);
-    })
-    .then(response => {
-      // Send the formatted message back to Slack
-      res.json(response);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(err.code || 500).send(err);
-      return Promise.reject(err);
-    });
+    // Make the request to the Knowledge Graph Search API
+    const response = await makeSearchRequest(req.body.text);
+
+    // Send the formatted message back to Slack
+    res.json(response);
+
+    return Promise.resolve();
+  } catch (err) {
+    console.error(err);
+    res.status(err.code || 500).send(err);
+    return Promise.reject(err);
+  }
 };
 // [END functions_slack_search]

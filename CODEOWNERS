@@ -5,7 +5,7 @@
 * @fhinkel
 
 # Kokoro
-.kokoro @fhinkel @SurferJeffAtGoogle
+.kokoro @fhinkel
 .kokoro/appengine @michaelawyu
 .kokoro/functions @ace-n @grant
 
@@ -19,6 +19,11 @@ functions/composer-storage-trigger @leahecole
 functions/scheduleinstance @djmailhot
 functions/speech-to-speech @ricalo
 functions/dialogflow @nnegrey
+functions/memorystore @ericschmidtatwork
+functions/spanner @jsimonweb
+
+# GCF samples outside of functions/
+datastore/functions @benwhitehead
 
 # One-offs
 cloud-sql @kurtisvg

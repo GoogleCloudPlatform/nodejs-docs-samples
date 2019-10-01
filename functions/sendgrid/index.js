@@ -16,7 +16,6 @@
 'use strict';
 
 // [START functions_sendgrid_setup]
-const {Buffer} = require('safe-buffer');
 const sendgrid = require('sendgrid');
 const config = require('./config.json');
 const uuid = require('uuid');
@@ -36,7 +35,7 @@ const bigquery = new BigQuery();
  * @param {string} key Your SendGrid API key.
  * @returns {object} SendGrid client.
  */
-function getClient(key) {
+const getClient = key => {
   if (!key) {
     const error = new Error(
       'SendGrid API key not provided. Make sure you have a "sg_key" property in your request querystring'
@@ -47,7 +46,7 @@ function getClient(key) {
 
   // Using SendGrid's Node.js Library https://github.com/sendgrid/sendgrid-nodejs
   return sendgrid(key);
-}
+};
 // [END functions_sendgrid_get_client]
 
 // [START functions_get_payload]
@@ -61,7 +60,7 @@ function getClient(key) {
  * @param {string} data.body Body of the email subject line.
  * @returns {object} Payload object.
  */
-function getPayload(requestBody) {
+const getPayload = requestBody => {
   if (!requestBody.to) {
     const error = new Error(
       'To email address not provided. Make sure you have a "to" property in your request'
@@ -109,7 +108,7 @@ function getPayload(requestBody) {
       },
     ],
   };
-}
+};
 // [END functions_get_payload]
 
 // [START functions_sendgrid_email]
@@ -132,59 +131,58 @@ function getPayload(requestBody) {
  * @param {string} req.body.body Body of the email subject line.
  * @param {object} res Cloud Function response context.
  */
-exports.sendgridEmail = (req, res) => {
-  return Promise.resolve()
-    .then(() => {
-      if (req.method !== 'POST') {
-        const error = new Error('Only POST requests are accepted');
-        error.code = 405;
-        throw error;
-      }
+exports.sendgridEmail = async (req, res) => {
+  try {
+    if (req.method !== 'POST') {
+      const error = new Error('Only POST requests are accepted');
+      error.code = 405;
+      throw error;
+    }
 
-      // Get a SendGrid client
-      const client = getClient(req.query.sg_key);
+    // Get a SendGrid client
+    const client = getClient(req.query.sg_key);
 
-      // Build the SendGrid request to send email
-      const request = client.emptyRequest({
-        method: 'POST',
-        path: '/v3/mail/send',
-        body: getPayload(req.body),
-      });
-
-      // Make the request to SendGrid's API
-      console.log(`Sending email to: ${req.body.to}`);
-      return client.API(request);
-    })
-    .then(response => {
-      if (response.statusCode < 200 || response.statusCode >= 400) {
-        const error = Error(response.body);
-        error.code = response.statusCode;
-        throw error;
-      }
-
-      console.log(`Email sent to: ${req.body.to}`);
-
-      // Forward the response back to the requester
-      res.status(response.statusCode);
-      if (response.headers['content-type']) {
-        res.set('content-type', response.headers['content-type']);
-      }
-      if (response.headers['content-length']) {
-        res.set('content-length', response.headers['content-length']);
-      }
-      if (response.body) {
-        res.send(response.body);
-      } else {
-        res.end();
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      const code =
-        err.code || (err.response ? err.response.statusCode : 500) || 500;
-      res.status(code).send(err);
-      return Promise.reject(err);
+    // Build the SendGrid request to send email
+    const request = client.emptyRequest({
+      method: 'POST',
+      path: '/v3/mail/send',
+      body: getPayload(req.body),
     });
+
+    // Make the request to SendGrid's API
+    console.log(`Sending email to: ${req.body.to}`);
+    const response = await client.API(request);
+
+    if (response.statusCode < 200 || response.statusCode >= 400) {
+      const error = Error(response.body);
+      error.code = response.statusCode;
+      throw error;
+    }
+
+    console.log(`Email sent to: ${req.body.to}`);
+
+    // Forward the response back to the requester
+    res.status(response.statusCode);
+    if (response.headers['content-type']) {
+      res.set('content-type', response.headers['content-type']);
+    }
+    if (response.headers['content-length']) {
+      res.set('content-length', response.headers['content-length']);
+    }
+    if (response.body) {
+      res.send(response.body);
+    } else {
+      res.end();
+    }
+
+    return Promise.resolve();
+  } catch (err) {
+    console.error(err);
+    const code =
+      err.code || (err.response ? err.response.statusCode : 500) || 500;
+    res.status(code).send(err);
+    return Promise.reject(err);
+  }
 };
 // [END functions_sendgrid_email]
 
@@ -194,7 +192,7 @@ exports.sendgridEmail = (req, res) => {
  *
  * @param {string} authorization The authorization header of the request, e.g. "Basic ZmdvOhJhcg=="
  */
-function verifyWebhook(authorization) {
+const verifyWebhook = authorization => {
   const basicAuth = Buffer.from(
     authorization.replace('Basic ', ''),
     'base64'
@@ -205,7 +203,7 @@ function verifyWebhook(authorization) {
     error.code = 401;
     throw error;
   }
-}
+};
 // [END functions_sendgrid_verify_webhook]
 
 // [START functions_sendgrid_fix_names]
@@ -214,7 +212,7 @@ function verifyWebhook(authorization) {
  *
  * @param {*} obj Value to examine.
  */
-function fixNames(obj) {
+const fixNames = obj => {
   if (Array.isArray(obj)) {
     obj.forEach(fixNames);
   } else if (obj && typeof obj === 'object') {
@@ -228,7 +226,7 @@ function fixNames(obj) {
       }
     });
   }
-}
+};
 // [END functions_sendgrid_fix_names]
 
 // [START functions_sendgrid_webhook]
@@ -240,46 +238,43 @@ function fixNames(obj) {
  * @param {object} req Cloud Function request context.
  * @param {object} res Cloud Function response context.
  */
-exports.sendgridWebhook = (req, res) => {
-  return Promise.resolve()
-    .then(() => {
-      if (req.method !== 'POST') {
-        const error = new Error('Only POST requests are accepted');
-        error.code = 405;
-        throw error;
-      }
+exports.sendgridWebhook = async (req, res) => {
+  try {
+    if (req.method !== 'POST') {
+      const error = new Error('Only POST requests are accepted');
+      error.code = 405;
+      throw error;
+    }
 
-      verifyWebhook(req.get('authorization') || '');
+    verifyWebhook(req.get('authorization') || '');
 
-      const events = req.body || [];
+    const events = req.body || [];
 
-      // Make sure property names in the data meet BigQuery standards
-      fixNames(events);
+    // Make sure property names in the data meet BigQuery standards
+    fixNames(events);
 
-      // Generate newline-delimited JSON
-      // See https://cloud.google.com/bigquery/data-formats#json_format
-      const json = events.map(event => JSON.stringify(event)).join('\n');
+    // Generate newline-delimited JSON
+    // See https://cloud.google.com/bigquery/data-formats#json_format
+    const json = events.map(event => JSON.stringify(event)).join('\n');
 
-      // Upload a new file to Cloud Storage if we have events to save
-      if (json.length) {
-        const bucketName = config.EVENT_BUCKET;
-        const unixTimestamp = new Date().getTime() * 1000;
-        const filename = `${unixTimestamp}-${uuid.v4()}.json`;
-        const file = storage.bucket(bucketName).file(filename);
+    // Upload a new file to Cloud Storage if we have events to save
+    if (json.length) {
+      const bucketName = config.EVENT_BUCKET;
+      const unixTimestamp = new Date().getTime() * 1000;
+      const filename = `${unixTimestamp}-${uuid.v4()}.json`;
+      const file = storage.bucket(bucketName).file(filename);
 
-        console.log(`Saving events to ${filename} in bucket ${bucketName}`);
+      console.log(`Saving events to ${filename} in bucket ${bucketName}`);
 
-        return file.save(json).then(() => {
-          console.log(`JSON written to ${filename}`);
-        });
-      }
-    })
-    .then(() => res.status(200).end())
-    .catch(err => {
-      console.error(err);
-      res.status(err.code || 500).send(err);
-      return Promise.reject(err);
-    });
+      await file.save(json);
+      console.log(`JSON written to ${filename}`);
+    }
+    res.status(200).end();
+  } catch (err) {
+    console.error(err);
+    res.status(err.code || 500).send(err);
+    return Promise.reject(err);
+  }
 };
 // [END functions_sendgrid_webhook]
 
@@ -288,13 +283,12 @@ exports.sendgridWebhook = (req, res) => {
  * Helper method to get a handle on a BigQuery table. Automatically creates the
  * dataset and table if necessary.
  */
-function getTable() {
-  const dataset = bigquery.dataset(config.DATASET);
+const getTable = async () => {
+  let dataset = bigquery.dataset(config.DATASET);
 
-  return dataset
-    .get({autoCreate: true})
-    .then(([dataset]) => dataset.table(config.TABLE).get({autoCreate: true}));
-}
+  [dataset] = await dataset.get({autoCreate: true});
+  return dataset.table(config.TABLE).get({autoCreate: true});
+};
 // [END functions_sendgrid_get_table]
 
 // [START functions_sendgrid_load]
@@ -308,7 +302,7 @@ function getTable() {
  * @param {string} [event.data.timeDeleted] Time the file was deleted if this is a deletion event.
  * @see https://cloud.google.com/storage/docs/json_api/v1/objects#resource
  */
-exports.sendgridLoad = event => {
+exports.sendgridLoad = async event => {
   const file = event.data;
 
   if (file.resourceState === 'not_exists') {
@@ -316,34 +310,32 @@ exports.sendgridLoad = event => {
     return;
   }
 
-  return Promise.resolve()
-    .then(() => {
-      if (!file.bucket) {
-        throw new Error(
-          'Bucket not provided. Make sure you have a "bucket" property in your request'
-        );
-      } else if (!file.name) {
-        throw new Error(
-          'Filename not provided. Make sure you have a "name" property in your request'
-        );
-      }
+  try {
+    if (!file.bucket) {
+      throw new Error(
+        'Bucket not provided. Make sure you have a "bucket" property in your request'
+      );
+    } else if (!file.name) {
+      throw new Error(
+        'Filename not provided. Make sure you have a "name" property in your request'
+      );
+    }
 
-      return getTable();
-    })
-    .then(([table]) => {
-      const fileObj = storage.bucket(file.bucket).file(file.name);
-      console.log(`Starting job for ${file.name}`);
-      const metadata = {
-        autodetect: true,
-        sourceFormat: 'NEWLINE_DELIMITED_JSON',
-      };
-      return table.import(fileObj, metadata);
-    })
-    .then(([job]) => job.promise())
-    .then(() => console.log(`Job complete for ${file.name}`))
-    .catch(err => {
-      console.log(`Job failed for ${file.name}`);
-      return Promise.reject(err);
-    });
+    const [table] = await getTable();
+
+    const fileObj = storage.bucket(file.bucket).file(file.name);
+    console.log(`Starting job for ${file.name}`);
+    const metadata = {
+      autodetect: true,
+      sourceFormat: 'NEWLINE_DELIMITED_JSON',
+    };
+    const [job] = await table.import(fileObj, metadata);
+
+    await job.promise();
+    console.log(`Job complete for ${file.name}`);
+  } catch (err) {
+    console.log(`Job failed for ${file.name}`);
+    return Promise.reject(err);
+  }
 };
 // [END functions_sendgrid_load]

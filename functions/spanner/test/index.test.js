@@ -36,7 +36,7 @@ const query = {
   sql: 'SELECT * FROM Albums',
 };
 
-function getSample() {
+const getSample = () => {
   const resultsMock = entities.map(row => {
     return {toJSON: sinon.stub().returns(row)};
   });
@@ -69,7 +69,7 @@ function getSample() {
       },
     },
   };
-}
+};
 
 it('get: Gets albums', async () => {
   const sample = getSample();

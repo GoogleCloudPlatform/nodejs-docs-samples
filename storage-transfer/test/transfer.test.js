@@ -25,7 +25,7 @@ const destBucketName = 'bar';
 const jobName = 'transferJobs/123456789012345678';
 const transferOperationName = 'transferOperations/123456789012345678';
 
-function getSample() {
+const getSample = () => {
   const transferJobMock = {
     name: jobName,
   };
@@ -75,7 +75,7 @@ function getSample() {
       transferOperation: transferOperationMock,
     },
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);

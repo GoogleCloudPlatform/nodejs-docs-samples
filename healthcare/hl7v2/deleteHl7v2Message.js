@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   hl7v2StoreId,
   hl7v2MessageId
-) {
+) => {
   // [START healthcare_delete_hl7v2_message]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function deleteHl7v2Message() {
+  const deleteHl7v2Message = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -47,11 +47,11 @@ function main(
       request
     );
     console.log('Deleted HL7v2 message');
-  }
+  };
 
   deleteHl7v2Message();
   // [END healthcare_delete_hl7v2_message]
-}
+};
 
 // node deleteHl7v2Message.js <projectId> <cloudRegion> <datasetId> <hl7v2StoreId> <hl7v2MessageId>
 main(...process.argv.slice(2));

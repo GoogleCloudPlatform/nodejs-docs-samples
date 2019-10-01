@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   member,
   role
-) {
+) => {
   // [START healthcare_dataset_set_iam_policy]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function setDatasetIamPolicy() {
+  const setDatasetIamPolicy = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -62,11 +62,11 @@ function main(
       'Set dataset IAM policy:',
       JSON.stringify(dataset.data, null, 2)
     );
-  }
+  };
 
   setDatasetIamPolicy();
   // [END healthcare_dataset_set_iam_policy]
-}
+};
 
 // node setDatasetIamPolicy.js <projectId> <cloudRegion> <datasetId> <member> <role>
 main(...process.argv.slice(2));

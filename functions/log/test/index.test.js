@@ -20,7 +20,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-function getSample() {
+const getSample = () => {
   const results = [[{}], {}];
   const stream = {
     on: sinon.stub().returnsThis(),
@@ -50,7 +50,7 @@ function getSample() {
       results: results,
     },
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
@@ -97,9 +97,7 @@ it('processLogEntry: should process log entry', () => {
   });
 
   const data = {
-    data: {
-      data: Buffer.from(json, 'ascii'),
-    },
+    data: Buffer.from(json, 'ascii'),
   };
 
   sample.program.processLogEntry(data);

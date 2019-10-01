@@ -8,6 +8,6 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.28.0"
+    "@google-cloud/pubsub": "^1.0.0"
   }
 }

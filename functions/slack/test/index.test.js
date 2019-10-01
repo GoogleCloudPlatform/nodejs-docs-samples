@@ -25,7 +25,7 @@ const query = 'giraffe';
 const SLACK_TOKEN = 'slack-token';
 const KG_API_KEY = 'kg-api-key';
 
-function getSample() {
+const getSample = () => {
   const config = {
     SLACK_TOKEN: SLACK_TOKEN,
     KG_API_KEY: KG_API_KEY,
@@ -50,9 +50,9 @@ function getSample() {
       config: config,
     },
   };
-}
+};
 
-function getMocks() {
+const getMocks = () => {
   const req = {
     headers: {},
     query: {},
@@ -82,7 +82,7 @@ function getMocks() {
     req: req,
     res: res,
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);

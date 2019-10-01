@@ -15,7 +15,7 @@
 
 'use strict';
 
-function makeGrpcRequest(JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
+const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
   // Uncomment these lines to set their values
   // const JWT_AUTH_TOKEN = 'YOUR_JWT_AUTH_TOKEN';
   // const API_KEY = 'YOUR_API_KEY';
@@ -51,7 +51,7 @@ function makeGrpcRequest(JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
       console.log(response.message);
     }
   });
-}
+};
 
 // The command-line program
 const {argv} = require('yargs')

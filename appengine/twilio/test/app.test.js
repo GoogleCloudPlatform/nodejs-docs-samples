@@ -25,13 +25,19 @@ const getSample = () => {
     messages: {
       create: sinon.stub().resolves(),
     },
-    message: sinon.stub(),
-    say: sinon.stub(),
-    toString: sinon.stub(),
+  };
+  const twilioVoiceRespMock = {
+    say: sinon.stub().returns(),
+  };
+  const twilioMessagingRespMock = {
+    message: sinon.stub().returns(),
   };
 
   const twilioStub = sinon.stub().returns(twilioMock);
-  twilioStub.TwimlResponse = sinon.stub().returns(twilioMock);
+  twilioStub.twiml = {
+    VoiceResponse: sinon.stub().returns(twilioVoiceRespMock),
+    MessagingResponse: sinon.stub().returns(twilioMessagingRespMock),
+  };
 
   const {app} = proxyquire('../app', {twilio: twilioStub});
 
@@ -41,6 +47,8 @@ const getSample = () => {
     }),
     mocks: {
       twilio: twilioMock,
+      twilioVoiceRespMock: twilioVoiceRespMock,
+      twilioMessagingRespMock: twilioMessagingRespMock,
     },
   };
 };
@@ -66,7 +74,11 @@ it('should receive an SMS message', () => {
     .type('form')
     .expect(200)
     .expect(() => {
-      assert(mocks.twilio.message.calledWith('Hello, Bob, you said: hi'));
+      assert(
+        mocks.twilioMessagingRespMock.message.calledWith(
+          'Hello, Bob, you said: hi'
+        )
+      );
     });
 });
 
@@ -78,6 +90,10 @@ it('should receive a call', () => {
     .send()
     .expect(200)
     .expect(() => {
-      assert(mocks.twilio.say.calledWith('Hello from Google App Engine.'));
+      assert(
+        mocks.twilioVoiceRespMock.say.calledWith(
+          'Hello from Google App Engine.'
+        )
+      );
     });
 });

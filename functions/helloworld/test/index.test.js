@@ -69,7 +69,7 @@ const httpInvocation = (fnUrl, port, body) => {
 describe('index.test.js', () => {
   before(tools.checkCredentials);
 
-  describe('helloGET', () => {
+  describe('functions_helloworld_get helloGET', () => {
     const PORT = 8081;
     let ffProc;
 
@@ -89,7 +89,7 @@ describe('index.test.js', () => {
     });
   });
 
-  describe('helloHttp', () => {
+  describe('functions_helloworld_http helloHttp', () => {
     const PORT = 8082;
     let ffProc;
 
@@ -132,7 +132,7 @@ describe('index.test.js', () => {
     });
   });
 
-  describe('helloBackground', () => {
+  describe('functions_helloworld_background helloBackground', () => {
     const PORT = 8083;
     let ffProc;
 
@@ -161,15 +161,15 @@ describe('index.test.js', () => {
     });
   });
 
-  describe('helloPubSub', () => {
+  describe('functions_helloworld_pubsub helloPubSub', () => {
     /* See sample.integration.pubsub.test.js */
   });
 
-  describe('helloGCS', () => {
+  describe('functions_helloworld_storage helloGCS', () => {
     /* See sample.integration.storage.test.js */
   });
 
-  describe('helloGCSGeneric', () => {
+  describe('functions_helloworld_storage_generic helloGCSGeneric', () => {
     it('helloGCSGeneric: should print event details', async () => {
       const PORT = 8084;
       const ffProc = startFF('helloGCSGeneric', 'event', PORT);
@@ -202,30 +202,32 @@ describe('index.test.js', () => {
     });
   });
 
-  describe('Error handling (unit tests)', () => {
-    // Silence dummy console calls in the samples
-    before(tools.stubConsole);
-    after(tools.restoreConsole);
+  describe('functions_helloworld_error', () => {
+    describe('Error handling (unit tests)', () => {
+      // Silence dummy console calls in the samples
+      before(tools.stubConsole);
+      after(tools.restoreConsole);
 
-    it('helloError: should throw an error', () => {
-      assert.throws(program.helloError, 'I failed you');
-    });
+      it('helloError: should throw an error', () => {
+        assert.throws(program.helloError, 'I failed you');
+      });
 
-    it('helloError2: should throw a value', () => {
-      assert.throws(program.helloError2, '1');
-    });
+      it('helloError2: should throw a value', () => {
+        assert.throws(program.helloError2, '1');
+      });
 
-    it('helloError3: callback should return an errback value', () => {
-      const cb = sinon.stub();
+      it('helloError3: callback should return an errback value', () => {
+        const cb = sinon.stub();
 
-      program.helloError3(null, null, cb);
+        program.helloError3(null, null, cb);
 
-      assert.ok(cb.calledOnce);
-      assert.ok(cb.calledWith('I failed you'));
+        assert.ok(cb.calledOnce);
+        assert.ok(cb.calledWith('I failed you'));
+      });
     });
   });
 
-  describe('helloTemplate', () => {
+  describe('functions_helloworld_template helloTemplate', () => {
     const PORT = 8085;
     let ffProc;
 

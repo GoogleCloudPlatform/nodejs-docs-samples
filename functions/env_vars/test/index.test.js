@@ -31,11 +31,13 @@ const getMocks = () => {
   };
 };
 
-it('should read env vars', () => {
-  const mocks = getMocks();
-  process.env['FOO'] = 'bar';
+describe('functions_env_vars', () => {
+  it('should read env vars', () => {
+    const mocks = getMocks();
+    process.env['FOO'] = 'bar';
 
-  functions.envVar(mocks.req, mocks.res);
+    functions.envVar(mocks.req, mocks.res);
 
-  assert.strictEqual(mocks.res.send.calledWith('bar'), true);
+    assert.strictEqual(mocks.res.send.calledWith('bar'), true);
+  });
 });

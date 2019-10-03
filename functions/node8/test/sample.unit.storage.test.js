@@ -23,51 +23,56 @@ const {helloGCS} = require('..');
 beforeEach(utils.stubConsole);
 afterEach(utils.restoreConsole);
 
-it('helloGCS: should print uploaded message', async () => {
-  // Initialize mocks
-  const filename = uuid.v4();
-  const event = {
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '1',
-  };
+describe('functions_helloworld_storage_node8', () => {
+  it('helloGCS: should print uploaded message', async () => {
+    // Initialize mocks
+    const filename = uuid.v4();
+    const event = {
+      name: filename,
+      resourceState: 'exists',
+      metageneration: '1',
+    };
 
-  // Call tested function and verify its behavior
-  await helloGCS(event);
-  assert.strictEqual(
-    console.log.calledWith(`File ${filename} uploaded.`),
-    true
-  );
-});
+    // Call tested function and verify its behavior
+    await helloGCS(event);
+    assert.strictEqual(
+      console.log.calledWith(`File ${filename} uploaded.`),
+      true
+    );
+  });
 
-it('helloGCS: should print metadata updated message', async () => {
-  // Initialize mocks
-  const filename = uuid.v4();
-  const event = {
-    name: filename,
-    resourceState: 'exists',
-    metageneration: '2',
-  };
+  it('helloGCS: should print metadata updated message', async () => {
+    // Initialize mocks
+    const filename = uuid.v4();
+    const event = {
+      name: filename,
+      resourceState: 'exists',
+      metageneration: '2',
+    };
 
-  // Call tested function and verify its behavior
-  await helloGCS(event);
-  assert.strictEqual(
-    console.log.calledWith(`File ${filename} metadata updated.`),
-    true
-  );
-});
+    // Call tested function and verify its behavior
+    await helloGCS(event);
+    assert.strictEqual(
+      console.log.calledWith(`File ${filename} metadata updated.`),
+      true
+    );
+  });
 
-it('helloGCS: should print deleted message', async () => {
-  // Initialize mocks
-  const filename = uuid.v4();
-  const event = {
-    name: filename,
-    resourceState: 'not_exists',
-    metageneration: '3',
-  };
+  it('helloGCS: should print deleted message', async () => {
+    // Initialize mocks
+    const filename = uuid.v4();
+    const event = {
+      name: filename,
+      resourceState: 'not_exists',
+      metageneration: '3',
+    };
 
-  // Call tested function and verify its behavior
-  await helloGCS(event);
-  assert.strictEqual(console.log.calledWith(`File ${filename} deleted.`), true);
+    // Call tested function and verify its behavior
+    await helloGCS(event);
+    assert.strictEqual(
+      console.log.calledWith(`File ${filename} deleted.`),
+      true
+    );
+  });
 });
 // [END functions_storage_unit_test]

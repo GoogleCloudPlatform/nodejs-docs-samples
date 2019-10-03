@@ -16,7 +16,7 @@
 'use strict';
 
 async function main(
-  projectId, // Your GCP Project Id
+  projectId = process.env.GCLOUD_PROJECT, // Your GCP Project Id
   inFile = 'resources/example.png',
   outFile = 'resources/example.mp3',
   glossaryLangs = ['fr', 'en'],

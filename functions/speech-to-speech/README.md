@@ -39,7 +39,7 @@ The sample requires the following environment variables:
 
 Use the following commands to declare the required environment variables:
 
-```
+```shell
 export GOOGLE_CLOUD_PROJECT=[your-GCP-project-id]
 export OUTPUT_BUCKET=[your-Google-Cloud-Storage-bucket]
 export GOOGLE_APPLICATION_CREDENTIALS=[path-to-your-API-key-file]
@@ -51,13 +51,13 @@ you should use to run the app.
 Run the following commands to set up NVM to work with the Node.js version
 declared in the `.nvmrc` file:
 
-```
+```shell
 nvm install && nvm use
 ```
 
 Run the following commands to install and start the Functions Framework:
 
-```
+```shell
 cd functions
 npm install
 npm install --global @google-cloud/functions-framework
@@ -78,7 +78,7 @@ The test script performs the following tasks:
 To run the tests, use the following commands from the
 `functions/speech-to-speech` folder:
 
-```
+```shell
 npm install && npm test
 ```
 
@@ -90,7 +90,7 @@ tool, such as [curl][10]. Before sending a request, make sure that the
 the environment variables, you must restart the framework to apply the new
 values. Use the following commands to restart the emulator:
 
-```
+```shell
 functions-framework --target=speechTranslate
 ```
 
@@ -98,7 +98,7 @@ The sample includes a `test/request-body.json` file that includes a JSON object
 that represents the body of a valid request, including the base64-encoded audio
 message. Run the following command to send a request to the emulator:
 
-```
+```shell
 curl --request POST --header "Content-Type:application/json" \
 --data @test/request-body.json http://localhost:8080/speechTranslate
 ```

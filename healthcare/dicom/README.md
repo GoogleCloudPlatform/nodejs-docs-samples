@@ -61,7 +61,10 @@ Run the following command to install the library dependencies for Node.js:
         node dicomWebRetrieveRendered.js <projectId> <cloudRegion>    Handles the GET requests specified in the DICOMweb
         <datasetId> <dicomStoreId> <studyUid> <seriesUid>             standard.
         <instanceUid>                       
-        
+
+        node dicomWebSearchStudies.js <projectId> <cloudRegion>       Searches studies using DICOM tags.
+        <datasetId> <dicomStoreId>
+
         node dicomWebDeleteStudy.js <projectId> <cloudRegion>         Handles DELETE requests.
         <datasetId> <dicomStoreId>  <studyUid>       
        

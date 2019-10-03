@@ -29,56 +29,60 @@ const getProgram = env => {
   });
 };
 
-it('should query MySQL', async () => {
-  const program = getProgram({
-    INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-mysql`,
-    SQL_USER: process.env.MYSQL_USER,
-    SQL_PASSWORD: process.env.MYSQL_PASSWORD,
-    SQL_NAME: process.env.MYSQL_DATABASE,
+describe('functions_sql_mysql', () => {
+  it('should query MySQL', async () => {
+    const program = getProgram({
+      INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-mysql`,
+      SQL_USER: process.env.MYSQL_USER,
+      SQL_PASSWORD: process.env.MYSQL_PASSWORD,
+      SQL_NAME: process.env.MYSQL_DATABASE,
+    });
+
+    const resMock = {
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub(),
+    };
+
+    program.mysqlDemo(null, resMock);
+
+    // Give the query time to complete
+    await new Promise(resolve => {
+      setTimeout(resolve, 1500);
+    });
+
+    assert.strictEqual(resMock.status.called, false);
+    assert.ok(resMock.send.calledOnce);
+
+    const [response] = resMock.send.firstCall.args;
+    assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
   });
-
-  const resMock = {
-    status: sinon.stub().returnsThis(),
-    send: sinon.stub(),
-  };
-
-  program.mysqlDemo(null, resMock);
-
-  // Give the query time to complete
-  await new Promise(resolve => {
-    setTimeout(resolve, 1500);
-  });
-
-  assert.strictEqual(resMock.status.called, false);
-  assert.ok(resMock.send.calledOnce);
-
-  const [response] = resMock.send.firstCall.args;
-  assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
 });
 
-it('should query Postgres', async () => {
-  const program = getProgram({
-    INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-pg`,
-    SQL_USER: process.env.POSTGRES_USER,
-    SQL_PASSWORD: process.env.POSTGRES_PASSWORD,
-    SQL_NAME: process.env.POSTGRES_DATABASE,
+describe('functions_sql_postgres', () => {
+  it('should query Postgres', async () => {
+    const program = getProgram({
+      INSTANCE_CONNECTION_NAME: `${INSTANCE_PREFIX}-pg`,
+      SQL_USER: process.env.POSTGRES_USER,
+      SQL_PASSWORD: process.env.POSTGRES_PASSWORD,
+      SQL_NAME: process.env.POSTGRES_DATABASE,
+    });
+
+    const resMock = {
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub(),
+    };
+
+    program.postgresDemo(null, resMock);
+
+    // Give the query time to complete
+    await new Promise(resolve => {
+      setTimeout(resolve, 1500);
+    });
+
+    assert.strictEqual(resMock.status.called, false);
+    assert.ok(resMock.send.calledOnce);
+
+    const [response] = resMock.send.firstCall.args;
+    assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
   });
-
-  const resMock = {
-    status: sinon.stub().returnsThis(),
-    send: sinon.stub(),
-  };
-
-  program.postgresDemo(null, resMock);
-
-  // Give the query time to complete
-  await new Promise(resolve => {
-    setTimeout(resolve, 1500);
-  });
-
-  assert.strictEqual(resMock.status.called, false);
-  assert.ok(resMock.send.calledOnce);
-
-  const [response] = resMock.send.firstCall.args;
-  assert.ok(new RegExp(/\d{4}-\d{1,2}-\d{1,2}/).test(response.message));
 });

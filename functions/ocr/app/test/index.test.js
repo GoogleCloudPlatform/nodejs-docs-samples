@@ -40,101 +40,117 @@ before(tools.stubConsole);
 after(tools.restoreConsole);
 
 describe('processImage', () => {
-  it('processImage validates parameters', async () => {
-    try {
-      await program.processImage({data: {}});
-      assert.fail('no error thrown');
-    } catch (err) {
-      assert.strictEqual(err.message, errorMsg('Bucket'));
-    }
+  describe('functions_ocr_process', () => {
+    it('processImage validates parameters', async () => {
+      try {
+        await program.processImage({data: {}});
+        assert.fail('no error thrown');
+      } catch (err) {
+        assert.strictEqual(err.message, errorMsg('Bucket'));
+      }
+    });
   });
 
-  it('processImage detects text', async () => {
-    const data = {
-      bucket: bucketName,
-      name: filename,
-    };
+  describe('functions_ocr_process functions_ocr_detect functions_ocr_publish', () => {
+    it('processImage detects text', async () => {
+      const data = {
+        bucket: bucketName,
+        name: filename,
+      };
 
-    await program.processImage(data);
-    assert.ok(console.log.calledWith(`Detected language "en" for ${filename}`));
-    assert.ok(
-      console.log.calledWith(`Extracted text from image:`, `${text}\n`)
-    );
-    assert.ok(console.log.calledWith(`Detected language "en" for ${filename}`));
-    assert.ok(console.log.calledWith(`File ${filename} processed.`));
+      await program.processImage(data);
+      assert.ok(
+        console.log.calledWith(`Detected language "en" for ${filename}`)
+      );
+      assert.ok(
+        console.log.calledWith(`Extracted text from image:`, `${text}\n`)
+      );
+      assert.ok(
+        console.log.calledWith(`Detected language "en" for ${filename}`)
+      );
+      assert.ok(console.log.calledWith(`File ${filename} processed.`));
+    });
   });
 });
 
 describe('translateText', () => {
-  it('translateText validates parameters', async () => {
-    const event = {
-      data: Buffer.from(JSON.stringify({})).toString('base64'),
-    };
-    try {
-      await program.translateText(event);
-      assert.fail('no error thrown');
-    } catch (err) {
-      assert.deepStrictEqual(err.message, errorMsg('Text'));
-    }
+  describe('functions_ocr_translate', () => {
+    it('translateText validates parameters', async () => {
+      const event = {
+        data: Buffer.from(JSON.stringify({})).toString('base64'),
+      };
+      try {
+        await program.translateText(event);
+        assert.fail('no error thrown');
+      } catch (err) {
+        assert.deepStrictEqual(err.message, errorMsg('Text'));
+      }
+    });
   });
 
-  it('translateText translates and publishes text', async () => {
-    const data = {
-      data: Buffer.from(
-        JSON.stringify({
-          text,
-          filename,
-          lang,
-        })
-      ).toString('base64'),
-    };
+  describe('functions_ocr_translate functions_ocr_publish', () => {
+    it('translateText translates and publishes text', async () => {
+      const data = {
+        data: Buffer.from(
+          JSON.stringify({
+            text,
+            filename,
+            lang,
+          })
+        ).toString('base64'),
+      };
 
-    await program.translateText(data);
-    assert.ok(console.log.calledWith(`Translating text into ${lang}`));
-    assert.ok(console.log.calledWith(`Text translated to ${lang}`));
+      await program.translateText(data);
+      assert.ok(console.log.calledWith(`Translating text into ${lang}`));
+      assert.ok(console.log.calledWith(`Text translated to ${lang}`));
+    });
   });
 });
 
 describe('saveResult', () => {
-  it('saveResult validates parameters', async () => {
-    const event = {
-      data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
-    };
+  describe('functions_ocr_save', () => {
+    it('saveResult validates parameters', async () => {
+      const event = {
+        data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
+      };
 
-    try {
-      await program.saveResult(event);
-      assert.fail('no error thrown');
-    } catch (err) {
-      assert.deepStrictEqual(err.message, errorMsg('Language', 'lang'));
-    }
+      try {
+        await program.saveResult(event);
+        assert.fail('no error thrown');
+      } catch (err) {
+        assert.deepStrictEqual(err.message, errorMsg('Language', 'lang'));
+      }
+    });
   });
 
-  it('saveResult translates and publishes text', async () => {
-    const data = {
-      data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
-        'base64'
-      ),
-    };
+  describe('functions_ocr_save functions_ocr_rename', () => {
+    it('saveResult translates and publishes text', async () => {
+      const data = {
+        data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
+          'base64'
+        ),
+      };
 
-    const newFilename = `${filename}_to_${lang}.txt`;
+      const newFilename = `${filename}_to_${lang}.txt`;
 
-    await program.saveResult(data);
-    assert.ok(
-      console.log.calledWith(`Received request to save file ${filename}`)
-    );
-    assert.ok(
-      console.log.calledWith(
-        `Saving result to ${newFilename} in bucket ${RESULT_BUCKET}`
-      )
-    );
-    assert.ok(console.log.calledWith('File saved.'));
+      await program.saveResult(data);
+      assert.ok(
+        console.log.calledWith(`Received request to save file ${filename}`)
+      );
+      assert.ok(
+        console.log.calledWith(
+          `Saving result to ${newFilename} in bucket ${RESULT_BUCKET}`
+        )
+      );
+      assert.ok(console.log.calledWith('File saved.'));
 
-    // Check file was actually saved
-    assert.ok(
-      storage
-        .bucket(RESULT_BUCKET)
-        .file(newFilename)
-        .exists()
-    );
+      // Check file was actually saved
+      assert.ok(
+        storage
+          .bucket(RESULT_BUCKET)
+          .file(newFilename)
+          .exists()
+      );
+    });
   });
 });

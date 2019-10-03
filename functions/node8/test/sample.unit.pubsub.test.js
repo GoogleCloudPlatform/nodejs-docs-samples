@@ -23,24 +23,26 @@ const {helloPubSub} = require('..');
 beforeEach(utils.stubConsole);
 afterEach(utils.restoreConsole);
 
-it('helloPubSub: should print a name', async () => {
-  // Initialize mocks
-  const name = uuid.v4();
-  const event = {
-    data: Buffer.from(name).toString('base64'),
-  };
+describe('functions_helloworld_pubsub_node8', () => {
+  it('helloPubSub: should print a name', async () => {
+    // Initialize mocks
+    const name = uuid.v4();
+    const event = {
+      data: Buffer.from(name).toString('base64'),
+    };
 
-  // Call tested function and verify its behavior
-  await helloPubSub(event);
-  assert.strictEqual(console.log.calledWith(`Hello, ${name}!`), true);
-});
+    // Call tested function and verify its behavior
+    await helloPubSub(event);
+    assert.strictEqual(console.log.calledWith(`Hello, ${name}!`), true);
+  });
 
-it('helloPubSub: should print hello world', async () => {
-  // Initialize mocks
-  const event = {};
+  it('helloPubSub: should print hello world', async () => {
+    // Initialize mocks
+    const event = {};
 
-  // Call tested function and verify its behavior
-  await helloPubSub(event);
-  assert.strictEqual(console.log.calledWith('Hello, World!'), true);
+    // Call tested function and verify its behavior
+    await helloPubSub(event);
+    assert.strictEqual(console.log.calledWith('Hello, World!'), true);
+  });
 });
 // [END functions_pubsub_unit_test]

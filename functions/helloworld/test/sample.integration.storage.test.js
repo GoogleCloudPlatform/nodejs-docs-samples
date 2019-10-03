@@ -24,7 +24,7 @@ const cwd = path.join(__dirname, '..');
 
 // [END functions_storage_integration_test]
 
-describe('GCS integration test', () => {
+describe('functions_helloworld_storage integration test', () => {
   // [START functions_storage_integration_test]
   it('helloGCS: should print uploaded message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts

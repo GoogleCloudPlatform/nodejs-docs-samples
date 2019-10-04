@@ -77,7 +77,7 @@ const getSample = () => {
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should set up sample in Postgres', () => {
+it('gae_flex_postgres_connect should set up sample in Postgres', () => {
   const sample = getSample();
 
   assert.strictEqual(sample.mocks.express.calledOnce, true);
@@ -94,42 +94,44 @@ it('should set up sample in Postgres', () => {
   ]);
 });
 
-it('should record a visit', async () => {
-  const sample = getSample();
-  const expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
+describe('gae_flex_postgres_app', () => {
+  it('should record a visit', async () => {
+    const sample = getSample();
+    const expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
 
-  await request(sample.app)
-    .get('/')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, expectedResult);
-    });
-});
+    await request(sample.app)
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        assert.strictEqual(response.text, expectedResult);
+      });
+  });
 
-it('should handle insert error', async () => {
-  const sample = getSample();
-  const expectedResult = 'insert_error';
+  it('should handle insert error', async () => {
+    const sample = getSample();
+    const expectedResult = 'insert_error';
 
-  sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
+    sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
 
-  await request(sample.app)
-    .get('/')
-    .expect(500)
-    .expect(response => {
-      assert.strictEqual(response.text.includes(expectedResult), true);
-    });
-});
+    await request(sample.app)
+      .get('/')
+      .expect(500)
+      .expect(response => {
+        assert.strictEqual(response.text.includes(expectedResult), true);
+      });
+  });
 
-it('should handle read error', async () => {
-  const sample = getSample();
-  const expectedResult = 'read_error';
+  it('should handle read error', async () => {
+    const sample = getSample();
+    const expectedResult = 'read_error';
 
-  sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
+    sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
 
-  await request(sample.app)
-    .get('/')
-    .expect(500)
-    .expect(response => {
-      assert.strictEqual(response.text.includes(expectedResult), true);
-    });
+    await request(sample.app)
+      .get('/')
+      .expect(500)
+      .expect(response => {
+        assert.strictEqual(response.text.includes(expectedResult), true);
+      });
+  });
 });

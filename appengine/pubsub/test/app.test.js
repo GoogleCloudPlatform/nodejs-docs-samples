@@ -64,72 +64,78 @@ afterEach(() => {
   sandbox.restore();
 });
 
-it('should send a message to Pub/Sub', async () => {
-  await requestObj
-    .post('/')
-    .type('form')
-    .send({payload: payload})
-    .expect(200)
-    .expect(response => {
-      assert(new RegExp(/Message \d* sent/).test(response.text));
-    });
+describe('gae_flex_pubsub_index', () => {
+  it('should send a message to Pub/Sub', async () => {
+    await requestObj
+      .post('/')
+      .type('form')
+      .send({payload: payload})
+      .expect(200)
+      .expect(response => {
+        assert(new RegExp(/Message \d* sent/).test(response.text));
+      });
+  });
+
+  it('should list sent Pub/Sub messages', async () => {
+    await requestObj
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        assert(
+          new RegExp(/Messages received by this instance/).test(response.text)
+        );
+      });
+  });
 });
 
-it('should receive incoming Pub/Sub messages', async () => {
-  await requestObj
-    .post('/pubsub/push')
-    .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
-    .send({
-      message: {
-        data: payload,
-      },
-    })
-    .expect(200);
+describe('gae_flex_pubsub_push', () => {
+  it('should receive incoming Pub/Sub messages', async () => {
+    await requestObj
+      .post('/pubsub/push')
+      .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
+      .send({
+        message: {
+          data: payload,
+        },
+      })
+      .expect(200);
+  });
+
+  it('should check for verification token on incoming Pub/Sub messages', async () => {
+    await requestObj
+      .post('/pubsub/push')
+      .field('payload', payload)
+      .expect(400);
+  });
 });
 
-it('should verify incoming Pub/Sub push requests', async () => {
-  sandbox
-    .stub(OAuth2Client.prototype, 'getFederatedSignonCertsAsync')
-    .resolves({
-      certs: {
-        fake_id: publicCert,
-      },
-    });
+describe('gae_flex_pubsub_auth_push', () => {
+  it('should verify incoming Pub/Sub push requests', async () => {
+    sandbox
+      .stub(OAuth2Client.prototype, 'getFederatedSignonCertsAsync')
+      .resolves({
+        certs: {
+          fake_id: publicCert,
+        },
+      });
 
-  await requestObj
-    .post('/pubsub/authenticated-push')
-    .set('Authorization', `Bearer ${createFakeToken()}`)
-    .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
-    .send({
-      message: {
-        data: Buffer.from(payload).toString('base64'),
-      },
-    })
-    .expect(200);
+    await requestObj
+      .post('/pubsub/authenticated-push')
+      .set('Authorization', `Bearer ${createFakeToken()}`)
+      .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
+      .send({
+        message: {
+          data: Buffer.from(payload).toString('base64'),
+        },
+      })
+      .expect(200);
 
-  // Make sure the message is visible on the home page
-  await requestObj
-    .get('/')
-    .expect(200)
-    .expect(response => {
-      assert(response.text.includes(payload));
-    });
-});
-
-it('should check for verification token on incoming Pub/Sub messages', async () => {
-  await requestObj
-    .post('/pubsub/push')
-    .field('payload', payload)
-    .expect(400);
-});
-
-it('should list sent Pub/Sub messages', async () => {
-  await requestObj
-    .get('/')
-    .expect(200)
-    .expect(response => {
-      assert(
-        new RegExp(/Messages received by this instance/).test(response.text)
-      );
-    });
+    // Make sure the message is visible on the home page
+    await requestObj
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        assert(response.text.includes(payload));
+      });
+  });
 });

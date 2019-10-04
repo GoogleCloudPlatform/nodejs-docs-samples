@@ -87,71 +87,75 @@ describe('functions/imagemagick tests', () => {
   beforeEach(tools.stubConsole);
   afterEach(tools.restoreConsole);
 
-  it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
-    const PORT = 8080;
-    const ffProc = startFF(PORT);
+  describe('functions_imagemagick_analyze', () => {
+    it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
+      const PORT = 8080;
+      const ffProc = startFF(PORT);
 
-    await requestRetry({
-      url: `http://localhost:${PORT}/blurOffensiveImages`,
-      body: {
-        data: {
-          bucket: BUCKET_NAME,
-          name: testFiles.safe,
+      await requestRetry({
+        url: `http://localhost:${PORT}/blurOffensiveImages`,
+        body: {
+          data: {
+            bucket: BUCKET_NAME,
+            name: testFiles.safe,
+          },
         },
-      },
+      });
+
+      const {stdout} = await stopFF(ffProc);
+      assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
     });
 
-    const {stdout} = await stopFF(ffProc);
-    assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
-  });
+    describe('functions_imagemagick_blur', () => {
+      it('blurOffensiveImages successfully blurs offensive images', async () => {
+        const PORT = 8081;
+        const ffProc = startFF(PORT);
 
-  it('blurOffensiveImages successfully blurs offensive images', async () => {
-    const PORT = 8081;
-    const ffProc = startFF(PORT);
+        await requestRetry({
+          url: `http://localhost:${PORT}/blurOffensiveImages`,
+          body: {
+            data: {
+              bucket: BUCKET_NAME,
+              name: testFiles.offensive,
+            },
+          },
+        });
 
-    await requestRetry({
-      url: `http://localhost:${PORT}/blurOffensiveImages`,
-      body: {
-        data: {
-          bucket: BUCKET_NAME,
-          name: testFiles.offensive,
-        },
-      },
+        const {stdout} = await stopFF(ffProc);
+
+        assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
+        assert.ok(
+          stdout.includes(
+            `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
+          )
+        );
+
+        const exists = await storage
+          .bucket(BLURRED_BUCKET_NAME)
+          .file(testFiles.offensive)
+          .exists();
+        assert.ok(exists, 'File uploaded');
+      });
     });
 
-    const {stdout} = await stopFF(ffProc);
+    it('blurOffensiveImages detects missing images as safe using Cloud Vision', async () => {
+      const PORT = 8082;
+      const ffProc = startFF(PORT);
+      const missingFileName = 'file-does-not-exist.jpg';
 
-    assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
-    assert.ok(
-      stdout.includes(
-        `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
-      )
-    );
-
-    const exists = await storage
-      .bucket(BLURRED_BUCKET_NAME)
-      .file(testFiles.offensive)
-      .exists();
-    assert.ok(exists, 'File uploaded');
-  });
-
-  it('blurOffensiveImages detects missing images as safe using Cloud Vision', async () => {
-    const PORT = 8082;
-    const ffProc = startFF(PORT);
-    const missingFileName = 'file-does-not-exist.jpg';
-
-    await requestRetry({
-      url: `http://localhost:${PORT}/blurOffensiveImages`,
-      body: {
-        data: {
-          bucket: BUCKET_NAME,
-          name: missingFileName,
+      await requestRetry({
+        url: `http://localhost:${PORT}/blurOffensiveImages`,
+        body: {
+          data: {
+            bucket: BUCKET_NAME,
+            name: missingFileName,
+          },
         },
-      },
-    });
+      });
 
-    const {stdout} = await stopFF(ffProc);
-    assert.ok(stdout.includes(`Detected ${missingFileName} as OK.`));
+      const {stdout} = await stopFF(ffProc);
+      assert.ok(stdout.includes(`Detected ${missingFileName} as OK.`));
+    });
   });
 
   after(async () => {

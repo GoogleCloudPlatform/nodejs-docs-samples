@@ -24,12 +24,14 @@ const sample = require('../');
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should demonstrate error type behavior', () => {
-  const objError = new Error('Error object!');
+describe('functions_concepts_error_object', () => {
+  it('should demonstrate error type behavior', () => {
+    const objError = new Error('Error object!');
 
-  const req = {body: {throwAsString: true}};
-  const res = {end: sinon.stub()};
+    const req = {body: {throwAsString: true}};
+    const res = {end: sinon.stub()};
 
-  sample.errorTypes(req, res);
-  assert.deepStrictEqual(console.error.getCall(0).args, [objError]);
+    sample.errorTypes(req, res);
+    assert.deepStrictEqual(console.error.getCall(0).args, [objError]);
+  });
 });

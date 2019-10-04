@@ -48,46 +48,50 @@ describe('functions/pubsub', () => {
     await ffProc;
   });
 
-  it('publish fails without parameters', async () => {
-    const response = await requestRetry({
-      url: `${BASE_URL}/`,
-      method: 'POST',
-      body: {},
-      retryDelay: 200,
-      json: true,
+  describe('functions_pubsub_publish', () => {
+    it('publish fails without parameters', async () => {
+      const response = await requestRetry({
+        url: `${BASE_URL}/`,
+        method: 'POST',
+        body: {},
+        retryDelay: 200,
+        json: true,
+      });
+
+      assert.strictEqual(response.statusCode, 500);
+      assert.strictEqual(
+        response.body,
+        'Missing parameter(s); include "topic" and "subscription" properties in your request.'
+      );
     });
 
-    assert.strictEqual(response.statusCode, 500);
-    assert.strictEqual(
-      response.body,
-      'Missing parameter(s); include "topic" and "subscription" properties in your request.'
-    );
-  });
+    it('publishes a message', async () => {
+      const response = await requestRetry({
+        url: `${BASE_URL}/`,
+        method: 'POST',
+        body: {
+          topic: TOPIC,
+          message: 'Pub/Sub from Cloud Functions',
+        },
+        retryDelay: 200,
+        json: true,
+      });
 
-  it('publishes a message', async () => {
-    const response = await requestRetry({
-      url: `${BASE_URL}/`,
-      method: 'POST',
-      body: {
-        topic: TOPIC,
-        message: 'Pub/Sub from Cloud Functions',
-      },
-      retryDelay: 200,
-      json: true,
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.body, 'Message published.');
     });
-
-    assert.strictEqual(response.statusCode, 200);
-    assert.strictEqual(response.body, 'Message published.');
   });
 
-  it('prints out a message', () => {
-    const jsonObject = JSON.stringify({data: MESSAGE});
-    const jsonBuffer = Buffer.from(jsonObject).toString('base64');
-    const pubsubMessage = {data: jsonBuffer, attributes: {}};
+  describe('functions_pubsub_subscribe', () => {
+    it('prints out a message', () => {
+      const jsonObject = JSON.stringify({data: MESSAGE});
+      const jsonBuffer = Buffer.from(jsonObject).toString('base64');
+      const pubsubMessage = {data: jsonBuffer, attributes: {}};
 
-    require('..').subscribe(pubsubMessage);
+      require('..').subscribe(pubsubMessage);
 
-    assert.strictEqual(console.log.callCount, 1);
-    assert.deepStrictEqual(console.log.firstCall.args, [jsonObject]);
+      assert.strictEqual(console.log.callCount, 1);
+      assert.deepStrictEqual(console.log.firstCall.args, [jsonObject]);
+    });
   });
 });

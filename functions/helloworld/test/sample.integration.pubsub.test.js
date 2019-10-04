@@ -24,7 +24,7 @@ const cwd = path.join(__dirname, '..');
 
 // [END functions_pubsub_integration_test]
 
-describe('Pub/Sub integration test', () => {
+describe('functions_helloworld_pubsub integration test', () => {
   // [START functions_pubsub_integration_test]
   it('helloPubSub: should print a name', async () => {
     const name = uuid.v4();

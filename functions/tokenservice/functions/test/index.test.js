@@ -68,7 +68,7 @@ describe('getOAuthToken tests', () => {
     await handleLinuxFailures(ffProc);
   });
 
-  describe('Firebase OAuth Token', () => {
+  describe('function_get_token Firebase OAuth Token', () => {
     // no argument 400 error
     it('should give 400 if no Context is provided', async () => {
       const response = await requestRetry({

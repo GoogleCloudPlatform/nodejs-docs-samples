@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2017 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -120,7 +120,7 @@ async function analyzeEntitiesOfText(text) {
     console.log(entity.name);
     console.log(` - Type: ${entity.type}, Salience: ${entity.salience}`);
     if (entity.metadata && entity.metadata.wikipedia_url) {
-      console.log(` - Wikipedia URL: ${entity.metadata.wikipedia_url}$`);
+      console.log(` - Wikipedia URL: ${entity.metadata.wikipedia_url}`);
     }
   });
   // [END language_entities_text]
@@ -155,7 +155,7 @@ async function analyzeEntitiesInFile(bucketName, fileName) {
     console.log(entity.name);
     console.log(` - Type: ${entity.type}, Salience: ${entity.salience}`);
     if (entity.metadata && entity.metadata.wikipedia_url) {
-      console.log(` - Wikipedia URL: ${entity.metadata.wikipedia_url}$`);
+      console.log(` - Wikipedia URL: ${entity.metadata.wikipedia_url}`);
     }
   });
 

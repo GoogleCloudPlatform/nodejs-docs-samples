@@ -55,77 +55,91 @@ const getSample = () => {
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should write to log', () => {
-  const expectedMsg = 'I am a log entry!';
-  const res = {end: sinon.stub()};
+describe('functions_log_helloworld', () => {
+  it('should write to log', () => {
+    const expectedMsg = 'I am a log entry!';
+    const res = {end: sinon.stub()};
 
-  getSample().program.helloWorld({}, res);
+    getSample().program.helloWorld({}, res);
 
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.firstCall.args, [expectedMsg]);
-  assert.strictEqual(res.end.callCount, 1);
-  assert.deepStrictEqual(res.end.firstCall.args, []);
+    assert.strictEqual(console.log.callCount, 1);
+    assert.deepStrictEqual(console.log.firstCall.args, [expectedMsg]);
+    assert.strictEqual(res.end.callCount, 1);
+    assert.deepStrictEqual(res.end.firstCall.args, []);
+  });
 });
 
-it('getLogEntries: should retrieve logs', async () => {
-  const sample = getSample();
+describe('functions_log_retrieve', () => {
+  it('getLogEntries: should retrieve logs', async () => {
+    const sample = getSample();
 
-  const entries = await sample.program.getLogEntries();
-  assert.strictEqual(console.log.calledWith('Entries:'), true);
-  assert.strictEqual(entries === sample.mocks.results[0], true);
+    const entries = await sample.program.getLogEntries();
+    assert.strictEqual(console.log.calledWith('Entries:'), true);
+    assert.strictEqual(entries === sample.mocks.results[0], true);
+  });
 });
 
-it('getMetrics: should retrieve metrics', () => {
-  const sample = getSample();
-  const callback = sinon.stub();
+describe('functions_log_get_metrics', () => {
+  it('getMetrics: should retrieve metrics', () => {
+    const sample = getSample();
+    const callback = sinon.stub();
 
-  sample.program.getMetrics(callback);
+    sample.program.getMetrics(callback);
 
-  assert.strictEqual(callback.callCount, 1);
+    assert.strictEqual(callback.callCount, 1);
+  });
 });
 
-it('processLogEntry: should process log entry', () => {
-  const sample = getSample();
-  const json = JSON.stringify({
-    protoPayload: {
-      methodName: 'method',
-      resourceName: 'resource',
-      authenticationInfo: {
-        principalEmail: 'me@example.com',
+describe('functions_log_stackdriver', () => {
+  it('processLogEntry: should process log entry', () => {
+    const sample = getSample();
+    const json = JSON.stringify({
+      protoPayload: {
+        methodName: 'method',
+        resourceName: 'resource',
+        authenticationInfo: {
+          principalEmail: 'me@example.com',
+        },
       },
-    },
+    });
+
+    const data = {
+      data: Buffer.from(json, 'ascii'),
+    };
+
+    sample.program.processLogEntry(data);
+
+    assert.strictEqual(console.log.calledWith('Method: method'), true);
+    assert.strictEqual(console.log.calledWith('Resource: resource'), true);
+    assert.strictEqual(
+      console.log.calledWith('Initiator: me@example.com'),
+      true
+    );
   });
 
-  const data = {
-    data: Buffer.from(json, 'ascii'),
-  };
-
-  sample.program.processLogEntry(data);
-
-  assert.strictEqual(console.log.calledWith('Method: method'), true);
-  assert.strictEqual(console.log.calledWith('Resource: resource'), true);
-  assert.strictEqual(console.log.calledWith('Initiator: me@example.com'), true);
-});
-
-it('processLogEntry: should work in Node 8', () => {
-  const sample = getSample();
-  const json = JSON.stringify({
-    protoPayload: {
-      methodName: 'method',
-      resourceName: 'resource',
-      authenticationInfo: {
-        principalEmail: 'me@example.com',
+  it('processLogEntry: should work in Node 8', () => {
+    const sample = getSample();
+    const json = JSON.stringify({
+      protoPayload: {
+        methodName: 'method',
+        resourceName: 'resource',
+        authenticationInfo: {
+          principalEmail: 'me@example.com',
+        },
       },
-    },
+    });
+
+    const data = {
+      data: Buffer.from(json, 'ascii'),
+    };
+
+    sample.program.processLogEntry(data);
+
+    assert.strictEqual(console.log.calledWith('Method: method'), true);
+    assert.strictEqual(console.log.calledWith('Resource: resource'), true);
+    assert.strictEqual(
+      console.log.calledWith('Initiator: me@example.com'),
+      true
+    );
   });
-
-  const data = {
-    data: Buffer.from(json, 'ascii'),
-  };
-
-  sample.program.processLogEntry(data);
-
-  assert.strictEqual(console.log.calledWith('Method: method'), true);
-  assert.strictEqual(console.log.calledWith('Resource: resource'), true);
-  assert.strictEqual(console.log.calledWith('Initiator: me@example.com'), true);
 });

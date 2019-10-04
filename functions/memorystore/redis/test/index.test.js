@@ -30,19 +30,21 @@ const getMocks = () => {
   };
 };
 
-describe('visitCount', () => {
-  it('should successfully increment the Redis counter', async () => {
-    const program = require('../');
-    const mocks = getMocks();
+describe('functions_memorystore_redis', () => {
+  describe('visitCount', () => {
+    it('should successfully increment the Redis counter', async () => {
+      const program = require('../');
+      const mocks = getMocks();
 
-    await program.visitCount(mocks.req, mocks.res);
+      await program.visitCount(mocks.req, mocks.res);
 
-    assert(!mocks.res.status.called);
-    assert(!mocks.res.send.called);
-    assert(mocks.res.writeHead.calledWith(200));
-    assert(mocks.res.end.calledOnce);
+      assert(!mocks.res.status.called);
+      assert(!mocks.res.send.called);
+      assert(mocks.res.writeHead.calledWith(200));
+      assert(mocks.res.end.calledOnce);
 
-    const [response] = mocks.res.end.firstCall.args;
-    assert(response.startsWith('Visit count:'));
+      const [response] = mocks.res.end.firstCall.args;
+      assert(response.startsWith('Visit count:'));
+    });
   });
 });

@@ -67,23 +67,25 @@ it('should make a promise request', async () => {
   assert.ok(response.body.includes(`Example Domain`));
 });
 
-it('should return synchronously', () => {
-  assert.strictEqual(
-    program.helloSynchronous({
-      something: true,
-    }),
-    'Something is true!'
-  );
-});
-
-it('should throw an error', () => {
-  assert.throws(
-    () => {
+describe('functions_background_synchronous', () => {
+  it('should return synchronously', () => {
+    assert.strictEqual(
       program.helloSynchronous({
-        something: false,
-      });
-    },
-    Error,
-    'Something was not true!'
-  );
+        something: true,
+      }),
+      'Something is true!'
+    );
+  });
+
+  it('should throw an error', () => {
+    assert.throws(
+      () => {
+        program.helloSynchronous({
+          something: false,
+        });
+      },
+      Error,
+      'Something was not true!'
+    );
+  });
 });

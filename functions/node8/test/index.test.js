@@ -99,211 +99,246 @@ it('should escape XSS', () => {
   assert.strictEqual(resMock.send.calledWith(xssQuery), false);
 });
 
-it('should monitor Firebase RTDB', () => {
-  const sample = getSample();
+describe('functions_firebase_rtdb_node8', () => {
+  it('should monitor Firebase RTDB', () => {
+    const sample = getSample();
 
-  const dataId = uuid.v4();
-  const resourceId = uuid.v4();
+    const dataId = uuid.v4();
+    const resourceId = uuid.v4();
 
-  const data = {
-    admin: true,
-    delta: {
-      id: dataId,
-    },
-    params: {
-      baz: 'quux',
-    },
-  };
-  const context = {
-    resource: resourceId,
-  };
-
-  sample.program.helloRTDB(data, context);
-
-  assert.deepStrictEqual(console.log.getCall(1).args, ['  baz: quux']);
-  assert.strictEqual(console.log.getCall(2).args[0].includes(resourceId), true);
-  assert.deepStrictEqual(console.log.getCall(3).args, ['Admin?: true']);
-  assert.strictEqual(console.log.getCall(5).args[0].includes(dataId), true);
-});
-
-it('should monitor Firestore', () => {
-  const sample = getSample();
-
-  const resourceId = uuid.v4();
-
-  const context = {
-    resource: resourceId,
-  };
-  const data = {
-    oldValue: {uuid: uuid.v4()},
-    value: {uuid: uuid.v4()},
-  };
-
-  sample.program.helloFirestore(data, context);
-
-  assert.strictEqual(console.log.firstCall.args[0].includes(resourceId), true);
-  assert.strictEqual(
-    console.log.calledWith(JSON.stringify(data.oldValue, null, 2)),
-    true
-  );
-  assert.strictEqual(
-    console.log.calledWith(JSON.stringify(data.value, null, 2)),
-    true
-  );
-});
-
-it('should monitor Auth', () => {
-  const sample = getSample();
-
-  const userId = uuid.v4();
-  const dateString = new Date().toISOString();
-  const emailString = `${uuid.v4()}@${uuid.v4()}.com`;
-
-  const data = {
-    uid: userId,
-    metadata: {
-      createdAt: dateString,
-    },
-    email: emailString,
-  };
-
-  sample.program.helloAuth(data, null);
-
-  assert.strictEqual(console.log.firstCall.args[0].includes(userId), true);
-  assert.strictEqual(console.log.secondCall.args[0].includes(dateString), true);
-  assert.strictEqual(console.log.thirdCall.args[0].includes(emailString), true);
-});
-
-it('should monitor Analytics', () => {
-  const sample = getSample();
-
-  const date = new Date();
-  const data = {
-    eventDim: [
-      {
-        name: 'my-event',
-        timestampMicros: `${date.valueOf()}000`,
+    const data = {
+      admin: true,
+      delta: {
+        id: dataId,
       },
-    ],
-    userDim: {
-      deviceInfo: {
-        deviceModel: 'Pixel',
+      params: {
+        baz: 'quux',
       },
-      geoInfo: {
-        city: 'London',
-        country: 'UK',
+    };
+    const context = {
+      resource: resourceId,
+    };
+
+    sample.program.helloRTDB(data, context);
+
+    assert.deepStrictEqual(console.log.getCall(1).args, ['  baz: quux']);
+    assert.strictEqual(
+      console.log.getCall(2).args[0].includes(resourceId),
+      true
+    );
+    assert.deepStrictEqual(console.log.getCall(3).args, ['Admin?: true']);
+    assert.strictEqual(console.log.getCall(5).args[0].includes(dataId), true);
+  });
+});
+
+describe('functions_firebase_firestore_node8', () => {
+  it('should monitor Firestore', () => {
+    const sample = getSample();
+
+    const resourceId = uuid.v4();
+
+    const context = {
+      resource: resourceId,
+    };
+    const data = {
+      oldValue: {uuid: uuid.v4()},
+      value: {uuid: uuid.v4()},
+    };
+
+    sample.program.helloFirestore(data, context);
+
+    assert.strictEqual(
+      console.log.firstCall.args[0].includes(resourceId),
+      true
+    );
+    assert.strictEqual(
+      console.log.calledWith(JSON.stringify(data.oldValue, null, 2)),
+      true
+    );
+    assert.strictEqual(
+      console.log.calledWith(JSON.stringify(data.value, null, 2)),
+      true
+    );
+  });
+});
+
+describe('functions_firebase_auth_node8', () => {
+  it('should monitor Auth', () => {
+    const sample = getSample();
+
+    const userId = uuid.v4();
+    const dateString = new Date().toISOString();
+    const emailString = `${uuid.v4()}@${uuid.v4()}.com`;
+
+    const data = {
+      uid: userId,
+      metadata: {
+        createdAt: dateString,
       },
-    },
-  };
+      email: emailString,
+    };
 
-  const context = {
-    resource: 'my-resource',
-  };
+    sample.program.helloAuth(data, null);
 
-  sample.program.helloAnalytics(data, context);
-
-  assert.strictEqual(
-    console.log.args[0][0],
-    'Function triggered by the following event: my-resource'
-  );
-  assert.strictEqual(console.log.args[1][0], 'Name: my-event');
-  assert.strictEqual(console.log.args[2][0], `Timestamp: ${date}`);
-  assert.strictEqual(console.log.args[3][0], 'Device Model: Pixel');
-  assert.strictEqual(console.log.args[4][0], 'Location: London, UK');
+    assert.strictEqual(console.log.firstCall.args[0].includes(userId), true);
+    assert.strictEqual(
+      console.log.secondCall.args[0].includes(dateString),
+      true
+    );
+    assert.strictEqual(
+      console.log.thirdCall.args[0].includes(emailString),
+      true
+    );
+  });
 });
 
-it('should make a promise request', async () => {
-  const sample = getSample();
-  const data = {
-    endpoint: 'foo.com',
-  };
+describe('functions_firebase_analytics_node8', () => {
+  it('should monitor Analytics', () => {
+    const sample = getSample();
 
-  const result = await sample.program.helloPromise(data);
-  assert.deepStrictEqual(sample.mocks.nodeFetch.firstCall.args, ['foo.com']);
-  assert.strictEqual(result, 'test');
-});
-
-it('should return synchronously', () => {
-  assert.strictEqual(
-    getSample().program.helloSynchronous({
-      something: true,
-    }),
-    'Something is true!'
-  );
-});
-
-it('should throw an error', () => {
-  assert.throws(
-    () => {
-      getSample().program.helloSynchronous({
-        something: false,
-      });
-    },
-    Error,
-    'Something was not true!'
-  );
-});
-
-it('should update data in response to Firestore events', () => {
-  const sample = getSample();
-
-  const date = Date.now();
-  const data = {
-    email: 'me@example.com',
-    metadata: {
-      createdAt: date,
-    },
-    value: {
-      fields: {
-        original: {
-          stringValue: 'foobar',
+    const date = new Date();
+    const data = {
+      eventDim: [
+        {
+          name: 'my-event',
+          timestampMicros: `${date.valueOf()}000`,
+        },
+      ],
+      userDim: {
+        deviceInfo: {
+          deviceModel: 'Pixel',
+        },
+        geoInfo: {
+          city: 'London',
+          country: 'UK',
         },
       },
-    },
-  };
+    };
 
-  const context = {
-    resource: '/documents/some/path',
-  };
+    const context = {
+      resource: 'my-resource',
+    };
 
-  sample.program.makeUpperCase(data, context);
+    sample.program.helloAnalytics(data, context);
 
-  assert.strictEqual(sample.mocks.firestore.doc.calledWith('some/path'), true);
-  assert.strictEqual(
-    console.log.calledWith('Replacing value: foobar --> FOOBAR'),
-    true
-  );
-  assert.strictEqual(
-    sample.mocks.firestore.set.calledWith({original: 'FOOBAR'}),
-    true
-  );
+    assert.strictEqual(
+      console.log.args[0][0],
+      'Function triggered by the following event: my-resource'
+    );
+    assert.strictEqual(console.log.args[1][0], 'Name: my-event');
+    assert.strictEqual(console.log.args[2][0], `Timestamp: ${date}`);
+    assert.strictEqual(console.log.args[3][0], 'Device Model: Pixel');
+    assert.strictEqual(console.log.args[4][0], 'Location: London, UK');
+  });
 });
 
-it('should listen to Firebase Remote Config events', () => {
-  const sample = getSample();
+describe('functions_background_promise_node8', () => {
+  it('should make a promise request', async () => {
+    const sample = getSample();
+    const data = {
+      endpoint: 'foo.com',
+    };
 
-  const data = {
-    updateOrigin: 'CONSOLE',
-    updateType: 'INCREMENTAL_UPDATE',
-    versionNumber: '1',
-  };
-
-  sample.program.helloRemoteConfig(data);
-
-  assert.strictEqual(
-    console.log.calledWith('Update type: INCREMENTAL_UPDATE'),
-    true
-  );
-  assert.strictEqual(console.log.calledWith('Origin: CONSOLE'), true);
-  assert.strictEqual(console.log.calledWith('Version: 1'), true);
+    const result = await sample.program.helloPromise(data);
+    assert.deepStrictEqual(sample.mocks.nodeFetch.firstCall.args, ['foo.com']);
+    assert.strictEqual(result, 'test');
+  });
 });
 
-it('should make async HTTP request', () => {
-  const sample = getSample();
+describe('functions_background_synchronous_node8', () => {
+  it('should return synchronously', () => {
+    assert.strictEqual(
+      getSample().program.helloSynchronous({
+        something: true,
+      }),
+      'Something is true!'
+    );
+  });
+});
 
-  sample.program.helloAsync();
-  assert.strictEqual(
-    sample.mocks.nodeFetch.calledWith('https://www.example.com'),
-    true
-  );
+describe('functions_background_synchronous_node8', () => {
+  it('should throw an error', () => {
+    assert.throws(
+      () => {
+        getSample().program.helloSynchronous({
+          something: false,
+        });
+      },
+      Error,
+      'Something was not true!'
+    );
+  });
+});
+
+describe('functions_firebase_reactive_node8', () => {
+  it('should update data in response to Firestore events', () => {
+    const sample = getSample();
+
+    const date = Date.now();
+    const data = {
+      email: 'me@example.com',
+      metadata: {
+        createdAt: date,
+      },
+      value: {
+        fields: {
+          original: {
+            stringValue: 'foobar',
+          },
+        },
+      },
+    };
+
+    const context = {
+      resource: '/documents/some/path',
+    };
+
+    sample.program.makeUpperCase(data, context);
+
+    assert.strictEqual(
+      sample.mocks.firestore.doc.calledWith('some/path'),
+      true
+    );
+    assert.strictEqual(
+      console.log.calledWith('Replacing value: foobar --> FOOBAR'),
+      true
+    );
+    assert.strictEqual(
+      sample.mocks.firestore.set.calledWith({original: 'FOOBAR'}),
+      true
+    );
+  });
+});
+
+describe('functions_firebase_remote_config_node8', () => {
+  it('should listen to Firebase Remote Config events', () => {
+    const sample = getSample();
+
+    const data = {
+      updateOrigin: 'CONSOLE',
+      updateType: 'INCREMENTAL_UPDATE',
+      versionNumber: '1',
+    };
+
+    sample.program.helloRemoteConfig(data);
+
+    assert.strictEqual(
+      console.log.calledWith('Update type: INCREMENTAL_UPDATE'),
+      true
+    );
+    assert.strictEqual(console.log.calledWith('Origin: CONSOLE'), true);
+    assert.strictEqual(console.log.calledWith('Version: 1'), true);
+  });
+});
+
+describe('functions_background_async', () => {
+  it('should make async HTTP request', () => {
+    const sample = getSample();
+
+    sample.program.helloAsync();
+    assert.strictEqual(
+      sample.mocks.nodeFetch.calledWith('https://www.example.com'),
+      true
+    );
+  });
 });

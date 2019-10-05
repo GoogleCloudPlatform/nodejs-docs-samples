@@ -149,187 +149,189 @@ const getMocks = () => {
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('Send fails if not a POST request', async () => {
-  const error = new Error('Only POST requests are accepted');
-  error.code = 405;
-  const sample = getSample();
-  const mocks = getMocks();
+describe('functions_sendgrid_email functions_get_payload functions_sendgrid_get_client', () => {
+  it('Send fails if not a POST request', async () => {
+    const error = new Error('Only POST requests are accepted');
+    error.code = 405;
+    const sample = getSample();
+    const mocks = getMocks();
 
-  try {
-    await sample.program.sendgridEmail(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
+    try {
+      await sample.program.sendgridEmail(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
 
-it('Send fails without an API key', async () => {
-  const error = new Error(
-    'SendGrid API key not provided. Make sure you have a "sg_key" property in your request querystring'
-  );
-  error.code = 401;
-  const mocks = getMocks();
+  it('Send fails without an API key', async () => {
+    const error = new Error(
+      'SendGrid API key not provided. Make sure you have a "sg_key" property in your request querystring'
+    );
+    error.code = 401;
+    const mocks = getMocks();
 
-  mocks.req.method = method;
+    mocks.req.method = method;
 
-  try {
+    try {
+      await getSample().program.sendgridEmail(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Send fails without a "to"', async () => {
+    const error = new Error(
+      'To email address not provided. Make sure you have a "to" property in your request'
+    );
+    error.code = 400;
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+
+    try {
+      await getSample().program.sendgridEmail(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Send fails without a "from"', async () => {
+    const error = new Error(
+      'From email address not provided. Make sure you have a "from" property in your request'
+    );
+    error.code = 400;
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+
+    try {
+      await getSample().program.sendgridEmail(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Send fails without a "subject"', async () => {
+    const error = new Error(
+      'Email subject line not provided. Make sure you have a "subject" property in your request'
+    );
+    error.code = 400;
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+
+    try {
+      await getSample().program.sendgridEmail(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Send fails without a "body"', async () => {
+    const error = new Error(
+      'Email content not provided. Make sure you have a "body" property in your request'
+    );
+    error.code = 400;
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+
+    try {
+      await getSample().program.sendgridEmail(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Handles response error', async () => {
+    const mocks = getMocks();
+    const sample = getSample();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+    mocks.req.body.body = body;
+    sample.mocks.client.API.returns(
+      Promise.resolve({
+        statusCode: 500,
+        body: 'error',
+      })
+    );
+
+    try {
+      await sample.program.sendgridEmail(mocks.req, mocks.res);
+    } catch (err) {
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args[0].message, 'error');
+    }
+  });
+
+  it('Sends the email and successfully responds', async () => {
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.query.sg_key = key;
+    mocks.req.body.to = to;
+    mocks.req.body.from = from;
+    mocks.req.body.subject = subject;
+    mocks.req.body.body = body;
+
     await getSample().program.sendgridEmail(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
     assert.strictEqual(mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+    assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
     assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Send fails without a "to"', async () => {
-  const error = new Error(
-    'To email address not provided. Make sure you have a "to" property in your request'
-  );
-  error.code = 400;
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-
-  try {
-    await getSample().program.sendgridEmail(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Send fails without a "from"', async () => {
-  const error = new Error(
-    'From email address not provided. Make sure you have a "from" property in your request'
-  );
-  error.code = 400;
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-
-  try {
-    await getSample().program.sendgridEmail(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Send fails without a "subject"', async () => {
-  const error = new Error(
-    'Email subject line not provided. Make sure you have a "subject" property in your request'
-  );
-  error.code = 400;
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-
-  try {
-    await getSample().program.sendgridEmail(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Send fails without a "body"', async () => {
-  const error = new Error(
-    'Email content not provided. Make sure you have a "body" property in your request'
-  );
-  error.code = 400;
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-
-  try {
-    await getSample().program.sendgridEmail(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Handles response error', async () => {
-  const mocks = getMocks();
-  const sample = getSample();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-  mocks.req.body.body = body;
-  sample.mocks.client.API.returns(
-    Promise.resolve({
-      statusCode: 500,
-      body: 'error',
-    })
-  );
-
-  try {
-    await sample.program.sendgridEmail(mocks.req, mocks.res);
-  } catch (err) {
-    assert.strictEqual(mocks.res.status.callCount, 1);
-    assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args[0].message, 'error');
-  }
-});
-
-it('Sends the email and successfully responds', async () => {
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.query.sg_key = key;
-  mocks.req.body.to = to;
-  mocks.req.body.from = from;
-  mocks.req.body.subject = subject;
-  mocks.req.body.body = body;
-
-  await getSample().program.sendgridEmail(mocks.req, mocks.res);
-  assert.strictEqual(mocks.res.status.callCount, 1);
-  assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
-  assert.strictEqual(mocks.res.send.callCount, 1);
-  assert.deepStrictEqual(mocks.res.send.firstCall.args, ['success']);
+    assert.deepStrictEqual(mocks.res.send.firstCall.args, ['success']);
+  });
 });
 
 it('Handles empty response body', async () => {
@@ -357,173 +359,181 @@ it('Handles empty response body', async () => {
   assert.deepStrictEqual(mocks.res.end.firstCall.args, []);
 });
 
-it('Send fails if not a POST request', async () => {
-  const error = new Error('Only POST requests are accepted');
-  error.code = 405;
-  const sample = getSample();
-  const mocks = getMocks();
+describe('functions_sendgrid_webhook functions_sendgrid_verify_webhook', () => {
+  it('Send fails if not a POST request', async () => {
+    const error = new Error('Only POST requests are accepted');
+    error.code = 405;
+    const sample = getSample();
+    const mocks = getMocks();
 
-  try {
+    try {
+      await sample.program.sendgridWebhook(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Throws if no basic auth', async () => {
+    const error = new Error('Invalid credentials');
+    error.code = 401;
+    const sample = getSample();
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = '';
+
+    try {
+      await sample.program.sendgridWebhook(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Throws if invalid username', async () => {
+    const error = new Error('Invalid credentials');
+    error.code = 401;
+    const sample = getSample();
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = 'Basic d3Jvbmc6YmFy';
+
+    try {
+      await sample.program.sendgridWebhook(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Throws if invalid password', async () => {
+    const error = new Error('Invalid credentials');
+    error.code = 401;
+    const sample = getSample();
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = 'Basic Zm9vOndyb25n';
+
+    try {
+      await sample.program.sendgridWebhook(mocks.req, mocks.res);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+      assert.strictEqual(mocks.res.send.callCount, 1);
+      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
+      assert.strictEqual(console.error.callCount, 1);
+      assert.deepStrictEqual(console.error.firstCall.args, [error]);
+    }
+  });
+
+  it('Calls "end" if no events', async () => {
+    const sample = getSample();
+    const mocks = getMocks();
+
+    mocks.req.method = method;
+    mocks.req.headers.authorization = auth;
+    mocks.req.body = undefined;
+
     await sample.program.sendgridWebhook(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
+    assert.strictEqual(mocks.res.end.callCount, 1);
+    assert.deepStrictEqual(mocks.res.end.firstCall.args, []);
+  });
 
-it('Throws if no basic auth', async () => {
-  const error = new Error('Invalid credentials');
-  error.code = 401;
-  const sample = getSample();
-  const mocks = getMocks();
+  describe('functions_sendgrid_fix_names functions_sendgrid_verify_webhook functions_sendgrid_webhook', () => {
+    it('Saves files', async () => {
+      const sample = getSample();
+      const mocks = getMocks();
 
-  mocks.req.method = method;
-  mocks.req.headers.authorization = '';
+      mocks.req.method = 'POST';
+      mocks.req.headers.authorization = auth;
+      mocks.req.body = events;
+      sample.mocks.uuid.v4 = sinon.stub().returns('1357');
 
-  try {
-    await sample.program.sendgridWebhook(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Throws if invalid username', async () => {
-  const error = new Error('Invalid credentials');
-  error.code = 401;
-  const sample = getSample();
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.headers.authorization = 'Basic d3Jvbmc6YmFy';
-
-  try {
-    await sample.program.sendgridWebhook(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Throws if invalid password', async () => {
-  const error = new Error('Invalid credentials');
-  error.code = 401;
-  const sample = getSample();
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.headers.authorization = 'Basic Zm9vOndyb25n';
-
-  try {
-    await sample.program.sendgridWebhook(mocks.req, mocks.res);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-    assert.strictEqual(mocks.res.send.callCount, 1);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-    assert.strictEqual(console.error.callCount, 1);
-    assert.deepStrictEqual(console.error.firstCall.args, [error]);
-  }
-});
-
-it('Calls "end" if no events', async () => {
-  const sample = getSample();
-  const mocks = getMocks();
-
-  mocks.req.method = method;
-  mocks.req.headers.authorization = auth;
-  mocks.req.body = undefined;
-
-  await sample.program.sendgridWebhook(mocks.req, mocks.res);
-  assert.strictEqual(mocks.res.end.callCount, 1);
-  assert.deepStrictEqual(mocks.res.end.firstCall.args, []);
-});
-
-it('Saves files', async () => {
-  const sample = getSample();
-  const mocks = getMocks();
-
-  mocks.req.method = 'POST';
-  mocks.req.headers.authorization = auth;
-  mocks.req.body = events;
-  sample.mocks.uuid.v4 = sinon.stub().returns('1357');
-
-  await sample.program.sendgridWebhook(mocks.req, mocks.res);
-  const [filename] = sample.mocks.bucket.file.firstCall.args;
-  assert.strictEqual(mocks.res.status.callCount, 1);
-  assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
-  assert.strictEqual(mocks.res.end.callCount, 1);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Saving events to ${filename} in bucket ${sample.mocks.config.EVENT_BUCKET}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `JSON written to ${filename}`,
-  ]);
-});
-
-it('sendgridLoad does nothing on delete', () => {
-  return getSample().program.sendgridLoad({
-    data: {
-      resourceState: 'not_exists',
-    },
+      await sample.program.sendgridWebhook(mocks.req, mocks.res);
+      const [filename] = sample.mocks.bucket.file.firstCall.args;
+      assert.strictEqual(mocks.res.status.callCount, 1);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
+      assert.strictEqual(mocks.res.end.callCount, 1);
+      assert.deepStrictEqual(console.log.getCall(0).args, [
+        `Saving events to ${filename} in bucket ${sample.mocks.config.EVENT_BUCKET}`,
+      ]);
+      assert.deepStrictEqual(console.log.getCall(1).args, [
+        `JSON written to ${filename}`,
+      ]);
+    });
   });
 });
 
-it('sendgridLoad fails without a bucket', async () => {
-  const error = new Error(
-    'Bucket not provided. Make sure you have a "bucket" property in your request'
-  );
-  const event = {
-    data: {},
-  };
+describe('functions_sendgrid_load', () => {
+  it('sendgridLoad does nothing on delete', () => {
+    return getSample().program.sendgridLoad({
+      data: {
+        resourceState: 'not_exists',
+      },
+    });
+  });
 
-  try {
-    await getSample().program.sendgridLoad(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
+  it('sendgridLoad fails without a bucket', async () => {
+    const error = new Error(
+      'Bucket not provided. Make sure you have a "bucket" property in your request'
+    );
+    const event = {
+      data: {},
+    };
+
+    try {
+      await getSample().program.sendgridLoad(event);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+    }
+  });
+
+  it('sendgridLoad fails without a name', async () => {
+    const error = new Error(
+      'Filename not provided. Make sure you have a "name" property in your request'
+    );
+    const event = {
+      data: {
+        bucket: 'event-bucket',
+      },
+    };
+
+    try {
+      await getSample().program.sendgridLoad(event);
+    } catch (err) {
+      assert.deepStrictEqual(err, error);
+    }
+  });
 });
 
-it('sendgridLoad fails without a name', async () => {
-  const error = new Error(
-    'Filename not provided. Make sure you have a "name" property in your request'
-  );
-  const event = {
-    data: {
-      bucket: 'event-bucket',
-    },
-  };
+describe('functions_sendgrid_get_table functions_sendgrid_load', () => {
+  it('starts a load job', async () => {
+    const sample = getSample();
+    const name = '1234.json';
+    const event = {
+      data: {
+        bucket: 'event-bucket',
+        name: name,
+      },
+    };
 
-  try {
-    await getSample().program.sendgridLoad(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, error);
-  }
-});
-
-it('starts a load job', async () => {
-  const sample = getSample();
-  const name = '1234.json';
-  const event = {
-    data: {
-      bucket: 'event-bucket',
-      name: name,
-    },
-  };
-
-  await sample.program.sendgridLoad(event);
-  assert.deepStrictEqual(console.log.getCall(0).args, [
-    `Starting job for ${name}`,
-  ]);
-  assert.deepStrictEqual(console.log.getCall(1).args, [
-    `Job complete for ${name}`,
-  ]);
+    await sample.program.sendgridLoad(event);
+    assert.deepStrictEqual(console.log.getCall(0).args, [
+      `Starting job for ${name}`,
+    ]);
+    assert.deepStrictEqual(console.log.getCall(1).args, [
+      `Job complete for ${name}`,
+    ]);
+  });
 });

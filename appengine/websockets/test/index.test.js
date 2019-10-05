@@ -32,19 +32,21 @@ after(async () => {
   await browser.close();
 });
 
-it('should process chat message', async () => {
-  await browserPage.goto('http://localhost:8080');
+describe('appengine_websockets_app', () => {
+  it('should process chat message', async () => {
+    await browserPage.goto('http://localhost:8080');
 
-  await browserPage.evaluate(() => {
-    document.querySelector('input').value = 'test';
-    document.querySelector('button').click();
+    await browserPage.evaluate(() => {
+      document.querySelector('input').value = 'test';
+      document.querySelector('button').click();
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const itemText = await browserPage.evaluate(
+      () => document.querySelector('li').textContent
+    );
+
+    assert.strictEqual(itemText, 'test');
   });
-
-  await new Promise(resolve => setTimeout(resolve, 100));
-
-  const itemText = await browserPage.evaluate(
-    () => document.querySelector('li').textContent
-  );
-
-  assert.strictEqual(itemText, 'test');
 });

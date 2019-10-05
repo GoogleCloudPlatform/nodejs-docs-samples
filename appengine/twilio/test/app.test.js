@@ -53,47 +53,53 @@ const getSample = () => {
   };
 };
 
-it('should send an SMS message', () => {
-  const {supertest} = getSample();
+describe('gae_flex_twilio_send_sms', () => {
+  it('should send an SMS message', () => {
+    const {supertest} = getSample();
 
-  return supertest
-    .get('/sms/send')
-    .query({to: 1234})
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Message sent.');
-    });
+    return supertest
+      .get('/sms/send')
+      .query({to: 1234})
+      .expect(200)
+      .expect(response => {
+        assert.strictEqual(response.text, 'Message sent.');
+      });
+  });
 });
 
-it('should receive an SMS message', () => {
-  const {supertest, mocks} = getSample();
+describe('gae_flex_twilio_receive_sms', () => {
+  it('should receive an SMS message', () => {
+    const {supertest, mocks} = getSample();
 
-  return supertest
-    .post('/sms/receive')
-    .send({From: 'Bob', Body: 'hi'})
-    .type('form')
-    .expect(200)
-    .expect(() => {
-      assert(
-        mocks.twilioMessagingRespMock.message.calledWith(
-          'Hello, Bob, you said: hi'
-        )
-      );
-    });
+    return supertest
+      .post('/sms/receive')
+      .send({From: 'Bob', Body: 'hi'})
+      .type('form')
+      .expect(200)
+      .expect(() => {
+        assert(
+          mocks.twilioMessagingRespMock.message.calledWith(
+            'Hello, Bob, you said: hi'
+          )
+        );
+      });
+  });
 });
 
-it('should receive a call', () => {
-  const {supertest, mocks} = getSample();
+describe('gae_flex_twilio_receive_call', () => {
+  it('should receive a call', () => {
+    const {supertest, mocks} = getSample();
 
-  return supertest
-    .post('/call/receive')
-    .send()
-    .expect(200)
-    .expect(() => {
-      assert(
-        mocks.twilioVoiceRespMock.say.calledWith(
-          'Hello from Google App Engine.'
-        )
-      );
-    });
+    return supertest
+      .post('/call/receive')
+      .send()
+      .expect(200)
+      .expect(() => {
+        assert(
+          mocks.twilioVoiceRespMock.say.calledWith(
+            'Hello from Google App Engine.'
+          )
+        );
+      });
+  });
 });

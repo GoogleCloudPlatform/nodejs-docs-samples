@@ -43,7 +43,7 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_mysql_mysql_create]
-const pool = mysql.createPool({
+const connectionOptions = {
   user: process.env.DB_USER, // e.g. 'my-db-user'
   password: process.env.DB_PASS, // e.g. 'my-db-password'
   database: process.env.DB_NAME, // e.g. 'my-database'
@@ -83,18 +83,23 @@ const pool = mysql.createPool({
   // [END cloud_sql_mysql_mysql_backoff]
 
   //[END_EXCLUDE]
-});
+};
+let pool;
+(async () => {
+  try {
+    pool = await mysql.createPool(connectionOptions);
+    // Wait for tables to be created (if they don't already exist).
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS votes
+        ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
+        candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
+    );
+  } catch (err) {
+    logger.err(err);
+    process.exit(1);
+  }
+})();
 // [END cloud_sql_mysql_mysql_create]
-
-// When the server starts, check for tables in the database.
-app.on('listening', async () => {
-  // Wait for tables to be created (if they don't already exist).
-  await pool.query(
-    `CREATE TABLE IF NOT EXISTS votes
-      ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
-      candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
-  );
-});
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {

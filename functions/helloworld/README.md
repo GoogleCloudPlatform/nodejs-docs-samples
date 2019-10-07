@@ -26,10 +26,6 @@ gcloud functions deploy helloGCS --runtime nodejs8 --trigger-resource $FUNCTIONS
 
 1. Read and follow the [prerequisites](../../../../#prerequisites).
 
-1. Install and run the [Google Cloud Functions Emulator](https://github.com/GoogleCloudPlatform/cloud-functions-emulator)
-
-        npm install -g @google-cloud/functions-emulator
-        functions start
 
 1. Install dependencies:
 

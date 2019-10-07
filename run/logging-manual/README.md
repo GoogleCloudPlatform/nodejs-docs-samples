@@ -4,7 +4,7 @@ This sample shows how to send structured logs to Stackdriver Logging.
 
 Read more about Cloud Run logging in the [Logging How-to Guide](http://cloud.google.com/run/docs/logging).
 
-For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/run).
+For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
 
 ## Local Development
 

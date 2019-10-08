@@ -10,8 +10,6 @@ See the [Scheduling Instances with Cloud Scheduler tutorial][tutorial].
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](../../#how-to-run-the-tests).
-
 1. Install dependencies:
 
         npm install

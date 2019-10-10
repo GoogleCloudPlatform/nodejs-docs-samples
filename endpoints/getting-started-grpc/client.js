@@ -15,6 +15,7 @@
 
 'use strict';
 
+// [START endpoints_make_grpc_request]
 const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
   // Uncomment these lines to set their values
   // const JWT_AUTH_TOKEN = 'YOUR_JWT_AUTH_TOKEN';
@@ -52,6 +53,7 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
     }
   });
 };
+// [END endpoints_make_grpc_request]
 
 // The command-line program
 const {argv} = require('yargs')

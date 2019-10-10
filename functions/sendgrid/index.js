@@ -329,7 +329,7 @@ exports.sendgridLoad = async event => {
       autodetect: true,
       sourceFormat: 'NEWLINE_DELIMITED_JSON',
     };
-    const [job] = await table.import(fileObj, metadata);
+    const [job] = await table.load(fileObj, metadata);
 
     await job.promise();
     console.log(`Job complete for ${file.name}`);

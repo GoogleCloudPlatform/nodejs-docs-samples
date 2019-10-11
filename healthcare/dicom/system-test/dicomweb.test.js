@@ -103,6 +103,14 @@ it('should retrieve a DICOM rendered PNG image', async () => {
   assert.ok(output.includes('Retrieved rendered image'));
 });
 
+it('should search for DICOM studies', async () => {
+  const output = await tools.runAsync(
+    `node dicomWebSearchStudies.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
+    cwd
+  );
+  assert.ok(output.includes('Found'));
+});
+
 it('should delete a DICOM study', async () => {
   const output = await tools.runAsync(
     `node dicomWebDeleteStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,

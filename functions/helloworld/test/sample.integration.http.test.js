@@ -26,7 +26,7 @@ const cwd = path.join(__dirname, '..');
 
 // [END functions_http_integration_test]
 
-describe('HTTP integration test', () => {
+describe('functions_helloworld_http HTTP integration test', () => {
   // [START functions_http_integration_test]
   let ffProc;
 

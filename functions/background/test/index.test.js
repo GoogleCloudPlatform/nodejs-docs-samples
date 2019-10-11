@@ -20,8 +20,6 @@ const requestRetry = require('requestretry');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
 
-const program = require('..');
-
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
 const cwd = path.join(__dirname, '..');
@@ -65,27 +63,4 @@ it('should make a promise request', async () => {
 
   assert.strictEqual(response.statusCode, 200);
   assert.ok(response.body.includes(`Example Domain`));
-});
-
-describe('functions_background_synchronous', () => {
-  it('should return synchronously', () => {
-    assert.strictEqual(
-      program.helloSynchronous({
-        something: true,
-      }),
-      'Something is true!'
-    );
-  });
-
-  it('should throw an error', () => {
-    assert.throws(
-      () => {
-        program.helloSynchronous({
-          something: false,
-        });
-      },
-      Error,
-      'Something was not true!'
-    );
-  });
 });

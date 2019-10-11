@@ -245,31 +245,6 @@ describe('functions_background_promise_node8', () => {
   });
 });
 
-describe('functions_background_synchronous_node8', () => {
-  it('should return synchronously', () => {
-    assert.strictEqual(
-      getSample().program.helloSynchronous({
-        something: true,
-      }),
-      'Something is true!'
-    );
-  });
-});
-
-describe('functions_background_synchronous_node8', () => {
-  it('should throw an error', () => {
-    assert.throws(
-      () => {
-        getSample().program.helloSynchronous({
-          something: false,
-        });
-      },
-      Error,
-      'Something was not true!'
-    );
-  });
-});
-
 describe('functions_firebase_reactive_node8', () => {
   it('should update data in response to Firestore events', () => {
     const sample = getSample();

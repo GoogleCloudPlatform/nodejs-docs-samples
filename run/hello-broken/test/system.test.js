@@ -36,7 +36,7 @@ describe('End-to-End Tests', () => {
     throw Error('"NAME" environment variable is required. For example: Cosmos');
   }
 
-  describe('Default Service', () => {
+  describe('Service relying on defaults', () => {
     const {BASE_URL} = process.env;
     if (!BASE_URL) {
       throw Error(
@@ -53,7 +53,7 @@ describe('End-to-End Tests', () => {
       );
     });
 
-    it('Fixed resource successfully falls back to a default value', async () => {
+    it('Fixed resource falls back to a default value', async () => {
       const response = await get('/improved', BASE_URL);
       assert.strictEqual(
         response.statusCode,
@@ -62,13 +62,13 @@ describe('End-to-End Tests', () => {
       );
       assert.strictEqual(
         response.body,
-        `Hello ${NAME}!`,
+        `Hello World!`,
         `Expected fallback "World" not found`
       );
     });
   });
 
-  describe('Overridden Service', () => {
+  describe('Service with specified $NAME', () => {
     const {BASE_URL_OVERRIDE} = process.env;
     if (!BASE_URL_OVERRIDE) {
       throw Error(

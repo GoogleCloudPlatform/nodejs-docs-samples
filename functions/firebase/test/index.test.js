@@ -20,7 +20,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-function getSample() {
+const getSample = () => {
   const firestoreMock = {
     doc: sinon.stub().returnsThis(),
     set: sinon.stub(),
@@ -34,153 +34,163 @@ function getSample() {
       firestore: firestoreMock,
     },
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should listen to RTDB', () => {
-  const sample = getSample();
+describe('functions_firebase_rtdb', () => {
+  it('should listen to RTDB', () => {
+    const sample = getSample();
 
-  const delta = {
-    foo: 'bar',
-  };
-  const event = {
-    resource: 'resource',
-    auth: {
-      admin: true,
-    },
-    delta: delta,
-    params: {
-      baz: 'quux',
-    },
-  };
-
-  sample.program.helloRTDB(event);
-
-  assert.strictEqual(console.log.calledWith('  baz: quux'), true);
-  assert.strictEqual(
-    console.log.calledWith('Function triggered by change to: resource'),
-    true
-  );
-  assert.strictEqual(console.log.calledWith('Admin?: true'), true);
-  assert.strictEqual(
-    console.log.calledWith(JSON.stringify(delta, null, 2)),
-    true
-  );
-});
-
-it('should listen to Firestore', () => {
-  const sample = getSample();
-
-  const oldValue = {
-    foo: 'bar',
-  };
-  const value = {
-    bar: 'baz',
-  };
-  const event = {
-    resource: 'resource',
-    eventType: 'type',
-    data: {
-      oldValue: oldValue,
-      value: value,
-    },
-  };
-
-  sample.program.helloFirestore(event);
-
-  assert.strictEqual(
-    console.log.calledWith('Function triggered by event on: resource'),
-    true
-  );
-  assert.strictEqual(console.log.calledWith('Event type: type'), true);
-  assert.strictEqual(
-    console.log.calledWith(JSON.stringify(oldValue, null, 2)),
-    true
-  );
-  assert.strictEqual(
-    console.log.calledWith(JSON.stringify(value, null, 2)),
-    true
-  );
-});
-
-it('should listen to Auth events', () => {
-  const sample = getSample();
-  const date = Date.now();
-  const event = {
-    resource: 'resource',
-    data: {
-      uid: 'me',
-      email: 'me@example.com',
-      metadata: {
-        createdAt: date,
+    const delta = {
+      foo: 'bar',
+    };
+    const event = {
+      resource: 'resource',
+      auth: {
+        admin: true,
       },
-    },
-  };
+      delta: delta,
+      params: {
+        baz: 'quux',
+      },
+    };
 
-  sample.program.helloAuth(event);
+    sample.program.helloRTDB(event);
 
-  assert.strictEqual(
-    console.log.calledWith('Function triggered by change to user: me'),
-    true
-  );
-  assert.strictEqual(console.log.calledWith(`Created at: ${date}`), true);
-  assert.strictEqual(console.log.calledWith('Email: me@example.com'), true);
+    assert.strictEqual(console.log.calledWith('  baz: quux'), true);
+    assert.strictEqual(
+      console.log.calledWith('Function triggered by change to: resource'),
+      true
+    );
+    assert.strictEqual(console.log.calledWith('Admin?: true'), true);
+    assert.strictEqual(
+      console.log.calledWith(JSON.stringify(delta, null, 2)),
+      true
+    );
+  });
 });
 
-it('should listen to Analytics events', () => {
-  const date = new Date();
-  const event = {
-    data: {
-      eventDim: [
-        {
-          name: 'my-event',
-          timestampMicros: `${date.valueOf()}000`,
-        },
-      ],
-      userDim: {
-        deviceInfo: {
-          deviceModel: 'Pixel',
-        },
-        geoInfo: {
-          city: 'London',
-          country: 'UK',
+describe('functions_firebase_firestore', () => {
+  it('should listen to Firestore', () => {
+    const sample = getSample();
+
+    const oldValue = {
+      foo: 'bar',
+    };
+    const value = {
+      bar: 'baz',
+    };
+    const event = {
+      resource: 'resource',
+      eventType: 'type',
+      data: {
+        oldValue: oldValue,
+        value: value,
+      },
+    };
+
+    sample.program.helloFirestore(event);
+
+    assert.strictEqual(
+      console.log.calledWith('Function triggered by event on: resource'),
+      true
+    );
+    assert.strictEqual(console.log.calledWith('Event type: type'), true);
+    assert.strictEqual(
+      console.log.calledWith(JSON.stringify(oldValue, null, 2)),
+      true
+    );
+    assert.strictEqual(
+      console.log.calledWith(JSON.stringify(value, null, 2)),
+      true
+    );
+  });
+});
+
+describe('functions_firebase_auth', () => {
+  it('should listen to Auth events', () => {
+    const sample = getSample();
+    const date = Date.now();
+    const event = {
+      resource: 'resource',
+      data: {
+        uid: 'me',
+        email: 'me@example.com',
+        metadata: {
+          createdAt: date,
         },
       },
-    },
-    resource: 'my-resource',
-  };
+    };
 
-  const sample = getSample();
-  sample.program.helloAnalytics(event);
-  assert.strictEqual(
-    console.log.args[0][0],
-    'Function triggered by the following event: my-resource'
-  );
-  assert.strictEqual(console.log.args[1][0], 'Name: my-event');
-  assert.strictEqual(console.log.args[2][0], `Timestamp: ${date}`);
-  assert.strictEqual(console.log.args[3][0], 'Device Model: Pixel');
-  assert.strictEqual(console.log.args[4][0], 'Location: London, UK');
+    sample.program.helloAuth(event);
+
+    assert.strictEqual(
+      console.log.calledWith('Function triggered by change to user: me'),
+      true
+    );
+    assert.strictEqual(console.log.calledWith(`Created at: ${date}`), true);
+    assert.strictEqual(console.log.calledWith('Email: me@example.com'), true);
+  });
 });
 
-it('should listen to Remote Config events', () => {
-  const sample = getSample();
+describe('functions_firebase_analytics', () => {
+  it('should listen to Analytics events', () => {
+    const date = new Date();
+    const event = {
+      data: {
+        eventDim: [
+          {
+            name: 'my-event',
+            timestampMicros: `${date.valueOf()}000`,
+          },
+        ],
+        userDim: {
+          deviceInfo: {
+            deviceModel: 'Pixel',
+          },
+          geoInfo: {
+            city: 'London',
+            country: 'UK',
+          },
+        },
+      },
+      resource: 'my-resource',
+    };
 
-  const event = {
-    data: {
-      updateOrigin: 'CONSOLE',
-      updateType: 'INCREMENTAL_UPDATE',
-      versionNumber: '1',
-    },
-  };
+    const sample = getSample();
+    sample.program.helloAnalytics(event);
+    assert.strictEqual(
+      console.log.args[0][0],
+      'Function triggered by the following event: my-resource'
+    );
+    assert.strictEqual(console.log.args[1][0], 'Name: my-event');
+    assert.strictEqual(console.log.args[2][0], `Timestamp: ${date}`);
+    assert.strictEqual(console.log.args[3][0], 'Device Model: Pixel');
+    assert.strictEqual(console.log.args[4][0], 'Location: London, UK');
+  });
+});
 
-  sample.program.helloRemoteConfig(event);
+describe('functions_firebase_remote_config', () => {
+  it('should listen to Remote Config events', () => {
+    const sample = getSample();
 
-  assert.strictEqual(
-    console.log.calledWith('Update type: INCREMENTAL_UPDATE'),
-    true
-  );
-  assert.strictEqual(console.log.calledWith('Origin: CONSOLE'), true);
-  assert.strictEqual(console.log.calledWith('Version: 1'), true);
+    const event = {
+      data: {
+        updateOrigin: 'CONSOLE',
+        updateType: 'INCREMENTAL_UPDATE',
+        versionNumber: '1',
+      },
+    };
+
+    sample.program.helloRemoteConfig(event);
+
+    assert.strictEqual(
+      console.log.calledWith('Update type: INCREMENTAL_UPDATE'),
+      true
+    );
+    assert.strictEqual(console.log.calledWith('Origin: CONSOLE'), true);
+    assert.strictEqual(console.log.calledWith('Version: 1'), true);
+  });
 });

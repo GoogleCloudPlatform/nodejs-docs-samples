@@ -14,14 +14,18 @@ See:
 
 See the [Cloud Functions Hello World tutorial][tutorial].
 
+**Note:** in order for the tests to run properly, you'll have to deploy some of the sample functions:
+
+```
+gcloud functions deploy helloHttp --runtime nodejs8 --trigger-http
+gcloud functions deploy helloPubSub --trigger-topic $FUNCTIONS_TOPIC --runtime nodejs8
+gcloud functions deploy helloGCS --runtime nodejs8 --trigger-resource $FUNCTIONS_DELETABLE_BUCKET --trigger-event providers/cloud.storage/eventTypes/object.change
+```
+
 ## Run the tests
 
 1. Read and follow the [prerequisites](../../../../#prerequisites).
 
-1. Install and run the [Google Cloud Functions Emulator](https://github.com/GoogleCloudPlatform/cloud-functions-emulator)
-
-        npm install -g @google-cloud/functions-emulator
-        functions start
 
 1. Install dependencies:
 
@@ -31,7 +35,7 @@ See the [Cloud Functions Hello World tutorial][tutorial].
 
         export GCF_REGION=us-central1
         export FUNCTIONS_TOPIC=[YOUR_PUBSUB_TOPIC]
-        export FUNCTIONS_BUCKET=[YOUR_CLOUD_STORAGE_BUCKET]
+        export FUNCTIONS_DELETABLE_BUCKET=[YOUR_CLOUD_STORAGE_BUCKET]  # will be deleted by tests!
 
 1. Run the tests:
 

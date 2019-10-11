@@ -24,8 +24,7 @@
   "dependencies": {
     "@google-cloud/storage": "^3.0.0",
     "busboy": "^0.3.0",
-    "escape-html": "^1.0.3",
-    "safe-buffer": "^5.1.2"
+    "escape-html": "^1.0.3"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

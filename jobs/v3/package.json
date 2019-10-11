@@ -16,10 +16,9 @@
     "system-test": "mocha system-test/*.test.js --timeout=40000"
   },
   "dependencies": {
-    "googleapis": "^40.0.0",
-    "safe-buffer": "^5.1.2",
+    "googleapis": "^43.0.0",
     "uuid": "^3.3.2",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

@@ -19,7 +19,7 @@ const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
 
-function getSample(FetchStub) {
+const getSample = FetchStub => {
   return {
     program: proxyquire('../', {
       'node-fetch': FetchStub,
@@ -28,64 +28,66 @@ function getSample(FetchStub) {
       fetch: FetchStub,
     },
   };
-}
+};
 
-it('Handles error in JSON body', async () => {
-  const event = {
-    data: {
-      file: 'some-file',
-    },
-  };
-  const expectedMsg = 'Something bad happened.';
-  const bodyJson = {error: expectedMsg};
-  const body = {
-    json: sinon.stub().returns(bodyJson),
-  };
-  const sample = getSample(sinon.stub().resolves(body));
+describe('composer_trigger', () => {
+  it('Handles error in JSON body', async () => {
+    const event = {
+      data: {
+        file: 'some-file',
+      },
+    };
+    const expectedMsg = 'Something bad happened.';
+    const bodyJson = {error: expectedMsg};
+    const body = {
+      json: sinon.stub().returns(bodyJson),
+    };
+    const sample = getSample(sinon.stub().resolves(body));
 
-  try {
-    await sample.program.triggerDag(event);
-    assert.fail('No error thrown');
-  } catch (err) {
-    assert.deepStrictEqual(err, new Error('Something bad happened.'));
-  }
-});
+    try {
+      await sample.program.triggerDag(event);
+      assert.fail('No error thrown');
+    } catch (err) {
+      assert.deepStrictEqual(err, new Error('Something bad happened.'));
+    }
+  });
 
-it('Handles error in IAP response.', async () => {
-  const event = {
-    data: {
-      file: 'some-file',
-    },
-  };
-  const expectedMsg = 'Default IAP Error Message.';
+  it('Handles error in IAP response.', async () => {
+    const event = {
+      data: {
+        file: 'some-file',
+      },
+    };
+    const expectedMsg = 'Default IAP Error Message.';
 
-  const serviceAccountAccessTokenRes = {
-    json: sinon.stub().resolves({access_token: 'default-access-token'}),
-  };
-  const signJsonClaimRes = {
-    json: sinon.stub().resolves({signature: 'default-jwt-signature'}),
-  };
-  const getTokenRes = {
-    json: sinon.stub().resolves({id_token: 'default-id-token'}),
-  };
-  const makeIapPostRequestRes = {
-    ok: false,
-    text: sinon.stub().resolves(expectedMsg),
-  };
-  const FetchStub = sinon
-    .stub()
-    .onCall(0)
-    .resolves(serviceAccountAccessTokenRes)
-    .onCall(1)
-    .resolves(signJsonClaimRes)
-    .onCall(2)
-    .resolves(getTokenRes)
-    .onCall(3)
-    .resolves(makeIapPostRequestRes);
-  const sample = getSample(FetchStub);
-  try {
-    await sample.program.triggerDag(event);
-  } catch (err) {
-    assert.deepStrictEqual(err, new Error(expectedMsg));
-  }
+    const serviceAccountAccessTokenRes = {
+      json: sinon.stub().resolves({access_token: 'default-access-token'}),
+    };
+    const signJsonClaimRes = {
+      json: sinon.stub().resolves({signature: 'default-jwt-signature'}),
+    };
+    const getTokenRes = {
+      json: sinon.stub().resolves({id_token: 'default-id-token'}),
+    };
+    const makeIapPostRequestRes = {
+      ok: false,
+      text: sinon.stub().resolves(expectedMsg),
+    };
+    const FetchStub = sinon
+      .stub()
+      .onCall(0)
+      .resolves(serviceAccountAccessTokenRes)
+      .onCall(1)
+      .resolves(signJsonClaimRes)
+      .onCall(2)
+      .resolves(getTokenRes)
+      .onCall(3)
+      .resolves(makeIapPostRequestRes);
+    const sample = getSample(FetchStub);
+    try {
+      await sample.program.triggerDag(event);
+    } catch (err) {
+      assert.deepStrictEqual(err, new Error(expectedMsg));
+    }
+  });
 });

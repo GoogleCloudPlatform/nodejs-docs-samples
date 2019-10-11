@@ -1,0 +1,18 @@
+{
+  "name": "graphviz-web",
+  "version": "1.0.0",
+  "description": "Demonstrates a Cloud Run service which provides a CLI tool over HTTP.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha test/app.test.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.0",
+    "supertest": "^4.0.2"
+  }
+}

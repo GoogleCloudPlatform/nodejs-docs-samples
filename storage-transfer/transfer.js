@@ -25,7 +25,7 @@ const storagetransfer = google.storagetransfer('v1');
 // [END setup]
 
 // [START auth]
-function auth(callback) {
+const auth = callback => {
   google.auth.getApplicationDefault((err, authClient) => {
     if (err) {
       return callback(err);
@@ -46,7 +46,7 @@ function auth(callback) {
     }
     callback(null, authClient);
   });
-}
+};
 // [END auth]
 
 // [START create_transfer_job]
@@ -61,7 +61,7 @@ function auth(callback) {
  * @param {string} [options.description] Optional. Description for the new transfer job.
  * @param {function} callback The callback function.
  */
-function createTransferJob(options, callback) {
+const createTransferJob = (options, callback) => {
   const startDate = moment(options.date, 'YYYY/MM/DD');
   const transferTime = moment(options.time, 'HH:mm');
 
@@ -117,7 +117,7 @@ function createTransferJob(options, callback) {
       }
     );
   });
-}
+};
 // [END create_transfer_job]
 
 // [START get_transfer_job]
@@ -127,7 +127,7 @@ function createTransferJob(options, callback) {
  * @param {string} jobName The name of the transfer job to get.
  * @param {function} callback The callback function.
  */
-function getTransferJob(jobName, callback) {
+const getTransferJob = (jobName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -150,7 +150,7 @@ function getTransferJob(jobName, callback) {
       }
     );
   });
-}
+};
 // [END get_transfer_job]
 
 // [START update_transfer_job]
@@ -163,7 +163,7 @@ function getTransferJob(jobName, callback) {
  * @param {string} options.value The new value for the field.
  * @param {function} callback The callback function.
  */
-function updateTransferJob(options, callback) {
+const updateTransferJob = (options, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -202,7 +202,7 @@ function updateTransferJob(options, callback) {
       }
     );
   });
-}
+};
 // [END update_transfer_job]
 
 // [START list_transfer_jobs]
@@ -211,7 +211,7 @@ function updateTransferJob(options, callback) {
  *
  * @param {function} callback The callback function.
  */
-function listTransferJobs(callback) {
+const listTransferJobs = callback => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -234,7 +234,7 @@ function listTransferJobs(callback) {
       }
     );
   });
-}
+};
 // [END list_transfer_jobs]
 
 // [START list_transfer_operations]
@@ -244,7 +244,7 @@ function listTransferJobs(callback) {
  * @param {string} [jobName] An optional job name by which to filter results.
  * @param {function} callback The callback function.
  */
-function listTransferOperations(jobName, callback) {
+const listTransferOperations = (jobName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -276,7 +276,7 @@ function listTransferOperations(jobName, callback) {
       }
     );
   });
-}
+};
 // [END list_transfer_operations]
 
 // [START get_transfer_operation]
@@ -286,7 +286,7 @@ function listTransferOperations(jobName, callback) {
  * @param {string} transferOperationName The name of the transfer operation.
  * @param {function} callback The callback function.
  */
-function getTransferOperation(transferOperationName, callback) {
+const getTransferOperation = (transferOperationName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -308,7 +308,7 @@ function getTransferOperation(transferOperationName, callback) {
       }
     );
   });
-}
+};
 // [END get_transfer_operation]
 
 // [START pause_transfer_operation]
@@ -318,7 +318,7 @@ function getTransferOperation(transferOperationName, callback) {
  * @param {string} transferOperationName The name of the transfer operation.
  * @param {function} callback The callback function.
  */
-function pauseTransferOperation(transferOperationName, callback) {
+const pauseTransferOperation = (transferOperationName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -339,7 +339,7 @@ function pauseTransferOperation(transferOperationName, callback) {
       }
     );
   });
-}
+};
 // [END pause_transfer_operation]
 
 // [START resume_transfer_operation]
@@ -349,7 +349,7 @@ function pauseTransferOperation(transferOperationName, callback) {
  * @param {string} transferOperationName The name of the transfer operation.
  * @param {function} callback The callback function.
  */
-function resumeTransferOperation(transferOperationName, callback) {
+const resumeTransferOperation = (transferOperationName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -370,7 +370,7 @@ function resumeTransferOperation(transferOperationName, callback) {
       }
     );
   });
-}
+};
 // [END resume_transfer_operation]
 // [END all]
 
@@ -386,7 +386,7 @@ const program = (module.exports = {
   getTransferOperation: getTransferOperation,
   pauseTransferOperation: pauseTransferOperation,
   resumeTransferOperation: resumeTransferOperation,
-  main: function(args) {
+  main: args => {
     // Run the command-line program
     cli.help().strict().parse(args).argv; // eslint-disable-line
   },

@@ -17,9 +17,9 @@
     "test": "repo-tools test install --cmd=npm -- run unit-test && repo-tools test install --cmd=npm -- run system-test"
   },
   "dependencies": {
-    "googleapis": "^40.0.0",
+    "googleapis": "^43.0.0",
     "moment": "^2.24.0",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

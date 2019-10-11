@@ -19,7 +19,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const functions = require('../');
 
-function getMocks() {
+const getMocks = () => {
   const req = {};
   const res = {
     send: sinon.stub().returnsThis(),
@@ -29,13 +29,15 @@ function getMocks() {
     req: req,
     res: res,
   };
-}
+};
 
-it('should read env vars', () => {
-  const mocks = getMocks();
-  process.env['FOO'] = 'bar';
+describe('functions_env_vars', () => {
+  it('should read env vars', () => {
+    const mocks = getMocks();
+    process.env['FOO'] = 'bar';
 
-  functions.envVar(mocks.req, mocks.res);
+    functions.envVar(mocks.req, mocks.res);
 
-  assert.strictEqual(mocks.res.send.calledWith('bar'), true);
+    assert.strictEqual(mocks.res.send.calledWith('bar'), true);
+  });
 });

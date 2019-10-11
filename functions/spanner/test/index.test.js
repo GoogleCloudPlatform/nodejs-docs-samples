@@ -36,7 +36,7 @@ const query = {
   sql: 'SELECT * FROM Albums',
 };
 
-function getSample() {
+const getSample = () => {
   const resultsMock = entities.map(row => {
     return {toJSON: sinon.stub().returns(row)};
   });
@@ -69,22 +69,24 @@ function getSample() {
       },
     },
   };
-}
+};
 
-it('get: Gets albums', async () => {
-  const sample = getSample();
-  const {mocks} = sample;
+describe('spanner_functions_quickstart', () => {
+  it('get: Gets albums', async () => {
+    const sample = getSample();
+    const {mocks} = sample;
 
-  await sample.program.get(mocks.req, mocks.res);
-  assert.strictEqual(mocks.spanner.instance.called, true);
-  assert.strictEqual(mocks.instance.database.called, true);
-  assert.strictEqual(mocks.database.run.calledWith(query), true);
-  assert.strictEqual(mocks.results[0].toJSON.called, true);
-  assert.strictEqual(
-    mocks.res.write.calledWith(
-      'SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n'
-    ),
-    true
-  );
-  assert.strictEqual(mocks.res.end.called, true);
+    await sample.program.get(mocks.req, mocks.res);
+    assert.strictEqual(mocks.spanner.instance.called, true);
+    assert.strictEqual(mocks.instance.database.called, true);
+    assert.strictEqual(mocks.database.run.calledWith(query), true);
+    assert.strictEqual(mocks.results[0].toJSON.called, true);
+    assert.strictEqual(
+      mocks.res.write.calledWith(
+        'SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n'
+      ),
+      true
+    );
+    assert.strictEqual(mocks.res.end.called, true);
+  });
 });

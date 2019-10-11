@@ -15,13 +15,12 @@
 
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
-const {Buffer} = require('safe-buffer');
 const Compute = require('@google-cloud/compute');
 const compute = new Compute();
 // [END functions_stop_instance_pubsub]
 
 /**
- * Starts a Compute Engine instance.
+ * Starts Compute Engine instances.
  *
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
@@ -32,37 +31,31 @@ const compute = new Compute();
  * @param {!object} callback Cloud Function PubSub callback indicating
  *  completion.
  */
-exports.startInstancePubSub = (event, context, callback) => {
+exports.startInstancePubSub = async (event, context, callback) => {
   try {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(event.data, 'base64').toString())
     );
     const options = {filter: `labels.${payload.label}`};
-    compute.getVMs(options).then(vms => {
-      vms[0].forEach(instance => {
+    const [vms] = await compute.getVMs(options);
+    await Promise.all(
+      vms.map(async instance => {
         if (payload.zone === instance.zone.id) {
-          compute
+          const [operation] = await compute
             .zone(payload.zone)
             .vm(instance.name)
-            .start()
-            .then(data => {
-              // Operation pending.
-              const operation = data[0];
-              return operation.promise();
-            })
-            .then(() => {
-              // Operation complete. Instance successfully started.
-              const message = 'Successfully started instance ' + instance.name;
-              console.log(message);
-              callback(null, message);
-            })
-            .catch(err => {
-              console.log(err);
-              callback(err);
-            });
+            .start();
+
+          // Operation pending
+          return operation.promise();
         }
-      });
-    });
+      })
+    );
+
+    // Operation complete. Instance successfully started.
+    const message = `Successfully started instance(s)`;
+    console.log(message);
+    callback(null, message);
   } catch (err) {
     console.log(err);
     callback(err);
@@ -72,50 +65,43 @@ exports.startInstancePubSub = (event, context, callback) => {
 // [START functions_stop_instance_pubsub]
 
 /**
- * Stops a Compute Engine instance.
+ * Stops Compute Engine instances.
  *
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
  *  zone - the GCP zone the instances are located in.
- *  instance - the name of a single instance.
- *  label - the label of instances to start.
- *
- * Exactly one of instance or label must be specified.
+ *  label - the label of instances to stop.
  *
  * @param {!object} event Cloud Function PubSub message event.
  * @param {!object} callback Cloud Function PubSub callback indicating completion.
  */
-exports.stopInstancePubSub = (event, context, callback) => {
+exports.stopInstancePubSub = async (event, context, callback) => {
   try {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(event.data, 'base64').toString())
     );
     const options = {filter: `labels.${payload.label}`};
-    compute.getVMs(options).then(vms => {
-      vms[0].forEach(instance => {
+    const [vms] = await compute.getVMs(options);
+    await Promise.all(
+      vms.map(async instance => {
         if (payload.zone === instance.zone.id) {
-          compute
+          const [operation] = await compute
             .zone(payload.zone)
             .vm(instance.name)
-            .stop()
-            .then(data => {
-              // Operation pending.
-              const operation = data[0];
-              return operation.promise();
-            })
-            .then(() => {
-              // Operation complete. Instance successfully stopped.
-              const message = 'Successfully stopped instance ' + instance.name;
-              console.log(message);
-              callback(null, message);
-            })
-            .catch(err => {
-              console.log(err);
-              callback(err);
-            });
+            .stop();
+
+          // Operation pending
+          return operation.promise();
+        } else {
+          return Promise.resolve();
         }
-      });
-    });
+      })
+    );
+
+    // Operation complete. Instance successfully stopped.
+    const message = `Successfully stopped instance(s)`;
+    console.log(message);
+    callback(null, message);
   } catch (err) {
     console.log(err);
     callback(err);
@@ -129,13 +115,13 @@ exports.stopInstancePubSub = (event, context, callback) => {
  * @param {!object} payload the request payload to validate.
  * @return {!object} the payload object.
  */
-function _validatePayload(payload) {
+const _validatePayload = payload => {
   if (!payload.zone) {
     throw new Error(`Attribute 'zone' missing from payload`);
   } else if (!payload.label) {
     throw new Error(`Attribute 'label' missing from payload`);
   }
   return payload;
-}
+};
 // [END functions_start_instance_pubsub]
 // [END functions_stop_instance_pubsub]

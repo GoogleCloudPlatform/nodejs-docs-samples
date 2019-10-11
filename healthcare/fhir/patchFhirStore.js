@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
   pubsubTopic
-) {
+) => {
   // [START healthcare_patch_fhir_store]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function patchFhirStore() {
+  const patchFhirStore = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -55,11 +55,11 @@ function main(
     console.log(
       `Patched FHIR store ${fhirStoreId} with Cloud Pub/Sub topic ${pubsubTopic}`
     );
-  }
+  };
 
   patchFhirStore();
   // [END healthcare_patch_fhir_store]
-}
+};
 
 // node patchFhirStore.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <pubsubTopic>
 main(...process.argv.slice(2));

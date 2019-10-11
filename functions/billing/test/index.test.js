@@ -69,23 +69,28 @@ describe('functions/billing tests', () => {
       await handleLinuxFailures(ffProc);
     });
 
-    it('should notify Slack when budget is exceeded', async () => {
-      const jsonData = {costAmount: 500, budgetAmount: 400};
-      const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
-        'base64'
-      );
-      const pubsubMessage = {data: encodedData, attributes: {}};
+    describe('functions_billing_slack', () => {
+      it('should notify Slack when budget is exceeded', async () => {
+        const jsonData = {costAmount: 500, budgetAmount: 400};
+        const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+          'base64'
+        );
+        const pubsubMessage = {data: encodedData, attributes: {}};
 
-      const response = await requestRetry({
-        url: `${BASE_URL}/notifySlack`,
-        method: 'POST',
-        body: {data: pubsubMessage},
-        retryDelay: 200,
-        json: true,
+        const response = await requestRetry({
+          url: `${BASE_URL}/notifySlack`,
+          method: 'POST',
+          body: {data: pubsubMessage},
+          retryDelay: 200,
+          json: true,
+        });
+
+        assert.strictEqual(response.statusCode, 200);
+        assert.strictEqual(
+          response.body,
+          'Slack notification sent successfully'
+        );
       });
-
-      assert.strictEqual(response.statusCode, 200);
-      assert.strictEqual(response.body, 'Slack notification sent successfully');
     });
   });
 
@@ -105,60 +110,64 @@ describe('functions/billing tests', () => {
       await handleLinuxFailures(ffProc);
     });
 
-    it('should disable billing when budget is exceeded', async () => {
-      // Use functions framework to ensure sample follows GCF specification
-      // (Invoking it directly works too, but DOES NOT ensure GCF compatibility)
+    describe('functions_billing_stop', () => {
+      it('should disable billing when budget is exceeded', async () => {
+        // Use functions framework to ensure sample follows GCF specification
+        // (Invoking it directly works too, but DOES NOT ensure GCF compatibility)
+        const jsonData = {costAmount: 500, budgetAmount: 400};
+        const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+          'base64'
+        );
+        const pubsubMessage = {data: encodedData, attributes: {}};
+
+        const response = await requestRetry({
+          url: `${BASE_URL}/stopBilling`,
+          method: 'POST',
+          body: {data: pubsubMessage},
+          retryDelay: 200,
+          json: true,
+        });
+
+        assert.strictEqual(response.statusCode, 200);
+        assert.ok(response.body.includes('Billing disabled'));
+      });
+    });
+  });
+});
+
+describe('shuts down GCE instances', () => {
+  describe('functions_billing_limit', () => {
+    it('should attempt to shut down GCE instances when budget is exceeded', async () => {
+      // Mock GCE (because real GCE instances take too long to start/stop)
+      const listInstancesResponseMock = {
+        data: {
+          items: [{name: 'test-instance-1', status: 'RUNNING'}],
+        },
+      };
+
+      const computeMock = {
+        instances: {
+          list: sinon.stub().returns(listInstancesResponseMock),
+          stop: sinon.stub().resolves({data: {}}),
+        },
+      };
+
+      const googleapisMock = Object.assign({}, googleapis);
+      googleapisMock.google.compute = sinon.stub().returns(computeMock);
+
+      // Run test
       const jsonData = {costAmount: 500, budgetAmount: 400};
       const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
         'base64'
       );
       const pubsubMessage = {data: encodedData, attributes: {}};
 
-      const response = await requestRetry({
-        url: `${BASE_URL}/stopBilling`,
-        method: 'POST',
-        body: {data: pubsubMessage},
-        retryDelay: 200,
-        json: true,
-      });
+      const sample = proxyquire('../', {googleapis: googleapisMock}); // kokoro-allow-mock
 
-      assert.strictEqual(response.statusCode, 200);
-      assert.ok(response.body.includes('Billing disabled'));
+      await sample.limitUse(pubsubMessage);
+
+      assert.strictEqual(computeMock.instances.list.calledOnce, true);
+      assert.ok(computeMock.instances.stop.calledOnce);
     });
-  });
-});
-
-describe('shuts down GCE instances', () => {
-  it('should attempt to shut down GCE instances when budget is exceeded', async () => {
-    // Mock GCE (because real GCE instances take too long to start/stop)
-    const listInstancesResponseMock = {
-      data: {
-        items: [{name: 'test-instance-1', status: 'RUNNING'}],
-      },
-    };
-
-    const computeMock = {
-      instances: {
-        list: sinon.stub().returns(listInstancesResponseMock),
-        stop: sinon.stub().resolves({data: {}}),
-      },
-    };
-
-    const googleapisMock = Object.assign({}, googleapis);
-    googleapisMock.google.compute = sinon.stub().returns(computeMock);
-
-    // Run test
-    const jsonData = {costAmount: 500, budgetAmount: 400};
-    const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
-      'base64'
-    );
-    const pubsubMessage = {data: encodedData, attributes: {}};
-
-    const sample = proxyquire('../', {googleapis: googleapisMock}); // kokoro-allow-mock
-
-    await sample.limitUse(pubsubMessage);
-
-    assert.strictEqual(computeMock.instances.list.calledOnce, true);
-    assert.ok(computeMock.instances.stop.calledOnce);
   });
 });

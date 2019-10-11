@@ -13,43 +13,47 @@
  * limitations under the License.
  */
 
-// [START functions_http_unit_test]
-const assert = require('assert');
-const sinon = require('sinon');
-const uuid = require('uuid');
+describe('functions_helloworld_http', () => {
+  // [START functions_http_unit_test]
+  const assert = require('assert');
+  const sinon = require('sinon');
+  const uuid = require('uuid');
 
-const {helloHttp} = require('..');
+  const {helloHttp} = require('..');
 
-it('helloHttp: should print a name', () => {
-  // Mock ExpressJS 'req' and 'res' parameters
-  const name = uuid.v4();
-  const req = {
-    body: {
-      name: name,
-    },
-  };
-  const res = {send: sinon.stub()};
+  it('helloHttp: should print a name', () => {
+    // Mock ExpressJS 'req' and 'res' parameters
+    const name = uuid.v4();
+    const req = {
+      query: {},
+      body: {
+        name: name,
+      },
+    };
+    const res = {send: sinon.stub()};
 
-  // Call tested function
-  helloHttp(req, res);
+    // Call tested function
+    helloHttp(req, res);
 
-  // Verify behavior of tested function
-  assert.ok(res.send.calledOnce);
-  assert.deepStrictEqual(res.send.firstCall.args, [`Hello ${name}!`]);
+    // Verify behavior of tested function
+    assert.ok(res.send.calledOnce);
+    assert.deepStrictEqual(res.send.firstCall.args, [`Hello ${name}!`]);
+  });
+  // [END functions_http_unit_test]
+
+  it('helloHttp: should print hello world', () => {
+    // Mock ExpressJS 'req' and 'res' parameters
+    const req = {
+      query: {},
+      body: {},
+    };
+    const res = {send: sinon.stub()};
+
+    // Call tested function
+    helloHttp(req, res);
+
+    // Verify behavior of tested function
+    assert.ok(res.send.calledOnce);
+    assert.deepStrictEqual(res.send.firstCall.args, ['Hello World!']);
+  });
 });
-
-it('helloHttp: should print hello world', () => {
-  // Mock ExpressJS 'req' and 'res' parameters
-  const req = {
-    body: {},
-  };
-  const res = {send: sinon.stub()};
-
-  // Call tested function
-  helloHttp(req, res);
-
-  // Verify behavior of tested function
-  assert.ok(res.send.calledOnce);
-  assert.deepStrictEqual(res.send.firstCall.args, ['Hello World!']);
-});
-// [END functions_http_unit_test]

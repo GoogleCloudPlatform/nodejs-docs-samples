@@ -4,7 +4,7 @@ This sample shows how to send structured logs to Stackdriver Logging.
 
 Read more about Cloud Run logging in the [Logging How-to Guide](http://cloud.google.com/run/docs/logging).
 
-For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/run).
+For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
 
 ## Local Development
 
@@ -42,12 +42,12 @@ test/deploy.sh
 
 ### runner.sh
 
-The `runner.sh` script is a helper that facilitates:
+The `runner.sh` script:
 
-* Deploy the service to Cloud Run based on the `deploy.sh` script.
-* Set the `BASE_URL` and `ID_TOKEN` environment variables.
-* Run any arguments passed to the `runner.sh` script.
-* Tear down the Cloud Run service on completion.
+* Deploys the service to Cloud Run based on the `deploy.sh` script.
+* Sets the `BASE_URL` and `ID_TOKEN` environment variables.
+* Runs any arguments passed to the `runner.sh` script.
+* Tears down the Cloud Run service on completion.
 
 ```sh
 test/runner.sh sleep 20
@@ -55,14 +55,18 @@ test/runner.sh sleep 20
 
 ## Environment Variables (Testing)
 
-* `BASE_URL`: Used to designate the URL of the Cloud Run service under system test. The URL is not deterministic, so the options are to record it at deploy time or use the Cloud Run API to retrieve the value.
-* `ID_TOKEN`: Used for authenticated HTTP requests to the Cloud Run service.
+* `BASE_URL`: The Cloud Run service URL for end-to-end tests.
+* `ID_TOKEN`: JWT token used to authenticate with Cloud Run's IAM-based authentication.
 * `REGION`: [`us-central1`] Optional override region for the location of the Cloud Run service.
-* `SERVICE_NAME`: Used in testing to specify the name of the service. The name may be included in API calls and test conditions.
-* `GOOGLE_CLOUD_PROJECT`: Used in production as an override to determination of the GCP Project from the GCP metadata server. Used in testing to configure the Logging client library.
+* `SERVICE_NAME`: The name of the deployed service, used in some API calls and test assertions.
+* `GOOGLE_CLOUD_PROJECT`: If used, overrides GCP metadata server to determine
+  the current GCP project. Required by the logging client library.
 
 ## Dependencies
 
 * **express**: Web server framework.
-* **got**: Used to pull the project ID of the running service from the [compute metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata) and make system test HTTP requests. This is required in production for log correlation without manually setting the $GOOGLE_CLOUD_PROJECT environment variable.
+* **got**: Used to pull the project ID of the running service from the 
+  [compute metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata)
+  and make system test HTTP requests. This is required in production for log correlation without
+  manually setting the $GOOGLE_CLOUD_PROJECT environment variable.
 

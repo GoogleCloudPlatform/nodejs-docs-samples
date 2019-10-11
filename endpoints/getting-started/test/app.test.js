@@ -15,7 +15,6 @@
 
 'use strict';
 
-const {Buffer} = require('safe-buffer');
 const express = require('express');
 const path = require('path');
 const proxyquire = require('proxyquire').noPreserveCache();
@@ -26,7 +25,7 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../app.js');
 
-function getSample() {
+const getSample = () => {
   const testApp = express();
   sinon.stub(testApp, 'listen').callsArg(1);
   const expressMock = sinon.stub().returns(testApp);
@@ -40,7 +39,7 @@ function getSample() {
       express: expressMock,
     },
   };
-}
+};
 
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);

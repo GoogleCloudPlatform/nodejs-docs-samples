@@ -17,7 +17,6 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const {Buffer} = require('safe-buffer');
 
 const app = express();
 app.use(bodyParser.json());

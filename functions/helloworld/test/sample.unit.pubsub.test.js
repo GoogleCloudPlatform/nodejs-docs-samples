@@ -13,42 +13,36 @@
  * limitations under the License.
  */
 
-// [START functions_pubsub_unit_test]
-const assert = require('assert');
-const uuid = require('uuid');
-const utils = require('@google-cloud/nodejs-repo-tools');
+describe('functions_helloworld_pubsub', () => {
+  // [START functions_pubsub_unit_test]
+  const assert = require('assert');
+  const uuid = require('uuid');
+  const utils = require('@google-cloud/nodejs-repo-tools');
 
-const {helloPubSub} = require('..');
+  const {helloPubSub} = require('..');
 
-beforeEach(utils.stubConsole);
-afterEach(utils.restoreConsole);
+  beforeEach(utils.stubConsole);
+  afterEach(utils.restoreConsole);
 
-it('helloPubSub: should print a name', done => {
-  // Initialize mocks
-  const name = uuid.v4();
-  const event = {
-    data: {
+  it('helloPubSub: should print a name', () => {
+    // Create mock Pub/Sub event
+    const name = uuid.v4();
+    const event = {
       data: Buffer.from(name).toString('base64'),
-    },
-  };
+    };
 
-  // Call tested function and verify its behavior
-  helloPubSub(event, () => {
+    // Call tested function and verify its behavior
+    helloPubSub(event);
     assert.ok(console.log.calledWith(`Hello, ${name}!`));
-    done();
   });
-});
+  // [END functions_pubsub_unit_test]
 
-it('helloPubSub: should print hello world', done => {
-  // Initialize mocks
-  const event = {
-    data: {},
-  };
+  it('helloPubSub: should print hello world', () => {
+    // Create mock Pub/Sub event
+    const event = {};
 
-  // Call tested function and verify its behavior
-  helloPubSub(event, () => {
+    // Call tested function and verify its behavior
+    helloPubSub(event);
     assert.ok(console.log.calledWith('Hello, World!'));
-    done();
   });
 });
-// [END functions_pubsub_unit_test]

@@ -17,18 +17,18 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId,
   studyUid
-) {
+) => {
   // [START healthcare_dicomweb_delete_study]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function dicomWebDeleteStudy() {
+  const dicomWebDeleteStudy = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -48,11 +48,11 @@ function main(
       request
     );
     console.log('Deleted DICOM study');
-  }
+  };
 
   dicomWebDeleteStudy();
   // [END healthcare_dicomweb_delete_study]
-}
+};
 
 // node dicomWebDeleteStudy.js <projectId> <cloudRegion> <datasetId> <dicomStoreId> <studyUid>
 main(...process.argv.slice(2));

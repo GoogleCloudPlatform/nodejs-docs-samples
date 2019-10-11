@@ -77,59 +77,63 @@ const getSample = () => {
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should set up sample in Postgres', () => {
-  const sample = getSample();
+describe('gae_flex_mysql_connect', () => {
+  it('should set up sample in Postgres', () => {
+    const sample = getSample();
 
-  assert.ok(sample.mocks.express.calledOnce);
-  assert.ok(sample.mocks.Knex.calledOnce);
-  assert.deepStrictEqual(sample.mocks.Knex.firstCall.args, [
-    {
-      client: 'mysql',
-      connection: {
-        user: sample.mocks.process.env.SQL_USER,
-        password: sample.mocks.process.env.SQL_PASSWORD,
-        database: sample.mocks.process.env.SQL_DATABASE,
+    assert.ok(sample.mocks.express.calledOnce);
+    assert.ok(sample.mocks.Knex.calledOnce);
+    assert.deepStrictEqual(sample.mocks.Knex.firstCall.args, [
+      {
+        client: 'mysql',
+        connection: {
+          user: sample.mocks.process.env.SQL_USER,
+          password: sample.mocks.process.env.SQL_PASSWORD,
+          database: sample.mocks.process.env.SQL_DATABASE,
+        },
       },
-    },
-  ]);
+    ]);
+  });
 });
 
-it('should record a visit', async () => {
-  const sample = getSample();
-  const expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
+describe('gae_flex_mysql_app', () => {
+  it('should record a visit', async () => {
+    const sample = getSample();
+    const expectedResult = 'Last 10 visits:\nTime: 1234, AddrHash: abcd';
 
-  await request(sample.app)
-    .get('/')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, expectedResult);
-    });
-});
+    await request(sample.app)
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        assert.strictEqual(response.text, expectedResult);
+      });
+  });
 
-it('should handle insert error', async () => {
-  const sample = getSample();
-  const expectedResult = 'insert_error';
+  it('should handle insert error', async () => {
+    const sample = getSample();
+    const expectedResult = 'insert_error';
 
-  sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
+    sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
 
-  await request(sample.app)
-    .get('/')
-    .expect(500)
-    .expect(response => {
-      assert.ok(response.text.includes(expectedResult));
-    });
-});
+    await request(sample.app)
+      .get('/')
+      .expect(500)
+      .expect(response => {
+        assert.ok(response.text.includes(expectedResult));
+      });
+  });
 
-it('should handle read error', async () => {
-  const sample = getSample();
-  const expectedResult = 'read_error';
+  it('should handle read error', async () => {
+    const sample = getSample();
+    const expectedResult = 'read_error';
 
-  sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
+    sample.mocks.knex.limit.returns(Promise.reject(expectedResult));
 
-  await request(sample.app)
-    .get('/')
-    .expect(500)
-    .expect(response => {
-      assert.ok(response.text.includes(expectedResult));
-    });
+    await request(sample.app)
+      .get('/')
+      .expect(500)
+      .expect(response => {
+        assert.ok(response.text.includes(expectedResult));
+      });
+  });
 });

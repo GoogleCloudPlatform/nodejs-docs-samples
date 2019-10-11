@@ -17,17 +17,17 @@
 
 'use strict';
 
-function main(
+const main = (
   projectId = process.env.GCLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   hl7v2StoreId
-) {
+) => {
   // [START healthcare_create_hl7v2_store]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1beta1');
 
-  async function createHl7v2Store() {
+  const createHl7v2Store = async () => {
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -43,11 +43,11 @@ function main(
 
     await healthcare.projects.locations.datasets.hl7V2Stores.create(request);
     console.log(`Created HL7v2 store: ${hl7v2StoreId}`);
-  }
+  };
 
   createHl7v2Store();
   // [END healthcare_create_hl7v2_store]
-}
+};
 
 // node createHl7v2Store.js <projectId> <cloudRegion> <datasetId> <hl7v2StoreId>
 main(...process.argv.slice(2));

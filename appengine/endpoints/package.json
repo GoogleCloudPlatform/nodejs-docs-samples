@@ -23,8 +23,7 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "safe-buffer": "^5.1.2"
+    "express": "^4.16.4"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

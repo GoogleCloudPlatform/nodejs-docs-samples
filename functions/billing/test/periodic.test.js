@@ -54,30 +54,34 @@ before(async () => {
   }
 });
 
-it('should shut down GCE instances when budget is exceeded', async () => {
-  const ffProc = execPromise(
-    `functions-framework --target=limitUse --signature-type=event`,
-    {timeout: 1000, shell: true, cwd}
-  );
+describe('functions_billing_limit', () => {
+  it('should shut down GCE instances when budget is exceeded', async () => {
+    const ffProc = execPromise(
+      `functions-framework --target=limitUse --signature-type=event`,
+      {timeout: 1000, shell: true, cwd}
+    );
 
-  const jsonData = {costAmount: 500, budgetAmount: 400};
-  const encodedData = Buffer.from(JSON.stringify(jsonData)).toString('base64');
-  const pubsubMessage = {data: encodedData, attributes: {}};
+    const jsonData = {costAmount: 500, budgetAmount: 400};
+    const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+      'base64'
+    );
+    const pubsubMessage = {data: encodedData, attributes: {}};
 
-  const response = await requestRetry({
-    url: `${BASE_URL}/`,
-    method: 'POST',
-    body: {data: pubsubMessage},
-    retryDelay: 200,
-    json: true,
+    const response = await requestRetry({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      body: {data: pubsubMessage},
+      retryDelay: 200,
+      json: true,
+    });
+
+    // Wait for the functions framework to stop
+    // Must be BEFORE assertions, in case they fail
+    await ffProc;
+
+    console.log(response.body);
+
+    assert.strictEqual(response.statusCode, 200);
+    assert.ok(response.body.includes('instance(s) stopped successfully'));
   });
-
-  // Wait for the functions framework to stop
-  // Must be BEFORE assertions, in case they fail
-  await ffProc;
-
-  console.log(response.body);
-
-  assert.strictEqual(response.statusCode, 200);
-  assert.ok(response.body.includes('instance(s) stopped successfully'));
 });

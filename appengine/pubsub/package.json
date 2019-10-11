@@ -13,12 +13,11 @@
     "test": "repo-tools test app && mocha */*.test.js --timeout=30000 --exit"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.28.0",
+    "@google-cloud/pubsub": "^1.0.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "google-auth-library": "^4.0.0",
-    "pug": "^2.0.1",
-    "safe-buffer": "^5.1.2"
+    "google-auth-library": "^5.0.0",
+    "pug": "^2.0.1"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

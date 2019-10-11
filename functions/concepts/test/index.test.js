@@ -1,5 +1,5 @@
 /**
- * Copyright 2016, Google, LLC.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,27 +17,21 @@
 
 const sinon = require('sinon');
 const assert = require('assert');
-const functions = require('../');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
-const getMocks = () => {
-  const req = {};
-  const res = {
-    send: sinon.stub().returnsThis(),
-  };
+const sample = require('../');
 
-  return {
-    req: req,
-    res: res,
-  };
-};
+beforeEach(tools.stubConsole);
+afterEach(tools.restoreConsole);
 
-describe('functions_env_vars', () => {
-  it('should read env vars', () => {
-    const mocks = getMocks();
-    process.env['FOO'] = 'bar';
+describe('functions_concepts_error_object', () => {
+  it('should demonstrate error type behavior', () => {
+    const objError = new Error('Error object!');
 
-    functions.envVar(mocks.req, mocks.res);
+    const req = {body: {throwAsString: true}};
+    const res = {end: sinon.stub()};
 
-    assert.strictEqual(mocks.res.send.calledWith('bar'), true);
+    sample.errorTypes(req, res);
+    assert.deepStrictEqual(console.error.getCall(0).args, [objError]);
   });
 });

@@ -21,6 +21,7 @@ functions/speech-to-speech @ricalo
 functions/dialogflow @nnegrey
 functions/memorystore @ericschmidtatwork
 functions/spanner @jsimonweb
+functions/tokenservice @santhoshvaddi
 
 # GCF samples outside of functions/
 datastore/functions @benwhitehead

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "e2e-test": "TARGET=Cloud test/runner.sh mocha test/system.test.js --timeout=20000",
+    "e2e-test": "NAME=Cloud test/runner.sh mocha test/system.test.js --timeout=20000",
     "lint": "eslint '**/*.js'",
     "fix": "eslint --fix '**/*.js'"
   },
@@ -17,6 +17,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "got": "^9.6.0"
+    "got": "^9.6.0",
+    "mocha": "^6.2.1"
   }
 }

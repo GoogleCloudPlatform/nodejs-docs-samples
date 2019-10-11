@@ -23,64 +23,68 @@ const sample = require(`../`);
 beforeEach(tools.stubConsole);
 afterEach(tools.restoreConsole);
 
-it('should demonstrate retry behavior for a promise', async () => {
-  // Retry by throwing an error
-  assert.throws(() => {
-    sample.retryPromise({
-      data: {
-        retry: true,
-      },
-    });
-  }, 'Retrying...');
+describe('functions_tips_retry', () => {
+  it('should demonstrate retry behavior for a promise', async () => {
+    // Retry by throwing an error
+    assert.throws(() => {
+      sample.retryPromise({
+        data: {
+          retry: true,
+        },
+      });
+    }, 'Retrying...');
 
-  // Terminate by returning a rejected promise
-  try {
-    await sample.retryPromise({data: {}});
-  } catch (err) {
-    assert.strictEqual(err.message, 'Not retrying...');
-    return Promise.resolve();
-  }
+    // Terminate by returning a rejected promise
+    try {
+      await sample.retryPromise({data: {}});
+    } catch (err) {
+      assert.strictEqual(err.message, 'Not retrying...');
+      return Promise.resolve();
+    }
+  });
+
+  it('should demonstrate retry behavior for a callback', done => {
+    const cb = sinon.stub();
+    const err = new Error('Error!');
+
+    // Retry by passing an error to the callback
+    sample.retryCallback(
+      {
+        data: {
+          retry: true,
+        },
+      },
+      cb
+    );
+    assert.deepStrictEqual(cb.firstCall.args, [err]);
+
+    // Terminate by passing nothing to the callback
+    sample.retryCallback({data: {}}, cb);
+    assert.deepStrictEqual(cb.secondCall.args, []);
+    done();
+  });
 });
 
-it('should demonstrate retry behavior for a callback', done => {
-  const cb = sinon.stub();
-  const err = new Error('Error!');
-
-  // Retry by passing an error to the callback
-  sample.retryCallback(
-    {
-      data: {
-        retry: true,
+describe('functions_tips_gcp_apis', () => {
+  it('should call a GCP API', async () => {
+    const reqMock = {
+      body: {
+        topic: process.env.FUNCTIONS_TOPIC,
       },
-    },
-    cb
-  );
-  assert.deepStrictEqual(cb.firstCall.args, [err]);
+    };
 
-  // Terminate by passing nothing to the callback
-  sample.retryCallback({data: {}}, cb);
-  assert.deepStrictEqual(cb.secondCall.args, []);
-  done();
-});
+    const resMock = {
+      send: sinon.stub().returnsThis(),
+      status: sinon.stub().returnsThis(),
+    };
 
-it('should call a GCP API', async () => {
-  const reqMock = {
-    body: {
-      topic: process.env.FUNCTIONS_TOPIC,
-    },
-  };
+    sample.gcpApiCall(reqMock, resMock);
 
-  const resMock = {
-    send: sinon.stub().returnsThis(),
-    status: sinon.stub().returnsThis(),
-  };
+    // Instead of modifying the sample to return a promise,
+    // use a delay here and keep the sample idiomatic
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-  sample.gcpApiCall(reqMock, resMock);
-
-  // Instead of modifying the sample to return a promise,
-  // use a delay here and keep the sample idiomatic
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  assert.ok(resMock.status.calledOnce);
-  assert.ok(resMock.status.calledWith(200));
+    assert.ok(resMock.status.calledOnce);
+    assert.ok(resMock.status.calledWith(200));
+  });
 });

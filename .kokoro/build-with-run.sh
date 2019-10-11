@@ -34,11 +34,8 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 export SAMPLE_NAME="$(basename $(pwd))"
 
-# Temporary: Verify available environment variables.
-env
-
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
-SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
+SUFFIX=${KOKORO_BUILD_ID}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 

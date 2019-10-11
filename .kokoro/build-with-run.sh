@@ -33,6 +33,10 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 # to run them concurrently.
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 export SAMPLE_NAME="$(basename $(pwd))"
+
+# Temporary: Verify available environment variables.
+env
+
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
 SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"

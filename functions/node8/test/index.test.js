@@ -223,27 +223,6 @@ it('should make a promise request', async () => {
   assert.strictEqual(result, 'test');
 });
 
-it('should return synchronously', () => {
-  assert.strictEqual(
-    getSample().program.helloSynchronous({
-      something: true,
-    }),
-    'Something is true!'
-  );
-});
-
-it('should throw an error', () => {
-  assert.throws(
-    () => {
-      getSample().program.helloSynchronous({
-        something: false,
-      });
-    },
-    Error,
-    'Something was not true!'
-  );
-});
-
 it('should update data in response to Firestore events', () => {
   const sample = getSample();
 

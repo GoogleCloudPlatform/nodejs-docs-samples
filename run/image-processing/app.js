@@ -59,6 +59,6 @@ app.post('/', async (req, res) => {
     res.status(500).send();
   }
 });
-// [END run_pubsub_handler]
+// [END run_imageproc_controller]
 
 module.exports = app;

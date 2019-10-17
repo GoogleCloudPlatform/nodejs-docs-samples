@@ -65,10 +65,10 @@ after(async () => {
 
 it('should store a DICOM instance', async () => {
   const output = await tools.runAsync(
-    `node dicomweb.js dicomWebStoreInstance ${datasetId} ${dicomStoreId} ${dcmFile}`,
+    `node dicomWebStoreInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${dcmFile}`,
     cwd
   );
-  assert.ok(output.includes('Stored instance'));
+  assert.ok(output.includes('Stored DICOM instance'));
 });
 
 it('should search DICOM instances', async () => {

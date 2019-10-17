@@ -1,10 +1,11 @@
 /**
- * Copyright 2019, Google, LLC.
+ * Copyright 2019 Google LLC
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,7 +51,7 @@ describe('Sample Integration Tests', () => {
 
   it('should run list-build-triggers.js', async () => {
     const stdout = execSync(
-      `node ./samples/list-build-triggers.js ${PROJECT_ID} ${TRIGGER_ID} cloud-build-mvp`,
+      `node ./samples/listBuildTriggers.js ${PROJECT_ID} ${TRIGGER_ID} cloud-build-mvp`,
       {cwd}
     );
     assert.include(stdout, 'Push-to-any-branch');

@@ -114,7 +114,7 @@ exports.listFiles = (req, res) => {
 // [END functions_concepts_filesystem]
 
 // [START functions_concepts_requests]
-const request = require('request');
+const fetch = require('node-fetch');
 
 /**
  * HTTP Cloud Function that makes an HTTP request
@@ -122,16 +122,11 @@ const request = require('request');
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.makeRequest = (req, res) => {
+exports.makeRequest = async (req, res) => {
   // The URL to send the request to
   const url = 'https://example.com';
 
-  request(url, (err, response) => {
-    if (!err && response.statusCode === 200) {
-      res.sendStatus(200);
-    } else {
-      res.sendStatus(500);
-    }
-  });
+  const externalRes = await fetch(url);
+  res.sendStatus(externalRes.ok ? 200 : 500);
 };
 // [END functions_concepts_requests]

@@ -123,9 +123,7 @@ const fetch = require('node-fetch');
  * @param {Object} res Cloud Function response context.
  */
 exports.makeRequest = async (req, res) => {
-  // The URL to send the request to
-  const url = 'https://example.com';
-
+  const url = 'https://example.com'; // URL to send the request to
   const externalRes = await fetch(url);
   res.sendStatus(externalRes.ok ? 200 : 500);
 };

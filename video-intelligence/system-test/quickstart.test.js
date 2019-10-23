@@ -27,6 +27,6 @@ const cwd = path.join(__dirname, '..');
 describe('quickstart samples', () => {
   it('should analyze a hardcoded video', async () => {
     const stdout = execSync(cmd, {cwd});
-    assert.match(stdout, /Label standing occurs at:/);
+    assert.match(stdout, /medium sized cats/);
   });
 });

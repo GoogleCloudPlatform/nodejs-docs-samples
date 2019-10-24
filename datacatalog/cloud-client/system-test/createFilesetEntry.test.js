@@ -21,7 +21,7 @@ const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const cwd = path.join(__dirname, '..');
 
-const projectId = process.env.PROJECT;
+const projectId = process.env.GCLOUD_PROJECT;
 // Use unique id to avoid conflicts between concurrent test runs
 const entryGroupId = `fileset_entry_group_${uuid.v4().substr(0, 8)}`;
 const entryId = `fileset_entry_id_${uuid.v4().substr(0, 8)}`;

@@ -41,6 +41,7 @@ const main = async (
   const location = 'us-central1';
 
   // TODO(developer): Uncomment the following lines before running the sample.
+  // const projectId = 'my-project'    
   // const entryGroupId = 'my-entry-group'
   // const entryId = 'my-entry'
 

@@ -29,7 +29,7 @@ const main = async (
   entryGroupId,
   entryId
 ) => {
-  // [START datacatalog_create_fileset]
+  // [START datacatalog_create_fileset_tag]
   // -------------------------------
   // Import required modules.
   // -------------------------------
@@ -44,27 +44,7 @@ const main = async (
   // const entryGroupId = 'my-entry-group'
   // const entryId = 'my-entry'
 
-  // 1. Create an Entry Group.
-  // -------------------------------
-  // Construct the EntryGroup for the EntryGroup request.
-  const entryGroup = {
-    displayName: 'My Fileset Entry Group',
-    description: 'This Entry Group consists of ....',
-  };
-
-  // Construct the EntryGroup request to be sent by the client.
-  const entryGroupRequest = {
-    parent: datacatalog.locationPath(projectId, location),
-    entryGroupId: entryGroupId,
-    entryGroup: entryGroup,
-  };
-
-  // Use the client to send the API request.
-  await datacatalog.createEntryGroup(entryGroupRequest);
-
-  // -------------------------------
-  // 2. Create a Fileset Entry.
-  // -------------------------------
+  // Create a Fileset Entry.
   // Construct the Entry for the Entry request.
   const FILESET_TYPE = 4;
 
@@ -75,14 +55,36 @@ const main = async (
     schema: {
       columns: [
         {
-          column: 'first_column',
+          column: 'city',
+          description: 'City',
+          mode: 'NULLABLE',
           type: 'STRING',
-          description: 'This columns consists of ....',
         },
         {
-          column: 'second_column',
+          column: 'state',
+          description: 'State',
+          mode: 'NULLABLE',
           type: 'STRING',
-          description: 'This columns consists of ....',
+        },
+        {
+          column: 'addresses',
+          description: 'Addresses',
+          mode: 'REPEATED',
+          subcolumns: [
+            {
+              column: 'city',
+              description: 'City',
+              mode: 'NULLABLE',
+              type: 'STRING',
+            },
+            {
+              column: 'state',
+              description: 'State',
+              mode: 'NULLABLE',
+              type: 'STRING',
+            },
+          ],
+          type: 'RECORD',
         },
       ],
     },
@@ -100,7 +102,7 @@ const main = async (
   const [response] = await datacatalog.createEntry(request);
 
   console.log(response);
-  // [END datacatalog_create_fileset]
+  // [END datacatalog_create_fileset_tag]
 };
 
 // node createFilesetEntry.js <projectId> <entryGroupId> <entryId>

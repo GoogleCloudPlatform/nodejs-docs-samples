@@ -18,7 +18,6 @@
 const path = require('path');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
-const uuid = require('uuid');
 const cwd = path.join(__dirname, '..');
 
 before(tools.checkCredentials);
@@ -32,22 +31,6 @@ describe('lookupEntry lookup', () => {
       cwd
     );
     const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;
-    assert.ok(output.includes(expectedLinkedResource));
-  });
-});
-
-describe('createFilesetEntry createEntry', () => {
-  it('should create a fileset entry', async () => {
-    const projectId = process.env.PROJECT;
-    // Use unique id to avoid conflicts between concurrent test runs
-    const entryGroupId = `fileset_entry_group_${uuid.v4().substr(0, 8)}`;
-    const entryId = `fileset_entry_id_${uuid.v4().substr(0, 8)}`;
-
-    const output = await tools.runAsync(
-      `node createFilesetEntry.js ${projectId} ${entryGroupId} ${entryId}`,
-      cwd
-    );
-    const expectedLinkedResource = `//datacatalog.googleapis.com/projects/${projectId}/locations/us-central1/entryGroups/${entryGroupId}/entries/${entryId}`;
     assert.ok(output.includes(expectedLinkedResource));
   });
 });

@@ -50,8 +50,8 @@ const main = async (projectId = process.env.GCLOUD_PROJECT, entryGroupId) => {
   // Construct the EntryGroup request to be sent by the client.
   const entryGroupRequest = {
     parent: datacatalog.locationPath(projectId, location),
-    entryGroupId: entryGroupId,
-    entryGroup: entryGroup,
+    entryGroupId,
+    entryGroup,
   };
 
   // Use the client to send the API request.

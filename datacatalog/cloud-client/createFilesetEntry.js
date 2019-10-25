@@ -95,8 +95,8 @@ const main = async (
   // Construct the Entry request to be sent by the client.
   const request = {
     parent: datacatalog.entryGroupPath(projectId, location, entryGroupId),
-    entryId: entryId,
-    entry: entry,
+    entryId,
+    entry,
   };
 
   // Use the client to send the API request.

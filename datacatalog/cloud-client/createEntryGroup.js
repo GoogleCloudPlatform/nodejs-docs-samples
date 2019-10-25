@@ -37,7 +37,7 @@ const main = async (projectId = process.env.GCLOUD_PROJECT, entryGroupId) => {
   const location = 'us-central1';
 
   // TODO(developer): Uncomment the following lines before running the sample.
-  // const projectId = 'my-project'  
+  // const projectId = 'my-project'
   // const entryGroupId = 'my-entry-group'
 
   // Create an Entry Group.

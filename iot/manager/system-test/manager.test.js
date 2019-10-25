@@ -315,7 +315,7 @@ it('should bind existing device to gateway', async () => {
   // create device
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   await iotClient.createDevice({
-    parent: iotClient.registryPath(projectId, region, registryName),
+    parent: iotClient.deviceRegistryPath(projectId, region, registryName),
     device: {
       id: deviceId,
     },
@@ -353,7 +353,7 @@ it('should list devices bound to gateway', async () => {
 
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   await iotClient.createDevice({
-    parent: iotClient.registryPath(projectId, region, registryName),
+    parent: iotClient.deviceRegistryPath(projectId, region, registryName),
     device: {
       id: deviceId,
     },
@@ -397,7 +397,7 @@ it('should list gateways for bound device', async () => {
   // create device
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   await iotClient.createDevice({
-    parent: iotClient.registryPath(projectId, region, registryName),
+    parent: iotClient.deviceRegistryPath(projectId, region, registryName),
     device: {
       id: deviceId,
     },

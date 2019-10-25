@@ -12,7 +12,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "request": "^2.85.0"
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

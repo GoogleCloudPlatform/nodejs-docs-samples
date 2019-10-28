@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2017 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {Translate} = require('@google-cloud/translate');
+const {Translate} = require('@google-cloud/translate').v2;
 const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'}).trim();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2017 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,10 +15,10 @@
 
 'use strict';
 
-async function detectLanguage(text) {
+function detectLanguageSample(text) {
   // [START translate_detect_language]
   // Imports the Google Cloud client library
-  const {Translate} = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate').v2;
 
   // Creates a client
   const translate = new Translate();
@@ -31,36 +31,43 @@ async function detectLanguage(text) {
   // Detects the language. "text" can be a string for detecting the language of
   // a single piece of text, or an array of strings for detecting the languages
   // of multiple texts.
-  let [detections] = await translate.detect(text);
-  detections = Array.isArray(detections) ? detections : [detections];
-  console.log('Detections:');
-  detections.forEach(detection => {
-    console.log(`${detection.input} => ${detection.language}`);
-  });
+  async function detectLanguage() {
+    let [detections] = await translate.detect(text);
+    detections = Array.isArray(detections) ? detections : [detections];
+    console.log('Detections:');
+    detections.forEach(detection => {
+      console.log(`${detection.input} => ${detection.language}`);
+    });
+  }
 
+  detectLanguage();
   // [END translate_detect_language]
 }
 
-async function listLanguages() {
+function listLanguagesSample() {
   // [START translate_list_codes]
   // Imports the Google Cloud client library
-  const {Translate} = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate').v2;
 
   // Creates a client
   const translate = new Translate();
 
-  // Lists available translation language with their names in English (the default).
-  const [languages] = await translate.getLanguages();
+  async function listLanguages() {
+    // Lists available translation language with their names in English (the default).
+    const [languages] = await translate.getLanguages();
 
-  console.log('Languages:');
-  languages.forEach(language => console.log(language));
+    console.log('Languages:');
+    languages.forEach(language => console.log(language));
+  }
+
+  listLanguages();
   // [END translate_list_codes]
 }
 
-async function listLanguagesWithTarget(target) {
+function listLanguagesWithTargetSample(target) {
   // [START translate_list_language_names]
   // Imports the Google Cloud client library
-  const {Translate} = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate').v2;
 
   // Creates a client
   const translate = new Translate();
@@ -70,19 +77,22 @@ async function listLanguagesWithTarget(target) {
    */
   // const target = 'The target language for language names, e.g. ru';
 
-  // Lists available translation language with their names in a target language
-  const [languages] = await translate.getLanguages(target);
+  async function listLanguagesWithTarget() {
+    // Lists available translation language with their names in a target language
+    const [languages] = await translate.getLanguages(target);
 
-  console.log('Languages:');
-  languages.forEach(language => console.log(language));
+    console.log('Languages:');
+    languages.forEach(language => console.log(language));
+  }
 
+  listLanguagesWithTarget();
   // [END translate_list_language_names]
 }
 
-async function translateText(text, target) {
+function translateTextSample(text, target) {
   // [START translate_translate_text]
   // Imports the Google Cloud client library
-  const {Translate} = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate').v2;
 
   // Creates a client
   const translate = new Translate();
@@ -93,23 +103,26 @@ async function translateText(text, target) {
   // const text = 'The text to translate, e.g. Hello, world!';
   // const target = 'The target language, e.g. ru';
 
-  // Translates the text into the target language. "text" can be a string for
-  // translating a single piece of text, or an array of strings for translating
-  // multiple texts.
-  let [translations] = await translate.translate(text, target);
-  translations = Array.isArray(translations) ? translations : [translations];
-  console.log('Translations:');
-  translations.forEach((translation, i) => {
-    console.log(`${text[i]} => (${target}) ${translation}`);
-  });
+  async function translateText() {
+    // Translates the text into the target language. "text" can be a string for
+    // translating a single piece of text, or an array of strings for translating
+    // multiple texts.
+    let [translations] = await translate.translate(text, target);
+    translations = Array.isArray(translations) ? translations : [translations];
+    console.log('Translations:');
+    translations.forEach((translation, i) => {
+      console.log(`${text[i]} => (${target}) ${translation}`);
+    });
+  }
 
+  translateText();
   // [END translate_translate_text]
 }
 
-async function translateTextWithModel(text, target, model) {
+function translateTextWithModelSample(text, target, model) {
   // [START translate_text_with_model]
   // Imports the Google Cloud client library
-  const {Translate} = require('@google-cloud/translate');
+  const {Translate} = require('@google-cloud/translate').v2;
 
   // Creates a client
   const translate = new Translate();
@@ -121,23 +134,27 @@ async function translateTextWithModel(text, target, model) {
   // const target = 'The target language, e.g. ru';
   // const model = 'The model to use, e.g. nmt';
 
-  const options = {
-    // The target language, e.g. "ru"
-    to: target,
-    // Make sure your project is whitelisted.
-    // Possible values are "base" and "nmt"
-    model: model,
-  };
+  async function translateTextWithModel() {
+    const options = {
+      // The target language, e.g. "ru"
+      to: target,
+      // Make sure your project is whitelisted.
+      // Possible values are "base" and "nmt"
+      model: model,
+    };
 
-  // Translates the text into the target language. "text" can be a string for
-  // translating a single piece of text, or an array of strings for translating
-  // multiple texts.
-  let [translations] = await translate.translate(text, options);
-  translations = Array.isArray(translations) ? translations : [translations];
-  console.log('Translations:');
-  translations.forEach((translation, i) => {
-    console.log(`${text[i]} => (${target}) ${translation}`);
-  });
+    // Translates the text into the target language. "text" can be a string for
+    // translating a single piece of text, or an array of strings for translating
+    // multiple texts.
+    let [translations] = await translate.translate(text, options);
+    translations = Array.isArray(translations) ? translations : [translations];
+    console.log('Translations:');
+    translations.forEach((translation, i) => {
+      console.log(`${text[i]} => (${target}) ${translation}`);
+    });
+  }
+
+  translateTextWithModel();
   // [END translate_text_with_model]
 }
 
@@ -147,7 +164,7 @@ require(`yargs`)
     `detect <text..>`,
     `Detects the language of one or more strings.`,
     {},
-    async opts => await detectLanguage(opts.text).catch(console.error)
+    async opts => await detectLanguageSample(opts.text)
   )
   .command(
     `list [target]`,
@@ -155,9 +172,9 @@ require(`yargs`)
     {},
     async opts => {
       if (opts.target) {
-        await listLanguagesWithTarget(opts.target).catch(console.error);
+        await listLanguagesWithTargetSample(opts.target);
       } else {
-        await listLanguages().catch(console.error);
+        await listLanguagesSample();
       }
     }
   )
@@ -165,17 +182,14 @@ require(`yargs`)
     `translate <toLang> <text..>`,
     `Translates one or more strings into the target language.`,
     {},
-    async opts =>
-      await translateText(opts.text, opts.toLang).catch(console.error)
+    async opts => await translateTextSample(opts.text, opts.toLang)
   )
   .command(
     `translate-with-model <toLang> <model> <text..>`,
     `Translates one or more strings into the target language using the specified model.`,
     {},
     async opts =>
-      await translateTextWithModel(opts.text, opts.toLang, opts.model).catch(
-        console.error
-      )
+      await translateTextWithModelSample(opts.text, opts.toLang, opts.model)
   )
   .example(`node $0 detect "Hello world!"`, `Detects the language of a string.`)
   .example(

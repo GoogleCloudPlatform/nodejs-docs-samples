@@ -71,7 +71,8 @@ describe(REGION_TAG, () => {
     await operation.promise();
   });
 
-  it('should batch translate the input text with a glossary', async () => {
+  // see: https://github.com/googleapis/nodejs-translate/issues/364
+  it.skip('should batch translate the input text with a glossary [FLAKY]', async () => {
     const projectId = await translationClient.getProjectId();
     const inputUri = `gs://cloud-samples-data/translation/text.txt`;
 

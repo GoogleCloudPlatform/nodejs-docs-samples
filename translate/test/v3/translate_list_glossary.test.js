@@ -26,7 +26,7 @@ const REGION_TAG = 'translate_list_glossary';
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const glossaryId = `test-glossary-${uuid.v4()}`;
+  const glossaryId = `my_test_glossary_${uuid.v4()}`;
 
   before(async function() {
     // Add a glossary to be deleted

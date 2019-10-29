@@ -17,6 +17,7 @@
 const {assert} = require('chai');
 const {TranslationServiceClient} = require('@google-cloud/translate');
 const cp = require('child_process');
+const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -24,11 +25,11 @@ const REGION_TAG = 'translate_create_glossary';
 
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
+  const glossaryId = `my_test_glossary_${uuid.v4()}`;
+  const location = 'us-central1';
 
   it('should create a glossary', async function() {
     const projectId = await translationClient.getProjectId();
-    const location = 'us-central1';
-    const glossaryId = 'test-glossary';
     const output = execSync(
       `node v3/${REGION_TAG}.js ${projectId} ${location} ${glossaryId}`
     );
@@ -40,8 +41,6 @@ describe(REGION_TAG, () => {
 
   after('cleanup for glossary create', async function() {
     const projectId = await translationClient.getProjectId();
-    const location = 'us-central1';
-    const glossaryId = 'test-glossary';
     // Delete the glossary to clean up
     const request = {
       parent: `projects/${projectId}/locations/${location}`,

@@ -28,7 +28,7 @@ const REGION_TAG = 'translate_batch_translate_text_with_glossary';
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const glossaryId = 'my-fake_glossary';
+  const glossaryId = `my_test_glossary_${uuid.v4()}`;
   const bucketUuid = uuid.v4();
   const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATION_OUTPUT/`;
   const storage = new Storage();
@@ -71,8 +71,7 @@ describe(REGION_TAG, () => {
     await operation.promise();
   });
 
-  // see: https://github.com/googleapis/nodejs-translate/issues/364
-  it.skip('should batch translate the input text with a glossary [FLAKY]', async () => {
+  it('should batch translate the input text with a glossary', async () => {
     const projectId = await translationClient.getProjectId();
     const inputUri = `gs://cloud-samples-data/translation/text.txt`;
 

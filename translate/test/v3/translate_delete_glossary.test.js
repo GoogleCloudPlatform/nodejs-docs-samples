@@ -17,6 +17,7 @@
 const {assert} = require('chai');
 const {TranslationServiceClient} = require('@google-cloud/translate');
 const cp = require('child_process');
+const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -25,7 +26,7 @@ const REGION_TAG = 'translate_delete_glossary';
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const glossaryId = 'glossary';
+  const glossaryId = `my_test_glossary_${uuid.v4()}`;
 
   before(async function() {
     // Add a glossary to be deleted

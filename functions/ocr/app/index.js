@@ -35,7 +35,7 @@ const Vision = require('@google-cloud/vision');
 const vision = new Vision.ImageAnnotatorClient();
 
 // Get a reference to the Translate API component
-const {Translate} = require('@google-cloud/translate');
+const {Translate} = require('@google-cloud/translate').v2;
 const translate = new Translate();
 
 // [END functions_ocr_setup]

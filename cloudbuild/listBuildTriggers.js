@@ -37,7 +37,7 @@ async function listBuildTriggers(
   };
 
   const [result] = await cb.listBuildTriggers(request);
-  console.info(JSON.stringify(result.triggers, null, 2));
+  console.info(JSON.stringify(result, null, 2));
 }
 // [END cloudbuild_list_build_triggers]
 

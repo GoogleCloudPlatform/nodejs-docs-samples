@@ -20,7 +20,7 @@ function main(
   modelId = 'model-id',
   text = 'text to translate'
 ) {
-  // [START translate_v3_text_with_model]
+  // [START translate_v3_translate_text_with_model]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -54,7 +54,7 @@ function main(
   }
 
   translateTextWithModel();
-  // [END translate_v3_text_with_model]
+  // [END translate_v3_translate_text_with_model]
 }
 
 main(...process.argv.slice(2));

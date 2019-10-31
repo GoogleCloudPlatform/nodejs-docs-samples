@@ -28,7 +28,6 @@ async function setEndpoint(projectId) {
   // A resource that represents Google Cloud Platform location.
   const projectLocation = client.locationPath(projectId, 'eu');
   // [END automl_set_endpoint]
-  console.log(projectLocation);
 
   // Grabs the list of datasets in a given project location.
   // Note: create a dataset in `eu` before calling `listDatasets`.

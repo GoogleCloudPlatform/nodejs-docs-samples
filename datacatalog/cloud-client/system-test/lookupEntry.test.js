@@ -24,10 +24,8 @@ before(tools.checkCredentials);
 
 describe('lookupEntry lookup', () => {
   it('should lookup a dataset entry', async () => {
-    const projectId = process.env.GCLOUD_PUBLIC_PROJECT;
-    const datasetId = process.env.GCLOUD_PUBLIC_DATASET_ID;
     const output = await tools.runAsync(
-      `node lookupEntry.js ${projectId} ${datasetId}`,
+      'node lookupEntry.js bigquery-public-data new_york_taxi_trips',
       cwd
     );
     const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;

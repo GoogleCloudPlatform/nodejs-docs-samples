@@ -25,8 +25,8 @@
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
 const main = async (
-  projectId = 'bigquery-public-data',
-  datasetId = 'new_york_taxi_trips'
+  projectId,
+  datasetId
 ) => {
   // [START datacatalog_lookup_dataset]
   // -------------------------------

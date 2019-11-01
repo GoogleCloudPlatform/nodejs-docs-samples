@@ -25,8 +25,8 @@
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
 const main = async (
-  projectId = process.env.GCLOUD_PROJECT,
-  datasetId = process.env.GCLOUD_DATASET_ID
+  projectId = 'bigquery-public-data',
+  datasetId = 'new_york_taxi_trips'
 ) => {
   // [START datacatalog_lookup_dataset]
   // -------------------------------

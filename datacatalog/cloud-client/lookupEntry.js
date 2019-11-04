@@ -24,10 +24,7 @@
  * For more information, see the README.md under /datacatalog and the
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
-const main = async (
-  projectId,
-  datasetId
-) => {
+const main = async (projectId, datasetId) => {
   // [START datacatalog_lookup_dataset]
   // -------------------------------
   // Import required modules.

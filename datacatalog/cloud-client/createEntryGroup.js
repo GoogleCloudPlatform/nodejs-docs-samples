@@ -18,34 +18,48 @@
 'use strict';
 
 /**
- * This application demonstrates how to perform lookup operations with the
+ * This application demonstrates how to create a Entry Group with the
  * Cloud Data Catalog API.
 
  * For more information, see the README.md under /datacatalog and the
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
-const main = async (projectId, datasetId) => {
-  // [START datacatalog_lookup_dataset]
+const main = async (projectId = process.env.GCLOUD_PROJECT, entryGroupId) => {
+  // [START datacatalog_create_entry_group_tag]
   // -------------------------------
   // Import required modules.
   // -------------------------------
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1beta1;
   const datacatalog = new DataCatalogClient();
 
-  const lookup = async () => {
-    // TODO(developer): Uncomment the following lines before running the sample.
-    // const projectId = 'my-project'
-    // const datasetId = 'my_dataset'
-    const resourceName = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;
-    const request = {linkedResource: resourceName};
-    const [result] = await datacatalog.lookupEntry(request);
-    return result;
+  // Currently, Data Catalog stores metadata in the
+  // us-central1 region.
+  const location = 'us-central1';
+
+  // TODO(developer): Uncomment the following lines before running the sample.
+  // const projectId = 'my-project'
+  // const entryGroupId = 'my-entry-group'
+
+  // Create an Entry Group.
+  // Construct the EntryGroup for the EntryGroup request.
+  const entryGroup = {
+    displayName: 'My Fileset Entry Group',
+    description: 'This Entry Group consists of ....',
   };
 
-  const response = await lookup();
+  // Construct the EntryGroup request to be sent by the client.
+  const entryGroupRequest = {
+    parent: datacatalog.locationPath(projectId, location),
+    entryGroupId,
+    entryGroup,
+  };
+
+  // Use the client to send the API request.
+  const [response] = await datacatalog.createEntryGroup(entryGroupRequest);
+
   console.log(response);
-  // [END datacatalog_lookup_dataset]
+  // [END datacatalog_create_entry_group_tag]
 };
 
-// node lookupEntry.js <projectId> <datasetID>
+// node createEntryGroup.js <projectId> <entryGroupId>
 main(...process.argv.slice(2));

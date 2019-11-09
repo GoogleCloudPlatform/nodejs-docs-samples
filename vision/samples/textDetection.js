@@ -238,26 +238,30 @@ async function main(inputDir) {
     const files = await readdir(inputDir);
 
     // Get a list of all files in the directory (filter out other directories)
-    const allImageFiles = (await Promise.all(
-      files.map(async file => {
-        const filename = path.join(inputDir, file);
-        const stats = await stat(filename);
-        if (!stats.isDirectory()) {
-          return filename;
-        }
-      })
-    )).filter(f => !!f);
+    const allImageFiles = (
+      await Promise.all(
+        files.map(async file => {
+          const filename = path.join(inputDir, file);
+          const stats = await stat(filename);
+          if (!stats.isDirectory()) {
+            return filename;
+          }
+        })
+      )
+    ).filter(f => !!f);
 
     // Figure out which files have already been processed
-    let imageFilesToProcess = (await Promise.all(
-      allImageFiles.map(async filename => {
-        const processed = await index.documentIsProcessed(filename);
-        if (!processed) {
-          // Forward this filename on for further processing
-          return filename;
-        }
-      })
-    )).filter(file => !!file);
+    let imageFilesToProcess = (
+      await Promise.all(
+        allImageFiles.map(async filename => {
+          const processed = await index.documentIsProcessed(filename);
+          if (!processed) {
+            // Forward this filename on for further processing
+            return filename;
+          }
+        })
+      )
+    ).filter(file => !!file);
 
     // The batch endpoint won't handle
     if (imageFilesToProcess.length > 15) {

@@ -20,7 +20,7 @@
     "jsonwebtoken": "^8.5.0",
     "request": "^2.88.0",
     "retry-request": "^4.0.0",
-    "yargs": "^14.0.0"
+    "yargs": "^15.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

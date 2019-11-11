@@ -132,4 +132,9 @@ describe('Recognize', () => {
     );
     assert.match(output, /Channel Tag: 2/);
   });
+
+  it('should run speech diarization on a local file', async () => {
+    const output = execSync(`${cmd} Diarization -f ${filepath2}`);
+    assert.match(output, /speakerTag:/);
+  });
 });

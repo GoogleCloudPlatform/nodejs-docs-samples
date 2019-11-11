@@ -544,12 +544,12 @@ async function syncRecognizeWithAutoPunctuation(
   languageCode
 ) {
   // [START speech_transcribe_auto_punctuation]
-  // Imports the Google Cloud client library for Beta API
+  // Imports the Google Cloud client library for API
   /**
    * TODO(developer): Update client library import to use new
    * version of API when desired features become available
    */
-  const speech = require('@google-cloud/speech').v1p1beta1;
+  const speech = require('@google-cloud/speech');
   const fs = require('fs');
 
   // Creates a client
@@ -710,6 +710,62 @@ async function syncRecognizeWithMultiChannelGCS(gcsUri) {
     .join('\n');
   console.log(`Transcription: \n${transcription}`);
   // [END speech_transcribe_multichannel_gcs]
+}
+
+async function speechTranscribeDiarization(fileName) {
+  // [START speech_transcribe_diarization]
+  const fs = require('fs');
+
+  // Imports the Google Cloud client library
+  const speech = require('@google-cloud/speech');
+
+  // Creates a client
+  const client = new speech.SpeechClient();
+
+  // Set config for Diarization
+  const diarizationConfig = {
+    enableSpeakerDiarization: true,
+    maxSpeakerCount: 2,
+  };
+
+  const config = {
+    encoding: `LINEAR16`,
+    sampleRateHertz: 8000,
+    languageCode: `en-US`,
+    diarizationConfig: diarizationConfig,
+    model: `phone_call`,
+  };
+
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // const fileName = 'Local path to audio file, e.g. /path/to/audio.raw';
+
+  const audio = {
+    content: fs.readFileSync(fileName).toString('base64'),
+  };
+
+  const request = {
+    config: config,
+    audio: audio,
+  };
+
+  const [response] = await client.recognize(request);
+  const transcription = response.results
+    .map(result => result.alternatives[0].transcript)
+    .join('\n');
+  console.log(`Transcription: ${transcription}`);
+  console.log(`Speaker Diarization:`);
+  const result = response.results[response.results.length - 1];
+  const wordsInfo = result.alternatives[0].words;
+  // Note: The transcript within each result is separate and sequential per result.
+  // However, the words list within an alternative includes all the words
+  // from all the results thus far. Thus, to get all the words with speaker
+  // tags, you only have to take the words list from the last result:
+  wordsInfo.forEach(a =>
+    console.log(` word: ${a.word}, speakerTag: ${a.speakerTag}`)
+  );
+  // [END speech_transcribe_diarization]
 }
 
 require(`yargs`) // eslint-disable-line
@@ -883,6 +939,12 @@ require(`yargs`) // eslint-disable-line
         opts.languageCode
       )
   )
+  .command(
+    `Diarization`,
+    `Isolate distinct speakers in an audio file`,
+    {},
+    opts => speechTranscribeDiarization(opts.speechFile)
+  )
   .options({
     encoding: {
       alias: 'e',
@@ -903,6 +965,12 @@ require(`yargs`) // eslint-disable-line
       default: 'en-US',
       global: true,
       requiresArg: true,
+      type: 'string',
+    },
+    speechFile: {
+      alias: 'f',
+      global: true,
+      requiresArg: false,
       type: 'string',
     },
   })

@@ -17,7 +17,7 @@
     "test": "repo-tools test install --cmd=npm -- run unit-test && repo-tools test install --cmd=npm -- run system-test"
   },
   "dependencies": {
-    "googleapis": "^44.0.0",
+    "googleapis": "^45.0.0",
     "moment": "^2.24.0",
     "yargs": "^14.0.0"
   },

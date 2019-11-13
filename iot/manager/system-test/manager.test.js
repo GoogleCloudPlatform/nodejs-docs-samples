@@ -271,9 +271,7 @@ it('should send command message to device', async () => {
   console.log(output);
   assert.ok(output.includes('Sent command'));
 
-  await tools.runAsync(
-    `${cmd} deleteDevice ${deviceId} ${registryName}`, cwd
-  );
+  await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
 
 it('should create a new gateway', async () => {

@@ -272,8 +272,7 @@ it('should send command message to device', async () => {
   assert.ok(output.includes('Sent command'));
 
   await tools.runAsync(
-    `${cmd} deleteDevice ${deviceId} ${registryName}`,
-    cwd
+    `${cmd} deleteDevice ${deviceId} ${registryName}`, cwd
   );
 });
 
@@ -300,9 +299,7 @@ it('should list gateways', async () => {
   );
 
   // look for output in list gateway
-  const gateways = await tools.runAsync(
-    `${cmd} listGateways ${registryName}`
-  );
+  const gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
   assert.ok(gateways.includes(`${gatewayId}`));
 
   await iotClient.deleteDevice({

@@ -20,7 +20,7 @@
  * https://cloud.google.com/vision/automl/docs/
  */
 
-`use strict`;
+'use strict';
 
 function createModel(
   projectId,
@@ -118,7 +118,7 @@ function getOperationStatus(operationFullId) {
 function listModels(projectId, computeRegion, filter) {
   // [START automl_vision_list_models]
   async function automlVisinListModels() {
-    const automl = require(`@google-cloud/automl`);
+    const automl = require('@google-cloud/automl');
 
     const client = new automl.v1beta1.AutoMlClient();
 
@@ -261,7 +261,7 @@ function listModelEvaluations(projectId, computeRegion, modelId, filter) {
   // [START automl_vision_list_model_evaluations]
   async function automlVisionListModelEvalution() {
     const automl = require(`@google-cloud/automl`).v1beta1;
-    const util = require(`util`);
+    const util = require('util');
 
     const client = new automl.AutoMlClient();
     /**
@@ -297,7 +297,7 @@ async function getModelEvaluation(
 ) {
   // [START automl_vision_get_model_evaluation]
   const automl = require(`@google-cloud/automl`).v1beta1;
-  const util = require(`util`);
+  const util = require('util');
 
   const client = new automl.AutoMlClient();
 
@@ -329,7 +329,7 @@ function displayEvaluation(projectId, computeRegion, modelId, filter) {
   // [START automl_vision_display_evaluation]
   async function automlVisionDisplayEvalution() {
     const automl = require(`@google-cloud/automl`).v1beta1;
-    const math = require(`mathjs`);
+    const math = require('mathjs');
 
     const client = new automl.AutoMlClient();
 

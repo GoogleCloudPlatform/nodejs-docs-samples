@@ -20,7 +20,7 @@
  * https://cloud.google.com/vision/automl/docs/
  */
 
-`use strict`;
+'use strict';
 
 function createDataset(projectId, computeRegion, datasetName, multiLabel) {
   // [START automl_vision_create_dataset]

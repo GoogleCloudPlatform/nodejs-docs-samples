@@ -1,22 +1,21 @@
-/**
- * Copyright 2019, Google LLC
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
 const {assert} = require('chai');
-const execa = require('execa');
+const {execSync} = require('child_process');
 
 /** Tests for AutoML Natural Language Entity Extraction - Dataset Operations */
 // TODO(developer): Before running the test cases,
@@ -30,12 +29,12 @@ const filter = 'textExtractionDatasetMetadata:*';
 const datasetId = 'TEN1866654084614848512';
 const importDataCsv = 'gs://cloud-ml-data/NL-entity/dataset.csv';
 
-const exec = async cmd => (await execa.shell(cmd)).stdout;
+const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 describe.skip(`Language Entity DatasetAPI`, () => {
   it(`should create, import and delete a dataset`, async () => {
     // Create dataset
-    let output = await exec(
+    let output = exec(
       `node create-dataset.v1beta1.js "${projectId}" "${computeRegion}" "${datasetName}"`
     );
     const parsedOut = output.split('\n');
@@ -43,13 +42,13 @@ describe.skip(`Language Entity DatasetAPI`, () => {
     assert.match(output, /Dataset display name:/);
 
     // Import data
-    output = await exec(
+    output = exec(
       `node import-data.v1beta1.js "${projectId}" "${computeRegion}" "${outputDatasetId}" "${importDataCsv}"`
     );
     assert.match(output, /Processing import.../);
 
     // Delete dataset
-    output = await exec(
+    output = exec(
       `node delete-dataset.v1beta1.js "${projectId}" "${computeRegion}" "${outputDatasetId}"`
     );
     assert.match(output, /Dataset delete details:/);
@@ -57,7 +56,7 @@ describe.skip(`Language Entity DatasetAPI`, () => {
 
   it(`should list datasets`, async () => {
     // List datasets
-    const output = await exec(
+    const output = exec(
       `node list-datasets.v1beta1.js "${projectId}" "${computeRegion}" "${filter}"`
     );
     assert.match(output, /List of datasets:/);
@@ -65,7 +64,7 @@ describe.skip(`Language Entity DatasetAPI`, () => {
 
   it(`should get preexisting dataset`, async () => {
     // Get dataset
-    const output = await exec(
+    const output = exec(
       `node get-dataset.v1beta1.js  "${projectId}" "${computeRegion}" "${datasetId}"`
     );
     assert.match(output, /Dataset display name:/);
@@ -74,7 +73,7 @@ describe.skip(`Language Entity DatasetAPI`, () => {
   it(`should export dataset`, async () => {
     // Export data
     const outputUri = 'gs://' + bucket + '/' + datasetId;
-    const output = await exec(
+    const output = exec(
       `node export-data.v1beta1.js  "${projectId}" "${computeRegion}" "${datasetId}" "${outputUri}"`
     );
     assert.match(output, /Processing export../);

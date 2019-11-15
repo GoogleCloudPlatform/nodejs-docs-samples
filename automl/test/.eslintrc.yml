@@ -1,5 +1,5 @@
 ---
-env:
-  mocha: true
 rules:
   no-warning-comments: off
+env:
+  mocha: true

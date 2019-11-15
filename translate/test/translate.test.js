@@ -68,9 +68,7 @@ describe('translate sample tests', () => {
   it('should translate multiple strings', async () => {
     const output = execSync(`${cmd} translate ${toLang} "${text}" "${text2}"`);
     const [translations] = await translate.translate([text, text2], toLang);
-    const expected = `Translations:\n${text} => (${toLang}) ${
-      translations[0]
-    }\n${text2} => (${toLang}) ${translations[1]}`;
+    const expected = `Translations:\n${text} => (${toLang}) ${translations[0]}\n${text2} => (${toLang}) ${translations[1]}`;
     assert.strictEqual(output, expected);
   });
 
@@ -88,9 +86,7 @@ describe('translate sample tests', () => {
       `${cmd} translate-with-model ${toLang} ${model} "${text}" "${text2}"`
     );
     const [translations] = await translate.translate([text, text2], toLang);
-    const expected = `Translations:\n${text} => (${toLang}) ${
-      translations[0]
-    }\n${text2} => (${toLang}) ${translations[1]}`;
+    const expected = `Translations:\n${text} => (${toLang}) ${translations[0]}\n${text2} => (${toLang}) ${translations[1]}`;
     assert.strictEqual(output, expected);
   });
 });

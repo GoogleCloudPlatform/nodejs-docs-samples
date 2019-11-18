@@ -21,7 +21,7 @@ const uuid = require('uuid');
 const region = 'us-central1';
 const clusterName = `test-${uuid()}`;
 
-const dataproc = require('@google-cloud/dataproc');
+const dataproc = require('@google-cloud/dataproc').v1;
 const client = new dataproc.v1.ClusterControllerClient({
   apiEndpoint: `${region}-dataproc.googleapis.com`,
 });
@@ -35,7 +35,7 @@ describe('create a dataproc cluster', () => {
     const stdout = execSync(
       `node createCluster.js "${projectId}" "${region}" "${clusterName}"`
     );
-    assert.match(stdout, /clusterUuid/);
+    assert.match(stdout, new RegExp(`${clusterName}`));
   });
 
   after(async () => {

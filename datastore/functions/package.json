@@ -15,7 +15,7 @@
     "test": "mocha test/*.test.js --timeout=5000"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^4.1.1",
+    "@google-cloud/datastore": "^5.0.0",
     "supertest": "^4.0.0"
   },
   "devDependencies": {

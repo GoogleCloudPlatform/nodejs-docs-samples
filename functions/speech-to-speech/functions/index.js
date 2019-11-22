@@ -35,7 +35,7 @@ const voiceSsmlGender = 'NEUTRAL';
 
 // Declare the API clients as global variables to allow them to initiaze at cold start.
 const {SpeechClient} = require('@google-cloud/speech');
-const {Translate} = require('@google-cloud/translate');
+const {Translate} = require('@google-cloud/translate').v2;
 const {TextToSpeechClient} = require('@google-cloud/text-to-speech');
 const {Storage} = require('@google-cloud/storage');
 

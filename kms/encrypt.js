@@ -34,8 +34,7 @@ async function encrypt(
 
   // Reads the file to be encrypted
   const readFile = promisify(fs.readFile);
-  const contentsBuffer = await readFile(plaintextFileName);
-  const plaintext = contentsBuffer.toString('base64');
+  const plaintext = await readFile(plaintextFileName);
   const name = client.cryptoKeyPath(
     projectId,
     locationId,
@@ -46,7 +45,7 @@ async function encrypt(
   // Encrypts the file using the specified crypto key
   const [result] = await client.encrypt({name, plaintext});
   const writeFile = promisify(fs.writeFile);
-  await writeFile(ciphertextFileName, Buffer.from(result.ciphertext, 'base64'));
+  await writeFile(ciphertextFileName, result.ciphertext);
   console.log(`Encrypted ${plaintextFileName} using ${result.name}.`);
   console.log(`Result saved to ${ciphertextFileName}.`);
 }

@@ -34,21 +34,20 @@ async function decrypt(
 
   // Reads the file to be decrypted
   const readFile = promisify(fs.readFile);
-  const contentsBuffer = await readFile(ciphertextFileName);
+  const ciphertext = await readFile(ciphertextFileName);
   const name = client.cryptoKeyPath(
     projectId,
     locationId,
     keyRingId,
     cryptoKeyId
   );
-  const ciphertext = contentsBuffer.toString('base64');
 
   // Decrypts the file using the specified crypto key
   const [result] = await client.decrypt({name, ciphertext});
 
   // Writes the decrypted file to disk
   const writeFile = promisify(fs.writeFile);
-  await writeFile(plaintextFileName, Buffer.from(result.plaintext, 'base64'));
+  await writeFile(plaintextFileName, result.plaintext);
   console.log(
     `Decrypted ${ciphertextFileName}, result saved to ${plaintextFileName}.`
   );

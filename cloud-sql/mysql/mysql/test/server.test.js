@@ -17,7 +17,6 @@
 const request = require('supertest');
 const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 // Stub out MySQL calls
 const stubMysql = sinon.stub(require('promise-mysql'));
@@ -29,9 +28,6 @@ poolStub['query'] = queryStub;
 stubMysql.createPool.returns(poolStub);
 
 const server = require('../server.js');
-
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
 
 it('check index page', async () => {
   const response = await request(server)

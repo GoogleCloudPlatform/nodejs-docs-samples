@@ -13,7 +13,6 @@
     "@sendgrid/mail": "^6.4.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^6.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^7.0.0"

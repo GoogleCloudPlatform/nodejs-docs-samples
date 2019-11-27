@@ -16,9 +16,9 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const cwd = path.join(__dirname, '..');
+const {exec} = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 // Use unique id to avoid conflicts between concurrent test runs
@@ -28,16 +28,28 @@ const location = 'us-central1';
 const {DataCatalogClient} = require('@google-cloud/datacatalog').v1beta1;
 const datacatalog = new DataCatalogClient();
 
-before(tools.checkCredentials);
+before(() => {
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
+});
 
 describe('createEntryGroup', () => {
-  it('should create a entry group', async () => {
-    const output = await tools.runAsync(
-      `node createEntryGroup.js ${projectId} ${entryGroupId}`,
-      cwd
-    );
+  it('should create a entry group', done => {
     const expectedName = `projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}`;
-    assert.ok(output.includes(expectedName));
+    exec(
+      `node createEntryGroup.js ${projectId} ${entryGroupId}`,
+      {cwd},
+      (err, stdout) => {
+        assert.ok(stdout.includes(expectedName));
+        done();
+      }
+    );
   });
 
   after(async () => {

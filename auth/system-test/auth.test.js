@@ -23,7 +23,16 @@ const cmd = 'node auth.js';
 
 const {BUCKET_NAME} = process.env;
 
-before(tools.checkCredentials);
+before(() => {
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
+});
 
 it('should load credentials implicitly', async () => {
   const output = await tools.runAsync(`${cmd} auth-cloud-implicit`, cwd);

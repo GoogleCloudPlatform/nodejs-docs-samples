@@ -28,7 +28,6 @@
     "@google-cloud/pubsub": "^1.0.0",
     "@google-cloud/storage": "^4.0.0",
     "child-process-promise": "^2.2.1",
-    "delay": "^4.3.0",
     "express": "^4.16.3",
     "mocha": "^6.1.4",
     "moment": "^2.24.0",

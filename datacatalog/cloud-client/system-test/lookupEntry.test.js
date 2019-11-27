@@ -16,20 +16,32 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const cwd = path.join(__dirname, '..');
+const {exec} = require('child_process');
 
-before(tools.checkCredentials);
+before(() => {
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
+});
 
 describe('lookupEntry lookup', () => {
-  it('should lookup a dataset entry', async () => {
+  it('should lookup a dataset entry', done => {
     const projectId = 'bigquery-public-data';
     const datasetId = 'new_york_taxi_trips';
-    const output = await tools.runAsync(
-      `node lookupEntry.js ${projectId} ${datasetId}`,
-      cwd
-    );
     const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;
-    assert.ok(output.includes(expectedLinkedResource));
+    exec(
+      `node lookupEntry.js ${projectId} ${datasetId}`,
+      {cwd},
+      (err, stdout) => {
+        assert.ok(stdout.includes(expectedLinkedResource));
+        done();
+      }
+    );
   });
 });

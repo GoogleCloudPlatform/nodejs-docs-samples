@@ -13,23 +13,10 @@
     "test": "mocha system-test/*.test.js --timeout=60000"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^6.0.0",
     "uuid": "^3.1.0"
   },
   "dependencies": {
     "@google-cloud/datacatalog": "^1.3.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "build": {
-        "requiredEnvVars": [
-          "GCLOUD_PROJECT",
-          "GCLOUD_DATASET_ID"
-        ]
-      }
-    }
   }
 }

@@ -19,7 +19,6 @@ const uuid = require('uuid');
 const assert = require('assert');
 const path = require('path');
 const childProcess = require('child_process');
-const delay = require('delay');
 const moment = require('moment');
 const promiseRetry = require('promise-retry');
 

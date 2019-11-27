@@ -21,19 +21,8 @@ const sinon = require('sinon');
 const execPromise = require('child-process-promise').exec;
 
 const program = require('..');
-
-const {PubSub} = require('@google-cloud/pubsub');
-const pubsub = new PubSub();
-const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
-
-const topicName = process.env.FUNCTIONS_TOPIC;
-
-const localFileName = 'test.txt';
 const fileName = `test-${uuid.v4()}.txt`;
-
 const bucketName = process.env.FUNCTIONS_BUCKET;
-const bucket = storage.bucket(bucketName);
 
 const startFF = (target, signature, port) => {
   const cwd = path.join(__dirname, '..');

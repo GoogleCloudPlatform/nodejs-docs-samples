@@ -14,7 +14,6 @@
 
 // [START functions_pubsub_system_test]
 const childProcess = require('child_process');
-const delay = require('delay');
 const assert = require('assert');
 const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');

@@ -26,7 +26,16 @@ const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
 const keeplistTags = 'PatientID';
 const cloudRegion = 'us-central1';
 
-before(tools.checkCredentials);
+before(() => {
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
+});
 after(async () => {
   try {
     await tools.runAsync(

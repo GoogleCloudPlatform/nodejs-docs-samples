@@ -42,7 +42,14 @@ const seriesUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.108';
 const instanceUid = '1.2.840.113619.2.176.3596.3364818.7271.1259708501.876';
 
 before(async () => {
-  tools.checkCredentials();
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
   await tools.runAsync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets

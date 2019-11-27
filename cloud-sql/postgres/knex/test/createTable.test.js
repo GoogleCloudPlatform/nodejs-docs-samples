@@ -17,7 +17,7 @@
 const assert = require('assert');
 const path = require('path');
 const Knex = require('knex');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {exec} = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 
@@ -41,20 +41,25 @@ before(async () => {
   }
 });
 
-it('should create a table', async () => {
-  const output = await tools.runAsync(
+it('should create a table', done => {
+  exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
-    cwd
+    {cwd},
+    (err, stdout) => {
+      assert.ok(stdout.includes(`Successfully created 'votes' table.`));
+      done();
+    }
   );
-  assert.ok(output.includes(`Successfully created 'votes' table.`));
 });
 
-it('should handle existing tables', async () => {
-  const {stderr} = await tools.runAsyncWithIO(
+it('should handle existing tables', done => {
+  exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
-    cwd
+    {cwd},
+    (err, stdout, stderr) => {
+      assert.ok(stderr.includes("Failed to create 'votes' table:"));
+      assert.ok(stderr.includes('already exists'));
+      done();
+    }
   );
-
-  assert.ok(stderr.includes("Failed to create 'votes' table:"));
-  assert.ok(stderr.includes('already exists'));
 });

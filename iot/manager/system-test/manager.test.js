@@ -39,7 +39,14 @@ const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   tools.run(installDeps, `${cwd}/../mqtt_example`);
-  tools.checkCredentials();
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
   // Create a topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);

@@ -35,7 +35,14 @@ const resourceType = 'Patient';
 let resourceId;
 
 before(async () => {
-  tools.checkCredentials();
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
   await tools.runAsync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets

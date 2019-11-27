@@ -44,7 +44,14 @@ const fhirResourceFile = `resources/${fhirFileName}`;
 const gcsUri = `${bucketName}/${fhirFileName}`;
 
 before(async () => {
-  tools.checkCredentials();
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
   // Create a Cloud Storage bucket to be used for testing.
   await storage.createBucket(bucketName);
   console.log(`Bucket ${bucketName} created.`);

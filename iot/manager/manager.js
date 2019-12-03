@@ -88,22 +88,26 @@ const createIotTopic = async topicName => {
 // Lookup the registry, assuming that it exists.
 const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_lookup_registry]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: registryName,
-  };
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
 
   try {
-    const {data} = await client.projects.locations.registries.get(request);
-
-    console.log('Looked up existing registry');
-    console.log(data);
+    var registryName = iotClient.registryPath(
+        projectId, cloudRegion, registryId);
+    iotClient.getDeviceRegistry({name: registryName}).then(responses => {
+      var response = responses[0];
+      // doThingsWith(response)
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
   } catch (err) {
     console.log('Could not look up registry');
     console.log(err);
@@ -120,35 +124,41 @@ const createRegistry = async (
 ) => {
   // [START iot_create_registry]
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
   // function errCb = lookupRegistry; // Lookup registry if already exists.
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const pubsubTopic = `projects/${projectId}/topics/${pubsubTopicId}`;
+  const iot = require('@google-cloud/iot');
 
-  const request = {
-    parent: parentName,
-    resource: {
+  // Lookup the pubsub topc
+  const topicPath = `projects/${projectId}/topics/${pubsubTopicId}`;
+
+  var iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  var newParent = iotClient.locationPath(projectId, cloudRegion);
+  var deviceRegistry = {
       eventNotificationConfigs: [
         {
-          pubsubTopicName: pubsubTopic,
+          pubsubTopicName: topicPath,
         },
       ],
       id: registryId,
-    },
+  };
+  var request = {
+    parent: newParent,
+    deviceRegistry: deviceRegistry,
   };
 
-  try {
-    const {data} = await client.projects.locations.registries.create(request);
-
-    console.log('Successfully created registry');
-    console.log(data);
-  } catch (err) {
-    console.log('Could not create registry');
-    console.log(err);
-  }
+  iotClient.createDeviceRegistry(request).then(responses => {
+      var response = responses[0];
+      console.log('Successfully created registry');
+      console.log(response);
+    }).catch(err => {
+      console.log('Could not create registry');
+      console.error(err);
+    });
   // [END iot_create_registry]
 };
 
@@ -466,34 +476,34 @@ const listDevices = async (client, registryId, projectId, cloudRegion) => {
 // List all of the registries in the given project.
 const listRegistries = async (client, projectId, cloudRegion) => {
   // [START iot_list_registries]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const iot = require('@google-cloud/iot');
 
-  const request = {
-    parent: parentName,
-  };
+  var newClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
 
-  try {
-    const {data} = await client.projects.locations.registries.list(request);
-    console.log('Current registries in project:\n', data['deviceRegistries']);
-  } catch (err) {
-    console.log('Could not list registries');
-    console.log(err);
-  }
+  // Iterate over all elements.
+  var formattedParent = newClient.locationPath(projectId, cloudRegion);
+
+  newClient.listDeviceRegistries({parent: formattedParent}).then(responses => {
+    var resources = responses[0];
+    console.log('Current registries in project:\n', resources);
+  }).catch(err => {
+    console.error(err);
+  });
   // [END iot_list_registries]
 };
 
 // Delete the given device from the registry.
 const deleteDevice = async (
-  client,
-  deviceId,
-  registryId,
-  projectId,
-  cloudRegion
-) => {
+    client,
+    deviceId,
+    registryId,
+    projectId,
+    cloudRegion
+  ) => {
   // [START iot_delete_device]
   // Client retrieved in callback
   // getClient(serviceAccountJson, function(client) {...});
@@ -577,25 +587,24 @@ const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
 const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_delete_registry]
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: registryName,
-  };
 
-  try {
-    const res = await client.projects.locations.registries.delete(request);
+  const iot = require('@google-cloud/iot');
 
+  var iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  var registryName = iotClient.registryPath(projectId, cloudRegion, registryId);
+  iotClient.deleteDeviceRegistry({name: registryName}).then(responses => {
+    console.log(responses);
     console.log('Successfully deleted registry');
-    console.log(res);
-  } catch (err) {
+  }).catch(err => {
     console.log('Could not delete registry');
-    console.log(err);
-  }
+    console.error(err);
+  });
   // [END iot_delete_registry]
 };
 
@@ -799,17 +808,25 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}`,
-  };
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
 
   try {
-    const {data} = await client.projects.locations.registries.get(request);
+    var registryName = iotClient.registryPath(
+        projectId, cloudRegion, registryId);
+    iotClient.getDeviceRegistry({name: registryName}).then(responses => {
+      var response = responses[0];
 
-    console.log('Found registry:', registryId);
-    console.log(data);
+      // doThingsWith(response)
+      console.log('Found registry:', registryId);
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
   } catch (err) {
     console.log('Could not find registry:', registryId);
     console.log(err);
@@ -845,39 +862,42 @@ const getClient = async serviceAccountJson => {
 // Retrieves the IAM policy for a given registry.
 const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_get_iam_policy]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    resource_: `${registryName}`,
-  };
+  const iot = require('@google-cloud/iot');
+
+  var client = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  var formattedResource = client.registryPath(
+      projectId, cloudRegion, registryId);
 
   let bindings, etag;
-  try {
-    const {data} = await client.projects.locations.registries.getIamPolicy(
-      request
-    );
-    bindings = data.bindings;
-    etag = data.etag;
-  } catch (err) {
-    console.log('Could not find policy for: ', registryId);
-    console.log('Trace: ', err);
-    return;
-  }
+  client.getIamPolicy({resource: formattedResource})
+    .then(responses => {
+      var response = responses[0];
 
-  console.log(`ETAG: ${etag}`);
-  bindings = bindings || [];
-  bindings.forEach(_binding => {
-    console.log(`Role: ${_binding.role}`);
-    _binding.members || (_binding.members = []);
-    _binding.members.forEach(_member => {
-      console.log(`\t${_member}`);
+      bindings = response.bindings;
+      etag = response.etag;
+
+      console.log('ETAG:', response.etag);
+      bindings = bindings || [];
+
+      bindings.forEach(_binding => {
+        console.log(`Role: ${_binding.role}`);
+        _binding.members || (_binding.members = []);
+        _binding.members.forEach(_member => {
+          console.log(`\t${_member}`);
+        });
+      });
+    }).catch(err => {
+      console.log('Could not find policy for: ', registryId);
+      console.log('Trace: ', err);
+      return;
     });
-  });
+
   // [END iot_get_iam_policy]
 };
 
@@ -891,50 +911,55 @@ const setIamPolicy = async (
   role
 ) => {
   // [START iot_set_iam_policy]
-  // Client retrieved in callback
-  // setClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    resource_: `${registryName}`,
-    resource: {
-      policy: {
-        bindings: [
-          {
-            members: member,
-            role: role,
-          },
-        ],
+
+  const iot = require('@google-cloud/iot');
+
+  var iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  var resource = iotClient.registryPath(projectId, cloudRegion, registryId);
+
+  const policy = {
+    bindings: [
+      {
+        members: [member],
+        role: role,
       },
-    },
+    ],
+  };
+
+  var request = {
+    resource: resource,
+    policy: policy,
   };
 
   let bindings, etag;
-  try {
-    const {data} = await client.projects.locations.registries.setIamPolicy(
-      request
-    );
-    bindings = data.bindings;
-    etag = data.etag;
+  iotClient.setIamPolicy(request).then(responses => {
+    let response = responses[0];
 
-    console.log(JSON.stringify(data));
-  } catch (err) {
+    bindings = response.bindings;
+    etag = response.etag;
+
+    console.log('ETAG:', response.etag);
+    bindings = bindings || [];
+
+    bindings.forEach(_binding => {
+      console.log(`Role: ${_binding.role}`);
+      _binding.members || (_binding.members = []);
+      _binding.members.forEach(_member => {
+        console.log(`\t${_member}`);
+      });
+    });
+
+  }).catch(err => {
     console.log('Could not set policy for: ', registryId);
     console.log('Trace: ', err);
-  }
-
-  console.log(`ETAG: ${etag}`);
-  bindings = bindings || [];
-  bindings.forEach(_binding => {
-    console.log(`Role: ${_binding.role}`);
-    _binding.members || (_binding.members = []);
-    _binding.members.forEach(_member => {
-      console.log(`\t${_member}`);
-    });
   });
+
   // [END iot_set_iam_policy]
 };
 

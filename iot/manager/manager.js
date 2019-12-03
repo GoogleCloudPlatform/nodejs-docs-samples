@@ -155,8 +155,8 @@ const createRegistry = async (
 
   try {
     const responses = await iotClient.createDeviceRegistry(request);
+    const response = responses[0];
 
-    let response = responses[0];
     console.log('Successfully created registry');
     console.log(response);
   } catch (err) {
@@ -492,7 +492,7 @@ const listRegistries = async (client, projectId, cloudRegion) => {
   const formattedParent = newClient.locationPath(projectId, cloudRegion);
 
   try {
-    const responses = newClient.listDeviceRegistries({parent: formattedParent});
+    const responses = await newClient.listDeviceRegistries({parent: formattedParent});
     const resources = responses[0];
     console.log('Current registries in project:\n', resources);
   } catch (err) {
@@ -893,7 +893,7 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
 
   let bindings, etag;
   try {
-    const responses = iotClient.getIamPolicy({resource: formattedResource});
+    const responses = await iotClient.getIamPolicy({resource: formattedResource});
     const response = responses[0];
 
     bindings = response.bindings;

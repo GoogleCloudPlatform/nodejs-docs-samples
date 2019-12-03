@@ -98,10 +98,12 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
   });
 
   try {
-    var registryName = iotClient.registryPath(
-        projectId, cloudRegion, registryId);
+    let registryName = iotClient.registryPath(
+        projectId,
+        cloudRegion,
+        registryId);
     iotClient.getDeviceRegistry({name: registryName}).then(responses => {
-      var response = responses[0];
+      let response = responses[0];
       // doThingsWith(response)
       console.log(response);
     })
@@ -133,12 +135,12 @@ const createRegistry = async (
   // Lookup the pubsub topc
   const topicPath = `projects/${projectId}/topics/${pubsubTopicId}`;
 
-  var iotClient = new iot.v1.DeviceManagerClient({
+  let iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
 
-  var newParent = iotClient.locationPath(projectId, cloudRegion);
-  var deviceRegistry = {
+  let newParent = iotClient.locationPath(projectId, cloudRegion);
+  let deviceRegistry = {
       eventNotificationConfigs: [
         {
           pubsubTopicName: topicPath,
@@ -146,13 +148,13 @@ const createRegistry = async (
       ],
       id: registryId,
   };
-  var request = {
+  let request = {
     parent: newParent,
     deviceRegistry: deviceRegistry,
   };
 
   iotClient.createDeviceRegistry(request).then(responses => {
-      var response = responses[0];
+      let response = responses[0];
       console.log('Successfully created registry');
       console.log(response);
     }).catch(err => {
@@ -480,15 +482,15 @@ const listRegistries = async (client, projectId, cloudRegion) => {
   // const projectId = 'adjective-noun-123';
   const iot = require('@google-cloud/iot');
 
-  var newClient = new iot.v1.DeviceManagerClient({
+  let newClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
 
   // Iterate over all elements.
-  var formattedParent = newClient.locationPath(projectId, cloudRegion);
+  let formattedParent = newClient.locationPath(projectId, cloudRegion);
 
   newClient.listDeviceRegistries({parent: formattedParent}).then(responses => {
-    var resources = responses[0];
+    let resources = responses[0];
     console.log('Current registries in project:\n', resources);
   }).catch(err => {
     console.error(err);
@@ -593,11 +595,11 @@ const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
 
   const iot = require('@google-cloud/iot');
 
-  var iotClient = new iot.v1.DeviceManagerClient({
+  let iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
 
-  var registryName = iotClient.registryPath(projectId, cloudRegion, registryId);
+  let registryName = iotClient.registryPath(projectId, cloudRegion, registryId);
   iotClient.deleteDeviceRegistry({name: registryName}).then(responses => {
     console.log(responses);
     console.log('Successfully deleted registry');
@@ -815,10 +817,10 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
   });
 
   try {
-    var registryName = iotClient.registryPath(
+    let registryName = iotClient.registryPath(
         projectId, cloudRegion, registryId);
     iotClient.getDeviceRegistry({name: registryName}).then(responses => {
-      var response = responses[0];
+      let response = responses[0];
 
       // doThingsWith(response)
       console.log('Found registry:', registryId);
@@ -867,17 +869,17 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
   // const registryId = 'my-registry';
   const iot = require('@google-cloud/iot');
 
-  var client = new iot.v1.DeviceManagerClient({
+  let client = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
 
-  var formattedResource = client.registryPath(
+  let formattedResource = client.registryPath(
       projectId, cloudRegion, registryId);
 
   let bindings, etag;
   client.getIamPolicy({resource: formattedResource})
     .then(responses => {
-      var response = responses[0];
+      let response = responses[0];
 
       bindings = response.bindings;
       etag = response.etag;
@@ -917,11 +919,11 @@ const setIamPolicy = async (
 
   const iot = require('@google-cloud/iot');
 
-  var iotClient = new iot.v1.DeviceManagerClient({
+  let iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
 
-  var resource = iotClient.registryPath(projectId, cloudRegion, registryId);
+  let resource = iotClient.registryPath(projectId, cloudRegion, registryId);
 
   const policy = {
     bindings: [
@@ -932,7 +934,7 @@ const setIamPolicy = async (
     ],
   };
 
-  var request = {
+  let request = {
     resource: resource,
     policy: policy,
   };

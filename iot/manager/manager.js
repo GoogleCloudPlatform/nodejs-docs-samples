@@ -886,18 +886,18 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
   // const registryId = 'my-registry';
   const iot = require('@google-cloud/iot');
 
-  let client = new iot.v1.DeviceManagerClient({
+  let iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
 
-  let formattedResource = client.registryPath(
+  let formattedResource = iotClient.registryPath(
     projectId,
     cloudRegion,
     registryId
   );
 
   let bindings, etag;
-  client
+  iotClient
     .getIamPolicy({resource: formattedResource})
     .then(responses => {
       let response = responses[0];

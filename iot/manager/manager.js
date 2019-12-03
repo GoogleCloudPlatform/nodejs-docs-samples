@@ -103,16 +103,13 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
       cloudRegion,
       registryId
     );
-    iotClient
-      .getDeviceRegistry({name: registryName})
-      .then(responses => {
-        const response = responses[0];
-        // doThingsWith(response)
-        console.log(response);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    try {
+      const responses = await iotClient.getDeviceRegistry({name: registryName});
+      const response = responses[0];
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
   } catch (err) {
     console.log('Could not look up registry');
     console.log(err);
@@ -156,17 +153,16 @@ const createRegistry = async (
     deviceRegistry: deviceRegistry,
   };
 
-  iotClient
-    .createDeviceRegistry(request)
-    .then(responses => {
-      let response = responses[0];
-      console.log('Successfully created registry');
-      console.log(response);
-    })
-    .catch(err => {
-      console.log('Could not create registry');
-      console.error(err);
-    });
+  try {
+    const responses = await iotClient.createDeviceRegistry(request);
+
+    let response = responses[0];
+    console.log('Successfully created registry');
+    console.log(response);
+  } catch (err) {
+    console.log('Could not create registry');
+    console.error(err);
+  }
   // [END iot_create_registry]
 };
 
@@ -495,15 +491,13 @@ const listRegistries = async (client, projectId, cloudRegion) => {
   // Iterate over all elements.
   const formattedParent = newClient.locationPath(projectId, cloudRegion);
 
-  newClient
-    .listDeviceRegistries({parent: formattedParent})
-    .then(responses => {
-      const resources = responses[0];
-      console.log('Current registries in project:\n', resources);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  try {
+    const responses = newClient.listDeviceRegistries({parent: formattedParent});
+    const resources = responses[0];
+    console.log('Current registries in project:\n', resources);
+  } catch (err) {
+    console.error(err);
+  }
   // [END iot_list_registries]
 };
 
@@ -608,17 +602,21 @@ const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
     // optional auth parameters.
   });
 
-  const registryName = iotClient.registryPath(projectId, cloudRegion, registryId);
-  iotClient
-    .deleteDeviceRegistry({name: registryName})
-    .then(responses => {
-      console.log(responses);
-      console.log('Successfully deleted registry');
-    })
-    .catch(err => {
-      console.log('Could not delete registry');
-      console.error(err);
+  const registryName = iotClient.registryPath(
+    projectId,
+    cloudRegion,
+    registryId
+  );
+  try {
+    const responses = await iotClient.deleteDeviceRegistry({
+      name: registryName,
     });
+    console.log(responses);
+    console.log('Successfully deleted registry');
+  } catch (err) {
+    console.log('Could not delete registry');
+    console.error(err);
+  }
   // [END iot_delete_registry]
 };
 
@@ -834,18 +832,15 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
       cloudRegion,
       registryId
     );
-    iotClient
-      .getDeviceRegistry({name: registryName})
-      .then(responses => {
-        const response = responses[0];
+    try {
+      const responses = await iotClient.getDeviceRegistry({name: registryName});
+      const response = responses[0];
 
-        // doThingsWith(response)
-        console.log('Found registry:', registryId);
-        console.log(response);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+      console.log('Found registry:', registryId);
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
   } catch (err) {
     console.log('Could not find registry:', registryId);
     console.log(err);
@@ -897,30 +892,28 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
   );
 
   let bindings, etag;
-  iotClient
-    .getIamPolicy({resource: formattedResource})
-    .then(responses => {
-      const response = responses[0];
+  try {
+    const responses = iotClient.getIamPolicy({resource: formattedResource});
+    const response = responses[0];
 
-      bindings = response.bindings;
-      etag = response.etag;
+    bindings = response.bindings;
+    etag = response.etag;
 
-      console.log('ETAG:', etag);
-      bindings = bindings || [];
+    console.log('ETAG:', etag);
+    bindings = bindings || [];
 
-      bindings.forEach(_binding => {
-        console.log(`Role: ${_binding.role}`);
-        _binding.members || (_binding.members = []);
-        _binding.members.forEach(_member => {
-          console.log(`\t${_member}`);
-        });
+    bindings.forEach(_binding => {
+      console.log(`Role: ${_binding.role}`);
+      _binding.members || (_binding.members = []);
+      _binding.members.forEach(_member => {
+        console.log(`\t${_member}`);
       });
-    })
-    .catch(err => {
-      console.log('Could not find policy for: ', registryId);
-      console.log('Trace: ', err);
-      return;
     });
+  } catch (err) {
+    console.log('Could not find policy for: ', registryId);
+    console.log('Trace: ', err);
+    return;
+  }
 
   // [END iot_get_iam_policy]
 };
@@ -962,30 +955,27 @@ const setIamPolicy = async (
   };
 
   let bindings, etag;
-  iotClient
-    .setIamPolicy(request)
-    .then(responses => {
-      const response = responses[0];
+  try {
+    const responses = await iotClient.setIamPolicy(request);
+    const response = responses[0];
 
-      bindings = response.bindings;
-      etag = response.etag;
+    bindings = response.bindings;
+    etag = response.etag;
 
-      console.log('ETAG:', etag);
-      bindings = bindings || [];
+    console.log('ETAG:', etag);
+    bindings = bindings || [];
 
-      bindings.forEach(_binding => {
-        console.log(`Role: ${_binding.role}`);
-        _binding.members || (_binding.members = []);
-        _binding.members.forEach(_member => {
-          console.log(`\t${_member}`);
-        });
+    bindings.forEach(_binding => {
+      console.log(`Role: ${_binding.role}`);
+      _binding.members || (_binding.members = []);
+      _binding.members.forEach(_member => {
+        console.log(`\t${_member}`);
       });
-    })
-    .catch(err => {
-      console.log('Could not set policy for: ', registryId);
-      console.log('Trace: ', err);
     });
-
+  } catch (err) {
+    console.log('Could not set policy for: ', registryId);
+    console.log('Trace: ', err);
+  }
   // [END iot_set_iam_policy]
 };
 

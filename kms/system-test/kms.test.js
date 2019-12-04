@@ -18,14 +18,14 @@ const fs = require(`fs`);
 const path = require(`path`);
 const {assert} = require('chai');
 const cp = require('child_process');
-const uuid = require(`uuid`);
 const {promisify} = require('util');
+const uuidv4 = require(`uuid/v4`);
 const unlink = promisify(fs.unlink);
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const keyRingName = `test-ring-${uuid.v4()}`;
-const keyNameOne = `test-key-${uuid.v4()}`;
+const keyRingName = `test-ring-${uuidv4()}`;
+const keyNameOne = `test-key-${uuidv4()}`;
 const member = `allAuthenticatedUsers`;
 const role = `roles/viewer`;
 const projectId = process.env.GCLOUD_PROJECT;
@@ -36,6 +36,8 @@ const decrypted = path.join(__dirname, `../resources/plaintext.txt.decrypted`);
 const unspecifiedKeyRingName = `projects/${projectId}/locations/global/keyRings/`;
 const formattedKeyRingName = `projects/${projectId}/locations/global/keyRings/${keyRingName}`;
 const formattedKeyName = `${formattedKeyRingName}/cryptoKeys/${keyNameOne}`;
+
+const nodeMajorVersion = parseInt(process.version.match(/v?(\d+).*/)[1]);
 
 describe('kms sample tests', () => {
   before(async () => {
@@ -295,5 +297,168 @@ describe('kms sample tests', () => {
         `${member}/${role} combo removed from policy for crypto key ${keyNameOne}.`
       )
     );
+  });
+
+  describe('asymmetric keys', () => {
+    const kms = require('../../src');
+    const client = new kms.KeyManagementServiceClient();
+
+    const locationId = `global`;
+    const keyRingId = `test-asymmetric-ring-${uuidv4()}`;
+    const keyAsymmetricDecryptName = `test-asymmetric-decrypt-${uuidv4()}`;
+
+    const keyAsymmetricSignName = `test-asymmetric-sign-${uuidv4()}`;
+
+    const dataToEncrypt = 'my data to encrypt';
+    const dataToSign = 'my data to sign';
+
+    let decryptKeyVersionId;
+    let signKeyVersionId;
+    let ciphertext;
+    let signature;
+
+    before(async function() {
+      // KMS keys can be created but still in "pending generation" state. This
+      // waits for the key version to reach the desired state.
+      const waitForState = async (name, state) => {
+        const sleep = w => new Promise(r => setTimeout(r, w));
+
+        let [version] = await client.getCryptoKeyVersion({name});
+        while (version.state !== state) {
+          await sleep(250);
+          [version] = await client.getCryptoKeyVersion({name});
+        }
+      };
+
+      // Create parent keyring
+      const parent = client.locationPath(projectId, locationId);
+      const [keyRing] = await client.createKeyRing({
+        parent: parent,
+        keyRingId: keyRingId,
+      });
+
+      // Create asymmetric decryption key - this also creates the first key
+      // version.
+      const [asymDecryptKey] = await client.createCryptoKey({
+        parent: keyRing.name,
+        cryptoKeyId: keyAsymmetricDecryptName,
+        cryptoKey: {
+          purpose: 'ASYMMETRIC_DECRYPT',
+          versionTemplate: {
+            algorithm: 'RSA_DECRYPT_OAEP_4096_SHA256',
+          },
+        },
+      });
+
+      // Wait for the first key to be ready.
+      decryptKeyVersionId = asymDecryptKey.name + '/cryptoKeyVersions/1';
+      await waitForState(decryptKeyVersionId, 'ENABLED');
+
+      // Create asymmetric signing key - this also creates the first key
+      // version.
+      const [asymSignKey] = await client.createCryptoKey({
+        parent: keyRing.name,
+        cryptoKeyId: keyAsymmetricSignName,
+        cryptoKey: {
+          purpose: 'ASYMMETRIC_SIGN',
+          versionTemplate: {
+            algorithm: 'EC_SIGN_P384_SHA384',
+          },
+        },
+      });
+
+      // Wait for the first key to be ready.
+      signKeyVersionId = asymSignKey.name + '/cryptoKeyVersions/1';
+      await waitForState(signKeyVersionId, 'ENABLED');
+    });
+
+    after(async function() {
+      await client.destroyCryptoKeyVersion({name: decryptKeyVersionId});
+      await client.destroyCryptoKeyVersion({name: signKeyVersionId});
+    });
+
+    it(`should perform asymmetric encryption`, async function() {
+      // Only run this test on Node 12+
+      if (nodeMajorVersion < 12) {
+        this.skip();
+      }
+
+      const out = execSync(`
+        node asymmetricEncrypt.js \
+          "${projectId}" \
+          "${keyRingId}" \
+          "${keyAsymmetricDecryptName}" \
+          "1" \
+          "${dataToEncrypt}"
+        `);
+
+      const re = new RegExp(`Encrypted ciphertext: (.+)`);
+      assert.match(out, re);
+
+      const match = re.exec(out);
+      ciphertext = match[1];
+    });
+
+    it(`should perform asymmetric decryption`, async function() {
+      // Only run this test on Node 12+
+      if (nodeMajorVersion < 12) {
+        this.skip();
+      }
+
+      const out = execSync(`
+        node asymmetricDecrypt.js \
+        "${projectId}" \
+        "${keyRingId}" \
+        "${keyAsymmetricDecryptName}" \
+        "1" \
+        "${ciphertext}"
+      `);
+
+      const re = new RegExp(`Decrypted plaintext: (.+)`);
+      assert.match(out, re);
+
+      const match = re.exec(out);
+      const plaintext = match[1];
+
+      assert.equal(dataToEncrypt, plaintext);
+    });
+
+    it(`should perform asymmetric signing`, async function() {
+      const out = execSync(`
+        node asymmetricSign.js \
+          "${projectId}" \
+          "${keyRingId}" \
+          "${keyAsymmetricSignName}" \
+          "1" \
+          "${dataToSign}"
+        `);
+
+      const re = new RegExp(`Signature: (.+)`);
+      assert.match(out, re);
+
+      const match = re.exec(out);
+      signature = match[1];
+    });
+
+    it(`should perform asymmetric verification`, async function() {
+      const out = execSync(`
+        node asymmetricVerify.js \
+        "${projectId}" \
+        "${keyRingId}" \
+        "${keyAsymmetricSignName}" \
+        "1" \
+        "${dataToSign}" \
+        "${signature}"
+      `);
+
+      const re = new RegExp(`Signature verified: (.+)`);
+      assert.match(out, re);
+
+      const match = re.exec(out);
+      const verified = match[1];
+
+      // Correct plaintext
+      assert.equal(verified, 'true');
+    });
   });
 });

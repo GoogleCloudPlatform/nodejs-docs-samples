@@ -23,7 +23,7 @@
 `use strict`;
 
 async function createModel(projectId, computeRegion, datasetId, modelName) {
-  // [START automl_natural_language_createModel]
+  // [START automl_language_createModel]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -70,11 +70,11 @@ async function createModel(projectId, computeRegion, datasetId, modelName) {
   console.log(`\tseconds: ${model.createTime.seconds}`);
   console.log(`\tnanos: ${model.createTime.nanos}`);
   console.log(`Model deployment state: ${deploymentState}`);
-  // [END automl_natural_language_createModel]
+  // [END automl_language_createModel]
 }
 
 async function getOperationStatus(operationFullId) {
-  // [START automl_natural_language_getOperationStatus]
+  // [START automl_language_getOperationStatus]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -90,11 +90,11 @@ async function getOperationStatus(operationFullId) {
     operationFullId
   );
   console.log(`Operation status: ${response}`);
-  // [END automl_natural_language_getOperationStatus]
+  // [END automl_language_getOperationStatus]
 }
 
 async function listModels(projectId, computeRegion, filter) {
-  // [START automl_natural_language_listModels]
+  // [START automl_language_listModels]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -160,11 +160,11 @@ async function listModels(projectId, computeRegion, filter) {
     console.log(`Model deployment state: ${model.deploymentState}`);
     console.log(`\n`);
   });
-  // [END automl_natural_language_listModels]
+  // [END automl_language_listModels]
 }
 
 async function getModel(projectId, computeRegion, modelId) {
-  // [START automl_natural_language_getModel]
+  // [START automl_language_getModel]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -222,7 +222,7 @@ async function getModel(projectId, computeRegion, modelId) {
   console.log(`\tseconds: ${model.updateTime.seconds}`);
   console.log(`\tnanos: ${model.updateTime.nanos}`);
   console.log(`Model deployment state: ${model.deploymentState}`);
-  // [END automl_natural_language_getModel]
+  // [END automl_language_getModel]
 }
 
 async function listModelEvaluations(
@@ -231,7 +231,7 @@ async function listModelEvaluations(
   modelId,
   filter_
 ) {
-  // [START automl_natural_language_listModelEvaluations]
+  // [START automl_language_listModelEvaluations]
   const automl = require(`@google-cloud/automl`);
   const util = require(`util`);
 
@@ -258,7 +258,7 @@ async function listModelEvaluations(
     console.log(util.inspect(element, false, null));
   });
 
-  // [END automl_natural_language_listModelEvaluations]
+  // [END automl_language_listModelEvaluations]
 }
 
 async function getModelEvaluation(
@@ -267,7 +267,7 @@ async function getModelEvaluation(
   modelId,
   modelEvaluationId
 ) {
-  // [START automl_natural_language_getModelEvaluation]
+  // [START automl_language_getModelEvaluation]
   const automl = require(`@google-cloud/automl`);
   const util = require(`util`);
 
@@ -294,11 +294,11 @@ async function getModelEvaluation(
     name: modelEvaluationFullId,
   });
   console.log(util.inspect(response, false, null));
-  // [END automl_natural_language_getModelEvaluation]
+  // [END automl_language_getModelEvaluation]
 }
 
 async function displayEvaluation(projectId, computeRegion, modelId, filter) {
-  // [START automl_natural_language_displayEvaluation]
+  // [START automl_language_displayEvaluation]
   const automl = require(`@google-cloud/automl`);
   const math = require(`mathjs`);
 
@@ -378,11 +378,11 @@ async function displayEvaluation(projectId, computeRegion, modelId, filter) {
       });
     }
   });
-  // [END automl_natural_language_displayEvaluation]
+  // [END automl_language_displayEvaluation]
 }
 
 async function deleteModel(projectId, computeRegion, modelId) {
-  // [START automl_natural_language_deleteModel]
+  // [START automl_language_deleteModel]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -403,7 +403,7 @@ async function deleteModel(projectId, computeRegion, modelId) {
   // The final result of the operation.
   if (response[2].done === true) console.log(`Model deleted.`);
 
-  // [END automl_natural_language_deleteModel]
+  // [END automl_language_deleteModel]
 }
 
 require(`yargs`)

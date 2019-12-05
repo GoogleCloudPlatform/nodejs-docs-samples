@@ -28,7 +28,7 @@ async function createDataset(
   datasetName,
   multilabel
 ) {
-  // [START automl_natural_language_createDataset]
+  // [START automl_language_createDataset]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -75,11 +75,11 @@ async function createDataset(
   console.log(`Dataset create time:`);
   console.log(`\tseconds: ${dataset.createTime.seconds}`);
   console.log(`\tnanos: ${dataset.createTime.nanos}`);
-  // [END automl_natural_language_createDataset]
+  // [END automl_language_createDataset]
 }
 
 async function listDatasets(projectId, computeRegion, filter) {
-  // [START automl_natural_language_listDatasets]
+  // [START automl_language_listDatasets]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -115,11 +115,11 @@ async function listDatasets(projectId, computeRegion, filter) {
     console.log(`\tnanos: ${dataset.createTime.nanos}`);
     console.log(`\n`);
   });
-  // [END automl_natural_language_listDatasets]
+  // [END automl_language_listDatasets]
 }
 
 async function getDataset(projectId, computeRegion, datasetId) {
-  // [START automl_natural_language_getDataset]
+  // [START automl_language_getDataset]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -147,11 +147,11 @@ async function getDataset(projectId, computeRegion, datasetId) {
   console.log(`Dataset create time: `);
   console.log(`\tseconds: ${dataset.createTime.seconds}`);
   console.log(`\tnanos: ${dataset.createTime.nanos}`);
-  // [END automl_natural_language_getDataset]
+  // [END automl_language_getDataset]
 }
 
 async function importData(projectId, computeRegion, datasetId, path) {
-  // [START automl_natural_language_importDataset]
+  // [START automl_language_importDataset]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -185,11 +185,11 @@ async function importData(projectId, computeRegion, datasetId, path) {
   // The final result of the operation.
   if (response[2].done === true) console.log(`Data imported.`);
 
-  // [END automl_natural_language_importDataset]
+  // [END automl_language_importDataset]
 }
 
 async function exportData(projectId, computeRegion, datasetId, outputUri) {
-  // [START automl_natural_language_exportDataset]
+  // [START automl_language_exportDataset]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -221,11 +221,11 @@ async function exportData(projectId, computeRegion, datasetId, outputUri) {
   const response = await operation.promise();
   // The final result of the operation.
   if (response[2].done === true) console.log(`Data exported.`);
-  // [END automl_natural_language_exportDataset]
+  // [END automl_language_exportDataset]
 }
 
 async function deleteDataset(projectId, computeRegion, datasetId) {
-  // [START automl_natural_language_deleteDataset]
+  // [START automl_language_deleteDataset]
   const automl = require(`@google-cloud/automl`);
 
   const client = new automl.v1beta1.AutoMlClient();
@@ -245,7 +245,7 @@ async function deleteDataset(projectId, computeRegion, datasetId) {
   const response = await operation.promise();
   // The final result of the operation.
   if (response[2].done === true) console.log(`Dataset deleted.`);
-  // [END automl_natural_language_deleteDataset]
+  // [END automl_language_deleteDataset]
 }
 
 require(`yargs`)

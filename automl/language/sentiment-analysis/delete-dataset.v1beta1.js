@@ -18,7 +18,7 @@ async function main(
   computeRegion = 'YOUR_REGION_NAME',
   datasetId = 'YOUR_DATASET_ID'
 ) {
-  // [START automl_natural_language_sentiment_delete_dataset]
+  // [START automl_language_sentiment_delete_dataset]
   const automl = require('@google-cloud/automl');
   const client = new automl.v1beta1.AutoMlClient();
 
@@ -53,6 +53,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_sentiment_delete_dataset]
+  // [END automl_language_sentiment_delete_dataset]
 }
 main(...process.argv.slice(2)).catch(console.error());

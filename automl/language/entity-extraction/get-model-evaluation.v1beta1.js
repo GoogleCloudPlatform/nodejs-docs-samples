@@ -19,7 +19,7 @@ async function main(
   modelId = 'YOUR_MODEL_ID',
   modelEvaluationId = 'YOUR_MODEL_EVALUATION_ID'
 ) {
-  // [START automl_natural_language_entity_get_model_evaluation]
+  // [START automl_language_entity_get_model_evaluation]
   const automl = require('@google-cloud/automl');
   const math = require('mathjs');
   const client = new automl.v1beta1.AutoMlClient();
@@ -100,6 +100,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_entity_get_model_evaluation]
+  // [END automl_language_entity_get_model_evaluation]
 }
 main(...process.argv.slice(2)).catch(console.error());

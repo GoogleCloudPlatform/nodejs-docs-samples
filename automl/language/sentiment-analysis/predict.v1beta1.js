@@ -19,7 +19,7 @@ async function main(
   modelId = 'YOUR_MODEL_ID',
   filePath = 'LOCAL_FILE_PATH'
 ) {
-  // [START automl_natural_language_sentiment_predict]
+  // [START automl_language_sentiment_predict]
   const automl = require('@google-cloud/automl');
   const fs = require('fs');
 
@@ -70,6 +70,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_sentiment_predict]
+  // [END automl_language_sentiment_predict]
 }
 main(...process.argv.slice(2)).catch(console.error());

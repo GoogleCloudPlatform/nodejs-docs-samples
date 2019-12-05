@@ -19,7 +19,7 @@ async function main(
   computeRegion = 'YOUR_REGION_NAME',
   modelId = 'YOUR_MODEL_ID'
 ) {
-  // [START automl_natural_language_entity_delete_model]
+  // [START automl_language_entity_delete_model]
   const automl = require('@google-cloud/automl');
   const client = new automl.v1beta1.AutoMlClient();
 
@@ -54,6 +54,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_entity_delete_model]
+  // [END automl_language_entity_delete_model]
 }
 main(...process.argv.slice(2)).catch(console.error());

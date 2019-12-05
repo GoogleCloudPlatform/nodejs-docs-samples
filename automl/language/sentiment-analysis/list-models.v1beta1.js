@@ -18,7 +18,7 @@ async function main(
   computeRegion = 'YOUR_REGION_NAME',
   filter = 'FILTER_EXPRESSIONS'
 ) {
-  // [START automl_natural_language_sentiment_list_models]
+  // [START automl_language_sentiment_list_models]
   const automl = require('@google-cloud/automl');
   const util = require('util');
   const client = new automl.v1beta1.AutoMlClient();
@@ -64,6 +64,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_sentiment_list_models]
+  // [END automl_language_sentiment_list_models]
 }
 main(...process.argv.slice(2)).catch(console.error());

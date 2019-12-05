@@ -14,7 +14,7 @@
 
 'use strict';
 async function main(operationFullId = 'OPERATION_FULL_ID') {
-  // [START automl_natural_language_entity_get_operation_status]
+  // [START automl_language_entity_get_operation_status]
   const automl = require('@google-cloud/automl');
   const client = new automl.v1beta1.AutoMlClient();
 
@@ -51,6 +51,6 @@ async function main(operationFullId = 'OPERATION_FULL_ID') {
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_entity_get_operation_status]
+  // [END automl_language_entity_get_operation_status]
 }
 main(...process.argv.slice(2)).catch(console.error());

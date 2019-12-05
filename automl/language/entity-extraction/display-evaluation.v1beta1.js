@@ -20,7 +20,7 @@ async function main(
   modelId = 'YOUR_MODEL_ID',
   filter = 'YOUR_FILTER_EXPRESSION'
 ) {
-  // [START automl_natural_language_entity_display_evaluation]
+  // [START automl_language_entity_display_evaluation]
   const automl = require('@google-cloud/automl');
   const math = require('mathjs');
   const client = new automl.v1beta1.AutoMlClient();
@@ -107,6 +107,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_entity_display_evaluation]
+  // [END automl_language_entity_display_evaluation]
 }
 main(...process.argv.slice(2)).catch(console.error());

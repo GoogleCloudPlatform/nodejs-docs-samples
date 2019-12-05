@@ -19,7 +19,7 @@ async function main(
   modelId = 'MODEL_ID',
   modelEvaluationId = 'MODEL_EVALUATION_ID'
 ) {
-  // [START automl_natural_language_sentiment_get_model_evaluation]
+  // [START automl_language_sentiment_get_model_evaluation]
   const automl = require('@google-cloud/automl');
   const math = require('mathjs');
   const util = require('util');
@@ -133,6 +133,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_sentiment_get_model_evaluation]
+  // [END automl_language_sentiment_get_model_evaluation]
 }
 main(...process.argv.slice(2)).catch(console.error());

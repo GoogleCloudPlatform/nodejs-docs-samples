@@ -19,7 +19,7 @@ async function main(
   datasetId = 'YOUR_DATASET_ID',
   gcsOutputUri = ''
 ) {
-  // [START automl_natural_language_sentiment_export_data]
+  // [START automl_language_sentiment_export_data]
   const automl = require('@google-cloud/automl');
   const client = new automl.v1beta1.AutoMlClient();
 
@@ -66,6 +66,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_sentiment_export_data]
+  // [END automl_language_sentiment_export_data]
 }
 main(...process.argv.slice(2)).catch(console.error());

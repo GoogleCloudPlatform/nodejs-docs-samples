@@ -19,7 +19,7 @@ async function main(
   datasetId = 'YOUR_DATASET_ID',
   gcsPath = 'GCS_PATH'
 ) {
-  // [START automl_natural_language_entity_import_data]
+  // [START automl_language_entity_import_data]
   const automl = require('@google-cloud/automl');
   const client = new automl.v1beta1.AutoMlClient();
 
@@ -65,6 +65,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_natural_language_entity_import_data]
+  // [END automl_language_entity_import_data]
 }
 main(...process.argv.slice(2)).catch(console.error());

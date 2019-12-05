@@ -23,7 +23,7 @@
 `use strict`;
 
 async function predict(projectId, computeRegion, modelId, filePath) {
-  // [START automl_natural_language_predict]
+  // [START automl_language_predict]
   const automl = require(`@google-cloud/automl`);
   const fs = require(`fs`);
 
@@ -64,7 +64,7 @@ async function predict(projectId, computeRegion, modelId, filePath) {
     console.log(`Predicted class name: ${result.displayName}`);
     console.log(`Predicted class score: ${result.classification.score}`);
   });
-  // [END automl_natural_language_predict]
+  // [END automl_language_predict]
 }
 
 require(`yargs`)

@@ -70,7 +70,7 @@ const setupIotTopic = async topicName => {
     const [updatedPolicy] = await topic.iam.setPolicy(policy);
     console.log(JSON.stringify(updatedPolicy, null, 2));
   } catch (err) {
-    console.error('ERROR:', err);
+    console.error('Error updating policy:', err);
   }
 };
 
@@ -108,11 +108,10 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
       const response = responses[0];
       console.log(response);
     } catch (err) {
-      console.error(err);
+      console.error('Error getting registry', err);
     }
   } catch (err) {
-    console.log('Could not look up registry');
-    console.log(err);
+    console.error('Could not look up registry', err);
   }
   // [END iot_lookup_registry]
 };
@@ -160,7 +159,7 @@ const createRegistry = async (
     console.log('Successfully created registry');
     console.log(response);
   } catch (err) {
-    console.log('Could not create registry', err);
+    console.error('Could not create registry', err);
   }
   // [END iot_create_registry]
 };
@@ -210,7 +209,7 @@ const createDevice = async (
     console.log('Created device');
     console.log(data);
   } catch (err) {
-    console.log('Could not create device', err);
+    console.error('Could not create device', err);
   }
   // [END iot_create_device]
 };
@@ -248,7 +247,7 @@ const createUnauthDevice = async (
     console.log('Created device');
     console.log(data);
   } catch (err) {
-    console.log('Could not create device', err);
+    console.error('Could not create device', err);
   }
   // [END iot_create_unauth_device]
 };
@@ -298,7 +297,7 @@ const createRsaDevice = async (
     console.log('Created device');
     console.log(data);
   } catch (err) {
-    console.log('Could not create device', err);
+    console.error('Could not create device', err);
   }
   // [END iot_create_rsa_device]
 };
@@ -346,7 +345,7 @@ const createEsDevice = async (
     console.log('Created device');
     console.log(data);
   } catch (err) {
-    console.log('Could not create device', err);
+    console.error('Could not create device', err);
   }
   // [END iot_create_es_device]
 };
@@ -392,7 +391,7 @@ const patchRsa256ForAuth = async (
     console.log('Patched device:', deviceId);
     console.log(data);
   } catch (err) {
-    console.log('Error patching device:', deviceId, err);
+    console.error('Error patching device:', deviceId, err);
   }
   // [END iot_patch_rsa]
 };
@@ -438,7 +437,7 @@ const patchEs256ForAuth = async (
     console.log('Patched device:', deviceId);
     console.log(data);
   } catch (err) {
-    console.log('Error patching device:', deviceId, err);
+    console.error('Error patching device:', deviceId, err);
   }
   // [END iot_patch_es]
 };
@@ -464,7 +463,7 @@ const listDevices = async (client, registryId, projectId, cloudRegion) => {
     );
     console.log('Current devices in registry:', data['devices']);
   } catch (err) {
-    console.log('Could not list devices', err);
+    console.error('Could not list devices', err);
   }
   // [END iot_list_devices]
 };
@@ -523,7 +522,7 @@ const deleteDevice = async (
     console.log('Successfully deleted device:', deviceId);
     console.log(data);
   } catch (err) {
-    console.log('Could not delete device:', deviceId, err);
+    console.error('Could not delete device:', deviceId, err);
   }
   // [END iot_delete_device]
 };
@@ -547,7 +546,7 @@ const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
     );
     devices = data.devices;
   } catch (err) {
-    console.log('Could not list devices', err);
+    console.error('Could not list devices', err);
     return;
   }
 
@@ -860,7 +859,7 @@ const getClient = async serviceAccountJson => {
   try {
     return google.discoverAPI(discoveryUrl);
   } catch (err) {
-    console.log('Error during API discovery.', err);
+    console.error('Error during API discovery.', err);
   }
 };
 // [END iot_get_client]

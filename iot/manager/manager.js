@@ -576,7 +576,7 @@ const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
     console.log(`Successfully deleted registry ${registryName}`);
     console.log(data);
   } catch (err) {
-    console.log('Could not delete registry', err);
+    console.error('Could not delete registry', err);
   }
 };
 
@@ -607,8 +607,7 @@ const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
     console.log(responses);
     console.log('Successfully deleted registry');
   } catch (err) {
-    console.log('Could not delete registry');
-    console.error(err);
+    console.error('Could not delete registry', err);
   }
   // [END iot_delete_registry]
 };
@@ -642,8 +641,8 @@ const getDevice = async (
     console.log('Found device:', deviceId);
     console.log(data);
   } catch (err) {
-    console.log('Could not find device:', deviceId);
-    console.log(err);
+    console.error('Could not find device:', deviceId);
+    console.error('Trace:', err);
   }
   // [END iot_get_device]
 };
@@ -675,8 +674,8 @@ const getDeviceState = async (
     } = await client.projects.locations.registries.devices.states.list(request);
     console.log('State:', data);
   } catch (err) {
-    console.log('Could not find device:', deviceId);
-    console.log(err);
+    console.error('Could not find device:', deviceId);
+    console.error('trace:', err);
   }
   // [END iot_get_device_state]
 };
@@ -711,8 +710,8 @@ const getDeviceConfigs = async (
 
     console.log('Configs:', data);
   } catch (err) {
-    console.log('Could not find device:', deviceId);
-    console.log(err);
+    console.error('Could not find device:', deviceId);
+    console.error('Trace:', err);
   }
   // [END iot_get_device_configs]
 };
@@ -755,8 +754,8 @@ const setDeviceConfig = async (
 
     console.log('Success:', data);
   } catch (err) {
-    console.log('Could not update config:', deviceId);
-    console.log('Message:', err);
+    console.error('Could not update config:', deviceId);
+    console.error('Message:', err);
   }
   // [END iot_set_device_config]
 };
@@ -800,7 +799,7 @@ const sendCommand = async (
 
     console.log('Sent command');
   } catch (err) {
-    console.error(err);
+    console.error('Could not send command:', err);
   }
   // [END iot_send_command]
 };
@@ -832,11 +831,11 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
       console.log('Found registry:', registryId);
       console.log(response);
     } catch (err) {
-      console.error(err);
+      console.error('Could not get device registry', err);
     }
   } catch (err) {
-    console.log('Could not find registry:', registryId);
-    console.log(err);
+    console.error('Could not find registry:', registryId);
+    console.error('Trace:', err);
   }
   // [END iot_get_registry]
 };
@@ -905,9 +904,8 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
       });
     });
   } catch (err) {
-    console.log('Could not find policy for: ', registryId);
-    console.log('Trace: ', err);
-    return;
+    console.error('Could not find policy for: ', registryId);
+    console.error('Trace: ', err);
   }
 
   // [END iot_get_iam_policy]
@@ -968,8 +966,8 @@ const setIamPolicy = async (
       });
     });
   } catch (err) {
-    console.log('Could not set policy for: ', registryId);
-    console.log('Trace: ', err);
+    console.error('Could not set policy for: ', registryId);
+    console.error('Trace: ', err);
   }
   // [END iot_set_iam_policy]
 };
@@ -1026,11 +1024,9 @@ const createGateway = async (
       createRequest
     );
 
-    console.log('Created device');
-    console.log(data);
+    console.log('Created device', data);
   } catch (err) {
-    console.log('Could not create device');
-    console.log(err);
+    console.error('Could not create device', err);
   }
   // [END iot_create_gateway]
 };
@@ -1065,7 +1061,7 @@ const bindDeviceToGateway = async (
 
     console.log(`Bound ${deviceId} to`, gatewayId);
   } catch (err) {
-    console.log('Could not bind device', err);
+    console.error('Could not bind device', err);
   }
   // [END iot_bind_device_to_gateway]
 };
@@ -1101,7 +1097,7 @@ const unbindDeviceFromGateway = async (
 
     console.log(`Unbound ${deviceId} from`, gatewayId);
   } catch (err) {
-    console.log('Could not unbind device', err);
+    console.error('Could not unbind device', err);
   }
   // [END iot_unbind_device_to_gateway]
 };
@@ -1172,7 +1168,7 @@ const unbindDeviceFromAllGateways = async (
               console.log('Unbound device from gateways', gateway.id);
               resolve();
             } catch (err) {
-              console.log('Could not unbind device', err);
+              console.error('Could not unbind device', err);
               reject();
             }
           });
@@ -1199,7 +1195,7 @@ const unbindAllDevices = async (client, projectId, cloudRegion, registryId) => {
     );
     devices = data.devices;
   } catch (err) {
-    console.log('Could not list devices', err);
+    console.error('Could not list devices', err);
     return;
   }
 
@@ -1245,8 +1241,7 @@ const listGateways = async (client, projectId, cloudRegion, registryId) => {
     );
     devices = data.devices;
   } catch (err) {
-    console.log('Could not list devices');
-    console.log(err);
+    console.error('Could not list devices', err);
     return;
   }
 
@@ -1290,8 +1285,7 @@ const listDevicesForGateway = async (
     );
     devices = data.devices;
   } catch (err) {
-    console.log('Could not list devices');
-    console.log(err);
+    console.error('Could not list devices', err);
     return;
   }
 
@@ -1332,8 +1326,7 @@ const listGatewaysForDevice = async (
     );
     devices = data.devices;
   } catch (err) {
-    console.log('Could not list gateways for device');
-    console.log(err);
+    console.error('Could not list gateways for device', err);
     return;
   }
 

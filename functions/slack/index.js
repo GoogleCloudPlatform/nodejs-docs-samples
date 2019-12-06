@@ -17,6 +17,7 @@
 // [START functions_slack_setup]
 const config = require('./config.json');
 const {google} = require('googleapis');
+const {verifyRequestSignature} = require('@slack/events-api')
 
 // Get a reference to the Knowledge Graph Search component
 const kgsearch = google.kgsearch('v1');
@@ -87,11 +88,19 @@ const formatSlackMessage = (query, response) => {
 /**
  * Verify that the webhook request came from Slack.
  *
- * @param {object} body The body of the request.
- * @param {string} body.token The Slack token to be verified.
+ * @param {object} req Cloud Function request object.
+ * @param {string} req.headers Headers Slack SDK uses to authenticate request.
+ * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
-const verifyWebhook = body => {
-  if (!body || body.token !== config.SLACK_TOKEN) {
+const verifyWebhook = (req) => {
+  const signature = {
+    signingSecret: config.SLACK_SECRET,
+    requestSignature: req.headers['x-slack-signature'],
+    requestTimestamp: req.headers['x-slack-request-timestamp'],
+    body: req.rawBody
+  };
+
+  if (!verifyRequestSignature(signature)) {
     const error = new Error('Invalid credentials');
     error.code = 401;
     throw error;
@@ -132,15 +141,12 @@ const makeSearchRequest = query => {
 /**
  * Receive a Slash Command request from Slack.
  *
- * Trigger this function by making a POST request with a payload to:
+ * Trigger this function by creating a Slack slash command with this URL:
  * https://[YOUR_REGION].[YOUR_PROJECT_ID].cloudfunctions.net/kgsearch
- *
- * @example
- * curl -X POST "https://us-central1.your-project-id.cloudfunctions.net/kgSearch" --data '{"token":"[YOUR_SLACK_TOKEN]","text":"giraffe"}'
  *
  * @param {object} req Cloud Function request object.
  * @param {object} req.body The request payload.
- * @param {string} req.body.token Slack's verification token.
+ * @param {string} req.rawBody Raw request payload used to validate Slack's message signature.
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
@@ -153,7 +159,7 @@ exports.kgSearch = async (req, res) => {
     }
 
     // Verify that this request came from Slack
-    verifyWebhook(req.body);
+    verifyWebhook(req);
 
     // Make the request to the Knowledge Graph Search API
     const response = await makeSearchRequest(req.body.text);

@@ -17,7 +17,7 @@
 // [START functions_slack_setup]
 const config = require('./config.json');
 const {google} = require('googleapis');
-const {verifyRequestSignature} = require('@slack/events-api')
+const {verifyRequestSignature} = require('@slack/events-api');
 
 // Get a reference to the Knowledge Graph Search component
 const kgsearch = google.kgsearch('v1');
@@ -92,12 +92,12 @@ const formatSlackMessage = (query, response) => {
  * @param {string} req.headers Headers Slack SDK uses to authenticate request.
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
-const verifyWebhook = (req) => {
+const verifyWebhook = req => {
   const signature = {
     signingSecret: config.SLACK_SECRET,
     requestSignature: req.headers['x-slack-signature'],
     requestTimestamp: req.headers['x-slack-request-timestamp'],
-    body: req.rawBody
+    body: req.rawBody,
   };
 
   if (!verifyRequestSignature(signature)) {

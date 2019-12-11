@@ -14,7 +14,7 @@
   "scripts": {
     "unit-test": "mocha test/*.test.js --timeout=10000",
     "system-test": "mocha system-test/*.test.js --timeout=10000",
-    "test": "repo-tools test install --cmd=npm -- run unit-test && repo-tools test install --cmd=npm -- run system-test"
+    "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
     "googleapis": "^45.0.0",
@@ -23,24 +23,10 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "@google-cloud/storage": "^4.0.0",
     "mocha": "^6.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^7.2.7",
-    "@google-cloud/storage": "^4.0.0",
     "uuid": "^3.3.2"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "product": "storage",
-    "samples": [
-      {
-        "id": "transfer",
-        "name": "Storage Transfer API",
-        "file": "transfer.js",
-        "docs_link": "https://cloud.google.com/storage/transfer",
-        "usage": "node transfer.js --help"
-      }
-    ]
   }
 }

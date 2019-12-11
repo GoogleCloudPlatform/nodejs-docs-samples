@@ -17,16 +17,23 @@ const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 const assert = require('assert');
-const utils = require('@google-cloud/nodejs-repo-tools');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, '../');
-const requestObj = utils.getRequest({cwd: cwd});
+const requestObj = tools.getRequest({cwd: cwd});
 
 before(async () => {
-  utils.checkCredentials();
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
   await bucket.create(bucket).then(() => {
     return bucket.acl.add({
       entity: 'allUsers',

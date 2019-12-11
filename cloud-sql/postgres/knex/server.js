@@ -1,17 +1,16 @@
-/**
- * Copyright 2018 Google LLC.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -45,7 +44,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
-// [START cloud_sql_postgres_connection_pool]
+// [START cloud_sql_postgres_knex_create]
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
 const connect = () => {
   // Configure which instance and what database user to connect with.
@@ -68,15 +67,15 @@ const connect = () => {
   // ... Specify additional properties here.
   // [START_EXCLUDE]
 
-  // [START cloud_sql_limit_connections]
+  // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
   // values for this setting are highly variable on app design, infrastructure, and database.
   knex.client.pool.max = 5;
   // 'min' is the minimum number of idle connections Knex maintains in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
   knex.client.pool.min = 5;
-  // [END cloud_sql_limit_connections]
-  // [START cloud_sql_connection_timeout]
+  // [END cloud_sql_postgres_knex_limit]
+  // [START cloud_sql_postgres_knex_timeout]
   // 'acquireTimeoutMillis' is the maximum number of milliseconds to wait for a connection checkout.
   // Any attempt to retrieve a connection from this pool that exceeds the set limit will throw an
   // SQLException.
@@ -84,27 +83,27 @@ const connect = () => {
   // 'idleTimeoutMillis' is the maximum amount of time a connection can sit in the pool. Connections that
   // sit idle for this many milliseconds are retried if idleTimeoutMillis is exceeded.
   knex.client.pool.idleTimeoutMillis = 600000; // 10 minutes
-  // [END cloud_sql_connection_timeout]
-  // [START cloud_sql_connection_backoff]
+  // [END cloud_sql_postgres_knex_timeout]
+  // [START cloud_sql_postgres_knex_backoff]
   // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
   knex.client.pool.createRetryIntervalMillis = 200; // 0.2 seconds
-  // [END cloud_sql_connection_backoff]
-  // [START cloud_sql_connection_lifetime]
+  // [END cloud_sql_postgres_knex_backoff]
+  // [START cloud_sql_postgres_knex_lifetime]
   // 'acquireTimeoutMillis' is the maximum possible lifetime of a connection in the pool. Connections that
   // live longer than this many milliseconds will be closed and reestablished between uses. This
   // value should be several minutes shorter than the database's timeout value to avoid unexpected
   // terminations.
   knex.client.pool.acquireTimeoutMillis = 600000; // 10 minutes
-  // [START cloud_sql_connection_lifetime]
+  // [START cloud_sql_postgres_knex_lifetime]
 
   // [END_EXCLUDE]
   return knex;
 };
 
 const knex = connect();
-// [END cloud_sql_postgres_connection_pool]
+// [END cloud_sql_postgres_knex_create]
 
-// [START cloud_sql_example_statement]
+// [START cloud_sql_postgres_knex_connection]
 /**
  * Insert a vote record into the database.
  *
@@ -119,7 +118,7 @@ const insertVote = async (knex, vote) => {
     throw Error(err);
   }
 };
-// [END cloud_sql_example_statement]
+// [END cloud_sql_postgres_knex_connection]
 
 /**
  * Retrieve the latest 5 vote records from the database.
@@ -189,7 +188,6 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', async (req, res) => {
-  // [START cloud_sql_example_statement]
   // Get the team from the request and record the time of the vote.
   const {team} = req.body;
   const timestamp = new Date();

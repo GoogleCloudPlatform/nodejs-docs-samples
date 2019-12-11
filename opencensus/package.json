@@ -17,8 +17,8 @@
     "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
-    "@opencensus/core": "^0.0.18",
-    "@opencensus/exporter-stackdriver": "^0.0.18"
+    "@opencensus/core": "^0.0.19",
+    "@opencensus/exporter-stackdriver": "^0.0.19"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

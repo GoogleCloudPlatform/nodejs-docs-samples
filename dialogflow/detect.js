@@ -30,7 +30,7 @@ function detectTextIntent(projectId, sessionId, queries, languageCode) {
   //   'Next monday at 3pm for 1 hour, please', // Tell the bot when the meeting is taking place
   //   'B'  // Rooms are defined on the Dialogflow agent, default options are A, B, or C
   // ]
-  // languaceCode: Indicates the language Dialogflow agent should use to detect intents
+  // languageCode: Indicates the language Dialogflow agent should use to detect intents
   // const languageCode = 'en';
 
   // Imports the Dialogflow library

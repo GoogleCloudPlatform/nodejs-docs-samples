@@ -415,7 +415,8 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
       )
     );
 
-  // Start recording and send the microphone input to the Speech API
+  // Start recording and send the microphone input to the Speech API.
+  // Ensure SoX is installed, see https://www.npmjs.com/package/node-record-lpcm16#dependencies
   recorder
     .record({
       sampleRateHertz: sampleRateHertz,

@@ -42,9 +42,6 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'global') {
       // example, 'en', 'ja'. In certain cases, BCP-47 codes including language and
       // region identifiers are returned (for example, 'zh-TW' and 'zh-CN')
       console.log(`Language - Language Code: ${language.languageCode}`);
-      // Human readable name of the language localized in the display language specified
-      // in the request.
-      console.log(`Language - Display Name: ${language.displayName}`);
       // Can be used as source language.
       console.log(`Language - Support Source: ${language.supportSource}`);
       // Can be used as target language.

@@ -200,7 +200,7 @@ const createDevice = async (
 
   const request = {
     parent: regPath,
-    device: device,
+    device
   };
   try {
     const responses = await iotClient.createDevice(request);
@@ -236,7 +236,7 @@ const createUnauthDevice = async (
   const device = {id: deviceId};
   const request = {
     parent: regPath,
-    device: device,
+    device
   };
 
   try {
@@ -284,7 +284,7 @@ const createRsaDevice = async (
 
   const request = {
     parent: regPath,
-    device: device,
+    device
   };
 
   try {
@@ -331,7 +331,7 @@ const createEsDevice = async (
   };
   const request = {
     parent: regPath,
-    device: device,
+    device
   };
 
   try {
@@ -339,7 +339,7 @@ const createEsDevice = async (
     const response = responses[0];
     console.log('Created device', response);
   } catch (err) {
-    console.error('Could note create device', err);
+    console.error('Could not create device', err);
   }
   // [END iot_create_es_device]
 };

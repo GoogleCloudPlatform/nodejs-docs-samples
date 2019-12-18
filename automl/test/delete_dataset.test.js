@@ -18,43 +18,46 @@ const {assert} = require('chai');
 const {AutoMlClient} = require('@google-cloud/automl').v1;
 
 const cp = require('child_process');
+const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const PREDICT_REGION_TAG = 'language_entity_extraction_predict';
+const DELETE_DATASET_REGION_TAG = 'delete_dataset';
 const LOCATION = 'us-central1';
-const MODEL_ID = 'TEN2238627664384491520';
 
-describe('Automl Natural Language Entity Extraction Predict Test', () => {
+describe('Automl Translate Delete Dataset Tests', () => {
   const client = new AutoMlClient();
+  let datasetId;
 
-  before('should verify the model is deployed', async () => {
+  before('should create a dataset', async () => {
     const projectId = await client.getProjectId();
+    const displayName = `test_${uuid
+      .v4()
+      .replace(/-/g, '_')
+      .substring(0, 26)}`;
     const request = {
-      name: client.modelPath(projectId, LOCATION, MODEL_ID),
+      parent: client.locationPath(projectId, LOCATION),
+      dataset: {
+        displayName: displayName,
+        translationDatasetMetadata: {
+          sourceLanguageCode: 'en',
+          targetLanguageCode: 'ja',
+        },
+      },
     };
-
-    const [response] = await client.getModel(request);
-    if (response.deploymentState === 'UNDEPLOYED') {
-      const request = {
-        name: client.modelPath(projectId, LOCATION, MODEL_ID),
-      };
-
-      const [operation] = await client.deployModel(request);
-
-      // Wait for operation to complete.
-      await operation.promise();
-    }
+    const [operation] = await client.createDataset(request);
+    const [response] = await operation.promise();
+    datasetId = response.name
+      .split('/')
+      [response.name.split('/').length - 1].split('\n')[0];
   });
 
-  it('should predict', async () => {
+  it('should delete a dataset', async () => {
     const projectId = await client.getProjectId();
-    const content =
-      "'Constitutional mutations in the WT1 gene in patients with Denys-Drash syndrome.'";
-
-    const predictOutput = execSync(
-      `node ${PREDICT_REGION_TAG}.js ${projectId} ${LOCATION} ${MODEL_ID} ${content}`
+    // delete
+    const delete_output = execSync(
+      `node ${DELETE_DATASET_REGION_TAG}.js ${projectId} ${LOCATION} ${datasetId}`
     );
-    assert.match(predictOutput, /Text Extract Entity Types/);
+    assert.match(delete_output, /Dataset deleted/);
   });
 });

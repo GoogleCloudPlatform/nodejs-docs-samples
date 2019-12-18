@@ -18,16 +18,16 @@ function main(
   projectId = 'YOUR_PROJECT_ID',
   location = 'us-central1',
   datasetId = 'YOUR_DATASET_ID',
-  displayName = 'YOUR_DISPLAY_NAME'
+  gcsUri = 'gs://BUCKET_ID/path_to_export/'
 ) {
-  // [START automl_language_entity_extraction_create_model]
+  // [START automl_export_dataset]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'us-central1';
-  // const dataset_id = 'YOUR_DATASET_ID';
-  // const displayName = 'YOUR_DISPLAY_NAME';
+  // const datasetId = 'YOUR_DATASET_ID';
+  // const gcsUri = 'gs://BUCKET_ID/path_to_export/';
 
   // Imports the Google Cloud AutoML library
   const {AutoMlClient} = require(`@google-cloud/automl`).v1;
@@ -35,25 +35,25 @@ function main(
   // Instantiates a client
   const client = new AutoMlClient();
 
-  async function createModel() {
+  async function exportDataset() {
     // Construct request
     const request = {
-      parent: client.locationPath(projectId, location),
-      model: {
-        displayName: displayName,
-        datasetId: datasetId,
-        textExtractionModelMetadata: {}, // Leave unset, to use the default base model
+      name: client.datasetPath(projectId, location, datasetId),
+      outputConfig: {
+        gcsDestination: {
+          outputUriPrefix: gcsUri,
+        },
       },
     };
 
-    // Don't wait for the LRO
-    const [operation] = await client.createModel(request);
-    console.log(`Training started... ${operation}`);
-    console.log(`Training operation name: ${operation.name}`);
+    const [operation] = await client.exportData(request);
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
+    console.log(`Dataset exported: ${response}`);
   }
 
-  createModel();
-  // [END automl_language_entity_extraction_create_model]
+  exportDataset();
+  // [END automl_export_dataset]
 }
 
 main(...process.argv.slice(2));

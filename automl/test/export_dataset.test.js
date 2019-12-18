@@ -16,41 +16,47 @@
 
 const {assert} = require('chai');
 const {AutoMlClient} = require('@google-cloud/automl').v1;
+const {Storage} = require('@google-cloud/storage');
 
 const cp = require('child_process');
-const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const CREATE_DATASET_REGION_TAG = 'language_entity_extraction_create_dataset';
+const DATASET_ID = 'TRL8522556519449886720';
+const EXPORT_DATASET_REGION_TAG = 'export_dataset';
 const LOCATION = 'us-central1';
 
-describe('Automl Natural Language Entity Extraction Create Dataset Test', () => {
+describe('Automl Translate Dataset Tests', () => {
   const client = new AutoMlClient();
-  let datasetId;
+  const prefix = 'TEST_EXPORT_OUTPUT';
 
-  it('should create a dataset', async () => {
+  it('should export a datset', async () => {
     const projectId = await client.getProjectId();
-    const displayName = `test_${uuid
-      .v4()
-      .replace(/-/g, '_')
-      .substring(0, 26)}`;
-
-    // create
-    const create_output = execSync(
-      `node ${CREATE_DATASET_REGION_TAG}.js ${projectId} ${LOCATION} ${displayName}`
+    const bucketName = `${projectId}-automl-translate`;
+    const export_output = execSync(
+      `node ${EXPORT_DATASET_REGION_TAG}.js ${projectId} ${LOCATION} ${DATASET_ID} gs://${bucketName}/${prefix}/`
     );
-    assert.match(create_output, /Dataset id:/);
 
-    datasetId = create_output.split('Dataset id: ')[1].split('\n')[0];
+    assert.match(export_output, /Dataset exported/);
   });
 
-  after('delete created dataset', async () => {
+  after('delete created files', async () => {
     const projectId = await client.getProjectId();
-    const request = {
-      name: client.datasetPath(projectId, LOCATION, datasetId),
+    const bucketName = `${projectId}-automl-translate`;
+
+    const storageClient = new Storage();
+    const options = {
+      prefix: prefix,
     };
-    const [operation] = await client.deleteDataset(request);
-    await operation.promise();
+    const [files] = await storageClient
+      .bucket(`gs://${bucketName}`)
+      .getFiles(options);
+
+    for (const file of files) {
+      await storageClient
+        .bucket(`gs://${bucketName}`)
+        .file(file.name)
+        .delete();
+    }
   });
 });

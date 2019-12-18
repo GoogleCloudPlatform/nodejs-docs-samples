@@ -21,30 +21,18 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const CREATE_MODEL_REGION_TAG = 'language_entity_extraction_create_model';
+const LIST_DATASET_REGION_TAG = 'list_datasets';
 const LOCATION = 'us-central1';
-const DATASET_ID = 'TEN8374527069979148288';
 
-describe('Automl Natural Language Entity Extraction Create Model Test', () => {
+describe('Automl List Dataset Tests', () => {
   const client = new AutoMlClient();
-  // let operationId;
 
-  // Natural language entity extraction models are non cancellable operations
-  it.skip('should create a model', async () => {
+  it('should list datasets', async () => {
     const projectId = await client.getProjectId();
-
-    const create_output = execSync(
-      `node ${CREATE_MODEL_REGION_TAG}.js ${projectId} ${LOCATION} ${DATASET_ID} extraction_test_create_model`
+    const list_output = execSync(
+      `node ${LIST_DATASET_REGION_TAG}.js ${projectId} ${LOCATION}`
     );
 
-    assert.match(create_output, /Training started/);
-
-    // operationId = create_output
-    //   .split('Training operation name: ')[1]
-    //   .split('\n')[0];
+    assert.match(list_output, /Dataset id/);
   });
-
-  // after('cancel model training', async () => {
-  //   await client.operationsClient.cancelOperation({name: operationId});
-  // });
 });

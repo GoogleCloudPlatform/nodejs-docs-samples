@@ -22,27 +22,43 @@ const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const CREATE_DATASET_REGION_TAG = 'language_entity_extraction_create_dataset';
+const IMPORT_DATASET_REGION_TAG = 'import_dataset';
 const LOCATION = 'us-central1';
 
-describe('Automl Natural Language Entity Extraction Create Dataset Test', () => {
+describe('Automl Import Dataset Test', () => {
   const client = new AutoMlClient();
   let datasetId;
 
-  it('should create a dataset', async () => {
+  before('should create a dataset', async () => {
     const projectId = await client.getProjectId();
     const displayName = `test_${uuid
       .v4()
       .replace(/-/g, '_')
       .substring(0, 26)}`;
+    const request = {
+      parent: client.locationPath(projectId, LOCATION),
+      dataset: {
+        displayName: displayName,
+        translationDatasetMetadata: {
+          sourceLanguageCode: 'en',
+          targetLanguageCode: 'ja',
+        },
+      },
+    };
+    const [operation] = await client.createDataset(request);
+    const [response] = await operation.promise();
+    datasetId = response.name
+      .split('/')
+      [response.name.split('/').length - 1].split('\n')[0];
+  });
 
-    // create
-    const create_output = execSync(
-      `node ${CREATE_DATASET_REGION_TAG}.js ${projectId} ${LOCATION} ${displayName}`
+  it('should create, import, and delete a dataset', async () => {
+    const projectId = await client.getProjectId();
+    const data = `gs://${projectId}-automl-translate/en-ja-short.csv`;
+    const import_output = execSync(
+      `node ${IMPORT_DATASET_REGION_TAG}.js ${projectId} ${LOCATION} ${datasetId} ${data}`
     );
-    assert.match(create_output, /Dataset id:/);
-
-    datasetId = create_output.split('Dataset id: ')[1].split('\n')[0];
+    assert.match(import_output, /Dataset imported/);
   });
 
   after('delete created dataset', async () => {

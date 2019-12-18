@@ -17,17 +17,17 @@
 function main(
   projectId = 'YOUR_PROJECT_ID',
   location = 'us-central1',
-  datasetId = 'YOUR_DATASET_ID',
-  displayName = 'YOUR_DISPLAY_NAME'
+  datasetId = 'YOUR_DISPLAY_ID',
+  path = 'gs://BUCKET_ID/path_to_training_data.csv'
 ) {
-  // [START automl_language_entity_extraction_create_model]
+  // [START automl_import_dataset]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'us-central1';
-  // const dataset_id = 'YOUR_DATASET_ID';
-  // const displayName = 'YOUR_DISPLAY_NAME';
+  // const datasetId = 'YOUR_DISPLAY_ID';
+  // const path = 'gs://BUCKET_ID/path_to_training_data.csv';
 
   // Imports the Google Cloud AutoML library
   const {AutoMlClient} = require(`@google-cloud/automl`).v1;
@@ -35,25 +35,28 @@ function main(
   // Instantiates a client
   const client = new AutoMlClient();
 
-  async function createModel() {
+  async function importDataset() {
     // Construct request
     const request = {
-      parent: client.locationPath(projectId, location),
-      model: {
-        displayName: displayName,
-        datasetId: datasetId,
-        textExtractionModelMetadata: {}, // Leave unset, to use the default base model
+      name: client.datasetPath(projectId, location, datasetId),
+      inputConfig: {
+        gcsSource: {
+          inputUris: path.split(','),
+        },
       },
     };
 
-    // Don't wait for the LRO
-    const [operation] = await client.createModel(request);
-    console.log(`Training started... ${operation}`);
-    console.log(`Training operation name: ${operation.name}`);
+    // Import dataset
+    console.log(`Proccessing import`);
+    const [operation] = await client.importData(request);
+
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
+    console.log(`Dataset imported: ${response}`);
   }
 
-  createModel();
-  // [END automl_language_entity_extraction_create_model]
+  importDataset();
+  // [END automl_import_dataset]
 }
 
 main(...process.argv.slice(2));

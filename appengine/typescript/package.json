@@ -9,17 +9,15 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "prepare": "npm run gcp-build",
-    "pretest": "npm run gcp-build",
-    "test": "repo-tools test app -- index.js",
+    "test": "repo-tools test app -- index.ts",
     "posttest": "npm run lint",
     "lint": "tslint -p .",
-    "start": "node ./index.js",
-    "gcp-build": "tsc -p .",
+    "start": "ts-node ./index.ts",
     "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "express": "^4.16.3",
+    "ts-node": "^8.5.4",
     "typescript": "^3.0.1"
   },
   "devDependencies": {

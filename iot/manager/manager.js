@@ -175,16 +175,18 @@ const createDevice = async (
   publicKeyFile
 ) => {
   // [START iot_create_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
+  const iot = require('@google-cloud/iot');
 
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const body = {
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {
     id: deviceId,
     credentials: [
       {
@@ -197,17 +199,13 @@ const createDevice = async (
   };
 
   const request = {
-    parent: registryName,
-    resource: body,
+    parent: regPath,
+    device,
   };
-
   try {
-    const {data} = await client.projects.locations.registries.devices.create(
-      request
-    );
-
-    console.log('Created device');
-    console.log(data);
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -224,28 +222,27 @@ const createUnauthDevice = async (
   cloudRegion
 ) => {
   // [START iot_create_unauth_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-unauth-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  console.log('Creating device:', deviceId);
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
+  const iot = require('@google-cloud/iot');
 
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {id: deviceId};
   const request = {
-    parent: registryName,
-    resource: {id: deviceId},
+    parent: regPath,
+    device,
   };
 
   try {
-    const {data} = await client.projects.locations.registries.devices.create(
-      request
-    );
-
-    console.log('Created device');
-    console.log(data);
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -262,15 +259,18 @@ const createRsaDevice = async (
   rsaCertificateFile
 ) => {
   // [START iot_create_rsa_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-rsa-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const body = {
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {
     id: deviceId,
     credentials: [
       {
@@ -283,19 +283,14 @@ const createRsaDevice = async (
   };
 
   const request = {
-    parent: registryName,
-    resource: body,
+    parent: regPath,
+    device,
   };
 
-  console.log(JSON.stringify(request));
-
   try {
-    const {data} = await client.projects.locations.registries.devices.create(
-      request
-    );
-
-    console.log('Created device');
-    console.log(data);
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -312,15 +307,18 @@ const createEsDevice = async (
   esCertificateFile
 ) => {
   // [START iot_create_es_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-es-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const body = {
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {
     id: deviceId,
     credentials: [
       {
@@ -331,19 +329,15 @@ const createEsDevice = async (
       },
     ],
   };
-
   const request = {
-    parent: registryName,
-    resource: body,
+    parent: regPath,
+    device,
   };
 
   try {
-    const {data} = await client.projects.locations.registries.devices.create(
-      request
-    );
-
-    console.log('Created device');
-    console.log(data);
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -503,26 +497,26 @@ const deleteDevice = async (
   cloudRegion
 ) => {
   // [START iot_delete_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
+  const iot = require('@google-cloud/iot');
 
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const devPath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
   try {
-    const {data} = await client.projects.locations.registries.devices.delete(
-      request
-    );
-
-    console.log('Successfully deleted device:', deviceId);
-    console.log(data);
+    const responses = await iotClient.deleteDevice({name: devPath});
+    console.log('Successfully deleted device', responses);
   } catch (err) {
-    console.error('Could not delete device:', deviceId, err);
+    console.error('Could not delete device', err);
   }
   // [END iot_delete_device]
 };

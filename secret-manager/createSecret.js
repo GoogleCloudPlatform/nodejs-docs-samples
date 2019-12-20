@@ -22,7 +22,7 @@ async function main(parent = 'projects/my-project', secretId = 'my-secret') {
   // const parent = 'projects/my-project';
   // const secretId = 'my-secret';
 
-  // Imports the Google Cloud Some API library
+  // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
   // Instantiates a client

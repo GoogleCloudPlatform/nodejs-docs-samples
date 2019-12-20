@@ -21,7 +21,7 @@ async function main(name = 'projects/my-project/secrets/my-secret') {
    */
   // const name = 'projects/my-project/secrets/my-secret';
 
-  // Imports the Google Cloud Some API library
+  // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
   // Instantiates a client

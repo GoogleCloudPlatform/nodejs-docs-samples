@@ -465,6 +465,12 @@ const listDevices = async (client, registryId, projectId, cloudRegion) => {
     const responses = await iotClient.listDevices({parent: parentName});
     const devices = responses[0];
 
+    if (devices.length > 0) {
+      console.log('Current devices in registry:');
+    } else {
+      console.log('No devices in registry.');
+    }
+
     for (let i = 0; i < devices.length; i++) {
       const device = devices[i];
       console.log(`Device ${i}: `, device);
@@ -681,6 +687,12 @@ const getDeviceState = async (
   try {
     const responses = await iotClient.listDeviceStates({name: devicePath});
     const states = responses[0].deviceStates;
+    if (states.length === 0) {
+      console.log(`No States for device: ${deviceId}`);
+    } else {
+      console.log(`States for device: ${deviceId}`);
+    }
+
     for (let i = 0; i < states.length; i++) {
       const state = states[i];
       console.log(
@@ -689,9 +701,6 @@ const getDeviceState = async (
         '\nData:\n',
         state.binaryData.toString('utf8')
       );
-    }
-    if (states.length == 0) {
-      console.log(`No states for device: ${deviceId}`);
     }
   } catch (err) {
     console.error('Could not find device:', deviceId);
@@ -729,6 +738,13 @@ const getDeviceConfigs = async (
       name: devicePath,
     });
     const configs = responses[0].deviceConfigs;
+
+    if (configs.length === 0) {
+      console.log(`No configs for device: ${deviceId}`);
+    } else {
+      console.log(`Configs:`);
+    }
+
     for (let i = 0; i < configs.length; i++) {
       const config = configs[i];
       console.log(
@@ -737,9 +753,6 @@ const getDeviceConfigs = async (
         '\nData:\n',
         config.binaryData.toString('utf8')
       );
-    }
-    if (configs.length == 0) {
-      console.log(`No states for device: ${deviceId}`);
     }
   } catch (err) {
     console.error('Could not find device:', deviceId);
@@ -814,7 +827,7 @@ const sendCommand = async (
     // optional auth parameters.
   });
 
-  const formattedName = client.devicePath(
+  const formattedName = iotClient.devicePath(
     projectId,
     cloudRegion,
     registryId,
@@ -827,7 +840,7 @@ const sendCommand = async (
   };
 
   try {
-    const responses = await client.sendCommandToDevice(request);
+    const responses = await iotClient.sendCommandToDevice(request);
 
     console.log('Sent command: ', responses[0]);
   } catch (err) {

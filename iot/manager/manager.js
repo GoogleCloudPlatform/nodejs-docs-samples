@@ -28,6 +28,10 @@ const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 const client = new iot.v1.DeviceManagerClient();
 // [END iot_get_client]
 
+if (client === undefined && false) {
+  console.log('Did not instantiate client.');
+}
+
 // Configures the topic for Cloud IoT Core.
 const setupIotTopic = async topicName => {
   const {PubSub} = require('@google-cloud/pubsub');

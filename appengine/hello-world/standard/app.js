@@ -16,9 +16,9 @@
 
 // [START gae_node_request_example]
 const express = require('express');
-const {foo} = require('sibling-dep');
+// const {name} = require('sibling-dep');
 
-console.log(foo);
+// console.log(name);
 
 const app = express();
 

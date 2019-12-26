@@ -16,16 +16,16 @@
 
 // [START gae_node_request_example]
 const express = require('express');
-// const {name} = require('sibling-dep');
+const {name} = require('sibling-dep');
 
-// console.log(name);
+console.log(name);
 
 const app = express();
 
 app.get('/', (req, res) => {
   res
     .status(200)
-    .send('Hello, world!')
+    .send('Hello, world! ' + name)
     .end();
 });
 

@@ -16,6 +16,7 @@
 
 const createHttpTaskWithToken = require('../createTask');
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const QUEUE_ID = 'default';

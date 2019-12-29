@@ -16,6 +16,7 @@
 
 const path = require('path');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const cwd = path.join(__dirname, '..');

@@ -14,6 +14,7 @@
 
 // [START functions_storage_unit_test]
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const uuid = require('uuid');
 const utils = require('@google-cloud/nodejs-repo-tools');
 

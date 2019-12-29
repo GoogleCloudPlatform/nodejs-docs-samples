@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const path = require('path');
 const Knex = require('knex');
 const {exec} = require('child_process');

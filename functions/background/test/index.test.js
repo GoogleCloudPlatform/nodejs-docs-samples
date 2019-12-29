@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const requestRetry = require('requestretry');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');

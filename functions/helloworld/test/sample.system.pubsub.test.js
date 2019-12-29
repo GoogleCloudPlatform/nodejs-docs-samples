@@ -15,6 +15,7 @@
 // [START functions_pubsub_system_test]
 const childProcess = require('child_process');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
 const moment = require('moment');

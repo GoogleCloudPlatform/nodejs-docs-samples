@@ -16,6 +16,7 @@
 
 const path = require('path');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const uuid = require('uuid');
 const cwd = path.join(__dirname, '..');
 const {exec} = require('child_process');

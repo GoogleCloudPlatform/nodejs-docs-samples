@@ -17,6 +17,7 @@
 const sinon = require('sinon');
 const uuid = require('uuid');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const utils = require('@google-cloud/nodejs-repo-tools');
 const proxyquire = require('proxyquire').noCallThru();
 

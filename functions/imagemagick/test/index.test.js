@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');

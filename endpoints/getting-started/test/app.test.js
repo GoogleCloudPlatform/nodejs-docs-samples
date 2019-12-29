@@ -20,6 +20,7 @@ const proxyquire = require('proxyquire').noPreserveCache();
 const request = require('supertest');
 const sinon = require('sinon');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../app.js');

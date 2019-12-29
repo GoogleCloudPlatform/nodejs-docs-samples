@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const runSample = `require('./basic-company-sample').runSample()`;
 

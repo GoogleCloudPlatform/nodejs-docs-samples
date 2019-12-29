@@ -14,6 +14,7 @@
 
 // [START functions_http_integration_test]
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const requestRetry = require('requestretry');

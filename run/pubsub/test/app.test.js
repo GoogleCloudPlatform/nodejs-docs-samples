@@ -19,6 +19,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const path = require('path');
 const supertest = require('supertest');
 const sinon = require('sinon');

@@ -15,6 +15,7 @@
 describe('functions_helloworld_http', () => {
   // [START functions_http_unit_test]
   const assert = require('assert');
+const {describe, it} = require('mocha');
   const sinon = require('sinon');
   const uuid = require('uuid');
 

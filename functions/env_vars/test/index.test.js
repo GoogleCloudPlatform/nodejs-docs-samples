@@ -16,6 +16,7 @@
 
 const sinon = require('sinon');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const functions = require('../');
 
 const getMocks = () => {

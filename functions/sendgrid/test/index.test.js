@@ -17,6 +17,7 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
 const method = 'POST';

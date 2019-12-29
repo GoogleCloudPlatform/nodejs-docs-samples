@@ -15,6 +15,7 @@
 describe('functions_helloworld_pubsub', () => {
   // [START functions_pubsub_unit_test]
   const assert = require('assert');
+const {describe, it} = require('mocha');
   const uuid = require('uuid');
   const utils = require('@google-cloud/nodejs-repo-tools');
 

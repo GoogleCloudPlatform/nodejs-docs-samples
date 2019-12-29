@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const {Datastore} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 const program = require('../');

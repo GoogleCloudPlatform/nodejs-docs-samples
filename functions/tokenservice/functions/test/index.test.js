@@ -15,6 +15,7 @@
 /* eslint-env node, mocha */
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const cwd = path.join(__dirname, '..');

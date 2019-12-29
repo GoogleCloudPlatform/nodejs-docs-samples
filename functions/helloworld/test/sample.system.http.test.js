@@ -14,6 +14,7 @@
 
 // [START functions_http_system_test]
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const Supertest = require('supertest');
 const supertest = Supertest(process.env.BASE_URL);
 

@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const childProcess = require('child_process');
 const iot = require('@google-cloud/iot');
 const path = require('path');

@@ -19,6 +19,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const {OAuth2Client} = require('google-auth-library');

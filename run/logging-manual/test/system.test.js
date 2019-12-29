@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const {Logging} = require('@google-cloud/logging');
 const request = require('got');
 

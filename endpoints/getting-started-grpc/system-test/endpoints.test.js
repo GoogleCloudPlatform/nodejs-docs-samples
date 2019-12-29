@@ -17,6 +17,7 @@
 const childProcess = require('child_process');
 const path = require('path');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const fs = require(`fs`);
 const jwt = require('jsonwebtoken');
 const tools = require('@google-cloud/nodejs-repo-tools');

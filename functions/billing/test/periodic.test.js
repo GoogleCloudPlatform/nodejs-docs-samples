@@ -16,6 +16,7 @@ const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const requestRetry = require('requestretry');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 
 const promiseRetry = require('promise-retry');
 

@@ -16,6 +16,7 @@
 
 const uuid = require('uuid');
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const fs = require('fs');
 const execPromise = require('child-process-promise').exec;
 let requestRetry = require('requestretry');

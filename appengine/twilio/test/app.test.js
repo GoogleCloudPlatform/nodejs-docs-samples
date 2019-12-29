@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const Supertest = require('supertest');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();

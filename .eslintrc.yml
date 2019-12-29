@@ -3,8 +3,6 @@ extends:
   - 'eslint:recommended'
   - 'plugin:node/recommended'
   - 'prettier'
-env:
-  mocha: true
 plugins:
   - node
   - prettier

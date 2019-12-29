@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {describe, it} = require('mocha');
 const path = require('path');
 const proxyquire = require('proxyquire').noPreserveCache();
 const sinon = require('sinon');

@@ -1,5 +1,3 @@
 ---
 rules:
   no-warning-comments: off
-env:
-  mocha: true

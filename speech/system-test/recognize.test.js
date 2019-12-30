@@ -17,6 +17,7 @@
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const {assert} = require('chai');
+const {describe, it, before, after} = require('mocha');
 const uuid = require('uuid');
 const cp = require('child_process');
 

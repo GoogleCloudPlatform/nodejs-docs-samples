@@ -17,6 +17,7 @@
 const path = require('path');
 const cp = require('child_process');
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

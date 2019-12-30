@@ -15,14 +15,13 @@
 'use strict';
 
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 const cp = require('child_process');
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe(`set endpoint for vision api call`, () => {
-  it(`should detect labels in a remote file from a pre-set api endpoint`, async () => {
+describe('set endpoint for vision api call', () => {
+  it('should detect text in a remote file from a pre-set api endpoint', () => {
     const stdout = execSync('node setEndpoint.js');
-    assert.match(stdout, /Labels:/);
-    assert.match(stdout, /cat/);
+    assert.match(stdout, /human/);
   });
 });

@@ -18,6 +18,7 @@ const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const cp = require('child_process');
 const {assert} = require('chai');
+const {describe, it, before, after} = require('mocha');
 const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});

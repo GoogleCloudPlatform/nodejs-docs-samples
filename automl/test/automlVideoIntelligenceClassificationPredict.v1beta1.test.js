@@ -15,6 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 const {execSync} = require('child_process');
 
 /** Tests for AutoML Video Intelligence Classification "Prediction API" sample.

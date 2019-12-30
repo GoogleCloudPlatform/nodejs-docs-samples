@@ -15,6 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 const {TranslationServiceClient} = require('@google-cloud/translate');
 const cp = require('child_process');
 

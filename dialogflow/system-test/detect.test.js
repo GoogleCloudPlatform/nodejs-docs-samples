@@ -16,6 +16,7 @@
 
 const path = require('path');
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const cmd = 'node detect.js';
 const cmd_tts = 'node detect-intent-TTS-response.v2.js';

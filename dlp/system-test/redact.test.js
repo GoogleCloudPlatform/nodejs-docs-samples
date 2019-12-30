@@ -15,6 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 const fs = require('fs');
 const cp = require('child_process');
 const {PNG} = require('pngjs');

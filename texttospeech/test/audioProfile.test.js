@@ -16,6 +16,7 @@
 
 const fs = require('fs');
 const {assert} = require('chai');
+const {describe, it, after} = require('mocha');
 const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});

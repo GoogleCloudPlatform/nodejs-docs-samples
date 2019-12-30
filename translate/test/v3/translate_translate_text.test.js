@@ -15,6 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
+const {describe, it} = require('mocha');
 const {TranslationServiceClient} = require('@google-cloud/translate');
 const cp = require('child_process');
 
@@ -31,6 +32,6 @@ describe(REGION_TAG, () => {
     const output = execSync(
       `node v3/${REGION_TAG}.js ${projectId} ${location} ${text}`
     );
-    assert.match(output, /Translation: Pozdrav svijetu/);
+    assert.match(output, /Translation: Zdravo svijete/);
   });
 });

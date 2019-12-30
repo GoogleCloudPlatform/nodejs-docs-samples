@@ -16,6 +16,7 @@
 
 const fs = require('fs');
 const {assert} = require('chai');
+const {describe, it, before, after} = require('mocha');
 const {TranslationServiceClient} = require('@google-cloud/translate').v3beta1;
 const cp = require('child_process');
 
@@ -29,7 +30,7 @@ describe(REGION_TAG, () => {
   const glossaryId = 'bistro-glossary';
   const outputFile = 'resources/example.mp3';
 
-  before(async function() {
+  before(() => {
     try {
       fs.unlinkSync(outputFile);
     } catch (e) {

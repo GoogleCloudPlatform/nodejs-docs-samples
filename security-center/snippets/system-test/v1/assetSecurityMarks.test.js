@@ -1,4 +1,4 @@
-// Copyright 2019, Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 const {SecurityCenterClient} = require('@google-cloud/security-center');
 const {assert} = require('chai');
+const {describe, it, before} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 

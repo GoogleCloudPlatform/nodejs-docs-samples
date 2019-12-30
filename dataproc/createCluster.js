@@ -25,9 +25,9 @@ function main(projectId, region, clusterName) {
 
   async function createCluster() {
     // TODO(developer): Uncomment and set the following variables
-    // project_id = 'YOUR_PROJECT_ID'
+    // projectId = 'YOUR_PROJECT_ID'
     // region = 'YOUR_CLUSTER_REGION'
-    // cluster_name = 'YOUR_CLUSTER_NAME'
+    // clusterName = 'YOUR_CLUSTER_NAME'
 
     // Create the cluster config
     const request = {

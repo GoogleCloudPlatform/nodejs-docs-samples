@@ -53,12 +53,11 @@ function main(
       glossary: glossary,
     };
 
-    // Create glossary using a long-running operation
-    // and wait for its completion
     try {
+      // Create glossary using a long-running operation
       const [operation] = await translationClient.createGlossary(request);
 
-      // Wait for operation to complete.
+      // Wait for the operation to complete
       await operation.promise();
 
       console.log(`Created glossary:`);

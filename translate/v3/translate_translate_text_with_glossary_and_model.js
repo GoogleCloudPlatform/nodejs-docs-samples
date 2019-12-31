@@ -51,11 +51,15 @@ function main(
       model: `projects/${projectId}/locations/${location}/models/${modelId}`,
     };
 
-    // Run request
-    const [response] = await translationClient.translateText(request);
+    try {
+      // Run request
+      const [response] = await translationClient.translateText(request);
 
-    for (const translation of response.glossaryTranslations) {
-      console.log(`Translation: ${translation.translatedText}`);
+      for (const translation of response.glossaryTranslations) {
+        console.log(`Translation: ${translation.translatedText}`);
+      }
+    } catch (error) {
+      console.error(error.details);
     }
   }
 

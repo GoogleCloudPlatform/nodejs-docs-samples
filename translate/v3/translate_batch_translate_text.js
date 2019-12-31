@@ -55,15 +55,18 @@ function main(
       },
     };
 
-    // Batch translate text using a long-running operation.
-    // You can wait for now, or get results later.
-    const [operation] = await translationClient.batchTranslateText(request);
+    try {
+      // Batch translate text using a long-running operation
+      const [operation] = await translationClient.batchTranslateText(request);
 
-    // Wait for operation to complete.
-    const [response] = await operation.promise();
+      // Wait for operation to complete.
+      const [response] = await operation.promise();
 
-    console.log(`Total Characters: ${response.totalCharacters}`);
-    console.log(`Translated Characters: ${response.translatedCharacters}`);
+      console.log(`Total Characters: ${response.totalCharacters}`);
+      console.log(`Translated Characters: ${response.translatedCharacters}`);
+    } catch (error) {
+      console.error(error.details);
+    }
   }
 
   batchTranslateText();

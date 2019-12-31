@@ -62,15 +62,19 @@ function main(
       },
     };
 
-    // Create a job whose results you can either wait for now, or get later
-    const [operation] = await client.batchTranslateText(request);
+    try {
+      // Create a job using a long-running operation
+      const [operation] = await client.batchTranslateText(request);
 
-    // Get a Promise representation of the final result of the job
-    const [response] = await operation.promise();
+      // Wait for the operation to complete
+      const [response] = await operation.promise();
 
-    // Display the translation for each input text provided
-    console.log(`Total Characters: ${response.totalCharacters}`);
-    console.log(`Translated Characters: ${response.translatedCharacters}`);
+      // Display the translation for each input text provided
+      console.log(`Total Characters: ${response.totalCharacters}`);
+      console.log(`Translated Characters: ${response.translatedCharacters}`);
+    } catch (error) {
+      console.error(error.details);
+    }
   }
 
   batchTranslateTextWithGlossary();

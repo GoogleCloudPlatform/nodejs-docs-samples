@@ -34,12 +34,16 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'global') {
       parent: `projects/${projectId}/locations/${location}`,
     };
 
-    // Run request
-    const [response] = await translationClient.getSupportedLanguages(request);
+    try {
+      // Run request
+      const [response] = await translationClient.getSupportedLanguages(request);
 
-    console.log(`Supported languages:`);
-    for (const language of response.languages) {
-      console.log(`Language Code: ${language.languageCode}`);
+      console.log(`Supported languages:`);
+      for (const language of response.languages) {
+        console.log(`Language Code: ${language.languageCode}`);
+      }
+    } catch (error) {
+      console.error(error.details);
     }
   }
 

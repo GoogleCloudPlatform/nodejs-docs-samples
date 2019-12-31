@@ -40,10 +40,14 @@ function main(
       name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
     };
 
-    // Get glossary
-    const [response] = await translationClient.getGlossary(request);
+    try {
+      // Get glossary
+      const [response] = await translationClient.getGlossary(request);
 
-    console.log(`Got glossary: ${response.name}`);
+      console.log(`Got glossary: ${response.name}`);
+    } catch (error) {
+      console.error(error.details);
+    }
   }
 
   getGlossary();

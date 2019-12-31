@@ -40,14 +40,17 @@ function main(
       name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
     };
 
-    // Delete glossary using a long-running operation.
-    // You can wait for now, or get results later.
-    const [operation] = await translationClient.deleteGlossary(request);
+    try {
+      // Delete glossary using a long-running operation
+      const [operation] = await translationClient.deleteGlossary(request);
 
-    // Wait for operation to complete.
-    const [response] = await operation.promise();
+      // Wait for operation to complete.
+      const [response] = await operation.promise();
 
-    console.log(`Deleted glossary: ${response.name}`);
+      console.log(`Deleted glossary: ${response.name}`);
+    } catch (error) {
+      console.error(error.details);
+    }
   }
 
   deleteGlossary();

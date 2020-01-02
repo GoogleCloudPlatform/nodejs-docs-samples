@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,31 +18,36 @@ function main(
   projectId = 'YOUR_PROJECT_ID',
   location = 'us-central1',
   modelId = 'YOUR_MODEL_ID',
-  content = 'text to predict'
+  filePath = 'path_to_local_file.jpg'
 ) {
-  // [START automl_language_entity_extraction_predict]
+  // [START automl_vision_classification_predict]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'us-central1';
   // const modelId = 'YOUR_MODEL_ID';
-  // const content = 'text to predict'
+  // const filePath = 'path_to_local_file.jpg';
 
   // Imports the Google Cloud AutoML library
   const {PredictionServiceClient} = require(`@google-cloud/automl`).v1;
+  const fs = require(`fs`);
 
   // Instantiates a client
   const client = new PredictionServiceClient();
 
+  // Read the file content for translation.
+  const content = fs.readFileSync(filePath);
+
   async function predict() {
     // Construct request
+    // params is additional domain-specific parameters.
+    // score_threshold is used to filter the result
     const request = {
       name: client.modelPath(projectId, location, modelId),
       payload: {
-        textSnippet: {
-          content: content,
-          mimeType: 'text/plain', // Types: 'test/plain', 'text/html'
+        image: {
+          imageBytes: content,
         },
       },
     };
@@ -50,19 +55,15 @@ function main(
     const [response] = await client.predict(request);
 
     for (const annotationPayload of response.payload) {
+      console.log(`Predicted class name: ${annotationPayload.displayName}`);
       console.log(
-        `Text Extract Entity Types: ${annotationPayload.displayName}`
+        `Predicted class score: ${annotationPayload.classification.score}`
       );
-      console.log(`Text Score: ${annotationPayload.textExtraction.score}`);
-      const textSegment = annotationPayload.textExtraction.textSegment;
-      console.log(`Text Extract Entity Content: ${textSegment.content}`);
-      console.log(`Text Start Offset: ${textSegment.startOffset}`);
-      console.log(`Text End Offset: ${textSegment.endOffset}`);
     }
   }
 
   predict();
-  // [END automl_language_entity_extraction_predict]
+  // [END automl_vision_classification_predict]
 }
 
 main(...process.argv.slice(2));

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 'use strict';
+/*eslint no-warning-comments: [0, { "terms": ["todo", "fixme"], "location": "anywhere" }]*/
 
 // sample-metadata:
 //   title: Cloud Tasks Create App Engine Target

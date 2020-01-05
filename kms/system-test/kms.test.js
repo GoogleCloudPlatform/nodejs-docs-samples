@@ -319,6 +319,7 @@ describe('kms sample tests', () => {
     let signature;
 
     before(async function() {
+      this.timeout(10000);
       // KMS keys can be created but still in "pending generation" state. This
       // waits for the key version to reach the desired state.
       const waitForState = async (name, state) => {
@@ -374,6 +375,7 @@ describe('kms sample tests', () => {
     });
 
     after(async function() {
+      this.timeout(10000);
       await client.destroyCryptoKeyVersion({name: decryptKeyVersionId});
       await client.destroyCryptoKeyVersion({name: signKeyVersionId});
     });

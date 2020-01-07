@@ -37,11 +37,11 @@ echo
 # Only needed if deploy completed.
 function cleanup {
   set -x
-  gcloud beta run services delete ${SERVICE_NAME} \
+  gcloud run services delete ${SERVICE_NAME} \
     --platform=managed \
     --region="${REGION:-us-central1}" \
     --quiet
-  gcloud beta run services delete ${SERVICE_OVERRIDE} \
+  gcloud run services delete ${SERVICE_OVERRIDE} \
     --platform=managed \
     --region="${REGION:-us-central1}" \
     --quiet

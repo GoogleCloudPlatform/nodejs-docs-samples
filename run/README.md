@@ -101,7 +101,7 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
 ```
 gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
-gcloud beta run deploy $SAMPLE \
+gcloud run deploy $SAMPLE \
   # Needed for Manual Logging sample.
   --set-env-var GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT} \
   --image gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}

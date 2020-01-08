@@ -22,7 +22,7 @@
     "express": "^4.16.4"
   },
   "devDependencies": {
-    "mocha": "^6.1.4",
+    "mocha": "^7.0.0",
     "sinon": "^7.3.2",
     "supertest": "^4.0.2",
     "uuid": "^3.3.2"

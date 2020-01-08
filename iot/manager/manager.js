@@ -28,6 +28,10 @@ const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 const client = new iot.v1.DeviceManagerClient();
 // [END iot_get_client]
 
+if (client === undefined) {
+  console.log('Did not instantiate client.');
+}
+
 // Configures the topic for Cloud IoT Core.
 const setupIotTopic = async topicName => {
   const {PubSub} = require('@google-cloud/pubsub');
@@ -354,36 +358,42 @@ const patchRsa256ForAuth = async (
   cloudRegion
 ) => {
   // [START iot_patch_rsa]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-rsa-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-    updateMask: 'credentials',
-    resource: {
-      credentials: [
-        {
-          publicKey: {
-            format: 'RSA_X509_PEM',
-            key: fs.readFileSync(rsaPublicKeyFile).toString(),
-          },
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const devPath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+
+  const device = {
+    name: devPath,
+    credentials: [
+      {
+        publicKey: {
+          format: 'RSA_X509_PEM',
+          key: fs.readFileSync(rsaPublicKeyFile).toString(),
         },
-      ],
-    },
+      },
+    ],
   };
 
   try {
-    const {data} = await client.projects.locations.registries.devices.patch(
-      request
-    );
+    const responses = await iotClient.updateDevice({
+      device: device,
+      updateMask: {paths: ['credentials']},
+    });
 
     console.log('Patched device:', deviceId);
-    console.log(data);
+    console.log('Response', responses[0]);
   } catch (err) {
     console.error('Error patching device:', deviceId, err);
   }
@@ -400,36 +410,42 @@ const patchEs256ForAuth = async (
   cloudRegion
 ) => {
   // [START iot_patch_es]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-es-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-    updateMask: 'credentials',
-    resource: {
-      credentials: [
-        {
-          publicKey: {
-            format: 'ES256_PEM',
-            key: fs.readFileSync(esPublicKeyFile).toString(),
-          },
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const devPath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+
+  const device = {
+    name: devPath,
+    credentials: [
+      {
+        publicKey: {
+          format: 'ES256_PEM',
+          key: fs.readFileSync(esPublicKeyFile).toString(),
         },
-      ],
-    },
+      },
+    ],
   };
 
   try {
-    const {data} = await client.projects.locations.registries.devices.patch(
-      request
-    );
+    const responses = await iotClient.updateDevice({
+      device: device,
+      updateMask: {paths: ['credentials']},
+    });
 
     console.log('Patched device:', deviceId);
-    console.log(data);
+    console.log('Response', responses[0]);
   } catch (err) {
     console.error('Error patching device:', deviceId, err);
   }
@@ -439,23 +455,30 @@ const patchEs256ForAuth = async (
 // List all of the devices in the given registry.
 const listDevices = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_list_devices]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
 
-  const request = {
-    parent: registryName,
-  };
+  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
 
   try {
-    const {data} = await client.projects.locations.registries.devices.list(
-      request
-    );
-    console.log('Current devices in registry:', data['devices']);
+    const responses = await iotClient.listDevices({parent: parentName});
+    const devices = responses[0];
+
+    if (devices.length > 0) {
+      console.log('Current devices in registry:');
+    } else {
+      console.log('No devices in registry.');
+    }
+
+    for (let i = 0; i < devices.length; i++) {
+      const device = devices[i];
+      console.log(`Device ${i}: `, device);
+    }
   } catch (err) {
     console.error('Could not list devices', err);
   }
@@ -614,25 +637,26 @@ const getDevice = async (
   cloudRegion
 ) => {
   // [START iot_get_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+  const devicePath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
 
   try {
-    const {data} = await client.projects.locations.registries.devices.get(
-      request
-    );
+    const responses = await iotClient.getDevice({name: devicePath});
+    const data = responses[0];
 
-    console.log('Found device:', deviceId);
-    console.log(data);
+    console.log('Found device:', deviceId, data);
   } catch (err) {
     console.error('Could not find device:', deviceId);
     console.error('Trace:', err);
@@ -649,23 +673,39 @@ const getDeviceState = async (
   cloudRegion
 ) => {
   // [START iot_get_device_state]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+  const devicePath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
 
   try {
-    const {
-      data,
-    } = await client.projects.locations.registries.devices.states.list(request);
-    console.log('State:', data);
+    const responses = await iotClient.listDeviceStates({name: devicePath});
+    const states = responses[0].deviceStates;
+    if (states.length === 0) {
+      console.log(`No States for device: ${deviceId}`);
+    } else {
+      console.log(`States for device: ${deviceId}`);
+    }
+
+    for (let i = 0; i < states.length; i++) {
+      const state = states[i];
+      console.log(
+        'State:',
+        state,
+        '\nData:\n',
+        state.binaryData.toString('utf8')
+      );
+    }
   } catch (err) {
     console.error('Could not find device:', deviceId);
     console.error('trace:', err);
@@ -682,29 +722,45 @@ const getDeviceConfigs = async (
   cloudRegion
 ) => {
   // [START iot_get_device_configs]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+  const devicePath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
 
   try {
-    const {
-      data,
-    } = await client.projects.locations.registries.devices.configVersions.list(
-      request
-    );
+    const responses = await iotClient.listDeviceConfigVersions({
+      name: devicePath,
+    });
+    const configs = responses[0].deviceConfigs;
 
-    console.log('Configs:', data);
+    if (configs.length === 0) {
+      console.log(`No configs for device: ${deviceId}`);
+    } else {
+      console.log(`Configs:`);
+    }
+
+    for (let i = 0; i < configs.length; i++) {
+      const config = configs[i];
+      console.log(
+        'Config:',
+        config,
+        '\nData:\n',
+        config.binaryData.toString('utf8')
+      );
+    }
   } catch (err) {
     console.error('Could not find device:', deviceId);
-    console.error('Trace:', err);
+    console.error('trace:', err);
   }
   // [END iot_get_device_configs]
 };
@@ -720,32 +776,35 @@ const setDeviceConfig = async (
   version
 ) => {
   // [START iot_set_device_config]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
   // const data = 'test-data';
   // const version = 0;
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const formattedName = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
 
   const binaryData = Buffer.from(data).toString('base64');
   const request = {
-    name: `${registryName}/devices/${deviceId}`,
+    name: formattedName,
     versionToUpdate: version,
     binaryData: binaryData,
   };
 
   try {
-    const {
-      data,
-    } = await client.projects.locations.registries.devices.modifyCloudToDeviceConfig(
-      request
-    );
+    const responses = await iotClient.modifyCloudToDeviceConfig(request);
 
-    console.log('Success:', data);
+    console.log('Success:', responses[0]);
   } catch (err) {
     console.error('Could not update config:', deviceId);
     console.error('Message:', err);
@@ -762,35 +821,32 @@ const sendCommand = async (
   commandMessage
 ) => {
   // [START iot_send_command]
-  // const iot = require('@google-cloud/iot');
-  // const client = new iot.v1.DeviceManagerClient();
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const commandMessage = 'message for device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
 
-  const binaryData = Buffer.from(commandMessage).toString('base64');
-
-  const formattedName = client.devicePath(
+  const formattedName = iotClient.devicePath(
     projectId,
     cloudRegion,
     registryId,
     deviceId
   );
-
-  // NOTE: The device must be subscribed to the wildcard subfolder
-  // or you should specify a subfolder.
+  const binaryData = Buffer.from(commandMessage);
   const request = {
     name: formattedName,
     binaryData: binaryData,
-    //subfolder: <your-subfolder>
   };
 
   try {
-    await client.sendCommandToDevice(request);
+    const responses = await iotClient.sendCommandToDevice(request);
 
-    console.log('Sent command');
+    console.log('Sent command: ', responses[0]);
   } catch (err) {
     console.error('Could not send command:', err);
   }

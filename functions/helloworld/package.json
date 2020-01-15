@@ -29,7 +29,7 @@
     "@google-cloud/storage": "^4.0.0",
     "child-process-promise": "^2.2.1",
     "express": "^4.16.3",
-    "mocha": "^6.1.4",
+    "mocha": "^7.0.0",
     "moment": "^2.24.0",
     "promise-retry": "^1.1.1",
     "proxyquire": "^2.1.0",

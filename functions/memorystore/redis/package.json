@@ -19,7 +19,7 @@
     "redis": "^2.8.0"
   },
   "devDependencies": {
-    "mocha": "^6.1.4",
+    "mocha": "^7.0.0",
     "sinon": "^7.3.2"
   }
 }

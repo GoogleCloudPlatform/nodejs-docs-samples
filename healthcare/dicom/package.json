@@ -15,7 +15,7 @@
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "@google-cloud/pubsub": "^1.0.0",
     "@google-cloud/storage": "^4.0.0",
-    "mocha": "^6.0.0"
+    "mocha": "^7.0.0"
   },
   "dependencies": {
     "googleapis": "^46.0.0",

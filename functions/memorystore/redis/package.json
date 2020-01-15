@@ -20,6 +20,6 @@
   },
   "devDependencies": {
     "mocha": "^7.0.0",
-    "sinon": "^7.3.2"
+    "sinon": "^8.0.0"
   }
 }

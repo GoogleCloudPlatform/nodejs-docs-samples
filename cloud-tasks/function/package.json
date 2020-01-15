@@ -15,6 +15,6 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^7.0.0"
+    "sinon": "^8.0.0"
   }
 }

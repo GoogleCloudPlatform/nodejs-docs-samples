@@ -13,8 +13,8 @@
     "@sendgrid/mail": "^6.4.0"
   },
   "devDependencies": {
-    "mocha": "^6.0.0",
+    "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^7.0.0"
+    "sinon": "^8.0.0"
   }
 }

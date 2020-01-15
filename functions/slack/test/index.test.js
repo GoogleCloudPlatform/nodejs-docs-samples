@@ -37,16 +37,21 @@ const getSample = () => {
   const googleapis = {
     kgsearch: sinon.stub().returns(kgsearch),
   };
+  const eventsApi = {
+    verifyRequestSignature: sinon.stub().returns(true),
+  };
 
   return {
     program: proxyquire('../', {
       googleapis: {google: googleapis},
       './config.json': config,
+      '@slack/events-api': eventsApi,
     }),
     mocks: {
       googleapis: googleapis,
       kgsearch: kgsearch,
       config: config,
+      eventsApi: eventsApi,
     },
   };
 };
@@ -115,7 +120,7 @@ describe('functions_slack_search functions_verify_webhook', () => {
     const sample = getSample();
 
     mocks.req.method = method;
-    mocks.req.body.token = 'wrong';
+    sample.mocks.eventsApi.verifyRequestSignature = sinon.stub().returns(false);
 
     try {
       await sample.program.kgSearch(mocks.req, mocks.res);

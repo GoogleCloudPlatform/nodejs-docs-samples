@@ -35,7 +35,7 @@
     "proxyquire": "^2.1.0",
     "request": "^2.88.0",
     "requestretry": "^4.0.0",
-    "sinon": "^7.0.0",
+    "sinon": "^8.0.0",
     "uuid": "^3.1.0",
     "yargs": "^15.0.0"
   },

@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@slack/events-api": "^2.3.0",
-    "googleapis": "^46.0.0"
+    "googleapis": "^47.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "mocha": "^6.0.0",
+    "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^7.2.7"
+    "sinon": "^8.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

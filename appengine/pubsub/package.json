@@ -22,8 +22,8 @@
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
-    "mocha": "^6.0.0",
-    "sinon": "^7.3.1",
+    "mocha": "^7.0.0",
+    "sinon": "^8.0.0",
     "uuid": "^3.3.2"
   },
   "cloud-repo-tools": {

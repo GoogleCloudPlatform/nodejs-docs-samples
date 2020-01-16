@@ -17,8 +17,8 @@
   "dependencies": {},
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "mocha": "^6.0.0",
-    "sinon": "^7.2.7"
+    "mocha": "^7.0.0",
+    "sinon": "^8.0.0"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

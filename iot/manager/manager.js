@@ -888,7 +888,6 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [END iot_get_registry]
 };
 
-// [START iot_get_client]
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
 const getClient = async serviceAccountJson => {
@@ -911,7 +910,6 @@ const getClient = async serviceAccountJson => {
     console.error('Error during API discovery.', err);
   }
 };
-// [END iot_get_client]
 
 // Retrieves the IAM policy for a given registry.
 const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {

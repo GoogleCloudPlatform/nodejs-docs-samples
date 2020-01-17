@@ -25,15 +25,15 @@ Functions for your project.
 
 1. Deploy the "get" function with an HTTP trigger:
 
-        gcloud functions deploy get --trigger-http
+        gcloud functions deploy get --runtime nodejs8 --trigger-http
 
 1. Deploy the "set" function with an HTTP trigger:
 
-        gcloud functions deploy set --trigger-http
+        gcloud functions deploy set --runtime nodejs8 --trigger-http
 
 1. Deploy the "del" function with an HTTP trigger:
 
-        gcloud functions deploy del --trigger-http
+        gcloud functions deploy del --runtime nodejs8 --trigger-http
 
 1. Call the "set" function to create a new entity:
 

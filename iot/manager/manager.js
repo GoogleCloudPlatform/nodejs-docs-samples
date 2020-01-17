@@ -1044,7 +1044,6 @@ const createGateway = async (
 
   const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
 
-  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
   console.log('Creating gateway:', gatewayId);
 
   let credentials = [];
@@ -1855,7 +1854,6 @@ require(`yargs`) // eslint-disable-line
     `Unbinds a device from all gateways`,
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await unbindDeviceFromAllGateways(
         opts.projectId,
         opts.cloudRegion,
@@ -1869,7 +1867,6 @@ require(`yargs`) // eslint-disable-line
     `Unbinds all devices in a given registry. Mainly for clearing registries`,
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await unbindAllDevices(opts.projectId, opts.cloudRegion, opts.registryId);
     }
   )

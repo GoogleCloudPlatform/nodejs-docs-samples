@@ -43,7 +43,7 @@ async function createJob(projectId, locationId, serviceId) {
       },
       relativeUri: '/log_payload',
       httpMethod: 'POST',
-      body: Buffer.from('Hello World'), //.toString("base64"),
+      body: Buffer.from('Hello World'),
     },
     schedule: '* * * * *',
     timeZone: 'America/Los_Angeles',

@@ -25,7 +25,7 @@ requireEnv CONTAINER_IMAGE
 
 # Deploy the service
 set -x
-gcloud beta run deploy "${SERVICE_NAME}" \
+gcloud run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
   ${FLAGS} \

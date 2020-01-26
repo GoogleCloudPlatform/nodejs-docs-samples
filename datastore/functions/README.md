@@ -25,18 +25,18 @@ Functions for your project.
 
 1. Deploy the "get" function with an HTTP trigger:
 
-        gcloud functions deploy get --runtime [YOUR_RUNTIME} --trigger-http
+        gcloud functions deploy get --runtime [YOUR_RUNTIME] --trigger-http
 
     * Replace `[YOUR_RUNTIME]` with the name of the runtime you are using. For a complete list,
     see the [gcloud reference](https://cloud.google.com/sdk/gcloud/reference/functions/deploy#--runtime).
 
 1. Deploy the "set" function with an HTTP trigger:
 
-        gcloud functions deploy set --runtime [YOUR_RUNTIME} --trigger-http
+        gcloud functions deploy set --runtime [YOUR_RUNTIME] --trigger-http
 
 1. Deploy the "del" function with an HTTP trigger:
 
-        gcloud functions deploy del --runtime [YOUR_RUNTIME} --trigger-http
+        gcloud functions deploy del --runtime [YOUR_RUNTIME] --trigger-http
 
 1. Call the "set" function to create a new entity:
 

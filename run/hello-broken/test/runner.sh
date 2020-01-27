@@ -52,5 +52,9 @@ trap cleanup EXIT
 export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
 export BASE_URL_OVERRIDE=$(SERVICE_NAME=${SERVICE_OVERRIDE} test/url.sh)
+
+test -z "$BASE_URL" && echo "BASE_URL value is empty" && exit 1
+test -z "$BASE_URL_OVERRIDE" && echo "BASE_URL_OVERRIDE value is empty" && exit 1
+
 # Do not use exec to preserve trap behavior.
 "$@"

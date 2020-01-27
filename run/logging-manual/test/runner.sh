@@ -42,5 +42,8 @@ trap cleanup EXIT
 # TODO: Perform authentication inside the test.
 export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
+
+test -z "$BASE_URL" && echo "BASE_URL value is empty" && exit 1
+
 # Do not use exec to preserve trap behavior.
 "$@"

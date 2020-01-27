@@ -17,16 +17,16 @@
     "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
-    "googleapis": "^45.0.0",
+    "googleapis": "^47.0.0",
     "moment": "^2.24.0",
     "yargs": "^15.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "@google-cloud/storage": "^4.0.0",
-    "mocha": "^6.0.0",
+    "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^7.2.7",
+    "sinon": "^8.0.0",
     "uuid": "^3.3.2"
   }
 }

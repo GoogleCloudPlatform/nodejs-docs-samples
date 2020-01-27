@@ -18,6 +18,6 @@
   },
   "devDependencies": {
     "got": "^9.6.0",
-    "mocha": "^6.2.1"
+    "mocha": "^7.0.0"
   }
 }

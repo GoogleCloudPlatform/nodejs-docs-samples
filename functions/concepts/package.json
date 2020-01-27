@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "mocha": "^6.0.0",
-    "sinon": "^7.0.0",
+    "mocha": "^7.0.0",
+    "sinon": "^8.0.0",
     "supertest": "^4.0.0"
   },
   "scripts": {

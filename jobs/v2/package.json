@@ -16,10 +16,10 @@
     "system-test": "mocha system-test/*.test.js --timeout=60000"
   },
   "dependencies": {
-    "googleapis": "^45.0.0"
+    "googleapis": "^47.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "mocha": "^6.0.0"
+    "mocha": "^7.0.0"
   }
 }

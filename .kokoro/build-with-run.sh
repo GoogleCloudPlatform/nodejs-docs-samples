@@ -16,6 +16,11 @@
 
 set -eo pipefail
 
+# Activate mocha config
+pushd github/nodejs-docs-samples
+mv .kokoro/.mocharc.yml .
+popd
+
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 pushd github/nodejs-docs-samples/${PROJECT}
 

@@ -71,6 +71,11 @@ export NODEJS_IOT_RSA_PUBLIC_CERT=${KOKORO_GFILE_DIR}/rsa_cert.pem
 export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
+# Activate mocha config
+pushd github/nodejs-docs-samples
+mv .kokoro/.mocharc.yml .
+popd
+
 cd github/nodejs-docs-samples/${PROJECT}
 
 # Install dependencies

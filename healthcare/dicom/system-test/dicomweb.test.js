@@ -18,6 +18,7 @@ const path = require('path');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const childProcess = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
@@ -50,27 +51,27 @@ before(async () => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
 });
 after(async () => {
   try {
-    await tools.runAsync(
+    await childProcess.execSync(
       `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
       cwd
     );
-    await tools.runAsync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
+    await childProcess.execSync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 
 it('should store a DICOM instance', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node dicomWebStoreInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${dcmFile}`,
     cwd
   );
@@ -78,7 +79,7 @@ it('should store a DICOM instance', async () => {
 });
 
 it('should search DICOM instances', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node dicomWebSearchForInstances.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
@@ -86,7 +87,7 @@ it('should search DICOM instances', async () => {
 });
 
 it('should retrieve a DICOM study', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node dicomWebRetrieveStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
     cwd
   );
@@ -94,7 +95,7 @@ it('should retrieve a DICOM study', async () => {
 });
 
 it('should retrieve a DICOM instance', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node dicomWebRetrieveInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
     cwd
   );
@@ -102,7 +103,7 @@ it('should retrieve a DICOM instance', async () => {
 });
 
 it('should retrieve a DICOM rendered PNG image', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node dicomWebRetrieveRendered.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
     cwd
   );
@@ -110,7 +111,7 @@ it('should retrieve a DICOM rendered PNG image', async () => {
 });
 
 it('should search for DICOM studies', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node dicomWebSearchStudies.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
@@ -118,7 +119,7 @@ it('should search for DICOM studies', async () => {
 });
 
 it('should delete a DICOM study', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node dicomWebDeleteStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
     cwd
   );

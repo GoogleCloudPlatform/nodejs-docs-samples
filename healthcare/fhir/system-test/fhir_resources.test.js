@@ -18,6 +18,7 @@ const path = require('path');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const childProcess = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
@@ -43,14 +44,14 @@ before(async () => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
 after(async () => {
   try {
-    await tools.runAsync(
+    await childProcess.execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
@@ -58,11 +59,11 @@ after(async () => {
 });
 
 it('should create a FHIR resource', async () => {
-  await tools.runAsync(
+  await childProcess.execSync(
     `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node fhir_resources.js createResource ${datasetId} ${fhirStoreId} ${resourceType}`,
     cwd
   );
@@ -74,7 +75,7 @@ it('should create a FHIR resource', async () => {
 });
 
 it('should get a FHIR resource', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node getFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -85,7 +86,7 @@ it('should get a FHIR resource', async () => {
 });
 
 it('should list and get a FHIR resource history', async () => {
-  let output = await tools.runAsync(
+  let output = await childProcess.execSync(
     `node listFhirResourceHistory.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -103,7 +104,7 @@ it('should list and get a FHIR resource history', async () => {
     ],
   } = formatted;
 
-  output = await tools.runAsync(
+  output = await childProcess.execSync(
     `node getFhirResourceHistory.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId} ${versionId}`,
     cwd
   );
@@ -111,7 +112,7 @@ it('should list and get a FHIR resource history', async () => {
 });
 
 it('should get everything in Patient compartment', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node getPatientEverything.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceId}`,
     cwd
   );
@@ -124,7 +125,7 @@ it('should get everything in Patient compartment', async () => {
 });
 
 it('should update a FHIR resource', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node updateFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -135,7 +136,7 @@ it('should update a FHIR resource', async () => {
 });
 
 it('should patch a FHIR resource', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node fhir_resources.js patchResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -143,21 +144,21 @@ it('should patch a FHIR resource', async () => {
 });
 
 it('should search for FHIR resources using GET', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node searchFhirResourcesGet.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`
   );
   assert.strictEqual(new RegExp('Resources found').test(output), true);
 });
 
 it('should search for FHIR resources using POST', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node searchFhirResourcesPost.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`
   );
   assert.strictEqual(new RegExp('Resources found').test(output), true);
 });
 
 it('should purge all historical versions of a FHIR resource', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node deleteFhirResourcePurge.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -168,7 +169,7 @@ it('should purge all historical versions of a FHIR resource', async () => {
 });
 
 it('should execute a Bundle', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node fhir_resources.js executeBundle ${datasetId} ${fhirStoreId} ${bundleFile}`,
     cwd
   );
@@ -176,14 +177,14 @@ it('should execute a Bundle', async () => {
 });
 
 it('should delete a FHIR resource', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node deleteFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
   assert.strictEqual(output, `Deleted FHIR resource ${resourceType}`);
 
   // Clean up
-  await tools.runAsync(
+  await childProcess.execSync(
     `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );

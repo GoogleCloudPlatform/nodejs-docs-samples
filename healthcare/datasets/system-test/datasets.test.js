@@ -18,6 +18,7 @@ const path = require('path');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const childProcess = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
@@ -38,7 +39,7 @@ before(() => {
 });
 after(async () => {
   try {
-    await tools.runAsync(
+    await childProcess.execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`,
       cwd
     );
@@ -47,7 +48,7 @@ after(async () => {
 });
 
 it('should create a dataset', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
@@ -55,7 +56,7 @@ it('should create a dataset', async () => {
 });
 
 it('should get a dataset', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
@@ -64,7 +65,7 @@ it('should get a dataset', async () => {
 
 it('should patch a dataset', async () => {
   const timeZone = 'GMT';
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node patchDataset.js ${projectId} ${cloudRegion} ${datasetId} ${timeZone}`,
     cwd
   );
@@ -75,7 +76,7 @@ it('should patch a dataset', async () => {
 });
 
 it('should list datasets', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node listDatasets.js ${projectId} ${cloudRegion}`,
     cwd
   );
@@ -83,7 +84,7 @@ it('should list datasets', async () => {
 });
 
 it('should de-identify data in a dataset and write to a new dataset', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node deidentifyDataset.js ${projectId} ${cloudRegion} ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
     cwd
   );
@@ -97,20 +98,20 @@ it('should create and get a dataset IAM policy', async () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = await tools.runAsync(
+  let output = await childProcess.execSync(
     `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes, 'ETAG');
 
-  output = await tools.runAsync(
+  output = await childProcess.execSync(
     `node getDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId}`
   );
   assert.ok(output.includes('dpebot'));
 });
 
 it('should delete a dataset', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );

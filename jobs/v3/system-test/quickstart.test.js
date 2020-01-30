@@ -15,9 +15,9 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const cp = require('child_process');
 
 it('should list companies', async () => {
-  const output = await tools.runAsync('node quickstart.js');
+  const output = await cp.execSync('node quickstart.js');
   assert.strictEqual(output.includes('Request ID'), true);
 });

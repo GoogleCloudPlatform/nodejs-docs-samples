@@ -15,9 +15,9 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const cp = require('child_process');
 
 it('should search jobs for alerts', async () => {
-  const output = await tools.runAsync('node email-alert-search-sample.js');
+  const output = await cp.execSync('node email-alert-search-sample.js');
   assert.strictEqual(output.includes('matchingJobs'), true);
 });

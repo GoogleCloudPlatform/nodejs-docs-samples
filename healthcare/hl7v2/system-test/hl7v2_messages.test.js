@@ -44,14 +44,14 @@ before(async () => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
 after(async () => {
   try {
-    await tools.runAsync(
+    await childProcess.execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
@@ -59,11 +59,11 @@ after(async () => {
 });
 
 it('should create an HL7v2 message', async () => {
-  await tools.runAsync(
+  await childProcess.execSync(
     `node createHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node createHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
@@ -71,7 +71,7 @@ it('should create an HL7v2 message', async () => {
 });
 
 it('should ingest an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node ingestHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
@@ -79,7 +79,7 @@ it('should ingest an HL7v2 message', async () => {
 });
 
 it('should get an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node getHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
@@ -87,7 +87,7 @@ it('should get an HL7v2 message', async () => {
 });
 
 it('should list HL7v2 messages', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node listHl7v2Messages.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
@@ -95,7 +95,7 @@ it('should list HL7v2 messages', async () => {
 });
 
 it('should patch an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node patchHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId} ${labelKey} ${labelValue}`,
     cwd
   );
@@ -103,14 +103,14 @@ it('should patch an HL7v2 message', async () => {
 });
 
 it('should delete an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `node deleteHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
   assert.ok(output.includes('Deleted HL7v2 message'));
 
   // Clean up
-  tools.runAsync(
+  childProcess.execSync(
     `node deleteHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );

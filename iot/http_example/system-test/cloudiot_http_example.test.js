@@ -19,6 +19,7 @@ const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const childProcess = require('child_process');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -54,17 +55,17 @@ it('should receive configuration message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
+  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     cwd
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
   );
 
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
     cwd
   );
@@ -72,32 +73,32 @@ it('should receive configuration message', async () => {
   assert.strictEqual(new RegExp(/Getting config/).test(output), true);
 
   // Check / cleanup
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     cwd
   );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
 it('should send event message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
+  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     cwd
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
   );
 
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
     cwd
   );
@@ -105,44 +106,44 @@ it('should send event message', async () => {
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 
   // Check / cleanup
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     cwd
   );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
 it('should send state message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
+  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     cwd
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
   );
 
-  const output = await tools.runAsync(
+  const output = await childProcess.execSync(
     `${cmd} --messageType=state --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
     cwd
   );
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 
   // Check / cleanup
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await tools.runAsync(
+  await childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     cwd
   );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });

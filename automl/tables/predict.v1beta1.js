@@ -63,7 +63,11 @@ async function main(
       // Params is additional domain-specific parameters.
       // Currently there is no additional parameters supported.
       client
-        .predict({name: modelFullId, payload: payload, params: {}})
+        .predict({
+          name: modelFullId,
+          payload: payload,
+          params: {feature_importance: true},
+        })
         .then(responses => {
           console.log(responses);
           console.log(`Prediction results:`);
@@ -71,6 +75,24 @@ async function main(
           for (const result of responses[0].payload) {
             console.log(`Predicted class name: ${result.displayName}`);
             console.log(`Predicted class score: ${result.tables.score}`);
+
+            // Get features of top importance
+            const featureList = result.tables.tablesModelColumnInfo.map(
+              columnInfo => {
+                return {
+                  importance: columnInfo.featureImportance,
+                  displayName: columnInfo.columnDisplayName,
+                };
+              }
+            );
+            // Sort features by their importance, highest importance first
+            featureList.sort(function(a, b) {
+              return b.importance - a.importance;
+            });
+
+            // Print top 10 important features
+            console.log('Features of top importance');
+            console.log(featureList.slice(0, 10));
           }
         })
         .catch(err => {

@@ -15,11 +15,11 @@
 'use strict';
 
 const assert = require(`assert`);
-const cp = require(`child_process`);
+const childProcess = require(`child_process`);
 const runSample = `require('./basic-job-sample').runSample()`;
 
 it(`Should create a job, get a job, update a job, update a job with field mask, and delete a job`, async () => {
-  const output = await cp.execSync(`node -e ${runSample}`);
+  const output = await childProcess.execSync(`node -e ${runSample}`);
   const pattern =
     `.*Job generated:.*\n` +
     `.*Job created:.*\n` +

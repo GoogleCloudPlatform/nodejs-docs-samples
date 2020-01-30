@@ -15,13 +15,13 @@
 'use strict';
 
 const assert = require('assert');
-const cp = require('child_process');
+const childProcess = require('child_process');
 
 it('Should throw an error without projectId', async () => {
   process.env.GOOGLE_PROJECT_ID = '';
 
   try {
-    await cp.execSync('node metrics-quickstart.js');
+    await childProcess.execSync('node metrics-quickstart.js');
     assert.fail('Did not throw an error.');
   } catch (err) {
     assert.ok(err.message.includes('Unable to proceed without a Project ID'));
@@ -33,7 +33,7 @@ it('Should capture stats data and export it to backend', async () => {
   process.env.KUBERNETES_SERVICE_HOST = 'localhost';
   process.env.EXPORT_INTERVAL = 1;
 
-  const output = await cp.execSync('node metrics-quickstart.js');
+  const output = await childProcess.execSync('node metrics-quickstart.js');
   assert.ok(new RegExp('Latency *:*').test(output));
   assert.ok(output.includes('Done recording metrics.'));
 });

@@ -16,7 +16,6 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const childProcess = require('child_process');
 
 const cwd = path.join(__dirname, '..');
@@ -46,7 +45,7 @@ it('should load credentials explicitly', async () => {
   console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
   const output = await childProcess.execSync(
     `${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`,
-    {cwd, shell: true}
+    cwd
   );
   assert.strictEqual(output.includes(BUCKET_NAME), true);
 });

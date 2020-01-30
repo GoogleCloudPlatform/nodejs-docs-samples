@@ -16,8 +16,8 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const childProcess = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';

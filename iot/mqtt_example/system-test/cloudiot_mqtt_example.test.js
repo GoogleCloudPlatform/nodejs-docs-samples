@@ -255,7 +255,7 @@ it('should listen for bound device config message', async () => {
 
 it('should listen for error topic messages', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tchildProcess.execSync(
+  await childProcess.execSync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
     cwd
   );

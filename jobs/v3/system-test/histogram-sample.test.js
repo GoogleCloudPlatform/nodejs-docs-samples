@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const cp = require('child_process');
+const childProcess = require('child_process');
 
 it('should do a histogram search', async () => {
-  const output = await cp.execSync('node histogram-sample.js');
+  const output = await childProcess.execSync('node histogram-sample.js');
 
   assert.strictEqual(output.includes('COMPANY_ID'), true);
   assert.strictEqual(output.includes('someFieldName1'), true);

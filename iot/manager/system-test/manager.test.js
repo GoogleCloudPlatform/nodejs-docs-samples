@@ -198,7 +198,10 @@ it('should create and list devices', async () => {
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await childProcess.execSync(`${cmd} listDevices ${registryName}`, cwd);
+  output = await childProcess.execSync(
+    `${cmd} listDevices ${registryName}`,
+    cwd
+  );
   assert.ok(output.includes('Current devices in registry:'));
   assert.ok(output.includes(localDevice));
   output = await childProcess.execSync(
@@ -237,14 +240,20 @@ it('should create and get an iam policy', async () => {
   );
   assert.ok(output.includes('ETAG'));
 
-  output = await childProcess.execSync(`${cmd} getIamPolicy ${registryName}`, cwd);
+  output = await childProcess.execSync(
+    `${cmd} getIamPolicy ${registryName}`,
+    cwd
+  );
   assert.ok(output.includes('dpebot'));
 });
 
 it('should create and delete a registry', async () => {
   const createRegistryId = `${registryName}-create`;
 
-  let output = await childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  let output = await childProcess.execSync(
+    `${cmd} setupIotTopic ${topicName}`,
+    cwd
+  );
   output = await childProcess.execSync(
     `${cmd} createRegistry ${createRegistryId} ${topicName}`,
     cwd
@@ -278,7 +287,10 @@ it('should send command message to device', async () => {
   console.log(output);
   assert.ok(output.includes('Sent command'));
 
-  await childProcess.execSync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
+  await childProcess.execSync(
+    `${cmd} deleteDevice ${deviceId} ${registryName}`,
+    cwd
+  );
 });
 
 it('should create a new gateway', async () => {
@@ -304,7 +316,9 @@ it('should list gateways', async () => {
   );
 
   // look for output in list gateway
-  const gateways = await childProcess.execSync(`${cmd} listGateways ${registryName}`);
+  const gateways = await childProcess.execSync(
+    `${cmd} listGateways ${registryName}`
+  );
   assert.ok(gateways.includes(`${gatewayId}`));
 
   await iotClient.deleteDevice({

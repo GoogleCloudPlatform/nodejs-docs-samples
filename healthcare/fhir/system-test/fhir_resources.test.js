@@ -16,7 +16,6 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const childProcess = require('child_process');
 

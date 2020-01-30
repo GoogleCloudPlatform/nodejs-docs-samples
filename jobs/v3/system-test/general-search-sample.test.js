@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const cp = require('child_process');
+const childProcess = require('child_process');
 
 it('should do a general search', async () => {
-  const output = await cp.execSync('node general-search-sample.js');
+  const output = await childProcess.execSync('node general-search-sample.js');
 
   const pattern =
     '.*matchingJobs.*\n' +

@@ -15,11 +15,11 @@
 'use strict';
 
 const assert = require('assert');
-const cp = require('child_process');
+const childProcess = require('child_process');
 const runSample = `require('./batchdelete-jobs-sample')`;
 
 it('Should batchDelete jobs.', async () => {
-  const output = await cp.execSync(`node -e ${runSample}`);
+  const output = await childProcess.execSync(`node -e ${runSample}`);
   const pattern = '.*Batch deleted.*';
   assert.strictEqual(new RegExp(pattern).test(output), true);
 });

@@ -16,7 +16,6 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const childProcess = require('child_process');
 
@@ -66,7 +65,10 @@ after(async () => {
       `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
       cwd
     );
-    await childProcess.execSync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
+    await childProcess.execSync(
+      `node deleteDataset.js ${datasetId}`,
+      cwdDatasets
+    );
   } catch (err) {} // Ignore error
 });
 

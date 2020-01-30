@@ -259,7 +259,6 @@ it('should listen for error topic messages', async () => {
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
     cwd
   );
-
   // create a device but don't associate it with the gateway
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
   await childProcess.execSync(

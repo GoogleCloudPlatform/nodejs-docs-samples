@@ -17,10 +17,13 @@ See the [Cloud Functions Hello World tutorial][tutorial].
 **Note:** in order for the tests to run properly, you'll have to deploy some of the sample functions:
 
 ```
-gcloud functions deploy helloHttp --runtime nodejs8 --trigger-http
-gcloud functions deploy helloPubSub --trigger-topic $FUNCTIONS_TOPIC --runtime nodejs8
-gcloud functions deploy helloGCS --runtime nodejs8 --trigger-resource $FUNCTIONS_DELETABLE_BUCKET --trigger-event providers/cloud.storage/eventTypes/object.change
+gcloud functions deploy helloHttp --runtime [YOUR_RUNTIME] --trigger-http
+gcloud functions deploy helloPubSub --trigger-topic $FUNCTIONS_TOPIC --runtime [YOUR_RUNTIME]
+gcloud functions deploy helloGCS --runtime [YOUR_RUNTIME] --trigger-resource $FUNCTIONS_DELETABLE_BUCKET --trigger-event providers/cloud.storage/eventTypes/object.change
 ```
+
+* Replace `[YOUR_RUNTIME]` with the name of the runtime you are using. For a
+complete list, see the [gcloud reference](https://cloud.google.com/sdk/gcloud/reference/functions/deploy#--runtime).
 
 ## Run the tests
 

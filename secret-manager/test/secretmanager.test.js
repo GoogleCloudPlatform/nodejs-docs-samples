@@ -23,7 +23,8 @@ const client = new SecretManagerServiceClient();
 
 const projectId = process.env.GCLOUD_PROJECT;
 const secretId = uuidv4();
-const payload = `my super secret data`;
+const payload = 'my super secret data';
+const iamUser = 'user:sethvargo@google.com';
 
 let secret;
 let version;
@@ -136,6 +137,18 @@ describe(`Secret Manager samples`, () => {
   });
 
   it(`gets secret versions`, async () => {
+    const output = execSync(`node iamGrantAccess.js ${secret.name} ${iamUser}`);
+    assert.match(output, new RegExp(`Updated IAM policy`));
+  });
+
+  it(`revokes access permissions`, async () => {
+    const output = execSync(
+      `node iamRevokeAccess.js ${secret.name} ${iamUser}`
+    );
+    assert.match(output, new RegExp(`Updated IAM policy`));
+  });
+
+  it(`grants access permissions`, async () => {
     const output = execSync(`node getSecretVersion.js ${version.name}`);
     assert.match(output, new RegExp(`Found secret ${version.name}`));
   });

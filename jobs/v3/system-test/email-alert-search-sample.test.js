@@ -17,9 +17,7 @@
 const assert = require('assert');
 const childProcess = require('child_process');
 
-it('should search jobs for alerts', async () => {
-  const output = await childProcess.execSync(
-    'node email-alert-search-sample.js'
-  );
+it('should search jobs for alerts', () => {
+  const output = childProcess.execSync('node email-alert-search-sample.js');
   assert.strictEqual(output.includes('matchingJobs'), true);
 });

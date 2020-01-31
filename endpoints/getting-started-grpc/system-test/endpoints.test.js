@@ -72,16 +72,16 @@ const JWT_AUTH_TOKEN = jwt.sign(
 );
 
 // API key
-it(`should request a greeting from a remote Compute Engine instance using an API key`, async () => {
-  const output = await childProcess.execSync(
+it(`should request a greeting from a remote Compute Engine instance using an API key`, () => {
+  const output = childProcess.execSync(
     `${clientCmd} -h ${GCE_HOST} -k ${API_KEY}`,
     cwd
   );
   assert.ok(new RegExp('Hello world').test(output));
 });
 
-it(`should request a greeting from a remote Container Engine cluster using an API key`, async () => {
-  const output = await childProcess.execSync(
+it(`should request a greeting from a remote Container Engine cluster using an API key`, () => {
+  const output = childProcess.execSync(
     `${clientCmd} -h ${GKE_HOST} -k ${API_KEY}`,
     cwd
   );
@@ -93,7 +93,7 @@ it('should request and handle a greeting locally using an API key', async () => 
   const server = childProcess.exec(`${serverCmd} -p ${PORT}`, {cwd: cwd});
 
   await delay(1000);
-  const clientOutput = await childProcess.execSync(
+  const clientOutput = childProcess.execSync(
     `${clientCmd} -h localhost:${PORT} -k ${API_KEY}`,
     cwd
   );
@@ -102,16 +102,16 @@ it('should request and handle a greeting locally using an API key', async () => 
 });
 
 // Authtoken
-it(`should request a greeting from a remote Compute Engine instance using a JWT Auth Token`, async () => {
-  const output = await childProcess.execSync(
+it(`should request a greeting from a remote Compute Engine instance using a JWT Auth Token`, () => {
+  const output = childProcess.execSync(
     `${clientCmd} -h ${GCE_HOST} -j ${JWT_AUTH_TOKEN}`,
     cwd
   );
   assert.ok(new RegExp('Hello world').test(output));
 });
 
-it(`should request a greeting from a remote Container Engine cluster using a JWT Auth Token`, async () => {
-  const output = await childProcess.execSync(
+it(`should request a greeting from a remote Container Engine cluster using a JWT Auth Token`, () => {
+  const output = childProcess.execSync(
     `${clientCmd} -h ${GKE_HOST} -j ${JWT_AUTH_TOKEN}`,
     cwd
   );
@@ -123,7 +123,7 @@ it(`should request and handle a greeting locally using a JWT Auth Token`, async 
   const server = childProcess.exec(`${serverCmd} -p ${PORT}`, {cwd: cwd});
 
   await delay(1000);
-  const clientOutput = await childProcess.execSync(
+  const clientOutput = childProcess.execSync(
     `${clientCmd} -h localhost:${PORT} -j ${JWT_AUTH_TOKEN}`,
     cwd
   );

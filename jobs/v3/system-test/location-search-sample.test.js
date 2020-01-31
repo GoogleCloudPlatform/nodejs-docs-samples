@@ -17,8 +17,8 @@
 const assert = require('assert');
 const childProcess = require('child_process');
 
-it('should do a search with location filters', async () => {
-  const output = await childProcess.execSync('node location-search-sample.js');
+it('should do a search with location filters', () => {
+  const output = childProcess.execSync('node location-search-sample.js');
 
   const pattern =
     '.*matchingJobs.*locationFilters.*\n' +

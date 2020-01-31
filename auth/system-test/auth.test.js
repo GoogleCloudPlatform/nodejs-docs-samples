@@ -34,16 +34,16 @@ before(() => {
   );
 });
 
-it('should load credentials implicitly', async () => {
-  const output = await childProcess.execSync(`${cmd} auth-cloud-implicit`, cwd);
+it('should load credentials implicitly', () => {
+  const output = childProcess.execSync(`${cmd} auth-cloud-implicit`, cwd);
   assert.strictEqual(output.includes(BUCKET_NAME), true);
 });
 
-it('should load credentials explicitly', async () => {
+it('should load credentials explicitly', () => {
   const project = process.env.GCLOUD_PROJECT;
   const keyfile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
-  const output = await childProcess.execSync(
+  const output = childProcess.execSync(
     `${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`,
     cwd
   );

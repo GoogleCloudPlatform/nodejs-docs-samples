@@ -17,7 +17,7 @@
 const assert = require('assert');
 const childProcess = require('child_process');
 
-it('should list companies', async () => {
-  const output = await childProcess.execSync('node quickstart.js');
+it('should list companies', () => {
+  const output = childProcess.execSync('node quickstart.js');
   assert.strictEqual(output.includes('Request ID'), true);
 });

@@ -17,8 +17,8 @@
 const assert = require('assert');
 const childProcess = require('child_process');
 
-it('should do a general search', async () => {
-  const output = await childProcess.execSync('node general-search-sample.js');
+it('should do a general search', () => {
+  const output = childProcess.execSync('node general-search-sample.js');
 
   const pattern =
     '.*matchingJobs.*\n' +

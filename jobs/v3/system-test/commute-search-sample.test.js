@@ -17,8 +17,8 @@
 const assert = require('assert');
 const childProcess = require('child_process');
 
-it('should do a commute search', async () => {
-  const output = await childProcess.execSync('node commute-search-sample.js');
+it('should do a commute search', () => {
+  const output = childProcess.execSync('node commute-search-sample.js');
 
   assert.strictEqual(
     new RegExp('.*matchingJobs.*commuteInfo.*').test(output),

@@ -51,21 +51,21 @@ after(async () => {
   console.log(`Topic ${topic.name} deleted.`);
 });
 
-it('should receive configuration message', async () => {
+it('should receive configuration message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await childProcess.execSync(
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     cwd
   );
-  await childProcess.execSync(
+  childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
   );
 
-  const output = await childProcess.execSync(
+  const output = childProcess.execSync(
     `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
     cwd
   );
@@ -73,32 +73,32 @@ it('should receive configuration message', async () => {
   assert.strictEqual(new RegExp(/Getting config/).test(output), true);
 
   // Check / cleanup
-  await childProcess.execSync(
+  childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await childProcess.execSync(
+  childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     cwd
   );
-  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
 it('should send event message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await childProcess.execSync(
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     cwd
   );
-  await childProcess.execSync(
+  childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
   );
 
-  const output = await childProcess.execSync(
+  const output = childProcess.execSync(
     `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
     cwd
   );

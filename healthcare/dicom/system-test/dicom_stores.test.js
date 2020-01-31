@@ -75,79 +75,79 @@ after(async () => {
 
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    await childProcess.execSync(
+    childProcess.execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
   } catch (err) {} // Ignore error
 });
 
-it('should create a DICOM store', async () => {
-  const output = await childProcess.execSync(
+it('should create a DICOM store', () => {
+  const output = childProcess.execSync(
     `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
   assert.ok(output.includes('Created DICOM store'));
 });
 
-it('should get a DICOM store', async () => {
-  const output = await childProcess.execSync(
+it('should get a DICOM store', () => {
+  const output = childProcess.execSync(
     `node getDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
   assert.ok(output.includes('name'));
 });
 
-it('should patch a DICOM store', async () => {
-  const output = await childProcess.execSync(
+it('should patch a DICOM store', () => {
+  const output = childProcess.execSync(
     `node patchDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${topicName}`,
     cwd
   );
   assert.ok(output.includes('Patched DICOM store'));
 });
 
-it('should list DICOM stores', async () => {
-  const output = await childProcess.execSync(
+it('should list DICOM stores', () => {
+  const output = childProcess.execSync(
     `node listDicomStores.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
   assert.ok(output.includes('dicomStores'));
 });
 
-it('should create and get a DICOM store IAM policy', async () => {
+it('should create and get a DICOM store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = await childProcess.execSync(
+  let output = childProcess.execSync(
     `node setDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes, 'ETAG');
 
-  output = await childProcess.execSync(
+  output = childProcess.execSync(
     `node getDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`
   );
   assert.ok(output.includes('dpebot'));
 });
 
-it('should import a DICOM object from GCS', async () => {
-  const output = await childProcess.execSync(
+it('should import a DICOM object from GCS', () => {
+  const output = childProcess.execSync(
     `node importDicomInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${gcsUri}`,
     cwd
   );
   assert.ok(output.includes('Successfully imported DICOM instances'));
 });
 
-it('should export a DICOM instance', async () => {
-  const output = await childProcess.execSync(
+it('should export a DICOM instance', () => {
+  const output = childProcess.execSync(
     `node exportDicomInstanceGcs.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${bucketName}`,
     cwd
   );
   assert.ok(output.includes('Exported DICOM instances'));
 });
 
-it('should delete a DICOM store', async () => {
-  const output = await childProcess.execSync(
+it('should delete a DICOM store', () => {
+  const output = childProcess.execSync(
     `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );

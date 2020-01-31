@@ -18,8 +18,8 @@ const assert = require(`assert`);
 const childProcess = require(`child_process`);
 const runSample = `require('./basic-job-sample').runSample()`;
 
-it(`Should create a job, get a job, update a job, update a job with field mask, and delete a job`, async () => {
-  const output = await childProcess.execSync(`node -e ${runSample}`);
+it(`Should create a job, get a job, update a job, update a job with field mask, and delete a job`, () => {
+  const output = childProcess.execSync(`node -e ${runSample}`);
   const pattern =
     `.*Job generated:.*\n` +
     `.*Job created:.*\n` +

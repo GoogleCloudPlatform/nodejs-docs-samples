@@ -18,6 +18,8 @@ const assert = require('assert');
 const childProcess = require('child_process');
 
 it('should search featured job', async () => {
-  const output = await childProcess.execSync('node featured-job-search-sample.js');
+  const output = await childProcess.execSync(
+    'node featured-job-search-sample.js'
+  );
   assert.strictEqual(output.includes('matchingJobs'), true);
 });

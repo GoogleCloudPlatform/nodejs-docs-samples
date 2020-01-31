@@ -39,7 +39,7 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  tools.run(installDeps, `${cwd}/../mqtt_example`);
+  tools.run(installDeps, `${cwd}/../../mqtt_example`);
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -278,7 +278,7 @@ it('should send command message to device', async () => {
   childProcess.execSync(
     `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
   --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
-    path.join(__dirname, '../../../../mqtt_example')
+    path.join(__dirname, '../../../mqtt_example')
   );
 
   const output = await childProcess.execSync(

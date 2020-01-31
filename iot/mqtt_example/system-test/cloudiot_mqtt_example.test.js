@@ -183,7 +183,7 @@ it('should send state message', () => {
   childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-it('should receive command message', async () => {
+it.only('should receive command message', async () => {
   const deviceId = `commands-device`;
   const message = 'rotate 180 degrees';
 

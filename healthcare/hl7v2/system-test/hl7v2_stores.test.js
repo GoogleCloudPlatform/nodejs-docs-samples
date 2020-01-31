@@ -17,7 +17,7 @@
 const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const {PubSub} = require('@google-cloud/pubsub');
@@ -45,7 +45,7 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  childProcess.execSync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
@@ -54,7 +54,7 @@ after(async () => {
   try {
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    childProcess.execSync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
@@ -62,7 +62,7 @@ after(async () => {
 });
 
 it('should create an HL7v2 store', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node createHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
@@ -70,7 +70,7 @@ it('should create an HL7v2 store', () => {
 });
 
 it('should get an HL7v2 store', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node getHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
@@ -78,7 +78,7 @@ it('should get an HL7v2 store', () => {
 });
 
 it('should patch an HL7v2 store', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node patchHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${topicName}`,
     cwd
   );
@@ -86,7 +86,7 @@ it('should patch an HL7v2 store', () => {
 });
 
 it('should list HL7v2 stores', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node listHl7v2Stores.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
@@ -97,20 +97,20 @@ it('should create and get an HL7v2 store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = childProcess.execSync(
+  let output = execSync(
     `node setHl7v2StoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes, 'ETAG');
 
-  output = childProcess.execSync(
+  output = execSync(
     `node getHl7v2StoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`
   );
   assert.ok(output.includes('dpebot'));
 });
 
 it('should delete an HL7v2 Store', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node deleteHl7v2Store ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );

@@ -17,7 +17,7 @@
 const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
@@ -44,14 +44,14 @@ before(() => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  childProcess.execSync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
 after(() => {
   try {
-    childProcess.execSync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
@@ -59,11 +59,11 @@ after(() => {
 });
 
 it('should create an HL7v2 message', () => {
-  childProcess.execSync(
+  execSync(
     `node createHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  const output = childProcess.execSync(
+  const output = execSync(
     `node createHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
@@ -71,7 +71,7 @@ it('should create an HL7v2 message', () => {
 });
 
 it('should ingest an HL7v2 message', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node ingestHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
@@ -79,7 +79,7 @@ it('should ingest an HL7v2 message', () => {
 });
 
 it('should get an HL7v2 message', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node getHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
@@ -87,7 +87,7 @@ it('should get an HL7v2 message', () => {
 });
 
 it('should list HL7v2 messages', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node listHl7v2Messages.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
@@ -95,7 +95,7 @@ it('should list HL7v2 messages', () => {
 });
 
 it('should patch an HL7v2 message', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node patchHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId} ${labelKey} ${labelValue}`,
     cwd
   );
@@ -103,14 +103,14 @@ it('should patch an HL7v2 message', () => {
 });
 
 it('should delete an HL7v2 message', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node deleteHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
   assert.ok(output.includes('Deleted HL7v2 message'));
 
   // Clean up
-  childProcess.execSync(
+  execSync(
     `node deleteHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );

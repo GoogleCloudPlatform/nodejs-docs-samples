@@ -17,7 +17,8 @@
 const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
+
 
 const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
@@ -38,7 +39,7 @@ before(() => {
 });
 after(() => {
   try {
-    childProcess.execSync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`,
       cwd
     );
@@ -47,7 +48,7 @@ after(() => {
 });
 
 it('should create a dataset', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
@@ -55,7 +56,7 @@ it('should create a dataset', () => {
 });
 
 it('should get a dataset', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
@@ -64,7 +65,7 @@ it('should get a dataset', () => {
 
 it('should patch a dataset', () => {
   const timeZone = 'GMT';
-  const output = childProcess.execSync(
+  const output = execSync(
     `node patchDataset.js ${projectId} ${cloudRegion} ${datasetId} ${timeZone}`,
     cwd
   );
@@ -75,7 +76,7 @@ it('should patch a dataset', () => {
 });
 
 it('should list datasets', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node listDatasets.js ${projectId} ${cloudRegion}`,
     cwd
   );
@@ -83,7 +84,7 @@ it('should list datasets', () => {
 });
 
 it('should de-identify data in a dataset and write to a new dataset', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node deidentifyDataset.js ${projectId} ${cloudRegion} ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
     cwd
   );
@@ -97,20 +98,20 @@ it('should create and get a dataset IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = childProcess.execSync(
+  let output = execSync(
     `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes, 'ETAG');
 
-  output = childProcess.execSync(
+  output = execSync(
     `node getDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId}`
   );
   assert.ok(output.includes('dpebot'));
 });
 
 it('should delete a dataset', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );

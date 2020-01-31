@@ -16,7 +16,7 @@
 
 const path = require('path');
 const assert = require('assert');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 const cmd = 'node auth.js';
@@ -35,7 +35,7 @@ before(() => {
 });
 
 it('should load credentials implicitly', () => {
-  const output = childProcess.execSync(`${cmd} auth-cloud-implicit`, cwd);
+  const output = execSync(`${cmd} auth-cloud-implicit`, cwd);
   assert.strictEqual(output.includes(BUCKET_NAME), true);
 });
 
@@ -43,7 +43,7 @@ it('should load credentials explicitly', () => {
   const project = process.env.GCLOUD_PROJECT;
   const keyfile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
-  const output = childProcess.execSync(
+  const output = execSync(
     `${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`,
     cwd
   );

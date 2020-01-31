@@ -15,11 +15,11 @@
 'use strict';
 
 const assert = require('assert');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 const runSample = `require('./basic-company-sample').runSample()`;
 
 it('Should create a company, get a company, update a company, update a company with field mask and delete a company', () => {
-  const output = childProcess.execSync(`node -e ${runSample}`);
+  const output = execSync(`node -e ${runSample}`);
   const pattern =
     '.*Company generated:.*\n' +
     '.*Company created:.*\n' +

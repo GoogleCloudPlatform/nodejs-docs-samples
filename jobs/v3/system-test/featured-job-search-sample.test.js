@@ -15,9 +15,9 @@
 'use strict';
 
 const assert = require('assert');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 it('should search featured job', () => {
-  const output = childProcess.execSync('node featured-job-search-sample.js');
+  const output = execSync('node featured-job-search-sample.js');
   assert.strictEqual(output.includes('matchingJobs'), true);
 });

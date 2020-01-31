@@ -17,7 +17,7 @@
 const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
@@ -50,27 +50,27 @@ before(() => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  childProcess.execSync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
-  childProcess.execSync(
+  execSync(
     `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
 });
 after(() => {
   try {
-    childProcess.execSync(
+    execSync(
       `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
       cwd
     );
-    childProcess.execSync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
+    execSync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
   } catch (err) {} // Ignore error
 });
 
 it('should store a DICOM instance', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node dicomWebStoreInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${dcmFile}`,
     cwd
   );
@@ -78,7 +78,7 @@ it('should store a DICOM instance', () => {
 });
 
 it('should search DICOM instances', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node dicomWebSearchForInstances.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
@@ -86,7 +86,7 @@ it('should search DICOM instances', () => {
 });
 
 it('should retrieve a DICOM study', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node dicomWebRetrieveStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
     cwd
   );
@@ -94,7 +94,7 @@ it('should retrieve a DICOM study', () => {
 });
 
 it('should retrieve a DICOM instance', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node dicomWebRetrieveInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
     cwd
   );
@@ -102,7 +102,7 @@ it('should retrieve a DICOM instance', () => {
 });
 
 it('should retrieve a DICOM rendered PNG image', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node dicomWebRetrieveRendered.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
     cwd
   );
@@ -110,7 +110,7 @@ it('should retrieve a DICOM rendered PNG image', () => {
 });
 
 it('should search for DICOM studies', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node dicomWebSearchStudies.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
@@ -118,7 +118,7 @@ it('should search for DICOM studies', () => {
 });
 
 it('should delete a DICOM study', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node dicomWebDeleteStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
     cwd
   );

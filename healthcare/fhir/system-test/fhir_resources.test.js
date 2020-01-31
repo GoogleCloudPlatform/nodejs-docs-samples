@@ -17,7 +17,7 @@
 const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
@@ -43,14 +43,14 @@ before(() => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  childProcess.execSync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
 after(() => {
   try {
-    childProcess.execSync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
@@ -58,11 +58,11 @@ after(() => {
 });
 
 it('should create a FHIR resource', () => {
-  childProcess.execSync(
+  execSync(
     `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
-  const output = childProcess.execSync(
+  const output = execSync(
     `node fhir_resources.js createResource ${datasetId} ${fhirStoreId} ${resourceType}`,
     cwd
   );
@@ -74,7 +74,7 @@ it('should create a FHIR resource', () => {
 });
 
 it('should get a FHIR resource', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node getFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -85,7 +85,7 @@ it('should get a FHIR resource', () => {
 });
 
 it('should list and get a FHIR resource history', () => {
-  let output = childProcess.execSync(
+  let output = execSync(
     `node listFhirResourceHistory.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -103,7 +103,7 @@ it('should list and get a FHIR resource history', () => {
     ],
   } = formatted;
 
-  output = childProcess.execSync(
+  output = execSync(
     `node getFhirResourceHistory.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId} ${versionId}`,
     cwd
   );
@@ -111,7 +111,7 @@ it('should list and get a FHIR resource history', () => {
 });
 
 it('should get everything in Patient compartment', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node getPatientEverything.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceId}`,
     cwd
   );
@@ -124,7 +124,7 @@ it('should get everything in Patient compartment', () => {
 });
 
 it('should update a FHIR resource', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node updateFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -135,7 +135,7 @@ it('should update a FHIR resource', () => {
 });
 
 it('should patch a FHIR resource', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node fhir_resources.js patchResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -143,21 +143,21 @@ it('should patch a FHIR resource', () => {
 });
 
 it('should search for FHIR resources using GET', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node searchFhirResourcesGet.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`
   );
   assert.strictEqual(new RegExp('Resources found').test(output), true);
 });
 
 it('should search for FHIR resources using POST', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node searchFhirResourcesPost.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`
   );
   assert.strictEqual(new RegExp('Resources found').test(output), true);
 });
 
 it('should purge all historical versions of a FHIR resource', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node deleteFhirResourcePurge.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
@@ -168,7 +168,7 @@ it('should purge all historical versions of a FHIR resource', () => {
 });
 
 it('should execute a Bundle', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node fhir_resources.js executeBundle ${datasetId} ${fhirStoreId} ${bundleFile}`,
     cwd
   );
@@ -176,14 +176,14 @@ it('should execute a Bundle', () => {
 });
 
 it('should delete a FHIR resource', () => {
-  const output = childProcess.execSync(
+  const output = execSync(
     `node deleteFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     cwd
   );
   assert.strictEqual(output, `Deleted FHIR resource ${resourceType}`);
 
   // Clean up
-  childProcess.execSync(
+   execSync(
     `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );

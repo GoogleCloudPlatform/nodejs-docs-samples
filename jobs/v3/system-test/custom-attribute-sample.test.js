@@ -15,11 +15,11 @@
 'use strict';
 
 const assert = require('assert');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 const runSample = `require('./custom-attribute-sample').runSample()`;
 
 it('should search job with custom attribute filter', () => {
-  const output = childProcess.execSync(`node -e ${runSample}`);
+  const output = execSync(`node -e ${runSample}`);
   const pattern =
     '.*Job created:.*jobWithACustomAttribute.*\n' +
     '.*matchingJobs.*jobWithACustomAttribute.*\n' +

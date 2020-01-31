@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 it('should do a commute search', () => {
-  const output = childProcess.execSync('node commute-search-sample.js');
+  const output = execSync('node commute-search-sample.js');
 
   assert.strictEqual(
     new RegExp('.*matchingJobs.*commuteInfo.*').test(output),

@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const childProcess = require('child_process');
+const {execSync} = require('child_process');
 
 it('should auto complete job titles within given companyName', () => {
-  const output = childProcess.execSync('node auto-complete-sample.js');
+  const output = execSync('node auto-complete-sample.js');
   const pattern =
     '.*completionResults.*"suggestion":"Google","type":"COMPANY_NAME"}.*\n' +
     '.*completionResults.*"suggestion":"Software Engineer","type":"JOB_TITLE".*\n' +

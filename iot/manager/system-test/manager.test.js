@@ -81,7 +81,7 @@ after(async () => {
   console.log('Deleted test registry.');
 });
 
-it('should create and delete an unauthorized device', async () => {
+it('should create and delete an unauthorized device', () => {
   const localDevice = 'test-device-unauth-delete';
 
   let output = childProcess.execSync(
@@ -96,7 +96,7 @@ it('should create and delete an unauthorized device', async () => {
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should list configs for a device', async () => {
+it('should list configs for a device', () => {
   const localDevice = 'test-device-configs';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -115,7 +115,7 @@ it('should list configs for a device', async () => {
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and delete an RSA256 device', async () => {
+it('should create and delete an RSA256 device', () => {
   const localDevice = 'test-rsa-device';
   let output = childProcess.execSync(
     `${cmd} createRsa256Device ${localDevice} ${registryName} ${rsaPublicCert}`,
@@ -134,7 +134,7 @@ it('should create and delete an RSA256 device', async () => {
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and delete an ES256 device', async () => {
+it('should create and delete an ES256 device', () => {
   const localDevice = 'test-es256-device';
   let output = childProcess.execSync(
     `${cmd} createEs256Device ${localDevice} ${registryName} ${ecPublicKey}`,
@@ -153,7 +153,7 @@ it('should create and delete an ES256 device', async () => {
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should patch an unauthorized device with RSA256', async () => {
+it('should patch an unauthorized device with RSA256', () => {
   const localDevice = 'test-device-patch-rs256';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -172,7 +172,7 @@ it('should patch an unauthorized device with RSA256', async () => {
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should patch an unauthorized device with ES256', async () => {
+it('should patch an unauthorized device with ES256', () => {
   const localDevice = 'test-device-patch-es256';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -191,7 +191,7 @@ it('should patch an unauthorized device with ES256', async () => {
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and list devices', async () => {
+it('should create and list devices', () => {
   const localDevice = 'test-device-list';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -208,7 +208,7 @@ it('should create and list devices', async () => {
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and get a device', async () => {
+it('should create and get a device', () => {
   const localDevice = 'test-device-get';
 
   let output = childProcess.execSync(
@@ -227,7 +227,7 @@ it('should create and get a device', async () => {
   );
 });
 
-it('should create and get an iam policy', async () => {
+it('should create and get an iam policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
@@ -241,7 +241,7 @@ it('should create and get an iam policy', async () => {
   assert.ok(output.includes('dpebot'));
 });
 
-it('should create and delete a registry', async () => {
+it('should create and delete a registry', () => {
   const createRegistryId = `${registryName}-create`;
 
   let output = childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, cwd);
@@ -257,7 +257,7 @@ it('should create and delete a registry', async () => {
   assert.ok(output.includes('Successfully deleted registry'));
 });
 
-it('should send command message to device', async () => {
+it('should send command message to device', () => {
   const deviceId = 'test-device-command';
   const commandMessage = 'rotate:180_degrees';
 

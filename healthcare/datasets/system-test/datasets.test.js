@@ -19,7 +19,6 @@ const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
 
-
 const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');

@@ -183,7 +183,7 @@ it('should delete a FHIR resource', () => {
   assert.strictEqual(output, `Deleted FHIR resource ${resourceType}`);
 
   // Clean up
-   execSync(
+  execSync(
     `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );

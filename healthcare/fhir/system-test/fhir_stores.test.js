@@ -16,8 +16,8 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const {execSync} = require('child_process');
 
 const {PubSub} = require('@google-cloud/pubsub');
 const {Storage} = require('@google-cloud/storage');
@@ -60,7 +60,7 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  await tools.runAsync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
@@ -76,79 +76,79 @@ after(async () => {
 
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    await tools.runAsync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
   } catch (err) {} // Ignore error
 });
 
-it('should create a FHIR store', async () => {
-  const output = await tools.runAsync(
+it('should create a FHIR store', () => {
+  const output = execSync(
     `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
   assert.ok(output.includes('Created FHIR store'));
 });
 
-it('should get a FHIR store', async () => {
-  const output = await tools.runAsync(
+it('should get a FHIR store', () => {
+  const output = execSync(
     `node getFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );
   assert.ok(output.includes('name'));
 });
 
-it('should list FHIR stores', async () => {
-  const output = await tools.runAsync(
+it('should list FHIR stores', () => {
+  const output = execSync(
     `node listFhirStores.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
   assert.ok(output.includes('fhirStores'));
 });
 
-it('should patch a FHIR store', async () => {
-  const output = await tools.runAsync(
+it('should patch a FHIR store', () => {
+  const output = execSync(
     `node patchFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${topicName}`,
     cwd
   );
   assert.ok(output.includes('Patched FHIR store'));
 });
 
-it('should import FHIR resources into a FHIR store from Cloud Storage', async () => {
-  const output = await tools.runAsync(
+it('should import FHIR resources into a FHIR store from Cloud Storage', () => {
+  const output = execSync(
     `node importFhirResources.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${gcsUri}`,
     cwd
   );
   assert.ok(output.includes('Import FHIR resources succeeded'));
 });
 
-it('should export FHIR resources from a FHIR store to Cloud Storage', async () => {
-  const output = await tools.runAsync(
+it('should export FHIR resources from a FHIR store to Cloud Storage', () => {
+  const output = execSync(
     `node exportFhirResources.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${gcsUri}`,
     cwd
   );
   assert.ok(output.includes('Exported FHIR resources successfully'));
 });
 
-it('should create and get a FHIR store IAM policy', async () => {
+it('should create and get a FHIR store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = await tools.runAsync(
+  let output = execSync(
     `node setFhirStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes, 'ETAG');
 
-  output = await tools.runAsync(
+  output = execSync(
     `node getFhirStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`
   );
   assert.ok(output.includes('dpebot'));
 });
 
-it('should delete a FHIR store', async () => {
-  const output = await tools.runAsync(
+it('should delete a FHIR store', () => {
+  const output = execSync(
     `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
     cwd
   );

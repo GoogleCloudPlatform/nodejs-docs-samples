@@ -20,6 +20,7 @@ const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const childProcess = require('child_process');
 
 const topicName = `nodejs-iot-test-topic-${uuid.v4()}`;
 const registryName = `nodejs-iot-test-registry-${uuid.v4()}`;
@@ -63,7 +64,7 @@ before(async () => {
       ],
     },
   };
-  await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, cwd);
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
   console.log(`Created registry: ${registryName}`);
@@ -80,187 +81,187 @@ after(async () => {
   console.log('Deleted test registry.');
 });
 
-it('should create and delete an unauthorized device', async () => {
+it('should create and delete an unauthorized device', () => {
   const localDevice = 'test-device-unauth-delete';
 
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should list configs for a device', async () => {
+it('should list configs for a device', () => {
   const localDevice = 'test-device-configs';
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} getDeviceConfigs ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Configs'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and delete an RSA256 device', async () => {
+it('should create and delete an RSA256 device', () => {
   const localDevice = 'test-rsa-device';
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createRsa256Device ${localDevice} ${registryName} ${rsaPublicCert}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} getDeviceState ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('State'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and delete an ES256 device', async () => {
+it('should create and delete an ES256 device', () => {
   const localDevice = 'test-es256-device';
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createEs256Device ${localDevice} ${registryName} ${ecPublicKey}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} getDeviceState ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('State'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should patch an unauthorized device with RSA256', async () => {
+it('should patch an unauthorized device with RSA256', () => {
   const localDevice = 'test-device-patch-rs256';
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} patchRsa256 ${localDevice} ${registryName} ${rsaPublicCert}`,
     cwd
   );
   assert.ok(output.includes('Patched device:'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should patch an unauthorized device with ES256', async () => {
+it('should patch an unauthorized device with ES256', () => {
   const localDevice = 'test-device-patch-es256';
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} patchEs256 ${localDevice} ${registryName} ${ecPublicKey}`,
     cwd
   );
   assert.ok(output.includes('Patched device:'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and list devices', async () => {
+it('should create and list devices', () => {
   const localDevice = 'test-device-list';
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(`${cmd} listDevices ${registryName}`, cwd);
+  output = childProcess.execSync(`${cmd} listDevices ${registryName}`, cwd);
   assert.ok(output.includes('Current devices in registry:'));
   assert.ok(output.includes(localDevice));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
 
-it('should create and get a device', async () => {
+it('should create and get a device', () => {
   const localDevice = 'test-device-get';
 
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes('Created device'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} getDevice ${localDevice} ${registryName}`,
     cwd
   );
   assert.ok(output.includes(`Found device: ${localDevice}`));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
     cwd
   );
 });
 
-it('should create and get an iam policy', async () => {
+it('should create and get an iam policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = await tools.runAsync(
+  let output = childProcess.execSync(
     `${cmd} setIamPolicy ${registryName} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes('ETAG'));
 
-  output = await tools.runAsync(`${cmd} getIamPolicy ${registryName}`, cwd);
+  output = childProcess.execSync(`${cmd} getIamPolicy ${registryName}`, cwd);
   assert.ok(output.includes('dpebot'));
 });
 
-it('should create and delete a registry', async () => {
+it('should create and delete a registry', () => {
   const createRegistryId = `${registryName}-create`;
 
-  let output = await tools.runAsync(`${cmd} setupIotTopic ${topicName}`, cwd);
-  output = await tools.runAsync(
+  let output = childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  output = childProcess.execSync(
     `${cmd} createRegistry ${createRegistryId} ${topicName}`,
     cwd
   );
   assert.ok(output.includes('Successfully created registry'));
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} deleteRegistry ${createRegistryId}`,
     cwd
   );
   assert.ok(output.includes('Successfully deleted registry'));
 });
 
-it('should send command message to device', async () => {
+it('should send command message to device', () => {
   const deviceId = 'test-device-command';
   const commandMessage = 'rotate:180_degrees';
 
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
     cwd
   );
@@ -271,18 +272,18 @@ it('should send command message to device', async () => {
     path.join(__dirname, '../../mqtt_example')
   );
 
-  const output = await tools.runAsync(
+  const output = childProcess.execSync(
     `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
   );
   console.log(output);
   assert.ok(output.includes('Sent command'));
 
-  await tools.runAsync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
+  childProcess.execSync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
 
 it('should create a new gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  const gatewayOut = await tools.runAsync(
+  const gatewayOut = childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
   --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
@@ -297,13 +298,13 @@ it('should create a new gateway', async () => {
 
 it('should list gateways', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
   --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
 
   // look for output in list gateway
-  const gateways = await tools.runAsync(`${cmd} listGateways ${registryName}`);
+  const gateways = childProcess.execSync(`${cmd} listGateways ${registryName}`);
   assert.ok(gateways.includes(`${gatewayId}`));
 
   await iotClient.deleteDevice({
@@ -313,7 +314,7 @@ it('should list gateways', async () => {
 
 it('should bind existing device to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
   --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
@@ -328,7 +329,7 @@ it('should bind existing device to gateway', async () => {
   });
 
   // bind device to gateway
-  const bind = await tools.runAsync(
+  const bind = childProcess.execSync(
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
@@ -336,7 +337,7 @@ it('should bind existing device to gateway', async () => {
   assert.strictEqual(bind.includes('Could not bind device'), false);
 
   // test unbind
-  const unbind = await tools.runAsync(
+  const unbind = childProcess.execSync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
   assert.ok(unbind.includes(`Unbound ${deviceId} from ${gatewayId}`));
@@ -352,7 +353,7 @@ it('should bind existing device to gateway', async () => {
 
 it('should list devices bound to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
   --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
@@ -365,11 +366,11 @@ it('should list devices bound to gateway', async () => {
     },
   });
 
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  const devices = await tools.runAsync(
+  const devices = childProcess.execSync(
     `${cmd} listDevicesForGateway ${registryName} ${gatewayId}`
   );
 
@@ -380,7 +381,7 @@ it('should list devices bound to gateway', async () => {
   );
 
   // cleanup
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
@@ -395,7 +396,7 @@ it('should list devices bound to gateway', async () => {
 
 it('should list gateways for bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
   --format=RSA_X509_PEM --key=${rsaPublicCert}`
   );
@@ -409,11 +410,11 @@ it('should list gateways for bound device', async () => {
     },
   });
 
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
-  const devices = await tools.runAsync(
+  const devices = childProcess.execSync(
     `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`
   );
 
@@ -424,7 +425,7 @@ it('should list gateways for bound device', async () => {
   );
 
   // cleanup
-  await tools.runAsync(
+  childProcess.execSync(
     `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 

@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {execSync} = require('child_process');
 
-it('should do a commute search', async () => {
-  const output = await tools.runAsync('node commute-search-sample.js');
+it('should do a commute search', () => {
+  const output = execSync('node commute-search-sample.js');
 
   assert.strictEqual(
     new RegExp('.*matchingJobs.*commuteInfo.*').test(output),

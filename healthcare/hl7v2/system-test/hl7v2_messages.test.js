@@ -16,8 +16,8 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const {execSync} = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
@@ -35,7 +35,7 @@ const messageId = '2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw=';
 const labelKey = 'my-key';
 const labelValue = 'my-value';
 
-before(async () => {
+before(() => {
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -44,73 +44,73 @@ before(async () => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  await tools.runAsync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
 });
-after(async () => {
+after(() => {
   try {
-    await tools.runAsync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
   } catch (err) {} // Ignore error
 });
 
-it('should create an HL7v2 message', async () => {
-  await tools.runAsync(
+it('should create an HL7v2 message', () => {
+  execSync(
     `node createHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
-  const output = await tools.runAsync(
+  const output = execSync(
     `node createHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
   assert.ok(output.includes('Created HL7v2 message'));
 });
 
-it('should ingest an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+it('should ingest an HL7v2 message', () => {
+  const output = execSync(
     `node ingestHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageFile}`,
     cwd
   );
   assert.ok(output.includes('Ingested HL7v2 message'));
 });
 
-it('should get an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+it('should get an HL7v2 message', () => {
+  const output = execSync(
     `node getHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
   assert.ok(output.includes('Got HL7v2 message'));
 });
 
-it('should list HL7v2 messages', async () => {
-  const output = await tools.runAsync(
+it('should list HL7v2 messages', () => {
+  const output = execSync(
     `node listHl7v2Messages.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
   assert.ok(output.includes('HL7v2 messages'));
 });
 
-it('should patch an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+it('should patch an HL7v2 message', () => {
+  const output = execSync(
     `node patchHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId} ${labelKey} ${labelValue}`,
     cwd
   );
   assert.ok(output.includes('Patched HL7v2 message'));
 });
 
-it('should delete an HL7v2 message', async () => {
-  const output = await tools.runAsync(
+it('should delete an HL7v2 message', () => {
+  const output = execSync(
     `node deleteHl7v2Message.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${messageId}`,
     cwd
   );
   assert.ok(output.includes('Deleted HL7v2 message'));
 
   // Clean up
-  tools.runAsync(
+  execSync(
     `node deleteHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );

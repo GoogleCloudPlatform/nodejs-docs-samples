@@ -16,8 +16,8 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const {execSync} = require('child_process');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const {PubSub} = require('@google-cloud/pubsub');
@@ -45,7 +45,7 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  await tools.runAsync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
@@ -54,63 +54,63 @@ after(async () => {
   try {
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    await tools.runAsync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
   } catch (err) {} // Ignore error
 });
 
-it('should create an HL7v2 store', async () => {
-  const output = await tools.runAsync(
+it('should create an HL7v2 store', () => {
+  const output = execSync(
     `node createHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
   assert.ok(output.includes('Created HL7v2 store'));
 });
 
-it('should get an HL7v2 store', async () => {
-  const output = await tools.runAsync(
+it('should get an HL7v2 store', () => {
+  const output = execSync(
     `node getHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );
   assert.ok(output.includes('name'));
 });
 
-it('should patch an HL7v2 store', async () => {
-  const output = await tools.runAsync(
+it('should patch an HL7v2 store', () => {
+  const output = execSync(
     `node patchHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${topicName}`,
     cwd
   );
   assert.ok(output.includes('Patched HL7v2 store'));
 });
 
-it('should list HL7v2 stores', async () => {
-  const output = await tools.runAsync(
+it('should list HL7v2 stores', () => {
+  const output = execSync(
     `node listHl7v2Stores.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
   assert.ok(output.includes('hl7V2Stores'));
 });
 
-it('should create and get an HL7v2 store IAM policy', async () => {
+it('should create and get an HL7v2 store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = await tools.runAsync(
+  let output = execSync(
     `node setHl7v2StoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes, 'ETAG');
 
-  output = await tools.runAsync(
+  output = execSync(
     `node getHl7v2StoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`
   );
   assert.ok(output.includes('dpebot'));
 });
 
-it('should delete an HL7v2 Store', async () => {
-  const output = await tools.runAsync(
+it('should delete an HL7v2 Store', () => {
+  const output = execSync(
     `node deleteHl7v2Store ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
     cwd
   );

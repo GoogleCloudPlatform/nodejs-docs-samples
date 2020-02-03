@@ -15,11 +15,11 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {execSync} = require('child_process');
 const runSample = `require('./custom-attribute-sample').runSample()`;
 
-it('should search job with custom attribute filter', async () => {
-  const output = await tools.runAsync(`node -e ${runSample}`);
+it('should search job with custom attribute filter', () => {
+  const output = execSync(`node -e ${runSample}`);
   const pattern =
     '.*Job created:.*jobWithACustomAttribute.*\n' +
     '.*matchingJobs.*jobWithACustomAttribute.*\n' +

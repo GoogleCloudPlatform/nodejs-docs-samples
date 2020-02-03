@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {execSync} = require('child_process');
 
-it('should do a search with location filters', async () => {
-  const output = await tools.runAsync('node location-search-sample.js');
+it('should do a search with location filters', () => {
+  const output = execSync('node location-search-sample.js');
 
   const pattern =
     '.*matchingJobs.*locationFilters.*\n' +

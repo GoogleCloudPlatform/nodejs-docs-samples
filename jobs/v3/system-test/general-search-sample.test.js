@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {execSync} = require('child_process');
 
-it('should do a general search', async () => {
-  const output = await tools.runAsync('node general-search-sample.js');
+it('should do a general search', () => {
+  const output = execSync('node general-search-sample.js');
 
   const pattern =
     '.*matchingJobs.*\n' +

@@ -18,7 +18,6 @@ const assert = require('assert');
 const path = require('path');
 const proxyquire = require('proxyquire').noPreserveCache();
 const sinon = require('sinon');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../createTables.js');
 
@@ -58,36 +57,22 @@ const getSample = () => {
 };
 
 const stubConsole = function () {
-  /* eslint-disable no-console */
-  if (
-    typeof console.log.restore !== `function` &&
-    typeof console.error.restore !== `function`
-  ) {
-   
-      console.log('c');
       sinon.stub(console, `error`);
-      console.log('d');
       sinon.stub(console, `log`).callsFake((a, b) => {
         if (
           typeof a === `string` &&
           a.indexOf(`\u001b`) !== -1 &&
           typeof b === `string`
         ) {
-          console.log('e');
           console.log.apply(console, arguments);
         }
       });
-  }
  };
  
  
  const restoreConsole = function() {
-    if (typeof console.error.restore === `function`) {
-      console.log('g');
+    console.log.restore();
       console.error.restore();
-   
-    /* eslint-enable no-console */
-  }
 }
  
  

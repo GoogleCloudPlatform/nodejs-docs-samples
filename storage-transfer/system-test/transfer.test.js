@@ -20,6 +20,7 @@ const storage = new Storage();
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const sinon = require('sinon');
 
 const program = require('../transfer');
 
@@ -32,6 +33,28 @@ const time = '15:30';
 const description = 'this is a test';
 const status = 'DISABLED';
 
+
+function stubConsole() {
+      sinon.stub(console, `error`);
+      sinon.stub(console, `log`).callsFake((a, b) => {
+        if (
+          typeof a === `string` &&
+          a.indexOf(`\u001b`) !== -1 &&
+          typeof b === `string`
+        ) {
+          console.log('e');
+          console.log.apply(console, arguments);
+        }
+      });
+ };
+ 
+ 
+ //Restore console
+function restoreConsole() {
+      console.log.restore();
+      console.error.restore();
+  }
+
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
@@ -42,7 +65,7 @@ before(async () => {
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
 
-  tools.stubConsole();
+  stubConsole();
 
   const bucketOptions = {
     entity: 'allUsers',
@@ -55,7 +78,7 @@ before(async () => {
 });
 
 after(() => {
-  tools.restoreConsole();
+  restoreConsole();
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);
   try {

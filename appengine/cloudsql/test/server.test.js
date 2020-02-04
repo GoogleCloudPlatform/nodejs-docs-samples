@@ -73,9 +73,6 @@ const getSample = () => {
   };
 };
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
-
 describe('gae_flex_mysql_connect', () => {
   it('should set up sample in Postgres', () => {
     const sample = getSample();

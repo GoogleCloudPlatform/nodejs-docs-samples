@@ -17,11 +17,33 @@ describe('functions_helloworld_storage', () => {
   const assert = require('assert');
   const uuid = require('uuid');
   const utils = require('@google-cloud/nodejs-repo-tools');
+  const sinon = require('sinon');
 
   const {helloGCS} = require('..');
 
-  beforeEach(utils.stubConsole);
-  afterEach(utils.restoreConsole);
+  const stubConsole = function () {
+    sinon.stub(console, `error`);
+    sinon.stub(console, `log`).callsFake((a, b) => {
+      if (
+        typeof a === `string` &&
+        a.indexOf(`\u001b`) !== -1 &&
+        typeof b === `string`
+      ) {
+        console.log('e');
+        console.log.apply(console, arguments);
+      }
+    });
+
+};
+
+
+const restoreConsole = function() {
+    console.log.restore();
+    console.error.restore();
+}
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
   it('helloGCS: should print uploaded message', () => {
     // Initialize mocks

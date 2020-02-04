@@ -15,12 +15,9 @@
 // [START functions_storage_unit_test]
 const assert = require('assert');
 const uuid = require('uuid');
-const utils = require('@google-cloud/nodejs-repo-tools');
 
 const {helloGCS} = require('..');
 
-beforeEach(utils.stubConsole);
-afterEach(utils.restoreConsole);
 
 describe('functions_helloworld_storage_node8', () => {
   it('helloGCS: should print uploaded message', async () => {

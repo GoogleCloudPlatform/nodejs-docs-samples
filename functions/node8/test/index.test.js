@@ -17,7 +17,6 @@
 const sinon = require('sinon');
 const uuid = require('uuid');
 const assert = require('assert');
-const utils = require('@google-cloud/nodejs-repo-tools');
 const proxyquire = require('proxyquire').noCallThru();
 
 const getSample = () => {
@@ -40,8 +39,27 @@ const getSample = () => {
   };
 };
 
-beforeEach(utils.stubConsole);
-afterEach(utils.restoreConsole);
+const stubConsole = function () {
+      sinon.stub(console, `error`);
+      sinon.stub(console, `log`).callsFake((a, b) => {
+        if (
+          typeof a === `string` &&
+          a.indexOf(`\u001b`) !== -1 &&
+          typeof b === `string`
+        ) {
+          console.log.apply(console, arguments);
+        }
+      });
+ };
+ 
+ 
+ const restoreConsole = function() {
+      console.log.restore();
+      console.error.restore();
+  }
+
+ beforeEach(stubConsole);
+ afterEach(restoreConsole);
 
 it('should respond to HTTP POST', () => {
   const sample = getSample();

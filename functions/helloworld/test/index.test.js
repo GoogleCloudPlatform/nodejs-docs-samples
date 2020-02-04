@@ -199,14 +199,13 @@ describe('index.test.js', () => {
     });
   });
 
+  
+
   describe('functions_helloworld_error', () => {
     describe('Error handling (unit tests)', () => {
-      // Silence dummy console calls in the samples
-      before(tools.stubConsole);
-      after(tools.restoreConsole);
-
+      
       it('helloError: should throw an error', () => {
-        assert.throws(program.helloError, 'I failed you');
+        assert.throws(program.helloError, 'Error: I failed you');
       });
 
       it('helloError2: should throw a value', () => {

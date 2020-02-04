@@ -15,8 +15,8 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const path = require('path');
+const sinon = require('sinon');
 
 const execPromise = require('child-process-promise').exec;
 const requestRetry = require('requestretry');
@@ -29,8 +29,28 @@ const TOPIC = process.env.FUNCTIONS_TOPIC;
 const MESSAGE = 'Hello, world!';
 
 describe('functions/pubsub', () => {
-  beforeEach(tools.stubConsole);
-  afterEach(tools.restoreConsole);
+  const stubConsole = function () {
+        sinon.stub(console, `error`);
+        sinon.stub(console, `log`).callsFake((a, b) => {
+          if (
+            typeof a === `string` &&
+            a.indexOf(`\u001b`) !== -1 &&
+            typeof b === `string`
+          ) {
+            console.log.apply(console, arguments);
+          }
+        });
+      }
+
+   
+   
+   //Restore console
+   const restoreConsole = function() {
+        console.log.restore();
+        console.error.restore();
+    }
+   beforeEach(stubConsole);
+   afterEach(restoreConsole);
 
   let ffProc;
 

@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
+const sinon = require('sinon');
 
 const storage = new Storage();
 
@@ -83,8 +83,18 @@ describe('functions/imagemagick tests', () => {
     };
   });
 
-  beforeEach(tools.stubConsole);
-  afterEach(tools.restoreConsole);
+const stubConsole = function () {
+     sinon.stub(console, `error`);
+};
+
+
+const restoreConsole = function() {
+     console.error.restore();
+ };
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
+
 
   describe('functions_imagemagick_analyze', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {

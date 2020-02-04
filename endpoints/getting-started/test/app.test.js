@@ -20,7 +20,6 @@ const proxyquire = require('proxyquire').noPreserveCache();
 const request = require('supertest');
 const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../app.js');
 
@@ -40,8 +39,20 @@ const getSample = () => {
   };
 };
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+
+const stubConsole = function () {
+      sinon.stub(console, `error`);
+ };
+ 
+ 
+ //Restore console
+ const restoreConsole = function() {
+      console.error.restore();
+  }
+ 
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 it('should echo a message', async () => {
   await request(getSample().app)

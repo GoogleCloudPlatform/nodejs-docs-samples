@@ -199,11 +199,8 @@ describe('index.test.js', () => {
     });
   });
 
-  
-
   describe('functions_helloworld_error', () => {
     describe('Error handling (unit tests)', () => {
-      
       it('helloError: should throw an error', () => {
         assert.throws(program.helloError, 'Error: I failed you');
       });

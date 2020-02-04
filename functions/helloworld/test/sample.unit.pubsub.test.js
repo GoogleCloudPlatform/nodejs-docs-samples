@@ -21,29 +21,27 @@ describe('functions_helloworld_pubsub', () => {
 
   const {helloPubSub} = require('..');
 
-  const stubConsole = function () {
-        sinon.stub(console, `error`);
-        sinon.stub(console, `log`).callsFake((a, b) => {
-          if (
-            typeof a === `string` &&
-            a.indexOf(`\u001b`) !== -1 &&
-            typeof b === `string`
-          ) {
-            console.log('e');
-            console.log.apply(console, arguments);
-          }
-        });
+  const stubConsole = function() {
+    sinon.stub(console, `error`);
+    sinon.stub(console, `log`).callsFake((a, b) => {
+      if (
+        typeof a === `string` &&
+        a.indexOf(`\u001b`) !== -1 &&
+        typeof b === `string`
+      ) {
+        console.log('e');
+        console.log.apply(console, arguments);
+      }
+    });
+  };
 
-   };
-   
-   
-   const restoreConsole = function() {
-        console.log.restore();
-        console.error.restore();
-    }
+  const restoreConsole = function() {
+    console.log.restore();
+    console.error.restore();
+  };
 
-   beforeEach(stubConsole);
-   afterEach(restoreConsole);
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
 
   it('helloPubSub: should print a name', () => {
     // Create mock Pub/Sub event

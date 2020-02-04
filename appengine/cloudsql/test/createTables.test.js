@@ -56,32 +56,27 @@ const getSample = () => {
   };
 };
 
-
-const stubConsole = function () {
+const stubConsole = function() {
   /* eslint-disable no-console */
-      sinon.stub(console, `error`);
-      sinon.stub(console, `log`).callsFake((a, b) => {
-        if (
-          typeof a === `string` &&
-          a.indexOf(`\u001b`) !== -1 &&
-          typeof b === `string`
-        ) {
-          console.log.apply(console, arguments);
-        }
-      });
- };
- 
- 
- const restoreConsole = function() {
-    console.log.restore();
-      console.error.restore();
-}
- 
- 
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
+    }
+  });
+};
+
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
 
 beforeEach(stubConsole);
 afterEach(restoreConsole);
-
 
 describe('gae_flex_mysql_create_tables', () => {
   it('should create a table', async () => {

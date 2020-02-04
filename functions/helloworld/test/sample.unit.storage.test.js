@@ -21,7 +21,7 @@ describe('functions_helloworld_storage', () => {
 
   const {helloGCS} = require('..');
 
-  const stubConsole = function () {
+  const stubConsole = function() {
     sinon.stub(console, `error`);
     sinon.stub(console, `log`).callsFake((a, b) => {
       if (
@@ -33,17 +33,15 @@ describe('functions_helloworld_storage', () => {
         console.log.apply(console, arguments);
       }
     });
+  };
 
-};
-
-
-const restoreConsole = function() {
+  const restoreConsole = function() {
     console.log.restore();
     console.error.restore();
-}
+  };
 
-beforeEach(stubConsole);
-afterEach(restoreConsole);
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
 
   it('helloGCS: should print uploaded message', () => {
     // Initialize mocks

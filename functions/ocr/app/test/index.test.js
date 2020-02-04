@@ -15,11 +15,10 @@
 'use strict';
 
 const assert = require('assert');
+const sinon = require('sinon');
 
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-
-const sinon = require('sinon');
 
 const bucketName = process.env.FUNCTIONS_BUCKET;
 const filename = 'wakeupcat.jpg';
@@ -35,28 +34,26 @@ const errorMsg = (name, propertyName) => {
   return `${name} not provided. Make sure you have a "${propertyName}" property in your request`;
 };
 
-const stubConsole = function () {
-      sinon.stub(console, `error`);
-      sinon.stub(console, `log`).callsFake((a, b) => {
-        if (
-          typeof a === `string` &&
-          a.indexOf(`\u001b`) !== -1 &&
-          typeof b === `string`
-        ) {
-          console.log.apply(console, arguments);
-        }
-      });
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
     }
+  });
+};
 
- 
- const restoreConsole = function() {
-      console.log.restore();
-      console.error.restore();
-  }
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
 
-
- beforeEach(stubConsole);
- afterEach(restoreConsole);
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 describe('processImage', () => {
   describe('functions_ocr_process', () => {

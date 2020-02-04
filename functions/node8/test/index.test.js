@@ -39,27 +39,26 @@ const getSample = () => {
   };
 };
 
-const stubConsole = function () {
-      sinon.stub(console, `error`);
-      sinon.stub(console, `log`).callsFake((a, b) => {
-        if (
-          typeof a === `string` &&
-          a.indexOf(`\u001b`) !== -1 &&
-          typeof b === `string`
-        ) {
-          console.log.apply(console, arguments);
-        }
-      });
- };
- 
- 
- const restoreConsole = function() {
-      console.log.restore();
-      console.error.restore();
-  }
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
+    }
+  });
+};
 
- beforeEach(stubConsole);
- afterEach(restoreConsole);
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 it('should respond to HTTP POST', () => {
   const sample = getSample();

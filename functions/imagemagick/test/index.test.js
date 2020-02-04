@@ -83,18 +83,16 @@ describe('functions/imagemagick tests', () => {
     };
   });
 
-const stubConsole = function () {
-     sinon.stub(console, `error`);
-};
+  const stubConsole = function() {
+    sinon.stub(console, `error`);
+  };
 
+  const restoreConsole = function() {
+    console.error.restore();
+  };
 
-const restoreConsole = function() {
-     console.error.restore();
- };
-
-beforeEach(stubConsole);
-afterEach(restoreConsole);
-
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
 
   describe('functions_imagemagick_analyze', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {

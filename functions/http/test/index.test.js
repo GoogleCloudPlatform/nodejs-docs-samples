@@ -65,19 +65,16 @@ const getMocks = () => {
   };
 };
 
-const stubConsole = function () {
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+};
 
-      sinon.stub(console, `error`);
- };
- 
- 
- const restoreConsole = function() {
-      console.error.restore();
-  }
+const restoreConsole = function() {
+  console.error.restore();
+};
 
- beforeEach(stubConsole);
- afterEach(restoreConsole);
- 
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 describe('functions_http_method', () => {
   it('http:helloHttp: should handle GET', () => {

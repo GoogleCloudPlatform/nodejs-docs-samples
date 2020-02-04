@@ -143,33 +143,32 @@ const getMocks = () => {
     res: res,
   };
 };
-const stubConsole = function () {
+const stubConsole = function() {
   if (
     typeof console.log.restore !== `function` &&
     typeof console.error.restore !== `function`
   ) {
-      sinon.stub(console, `error`);
-      sinon.stub(console, `log`).callsFake((a, b) => {
-        if (
-          typeof a === `string` &&
-          a.indexOf(`\u001b`) !== -1 &&
-          typeof b === `string`
-        ) {
-          console.log.apply(console, arguments);
-        }
-      });
-    }
- };
- 
- 
- //Restore console
- const restoreConsole = function() {
-       console.log.restore();
-      console.error.restore();
+    sinon.stub(console, `error`);
+    sinon.stub(console, `log`).callsFake((a, b) => {
+      if (
+        typeof a === `string` &&
+        a.indexOf(`\u001b`) !== -1 &&
+        typeof b === `string`
+      ) {
+        console.log.apply(console, arguments);
+      }
+    });
   }
-  
- beforeEach(stubConsole);
- afterEach(restoreConsole);
+};
+
+//Restore console
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 describe('functions_sendgrid_email functions_get_payload functions_sendgrid_get_client', () => {
   it('Send fails if not a POST request', async () => {

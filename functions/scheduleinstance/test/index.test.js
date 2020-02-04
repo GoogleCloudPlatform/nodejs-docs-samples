@@ -46,28 +46,26 @@ const getMocks = () => {
     callback: callback,
   };
 };
-const stubConsole = function () {
-      sinon.stub(console, `error`);
-      sinon.stub(console, `log`).callsFake((a, b) => {
-        if (
-          typeof a === `string` &&
-          a.indexOf(`\u001b`) !== -1 &&
-          typeof b === `string`
-        ) {
-          console.log.apply(console, arguments);
-        }
-      });
- 
- };
- 
- 
- //Restore console
- const restoreConsole = function() {
-       console.log.restore();
-      console.error.restore();
-  }
- beforeEach(stubConsole);
- afterEach(restoreConsole);
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
+    }
+  });
+};
+
+//Restore console
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 /** Tests for startInstancePubSub */
 describe('functions_start_instance_pubsub', () => {

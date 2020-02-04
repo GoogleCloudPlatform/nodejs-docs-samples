@@ -39,17 +39,14 @@ const getSample = () => {
   };
 };
 
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+};
 
-const stubConsole = function () {
-      sinon.stub(console, `error`);
- };
- 
- 
- //Restore console
- const restoreConsole = function() {
-      console.error.restore();
-  }
- 
+//Restore console
+const restoreConsole = function() {
+  console.error.restore();
+};
 
 beforeEach(stubConsole);
 afterEach(restoreConsole);

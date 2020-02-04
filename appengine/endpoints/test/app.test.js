@@ -38,15 +38,13 @@ const getSample = () => {
   };
 };
 
-const stubConsole = function () {
-      sinon.stub(console, `error`);
-}
- 
- 
- const restoreConsole = function() {
-      console.error.restore();
-  }
- 
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+};
+
+const restoreConsole = function() {
+  console.error.restore();
+};
 
 beforeEach(stubConsole);
 afterEach(restoreConsole);

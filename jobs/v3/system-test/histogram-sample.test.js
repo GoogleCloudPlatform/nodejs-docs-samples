@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {execSync} = require('child_process');
 
-it('should do a histogram search', async () => {
-  const output = await tools.runAsync('node histogram-sample.js');
+it('should do a histogram search', () => {
+  const output = execSync('node histogram-sample.js');
 
   assert.strictEqual(output.includes('COMPANY_ID'), true);
   assert.strictEqual(output.includes('someFieldName1'), true);

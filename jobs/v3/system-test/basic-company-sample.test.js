@@ -15,11 +15,11 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {execSync} = require('child_process');
 const runSample = `require('./basic-company-sample').runSample()`;
 
-it('Should create a company, get a company, update a company, update a company with field mask and delete a company', async () => {
-  const output = await tools.runAsync(`node -e ${runSample}`);
+it('Should create a company, get a company, update a company, update a company with field mask and delete a company', () => {
+  const output = execSync(`node -e ${runSample}`);
   const pattern =
     '.*Company generated:.*\n' +
     '.*Company created:.*\n' +

@@ -20,7 +20,6 @@ const proxyquire = require('proxyquire').noCallThru();
 const request = require('supertest');
 const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
@@ -72,9 +71,6 @@ const getSample = () => {
     },
   };
 };
-
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
 
 it('gae_flex_postgres_connect should set up sample in Postgres', () => {
   const sample = getSample();

@@ -16,6 +16,7 @@
 const path = require('path');
 const assert = require('assert');
 const utils = require('@google-cloud/nodejs-repo-tools');
+const sinon = require('sinon');
 
 const cwd = path.join(__dirname, '../');
 const requestObj = utils.getRequest({
@@ -23,8 +24,26 @@ const requestObj = utils.getRequest({
   cmd: 'server',
 });
 
-beforeEach(utils.stubConsole);
-afterEach(utils.restoreConsole);
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
+    }
+  });
+};
+
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 it('should send greetings', async () => {
   await requestObj

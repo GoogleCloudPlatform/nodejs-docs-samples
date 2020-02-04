@@ -18,7 +18,6 @@ const assert = require('assert');
 const path = require('path');
 const proxyquire = require('proxyquire').noPreserveCache();
 const sinon = require('sinon');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const SAMPLE_PATH = path.join(__dirname, '../createTables.js');
 
@@ -57,8 +56,26 @@ const getSample = () => {
   };
 };
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
+    }
+  });
+};
+
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 describe('gae_flex_postgres_create_tables', () => {
   it('should create a table', async () => {

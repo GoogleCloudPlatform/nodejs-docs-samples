@@ -16,11 +16,28 @@
 
 const sinon = require(`sinon`);
 const assert = require(`assert`);
-const tools = require(`@google-cloud/nodejs-repo-tools`);
 
 const sample = require(`../`);
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
+    }
+  });
+};
+
+//Restore console
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 describe('functions_tips_retry', () => {
   it('should demonstrate retry behavior for a promise', async () => {

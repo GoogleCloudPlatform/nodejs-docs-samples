@@ -15,12 +15,7 @@
 // [START functions_pubsub_unit_test]
 const assert = require('assert');
 const uuid = require('uuid');
-const utils = require('@google-cloud/nodejs-repo-tools');
-
 const {helloPubSub} = require('..');
-
-beforeEach(utils.stubConsole);
-afterEach(utils.restoreConsole);
 
 describe('functions_helloworld_pubsub_node8', () => {
   it('helloPubSub: should print a name', async () => {

@@ -18,7 +18,6 @@ const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
 const uuid = require('uuid');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const getSample = () => {
   const requestPromise = sinon
@@ -66,8 +65,16 @@ const getMocks = () => {
   };
 };
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+};
+
+const restoreConsole = function() {
+  console.error.restore();
+};
+
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 describe('functions_http_method', () => {
   it('http:helloHttp: should handle GET', () => {

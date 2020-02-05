@@ -23,7 +23,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const productSearchClient = new vision.ProductSearchClient();
-const cmd = `node productSearch/referenceImages.js`;
+const cmd = `node productSearch`;
 
 // Shared fixture data for product tests
 const testProduct = {
@@ -73,14 +73,14 @@ describe(`reference images`, () => {
 
   it(`should create reference image`, async () => {
     const output = execSync(
-      `${cmd} createReferenceImage "${testProduct.projectId}" "${testProduct.location}" "${testProduct.productId}" "${testProduct.productReferenceImageId}" "${testProduct.productImageUri}"`
+      `${cmd}/createReferenceImage "${testProduct.projectId}" "${testProduct.location}" "${testProduct.productId}" "${testProduct.productReferenceImageId}" "${testProduct.productImageUri}"`
     );
     assert.match(output, /response.uri: gs:\/\//);
   });
 
   it(`should delete reference image`, async () => {
     const output = execSync(
-      `${cmd} deleteReferenceImage "${testProduct.projectId}" "${testProduct.location}" "${testProduct.productId}" "${testProduct.productReferenceImageId}"`
+      `${cmd}/deleteReferenceImage "${testProduct.projectId}" "${testProduct.location}" "${testProduct.productId}" "${testProduct.productReferenceImageId}"`
     );
 
     assert.match(output, /Reference image deleted from product./);

@@ -20,7 +20,7 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node productSearch/importProductSets.js`;
+const cmd = `node productSearch/importProductSets`;
 
 //Shared fixture data for product tests
 const testImportProductSets = {
@@ -32,7 +32,7 @@ const testImportProductSets = {
 describe(`import product sets`, () => {
   it(`should import a Product Set`, async () => {
     const output = execSync(
-      `${cmd} importProductSets "${testImportProductSets.projectId}" "${testImportProductSets.location}" "${testImportProductSets.gcsUri}"`
+      `${cmd} ${testImportProductSets.projectId} ${testImportProductSets.location} ${testImportProductSets.gcsUri}`
     );
     assert.match(output, /Processing done./);
   });

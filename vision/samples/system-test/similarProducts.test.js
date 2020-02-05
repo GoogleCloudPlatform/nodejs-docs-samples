@@ -22,7 +22,7 @@ const path = require('path');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node productSearch/similarProducts.js`;
+const cmd = `node productSearch`;
 const filter = ['', 'style=womens'];
 const localPath = path.join(__dirname, '../resources/shoes_1.jpg');
 const gcsUri = 'gs://cloud-samples-data/vision/product_search/shoes_1.jpg';
@@ -47,7 +47,7 @@ testSimilarProducts.productPath = productSearch.productSetPath(
 describe(`similar products`, () => {
   it(`should check if similar product exists to one provided in local file with no filter`, async () => {
     const output = execSync(
-      `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${localPath}" "${filter[0]}"`
+      `${cmd}/getSimilarProducts "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${localPath}" "${filter[0]}"`
     );
     assert.match(output, /Similar product information:/);
     assert.match(
@@ -60,7 +60,7 @@ describe(`similar products`, () => {
 
   it(`should check if similar product exists to one provided in local file with filter`, async () => {
     const output = execSync(
-      `${cmd} getSimilarProductsFile "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${localPath}" "${filter[1]}"`
+      `${cmd}/getSimilarProducts "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${localPath}" "${filter[1]}"`
     );
     assert.match(output, /Similar product information:/);
     assert.match(
@@ -72,7 +72,7 @@ describe(`similar products`, () => {
 
   it(`should check if similar product exists to one provided in GCS file with no filter`, async () => {
     const output = execSync(
-      `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${gcsUri}" "${filter[0]}"`
+      `${cmd}/getSimilarProductsGcs "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${gcsUri}" "${filter[0]}"`
     );
     assert.match(output, /Similar product information:/);
     assert.match(
@@ -85,7 +85,7 @@ describe(`similar products`, () => {
 
   it(`should check if similar product exists to one provided in GCS file with filter`, async () => {
     const output = execSync(
-      `${cmd} getSimilarProductsGcs "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${gcsUri}" "${filter[1]}"`
+      `${cmd}/getSimilarProductsGcs "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${gcsUri}" "${filter[1]}"`
     );
     assert.match(output, /Similar product information:/);
     assert.match(

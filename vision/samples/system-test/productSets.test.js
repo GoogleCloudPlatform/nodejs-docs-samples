@@ -23,7 +23,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const productSearch = new vision.ProductSearchClient();
-const cmd = `node productSearch/productSets.js`;
+const cmd = `node productSearch`;
 
 // Shared fixture data for product tests
 const testProductSet = {
@@ -53,7 +53,7 @@ async function getProductSetOrFalse(productSetPath) {
   }
 }
 
-describe(`product sets`, () => {
+describe.only(`product sets`, () => {
   before(async () => {
     // Create a test product set for each test
     await productSearch.createProductSet({
@@ -93,7 +93,7 @@ describe(`product sets`, () => {
     testProductSet.createdProductSetPaths.push(newProductSetPath);
 
     const output = execSync(
-      `${cmd} createProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`
+      `${cmd}/createProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${newProductSetId}" "${testProductSet.productSetDisplayName}"`
     );
 
     assert.match(output, new RegExp(`Product Set name: ${newProductSetPath}`));
@@ -107,7 +107,7 @@ describe(`product sets`, () => {
 
   it(`should get product set`, async () => {
     const output = execSync(
-      `${cmd} getProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
+      `${cmd}/getProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
     );
 
     assert.match(
@@ -124,7 +124,7 @@ describe(`product sets`, () => {
 
   it(`should list product sets`, async () => {
     const output = execSync(
-      `${cmd} listProductSets "${testProductSet.projectId}" "${testProductSet.location}"`
+      `${cmd}/listProductSets "${testProductSet.projectId}" "${testProductSet.location}"`
     );
 
     assert.match(
@@ -141,7 +141,7 @@ describe(`product sets`, () => {
 
   it(`should purge a product set`, async () => {
     const output = execSync(
-      `${cmd} purgeProductsInProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
+      `${cmd}/purgeProductsInProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
     );
 
     assert.match(output, new RegExp(`Products removed from product set.`));
@@ -154,7 +154,7 @@ describe(`product sets`, () => {
     assert.ok(productSet);
 
     const output = execSync(
-      `${cmd} deleteProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
+      `${cmd}/deleteProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
     );
 
     assert.match(output, /deleted/);

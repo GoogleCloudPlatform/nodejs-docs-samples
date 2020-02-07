@@ -29,7 +29,7 @@ const noteId = `test-note-${uuidVal}`;
 const resourceUrl = `gcr.io/test-project/test-image-${uuidVal}`;
 const subscriptionId = `occurrence-subscription-${uuidVal}`;
 const timeoutSeconds = 5;
-const retries = 5;
+const retries = 10;
 
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();

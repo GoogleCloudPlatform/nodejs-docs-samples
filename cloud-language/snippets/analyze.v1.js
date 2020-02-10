@@ -180,8 +180,11 @@ async function analyzeSyntaxOfText(text) {
     type: 'PLAIN_TEXT',
   };
 
-  // Detects syntax in the document
-  const [syntax] = await client.analyzeSyntax({document});
+  // Need to specify an encodingType to receive word offsets
+  const encodingType = 'UTF8';
+
+  // Detects the sentiment of the document
+  const [syntax] = await client.analyzeSyntax({document, encodingType});
 
   console.log('Tokens:');
   syntax.tokens.forEach(part => {
@@ -211,8 +214,11 @@ async function analyzeSyntaxInFile(bucketName, fileName) {
     type: 'PLAIN_TEXT',
   };
 
-  // Detects syntax in the document
-  const [syntax] = await client.analyzeSyntax({document});
+  // Need to specify an encodingType to receive word offsets
+  const encodingType = 'UTF8';
+
+  // Detects the sentiment of the document
+  const [syntax] = await client.analyzeSyntax({document, encodingType});
 
   console.log('Parts of speech:');
   syntax.tokens.forEach(part => {

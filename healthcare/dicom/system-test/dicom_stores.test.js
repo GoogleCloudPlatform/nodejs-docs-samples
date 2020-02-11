@@ -16,8 +16,8 @@
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const {execSync} = require('child_process');
 
 const {PubSub} = require('@google-cloud/pubsub');
 const {Storage} = require('@google-cloud/storage');
@@ -59,7 +59,7 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  await tools.runAsync(
+  execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwdDatasets
   );
@@ -75,79 +75,79 @@ after(async () => {
 
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    await tools.runAsync(
+    execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
       cwdDatasets
     );
   } catch (err) {} // Ignore error
 });
 
-it('should create a DICOM store', async () => {
-  const output = await tools.runAsync(
+it('should create a DICOM store', () => {
+  const output = execSync(
     `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
   assert.ok(output.includes('Created DICOM store'));
 });
 
-it('should get a DICOM store', async () => {
-  const output = await tools.runAsync(
+it('should get a DICOM store', () => {
+  const output = execSync(
     `node getDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );
   assert.ok(output.includes('name'));
 });
 
-it('should patch a DICOM store', async () => {
-  const output = await tools.runAsync(
+it('should patch a DICOM store', () => {
+  const output = execSync(
     `node patchDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${topicName}`,
     cwd
   );
   assert.ok(output.includes('Patched DICOM store'));
 });
 
-it('should list DICOM stores', async () => {
-  const output = await tools.runAsync(
+it('should list DICOM stores', () => {
+  const output = execSync(
     `node listDicomStores.js ${projectId} ${cloudRegion} ${datasetId}`,
     cwd
   );
   assert.ok(output.includes('dicomStores'));
 });
 
-it('should create and get a DICOM store IAM policy', async () => {
+it('should create and get a DICOM store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
-  let output = await tools.runAsync(
+  let output = execSync(
     `node setDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${localMember} ${localRole}`,
     cwd
   );
   assert.ok(output.includes, 'ETAG');
 
-  output = await tools.runAsync(
+  output = execSync(
     `node getDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`
   );
   assert.ok(output.includes('dpebot'));
 });
 
-it('should import a DICOM object from GCS', async () => {
-  const output = await tools.runAsync(
+it('should import a DICOM object from GCS', () => {
+  const output = execSync(
     `node importDicomInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${gcsUri}`,
     cwd
   );
   assert.ok(output.includes('Successfully imported DICOM instances'));
 });
 
-it('should export a DICOM instance', async () => {
-  const output = await tools.runAsync(
+it('should export a DICOM instance', () => {
+  const output = execSync(
     `node exportDicomInstanceGcs.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${bucketName}`,
     cwd
   );
   assert.ok(output.includes('Exported DICOM instances'));
 });
 
-it('should delete a DICOM store', async () => {
-  const output = await tools.runAsync(
+it('should delete a DICOM store', () => {
+  const output = execSync(
     `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
     cwd
   );

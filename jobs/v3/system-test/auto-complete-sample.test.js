@@ -15,10 +15,10 @@
 'use strict';
 
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {execSync} = require('child_process');
 
-it('should auto complete job titles within given companyName', async () => {
-  const output = await tools.runAsync('node auto-complete-sample.js');
+it('should auto complete job titles within given companyName', () => {
+  const output = execSync('node auto-complete-sample.js');
   const pattern =
     '.*completionResults.*"suggestion":"Google","type":"COMPANY_NAME"}.*\n' +
     '.*completionResults.*"suggestion":"Software Engineer","type":"JOB_TITLE".*\n' +

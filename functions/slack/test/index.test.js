@@ -17,7 +17,6 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const method = 'POST';
 const query = 'giraffe';
@@ -37,16 +36,21 @@ const getSample = () => {
   const googleapis = {
     kgsearch: sinon.stub().returns(kgsearch),
   };
+  const eventsApi = {
+    verifyRequestSignature: sinon.stub().returns(true),
+  };
 
   return {
     program: proxyquire('../', {
       googleapis: {google: googleapis},
       './config.json': config,
+      '@slack/events-api': eventsApi,
     }),
     mocks: {
       googleapis: googleapis,
       kgsearch: kgsearch,
       config: config,
+      eventsApi: eventsApi,
     },
   };
 };
@@ -83,8 +87,26 @@ const getMocks = () => {
   };
 };
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+const stubConsole = function() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`).callsFake((a, b) => {
+    if (
+      typeof a === `string` &&
+      a.indexOf(`\u001b`) !== -1 &&
+      typeof b === `string`
+    ) {
+      console.log.apply(console, arguments);
+    }
+  });
+};
+
+//Restore console
+const restoreConsole = function() {
+  console.log.restore();
+  console.error.restore();
+};
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 describe('functions_slack_search', () => {
   it('Send fails if not a POST request', async () => {
@@ -115,7 +137,7 @@ describe('functions_slack_search functions_verify_webhook', () => {
     const sample = getSample();
 
     mocks.req.method = method;
-    mocks.req.body.token = 'wrong';
+    sample.mocks.eventsApi.verifyRequestSignature = sinon.stub().returns(false);
 
     try {
       await sample.program.kgSearch(mocks.req, mocks.res);

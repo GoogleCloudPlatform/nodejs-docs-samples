@@ -18,6 +18,11 @@ set -e;
 
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 
+# Activate mocha config
+pushd github/nodejs-docs-samples
+mv .kokoro/.mocharc.yml .
+popd
+
 # Update gcloud
 gcloud components update --quiet
 

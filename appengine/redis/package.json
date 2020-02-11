@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "nconf": "^0.10.0",
-    "redis": "^2.8.0"
+    "redis": "^3.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0"

@@ -170,7 +170,7 @@ async function detectPersonGCS(gcsUri) {
       }
     }
   }
-  // [END video_detect_person_beta]
+  // [END video_detect_person_gcs_beta]
 }
 async function detectFaces(path) {
   //[START video_detect_faces_beta]
@@ -244,6 +244,7 @@ async function detectFaces(path) {
       }
     }
   }
+  //[END video_detect_faces_beta]
 }
 async function detectFacesGCS(gcsUri) {
   //[START video_detect_faces_gcs_beta]
@@ -313,6 +314,7 @@ async function detectFacesGCS(gcsUri) {
       }
     }
   }
+  //[END video_detect_faces_gcs_beta]
 }
 
 async function main() {

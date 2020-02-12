@@ -15,7 +15,7 @@
 'use strict';
 
 async function detectPerson(path) {
-  //[START video_detect_person_beta]
+  // [START video_detect_person_beta]
   // Imports the Google Cloud Video Intelligence library + Node's fs library
   const Video = require('@google-cloud/video-intelligence').v1p3beta1;
   const fs = require('fs');
@@ -44,6 +44,7 @@ async function detectPerson(path) {
     },
   };
   // Detects people in a video
+  // We get the first result because only one video is processed.
   const [operation] = await video.annotateVideo(request);
   const results = await operation.promise();
   console.log('Waiting for operation to complete...');
@@ -96,7 +97,7 @@ async function detectPerson(path) {
   // [END video_detect_person_beta]
 }
 async function detectPersonGCS(gcsUri) {
-  //[START video_detect_person_gcs_beta]
+  // [START video_detect_person_gcs_beta]
   // Imports the Google Cloud Video Intelligence library
   const Video = require('@google-cloud/video-intelligence').v1p3beta1;
   // Creates a client
@@ -173,7 +174,7 @@ async function detectPersonGCS(gcsUri) {
   // [END video_detect_person_gcs_beta]
 }
 async function detectFaces(path) {
-  //[START video_detect_faces_beta]
+  // [START video_detect_faces_beta]
   // Imports the Google Cloud Video Intelligence library + Node's fs library
   const Video = require('@google-cloud/video-intelligence').v1p3beta1;
   const fs = require('fs');
@@ -244,10 +245,10 @@ async function detectFaces(path) {
       }
     }
   }
-  //[END video_detect_faces_beta]
+  // [END video_detect_faces_beta]
 }
 async function detectFacesGCS(gcsUri) {
-  //[START video_detect_faces_gcs_beta]
+  // [START video_detect_faces_gcs_beta]
   // Imports the Google Cloud Video Intelligence library
   const Video = require('@google-cloud/video-intelligence').v1p3beta1;
   // Creates a client
@@ -314,7 +315,7 @@ async function detectFacesGCS(gcsUri) {
       }
     }
   }
-  //[END video_detect_faces_gcs_beta]
+  // [END video_detect_faces_gcs_beta]
 }
 
 async function main() {

@@ -123,7 +123,7 @@ describe('functions/datastore', () => {
           kind: KIND,
           key: NAME,
           value: VALUE,
-        }
+        },
       });
       assert.strictEqual(response.status, 200);
       assert.ok(response.data.includes(`Entity ${KIND}/${NAME} saved`));
@@ -147,21 +147,22 @@ describe('functions/datastore', () => {
     });
 
     it('get: Fails when entity does not exist', async () => {
-      const response = await requestRetry({
+      const response = await request({
+        retry: true,
         url: `${BASE_URL}/get`,
         method: 'POST',
         body: {
           kind: KIND,
           key: 'nonexistent',
         },
-        json: true,
+        responseType: 'text',
       });
 
-      assert.strictEqual(response.statusCode, 500);
+      assert.strictEqual(response.status, 500);
       assert.ok(
         new RegExp(
           /(Missing or insufficient permissions.)|(No entity found for key)/
-        ).test(response.body)
+        ).test(response.data)
       );
     });
 
@@ -173,7 +174,7 @@ describe('functions/datastore', () => {
         body: {
           kind: KIND,
           key: NAME,
-        }
+        },
       });
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
@@ -271,7 +272,7 @@ describe('functions/datastore', () => {
           kind: KIND,
           key: 'nonexistent',
         },
-        responseType: 'text'
+        responseType: 'text',
       });
       assert.strictEqual(response.status, 200);
       assert.strictEqual(response.data, `Entity ${KIND}/nonexistent deleted.`);
@@ -286,7 +287,7 @@ describe('functions/datastore', () => {
           kind: KIND,
           key: NAME,
         },
-        responseType: 'text'
+        responseType: 'text',
       });
       assert.strictEqual(response.status, 200);
       assert.strictEqual(response.data, `Entity ${KIND}/${NAME} deleted.`);

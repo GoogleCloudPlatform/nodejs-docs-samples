@@ -15,24 +15,18 @@
 'use strict';
 
 const assert = require('assert');
+const path = require('path');
+const uuid = require('uuid');
+const sinon = require('sinon');
+const {request} = require('gaxios');
+const execPromise = require('child-process-promise').exec;
 const {Datastore} = require('@google-cloud/datastore');
+
 const datastore = new Datastore();
 const program = require('../');
-const uuid = require('uuid');
-const path = require('path');
-const execPromise = require('child-process-promise').exec;
-const sinon = require('sinon');
 
 const FF_TIMEOUT = 3000;
-
-let requestRetry = require('requestretry');
-requestRetry = requestRetry.defaults({
-  retryDelay: 500,
-  retryStrategy: requestRetry.RetryStrategies.NetworkError,
-});
-
 const cwd = path.join(__dirname, '..');
-
 const NAME = 'sampletask1';
 const KIND = `Task-${uuid.v4()}`;
 const VALUE = {
@@ -96,9 +90,7 @@ describe('functions/datastore', () => {
         status: sinon.stub().returnsThis(),
         send: sinon.stub(),
       };
-
       await program.set(req, res);
-
       assert.ok(res.status.calledWith(500));
       assert.ok(res.send.calledWith(errorMsg('Key')));
     });
@@ -122,19 +114,19 @@ describe('functions/datastore', () => {
     });
 
     it('set: Saves an entity', async () => {
-      const response = await requestRetry({
+      const response = await request({
         url: `${BASE_URL}/set`,
         method: 'POST',
+        retry: true,
+        responseType: 'text',
         body: {
           kind: KIND,
           key: NAME,
           value: VALUE,
-        },
-        json: true,
+        }
       });
-
-      assert.strictEqual(response.statusCode, 200);
-      assert.ok(response.body.includes(`Entity ${KIND}/${NAME} saved`));
+      assert.strictEqual(response.status, 200);
+      assert.ok(response.data.includes(`Entity ${KIND}/${NAME} saved`));
     });
   });
 
@@ -174,18 +166,17 @@ describe('functions/datastore', () => {
     });
 
     it('get: Finds an entity', async () => {
-      const response = await requestRetry({
+      const response = await request({
+        retry: true,
         method: 'POST',
         url: `${BASE_URL}/get`,
         body: {
           kind: KIND,
           key: NAME,
-        },
-        json: true,
+        }
       });
-
-      assert.strictEqual(response.statusCode, 200);
-      assert.deepStrictEqual(response.body, {
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
         description: 'Buy milk',
       });
     });
@@ -272,32 +263,33 @@ describe('functions/datastore', () => {
     });
 
     it(`del: Doesn't fail when entity does not exist`, async () => {
-      const response = await requestRetry({
+      const response = await request({
         method: 'POST',
+        retry: true,
         url: `${BASE_URL}/del`,
         body: {
           kind: KIND,
           key: 'nonexistent',
         },
-        json: true,
+        responseType: 'text'
       });
-
-      assert.strictEqual(response.statusCode, 200);
-      assert.strictEqual(response.body, `Entity ${KIND}/nonexistent deleted.`);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data, `Entity ${KIND}/nonexistent deleted.`);
     });
 
     it('del: Deletes an entity', async () => {
-      const response = await requestRetry({
+      const response = await request({
+        retry: true,
         method: 'POST',
         url: `${BASE_URL}/del`,
         body: {
           kind: KIND,
           key: NAME,
         },
-        json: true,
+        responseType: 'text'
       });
-      assert.strictEqual(response.statusCode, 200);
-      assert.strictEqual(response.body, `Entity ${KIND}/${NAME} deleted.`);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data, `Entity ${KIND}/${NAME} deleted.`);
 
       const key = datastore.key([KIND, NAME]);
       const [entity] = await datastore.get(key);

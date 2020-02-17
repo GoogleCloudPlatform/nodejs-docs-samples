@@ -19,6 +19,7 @@ const path = require('path');
 const uuid = require('uuid');
 const sinon = require('sinon');
 const {request} = require('gaxios');
+const isReachable = require('is-reachable');
 const execPromise = require('child-process-promise').exec;
 const {Datastore} = require('@google-cloud/datastore');
 
@@ -48,17 +49,27 @@ const handleLinuxFailures = async proc => {
   }
 };
 
+// Wait for the HTTP server to start listening
+const waitForReady = async baseUrl => {
+  let ready = false;
+  while (!ready) {
+    await new Promise(r => setTimeout(r, 500));
+    ready = await isReachable(baseUrl);
+  }
+};
+
 describe('functions/datastore', () => {
   describe('set', () => {
     let ffProc;
     const PORT = 8080;
     const BASE_URL = `http://localhost:${PORT}`;
 
-    before(() => {
+    before(async () => {
       ffProc = execPromise(
         `functions-framework --target=set --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
+      await waitForReady(BASE_URL);
     });
 
     after(async () => {
@@ -117,9 +128,8 @@ describe('functions/datastore', () => {
       const response = await request({
         url: `${BASE_URL}/set`,
         method: 'POST',
-        retry: true,
         responseType: 'text',
-        body: {
+        data: {
           kind: KIND,
           key: NAME,
           value: VALUE,
@@ -135,11 +145,12 @@ describe('functions/datastore', () => {
     const PORT = 8081;
     const BASE_URL = `http://localhost:${PORT}`;
 
-    before(() => {
+    before(async () => {
       ffProc = execPromise(
         `functions-framework --target=get --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
+      await waitForReady(BASE_URL);
     });
 
     after(async () => {
@@ -148,14 +159,14 @@ describe('functions/datastore', () => {
 
     it('get: Fails when entity does not exist', async () => {
       const response = await request({
-        retry: true,
         url: `${BASE_URL}/get`,
         method: 'POST',
-        body: {
+        data: {
           kind: KIND,
           key: 'nonexistent',
         },
         responseType: 'text',
+        validateStatus: () => true,
       });
 
       assert.strictEqual(response.status, 500);
@@ -168,10 +179,9 @@ describe('functions/datastore', () => {
 
     it('get: Finds an entity', async () => {
       const response = await request({
-        retry: true,
         method: 'POST',
         url: `${BASE_URL}/get`,
-        body: {
+        data: {
           kind: KIND,
           key: NAME,
         },
@@ -220,11 +230,12 @@ describe('functions/datastore', () => {
     const PORT = 8082;
     const BASE_URL = `http://localhost:${PORT}`;
 
-    before(() => {
+    before(async () => {
       ffProc = execPromise(
         `functions-framework --target=del --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
+      await waitForReady(BASE_URL);
     });
 
     after(async () => {
@@ -266,9 +277,8 @@ describe('functions/datastore', () => {
     it(`del: Doesn't fail when entity does not exist`, async () => {
       const response = await request({
         method: 'POST',
-        retry: true,
         url: `${BASE_URL}/del`,
-        body: {
+        data: {
           kind: KIND,
           key: 'nonexistent',
         },
@@ -280,10 +290,9 @@ describe('functions/datastore', () => {
 
     it('del: Deletes an entity', async () => {
       const response = await request({
-        retry: true,
         method: 'POST',
         url: `${BASE_URL}/del`,
-        body: {
+        data: {
           kind: KIND,
           key: NAME,
         },

@@ -110,7 +110,7 @@ async function getMetricDescriptor(projectId, metricId) {
   // const metricId = 'custom.googleapis.com/your/id';
 
   const request = {
-    name: client.metricDescriptorPath(projectId, metricId),
+    name: client.projectMetricDescriptorPath(projectId, metricId),
   };
 
   // Retrieves a metric descriptor
@@ -143,7 +143,7 @@ async function deleteMetricDescriptor(projectId, metricId) {
   // const metricId = 'custom.googleapis.com/stores/daily_sales';
 
   const request = {
-    name: client.metricDescriptorPath(projectId, metricId),
+    name: client.projectMetricDescriptorPath(projectId, metricId),
   };
 
   // Deletes a metric descriptor
@@ -432,7 +432,10 @@ async function getMonitoredResourceDescriptor(projectId, resourceType) {
   // const resourceType = 'some_resource_type, e.g. cloudsql_database';
 
   const request = {
-    name: client.monitoredResourceDescriptorPath(projectId, resourceType),
+    name: client.projectMonitoredResourceDescriptorPath(
+      projectId,
+      resourceType
+    ),
   };
 
   // Lists monitored resource descriptors

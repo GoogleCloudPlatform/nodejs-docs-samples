@@ -83,7 +83,9 @@ async function restorePolicies(projectId) {
     // Restore each policy one at a time
     let policy = policies[index];
     if (await doesAlertPolicyExist(policy.name)) {
-      policy = await client.updateAlertPolicy({alertPolicy: policy});
+      policy = await client.updateAlertPolicy({
+        alertPolicy: policy,
+      });
     } else {
       // Clear away output-only fields
       delete policy.name;
@@ -101,7 +103,9 @@ async function restorePolicies(projectId) {
   }
   async function doesAlertPolicyExist(name) {
     try {
-      const [policy] = await client.getAlertPolicy({name});
+      const [policy] = await client.getAlertPolicy({
+        name,
+      });
       return policy ? true : false;
     } catch (err) {
       if (err && err.code === 5) {
@@ -131,7 +135,10 @@ async function deleteChannels(projectId, filter) {
   // const projectId = 'YOUR_PROJECT_ID';
   // const filter = 'A filter for selecting policies, e.g. description:"cloud"';
 
-  const request = {name: client.projectPath(projectId), filter};
+  const request = {
+    name: client.projectPath(projectId),
+    filter,
+  };
   const channels = await client.listNotificationChannels(request);
   console.log(channels);
   for (const channel of channels[0]) {
@@ -173,15 +180,19 @@ async function replaceChannels(projectId, alertPolicyId, channelIds) {
   // ];
 
   const notificationChannels = channelIds.map(id =>
-    notificationClient.notificationChannelPath(projectId, id)
+    notificationClient.projectNotificationChannelPath(projectId, id)
   );
 
   for (const channel of notificationChannels) {
     const updateChannelRequest = {
-      updateMask: {paths: ['enabled']},
+      updateMask: {
+        paths: ['enabled'],
+      },
       notificationChannel: {
         name: channel,
-        enabled: {value: true},
+        enabled: {
+          value: true,
+        },
       },
     };
     try {
@@ -190,7 +201,9 @@ async function replaceChannels(projectId, alertPolicyId, channelIds) {
       const createChannelRequest = {
         notificationChannel: {
           name: channel,
-          notificationChannel: {type: 'email'},
+          notificationChannel: {
+            type: 'email',
+          },
         },
       };
       const newChannel = await notificationClient.createNotificationChannel(
@@ -201,9 +214,11 @@ async function replaceChannels(projectId, alertPolicyId, channelIds) {
   }
 
   const updateAlertPolicyRequest = {
-    updateMask: {paths: ['notification_channels']},
+    updateMask: {
+      paths: ['notification_channels'],
+    },
     alertPolicy: {
-      name: alertClient.alertPolicyPath(projectId, alertPolicyId),
+      name: alertClient.projectAlertPolicyPath(projectId, alertPolicyId),
       notificationChannels: notificationChannels,
     },
   };
@@ -243,10 +258,14 @@ async function enablePolicies(projectId, enabled, filter) {
     policies
       .map(policy => {
         return {
-          updateMask: {paths: ['enabled']},
+          updateMask: {
+            paths: ['enabled'],
+          },
           alertPolicy: {
             name: policy.name,
-            enabled: {value: enabled},
+            enabled: {
+              value: enabled,
+            },
           },
         };
       })

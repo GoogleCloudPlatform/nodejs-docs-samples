@@ -18,10 +18,9 @@ run @GoogleCloudPlatform/cdpe-cbr-containers
 functions/composer-storage-trigger @leahecole
 functions/scheduleinstance @djmailhot
 functions/speech-to-speech @ricalo
-functions/dialogflow @nnegrey
 functions/memorystore @ericschmidtatwork
 functions/spanner @jsimonweb
-functions/tokenservice @santhoshvaddi
+functions/tokenservice @nnegrey
 
 # GCF samples outside of functions/
 datastore/functions @benwhitehead

@@ -1,6 +1,5 @@
 {
   "name": "nodejs-docs-samples-functions-background",
-  "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",
@@ -15,17 +14,11 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.5"
+    "gaxios": "^2.3.1"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "child-process-promise": "^2.2.1",
-    "mocha": "^7.0.0",
-    "requestretry": "^4.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true
+    "mocha": "^7.0.0"
   }
 }

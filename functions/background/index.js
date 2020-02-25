@@ -15,7 +15,7 @@
 'use strict';
 
 // [START functions_background_promise]
-const requestPromiseNative = require('request-promise-native');
+const {request} = require('gaxios');
 
 /**
  * Background Cloud Function that returns a Promise. Note that we don't pass
@@ -26,8 +26,8 @@ const requestPromiseNative = require('request-promise-native');
  * @returns {Promise}
  */
 exports.helloPromise = data => {
-  return requestPromiseNative({
-    uri: data.endpoint,
+  return request({
+    url: data.endpoint,
   });
 };
 // [END functions_background_promise]

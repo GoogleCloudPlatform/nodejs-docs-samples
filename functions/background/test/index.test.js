@@ -15,7 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const requestRetry = require('requestretry');
+const {request} = require('gaxios');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
 
@@ -52,14 +52,16 @@ it('should make a promise request', async () => {
     },
   };
 
-  const response = await requestRetry({
+  const response = await request({
     url: `${BASE_URL}/`,
     method: 'POST',
-    body: event,
-    retryDelay: 200,
-    json: true,
+    data: event,
+    responseType: 'text',
+    retryConfig: {
+      httpMethodsToRetry: ['POST'],
+    },
   });
 
-  assert.strictEqual(response.statusCode, 200);
-  assert.ok(response.body.includes(`Example Domain`));
+  assert.strictEqual(response.status, 200);
+  assert.ok(response.data.includes(`Example Domain`));
 });

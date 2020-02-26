@@ -181,6 +181,7 @@ const mqttDeviceDemo = (
 ) => {
   // [START iot_mqtt_run]
 
+  // const projectId = `my-project-name-123`;
   // const deviceId = `myDevice`;
   // const registryId = `myRegistry`;
   // const region = `us-central1`;

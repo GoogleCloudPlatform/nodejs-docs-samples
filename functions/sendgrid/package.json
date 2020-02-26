@@ -18,7 +18,7 @@
     "@google-cloud/bigquery": "^4.0.0",
     "@google-cloud/storage": "^4.0.0",
     "sendgrid": "^5.2.3",
-    "uuid": "^3.3.2"
+    "uuid": "^7.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

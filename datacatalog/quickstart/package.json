@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "mocha": "^7.0.0",
-    "uuid": "^3.1.0"
+    "uuid": "^7.0.0"
   },
   "dependencies": {
     "@google-cloud/datacatalog": "^1.7.0"

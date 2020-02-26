@@ -249,7 +249,7 @@ describe('functions_http_signed_url', () => {
       method: 'POST',
       body: {
         bucket: 'nodejs-docs-samples',
-        filename: `gcf-gcs-url-${uuid.v4}`,
+        filename: `gcf-gcs-url-${uuid.v4()}`,
         contentType: 'application/octet-stream',
       },
     };

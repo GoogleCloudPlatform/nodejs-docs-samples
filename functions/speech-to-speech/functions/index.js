@@ -15,7 +15,7 @@
 'use strict';
 
 // This sample uses the UUID library to generate the output filename.
-const uuid = require('uuid/v4');
+const uuid = require('uuid');
 const functions = require('firebase-functions');
 
 const googleCloudProject = process.env.GOOGLE_CLOUD_PROJECT;
@@ -80,7 +80,7 @@ exports.speechTranslate = functions.https.onRequest(
         const translation = {languageCode: languageCode};
         const outputFilename =
           request.body.outputFilename ||
-          `${uuid()}.${outputAudioEncoding.toLowerCase()}`;
+          `${uuid.v4()}.${outputAudioEncoding.toLowerCase()}`;
 
         try {
           const [textTranslation] = await callTextTranslation(

@@ -19,7 +19,7 @@ const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 const uuid = require('uuid');
 
-const dataproc = require('@google-cloud/dataproc').v1;
+const dataproc = require('@google-cloud/dataproc');
 const {Storage} = require('@google-cloud/storage');
 
 const myUuid = uuid();
@@ -41,7 +41,10 @@ const clusterClient = new dataproc.v1.ClusterControllerClient({
 
 const storage = new Storage();
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd =>
+  cp.execSync(cmd, {
+    encoding: 'utf-8',
+  });
 
 describe('execute the quickstart', () => {
   before(async () => {

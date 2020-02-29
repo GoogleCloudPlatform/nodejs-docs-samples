@@ -22,14 +22,17 @@ const uuid = require('uuid');
 const region = 'us-central1';
 const clusterName = `node-cc-test-${uuid()}`;
 
-const dataproc = require('@google-cloud/dataproc').v1;
-const clusterClient = new dataproc.ClusterControllerClient({
+const dataproc = require('@google-cloud/dataproc');
+const clusterClient = new dataproc.v1.ClusterControllerClient({
   apiEndpoint: `${region}-dataproc.googleapis.com`,
 });
 
 const projectId = process.env.GCLOUD_PROJECT;
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd =>
+  cp.execSync(cmd, {
+    encoding: 'utf-8',
+  });
 
 describe('create a dataproc cluster', () => {
   it('should create a dataproc cluster', async () => {

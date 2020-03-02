@@ -14,7 +14,7 @@
 'use strict';
 
 function main(organizationId = 'your-org-id') {
-  // [END scc_list_notification_configs]
+  // [START scc_list_notification_configs]
   // npm install @google-cloud/security-center/
   const {
     SecurityCenterClient,

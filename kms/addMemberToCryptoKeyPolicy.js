@@ -36,12 +36,10 @@ async function addMemberToCryptoKeyPolicy(
     keyRingId,
     cryptoKeyId
   );
-
   // Gets the IAM policy of a crypto key
   const [result] = await client.getIamPolicy({resource});
   let policy = Object.assign({bindings: []}, result);
   const index = policy.bindings.findIndex(binding => binding.role === role);
-
   // Add the role/member combo to the policy
   const members = [];
   const binding = Object.assign({role, members}, policy.bindings[index]);

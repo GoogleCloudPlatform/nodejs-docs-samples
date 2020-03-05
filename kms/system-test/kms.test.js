@@ -301,7 +301,7 @@ describe('kms sample tests', () => {
   });
 
   describe('asymmetric keys', () => {
-    const kms = require('../../src');
+    const kms = require('@google-cloud/kms');
     const client = new kms.KeyManagementServiceClient();
 
     const locationId = `global`;

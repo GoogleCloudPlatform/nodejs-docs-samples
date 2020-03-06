@@ -26,6 +26,6 @@ const file = 'resources/googlework_short.mp4';
 describe('analyzing people in video', () => {
   it('should identify people in a local file', async () => {
     const output = execSync(`${cmd} ${file}`);
-    assert.match(output, /Hair/);
+    assert.match(output, /Landmark/);
   });
 });

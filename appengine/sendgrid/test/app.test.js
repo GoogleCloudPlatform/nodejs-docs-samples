@@ -1,10 +1,9 @@
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
-const proxyquire = require('proxyquire');
 
 const cwd = path.join(__dirname, '../');
-const request = supertest(proxyquire(path.join(cwd)));
+const request = supertest(path.join(cwd));
 
 describe('gae_flex_sendgrid', () => {
   it('GET /: should show homepage template', async () => {

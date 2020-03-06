@@ -25,13 +25,12 @@ const {OAuth2Client} = require('google-auth-library');
 const path = require('path');
 const sinon = require('sinon');
 const supertest = require('supertest');
-const proxyquire = require('proxyquire').noPreserveCache();
 
 const message = 'This is a test message sent at: ';
 const payload = message + Date.now();
 
 const cwd = path.join(__dirname, '../');
-const requestObj = supertest(proxyquire(path.join(cwd)));
+const requestObj = ssupertest(path.join(cwd));
 
 const fixtures = path.join(__dirname, 'fixtures');
 const privateKey = fs.readFileSync(path.join(fixtures, 'privatekey.pem'));

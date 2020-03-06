@@ -26,6 +26,6 @@ const file = 'resources/googlework_short.mp4';
 describe('analyzing faces in video', () => {
   it('should identify faces in a local file', async () => {
     const output = execSync(`${cmd} ${file}`);
-    assert.match(output, /glasses/);
+    assert.match(output, /Attribute/);
   });
 });

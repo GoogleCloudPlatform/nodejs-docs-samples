@@ -26,6 +26,6 @@ const gcsUri = 'gs://cloud-samples-data/video/googlework_short.mp4';
 describe('analyzing people in video', () => {
   it('should identify people in a file in Google Storage', async () => {
     const output = execSync(`${cmd} ${gcsUri}`);
-    assert.match(output, /Hair/);
+    assert.match(output, /Landmark/);
   });
 });

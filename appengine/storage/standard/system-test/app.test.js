@@ -17,14 +17,15 @@ const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 const assert = require('assert');
-const supertest = require('supertest');
-const proxyquire = require('proxyquire').noPreserveCache();
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, '../');
-const requestObj = supertest(proxyquire(path.join(cwd)));
+//const requestObj = supertest(path.join(cwd));
+
+const requestObj = tools.getRequest({cwd: cwd});
 
 before(async () => {
   assert(

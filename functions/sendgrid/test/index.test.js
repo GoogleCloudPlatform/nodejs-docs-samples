@@ -144,21 +144,8 @@ const getMocks = () => {
   };
 };
 const stubConsole = function() {
-  if (
-    typeof console.log.restore !== `function` &&
-    typeof console.error.restore !== `function`
-  ) {
-    sinon.stub(console, `error`);
-    sinon.stub(console, `log`).callsFake((a, b) => {
-      if (
-        typeof a === `string` &&
-        a.indexOf(`\u001b`) !== -1 &&
-        typeof b === `string`
-      ) {
-        console.log.apply(console, arguments);
-      }
-    });
-  }
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`);
 };
 
 //Restore console

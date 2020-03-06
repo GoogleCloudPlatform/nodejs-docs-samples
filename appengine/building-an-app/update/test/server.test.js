@@ -17,36 +17,34 @@ const assert = require('assert');
 const supertest = require('supertest');
 const express = require('express');
 
-
 const app = express();
 
-
-it('should send greetings', async () => {
+it('should send greetings', () => {
   supertest(app)
-  .get('/')
-  .expect(200)
-  .expect(response => {
-    assert.strictEqual(response.text, 'Hello from App Engine!');
-  })
+    .get('/')
+    .expect(200)
+    .expect(response => {
+      assert.strictEqual(response.text, 'Hello from App Engine!');
+    });
 });
 
-it('should display form', async () => {
+it('should display form', () => {
   supertest(app)
-  .get('/')
-  .expect(200)
-  .expect(response => {
-    assert.strictEqual(response.text.includes('textarea name="message" placeholder="Message"'),
-    true
-  );
-  })
+    .get('/')
+    .expect(200)
+    .expect(response => {
+      assert.strictEqual(
+        response.text.includes('textarea name="message" placeholder="Message"'),
+        true
+      );
+    });
 });
 
-it('should record message', async () => {
+it('should record message', () => {
   supertest(app)
-  .get('/')
-  .expect(200)
-  .expect(response => {
-    assert.strictEqual(response.text, 'Thanks for your message!')
-  });
-  })
-  
+    .get('/')
+    .expect(200)
+    .expect(response => {
+      assert.strictEqual(response.text, 'Thanks for your message!');
+    });
+});

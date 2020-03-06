@@ -19,7 +19,6 @@ const childProcess = require('child_process');
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const util = require('util');
 const uuid = require('uuid');
 
@@ -40,7 +39,7 @@ const installDeps = 'npm install';
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
-assert.ok(tools.run(installDeps, `${cwd}/../manager`));
+assert.ok(childProcess.exec(installDeps, `${cwd}/../manager`));
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
@@ -77,8 +76,8 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  tools.run(`${helper} unbindAllDevices ${registryName}`, cwd);
-  tools.run(`${helper} clearRegistry ${registryName}`, cwd);
+  childProcess.exec(`${helper} unbindAllDevices ${registryName}`, cwd);
+  childProcess.exec(`${helper} clearRegistry ${registryName}`, cwd);
 
   console.log('Deleted test registry.');
 });

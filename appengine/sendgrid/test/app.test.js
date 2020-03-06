@@ -1,9 +1,10 @@
 const assert = require('assert');
 const path = require('path');
-const utils = require('@google-cloud/nodejs-repo-tools');
+const supertest = require('supertest');
+const proxyquire = require('proxyquire');
 
 const cwd = path.join(__dirname, '../');
-const request = utils.getRequest({cwd: cwd});
+const request = supertest(proxyquire(path.join(cwd)));
 
 describe('gae_flex_sendgrid', () => {
   it('GET /: should show homepage template', async () => {

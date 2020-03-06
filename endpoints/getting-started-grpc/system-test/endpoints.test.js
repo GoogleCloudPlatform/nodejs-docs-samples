@@ -19,7 +19,6 @@ const path = require('path');
 const assert = require('assert');
 const fs = require(`fs`);
 const jwt = require('jsonwebtoken');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const delay = require('delay');
 
 const clientCmd = `node client.js`;
@@ -133,9 +132,6 @@ it(`should request and handle a greeting locally using a JWT Auth Token`, async 
 
 // Misc
 it('should require either an API key or a JWT Auth Token', async () => {
-  const {stderr} = await tools.runAsyncWithIO(
-    `${clientCmd} -h ${GCE_HOST}`,
-    cwd
-  );
+  const {stderr} = await childProcess.exec(`${clientCmd} -h ${GCE_HOST}`, cwd);
   assert.ok(stderr.includes('One of API_KEY or JWT_AUTH_TOKEN must be set'));
 });

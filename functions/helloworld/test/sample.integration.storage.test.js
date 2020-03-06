@@ -27,7 +27,7 @@ describe('functions_helloworld_storage integration test', () => {
   // [START functions_storage_integration_test]
   it('helloGCS: should print uploaded message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
-    const PORT = 9000; // Each running framework instance needs a unique port
+    const PORT = 2001; // Each running framework instance needs a unique port
 
     const data = {
       data: {
@@ -65,7 +65,7 @@ describe('functions_helloworld_storage integration test', () => {
 
   it('helloGCS: should print metadata updated message', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
-    const PORT = 9001; // Each running framework instance needs a unique port
+    const PORT = 9005; // Each running framework instance needs a unique port
 
     const data = {
       data: {

@@ -20,11 +20,13 @@
   "license": "Apache-2.0",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "nock": "^12.0.2"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^7.0.0",
-    "sinon": "^9.0.0"
+    "sinon": "^9.0.0",
+    "supertest": "^4.0.2"
   }
 }

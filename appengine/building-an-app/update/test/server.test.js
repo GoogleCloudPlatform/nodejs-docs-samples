@@ -13,67 +13,40 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
-const utils = require('@google-cloud/nodejs-repo-tools');
-const sinon = require('sinon');
+const supertest = require('supertest');
+const express = require('express');
 
-const cwd = path.join(__dirname, '../');
-const requestObj = utils.getRequest({
-  cwd: cwd,
-  cmd: 'server',
-});
 
-const stubConsole = function() {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`).callsFake((a, b) => {
-    if (
-      typeof a === `string` &&
-      a.indexOf(`\u001b`) !== -1 &&
-      typeof b === `string`
-    ) {
-      console.log.apply(console, arguments);
-    }
-  });
-};
+const app = express();
 
-const restoreConsole = function() {
-  console.log.restore();
-  console.error.restore();
-};
-
-beforeEach(stubConsole);
-afterEach(restoreConsole);
 
 it('should send greetings', async () => {
-  await requestObj
-    .get('/')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello from App Engine!');
-    });
+  supertest(app)
+  .get('/')
+  .expect(200)
+  .expect(response => {
+    assert.strictEqual(response.text, 'Hello from App Engine!');
+  })
 });
 
 it('should display form', async () => {
-  await requestObj
-    .get('/submit')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(
-        response.text.includes('textarea name="message" placeholder="Message"'),
-        true
-      );
-    });
+  supertest(app)
+  .get('/')
+  .expect(200)
+  .expect(response => {
+    assert.strictEqual(response.text.includes('textarea name="message" placeholder="Message"'),
+    true
+  );
+  })
 });
 
 it('should record message', async () => {
-  await requestObj
-    .post('/submit', {
-      name: 'sample-user',
-      message: 'sample-message',
-    })
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Thanks for your message!');
-    });
-});
+  supertest(app)
+  .get('/')
+  .expect(200)
+  .expect(response => {
+    assert.strictEqual(response.text, 'Thanks for your message!')
+  });
+  })
+  

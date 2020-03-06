@@ -30,7 +30,7 @@ const message = 'This is a test message sent at: ';
 const payload = message + Date.now();
 
 const cwd = path.join(__dirname, '../');
-const requestObj = ssupertest(path.join(cwd));
+const requestObj = supertest(path.join(cwd));
 
 const fixtures = path.join(__dirname, 'fixtures');
 const privateKey = fs.readFileSync(path.join(fixtures, 'privatekey.pem'));

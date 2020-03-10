@@ -38,7 +38,11 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'LOCATION_ID') {
     for (const realm of results.realms) {
       console.log(`Realm name: ${realm.name}`);
       console.log(`Realm description: ${realm.description}`);
-      console.log(`Realm time zone: ${realm.timeZone}\n`);
+      console.log(`Realm time zone: ${realm.timeZone}`);
+
+      const createTime = realm.createTime;
+      const createDate = new Date(createTime.seconds * 1000);
+      console.log(`Realm created on: ${createDate.toLocaleDateString()}\n`);
     }
     // [END cloud_game_servers_list_realms]
   }

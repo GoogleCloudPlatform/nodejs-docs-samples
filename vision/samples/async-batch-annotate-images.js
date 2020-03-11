@@ -14,55 +14,72 @@
 
 'use strict';
 
-async function main(inputImageUri, outputUri) {
-  // [START vision_async_batch_annotate_images_beta]
+function main(
+  inputImageUri = 'gs://cloud-samples-data/vision/label/wakeupcat.jpg',
+  outputUri = 'gs://YOUR_BUCKET_ID/path/to/save/results/'
+) {
+  // [START vision_async_batch_annotate_images]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.
+   */
+  // const inputImageUri = 'gs://cloud-samples-data/vision/label/wakeupcat.jpg';
+  // const outputUri = 'gs://YOUR_BUCKET_ID/path/to/save/results/';
 
   // Imports the Google Cloud client libraries
-  const {ImageAnnotatorClient} = require('@google-cloud/vision').v1p4beta1;
+  const {ImageAnnotatorClient} = require('@google-cloud/vision').v1;
 
-  // Creates a client
+  // Instantiates a client
   const client = new ImageAnnotatorClient();
 
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // GCS path where the image resides
-  // const inputImageUri = 'gs://my-bucket/my_image.jpg';
-  // GCS path where to store the output json
-  // const outputUri = 'gs://mybucket/out/'
+  // You can send multiple images to be annotated, this sample demonstrates how to do this with
+  // one image. If you want to use multiple images, you have to create a request object for each image that you want annotated.
+  async function asyncBatchAnnotateImages() {
+    // Set the type of annotation you want to perform on the image
+    // https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.Feature.Type
+    const features = [
+      {type: 'LABEL_DETECTION'},
+    ];
 
-  const features = [
-    {type: 'DOCUMENT_LABEL_DETECTION'},
-    {type: 'DOCUMENT_TEXT_DETECTION'},
-    {type: 'DOCUMENT_IMAGE_DETECTION'},
-  ];
-
-  const outputConfig = {
-    gcsDestination: {
-      uri: outputUri,
-    },
-  };
-
-  const request = {
-    requests: [
-      {
-        image: {
-          source: {
-            imageUri: inputImageUri,
-          },
+    // Build the image request object for that one image. Note: for additional images you have to create
+    // additional image request objects and store them in a list to be used below.  
+    const imageRequest = {
+      image: {
+        source: {
+          imageUri: inputImageUri,
         },
-        features: features,
       },
-    ],
-    outputConfig,
-  };
+      features: features,
+    }
 
-  const [operation] = await client.asyncBatchAnnotateImages(request);
-  const [filesResponse] = await operation.promise();
+    // Set where to store the results for the images that will be annotated.  
+    const outputConfig = {
+      gcsDestination: {
+        uri: outputUri,
+      },
+      batchSize: 2, // The max number of responses to output in each JSON file
+    };
 
-  const destinationUri = filesResponse.outputConfig.gcsDestination.uri;
-  console.log(`Json saved to: ${destinationUri}`);
-  // [END vision_async_batch_annotate_images_beta]
+    // Add each image request object to the batch request and add the output config.
+    const request = {
+      requests: [
+        imageRequest, // add additional request objects here
+      ],
+      outputConfig,
+    };
+
+    // Make the asynchronous batch request.
+    const [operation] = await client.asyncBatchAnnotateImages(request);
+
+    // Wait for the operation to complete
+    const [filesResponse] = await operation.promise();
+
+    // The output is written to GCS with the provided output_uri as prefix
+    const destinationUri = filesResponse.outputConfig.gcsDestination.uri;
+    console.log(`Output written to GCS with prefix: ${destinationUri}`);
+  }
+
+  asyncBatchAnnotateImages();
+  // [END vision_async_batch_annotate_images]
 }
 
-main(...process.argv.slice(2)).catch(console.error);
+main(...process.argv.slice(2));

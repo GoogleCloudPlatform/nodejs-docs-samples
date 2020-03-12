@@ -13,16 +13,10 @@
 // limitations under the License.
 'use strict';
 
-function main(
-  organizationId = 'your-org-id',
-  configId = 'your-config-name',
-  pubsubTopic = 'projects/{your-project}/topics/{your-topic}'
-) {
-  // [START scc_update_notification_config]
+function main(organizationId = 'your-org-id', configId = 'your-config-id') {
+  // [START scc_get_notification_configs]
   // npm install @google-cloud/security-center/
-  const {
-    SecurityCenterClient,
-  } = require('@google-cloud/security-center').v1p1beta1;
+  const {SecurityCenterClient} = require('@google-cloud/security-center');
 
   const client = new SecurityCenterClient();
 
@@ -33,23 +27,15 @@ function main(
     configId
   );
 
-  // pubsubTopic = "projects/{your-project}/topics/{your-topic}";
-  // Ensure this Service Account has the "pubsub.topics.setIamPolicy" permission on this topic.
-
-  async function updateNotificationConfig() {
-    const [response] = await client.updateNotificationConfig({
-      updateMask: {paths: ['description', 'pubsub_topic']},
-      notificationConfig: {
-        name: formattedConfigName,
-        description: 'Updated config description',
-        pubsubTopic: pubsubTopic,
-      },
+  async function getNotificationConfg() {
+    const [response] = await client.getNotificationConfig({
+      name: formattedConfigName,
     });
-    console.log('notification config update succeeded: ', response);
+    console.log('Notification config: ', response);
   }
 
-  updateNotificationConfig();
-  // [END scc_update_notification_config]
+  getNotificationConfg();
+  // [END scc_get_notification_configs]
 }
 
 main(...process.argv.slice(2));

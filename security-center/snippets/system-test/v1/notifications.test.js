@@ -14,9 +14,7 @@
 
 'use strict';
 
-const {
-  SecurityCenterClient,
-} = require('@google-cloud/security-center').v1p1beta1;
+const {SecurityCenterClient} = require('@google-cloud/security-center');
 const uuidv1 = require('uuid').v1;
 const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
@@ -44,7 +42,6 @@ describe('Client with Notifications', async () => {
         notificationConfig: {
           description: 'Sample config for node.js',
           pubsubTopic: pubsubTopic,
-          eventType: 'FINDING',
           streamingConfig: {filter: 'state = "ACTIVE"'},
         },
       });
@@ -71,7 +68,7 @@ describe('Client with Notifications', async () => {
 
   it('client can create config', () => {
     const output = exec(
-      `node v1p1beta1/createNotificationConfig.js ${organizationId} ${createConfig} ${pubsubTopic}`
+      `node v1/createNotificationConfig.js ${organizationId} ${createConfig} ${pubsubTopic}`
     );
     assert.include(output, createConfig);
     assert.match(output, /Notification config creation succeeded/);
@@ -80,7 +77,7 @@ describe('Client with Notifications', async () => {
 
   it('client can delete config', () => {
     const output = exec(
-      `node v1p1beta1/deleteNotificationConfig.js ${organizationId} ${deleteConfig}`
+      `node v1/deleteNotificationConfig.js ${organizationId} ${deleteConfig}`
     );
     assert.include(output, 'Notification config deleted');
     assert.notMatch(output, /undefined/);
@@ -88,7 +85,7 @@ describe('Client with Notifications', async () => {
 
   it('client can get config', () => {
     const output = exec(
-      `node v1p1beta1/getNotificationConfig.js ${organizationId} ${getConfig}`
+      `node v1/getNotificationConfig.js ${organizationId} ${getConfig}`
     );
     assert.include(output, getConfig);
     assert.match(output, /Notification config/);
@@ -96,9 +93,7 @@ describe('Client with Notifications', async () => {
   });
 
   it('client can list configs', () => {
-    const output = exec(
-      `node v1p1beta1/listNotificationConfigs.js ${organizationId}`
-    );
+    const output = exec(`node v1/listNotificationConfigs.js ${organizationId}`);
     assert.include(output, listConfig);
     assert.match(output, /Received Notification configs/);
     assert.notMatch(output, /undefined/);
@@ -106,7 +101,7 @@ describe('Client with Notifications', async () => {
 
   it('client can update configs', () => {
     const output = exec(
-      `node v1p1beta1/updateNotificationConfig.js ${organizationId} ${updateConfig} ${pubsubTopic}`
+      `node v1/updateNotificationConfig.js ${organizationId} ${updateConfig} ${pubsubTopic}`
     );
     assert.include(output, updateConfig);
     assert.match(output, /notification config update succeeded/);

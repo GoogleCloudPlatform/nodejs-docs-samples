@@ -20,9 +20,7 @@ function main(
 ) {
   // [START scc_create_notification_config]
   // npm install @google-cloud/security-center/
-  const {
-    SecurityCenterClient,
-  } = require('@google-cloud/security-center').v1p1beta1;
+  const {SecurityCenterClient} = require('@google-cloud/security-center');
 
   const client = new SecurityCenterClient();
 
@@ -40,7 +38,6 @@ function main(
       notificationConfig: {
         description: 'Sample config for node.js',
         pubsubTopic: pubsubTopic,
-        eventType: 'FINDING',
         streamingConfig: {filter: 'state = "ACTIVE"'},
       },
     });

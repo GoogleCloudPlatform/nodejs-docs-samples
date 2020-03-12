@@ -16,9 +16,7 @@
 function main(organizationId = 'your-org-id', configId = 'your-config-id') {
   // [START scc_delete_notification_config]
   // npm install @google-cloud/security-center/
-  const {
-    SecurityCenterClient,
-  } = require('@google-cloud/security-center').v1p1beta1;
+  const {SecurityCenterClient} = require('@google-cloud/security-center');
 
   const client = new SecurityCenterClient();
 

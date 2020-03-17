@@ -38,7 +38,10 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  childProcess.execSync(installDeps, `${cwd}/../mqtt_example`);
+  childProcess.execSync(installDeps, {
+    cwd: `${cwd}/../mqtt_example`,
+    shell: true,
+  });
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -268,7 +271,7 @@ it('should send command message to device', () => {
 
   childProcess.execSync(
     `${cmd} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
   childProcess.execSync(

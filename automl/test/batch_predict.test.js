@@ -25,59 +25,23 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const BATCH_PREDICT_REGION_TAG = 'batch_predict';
 const LOCATION = 'us-central1';
-const MODEL_ID = 'TEN2238627664384491520';
+const MODEL_ID = 'TEN0000000000000000000';
 const PREFIX = 'TEST_BATCH_PREDICT';
 
 describe('Automl Batch Predict Test', () => {
   const client = new AutoMlClient();
 
-  before('should verify the model is deployed', async () => {
-    const projectId = await client.getProjectId();
-    const request = {
-      name: client.modelPath(projectId, LOCATION, MODEL_ID),
-    };
-
-    const [response] = await client.getModel(request);
-    if (response.deploymentState === 'UNDEPLOYED') {
-      const request = {
-        name: client.modelPath(projectId, LOCATION, MODEL_ID),
-      };
-
-      const [operation] = await client.deployModel(request);
-
-      // Wait for operation to complete.
-      await operation.promise();
-    }
-  });
-
   it('should batch predict', async () => {
+    // As batch prediction can take a long time, instead try to batch predict
+    // on a nonexistent model and confirm that the model was not found, but
+    // other elements of the request were valid.
     const projectId = await client.getProjectId();
     const inputUri = `gs://${projectId}-lcm/entity_extraction/input.jsonl`;
-    const outputUri = `gs://${projectId}-lcm/${PREFIX}/`;
+    const outputUri = `gs://${projectId}-lcm/TEST_BATCH_PREDICT/`;
 
-    const batchPredictOutput = execSync(
-      `node ${BATCH_PREDICT_REGION_TAG}.js ${projectId} ${LOCATION} ${MODEL_ID} ${inputUri} ${outputUri}`
-    );
-    assert.match(
-      batchPredictOutput,
-      /Batch Prediction results saved to Cloud Storage bucket/
-    );
-  });
+    const args = [BATCH_PREDICT_REGION_TAG, projectId, LOCATION, MODEL_ID, inputUri, outputUri];
+    const output = cp.spawnSync('node', args, {encoding: 'utf8'});
 
-  after('delete created files', async () => {
-    const projectId = await client.getProjectId();
-    const storageClient = new Storage();
-    const options = {
-      prefix: PREFIX,
-    };
-    const [files] = await storageClient
-      .bucket(`gs://${projectId}-lcm`)
-      .getFiles(options);
-    files.forEach(file => {
-      storageClient
-        .bucket(`gs://${projectId}-lcm`)
-        .file(file.name)
-        .delete();
-    });
+    assert.match(output.stderr, /does not exist/);
   });
 });

@@ -151,7 +151,13 @@ describe('metrics', () => {
         perSeriesAligner: `ALIGN_MEAN`,
       },
     });
-    const output = execSync(`${cmd} read-aggregate`);
+    let output;
+    try {
+      output = execSync(`${cmd} read-aggregate`);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
     assert.include(output, 'CPU utilization:');
     timeSeries.forEach(data => {
       assert.include(output, data.metric.labels.instance_name);

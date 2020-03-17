@@ -324,6 +324,9 @@ async function readTimeSeriesAggregate(projectId) {
   console.log('CPU utilization:');
   timeSeries.forEach(data => {
     console.log(data);
+    for (const point of data.points) {
+      console.log(point);
+    }
     console.log(data.metric.labels.instance_name);
     console.log(`  Now: ${data.points[0].value.doubleValue}`);
     console.log(`  10 min ago: ${data.points[1].value.doubleValue}`);

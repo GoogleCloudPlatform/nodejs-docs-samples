@@ -41,7 +41,7 @@ before(async () => {
   childProcess.execSync(installDeps, {
     cwd: `${cwd}/../mqtt_example`,
     shell: true,
-  });
+  }).toString().trim();
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -80,11 +80,11 @@ after(async () => {
   childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
     cwd,
     shell: true,
-  });
+  }).toString().trim();
   childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
     cwd,
     shell: true,
-  });
+  }).toString().trim();
 
   console.log('Deleted test registry.');
 });
@@ -285,7 +285,6 @@ it('should send command message to device', () => {
   );
   console.log(output);
   assert.ok(output.includes('Sent command'));
-
   childProcess.execSync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
 

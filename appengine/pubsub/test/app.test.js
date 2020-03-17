@@ -33,7 +33,6 @@ const payload = message + Date.now();
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 
-
 const fixtures = path.join(__dirname, 'fixtures');
 const privateKey = fs.readFileSync(path.join(fixtures, 'privatekey.pem'));
 const publicCert = fs.readFileSync(path.join(fixtures, 'public_cert.pem'));

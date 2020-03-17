@@ -21,11 +21,11 @@ const proxyquire = require('proxyquire').noPreserveCache();
 
 const cwd = path.join(__dirname, '../');
 
-const requestObj = supertest(proxyquire(path.join (cwd, 'server'), {process}));
+const requestObj = supertest(proxyquire(path.join(cwd, 'server'), {process}));
 
 const stubConsole = function() {
   sinon.stub(console, `error`);
-  sinon.stub(console, `log`)
+  sinon.stub(console, `log`);
 };
 
 const restoreConsole = function() {

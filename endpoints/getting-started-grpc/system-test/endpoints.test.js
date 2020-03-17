@@ -132,9 +132,9 @@ it(`should request and handle a greeting locally using a JWT Auth Token`, async 
 
 // Misc
 it('should require either an API key or a JWT Auth Token', async () => {
-  const {stderr} = await childProcess.exec(
-    `${clientCmd} -h ${GCE_HOST}`,
-    {cwd: cwd, shell: true}
-  );
+  const {stderr} = await childProcess.exec(`${clientCmd} -h ${GCE_HOST}`, {
+    cwd: cwd,
+    shell: true,
+  });
   assert.ok(stderr.includes('One of API_KEY or JWT_AUTH_TOKEN must be set'));
 });

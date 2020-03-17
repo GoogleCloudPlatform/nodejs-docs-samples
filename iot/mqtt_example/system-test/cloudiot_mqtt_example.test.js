@@ -39,7 +39,7 @@ const installDeps = 'npm install';
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
-assert.ok(tools.run(installDeps, `${cwd}/../manager`));
+assert.ok(childProcess.execSync(installDeps, `${cwd}/../manager`));
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
@@ -76,8 +76,14 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  childProcess.execSync(`${helper} unbindAllDevices ${registryName}`, {cwd, shell: true});
-  childProcess.execSync(`${helper} clearRegistry ${registryName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} unbindAllDevices ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} clearRegistry ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 
   console.log('Deleted test registry.');
 });

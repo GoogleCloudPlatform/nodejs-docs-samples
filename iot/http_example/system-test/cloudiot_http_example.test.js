@@ -28,10 +28,12 @@ const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --devi
 const cwd = path.join(__dirname, '..');
 const installDeps = 'npm install';
 
-assert.ok(childProcess.execSync(installDeps, {cwd: `${cwd}/../manager`, shell: true}));
+assert.ok(
+  childProcess.execSync(installDeps, {cwd: `${cwd}/../manager`, shell: true})
+);
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,cdcddcnp
+    process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
   );
   assert(

@@ -19,7 +19,6 @@ const childProcess = require('child_process');
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const util = require('util');
 const uuid = require('uuid');
 
@@ -77,8 +76,8 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  tools.run(`${helper} unbindAllDevices ${registryName}`, cwd);
-  tools.run(`${helper} clearRegistry ${registryName}`, cwd);
+  childProcess.execSync(`${helper} unbindAllDevices ${registryName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} clearRegistry ${registryName}`, {cwd, shell: true});
 
   console.log('Deleted test registry.');
 });

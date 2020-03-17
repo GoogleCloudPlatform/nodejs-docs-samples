@@ -24,13 +24,15 @@ const jwt = require('jsonwebtoken');
 const {OAuth2Client} = require('google-auth-library');
 const path = require('path');
 const sinon = require('sinon');
-const utils = require('@google-cloud/nodejs-repo-tools');
+const supertest = require('supertest');
+const proxyquire = require('proxyquire').noPreserveCache();
 
 const message = 'This is a test message sent at: ';
 const payload = message + Date.now();
 
 const cwd = path.join(__dirname, '../');
-const requestObj = utils.getRequest({cwd: cwd});
+const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
+
 
 const fixtures = path.join(__dirname, 'fixtures');
 const privateKey = fs.readFileSync(path.join(fixtures, 'privatekey.pem'));

@@ -18,7 +18,6 @@ const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const childProcess = require('child_process');
 
@@ -39,7 +38,7 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  tools.run(installDeps, `${cwd}/../mqtt_example`);
+  childProcess.execSync(installDeps, `${cwd}/../mqtt_example`);
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -75,8 +74,8 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
-  tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
+  childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {cwd, shell: true});
+  childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {cwd, shell: true});
 
   console.log('Deleted test registry.');
 });
@@ -266,7 +265,7 @@ it('should send command message to device', () => {
     cwd
   );
 
-  tools.runAsync(
+  childProcess.execSync(
     `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
   --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
     path.join(__dirname, '../../mqtt_example')

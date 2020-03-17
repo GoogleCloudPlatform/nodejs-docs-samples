@@ -17,7 +17,6 @@
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const childProcess = require('child_process');
 
@@ -29,10 +28,10 @@ const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --devi
 const cwd = path.join(__dirname, '..');
 const installDeps = 'npm install';
 
-assert.ok(tools.run(installDeps, `${cwd}/../manager`));
+assert.ok(childProcess.execSync(installDeps, {cwd: `${cwd}/../manager`, shell: true}));
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,
+    process.env.GCLOUD_PROJECT,cdcddcnp
     `Must set GCLOUD_PROJECT environment variable!`
   );
   assert(

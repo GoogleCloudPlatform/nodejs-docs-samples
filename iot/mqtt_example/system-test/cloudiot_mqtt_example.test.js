@@ -24,8 +24,7 @@ const uuid = require('uuid');
 
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
-//const topicName = `nodejs-iot-test-mqtt-topic-${uuid.v4()}`;
-const topicName = 'topictest';
+const topicName = `nodejs-iot-test-mqtt-topic-${uuid.v4()}`;
 const registryName = `nodejs-iot-test-mqtt-registry-${uuid.v4()}`;
 const region = `us-central1`;
 const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;

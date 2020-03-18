@@ -208,7 +208,7 @@ it('should create and list devices', () => {
     {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
-  output = childProcess.execSync(`${cmd} listDevices ${registryName}`, cwd);
+  output = childProcess.execSync(`${cmd} listDevices ${registryName}`, {cwd, shell: true});
   assert.ok(output.includes('Current devices in registry:'));
   assert.ok(output.includes(localDevice));
   output = childProcess.execSync(

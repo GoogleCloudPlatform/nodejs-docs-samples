@@ -96,12 +96,12 @@ it('should create and delete an unauthorized device', () => {
 
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
@@ -110,17 +110,17 @@ it('should list configs for a device', () => {
   const localDevice = 'test-device-configs';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(
     `${cmd} getDeviceConfigs ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Configs'));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
@@ -129,17 +129,17 @@ it('should create and delete an RSA256 device', () => {
   const localDevice = 'test-rsa-device';
   let output = childProcess.execSync(
     `${cmd} createRsa256Device ${localDevice} ${registryName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(
     `${cmd} getDeviceState ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('State'));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
@@ -148,17 +148,17 @@ it('should create and delete an ES256 device', () => {
   const localDevice = 'test-es256-device';
   let output = childProcess.execSync(
     `${cmd} createEs256Device ${localDevice} ${registryName} ${ecPublicKey}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(
     `${cmd} getDeviceState ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('State'));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
@@ -167,17 +167,17 @@ it('should patch an unauthorized device with RSA256', () => {
   const localDevice = 'test-device-patch-rs256';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(
     `${cmd} patchRsa256 ${localDevice} ${registryName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Patched device:'));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
@@ -186,17 +186,17 @@ it('should patch an unauthorized device with ES256', () => {
   const localDevice = 'test-device-patch-es256';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(
     `${cmd} patchEs256 ${localDevice} ${registryName} ${ecPublicKey}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Patched device:'));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
@@ -205,7 +205,7 @@ it('should create and list devices', () => {
   const localDevice = 'test-device-list';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(`${cmd} listDevices ${registryName}`, cwd);
@@ -213,7 +213,7 @@ it('should create and list devices', () => {
   assert.ok(output.includes(localDevice));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted device'));
 });
@@ -223,17 +223,17 @@ it('should create and get a device', () => {
 
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Created device'));
   output = childProcess.execSync(
     `${cmd} getDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes(`Found device: ${localDevice}`));
   output = childProcess.execSync(
     `${cmd} deleteDevice ${localDevice} ${registryName}`,
-    cwd
+    {cwd, shell: true}
   );
 });
 
@@ -243,26 +243,26 @@ it('should create and get an iam policy', () => {
 
   let output = childProcess.execSync(
     `${cmd} setIamPolicy ${registryName} ${localMember} ${localRole}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('ETAG'));
 
-  output = childProcess.execSync(`${cmd} getIamPolicy ${registryName}`, cwd);
+  output = childProcess.execSync(`${cmd} getIamPolicy ${registryName}`, {cwd, shell: true});
   assert.ok(output.includes('dpebot'));
 });
 
 it('should create and delete a registry', () => {
   const createRegistryId = `${registryName}-create`;
 
-  let output = childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  let output = childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, {cwd, shell: true});
   output = childProcess.execSync(
     `${cmd} createRegistry ${createRegistryId} ${topicName}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully created registry'));
   output = childProcess.execSync(
     `${cmd} deleteRegistry ${createRegistryId}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.ok(output.includes('Successfully deleted registry'));
 });
@@ -273,21 +273,23 @@ it('should send command message to device', () => {
 
   childProcess.execSync(
     `${cmd} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
   childProcess.execSync(
     `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
   --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
-    path.join(__dirname, '../../mqtt_example')
+    {cwd: path.join(__dirname, '../../mqtt_example'), shell: true}
   );
 
   const output = childProcess.execSync(
-    `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`
+    `${cmd} sendCommand ${deviceId} ${registryName} ${commandMessage}`,
+    {cwd, shell: true}
   );
   console.log(output);
   assert.ok(output.includes('Sent command'));
-  childProcess.execSync(`${cmd} deleteDevice ${deviceId} ${registryName}`, cwd);
+  childProcess.execSync(`${cmd} deleteDevice ${deviceId} ${registryName}`, 
+  {cwd, shell: true});
 });
 
 it('should create a new gateway', async () => {

@@ -40,10 +40,8 @@ const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   // tools.run(installDeps, `${cwd}/../mqtt_example`);
-  await childProcess.execSync(installDeps, {
-    cwd: `${cwd}/../mqtt_example`,
-    shell: true,
-  });
+  await childProcess.execSync(installDeps, {cwd: `${cwd}/../mqtt_example`, shell: true}
+  );
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -82,11 +80,11 @@ after(async () => {
   // tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
   // tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
   await childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
-    cwd,
+    cwd: cwd,
     shell: true,
   });
   await childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
-    cwd,
+    cwd: cwd,
     shell: true,
   });
 

@@ -66,7 +66,7 @@ before(async () => {
       ],
     },
   };
-  childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, cwd);
+  childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, {cwd, shell: true});
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
   console.log(`Created registry: ${registryName}`);

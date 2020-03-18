@@ -72,7 +72,7 @@ async function main(
 
     // Configure the request for batch process
     const requests = {
-      parent: `projects/${projectId}`,
+      parent: `projects/${projectId}/locations/us-central1`,
       requests: [request],
     };
 

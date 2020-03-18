@@ -20,6 +20,7 @@ const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
 const uuid = require('uuid');
 const childProcess = require('child_process');
+const tools = require('@google-cloud/nodejs-repo-tools');
 
 const topicName = `nodejs-iot-test-topic-${uuid.v4()}`;
 const registryName = `nodejs-iot-test-registry-${uuid.v4()}`;
@@ -38,10 +39,11 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  childProcess.execSync(installDeps, {
-    cwd: `${cwd}/../mqtt_example`,
-    shell: true,
-  }).toString().trim();
+  tools.run(installDeps, `${cwd}/../mqtt_example`);
+  // childProcess.execSync(installDeps, {
+  //   cwd: `${cwd}/../mqtt_example`,
+  //   shell: true,
+  // });
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -77,14 +79,16 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
-    cwd,
-    shell: true,
-  }).toString().trim();
-  childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
-    cwd,
-    shell: true,
-  }).toString().trim();
+  tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
+  tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
+  // childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
+  //   cwd,
+  //   shell: true,
+  // });
+  // childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
+  //   cwd,
+  //   shell: true,
+  // });
 
   console.log('Deleted test registry.');
 });
@@ -271,10 +275,10 @@ it('should send command message to device', () => {
 
   childProcess.execSync(
     `${cmd} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
-    {cwd, shell: true}
+    cwd
   );
 
-  childProcess.execSync(
+  tools.runAsync(
     `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
   --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
     path.join(__dirname, '../../mqtt_example')

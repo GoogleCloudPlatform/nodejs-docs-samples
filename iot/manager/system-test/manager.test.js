@@ -18,7 +18,6 @@ const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const childProcess = require('child_process');
 
@@ -39,7 +38,10 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  childProcess.execSync(installDeps, {cwd: `${cwd}/../mqtt_example`, shell: true});
+  childProcess.execSync(installDeps, {
+    cwd: `${cwd}/../mqtt_example`,
+    shell: true,
+  });
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -75,11 +77,16 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {cwd: cwd, shell: true});
-  childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {cwd: cwd, shell: true});
+  childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
+    cwd: cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
+    cwd: cwd,
+    shell: true,
+  });
 
   console.log('Deleted test registry.');
-
 });
 
 it('should create and delete an unauthorized device', () => {

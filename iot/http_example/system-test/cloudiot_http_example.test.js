@@ -56,7 +56,10 @@ it('should receive configuration message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     {cwd, shell: true}
@@ -82,14 +85,20 @@ it('should receive configuration message', () => {
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     {cwd, shell: true}
   );
-  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should send event message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     {cwd, shell: true}
@@ -115,13 +124,19 @@ it('should send event message', async () => {
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     {cwd, shell: true}
   );
-  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {cwd, shell: true});
+  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should send state message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
-  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd, shell: true});
+  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   await childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     {cwd, shell: true}
@@ -146,5 +161,8 @@ it('should send state message', async () => {
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     {cwd, shell: true}
   );
-  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {cwd, shell: true});
+  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });

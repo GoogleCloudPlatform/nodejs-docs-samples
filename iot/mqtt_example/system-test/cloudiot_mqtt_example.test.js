@@ -39,7 +39,9 @@ const installDeps = 'npm install';
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
-assert.ok(childProcess.execSync(installDeps, {cwd: `${cwd}/../manager`, shell: true}));
+assert.ok(
+  childProcess.execSync(installDeps, {cwd: `${cwd}/../manager`, shell: true})
+);
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
@@ -65,7 +67,10 @@ before(async () => {
       ],
     },
   };
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
   console.log(`Created registry: ${registryName}`);
@@ -92,10 +97,10 @@ it('should receive configuration message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  let output = childProcess.execSync(
-    `${helper} setupIotTopic ${topicName}`,
-    {cwd, shell: true}
-  );
+  let output = childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     {cwd, shell: true}
@@ -122,14 +127,20 @@ it('should receive configuration message', () => {
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     {cwd, shell: true}
   );
-  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should send event message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     {cwd, shell: true}
@@ -160,7 +171,10 @@ it('should send event message', () => {
 it('should send state message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
     {cwd, shell: true}
@@ -185,7 +199,10 @@ it('should send state message', () => {
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
     {cwd, shell: true}
   );
-  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {cwd, shell: true});
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it.only('should receive command message', async () => {
@@ -249,14 +266,14 @@ it('should listen for bound device config message', () => {
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
     {cwd, shell: true}
   );
-  childProcess.execSync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    {cwd, shell: true}
-  );
-  childProcess.execSync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    {cwd, shell: true}
-  );
+  childProcess.execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should listen for error topic messages', () => {
@@ -288,14 +305,14 @@ it('should listen for error topic messages', () => {
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
     {cwd, shell: true}
   );
-  childProcess.execSync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    {cwd, shell: true}
-  );
-  childProcess.execSync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    {cwd, shell: true}
-  );
+  childProcess.execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should send data from bound device', async () => {
@@ -331,12 +348,12 @@ it('should send data from bound device', async () => {
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
     {cwd, shell: true}
   );
-  childProcess.execSync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    {cwd, shell: true}
-  );
-  childProcess.execSync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    {cwd, shell: true}
-  );
+  childProcess.execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 });

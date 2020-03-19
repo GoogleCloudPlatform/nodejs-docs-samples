@@ -92,29 +92,6 @@ function createModel(
   // [END automl_vision_create_model]
 }
 
-function getOperationStatus(operationFullId) {
-  // [START automl_vision_get_operation_status]
-  async function automlVisionGetOperationStatus() {
-    const automl = require(`@google-cloud/automl`).v1beta1;
-
-    const client = new automl.AutoMlClient();
-
-    /**
-     * TODO(developer): Uncomment the following line before running the sample.
-     */
-    // const operationFullId = `Full name of an operation, eg. “Projects/<projectId>/locations/us-central1/operations/<operationId>
-
-    // Get the latest state of a long-running operation.
-    const [response] = await client.operationsClient.getOperation(
-      operationFullId
-    );
-    console.log(`Operation status: `, response);
-  }
-
-  automlVisionGetOperationStatus().catch(console.error);
-  // [END automl_vision_get_operation_status]
-}
-
 function listModels(projectId, computeRegion, filter) {
   // [START automl_vision_list_models]
   async function automlVisinListModels() {
@@ -289,42 +266,6 @@ function listModelEvaluations(projectId, computeRegion, modelId, filter) {
   // [END automl_vision_list_model_evaluations]
 }
 
-async function getModelEvaluation(
-  projectId,
-  computeRegion,
-  modelId,
-  modelEvaluationId
-) {
-  // [START automl_vision_get_model_evaluation]
-  const automl = require(`@google-cloud/automl`).v1beta1;
-  const util = require('util');
-
-  const client = new automl.AutoMlClient();
-
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-  // const computeRegion = `region-name, e.g. "us-central1"`;
-  // const modelId = `id of the model, e.g. “ICN12345”`;
-  // const modelEvaluationId = `Id of your model evaluation, e.g “ICN12345”
-
-  // Get the full path of the model evaluation.
-  const modelEvaluationFullId = client.modelEvaluationPath(
-    projectId,
-    computeRegion,
-    modelId,
-    modelEvaluationId
-  );
-
-  // Get complete detail of the model evaluation.
-  const [response] = await client.getModelEvaluation({
-    name: modelEvaluationFullId,
-  });
-  console.log(util.inspect(response, false, null));
-  // [END automl_vision_get_model_evaluation]
-}
-
 function displayEvaluation(projectId, computeRegion, modelId, filter) {
   // [START automl_vision_display_evaluation]
   async function automlVisionDisplayEvalution() {
@@ -487,13 +428,6 @@ require(`yargs`) // eslint-disable-line
       requiresArg: true,
       description: `Id of the model evaluation`,
     },
-    operationFullId: {
-      alias: `o`,
-      type: `string`,
-      default: ``,
-      requiresArg: true,
-      description: `Full name of an operation`,
-    },
     projectId: {
       alias: `z`,
       type: `string`,
@@ -518,12 +452,6 @@ require(`yargs`) // eslint-disable-line
       opts.trainBudget
     )
   )
-  .command(
-    `get-operation-status`,
-    `Gets status of current operation`,
-    {},
-    opts => getOperationStatus(opts.operationFullId)
-  )
   .command(`list-models`, `list all Models`, {}, opts =>
     listModels(opts.projectId, opts.computeRegion, opts.filter)
   )
@@ -538,14 +466,6 @@ require(`yargs`) // eslint-disable-line
       opts.filter
     )
   )
-  .command(`get-model-evaluation`, `Get model evaluation`, {}, opts =>
-    getModelEvaluation(
-      opts.projectId,
-      opts.computeRegion,
-      opts.modelId,
-      opts.modelEvaluationId
-    )
-  )
   .command(`display-evaluation`, `Display evaluation`, {}, opts =>
     displayEvaluation(
       opts.projectId,
@@ -558,11 +478,9 @@ require(`yargs`) // eslint-disable-line
     deleteModel(opts.projectId, opts.computeRegion, opts.modelId)
   )
   .example(`node $0 create-model -i "datasetId" -m "myModelName" -t "2"`)
-  .example(`node $0 get-operation-status -i "datasetId" -o "OperationFullID"`)
   .example(`node $0 list-models -f "image_classification_dataset_metadata:*"`)
   .example(`node $0 get-model -a "ModelID"`)
   .example(`node $0 list-model-evaluations -a "ModelID"`)
-  .example(`node $0 get-model-evaluation -a "ModelId" -e "ModelEvaluationID"`)
   .example(`node $0 display-evaluation -a "ModelId"`)
   .example(`node $0 delete-model -a "ModelID"`)
   .wrap(120)

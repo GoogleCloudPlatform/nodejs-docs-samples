@@ -77,16 +77,16 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  // tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
-  // tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
-  await childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
-    cwd,
-    shell: true,
-  });
-  await childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
-    cwd,
-    shell: true,
-  });
+  tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
+  tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
+  // await childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
+  //   cwd,
+  //   shell: true,
+  // });
+  // await childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
+  //   cwd,
+  //   shell: true,
+  // });
 
   console.log('Deleted test registry.');
 });

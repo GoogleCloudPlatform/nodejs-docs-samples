@@ -39,9 +39,8 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  // tools.run(installDeps, `${cwd}/../mqtt_example`);
-  await childProcess.execSync(installDeps, {cwd: `${cwd}/../mqtt_example`, shell: true}
-  );
+  tools.run(installDeps, `${cwd}/../mqtt_example`);
+  //await childProcess.execSync(installDeps, {cwd: `${cwd}/../mqtt_example`, shell: true});
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -77,16 +76,16 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
-  tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
-  // await childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
-  //   cwd,
-  //   shell: true,
-  // });
-  // await childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
-  //   cwd,
-  //   shell: true,
-  // });
+  // tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
+  // tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
+  await childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  await childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 
   console.log('Deleted test registry.');
 });

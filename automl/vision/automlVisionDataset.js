@@ -123,46 +123,6 @@ function listDatasets(projectId, computeRegion, filter) {
   // [END automl_vision_list_datasets]
 }
 
-function getDataset(projectId, computeRegion, datasetId) {
-  // [START automl_vision_get_dataset]
-  async function automlVisionGetDataset() {
-    const automl = require(`@google-cloud/automl`).v1beta1;
-
-    const client = new automl.AutoMlClient();
-
-    /**
-     * TODO(developer): Uncomment the following line before running the sample.
-     */
-    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-    // const computeRegion = `region-name, e.g. "us-central1"`;
-    // const datasetId = `Id of the dataset`;
-
-    // Get the full path of the dataset.
-    const datasetFullId = client.datasetPath(
-      projectId,
-      computeRegion,
-      datasetId
-    );
-
-    // Get complete detail of the dataset.
-    const [dataset] = await client.getDataset({name: datasetFullId});
-    // Display the dataset information.
-    console.log(`Dataset name: ${dataset.name}`);
-    console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
-    console.log(`Dataset display name: ${dataset.displayName}`);
-    console.log(`Dataset example count: ${dataset.exampleCount}`);
-    console.log(
-      `Classification type: ${dataset.imageClassificationDatasetMetadata.classificationType}`
-    );
-    console.log(`Dataset create time: `);
-    console.log(`\tseconds: ${dataset.createTime.seconds}`);
-    console.log(`\tnanos: ${dataset.createTime.nanos}`);
-  }
-
-  automlVisionGetDataset().catch(console.error);
-  // [END automl_vision_get_dataset]
-}
-
 function importData(projectId, computeRegion, datasetId, path) {
   // [START automl_vision_import_data]
   async function automlVisionImportData() {
@@ -210,52 +170,6 @@ function importData(projectId, computeRegion, datasetId, path) {
 
   automlVisionImportData().catch(console.error);
   // [END automl_vision_import_data]
-}
-
-function exportData(projectId, computeRegion, datasetId, outputUri) {
-  // [START automl_vision_export_data]
-  async function automlVisionExportData() {
-    const automl = require(`@google-cloud/automl`).v1beta1;
-
-    const client = new automl.AutoMlClient();
-
-    /**
-     * TODO(developer): Uncomment the following line before running the sample.
-     */
-    // const projectId = `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`;
-    // const computeRegion = `region-name, e.g. "us-central1"`;
-    // const datasetId = `Id of the dataset`;
-    // const outputUri = `Google Cloud Storage URI for the export directory, e.g. “gs://myproject/output”;`
-
-    // Get the full path of the dataset.
-    const datasetFullId = client.datasetPath(
-      projectId,
-      computeRegion,
-      datasetId
-    );
-
-    // Set the output URI
-    const outputConfig = {
-      gcsDestination: {
-        outputUriPrefix: outputUri,
-      },
-    };
-
-    // Export the data to the output URI.
-    const [operation] = await client.exportData({
-      name: datasetFullId,
-      outputConfig: outputConfig,
-    });
-    const [, , response] = await operation.promise();
-
-    // The final result of the operation.
-    if (response.done) {
-      console.log(`Data exported.`);
-    }
-  }
-
-  automlVisionExportData().catch(console.error);
-  // [END automl_vision_export_data]
 }
 
 function deleteDataset(projectId, computeRegion, datasetId) {
@@ -331,12 +245,6 @@ require(`yargs`) // eslint-disable-line
         `Type of the classification problem, ` +
         `False - MULTICLASS, True - MULTILABEL.`,
     },
-    outputUri: {
-      alias: `o`,
-      type: `string`,
-      requiresArg: true,
-      description: `URI (or local path) to export dataset`,
-    },
     path: {
       alias: `p`,
       type: `string`,
@@ -364,36 +272,17 @@ require(`yargs`) // eslint-disable-line
   .command(`list-datasets`, `list all Datasets`, {}, opts =>
     listDatasets(opts.projectId, opts.computeRegion, opts.filter)
   )
-  .command(`get-dataset`, `Get a Dataset`, {}, opts =>
-    getDataset(opts.projectId, opts.computeRegion, opts.datasetId)
-  )
   .command(`delete-dataset`, `Delete a dataset`, {}, opts =>
     deleteDataset(opts.projectId, opts.computeRegion, opts.datasetId)
   )
   .command(`import-data`, `Import labeled items into dataset`, {}, opts =>
     importData(opts.projectId, opts.computeRegion, opts.datasetId, opts.path)
   )
-  .command(
-    `export-data`,
-    `Export a dataset to a Google Cloud Storage Bucket`,
-    {},
-    opts =>
-      exportData(
-        opts.projectId,
-        opts.computeRegion,
-        opts.datasetId,
-        opts.outputUri
-      )
-  )
   .example(`node $0 create-dataset -n "newDataSet"`)
   .example(`node $0 list-datasets -f "image_classification_dataset_metadata:*"`)
-  .example(`node $0 get-dataset -i "DATASETID"`)
   .example(`node $0 delete-dataset -i "DATASETID"`)
   .example(
     `node $0 import-data -i "dataSetId" -p "gs://myproject/mytraindata.csv"`
-  )
-  .example(
-    `node $0 export-data -i "dataSetId" -o "gs://myproject/outputdestination.csv"`
   )
   .wrap(120)
   .recommendCommands()

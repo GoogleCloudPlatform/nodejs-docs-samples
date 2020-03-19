@@ -17,10 +17,10 @@
 const {assert} = require('chai');
 const {describe, it, after} = require('mocha');
 const cp = require('child_process');
-const uuid = require('uuid');
+const {v4} = require('uuid');
 
 const region = 'us-central1';
-const clusterName = `node-cc-test-${uuid()}`;
+const clusterName = `node-cc-test-${v4()}`;
 
 const dataproc = require('@google-cloud/dataproc');
 const clusterClient = new dataproc.v1.ClusterControllerClient({

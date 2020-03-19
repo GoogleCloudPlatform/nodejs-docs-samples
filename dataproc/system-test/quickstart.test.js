@@ -17,12 +17,12 @@
 const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
-const uuid = require('uuid');
+const {v4} = require('uuid');
 
 const dataproc = require('@google-cloud/dataproc');
 const {Storage} = require('@google-cloud/storage');
 
-const myUuid = uuid();
+const myUuid = v4();
 const region = 'us-central1';
 const clusterName = `node-qs-test-${myUuid}`;
 const bucketName = `node-dataproc-qs-test-${myUuid}`;

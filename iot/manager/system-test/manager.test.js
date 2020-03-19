@@ -66,7 +66,7 @@ before(async () => {
       ],
     },
   };
-  childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, {cwd, shell: true});
+  await childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, {cwd, shell: true});
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
   console.log(`Created registry: ${registryName}`);
@@ -80,11 +80,11 @@ after(async () => {
   // tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
   // tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
   await childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {
-    cwd: cwd,
+    cwd,
     shell: true,
   });
   await childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {
-    cwd: cwd,
+    cwd,
     shell: true,
   });
 

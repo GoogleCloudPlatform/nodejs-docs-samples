@@ -39,7 +39,8 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  tools.run(installDeps, `${cwd}/../mqtt_example`);
+  console.log('entering before hook');
+  childProcess.execSync(installDeps, {cwd: `${cwd}/../mqtt_example`, shell: true});
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -68,20 +69,25 @@ before(async () => {
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
   console.log(`Created registry: ${registryName}`);
+  console.log('exiting before hook');
 });
 
 after(async () => {
+  console.log('entering after hook');
   await pubSubClient.topic(topicName).delete();
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  tools.run(`${cmd} unbindAllDevices ${registryName}`, cwd);
-  tools.run(`${cmd} clearRegistry ${registryName}`, cwd);
+  childProcess.execSync(`${cmd} unbindAllDevices ${registryName}`, {cwd: cwd, shell: true});
+  childProcess.execSync(`${cmd} clearRegistry ${registryName}`, {cwd: cwd, shell: true});
 
   console.log('Deleted test registry.');
+  console.log('exiting after hook');
+
 });
 
 it('should create and delete an unauthorized device', () => {
+  console.log('a');
   const localDevice = 'test-device-unauth-delete';
 
   let output = childProcess.execSync(
@@ -97,6 +103,7 @@ it('should create and delete an unauthorized device', () => {
 });
 
 it('should list configs for a device', () => {
+  console.log('b');
   const localDevice = 'test-device-configs';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -116,6 +123,7 @@ it('should list configs for a device', () => {
 });
 
 it('should create and delete an RSA256 device', () => {
+  console.log('c');
   const localDevice = 'test-rsa-device';
   let output = childProcess.execSync(
     `${cmd} createRsa256Device ${localDevice} ${registryName} ${rsaPublicCert}`,
@@ -135,6 +143,7 @@ it('should create and delete an RSA256 device', () => {
 });
 
 it('should create and delete an ES256 device', () => {
+  console.log('d');
   const localDevice = 'test-es256-device';
   let output = childProcess.execSync(
     `${cmd} createEs256Device ${localDevice} ${registryName} ${ecPublicKey}`,
@@ -154,6 +163,7 @@ it('should create and delete an ES256 device', () => {
 });
 
 it('should patch an unauthorized device with RSA256', () => {
+  console.log('e');
   const localDevice = 'test-device-patch-rs256';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -173,6 +183,7 @@ it('should patch an unauthorized device with RSA256', () => {
 });
 
 it('should patch an unauthorized device with ES256', () => {
+  console.log('f');
   const localDevice = 'test-device-patch-es256';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -192,6 +203,7 @@ it('should patch an unauthorized device with ES256', () => {
 });
 
 it('should create and list devices', () => {
+  console.log('g');
   const localDevice = 'test-device-list';
   let output = childProcess.execSync(
     `${cmd} createUnauthDevice ${localDevice} ${registryName}`,
@@ -209,6 +221,7 @@ it('should create and list devices', () => {
 });
 
 it('should create and get a device', () => {
+  console.log('h');
   const localDevice = 'test-device-get';
 
   let output = childProcess.execSync(
@@ -228,6 +241,7 @@ it('should create and get a device', () => {
 });
 
 it('should create and get an iam policy', () => {
+  console.log('i');
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 
@@ -242,6 +256,7 @@ it('should create and get an iam policy', () => {
 });
 
 it('should create and delete a registry', () => {
+  console.log('j');
   const createRegistryId = `${registryName}-create`;
 
   let output = childProcess.execSync(`${cmd} setupIotTopic ${topicName}`, cwd);
@@ -258,6 +273,7 @@ it('should create and delete a registry', () => {
 });
 
 it('should send command message to device', () => {
+  console.log('k');
   const deviceId = 'test-device-command';
   const commandMessage = 'rotate:180_degrees';
 
@@ -282,6 +298,7 @@ it('should send command message to device', () => {
 });
 
 it('should create a new gateway', async () => {
+  console.log('l');
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   const gatewayOut = childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
@@ -297,6 +314,7 @@ it('should create a new gateway', async () => {
 });
 
 it('should list gateways', async () => {
+  console.log('m');
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
@@ -313,6 +331,7 @@ it('should list gateways', async () => {
 });
 
 it('should bind existing device to gateway', async () => {
+  console.log('n');
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
@@ -352,6 +371,7 @@ it('should bind existing device to gateway', async () => {
 });
 
 it('should list devices bound to gateway', async () => {
+  console.log('o');
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
@@ -395,6 +415,7 @@ it('should list devices bound to gateway', async () => {
 });
 
 it('should list gateways for bound device', async () => {
+  console.log('p');
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\

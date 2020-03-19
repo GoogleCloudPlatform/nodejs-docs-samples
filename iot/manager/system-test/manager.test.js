@@ -291,12 +291,13 @@ it('should send command message to device', () => {
   childProcess.execSync(`${cmd} deleteDevice ${deviceId} ${registryName}`, 
   {cwd, shell: true});
 });
-
+//after here is where i added cwd
 it('should create a new gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   const gatewayOut = childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
-  --format=RSA_X509_PEM --key=${rsaPublicCert}`
+  --format=RSA_X509_PEM --key=${rsaPublicCert}`, 
+  {cwd, shell: true}
   );
 
   // test no error on create gateway.
@@ -311,7 +312,8 @@ it('should list gateways', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
-  --format=RSA_X509_PEM --key=${rsaPublicCert}`
+  --format=RSA_X509_PEM --key=${rsaPublicCert}`, 
+  {cwd, shell: true}
   );
 
   // look for output in list gateway
@@ -327,7 +329,8 @@ it('should bind existing device to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
-  --format=RSA_X509_PEM --key=${rsaPublicCert}`
+  --format=RSA_X509_PEM --key=${rsaPublicCert}`, 
+  {cwd, shell: true}
   );
 
   // create device
@@ -341,7 +344,8 @@ it('should bind existing device to gateway', async () => {
 
   // bind device to gateway
   const bind = childProcess.execSync(
-    `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
+    `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`, 
+    {cwd, shell: true}
   );
 
   assert.ok(bind.includes(`Binding device: ${deviceId}`));
@@ -349,7 +353,8 @@ it('should bind existing device to gateway', async () => {
 
   // test unbind
   const unbind = childProcess.execSync(
-    `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
+    `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`, 
+    {cwd, shell: true}
   );
   assert.ok(unbind.includes(`Unbound ${deviceId} from ${gatewayId}`));
 
@@ -366,7 +371,8 @@ it('should list devices bound to gateway', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
-  --format=RSA_X509_PEM --key=${rsaPublicCert}`
+  --format=RSA_X509_PEM --key=${rsaPublicCert}`, 
+  {cwd, shell: true}
   );
 
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
@@ -378,11 +384,13 @@ it('should list devices bound to gateway', async () => {
   });
 
   childProcess.execSync(
-    `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
+    `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`, 
+    {cwd, shell: true}
   );
 
   const devices = childProcess.execSync(
-    `${cmd} listDevicesForGateway ${registryName} ${gatewayId}`
+    `${cmd} listDevicesForGateway ${registryName} ${gatewayId}`, 
+    {cwd, shell: true}
   );
 
   assert.ok(devices.includes(deviceId));
@@ -393,7 +401,8 @@ it('should list devices bound to gateway', async () => {
 
   // cleanup
   childProcess.execSync(
-    `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
+    `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`, 
+    {cwd, shell: true}
   );
 
   await iotClient.deleteDevice({
@@ -409,7 +418,8 @@ it('should list gateways for bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${cmd} createGateway --registryId=${registryName} --gatewayId=${gatewayId}\
-  --format=RSA_X509_PEM --key=${rsaPublicCert}`
+  --format=RSA_X509_PEM --key=${rsaPublicCert}`, 
+  {cwd, shell: true}
   );
 
   // create device
@@ -422,11 +432,13 @@ it('should list gateways for bound device', async () => {
   });
 
   childProcess.execSync(
-    `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
+    `${cmd} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`, 
+    {cwd, shell: true}
   );
 
   const devices = childProcess.execSync(
-    `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`
+    `${cmd} listGatewaysForDevice ${registryName} ${deviceId}`, 
+    {cwd, shell: true}
   );
 
   assert.ok(devices.includes(gatewayId));
@@ -437,7 +449,8 @@ it('should list gateways for bound device', async () => {
 
   // cleanup
   childProcess.execSync(
-    `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
+    `${cmd} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`, 
+    {cwd, shell: true}
   );
 
   await iotClient.deleteDevice({

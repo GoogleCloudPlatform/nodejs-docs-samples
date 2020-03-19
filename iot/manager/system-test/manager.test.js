@@ -282,7 +282,7 @@ it('should send command message to device', () => {
     cwd
   );
 
-  await childProcess.execSync(
+  childProcess.exec(
     `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
   --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
     {cwd: path.join(__dirname, '../../mqtt_example'), shell: true}

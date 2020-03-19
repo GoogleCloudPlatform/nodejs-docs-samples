@@ -20,13 +20,13 @@ const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 const {promisify} = require('util');
-const uuidv4 = require(`uuid/v4`);
+const {v4} = require(`uuid`);
 const unlink = promisify(fs.unlink);
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const keyRingName = `test-ring-${uuidv4()}`;
-const keyNameOne = `test-key-${uuidv4()}`;
+const keyRingName = `test-ring-${v4()}`;
+const keyNameOne = `test-key-${v4()}`;
 const member = `allAuthenticatedUsers`;
 const role = `roles/viewer`;
 const projectId = process.env.GCLOUD_PROJECT;
@@ -305,10 +305,10 @@ describe('kms sample tests', () => {
     const client = new kms.KeyManagementServiceClient();
 
     const locationId = `global`;
-    const keyRingId = `test-asymmetric-ring-${uuidv4()}`;
-    const keyAsymmetricDecryptName = `test-asymmetric-decrypt-${uuidv4()}`;
+    const keyRingId = `test-asymmetric-ring-${v4()}`;
+    const keyAsymmetricDecryptName = `test-asymmetric-decrypt-${v4()}`;
 
-    const keyAsymmetricSignName = `test-asymmetric-sign-${uuidv4()}`;
+    const keyAsymmetricSignName = `test-asymmetric-sign-${v4()}`;
 
     const dataToEncrypt = 'my data to encrypt';
     const dataToSign = 'my data to sign';

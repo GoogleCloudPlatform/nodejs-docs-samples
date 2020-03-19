@@ -289,7 +289,7 @@ it('should send command message to device', () => {
   console.log(output);
   assert.ok(output.includes('Sent command'));
   childProcess.execSync(`${cmd} deleteDevice ${deviceId} ${registryName}`, 
-  {cwd, shell: true});
+  {cwd: path.join(__dirname, '../../mqtt_example'), shell: true});
 });
 //after here is where i added cwd
 it('should create a new gateway', async () => {

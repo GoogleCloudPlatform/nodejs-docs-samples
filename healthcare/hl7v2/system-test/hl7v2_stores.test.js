@@ -45,19 +45,17 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    {cwd: cwdDatasets}
-  );
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
 });
 after(async () => {
   try {
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      {cwd: cwdDatasets}
-    );
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+      cwd: cwdDatasets,
+    });
   } catch (err) {} // Ignore error
 });
 

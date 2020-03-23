@@ -44,17 +44,15 @@ before(() => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    {cwd: cwdDatasets}
-  );
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
 });
 after(() => {
   try {
-    execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      {cwd: cwdDatasets}
-    );
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+      cwd: cwdDatasets,
+    });
   } catch (err) {} // Ignore error
 });
 

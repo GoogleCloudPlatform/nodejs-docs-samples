@@ -13,16 +13,19 @@
 // limitations under the License.
 
 'use strict';
-
+/**
+ * Recognizes and annotates logos and brand marks in a video.
+ * @param {string} inputUri video file to annotate
+ */
 function main(inputUri = 'gs://cloud-samples-data/video/googlework_short.mp4') {
-  // [START video_detect_logo_gcs_beta]
+  // [START video_detect_logo_gcs]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const inputUri = 'gs://cloud-samples-data/video/googlework_short.mp4';
 
   // Imports the Google Cloud client libraries
-  const Video = require('@google-cloud/video-intelligence').v1p3beta1;
+  const Video = require('@google-cloud/video-intelligence');
 
   // Instantiates a client
   const client = new Video.VideoIntelligenceServiceClient();
@@ -99,7 +102,7 @@ function main(inputUri = 'gs://cloud-samples-data/video/googlework_short.mp4') {
   }
 
   detectLogoGcs();
-  // [END video_detect_logo_gcs_beta]
+  // [END video_detect_logo_gcs]
 }
 
 main(...process.argv.slice(2));

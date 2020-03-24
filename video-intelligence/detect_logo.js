@@ -15,14 +15,14 @@
 'use strict';
 
 function main(localFilePath = 'path/to/your/video.mp4') {
-  // [START video_detect_logo_beta]
+  // [START video_detect_logo]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const localFilePath = 'path/to/your/video.mp4'
 
   // Imports the Google Cloud client libraries
-  const Video = require('@google-cloud/video-intelligence').v1p3beta1;
+  const Video = require('@google-cloud/video-intelligence');
   const fs = require('fs');
 
   // Instantiates a client
@@ -102,7 +102,7 @@ function main(localFilePath = 'path/to/your/video.mp4') {
   }
 
   detectLogo();
-  // [END video_detect_logo_beta]
+  // [END video_detect_logo]
 }
 
 main(...process.argv.slice(2));

@@ -43,7 +43,7 @@ const main = (
     const response = await healthcare.projects.locations.datasets.hl7V2Stores.messages.list(
       request
     );
-    const hl7v2Messages = response.data.messages;
+    const hl7v2Messages = response.data.hl7V2Messages;
     console.log(`HL7v2 messages: ${hl7v2Messages.length}`);
     for (const hl7v2Message of hl7v2Messages) {
       console.log(hl7v2Message);

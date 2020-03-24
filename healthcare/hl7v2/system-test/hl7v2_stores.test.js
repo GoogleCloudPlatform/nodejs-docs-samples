@@ -45,26 +45,24 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwdDatasets
-  );
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
 });
 after(async () => {
   try {
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      cwdDatasets
-    );
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+      cwd: cwdDatasets,
+    });
   } catch (err) {} // Ignore error
 });
 
 it('should create an HL7v2 store', () => {
   const output = execSync(
     `node createHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Created HL7v2 store'));
 });
@@ -72,7 +70,7 @@ it('should create an HL7v2 store', () => {
 it('should get an HL7v2 store', () => {
   const output = execSync(
     `node getHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('name'));
 });
@@ -80,7 +78,7 @@ it('should get an HL7v2 store', () => {
 it('should patch an HL7v2 store', () => {
   const output = execSync(
     `node patchHl7v2Store.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${topicName}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Patched HL7v2 store'));
 });
@@ -88,7 +86,7 @@ it('should patch an HL7v2 store', () => {
 it('should list HL7v2 stores', () => {
   const output = execSync(
     `node listHl7v2Stores.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('hl7V2Stores'));
 });
@@ -99,7 +97,7 @@ it('should create and get an HL7v2 store IAM policy', () => {
 
   let output = execSync(
     `node setHl7v2StoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId} ${localMember} ${localRole}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes, 'ETAG');
 
@@ -112,7 +110,7 @@ it('should create and get an HL7v2 store IAM policy', () => {
 it('should delete an HL7v2 Store', () => {
   const output = execSync(
     `node deleteHl7v2Store ${projectId} ${cloudRegion} ${datasetId} ${hl7v2StoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Deleted HL7v2 store'));
 });

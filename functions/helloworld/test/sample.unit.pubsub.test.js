@@ -16,23 +16,13 @@ describe('functions_helloworld_pubsub', () => {
   // [START functions_pubsub_unit_test]
   const assert = require('assert');
   const uuid = require('uuid');
-  const utils = require('@google-cloud/nodejs-repo-tools');
   const sinon = require('sinon');
 
   const {helloPubSub} = require('..');
 
   const stubConsole = function() {
     sinon.stub(console, `error`);
-    sinon.stub(console, `log`).callsFake((a, b) => {
-      if (
-        typeof a === `string` &&
-        a.indexOf(`\u001b`) !== -1 &&
-        typeof b === `string`
-      ) {
-        console.log('e');
-        console.log.apply(console, arguments);
-      }
-    });
+    sinon.stub(console, `log`);
   };
 
   const restoreConsole = function() {

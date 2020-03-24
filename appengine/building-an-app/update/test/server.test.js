@@ -15,26 +15,17 @@
 
 const path = require('path');
 const assert = require('assert');
-const utils = require('@google-cloud/nodejs-repo-tools');
 const sinon = require('sinon');
+const supertest = require('supertest');
+const proxyquire = require('proxyquire').noPreserveCache();
 
 const cwd = path.join(__dirname, '../');
-const requestObj = utils.getRequest({
-  cwd: cwd,
-  cmd: 'server',
-});
+
+const requestObj = supertest(proxyquire(path.join(cwd, 'server'), {process}));
 
 const stubConsole = function() {
   sinon.stub(console, `error`);
-  sinon.stub(console, `log`).callsFake((a, b) => {
-    if (
-      typeof a === `string` &&
-      a.indexOf(`\u001b`) !== -1 &&
-      typeof b === `string`
-    ) {
-      console.log.apply(console, arguments);
-    }
-  });
+  sinon.stub(console, `log`);
 };
 
 const restoreConsole = function() {

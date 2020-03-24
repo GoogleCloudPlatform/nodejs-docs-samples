@@ -35,7 +35,7 @@ before(() => {
 });
 
 it('should load credentials implicitly', () => {
-  const output = execSync(`${cmd} auth-cloud-implicit`, cwd);
+  const output = execSync(`${cmd} auth-cloud-implicit`, {cwd, shell: true});
   assert.strictEqual(output.includes(BUCKET_NAME), true);
 });
 
@@ -45,7 +45,7 @@ it('should load credentials explicitly', () => {
   console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
   const output = execSync(
     `${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.strictEqual(output.includes(BUCKET_NAME), true);
 });

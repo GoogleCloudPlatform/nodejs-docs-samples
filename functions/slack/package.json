@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@slack/events-api": "^2.3.0",
-    "googleapis": "^47.0.0"
+    "googleapis": "^48.0.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",

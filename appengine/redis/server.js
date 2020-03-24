@@ -21,10 +21,7 @@ const nconf = require('nconf');
 // read in keys and secrets. You can store these in a variety of ways.
 // I like to use a keys.json file that is in the .gitignore file,
 // but you can also store them in environment variables
-nconf
-  .argv()
-  .env()
-  .file('keys.json');
+nconf.argv().env().file('keys.json');
 
 // [START gae_flex_node_redis]
 // Connect to a redis server provisioned over at
@@ -38,7 +35,7 @@ const client = redis
       return_buffers: true,
     }
   )
-  .on('error', err => console.error('ERR:REDIS:', err));
+  .on('error', (err) => console.error('ERR:REDIS:', err));
 // [END gae_flex_node_redis]]
 
 // Create a simple little server.
@@ -58,7 +55,7 @@ http
         return;
       }
 
-      data.forEach(ip => {
+      data.forEach((ip) => {
         iplist += `${ip}; `;
       });
 

@@ -21,7 +21,7 @@ const assert = require('assert');
 const getSample = () => {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise(resolve => resolve('request sent')));
+    .returns(new Promise((resolve) => resolve('request sent')));
 
   return {
     program: proxyquire('../', {
@@ -46,13 +46,13 @@ const getMocks = () => {
     callback: callback,
   };
 };
-const stubConsole = function() {
+const stubConsole = function () {
   sinon.stub(console, `error`);
   sinon.stub(console, `log`);
 };
 
 //Restore console
-const restoreConsole = function() {
+const restoreConsole = function () {
   console.log.restore();
   console.error.restore();
 };

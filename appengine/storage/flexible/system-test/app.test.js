@@ -53,7 +53,7 @@ it('should load', async () => {
   await requestObj
     .get('/')
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.strictEqual(
         new RegExp(/<input type="file" name="file">/).test(response.text),
         true
@@ -66,7 +66,7 @@ it('should upload a file', async () => {
     .post('/upload')
     .attach('file', path.join(__dirname, 'resources/test.txt'))
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.strictEqual(
         response.text,
         `https://storage.googleapis.com/${bucketName}/test.txt`

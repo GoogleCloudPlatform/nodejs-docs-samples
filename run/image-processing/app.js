@@ -30,9 +30,7 @@ app.post('/', async (req, res) => {
   const pubSubMessage = req.body.message;
   let data;
   try {
-    data = Buffer.from(pubSubMessage.data, 'base64')
-      .toString()
-      .trim();
+    data = Buffer.from(pubSubMessage.data, 'base64').toString().trim();
     data = JSON.parse(data);
   } catch (err) {
     const msg =

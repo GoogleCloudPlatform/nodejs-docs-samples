@@ -29,13 +29,13 @@ const TOPIC = process.env.FUNCTIONS_TOPIC;
 const MESSAGE = 'Hello, world!';
 
 describe('functions/pubsub', () => {
-  const stubConsole = function() {
+  const stubConsole = function () {
     sinon.stub(console, `error`);
     sinon.stub(console, `log`);
   };
 
   //Restore console
-  const restoreConsole = function() {
+  const restoreConsole = function () {
     console.log.restore();
     console.error.restore();
   };

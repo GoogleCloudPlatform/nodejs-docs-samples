@@ -20,12 +20,12 @@ describe('functions_helloworld_storage', () => {
 
   const {helloGCS} = require('..');
 
-  const stubConsole = function() {
+  const stubConsole = function () {
     sinon.stub(console, `error`);
     sinon.stub(console, `log`);
   };
 
-  const restoreConsole = function() {
+  const restoreConsole = function () {
     console.log.restore();
     console.error.restore();
   };

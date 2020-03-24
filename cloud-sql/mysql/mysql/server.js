@@ -130,10 +130,7 @@ app.post('/', async (req, res) => {
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
-    res
-      .status(400)
-      .send('Invalid team specified.')
-      .end();
+    res.status(400).send('Invalid team specified.').end();
   }
 
   // [START cloud_sql_mysql_mysql_connection]
@@ -157,10 +154,7 @@ app.post('/', async (req, res) => {
   }
   // [END cloud_sql_mysql_mysql_connection]
 
-  res
-    .status(200)
-    .send(`Successfully voted for ${team} at ${timestamp}`)
-    .end();
+  res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
 const PORT = process.env.PORT || 8080;

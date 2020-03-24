@@ -82,7 +82,7 @@ const detectText = async (bucketName, filename) => {
   // Submit a message to the bus for each language we're going to translate to
   const topicName = config.get('TRANSLATE_TOPIC');
 
-  const tasks = config.get('TO_LANG').map(lang => {
+  const tasks = config.get('TO_LANG').map((lang) => {
     const messageData = {
       text: text,
       filename: filename,
@@ -117,7 +117,7 @@ const renameImageForSave = (filename, lang) => {
  *
  * @param {object} event A Google Cloud Storage File object.
  */
-exports.processImage = async event => {
+exports.processImage = async (event) => {
   const {bucket, name} = event;
 
   if (!bucket) {
@@ -147,7 +147,7 @@ exports.processImage = async event => {
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.translateText = async event => {
+exports.translateText = async (event) => {
   const pubsubData = event.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);
@@ -195,7 +195,7 @@ exports.translateText = async event => {
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.saveResult = async event => {
+exports.saveResult = async (event) => {
   const pubsubData = event.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);

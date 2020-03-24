@@ -36,7 +36,7 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const batchDelete = async (jobServiceClient, companyName, jobs) => {
   try {
     let batchDeleteQuery = `companyName = "${companyName}"`;
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       batchDeleteQuery += ` AND requisitionId = "${job.requisitionId}"`;
     });
 

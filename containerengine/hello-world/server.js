@@ -16,7 +16,7 @@
 
 // [START all]
 const http = require('http');
-const handleRequest = function(req, res) {
+const handleRequest = function (req, res) {
   res.writeHead(200);
   res.end('Hello Kubernetes!');
 };

@@ -37,10 +37,7 @@ app.get('/', async (req, res, next) => {
   try {
     const response = await getProjectId();
     const projectId = response.body;
-    res
-      .status(200)
-      .send(`Project ID: ${projectId}`)
-      .end();
+    res.status(200).send(`Project ID: ${projectId}`).end();
   } catch (error) {
     if (error && error.statusCode && error.statusCode !== 200) {
       console.log('Error while talking to metadata server.');

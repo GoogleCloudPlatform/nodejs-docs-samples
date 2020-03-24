@@ -97,7 +97,7 @@ describe('gae_flex_postgres_app', () => {
     await request(sample.app)
       .get('/')
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         assert.strictEqual(response.text, expectedResult);
       });
   });
@@ -111,7 +111,7 @@ describe('gae_flex_postgres_app', () => {
     await request(sample.app)
       .get('/')
       .expect(500)
-      .expect(response => {
+      .expect((response) => {
         assert.strictEqual(response.text.includes(expectedResult), true);
       });
   });
@@ -125,7 +125,7 @@ describe('gae_flex_postgres_app', () => {
     await request(sample.app)
       .get('/')
       .expect(500)
-      .expect(response => {
+      .expect((response) => {
         assert.strictEqual(response.text.includes(expectedResult), true);
       });
   });

@@ -22,7 +22,7 @@ const uuid = require('uuid');
 const getSample = () => {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise(resolve => resolve('test')));
+    .returns(new Promise((resolve) => resolve('test')));
 
   return {
     sample: proxyquire('../', {
@@ -37,7 +37,7 @@ const getSample = () => {
 const getMocks = () => {
   const req = {
     headers: {},
-    get: function(header) {
+    get: function (header) {
       return this.headers[header];
     },
   };
@@ -65,11 +65,11 @@ const getMocks = () => {
   };
 };
 
-const stubConsole = function() {
+const stubConsole = function () {
   sinon.stub(console, `error`);
 };
 
-const restoreConsole = function() {
+const restoreConsole = function () {
   console.error.restore();
 };
 
@@ -258,7 +258,7 @@ describe('functions_http_signed_url', () => {
 
     // Instead of modifying the sample to return a promise,
     // use a delay here and keep the sample idiomatic
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     assert.strictEqual(mocks.res.status.called, false);
     assert.strictEqual(mocks.res.send.calledOnce, true);

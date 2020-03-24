@@ -41,7 +41,7 @@ before(() => {
 });
 
 describe('createFilesetEntry', () => {
-  it('should create a fileset entry', done => {
+  it('should create a fileset entry', (done) => {
     const expectedLinkedResource = `//datacatalog.googleapis.com/projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}/entries/${entryId}`;
     exec(
       `node createFilesetEntry.js ${projectId} ${entryGroupId} ${entryId}`,

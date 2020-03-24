@@ -236,7 +236,7 @@ exports.helloAnalytics = (data, context) => {
  * @param {object} data The Cloud Functions event data.
  * @returns {Promise}
  */
-exports.helloPromise = data => {
+exports.helloPromise = (data) => {
   return fetch(data.endpoint);
 };
 // [END functions_background_promise_node8]
@@ -269,7 +269,7 @@ exports.makeUpperCase = (data, context) => {
  *
  * @param {object} data The Cloud Functions event data.
  */
-exports.helloRemoteConfig = data => {
+exports.helloRemoteConfig = (data) => {
   console.log(`Update type: ${data.updateType}`);
   console.log(`Origin: ${data.updateOrigin}`);
   console.log(`Version: ${data.versionNumber}`);
@@ -282,7 +282,7 @@ exports.helloRemoteConfig = data => {
  *
  * @param {object} data The event payload.
  */
-exports.helloAsync = async data => {
+exports.helloAsync = async (data) => {
   const result = await fetch('https://www.example.com');
   return result;
 };

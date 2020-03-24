@@ -34,7 +34,7 @@ prompt.get(FIELDS, async (err, config) => {
 
   // Create the "visits" table
   try {
-    await knex.schema.createTable('visits', table => {
+    await knex.schema.createTable('visits', (table) => {
       table.increments();
       table.timestamp('timestamp');
       table.string('userIp');

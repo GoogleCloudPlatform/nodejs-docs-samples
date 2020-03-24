@@ -27,9 +27,7 @@ app.post('/', (req, res) => {
 
   const pubSubMessage = req.body.message;
   const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64')
-        .toString()
-        .trim()
+    ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
     : 'World';
 
   console.log(`Hello ${name}!`);

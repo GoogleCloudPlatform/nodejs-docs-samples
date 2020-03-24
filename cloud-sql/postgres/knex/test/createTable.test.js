@@ -41,7 +41,7 @@ before(async () => {
   }
 });
 
-it('should create a table', done => {
+it('should create a table', (done) => {
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
     {cwd},
@@ -52,7 +52,7 @@ it('should create a table', done => {
   );
 });
 
-it('should handle existing tables', done => {
+it('should handle existing tables', (done) => {
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
     {cwd},

@@ -66,7 +66,7 @@ app.post('/upload', multer.single('file'), (req, res, next) => {
     resumable: false,
   });
 
-  blobStream.on('error', err => {
+  blobStream.on('error', (err) => {
     next(err);
   });
 

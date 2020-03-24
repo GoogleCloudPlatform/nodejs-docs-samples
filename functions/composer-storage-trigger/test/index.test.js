@@ -18,7 +18,7 @@ const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
 
-const getSample = FetchStub => {
+const getSample = (FetchStub) => {
   return {
     program: proxyquire('../', {
       'node-fetch': FetchStub,

@@ -20,7 +20,7 @@ const proxyquire = require(`proxyquire`);
 
 const INSTANCE_PREFIX = `nodejs-docs-samples:us-central1:integration-tests-instance`;
 
-const getProgram = env => {
+const getProgram = (env) => {
   return proxyquire(`../`, {
     process: {
       env: env,
@@ -45,7 +45,7 @@ describe('functions_sql_mysql', () => {
     program.mysqlDemo(null, resMock);
 
     // Give the query time to complete
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       setTimeout(resolve, 1500);
     });
 
@@ -74,7 +74,7 @@ describe('functions_sql_postgres', () => {
     program.postgresDemo(null, resMock);
 
     // Give the query time to complete
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       setTimeout(resolve, 1500);
     });
 

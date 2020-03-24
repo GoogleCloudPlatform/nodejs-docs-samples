@@ -21,7 +21,7 @@ const {google} = require('googleapis');
 
 google.auth
   .getClient({scopes: ['https://www.googleapis.com/auth/jobs']})
-  .then(auth => {
+  .then((auth) => {
     // Instantiates an authorized client
     const jobs = google.jobs({
       version: 'v2',
@@ -41,7 +41,7 @@ google.auth
 
       if (companies.length) {
         console.log('Companies:');
-        companies.forEach(company => console.log(company.name));
+        companies.forEach((company) => console.log(company.name));
       } else {
         console.log(`No companies found.`);
       }

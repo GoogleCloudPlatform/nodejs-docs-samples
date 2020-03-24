@@ -43,7 +43,7 @@ const getLogEntries = async () => {
   const [entries] = await logging.getEntries(options);
 
   console.log('Entries:');
-  entries.forEach(entry => console.log(entry));
+  entries.forEach((entry) => console.log(entry));
   return entries;
 };
 // [END functions_log_retrieve]
@@ -55,7 +55,7 @@ const getLogEntries = async () => {
 // https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
 const Monitoring = require('@google-cloud/monitoring');
 
-const getMetrics = callback => {
+const getMetrics = (callback) => {
   // Instantiates a client
   const monitoring = Monitoring.v3().metricServiceApi();
 
@@ -86,16 +86,16 @@ const getMetrics = callback => {
   // Iterate over all elements.
   monitoring
     .listTimeSeries(options)
-    .on('error', err => {
+    .on('error', (err) => {
       error = err;
     })
-    .on('data', element => console.log(element))
+    .on('data', (element) => console.log(element))
     .on('end', () => callback(error));
   // [END functions_log_get_metrics]
 };
 
 // [START functions_log_stackdriver]
-exports.processLogEntry = data => {
+exports.processLogEntry = (data) => {
   const dataBuffer = Buffer.from(data.data, 'base64');
 
   const logEntry = JSON.parse(dataBuffer.toString('ascii')).protoPayload;

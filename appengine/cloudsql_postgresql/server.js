@@ -70,7 +70,7 @@ const insertVisit = (knex, visit) => {
  * @returns {Promise}
  */
 
-const getVisits = async knex => {
+const getVisits = async (knex) => {
   const results = await knex
     .select('timestamp', 'userIp')
     .from('visits')
@@ -78,7 +78,7 @@ const getVisits = async knex => {
     .limit(10);
 
   return results.map(
-    visit => `Time: ${visit.timestamp}, AddrHash: ${visit.userIp}`
+    (visit) => `Time: ${visit.timestamp}, AddrHash: ${visit.userIp}`
   );
 };
 

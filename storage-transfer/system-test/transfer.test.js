@@ -89,7 +89,7 @@ after(() => {
   } catch (err) {} // ignore error
 });
 
-it('should create a storage transfer job', done => {
+it('should create a storage transfer job', (done) => {
   const options = {
     srcBucket: firstBucketName,
     destBucket: secondBucketName,
@@ -112,7 +112,7 @@ it('should create a storage transfer job', done => {
   });
 });
 
-it('should get a transferJob', done => {
+it('should get a transferJob', (done) => {
   program.getTransferJob(jobName, (err, transferJob) => {
     assert.ifError(err);
     assert.strictEqual(transferJob.name, jobName);
@@ -126,7 +126,7 @@ it('should get a transferJob', done => {
   });
 });
 
-it('should update a transferJob', done => {
+it('should update a transferJob', (done) => {
   const options = {
     job: jobName,
     field: 'status',
@@ -146,19 +146,21 @@ it('should update a transferJob', done => {
   });
 });
 
-it('should list transferJobs', done => {
+it('should list transferJobs', (done) => {
   program.listTransferJobs((err, transferJobs) => {
     assert.ifError(err);
     assert.strictEqual(
-      transferJobs.some(transferJob => transferJob.name === jobName),
+      transferJobs.some((transferJob) => transferJob.name === jobName),
       true
     );
     assert.strictEqual(
-      transferJobs.some(transferJob => transferJob.description === description),
+      transferJobs.some(
+        (transferJob) => transferJob.description === description
+      ),
       true
     );
     assert.strictEqual(
-      transferJobs.some(transferJob => transferJob.status === status),
+      transferJobs.some((transferJob) => transferJob.status === status),
       true
     );
     assert.strictEqual(
@@ -169,7 +171,7 @@ it('should list transferJobs', done => {
   });
 });
 
-it('should list transferOperations', done => {
+it('should list transferOperations', (done) => {
   program.listTransferOperations(jobName, (err, operations) => {
     assert.ifError(err);
     assert.strictEqual(Array.isArray(operations), true);

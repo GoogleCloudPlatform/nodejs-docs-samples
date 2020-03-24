@@ -91,7 +91,7 @@ const publishAsync = (
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.
     console.log('Publishing message:', payload);
-    client.publish(mqttTopic, payload, {qos: 1}, err => {
+    client.publish(mqttTopic, payload, {qos: 1}, (err) => {
       if (!err) {
         shouldBackoff = false;
         backoffTime = MINIMUM_BACKOFF_TIME;
@@ -118,7 +118,7 @@ const publishAsync = (
         client = mqtt.connect(connectionArgs);
         // [END iot_mqtt_jwt_refresh]
 
-        client.on('connect', success => {
+        client.on('connect', (success) => {
           console.log('connect');
           if (!success) {
             console.log('Client not connected...');
@@ -139,7 +139,7 @@ const publishAsync = (
           shouldBackoff = true;
         });
 
-        client.on('error', err => {
+        client.on('error', (err) => {
           console.log('error', err);
         });
 
@@ -230,7 +230,7 @@ const mqttDeviceDemo = (
   // same as the device registry's Cloud Pub/Sub topic.
   const mqttTopic = `/devices/${deviceId}/${messageType}`;
 
-  client.on('connect', success => {
+  client.on('connect', (success) => {
     console.log('connect');
     if (!success) {
       console.log('Client not connected...');
@@ -244,7 +244,7 @@ const mqttDeviceDemo = (
     shouldBackoff = true;
   });
 
-  client.on('error', err => {
+  client.on('error', (err) => {
     console.log('error', err);
   });
 
@@ -280,7 +280,7 @@ const attachDevice = (deviceId, client, jwt) => {
     attachPayload = `{ 'authorization' : ${jwt} }`;
   }
 
-  client.publish(attachTopic, attachPayload, {qos: 1}, err => {
+  client.publish(attachTopic, attachPayload, {qos: 1}, (err) => {
     if (!err) {
       shouldBackoff = false;
       backoffTime = MINIMUM_BACKOFF_TIME;
@@ -301,7 +301,7 @@ const detachDevice = (deviceId, client, jwt) => {
     detachPayload = `{ 'authorization' : ${jwt} }`;
   }
 
-  client.publish(detachTopic, detachPayload, {qos: 1}, err => {
+  client.publish(detachTopic, detachPayload, {qos: 1}, (err) => {
     if (!err) {
       shouldBackoff = false;
       backoffTime = MINIMUM_BACKOFF_TIME;
@@ -361,7 +361,7 @@ const publishAsyncGateway = (
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.
     console.log(`Publishing message: ${payload} to ${mqttTopic}`);
-    client.publish(mqttTopic, payload, {qos: 1}, err => {
+    client.publish(mqttTopic, payload, {qos: 1}, (err) => {
       if (!err) {
         shouldBackoff = false;
         backoffTime = MINIMUM_BACKOFF_TIME;
@@ -440,7 +440,7 @@ const sendDataFromBoundDevice = (
   const iatTime = parseInt(Date.now() / 1000);
   const client = mqtt.connect(connectionArgs);
 
-  client.on('connect', success => {
+  client.on('connect', (success) => {
     if (!success) {
       console.log('Client not connected...');
     } else if (!publishChainInProgress) {
@@ -471,7 +471,7 @@ const sendDataFromBoundDevice = (
     shouldBackoff = true;
   });
 
-  client.on('error', err => {
+  client.on('error', (err) => {
     console.log('error', err);
   });
 
@@ -528,7 +528,7 @@ const listenForConfigMessages = (
   // Create a client, and connect to the Google MQTT bridge.
   const client = mqtt.connect(connectionArgs);
 
-  client.on('connect', success => {
+  client.on('connect', (success) => {
     if (!success) {
       console.log('Client not connected...');
     } else {
@@ -554,7 +554,7 @@ const listenForConfigMessages = (
     shouldBackoff = true;
   });
 
-  client.on('error', err => {
+  client.on('error', (err) => {
     console.log('error', err);
   });
 
@@ -615,7 +615,7 @@ const listenForErrorMessages = (
   // Create a client, and connect to the Google MQTT bridge.
   const client = mqtt.connect(connectionArgs);
 
-  client.on('connect', success => {
+  client.on('connect', (success) => {
     if (!success) {
       console.log('Client not connected...');
     } else {
@@ -638,7 +638,7 @@ const listenForErrorMessages = (
     shouldBackoff = true;
   });
 
-  client.on('error', err => {
+  client.on('error', (err) => {
     console.log('error', err);
   });
 
@@ -731,7 +731,7 @@ const {argv} = require(`yargs`)
         type: 'number',
       },
     },
-    opts => {
+    (opts) => {
       mqttDeviceDemo(
         opts.deviceId,
         opts.registryId,
@@ -763,7 +763,7 @@ const {argv} = require(`yargs`)
         type: 'number',
       },
     },
-    opts => {
+    (opts) => {
       sendDataFromBoundDevice(
         opts.deviceId,
         opts.gatewayId,
@@ -796,7 +796,7 @@ const {argv} = require(`yargs`)
         type: 'number',
       },
     },
-    opts => {
+    (opts) => {
       listenForConfigMessages(
         opts.deviceId,
         opts.gatewayId,
@@ -828,7 +828,7 @@ const {argv} = require(`yargs`)
         type: 'number',
       },
     },
-    opts => {
+    (opts) => {
       listenForErrorMessages(
         opts.deviceId,
         opts.gatewayId,

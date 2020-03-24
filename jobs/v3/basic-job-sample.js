@@ -40,7 +40,7 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 /**
  * Generate a basic job with given companyName.
  */
-const generateJobWithRequiredFields = companyName => {
+const generateJobWithRequiredFields = (companyName) => {
   const applicationUris = ['http://careers.google.com'];
   const description =
     'Design, develop, test, deploy, maintain and improve software.';

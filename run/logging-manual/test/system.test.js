@@ -33,7 +33,7 @@ const getLogEntriesPolling = async (filter, max_attempts) => {
   return [];
 };
 
-const getLogEntries = async filter => {
+const getLogEntries = async (filter) => {
   const preparedFilter = `resource.type="cloud_run_revision" ${filter}`;
   const entries = await logging.getEntries({
     filter: preparedFilter,
@@ -83,7 +83,7 @@ describe('Logging', () => {
         5
       )}"`;
       const entries = await getLogEntriesPolling(filter);
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.metadata.httpRequest) {
           requestLog = entry;
         } else {

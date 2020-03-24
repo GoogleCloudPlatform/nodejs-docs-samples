@@ -23,7 +23,7 @@ const REDISHOST = process.env.REDISHOST || 'localhost';
 const REDISPORT = process.env.REDISPORT || 6379;
 
 const redisClient = redis.createClient(REDISPORT, REDISHOST);
-redisClient.on('error', err => console.error('ERR:REDIS:', err));
+redisClient.on('error', (err) => console.error('ERR:REDIS:', err));
 
 const incrAsync = promisify(redisClient.incr).bind(redisClient);
 

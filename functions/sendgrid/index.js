@@ -34,7 +34,7 @@ const bigquery = new BigQuery();
  * @param {string} key Your SendGrid API key.
  * @returns {object} SendGrid client.
  */
-const getClient = key => {
+const getClient = (key) => {
   if (!key) {
     const error = new Error(
       'SendGrid API key not provided. Make sure you have a "sg_key" property in your request querystring'
@@ -59,7 +59,7 @@ const getClient = key => {
  * @param {string} data.body Body of the email subject line.
  * @returns {object} Payload object.
  */
-const getPayload = requestBody => {
+const getPayload = (requestBody) => {
   if (!requestBody.to) {
     const error = new Error(
       'To email address not provided. Make sure you have a "to" property in your request'
@@ -191,7 +191,7 @@ exports.sendgridEmail = async (req, res) => {
  *
  * @param {string} authorization The authorization header of the request, e.g. "Basic ZmdvOhJhcg=="
  */
-const verifyWebhook = authorization => {
+const verifyWebhook = (authorization) => {
   const basicAuth = Buffer.from(
     authorization.replace('Basic ', ''),
     'base64'
@@ -211,11 +211,11 @@ const verifyWebhook = authorization => {
  *
  * @param {*} obj Value to examine.
  */
-const fixNames = obj => {
+const fixNames = (obj) => {
   if (Array.isArray(obj)) {
     obj.forEach(fixNames);
   } else if (obj && typeof obj === 'object') {
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       const value = obj[key];
       fixNames(value);
       const fixedKey = key.replace('-', '_');
@@ -254,7 +254,7 @@ exports.sendgridWebhook = async (req, res) => {
 
     // Generate newline-delimited JSON
     // See https://cloud.google.com/bigquery/data-formats#json_format
-    const json = events.map(event => JSON.stringify(event)).join('\n');
+    const json = events.map((event) => JSON.stringify(event)).join('\n');
 
     // Upload a new file to Cloud Storage if we have events to save
     if (json.length) {
@@ -301,7 +301,7 @@ const getTable = async () => {
  * @param {string} [event.data.timeDeleted] Time the file was deleted if this is a deletion event.
  * @see https://cloud.google.com/storage/docs/json_api/v1/objects#resource
  */
-exports.sendgridLoad = async event => {
+exports.sendgridLoad = async (event) => {
   const file = event.data;
 
   if (file.resourceState === 'not_exists') {

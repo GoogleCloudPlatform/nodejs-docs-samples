@@ -34,10 +34,10 @@ const VALUE = {
   description: 'Buy milk',
 };
 
-const errorMsg = msg =>
+const errorMsg = (msg) =>
   `${msg} not provided. Make sure you have a "${msg.toLowerCase()}" property in your request`;
 
-const handleLinuxFailures = async proc => {
+const handleLinuxFailures = async (proc) => {
   try {
     return await proc;
   } catch (err) {
@@ -50,10 +50,10 @@ const handleLinuxFailures = async proc => {
 };
 
 // Wait for the HTTP server to start listening
-const waitForReady = async baseUrl => {
+const waitForReady = async (baseUrl) => {
   let ready = false;
   while (!ready) {
-    await new Promise(r => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 500));
     ready = await isReachable(baseUrl);
   }
 };

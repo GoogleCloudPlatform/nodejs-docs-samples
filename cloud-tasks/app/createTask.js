@@ -17,7 +17,7 @@
 // [START cloud_tasks_app_create_task]
 const MAX_SCHEDULE_LIMIT = 30 * 60 * 60 * 24; // Represents 30 days in seconds.
 
-const createHttpTaskWithToken = async function(
+const createHttpTaskWithToken = async function (
   project = 'my-project-id', // Your GCP Project id
   queue = 'my-queue', // Name of your Queue
   location = 'us-central1', // The GCP region of your queue

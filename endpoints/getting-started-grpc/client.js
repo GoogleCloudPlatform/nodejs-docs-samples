@@ -83,7 +83,7 @@ const {argv} = require('yargs')
     default: 'world',
     global: true,
   })
-  .check(argv => {
+  .check((argv) => {
     const valid = !!(argv.jwtAuthToken || argv.apiKey);
     if (!valid) {
       console.error('One of API_KEY or JWT_AUTH_TOKEN must be set.');

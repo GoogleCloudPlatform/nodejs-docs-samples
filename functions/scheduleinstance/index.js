@@ -38,7 +38,7 @@ exports.startInstancePubSub = async (event, context, callback) => {
     const options = {filter: `labels.${payload.label}`};
     const [vms] = await compute.getVMs(options);
     await Promise.all(
-      vms.map(async instance => {
+      vms.map(async (instance) => {
         if (payload.zone === instance.zone.id) {
           const [operation] = await compute
             .zone(payload.zone)
@@ -82,7 +82,7 @@ exports.stopInstancePubSub = async (event, context, callback) => {
     const options = {filter: `labels.${payload.label}`};
     const [vms] = await compute.getVMs(options);
     await Promise.all(
-      vms.map(async instance => {
+      vms.map(async (instance) => {
         if (payload.zone === instance.zone.id) {
           const [operation] = await compute
             .zone(payload.zone)
@@ -114,7 +114,7 @@ exports.stopInstancePubSub = async (event, context, callback) => {
  * @param {!object} payload the request payload to validate.
  * @return {!object} the payload object.
  */
-const _validatePayload = payload => {
+const _validatePayload = (payload) => {
   if (!payload.zone) {
     throw new Error(`Attribute 'zone' missing from payload`);
   } else if (!payload.label) {

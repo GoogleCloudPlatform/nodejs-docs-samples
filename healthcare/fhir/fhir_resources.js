@@ -196,8 +196,8 @@ require(`yargs`) // eslint-disable-line
     `createResource <datasetId> <fhirStoreId> <resourceType>`,
     `Creates a new resource in a FHIR store.`,
     {},
-    opts => {
-      const cb = token => {
+    (opts) => {
+      const cb = (token) => {
         createResource(
           token,
           opts.projectId,
@@ -214,8 +214,8 @@ require(`yargs`) // eslint-disable-line
     `patchResource <datasetId> <fhirStoreId> <resourceType> <resourceId>`,
     `Patches an existing resource in a FHIR store.`,
     {},
-    opts => {
-      const cb = token => {
+    (opts) => {
+      const cb = (token) => {
         patchResource(
           token,
           opts.projectId,
@@ -233,8 +233,8 @@ require(`yargs`) // eslint-disable-line
     `executeBundle <datasetId> <fhirStoreId> <bundleFile>`,
     `Executes all the requests in the given Bundle.`,
     {},
-    opts => {
-      const cb = token => {
+    (opts) => {
+      const cb = (token) => {
         executeBundle(
           token,
           opts.projectId,

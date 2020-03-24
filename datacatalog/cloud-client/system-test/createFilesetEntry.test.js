@@ -41,12 +41,12 @@ before(() => {
 });
 
 describe('createFilesetEntry', () => {
-  before(done => {
+  before((done) => {
     // Must create entryGroup before creating entry
     exec(`node createEntryGroup.js ${projectId} ${entryGroupId}`, {cwd}, done);
   });
 
-  it('should create a fileset entry', done => {
+  it('should create a fileset entry', (done) => {
     const expectedLinkedResource = `//datacatalog.googleapis.com/projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}/entries/${entryId}`;
     exec(
       `node createFilesetEntry.js ${projectId} ${entryGroupId} ${entryId}`,

@@ -36,7 +36,7 @@ const authCloudImplicit = async () => {
     const [buckets] = results;
 
     console.log('Buckets:');
-    buckets.forEach(bucket => {
+    buckets.forEach((bucket) => {
       console.log(bucket.name);
     });
   } catch (err) {
@@ -62,7 +62,7 @@ const authCloudExplicit = async ({projectId, keyFilename}) => {
     const [buckets] = await storage.getBuckets();
 
     console.log('Buckets:');
-    buckets.forEach(bucket => {
+    buckets.forEach((bucket) => {
       console.log(bucket.name);
     });
   } catch (err) {

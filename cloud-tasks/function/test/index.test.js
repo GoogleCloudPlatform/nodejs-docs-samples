@@ -20,10 +20,10 @@ const assert = require('assert');
 
 const key = process.env.SENDGRID_API_KEY;
 
-const getSample = function() {
+const getSample = function () {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise(resolve => resolve('test')));
+    .returns(new Promise((resolve) => resolve('test')));
 
   return {
     program: proxyquire('../', {
@@ -35,14 +35,14 @@ const getSample = function() {
   };
 };
 
-const getMocks = function() {
+const getMocks = function () {
   const req = {
     body: {},
   };
 
   const res = {
     send: sinon.stub().returnsThis(),
-    status: function(statusCode) {
+    status: function (statusCode) {
       this.statusCode = statusCode;
       return this;
     },

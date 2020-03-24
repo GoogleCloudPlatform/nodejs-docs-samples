@@ -30,7 +30,7 @@ describe('Unit Tests', () => {
         .type('text')
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect(res => {
+        .expect((res) => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }
@@ -44,7 +44,7 @@ describe('Unit Tests', () => {
         .query({dot: ''})
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect(res => {
+        .expect((res) => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }
@@ -58,7 +58,7 @@ describe('Unit Tests', () => {
         .query({dot: `digraph`})
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect(res => {
+        .expect((res) => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }

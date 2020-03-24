@@ -58,10 +58,7 @@ app.get('/', async (req, res, next) => {
       'Example label',
       '100'
     );
-    res
-      .status(200)
-      .send('Event tracked.')
-      .end();
+    res.status(200).send('Event tracked.').end();
   } catch (error) {
     // This sample treats an event tracking error as a fatal error. Depending
     // on your application's needs, failing to track an event may not be

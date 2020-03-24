@@ -161,7 +161,7 @@ const publishAsync = (authToken, messageCount, numMessages) => {
     json: true,
     method: 'POST',
     retries: 5,
-    shouldRetryFn: function(incomingHttpMessage) {
+    shouldRetryFn: function (incomingHttpMessage) {
       return incomingHttpMessage.statusMessage !== 'OK';
     },
   };
@@ -212,7 +212,7 @@ const getConfig = (authToken, version) => {
     },
     json: true,
     retries: 5,
-    shouldRetryFn: function(incomingHttpMessage) {
+    shouldRetryFn: function (incomingHttpMessage) {
       console.log('Retry?');
       return incomingHttpMessage.statusMessage !== 'OK';
     },

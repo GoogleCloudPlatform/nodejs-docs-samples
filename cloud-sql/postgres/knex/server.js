@@ -126,7 +126,7 @@ const insertVote = async (knex, vote) => {
  * @param {object} knex The Knex connection object.
  * @returns {Promise}
  */
-const getVotes = async knex => {
+const getVotes = async (knex) => {
   return await knex
     .select('candidate', 'time_cast')
     .from('votes')
@@ -143,13 +143,11 @@ const getVotes = async knex => {
  * @returns {Promise}
  */
 const getVoteCount = async (knex, candidate) => {
-  return await knex('votes')
-    .count('vote_id')
-    .where('candidate', candidate);
+  return await knex('votes').count('vote_id').where('candidate', candidate);
 };
 
 app.get('/', (req, res) => {
-  (async function() {
+  (async function () {
     // Query the total count of "TABS" from the database.
     const tabsResult = await getVoteCount(knex, 'TABS');
     const tabsTotalVotes = parseInt(tabsResult[0].count);
@@ -193,10 +191,7 @@ app.post('/', async (req, res) => {
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
-    res
-      .status(400)
-      .send('Invalid team specified.')
-      .end();
+    res.status(400).send('Invalid team specified.').end();
     return;
   }
 
@@ -217,10 +212,7 @@ app.post('/', async (req, res) => {
       .end();
     return;
   }
-  res
-    .status(200)
-    .send(`Successfully voted for ${team} at ${timestamp}`)
-    .end();
+  res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
 const PORT = process.env.PORT || 8080;

@@ -41,7 +41,7 @@ const generateAccessToken = (
   // With the service account's credentials, we can make a request to generate
   // a new token for a 2nd service account that only has the permission to
   // act as a Dialogflow Client
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const post_options = {
       host: 'iamcredentials.googleapis.com',
       path:
@@ -55,9 +55,9 @@ const generateAccessToken = (
 
     // Set up the request
     let oauthToken = '';
-    const post_req = https.request(post_options, res => {
+    const post_req = https.request(post_options, (res) => {
       res.setEncoding('utf8');
-      res.on('data', chunk => {
+      res.on('data', (chunk) => {
         oauthToken += chunk;
       });
       res.on('end', () => {
@@ -67,7 +67,7 @@ const generateAccessToken = (
       });
     });
 
-    post_req.on('error', e => {
+    post_req.on('error', (e) => {
       console.log('ERROR generating new token', e.message);
       return 'Error retrieving token';
     });
@@ -87,8 +87,8 @@ const generateAccessToken = (
 // [END generate_token]
 
 // [START retrieve_credentials]
-const retrieveCredentials = context => {
-  return new Promise(resolve => {
+const retrieveCredentials = (context) => {
+  return new Promise((resolve) => {
     // To create a new access token, we first have to retrieve the credentials
     // of the service account that will make the generateTokenRequest().
     // To do that, we will use the App Engine Default Service Account.
@@ -99,10 +99,10 @@ const retrieveCredentials = context => {
       headers: {'Metadata-Flavor': 'Google'},
     };
 
-    const get_req = http.get(options, res => {
+    const get_req = http.get(options, (res) => {
       let body = '';
 
-      res.on('data', chunk => {
+      res.on('data', (chunk) => {
         body += chunk;
       });
 
@@ -116,7 +116,7 @@ const retrieveCredentials = context => {
         return resolve(result);
       });
     });
-    get_req.on('error', e => {
+    get_req.on('error', (e) => {
       //console.log('Error retrieving credentials', e.message);
       return `Error retrieving token${e.message}`;
     });
@@ -128,7 +128,7 @@ exports.retrieveCredentials = retrieveCredentials;
 
 // [START validate_token]
 // This method verifies the token expiry by validating against current time
-const isValid = expiryTime => {
+const isValid = (expiryTime) => {
   const currentDate = new Date();
   const expirationDate = new Date(expiryTime);
   // If within 5 minutes of expiration, return false

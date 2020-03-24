@@ -44,10 +44,7 @@ app.post('/call/receive', (req, res) => {
 
   twiml.say('Hello from Google App Engine.');
 
-  res
-    .status(200)
-    .contentType('text/xml')
-    .send(twiml.toString());
+  res.status(200).contentType('text/xml').send(twiml.toString());
 });
 // [END gae_flex_twilio_receive_call]
 
@@ -83,10 +80,7 @@ app.post('/sms/receive', bodyParser, (req, res) => {
   const twiml = new twilio.twiml.MessagingResponse();
   twiml.message(`Hello, ${sender}, you said: ${body}`);
 
-  res
-    .status(200)
-    .contentType('text/xml')
-    .send(twiml.toString());
+  res.status(200).contentType('text/xml').send(twiml.toString());
 });
 // [END gae_flex_twilio_receive_sms]
 

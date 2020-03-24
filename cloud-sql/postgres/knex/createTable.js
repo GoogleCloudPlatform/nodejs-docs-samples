@@ -16,14 +16,14 @@
 
 const Knex = require('knex');
 
-const createTable = async config => {
+const createTable = async (config) => {
   // Connect to the database
   config.host = `/cloudsql/${config.connectionName}`;
   const knex = Knex({client: 'pg', connection: config});
 
   // Create the "votes" table
   try {
-    await knex.schema.createTable('votes', table => {
+    await knex.schema.createTable('votes', (table) => {
       table.bigIncrements('vote_id').notNull();
       table.timestamp('time_cast').notNull();
       table.specificType('candidate', 'CHAR(6) NOT NULL');

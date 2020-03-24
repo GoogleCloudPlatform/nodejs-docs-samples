@@ -41,7 +41,7 @@ before(() => {
 });
 
 describe('deleteFilesetEntry', () => {
-  before(done => {
+  before((done) => {
     // Must create an entry to be deleted.
     exec(
       `node createFilesetEntry.js ${projectId} ${entryGroupId} ${entryId}`,
@@ -50,7 +50,7 @@ describe('deleteFilesetEntry', () => {
     );
   });
 
-  it('should delete a fileset entry', done => {
+  it('should delete a fileset entry', (done) => {
     exec(
       `node deleteFilesetEntry.js ${projectId} ${entryGroupId} ${entryId}`,
       {cwd},

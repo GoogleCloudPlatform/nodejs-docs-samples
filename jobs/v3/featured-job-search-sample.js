@@ -34,7 +34,7 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 /**
  * Creates a job as featured.
  */
-const generateFeaturedJob = companyName => {
+const generateFeaturedJob = (companyName) => {
   const requisitionId = `"featuredJob: ${new Date().getTime()}}`;
   const jobTitle = 'Software Engineer';
   const applicationUrls = ['http://careers.google.com'];

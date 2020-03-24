@@ -18,13 +18,13 @@
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloRTDB = event => {
+exports.helloRTDB = (event) => {
   const triggerResource = event.resource;
 
   const pathParams = event.params;
   if (pathParams) {
     console.log(`Path parameters:`);
-    Object.keys(pathParams).forEach(key => {
+    Object.keys(pathParams).forEach((key) => {
       console.log(`  ${key}: ${pathParams[key]}`);
     });
   }
@@ -42,7 +42,7 @@ exports.helloRTDB = event => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloFirestore = event => {
+exports.helloFirestore = (event) => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by event on: ${triggerResource}`);
@@ -66,7 +66,7 @@ exports.helloFirestore = event => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAuth = event => {
+exports.helloAuth = (event) => {
   try {
     const {data} = event;
     console.log(`Function triggered by change to user: ${data.uid}`);
@@ -89,7 +89,7 @@ const firestore = new Firestore({
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
-exports.makeUpperCase = event => {
+exports.makeUpperCase = (event) => {
   const {resource} = event;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
@@ -109,7 +109,7 @@ exports.makeUpperCase = event => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAnalytics = event => {
+exports.helloAnalytics = (event) => {
   const {resource} = event;
   console.log(`Function triggered by the following event: ${resource}`);
 
@@ -129,7 +129,7 @@ exports.helloAnalytics = event => {
  *
  * @param {object} data The Cloud Functions event data.
  */
-exports.helloRemoteConfig = event => {
+exports.helloRemoteConfig = (event) => {
   const {data} = event;
 
   console.log(`Update type: ${data.updateType}`);

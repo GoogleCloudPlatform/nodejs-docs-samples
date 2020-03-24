@@ -34,11 +34,7 @@ describe('Unit Tests', () => {
 
   describe('should fail', () => {
     it(`on a Bad Request with an empty payload`, async () => {
-      await request
-        .post('/')
-        .type('json')
-        .send('')
-        .expect(400);
+      await request.post('/').type('json').send('').expect(400);
     });
 
     it(`on a Bad Request with an invalid payload`, async () => {
@@ -50,11 +46,7 @@ describe('Unit Tests', () => {
     });
 
     it(`on a Bad Request with an invalid mimetype`, async () => {
-      await request
-        .post('/')
-        .type('text')
-        .send('{message: true}')
-        .expect(400);
+      await request.post('/').type('text').send('{message: true}').expect(400);
     });
   });
 

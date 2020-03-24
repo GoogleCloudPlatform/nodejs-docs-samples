@@ -92,10 +92,10 @@ exports.connectionPooling = (req, res) => {
       method: 'GET',
       agent: agent,
     },
-    resInner => {
+    (resInner) => {
       let rawData = '';
       resInner.setEncoding('utf8');
-      resInner.on('data', chunk => {
+      resInner.on('data', (chunk) => {
         rawData += chunk;
       });
       resInner.on('end', () => {
@@ -103,7 +103,7 @@ exports.connectionPooling = (req, res) => {
       });
     }
   );
-  req.on('error', e => {
+  req.on('error', (e) => {
     res.status(500).send(`Error: ${e.message}`);
   });
   req.end();
@@ -144,7 +144,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
  * @param {object} event.data Data included with the event.
  * @param {object} event.data.retry User-supplied parameter that tells the function whether to retry.
  */
-exports.retryPromise = event => {
+exports.retryPromise = (event) => {
   const tryAgain = !!event.data.retry;
 
   if (tryAgain) {
@@ -193,7 +193,7 @@ const pubsub = new PubSub();
 exports.gcpApiCall = (req, res) => {
   const topic = pubsub.topic(req.body.topic);
 
-  topic.publish(Buffer.from('Test message'), err => {
+  topic.publish(Buffer.from('Test message'), (err) => {
     if (err) {
       res.status(500).send(`Error publishing the message: ${err}`);
     } else {

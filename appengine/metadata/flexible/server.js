@@ -45,10 +45,7 @@ const getExternalIp = async () => {
 app.get('/', async (req, res, next) => {
   try {
     const externalIp = await getExternalIp();
-    res
-      .status(200)
-      .send(`External IP: ${externalIp}`)
-      .end();
+    res.status(200).send(`External IP: ${externalIp}`).end();
   } catch (err) {
     next(err);
   }

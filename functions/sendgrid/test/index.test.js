@@ -117,7 +117,7 @@ const getMocks = () => {
     headers: {},
     query: {},
     body: {},
-    get: function(header) {
+    get: function (header) {
       return this.headers[header];
     },
   };
@@ -127,11 +127,11 @@ const getMocks = () => {
     send: sinon.stub().returnsThis(),
     json: sinon.stub().returnsThis(),
     end: sinon.stub().returnsThis(),
-    status: function(statusCode) {
+    status: function (statusCode) {
       this.statusCode = statusCode;
       return this;
     },
-    set: function(header, value) {
+    set: function (header, value) {
       this.headers[header] = value;
       return this;
     },
@@ -143,7 +143,7 @@ const getMocks = () => {
     res: res,
   };
 };
-const stubConsole = function() {
+const stubConsole = function () {
   if (
     typeof console.log.restore !== `function` &&
     typeof console.error.restore !== `function`
@@ -154,7 +154,7 @@ const stubConsole = function() {
 };
 
 //Restore console
-const restoreConsole = function() {
+const restoreConsole = function () {
   console.log.restore();
   console.error.restore();
 };

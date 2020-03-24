@@ -38,18 +38,18 @@ const getSample = () => {
   };
 };
 
-const stubConsole = function() {
+const stubConsole = function () {
   sinon.stub(console, `error`);
 };
 
-const restoreConsole = function() {
+const restoreConsole = function () {
   console.error.restore();
 };
 
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-it(`sets up the sample`, done => {
+it(`sets up the sample`, (done) => {
   const sample = getSample();
 
   assert.ok(sample.mocks.express.calledOnce);
@@ -62,7 +62,7 @@ it(`should echo a message`, async () => {
     .post('/echo')
     .send({message: 'foo'})
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.strictEqual(response.body.message, 'foo');
     });
 });
@@ -72,7 +72,7 @@ it(`should try to parse encoded info`, async () => {
   await request(sample.app)
     .get('/auth/info/googlejwt')
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.deepStrictEqual(response.body, {id: 'anonymous'});
     });
 });
@@ -86,7 +86,7 @@ it(`should successfully parse encoded info`, async () => {
       Buffer.from(JSON.stringify({id: 'foo'})).toString('base64')
     )
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.deepStrictEqual(response.body, {id: 'foo'});
     });
 });

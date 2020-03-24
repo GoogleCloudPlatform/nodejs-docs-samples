@@ -42,7 +42,7 @@ const contextValue = (uid = 'test-uid', email_verified = true) => ({
   },
 });
 
-const handleLinuxFailures = async proc => {
+const handleLinuxFailures = async (proc) => {
   try {
     return await proc;
   } catch (err) {

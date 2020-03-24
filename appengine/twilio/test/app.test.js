@@ -60,7 +60,7 @@ describe('gae_flex_twilio_send_sms', () => {
       .get('/sms/send')
       .query({to: 1234})
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         assert.strictEqual(response.text, 'Message sent.');
       });
   });

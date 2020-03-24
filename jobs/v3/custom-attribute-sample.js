@@ -39,7 +39,7 @@ const REQUEST_META_DATA = {
 /**
  * Generate a job with a custom attribute.
  */
-const generateJobWithACustomAttribute = companyName => {
+const generateJobWithACustomAttribute = (companyName) => {
   const requisitionId = `jobWithACustomAttribute: ${new Date().getTime()}`;
   const jobTitle = 'Software Engineer';
   const applicationUrls = ['http://careers.google.com'];
@@ -70,7 +70,7 @@ const generateJobWithACustomAttribute = companyName => {
 /**
  * CustomAttributeFilter on String value CustomAttribute
  */
-const filtersOnStringValueCustomAttribute = async jobServiceClient => {
+const filtersOnStringValueCustomAttribute = async (jobServiceClient) => {
   try {
     const customAttributeFilter = 'NOT EMPTY(someFieldName1)';
     const jobQuery = {customAttributeFilter: customAttributeFilter};
@@ -97,7 +97,7 @@ const filtersOnStringValueCustomAttribute = async jobServiceClient => {
 /**
  * CustomAttributeFilter on Long value CustomAttribute
  */
-const filtersOnLongValueCustomAttribute = async jobServiceClient => {
+const filtersOnLongValueCustomAttribute = async (jobServiceClient) => {
   try {
     const customAttributeFilter =
       '(255 <= someFieldName2) AND' + ' (someFieldName2 <= 257)';
@@ -125,7 +125,7 @@ const filtersOnLongValueCustomAttribute = async jobServiceClient => {
 /**
  * CustomAttributeFilter on multiple CustomAttributes
  */
-const filtersOnMultiCustomAttributes = async jobServiceClient => {
+const filtersOnMultiCustomAttributes = async (jobServiceClient) => {
   try {
     const customAttributeFilter =
       '(someFieldName1 = "value1") AND ((255 <= someFieldName2) OR ' +

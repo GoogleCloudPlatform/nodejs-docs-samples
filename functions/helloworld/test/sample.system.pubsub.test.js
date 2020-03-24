@@ -29,16 +29,14 @@ describe('system tests', () => {
     const name = uuid.v4();
 
     // Subtract time to work-around local-GCF clock difference
-    const startTime = moment()
-      .subtract(4, 'minutes')
-      .toISOString();
+    const startTime = moment().subtract(4, 'minutes').toISOString();
 
     // Publish to pub/sub topic
     const topic = pubsub.topic(topicName);
     await topic.publish(Buffer.from(name));
 
     // Wait for logs to become consistent
-    await promiseRetry(retry => {
+    await promiseRetry((retry) => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
         .toString();
@@ -54,16 +52,14 @@ describe('system tests', () => {
 
   it('helloPubSub: should print hello world', async () => {
     // Subtract time to work-around local-GCF clock difference
-    const startTime = moment()
-      .subtract(4, 'minutes')
-      .toISOString();
+    const startTime = moment().subtract(4, 'minutes').toISOString();
 
     // Publish to pub/sub topic
     const topic = pubsub.topic(topicName);
     await topic.publish(Buffer.from(''), {a: 'b'});
 
     // Wait for logs to become consistent
-    await promiseRetry(retry => {
+    await promiseRetry((retry) => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
         .toString();

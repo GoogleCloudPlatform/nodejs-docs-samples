@@ -56,13 +56,13 @@ const getSample = () => {
   };
 };
 
-const stubConsole = function() {
+const stubConsole = function () {
   /* eslint-disable no-console */
   sinon.stub(console, `error`);
   sinon.stub(console, `log`);
 };
 
-const restoreConsole = function() {
+const restoreConsole = function () {
   console.log.restore();
   console.error.restore();
 };
@@ -87,7 +87,7 @@ describe('gae_flex_mysql_create_tables', () => {
       exampleConfig
     );
 
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, 10));
     assert.ok(sample.mocks.Knex.calledOnce);
     assert.deepStrictEqual(sample.mocks.Knex.firstCall.args, [
       {
@@ -116,7 +116,7 @@ describe('gae_flex_mysql_create_tables', () => {
       prompt: sample.mocks.prompt,
     });
 
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, 10));
     assert.ok(console.error.calledOnce);
     assert.ok(console.error.calledWith(error));
     assert.ok(sample.mocks.Knex.notCalled);
@@ -133,7 +133,7 @@ describe('gae_flex_mysql_create_tables', () => {
       knex: sample.mocks.Knex,
       prompt: sample.mocks.prompt,
     });
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, 10));
     assert.ok(console.error.calledOnce);
     assert.ok(
       console.error.calledWith(`Failed to create 'visits' table:`, error)

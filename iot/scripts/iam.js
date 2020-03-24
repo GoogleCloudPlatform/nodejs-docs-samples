@@ -19,7 +19,7 @@
  * For more information, see https://cloud.google.com/iot.
  */
 
-const setTopicPolicy = async topicName => {
+const setTopicPolicy = async (topicName) => {
   // Imports the Google Cloud client library
   const {PubSub} = require('@google-cloud/pubsub');
 
@@ -44,7 +44,7 @@ const setTopicPolicy = async topicName => {
     members: [serviceAccount],
   };
 
-  policy.bindings.forEach(_binding => {
+  policy.bindings.forEach((_binding) => {
     if (_binding.role === binding.role) {
       binding = _binding;
       hasRole = true;

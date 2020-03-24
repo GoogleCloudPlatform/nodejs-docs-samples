@@ -93,7 +93,7 @@ const _setAuthCredential = async () => {
  * @param {string} projectName Name of project to check if billing is enabled
  * @return {bool} Whether project has billing enabled or not
  */
-const _isBillingEnabled = async projectName => {
+const _isBillingEnabled = async (projectName) => {
   const res = await billing.getBillingInfo({name: projectName});
   return res.data.billingEnabled;
 };
@@ -103,7 +103,7 @@ const _isBillingEnabled = async projectName => {
  * @param {string} projectName Name of project disable billing on
  * @return {string} Text containing response from disabling billing
  */
-const _disableBillingForProject = async projectName => {
+const _disableBillingForProject = async (projectName) => {
   const res = await billing.updateBillingInfo({
     name: projectName,
     resource: {billingAccountName: ''}, // Disable billing
@@ -168,8 +168,8 @@ const _listRunningInstances = async (projectId, zone) => {
   });
 
   const instances = res.data.items || [];
-  const ranInstances = instances.filter(item => item.status === 'RUNNING');
-  return ranInstances.map(item => item.name);
+  const ranInstances = instances.filter((item) => item.status === 'RUNNING');
+  return ranInstances.map((item) => item.name);
 };
 
 /**
@@ -178,14 +178,14 @@ const _listRunningInstances = async (projectId, zone) => {
  */
 const _stopInstances = async (projectId, zone, instanceNames) => {
   await Promise.all(
-    instanceNames.map(instanceName => {
+    instanceNames.map((instanceName) => {
       return compute.instances
         .stop({
           project: projectId,
           zone: zone,
           instance: instanceName,
         })
-        .then(res => {
+        .then((res) => {
           console.log(`Instance stopped successfully: ${instanceName}`);
           return res.data;
         });
@@ -217,8 +217,10 @@ const _listStoppedInstances = async (projectId, zone) => {
   });
 
   const instances = res.data.items || [];
-  const stoppedInstances = instances.filter(item => item.status !== 'RUNNING');
-  return stoppedInstances.map(item => item.name);
+  const stoppedInstances = instances.filter(
+    (item) => item.status !== 'RUNNING'
+  );
+  return stoppedInstances.map((item) => item.name);
 };
 
 /**
@@ -230,7 +232,7 @@ const _startInstances = async (projectId, zone, instanceNames) => {
     return 'No stopped instances were found.';
   }
   await Promise.all(
-    instanceNames.map(instanceName => {
+    instanceNames.map((instanceName) => {
       return compute.instances.start({
         project: projectId,
         zone: zone,

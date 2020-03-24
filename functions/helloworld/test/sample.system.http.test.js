@@ -23,7 +23,7 @@ describe('system tests', () => {
       .post('/helloHttp')
       .send({name: 'John'})
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         assert.strictEqual(response.text, 'Hello John!');
       });
   });
@@ -33,7 +33,7 @@ describe('system tests', () => {
     await supertest
       .get('/helloHttp')
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         assert.strictEqual(response.text, 'Hello World!');
       });
   });

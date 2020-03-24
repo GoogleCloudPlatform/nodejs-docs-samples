@@ -61,14 +61,14 @@ describe('functions/imagemagick tests', () => {
   });
 
   before(() => {
-    startFF = port => {
+    startFF = (port) => {
       return execPromise(
         `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
         {timeout: 15000, shell: true, cwd}
       );
     };
 
-    stopFF = async ffProc => {
+    stopFF = async (ffProc) => {
       try {
         return await ffProc;
       } catch (err) {
@@ -83,11 +83,11 @@ describe('functions/imagemagick tests', () => {
     };
   });
 
-  const stubConsole = function() {
+  const stubConsole = function () {
     sinon.stub(console, `error`);
   };
 
-  const restoreConsole = function() {
+  const restoreConsole = function () {
     console.error.restore();
   };
 

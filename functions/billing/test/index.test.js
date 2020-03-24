@@ -39,7 +39,7 @@ after(async () => {
   await require('../').startBilling(pubsubMessage);
 });
 
-const handleLinuxFailures = async proc => {
+const handleLinuxFailures = async (proc) => {
   try {
     return await proc;
   } catch (err) {

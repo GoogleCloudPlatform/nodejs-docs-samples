@@ -23,12 +23,12 @@ const cwd = path.join(__dirname, '../');
 
 const requestObj = supertest(proxyquire(path.join(cwd, 'server'), {process}));
 
-const stubConsole = function() {
+const stubConsole = function () {
   sinon.stub(console, `error`);
   sinon.stub(console, `log`);
 };
 
-const restoreConsole = function() {
+const restoreConsole = function () {
   console.log.restore();
   console.error.restore();
 };
@@ -40,7 +40,7 @@ it('should send greetings', async () => {
   await requestObj
     .get('/')
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.strictEqual(response.text, 'Hello from App Engine!');
     });
 });
@@ -49,7 +49,7 @@ it('should display form', async () => {
   await requestObj
     .get('/submit')
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.strictEqual(
         response.text.includes('textarea name="message" placeholder="Message"'),
         true
@@ -64,7 +64,7 @@ it('should record message', async () => {
       message: 'sample-message',
     })
     .expect(200)
-    .expect(response => {
+    .expect((response) => {
       assert.strictEqual(response.text, 'Thanks for your message!');
     });
 });

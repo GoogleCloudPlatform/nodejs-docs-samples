@@ -34,12 +34,12 @@ const errorMsg = (name, propertyName) => {
   return `${name} not provided. Make sure you have a "${propertyName}" property in your request`;
 };
 
-const stubConsole = function() {
+const stubConsole = function () {
   sinon.stub(console, `error`);
   sinon.stub(console, `log`);
 };
 
-const restoreConsole = function() {
+const restoreConsole = function () {
   console.log.restore();
   console.error.restore();
 };
@@ -153,12 +153,7 @@ describe('saveResult', () => {
       assert.ok(console.log.calledWith('File saved.'));
 
       // Check file was actually saved
-      assert.ok(
-        storage
-          .bucket(RESULT_BUCKET)
-          .file(newFilename)
-          .exists()
-      );
+      assert.ok(storage.bucket(RESULT_BUCKET).file(newFilename).exists());
     });
   });
 });

@@ -58,7 +58,7 @@ google.auth.getApplicationDefault((err, authClient) => {
 
     if (companies.length) {
       console.log('Companies:');
-      companies.forEach(company => console.log(company.name));
+      companies.forEach((company) => console.log(company.name));
     } else {
       console.log(`No companies found.`);
     }

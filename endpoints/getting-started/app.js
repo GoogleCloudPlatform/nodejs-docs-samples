@@ -26,10 +26,7 @@ app.use(bodyParser.json());
 // [END setup]
 
 app.post('/echo', (req, res) => {
-  res
-    .status(200)
-    .json({message: req.body.message})
-    .end();
+  res.status(200).json({message: req.body.message}).end();
 });
 
 const authInfoHandler = (req, res) => {
@@ -38,10 +35,7 @@ const authInfoHandler = (req, res) => {
   if (encodedInfo) {
     authUser = JSON.parse(Buffer.from(encodedInfo, 'base64'));
   }
-  res
-    .status(200)
-    .json(authUser)
-    .end();
+  res.status(200).json(authUser).end();
 };
 
 app.get('/auth/info/googlejwt', authInfoHandler);

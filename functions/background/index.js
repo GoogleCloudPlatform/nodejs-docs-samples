@@ -25,7 +25,7 @@ const {request} = require('gaxios');
  * @param {object} data.endpoint The URL to send the request to.
  * @returns {Promise}
  */
-exports.helloPromise = data => {
+exports.helloPromise = (data) => {
   return request({
     url: data.endpoint,
   });

@@ -33,9 +33,7 @@ const baseCmd = 'gcloud functions';
 describe('system tests', () => {
   it('helloGCS: should print uploaded message', async () => {
     // Subtract time to work-around local-GCF clock difference
-    const startTime = moment()
-      .subtract(2, 'minutes')
-      .toISOString();
+    const startTime = moment().subtract(2, 'minutes').toISOString();
 
     // Upload file
     const filepath = path.join(__dirname, localFileName);
@@ -44,7 +42,7 @@ describe('system tests', () => {
     });
 
     // Wait for logs to become consistent
-    await promiseRetry(retry => {
+    await promiseRetry((retry) => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
         .toString();
@@ -60,16 +58,14 @@ describe('system tests', () => {
 
   it('helloGCS: should print metadata updated message', async () => {
     // Subtract time to work-around local-GCF clock difference
-    const startTime = moment()
-      .subtract(2, 'minutes')
-      .toISOString();
+    const startTime = moment().subtract(2, 'minutes').toISOString();
 
     // Update file metadata
     const file = bucket.file(gcsFileName);
     await file.setMetadata(gcsFileName, {foo: 'bar'});
 
     // Wait for logs to become consistent
-    await promiseRetry(retry => {
+    await promiseRetry((retry) => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
         .toString();
@@ -84,15 +80,13 @@ describe('system tests', () => {
 
   it('helloGCS: should print deleted message', async () => {
     // Subtract time to work-around local-GCF clock difference
-    const startTime = moment()
-      .subtract(2, 'minutes')
-      .toISOString();
+    const startTime = moment().subtract(2, 'minutes').toISOString();
 
     // Delete file
     bucket.deleteFiles();
 
     // Wait for logs to become consistent
-    await promiseRetry(retry => {
+    await promiseRetry((retry) => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
         .toString();

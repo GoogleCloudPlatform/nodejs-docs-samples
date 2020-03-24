@@ -845,7 +845,6 @@ const sendCommand = async (
 
   try {
     const responses = await iotClient.sendCommandToDevice(request);
-
     console.log('Sent command: ', responses[0]);
   } catch (err) {
     console.error('Could not send command:', err);

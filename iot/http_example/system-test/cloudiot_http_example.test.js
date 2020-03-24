@@ -17,7 +17,6 @@
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
 const childProcess = require('child_process');
 
@@ -29,7 +28,9 @@ const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --devi
 const cwd = path.join(__dirname, '..');
 const installDeps = 'npm install';
 
-assert.ok(tools.run(installDeps, `${cwd}/../manager`));
+assert.ok(
+  childProcess.execSync(installDeps, {cwd: `${cwd}/../manager`, shell: true})
+);
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
@@ -55,19 +56,22 @@ it('should receive configuration message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
+    {cwd, shell: true}
   );
   childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
-    cwd
+    {cwd, shell: true}
   );
 
   const output = childProcess.execSync(
     `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
-    cwd
+    {cwd, shell: true}
   );
 
   assert.strictEqual(new RegExp(/Getting config/).test(output), true);
@@ -75,32 +79,38 @@ it('should receive configuration message', () => {
   // Check / cleanup
   childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
   childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should send event message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
+    {cwd, shell: true}
   );
   childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
-    cwd
+    {cwd, shell: true}
   );
 
   const output = childProcess.execSync(
     `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
-    cwd
+    {cwd, shell: true}
   );
 
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
@@ -108,42 +118,51 @@ it('should send event message', async () => {
   // Check / cleanup
   await childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
   await childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should send state message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
-  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
   await childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
+    {cwd, shell: true}
   );
   await childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
-    cwd
+    {cwd, shell: true}
   );
 
   const output = await childProcess.execSync(
     `${cmd} --messageType=state --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
-    cwd
+    {cwd, shell: true}
   );
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 
   // Check / cleanup
   await childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
   await childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });

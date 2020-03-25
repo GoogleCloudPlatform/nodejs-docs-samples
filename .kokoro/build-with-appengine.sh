@@ -65,7 +65,7 @@ npm install
 
 # If tests are running against master, configure Build Cop
 # to open issues on failures:
-if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"continuous"* ]]; then
+if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_OUTPUT=sponge_log.xml
 	export MOCHA_REPORTER=xunit
 	cleanup() {

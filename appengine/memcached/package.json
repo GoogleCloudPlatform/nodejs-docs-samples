@@ -10,13 +10,14 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "repo-tools test app"
+    "test": "mocha test/ --timeout=60000 --exit"
   },
   "dependencies": {
     "express": "^4.16.4",
     "memjs": "^1.2.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0"
+    "mocha": "^7.0.0",
+    "supertest": "^4.0.2"
   }
 }

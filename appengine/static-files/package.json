@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "repo-tools test app --url localhost:8080/static/main.css"
+    "test": "mocha test/*.test.js --url localhost:8080/static/main.css"
   },
   "cloud-repo-tools": {
     "test": {
@@ -25,6 +25,7 @@
     "pug": "^2.0.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0"
+    "mocha": "^7.0.0",
+    "supertest": "^4.0.2"
   }
 }

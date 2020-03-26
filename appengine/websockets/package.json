@@ -13,16 +13,16 @@
     "start": "node app.js",
     "lint": "eslint .",
     "fix": "eslint --fix .",
-    "test": "repo-tools test app & mocha */*.test.js --timeout=30000 --exit",
+    "test": "mocha test/*.test.js --timeout=30000 --exit",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
     "express": "^4.15.4",
     "pug": "^2.0.3",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "eslint": "^6.0.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-node": "^11.0.0",

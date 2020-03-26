@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "repo-tools test app && mocha */*.test.js --timeout=30000 --exit"
+    "test": "mocha */*.test.js --timeout=30000 --exit"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^1.0.0",
@@ -20,7 +20,6 @@
     "pug": "^2.0.1"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^7.0.0",
     "sinon": "^9.0.0",

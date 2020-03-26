@@ -86,6 +86,18 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
+# If tests are running against master, configure Build Cop
+# to open issues on failures:
+if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
+	export MOCHA_REPORTER_OUTPUT=sponge_log.xml
+	export MOCHA_REPORTER=xunit
+	cleanup() {
+	chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
+	$KOKORO_GFILE_DIR/linux_amd64/buildcop
+	}
+	trap cleanup EXIT HUP
+fi
+
 npm test
 
 exit $?

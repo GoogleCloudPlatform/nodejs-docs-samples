@@ -22,4 +22,6 @@ const handleRequest = function (req, res) {
 };
 const www = http.createServer(handleRequest);
 www.listen(process.env.PORT || 8080);
+
+module.exports = www;
 // [END all]

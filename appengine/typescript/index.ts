@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const PORT = Number(process.env.PORT) || 8080;
-import * as express from "express";
+const express = require('express');
 
 const app = express();
 
@@ -24,3 +24,5 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
+
+module.exports = app;

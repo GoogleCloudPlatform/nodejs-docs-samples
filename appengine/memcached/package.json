@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha test/ --timeout=60000 --exit"
+    "test": "mocha test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {
     "express": "^4.16.4",

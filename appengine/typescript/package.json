@@ -11,7 +11,7 @@
   "scripts": {
     "prepare": "npm run gcp-build",
     "pretest": "npm run gcp-build",
-    "test": "mocha test/*.test.js",
+    "test": "mocha test/*.test.ts",
     "posttest": "npm run lint",
     "lint": "tslint -p .",
     "start": "node ./index.js",

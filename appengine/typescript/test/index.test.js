@@ -3,7 +3,7 @@ const path = require('path');
 const app = require(path.join(__dirname, '../', 'index.ts'));
 
 after(function() {
-  process.exit(0);
+  process.exitCode(0);
 })
 
 it('should be listening', async () => {

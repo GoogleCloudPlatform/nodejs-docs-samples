@@ -1,8 +1,11 @@
-const supertest = require('supertest');
-const path = require('path');
-const app = require(path.join(__dirname, '../', 'app.js'));
+const app = require('../app');
 
+const request = require('supertest');
 
-it('should be listening', async () => {
-  await supertest(app).get('/').expect(200);
+describe('start app', () => {
+  describe('GET /', () => {
+    it('should get 200', (done) => {
+      request(app).get('/').expect(200, done);
+    });
+  });
 });

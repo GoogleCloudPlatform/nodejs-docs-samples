@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha test/*.test.js --url localhost:8080/static/main.css"
+    "test": "mocha --exit test/*.test.js --url localhost:8080/static/main.css"
   },
   "cloud-repo-tools": {
     "test": {

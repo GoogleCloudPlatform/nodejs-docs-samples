@@ -13,7 +13,7 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "system-test": "mocha test/ --timeout=60000 --exit",
+    "system-test": "mocha --exit test/*.test.js",
     "test": "npm run system-test"
   },
   "dependencies": {

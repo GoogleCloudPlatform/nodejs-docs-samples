@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "system-test": "mocha test/*.test.js --timeout=30000 --exit",
+    "system-test": "mocha --exit test/*.test.js",
     "test": "npm run system-test"
   },
   "dependencies": {},

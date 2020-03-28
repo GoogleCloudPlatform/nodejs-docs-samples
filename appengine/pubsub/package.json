@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha test/*.test.js --timeout=30000 --exit"
+    "test": "mocha --exit test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^1.0.0",

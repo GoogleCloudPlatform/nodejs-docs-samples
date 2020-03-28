@@ -20,6 +20,7 @@
     "pug": "^2.0.1"
   },
   "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^7.0.0",
     "sinon": "^9.0.0",

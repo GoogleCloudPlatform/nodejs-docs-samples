@@ -19,8 +19,10 @@ set -e;
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 
 # Activate mocha config
+export MOCHA_REPORTER_OUTPUT=sponge_log.xml
+export MOCHA_REPORTER=xunit
 pushd github/nodejs-docs-samples
-mv .kokoro/.mocharc.yml .
+mv .kokoro/.mocharc.js .
 popd
 
 # Update gcloud
@@ -66,8 +68,6 @@ npm install
 # If tests are running against master, configure Build Cop
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"presubmit"* ]]; then
-	export MOCHA_REPORTER_OUTPUT=sponge_log.xml
-	export MOCHA_REPORTER=xunit
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}
 	cleanup() {
 	chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop

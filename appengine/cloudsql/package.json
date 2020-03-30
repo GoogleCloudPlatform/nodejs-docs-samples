@@ -13,9 +13,9 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "unit-test": "mocha --exit test/createTables.test.js; mocha --exit server.test.js",
+    "unit-test": "mocha test/*.test.js --timeout=60000",
     "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME=tcp:$SQL_PORT &",
-    "system-test": "mocha --exit test/serverListening.test.js",
+    "system-test": "repo-tools test app -- server.js",
     "system-test-proxy": "npm run start-proxy; npm run system-test",
     "all-test": "npm run unit-test && npm run system-test",
     "test": "npm -- run all-test"

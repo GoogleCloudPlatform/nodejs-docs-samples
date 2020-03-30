@@ -26,7 +26,7 @@ const {
 // [END opentelemetry_trace_import]
 
 // [START setup_exporter]
-// Enable OpenTelemetry exporters to export traces to Cloud Trace exporter.
+// Enable OpenTelemetry exporters to export traces to Google Cloud Trace.
 // Exporters use Application Default Credentials (ADCs) to authenticate.
 // See https://developers.google.com/identity/protocols/application-default-credentials
 // for more details.

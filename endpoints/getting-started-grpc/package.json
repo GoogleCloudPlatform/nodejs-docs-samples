@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha --exit system-test/*.test.js"
+    "test": "mocha --exit system-test/*.test.js --timeout=60000"
   },
   "dependencies": {
     "google-auth-library": "^6.0.0",

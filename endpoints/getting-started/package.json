@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha --exit test/*.test.js"
+    "test": "mocha -- test/*.test.js --timeout=20000"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

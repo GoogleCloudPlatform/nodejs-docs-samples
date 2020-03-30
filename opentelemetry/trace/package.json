@@ -1,0 +1,33 @@
+{
+  "name": "opentelemetry-samples",
+  "description": "An example of exporting a traces from OpenTelemetry Node.js to Cloud Trace Exporter.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "start": "node traces-quickstart.js",
+    "test": "repo-tools test run --cmd mocha -- system-test/*.test.js --timeout=5000 --exit"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "0.5.2",
+    "@opentelemetry/tracing": "0.5.2",
+    "@opentelemetry/node": "0.5.2",
+    "@google-cloud/opentelemetry-cloud-trace-exporter": "0.1.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^7.0.0"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  }
+}

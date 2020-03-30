@@ -72,8 +72,10 @@ export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
 # Activate mocha config
+export MOCHA_REPORTER_OUTPUT=sponge_log.xml
+export MOCHA_REPORTER=xunit
 pushd github/nodejs-docs-samples
-mv .kokoro/.mocharc.yml .
+mv .kokoro/.mocharc.js .
 popd
 
 cd github/nodejs-docs-samples/${PROJECT}
@@ -89,8 +91,7 @@ gcloud config set project $GCLOUD_PROJECT
 # If tests are running against master, configure Build Cop
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
-	export MOCHA_REPORTER_OUTPUT=sponge_log.xml
-	export MOCHA_REPORTER=xunit
+	export MOCHA_REPORTER_SUITENAME=${PROJECT}
 	cleanup() {
 	chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
 	$KOKORO_GFILE_DIR/linux_amd64/buildcop

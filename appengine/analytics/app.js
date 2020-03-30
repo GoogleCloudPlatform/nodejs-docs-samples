@@ -72,4 +72,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
+
+module.exports = app;
 // [END gae_flex_analytics_track_event]

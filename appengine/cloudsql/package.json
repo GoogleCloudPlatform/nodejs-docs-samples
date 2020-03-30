@@ -18,7 +18,7 @@
     "system-test": "repo-tools test app -- server.js",
     "system-test-proxy": "npm run start-proxy; npm run system-test",
     "all-test": "npm run unit-test && npm run system-test",
-    "test": "repo-tools test run --cmd npm -- run all-test"
+    "test": "npm -- run all-test"
   },
   "dependencies": {
     "express": "^4.16.4",

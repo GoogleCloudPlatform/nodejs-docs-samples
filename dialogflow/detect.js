@@ -105,7 +105,7 @@ async function detectEventIntent(
   eventName,
   languageCode
 ) {
-  const {struct} = require('pb-util');
+  const { struct } = require('pb-util');
 
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
@@ -122,7 +122,7 @@ async function detectEventIntent(
     queryInput: {
       event: {
         name: eventName,
-        parameters: struct.encode({foo: 'bar'}),
+        parameters: struct.encode({ foo: 'bar' }),
         languageCode: languageCode,
       },
     },
@@ -168,7 +168,7 @@ async function detectAudioIntent(
   // [START dialogflow_detect_intent_audio]
   const fs = require('fs');
   const util = require('util');
-  const {struct} = require('pb-util');
+  const { struct } = require('pb-util');
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
 
@@ -236,8 +236,8 @@ async function streamingDetectIntent(
   // [START dialogflow_detect_intent_streaming]
   const fs = require('fs');
   const util = require('util');
-  const {Transform, pipeline} = require('stream');
-  const {struct} = require('pb-util');
+  const { Transform, pipeline } = require('stream');
+  const { struct } = require('pb-util');
 
   const pump = util.promisify(pipeline);
   // Imports the Dialogflow library
@@ -324,7 +324,7 @@ async function streamingDetectIntent(
     new Transform({
       objectMode: true,
       transform: (obj, _, next) => {
-        next(null, {inputAudio: obj});
+        next(null, { inputAudio: obj });
       },
     }),
     detectStream

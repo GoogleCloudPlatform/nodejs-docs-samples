@@ -14,8 +14,6 @@
 
 'use strict';
 
-const projectId = process.env.GCLOUD_PROJECT;
-const {struct} = require('pb-util');
 const sessionId = require('uuid/v1')();
 const util = require('util');
 
@@ -47,78 +45,6 @@ async function createKnowledgeBase(projectId, displayName) {
   console.log(`displayName: ${result.displayName}`);
 
   // [END dialogflow_create_knowledge_base]
-}
-
-async function getKnowledgeBase(projectId, knowledgeBaseId) {
-  // [START dialogflow_get_knowledge_base]
-  // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
-  // Instantiate a DialogFlow client.
-  const client = new dialogflow.KnowledgeBasesClient({
-    projectId: projectId,
-  });
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'ID of GCP project associated with your Dialogflow agent';
-  // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
-  const formattedName = client.knowledgeBasePath(projectId, knowledgeBaseId);
-
-  const [result] = await client.getKnowledgeBase({name: formattedName});
-  console.log(`displayName: ${result.displayName}`);
-  console.log(`name: ${result.name}`);
-  // [END dialogflow_get_knowledge_base]
-}
-
-async function listKnowledgeBases(projectId) {
-  // [START dialogflow_list_knowledge_base]
-  // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
-  // Instantiate a DialogFlow KnowledgeBasesClient.
-  const client = new dialogflow.KnowledgeBasesClient({
-    projectPath: projectId,
-  });
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'ID of GCP project associated with your Dialogflow agent';
-
-  const formattedParent = client.projectPath(projectId);
-
-  const [resources] = await client.listKnowledgeBases({
-    parent: formattedParent,
-  });
-  resources.forEach(r => {
-    console.log(`displayName: ${r.displayName}`);
-    console.log(`name: ${r.name}`);
-  });
-  // [END dialogflow_list_knowledge_base]
-}
-
-async function deleteKnowledgeBase(projectId, knowledgeBaseFullName) {
-  // [START dialogflow_delete_knowledge_base]
-  // Instantiate a DialogFlow client.
-  const dialogflow = require('dialogflow').v2beta1;
-
-  // Instantiate a DialogFlow KnowledgeBasesClient.
-  const client = new dialogflow.KnowledgeBasesClient();
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'ID of GCP project associated with your Dialogflow agent';
-  // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
-
-  const [result] = await client.deleteKnowledgeBase({
-    name: knowledgeBaseFullName,
-  });
-
-  if (result.name === 'undefined') console.log(`Knowledge Base deleted`);
-  // [END dialogflow_delete_knowledge_base]
 }
 
 async function createDocument(
@@ -169,86 +95,6 @@ async function createDocument(
   console.log(`source...${response.source}`);
 
   // [END dialogflow_create_document]
-}
-
-async function listDocuments(projectId, knowledgeBaseFullName) {
-  // [START dialogflow_list_document]
-  // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
-  // Instantiate a DialogFlow Documents client.
-  const client = new dialogflow.DocumentsClient({
-    projectId: projectId,
-  });
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'ID of GCP project associated with your Dialogflow agent';
-  // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
-
-  const [resources] = await client.listDocuments({
-    parent: knowledgeBaseFullName,
-  });
-  console.log(
-    `There are ${resources.length} documents in ${knowledgeBaseFullName}`
-  );
-  resources.forEach(resource => {
-    console.log(`KnowledgeType: ${resource.knowledgeType}`);
-    console.log(`displayName: ${resource.displayName}`);
-    console.log(`mimeType: ${resource.mimeType}`);
-    console.log(`contentUri: ${resource.contentUri}`);
-    console.log(`source: ${resource.source}`);
-    console.log(`name: ${resource.name}`);
-  });
-  // [END dialogflow_list_document]
-}
-
-async function getDocument(documentId) {
-  // [START dialogflow_get_document]
-  // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
-  // Instantiate a DialogFlow Documents client.
-  const client = new dialogflow.DocumentsClient({
-    projectId: projectId,
-  });
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const documentId = `full path to document in knowledge base, e.g. myKnowledgeBase/documents/myDoc`;
-
-  const [r] = await client.getDocument({name: documentId});
-  console.log(` KnowledgeType: ${r.knowledgeType}`);
-  console.log(` displayName: ${r.displayName}`);
-  console.log(` mimeType: ${r.mimeType}`);
-  console.log(` contentUri: ${r.contentUri}`);
-  console.log(` source: ${r.source}`);
-  console.log(` name: ${r.name}`);
-  // [END dialogflow_get_document]
-}
-
-async function deleteDocument(projectId, documentId) {
-  // [START dialogflow_delete_document]
-  // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
-  // Instantiate a DialogFlow Documents client.
-  const client = new dialogflow.DocumentsClient({
-    projectId: projectId,
-  });
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'ID of GCP project associated with your Dialogflow agent';
-  // const documentId = `full path to document in knowledge base, e.g. myKnowledgeBase/documents/myDoc`;
-
-  const [operation] = await client.deleteDocument({name: documentId});
-  const responses = await operation.promise();
-  if (responses[2].done === true) console.log(`document deleted`);
-  // [END dialogflow_delete_document]
 }
 
 async function detectIntentandSentiment(
@@ -369,7 +215,7 @@ async function detectIntentKnowledge(
   projectId,
   sessionId,
   languageCode,
-  knowledgeBaseFullName,
+  knowledgeBaseId,
   query
 ) {
   // [START dialogflow_detect_intent_knowledge]
@@ -385,7 +231,7 @@ async function detectIntentKnowledge(
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const sessionId = `user specific ID of session, e.g. 12345`;
   // const languageCode = 'BCP-47 language code, e.g. en-US';
-  // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
+  // const knowledgeBaseId = `the ID of your KnowledgeBase`;
   // const query = `phrase(s) to pass to detect, e.g. I'd like to reserve a room for six people`;
 
   // Define session path
@@ -393,7 +239,7 @@ async function detectIntentKnowledge(
   const knowbase = new dialogflow.KnowledgeBasesClient();
   const knowledgeBasePath = knowbase.knowledgeBasePath(
     projectId,
-    knowledgeBaseFullName
+    knowledgeBaseId
   );
 
   // The audio query request
@@ -428,86 +274,9 @@ async function detectIntentKnowledge(
   // [END dialogflow_detect_intent_knowledge]
 }
 
-async function detectIntentwithModelSelection(
-  projectId,
-  sessionId,
-  audioFilePath,
-  languageCode,
-  model
-) {
-  // [START dialogflow_detect_intent_with_model_selection]
-  const fs = require('fs');
-
-  // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
-  // Instantiate a DialogFlow client.
-  const sessionClient = new dialogflow.SessionsClient();
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'ID of GCP project associated with your Dialogflow agent';
-  // const sessionId = `user specific ID of session, e.g. 12345`;
-  // const audioFilePath = `path to local audio file, e.g. ./resources/book_a_room.wav`;
-  // const languageCode = 'BCP-47 language code, e.g. en-US';
-  // const model = `speech mode selected for given request, e.g. video, phone_call, command_and_search, default`;
-
-  // Define session path
-  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-  // Read the content of the audio file and send it as part of the request.
-  const readFile = util.promisify(fs.readFile);
-  const inputAudio = await readFile(audioFilePath);
-  const request = {
-    session: sessionPath,
-    queryInput: {
-      audioConfig: {
-        audioEncoding: `AUDIO_ENCODING_LINEAR_16`,
-        sampleRateHertz: 16000,
-        languageCode: languageCode,
-        model: model,
-      },
-    },
-    inputAudio: inputAudio,
-  };
-  // Recognizes the speech in the audio and detects its intent.
-  const responses = await sessionClient.detectIntent(request);
-  const contextClient = new dialogflow.ContextsClient();
-  const result = responses[0].queryResult;
-  console.log(`  Query: ${result.queryText}`);
-  console.log(`  Response: ${result.fulfillmentText}`);
-  if (result.intent) {
-    console.log(`  Intent: ${result.intent.displayName}`);
-  } else {
-    console.log(`  No intent matched.`);
-  }
-  const parameters = JSON.stringify(struct.decode(result.parameters));
-  console.log(`  Parameters: ${parameters}`);
-  if (result.outputContexts && result.outputContexts.length) {
-    console.log(`  Output contexts:`);
-    result.outputContexts.forEach(context => {
-      const contextId = contextClient.matchContextFromContextName(context.name);
-      const contextParameters = JSON.stringify(
-        struct.decode(context.parameters)
-      );
-      console.log(`    ${contextId}`);
-      console.log(`      lifespan: ${context.lifespanCount}`);
-      console.log(`      parameters: ${contextParameters}`);
-    });
-  }
-  // [END dialogflow_detect_intent_with_model_selection]
-}
-
 const cli = require(`yargs`)
   .demand(1)
   .options({
-    audioFilePath: {
-      alias: `i`,
-      type: `string`,
-      default: `./resources/book_a_room.wav`,
-      requiresArg: true,
-      description: `Audio File to send to Detect Intent with Model Selection`,
-    },
     documentId: {
       alias: `d`,
       type: `string`,
@@ -527,21 +296,6 @@ const cli = require(`yargs`)
       requiresArg: true,
       description: `uri of document to be added`,
     },
-    encoding: {
-      alias: 'e',
-      default: 'AUDIO_ENCODING_LINEAR_16',
-      choices: [
-        'AUDIO_ENCODING_LINEAR_16',
-        'AUDIO_ENCODING_FLAC',
-        'AUDIO_ENCODING_MULAW',
-        'AUDIO_ENCODING_AMR',
-        'AUDIO_ENCODING_AMR_WB',
-        'AUDIO_ENCODING_OGG_OPUS',
-        'AUDIO_ENCODING_SPEEX_WITH_HEADER_BYTE',
-      ],
-      requiresArg: true,
-      description: 'The encoding of the input audio.',
-    },
     knowledgeBaseName: {
       alias: `k`,
       default: `TestKnowledgeBase`,
@@ -554,12 +308,6 @@ const cli = require(`yargs`)
       type: `string`,
       requiresArg: true,
       description: `full path knowledge base`,
-    },
-    knowledgeBaseId: {
-      alias: `b`,
-      type: `string`,
-      requiresArg: `true`,
-      description: `specific Id string for knowledge base`,
     },
     knowledgeTypes: {
       alias: `t`,
@@ -581,13 +329,6 @@ const cli = require(`yargs`)
       type: `string`,
       requiresArg: true,
       description: `The mime_type of the Document`,
-    },
-    model: {
-      alias: `o`,
-      default: `phone_call`,
-      type: `string`,
-      requiresArg: true,
-      description: `The Speech model to return response: possible models- 'video', 'phone_call', 'command_and_search', 'default'`,
     },
     outputFile: {
       alias: `f`,
@@ -614,14 +355,6 @@ const cli = require(`yargs`)
       description: 'An array of text queries',
       default: `Where is my data stored?`,
     },
-    sampleRateHertz: {
-      alias: 'r',
-      type: 'number',
-      default: 16000,
-      description:
-        'The sample rate in Hz of the input audio. Only ' +
-        'required if the input audio is in raw format.',
-    },
     sessionId: {
       alias: 's',
       default: sessionId,
@@ -633,21 +366,6 @@ const cli = require(`yargs`)
   })
   .command(`createKnowledgeBase`, `Creates a new knowledge base`, {}, opts =>
     createKnowledgeBase(opts.projectId, opts.knowledgeBaseName)
-  )
-  .command(
-    `getKnowledgeBase`,
-    `Gets Knowledge base by Knowledge Base Name`,
-    {},
-    opts => getKnowledgeBase(opts.projectId, opts.knowledgeBaseId)
-  )
-  .command(
-    `listKnowledgeBases`,
-    `Lists all knowledge bases present by ProjectId`,
-    {},
-    opts => listKnowledgeBases(opts.projectId)
-  )
-  .command(`deleteKnowledgeBase`, `Deletes a knowledge base`, {}, opts =>
-    deleteKnowledgeBase(opts.projectId, opts.knowledgeBaseFullName)
   )
   .command(
     `createDocument`,
@@ -662,24 +380,6 @@ const cli = require(`yargs`)
         opts.knowledgeTypes,
         opts.mimeType
       )
-  )
-  .command(
-    `getDocument`,
-    `Gets a specific document from the knowledge base`,
-    {},
-    opts => getDocument(opts.documentId)
-  )
-  .command(
-    `listDocuments`,
-    `Lists all the documents belonging to a knowledge base`,
-    {},
-    opts => listDocuments(opts.projectId, opts.knowledgeBaseFullName)
-  )
-  .command(
-    `deleteDocument`,
-    `Deletes a specific document from a knowledge base`,
-    {},
-    opts => deleteDocument(opts.projectId, opts.documentId)
   )
   .command(
     `detectIntentwithTexttoSpeechResponse`,
@@ -719,36 +419,14 @@ const cli = require(`yargs`)
         opts.languageCode
       )
   )
-  .command(
-    `detectIntentwithModelSelection`,
-    `Returns result of detect intent with model selection on an audio file as input`,
-    {},
-    opts =>
-      detectIntentwithModelSelection(
-        opts.projectId,
-        opts.sessionId,
-        opts.audioFilePath,
-        opts.languageCode,
-        opts.model
-      )
-  )
   .example(`node $0 createKnowledgeBase -k "newTestKnowledgeBase"`)
-  .example(`node $0 getKnowledgeBase -n "KNOWLEDGEBASEFULLNAME"`)
-  .example(`node $0 listKnowledgeBases`)
-  .example(`node $0 deleteKnowledgeBase -n "KNOWLEDGEBASEFULLNAME"`)
   .example(
     `node $0 createDocument -n "KNOWLEDGEBASEFULLNAME" -p "URIHTMLPATHTODOC" -m "MyDoc"`
   )
-  .example(`node $0 getDocument -d "FULLDOCUMENTID"`)
-  .example(`node $0 listDocuments -n "KNOWLEDGEBASEFULLNAME"`)
-  .example(`node $0 deleteDocument -d "FULLDOCUMENTID"`)
   .example(`node $0 detectIntentwithTexttoSpeechResponse "How do I sign up?"`)
   .example(`node $0 detectIntentKnowledge -q "how do i sign up?"`)
   .example(
     `node $0 detectIntentandSentiment "Book a great room for six great folks!"`
-  )
-  .example(
-    `node $0 detectIntentwithModelSelection -i "./resources/book_a_room.wav" -l "en-US" -o "phone_call"`
   )
   .wrap(120)
   .recommendCommands()

@@ -22,7 +22,6 @@
     "nconf": "^0.10.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^7.0.0",
     "sinon": "^9.0.0"
   },

@@ -12,7 +12,6 @@
     "test": "mocha system-test/*.test.js --timeout=60000"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "@google-cloud/pubsub": "^1.0.0",
     "mocha": "^7.0.0"
   },

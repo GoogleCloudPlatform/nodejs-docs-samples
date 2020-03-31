@@ -11,7 +11,7 @@
   "scripts": {
     "prepare": "npm run gcp-build",
     "pretest": "npm run gcp-build",
-    "test": "repo-tools test app -- index.js",
+    "test": "repo-tools test app -- index.js",    
     "posttest": "npm run lint",
     "lint": "tslint -p .",
     "start": "node ./index.js",

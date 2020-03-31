@@ -46,8 +46,8 @@ async function inspectString(
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // The customInfoTypes of information to match
-  // const customInfoTypes = [{ name: 'DICT_TYPE', dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { name: 'REGEX_TYPE', regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
+  // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
+  //   { infoType: { name: 'REGEX_TYPE' }, regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
 
   // Whether to include the matching string
   // const includeQuote = true;
@@ -129,8 +129,8 @@ async function inspectFile(
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // The customInfoTypes of information to match
-  // const customInfoTypes = [{ name: 'DICT_TYPE', dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { name: 'REGEX_TYPE', regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
+  // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
+  //   { infoType: { name: 'REGEX_TYPE' }, regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
 
   // Whether to include the matching string
   // const includeQuote = true;
@@ -225,8 +225,8 @@ async function inspectGCSFile(
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // The customInfoTypes of information to match
-  // const customInfoTypes = [{ name: 'DICT_TYPE', dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { name: 'REGEX_TYPE', regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
+  // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
+  //   { infoType: { name: 'REGEX_TYPE' }, regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
 
   // The name of the Pub/Sub topic to notify once the job completes
   // TODO(developer): create a Pub/Sub topic to use for this
@@ -367,8 +367,8 @@ async function inspectDatastore(
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // The customInfoTypes of information to match
-  // const customInfoTypes = [{ name: 'DICT_TYPE', dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { name: 'REGEX_TYPE', regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
+  // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
+  //   { infoType: { name: 'REGEX_TYPE' }, regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
 
   // The name of the Pub/Sub topic to notify once the job completes
   // TODO(developer): create a Pub/Sub topic to use for this
@@ -512,8 +512,8 @@ async function inspectBigquery(
   // const infoTypes = [{ name: 'PHONE_NUMBER' }, { name: 'EMAIL_ADDRESS' }, { name: 'CREDIT_CARD_NUMBER' }];
 
   // The customInfoTypes of information to match
-  // const customInfoTypes = [{ name: 'DICT_TYPE', dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { name: 'REGEX_TYPE', regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
+  // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
+  //   { infoType: { name: 'REGEX_TYPE' }, regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
 
   // The name of the Pub/Sub topic to notify once the job completes
   // TODO(developer): create a Pub/Sub topic to use for this

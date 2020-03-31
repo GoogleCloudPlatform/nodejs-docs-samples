@@ -121,12 +121,12 @@ async function listInspectTemplates(callingProjectId) {
 
       const inspectConfig = template.inspectConfig;
       const infoTypes = inspectConfig.infoTypes.map(x => x.name);
-      console.log(`  InfoTypes:`, infoTypes.join(' '));
-      console.log(`  Minimum likelihood:`, inspectConfig.minLikelihood);
-      console.log(`  Include quotes:`, inspectConfig.includeQuote);
+      console.log('  InfoTypes:', infoTypes.join(' '));
+      console.log('  Minimum likelihood:', inspectConfig.minLikelihood);
+      console.log('  Include quotes:', inspectConfig.includeQuote);
 
       const limits = inspectConfig.limits;
-      console.log(`  Max findings per request:`, limits.maxFindingsPerRequest);
+      console.log('  Max findings per request:', limits.maxFindingsPerRequest);
     });
   } catch (err) {
     console.log(`Error in listInspectTemplates: ${err.message || err}`);
@@ -166,8 +166,8 @@ async function deleteInspectTemplate(templateName) {
 const cli = require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `create`,
-    `Create a new DLP inspection configuration template.`,
+    'create',
+    'Create a new DLP inspection configuration template.',
     {
       minLikelihood: {
         alias: 'm',
@@ -229,12 +229,12 @@ const cli = require(`yargs`) // eslint-disable-line
         opts.maxFindings
       )
   )
-  .command(`list`, `List DLP inspection configuration templates.`, {}, opts =>
+  .command('list', 'List DLP inspection configuration templates.', {}, opts =>
     listInspectTemplates(opts.callingProjectId)
   )
   .command(
-    `delete <templateName>`,
-    `Delete the DLP inspection configuration template with the specified name.`,
+    'delete <templateName>',
+    'Delete the DLP inspection configuration template with the specified name.',
     {},
     opts => deleteInspectTemplate(opts.templateName)
   )
@@ -251,13 +251,13 @@ const cli = require(`yargs`) // eslint-disable-line
     global: true,
   })
   .example(
-    `node $0 create -m VERY_LIKELY -t PERSON_NAME -f 5 -q false -i my-template-id`
+    'node $0 create -m VERY_LIKELY -t PERSON_NAME -f 5 -q false -i my-template-id'
   )
-  .example(`node $0 list`)
-  .example(`node $0 delete projects/my-project/inspectTemplates/#####`)
+  .example('node $0 list')
+  .example('node $0 delete projects/my-project/inspectTemplates/#####')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/dlp/docs.`);
+  .epilogue('For more information, see https://cloud.google.com/dlp/docs.');
 
 if (module === require.main) {
   cli.help().strict().argv; // eslint-disable-line

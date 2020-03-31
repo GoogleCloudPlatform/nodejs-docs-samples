@@ -194,8 +194,8 @@ async function deleteTrigger(triggerId) {
 const cli = require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `create <bucketName> <scanPeriod>`,
-    `Create a Data Loss Prevention API job trigger.`,
+    'create <bucketName> <scanPeriod>',
+    'Create a Data Loss Prevention API job trigger.',
     {
       infoTypes: {
         alias: 't',
@@ -261,12 +261,12 @@ const cli = require(`yargs`) // eslint-disable-line
         opts.maxFindings
       )
   )
-  .command(`list`, `List Data Loss Prevention API job triggers.`, {}, opts =>
+  .command('list', 'List Data Loss Prevention API job triggers.', {}, opts =>
     listTriggers(opts.callingProjectId)
   )
   .command(
-    `delete <triggerId>`,
-    `Delete a Data Loss Prevention API job trigger.`,
+    'delete <triggerId>',
+    'Delete a Data Loss Prevention API job trigger.',
     {},
     opts => deleteTrigger(opts.triggerId)
   )
@@ -275,12 +275,12 @@ const cli = require(`yargs`) // eslint-disable-line
     alias: 'callingProjectId',
     default: process.env.GCLOUD_PROJECT || '',
   })
-  .example(`node $0 create my-bucket 1`)
-  .example(`node $0 list`)
-  .example(`node $0 delete projects/my-project/jobTriggers/my-trigger`)
+  .example('node $0 create my-bucket 1')
+  .example('node $0 list')
+  .example('node $0 delete projects/my-project/jobTriggers/my-trigger')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/dlp/docs.`);
+  .epilogue('For more information, see https://cloud.google.com/dlp/docs.');
 
 if (module === require.main) {
   cli.help().strict().argv; // eslint-disable-line

@@ -402,11 +402,11 @@ async function reidentifyWithFpe(
   // [END dlp_reidentify_fpe]
 }
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .command(
-    `deidMask <string>`,
-    `Deidentify sensitive data in a string by masking it with a character.`,
+    'deidMask <string>',
+    'Deidentify sensitive data in a string by masking it with a character.',
     {
       maskingCharacter: {
         type: 'string',
@@ -428,8 +428,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `deidFpe <string> <wrappedKey> <keyName>`,
-    `Deidentify sensitive data in a string using Format Preserving Encryption (FPE).`,
+    'deidFpe <string> <wrappedKey> <keyName>',
+    'Deidentify sensitive data in a string using Format Preserving Encryption (FPE).',
     {
       alphabet: {
         type: 'string',
@@ -459,8 +459,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `reidFpe <string> <surrogateType> <wrappedKey> <keyName>`,
-    `Reidentify sensitive data in a string using Format Preserving Encryption (FPE).`,
+    'reidFpe <string> <surrogateType> <wrappedKey> <keyName>',
+    'Reidentify sensitive data in a string using Format Preserving Encryption (FPE).',
     {
       alphabet: {
         type: 'string',
@@ -485,8 +485,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `deidDateShift <inputCsvFile> <outputCsvFile> <lowerBoundDays> <upperBoundDays> [dateFields...]`,
-    `Deidentify dates in a CSV file by pseudorandomly shifting them.`,
+    'deidDateShift <inputCsvFile> <outputCsvFile> <lowerBoundDays> <upperBoundDays> [dateFields...]',
+    'Deidentify dates in a CSV file by pseudorandomly shifting them.',
     {
       contextFieldId: {
         type: 'string',
@@ -524,19 +524,19 @@ const cli = require(`yargs`)
     alias: 'callingProjectId',
     default: process.env.GCLOUD_PROJECT || '',
   })
-  .example(`node $0 deidMask "My SSN is 372819127"`)
+  .example('node $0 deidMask "My SSN is 372819127"')
   .example(
-    `node $0 deidFpe "My SSN is 372819127" <YOUR_ENCRYPTED_AES_256_KEY> projects/my-project/locations/global/keyrings/my-keyring -s SSN_TOKEN`
+    'node $0 deidFpe "My SSN is 372819127" <YOUR_ENCRYPTED_AES_256_KEY> projects/my-project/locations/global/keyrings/my-keyring -s SSN_TOKEN'
   )
   .example(
-    `node $0 reidFpe "My SSN is SSN_TOKEN(9):#########" <YOUR_ENCRYPTED_AES_256_KEY> projects/my-project/locations/global/keyrings/my-keyring SSN_TOKEN -a NUMERIC`
+    'node $0 reidFpe "My SSN is SSN_TOKEN(9):#########" <YOUR_ENCRYPTED_AES_256_KEY> projects/my-project/locations/global/keyrings/my-keyring SSN_TOKEN -a NUMERIC'
   )
   .example(
-    `node $0 deidDateShift dates.csv dates-shifted.csv 30 30 birth_date register_date [-w <YOUR_ENCRYPTED_AES_256_KEY> -n projects/my-project/locations/global/keyrings/my-keyring]`
+    'node $0 deidDateShift dates.csv dates-shifted.csv 30 30 birth_date register_date [-w <YOUR_ENCRYPTED_AES_256_KEY> -n projects/my-project/locations/global/keyrings/my-keyring]'
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/dlp/docs.`);
+  .epilogue('For more information, see https://cloud.google.com/dlp/docs.');
 
 if (module === require.main) {
   cli.help().strict().argv; // eslint-disable-line

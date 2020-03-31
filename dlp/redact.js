@@ -130,11 +130,11 @@ async function redactImage(
   // [END dlp_redact_image]
 }
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .command(
-    `string <string>`,
-    `Redact a string using the Data Loss Prevention API.`,
+    'string <string>',
+    'Redact a string using the Data Loss Prevention API.',
     {},
     opts =>
       redactText(
@@ -145,8 +145,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `image <filepath> <outputPath>`,
-    `Redact sensitive data from an image using the Data Loss Prevention API.`,
+    'image <filepath> <outputPath>',
+    'Redact sensitive data from an image using the Data Loss Prevention API.',
     {},
     opts =>
       redactImage(
@@ -187,11 +187,11 @@ const cli = require(`yargs`)
     type: 'string',
     global: true,
   })
-  .example(`node $0 image resources/test.png result.png -t MALE_NAME`)
+  .example('node $0 image resources/test.png result.png -t MALE_NAME')
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2/projects.image/redact#ImageRedactionConfig`
+    'For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2/projects.image/redact#ImageRedactionConfig'
   );
 
 if (module === require.main) {

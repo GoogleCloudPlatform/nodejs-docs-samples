@@ -120,7 +120,7 @@ async function numericalRiskAnalysis(
       subscription.on('error', errorHandler);
     });
     setTimeout(() => {
-      console.log(` Waiting for DLP job to fully complete`);
+      console.log(' Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     const results = job.riskDetails.numericalStatsResult;
@@ -255,7 +255,7 @@ async function categoricalRiskAnalysis(
       subscription.on('error', errorHandler);
     });
     setTimeout(() => {
-      console.log(` Waiting for DLP job to fully complete`);
+      console.log(' Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     const histogramBuckets =
@@ -389,7 +389,7 @@ async function kAnonymityAnalysis(
       subscription.on('error', errorHandler);
     });
     setTimeout(() => {
-      console.log(` Waiting for DLP job to fully complete`);
+      console.log(' Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     const histogramBuckets =
@@ -524,7 +524,7 @@ async function lDiversityAnalysis(
       subscription.on('error', errorHandler);
     });
     setTimeout(() => {
-      console.log(` Waiting for DLP job to fully complete`);
+      console.log(' Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     const histogramBuckets =
@@ -666,7 +666,7 @@ async function kMapEstimationAnalysis(
       subscription.on('error', errorHandler);
     });
     setTimeout(() => {
-      console.log(` Waiting for DLP job to fully complete`);
+      console.log(' Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     const histogramBuckets =
@@ -696,8 +696,8 @@ async function kMapEstimationAnalysis(
 const cli = require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `numerical <datasetId> <tableId> <columnName> <topicId> <subscriptionId>`,
-    `Computes risk metrics of a column of numbers in a Google BigQuery table.`,
+    'numerical <datasetId> <tableId> <columnName> <topicId> <subscriptionId>',
+    'Computes risk metrics of a column of numbers in a Google BigQuery table.',
     {},
     opts =>
       numericalRiskAnalysis(
@@ -711,8 +711,8 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `categorical <datasetId> <tableId> <columnName> <topicId> <subscriptionId>`,
-    `Computes risk metrics of a column of data in a Google BigQuery table.`,
+    'categorical <datasetId> <tableId> <columnName> <topicId> <subscriptionId>',
+    'Computes risk metrics of a column of data in a Google BigQuery table.',
     {},
     opts =>
       categoricalRiskAnalysis(
@@ -726,8 +726,8 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `kAnonymity <datasetId> <tableId> <topicId> <subscriptionId> [quasiIdColumnNames..]`,
-    `Computes the k-anonymity of a column set in a Google BigQuery table.`,
+    'kAnonymity <datasetId> <tableId> <topicId> <subscriptionId> [quasiIdColumnNames..]',
+    'Computes the k-anonymity of a column set in a Google BigQuery table.',
     {},
     opts =>
       kAnonymityAnalysis(
@@ -743,8 +743,8 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `lDiversity <datasetId> <tableId> <sensitiveAttribute> <topicId> <subscriptionId> [quasiIdColumnNames..]`,
-    `Computes the l-diversity of a column set in a Google BigQuery table.`,
+    'lDiversity <datasetId> <tableId> <sensitiveAttribute> <topicId> <subscriptionId> [quasiIdColumnNames..]',
+    'Computes the l-diversity of a column set in a Google BigQuery table.',
     {},
     opts =>
       lDiversityAnalysis(
@@ -761,8 +761,8 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `kMap <datasetId> <tableId> <topicId> <subscriptionId> [quasiIdColumnNames..]`,
-    `Computes the k-map risk estimation of a column set in a Google BigQuery table.`,
+    'kMap <datasetId> <tableId> <topicId> <subscriptionId> [quasiIdColumnNames..]',
+    'Computes the k-map risk estimation of a column set in a Google BigQuery table.',
     {
       infoTypes: {
         alias: 't',
@@ -820,23 +820,23 @@ const cli = require(`yargs`) // eslint-disable-line
     global: true,
   })
   .example(
-    `node $0 numerical nhtsa_traffic_fatalities accident_2015 state_number my-topic my-subscription -p bigquery-public-data`
+    'node $0 numerical nhtsa_traffic_fatalities accident_2015 state_number my-topic my-subscription -p bigquery-public-data'
   )
   .example(
-    `node $0 categorical nhtsa_traffic_fatalities accident_2015 state_name my-topic my-subscription -p bigquery-public-data`
+    'node $0 categorical nhtsa_traffic_fatalities accident_2015 state_name my-topic my-subscription -p bigquery-public-data'
   )
   .example(
-    `node $0 kAnonymity nhtsa_traffic_fatalities accident_2015 my-topic my-subscription state_number county -p bigquery-public-data`
+    'node $0 kAnonymity nhtsa_traffic_fatalities accident_2015 my-topic my-subscription state_number county -p bigquery-public-data'
   )
   .example(
-    `node $0 lDiversity nhtsa_traffic_fatalities accident_2015 my-topic my-subscription city state_number county -p bigquery-public-data`
+    'node $0 lDiversity nhtsa_traffic_fatalities accident_2015 my-topic my-subscription city state_number county -p bigquery-public-data'
   )
   .example(
-    `node risk kMap san_francisco bikeshare_trips my-topic my-subscription zip_code -t US_ZIP_5 -p bigquery-public-data`
+    'node risk kMap san_francisco bikeshare_trips my-topic my-subscription zip_code -t US_ZIP_5 -p bigquery-public-data'
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/dlp/docs.`);
+  .epilogue('For more information, see https://cloud.google.com/dlp/docs.');
 
 if (module === require.main) {
   cli.help().strict().argv; // eslint-disable-line

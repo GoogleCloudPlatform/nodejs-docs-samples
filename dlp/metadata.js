@@ -33,7 +33,7 @@ async function listInfoTypes(languageCode, filter) {
     filter: filter,
   });
   const infoTypes = response.infoTypes;
-  console.log(`Info types:`);
+  console.log('Info types:');
   infoTypes.forEach(infoType => {
     console.log(`\t${infoType.name} (${infoType.displayName})`);
   });
@@ -41,11 +41,11 @@ async function listInfoTypes(languageCode, filter) {
   // [END dlp_list_info_types]
 }
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .command(
-    `infoTypes [filter]`,
-    `List the types of sensitive information the DLP API supports.`,
+    'infoTypes [filter]',
+    'List the types of sensitive information the DLP API supports.',
     {},
     opts => listInfoTypes(opts.languageCode, opts.filter)
   )
@@ -55,10 +55,10 @@ const cli = require(`yargs`)
     type: 'string',
     global: true,
   })
-  .example(`node $0 infoTypes "supported_by=INSPECT"`)
+  .example('node $0 infoTypes "supported_by=INSPECT"')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/dlp/docs`);
+  .epilogue('For more information, see https://cloud.google.com/dlp/docs');
 
 if (module === require.main) {
   cli.help().strict().argv; // eslint-disable-line

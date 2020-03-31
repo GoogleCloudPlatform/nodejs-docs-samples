@@ -20,14 +20,14 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node jobs.js`;
-const badJobName = `projects/not-a-project/dlpJobs/i-123456789`;
+const cmd = 'node jobs.js';
+const badJobName = 'projects/not-a-project/dlpJobs/i-123456789';
 
 const testCallingProjectId = process.env.GCLOUD_PROJECT;
-const testTableProjectId = `bigquery-public-data`;
-const testDatasetId = `san_francisco`;
-const testTableId = `bikeshare_trips`;
-const testColumnName = `zip_code`;
+const testTableProjectId = 'bigquery-public-data';
+const testDatasetId = 'san_francisco';
+const testTableId = 'bikeshare_trips';
+const testColumnName = 'zip_code';
 
 describe('jobs', () => {
   // Helper function for creating test jobs

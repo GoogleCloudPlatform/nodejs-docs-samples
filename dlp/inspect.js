@@ -75,7 +75,7 @@ async function inspectString(
     const [response] = await dlp.inspectContent(request);
     const findings = response.result.findings;
     if (findings.length > 0) {
-      console.log(`Findings:`);
+      console.log('Findings:');
       findings.forEach(finding => {
         if (includeQuote) {
           console.log(`\tQuote: ${finding.quote}`);
@@ -84,7 +84,7 @@ async function inspectString(
         console.log(`\tLikelihood: ${finding.likelihood}`);
       });
     } else {
-      console.log(`No findings.`);
+      console.log('No findings.');
     }
   } catch (err) {
     console.log(`Error in inspectString: ${err.message || err}`);
@@ -168,7 +168,7 @@ async function inspectFile(
     const [response] = await dlp.inspectContent(request);
     const findings = response.result.findings;
     if (findings.length > 0) {
-      console.log(`Findings:`);
+      console.log('Findings:');
       findings.forEach(finding => {
         if (includeQuote) {
           console.log(`\tQuote: ${finding.quote}`);
@@ -177,7 +177,7 @@ async function inspectFile(
         console.log(`\tLikelihood: ${finding.likelihood}`);
       });
     } else {
-      console.log(`No findings.`);
+      console.log('No findings.');
     }
   } catch (err) {
     console.log(`Error in inspectFile: ${err.message || err}`);
@@ -300,7 +300,7 @@ async function inspectGCSFile(
     });
 
     setTimeout(() => {
-      console.log(`Waiting for DLP job to fully complete`);
+      console.log('Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     console.log(`Job ${job.name} status: ${job.state}`);
@@ -313,7 +313,7 @@ async function inspectGCSFile(
         );
       });
     } else {
-      console.log(`No findings.`);
+      console.log('No findings.');
     }
   } catch (err) {
     console.log(`Error in inspectGCSFile: ${err.message || err}`);
@@ -446,7 +446,7 @@ async function inspectDatastore(
     });
     // Wait for DLP job to fully complete
     setTimeout(() => {
-      console.log(`Waiting for DLP job to fully complete`);
+      console.log('Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     console.log(`Job ${job.name} status: ${job.state}`);
@@ -459,7 +459,7 @@ async function inspectDatastore(
         );
       });
     } else {
-      console.log(`No findings.`);
+      console.log('No findings.');
     }
   } catch (err) {
     console.log(`Error in inspectDatastore: ${err.message || err}`);
@@ -590,7 +590,7 @@ async function inspectBigquery(
     });
     // Wait for DLP job to fully complete
     setTimeout(() => {
-      console.log(`Waiting for DLP job to fully complete`);
+      console.log('Waiting for DLP job to fully complete');
     }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     console.log(`Job ${job.name} status: ${job.state}`);
@@ -603,7 +603,7 @@ async function inspectBigquery(
         );
       });
     } else {
-      console.log(`No findings.`);
+      console.log('No findings.');
     }
   } catch (err) {
     console.log(`Error in inspectBigquery: ${err.message || err}`);
@@ -615,8 +615,8 @@ async function inspectBigquery(
 const cli = require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `string <string>`,
-    `Inspect a string using the Data Loss Prevention API.`,
+    'string <string>',
+    'Inspect a string using the Data Loss Prevention API.',
     {},
     opts =>
       inspectString(
@@ -630,8 +630,8 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `file <filepath>`,
-    `Inspects a local text, PNG, or JPEG file using the Data Loss Prevention API.`,
+    'file <filepath>',
+    'Inspects a local text, PNG, or JPEG file using the Data Loss Prevention API.',
     {},
     opts =>
       inspectFile(
@@ -645,8 +645,8 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `gcsFile <bucketName> <fileName> <topicId> <subscriptionId>`,
-    `Inspects a text file stored on Google Cloud Storage with the Data Loss Prevention API, using Pub/Sub for job notifications.`,
+    'gcsFile <bucketName> <fileName> <topicId> <subscriptionId>',
+    'Inspects a text file stored on Google Cloud Storage with the Data Loss Prevention API, using Pub/Sub for job notifications.',
     {},
     opts =>
       inspectGCSFile(
@@ -662,8 +662,8 @@ const cli = require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `bigquery <datasetName> <tableName> <topicId> <subscriptionId>`,
-    `Inspects a BigQuery table using the Data Loss Prevention API using Pub/Sub for job notifications.`,
+    'bigquery <datasetName> <tableName> <topicId> <subscriptionId>',
+    'Inspects a BigQuery table using the Data Loss Prevention API using Pub/Sub for job notifications.',
     {},
     opts => {
       inspectBigquery(
@@ -681,8 +681,8 @@ const cli = require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `datastore <kind> <topicId> <subscriptionId>`,
-    `Inspect a Datastore instance using the Data Loss Prevention API using Pub/Sub for job notifications.`,
+    'datastore <kind> <topicId> <subscriptionId>',
+    'Inspect a Datastore instance using the Data Loss Prevention API using Pub/Sub for job notifications.',
     {
       namespaceId: {
         type: 'string',
@@ -781,15 +781,15 @@ const cli = require(`yargs`) // eslint-disable-line
     type: 'string',
     global: true,
   })
-  .example(`node $0 string "My email address is me@somedomain.com"`)
-  .example(`node $0 file resources/test.txt`)
-  .example(`node $0 gcsFile my-bucket my-file.txt my-topic my-subscription`)
-  .example(`node $0 bigquery my-dataset my-table my-topic my-subscription`)
-  .example(`node $0 datastore my-datastore-kind my-topic my-subscription`)
+  .example('node $0 string "My email address is me@somedomain.com"')
+  .example('node $0 file resources/test.txt')
+  .example('node $0 gcsFile my-bucket my-file.txt my-topic my-subscription')
+  .example('node $0 bigquery my-dataset my-table my-topic my-subscription')
+  .example('node $0 datastore my-datastore-kind my-topic my-subscription')
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2/InspectConfig`
+    'For more information, see https://cloud.google.com/dlp/docs. Optional flags are explained at https://cloud.google.com/dlp/docs/reference/rest/v2/InspectConfig'
   );
 
 if (module === require.main) {

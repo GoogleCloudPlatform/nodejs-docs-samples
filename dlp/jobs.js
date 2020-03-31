@@ -86,8 +86,8 @@ function deleteJob(jobName) {
 const cli = require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `list <filter>`,
-    `List Data Loss Prevention API jobs corresponding to a given filter.`,
+    'list <filter>',
+    'List Data Loss Prevention API jobs corresponding to a given filter.',
     {
       jobType: {
         type: 'string',
@@ -98,8 +98,8 @@ const cli = require(`yargs`) // eslint-disable-line
     opts => listJobs(opts.callingProject, opts.filter, opts.jobType)
   )
   .command(
-    `delete <jobName>`,
-    `Delete results of a Data Loss Prevention API job.`,
+    'delete <jobName>',
+    'Delete results of a Data Loss Prevention API job.',
     {},
     opts => deleteJob(opts.jobName)
   )
@@ -108,11 +108,11 @@ const cli = require(`yargs`) // eslint-disable-line
     alias: 'callingProject',
     default: process.env.GCLOUD_PROJECT || '',
   })
-  .example(`node $0 list "state=DONE" -t RISK_ANALYSIS_JOB`)
-  .example(`node $0 delete projects/YOUR_GCLOUD_PROJECT/dlpJobs/X-#####`)
+  .example('node $0 list "state=DONE" -t RISK_ANALYSIS_JOB')
+  .example('node $0 delete projects/YOUR_GCLOUD_PROJECT/dlpJobs/X-#####')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/dlp/docs.`);
+  .epilogue('For more information, see https://cloud.google.com/dlp/docs.');
 
 if (module === require.main) {
   cli.help().strict().argv; // eslint-disable-line

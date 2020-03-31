@@ -78,7 +78,7 @@ describe('redact', () => {
 
   // redact_image
   it('should redact a single sensitive data type from an image', async () => {
-    const testName = `redact-single-type`;
+    const testName = 'redact-single-type';
     const output = execSync(
       `${cmd} image ${testImage} ${testName}.actual.png -t PHONE_NUMBER`
     );
@@ -91,7 +91,7 @@ describe('redact', () => {
   });
 
   it('should redact multiple sensitive data types from an image', async () => {
-    const testName = `redact-multiple-types`;
+    const testName = 'redact-multiple-types';
     const output = execSync(
       `${cmd} image ${testImage} ${testName}.actual.png -t PHONE_NUMBER EMAIL_ADDRESS`
     );

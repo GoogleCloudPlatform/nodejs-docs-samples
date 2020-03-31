@@ -59,7 +59,7 @@ function main(
     // Wait for operation to complete.
     await operation.promise();
 
-    console.log(`Created glossary:`);
+    console.log('Created glossary:');
     console.log(`InputUri ${request.glossary.inputConfig.gcsSource.inputUri}`);
   }
 

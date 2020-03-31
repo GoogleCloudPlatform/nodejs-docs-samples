@@ -29,7 +29,7 @@ describe(REGION_TAG, () => {
   const glossaryId = `my_test_glossary_${uuid.v4()}`;
   const location = 'us-central1';
 
-  it('should create a glossary', async function() {
+  it('should create a glossary', async () => {
     const projectId = await translationClient.getProjectId();
     const output = execSync(
       `node v3/${REGION_TAG}.js ${projectId} ${location} ${glossaryId}`
@@ -40,7 +40,7 @@ describe(REGION_TAG, () => {
     );
   });
 
-  after('cleanup for glossary create', async function() {
+  after('cleanup for glossary create', async () => {
     const projectId = await translationClient.getProjectId();
     // Delete the glossary to clean up
     const request = {

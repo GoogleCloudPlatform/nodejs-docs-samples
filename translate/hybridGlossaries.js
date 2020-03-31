@@ -102,7 +102,7 @@ async function main(
       const [operation] = await translationClient.createGlossary(request);
       // Wait for operation to complete.
       await operation.promise();
-      console.log(`Created glossary ` + glossaryName + '.');
+      console.log('Created glossary ' + glossaryName + '.');
     } catch (AlreadyExists) {
       console.log(
         'The glossary ' +

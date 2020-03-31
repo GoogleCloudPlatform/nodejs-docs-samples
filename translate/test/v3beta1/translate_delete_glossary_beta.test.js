@@ -28,7 +28,7 @@ describe(REGION_TAG, () => {
   const location = 'us-central1';
   const glossaryId = 'glossary';
 
-  before(async function() {
+  before(async () => {
     // Add a glossary to be deleted
     // const translationClient = new TranslationServiceClient();
     const projectId = await translationClient.getProjectId();

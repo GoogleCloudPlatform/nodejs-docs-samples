@@ -42,7 +42,7 @@ function main(
     // Run request
     const [response] = await translationClient.detectLanguage(request);
 
-    console.log(`Detected Languages:`);
+    console.log('Detected Languages:');
     for (const language of response.languages) {
       console.log(`Language Code: ${language.languageCode}`);
       console.log(`Confidence: ${language.confidence}`);

@@ -50,7 +50,7 @@ describe('Server should respond to /log_payload', () => {
   it('should log the payload', done => {
     const body = Buffer.from('test');
     request
-      .post(`/log_payload`)
+      .post('/log_payload')
       .type('raw')
       .send(body)
       .expect(200, /Printed job/, done);

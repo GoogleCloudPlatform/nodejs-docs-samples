@@ -31,7 +31,7 @@ let version;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe(`Secret Manager samples`, () => {
+describe('Secret Manager samples', () => {
   before(async () => {
     [secret] = await client.createSecret({
       parent: `projects/${projectId}`,
@@ -83,87 +83,87 @@ describe(`Secret Manager samples`, () => {
     }
   });
 
-  it(`runs the quickstart`, async () => {
+  it('runs the quickstart', async () => {
     const stdout = execSync(
       `node quickstart.js projects/${projectId} ${secretId}-quickstart bar`
     );
-    assert.match(stdout, new RegExp(`Created secret`));
-    assert.match(stdout, new RegExp(`Added secret version`));
-    assert.match(stdout, new RegExp(`Payload: bar`));
+    assert.match(stdout, new RegExp('Created secret'));
+    assert.match(stdout, new RegExp('Added secret version'));
+    assert.match(stdout, new RegExp('Payload: bar'));
   });
 
-  it(`creates a secret`, async () => {
+  it('creates a secret', async () => {
     const output = execSync(
       `node createSecret.js projects/${projectId} ${secretId}-2`
     );
-    assert.match(output, new RegExp(`Created secret`));
+    assert.match(output, new RegExp('Created secret'));
   });
 
-  it(`lists secrets`, async () => {
+  it('lists secrets', async () => {
     const output = execSync(`node listSecrets.js projects/${projectId}`);
     assert.match(output, new RegExp(`${secret.name}`));
   });
 
-  it(`gets a secret`, async () => {
+  it('gets a secret', async () => {
     const output = execSync(`node getSecret.js ${secret.name}`);
     assert.match(output, new RegExp(`Found secret ${secret.name}`));
   });
 
-  it(`updates a secret`, async () => {
+  it('updates a secret', async () => {
     const output = execSync(`node updateSecret.js ${secret.name}`);
     assert.match(output, new RegExp(`Updated secret ${secret.name}`));
   });
 
-  it(`deletes a secret`, async () => {
+  it('deletes a secret', async () => {
     const output = execSync(
       `node deleteSecret.js projects/${projectId}/secrets/${secretId}-2`
     );
-    assert.match(output, new RegExp(`Deleted secret`));
+    assert.match(output, new RegExp('Deleted secret'));
   });
 
-  it(`accesses secret versions`, async () => {
+  it('accesses secret versions', async () => {
     const output = execSync(`node accessSecretVersion.js ${version.name}`);
     assert.match(output, new RegExp(payload));
   });
 
-  it(`adds secret versions`, async () => {
+  it('adds secret versions', async () => {
     const output = execSync(`node addSecretVersion.js ${secret.name}`);
-    assert.match(output, new RegExp(`Added secret version`));
+    assert.match(output, new RegExp('Added secret version'));
   });
 
-  it(`list secret versions`, async () => {
+  it('list secret versions', async () => {
     const output = execSync(`node listSecretVersions.js ${secret.name}`);
     assert.match(output, new RegExp(`${version.name}`));
   });
 
-  it(`gets secret versions`, async () => {
+  it('gets secret versions', async () => {
     const output = execSync(`node iamGrantAccess.js ${secret.name} ${iamUser}`);
-    assert.match(output, new RegExp(`Updated IAM policy`));
+    assert.match(output, new RegExp('Updated IAM policy'));
   });
 
-  it(`revokes access permissions`, async () => {
+  it('revokes access permissions', async () => {
     const output = execSync(
       `node iamRevokeAccess.js ${secret.name} ${iamUser}`
     );
-    assert.match(output, new RegExp(`Updated IAM policy`));
+    assert.match(output, new RegExp('Updated IAM policy'));
   });
 
-  it(`grants access permissions`, async () => {
+  it('grants access permissions', async () => {
     const output = execSync(`node getSecretVersion.js ${version.name}`);
     assert.match(output, new RegExp(`Found secret ${version.name}`));
   });
 
-  it(`disables secret versions`, async () => {
+  it('disables secret versions', async () => {
     const output = execSync(`node disableSecretVersion.js ${version.name}`);
     assert.match(output, new RegExp(`Disabled ${version.name}`));
   });
 
-  it(`enables secret versions`, async () => {
+  it('enables secret versions', async () => {
     const output = execSync(`node enableSecretVersion.js ${version.name}`);
     assert.match(output, new RegExp(`Enabled ${version.name}`));
   });
 
-  it(`destroys secret versions`, async () => {
+  it('destroys secret versions', async () => {
     const output = execSync(`node destroySecretVersion.js ${version.name}`);
     assert.match(output, new RegExp(`Destroyed ${version.name}`));
   });

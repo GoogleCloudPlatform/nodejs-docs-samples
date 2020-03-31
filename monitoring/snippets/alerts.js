@@ -308,23 +308,23 @@ async function listPolicies(projectId) {
   // [END monitoring_alert_list_policies]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .command(
-    `backup <projectId>`,
-    `Save alert policies to a ./policies_backup.json file.`,
+    'backup <projectId>',
+    'Save alert policies to a ./policies_backup.json file.',
     {},
     opts => backupPolicies(opts.projectId, opts.filter || '')
   )
   .command(
-    `restore <projectId>`,
-    `Restore alert policies from a ./policies_backup.json file.`,
+    'restore <projectId>',
+    'Restore alert policies from a ./policies_backup.json file.',
     {},
     opts => restorePolicies(opts.projectId, opts.filter || '')
   )
   .command(
-    `replace <alertPolicyName> <channelNames..>`,
-    `Replace the notification channels of the specified alert policy.`,
+    'replace <alertPolicyName> <channelNames..>',
+    'Replace the notification channels of the specified alert policy.',
     {},
     opts => {
       const parts = opts.alertPolicyName.split('/');
@@ -333,28 +333,28 @@ require(`yargs`)
     }
   )
   .command(
-    `disable <projectId> [filter]`,
-    `Disables policies that match the given filter.`,
+    'disable <projectId> [filter]',
+    'Disables policies that match the given filter.',
     {},
-    opts => enablePolicies(opts.projectId, false, opts.filter || ``)
+    opts => enablePolicies(opts.projectId, false, opts.filter || '')
   )
   .command(
-    `enable <projectId> [filter]`,
-    `Enables policies that match the given filter.`,
+    'enable <projectId> [filter]',
+    'Enables policies that match the given filter.',
     {},
-    opts => enablePolicies(opts.projectId, true, opts.filter || ``)
+    opts => enablePolicies(opts.projectId, true, opts.filter || '')
   )
   .command(
-    `list <projectId>`,
-    `Lists alert policies in the specified project.`,
+    'list <projectId>',
+    'Lists alert policies in the specified project.',
     {},
     opts => listPolicies(opts.projectId)
   )
   .command(
-    `deleteChannels <projectId> [filter]`,
-    `Lists and deletes all channels in the specified project.`,
+    'deleteChannels <projectId> [filter]',
+    'Lists and deletes all channels in the specified project.',
     {},
-    opts => deleteChannels(opts.projectId, opts.filter || ``)
+    opts => deleteChannels(opts.projectId, opts.filter || '')
   )
   .options({
     alertPolicyName: {
@@ -362,40 +362,40 @@ require(`yargs`)
       requiresArg: true,
     },
   })
-  .example(`node $0 backup my-project-id`, `Backup policies.`)
-  .example(`node $0 restore my-project-id`, `Restore policies.`)
+  .example('node $0 backup my-project-id', 'Backup policies.')
+  .example('node $0 restore my-project-id', 'Restore policies.')
   .example(
-    `node $0 replace projects/my-project-id/alertPolicies/12345 channel-1 channel-2 channel-3`,
-    `Replace the notification channels of the specified alert policy.`
+    'node $0 replace projects/my-project-id/alertPolicies/12345 channel-1 channel-2 channel-3',
+    'Replace the notification channels of the specified alert policy.'
   )
   .example(
-    `node $0 disable my-project-id "(NOT display_name.empty OR NOT description.empty) AND user_labels='active'"`,
-    `Disables policies that match the given filter.`
+    'node $0 disable my-project-id "(NOT display_name.empty OR NOT description.empty) AND user_labels=\'active\'"',
+    'Disables policies that match the given filter.'
   )
   .example(
-    `node $0 disable my-project-id "description:'cloud'"`,
-    `Disables policies that match the given filter.`
+    'node $0 disable my-project-id "description:\'cloud\'"',
+    'Disables policies that match the given filter.'
   )
   .example(
-    `node $0 disable my-project-id "display_name=monitoring.regex.full_match('Temp \\d{4}')"`,
-    `Disables policies that match the given filter.`
+    'node $0 disable my-project-id "display_name=monitoring.regex.full_match(\'Temp \\d{4}\')"',
+    'Disables policies that match the given filter.'
   )
   .example(
-    `node $0 enable my-project-id "(NOT display_name.empty OR NOT description.empty) AND user_labels='active'"`,
-    `Enables policies that match the given filter.`
+    'node $0 enable my-project-id "(NOT display_name.empty OR NOT description.empty) AND user_labels=\'active\'"',
+    'Enables policies that match the given filter.'
   )
   .example(
-    `node $0 enable my-project-id "description:'cloud'"`,
-    `Enables policies that match the given filter.`
+    'node $0 enable my-project-id "description:\'cloud\'"',
+    'Enables policies that match the given filter.'
   )
   .example(
-    `node $0 enable my-project-id "display_name=monitoring.regex.full_match('Temp \\d{4}')"`,
-    `Enables policies that match the given filter.`
+    'node $0 enable my-project-id "display_name=monitoring.regex.full_match(\'Temp \\d{4}\')"',
+    'Enables policies that match the given filter.'
   )
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/monitoring/docs/`
+    'For more information, see https://cloud.google.com/monitoring/docs/'
   )
   .help()
   .strict().argv;

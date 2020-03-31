@@ -66,12 +66,12 @@ async function createUptimeCheckConfig(projectId, hostname) {
   console.log('Uptime check created:');
   console.log(`ID: ${uptimeCheckConfig.name}`);
   console.log(`Display Name: ${uptimeCheckConfig.displayName}`);
-  console.log(`Resource: %j`, uptimeCheckConfig.monitoredResource);
-  console.log(`Period: %j`, uptimeCheckConfig.period);
-  console.log(`Timeout: %j`, uptimeCheckConfig.timeout);
+  console.log('Resource: %j', uptimeCheckConfig.monitoredResource);
+  console.log('Period: %j', uptimeCheckConfig.period);
+  console.log('Timeout: %j', uptimeCheckConfig.timeout);
   console.log(`Check type: ${uptimeCheckConfig.check_request_type}`);
   console.log(
-    `Check: %j`,
+    'Check: %j',
     uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
   );
   console.log(
@@ -107,12 +107,12 @@ async function listUptimeCheckConfigs(projectId) {
   uptimeCheckConfigs.forEach(uptimeCheckConfig => {
     console.log(`ID: ${uptimeCheckConfig.name}`);
     console.log(`  Display Name: ${uptimeCheckConfig.displayName}`);
-    console.log(`  Resource: %j`, uptimeCheckConfig.monitoredResource);
-    console.log(`  Period: %j`, uptimeCheckConfig.period);
-    console.log(`  Timeout: %j`, uptimeCheckConfig.timeout);
+    console.log('  Resource: %j', uptimeCheckConfig.monitoredResource);
+    console.log('  Period: %j', uptimeCheckConfig.period);
+    console.log('  Timeout: %j', uptimeCheckConfig.timeout);
     console.log(`  Check type: ${uptimeCheckConfig.check_request_type}`);
     console.log(
-      `  Check: %j`,
+      '  Check: %j',
       uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
     );
     console.log(
@@ -172,12 +172,12 @@ async function getUptimeCheckConfig(projectId, uptimeCheckConfigId) {
   const [uptimeCheckConfig] = await client.getUptimeCheckConfig(request);
   console.log(`ID: ${uptimeCheckConfig.name}`);
   console.log(`Display Name: ${uptimeCheckConfig.displayName}`);
-  console.log(`Resource: %j`, uptimeCheckConfig.monitoredResource);
-  console.log(`Period: %j`, uptimeCheckConfig.period);
-  console.log(`Timeout: %j`, uptimeCheckConfig.timeout);
+  console.log('Resource: %j', uptimeCheckConfig.monitoredResource);
+  console.log('Period: %j', uptimeCheckConfig.period);
+  console.log('Timeout: %j', uptimeCheckConfig.timeout);
   console.log(`Check type: ${uptimeCheckConfig.check_request_type}`);
   console.log(
-    `Check: %j`,
+    'Check: %j',
     uptimeCheckConfig.httpCheck || uptimeCheckConfig.tcpCheck
   );
   console.log(
@@ -265,35 +265,35 @@ async function updateUptimeCheckConfigDisplayName(
   // [END monitoring_uptime_check_update]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .command(
-    `create <hostname> [projectId]`,
-    `Creates an uptime check config.`,
+    'create <hostname> [projectId]',
+    'Creates an uptime check config.',
     {},
     opts => createUptimeCheckConfig(opts.projectId, '' + opts.hostname)
   )
-  .command(`list [projectId]`, `Lists uptime check configs.`, {}, opts =>
+  .command('list [projectId]', 'Lists uptime check configs.', {}, opts =>
     listUptimeCheckConfigs(opts.projectId)
   )
-  .command(`list-ips`, `Lists uptime check config IPs.`, {}, () =>
+  .command('list-ips', 'Lists uptime check config IPs.', {}, () =>
     listUptimeCheckIps()
   )
   .command(
-    `get <uptimeCheckConfigId> [projectId]`,
-    `Gets an uptime check config.`,
+    'get <uptimeCheckConfigId> [projectId]',
+    'Gets an uptime check config.',
     {},
     opts => getUptimeCheckConfig(opts.projectId, opts.uptimeCheckConfigId)
   )
   .command(
-    `delete <uptimeCheckConfigId> [projectId]`,
-    `Deletes an uptime check config.`,
+    'delete <uptimeCheckConfigId> [projectId]',
+    'Deletes an uptime check config.',
     {},
     opts => deleteUptimeCheckConfig(opts.projectId, opts.uptimeCheckConfigId)
   )
   .command(
-    `update <uptimeCheckConfigId> <displayName> <path> [projectId]`,
-    `Update the display name of an uptime check config.`,
+    'update <uptimeCheckConfigId> <displayName> <path> [projectId]',
+    'Update the display name of an uptime check config.',
     {},
     opts =>
       updateUptimeCheckConfigDisplayName(
@@ -312,20 +312,20 @@ require(`yargs`)
       type: 'string',
     },
   })
-  .example(`node $0 create mydomain.com`, 'Create an uptime check.')
-  .example(`node $0 list`, 'List all uptime check configs.')
+  .example('node $0 create mydomain.com', 'Create an uptime check.')
+  .example('node $0 list', 'List all uptime check configs.')
   .example(
-    `node $0 list "resource.type = gce_instance AND resource.label.instance_id = mongodb"`,
+    'node $0 list "resource.type = gce_instance AND resource.label.instance_id = mongodb"',
     'List all uptime check configs for a specific GCE instance.'
   )
-  .example(`node $0 list-ips`)
-  .example(`node $0 get My-Uptime-Check`)
-  .example(`node $0 delete My-Uptime-Check`)
-  .example(`node $0 update My-Uptime-Check "My New Uptime Check" /some/path`)
+  .example('node $0 list-ips')
+  .example('node $0 get My-Uptime-Check')
+  .example('node $0 delete My-Uptime-Check')
+  .example('node $0 update My-Uptime-Check "My New Uptime Check" /some/path')
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/monitoring/uptime-checks/`
+    'For more information, see https://cloud.google.com/monitoring/uptime-checks/'
   )
   .help()
   .strict().argv;

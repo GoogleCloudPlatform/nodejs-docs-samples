@@ -200,7 +200,7 @@ async function writeTimeSeriesData(projectId) {
 
   // Writes time series data
   const result = await client.createTimeSeries(request);
-  console.log(`Done writing time series data.`, result);
+  console.log('Done writing time series data.', result);
 
   // [END monitoring_write_timeseries]
 }
@@ -330,7 +330,7 @@ async function readTimeSeriesAggregate(projectId) {
     }
     console.log(`  Now: ${data.points[0].value.doubleValue}`);
     console.log(`  10 min ago: ${data.points[1].value.doubleValue}`);
-    console.log(`=====`);
+    console.log('=====');
   });
   // [END monitoring_read_timeseries_align]
 }
@@ -409,7 +409,7 @@ async function listMonitoredResourceDescriptors(projectId) {
     console.log(descriptor.name);
     console.log(`  Type: ${descriptor.type}`);
     if (descriptor.labels) {
-      console.log(`  Labels:`);
+      console.log('  Labels:');
       descriptor.labels.forEach(label => {
         console.log(
           `    ${label.key} (${label.valueType}): ${label.description}`
@@ -456,65 +456,65 @@ async function getMonitoredResourceDescriptor(projectId, resourceType) {
   // [END monitoring_get_resource]
 }
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .command(
-    `create [projectId]`,
-    `Creates an example 'custom.googleapis.com/stores/daily_sales' custom metric descriptor.`,
+    'create [projectId]',
+    "Creates an example 'custom.googleapis.com/stores/daily_sales' custom metric descriptor.",
     {},
     opts => createMetricDescriptor(opts.projectId)
   )
-  .command(`list [projectId]`, `Lists metric descriptors.`, {}, opts =>
+  .command('list [projectId]', 'Lists metric descriptors.', {}, opts =>
     listMetricDescriptors(opts.projectId)
   )
-  .command(`get <metricId> [projectId]`, `Get a metric descriptor.`, {}, opts =>
+  .command('get <metricId> [projectId]', 'Get a metric descriptor.', {}, opts =>
     getMetricDescriptor(opts.projectId, opts.metricId)
   )
   .command(
-    `delete <metricId> [projectId]`,
-    `Deletes a custom metric descriptor.`,
+    'delete <metricId> [projectId]',
+    'Deletes a custom metric descriptor.',
     {},
     opts => deleteMetricDescriptor(opts.projectId, opts.metricId)
   )
   .command(
-    `write [projectId]`,
-    `Writes example time series data to 'custom.googleapis.com/stores/daily_sales'.`,
+    'write [projectId]',
+    "Writes example time series data to 'custom.googleapis.com/stores/daily_sales'.",
     {},
     opts => writeTimeSeriesData(opts.projectId)
   )
   .command(
-    `read <filter> [projectId]`,
-    `Reads time series data that matches the given filter.`,
+    'read <filter> [projectId]',
+    'Reads time series data that matches the given filter.',
     {},
     opts => readTimeSeriesData(opts.projectId, opts.filter)
   )
   .command(
-    `read-fields [projectId]`,
-    `Reads headers of time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.`,
+    'read-fields [projectId]',
+    "Reads headers of time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.",
     {},
     opts => readTimeSeriesFields(opts.projectId)
   )
   .command(
-    `read-aggregate [projectId]`,
-    `Aggregates time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.`,
+    'read-aggregate [projectId]',
+    "Aggregates time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.",
     {},
     opts => readTimeSeriesAggregate(opts.projectId)
   )
   .command(
-    `read-reduce [projectId]`,
-    `Reduces time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.`,
+    'read-reduce [projectId]',
+    "Reduces time series data that matches 'compute.googleapis.com/instance/cpu/utilization'.",
     {},
     opts => readTimeSeriesReduce(opts.projectId)
   )
   .command(
-    `list-resources [projectId]`,
-    `Lists monitored resource descriptors.`,
+    'list-resources [projectId]',
+    'Lists monitored resource descriptors.',
     {},
     opts => listMonitoredResourceDescriptors(opts.projectId)
   )
   .command(
-    `get-resource <resourceType> [projectId]`,
-    `Get a monitored resource descriptor.`,
+    'get-resource <resourceType> [projectId]',
+    'Get a monitored resource descriptor.',
     {},
     opts => getMonitoredResourceDescriptor(opts.projectId, opts.resourceType)
   )
@@ -527,23 +527,23 @@ const cli = require(`yargs`)
       type: 'string',
     },
   })
-  .example(`node $0 create`)
-  .example(`node $0 list`)
-  .example(`node $0 get logging.googleapis.com/log_entry_count`)
-  .example(`node $0 delete custom.googleapis.com/stores/daily_sales`)
-  .example(`node $0 list-resources`)
-  .example(`node $0 get-resource cloudsql_database`)
-  .example(`node $0 write`)
+  .example('node $0 create')
+  .example('node $0 list')
+  .example('node $0 get logging.googleapis.com/log_entry_count')
+  .example('node $0 delete custom.googleapis.com/stores/daily_sales')
+  .example('node $0 list-resources')
+  .example('node $0 get-resource cloudsql_database')
+  .example('node $0 write')
   .example(
-    `node $0 read 'metric.type="compute.googleapis.com/instance/cpu/utilization"'`
+    'node $0 read \'metric.type="compute.googleapis.com/instance/cpu/utilization"\''
   )
-  .example(`node $0 read-fields`)
-  .example(`node $0 read-aggregate`)
-  .example(`node $0 read-reduce`)
+  .example('node $0 read-fields')
+  .example('node $0 read-aggregate')
+  .example('node $0 read-reduce')
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/monitoring/docs`
+    'For more information, see https://cloud.google.com/monitoring/docs'
   );
 
 if (module === require.main) {

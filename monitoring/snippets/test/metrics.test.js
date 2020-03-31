@@ -23,12 +23,12 @@ const retry = require('p-retry');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new monitoring.MetricServiceClient();
-const cmd = `node metrics.js`;
-const customMetricId = `custom.googleapis.com/stores/daily_sales`;
-const computeMetricId = `compute.googleapis.com/instance/cpu/utilization`;
+const cmd = 'node metrics.js';
+const customMetricId = 'custom.googleapis.com/stores/daily_sales';
+const computeMetricId = 'compute.googleapis.com/instance/cpu/utilization';
 const filter = `metric.type="${computeMetricId}"`;
 const projectId = process.env.GCLOUD_PROJECT;
-const resourceId = `cloudsql_database`;
+const resourceId = 'cloudsql_database';
 
 describe('metrics', () => {
   it('should create a metric descriptors', () => {
@@ -121,7 +121,7 @@ describe('metrics', () => {
       },
       // Don't return time series data, instead just return information about
       // the metrics that match the filter
-      view: `HEADERS`,
+      view: 'HEADERS',
     });
     const output = execSync(`${cmd} read-fields`);
     assert.include(output, 'Found data points for the following instances');
@@ -148,7 +148,7 @@ describe('metrics', () => {
         alignmentPeriod: {
           seconds: 600,
         },
-        perSeriesAligner: `ALIGN_MEAN`,
+        perSeriesAligner: 'ALIGN_MEAN',
       },
     });
     let output;
@@ -184,8 +184,8 @@ describe('metrics', () => {
         alignmentPeriod: {
           seconds: 600,
         },
-        crossSeriesReducer: `REDUCE_MEAN`,
-        perSeriesAligner: `ALIGN_MEAN`,
+        crossSeriesReducer: 'REDUCE_MEAN',
+        perSeriesAligner: 'ALIGN_MEAN',
       },
     });
     const output = execSync(`${cmd} read-reduce`);

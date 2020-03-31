@@ -32,7 +32,7 @@ describe('Cloud Task Sample Tests', () => {
   before(async () => {
     const client = new CloudTasksClient();
     projectId = await client.getProjectId();
-    url = `https://example.com/taskhandler`;
+    url = 'https://example.com/taskhandler';
   });
 
   it('should create a queue', () => {

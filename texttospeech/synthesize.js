@@ -123,21 +123,21 @@ async function synthesizeSsmlFile(ssmlFile, outputFile) {
 async function main() {
 require(`yargs`) // eslint-disable-line
     .demand(1)
-    .command(`text <text>`, `Synthesizes audio file from text`, {}, opts =>
+    .command('text <text>', 'Synthesizes audio file from text', {}, opts =>
       synthesizeText(opts.text, opts.outputFile)
     )
-    .command(`ssml <ssml>`, `Synthesizes audio file from SSML`, {}, opts =>
+    .command('ssml <ssml>', 'Synthesizes audio file from SSML', {}, opts =>
       synthesizeSsml(opts.ssml, opts.outputFile)
     )
     .command(
-      `text-file <textFile>`,
-      `Synthesizes audio file from text in a file`,
+      'text-file <textFile>',
+      'Synthesizes audio file from text in a file',
       {},
       opts => synthesizeTextFile(opts.textFile, opts.outputFile)
     )
     .command(
-      `ssml-file <ssmlFile>`,
-      `Synthesizes audio file from SSML in a file`,
+      'ssml-file <ssmlFile>',
+      'Synthesizes audio file from SSML in a file',
       {},
       opts => synthesizeSsmlFile(opts.ssmlFile, opts.outputFile)
     )
@@ -150,14 +150,14 @@ require(`yargs`) // eslint-disable-line
         type: 'string',
       },
     })
-    .example(`node $0 text "hello" -o hello.mp3`)
-    .example(`node $0 ssml "<speak>Hello there.</speak>" -o hello.mp3`)
-    .example(`node $0 text-file resources/hello.txt -o output.mp3`)
-    .example(`node $0 ssml-file resources/hello.ssml -o output.mp3`)
+    .example('node $0 text "hello" -o hello.mp3')
+    .example('node $0 ssml "<speak>Hello there.</speak>" -o hello.mp3')
+    .example('node $0 text-file resources/hello.txt -o output.mp3')
+    .example('node $0 ssml-file resources/hello.ssml -o output.mp3')
     .wrap(120)
     .recommendCommands()
     .epilogue(
-      `For more information, see https://cloud.google.com/text-to-speech/docs`
+      'For more information, see https://cloud.google.com/text-to-speech/docs'
     )
     .help()
     .strict().argv;

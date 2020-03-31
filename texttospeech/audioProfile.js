@@ -44,11 +44,11 @@ async function synthesizeText(
 }
 
 async function main() {
-  require(`yargs`)
+  require('yargs')
     .demand(1)
     .command(
-      `synthesize <text>`,
-      `Detects speech in a local audio file.`,
+      'synthesize <text>',
+      'Detects speech in a local audio file.',
       {},
       opts =>
         synthesizeText(
@@ -96,23 +96,23 @@ async function main() {
         type: 'string',
       },
     })
-    .array(`effectsProfileId`)
-    .example(`node $0 synthesize "Enter Phrase to Test Here"`)
+    .array('effectsProfileId')
+    .example('node $0 synthesize "Enter Phrase to Test Here"')
     .example(
-      `node $0 synthesize "This is optimized for Phone" -f ./resources/phone.mp3 -e telephony-class-application -l en-US`
+      'node $0 synthesize "This is optimized for Phone" -f ./resources/phone.mp3 -e telephony-class-application -l en-US'
     )
     .example(
-      `node $0 synthesize "This is optimized for a Wearable, like a watch" -f ./resources/watch.mp3 -e wearable-class-device -l en-US`
+      'node $0 synthesize "This is optimized for a Wearable, like a watch" -f ./resources/watch.mp3 -e wearable-class-device -l en-US'
     )
     .example(
-      `node $0 synthesize "This is optimized for Home Entertainment System" -f ./resources/homestereo.mp3 -e large-home-entertainment-class-device`
+      'node $0 synthesize "This is optimized for Home Entertainment System" -f ./resources/homestereo.mp3 -e large-home-entertainment-class-device'
     )
     .example(
-      `node $0 synthesize "This is optimized for the Car" -f ./resources/car.mp3 -e large-automotive-class-device`
+      'node $0 synthesize "This is optimized for the Car" -f ./resources/car.mp3 -e large-automotive-class-device'
     )
     .wrap(120)
     .recommendCommands()
-    .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
+    .epilogue('For more information, see https://cloud.google.com/speech/docs')
     .help()
     .strict().argv;
 }

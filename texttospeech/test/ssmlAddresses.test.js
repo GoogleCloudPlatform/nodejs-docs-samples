@@ -26,7 +26,7 @@ const outputFile = 'resources/example.mp3';
 
 describe('ssmlAddresses', () => {
   // delete 'resources/example.mp3' file if it already exists
-  before(function() {
+  before(() => {
     try {
       fs.unlinkSync(outputFile);
     } catch (e) {
@@ -35,7 +35,7 @@ describe('ssmlAddresses', () => {
   });
 
   // delete 'resources/example.mp3' file
-  after(function() {
+  after(() => {
     fs.unlinkSync(outputFile);
     assert.strictEqual(fs.existsSync(outputFile), false);
   });

@@ -28,7 +28,7 @@ async function listVoices() {
     console.log(`Name: ${voice.name}`);
     console.log(`  SSML Voice Gender: ${voice.ssmlGender}`);
     console.log(`  Natural Sample Rate Hertz: ${voice.naturalSampleRateHertz}`);
-    console.log(`  Supported languages:`);
+    console.log('  Supported languages:');
     voice.languageCodes.forEach(languageCode => {
       console.log(`    ${languageCode}`);
     });
@@ -39,12 +39,12 @@ async function listVoices() {
 async function main() {
 require(`yargs`) // eslint-disable-line
     .demand(1)
-    .command(`list-voices`, `List supported voices.`, {}, () => listVoices())
-    .example(`node $0 list-voices`)
+    .command('list-voices', 'List supported voices.', {}, () => listVoices())
+    .example('node $0 list-voices')
     .wrap(120)
     .recommendCommands()
     .epilogue(
-      `For more information, see https://cloud.google.com/text-to-speech/docs`
+      'For more information, see https://cloud.google.com/text-to-speech/docs'
     )
     .help()
     .strict().argv;

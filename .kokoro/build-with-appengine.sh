@@ -42,25 +42,21 @@ VERSION=$(echo $VERSION | sed 's_/flexible\|/standard__')
 export GAE_VERSION=$VERSION
 export GCLOUD_STORAGE_BUCKET=docs-samples-${VERSION}
 
-# Register post-test cleanup
-function cleanup {
-  gcloud app versions delete $GAE_VERSION --quiet
-}
-trap cleanup EXIT
-
-
 cd github/nodejs-docs-samples/${PROJECT}
-
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
-
 # Deploy the app
 gcloud app deploy --version $GAE_VERSION --no-promote --quiet
 
+# Register post-test cleanup
+function cleanup {
+  gcloud app versions delete $GAE_VERSION --quiet
+}
+trap cleanup EXIT HUP
 
 # Install dependencies and run tests
 npm install
@@ -69,11 +65,13 @@ npm install
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}
-	cleanup() {
-	chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
-	$KOKORO_GFILE_DIR/linux_amd64/buildcop
+	notify_buildcop() {
+		# Call the original trap function.
+		cleanup
+		chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
+		$KOKORO_GFILE_DIR/linux_amd64/buildcop
 	}
-	trap cleanup EXIT HUP
+	trap notify_buildcop EXIT HUP
 fi
 
 npm test

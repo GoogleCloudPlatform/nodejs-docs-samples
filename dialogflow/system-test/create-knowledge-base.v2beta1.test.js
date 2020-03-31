@@ -40,7 +40,7 @@ describe('create a knowledge base', () => {
   });
 
   after('delete created knowledge base', async () => {
-    const [result] = await client.deleteKnowledgeBase({
+    await client.deleteKnowledgeBase({
       name: knowledgeBaseName,
     });
   });

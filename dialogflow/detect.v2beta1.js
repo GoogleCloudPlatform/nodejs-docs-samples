@@ -80,14 +80,14 @@ async function createDocument(
       knowledgeTypes: [knowledgeTypes],
       displayName: documentName,
       contentUri: documentPath,
-      source: `contentUri`,
+      source: 'contentUri',
       mimeType: mimeType,
     },
   };
 
   const [operation] = await client.createDocument(request);
   const [response] = await operation.promise();
-  console.log(`Document created`);
+  console.log('Document created');
   console.log(`Content URI...${response.contentUri}`);
   console.log(`displayName...${response.displayName}`);
   console.log(`mimeType...${response.mimeType}`);
@@ -146,10 +146,10 @@ async function detectIntentandSentiment(
   if (result.intent) {
     console.log(`  Intent: ${result.intent.displayName}`);
   } else {
-    console.log(`  No intent matched.`);
+    console.log('  No intent matched.');
   }
   if (result.sentimentAnalysisResult) {
-    console.log(`Detected sentiment`);
+    console.log('Detected sentiment');
     console.log(
       `  Score: ${result.sentimentAnalysisResult.queryTextSentiment.score}`
     );
@@ -157,7 +157,7 @@ async function detectIntentandSentiment(
       `  Magnitude: ${result.sentimentAnalysisResult.queryTextSentiment.magnitude}`
     );
   } else {
-    console.log(`No sentiment Analysis Found`);
+    console.log('No sentiment Analysis Found');
   }
   // [END dialogflow_detect_intent_with_sentiment_analysis]
 }
@@ -187,7 +187,7 @@ async function detectIntentwithTexttoSpeechResponse(
 
   // Define session path
   const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-  const fs = require(`fs`);
+  const fs = require('fs');
 
   // The audio query request
   const request = {
@@ -199,7 +199,7 @@ async function detectIntentwithTexttoSpeechResponse(
       },
     },
     outputAudioConfig: {
-      audioEncoding: `OUTPUT_AUDIO_ENCODING_LINEAR_16`,
+      audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
     },
   };
 
@@ -274,68 +274,68 @@ async function detectIntentKnowledge(
   // [END dialogflow_detect_intent_knowledge]
 }
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .options({
     documentId: {
-      alias: `d`,
-      type: `string`,
+      alias: 'd',
+      type: 'string',
       requiresArg: true,
-      description: `Full path of document in knowledge base`,
+      description: 'Full path of document in knowledge base',
     },
     documentName: {
-      alias: `m`,
-      type: `string`,
-      default: `testDoc`,
+      alias: 'm',
+      type: 'string',
+      default: 'testDoc',
       requiresArg: true,
-      description: `Name of Document to Create`,
+      description: 'Name of Document to Create',
     },
     documentPath: {
-      alias: `z`,
-      type: `string`,
+      alias: 'z',
+      type: 'string',
       requiresArg: true,
-      description: `uri of document to be added`,
+      description: 'uri of document to be added',
     },
     knowledgeBaseName: {
-      alias: `k`,
-      default: `TestKnowledgeBase`,
-      type: `string`,
+      alias: 'k',
+      default: 'TestKnowledgeBase',
+      type: 'string',
       requiresArg: true,
-      description: `The name of the knowledge base to search from`,
+      description: 'The name of the knowledge base to search from',
     },
     knowledgeBaseFullName: {
-      alias: `n`,
-      type: `string`,
+      alias: 'n',
+      type: 'string',
       requiresArg: true,
-      description: `full path knowledge base`,
+      description: 'full path knowledge base',
     },
     knowledgeTypes: {
-      alias: `t`,
-      type: `string`,
-      default: `FAQ`,
+      alias: 't',
+      type: 'string',
+      default: 'FAQ',
       requiresArg: true,
-      description: `The Knowledge type of the Document.`,
+      description: 'The Knowledge type of the Document.',
     },
     languageCode: {
-      alias: `l`,
+      alias: 'l',
       default: 'en-US',
       type: 'string',
       requiresArg: true,
       description: 'The language code of the query. Defaults to "en-US".',
     },
     mimeType: {
-      alias: `y`,
-      default: `text/html`,
-      type: `string`,
+      alias: 'y',
+      default: 'text/html',
+      type: 'string',
       requiresArg: true,
-      description: `The mime_type of the Document`,
+      description: 'The mime_type of the Document',
     },
     outputFile: {
-      alias: `f`,
-      default: `./resources/output.wav`,
+      alias: 'f',
+      default: './resources/output.wav',
       global: true,
       requiresArg: true,
-      type: `string`,
+      type: 'string',
     },
     projectId: {
       alias: 'p',
@@ -353,7 +353,7 @@ const cli = require(`yargs`)
       demandOption: true,
       requiresArg: true,
       description: 'An array of text queries',
-      default: `Where is my data stored?`,
+      default: 'Where is my data stored?',
     },
     sessionId: {
       alias: 's',
@@ -364,12 +364,12 @@ const cli = require(`yargs`)
         'The identifier of the detect session. Defaults to a random UUID.',
     },
   })
-  .command(`createKnowledgeBase`, `Creates a new knowledge base`, {}, opts =>
+  .command('createKnowledgeBase', 'Creates a new knowledge base', {}, opts =>
     createKnowledgeBase(opts.projectId, opts.knowledgeBaseName)
   )
   .command(
-    `createDocument`,
-    `Creates a new document for this knowledge base`,
+    'createDocument',
+    'Creates a new document for this knowledge base',
     {},
     opts =>
       createDocument(
@@ -382,8 +382,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `detectIntentwithTexttoSpeechResponse`,
-    `Detects the intent of text input, outputs .wav file to target location`,
+    'detectIntentwithTexttoSpeechResponse',
+    'Detects the intent of text input, outputs .wav file to target location',
     {},
     opts =>
       detectIntentwithTexttoSpeechResponse(
@@ -395,8 +395,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `detectIntentKnowledge`,
-    `Detects answers from knowledge base queries`,
+    'detectIntentKnowledge',
+    'Detects answers from knowledge base queries',
     {},
     opts =>
       detectIntentKnowledge(
@@ -408,8 +408,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `detectIntentandSentiment`,
-    `Detects sentiment with detect Intent query`,
+    'detectIntentandSentiment',
+    'Detects sentiment with detect Intent query',
     {},
     opts =>
       detectIntentandSentiment(
@@ -419,19 +419,19 @@ const cli = require(`yargs`)
         opts.languageCode
       )
   )
-  .example(`node $0 createKnowledgeBase -k "newTestKnowledgeBase"`)
+  .example('node $0 createKnowledgeBase -k "newTestKnowledgeBase"')
   .example(
-    `node $0 createDocument -n "KNOWLEDGEBASEFULLNAME" -p "URIHTMLPATHTODOC" -m "MyDoc"`
+    'node $0 createDocument -n "KNOWLEDGEBASEFULLNAME" -p "URIHTMLPATHTODOC" -m "MyDoc"'
   )
-  .example(`node $0 detectIntentwithTexttoSpeechResponse "How do I sign up?"`)
-  .example(`node $0 detectIntentKnowledge -q "how do i sign up?"`)
+  .example('node $0 detectIntentwithTexttoSpeechResponse "How do I sign up?"')
+  .example('node $0 detectIntentKnowledge -q "how do i sign up?"')
   .example(
-    `node $0 detectIntentandSentiment "Book a great room for six great folks!"`
+    'node $0 detectIntentandSentiment "Book a great room for six great folks!"'
   )
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/dialogflow-enterprise/docs`
+    'For more information, see https://cloud.google.com/dialogflow-enterprise/docs'
   )
   .help()
   .strict();

@@ -26,8 +26,6 @@ describe('delete intent', () => {
   const client = new dialogflow.IntentsClient();
   const cmd = 'node resource.js';
   const displayName = `fake_display_name_${uuid.v4().split('-')[0]}`;
-  const message1 = 'message_1';
-  const message2 = 'message_2';
   let intentId;
 
   before('create the intent', async () => {
@@ -36,17 +34,23 @@ describe('delete intent', () => {
       parent: client.projectAgentPath(projectId),
       intent: {
         displayName: displayName,
-        trainingPhrases: [{
-          type: 'EXAMPLE',
-          parts: [{
-            text: 'training_phrase_1',
-          }],
-        }],
-        messages: [{
-          text: {
-            text: ['message1', 'message2'],
+        trainingPhrases: [
+          {
+            type: 'EXAMPLE',
+            parts: [
+              {
+                text: 'training_phrase_1',
+              },
+            ],
           },
-        }],
+        ],
+        messages: [
+          {
+            text: {
+              text: ['message1', 'message2'],
+            },
+          },
+        ],
       },
     };
 
@@ -55,7 +59,7 @@ describe('delete intent', () => {
   });
 
   it('should delete an intent', async () => {
-    let output = exec(`${cmd} delete-intent -i ${intentId}`);
+    const output = exec(`${cmd} delete-intent -i ${intentId}`);
     assert.include(output, intentId);
   });
 });

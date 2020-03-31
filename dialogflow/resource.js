@@ -125,7 +125,7 @@ async function deleteIntent(projectId, intentId) {
 
   const intentPath = intentsClient.intentPath(projectId, intentId);
 
-  const request = { name: intentPath };
+  const request = {name: intentPath};
 
   // Send the request for deleting the intent.
   const result = await intentsClient.deleteIntent(request);
@@ -244,7 +244,7 @@ async function deleteSessionEntityType(
 // /////////////////////////////////////////////////////////////////////////////
 // Command line interface.
 // /////////////////////////////////////////////////////////////////////////////
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .options({
     projectId: {
@@ -402,7 +402,7 @@ const cli = require(`yargs`)
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/dialogflow-enterprise/docs`
+    'For more information, see https://cloud.google.com/dialogflow-enterprise/docs'
   )
   .help()
   .strict();

@@ -1,4 +1,4 @@
- // Copyright 2020 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ describe('list session entity types', () => {
   const cmd = 'node resource.js';
   const sessionId = uuid.v1();
   const displayName = `fake_display_name_${uuid.v4().split('-')[0]}`;
-  const synonym1 = 'synonym_1';
-  const synonym2 = 'synonym_2';
   let entityTypeId;
 
   before('create a session entity type', async () => {
@@ -42,24 +40,28 @@ describe('list session entity types', () => {
       },
     };
 
-    const responses = await client.createEntityType(
-      createEntityTypeRequest
-    );
-    entityTypeId = responses[0].name.split('/')[4]
+    const responses = await client.createEntityType(createEntityTypeRequest);
+    entityTypeId = responses[0].name.split('/')[4];
 
     // Create the session entity type
     const sessionEntityTypeRequest = {
       parent: sessionClient.sessionPath(projectId, sessionId),
       sessionEntityType: {
-        name: sessionClient.sessionEntityTypePath(projectId, sessionId, displayName),
+        name: sessionClient.sessionEntityTypePath(
+          projectId,
+          sessionId,
+          displayName
+        ),
         entityOverrideMode: 'ENTITY_OVERRIDE_MODE_OVERRIDE',
-        entities: [{
-          value: 'synonym1',
-          synonyms: ['synonym2']
-        }],
+        entities: [
+          {
+            value: 'synonym1',
+            synonyms: ['synonym2'],
+          },
+        ],
       },
     };
-    const [response] = await sessionClient.createSessionEntityType(sessionEntityTypeRequest);
+    await sessionClient.createSessionEntityType(sessionEntityTypeRequest);
   });
 
   it('should List the Session Entity Type', async () => {
@@ -74,6 +76,6 @@ describe('list session entity types', () => {
     const request = {
       name: client.entityTypePath(projectId, entityTypeId),
     };
-    const response = await client.deleteEntityType(request);
+    await client.deleteEntityType(request);
   });
 });

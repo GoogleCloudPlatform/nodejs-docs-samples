@@ -63,10 +63,10 @@ async function main(
     if (result.intent) {
       console.log(`  Intent: ${result.intent.displayName}`);
     } else {
-      console.log(`  No intent matched.`);
+      console.log('  No intent matched.');
     }
     if (result.sentimentAnalysisResult) {
-      console.log(`Detected sentiment`);
+      console.log('Detected sentiment');
       console.log(
         `  Score: ${result.sentimentAnalysisResult.queryTextSentiment.score}`
       );
@@ -74,7 +74,7 @@ async function main(
         `  Magnitude: ${result.sentimentAnalysisResult.queryTextSentiment.magnitude}`
       );
     } else {
-      console.log(`No sentiment Analysis Found`);
+      console.log('No sentiment Analysis Found');
     }
     // [END dialogflow_detect_intent_with_sentiment_analysis]
   }

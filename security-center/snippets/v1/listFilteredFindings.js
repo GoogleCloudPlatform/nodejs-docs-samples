@@ -33,7 +33,7 @@ function main(sourceName = 'YOUR_NUMERIC_ORG_ID') {
     const [response] = await client.listFindings({
       // List findings across all sources.
       parent: sourceName,
-      filter: `category="MEDIUM_RISK_ONE"`,
+      filter: 'category="MEDIUM_RISK_ONE"',
     });
     let count = 0;
     Array.from(response).forEach(result =>

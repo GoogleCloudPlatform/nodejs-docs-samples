@@ -33,7 +33,7 @@ function main(sourceName = 'YOUR_NUMERIC_ORG_ID') {
     const [response] = await client.listFindings({
       // List findings across all sources.
       parent: sourceName,
-      filter: `NOT security_marks.marks.key_a="value_a"`,
+      filter: 'NOT security_marks.marks.key_a="value_a"',
     });
     let count = 0;
     Array.from(response).forEach(result =>

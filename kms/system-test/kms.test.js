@@ -14,25 +14,25 @@
 
 'use strict';
 
-const fs = require(`fs`);
-const path = require(`path`);
+const fs = require('fs');
+const path = require('path');
 const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 const {promisify} = require('util');
-const {v4} = require(`uuid`);
+const {v4} = require('uuid');
 const unlink = promisify(fs.unlink);
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const keyRingName = `test-ring-${v4()}`;
 const keyNameOne = `test-key-${v4()}`;
-const member = `allAuthenticatedUsers`;
-const role = `roles/viewer`;
+const member = 'allAuthenticatedUsers';
+const role = 'roles/viewer';
 const projectId = process.env.GCLOUD_PROJECT;
-const plaintext = path.join(__dirname, `../resources/plaintext.txt`);
-const ciphertext = path.join(__dirname, `../resources/plaintext.txt.encrypted`);
-const decrypted = path.join(__dirname, `../resources/plaintext.txt.decrypted`);
+const plaintext = path.join(__dirname, '../resources/plaintext.txt');
+const ciphertext = path.join(__dirname, '../resources/plaintext.txt.encrypted');
+const decrypted = path.join(__dirname, '../resources/plaintext.txt.decrypted');
 
 const unspecifiedKeyRingName = `projects/${projectId}/locations/global/keyRings/`;
 const formattedKeyRingName = `projects/${projectId}/locations/global/keyRings/${keyRingName}`;
@@ -65,7 +65,7 @@ describe('kms sample tests', () => {
     assert.match(output, /\/locations\/global\/keyRings\//);
   });
 
-  it(`should create a key ring`, async () => {
+  it('should create a key ring', async () => {
     const output = execSync(
       `node createKeyring.js "${projectId}" "${keyRingName}"`
     );
@@ -77,18 +77,18 @@ describe('kms sample tests', () => {
     }
   });
 
-  it(`should list key rings`, async () => {
+  it('should list key rings', async () => {
     const output = execSync(`node listKeyrings.js ${projectId}`);
     assert.match(output, new RegExp(unspecifiedKeyRingName));
   });
 
-  it(`should get a key ring`, async () => {
+  it('should get a key ring', async () => {
     const output = execSync(`node getKeyring ${projectId} ${keyRingName}`);
     assert.match(output, new RegExp(`Name: ${formattedKeyRingName}`));
     assert.match(output, /Created: /);
   });
 
-  it(`should get a key ring's empty IAM policy`, async () => {
+  it("should get a key ring's empty IAM policy", async () => {
     const output = execSync(
       `node getKeyringIamPolicy.js ${projectId} ${keyRingName}`
     );
@@ -98,7 +98,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should grant access to a key ring`, async () => {
+  it('should grant access to a key ring', async () => {
     const output = execSync(
       `node addMemberToKeyRingPolicy.js ${projectId} ${keyRingName} ${member} ${role}`
     );
@@ -110,7 +110,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should get a key ring's updated IAM policy`, async () => {
+  it("should get a key ring's updated IAM policy", async () => {
     const output = execSync(
       `node getKeyringIamPolicy.js ${projectId} ${keyRingName}`
     );
@@ -118,7 +118,7 @@ describe('kms sample tests', () => {
     assert.match(output, new RegExp(`  ${member}`));
   });
 
-  it(`should revoke access to a key ring`, async () => {
+  it('should revoke access to a key ring', async () => {
     const output = execSync(
       `node removeMemberFromKeyRingPolicy.js ${projectId} ${keyRingName} ${member} ${role}`
     );
@@ -130,7 +130,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should create a key`, async () => {
+  it('should create a key', async () => {
     const output = execSync(
       `node createCryptoKey.js ${projectId} ${keyRingName} ${keyNameOne}`
     );
@@ -139,22 +139,22 @@ describe('kms sample tests', () => {
     }
   });
 
-  it(`should list keys`, async () => {
+  it('should list keys', async () => {
     const output = execSync(
       `node listCryptoKeys.js ${projectId} ${keyRingName}`
     );
     assert.match(output, new RegExp(formattedKeyName));
   });
 
-  it(`should get a key`, async () => {
+  it('should get a key', async () => {
     const output = execSync(
       `node getCryptoKey.js ${projectId} ${keyRingName} ${keyNameOne}`
     );
     assert.match(output, new RegExp(`Name: ${formattedKeyName}`));
-    assert.match(output, new RegExp(`Created: `));
+    assert.match(output, new RegExp('Created: '));
   });
 
-  it(`should set a crypto key's primary version`, async () => {
+  it("should set a crypto key's primary version", async () => {
     const output = execSync(
       `node setPrimaryCryptoKeyVersion.js ${projectId} ${keyRingName} ${keyNameOne} 1`
     );
@@ -164,7 +164,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should encrypt a file`, async () => {
+  it('should encrypt a file', async () => {
     const output = execSync(
       `node encrypt.js ${projectId} ${keyRingName} ${keyNameOne} "${plaintext}" "${ciphertext}"`
     );
@@ -177,7 +177,7 @@ describe('kms sample tests', () => {
     assert.match(output, new RegExp(`Result saved to ${ciphertext}.`));
   });
 
-  it(`should decrypt a file`, async () => {
+  it('should decrypt a file', async () => {
     const output = execSync(
       `node decrypt.js ${projectId} "${keyRingName}" "${keyNameOne}" "${ciphertext}" "${decrypted}"`
     );
@@ -192,7 +192,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should create a crypto key version`, async () => {
+  it('should create a crypto key version', async () => {
     const output = execSync(
       `node createCryptoKeyVersion ${projectId} "${keyRingName}" "${keyNameOne}"`
     );
@@ -200,17 +200,17 @@ describe('kms sample tests', () => {
       output,
       new RegExp(`Crypto key version ${formattedKeyName}/cryptoKeyVersions/`)
     );
-    assert.match(output, new RegExp(` created.`));
+    assert.match(output, new RegExp(' created.'));
   });
 
-  it(`should list crypto key versions`, async () => {
+  it('should list crypto key versions', async () => {
     const output = execSync(
       `node listCryptoKeyVersions.js ${projectId} "${keyRingName}" "${keyNameOne}"`
     );
     assert.match(output, new RegExp(`${formattedKeyName}/cryptoKeyVersions/1`));
   });
 
-  it(`should destroy a crypto key version`, async () => {
+  it('should destroy a crypto key version', async () => {
     const output = execSync(
       `node destroyCryptoKeyVersion ${projectId} "${keyRingName}" "${keyNameOne}" 2`
     );
@@ -222,7 +222,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should restore a crypto key version`, async () => {
+  it('should restore a crypto key version', async () => {
     const output = execSync(
       `node restoreCryptoKeyVersion ${projectId} "${keyRingName}" "${keyNameOne}" 2`
     );
@@ -234,7 +234,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should enable a crypto key version`, async () => {
+  it('should enable a crypto key version', async () => {
     const output = execSync(
       `node enableCryptoKeyVersion ${projectId} "${keyRingName}" "${keyNameOne}" 2`
     );
@@ -246,7 +246,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should disable a crypto key version`, async () => {
+  it('should disable a crypto key version', async () => {
     const output = execSync(
       `node disableCryptoKeyVersion ${projectId} "${keyRingName}" "${keyNameOne}" 2`
     );
@@ -258,7 +258,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should get a crypto key's empty IAM policy`, async () => {
+  it("should get a crypto key's empty IAM policy", async () => {
     const output = execSync(
       `node getCryptoKeyIamPolicy ${projectId} "${keyRingName}" "${keyNameOne}"`
     );
@@ -268,7 +268,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should grant access to a crypto key`, async () => {
+  it('should grant access to a crypto key', async () => {
     const output = execSync(
       `node addMemberToCryptoKeyPolicy ${projectId} "${keyRingName}" "${keyNameOne}" "${member}" "${role}"`
     );
@@ -280,7 +280,7 @@ describe('kms sample tests', () => {
     );
   });
 
-  it(`should get a crypto key's updated IAM policy`, async () => {
+  it("should get a crypto key's updated IAM policy", async () => {
     const output = execSync(
       `node getCryptoKeyIamPolicy ${projectId} "${keyRingName}" "${keyNameOne}"`
     );
@@ -288,7 +288,7 @@ describe('kms sample tests', () => {
     assert.match(output, new RegExp(`  ${member}`));
   });
 
-  it(`should revoke access to a crypto key`, async () => {
+  it('should revoke access to a crypto key', async () => {
     const output = execSync(
       `node removeMemberCryptoKeyPolicy ${projectId} "${keyRingName}" "${keyNameOne}" ${member} ${role}`
     );
@@ -304,7 +304,7 @@ describe('kms sample tests', () => {
     const kms = require('@google-cloud/kms');
     const client = new kms.KeyManagementServiceClient();
 
-    const locationId = `global`;
+    const locationId = 'global';
     const keyRingId = `test-asymmetric-ring-${v4()}`;
     const keyAsymmetricDecryptName = `test-asymmetric-decrypt-${v4()}`;
 
@@ -380,7 +380,7 @@ describe('kms sample tests', () => {
       await client.destroyCryptoKeyVersion({name: signKeyVersionId});
     });
 
-    it(`should perform asymmetric encryption`, async function() {
+    it('should perform asymmetric encryption', async function() {
       // Only run this test on Node 12+
       if (nodeMajorVersion < 12) {
         this.skip();
@@ -395,14 +395,14 @@ describe('kms sample tests', () => {
           "${dataToEncrypt}"
         `);
 
-      const re = new RegExp(`Encrypted ciphertext: (.+)`);
+      const re = new RegExp('Encrypted ciphertext: (.+)');
       assert.match(out, re);
 
       const match = re.exec(out);
       ciphertext = match[1];
     });
 
-    it(`should perform asymmetric decryption`, async function() {
+    it('should perform asymmetric decryption', async function() {
       // Only run this test on Node 12+
       if (nodeMajorVersion < 12) {
         this.skip();
@@ -417,7 +417,7 @@ describe('kms sample tests', () => {
         "${ciphertext}"
       `);
 
-      const re = new RegExp(`Decrypted plaintext: (.+)`);
+      const re = new RegExp('Decrypted plaintext: (.+)');
       assert.match(out, re);
 
       const match = re.exec(out);
@@ -426,7 +426,7 @@ describe('kms sample tests', () => {
       assert.equal(dataToEncrypt, plaintext);
     });
 
-    it(`should perform asymmetric signing`, async function() {
+    it('should perform asymmetric signing', async () => {
       const out = execSync(`
         node asymmetricSign.js \
           "${projectId}" \
@@ -436,14 +436,14 @@ describe('kms sample tests', () => {
           "${dataToSign}"
         `);
 
-      const re = new RegExp(`Signature: (.+)`);
+      const re = new RegExp('Signature: (.+)');
       assert.match(out, re);
 
       const match = re.exec(out);
       signature = match[1];
     });
 
-    it(`should perform asymmetric verification`, async function() {
+    it('should perform asymmetric verification', async () => {
       const out = execSync(`
         node asymmetricVerify.js \
         "${projectId}" \
@@ -454,7 +454,7 @@ describe('kms sample tests', () => {
         "${signature}"
       `);
 
-      const re = new RegExp(`Signature verified: (.+)`);
+      const re = new RegExp('Signature verified: (.+)');
       assert.match(out, re);
 
       const match = re.exec(out);

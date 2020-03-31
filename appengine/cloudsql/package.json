@@ -21,6 +21,7 @@
     "test": "npm -- run all-test"
   },
   "dependencies": {
+    "chai": "^4.2.0",
     "express": "^4.16.4",
     "knex": "^0.20.0",
     "mysql": "^2.16.0",
@@ -31,7 +32,8 @@
     "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0",
-    "supertest": "^4.0.0"
+    "supertest": "^4.0.0",
+    "wait-port": "^0.2.7"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,

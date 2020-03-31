@@ -109,10 +109,10 @@ app.get('/', async (req, res, next) => {
 });
 
 const PORT = process.env.PORT || 8080;
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 // [END gae_flex_mysql_app]
 
-module.exports = {server, app};
+module.exports = app;

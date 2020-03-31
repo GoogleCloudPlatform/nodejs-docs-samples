@@ -30,7 +30,7 @@ describe(REGION_TAG, () => {
   const glossaryId = `my_test_glossary_${uuid.v4()}`;
   const modelId = 'TRL1218052175389786112';
 
-  before(async function() {
+  before(async () => {
     // Add a glossary to be translate with
     const projectId = await translationClient.getProjectId();
 
@@ -69,7 +69,7 @@ describe(REGION_TAG, () => {
     assert.match(output, /道順/);
   });
 
-  after(async function() {
+  after(async () => {
     const projectId = await translationClient.getProjectId();
     const request = {
       parent: `projects/${projectId}/locations/${location}`,

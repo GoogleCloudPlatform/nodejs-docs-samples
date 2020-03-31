@@ -31,7 +31,7 @@ const sampleText = './resources/testInput.txt';
 const donotdeleteModelId = 'TRL188026453969732486';
 
 describe.skip('automl sample tests', () => {
-  it(`should create a create, list, and delete a dataset`, async () => {
+  it('should create a create, list, and delete a dataset', async () => {
     // Check to see that this dataset does not yet exist
     let output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, new RegExp(testDataSetName));
@@ -39,8 +39,8 @@ describe.skip('automl sample tests', () => {
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
     const dataSetId = output
-      .split(`\n`)[1]
-      .split(`:`)[1]
+      .split('\n')[1]
+      .split(':')[1]
       .trim();
     assert.match(
       output,
@@ -53,7 +53,7 @@ describe.skip('automl sample tests', () => {
   });
 
   // We make two models running this test, see hard-coded workaround below
-  it(`should create a dataset, import data, and start making a model`, async () => {
+  it('should create a dataset, import data, and start making a model', async () => {
     // Check to see that this dataset does not yet exist
     let output = execSync(`${cmdDataset} list-datasets`);
     assert.notMatch(output, new RegExp(dummyDataSet));
@@ -61,8 +61,8 @@ describe.skip('automl sample tests', () => {
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
     const dataSetId = output
-      .split(`\n`)[1]
-      .split(`:`)[1]
+      .split('\n')[1]
+      .split(':')[1]
       .trim();
     assert.match(output, new RegExp(`Dataset display name:  ${dummyDataSet}`));
 
@@ -81,10 +81,10 @@ describe.skip('automl sample tests', () => {
       `${cmdModel} create-model -i "${dataSetId}" -m "${testModelName}" -t "2"`
     );
     const operationName = output
-      .split(`\n`)[0]
-      .split(`:`)[1]
+      .split('\n')[0]
+      .split(':')[1]
       .trim();
-    assert.match(output, `Training started...`);
+    assert.match(output, 'Training started...');
 
     // Poll operation status, here confirming that operation is not complete yet
     output = execSync(
@@ -93,7 +93,7 @@ describe.skip('automl sample tests', () => {
     assert.match(output, /done: false/);
   });
 
-  it(`should run get model (from a prexisting model)`, async () => {
+  it('should run get model (from a prexisting model)', async () => {
     // Confirm dataset exists
     let output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, /me_do_not_delete/);
@@ -109,7 +109,7 @@ describe.skip('automl sample tests', () => {
     assert.match(output, /Model deployment state: DEPLOYED/);
   });
 
-  it(`should run Prediction from prexisting model`, async () => {
+  it('should run Prediction from prexisting model', async () => {
     // Confirm dataset exists
     let output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, /me_do_not_delete/);
@@ -118,7 +118,7 @@ describe.skip('automl sample tests', () => {
     output = execSync(
       `${cmdModel} list-model-evaluations -a "${donotdeleteModelId}"`
     );
-    assert.match(output, `translationEvaluationMetrics:`);
+    assert.match(output, 'translationEvaluationMetrics:');
 
     // Run prediction on 'testImage.jpg' in resources folder
     output = execSync(
@@ -131,7 +131,7 @@ describe.skip('automl sample tests', () => {
   });
 
   // List datasets
-  it(`should list datasets`, async () => {
+  it('should list datasets', async () => {
     const output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, /List of datasets:/);
   });

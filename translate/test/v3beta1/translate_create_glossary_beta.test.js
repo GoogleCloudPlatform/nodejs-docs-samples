@@ -26,7 +26,7 @@ const REGION_TAG = 'translate_create_glossary_beta';
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
 
-  it('should create a glossary', async function() {
+  it('should create a glossary', async () => {
     const projectId = await translationClient.getProjectId();
     const location = 'us-central1';
     const glossaryId = 'test-glossary';
@@ -39,7 +39,7 @@ describe(REGION_TAG, () => {
     );
   });
 
-  after('cleanup for glossary create', async function() {
+  after('cleanup for glossary create', async () => {
     const projectId = await translationClient.getProjectId();
     const location = 'us-central1';
     const glossaryId = 'test-glossary';

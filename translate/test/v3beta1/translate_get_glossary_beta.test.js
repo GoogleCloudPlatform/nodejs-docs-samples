@@ -28,7 +28,7 @@ describe(REGION_TAG, () => {
   const location = 'us-central1';
   const glossaryId = 'test-glossary';
 
-  before(async function() {
+  before(async () => {
     // Add a glossary to get
     const projectId = await translationClient.getProjectId();
     const glossary = {
@@ -66,7 +66,7 @@ describe(REGION_TAG, () => {
     assert.match(output, /test-glossary/);
   });
 
-  after(async function() {
+  after(async () => {
     //delete the glossary we created
     const projectId = await translationClient.getProjectId();
     const name = translationClient.glossaryPath(

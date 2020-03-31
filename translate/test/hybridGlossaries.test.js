@@ -48,7 +48,7 @@ describe(REGION_TAG, () => {
     assert.strictEqual(fs.existsSync(outputFile), true);
   });
 
-  after(async function() {
+  after(async () => {
     fs.unlinkSync(outputFile);
     assert.strictEqual(fs.existsSync(outputFile), false);
     // get projectId

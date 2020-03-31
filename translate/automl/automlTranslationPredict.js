@@ -30,8 +30,8 @@ async function predict(
   translationAllowFallback
 ) {
   // [START automl_translation_predict]
-  const automl = require(`@google-cloud/automl`);
-  const fs = require(`fs`);
+  const automl = require('@google-cloud/automl');
+  const fs = require('fs');
 
   // Create client for prediction service.
   const client = new automl.PredictionServiceClient();
@@ -49,7 +49,7 @@ async function predict(
   const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
   // Read the file content for translation.
-  const content = fs.readFileSync(filePath, `utf8`);
+  const content = fs.readFileSync(filePath, 'utf8');
 
   // Set the payload by giving the content of the file.
   const payload = {
@@ -75,55 +75,55 @@ async function predict(
 
   const response = responses[0];
   console.log(
-    `Translated Content: `,
+    'Translated Content: ',
     response.payload[0].translation.translatedContent.content
   );
 
   // [END automl_translation_predict]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .options({
     computeRegion: {
-      alias: `c`,
-      type: `string`,
+      alias: 'c',
+      type: 'string',
       default: 'us-central1',
       requiresArg: true,
-      description: `region name e.g. "us-central1"`,
+      description: 'region name e.g. "us-central1"',
     },
     filePath: {
-      alias: `f`,
-      default: `./resources/testInput.txt`,
-      type: `string`,
+      alias: 'f',
+      default: './resources/testInput.txt',
+      type: 'string',
       requiresArg: true,
-      description: `local text file path of the content to be classified`,
+      description: 'local text file path of the content to be classified',
     },
     modelId: {
-      alias: `i`,
-      type: `string`,
+      alias: 'i',
+      type: 'string',
       requiresArg: true,
-      description: `Id of the model which will be used for text classification`,
+      description: 'Id of the model which will be used for text classification',
     },
     projectId: {
-      alias: `z`,
-      type: `number`,
+      alias: 'z',
+      type: 'number',
       default: process.env.GCLOUD_PROJECT,
       requiresArg: true,
-      description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
+      description: 'The GCLOUD_PROJECT string, e.g. "my-gcloud-project"',
     },
     translationAllowFallback: {
-      alias: `t`,
-      type: `string`,
-      default: `False`,
+      alias: 't',
+      type: 'string',
+      default: 'False',
       requiresArg: true,
       description:
-        `Use true if AutoML will fallback to use a Google translation model for` +
-        `translation requests if the specified AutoML translation model cannot` +
-        `serve the request. Use false to not use Google translation model.`,
+        'Use true if AutoML will fallback to use a Google translation model for' +
+        'translation requests if the specified AutoML translation model cannot' +
+        'serve the request. Use false to not use Google translation model.',
     },
   })
-  .command(`predict`, `classify the content`, {}, opts =>
+  .command('predict', 'classify the content', {}, opts =>
     predict(
       opts.projectId,
       opts.computeRegion,
@@ -133,7 +133,7 @@ require(`yargs`)
     )
   )
   .example(
-    `node $0 predict -i "modelId" -f "./resources/testInput.txt" -t "False"`
+    'node $0 predict -i "modelId" -f "./resources/testInput.txt" -t "False"'
   )
   .wrap(120)
   .recommendCommands()

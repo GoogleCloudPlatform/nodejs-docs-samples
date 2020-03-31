@@ -49,13 +49,13 @@ describe('translate sample tests', () => {
   it('should list languages', () => {
     const output = execSync(`${cmd} list`);
     assert.match(output, /Languages:/);
-    assert.match(output, new RegExp(`{ code: 'af', name: 'Afrikaans' }`));
+    assert.match(output, new RegExp("{ code: 'af', name: 'Afrikaans' }"));
   });
 
   it('should list languages with a target', () => {
     const output = execSync(`${cmd} list es`);
     assert.match(output, /Languages:/);
-    assert.match(output, new RegExp(`{ code: 'af', name: 'afrikáans' }`));
+    assert.match(output, new RegExp("{ code: 'af', name: 'afrikáans' }"));
   });
 
   it('should translate a single string', async () => {

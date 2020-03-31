@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, before, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const uuid = require('uuid');
 const dialogflow = require('dialogflow');
@@ -43,7 +43,7 @@ describe('create intent', () => {
   after('delete the created intent', async () => {
     const projectId = await client.getProjectId();
     const intentPath = client.intentPath(projectId, intentId);
-    const request = { name: intentPath };
-    const result = await client.deleteIntent(request);
+    const request = {name: intentPath};
+    await client.deleteIntent(request);
   });
 });

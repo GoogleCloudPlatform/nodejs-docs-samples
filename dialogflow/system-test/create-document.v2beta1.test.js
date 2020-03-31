@@ -21,7 +21,6 @@ const uuid = require('uuid/v4');
 const dialogflow = require('dialogflow').v2beta1;
 
 const cmd = 'node detect.v2beta1.js createDocument';
-const testKnowledgeBaseName = `${uuid().split('-')[0]}-TestKnowledgeBase`;
 const testDocName = 'TestDoc';
 const testDocumentPath = 'https://cloud.google.com/storage/docs/faq';
 
@@ -45,12 +44,14 @@ describe('create a document', () => {
   });
 
   it('should create a document', () => {
-    const output = exec(`${cmd} -n "${knowledgeBaseName}" -z "${testDocumentPath}" -m "${testDocName}"`);
+    const output = exec(
+      `${cmd} -n "${knowledgeBaseName}" -z "${testDocumentPath}" -m "${testDocName}"`
+    );
     assert.include(output, 'Document created');
   });
 
   after('delete created document', async () => {
-    const [result] = await client.deleteKnowledgeBase({
+    await client.deleteKnowledgeBase({
       name: knowledgeBaseName,
       force: true,
     });

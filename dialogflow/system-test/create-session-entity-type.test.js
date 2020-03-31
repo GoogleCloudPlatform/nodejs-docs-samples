@@ -1,4 +1,4 @@
- // Copyright 2020 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const uuid = require('uuid');
 const dialogflow = require('dialogflow');
@@ -40,10 +40,8 @@ describe('create session entity type', () => {
       },
     };
 
-    const responses = await client.createEntityType(
-      createEntityTypeRequest
-    );
-    entityTypeId = responses[0].name.split('/')[4]
+    const responses = await client.createEntityType(createEntityTypeRequest);
+    entityTypeId = responses[0].name.split('/')[4];
   });
 
   it('should Create a Session Entity Type', async () => {
@@ -61,6 +59,6 @@ describe('create session entity type', () => {
     const request = {
       name: client.entityTypePath(projectId, entityTypeId),
     };
-    const response = await client.deleteEntityType(request);
+    await client.deleteEntityType(request);
   });
 });

@@ -22,7 +22,7 @@ function detectTextIntent(projectId, sessionId, queries, languageCode) {
    */
   // projectId: ID of the GCP project where Dialogflow agent is deployed
   // const projectId = 'PROJECT_ID';
-  // sessionId: String representing a random number or hashed user identifier 
+  // sessionId: String representing a random number or hashed user identifier
   // const sessionId = '123456';
   // queries: A set of sequential queries to be send to Dialogflow agent for Intent Detection
   // const queries = [
@@ -105,7 +105,7 @@ async function detectEventIntent(
   eventName,
   languageCode
 ) {
-  const { struct } = require('pb-util');
+  const {struct} = require('pb-util');
 
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
@@ -122,7 +122,7 @@ async function detectEventIntent(
     queryInput: {
       event: {
         name: eventName,
-        parameters: struct.encode({ foo: 'bar' }),
+        parameters: struct.encode({foo: 'bar'}),
         languageCode: languageCode,
       },
     },
@@ -139,12 +139,12 @@ async function detectEventIntent(
   if (result.intent) {
     console.log(`  Intent: ${result.intent.displayName}`);
   } else {
-    console.log(`  No intent matched.`);
+    console.log('  No intent matched.');
   }
   const parameters = JSON.stringify(struct.decode(result.parameters));
   console.log(`  Parameters: ${parameters}`);
   if (result.outputContexts && result.outputContexts.length) {
-    console.log(`  Output contexts:`);
+    console.log('  Output contexts:');
     result.outputContexts.forEach(context => {
       const contextId = contextClient.matchContextFromContextName(context.name);
       const contextParameters = JSON.stringify(
@@ -168,7 +168,7 @@ async function detectAudioIntent(
   // [START dialogflow_detect_intent_audio]
   const fs = require('fs');
   const util = require('util');
-  const { struct } = require('pb-util');
+  const {struct} = require('pb-util');
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
 
@@ -206,12 +206,12 @@ async function detectAudioIntent(
   if (result.intent) {
     console.log(`  Intent: ${result.intent.displayName}`);
   } else {
-    console.log(`  No intent matched.`);
+    console.log('  No intent matched.');
   }
   const parameters = JSON.stringify(struct.decode(result.parameters));
   console.log(`  Parameters: ${parameters}`);
   if (result.outputContexts && result.outputContexts.length) {
-    console.log(`  Output contexts:`);
+    console.log('  Output contexts:');
     result.outputContexts.forEach(context => {
       const contextId = contextClient.matchContextFromContextName(context.name);
       const contextParameters = JSON.stringify(
@@ -236,8 +236,8 @@ async function streamingDetectIntent(
   // [START dialogflow_detect_intent_streaming]
   const fs = require('fs');
   const util = require('util');
-  const { Transform, pipeline } = require('stream');
-  const { struct } = require('pb-util');
+  const {Transform, pipeline} = require('stream');
+  const {struct} = require('pb-util');
 
   const pump = util.promisify(pipeline);
   // Imports the Dialogflow library
@@ -281,7 +281,7 @@ async function streamingDetectIntent(
           `Intermediate transcript: ${data.recognitionResult.transcript}`
         );
       } else {
-        console.log(`Detected intent:`);
+        console.log('Detected intent:');
 
         const result = data.queryResult;
         // Instantiates a context client
@@ -292,12 +292,12 @@ async function streamingDetectIntent(
         if (result.intent) {
           console.log(`  Intent: ${result.intent.displayName}`);
         } else {
-          console.log(`  No intent matched.`);
+          console.log('  No intent matched.');
         }
         const parameters = JSON.stringify(struct.decode(result.parameters));
         console.log(`  Parameters: ${parameters}`);
         if (result.outputContexts && result.outputContexts.length) {
-          console.log(`  Output contexts:`);
+          console.log('  Output contexts:');
           result.outputContexts.forEach(context => {
             const contextId = contextClient.matchContextFromContextName(
               context.name
@@ -324,7 +324,7 @@ async function streamingDetectIntent(
     new Transform({
       objectMode: true,
       transform: (obj, _, next) => {
-        next(null, { inputAudio: obj });
+        next(null, {inputAudio: obj});
       },
     }),
     detectStream
@@ -332,7 +332,7 @@ async function streamingDetectIntent(
   // [END dialogflow_detect_intent_streaming]
 }
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .options({
     projectId: {
@@ -387,8 +387,8 @@ const cli = require(`yargs`)
     "Please provide your Dialogflow agent's project ID with the -p flag or through the GOOGLE_CLOUD_PROJECT env var"
   )
   .command(
-    `text`,
-    `Detects the intent for text queries.`,
+    'text',
+    'Detects the intent for text queries.',
     {
       queries: {
         alias: 'q',
@@ -408,8 +408,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `event <eventName>`,
-    `Detects the intent for a client-generated event name.`,
+    'event <eventName>',
+    'Detects the intent for a client-generated event name.',
     {},
     opts =>
       detectEventIntent(
@@ -420,8 +420,8 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `audio <filename>`,
-    `Detects the intent for audio queries in a local file.`,
+    'audio <filename>',
+    'Detects the intent for audio queries in a local file.',
     {},
     opts =>
       detectAudioIntent(
@@ -434,9 +434,9 @@ const cli = require(`yargs`)
       )
   )
   .command(
-    `stream <filename>`,
-    `Detects the intent in a local audio file by streaming it to the ` +
-      `Conversation API.`,
+    'stream <filename>',
+    'Detects the intent in a local audio file by streaming it to the ' +
+      'Conversation API.',
     {},
     opts =>
       streamingDetectIntent(
@@ -449,16 +449,16 @@ const cli = require(`yargs`)
       )
   )
   .example(
-    `node $0 text -q "hello" "book a room" "Mountain View" ` +
-      `"today" "230pm" "half an hour" "two people" "A" "yes"`
+    'node $0 text -q "hello" "book a room" "Mountain View" ' +
+      '"today" "230pm" "half an hour" "two people" "A" "yes"'
   )
-  .example(`node $0 event order_pizza`)
-  .example(`node $0 audio resources/book_a_room.wav -r 16000`)
-  .example(`node $0 stream resources/mountain_view.wav -r 16000`)
+  .example('node $0 event order_pizza')
+  .example('node $0 audio resources/book_a_room.wav -r 16000')
+  .example('node $0 stream resources/mountain_view.wav -r 16000')
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/dialogflow-enterprise/docs`
+    'For more information, see https://cloud.google.com/dialogflow-enterprise/docs'
   )
   .help()
   .strict();

@@ -38,8 +38,8 @@ async function main(
 
   // Define session path
   const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-  const fs = require(`fs`);
-  const util = require(`util`);
+  const fs = require('fs');
+  const util = require('util');
 
   async function detectIntentwithTTSResponse() {
     // The audio query request
@@ -52,7 +52,7 @@ async function main(
         },
       },
       outputAudioConfig: {
-        audioEncoding: `OUTPUT_AUDIO_ENCODING_LINEAR_16`,
+        audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
       },
     };
     sessionClient.detectIntent(request).then(responses => {

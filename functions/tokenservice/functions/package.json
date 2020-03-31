@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "babel-eslint": "^10.0.2",
     "child-process-promise": "^2.2.1",
     "eslint": "^6.0.0",

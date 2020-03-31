@@ -136,9 +136,9 @@ app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 
-module.exports = app;
+module.exports = {server, app};

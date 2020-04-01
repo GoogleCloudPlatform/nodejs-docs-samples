@@ -5,7 +5,6 @@ const childProcess = require('child_process');
 const path = require('path');
 const appPath = path.join(__dirname, '../app.js');
 
-
 describe('server listening', () => {
   it('should be listening', async () => {
     await childProcess.exec(`node ${appPath}`);

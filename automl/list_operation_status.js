@@ -23,7 +23,7 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
   // const location = 'us-central1';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -37,10 +37,10 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
 
     const [response] = await client.operationsClient.listOperations(request);
 
-    console.log(`List of operation status:`);
+    console.log('List of operation status:');
     for (const operation of response) {
       console.log(`Name: ${operation.name}`);
-      console.log(`Operation details:`);
+      console.log('Operation details:');
       console.log(`${operation}`);
     }
   }

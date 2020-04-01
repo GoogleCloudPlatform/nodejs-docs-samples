@@ -21,18 +21,18 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmdDataset = `node vision/automlVisionDataset.js`;
-const cmdModel = `node vision/automlVisionModel.js`;
-const cmdPredict = `node vision/automlVisionPredict.js`;
+const cmdDataset = 'node vision/automlVisionDataset.js';
+const cmdModel = 'node vision/automlVisionModel.js';
+const cmdPredict = 'node vision/automlVisionPredict.js';
 
-const testDataSetName = `testDataSet`;
-const dummyDataSet = `dummyDataSet`;
-const testModelName = `dummyModel`;
-const testImgPath = `./resources/`;
-const sampleImage2 = path.join(testImgPath, `testImage2.jpg`);
+const testDataSetName = 'testDataSet';
+const dummyDataSet = 'dummyDataSet';
+const testModelName = 'dummyModel';
+const testImgPath = './resources/';
+const sampleImage2 = path.join(testImgPath, 'testImage2.jpg');
 
-describe(`auto ml vision`, () => {
-  it.skip(`should create, list, and delete a dataset`, async () => {
+describe('auto ml vision', () => {
+  it.skip('should create, list, and delete a dataset', async () => {
     // Check to see that this dataset does not yet exist
     let output = execSync(`${cmdDataset} list-datasets`);
     assert.strictEqual(output.includes(testDataSetName), false);
@@ -40,8 +40,8 @@ describe(`auto ml vision`, () => {
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
     const dataSetId = output
-      .split(`\n`)[1]
-      .split(`:`)[1]
+      .split('\n')[1]
+      .split(':')[1]
       .trim();
     assert.match(output, new RegExp(testDataSetName));
 
@@ -52,7 +52,7 @@ describe(`auto ml vision`, () => {
 
   // See : https://github.com/GoogleCloudPlatform/python-docs-samples/blob/master/vision/automl/model_test.py
   // We make two models running this test, see hard-coded workaround below
-  it.skip(`should create a dataset, import data, and start making a model`, async () => {
+  it.skip('should create a dataset, import data, and start making a model', async () => {
     // Check to see that this dataset does not yet exist
     let output = execSync(`${cmdDataset} list-datasets`);
     assert.strictEqual(output.includes(dummyDataSet), false);
@@ -60,8 +60,8 @@ describe(`auto ml vision`, () => {
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
     const dataSetId = output
-      .split(`\n`)[1]
-      .split(`:`)[1]
+      .split('\n')[1]
+      .split(':')[1]
       .trim();
     assert.match(output, new RegExp(dummyDataSet));
 
@@ -79,9 +79,9 @@ describe(`auto ml vision`, () => {
     output = execSync(`
       ${cmdModel} create-model -i "${dataSetId}" -m "${testModelName}" -t "2"`);
     const operationName = output
-      .split(`\n`)[0]
-      .split(`:`)[1]
-      .split(`/`)
+      .split('\n')[0]
+      .split(':')[1]
+      .split('/')
       .pop()
       .trim();
     assert.match(output, /Training started.../);
@@ -93,9 +93,9 @@ describe(`auto ml vision`, () => {
     assert.match(output, /done: false/);
   });
 
-  it.skip(`should display evaluation from prexisting model`, async () => {
-    const flowersModelId = `ICN723541179344731436`;
-    const flowersDisplayName = `flowersTest`;
+  it.skip('should display evaluation from prexisting model', async () => {
+    const flowersModelId = 'ICN723541179344731436';
+    const flowersDisplayName = 'flowersTest';
 
     // Confirm dataset exists
     let output = execSync(`${cmdDataset} list-datasets`);
@@ -111,9 +111,9 @@ describe(`auto ml vision`, () => {
     assert.match(output, /Model Precision/);
   });
 
-  it.skip(`should run Prediction from prexisting model`, async () => {
-    const donotdeleteModelId = `ICN723541179344731436`;
-    const flowersDisplayName = `flowers`;
+  it.skip('should run Prediction from prexisting model', async () => {
+    const donotdeleteModelId = 'ICN723541179344731436';
+    const flowersDisplayName = 'flowers';
 
     // Confirm dataset exists
     let output = execSync(`${cmdDataset} list-datasets`);
@@ -131,7 +131,7 @@ describe(`auto ml vision`, () => {
   });
 
   // List datasets
-  it(`should list datasets`, async () => {
+  it('should list datasets', async () => {
     const output = execSync(`${cmdDataset} list-datasets`);
     assert.match(output, /List of datasets:/);
   });

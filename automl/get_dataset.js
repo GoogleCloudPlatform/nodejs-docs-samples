@@ -33,7 +33,7 @@ function main(
   // const datasetId = 'YOUR_DATASET_ID';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -53,7 +53,7 @@ function main(
       }`
     );
     console.log(`Dataset display name: ${response.displayName}`);
-    console.log(`Dataset create time`);
+    console.log('Dataset create time');
     console.log(`\tseconds ${response.createTime.seconds}`);
     console.log(`\tnanos ${response.createTime.nanos / 1e9}`);
     // [END automl_language_sentiment_analysis_get_dataset]
@@ -80,7 +80,7 @@ function main(
 
     // [START automl_translate_get_dataset]
     if (response.translationDatasetMetadata !== undefined) {
-      console.log(`Translation dataset metadata:`);
+      console.log('Translation dataset metadata:');
       console.log(
         `\tSource language code: ${response.translationDatasetMetadata.sourceLanguageCode}`
       );

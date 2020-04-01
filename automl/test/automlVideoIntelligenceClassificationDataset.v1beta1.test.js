@@ -35,8 +35,8 @@ const importDataCsv = 'gs://automl-video-demo-data/hmdb_split1.csv';
 
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-describe.skip(`DatasetAPI`, () => {
-  it(`should create, import and delete a dataset`, async () => {
+describe.skip('DatasetAPI', () => {
+  it('should create, import and delete a dataset', async () => {
     // Create dataset
     let output = exec(`${cmdDataset} create-dataset "${datasetName}"`);
     const parsedOut = output.split('\n');
@@ -54,19 +54,19 @@ describe.skip(`DatasetAPI`, () => {
     assert.match(output, /Dataset delete details:/);
   });
 
-  it(`should list datasets`, async () => {
+  it('should list datasets', async () => {
     // List dataset
     const output = exec(`${cmdDataset} list-datasets "${filter}"`);
     assert.match(output, /List of datasets:/);
   });
 
-  it(`should get preexisting dataset`, async () => {
+  it('should get preexisting dataset', async () => {
     // Get dataset
     const output = exec(`${cmdDataset} get-dataset "${datasetId}"`);
     assert.match(output, /Dataset display name:/);
   });
 
-  it(`should export dataset`, async () => {
+  it('should export dataset', async () => {
     // Export data
     const outputUri = 'gs://' + bucket + '/' + datasetId;
     const output = exec(

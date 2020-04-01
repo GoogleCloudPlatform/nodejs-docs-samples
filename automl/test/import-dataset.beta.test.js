@@ -32,7 +32,13 @@ describe('Automl Import Dataset Test', () => {
     // other elements of the request were valid.
     const projectId = await client.getProjectId();
     const data = `gs://${projectId}-automl-translate/en-ja-short.csv`;
-    const args = [IMPORT_DATASET_REGION_TAG, projectId, LOCATION, 'TEN0000000000000000000', data];
+    const args = [
+      IMPORT_DATASET_REGION_TAG,
+      projectId,
+      LOCATION,
+      'TEN0000000000000000000',
+      data,
+    ];
     const output = cp.spawnSync('node', args, {encoding: 'utf8'});
 
     assert.match(output.stderr, /NOT_FOUND/);

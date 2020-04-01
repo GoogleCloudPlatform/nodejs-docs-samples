@@ -42,7 +42,7 @@ async function main(
     .listModelEvaluations({parent: modelFullId, filter: filter})
     .then(responses => {
       const element = responses[0];
-      console.log(`List of model evaluations:`);
+      console.log('List of model evaluations:');
       for (let i = 0; i < element.length; i++) {
         const confidenceMetricsEntries =
           element[i].classificationEvaluationMetrics.confidenceMetricsEntry;
@@ -51,7 +51,7 @@ async function main(
         console.log(`\nModel evaluation name: ${element[i].name}`);
         console.log(
           `Model evaluation Id: ${element[i].name
-            .split(`/`)
+            .split('/')
             .slice(-1)
             .pop()}`
         );
@@ -62,14 +62,14 @@ async function main(
         console.log(
           `Model evaluation example count: ${element[i].evaluatedExampleCount}`
         );
-        console.log(`Video classification evaluation metrics:`);
+        console.log('Video classification evaluation metrics:');
         console.log(
           `\tModel auPrc: ${math.round(
             element[i].classificationEvaluationMetrics.auPrc,
             6
           )}`
         );
-        console.log(`\tConfidence metrics entries:`);
+        console.log('\tConfidence metrics entries:');
 
         for (const confidenceMetricsEntry of confidenceMetricsEntries) {
           console.log(

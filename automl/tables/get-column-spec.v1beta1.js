@@ -52,7 +52,7 @@ async function main(
       const column = responses[0];
       // Display the column spec information.
       console.log(`Column name: ${column.name}`);
-      console.log(`Column Id: ${column.name.split(`/`).pop(-1)}`);
+      console.log(`Column Id: ${column.name.split('/').pop(-1)}`);
       console.log(`Column display name: ${column.displayName}`);
       console.log(`Column datatype: ${column.dataType.typeCode}`);
       console.log(

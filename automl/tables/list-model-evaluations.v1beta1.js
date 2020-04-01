@@ -41,11 +41,11 @@ async function main(
     .listModelEvaluations({parent: modelFullId, filter: filter})
     .then(responses => {
       const element = responses[0];
-      console.log(`List of model evaluations:`);
+      console.log('List of model evaluations:');
       for (let i = 0; i < element.length; i++) {
         const classMetrics = element[i].classificationEvaluationMetrics;
         const regressionMetrics = element[i].regressionEvaluationMetrics;
-        const evaluationId = element[i].name.split(`/`)[7].split('`')[0];
+        const evaluationId = element[i].name.split('/')[7].split('`')[0];
 
         console.log(`Model evaluation name: ${element[i].name}`);
         console.log(`Model evaluation Id: ${evaluationId}`);
@@ -60,7 +60,7 @@ async function main(
         if (classMetrics) {
           const confidenceMetricsEntries = classMetrics.confidenceMetricsEntry;
 
-          console.log(`Table classification evaluation metrics:`);
+          console.log('Table classification evaluation metrics:');
           console.log(`\tModel auPrc: ${math.round(classMetrics.auPrc, 6)}`);
           console.log(`\tModel auRoc: ${math.round(classMetrics.auRoc, 6)}`);
           console.log(
@@ -68,7 +68,7 @@ async function main(
           );
 
           if (confidenceMetricsEntries.length > 0) {
-            console.log(`\tConfidence metrics entries:`);
+            console.log('\tConfidence metrics entries:');
 
             for (const confidenceMetricsEntry of confidenceMetricsEntries) {
               console.log(
@@ -137,14 +137,14 @@ async function main(
               console.log(
                 `\t\tModel true negative count: ${confidenceMetricsEntry.trueNegativeCount}`
               );
-              console.log(`\n`);
+              console.log('\n');
             }
           }
           console.log(
             `\tModel annotation spec Id: ${classMetrics.annotationSpecId}`
           );
         } else if (regressionMetrics) {
-          console.log(`Table regression evaluation metrics:`);
+          console.log('Table regression evaluation metrics:');
           console.log(
             `\tModel root mean squared error: ${regressionMetrics.rootMeanSquaredError}`
           );
@@ -156,7 +156,7 @@ async function main(
           );
           console.log(`\tModel rSquared: ${regressionMetrics.rSquared}`);
         }
-        console.log(`\n`);
+        console.log('\n');
       }
     })
     .catch(err => {

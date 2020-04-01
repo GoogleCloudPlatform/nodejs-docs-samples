@@ -55,7 +55,7 @@ async function main(
   };
 
   // Add the update mask to particular field.
-  const fieldMask = `dataType`;
+  const fieldMask = 'dataType';
   const updateMask = {path: fieldMask};
 
   // Update the column spec.
@@ -66,7 +66,7 @@ async function main(
 
       // Display the column spec information.
       console.log(`Column name: ${column.name}`);
-      console.log(`Column Id: ${column.name.split(`/`).pop(-1)}`);
+      console.log(`Column Id: ${column.name.split('/').pop(-1)}`);
       console.log(`Column display name: ${column.displayName}`);
       console.log(`Column datatype: ${column.dataType.typeCode}`);
       console.log(

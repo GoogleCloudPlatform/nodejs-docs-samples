@@ -28,7 +28,7 @@ function main(
   // const modelId = 'YOUR_MODEL_ID';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1beta1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1beta1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -48,7 +48,7 @@ function main(
       }`
     );
     console.log(`Model display name: ${response.displayName}`);
-    console.log(`Model create time`);
+    console.log('Model create time');
     console.log(`\tseconds ${response.createTime.seconds}`);
     console.log(`\tnanos ${response.createTime.nanos / 1e9}`);
     console.log(`Model deployment state: ${response.deploymentState}`);

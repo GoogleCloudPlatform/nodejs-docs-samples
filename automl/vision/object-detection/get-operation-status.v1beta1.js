@@ -33,19 +33,19 @@ function main(operationFullId = 'OPERATION_FULL_ID') {
     const [response] = await automlClient.operationsClient.getOperation({
       name: operationFullId,
     });
-    console.log(`Operation details:`);
+    console.log('Operation details:');
     console.log(`\tName: ${response.name}`);
-    console.log(`\tMetadata:`);
+    console.log('\tMetadata:');
     console.log(`\t\tType Url: ${response.metadata.typeUrl}`);
     console.log(`\tDone: ${response.done}`);
 
     if (response.response) {
-      console.log(`\tResponse:`);
+      console.log('\tResponse:');
       console.log(`\t\tType Url: ${response.response.typeUrl}`);
     }
 
     if (response.error) {
-      console.log(`\tResponse:`);
+      console.log('\tResponse:');
       console.log(`\t\tError code: ${response.error.code}`);
       console.log(`\t\tError message: ${response.error.message}`);
     }

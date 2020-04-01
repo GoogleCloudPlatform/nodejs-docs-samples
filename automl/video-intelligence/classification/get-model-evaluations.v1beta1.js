@@ -55,7 +55,7 @@ async function main(
       console.log(`\nModel evaluation name: ${response.name}`);
       console.log(
         `Model evaluation Id: ${response.name
-          .split(`/`)
+          .split('/')
           .slice(-1)
           .pop()}`
       );
@@ -66,14 +66,14 @@ async function main(
       console.log(
         `Model evaluation example count: ${response.evaluatedExampleCount}`
       );
-      console.log(`Video classification evaluation metrics:`);
+      console.log('Video classification evaluation metrics:');
       console.log(
         `\tModel auPrc: ${math.round(
           response.classificationEvaluationMetrics.auPrc,
           6
         )}`
       );
-      console.log(`\tConfidence metrics entries:`);
+      console.log('\tConfidence metrics entries:');
 
       for (const confidenceMetricsEntry of confidenceMetricsEntries) {
         console.log(

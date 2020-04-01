@@ -34,8 +34,8 @@ const outputUriPrefix = 'gs://video-intelligence/';
 
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-describe.skip(`Video Intelligence PredictionAPI`, () => {
-  it(`should run prediction from preexisting model`, async () => {
+describe.skip('Video Intelligence PredictionAPI', () => {
+  it('should run prediction from preexisting model', async () => {
     // Run prediction on 'annotate_video.csv' from gcs inputUri
     const output = exec(
       `${cmdPredict} predict "${modelId}" "${inputUri}" "${outputUriPrefix}"`

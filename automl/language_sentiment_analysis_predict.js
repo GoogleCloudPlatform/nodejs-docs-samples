@@ -30,7 +30,7 @@ function main(
   // const content = 'text to predict'
 
   // Imports the Google Cloud AutoML library
-  const {PredictionServiceClient} = require(`@google-cloud/automl`).v1;
+  const {PredictionServiceClient} = require('@google-cloud/automl').v1;
 
   // Instantiates a client
   const client = new PredictionServiceClient();

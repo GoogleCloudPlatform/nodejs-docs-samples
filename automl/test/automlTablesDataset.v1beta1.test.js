@@ -41,7 +41,7 @@ const outputBigQueryUri = 'bq://automl-tables-bg-output';
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 describe('Tables DatasetAPI', () => {
-  it.skip(`should create, import, update and delete a dataset`, async () => {
+  it.skip('should create, import, update and delete a dataset', async () => {
     // Create dataset
     let output = exec(`${cmdDataset} create-dataset "${datasetName}"`);
     const parsedOut = output.split('\n');
@@ -66,19 +66,19 @@ describe('Tables DatasetAPI', () => {
     assert.match(output, /Dataset delete details:/);
   });
 
-  it.skip(`should list datasets`, async () => {
+  it.skip('should list datasets', async () => {
     // List dataset
     const output = exec(`${cmdDataset} list-datasets "${filter}"`);
     assert.match(output, /Dataset Id:/);
   });
 
-  it.skip(`should get preexisting dataset`, async () => {
+  it.skip('should get preexisting dataset', async () => {
     // Get dataset
     const output = exec(`${cmdDataset} get-dataset "${datasetId}"`);
     assert.match(output, /Dataset Id:/);
   });
 
-  it.skip(`should get,list,update tablespec and columnspec`, async () => {
+  it.skip('should get,list,update tablespec and columnspec', async () => {
     // List table
     let output = exec(
       `${cmdDataset} list-table-specs` + ` "${datasetId}" "${filter}"`
@@ -122,7 +122,7 @@ describe('Tables DatasetAPI', () => {
     assert.match(output, /Column Id:/);
   });
 
-  it.skip(`should export CSV dataset`, async () => {
+  it.skip('should export CSV dataset', async () => {
     // Export data to csv
     const output = exec(
       `${cmdDataset} export-data-to-csv` + ` "${datasetId}" "${outputGcsUri}"`
@@ -130,7 +130,7 @@ describe('Tables DatasetAPI', () => {
     assert.match(output, /Processing export.../);
   });
 
-  it.skip(`should export BigQuery dataset`, async () => {
+  it.skip('should export BigQuery dataset', async () => {
     // Export data to bigquery
     const output = exec(
       `${cmdDataset} export-data-to-bigquery` +

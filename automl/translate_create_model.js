@@ -30,7 +30,7 @@ function main(
   // const displayName = 'YOUR_DISPLAY_NAME';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -48,7 +48,7 @@ function main(
 
     // Don't wait for the LRO
     const [operation] = await client.createModel(request);
-    console.log(`Training started...`);
+    console.log('Training started...');
     console.log(`Training operation name: ${operation.name}`);
   }
 

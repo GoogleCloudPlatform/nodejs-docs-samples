@@ -43,7 +43,7 @@ async function main(
   const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
   // Get the multiple Google Cloud Storage input URIs.
-  const inputUris = inputUri.split(`,`);
+  const inputUris = inputUri.split(',');
   const inputConfig = {
     gcsSource: {
       inputUris: inputUris,

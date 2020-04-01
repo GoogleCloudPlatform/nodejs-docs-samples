@@ -37,7 +37,7 @@ async function main(
   const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
 
   // Get the multiple Google Cloud Storage URIs.
-  const inputUris = gcsPath.split(`,`);
+  const inputUris = gcsPath.split(',');
   const inputConfig = {
     gcsSource: {
       inputUris: inputUris,
@@ -49,7 +49,7 @@ async function main(
     .importData({name: datasetFullId, inputConfig: inputConfig})
     .then(responses => {
       const operation = responses[0];
-      console.log(`Processing import...`);
+      console.log('Processing import...');
       return operation.promise();
     })
     .then(responses => {
@@ -58,7 +58,7 @@ async function main(
 
       // Get the data import details.
       console.log('Data import details:');
-      console.log(`\tOperation details:`);
+      console.log('\tOperation details:');
       console.log(`\t\tName: ${operationDetails.name}`);
       console.log(`\t\tDone: ${operationDetails.done}`);
     })

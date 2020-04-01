@@ -43,7 +43,7 @@ async function main(
   };
 
   // Add the update mask to particular field.
-  const fieldMask = `displayName`;
+  const fieldMask = 'displayName';
   const updateMask = {path: fieldMask};
 
   // Update the information about a given dataset.
@@ -54,7 +54,7 @@ async function main(
 
       // Display the dataset information.
       console.log(`Dataset name: ${dataset.name}`);
-      console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
+      console.log(`Dataset Id: ${dataset.name.split('/').pop(-1)}`);
       console.log(`Updated dataset display name: ${dataset.displayName}`);
       console.log(`Dataset example count: ${dataset.exampleCount}`);
     })

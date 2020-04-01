@@ -38,22 +38,22 @@ async function main(
     .listOperations({name: projectLocation, filter: filter})
     .then(responses => {
       const response = responses[0];
-      console.log(`List of operations:`);
+      console.log('List of operations:');
       for (let i = 0; i < response.length; i++) {
         // Display operation details.
-        console.log(`\nOperation details:`);
+        console.log('\nOperation details:');
         console.log(`\t\tName: ${response[i].name}`);
-        console.log(`\t\tMetadata:`);
+        console.log('\t\tMetadata:');
         console.log(`\t\t\tType Url: ${response[i].metadata.typeUrl}`);
         console.log(`\t\tDone: ${response[i].done}`);
 
         if (response[i].response) {
-          console.log(`\t\tResponse:`);
+          console.log('\t\tResponse:');
           console.log(`\t\t\tType Url: ${response[i].response.typeUrl}`);
         }
 
         if (response[i].error) {
-          console.log(`\t\tResponse:`);
+          console.log('\t\tResponse:');
           console.log(`\t\t\tError code: ${response[i].error.code}`);
           console.log(`\t\t\tError message: ${response[i].error.message}`);
         }

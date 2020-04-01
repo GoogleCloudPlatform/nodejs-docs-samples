@@ -43,12 +43,12 @@ async function main(
       const response = respond[0];
 
       // Iterate through the results.
-      let modelEvaluationId = ``;
+      let modelEvaluationId = '';
       for (const element of response) {
         // There is evaluation for each class in a model and for overall model.
         // Get only the evaluation of overall model.
         if (!element.annotationSpecId) {
-          modelEvaluationId = element.name.split(`/`).pop(-1);
+          modelEvaluationId = element.name.split('/').pop(-1);
         }
       }
       console.log(`Model Evaluation ID: ${modelEvaluationId}`);
@@ -77,8 +77,8 @@ async function main(
               for (const confidenceMetricsEntry of confidenceMetricsEntries) {
                 if (confidenceMetricsEntry.confidenceThreshold === 0.5) {
                   console.log(
-                    `\tPrecision and recall are based on ` +
-                      `a score threshold of 0.5`
+                    '\tPrecision and recall are based on ' +
+                      'a score threshold of 0.5'
                   );
                   console.log(
                     `\t\tModel precision: ${math.round(

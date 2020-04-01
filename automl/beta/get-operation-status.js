@@ -28,7 +28,7 @@ function main(
   // const operationId = 'YOUR_OPERATION_ID';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1beta1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1beta1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -42,7 +42,7 @@ function main(
     const [response] = await client.operationsClient.getOperation(request);
 
     console.log(`Name: ${response.name}`);
-    console.log(`Operation details:`);
+    console.log('Operation details:');
     console.log(response);
   }
 

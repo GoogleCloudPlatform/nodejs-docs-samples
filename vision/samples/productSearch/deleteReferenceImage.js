@@ -41,7 +41,7 @@ function main(projectId, location, productId, referenceImageId) {
     };
 
     await client.deleteReferenceImage(request);
-    console.log(`Reference image deleted from product.`);
+    console.log('Reference image deleted from product.');
   }
   // [END vision_product_search_delete_reference_image]
   deleteReferenceImage();

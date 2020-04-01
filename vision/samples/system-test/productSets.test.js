@@ -23,7 +23,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const productSearch = new vision.ProductSearchClient();
-const cmd = `node productSearch`;
+const cmd = 'node productSearch';
 
 // Shared fixture data for product tests
 const testProductSet = {
@@ -53,7 +53,7 @@ async function getProductSetOrFalse(productSetPath) {
   }
 }
 
-describe.only(`product sets`, () => {
+describe.only('product sets', () => {
   before(async () => {
     // Create a test product set for each test
     await productSearch.createProductSet({
@@ -82,7 +82,7 @@ describe.only(`product sets`, () => {
     });
   });
 
-  it(`should create product set`, async () => {
+  it('should create product set', async () => {
     const newProductSetId = `ProductSetId${uuid.v4()}`;
     const newProductSetPath = productSearch.productSetPath(
       testProductSet.projectId,
@@ -105,7 +105,7 @@ describe.only(`product sets`, () => {
     );
   });
 
-  it(`should get product set`, async () => {
+  it('should get product set', async () => {
     const output = execSync(
       `${cmd}/getProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
     );
@@ -122,7 +122,7 @@ describe.only(`product sets`, () => {
     );
   });
 
-  it(`should list product sets`, async () => {
+  it('should list product sets', async () => {
     const output = execSync(
       `${cmd}/listProductSets "${testProductSet.projectId}" "${testProductSet.location}"`
     );
@@ -139,15 +139,15 @@ describe.only(`product sets`, () => {
     );
   });
 
-  it(`should purge a product set`, async () => {
+  it('should purge a product set', async () => {
     const output = execSync(
       `${cmd}/purgeProductsInProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productSetId}"`
     );
 
-    assert.match(output, new RegExp(`Products removed from product set.`));
+    assert.match(output, new RegExp('Products removed from product set.'));
   });
 
-  it(`should delete product sets`, async () => {
+  it('should delete product sets', async () => {
     const productSet = await productSearch.getProductSet({
       name: `${testProductSet.productSetPath}`,
     });

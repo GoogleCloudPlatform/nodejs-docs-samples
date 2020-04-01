@@ -36,12 +36,10 @@ function main(
   async function asyncBatchAnnotateImages() {
     // Set the type of annotation you want to perform on the image
     // https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.Feature.Type
-    const features = [
-      {type: 'LABEL_DETECTION'},
-    ];
+    const features = [{type: 'LABEL_DETECTION'}];
 
     // Build the image request object for that one image. Note: for additional images you have to create
-    // additional image request objects and store them in a list to be used below.  
+    // additional image request objects and store them in a list to be used below.
     const imageRequest = {
       image: {
         source: {
@@ -49,9 +47,9 @@ function main(
         },
       },
       features: features,
-    }
+    };
 
-    // Set where to store the results for the images that will be annotated.  
+    // Set where to store the results for the images that will be annotated.
     const outputConfig = {
       gcsDestination: {
         uri: outputUri,

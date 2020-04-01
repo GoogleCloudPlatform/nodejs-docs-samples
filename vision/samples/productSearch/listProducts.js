@@ -40,7 +40,7 @@ function main(projectId, location) {
       console.log(`Product description: ${product.description}`);
       console.log(`Product category: ${product.productCategory}`);
       if (product.productLabels.length) {
-        console.log(`Product labels:`);
+        console.log('Product labels:');
         product.productLabels.forEach(productLabel => {
           console.log(`${productLabel.key}: ${productLabel.value}`);
         });

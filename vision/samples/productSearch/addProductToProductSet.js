@@ -42,7 +42,7 @@ function main(projectId, location, productId, productSetId) {
     };
 
     await client.addProductToProductSet(request);
-    console.log(`Product added to product set.`);
+    console.log('Product added to product set.');
   }
   // [END vision_product_search_add_product_to_product_set]
   addProductToProductSet();

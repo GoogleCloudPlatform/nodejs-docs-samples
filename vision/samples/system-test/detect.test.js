@@ -29,15 +29,15 @@ const client = new vision.ImageAnnotatorClient();
 const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const prefix = 'results';
-const cmd = `node detect.js`;
+const cmd = 'node detect.js';
 const files = [
-  `face_no_surprise.jpg`,
-  `landmark.jpg`,
-  `logos.png`,
-  `text.jpg`,
-  `wakeupcat.jpg`,
-  `faulkner.jpg`,
-  `city.jpg`,
+  'face_no_surprise.jpg',
+  'landmark.jpg',
+  'logos.png',
+  'text.jpg',
+  'wakeupcat.jpg',
+  'faulkner.jpg',
+  'city.jpg',
   'pdf-ocr.pdf',
   'duck_and_truck.jpg',
   'google.png',
@@ -48,7 +48,7 @@ const files = [
   };
 });
 
-describe(`detect`, () => {
+describe('detect', () => {
   before(async () => {
     const [bucket] = await storage.createBucket(bucketName);
     await Promise.all(files.map(file => bucket.upload(file.localPath)));
@@ -61,37 +61,37 @@ describe(`detect`, () => {
     await bucket.delete();
   });
 
-  it(`should detect faces in a local file`, async () => {
+  it('should detect faces in a local file', async () => {
     const output = execSync(`${cmd} faces ${files[0].localPath}`);
     assert.match(output, /Faces:/);
     assert.match(output, /Face #1:/);
   });
 
-  it(`should detect faces in a remote file`, async () => {
+  it('should detect faces in a remote file', async () => {
     const output = execSync(`${cmd} faces-gcs ${bucketName} ${files[0].name}`);
     assert.match(output, /Faces:/);
     assert.match(output, /Face #1:/);
   });
 
-  it(`should detect labels in a local file`, async () => {
+  it('should detect labels in a local file', async () => {
     const output = execSync(`${cmd} labels ${files[4].localPath}`);
     assert.match(output, /Labels:/);
     assert.match(output, /cat/);
   });
 
-  it(`should detect labels in a remote file`, async () => {
+  it('should detect labels in a remote file', async () => {
     const output = execSync(`${cmd} labels-gcs ${bucketName} ${files[4].name}`);
     assert.match(output, /Labels:/);
     assert.match(output, /cat/);
   });
 
-  it(`should detect landmarks in a local file`, async () => {
+  it('should detect landmarks in a local file', async () => {
     const output = execSync(`${cmd} landmarks ${files[1].localPath}`);
     assert.match(output, /Landmarks:/);
     assert.match(output, /Palace of Fine Arts/);
   });
 
-  it(`should detect landmarks in a remote file`, async () => {
+  it('should detect landmarks in a remote file', async () => {
     const output = execSync(
       `${cmd} landmarks-gcs ${bucketName} ${files[1].name}`
     );
@@ -99,70 +99,70 @@ describe(`detect`, () => {
     assert.match(output, /Palace of Fine Arts/);
   });
 
-  it(`should detect text in a local file`, async () => {
+  it('should detect text in a local file', async () => {
     const output = execSync(`${cmd} text ${files[3].localPath}`);
     assert.match(output, /Text:/);
     assert.match(output, /System Software Update/);
   });
 
-  it(`should detect text in a remote file`, async () => {
+  it('should detect text in a remote file', async () => {
     const output = execSync(`${cmd} text-gcs ${bucketName} ${files[3].name}`);
     assert.match(output, /Text:/);
     assert.match(output, /System Software Update/);
   });
 
-  it(`should detect logos in a local file`, async () => {
+  it('should detect logos in a local file', async () => {
     const output = execSync(`${cmd} logos ${files[9].localPath}`);
     assert.match(output, /Logos:/);
     assert.match(output, /Google/);
   });
 
-  it(`should detect logos in a remote file`, async () => {
+  it('should detect logos in a remote file', async () => {
     const output = execSync(`${cmd} logos-gcs ${bucketName} ${files[9].name}`);
     assert.match(output, /Logos:/);
     assert.match(output, /Google/);
   });
 
-  it(`should detect properties in a local file`, async () => {
+  it('should detect properties in a local file', async () => {
     const output = execSync(`${cmd} properties ${files[1].localPath}`);
     assert.match(output, /color: { red: 69, green: 42, blue: 27/);
-    assert.ok(output.split(`\n`).length > 4, `Multiple colors were detected.`);
+    assert.ok(output.split('\n').length > 4, 'Multiple colors were detected.');
   });
 
-  it(`should detect properties in a remote file`, async () => {
+  it('should detect properties in a remote file', async () => {
     const output = execSync(
       `${cmd} properties-gcs ${bucketName} ${files[1].name}`
     );
     assert.match(output, /color: { red: 69, green: 42, blue: 27/);
-    assert.ok(output.split(`\n`).length > 4, `Multiple colors were detected.`);
+    assert.ok(output.split('\n').length > 4, 'Multiple colors were detected.');
   });
 
-  it(`should detect safe-search in a local file`, async () => {
+  it('should detect safe-search in a local file', async () => {
     const output = execSync(`${cmd} safe-search ${files[4].localPath}`);
     assert.match(output, /VERY_LIKELY/);
     assert.match(output, /Racy:/);
   });
 
-  it(`should detect safe-search in a remote file`, async () => {
+  it('should detect safe-search in a remote file', async () => {
     const output = execSync(
       `${cmd} safe-search-gcs ${bucketName} ${files[4].name}`
     );
     assert.match(output, /Medical:/);
   });
 
-  it(`should detect crop hints in a local file`, async () => {
+  it('should detect crop hints in a local file', async () => {
     const output = execSync(`${cmd} crops ${files[2].localPath}`);
     assert.match(output, /Crop Hint 0:/);
     assert.match(output, /Bound 2:/);
   });
 
-  it(`should detect crop hints in a remote file`, async () => {
+  it('should detect crop hints in a remote file', async () => {
     const output = execSync(`${cmd} crops-gcs ${bucketName} ${files[2].name}`);
     assert.match(output, /Crop Hint 0:/);
     assert.match(output, /Bound 2:/);
   });
 
-  it(`should detect similar web images in a local file`, async () => {
+  it('should detect similar web images in a local file', async () => {
     const output = execSync(`${cmd} web ${files[5].localPath}`);
 
     const [results] = await client.webDetection(files[5].localPath);
@@ -187,7 +187,7 @@ describe(`detect`, () => {
     }
   });
 
-  it(`should detect similar web images in a remote file`, async () => {
+  it('should detect similar web images in a remote file', async () => {
     const output = execSync(`${cmd} web-gcs ${bucketName} ${files[5].name}`);
 
     const [results] = await client.webDetection(
@@ -214,14 +214,14 @@ describe(`detect`, () => {
     }
   });
 
-  it(`should detect web entities with geo metadata in local file`, async () => {
+  it('should detect web entities with geo metadata in local file', async () => {
     const output = execSync(`${cmd} web-geo ${files[1].localPath}`);
     assert.match(output, /Description:/);
     assert.match(output, /Score:/);
     assert.match(output, /Rome/);
   });
 
-  it(`should detect web entities with geo metadata in remote file`, async () => {
+  it('should detect web entities with geo metadata in remote file', async () => {
     const output = execSync(
       `${cmd} web-geo-gcs ${bucketName} ${files[1].name}`
     );
@@ -230,33 +230,33 @@ describe(`detect`, () => {
     assert.match(output, /Rome/);
   });
 
-  it(`should read a document from a local file`, async () => {
+  it('should read a document from a local file', async () => {
     const output = execSync(`${cmd} fulltext ${files[2].localPath}`);
     assert.match(output, /Google Cloud Platform/);
     assert.match(output, /Word text: Cloud/);
     assert.match(output, /Word confidence: 0.9/);
   });
 
-  it(`should read a document from a remote file`, async () => {
+  it('should read a document from a remote file', async () => {
     const output = execSync(
       `${cmd} fulltext-gcs ${bucketName} ${files[2].name}`
     );
     assert.match(output, /Google Cloud Platform/);
   });
 
-  it(`should extract text from pdf file`, async () => {
+  it('should extract text from pdf file', async () => {
     const output = execSync(
       `${cmd} pdf ${bucketName} ${files[7].name} ${prefix}`
     );
     assert.match(output, /results/);
   });
 
-  it(`should detect objects in a local file`, async () => {
+  it('should detect objects in a local file', async () => {
     const output = execSync(`${cmd} localize-objects ${files[8].localPath}`);
     assert.match(output, /Name: Toy/);
   });
 
-  it(`should detect objects in a remote file`, async () => {
+  it('should detect objects in a remote file', async () => {
     const output = execSync(
       `${cmd} localize-objects-gcs gs://${bucketName}/${files[8].name}`
     );

@@ -37,7 +37,7 @@ function main(projectId, location, productId, productSetId) {
     };
 
     await client.removeProductFromProductSet(request);
-    console.log(`Product removed from product set.`);
+    console.log('Product removed from product set.');
   }
   // [END vision_product_search_remove_product_from_product_set]
   removeProductFromProductSet();

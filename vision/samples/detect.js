@@ -742,179 +742,179 @@ async function localizeObjectsGCS(gcsUri) {
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `faces <fileName>`,
-    `Detects faces in a local image file.`,
+    'faces <fileName>',
+    'Detects faces in a local image file.',
     {},
     opts => detectFaces(opts.fileName)
   )
   .command(
-    `faces-gcs <bucketName> <fileName>`,
-    `Detects faces in an image in Google Cloud Storage.`,
+    'faces-gcs <bucketName> <fileName>',
+    'Detects faces in an image in Google Cloud Storage.',
     {},
     opts => detectFacesGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `labels <fileName>`,
-    `Detects labels in a local image file.`,
+    'labels <fileName>',
+    'Detects labels in a local image file.',
     {},
     opts => detectLabels(opts.fileName)
   )
   .command(
-    `labels-gcs <bucketName> <fileName>`,
-    `Detects labels in an image in Google Cloud Storage.`,
+    'labels-gcs <bucketName> <fileName>',
+    'Detects labels in an image in Google Cloud Storage.',
     {},
     opts => detectLabelsGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `landmarks <fileName>`,
-    `Detects landmarks in a local image file.`,
+    'landmarks <fileName>',
+    'Detects landmarks in a local image file.',
     {},
     opts => detectLandmarks(opts.fileName)
   )
   .command(
-    `landmarks-gcs <bucketName> <fileName>`,
-    `Detects landmarks in an image in Google Cloud Storage.`,
+    'landmarks-gcs <bucketName> <fileName>',
+    'Detects landmarks in an image in Google Cloud Storage.',
     {},
     opts => detectLandmarksGCS(opts.bucketName, opts.fileName)
   )
-  .command(`text <fileName>`, `Detects text in a local image file.`, {}, opts =>
+  .command('text <fileName>', 'Detects text in a local image file.', {}, opts =>
     detectText(opts.fileName)
   )
   .command(
-    `text-gcs <bucketName> <fileName>`,
-    `Detects text in an image in Google Cloud Storage.`,
+    'text-gcs <bucketName> <fileName>',
+    'Detects text in an image in Google Cloud Storage.',
     {},
     opts => detectTextGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `logos <fileName>`,
-    `Detects logos in a local image file.`,
+    'logos <fileName>',
+    'Detects logos in a local image file.',
     {},
     opts => detectLogos(opts.fileName)
   )
   .command(
-    `logos-gcs <bucketName> <fileName>`,
-    `Detects logos in an image in Google Cloud Storage.`,
+    'logos-gcs <bucketName> <fileName>',
+    'Detects logos in an image in Google Cloud Storage.',
     {},
     opts => detectLogosGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `properties <fileName>`,
-    `Detects image properties in a local image file.`,
+    'properties <fileName>',
+    'Detects image properties in a local image file.',
     {},
     opts => detectProperties(opts.fileName)
   )
   .command(
-    `properties-gcs <bucketName> <fileName>`,
-    `Detects image properties in an image in Google Cloud Storage.`,
+    'properties-gcs <bucketName> <fileName>',
+    'Detects image properties in an image in Google Cloud Storage.',
     {},
     opts => detectPropertiesGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `safe-search <fileName>`,
-    `Detects safe search properties in a local image file.`,
+    'safe-search <fileName>',
+    'Detects safe search properties in a local image file.',
     {},
     opts => detectSafeSearch(opts.fileName)
   )
   .command(
-    `safe-search-gcs <bucketName> <fileName>`,
-    `Detects safe search properties in an image in Google Cloud Storage.`,
+    'safe-search-gcs <bucketName> <fileName>',
+    'Detects safe search properties in an image in Google Cloud Storage.',
     {},
     opts => detectSafeSearchGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `crops <fileName>`,
-    `Detects crop hints in a local image file.`,
+    'crops <fileName>',
+    'Detects crop hints in a local image file.',
     {},
     opts => detectCropHints(opts.fileName)
   )
   .command(
-    `crops-gcs <bucketName> <fileName>`,
-    `Detects crop hints in an image in Google Cloud Storage.`,
+    'crops-gcs <bucketName> <fileName>',
+    'Detects crop hints in an image in Google Cloud Storage.',
     {},
     opts => detectCropHintsGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `web <fileName>`,
-    `Finds similar photos on the web for a local image file.`,
+    'web <fileName>',
+    'Finds similar photos on the web for a local image file.',
     {},
     opts => detectWeb(opts.fileName)
   )
   .command(
-    `web-gcs <bucketName> <fileName>`,
-    `Finds similar photos on the web for an image in Google Cloud Storage.`,
+    'web-gcs <bucketName> <fileName>',
+    'Finds similar photos on the web for an image in Google Cloud Storage.',
     {},
     opts => detectWebGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `web-geo <fileName>`,
-    `Detects web entities with improved results using geographic metadata`,
+    'web-geo <fileName>',
+    'Detects web entities with improved results using geographic metadata',
     {},
     opts => detectWebGeo(opts.fileName)
   )
   .command(
-    `web-geo-gcs <bucketName> <fileName>`,
-    `Detects web entities with improved results using geographic metadata`,
+    'web-geo-gcs <bucketName> <fileName>',
+    'Detects web entities with improved results using geographic metadata',
     {},
     opts => detectWebGeoGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `fulltext <fileName>`,
-    `Extracts full text from a local image file.`,
+    'fulltext <fileName>',
+    'Extracts full text from a local image file.',
     {},
     opts => detectFulltext(opts.fileName)
   )
   .command(
-    `fulltext-gcs <bucketName> <fileName>`,
-    `Extracts full text from an image in Google Cloud Storage.`,
+    'fulltext-gcs <bucketName> <fileName>',
+    'Extracts full text from an image in Google Cloud Storage.',
     {},
     opts => detectFulltextGCS(opts.bucketName, opts.fileName)
   )
   .command(
-    `pdf <bucketName> <fileName> <outputPrefix>`,
-    `Extracts full text from a pdf file`,
+    'pdf <bucketName> <fileName> <outputPrefix>',
+    'Extracts full text from a pdf file',
     {},
     opts => detectPdfText(opts.bucketName, opts.fileName, opts.outputPrefix)
   )
   .command(
-    `localize-objects <fileName>`,
-    `Detects Objects in a local image file`,
+    'localize-objects <fileName>',
+    'Detects Objects in a local image file',
     {},
     opts => localizeObjects(opts.fileName)
   )
   .command(
-    `localize-objects-gcs <gcsUri>`,
-    `Detects Objects Google Cloud Storage Bucket`,
+    'localize-objects-gcs <gcsUri>',
+    'Detects Objects Google Cloud Storage Bucket',
     {},
     opts => localizeObjectsGCS(opts.gcsUri)
   )
-  .example(`node $0 faces ./resources/face_no_surprise.jpg`)
-  .example(`node $0 faces-gcs my-bucket your-image.jpg`)
-  .example(`node $0 labels ./resources/wakeupcat.jpg`)
-  .example(`node $0 labels-gcs my-bucket your-image.jpg`)
-  .example(`node $0 landmarks ./resources/landmark.jpg`)
-  .example(`node $0 landmarks-gcs my-bucket your-image.jpg`)
-  .example(`node $0 text ./resources/wakeupcat.jpg`)
-  .example(`node $0 text-gcs my-bucket your-image.jpg`)
-  .example(`node $0 logos ./resources/logos.png`)
-  .example(`node $0 logos-gcs my-bucket your-image.jpg.png`)
-  .example(`node $0 properties ./resources/landmark.jpg`)
-  .example(`node $0 properties-gcs my-bucket your-image.jpg`)
-  .example(`node $0 safe-search ./resources/wakeupcat.jpg`)
-  .example(`node $0 safe-search-gcs my-bucket your-image.jpg`)
-  .example(`node $0 crops ./resources/wakeupcat.jpg`)
-  .example(`node $0 crops-gcs my-bucket your-image.jpg`)
-  .example(`node $0 web ./resources/wakeupcat.jpg`)
-  .example(`node $0 web-gcs my-bucket your-image.jpg`)
-  .example(`node $0 web-geo ./resources/city.jpg`)
-  .example(`node $0 web-geo-gcs my-bucket your-image.jpg`)
-  .example(`node $0 fulltext ./resources/wakeupcat.jpg`)
-  .example(`node $0 fulltext-gcs my-bucket your-image.jpg`)
-  .example(`node $0 pdf my-bucket my-pdf.pdf results`)
-  .example(`node $0 localize-objects ./resources/duck_and_truck.jpg`)
-  .example(`node $0 localize-objects-gcs gs://bucket/bucketImage.png`)
+  .example('node $0 faces ./resources/face_no_surprise.jpg')
+  .example('node $0 faces-gcs my-bucket your-image.jpg')
+  .example('node $0 labels ./resources/wakeupcat.jpg')
+  .example('node $0 labels-gcs my-bucket your-image.jpg')
+  .example('node $0 landmarks ./resources/landmark.jpg')
+  .example('node $0 landmarks-gcs my-bucket your-image.jpg')
+  .example('node $0 text ./resources/wakeupcat.jpg')
+  .example('node $0 text-gcs my-bucket your-image.jpg')
+  .example('node $0 logos ./resources/logos.png')
+  .example('node $0 logos-gcs my-bucket your-image.jpg.png')
+  .example('node $0 properties ./resources/landmark.jpg')
+  .example('node $0 properties-gcs my-bucket your-image.jpg')
+  .example('node $0 safe-search ./resources/wakeupcat.jpg')
+  .example('node $0 safe-search-gcs my-bucket your-image.jpg')
+  .example('node $0 crops ./resources/wakeupcat.jpg')
+  .example('node $0 crops-gcs my-bucket your-image.jpg')
+  .example('node $0 web ./resources/wakeupcat.jpg')
+  .example('node $0 web-gcs my-bucket your-image.jpg')
+  .example('node $0 web-geo ./resources/city.jpg')
+  .example('node $0 web-geo-gcs my-bucket your-image.jpg')
+  .example('node $0 fulltext ./resources/wakeupcat.jpg')
+  .example('node $0 fulltext-gcs my-bucket your-image.jpg')
+  .example('node $0 pdf my-bucket my-pdf.pdf results')
+  .example('node $0 localize-objects ./resources/duck_and_truck.jpg')
+  .example('node $0 localize-objects-gcs gs://bucket/bucketImage.png')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/vision/docs`)
+  .epilogue('For more information, see https://cloud.google.com/vision/docs')
   .help()
   .strict().argv;

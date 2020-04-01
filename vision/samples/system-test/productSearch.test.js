@@ -23,7 +23,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const productSearchClient = new vision.ProductSearchClient();
-const cmd = `node productSearch`;
+const cmd = 'node productSearch';
 
 // Shared fixture data for product tests
 const testProductSet = {
@@ -45,7 +45,7 @@ testProductSet.productSetPath = productSearchClient.productSetPath(
 testProductSet.createdProductPaths = [];
 testProductSet.createdProductSetPaths = [];
 
-describe(`product search`, () => {
+describe('product search', () => {
   before(async () => {
     // Create a test product set for each test
     await productSearchClient.createProduct({
@@ -94,14 +94,14 @@ describe(`product search`, () => {
     });
   });
 
-  it(`should add product to product set`, async () => {
+  it('should add product to product set', async () => {
     const output = execSync(
       `${cmd}/addProductToProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productId}" "${testProductSet.productSetId}"`
     );
     assert.match(output, /Product added to product set./);
   });
 
-  it(`should remove a product from a product set`, async () => {
+  it('should remove a product from a product set', async () => {
     const output = execSync(
       `${cmd}/removeProductFromProductSet "${testProductSet.projectId}" "${testProductSet.location}" "${testProductSet.productId}" "${testProductSet.productSetId}"`
     );

@@ -20,8 +20,8 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe(`quickstart`, () => {
-  it(`should detect labels in a remote file`, async () => {
+describe('quickstart', () => {
+  it('should detect labels in a remote file', async () => {
     const stdout = execSync('node quickstart.js');
     assert.match(stdout, /Labels:/);
     assert.match(stdout, /cat/);

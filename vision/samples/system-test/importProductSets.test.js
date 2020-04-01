@@ -20,7 +20,7 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node productSearch/importProductSets`;
+const cmd = 'node productSearch/importProductSets';
 
 //Shared fixture data for product tests
 const testImportProductSets = {
@@ -29,8 +29,8 @@ const testImportProductSets = {
   gcsUri: 'gs://cloud-samples-data/vision/product_search/product_sets.csv',
 };
 
-describe(`import product sets`, () => {
-  it(`should import a Product Set`, async () => {
+describe('import product sets', () => {
+  it('should import a Product Set', async () => {
     const output = execSync(
       `${cmd} ${testImportProductSets.projectId} ${testImportProductSets.location} ${testImportProductSets.gcsUri}`
     );

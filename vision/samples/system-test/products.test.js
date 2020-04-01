@@ -22,7 +22,7 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node productSearch`;
+const cmd = 'node productSearch';
 
 const productSearch = new vision.ProductSearchClient();
 
@@ -54,7 +54,7 @@ async function getProductOrFalse(productPath) {
   }
 }
 
-describe(`products`, () => {
+describe('products', () => {
   before(async () => {
     // Create a test product set for each test
     await productSearch.createProduct({
@@ -81,7 +81,7 @@ describe(`products`, () => {
       }
     });
   });
-  it(`should create product`, async () => {
+  it('should create product', async () => {
     const newProductId = `ProductId${uuid.v4()}`;
     const newProductPath = productSearch.productPath(
       testProduct.projectId,
@@ -107,7 +107,7 @@ describe(`products`, () => {
     assert.match(output, /Product deleted./);
   });
 
-  it(`should get product`, async () => {
+  it('should get product', async () => {
     const newProductId = `ProductId${uuid.v4()}`;
     const newProductPath = productSearch.productPath(
       testProduct.projectId,
@@ -141,7 +141,7 @@ describe(`products`, () => {
     assert.match(output, /Product deleted./);
   });
 
-  it(`should list products`, async () => {
+  it('should list products', async () => {
     const output = execSync(
       `${cmd}/listProducts "${testProduct.projectId}" "${testProduct.location}"`
     );
@@ -149,7 +149,7 @@ describe(`products`, () => {
     assert.match(output, /Product labels:/);
   });
 
-  it(`should update product label`, async () => {
+  it('should update product label', async () => {
     const newProductId = `ProductId${uuid.v4()}`;
     const newProductPath = productSearch.productPath(
       testProduct.projectId,
@@ -182,7 +182,7 @@ describe(`products`, () => {
     );
   });
 
-  it(`should delete product`, async () => {
+  it('should delete product', async () => {
     const newProductId = `ProductId${uuid.v4()}`;
     const newProductPath = productSearch.productPath(
       testProduct.projectId,
@@ -209,7 +209,7 @@ describe(`products`, () => {
     }
   });
 
-  it(`should remove orphaned products`, async () => {
+  it('should remove orphaned products', async () => {
     const newProductId = `ProductId${uuid.v4()}`;
     const newProductPath = productSearch.productPath(
       testProduct.projectId,
@@ -228,7 +228,7 @@ describe(`products`, () => {
       `${cmd}/purgeOrphanProducts "${testProduct.projectId}" "${testProduct.location}"`
     );
 
-    assert.match(output, new RegExp(`Orphan products deleted.`));
+    assert.match(output, new RegExp('Orphan products deleted.'));
     try {
       await productSearch.getProduct({name: `${newProductPath}`});
       assert.fail('Product was not deleted');

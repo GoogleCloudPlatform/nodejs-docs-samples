@@ -210,35 +210,35 @@ async function detectWebEntitiesIncludingGeoResults(fileName) {
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `web-entities-geo <fileName>`,
-    `Detects web entities with improved results using geographic metadata`,
+    'web-entities-geo <fileName>',
+    'Detects web entities with improved results using geographic metadata',
     {},
     opts => detectWebEntitiesIncludingGeoResults(opts.fileName)
   )
   .command(
-    `safe-search <fileName>`,
-    `Detects safe search properties including additional racy category`,
+    'safe-search <fileName>',
+    'Detects safe search properties including additional racy category',
     {},
     opts => detectSafeSearch(opts.fileName)
   )
   .command(
-    `web <fileName>`,
-    `Detects web entities including new best guess labels describing content`,
+    'web <fileName>',
+    'Detects web entities including new best guess labels describing content',
     {},
     opts => detectWeb(opts.fileName)
   )
   .command(
-    `fulltext <fileName>`,
-    `Extracts full text from an image file including new confidence scores`,
+    'fulltext <fileName>',
+    'Extracts full text from an image file including new confidence scores',
     {},
     opts => detectFulltext(opts.fileName)
   )
-  .example(`node $0 safe-search ./resources/wakeupcat.jpg`)
-  .example(`node $0 web-entities-geo ./resources/city.jpg`)
-  .example(`node $0 web ./resources/wakeupcat.jpg`)
-  .example(`node $0 fulltext ./resources/wakeupcat.jpg`)
+  .example('node $0 safe-search ./resources/wakeupcat.jpg')
+  .example('node $0 web-entities-geo ./resources/city.jpg')
+  .example('node $0 web ./resources/wakeupcat.jpg')
+  .example('node $0 fulltext ./resources/wakeupcat.jpg')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/vision/docs`)
+  .epilogue('For more information, see https://cloud.google.com/vision/docs')
   .help()
   .strict().argv;

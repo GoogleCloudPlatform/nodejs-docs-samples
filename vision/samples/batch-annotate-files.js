@@ -14,9 +14,7 @@
 
 'use strict';
 
-function main(
-  fileName = 'path/to/your/file.pdf'
-) {
+function main(fileName = 'path/to/your/file.pdf') {
   // [START vision_batch_annotate_files]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -62,9 +60,7 @@ function main(
 
     // Add each `AnnotateFileRequest` object to the batch request.
     const request = {
-      requests: [
-        fileRequest,
-      ],
+      requests: [fileRequest],
     };
 
     // Make the synchronous batch request.
@@ -75,7 +71,7 @@ function main(
     const responses = result.responses[0].responses;
 
     for (const response of responses) {
-      console.log(`Full text: ${response.fullTextAnnotation.text}`)
+      console.log(`Full text: ${response.fullTextAnnotation.text}`);
       for (const page of response.fullTextAnnotation.pages) {
         for (const block of page.blocks) {
           console.log(`Block confidence: ${block.confidence}`);

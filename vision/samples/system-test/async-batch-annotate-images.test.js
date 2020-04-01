@@ -25,16 +25,16 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
-const cmd = `node async-batch-annotate-images.js`;
+const cmd = 'node async-batch-annotate-images.js';
 
-const files = [`pdf-ocr.pdf`, `landmark.jpg`].map(name => {
+const files = ['pdf-ocr.pdf', 'landmark.jpg'].map(name => {
   return {
     name,
     localPath: path.resolve(path.join(__dirname, `../resources/${name}`)),
   };
 });
 
-describe(`detect v1 p4 beta1`, () => {
+describe('detect v1 p4 beta1', () => {
   before(async () => {
     const [bucket] = await storage.createBucket(bucketName);
     await Promise.all(files.map(file => bucket.upload(file.localPath)));
@@ -46,7 +46,7 @@ describe(`detect v1 p4 beta1`, () => {
     await bucket.delete();
   });
 
-  it(`should annotate the remote landmark.jpg sample`, async () => {
+  it('should annotate the remote landmark.jpg sample', async () => {
     const output = execSync(
       `${cmd} gs://${bucketName}/${files[1].name} gs://${bucketName}/out/`
     );

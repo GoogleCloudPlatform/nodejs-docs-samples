@@ -21,9 +21,9 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe(`Text Detection`, () => {
-  it(`should detect texts`, async () => {
-    const inputDir = path.join(__dirname, `../resources`);
+describe('Text Detection', () => {
+  it('should detect texts', async () => {
+    const inputDir = path.join(__dirname, '../resources');
     try {
       execSync(`node textDetection analyze ${inputDir}`);
     } catch (err) {

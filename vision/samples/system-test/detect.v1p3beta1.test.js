@@ -25,9 +25,9 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
-const cmd = `node detect.v1p3beta1.js`;
+const cmd = 'node detect.v1p3beta1.js';
 
-const files = [`duck_and_truck.jpg`, `handwritten.jpg`, `bicycle.jpg`].map(
+const files = ['duck_and_truck.jpg', 'handwritten.jpg', 'bicycle.jpg'].map(
   name => {
     return {
       name,
@@ -36,7 +36,7 @@ const files = [`duck_and_truck.jpg`, `handwritten.jpg`, `bicycle.jpg`].map(
   }
 );
 
-describe(`detect v1 p3 beta1`, () => {
+describe('detect v1 p3 beta1', () => {
   before(async () => {
     const [bucket] = await storage.createBucket(bucketName);
     await Promise.all(files.map(file => bucket.upload(file.localPath)));
@@ -49,14 +49,14 @@ describe(`detect v1 p3 beta1`, () => {
     await bucket.delete();
   });
 
-  it(`should read handwriting in local handwritten.jpg sample`, async () => {
+  it('should read handwriting in local handwritten.jpg sample', async () => {
     const output = execSync(
       `${cmd} detectHandwriting -h ${files[1].localPath}`
     );
     assert.match(output, /hand written message/);
   });
 
-  it(`should read handwriting from handwritten.jpg in GCS bucket`, async () => {
+  it('should read handwriting from handwritten.jpg in GCS bucket', async () => {
     const output = execSync(
       `${cmd} detectHandwritingGCS -u gs://${bucketName}/${files[1].name}`
     );

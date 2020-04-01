@@ -10,7 +10,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 
 ### `npm run e2e-test`
 
-```
+```sh
 export SERVICE_NAME=logging-manual
 export CONTAINER_IMAGE=gcr.io/${GOOGLE_CLOUD_PROJECT}/logging-manual
 npm run e2e-test
@@ -69,4 +69,3 @@ test/runner.sh sleep 20
   [compute metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata)
   and make system test HTTP requests. This is required in production for log correlation without
   manually setting the $GOOGLE_CLOUD_PROJECT environment variable.
-

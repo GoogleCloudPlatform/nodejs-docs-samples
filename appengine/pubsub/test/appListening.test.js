@@ -2,8 +2,9 @@ const waitPort = require('wait-port');
 const {expect} = require('chai');
 const PORT = process.env.PORT || 8080;
 const childProcess = require('child_process');
-const appPath = path.join(__dirname, '../app.js');
 const path = require('path');
+const appPath = path.join(__dirname, '../app.js');
+
 
 describe('server listening', () => {
   it('should be listening', async () => {

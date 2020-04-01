@@ -22,7 +22,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node betaFeatures.js';
-const cwd = path.join(__dirname, `..`);
+const cwd = path.join(__dirname, '..');
 
 //audio file paths
 const resourcePath = path.join(__dirname, '..', 'resources');
@@ -34,7 +34,7 @@ const BrooklynFilePath = path.join(resourcePath, 'brooklyn.flac');
 const monoUri = 'gs://cloud-samples-data/speech/commercial_mono.wav';
 const stereoUri = 'gs://cloud-samples-data/speech/commercial_stereo.wav';
 
-describe(`BetaFeatures`, () => {
+describe('BetaFeatures', () => {
   it('should run speech diarization on a local file', async () => {
     const output = execSync(`${cmd} Diarization -f ${monoFilePath}`);
     assert.match(output, /speakerTag:/);

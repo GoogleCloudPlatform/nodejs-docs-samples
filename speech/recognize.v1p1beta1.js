@@ -81,11 +81,11 @@ async function syncRecognizeWithMetaData(
   // [END speech_transcribe_recognition_metadata_beta]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .command(
-    `sync-metadata <filename>`,
-    `Detects speech in a local audio file with metadata.`,
+    'sync-metadata <filename>',
+    'Detects speech in a local audio file with metadata.',
     {},
     opts =>
       syncRecognizeWithMetaData(
@@ -118,9 +118,9 @@ require(`yargs`)
       type: 'string',
     },
   })
-  .example(`node $0 sync-metadata ./resources/commercial_mono.wav`)
+  .example('node $0 sync-metadata ./resources/commercial_mono.wav')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
+  .epilogue('For more information, see https://cloud.google.com/speech/docs')
   .help()
   .strict().argv;

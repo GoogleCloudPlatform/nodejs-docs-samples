@@ -38,12 +38,12 @@ async function speechTranscribeDiarization(fileName) {
   // const fileName = 'Local path to audio file, e.g. /path/to/audio.raw';
 
   const config = {
-    encoding: `LINEAR16`,
+    encoding: 'LINEAR16',
     sampleRateHertz: 8000,
-    languageCode: `en-US`,
+    languageCode: 'en-US',
     enableSpeakerDiarization: true,
     diarizationSpeakerCount: 2,
-    model: `phone_call`,
+    model: 'phone_call',
   };
 
   const audio = {
@@ -60,7 +60,7 @@ async function speechTranscribeDiarization(fileName) {
     .map(result => result.alternatives[0].transcript)
     .join('\n');
   console.log(`Transcription: ${transcription}`);
-  console.log(`Speaker Diarization:`);
+  console.log('Speaker Diarization:');
   const result = response.results[response.results.length - 1];
   const wordsInfo = result.alternatives[0].words;
   // Note: The transcript within each result is separate and sequential per result.
@@ -87,12 +87,12 @@ async function asyncSpeechTranscribeDiarizationGCS(gcsUri) {
   // const uri = path to GCS audio file e.g. `gs:/bucket/audio.wav`;
 
   const config = {
-    encoding: `LINEAR16`,
+    encoding: 'LINEAR16',
     sampleRateHertz: 8000,
-    languageCode: `en-US`,
+    languageCode: 'en-US',
     enableSpeakerDiarization: true,
     diarizationSpeakerCount: 2,
-    model: `phone_call`,
+    model: 'phone_call',
   };
 
   const audio = {
@@ -109,7 +109,7 @@ async function asyncSpeechTranscribeDiarizationGCS(gcsUri) {
     .map(result => result.alternatives[0].transcript)
     .join('\n');
   console.log(`Transcription: ${transcription}`);
-  console.log(`Speaker Diarization:`);
+  console.log('Speaker Diarization:');
   const result = response.results[response.results.length - 1];
   const wordsInfo = result.alternatives[0].words;
   // Note: The transcript within each result is separate and sequential per result.
@@ -138,8 +138,8 @@ async function speechTranscribeMultiChannel(fileName) {
   // const fileName = 'Local path to audio file, e.g. /path/to/audio.raw';
 
   const config = {
-    encoding: `LINEAR16`,
-    languageCode: `en-US`,
+    encoding: 'LINEAR16',
+    languageCode: 'en-US',
     audioChannelCount: 2,
     enableSeparateRecognitionPerChannel: true,
   };
@@ -173,7 +173,7 @@ async function speechTranscribeMultichannelGCS(gcsUri) {
 
   const config = {
     encoding: 'LINEAR16',
-    languageCode: `en-US`,
+    languageCode: 'en-US',
     audioChannelCount: 2,
     enableSeparateRecognitionPerChannel: true,
   };
@@ -216,8 +216,8 @@ async function speechTranscribeMultilang(fileName) {
   const config = {
     encoding: 'LINEAR16',
     sampleRateHertz: 44100,
-    languageCode: `en-US`,
-    alternativeLanguageCodes: [`es-ES`, `en-US`],
+    languageCode: 'en-US',
+    alternativeLanguageCodes: ['es-ES', 'en-US'],
   };
 
   const audio = {
@@ -253,8 +253,8 @@ async function speechTranscribeMultilangGCS(gcsUri) {
   const config = {
     encoding: 'LINEAR16',
     sampleRateHertz: 44100,
-    languageCode: `en-US`,
-    alternativeLanguageCodes: [`es-ES`, `en-US`],
+    languageCode: 'en-US',
+    alternativeLanguageCodes: ['es-ES', 'en-US'],
   };
 
   const audio = {
@@ -291,9 +291,9 @@ async function speechTranscribeWordLevelConfidence(fileName) {
   // const fileName = 'Local path to audio file, e.g. /path/to/audio.raw';
 
   const config = {
-    encoding: `FLAC`,
+    encoding: 'FLAC',
     sampleRateHertz: 16000,
-    languageCode: `en-US`,
+    languageCode: 'en-US',
     enableWordConfidence: true,
   };
 
@@ -312,10 +312,10 @@ async function speechTranscribeWordLevelConfidence(fileName) {
     .join('\n');
   const confidence = response.results
     .map(result => result.alternatives[0].confidence)
-    .join(`\n`);
+    .join('\n');
   console.log(`Transcription: ${transcription} \n Confidence: ${confidence}`);
 
-  console.log(`Word-Level-Confidence:`);
+  console.log('Word-Level-Confidence:');
   const words = response.results.map(result => result.alternatives[0]);
   words[0].words.forEach(a => {
     console.log(` word: ${a.word}, confidence: ${a.confidence}`);
@@ -337,9 +337,9 @@ async function speechTranscribeWordLevelConfidenceGCS(gcsUri) {
   // const uri = path to GCS audio file e.g. `gs:/bucket/audio.wav`;
 
   const config = {
-    encoding: `FLAC`,
+    encoding: 'FLAC',
     sampleRateHertz: 16000,
-    languageCode: `en-US`,
+    languageCode: 'en-US',
     enableWordConfidence: true,
   };
 
@@ -358,10 +358,10 @@ async function speechTranscribeWordLevelConfidenceGCS(gcsUri) {
     .join('\n');
   const confidence = response.results
     .map(result => result.alternatives[0].confidence)
-    .join(`\n`);
+    .join('\n');
   console.log(`Transcription: ${transcription} \n Confidence: ${confidence}`);
 
-  console.log(`Word-Level-Confidence:`);
+  console.log('Word-Level-Confidence:');
   const words = response.results.map(result => result.alternatives[0]);
   words[0].words.forEach(a => {
     console.log(` word: ${a.word}, confidence: ${a.confidence}`);
@@ -369,53 +369,53 @@ async function speechTranscribeWordLevelConfidenceGCS(gcsUri) {
   // [END speech_transcribe_word_level_confidence_gcs_beta]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .command(
-    `Diarization`,
-    `Isolate distinct speakers in an audio file`,
+    'Diarization',
+    'Isolate distinct speakers in an audio file',
     {},
     opts => speechTranscribeDiarization(opts.speechFile)
   )
   .command(
-    `DiarizationGCS`,
-    `Isolate distinct speakers in an audio file located in a Google Cloud Storage bucket.`,
+    'DiarizationGCS',
+    'Isolate distinct speakers in an audio file located in a Google Cloud Storage bucket.',
     {},
     opts => asyncSpeechTranscribeDiarizationGCS(opts.gcsUri)
   )
   .command(
-    `multiChannelTranscribe`,
-    `Differentiates input by audio channel in local audio file.`,
+    'multiChannelTranscribe',
+    'Differentiates input by audio channel in local audio file.',
     {},
     opts => speechTranscribeMultiChannel(opts.speechFile)
   )
   .command(
-    `multiChannelTranscribeGCS`,
-    `Differentiates input by audio channel in an audio file located in a Google Cloud Storage bucket.`,
+    'multiChannelTranscribeGCS',
+    'Differentiates input by audio channel in an audio file located in a Google Cloud Storage bucket.',
     {},
     opts => speechTranscribeMultichannelGCS(opts.gcsUri)
   )
   .command(
-    `multiLanguageTranscribe`,
-    `Transcribes multiple languages from local audio file.`,
+    'multiLanguageTranscribe',
+    'Transcribes multiple languages from local audio file.',
     {},
     opts => speechTranscribeMultilang(opts.speechFile)
   )
   .command(
-    `multiLanguageTranscribeGCS`,
-    `Transcribes multiple languages from GCS audio file.`,
+    'multiLanguageTranscribeGCS',
+    'Transcribes multiple languages from GCS audio file.',
     {},
     opts => speechTranscribeMultilangGCS(opts.gcsUri)
   )
   .command(
-    `wordLevelConfidence`,
-    `Detects word level confidence from local audio file.`,
+    'wordLevelConfidence',
+    'Detects word level confidence from local audio file.',
     {},
     opts => speechTranscribeWordLevelConfidence(opts.speechFile)
   )
   .command(
-    `wordLevelConfidenceGCS`,
-    `Detects word level confidence from GCS audio file.`,
+    'wordLevelConfidenceGCS',
+    'Detects word level confidence from GCS audio file.',
     {},
     opts => speechTranscribeWordLevelConfidenceGCS(opts.gcsUri)
   )
@@ -433,26 +433,26 @@ require(`yargs`)
       type: 'string',
     },
   })
-  .example(`node $0 Diarization -f ./resources/commercial_mono.wav`)
+  .example('node $0 Diarization -f ./resources/commercial_mono.wav')
   .example(
-    `node $0 DiarizationGCS -u gs://cloud-samples-tests/speech/commercial_mono.wav`
+    'node $0 DiarizationGCS -u gs://cloud-samples-tests/speech/commercial_mono.wav'
   )
   .example(
-    `node $0 multiChannelTranscribe -f ./resources/commercial_stereo.wav`
+    'node $0 multiChannelTranscribe -f ./resources/commercial_stereo.wav'
   )
   .example(
-    `node $0 multiChannelTranscribeGCS -u gs://cloud-samples-tests/speech/commercial_stereo.wav`
+    'node $0 multiChannelTranscribeGCS -u gs://cloud-samples-tests/speech/commercial_stereo.wav'
   )
-  .example(`node $0 multiLanguageTranscribe -f ./resources/multi.wav`)
+  .example('node $0 multiLanguageTranscribe -f ./resources/multi.wav')
   .example(
-    `node $0 multiLanguageTranscribeGCS -u gs://nodejs-docs-samples/multi_mono.wav`
+    'node $0 multiLanguageTranscribeGCS -u gs://nodejs-docs-samples/multi_mono.wav'
   )
-  .example(`node $0 wordLevelConfidence -f ./resources/brooklyn.flac`)
+  .example('node $0 wordLevelConfidence -f ./resources/brooklyn.flac')
   .example(
-    `node $0 wordLevelConfidenceGCS -u gs://cloud-samples-tests/speech/brooklyn.flac`
+    'node $0 wordLevelConfidenceGCS -u gs://cloud-samples-tests/speech/brooklyn.flac'
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
+  .epilogue('For more information, see https://cloud.google.com/speech/docs')
   .help()
   .strict().argv;

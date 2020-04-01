@@ -198,7 +198,7 @@ function infiniteStream(
     restartCounter++;
 
     if (!lastTranscriptWasFinal) {
-      process.stdout.write(`\n`);
+      process.stdout.write('\n');
     }
     process.stdout.write(
       chalk.yellow(`${streamingLimit * restartCounter}: RESTARTING REQUEST\n`)
@@ -233,11 +233,11 @@ function infiniteStream(
   // [END speech_transcribe_infinite_streaming]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .command(
-    `infiniteStream`,
-    `infinitely streams audio input from microphone to speech API`,
+    'infiniteStream',
+    'infinitely streams audio input from microphone to speech API',
     {},
     opts =>
       infiniteStream(
@@ -277,9 +277,9 @@ require(`yargs`)
       type: 'number',
     },
   })
-  .example(`node $0 infiniteStream`)
+  .example('node $0 infiniteStream')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
+  .epilogue('For more information, see https://cloud.google.com/speech/docs')
   .help()
   .strict().argv;

@@ -63,7 +63,7 @@ async function syncRecognize(
   const transcription = response.results
     .map(result => result.alternatives[0].transcript)
     .join('\n');
-  console.log(`Transcription: `, transcription);
+  console.log('Transcription: ', transcription);
   // [END speech_transcribe_sync]
 }
 
@@ -107,7 +107,7 @@ async function syncRecognizeGCS(
   const transcription = response.results
     .map(result => result.alternatives[0].transcript)
     .join('\n');
-  console.log(`Transcription: `, transcription);
+  console.log('Transcription: ', transcription);
   // [END speech_transcribe_sync_gcs]
 }
 
@@ -151,17 +151,17 @@ async function syncRecognizeWords(
   // Detects speech in the audio file
   const [response] = await client.recognize(request);
   response.results.forEach(result => {
-    console.log(`Transcription: `, result.alternatives[0].transcript);
+    console.log('Transcription: ', result.alternatives[0].transcript);
     result.alternatives[0].words.forEach(wordInfo => {
       // NOTE: If you have a time offset exceeding 2^32 seconds, use the
       // wordInfo.{x}Time.seconds.high to calculate seconds.
       const startSecs =
         `${wordInfo.startTime.seconds}` +
-        `.` +
+        '.' +
         wordInfo.startTime.nanos / 100000000;
       const endSecs =
         `${wordInfo.endTime.seconds}` +
-        `.` +
+        '.' +
         wordInfo.endTime.nanos / 100000000;
       console.log(`Word: ${wordInfo.word}`);
       console.log(`\t ${startSecs} secs - ${endSecs} secs`);
@@ -317,11 +317,11 @@ async function asyncRecognizeGCSWords(
       // wordInfo.{x}Time.seconds.high to calculate seconds.
       const startSecs =
         `${wordInfo.startTime.seconds}` +
-        `.` +
+        '.' +
         wordInfo.startTime.nanos / 100000000;
       const endSecs =
         `${wordInfo.endTime.seconds}` +
-        `.` +
+        '.' +
         wordInfo.endTime.nanos / 100000000;
       console.log(`Word: ${wordInfo.word}`);
       console.log(`\t ${startSecs} secs - ${endSecs} secs`);
@@ -411,7 +411,7 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
       process.stdout.write(
         data.results[0] && data.results[0].alternatives[0]
           ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
-          : `\n\nReached transcription time limit, press Ctrl+C\n`
+          : '\n\nReached transcription time limit, press Ctrl+C\n'
       )
     );
 
@@ -482,7 +482,7 @@ async function syncRecognizeModelSelection(
   const transcription = response.results
     .map(result => result.alternatives[0].transcript)
     .join('\n');
-  console.log(`Transcription: `, transcription);
+  console.log('Transcription: ', transcription);
   // [END speech_transcribe_model_selection]
 }
 
@@ -533,7 +533,7 @@ async function syncRecognizeModelSelectionGCS(
   const transcription = response.results
     .map(result => result.alternatives[0].transcript)
     .join('\n');
-  console.log(`Transcription: `, transcription);
+  console.log('Transcription: ', transcription);
   // [END speech_transcribe_model_selection_gcs]
 }
 
@@ -582,7 +582,7 @@ async function syncRecognizeWithAutoPunctuation(
   const transcription = response.results
     .map(result => result.alternatives[0].transcript)
     .join('\n');
-  console.log(`Transcription: `, transcription);
+  console.log('Transcription: ', transcription);
   // [END speech_transcribe_auto_punctuation]
 }
 
@@ -652,8 +652,8 @@ async function syncRecognizeWithMultiChannel(fileName) {
   // const fileName = 'Local path to audio file, e.g. /path/to/audio.raw';
 
   const config = {
-    encoding: `LINEAR16`,
-    languageCode: `en-US`,
+    encoding: 'LINEAR16',
+    languageCode: 'en-US',
     audioChannelCount: 2,
     enableSeparateRecognitionPerChannel: true,
   };
@@ -687,7 +687,7 @@ async function syncRecognizeWithMultiChannelGCS(gcsUri) {
 
   const config = {
     encoding: 'LINEAR16',
-    languageCode: `en-US`,
+    languageCode: 'en-US',
     audioChannelCount: 2,
     enableSeparateRecognitionPerChannel: true,
   };
@@ -729,11 +729,11 @@ async function speechTranscribeDiarization(fileName) {
   };
 
   const config = {
-    encoding: `LINEAR16`,
+    encoding: 'LINEAR16',
     sampleRateHertz: 8000,
-    languageCode: `en-US`,
+    languageCode: 'en-US',
     diarizationConfig: diarizationConfig,
-    model: `phone_call`,
+    model: 'phone_call',
   };
 
   /**
@@ -755,7 +755,7 @@ async function speechTranscribeDiarization(fileName) {
     .map(result => result.alternatives[0].transcript)
     .join('\n');
   console.log(`Transcription: ${transcription}`);
-  console.log(`Speaker Diarization:`);
+  console.log('Speaker Diarization:');
   const result = response.results[response.results.length - 1];
   const wordsInfo = result.alternatives[0].words;
   // Note: The transcript within each result is separate and sequential per result.
@@ -771,8 +771,8 @@ async function speechTranscribeDiarization(fileName) {
 require(`yargs`) // eslint-disable-line
   .demand(1)
   .command(
-    `sync <filename>`,
-    `Detects speech in a local audio file.`,
+    'sync <filename>',
+    'Detects speech in a local audio file.',
     {},
     opts =>
       syncRecognize(
@@ -783,8 +783,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-gcs <gcsUri>`,
-    `Detects speech in an audio file located in a Google Cloud Storage bucket.`,
+    'sync-gcs <gcsUri>',
+    'Detects speech in an audio file located in a Google Cloud Storage bucket.',
     {},
     opts =>
       syncRecognizeGCS(
@@ -795,8 +795,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-words <filename>`,
-    `Detects speech in a local audio file with word time offset.`,
+    'sync-words <filename>',
+    'Detects speech in a local audio file with word time offset.',
     {},
     opts =>
       syncRecognizeWords(
@@ -807,8 +807,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `async <filename>`,
-    `Creates a job to detect speech in a local audio file, and waits for the job to complete.`,
+    'async <filename>',
+    'Creates a job to detect speech in a local audio file, and waits for the job to complete.',
     {},
     opts =>
       asyncRecognize(
@@ -819,8 +819,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `async-gcs <gcsUri>`,
-    `Creates a job to detect speech in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
+    'async-gcs <gcsUri>',
+    'Creates a job to detect speech in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.',
     {},
     opts =>
       asyncRecognizeGCS(
@@ -831,8 +831,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `async-gcs-words <gcsUri>`,
-    `Creates a job to detect speech  with word time offset in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.`,
+    'async-gcs-words <gcsUri>',
+    'Creates a job to detect speech  with word time offset in an audio file located in a Google Cloud Storage bucket, and waits for the job to complete.',
     {},
     opts =>
       asyncRecognizeGCSWords(
@@ -843,8 +843,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `stream <filename>`,
-    `Detects speech in a local audio file by streaming it to the Speech API.`,
+    'stream <filename>',
+    'Detects speech in a local audio file by streaming it to the Speech API.',
     {},
     opts =>
       streamingRecognize(
@@ -855,8 +855,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `listen`,
-    `Detects speech in a microphone input stream. This command requires that you have SoX installed and available in your $PATH. See https://www.npmjs.com/package/node-record-lpcm16#dependencies`,
+    'listen',
+    'Detects speech in a microphone input stream. This command requires that you have SoX installed and available in your $PATH. See https://www.npmjs.com/package/node-record-lpcm16#dependencies',
     {},
     opts =>
       streamingMicRecognize(
@@ -866,8 +866,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-model <filename> <model>`,
-    `Detects speech in a local audio file using provided model.`,
+    'sync-model <filename> <model>',
+    'Detects speech in a local audio file using provided model.',
     {},
     opts =>
       syncRecognizeModelSelection(
@@ -879,8 +879,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-model-gcs <gcsUri> <model>`,
-    `Detects speech in an audio file located in a Google Cloud Storage bucket using provided model.`,
+    'sync-model-gcs <gcsUri> <model>',
+    'Detects speech in an audio file located in a Google Cloud Storage bucket using provided model.',
     {},
     opts =>
       syncRecognizeModelSelectionGCS(
@@ -892,8 +892,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-auto-punctuation <filename>`,
-    `Detects speech in a local audio file with auto punctuation.`,
+    'sync-auto-punctuation <filename>',
+    'Detects speech in a local audio file with auto punctuation.',
     {},
     opts =>
       syncRecognizeWithAutoPunctuation(
@@ -904,8 +904,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-enhanced-model <filename>`,
-    `Detects speech in a local audio file using an enhanced model.`,
+    'sync-enhanced-model <filename>',
+    'Detects speech in a local audio file using an enhanced model.',
     {},
     opts =>
       syncRecognizeWithEnhancedModel(
@@ -916,8 +916,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-multi-channel <filename>`,
-    `Differentiates input by audio channel in local audio file.`,
+    'sync-multi-channel <filename>',
+    'Differentiates input by audio channel in local audio file.',
     {},
     opts =>
       syncRecognizeWithMultiChannel(
@@ -928,8 +928,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `sync-multi-channel-gcs <gcsUri>`,
-    `Differentiates input by audio channel in an audio file located in a Google Cloud Storage bucket.`,
+    'sync-multi-channel-gcs <gcsUri>',
+    'Differentiates input by audio channel in an audio file located in a Google Cloud Storage bucket.',
     {},
     opts =>
       syncRecognizeWithMultiChannelGCS(
@@ -940,8 +940,8 @@ require(`yargs`) // eslint-disable-line
       )
   )
   .command(
-    `Diarization`,
-    `Isolate distinct speakers in an audio file`,
+    'Diarization',
+    'Isolate distinct speakers in an audio file',
     {},
     opts => speechTranscribeDiarization(opts.speechFile)
   )
@@ -974,21 +974,21 @@ require(`yargs`) // eslint-disable-line
       type: 'string',
     },
   })
-  .example(`node $0 sync ./resources/audio.raw -e LINEAR16 -r 16000`)
-  .example(`node $0 async-gcs gs://gcs-test-data/vr.flac -e FLAC -r 16000`)
-  .example(`node $0 stream ./resources/audio.raw  -e LINEAR16 -r 16000`)
-  .example(`node $0 listen`)
+  .example('node $0 sync ./resources/audio.raw -e LINEAR16 -r 16000')
+  .example('node $0 async-gcs gs://gcs-test-data/vr.flac -e FLAC -r 16000')
+  .example('node $0 stream ./resources/audio.raw  -e LINEAR16 -r 16000')
+  .example('node $0 listen')
   .example(
-    `node $0 sync-model ./resources/Google_Gnome.wav video -e LINEAR16 -r 16000`
+    'node $0 sync-model ./resources/Google_Gnome.wav video -e LINEAR16 -r 16000'
   )
   .example(
-    `node $0 sync-model-gcs gs://gcs-test-data/Google_Gnome.wav phone_call -e LINEAR16 -r 16000`
+    'node $0 sync-model-gcs gs://gcs-test-data/Google_Gnome.wav phone_call -e LINEAR16 -r 16000'
   )
-  .example(`node $0 sync-auto-punctuation ./resources/commercial_mono.wav`)
-  .example(`node $0 sync-enhanced-model ./resources/commercial_mono.wav`)
-  .example(`node $0 sync-multi-channel ./resources/commercial_stereo.wav`)
+  .example('node $0 sync-auto-punctuation ./resources/commercial_mono.wav')
+  .example('node $0 sync-enhanced-model ./resources/commercial_mono.wav')
+  .example('node $0 sync-multi-channel ./resources/commercial_stereo.wav')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
+  .epilogue('For more information, see https://cloud.google.com/speech/docs')
   .help()
   .strict().argv;

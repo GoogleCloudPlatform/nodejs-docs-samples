@@ -1,12 +1,13 @@
-const supertest = require('supertest');
-const proxyquire = require('proxyquire');
-const path = require('path');
-const cwd = path.join(__dirname, '../');
-
-const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
+const waitPort = require('wait-port');
+const {expect} = require('chai');
+const PORT = process.env.PORT || 8080;
+const childProcess = require('child_process');
 
 describe('server listening', () => {
   it('should be listening', async () => {
-    await requestObj.get('/').expect(200);
+    const child = await childProcess.exec('node app.js');
+    const isOpen = await waitPort({port: PORT});
+    expect(isOpen).to.be.true;
+    process.kill(child.pid, 'SIGTERM');
   });
 });

@@ -46,16 +46,16 @@ SUFFIX=${KOKORO_BUILD_ID}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
-# Register post-test cleanup.
-function cleanup {
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
-}
-trap cleanup EXIT
-
 # Build the service
 set -x
 gcloud builds submit --tag="${CONTAINER_IMAGE}"
 set +x
+
+# Register post-test cleanup.
+function cleanup {
+  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
+}
+trap cleanup EXIT HUP
 
 # Install dependencies and run Nodejs tests.
 export NODE_ENV=development
@@ -65,11 +65,13 @@ npm install
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}
-	cleanup() {
-	chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
-	$KOKORO_GFILE_DIR/linux_amd64/buildcop
+	notify_buildcop() {
+		# Call the original trap function.
+		cleanup
+		chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
+		$KOKORO_GFILE_DIR/linux_amd64/buildcop
 	}
-	trap cleanup EXIT HUP
+	trap notify_buildcop EXIT HUP
 fi
 
 npm test

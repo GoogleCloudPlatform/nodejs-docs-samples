@@ -10,13 +10,15 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "repo-tools test app"
+    "test": "mocha --exit test/*.test.js"
   },
   "dependencies": {
     "express": "^4.16.4",
     "memjs": "^1.2.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0"
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "chai": "^4.2.0",
+    "wait-port": "^0.2.7"
   }
 }

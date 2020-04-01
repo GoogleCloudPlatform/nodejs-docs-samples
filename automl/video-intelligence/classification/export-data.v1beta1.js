@@ -49,7 +49,7 @@ async function main(
     .exportData({name: datasetFullId, outputConfig: outputConfig})
     .then(responses => {
       const operation = responses[0];
-      console.log(`Processing export...`);
+      console.log('Processing export...');
       return operation.promise();
     })
     .then(responses => {
@@ -58,7 +58,7 @@ async function main(
 
       // Get the data export details.
       console.log('Data export details:');
-      console.log(`\tOperation details:`);
+      console.log('\tOperation details:');
       console.log(`\t\tName: ${operationDetails.name}`);
       console.log(`\t\tDone: ${operationDetails.done}`);
     })

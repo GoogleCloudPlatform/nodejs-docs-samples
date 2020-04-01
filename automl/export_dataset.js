@@ -30,7 +30,7 @@ function main(
   // const gcsUri = 'gs://BUCKET_ID/path_to_export/';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1;
 
   // Instantiates a client
   const client = new AutoMlClient();

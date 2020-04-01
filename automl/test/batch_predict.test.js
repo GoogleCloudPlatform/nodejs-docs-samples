@@ -15,18 +15,14 @@
 'use strict';
 
 const {assert} = require('chai');
-const {after, before, describe, it} = require('mocha');
+const {describe, it} = require('mocha');
 const {AutoMlClient} = require('@google-cloud/automl').v1;
-const {Storage} = require('@google-cloud/storage');
 
 const cp = require('child_process');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const BATCH_PREDICT_REGION_TAG = 'batch_predict';
 const LOCATION = 'us-central1';
 const MODEL_ID = 'TEN0000000000000000000';
-const PREFIX = 'TEST_BATCH_PREDICT';
 
 describe('Automl Batch Predict Test', () => {
   const client = new AutoMlClient();
@@ -39,7 +35,14 @@ describe('Automl Batch Predict Test', () => {
     const inputUri = `gs://${projectId}-lcm/entity_extraction/input.jsonl`;
     const outputUri = `gs://${projectId}-lcm/TEST_BATCH_PREDICT/`;
 
-    const args = [BATCH_PREDICT_REGION_TAG, projectId, LOCATION, MODEL_ID, inputUri, outputUri];
+    const args = [
+      BATCH_PREDICT_REGION_TAG,
+      projectId,
+      LOCATION,
+      MODEL_ID,
+      inputUri,
+      outputUri,
+    ];
     const output = cp.spawnSync('node', args, {encoding: 'utf8'});
 
     assert.match(output.stderr, /does not exist/);

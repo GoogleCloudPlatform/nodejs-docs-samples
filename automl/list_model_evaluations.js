@@ -33,7 +33,7 @@ function main(
   // const modelId = 'YOUR_MODEL_ID';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -47,12 +47,12 @@ function main(
 
     const [response] = await client.listModelEvaluations(request);
 
-    console.log(`List of model evaluations:`);
+    console.log('List of model evaluations:');
     for (const evaluation of response) {
       console.log(`Model evaluation name: ${evaluation.name}`);
       console.log(`Model annotation spec id: ${evaluation.annotationSpecId}`);
       console.log(`Model display name: ${evaluation.displayName}`);
-      console.log(`Model create time`);
+      console.log('Model create time');
       console.log(`\tseconds ${evaluation.createTime.seconds}`);
       console.log(`\tnanos ${evaluation.createTime.nanos / 1e9}`);
       console.log(

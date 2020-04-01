@@ -42,10 +42,10 @@ async function main(
       const dataset = responses[0];
 
       // Display the dataset information.
-      console.log(`List of datasets:`);
+      console.log('List of datasets:');
       for (let i = 0; i < dataset.length; i++) {
         console.log(`\nDataset name: ${dataset[i].name}`);
-        console.log(`Dataset Id: ${dataset[i].name.split(`/`).pop(-1)}`);
+        console.log(`Dataset Id: ${dataset[i].name.split('/').pop(-1)}`);
         console.log(`Dataset display name: ${dataset[i].displayName}`);
         console.log(`Dataset example count: ${dataset[i].exampleCount}`);
         console.log(

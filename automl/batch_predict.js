@@ -32,7 +32,7 @@ function main(
   // const outputUri = 'gs://YOUR_BUCKET_ID/path_to_save_results/';
 
   // Imports the Google Cloud AutoML library
-  const {PredictionServiceClient} = require(`@google-cloud/automl`).v1;
+  const {PredictionServiceClient} = require('@google-cloud/automl').v1;
 
   // Instantiates a client
   const client = new PredictionServiceClient();
@@ -55,7 +55,7 @@ function main(
 
     const [operation] = await client.batchPredict(request);
 
-    console.log(`Waiting for operation to complete...`);
+    console.log('Waiting for operation to complete...');
     // Wait for operation to complete.
     const [response] = await operation.promise();
     console.log(

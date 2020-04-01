@@ -73,7 +73,7 @@ async function main(
     .then(responses => {
       const initialApiResponse = responses[1];
       console.log(`Training operation name: ${initialApiResponse.name}`);
-      console.log(`Training started...`);
+      console.log('Training started...');
     })
     .catch(err => {
       console.error(err);

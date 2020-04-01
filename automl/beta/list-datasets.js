@@ -24,7 +24,7 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
   // const location = 'us-central1';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1beta1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1beta1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -38,7 +38,7 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
 
     const [response] = await client.listDatasets(request);
 
-    console.log(`List of datasets:`);
+    console.log('List of datasets:');
     for (const dataset of response) {
       console.log(`Dataset name: ${dataset.name}`);
       console.log(
@@ -47,7 +47,7 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
         }`
       );
       console.log(`Dataset display name: ${dataset.displayName}`);
-      console.log(`Dataset create time`);
+      console.log('Dataset create time');
       console.log(`\tseconds ${dataset.createTime.seconds}`);
       console.log(`\tnanos ${dataset.createTime.nanos / 1e9}`);
 

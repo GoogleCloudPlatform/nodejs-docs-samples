@@ -39,7 +39,7 @@ const bqOutputUriPrefix = 'bq://automl-tables-bg-output';
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 describe('Tables PredictionAPI', () => {
-  it.skip(`should perform single prediction`, async () => {
+  it.skip('should perform single prediction', async () => {
     // Run single prediction on predictTest.csv in resource folder
     const output = exec(`${cmdPredict} predict "${modelId}" "${filePath}"`);
     assert.match(output, /Prediction results:/);

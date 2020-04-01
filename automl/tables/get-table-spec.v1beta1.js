@@ -49,12 +49,12 @@ async function main(
 
       // Display the table spec information.
       console.log(`Table name: ${table.name}`);
-      console.log(`Table Id: ${table.name.split(`/`).pop(-1)}`);
+      console.log(`Table Id: ${table.name.split('/').pop(-1)}`);
       console.log(`Table row count: ${table.rowCount}`);
       console.log(`Table column count: ${table.columnCount}`);
 
-      console.log(`Table input config:`);
-      if (table.inputConfigs[0].source === `gcsSource`) {
+      console.log('Table input config:');
+      if (table.inputConfigs[0].source === 'gcsSource') {
         console.log(`\t${table.inputConfigs[0].gcsSource.inputUris}`);
       } else {
         console.log(`\t${table.inputConfigs[0].bigquerySource.inputUri}`);

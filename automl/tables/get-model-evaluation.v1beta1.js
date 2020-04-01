@@ -50,7 +50,7 @@ async function main(
 
       const classMetrics = response.classificationEvaluationMetrics;
       const regressionMetrics = response.regressionEvaluationMetrics;
-      const evaluationId = response.name.split(`/`)[7].split('`')[0];
+      const evaluationId = response.name.split('/')[7].split('`')[0];
 
       // Display the model evaluation information.
       console.log(`Model evaluation name: ${response.name}`);
@@ -65,13 +65,13 @@ async function main(
       if (classMetrics) {
         const confidenceMetricsEntries = classMetrics.confidenceMetricsEntry;
 
-        console.log(`Table classification evaluation metrics:`);
+        console.log('Table classification evaluation metrics:');
         console.log(`\tModel auPrc: ${math.round(classMetrics.auPrc, 6)}`);
         console.log(`\tModel auRoc: ${math.round(classMetrics.auRoc, 6)}`);
         console.log(`\tModel log loss: ${math.round(classMetrics.logLoss, 6)}`);
 
         if (confidenceMetricsEntries.length > 0) {
-          console.log(`\tConfidence metrics entries:`);
+          console.log('\tConfidence metrics entries:');
 
           for (const confidenceMetricsEntry of confidenceMetricsEntries) {
             console.log(
@@ -140,14 +140,14 @@ async function main(
             console.log(
               `\t\tModel true negative count: ${confidenceMetricsEntry.trueNegativeCount}`
             );
-            console.log(`\n`);
+            console.log('\n');
           }
         }
         console.log(
           `\tModel annotation spec Id: ${classMetrics.annotationSpecId}`
         );
       } else if (regressionMetrics) {
-        console.log(`Table regression evaluation metrics:`);
+        console.log('Table regression evaluation metrics:');
         console.log(
           `\tModel root mean squared error: ${regressionMetrics.rootMeanSquaredError}`
         );

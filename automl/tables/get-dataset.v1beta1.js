@@ -44,10 +44,10 @@ async function main(
 
       // Display the dataset information.
       console.log(`Dataset name: ${dataset.name}`);
-      console.log(`Dataset Id: ${dataset.name.split(`/`).pop(-1)}`);
+      console.log(`Dataset Id: ${dataset.name.split('/').pop(-1)}`);
       console.log(`Dataset display name: ${dataset.displayName}`);
       console.log(`Dataset example count: ${dataset.exampleCount}`);
-      console.log(`Tables dataset metadata:`);
+      console.log('Tables dataset metadata:');
       console.log(
         `\tTarget column correlations: ${util.inspect(
           tablesDatasetMetadata.targetColumnCorrelations,

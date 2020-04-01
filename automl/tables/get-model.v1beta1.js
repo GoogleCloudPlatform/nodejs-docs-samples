@@ -41,10 +41,10 @@ async function main(
 
       // Display the model information.
       console.log(`Model name: ${model.name}`);
-      console.log(`Model Id: ${model.name.split(`/`).pop(-1)}`);
+      console.log(`Model Id: ${model.name.split('/').pop(-1)}`);
       console.log(`Model display name: ${model.displayName}`);
       console.log(`Dataset Id: ${model.datasetId}`);
-      console.log(`Tables model metadata: `);
+      console.log('Tables model metadata: ');
       console.log(
         `\tTraining budget: ${model.tablesModelMetadata.trainBudgetMilliNodeHours}`
       );

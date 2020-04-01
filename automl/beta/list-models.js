@@ -23,7 +23,7 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
   // const location = 'us-central1';
 
   // Imports the Google Cloud AutoML library
-  const {AutoMlClient} = require(`@google-cloud/automl`).v1beta1;
+  const {AutoMlClient} = require('@google-cloud/automl').v1beta1;
 
   // Instantiates a client
   const client = new AutoMlClient();
@@ -37,13 +37,13 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
 
     const [response] = await client.listModels(request);
 
-    console.log(`List of models:`);
+    console.log('List of models:');
     for (const model of response) {
       console.log(`Model name: ${model.name}`);
       console.log(`
         Model id: ${model.name.split('/')[model.name.split('/').length - 1]}`);
       console.log(`Model display name: ${model.displayName}`);
-      console.log(`Model create time`);
+      console.log('Model create time');
       console.log(`\tseconds ${model.createTime.seconds}`);
       console.log(`\tnanos ${model.createTime.nanos / 1e9}`);
       console.log(`Model deployment state: ${model.deploymentState}`);

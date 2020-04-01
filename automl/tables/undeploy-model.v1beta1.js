@@ -38,9 +38,9 @@ async function main(
     .undeployModel({name: modelFullId})
     .then(responses => {
       const response = responses[0];
-      console.log(`Undeployment Details:`);
+      console.log('Undeployment Details:');
       console.log(`\tName: ${response.name}`);
-      console.log(`\tMetadata:`);
+      console.log('\tMetadata:');
       console.log(`\t\tType Url: ${response.metadata.typeUrl}`);
       console.log(`\tDone: ${response.done}`);
     })

@@ -46,7 +46,7 @@ async function main(
   const stream = fs
     .createReadStream(filePath)
     .pipe(csv.parse())
-    .on(`data`, function(data) {
+    .on('data', data => {
       const values = [];
 
       for (const val of data) {
@@ -70,7 +70,7 @@ async function main(
         })
         .then(responses => {
           console.log(responses);
-          console.log(`Prediction results:`);
+          console.log('Prediction results:');
 
           for (const result of responses[0].payload) {
             console.log(`Predicted class name: ${result.displayName}`);
@@ -86,7 +86,7 @@ async function main(
               }
             );
             // Sort features by their importance, highest importance first
-            featureList.sort(function(a, b) {
+            featureList.sort((a, b) => {
               return b.importance - a.importance;
             });
 

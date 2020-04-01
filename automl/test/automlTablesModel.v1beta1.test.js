@@ -40,7 +40,7 @@ const filter = 'tablesModelMetadata:*';
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 describe('Tables ModelAPI', () => {
-  it.skip(`should create a model`, async () => {
+  it.skip('should create a model', async () => {
     // Create model
     let output = exec(
       `${cmdModel} create-model "${datasetId}" "${tableId}" "${columnId}"` +
@@ -97,19 +97,19 @@ describe('Tables ModelAPI', () => {
     assert.match(output, /Model delete details:/);
   });
 
-  it.skip(`should deploy the model`, async () => {
+  it.skip('should deploy the model', async () => {
     // Deploy model
     const output = exec(`${cmdModel} deploy-model "${deployModelId}"`);
     assert.match(output, /Name:/);
   });
 
-  it.skip(`should undeploy the model`, async () => {
+  it.skip('should undeploy the model', async () => {
     // Undeploy model
     const output = exec(`${cmdModel} undeploy-model "${undeployModelId}"`);
     assert.match(output, /Name:/);
   });
 
-  it.skip(`should list and get operation status`, async () => {
+  it.skip('should list and get operation status', async () => {
     // List operations status
     let output = exec(`${cmdModel} list-operations-status `);
     const operationFullId = output

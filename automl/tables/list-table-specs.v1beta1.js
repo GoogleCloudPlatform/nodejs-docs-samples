@@ -43,15 +43,15 @@ async function main(
       const table = responses[0];
 
       // Display the table information.
-      console.log(`List of table specs: `);
+      console.log('List of table specs: ');
       for (let i = 0; i < table.length; i++) {
         console.log(`Table name: ${table[i].name}`);
-        console.log(`Table Id: ${table[i].name.split(`/`).pop(-1)}`);
+        console.log(`Table Id: ${table[i].name.split('/').pop(-1)}`);
         console.log(`Table row count: ${table[i].rowCount}`);
         console.log(`Table column count: ${table[i].columnCount}`);
 
-        console.log(`Table input config:`);
-        if (table[i].inputConfigs[0].source === `gcsSource`) {
+        console.log('Table input config:');
+        if (table[i].inputConfigs[0].source === 'gcsSource') {
           console.log(`\t${table[i].inputConfigs[0].gcsSource.inputUris}`);
         } else {
           console.log(`\t${table[i].inputConfigs[0].bigquerySource.inputUri}`);

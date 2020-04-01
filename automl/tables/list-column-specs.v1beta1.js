@@ -51,16 +51,16 @@ async function main(
       const column = responses[0];
 
       // Display the table columns specs information.
-      console.log(`List of column specs: `);
+      console.log('List of column specs: ');
       for (let i = 0; i < column.length; i++) {
         console.log(`Column name: ${column[i].name}`);
-        console.log(`Column Id: ${column[i].name.split(`/`).pop(-1)}`);
+        console.log(`Column Id: ${column[i].name.split('/').pop(-1)}`);
         console.log(`Column display name: ${column[i].displayName}`);
         console.log(`Column datatype: ${column[i].dataType.typeCode}`);
         console.log(
           `Column distinct value count: ${column[i].dataStats.distinctValueCount}`
         );
-        console.log(`\n`);
+        console.log('\n');
       }
     })
     .catch(err => {

@@ -39,7 +39,7 @@ async function main(
   const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
 
   let inputConfig = {};
-  if (path.startsWith(`bq`)) {
+  if (path.startsWith('bq')) {
     // Get Bigquery URI.
     inputConfig = {
       bigquerySource: {
@@ -48,7 +48,7 @@ async function main(
     };
   } else {
     // Get the multiple Google Cloud Storage URIs.
-    const inputUris = path.split(`,`);
+    const inputUris = path.split(',');
     inputConfig = {
       gcsSource: {
         inputUris: inputUris,
@@ -61,7 +61,7 @@ async function main(
     .importData({name: datasetFullId, inputConfig: inputConfig})
     .then(responses => {
       const operation = responses[0];
-      console.log(`Processing import...`);
+      console.log('Processing import...');
       return operation.promise();
     })
     .then(responses => {
@@ -70,7 +70,7 @@ async function main(
 
       // Get the data import details.
       console.log('Data import details:');
-      console.log(`\tOperation details:`);
+      console.log('\tOperation details:');
       console.log(`\t\tName: ${operationDetails.name}`);
       console.log(`\t\tDone: ${operationDetails.done}`);
     })

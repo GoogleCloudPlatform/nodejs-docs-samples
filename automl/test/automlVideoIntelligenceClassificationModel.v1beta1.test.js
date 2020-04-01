@@ -33,8 +33,8 @@ const testModelName = 'test_video_model';
 
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-describe.skip(`Video Intelligence ModelAPI`, () => {
-  it(`should create a model`, async () => {
+describe.skip('Video Intelligence ModelAPI', () => {
+  it('should create a model', async () => {
     // Create model
     let output = exec(
       `${cmdModel} create-model "${datasetId}" "${testModelName}"`
@@ -83,7 +83,7 @@ describe.skip(`Video Intelligence ModelAPI`, () => {
     assert.match(output, /Model delete details:/);
   });
 
-  it(`should list and get operation status`, async () => {
+  it('should list and get operation status', async () => {
     // List operation status
     let output = exec(`${cmdModel} list-operations-status`);
     const operationFullId = output

@@ -46,7 +46,7 @@ async function main(
 
       // Get the Model delete details.
       console.log('Model delete details:');
-      console.log(`\tOperation details:`);
+      console.log('\tOperation details:');
       console.log(`\t\tName: ${operationDetails.name}`);
       console.log(`\tDone: ${operationDetails.done}`);
     })

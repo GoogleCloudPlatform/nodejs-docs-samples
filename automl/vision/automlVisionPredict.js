@@ -63,7 +63,7 @@ function predict(projectId, computeRegion, modelId, filePath, scoreThreshold) {
       payload: payload,
       params: params,
     });
-    console.log(`Prediction results:`);
+    console.log('Prediction results:');
     response.payload.forEach(result => {
       console.log(`Predicted class name: ${result.displayName}`);
       console.log(`Predicted class score: ${result.classification.score}`);
@@ -78,44 +78,44 @@ require(`yargs`) // eslint-disable-line
   .demand(1)
   .options({
     computeRegion: {
-      alias: `c`,
-      type: `string`,
+      alias: 'c',
+      type: 'string',
       default: 'us-central1',
       requiresArg: true,
-      description: `region name e.g. "us-central1"`,
+      description: 'region name e.g. "us-central1"',
     },
     filePath: {
-      alias: `f`,
-      default: `./resources/testImage.jpg`,
-      type: `string`,
+      alias: 'f',
+      default: './resources/testImage.jpg',
+      type: 'string',
       requiresArg: true,
-      description: `local text file path of the content to be classified`,
+      description: 'local text file path of the content to be classified',
     },
     modelId: {
-      alias: `i`,
+      alias: 'i',
       //default: ``,
-      type: `string`,
+      type: 'string',
       requiresArg: true,
-      description: `Id of the model which will be used for text classification`,
+      description: 'Id of the model which will be used for text classification',
     },
     projectId: {
-      alias: `z`,
-      type: `string`,
+      alias: 'z',
+      type: 'string',
       default: process.env.GCLOUD_PROJECT,
       requiresArg: true,
-      description: `The GCLOUD_PROJECT string, e.g. "my-gcloud-project"`,
+      description: 'The GCLOUD_PROJECT string, e.g. "my-gcloud-project"',
     },
     scoreThreshold: {
-      alias: `s`,
-      type: `string`,
-      default: `0.5`,
+      alias: 's',
+      type: 'string',
+      default: '0.5',
       requiresArg: true,
       description:
-        `A value from 0.0 to 1.0.  When the model makes predictions for an image it will` +
-        `only produce results that have at least this confidence score threshold.  Default is .5`,
+        'A value from 0.0 to 1.0.  When the model makes predictions for an image it will' +
+        'only produce results that have at least this confidence score threshold.  Default is .5',
     },
   })
-  .command(`predict`, `classify the content`, {}, opts =>
+  .command('predict', 'classify the content', {}, opts =>
     predict(
       opts.projectId,
       opts.computeRegion,
@@ -125,7 +125,7 @@ require(`yargs`) // eslint-disable-line
     )
   )
   .example(
-    `node $0 predict -i "modelId" -f "./resources/testImage.jpg" -s "0.5"`
+    'node $0 predict -i "modelId" -f "./resources/testImage.jpg" -s "0.5"'
   )
   .wrap(120)
   .recommendCommands()

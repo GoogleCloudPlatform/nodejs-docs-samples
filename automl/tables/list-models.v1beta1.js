@@ -40,13 +40,13 @@ async function main(
       const model = responses[0];
 
       // Display the model information.
-      console.log(`List of models:`);
+      console.log('List of models:');
       for (let i = 0; i < model.length; i++) {
         console.log(`\nModel name: ${model[i].name}`);
-        console.log(`Model Id: ${model[i].name.split(`/`).pop(-1)}`);
+        console.log(`Model Id: ${model[i].name.split('/').pop(-1)}`);
         console.log(`Model display name: ${model[i].displayName}`);
         console.log(`Dataset Id: ${model[i].datasetId}`);
-        console.log(`Tables model metadata:`);
+        console.log('Tables model metadata:');
         console.log(
           `\tTraining budget: ${model[i].tablesModelMetadata.trainBudgetMilliNodeHours}`
         );

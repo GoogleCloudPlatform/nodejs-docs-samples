@@ -46,7 +46,7 @@ async function main(
 
       // Get the dataset delete details.
       console.log('Dataset delete details:');
-      console.log(`\tOperation details:`);
+      console.log('\tOperation details:');
       console.log(`\t\tName: ${operationDetails.name}`);
       console.log(`\t\tDone: ${operationDetails.done}`);
     })

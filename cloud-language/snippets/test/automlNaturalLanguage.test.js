@@ -93,7 +93,7 @@ describe.skip('automl', () => {
   });
 
   it('should display evaluation from prexisting model', async () => {
-    const donotdeleteModelId = `TCN4740161257642267869`;
+    const donotdeleteModelId = 'TCN4740161257642267869';
 
     // Confirm dataset exists
     let output = execSync(`${cmdDataset} list-datasets`);
@@ -112,7 +112,7 @@ describe.skip('automl', () => {
   });
 
   it('should run Prediction from prexisting model', async () => {
-    const donotdeleteModelId = `TCN4740161257642267869`;
+    const donotdeleteModelId = 'TCN4740161257642267869';
 
     // Confirm dataset exists
     let output = execSync(`${cmdDataset} list-datasets`);

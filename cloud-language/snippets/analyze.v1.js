@@ -39,7 +39,7 @@ async function analyzeSentimentOfText(text) {
   const [result] = await client.analyzeSentiment({document});
 
   const sentiment = result.documentSentiment;
-  console.log(`Document sentiment:`);
+  console.log('Document sentiment:');
   console.log(`  Score: ${sentiment.score}`);
   console.log(`  Magnitude: ${sentiment.magnitude}`);
 
@@ -77,7 +77,7 @@ async function analyzeSentimentInFile(bucketName, fileName) {
   const [result] = await client.analyzeSentiment({document});
 
   const sentiment = result.documentSentiment;
-  console.log(`Document sentiment:`);
+  console.log('Document sentiment:');
   console.log(`  Score: ${sentiment.score}`);
   console.log(`  Magnitude: ${sentiment.magnitude}`);
 
@@ -189,7 +189,7 @@ async function analyzeSyntaxOfText(text) {
   console.log('Tokens:');
   syntax.tokens.forEach(part => {
     console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
-    console.log(`Morphology:`, part.partOfSpeech);
+    console.log('Morphology:', part.partOfSpeech);
   });
   // [END language_syntax_text]
 }
@@ -223,7 +223,7 @@ async function analyzeSyntaxInFile(bucketName, fileName) {
   console.log('Parts of speech:');
   syntax.tokens.forEach(part => {
     console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
-    console.log(`Morphology:`, part.partOfSpeech);
+    console.log('Morphology:', part.partOfSpeech);
   });
   // [END language_syntax_gcs]
 }
@@ -251,7 +251,7 @@ async function analyzeEntitySentimentOfText(text) {
   const [result] = await client.analyzeEntitySentiment({document});
   const entities = result.entities;
 
-  console.log(`Entities and sentiments:`);
+  console.log('Entities and sentiments:');
   entities.forEach(entity => {
     console.log(`  Name: ${entity.name}`);
     console.log(`  Type: ${entity.type}`);
@@ -285,7 +285,7 @@ async function analyzeEntitySentimentInFile(bucketName, fileName) {
   const [result] = await client.analyzeEntitySentiment({document});
   const entities = result.entities;
 
-  console.log(`Entities and sentiments:`);
+  console.log('Entities and sentiments:');
   entities.forEach(entity => {
     console.log(`  Name: ${entity.name}`);
     console.log(`  Type: ${entity.type}`);
@@ -353,98 +353,98 @@ async function classifyTextInFile(bucketName, fileName) {
   // [END language_classify_gcs]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .command(
-    `sentiment-text <text>`,
-    `Detects sentiment of a string.`,
+    'sentiment-text <text>',
+    'Detects sentiment of a string.',
     {},
     opts => analyzeSentimentOfText(opts.text)
   )
   .command(
-    `sentiment-file <bucketName> <fileName>`,
-    `Detects sentiment in a file in Google Cloud Storage.`,
+    'sentiment-file <bucketName> <fileName>',
+    'Detects sentiment in a file in Google Cloud Storage.',
     {},
     opts => analyzeSentimentInFile(opts.bucketName, opts.fileName)
   )
-  .command(`entities-text <text>`, `Detects entities in a string.`, {}, opts =>
+  .command('entities-text <text>', 'Detects entities in a string.', {}, opts =>
     analyzeEntitiesOfText(opts.text)
   )
   .command(
-    `entities-file <bucketName> <fileName>`,
-    `Detects entities in a file in Google Cloud Storage.`,
+    'entities-file <bucketName> <fileName>',
+    'Detects entities in a file in Google Cloud Storage.',
     {},
     opts => analyzeEntitiesInFile(opts.bucketName, opts.fileName)
   )
-  .command(`syntax-text <text>`, `Detects syntax of a string.`, {}, opts =>
+  .command('syntax-text <text>', 'Detects syntax of a string.', {}, opts =>
     analyzeSyntaxOfText(opts.text)
   )
   .command(
-    `syntax-file <bucketName> <fileName>`,
-    `Detects syntax in a file in Google Cloud Storage.`,
+    'syntax-file <bucketName> <fileName>',
+    'Detects syntax in a file in Google Cloud Storage.',
     {},
     opts => analyzeSyntaxInFile(opts.bucketName, opts.fileName)
   )
   .command(
-    `entity-sentiment-text <text>`,
-    `Detects sentiment of the entities in a string.`,
+    'entity-sentiment-text <text>',
+    'Detects sentiment of the entities in a string.',
     {},
     opts => analyzeEntitySentimentOfText(opts.text)
   )
   .command(
-    `entity-sentiment-file <bucketName> <fileName>`,
-    `Detects sentiment of the entities in a file in Google Cloud Storage.`,
+    'entity-sentiment-file <bucketName> <fileName>',
+    'Detects sentiment of the entities in a file in Google Cloud Storage.',
     {},
     opts => analyzeEntitySentimentInFile(opts.bucketName, opts.fileName)
   )
-  .command(`classify-text <text>`, `Classifies text of a string.`, {}, opts =>
+  .command('classify-text <text>', 'Classifies text of a string.', {}, opts =>
     classifyTextOfText(opts.text)
   )
   .command(
-    `classify-file <bucketName> <fileName>`,
-    `Classifies text in a file in Google Cloud Storage.`,
+    'classify-file <bucketName> <fileName>',
+    'Classifies text in a file in Google Cloud Storage.',
     {},
     opts => classifyTextInFile(opts.bucketName, opts.fileName)
   )
   .example(
-    `node $0 sentiment-text "President Obama is speaking at the White House."`
+    'node $0 sentiment-text "President Obama is speaking at the White House."'
   )
   .example(
-    `node $0 sentiment-file my-bucket file.txt`,
-    `Detects sentiment in gs://my-bucket/file.txt`
+    'node $0 sentiment-file my-bucket file.txt',
+    'Detects sentiment in gs://my-bucket/file.txt'
   )
   .example(
-    `node $0 entities-text "President Obama is speaking at the White House."`
+    'node $0 entities-text "President Obama is speaking at the White House."'
   )
   .example(
-    `node $0 entities-file my-bucket file.txt`,
-    `Detects entities in gs://my-bucket/file.txt`
+    'node $0 entities-file my-bucket file.txt',
+    'Detects entities in gs://my-bucket/file.txt'
   )
   .example(
-    `node $0 syntax-text "President Obama is speaking at the White House."`
+    'node $0 syntax-text "President Obama is speaking at the White House."'
   )
   .example(
-    `node $0 syntax-file my-bucket file.txt`,
-    `Detects syntax in gs://my-bucket/file.txt`
+    'node $0 syntax-file my-bucket file.txt',
+    'Detects syntax in gs://my-bucket/file.txt'
   )
   .example(
-    `node $0 entity-sentiment-text "President Obama is speaking at the White House."`
+    'node $0 entity-sentiment-text "President Obama is speaking at the White House."'
   )
   .example(
-    `node $0 entity-sentiment-file my-bucket file.txt`,
-    `Detects sentiment of entities in gs://my-bucket/file.txt`
+    'node $0 entity-sentiment-file my-bucket file.txt',
+    'Detects sentiment of entities in gs://my-bucket/file.txt'
   )
   .example(
-    `node $0 classify-text "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."`
+    'node $0 classify-text "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."'
   )
   .example(
-    `node $0 classify-file my-bucket android_text.txt`,
-    `Detects syntax in gs://my-bucket/android_text.txt`
+    'node $0 classify-file my-bucket android_text.txt',
+    'Detects syntax in gs://my-bucket/android_text.txt'
   )
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/natural-language/docs`
+    'For more information, see https://cloud.google.com/natural-language/docs'
   )
   .help()
   .strict().argv;

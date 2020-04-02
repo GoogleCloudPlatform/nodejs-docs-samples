@@ -15,20 +15,27 @@
 // This sample instantiates an inline workflow template using the client
 // library for Cloud Dataproc.
 
-function main(projectId, region) {
+// sample-metadata:
+//   title: Instantiate an inline workflow template
+//   usage: node instantiateInlineWorkflowTemplate.js <PROJECT_ID> <REGION>
+
+/*eslint no-warning-comments: [0, { "terms": ["todo", "fixme"], "location": "anywhere" }]*/
+
+function main(projectId = 'YOUR_PROJECT_ID', region = 'YOUR_REGION') {
   // [START dataproc_instantiate_inline_workflow_template]
   const dataproc = require('@google-cloud/dataproc');
+
+  // TODO(developer): Uncomment and set the following variables
+  // projectId = 'YOUR_PROJECT_ID'
+  // region = 'YOUR_REGION'
 
   // Create a client with the endpoint set to the desired region
   const client = new dataproc.v1.WorkflowTemplateServiceClient({
     apiEndpoint: `${region}-dataproc.googleapis.com`,
+    projectId: projectId,
   });
 
   async function instantiateInlineWorkflowTemplate() {
-    // TODO(developer): Uncomment and set the following variables
-    // projectId = 'YOUR_PROJECT_ID'
-    // region = 'YOUR_REGION'
-
     // Create the formatted parent.
     const parent = client.regionPath(projectId, region);
 

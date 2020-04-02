@@ -24,7 +24,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
-const cmd = `node batch_parse_table.js`;
+const cmd = 'node batch_parse_table.js';
 
 const testParseTable = {
   projectId: process.env.GCLOUD_PROJECT,
@@ -32,7 +32,7 @@ const testParseTable = {
   gcsOutputUriPrefix: uuid.v4(),
 };
 
-describe(`Document AI batch parse table`, () => {
+describe('Document AI batch parse table', () => {
   before(async () => {
     await storage.createBucket(bucketName);
   });
@@ -43,7 +43,7 @@ describe(`Document AI batch parse table`, () => {
     await bucket.delete();
   });
 
-  it(`should parse the GCS invoice example as as table`, async () => {
+  it('should parse the GCS invoice example as as table', async () => {
     const output = execSync(
       `${cmd} ${testParseTable.projectId} ${testParseTable.location} gs://${bucketName}`
     );

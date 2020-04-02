@@ -17,7 +17,7 @@
 const {assert} = require('chai');
 const {describe, it, before, after, afterEach, beforeEach} = require('mocha');
 const cp = require('child_process');
-const uuid = require(`uuid`);
+const uuid = require('uuid');
 
 const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');
 const client = new ContainerAnalysisClient();
@@ -81,7 +81,7 @@ describe('Note tests', () => {
     const output = execSync(
       `node createOccurrence.js "${projectId}" "${noteId}" "${projectId}" "${resourceUrl}"`
     );
-    assert.include(output, `Occurrence created`);
+    assert.include(output, 'Occurrence created');
   });
 
   it('should get occurrence', async () => {
@@ -233,7 +233,7 @@ describe('Note tests', () => {
     const output = execSync(
       `node deleteOccurrence.js "${projectId}" "${occurrenceId}"`
     );
-    assert.include(output, `Occurrence deleted:`);
+    assert.include(output, 'Occurrence deleted:');
   });
   it('should delete note', () => {
     const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
@@ -292,7 +292,7 @@ describe('polling', () => {
     const output = execSync(
       `node pollDiscoveryOccurrenceFinished.js "${projectId}" "${resourceUrl}" "${timeoutSeconds}"`
     );
-    assert.include(output, `Found discovery occurrence`);
+    assert.include(output, 'Found discovery occurrence');
   });
 });
 
@@ -377,7 +377,7 @@ describe('pubsub', () => {
       `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`
     );
 
-    assert.include(empty, `Polled 0 occurrences`);
+    assert.include(empty, 'Polled 0 occurrences');
     // create test occurrences
     for (let i = 0; i < expectedNum; i++) {
       const [

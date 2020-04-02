@@ -44,10 +44,10 @@ async function main(
   };
 
   // Listen for new messages until timeout is hit
-  subscription.on(`message`, messageHandler);
+  subscription.on('message', messageHandler);
 
   setTimeout(() => {
-    subscription.removeListener(`message`, messageHandler);
+    subscription.removeListener('message', messageHandler);
     console.log(`Polled ${count} occurrences`);
   }, timeoutSeconds * 1000);
   // [END containeranalysis_pubsub]

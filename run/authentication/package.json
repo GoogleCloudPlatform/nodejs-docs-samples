@@ -1,0 +1,21 @@
+{
+  "name": "nodejs-auth",
+  "version": "1.0.0",
+  "description": "Cloud Run service-to-service authentication",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "test": "test"
+  },
+  "author": "krippaehne",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.16.4",
+    "gcp-metadata": "^4.0.0",
+    "got": "^10.7.0"
+  },
+  "devDependencies": {
+    "mocha": "^7.0.0"
+  }
+}

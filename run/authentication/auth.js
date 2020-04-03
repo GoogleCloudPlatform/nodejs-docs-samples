@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function main(receivingServiceURL = 'YOUR_RECEIVING_SERVICE_URL') {
 // [START run_service_to_service_auth]
-// Make sure to `npm install gcp-metadata` and `npm install got` or add the dependencies to your package.json
+
+// Import the Metadata API
 const gcpMetadata = require('gcp-metadata')
 const got = require('got');
+
+// TODO(developer): Add the URL of your receiving service
+// const receivingServiceURL = 'YOUR_RECEIVING_SERVICE_URL''
 
 const requestServiceToken = async () => { 
   try {
 
-    // Add the URL of your receiving service
-    const receivingServiceURL = ...
-
     // Set up the metadata server request options
-    // See https://cloud.google.com/compute/docs/instances/verifying-instance-identity#request_signature
+
     const metadataServerTokenPath = 'service-accounts/default/identity?audience=' + receivingServiceURL;
     const tokenRequestOptions = {
       headers: {
@@ -33,20 +35,27 @@ const requestServiceToken = async () => {
     };
     
     // Fetch the token and then provide it in the request to the receiving service
-    const tokenResponse = await gcpMetadata.instance(metadataServerTokenPath, tokenRequestOptions);
+    const token = await gcpMetadata.instance(metadataServerTokenPath, tokenRequestOptions);
     const serviceRequestOptions = { 
       headers: {
-        'Authorization': 'bearer ' + tokenResponse
+        'Authorization': 'bearer ' + token
+
       }
     };
 
     const serviceResponse = await got(receivingServiceURL, serviceRequestOptions);
-    res.send(serviceResponse.body);
+    return serviceResponse;
 
   } catch (error) { 
     console.log('Metadata server could not respond to query ', error);
-    res.send(error);
+    return error;
+
   }
 };
 
 // [END run_service_to_service_auth]
+
+requestServiceToken();
+};
+main();
+

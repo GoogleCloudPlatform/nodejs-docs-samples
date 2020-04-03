@@ -17,7 +17,7 @@
 // [START functions_bearer_token]
 const {get} = require('axios');
 
-// TODO<developer>: set these values
+// TODO(developer): set these values
 const REGION = 'us-central1';
 const PROJECT_ID = 'my-project-id';
 const RECEIVING_FUNCTION = 'myFunction';

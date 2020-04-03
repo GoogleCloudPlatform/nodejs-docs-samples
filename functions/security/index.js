@@ -19,7 +19,7 @@ const {get} = require('axios');
 
 // TODO<developer>: set these values
 const REGION = 'us-central1';
-const PROJECT_ID = 'nodejs-docs-samples';
+const PROJECT_ID = 'my-project-id';
 const RECEIVING_FUNCTION = 'myFunction';
 
 // Constants for setting up metadata server request

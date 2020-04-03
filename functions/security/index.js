@@ -29,7 +29,7 @@ const metadataServerURL =
   'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=';
 const tokenUrl = metadataServerURL + functionURL;
 
-exports.bearerToken = async (req, res) => {
+exports.callingFunction = async (req, res) => {
   // Fetch the token
   const tokenResponse = await get(tokenUrl, {
     headers: {

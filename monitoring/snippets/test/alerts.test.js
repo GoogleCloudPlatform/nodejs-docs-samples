@@ -32,6 +32,19 @@ const cmd = 'node alerts';
 let policyOneName, policyTwoName, channelName;
 const testPrefix = `gcloud-test-${uuid.v4().split('-')[0]}`;
 
+// Tests in this suite can trigger the error,
+// "Too many concurrent edits to the project configuration. Please try again".
+const delay = async test => {
+  const retries = test.currentRetry();
+  if (retries === 0) return; // no retry on the first failure.
+  // see: https://cloud.google.com/storage/docs/exponential-backoff:
+  const ms = Math.pow(2, retries) * 500 + Math.random() * 2000;
+  return new Promise(done => {
+    console.info(`retrying "${test.title}" in ${ms}ms`);
+    setTimeout(done, ms);
+  });
+};
+
 describe('alerts', () => {
   before(async () => {
     await reapPolicies();
@@ -162,13 +175,17 @@ describe('alerts', () => {
     await deleteChannels();
   });
 
-  it('should replace notification channels', () => {
+  it('should replace notification channels', async function() {
+    this.retries(8);
+    await delay(this.test);
     const stdout = execSync(`${cmd} replace ${policyOneName} ${channelName}`);
     assert.include(stdout, 'Updated projects');
     assert.include(stdout, policyOneName);
   });
 
-  it('should disable policies', () => {
+  it('should disable policies', async function() {
+    this.retries(8);
+    await delay(this.test);
     const stdout = execSync(
       `${cmd} disable ${projectId} 'display_name.size < 28'`
     );
@@ -177,7 +194,9 @@ describe('alerts', () => {
     assert.include(stdout, policyTwoName);
   });
 
-  it('should enable policies', () => {
+  it('should enable policies', async function() {
+    this.retries(8);
+    await delay(this.test);
     const stdout = execSync(
       `${cmd} enable ${projectId} 'display_name.size < 28'`
     );
@@ -194,14 +213,18 @@ describe('alerts', () => {
     assert.include(stdout, 'second');
   });
 
-  it('should backup all policies', async () => {
+  it('should backup all policies', async function() {
+    this.retries(8);
+    await delay(this.test);
     const output = execSync(`${cmd} backup ${projectId}`);
     assert.include(output, 'Saved policies to ./policies_backup.json');
     assert.ok(fs.existsSync(path.join(__dirname, '../policies_backup.json')));
     await client.deleteAlertPolicy({name: policyOneName});
   });
 
-  it('should restore policies', () => {
+  it('should restore policies', async function() {
+    this.retries(8);
+    await delay(this.test);
     const output = execSync(`${cmd} restore ${projectId}`);
     assert.include(output, 'Loading policies from ./policies_backup.json');
     const matches = output.match(

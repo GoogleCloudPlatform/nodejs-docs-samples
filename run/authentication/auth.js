@@ -26,6 +26,7 @@ const requestServiceToken = async () => {
   try {
 
     // Set up the metadata server request options
+
     const metadataServerTokenPath = 'service-accounts/default/identity?audience=' + receivingServiceURL;
     const tokenRequestOptions = {
       headers: {
@@ -38,6 +39,7 @@ const requestServiceToken = async () => {
     const serviceRequestOptions = { 
       headers: {
         'Authorization': 'bearer ' + token
+
       }
     };
 
@@ -47,6 +49,7 @@ const requestServiceToken = async () => {
   } catch (error) { 
     console.log('Metadata server could not respond to query ', error);
     return error;
+
   }
 };
 
@@ -55,3 +58,4 @@ const requestServiceToken = async () => {
 requestServiceToken();
 };
 main();
+

@@ -173,7 +173,11 @@ describe('metrics', async () => {
     timeSeries.forEach(data => {
       assert.include(output, data.metric.labels.instance_name);
       assert.include(output, ' Now: 0.');
-      assert.include(output, ' 10 min ago: 0.');
+      // Don't assert against a value from 10 minutes ago, if none is
+      // being reported by stackdriver:
+      if (data.points.length > 1) {
+        assert.include(output, ' 10 min ago: 0.');
+      }
     });
   });
 

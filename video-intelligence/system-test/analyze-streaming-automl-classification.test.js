@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = `node analyze-streaming-automl-classification.js`;
 const modelId = `VCN3094808572840640512`;
 const project = process.env.GCLOUD_PROJECT;
-const file = 'resources/cat.mp4';
+const file = 'resources/googlework_short.mp4';
 
 describe('streaming automl classification', () => {
   it('should classify the action in the streaming video', async () => {

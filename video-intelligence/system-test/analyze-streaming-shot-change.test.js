@@ -21,7 +21,7 @@ const {describe, it} = require('mocha');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = `node analyze-streaming-shot-change.js`;
-const file = 'resources/cat.mp4';
+const file = 'resources/googlework_short.mp4';
 
 describe('streaming shot change', () => {
   it('should analyze shot changes in a streaming video', async () => {

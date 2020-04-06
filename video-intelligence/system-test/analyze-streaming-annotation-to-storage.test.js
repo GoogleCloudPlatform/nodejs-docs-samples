@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = `node analyze-streaming-annotation-to-storage.js`;
 const project = process.env.GCLOUD_PROJECT;
-const file = 'resources/cat.mp4';
+const file = 'resources/googlework_short.mp4';
 const outputUri = 'gs://' + project + '/VIDEO_STREAMING_OUTPUT';
 
 describe('streaming annotation to storage', () => {

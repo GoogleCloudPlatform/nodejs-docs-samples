@@ -21,7 +21,7 @@ const {describe, it} = require('mocha');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = `node analyze-streaming-object.js`;
-const file = 'resources/cat.mp4';
+const file = 'resources/googlework_short.mp4';
 
 describe('streaming object', () => {
   it('should track an object in a streaming video', async () => {

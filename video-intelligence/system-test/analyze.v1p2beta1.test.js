@@ -24,7 +24,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node analyze.v1p2beta1.js';
 const url = 'gs://cloud-samples-data/video/cat.mp4';
-const file1 = 'resources/cat.mp4';
+const file1 = 'resources/googlework_short.mp4';
 const file2 = 'resources/googlework_short.mp4';
 const possibleTexts = /Google|GOOGLE|SUR|OMAR|ROTO|Vice President|58oo9|LONDRES|PARIS|METRO|RUE|CARLO/;
 

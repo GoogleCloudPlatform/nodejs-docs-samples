@@ -21,13 +21,13 @@
 async function listIntents(projectId) {
   // [START dialogflow_list_intents]
   // Imports the Dialogflow library
-  const dialogflow = require('dialogflow');
+  const dialogflow = require('@google-cloud/dialogflow');
 
   // Instantiates clients
   const intentsClient = new dialogflow.IntentsClient();
 
   // The path to identify the agent that owns the intents.
-  const projectAgentPath = intentsClient.projectAgentPath(projectId);
+  const projectAgentPath = intentsClient.agentPath(projectId);
 
   const request = {
     parent: projectAgentPath,
@@ -66,13 +66,13 @@ async function createIntent(
 ) {
   // [START dialogflow_create_intent]
   // Imports the Dialogflow library
-  const dialogflow = require('dialogflow');
+  const dialogflow = require('@google-cloud/dialogflow');
 
   // Instantiates the Intent Client
   const intentsClient = new dialogflow.IntentsClient();
 
   // The path to identify the agent that owns the created intent.
-  const agentPath = intentsClient.projectAgentPath(projectId);
+  const agentPath = intentsClient.agentPath(projectId);
 
   const trainingPhrases = [];
 
@@ -118,7 +118,7 @@ async function createIntent(
 async function deleteIntent(projectId, intentId) {
   // [START dialogflow_delete_intent]
   // Imports the Dialogflow library
-  const dialogflow = require('dialogflow');
+  const dialogflow = require('@google-cloud/dialogflow');
 
   // Instantiates clients
   const intentsClient = new dialogflow.IntentsClient();
@@ -146,16 +146,16 @@ async function createSessionEntityType(
   entityOverrideMode
 ) {
   // Imports the Dialogflow library
-  const dialogflow = require('dialogflow');
+  const dialogflow = require('@google-cloud/dialogflow');
 
   // Instantiates clients
   const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient();
 
-  const sessionPath = sessionEntityTypesClient.sessionPath(
+  const sessionPath = sessionEntityTypesClient.projectAgentSessionPath(
     projectId,
     sessionId
   );
-  const sessionEntityTypePath = sessionEntityTypesClient.sessionEntityTypePath(
+  const sessionEntityTypePath = sessionEntityTypesClient.projectAgentSessionEntityTypePath(
     projectId,
     sessionId,
     entityTypeDisplayName
@@ -188,11 +188,11 @@ async function createSessionEntityType(
 
 async function listSessionEntityTypes(projectId, sessionId) {
   // Imports the Dialogflow library
-  const dialogflow = require('dialogflow');
+  const dialogflow = require('@google-cloud/dialogflow');
 
   // Instantiates clients
   const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient();
-  const sessionPath = sessionEntityTypesClient.sessionPath(
+  const sessionPath = sessionEntityTypesClient.projectAgentSessionPath(
     projectId,
     sessionId
   );
@@ -217,13 +217,13 @@ async function deleteSessionEntityType(
   entityTypeDisplayName
 ) {
   // Imports the Dialogflow library
-  const dialogflow = require('dialogflow');
+  const dialogflow = require('@google-cloud/dialogflow');
 
   // Instantiates clients
   const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient();
 
   // The path to identify the sessionEntityType to be deleted.
-  const sessionEntityTypePath = sessionEntityTypesClient.sessionEntityTypePath(
+  const sessionEntityTypePath = sessionEntityTypesClient.projectAgentSessionEntityTypePath(
     projectId,
     sessionId,
     entityTypeDisplayName

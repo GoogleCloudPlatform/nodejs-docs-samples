@@ -18,7 +18,7 @@ const {assert} = require('chai');
 const {describe, before, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const uuid = require('uuid');
-const dialogflow = require('dialogflow');
+const dialogflow = require('@google-cloud/dialogflow');
 
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
@@ -31,7 +31,7 @@ describe('delete intent', () => {
   before('create the intent', async () => {
     const projectId = await client.getProjectId();
     const createIntentRequest = {
-      parent: client.projectAgentPath(projectId),
+      parent: client.agentPath(projectId),
       intent: {
         displayName: displayName,
         trainingPhrases: [

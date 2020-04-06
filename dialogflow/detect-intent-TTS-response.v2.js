@@ -22,7 +22,7 @@ async function main(
 ) {
   // [START dialogflow_detect_intent_with_texttospeech_response]
   // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2;
+  const dialogflow = require('@google-cloud/dialogflow').v2;
 
   // Instantiate a DialogFlow client.
   const sessionClient = new dialogflow.SessionsClient();
@@ -37,7 +37,10 @@ async function main(
   // const outputFile = `path for audio output file, e.g. ./resources/myOutput.wav`;
 
   // Define session path
-  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
+  const sessionPath = sessionClient.projectAgentSessionPath(
+    projectId,
+    sessionId
+  );
   const fs = require('fs');
   const util = require('util');
 

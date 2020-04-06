@@ -18,7 +18,7 @@ const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const uuid = require('uuid');
-const dialogflow = require('dialogflow');
+const dialogflow = require('@google-cloud/dialogflow');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 describe('create session entity type', () => {
@@ -33,7 +33,7 @@ describe('create session entity type', () => {
   before('create an entity type', async () => {
     const projectId = await client.getProjectId();
     const createEntityTypeRequest = {
-      parent: client.projectAgentPath(projectId),
+      parent: client.agentPath(projectId),
       entityType: {
         displayName: displayName,
         kind: 'KIND_MAP',

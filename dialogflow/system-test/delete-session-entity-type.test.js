@@ -18,7 +18,7 @@ const {assert} = require('chai');
 const {describe, after, before, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const uuid = require('uuid');
-const dialogflow = require('dialogflow');
+const dialogflow = require('@google-cloud/dialogflow');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 describe('delete session entity types', () => {
@@ -33,7 +33,7 @@ describe('delete session entity types', () => {
     // First create an entity type
     const projectId = await client.getProjectId();
     const createEntityTypeRequest = {
-      parent: client.projectAgentPath(projectId),
+      parent: client.agentPath(projectId),
       entityType: {
         displayName: displayName,
         kind: 'KIND_MAP',
@@ -45,9 +45,9 @@ describe('delete session entity types', () => {
 
     // Create the session entity type
     const sessionEntityTypeRequest = {
-      parent: sessionClient.sessionPath(projectId, sessionId),
+      parent: sessionClient.projectAgentSessionPath(projectId, sessionId),
       sessionEntityType: {
-        name: sessionClient.sessionEntityTypePath(
+        name: sessionClient.projectAgentSessionEntityTypePath(
           projectId,
           sessionId,
           displayName

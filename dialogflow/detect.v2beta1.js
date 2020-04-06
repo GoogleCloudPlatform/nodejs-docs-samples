@@ -20,7 +20,7 @@ const util = require('util');
 async function createKnowledgeBase(projectId, displayName) {
   // [START dialogflow_create_knowledge_base]
   // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
+  const dialogflow = require('@google-cloud/dialogflow').v2beta1;
 
   // Instantiate a DialogFlow client.
   const client = new dialogflow.KnowledgeBasesClient();
@@ -31,7 +31,7 @@ async function createKnowledgeBase(projectId, displayName) {
   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
   // const displayName = `your knowledge base display name, e.g. myKnowledgeBase`;
 
-  const formattedParent = client.projectPath(projectId);
+  const formattedParent = 'projects/' + projectId;
   const knowledgeBase = {
     displayName: displayName,
   };
@@ -47,55 +47,59 @@ async function createKnowledgeBase(projectId, displayName) {
   // [END dialogflow_create_knowledge_base]
 }
 
-async function createDocument(
-  projectId,
-  knowledgeBaseFullName,
-  documentPath,
-  documentName,
-  knowledgeTypes,
-  mimeType
-) {
-  // [START dialogflow_create_document]
-  // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
+/*
+ *This test is commented until the proto change for dialogflow/v2beta1 is finished.
+ */
+// async function createDocument(
+//   projectId,
+//   knowledgeBaseFullName,
+//   documentPath,
+//   documentName,
+//   knowledgeTypes,
+//   mimeType
+// ) {
+//   // [START dialogflow_create_document]
+//   // Imports the Dialogflow client library
+//   const dialogflow = require('@google-cloud/dialogflow').v2beta1;
 
-  // Instantiate a DialogFlow Documents client.
-  const client = new dialogflow.DocumentsClient({
-    projectId: projectId,
-  });
+//   // Instantiate a DialogFlow Documents client.
+//   const client = new dialogflow.DocumentsClient({
+//     projectId: projectId,
+//   });
 
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'ID of GCP project associated with your Dialogflow agent';
-  // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
-  // const documentPath = `path of the document you'd like to add, e.g. https://dialogflow.com/docs/knowledge-connectors`;
-  // const documentName = `displayed name of your document in knowledge base, e.g. myDoc`;
-  // const knowledgeTypes = `The Knowledge type of the Document. e.g. FAQ`;
-  // const mimeType = `The mime_type of the Document. e.g. text/csv, text/html,text/plain, text/pdf etc.`;
+//   /**
+//    * TODO(developer): Uncomment the following lines before running the sample.
+//    */
+//   // const projectId = 'ID of GCP project associated with your Dialogflow agent';
+//   // const knowledgeBaseFullName = `the full path of your knowledge base, e.g my-Gcloud-project/myKnowledgeBase`;
+//   // const documentPath = `path of the document you'd like to add, e.g. https://dialogflow.com/docs/knowledge-connectors`;
+//   // const documentName = `displayed name of your document in knowledge base, e.g. myDoc`;
+//   // const knowledgeTypes = `The Knowledge type of the Document. e.g. FAQ`;
+//   // const mimeType = `The mime_type of the Document. e.g. text/csv, text/html,text/plain, text/pdf etc.`;
 
-  const request = {
-    parent: knowledgeBaseFullName,
-    document: {
-      knowledgeTypes: [knowledgeTypes],
-      displayName: documentName,
-      contentUri: documentPath,
-      source: 'contentUri',
-      mimeType: mimeType,
-    },
-  };
+//   const request = {
+//     parent: knowledgeBaseFullName,
+//     document: {
+//       knowledgeTypes: [knowledgeTypes],
+//       displayName: documentName,
+//       contentUri: documentPath,
+//       source: 'contentUri',
+//       mimeType: mimeType,
+//     },
+//   };
 
-  const [operation] = await client.createDocument(request);
-  const [response] = await operation.promise();
-  console.log('Document created');
-  console.log(`Content URI...${response.contentUri}`);
-  console.log(`displayName...${response.displayName}`);
-  console.log(`mimeType...${response.mimeType}`);
-  console.log(`name...${response.name}`);
-  console.log(`source...${response.source}`);
+//   const [operation] = await client.createDocument(request);
+//   const [response] = await operation.promise();
 
-  // [END dialogflow_create_document]
-}
+//   console.log('Document created');
+//   console.log(`Content URI...${response.contentUri}`);
+//   console.log(`displayName...${response.displayName}`);
+//   console.log(`mimeType...${response.mimeType}`);
+//   console.log(`name...${response.name}`);
+//   console.log(`source...${response.source}`);
+
+//   // [END dialogflow_create_document]
+// }
 
 async function detectIntentandSentiment(
   projectId,
@@ -105,8 +109,7 @@ async function detectIntentandSentiment(
 ) {
   // [START dialogflow_detect_intent_with_sentiment_analysis]
   // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
+  const dialogflow = require('@google-cloud/dialogflow').v2beta1;
   // Instantiate a DialogFlow client.
   const sessionClient = new dialogflow.SessionsClient();
 
@@ -119,7 +122,10 @@ async function detectIntentandSentiment(
   // const languageCode = 'BCP-47 language code, e.g. en-US';
 
   // Define session path
-  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
+  const sessionPath = sessionClient.projectAgentSessionPath(
+    projectId,
+    sessionId
+  );
 
   // The text query request.
   const request = {
@@ -171,8 +177,7 @@ async function detectIntentwithTexttoSpeechResponse(
 ) {
   // [START dialogflow_detect_intent_with_texttospeech_response]
   // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
+  const dialogflow = require('@google-cloud/dialogflow').v2beta1;
   // Instantiate a DialogFlow client.
   const sessionClient = new dialogflow.SessionsClient();
 
@@ -186,7 +191,10 @@ async function detectIntentwithTexttoSpeechResponse(
   // const outputFile = `path for audio output file, e.g. ./resources/myOutput.wav`;
 
   // Define session path
-  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
+  const sessionPath = sessionClient.projectAgentSessionPath(
+    projectId,
+    sessionId
+  );
   const fs = require('fs');
 
   // The audio query request
@@ -220,8 +228,7 @@ async function detectIntentKnowledge(
 ) {
   // [START dialogflow_detect_intent_knowledge]
   // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2beta1;
-
+  const dialogflow = require('@google-cloud/dialogflow').v2beta1;
   // Instantiate a DialogFlow client.
   const sessionClient = new dialogflow.SessionsClient();
 
@@ -235,12 +242,12 @@ async function detectIntentKnowledge(
   // const query = `phrase(s) to pass to detect, e.g. I'd like to reserve a room for six people`;
 
   // Define session path
-  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-  const knowbase = new dialogflow.KnowledgeBasesClient();
-  const knowledgeBasePath = knowbase.knowledgeBasePath(
+  const sessionPath = sessionClient.projectAgentSessionPath(
     projectId,
-    knowledgeBaseId
+    sessionId
   );
+  const knowledgeBasePath =
+    'projects/' + projectId + '/knowledgeBases/' + knowledgeBaseId + '';
 
   // The audio query request
   const request = {
@@ -367,20 +374,25 @@ const cli = require('yargs')
   .command('createKnowledgeBase', 'Creates a new knowledge base', {}, opts =>
     createKnowledgeBase(opts.projectId, opts.knowledgeBaseName)
   )
-  .command(
-    'createDocument',
-    'Creates a new document for this knowledge base',
-    {},
-    opts =>
-      createDocument(
-        opts.projectId,
-        opts.knowledgeBaseFullName,
-        opts.documentPath,
-        opts.documentName,
-        opts.knowledgeTypes,
-        opts.mimeType
-      )
-  )
+  /**
+   * TODO(developer): Uncomment the following lines until proto updates for dialogflow/v2beta1 is complete.
+   * This method should be annotated with (google.longrunning.operationInfo) to generate LRO methods.
+   * Now it's a simple method, without proper LRO response, so it fails because `promise() is not a function`.
+   */
+  // .command(
+  //   'createDocument',
+  //   'Creates a new document for this knowledge base',
+  //   {},
+  //   opts =>
+  //     createDocument(
+  //       opts.projectId,
+  //       opts.knowledgeBaseFullName,
+  //       opts.documentPath,
+  //       opts.documentName,
+  //       opts.knowledgeTypes,
+  //       opts.mimeType
+  //     )
+  // )
   .command(
     'detectIntentwithTexttoSpeechResponse',
     'Detects the intent of text input, outputs .wav file to target location',

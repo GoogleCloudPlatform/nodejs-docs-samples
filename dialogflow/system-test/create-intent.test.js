@@ -18,7 +18,7 @@ const {assert} = require('chai');
 const {after, describe, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const uuid = require('uuid');
-const dialogflow = require('dialogflow');
+const dialogflow = require('@google-cloud/dialogflow');
 
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 

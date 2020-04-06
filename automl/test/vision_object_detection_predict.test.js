@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {before, describe, it} = require('mocha');
+const {describe, it} = require('mocha');
 const {AutoMlClient} = require('@google-cloud/automl').v1;
 
 const cp = require('child_process');
@@ -26,10 +26,26 @@ const MODEL_ID = 'IOD1656537412546854912';
 const PREDICT_REGION_TAG = 'vision_object_detection_predict';
 const LOCATION = 'us-central1';
 
+// If two suites of tests are running parallel, importing and creating
+// datasets can fail, with:
+// "Another DEPLOY model operation is running on the model".
+const delay = async test => {
+  const retries = test.currentRetry();
+  if (retries === 0) return; // no retry on the first failure.
+  // see: https://cloud.google.com/storage/docs/exponential-backoff:
+  const ms = Math.pow(2, retries) * 1000 + Math.random() * 2000;
+  return new Promise(done => {
+    console.info(`retrying "${test.title}" in ${ms}ms`);
+    setTimeout(done, ms);
+  });
+};
+
 describe('Automl Vision Object Detection Predict Test', () => {
   const client = new AutoMlClient();
 
-  before('should verify the model is deployed', async () => {
+  it('should verify the model is deployed', async function() {
+    this.retries(5);
+    await delay(this.test);
     const projectId = await client.getProjectId();
     const request = {
       name: client.modelPath(projectId, LOCATION, MODEL_ID),

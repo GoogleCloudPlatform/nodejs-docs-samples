@@ -21,7 +21,7 @@ async function main(
 ) {
   // [START dialogflow_detect_intent_with_sentiment_analysis]
   // Imports the Dialogflow client library
-  const dialogflow = require('dialogflow').v2;
+  const dialogflow = require('@google-cloud/dialogflow').v2;
 
   // Instantiate a DialogFlow client.
   const sessionClient = new dialogflow.SessionsClient();
@@ -35,7 +35,10 @@ async function main(
   // const languageCode = 'BCP-47 language code, e.g. en-US';
 
   // Define session path
-  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
+  const sessionPath = sessionClient.projectAgentSessionPath(
+    projectId,
+    sessionId
+  );
 
   async function detectIntentandSentiment() {
     // The text query request.

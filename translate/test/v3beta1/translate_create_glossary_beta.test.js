@@ -22,14 +22,15 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_create_glossary_beta';
+const uuid = require('uuid');
 
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
+  const glossaryId = `test-glossary-${uuid.v4()}`;
 
   it('should create a glossary', async () => {
     const projectId = await translationClient.getProjectId();
     const location = 'us-central1';
-    const glossaryId = 'test-glossary';
     const output = execSync(
       `node v3beta1/${REGION_TAG}.js ${projectId} ${location} ${glossaryId}`
     );
@@ -42,7 +43,6 @@ describe(REGION_TAG, () => {
   after('cleanup for glossary create', async () => {
     const projectId = await translationClient.getProjectId();
     const location = 'us-central1';
-    const glossaryId = 'test-glossary';
     // Delete the glossary to clean up
     const name = translationClient.glossaryPath(
       projectId,

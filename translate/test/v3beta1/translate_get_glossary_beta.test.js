@@ -22,11 +22,12 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_get_glossary_beta';
+const uuid = require('uuid');
 
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const glossaryId = 'test-glossary';
+  const glossaryId = `test-glossary-${uuid.v4()}`;
 
   before(async () => {
     // Add a glossary to get
@@ -63,7 +64,7 @@ describe(REGION_TAG, () => {
     const output = execSync(
       `node v3beta1/${REGION_TAG}.js ${projectId} ${location} ${glossaryId}`
     );
-    assert.match(output, /test-glossary/);
+    assert.include(output, glossaryId);
   });
 
   after(async () => {

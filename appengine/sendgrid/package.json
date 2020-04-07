@@ -16,7 +16,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.16.4",
     "pug": "^2.0.3",
-    "@sendgrid/client": "^6.3.0"
+    "@sendgrid/client": "^7.0.0"
   },
   "devDependencies": {
     "mocha": "^7.0.0",

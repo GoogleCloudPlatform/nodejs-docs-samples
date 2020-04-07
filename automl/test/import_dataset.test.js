@@ -26,20 +26,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const IMPORT_DATASET_REGION_TAG = 'import_dataset';
 const LOCATION = 'us-central1';
 const TWENTY_MINUTES_IN_SECONDS = 60 * 20;
-
-// If two suites of tests are running parallel, importing and creating
-// datasets can fail, with:
-// No other operations should be working on projects/1046198160504/*.
-const delay = async test => {
-  const retries = test.currentRetry();
-  if (retries === 0) return; // no retry on the first failure.
-  // see: https://cloud.google.com/storage/docs/exponential-backoff:
-  const ms = Math.pow(2, retries) * 1000 + Math.random() * 2000;
-  return new Promise(done => {
-    console.info(`retrying "${test.title}" in ${ms}ms`);
-    setTimeout(done, ms);
-  });
-};
+const {delay} = require('./util');
 
 describe('Automl Import Dataset Test', () => {
   const client = new AutoMlClient();

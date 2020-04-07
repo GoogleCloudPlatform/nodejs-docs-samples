@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it, after} = require('mocha');
+const {describe, it, afterEach} = require('mocha');
 const {AutoMlClient} = require('@google-cloud/automl').v1;
 
 const cp = require('child_process');
@@ -26,11 +26,16 @@ const CREATE_MODEL_REGION_TAG = 'translate_create_model';
 const LOCATION = 'us-central1';
 const DATASET_ID = 'TRL8522556519449886720';
 
+const {delay} = require('./util');
+
 describe('Automl Translate Create Model Tests', () => {
   const client = new AutoMlClient();
   let operationId;
 
-  it('should create a model', async () => {
+  it('should create a model', async function() {
+    this.retries(5);
+    await delay(this.test);
+
     const projectId = await client.getProjectId();
     const create_output = execSync(
       `node ${CREATE_MODEL_REGION_TAG}.js ${projectId} ${LOCATION} ${DATASET_ID} translation_test_create_model`
@@ -43,7 +48,7 @@ describe('Automl Translate Create Model Tests', () => {
       .split('\n')[0];
   });
 
-  after('cancel model training', async () => {
+  afterEach('cancel model training', async () => {
     await client.operationsClient.cancelOperation({name: operationId});
   });
 });

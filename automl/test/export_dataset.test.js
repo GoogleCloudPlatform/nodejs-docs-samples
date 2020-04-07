@@ -27,11 +27,15 @@ const DATASET_ID = 'TRL8522556519449886720';
 const EXPORT_DATASET_REGION_TAG = 'export_dataset';
 const LOCATION = 'us-central1';
 
+const {delay} = require('./util');
+
 describe('Automl Translate Dataset Tests', () => {
   const client = new AutoMlClient();
   const prefix = 'TEST_EXPORT_OUTPUT';
 
-  it('should export a datset', async () => {
+  it('should export a datset', async function() {
+    this.retries(4);
+    await delay(this.test);
     const projectId = await client.getProjectId();
     const bucketName = `${projectId}-automl-translate`;
     const export_output = execSync(

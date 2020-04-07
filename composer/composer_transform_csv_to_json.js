@@ -14,9 +14,9 @@
 // limitations under the License.
 
 module.exports = function main(
-  line = 'tampa, 106, january, null, null, 08--17-2019'
+  line = 'tampa, 106, january, null, null, 08-17-2019'
 ) {
-  // [START transform_CSV_to_JSON]
+  // [START composer_transform_csv_to_json]
 
   function transformCSVtoJSON(line) {
     const values = line.split(',');
@@ -41,6 +41,6 @@ module.exports = function main(
   }
 
   transformCSVtoJSON(line);
-  // [END transform_CSV_to_JSON]
+  // [END composer_transform_csv_to_json]
   return transformCSVtoJSON(line);
 };

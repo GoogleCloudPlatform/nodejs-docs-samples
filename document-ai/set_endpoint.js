@@ -26,7 +26,7 @@ async function main(
   location = 'europe-west2',
   gcsInputUri = 'gs://cloud-samples-data/documentai/invoice.pdf'
 ) {
-  // [START document_quickstart]
+  // [START documentai_set_endpoint]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -76,7 +76,7 @@ async function main(
       console.log(`Entity mention text: ${entity.mentionText}`);
     }
   }
-  // [END document_quickstart]
+  // [END documentai_set_endpoint]
   await setEndpoint();
 }
 

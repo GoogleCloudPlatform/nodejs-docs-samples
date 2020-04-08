@@ -24,7 +24,7 @@ async function main(
   gcsOutputUriPrefix = uuid.v4(),
   gcsInputUri = 'gs://cloud-samples-data/documentai/invoice.pdf'
 ) {
-  // [START document_parse_form]
+  // [START documentai_batch_parse_form]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -133,7 +133,7 @@ async function main(
       }
     });
   }
-  // [END document_parse_form]
+  // [END documentai_batch_parse_form]
 
   parseFormGCS(gcsInputUri, gcsOutputUri, gcsOutputUriPrefix);
 }

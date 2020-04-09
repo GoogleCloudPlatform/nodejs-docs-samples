@@ -22,6 +22,11 @@ const assert = require('assert');
 const stubMysql = sinon.stub(require('promise-mysql'));
 const poolStub = sinon.stub();
 const queryStub = sinon.stub();
+queryStub.withArgs(sinon.match(
+    `CREATE TABLE IF NOT EXISTS votes
+      ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
+      candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
+)).resolves([]);
 queryStub.withArgs(sinon.match('SELECT COUNT(vote_id)')).resolves([{count: 1}]);
 queryStub.withArgs(sinon.match('SELECT candidate, time_cast')).resolves([]);
 poolStub['query'] = queryStub;

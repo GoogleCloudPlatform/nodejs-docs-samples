@@ -88,19 +88,32 @@ const createPool = async () => {
 };
 // [END cloud_sql_mysql_mysql_create]
 
-const ensureSchema = () => {
+const ensureSchema = async () => {
   // Wait for tables to be created (if they don't already exist).
-  pool.query(
-    `CREATE TABLE IF NOT EXISTS votes
-      ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
-      candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
-  )
-    .then(() => console.log(`Ensured that table 'votes' exists`))
-    .catch((e) =>`Got error: ${e}`
+  try {
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS votes
+        ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
+        candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
     );
+    console.log(`Ensured that table 'votes' exists`);
+  } catch (e) {
+    console.log(`Got error: ${e}`);
+  }
 };
 
-createPool().then(ensureSchema).catch((error)=>(console.log(error)));
+let schemaReady;
+
+createPool()
+  .then(() => (schemaReady = ensureSchema()))
+  .catch((error) => console.log(error));
+
+const awaitSchema = async (req, res, next) => {
+  await schemaReady;
+  next();
+};
+
+app.use(awaitSchema);
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {

@@ -86,7 +86,6 @@ const createPool = async () => {
     //[END_EXCLUDE]
   });
 };
-createPool();
 // [END cloud_sql_mysql_mysql_create]
 
 const ensureSchema = async () => {
@@ -97,7 +96,8 @@ const ensureSchema = async () => {
       candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
   );
 };
-ensureSchema();
+
+createPool().then(ensureSchema).catch((error)=>(console.log(error)));
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {

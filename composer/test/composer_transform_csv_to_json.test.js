@@ -1,5 +1,5 @@
 const {assert} = require('chai');
-const tutorial = require('../composerJSTutorial.js');
+const tutorial = require('../composer_transform_csv_to_json.js');
 
 const lineTest = 'tampa, 106, january, null, null, 08-17-2019';
 

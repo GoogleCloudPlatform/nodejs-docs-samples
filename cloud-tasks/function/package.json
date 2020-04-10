@@ -10,7 +10,7 @@
     "test": "mocha test/*.test.js --timeout=60000"
   },
   "dependencies": {
-    "@sendgrid/mail": "^6.4.0"
+    "@sendgrid/mail": "^7.0.0"
   },
   "devDependencies": {
     "mocha": "^7.0.0",

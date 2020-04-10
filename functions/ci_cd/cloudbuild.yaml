@@ -1,4 +1,4 @@
-# [START functions_ci_cd_cloud_build_nodejs]
+# [START functions_ci_cd_cloud_build]
 steps:
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
@@ -9,4 +9,4 @@ steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['functions', 'deploy', '[YOUR_DEPLOYED_FUNCTION_NAME]', '[YOUR_FUNCTION_TRIGGER]', '--runtime', '[YOUR_RUNTIME]', '--entry-point', '[YOUR_FUNCTION_NAME_IN_CODE]']
   dir: 'functions/autodeploy'
-# [END functions_ci_cd_cloud_build_nodejs]
+# [END functions_ci_cd_cloud_build]

@@ -10,6 +10,9 @@ describe('server listening', () => {
     const child = childProcess.exec(`node ${appPath}`);
     const isOpen = await waitPort({port: PORT});
     expect(isOpen).to.be.true;
+    process.stdout.write(`sql user: ${process.env.SQL_USER},
+      password: ${process.env.SQL_PASSWORD},
+      database: ${process.env.SQL_DATABASE}`);
     process.kill(child.pid, 'SIGTERM');
   });
 });

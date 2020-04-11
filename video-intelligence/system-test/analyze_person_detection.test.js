@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node analyze_person_detection.js`;
+const cmd = 'node analyze_person_detection.js';
 const file = 'resources/googlework_short.mp4';
 
 describe('analyzing people in video', () => {

@@ -19,7 +19,7 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node analyze-streaming-annotation-to-storage.js`;
+const cmd = 'node analyze-streaming-annotation-to-storage.js';
 const project = process.env.GCLOUD_PROJECT;
 const file = 'resources/googlework_short.mp4';
 const outputUri = 'gs://' + project + '/VIDEO_STREAMING_OUTPUT';

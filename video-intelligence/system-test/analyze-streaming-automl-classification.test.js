@@ -20,8 +20,8 @@ const {describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node analyze-streaming-automl-classification.js`;
-const modelId = `VCN3094808572840640512`;
+const cmd = 'node analyze-streaming-automl-classification.js';
+const modelId = 'VCN3094808572840640512';
 const project = process.env.GCLOUD_PROJECT;
 const file = 'resources/googlework_short.mp4';
 

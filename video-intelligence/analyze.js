@@ -163,7 +163,7 @@ async function analyzeShots(gcsUri) {
   console.log('Shot changes:');
 
   if (shotChanges.length === 1) {
-    console.log(`The entire video is one shot.`);
+    console.log('The entire video is one shot.');
   } else {
     shotChanges.forEach((shot, shotIdx) => {
       console.log(`Scene ${shotIdx} occurs from:`);
@@ -344,7 +344,7 @@ async function analyzeTextGCS(gcsUri) {
           `Time offset for the frame: ${timeOffset.seconds || 0}` +
             `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
         );
-        console.log(`Rotated Bounding Box Vertices:`);
+        console.log('Rotated Bounding Box Vertices:');
         frame.rotatedBoundingBox.vertices.forEach(vertex => {
           console.log(`Vertex.x:${vertex.x}, Vertex.y:${vertex.y}`);
         });
@@ -399,7 +399,7 @@ async function analyzeObjectTrackingGCS(gcsUri) {
       `Time offset for the first frame: ${timeOffset.seconds || 0}` +
         `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
     );
-    console.log(`Bounding box position:`);
+    console.log('Bounding box position:');
     console.log(` left   :${box.left}`);
     console.log(` top    :${box.top}`);
     console.log(` right  :${box.right}`);
@@ -468,7 +468,7 @@ async function analyzeText(path) {
           `Time offset for the frame: ${timeOffset.seconds || 0}` +
             `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
         );
-        console.log(`Rotated Bounding Box Vertices:`);
+        console.log('Rotated Bounding Box Vertices:');
         frame.rotatedBoundingBox.vertices.forEach(vertex => {
           console.log(`Vertex.x:${vertex.x}, Vertex.y:${vertex.y}`);
         });
@@ -526,7 +526,7 @@ async function analyzeObjectTracking(path) {
       `Time offset for the first frame: ${timeOffset.seconds || 0}` +
         `.${(timeOffset.nanos / 1e6).toFixed(0)}s`
     );
-    console.log(`Bounding box position:`);
+    console.log('Bounding box position:');
     console.log(` left   :${box.left}`);
     console.log(` top    :${box.top}`);
     console.log(` right  :${box.right}`);
@@ -536,77 +536,79 @@ async function analyzeObjectTracking(path) {
 }
 
 async function main() {
-  require(`yargs`)
+  require('yargs')
     .demand(1)
     .command(
-      `shots <gcsUri>`,
-      `Analyzes shot angles in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
+      'shots <gcsUri>',
+      'Analyzes shot angles in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.',
       {},
       opts => analyzeShots(opts.gcsUri)
     )
     .command(
-      `labels-gcs <gcsUri>`,
-      `Labels objects in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
+      'labels-gcs <gcsUri>',
+      'Labels objects in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.',
       {},
       opts => analyzeLabelsGCS(opts.gcsUri)
     )
     .command(
-      `labels-file <filePath>`,
-      `Labels objects in a video stored locally using the Cloud Video Intelligence API.`,
+      'labels-file <filePath>',
+      'Labels objects in a video stored locally using the Cloud Video Intelligence API.',
       {},
       opts => analyzeLabelsLocal(opts.filePath)
     )
     .command(
-      `safe-search <gcsUri>`,
-      `Detects explicit content in a video stored in Google Cloud Storage.`,
+      'safe-search <gcsUri>',
+      'Detects explicit content in a video stored in Google Cloud Storage.',
       {},
       opts => analyzeSafeSearch(opts.gcsUri)
     )
     .command(
-      `transcription <gcsUri>`,
-      `Extract the video transcription using the Cloud Video Intelligence API.`,
+      'transcription <gcsUri>',
+      'Extract the video transcription using the Cloud Video Intelligence API.',
       {},
       opts => analyzeVideoTranscription(opts.gcsUri)
     )
     .command(
-      `video-text-gcs <gcsUri>`,
-      `Analyzes text in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
+      'video-text-gcs <gcsUri>',
+      'Analyzes text in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.',
       {},
       opts => analyzeTextGCS(opts.gcsUri)
     )
     .command(
-      `track-objects-gcs <gcsUri>`,
-      `Analyzes objects in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.`,
+      'track-objects-gcs <gcsUri>',
+      'Analyzes objects in a video stored in Google Cloud Storage using the Cloud Video Intelligence API.',
       {},
       opts => analyzeObjectTrackingGCS(opts.gcsUri)
     )
     .command(
-      `video-text <path>`,
-      `Analyzes text in a video stored in a local file using the Cloud Video Intelligence API.`,
+      'video-text <path>',
+      'Analyzes text in a video stored in a local file using the Cloud Video Intelligence API.',
       {},
       opts => analyzeText(opts.path)
     )
     .command(
-      `track-objects <path>`,
-      `Analyzes objects in a video stored in a local file using the Cloud Video Intelligence API.`,
+      'track-objects <path>',
+      'Analyzes objects in a video stored in a local file using the Cloud Video Intelligence API.',
       {},
       opts => analyzeObjectTracking(opts.path)
     )
-    .example(`node $0 shots gs://cloud-samples-data/video/googlework_short.mp4`)
-    .example(`node $0 labels-gcs gs://cloud-samples-data/video/cat.mp4`)
-    .example(`node $0 labels-file googlework_short.mp4`)
-    .example(`node $0 safe-search gs://cloud-samples-data/video/googlework_short.mp4`)
-    .example(`node $0 transcription gs://cloud-samples-data/video/cat.mp4`)
-    .example(`node $0 video-text ./resources/googlework_short.mp4`)
+    .example('node $0 shots gs://cloud-samples-data/video/googlework_short.mp4')
+    .example('node $0 labels-gcs gs://cloud-samples-data/video/cat.mp4')
+    .example('node $0 labels-file googlework_short.mp4')
     .example(
-      `node $0 video-text-gcs gs://nodejs-docs-samples/video/googlework_short.mp4`
+      'node $0 safe-search gs://cloud-samples-data/video/googlework_short.mp4'
     )
-    .example(`node $0 track-objects ./resources/googlework_short.mp4`)
-    .example(`node $0 track-objects-gcs gs://nodejs-docs-samples/video/cat.mp4`)
+    .example('node $0 transcription gs://cloud-samples-data/video/cat.mp4')
+    .example('node $0 video-text ./resources/googlework_short.mp4')
+    .example(
+      'node $0 video-text-gcs gs://nodejs-docs-samples/video/googlework_short.mp4'
+    )
+    .example('node $0 track-objects ./resources/googlework_short.mp4')
+    .example('node $0 track-objects-gcs gs://nodejs-docs-samples/video/cat.mp4')
     .wrap(120)
     .recommendCommands()
     .epilogue(
-      `For more information, see https://cloud.google.com/video-intelligence/docs`
+      'For more information, see https://cloud.google.com/video-intelligence/docs'
     )
     .help()
     .strict().argv;

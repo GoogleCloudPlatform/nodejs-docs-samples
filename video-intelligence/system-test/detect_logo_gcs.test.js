@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = `node detect_logo_gcs.js`;
+const cmd = 'node detect_logo_gcs.js';
 const file = 'gs://cloud-samples-data/video/googlework_short.mp4';
 
 describe('analyzing logos in video on gcs', () => {

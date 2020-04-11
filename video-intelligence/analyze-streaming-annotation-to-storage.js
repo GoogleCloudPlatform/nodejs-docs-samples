@@ -52,7 +52,7 @@ async function main(path = 'YOUR_LOCAL_FILE', outputUri = 'PATH_TO_OUTPUT') {
       };
       chunks.push(request);
     })
-    .on('close', function() {
+    .on('close', () => {
       // configRequest should be the first in the stream of requests
       stream.write(configRequest);
       for (let i = 0; i < chunks.length; i++) {

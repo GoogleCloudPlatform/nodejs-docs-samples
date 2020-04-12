@@ -28,7 +28,6 @@ const cmd = 'node batch_parse_form.js';
 
 const testParseForm = {
   projectId: process.env.GCLOUD_PROJECT,
-  location: 'us-central1',
   gcsOutputUriPrefix: uuid.v4(),
 };
 
@@ -45,7 +44,7 @@ describe('Document AI batch parse form', () => {
 
   it('should parse the GCS invoice example as a form', async () => {
     const output = execSync(
-      `${cmd} ${testParseForm.projectId} ${testParseForm.location} gs://${bucketName}`
+      `${cmd} ${testParseForm.projectId} gs://${bucketName}`
     );
     assert.match(output, /Extracted key value pair:/);
   });

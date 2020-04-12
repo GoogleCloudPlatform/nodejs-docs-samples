@@ -19,7 +19,6 @@ const uuid = require('uuid');
 
 async function main(
   projectId = 'YOUR_PROJECT_ID',
-  location = 'YOUR_PROJECT_LOCATION',
   gcsOutputUri = 'output-bucket',
   gcsOutputUriPrefix = uuid.v4(),
   gcsInputUri = 'gs://cloud-samples-data/documentai/invoice.pdf'
@@ -29,7 +28,6 @@ async function main(
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_PROJECT_LOCATION',
   // const gcsOutputUri = 'YOUR_STORAGE_BUCKET';
   // const gcsOutputUriPrefix = 'YOUR_STORAGE_PREFIX';
   // const gcsInputUri = 'GCS URI of the PDF to process';
@@ -44,7 +42,7 @@ async function main(
   const storage = new Storage();
 
   async function parseFormGCS(inputUri, outputUri, outputUriPrefix) {
-    const parent = `projects/${projectId}/locations/${location}`;
+    const parent = `projects/${projectId}`;
 
     // Configure the batch process request.
     const request = {

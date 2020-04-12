@@ -23,11 +23,10 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
-const LOCATION = 'europe-west2';
 
 describe('Document AI set endpoint', () => {
   it('should process a PDF in another region', async () => {
-    const stdout = execSync(`node ./set_endpoint.js ${projectId} ${LOCATION}`, {
+    const stdout = execSync(`node ./set_endpoint.js ${projectId}`, {
       cwd,
     });
     assert.match(stdout, /Entity/);

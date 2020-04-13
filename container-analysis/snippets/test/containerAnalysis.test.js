@@ -17,6 +17,7 @@
 const {assert} = require('chai');
 const {describe, it, before, after, afterEach, beforeEach} = require('mocha');
 const cp = require('child_process');
+const {delay} = require('./util');
 const uuid = require('uuid');
 
 const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');
@@ -343,7 +344,10 @@ describe('pubsub', () => {
     await pubsub.subscription(subscriptionId).delete();
   });
 
-  it('should get count of occurrences from pubsub topic', async () => {
+  it('should get count of occurrences from pubsub topic', async function() {
+    this.retries(3);
+    await delay(this.test);
+
     const occurrenceCount = 3;
     const pubSubOccurrenceReq = {
       parent: formattedParent,

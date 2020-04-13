@@ -15,13 +15,9 @@
 
 'use strict';
 
-/**
- * Process a single PDF.
- * @param {string} projectId your Google Cloud project ID
- * @param {string} gcsInputUri Cloud Storage URI of the PDF document to parse
- */
 async function main(
   projectId,
+  location = 'eu',
   gcsInputUri = 'gs://cloud-samples-data/documentai/invoice.pdf'
 ) {
   // [START documentai_set_endpoint]
@@ -29,6 +25,7 @@ async function main(
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
+  // const location = 'YOUR_PROJECT_LOCATION'; // Format is 'us' or 'eu'
   // const gcsInputUri = 'YOUR_SOURCE_PDF';
 
   const {
@@ -41,7 +38,7 @@ async function main(
 
   async function setEndpoint() {
     // Configure the request for processing the PDF
-    const parent = `projects/${projectId}`;
+    const parent = `projects/${projectId}/locations/${location}`;
     const request = {
       parent,
       inputConfig: {

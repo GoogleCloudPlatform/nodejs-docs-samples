@@ -23,10 +23,11 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
+const LOCATION = 'us';
 
 describe('Document AI parse table', () => {
   it('should parse the GCS invoice example as as table', async () => {
-    const stdout = execSync(`node ./parse_table.js ${projectId}`, {
+    const stdout = execSync(`node ./parse_table.js ${projectId} ${LOCATION}`, {
       cwd,
     });
     assert.match(stdout, /Header row/);

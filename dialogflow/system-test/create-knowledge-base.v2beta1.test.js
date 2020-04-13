@@ -33,10 +33,7 @@ describe('create a knowledge base', () => {
     const output = exec(`${cmd} -k ${testKnowledgeBaseName}`);
     assert.include(output, `displayName: ${testKnowledgeBaseName}`);
 
-    knowledgeBaseName = output
-      .split('\n')[0]
-      .split(':')[1]
-      .trim();
+    knowledgeBaseName = output.split('\n')[0].split(':')[1].trim();
   });
 
   after('delete created knowledge base', async () => {

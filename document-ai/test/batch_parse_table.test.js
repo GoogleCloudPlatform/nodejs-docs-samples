@@ -28,6 +28,7 @@ const cmd = 'node batch_parse_table.js';
 
 const testParseTable = {
   projectId: process.env.GCLOUD_PROJECT,
+  location: 'us',
   gcsOutputUriPrefix: uuid.v4(),
 };
 
@@ -44,7 +45,7 @@ describe('Document AI batch parse table', () => {
 
   it('should parse the GCS invoice example as as table', async () => {
     const output = execSync(
-      `${cmd} ${testParseTable.projectId} gs://${bucketName}`
+      `${cmd} ${testParseTable.projectId} ${testParseTable.location} gs://${bucketName}`
     );
     assert.match(output, /First detected language:/);
   });

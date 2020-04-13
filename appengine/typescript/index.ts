@@ -20,6 +20,8 @@ app.get("/", (req, res) => {
   res.send("🎉 Hello TypeScript! 🎉");
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
+
+module.exports = server;

@@ -72,7 +72,7 @@ export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
 # Activate mocha config
-export MOCHA_REPORTER_OUTPUT=sponge_log.xml
+export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
 export MOCHA_REPORTER=xunit
 pushd github/nodejs-docs-samples
 mv .kokoro/.mocharc.js .

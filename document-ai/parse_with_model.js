@@ -15,14 +15,9 @@
 
 'use strict';
 
-/**
- * Process a single PDF.
- * @param {string} projectId your Google Cloud project ID
- * @param {string} autoMLModel AutoML Natural Language model to use
- * @param {string} gcsInputUri Cloud Storage URI of the PDF document to parse
- */
 async function main(
   projectId,
+  location,
   autoMLModel,
   gcsInputUri = 'gs://cloud-samples-data/documentai/invoice.pdf'
 ) {
@@ -31,6 +26,7 @@ async function main(
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
+  // const location = 'YOUR_PROJECT_LOCATION'; // Format is 'us' or 'eu'
   // const autoMLModel = 'Full resource name of AutoML Natural Language model';
   // const gcsInputUri = 'YOUR_SOURCE_PDF';
 
@@ -41,7 +37,7 @@ async function main(
 
   async function parseWithModel() {
     // Configure the request for processing the PDF
-    const parent = `projects/${projectId}`;
+    const parent = `projects/${projectId}/locations/${location}`;
     const request = {
       parent,
       inputConfig: {

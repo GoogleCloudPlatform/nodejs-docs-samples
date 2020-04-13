@@ -47,6 +47,7 @@ function main(filename, encoding, sourceLanguage, targetLanguage) {
         sourceLanguageCode: sourceLanguage,
         targetLanguageCode: targetLanguage,
       },
+      single_utterance: true,
     };
 
     // First request needs to have only a streaming config, no data.

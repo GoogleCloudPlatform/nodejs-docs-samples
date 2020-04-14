@@ -318,7 +318,7 @@ describe('kms sample tests', () => {
     let ciphertext;
     let signature;
 
-    before(async function() {
+    before(async function () {
       this.timeout(10000);
       // KMS keys can be created but still in "pending generation" state. This
       // waits for the key version to reach the desired state.
@@ -374,13 +374,13 @@ describe('kms sample tests', () => {
       await waitForState(signKeyVersionId, 'ENABLED');
     });
 
-    after(async function() {
+    after(async function () {
       this.timeout(10000);
       await client.destroyCryptoKeyVersion({name: decryptKeyVersionId});
       await client.destroyCryptoKeyVersion({name: signKeyVersionId});
     });
 
-    it('should perform asymmetric encryption', async function() {
+    it('should perform asymmetric encryption', async function () {
       // Only run this test on Node 12+
       if (nodeMajorVersion < 12) {
         this.skip();
@@ -402,7 +402,7 @@ describe('kms sample tests', () => {
       ciphertext = match[1];
     });
 
-    it('should perform asymmetric decryption', async function() {
+    it('should perform asymmetric decryption', async function () {
       // Only run this test on Node 12+
       if (nodeMajorVersion < 12) {
         this.skip();

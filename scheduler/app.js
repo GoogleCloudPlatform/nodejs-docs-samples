@@ -30,10 +30,7 @@ app.post('/log_payload', (req, res) => {
 // [END cloud_scheduler_app]
 
 app.get('/', (req, res) => {
-  res
-    .status(200)
-    .send('Hello, World!')
-    .end();
+  res.status(200).send('Hello, World!').end();
 });
 
 // Start the server

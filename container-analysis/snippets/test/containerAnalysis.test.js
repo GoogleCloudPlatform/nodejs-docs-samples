@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it, before, after, afterEach, beforeEach} = require('mocha');
+const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 const {delay} = require('./util');
 const uuid = require('uuid');
@@ -312,84 +312,91 @@ describe('pubsub', () => {
     topic = pubsub.topic(topicName);
   });
 
-  beforeEach(async () => {
-    await topic.createSubscription(subscriptionId);
-    const pubSubNoteReq = {
-      parent: formattedParent,
-      noteId: `${noteId}-pubsub`,
-      note: {
-        vulnerability: {
-          details: [
-            {
-              affectedCpeUri: 'foo.uri',
-              affectedPackage: 'foo',
-              affectedVersionStart: {
-                kind: 'MINIMUM',
+  describe('occurrences from pubsub subscription', () => {
+    before(async () => {
+      await topic.createSubscription(subscriptionId);
+      const pubSubNoteReq = {
+        parent: formattedParent,
+        noteId: `${noteId}-pubsub`,
+        note: {
+          vulnerability: {
+            details: [
+              {
+                affectedCpeUri: 'foo.uri',
+                affectedPackage: 'foo',
+                affectedVersionStart: {
+                  kind: 'MINIMUM',
+                },
+                affectedVersionEnd: {
+                  kind: 'MAXIMUM',
+                },
               },
-              affectedVersionEnd: {
-                kind: 'MAXIMUM',
-              },
-            },
-          ],
+            ],
+          },
         },
-      },
-    };
-    await client.getGrafeasClient().createNote(pubSubNoteReq);
-  });
+      };
+      await client.getGrafeasClient().createNote(pubSubNoteReq);
+    });
 
-  afterEach(async () => {
-    await client
-      .getGrafeasClient()
-      .deleteNote({name: `${formattedNoteName}-pubsub`});
-    await pubsub.subscription(subscriptionId).delete();
-  });
+    it('should get count of occurrences from pubsub topic', async function() {
+      this.retries(3);
+      await delay(this.test);
 
-  it('should get count of occurrences from pubsub topic', async function() {
-    this.retries(3);
-    await delay(this.test);
-
-    const occurrenceCount = 3;
-    const pubSubOccurrenceReq = {
-      parent: formattedParent,
-      occurrence: {
-        noteName: `${formattedNoteName}-pubsub`,
-        resourceUri: resourceUrl,
-        vulnerability: {
-          packageIssue: [
-            {
-              affectedCpeUri: 'foo.uri',
-              affectedPackage: 'foo',
-              affectedVersion: {
-                kind: 'MINIMUM',
+      const occurrenceCount = 3;
+      const pubSubOccurrenceReq = {
+        parent: formattedParent,
+        occurrence: {
+          noteName: `${formattedNoteName}-pubsub`,
+          resourceUri: resourceUrl,
+          vulnerability: {
+            packageIssue: [
+              {
+                affectedCpeUri: 'foo.uri',
+                affectedPackage: 'foo',
+                affectedVersion: {
+                  kind: 'MINIMUM',
+                },
+                fixedVersion: {
+                  kind: 'MAXIMUM',
+                },
               },
-              fixedVersion: {
-                kind: 'MAXIMUM',
-              },
-            },
-          ],
+            ],
+          },
         },
-      },
-    };
+      };
 
-    // empty subscription
-    execSync(
-      `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`
-    );
+      // empty subscription
+      execSync(
+        `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`
+      );
 
-    // create test occurrences
-    for (let i = 0; i < occurrenceCount; i++) {
-      const [
-        pubSubOccurrence,
-      ] = await client.getGrafeasClient().createOccurrence(pubSubOccurrenceReq);
+      // create test occurrences
+      for (let i = 0; i < occurrenceCount; i++) {
+        const [
+          pubSubOccurrence,
+        ] = await client
+          .getGrafeasClient()
+          .createOccurrence(pubSubOccurrenceReq);
+        await client
+          .getGrafeasClient()
+          .deleteOccurrence({name: pubSubOccurrence.name});
+      }
+      const output = execSync(
+        `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`
+      );
+
+      // ensure that our occcurences were enqueued:
+      assert.match(output, /Polled [1-9]+ occurrences/);
+    });
+
+    it('should delete the pubsub subscription', async function() {
+      this.retries(3);
+      await delay(this.test);
+
       await client
         .getGrafeasClient()
-        .deleteOccurrence({name: pubSubOccurrence.name});
-    }
-    const output = execSync(
-      `node occurrencePubSub.js "${projectId}" "${subscriptionId}" "${timeoutSeconds}"`
-    );
-
-    // ensure that our occcurences were enqueued:
-    assert.match(output, /Polled [1-9]+ occurrences/);
+        .deleteNote({name: `${formattedNoteName}-pubsub`});
+      await pubsub.subscription(subscriptionId).delete();
+    });
   });
 });

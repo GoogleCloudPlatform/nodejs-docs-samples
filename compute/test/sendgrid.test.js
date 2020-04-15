@@ -17,14 +17,14 @@
 const proxyquire = require('proxyquire');
 const {assert} = require('chai');
 
-process.env.SENDGRID_API_KEY = `foo`;
+process.env.SENDGRID_API_KEY = 'foo';
 
 describe('sendgrid', () => {
   it('should send an email', () => {
-    proxyquire(`../sendgrid`, {
+    proxyquire('../sendgrid', {
       '@sendgrid/mail': {
         setApiKey: key => {
-          assert.strictEqual(key, `foo`);
+          assert.strictEqual(key, 'foo');
         },
         send: msg => {
           assert.deepStrictEqual(msg, {

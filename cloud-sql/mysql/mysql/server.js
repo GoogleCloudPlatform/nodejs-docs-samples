@@ -90,23 +90,17 @@ const createPool = async () => {
 
 const ensureSchema = async () => {
   // Wait for tables to be created (if they don't already exist).
-  try {
-    await pool.query(
-      `CREATE TABLE IF NOT EXISTS votes
-        ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
-        candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
-    );
-    console.log(`Ensured that table 'votes' exists`);
-  } catch (e) {
-    console.log(`Got error: ${e}`);
-  }
+  await pool.query(
+    `CREATE TABLE IF NOT EXISTS votes
+      ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
+      candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
+  );
+  console.log(`Ensured that table 'votes' exists`);
 };
 
 let schemaReady;
 
-createPool()
-  .then(() => (schemaReady = ensureSchema()))
-  .catch((error) => console.log(error));
+createPool().then(() => (schemaReady = ensureSchema()));
 
 const awaitSchema = async (req, res, next) => {
   await schemaReady;

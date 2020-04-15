@@ -14,41 +14,41 @@
 
 'use strict';
 
-const proxyquire = require(`proxyquire`).noPreserveCache();
+const proxyquire = require('proxyquire').noPreserveCache();
 const assert = require('assert');
 
-process.env.MAILJET_API_KEY = `foo`;
-process.env.MAILJET_API_SECRET = `bar`;
+process.env.MAILJET_API_KEY = 'foo';
+process.env.MAILJET_API_SECRET = 'bar';
 
 describe('mailjet', () => {
   it('should send an email', () => {
-    proxyquire(`../mailjet`, {
+    proxyquire('../mailjet', {
       nodemailer: {
         createTransport: arg => {
-          assert.strictEqual(arg, `test`);
+          assert.strictEqual(arg, 'test');
           return {
             sendMail: payload => {
               assert.deepStrictEqual(payload, {
-                from: `ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM`,
-                to: `EMAIL@EXAMPLE.COM`,
-                subject: `test email from Node.js on Google Cloud Platform`,
-                text: `Hello!\n\nThis a test email from Node.js.`,
+                from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM',
+                to: 'EMAIL@EXAMPLE.COM',
+                subject: 'test email from Node.js on Google Cloud Platform',
+                text: 'Hello!\n\nThis a test email from Node.js.',
               });
-              return `done`;
+              return 'done';
             },
           };
         },
       },
       'nodemailer-smtp-transport': options => {
         assert.deepStrictEqual(options, {
-          host: `in.mailjet.com`,
+          host: 'in.mailjet.com',
           port: 2525,
           auth: {
-            user: `foo`,
-            pass: `bar`,
+            user: 'foo',
+            pass: 'bar',
           },
         });
-        return `test`;
+        return 'test';
       },
     });
   });

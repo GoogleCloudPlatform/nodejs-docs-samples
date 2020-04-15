@@ -19,7 +19,7 @@ set -e;
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 
 # Activate mocha config
-export MOCHA_REPORTER_OUTPUT=sponge_log.xml
+export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
 export MOCHA_REPORTER=xunit
 pushd github/nodejs-docs-samples
 mv .kokoro/.mocharc.js .

@@ -32,7 +32,7 @@ describe('Automl Translate Create Model Tests', () => {
   const client = new AutoMlClient();
   let operationId;
 
-  it('should create a model', async function() {
+  it('should create a model', async function () {
     this.retries(5);
     await delay(this.test);
 

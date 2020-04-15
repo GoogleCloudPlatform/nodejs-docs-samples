@@ -38,10 +38,7 @@ describe.skip('automl sample tests', () => {
 
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
-    const dataSetId = output
-      .split('\n')[1]
-      .split(':')[1]
-      .trim();
+    const dataSetId = output.split('\n')[1].split(':')[1].trim();
     assert.match(
       output,
       new RegExp(`Dataset display name:  ${testDataSetName}`)
@@ -60,10 +57,7 @@ describe.skip('automl sample tests', () => {
 
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
-    const dataSetId = output
-      .split('\n')[1]
-      .split(':')[1]
-      .trim();
+    const dataSetId = output.split('\n')[1].split(':')[1].trim();
     assert.match(output, new RegExp(`Dataset display name:  ${dummyDataSet}`));
 
     // Import Data
@@ -80,10 +74,7 @@ describe.skip('automl sample tests', () => {
     output = execSync(
       `${cmdModel} create-model -i "${dataSetId}" -m "${testModelName}" -t "2"`
     );
-    const operationName = output
-      .split('\n')[0]
-      .split(':')[1]
-      .trim();
+    const operationName = output.split('\n')[0].split(':')[1].trim();
     assert.match(output, 'Training started...');
 
     // Poll operation status, here confirming that operation is not complete yet

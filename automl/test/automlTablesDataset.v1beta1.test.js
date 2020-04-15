@@ -84,10 +84,7 @@ describe('Tables DatasetAPI', () => {
       `${cmdDataset} list-table-specs` + ` "${datasetId}" "${filter}"`
     );
     let parsedOut = output.split('\n');
-    const outputTableId = parsedOut[1]
-      .split(':')[1]
-      .trim()
-      .split('/')[7];
+    const outputTableId = parsedOut[1].split(':')[1].trim().split('/')[7];
     assert.match(output, /Table Id:/);
 
     // Get table
@@ -101,10 +98,7 @@ describe('Tables DatasetAPI', () => {
       `${cmdDataset} list-column-specs` + ` "${datasetId}" "${outputTableId}"`
     );
     parsedOut = output.split('\n');
-    const outputColumnId = parsedOut[1]
-      .split(':')[1]
-      .trim()
-      .split('/')[9];
+    const outputColumnId = parsedOut[1].split(':')[1].trim().split('/')[9];
     assert.match(output, /Column Id:/);
 
     // Get column

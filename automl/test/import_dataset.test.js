@@ -69,14 +69,11 @@ describe('Automl Import Dataset Test', () => {
     }
   }
 
-  it('should create a dataset', async function() {
+  it('should create a dataset', async function () {
     this.retries(5);
     await delay(this.test);
     const projectId = await client.getProjectId();
-    const displayName = `test_${uuid
-      .v4()
-      .replace(/-/g, '_')
-      .substring(0, 26)}`;
+    const displayName = `test_${uuid.v4().replace(/-/g, '_').substring(0, 26)}`;
     const request = {
       parent: client.locationPath(projectId, LOCATION),
       dataset: {
@@ -94,7 +91,7 @@ describe('Automl Import Dataset Test', () => {
       [response.name.split('/').length - 1].split('\n')[0];
   });
 
-  it('should import dataset', async function() {
+  it('should import dataset', async function () {
     this.retries(5);
     await delay(this.test);
     const projectId = await client.getProjectId();
@@ -105,7 +102,7 @@ describe('Automl Import Dataset Test', () => {
     assert.match(import_output, /Dataset imported/);
   });
 
-  it('should delete created dataset', async function() {
+  it('should delete created dataset', async function () {
     this.retries(5);
     await delay(this.test);
     const projectId = await client.getProjectId();

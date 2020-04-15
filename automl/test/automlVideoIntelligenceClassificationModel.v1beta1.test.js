@@ -39,10 +39,7 @@ describe.skip('Video Intelligence ModelAPI', () => {
     let output = exec(
       `${cmdModel} create-model "${datasetId}" "${testModelName}"`
     );
-    const operationName = output
-      .split('\n')[0]
-      .split(':')[1]
-      .trim();
+    const operationName = output.split('\n')[0].split(':')[1].trim();
     assert.match(output, /Training started.../);
 
     output = exec(`${cmdModel} get-operation-status "${operationName}"`);
@@ -86,10 +83,7 @@ describe.skip('Video Intelligence ModelAPI', () => {
   it('should list and get operation status', async () => {
     // List operation status
     let output = exec(`${cmdModel} list-operations-status`);
-    const operationFullId = output
-      .split('\n')[3]
-      .split(':')[1]
-      .trim();
+    const operationFullId = output.split('\n')[3].split(':')[1].trim();
     assert.match(output, /Operation details:/);
 
     // Get operation status

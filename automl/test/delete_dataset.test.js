@@ -32,10 +32,7 @@ describe('Automl Translate Delete Dataset Tests', () => {
 
   before('should create a dataset', async () => {
     const projectId = await client.getProjectId();
-    const displayName = `test_${uuid
-      .v4()
-      .replace(/-/g, '_')
-      .substring(0, 26)}`;
+    const displayName = `test_${uuid.v4().replace(/-/g, '_').substring(0, 26)}`;
     const request = {
       parent: client.locationPath(projectId, LOCATION),
       dataset: {

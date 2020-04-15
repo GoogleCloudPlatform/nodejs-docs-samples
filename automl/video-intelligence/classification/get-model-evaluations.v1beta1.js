@@ -54,10 +54,7 @@ async function main(
       // Display the model evaluations information.
       console.log(`\nModel evaluation name: ${response.name}`);
       console.log(
-        `Model evaluation Id: ${response.name
-          .split('/')
-          .slice(-1)
-          .pop()}`
+        `Model evaluation Id: ${response.name.split('/').slice(-1).pop()}`
       );
       console.log(
         `Model evaluation annotation spec Id: ${response.annotationSpecId}`

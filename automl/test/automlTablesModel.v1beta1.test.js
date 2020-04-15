@@ -46,10 +46,7 @@ describe('Tables ModelAPI', () => {
       `${cmdModel} create-model "${datasetId}" "${tableId}" "${columnId}"` +
         ` "${testModelName}" "${trainBudget}"`
     );
-    const operationName = output
-      .split('\n')[0]
-      .split(':')[1]
-      .trim();
+    const operationName = output.split('\n')[0].split(':')[1].trim();
     assert.match(output, /Training started.../);
 
     output = exec(`${cmdModel} get-operation-status "${operationName}"`);
@@ -112,10 +109,7 @@ describe('Tables ModelAPI', () => {
   it.skip('should list and get operation status', async () => {
     // List operations status
     let output = exec(`${cmdModel} list-operations-status `);
-    const operationFullId = output
-      .split('\n')[3]
-      .split(':')[1]
-      .trim();
+    const operationFullId = output.split('\n')[3].split(':')[1].trim();
     assert.match(output, /Operation details:/);
 
     // Get operation status

@@ -32,10 +32,7 @@ describe('Automl Video Classification Create Dataset Test', () => {
 
   it('should create a dataset', async () => {
     const projectId = await client.getProjectId();
-    const displayName = `test_${uuid
-      .v4()
-      .replace(/-/g, '_')
-      .substring(0, 26)}`;
+    const displayName = `test_${uuid.v4().replace(/-/g, '_').substring(0, 26)}`;
 
     // create
     const create_output = execSync(

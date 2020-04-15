@@ -27,10 +27,8 @@ datastore/functions @benwhitehead
 
 # One-offs
 cloud-sql @kurtisvg
+composer @leahecole @sofisl
 healthcare @noerog
 iot @gguuss
 jobs @happyhuman
 
-#Composer samples
-@sofisl
-@leahecole

@@ -31,7 +31,7 @@ const {delay} = require('./util');
 describe('Automl Vision Object Detection Predict Test', () => {
   const client = new AutoMlClient();
 
-  it('should verify the model is deployed', async function() {
+  it('should verify the model is deployed', async function () {
     this.retries(5);
     await delay(this.test);
     const projectId = await client.getProjectId();

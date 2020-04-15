@@ -33,7 +33,7 @@ describe('Automl Translate Dataset Tests', () => {
   const client = new AutoMlClient();
   const prefix = 'TEST_EXPORT_OUTPUT';
 
-  it('should export a datset', async function() {
+  it('should export a datset', async function () {
     this.retries(4);
     await delay(this.test);
     const projectId = await client.getProjectId();
@@ -58,10 +58,7 @@ describe('Automl Translate Dataset Tests', () => {
       .getFiles(options);
 
     for (const file of files) {
-      await storageClient
-        .bucket(`gs://${bucketName}`)
-        .file(file.name)
-        .delete();
+      await storageClient.bucket(`gs://${bucketName}`).file(file.name).delete();
     }
   });
 });

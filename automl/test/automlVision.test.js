@@ -39,10 +39,7 @@ describe('auto ml vision', () => {
 
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${testDataSetName}"`);
-    const dataSetId = output
-      .split('\n')[1]
-      .split(':')[1]
-      .trim();
+    const dataSetId = output.split('\n')[1].split(':')[1].trim();
     assert.match(output, new RegExp(testDataSetName));
 
     // Delete dataset
@@ -59,10 +56,7 @@ describe('auto ml vision', () => {
 
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
-    const dataSetId = output
-      .split('\n')[1]
-      .split(':')[1]
-      .trim();
+    const dataSetId = output.split('\n')[1].split(':')[1].trim();
     assert.match(output, new RegExp(dummyDataSet));
 
     // Import Data

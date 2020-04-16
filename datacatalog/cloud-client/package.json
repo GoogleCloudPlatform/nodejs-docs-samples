@@ -17,6 +17,6 @@
     "uuid": "^7.0.0"
   },
   "dependencies": {
-    "@google-cloud/datacatalog": "^1.3.0"
+    "@google-cloud/datacatalog": "^2.0.0"
   }
 }

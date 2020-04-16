@@ -13,15 +13,9 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-<<<<<<< HEAD
     "unit-test": "mocha test/createTables.test.js --timeout=30000 && mocha test/server.test.js",
     "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME=tcp:$SQL_PORT &",
     "system-test": "mocha test/serverListening.test.js --exit",
-=======
-    "unit-test": "mocha test/createTables.test.js --timeout=30000 && mocha test/server.test.js --timeout=30000",
-    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME=tcp:$SQL_PORT &",
-    "system-test": "mocha test/serverListening.test.js --timeout=30000",
->>>>>>> bd9e5dd5... chore: refactor cloudsql_postgresql
     "system-test-proxy": "npm run start-proxy; npm run system-test",
     "all-test": "npm run unit-test && npm run system-test",
     "test": "npm -- run all-test"

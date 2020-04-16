@@ -57,7 +57,6 @@ const getSample = () => {
 };
 
 const stubConsole = function () {
-  /* eslint-disable no-console */
   sinon.stub(console, `error`);
   sinon.stub(console, `log`);
 };

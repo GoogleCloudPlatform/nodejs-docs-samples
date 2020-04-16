@@ -23,7 +23,7 @@ const Knex = require('knex');
 const crypto = require('crypto');
 
 const app = express();
-app.enable('trust proxy');
+//app.enable('trust proxy');
 
 const connect = () => {
   // [START gae_flex_postgres_connect]

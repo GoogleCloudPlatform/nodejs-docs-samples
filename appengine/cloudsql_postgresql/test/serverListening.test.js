@@ -13,6 +13,13 @@ describe('server listening', () => {
     process.stdout.write(`sql user: ${process.env.SQL_USER},
       password: ${process.env.SQL_PASSWORD},
       database: ${process.env.SQL_DATABASE}`);
-    process.kill(child.pid, 'SIGTERM');
+    try {
+      process.kill(child.pid, 'SIGTERM');
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
+    try {
+      child.kill('SIGTERM');
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
   });
 });

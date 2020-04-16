@@ -23,7 +23,7 @@
     "system-test": "mocha test/serverListening.test.js --timeout=30000",
 >>>>>>> bd9e5dd5... chore: refactor cloudsql_postgresql
     "system-test-proxy": "npm run start-proxy; npm run system-test",
-    "all-test": "npm run unit-test && npm run system-test",
+    "all-test": "npm run system-test",
     "test": "npm -- run all-test"
   },
   "dependencies": {

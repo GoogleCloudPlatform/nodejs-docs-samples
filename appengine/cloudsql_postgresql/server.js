@@ -23,7 +23,7 @@ const Knex = require('knex');
 const crypto = require('crypto');
 
 const app = express();
-//app.enable('trust proxy');
+app.enable('trust proxy');
 
 const connect = () => {
   // [START gae_flex_postgres_connect]
@@ -69,7 +69,6 @@ const insertVisit = (knex, visit) => {
  * @param {object} knex The Knex connection object.
  * @returns {Promise}
  */
-
 const getVisits = async (knex) => {
   const results = await knex
     .select('timestamp', 'userIp')
@@ -99,7 +98,6 @@ app.get('/', async (req, res, next) => {
 
     // Query the last 10 visits from the database.
     const visits = await getVisits(knex);
-
     res
       .status(200)
       .set('Content-Type', 'text/plain')

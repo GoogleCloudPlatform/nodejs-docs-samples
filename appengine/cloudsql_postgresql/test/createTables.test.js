@@ -132,7 +132,6 @@ describe('gae_flex_postgres_create_tables', () => {
       knex: sample.mocks.Knex,
       prompt: sample.mocks.prompt,
     });
-
     await new Promise((r) => setTimeout(r, 10));
     assert.ok(console.error.calledOnce);
     assert.ok(

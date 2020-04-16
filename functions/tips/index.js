@@ -74,8 +74,13 @@ exports.lazyGlobals = (req, res) => {
 // [END functions_tips_lazy_globals]
 
 // [START functions_tips_connection_pooling]
+const axios = require('axios');
+
 const http = require('http');
-const agent = new http.Agent({keepAlive: true});
+const https = require('https');
+
+const httpAgent = new http.Agent({keepAlive: true});
+const httpsAgent = new https.Agent({keepAlive: true});
 
 /**
  * HTTP Cloud Function that caches an HTTP agent to pool HTTP connections.
@@ -83,30 +88,13 @@ const agent = new http.Agent({keepAlive: true});
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.connectionPooling = (req, res) => {
-  req = http.request(
-    {
-      host: '',
-      port: 80,
-      path: '',
-      method: 'GET',
-      agent: agent,
-    },
-    (resInner) => {
-      let rawData = '';
-      resInner.setEncoding('utf8');
-      resInner.on('data', (chunk) => {
-        rawData += chunk;
-      });
-      resInner.on('end', () => {
-        res.status(200).send(`Data: ${rawData}`);
-      });
-    }
-  );
-  req.on('error', (e) => {
-    res.status(500).send(`Error: ${e.message}`);
-  });
-  req.end();
+exports.connectionPooling = async (req, res) => {
+  try {
+    const {data} = await axios.get('/', {httpAgent, httpsAgent});
+    res.status(200).send(`Data: ${data}`);
+  } catch (err) {
+    res.status(500).send(`Error: ${err.message}`);
+  }
 };
 // [END functions_tips_connection_pooling]
 

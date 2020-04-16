@@ -32,7 +32,7 @@ async function readImage(filePath) {
     fs.createReadStream(filePath)
       .pipe(new PNG())
       .on('error', reject)
-      .on('parsed', function() {
+      .on('parsed', function () {
         resolve(this);
       });
   });

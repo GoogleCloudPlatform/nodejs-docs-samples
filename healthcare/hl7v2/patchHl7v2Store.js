@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_patch_hl7v2_store]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const patchHl7v2Store = async () => {
     const auth = await google.auth.getClient({

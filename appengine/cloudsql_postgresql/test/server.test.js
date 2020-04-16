@@ -72,7 +72,6 @@ const getSample = () => {
   };
 };
 
-
 it('gae_flex_postgres_connect should set up sample in Postgres', () => {
   const sample = getSample();
 

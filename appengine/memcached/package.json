@@ -15,5 +15,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "memjs": "^1.2.0"
+  },
+  "devDependencies": {
+  "@google-cloud/nodejs-repo-tools": "^3.3.0"
   }
 }

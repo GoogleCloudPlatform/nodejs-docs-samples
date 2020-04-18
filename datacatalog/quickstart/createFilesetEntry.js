@@ -32,7 +32,7 @@ const main = async (
   // -------------------------------
   // Import required modules.
   // -------------------------------
-  const {DataCatalogClient} = require('@google-cloud/datacatalog').v1beta1;
+  const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
 
   // -------------------------------

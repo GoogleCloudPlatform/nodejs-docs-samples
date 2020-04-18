@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_get_hl7v2_message]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const getHl7v2Message = async () => {
     const auth = await google.auth.getClient({

@@ -23,7 +23,7 @@ const main = (
 ) => {
   // [START healthcare_list_hl7v2_stores]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const listHl7v2Stores = async () => {
     const auth = await google.auth.getClient({

@@ -387,8 +387,9 @@ async function analyzeObjectTrackingGCS(gcsUri) {
     const time = object.segment;
     console.log(
       `Segment: ${time.startTimeOffset.seconds || 0}` +
-        `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${time
-          .endTimeOffset.seconds || 0}.` +
+        `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${
+          time.endTimeOffset.seconds || 0
+        }.` +
         `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`
     );
     console.log(`Confidence: ${object.confidence}`);
@@ -514,8 +515,9 @@ async function analyzeObjectTracking(path) {
     const time = object.segment;
     console.log(
       `Segment: ${time.startTimeOffset.seconds || 0}` +
-        `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${time
-          .endTimeOffset.seconds || 0}.` +
+        `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${
+          time.endTimeOffset.seconds || 0
+        }.` +
         `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`
     );
     console.log(`Confidence: ${object.confidence}`);

@@ -66,8 +66,9 @@ async function main(path = 'YOUR_LOCAL_FILE') {
     shotChanges.forEach(shot => {
       console.log(
         ` Shot: ${shot.startTimeOffset.seconds || 0}` +
-          `.${(shot.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${shot
-            .endTimeOffset.seconds || 0}` +
+          `.${(shot.startTimeOffset.nanos / 1e6).toFixed(0)}s to ${
+            shot.endTimeOffset.seconds || 0
+          }` +
           `.${(shot.endTimeOffset.nanos / 1e6).toFixed(0)}s`
       );
     });

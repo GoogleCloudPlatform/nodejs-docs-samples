@@ -4,17 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node editor/main.js",
-    "serve": "node renderer/main.js",
+    "start": "node main.js",
+    "serve": "node main.js",
     "test": "test"
   },
   "author": "krippaehne",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "gcp-metadata": "^4.0.0",
     "got": "^10.7.0",
-    "handlebars": "^4.7.6",
     "showdown": "^1.9.1"
   }
 }

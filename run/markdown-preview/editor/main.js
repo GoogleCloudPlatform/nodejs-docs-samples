@@ -15,14 +15,34 @@
 // Sample editor provides a frontend to a markdown rendering microservice.
 
 
-const service = require('./service.js');
+  const express = require('express');
+  const {renderService} = require('./service.js');
+  const {renderRequest} = require('./render.js');
 
-function main() {
+  const app = express()
 
-  if (service.newServiceFromEnv) {
-    console.log("newServiceFromEnv: ", service.newServiceFromEnv())
-  }
+  app.use(express.json());
+  app.use(express.urlencoded());
+  
+  const service = renderService();
 
+  app.get('/', async (req, res) => { 
+    try {
+      const parsedTemplate = service.parsedTemplate;
+      res.send(parsedTemplate)
+    } catch (err) {
+      console.log(err)
+      res.send('error', err)
+    }
+  })
 
-}
-main();
+  app.post('/render', async (req, res) => {
+    console.log('body in post: ', req.body);
+    const markdown = req.body.data; // markdown text from index.html
+    const render = await renderRequest(service, markdown)
+    res.send(render) 
+  })
+
+  const port = process.env.PORT || 8080;
+  app.listen(port, () => console.log(`app listening on port ${port}`))
+  

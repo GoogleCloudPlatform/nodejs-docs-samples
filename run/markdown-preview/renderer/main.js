@@ -15,27 +15,39 @@
 // Sample editor provides a frontend to a markdown rendering microservice.
 
 const showdown = require('showdown');
-const express = require('express')
+const express = require('express');
 
 const app = express();
 
-const main = () => {
-  app.get('/', (req, res) => {markdownHandler(req,res)})
+app.use(express.json());
+app.use(express.urlencoded());
 
-  const port = process.env.PORT || 8080;
-  app.listen(port, err => {
-    if (err) console.log('Error: ', err);
-    console.log('Server is listening on port ', port)
-  })
-}
+app.get('/', (req, res) => {
+  res.send('works')
 
-const markdownHandler = (req, res) => {
-  console.log(req.headers);
+  // console.log('req.headers in renderer: ', req.headers);
+  // console.log('req.params in renderer: ', req.params);
+  // console.log('req.body in renderer: ', req.body);
+  // const markdown = req.body;
+  // const converter = new showdown.Converter();
+  // const html = converter.makeHtml(markdown)
+  // res.send(html)
+})
 
-  const testMarkdown = 'this is *markdown* text';
+app.post('/', (req, res) => {
+  console.log('req.headers in renderer: ', req.headers);
+  console.log('req.params in renderer: ', req.params);
+  console.log('req.body in renderer: ', req.body);
+  const markdown = req.body;
+  console.log(markdown);
   const converter = new showdown.Converter();
-  const html = converter.makeHtml(testMarkdown)
-  const fullString = testMarkdown + html;
-  res.send(fullString)
-}
-main();
+  const html = converter.makeHtml(markdown)
+  res.send(html)
+})
+
+const port = process.env.PORT || 8080;
+
+app.listen(port, err => {
+  if (err) console.log('Error: ', err);
+  console.log('Server is listening on port ', port)
+})

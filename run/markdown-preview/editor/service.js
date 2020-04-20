@@ -15,45 +15,35 @@ const handlebars = require('handlebars');
 const { readFileSync } = require('fs');
 
 
-const newServiceFromEnv = () => {
-
+const renderService = () => {
   const url = process.env.EDITOR_UPSTREAM_RENDER_URL;
-  if (url === '') throw Error ("no configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
+  if (!url) throw Error ("no configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
   const auth = process.env.EDITOR_UPSTREAM_AUTHENTICATED;
   if (!auth) console.log("editor: starting in unauthenticated upstream mode");
 
+  console.log('url: ', url);
+  console.log('auth: ', auth);
 	// The use case of this service is the UI driven by these files.
 	// Loading them as part of the server startup process keeps failures easily
 	// discoverable and minimizes latency for the first request.
   
-  const parsedTemplate = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
+  const template = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
   const markdownDefault = readFileSync(__dirname + '/templates/markdown.md');
 
-  console.log(parsedTemplate({ default: markdownDefault}));
+  const parsedTemplate = template({ default: markdownDefault});
 
-  const renderService = {
-    Renderer: {
-      URL: url,
-      isAuthenticated: auth,  
-    },
+  ///// possibly de-objectify this service
+  const service = {
+    url: url,
+    isAuthenticated: auth,  
     parsedTemplate: parsedTemplate,
     markdownDefault: markdownDefault
   }
 
-  return renderService;
-
-};
-newServiceFromEnv();
-const registerHandlers = () => {
-////// TODO: uses mux. might not need this method for node.js
-};
-
-const renderHandler = (req, res) => {
+  return service;
 
 };
 
 module.exports = {
-  newServiceFromEnv,
-  registerHandlers,
-  renderHandler
+  renderService
 }

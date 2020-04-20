@@ -17,30 +17,34 @@
 // Import the Metadata API
 const gcpMetadata = require('gcp-metadata')
 const got = require('got');
-const { renderService }  = require('./service.js');
 
 // NewRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
-const newRequest = async (service) => { 
+const newRequest = async (service, markdown) => { 
   // Skip authentication if not using HTTPS, such as for local development.
-  if (!service.isAuthenticated) return null;
-  
+  if (!service.isAuthenticated) {
+    console.log("Service is not authenticated")
+    return null;
+  }
   try {
-    // Query the id_token with ?audience as the serviceURL
-    const metadataServerTokenPath = 'service-accounts/default/identity?audience=' + service.URL;
-    const tokenRequestOptions = {
-      headers: {
-        'Metadata-Flavor': 'Google'
-      }
-    };
+    console.log('markdown in render: ', markdown);
+    // Query the token with ?audience as the service URL
+    const metadataServerTokenPath = `service-accounts/default/identity?audience=${service.url}`;
     // Fetch the token and then provide it in the request to the receiving service
-    const token = await gcpMetadata.instance(metadataServerTokenPath, tokenRequestOptions);
+    const token = await gcpMetadata.instance(metadataServerTokenPath);
+
     const serviceRequestOptions = { 
+      method: 'POST',
       headers: {
-        'Authorization': 'bearer ' + token
-      }
+        'Authorization': 'bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({data: markdown})
     };
-    const serviceResponse = await got(receivingServiceURL, serviceRequestOptions);
+
+    const serviceRequest = await got(service.url, serviceRequestOptions);
+    const serviceResponse = serviceRequest;
+    console.log('service response: ', serviceResponse);
     return serviceResponse;
   } catch (error) { 
     console.log('Metadata server could not respond to query ', error);
@@ -53,15 +57,20 @@ const newRequest = async (service) => {
 // [START run_secure_request_do]
 
 // Render converts the Markdown plaintext to HTML.
-const render = async (service) => {
-  service.newRequest(renderService)
-  ////// TODO: this needs to convert the markdown into html
-  ////// go uses 'ioutil' 
+
+const renderRequest = async (service, markdown) => {
+  const authedService = await newRequest(service, markdown);
+  if (authedService) {
+    return authedService;
+  } else {
+    return null;
+  }
+  //   ////// TODO: this needs to convert the markdown into html
+//   ////// Go uses 'ioutil' 
 }
 // [END run_secure_request_do]
 
+
 module.exports = {
-  requestServiceToken,
-  newRequest,
-  render,
+  renderRequest,
 }

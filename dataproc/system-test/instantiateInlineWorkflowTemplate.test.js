@@ -26,8 +26,12 @@ const execSync = cmd =>
     encoding: 'utf-8',
   });
 
+const {delay} = require('./util');
+
 describe('instantiate an inline workflow template', () => {
-  it('should instantiate an inline workflow template', async () => {
+  it('should instantiate an inline workflow template', async function () {
+    this.retries(4);
+    await delay(this.test);
     const stdout = execSync(
       `node instantiateInlineWorkflowTemplate.js "${projectId}" "${region}"`
     );

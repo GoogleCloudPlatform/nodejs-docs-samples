@@ -21,7 +21,7 @@
 
 /*eslint no-warning-comments: [0, { "terms": ["todo", "fixme"], "location": "anywhere" }]*/
 
-function main(projectId = 'YOUR_PROJECT_ID', region = 'YOUR_REGION') {
+async function main(projectId = 'YOUR_PROJECT_ID', region = 'YOUR_REGION') {
   // [START dataproc_instantiate_inline_workflow_template]
   const dataproc = require('@google-cloud/dataproc');
 
@@ -91,4 +91,7 @@ function main(projectId = 'YOUR_PROJECT_ID', region = 'YOUR_REGION') {
   instantiateInlineWorkflowTemplate();
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

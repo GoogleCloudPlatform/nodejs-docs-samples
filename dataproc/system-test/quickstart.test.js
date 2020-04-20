@@ -63,10 +63,7 @@ describe('execute the quickstart', () => {
   });
 
   after(async () => {
-    await storage
-      .bucket(bucketName)
-      .file(jobFileName)
-      .delete();
+    await storage.bucket(bucketName).file(jobFileName).delete();
     await storage.bucket(bucketName).delete();
 
     const [clusters] = await clusterClient.listClusters({

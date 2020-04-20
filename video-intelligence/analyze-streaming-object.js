@@ -65,8 +65,9 @@ async function main(path = 'YOUR_LOCAL_FILE') {
       console.log(`Track id: ${object.trackId}`);
       console.log(`Confidence: ${object.confidence}`);
       console.log(
-        `Time offset for the frame: ${object.frames[0].timeOffset.seconds ||
-          0}` + `.${(object.frames[0].timeOffset.nanos / 1e6).toFixed(0)}s`
+        `Time offset for the frame: ${
+          object.frames[0].timeOffset.seconds || 0
+        }` + `.${(object.frames[0].timeOffset.nanos / 1e6).toFixed(0)}s`
       );
       //Every annotation has only one frame.
       const box = object.frames[0].normalizedBoundingBox;

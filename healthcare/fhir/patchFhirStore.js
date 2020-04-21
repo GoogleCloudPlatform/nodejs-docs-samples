@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_patch_fhir_store]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const patchFhirStore = async () => {
     const auth = await google.auth.getClient({

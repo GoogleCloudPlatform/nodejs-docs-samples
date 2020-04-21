@@ -27,7 +27,7 @@ const main = (
 ) => {
   // [START healthcare_get_resource_history]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const getFhirResourceHistory = async () => {
     const auth = await google.auth.getClient({

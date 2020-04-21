@@ -75,7 +75,6 @@ limitations under the License.
         const preview = document.getElementById('preview');
         const lp = new mdc.linearProgress.MDCLinearProgress(document.querySelector('.mdc-linear-progress'));
         async function render(data = {}) {
-            console.log(" indexed data: ", data)
             const response = await fetch('/render', {
                 method: 'POST',
                 headers: {

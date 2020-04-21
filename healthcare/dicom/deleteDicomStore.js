@@ -24,7 +24,7 @@ const main = (
 ) => {
   // [START healthcare_delete_dicom_store]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const deleteDicomStore = async () => {
     const auth = await google.auth.getClient({

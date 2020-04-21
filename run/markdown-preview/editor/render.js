@@ -27,7 +27,7 @@ const newRequest = async (service, markdown) => {
     return null;
   }
   try {
-    console.log('markdown in render: ', markdown);
+
     // Query the token with ?audience as the service URL
     const metadataServerTokenPath = `service-accounts/default/identity?audience=${service.url}`;
     // Fetch the token and then provide it in the request to the receiving service
@@ -39,12 +39,11 @@ const newRequest = async (service, markdown) => {
         'Authorization': 'bearer ' + token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({data: markdown})
+      body: JSON.stringify({markdown: markdown})
     };
 
     const serviceRequest = await got(service.url, serviceRequestOptions);
-    const serviceResponse = serviceRequest;
-    console.log('service response: ', serviceResponse);
+    const serviceResponse = serviceRequest.body;
     return serviceResponse;
   } catch (error) { 
     console.log('Metadata server could not respond to query ', error);
@@ -65,9 +64,8 @@ const renderRequest = async (service, markdown) => {
   } else {
     return null;
   }
-  //   ////// TODO: this needs to convert the markdown into html
-//   ////// Go uses 'ioutil' 
 }
+
 // [END run_secure_request_do]
 
 

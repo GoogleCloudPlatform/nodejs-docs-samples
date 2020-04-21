@@ -22,7 +22,6 @@
   const app = express()
 
   app.use(express.json());
-  app.use(express.urlencoded());
   
   const service = renderService();
 
@@ -31,18 +30,22 @@
       const parsedTemplate = service.parsedTemplate;
       res.send(parsedTemplate)
     } catch (err) {
-      console.log(err)
+      console.log('Error: ', err)
       res.send('error', err)
     }
   })
 
   app.post('/render', async (req, res) => {
-    console.log('body in post: ', req.body);
-    const markdown = req.body.data; // markdown text from index.html
+    const markdown = req.body.data;
     const render = await renderRequest(service, markdown)
-    res.send(render) 
+    const response = JSON.parse(render);
+    res.send(response.data) 
   })
 
   const port = process.env.PORT || 8080;
-  app.listen(port, () => console.log(`app listening on port ${port}`))
+
+  app.listen(port, err => {
+    if (err) console.log('Error: ', err)
+    console.log(`Editor listening on port ${port}`)
+  })
   

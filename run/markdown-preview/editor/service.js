@@ -14,15 +14,12 @@
 const handlebars = require('handlebars');
 const { readFileSync } = require('fs');
 
-
 const renderService = () => {
   const url = process.env.EDITOR_UPSTREAM_RENDER_URL;
   if (!url) throw Error ("no configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
   const auth = process.env.EDITOR_UPSTREAM_AUTHENTICATED;
   if (!auth) console.log("editor: starting in unauthenticated upstream mode");
 
-  console.log('url: ', url);
-  console.log('auth: ', auth);
 	// The use case of this service is the UI driven by these files.
 	// Loading them as part of the server startup process keeps failures easily
 	// discoverable and minimizes latency for the first request.

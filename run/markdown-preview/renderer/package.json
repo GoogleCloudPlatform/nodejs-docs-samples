@@ -13,6 +13,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "got": "^10.7.0",
-    "showdown": "^1.9.1"
+    "showdown": "^1.9.1",
+    "xss": "^1.0.6"
   }
 }

@@ -16,38 +16,34 @@
 
 const showdown = require('showdown');
 const express = require('express');
+const xss = require('xss');
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded());
-
-app.get('/', (req, res) => {
-  res.send('works')
-
-  // console.log('req.headers in renderer: ', req.headers);
-  // console.log('req.params in renderer: ', req.params);
-  // console.log('req.body in renderer: ', req.body);
-  // const markdown = req.body;
-  // const converter = new showdown.Converter();
-  // const html = converter.makeHtml(markdown)
-  // res.send(html)
-})
 
 app.post('/', (req, res) => {
-  console.log('req.headers in renderer: ', req.headers);
-  console.log('req.params in renderer: ', req.params);
-  console.log('req.body in renderer: ', req.body);
-  const markdown = req.body;
-  console.log(markdown);
-  const converter = new showdown.Converter();
-  const html = converter.makeHtml(markdown)
-  res.send(html)
+  try {
+
+    // Get the Markdown text and convert it into HTML using Showdown
+    const markdown = req.body.markdown;
+    const converter = new showdown.Converter();
+    const data = converter.makeHtml(markdown);
+
+    // Add XSS sanitizer
+    const sanitizedData = xss(data);
+    const response = JSON.stringify({data: sanitizedData});
+    res.send(response);
+  
+  } catch(err) {
+    console.log('errorr: ', err);
+    res.send(err)
+  }
 })
 
 const port = process.env.PORT || 8080;
 
 app.listen(port, err => {
   if (err) console.log('Error: ', err);
-  console.log('Server is listening on port ', port)
+  console.log('Renderer is listening on port ', port)
 })

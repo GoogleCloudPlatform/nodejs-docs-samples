@@ -29,7 +29,6 @@ const renderService = () => {
 
   const parsedTemplate = template({ default: markdownDefault});
 
-  ///// possibly de-objectify this service
   const service = {
     url: url,
     isAuthenticated: auth,  

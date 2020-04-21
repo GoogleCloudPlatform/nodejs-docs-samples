@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "got": "^10.0.0"
+    "got": "^11.0.0"
   },
   "devDependencies": {
     "mocha": "^7.0.0",

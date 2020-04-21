@@ -15,7 +15,7 @@
 const {GoogleToken} = require('gtoken');
 const request = require('request-promise');
 
-const BASE_URL = 'https://healthcare.googleapis.com/v1beta1';
+const BASE_URL = 'https://healthcare.googleapis.com/v1';
 
 // [START healthcare_get_token]
 const getToken = (serviceAccountJson, cb) => {

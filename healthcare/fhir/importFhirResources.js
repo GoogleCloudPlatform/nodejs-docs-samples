@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_import_fhir_resources]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
   const sleep = require('../sleep');
 
   const importFhirResources = async () => {

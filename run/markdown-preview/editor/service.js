@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 const handlebars = require('handlebars');
 const { readFileSync } = require('fs');
 
@@ -26,7 +27,6 @@ const renderService = () => {
   
   const template = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
   const markdownDefault = readFileSync(__dirname + '/templates/markdown.md');
-
   const parsedTemplate = template({ default: markdownDefault});
 
   const service = {

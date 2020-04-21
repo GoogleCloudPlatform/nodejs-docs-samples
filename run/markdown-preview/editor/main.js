@@ -20,7 +20,6 @@
   const {renderRequest} = require('./render.js');
 
   const app = express()
-
   app.use(express.json());
   
   const service = renderService();
@@ -31,15 +30,20 @@
       res.send(parsedTemplate)
     } catch (err) {
       console.log('Error: ', err)
-      res.send('error', err)
+      res.send(err)
     }
   })
 
   app.post('/render', async (req, res) => {
-    const markdown = req.body.data;
-    const render = await renderRequest(service, markdown)
-    const response = JSON.parse(render);
-    res.send(response.data) 
+    try {
+      const markdown = req.body.data;
+      const render = await renderRequest(service, markdown)
+      const response = JSON.parse(render);
+      res.send(response.data)   
+    } catch (err) {
+      console.log('Error: ', err)
+      res.send(err)
+    }
   })
 
   const port = process.env.PORT || 8080;

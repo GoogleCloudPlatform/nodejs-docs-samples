@@ -21,11 +21,13 @@ const got = require('got');
 // NewRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
 const newRequest = async (service, markdown) => { 
+
   // Skip authentication if not using HTTPS, such as for local development.
   if (!service.isAuthenticated) {
     console.log("Service is not authenticated")
     return null;
   }
+
   try {
 
     // Query the token with ?audience as the service URL
@@ -42,9 +44,10 @@ const newRequest = async (service, markdown) => {
       body: JSON.stringify({markdown: markdown})
     };
 
-    const serviceRequest = await got(service.url, serviceRequestOptions);
-    const serviceResponse = serviceRequest.body;
-    return serviceResponse;
+    // renderRequest converts the Markdown plaintext to HTML.
+    const renderRequest = await got(service.url, serviceRequestOptions);
+    const renderResponse = renderRequest.body;
+    return renderResponse;
   } catch (error) { 
     console.log('Metadata server could not respond to query ', error);
     return error;
@@ -54,8 +57,6 @@ const newRequest = async (service, markdown) => {
 // [END run_secure_request]
 
 // [START run_secure_request_do]
-
-// Render converts the Markdown plaintext to HTML.
 
 const renderRequest = async (service, markdown) => {
   const authedService = await newRequest(service, markdown);

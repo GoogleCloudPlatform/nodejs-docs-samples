@@ -22,6 +22,7 @@ environment.
 * [Hello World](helloworld/)
 * [Background](background/)
 * [Callbacks](messages/)
+* [Cloud Bigtable](bigtable/)
 * [Cloud Pub/Sub](pubsub/)
 * [Cloud Spanner](spanner/)
 * [Dependencies](uuid/)

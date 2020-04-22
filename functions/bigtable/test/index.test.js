@@ -17,6 +17,7 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
+const {PassThrough} = require('stream');
 
 const rows = [
   {
@@ -46,11 +47,10 @@ const query = {
 };
 
 const getSample = () => {
-  const resultsMock = rows.map((row) => {
-    return {toJSON: sinon.stub().returns(row)};
-  });
+  const mockedStream = require('stream').Readable.from(rows);
+
   const tableMock = {
-    createReadStream: sinon.stub().returns(Promise.resolve([resultsMock])),
+    createReadStream: sinon.stub().returns(mockedStream),
   };
   const instanceMock = {
     table: sinon.stub().returns(tableMock),
@@ -69,7 +69,6 @@ const getSample = () => {
       bigtable: bigtableMock,
       table: tableMock,
       instance: instanceMock,
-      results: resultsMock,
       res: {
         status: sinon.stub().returnsThis(),
         send: sinon.stub().returnsThis(),
@@ -89,7 +88,8 @@ describe('bigtable_functions_quickstart', () => {
     assert.strictEqual(mocks.bigtable.instance.called, true);
     assert.strictEqual(mocks.instance.table.called, true);
     assert.strictEqual(mocks.table.createReadStream.calledWith(query), true);
-    assert.strictEqual(mocks.results[0].toJSON.called, true);
+    // assert.strictEqual(mocks.results[0].toJSON.called, true);
+    console.log(mocks.res.write.getCalls())
     assert.strictEqual(
         mocks.res.write.calledWith(
             'SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n'

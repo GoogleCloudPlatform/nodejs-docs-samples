@@ -59,10 +59,7 @@ describe.skip('automl', () => {
     // Create dataset
     output = execSync(`${cmdDataset} create-dataset -n "${dummyDataSet}"`);
 
-    const dataSetId = output
-      .split('\n')[1]
-      .split(':')[1]
-      .trim();
+    const dataSetId = output.split('\n')[1].split(':')[1].trim();
     assert.match(output, /Dataset display name: {2}dummyDataSet/);
 
     // Import Data
@@ -79,10 +76,7 @@ describe.skip('automl', () => {
     output = execSync(
       `${cmdModel} create-model -i "${dataSetId}" -m "${testModelName}" -t "2"`
     );
-    const operationName = output
-      .split('\n')[0]
-      .split(':')[1]
-      .trim();
+    const operationName = output.split('\n')[0].split(':')[1].trim();
     assert.match(output, /Training started.../);
 
     // Poll operation status, here confirming that operation is not complete yet

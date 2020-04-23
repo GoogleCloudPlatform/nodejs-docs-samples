@@ -21,7 +21,7 @@ const {Bigtable} = require('@google-cloud/bigtable');
 const bigtable = new Bigtable();
 
 // Your Cloud Bigtable instance ID
-const instanceId = 'testing-instance';
+const instanceId = 'your-instance';
 
 // Your Cloud Bigtable table ID
 const tableId = 'mobile-time-series';

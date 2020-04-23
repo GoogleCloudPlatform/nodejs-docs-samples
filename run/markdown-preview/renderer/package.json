@@ -1,19 +1,26 @@
 {
   "name": "markdown-preview",
-  "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
+  },
+  "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "serve": "node main.js",
-    "test": "test"
+    "test": "mocha test/*.test.js"
   },
-  "author": "krippaehne",
-  "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
     "got": "^10.7.0",
-    "showdown": "^1.9.1",
+    "markdown-it": "^10.0.0",
     "xss": "^1.0.6"
   }
 }

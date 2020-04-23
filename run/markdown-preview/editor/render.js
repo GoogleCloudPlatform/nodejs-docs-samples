@@ -20,56 +20,43 @@ const got = require('got');
 
 // NewRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
-const newRequest = async (service, markdown) => { 
+const renderRequest = async (service, markdown) => { 
+  let token;
 
-  // Skip authentication if not using HTTPS, such as for local development.
-  if (!service.isAuthenticated) {
-    console.log("Service is not authenticated")
-    return null;
-  }
+  // Build the request to the Renderer receiving service.
+  const serviceRequestOptions = { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({markdown: markdown})
+  };
 
-  try {
-
-    // Query the token with ?audience as the service URL
+  if (service.isAuthenticated) {
+    try {
+    // Query the token with ?audience as the service URL.
     const metadataServerTokenPath = `service-accounts/default/identity?audience=${service.url}`;
-    // Fetch the token and then provide it in the request to the receiving service
-    const token = await gcpMetadata.instance(metadataServerTokenPath);
+    // Fetch the token and then add it to the request header.
+    token = await gcpMetadata.instance(metadataServerTokenPath);
+    serviceRequestOptions.headers['Authorization'] = 'bearer ' + token;
+    } catch(err) {
+      console.log('Metadata server could not respond to request ', err);
+      return err;
+    }
+  };
+  // [END run_secure_request]
 
-    const serviceRequestOptions = { 
-      method: 'POST',
-      headers: {
-        'Authorization': 'bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({markdown: markdown})
-    };
-
-    // renderRequest converts the Markdown plaintext to HTML.
-    const renderRequest = await got(service.url, serviceRequestOptions);
-    const renderResponse = renderRequest.body;
-    return renderResponse;
-  } catch (error) { 
-    console.log('Metadata server could not respond to query ', error);
-    return error;
-  }
+  // [START run_secure_request_do]
+  try {
+    // serviceRequest converts the Markdown plaintext to HTML.
+    const serviceRequest = await got(service.url, serviceRequestOptions);
+    const serviceResponse = serviceRequest.body;
+    return serviceResponse;
+  } catch (err) { 
+    console.log('Renderer service could not respond to request ', err);
+    return err;
+  };
+  // [END run_secure_request_do]
 };
 
-// [END run_secure_request]
-
-// [START run_secure_request_do]
-
-const renderRequest = async (service, markdown) => {
-  const authedService = await newRequest(service, markdown);
-  if (authedService) {
-    return authedService;
-  } else {
-    return null;
-  }
-}
-
-// [END run_secure_request_do]
-
-
-module.exports = {
-  renderRequest,
-}
+module.exports = renderRequest;

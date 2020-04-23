@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Sample editor provides a frontend to a markdown rendering microservice.
-
-const showdown = require('showdown');
 const express = require('express');
+const MarkdownIt = require('markdown-it');
 const xss = require('xss');
 
 const app = express();
@@ -25,19 +23,19 @@ app.use(express.json());
 app.post('/', (req, res) => {
   try {
 
-    // Get the Markdown text and convert it into HTML using Showdown
+    // Get the Markdown text and convert it into HTML using markdown-it
     const markdown = req.body.markdown;
-    const converter = new showdown.Converter();
-    const data = converter.makeHtml(markdown);
+    const md = new MarkdownIt();
+    const unsafeData = md.render(markdown);
 
     // Add XSS sanitizer
-    const sanitizedData = xss(data);
-    const response = JSON.stringify({data: sanitizedData});
+    const safeData = xss(unsafeData);
+    const response = JSON.stringify({data: safeData});
     res.send(response);
   
   } catch(err) {
-    console.log('errorr: ', err);
-    res.send(err)
+    console.log('Error: ', err);
+    res.send(err);
   }
 })
 
@@ -45,5 +43,5 @@ const port = process.env.PORT || 8080;
 
 app.listen(port, err => {
   if (err) console.log('Error: ', err);
-  console.log('Renderer is listening on port ', port)
+  console.log('Renderer is listening on port ', port);
 })

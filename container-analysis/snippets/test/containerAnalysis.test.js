@@ -303,18 +303,32 @@ describe('pubsub', () => {
     projectId = await client.getProjectId();
     formattedParent = `projects/${projectId}`;
     formattedNoteName = `projects/${projectId}/notes/${noteId}`;
-    try {
-      // attempt to create topic if missing
-      await pubsub.createTopic(topicName);
-    } catch (err) {
-      console.log(`topic creation failed: ${topicName}`);
-    }
     topic = pubsub.topic(topicName);
   });
 
   describe('occurrences from pubsub subscription', () => {
-    before(async () => {
-      await topic.createSubscription(subscriptionId);
+    it('should get count of occurrences from pubsub topic', async function() {
+      this.retries(3);
+      await delay(this.test);
+      try {
+        // attempt to create topic if missing
+        await pubsub.createTopic(topicName);
+      } catch (err) {
+        console.log(`topic creation failed: ${topicName} ${err.message}`);
+        if (!err.message.includes('ALREADY_EXISTS')) {
+          throw err;
+        }
+      }
+      try {
+        await topic.createSubscription(subscriptionId);
+      } catch (err) {
+        console.log(
+          `subscription creation failed: ${subscriptionId} ${err.message}`
+        );
+        if (!err.message.includes('ALREADY_EXISTS')) {
+          throw err;
+        }
+      }
       const pubSubNoteReq = {
         parent: formattedParent,
         noteId: `${noteId}-pubsub`,
@@ -336,12 +350,6 @@ describe('pubsub', () => {
         },
       };
       await client.getGrafeasClient().createNote(pubSubNoteReq);
-    });
-
-    it('should get count of occurrences from pubsub topic', async function () {
-      this.retries(3);
-      await delay(this.test);
-
       const occurrenceCount = 3;
       const pubSubOccurrenceReq = {
         parent: formattedParent,
@@ -389,7 +397,7 @@ describe('pubsub', () => {
       assert.match(output, /Polled [1-9]+ occurrences/);
     });
 
-    it('should delete the pubsub subscription', async function () {
+    it('should delete the pubsub subscription', async function() {
       this.retries(3);
       await delay(this.test);
 

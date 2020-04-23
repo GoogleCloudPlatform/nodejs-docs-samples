@@ -175,7 +175,7 @@ describe('alerts', () => {
     await deleteChannels();
   });
 
-  it('should replace notification channels', async function() {
+  it('should replace notification channels', async function () {
     this.retries(8);
     await delay(this.test);
     const stdout = execSync(`${cmd} replace ${policyOneName} ${channelName}`);
@@ -183,7 +183,7 @@ describe('alerts', () => {
     assert.include(stdout, policyOneName);
   });
 
-  it('should disable policies', async function() {
+  it('should disable policies', async function () {
     this.retries(8);
     await delay(this.test);
     const stdout = execSync(
@@ -194,7 +194,7 @@ describe('alerts', () => {
     assert.include(stdout, policyTwoName);
   });
 
-  it('should enable policies', async function() {
+  it('should enable policies', async function () {
     this.retries(8);
     await delay(this.test);
     const stdout = execSync(
@@ -213,7 +213,7 @@ describe('alerts', () => {
     assert.include(stdout, 'second');
   });
 
-  it('should backup all policies', async function() {
+  it('should backup all policies', async function () {
     this.retries(8);
     await delay(this.test);
     const output = execSync(`${cmd} backup ${projectId}`);
@@ -222,7 +222,7 @@ describe('alerts', () => {
     await client.deleteAlertPolicy({name: policyOneName});
   });
 
-  it('should restore policies', async function() {
+  it('should restore policies', async function () {
     this.retries(8);
     await delay(this.test);
     const output = execSync(`${cmd} restore ${projectId}`);

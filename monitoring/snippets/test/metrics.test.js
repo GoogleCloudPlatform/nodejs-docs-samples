@@ -43,7 +43,7 @@ const delay = async test => {
   });
 };
 describe('metrics', async () => {
-  it('should create a metric descriptors', async function() {
+  it('should create a metric descriptors', async function () {
     this.retries(8);
     await delay(this.test);
     const output = execSync(`${cmd} create`);
@@ -51,7 +51,7 @@ describe('metrics', async () => {
     assert.include(output, `Type: ${customMetricId}`);
   });
 
-  it('should list metric descriptors, including the new custom one', async function() {
+  it('should list metric descriptors, including the new custom one', async function () {
     this.retries(8);
     await delay(this.test);
     const output = execSync(`${cmd} list`);
@@ -64,14 +64,14 @@ describe('metrics', async () => {
     assert.include(output, `Type: ${customMetricId}`);
   });
 
-  it('should write time series data', async function() {
+  it('should write time series data', async function () {
     this.retries(5);
     await delay(this.test);
     const output = execSync(`${cmd} write`);
     assert.include(output, 'Done writing time series data.');
   });
 
-  it('should delete a metric descriptor', async function() {
+  it('should delete a metric descriptor', async function () {
     this.retries(5);
     await delay(this.test);
     const output = execSync(`${cmd} delete ${customMetricId}`);
@@ -139,7 +139,7 @@ describe('metrics', async () => {
     });
   });
 
-  it('should read time series data aggregated', async function() {
+  it('should read time series data aggregated', async function () {
     this.retries(5);
     await delay(this.test);
     const [timeSeries] = await client.listTimeSeries({

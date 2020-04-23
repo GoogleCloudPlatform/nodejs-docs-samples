@@ -42,11 +42,13 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {
       name,
-      updateMask: 'notificationConfig',
+      updateMask: 'notificationConfigs',
       resource: {
-        notificationConfig: {
-          pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
-        },
+        notificationConfigs: [
+          {
+            pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
+          }
+        ]
       },
     };
 

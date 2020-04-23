@@ -45,14 +45,14 @@ before(() => {
   );
   execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwdDatasets
+    {cwd: cwdDatasets}
   );
 });
 after(() => {
   try {
     execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      cwdDatasets
+      {cwd: cwdDatasets}
     );
   } catch (err) {} // Ignore error
 });
@@ -60,11 +60,11 @@ after(() => {
 it('should create a FHIR resource', () => {
   execSync(
     `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
-    cwd
+    {cwd}
   );
   const output = execSync(
     `node fhir_resources.js createResource ${datasetId} ${fhirStoreId} ${resourceType}`,
-    cwd
+    {cwd}
   );
   const createdResource = new RegExp(
     `Created FHIR resource ${resourceType} with ID (.*).`
@@ -76,7 +76,7 @@ it('should create a FHIR resource', () => {
 it('should get a FHIR resource', () => {
   const output = execSync(
     `node getFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
-    cwd
+    {cwd}
   );
   assert.strictEqual(
     new RegExp(`Got ${resourceType} resource`).test(output),
@@ -87,7 +87,7 @@ it('should get a FHIR resource', () => {
 it('should list and get a FHIR resource history', () => {
   let output = execSync(
     `node listFhirResourceHistory.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('versionId'));
 
@@ -105,7 +105,7 @@ it('should list and get a FHIR resource history', () => {
 
   output = execSync(
     `node getFhirResourceHistory.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId} ${versionId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes(versionId));
 });
@@ -113,7 +113,7 @@ it('should list and get a FHIR resource history', () => {
 it('should get everything in Patient compartment', () => {
   const output = execSync(
     `node getPatientEverything.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceId}`,
-    cwd
+    {cwd}
   );
   assert.strictEqual(
     new RegExp(`Got all resources in patient ${resourceId} compartment`).test(
@@ -126,7 +126,7 @@ it('should get everything in Patient compartment', () => {
 it('should update a FHIR resource', () => {
   const output = execSync(
     `node updateFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
-    cwd
+    {cwd}
   );
   assert.strictEqual(
     new RegExp(`Updated ${resourceType} resource`).test(output),
@@ -137,7 +137,7 @@ it('should update a FHIR resource', () => {
 it('should patch a FHIR resource', () => {
   const output = execSync(
     `node fhir_resources.js patchResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
-    cwd
+    {cwd}
   );
   assert.strictEqual(output, `Patched ${resourceType} resource`);
 });
@@ -159,7 +159,7 @@ it('should search for FHIR resources using POST', () => {
 it('should purge all historical versions of a FHIR resource', () => {
   const output = execSync(
     `node deleteFhirResourcePurge.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
-    cwd
+    {cwd}
   );
   assert.strictEqual(
     output,
@@ -170,7 +170,7 @@ it('should purge all historical versions of a FHIR resource', () => {
 it('should execute a Bundle', () => {
   const output = execSync(
     `node fhir_resources.js executeBundle ${datasetId} ${fhirStoreId} ${bundleFile}`,
-    cwd
+    {cwd}
   );
   assert.strictEqual(new RegExp('Executed Bundle').test(output), true);
 });
@@ -178,13 +178,13 @@ it('should execute a Bundle', () => {
 it('should delete a FHIR resource', () => {
   const output = execSync(
     `node deleteFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
-    cwd
+    {cwd}
   );
   assert.strictEqual(output, `Deleted FHIR resource ${resourceType}`);
 
   // Clean up
   execSync(
     `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
-    cwd
+    {cwd}
   );
 });

@@ -87,17 +87,6 @@ describe('functions_log_retrieve', () => {
   });
 });
 
-describe('functions_log_get_metrics', () => {
-  it('getMetrics: should retrieve metrics', () => {
-    const sample = getSample();
-    const callback = sinon.stub();
-
-    sample.program.getMetrics(callback);
-
-    assert.strictEqual(callback.callCount, 1);
-  });
-});
-
 describe('functions_log_stackdriver', () => {
   it('processLogEntry: should process log entry', () => {
     const sample = getSample();

@@ -23,7 +23,7 @@
   "dependencies": {
     "chai": "^4.2.0",
     "express": "^4.16.4",
-    "knex": "^0.20.0",
+    "knex": "^0.21.0",
     "pg": "^8.0.0",
     "prompt": "^1.0.0",
     "wait-port": "^0.2.7"

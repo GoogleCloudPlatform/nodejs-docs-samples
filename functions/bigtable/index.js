@@ -41,7 +41,6 @@ exports.get = async (req, res) => {
   try {
     const prefix = 'phone#';
     let rows = [];
-
     await table
         .createReadStream({
           prefix,

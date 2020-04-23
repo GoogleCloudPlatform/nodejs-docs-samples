@@ -19,6 +19,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const {PassThrough} = require('stream');
 
+let mockedStream;
 const rows = [
   {
     id: "phone#4c410523#20190501",
@@ -47,7 +48,7 @@ const query = {
 };
 
 const getSample = () => {
-  const mockedStream = require('stream').Readable.from(rows);
+  mockedStream = require('stream').Readable.from(rows);
 
   const tableMock = {
     createReadStream: sinon.stub().returns(mockedStream),
@@ -83,16 +84,23 @@ describe('bigtable_functions_quickstart', () => {
   it('get: Gets rows', async () => {
     const sample = getSample();
     const {mocks} = sample;
-
     await sample.program.get(mocks.req, mocks.res);
+    rows.forEach((row) => {
+      mockedStream.emit('data', row);
+    });
+    mockedStream.emit("end");
     assert.strictEqual(mocks.bigtable.instance.called, true);
     assert.strictEqual(mocks.instance.table.called, true);
     assert.strictEqual(mocks.table.createReadStream.calledWith(query), true);
-    // assert.strictEqual(mocks.results[0].toJSON.called, true);
-    console.log(mocks.res.write.getCalls())
     assert.strictEqual(
         mocks.res.write.calledWith(
-            'SingerId: 1, AlbumId: 2, AlbumTitle: Total Junk\n'
+            'rowkey: phone#4c410523#20190501, os_build: PQ2A.190405.003\n'
+        ),
+        true
+    );
+    assert.strictEqual(
+        mocks.res.write.calledWith(
+            'rowkey: phone#5c10102#20190501, os_build: PQ2A.190406.000\n'
         ),
         true
     );

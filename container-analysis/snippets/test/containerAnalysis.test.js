@@ -189,7 +189,7 @@ describe('Note tests', () => {
         noteName: `${formattedNoteName}-critical`,
         resourceUri: resourceUrl,
         vulnerability: {
-          severity: 'CRITICAL',
+          effective_severity: 'CRITICAL',
           packageIssue: [
             {
               affectedCpeUri: 'foo.uri',

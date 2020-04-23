@@ -45,8 +45,8 @@ async function main(
     console.log(`High Severity Vulnerabilities for ${imageUrl}`);
     occurrences.forEach(occurrence => {
       if (
-        occurrence.vulnerability.severity === 'HIGH' ||
-        occurrence.vulnerability.severity === 'CRITICAL'
+        occurrence.vulnerability.effective_severity === 'HIGH' ||
+        occurrence.vulnerability.effective_severity === 'CRITICAL'
       ) {
         console.log(`${occurrence.name}:`);
       }

@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START bigtable_functions_quickstart]
 // Imports the Google Cloud client library
 const {Bigtable} = require('@google-cloud/bigtable');
 
@@ -62,5 +63,5 @@ exports.get = async (req, res) => {
     res.send(`Error querying Bigtable: ${err}`);
     res.status(500).end();
   }
-
 };
+// [END bigtable_functions_quickstart]

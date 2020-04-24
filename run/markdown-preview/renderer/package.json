@@ -21,6 +21,10 @@
     "express": "^4.17.1",
     "got": "^10.7.0",
     "markdown-it": "^10.0.0",
+    "supertest": "^4.0.2",
     "xss": "^1.0.6"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.1"
   }
 }

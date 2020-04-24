@@ -21,6 +21,8 @@
     "express": "^4.17.1",
     "gcp-metadata": "^4.0.0",
     "got": "^10.7.0",
-    "handlebars": "^4.7.6"
+    "handlebars": "^4.7.6",
+    "mocha": "^7.1.1",
+    "supertest": "^4.0.2"
   }
 }

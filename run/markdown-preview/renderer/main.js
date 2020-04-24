@@ -45,3 +45,6 @@ app.listen(port, err => {
   if (err) console.log('Error: ', err);
   console.log('Renderer is listening on port ', port);
 })
+
+// Export for testing purposes.
+module.exports = app;

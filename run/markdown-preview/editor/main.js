@@ -25,7 +25,7 @@
   const buildService = async () => {
     url = process.env.EDITOR_UPSTREAM_RENDER_URL;
     if (!url) throw Error ("No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
-    isAuthenticated = process.env.EDITOR_UPSTREAM_AUTHENTICATED;
+    isAuthenticated = !process.env.EDITOR_UPSTREAM_UNAUTHENTICATED;
     if (!isAuthenticated) console.log("Editor: starting in unauthenticated upstream mode");
     return {url, isAuthenticated};
   }

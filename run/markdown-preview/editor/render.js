@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START run_secure_request]
-
 // Import the Metadata API
 const gcpMetadata = require('gcp-metadata')
 const got = require('got');
 
-// NewRequest creates a new HTTP request with IAM ID Token credential.
+// renderRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
 const renderRequest = async (service, markdown) => { 
+  // [START run_secure_request]
   let token;
 
   // Build the request to the Renderer receiving service.

@@ -48,7 +48,7 @@ const createPool = async () => {
   config.user = process.env.DB_USER; // e.g. 'my-db-user'
   config.password = process.env.DB_PASS; // e.g. 'my-db-password'
   config.database = process.env.DB_NAME; // e.g. 'my-database'
-  config.server = process.env.DEPLOYED ? '172.0.0.1' : '127.0.0.1';
+  config.server = process.env.DEPLOYED ? '172.17.0.1' : '127.0.0.1';
   config.port = 1433;
 
   // [START_EXCLUDE]

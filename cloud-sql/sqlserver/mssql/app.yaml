@@ -20,8 +20,7 @@ env_variables:
   DB_USER: MY_DB_USER
   DB_PASS: MY_DB_PASSWORD
   DB_NAME: MY_DATABASE
-  # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
-  CLOUD_SQL_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>
+  DEPLOYED: true
 
 beta_settings:
   # The connection name of your instance, available by using

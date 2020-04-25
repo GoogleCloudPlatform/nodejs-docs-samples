@@ -30,7 +30,8 @@
 Download a JSON key to use to authenticate your connection. 
 
 
-1. Use the information noted in the previous steps:
+## Running locally
+Use the information noted in the previous steps to set the following environment variables:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
 export DB_USER='my-db-user'
@@ -40,9 +41,7 @@ export DB_NAME='my_db'
 Note: Saving credentials in environment variables is convenient, but not secure - consider a more
 secure solution such as [Secret Manager](https://cloud.google.com/secret-manager/docs/overview) to help keep secrets safe.
 
-## Running locally
-
-To run this application locally, download and install the `cloud_sql_proxy` by
+Download and install the `cloud_sql_proxy` by
 following the instructions [here](https://cloud.google.com/sql/docs/mysql/sql-proxy#install). 
 
 Then, use the following command to start the proxy in the
@@ -63,9 +62,9 @@ npm start
 
 Navigate towards `http://127.0.0.1:8080` to verify your application is running correctly.
 
-## Google App Engine Flexible
+## Deploy to Google App Engine Flexible
 
-TApp Engine Flexible supports connecting to your SQL Server instance through TCP
+App Engine Flexible supports connecting to your SQL Server instance through TCP
 
 First, update `app.yaml` with the correct values to pass the environment 
 variables and instance name into the runtime.

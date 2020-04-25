@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "mocha": "^7.0.0",
-    "proxyquire": "^2.1.0",
     "supertest": "^4.0.0"
   }
 }

@@ -55,12 +55,11 @@ const createPool = async () => {
   // [START_EXCLUDE]
 
   // [START cloud_sql_server_mssql_timeout]
-  // 'connectionTimeout` is the maximum number of seconds to wait trying to establish an
+  // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
   // initial connection. After the specified amount of time, an exception will be thrown.
   config.connectionTimeout = 30000;
   // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a 
-  // connection from the pool. This is slightly different from connectionTimeout, because acquiring 
-  // a pool connection does not always involve making a new connection.
+  // connection from the pool.
   config.pool.acquireTimeoutMillis = 30000;
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
   // and not be checked out before it is automatically closed

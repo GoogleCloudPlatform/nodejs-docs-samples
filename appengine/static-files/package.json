@@ -12,14 +12,6 @@
     "start": "node app.js",
     "test": "mocha --exit test/*.test.js --url localhost:8080/static/main.css"
   },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "background-color",
-        "port": 8080
-      }
-    }
-  },
   "dependencies": {
     "express": "^4.16.4",
     "pug": "^2.0.3"

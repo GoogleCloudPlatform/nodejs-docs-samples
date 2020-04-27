@@ -19,18 +19,5 @@
     "googleapis": "^49.0.0",
     "uuid": "^7.0.0",
     "yargs": "^15.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "build": {
-        "requiredEnvVars": [
-          "API_KEY",
-          "GCLOUD_PROJECT",
-          "PUBSUB_TOPIC"
-        ]
-      }
-    }
   }
 }

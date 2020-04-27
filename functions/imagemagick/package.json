@@ -27,13 +27,5 @@
     "request": "^2.88.0",
     "requestretry": "^4.0.0",
     "sinon": "^9.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "FUNCTIONS_BUCKET",
-      "BLURRED_BUCKET_NAME"
-    ]
   }
 }

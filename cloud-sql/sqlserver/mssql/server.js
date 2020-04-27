@@ -48,6 +48,7 @@ const createPool = async () => {
   config.user = process.env.DB_USER; // e.g. 'my-db-user'
   config.password = process.env.DB_PASS; // e.g. 'my-db-password'
   config.database = process.env.DB_NAME; // e.g. 'my-database'
+  // set the server to '172.17.0.1' when connecting from App Engine Flex
   config.server = process.env.DEPLOYED ? '172.17.0.1' : '127.0.0.1';
   config.port = 1433;
 
@@ -61,6 +62,9 @@ const createPool = async () => {
   // connection from the pool. This is slightly different from connectionTimeout, because acquiring 
   // a pool connection does not always involve making a new connection.
   config.pool.acquireTimeoutMillis = 30000;
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
+  // and not be checked out before it is automatically closed
+  config.pool.idleTimeoutMillis = 600000,
   // [END cloud_sql_server_mssql_timeout]
 
   // [START cloud_sql_server_mssql_limit]
@@ -71,12 +75,6 @@ const createPool = async () => {
   // Additional connections will be established to meet this value unless the pool is full.
   config.pool.min = 1;
   // [END cloud_sql_server_mssql_limit]
-
-  // [START cloud_sql_server_mssql_lifetime]
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
-  // and not be checked out before it is automatically closed
-  config.pool.idleTimeoutMillis = 600000,
-  // [END cloud_sql_server_mssql_lifetime]
 
   // [START cloud_sql_server_mssql_backoff]
   // The node-mssql module uses a built-in retry strategy which does not implement backoff.

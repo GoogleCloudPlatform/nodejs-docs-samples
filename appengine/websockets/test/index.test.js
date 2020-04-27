@@ -14,8 +14,6 @@
 
 'use strict';
 
-/* eslint node/no-extraneous-require: "off" */
-
 const assert = require('assert');
 const puppeteer = require('puppeteer');
 /* global document */

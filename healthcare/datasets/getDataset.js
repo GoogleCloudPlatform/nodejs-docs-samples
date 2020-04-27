@@ -23,7 +23,7 @@ const main = (
 ) => {
   // [START healthcare_get_dataset]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const getDataset = async () => {
     const auth = await google.auth.getClient({

@@ -16,16 +16,15 @@
     "deploy": "gcloud app deploy",
     "start": "node app.js",
     "unit-test": "mocha test/ --timeout=60000 --exit",
-    "system-test": "repo-tools test app",
-    "all-test": "npm run unit-test && npm run system-test",
-    "test": "repo-tools test run --cmd npm -- run all-test"  
+    "test": "npm run unit-test"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "chai": "^4.2.0",
+    "express": "^4.16.4",
+    "wait-port": "^0.2.7"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0",

@@ -86,7 +86,6 @@ const createPool = async () => {
     //[END_EXCLUDE]
   });
 };
-createPool();
 // [END cloud_sql_mysql_mysql_create]
 
 const ensureSchema = async () => {
@@ -96,8 +95,19 @@ const ensureSchema = async () => {
       ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
       candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
   );
+  console.log(`Ensured that table 'votes' exists`);
 };
-ensureSchema();
+
+let schemaReady;
+
+createPool().then(() => (schemaReady = ensureSchema()));
+
+const awaitSchema = async (req, res, next) => {
+  await schemaReady;
+  next();
+};
+
+app.use(awaitSchema);
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {

@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_dataset_set_iam_policy]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const setDatasetIamPolicy = async () => {
     const auth = await google.auth.getClient({

@@ -13,27 +13,18 @@
 // limitations under the License.
 
 const assert = require('assert');
-const gcpMetadata = require('gcp-metadata')
-const got = require('got');
+const requestServiceToken = require('../auth.js');
+let res;
 
 describe('requestServiceToken tests', () => {
-  let receivingServiceURL = '';
-  let metadataServerTokenPath = `service-accounts/default/identity?audience=${receivingServiceURL}`;
-
-  it('should return undefined if requesting a token with invalid Receiving Service URL', async () => {
-    const response = () => {gcpMetadata.instance(metadataServerTokenPath)};
-    assert.strictEqual(response(), undefined);    
+  before(async function () {
+    this.timeout(5000);
+    res = await requestServiceToken('');
   })
 
-  let serviceRequestOptions = { 
-    headers: {
-      'Authorization': 'bearer '
-    }
-  };
-
-  it('should return undefined if invalid token is provided', async () => {
-    const response = () => {got(receivingServiceURL, serviceRequestOptions)};
-    assert.strictEqual(response(), undefined)
-  });
+  it('should return an error if given invalid Receiving Service URL', () => {
+    assert.strictEqual(typeof res, 'object'); 
+    assert.strictEqual(res.code, 'EHOSTDOWN')
+  })
 
 })

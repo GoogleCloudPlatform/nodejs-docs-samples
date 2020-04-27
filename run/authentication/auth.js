@@ -34,7 +34,7 @@ const got = require('got');
         'Authorization': 'bearer ' + token
       }
     };
-
+    console.log('TOKEN??????? ', token);
     const serviceResponse = await got(receivingServiceURL, serviceRequestOptions);
     return serviceResponse;
 
@@ -48,3 +48,4 @@ const got = require('got');
 };
 requestServiceToken(...process.argv.slice(2));
 
+module.exports = requestServiceToken;

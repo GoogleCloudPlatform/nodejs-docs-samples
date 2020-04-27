@@ -20,7 +20,7 @@ const supertest = require('supertest');
 
 let request, template, htmlString, markdownString, falseString;
 
-describe('Unit Tests', () => {
+describe('Editor unit tests', () => {
   before(async () => {
     const {app, buildTemplate} = require(path.join(__dirname, '..', 'main'));
     request = supertest(app);

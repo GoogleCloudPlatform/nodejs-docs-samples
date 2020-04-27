@@ -78,5 +78,6 @@ app.listen(port, err => {
 // Exports for testing purposes.
 module.exports = {
   app,
+  buildService,
   buildTemplate
 }

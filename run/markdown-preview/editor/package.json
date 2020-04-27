@@ -15,7 +15,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "mocha test/*.test.js"
+    "test": "mocha test/*.test.js --exit"
   },
   "dependencies": {
     "express": "^4.17.1",

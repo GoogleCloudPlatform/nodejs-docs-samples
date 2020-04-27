@@ -24,9 +24,5 @@
     "@google-cloud/storage": "^4.0.0",
     "busboy": "^0.3.0",
     "escape-html": "^1.0.3"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

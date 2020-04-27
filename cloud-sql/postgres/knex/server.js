@@ -86,6 +86,9 @@ const connect = () => {
   // initial connection before retrying. 
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
   knex.client.pool.createTimeoutMillis = 30000; // 30 seconds
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
+  // and not be checked out before it is automatically closed.
+  knex.client.pool.idleTimeoutMillis = 600000; // 10 minutes
   // [END cloud_sql_postgres_knex_timeout]
 
   // [START cloud_sql_postgres_knex_backoff]
@@ -93,12 +96,6 @@ const connect = () => {
   // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
   knex.client.pool.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
-
-  // [START cloud_sql_postgres_knex_lifetime]
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
-  // and not be checked out before it is automatically closed.
-  knex.client.pool.idleTimeoutMillis = 600000; // 10 minutes
-  // [END cloud_sql_postgres_knex_lifetime]
 
   // [END_EXCLUDE]
   return knex;

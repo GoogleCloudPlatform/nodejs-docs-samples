@@ -47,14 +47,5 @@
     "mocha": "^7.0.0",
     "request": "^2.88.0",
     "requestretry": "^4.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "GOOGLE_CLOUD_PROJECT",
-      "OUTPUT_BUCKET",
-      "SUPPORTED_LANGUAGE_CODES"
-    ]
   }
 }

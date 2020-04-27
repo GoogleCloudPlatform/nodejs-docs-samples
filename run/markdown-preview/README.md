@@ -11,6 +11,7 @@ Required variables for this sample include:
 
 * `EDITOR_UPSTREAM_RENDER_URL`: The URL of the restricted Cloud Run service that
   renders Markdown to HTML.
+* `EDITOR_UPSTREAM_UNAUTHENTICATED`: A boolean that indicates whether the service is unauthenticated.
 
 ## Dependencies
 

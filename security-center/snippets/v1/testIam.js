@@ -38,8 +38,9 @@ function main(sourceName = 'FULL_SOURCE_PATH') {
         permissions: ['securitycenter.findings.update'],
       });
       console.log(
-        `Permissions to create/update findings? ${policy.permissions.length >
-          0}`
+        `Permissions to create/update findings? ${
+          policy.permissions.length > 0
+        }`
       );
     }
     {

@@ -33,7 +33,7 @@ module.exports = async () => {
   const NOW = new Date();
 
   const [results] = await realmsClient.listRealms(request);
-  for (const realm of results.realms) {
+  for (const realm of results) {
     // Check age of realm. If older than maximum life span, delete.
     const ageOfRealm = new Date(realm.createTime.seconds * 1000);
     if (NOW - ageOfRealm > MAX_REALM_LIFESPAN) {

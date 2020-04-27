@@ -12,21 +12,6 @@
     "start": "node server.js",
     "test": "mocha test/*.test.js --timeout=30000 --exit"
   },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "requiredEnvVars": [
-          "redisHost",
-          "redisPort",
-          "redisKey"
-        ],
-        "msg": "IPs:\n::1;",
-        "args": [
-          "server.js"
-        ]
-      }
-    }
-  },
   "dependencies": {
     "nconf": "^0.10.0",
     "redis": "^3.0.0"

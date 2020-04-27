@@ -37,17 +37,5 @@
     "sinon": "^9.0.0",
     "uuid": "^7.0.0",
     "yargs": "^15.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "BASE_URL",
-      "GCLOUD_PROJECT",
-      "GCF_REGION",
-      "FUNCTIONS_TOPIC",
-      "FUNCTIONS_BUCKET",
-      "FUNCTIONS_CMD"
-    ]
   }
 }

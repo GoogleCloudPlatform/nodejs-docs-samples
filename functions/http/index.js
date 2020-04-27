@@ -173,8 +173,8 @@ exports.uploadFile = (req, res) => {
     await Promise.all(fileWrites);
 
     // TODO(developer): Process saved files here
-    for (const file of uploads) {
-      fs.unlinkSync(file);
+    for (const file in uploads) {
+      fs.unlinkSync(uploads[file]);
     }
     res.send();
   });

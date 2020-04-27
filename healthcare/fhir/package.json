@@ -23,18 +23,5 @@
     "gtoken": "^5.0.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "build": {
-        "requiredEnvVars": [
-          "API_KEY",
-          "GCLOUD_PROJECT",
-          "PUBSUB_TOPIC"
-        ]
-      }
-    }
   }
 }

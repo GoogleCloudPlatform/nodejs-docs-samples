@@ -35,7 +35,7 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'LOCATION_ID') {
     };
 
     const [results] = await client.listRealms(request);
-    for (const realm of results.realms) {
+    for (const realm of results) {
       console.log(`Realm name: ${realm.name}`);
       console.log(`Realm description: ${realm.description}`);
       console.log(`Realm time zone: ${realm.timeZone}`);

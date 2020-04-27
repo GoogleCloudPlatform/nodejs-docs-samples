@@ -25,17 +25,5 @@
     "mocha": "^7.0.0",
     "supertest": "^4.0.2",
     "proxyquire": "^2.1.3"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": false,
-    "requiresProjectId": false,
-    "test": {
-      "app": {
-        "args": [
-          "server.js"
-        ],
-        "msg": "Hello from App Engine!"
-      }
-    }
   }
 }

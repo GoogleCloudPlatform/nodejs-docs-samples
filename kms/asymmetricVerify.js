@@ -30,7 +30,7 @@ async function asymmetricVerify(
   // The location of the crypto key's key ring, e.g. "global"
   const locationId = 'global';
 
-  // Construct the cyrpto key version ID
+  // Construct the crypto key version ID
   const name = client.cryptoKeyVersionPath(
     projectId,
     locationId,

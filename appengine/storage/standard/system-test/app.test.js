@@ -31,10 +31,6 @@ before(async () => {
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
   );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
-  );
   await bucket.create(bucket).then(() => {
     return bucket.acl.add({
       entity: 'allUsers',

@@ -19,7 +19,6 @@ const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
 
-const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
@@ -39,8 +38,7 @@ before(() => {
 after(() => {
   try {
     execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`,
-      cwd
+      `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`
     );
     // eslint-disable-next-line no-empty
   } catch (err) {} // Ignore error
@@ -48,16 +46,14 @@ after(() => {
 
 it('should create a dataset', () => {
   const output = execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd
+    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`
   );
-  assert.strictEqual(output, `Created dataset: ${datasetId}`);
+  assert.ok(output.includes('Created dataset'));
 });
 
 it('should get a dataset', () => {
   const output = execSync(
     `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd
   );
   assert.ok(output.includes('name'));
 });
@@ -66,30 +62,24 @@ it('should patch a dataset', () => {
   const timeZone = 'GMT';
   const output = execSync(
     `node patchDataset.js ${projectId} ${cloudRegion} ${datasetId} ${timeZone}`,
-    cwd
   );
-  assert.strictEqual(
-    output,
-    `Dataset ${datasetId} patched with time zone ${timeZone}`
+  assert.ok(
+    output.includes('patched with time zone')
   );
 });
 
 it('should list datasets', () => {
-  const output = execSync(
-    `node listDatasets.js ${projectId} ${cloudRegion}`,
-    cwd
-  );
+  const output = execSync(`node listDatasets.js ${projectId} ${cloudRegion}`, {
+  });
   assert.ok(output.includes('datasets'));
 });
 
 it('should de-identify data in a dataset and write to a new dataset', () => {
   const output = execSync(
     `node deidentifyDataset.js ${projectId} ${cloudRegion} ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
-    cwd
   );
-  assert.strictEqual(
-    output,
-    `De-identified data written from dataset ${datasetId} to dataset ${destinationDatasetId}`
+  assert.ok(
+    output.includes('De-identified data written')
   );
 });
 
@@ -99,7 +89,6 @@ it('should create and get a dataset IAM policy', () => {
 
   let output = execSync(
     `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`,
-    cwd
   );
   assert.ok(output.includes, 'ETAG');
 
@@ -112,7 +101,6 @@ it('should create and get a dataset IAM policy', () => {
 it('should delete a dataset', () => {
   const output = execSync(
     `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd
   );
-  assert.strictEqual(output, `Deleted dataset: ${datasetId}`);
+  assert.ok(output.includes('Deleted dataset'));
 });

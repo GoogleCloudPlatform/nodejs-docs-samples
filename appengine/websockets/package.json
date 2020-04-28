@@ -29,14 +29,5 @@
     "eslint-plugin-prettier": "^3.0.0",
     "mocha": "^7.0.0",
     "puppeteer": "^3.0.0"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "messages"
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

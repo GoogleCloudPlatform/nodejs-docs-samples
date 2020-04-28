@@ -17,7 +17,7 @@
     "system-test": "mocha system-test/*.test.js --timeout=600000"
   },
   "dependencies": {
-    "@google-cloud/iot": "^1.6.1",
+    "@google-cloud/iot": "^2.0.0",
     "@google-cloud/pubsub": "^1.2.0",
     "googleapis": "^48.0.0",
     "yargs": "^15.1.0"
@@ -25,16 +25,5 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "uuid": "^7.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "build": {
-        "requiredEnvVars": [
-          "API_KEY"
-        ]
-      }
-    }
   }
 }

@@ -15,20 +15,8 @@
     "mocha": "^7.0.0"
   },
   "dependencies": {
-    "googleapis": "^48.0.0",
+    "googleapis": "^49.0.0",
     "uuid": "^7.0.0",
     "yargs": "^15.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "build": {
-        "requiredEnvVars": [
-          "API_KEY",
-          "GCLOUD_PROJECT"
-        ]
-      }
-    }
   }
 }

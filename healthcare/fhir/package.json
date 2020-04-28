@@ -17,24 +17,11 @@
     "mocha": "^7.0.0"
   },
   "dependencies": {
-    "googleapis": "^48.0.0",
+    "googleapis": "^49.0.0",
     "uuid": "^7.0.0",
     "yargs": "^15.0.0",
     "gtoken": "^5.0.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "build": {
-        "requiredEnvVars": [
-          "API_KEY",
-          "GCLOUD_PROJECT",
-          "PUBSUB_TOPIC"
-        ]
-      }
-    }
   }
 }

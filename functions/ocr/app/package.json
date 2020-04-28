@@ -24,15 +24,5 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "sinon": "^9.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "FUNCTIONS_BUCKET",
-      "OUTPUT_BUCKET",
-      "TRANSLATE_TOPIC",
-      "RESULT_TOPIC"
-    ]
   }
 }

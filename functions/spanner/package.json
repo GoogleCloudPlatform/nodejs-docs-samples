@@ -21,9 +21,5 @@
     "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

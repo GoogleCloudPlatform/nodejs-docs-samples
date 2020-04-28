@@ -142,7 +142,7 @@ const makeSearchRequest = (query) => {
  * Receive a Slash Command request from Slack.
  *
  * Trigger this function by creating a Slack slash command with this URL:
- * https://[YOUR_REGION].[YOUR_PROJECT_ID].cloudfunctions.net/kgsearch
+ * https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/kgSearch
  *
  * @param {object} req Cloud Function request object.
  * @param {object} req.body The request payload.

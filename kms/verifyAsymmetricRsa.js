@@ -15,20 +15,25 @@
 'use strict';
 
 async function main(
-  projectId = 'my-project',
+  projectId = 'your-project-id',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
   keyId = 'my-key',
-  versionId = '123'
+  versionId = '1',
+  message = 'my message to verify',
+  signatureBuffer = Buffer.from('...')
 ) {
-  // [START kms_get_public_key]
+  // [START kms_verify_asymmetric_signature_rsa]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
-  // const projectId = 'my-project';
+  // const projectId = 'your-project-id';
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '1';
+  // const message = 'my message to verify';
+  // const signatureBuffer = Buffer.from('...');
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,7 +41,7 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
+  // Build the key name
   const versionName = client.cryptoKeyVersionPath(
     projectId,
     locationId,
@@ -45,18 +50,31 @@ async function main(
     versionId
   );
 
-  async function getPublicKey() {
+  async function verifyAsymmetricSignatureRsa() {
+    // Get public key
     const [publicKey] = await client.getPublicKey({
       name: versionName,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    // Create the verifier. The algorithm must match the algorithm of the key.
+    const crypto = require('crypto');
+    const verify = crypto.createVerify('sha256');
+    verify.update(message);
+    verify.end();
 
-    return publicKey;
+    // Build the key object
+    const key = {
+      key: publicKey.pem,
+      padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+    };
+
+    // Verify the signature using the public key
+    const verified = verify.verify(key, signatureBuffer);
+    return verified;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return verifyAsymmetricSignatureRsa();
+  // [END kms_verify_asymmetric_signature_rsa]
 }
 module.exports.main = main;
 

@@ -14,21 +14,25 @@
 
 'use strict';
 
+// [START kms_sign_asymmetric]
 async function main(
-  projectId = 'my-project',
+  projectId = 'your-project-id',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
   keyId = 'my-key',
-  versionId = '123'
+  versionId = '123',
+  message = Buffer.from('...')
 ) {
-  // [START kms_get_public_key]
+  // [START kms_sign_asymmetric]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
-  // const projectId = 'my-project';
+  // const projectId = 'your-project-id';
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '123';
+  // const message = Buffer.from('...');
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,7 +40,7 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
+  // Build the version name
   const versionName = client.cryptoKeyVersionPath(
     projectId,
     locationId,
@@ -45,18 +49,32 @@ async function main(
     versionId
   );
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
+  async function signAsymmetric() {
+    // Create a digest of the message. The digest needs to match the digest
+    // configured for the Cloud KMS key.
+    const crypto = require('crypto');
+    const digest = crypto.createHash('sha256');
+    digest.update(message);
+
+    // Sign the message with Cloud KMS
+    const [signResponse] = await client.asymmetricSign({
       name: versionName,
+      digest: {
+        sha256: digest.digest(),
+      },
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    // Example of how to display signature. Because the signature is in a binary
+    // format, you need to encode the output before printing it to a console or
+    // displaying it on a screen.
+    const encoded = signResponse.signature.toString('base64');
+    console.log(`Signature: ${encoded}`);
 
-    return publicKey;
+    return signResponse.signature;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return signAsymmetric();
+  // [END kms_sign_asymmetric]
 }
 module.exports.main = main;
 

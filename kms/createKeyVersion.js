@@ -18,10 +18,9 @@ async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  keyId = 'my-key'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_create_key_version]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -36,27 +35,20 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the parent key name
+  const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function createKeyVersion() {
+    const [version] = await client.createCryptoKeyVersion({
+      parent: keyName,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Created key version: ${version.name}`);
+    return version;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return createKeyVersion();
+  // [END kms_create_key_version]
 }
 module.exports.main = main;
 

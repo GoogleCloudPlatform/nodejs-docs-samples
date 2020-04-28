@@ -18,10 +18,9 @@ async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  keyId = 'my-key'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_iam_get_policy]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +28,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const member = 'user:foo@example.com';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +36,34 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
+  // Build the resource name
+  const resourceName = client.cryptoKeyPath(
     projectId,
     locationId,
     keyRingId,
-    keyId,
-    versionId
+    keyId
   );
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  // The resource name could also be a key ring.
+  // const resourceName = client.keyRingPath(projectId, locationId, keyRingId);
+
+  async function iamGetPolicy() {
+    const [policy] = await client.getIamPolicy({
+      resource: resourceName,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    for (const binding of policy.bindings) {
+      console.log(`Role: ${binding.role}`);
+      for (const member of binding.members) {
+        console.log(`  - ${member}`);
+      }
+    }
 
-    return publicKey;
+    return policy;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return iamGetPolicy();
+  // [END kms_iam_get_policy]
 }
 module.exports.main = main;
 

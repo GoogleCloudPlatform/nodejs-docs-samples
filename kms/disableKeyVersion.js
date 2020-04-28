@@ -21,7 +21,7 @@ async function main(
   keyId = 'my-key',
   versionId = '123'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_disable_key_version]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +29,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '123';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -45,18 +46,23 @@ async function main(
     versionId
   );
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function disableKeyVersion() {
+    const [version] = await client.updateCryptoKeyVersion({
+      cryptoKeyVersion: {
+        name: versionName,
+        state: 'DISABLED',
+      },
+      updateMask: {
+        paths: ['state'],
+      },
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Disabled key version: ${version.name}`);
+    return version;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return disableKeyVersion();
+  // [END kms_disable_key_version]
 }
 module.exports.main = main;
 

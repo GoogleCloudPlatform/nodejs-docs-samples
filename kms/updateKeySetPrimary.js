@@ -21,7 +21,7 @@ async function main(
   keyId = 'my-key',
   versionId = '123'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_update_key_set_primary]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +29,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '123';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +37,21 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the key name
+  const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function updateKeySetPrimary() {
+    const [key] = await client.updateCryptoKeyPrimaryVersion({
+      name: keyName,
+      cryptoKeyVersionId: versionId,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Set primary to ${versionId}`);
+    return key;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return updateKeySetPrimary();
+  // [END kms_update_key_set_primary]
 }
 module.exports.main = main;
 

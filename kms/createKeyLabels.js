@@ -18,17 +18,16 @@ async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  id = 'my-labeled-key'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_create_key_labels]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
-  // const keyId = 'my-key';
+  // const id = 'my-labeled-key';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +35,31 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the parent key ring name
+  const keyRingName = client.keyRingPath(projectId, locationId, keyRingId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function createKeyLabels() {
+    const [key] = await client.createCryptoKey({
+      parent: keyRingName,
+      cryptoKeyId: id,
+      cryptoKey: {
+        purpose: 'ENCRYPT_DECRYPT',
+        versionTemplate: {
+          algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+        },
+        labels: {
+          team: 'alpha',
+          cost_center: 'cc1234',
+        },
+      },
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Created labeled key: ${key.name}`);
+    return key;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return createKeyLabels();
+  // [END kms_create_key_labels]
 }
 module.exports.main = main;
 

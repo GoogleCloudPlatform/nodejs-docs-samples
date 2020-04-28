@@ -49,7 +49,7 @@ exports.blurOffensiveImages = async (event) => {
       detections.violence === 'VERY_LIKELY'
     ) {
       console.log(`Detected ${file.name} as inappropriate.`);
-      return blurImage(file, BLURRED_BUCKET_NAME);
+      return await blurImage(file, BLURRED_BUCKET_NAME);
     } else {
       console.log(`Detected ${file.name} as OK.`);
     }

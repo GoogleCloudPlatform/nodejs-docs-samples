@@ -307,7 +307,7 @@ describe('pubsub', () => {
   });
 
   describe('occurrences from pubsub subscription', () => {
-    it('should get count of occurrences from pubsub topic', async function() {
+    it('should get count of occurrences from pubsub topic', async function () {
       this.retries(3);
       await delay(this.test);
       try {
@@ -397,7 +397,7 @@ describe('pubsub', () => {
       assert.match(output, /Polled [1-9]+ occurrences/);
     });
 
-    it('should delete the pubsub subscription', async function() {
+    it('should delete the pubsub subscription', async function () {
       this.retries(3);
       await delay(this.test);
 

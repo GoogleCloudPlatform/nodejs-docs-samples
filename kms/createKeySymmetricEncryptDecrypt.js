@@ -18,17 +18,16 @@ async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  id = 'my-symmetric-encryption-key'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_create_key_symmetric_encrypt_decrypt]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
-  // const keyId = 'my-key';
+  // const id = 'my-symmetric-encryption-key';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +35,27 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the parent key ring name
+  const keyRingName = client.keyRingPath(projectId, locationId, keyRingId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function createKeySymmetricEncryptDecrypt() {
+    const [key] = await client.createCryptoKey({
+      parent: keyRingName,
+      cryptoKeyId: id,
+      cryptoKey: {
+        purpose: 'ENCRYPT_DECRYPT',
+        versionTemplate: {
+          algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+        },
+      },
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Created symmetric key: ${key.name}`);
+    return key;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return createKeySymmetricEncryptDecrypt();
+  // [END kms_create_key_symmetric_encrypt_decrypt]
 }
 module.exports.main = main;
 

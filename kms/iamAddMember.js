@@ -19,9 +19,9 @@ async function main(
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
   keyId = 'my-key',
-  versionId = '123'
+  member = 'user:foo@example.com'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_iam_add_member]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +29,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const member = 'user:foo@example.com';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +37,41 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
+  // Build the resource name
+  const resourceName = client.cryptoKeyPath(
     projectId,
     locationId,
     keyRingId,
-    keyId,
-    versionId
+    keyId
   );
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  // The resource name could also be a key ring.
+  // const resourceName = client.keyRingPath(projectId, locationId, keyRingId);
+
+  async function iamAddMember() {
+    // Get the current IAM policy.
+    const [policy] = await client.getIamPolicy({
+      resource: resourceName,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    // Add the member to the policy.
+    policy.bindings.push({
+      role: 'roles/cloudkms.cryptoKeyEncrypterDecrypter',
+      members: [member],
+    });
 
-    return publicKey;
+    // Save the updated policy.
+    const [updatedPolicy] = await client.setIamPolicy({
+      resource: resourceName,
+      policy: policy,
+    });
+
+    console.log('Updated policy');
+    return updatedPolicy;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return iamAddMember();
+  // [END kms_iam_add_member]
 }
 module.exports.main = main;
 

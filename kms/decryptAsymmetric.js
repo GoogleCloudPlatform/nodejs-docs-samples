@@ -19,9 +19,10 @@ async function main(
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
   keyId = 'my-key',
-  versionId = '123'
+  versionId = '123',
+  ciphertext = Buffer.from('...')
 ) {
-  // [START kms_get_public_key]
+  // [START kms_decrypt_asymmetric]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +30,8 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '123';
+  // const ciphertext = Buffer.from('...');
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -45,18 +48,24 @@ async function main(
     versionId
   );
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
+  async function decryptAsymmetric() {
+    const [result] = await client.asymmetricDecrypt({
       name: versionName,
+      ciphertext: ciphertext,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    // NOTE: The ciphertext must be properly formatted. In Node < 12, the
+    // crypto.publicEncrypt() function does not properly consume the OAEP
+    // padding and thus produces invalid ciphertext. If you are using Node to do
+    // public key encryption, please use version 12+.
+    const plaintext = result.plaintext.toString('utf8');
 
-    return publicKey;
+    console.log(`Plaintext: ${plaintext}`);
+    return plaintext;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return decryptAsymmetric();
+  // [END kms_decrypt_asymmetric]
 }
 module.exports.main = main;
 

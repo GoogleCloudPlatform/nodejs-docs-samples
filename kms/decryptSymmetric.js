@@ -19,9 +19,9 @@ async function main(
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
   keyId = 'my-key',
-  versionId = '123'
+  ciphertext = Buffer.from('...')
 ) {
-  // [START kms_get_public_key]
+  // [START kms_decrypt_symmetric]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +29,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const ciphertext = Buffer.from('...');
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +37,23 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the key name
+  const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function decryptSymmetric() {
+    const [result] = await client.decrypt({
+      name: keyName,
+      ciphertext: ciphertext,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    const plaintext = result.plaintext.toString('utf8');
 
-    return publicKey;
+    console.log(`Plaintext: ${plaintext}`);
+    return plaintext;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return decryptSymmetric();
+  // [END kms_decrypt_symmetric]
 }
 module.exports.main = main;
 

@@ -18,10 +18,9 @@ async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  keyId = 'my-key'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_update_key_add_rotation_schedule]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +28,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '123';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +36,35 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the key name
+  const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function updateKeyAddRotation() {
+    const [key] = await client.updateCryptoKey({
+      cryptoKey: {
+        name: keyName,
+
+        // Rotate the key every 30 days.
+        rotationPeriod: {
+          seconds: 60 * 60 * 24 * 30,
+        },
+
+        // Start the first rotation in 24 hours.
+        nextRotationTime: {
+          seconds: new Date().getTime() / 1000 + 60 * 60 * 24,
+        },
+      },
+      updateMask: {
+        paths: ['rotation_period', 'next_rotation_time'],
+      },
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Updated rotation for: ${key.name}`);
+    return key;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return updateKeyAddRotation();
+  // [END kms_update_key_add_rotation_schedule]
 }
 module.exports.main = main;
 

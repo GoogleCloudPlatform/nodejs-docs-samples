@@ -21,7 +21,7 @@ async function main(
   keyId = 'my-key',
   versionId = '123'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_get_key_version_attestation]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +29,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '123';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -45,18 +46,24 @@ async function main(
     versionId
   );
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
+  async function getKeyVersionAttestation() {
+    const [version] = await client.getCryptoKeyVersion({
       name: versionName,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    // Only HSM keys have an attestation. For other key types, the attestion
+    // will be nil.
+    const attestation = version.attestation;
+    if (!attestation) {
+      throw new Error('no attestation');
+    }
 
-    return publicKey;
+    console.log(`Attestation: ${attestation.toString('base64')}`);
+    return attestation.content;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return getKeyVersionAttestation();
+  // [END kms_get_key_version_attestation]
 }
 module.exports.main = main;
 

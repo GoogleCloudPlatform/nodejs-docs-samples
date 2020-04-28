@@ -17,18 +17,15 @@
 async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
-  keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  id = 'my-key-ring'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_create_key_ring]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-east1';
-  // const keyRingId = 'my-key-ring';
-  // const keyId = 'my-key';
+  // const id = 'my-key-ring';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +33,21 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the parent location name
+  const locationName = client.locationPath(projectId, locationId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function createKeyRing() {
+    const [keyRing] = await client.createKeyRing({
+      parent: locationName,
+      keyRingId: id,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Created key ring: ${keyRing.name}`);
+    return keyRing;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return createKeyRing();
+  // [END kms_create_key_ring]
 }
 module.exports.main = main;
 

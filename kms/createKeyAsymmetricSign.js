@@ -18,17 +18,16 @@ async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  id = 'my-asymmetric-sign-key'
 ) {
-  // [START kms_get_public_key]
+  // [START kms_create_key_asymmetric_sign]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
-  // const keyId = 'my-key';
+  // const id = 'my-asymmetric-sign-key';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -36,27 +35,27 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key version name
-  const versionName = client.cryptoKeyVersionPath(
-    projectId,
-    locationId,
-    keyRingId,
-    keyId,
-    versionId
-  );
+  // Build the parent key ring name
+  const keyRingName = client.keyRingPath(projectId, locationId, keyRingId);
 
-  async function getPublicKey() {
-    const [publicKey] = await client.getPublicKey({
-      name: versionName,
+  async function createKeyAsymmetricSign() {
+    const [key] = await client.createCryptoKey({
+      parent: keyRingName,
+      cryptoKeyId: id,
+      cryptoKey: {
+        purpose: 'ASYMMETRIC_SIGN',
+        versionTemplate: {
+          algorithm: 'RSA_SIGN_PKCS1_2048_SHA256',
+        },
+      },
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
-
-    return publicKey;
+    console.log(`Created asymmetric key: ${key.name}`);
+    return key;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return createKeyAsymmetricSign();
+  // [END kms_create_key_asymmetric_sign]
 }
 module.exports.main = main;
 

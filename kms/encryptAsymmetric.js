@@ -19,9 +19,10 @@ async function main(
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
   keyId = 'my-key',
-  versionId = '123'
+  versionId = '123',
+  plaintextBuffer = Buffer.from('...')
 ) {
-  // [START kms_get_public_key]
+  // [START kms_encrypt_asymmetric]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
@@ -29,6 +30,8 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // const versionId = '123';
+  // const plaintextBuffer = Buffer.from('...');
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -45,18 +48,37 @@ async function main(
     versionId
   );
 
-  async function getPublicKey() {
+  async function encryptAsymmetric() {
+    // Get public key from Cloud KMS
     const [publicKey] = await client.getPublicKey({
       name: versionName,
     });
 
-    console.log(`Public key pem: ${publicKey.pem}`);
+    // Import and setup crypto
+    const crypto = require('crypto');
 
-    return publicKey;
+    // Encrypt plaintext locally using the public key. This example uses a key
+    // that was configured with sha256 hash with OAEP padding. Update these
+    // values to match the Cloud KMS key.
+    //
+    // NOTE: In Node < 12, this function does not properly consume the OAEP
+    // padding and thus produces invalid ciphertext. If you are using Node to do
+    // public key encryption, please use version 12+.
+    const ciphertextBuffer = crypto.publicEncrypt(
+      {
+        key: publicKey.pem,
+        oaepHash: 'sha256',
+        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      },
+      plaintextBuffer
+    );
+
+    console.log(`Ciphertext: ${ciphertextBuffer.toString('base64')}`);
+    return ciphertextBuffer;
   }
 
-  return getPublicKey();
-  // [END kms_get_public_key]
+  return encryptAsymmetric();
+  // [END kms_encrypt_asymmetric]
 }
 module.exports.main = main;
 

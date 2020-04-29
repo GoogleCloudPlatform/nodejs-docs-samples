@@ -17,7 +17,7 @@ const handlebars = require('handlebars');
 const { readFileSync } = require('fs');
 const renderRequest = require('./render.js');
 
-const app = express()
+const app = express();
 app.use(express.json());
 
 let url, isAuthenticated, markdownDefault, parsedTemplate;

@@ -19,7 +19,9 @@ const path = require('path');
 
 let request, service, markdown;
 
-describe('Editor renderRequest unit tests', () => {
+describe('Editor renderRequest unit tests', function () {
+  this.timeout(6000);
+  
   before(async () => {
     request = require(path.join(__dirname, '..', 'render'));
     service = {url: 'https://www.google.com', isAuthenticated: false};
@@ -28,12 +30,12 @@ describe('Editor renderRequest unit tests', () => {
 
   it('can make an unauthenticated request', async () => {
     const res = await request(service, markdown);
-    assert.deepStrictEqual(res.name, 'HTTPError');
+    assert.deepStrictEqual(res.name, 'TypeError');
   })
 
   it('can make an authenticated request with an invalid url', async () => {
     service.isAuthenticated = true;
     const res = await request(service, markdown);
-    assert.deepStrictEqual(res.name, 'HTTPError');
+    assert.deepStrictEqual(res.name, 'FetchError');
   })
 });

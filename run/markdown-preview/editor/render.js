@@ -28,22 +28,20 @@ const renderRequest = async (service, markdown) => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({markdown: markdown})
+    body: {markdown: markdown}
   };
 
   if (service.isAuthenticated) {
-    setTimeout( async () => {
-      try {
-      // Query the token with ?audience as the service URL.
-      const metadataServerTokenPath = `service-accounts/default/identity?audience=${service.url}`;
-      // Fetch the token and then add it to the request header.
-      token = await gcpMetadata.instance(metadataServerTokenPath);
-      serviceRequestOptions.headers['Authorization'] = 'bearer ' + token;
-      } catch(err) {
-        console.log('Metadata server could not respond to request ', err);
-        return err;
-      }
-    }, 2000);
+    try {
+    // Query the token with ?audience as the service URL.
+    const metadataServerTokenPath = `service-accounts/default/identity?audience=${service.url}`;
+    // Fetch the token and then add it to the request header.
+    token = await gcpMetadata.instance(metadataServerTokenPath);
+    serviceRequestOptions.headers['Authorization'] = 'bearer ' + token;
+    } catch(err) {
+      console.log('Metadata server could not respond to request ', err);
+      return err;
+    }
   };
   // [END run_secure_request]
 

@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "googleapis": "^49.0.0",
-    "uuid": "^7.0.0",
+    "uuid": "^8.0.0",
     "yargs": "^15.0.0",
     "gtoken": "^5.0.0",
     "request": "^2.87.0",

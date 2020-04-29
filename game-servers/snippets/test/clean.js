@@ -46,7 +46,7 @@ module.exports = async () => {
         clustersRequest
       );
       const [clusters] = clustersResult;
-      for (const cluster of clusters.gameServerClusters) {
+      for (const cluster of clusters) {
         const deleteClusterRequest = {
           name: cluster.name,
         };

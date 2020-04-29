@@ -25,9 +25,5 @@
     "eslint-plugin-promise": "^4.1.1",
     "prettier": "^2.0.0",
     "requestretry": "^4.0.0"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "showdown": "^1.9.1"
   }
 }

@@ -38,3 +38,7 @@ Then set environment variables before starting your application:
     export GCLOUD_STORAGE_BUCKET=<your-bucket-name>
     npm install
     npm start
+
+Run the tests, if desired:
+
+    npm test

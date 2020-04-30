@@ -28,7 +28,7 @@ const init = () => {
   isAuthenticated = !process.env.EDITOR_UPSTREAM_UNAUTHENTICATED;
   if (!isAuthenticated) console.log("Editor: starting in unauthenticated upstream mode");
   return {url, isAuthenticated};
-}
+};
 
 const service = init();
 
@@ -36,9 +36,9 @@ const service = init();
 const buildTemplate = async () => {
   try {
     markdownDefault = readFileSync(__dirname + '/templates/markdown.md');
-    const index = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
-    compiledIndex = index({ default: markdownDefault});
-    return compiledIndex
+    const indexTemplate = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
+    compiledTemplate = indexTemplate({ default: markdownDefault});
+    return compiledTemplate
   } catch(err) {
     throw Error ('Error loading template: ', err);
   }
@@ -72,11 +72,11 @@ const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, err => {
   console.log(`Renderer is listening on port ${PORT}`);
-})
+});
 
 // Exports for testing purposes.
 module.exports = {
   app,
   init,
   buildTemplate
-}
+};

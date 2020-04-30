@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.post('/', (req, res) => {
   try {
-    // Get the Markdown text and convert it into HTML using markdown-it
+    // Get the Markdown text and convert it into HTML using markdown-it.
     const markdown = req.body.markdown.data ? req.body.markdown.data : '';
     const md = new MarkdownIt();
     const html = md.render(markdown);

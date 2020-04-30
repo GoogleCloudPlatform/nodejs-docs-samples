@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Use the official lightweight Node.js 12 image.
+# Use the official lightweight Node.js 10 image.
 # https://hub.docker.com/_/node
 FROM node:10-slim
 

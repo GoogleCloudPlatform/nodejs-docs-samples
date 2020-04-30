@@ -20,9 +20,9 @@ const renderRequest = require('./render.js');
 const app = express();
 app.use(express.json());
 
-let url, isAuthenticated, markdownDefault, parsedTemplate;
+let url, isAuthenticated, markdownDefault, compiledIndex, template;
 
-const buildService = async () => {
+const init = () => {
   url = process.env.EDITOR_UPSTREAM_RENDER_URL;
   if (!url) throw Error ("No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
   isAuthenticated = !process.env.EDITOR_UPSTREAM_UNAUTHENTICATED;
@@ -30,26 +30,27 @@ const buildService = async () => {
   return {url, isAuthenticated};
 }
 
+const service = init();
+
 // Load the template files and serve them with the Editor service.
 const buildTemplate = async () => {
   try {
     markdownDefault = readFileSync(__dirname + '/templates/markdown.md');
     const index = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
-    parsedTemplate = index({ default: markdownDefault});
-    return parsedTemplate
+    compiledIndex = index({ default: markdownDefault});
+    return compiledIndex
   } catch(err) {
-    console.log('Error: ', err);
-    return err
+    throw Error ('Error loading template: ', err);
   }
 };
 
 app.get('/', async (req, res) => { 
   try {
-    const template = await buildTemplate();
-    res.send(template);
+    template = await buildTemplate();
+    res.status(200).send(template);
   } catch (err) {
-    console.log('Error: ', err);
-    res.send(err);
+    console.log('Error loading the Editor service: ', err);
+    res.status(500).send(err);
   }
 });
 
@@ -57,27 +58,25 @@ app.get('/', async (req, res) => {
 // The request returns the Markdown text converted to HTML.
 app.post('/render', async (req, res) => {
   try {
-    const markdown = req.body.data;
-    const service = await buildService();
+    const markdown = req.body;
     const render = await renderRequest(service, markdown);
-    const response = JSON.parse(render);
-    res.send(response.data);
+    const response = render;
+    res.status(200).send(response.data);
   } catch (err) {
-    console.log('Error: ', err);
-    res.send(err);
+    console.log('Error querying the Renderer service: ', err);
+    res.status(500).send(err);
   }
 });
 
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
-app.listen(port, err => {
-  if (err) console.log('Error: ', err)
-  console.log(`Editor listening on port ${port}`)
+app.listen(PORT, err => {
+  console.log(`Renderer is listening on port ${PORT}`);
 })
 
 // Exports for testing purposes.
 module.exports = {
   app,
-  buildService,
+  init,
   buildTemplate
 }

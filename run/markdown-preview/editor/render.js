@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Import the Metadata API
 const gcpMetadata = require('gcp-metadata')
 const got = require('got');
 
@@ -28,7 +27,8 @@ const renderRequest = async (service, markdown) => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: {markdown: markdown}
+    json: {markdown},
+    responseType: 'json'
   };
 
   if (service.isAuthenticated) {
@@ -39,8 +39,7 @@ const renderRequest = async (service, markdown) => {
     token = await gcpMetadata.instance(metadataServerTokenPath);
     serviceRequestOptions.headers['Authorization'] = 'bearer ' + token;
     } catch(err) {
-      console.log('Metadata server could not respond to request ', err);
-      return err;
+      throw Error('Metadata server could not respond to request: ', err);
     }
   };
   // [END run_secure_request]
@@ -52,8 +51,7 @@ const renderRequest = async (service, markdown) => {
     const serviceResponse = serviceRequest.body;
     return serviceResponse;
   } catch (err) { 
-    console.log('Renderer service could not respond to request ', err);
-    return err;
+    throw Error('Renderer service could not respond to request ', err);
   };
   // [END run_secure_request_do]
 };

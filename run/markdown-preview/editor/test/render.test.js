@@ -29,13 +29,11 @@ describe('Editor renderRequest unit tests', function () {
   });
 
   it('can make an unauthenticated request', async () => {
-    const res = await request(service, markdown);
-    assert.deepStrictEqual(res.name, 'TypeError');
+    assert.rejects(request(service, markdown));
   })
 
   it('can make an authenticated request with an invalid url', async () => {
     service.isAuthenticated = true;
-    const res = await request(service, markdown);
-    assert.deepStrictEqual(res.name, 'FetchError');
+    assert.rejects(request(service, markdown));
   })
 });

@@ -18,19 +18,41 @@ const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
 
-const env = Object.assign({}, process.env);
-
 let request, service, template, htmlString, markdownString, falseString;
 
 describe('Editor unit tests', () => {
-  before(async () => {
-    const {app, buildService, buildTemplate} = require(path.join(__dirname, '..', 'main'));
-    request = supertest(app);
-    service = async () => { return await buildService()};
-    template = await buildTemplate();
+  describe('Service init', () => {
+    it('should respond with an error for no EDITOR_UPSTREAM_RENDER_URL var', async () => {
+      const {app, init} = require(path.join(__dirname, '..', 'main'));
+      request = supertest(app);
+      service = () => init();
+      assert.rejects(service, 'Error')
+    });
+
+    // Reload the server with updated env vars.
+    before(async () => {
+      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
+      const {app, init} = require(path.join(__dirname, '..', 'main'));
+      request = supertest(app);
+      service = () => { return init()};
+    })
+
+    it('should return an object with an EDITOR_UPSTREAM_RENDER_URL var', async () => {
+      const response = service();
+      assert.equal(response.url, process.env.EDITOR_UPSTREAM_RENDER_URL);
+      assert.equal(response.url, 'https://www.example.com/');
+      assert.equal(response.isAuthenticated, true);
+    })
   });
 
   describe('Handlebars compiler', async () => {
+    before(async () => {
+      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
+      const {app, init, buildTemplate} = require(path.join(__dirname, '..', 'main'));
+      request = supertest(app);
+      template = await buildTemplate(init());
+    })
+
     it('includes HTML from the templates', () => {
       htmlString = template.includes('<title>Markdown Editor</title>');
       assert.equal(htmlString, true);
@@ -55,30 +77,18 @@ describe('Editor unit tests', () => {
     it('should respond with a Bad Request for a request with invalid JSON', async () => {
       await request.post('/render').type('json').send('invalid string').expect(400);
     });
-
-    it('should succeed with valid JSON', async () => {
-      await request.post('/render').type('json').send('{"markdown":"valid string"}').expect(200);
-    });
-  });
-
-  describe('Service builder', () => {
-    it('should respond with an error for no EDITOR_UPSTREAM_RENDER_URL var', async () => {
-      assert.rejects(await service, 'Error')
-    });
-
+    
     // Reload the server with updated env vars.
     before(async () => {
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app, buildService} = require(path.join(__dirname, '..', 'main'));
+      const {app, init} = require(path.join(__dirname, '..', 'main'));
       request = supertest(app);
-      service = async () => { return await buildService()};
+      service = init();
     })
 
-    it('should return an object with an EDITOR_UPSTREAM_RENDER_URL var', async () => {
-      const response = await service();
-      assert.equal(response.url, process.env.EDITOR_UPSTREAM_RENDER_URL);
-      assert.equal(response.url, 'https://www.example.com/');
-      assert.equal(response.isAuthenticated, true);
-    })
-  })
+    it('should successfully make a request with valid JSON', async function () {
+      this.timeout(6000);
+      await request.post('/render').type('json').send({data:"valid string"}).expect(500);
+    });
+  });
 });

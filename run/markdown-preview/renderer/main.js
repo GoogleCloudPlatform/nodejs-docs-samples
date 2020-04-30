@@ -14,36 +14,28 @@
 
 const express = require('express');
 const MarkdownIt = require('markdown-it');
-const xss = require('xss');
 
 const app = express();
-
 app.use(express.json());
 
 app.post('/', (req, res) => {
   try {
-
     // Get the Markdown text and convert it into HTML using markdown-it
-    const markdown = req.body.markdown;
+    const markdown = req.body.markdown.data ? req.body.markdown.data : '';
     const md = new MarkdownIt();
-    const unsafeData = md.render(markdown);
-
-    // Add XSS sanitizer
-    const safeData = xss(unsafeData);
-    const response = JSON.stringify({data: safeData});
-    res.send(response);
-  
+    const html = md.render(markdown);
+    const response = {data: html};
+    res.status(200).send(response);
   } catch(err) {
-    console.log('Error: ', err);
-    res.send(err);
+    console.log('Error rendering Markdown: ', err);
+    res.status(400).send(err);
   }
 })
 
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
-app.listen(port, err => {
-  if (err) console.log('Error: ', err);
-  console.log('Renderer is listening on port ', port);
+app.listen(PORT, err => {
+  console.log(`Renderer is listening on port ${PORT}`);
 })
 
 // Export for testing purposes.

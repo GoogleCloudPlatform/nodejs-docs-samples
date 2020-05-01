@@ -20,11 +20,14 @@ app.use(express.json());
 
 app.post('/', (req, res) => {
   let markdown;
-  if (req.body.markdown.data) {
-    markdown = req.body.markdown.data
+  if (!req.body.markdown.data) {
+    const msg = 'Markdown data could not be retrieved.';
+    console.log(msg);
+    res.status(400).send(`Error: ${msg}`)
   } else {
-    res.status(400).send('Error: Markdown data could not be retrieved.')
+    markdown = req.body.markdown.data;
   };
+  
   try {
     // Get the Markdown text and convert it into HTML using markdown-it.
     const md = new MarkdownIt();

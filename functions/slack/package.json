@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@slack/events-api": "^2.3.0",
-    "googleapis": "^48.0.0"
+    "googleapis": "^49.0.0"
   },
   "devDependencies": {
     "mocha": "^7.0.0",

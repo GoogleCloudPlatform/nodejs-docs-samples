@@ -27,11 +27,11 @@ app.post('/', (req, res) => {
   } else {
     markdown = req.body.markdown.data;
   };
-  
+
   try {
     // Get the Markdown text and convert it into HTML using markdown-it.
     const md = new MarkdownIt();
-    const html = md.render(markdown());
+    const html = md.render(markdown);
     const response = {data: html};
     res.status(200).send(response);
   } catch(err) {

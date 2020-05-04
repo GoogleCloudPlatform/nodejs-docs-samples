@@ -105,15 +105,14 @@ let schemaReady;
 
 createPool().then(() => (schemaReady = ensureSchema()));
 
-const awaitSchema = async (req, res, next) => {
+app.use(async (req, res, next) => {
   await schemaReady;
   next();
-};
-
-app.use(awaitSchema);
+});
 
 // Serve the index page, showing vote tallies.
-app.get('/', async (req, res) => {
+app.get('/', async (req, res, next) => {
+  try {
   // Get the 5 most recent votes.
   const recentVotesQuery = pool.request().query(
     'SELECT TOP(5) candidate, time_cast FROM votes ORDER BY time_cast DESC'
@@ -132,19 +131,30 @@ app.get('/', async (req, res) => {
 
   // Run queries concurrently, and wait for them to complete
   // This is faster than await-ing each query object as it is created
-  const recentVotes = await recentVotesQuery;
-  const tabsVotes = await tabsQuery;
-  const spacesVotes = await spacesQuery;
+  
+    const recentVotes = await recentVotesQuery;
+    const tabsVotes = await tabsQuery;
+    const spacesVotes = await spacesQuery;
 
-  res.render('index.pug', {
-    recentVotes: recentVotes.recordset,
-    tabCount: tabsVotes.recordset[0].count,
-    spaceCount: spacesVotes.recordset[0].count,
-  });
+    res.render('index.pug', {
+      recentVotes: recentVotes.recordset,
+      tabCount: tabsVotes.recordset[0].count,
+      spaceCount: spacesVotes.recordset[0].count,
+    });
+  }
+  catch (err) {
+    logger.error(err);
+    res
+      .status(500)
+      .send(
+        'Unable to load page. Please check the application logs for more details.'
+      )
+      .end();
+  }
 });
 
 // Handle incoming vote requests and inserting them into the database.
-app.post('/', async (req, res) => {
+app.post('/', async (req, res, next) => {
   const {team} = req.body;
   const timestamp = new Date();
 
@@ -192,9 +202,12 @@ const server = app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 
-process.on('unhandledRejection', err => {
-  logger.error(err);
-  process.exit(1);
-});
+var environment = process.env.NODE_ENV || 'development';
+if (environment === `development`) {
+  process.on('unhandledRejection', err => {
+    console.error(err);
+    process.exit(1);
+  });
+}
 
 module.exports = server;

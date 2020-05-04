@@ -147,8 +147,8 @@ const getVoteCount = async (knex, candidate) => {
   return await knex('votes').count('vote_id').where('candidate', candidate);
 };
 
-app.get('/', (req, res) => {
-  (async function () {
+app.get('/', async (req, res) => {
+  try {
     // Query the total count of "TABS" from the database.
     const tabsResult = await getVoteCount(knex, 'TABS');
     const tabsTotalVotes = parseInt(tabsResult[0].count);
@@ -183,7 +183,14 @@ app.get('/', (req, res) => {
       voteDiff: voteDiff,
       leaderMessage: leaderMessage,
     });
-  })();
+  }
+  catch(err) {
+    res
+      .status(500)
+      .send('Unable to load page; see logs for more details.')
+      .end();
+  }
+    
 });
 
 app.post('/', async (req, res) => {

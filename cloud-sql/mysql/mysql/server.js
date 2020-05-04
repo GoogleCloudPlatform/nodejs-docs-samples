@@ -102,36 +102,46 @@ let schemaReady;
 
 createPool().then(() => (schemaReady = ensureSchema()));
 
-const awaitSchema = async (req, res, next) => {
+app.use(async (req, res, next) => {
   await schemaReady;
   next();
-};
-
-app.use(awaitSchema);
+});
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {
-  // Get the 5 most recent votes.
-  const recentVotesQuery = pool.query(
-    'SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5'
-  );
+  try {
+    // Get the 5 most recent votes.
+    const recentVotesQuery = pool.query(
+      'SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5'
+    );
 
-  // Get votes
-  const stmt = 'SELECT COUNT(vote_id) as count FROM votes WHERE candidate=?';
-  const tabsQuery = pool.query(stmt, ['TABS']);
-  const spacesQuery = pool.query(stmt, ['SPACES']);
+    // Get votes
+    const stmt = 'SELECT COUNT(vote_id) as count FROM votes WHERE candidate=?';
+    const tabsQuery = pool.query(stmt, ['TABS']);
+    const spacesQuery = pool.query(stmt, ['SPACES']);
 
-  // Run queries concurrently, and wait for them to complete
-  // This is faster than await-ing each query object as it is created
-  const recentVotes = await recentVotesQuery;
-  const [tabsVotes] = await tabsQuery;
-  const [spacesVotes] = await spacesQuery;
+    // Run queries concurrently, and wait for them to complete
+    // This is faster than await-ing each query object as it is created
+    const recentVotes = await recentVotesQuery;
+    const [tabsVotes] = await tabsQuery;
+    const [spacesVotes] = await spacesQuery;
 
-  res.render('index.pug', {
-    recentVotes,
-    tabCount: tabsVotes.count,
-    spaceCount: spacesVotes.count,
-  });
+    res.render('index.pug', {
+      recentVotes,
+      tabCount: tabsVotes.count,
+      spaceCount: spacesVotes.count,
+    });
+  } 
+  catch(err) {
+    logger.err(err);
+    res
+      .status(500)
+      .send(
+        'Unable to load page. Please check the application logs for more details.'
+      )
+      .end();
+  }
+  
 });
 
 // Handle incoming vote requests and inserting them into the database.
@@ -172,5 +182,13 @@ const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
+
+var environment = process.env.NODE_ENV || 'development';
+if (environment !== `development`) {
+  process.on('unhandledRejection', err => {
+    console.error(err);
+    process.exit(1);
+  });
+}
 
 module.exports = server;

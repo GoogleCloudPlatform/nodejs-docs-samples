@@ -15,15 +15,13 @@
 const requestServiceToken = async (receivingServiceURL = 'https://SERVICE_NAME-HASH-run.app') => {
 // [START run_service_to_service_auth]
 
-// Import the Metadata API
-const gcpMetadata = require('gcp-metadata')
-const got = require('got');
+  const gcpMetadata = require('gcp-metadata');
+  const got = require('got');
 
-// TODO(developer): Add the URL of your receiving service
-// const receivingServiceURL = 'https://SERVICE_NAME-HASH-run.app'
+  // TODO(developer): Add the URL of your receiving service
+  // const receivingServiceURL = 'https://SERVICE_NAME-HASH-run.app'
 
   try {
-
     // Set up the metadata server request URL
     const metadataServerTokenPath = `service-accounts/default/identity?audience=${receivingServiceURL}`;
     
@@ -34,14 +32,12 @@ const got = require('got');
         'Authorization': 'bearer ' + token
       }
     };
-    console.log('TOKEN??????? ', token);
     const serviceResponse = await got(receivingServiceURL, serviceRequestOptions);
     return serviceResponse;
-
   } catch (error) { 
     console.log('Metadata server could not respond to query ', error);
     return error;
-  }
+  };
 
 // [END run_service_to_service_auth]
 

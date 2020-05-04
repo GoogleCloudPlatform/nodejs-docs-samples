@@ -172,7 +172,7 @@ app.post('/', async (req, res) => {
     // involve retrying or adjusting parameters depending on the situation.
     // [START_EXCLUDE]
 
-    logger.err(err);
+    logger.error(err);
     res
       .status(500)
       .send(
@@ -190,6 +190,11 @@ const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
+});
+
+process.on('unhandledRejection', err => {
+  logger.error(err);
+  process.exit(1);
 });
 
 module.exports = server;

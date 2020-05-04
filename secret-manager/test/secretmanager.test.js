@@ -16,13 +16,13 @@
 
 const {assert} = require('chai');
 const cp = require('child_process');
-const uuidv4 = require('uuid/v4');
+const {v4} = require('uuid');
 
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 const client = new SecretManagerServiceClient();
 
 const projectId = process.env.GCLOUD_PROJECT;
-const secretId = uuidv4();
+const secretId = v4();
 const payload = 'my super secret data';
 const iamUser = 'user:sethvargo@google.com';
 

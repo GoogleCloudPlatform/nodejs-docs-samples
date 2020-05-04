@@ -14,17 +14,17 @@
 
 const assert = require('assert');
 const requestServiceToken = require('../auth.js');
+
 let res;
 
 describe('requestServiceToken tests', () => {
   before(async function () {
-    this.timeout(5000);
+    this.timeout(3000);
     res = await requestServiceToken('');
-  })
+  });
 
   it('should return an error if given invalid Receiving Service URL', () => {
     assert.strictEqual(typeof res, 'object'); 
-    assert.strictEqual(res.code, 'EHOSTDOWN')
-  })
-
-})
+    assert.strictEqual(res.code, 'EHOSTDOWN');
+  });
+});

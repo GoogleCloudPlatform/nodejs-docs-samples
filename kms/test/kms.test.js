@@ -17,19 +17,19 @@
 const {describe, it, before, after, beforeEach, afterEach} = require('mocha');
 const {assert} = require('chai');
 const crypto = require('crypto');
-const uuidv4 = require('uuid/v4');
+const {v4} = require('uuid');
 
 const {KeyManagementServiceClient} = require('@google-cloud/kms');
 const client = new KeyManagementServiceClient();
 
 const projectId = process.env.GCLOUD_PROJECT;
 const locationId = 'us-east1';
-const keyRingId = uuidv4();
-const asymmetricDecryptKeyId = uuidv4();
-const asymmetricSignEcKeyId = uuidv4();
-const asymmetricSignRsaKeyId = uuidv4();
-const hsmKeyId = uuidv4();
-const symmetricKeyId = uuidv4();
+const keyRingId = v4();
+const asymmetricDecryptKeyId = v4();
+const asymmetricSignEcKeyId = v4();
+const asymmetricSignRsaKeyId = v4();
+const hsmKeyId = v4();
+const symmetricKeyId = v4();
 
 const nodeMajorVersion = parseInt(process.version.match(/v?(\d+).*/)[1]);
 
@@ -230,47 +230,47 @@ describe('Cloud KMS samples', () => {
 
   it('creates asymmetric decryption keys', async () => {
     const sample = require('../createKeyAsymmetricDecrypt');
-    const key = await sample.main(projectId, locationId, keyRingId, uuidv4());
+    const key = await sample.main(projectId, locationId, keyRingId, v4());
     assert.equal(key.purpose, 'ASYMMETRIC_DECRYPT');
     assert.equal(key.versionTemplate.algorithm, 'RSA_DECRYPT_OAEP_2048_SHA256');
   });
 
   it('creates asymmetric signing keys', async () => {
     const sample = require('../createKeyAsymmetricSign');
-    const key = await sample.main(projectId, locationId, keyRingId, uuidv4());
+    const key = await sample.main(projectId, locationId, keyRingId, v4());
     assert.equal(key.purpose, 'ASYMMETRIC_SIGN');
     assert.equal(key.versionTemplate.algorithm, 'RSA_SIGN_PKCS1_2048_SHA256');
   });
 
   it('creates hsm keys', async () => {
     const sample = require('../createKeyHsm');
-    const key = await sample.main(projectId, locationId, keyRingId, uuidv4());
+    const key = await sample.main(projectId, locationId, keyRingId, v4());
     assert.equal(key.versionTemplate.protectionLevel, 'HSM');
   });
 
   it('creates labeled keys', async () => {
     const sample = require('../createKeyLabels');
-    const key = await sample.main(projectId, locationId, keyRingId, uuidv4());
+    const key = await sample.main(projectId, locationId, keyRingId, v4());
     assert.equal(key.labels.team, 'alpha');
     assert.equal(key.labels.cost_center, 'cc1234');
   });
 
   it('creates key rings', async () => {
     const sample = require('../createKeyRing');
-    const keyRing = await sample.main(projectId, locationId, uuidv4());
+    const keyRing = await sample.main(projectId, locationId, v4());
     assert.match(keyRing.name, new RegExp(`${locationId}`));
   });
 
   it('creates rotating keys', async () => {
     const sample = require('../createKeyRotationSchedule');
-    const key = await sample.main(projectId, locationId, keyRingId, uuidv4());
+    const key = await sample.main(projectId, locationId, keyRingId, v4());
     assert.exists(key.rotationPeriod);
     assert.exists(key.nextRotationTime);
   });
 
   it('creates symmetric keys', async () => {
     const sample = require('../createKeySymmetricEncryptDecrypt');
-    const key = await sample.main(projectId, locationId, keyRingId, uuidv4());
+    const key = await sample.main(projectId, locationId, keyRingId, v4());
     assert.equal(key.purpose, 'ENCRYPT_DECRYPT');
     assert.equal(key.versionTemplate.algorithm, 'GOOGLE_SYMMETRIC_ENCRYPTION');
   });

@@ -42,9 +42,8 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_mysql_mysql_create]
-let pool;
 const createPool = async () => {
-  pool = await mysql.createPool({
+  return await mysql.createPool({
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
@@ -88,7 +87,7 @@ const createPool = async () => {
 };
 // [END cloud_sql_mysql_mysql_create]
 
-const ensureSchema = async () => {
+const ensureSchema = async (pool) => {
   // Wait for tables to be created (if they don't already exist).
   await pool.query(
     `CREATE TABLE IF NOT EXISTS votes
@@ -98,21 +97,28 @@ const ensureSchema = async () => {
   console.log(`Ensured that table 'votes' exists`);
 };
 
-let schemaReady;
+let pool;
+const poolPromise = createPool()
+  .then(async (pool) => {
+    await ensureSchema(pool);
+    return pool;
+  })
+  .catch((err) => {
+    logger.error(err);
+    process.exit(1)
+  });
+
 app.use(async (req, res, next) => {
-  if (schemaReady) {
+  if (pool) {
+    return next();
+  }
+  try {
+    pool = await poolPromise;
     next();
   }
-  else {
-    try {
-      await createPool();
-      schemaReady = await ensureSchema();
-      next();
-    }
-    catch (err) {
-      logger.error(err);
-      return next(err);
-    }
+  catch (err) {
+    logger.error(err);
+    return next(err);
   }
 });
 
@@ -142,7 +148,7 @@ app.get('/', async (req, res) => {
     });
   } 
   catch(err) {
-    logger.err(err);
+    logger.error(err);
     res
       .status(500)
       .send(
@@ -172,7 +178,7 @@ app.post('/', async (req, res) => {
     // If something goes wrong, handle the error in this section. This might
     // involve retrying or adjusting parameters depending on the situation.
     // [START_EXCLUDE]
-    logger.err(err);
+    logger.error(err);
     res
       .status(500)
       .send(

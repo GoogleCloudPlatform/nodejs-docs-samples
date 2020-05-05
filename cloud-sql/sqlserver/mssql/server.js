@@ -42,7 +42,6 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_server_mssql_create]
-let pool;
 const createPool = async () => {
   let config = {pool: {}};
   config.user = process.env.DB_USER; // e.g. 'my-db-user'
@@ -82,11 +81,11 @@ const createPool = async () => {
   // [END cloud_sql_server_mssql_backoff]
 
   // [END_EXCLUDE]
-  pool = await mssql.connect(config);
+  return await mssql.connect(config);
 };
 // [END cloud_sql_mysql_mysql_create]
 
-const ensureSchema = async () => {
+const ensureSchema = async (pool) => {
   // Wait for tables to be created (if they don't already exist).
   await pool.request()
     .query(
@@ -101,21 +100,28 @@ const ensureSchema = async () => {
   console.log(`Ensured that table 'votes' exists`);
 };
 
-let schemaReady;
+let pool;
+const poolPromise = createPool()
+  .then(async (pool) => {
+    await ensureSchema(pool);
+    return pool;
+  })
+  .catch((err) => {
+    logger.error(err);
+    process.exit(1);
+  });
+
 app.use(async (req, res, next) => {
-  if (schemaReady) {
+  if (pool) {
+    return next();
+  }
+  try {
+    pool = await poolPromise;
     next();
   }
-  else {
-    try {
-      await createPool();
-      schemaReady = await ensureSchema();
-      next();
-    }
-    catch (err) {
-      logger.error(err);
-      return next(err);
-    }
+  catch (err) {
+    logger.error(err);
+    return next(err);
   }
 });
 

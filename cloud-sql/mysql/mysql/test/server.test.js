@@ -30,7 +30,7 @@ stubMysql.createPool.returns(poolStub);
 const server = require('../server.js');
 
 it('check index page', async () => {
-  const response = await request(server).get('/').timeout(2000);
+  const response = await request(server).get('/').timeout(3000);
 
   assert.strictEqual(response.status, 200);
 });

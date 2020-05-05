@@ -48,11 +48,11 @@ const createPool = async () => {
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
-    // If connecting via unix domain socket, specify the path
-    socketPath: `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
+    // // If connecting via unix domain socket, specify the path
+    // socketPath: `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
     // If connecting via TCP, enter the IP and port instead
-    // host: 'localhost',
-    // port: 3306,
+    host: 'localhost',
+    port: 3306,
 
     //[START_EXCLUDE]
 
@@ -99,12 +99,21 @@ const ensureSchema = async () => {
 };
 
 let schemaReady;
-
-createPool().then(() => (schemaReady = ensureSchema()));
-
 app.use(async (req, res, next) => {
-  await schemaReady;
-  next();
+  if (schemaReady) {
+    next();
+  }
+  else {
+    try {
+      await createPool();
+      schemaReady = await ensureSchema();
+      next();
+    }
+    catch (err) {
+      logger.error(err);
+      return next(err);
+    }
+  }
 });
 
 // Serve the index page, showing vote tallies.
@@ -183,12 +192,9 @@ const server = app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 
-var environment = process.env.NODE_ENV || 'development';
-if (environment !== `development`) {
-  process.on('unhandledRejection', err => {
-    console.error(err);
-    process.exit(1);
-  });
-}
+process.on('unhandledRejection', err => {
+  console.error(err);
+  process.exit(1);
+});
 
 module.exports = server;

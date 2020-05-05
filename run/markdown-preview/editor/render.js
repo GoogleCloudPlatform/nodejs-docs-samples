@@ -47,8 +47,8 @@ const renderRequest = async (service, markdown) => {
   // [START run_secure_request_do]
   try {
     // serviceRequest converts the Markdown plaintext to HTML.
-    const serviceRequest = await got(service.url, serviceRequestOptions);
-    const serviceResponse = serviceRequest.body;
+    const serviceResponse = await got(service.url, serviceRequestOptions);
+    console.log('serviceResponseee: ', serviceResponse);
     return serviceResponse;
   } catch (err) { 
     throw Error('Renderer service could not respond to request ', err);

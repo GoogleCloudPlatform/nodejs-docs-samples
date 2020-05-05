@@ -33,20 +33,20 @@ const init = () => {
 const service = init();
 
 // Load the template files and serve them with the Editor service.
-const buildTemplate = async () => {
+const buildTemplate = () => {
   try {
     markdownDefault = readFileSync(__dirname + '/templates/markdown.md');
     const indexTemplate = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
     compiledTemplate = indexTemplate({ default: markdownDefault});
-    return compiledTemplate
+    return compiledTemplate;
   } catch(err) {
     throw Error ('Error loading template: ', err);
   }
 };
 
-app.get('/', async (req, res) => { 
+app.get('/', (req, res) => { 
   try {
-    template = await buildTemplate();
+    template = buildTemplate();
     res.status(200).send(template);
   } catch (err) {
     console.log('Error loading the Editor service: ', err);
@@ -59,9 +59,8 @@ app.get('/', async (req, res) => {
 app.post('/render', async (req, res) => {
   try {
     const markdown = req.body;
-    const render = await renderRequest(service, markdown);
-    const response = render;
-    res.status(200).send(response.data);
+    const response = await renderRequest(service, markdown);
+    res.status(200).send(response.body.data);
   } catch (err) {
     console.log('Error querying the Renderer service: ', err);
     res.status(500).send(err);
@@ -71,7 +70,7 @@ app.post('/render', async (req, res) => {
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, err => {
-  console.log(`Renderer is listening on port ${PORT}`);
+  console.log(`Editor service is listening on port ${PORT}`);
 });
 
 // Exports for testing purposes.

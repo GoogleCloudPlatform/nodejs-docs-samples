@@ -1,6 +1,6 @@
 {
-  "name": "cloudsql-mysql-mysql",
-  "description": "Node.js Cloud SQL MySQL Connectivity Sample",
+  "name": "cloudsql-sqlserver-mssql",
+  "description": "Node.js Cloud SQL SQL Server Connectivity Sample",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",

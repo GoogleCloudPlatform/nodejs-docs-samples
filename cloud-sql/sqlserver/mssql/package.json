@@ -13,7 +13,7 @@
   },
   "scripts": {
     "system-test": "mocha test/*.test.js --timeout=60000 --exit",
-    "test": "export NODE_ENV='test' && npm run system-test"
+    "test": "npm run system-test"
   },
   "dependencies": {
     "@google-cloud/logging-winston": "^3.0.0",

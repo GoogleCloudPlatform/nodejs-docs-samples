@@ -102,16 +102,26 @@ const ensureSchema = async () => {
 };
 
 let schemaReady;
-
-createPool().then(() => (schemaReady = ensureSchema()));
-
 app.use(async (req, res, next) => {
-  await schemaReady;
-  next();
+  if (schemaReady) {
+    next();
+  }
+  else {
+    try {
+      await createPool();
+      schemaReady = await ensureSchema();
+      next();
+    }
+    catch (err) {
+      logger.error(err);
+      return next(err);
+    }
+  }
 });
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res, next) => {
+  
   try {
   // Get the 5 most recent votes.
   const recentVotesQuery = pool.request().query(

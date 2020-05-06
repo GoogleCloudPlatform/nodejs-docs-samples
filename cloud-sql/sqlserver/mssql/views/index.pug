@@ -1,0 +1,70 @@
+doctype html
+html(lang="en")
+  head
+    title Tabs VS Spaces
+
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js")
+  body
+
+    nav(class="red lighten-1")
+      div(class="nav-wrapper")
+        a(href="#" class="brand-logo center") Tabs VS Spaces
+
+    div(class="section")
+
+      div(class="center")
+        h4
+          - var diff = tabCount - spaceCount
+          if tabCount > spaceCount
+            = 'TABS are winning by ' + (tabCount - spaceCount) + ' votes!'
+          else if spaceCount > tabCount
+            = 'SPACES are winning by ' + (spaceCount - tabCount) + ' votes!'
+          else
+            = 'TABS and SPACES are evenly matched!'
+
+      div(class="row center")
+        div(class="col s6 m5 offset-m1")
+          div(class=(leadTeam === 'TABS') ? 'card-panel green lighten-3' : 'card-panel')
+            i(class="material-icons large") keyboard_tab
+            h3 #{tabCount} votes
+            button(id="voteTabs" class="btn green") Vote for TABS
+        div(class="col s6 m5")
+          div(class=(leadTeam === 'SPACES') ? 'card-panel green lighten-3' : 'card-panel')
+            i(class="material-icons large") space_bar
+            h3 #{spaceCount} votes
+            button(id="voteSpaces" class="btn blue") Vote for SPACES
+
+      h4(class="header center") Recent Votes
+      ul(class="container collection center")
+        each vote in recentVotes
+          li(class="collection-item avatar")
+            if vote.candidate.trim() === 'TABS'
+              i(class="material-icons circle green") keyboard_tab
+            else
+              i(class="material-icons circle blue") space_bar
+            span(class="title") A vote for <b>#{vote.candidate}</b>
+            p was cast at #{vote.time_cast}.
+
+    script.
+      function vote(team) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          var msg = "";
+          if (this.readyState == 4) {
+            if (!window.alert(this.responseText)) {
+              window.location.reload();
+            }
+          }
+        };
+        xhr.open("POST", "/", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send("team=" + team);
+      }
+       document.getElementById("voteTabs").addEventListener("click", function () {
+        vote("TABS");
+      });
+      document.getElementById("voteSpaces").addEventListener("click", function () {
+        vote("SPACES");
+      });

@@ -20,7 +20,7 @@
  * https://cloud.google.com/natural-language/automl/docs/
  */
 
-`use strict`;
+'use strict';
 
 async function createModel(projectId, computeRegion, datasetId, modelName) {
   // [START automl_language_createModel]
@@ -180,7 +180,9 @@ async function getModel(projectId, computeRegion, modelId) {
   const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
   // Get complete detail of the model.
-  const [model] = await client.getModel({name: modelFullId});
+  const [model] = await client.getModel({
+    name: modelFullId,
+  });
 
   // Display the model information.
   console.log(`Model name: ${model.name}`);
@@ -398,7 +400,9 @@ async function deleteModel(projectId, computeRegion, modelId) {
   const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
   // Delete a model.
-  const [operation] = client.deleteModel({name: modelFullId});
+  const [operation] = client.deleteModel({
+    name: modelFullId,
+  });
   const response = await operation.promise();
   // The final result of the operation.
   if (response[2].done === true) console.log('Model deleted.');

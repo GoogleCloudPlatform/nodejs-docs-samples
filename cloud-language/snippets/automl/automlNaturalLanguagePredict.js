@@ -20,7 +20,7 @@
  * https://cloud.google.com/natural-language/automl/docs/
  */
 
-`use strict`;
+'use strict';
 
 async function predict(projectId, computeRegion, modelId, filePath) {
   // [START automl_language_predict]

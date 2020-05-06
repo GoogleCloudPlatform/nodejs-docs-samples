@@ -20,7 +20,7 @@ const path = require('path');
 let request, service, markdown;
 
 describe('Editor renderRequest unit tests', function () {
-  this.timeout(6000);
+  this.timeout(5000);
   
   before(async () => {
     request = require(path.join(__dirname, '..', 'render'));

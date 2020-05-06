@@ -24,7 +24,10 @@ describe('Editor unit tests', () => {
   describe('Service init', () => {
     it('should respond with an error for no EDITOR_UPSTREAM_RENDER_URL var', async () => {
       request = () => require(path.join(__dirname, '..', 'main'));
-      assert.throws(request, {name: 'Error', message: 'No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable'})
+      assert.throws(request, {
+        name: 'Error', 
+        message: 'No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable'
+      });
     });
 
     it('should return an object with an EDITOR_UPSTREAM_RENDER_URL var', async () => {

@@ -20,7 +20,7 @@
  * https://cloud.google.com/natural-language/automl/docs/
  */
 
-`use strict`;
+'use strict';
 
 async function createDataset(
   projectId,
@@ -135,7 +135,9 @@ async function getDataset(projectId, computeRegion, datasetId) {
   const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
 
   // Get complete detail of the dataset.
-  const [dataset] = await client.getDataset({name: datasetFullId});
+  const [dataset] = await client.getDataset({
+    name: datasetFullId,
+  });
   // Display the dataset information.
   console.log(`Dataset name: ${dataset.name}`);
   console.log(`Dataset id: ${dataset.name.split('/').pop(-1)}`);
@@ -241,7 +243,9 @@ async function deleteDataset(projectId, computeRegion, datasetId) {
   const datasetFullId = client.datasetPath(projectId, computeRegion, datasetId);
 
   // Delete a dataset.
-  const [operation] = await client.deleteDataset({name: datasetFullId});
+  const [operation] = await client.deleteDataset({
+    name: datasetFullId,
+  });
   const response = await operation.promise();
   // The final result of the operation.
   if (response[2].done === true) console.log('Dataset deleted.');

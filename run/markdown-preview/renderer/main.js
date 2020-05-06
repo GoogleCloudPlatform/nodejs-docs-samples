@@ -30,6 +30,7 @@ app.post('/', (req, res) => {
 
   try {
     // Get the Markdown text and convert it into HTML using markdown-it.
+    // Markdown-it prohibits some kinds of links making it safe from XSS.
     const md = new MarkdownIt();
     const html = md.render(markdown);
     res.status(200).send(html);

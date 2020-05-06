@@ -83,7 +83,7 @@ const createPool = async () => {
   // [END_EXCLUDE]
   return await mssql.connect(config);
 };
-// [END cloud_sql_mysql_mysql_create]
+// [END cloud_sql_server_mssql_create]
 
 const ensureSchema = async (pool) => {
   // Wait for tables to be created (if they don't already exist).

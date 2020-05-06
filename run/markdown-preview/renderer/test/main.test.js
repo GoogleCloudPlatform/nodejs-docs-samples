@@ -26,30 +26,28 @@ describe('Unit Tests', () => {
     request = supertest(app);
   });
 
-  it('should return Bad Request with an invalid payload', async () => {
+  it('should return Bad Request with an invalid type', async () => {
     await request.post('/').type('json').send('markdown: true').expect(400);
   });
 
   it('should succeed with a valid request', async () => {
-    const header = {markdown: { data: "**markdown text**"}};
-    await request.post('/').type('json').send(header).expect(200).then(res => {
-      const body = res.body;
-      assert.equal(body.data, "<p><strong>markdown text</strong></p>\n")
+    const markdown = "**markdown text**";
+    await request.post('/').type('text').send(markdown).expect(200).then(res => {
+      const body = res.text;
+      assert.equal(body, "<p><strong>markdown text</strong></p>\n")
     });
   });
 
   it('should succeed with a request that includes xss', async () => {
-    let text = "<script>script</script>";
-    let header = {markdown: { data: text}};
-    await request.post('/').type('json').send(header).expect(200).then(res => {
-      const body = res.body;
-      assert.deepStrictEqual(body.data, "<p>&lt;script&gt;script&lt;/script&gt;</p>\n");
+    let markdown = "<script>script</script>";
+    await request.post('/').type('text').send(markdown).expect(200).then(res => {
+      const body = res.text;
+      assert.deepStrictEqual(body, "<p>&lt;script&gt;script&lt;/script&gt;</p>\n");
      });
-    text = '<a onblur="alert(secret)" href="http://www.google.com">Google</a>'
-    header = {markdown: { data: text}};
-    await request.post('/').type('json').send(header).expect(200).then(res => {
-      const body = res.body;
-      assert.deepStrictEqual(body.data, "<p>&lt;a onblur=&quot;alert(secret)&quot; href=&quot;http://www.google.com&quot;&gt;Google&lt;/a&gt;</p>\n");
+    markdown = '<a onblur="alert(secret)" href="http://www.google.com">Google</a>'
+    await request.post('/').type('text').send(markdown).expect(200).then(res => {
+      const body = res.text;
+      assert.deepStrictEqual(body, "<p>&lt;a onblur=&quot;alert(secret)&quot; href=&quot;http://www.google.com&quot;&gt;Google&lt;/a&gt;</p>\n");
      });
   })
 })

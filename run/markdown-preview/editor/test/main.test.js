@@ -18,27 +18,21 @@ const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
 
-let request, service, template, htmlString, markdownString, falseString;
+let request, template, htmlString, markdownString, falseString;
 
 describe('Editor unit tests', () => {
   describe('Service init', () => {
     it('should respond with an error for no EDITOR_UPSTREAM_RENDER_URL var', async () => {
-      const {app, init} = require(path.join(__dirname, '..', 'main'));
-      request = supertest(app);
-      service = () => init();
-      assert.rejects(service, 'Error')
+      request = () => require(path.join(__dirname, '..', 'main'));
+      assert.throws(request, {name: 'Error', message: 'No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable'})
     });
 
-    // Reload the server with updated env vars.
-    before(async () => {
+    it('should return an object with an EDITOR_UPSTREAM_RENDER_URL var', async () => {
+      // Reload the server with updated env vars.
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
       const {app, init} = require(path.join(__dirname, '..', 'main'));
       request = supertest(app);
-      service = () => { return init()};
-    })
-
-    it('should return an object with an EDITOR_UPSTREAM_RENDER_URL var', async () => {
-      const response = service();
+      const response = init();
       assert.equal(response.url, process.env.EDITOR_UPSTREAM_RENDER_URL);
       assert.equal(response.url, 'https://www.example.com/');
       assert.equal(response.isAuthenticated, true);
@@ -48,9 +42,9 @@ describe('Editor unit tests', () => {
   describe('Handlebars compiler', async () => {
     before(async () => {
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app, init, buildTemplate} = require(path.join(__dirname, '..', 'main'));
+      const {app, buildTemplate} = require(path.join(__dirname, '..', 'main'));
       request = supertest(app);
-      template = await buildTemplate(init());
+      template = buildTemplate();
     })
 
     it('includes HTML from the templates', () => {
@@ -78,16 +72,12 @@ describe('Editor unit tests', () => {
       await request.post('/render').type('json').send('invalid string').expect(400);
     });
     
-    // Reload the server with updated env vars.
-    before(async () => {
-      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app, init} = require(path.join(__dirname, '..', 'main'));
-      request = supertest(app);
-      service = init();
-    })
-
     it('should successfully make a request with valid JSON', async function () {
-      this.timeout(6000);
+      this.timeout(5000);
+      // Reload the server with updated env vars.
+      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
+      const {app} = require(path.join(__dirname, '..', 'main'));
+      request = supertest(app);
       await request.post('/render').type('json').send({data:"valid string"}).expect(500);
     });
   });

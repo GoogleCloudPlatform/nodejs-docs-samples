@@ -24,11 +24,12 @@ describe('Editor renderRequest unit tests', function () {
   
   before(async () => {
     request = require(path.join(__dirname, '..', 'render'));
-    service = {url: 'https://www.google.com', isAuthenticated: false};
+    service = {url: 'https://www.google.com'};
     markdown = "**markdown text**";
   });
 
   it('can make an unauthenticated request', async () => {
+    service.isAuthenticated = false;
     assert.rejects(request(service, markdown));
   })
 

@@ -59,6 +59,9 @@ export TRANSLATE_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_BUCKET=$FUNCTIONS_BUCKET
 
+# functions/ocr (reuses some stuff from functions/translate)
+export TO_LANG="en,es"
+
 #  functions/imagemagick
 export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-imagick
 

@@ -25,10 +25,9 @@ const renderRequest = async (service, markdown) => {
   const serviceRequestOptions = { 
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'text/plain'
     },
-    json: {markdown},
-    responseType: 'json'
+    body: markdown.data
   };
 
   if (service.isAuthenticated) {
@@ -48,7 +47,6 @@ const renderRequest = async (service, markdown) => {
   try {
     // serviceRequest converts the Markdown plaintext to HTML.
     const serviceResponse = await got(service.url, serviceRequestOptions);
-    console.log('serviceResponseee: ', serviceResponse);
     return serviceResponse;
   } catch (err) { 
     throw Error('Renderer service could not respond to request ', err);

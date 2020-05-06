@@ -20,7 +20,7 @@ const renderRequest = require('./render.js');
 const app = express();
 app.use(express.json());
 
-let url, isAuthenticated, markdownDefault, compiledIndex, template;
+let url, isAuthenticated, markdownDefault, compiledTemplate, template;
 
 const init = () => {
   url = process.env.EDITOR_UPSTREAM_RENDER_URL;
@@ -37,7 +37,7 @@ const buildTemplate = () => {
   try {
     markdownDefault = readFileSync(__dirname + '/templates/markdown.md');
     const indexTemplate = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
-    compiledTemplate = indexTemplate({ default: markdownDefault});
+    compiledTemplate = indexTemplate({default: markdownDefault});
     return compiledTemplate;
   } catch(err) {
     throw Error ('Error loading template: ', err);
@@ -60,7 +60,7 @@ app.post('/render', async (req, res) => {
   try {
     const markdown = req.body;
     const response = await renderRequest(service, markdown);
-    res.status(200).send(response.body.data);
+    res.status(200).send(response.body);
   } catch (err) {
     console.log('Error querying the Renderer service: ', err);
     res.status(500).send(err);

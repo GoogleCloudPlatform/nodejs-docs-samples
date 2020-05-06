@@ -16,24 +16,23 @@ const express = require('express');
 const MarkdownIt = require('markdown-it');
 
 const app = express();
-app.use(express.json());
+app.use(express.text());
 
 app.post('/', (req, res) => {
   let markdown;
-  if (!req.body.markdown.data) {
+  if (!req.body) {
     const msg = 'Markdown data could not be retrieved.';
     console.log(msg);
     res.status(400).send(`Error: ${msg}`)
   } else {
-    markdown = req.body.markdown.data;
+    markdown = req.body;
   };
 
   try {
     // Get the Markdown text and convert it into HTML using markdown-it.
     const md = new MarkdownIt();
     const html = md.render(markdown);
-    const response = {data: html};
-    res.status(200).send(response);
+    res.status(200).send(html);
   } catch(err) {
     console.log('Error rendering Markdown: ', err);
     res.status(400).send(err);

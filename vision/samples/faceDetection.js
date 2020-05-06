@@ -47,17 +47,20 @@ async function detectFaces(inputFile) {
  * Draws a polygon around the faces, then saves to outputFile.
  */
 // [START vision_face_detection_tutorial_process_response]
-async function highlightFaces(inputFile, faces, outputFile, Canvas) {
-  const {promisify} = require('util');
-  const readFile = promisify(fs.readFile);
-  const image = await readFile(inputFile);
-  const Image = Canvas.Image;
-  // Open the original image into a canvas
-  const img = new Image();
-  img.src = image;
-  const canvas = new Canvas.Canvas(img.width, img.height);
-  const context = canvas.getContext('2d');
-  context.drawImage(img, 0, 0, img.width, img.height);
+async function highlightFaces(inputFile, faces, outputFile, PImage) {
+  // Open the original image
+  const stream = fs.createReadStream(inputFile);
+  let promise;
+  if (inputFile.match(/\.jpg$/)) {
+    promise = PImage.decodeJPEGFromStream(stream);
+  } else if (inputFile.match(/\.png$/)) {
+    promise = PImage.decodePNGFromStream(stream);
+  } else {
+    throw new Error(`Unknown filename extension ${inputFile}`);
+  }
+  const img = await promise;
+  const context = img.getContext('2d');
+  context.drawImage(img, 0, 0, img.width, img.height, 0, 0);
 
   // Now draw boxes around all the faces
   context.strokeStyle = 'rgba(0,255,0,0.8)';
@@ -71,8 +74,10 @@ async function highlightFaces(inputFile, faces, outputFile, Canvas) {
       if (i === 0) {
         origX = bounds.x;
         origY = bounds.y;
+        context.moveTo(bounds.x, bounds.y);
+      } else {
+        context.lineTo(bounds.x, bounds.y);
       }
-      context.lineTo(bounds.x, bounds.y);
     });
     context.lineTo(origX, origY);
     context.stroke();
@@ -81,25 +86,18 @@ async function highlightFaces(inputFile, faces, outputFile, Canvas) {
   // Write the result to a file
   console.log(`Writing to file ${outputFile}`);
   const writeStream = fs.createWriteStream(outputFile);
-  const pngStream = canvas.pngStream();
-
-  await new Promise((resolve, reject) => {
-    pngStream
-      .on('data', chunk => writeStream.write(chunk))
-      .on('error', reject)
-      .on('end', resolve);
-  });
+  await PImage.encodePNGToStream(img, writeStream);
 }
 // [END vision_face_detection_tutorial_process_response]
 
 // Run the example
 // [START vision_face_detection_tutorial_run_application]
 async function main(inputFile, outputFile) {
-  const Canvas = require('canvas');
+  const PImage = require('pureimage');
   outputFile = outputFile || 'out.png';
   const faces = await detectFaces(inputFile);
   console.log('Highlighting...');
-  await highlightFaces(inputFile, faces, outputFile, Canvas);
+  await highlightFaces(inputFile, faces, outputFile, PImage);
   console.log('Finished!');
 }
 // [END vision_face_detection_tutorial_run_application]

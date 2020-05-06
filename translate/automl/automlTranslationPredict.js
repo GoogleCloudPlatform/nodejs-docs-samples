@@ -20,7 +20,7 @@
  * https://cloud.google.com/translate/automl/docs
  */
 
-`use strict`;
+'use strict';
 
 async function predict(
   projectId,

@@ -1,5 +1,0 @@
-{
-  "requiresKeyFile": true,
-  "requiresProjectId": true,
-  "requiredEnvVars": ["BUCKET_NAME"]
-}

@@ -33,9 +33,12 @@ export DB_USER="kokoro_ci"
 export DB_PASS=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
 if [[ $SQL_CLIENT == 'pg' ]]; then
 	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
-else
+elif [[ $SQL_CLIENT == 'sqlserver' ]]; then
+	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-sqlserver-connection-name.txt)
+elif [[ $SQL_CLIENT == 'mysql' ]]; then
 	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
 fi
+
 
 # Configure Sendgrid variables
 export SENDGRID_SENDER="test@google.com"
@@ -58,6 +61,9 @@ export SUPPORTED_LANGUAGE_CODES="en,es"
 export TRANSLATE_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_BUCKET=$FUNCTIONS_BUCKET
+
+# functions/ocr (reuses some stuff from functions/translate)
+export TO_LANG="en,es"
 
 #  functions/imagemagick
 export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-imagick
@@ -87,6 +93,18 @@ npm install
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
+
+# Download and run the proxy if testing a Cloud SQL sample
+if [[ $SQL_CLIENT ]]; then
+	wget --quiet https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+	chmod +x cloud_sql_proxy	
+	if [[ $SQL_CLIENT == 'sqlserver' ]]; then
+		./cloud_sql_proxy -instances="${CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
+	else
+		mkdir /cloudsql; chmod 777 /cloudsql 
+		./cloud_sql_proxy -dir=/cloudsql -instances="${CONNECTION_NAME}" &>> cloud_sql_proxy.log &
+	fi
+fi
 
 # If tests are running against master, configure Build Cop
 # to open issues on failures:

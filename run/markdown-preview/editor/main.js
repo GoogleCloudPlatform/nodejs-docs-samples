@@ -58,9 +58,9 @@ app.get('/', (req, res) => {
 // The request returns the Markdown text converted to HTML.
 app.post('/render', async (req, res) => {
   try {
-    const markdown = req.body;
+    const markdown = req.body.data;
     const response = await renderRequest(service, markdown);
-    res.status(200).send(response.body);
+    res.status(200).send(response);
   } catch (err) {
     console.log('Error querying the Renderer service: ', err);
     res.status(500).send(err);

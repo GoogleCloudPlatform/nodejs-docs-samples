@@ -18,13 +18,11 @@ const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
 
-let request, template, htmlString, markdownString, falseString;
-
 describe('Editor unit tests', () => {
   describe('Service init', () => {
     it('should respond with an error for no EDITOR_UPSTREAM_RENDER_URL var', async () => {
-      request = () => require(path.join(__dirname, '..', 'main'));
-      assert.throws(request, {
+      let app = () => require(path.join(__dirname, '..', 'main'));
+      assert.throws(app, {
         name: 'Error', 
         message: 'No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable'
       });
@@ -33,9 +31,9 @@ describe('Editor unit tests', () => {
     it('should return an object with an EDITOR_UPSTREAM_RENDER_URL var', async () => {
       // Reload the server with updated env vars.
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app, init} = require(path.join(__dirname, '..', 'main'));
-      request = supertest(app);
+      const {init} = require(path.join(__dirname, '..', 'main'));
       const response = init();
+      // Successfully creates an init object.
       assert.equal(response.url, process.env.EDITOR_UPSTREAM_RENDER_URL);
       assert.equal(response.url, 'https://www.example.com/');
       assert.equal(response.isAuthenticated, true);
@@ -43,45 +41,46 @@ describe('Editor unit tests', () => {
   });
 
   describe('Handlebars compiler', async () => {
+    let template;
+
     before(async () => {
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app, buildTemplate} = require(path.join(__dirname, '..', 'main'));
-      request = supertest(app);
+      const {buildTemplate} = require(path.join(__dirname, '..', 'main'));
       template = buildTemplate();
     })
 
     it('includes HTML from the templates', () => {
-      htmlString = template.includes('<title>Markdown Editor</title>');
+      let htmlString = template.includes('<title>Markdown Editor</title>');
       assert.equal(htmlString, true);
     });
 
     it('includes Markdown from the templates', () => {
-      markdownString = template.includes("This UI allows a user to write Markdown text");
+      let markdownString = template.includes("This UI allows a user to write Markdown text");
       assert.equal(markdownString, true)
     });
 
     it('accurately checks the template for nonexistant string', () => {
-      falseString = template.includes("not a string in the template");
+      let falseString = template.includes("not a string in the template");
       assert.equal(falseString, false);      
     });
   });
 
   describe('Render request', () => {
+    let request;
+
+    before(async () => {
+      const {app} = require(path.join(__dirname, '..', 'main'));
+      request = supertest(app);
+    });
+
     it('should respond with Not Found for a GET request to the /render endpoint', async () => {
       await request.get('/render').expect(404);
     });
 
-    it('should respond with a Bad Request for a request with invalid JSON', async () => {
-      await request.post('/render').type('json').send('invalid string').expect(400);
-    });
-    
-    it('should successfully make a request with valid JSON', async function () {
-      this.timeout(5000);
-      // Reload the server with updated env vars.
-      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app} = require(path.join(__dirname, '..', 'main'));
-      request = supertest(app);
-      await request.post('/render').type('json').send({data:"valid string"}).expect(500);
+    it('should respond with a Bad Request for a request with invalid type', async function () {
+      this.timeout(9000);
+      // Request is expecting plain text and will not accept json.
+      await request.post('/render').type('json').send({body: {"data":"markdown"}}).expect(500);
     });
   });
 });

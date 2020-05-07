@@ -27,7 +27,7 @@ describe('Unit Tests', () => {
   });
 
   it('should return Bad Request with an invalid type', async () => {
-    await request.post('/').type('json').send('markdown: true').expect(400);
+    await request.post('/').type('json').send({"json": "json"}).expect(400);
   });
 
   it('should succeed with a valid request', async () => {

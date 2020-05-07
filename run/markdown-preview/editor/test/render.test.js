@@ -20,21 +20,23 @@ const path = require('path');
 let request, service, markdown;
 
 describe('Editor renderRequest unit tests', function () {
-  this.timeout(5000);
+  this.timeout(9000);
   
   before(async () => {
     request = require(path.join(__dirname, '..', 'render'));
-    service = {url: 'https://www.google.com'};
+    service = {url: 'https://www.example.com'};
     markdown = "**markdown text**";
   });
 
   it('can make an unauthenticated request', async () => {
     service.isAuthenticated = false;
+    // Request should be rejected with an error if it's not authenticated.
     assert.rejects(request(service, markdown));
   })
 
   it('can make an authenticated request with an invalid url', async () => {
     service.isAuthenticated = true;
+    // Request will be rejected if it's authenticated but given an invalid url.
     assert.rejects(request(service, markdown));
   })
 });

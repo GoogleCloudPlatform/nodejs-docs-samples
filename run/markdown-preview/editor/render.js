@@ -27,7 +27,8 @@ const renderRequest = async (service, markdown) => {
     headers: {
       'Content-Type': 'text/plain'
     },
-    body: markdown
+    body: markdown,
+    timeout: 3000
   };
 
   if (service.isAuthenticated) {
@@ -49,7 +50,7 @@ const renderRequest = async (service, markdown) => {
     const serviceResponse = await got(service.url, serviceRequestOptions);
     return serviceResponse.body;
   } catch (err) { 
-    throw Error('Renderer service could not respond to request ', err);
+    throw Error('Renderer service could not respond to request: ', err);
   };
   // [END run_secure_request_do]
 };

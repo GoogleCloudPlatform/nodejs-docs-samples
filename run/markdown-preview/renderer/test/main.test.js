@@ -16,6 +16,7 @@
 
 const assert = require('assert');
 const path = require('path');
+const sinon = require('sinon');
 const supertest = require('supertest');
 
 let request;
@@ -27,7 +28,12 @@ describe('Unit Tests', () => {
   });
 
   it('should return Bad Request with an invalid type', async () => {
-    await request.post('/').type('json').send({"json": "json"}).expect(400);
+    const consoleStub = sinon.stub(console, 'log');
+    // Ensure that the expected error is logged.
+    await request.post('/').type('json').send({"json": "json"});
+    const message = console.log.getCall(0).args[1].message;
+    assert.equal(message, "Input data should be a String");
+    consoleStub.restore();
   });
 
   it('should succeed with a valid request', async () => {

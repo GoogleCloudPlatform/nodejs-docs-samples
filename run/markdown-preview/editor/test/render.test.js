@@ -32,22 +32,22 @@ describe('Editor renderRequest unit tests', function () {
   it('can make an unauthenticated request', async () => {
     service.isAuthenticated = false;
     // Request should be rejected with an error if it's not authenticated.
-    assert.rejects(async () => {
-      await request(service, markdown)
-    }, {
-      name: 'Error', 
-      message: 'Renderer service could not respond to request: '
-    });
+    try {
+      const response = await request(service, markdown);
+      assert.ok(response.body.length > 0, 'Metadata server sent empty value')
+    } catch (e) {
+      assert.equal(e.message, 'Renderer service could not respond to request: ')
+    };
   });
 
   it('can make an authenticated request with an invalid url', async () => {
     service.isAuthenticated = true;
     // Request will be rejected if it's authenticated but given an invalid url.
-    assert.rejects(async () => {
-      await request(service, markdown)
-    }, {
-      name: 'Error',
-      message: 'Metadata server could not respond to request: '
-    });
+    try {
+      const response = await request(service, markdown);
+      assert.ok(response.body.length > 0, 'Metadata server sent empty value')
+    } catch (e) {
+      assert.equal(e.message, 'Metadata server could not respond to request: ')
+    };
   });
 });

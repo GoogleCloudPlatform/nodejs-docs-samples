@@ -36,7 +36,6 @@ describe('Editor unit tests', () => {
       const response = init();
       // Successfully creates an init object.
       assert.equal(response.url, process.env.EDITOR_UPSTREAM_RENDER_URL);
-      assert.equal(response.url, 'https://www.example.com/');
       assert.equal(response.isAuthenticated, true);
     })
   });

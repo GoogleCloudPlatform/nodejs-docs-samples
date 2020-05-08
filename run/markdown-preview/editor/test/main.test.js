@@ -16,6 +16,7 @@
 
 const assert = require('assert');
 const path = require('path');
+const sinon = require('sinon');
 const supertest = require('supertest');
 
 describe('Editor unit tests', () => {
@@ -77,10 +78,14 @@ describe('Editor unit tests', () => {
       await request.get('/render').expect(404);
     });
 
-    it('should respond with a Bad Request for a request with invalid type', async function () {
+    it('can make a POST request, with an error thrown by the metadata server', async function () {
       this.timeout(9000);
-      // Request is expecting plain text and will not accept json.
-      await request.post('/render').type('json').send({body: {"data":"markdown"}}).expect(500);
+      const consoleStub = sinon.stub(console, 'log');
+      // Ensure that the expected error is logged.
+      await request.post('/render').type('json').send({body: {"data":"markdown"}});
+      const message = console.log.getCall(0).args[1].message;
+      assert.equal(message, "Metadata server could not respond to request: ");
+      consoleStub.restore();
     });
   });
 });

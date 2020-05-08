@@ -16,6 +16,7 @@
 
 const assert = require('assert');
 const path = require('path');
+const sinon = require('sinon');
 
 let request, service, markdown;
 
@@ -31,12 +32,22 @@ describe('Editor renderRequest unit tests', function () {
   it('can make an unauthenticated request', async () => {
     service.isAuthenticated = false;
     // Request should be rejected with an error if it's not authenticated.
-    assert.rejects(request(service, markdown));
-  })
+    assert.rejects(async () => {
+      await request(service, markdown)
+    }, {
+      name: 'Error', 
+      message: 'Renderer service could not respond to request: '
+    });
+  });
 
   it('can make an authenticated request with an invalid url', async () => {
     service.isAuthenticated = true;
     // Request will be rejected if it's authenticated but given an invalid url.
-    assert.rejects(request(service, markdown));
-  })
+    assert.rejects(async () => {
+      await request(service, markdown)
+    }, {
+      name: 'Error',
+      message: 'Metadata server could not respond to request: '
+    });
+  });
 });

@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it, before, after} = require('mocha');
+const {describe, it, beforeEach, afterEach} = require('mocha');
 const cp = require('child_process');
 const {v4} = require('uuid');
 
@@ -46,13 +46,17 @@ const execSync = cmd =>
     encoding: 'utf-8',
   });
 
+const {delay} = require('./util');
+
 describe('execute the quickstart', () => {
-  before(async () => {
+  beforeEach(async () => {
     const [bucket] = await storage.createBucket(bucketName);
     await bucket.file(jobFileName).save(sortCode);
   });
 
-  it('should execute the quickstart', async () => {
+  it('should execute the quickstart', async function () {
+    this.retries(4);
+    await delay(this.test);
     const stdout = execSync(
       `node quickstart.js "${projectId}" "${region}" "${clusterName}" "${jobFilePath}"`
     );
@@ -62,7 +66,7 @@ describe('execute the quickstart', () => {
     assert.match(stdout, /successfully deleted/);
   });
 
-  after(async () => {
+  afterEach(async () => {
     await storage.bucket(bucketName).file(jobFileName).delete();
     await storage.bucket(bucketName).delete();
 

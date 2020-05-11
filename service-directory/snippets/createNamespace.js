@@ -15,16 +15,18 @@
 
 'use strict';
 
-async function quickstart(
+async function main(
   projectId = 'my-project',
-  locationId = 'us-central1'
+  locationId = 'us-central1',
+  namespaceId = 'my-namespace'
 ) {
-  // [START servicedirectory_quickstart]
+  // [START servicedirectory_create_namespace]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-central1';
+  // const namespaceId = 'my-namespace';
 
   // Imports the Google Cloud client library
   const {
@@ -40,21 +42,19 @@ async function quickstart(
     locationId
   );
 
-  async function listNamespaces() {
-    const [namespaces] = await registrationServiceClient.listNamespaces({
+  async function createNamespace() {
+    const [namespace] = await registrationServiceClient.createNamespace({
       parent: locationName,
+      namespaceId: namespaceId,
     });
 
-    console.log('Namespaces: ');
-    for (const n of namespaces) {
-      console.log(`${n.name}`);
-    }
-    return namespaces;
+    console.log(`Created namespace: ${namespace.name}`);
+    return namespace;
   }
 
-  return listNamespaces();
-  // [END servicedirectory_quickstart]
+  return createNamespace();
+  // [END servicedirectory_create_namespace]
 }
 
 const args = process.argv.slice(2);
-quickstart(...args).catch(console.error);
+main(...args).catch(console.error);

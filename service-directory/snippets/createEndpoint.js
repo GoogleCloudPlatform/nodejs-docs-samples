@@ -15,16 +15,22 @@
 
 'use strict';
 
-async function quickstart(
+async function main(
   projectId = 'my-project',
-  locationId = 'us-central1'
+  locationId = 'us-east1',
+  namespaceId = 'my-namespace',
+  serviceId = 'my-service',
+  endpointId = 'my-endpoint'
 ) {
-  // [START servicedirectory_quickstart]
+  // [START servicedirectory_create_endpoint]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-central1';
+  // const namespaceId = 'my-namespace';
+  // const serviceId = 'my-service';
+  // const endpointId = 'my-endpoint';
 
   // Imports the Google Cloud client library
   const {
@@ -34,27 +40,28 @@ async function quickstart(
   // Creates a client
   const registrationServiceClient = new RegistrationServiceClient();
 
-  // Build the location name
-  const locationName = registrationServiceClient.locationPath(
+  // Build the service name
+  const serviceName = registrationServiceClient.servicePath(
     projectId,
-    locationId
+    locationId,
+    namespaceId,
+    serviceId
   );
 
-  async function listNamespaces() {
-    const [namespaces] = await registrationServiceClient.listNamespaces({
-      parent: locationName,
+  async function createEndpoint() {
+    const [endpoint] = await registrationServiceClient.createEndpoint({
+      parent: serviceName,
+      endpointId: endpointId,
+      endpoint: {address: '10.0.0.1', port: 8080},
     });
 
-    console.log('Namespaces: ');
-    for (const n of namespaces) {
-      console.log(`${n.name}`);
-    }
-    return namespaces;
+    console.log(`Created endpoint: ${endpoint.name}`);
+    return endpoint;
   }
 
-  return listNamespaces();
-  // [END servicedirectory_quickstart]
+  return createEndpoint();
+  // [END servicedirectory_create_endpoint]
 }
 
 const args = process.argv.slice(2);
-quickstart(...args).catch(console.error);
+main(...args).catch(console.error);

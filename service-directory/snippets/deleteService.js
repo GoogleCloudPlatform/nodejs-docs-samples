@@ -15,16 +15,20 @@
 
 'use strict';
 
-async function quickstart(
+async function main(
   projectId = 'my-project',
-  locationId = 'us-central1'
+  locationId = 'us-east1',
+  namespaceId = 'my-namespace',
+  serviceId = 'my-service'
 ) {
-  // [START servicedirectory_quickstart]
+  // [START servicedirectory_delete_service]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-central1';
+  // const namespaceId = 'my-namespace';
+  // const serviceId = 'my-service';
 
   // Imports the Google Cloud client library
   const {
@@ -34,27 +38,25 @@ async function quickstart(
   // Creates a client
   const registrationServiceClient = new RegistrationServiceClient();
 
-  // Build the location name
-  const locationName = registrationServiceClient.locationPath(
+  // Build the service name
+  const serviceName = registrationServiceClient.servicePath(
     projectId,
-    locationId
+    locationId,
+    namespaceId,
+    serviceId
   );
 
-  async function listNamespaces() {
-    const [namespaces] = await registrationServiceClient.listNamespaces({
-      parent: locationName,
+  async function deleteService() {
+    await registrationServiceClient.deleteService({
+      name: serviceName,
     });
 
-    console.log('Namespaces: ');
-    for (const n of namespaces) {
-      console.log(`${n.name}`);
-    }
-    return namespaces;
+    console.log(`Deleted service: ${serviceName}`);
   }
 
-  return listNamespaces();
-  // [END servicedirectory_quickstart]
+  deleteService();
+  // [END servicedirectory_delete_service]
 }
 
 const args = process.argv.slice(2);
-quickstart(...args).catch(console.error);
+main(...args).catch(console.error);

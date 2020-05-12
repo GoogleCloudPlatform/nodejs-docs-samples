@@ -19,6 +19,11 @@ export NODE_ENV=development
 
 cd github/nodejs-docs-samples/
 
+# Display link to docs
+echo "================================================================="
+echo "Test failing? See go/drift-test-tracker-onboarding for more info!
+echo "================================================================="
+
 # Fetch XUnit CI enforcer script
 #  curl-ing it ensures we get the latest version
 curl "https://raw.githubusercontent.com/GoogleCloudPlatform/repo-automation-playground/master/xunit-ci-enforcer/region_tag_enforcer.sh" > enforcer.sh

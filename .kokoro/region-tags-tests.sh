@@ -21,7 +21,7 @@ cd github/nodejs-docs-samples/
 
 # Display link to docs
 echo "================================================================="
-echo "Test failing? See go/drift-test-tracker-onboarding for more info!
+echo "Test failing? See go/drift-test-tracker-onboarding for more info!"
 echo "================================================================="
 
 # Fetch XUnit CI enforcer script

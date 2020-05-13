@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START datacatalog_search_project]
+// [START datacatalog_search_org]
 // This application demonstrates how to perform search operations with the
 // Cloud Data Catalog API.
 
 const main = async (
-  projectId = process.env.GCLOUD_PROJECT,
+  organizationId = process.env.GCP_ORG,
   query
 ) => {
 
@@ -29,9 +29,9 @@ const main = async (
 
   // Create request.
   const scope = {
-    includeProjectIds: [projectId],
-    // Alternatively, search using org scopes.
-    // includeOrgIds: [organizationId]
+    includeOrgIds: [organizationId],
+    // Alternatively, search using project scopes.
+    // includeProjectIds: ['my-project'],
   };
 
   const request = {
@@ -44,9 +44,9 @@ const main = async (
   return response;
 }
 
-// node search_catalog.js <projectId> <query>
+// node searchCatalogOrg.js <organizationId> <query>
 // sample values:
-// projectId = 'my-project';
+// organizationId = 111111000000;
 // query = 'type=dataset'
 main(...process.argv.slice(2));
-// [END datacatalog_search_project]
+// [END datacatalog_search_org]

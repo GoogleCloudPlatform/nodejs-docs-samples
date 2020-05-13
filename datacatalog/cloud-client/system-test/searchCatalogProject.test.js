@@ -50,7 +50,7 @@ describe('searchCatalog project', () => {
     const query = 'type=dataset';
     const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;
     exec(
-      `node search_catalog_project.js ${projectId} ${query}`,
+      `node searchCatalogProject.js ${projectId} ${query}`,
       {cwd},
       (err, stdout) => {
         assert.ok(stdout.includes(expectedLinkedResource));

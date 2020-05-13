@@ -13,7 +13,10 @@ Run the following command to install the library dependencies for Node.js:
 # Running the sample
 
     Commands:
+        createEntryGroup.js <projectId> <entryGroupId>                          Create a entry group.
+        createFilesetEntry.js <projectId> <entryGroupId> <entryId>              Create a fileset entry.
         lookupEntry.js <projectId> <datasetId>                                  Lookup a dataset entry.
-
+        search_catalog.js <projectId> <query>                                   Search Catalog with project scope.
+        search_catalog.js <organizationId> <query>                              Search Catalog with organization scope.
 
 For more information, see https://cloud.google.com/data-catalog/docs/

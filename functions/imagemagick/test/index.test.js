@@ -94,7 +94,7 @@ describe('functions/imagemagick tests', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  describe('functions_imagemagick_analyze', () => {
+  describe('functions_imagemagick_setup functions_imagemagick_analyze functions_imagemagick_blur', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
       const PORT = 8080;
       const ffProc = startFF(PORT);
@@ -113,36 +113,34 @@ describe('functions/imagemagick tests', () => {
       assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
     });
 
-    describe('functions_imagemagick_blur', () => {
-      it('blurOffensiveImages successfully blurs offensive images', async () => {
-        const PORT = 8081;
-        const ffProc = startFF(PORT);
+    it('blurOffensiveImages successfully blurs offensive images', async () => {
+      const PORT = 8081;
+      const ffProc = startFF(PORT);
 
-        await requestRetry({
-          url: `http://localhost:${PORT}/blurOffensiveImages`,
-          body: {
-            data: {
-              bucket: BUCKET_NAME,
-              name: testFiles.offensive,
-            },
+      await requestRetry({
+        url: `http://localhost:${PORT}/blurOffensiveImages`,
+        body: {
+          data: {
+            bucket: BUCKET_NAME,
+            name: testFiles.offensive,
           },
-        });
-
-        const {stdout} = await stopFF(ffProc);
-
-        assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
-        assert.ok(
-          stdout.includes(
-            `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
-          )
-        );
-
-        const exists = await storage
-          .bucket(BLURRED_BUCKET_NAME)
-          .file(testFiles.offensive)
-          .exists();
-        assert.ok(exists, 'File uploaded');
+        },
       });
+
+      const {stdout} = await stopFF(ffProc);
+
+      assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
+      assert.ok(
+        stdout.includes(
+          `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
+        )
+      );
+
+      const exists = await storage
+        .bucket(BLURRED_BUCKET_NAME)
+        .file(testFiles.offensive)
+        .exists();
+      assert.ok(exists, 'File uploaded');
     });
 
     it('blurOffensiveImages detects missing images as safe using Cloud Vision', async () => {

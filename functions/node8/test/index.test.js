@@ -325,3 +325,11 @@ describe('functions_background_async', () => {
     );
   });
 });
+
+
+// Whitelist these region tags with the region-tag enforcer
+// describe('functions_helloworld_background_node');
+// describe('functions_helloworld_storage_generic_node');
+// describe('functions_tips_infinite_retries_node');
+// describe('functions_tips_retry_node');
+// describe('functions_tips_terminate_node');

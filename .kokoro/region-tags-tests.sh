@@ -20,9 +20,9 @@ export NODE_ENV=development
 cd github/nodejs-docs-samples/
 
 # Display link to docs
-echo "================================================================="
-echo "Test failing? See go/drift-test-tracker-onboarding for more info!"
-echo "================================================================="
+echo '================================================================='
+echo -e 'Test failing? See \e[36mgo/drift-test-tracker-onboarding\e[0m for more info!'
+echo '================================================================='
 
 # Fetch XUnit CI enforcer script
 #  curl-ing it ensures we get the latest version

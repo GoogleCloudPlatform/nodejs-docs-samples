@@ -1,21 +1,21 @@
-/**
- * Copyright 2017, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
-function makeGrpcRequest(JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
+// [START endpoints_make_grpc_request]
+const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
   // Uncomment these lines to set their values
   // const JWT_AUTH_TOKEN = 'YOUR_JWT_AUTH_TOKEN';
   // const API_KEY = 'YOUR_API_KEY';
@@ -51,10 +51,11 @@ function makeGrpcRequest(JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) {
       console.log(response.message);
     }
   });
-}
+};
+// [END endpoints_make_grpc_request]
 
 // The command-line program
-const argv = require('yargs')
+const {argv} = require('yargs')
   .usage(
     'Usage: node $0 {-k YOUR_API_KEY>, <-j YOUR_JWT_AUTH_TOKEN} [-h YOUR_ENDPOINTS_HOST] [-g GREETEE_NAME]'
   )
@@ -82,7 +83,7 @@ const argv = require('yargs')
     default: 'world',
     global: true,
   })
-  .check(argv => {
+  .check((argv) => {
     const valid = !!(argv.jwtAuthToken || argv.apiKey);
     if (!valid) {
       console.error('One of API_KEY or JWT_AUTH_TOKEN must be set.');
@@ -92,7 +93,8 @@ const argv = require('yargs')
   .wrap(120)
   .help()
   .strict()
-  .epilogue(`For more information, see https://cloud.google.com/endpoints/docs`)
-  .argv;
+  .epilogue(
+    `For more information, see https://cloud.google.com/endpoints/docs`
+  );
 
 makeGrpcRequest(argv.jwtAuthToken, argv.apiKey, argv.host, argv.greetee);

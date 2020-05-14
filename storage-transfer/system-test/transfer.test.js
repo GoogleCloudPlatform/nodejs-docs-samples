@@ -1,17 +1,16 @@
-/**
- * Copyright 2017, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /* eslint no-empty: 0 */
 'use strict';
@@ -19,8 +18,8 @@
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const sinon = require('sinon');
 
 const program = require('../transfer');
 
@@ -33,9 +32,27 @@ const time = '15:30';
 const description = 'this is a test';
 const status = 'DISABLED';
 
+const stubConsole = function stubConsole() {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`);
+};
+
+const restoreConsole = function restoreConsole() {
+  console.log.restore();
+  console.error.restore();
+};
+
 before(async () => {
-  tools.checkCredentials();
-  tools.stubConsole();
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
+
+  stubConsole();
 
   const bucketOptions = {
     entity: 'allUsers',
@@ -47,8 +64,8 @@ before(async () => {
   await bucket2.acl.add(bucketOptions);
 });
 
-after(async () => {
-  tools.restoreConsole();
+after(() => {
+  restoreConsole();
   const bucketOne = storage.bucket(firstBucketName);
   const bucketTwo = storage.bucket(secondBucketName);
   try {
@@ -72,7 +89,7 @@ after(async () => {
   } catch (err) {} // ignore error
 });
 
-it('should create a storage transfer job', done => {
+it('should create a storage transfer job', (done) => {
   const options = {
     srcBucket: firstBucketName,
     destBucket: secondBucketName,
@@ -95,7 +112,7 @@ it('should create a storage transfer job', done => {
   });
 });
 
-it('should get a transferJob', done => {
+it('should get a transferJob', (done) => {
   program.getTransferJob(jobName, (err, transferJob) => {
     assert.ifError(err);
     assert.strictEqual(transferJob.name, jobName);
@@ -109,7 +126,7 @@ it('should get a transferJob', done => {
   });
 });
 
-it('should update a transferJob', done => {
+it('should update a transferJob', (done) => {
   const options = {
     job: jobName,
     field: 'status',
@@ -129,19 +146,21 @@ it('should update a transferJob', done => {
   });
 });
 
-it('should list transferJobs', done => {
+it('should list transferJobs', (done) => {
   program.listTransferJobs((err, transferJobs) => {
     assert.ifError(err);
     assert.strictEqual(
-      transferJobs.some(transferJob => transferJob.name === jobName),
+      transferJobs.some((transferJob) => transferJob.name === jobName),
       true
     );
     assert.strictEqual(
-      transferJobs.some(transferJob => transferJob.description === description),
+      transferJobs.some(
+        (transferJob) => transferJob.description === description
+      ),
       true
     );
     assert.strictEqual(
-      transferJobs.some(transferJob => transferJob.status === status),
+      transferJobs.some((transferJob) => transferJob.status === status),
       true
     );
     assert.strictEqual(
@@ -152,7 +171,7 @@ it('should list transferJobs', done => {
   });
 });
 
-it('should list transferOperations', done => {
+it('should list transferOperations', (done) => {
   program.listTransferOperations(jobName, (err, operations) => {
     assert.ifError(err);
     assert.strictEqual(Array.isArray(operations), true);

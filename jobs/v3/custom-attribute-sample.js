@@ -1,17 +1,16 @@
-/**
- * Copyright 2018, Google, LLC.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -40,7 +39,7 @@ const REQUEST_META_DATA = {
 /**
  * Generate a job with a custom attribute.
  */
-const generateJobWithACustomAttribute = companyName => {
+const generateJobWithACustomAttribute = (companyName) => {
   const requisitionId = `jobWithACustomAttribute: ${new Date().getTime()}`;
   const jobTitle = 'Software Engineer';
   const applicationUrls = ['http://careers.google.com'];
@@ -71,7 +70,7 @@ const generateJobWithACustomAttribute = companyName => {
 /**
  * CustomAttributeFilter on String value CustomAttribute
  */
-const filtersOnStringValueCustomAttribute = async jobServiceClient => {
+const filtersOnStringValueCustomAttribute = async (jobServiceClient) => {
   try {
     const customAttributeFilter = 'NOT EMPTY(someFieldName1)';
     const jobQuery = {customAttributeFilter: customAttributeFilter};
@@ -98,7 +97,7 @@ const filtersOnStringValueCustomAttribute = async jobServiceClient => {
 /**
  * CustomAttributeFilter on Long value CustomAttribute
  */
-const filtersOnLongValueCustomAttribute = async jobServiceClient => {
+const filtersOnLongValueCustomAttribute = async (jobServiceClient) => {
   try {
     const customAttributeFilter =
       '(255 <= someFieldName2) AND' + ' (someFieldName2 <= 257)';
@@ -126,7 +125,7 @@ const filtersOnLongValueCustomAttribute = async jobServiceClient => {
 /**
  * CustomAttributeFilter on multiple CustomAttributes
  */
-const filtersOnMultiCustomAttributes = async jobServiceClient => {
+const filtersOnMultiCustomAttributes = async (jobServiceClient) => {
   try {
     const customAttributeFilter =
       '(someFieldName1 = "value1") AND ((255 <= someFieldName2) OR ' +

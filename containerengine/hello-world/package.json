@@ -14,23 +14,12 @@
   },
   "scripts": {
     "start": "node server.js",
-    "system-test": "repo-tools test app -- server.js",
+    "system-test": "mocha --exit test/*.test.js",
     "test": "npm run system-test"
   },
   "dependencies": {},
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Hello Kubernetes!",
-        "args": [
-          "server.js"
-        ]
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
+    "mocha": "^7.0.0",
+    "supertest": "^4.0.2"
   }
 }

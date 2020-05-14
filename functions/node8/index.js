@@ -1,17 +1,16 @@
-/**
- * Copyright 2018, Google LLC.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // [START functions_background_promise_node8]
 // [START functions_background_async]
@@ -19,22 +18,6 @@ const fetch = require('node-fetch');
 
 // [END functions_background_promise_node8]
 // [END functions_background_async]
-
-/**
- * HTTP Cloud Function (same signature as other Node runtimes)
- *
- * @param {Object} req Cloud Function request context.
- *                     More info: https://expressjs.com/en/api.html#req
- * @param {Object} res Cloud Function response context.
- *                     More info: https://expressjs.com/en/api.html#res
- */
-// [START functions_tips_terminate_node8]
-const escapeHtml = require('escape-html');
-
-exports.helloHttp = (req, res) => {
-  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
-};
-// [END functions_tips_terminate_node8]
 
 // [START functions_tips_infinite_retries_node8]
 /**
@@ -65,6 +48,7 @@ exports.avoidInfiniteRetries = (data, context) => {
  * how to toggle retries using a promise
  *
  * @param {object} data The event payload.
+ * @param {object} data.retry User-supplied parameter that tells the function whether to retry.
  * @param {object} context The event metadata.
  */
 exports.retryPromise = (data, context) => {
@@ -98,16 +82,16 @@ exports.helloBackground = (data, context) => {
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} data The event payload.
+ * @param {object} pubSubEvent The event payload.
  * @param {object} context The event metadata.
  */
-exports.helloPubSub = (data, context) => {
-  const pubSubMessage = data;
-  const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64').toString()
+exports.helloPubSub = (pubSubEvent, context) => {
+  const name = pubSubEvent.data
+    ? Buffer.from(pubSubEvent.data, 'base64').toString()
     : 'World';
 
   console.log(`Hello, ${name}!`);
+  return;
 };
 // [END functions_helloworld_pubsub_node8]
 
@@ -160,6 +144,14 @@ exports.helloGCSGeneric = (data, context) => {
  */
 exports.helloRTDB = (data, context) => {
   const triggerResource = context.resource;
+
+  const pathParams = data.params;
+  if (pathParams) {
+    console.log(`Parameters:`);
+    Object.entries(pathParams).forEach(([param, value]) => {
+      console.log(`  ${param}: ${value}`);
+    });
+  }
 
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!data.admin}`);
@@ -224,10 +216,10 @@ exports.helloAuth = (data, context) => {
  * @param {object} context The event metadata.
  */
 exports.helloAnalytics = (data, context) => {
-  const resource = context.resource;
+  const {resource} = context;
   console.log(`Function triggered by the following event: ${resource}`);
 
-  const analyticsEvent = data.eventDim[0];
+  const [analyticsEvent] = data.eventDim;
   console.log(`Name: ${analyticsEvent.name}`);
   console.log(`Timestamp: ${new Date(analyticsEvent.timestampMicros / 1000)}`);
 
@@ -245,27 +237,10 @@ exports.helloAnalytics = (data, context) => {
  * @param {object} data The Cloud Functions event data.
  * @returns {Promise}
  */
-exports.helloPromise = data => {
+exports.helloPromise = (data) => {
   return fetch(data.endpoint);
 };
 // [END functions_background_promise_node8]
-
-// [START functions_background_synchronous_node8]
-/**
- * Background Cloud Function that returns synchronously. Note that we don't pass
- * a "callback" argument to the function.
- *
- * @param {object} data The Cloud Functions event data.
- */
-exports.helloSynchronous = data => {
-  // This function returns synchronously
-  if (data.something === true) {
-    return 'Something is true!';
-  } else {
-    throw new Error('Something was not true!');
-  }
-};
-// [END functions_background_synchronous_node8]
 
 // [START functions_firebase_reactive_node8]
 const Firestore = require('@google-cloud/firestore');
@@ -276,7 +251,7 @@ const firestore = new Firestore({
 
 // Converts strings added to /messages/{pushId}/original to uppercase
 exports.makeUpperCase = (data, context) => {
-  const resource = context.resource;
+  const {resource} = context;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
   const curValue = data.value.fields.original.stringValue;
@@ -295,7 +270,7 @@ exports.makeUpperCase = (data, context) => {
  *
  * @param {object} data The Cloud Functions event data.
  */
-exports.helloRemoteConfig = data => {
+exports.helloRemoteConfig = (data) => {
   console.log(`Update type: ${data.updateType}`);
   console.log(`Origin: ${data.updateOrigin}`);
   console.log(`Version: ${data.versionNumber}`);
@@ -308,7 +283,7 @@ exports.helloRemoteConfig = data => {
  *
  * @param {object} data The event payload.
  */
-exports.helloAsync = async data => {
+exports.helloAsync = async (data) => {
   const result = await fetch('https://www.example.com');
   return result;
 };

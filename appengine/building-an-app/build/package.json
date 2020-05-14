@@ -7,14 +7,14 @@
   "scripts": {
     "start": "node server.js",
     "deploy": "gcloud app deploy",
-    "test": "repo-tools test app"
+    "test": "mocha --exit test/*.test.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "author": "Google Inc.",
   "license": "Apache-2.0",
@@ -22,18 +22,8 @@
     "express": "^4.16.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.2.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": false,
-    "requiresProjectId": false,
-    "test": {
-      "app": {
-        "args": [
-          "server.js"
-        ],
-        "msg": "Hello from App Engine!"
-      }
-    }
+    "mocha": "^7.0.0",
+    "supertest": "^4.0.2",
+    "proxyquire": "^2.1.3"
   }
 }

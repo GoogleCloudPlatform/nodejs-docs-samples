@@ -1,191 +1,175 @@
-/**
- * Copyright 2017, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the `License`);
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an `AS IS` BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/* eslint-disable prefer-destructuring */
 
 'use strict';
 
 const fs = require('fs');
+
+// [START iot_get_client]
 const {google} = require('googleapis');
+const iot = require('@google-cloud/iot');
 
 const API_VERSION = 'v1';
 const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
 
+const client = new iot.v1.DeviceManagerClient();
+// [END iot_get_client]
+
+if (client === undefined) {
+  console.log('Did not instantiate client.');
+}
+
 // Configures the topic for Cloud IoT Core.
-function setupIotTopic(topicName) {
+const setupIotTopic = async (topicName) => {
   const {PubSub} = require('@google-cloud/pubsub');
 
   const pubsub = new PubSub();
   const topic = pubsub.topic(topicName);
   const serviceAccount = `serviceAccount:cloud-iot@system.gserviceaccount.com`;
 
-  topic.iam
-    .getPolicy()
-    .then(results => {
-      const policy = results[0] || {};
-      policy.bindings || (policy.bindings = []);
-      console.log(JSON.stringify(policy, null, 2));
+  let policy = await topic.iam.getPolicy();
+  policy = policy[0] || {};
 
-      let hasRole = false;
-      let binding = {
-        role: 'roles/pubsub.publisher',
-        members: [serviceAccount],
-      };
+  policy.bindings || (policy.bindings = []);
+  console.log(JSON.stringify(policy, null, 2));
 
-      policy.bindings.forEach(_binding => {
-        if (_binding.role === binding.role) {
-          binding = _binding;
-          hasRole = true;
-          return false;
-        }
-      });
+  let hasRole = false;
+  let binding = {
+    role: 'roles/pubsub.publisher',
+    members: [serviceAccount],
+  };
 
-      if (hasRole) {
-        binding.members || (binding.members = []);
-        if (binding.members.indexOf(serviceAccount) === -1) {
-          binding.members.push(serviceAccount);
-        }
-      } else {
-        policy.bindings.push(binding);
-      }
+  policy.bindings.forEach((_binding) => {
+    if (_binding.role === binding.role) {
+      binding = _binding;
+      hasRole = true;
+      return false;
+    }
+  });
 
-      // Updates the IAM policy for the topic
-      return topic.iam.setPolicy(policy);
-    })
-    .then(results => {
-      const updatedPolicy = results[0];
+  if (hasRole) {
+    binding.members || (binding.members = []);
+    if (binding.members.indexOf(serviceAccount) === -1) {
+      binding.members.push(serviceAccount);
+    }
+  } else {
+    policy.bindings.push(binding);
+  }
 
-      console.log(JSON.stringify(updatedPolicy, null, 2));
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
-}
+  // Updates the IAM policy for the topic
+  try {
+    const [updatedPolicy] = await topic.iam.setPolicy(policy);
+    console.log(JSON.stringify(updatedPolicy, null, 2));
+  } catch (err) {
+    console.error('Error updating policy:', err);
+  }
+};
 
-function createIotTopic(topicName) {
+const createIotTopic = async (topicName) => {
   // Imports the Google Cloud client library
   const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates a client
   const pubsub = new PubSub();
 
-  pubsub.createTopic(topicName).then(() => {
-    setupIotTopic(topicName);
-  });
-}
+  await pubsub.createTopic(topicName);
+  await setupIotTopic(topicName);
+};
 
 // Lookup the registry, assuming that it exists.
-function lookupRegistry(client, registryId, projectId, cloudRegion) {
+const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_lookup_registry]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: registryName,
-  };
+  const iot = require('@google-cloud/iot');
 
-  client.projects.locations.registries.get(request, (err, res) => {
-    if (err) {
-      console.log('Could not look up registry');
-      console.log(err);
-    } else {
-      console.log('Looked up existing registry');
-      console.log(res.data);
-    }
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  try {
+    const registryName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
+    try {
+      const responses = await iotClient.getDeviceRegistry({name: registryName});
+      const response = responses[0];
+      console.log(response);
+    } catch (err) {
+      console.error('Error getting registry', err);
+    }
+  } catch (err) {
+    console.error('Could not look up registry', err);
+  }
   // [END iot_lookup_registry]
-}
+};
 
-function createRegistry(
-  client,
-  registryId,
-  projectId,
-  cloudRegion,
-  pubsubTopicId,
-  foundCb
-) {
-  // [START iot_create_registry]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
-  // const cloudRegion = 'us-central1';
-  // const projectId = 'adjective-noun-123';
-  // const registryId = 'my-registry';
-  // function errCb = lookupRegistry; // Lookup registry if already exists.
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const pubsubTopic = `projects/${projectId}/topics/${pubsubTopicId}`;
-
-  const request = {
-    parent: parentName,
-    resource: {
-      eventNotificationConfigs: [
-        {
-          pubsubTopicName: pubsubTopic,
-        },
-      ],
-      id: registryId,
-    },
-  };
-
-  client.projects.locations.registries.create(request, (err, res) => {
-    if (err) {
-      if (err.code === 409) {
-        // The registry already exists - look it up instead.
-        foundCb(client, registryId, projectId, cloudRegion);
-      } else {
-        console.log('Could not create registry');
-        console.log(err);
-      }
-    } else {
-      console.log('Successfully created registry');
-      console.log(res.data);
-    }
-  });
-  // [END iot_create_registry]
-}
-
-// Create a new registry, or look up an existing one if it doesn't exist.
-function lookupOrCreateRegistry(
+const createRegistry = async (
   client,
   registryId,
   projectId,
   cloudRegion,
   pubsubTopicId
-) {
-  // [START iot_lookup_or_create_registry]
+) => {
+  // [START iot_create_registry]
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  // const pubsubTopicId = 'my-iot-topic';
+  // function errCb = lookupRegistry; // Lookup registry if already exists.
+  const iot = require('@google-cloud/iot');
 
-  createRegistry(
-    client,
-    registryId,
-    projectId,
-    cloudRegion,
-    pubsubTopicId,
-    lookupRegistry
-  );
-  // [END iot_lookup_or_create_registry]
-}
+  // Lookup the pubsub topic
+  const topicPath = `projects/${projectId}/topics/${pubsubTopicId}`;
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const newParent = iotClient.locationPath(projectId, cloudRegion);
+  const deviceRegistry = {
+    eventNotificationConfigs: [
+      {
+        pubsubTopicName: topicPath,
+      },
+    ],
+    id: registryId,
+  };
+  const request = {
+    parent: newParent,
+    deviceRegistry: deviceRegistry,
+  };
+
+  try {
+    const responses = await iotClient.createDeviceRegistry(request);
+    const response = responses[0];
+
+    console.log('Successfully created registry');
+    console.log(response);
+  } catch (err) {
+    console.error('Could not create registry', err);
+  }
+  // [END iot_create_registry]
+};
 
 // Create a new device with a given public key format
-function createDevice(
+const createDevice = async (
   client,
   deviceId,
   registryId,
@@ -193,18 +177,20 @@ function createDevice(
   cloudRegion,
   publicKeyFormat,
   publicKeyFile
-) {
+) => {
   // [START iot_create_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
+  const iot = require('@google-cloud/iot');
 
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const body = {
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {
     id: deviceId,
     credentials: [
       {
@@ -217,78 +203,78 @@ function createDevice(
   };
 
   const request = {
-    parent: registryName,
-    resource: body,
+    parent: regPath,
+    device,
   };
-
-  client.projects.locations.registries.devices.create(request, (err, res) => {
-    if (err) {
-      console.log('Could not create device');
-      console.log(err);
-    } else {
-      console.log('Created device');
-      console.log(res.data);
-    }
-  });
+  try {
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
+  } catch (err) {
+    console.error('Could not create device', err);
+  }
   // [END iot_create_device]
-}
+};
 
 // Create a new device with the given id. The body defines the parameters for
 // the device, such as authentication.
-function createUnauthDevice(
+const createUnauthDevice = async (
   client,
   deviceId,
   registryId,
   projectId,
   cloudRegion
-) {
+) => {
   // [START iot_create_unauth_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-unauth-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  console.log('Creating device:', deviceId);
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
+  const iot = require('@google-cloud/iot');
 
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {id: deviceId};
   const request = {
-    parent: registryName,
-    resource: {id: deviceId},
+    parent: regPath,
+    device,
   };
 
-  client.projects.locations.registries.devices.create(request, (err, res) => {
-    if (err) {
-      console.log('Could not create device');
-      console.log(err);
-    } else {
-      console.log('Created device');
-      console.log(res.data);
-    }
-  });
+  try {
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
+  } catch (err) {
+    console.error('Could not create device', err);
+  }
   // [END iot_create_unauth_device]
-}
+};
 
 // Create a device using RSA256 for authentication.
-function createRsaDevice(
+const createRsaDevice = async (
   client,
   deviceId,
   registryId,
   projectId,
   cloudRegion,
   rsaCertificateFile
-) {
+) => {
   // [START iot_create_rsa_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-rsa-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const body = {
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {
     id: deviceId,
     credentials: [
       {
@@ -301,43 +287,42 @@ function createRsaDevice(
   };
 
   const request = {
-    parent: registryName,
-    resource: body,
+    parent: regPath,
+    device,
   };
 
-  console.log(JSON.stringify(request));
-
-  client.projects.locations.registries.devices.create(request, (err, res) => {
-    if (err) {
-      console.log('Could not create device');
-      console.log(err);
-    } else {
-      console.log('Created device');
-      console.log(res.data);
-    }
-  });
+  try {
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
+  } catch (err) {
+    console.error('Could not create device', err);
+  }
   // [END iot_create_rsa_device]
-}
+};
 
 // Create a device using ES256 for authentication.
-function createEsDevice(
+const createEsDevice = async (
   client,
   deviceId,
   registryId,
   projectId,
   cloudRegion,
   esCertificateFile
-) {
+) => {
   // [START iot_create_es_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-es-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const body = {
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  const device = {
     id: deviceId,
     credentials: [
       {
@@ -348,377 +333,440 @@ function createEsDevice(
       },
     ],
   };
-
   const request = {
-    parent: registryName,
-    resource: body,
+    parent: regPath,
+    device,
   };
 
-  client.projects.locations.registries.devices.create(request, (err, res) => {
-    if (err) {
-      console.log('Could not create device');
-      console.log(err);
-    } else {
-      console.log('Created device');
-      console.log(res.data);
-    }
-  });
+  try {
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device', response);
+  } catch (err) {
+    console.error('Could not create device', err);
+  }
   // [END iot_create_es_device]
-}
+};
 
 // Add RSA256 authentication to the given device.
-function patchRsa256ForAuth(
+const patchRsa256ForAuth = async (
   client,
   deviceId,
   registryId,
   rsaPublicKeyFile,
   projectId,
   cloudRegion
-) {
+) => {
   // [START iot_patch_rsa]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-rsa-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-    updateMask: 'credentials',
-    resource: {
-      credentials: [
-        {
-          publicKey: {
-            format: 'RSA_X509_PEM',
-            key: fs.readFileSync(rsaPublicKeyFile).toString(),
-          },
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const devPath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+
+  const device = {
+    name: devPath,
+    credentials: [
+      {
+        publicKey: {
+          format: 'RSA_X509_PEM',
+          key: fs.readFileSync(rsaPublicKeyFile).toString(),
         },
-      ],
-    },
+      },
+    ],
   };
 
-  client.projects.locations.registries.devices.patch(request, (err, res) => {
-    if (err) {
-      console.log('Error patching device:', deviceId);
-      console.log(err);
-    } else {
-      console.log('Patched device:', deviceId);
-      console.log(res.data);
-    }
-  });
+  try {
+    const responses = await iotClient.updateDevice({
+      device: device,
+      updateMask: {paths: ['credentials']},
+    });
+
+    console.log('Patched device:', deviceId);
+    console.log('Response', responses[0]);
+  } catch (err) {
+    console.error('Error patching device:', deviceId, err);
+  }
   // [END iot_patch_rsa]
-}
+};
 
 // Add ES256 authentication to the given device.
-function patchEs256ForAuth(
+const patchEs256ForAuth = async (
   client,
   deviceId,
   registryId,
   esPublicKeyFile,
   projectId,
   cloudRegion
-) {
+) => {
   // [START iot_patch_es]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-es-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-    updateMask: 'credentials',
-    resource: {
-      credentials: [
-        {
-          publicKey: {
-            format: 'ES256_PEM',
-            key: fs.readFileSync(esPublicKeyFile).toString(),
-          },
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const devPath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+
+  const device = {
+    name: devPath,
+    credentials: [
+      {
+        publicKey: {
+          format: 'ES256_PEM',
+          key: fs.readFileSync(esPublicKeyFile).toString(),
         },
-      ],
-    },
+      },
+    ],
   };
 
-  client.projects.locations.registries.devices.patch(request, (err, res) => {
-    if (err) {
-      console.log('Error patching device:', deviceId);
-      console.log(err);
-    } else {
-      console.log('Patched device:', deviceId);
-      console.log(res.data);
-    }
-  });
+  try {
+    const responses = await iotClient.updateDevice({
+      device: device,
+      updateMask: {paths: ['credentials']},
+    });
+
+    console.log('Patched device:', deviceId);
+    console.log('Response', responses[0]);
+  } catch (err) {
+    console.error('Error patching device:', deviceId, err);
+  }
   // [END iot_patch_es]
-}
+};
 
 // List all of the devices in the given registry.
-function listDevices(client, registryId, projectId, cloudRegion) {
+const listDevices = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_list_devices]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-
-  const request = {
-    parent: registryName,
-  };
-
-  client.projects.locations.registries.devices.list(request, (err, res) => {
-    if (err) {
-      console.log('Could not list devices');
-      console.log(err);
-    } else {
-      const data = res.data;
-      console.log('Current devices in registry:', data['devices']);
-    }
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
+
+  try {
+    const responses = await iotClient.listDevices({parent: parentName});
+    const devices = responses[0];
+
+    if (devices.length > 0) {
+      console.log('Current devices in registry:');
+    } else {
+      console.log('No devices in registry.');
+    }
+
+    for (let i = 0; i < devices.length; i++) {
+      const device = devices[i];
+      console.log(`Device ${i}: `, device);
+    }
+  } catch (err) {
+    console.error('Could not list devices', err);
+  }
   // [END iot_list_devices]
-}
+};
 
 // List all of the registries in the given project.
-function listRegistries(client, projectId, cloudRegion) {
+const listRegistries = async (client, projectId, cloudRegion) => {
   // [START iot_list_registries]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+  const iot = require('@google-cloud/iot');
 
-  const request = {
-    parent: parentName,
-  };
-
-  client.projects.locations.registries.list(request, (err, res) => {
-    if (err) {
-      console.log('Could not list registries');
-      console.log(err);
-    } else {
-      const data = res.data;
-      console.log('Current registries in project:\n', data['deviceRegistries']);
-    }
+  const newClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  // Iterate over all elements.
+  const formattedParent = newClient.locationPath(projectId, cloudRegion);
+
+  try {
+    const responses = await newClient.listDeviceRegistries({
+      parent: formattedParent,
+    });
+    const resources = responses[0];
+    console.log('Current registries in project:\n', resources);
+  } catch (err) {
+    console.error('Could not list registries', err);
+  }
   // [END iot_list_registries]
-}
+};
 
 // Delete the given device from the registry.
-function deleteDevice(
+const deleteDevice = async (
   client,
   deviceId,
   registryId,
   projectId,
-  cloudRegion,
-  cb
-) {
+  cloudRegion
+) => {
   // [START iot_delete_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
+  const iot = require('@google-cloud/iot');
 
-  client.projects.locations.registries.devices.delete(request, (err, res) => {
-    if (err) {
-      console.log('Could not delete device:', deviceId);
-      console.log(err);
-    } else {
-      console.log('Successfully deleted device:', deviceId);
-      console.log(res.data);
-      if (cb) {
-        cb();
-      }
-    }
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  const devPath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+  try {
+    const responses = await iotClient.deleteDevice({name: devPath});
+    console.log('Successfully deleted device', responses);
+  } catch (err) {
+    console.error('Could not delete device', err);
+  }
   // [END iot_delete_device]
-}
+};
 
 // Clear the given registry by removing all devices and deleting the registry.
-function clearRegistry(client, registryId, projectId, cloudRegion) {
+const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
   const parentName = `projects/${projectId}/locations/${cloudRegion}`;
   const registryName = `${parentName}/registries/${registryId}`;
   const requestDelete = {
     name: registryName,
   };
 
-  const after = function() {
-    client.projects.locations.registries.delete(requestDelete, (err, res) => {
-      if (err) {
-        console.log('Could not delete registry', err);
-      } else {
-        console.log(`Successfully deleted registry ${registryName}`);
-        console.log(res.data);
-      }
-    });
-  };
-
   const request = {
     parent: registryName,
   };
 
-  client.projects.locations.registries.devices.list(request, (err, res) => {
-    if (err) {
-      console.log('Could not list devices', err);
-      return;
-    }
+  let devices;
+  try {
+    const {data} = await client.projects.locations.registries.devices.list(
+      request
+    );
+    devices = data.devices;
+  } catch (err) {
+    console.error('Could not list devices', err);
+    return;
+  }
 
-    const data = res.data;
-    console.log('Current devices in registry:', data['devices']);
-    const devices = data['devices'];
+  // Delete devices in registry
+  console.log('Current devices in registry:', devices);
+  if (devices) {
+    const promises = devices.map((device, index) => {
+      console.log(`${device.id} [${index}/${devices.length}] removed`);
+      return deleteDevice(
+        client,
+        device.id,
+        registryId,
+        projectId,
+        cloudRegion
+      );
+    });
+    await Promise.all(promises);
+  }
 
-    if (devices) {
-      devices.forEach((device, index) => {
-        console.log(`${device.id} [${index}/${devices.length}] removed`);
-        if (index === devices.length - 1) {
-          deleteDevice(
-            client,
-            device.id,
-            registryId,
-            projectId,
-            cloudRegion,
-            after
-          );
-        } else {
-          deleteDevice(client, device.id, registryId, projectId, cloudRegion);
-        }
-      });
-    } else {
-      after();
-    }
-  });
-}
+  // Delete registry
+  try {
+    const {data} = await client.projects.locations.registries.delete(
+      requestDelete
+    );
+
+    console.log(`Successfully deleted registry ${registryName}`);
+    console.log(data);
+  } catch (err) {
+    console.error('Could not delete registry', err);
+  }
+};
 
 // Delete the given registry. Note that this will only succeed if the registry
 // is empty.
-function deleteRegistry(client, registryId, projectId, cloudRegion) {
+const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_delete_registry]
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: registryName,
-  };
 
-  client.projects.locations.registries.delete(request, (err, res) => {
-    if (err) {
-      console.log('Could not delete registry');
-      console.log(err);
-    } else {
-      console.log('Successfully deleted registry');
-      console.log(res);
-    }
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  const registryName = iotClient.registryPath(
+    projectId,
+    cloudRegion,
+    registryId
+  );
+  try {
+    const responses = await iotClient.deleteDeviceRegistry({
+      name: registryName,
+    });
+    console.log(responses);
+    console.log('Successfully deleted registry');
+  } catch (err) {
+    console.error('Could not delete registry', err);
+  }
   // [END iot_delete_registry]
-}
+};
 
 // Retrieve the given device from the registry.
-function getDevice(client, deviceId, registryId, projectId, cloudRegion) {
-  // [START iot_get_device]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
-  // const cloudRegion = 'us-central1';
-  // const deviceId = 'my-device';
-  // const projectId = 'adjective-noun-123';
-  // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
-
-  client.projects.locations.registries.devices.get(request, (err, res) => {
-    if (err) {
-      console.log('Could not find device:', deviceId);
-      console.log(err);
-    } else {
-      console.log('Found device:', deviceId);
-      console.log(res.data);
-    }
-  });
-  // [END iot_get_device]
-}
-
-// Retrieve the given device's state from the registry.
-function getDeviceState(client, deviceId, registryId, projectId, cloudRegion) {
-  // [START iot_get_device_state]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
-  // const cloudRegion = 'us-central1';
-  // const deviceId = 'my-device';
-  // const projectId = 'adjective-noun-123';
-  // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
-
-  client.projects.locations.registries.devices.states.list(
-    request,
-    (err, data) => {
-      if (err) {
-        console.log('Could not find device:', deviceId);
-        console.log(err);
-      } else {
-        console.log('State:', data.data);
-      }
-    }
-  );
-  // [END iot_get_device_state]
-}
-
-// Retrieve the given device's configuration history from the registry.
-function getDeviceConfigs(
+const getDevice = async (
   client,
   deviceId,
   registryId,
   projectId,
   cloudRegion
-) {
-  // [START iot_get_device_configs]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
+) => {
+  // [START iot_get_device]
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
-
-  client.projects.locations.registries.devices.configVersions.list(
-    request,
-    (err, data) => {
-      if (err) {
-        console.log('Could not find device:', deviceId);
-        console.log(err);
-      } else {
-        console.log('Configs:', data.data);
-      }
-    }
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+  const devicePath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
   );
+
+  try {
+    const responses = await iotClient.getDevice({name: devicePath});
+    const data = responses[0];
+
+    console.log('Found device:', deviceId, data);
+  } catch (err) {
+    console.error('Could not find device:', deviceId);
+    console.error('Trace:', err);
+  }
+  // [END iot_get_device]
+};
+
+// Retrieve the given device's state from the registry.
+const getDeviceState = async (
+  client,
+  deviceId,
+  registryId,
+  projectId,
+  cloudRegion
+) => {
+  // [START iot_get_device_state]
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+  const devicePath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+
+  try {
+    const responses = await iotClient.listDeviceStates({name: devicePath});
+    const states = responses[0].deviceStates;
+    if (states.length === 0) {
+      console.log(`No States for device: ${deviceId}`);
+    } else {
+      console.log(`States for device: ${deviceId}`);
+    }
+
+    for (let i = 0; i < states.length; i++) {
+      const state = states[i];
+      console.log(
+        'State:',
+        state,
+        '\nData:\n',
+        state.binaryData.toString('utf8')
+      );
+    }
+  } catch (err) {
+    console.error('Could not find device:', deviceId);
+    console.error('trace:', err);
+  }
+  // [END iot_get_device_state]
+};
+
+// Retrieve the given device's configuration history from the registry.
+const getDeviceConfigs = async (
+  client,
+  deviceId,
+  registryId,
+  projectId,
+  cloudRegion
+) => {
+  // [START iot_get_device_configs]
+  // const cloudRegion = 'us-central1';
+  // const deviceId = 'my-device';
+  // const projectId = 'adjective-noun-123';
+  // const registryId = 'my-registry';
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+  const devicePath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+
+  try {
+    const responses = await iotClient.listDeviceConfigVersions({
+      name: devicePath,
+    });
+    const configs = responses[0].deviceConfigs;
+
+    if (configs.length === 0) {
+      console.log(`No configs for device: ${deviceId}`);
+    } else {
+      console.log(`Configs:`);
+    }
+
+    for (let i = 0; i < configs.length; i++) {
+      const config = configs[i];
+      console.log(
+        'Config:',
+        config,
+        '\nData:\n',
+        config.binaryData.toString('utf8')
+      );
+    }
+  } catch (err) {
+    console.error('Could not find device:', deviceId);
+    console.error('trace:', err);
+  }
   // [END iot_get_device_configs]
-}
+};
 
 // Send configuration data to device.
-function setDeviceConfig(
+const setDeviceConfig = async (
   client,
   deviceId,
   registryId,
@@ -726,239 +774,276 @@ function setDeviceConfig(
   cloudRegion,
   data,
   version
-) {
+) => {
   // [START iot_set_device_config]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
   // const data = 'test-data';
   // const version = 0;
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const formattedName = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
 
   const binaryData = Buffer.from(data).toString('base64');
   const request = {
-    name: `${registryName}/devices/${deviceId}`,
+    name: formattedName,
     versionToUpdate: version,
     binaryData: binaryData,
   };
 
-  client.projects.locations.registries.devices.modifyCloudToDeviceConfig(
-    request,
-    (err, data) => {
-      if (err) {
-        console.log('Could not update config:', deviceId);
-        console.log('Message: ', err);
-      } else {
-        console.log('Success :', data);
-      }
-    }
-  );
+  try {
+    const responses = await iotClient.modifyCloudToDeviceConfig(request);
+
+    console.log('Success:', responses[0]);
+  } catch (err) {
+    console.error('Could not update config:', deviceId);
+    console.error('Message:', err);
+  }
   // [END iot_set_device_config]
-}
+};
 
 // sends a command to a specified device subscribed to the commands topic
-function sendCommand(
-  client,
+const sendCommand = async (
   deviceId,
   registryId,
   projectId,
   cloudRegion,
   commandMessage
-) {
+) => {
   // [START iot_send_command]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
+  // const commandMessage = 'message for device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
 
-  const binaryData = Buffer.from(commandMessage).toString('base64');
-
-  // NOTE: The device must be subscribed to the wildcard subfolder
-  // or you should pass a subfolder
+  const formattedName = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+  const binaryData = Buffer.from(commandMessage);
   const request = {
-    name: `${registryName}/devices/${deviceId}`,
+    name: formattedName,
     binaryData: binaryData,
-    //subfolder: <your-subfolder>
   };
 
-  client.projects.locations.registries.devices.sendCommandToDevice(
-    request,
-    (err, data) => {
-      if (err) {
-        console.log('Could not send command:', request);
-        console.log('Error: ', err);
-      } else {
-        console.log('Success:', data.status);
-      }
-    }
-  );
+  try {
+    const responses = await iotClient.sendCommandToDevice(request);
+    
+    console.log('Sent command: ', responses[0]);
+  } catch (err) {
+    console.error('Could not send command:', err);
+  }
   // [END iot_send_command]
-}
+};
 
 // Retrieve the given device from the registry.
-function getRegistry(client, registryId, projectId, cloudRegion) {
+const getRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_get_registry]
   // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}`,
-  };
+  const iot = require('@google-cloud/iot');
 
-  client.projects.locations.registries.get(request, (err, data) => {
-    if (err) {
-      console.log('Could not find registry:', registryId);
-      console.log(err);
-    } else {
-      console.log('Found registry:', registryId);
-      console.log(data.data);
-    }
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  try {
+    const registryName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
+    try {
+      const responses = await iotClient.getDeviceRegistry({name: registryName});
+      const response = responses[0];
+
+      console.log('Found registry:', registryId);
+      console.log(response);
+    } catch (err) {
+      console.error('Could not get device registry', err);
+    }
+  } catch (err) {
+    console.error('Could not find registry:', registryId);
+    console.error('Trace:', err);
+  }
   // [END iot_get_registry]
-}
+};
 
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
-function getClient(serviceAccountJson, cb) {
+const getClient = async (serviceAccountJson) => {
   // the getClient method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
   // environment variables if serviceAccountJson is not passed in
-  google.auth
-    .getClient({
-      keyFilename: serviceAccountJson,
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    })
-    .then(authClient => {
-      const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}`;
+  const authClient = await google.auth.getClient({
+    keyFilename: serviceAccountJson,
+    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+  });
 
-      google.options({
-        auth: authClient,
-      });
+  const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}`;
 
-      google
-        .discoverAPI(discoveryUrl)
-        .then(client => {
-          cb(client);
-        })
-        .catch(err => {
-          console.log('Error during API discovery.', err);
-        });
-    });
-}
+  google.options({
+    auth: authClient,
+  });
+
+  try {
+    return google.discoverAPI(discoveryUrl);
+  } catch (err) {
+    console.error('Error during API discovery.', err);
+  }
+};
 
 // Retrieves the IAM policy for a given registry.
-function getIamPolicy(client, registryId, projectId, cloudRegion) {
+const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
   // [START iot_get_iam_policy]
-  // Client retrieved in callback
-  // getClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    resource_: `${registryName}`,
-  };
+  const iot = require('@google-cloud/iot');
 
-  client.projects.locations.registries.getIamPolicy(request, (err, data) => {
-    if (err) {
-      console.log('Could not find policy for: ', registryId);
-      console.log('Trace: ', err);
-    } else {
-      data = data.data;
-      console.log(`ETAG: ${data.etag}`);
-      data.bindings = data.bindings || [];
-      data.bindings.forEach(_binding => {
-        console.log(`Role: ${_binding.role}`);
-        _binding.members || (_binding.members = []);
-        _binding.members.forEach(_member => {
-          console.log(`\t${_member}`);
-        });
-      });
-    }
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  const formattedResource = iotClient.registryPath(
+    projectId,
+    cloudRegion,
+    registryId
+  );
+
+  let bindings, etag;
+  try {
+    const responses = await iotClient.getIamPolicy({
+      resource: formattedResource,
+    });
+    const response = responses[0];
+
+    bindings = response.bindings;
+    etag = response.etag;
+
+    console.log('ETAG:', etag);
+    bindings = bindings || [];
+
+    bindings.forEach((_binding) => {
+      console.log(`Role: ${_binding.role}`);
+      _binding.members || (_binding.members = []);
+      _binding.members.forEach((_member) => {
+        console.log(`\t${_member}`);
+      });
+    });
+  } catch (err) {
+    console.error('Could not find policy for: ', registryId);
+    console.error('Trace: ', err);
+  }
+
   // [END iot_get_iam_policy]
-}
+};
 
 // Sets the IAM permissions for a given registry to a single member / role.
-function setIamPolicy(
+const setIamPolicy = async (
   client,
   registryId,
   projectId,
   cloudRegion,
   member,
   role
-) {
+) => {
   // [START iot_set_iam_policy]
-  // Client retrieved in callback
-  // setClient(serviceAccountJson, function(client) {...});
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    resource_: `${registryName}`,
-    resource: {
-      policy: {
-        bindings: [
-          {
-            members: member,
-            role: role,
-          },
-        ],
+
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const resource = iotClient.registryPath(projectId, cloudRegion, registryId);
+
+  const policy = {
+    bindings: [
+      {
+        members: [member],
+        role: role,
       },
-    },
+    ],
   };
 
-  client.projects.locations.registries.setIamPolicy(request, (err, data) => {
-    if (err) {
-      console.log('Could not set policy for: ', registryId);
-      console.log('Trace: ', err);
-    } else {
-      console.log(`ETAG: ${data.etag}`);
-      console.log(JSON.stringify(data));
-      data.bindings = data.bindings || [];
-      data.bindings.forEach(_binding => {
-        console.log(`Role: ${_binding.role}`);
-        _binding.members || (_binding.members = []);
-        _binding.members.forEach(_member => {
-          console.log(`\t${_member}`);
-        });
+  const request = {
+    resource: resource,
+    policy: policy,
+  };
+
+  let bindings, etag;
+  try {
+    const responses = await iotClient.setIamPolicy(request);
+    const response = responses[0];
+
+    bindings = response.bindings;
+    etag = response.etag;
+
+    console.log('ETAG:', etag);
+    bindings = bindings || [];
+
+    bindings.forEach((_binding) => {
+      console.log(`Role: ${_binding.role}`);
+      _binding.members || (_binding.members = []);
+      _binding.members.forEach((_member) => {
+        console.log(`\t${_member}`);
       });
-    }
-  });
+    });
+  } catch (err) {
+    console.error('Could not set policy for: ', registryId);
+    console.error('Trace: ', err);
+  }
   // [END iot_set_iam_policy]
-}
+};
 
 // Creates a gateway.
-function createGateway(
+const createGateway = async (
   client,
   projectId,
   cloudRegion,
   registryId,
   gatewayId,
   publicKeyFormat,
-  publicKeyFile
-) {
+  publicKeyFile,
+  gatewayAuthMethod
+) => {
   // [START iot_create_gateway]
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-unauth-device';
   // const gatewayId = 'my-gateway';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+  // const gatewayAuthMethod = 'ASSOCIATION_ONLY';
+  const iot = require('@google-cloud/iot');
+
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+
   console.log('Creating gateway:', gatewayId);
 
   let credentials = [];
@@ -975,328 +1060,328 @@ function createGateway(
     ];
   }
 
-  const createRequest = {
-    parent: parentName,
-    resource: {
-      id: gatewayId,
-      credentials: credentials,
-      gatewayConfig: {
-        gatewayType: 'GATEWAY',
-        gatewayAuthMethod: 'ASSOCIATION_ONLY',
-      },
+  const device = {
+    id: gatewayId,
+    credentials: credentials,
+    gatewayConfig: {
+      gatewayType: 'GATEWAY',
+      gatewayAuthMethod: gatewayAuthMethod,
     },
   };
 
-  client.projects.locations.registries.devices.create(
-    createRequest,
-    (err, res) => {
-      if (err) {
-        console.log('Could not create device');
-        console.log(err);
-      } else {
-        console.log('Created device');
-        console.log(res.data);
-      }
-    }
-  );
+  const request = {
+    parent: regPath,
+    device,
+  };
+
+  try {
+    const responses = await iotClient.createDevice(request);
+    const response = responses[0];
+    console.log('Created device:', response);
+  } catch (err) {
+    console.error('Could not create gateway', err);
+  }
   // [END iot_create_gateway]
-}
+};
 
 // Binds a device to a gateway so that it can be attached.
-function bindDeviceToGateway(
+const bindDeviceToGateway = async (
   client,
   projectId,
   cloudRegion,
   registryId,
   deviceId,
   gatewayId
-) {
+) => {
   // [START iot_bind_device_to_gateway]
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-unauth-device';
   // const gatewayId = 'my-gateway';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
+  const iot = require('@google-cloud/iot');
 
-  console.log(`Binding device: ${deviceId}`);
-  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
 
   const bindRequest = {
-    parent: parentName,
+    parent: regPath,
     deviceId: deviceId,
     gatewayId: gatewayId,
   };
 
-  client.projects.locations.registries.bindDeviceToGateway(bindRequest, err => {
-    if (err) {
-      console.log('Could not bind device', err);
-    } else {
-      console.log(`Bound ${deviceId} to`, gatewayId);
-    }
-  });
+  console.log(`Binding device: ${deviceId}`);
+
+  try {
+    await iotClient.bindDeviceToGateway(bindRequest);
+
+    console.log(`Bound ${deviceId} to`, gatewayId);
+  } catch (err) {
+    console.error('Could not bind device', err);
+  }
   // [END iot_bind_device_to_gateway]
-}
+};
 
 // Unbinds a device from a gateway.
-function unbindDeviceFromGateway(
+const unbindDeviceFromGateway = async (
   client,
   projectId,
   cloudRegion,
   registryId,
   deviceId,
   gatewayId
-) {
+) => {
   // [START iot_unbind_device_to_gateway]
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-unauth-device';
   // const gatewayId = 'my-gateway';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
+
   console.log(`Unbinding device: ${deviceId}`);
-  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
+
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
+  });
+  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
 
   const unbindRequest = {
-    parent: parentName,
+    parent: regPath,
     deviceId: deviceId,
     gatewayId: gatewayId,
   };
 
-  client.projects.locations.registries.unbindDeviceFromGateway(
-    unbindRequest,
-    err => {
-      if (err) {
-        console.log('Could not unbind device', err);
-      } else {
-        console.log(`Unbound ${deviceId} from`, gatewayId);
-      }
-    }
-  );
+  try {
+    await iotClient.unbindDeviceFromGateway(unbindRequest);
+
+    console.log(`Unbound ${deviceId} from`, gatewayId);
+  } catch (err) {
+    console.error('Could not unbind device', err);
+  }
   // [END iot_unbind_device_to_gateway]
-}
+};
 
 // Unbinds the given device from all gateways
-function unbindDeviceFromAllGateways(
-  client,
+const unbindDeviceFromAllGateways = async (
   projectId,
   cloudRegion,
   registryId,
   deviceId
-) {
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    name: `${registryName}/devices/${deviceId}`,
-  };
+) => {
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({});
 
-  // get information about this device
-  client.projects.locations.registries.devices.get(request, (err, res) => {
-    if (err) {
-      console.error('Could not get device', err);
-      return;
-    }
+  let device;
+  const devicePath = iotClient.devicePath(
+    projectId,
+    cloudRegion,
+    registryId,
+    deviceId
+  );
+  try {
+    const responses = await iotClient.getDevice({name: devicePath});
+    device = responses[0];
+    console.log(`Found Device ${device.id}`);
+  } catch (err) {
+    console.error('Could not find device:', deviceId);
+    console.error('Trace:', err);
+    return;
+  }
 
-    const device = res.data;
-    if (device) {
-      const isGateway = device.gatewayConfig.gatewayType === 'GATEWAY';
-
-      if (!isGateway) {
-        const listGatewaysForDeviceRequest = {
-          parent: registryName,
-          'gatewayListOptions.associationsDeviceId': deviceId,
-        };
-
-        // get list of all gateways this non-gateway device is bound to
-        client.projects.locations.registries.devices.list(
-          listGatewaysForDeviceRequest,
-          (err, res) => {
-            if (err) {
-              console.error('Could not list gateways', err);
-              return;
-            }
-
-            const data = res.data;
-            if (data.devices && data.devices.length > 0) {
-              const gateways = data.devices;
-
-              gateways.forEach(gateway => {
-                const unbindRequest = {
-                  parent: registryName,
-                  deviceId: device.id,
-                  gatewayId: gateway.id,
-                };
-
-                // for each gateway, make the call to unbind it
-                client.projects.locations.registries.unbindDeviceFromGateway(
-                  unbindRequest,
-                  err => {
-                    if (err) {
-                      console.log('Could not unbind device', err);
-                    } else {
-                      console.log('Unbound device from gateways', gateway.id);
-                    }
-                  }
-                );
-              });
-            }
-          }
-        );
-      }
-    }
-  });
-}
-
-function unbindAllDevices(client, projectId, cloudRegion, registryId) {
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const request = {
-    parent: registryName,
-  };
-
-  // get information about this device
-  client.projects.locations.registries.devices.list(request, (err, res) => {
-    if (err) {
-      console.log('Could not list devices', err);
-      return;
-    }
-
-    const data = res.data;
-    if (!data) {
-      return;
-    }
-
-    const devices = data.devices;
-
-    if (devices && devices.length > 0) {
-      devices.forEach(device => {
-        if (device) {
-          const isGateway =
-            device.gatewayConfig &&
-            device.gatewayConfig.gatewayType === 'GATEWAY';
-
-          if (!isGateway) {
-            unbindDeviceFromAllGateways(
-              client,
-              projectId,
-              cloudRegion,
-              registryId,
-              device.id
-            );
-          }
-        }
+  if (device) {
+    try {
+      const parentName = iotClient.registryPath(
+        projectId,
+        cloudRegion,
+        registryId
+      );
+      const responses = await iotClient.listDevices({
+        parent: parentName,
+        gatewayListOptions: {associationsDeviceId: deviceId},
       });
+      const gateways = responses[0];
+      if (gateways && gateways.length > 0) {
+        for (let i = 0; i < gateways.length; i++) {
+          const gatewayId = gateways[i].id;
+          unbindDeviceFromGateway(
+            client,
+            projectId,
+            cloudRegion,
+            registryId,
+            deviceId,
+            gatewayId
+          );
+        }
+      }
+    } catch (err) {
+      console.error('Could not list gateways', err);
+      return;
     }
+  }
+};
+
+const unbindAllDevices = async (projectId, cloudRegion, registryId) => {
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
-}
+
+  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
+
+  try {
+    const responses = await iotClient.listDevices({parent: parentName});
+    const devices = responses[0];
+
+    if (devices.length > 0) {
+      console.log('Current devices in registry:');
+    } else {
+      console.log('No devices in registry.');
+    }
+
+    for (let i = 0; i < devices.length; i++) {
+      const device = devices[i];
+      unbindDeviceFromAllGateways(
+        projectId,
+        cloudRegion,
+        registryId,
+        device.id
+      );
+    }
+  } catch (err) {
+    console.error('Could not list devices', err);
+  }
+};
 
 // Lists gateways in a registry.
-function listGateways(client, projectId, cloudRegion, registryId) {
+const listGateways = async (client, projectId, cloudRegion, registryId) => {
   // [START iot_list_gateways]
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
-  const request = {
-    parent: parentName,
-    fieldMask: 'config,gatewayConfig',
-  };
-
-  client.projects.locations.registries.devices.list(request, (err, res) => {
-    if (err) {
-      console.log('Could not list devices');
-      console.log(err);
-    } else {
-      const data = res.data;
-      console.log('Current gateways in registry:');
-      data.devices.forEach(device => {
-        if (
-          device.gatewayConfig !== undefined &&
-          device.gatewayConfig.gatewayType === 'GATEWAY'
-        ) {
-          console.log('----\n', device);
-        } else {
-          console.log('\t', device);
-        }
-      });
-    }
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  const registryPath = iotClient.registryPath(
+    projectId,
+    cloudRegion,
+    registryId
+  );
+
+  try {
+    console.log('Current gateways in registry:');
+    const responses = await iotClient.listDevices({
+      parent: registryPath,
+      fieldMask: {paths: ['config', 'gateway_config']},
+    });
+    const devices = responses[0];
+
+    devices.forEach((device) => {
+      if (
+        device.gatewayConfig !== undefined &&
+        device.gatewayConfig.gatewayType === 'GATEWAY'
+      ) {
+        console.log('----\n', device);
+      }
+    });
+  } catch (err) {
+    console.error('Could not list gateways:');
+    console.error('Trace:', err);
+    return;
+  }
   // [END iot_list_gateways]
-}
+};
 
 // Lists devices bound to a gateway.
-function listDevicesForGateway(
+const listDevicesForGateway = async (
   client,
   projectId,
   cloudRegion,
   registryId,
   gatewayId
-) {
+) => {
   // [START iot_list_devices_for_gateway]
   // const cloudRegion = 'us-central1';
   // const gatewayId = 'my-gateway';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
-  const request = {
-    parent: parentName,
-    'gatewayListOptions.associationsGatewayId': gatewayId,
-  };
-
-  client.projects.locations.registries.devices.list(request, (err, res) => {
-    if (err) {
-      console.log('Could not list devices');
-      console.log(err);
-    } else {
-      console.log('Current devices bound to gateway: ', gatewayId);
-      const data = res.data;
-      if (data.devices && data.devices.length > 0) {
-        data.devices.forEach(device => {
-          console.log(`\tDevice: ${device.numId} : ${device.id}`);
-        });
-      } else {
-        console.log('No devices bound to this gateway.');
-      }
-    }
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
+
+  try {
+    const responses = await iotClient.listDevices({
+      parent: parentName,
+      gatewayListOptions: {associationsGatewayId: gatewayId},
+    });
+    const devices = responses[0];
+
+    if (devices.length > 0) {
+      console.log('Current devices bound to gateway: ', gatewayId);
+    } else {
+      console.log('No devices bound to this gateway.');
+    }
+
+    for (let i = 0; i < devices.length; i++) {
+      const device = devices[i];
+      console.log(`\tDevice: ${device.numId}: ${device.id}`);
+    }
+  } catch (err) {
+    console.error('Could not list devices', err);
+  }
   // [END iot_list_devices_for_gateway]
-}
+};
 
 // Lists gateways a given device is bound to.
-function listGatewaysForDevice(
+const listGatewaysForDevice = async (
   client,
   projectId,
   cloudRegion,
   registryId,
   deviceId
-) {
+) => {
   // [START iot_list_gateways_for_device]
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
   // const projectId = 'adjective-noun-123';
   // const registryId = 'my-registry';
-  const parentName = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}`;
-  const request = {
-    parent: parentName,
-    'gatewayListOptions.associationsDeviceId': deviceId,
-  };
-
-  client.projects.locations.registries.devices.list(request, (err, res) => {
-    if (err) {
-      console.log('Could not list gateways for device');
-      console.log(err);
-    } else {
-      console.log('Current gateways for device:', deviceId);
-      const data = res.data;
-      if (data.devices && data.devices.length > 0) {
-        data.devices.forEach(gateway => {
-          console.log(`\tDevice: ${gateway.numId} : ${gateway.id}`);
-        });
-      } else {
-        console.log('No gateways associated with this device.');
-      }
-    }
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient({
+    // optional auth parameters.
   });
+
+  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
+
+  try {
+    const responses = await iotClient.listDevices({
+      parent: parentName,
+      gatewayListOptions: {associationsDeviceId: deviceId},
+    });
+    const devices = responses[0];
+
+    if (devices.length > 0) {
+      console.log('Current gateways for: ', deviceId);
+    } else {
+      console.log('No gateways associated with this device.');
+    }
+
+    for (let i = 0; i < devices.length; i++) {
+      const device = devices[i];
+      console.log(`\tDevice: ${device.numId}: ${device.id}`);
+    }
+  } catch (err) {
+    console.error('Could not list devices', err);
+  }
   // [END iot_list_gateways_for_device]
-}
+};
 
 require(`yargs`) // eslint-disable-line
   .demand(1)
@@ -1327,53 +1412,47 @@ require(`yargs`) // eslint-disable-line
     `createRsa256Device <deviceId> <registryId> <rsaPath>`,
     `Creates an RSA256 device.`,
     {},
-    opts => {
-      const cb = function(client) {
-        createRsaDevice(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.rsaPath
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await createRsaDevice(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.rsaPath
+      );
     }
   )
   .command(
     `createEs256Device <deviceId> <registryId> <esPath>`,
     `Creates an ES256 device.`,
     {},
-    opts => {
-      const cb = function(client) {
-        createEsDevice(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.esPath
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await createEsDevice(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.esPath
+      );
     }
   )
   .command(
     `createUnauthDevice <deviceId> <registryId>`,
     `Creates a device without authorization.`,
     {},
-    opts => {
-      const cb = function(client) {
-        createUnauthDevice(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await createUnauthDevice(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
@@ -1394,285 +1473,296 @@ require(`yargs`) // eslint-disable-line
         type: 'string',
       },
     },
-    opts => {
-      const cb = client => {
-        createDevice(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.publicKeyFormat,
-          opts.publicKeyFile
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await createDevice(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.publicKeyFormat,
+        opts.publicKeyFile
+      );
     }
   )
   .command(
     `createRegistry <registryId> <pubsubTopic>`,
     `Creates a device registry.`,
     {},
-    opts => {
-      const cb = function(client) {
-        lookupOrCreateRegistry(
-          client,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.pubsubTopic
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await createRegistry(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.pubsubTopic
+      );
+    }
+  )
+  .command(
+    `lookupRegistry <registryId>`,
+    `Gets a device registry.`,
+    {},
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await lookupRegistry(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `createIotTopic <pubsubTopic>`,
     `Creates and configures a PubSub topic for Cloud IoT Core.`,
     {},
-    opts => createIotTopic(opts.pubsubTopic)
+    (opts) => createIotTopic(opts.pubsubTopic)
   )
   .command(
     `setupIotTopic <pubsubTopic>`,
     `Configures the PubSub topic for Cloud IoT Core.`,
     {},
-    opts => setupIotTopic(opts.pubsubTopic)
+    (opts) => setupIotTopic(opts.pubsubTopic)
   )
   .command(
     `deleteDevice <deviceId> <registryId>`,
     `Deletes a device from the device registry.`,
     {},
-    opts => {
-      const cb = function(client) {
-        deleteDevice(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await deleteDevice(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `clearRegistry <registryId>`,
     `!!Be careful! Removes all devices and then deletes a device registry!!`,
     {},
-    opts => {
-      const cb = function(client) {
-        clearRegistry(
-          client,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await clearRegistry(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `deleteRegistry <registryId>`,
     `Deletes a device registry.`,
     {},
-    opts => {
-      const cb = function(client) {
-        deleteRegistry(
-          client,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await deleteRegistry(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `getDevice <deviceId> <registryId>`,
     `Retrieves device info given a device ID.`,
     {},
-    opts => {
-      const cb = function(client) {
-        getDevice(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await getDevice(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `getDeviceConfigs <deviceId> <registryId>`,
     `Retrieves device configurations given a device ID.`,
     {},
-    opts => {
-      const cb = function(client) {
-        getDeviceConfigs(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      getDeviceConfigs(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `getDeviceState <deviceId> <registryId>`,
     `Retrieves device state given a device ID.`,
     {},
-    opts => {
-      const cb = function(client) {
-        getDeviceState(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      getDeviceState(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
-  .command(`getRegistry <registryId>`, `Retrieves a registry.`, {}, opts => {
-    const cb = function(client) {
-      getRegistry(client, opts.registryId, opts.projectId, opts.cloudRegion);
-    };
-    getClient(opts.serviceAccount, cb);
-  })
+  .command(
+    `getRegistry <registryId>`,
+    `Retrieves a registry.`,
+    {},
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await getRegistry(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
+    }
+  )
   .command(
     `listDevices <registryId>`,
     `Lists the devices in a given registry.`,
     {},
-    opts => {
-      const cb = function(client) {
-        listDevices(client, opts.registryId, opts.projectId, opts.cloudRegion);
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await listDevices(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `listRegistries`,
     `Lists the registries in a given project.`,
     {},
-    opts => {
-      const cb = function(client) {
-        listRegistries(client, opts.projectId, opts.cloudRegion);
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await listRegistries(client, opts.projectId, opts.cloudRegion);
     }
   )
   .command(
     `patchEs256 <deviceId> <registryId> <es256Path>`,
     `Patches a device with ES256 authorization credentials.`,
     {},
-    opts => {
-      const cb = function(client) {
-        patchEs256ForAuth(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.es256Path,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await patchEs256ForAuth(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.es256Path,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `patchRsa256 <deviceId> <registryId> <rsa256Path>`,
     `Patches a device with RSA256 authentication credentials.`,
     {},
-    opts => {
-      const cb = function(client) {
-        patchRsa256ForAuth(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.rsa256Path,
-          opts.projectId,
-          opts.cloudRegion
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await patchRsa256ForAuth(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.rsa256Path,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `setConfig <deviceId> <registryId> <configuration> <version>`,
     `Sets a devices configuration to the specified data.`,
     {},
-    opts => {
-      const cb = function(client) {
-        setDeviceConfig(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.configuration,
-          opts.version || 0
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await setDeviceConfig(
+        client,
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.configuration,
+        opts.version || 0
+      );
     }
   )
   .command(
     `sendCommand <deviceId> <registryId> <commandMsg>`,
     `Sends a command message to a device subscribed to the commands topic`,
     {},
-    opts => {
-      const cb = client => {
-        sendCommand(
-          client,
-          opts.deviceId,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.commandMsg
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      await sendCommand(
+        opts.deviceId,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.commandMsg
+      );
     }
   )
   .command(
     `getIamPolicy <registryId>`,
     `Gets the IAM permissions for a given registry`,
     {},
-    opts => {
-      const cb = function(client) {
-        getIamPolicy(client, opts.registryId, opts.projectId, opts.cloudRegion);
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await getIamPolicy(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion
+      );
     }
   )
   .command(
     `setIamPolicy <registryId> <member> <role>`,
     `Gets the IAM permissions for a given registry`,
     {},
-    opts => {
-      const cb = function(client) {
-        setIamPolicy(
-          client,
-          opts.registryId,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.member,
-          opts.role
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await setIamPolicy(
+        client,
+        opts.registryId,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.member,
+        opts.role
+      );
     }
   )
   .command(
-    `createGateway <registryId> <gatewayId>`,
+    `createGateway`,
     `Creates a gateway`,
     {
+      registryId: {
+        description:
+          'Enter a permanent ID that starts with a lower case letter. Must end in a letter or number.',
+        requiresArg: true,
+        type: 'string',
+      },
+      gatewayId: {
+        description:
+          'Enter a permanent ID that starts with a lowercase letter. Must end in a letter or number',
+        requiresArg: true,
+        type: 'string',
+      },
       publicKeyFormat: {
+        alias: 'format',
         default: 'RSA_X509_PEM',
         description: 'Public key format for devices.',
         requiresArg: true,
@@ -1680,139 +1770,134 @@ require(`yargs`) // eslint-disable-line
         type: 'string',
       },
       publicKeyFile: {
+        alias: 'key',
         description:
           'Path to the public key file used for device authentication.',
         requiresArg: true,
         type: 'string',
       },
+      gatewayAuthMethod: {
+        default: 'ASSOCIATION_ONLY',
+        description:
+          'Determines how Cloud IoT Core verifies and trusts devices associated with this gateway.',
+        requiresArg: true,
+        choices: [
+          'ASSOCIATION_ONLY',
+          'DEVICE_AUTH_TOKEN_ONLY',
+          'ASSOCIATION_AND_DEVICE_AUTH_TOKEN',
+          'GATEWAY_AUTH_METHOD_UNSPECIFIED',
+        ],
+        type: 'string',
+      },
     },
-    opts => {
-      const cb = function(client) {
-        createGateway(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId,
-          opts.gatewayId,
-          opts.publicKeyFormat,
-          opts.publicKeyFile
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await createGateway(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.registryId,
+        opts.gatewayId,
+        opts.publicKeyFormat,
+        opts.publicKeyFile
+      );
     }
   )
   .command(
     `listGateways <registryId>`,
     `Lists gateways in a registry.`,
     {},
-    opts => {
-      const cb = function(client) {
-        listGateways(client, opts.projectId, opts.cloudRegion, opts.registryId);
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await listGateways(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.registryId
+      );
     }
   )
   .command(
     `bindDeviceToGateway <registryId> <gatewayId> <deviceId>`,
     `Binds a device to a gateway`,
     {},
-    opts => {
-      const cb = function(client) {
-        bindDeviceToGateway(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId,
-          opts.deviceId,
-          opts.gatewayId
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await bindDeviceToGateway(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.registryId,
+        opts.deviceId,
+        opts.gatewayId
+      );
     }
   )
   .command(
     `unbindDeviceFromGateway <registryId> <gatewayId> <deviceId>`,
     `Unbinds a device from a gateway`,
     {},
-    opts => {
-      const cb = function(client) {
-        unbindDeviceFromGateway(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId,
-          opts.deviceId,
-          opts.gatewayId
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await unbindDeviceFromGateway(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.registryId,
+        opts.deviceId,
+        opts.gatewayId
+      );
     }
   )
   .command(
     `unbindDeviceFromAllGateways <registryId> <deviceId>`,
     `Unbinds a device from all gateways`,
     {},
-    opts => {
-      const cb = function(client) {
-        unbindDeviceFromAllGateways(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId,
-          opts.deviceId
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      await unbindDeviceFromAllGateways(
+        opts.projectId,
+        opts.cloudRegion,
+        opts.registryId,
+        opts.deviceId
+      );
     }
   )
   .command(
     `unbindAllDevices <registryId>`,
     `Unbinds all devices in a given registry. Mainly for clearing registries`,
     {},
-    opts => {
-      const cb = client => {
-        unbindAllDevices(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      await unbindAllDevices(opts.projectId, opts.cloudRegion, opts.registryId);
     }
   )
   .command(
     `listDevicesForGateway <registryId> <gatewayId>`,
     `Lists devices in a gateway.`,
     {},
-    opts => {
-      const cb = function(client) {
-        listDevicesForGateway(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId,
-          opts.gatewayId
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await listDevicesForGateway(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.registryId,
+        opts.gatewayId
+      );
     }
   )
   .command(
     `listGatewaysForDevice <registryId> <deviceId>`,
     `Lists gateways for a given device.`,
     {},
-    opts => {
-      const cb = function(client) {
-        listGatewaysForDevice(
-          client,
-          opts.projectId,
-          opts.cloudRegion,
-          opts.registryId,
-          opts.deviceId
-        );
-      };
-      getClient(opts.serviceAccount, cb);
+    async (opts) => {
+      const client = await getClient(opts.serviceAccount);
+      await listGatewaysForDevice(
+        client,
+        opts.projectId,
+        opts.cloudRegion,
+        opts.registryId,
+        opts.deviceId
+      );
     }
   )
   .example(
@@ -1826,6 +1911,10 @@ require(`yargs`) // eslint-disable-line
   )
   .example(
     `node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`
+  )
+  .example(
+    `node $0 createGateway --registryId=my-registry --gatewayId=my-gateway\
+    --format=RS256_X509_PEM --key=./rsa_cert.pem`
   )
   .example(`node $0 createUnauthDevice my-device my-registry`)
   .example(`node $0 deleteDevice my-device my-registry`)

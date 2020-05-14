@@ -1,118 +1,153 @@
-/**
- * Copyright 2018, Google, LLC
- * Licensed under the Apache License, Version 2.0 (the `License`);
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an `AS IS` BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
 const path = require('path');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 const uuid = require('uuid');
+const {execSync} = require('child_process');
 
-const cmdDataset = 'node datasets.js';
-const cmd = 'node dicom_stores.js';
+const {PubSub} = require('@google-cloud/pubsub');
+const {Storage} = require('@google-cloud/storage');
+
+const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const cloudRegion = 'us-central1';
+const projectId = process.env.GCLOUD_PROJECT;
+const pubSubClient = new PubSub({projectId});
+const storage = new Storage();
+const topicName = `nodejs-healthcare-test-topic-${uuid.v4()}`;
+
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
+
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
+const dicomStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
-const pubsubTopic = `nodejs-docs-samples-test-pubsub${uuid.v4()}`.replace(
-  /-/gi,
-  '_'
-);
+const dcmFileName = 'IM-0002-0001-JPEG-BASELINE.dcm';
 
-const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
-
-const dcmFileName = `IM-0002-0001-JPEG-BASELINE.dcm`;
-const gcsUri = bucketName + '/' + dcmFileName;
+const resourceFile = `resources/${dcmFileName}`;
+const gcsUri = `${bucketName}/${dcmFileName}`;
 
 before(async () => {
-  tools.checkCredentials();
-  await tools.runAsync(`${cmdDataset} createDataset ${datasetId}`, cwdDatasets);
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
+  // Create a Cloud Storage bucket to be used for testing.
+  await storage.createBucket(bucketName);
+  console.log(`Bucket ${bucketName} created.`);
+  await storage.bucket(bucketName).upload(resourceFile);
+
+  // Create a Pub/Sub topic to be used for testing.
+  const [topic] = await pubSubClient.createTopic(topicName);
+  console.log(`Topic ${topic.name} created.`);
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
 });
+
 after(async () => {
   try {
-    await tools.runAsync(
-      `${cmdDataset} deleteDataset ${datasetId}`,
-      cwdDatasets
-    );
+    const bucket = storage.bucket(bucketName);
+    await bucket.deleteFiles({force: true});
+    await bucket.deleteFiles({force: true}); // Try a second time...
+    await bucket.delete();
+    console.log(`Bucket ${bucketName} deleted.`);
+
+    await pubSubClient.topic(topicName).delete();
+    console.log(`Topic ${topicName} deleted.`);
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+      cwd: cwdDatasets,
+    });
   } catch (err) {} // Ignore error
 });
 
-it('should create a DICOM store', async () => {
-  const output = await tools.runAsync(
-    `${cmd} createDicomStore ${datasetId} ${dicomStoreId}`,
-    cwd
+it('should create a DICOM store', () => {
+  const output = execSync(
+    `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
+    {cwd}
   );
-  assert.strictEqual(new RegExp(/Created DICOM store/).test(output), true);
+  assert.ok(output.includes('Created DICOM store'));
 });
 
-it('should get a DICOM store', async () => {
-  const output = await tools.runAsync(
-    `${cmd} getDicomStore ${datasetId} ${dicomStoreId}`,
-    cwd
+it('should get a DICOM store', () => {
+  const output = execSync(
+    `node getDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
+    {cwd}
   );
-  assert.strictEqual(new RegExp(/Got DICOM store/).test(output), true);
+  assert.ok(output.includes('name'));
 });
 
-it('should patch a DICOM store', async () => {
-  const output = await tools.runAsync(
-    `${cmd} patchDicomStore ${datasetId} ${dicomStoreId} ${pubsubTopic}`,
-    cwd
+it('should patch a DICOM store', () => {
+  const output = execSync(
+    `node patchDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${topicName}`,
+    {cwd}
   );
-  assert.strictEqual(
-    new RegExp(/Patched DICOM store with Cloud Pub\/Sub topic/).test(output),
-    true
-  );
+  assert.ok(output.includes('Patched DICOM store'));
 });
 
-it('should list DICOM stores', async () => {
-  const output = await tools.runAsync(
-    `${cmd} listDicomStores ${datasetId}`,
-    cwd
+it('should list DICOM stores', () => {
+  const output = execSync(
+    `node listDicomStores.js ${projectId} ${cloudRegion} ${datasetId}`,
+    {cwd}
   );
-  assert.strictEqual(new RegExp(/DICOM stores/).test(output), true);
+  assert.ok(output.includes('dicomStores'));
 });
 
-it('should export a DICOM instance', async () => {
-  const output = await tools.runAsync(
-    `${cmd} exportDicomInstanceGcs ${datasetId} ${dicomStoreId} ${bucketName}`,
-    cwd
+it('should create and get a DICOM store IAM policy', () => {
+  const localMember = 'group:dpebot@google.com';
+  const localRole = 'roles/viewer';
+
+  let output = execSync(
+    `node setDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${localMember} ${localRole}`,
+    {cwd}
   );
-  assert.strictEqual(
-    new RegExp(/Exported DICOM instances to bucket/).test(output),
-    true
+  assert.ok(output.includes, 'ETAG');
+
+  output = execSync(
+    `node getDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`
   );
+  assert.ok(output.includes('dpebot'));
 });
 
-it('should import a DICOM object from GCS', async () => {
-  const output = await tools.runAsync(
-    `${cmd} importDicomObject ${datasetId} ${dicomStoreId} ${gcsUri}`,
-    cwd
+it('should import a DICOM object from GCS', () => {
+  const output = execSync(
+    `node importDicomInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${gcsUri}`,
+    {cwd}
   );
-  assert.strictEqual(
-    new RegExp(/Imported DICOM objects from bucket/).test(output),
-    true
-  );
+  assert.ok(output.includes('Successfully imported DICOM instances'));
 });
 
-it('should delete a DICOM store', async () => {
-  const output = await tools.runAsync(
-    `${cmd} deleteDicomStore ${datasetId} ${dicomStoreId}`,
-    cwd
+it('should export a DICOM instance', () => {
+  const output = execSync(
+    `node exportDicomInstanceGcs.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${bucketName}`,
+    {cwd}
   );
-  assert.strictEqual(new RegExp(/Deleted DICOM store/).test(output), true);
+  assert.ok(output.includes('Exported DICOM instances'));
+});
+
+it('should delete a DICOM store', () => {
+  const output = execSync(
+    `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
+    {cwd}
+  );
+  assert.ok(output.includes('Deleted DICOM store'));
 });

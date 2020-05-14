@@ -1,17 +1,16 @@
-/**
- * Copyright 2018, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -75,8 +74,13 @@ exports.lazyGlobals = (req, res) => {
 // [END functions_tips_lazy_globals]
 
 // [START functions_tips_connection_pooling]
+const axios = require('axios');
+
 const http = require('http');
-const agent = new http.Agent({keepAlive: true});
+const https = require('https');
+
+const httpAgent = new http.Agent({keepAlive: true});
+const httpsAgent = new https.Agent({keepAlive: true});
 
 /**
  * HTTP Cloud Function that caches an HTTP agent to pool HTTP connections.
@@ -84,30 +88,13 @@ const agent = new http.Agent({keepAlive: true});
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.connectionPooling = (req, res) => {
-  req = http.request(
-    {
-      host: '',
-      port: 80,
-      path: '',
-      method: 'GET',
-      agent: agent,
-    },
-    resInner => {
-      let rawData = '';
-      resInner.setEncoding('utf8');
-      resInner.on('data', chunk => {
-        rawData += chunk;
-      });
-      resInner.on('end', () => {
-        res.status(200).send(`Data: ${rawData}`);
-      });
-    }
-  );
-  req.on('error', e => {
-    res.status(500).send(`Error: ${e.message}`);
-  });
-  req.end();
+exports.connectionPooling = async (req, res) => {
+  try {
+    const {data} = await axios.get('/', {httpAgent, httpsAgent});
+    res.status(200).send(`Data: ${data}`);
+  } catch (err) {
+    res.status(500).send(`Error: ${err.message}`);
+  }
 };
 // [END functions_tips_connection_pooling]
 
@@ -145,7 +132,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
  * @param {object} event.data Data included with the event.
  * @param {object} event.data.retry User-supplied parameter that tells the function whether to retry.
  */
-exports.retryPromise = event => {
+exports.retryPromise = (event) => {
   const tryAgain = !!event.data.retry;
 
   if (tryAgain) {
@@ -194,7 +181,7 @@ const pubsub = new PubSub();
 exports.gcpApiCall = (req, res) => {
   const topic = pubsub.topic(req.body.topic);
 
-  topic.publish(Buffer.from('Test message'), err => {
+  topic.publish(Buffer.from('Test message'), (err) => {
     if (err) {
       res.status(500).send(`Error publishing the message: ${err}`);
     } else {

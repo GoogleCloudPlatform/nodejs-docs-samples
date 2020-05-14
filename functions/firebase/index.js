@@ -1,17 +1,16 @@
-/**
- * Copyright 2018, Google LLC.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // [START functions_firebase_rtdb]
 /**
@@ -19,8 +18,16 @@
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloRTDB = event => {
+exports.helloRTDB = (event) => {
   const triggerResource = event.resource;
+
+  const pathParams = event.params;
+  if (pathParams) {
+    console.log(`Path parameters:`);
+    Object.keys(pathParams).forEach((key) => {
+      console.log(`  ${key}: ${pathParams[key]}`);
+    });
+  }
 
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!event.auth.admin}`);
@@ -35,7 +42,7 @@ exports.helloRTDB = event => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloFirestore = event => {
+exports.helloFirestore = (event) => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by event on: ${triggerResource}`);
@@ -59,9 +66,9 @@ exports.helloFirestore = event => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAuth = event => {
+exports.helloAuth = (event) => {
   try {
-    const data = event.data;
+    const {data} = event;
     console.log(`Function triggered by change to user: ${data.uid}`);
     console.log(`Created at: ${data.metadata.createdAt}`);
 
@@ -82,8 +89,8 @@ const firestore = new Firestore({
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
-exports.makeUpperCase = event => {
-  const resource = event.resource;
+exports.makeUpperCase = (event) => {
+  const {resource} = event;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
   const curValue = event.data.value.fields.original.stringValue;
@@ -102,11 +109,11 @@ exports.makeUpperCase = event => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAnalytics = event => {
-  const resource = event.resource;
+exports.helloAnalytics = (event) => {
+  const {resource} = event;
   console.log(`Function triggered by the following event: ${resource}`);
 
-  const analyticsEvent = event.data.eventDim[0];
+  const [analyticsEvent] = event.data.eventDim;
   console.log(`Name: ${analyticsEvent.name}`);
   console.log(`Timestamp: ${new Date(analyticsEvent.timestampMicros / 1000)}`);
 
@@ -122,8 +129,8 @@ exports.helloAnalytics = event => {
  *
  * @param {object} data The Cloud Functions event data.
  */
-exports.helloRemoteConfig = event => {
-  const data = event.data;
+exports.helloRemoteConfig = (event) => {
+  const {data} = event;
 
   console.log(`Update type: ${data.updateType}`);
   console.log(`Origin: ${data.updateOrigin}`);

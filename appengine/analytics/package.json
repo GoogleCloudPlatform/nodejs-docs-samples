@@ -10,27 +10,19 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "start": "node app.js",
-    "system-test": "repo-tools test app",
+    "system-test": "mocha --exit test/*.test.js",
     "test": "npm run system-test"
   },
   "dependencies": {
     "express": "^4.16.4",
-    "got": "^9.6.0"
+    "got": "^11.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Event tracked."
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
+    "mocha": "^7.0.0",
+    "supertest": "^4.0.2"
   }
 }

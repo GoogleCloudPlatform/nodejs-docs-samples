@@ -1,7 +1,6 @@
 {
   "name": "cloudsql-mysql-mysql",
   "description": "Node.js Cloud SQL MySQL Connectivity Sample",
-  "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",
@@ -10,51 +9,25 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "system-test": "mocha test/*.test.js --timeout=60000 --exit",
-    "all-test": "npm run system-test"
+    "test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/logging-winston": "^0.11.0",
-    "body-parser": "1.18.3",
-    "express": "4.16.2",
-    "promise-mysql": "^3.3.1",
+    "@google-cloud/logging-winston": "^3.0.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "promise-mysql": "^4.0.0",
     "prompt": "^1.0.0",
     "pug": "^2.0.3",
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.2.0",
-    "mocha": "^6.0.0",
+    "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
     "supertest": "^4.0.0",
-    "sinon": "^7.1.1"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "app": {
-        "requiredEnvVars": [
-          "DB_USER",
-          "DB_PASS",
-          "DB_NAME",
-          "CLOUD_SQL_INSTANCE_NAME"
-        ],
-        "args": [
-          "server.js"
-        ]
-      },
-      "build": {
-        "requiredEnvVars": [
-          "DB_USER",
-          "DB_PASS",
-          "DB_NAME",
-          "CLOUD_SQL_INSTANCE_NAME"
-        ]
-      }
-    }
+    "sinon": "^9.0.0"
   }
 }

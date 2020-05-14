@@ -1,0 +1,22 @@
+{
+  "name": "@google-cloud/datacatalog-quickstart",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Quickstart guides for the Cloud Data Catalog client library for Node.js",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": "GoogleCloudPlatform/nodejs-docs-samples",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "mocha system-test/*.test.js --timeout=60000"
+  },
+  "devDependencies": {
+    "mocha": "^7.0.0",
+    "uuid": "^8.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/datacatalog": "^2.0.0"
+  }
+}

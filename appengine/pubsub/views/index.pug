@@ -4,6 +4,15 @@ html(lang='en')
     title PubSub
     meta(charset='utf-8')
   body
+    p Bearer tokens received by this instance:
+    ul
+      each val in tokens
+        li= val
+    p Claims received by this instance:
+    ul
+      each val in claims
+        li
+          code!= JSON.stringify(val)
     p Messages received by this instance:
     ul
       each val in messages

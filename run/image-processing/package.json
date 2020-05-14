@@ -1,0 +1,31 @@
+{
+  "name": "nodejs-image-processing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloud Storage-triggered image processing with Cloud Vision API and ImageMagick transformation.",
+  "main": "index.js",
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha test/*.test.js --check-leaks --timeout=5000"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^4.0.0",
+    "@google-cloud/vision": "^1.1.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4",
+    "gm": "^1.23.1"
+  },
+  "devDependencies": {
+    "mocha": "^7.0.0",
+    "supertest": "^4.0.2"
+  }
+}

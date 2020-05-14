@@ -6,14 +6,21 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha test/*.test.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "twilio": "^3.28.0"
+    "twilio": "^3.34.0"
+  },
+  "devDependencies": {
+    "mocha": "^7.0.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^9.0.0",
+    "supertest": "^4.0.2"
   }
 }

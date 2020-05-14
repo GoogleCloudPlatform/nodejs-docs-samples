@@ -1,21 +1,18 @@
-/**
- * Copyright 2018, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
-
-const Buffer = require('safe-buffer').Buffer;
 
 // [START functions_helloworld_http]
 const escapeHtml = require('escape-html');
@@ -47,19 +44,10 @@ exports.helloGET = (req, res) => {
  * @param {Object} res Cloud Function response context.
  *                     More info: https://expressjs.com/en/api.html#res
  */
-// [START functions_tips_terminate]
 exports.helloHttp = (req, res) => {
-  const name =
-    req.query && req.query.name
-      ? req.query.name
-      : req.body && req.body.name
-      ? req.body.name
-      : 'World';
-  res.send(`Hello ${escapeHtml(name)}!`);
+  res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 };
 // [END functions_helloworld_http]
-
-// [END functions_tips_terminate]
 
 // [START functions_helloworld_background]
 /**
@@ -68,11 +56,9 @@ exports.helloHttp = (req, res) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-// [START functions_tips_terminate]
-exports.helloBackground = (event, callback) => {
-  callback(null, `Hello ${event.data.name || 'World'}!`);
+exports.helloBackground = (data, context, callback) => {
+  callback(null, `Hello ${data.name || 'World'}!`);
 };
-// [END functions_tips_terminate]
 // [END functions_helloworld_background]
 
 // [START functions_helloworld_pubsub]
@@ -81,18 +67,16 @@ exports.helloBackground = (event, callback) => {
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloPubSub = (event, callback) => {
-  const pubsubMessage = event.data;
-  const name = pubsubMessage.data
-    ? Buffer.from(pubsubMessage.data, 'base64').toString()
+exports.helloPubSub = (data, context) => {
+  const pubSubMessage = data;
+  const name = pubSubMessage.data
+    ? Buffer.from(pubSubMessage.data, 'base64').toString()
     : 'World';
 
   console.log(`Hello, ${name}!`);
-
-  callback();
 };
 // [END functions_helloworld_pubsub]
 
@@ -100,23 +84,20 @@ exports.helloPubSub = (event, callback) => {
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
+ * @param {object} data The event payload.
+ * @param {object} context The event metadata.
  */
-exports.helloGCS = (event, callback) => {
-  const file = event.data;
-
+exports.helloGCS = (data, context) => {
+  const file = data;
   if (file.resourceState === 'not_exists') {
     console.log(`File ${file.name} deleted.`);
   } else if (file.metageneration === '1') {
     // metageneration attribute is updated on metadata changes.
-    // value is 1 if file was newly created or overwritten
+    // on create value is 1
     console.log(`File ${file.name} uploaded.`);
   } else {
     console.log(`File ${file.name} metadata updated.`);
   }
-
-  callback();
 };
 // [END functions_helloworld_storage]
 
@@ -127,11 +108,11 @@ exports.helloGCS = (event, callback) => {
  * @param {object} event The Cloud Functions event.
  * @param {function} callback The callback function.
  */
-exports.helloGCSGeneric = (event, callback) => {
-  const file = event.data;
+exports.helloGCSGeneric = (data, context, callback) => {
+  const file = data;
 
-  console.log(`  Event: ${event.eventId}`);
-  console.log(`  Event Type: ${event.eventType}`);
+  console.log(`  Event: ${context.eventId}`);
+  console.log(`  Event Type: ${context.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
   console.log(`  File: ${file.name}`);
   console.log(`  Metageneration: ${file.metageneration}`);
@@ -149,7 +130,7 @@ exports.helloGCSGeneric = (event, callback) => {
  * @param {function} callback The callback function.
  */
 
-exports.helloError = (event, callback) => {
+exports.helloError = (data, context, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver Error Reporting
   console.error(new Error('I failed you'));
@@ -167,7 +148,7 @@ exports.helloError = (event, callback) => {
  */
 /* eslint-disable no-throw-literal */
 
-exports.helloError2 = (event, callback) => {
+exports.helloError2 = (data, context, callback) => {
   // [START functions_helloworld_error]
   // These will NOT be reported to Stackdriver Error Reporting
   console.info(new Error('I failed you')); // Logging an Error object at the info level
@@ -184,7 +165,7 @@ exports.helloError2 = (event, callback) => {
  * @param {function} callback The callback function.
  */
 /* eslint-disable */
-exports.helloError3 = (event, callback) => {
+exports.helloError3 = (data, context, callback) => {
   // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   callback('I failed you');

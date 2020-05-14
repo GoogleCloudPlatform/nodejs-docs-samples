@@ -1,31 +1,29 @@
-/**
- * Copyright 2017, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
 
 const srcBucketName = 'foo';
 const destBucketName = 'bar';
 const jobName = 'transferJobs/123456789012345678';
 const transferOperationName = 'transferOperations/123456789012345678';
 
-function getSample() {
+const getSample = () => {
   const transferJobMock = {
     name: jobName,
   };
@@ -75,10 +73,19 @@ function getSample() {
       transferOperation: transferOperationMock,
     },
   };
-}
+};
+const stubConsole = function () {
+  sinon.stub(console, `error`);
+  sinon.stub(console, `log`);
+};
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+//Restore console
+const restoreConsole = function () {
+  console.log.restore();
+  console.error.restore();
+};
+beforeEach(stubConsole);
+afterEach(restoreConsole);
 
 it('should create a transfer job', () => {
   const description = 'description';
@@ -765,7 +772,7 @@ it('should handle resume error', () => {
 });
 
 it('should call createTransferJob', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'createTransferJob');
   program.main([
@@ -792,7 +799,7 @@ it('should call createTransferJob', () => {
 });
 
 it('should call getTransferJob', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'getTransferJob');
   program.main(['jobs', 'get', jobName]);
@@ -803,7 +810,7 @@ it('should call getTransferJob', () => {
 });
 
 it('should call listTransferJobs', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'listTransferJobs');
   program.main(['jobs', 'list']);
@@ -815,7 +822,7 @@ it('should call listTransferJobs', () => {
 });
 
 it('should call updateTransferJob', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'updateTransferJob');
   program.main(['jobs', 'set', jobName, 'status', 'DISABLED']);
@@ -833,7 +840,7 @@ it('should call updateTransferJob', () => {
 });
 
 it('should call listTransferOperations', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'listTransferOperations');
   program.main(['operations', 'list']);
@@ -845,7 +852,7 @@ it('should call listTransferOperations', () => {
 });
 
 it('should call listTransferOperations and filter', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'listTransferOperations');
   program.main(['operations', 'list', jobName]);
@@ -857,7 +864,7 @@ it('should call listTransferOperations and filter', () => {
 });
 
 it('should call getTransferOperation', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'getTransferOperation');
   program.main(['operations', 'get', transferOperationName]);
@@ -869,7 +876,7 @@ it('should call getTransferOperation', () => {
 });
 
 it('should call pauseTransferOperation', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'pauseTransferOperation');
   program.main(['operations', 'pause', transferOperationName]);
@@ -881,7 +888,7 @@ it('should call pauseTransferOperation', () => {
 });
 
 it('should call resumeTransferOperation', () => {
-  const program = getSample().program;
+  const {program} = getSample();
 
   sinon.stub(program, 'resumeTransferOperation');
   program.main(['operations', 'resume', transferOperationName]);

@@ -32,7 +32,7 @@ secure solution such as [Cloud KMS](https://cloud.google.com/kms/) to help keep 
 ## Running locally
 
 To run this application locally, download and install the `cloud_sql_proxy` by
-following the instructions [here](https://cloud.google.com/sql/docs/mysql/sql-proxy#install).
+[following the instructions](https://cloud.google.com/sql/docs/mysql/sql-proxy#install).
 
 Once the proxy is ready, use the following command to start the proxy in the
 background:
@@ -90,3 +90,39 @@ command:
 gcloud app browse
 ```
 
+## Deploy to Cloud Run
+
+See the [Cloud Run documentation](https://cloud.google.com/sql/docs/mysql/connect-run)
+for more details on connecting a Cloud Run service to Cloud SQL.
+
+1. Build the container image:
+
+```sh
+gcloud builds submit --tag gcr.io/[YOUR_PROJECT_ID]/run-sql
+```
+
+2. Deploy the service to Cloud Run:
+
+```sh
+gcloud run deploy run-sql --image gcr.io/[YOUR_PROJECT_ID]/run-sql
+```
+
+Take note of the URL output at the end of the deployment process.
+
+3. Configure the service for use with Cloud Run
+
+```sh
+gcloud run services update run-sql \
+    --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
+    --set-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
+      DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
+```
+Replace environment variables with the correct values for your Cloud SQL
+instance configuration.
+
+This step can be done as part of deployment but is separated for clarity.
+
+4. Navigate your browser to the URL noted in step 2.
+
+For more details about using Cloud Run see http://cloud.run.
+Review other [Node.js on Cloud Run samples](../../../run/).

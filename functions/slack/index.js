@@ -1,23 +1,22 @@
-/**
- * Copyright 2016, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2016 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
 // [START functions_slack_setup]
-const config = require('./config.json');
 const {google} = require('googleapis');
+const {verifyRequestSignature} = require('@slack/events-api');
 
 // Get a reference to the Knowledge Graph Search component
 const kgsearch = google.kgsearch('v1');
@@ -31,7 +30,7 @@ const kgsearch = google.kgsearch('v1');
  * @param {object} response The response from the Knowledge Graph API.
  * @returns {object} The formatted message.
  */
-function formatSlackMessage(query, response) {
+const formatSlackMessage = (query, response) => {
   let entity;
 
   // Extract the first entity from the result list, if any
@@ -81,23 +80,31 @@ function formatSlackMessage(query, response) {
   }
 
   return slackMessage;
-}
+};
 // [END functions_slack_format]
 
 // [START functions_verify_webhook]
 /**
  * Verify that the webhook request came from Slack.
  *
- * @param {object} body The body of the request.
- * @param {string} body.token The Slack token to be verified.
+ * @param {object} req Cloud Function request object.
+ * @param {string} req.headers Headers Slack SDK uses to authenticate request.
+ * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
-function verifyWebhook(body) {
-  if (!body || body.token !== config.SLACK_TOKEN) {
+const verifyWebhook = (req) => {
+  const signature = {
+    signingSecret: process.env.SLACK_SECRET,
+    requestSignature: req.headers['x-slack-signature'],
+    requestTimestamp: req.headers['x-slack-request-timestamp'],
+    body: req.rawBody,
+  };
+
+  if (!verifyRequestSignature(signature)) {
     const error = new Error('Invalid credentials');
     error.code = 401;
     throw error;
   }
-}
+};
 // [END functions_verify_webhook]
 
 // [START functions_slack_request]
@@ -106,11 +113,11 @@ function verifyWebhook(body) {
  *
  * @param {string} query The user's search query.
  */
-function makeSearchRequest(query) {
+const makeSearchRequest = (query) => {
   return new Promise((resolve, reject) => {
     kgsearch.entities.search(
       {
-        auth: config.KG_API_KEY,
+        auth: process.env.KG_API_KEY,
         query: query,
         limit: 1,
       },
@@ -126,48 +133,44 @@ function makeSearchRequest(query) {
       }
     );
   });
-}
+};
 // [END functions_slack_request]
 
 // [START functions_slack_search]
 /**
  * Receive a Slash Command request from Slack.
  *
- * Trigger this function by making a POST request with a payload to:
- * https://[YOUR_REGION].[YOUR_PROJECT_ID].cloudfunctions.net/kgsearch
- *
- * @example
- * curl -X POST "https://us-central1.your-project-id.cloudfunctions.net/kgSearch" --data '{"token":"[YOUR_SLACK_TOKEN]","text":"giraffe"}'
+ * Trigger this function by creating a Slack slash command with this URL:
+ * https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/kgSearch
  *
  * @param {object} req Cloud Function request object.
  * @param {object} req.body The request payload.
- * @param {string} req.body.token Slack's verification token.
+ * @param {string} req.rawBody Raw request payload used to validate Slack's message signature.
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
-exports.kgSearch = (req, res) => {
-  return Promise.resolve()
-    .then(() => {
-      if (req.method !== 'POST') {
-        const error = new Error('Only POST requests are accepted');
-        error.code = 405;
-        throw error;
-      }
+exports.kgSearch = async (req, res) => {
+  try {
+    if (req.method !== 'POST') {
+      const error = new Error('Only POST requests are accepted');
+      error.code = 405;
+      throw error;
+    }
 
-      // Verify that this request came from Slack
-      verifyWebhook(req.body);
+    // Verify that this request came from Slack
+    verifyWebhook(req);
 
-      // Make the request to the Knowledge Graph Search API
-      return makeSearchRequest(req.body.text);
-    })
-    .then(response => {
-      // Send the formatted message back to Slack
-      res.json(response);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(err.code || 500).send(err);
-      return Promise.reject(err);
-    });
+    // Make the request to the Knowledge Graph Search API
+    const response = await makeSearchRequest(req.body.text);
+
+    // Send the formatted message back to Slack
+    res.json(response);
+
+    return Promise.resolve();
+  } catch (err) {
+    console.error(err);
+    res.status(err.code || 500).send(err);
+    return Promise.reject(err);
+  }
 };
 // [END functions_slack_search]

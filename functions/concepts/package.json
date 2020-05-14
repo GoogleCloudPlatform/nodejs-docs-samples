@@ -9,15 +9,15 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.0.0"
   },
   "dependencies": {
-    "request": "^2.85.0"
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "mocha": "^6.0.0",
-    "sinon": "^7.0.0",
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "mocha": "^7.0.0",
+    "sinon": "^9.0.0",
     "supertest": "^4.0.0"
   },
   "scripts": {

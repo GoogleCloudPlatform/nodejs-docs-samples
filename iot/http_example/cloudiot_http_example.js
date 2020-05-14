@@ -1,27 +1,43 @@
-/**
- * Copyright 2017, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 // [START iot_http_includes]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const request = require('retry-request');
+const request = require('retry-request', {request: require('request')});
 // [END iot_http_includes]
 
+// Create a Cloud IoT Core JWT for the given project ID, signed with the given
+// private key.
+// [START iot_http_jwt]
+const createJwt = (projectId, privateKeyFile, algorithm) => {
+  // Create a JWT to authenticate this device. The device will be disconnected
+  // after the token expires, and will have to reconnect with a new token. The
+  // audience field should always be set to the GCP project ID.
+  const token = {
+    iat: parseInt(Date.now() / 1000),
+    exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
+    aud: projectId,
+  };
+  const privateKey = fs.readFileSync(privateKeyFile);
+  return jwt.sign(token, privateKey, {algorithm: algorithm});
+};
+// [END iot_http_jwt]
+
 console.log('Google Cloud IoT Core HTTP example.');
-const argv = require(`yargs`)
+const {argv} = require(`yargs`)
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
@@ -94,7 +110,7 @@ const argv = require(`yargs`)
   .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
   .help()
-  .strict().argv;
+  .strict();
 
 // [START iot_http_variables]
 // A unique string that identifies this device. For Google Cloud IoT Core, it
@@ -106,9 +122,7 @@ const authToken = createJwt(
   argv.privateKeyFile,
   argv.algorithm
 );
-const devicePath = `projects/${argv.projectId}/locations/${
-  argv.cloudRegion
-}/registries/${argv.registryId}/devices/${argv.deviceId}`;
+const devicePath = `projects/${argv.projectId}/locations/${argv.cloudRegion}/registries/${argv.registryId}/devices/${argv.deviceId}`;
 
 // The request path, set accordingly depending on the message type.
 const pathSuffix =
@@ -117,28 +131,11 @@ const urlBase = `https://${argv.httpBridgeAddress}/v1/${devicePath}`;
 const url = `${urlBase}${pathSuffix}`;
 // [END iot_http_variables]
 
-// Create a Cloud IoT Core JWT for the given project ID, signed with the given
-// private key.
-// [START iot_http_jwt]
-function createJwt(projectId, privateKeyFile, algorithm) {
-  // Create a JWT to authenticate this device. The device will be disconnected
-  // after the token expires, and will have to reconnect with a new token. The
-  // audience field should always be set to the GCP project ID.
-  const token = {
-    iat: parseInt(Date.now() / 1000),
-    exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
-    aud: projectId,
-  };
-  const privateKey = fs.readFileSync(privateKeyFile);
-  return jwt.sign(token, privateKey, {algorithm: algorithm});
-}
-// [END iot_http_jwt]
-
 // Publish numMessages message asynchronously, starting from message
 // messageCount. Telemetry events are published at a rate of 1 per second and
 // states at a rate of 1 every 2 seconds.
 // [START iot_http_publish]
-function publishAsync(authToken, messageCount, numMessages) {
+const publishAsync = (authToken, messageCount, numMessages) => {
   const payload = `${argv.registryId}/${argv.deviceId}-payload-${messageCount}`;
   console.log('Publishing message:', payload);
   const binaryData = Buffer.from(payload).toString('base64');
@@ -164,7 +161,7 @@ function publishAsync(authToken, messageCount, numMessages) {
     json: true,
     method: 'POST',
     retries: 5,
-    shouldRetryFn: function(incomingHttpMessage) {
+    shouldRetryFn: function (incomingHttpMessage) {
       return incomingHttpMessage.statusMessage !== 'OK';
     },
   };
@@ -176,7 +173,7 @@ function publishAsync(authToken, messageCount, numMessages) {
     if (error) {
       console.error('Received error: ', error);
     } else if (response.body.error) {
-      console.error('Received error: ' + JSON.stringify(response.body.error));
+      console.error(`Received error: ${JSON.stringify(response.body.error)}`);
     } else {
       console.log('Message sent.');
     }
@@ -199,15 +196,15 @@ function publishAsync(authToken, messageCount, numMessages) {
       }, delayMs);
     }
   });
-}
+};
 // [END iot_http_publish]
 
 // [START iot_http_getconfig]
-function getConfig(authToken, version) {
+const getConfig = (authToken, version) => {
   console.log(`Getting config from URL: ${urlBase}`);
 
   const options = {
-    url: urlBase + '/config?local_version=' + version,
+    url: `${urlBase}/config?local_version=${version}`,
     headers: {
       authorization: `Bearer ${authToken}`,
       'content-type': 'application/json',
@@ -215,7 +212,7 @@ function getConfig(authToken, version) {
     },
     json: true,
     retries: 5,
-    shouldRetryFn: function(incomingHttpMessage) {
+    shouldRetryFn: function (incomingHttpMessage) {
       console.log('Retry?');
       return incomingHttpMessage.statusMessage !== 'OK';
     },
@@ -230,7 +227,7 @@ function getConfig(authToken, version) {
       console.log('Received config', JSON.stringify(body));
     }
   });
-}
+};
 // [END iot_http_getconfig]
 
 // [START iot_run_http]

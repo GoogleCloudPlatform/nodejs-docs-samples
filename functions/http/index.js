@@ -1,17 +1,16 @@
-/**
- * Copyright 2016, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2016 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -31,7 +30,7 @@ exports.helloContent = (req, res) => {
   switch (req.get('content-type')) {
     // '{"name":"John"}'
     case 'application/json':
-      name = req.body.name;
+      ({name} = req.body);
       break;
 
     // 'John', stored in a Buffer
@@ -46,7 +45,7 @@ exports.helloContent = (req, res) => {
 
     // 'name=John' in the body of a POST request (not the URL)
     case 'application/x-www-form-urlencoded':
-      name = req.body.name;
+      ({name} = req.body);
       break;
   }
 
@@ -55,16 +54,6 @@ exports.helloContent = (req, res) => {
 // [END functions_http_content]
 
 // [START functions_http_method]
-function handleGET(req, res) {
-  // Do something with the GET request
-  res.status(200).send('Hello World!');
-}
-
-function handlePUT(req, res) {
-  // Do something with the PUT request
-  res.status(403).send('Forbidden!');
-}
-
 /**
  * Responds to a GET request with "Hello World!". Forbids a PUT request.
  *
@@ -77,10 +66,10 @@ function handlePUT(req, res) {
 exports.helloHttp = (req, res) => {
   switch (req.method) {
     case 'GET':
-      handleGET(req, res);
+      res.status(200).send('Hello World!');
       break;
     case 'PUT':
-      handlePUT(req, res);
+      res.status(403).send('Forbidden!');
       break;
     default:
       res.status(405).send({error: 'Something blew up!'});
@@ -102,7 +91,7 @@ exports.parseXML = (req, res) => {
   const data = req.rawBody;
   const xmlData = data.toString();
 
-  const parseString = require('xml2js').parseString;
+  const {parseString} = require('xml2js');
 
   parseString(xmlData, (err, result) => {
     if (err) {
@@ -164,7 +153,10 @@ exports.uploadFile = (req, res) => {
     const writeStream = fs.createWriteStream(filepath);
     file.pipe(writeStream);
 
-    // File was processed by Busboy; wait for it to be written to disk.
+    // File was processed by Busboy; wait for it to be written.
+    // Note: GCF may not persist saved files across invocations.
+    // Persistent files must be kept in other locations
+    // (such as Cloud Storage buckets).
     const promise = new Promise((resolve, reject) => {
       file.on('end', () => {
         writeStream.end();
@@ -177,15 +169,14 @@ exports.uploadFile = (req, res) => {
 
   // Triggered once all uploaded files are processed by Busboy.
   // We still need to wait for the disk writes (saves) to complete.
-  busboy.on('finish', () => {
-    Promise.all(fileWrites).then(() => {
-      // TODO(developer): Process saved files here
-      for (const name in uploads) {
-        const file = uploads[name];
-        fs.unlinkSync(file);
-      }
-      res.send();
-    });
+  busboy.on('finish', async () => {
+    await Promise.all(fileWrites);
+
+    // TODO(developer): Process saved files here
+    for (const file in uploads) {
+      fs.unlinkSync(uploads[file]);
+    }
+    res.send();
   });
 
   busboy.end(req.rawBody);

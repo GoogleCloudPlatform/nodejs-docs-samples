@@ -1,17 +1,16 @@
-/**
- * Copyright 2018 Google LLC.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -45,11 +44,9 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
-// [START cloud_sql_postgres_connection_pool]
+// [START cloud_sql_postgres_knex_create]
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
-const knex = connect();
-
-function connect() {
+const connect = () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
@@ -70,41 +67,44 @@ function connect() {
   // ... Specify additional properties here.
   // [START_EXCLUDE]
 
-  // [START cloud_sql_limit_connections]
+  // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
   // values for this setting are highly variable on app design, infrastructure, and database.
   knex.client.pool.max = 5;
   // 'min' is the minimum number of idle connections Knex maintains in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
   knex.client.pool.min = 5;
-  // [END cloud_sql_limit_connections]
-  // [START cloud_sql_connection_timeout]
-  // 'acquireTimeoutMillis' is the maximum number of milliseconds to wait for a connection checkout.
-  // Any attempt to retrieve a connection from this pool that exceeds the set limit will throw an
-  // SQLException.
+  // [END cloud_sql_postgres_knex_limit]
+
+  // [START cloud_sql_postgres_knex_timeout]
+  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a 
+  // connection from the pool. This is slightly different from connectionTimeout, because acquiring 
+  // a pool connection does not always involve making a new connection, and may include multiple retries.
+  // when making a connection
+  knex.client.pool.acquireTimeoutMillis = 60000; // 60 seconds
+  // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
+  // initial connection before retrying. 
+  // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
   knex.client.pool.createTimeoutMillis = 30000; // 30 seconds
-  // 'idleTimeoutMillis' is the maximum amount of time a connection can sit in the pool. Connections that
-  // sit idle for this many milliseconds are retried if idleTimeoutMillis is exceeded.
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
+  // and not be checked out before it is automatically closed.
   knex.client.pool.idleTimeoutMillis = 600000; // 10 minutes
-  // [END cloud_sql_connection_timeout]
-  // [START cloud_sql_connection_backoff]
+  // [END cloud_sql_postgres_knex_timeout]
+
+  // [START cloud_sql_postgres_knex_backoff]
+  // 'knex' uses a built-in retry strategy which does not implement backoff.
   // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
   knex.client.pool.createRetryIntervalMillis = 200; // 0.2 seconds
-  // [END cloud_sql_connection_backoff]
-  // [START cloud_sql_connection_lifetime]
-  // 'acquireTimeoutMillis' is the maximum possible lifetime of a connection in the pool. Connections that
-  // live longer than this many milliseconds will be closed and reestablished between uses. This
-  // value should be several minutes shorter than the database's timeout value to avoid unexpected
-  // terminations.
-  knex.client.pool.acquireTimeoutMillis = 600000; // 10 minutes
-  // [START cloud_sql_connection_lifetime]
+  // [END cloud_sql_postgres_knex_backoff]
 
   // [END_EXCLUDE]
   return knex;
-  // [END cloud_sql_postgres_connection_pool]
-}
+};
 
-// [START cloud_sql_example_statement]
+const knex = connect();
+// [END cloud_sql_postgres_knex_create]
+
+// [START cloud_sql_postgres_knex_connection]
 /**
  * Insert a vote record into the database.
  *
@@ -112,14 +112,14 @@ function connect() {
  * @param {object} vote The vote record to insert.
  * @returns {Promise}
  */
-async function insertVote(knex, vote) {
+const insertVote = async (knex, vote) => {
   try {
     return await knex('votes').insert(vote);
   } catch (err) {
     throw Error(err);
   }
-}
-// [END cloud_sql_example_statement]
+};
+// [END cloud_sql_postgres_knex_connection]
 
 /**
  * Retrieve the latest 5 vote records from the database.
@@ -127,13 +127,13 @@ async function insertVote(knex, vote) {
  * @param {object} knex The Knex connection object.
  * @returns {Promise}
  */
-async function getVotes(knex) {
+const getVotes = async (knex) => {
   return await knex
     .select('candidate', 'time_cast')
     .from('votes')
     .orderBy('time_cast', 'desc')
     .limit(5);
-}
+};
 
 /**
  * Retrieve the total count of records for a given candidate
@@ -143,14 +143,12 @@ async function getVotes(knex) {
  * @param {object} candidate The candidate for which to get the total vote count
  * @returns {Promise}
  */
-async function getVoteCount(knex, candidate) {
-  return await knex('votes')
-    .count('vote_id')
-    .where('candidate', candidate);
-}
+const getVoteCount = async (knex, candidate) => {
+  return await knex('votes').count('vote_id').where('candidate', candidate);
+};
 
-app.get('/', (req, res) => {
-  (async function() {
+app.get('/', async (req, res) => {
+  try {
     // Query the total count of "TABS" from the database.
     const tabsResult = await getVoteCount(knex, 'TABS');
     const tabsTotalVotes = parseInt(tabsResult[0].count);
@@ -185,20 +183,24 @@ app.get('/', (req, res) => {
       voteDiff: voteDiff,
       leaderMessage: leaderMessage,
     });
-  })();
+  }
+  catch(err) {
+    res
+      .status(500)
+      .send('Unable to load page; see logs for more details.')
+      .end();
+  }
+    
 });
 
-app.post('/', (req, res) => {
-  // [START cloud_sql_example_statement]
+app.post('/', async (req, res) => {
   // Get the team from the request and record the time of the vote.
-  const team = req.body.team;
+  const {team} = req.body;
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
-    res
-      .status(400)
-      .send('Invalid team specified.')
-      .end();
+    res.status(400).send('Invalid team specified.').end();
+    return;
   }
 
   // Create a vote record to be stored in the database.
@@ -208,28 +210,23 @@ app.post('/', (req, res) => {
   };
 
   // Save the data to the database.
-  insertVote(knex, vote)
-    // [END cloud_sql_example_statement]
-    .catch(err => {
-      logger.error('Error while attempting to submit vote. Error:' + err);
-      let msg = 'Unable to successfully cast vote!';
-      msg += 'Please check the application logs for more details.';
-      res
-        .status(500)
-        .send(msg)
-        .end();
-    });
-  const msg = 'Successfully voted for ' + team + ' at ' + timestamp;
-  res
-    .status(200)
-    .send(msg)
-    .end();
+  try {
+    await insertVote(knex, vote);
+  } catch (err) {
+    logger.error(`Error while attempting to submit vote:${err}`);
+    res
+      .status(500)
+      .send('Unable to cast vote; see logs for more details.')
+      .end();
+    return;
+  }
+  res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 
-module.exports = app;
+module.exports = server;

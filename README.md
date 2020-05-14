@@ -17,7 +17,7 @@ on Google Cloud Platform.
 
 ### Prerequisites
 
-1. Install [Node.js version 8 or greater][node]
+1. Install [Node.js version 10 or greater][node]
 1. Clone this repository:
 
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
@@ -38,9 +38,9 @@ on Google Cloud Platform.
 
 ### How to run a sample
 
-1. Change directory to one of the sample folders, e.g. `bigquery`:
+1. Change directory to one of the sample folders, e.g. `storage-transfer`:
 
-        cd bigquery/
+        cd storage-transfer/
 
 1. Install the sample's dependencies (see the sample's README for details):
 

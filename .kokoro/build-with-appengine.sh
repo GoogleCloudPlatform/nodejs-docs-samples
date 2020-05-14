@@ -18,6 +18,13 @@ set -e;
 
 export GCLOUD_PROJECT=nodejs-docs-samples-tests
 
+# Activate mocha config
+export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
+export MOCHA_REPORTER=xunit
+pushd github/nodejs-docs-samples
+mv .kokoro/.mocharc.js .
+popd
+
 # Update gcloud
 gcloud components update --quiet
 
@@ -35,28 +42,38 @@ VERSION=$(echo $VERSION | sed 's_/flexible\|/standard__')
 export GAE_VERSION=$VERSION
 export GCLOUD_STORAGE_BUCKET=docs-samples-${VERSION}
 
-# Register post-test cleanup
-function cleanup {
-  gcloud app versions delete $GAE_VERSION --quiet
-}
-trap cleanup EXIT
-
-
 cd github/nodejs-docs-samples/${PROJECT}
-
 
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
 
-
 # Deploy the app
 gcloud app deploy --version $GAE_VERSION --no-promote --quiet
 
+# Register post-test cleanup
+function cleanup {
+  gcloud app versions delete $GAE_VERSION --quiet
+}
+trap cleanup EXIT HUP
 
 # Install dependencies and run tests
 npm install
+
+# If tests are running against master, configure Build Cop
+# to open issues on failures:
+if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
+	export MOCHA_REPORTER_SUITENAME=${PROJECT}
+	notify_buildcop() {
+		# Call the original trap function.
+		cleanup
+		chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
+		$KOKORO_GFILE_DIR/linux_amd64/buildcop
+	}
+	trap notify_buildcop EXIT HUP
+fi
+
 npm test
 
 exit $?

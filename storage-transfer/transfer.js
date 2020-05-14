@@ -1,31 +1,30 @@
-/**
- * Copyright 2016, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2016 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
 // [START all]
 // [START setup]
 const moment = require('moment');
-const google = require('googleapis').google;
+const {google} = require('googleapis');
 
 // Instantiate a storage client
 const storagetransfer = google.storagetransfer('v1');
 // [END setup]
 
 // [START auth]
-function auth(callback) {
+const auth = (callback) => {
   google.auth.getApplicationDefault((err, authClient) => {
     if (err) {
       return callback(err);
@@ -46,7 +45,7 @@ function auth(callback) {
     }
     callback(null, authClient);
   });
-}
+};
 // [END auth]
 
 // [START create_transfer_job]
@@ -61,7 +60,7 @@ function auth(callback) {
  * @param {string} [options.description] Optional. Description for the new transfer job.
  * @param {function} callback The callback function.
  */
-function createTransferJob(options, callback) {
+const createTransferJob = (options, callback) => {
   const startDate = moment(options.date, 'YYYY/MM/DD');
   const transferTime = moment(options.time, 'HH:mm');
 
@@ -117,7 +116,7 @@ function createTransferJob(options, callback) {
       }
     );
   });
-}
+};
 // [END create_transfer_job]
 
 // [START get_transfer_job]
@@ -127,7 +126,7 @@ function createTransferJob(options, callback) {
  * @param {string} jobName The name of the transfer job to get.
  * @param {function} callback The callback function.
  */
-function getTransferJob(jobName, callback) {
+const getTransferJob = (jobName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -150,7 +149,7 @@ function getTransferJob(jobName, callback) {
       }
     );
   });
-}
+};
 // [END get_transfer_job]
 
 // [START update_transfer_job]
@@ -163,7 +162,7 @@ function getTransferJob(jobName, callback) {
  * @param {string} options.value The new value for the field.
  * @param {function} callback The callback function.
  */
-function updateTransferJob(options, callback) {
+const updateTransferJob = (options, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -202,7 +201,7 @@ function updateTransferJob(options, callback) {
       }
     );
   });
-}
+};
 // [END update_transfer_job]
 
 // [START list_transfer_jobs]
@@ -211,7 +210,7 @@ function updateTransferJob(options, callback) {
  *
  * @param {function} callback The callback function.
  */
-function listTransferJobs(callback) {
+const listTransferJobs = (callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -234,7 +233,7 @@ function listTransferJobs(callback) {
       }
     );
   });
-}
+};
 // [END list_transfer_jobs]
 
 // [START list_transfer_operations]
@@ -244,7 +243,7 @@ function listTransferJobs(callback) {
  * @param {string} [jobName] An optional job name by which to filter results.
  * @param {function} callback The callback function.
  */
-function listTransferOperations(jobName, callback) {
+const listTransferOperations = (jobName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -276,7 +275,7 @@ function listTransferOperations(jobName, callback) {
       }
     );
   });
-}
+};
 // [END list_transfer_operations]
 
 // [START get_transfer_operation]
@@ -286,7 +285,7 @@ function listTransferOperations(jobName, callback) {
  * @param {string} transferOperationName The name of the transfer operation.
  * @param {function} callback The callback function.
  */
-function getTransferOperation(transferOperationName, callback) {
+const getTransferOperation = (transferOperationName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -308,7 +307,7 @@ function getTransferOperation(transferOperationName, callback) {
       }
     );
   });
-}
+};
 // [END get_transfer_operation]
 
 // [START pause_transfer_operation]
@@ -318,7 +317,7 @@ function getTransferOperation(transferOperationName, callback) {
  * @param {string} transferOperationName The name of the transfer operation.
  * @param {function} callback The callback function.
  */
-function pauseTransferOperation(transferOperationName, callback) {
+const pauseTransferOperation = (transferOperationName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -329,7 +328,7 @@ function pauseTransferOperation(transferOperationName, callback) {
         name: transferOperationName,
         auth: authClient,
       },
-      err => {
+      (err) => {
         if (err) {
           return callback(err);
         }
@@ -339,7 +338,7 @@ function pauseTransferOperation(transferOperationName, callback) {
       }
     );
   });
-}
+};
 // [END pause_transfer_operation]
 
 // [START resume_transfer_operation]
@@ -349,7 +348,7 @@ function pauseTransferOperation(transferOperationName, callback) {
  * @param {string} transferOperationName The name of the transfer operation.
  * @param {function} callback The callback function.
  */
-function resumeTransferOperation(transferOperationName, callback) {
+const resumeTransferOperation = (transferOperationName, callback) => {
   auth((err, authClient) => {
     if (err) {
       return callback(err);
@@ -360,7 +359,7 @@ function resumeTransferOperation(transferOperationName, callback) {
         name: transferOperationName,
         auth: authClient,
       },
-      err => {
+      (err) => {
         if (err) {
           return callback(err);
         }
@@ -370,7 +369,7 @@ function resumeTransferOperation(transferOperationName, callback) {
       }
     );
   });
-}
+};
 // [END resume_transfer_operation]
 // [END all]
 
@@ -386,7 +385,7 @@ const program = (module.exports = {
   getTransferOperation: getTransferOperation,
   pauseTransferOperation: pauseTransferOperation,
   resumeTransferOperation: resumeTransferOperation,
-  main: function(args) {
+  main: (args) => {
     // Run the command-line program
     cli.help().strict().parse(args).argv; // eslint-disable-line
   },
@@ -397,14 +396,14 @@ cli
   .command(
     'jobs <cmd> [args]',
     'Run a job command.',
-    yargs => {
+    (yargs) => {
       yargs
         .demand(2)
         .command(
           'create <srcBucket> <destBucket> <time> <date> [description]',
           'Create a transfer job.',
           {},
-          opts => {
+          (opts) => {
             program.createTransferJob(
               {
                 srcBucket: opts.srcBucket,
@@ -417,7 +416,7 @@ cli
             );
           }
         )
-        .command('get <job>', 'Get a transfer job.', {}, opts => {
+        .command('get <job>', 'Get a transfer job.', {}, (opts) => {
           program.getTransferJob(opts.job, console.log);
         })
         .command('list', 'List transfer jobs.', {}, () => {
@@ -427,7 +426,7 @@ cli
           'set <job> <field> <value>',
           'Change the status, description or transferSpec of a transfer job.',
           {},
-          opts => {
+          (opts) => {
             program.updateTransferJob(
               {
                 job: opts.job,
@@ -462,25 +461,25 @@ cli
   .command(
     'operations <cmd> [args]',
     'Run an operation command.',
-    yargs => {
+    (yargs) => {
       yargs
         .demand(2)
         .command(
           'list [job]',
           'List transfer operations, optionally filtering by a job name.',
           {},
-          opts => {
+          (opts) => {
             program.listTransferOperations(opts.job, console.log);
           }
         )
-        .command('get <operation>', 'Get a transfer operation.', {}, opts => {
+        .command('get <operation>', 'Get a transfer operation.', {}, (opts) => {
           program.getTransferOperation(opts.operation, console.log);
         })
         .command(
           'pause <operation>',
           'Pause a transfer operation.',
           {},
-          opts => {
+          (opts) => {
             program.pauseTransferOperation(opts.operation, console.log);
           }
         )
@@ -488,7 +487,7 @@ cli
           'resume <operation>',
           'Resume a transfer operation.',
           {},
-          opts => {
+          (opts) => {
             program.resumeTransferOperation(opts.operation, console.log);
           }
         )

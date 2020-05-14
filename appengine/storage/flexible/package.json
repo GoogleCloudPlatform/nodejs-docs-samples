@@ -3,38 +3,21 @@
   "description": "Node.js Google Cloud Storage sample for Google App Engine",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha system-test/*.test.js --timeout=30000"
+    "test": "mocha system-test/*.test.js --exit --timeout=30000"
   },
   "engines": {
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "@google-cloud/storage": "^2.3.3",
+    "@google-cloud/storage": "^4.0.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "multer": "^1.4.1",
     "pug": "^2.0.3"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.0.0",
-    "mocha": "^5.2.0"
-  },
-  "cloud-repo-tools": {
-    "requiresProjectId": true,
-    "requiresKeyFile": true,
-    "test": {
-      "app": {
-        "requiredEnvVars": [
-          "GCLOUD_STORAGE_BUCKET"
-        ],
-        "msg": "<input type=\"file\" name=\"file\">",
-        "substitutions": "YOUR_BUCKET_NAME=$GCLOUD_STORAGE_BUCKET"
-      },
-      "build": {
-        "requiredEnvVars": [
-          "GCLOUD_STORAGE_BUCKET"
-        ]
-      }
-    }
+    "mocha": "^7.0.0",
+    "supertest": "^4.0.2",
+    "proxyquire": "^2.1.3"
   }
 }

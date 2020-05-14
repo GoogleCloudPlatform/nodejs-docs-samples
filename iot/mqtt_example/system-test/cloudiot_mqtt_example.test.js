@@ -1,25 +1,25 @@
-/**
- * Copyright 2017, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
+const assert = require('assert');
+const childProcess = require('child_process');
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
-const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const util = require('util');
 const uuid = require('uuid');
 
 const projectId =
@@ -39,9 +39,18 @@ const installDeps = 'npm install';
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
-assert.ok(tools.run(installDeps, `${cwd}/../manager`));
+assert.ok(
+  childProcess.execSync(installDeps, {cwd: `${cwd}/../manager`, shell: true})
+);
 before(async () => {
-  tools.checkCredentials();
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
   // Create a unique topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
@@ -58,7 +67,10 @@ before(async () => {
       ],
     },
   };
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
   console.log(`Created registry: ${registryName}`);
@@ -69,203 +81,218 @@ after(async () => {
   console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
-  tools.run(`${helper} unbindAllDevices ${registryName}`, cwd);
-  tools.run(`${helper} clearRegistry ${registryName}`, cwd);
+  childProcess.execSync(`${helper} unbindAllDevices ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} clearRegistry ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 
   console.log('Deleted test registry.');
 });
 
-it('should receive configuration message', async () => {
+it('should receive configuration message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  let output = await tools.runAsync(
-    `${helper} setupIotTopic ${topicName}`,
-    cwd
-  );
-  await tools.runAsync(
+  let output = childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
-  output = await tools.runAsync(
+  output = childProcess.execSync(
     `${cmd} mqttDeviceDemo --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
-    cwd
+    {cwd, shell: true}
   );
 
   assert.strictEqual(new RegExp('connect').test(output), true);
   assert.strictEqual(new RegExp('Config message received:').test(output), true);
 
   // Check / cleanup
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
-it('should send event message', async () => {
+it('should send event message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
-  const output = await tools.runAsync(
+  const output = childProcess.execSync(
     `${cmd} mqttDeviceDemo --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.strictEqual(new RegExp('Publishing message:').test(output), true);
 
   // Check / cleanup
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-it('should send state message', async () => {
+it('should send state message', () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
+  childProcess.execSync(`${helper} setupIotTopic ${topicName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(
     `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
-  const output = await tools.runAsync(
+  const output = childProcess.execSync(
     `${cmd} mqttDeviceDemo --messageType=state --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`,
-    cwd
+    {cwd, shell: true}
   );
   assert.strictEqual(new RegExp('Publishing message:').test(output), true);
 
   // Check / cleanup
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  childProcess.execSync(`${helper} deleteRegistry ${localRegName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
-it('should receive command message', async () => {
-  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
-  const localRegName = `${registryName}-rsa256`;
+it.only('should receive command message', async () => {
+  const deviceId = `commands-device`;
   const message = 'rotate 180 degrees';
 
-  await tools.runAsync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await tools.runAsync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
-  await tools.runAsync(
-    `${helper} createRsa256Device ${deviceId} ${localRegName} ${rsaPublicCert}`,
-    cwd
+  childProcess.execSync(
+    `${helper} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
+    {cwd, shell: true}
   );
 
-  const output = tools.runAsync(
-    `${cmd} mqttDeviceDemo --registryId=${localRegName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=443`,
-    cwd
+  const exec = util.promisify(childProcess.exec);
+
+  const output = exec(
+    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
+    {cwd, shell: true}
   );
 
-  await tools.runAsync(
-    `${helper} sendCommand ${deviceId} ${localRegName} "${message}"`,
-    cwd
+  childProcess.execSync(
+    `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
+    {cwd, shell: true}
   );
+
+  const {stdout} = await output;
 
   assert.strictEqual(
-    new RegExp(`Command message received: ${message}`).test(await output),
+    new RegExp(`Command message received: ${message}`).test(stdout),
     true
   );
 
   // Cleanup
-  await tools.runAsync(
-    `${helper} deleteDevice ${deviceId} ${localRegName}`,
-    cwd
-  );
-  await tools.runAsync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await iotClient.deleteDevice({
+    name: iotClient.devicePath(projectId, region, registryName, deviceId),
+  });
 });
 
-it('should listen for bound device config message', async () => {
+it('should listen for bound device config message', () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
 
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    {cwd, shell: true}
   );
 
   // listen for configuration changes
-  const out = await tools.runAsync(
-    `${cmd} listenForConfigMessages --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --clientDuration=10000 --algorithm=RS256`
+  const out = childProcess.execSync(
+    `${cmd} listenForConfigMessages --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --clientDuration=10000 --algorithm=RS256`,
+    {cwd, shell: true}
   );
 
   assert.strictEqual(new RegExp('message received').test(out), true);
 
   // cleanup
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    cwd
-  );
-  await tools.runAsync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    cwd
-  );
+  childProcess.execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
-it('should listen for error topic messages', async () => {
+it('should listen for error topic messages', () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
-
   // create a device but don't associate it with the gateway
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
   // check error topic contains error of attaching a device that is not bound
-  const out = await tools.runAsync(
-    `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --privateKeyFile=${rsaPrivateKey} --clientDuration=30000 --algorithm=RS256`
+  const out = childProcess.execSync(
+    `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --privateKeyFile=${rsaPrivateKey} --clientDuration=30000 --algorithm=RS256`,
+    {cwd, shell: true}
   );
 
   assert.strictEqual(
@@ -274,25 +301,25 @@ it('should listen for error topic messages', async () => {
   );
 
   // cleanup
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    cwd
-  );
-  await tools.runAsync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    cwd
-  );
+  childProcess.execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 });
 
 it('should send data from bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
-    cwd
+    {cwd, shell: true}
   );
 
   const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
@@ -303,29 +330,30 @@ it('should send data from bound device', async () => {
     },
   });
 
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    {cwd, shell: true}
   );
 
   // relay telemetry on behalf of device
-  const out = await tools.runAsync(
-    `${cmd} sendDataFromBoundDevice --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --numMessages=5 --algorithm=RS256`
+  const out = childProcess.execSync(
+    `${cmd} sendDataFromBoundDevice --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --numMessages=5 --algorithm=RS256`,
+    {cwd, shell: true}
   );
 
   assert.strictEqual(new RegExp('Publishing message 5/5').test(out), true);
   assert.strictEqual(new RegExp('Error: Connection refused').test(out), false);
 
-  await tools.runAsync(
+  childProcess.execSync(
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    {cwd, shell: true}
   );
-  await tools.runAsync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    cwd
-  );
-  await tools.runAsync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    cwd
-  );
+  childProcess.execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
+  childProcess.execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, {
+    cwd,
+    shell: true,
+  });
 });

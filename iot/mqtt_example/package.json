@@ -10,22 +10,21 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
-    "test": "repo-tools test install --cmd=npm -- run system-test",
+    "test": "npm -- run system-test",
     "system-test": "mocha system-test/*.test.js --timeout=600000"
   },
   "dependencies": {
-    "@google-cloud/iot": "^0.2.0",
+    "@google-cloud/iot": "^2.0.0",
     "jsonwebtoken": "^8.5.0",
-    "mqtt": "^2.18.8",
-    "yargs": "^13.2.2"
+    "mqtt": "^4.0.0",
+    "yargs": "^15.0.0"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.2.0",
-    "@google-cloud/pubsub": "^0.28.0",
-    "mocha": "^6.0.0",
-    "uuid": "^3.3.2"
+    "@google-cloud/pubsub": "^1.0.0",
+    "mocha": "^7.0.0",
+    "uuid": "^8.0.0"
   }
 }

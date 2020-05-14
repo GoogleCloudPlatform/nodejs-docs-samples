@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const PORT = Number(process.env.PORT) || 8080;
-import * as express from "express";
+import express = require('express');
 
+const PORT = Number(process.env.PORT) || 8080;
 const app = express();
 
 app.get("/", (req, res) => {
   res.send("🎉 Hello TypeScript! 🎉");
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
+
+module.exports = server;

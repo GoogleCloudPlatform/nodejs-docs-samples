@@ -1,105 +1,69 @@
-/**
- * Copyright 2017, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
 const assert = require('assert');
-const tools = require('@google-cloud/nodejs-repo-tools');
+const {request} = require('gaxios');
+const execPromise = require('child-process-promise').exec;
+const path = require('path');
 
-function getSample() {
-  const requestPromiseNative = sinon.stub().returns(Promise.resolve('test'));
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
-  return {
-    program: proxyquire('../', {
-      'request-promise-native': requestPromiseNative,
-    }),
-    mocks: {
-      requestPromiseNative: requestPromiseNative,
-    },
-  };
-}
+const cwd = path.join(__dirname, '..');
 
-beforeEach(tools.stubConsole);
-afterEach(tools.restoreConsole);
+let ffProc;
 
-it('should echo message', () => {
-  const event = {
-    data: {
-      myMessage: 'hi',
-    },
-  };
-  const sample = getSample();
-  const callback = sinon.stub();
-
-  sample.program.helloWorld(event, callback);
-
-  assert.strictEqual(console.log.callCount, 1);
-  assert.deepStrictEqual(console.log.firstCall.args, [event.data.myMessage]);
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, []);
+before(() => {
+  ffProc = execPromise(
+    `functions-framework --target=helloPromise --signature-type=event`,
+    {timeout: 2000, shell: true, cwd}
+  );
 });
 
-it('should say no message was provided', () => {
-  const error = new Error('No message defined!');
-  const callback = sinon.stub();
-  const sample = getSample();
-  sample.program.helloWorld({data: {}}, callback);
+after(async () => {
+  try {
+    await ffProc;
+  } catch (err) {
+    // Timeouts always cause errors on Linux, so catch them
+    if (err.name && err.name === 'ChildProcessError') {
+      return;
+    }
 
-  assert.strictEqual(callback.callCount, 1);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
+    throw err;
+  }
 });
 
-it('should make a promise request', () => {
-  const sample = getSample();
-  const event = {
-    data: {
-      endpoint: 'foo.com',
-    },
-  };
-
-  return sample.program.helloPromise(event).then(result => {
-    assert.deepStrictEqual(sample.mocks.requestPromiseNative.firstCall.args, [
-      {uri: 'foo.com'},
-    ]);
-    assert.strictEqual(result, 'test');
-  });
-});
-
-it('should return synchronously', () => {
-  assert.strictEqual(
-    getSample().program.helloSynchronous({
+describe('functions_background_promise', () => {
+  it('should make a promise request', async () => {
+    const event = {
       data: {
-        something: true,
+        endpoint: 'https://example.com',
       },
-    }),
-    'Something is true!'
-  );
-});
+    };
 
-it('should throw an error', () => {
-  assert.throws(
-    () => {
-      getSample().program.helloSynchronous({
-        data: {
-          something: false,
-        },
-      });
-    },
-    Error,
-    'Something was not true!'
-  );
+    const response = await request({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      data: event,
+      responseType: 'text',
+      retryConfig: {
+        httpMethodsToRetry: ['POST'],
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.ok(response.data.includes(`Example Domain`));
+  });
 });

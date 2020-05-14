@@ -1,17 +1,16 @@
-/**
- * Copyright 2016, Google, Inc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2016 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -22,10 +21,7 @@ const nconf = require('nconf');
 // read in keys and secrets. You can store these in a variety of ways.
 // I like to use a keys.json file that is in the .gitignore file,
 // but you can also store them in environment variables
-nconf
-  .argv()
-  .env()
-  .file('keys.json');
+nconf.argv().env().file('keys.json');
 
 // [START gae_flex_node_redis]
 // Connect to a redis server provisioned over at
@@ -39,7 +35,7 @@ const client = redis
       return_buffers: true,
     }
   )
-  .on('error', err => console.error('ERR:REDIS:', err));
+  .on('error', (err) => console.error('ERR:REDIS:', err));
 // [END gae_flex_node_redis]]
 
 // Create a simple little server.
@@ -59,7 +55,7 @@ http
         return;
       }
 
-      data.forEach(ip => {
+      data.forEach((ip) => {
         iplist += `${ip}; `;
       });
 

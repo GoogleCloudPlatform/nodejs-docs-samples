@@ -19,10 +19,6 @@ function main(
   location = 'us-central1',
   datasetId = 'YOUR_DATASET_ID'
 ) {
-  // [START automl_language_entity_extraction_get_dataset]
-  // [START automl_language_sentiment_analysis_get_dataset]
-  // [START automl_language_text_classification_get_dataset]
-  // [START automl_translate_get_dataset]
   // [START automl_vision_classification_get_dataset]
   // [START automl_vision_object_detection_get_dataset]
   /**
@@ -56,29 +52,20 @@ function main(
     console.log('Dataset create time');
     console.log(`\tseconds ${response.createTime.seconds}`);
     console.log(`\tnanos ${response.createTime.nanos / 1e9}`);
-    // [END automl_language_sentiment_analysis_get_dataset]
-    // [END automl_language_text_classification_get_dataset]
-    // [END automl_translate_get_dataset]
     // [END automl_vision_classification_get_dataset]
     // [END automl_vision_object_detection_get_dataset]
     console.log(
       `Text extraction dataset metadata: ${response.textExtractionDatasetMetadata}`
     );
-    // [END automl_language_entity_extraction_get_dataset]
 
-    // [START automl_language_sentiment_analysis_get_dataset]
     console.log(
       `Text sentiment dataset metadata: ${response.textSentimentDatasetMetadata}`
     );
-    // [END automl_language_sentiment_analysis_get_dataset]
 
-    // [START automl_language_text_classification_get_dataset]
     console.log(
       `Text classification dataset metadata: ${response.textClassificationDatasetMetadata}`
     );
-    // [END automl_language_text_classification_get_dataset]
 
-    // [START automl_translate_get_dataset]
     if (response.translationDatasetMetadata !== undefined) {
       console.log('Translation dataset metadata:');
       console.log(
@@ -88,7 +75,6 @@ function main(
         `\tTarget language code: ${response.translationDatasetMetadata.targetLanguageCode}`
       );
     }
-    // [END automl_translate_get_dataset]
 
     // [START automl_vision_classification_get_dataset]
     console.log(
@@ -100,18 +86,10 @@ function main(
     console.log(
       `Image object detection dataset metatdata: ${response.imageObjectDetectionDatasetMetatdata}`
     );
-    // [START automl_language_entity_extraction_get_dataset]
-    // [START automl_language_sentiment_analysis_get_dataset]
-    // [START automl_language_text_classification_get_dataset]
-    // [START automl_translate_get_dataset]
     // [START automl_vision_classification_get_dataset]
   }
 
   getDataset();
-  // [END automl_language_entity_extraction_get_dataset]
-  // [END automl_language_sentiment_analysis_get_dataset]
-  // [END automl_language_text_classification_get_dataset]
-  // [END automl_translate_get_dataset]
   // [END automl_vision_classification_get_dataset]
   // [END automl_vision_object_detection_get_dataset]
 }

@@ -59,7 +59,7 @@ function infiniteStream(
   // const streamingLimit = 10000; // ms - set to low number for demo purposes
 
   const chalk = require('chalk');
-  const {Transform} = require('stream');
+  const {Writable} = require('stream');
 
   // Node-Record-lpcm16
   const recorder = require('node-record-lpcm16');
@@ -146,8 +146,8 @@ function infiniteStream(
     }
   };
 
-  const audioInputStreamTransform = new Transform({
-    transform: (chunk, encoding, callback) => {
+  const audioInputStreamTransform = new Writable({
+    write(chunk, encoding, next) {
       if (newStream && lastAudioInput.length !== 0) {
         // Approximate math to calculate time of chunks
         const chunkTime = streamingLimit / lastAudioInput.length;
@@ -178,7 +178,13 @@ function infiniteStream(
         recognizeStream.write(chunk);
       }
 
-      callback();
+      next();
+    },
+
+    final() {
+      if (recognizeStream) {
+        recognizeStream.end();
+      }
     },
   });
 

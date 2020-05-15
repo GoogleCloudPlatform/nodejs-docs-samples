@@ -15,8 +15,6 @@
 'use strict';
 
 function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
-  // [START automl_language_entity_extraction_list_datasets]
-  // [START automl_language_sentiment_analysis_list_datasets]
   // [START automl_language_text_classification_list_datasets]
   // [START automl_translate_list_datasets]
   // [START automl_vision_classification_list_datasets]
@@ -54,7 +52,6 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
       console.log('Dataset create time');
       console.log(`\tseconds ${dataset.createTime.seconds}`);
       console.log(`\tnanos ${dataset.createTime.nanos / 1e9}`);
-      // [END automl_language_sentiment_analysis_list_datasets]
       // [END automl_language_text_classification_list_datasets]
       // [END automl_translate_list_datasets]
       // [END automl_vision_classification_list_datasets]
@@ -62,13 +59,10 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
       console.log(
         `Text extraction dataset metadata: ${dataset.textExtractionDatasetMetadata}`
       );
-      // [END automl_language_entity_extraction_list_datasets]
 
-      // [START automl_language_sentiment_analysis_list_datasets]
       console.log(
         `Text sentiment dataset metadata: ${dataset.textSentimentDatasetMetadata}`
       );
-      // [END automl_language_sentiment_analysis_list_datasets]
 
       // [START automl_language_text_classification_list_datasets]
       console.log(
@@ -98,8 +92,6 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
       console.log(
         `Image object detection dataset metatdata: ${dataset.imageObjectDetectionDatasetMetatdata}`
       );
-      // [START automl_language_entity_extraction_list_datasets]
-      // [START automl_language_sentiment_analysis_list_datasets]
       // [START automl_language_text_classification_list_datasets]
       // [START automl_translate_list_datasets]
       // [START automl_vision_classification_list_datasets]
@@ -107,8 +99,6 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
   }
 
   listDatasets();
-  // [END automl_language_entity_extraction_list_datasets]
-  // [END automl_language_sentiment_analysis_list_datasets]
   // [END automl_language_text_classification_list_datasets]
   // [END automl_translate_list_datasets]
   // [END automl_vision_classification_list_datasets]

@@ -21,7 +21,7 @@
     "@google-cloud/functions-framework": "^1.1.1",
     "babel-eslint": "^10.0.2",
     "child-process-promise": "^2.2.1",
-    "eslint": "^6.0.0",
+    "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.0",

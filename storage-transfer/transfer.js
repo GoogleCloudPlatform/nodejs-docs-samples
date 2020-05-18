@@ -28,7 +28,8 @@ const auth = async (callback) => {
   const authClient = await google.auth.getClient({
     scopes: ['https://www.googleapis.com/auth/cloud-platform']
   });
-  callback(null, authClient);
+
+  callback(authClient);
 };
 // [END auth]
 
@@ -48,11 +49,7 @@ const createTransferJob = (options, callback) => {
   const startDate = moment(options.date, 'YYYY/MM/DD');
   const transferTime = moment(options.time, 'HH:mm');
 
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     const transferJob = {
       projectId: process.env.GCLOUD_PROJECT,
       status: 'ENABLED',
@@ -91,9 +88,8 @@ const createTransferJob = (options, callback) => {
       },
       (err, response) => {
         if (err) {
-          return callback(err);
+          return callback(err, null);
         }
-
         const transferJob = response.data;
         console.log('Created transfer job: %s', transferJob.name);
         return callback(null, transferJob);
@@ -111,11 +107,7 @@ const createTransferJob = (options, callback) => {
  * @param {function} callback The callback function.
  */
 const getTransferJob = (jobName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferJobs.get(
       {
         auth: authClient,
@@ -147,11 +139,7 @@ const getTransferJob = (jobName, callback) => {
  * @param {function} callback The callback function.
  */
 const updateTransferJob = (options, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     const patchRequest = {
       projectId: process.env.GCLOUD_PROJECT,
       transferJob: {
@@ -195,11 +183,7 @@ const updateTransferJob = (options, callback) => {
  * @param {function} callback The callback function.
  */
 const listTransferJobs = (callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferJobs.list(
       {
         auth: authClient,
@@ -228,11 +212,7 @@ const listTransferJobs = (callback) => {
  * @param {function} callback The callback function.
  */
 const listTransferOperations = (jobName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     const filter = {
       project_id: process.env.GCLOUD_PROJECT,
     };
@@ -270,11 +250,7 @@ const listTransferOperations = (jobName, callback) => {
  * @param {function} callback The callback function.
  */
 const getTransferOperation = (transferOperationName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferOperations.get(
       {
         name: transferOperationName,
@@ -302,11 +278,7 @@ const getTransferOperation = (transferOperationName, callback) => {
  * @param {function} callback The callback function.
  */
 const pauseTransferOperation = (transferOperationName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferOperations.pause(
       {
         name: transferOperationName,
@@ -333,11 +305,7 @@ const pauseTransferOperation = (transferOperationName, callback) => {
  * @param {function} callback The callback function.
  */
 const resumeTransferOperation = (transferOperationName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferOperations.resume(
       {
         name: transferOperationName,

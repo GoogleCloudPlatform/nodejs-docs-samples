@@ -146,6 +146,18 @@ it('should create a transfer job', async () => {
   ]);
 });
 
+it('should handle create error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferJobs.create.yields(error);
+
+  await sample.program.createTransferJob({}, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
+});
+
 it('should get a transfer job', async () => {
   const sample = getSample();
   const callback = sinon.stub();
@@ -176,6 +188,18 @@ it('should get a transfer job', async () => {
     'Found transfer job: %s',
     sample.mocks.transferJob.name,
   ]);
+});
+
+it('should handle get error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferOperations.get.yields(error);
+
+  await sample.program.getTransferOperation(jobName, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
 it('should update a transfer job', async () => {
@@ -299,6 +323,35 @@ it('should update a transfer job', async () => {
   ]);
 });
 
+it('should handle patch error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  const options = {
+    job: jobName,
+    field: 'status',
+    value: 'DISABLED',
+  };
+  sample.mocks.storagetransfer.transferJobs.patch.yields(error);
+
+  await sample.program.updateTransferJob(options, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
+});
+
+it('should handle list error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferJobs.list.yields(error);
+
+  await sample.program.listTransferJobs(callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
+});
+
 it('should list transfer jobs', async () => {
   const sample = getSample();
   const callback = sinon.stub();
@@ -345,6 +398,18 @@ it('should list transfer jobs', async () => {
   assert.strictEqual(callback.calledTwice, true);
   assert.deepStrictEqual(callback.secondCall.args, [null, []]);
   assert.strictEqual(console.log.calledOnce, true);
+});
+
+it('should handle list error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferJobs.list.yields(error);
+
+  await sample.program.listTransferJobs(callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
 it('should list transfer operations', async () => {
@@ -489,18 +554,6 @@ it('should get a transfer operation', async () => {
     'Found transfer operation: %s',
     sample.mocks.transferOperation,
   ]);
-});
-
-it('should handle get error', async () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.storagetransfer.transferOperations.get.yields(error);
-
-  await sample.program.getTransferOperation(jobName, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
 it('should pause a transfer operation', async () => {

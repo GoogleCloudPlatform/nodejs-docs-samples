@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/logging": "^7.0.0",
-    "@google-cloud/monitoring": "^1.0.0"
+    "@google-cloud/monitoring": "^2.0.0"
   },
   "devDependencies": {
     "mocha": "^7.0.0",

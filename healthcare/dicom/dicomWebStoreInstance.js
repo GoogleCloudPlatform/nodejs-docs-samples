@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_dicomweb_store_instance]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
   const fs = require('fs');
   const binaryData = fs.createReadStream(dcmFile);
 

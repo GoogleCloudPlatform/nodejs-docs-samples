@@ -15,13 +15,6 @@
 'use strict';
 
 // [START functions_ocr_setup]
-const config = require('nconf')
-  .env()
-  .file('./config.json')
-  .defaults({
-    TO_LANG: ['en', 'es'],
-  });
-
 // Get a reference to the Pub/Sub component
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
@@ -80,9 +73,10 @@ const detectText = async (bucketName, filename) => {
   );
 
   // Submit a message to the bus for each language we're going to translate to
-  const topicName = config.get('TRANSLATE_TOPIC');
+  const TO_LANGS = process.env.TO_LANG.split(',');
+  const topicName = process.env.TRANSLATE_TOPIC;
 
-  const tasks = config.get('TO_LANG').map((lang) => {
+  const tasks = TO_LANGS.map((lang) => {
     const messageData = {
       text: text,
       filename: filename,
@@ -140,8 +134,8 @@ exports.processImage = async (event) => {
 /**
  * This function is exported by index.js, and is executed when
  * a message is published to the Cloud Pub/Sub topic specified
- * by the TRANSLATE_TOPIC value in the config.json file. The
- * function translates text using the Google Translate API.
+ * by the TRANSLATE_TOPIC environment variable. The function
+ * translates text using the Google Translate API.
  *
  * @param {object} event The Cloud Pub/Sub Message object.
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
@@ -179,7 +173,7 @@ exports.translateText = async (event) => {
     lang: lang,
   };
 
-  await publishResult(config.get('RESULT_TOPIC'), messageData);
+  await publishResult(process.env.RESULT_TOPIC, messageData);
   console.log(`Text translated to ${lang}`);
 };
 // [END functions_ocr_translate]
@@ -188,8 +182,8 @@ exports.translateText = async (event) => {
 /**
  * This function is exported by index.js, and is executed when
  * a message is published to the Cloud Pub/Sub topic specified
- * by the RESULT_TOPIC value in the config.json file. The
- * function saves the data packet to a file in GCS.
+ * by the RESULT_TOPIC environment variable. The function saves
+ * the data packet to a file in GCS.
  *
  * @param {object} event The Cloud Pub/Sub Message object.
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
@@ -218,7 +212,7 @@ exports.saveResult = async (event) => {
 
   console.log(`Received request to save file ${filename}`);
 
-  const bucketName = config.get('RESULT_BUCKET');
+  const bucketName = process.env.RESULT_BUCKET;
   const newFilename = renameImageForSave(filename, lang);
   const file = storage.bucket(bucketName).file(newFilename);
 

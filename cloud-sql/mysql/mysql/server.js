@@ -42,9 +42,8 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_mysql_mysql_create]
-let pool;
 const createPool = async () => {
-  pool = await mysql.createPool({
+  return await mysql.createPool({
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
@@ -86,42 +85,78 @@ const createPool = async () => {
     //[END_EXCLUDE]
   });
 };
-createPool();
 // [END cloud_sql_mysql_mysql_create]
 
-const ensureSchema = async () => {
+const ensureSchema = async (pool) => {
   // Wait for tables to be created (if they don't already exist).
   await pool.query(
     `CREATE TABLE IF NOT EXISTS votes
       ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
       candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
   );
+  console.log(`Ensured that table 'votes' exists`);
 };
-ensureSchema();
+
+let pool;
+const poolPromise = createPool()
+  .then(async (pool) => {
+    await ensureSchema(pool);
+    return pool;
+  })
+  .catch((err) => {
+    logger.error(err);
+    process.exit(1)
+  });
+
+app.use(async (req, res, next) => {
+  if (pool) {
+    return next();
+  }
+  try {
+    pool = await poolPromise;
+    next();
+  }
+  catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+});
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {
-  // Get the 5 most recent votes.
-  const recentVotesQuery = pool.query(
-    'SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5'
-  );
+  try {
+    // Get the 5 most recent votes.
+    const recentVotesQuery = pool.query(
+      'SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5'
+    );
 
-  // Get votes
-  const stmt = 'SELECT COUNT(vote_id) as count FROM votes WHERE candidate=?';
-  const tabsQuery = pool.query(stmt, ['TABS']);
-  const spacesQuery = pool.query(stmt, ['SPACES']);
+    // Get votes
+    const stmt = 'SELECT COUNT(vote_id) as count FROM votes WHERE candidate=?';
+    const tabsQuery = pool.query(stmt, ['TABS']);
+    const spacesQuery = pool.query(stmt, ['SPACES']);
 
-  // Run queries concurrently, and wait for them to complete
-  // This is faster than await-ing each query object as it is created
-  const recentVotes = await recentVotesQuery;
-  const [tabsVotes] = await tabsQuery;
-  const [spacesVotes] = await spacesQuery;
+    // Run queries concurrently, and wait for them to complete
+    // This is faster than await-ing each query object as it is created
+    const recentVotes = await recentVotesQuery;
+    const [tabsVotes] = await tabsQuery;
+    const [spacesVotes] = await spacesQuery;
 
-  res.render('index.pug', {
-    recentVotes,
-    tabCount: tabsVotes.count,
-    spaceCount: spacesVotes.count,
-  });
+    res.render('index.pug', {
+      recentVotes,
+      tabCount: tabsVotes.count,
+      spaceCount: spacesVotes.count,
+    });
+  } 
+  catch(err) {
+    logger.error(err);
+    res
+      .status(500)
+      .send(
+        'Unable to load page. Please check the application logs for more details.'
+      )
+      .end();
+  }
+  
 });
 
 // Handle incoming vote requests and inserting them into the database.
@@ -143,7 +178,7 @@ app.post('/', async (req, res) => {
     // If something goes wrong, handle the error in this section. This might
     // involve retrying or adjusting parameters depending on the situation.
     // [START_EXCLUDE]
-    logger.err(err);
+    logger.error(err);
     res
       .status(500)
       .send(
@@ -161,6 +196,11 @@ const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
+});
+
+process.on('unhandledRejection', err => {
+  console.error(err);
+  process.exit(1);
 });
 
 module.exports = server;

@@ -27,6 +27,7 @@
     "wait-port": "^0.2.7",
     "@types/express": "^4.16.0",
     "chai": "^4.2.0",
-    "tslint": "^6.0.0"
+    "tslint": "^6.0.0",
+    "typescript": "^3.8.3"
   }
 }

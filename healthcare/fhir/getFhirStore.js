@@ -24,7 +24,7 @@ const main = (
 ) => {
   // [START healthcare_get_fhir_store]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const getFhirStore = async () => {
     const auth = await google.auth.getClient({

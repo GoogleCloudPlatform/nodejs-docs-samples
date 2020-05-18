@@ -17,7 +17,7 @@
 // Cloud Data Catalog API.
 
 const main = async (
-  organizationId = process.env.GCP_ORG,
+  organizationId = process.env.GCLOUD_ORGANIZATION,
   query
 ) => {
 

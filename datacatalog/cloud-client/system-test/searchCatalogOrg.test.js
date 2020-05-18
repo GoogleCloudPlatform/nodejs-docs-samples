@@ -27,12 +27,12 @@ const bigquery = new BigQuery();
 
 before(async () => {
   assert(
-    process.env.GCP_ORG,
-    `Must set GCP_ORG environment variable!`
+    process.env.GCLOUD_ORGANIZATION,
+    `Must set GCLOUD_ORGANIZATION environment variable!`
   );
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GCLOUD_ORGANIZATION_PROJECT,
+    `Must set GCLOUD_ORGANIZATION_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -50,8 +50,8 @@ after(async () => {
 
 describe('searchCatalog org', () => {
   it('should return a dataset entry', (done) => {
-    const organizationId = process.env.GCP_ORG;
-    const projectId = process.env.GCLOUD_PROJECT;
+    const organizationId = process.env.GCLOUD_ORGANIZATION;
+    const projectId = process.env.GCLOUD_ORGANIZATION_PROJECT;
     const query = 'type=dataset';
     const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;
     exec(

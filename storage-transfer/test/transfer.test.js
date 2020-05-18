@@ -491,6 +491,18 @@ it('should get a transfer operation', async () => {
   ]);
 });
 
+it('should handle get error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferOperations.get.yields(error);
+
+  await sample.program.getTransferOperation(jobName, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
+});
+
 it('should pause a transfer operation', async () => {
   const sample = getSample();
   const callback = sinon.stub();
@@ -530,6 +542,18 @@ it('should pause a transfer operation', async () => {
   ]);
 });
 
+it('should handle pause error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferOperations.pause.yields(error);
+
+  await sample.program.pauseTransferOperation(jobName, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
+});
+
 it('should resume a transfer operation', async () => {
   const sample = getSample();
   const callback = sinon.stub();
@@ -567,6 +591,18 @@ it('should resume a transfer operation', async () => {
     'Resumed transfer operation: %s',
     transferOperationName,
   ]);
+});
+
+it('should handle resume error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferOperations.resume.yields(error);
+
+  await sample.program.resumeTransferOperation(jobName, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
 it('should call createTransferJob', () => {

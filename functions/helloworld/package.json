@@ -25,7 +25,7 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "@google-cloud/pubsub": "^1.0.0",
-    "@google-cloud/storage": "^4.0.0",
+    "@google-cloud/storage": "^5.0.0",
     "child-process-promise": "^2.2.1",
     "express": "^4.16.3",
     "mocha": "^7.0.0",

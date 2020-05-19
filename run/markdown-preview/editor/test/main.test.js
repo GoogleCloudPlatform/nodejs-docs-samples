@@ -16,7 +16,6 @@
 
 const assert = require('assert');
 const path = require('path');
-const sinon = require('sinon');
 const supertest = require('supertest');
 
 describe('Editor unit tests', () => {
@@ -66,14 +65,18 @@ describe('Editor unit tests', () => {
       await request.get('/render').expect(404);
     });
 
-    it('can make a POST request, with an error thrown by the Google Auth server', async function () {
+    it('can make a POST request, with an error thrown if data type is incorrect', async function () {
       this.timeout(9000);
-      const consoleStub = sinon.stub(console, 'log');
       // Ensure that the expected error is logged.
-      await request.post('/render').type('json').send({body: {"data":"markdown"}});
-      const message = console.log.getCall(0).args[1].message;
-      assert.equal(message, "GoogleAuth server could not respond to request: ");
-      consoleStub.restore();
+      let response = await request.post('/render').type('json').send({"data":"markdown"}).expect(500);
+      assert.equal(response.error.message, 'cannot POST /render (500)');
+
+      try {
+        await request.post('/render').type('text/plain').send({"data":"markdown"}).expect(500);
+      } catch (e) {
+        const message = e.message.includes('The "string" argument must be of type string');
+        assert.equal(message, true);
+      };
     });
   });
 });

@@ -17,14 +17,14 @@
 const assert = require('assert');
 const path = require('path');
 
-let request, service, markdown;
+let request, markdown;
 
 describe('Editor renderRequest unit tests', function () {
   this.timeout(9000);
   
   before(async () => {
     request = require(path.join(__dirname, '..', 'render'));
-    service = {url: 'https://www.example.com'};
+    process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
     markdown = "**markdown text**";
   });
 
@@ -32,7 +32,7 @@ describe('Editor renderRequest unit tests', function () {
     // Request will be rejected if it's given an invalid url.
     try {
       const response = await request(markdown);
-      assert.ok(response.body.length > 0, 'ID token client sent empty value')
+      if (response) assert.ok(response.body.length > 0, 'ID token client sent empty value')
     } catch (e) {
       assert.equal(e.message, 'GoogleAuth server could not respond to request: ')
     };

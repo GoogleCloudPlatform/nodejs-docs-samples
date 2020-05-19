@@ -12,7 +12,6 @@ Required variables for this sample include:
 * `EDITOR_UPSTREAM_RENDER_URL`: The URL of the restricted Cloud Run service that
   renders Markdown to HTML.
 
-
 ## Dependencies
 
 * **express**: Web server framework.
@@ -20,4 +19,3 @@ Required variables for this sample include:
 * **got**: Node.js library for HTTP requests.
 * **handlebars** JavaScript template engine.
 * **markdown-it**: JavaScript library for parsing and rendering Markdown text.
-* **xss**: Node.js HTML sanitizer.

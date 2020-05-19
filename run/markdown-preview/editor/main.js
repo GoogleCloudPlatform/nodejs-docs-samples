@@ -34,9 +34,9 @@ const buildRenderedHtml = async () => {
   }
 };
 
-app.get('/', (req, res) => { 
+app.get('/', async (req, res) => { 
   try {
-    if (!renderedHtml) renderedHtml = buildRenderedHtml();
+    if (!renderedHtml) renderedHtml = await buildRenderedHtml();
     res.status(200).send(renderedHtml);
   } catch (err) {
     console.log('Error loading the Editor service: ', err);

@@ -19,7 +19,7 @@ const app = express();
 app.use(express.text());
 
 app.post('/', (req, res) => {
-  if (!req.body) {
+  if (typeof(req.body) !== 'string') {
     const msg = 'Markdown data could not be retrieved.';
     console.log(msg);
     res.status(400).send(`Error: ${msg}`);
@@ -28,7 +28,7 @@ app.post('/', (req, res) => {
   const markdown = req.body;
   try {
     // Get the Markdown text and convert it into HTML using markdown-it.
-    // Markdown-it prohibits some kinds of links making it safe from XSS.
+    // Info about XSS prevention in markdown-it can be found here: https://github.com/markdown-it/markdown-it/blob/master/docs/security.md    const md = new MarkdownIt();
     const md = new MarkdownIt();
     const html = md.render(markdown);
     res.status(200).send(html);

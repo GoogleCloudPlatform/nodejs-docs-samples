@@ -18,9 +18,9 @@ const auth = new GoogleAuth();
 
 // renderRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
-const renderRequest = async (service, markdown) => { 
+const renderRequest = async (markdown) => { 
   // [START run_secure_request]
-  const targetAudience = service.url;
+  const serviceUrl = process.env.EDITOR_UPSTREAM_RENDER_URL;
   // Build the request to the Renderer receiving service.
   const serviceRequestOptions = { 
     method: 'POST',
@@ -32,8 +32,8 @@ const renderRequest = async (service, markdown) => {
   };
 
   try {
-    // Create a Google Auth client with the Renderer url as the target audience.
-    const client = await auth.getIdTokenClient(targetAudience);
+    // Create a Google Auth client with the Renderer service url as the target audience.
+    const client = await auth.getIdTokenClient(serviceUrl);
     // Fetch the client request headers and add them to the service request headers.
     // The client request headers include an ID token that authenticates the request.
     const clientHeaders = await client.getRequestHeaders();
@@ -46,7 +46,7 @@ const renderRequest = async (service, markdown) => {
   // [START run_secure_request_do]
   try {
     // serviceResponse converts the Markdown plaintext to HTML.
-    const serviceResponse = await got(service.url, serviceRequestOptions);
+    const serviceResponse = await got(serviceUrl, serviceRequestOptions);
     return serviceResponse.body;
   } catch (err) { 
     throw Error('Renderer service could not respond to request: ', err);

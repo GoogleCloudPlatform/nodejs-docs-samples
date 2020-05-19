@@ -20,17 +20,7 @@ const renderRequest = require('./render.js');
 const app = express();
 app.use(express.json());
 
-let url, isAuthenticated, markdownDefault, compiledTemplate, renderedHtml = undefined;
-
-const init = () => {
-  url = process.env.EDITOR_UPSTREAM_RENDER_URL;
-  if (!url) throw Error ("No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
-  isAuthenticated = !process.env.EDITOR_UPSTREAM_UNAUTHENTICATED;
-  if (!isAuthenticated) console.log("Editor: starting in unauthenticated upstream mode");
-  return {url, isAuthenticated};
-};
-
-const service = init();
+let markdownDefault, compiledTemplate, renderedHtml;
 
 // Load the template files and serve them with the Editor service.
 const buildRenderedHtml = async () => {
@@ -59,7 +49,7 @@ app.get('/', (req, res) => {
 app.post('/render', async (req, res) => {
   try {
     const markdown = req.body.data;
-    const response = await renderRequest(service, markdown);
+    const response = await renderRequest(markdown);
     res.status(200).send(response);
   } catch (err) {
     console.log('Error querying the Renderer service: ', err);
@@ -76,6 +66,5 @@ app.listen(PORT, err => {
 // Exports for testing purposes.
 module.exports = {
   app,
-  init,
   buildRenderedHtml
 };

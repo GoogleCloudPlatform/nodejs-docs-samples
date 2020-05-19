@@ -24,27 +24,12 @@ const storagetransfer = google.storagetransfer('v1');
 // [END setup]
 
 // [START auth]
-const auth = (callback) => {
-  google.auth.getApplicationDefault((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
-    // The createScopedRequired method returns true when running on GAE or a
-    // local developer machine. In that case, the desired scopes must be passed
-    // in manually. When the code is  running in GCE or GAE Flexible, the scopes
-    // are pulled from the GCE metadata server.
-    // See https://cloud.google.com/compute/docs/authentication for more
-    // information.
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      // Scopes can be specified either as an array or as a single,
-      // space-delimited string.
-      authClient = authClient.createScoped([
-        'https://www.googleapis.com/auth/cloud-platform',
-      ]);
-    }
-    callback(null, authClient);
+const auth = async (callback) => {
+  const authClient = await google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
   });
+
+  callback(authClient);
 };
 // [END auth]
 
@@ -64,11 +49,7 @@ const createTransferJob = (options, callback) => {
   const startDate = moment(options.date, 'YYYY/MM/DD');
   const transferTime = moment(options.time, 'HH:mm');
 
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     const transferJob = {
       projectId: process.env.GCLOUD_PROJECT,
       status: 'ENABLED',
@@ -109,7 +90,6 @@ const createTransferJob = (options, callback) => {
         if (err) {
           return callback(err);
         }
-
         const transferJob = response.data;
         console.log('Created transfer job: %s', transferJob.name);
         return callback(null, transferJob);
@@ -127,11 +107,7 @@ const createTransferJob = (options, callback) => {
  * @param {function} callback The callback function.
  */
 const getTransferJob = (jobName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferJobs.get(
       {
         auth: authClient,
@@ -163,11 +139,7 @@ const getTransferJob = (jobName, callback) => {
  * @param {function} callback The callback function.
  */
 const updateTransferJob = (options, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     const patchRequest = {
       projectId: process.env.GCLOUD_PROJECT,
       transferJob: {
@@ -211,11 +183,7 @@ const updateTransferJob = (options, callback) => {
  * @param {function} callback The callback function.
  */
 const listTransferJobs = (callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferJobs.list(
       {
         auth: authClient,
@@ -244,11 +212,7 @@ const listTransferJobs = (callback) => {
  * @param {function} callback The callback function.
  */
 const listTransferOperations = (jobName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     const filter = {
       project_id: process.env.GCLOUD_PROJECT,
     };
@@ -286,11 +250,7 @@ const listTransferOperations = (jobName, callback) => {
  * @param {function} callback The callback function.
  */
 const getTransferOperation = (transferOperationName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferOperations.get(
       {
         name: transferOperationName,
@@ -318,11 +278,7 @@ const getTransferOperation = (transferOperationName, callback) => {
  * @param {function} callback The callback function.
  */
 const pauseTransferOperation = (transferOperationName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferOperations.pause(
       {
         name: transferOperationName,
@@ -349,11 +305,7 @@ const pauseTransferOperation = (transferOperationName, callback) => {
  * @param {function} callback The callback function.
  */
 const resumeTransferOperation = (transferOperationName, callback) => {
-  auth((err, authClient) => {
-    if (err) {
-      return callback(err);
-    }
-
+  auth((authClient) => {
     storagetransfer.transferOperations.resume(
       {
         name: transferOperationName,

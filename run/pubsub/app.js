@@ -33,6 +33,8 @@ app.post('/', (req, res) => {
   console.log(`Hello ${name}!`);
   res.status(204).send();
 });
-// [END run_pubsub_handler]
 
 module.exports = app;
+// [END run_pubsub_handler]
+
+

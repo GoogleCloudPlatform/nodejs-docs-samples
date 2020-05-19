@@ -34,7 +34,7 @@ describe('Editor renderRequest unit tests', function () {
       const response = await request(markdown);
       assert.ok(!response.body, 'ID token client sent empty value')
     } catch (e) {
-      assert.equal(e.message, 'GoogleAuth server could not respond to request: ')
+      assert.equal(e.message, 'Renderer service could not respond to request: ')
     };
   });
 });

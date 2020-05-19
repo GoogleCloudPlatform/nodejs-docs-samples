@@ -146,7 +146,7 @@ it('should create a transfer job', async () => {
   ]);
 });
 
-it.skip('should handle create error', async () => {
+it('should handle create error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();

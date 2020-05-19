@@ -88,7 +88,7 @@ const createTransferJob = (options, callback) => {
       },
       (err, response) => {
         if (err) {
-          return callback(err, null);
+          return callback(err);
         }
         const transferJob = response.data;
         console.log('Created transfer job: %s', transferJob.name);

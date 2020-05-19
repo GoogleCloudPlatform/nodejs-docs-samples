@@ -22,7 +22,9 @@ let client, serviceUrl;
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
 const renderRequest = async (markdown) => { 
   // [START run_secure_request]
-  if (process.env.EDITOR_UPSTREAM_RENDER_URL) serviceUrl = process.env.EDITOR_UPSTREAM_RENDER_URL;
+  if (!process.env.EDITOR_UPSTREAM_RENDER_URL) throw Error('EDITOR_UPSTREAM_RENDER_URL needs to be set.');
+  serviceUrl = process.env.EDITOR_UPSTREAM_RENDER_URL;
+  
   // Build the request to the Renderer receiving service.
   const serviceRequestOptions = { 
     method: 'POST',

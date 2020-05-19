@@ -38,10 +38,9 @@ describe('Unit Tests', () => {
 
   it('should succeed with a valid request', async () => {
     const markdown = "**markdown text**";
-    await request.post('/').type('text').send(markdown).expect(200).then(res => {
-      const body = res.text;
-      assert.equal(body, "<p><strong>markdown text</strong></p>\n")
-    });
+    const response = await request.post('/').type('text').send(markdown).expect(200);
+    const body = response.text;
+    assert.equal(body, "<p><strong>markdown text</strong></p>\n")
   });
 
   it('should succeed with a request that includes xss', async () => {

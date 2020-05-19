@@ -34,7 +34,7 @@ async function main(name = 'projects/my-project/secrets/my-secret/versions/1') {
     });
 
     // Extract the payload as a string.
-    const payload = version.payload.data.toString('utf8');
+    const payload = version.payload.data.toString();
 
     // WARNING: Do not print the secret in a production environment - this
     // snippet is showing how to access the secret material.

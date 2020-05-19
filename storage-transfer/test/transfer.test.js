@@ -146,7 +146,7 @@ it('should create a transfer job', async () => {
   ]);
 });
 
-it('should handle create error', async () => {
+it.skip('should handle create error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
@@ -194,9 +194,9 @@ it('should handle get error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
-  sample.mocks.storagetransfer.transferOperations.get.yields(error);
+  sample.mocks.storagetransfer.transferJobs.get.yields(error);
 
-  await sample.program.getTransferOperation(jobName, callback);
+  await sample.program.getTransferJob(jobName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
@@ -510,6 +510,18 @@ it('should list transfer operations', async () => {
   assert.strictEqual(console.log.calledTwice, true);
 });
 
+it('should handle list error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferOperations.list.yields(error);
+
+  await sample.program.listTransferOperations(undefined, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
+});
+
 it('should get a transfer operation', async () => {
   const sample = getSample();
   const callback = sinon.stub();
@@ -554,6 +566,18 @@ it('should get a transfer operation', async () => {
     'Found transfer operation: %s',
     sample.mocks.transferOperation,
   ]);
+});
+
+it('should handle get error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferOperations.get.yields(error);
+
+  await sample.program.getTransferOperation(jobName, callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
 it('should pause a transfer operation', async () => {

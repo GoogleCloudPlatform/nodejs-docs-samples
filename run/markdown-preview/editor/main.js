@@ -14,13 +14,13 @@
 
 const express = require('express');
 const handlebars = require('handlebars');
-const { readFileSync } = require('fs');
+const { readFile } = require('fs').promises;
 const renderRequest = require('./render.js');
 
 const app = express();
 app.use(express.json());
 
-let url, isAuthenticated, markdownDefault, compiledTemplate, template;
+let url, isAuthenticated, markdownDefault, compiledTemplate, renderedHtml = undefined;
 
 const init = () => {
   url = process.env.EDITOR_UPSTREAM_RENDER_URL;
@@ -33,12 +33,12 @@ const init = () => {
 const service = init();
 
 // Load the template files and serve them with the Editor service.
-const buildTemplate = () => {
+const buildRenderedHtml = async () => {
   try {
-    markdownDefault = readFileSync(__dirname + '/templates/markdown.md');
-    const indexTemplate = handlebars.compile(readFileSync(__dirname + '/templates/index.html', 'utf8'));
-    compiledTemplate = indexTemplate({default: markdownDefault});
-    return compiledTemplate;
+    markdownDefault = await readFile(__dirname + '/templates/markdown.md');
+    compiledTemplate = handlebars.compile(await readFile(__dirname + '/templates/index.html', 'utf8'));
+    renderedHtml = compiledTemplate({default: markdownDefault});
+    return renderedHtml;
   } catch(err) {
     throw Error ('Error loading template: ', err);
   }
@@ -46,8 +46,8 @@ const buildTemplate = () => {
 
 app.get('/', (req, res) => { 
   try {
-    template = buildTemplate();
-    res.status(200).send(template);
+    if (!renderedHtml) renderedHtml = buildRenderedHtml();
+    res.status(200).send(renderedHtml);
   } catch (err) {
     console.log('Error loading the Editor service: ', err);
     res.status(500).send(err);
@@ -77,5 +77,5 @@ app.listen(PORT, err => {
 module.exports = {
   app,
   init,
-  buildTemplate
+  buildRenderedHtml
 };

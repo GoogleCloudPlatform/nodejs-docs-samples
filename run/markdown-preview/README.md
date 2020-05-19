@@ -17,7 +17,7 @@ Required variables for this sample include:
 ## Dependencies
 
 * **express**: Web server framework.
-* **gcp-metadata**: Access Google Cloud Platform metadata server.
+* **google-auth-library**: OAuth2.0 library for authentication and authorization.
 * **got**: Node.js library for HTTP requests.
 * **handlebars** JavaScript template engine.
 * **markdown-it**: JavaScript library for parsing and rendering Markdown text.

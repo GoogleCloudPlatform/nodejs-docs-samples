@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const gcpMetadata = require('gcp-metadata')
+const {GoogleAuth} = require('google-auth-library');
 const got = require('got');
+const auth = new GoogleAuth();
 
 // renderRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
 const renderRequest = async (service, markdown) => { 
   // [START run_secure_request]
-  let token;
-
+  const targetAudience = service.url;
   // Build the request to the Renderer receiving service.
   const serviceRequestOptions = { 
     method: 'POST',
@@ -31,22 +31,21 @@ const renderRequest = async (service, markdown) => {
     timeout: 3000
   };
 
-  if (service.isAuthenticated) {
-    try {
-    // Query the token with ?audience as the service URL.
-    const metadataServerTokenPath = `service-accounts/default/identity?audience=${service.url}`;
-    // Fetch the token and then add it to the request header.
-    token = await gcpMetadata.instance(metadataServerTokenPath);
-    serviceRequestOptions.headers['Authorization'] = 'bearer ' + token;
-    } catch(err) {
-      throw Error('Metadata server could not respond to request: ', err);
-    }
+  try {
+    // Create a Google Auth client with the Renderer url as the target audience.
+    const client = await auth.getIdTokenClient(targetAudience);
+    // Fetch the client request headers and add them to the service request headers.
+    // The client request headers include an ID token that authenticates the request.
+    const clientHeaders = await client.getRequestHeaders();
+    serviceRequestOptions.headers['Authorization'] = clientHeaders['Authorization'];
+  } catch(err) {
+    throw Error('Metadata server could not respond to request: ', err);
   };
   // [END run_secure_request]
 
   // [START run_secure_request_do]
   try {
-    // serviceRequest converts the Markdown plaintext to HTML.
+    // serviceResponse converts the Markdown plaintext to HTML.
     const serviceResponse = await got(service.url, serviceRequestOptions);
     return serviceResponse.body;
   } catch (err) { 

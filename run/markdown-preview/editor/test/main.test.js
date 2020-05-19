@@ -57,6 +57,7 @@ describe('Editor unit tests', () => {
     let request;
 
     before(async () => {
+      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
       const {app} = require(path.join(__dirname, '..', 'main'));
       request = supertest(app);
     });

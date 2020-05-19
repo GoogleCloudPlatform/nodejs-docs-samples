@@ -32,7 +32,7 @@ describe('Editor renderRequest unit tests', function () {
     // Request will be rejected if it's given an invalid url.
     try {
       const response = await request(markdown);
-      if (response) assert.ok(response.body.length > 0, 'ID token client sent empty value')
+      assert.ok(!response.body, 'ID token client sent empty value')
     } catch (e) {
       assert.equal(e.message, 'GoogleAuth server could not respond to request: ')
     };

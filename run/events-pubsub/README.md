@@ -13,23 +13,36 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 
 ## Quickstart
 
+Create a Cloud Pub/Sub topic:
+
 ```sh
 gcloud pubsub topics create my-topic
+```
 
+Create a Cloud Pub/Sub trigger:
+
+```sh
 gcloud alpha events triggers create pubsub-trigger \
 --target-service cloudrun-events \
 --type com.google.cloud.pubsub.topic.publish \
 --parameters topic=my-topic
+```
 
+Deploy your Cloud Run service:
+
+```sh
 gcloud builds submit \
- --tag gcr.io/$(gcloud config get-value project)/"$MY_RUN_CONTAINER"
-gcloud run deploy "$MY_RUN_SERVICE" \
- --image gcr.io/$(gcloud config get-value project)/"$MY_RUN_CONTAINER" \
- --allow-unauthenticated # Note: The "allowed unauthenticated requests" flag is not needed in production.
+ --tag gcr.io/$(gcloud config get-value project)/cloudrun-events
+gcloud run deploy cloudrun-events \
+ --image gcr.io/$(gcloud config get-value project)/cloudrun-events
  ```
 
- Test:
+## Test
 
- ```
- gcloud pubsub topics publish my-topic --message="Hello there"
- ```
+Test your Cloud Run service by publishing a message to the topic: 
+
+```sh
+gcloud pubsub topics publish my-topic --message="Hello there"
+```
+
+You may observe the Run service receiving an event in Stackdriver Logs.

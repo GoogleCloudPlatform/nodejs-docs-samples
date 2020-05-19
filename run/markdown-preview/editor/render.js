@@ -16,13 +16,13 @@ const {GoogleAuth} = require('google-auth-library');
 const got = require('got');
 const auth = new GoogleAuth();
 
-let client;
+let client, serviceUrl;
 
 // renderRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
 const renderRequest = async (markdown) => { 
   // [START run_secure_request]
-  const serviceUrl = process.env.EDITOR_UPSTREAM_RENDER_URL;
+  if (process.env.EDITOR_UPSTREAM_RENDER_URL) serviceUrl = process.env.EDITOR_UPSTREAM_RENDER_URL;
   // Build the request to the Renderer receiving service.
   const serviceRequestOptions = { 
     method: 'POST',

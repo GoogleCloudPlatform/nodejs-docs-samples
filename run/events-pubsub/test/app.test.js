@@ -55,7 +55,7 @@ describe('Unit Tests', () => {
         .type('json')
         .send({message: true})
         .expect((res) => {
-          assert.equal(res.body.message, 'Hello, World!');
+          assert.equal(res.text, 'Hello, World! ID: ');
         });
     });
 
@@ -66,7 +66,7 @@ describe('Unit Tests', () => {
         .set('ce-id', 1234)
         .send({message: true})
         .expect((res) => {
-          assert.equal(res.body.id, 1234);
+          assert.equal(res.text, 'Hello, World! ID: 1234');
         });
     });
   });

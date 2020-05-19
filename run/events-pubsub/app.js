@@ -26,11 +26,7 @@ app.post('/', (req, res) => {
     ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
     : 'World';
   
-  // TODO follow new design doc.
-  res.send({
-    message: `Hello, ${name}!`,
-    id: req.get('ce-id')
-  });
+  res.send(`Hello, ${name}! ID: ${req.get('ce-id') || ''}`);
 });
 
 module.exports = app;

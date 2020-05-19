@@ -16,7 +16,6 @@
 
 const assert = require('assert');
 const path = require('path');
-const sinon = require('sinon');
 
 let request, service, markdown;
 
@@ -29,25 +28,13 @@ describe('Editor renderRequest unit tests', function () {
     markdown = "**markdown text**";
   });
 
-  it('can make an unauthenticated request', async () => {
-    service.isAuthenticated = false;
-    // Request should be rejected with an error if it's not authenticated.
+  it('can make a request with an invalid url', async () => {
+    // Request will be rejected if it's given an invalid url.
     try {
-      const response = await request(service, markdown);
-      assert.ok(response.body.length > 0, 'Metadata server sent empty value')
+      const response = await request(markdown);
+      assert.ok(response.body.length > 0, 'ID token client sent empty value')
     } catch (e) {
-      assert.equal(e.message, 'Renderer service could not respond to request: ')
-    };
-  });
-
-  it('can make an authenticated request with an invalid url', async () => {
-    service.isAuthenticated = true;
-    // Request will be rejected if it's authenticated but given an invalid url.
-    try {
-      const response = await request(service, markdown);
-      assert.ok(response.body.length > 0, 'Metadata server sent empty value')
-    } catch (e) {
-      assert.equal(e.message, 'Metadata server could not respond to request: ')
+      assert.equal(e.message, 'GoogleAuth server could not respond to request: ')
     };
   });
 });

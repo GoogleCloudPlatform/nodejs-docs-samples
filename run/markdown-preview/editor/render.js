@@ -41,7 +41,7 @@ const renderRequest = async (markdown) => {
     const clientHeaders = await client.getRequestHeaders();
     serviceRequestOptions.headers['Authorization'] = clientHeaders['Authorization'];
   } catch(err) {
-    throw Error('Metadata server could not respond to request: ', err);
+    throw Error('GoogleAuth server could not respond to request: ', err);
   };
   // [END run_secure_request]
 

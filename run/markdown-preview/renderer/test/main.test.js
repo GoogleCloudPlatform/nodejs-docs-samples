@@ -31,8 +31,8 @@ describe('Unit Tests', () => {
     const consoleStub = sinon.stub(console, 'log');
     // Ensure that the expected error is logged.
     await request.post('/').type('json').send({"json": "json"});
-    const message = console.log.getCall(0).args[1].message;
-    assert.equal(message, "Input data should be a String");
+    const message = console.log.getCall(0).args[0];
+    assert.equal(message, "Markdown data could not be retrieved.");
     consoleStub.restore();
   });
 

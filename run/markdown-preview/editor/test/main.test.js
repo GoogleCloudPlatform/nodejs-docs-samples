@@ -20,33 +20,21 @@ const sinon = require('sinon');
 const supertest = require('supertest');
 
 describe('Editor unit tests', () => {
-  describe('Service init', () => {
-    it('should respond with an error for no EDITOR_UPSTREAM_RENDER_URL var', async () => {
-      let app = () => require(path.join(__dirname, '..', 'main'));
-      assert.throws(app, {
-        name: 'Error', 
-        message: 'No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable'
-      });
-    });
-
-    it('should return an object with an EDITOR_UPSTREAM_RENDER_URL var', async () => {
-      // Reload the server with updated env vars.
-      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {init} = require(path.join(__dirname, '..', 'main'));
-      const response = init();
-      // Successfully creates an init object.
-      assert.equal(response.url, process.env.EDITOR_UPSTREAM_RENDER_URL);
-      assert.equal(response.isAuthenticated, true);
+  describe('Initialize app', () => {
+    it('should successfully start the app', async function () {
+      const {app} = require(path.join(__dirname, '..', 'main'));
+      const request = supertest(app);
+      await request.get('/').expect(200);
     })
   });
 
   describe('Handlebars compiler', async () => {
     let template;
 
-    before(async () => {
+    before( async () => {
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {buildTemplate} = require(path.join(__dirname, '..', 'main'));
-      template = buildTemplate();
+      const {buildRenderedHtml} = require(path.join(__dirname, '..', 'main'));
+      template = await buildRenderedHtml();
     })
 
     it('includes HTML from the templates', () => {
@@ -77,13 +65,13 @@ describe('Editor unit tests', () => {
       await request.get('/render').expect(404);
     });
 
-    it('can make a POST request, with an error thrown by the metadata server', async function () {
+    it('can make a POST request, with an error thrown by the Google Auth server', async function () {
       this.timeout(9000);
       const consoleStub = sinon.stub(console, 'log');
       // Ensure that the expected error is logged.
       await request.post('/render').type('json').send({body: {"data":"markdown"}});
       const message = console.log.getCall(0).args[1].message;
-      assert.equal(message, "Metadata server could not respond to request: ");
+      assert.equal(message, "GoogleAuth server could not respond to request: ");
       consoleStub.restore();
     });
   });

@@ -67,16 +67,10 @@ describe('Editor unit tests', () => {
 
     it('can make a POST request, with an error thrown if data type is incorrect', async function () {
       this.timeout(9000);
-      // Ensure that the expected error is logged.
-      let response = await request.post('/render').type('json').send({"data":"markdown"}).expect(500);
-      assert.equal(response.error.message, 'cannot POST /render (500)');
-
-      try {
-        await request.post('/render').type('text/plain').send({"data":"markdown"}).expect(500);
-      } catch (e) {
-        const message = e.message.includes('The "string" argument must be of type string');
-        assert.equal(message, true);
-      };
+      // A valid type will make a request to the /render endpoint.
+      await request.post('/render').type('json').send({"data":"markdown"}).expect(500);
+      // An incorrect type will not successfully make a request and will print an error in the console. 
+      await request.post('/render').type('json').send('string: incorrect data type').expect(400);
     });
   });
 });

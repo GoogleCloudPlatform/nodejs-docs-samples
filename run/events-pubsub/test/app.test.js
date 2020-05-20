@@ -49,11 +49,13 @@ describe('Unit Tests', () => {
   });
 
   describe('should succeed', () => {
+    const data = Buffer.from('World').toString(`base64`);
+    
     it(`with a minimally valid Pub/Sub Message`, async () => {
       await request
         .post('/')
         .type('json')
-        .send({message: true})
+        .send({message: {data}})
         .expect((res) => {
           assert.equal(res.text, 'Hello, World! ID: ');
         });
@@ -64,7 +66,7 @@ describe('Unit Tests', () => {
         .post('/')
         .type('json')
         .set('ce-id', 1234)
-        .send({message: true})
+        .send({message: {data}})
         .expect((res) => {
           assert.equal(res.text, 'Hello, World! ID: 1234');
         });

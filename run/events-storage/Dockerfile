@@ -2,7 +2,7 @@
 # Use of this source code is governed by the Apache 2.0
 # license that can be found in the LICENSE file.
 
-# [START run_storage_dockerfile]
+# [START run_events_storage_dockerfile]
 
 # Use the official lightweight Node.js 10 image.
 # https://hub.docker.com/_/node
@@ -27,4 +27,4 @@ COPY . .
 # Run the web service on container startup.
 CMD [ "npm", "start" ]
 
-# [END run_storage_dockerfile]
+# [END run_events_storage_dockerfile]

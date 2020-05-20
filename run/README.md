@@ -11,12 +11,13 @@
 |[Hello World][helloworld]&nbsp;&#10149;  | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_helloworld] |
 |[System Packages][system_package]        | Use system-installed binaries in your service. | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_system_package] |
 |[Pub/Sub][pubsub]                        | Event-driven service with a Pub/Sub push subscription | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_pubsub] |
+|[Events – Pub/Sub][events_pubsub]         | Use Pub/Sub with Cloud Run | - |
 |[Image Processing][image_processing]     | Event-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_image_processing] |
 |[Manual Logging][manual_logging]         | Structured logging without client library | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_manual_logging] |
 |[Cloud SQL (MySQL)][mysql]               | Use MySQL with Cloud Run | - |
 |[Cloud SQL (Postgres)][postgres]         | Use Postgres with Cloud Run | - |
 |[Hello Broken][hello_broken]             | Something is wrong, how do you fix it? | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_hello_broken] |
-|[Events – Cloud Storage][events_stoage]         | Use Cloud Storage Triggers with Cloud Run | - |
+|[Events – GCS][events_gcs]         | Event-driven service with Events for Cloud Run for GCS | - |
 
 For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
@@ -128,4 +129,5 @@ for more information.
 [run_button_image_processing]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/image-processing
 [run_button_manual_logging]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/logging-manual
 [run_button_hello_broken]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/hello-broken
-[events_storage]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-storage
+[events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-pubsub
+[events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-gcs

@@ -32,6 +32,7 @@ const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
 
 const bundleFile = 'resources/bundle.json';
 const resourceType = 'Patient';
+const version = 'STU3';
 let resourceId;
 
 before(() => {
@@ -59,7 +60,7 @@ after(() => {
 
 it('should create a FHIR resource', () => {
   execSync(
-    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
+    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${version}`,
     {cwd}
   );
   const output = execSync(

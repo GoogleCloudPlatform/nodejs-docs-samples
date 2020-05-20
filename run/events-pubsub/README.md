@@ -22,7 +22,7 @@ Create a Cloud Pub/Sub trigger:
 
 ```sh
 gcloud alpha events triggers create pubsub-trigger \
---target-service cloudrun-events \
+--target-service cloudrun-events-pubsub \
 --type com.google.cloud.pubsub.topic.publish \
 --parameters topic=my-topic
 ```
@@ -31,9 +31,9 @@ Deploy your Cloud Run service:
 
 ```sh
 gcloud builds submit \
- --tag gcr.io/$(gcloud config get-value project)/cloudrun-events
-gcloud run deploy cloudrun-events \
- --image gcr.io/$(gcloud config get-value project)/cloudrun-events
+ --tag gcr.io/$(gcloud config get-value project)/cloudrun-events-pubsub
+gcloud run deploy cloudrun-events-pubsub \
+ --image gcr.io/$(gcloud config get-value project)/cloudrun-events-pubsub
  ```
 
 ## Test
@@ -44,4 +44,4 @@ Test your Cloud Run service by publishing a message to the topic:
 gcloud pubsub topics publish my-topic --message="Hello there"
 ```
 
-You may observe the Run service receiving an event in Stackdriver Logs.
+You may observe the Run service receiving an event in Cloud Logging.

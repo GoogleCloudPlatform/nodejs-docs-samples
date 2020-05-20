@@ -37,6 +37,7 @@ const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
+const version = 'STU3';
 
 const fhirFileName = 'fhir_data.ndjson';
 
@@ -85,7 +86,7 @@ after(async () => {
 
 it('should create a FHIR store', () => {
   const output = execSync(
-    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
+    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${version}`,
     {cwd}
   );
   assert.ok(output.includes('Created FHIR store'));

@@ -24,7 +24,7 @@ const main = (
 ) => {
   // [START healthcare_dicom_store_get_iam_policy]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const getDicomStoreIamPolicy = async () => {
     const auth = await google.auth.getClient({

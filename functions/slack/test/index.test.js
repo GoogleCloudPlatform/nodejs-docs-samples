@@ -43,7 +43,7 @@ const getSample = () => {
   return {
     program: proxyquire('../', {
       googleapis: {google: googleapis},
-      './config.json': config,
+      process: { env: config },
       '@slack/events-api': eventsApi,
     }),
     mocks: {

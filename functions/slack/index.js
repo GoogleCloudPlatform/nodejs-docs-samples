@@ -15,7 +15,6 @@
 'use strict';
 
 // [START functions_slack_setup]
-const config = require('./config.json');
 const {google} = require('googleapis');
 const {verifyRequestSignature} = require('@slack/events-api');
 
@@ -94,7 +93,7 @@ const formatSlackMessage = (query, response) => {
  */
 const verifyWebhook = (req) => {
   const signature = {
-    signingSecret: config.SLACK_SECRET,
+    signingSecret: process.env.SLACK_SECRET,
     requestSignature: req.headers['x-slack-signature'],
     requestTimestamp: req.headers['x-slack-request-timestamp'],
     body: req.rawBody,
@@ -118,7 +117,7 @@ const makeSearchRequest = (query) => {
   return new Promise((resolve, reject) => {
     kgsearch.entities.search(
       {
-        auth: config.KG_API_KEY,
+        auth: process.env.KG_API_KEY,
         query: query,
         limit: 1,
       },
@@ -142,7 +141,7 @@ const makeSearchRequest = (query) => {
  * Receive a Slash Command request from Slack.
  *
  * Trigger this function by creating a Slack slash command with this URL:
- * https://[YOUR_REGION].[YOUR_PROJECT_ID].cloudfunctions.net/kgsearch
+ * https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/kgSearch
  *
  * @param {object} req Cloud Function request object.
  * @param {object} req.body The request payload.

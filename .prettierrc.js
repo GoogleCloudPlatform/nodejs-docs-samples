@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-const assert = require('assert');
-const {execSync} = require('child_process');
-
-it('should list companies', () => {
-  const output = execSync('node quickstart.js');
-  assert.strictEqual(output.includes('Request ID'), true);
-});
+module.exports = {
+  ...require('gts/.prettierrc.json')
+}

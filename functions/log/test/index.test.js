@@ -25,10 +25,6 @@ const getSample = () => {
   };
   stream.on.withArgs('end').yields();
 
-  const monitoring = {
-    projectPath: sinon.stub(),
-    listTimeSeries: sinon.stub().returns(stream),
-  };
   const logging = {
     getEntries: sinon.stub().returns(Promise.resolve(results)),
   };
@@ -36,14 +32,8 @@ const getSample = () => {
   return {
     program: proxyquire('../', {
       '@google-cloud/logging': sinon.stub().returns(logging),
-      '@google-cloud/monitoring': {
-        v3: sinon.stub().returns({
-          metricServiceApi: sinon.stub().returns(monitoring),
-        }),
-      },
     }),
     mocks: {
-      monitoring: monitoring,
       logging: logging,
       results: results,
     },
@@ -84,17 +74,6 @@ describe('functions_log_retrieve', () => {
     const entries = await sample.program.getLogEntries();
     assert.strictEqual(console.log.calledWith('Entries:'), true);
     assert.strictEqual(entries === sample.mocks.results[0], true);
-  });
-});
-
-describe('functions_log_get_metrics', () => {
-  it('getMetrics: should retrieve metrics', () => {
-    const sample = getSample();
-    const callback = sinon.stub();
-
-    sample.program.getMetrics(callback);
-
-    assert.strictEqual(callback.callCount, 1);
   });
 });
 

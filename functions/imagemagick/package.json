@@ -15,7 +15,7 @@
     "test": "mocha test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
-    "@google-cloud/storage": "^4.0.0",
+    "@google-cloud/storage": "^5.0.0",
     "@google-cloud/vision": "^1.0.0",
     "gm": "^1.23.1"
   },
@@ -27,13 +27,5 @@
     "request": "^2.88.0",
     "requestretry": "^4.0.0",
     "sinon": "^9.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "FUNCTIONS_BUCKET",
-      "BLURRED_BUCKET_NAME"
-    ]
   }
 }

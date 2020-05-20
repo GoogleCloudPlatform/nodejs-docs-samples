@@ -23,7 +23,7 @@
   "dependencies": {
     "chai": "^4.2.0",
     "express": "^4.16.4",
-    "knex": "^0.20.0",
+    "knex": "^0.21.0",
     "mysql": "^2.16.0",
     "prompt": "^1.0.0"
   },
@@ -33,34 +33,5 @@
     "sinon": "^9.0.0",
     "supertest": "^4.0.0",
     "wait-port": "^0.2.7"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "app": {
-        "requiredEnvVars": [
-          "SQL_USER",
-          "SQL_PASSWORD",
-          "SQL_DATABASE",
-          "SQL_PORT",
-          "INSTANCE_CONNECTION_NAME"
-        ],
-        "msg": "Last 10 visits:",
-        "substitutions": "YOUR_SQL_USER=$SQL_USER,YOUR_SQL_PASSWORD=$SQL_PASSWORD,YOUR_SQL_DATABASE=$SQL_DATABASE,YOUR_INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME",
-        "args": [
-          "server.js"
-        ]
-      },
-      "build": {
-        "requiredEnvVars": [
-          "SQL_USER",
-          "SQL_PASSWORD",
-          "SQL_DATABASE",
-          "SQL_PORT",
-          "INSTANCE_CONNECTION_NAME"
-        ]
-      }
-    }
   }
 }

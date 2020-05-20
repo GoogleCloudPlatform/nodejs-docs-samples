@@ -26,7 +26,7 @@ const main = (
 ) => {
   // [START healthcare_delete_resource_purge]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const deleteFhirResourcePurge = async () => {
     const auth = await google.auth.getClient({

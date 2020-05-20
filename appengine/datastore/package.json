@@ -24,14 +24,5 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "supertest": "^4.0.2"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Last 10 visits:"
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

@@ -31,10 +31,6 @@ before(async () => {
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
   );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
-  );
   await bucket.create(bucket).then(() => {
     return bucket.acl.add({
       entity: 'allUsers',
@@ -49,27 +45,29 @@ after(async () => {
   } catch (err) {} // ignore error
 });
 
-it('should load', async () => {
-  await requestObj
-    .get('/')
-    .expect(200)
-    .expect((response) => {
-      assert.strictEqual(
-        new RegExp(/<input type="file" name="file">/).test(response.text),
-        true
-      );
-    });
-});
+describe('gae_storage_app', () => {
+  it('should load', async () => {
+    await requestObj
+      .get('/')
+      .expect(200)
+      .expect((response) => {
+        assert.strictEqual(
+          new RegExp(/<input type="file" name="file">/).test(response.text),
+          true
+        );
+      });
+  });
 
-it('should upload a file', async () => {
-  await requestObj
-    .post('/upload')
-    .attach('file', path.join(__dirname, 'resources/test.txt'))
-    .expect(200)
-    .expect((response) => {
-      assert.strictEqual(
-        response.text,
-        `https://storage.googleapis.com/${bucketName}/test.txt`
-      );
-    });
+  it('should upload a file', async () => {
+    await requestObj
+      .post('/upload')
+      .attach('file', path.join(__dirname, 'resources/test.txt'))
+      .expect(200)
+      .expect((response) => {
+        assert.strictEqual(
+          response.text,
+          `https://storage.googleapis.com/${bucketName}/test.txt`
+        );
+      });
+  });
 });

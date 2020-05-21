@@ -19,11 +19,11 @@ functions/composer-storage-trigger @leahecole
 functions/scheduleinstance @djmailhot
 functions/speech-to-speech @ricalo
 functions/memorystore @ericschmidtatwork
+functions/spanner @jsimonweb
 functions/tokenservice @nnegrey
 
 # GCF samples outside of functions/
 datastore/functions @benwhitehead
-spanner/functions @skuruppu
 
 # One-offs
 cloud-sql @kurtisvg
@@ -31,3 +31,4 @@ composer @leahecole @sofisl
 healthcare @noerog
 iot @gguuss
 jobs @happyhuman
+

@@ -24,7 +24,7 @@ const renderRequest = async (markdown) => {
   // [START run_secure_request]
   if (!process.env.EDITOR_UPSTREAM_RENDER_URL) throw Error('EDITOR_UPSTREAM_RENDER_URL needs to be set.');
   serviceUrl = process.env.EDITOR_UPSTREAM_RENDER_URL;
-  
+
   // Build the request to the Renderer receiving service.
   const serviceRequestOptions = { 
     method: 'POST',
@@ -45,9 +45,7 @@ const renderRequest = async (markdown) => {
   } catch(err) {
     throw Error('GoogleAuth server could not respond to request: ', err);
   };
-  // [END run_secure_request]
 
-  // [START run_secure_request_do]
   try {
     // serviceResponse converts the Markdown plaintext to HTML.
     const serviceResponse = await got(serviceUrl, serviceRequestOptions);
@@ -55,7 +53,7 @@ const renderRequest = async (markdown) => {
   } catch (err) { 
     throw Error('Renderer service could not respond to request: ', err);
   };
-  // [END run_secure_request_do]
+  // [END run_secure_request]
 };
 
 module.exports = renderRequest;

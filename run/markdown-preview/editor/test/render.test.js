@@ -17,24 +17,21 @@
 const assert = require('assert');
 const path = require('path');
 
-let request, markdown;
+let renderRequest, markdown;
 
 describe('Editor renderRequest unit tests', function () {
   this.timeout(9000);
   
   before(async () => {
-    request = require(path.join(__dirname, '..', 'render'));
+    renderRequest = require(path.join(__dirname, '..', 'render'));
     process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
     markdown = "**markdown text**";
   });
 
-  it('can make a request with an invalid url', async () => {
-    // Request will be rejected if it's given an invalid url.
-    try {
-      const response = await request(markdown);
-      assert.ok(!response.body, 'ID token client sent empty value')
-    } catch (e) {
-      assert.equal(e.message, 'Renderer service could not respond to request: ')
-    };
+  it('can make a request with an valid url', async () => {
+    // Request will be successful and return the converted markdown as a string.
+      const response = await renderRequest(markdown);
+      let exampleString = response.includes('This domain is for use in illustrative examples in documents.');
+      assert.equal(exampleString, true);
   });
 });

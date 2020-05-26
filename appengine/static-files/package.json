@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "pug": "^2.0.3"
+    "pug": "^3.0.0"
   },
   "devDependencies": {
     "mocha": "^7.0.0",

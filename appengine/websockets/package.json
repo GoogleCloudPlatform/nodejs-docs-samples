@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "express": "^4.15.4",
-    "pug": "^2.0.3",
+    "pug": "^3.0.0",
     "socket.io": "^2.2.0",
     "supertest": "^4.0.2"
   },

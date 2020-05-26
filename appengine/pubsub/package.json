@@ -18,7 +18,7 @@
     "express": "^4.16.3",
     "google-auth-library": "^6.0.0",
     "path": "^0.12.7",
-    "pug": "^2.0.1",
+    "pug": "^3.0.0",
     "wait-port": "^0.2.7"
   },
   "devDependencies": {

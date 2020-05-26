@@ -21,7 +21,7 @@
     "express": "^4.17.1",
     "mssql": "^6.2.0",
     "prompt": "^1.0.0",
-    "pug": "^2.0.3",
+    "pug": "^3.0.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {

@@ -1,7 +1,6 @@
 {
   "name": "markdown-preview-renderer",
   "description": "Cloud Run service to demonstrate service-to-service authentication, paired with Editor service.",
-  "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google LLC",
@@ -10,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">= 10.0.0"
+    "node": ">= 12.0.0"
   },
   "main": "main.js",
   "scripts": {

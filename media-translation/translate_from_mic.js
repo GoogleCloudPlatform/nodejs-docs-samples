@@ -120,9 +120,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
           audioContent: chunk.toString('base64'),
         };
         stream.write(request);
-      })
-      .on('error', console.log)
-      .pipe(stream);
+      });
 
     console.log('Listening, press Ctrl+C to stop.');
   }

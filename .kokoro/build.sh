@@ -32,11 +32,11 @@ export DB_NAME="kokoro_ci"
 export DB_USER="kokoro_ci"
 export DB_PASS=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
 if [[ $SQL_CLIENT == 'pg' ]]; then
-	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
+	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
 elif [[ $SQL_CLIENT == 'sqlserver' ]]; then
-	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-sqlserver-connection-name.txt)
+	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-sqlserver-connection-name.txt)
 elif [[ $SQL_CLIENT == 'mysql' ]]; then
-	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
+	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
 fi
 
 
@@ -99,17 +99,17 @@ if [[ $SQL_CLIENT ]]; then
 	wget --quiet https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
 	chmod +x cloud_sql_proxy	
 	if [[ $SQL_CLIENT == 'sqlserver' ]]; then
-		./cloud_sql_proxy -instances="${CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
 	else
 		# Run the proxy using unix sockets
 		mkdir $HOME/cloudsql; chmod 777 $HOME/cloudsql 
 		export DB_SOCKET_PATH=$HOME/cloudsql
-		./cloud_sql_proxy -dir=$DB_SOCKET_PATH -instances="${CONNECTION_NAME}" &>> cloud_sql_proxy.log &
+		./cloud_sql_proxy -dir=$DB_SOCKET_PATH -instances="${INSTANCE_CONNECTION_NAME}" &>> cloud_sql_proxy.log &
 		# Run the proxy using TCP
 		if [[ $SQL_CLIENT == 'mysql' ]]; then
-			./cloud_sql_proxy -instances="${CONNECTION_NAME}"=tcp:3306 &>> cloud_sql_proxy.log &
+			./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306 &>> cloud_sql_proxy.log &
 		else
-			./cloud_sql_proxy -instances="${CONNECTION_NAME}"=tcp:5432 &>> cloud_sql_proxy.log &
+			./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432 &>> cloud_sql_proxy.log &
 		fi
 	fi
 fi

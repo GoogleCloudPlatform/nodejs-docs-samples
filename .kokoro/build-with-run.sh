@@ -42,7 +42,9 @@ export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 export SAMPLE_NAME="$(basename $(pwd))"
 
 # Cloud Run has a max service name length, $KOKORO_BUILD_ID is too long to guarantee no conflict deploys.
+set -x
 SUFFIX=$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-z0-9' | head -c 15)
+set +x
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 

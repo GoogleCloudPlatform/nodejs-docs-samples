@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-const PORT = 80;
+const PORT = process.env.port || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');

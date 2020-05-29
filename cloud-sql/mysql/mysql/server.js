@@ -43,18 +43,18 @@ const logger = winston.createLogger({
 
 // [START cloud_sql_mysql_mysql_create_tcp]
 const createTcpPool = async (config) => {
+  // Extract host and port from socket address
   const dbSocketAddr = process.env.DB_HOST.split(":")
 
+  // Establish a connection to the database
   return await mysql.createPool({
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
     host: dbSocketAddr[0], // e.g. '127.0.0.1'
     port: dbSocketAddr[1], // e.g. '3306'
-    // Specify additional properties here.
-    // [START_EXCLUDE]
+    // ... Specify additional properties here.
     ...config
-    // [END_EXCLUDE]
   });
 }
 // [END cloud_sql_mysql_mysql_create_tcp]
@@ -63,16 +63,15 @@ const createTcpPool = async (config) => {
 const createUnixSocketPool = async (config) => {
   const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
 
+  // Establish a connection to the database
   return await mysql.createPool({
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
     // If connecting via unix domain socket, specify the path
-    socketPath: `${dbSocketPath}/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
+    socketPath: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
     // Specify additional properties here.
-    // [START_EXCLUDE]
     ...config
-    // [END_EXCLUDE]
   });
 }
 // [END cloud_sql_mysql_mysql_create_socket]

@@ -22,8 +22,8 @@ const {exec} = require('child_process');
 const cwd = path.join(__dirname, '..');
 
 const {DB_USER, DB_PASS, DB_NAME} = process.env;
-const CONNECTION_NAME = process.env.CLOUD_SQL_CONNECTION_NAME;
-
+const CONNECTION_NAME = process.env.INSTANCE_CONNECTION_NAME;
+const SOCKET_PATH = process.env.DB_SOCKET_PATH || "/cloudsql"
 before(async () => {
   try {
     const knex = Knex({
@@ -32,7 +32,7 @@ before(async () => {
         user: DB_USER,
         password: DB_PASS,
         database: DB_NAME,
-        host: `/cloudsql/${CONNECTION_NAME}`,
+        host: `${SOCKET_PATH}/${CONNECTION_NAME}`,
       },
     });
     await knex.schema.dropTable('votes');

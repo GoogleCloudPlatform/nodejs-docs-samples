@@ -17,8 +17,10 @@
 const Knex = require('knex');
 
 const createTable = async (config) => {
+  const socketPath = process.env.DB_SOCKET_PATH || "/cloudsql";
+  
   // Connect to the database
-  config.host = `/cloudsql/${config.connectionName}`;
+  config.host = `${socketPath}/${config.connectionName}`;
   const knex = Knex({client: 'pg', connection: config});
 
   // Create the "votes" table

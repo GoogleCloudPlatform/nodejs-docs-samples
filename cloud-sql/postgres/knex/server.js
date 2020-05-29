@@ -44,36 +44,61 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
-// [START cloud_sql_postgres_knex_create]
+// [START cloud_sql_postgres_knex_create_tcp]
+const connectWithTcp = (config) => {
+  // Extract host and port from socket address
+  const dbSocketAddr = process.env.DB_HOST.split(":")
+
+  // Establish a connection to the database
+  return Knex({
+    client: 'pg',
+    connection: {
+      user: process.env.DB_USER, // e.g. 'my-user'
+      password: process.env.DB_PASS, // e.g. 'my-user-password'
+      database: process.env.DB_NAME, // e.g. 'my-database'
+      host: dbSocketAddr[0], // e.g. '127.0.0.1'
+      port: dbSocketAddr[1], // e.g. '5432'
+    },
+    // ... Specify additional properties here.
+    ...config
+  });
+}
+// [END cloud_sql_postgres_knex_create_tcp]
+
+// [START cloud_sql_postgres_knex_create_socket]
+const connectWithUnixSockets = (config) => {
+  const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
+
+  debugger;
+  // Establish a connection to the database
+  return Knex({
+    client: 'pg',
+    connection: {
+      user: process.env.DB_USER, // e.g. 'my-user'
+      password: process.env.DB_PASS, // e.g. 'my-user-password'
+      database: process.env.DB_NAME, // e.g. 'my-database'
+      host: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
+    },
+    // ... Specify additional properties here.
+    ...config
+  });
+}
+// [END cloud_sql_postgres_knex_create_socket]
+
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
 const connect = () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
-  const config = {
-    user: process.env.DB_USER, // e.g. 'my-user'
-    password: process.env.DB_PASS, // e.g. 'my-user-password'
-    database: process.env.DB_NAME, // e.g. 'my-database'
-  };
-
-  config.host = `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`;
-
-  // Establish a connection to the database
-  const knex = Knex({
-    client: 'pg',
-    connection: config,
-  });
-
-  // ... Specify additional properties here.
-  // [START_EXCLUDE]
+  let config = {pool: {}};
 
   // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
   // values for this setting are highly variable on app design, infrastructure, and database.
-  knex.client.pool.max = 5;
+  config.pool.max = 5;
   // 'min' is the minimum number of idle connections Knex maintains in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
-  knex.client.pool.min = 5;
+  config.pool.min = 5;
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
@@ -81,28 +106,32 @@ const connect = () => {
   // connection from the pool. This is slightly different from connectionTimeout, because acquiring 
   // a pool connection does not always involve making a new connection, and may include multiple retries.
   // when making a connection
-  knex.client.pool.acquireTimeoutMillis = 60000; // 60 seconds
+  config.pool.acquireTimeoutMillis = 60000; // 60 seconds
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
   // initial connection before retrying. 
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
-  knex.client.pool.createTimeoutMillis = 30000; // 30 seconds
+  config.createTimeoutMillis = 30000; // 30 seconds
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
   // and not be checked out before it is automatically closed.
-  knex.client.pool.idleTimeoutMillis = 600000; // 10 minutes
+  config.idleTimeoutMillis = 600000; // 10 minutes
   // [END cloud_sql_postgres_knex_timeout]
 
   // [START cloud_sql_postgres_knex_backoff]
   // 'knex' uses a built-in retry strategy which does not implement backoff.
   // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
-  knex.client.pool.createRetryIntervalMillis = 200; // 0.2 seconds
+  config.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
 
-  // [END_EXCLUDE]
+  let knex;
+  if (process.env.DB_HOST) {
+    knex = connectWithTcp(config);
+  } else {
+    knex = connectWithUnixSockets(config);
+  }
   return knex;
 };
 
 const knex = connect();
-// [END cloud_sql_postgres_knex_create]
 
 // [START cloud_sql_postgres_knex_connection]
 /**

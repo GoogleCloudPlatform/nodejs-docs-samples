@@ -102,9 +102,9 @@ if [[ $SQL_CLIENT ]]; then
 		./cloud_sql_proxy -instances="${CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
 	else
 		# Run the proxy using unix sockets
-		mkdir cloudsql; chmod 777 cloudsql 
-		export DB_SOCKET_PATH=cloudsql
-		./cloud_sql_proxy -dir=cloudsql -instances="${CONNECTION_NAME}" &>> cloud_sql_proxy.log &
+		mkdir $HOME/cloudsql; chmod 777 $HOME/cloudsql 
+		export DB_SOCKET_PATH=$HOME/cloudsql
+		./cloud_sql_proxy -dir=$DB_SOCKET_PATH -instances="${CONNECTION_NAME}" &>> cloud_sql_proxy.log &
 		# Run the proxy using TCP
 		if [[ $SQL_CLIENT == 'mysql' ]]; then
 			./cloud_sql_proxy -instances="${CONNECTION_NAME}"=tcp:3306 &>> cloud_sql_proxy.log &

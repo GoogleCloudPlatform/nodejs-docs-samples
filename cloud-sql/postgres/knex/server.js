@@ -69,7 +69,6 @@ const connectWithTcp = (config) => {
 const connectWithUnixSockets = (config) => {
   const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
 
-  debugger;
   // Establish a connection to the database
   return Knex({
     client: 'pg',

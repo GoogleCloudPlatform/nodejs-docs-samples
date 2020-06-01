@@ -17,7 +17,7 @@
 set -eo pipefail
 
 _run_error_log() {
-  echo "error: $(caller)"
+  echo "error: line $(caller)"
 }
 
 trap '_run_error_log' ERR

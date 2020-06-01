@@ -16,6 +16,12 @@
 
 set -eo pipefail
 
+_run_error_log() {
+  echo "error: $(caller)"
+}
+
+trap '_run_error_log' ERR
+
 # Activate mocha config
 export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
 export MOCHA_REPORTER=xunit
@@ -43,7 +49,7 @@ export SAMPLE_NAME="$(basename $(pwd))"
 
 # Cloud Run has a max service name length, $KOKORO_BUILD_ID is too long to guarantee no conflict deploys.
 set -x
-SUFFIX=$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-z0-9' | head -c 15)
+export SUFFIX="$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-z0-9' | head -c 15)"
 set +x
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"

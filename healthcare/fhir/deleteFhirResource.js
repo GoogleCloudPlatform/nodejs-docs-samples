@@ -44,6 +44,10 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
     const request = {name};
 
+    // Regardless of whether the operation succeeds or
+    // fails, the server returns a 200 OK HTTP status code. To check that the
+    // resource was successfully deleted, search for or get the resource and
+    // see if it exists.
     await healthcare.projects.locations.datasets.fhirStores.fhir.delete(
       request
     );

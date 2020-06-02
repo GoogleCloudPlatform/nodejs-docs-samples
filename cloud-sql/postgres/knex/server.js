@@ -47,7 +47,7 @@ const logger = winston.createLogger({
 // [START cloud_sql_postgres_knex_create_tcp]
 const connectWithTcp = (config) => {
   // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(":")
+  const dbSocketAddr = process.env.DB_HOST.split(":") // e.g. '127.0.0.1:5432'
 
   // Establish a connection to the database
   return Knex({

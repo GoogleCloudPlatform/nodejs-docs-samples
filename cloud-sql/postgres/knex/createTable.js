@@ -17,8 +17,17 @@
 const Knex = require('knex');
 
 const createTable = async (config) => {
+  const socketPath = process.env.DB_SOCKET_PATH || "/cloudsql";
+  
   // Connect to the database
-  config.host = `/cloudsql/${config.connectionName}`;
+  if (config.dbHost){
+    const dbSocketAddr = config.dbHost.split(":");
+    config.host = dbSocketAddr[0];
+    config.port = dbSocketAddr[1];
+  } else {
+    config.host = `${socketPath}/${config.connectionName}`;
+  }
+  
   const knex = Knex({client: 'pg', connection: config});
 
   // Create the "votes" table
@@ -41,7 +50,7 @@ const createTable = async (config) => {
 
 require('yargs')
   .command(
-    '* <user> <password> <database> <connectionName>',
+    '* <user> <password> <database> <connectionName> [dbHost]',
     'Create a "votes" table',
     {},
     createTable

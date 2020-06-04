@@ -14,7 +14,7 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "gaxios": "^2.3.1"
+    "gaxios": "^3.0.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",

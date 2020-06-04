@@ -45,26 +45,30 @@ it('should send greetings', async () => {
     });
 });
 
-it('should display form', async () => {
-  await requestObj
-    .get('/submit')
-    .expect(200)
-    .expect((response) => {
-      assert.strictEqual(
-        response.text.includes('textarea name="message" placeholder="Message"'),
-        true
-      );
-    });
+describe('add_display_form', () => {
+  it('should display form', async () => {
+    await requestObj
+      .get('/submit')
+      .expect(200)
+      .expect((response) => {
+        assert.strictEqual(
+          response.text.includes('textarea name="message" placeholder="Message"'),
+          true
+        );
+      });
+  });
 });
 
-it('should record message', async () => {
-  await requestObj
-    .post('/submit', {
-      name: 'sample-user',
-      message: 'sample-message',
-    })
-    .expect(200)
-    .expect((response) => {
-      assert.strictEqual(response.text, 'Thanks for your message!');
-    });
+describe('add_post_handler enable_parser', () => {
+  it('should record message', async () => {
+    await requestObj
+      .post('/submit', {
+        name: 'sample-user',
+        message: 'sample-message',
+      })
+      .expect(200)
+      .expect((response) => {
+        assert.strictEqual(response.text, 'Thanks for your message!');
+      });
+  });
 });

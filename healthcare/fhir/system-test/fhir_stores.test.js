@@ -37,6 +37,7 @@ const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
+const version = 'STU3';
 
 const fhirFileName = 'fhir_data.ndjson';
 
@@ -62,7 +63,7 @@ before(async () => {
   console.log(`Topic ${topic.name} created.`);
   execSync(
     `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwdDatasets
+    {cwd: cwdDatasets}
   );
 });
 
@@ -78,15 +79,15 @@ after(async () => {
     console.log(`Topic ${topicName} deleted.`);
     execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      cwdDatasets
+      {cwd: cwdDatasets}
     );
   } catch (err) {} // Ignore error
 });
 
 it('should create a FHIR store', () => {
   const output = execSync(
-    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
-    cwd
+    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${version}`,
+    {cwd}
   );
   assert.ok(output.includes('Created FHIR store'));
 });
@@ -94,7 +95,7 @@ it('should create a FHIR store', () => {
 it('should get a FHIR store', () => {
   const output = execSync(
     `node getFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('name'));
 });
@@ -102,7 +103,7 @@ it('should get a FHIR store', () => {
 it('should list FHIR stores', () => {
   const output = execSync(
     `node listFhirStores.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('fhirStores'));
 });
@@ -110,7 +111,7 @@ it('should list FHIR stores', () => {
 it('should patch a FHIR store', () => {
   const output = execSync(
     `node patchFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${topicName}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Patched FHIR store'));
 });
@@ -118,7 +119,7 @@ it('should patch a FHIR store', () => {
 it('should import FHIR resources into a FHIR store from Cloud Storage', () => {
   const output = execSync(
     `node importFhirResources.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${gcsUri}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Import FHIR resources succeeded'));
 });
@@ -126,7 +127,7 @@ it('should import FHIR resources into a FHIR store from Cloud Storage', () => {
 it('should export FHIR resources from a FHIR store to Cloud Storage', () => {
   const output = execSync(
     `node exportFhirResources.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${gcsUri}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Exported FHIR resources successfully'));
 });
@@ -137,7 +138,7 @@ it('should create and get a FHIR store IAM policy', () => {
 
   let output = execSync(
     `node setFhirStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${localMember} ${localRole}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes, 'ETAG');
 
@@ -150,7 +151,7 @@ it('should create and get a FHIR store IAM policy', () => {
 it('should delete a FHIR store', () => {
   const output = execSync(
     `node deleteFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Deleted FHIR store'));
 });

@@ -45,23 +45,25 @@ after(async () => {
   }
 });
 
-it('should make a promise request', async () => {
-  const event = {
-    data: {
-      endpoint: 'https://example.com',
-    },
-  };
+describe('functions_background_promise', () => {
+  it('should make a promise request', async () => {
+    const event = {
+      data: {
+        endpoint: 'https://example.com',
+      },
+    };
 
-  const response = await request({
-    url: `${BASE_URL}/`,
-    method: 'POST',
-    data: event,
-    responseType: 'text',
-    retryConfig: {
-      httpMethodsToRetry: ['POST'],
-    },
+    const response = await request({
+      url: `${BASE_URL}/`,
+      method: 'POST',
+      data: event,
+      responseType: 'text',
+      retryConfig: {
+        httpMethodsToRetry: ['POST'],
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.ok(response.data.includes(`Example Domain`));
   });
-
-  assert.strictEqual(response.status, 200);
-  assert.ok(response.data.includes(`Example Domain`));
 });

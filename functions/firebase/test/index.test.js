@@ -202,3 +202,30 @@ describe('functions_firebase_remote_config', () => {
     assert.strictEqual(console.log.calledWith('Version: 1'), true);
   });
 });
+
+describe('functions_firebase_reactive', () => {
+  it('should capitalize original value', () => {
+    const sample = getSample();
+
+    const value = {
+      fields: {
+        original: {
+          stringValue: 'abc'
+        }
+      }
+    };
+
+    const event = {
+      resource: 'foo/documents/bar',
+      eventType: 'type',
+      data: {
+        value: value,
+      },
+    };
+
+    sample.program.makeUpperCase(event, context);
+
+    assert.strictEqual(console.log.calledWith('Replacing value: abc --> ABC'), true);
+    assert.strictEqual(sample.mocks.firestore.doc.calledWith('bar'), true);
+  });
+});

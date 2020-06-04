@@ -21,17 +21,5 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "supertest": "^4.0.2"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Hello Kubernetes!",
-        "args": [
-          "server.js"
-        ]
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

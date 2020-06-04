@@ -32,10 +32,13 @@ export DB_NAME="kokoro_ci"
 export DB_USER="kokoro_ci"
 export DB_PASS=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
 if [[ $SQL_CLIENT == 'pg' ]]; then
-	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
-else
-	export CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
+	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
+elif [[ $SQL_CLIENT == 'sqlserver' ]]; then
+	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-sqlserver-connection-name.txt)
+elif [[ $SQL_CLIENT == 'mysql' ]]; then
+	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
 fi
+
 
 # Configure Sendgrid variables
 export SENDGRID_SENDER="test@google.com"
@@ -59,6 +62,9 @@ export TRANSLATE_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_TOPIC=$FUNCTIONS_TOPIC
 export RESULT_BUCKET=$FUNCTIONS_BUCKET
 
+# functions/ocr (reuses some stuff from functions/translate)
+export TO_LANG="en,es"
+
 #  functions/imagemagick
 export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-imagick
 
@@ -72,7 +78,7 @@ export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
 # Activate mocha config
-export MOCHA_REPORTER_OUTPUT=sponge_log.xml
+export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
 export MOCHA_REPORTER=xunit
 pushd github/nodejs-docs-samples
 mv .kokoro/.mocharc.js .
@@ -87,6 +93,21 @@ npm install
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GCLOUD_PROJECT
+
+# Download and run the proxy if testing a Cloud SQL sample
+if [[ $SQL_CLIENT ]]; then
+	wget --quiet https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+	chmod +x cloud_sql_proxy	
+	if [[ $SQL_CLIENT == 'sqlserver' ]]; then
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
+	elif [[ $SQL_CLIENT == 'mysql' ]]; then
+		export DB_HOST=127.0.0.1:3306
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306 &>> cloud_sql_proxy.log &
+	else
+		export DB_HOST=127.0.0.1:5432
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432 &>> cloud_sql_proxy.log &
+	fi
+fi
 
 # If tests are running against master, configure Build Cop
 # to open issues on failures:

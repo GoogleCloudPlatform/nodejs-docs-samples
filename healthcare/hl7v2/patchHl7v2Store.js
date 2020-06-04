@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_patch_hl7v2_store]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const patchHl7v2Store = async () => {
     const auth = await google.auth.getClient({
@@ -42,11 +42,13 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {
       name,
-      updateMask: 'notificationConfig',
+      updateMask: 'notificationConfigs',
       resource: {
-        notificationConfig: {
-          pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
-        },
+        notificationConfigs: [
+          {
+            pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
+          }
+        ]
       },
     };
 

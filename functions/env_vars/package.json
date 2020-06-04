@@ -18,9 +18,5 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "sinon": "^9.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

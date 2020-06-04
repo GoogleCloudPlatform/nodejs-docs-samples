@@ -153,7 +153,10 @@ exports.uploadFile = (req, res) => {
     const writeStream = fs.createWriteStream(filepath);
     file.pipe(writeStream);
 
-    // File was processed by Busboy; wait for it to be written to disk.
+    // File was processed by Busboy; wait for it to be written.
+    // Note: GCF may not persist saved files across invocations.
+    // Persistent files must be kept in other locations
+    // (such as Cloud Storage buckets).
     const promise = new Promise((resolve, reject) => {
       file.on('end', () => {
         writeStream.end();
@@ -170,8 +173,8 @@ exports.uploadFile = (req, res) => {
     await Promise.all(fileWrites);
 
     // TODO(developer): Process saved files here
-    for (const file of uploads) {
-      fs.unlinkSync(file);
+    for (const file in uploads) {
+      fs.unlinkSync(uploads[file]);
     }
     res.send();
   });

@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_create_hl7v2_message]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
   const fs = require('fs');
   const util = require('util');
   const readFile = util.promisify(fs.readFile);

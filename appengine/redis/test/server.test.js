@@ -6,6 +6,8 @@ after(() => {
   process.exitCode(0);
 });
 
-it('should be listening', async () => {
-  await supertest(app).get('/').expect(200);
+describe('gae_flex_node_redis', () => {
+  it('should be listening', async () => {
+    await supertest(app).get('/').expect(200);
+  });
 });

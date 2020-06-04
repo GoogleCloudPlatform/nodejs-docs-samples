@@ -39,13 +39,6 @@ sysImports=$(echo $sysImports | sed -e "s/[^0-9a-zA-Z]*@/:@/g")
 allLibs=$(echo $allImports | egrep -s $CHECKED_PKG_NAME | sort | uniq)
 sysLibs=$(echo $sysImports | egrep -s $CHECKED_PKG_NAME | sort | uniq)
 
-# Remove whitelisted libraries
-for lib in "nodejs-repo-tools"
-do
-	allLibs=($(echo $allLibs | grep -v "$lib"))
-	sysLibs=($(echo $sysLibs | grep -v "$lib"))
-done
-
 # Check equality
 errCode=0
 for lib in $allLibs

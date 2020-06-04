@@ -90,3 +90,7 @@ describe('getOAuthToken tests', () => {
     });
   });
 });
+
+describe('generate_token retrieve_credentials save_token_to_firebase validate_token', () => {
+  // Whitelist these region tags with the region-tag enforcer
+});

@@ -16,15 +16,11 @@
   },
   "dependencies": {
     "@slack/events-api": "^2.3.0",
-    "googleapis": "^48.0.0"
+    "googleapis": "^52.0.0"
   },
   "devDependencies": {
     "mocha": "^7.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

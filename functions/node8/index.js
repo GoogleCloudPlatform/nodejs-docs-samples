@@ -91,6 +91,7 @@ exports.helloPubSub = (pubSubEvent, context) => {
     : 'World';
 
   console.log(`Hello, ${name}!`);
+  return;
 };
 // [END functions_helloworld_pubsub_node8]
 

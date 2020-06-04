@@ -26,14 +26,5 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "supertest": "^4.0.2"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Express.js + Mailjet on Google App Engine."
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

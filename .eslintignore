@@ -1,2 +1,6 @@
-**/node_modules/*
-appengine/parse-server/cloud/main.js
+**/node_modules
+**/coverage
+test/fixtures
+build/
+docs/
+protos/

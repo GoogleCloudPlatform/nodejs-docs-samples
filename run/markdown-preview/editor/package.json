@@ -16,7 +16,7 @@
   "scripts": {
     "e2e-test": "test/runner.sh mocha test/system.test.js --timeout=30000",
     "start": "node main.js",
-    "test": "mocha test/*.test.js --exit"
+    "test": "mocha test/main.test.js test/render.test.js --exit"
   },
   "dependencies": {
     "express": "^4.17.1",

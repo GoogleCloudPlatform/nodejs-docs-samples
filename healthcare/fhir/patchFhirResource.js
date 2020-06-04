@@ -31,6 +31,7 @@ function main(
     const auth = await google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
+    // TODO(developer): replace patchOptions with your desired JSON patch body
     const patchOptions = [{op: 'replace', path: '/active', value: false}];
     google.options({auth, headers: {'Content-Type': 'application/json-patch+json'}});
 

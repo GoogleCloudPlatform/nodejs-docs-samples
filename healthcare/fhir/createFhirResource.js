@@ -50,7 +50,7 @@ function main(
     // const resourceType = 'Patient';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
 
-    const request = {parent, type: 'Patient', requestBody: body};
+    const request = {parent, type: resourceType, requestBody: body};
     const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.create(
       request
     );

@@ -22,11 +22,10 @@ function main(
   fhirStoreId,
   bundleFile
 ) {
-  // [START healthcare_create_fhir_execute_bundle]
+  // [START healthcare_fhir_execute_bundle]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1');
   const fs = require('fs');
-  const bundle = JSON.parse(fs.readFileSync(bundleFile));
 
   async function executeFhirBundle() {
     const auth = await google.auth.getClient({
@@ -42,6 +41,8 @@ function main(
     // const fhirStoreId = 'my-fhir-store';
     // const bundleFile = 'bundle.json';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
+
+    const bundle = JSON.parse(fs.readFileSync(bundleFile));
 
     const request = {parent, requestBody: bundle};
     const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.executeBundle(

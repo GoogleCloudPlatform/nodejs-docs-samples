@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@opencensus/core": "^0.0.21",
-    "@opencensus/exporter-stackdriver": "^0.0.21"
+    "@opencensus/exporter-stackdriver": "^0.0.22"
   },
   "devDependencies": {
     "mocha": "^7.0.0"

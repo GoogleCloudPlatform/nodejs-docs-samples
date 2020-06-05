@@ -27,7 +27,6 @@ const main = (
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1');
   const fs = require('fs');
-  const binaryData = fs.createReadStream(dcmFile);
 
   const dicomWebStoreInstance = async () => {
     const auth = await google.auth.getClient({
@@ -49,6 +48,7 @@ const main = (
     // const dcmFile = 'file.dcm';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = `studies`;
+    const binaryData = fs.createReadStream(dcmFile);
     const request = {
       parent,
       dicomWebPath,

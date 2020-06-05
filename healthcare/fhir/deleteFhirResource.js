@@ -51,7 +51,7 @@ const main = (
     await healthcare.projects.locations.datasets.fhirStores.fhir.delete(
       request
     );
-    console.log(`Deleted FHIR resource ${resourceType}`);
+    console.log(`Deleted FHIR resource`);
   };
 
   deleteFhirResource();

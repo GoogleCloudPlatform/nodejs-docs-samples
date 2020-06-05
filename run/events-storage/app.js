@@ -11,7 +11,7 @@ app.use(express.json());
 // [START run_events_storage_handler]
 app.post('/', (req, res) => {
   if (!req.body) {
-    const msg = 'no Pub/Sub message received';
+    const msg = 'no message received';
     console.error(`error: ${msg}`);
     res.status(400).send(`Bad Request: ${msg}`);
     return;
@@ -23,12 +23,10 @@ app.post('/', (req, res) => {
     return;
   }
 
-  const pubSubMessage = req.body.message;
-  const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
-    : 'World';
-
-  console.log(`Hello ${name}!`);
+  console.log('--req.body');
+  console.log(req.body);
+  console.log('==req.body');
+  
   res.status(204).send();
 });
 

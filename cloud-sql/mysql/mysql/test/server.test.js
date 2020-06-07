@@ -14,25 +14,35 @@
 
 'use strict';
 
+const path = require('path');
 const request = require('supertest');
-const sinon = require('sinon');
 const assert = require('assert');
 
-// Stub out MySQL calls
-const stubMysql = sinon.stub(require('promise-mysql'));
-const poolStub = sinon.stub();
-const queryStub = sinon.stub();
-queryStub.withArgs(sinon.match('SELECT COUNT(vote_id)')).resolves([{count: 1}]);
-queryStub.withArgs(sinon.match('SELECT candidate, time_cast')).resolves([]);
-poolStub['query'] = queryStub;
-stubMysql.createPool.returns(poolStub);
+const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
-const server = require('../server.js');
+const server = require(SAMPLE_PATH);
 
-it('check index page', async () => {
-  const response = await request(server).get('/').timeout(3000);
-
-  assert.strictEqual(response.status, 200);
+after(() => {
+  server.close();
 });
 
-server.close();
+it('should display the default page', async () => {
+  await request(server)
+    .get('/')
+    .expect(200)
+    .expect((response) => {
+      assert.ok(response.text.includes('Tabs VS Spaces'));
+    });
+});
+
+it('should handle insert error', async () => {
+  const expectedResult = 'Invalid team specified';
+
+  await request(server)
+    .post('/')
+    .expect(400)
+    .expect((response) => {
+      assert.ok(response.text.includes(expectedResult));
+    });
+});
+

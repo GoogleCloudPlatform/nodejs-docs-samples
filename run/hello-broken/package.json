@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "e2e-test": "NAME=Cloud test/runner.sh mocha test/system.test.js --timeout=30000",
+    "test": "test/system.test.js --timeout=30000",
+    "e2e-test": "NAME=Cloud test/runner.sh echo \"xxxxxxxx\" mocha test/system.test.js --timeout=30000",
     "lint": "eslint '**/*.js'",
     "fix": "eslint --fix '**/*.js'"
   },

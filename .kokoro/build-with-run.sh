@@ -84,3 +84,5 @@ fi
 
 npm test
 npm run --if-present e2e-test
+
+exit $?

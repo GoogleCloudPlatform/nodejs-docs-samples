@@ -1,10 +1,10 @@
-// Copyright 2019 Google LLC
+// Copyright 2017 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     https://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,96 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
+// const path = require('path');
 // const assert = require('assert');
-// const request = require('got');
+// const {execSync} = require('child_process');
 
-// const get = (route, base_url) => {
-//   const {ID_TOKEN} = process.env;
-//   if (!ID_TOKEN) {
-//     throw Error('"ID_TOKEN" environment variable is required.');
-//   }
+// const cwd = path.join(__dirname, '..');
+// const cmd = 'node auth.js';
 
-//   return request(route, {
-//     baseUrl: base_url.trim(),
-//     headers: {
-//       Authorization: `Bearer ${ID_TOKEN.trim()}`,
-//     },
-//     throwHttpErrors: false,
-//   });
-// };
+// const {BUCKET_NAME} = process.env;
 
-describe('End-to-End Tests', () => {
-  // const {NAME} = process.env;
-  // if (!NAME) {
-  //   throw Error('"NAME" environment variable is required. For example: Cosmos');
-  // }
+before(() => {
+  assert(
+    process.env.GCLOUD_PROJECT,
+    `Must set GCLOUD_PROJECT environment variable!`
+  );
+  assert(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  );
+});
 
-  describe('Service relying on defaults', () => {
-    // const {BASE_URL} = process.env;
-    // if (!BASE_URL) {
-    //   throw Error(
-    //     '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
-    //   );
-    // }
+it('should load credentials implicitly', () => {
+  // const output = execSync(`${cmd} auth-cloud-implicit`, {cwd, shell: true});
+  // assert.strictEqual(output.includes(BUCKET_NAME), true);
+  assert(true);
+});
 
-    it('Broken resource fails on any request', async () => {
-      // const response = await get('/', BASE_URL);
-      // assert.strictEqual(
-      //   response.statusCode,
-      //   500,
-      //   'Internal service error not found'
-      // );
-    });
+it('should load credentials explicitly', () => {
+  // const project = process.env.GCLOUD_PROJECT;
+  // const keyfile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  // console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
+  // const output = execSync(
+  //   `${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`,
+  //   {cwd, shell: true}
+  // );
+  // assert.strictEqual(output.includes(BUCKET_NAME), true);
 
-  //   it('Fixed resource falls back to a default value', async () => {
-  //     const response = await get('/improved', BASE_URL);
-  //     assert.strictEqual(
-  //       response.statusCode,
-  //       200,
-  //       'Did not fallback to default as expected'
-  //     );
-  //     assert.strictEqual(
-  //       response.body,
-  //       `Hello World!`,
-  //       `Expected fallback "World" not found`
-  //     );
-  //   });
-  // });
+  assert(false);
 
-  // describe('Service with specified $NAME', () => {
-  //   const {BASE_URL_OVERRIDE} = process.env;
-  //   if (!BASE_URL_OVERRIDE) {
-  //     throw Error(
-  //       '"BASE_URL_OVERRIDE" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
-  //     );
-  //   }
-
-  //   it('Broken resource uses the NAME override', async () => {
-  //     const response = await get('/', BASE_URL_OVERRIDE);
-  //     assert.strictEqual(
-  //       response.statusCode,
-  //       200,
-  //       'Did not use the NAME override'
-  //     );
-  //     assert.strictEqual(
-  //       response.body,
-  //       `Hello ${NAME}!`,
-  //       `Expected override "${NAME}" not found`
-  //     );
-  //   });
-
-  //   it('Fixed resource uses the NAME override', async () => {
-  //     const response = await get('/improved', BASE_URL_OVERRIDE);
-  //     assert.strictEqual(
-  //       response.statusCode,
-  //       200,
-  //       'Did not fallback to default as expected'
-  //     );
-  //     assert.strictEqual(
-  //       response.body,
-  //       `Hello ${NAME}!`,
-  //       `Expected override "${NAME}" not found`
-  //     );
-  //   });
-  });
 });

@@ -14,6 +14,8 @@
 
 'use strict';
 
+const assert = require('assert');
+
 // const path = require('path');
 // const assert = require('assert');
 // const {execSync} = require('child_process');
@@ -24,14 +26,14 @@
 // const {BUCKET_NAME} = process.env;
 
 before(() => {
-  assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
-  );
+  // assert(
+  //   process.env.GCLOUD_PROJECT,
+  //   `Must set GCLOUD_PROJECT environment variable!`
+  // );
+  // assert(
+  //   process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  //   `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+  // );
 });
 
 it('should load credentials implicitly', () => {

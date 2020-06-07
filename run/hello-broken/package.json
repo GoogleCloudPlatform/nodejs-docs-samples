@@ -1,23 +1,25 @@
 {
-  "name": "hello-broken",
-  "description": "Broken Cloud Run service for troubleshooting practice",
-  "version": "1.0.0",
+  "name": "nodejs-docs-samples-auth",
+  "version": "0.0.1",
   "private": true,
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "mocha test/system.test.js --timeout=30000",
-    "e2e-test": "NAME=Cloud test/runner.sh echo \"xxxxxxxx\" mocha test/system.test.js --timeout=30000",
-    "lint": "eslint '**/*.js'",
-    "fix": "eslint --fix '**/*.js'"
-  },
-  "author": "Google LLC",
   "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "npm -- run system-test",
+    "system-test": "mocha system-test/*.test.js --timeout=30000"
+  },
   "dependencies": {
-    "express": "^4.17.1"
+    "@google-cloud/storage": "^5.0.0",
+    "yargs": "^15.0.0"
   },
   "devDependencies": {
-    "got": "^11.0.0",
     "mocha": "^7.0.0"
   }
 }

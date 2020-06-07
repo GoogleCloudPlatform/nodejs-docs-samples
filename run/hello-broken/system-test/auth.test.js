@@ -47,5 +47,5 @@ it('should load credentials explicitly', () => {
     `${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`,
     {cwd, shell: true}
   );
-  assert.strictEqual(output.includes(BUCKET_NAME), true);
+  assert.strictEqual(output.includes(BUCKET_NAME), false);
 });

@@ -35,9 +35,3 @@ export UPSTREAM_CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${UPSTREAM_S
 set -x
 gcloud builds submit --tag="${UPSTREAM_CONTAINER_IMAGE}"
 set +x
-
-# Register post-test cleanup.
-function cleanup {
-  gcloud --quiet container images delete "${UPSTREAM_CONTAINER_IMAGE}"
-}
-trap cleanup EXIT HUP

@@ -56,6 +56,8 @@ function cleanup {
     --platform=managed \
     --region="${REGION:-us-central1}" \
     --quiet
+  gcloud container images delete "${UPSTREAM_CONTAINER_IMAGE}" \
+    --quiet 
 }
 trap cleanup EXIT
 

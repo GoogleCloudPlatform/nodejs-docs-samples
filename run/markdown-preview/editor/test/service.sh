@@ -34,4 +34,4 @@ export UPSTREAM_CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${UPSTREAM_S
 # Build the service
 set -x
 gcloud builds submit --tag="${UPSTREAM_CONTAINER_IMAGE}"
-set +x
+echo "$UPSTREAM_SERVICE_NAME"

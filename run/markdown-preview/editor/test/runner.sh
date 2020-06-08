@@ -25,7 +25,7 @@ requireEnv SERVICE_NAME
 echo '---'
 
 # Build the Renderer service.
-test/service.sh
+export UPSTREAM_SERVICE_NAME=$(test/service.sh)
 requireEnv UPSTREAM_SERVICE_NAME
 
 # Deploy the Renderer service.

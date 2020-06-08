@@ -15,18 +15,24 @@
 'use strict';
 
 const assert = require('assert');
+const path = require('path');
+const app = require(path.join(__dirname, '../', 'app.js'));
 const puppeteer = require('puppeteer');
 /* global document */
 
 let browser, browserPage;
 
 before(async () => {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {});
+
   browser = await puppeteer.launch();
   browserPage = await browser.newPage();
 });
 
 after(async () => {
   await browser.close();
+  await app.close();
 });
 
 describe('appengine_websockets_app', () => {

@@ -37,6 +37,8 @@ Run the following command to install the library dependencies for Node.js:
 ## FHIR resources
 
     Commands:
+        createFhirResource.js <projectId> <cloudRegion> <datasetId>           Creates a FHIR resource.
+        <fhirStoreId> <resourceType>
         deleteFhirResource.js <projectId> <cloudRegion> <datasetId>           Deletes a FHIR resource.
         <fhirStoreId> <resourceType> <resourceId>
         deleteFhirResourcePurge.js <projectId> <cloudRegion> <datasetId>      Deletes all historical versions of a FHIR resource.
@@ -57,14 +59,11 @@ Run the following command to install the library dependencies for Node.js:
         <fhirStoreId> <resourceType>
         updateFhirResource.js <projectId> <cloudRegion> <datasetId>           Updates the entire contents of a resource.
         <fhirStoreId> <resourceType> <resourceId>
+        patchFhirResource.js <projectId> <cloudRegion> <datasetId>            Updates part of a resource.
+        <fhirStoreId> <resourceType> <resourceId>
+        executeFhirBundle.js <projectId> <cloudRegion> <datasetId>            Executes all the requests in the given Bundle.
+        <fhirStoreId> <bundleFile>
 
-    Commands:
-        fhir_resources.js createResource <datasetId> <fhirStoreId>    Creates a new resource in a FHIR store.
-        <resourceType>
-        fhir_resources.js patchResource <datasetId> <fhirStoreId>     Patches an existing resource in a FHIR store.
-        <resourceType> <resourceId>
-        fhir_resources.js executeBundle <datasetId> <fhirStoreId>     Executes all the requests in the given Bundle.
-        <bundleFile>
 
     Options:
     --version             Show version number                                                                    [boolean]

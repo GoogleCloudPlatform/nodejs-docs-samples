@@ -38,6 +38,7 @@ const main = (
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
     // const fhirStoreId = 'my-fhir-store';
+    // const resourceType = 'Patient';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir`;
     const request = {parent, resourceType};
 

@@ -47,7 +47,7 @@ const main = (
     await healthcare.projects.locations.datasets.fhirStores.fhir.ResourcePurge(
       request
     );
-    console.log(`Deleted all historical versions of ${resourceType} resource`);
+    console.log(`Deleted all historical versions of resource`);
   };
 
   deleteFhirResourcePurge();

@@ -34,7 +34,6 @@ const main = (
     });
     google.options({
       auth,
-      data: {resourceType: resourceType, id: resourceId, active: true},
       headers: {'Content-Type': 'application/fhir+json'},
     });
 
@@ -46,7 +45,8 @@ const main = (
     // const resourceType = 'Patient';
     // const resourceId = '16e8a860-33b3-49be-9b03-de979feed14a';
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
-    const request = {name};
+    const body = {resourceType: resourceType, id: resourceId, active: true};
+    const request = {name, requestBody: body};
 
     const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.update(
       request

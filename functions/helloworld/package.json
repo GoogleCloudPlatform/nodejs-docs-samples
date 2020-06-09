@@ -17,7 +17,7 @@
     "test": "npm run unit-test"
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "^4.0.0",
+    "@google-cloud/debug-agent": "^5.0.0",
     "escape-html": "^1.0.3",
     "pug": "^3.0.0",
     "supertest": "^4.0.2"

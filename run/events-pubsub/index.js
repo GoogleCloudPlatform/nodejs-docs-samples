@@ -9,4 +9,4 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () =>
   console.log(`nodejs-run-events-pubsub listening on port ${PORT}`)
 );
-// [END run_evennts_pubsub_server]
+// [END run_events_pubsub_server]

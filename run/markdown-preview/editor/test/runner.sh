@@ -29,7 +29,8 @@ export UPSTREAM_CONTAINER_IMAGE=$(test/service.sh)
 requireEnv UPSTREAM_CONTAINER_IMAGE
 
 # Assign the Renderer service container image.
-export UPSTREAM_SERVICE_NAME=$(test/service-name.sh)
+SUFFIX=${KOKORO_BUILD_ID}
+export UPSTREAM_SERVICE_NAME="renderer-${SUFFIX}"
 requireEnv UPSTREAM_SERVICE_NAME
 
 # Deploy the Renderer service.

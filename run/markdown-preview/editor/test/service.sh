@@ -24,10 +24,9 @@ npm install
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently.
 export UPSTREAM_SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
-export UPSTREAM_SAMPLE_NAME="renderer"
 
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
-export UPSTREAM_CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${UPSTREAM_SAMPLE_NAME}:${UPSTREAM_SAMPLE_VERSION}"
+export UPSTREAM_CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-renderer:${UPSTREAM_SAMPLE_VERSION}"
 
 # Build the service
 set -x

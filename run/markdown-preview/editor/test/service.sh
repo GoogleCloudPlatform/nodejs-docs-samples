@@ -27,11 +27,9 @@ export UPSTREAM_SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 export UPSTREAM_SAMPLE_NAME="renderer"
 
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
-SUFFIX=${KOKORO_BUILD_ID}
-export UPSTREAM_SERVICE_NAME="${UPSTREAM_SAMPLE_NAME}-${SUFFIX}"
 export UPSTREAM_CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${UPSTREAM_SAMPLE_NAME}:${UPSTREAM_SAMPLE_VERSION}"
 
 # Build the service
 set -x
 gcloud builds submit --tag="${UPSTREAM_CONTAINER_IMAGE}"
-echo "$UPSTREAM_SERVICE_NAME"
+echo "$UPSTREAM_CONTAINER_IMAGE"

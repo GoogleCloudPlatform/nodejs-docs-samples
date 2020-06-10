@@ -24,8 +24,21 @@ requireEnv SERVICE_NAME
 # The markdown-preview sample needs to be tested with both the editor and renderer services deployed.
 echo '---'
 
-# Build the Renderer service.
-export UPSTREAM_CONTAINER_IMAGE=$(test/service.sh)
+pushd ../renderer
+
+# Version is in the format <PR#>-<GIT COMMIT SHA>.
+# Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
+# to run them concurrently.
+export UPSTREAM_SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
+export UPSTREAM_CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-renderer:${UPSTREAM_SAMPLE_VERSION}"
+
+# Build the Renderer service
+set -x
+gcloud builds submit --tag="${UPSTREAM_CONTAINER_IMAGE}"
+set +x
+
+pushd ../editor
+
 requireEnv UPSTREAM_CONTAINER_IMAGE
 
 # Assign the Renderer service container image.

@@ -73,7 +73,7 @@ after(() => {
       `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
       {cwd}
     );
-    execSync(`node deleteDataset.js ${datasetId}`, {cwd: cwdDatasets});
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {cwd: cwdDatasets});
   } catch (err) {} // Ignore error
 });
 

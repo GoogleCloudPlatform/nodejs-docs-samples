@@ -57,6 +57,7 @@ FLAGS="--allow-unauthenticated --set-env-vars EDITOR_UPSTREAM_RENDER_URL=$EDITOR
 
 # Assign the Editor service url.
 export BASE_URL=$(SERVICE_NAME=${SERVICE_NAME} test/url.sh)
+test -z "$BASE_URL" && echo "BASE_URL value is empty" && exit 1
 
 echo
 echo '---'

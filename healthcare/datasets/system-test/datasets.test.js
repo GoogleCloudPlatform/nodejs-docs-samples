@@ -98,9 +98,11 @@ it('should create and get a dataset IAM policy', () => {
   assert.ok(output.includes('dpebot'));
 });
 
+/*
 it('should delete a dataset', () => {
   const output = execSync(
     `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
   );
   assert.ok(output.includes('Deleted dataset'));
 });
+*/

@@ -64,6 +64,8 @@ before(async () => {
   // Create a Cloud Storage bucket to be used for testing.
   await storage.createBucket(bucketName);
   console.log(`Bucket ${bucketName} created.`);
+  // Upload the FHIR resource file so that there's something to
+  // use for the importFhirResources test.
   await storage.bucket(bucketName).upload(fhirResourceFile);
 
   // Create a Pub/Sub topic to be used for testing.

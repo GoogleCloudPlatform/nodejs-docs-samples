@@ -41,6 +41,15 @@ const studyUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.105';
 const seriesUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.108';
 const instanceUid = '1.2.840.113619.2.176.3596.3364818.7271.1259708501.876';
 
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
+
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,

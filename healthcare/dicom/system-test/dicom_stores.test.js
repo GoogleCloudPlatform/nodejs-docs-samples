@@ -41,6 +41,14 @@ const dcmFileName = 'IM-0002-0001-JPEG-BASELINE.dcm';
 
 const resourceFile = `resources/${dcmFileName}`;
 const gcsUri = `${bucketName}/${dcmFileName}`;
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
 
 before(async () => {
   assert(

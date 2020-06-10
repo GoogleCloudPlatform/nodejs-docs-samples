@@ -33,7 +33,7 @@ const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
+const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );

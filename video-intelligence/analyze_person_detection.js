@@ -89,8 +89,8 @@ function main(path = 'YOUR_LOCAL_FILE') {
         // of the person detected.
         const [firstTimestampedObject] = timestampedObjects;
 
-        // Attributes include unique pieces of clothing,
-        // poses, or hair color.
+        // Attributes include unique pieces of clothing, poses (i.e., body
+        // landmarks) of the person detected.
         for (const {name, value} of firstTimestampedObject.attributes) {
           console.log(`\tAttribute: ${name}; Value: ${value}`);
         }

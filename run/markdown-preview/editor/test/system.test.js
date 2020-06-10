@@ -17,7 +17,7 @@ const got = require('got');
 
 describe('End-to-End Tests', () => {
   describe('Service-to-service authenticated request', () => {
-    const {BASE_URL} = process.env.BASE_URL;
+    const {BASE_URL} = process.env;
     if (!BASE_URL) {
       throw Error(
         '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'

@@ -79,8 +79,7 @@ function main(gcsUri = 'YOUR_STORAGE_URI') {
         const [firstTimestapedObject] = timestampedObjects;
 
         for (const {name} of firstTimestapedObject.attributes) {
-          // Attributes include unique pieces of clothing, like glasses,
-          // poses, or hair color.
+          // Attributes include 'glasses', 'headwear', 'smiling'.
           console.log(`\tAttribute: ${name}; `);
         }
       }

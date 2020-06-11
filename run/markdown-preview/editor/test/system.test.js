@@ -23,6 +23,7 @@ describe('End-to-End Tests', () => {
         '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
       );
     };
+    console.log(`BASE_URL environment variable declared with value ${BASE_URL}`);
 
     it('Can successfully make a request', async () => {
       const options = {

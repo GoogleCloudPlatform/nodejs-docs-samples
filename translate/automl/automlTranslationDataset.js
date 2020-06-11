@@ -291,7 +291,7 @@ require('yargs')
       description: 'The target language to be translated to',
     },
   })
-  .command('createDataset', 'creates a new Dataset', {}, opts =>
+  .command('create-dataset', 'creates a new Dataset', {}, opts =>
     createDataset(
       opts.projectId,
       opts.computeRegion,

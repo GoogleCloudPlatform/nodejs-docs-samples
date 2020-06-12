@@ -28,20 +28,22 @@ const authCloudImplicit = async () => {
   // the client, the client library will look for credentials in the
   // environment.
   const storage = new Storage();
+  // Makes an authenticated API request.
+  async function listBuckets() {
+    try {
+      const results = await storage.getBuckets();
 
-  try {
-    // Makes an authenticated API request.
-    const results = await storage.getBuckets();
+      const [buckets] = results;
 
-    const [buckets] = results;
-
-    console.log('Buckets:');
-    buckets.forEach((bucket) => {
-      console.log(bucket.name);
-    });
-  } catch (err) {
-    console.error('ERROR:', err);
+      console.log('Buckets:');
+      buckets.forEach((bucket) => {
+        console.log(bucket.name);
+      });
+    } catch (err) {
+      console.error('ERROR:', err);
+    }
   }
+  listBuckets();
   // [END auth_cloud_implicit]
 };
 
@@ -58,16 +60,19 @@ const authCloudExplicit = async ({projectId, keyFilename}) => {
   const storage = new Storage({projectId, keyFilename});
 
   // Makes an authenticated API request.
-  try {
-    const [buckets] = await storage.getBuckets();
+  async function listBuckets() {
+    try {
+      const [buckets] = await storage.getBuckets();
 
-    console.log('Buckets:');
-    buckets.forEach((bucket) => {
-      console.log(bucket.name);
-    });
-  } catch (err) {
-    console.error('ERROR:', err);
+      console.log('Buckets:');
+      buckets.forEach((bucket) => {
+        console.log(bucket.name);
+      });
+    } catch (err) {
+      console.error('ERROR:', err);
+    }
   }
+  listBuckets();
   // [END auth_cloud_explicit]
 };
 

@@ -17,17 +17,24 @@ const got = require('got');
 
 describe('End-to-End Tests', () => {
   describe('Service-to-service authenticated request', () => {
+    const {ID_TOKEN} = process.env;
+    if (!ID_TOKEN) {
+      throw Error('"ID_TOKEN" environment variable is required.');
+    }
+
     const {BASE_URL} = process.env;
     if (!BASE_URL) {
       throw Error(
         '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
       );
     };
-    console.log(`BASE_URL environment variable declared with value ${BASE_URL}`);
 
     it('Can successfully make a request', async () => {
       const options = {
-        prefixUrl: BASE_URL.trim()
+        prefixUrl: BASE_URL.trim(),
+        headers: {
+          Authorization: `Bearer ${ID_TOKEN.trim()}`
+        }
       };
       const response = await got('/', options);
       assert.strictEqual(response.statusCode, 200);
@@ -36,6 +43,9 @@ describe('End-to-End Tests', () => {
     it('Can successfully make a request to the Renderer', async () => {
       const options = { 
         prefixUrl: BASE_URL.trim(),
+        headers: {
+          Authorization: `Bearer ${ID_TOKEN.trim()}`
+        },
         method: 'POST',
         json:  {
           "data": "**markdown**"

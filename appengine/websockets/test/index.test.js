@@ -16,7 +16,7 @@
 
 const assert = require('assert');
 const path = require('path');
-const app = require(path.join(__dirname, '../', 'app.js'));
+const app = require(path.join(path.dirname(__dirname), 'app.js'));
 const puppeteer = require('puppeteer');
 /* global document */
 

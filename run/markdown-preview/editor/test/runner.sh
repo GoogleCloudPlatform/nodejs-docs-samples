@@ -53,7 +53,7 @@ FLAGS="--no-allow-unauthenticated" SERVICE_NAME=${UPSTREAM_SERVICE_NAME} CONTAIN
 export EDITOR_UPSTREAM_RENDER_URL=$(SERVICE_NAME=${UPSTREAM_SERVICE_NAME} test/url.sh)
 
 # Deploy the Editor service.
-FLAGS="--allow-unauthenticated --set-env-vars EDITOR_UPSTREAM_RENDER_URL=$EDITOR_UPSTREAM_RENDER_URL" test/deploy.sh
+FLAGS="--set-env-vars EDITOR_UPSTREAM_RENDER_URL=$EDITOR_UPSTREAM_RENDER_URL" test/deploy.sh
 
 # Assign the Editor service url.
 export BASE_URL=$(SERVICE_NAME=${SERVICE_NAME} test/url.sh)
@@ -61,6 +61,7 @@ test -z "$BASE_URL" && echo "BASE_URL value is empty" && exit 1
 
 # Assign an ID token for the Editor service.
 export ID_TOKEN=$(gcloud auth print-identity-token)
+test -z "$ID_TOKEN" && echo "ID_TOKEN value is empty" && exit 1
 
 echo
 echo '---'

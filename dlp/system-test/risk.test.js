@@ -46,12 +46,34 @@ const pubsub = new PubSub();
 describe('risk', () => {
   // Create new custom topic/subscription
   let topic, subscription;
-  const topicName = `dlp-risk-topic-${uuid.v4()}`;
-  const subscriptionName = `dlp-risk-subscription-${uuid.v4()}`;
+  const topicName = `dlp-risk-topic-${uuid.v4()}-${Date.now()}`;
+  const subscriptionName = `dlp-risk-subscription-${uuid.v4()}-${Date.now()}`;
   before(async () => {
     [topic] = await pubsub.createTopic(topicName);
     [subscription] = await topic.createSubscription(subscriptionName);
+    await deleteOldTopics();
   });
+
+  async function deleteOldTopics() {
+    const [topics] = await pubsub.getTopics();
+    const now = Date.now();
+    const TEN_HOURS_MS = 1000 * 60 * 60 * 10;
+    for (const topic of topics) {
+      const created = Number(topic.name.split('-').pop());
+      if (
+        topic.name.includes('dlp-risk-topic') &&
+        now - created > TEN_HOURS_MS
+      ) {
+        const [subscriptions] = await topic.getSubscriptions();
+        for (const subscription of subscriptions) {
+          console.info(`deleting ${subscription.name}`);
+          await subscription.delete();
+        }
+        console.info(`deleting ${topic.name}`);
+        await topic.delete();
+      }
+    }
+  }
 
   // Delete custom topic/subscription
   after(async () => {
@@ -64,7 +86,6 @@ describe('risk', () => {
     const output = execSync(
       `${cmd} numerical ${dataset} harmful ${numericField} ${topicName} ${subscriptionName} -p ${testProjectId}`
     );
-    console.info(output);
     assert.match(output, /Value at 0% quantile:/);
     assert.match(output, /Value at \d+% quantile:/);
   });

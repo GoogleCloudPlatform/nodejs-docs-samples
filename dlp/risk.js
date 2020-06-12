@@ -97,10 +97,14 @@ async function numericalRiskAnalysis(
     const subscription = await topicResponse.subscription(subscriptionId);
     const [jobsResponse] = await dlp.createDlpJob(request);
     const jobName = jobsResponse.name;
+    const jobNameSuffix = jobName.split('/').pop();
     // Watch the Pub/Sub topic until the DLP job finishes
     await new Promise((resolve, reject) => {
       const messageHandler = message => {
-        if (message.attributes && message.attributes.DlpJobName === jobName) {
+        if (
+          message.attributes &&
+          message.attributes.DlpJobName.includes(jobNameSuffix)
+        ) {
           message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
@@ -232,10 +236,14 @@ async function categoricalRiskAnalysis(
     const subscription = await topicResponse.subscription(subscriptionId);
     const [jobsResponse] = await dlp.createDlpJob(request);
     const jobName = jobsResponse.name;
+    const jobNameSuffix = jobName.split('/').pop();
     // Watch the Pub/Sub topic until the DLP job finishes
     await new Promise((resolve, reject) => {
       const messageHandler = message => {
-        if (message.attributes && message.attributes.DlpJobName === jobName) {
+        if (
+          message.attributes &&
+          message.attributes.DlpJobName.includes(jobNameSuffix)
+        ) {
           message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
@@ -366,10 +374,14 @@ async function kAnonymityAnalysis(
     const subscription = await topicResponse.subscription(subscriptionId);
     const [jobsResponse] = await dlp.createDlpJob(request);
     const jobName = jobsResponse.name;
+    const jobNameSuffix = jobName.split('/').pop();
     // Watch the Pub/Sub topic until the DLP job finishes
     await new Promise((resolve, reject) => {
       const messageHandler = message => {
-        if (message.attributes && message.attributes.DlpJobName === jobName) {
+        if (
+          message.attributes &&
+          message.attributes.DlpJobName.includes(jobNameSuffix)
+        ) {
           message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
@@ -501,10 +513,14 @@ async function lDiversityAnalysis(
     const subscription = await topicResponse.subscription(subscriptionId);
     const [jobsResponse] = await dlp.createDlpJob(request);
     const jobName = jobsResponse.name;
+    const jobNameSuffix = jobName.split('/').pop();
     // Watch the Pub/Sub topic until the DLP job finishes
     await new Promise((resolve, reject) => {
       const messageHandler = message => {
-        if (message.attributes && message.attributes.DlpJobName === jobName) {
+        if (
+          message.attributes &&
+          message.attributes.DlpJobName.includes(jobNameSuffix)
+        ) {
           message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
@@ -643,10 +659,14 @@ async function kMapEstimationAnalysis(
     const subscription = await topicResponse.subscription(subscriptionId);
     const [jobsResponse] = await dlp.createDlpJob(request);
     const jobName = jobsResponse.name;
+    const jobNameSuffix = jobName.split('/').pop();
     // Watch the Pub/Sub topic until the DLP job finishes
     await new Promise((resolve, reject) => {
       const messageHandler = message => {
-        if (message.attributes && message.attributes.DlpJobName === jobName) {
+        if (
+          message.attributes &&
+          message.attributes.DlpJobName.includes(jobNameSuffix)
+        ) {
           message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);

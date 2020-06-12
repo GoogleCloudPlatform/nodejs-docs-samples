@@ -17,6 +17,7 @@
 const {assert} = require('chai');
 const {describe, it, before} = require('mocha');
 const cp = require('child_process');
+const DLP = require('@google-cloud/dlp');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -65,7 +66,27 @@ describe('jobs', () => {
   let testJobName;
   before(async () => {
     testJobName = await createTestJob();
+    await deleteStaleJobs();
   });
+
+  async function deleteStaleJobs() {
+    const dlp = new DLP.DlpServiceClient();
+    const request = {
+      parent: dlp.projectPath(testCallingProjectId),
+      filter: 'state=DONE',
+      type: 'RISK_ANALYSIS_JOB',
+    };
+    const [jobs] = await dlp.listDlpJobs(request);
+    for (const job of jobs) {
+      const TEN_HOURS_MS = 1000 * 60 * 60 * 10;
+      const created = Number(job.createTime.seconds) * 1000;
+      const now = Date.now();
+      if (now - created > TEN_HOURS_MS) {
+        console.info(`delete ${job.name}`);
+        await dlp.deleteDlpJob({name: job.name});
+      }
+    }
+  }
 
   // dlp_list_jobs
   it('should list jobs', () => {

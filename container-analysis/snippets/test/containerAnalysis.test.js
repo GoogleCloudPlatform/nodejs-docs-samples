@@ -239,7 +239,12 @@ describe('Note tests', () => {
   it('should delete note', () => {
     const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
     assert.include(output, `Note ${formattedNoteName} deleted.`);
-  });
+    // Sometimes the delete note test is failing with the error:
+    // Error: 5 NOT_FOUND: note with ID "test-note-${uuid}" for project
+    // ${projectId} does not exist.
+    // Attempting to work around this issue by retrying a few times.
+    // DO NOT MERGE.  If this works, we should submit an upstream bug.
+  }).retries(3);
 });
 
 describe('polling', () => {

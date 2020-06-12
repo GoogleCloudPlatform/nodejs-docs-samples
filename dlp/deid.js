@@ -402,6 +402,61 @@ async function reidentifyWithFpe(
   // [END dlp_reidentify_fpe]
 }
 
+async function deidentifyWithReplacement(
+  callingProjectId,
+  string,
+  replacement
+) {
+  // [START dlp_deidentify_replacement]
+  // Imports the Google Cloud Data Loss Prevention library
+  const DLP = require('@google-cloud/dlp');
+
+  // Instantiates a client
+  const dlp = new DLP.DlpServiceClient();
+
+  // The project ID to run the API call under
+  // const callingProjectId = process.env.GCLOUD_PROJECT;
+
+  // The string to deidentify
+  // const string = 'My SSN is 372819127';
+
+  // The string to replace sensitive information with
+  // const replacement = "[REDACTED]"
+
+  // Construct deidentification request
+  const item = {value: string};
+  const request = {
+    parent: dlp.projectPath(callingProjectId),
+    deidentifyConfig: {
+      infoTypeTransformations: {
+        transformations: [
+          {
+            primitiveTransformation: {
+              replaceConfig: {
+                newValue: {
+                  stringValue: replacement,
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+    item: item,
+  };
+
+  try {
+    // Run deidentification request
+    const [response] = await dlp.deidentifyContent(request);
+    const deidentifiedItem = response.item;
+    console.log(deidentifiedItem.value);
+  } catch (err) {
+    console.log(`Error in deidentifyWithReplacement: ${err.message || err}`);
+  }
+
+  // [END dlp_deidentify_replacement]
+}
+
 const cli = require('yargs')
   .demand(1)
   .command(
@@ -517,6 +572,17 @@ const cli = require('yargs')
         opts.contextFieldId,
         opts.wrappedKey,
         opts.keyName
+      ).catch(console.log)
+  )
+  .command(
+    'deidReplace <string> <replacement>',
+    'Deidentify sensitive data in a string by replacing it with a given replacement string.',
+    {},
+    opts =>
+      deidentifyWithReplacement(
+        opts.callingProjectId,
+        opts.string,
+        opts.replacement
       ).catch(console.log)
   )
   .option('c', {

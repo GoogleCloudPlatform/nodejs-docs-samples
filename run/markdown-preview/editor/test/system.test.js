@@ -34,7 +34,9 @@ describe('End-to-End Tests', () => {
         prefixUrl: BASE_URL.trim(),
         headers: {
           Authorization: `Bearer ${ID_TOKEN.trim()}`
-        }
+        },
+        timeout: 3000,
+        retry: 1
       };
       const response = await got('/', options);
       assert.strictEqual(response.statusCode, 200);
@@ -49,7 +51,9 @@ describe('End-to-End Tests', () => {
         method: 'POST',
         json:  {
           "data": "**markdown**"
-        }
+        },
+        timeout: 3000,
+        retry: 1
       };
       const response = await got('/render', options);
       assert.strictEqual(response.statusCode, 200);

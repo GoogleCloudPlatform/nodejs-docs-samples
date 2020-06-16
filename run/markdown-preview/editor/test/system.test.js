@@ -35,7 +35,6 @@ describe('End-to-End Tests', () => {
         headers: {
           Authorization: `Bearer ${ID_TOKEN.trim()}`
         },
-        timeout: 3000,
         retry: 1
       };
       const response = await got('/', options);

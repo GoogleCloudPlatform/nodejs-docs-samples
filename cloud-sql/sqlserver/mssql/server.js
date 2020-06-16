@@ -175,7 +175,7 @@ app.post('/', async (req, res, next) => {
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
-    res.status(400).send('Invalid team specified.').end();
+    return res.status(400).send('Invalid team specified.').end();
   }
 
   // [START cloud_sql_server_mssql_connection]
@@ -199,7 +199,7 @@ app.post('/', async (req, res, next) => {
     // [START_EXCLUDE]
 
     logger.error(err);
-    res
+    return res
       .status(500)
       .send(
         'Unable to successfully cast vote! Please check the application logs for more details.'

@@ -18,6 +18,7 @@ const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
 const {TranslationServiceClient} = require('@google-cloud/translate').v3beta1;
 const cp = require('child_process');
+const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -26,7 +27,7 @@ const REGION_TAG = 'translate_list_glossary_beta';
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const glossaryId = 'test-glossary';
+  const glossaryId = `test-glossary_${uuid.v4()}`;
 
   before(async () => {
     // Add a glossary to be deleted

@@ -52,7 +52,6 @@ describe('End-to-End Tests', () => {
         json:  {
           "data": "**markdown**"
         },
-        timeout: 3000,
         retry: 1
       };
       const response = await got('/render', options);

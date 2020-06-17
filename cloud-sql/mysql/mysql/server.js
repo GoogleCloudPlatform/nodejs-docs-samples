@@ -41,20 +41,43 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
-// [START cloud_sql_mysql_mysql_create]
-const createPool = async () => {
+// [START cloud_sql_mysql_mysql_create_tcp]
+const createTcpPool = async (config) => {
+  // Extract host and port from socket address
+  const dbSocketAddr = process.env.DB_HOST.split(":")
+
+  // Establish a connection to the database
+  return await mysql.createPool({
+    user: process.env.DB_USER, // e.g. 'my-db-user'
+    password: process.env.DB_PASS, // e.g. 'my-db-password'
+    database: process.env.DB_NAME, // e.g. 'my-database'
+    host: dbSocketAddr[0], // e.g. '127.0.0.1'
+    port: dbSocketAddr[1], // e.g. '3306'
+    // ... Specify additional properties here.
+    ...config
+  });
+}
+// [END cloud_sql_mysql_mysql_create_tcp]
+
+// [START cloud_sql_mysql_mysql_create_socket]
+const createUnixSocketPool = async (config) => {
+  const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
+
+  // Establish a connection to the database
   return await mysql.createPool({
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
     // If connecting via unix domain socket, specify the path
-    socketPath: `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
-    // If connecting via TCP, enter the IP and port instead
-    // host: 'localhost',
-    // port: 3306,
+    socketPath: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
+    // Specify additional properties here.
+    ...config
+  });
+}
+// [END cloud_sql_mysql_mysql_create_socket]
 
-    //[START_EXCLUDE]
-
+const createPool = async () => {
+  const config = {
     // [START cloud_sql_mysql_mysql_limit]
     // 'connectionLimit' is the maximum number of connections the pool is allowed
     // to keep at once.
@@ -81,9 +104,13 @@ const createPool = async () => {
     // The mysql module automatically uses exponential delays between failed
     // connection attempts.
     // [END cloud_sql_mysql_mysql_backoff]
-
-    //[END_EXCLUDE]
-  });
+  }
+  if (process.env.DB_HOST) {
+    return await createTcpPool(config);
+  } else {
+    return await createUnixSocketPool(config);
+  }
+    
 };
 // [END cloud_sql_mysql_mysql_create]
 
@@ -165,7 +192,7 @@ app.post('/', async (req, res) => {
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
-    res.status(400).send('Invalid team specified.').end();
+    return res.status(400).send('Invalid team specified.').end();
   }
 
   // [START cloud_sql_mysql_mysql_connection]
@@ -179,7 +206,7 @@ app.post('/', async (req, res) => {
     // involve retrying or adjusting parameters depending on the situation.
     // [START_EXCLUDE]
     logger.error(err);
-    res
+    return res
       .status(500)
       .send(
         'Unable to successfully cast vote! Please check the application logs for more details.'

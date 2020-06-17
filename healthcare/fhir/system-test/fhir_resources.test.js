@@ -32,6 +32,7 @@ const fhirStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
 
 const bundleFile = 'resources/bundle.json';
 const resourceType = 'Patient';
+const version = 'STU3';
 let resourceId;
 
 before(() => {
@@ -59,15 +60,15 @@ after(() => {
 
 it('should create a FHIR resource', () => {
   execSync(
-    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId}`,
+    `node createFhirStore.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${version}`,
     {cwd}
   );
   const output = execSync(
-    `node fhir_resources.js createResource ${datasetId} ${fhirStoreId} ${resourceType}`,
+    `node createFhirResource ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`,
     {cwd}
   );
   const createdResource = new RegExp(
-    `Created FHIR resource ${resourceType} with ID (.*).`
+    `Created FHIR resource with ID (.*)`
   );
   assert.strictEqual(createdResource.test(output), true);
   [, resourceId] = createdResource.exec(output);
@@ -136,10 +137,13 @@ it('should update a FHIR resource', () => {
 
 it('should patch a FHIR resource', () => {
   const output = execSync(
-    `node fhir_resources.js patchResource ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
+    `node patchFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     {cwd}
   );
-  assert.strictEqual(output, `Patched ${resourceType} resource`);
+  assert.strictEqual(
+    new RegExp(`Patched ${resourceType} resource`).test(output),
+    true
+  );
 });
 
 it('should search for FHIR resources using GET', () => {
@@ -161,18 +165,15 @@ it('should purge all historical versions of a FHIR resource', () => {
     `node deleteFhirResourcePurge.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     {cwd}
   );
-  assert.strictEqual(
-    output,
-    `Deleted all historical versions of ${resourceType} resource`
-  );
+  assert.strictEqual(new RegExp('Deleted all historical versions of resource').test(output), true);
 });
 
 it('should execute a Bundle', () => {
   const output = execSync(
-    `node fhir_resources.js executeBundle ${datasetId} ${fhirStoreId} ${bundleFile}`,
+    `node executeFhirBundle ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${bundleFile}`,
     {cwd}
   );
-  assert.strictEqual(new RegExp('Executed Bundle').test(output), true);
+  assert.strictEqual(new RegExp('FHIR bundle executed').test(output), true);
 });
 
 it('should delete a FHIR resource', () => {
@@ -180,7 +181,7 @@ it('should delete a FHIR resource', () => {
     `node deleteFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     {cwd}
   );
-  assert.strictEqual(output, `Deleted FHIR resource ${resourceType}`);
+  assert.strictEqual(new RegExp('Deleted FHIR resource').test(output), true);
 
   // Clean up
   execSync(

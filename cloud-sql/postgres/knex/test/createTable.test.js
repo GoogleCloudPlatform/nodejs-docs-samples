@@ -21,19 +21,28 @@ const {exec} = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 
-const {DB_USER, DB_PASS, DB_NAME} = process.env;
-const CONNECTION_NAME = process.env.CLOUD_SQL_CONNECTION_NAME;
+const {DB_USER, DB_PASS, DB_NAME, CONNECTION_NAME, DB_HOST} = process.env;
+const SOCKET_PATH = process.env.DB_SOCKET_PATH || "/cloudsql"
 
 before(async () => {
+  const connection = {
+    user: DB_USER,
+    password: DB_PASS,
+    database: DB_NAME,
+  };
+
+  if (DB_HOST) {
+    const dbSocketAddr = process.env.DB_HOST.split(":");
+    connection.host = dbSocketAddr[0];
+    connection.port = dbSocketAddr[1];
+  } else {
+    connection.host = `${SOCKET_PATH}/${CONNECTION_NAME}`;
+  }
+
   try {
     const knex = Knex({
       client: 'pg',
-      connection: {
-        user: DB_USER,
-        password: DB_PASS,
-        database: DB_NAME,
-        host: `/cloudsql/${CONNECTION_NAME}`,
-      },
+      connection,
     });
     await knex.schema.dropTable('votes');
   } catch (err) {
@@ -43,7 +52,7 @@ before(async () => {
 
 it('should create a table', (done) => {
   exec(
-    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} ${DB_HOST}`,
     {cwd},
     (err, stdout) => {
       assert.ok(stdout.includes(`Successfully created 'votes' table.`));
@@ -54,7 +63,7 @@ it('should create a table', (done) => {
 
 it('should handle existing tables', (done) => {
   exec(
-    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME}`,
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} ${DB_HOST}`,
     {cwd},
     (err, stdout, stderr) => {
       assert.ok(stderr.includes("Failed to create 'votes' table:"));

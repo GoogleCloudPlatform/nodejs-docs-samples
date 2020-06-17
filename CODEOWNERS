@@ -15,7 +15,6 @@ functions @ace-n @grant
 run @GoogleCloudPlatform/cdpe-cbr-containers
 
 # Other functions samples
-functions/composer-storage-trigger @leahecole
 functions/scheduleinstance @djmailhot
 functions/speech-to-speech @ricalo
 functions/memorystore @ericschmidtatwork

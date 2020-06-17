@@ -14,14 +14,14 @@
   "license": "Apache-2.0",
   "dependencies": {
     "google-auth-library": "^6.0.0",
-    "googleapis": "^48.0.0",
+    "googleapis": "^52.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "child-process-promise": "^2.2.1",
     "mocha": "^7.0.0",
-    "promise-retry": "^1.1.1",
+    "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",
     "request": "^2.88.0",
     "requestretry": "^4.0.0",

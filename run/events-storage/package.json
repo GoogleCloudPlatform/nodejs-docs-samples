@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-storage",
+  "name": "cloud-run-events-gcs",
   "version": "1.0.0",
   "private": true,
   "description": "Simple GCS subscriber service sample",
@@ -23,7 +23,6 @@
   "devDependencies": {
     "mocha": "^7.0.0",
     "sinon": "^9.0.0",
-    "supertest": "^4.0.2",
-    "uuid": "^8.0.0"
+    "supertest": "^4.0.2"
   }
 }

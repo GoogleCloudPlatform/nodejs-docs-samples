@@ -22,7 +22,6 @@ const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
 const sinon = require('sinon');
-const uuid = require('uuid');
 
 let request;
 
@@ -36,18 +35,6 @@ describe('Unit Tests', () => {
     it(`on a Bad Request with an empty payload`, async () => {
       await request.post('/').type('json').send('').expect(400);
     });
-
-    it(`on a Bad Request with an invalid payload`, async () => {
-      await request
-        .post('/')
-        .type('json')
-        .send({nomessage: 'invalid'})
-        .expect(400);
-    });
-
-    it(`on a Bad Request with an invalid mimetype`, async () => {
-      await request.post('/').type('text').send('{message: true}').expect(400);
-    });
   });
 
   describe('should succeed', () => {
@@ -60,25 +47,13 @@ describe('Unit Tests', () => {
       console.log.restore();
     });
 
-    it(`with a minimally valid Pub/Sub Message`, async () => {
+    it(`with a minimally valid GCS event`, async () => {
       await request
         .post('/')
-        .type('json')
-        .send({message: true})
-        .expect(204)
-        .expect(() => assert.ok(console.log.calledWith('Hello World!')));
-    });
-
-    it(`with a populated Pub/Sub Message`, async () => {
-      const name = uuid.v4();
-      const data = Buffer.from(name).toString(`base64`);
-
-      await request
-        .post('/')
-        .type('json')
-        .send({message: {data}})
-        .expect(204)
-        .expect(() => assert.ok(console.log.calledWith(`Hello ${name}!`)));
+        .set('ce-subject', 'test-subject')
+        .send()
+        .expect(200)
+        .expect(() => assert.ok(console.log.calledWith('GCS CloudEvent type: test-subject')));
     });
   });
 });

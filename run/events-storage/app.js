@@ -1,34 +1,32 @@
-// Copyright 2020 Google LLC. All rights reserved.
-// Use of this source code is governed by the Apache 2.0
-// license that can be found in the LICENSE file.
+// Copyright 2020 Google, LLC.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-// [START run_events_storage_server_setup]
+// [START run_events_gcs_server_setup]
 const express = require('express');
 const app = express();
 app.use(express.json());
-// [END run_events_storage_server_setup]
+// [END run_events_gcs_server_setup]
 
-// [START run_events_storage_handler]
+// [START run_events_gcs_handler]
 app.post('/', (req, res) => {
-  if (!req.body) {
-    const msg = 'no message received';
-    console.error(`error: ${msg}`);
-    res.status(400).send(`Bad Request: ${msg}`);
-    return;
-  }
-  if (!req.body.message) {
-    const msg = 'invalid Pub/Sub message format';
-    console.error(`error: ${msg}`);
-    res.status(400).send(`Bad Request: ${msg}`);
-    return;
+  if (!req.header('ce-subject')) {
+    return res.status(400).send('Bad Request: missing required header: ce-subject');
   }
 
-  console.log('--req.body');
-  console.log(req.body);
-  console.log('==req.body');
-  
-  res.status(204).send();
+  console.log(`GCS CloudEvent type: ${req.header('ce-subject')}`);
+  return res.status(200).send(`GCS CloudEvent type: ${req.header('ce-subject')}`);
 });
 
 module.exports = app;
-// [END run_events_storage_handler]
+// [END run_events_gcs_handler]

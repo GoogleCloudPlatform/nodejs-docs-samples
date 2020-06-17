@@ -119,7 +119,14 @@ exports.avoidInfiniteRetries = (event, callback) => {
 
   // Do what the function is supposed to do
   console.log(`Processing event ${event} with age ${eventAge} ms.`);
-  callback();
+  
+  // Retry failed function executions
+  const failed = false;
+  if (failed) {
+    callback('some error');
+  } else {
+    callback();
+  }
 };
 // [END functions_tips_infinite_retries]
 

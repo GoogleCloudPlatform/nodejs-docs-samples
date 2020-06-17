@@ -28,6 +28,6 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.0.0",
     "mocha": "^7.0.0",
-    "puppeteer": "^3.0.0"
+    "puppeteer": "^4.0.0"
   }
 }

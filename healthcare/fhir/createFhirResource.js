@@ -22,7 +22,7 @@ function main(
   fhirStoreId,
   resourceType,
 ) {
-  // [START healthcare_create_fhir_resource]
+  // [START healthcare_create_resource]
   const {google} = require('googleapis');
   const healthcare = google.healthcare('v1');
 
@@ -59,7 +59,7 @@ function main(
   }
 
   createFhirResource();
-  // [END healthcare_create_fhir_resource]
+  // [END healthcare_create_resource]
 }
 
 // node createFhirResource.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType>

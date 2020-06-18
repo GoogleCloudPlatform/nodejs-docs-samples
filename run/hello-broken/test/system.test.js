@@ -14,6 +14,7 @@
 
 const assert = require('assert');
 const request = require('got');
+const {resolve} = require('url');
 
 const get = (route, base_url) => {
   const {ID_TOKEN} = process.env;
@@ -21,8 +22,7 @@ const get = (route, base_url) => {
     throw Error('"ID_TOKEN" environment variable is required.');
   }
 
-  return request(route, {
-    baseUrl: base_url.trim(),
+  return request(resolve(base_url.trim(), route), {
     headers: {
       Authorization: `Bearer ${ID_TOKEN.trim()}`,
     },

@@ -53,6 +53,8 @@ describe('searchCatalog project', () => {
       `node searchCatalogProject.js ${projectId} ${query}`,
       {cwd},
       (err, stdout) => {
+        // ADD line to test return on kokoro build
+        console.log(stdout)
         assert.ok(stdout.includes(expectedLinkedResource));
         done();
       }

@@ -54,7 +54,7 @@ describe('searchCatalog project', () => {
       {cwd},
       (err, stdout) => {
         // ADD line to test return on kokoro build
-        console.log(stdout)
+        console.log(`search-project: ${stdout} ${err}`)
         assert.ok(stdout.includes(expectedLinkedResource));
         done();
       }

@@ -59,7 +59,7 @@ describe('searchCatalog org', () => {
       {cwd},
       (err, stdout) => {
         // ADD line to test return on kokoro build
-        console.log(stdout)
+        console.log(`search-org: ${stdout} ${err}`)
         assert.ok(stdout.includes(expectedLinkedResource));
         done();
       }

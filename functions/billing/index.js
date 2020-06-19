@@ -35,7 +35,7 @@ const CHANNEL = process.env.SLACK_CHANNEL || 'general';
 exports.notifySlack = async (pubsubEvent, context) => {
   const pubsubAttrs = pubsubEvent.attributes;
   const pubsubData = Buffer.from(pubsubEvent.data, 'base64').toString();
-  const budgetNotificationText = `${pubsubAttrs}, ${pubsubData}`;
+  const budgetNotificationText = `${JSON.stringify(pubsubAttrs)}, ${pubsubData}`;
 
   await slack.chat.postMessage({
     token: BOT_ACCESS_TOKEN,

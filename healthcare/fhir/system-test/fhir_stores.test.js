@@ -142,7 +142,7 @@ it('should export FHIR resources from a FHIR store to Cloud Storage', () => {
   assert.ok(output.includes('Exported FHIR resources successfully'));
 });
 
-it.skip('should create and get a FHIR store IAM policy', () => {
+it('should create and get a FHIR store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 

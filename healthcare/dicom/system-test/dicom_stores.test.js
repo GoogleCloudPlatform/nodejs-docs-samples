@@ -120,7 +120,7 @@ it('should list DICOM stores', () => {
   assert.ok(output.includes('dicomStores'));
 });
 
-it.skip('should create and get a DICOM store IAM policy', () => {
+it('should create and get a DICOM store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 

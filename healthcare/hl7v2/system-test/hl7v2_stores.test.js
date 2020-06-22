@@ -99,7 +99,7 @@ it('should list HL7v2 stores', () => {
   assert.ok(output.includes('hl7V2Stores'));
 });
 
-it.skip('should create and get an HL7v2 store IAM policy', () => {
+it('should create and get an HL7v2 store IAM policy', () => {
   const localMember = 'group:dpebot@google.com';
   const localRole = 'roles/viewer';
 

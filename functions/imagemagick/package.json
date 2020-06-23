@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.0.0",
-    "@google-cloud/vision": "^1.0.0",
+    "@google-cloud/vision": "^2.0.0",
     "gm": "^1.23.1"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "child-process-promise": "^2.2.1",
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "proxyquire": "^2.1.0",
     "request": "^2.88.0",
     "requestretry": "^4.0.0",

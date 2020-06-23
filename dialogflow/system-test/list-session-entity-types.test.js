@@ -21,6 +21,8 @@ const uuid = require('uuid');
 const dialogflow = require('@google-cloud/dialogflow');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
+const {delay} = require('./util');
+
 describe('list session entity types', () => {
   const client = new dialogflow.EntityTypesClient();
   const sessionClient = new dialogflow.SessionEntityTypesClient();
@@ -64,7 +66,10 @@ describe('list session entity types', () => {
     await sessionClient.createSessionEntityType(sessionEntityTypeRequest);
   });
 
-  it('should List the Session Entity Type', async () => {
+  it('should List the Session Entity Type', async function () {
+    this.retries(5);
+    await delay(this.test);
+
     const output = exec(`${cmd} list-session-entity-types -s ${sessionId}`);
     assert.include(output, sessionId);
     assert.include(output, displayName);

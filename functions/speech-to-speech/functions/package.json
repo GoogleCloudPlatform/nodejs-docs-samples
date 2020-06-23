@@ -35,7 +35,7 @@
   "dependencies": {
     "@google-cloud/speech": "^4.0.0",
     "@google-cloud/storage": "^5.0.0",
-    "@google-cloud/text-to-speech": "^2.0.0",
+    "@google-cloud/text-to-speech": "^3.0.0",
     "@google-cloud/translate": "^6.0.0",
     "uuid": "^8.0.0",
     "firebase-admin": "^8.0.0",

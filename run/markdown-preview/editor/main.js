@@ -46,6 +46,7 @@ app.get('/', async (req, res) => {
 
 // The renderRequest makes a request to the Renderer service. 
 // The request returns the Markdown text converted to HTML.
+// [START run_secure_request_do]
 app.post('/render', async (req, res) => {
   try {
     const markdown = req.body.data;
@@ -56,6 +57,7 @@ app.post('/render', async (req, res) => {
     res.status(500).send(err);
   }
 });
+// [END run_secure_request_do]
 
 const PORT = process.env.PORT || 8080;
 

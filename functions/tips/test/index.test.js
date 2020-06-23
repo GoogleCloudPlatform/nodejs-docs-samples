@@ -40,7 +40,7 @@ describe('functions_tips_retry', () => {
           retry: true,
         },
       });
-    }, 'Retrying...');
+    }, new Error('Retrying...'));
 
     // Terminate by returning a rejected promise
     try {

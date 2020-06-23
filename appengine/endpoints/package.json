@@ -25,7 +25,7 @@
     "wait-port": "^0.2.7"
   },
   "devDependencies": {
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0",
     "supertest": "^4.0.0"

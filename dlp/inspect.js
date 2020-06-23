@@ -57,7 +57,7 @@ async function inspectString(
 
   // Construct request
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     inspectConfig: {
       infoTypes: infoTypes,
       customInfoTypes: customInfoTypes,
@@ -150,7 +150,7 @@ async function inspectFile(
 
   // Construct request
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     inspectConfig: {
       infoTypes: infoTypes,
       customInfoTypes: customInfoTypes,
@@ -246,7 +246,7 @@ async function inspectGCSFile(
 
   // Construct request for creating an inspect job
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     inspectJob: {
       inspectConfig: {
         infoTypes: infoTypes,
@@ -394,7 +394,7 @@ async function inspectDatastore(
 
   // Construct request for creating an inspect job
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     inspectJob: {
       inspectConfig: {
         infoTypes: infoTypes,
@@ -537,7 +537,7 @@ async function inspectBigquery(
 
   // Construct request for creating an inspect job
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     inspectJob: {
       inspectConfig: {
         infoTypes: infoTypes,

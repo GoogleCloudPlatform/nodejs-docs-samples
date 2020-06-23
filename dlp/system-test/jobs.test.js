@@ -39,7 +39,7 @@ describe('jobs', () => {
 
     // Construct job request
     const request = {
-      parent: dlp.projectPath(testCallingProjectId),
+      parent: `projects/${testCallingProjectId}/locations/global`,
       riskJob: {
         privacyMetric: {
           categoricalStatsConfig: {
@@ -72,7 +72,7 @@ describe('jobs', () => {
   async function deleteStaleJobs() {
     const dlp = new DLP.DlpServiceClient();
     const request = {
-      parent: dlp.projectPath(testCallingProjectId),
+      parent: `projects/${testCallingProjectId}/locations/global`,
       filter: 'state=DONE',
       type: 'RISK_ANALYSIS_JOB',
     };
@@ -91,12 +91,18 @@ describe('jobs', () => {
   // dlp_list_jobs
   it('should list jobs', () => {
     const output = execSync(`${cmd} list 'state=DONE'`);
-    assert.match(output, /Job projects\/(\w|-)+\/dlpJobs\/\w-\d+ status: DONE/);
+    assert.match(
+      output,
+      /Job projects\/(\w|-)+\/locations\/global\/dlpJobs\/\w-\d+ status: DONE/
+    );
   });
 
   it('should list jobs of a given type', () => {
     const output = execSync(`${cmd} list 'state=DONE' -t RISK_ANALYSIS_JOB`);
-    assert.match(output, /Job projects\/(\w|-)+\/dlpJobs\/r-\d+ status: DONE/);
+    assert.match(
+      output,
+      /Job projects\/(\w|-)+\/locations\/global\/dlpJobs\/r-\d+ status: DONE/
+    );
   });
 
   it('should handle job listing errors', () => {

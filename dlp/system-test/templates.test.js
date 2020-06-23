@@ -32,7 +32,7 @@ describe('templates', () => {
   const DISPLAY_NAME = `My Template ${uuid.v4()}`;
   const TEMPLATE_NAME = `my-template-${uuid.v4()}`;
 
-  const fullTemplateName = `projects/${process.env.GCLOUD_PROJECT}/inspectTemplates/${TEMPLATE_NAME}`;
+  const fullTemplateName = `projects/${process.env.GCLOUD_PROJECT}/locations/global/inspectTemplates/${TEMPLATE_NAME}`;
 
   // create_inspect_template
   it('should create template', () => {

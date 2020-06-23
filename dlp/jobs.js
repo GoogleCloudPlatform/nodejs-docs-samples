@@ -36,7 +36,7 @@ async function listJobs(callingProjectId, filter, jobType) {
 
   // Construct request for listing DLP scan jobs
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     filter: filter,
     type: jobType,
   };

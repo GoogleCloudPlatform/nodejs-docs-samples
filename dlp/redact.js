@@ -32,7 +32,7 @@ async function redactText(callingProjectId, string, minLikelihood, infoTypes) {
 
   // Construct redaction request
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     item: {
       value: string,
     },
@@ -105,7 +105,7 @@ async function redactImage(
 
   // Construct image redaction request
   const request = {
-    parent: dlp.projectPath(callingProjectId),
+    parent: `projects/${callingProjectId}/locations/global`,
     byteItem: {
       type: fileTypeConstant,
       data: fileBytes,

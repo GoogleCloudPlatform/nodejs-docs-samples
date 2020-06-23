@@ -37,7 +37,7 @@ describe('End-to-End Tests', () => {
         },
         retry: 1
       };
-      const response = await got('/', options);
+      const response = await got('', options);
       assert.strictEqual(response.statusCode, 200);
     });
 
@@ -54,7 +54,7 @@ describe('End-to-End Tests', () => {
         },
         retry: 1
       };
-      const response = await got('/render', options);
+      const response = await got('render', options);
       assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(response.body, '<p><strong>markdown</strong></p>\n');
     });

@@ -9,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "unit-test": "mocha test/index.test.js test/*unit*test.js test/*integration*test.js --timeout=2000 --exit",
@@ -28,7 +28,7 @@
     "@google-cloud/storage": "^5.0.0",
     "child-process-promise": "^2.2.1",
     "express": "^4.16.3",
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "moment": "^2.24.0",
     "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",

@@ -44,7 +44,7 @@ Create a Cloud Storage (via Audit Log) trigger:
 
 ```sh
 gcloud alpha events triggers create my-gcs-trigger \
-  --target-service cloudrun-events-storage \
+  --target-service $MY_RUN_SERVICE  \
   --type com.google.cloud.auditlog.event \
   --parameters methodName=storage.buckets.update \
   --parameters serviceName=storage.googleapis.com \

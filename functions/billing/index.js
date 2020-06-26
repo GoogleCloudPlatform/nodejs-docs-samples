@@ -19,7 +19,7 @@
 const {google} = require('googleapis');
 const {auth} = require('google-auth-library');
 
-const PROJECT_ID = process.env.GCP_PROJECT;
+const PROJECT_ID = process.env.PROJECT_ID;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 // [END functions_billing_stop]
 // [END functions_billing_limit]
@@ -57,9 +57,22 @@ exports.stopBilling = async (pubsubEvent, context) => {
   if (pubsubData.costAmount <= pubsubData.budgetAmount) {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
   }
+  
+  if (!PROJECT_ID) {
+    return `No project specified`;
+  }
 
   await _setAuthCredential();
-  if (await _isBillingEnabled(PROJECT_NAME)) {
+  let billingEnabled;
+  try {
+    billingEnabled = await _isBillingEnabled(PROJECT_NAME);
+  }
+  catch (e) {
+    billingEnabled = true;
+    console.log('Unable to determine if billing is enabled on specified project, assuming true');
+  }
+  
+  if (billingEnabled) {
     return _disableBillingForProject(PROJECT_NAME);
   } else {
     return 'Billing already disabled';

@@ -19,11 +19,7 @@
 const {google} = require('googleapis');
 const {auth} = require('google-auth-library');
 
-let PROJECT_ID = process.env.PROJECT_ID;
-// Attempt to use GCP_PROJECT if no PROJECT_ID was specified
-if (typeof PROJECT_ID === 'undefined') {
-  PROJECT_ID = process.env.GCP_PROJECT;
-}
+const PROJECT_ID = process.env.GCP_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 // [END functions_billing_stop]
 // [END functions_billing_limit]

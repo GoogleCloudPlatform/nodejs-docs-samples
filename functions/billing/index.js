@@ -19,7 +19,11 @@
 const {google} = require('googleapis');
 const {auth} = require('google-auth-library');
 
-const PROJECT_ID = process.env.PROJECT_ID;
+let PROJECT_ID = process.env.PROJECT_ID;
+// Attempt to use GCP_PROJECT if no PROJECT_ID was specified
+if (typeof PROJECT_ID === 'undefined') {
+  PROJECT_ID = process.env.GCP_PROJECT;
+}
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 // [END functions_billing_stop]
 // [END functions_billing_limit]
@@ -63,15 +67,7 @@ exports.stopBilling = async (pubsubEvent, context) => {
   }
 
   await _setAuthCredential();
-  let billingEnabled;
-  try {
-    billingEnabled = await _isBillingEnabled(PROJECT_NAME);
-  }
-  catch (e) {
-    billingEnabled = true;
-    console.log('Unable to determine if billing is enabled on specified project, assuming true');
-  }
-  
+  const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
   if (billingEnabled) {
     return _disableBillingForProject(PROJECT_NAME);
   } else {
@@ -107,8 +103,13 @@ const _setAuthCredential = async () => {
  * @return {bool} Whether project has billing enabled or not
  */
 const _isBillingEnabled = async (projectName) => {
-  const res = await billing.getBillingInfo({name: projectName});
-  return res.data.billingEnabled;
+  try {
+    const res = await billing.getBillingInfo({name: projectName});
+    return res.data.billingEnabled;
+  } catch (e) {
+    console.log('Unable to determine if billing is enabled on specified project, assuming billing is enabled');
+    return true;
+  }
 };
 
 /**

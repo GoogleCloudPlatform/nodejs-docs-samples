@@ -11,13 +11,15 @@
 |[Hello World][helloworld]&nbsp;&#10149;  | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_helloworld] |
 |[System Packages][system_package]        | Use system-installed binaries in your service. | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_system_package] |
 |[Pub/Sub][pubsub]                        | Event-driven service with a Pub/Sub push subscription | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_pubsub] |
-|[Events – Pub/Sub][events_pubsub]         | Use Pub/Sub with Cloud Run | - |
+|[Events – Pub/Sub][events_pubsub]         | Event-driven service with Events for Cloud Run for Pub/Sub | - |
+|[Anthos Events – Pub/Sub][anthos_events_pubsub]  | Event-driven service with Events for Cloud Run on Anthos for Pub/Sub  |      -        |
 |[Image Processing][image_processing]     | Event-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_image_processing] |
 |[Manual Logging][manual_logging]         | Structured logging without client library | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_manual_logging] |
 |[Cloud SQL (MySQL)][mysql]               | Use MySQL with Cloud Run | - |
 |[Cloud SQL (Postgres)][postgres]         | Use Postgres with Cloud Run | - |
 |[Hello Broken][hello_broken]             | Something is wrong, how do you fix it? | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_hello_broken] |
 |[Events – GCS][events_gcs]         | Event-driven service with Events for Cloud Run for GCS | - |
+|[Anthos Events – GCS][anthos_events_gcs]  | Event-driven service with Events for Cloud Run on Anthos for GCS  |      -        |
 
 For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
@@ -130,4 +132,6 @@ for more information.
 [run_button_manual_logging]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/logging-manual
 [run_button_hello_broken]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/hello-broken
 [events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-gcs
+[anthos_events_gcs]: events-storage/anthos.md
 [events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-pubsub
+[anthos_events_pubsub]: events-pubsub/anthos.md

@@ -12,13 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START run_events_gcs_server_setup]
+// [START run_events_gcs_handler]
 const express = require('express');
 const app = express();
-app.use(express.json());
-// [END run_events_gcs_server_setup]
 
-// [START run_events_gcs_handler]
+app.use(express.json());
 app.post('/', (req, res) => {
   if (!req.header('ce-subject')) {
     return res.status(400).send('Bad Request: missing required header: ce-subject');

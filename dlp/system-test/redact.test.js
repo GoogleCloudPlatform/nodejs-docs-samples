@@ -87,7 +87,7 @@ describe('redact', () => {
       `${testName}.actual.png`,
       `${testResourcePath}/${testName}.expected.png`
     );
-    assert.isBelow(difference, 0.03);
+    assert.isBelow(difference, 0.1);
   });
 
   it('should redact multiple sensitive data types from an image', async () => {
@@ -100,7 +100,7 @@ describe('redact', () => {
       `${testName}.actual.png`,
       `${testResourcePath}/${testName}.expected.png`
     );
-    assert.isBelow(difference, 0.03);
+    assert.isBelow(difference, 0.1);
   });
 
   it('should report info type errors', () => {

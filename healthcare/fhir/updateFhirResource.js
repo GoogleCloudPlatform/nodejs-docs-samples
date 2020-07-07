@@ -45,6 +45,9 @@ const main = (
     // const resourceType = 'Patient';
     // const resourceId = '16e8a860-33b3-49be-9b03-de979feed14a';
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
+    // The following body works with a Patient resource and is not intended
+    // to work with other types of FHIR resources. If necessary, supply a new
+    // body with data that corresponds to the FHIR resource you are updating.
     const body = {resourceType: resourceType, id: resourceId, active: true};
     const request = {name, requestBody: body};
 

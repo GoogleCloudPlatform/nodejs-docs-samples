@@ -53,7 +53,7 @@ $ gcloud endpoints services deploy api.pb api_config.yaml
 
 1. Build a Docker image for later use using the following command. Make sure to replace `[YOUR_PROJECT_ID]` with your Project ID.
 ```
-$ gcloud container builds submit --tag gcr.io/[YOUR_PROJECT_ID]/endpoints-example:1.0 .
+$ gcloud builds submit --tag gcr.io/[YOUR_PROJECT_ID]/endpoints-example:1.0 .
 ...
 Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
 ```

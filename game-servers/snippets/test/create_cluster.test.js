@@ -30,7 +30,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const LOCATION = 'us-central1';
 const GKE_CLUSTER_NAME =
   process.env.SAMPLE_CLUSTER_NAME ||
-  'projects/1046198160504/locations/us-west1-a/clusters/grpc-bug-cluster';
+  'projects/217093627905/locations/us-central1/clusters/gke-shared-default';
 
 describe('Game Servers Create Cluster Test', () => {
   const realmsClient = new RealmsServiceClient();

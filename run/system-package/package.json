@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js"
+    "test": "mocha test/app.test.js",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {
     "express": "^4.17.1"

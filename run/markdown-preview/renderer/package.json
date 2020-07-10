@@ -14,13 +14,15 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "mocha test/*.test.js --exit"
+    "test": "mocha test/*.test.js --exit",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {
     "express": "^4.17.1",
     "markdown-it": "^11.0.0"
   },
   "devDependencies": {
+    "got": "^11.5.0",
     "mocha": "^8.0.0",
     "sinon": "^9.0.2",
     "supertest": "^4.0.2"

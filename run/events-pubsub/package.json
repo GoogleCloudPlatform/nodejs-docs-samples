@@ -15,12 +15,14 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/*.test.js --check-leaks"
+    "test": "mocha test/*.test.js --check-leaks",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {
     "express": "^4.16.4"
   },
   "devDependencies": {
+    "got": "^11.5.0",
     "mocha": "^8.0.0",
     "sinon": "^9.0.0",
     "supertest": "^4.0.2",

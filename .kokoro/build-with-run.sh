@@ -83,4 +83,4 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 fi
 
 npm test
-npm run --if-present e2e-test
+npm run --if-present system-test

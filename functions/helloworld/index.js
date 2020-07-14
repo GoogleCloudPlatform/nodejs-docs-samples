@@ -53,12 +53,12 @@ exports.helloHttp = (req, res) => {
 /**
  * Background Cloud Function.
  *
- * @param {object} data The Cloud Functions event.
+ * @param {object} event The Cloud Functions event.
  * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
-exports.helloBackground = (data, context, callback) => {
-  callback(null, `Hello ${data.name || 'World'}!`);
+exports.helloBackground = (event, context, callback) => {
+  callback(null, `Hello ${event.name || 'World'}!`);
 };
 // [END functions_helloworld_background]
 
@@ -124,12 +124,12 @@ exports.helloGCSGeneric = (file, context, callback) => {
 /**
  * Background Cloud Function that throws an error.
  *
- * @param {object} data The Cloud Functions event.
+ * @param {object} event The Cloud Functions event.
  * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 
-exports.helloError = (data, context, callback) => {
+exports.helloError = (event, context, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver Error Reporting
   console.error(new Error('I failed you'));
@@ -142,13 +142,13 @@ exports.helloError = (data, context, callback) => {
 /**
  * Background Cloud Function that throws a value.
  *
- * @param {object} data The Cloud Functions event.
+ * @param {object} event The Cloud Functions event.
  * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 /* eslint-disable no-throw-literal */
 
-exports.helloError2 = (data, context, callback) => {
+exports.helloError2 = (event, context, callback) => {
   // [START functions_helloworld_error]
   // These will NOT be reported to Stackdriver Error Reporting
   console.info(new Error('I failed you')); // Logging an Error object at the info level
@@ -161,12 +161,12 @@ exports.helloError2 = (data, context, callback) => {
 /**
  * Background Cloud Function that returns an error.
  *
- * @param {object} data The Cloud Functions event.
+ * @param {object} event The Cloud Functions event.
  * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 /* eslint-disable */
-exports.helloError3 = (data, context, callback) => {
+exports.helloError3 = (event, context, callback) => {
   // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   callback('I failed you');

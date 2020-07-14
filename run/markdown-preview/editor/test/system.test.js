@@ -35,14 +35,14 @@ describe('End-to-End Tests', () => {
         headers: {
           Authorization: `Bearer ${ID_TOKEN.trim()}`
         },
-        retry: 1
+        retry: 3
       };
       const response = await got('', options);
       assert.strictEqual(response.statusCode, 200);
     });
 
     it('Can successfully make a request to the Renderer', async () => {
-      const options = { 
+      const options = {
         prefixUrl: BASE_URL.trim(),
         headers: {
           Authorization: `Bearer ${ID_TOKEN.trim()}`
@@ -52,7 +52,7 @@ describe('End-to-End Tests', () => {
           "data": "**markdown**"
 
         },
-        retry: 1
+        retry: 3
       };
       const response = await got('render', options);
       assert.strictEqual(response.statusCode, 200);

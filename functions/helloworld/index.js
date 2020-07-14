@@ -53,7 +53,8 @@ exports.helloHttp = (req, res) => {
 /**
  * Background Cloud Function.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} data The Cloud Functions event.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 exports.helloBackground = (data, context, callback) => {
@@ -67,13 +68,12 @@ exports.helloBackground = (data, context, callback) => {
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} data The event payload.
+ * @param {object} message The Pub/Sub message.
  * @param {object} context The event metadata.
  */
-exports.helloPubSub = (data, context) => {
-  const pubSubMessage = data;
-  const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64').toString()
+exports.helloPubSub = (message, context) => {
+  const name = message.data
+    ? Buffer.from(message.data, 'base64').toString()
     : 'World';
 
   console.log(`Hello, ${name}!`);
@@ -84,11 +84,10 @@ exports.helloPubSub = (data, context) => {
 /**
  * Background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} data The event payload.
+ * @param {object} file The Cloud Storage file metadata.
  * @param {object} context The event metadata.
  */
-exports.helloGCS = (data, context) => {
-  const file = data;
+exports.helloGCS = (file, context) => {
   if (file.resourceState === 'not_exists') {
     console.log(`File ${file.name} deleted.`);
   } else if (file.metageneration === '1') {
@@ -105,12 +104,11 @@ exports.helloGCS = (data, context) => {
 /**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} file The Cloud Storage file metadata.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
-exports.helloGCSGeneric = (data, context, callback) => {
-  const file = data;
-
+exports.helloGCSGeneric = (file, context, callback) => {
   console.log(`  Event: ${context.eventId}`);
   console.log(`  Event Type: ${context.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
@@ -126,7 +124,8 @@ exports.helloGCSGeneric = (data, context, callback) => {
 /**
  * Background Cloud Function that throws an error.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} data The Cloud Functions event.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 
@@ -143,7 +142,8 @@ exports.helloError = (data, context, callback) => {
 /**
  * Background Cloud Function that throws a value.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} data The Cloud Functions event.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 /* eslint-disable no-throw-literal */
@@ -161,7 +161,8 @@ exports.helloError2 = (data, context, callback) => {
 /**
  * Background Cloud Function that returns an error.
  *
- * @param {object} event The Cloud Functions event.
+ * @param {object} data The Cloud Functions event.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 /* eslint-disable */

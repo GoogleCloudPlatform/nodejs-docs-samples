@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/*.test.js --check-leaks",
+    "test": "mocha test/app.test.js --check-leaks",
     "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {

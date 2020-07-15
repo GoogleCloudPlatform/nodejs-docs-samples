@@ -6,13 +6,14 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js",
+    "test": "mocha test/app.test.js --check-leaks",
     "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "got": "^11.5.0",
     "mocha": "^8.0.0",
     "supertest": "^4.0.2"
   }

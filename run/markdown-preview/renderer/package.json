@@ -14,7 +14,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "mocha test/*.test.js --exit",
+    "test": "mocha test/main.test.js --exit",
     "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {

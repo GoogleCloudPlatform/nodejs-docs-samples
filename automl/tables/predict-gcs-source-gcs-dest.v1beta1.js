@@ -13,18 +13,15 @@
 // limitations under the License.
 
 'use strict';
+
 async function main(
-  projectId = 'YOUR_PROJECT_ID',
-  computeRegion = 'YOUR_REGION_NAME',
-  modelId = 'MODEL_ID',
-  inputUri = 'GCS_PATH',
-  outputUriPrefix = 'GCS_DIRECTORY'
+  projectId = 'YOUR_GCP_PROJECT_ID',
+  computeRegion = 'REGION',
+  modelId = 'YOUR_MODEL_ID',
+  inputUri = 'gs://your-bucket-uri/file.csv',
+  outputUriPrefix = 'gs://your-bucket-uri/OUTPUT_PREFIX/'
 ) {
   // [START automl_tables_predict_using_gcs_source_and_gcs_dest]
-  const automl = require('@google-cloud/automl');
-
-  // Create client for prediction service.
-  const client = new automl.v1beta1.PredictionServiceClient();
 
   /**
    * Demonstrates using the AutoML client to request prediction from
@@ -40,38 +37,49 @@ async function main(
   // e.g., "gs://<bucket-name>/<folder-name>",
   // `The destination Google Cloud Storage URI for storing outputs`;
 
+  const automl = require('@google-cloud/automl');
+
+  // Create client for prediction service.
+  const automlClient = new automl.v1beta1.PredictionServiceClient();
+
   // Get the full path of the model.
-  const modelFullId = client.modelPath(projectId, computeRegion, modelId);
+  const modelFullId = automlClient.modelPath(projectId, computeRegion, modelId);
 
-  // Get the multiple Google Cloud Storage input URIs.
-  const inputUris = inputUri.split(',');
-  const inputConfig = {
-    gcsSource: {
-      inputUris: inputUris,
-    },
-  };
+  async function batchPredict() {
+    // Construct request
+    const inputConfig = {
+      gcsSource: {
+        inputUris: [inputUri],
+      },
+    };
 
-  // Get the Google Cloud Storage output URI.
-  const outputConfig = {
-    gcsDestination: {
-      outputUriPrefix: outputUriPrefix,
-    },
-  };
+    // Get the Google Cloud Storage output URI.
+    const outputConfig = {
+      gcsDestination: {
+        outputUriPrefix: outputUriPrefix,
+      },
+    };
 
-  // Get the latest state of long-running operation.
-  client
-    .batchPredict({
+    const [, operation] = await automlClient.batchPredict({
       name: modelFullId,
       inputConfig: inputConfig,
       outputConfig: outputConfig,
-    })
-    .then(responses => {
-      const operation = responses[1];
-      console.log(`Operation name: ${operation.name}`);
-    })
-    .catch(err => {
-      console.error(err);
     });
+
+    // Get the latest state of long-running operation.
+    console.log(`Operation name: ${operation.name}`);
+    return operation;
+  }
+
+  batchPredict();
   // [END automl_tables_predict_using_gcs_source_and_gcs_dest]
 }
-main(...process.argv.slice(2)).catch(console.error());
+
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

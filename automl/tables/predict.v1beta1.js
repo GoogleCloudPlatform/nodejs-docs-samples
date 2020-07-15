@@ -1,5 +1,4 @@
 // Copyright 2019 Google LLC
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,18 +14,12 @@
 'use strict';
 
 async function main(
-  projectId = 'YOUR_PROJECT_ID',
-  computeRegion = 'YOUR_REGION_NAME',
-  modelId = 'MODEL_ID',
-  filePath = 'FILE_PATH'
+  projectId = 'YOUR_GCP_PROJECT_ID',
+  computeRegion = 'REGION',
+  modelId = 'YOUR_MODEL_ID',
+  inputs = [{numberValue: 1}, {stringValue: 'value'}]
 ) {
   // [START automl_tables_predict]
-  const automl = require('@google-cloud/automl');
-  const fs = require('fs');
-  const csv = require('csv');
-
-  // Create client for prediction service.
-  const client = new automl.v1beta1.PredictionServiceClient();
 
   /**
    * Demonstrates using the AutoML client to request prediction from
@@ -35,71 +28,68 @@ async function main(
    */
   // const projectId = '[PROJECT_ID]' e.g., "my-gcloud-project";
   // const computeRegion = '[REGION_NAME]' e.g., "us-central1";
-  // const modelId = '[MODEL_ID]' e.g., "TBL4704590352927948800";
-  // const filePath = '[FILE_PATH]'
-  // e.g., "<resource>/<csv file>", `local csv file path`;
+  // const modelId = '[MODEL_ID]' e.g., "TBL000000000000";
+  // const inputs = [{ numberValue: 1 }, { stringValue: 'value' }, { stringValue: 'value2' } ...]
+
+  const automl = require('@google-cloud/automl');
+
+  // Create client for prediction service.
+  const automlClient = new automl.v1beta1.PredictionServiceClient();
 
   // Get the full path of the model.
-  const modelFullId = client.modelPath(projectId, computeRegion, modelId);
+  const modelFullId = automlClient.modelPath(projectId, computeRegion, modelId);
 
-  // Read the csv file content for prediction.
-  const stream = fs
-    .createReadStream(filePath)
-    .pipe(csv.parse())
-    .on('data', data => {
-      const values = [];
+  inputs = JSON.parse(inputs);
 
-      for (const val of data) {
-        values.push({stringValue: val});
-      }
+  async function predict() {
+    // Set the payload by giving the row values.
+    const payload = {
+      row: {
+        values: inputs,
+      },
+    };
 
-      // Set the payload by giving the row values.
-      const payload = {
-        row: {
-          values: values,
-        },
-      };
-
-      // Params is additional domain-specific parameters.
-      // Currently there is no additional parameters supported.
-      client
-        .predict({
-          name: modelFullId,
-          payload: payload,
-          params: {feature_importance: true},
-        })
-        .then(responses => {
-          console.log(responses);
-          console.log('Prediction results:');
-
-          for (const result of responses[0].payload) {
-            console.log(`Predicted class name: ${result.displayName}`);
-            console.log(`Predicted class score: ${result.tables.score}`);
-
-            // Get features of top importance
-            const featureList = result.tables.tablesModelColumnInfo.map(
-              columnInfo => {
-                return {
-                  importance: columnInfo.featureImportance,
-                  displayName: columnInfo.columnDisplayName,
-                };
-              }
-            );
-            // Sort features by their importance, highest importance first
-            featureList.sort((a, b) => {
-              return b.importance - a.importance;
-            });
-
-            // Print top 10 important features
-            console.log('Features of top importance');
-            console.log(featureList.slice(0, 10));
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    // Params is additional domain-specific parameters.
+    // Currently there is no additional parameters supported.
+    const [response] = await automlClient.predict({
+      name: modelFullId,
+      payload: payload,
+      params: {feature_importance: true},
     });
-  stream.read();
+    console.log('Prediction results:');
+
+    for (const result of response.payload) {
+      console.log(`Predicted class name: ${result.displayName}`);
+      console.log(`Predicted class score: ${result.tables.score}`);
+
+      // Get features of top importance
+      const featureList = result.tables.tablesModelColumnInfo.map(
+        columnInfo => {
+          return {
+            importance: columnInfo.featureImportance,
+            displayName: columnInfo.columnDisplayName,
+          };
+        }
+      );
+      // Sort features by their importance, highest importance first
+      featureList.sort((a, b) => {
+        return b.importance - a.importance;
+      });
+
+      // Print top 10 important features
+      console.log('Features of top importance');
+      console.log(featureList.slice(0, 10));
+    }
+  }
+  predict();
   // [END automl_tables_predict]
 }
-main(...process.argv.slice(2)).catch(console.error());
+
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

@@ -13,18 +13,15 @@
 // limitations under the License.
 
 'use strict';
+
 async function main(
-  projectId = 'YOUR_PROJECT_ID',
-  computeRegion = 'YOUR_REGION_NAME',
+  projectId = 'YOUR_GCP_PROJECT_ID',
+  computeRegion = 'REGION',
   modelId = 'MODEL_ID',
   inputUri = 'GCS_PATH',
   outputUri = 'BIGQUERY_DIRECTORY'
 ) {
   // [START automl_tables_predict_using_gcs_source_and_bq_dest]
-  const automl = require('@google-cloud/automl');
-
-  // Create client for prediction service.
-  const client = new automl.v1beta1.PredictionServiceClient();
 
   /**
    * Demonstrates using the AutoML client to request prediction from
@@ -39,38 +36,47 @@ async function main(
   // const outputUri = '[BIGQUERY_PATH]' e.g., "bq://<project_id>",
   // `The destination Big Query URI for storing outputs`;
 
+  const automl = require('@google-cloud/automl');
+
+  // Create client for prediction service.
+  const automlClient = new automl.v1beta1.PredictionServiceClient();
+
   // Get the full path of the model.
-  const modelFullId = client.modelPath(projectId, computeRegion, modelId);
+  const modelFullId = automlClient.modelPath(projectId, computeRegion, modelId);
 
-  // Get the multiple Google Cloud Storage input URIs.
-  const inputUris = inputUri.split(',');
-  const inputConfig = {
-    gcsSource: {
-      inputUris: inputUris,
-    },
-  };
+  async function batchPredict() {
+    const inputConfig = {
+      gcsSource: {
+        inputUris: [inputUri],
+      },
+    };
 
-  // Get the Big Query output URIs.
-  const outputConfig = {
-    bigqueryDestination: {
-      outputUri: outputUri,
-    },
-  };
+    // Get the Big Query output URIs.
+    const outputConfig = {
+      bigqueryDestination: {
+        outputUri: outputUri,
+      },
+    };
 
-  // Get the latest state of long-running operation.
-  client
-    .batchPredict({
+    const [, operation] = await automlClient.batchPredict({
       name: modelFullId,
       inputConfig: inputConfig,
       outputConfig: outputConfig,
-    })
-    .then(responses => {
-      const operation = responses[1];
-      console.log(`Operation name: ${operation.name}`);
-    })
-    .catch(err => {
-      console.error(err);
     });
+
+    // Get the latest state of long-running operation.
+    console.log(`Operation name: ${operation.name}`);
+  }
+
+  batchPredict();
   // [END automl_tables_predict_using_gcs_source_and_bq_dest]
 }
-main(...process.argv.slice(2)).catch(console.error());
+
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

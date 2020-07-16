@@ -19,8 +19,7 @@
  * @param {string} location Compute Engine region
  * @param {string} realmId the realm to use
  * @param {string} gameClusterId unique identifier for the new Game Cluster
- * @param {string} gkeClusterId the GKE cluster to connect to
- * @param {string} gkeLocation the location of the GKE cluster
+ * @param {string} gkeClusterName The full resource name of the GKE cluster to use
  */
 async function main(
   projectId = 'YOUR_PROJECT_ID',
@@ -54,6 +53,7 @@ async function main(
         connectionInfo: {
           gkeClusterReference: {
             // Provide full resource name of a Kubernetes Engine cluster
+            // In the form of 'projects/<project-id>/locations/<location>/clusters/<gke-cluster-name>'
             cluster: gkeClusterName,
           },
           namespace: 'default',

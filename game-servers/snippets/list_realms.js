@@ -19,7 +19,7 @@
  * @param {string} location Compute Engine region.
  */
 async function main(projectId = 'YOUR_PROJECT_ID', location = 'LOCATION_ID') {
-  // [START cloud_game_servers_list_realms]
+  // [START cloud_game_servers_realm_list]
   const {RealmsServiceClient} = require('@google-cloud/game-servers');
 
   const client = new RealmsServiceClient();
@@ -47,7 +47,7 @@ async function main(projectId = 'YOUR_PROJECT_ID', location = 'LOCATION_ID') {
   }
 
   listRealms();
-  // [END cloud_game_servers_list_realms]
+  // [END cloud_game_servers_realm_list]
 }
 
 main(...process.argv.slice(2)).catch(err => {

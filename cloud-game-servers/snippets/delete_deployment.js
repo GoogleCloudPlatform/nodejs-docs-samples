@@ -22,7 +22,7 @@ async function main(
   projectId = 'YOUR_PROJECT_ID',
   deploymentId = 'DEPLOYMENT_ID'
 ) {
-  // [START cloud_game_servers_delete_deployment]
+  // [START cloud_game_servers_deployment_delete]
   const {
     GameServerDeploymentsServiceClient,
   } = require('@google-cloud/game-servers');
@@ -47,7 +47,7 @@ async function main(
 
   deleteGameServerDeployment();
 
-  // [END cloud_game_servers_delete_deployment]
+  // [END cloud_game_servers_deployment_delete]
 }
 
 main(...process.argv.slice(2)).catch(err => {

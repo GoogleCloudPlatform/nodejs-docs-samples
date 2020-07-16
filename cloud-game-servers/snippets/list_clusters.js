@@ -24,7 +24,7 @@ async function main(
   location = 'LOCATION_ID',
   realmId = 'REALM_ID'
 ) {
-  // [START cloud_game_servers_list_clusters]
+  // [START cloud_game_servers_cluster_list]
   const {
     GameServerClustersServiceClient,
   } = require('@google-cloud/game-servers');
@@ -57,7 +57,7 @@ async function main(
   }
 
   listGameServerClusters();
-  // [END cloud_game_servers_list_clusters]
+  // [END cloud_game_servers_cluster_list]
 }
 
 main(...process.argv.slice(2)).catch(err => {

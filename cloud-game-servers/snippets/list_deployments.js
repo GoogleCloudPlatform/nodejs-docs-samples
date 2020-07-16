@@ -18,7 +18,7 @@
  * @param {string} projectId string project identifier
  */
 async function main(projectId = 'YOUR_PROJECT_ID') {
-  // [START cloud_game_servers_list_deployments]
+  // [START cloud_game_servers_deployment_list]
   const {
     GameServerDeploymentsServiceClient,
   } = require('@google-cloud/game-servers');
@@ -49,7 +49,7 @@ async function main(projectId = 'YOUR_PROJECT_ID') {
 
   listGameServerDeployments();
 
-  // [END cloud_game_servers_list_deployments]
+  // [END cloud_game_servers_deployment_list]
 }
 
 main(...process.argv.slice(2)).catch(err => {

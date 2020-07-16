@@ -106,9 +106,8 @@ exports.helloGCS = (file, context) => {
  *
  * @param {object} file The Cloud Storage file metadata.
  * @param {object} context The event metadata.
- * @param {function} callback The callback function.
  */
-exports.helloGCSGeneric = (file, context, callback) => {
+exports.helloGCSGeneric = (file, context) => {
   console.log(`  Event: ${context.eventId}`);
   console.log(`  Event Type: ${context.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
@@ -116,8 +115,6 @@ exports.helloGCSGeneric = (file, context, callback) => {
   console.log(`  Metageneration: ${file.metageneration}`);
   console.log(`  Created: ${file.timeCreated}`);
   console.log(`  Updated: ${file.updated}`);
-
-  callback();
 };
 // [END functions_helloworld_storage_generic]
 

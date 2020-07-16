@@ -36,11 +36,14 @@ function main(
 
   async function updateNotificationConfig() {
     const [response] = await client.updateNotificationConfig({
-      updateMask: {paths: ['description', 'pubsub_topic']},
+      updateMask: {
+        paths: ['description', 'pubsub_topic', 'streaming_config.filter'],
+      },
       notificationConfig: {
         name: formattedConfigName,
         description: 'Updated config description',
         pubsubTopic: pubsubTopic,
+        streamingConfig: {filter: 'state = "INACTIVE"'},
       },
     });
     console.log('notification config update succeeded: ', response);

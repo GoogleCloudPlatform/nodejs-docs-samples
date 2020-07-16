@@ -31,7 +31,7 @@ const bucket = storage.bucket(bucketName);
 const baseCmd = 'gcloud functions';
 
 describe('system tests', () => {
-  it('helloGCSGeneric: should print event', async () => {
+  it('helloGCS: should print event', async () => {
     // Subtract time to work-around local-GCF clock difference
     const startTime = moment().subtract(2, 'minutes').toISOString();
 
@@ -44,7 +44,7 @@ describe('system tests', () => {
     // Wait for logs to become consistent
     await promiseRetry((retry) => {
       const logs = childProcess
-        .execSync(`${baseCmd} logs read helloGCSGeneric --start-time ${startTime}`)
+        .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
         .toString();
 
       try {

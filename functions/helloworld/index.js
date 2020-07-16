@@ -82,32 +82,12 @@ exports.helloPubSub = (message, context) => {
 
 // [START functions_helloworld_storage]
 /**
- * Background Cloud Function to be triggered by Cloud Storage.
- *
- * @param {object} file The Cloud Storage file metadata.
- * @param {object} context The event metadata.
- */
-exports.helloGCS = (file, context) => {
-  if (file.resourceState === 'not_exists') {
-    console.log(`File ${file.name} deleted.`);
-  } else if (file.metageneration === '1') {
-    // metageneration attribute is updated on metadata changes.
-    // on create value is 1
-    console.log(`File ${file.name} uploaded.`);
-  } else {
-    console.log(`File ${file.name} metadata updated.`);
-  }
-};
-// [END functions_helloworld_storage]
-
-// [START functions_helloworld_storage_generic]
-/**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
  * @param {object} file The Cloud Storage file metadata.
  * @param {object} context The event metadata.
  */
-exports.helloGCSGeneric = (file, context) => {
+exports.helloGCS = (file, context) => {
   console.log(`  Event: ${context.eventId}`);
   console.log(`  Event Type: ${context.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
@@ -116,7 +96,7 @@ exports.helloGCSGeneric = (file, context) => {
   console.log(`  Created: ${file.timeCreated}`);
   console.log(`  Updated: ${file.updated}`);
 };
-// [END functions_helloworld_storage_generic]
+// [END functions_helloworld_storage]
 
 /**
  * Background Cloud Function that throws an error.

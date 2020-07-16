@@ -23,7 +23,7 @@ const cwd = path.join(__dirname, '..');
 
 // [END functions_storage_integration_test]
 
-describe('functions_helloworld_storage_generic integration test', () => {
+describe('functions_helloworld_storage integration test', () => {
   // [START functions_storage_integration_test]
   it('helloGCSGeneric: should print GCS event', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
@@ -46,7 +46,7 @@ describe('functions_helloworld_storage_generic integration test', () => {
     //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
     //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     const proc = execPromise(
-      `functions-framework --target=helloGCSGeneric --signature-type=event --port=${PORT} & sleep 1; kill $!`,
+      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
       {shell: true, cwd}
     );
 

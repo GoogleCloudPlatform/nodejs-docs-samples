@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-describe('functions_helloworld_storage_generic', () => {
+describe('functions_helloworld_storage', () => {
   // [START functions_storage_unit_test]
   const assert = require('assert');
   const uuid = require('uuid');
   const sinon = require('sinon');
 
-  const {helloGCSGeneric} = require('..');
+  const {helloGCS} = require('..');
 
   const stubConsole = function () {
     sinon.stub(console, `error`);
@@ -33,7 +33,7 @@ describe('functions_helloworld_storage_generic', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('helloGCSGeneric: should print out event', () => {
+  it('helloGCS: should print out event', () => {
     // Initialize mocks
     const filename = uuid.v4();
     const eventType = 'google.storage.object.finalize';
@@ -48,7 +48,7 @@ describe('functions_helloworld_storage_generic', () => {
     }
 
     // Call tested function and verify its behavior
-    helloGCSGeneric(event, context);
+    helloGCS(event, context);
     assert.ok(console.log.calledWith(`  File: ${filename}`));
     assert.ok(console.log.calledWith(`  Event Type: ${eventType}`));
   });

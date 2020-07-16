@@ -28,7 +28,7 @@ async function main(
   gameClusterId = 'GAME_CLUSTER_ID',
   gkeClusterName = 'GKE_CLUSTER_NAME'
 ) {
-  // [START cloud_game_servers_create_cluster]
+  // [START cloud_game_servers_cluster_create]
   const {
     GameServerClustersServiceClient,
   } = require('@google-cloud/game-servers');
@@ -73,7 +73,7 @@ async function main(
   }
 
   createGameServerCluster();
-  // [END cloud_game_servers_create_cluster]
+  // [END cloud_game_servers_cluster_create]
 }
 
 main(...process.argv.slice(2)).catch(err => {

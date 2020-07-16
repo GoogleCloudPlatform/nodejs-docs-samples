@@ -24,7 +24,7 @@ async function main(
   location = 'LOCATION_ID',
   realmId = 'REALM_ID'
 ) {
-  // [START cloud_game_servers_delete_realm]
+  // [START cloud_game_servers_realm_delete]
   const {RealmsServiceClient} = require('@google-cloud/game-servers');
 
   const client = new RealmsServiceClient();
@@ -48,7 +48,7 @@ async function main(
   }
 
   deleteRealm();
-  // [END cloud_game_servers_delete_realm]
+  // [END cloud_game_servers_realm_delete]
 }
 
 main(...process.argv.slice(2)).catch(err => {

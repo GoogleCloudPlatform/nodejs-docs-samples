@@ -24,7 +24,7 @@ async function main(
   location = 'LOCATION_ID',
   realmId = 'REALM_ID'
 ) {
-  // [START cloud_game_servers_get_realm]
+  // [START cloud_game_servers_realm_get]
   const {RealmsServiceClient} = require('@google-cloud/game-servers');
 
   const client = new RealmsServiceClient();
@@ -53,7 +53,7 @@ async function main(
   }
 
   getRealm();
-  // [END cloud_game_servers_get_realm]
+  // [END cloud_game_servers_realm_get]
 }
 
 main(...process.argv.slice(2)).catch(err => {

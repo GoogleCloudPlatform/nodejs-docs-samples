@@ -22,7 +22,7 @@ async function main(
   projectId = 'YOUR_PROJECT_ID',
   deploymentId = 'DEPLOYMENT_ID'
 ) {
-  // [START cloud_game_servers_get_deployment]
+  // [START cloud_game_servers_deployment_get]
   const {
     GameServerDeploymentsServiceClient,
   } = require('@google-cloud/game-servers');
@@ -51,7 +51,7 @@ async function main(
 
   getGameServerDeployment();
 
-  // [END cloud_game_servers_get_deployment]
+  // [END cloud_game_servers_deployment_get]
 }
 
 main(...process.argv.slice(2)).catch(err => {

@@ -19,26 +19,26 @@
  * @param {string} location Compute Engine region.
  * @param {string} realmId the unique ID of the realm
  */
-function main(
+async function main(
   projectId = 'YOUR_PROJECT_ID',
   location = 'LOCATION_ID',
   realmId = 'REALM_ID'
 ) {
   // [START cloud_game_servers_get_realm]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'Your Google Cloud Project ID';
-  // const location = 'A Compute Engine region, e.g. "us-central1"';
-  // const realmId = 'Unique identifier of the realm';
   const {RealmsServiceClient} = require('@google-cloud/game-servers');
 
   const client = new RealmsServiceClient();
 
   async function getRealm() {
+    /**
+     * TODO(developer): Uncomment these variables before running the sample.
+     */
+    // const projectId = 'Your Google Cloud Project ID';
+    // const location = 'A Compute Engine region, e.g. "us-central1"';
+    // const realmId = 'Unique identifier of the realm';
     const request = {
       // Realm name is the full resource name including project ID and location
-      name: `projects/${projectId}/locations/${location}/realms/${realmId}`,
+      name: client.realmPath(projectId, location, realmId),
     };
 
     const [realm] = await client.getRealm(request);
@@ -50,10 +50,17 @@ function main(
     const createDate = new Date(createTime.seconds * 1000);
 
     console.log(`Realm created on: ${createDate.toLocaleDateString()}`);
-    // [END cloud_game_servers_get_realm]
   }
 
   getRealm();
+  // [END cloud_game_servers_get_realm]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

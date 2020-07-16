@@ -19,18 +19,12 @@
  * @param {string} location Compute Engine region
  * @param {string} realmId the realm to use
  */
-function main(
+async function main(
   projectId = 'YOUR_PROJECT_ID',
   location = 'LOCATION_ID',
   realmId = 'REALM_ID'
 ) {
   // [START cloud_game_servers_list_clusters]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'Your Google Cloud Project ID';
-  // const location = 'A Compute Engine region, e.g. "us-central1"';
-  // const realmId = 'The ID of the realm to locate this cluster in';
   const {
     GameServerClustersServiceClient,
   } = require('@google-cloud/game-servers');
@@ -38,9 +32,15 @@ function main(
   const client = new GameServerClustersServiceClient();
 
   async function listGameServerClusters() {
+    /**
+     * TODO(developer): Uncomment these variables before running the sample.
+     */
+    // const projectId = 'Your Google Cloud Project ID';
+    // const location = 'A Compute Engine region, e.g. "us-central1"';
+    // const realmId = 'The ID of the realm to locate this cluster in';
     const request = {
       // Provide full resource name of a Game Server Realm
-      parent: `projects/${projectId}/locations/${location}/realms/${realmId}`,
+      parent: client.realmPath(projectId, location, realmId),
     };
 
     const results = await client.listGameServerClusters(request);
@@ -54,10 +54,17 @@ function main(
         `\tGKE cluster: ${cluster.connectionInfo.gkeClusterReference.cluster}`
       );
     }
-    // [END cloud_game_servers_list_clusters]
   }
 
   listGameServerClusters();
+  // [END cloud_game_servers_list_clusters]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

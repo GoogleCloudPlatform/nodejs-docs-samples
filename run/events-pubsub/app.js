@@ -23,6 +23,7 @@ app.post('/', (req, res) => {
     ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
     : 'World';
   
+  console.log(`Hello, ${name}! ID: ${req.get('ce-id') || ''}`);
   res.send(`Hello, ${name}! ID: ${req.get('ce-id') || ''}`);
 });
 

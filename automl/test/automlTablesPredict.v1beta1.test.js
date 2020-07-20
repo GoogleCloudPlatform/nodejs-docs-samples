@@ -26,8 +26,8 @@ const region = 'us-central1';
 const modelId = process.env.TABLE_MODEL_ID;
 const gcsInputUri = `gs://${projectId}-tables/predictTest.csv`;
 const gcsOutputUriPrefix = `gs://${projectId}-tables/test_outputs/`;
-const bqInputUri = 'bq://automl-tables-bg-input';
-const bqOutputUriPrefix = 'bq://automl-tables-bg-output';
+const bqInputUri = `bq://${projectId}.automl_test.bank_marketing`;
+const bqOutputUriPrefix = `bq://${projectId}`;
 
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
@@ -90,11 +90,11 @@ describe('Tables PredictionAPI', () => {
     assert.include(output, 'Operation name:');
   });
 
-  it.skip(`should perform batch prediction using BQ as source and
+  it(`should perform batch prediction using BQ as source and
     BQ as destination`, async () => {
     // Run batch prediction using BQ as source and BQ as destination
     const output = exec(
-      `node tables/predict-gcs-source-bq-dest.v1beta1.js predict-using-bq-source-and-bq-dest "${modelId}"` +
+      `node tables/predict-bq-source-bq-dest.v1beta1.js "${projectId}" "${region}" "${modelId}"` +
         ` "${bqInputUri}" "${bqOutputUriPrefix}"`
     );
     assert.match(output, /Operation name:/);

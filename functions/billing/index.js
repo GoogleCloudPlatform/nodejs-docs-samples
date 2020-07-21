@@ -19,7 +19,7 @@
 const {google} = require('googleapis');
 const {auth} = require('google-auth-library');
 
-const PROJECT_ID = process.env.GCP_PROJECT;
+const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 // [END functions_billing_stop]
 // [END functions_billing_limit]

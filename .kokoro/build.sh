@@ -14,13 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
       
-export GCLOUD_PROJECT=nodejs-docs-samples-tests
-export GCP_PROJECT=$GCLOUD_PROJECT
-export GOOGLE_CLOUD_PROJECT=$GCLOUD_PROJECT
+export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 
 export GCF_REGION=us-central1
 export NODE_ENV=development
-export BUCKET_NAME=$GCLOUD_PROJECT
+export BUCKET_NAME=$GOOGLE_CLOUD_PROJECT
 
 # Configure GAE variables
 export TWILIO_NUMBER="+15005550006" # public placeholder value
@@ -46,8 +44,8 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 
 # Configure GCF variables
 export FUNCTIONS_TOPIC=integration-tests-instance
-export FUNCTIONS_BUCKET=$GCLOUD_PROJECT
-export FUNCTIONS_DELETABLE_BUCKET=$GCLOUD_PROJECT-functions
+export FUNCTIONS_BUCKET=$GOOGLE_CLOUD_PROJECT
+export FUNCTIONS_DELETABLE_BUCKET=$GOOGLE_CLOUD_PROJECT-functions
 
 #  functions/speech-to-speech
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
@@ -66,7 +64,7 @@ export RESULT_BUCKET=$FUNCTIONS_BUCKET
 export TO_LANG="en,es"
 
 #  functions/imagemagick
-export BLURRED_BUCKET_NAME=$GCLOUD_PROJECT-imagick
+export BLURRED_BUCKET_NAME=$GOOGLE_CLOUD_PROJECT-imagick
 
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
@@ -92,7 +90,7 @@ npm install
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-gcloud config set project $GCLOUD_PROJECT
+gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 # Download and run the proxy if testing a Cloud SQL sample
 if [[ $SQL_CLIENT ]]; then

@@ -128,35 +128,6 @@ describe('index.test.js', () => {
     });
   });
 
-  describe('functions_helloworld_background helloBackground', () => {
-    const PORT = 8083;
-    let ffProc;
-
-    before(() => {
-      ffProc = startFF('helloBackground', 'event', PORT);
-    });
-
-    after(async () => {
-      await ffProc;
-    });
-
-    it('helloBackground: should print a name', async () => {
-      const data = {data: {name: 'John'}};
-
-      const response = await httpInvocation('helloBackground', PORT, data);
-
-      assert.ok(response.body.includes('Hello John!'));
-    });
-
-    it('helloBackground: should print hello world', async () => {
-      const data = {data: {}};
-
-      const response = await httpInvocation('helloBackground', PORT, data);
-
-      assert.ok(response.body.includes('Hello World!'));
-    });
-  });
-
   describe('functions_helloworld_pubsub helloPubSub', () => {
     /* See sample.integration.pubsub.test.js */
   });

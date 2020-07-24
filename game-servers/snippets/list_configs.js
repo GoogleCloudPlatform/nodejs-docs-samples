@@ -14,7 +14,7 @@
 'use strict';
 
 /**
- * Delete a Game Servers Deployment.
+ * List all the Game Servers Configs.
  * @param {string} projectId string project identifier
  * @param {string} deploymentId unique identifier for the new Game Server Deployment
  */
@@ -22,33 +22,41 @@ async function main(
   projectId = 'YOUR_PROJECT_ID',
   deploymentId = 'DEPLOYMENT_ID'
 ) {
-  // [START cloud_game_servers_deployment_delete]
+  // [START cloud_game_servers_config_list]
   const {
-    GameServerDeploymentsServiceClient,
+    GameServerConfigsServiceClient,
   } = require('@google-cloud/game-servers');
 
-  const client = new GameServerDeploymentsServiceClient();
+  const client = new GameServerConfigsServiceClient();
 
-  async function deleteGameServerDeployment() {
+  async function listGameServerConfigs() {
     /**
      * TODO(developer): Uncomment these variables before running the sample.
      */
     // const projectId = 'Your Google Cloud Project ID';
     // const deploymentId = 'A unique ID for the Game Server Deployment';
     const request = {
-      // The full resource name
-      name: client.gameServerDeploymentPath(projectId, 'global', deploymentId),
+      parent: client.gameServerDeploymentPath(
+        projectId,
+        'global',
+        deploymentId
+      ),
     };
 
-    const [operation] = await client.deleteGameServerDeployment(request);
-    await operation.promise();
+    const [results] = await client.listGameServerConfigs(request);
+    for (const config of results) {
+      console.log(`Config name: ${config.name}`);
+      console.log(`Config description: ${config.description}`);
 
-    console.log(`Deployment with name ${request.name} deleted.`);
+      const createTime = config.createTime;
+      const createDate = new Date(createTime.seconds * 1000);
+      console.log(`Config created on: ${createDate.toLocaleDateString()}\n`);
+    }
   }
 
-  deleteGameServerDeployment();
+  listGameServerConfigs();
 
-  // [END cloud_game_servers_deployment_delete]
+  // [END cloud_game_servers_config_list]
 }
 
 main(...process.argv.slice(2)).catch(err => {

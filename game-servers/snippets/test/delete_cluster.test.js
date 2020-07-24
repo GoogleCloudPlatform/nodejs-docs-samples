@@ -87,26 +87,11 @@ describe('Game Servers Delete Cluster Test', () => {
   });
 
   after(async () => {
-    // Delete the Game Server cluster
-    const deleteClusterRequest = {
-      // Provide full resource name of a Game Server Realm
-      name: `projects/${projectId}/locations/${LOCATION}/realms/${realmId}/gameServerClusters/${gameClusterId}`,
-    };
-    try {
-      const [operation1] = await gameClustersClient.deleteGameServerCluster(
-        deleteClusterRequest
-      );
-      await operation1.promise();
-    } catch (ex) {
-      console.log(ex);
-      console.log(`Realm ID: ${realmId}`);
-      console.log(`Cluster ID: ${gameClusterId}`);
-    }
     // Delete the realm
     const deleteRealmRequest = {
       name: `projects/${projectId}/locations/${LOCATION}/realms/${realmId}`,
     };
-    const [operation2] = await realmsClient.deleteRealm(deleteRealmRequest);
-    await operation2.promise();
+    const [operation] = await realmsClient.deleteRealm(deleteRealmRequest);
+    await operation.promise();
   });
 });

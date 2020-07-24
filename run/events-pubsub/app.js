@@ -23,8 +23,9 @@ app.post('/', (req, res) => {
     ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
     : 'World';
   
-  console.log(`Hello, ${name}! ID: ${req.get('ce-id') || ''}`);
-  res.send(`Hello, ${name}! ID: ${req.get('ce-id') || ''}`);
+  const msg = `Hello, ${name}! ID: ${req.get('ce-id') || ''}`;
+  console.log(msg);
+  res.send(msg);
 });
 
 module.exports = app;

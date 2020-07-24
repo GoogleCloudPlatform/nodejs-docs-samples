@@ -22,7 +22,7 @@ const sinon = require('sinon');
 
 const cwd = path.join(__dirname, '..');
 
-const PROJECT_NAME = process.env.GCP_PROJECT;
+const PROJECT_NAME = process.env.GOOGLE_CLOUD_PROJECT;
 
 const {BILLING_ACCOUNT} = process.env;
 

@@ -25,7 +25,7 @@ const topicName = `nodejs-iot-test-topic-${uuid.v4()}`;
 const registryName = `nodejs-iot-test-registry-${uuid.v4()}`;
 const region = 'us-central1';
 const projectId =
-  process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
+  process.env.GOOGLE_CLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 
 const cmd = 'node manager.js';
 const cwd = path.join(__dirname, '..');
@@ -43,8 +43,8 @@ before(async () => {
     shell: true,
   });
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,

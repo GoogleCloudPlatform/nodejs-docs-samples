@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId,

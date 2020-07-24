@@ -56,8 +56,8 @@ const httpInvocation = (fnUrl, port, body) => {
 describe('index.test.js', () => {
   before(() => {
     assert(
-      process.env.GCLOUD_PROJECT,
-      `Must set GCLOUD_PROJECT environment variable!`
+      process.env.GOOGLE_CLOUD_PROJECT,
+      `Must set GOOGLE_CLOUD_PROJECT environment variable!`
     );
     assert(
       process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -125,35 +125,6 @@ describe('index.test.js', () => {
 
       assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(response.body.includes('<script>'), false);
-    });
-  });
-
-  describe('functions_helloworld_background helloBackground', () => {
-    const PORT = 8083;
-    let ffProc;
-
-    before(() => {
-      ffProc = startFF('helloBackground', 'event', PORT);
-    });
-
-    after(async () => {
-      await ffProc;
-    });
-
-    it('helloBackground: should print a name', async () => {
-      const data = {data: {name: 'John'}};
-
-      const response = await httpInvocation('helloBackground', PORT, data);
-
-      assert.ok(response.body.includes('Hello John!'));
-    });
-
-    it('helloBackground: should print hello world', async () => {
-      const data = {data: {}};
-
-      const response = await httpInvocation('helloBackground', PORT, data);
-
-      assert.ok(response.body.includes('Hello World!'));
     });
   });
 

@@ -24,7 +24,7 @@ const {Storage} = require('@google-cloud/storage');
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cloudRegion = 'us-central1';
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const pubSubClient = new PubSub({projectId});
 const storage = new Storage();
 const topicName = `nodejs-healthcare-test-topic-${uuid.v4()}`;
@@ -46,8 +46,8 @@ const gcsUri = `${bucketName}/${fhirFileName}`;
 
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,

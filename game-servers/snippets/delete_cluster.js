@@ -51,7 +51,8 @@ async function main(
       ),
     };
 
-    await client.deleteGameServerCluster(request);
+    const [operation] = await client.deleteGameServerCluster(request);
+    await operation.promise();
 
     console.log('Game Server cluster deleted');
   }

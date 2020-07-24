@@ -19,7 +19,7 @@ const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
 
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const cloudRegion = 'us-central1';
 
 const cwdDatasets = path.join(__dirname, '../../datasets');
@@ -43,8 +43,8 @@ const instanceUid = '1.2.840.113619.2.176.3596.3364818.7271.1259708501.876';
 
 before(() => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,

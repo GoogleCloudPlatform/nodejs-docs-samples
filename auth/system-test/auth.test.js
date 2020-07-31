@@ -25,8 +25,8 @@ const {BUCKET_NAME} = process.env;
 
 before(() => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -40,7 +40,7 @@ it('should load credentials implicitly', () => {
 });
 
 it('should load credentials explicitly', () => {
-  const project = process.env.GCLOUD_PROJECT;
+  const project = process.env.GOOGLE_CLOUD_PROJECT;
   const keyfile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
   const output = execSync(

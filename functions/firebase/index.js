@@ -85,7 +85,7 @@ exports.helloAuth = (event) => {
 const Firestore = require('@google-cloud/firestore');
 
 const firestore = new Firestore({
-  projectId: process.env.GCP_PROJECT,
+  projectId: process.env.GOOGLE_CLOUD_PROJECT,
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase

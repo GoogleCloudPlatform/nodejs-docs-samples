@@ -25,7 +25,7 @@ exports.helloWorld = (req, res) => {
 // [START functions_log_retrieve]
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
+// the project specified by the GOOGLE_CLOUD_PROJECT environment variable. See
 // https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
 const Logging = require('@google-cloud/logging');
 

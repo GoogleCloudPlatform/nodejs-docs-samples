@@ -49,19 +49,6 @@ exports.helloHttp = (req, res) => {
 };
 // [END functions_helloworld_http]
 
-// [START functions_helloworld_background]
-/**
- * Background Cloud Function.
- *
- * @param {object} event The Cloud Functions event.
- * @param {object} context The event metadata.
- * @param {function} callback The callback function.
- */
-exports.helloBackground = (event, context, callback) => {
-  callback(null, `Hello ${event.name || 'World'}!`);
-};
-// [END functions_helloworld_background]
-
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.

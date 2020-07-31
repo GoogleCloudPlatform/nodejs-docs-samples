@@ -14,9 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
       
-export GCLOUD_PROJECT=cdpe-functions-billing-test
-export GCP_PROJECT=$GCLOUD_PROJECT
-export GOOGLE_CLOUD_PROJECT=$GCLOUD_PROJECT
+export GOOGLE_CLOUD_PROJECT=cdpe-functions-billing-test
 
 export GCF_REGION=us-central1
 export NODE_ENV=development
@@ -34,7 +32,7 @@ npm install
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-gcloud config set project $GCLOUD_PROJECT
+gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 npm run ${TEST_CMD}
 

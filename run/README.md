@@ -109,8 +109,9 @@ npm test
 
 # Run system tests.
 SAMPLE=[SAMPLE_TO_TEST]
-gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual
-CONTAINER_IMAGE=gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual SERVICE_NAME=${SAMPLE} npm run system-test
+CONTAINER_IMAGE=gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual 
+gcloud builds submit --tag $CONTAINER_IMAGE
+SERVICE_NAME=${SAMPLE} npm run system-test
 gcloud container images delete gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual
 ```
 

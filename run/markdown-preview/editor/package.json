@@ -1,5 +1,5 @@
 {
-  "name": "markdown-preview",
+  "name": "markdown-preview-editor",
   "description": "Cloud Run service to demonstrate service-to-service authentication, paired with Renderer service.",
   "version": "0.0.1",
   "private": true,

@@ -136,39 +136,6 @@ describe('index.test.js', () => {
     /* See sample.integration.storage.test.js */
   });
 
-  describe('functions_helloworld_storage_generic helloGCSGeneric', () => {
-    it('helloGCSGeneric: should print event details', async () => {
-      const PORT = 8084;
-      const ffProc = startFF('helloGCSGeneric', 'event', PORT);
-
-      // Update file metadata
-      const data = {
-        name: fileName,
-        resourceState: 'exists',
-        metageneration: '2',
-        bucket: bucketName,
-        timeCreated: new Date(),
-        updated: new Date(),
-      };
-      const context = {
-        eventId: '12345',
-        eventType: 'google.storage.object.metadataUpdate',
-      };
-
-      const response = await httpInvocation('helloGCSGeneric', PORT, {
-        data,
-        context,
-      });
-      const {stdout} = await ffProc;
-
-      assert.ok(stdout.includes(`Bucket: ${bucketName}`));
-      assert.ok(stdout.includes(`File: ${fileName}`));
-      assert.ok(
-        stdout.includes('Event Type: google.storage.object.metadataUpdate')
-      );
-    });
-  });
-
   describe('functions_helloworld_error', () => {
     describe('Error handling (unit tests)', () => {
       it('helloError: should throw an error', () => {

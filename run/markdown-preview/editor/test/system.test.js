@@ -45,12 +45,12 @@ describe('End-to-End Tests', () => {
       const options = {
         prefixUrl: BASE_URL.trim(),
         headers: {
-          Authorization: `Bearer ${ID_TOKEN.trim()}`
+          Authorization: `Bearer ${ID_TOKEN.trim()}`,
+          'Content-Type': 'application/json'
         },
         method: 'POST',
         json:  {
           "data": "**markdown**"
-
         },
         retry: 3
       };

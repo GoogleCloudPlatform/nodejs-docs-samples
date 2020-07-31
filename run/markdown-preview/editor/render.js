@@ -43,7 +43,7 @@ const renderRequest = async (markdown) => {
     const clientHeaders = await client.getRequestHeaders();
     serviceRequestOptions.headers['Authorization'] = clientHeaders['Authorization'];
   } catch(err) {
-    throw Error('GoogleAuth server could not respond to request: ', err);
+    throw Error('could not create identity token: ', err);
   };
 
   try {
@@ -51,7 +51,7 @@ const renderRequest = async (markdown) => {
     const serviceResponse = await got(serviceUrl, serviceRequestOptions);
     return serviceResponse.body;
   } catch (err) { 
-    throw Error('Renderer service could not respond to request: ', err);
+    throw Error('request to rendering service failed: ', err);
   };
   // [END run_secure_request]
 };

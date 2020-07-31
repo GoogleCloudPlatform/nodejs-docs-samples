@@ -11,10 +11,10 @@
   "engines": {
     "node": ">= 12.0.0"
   },
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node main.js",
-    "test": "mocha test/main.test.js --exit",
+    "start": "node index.js",
+    "test": "mocha test/app.test.js --exit",
     "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {

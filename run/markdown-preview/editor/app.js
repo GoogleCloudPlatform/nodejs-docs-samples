@@ -53,17 +53,11 @@ app.post('/render', async (req, res) => {
     const response = await renderRequest(markdown);
     res.status(200).send(response);
   } catch (err) {
-    console.log('Error querying the Renderer service: ', err);
+    console.log('error: markdown rendering:', err);
     res.status(500).send(err);
   }
 });
 // [END run_secure_request_do]
-
-const PORT = process.env.PORT || 8080;
-
-app.listen(PORT, err => {
-  console.log(`Editor service is listening on port ${PORT}`);
-});
 
 // Exports for testing purposes.
 module.exports = {

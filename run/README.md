@@ -109,7 +109,7 @@ npm test
 
 # Run system tests.
 SAMPLE=[SAMPLE_TO_TEST]
-CONTAINER_IMAGE=gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual 
+CONTAINER_IMAGE=gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual
 gcloud builds submit --tag $CONTAINER_IMAGE
 SERVICE_NAME=${SAMPLE} npm run system-test
 gcloud container images delete gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual
@@ -131,7 +131,7 @@ for more information.
 [run_docs]: https://cloud.google.com/run/docs/
 [run_build]: https://cloud.google.com/run/docs/building/containers
 [run_deploy]: https://cloud.google.com/run/docs/deploying
-[helloworld]: https://github.com/knative/docs/tree/master/docs/serving/samples/hello-world/helloworld-nodejs
+[helloworld]: helloworld/
 [system_package]: system-package/
 [pubsub]: pubsub/
 [image_processing]: image-processing/

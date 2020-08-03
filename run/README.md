@@ -29,12 +29,11 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
 2. Clone this repository:
 
-    ```
+    ```sh
     git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
     ```
 
     Note: Some samples in the list above are hosted in other repositories. They are noted with the symbol "&#10149;".
-
 
 ## How to run a sample locally
 
@@ -42,7 +41,7 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
 2. [Build the sample container](https://cloud.google.com/run/docs/building/containers#building_locally_and_pushing_using_docker):
 
-    ```
+    ```sh
     export SAMPLE=$sample
     cd $SAMPLE
     docker build --tag $sample .
@@ -52,13 +51,13 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
     With the built container:
 
-    ```
+    ```sh
     PORT=8080 && docker run --rm -p 8080:${PORT} -e PORT=${PORT} $SAMPLE
     ```
 
     Overriding the built container with local code:
 
-    ```
+    ```sh
     PORT=8080 && docker run --rm \
         -p 8080:${PORT} -e PORT=${PORT} \
         -v $PWD:/usr/src/app $SAMPLE
@@ -66,7 +65,7 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
     Injecting your service account key:
 
-    ```
+    ```sh
     export SA_KEY_NAME=my-key-name-123
     PORT=8080 && docker run --rm \
         -p 8080:${PORT} -e PORT=${PORT} \
@@ -81,16 +80,17 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
     2. Run the container with a shell:
 
-    ```
+    ```sh
     PORT=8080 && docker run --rm \
         --interactive --tty \
         -p 8080:${PORT} -e PORT=${PORT} \
         -v $PWD:/usr/src/app $SAMPLE \
         /bin/bash
     ```
+
     3. Re-generate the `package-lock.json`:
 
-    ```
+    ```sh
     rm package-lock.json
     npm install
     ```
@@ -101,11 +101,25 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
 
     4. Exit the container: `Ctrl-D`
 
+## Running the Tests
+
+```sh
+# Run unit & integration tests.
+npm test
+
+# Run system tests.
+SAMPLE=[SAMPLE_TO_TEST]
+CONTAINER_IMAGE=gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual 
+gcloud builds submit --tag $CONTAINER_IMAGE
+SERVICE_NAME=${SAMPLE} npm run system-test
+gcloud container images delete gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual
+```
+
 ## Deploying
 
-```
+```sh
 gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
-gcloud run deploy $SAMPLE \
+gcloud run deploy ${SAMPLE} \
   # Needed for Manual Logging sample.
   --set-env-var GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT} \
   --image gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}

@@ -49,7 +49,7 @@ describe(REGION_TAG, () => {
       });
   });
 
-  it('should batch translate the input text', async () => {
+  it('should batch translate the input text', async function () {
     const projectId = await translationClient.getProjectId();
     const inputUri = 'gs://cloud-samples-data/translation/text.txt';
 
@@ -59,6 +59,9 @@ describe(REGION_TAG, () => {
     );
     assert.match(output, /Total Characters: 13/);
     assert.match(output, /Translated Characters: 13/);
+
+    // batch translate fluctuates between 2 to 4 minutes.
+    this.timeout(300000);
   });
 
   // Delete the folder from GCS for cleanup

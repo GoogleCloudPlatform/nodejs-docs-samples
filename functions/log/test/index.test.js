@@ -67,16 +67,6 @@ describe('functions_log_helloworld', () => {
   });
 });
 
-describe('functions_log_retrieve', () => {
-  it('getLogEntries: should retrieve logs', async () => {
-    const sample = getSample();
-
-    const entries = await sample.program.getLogEntries();
-    assert.strictEqual(console.log.calledWith('Entries:'), true);
-    assert.strictEqual(entries === sample.mocks.results[0], true);
-  });
-});
-
 describe('functions_log_stackdriver', () => {
   it('processLogEntry: should process log entry', () => {
     const sample = getSample();

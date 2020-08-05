@@ -33,7 +33,7 @@ Run the following command to install the library dependencies for NodeJS:
       setConfig <deviceId> <registryId> <configuration> <version>  Sets a devices configuration to the specified data.
 
     Options:
-      --projectId, -p       The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+      --projectId, -p       The Project ID to use. Defaults to the value of the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                             environment variables.                                                                  [string]
       --serviceAccount, -s  The path to your service credentials JSON.                                              [string]
       --help                Show help                                                                              [boolean]

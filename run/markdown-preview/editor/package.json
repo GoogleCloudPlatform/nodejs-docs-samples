@@ -1,5 +1,5 @@
 {
-  "name": "markdown-preview",
+  "name": "markdown-preview-editor",
   "description": "Cloud Run service to demonstrate service-to-service authentication, paired with Renderer service.",
   "version": "0.0.1",
   "private": true,
@@ -14,9 +14,9 @@
   },
   "main": "main.js",
   "scripts": {
-    "e2e-test": "test/runner.sh mocha test/system.test.js --timeout=30000",
-    "start": "node main.js",
-    "test": "mocha test/main.test.js test/render.test.js --exit"
+    "start": "node index.js",
+    "test": "mocha test/app.test.js --timeout=10000 --exit",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=30000"
   },
   "dependencies": {
     "express": "^4.17.1",

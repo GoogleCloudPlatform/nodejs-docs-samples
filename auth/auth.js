@@ -90,7 +90,7 @@ const cli = require(`yargs`)
     {
       projectId: {
         alias: 'p',
-        default: process.env.GCLOUD_PROJECT,
+        default: process.env.GOOGLE_CLOUD_PROJECT,
       },
       keyFilename: {
         alias: 'k',

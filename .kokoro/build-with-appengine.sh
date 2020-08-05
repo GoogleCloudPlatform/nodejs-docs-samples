@@ -16,7 +16,7 @@
 
 set -e;
 
-export GCLOUD_PROJECT=nodejs-docs-samples-tests
+export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 
 # Activate mocha config
 export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
@@ -31,7 +31,7 @@ gcloud components update --quiet
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-gcloud config set project $GCLOUD_PROJECT
+gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 export NODE_ENV=development
 
@@ -47,7 +47,7 @@ cd github/nodejs-docs-samples/${PROJECT}
 # Configure gcloud
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-gcloud config set project $GCLOUD_PROJECT
+gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 # Deploy the app
 gcloud app deploy --version $GAE_VERSION --no-promote --quiet

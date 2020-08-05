@@ -17,7 +17,7 @@
     "test": "npm run unit-test && npm run system-test"
   },
   "dependencies": {
-    "googleapis": "^52.0.0",
+    "googleapis": "^58.0.0",
     "moment": "^2.24.0",
     "yargs": "^15.0.0"
   },

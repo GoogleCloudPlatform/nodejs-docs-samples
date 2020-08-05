@@ -44,7 +44,8 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 # Version is in the format <PR#>-<GIT COMMIT SHA>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently. Defaults to 'latest'.
-export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
+RAW_SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
+export SAMPLE_VERSION="${RAW_SAMPLE_VERSION:0:15}"
 export SAMPLE_NAME="$(basename $(pwd))"
 
 # Cloud Run has a max service name length, $KOKORO_BUILD_ID is too long to guarantee no conflict deploys.
@@ -83,4 +84,4 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 fi
 
 npm test
-npm run --if-present e2e-test
+npm run --if-present system-test

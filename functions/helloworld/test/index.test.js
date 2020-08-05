@@ -56,8 +56,8 @@ const httpInvocation = (fnUrl, port, body) => {
 describe('index.test.js', () => {
   before(() => {
     assert(
-      process.env.GCLOUD_PROJECT,
-      `Must set GCLOUD_PROJECT environment variable!`
+      process.env.GOOGLE_CLOUD_PROJECT,
+      `Must set GOOGLE_CLOUD_PROJECT environment variable!`
     );
     assert(
       process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -128,74 +128,12 @@ describe('index.test.js', () => {
     });
   });
 
-  describe('functions_helloworld_background helloBackground', () => {
-    const PORT = 8083;
-    let ffProc;
-
-    before(() => {
-      ffProc = startFF('helloBackground', 'event', PORT);
-    });
-
-    after(async () => {
-      await ffProc;
-    });
-
-    it('helloBackground: should print a name', async () => {
-      const data = {data: {name: 'John'}};
-
-      const response = await httpInvocation('helloBackground', PORT, data);
-
-      assert.ok(response.body.includes('Hello John!'));
-    });
-
-    it('helloBackground: should print hello world', async () => {
-      const data = {data: {}};
-
-      const response = await httpInvocation('helloBackground', PORT, data);
-
-      assert.ok(response.body.includes('Hello World!'));
-    });
-  });
-
   describe('functions_helloworld_pubsub helloPubSub', () => {
     /* See sample.integration.pubsub.test.js */
   });
 
   describe('functions_helloworld_storage helloGCS', () => {
     /* See sample.integration.storage.test.js */
-  });
-
-  describe('functions_helloworld_storage_generic helloGCSGeneric', () => {
-    it('helloGCSGeneric: should print event details', async () => {
-      const PORT = 8084;
-      const ffProc = startFF('helloGCSGeneric', 'event', PORT);
-
-      // Update file metadata
-      const data = {
-        name: fileName,
-        resourceState: 'exists',
-        metageneration: '2',
-        bucket: bucketName,
-        timeCreated: new Date(),
-        updated: new Date(),
-      };
-      const context = {
-        eventId: '12345',
-        eventType: 'google.storage.object.metadataUpdate',
-      };
-
-      const response = await httpInvocation('helloGCSGeneric', PORT, {
-        data,
-        context,
-      });
-      const {stdout} = await ffProc;
-
-      assert.ok(stdout.includes(`Bucket: ${bucketName}`));
-      assert.ok(stdout.includes(`File: ${fileName}`));
-      assert.ok(
-        stdout.includes('Event Type: google.storage.object.metadataUpdate')
-      );
-    });
   });
 
   describe('functions_helloworld_error', () => {

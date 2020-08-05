@@ -20,8 +20,8 @@ const supertest = require('supertest');
 
 describe('Editor unit tests', () => {
   describe('Initialize app', () => {
-    it('should successfully start the app', async function () {
-      const {app} = require(path.join(__dirname, '..', 'main'));
+    it('should successfully load the index page', async function () {
+      const {app} = require(path.join(__dirname, '..', 'app'));
       const request = supertest(app);
       await request.get('/').expect(200);
     })
@@ -31,8 +31,7 @@ describe('Editor unit tests', () => {
     let template;
 
     before( async () => {
-      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {buildRenderedHtml} = require(path.join(__dirname, '..', 'main'));
+      const {buildRenderedHtml} = require(path.join(__dirname, '..', 'app'));
       template = await buildRenderedHtml();
     })
 
@@ -40,35 +39,31 @@ describe('Editor unit tests', () => {
       let htmlString = template.includes('<title>Markdown Editor</title>');
       assert.equal(htmlString, true);
     });
-
-    it('includes Markdown from the templates', () => {
-      let markdownString = template.includes("This UI allows a user to write Markdown text");
-      assert.equal(markdownString, true)
-    });
-
-    it('accurately checks the template for nonexistant string', () => {
-      let falseString = template.includes("not a string in the template");
-      assert.equal(falseString, false);      
-    });
   });
 
+});
+
+describe('Integration tests', () => {
   describe('Render request', () => {
     let request;
 
     before(async () => {
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app} = require(path.join(__dirname, '..', 'main'));
+      const {app} = require(path.join(__dirname, '..', 'app'));
       request = supertest(app);
     });
 
-    it('should respond with Not Found for a GET request to the /render endpoint', async () => {
+    it('responds 404 Not Found on "GET /render"', async () => {
       await request.get('/render').expect(404);
     });
 
-    it('can make a POST request, with an error thrown if data type is incorrect', async function () {
-      this.timeout(9000);
+    it('responds 200 OK on "POST /render" with valid JSON', async () => {
       // A valid type will make a request to the /render endpoint.
-      await request.post('/render').type('json').send({"data":"markdown"}).expect(200);
+      // TODO: This test outputs a JSON parsing SyntaxError from supertest but does not fail the assert.
+      await request.post('/render').type('json').set('Accept', 'text/html').send({"data":"markdown"}).expect(200).expect('content-type', 'text/html; charset=utf-8');
+    });
+    
+    it('responds 400 Bad Request on "POST /render" without valid JSON', async () => {
       // An incorrect type will not successfully make a request and will print an error in the console. 
       await request.post('/render').type('json').send('string: incorrect data type').expect(400);
     });

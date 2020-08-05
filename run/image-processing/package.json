@@ -15,7 +15,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/*.test.js --check-leaks --timeout=5000"
+    "test": "mocha test/app.test.js --check-leaks --timeout=5000",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {
     "@google-cloud/storage": "^5.0.0",
@@ -25,6 +26,7 @@
     "gm": "^1.23.1"
   },
   "devDependencies": {
+    "got": "^11.5.0",
     "mocha": "^8.0.0",
     "supertest": "^4.0.2"
   }

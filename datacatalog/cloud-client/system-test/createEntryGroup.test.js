@@ -20,7 +20,7 @@ const uuid = require('uuid');
 const cwd = path.join(__dirname, '..');
 const {exec} = require('child_process');
 
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 // Use unique id to avoid conflicts between concurrent test runs
 const entryGroupId = `fileset_entry_group_${uuid.v4().substr(0, 8)}`;
 const location = 'us-central1';
@@ -30,8 +30,8 @@ const datacatalog = new DataCatalogClient();
 
 before(() => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,

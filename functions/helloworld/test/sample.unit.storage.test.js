@@ -33,46 +33,24 @@ describe('functions_helloworld_storage', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('helloGCS: should print uploaded message', () => {
+  it('helloGCS: should print out event', () => {
     // Initialize mocks
     const filename = uuid.v4();
+    const eventType = 'google.storage.object.finalize';
     const event = {
       name: filename,
       resourceState: 'exists',
       metageneration: '1',
     };
+    const context = {
+      eventId: 'g1bb3r1sh',
+      eventType: eventType
+    }
 
     // Call tested function and verify its behavior
-    helloGCS(event);
-    assert.ok(console.log.calledWith(`File ${filename} uploaded.`));
+    helloGCS(event, context);
+    assert.ok(console.log.calledWith(`  File: ${filename}`));
+    assert.ok(console.log.calledWith(`  Event Type: ${eventType}`));
   });
   // [END functions_storage_unit_test]
-
-  it('helloGCS: should print metadata updated message', () => {
-    // Initialize mocks
-    const filename = uuid.v4();
-    const event = {
-      name: filename,
-      resourceState: 'exists',
-      metageneration: '2',
-    };
-
-    // Call tested function and verify its behavior
-    helloGCS(event);
-    assert.ok(console.log.calledWith(`File ${filename} metadata updated.`));
-  });
-
-  it('helloGCS: should print deleted message', () => {
-    // Initialize mocks
-    const filename = uuid.v4();
-    const event = {
-      name: filename,
-      resourceState: 'not_exists',
-      metageneration: '3',
-    };
-
-    // Call tested function and verify its behavior
-    helloGCS(event);
-    assert.ok(console.log.calledWith(`File ${filename} deleted.`));
-  });
 });

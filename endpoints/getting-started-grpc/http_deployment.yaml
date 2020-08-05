@@ -55,6 +55,6 @@ spec:
           - containerPort: 8080
           - containerPort: 9000
       - name: node-grpc-hello
-        image: gcr.io/GCLOUD_PROJECT/endpoints-example:1.0
+        image: gcr.io/GOOGLE_CLOUD_PROJECT/endpoints-example:1.0
         ports:
           - containerPort: 50051

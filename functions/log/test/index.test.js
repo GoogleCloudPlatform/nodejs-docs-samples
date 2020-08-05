@@ -93,30 +93,4 @@ describe('functions_log_stackdriver', () => {
       true
     );
   });
-
-  it('processLogEntry: should work in Node 8', () => {
-    const sample = getSample();
-    const json = JSON.stringify({
-      protoPayload: {
-        methodName: 'method',
-        resourceName: 'resource',
-        authenticationInfo: {
-          principalEmail: 'me@example.com',
-        },
-      },
-    });
-
-    const data = {
-      data: Buffer.from(json, 'ascii'),
-    };
-
-    sample.program.processLogEntry(data);
-
-    assert.strictEqual(console.log.calledWith('Method: method'), true);
-    assert.strictEqual(console.log.calledWith('Resource: resource'), true);
-    assert.strictEqual(
-      console.log.calledWith('Initiator: me@example.com'),
-      true
-    );
-  });
 });

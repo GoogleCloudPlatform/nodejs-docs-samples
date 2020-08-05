@@ -26,7 +26,11 @@ before(async () => {
   const PORT = process.env.PORT || 8080;
   app.listen(PORT, () => {});
 
-  browser = await puppeteer.launch();
+  browser = await puppeteer.launch({
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+    ]});
   browserPage = await browser.newPage();
 });
 

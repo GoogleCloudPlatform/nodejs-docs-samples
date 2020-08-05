@@ -13,7 +13,7 @@
     "start": "node app.js",
     "lint": "eslint .",
     "fix": "eslint --fix .",
-    "test": "mocha --exit test/app.test.js",
+    "test": "mocha --exit test/*.test.js",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {

@@ -26,3 +26,6 @@ app.listen(port, () => {
   console.log(`helloworld: listening on port ${port}`);
 });
 // [END run_helloworld_service]
+
+// Exports for testing purposes.
+module.exports = app;

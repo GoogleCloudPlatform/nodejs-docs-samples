@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START run_broken_service]
+// [START run_helloworld_service]
 const express = require('express');
 const app = express();
 
@@ -25,4 +25,4 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`helloworld: listening on port ${port}`);
 });
-// [END run_broken_service]
+// [END run_helloworld_service]

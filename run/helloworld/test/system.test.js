@@ -44,31 +44,8 @@ describe('End-to-End Tests', () => {
       );
     }
 
-    it('Service uses default value', async () => {
-      const response = await get('/', BASE_URL);
-      assert.strictEqual(
-        response.statusCode,
-        200,
-        'Did not fallback to default as expected'
-      );
-      assert.strictEqual(
-        response.body,
-        `Hello World!`,
-        `Expected fallback "World" not found`
-      );
-    });
-  });
-
-  describe('Service with specified $NAME', () => {
-    const {BASE_URL_OVERRIDE} = process.env;
-    if (!BASE_URL_OVERRIDE) {
-      throw Error(
-        '"BASE_URL_OVERRIDE" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
-      );
-    }
-
     it('Service uses the NAME override', async () => {
-      const response = await get('/', BASE_URL_OVERRIDE);
+      const response = await get('/', BASE_URL);
       assert.strictEqual(
         response.statusCode,
         200,

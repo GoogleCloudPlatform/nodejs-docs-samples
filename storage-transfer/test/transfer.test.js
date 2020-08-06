@@ -173,7 +173,7 @@ it('should get a transfer job', async () => {
     [
       {
         auth: {},
-        projectId: process.env.GCLOUD_PROJECT,
+        projectId: process.env.GOOGLE_CLOUD_PROJECT,
         jobName: jobName,
       },
     ]
@@ -224,7 +224,7 @@ it('should update a transfer job', async () => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             status: options.value,
@@ -264,7 +264,7 @@ it('should update a transfer job', async () => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             description: options.value,
@@ -301,7 +301,7 @@ it('should update a transfer job', async () => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             transferSpec: JSON.parse(options.value),
@@ -367,7 +367,7 @@ it('should list transfer jobs', async () => {
     [
       {
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -391,7 +391,7 @@ it('should list transfer jobs', async () => {
     [
       {
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -432,7 +432,7 @@ it('should list transfer operations', async () => {
       {
         name: 'transferOperations',
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -464,7 +464,7 @@ it('should list transfer operations', async () => {
         name: 'transferOperations',
         auth: {},
         filter: JSON.stringify({
-          project_id: process.env.GCLOUD_PROJECT,
+          project_id: process.env.GOOGLE_CLOUD_PROJECT,
           job_names: [jobName],
         }),
       },
@@ -499,7 +499,7 @@ it('should list transfer operations', async () => {
         name: 'transferOperations',
         auth: {},
         filter: JSON.stringify({
-          project_id: process.env.GCLOUD_PROJECT,
+          project_id: process.env.GOOGLE_CLOUD_PROJECT,
           job_names: [jobName],
         }),
       },

@@ -29,7 +29,7 @@ The following command summarizes the sample usage:
 
     Options:
 
-        --projectId           The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
+        --projectId           The Project ID to use. Defaults to the value of the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                             environment variables.
         --cloudRegion         GCP cloud region.
         --registryId          Cloud IoT registry ID.

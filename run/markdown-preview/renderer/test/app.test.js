@@ -23,7 +23,7 @@ let request;
 
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'main'));
+    const app = require(path.join(__dirname, '..', 'app'));
     request = supertest(app);
   });
 

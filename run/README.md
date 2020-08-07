@@ -144,7 +144,7 @@ for more information.
 [hello_broken]: hello-broken/
 [idtoken]: https://github.com/googleapis/google-auth-library-nodejs/blob/master/samples/idtokens-serverless.js
 
-[events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-gcs
+[events_gcs]: events-storage
 [anthos_events_gcs]: events-storage/anthos.md
 [events_pubsub]: events-pubsub/
 [anthos_events_pubsub]: events-pubsub/anthos.md

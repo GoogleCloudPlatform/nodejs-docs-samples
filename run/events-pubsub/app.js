@@ -9,13 +9,15 @@ const app = express();
 app.use(express.json());
 app.post('/', (req, res) => {
   if (!req.body) {
-    const msg = 'no Pub/Sub message received';
-    res.status(400).send(`Bad Request: ${msg}`);
+    const errorMessage = 'no Pub/Sub message received';
+    res.status(400).send(`Bad Request: ${errorMessage}`);
+    console.log(`Bad Request: ${errorMessage}`);
     return;
   }
   if (!req.body.message) {
-    const msg = 'invalid Pub/Sub message format';
-    res.status(400).send(`Bad Request: ${msg}`);
+    const errorMessage = 'invalid Pub/Sub message format';
+    res.status(400).send(`Bad Request: ${errorMessage}`);
+    console.log(`Bad Request: ${errorMessage}`);
     return;
   }
   const pubSubMessage = req.body.message;
@@ -23,9 +25,9 @@ app.post('/', (req, res) => {
     ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
     : 'World';
   
-  const msg = `Hello, ${name}! ID: ${req.get('ce-id') || ''}`;
-  console.log(msg);
-  res.send(msg);
+  const result = `Hello, ${name}! ID: ${req.get('ce-id') || ''}`;
+  console.log(result);
+  res.send(result);
 });
 
 module.exports = app;

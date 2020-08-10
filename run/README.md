@@ -8,18 +8,20 @@
 
 |                 Sample                  |        Description       |     Deploy    |
 | --------------------------------------- | ------------------------ | ------------- |
-|[Hello World][helloworld]&nbsp;&#10149;  | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_helloworld] |
+|[Hello World][helloworld]  | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_helloworld] |
 |[System Packages][system_package]        | Use system-installed binaries in your service. | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_system_package] |
-|[Pub/Sub][pubsub]                        | Event-driven service with a Pub/Sub push subscription | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_pubsub] |
-|[Events – Pub/Sub][events_pubsub]         | Event-driven service with Events for Cloud Run for Pub/Sub | - |
-|[Anthos Events – Pub/Sub][anthos_events_pubsub]  | Event-driven service with Events for Cloud Run on Anthos for Pub/Sub  |      -        |
-|[Image Processing][image_processing]     | Event-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_image_processing] |
+|[Pub/Sub][pubsub]                        | Processing messages from a Pub/Sub push subscription | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_pubsub] |
+|[Image Processing][image_processing]     | Cloud Storage & Pub/Sub-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_image_processing] |
 |[Manual Logging][manual_logging]         | Structured logging without client library | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_manual_logging] |
 |[Cloud SQL (MySQL)][mysql]               | Use MySQL with Cloud Run | - |
 |[Cloud SQL (Postgres)][postgres]         | Use Postgres with Cloud Run | - |
+|[Service to Service Requests][idtoken] &#10149;  | Create requests to authenticated-only services | - |
 |[Hello Broken][hello_broken]             | Something is wrong, how do you fix it? | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30"/>][run_button_hello_broken] |
-|[Events – GCS][events_gcs]         | Event-driven service with Events for Cloud Run for GCS | - |
-|[Anthos Events – GCS][anthos_events_gcs]  | Event-driven service with Events for Cloud Run on Anthos for GCS  |      -        |
+|[Pub/Sub - Events][events_pubsub]         | Event-driven service with Events for Cloud Run for Pub/Sub | - |
+|[Pub/Sub - Anthos Events][anthos_events_pubsub]  | Event-driven service with Events for Cloud Run on Anthos for Pub/Sub  |      -        |
+|[Cloud Storage - Events][events_gcs]         | Event-driven service with Events for Cloud Run for GCS | - |
+|[Cloud Storage - Anthos Events][anthos_events_gcs]  | Event-driven service with Events for Cloud Run on Anthos for GCS  |      -        |
+
 
 For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
@@ -109,7 +111,7 @@ npm test
 
 # Run system tests.
 SAMPLE=[SAMPLE_TO_TEST]
-CONTAINER_IMAGE=gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual 
+CONTAINER_IMAGE=gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual
 gcloud builds submit --tag $CONTAINER_IMAGE
 SERVICE_NAME=${SAMPLE} npm run system-test
 gcloud container images delete gcr.io/$GOOGLE_CLOUD_PROJECT/${SAMPLE}:manual
@@ -131,7 +133,8 @@ for more information.
 [run_docs]: https://cloud.google.com/run/docs/
 [run_build]: https://cloud.google.com/run/docs/building/containers
 [run_deploy]: https://cloud.google.com/run/docs/deploying
-[helloworld]: https://github.com/knative/docs/tree/master/docs/serving/samples/hello-world/helloworld-nodejs
+
+[helloworld]: helloworld/
 [system_package]: system-package/
 [pubsub]: pubsub/
 [image_processing]: image-processing/
@@ -139,13 +142,16 @@ for more information.
 [mysql]: ../cloud-sql/mysql/mysql
 [postgres]: ../cloud-sql/postgres/knex
 [hello_broken]: hello-broken/
-[run_button_helloworld]: https://deploy.cloud.run/?git_repo=https://github.com/knative/docs&dir=docs/serving/samples/hello-world/helloworld-nodejs
+[idtoken]: https://github.com/googleapis/google-auth-library-nodejs/blob/master/samples/idtokens-serverless.js
+
+[events_gcs]: events-storage
+[anthos_events_gcs]: events-storage/anthos.md
+[events_pubsub]: events-pubsub/
+[anthos_events_pubsub]: events-pubsub/anthos.md
+
+[run_button_helloworld]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/helloworld
 [run_button_system_package]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/system-package
 [run_button_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/pubsub
 [run_button_image_processing]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/image-processing
 [run_button_manual_logging]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/logging-manual
 [run_button_hello_broken]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/hello-broken
-[events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-gcs
-[anthos_events_gcs]: events-storage/anthos.md
-[events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/events-pubsub
-[anthos_events_pubsub]: events-pubsub/anthos.md

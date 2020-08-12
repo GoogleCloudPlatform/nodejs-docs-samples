@@ -15,21 +15,28 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, before} = require('mocha');
 const cp = require('child_process');
+const DLP = require('@google-cloud/dlp');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = 'node metadata.js';
-
+const client = new DLP.DlpServiceClient();
 describe('metadata', () => {
+  let projectId;
+
+  before(async () => {
+    projectId = await client.getProjectId();
+  });
   it('should list info types', () => {
-    const output = execSync(`${cmd} infoTypes`);
+    const output = execSync(`node metadata.js ${projectId} infoTypes`);
     assert.match(output, /US_DRIVERS_LICENSE_NUMBER/);
   });
 
   it('should filter listed info types', () => {
-    const output = execSync(`${cmd} infoTypes "supported_by=RISK_ANALYSIS"`);
+    const output = execSync(
+      `node metadata.js ${projectId} infoTypes "supported_by=RISK_ANALYSIS"`
+    );
     assert.notMatch(output, /US_DRIVERS_LICENSE_NUMBER/);
   });
 });

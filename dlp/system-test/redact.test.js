@@ -15,17 +15,19 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, before} = require('mocha');
 const fs = require('fs');
 const cp = require('child_process');
 const {PNG} = require('pngjs');
 const pixelmatch = require('pixelmatch');
+const DLP = require('@google-cloud/dlp');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = 'node redact.js';
 const testImage = 'resources/test.png';
 const testResourcePath = 'system-test/resources';
+
+const client = new DLP.DlpServiceClient();
 
 async function readImage(filePath) {
   return new Promise((resolve, reject) => {
@@ -52,26 +54,30 @@ async function getImageDiffPercentage(image1Path, image2Path) {
   );
   return diffPixels / (diff.width * diff.height);
 }
-
 describe('redact', () => {
+  let projectId;
+
+  before(async () => {
+    projectId = await client.getProjectId();
+  });
   // redact_text
   it('should redact a single sensitive data type from a string', () => {
     const output = execSync(
-      `${cmd} string "My email is jenny@example.com" -t EMAIL_ADDRESS`
+      `node redactText.js ${projectId} "My email is jenny@example.com" -t EMAIL_ADDRESS`
     );
     assert.match(output, /My email is \[EMAIL_ADDRESS\]/);
   });
 
   it('should redact multiple sensitive data types from a string', () => {
     const output = execSync(
-      `${cmd} string "I am 29 years old and my email is jenny@example.com" -t EMAIL_ADDRESS AGE`
+      `node redactText.js ${projectId} "I am 29 years old and my email is jenny@example.com" LIKELIHOOD_UNSPECIFIED 'EMAIL_ADDRESS,AGE'`
     );
     assert.match(output, /I am \[AGE\] and my email is \[EMAIL_ADDRESS\]/);
   });
 
   it('should handle string with no sensitive data', () => {
     const output = execSync(
-      `${cmd} string "No sensitive data to redact here" -t EMAIL_ADDRESS AGE`
+      `node redactText.js ${projectId} "No sensitive data to redact here" LIKELIHOOD_UNSPECIFIED 'EMAIL_ADDRESS,AGE'`
     );
     assert.match(output, /No sensitive data to redact here/);
   });
@@ -80,7 +86,7 @@ describe('redact', () => {
   it('should redact a single sensitive data type from an image', async () => {
     const testName = 'redact-single-type';
     const output = execSync(
-      `${cmd} image ${testImage} ${testName}.actual.png -t PHONE_NUMBER`
+      `node redactImage.js ${projectId} ${testImage} 'LIKELIHOOD_UNSPECIFIED' 'PHONE_NUMBER' ${testName}.actual.png`
     );
     assert.match(output, /Saved image redaction results to path/);
     const difference = await getImageDiffPercentage(
@@ -93,7 +99,7 @@ describe('redact', () => {
   it('should redact multiple sensitive data types from an image', async () => {
     const testName = 'redact-multiple-types';
     const output = execSync(
-      `${cmd} image ${testImage} ${testName}.actual.png -t PHONE_NUMBER EMAIL_ADDRESS`
+      `node redactImage.js ${projectId} ${testImage} LIKELIHOOD_UNSPECIFIED 'PHONE_NUMBER,EMAIL_ADDRESS' ${testName}.actual.png`
     );
     assert.match(output, /Saved image redaction results to path/);
     const difference = await getImageDiffPercentage(
@@ -104,14 +110,26 @@ describe('redact', () => {
   });
 
   it('should report info type errors', () => {
-    const output = execSync(
-      `${cmd} string "My email is jenny@example.com" -t NONEXISTENT`
-    );
-    assert.match(output, /Error in deidentifyContent/);
+    let output;
+    try {
+      output = execSync(
+        `node redactText.js ${projectId} "My email is jenny@example.com" LIKELIHOOD_UNSPECIFIED 'NONEXISTENT'`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 
   it('should report image redaction handling errors', () => {
-    const output = execSync(`${cmd} image ${testImage} output.png -t BAD_TYPE`);
-    assert.match(output, /Error in redactImage/);
+    let output;
+    try {
+      output = execSync(
+        `node redactImage.js ${projectId} ${testImage} output.png BAD_TYPE`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 });

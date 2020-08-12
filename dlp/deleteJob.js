@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
 // sample-metadata:
-//  title: Metadata
-//  description: List the types of sensitive information the DLP API supports
-//  usage: node metadata.js my-project langaugeCode filter
+//  title: Delete Job
+//  description: Delete results of a Data Loss Prevention API job.
+//  usage: node deleteJob.js my-project projects/YOUR_GCLOUD_PROJECT/dlpJobs/X-#####
 
-function main(projectId, languageCode, filter) {
-  // [START dlp_list_info_types]
+function main(projectId, jobName) {
+  // [START dlp_delete_job]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -29,30 +28,30 @@ function main(projectId, languageCode, filter) {
   // The project ID to run the API call under
   // const projectId = 'my-project';
 
-  // The BCP-47 language code to use, e.g. 'en-US'
-  // const languageCode = 'en-US';
+  // The name of the job whose results should be deleted
+  // Parent project ID is automatically extracted from this parameter
+  // const jobName = 'projects/my-project/dlpJobs/X-#####'
 
-  // The filter to use
-  // const filter = 'supported_by=INSPECT'
+  function deleteJob() {
+    // Construct job deletion request
+    const request = {
+      name: jobName,
+    };
 
-  async function listInfoTypes() {
-    const [response] = await dlp.listInfoTypes({
-      languageCode: languageCode,
-      filter: filter,
-    });
-    const infoTypes = response.infoTypes;
-    console.log('Info types:');
-    infoTypes.forEach(infoType => {
-      console.log(`\t${infoType.name} (${infoType.displayName})`);
-    });
+    // Run job deletion request
+    dlp
+      .deleteDlpJob(request)
+      .then(() => {
+        console.log(`Successfully deleted job ${jobName}.`);
+      })
+      .catch(err => {
+        console.log(`Error in deleteJob: ${err.message || err}`);
+      });
   }
 
-  listInfoTypes();
-  // [END dlp_list_info_types]
+  deleteJob();
+  // [END dlp_delete_job]
 }
-
-module.exports.main = main;
-
 main(...process.argv.slice(2));
 process.on('unhandledRejection', err => {
   console.error(err.message);

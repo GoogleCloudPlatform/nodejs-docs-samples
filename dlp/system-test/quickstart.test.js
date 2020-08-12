@@ -15,14 +15,21 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, before} = require('mocha');
 const cp = require('child_process');
+const DLP = require('@google-cloud/dlp');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+const client = new DLP.DlpServiceClient();
 describe('quickstart', () => {
+  let projectId;
+
+  before(async () => {
+    projectId = await client.getProjectId();
+  });
   it('should run', () => {
-    const output = execSync('node quickstart.js');
+    const output = execSync(`node quickstart.js ${projectId}`);
     assert.match(output, /Info type: PERSON_NAME/);
   });
 });

@@ -21,16 +21,20 @@ const DLP = require('@google-cloud/dlp');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = 'node jobs.js';
 const badJobName = 'projects/not-a-project/dlpJobs/i-123456789';
 
-const testCallingProjectId = process.env.GCLOUD_PROJECT;
 const testTableProjectId = 'bigquery-public-data';
 const testDatasetId = 'san_francisco';
 const testTableId = 'bikeshare_trips';
 const testColumnName = 'zip_code';
 
-describe('jobs', () => {
+const client = new DLP.DlpServiceClient();
+describe('test', () => {
+  let projectId;
+
+  before(async () => {
+    projectId = await client.getProjectId();
+  });
   // Helper function for creating test jobs
   const createTestJob = async () => {
     // Initialize client library
@@ -39,7 +43,7 @@ describe('jobs', () => {
 
     // Construct job request
     const request = {
-      parent: `projects/${testCallingProjectId}/locations/global`,
+      parent: `projects/${projectId}/locations/global`,
       riskJob: {
         privacyMetric: {
           categoricalStatsConfig: {
@@ -72,7 +76,7 @@ describe('jobs', () => {
   async function deleteStaleJobs() {
     const dlp = new DLP.DlpServiceClient();
     const request = {
-      parent: `projects/${testCallingProjectId}/locations/global`,
+      parent: `projects/${projectId}/locations/global`,
       filter: 'state=DONE',
       type: 'RISK_ANALYSIS_JOB',
     };
@@ -90,7 +94,7 @@ describe('jobs', () => {
 
   // dlp_list_jobs
   it('should list jobs', () => {
-    const output = execSync(`${cmd} list 'state=DONE'`);
+    const output = execSync(`node listJobs.js ${projectId} 'state=DONE'`);
     assert.match(
       output,
       /Job projects\/(\w|-)+\/locations\/global\/dlpJobs\/\w-\d+ status: DONE/
@@ -98,7 +102,9 @@ describe('jobs', () => {
   });
 
   it('should list jobs of a given type', () => {
-    const output = execSync(`${cmd} list 'state=DONE' -t RISK_ANALYSIS_JOB`);
+    const output = execSync(
+      `node listJobs.js ${projectId} 'state=DONE' RISK_ANALYSIS_JOB`
+    );
     assert.match(
       output,
       /Job projects\/(\w|-)+\/locations\/global\/dlpJobs\/r-\d+ status: DONE/
@@ -106,18 +112,29 @@ describe('jobs', () => {
   });
 
   it('should handle job listing errors', () => {
-    const output = execSync(`${cmd} list 'state=NOPE'`);
-    assert.match(output, /Error in listJobs/);
+    let output;
+    try {
+      output = execSync(`node listJobs.js ${projectId} 'state=NOPE'`);
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 
   // dlp_delete_job
   it('should delete job', () => {
-    const output = execSync(`${cmd} delete ${testJobName}`);
+    const output = execSync(`node deleteJob.js ${projectId} ${testJobName}`);
     assert.include(output, `Successfully deleted job ${testJobName}.`);
   });
 
   it('should handle job deletion errors', () => {
-    const output = execSync(`${cmd} delete ${badJobName}`);
+    let output;
+    try {
+      output = execSync(`node deleteJob.js ${projectId} ${badJobName}`);
+    } catch (err) {
+      output = err.message;
+    }
+    console.log(output);
     assert.match(output, /Error in deleteJob/);
   });
 });

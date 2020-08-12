@@ -20,15 +20,20 @@ const cp = require('child_process');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 const uuid = require('uuid');
+const DLP = require('@google-cloud/dlp');
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
-const cmd = 'node inspect.js';
 const bucket = 'nodejs-docs-samples-dlp';
 const dataProject = 'nodejs-docs-samples';
 
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
+const client = new DLP.DlpServiceClient();
 describe('inspect', () => {
-  // Create new custom topic/subscription
+  let projectId;
+
+  before(async () => {
+    projectId = await client.getProjectId();
+  });
   let topic, subscription;
   const topicName = `dlp-inspect-topic-${uuid.v4()}`;
   const subscriptionName = `dlp-inspect-subscription-${uuid.v4()}`;
@@ -46,77 +51,95 @@ describe('inspect', () => {
   // inspect_string
   it('should inspect a string', () => {
     const output = execSync(
-      `${cmd} string "I'm Gary and my email is gary@example.com"`
+      `node inspectString.js ${projectId} "I'm Gary and my email is gary@example.com"`
     );
     assert.match(output, /Info type: EMAIL_ADDRESS/);
   });
 
   it('should inspect a string with custom dictionary', () => {
     const output = execSync(
-      `${cmd} string "I'm Gary and my email is gary@example.com" -d "Gary,email"`
+      `node inspectString.js ${projectId} "I'm Gary and my email is gary@example.com" 'LIKELIHOOD_UNSPECIFIED' '0' 'PHONE_NUMBER' "Gary,email"`
     );
     assert.match(output, /Info type: CUSTOM_DICT_0/);
   });
 
   it('should inspect a string with custom regex', () => {
     const output = execSync(
-      `${cmd} string "I'm Gary and my email is gary@example.com" -r "gary@example\\.com"`
+      `node inspectString.js ${projectId} "I'm Gary and my email is gary@example.com" 'LIKELIHOOD_UNSPECIFIED' '0' 'PHONE_NUMBER' "gary@example\\.com"`
     );
     assert.match(output, /Info type: CUSTOM_REGEX_0/);
   });
 
   it('should handle a string with no sensitive data', () => {
-    const output = execSync(`${cmd} string "foo"`);
+    const output = execSync(`node inspectString.js ${projectId} string "foo"`);
     assert.include(output, 'No findings.');
   });
 
   it('should report string inspection handling errors', () => {
-    const output = execSync(
-      `${cmd} string "I'm Gary and my email is gary@example.com" -t BAD_TYPE`
-    );
-    assert.match(output, /Error in inspectString/);
+    let output;
+    try {
+      output = execSync(
+        `node inspectString.js ${projectId} "I'm Gary and my email is gary@example.com" 'LIKELIHOOD_UNSPECIFIED' '0' BAD_TYPE`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'BAD_TYPE');
   });
 
   // inspect_file
   it('should inspect a local text file', () => {
-    const output = execSync(`${cmd} file resources/test.txt`);
+    const output = execSync(
+      `node inspectFile.js ${projectId} resources/test.txt`
+    );
     assert.match(output, /Info type: PHONE_NUMBER/);
     assert.match(output, /Info type: EMAIL_ADDRESS/);
   });
 
   it('should inspect a local text file with custom dictionary', () => {
     const output = execSync(
-      `${cmd} file resources/test.txt -d "gary@somedomain.com"`
+      `node inspectFile.js ${projectId} resources/test.txt 'LIKELIHOOD_UNSPECIFIED' '0' 'PHONE_NUMBER' "Gary,email"`
     );
     assert.match(output, /Info type: CUSTOM_DICT_0/);
   });
 
   it('should inspect a local text file with custom regex', () => {
     const output = execSync(
-      `${cmd} file resources/test.txt -r "\\(\\d{3}\\) \\d{3}-\\d{4}"`
+      `node inspectFile.js ${projectId} resources/test.txt 'LIKELIHOOD_UNSPECIFIED' '0' 'PHONE_NUMBER' "\\(\\d{3}\\) \\d{3}-\\d{4}"`
     );
     assert.match(output, /Info type: CUSTOM_REGEX_0/);
   });
 
   it('should inspect a local image file', () => {
-    const output = execSync(`${cmd} file resources/test.png`);
+    const output = execSync(
+      `node inspectFile.js ${projectId} resources/test.png`
+    );
     assert.match(output, /Info type: EMAIL_ADDRESS/);
   });
 
   it('should handle a local file with no sensitive data', () => {
-    const output = execSync(`${cmd} file resources/harmless.txt`);
+    const output = execSync(
+      `node inspectFile.js ${projectId} resources/harmless.txt`
+    );
     assert.match(output, /No findings/);
   });
 
   it('should report local file handling errors', () => {
-    const output = execSync(`${cmd} file resources/harmless.txt -t BAD_TYPE`);
-    assert.match(output, /Error in inspectFile/);
+    let output;
+    try {
+      output = execSync(
+        `node inspectFile.js ${projectId} resources/harmless.txt 'LIKELIHOOD_UNSPECIFIED' '0' 'BAD_TYPE'`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 
   // inspect_gcs_file_promise
   it.skip('should inspect a GCS text file', () => {
     const output = execSync(
-      `${cmd} gcsFile ${bucket} test.txt ${topicName} ${subscriptionName}`
+      `node inspectGCSFile.js ${projectId} ${bucket} test.txt ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
@@ -124,7 +147,7 @@ describe('inspect', () => {
 
   it.skip('should inspect multiple GCS text files', () => {
     const output = execSync(
-      `${cmd} gcsFile ${bucket} "*.txt" ${topicName} ${subscriptionName}`
+      `node inspectGCSFile.js ${projectId} ${bucket} "*.txt" ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
@@ -132,70 +155,85 @@ describe('inspect', () => {
 
   it.skip('should handle a GCS file with no sensitive data', () => {
     const output = execSync(
-      `${cmd} gcsFile ${bucket} harmless.txt ${topicName} ${subscriptionName}`
+      `node inspectGCSFile.js ${projectId} ${bucket} harmless.txt ${topicName} ${subscriptionName}`
     );
     assert.match(output, /No findings/);
   });
 
   it('should report GCS file handling errors', () => {
-    const output = execSync(
-      `${cmd} gcsFile ${bucket} harmless.txt ${topicName} ${subscriptionName} -t BAD_TYPE`
-    );
-    assert.match(output, /Error in inspectGCSFile/);
+    let output;
+    try {
+      output = execSync(
+        `node inspectGCSFile.js ${projectId} ${bucket} harmless.txt ${topicName} ${subscriptionName} 'LIKELIHOOD_UNSPECIFIED' '0' 'BAD_TYPE'`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 
   // inspect_datastore
   it.skip('should inspect Datastore', () => {
     const output = execSync(
-      `${cmd} datastore Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
+      `node inspectDatastore.js ${projectId} Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
   });
 
   it.skip('should handle Datastore with no sensitive data', () => {
     const output = execSync(
-      `${cmd} datastore Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
+      `node inspectDatastore.js ${projectId} Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
     );
     assert.match(output, /No findings/);
   });
 
   it('should report Datastore errors', () => {
-    const output = execSync(
-      `${cmd} datastore Harmless ${topicName} ${subscriptionName} --namespaceId DLP -t BAD_TYPE -p ${dataProject}`
-    );
-    assert.match(output, /Error in inspectDatastore/);
+    let output;
+    try {
+      output = execSync(
+        `node inspectDatastore.js ${projectId} ${projectId} 'DLP' 'Person' ${topicName} ${subscriptionName} 'LIKELIHOOD_UNSPECIFIED' '0' 'BAD_TYPE'`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 
   // inspect_bigquery
   it.skip('should inspect a Bigquery table', () => {
     const output = execSync(
-      `${cmd} bigquery integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`
+      `node inspectBigQuery.js ${projectId} integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
   });
 
   it.skip('should handle a Bigquery table with no sensitive data', () => {
     const output = execSync(
-      `${cmd} bigquery integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`
+      `node inspectBigQuery.js ${projectId} integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`
     );
     assert.match(output, /No findings/);
   });
 
   it('should report Bigquery table handling errors', () => {
-    const output = execSync(
-      `${cmd} bigquery integration_tests_dlp harmless ${topicName} ${subscriptionName} -t BAD_TYPE -p ${dataProject}`
-    );
-    assert.match(output, /Error in inspectBigquery/);
+    let output;
+    try {
+      output = execSync(
+        `node inspectBigQuery.js ${projectId} ${dataProject} integration_tests_dlp harmless ${topicName} ${subscriptionName} 'LIKELIHOOD_UNSPECIFIED' '0' 'BAD_TYPE'`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 
   // CLI options
   // This test is potentially flaky, possibly because of model changes.
   it('should have a minLikelihood option', () => {
     const outputA = execSync(
-      `${cmd} string "My phone number is (123) 456-7890." -m VERY_LIKELY`
+      `node inspectString.js ${projectId} "My phone number is (123) 456-7890." VERY_LIKELY`
     );
     const outputB = execSync(
-      `${cmd} string "My phone number is (123) 456-7890." -m UNLIKELY`
+      `node inspectString.js ${projectId} "My phone number is (123) 456-7890." UNLIKELY`
     );
     assert.ok(outputA);
     assert.notMatch(outputA, /PHONE_NUMBER/);
@@ -204,10 +242,10 @@ describe('inspect', () => {
 
   it('should have a maxFindings option', () => {
     const outputA = execSync(
-      `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 1`
+      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." LIKELIHOOD_UNSPECIFIED 2`
     );
     const outputB = execSync(
-      `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -f 2`
+      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." LIKELIHOOD_UNSPECIFIED 3`
     );
     assert.notStrictEqual(
       outputA.includes('PHONE_NUMBER'),
@@ -219,22 +257,22 @@ describe('inspect', () => {
 
   it('should have an option to include quotes', () => {
     const outputA = execSync(
-      `${cmd} string "My phone number is (223) 456-7890." -q false`
+      `node inspectString.js ${projectId} "My phone number is (223) 456-7890." '' '' '' '' false`
     );
     const outputB = execSync(
-      `${cmd} string "My phone number is (223) 456-7890."`
+      `node inspectString.js ${projectId} "My phone number is (223) 456-7890." '' '' '' '' `
     );
     assert.ok(outputA);
-    assert.notMatch(outputA, /\(223\) 456-7890/);
-    assert.match(outputB, /\(223\) 456-7890/);
+    assert.notMatch(outputB, /\(223\) 456-7890/);
+    assert.match(outputA, /\(223\) 456-7890/);
   });
 
   it('should have an option to filter results by infoType', () => {
     const outputA = execSync(
-      `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890."`
+      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890."`
     );
     const outputB = execSync(
-      `${cmd} string "My email is gary@example.com and my phone number is (223) 456-7890." -t PHONE_NUMBER`
+      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." LIKELIHOOD_UNSPECIFIED 0 PHONE_NUMBER`
     );
     assert.match(outputA, /EMAIL_ADDRESS/);
     assert.match(outputA, /PHONE_NUMBER/);

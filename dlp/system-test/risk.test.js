@@ -19,6 +19,7 @@ const {describe, it, before, after} = require('mocha');
 const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
 const cp = require('child_process');
+const DLP = require('@google-cloud/dlp');
 
 const execSync = cmd => {
   return cp.execSync(cmd, {
@@ -27,12 +28,11 @@ const execSync = cmd => {
   });
 };
 
-const cmd = 'node risk.js';
 const dataset = 'integration_tests_dlp';
 const uniqueField = 'Name';
 const numericField = 'Age';
-const testProjectId = process.env.GCLOUD_PROJECT;
 const pubsub = new PubSub();
+const client = new DLP.DlpServiceClient();
 
 /*
  * The tests in this file rely on a table in BigQuery entitled
@@ -44,11 +44,14 @@ const pubsub = new PubSub();
  * Insert into this table a few rows of Age/Name pairs.
  */
 describe('risk', () => {
+  let projectId;
   // Create new custom topic/subscription
-  let topic, subscription;
-  const topicName = `dlp-risk-topic-${uuid.v4()}-${Date.now()}`;
-  const subscriptionName = `dlp-risk-subscription-${uuid.v4()}-${Date.now()}`;
+  let topic, subscription, topicName, subscriptionName;
+
   before(async () => {
+    topicName = `dlp-risk-topic-${uuid.v4()}-${Date.now()}`;
+    subscriptionName = `dlp-risk-subscription-${uuid.v4()}-${Date.now()}`;
+    projectId = await client.getProjectId();
     [topic] = await pubsub.createTopic(topicName);
     [subscription] = await topic.createSubscription(subscriptionName);
     await deleteOldTopics();
@@ -84,61 +87,77 @@ describe('risk', () => {
   // numericalRiskAnalysis
   it('should perform numerical risk analysis', () => {
     const output = execSync(
-      `${cmd} numerical ${dataset} harmful ${numericField} ${topicName} ${subscriptionName} -p ${testProjectId}`
+      `node numericalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${numericField} ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Value at 0% quantile:/);
     assert.match(output, /Value at \d+% quantile:/);
   });
 
   it('should handle numerical risk analysis errors', () => {
-    const output = execSync(
-      `${cmd} numerical ${dataset} nonexistent ${numericField} ${topicName} ${subscriptionName} -p ${testProjectId}`
-    );
-    assert.match(output, /Error in numericalRiskAnalysis/);
+    let output;
+    try {
+      output = execSync(
+        `node numericalRiskAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${numericField} ${topicName} ${subscriptionName}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'NOT_FOUND');
   });
 
   // categoricalRiskAnalysis
   it('should perform categorical risk analysis on a string field', () => {
     const output = execSync(
-      `${cmd} categorical ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName} -p ${testProjectId}`
+      `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Most common value occurs \d time\(s\)/);
   });
 
   it('should perform categorical risk analysis on a number field', () => {
     const output = execSync(
-      `${cmd} categorical ${dataset} harmful ${numericField} ${topicName} ${subscriptionName} -p ${testProjectId}`
+      `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${numericField} ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Most common value occurs \d time\(s\)/);
   });
 
   it('should handle categorical risk analysis errors', () => {
-    const output = execSync(
-      `${cmd} categorical ${dataset} nonexistent ${uniqueField} ${topicName} ${subscriptionName} -p ${testProjectId}`
-    );
-    assert.match(output, /Error in categoricalRiskAnalysis/);
+    let output;
+    try {
+      output = execSync(
+        `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${uniqueField} ${topicName} ${subscriptionName}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'fail');
   });
 
   // kAnonymityAnalysis
   it('should perform k-anonymity analysis on a single field', () => {
     const output = execSync(
-      `${cmd} kAnonymity ${dataset} harmful ${topicName} ${subscriptionName} ${numericField} -p ${testProjectId}`
+      `node kAnonymityAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} ${numericField}`
     );
-    assert.match(output, /Quasi-ID values:/);
-    assert.match(output, /Class size: \d/);
+    console.log(output);
+    assert.include(output, 'Quasi-ID values:');
+    assert.include(output, 'Class size:');
   });
 
   it('should handle k-anonymity analysis errors', () => {
-    const output = execSync(
-      `${cmd} kAnonymity ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField} -p ${testProjectId}`
-    );
-    assert.match(output, /Error in kAnonymityAnalysis/);
+    let output;
+    try {
+      output = execSync(
+        `node kAnonymityAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'fail');
   });
 
   // kMapAnalysis
   it('should perform k-map analysis on a single field', () => {
     const output = execSync(
-      `${cmd} kMap ${dataset} harmful ${topicName} ${subscriptionName} ${numericField} -t AGE -p ${testProjectId}`
+      `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' ${numericField} AGE`
     );
     assert.match(output, /Anonymity range: \[\d+, \d+\]/);
     assert.match(output, /Size: \d/);
@@ -146,24 +165,29 @@ describe('risk', () => {
   });
 
   it('should handle k-map analysis errors', () => {
-    const output = execSync(
-      `${cmd} kMap ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField} -t AGE -p ${testProjectId}`
-    );
-    assert.match(output, /Error in kMapEstimationAnalysis/);
+    let output;
+    try {
+      output = execSync(
+        `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField} AGE`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'fail');
   });
 
   it('should check that numbers of quasi-ids and info types are equal', () => {
     assert.throws(() => {
       execSync(
-        `${cmd} kMap ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField} -t AGE GENDER -p ${testProjectId}`
+        `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' 'Age,Gender' AGE`
       );
-    }, /Number of infoTypes and number of quasi-identifiers must be equal!/);
+    }, /3 INVALID_ARGUMENT: InfoType name cannot be empty of a TaggedField/);
   });
 
   // lDiversityAnalysis
   it('should perform l-diversity analysis on a single field', () => {
     const output = execSync(
-      `${cmd} lDiversity ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName} ${numericField} -p ${testProjectId}`
+      `node lDiversityAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} ${uniqueField} ${numericField}`
     );
     assert.match(output, /Quasi-ID values:/);
     assert.match(output, /Class size: \d/);
@@ -171,9 +195,14 @@ describe('risk', () => {
   });
 
   it('should handle l-diversity analysis errors', () => {
-    const output = execSync(
-      `${cmd} lDiversity ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField} -p ${testProjectId}`
-    );
-    assert.match(output, /Error in lDiversityAnalysis/);
+    let output;
+    try {
+      output = execSync(
+        `node lDiversityAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'fail');
   });
 });

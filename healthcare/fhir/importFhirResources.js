@@ -44,7 +44,7 @@ const main = (
     const request = {
       name,
       resource: {
-        contentStructure: 'BUNDLE',
+        contentStructure: 'RESOURCE',
         gcsSource: {
           uri: `gs://${gcsUri}`,
         },
@@ -66,9 +66,11 @@ const main = (
       operationRequest
     );
 
-    if (typeof operationStatus.data.error === 'undefined') {
+    const success = operationStatus.data.metadata.counter.success;
+
+    if (typeof success !== 'undefined') {
       console.log(
-        `Import FHIR resources succeeded. ${operationStatus.data.response.inputSize} resources imported`
+        `Import FHIR resources succeeded. ${success} resources imported`
       );
     } else {
       console.log(

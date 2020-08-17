@@ -92,6 +92,11 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
+echo '*******'
+gcloud auth list
+echo '******************'
+gcloud auth list --filter=status:ACTIVE --format="value(account)"
+
 # Download and run the proxy if testing a Cloud SQL sample
 if [[ $SQL_CLIENT ]]; then
 	wget --quiet https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy

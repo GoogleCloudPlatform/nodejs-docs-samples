@@ -69,7 +69,7 @@ const createUnixSocketPool = async (config) => {
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
     // If connecting via unix domain socket, specify the path
-    socketPath: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
+    socketPath: `${dbSocketPath}/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
     // Specify additional properties here.
     ...config
   });

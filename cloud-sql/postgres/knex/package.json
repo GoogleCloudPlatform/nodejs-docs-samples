@@ -13,7 +13,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_INSTANCE_NAME &",
+    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_CONNECTION_NAME &",
     "test": "mocha test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {

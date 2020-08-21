@@ -2,10 +2,10 @@
 
 ## Before you begin
 
-1. If you haven't already, set up a Node.js Development Environment by following the [Node.js setup guide](https://cloud.google.com/nodejs/docs/setup)  and 
+1. If you haven't already, set up a Node.js Development Environment by following the [Node.js setup guide](https://cloud.google.com/nodejs/docs/setup)  and
 [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
-2. Create a Cloud SQL for PostgreSQL instance by following these 
+2. Create a Cloud SQL for PostgreSQL instance by following these
 [instructions](https://cloud.google.com/sql/docs/postgres/create-instance). Note the instance name that you create,
 and password that you specify for the default 'postgres' user.
 
@@ -13,7 +13,7 @@ and password that you specify for the default 'postgres' user.
 
 3. Create a database for your application by following these [instructions](https://cloud.google.com/sql/docs/postgres/create-manage-databases). Note the database name.
 
-4. Create a service account with the 'Cloud SQL Client' permissions by following these 
+4. Create a service account with the 'Cloud SQL Client' permissions by following these
 [instructions](https://cloud.google.com/sql/docs/postgres/connect-external-app#4_if_required_by_your_authentication_method_create_a_service_account).
 Download a JSON key to use to authenticate your connection.
 
@@ -92,7 +92,7 @@ export DB_SOCKET_PATH=/path/to/the/new/directory
 Use these terminal commands to initialize other environment variables as well:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
-export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
+export CLOUD_SQL_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export DB_USER='<DB_USER_NAME>'
 export DB_PASS='<DB_PASSWORD>'
 export DB_NAME='<DB_NAME>'
@@ -101,7 +101,7 @@ export DB_NAME='<DB_NAME>'
 Then use this command to launch the proxy in the background:
 
 ```bash
-./cloud_sql_proxy -dir=$DB_SOCKET_PATH --instances=$INSTANCE_CONNECTION_NAME --credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
+./cloud_sql_proxy -dir=$DB_SOCKET_PATH --instances=$CLOUD_SQL_CONNECTION_NAME --credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
 ```
 
 ### Testing the application
@@ -116,8 +116,8 @@ Then use this command to launch the proxy in the background:
 With the Cloud SQL proxy running, run the following command to create the sample app's table in your Cloud SQL PostgreSQL database:
 
     ```
-    node createTable.js
-    ``` 
+    node createTable.js $DB_USER $DB_PW $DB_NAME $CLOUD_SQL_CONNECTION_NAME
+    ```
 
 4. Run the sample app locally with the following command:
 
@@ -200,8 +200,8 @@ Take note of the URL output at the end of the deployment process.
 
 ```sh
 gcloud run services update run-sql \
-    --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
-    --set-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
+    --add-cloudsql-instances [CLOUD_SQL_CONNECTION_NAME] \
+    --set-env-vars CLOUD_SQL_CONNECTION_NAME=[CLOUD_SQL_CONNECTION_NAME],\
       DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
 ```
 Replace environment variables with the correct values for your Cloud SQL

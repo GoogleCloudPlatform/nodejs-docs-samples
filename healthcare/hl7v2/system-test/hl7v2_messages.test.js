@@ -34,6 +34,14 @@ const messageFile = 'resources/hl7v2-sample.json';
 const messageId = '2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw=';
 const labelKey = 'my-key';
 const labelValue = 'my-value';
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
 
 before(() => {
   assert(

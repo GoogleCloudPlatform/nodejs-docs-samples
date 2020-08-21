@@ -35,6 +35,15 @@ const resourceType = 'Patient';
 const version = 'STU3';
 let resourceId;
 
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
+
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,

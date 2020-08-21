@@ -58,6 +58,21 @@ it('should get a dataset', () => {
   assert.ok(output.includes('name'));
 });
 
+it('should create and get a dataset IAM policy', () => {
+  const localMember = 'group:dpebot@google.com';
+  const localRole = 'roles/viewer';
+
+  let output = execSync(
+    `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`,
+  );
+  assert.ok(output.includes, 'ETAG');
+
+  output = execSync(
+    `node getDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId}`
+  );
+  assert.ok(output.includes('dpebot'));
+});
+
 it('should patch a dataset', () => {
   const timeZone = 'GMT';
   const output = execSync(
@@ -81,21 +96,6 @@ it('should de-identify data in a dataset and write to a new dataset', () => {
   assert.ok(
     output.includes('De-identified data written')
   );
-});
-
-it('should create and get a dataset IAM policy', () => {
-  const localMember = 'group:dpebot@google.com';
-  const localRole = 'roles/viewer';
-
-  let output = execSync(
-    `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`,
-  );
-  assert.ok(output.includes, 'ETAG');
-
-  output = execSync(
-    `node getDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId}`
-  );
-  assert.ok(output.includes('dpebot'));
 });
 
 it('should delete a dataset', () => {

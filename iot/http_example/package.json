@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@google-cloud/pubsub": "^2.0.0",
-    "googleapis": "^58.0.0",
+    "googleapis": "^59.0.0",
     "mocha": "^8.0.0",
     "uuid": "^8.0.0"
   }

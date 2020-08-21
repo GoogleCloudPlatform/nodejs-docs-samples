@@ -64,7 +64,7 @@ const main = (
       {name: operationName}
     );
 
-    if (typeof operationStatus.data.response.resourceCount !== 'undefined') {
+    if (typeof operationStatus.data.metadata.counter !== 'undefined') {
       console.log('Exported FHIR resources successfully');
     } else {
       console.log('Export failed');

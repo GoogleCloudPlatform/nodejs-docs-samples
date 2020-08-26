@@ -58,8 +58,8 @@ const main = (
 
     const operationRequest = {name: operationName};
 
-    // Wait five seconds for the LRO to finish.
-    await sleep(5000);
+    // Wait twenty seconds for the LRO to finish.
+    await sleep(20000);
 
     // Check the LRO's status
     const operationStatus = await healthcare.projects.locations.datasets.operations.get(
@@ -70,12 +70,12 @@ const main = (
 
     if (typeof success !== 'undefined') {
       console.log(
-        `Import FHIR resources succeeded. ${success} resources imported`
+        `Import FHIR resources succeeded. ${success} resources imported.`
       );
     } else {
       console.log(
-        'Imported FHIR resources failed. Details\n:',
-        operationStatus.data.error
+        'Imported FHIR resources failed. Details available in Cloud Logging at the following URL:\n',
+        operationStatus.data.metadata.logsUrl
       );
     }
   };

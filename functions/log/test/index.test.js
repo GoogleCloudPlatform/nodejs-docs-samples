@@ -67,44 +67,8 @@ describe('functions_log_helloworld', () => {
   });
 });
 
-describe('functions_log_retrieve', () => {
-  it('getLogEntries: should retrieve logs', async () => {
-    const sample = getSample();
-
-    const entries = await sample.program.getLogEntries();
-    assert.strictEqual(console.log.calledWith('Entries:'), true);
-    assert.strictEqual(entries === sample.mocks.results[0], true);
-  });
-});
-
 describe('functions_log_stackdriver', () => {
   it('processLogEntry: should process log entry', () => {
-    const sample = getSample();
-    const json = JSON.stringify({
-      protoPayload: {
-        methodName: 'method',
-        resourceName: 'resource',
-        authenticationInfo: {
-          principalEmail: 'me@example.com',
-        },
-      },
-    });
-
-    const data = {
-      data: Buffer.from(json, 'ascii'),
-    };
-
-    sample.program.processLogEntry(data);
-
-    assert.strictEqual(console.log.calledWith('Method: method'), true);
-    assert.strictEqual(console.log.calledWith('Resource: resource'), true);
-    assert.strictEqual(
-      console.log.calledWith('Initiator: me@example.com'),
-      true
-    );
-  });
-
-  it('processLogEntry: should work in Node 8', () => {
     const sample = getSample();
     const json = JSON.stringify({
       protoPayload: {

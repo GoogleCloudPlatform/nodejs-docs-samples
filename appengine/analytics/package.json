@@ -18,8 +18,8 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "got": "^11.0.0"
+    "axios": "^0.20.0",
+    "express": "^4.16.4"
   },
   "devDependencies": {
     "mocha": "^8.0.0",

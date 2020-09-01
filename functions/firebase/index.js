@@ -92,7 +92,7 @@ exports.makeUpperCase = (event) => {
   const {resource} = event;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
-  const curValue = event.data.value.fields.original.stringValue;
+  const curValue = event.value.fields.original.stringValue;
   const newValue = curValue.toUpperCase();
   console.log(`Replacing value: ${curValue} --> ${newValue}`);
 
@@ -126,13 +126,11 @@ exports.helloAnalytics = (event) => {
 /**
  * Triggered by a change to a Firebase Remote Config value.
  *
- * @param {object} data The Cloud Functions event data.
+ * @param {object} event The Cloud Functions event.
  */
 exports.helloRemoteConfig = (event) => {
-  const {data} = event;
-
-  console.log(`Update type: ${data.updateType}`);
-  console.log(`Origin: ${data.updateOrigin}`);
-  console.log(`Version: ${data.versionNumber}`);
+  console.log(`Update type: ${event.updateType}`);
+  console.log(`Origin: ${event.updateOrigin}`);
+  console.log(`Version: ${event.versionNumber}`);
 };
 // [END functions_firebase_remote_config]

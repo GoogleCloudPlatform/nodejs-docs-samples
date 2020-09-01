@@ -68,12 +68,11 @@ exports.helloFirestore = (event) => {
  */
 exports.helloAuth = (event) => {
   try {
-    const {data} = event;
-    console.log(`Function triggered by change to user: ${data.uid}`);
-    console.log(`Created at: ${data.metadata.createdAt}`);
+    console.log(`Function triggered by change to user: ${event.uid}`);
+    console.log(`Created at: ${event.metadata.createdAt}`);
 
-    if (event.data.email) {
-      console.log(`Email: ${data.email}`);
+    if (event.email) {
+      console.log(`Email: ${event.email}`);
     }
   } catch (err) {
     console.error(err);

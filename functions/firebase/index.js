@@ -48,14 +48,14 @@ exports.helloFirestore = (event) => {
   console.log(`Function triggered by event on: ${triggerResource}`);
   console.log(`Event type: ${event.eventType}`);
 
-  if (event.data.oldValue && Object.keys(event.data.oldValue).length) {
+  if (event.oldValue && Object.keys(event.oldValue).length) {
     console.log(`\nOld value:`);
-    console.log(JSON.stringify(event.data.oldValue, null, 2));
+    console.log(JSON.stringify(event.oldValue, null, 2));
   }
 
-  if (event.data.value && Object.keys(event.data.value).length) {
+  if (event.value && Object.keys(event.value).length) {
     console.log(`\nNew value:`);
-    console.log(JSON.stringify(event.data.value, null, 2));
+    console.log(JSON.stringify(event.value, null, 2));
   }
 };
 // [END functions_firebase_firestore]

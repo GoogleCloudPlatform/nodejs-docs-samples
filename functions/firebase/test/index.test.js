@@ -93,10 +93,8 @@ describe('functions_firebase_firestore', () => {
     const event = {
       resource: 'resource',
       eventType: 'type',
-      data: {
-        oldValue: oldValue,
-        value: value,
-      },
+      oldValue: oldValue,
+      value: value,
     };
 
     sample.program.helloFirestore(event);

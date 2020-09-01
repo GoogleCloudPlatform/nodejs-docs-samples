@@ -190,6 +190,7 @@ function infiniteStream(
 
   function restartStream() {
     if (recognizeStream) {
+      recognizeStream.end();
       recognizeStream.removeListener('data', speechCallback);
       recognizeStream = null;
     }

@@ -2,6 +2,7 @@
 # for more info about CODEOWNERS file
 
 # Repo owner
+* @sofisl
 * @fhinkel
 
 # Kokoro

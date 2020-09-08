@@ -29,6 +29,20 @@ const testTableId = 'bikeshare_trips';
 const testColumnName = 'zip_code';
 
 const client = new DLP.DlpServiceClient();
+
+// createTestJob needs time to finish creating a DLP job, before listing
+// tests will succeed.
+const delay = async test => {
+  const retries = test.currentRetry();
+  if (retries === 0) return; // no retry on the first failure.
+  // see: https://cloud.google.com/storage/docs/exponential-backoff:
+  const ms = Math.pow(2, retries) * 1000 + Math.random() * 2000;
+  return new Promise(done => {
+    console.info(`retrying "${test.title}" in ${ms}ms`);
+    setTimeout(done, ms);
+  });
+};
+
 describe('test', () => {
   let projectId;
 
@@ -93,7 +107,9 @@ describe('test', () => {
   }
 
   // dlp_list_jobs
-  it('should list jobs', () => {
+  it('should list jobs', async function () {
+    this.retries(5);
+    await delay(this.test);
     const output = execSync(`node listJobs.js ${projectId} 'state=DONE'`);
     assert.match(
       output,
@@ -101,7 +117,9 @@ describe('test', () => {
     );
   });
 
-  it('should list jobs of a given type', () => {
+  it('should list jobs of a given type', async function () {
+    this.retries(5);
+    await delay(this.test);
     const output = execSync(
       `node listJobs.js ${projectId} 'state=DONE' RISK_ANALYSIS_JOB`
     );

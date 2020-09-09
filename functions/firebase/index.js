@@ -89,16 +89,23 @@ const firestore = new Firestore({
 
 // Converts strings added to /messages/{pushId}/original to uppercase
 exports.makeUpperCase = (event) => {
-  const {resource} = event;
+  const resource = event.value.name;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
   const curValue = event.value.fields.original.stringValue;
   const newValue = curValue.toUpperCase();
-  console.log(`Replacing value: ${curValue} --> ${newValue}`);
 
-  return affectedDoc.set({
-    original: newValue,
-  });
+  if (curValue != newValue) {
+    console.log(`Replacing value: ${curValue} --> ${newValue}`);
+
+    return affectedDoc.set({
+      original: newValue,
+    });
+  } else {
+    // Value is already upper-case
+    // Don't perform a(nother) write to avoid infinite loops
+    console.log('Value is already upper-case.')
+  }
 };
 // [END functions_firebase_reactive]
 

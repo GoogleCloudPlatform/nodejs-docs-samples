@@ -95,7 +95,7 @@ exports.makeUpperCase = (event) => {
   const curValue = event.value.fields.original.stringValue;
   const newValue = curValue.toUpperCase();
 
-  if (curValue != newValue) {
+  if (curValue !== newValue) {
     console.log(`Replacing value: ${curValue} --> ${newValue}`);
 
     return affectedDoc.set({

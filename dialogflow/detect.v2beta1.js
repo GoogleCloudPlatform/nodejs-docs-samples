@@ -14,7 +14,7 @@
 
 'use strict';
 
-const sessionId = require('uuid/v1')();
+const sessionId = require('uuid').v1();
 const util = require('util');
 
 async function createKnowledgeBase(projectId, displayName) {

@@ -362,7 +362,7 @@ const cli = require('yargs')
     },
     sessionId: {
       alias: 's',
-      default: require('uuid/v1')(),
+      default: require('uuid').v1(),
       type: 'string',
       requiresArg: true,
       description:

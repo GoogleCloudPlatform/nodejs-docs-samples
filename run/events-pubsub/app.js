@@ -21,7 +21,7 @@ app.post('/', (req, res) => {
   }
   // Cast to MessagePublishedEvent for IDE autocompletion
   const pubSubMessage = toMessagePublishedEvent(req.body);
-  const name = pubSubMessage.message.data
+  const name = pubSubMessage.message && pubSubMessage.message.data
     ? Buffer.from(pubSubMessage.message.data, 'base64').toString().trim()
     : 'World';
   

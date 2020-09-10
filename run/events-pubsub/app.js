@@ -14,6 +14,11 @@ app.post('/', (req, res) => {
     res.status(400).send(`Bad Request: ${msg}`);
     return;
   }
+  if (!req.body.message) {
+    const msg = 'invalid Pub/Sub message format';
+    res.status(400).send(`Bad Request: ${msg}`);
+    return;
+  }
   // Cast to MessagePublishedEvent for IDE autocompletion
   const pubSubMessage = toMessagePublishedEvent(req.body);
   const name = pubSubMessage.message.data

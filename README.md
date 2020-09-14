@@ -7,8 +7,8 @@ Node.js samples for [Google Cloud Platform products][cloud].
 See [cloud.google.com/nodejs][cloud_nodejs] to get up and running with Node.js
 on Google Cloud Platform.
 
-[slack_badge]: https://img.shields.io/badge/slack-nodejs%20on%20gcp-E01563.svg	
-[slack_link]: https://gcp-slack.appspot.com/
+[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg	
+[slack_link]: https://googlecloud-community.slack.com/
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
 

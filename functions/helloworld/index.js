@@ -49,19 +49,6 @@ exports.helloHttp = (req, res) => {
 };
 // [END functions_helloworld_http]
 
-// [START functions_helloworld_background]
-/**
- * Background Cloud Function.
- *
- * @param {object} event The Cloud Functions event.
- * @param {object} context The event metadata.
- * @param {function} callback The callback function.
- */
-exports.helloBackground = (event, context, callback) => {
-  callback(null, `Hello ${event.name || 'World'}!`);
-};
-// [END functions_helloworld_background]
-
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
@@ -82,33 +69,12 @@ exports.helloPubSub = (message, context) => {
 
 // [START functions_helloworld_storage]
 /**
- * Background Cloud Function to be triggered by Cloud Storage.
+ * Generic background Cloud Function to be triggered by Cloud Storage.
  *
  * @param {object} file The Cloud Storage file metadata.
  * @param {object} context The event metadata.
  */
 exports.helloGCS = (file, context) => {
-  if (file.resourceState === 'not_exists') {
-    console.log(`File ${file.name} deleted.`);
-  } else if (file.metageneration === '1') {
-    // metageneration attribute is updated on metadata changes.
-    // on create value is 1
-    console.log(`File ${file.name} uploaded.`);
-  } else {
-    console.log(`File ${file.name} metadata updated.`);
-  }
-};
-// [END functions_helloworld_storage]
-
-// [START functions_helloworld_storage_generic]
-/**
- * Generic background Cloud Function to be triggered by Cloud Storage.
- *
- * @param {object} file The Cloud Storage file metadata.
- * @param {object} context The event metadata.
- * @param {function} callback The callback function.
- */
-exports.helloGCSGeneric = (file, context, callback) => {
   console.log(`  Event: ${context.eventId}`);
   console.log(`  Event Type: ${context.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
@@ -116,10 +82,8 @@ exports.helloGCSGeneric = (file, context, callback) => {
   console.log(`  Metageneration: ${file.metageneration}`);
   console.log(`  Created: ${file.timeCreated}`);
   console.log(`  Updated: ${file.updated}`);
-
-  callback();
 };
-// [END functions_helloworld_storage_generic]
+// [END functions_helloworld_storage]
 
 /**
  * Background Cloud Function that throws an error.

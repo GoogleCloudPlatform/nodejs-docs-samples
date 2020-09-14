@@ -24,7 +24,7 @@ const {Storage} = require('@google-cloud/storage');
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cloudRegion = 'us-central1';
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const pubSubClient = new PubSub({projectId});
 const storage = new Storage();
 const topicName = `nodejs-healthcare-test-topic-${uuid.v4()}`;
@@ -43,11 +43,19 @@ const fhirFileName = 'fhir_data.ndjson';
 
 const fhirResourceFile = `resources/${fhirFileName}`;
 const gcsUri = `${bucketName}/${fhirFileName}`;
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
 
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -56,6 +64,8 @@ before(async () => {
   // Create a Cloud Storage bucket to be used for testing.
   await storage.createBucket(bucketName);
   console.log(`Bucket ${bucketName} created.`);
+  // Upload the FHIR resource file so that there's something to
+  // use for the importFhirResources test.
   await storage.bucket(bucketName).upload(fhirResourceFile);
 
   // Create a Pub/Sub topic to be used for testing.

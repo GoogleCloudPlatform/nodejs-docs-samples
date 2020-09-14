@@ -16,7 +16,7 @@
     "system-test": "mocha system-test/*.test.js --timeout=40000"
   },
   "dependencies": {
-    "googleapis": "^55.0.0",
+    "googleapis": "^59.0.0",
     "uuid": "^8.0.0",
     "yargs": "^15.0.0"
   },

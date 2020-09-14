@@ -28,7 +28,8 @@ app.post('/', (req, res) => {
   const markdown = req.body;
   try {
     // Get the Markdown text and convert it into HTML using markdown-it.
-    // Info about XSS prevention in markdown-it can be found here: https://github.com/markdown-it/markdown-it/blob/master/docs/security.md
+    // For details about XSS prevention in markdown-it,
+    // see https://github.com/markdown-it/markdown-it/blob/master/docs/security.md
     const md = new MarkdownIt();
     const html = md.render(markdown);
     res.status(200).send(html);
@@ -36,12 +37,6 @@ app.post('/', (req, res) => {
     console.log('Error rendering Markdown: ', err);
     res.status(400).send(err);
   }
-})
-
-const PORT = process.env.PORT || 8080;
-
-app.listen(PORT, err => {
-  console.log(`Renderer is listening on port ${PORT}`);
 })
 
 // Export for testing purposes.

@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
@@ -64,7 +64,7 @@ const main = (
       {name: operationName}
     );
 
-    if (typeof operationStatus.data.response.resourceCount !== 'undefined') {
+    if (typeof operationStatus.data.metadata.counter !== 'undefined') {
       console.log('Exported FHIR resources successfully');
     } else {
       console.log('Export failed');

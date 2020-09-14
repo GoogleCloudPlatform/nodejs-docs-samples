@@ -22,32 +22,6 @@ exports.helloWorld = (req, res) => {
 };
 // [END functions_log_helloworld]
 
-// [START functions_log_retrieve]
-// By default, the client will authenticate using the service account file
-// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
-// https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
-const Logging = require('@google-cloud/logging');
-
-const getLogEntries = async () => {
-  // Instantiates a client
-  const logging = Logging();
-
-  const options = {
-    pageSize: 10,
-    filter: 'resource.type="cloud_function"',
-  };
-
-  // Retrieve the latest Cloud Function log entries
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/logging
-  const [entries] = await logging.getEntries(options);
-
-  console.log('Entries:');
-  entries.forEach((entry) => console.log(entry));
-  return entries;
-};
-// [END functions_log_retrieve]
-
 // [START functions_log_stackdriver]
 exports.processLogEntry = (data) => {
   const dataBuffer = Buffer.from(data.data, 'base64');

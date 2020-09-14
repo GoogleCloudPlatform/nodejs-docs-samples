@@ -22,6 +22,7 @@ requireEnv() {
 
 requireEnv SERVICE_NAME
 requireEnv CONTAINER_IMAGE
+requireEnv GOOGLE_CLOUD_PROJECT
 
 # Deploy the service
 set -x

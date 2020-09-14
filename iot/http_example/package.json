@@ -19,7 +19,7 @@
     "jsonwebtoken": "^8.5.0",
     "request": "^2.88.0",
     "retry-request": "^4.0.0",
-    "yargs": "^15.0.0"
+    "yargs": "^16.0.0"
   },
   "devDependencies": {
     "@google-cloud/pubsub": "^2.0.0",

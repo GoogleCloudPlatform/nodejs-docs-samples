@@ -47,6 +47,6 @@ describe('Document AI batch parse table', () => {
     const output = execSync(
       `${cmd} ${testParseTable.projectId} ${testParseTable.location} gs://${bucketName}`
     );
-    assert.match(output, /First detected language:/);
+    assert.match(output, /Document processing complete./);
   });
 });

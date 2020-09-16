@@ -1,0 +1,38 @@
+{
+  "name": "cats-v-dogs-postgres",
+  "description": "Node.js PostgreSQL sample for Cloud SQL on App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME &",
+    "start": "node index.js",
+    "test": "mocha test/*.test.js --timeout=60000 --exit"
+  },
+  "dependencies": {
+    "@google-cloud/logging-winston": "^4.0.0",
+    "@google-cloud/secret-manager": "^3.1.0",
+    "express": "^4.16.2",
+    "firebase-admin": "^9.1.0",
+    "knex": "^0.21.0",
+    "pg": "^8.0.0",
+    "pug": "^3.0.0",
+    "winston": "3.3.3"
+  },
+  "devDependencies": {
+    "mocha": "^8.0.0",
+    "mssql": "^6.2.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.1.0",
+    "sqlite3": "^5.0.0",
+    "supertest": "^4.0.0"
+  }
+}

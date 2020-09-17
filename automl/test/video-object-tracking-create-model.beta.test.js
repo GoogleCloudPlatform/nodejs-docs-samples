@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {after, describe, it} = require('mocha');
+const {describe, it} = require('mocha');
 const {AutoMlClient} = require('@google-cloud/automl').v1beta1;
 
 const cp = require('child_process');
@@ -28,22 +28,13 @@ const DATASET_ID = 'VOT9082518000266903552';
 
 describe('Automl Video Object Tracking Create Model Test', () => {
   const client = new AutoMlClient();
-  let operationId;
 
-  it('should create a model', async () => {
+  it.skip('should create a model', async () => {
     const projectId = await client.getProjectId();
     const create_output = execSync(
       `node ${CREATE_MODEL_REGION_TAG}.js ${projectId} ${LOCATION} ${DATASET_ID} video_test_create_model`
     );
 
     assert.match(create_output, /Training started/);
-
-    operationId = create_output
-      .split('Training operation name: ')[1]
-      .split('\n')[0];
-  });
-
-  after('cancel model training', async () => {
-    await client.operationsClient.cancelOperation({name: operationId});
   });
 });

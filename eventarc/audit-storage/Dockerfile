@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START run_events_gcs_dockerfile]
+# [START eventarc_gcs_dockerfile]
 
 # Use the official lightweight Node.js 10 image.
 # https://hub.docker.com/_/node
@@ -37,4 +37,4 @@ COPY . .
 # Run the web service on container startup.
 CMD [ "npm", "start" ]
 
-# [END run_events_gcs_dockerfile]
+# [END eventarc_gcs_dockerfile]

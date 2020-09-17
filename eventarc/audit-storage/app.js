@@ -13,7 +13,6 @@
 // limitations under the License.
 
 // [START eventarc_gcs_handler]
-// [START run_events_gcs_handler]
 const express = require('express');
 const app = express();
 
@@ -28,5 +27,4 @@ app.post('/', (req, res) => {
 });
 
 module.exports = app;
-// [END run_events_gcs_handler]
 // [END eventarc_gcs_handler]

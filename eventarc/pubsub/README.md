@@ -1,4 +1,4 @@
-# Events for Cloud Run – Pub/Sub tutorial
+# Cloud Eventarc – Pub/Sub Events tutorial
 
 This sample shows how to create a service that processes Pub/Sub messages.
 
@@ -34,7 +34,6 @@ gcloud beta eventarc triggers create pubsub-trigger \
 Test your Cloud Run service by publishing a message to the topic:
 
 ```sh
-# Get the topic
 TOPIC=$(gcloud beta eventarc triggers describe pubsub-trigger \
 --format="value(transport.pubsub.topic)")
 
@@ -43,7 +42,7 @@ echo "Listening to events on topic: $TOPIC"
 gcloud pubsub topics publish $TOPIC --message="Events"
 ```
 
-You may observe the Run service receiving an event in Cloud Logging.
+You may observe the Run service receiving an event in Cloud Logging:
 
 ```sh
 gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=eventarc-pubsub" --limit 10

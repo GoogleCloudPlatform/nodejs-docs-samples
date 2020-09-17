@@ -3,12 +3,10 @@
 // license that can be found in the LICENSE file.
 
 // [START eventarc_pubsub_server]
-// [START run_events_pubsub_server]
 const app = require('./app.js');
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () =>
   console.log(`nodejs-eventarc-pubsub listening on port ${PORT}`)
 );
-// [END run_events_pubsub_server]
 // [END eventarc_pubsub_server]

@@ -38,6 +38,13 @@ describe('Cloud Scheduler Sample Tests', () => {
     jobName = stdout.split('/').pop();
   });
 
+  it('should update a scheduler job', async () => {
+    const stdout = execSync(
+      `node updateJob.js ${PROJECT_ID} ${LOCATION_ID} ${jobName}`
+    );
+    assert.match(stdout, /Updated job/);
+  });
+
   it('should delete a scheduler job', async () => {
     const stdout = execSync(
       `node deleteJob.js ${PROJECT_ID} ${LOCATION_ID} ${jobName}`

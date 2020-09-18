@@ -22,8 +22,8 @@ app.post('/', (req, res) => {
     return res.status(400).send('Bad Request: missing required header: ce-subject');
   }
 
-  console.log(`GCS CloudEvent type: ${req.header('ce-subject')}`);
-  return res.status(200).send(`GCS CloudEvent type: ${req.header('ce-subject')}`);
+  console.log(`Detected change in GCS bucket: ${req.header('ce-subject')}`);
+  return res.status(200).send(`Detected change in GCS bucket: ${req.header('ce-subject')}`);
 });
 
 module.exports = app;

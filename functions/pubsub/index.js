@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START functions_pubsub_publish]
 // [START functions_pubsub_setup]
 const {PubSub} = require('@google-cloud/pubsub');
 
@@ -21,7 +22,6 @@ const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 // [END functions_pubsub_setup]
 
-// [START functions_pubsub_publish]
 /**
  * Publishes a message to a Cloud Pub/Sub Topic.
  *

@@ -197,6 +197,11 @@ async function asyncRecognize(
     sampleRateHertz: sampleRateHertz,
     languageCode: languageCode,
   };
+
+  /**
+   * Note that transcription is limited to 60 seconds audio.
+   * Use a GCS file for audio longer than 1 minute.
+   */
   const audio = {
     content: fs.readFileSync(filename).toString('base64'),
   };
@@ -528,7 +533,7 @@ async function syncRecognizeModelSelectionGCS(
     audio: audio,
   };
 
-  // Detects speech in the audio file
+  // Detects speech in the audio file.
   const [response] = await client.recognize(request);
   const transcription = response.results
     .map(result => result.alternatives[0].transcript)
@@ -549,6 +554,7 @@ async function syncRecognizeWithAutoPunctuation(
    * TODO(developer): Update client library import to use new
    * version of API when desired features become available
    */
+
   const speech = require('@google-cloud/speech');
   const fs = require('fs');
 
@@ -568,6 +574,7 @@ async function syncRecognizeWithAutoPunctuation(
     languageCode: languageCode,
     enableAutomaticPunctuation: true,
   };
+
   const audio = {
     content: fs.readFileSync(filename).toString('base64'),
   };

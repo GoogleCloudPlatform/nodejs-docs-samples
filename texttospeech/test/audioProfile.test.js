@@ -22,11 +22,9 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node audioProfile.js';
-const text = 'Hello Everybody!  This is an Audio Profile Optimized Sound Byte.';
-const outputFile1 = 'phonetest.mp3';
-const outputFile2 = 'homeTheatreTest.mp3';
-const outputFile3 = 'carAudioTest.mp3';
-const outputFile4 = 'watchAudioTest.mp3';
+const text =
+  '"Hello Everybody!  This is an Audio Profile Optimized Sound Byte."';
+const outputFile = 'phonetest.mp3';
 
 describe('audio profile', () => {
   after(() => {
@@ -37,54 +35,13 @@ describe('audio profile', () => {
         // Ignore error
       }
     }
-    [outputFile1, outputFile2, outputFile3, outputFile4].map(unlink);
+    [outputFile].map(unlink);
   });
 
-  it('should synthesize Speech for Telephone Audio Profile', async () => {
-    assert.strictEqual(fs.existsSync(outputFile1), false);
-    const output = execSync(
-      `${cmd} synthesize '${text}' -f ${outputFile1} -e telephony-class-application`
-    );
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile1}`)
-    );
-    assert.ok(fs.existsSync(outputFile1));
-  });
-
-  it('should synthesize Speech for Home Theatre Audio Profile', async () => {
-    assert.strictEqual(fs.existsSync(outputFile2), false);
-    const output = execSync(
-      `${cmd} synthesize '${text}' -f ${outputFile2} -e large-home-entertainment-class-device`
-    );
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile2}`)
-    );
-    assert.ok(fs.existsSync(outputFile2));
-  });
-
-  it('should synthesize Speech for Car Audio Audio Profile', async () => {
-    assert.strictEqual(fs.existsSync(outputFile3), false);
-    const output = execSync(
-      `${cmd} synthesize '${text}' -f ${outputFile3} -e large-automotive-class-device`
-    );
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile3}`)
-    );
-    assert.ok(fs.existsSync(outputFile3));
-  });
-
-  it('should synthesize Speech for Watch Audio Profile', async () => {
-    assert.strictEqual(fs.existsSync(outputFile4), false);
-    const output = execSync(
-      `${cmd} synthesize '${text}' -f ${outputFile4} -e wearable-class-device`
-    );
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile4}`)
-    );
-    assert.ok(fs.existsSync(outputFile4));
+  it('should synthesize human audio using hardware profile', async () => {
+    assert.strictEqual(fs.existsSync(outputFile), false);
+    const output = execSync(`${cmd} ${text} ${outputFile}`);
+    assert.match(output, new RegExp('Audio content written to file:'));
+    assert.ok(fs.existsSync(outputFile));
   });
 });

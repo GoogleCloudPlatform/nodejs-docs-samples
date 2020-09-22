@@ -137,7 +137,7 @@ function translateTextWithModelSample(text, target, model) {
     const options = {
       // The target language, e.g. "ru"
       to: target,
-      // Make sure your project is whitelisted.
+      // Make sure your project is on the allow list.
       // Possible values are "base" and "nmt"
       model: model,
     };

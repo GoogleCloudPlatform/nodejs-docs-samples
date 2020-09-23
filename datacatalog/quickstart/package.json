@@ -13,8 +13,8 @@
     "test": "mocha system-test/*.test.js --timeout=60000"
   },
   "devDependencies": {
-    "mocha": "^7.0.0",
-    "uuid": "^7.0.0"
+    "mocha": "^8.0.0",
+    "uuid": "^8.0.0"
   },
   "dependencies": {
     "@google-cloud/datacatalog": "^2.0.0"

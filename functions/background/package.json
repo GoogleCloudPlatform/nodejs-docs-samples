@@ -8,7 +8,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"
@@ -19,6 +19,6 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "child-process-promise": "^2.2.1",
-    "mocha": "^7.0.0"
+    "mocha": "^8.0.0"
   }
 }

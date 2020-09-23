@@ -24,7 +24,7 @@
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
 const main = async (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   entryGroupId,
   entryId
 ) => {

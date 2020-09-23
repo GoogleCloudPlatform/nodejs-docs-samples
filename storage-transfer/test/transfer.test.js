@@ -53,7 +53,7 @@ const getSample = () => {
   const googleMock = {
     storagetransfer: sinon.stub().returns(storagetransferMock),
     auth: {
-      getApplicationDefault: sinon.stub().yields(null, {}),
+      getClient: sinon.stub().returns({}),
     },
   };
 
@@ -87,7 +87,7 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-it('should create a transfer job', () => {
+it('should create a transfer job', async () => {
   const description = 'description';
   const sample = getSample();
   const callback = sinon.stub();
@@ -100,7 +100,7 @@ it('should create a transfer job', () => {
     time: time,
   };
 
-  sample.program.createTransferJob(options, callback);
+  await sample.program.createTransferJob(options, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.create.calledOnce,
@@ -123,7 +123,7 @@ it('should create a transfer job', () => {
   ]);
 
   options.description = description;
-  sample.program.createTransferJob(options, callback);
+  await sample.program.createTransferJob(options, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.create.calledTwice,
@@ -146,35 +146,23 @@ it('should create a transfer job', () => {
   ]);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.createTransferJob({}, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle create error', () => {
+it('should handle create error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferJobs.create.yields(error);
 
-  sample.program.createTransferJob({}, callback);
+  await sample.program.createTransferJob({}, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-it('should get a transfer job', () => {
+it('should get a transfer job', async () => {
   const sample = getSample();
   const callback = sinon.stub();
 
-  sample.program.getTransferJob(jobName, callback);
+  await sample.program.getTransferJob(jobName, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.get.calledOnce,
@@ -185,7 +173,7 @@ it('should get a transfer job', () => {
     [
       {
         auth: {},
-        projectId: process.env.GCLOUD_PROJECT,
+        projectId: process.env.GOOGLE_CLOUD_PROJECT,
         jobName: jobName,
       },
     ]
@@ -202,31 +190,19 @@ it('should get a transfer job', () => {
   ]);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.getTransferJob(jobName, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle get error', () => {
+it('should handle get error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferJobs.get.yields(error);
 
-  sample.program.getTransferJob(jobName, callback);
+  await sample.program.getTransferJob(jobName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-it('should update a transfer job', () => {
+it('should update a transfer job', async () => {
   const sample = getSample();
   const callback = sinon.stub();
   const options = {
@@ -235,7 +211,7 @@ it('should update a transfer job', () => {
     value: 'DISABLED',
   };
 
-  sample.program.updateTransferJob(options, callback);
+  await sample.program.updateTransferJob(options, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.patch.calledOnce,
@@ -248,7 +224,7 @@ it('should update a transfer job', () => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             status: options.value,
@@ -272,7 +248,7 @@ it('should update a transfer job', () => {
   options.field = 'description';
   options.value = 'description';
 
-  sample.program.updateTransferJob(options, callback);
+  await sample.program.updateTransferJob(options, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.patch.calledTwice,
@@ -288,7 +264,7 @@ it('should update a transfer job', () => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             description: options.value,
@@ -312,7 +288,7 @@ it('should update a transfer job', () => {
   options.field = 'transferSpec';
   options.value = '{"foo":"bar"}';
 
-  sample.program.updateTransferJob(options, callback);
+  await sample.program.updateTransferJob(options, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.patch.calledThrice,
@@ -325,7 +301,7 @@ it('should update a transfer job', () => {
         auth: {},
         jobName: jobName,
         resource: {
-          projectId: process.env.GCLOUD_PROJECT,
+          projectId: process.env.GOOGLE_CLOUD_PROJECT,
           transferJob: {
             name: jobName,
             transferSpec: JSON.parse(options.value),
@@ -347,24 +323,7 @@ it('should update a transfer job', () => {
   ]);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  const options = {
-    job: jobName,
-    field: 'status',
-    value: 'DISABLED',
-  };
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.updateTransferJob(options, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle patch error', () => {
+it('should handle patch error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
@@ -375,17 +334,29 @@ it('should handle patch error', () => {
   };
   sample.mocks.storagetransfer.transferJobs.patch.yields(error);
 
-  sample.program.updateTransferJob(options, callback);
+  await sample.program.updateTransferJob(options, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-it('should list transfer jobs', () => {
+it('should handle list error', async () => {
+  const error = new Error('error');
+  const sample = getSample();
+  const callback = sinon.stub();
+  sample.mocks.storagetransfer.transferJobs.list.yields(error);
+
+  await sample.program.listTransferJobs(callback);
+
+  assert.strictEqual(callback.calledOnce, true);
+  assert.deepStrictEqual(callback.firstCall.args, [error]);
+});
+
+it('should list transfer jobs', async () => {
   const sample = getSample();
   const callback = sinon.stub();
 
-  sample.program.listTransferJobs(callback);
+  await sample.program.listTransferJobs(callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.list.calledOnce,
@@ -396,7 +367,7 @@ it('should list transfer jobs', () => {
     [
       {
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -409,7 +380,7 @@ it('should list transfer jobs', () => {
   assert.deepStrictEqual(console.log.firstCall.args, ['Found %d jobs!', 1]);
 
   sample.mocks.storagetransfer.transferJobs.list.yields(null, {});
-  sample.program.listTransferJobs(callback);
+  await sample.program.listTransferJobs(callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferJobs.list.calledTwice,
@@ -420,7 +391,7 @@ it('should list transfer jobs', () => {
     [
       {
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -429,36 +400,24 @@ it('should list transfer jobs', () => {
   assert.strictEqual(console.log.calledOnce, true);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.listTransferJobs(callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle list error', () => {
+it('should handle list error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferJobs.list.yields(error);
 
-  sample.program.listTransferJobs(callback);
+  await sample.program.listTransferJobs(callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-it('should list transfer operations', () => {
+it('should list transfer operations', async () => {
   const sample = getSample();
   const callback = sinon.stub();
 
   // Test that all operations get listed
-  sample.program.listTransferOperations(undefined, callback);
+  await sample.program.listTransferOperations(undefined, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferOperations.list.calledOnce,
@@ -473,7 +432,7 @@ it('should list transfer operations', () => {
       {
         name: 'transferOperations',
         auth: {},
-        filter: JSON.stringify({project_id: process.env.GCLOUD_PROJECT}),
+        filter: JSON.stringify({project_id: process.env.GOOGLE_CLOUD_PROJECT}),
       },
     ]
   );
@@ -489,7 +448,7 @@ it('should list transfer operations', () => {
   ]);
 
   // Test that operations for a specific job get listed
-  sample.program.listTransferOperations(jobName, callback);
+  await sample.program.listTransferOperations(jobName, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferOperations.list.calledTwice,
@@ -505,7 +464,7 @@ it('should list transfer operations', () => {
         name: 'transferOperations',
         auth: {},
         filter: JSON.stringify({
-          project_id: process.env.GCLOUD_PROJECT,
+          project_id: process.env.GOOGLE_CLOUD_PROJECT,
           job_names: [jobName],
         }),
       },
@@ -524,7 +483,7 @@ it('should list transfer operations', () => {
 
   // Test that operations for a specific job get listed when the API response with just an object
   sample.mocks.storagetransfer.transferOperations.list.yields(null, {});
-  sample.program.listTransferOperations(jobName, callback);
+  await sample.program.listTransferOperations(jobName, callback);
 
   assert.strictEqual(
     sample.mocks.storagetransfer.transferOperations.list.calledThrice,
@@ -540,7 +499,7 @@ it('should list transfer operations', () => {
         name: 'transferOperations',
         auth: {},
         filter: JSON.stringify({
-          project_id: process.env.GCLOUD_PROJECT,
+          project_id: process.env.GOOGLE_CLOUD_PROJECT,
           job_names: [jobName],
         }),
       },
@@ -551,35 +510,23 @@ it('should list transfer operations', () => {
   assert.strictEqual(console.log.calledTwice, true);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.listTransferOperations(undefined, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle list error', () => {
+it('should handle list error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.list.yields(error);
 
-  sample.program.listTransferOperations(undefined, callback);
+  await sample.program.listTransferOperations(undefined, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-it('should get a transfer operation', () => {
+it('should get a transfer operation', async () => {
   const sample = getSample();
   const callback = sinon.stub();
 
-  sample.program.getTransferOperation(transferOperationName, callback);
+  await sample.program.getTransferOperation(transferOperationName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.strictEqual(
@@ -621,35 +568,23 @@ it('should get a transfer operation', () => {
   ]);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.getTransferOperation(jobName, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle get error', () => {
+it('should handle get error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.get.yields(error);
 
-  sample.program.getTransferOperation(jobName, callback);
+  await sample.program.getTransferOperation(jobName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-it('should pause a transfer operation', () => {
+it('should pause a transfer operation', async () => {
   const sample = getSample();
   const callback = sinon.stub();
 
-  sample.program.pauseTransferOperation(transferOperationName, callback);
+  await sample.program.pauseTransferOperation(transferOperationName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.strictEqual(
@@ -684,35 +619,23 @@ it('should pause a transfer operation', () => {
   ]);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.pauseTransferOperation(jobName, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle pause error', () => {
+it('should handle pause error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.pause.yields(error);
 
-  sample.program.pauseTransferOperation(jobName, callback);
+  await sample.program.pauseTransferOperation(jobName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);
 });
 
-it('should resume a transfer operation', () => {
+it('should resume a transfer operation', async () => {
   const sample = getSample();
   const callback = sinon.stub();
 
-  sample.program.resumeTransferOperation(transferOperationName, callback);
+  await sample.program.resumeTransferOperation(transferOperationName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.strictEqual(
@@ -747,25 +670,13 @@ it('should resume a transfer operation', () => {
   ]);
 });
 
-it('should handle auth error', () => {
-  const error = new Error('error');
-  const sample = getSample();
-  const callback = sinon.stub();
-  sample.mocks.googleapis.google.auth.getApplicationDefault.yields(error);
-
-  sample.program.resumeTransferOperation(jobName, callback);
-
-  assert.strictEqual(callback.calledOnce, true);
-  assert.deepStrictEqual(callback.firstCall.args, [error]);
-});
-
-it('should handle resume error', () => {
+it('should handle resume error', async () => {
   const error = new Error('error');
   const sample = getSample();
   const callback = sinon.stub();
   sample.mocks.storagetransfer.transferOperations.resume.yields(error);
 
-  sample.program.resumeTransferOperation(jobName, callback);
+  await sample.program.resumeTransferOperation(jobName, callback);
 
   assert.strictEqual(callback.calledOnce, true);
   assert.deepStrictEqual(callback.firstCall.args, [error]);

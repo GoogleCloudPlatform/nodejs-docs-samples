@@ -2,10 +2,10 @@
 
 ## Before you begin
 
-1. If you haven't already, set up a Node.js Development Environment by following the [Node.js setup guide](https://cloud.google.com/nodejs/docs/setup)  and 
+1. If you haven't already, set up a Node.js Development Environment by following the [Node.js setup guide](https://cloud.google.com/nodejs/docs/setup)  and
 [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
-2. Create a Cloud SQL for PostgreSQL instance by following these 
+2. Create a Cloud SQL for PostgreSQL instance by following these
 [instructions](https://cloud.google.com/sql/docs/postgres/create-instance). Note the instance name that you create,
 and password that you specify for the default 'postgres' user.
 
@@ -13,8 +13,8 @@ and password that you specify for the default 'postgres' user.
 
 3. Create a database for your application by following these [instructions](https://cloud.google.com/sql/docs/postgres/create-manage-databases). Note the database name.
 
-4. Create a service account with the 'Cloud SQL Client' permissions by following these 
-[instructions](https://cloud.google.com/sql/docs/mysql/connect-external-app#4_if_required_by_your_authentication_method_create_a_service_account).
+4. Create a service account with the 'Cloud SQL Client' permissions by following these
+[instructions](https://cloud.google.com/sql/docs/postgres/connect-external-app#4_if_required_by_your_authentication_method_create_a_service_account).
 Download a JSON key to use to authenticate your connection.
 
 5. Use the information noted in the previous steps:
@@ -35,14 +35,76 @@ Setting up the Cloud SQL database for the app requires setting up the app for lo
 1. To run this application locally, download and install the `cloud_sql_proxy` by
 [following the instructions](https://cloud.google.com/sql/docs/postgres/sql-proxy#install).
 
-    Once the proxy is ready, use the following command to start the proxy in the
-    background:
-    ```bash
-    ./cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_CONNECTION_NAME -credential_file=$GOOGLE_APPLICATION_CREDENTIALS
-    ```
-    Note: Make sure to run the command under a user with write access in the 
-    `/cloudsql` directory. This proxy will use this folder to create a unix socket
-    the application will use to connect to Cloud SQL.
+Instructions are provided below for using the proxy with a TCP connection or a Unix Domain Socket.
+On Linux or Mac OS you can use either option, but on Windows the proxy currently requires a TCP
+connection.
+
+### Launch proxy with TCP
+
+To run the sample locally with a TCP connection, set environment variables and launch the proxy as
+shown below.
+
+#### Linux / Mac OS
+Use these terminal commands to initialize environment variables:
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
+export DB_HOST='127.0.0.1:5432'
+export DB_USER='<DB_USER_NAME>'
+export DB_PASS='<DB_PASSWORD>'
+export DB_NAME='<DB_NAME>'
+```
+
+Then use this command to launch the proxy in the background:
+```bash
+./cloud_sql_proxy -instances=<project-id>:<region>:<instance-name>=tcp:5432 -credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
+```
+
+#### Windows/PowerShell
+Use these PowerShell commands to initialize environment variables:
+```powershell
+$env:GOOGLE_APPLICATION_CREDENTIALS="<CREDENTIALS_JSON_FILE>"
+$env:DB_HOST="127.0.0.1:5432"
+$env:DB_USER="<DB_USER_NAME>"
+$env:DB_PASS="<DB_PASSWORD>"
+$env:DB_NAME="<DB_NAME>"
+```
+
+Then use this command to launch the proxy in a separate PowerShell session:
+```powershell
+Start-Process -filepath "C:\<path to proxy exe>" -ArgumentList "-instances=<project-id>:<region>:<instance-name>=tcp:5432 -credential_file=<CREDENTIALS_JSON_FILE>"
+```
+
+### Launch proxy with Unix Domain Socket
+NOTE: this option is currently only supported on Linux and Mac OS. Windows users should use the
+[Launch proxy with TCP](#launch-proxy-with-tcp) option.
+
+To use a Unix socket, you'll need to create a directory and give write access to the user running
+the proxy. For example:
+```bash
+sudo mkdir /path/to/the/new/directory
+sudo chown -R $USER /path/to/the/new/directory
+```
+You'll also need to initialize an environment variable containing the directory you just created:
+```bash
+export DB_SOCKET_PATH=/path/to/the/new/directory
+```
+
+Use these terminal commands to initialize other environment variables as well:
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
+export CLOUD_SQL_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
+export DB_USER='<DB_USER_NAME>'
+export DB_PASS='<DB_PASSWORD>'
+export DB_NAME='<DB_NAME>'
+```
+
+Then use this command to launch the proxy in the background:
+
+```bash
+./cloud_sql_proxy -dir=$DB_SOCKET_PATH --instances=$CLOUD_SQL_CONNECTION_NAME --credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
+```
+
+### Testing the application
 
 2. Next, install the Node.js packages necessary to run the app locally by running the following command:
 
@@ -54,8 +116,8 @@ Setting up the Cloud SQL database for the app requires setting up the app for lo
 With the Cloud SQL proxy running, run the following command to create the sample app's table in your Cloud SQL PostgreSQL database:
 
     ```
-    node createTable.js
-    ``` 
+    node createTable.js $DB_USER $DB_PW $DB_NAME $CLOUD_SQL_CONNECTION_NAME
+    ```
 
 4. Run the sample app locally with the following command:
 
@@ -138,8 +200,8 @@ Take note of the URL output at the end of the deployment process.
 
 ```sh
 gcloud run services update run-sql \
-    --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
-    --set-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
+    --add-cloudsql-instances [CLOUD_SQL_CONNECTION_NAME] \
+    --set-env-vars CLOUD_SQL_CONNECTION_NAME=[CLOUD_SQL_CONNECTION_NAME],\
       DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
 ```
 Replace environment variables with the correct values for your Cloud SQL

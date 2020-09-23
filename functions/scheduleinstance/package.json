@@ -9,18 +9,17 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "proxyquire": "^2.0.0",
     "sinon": "^9.0.0"
   },
   "dependencies": {
-    "@google-cloud/compute": "^1.0.0"
+    "@google-cloud/compute": "^2.0.0"
   }
 }

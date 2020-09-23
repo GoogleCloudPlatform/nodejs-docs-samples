@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId,
@@ -25,9 +25,8 @@ const main = (
 ) => {
   // [START healthcare_dicomweb_store_instance]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
   const fs = require('fs');
-  const binaryData = fs.createReadStream(dcmFile);
 
   const dicomWebStoreInstance = async () => {
     const auth = await google.auth.getClient({
@@ -49,6 +48,7 @@ const main = (
     // const dcmFile = 'file.dcm';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = `studies`;
+    const binaryData = fs.createReadStream(dcmFile);
     const request = {
       parent,
       dicomWebPath,

@@ -20,32 +20,11 @@
     "google-auth-library": "^6.0.0",
     "grpc": "^1.18.0",
     "jsonwebtoken": "^8.2.0",
-    "yargs": "^15.0.0"
+    "yargs": "^16.0.0"
   },
   "devDependencies": {
-    "delay": "^4.2.0",
-    "mocha": "^7.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "app": {
-        "requiredEnvVars": [
-          "ENDPOINTS_API_KEY",
-          "ENDPOINTS_GCE_HOST",
-          "ENDPOINTS_GKE_HOST",
-          "ENDPOINTS_SERVICE_NAME"
-        ]
-      },
-      "build": {
-        "requiredEnvVars": [
-          "ENDPOINTS_API_KEY",
-          "ENDPOINTS_GCE_HOST",
-          "ENDPOINTS_GKE_HOST",
-          "ENDPOINTS_SERVICE_NAME"
-        ]
-      }
-    }
+    "chai": "^4.2.0",
+    "mocha": "^8.0.0",
+    "wait-port": "^0.2.7"
   }
 }

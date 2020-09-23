@@ -19,7 +19,7 @@
 const {google} = require('googleapis');
 const {auth} = require('google-auth-library');
 
-const PROJECT_ID = process.env.GCP_PROJECT;
+const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 // [END functions_billing_stop]
 // [END functions_billing_limit]
@@ -35,7 +35,7 @@ const CHANNEL = process.env.SLACK_CHANNEL || 'general';
 exports.notifySlack = async (pubsubEvent, context) => {
   const pubsubAttrs = pubsubEvent.attributes;
   const pubsubData = Buffer.from(pubsubEvent.data, 'base64').toString();
-  const budgetNotificationText = `${pubsubAttrs}, ${pubsubData}`;
+  const budgetNotificationText = `${JSON.stringify(pubsubAttrs)}, ${pubsubData}`;
 
   await slack.chat.postMessage({
     token: BOT_ACCESS_TOKEN,
@@ -57,9 +57,14 @@ exports.stopBilling = async (pubsubEvent, context) => {
   if (pubsubData.costAmount <= pubsubData.budgetAmount) {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
   }
+  
+  if (!PROJECT_ID) {
+    return `No project specified`;
+  }
 
   await _setAuthCredential();
-  if (await _isBillingEnabled(PROJECT_NAME)) {
+  const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
+  if (billingEnabled) {
     return _disableBillingForProject(PROJECT_NAME);
   } else {
     return 'Billing already disabled';
@@ -94,8 +99,13 @@ const _setAuthCredential = async () => {
  * @return {bool} Whether project has billing enabled or not
  */
 const _isBillingEnabled = async (projectName) => {
-  const res = await billing.getBillingInfo({name: projectName});
-  return res.data.billingEnabled;
+  try {
+    const res = await billing.getBillingInfo({name: projectName});
+    return res.data.billingEnabled;
+  } catch (e) {
+    console.log('Unable to determine if billing is enabled on specified project, assuming billing is enabled');
+    return true;
+  }
 };
 
 /**

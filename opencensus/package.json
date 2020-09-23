@@ -17,14 +17,10 @@
     "test": "mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
-    "@opencensus/core": "^0.0.21",
-    "@opencensus/exporter-stackdriver": "^0.0.21"
+    "@opencensus/core": "^0.0.22",
+    "@opencensus/exporter-stackdriver": "^0.0.22"
   },
   "devDependencies": {
-    "mocha": "^7.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true
+    "mocha": "^8.0.0"
   }
 }

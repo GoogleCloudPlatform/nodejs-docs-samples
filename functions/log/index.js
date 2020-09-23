@@ -22,78 +22,6 @@ exports.helloWorld = (req, res) => {
 };
 // [END functions_log_helloworld]
 
-// [START functions_log_retrieve]
-// By default, the client will authenticate using the service account file
-// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
-// https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
-const Logging = require('@google-cloud/logging');
-
-const getLogEntries = async () => {
-  // Instantiates a client
-  const logging = Logging();
-
-  const options = {
-    pageSize: 10,
-    filter: 'resource.type="cloud_function"',
-  };
-
-  // Retrieve the latest Cloud Function log entries
-  // See https://googlecloudplatform.github.io/gcloud-node/#/docs/logging
-  const [entries] = await logging.getEntries(options);
-
-  console.log('Entries:');
-  entries.forEach((entry) => console.log(entry));
-  return entries;
-};
-// [END functions_log_retrieve]
-
-// [START functions_log_get_metrics]
-// By default, the client will authenticate using the service account file
-// specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
-// the project specified by the GCLOUD_PROJECT environment variable. See
-// https://github.com/googleapis/google-cloud-node/blob/master/docs/authentication.md
-const Monitoring = require('@google-cloud/monitoring');
-
-const getMetrics = (callback) => {
-  // Instantiates a client
-  const monitoring = Monitoring.v3().metricServiceApi();
-
-  // Create two datestrings, a start and end range
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setHours(oneWeekAgo.getHours() - 7 * 24);
-
-  const options = {
-    name: monitoring.projectPath(process.env.GCLOUD_PROJECT),
-    // There is also: cloudfunctions.googleapis.com/function/execution_count
-    filter:
-      'metric.type="cloudfunctions.googleapis.com/function/execution_times"',
-    interval: {
-      startTime: {
-        seconds: oneWeekAgo.getTime() / 1000,
-      },
-      endTime: {
-        seconds: Date.now() / 1000,
-      },
-    },
-    view: 1,
-  };
-
-  console.log('Data:');
-
-  let error;
-
-  // Iterate over all elements.
-  monitoring
-    .listTimeSeries(options)
-    .on('error', (err) => {
-      error = err;
-    })
-    .on('data', (element) => console.log(element))
-    .on('end', () => callback(error));
-  // [END functions_log_get_metrics]
-};
-
 // [START functions_log_stackdriver]
 exports.processLogEntry = (data) => {
   const dataBuffer = Buffer.from(data.data, 'base64');
@@ -106,4 +34,3 @@ exports.processLogEntry = (data) => {
 // [END functions_log_stackdriver]
 
 exports.getLogEntries = getLogEntries;
-exports.getMetrics = getMetrics;

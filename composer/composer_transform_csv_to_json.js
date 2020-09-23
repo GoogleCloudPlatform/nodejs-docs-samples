@@ -1,4 +1,5 @@
 /* eslint-disable func-style */
+/* eslint-disable no-var */
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +20,8 @@ module.exports = function main(
   // [START composer_transform_csv_to_json]
 
   function transformCSVtoJSON(line) {
-    const values = line.split(',');
-    const properties = [
+    var values = line.split(',');
+    var properties = [
       'location',
       'average_temperature',
       'month',
@@ -30,17 +31,17 @@ module.exports = function main(
     ];
     const weatherInCity = {};
 
-    for (let count = 0; count < values.length; count++) {
+    for (var count = 0; count < values.length; count++) {
       if (values[count] !== 'null') {
         weatherInCity[properties[count]] = values[count];
       }
     }
 
-    const jsonString = JSON.stringify(weatherInCity);
+    var jsonString = JSON.stringify(weatherInCity);
     return jsonString;
   }
-
-  transformCSVtoJSON(line);
-  // [END composer_transform_csv_to_json]
+  
+// [END composer_transform_csv_to_json]
+    
   return transformCSVtoJSON(line);
 };

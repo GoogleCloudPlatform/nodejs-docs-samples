@@ -17,14 +17,14 @@
     "system-test": "mocha system-test/*.test.js --timeout=600000"
   },
   "dependencies": {
-    "@google-cloud/iot": "^1.0.0",
+    "@google-cloud/iot": "^2.0.0",
     "jsonwebtoken": "^8.5.0",
-    "mqtt": "^3.0.0",
-    "yargs": "^15.0.0"
+    "mqtt": "^4.0.0",
+    "yargs": "^16.0.0"
   },
   "devDependencies": {
-    "@google-cloud/pubsub": "^1.0.0",
-    "mocha": "^7.0.0",
-    "uuid": "^7.0.0"
+    "@google-cloud/pubsub": "^2.0.0",
+    "mocha": "^8.0.0",
+    "uuid": "^8.0.0"
   }
 }

@@ -18,20 +18,11 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "got": "^10.0.0"
+    "axios": "^0.20.0",
+    "express": "^4.16.4"
   },
   "devDependencies": {
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "supertest": "^4.0.2"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Event tracked."
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_search_resources_get]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const searchFhirResourcesGet = async () => {
     const auth = await google.auth.getClient({
@@ -38,6 +38,7 @@ const main = (
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
     // const fhirStoreId = 'my-fhir-store';
+    // const resourceType = 'Patient';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir`;
     const request = {parent, resourceType};
 

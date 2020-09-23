@@ -25,10 +25,6 @@ const getSample = () => {
   };
   stream.on.withArgs('end').yields();
 
-  const monitoring = {
-    projectPath: sinon.stub(),
-    listTimeSeries: sinon.stub().returns(stream),
-  };
   const logging = {
     getEntries: sinon.stub().returns(Promise.resolve(results)),
   };
@@ -36,14 +32,8 @@ const getSample = () => {
   return {
     program: proxyquire('../', {
       '@google-cloud/logging': sinon.stub().returns(logging),
-      '@google-cloud/monitoring': {
-        v3: sinon.stub().returns({
-          metricServiceApi: sinon.stub().returns(monitoring),
-        }),
-      },
     }),
     mocks: {
-      monitoring: monitoring,
       logging: logging,
       results: results,
     },
@@ -77,55 +67,8 @@ describe('functions_log_helloworld', () => {
   });
 });
 
-describe('functions_log_retrieve', () => {
-  it('getLogEntries: should retrieve logs', async () => {
-    const sample = getSample();
-
-    const entries = await sample.program.getLogEntries();
-    assert.strictEqual(console.log.calledWith('Entries:'), true);
-    assert.strictEqual(entries === sample.mocks.results[0], true);
-  });
-});
-
-describe('functions_log_get_metrics', () => {
-  it('getMetrics: should retrieve metrics', () => {
-    const sample = getSample();
-    const callback = sinon.stub();
-
-    sample.program.getMetrics(callback);
-
-    assert.strictEqual(callback.callCount, 1);
-  });
-});
-
 describe('functions_log_stackdriver', () => {
   it('processLogEntry: should process log entry', () => {
-    const sample = getSample();
-    const json = JSON.stringify({
-      protoPayload: {
-        methodName: 'method',
-        resourceName: 'resource',
-        authenticationInfo: {
-          principalEmail: 'me@example.com',
-        },
-      },
-    });
-
-    const data = {
-      data: Buffer.from(json, 'ascii'),
-    };
-
-    sample.program.processLogEntry(data);
-
-    assert.strictEqual(console.log.calledWith('Method: method'), true);
-    assert.strictEqual(console.log.calledWith('Resource: resource'), true);
-    assert.strictEqual(
-      console.log.calledWith('Initiator: me@example.com'),
-      true
-    );
-  });
-
-  it('processLogEntry: should work in Node 8', () => {
     const sample = getSample();
     const json = JSON.stringify({
       protoPayload: {

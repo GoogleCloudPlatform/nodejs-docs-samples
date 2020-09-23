@@ -24,16 +24,7 @@
     "node-mailjet": "^3.3.1"
   },
   "devDependencies": {
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "supertest": "^4.0.2"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Express.js + Mailjet on Google App Engine."
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
   }
 }

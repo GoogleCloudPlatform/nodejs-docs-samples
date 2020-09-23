@@ -25,7 +25,7 @@ staffing agencies to improve job site engagement and candidate conversion.
 
 ## Running the tests
 
-1.  Set the **GCLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
+1.  Set the **GOOGLE_CLOUD_PROJECT** and **GOOGLE_APPLICATION_CREDENTIALS** environment variables.
 
 1.  Run all tests:
 

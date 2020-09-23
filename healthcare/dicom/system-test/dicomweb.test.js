@@ -19,7 +19,7 @@ const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
 
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const cloudRegion = 'us-central1';
 
 const cwdDatasets = path.join(__dirname, '../../datasets');
@@ -41,38 +41,46 @@ const studyUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.105';
 const seriesUid = '1.2.840.113619.2.176.3596.3364818.7819.1259708454.108';
 const instanceUid = '1.2.840.113619.2.176.3596.3364818.7271.1259708501.876';
 
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
+
 before(() => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
   );
-  execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwdDatasets
-  );
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
   execSync(
     `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
-    cwd
+    {cwd}
   );
 });
 after(() => {
   try {
     execSync(
       `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
-      cwd
+      {cwd}
     );
-    execSync(`node deleteDataset.js ${datasetId}`, cwdDatasets);
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {cwd: cwdDatasets});
   } catch (err) {} // Ignore error
 });
 
 it('should store a DICOM instance', () => {
   const output = execSync(
     `node dicomWebStoreInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${dcmFile}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Stored DICOM instance'));
 });
@@ -80,7 +88,7 @@ it('should store a DICOM instance', () => {
 it('should search DICOM instances', () => {
   const output = execSync(
     `node dicomWebSearchForInstances.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Found'));
 });
@@ -88,7 +96,7 @@ it('should search DICOM instances', () => {
 it('should retrieve a DICOM study', () => {
   const output = execSync(
     `node dicomWebRetrieveStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Retrieved study'));
 });
@@ -96,7 +104,7 @@ it('should retrieve a DICOM study', () => {
 it('should retrieve a DICOM instance', () => {
   const output = execSync(
     `node dicomWebRetrieveInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Retrieved DICOM instance'));
 });
@@ -104,7 +112,7 @@ it('should retrieve a DICOM instance', () => {
 it('should retrieve a DICOM rendered PNG image', () => {
   const output = execSync(
     `node dicomWebRetrieveRendered.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid} ${seriesUid} ${instanceUid}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Retrieved rendered image'));
 });
@@ -112,7 +120,7 @@ it('should retrieve a DICOM rendered PNG image', () => {
 it('should search for DICOM studies', () => {
   const output = execSync(
     `node dicomWebSearchStudies.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Found'));
 });
@@ -120,7 +128,7 @@ it('should search for DICOM studies', () => {
 it('should delete a DICOM study', () => {
   const output = execSync(
     `node dicomWebDeleteStudy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${studyUid}`,
-    cwd
+    {cwd}
   );
-  assert.ok(output.includes('Deleted study'));
+  assert.ok(output.includes('Deleted DICOM study'));
 });

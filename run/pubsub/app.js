@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All rights reserved.
+// Copyright 2020 Google LLC. All rights reserved.
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
@@ -33,6 +33,8 @@ app.post('/', (req, res) => {
   console.log(`Hello ${name}!`);
   res.status(204).send();
 });
-// [END run_pubsub_handler]
 
 module.exports = app;
+// [END run_pubsub_handler]
+
+

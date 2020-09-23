@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All rights reserved.
+// Copyright 2020 Google LLC. All rights reserved.
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
@@ -58,15 +58,16 @@ describe('Logging', () => {
       const {BASE_URL, ID_TOKEN} = process.env;
       if (!BASE_URL) {
         throw Error(
-          '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app.'
+          '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
         );
       }
 
       if (!ID_TOKEN) {
         throw Error('"ID_TOKEN" environment variable is required.');
       }
-      await request('/', {
-        prefixUrl: BASE_URL.trim(),
+
+      console.log(`Sending test requests to ${BASE_URL}`);
+      await request(BASE_URL.trim(), {
         headers: {
           Authorization: `Bearer ${ID_TOKEN.trim()}`,
         },

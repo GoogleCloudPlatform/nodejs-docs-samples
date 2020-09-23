@@ -2,6 +2,7 @@
 # for more info about CODEOWNERS file
 
 # Repo owner
+* @sofisl
 * @fhinkel
 
 # Kokoro
@@ -15,7 +16,6 @@ functions @ace-n @grant
 run @GoogleCloudPlatform/cdpe-cbr-containers
 
 # Other functions samples
-functions/composer-storage-trigger @leahecole
 functions/scheduleinstance @djmailhot
 functions/speech-to-speech @ricalo
 functions/memorystore @ericschmidtatwork
@@ -27,7 +27,7 @@ datastore/functions @benwhitehead
 
 # One-offs
 cloud-sql @kurtisvg
-composer @leahecole @sofisl
+composer @leahecole @sofisl @yoshi-nodejs
 healthcare @noerog
 iot @gguuss
 jobs @happyhuman

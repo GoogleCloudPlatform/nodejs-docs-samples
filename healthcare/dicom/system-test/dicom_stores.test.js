@@ -24,7 +24,7 @@ const {Storage} = require('@google-cloud/storage');
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cloudRegion = 'us-central1';
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const pubSubClient = new PubSub({projectId});
 const storage = new Storage();
 const topicName = `nodejs-healthcare-test-topic-${uuid.v4()}`;
@@ -33,7 +33,7 @@ const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
+const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
@@ -41,11 +41,19 @@ const dcmFileName = 'IM-0002-0001-JPEG-BASELINE.dcm';
 
 const resourceFile = `resources/${dcmFileName}`;
 const gcsUri = `${bucketName}/${dcmFileName}`;
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
 
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -59,10 +67,9 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwdDatasets
-  );
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
 });
 
 after(async () => {
@@ -75,17 +82,16 @@ after(async () => {
 
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      cwdDatasets
-    );
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+      cwd: cwdDatasets,
+    });
   } catch (err) {} // Ignore error
 });
 
 it('should create a DICOM store', () => {
   const output = execSync(
     `node createDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Created DICOM store'));
 });
@@ -93,7 +99,7 @@ it('should create a DICOM store', () => {
 it('should get a DICOM store', () => {
   const output = execSync(
     `node getDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('name'));
 });
@@ -101,7 +107,7 @@ it('should get a DICOM store', () => {
 it('should patch a DICOM store', () => {
   const output = execSync(
     `node patchDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${topicName}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Patched DICOM store'));
 });
@@ -109,7 +115,7 @@ it('should patch a DICOM store', () => {
 it('should list DICOM stores', () => {
   const output = execSync(
     `node listDicomStores.js ${projectId} ${cloudRegion} ${datasetId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('dicomStores'));
 });
@@ -120,7 +126,7 @@ it('should create and get a DICOM store IAM policy', () => {
 
   let output = execSync(
     `node setDicomStoreIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${localMember} ${localRole}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes, 'ETAG');
 
@@ -133,7 +139,7 @@ it('should create and get a DICOM store IAM policy', () => {
 it('should import a DICOM object from GCS', () => {
   const output = execSync(
     `node importDicomInstance.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${gcsUri}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Successfully imported DICOM instances'));
 });
@@ -141,7 +147,7 @@ it('should import a DICOM object from GCS', () => {
 it('should export a DICOM instance', () => {
   const output = execSync(
     `node exportDicomInstanceGcs.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId} ${bucketName}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Exported DICOM instances'));
 });
@@ -149,7 +155,7 @@ it('should export a DICOM instance', () => {
 it('should delete a DICOM store', () => {
   const output = execSync(
     `node deleteDicomStore.js ${projectId} ${cloudRegion} ${datasetId} ${dicomStoreId}`,
-    cwd
+    {cwd}
   );
   assert.ok(output.includes('Deleted DICOM store'));
 });

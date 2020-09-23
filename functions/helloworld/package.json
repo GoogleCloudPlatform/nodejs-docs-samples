@@ -9,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "unit-test": "mocha test/index.test.js test/*unit*test.js test/*integration*test.js --timeout=2000 --exit",
@@ -17,37 +17,24 @@
     "test": "npm run unit-test"
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "^4.0.0",
+    "@google-cloud/debug-agent": "^5.0.0",
     "escape-html": "^1.0.3",
-    "pug": "^2.0.3",
+    "pug": "^3.0.0",
     "supertest": "^4.0.2"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
-    "@google-cloud/pubsub": "^1.0.0",
-    "@google-cloud/storage": "^4.0.0",
+    "@google-cloud/pubsub": "^2.0.0",
+    "@google-cloud/storage": "^5.0.0",
     "child-process-promise": "^2.2.1",
     "express": "^4.16.3",
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "moment": "^2.24.0",
-    "promise-retry": "^1.1.1",
+    "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",
     "request": "^2.88.0",
     "requestretry": "^4.0.0",
     "sinon": "^9.0.0",
-    "uuid": "^7.0.0",
-    "yargs": "^15.0.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "requiredEnvVars": [
-      "BASE_URL",
-      "GCLOUD_PROJECT",
-      "GCF_REGION",
-      "FUNCTIONS_TOPIC",
-      "FUNCTIONS_BUCKET",
-      "FUNCTIONS_CMD"
-    ]
+    "uuid": "^8.0.0"
   }
 }

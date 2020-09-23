@@ -1,0 +1,31 @@
+{
+  "name": "cloudsql-sqlserver-mssql",
+  "description": "Node.js Cloud SQL SQL Server Connectivity Sample",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "system-test": "mocha test/*.test.js --timeout=60000 --exit",
+    "test": "npm run system-test"
+  },
+  "dependencies": {
+    "@google-cloud/logging-winston": "^4.0.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mssql": "^6.2.0",
+    "prompt": "^1.0.0",
+    "pug": "^3.0.0",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.0.0",
+    "supertest": "^4.0.0"
+  }
+}

@@ -44,8 +44,8 @@ const restoreConsole = function restoreConsole() {
 
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -100,6 +100,7 @@ it('should create a storage transfer job', (done) => {
 
   program.createTransferJob(options, (err, transferJob) => {
     assert.ifError(err);
+    // jobName is used by other tests below.
     jobName = transferJob.name;
     assert.strictEqual(transferJob.name.indexOf('transferJobs/'), 0);
     assert.strictEqual(transferJob.description, description);

@@ -49,31 +49,18 @@ exports.helloHttp = (req, res) => {
 };
 // [END functions_helloworld_http]
 
-// [START functions_helloworld_background]
-/**
- * Background Cloud Function.
- *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
- */
-exports.helloBackground = (data, context, callback) => {
-  callback(null, `Hello ${data.name || 'World'}!`);
-};
-// [END functions_helloworld_background]
-
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
- * @param {object} data The event payload.
+ * @param {object} message The Pub/Sub message.
  * @param {object} context The event metadata.
  */
-exports.helloPubSub = (data, context) => {
-  const pubSubMessage = data;
-  const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64').toString()
+exports.helloPubSub = (message, context) => {
+  const name = message.data
+    ? Buffer.from(message.data, 'base64').toString()
     : 'World';
 
   console.log(`Hello, ${name}!`);
@@ -82,35 +69,12 @@ exports.helloPubSub = (data, context) => {
 
 // [START functions_helloworld_storage]
 /**
- * Background Cloud Function to be triggered by Cloud Storage.
- *
- * @param {object} data The event payload.
- * @param {object} context The event metadata.
- */
-exports.helloGCS = (data, context) => {
-  const file = data;
-  if (file.resourceState === 'not_exists') {
-    console.log(`File ${file.name} deleted.`);
-  } else if (file.metageneration === '1') {
-    // metageneration attribute is updated on metadata changes.
-    // on create value is 1
-    console.log(`File ${file.name} uploaded.`);
-  } else {
-    console.log(`File ${file.name} metadata updated.`);
-  }
-};
-// [END functions_helloworld_storage]
-
-// [START functions_helloworld_storage_generic]
-/**
  * Generic background Cloud Function to be triggered by Cloud Storage.
  *
- * @param {object} event The Cloud Functions event.
- * @param {function} callback The callback function.
+ * @param {object} file The Cloud Storage file metadata.
+ * @param {object} context The event metadata.
  */
-exports.helloGCSGeneric = (data, context, callback) => {
-  const file = data;
-
+exports.helloGCS = (file, context) => {
   console.log(`  Event: ${context.eventId}`);
   console.log(`  Event Type: ${context.eventType}`);
   console.log(`  Bucket: ${file.bucket}`);
@@ -118,19 +82,18 @@ exports.helloGCSGeneric = (data, context, callback) => {
   console.log(`  Metageneration: ${file.metageneration}`);
   console.log(`  Created: ${file.timeCreated}`);
   console.log(`  Updated: ${file.updated}`);
-
-  callback();
 };
-// [END functions_helloworld_storage_generic]
+// [END functions_helloworld_storage]
 
 /**
  * Background Cloud Function that throws an error.
  *
  * @param {object} event The Cloud Functions event.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 
-exports.helloError = (data, context, callback) => {
+exports.helloError = (event, context, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver Error Reporting
   console.error(new Error('I failed you'));
@@ -144,11 +107,12 @@ exports.helloError = (data, context, callback) => {
  * Background Cloud Function that throws a value.
  *
  * @param {object} event The Cloud Functions event.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 /* eslint-disable no-throw-literal */
 
-exports.helloError2 = (data, context, callback) => {
+exports.helloError2 = (event, context, callback) => {
   // [START functions_helloworld_error]
   // These will NOT be reported to Stackdriver Error Reporting
   console.info(new Error('I failed you')); // Logging an Error object at the info level
@@ -162,10 +126,11 @@ exports.helloError2 = (data, context, callback) => {
  * Background Cloud Function that returns an error.
  *
  * @param {object} event The Cloud Functions event.
+ * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
 /* eslint-disable */
-exports.helloError3 = (data, context, callback) => {
+exports.helloError3 = (event, context, callback) => {
   // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   callback('I failed you');

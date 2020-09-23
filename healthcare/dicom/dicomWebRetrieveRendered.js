@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   dicomStoreId,
@@ -27,7 +27,7 @@ const main = (
 ) => {
   // [START healthcare_dicomweb_retrieve_rendered]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
   const fs = require('fs');
   const util = require('util');
   const writeFile = util.promisify(fs.writeFile);

@@ -845,6 +845,7 @@ const sendCommand = async (
 
   try {
     const responses = await iotClient.sendCommandToDevice(request);
+    
     console.log('Sent command: ', responses[0]);
   } catch (err) {
     console.error('Could not send command:', err);
@@ -890,7 +891,7 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
 // Returns an authorized API client by discovering the Cloud IoT Core API with
 // the provided API key.
 const getClient = async (serviceAccountJson) => {
-  // the getClient method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
+  // the getClient method looks for the GOOGLE_CLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
   // environment variables if serviceAccountJson is not passed in
   const authClient = await google.auth.getClient({
     keyFilename: serviceAccountJson,
@@ -1393,9 +1394,9 @@ require(`yargs`) // eslint-disable-line
     },
     projectId: {
       alias: 'p',
-      default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+      default: process.env.GOOGLE_CLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
       description:
-        'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+        'The Project ID to use. Defaults to the value of the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
       type: 'string',
     },

@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
@@ -26,7 +26,7 @@ const main = (
 ) => {
   // [START healthcare_delete_resource_purge]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const deleteFhirResourcePurge = async () => {
     const auth = await google.auth.getClient({
@@ -47,7 +47,7 @@ const main = (
     await healthcare.projects.locations.datasets.fhirStores.fhir.ResourcePurge(
       request
     );
-    console.log(`Deleted all historical versions of ${resourceType} resource`);
+    console.log(`Deleted all historical versions of resource`);
   };
 
   deleteFhirResourcePurge();

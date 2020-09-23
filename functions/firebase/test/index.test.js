@@ -93,10 +93,8 @@ describe('functions_firebase_firestore', () => {
     const event = {
       resource: 'resource',
       eventType: 'type',
-      data: {
-        oldValue: oldValue,
-        value: value,
-      },
+      oldValue: oldValue,
+      value: value,
     };
 
     sample.program.helloFirestore(event);
@@ -123,12 +121,10 @@ describe('functions_firebase_auth', () => {
     const date = Date.now();
     const event = {
       resource: 'resource',
-      data: {
-        uid: 'me',
-        email: 'me@example.com',
-        metadata: {
-          createdAt: date,
-        },
+      uid: 'me',
+      email: 'me@example.com',
+      metadata: {
+        createdAt: date,
       },
     };
 
@@ -185,11 +181,9 @@ describe('functions_firebase_remote_config', () => {
     const sample = getSample();
 
     const event = {
-      data: {
-        updateOrigin: 'CONSOLE',
-        updateType: 'INCREMENTAL_UPDATE',
-        versionNumber: '1',
-      },
+      updateOrigin: 'CONSOLE',
+      updateType: 'INCREMENTAL_UPDATE',
+      versionNumber: '1',
     };
 
     sample.program.helloRemoteConfig(event);
@@ -200,5 +194,54 @@ describe('functions_firebase_remote_config', () => {
     );
     assert.strictEqual(console.log.calledWith('Origin: CONSOLE'), true);
     assert.strictEqual(console.log.calledWith('Version: 1'), true);
+  });
+});
+
+describe('functions_firebase_reactive', () => {
+  it('should capitalize original value', () => {
+    const sample = getSample();
+
+    const value = {
+      name: 'foo/documents/bar',
+      fields: {
+        original: {
+          stringValue: 'abc'
+        }
+      }
+    };
+
+    const event = {
+      eventType: 'type',
+      value: value,
+    };
+
+    sample.program.makeUpperCase(event);
+
+    assert.strictEqual(console.log.calledWith('Replacing value: abc --> ABC'), true);
+    assert.strictEqual(sample.mocks.firestore.doc.calledWith('bar'), true);
+    assert.strictEqual(sample.mocks.firestore.set.callCount, 1);
+  });
+
+  it('should do nothing if value is already capitalized', () => {
+    const sample = getSample();
+
+    const value = {
+      name: 'foo/documents/bar',
+      fields: {
+        original: {
+          stringValue: 'ABC'
+        }
+      }
+    };
+
+    const event = {
+      eventType: 'type',
+      value: value,
+    };
+
+    sample.program.makeUpperCase(event);
+
+    assert.strictEqual(console.log.calledWith('Value is already upper-case.'), true);
+    assert.strictEqual(sample.mocks.firestore.set.callCount, 0);
   });
 });

@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
@@ -25,7 +25,7 @@ const main = (
 ) => {
   // [START healthcare_import_fhir_resources]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
   const sleep = require('../sleep');
 
   const importFhirResources = async () => {
@@ -44,7 +44,7 @@ const main = (
     const request = {
       name,
       resource: {
-        contentStructure: 'BUNDLE',
+        contentStructure: 'RESOURCE',
         gcsSource: {
           uri: `gs://${gcsUri}`,
         },
@@ -58,22 +58,24 @@ const main = (
 
     const operationRequest = {name: operationName};
 
-    // Wait five seconds for the LRO to finish.
-    await sleep(5000);
+    // Wait twenty seconds for the LRO to finish.
+    await sleep(20000);
 
     // Check the LRO's status
     const operationStatus = await healthcare.projects.locations.datasets.operations.get(
       operationRequest
     );
 
-    if (typeof operationStatus.data.error === 'undefined') {
+    const success = operationStatus.data.metadata.counter.success;
+
+    if (typeof success !== 'undefined') {
       console.log(
-        `Import FHIR resources succeeded. ${operationStatus.data.response.inputSize} resources imported`
+        `Import FHIR resources succeeded. ${success} resources imported.`
       );
     } else {
       console.log(
-        'Imported FHIR resources failed. Details\n:',
-        operationStatus.data.error
+        'Imported FHIR resources failed. Details available in Cloud Logging at the following URL:\n',
+        operationStatus.data.metadata.logsUrl
       );
     }
   };

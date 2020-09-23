@@ -53,7 +53,7 @@ $ gcloud endpoints services deploy api.pb api_config.yaml
 
 1. Build a Docker image for later use using the following command. Make sure to replace `[YOUR_PROJECT_ID]` with your Project ID.
 ```
-$ gcloud container builds submit --tag gcr.io/[YOUR_PROJECT_ID]/endpoints-example:1.0 .
+$ gcloud builds submit --tag gcr.io/[YOUR_PROJECT_ID]/endpoints-example:1.0 .
 ...
 Service Configuration [SERVICE_CONFIG_ID] uploaded for service [SERVICE_NAME]
 ```
@@ -72,9 +72,9 @@ $ sudo apt-get update
 $ sudo apt-get install docker.io
 ```
 
-1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_GCLOUD_PROJECT]` and `[YOUR_SERVICE_NAME]` with your GCloud Project ID and your service's name respectively.
+1. Using the SSH connection to your instance, initialize the required Docker images in the order specified below. Replace `[YOUR_GOOGLE_CLOUD_PROJECT]` and `[YOUR_SERVICE_NAME]` with your GCloud Project ID and your service's name respectively.
 ```
-$ sudo docker run --detach --name=helloworld gcr.io/[YOUR_GCLOUD_PROJECT]/endpoints-example:1.0
+$ sudo docker run --detach --name=helloworld gcr.io/[YOUR_GOOGLE_CLOUD_PROJECT]/endpoints-example:1.0
 ```
 
 ```
@@ -109,7 +109,7 @@ $ gcloud components install kubectl
 $ gcloud container clusters get-credentials [YOUR_CLUSTER_NAME] --zone [YOUR_CLUSTER_ZONE]
 ```
 
-1. Edit the `container_engine.yaml` file, and replace `GCLOUD_PROJECT` and `SERVICE_NAME` with your GCloud Project ID and your service's name.
+1. Edit the `container_engine.yaml` file, and replace `GOOGLE_CLOUD_PROJECT` and `SERVICE_NAME` with your GCloud Project ID and your service's name.
 
 1. Add a [Kubernetes service][docs_k8s_services] to the cluster you created. Note that Kubernetes services should not be confused with [Endpoints services][docs_endpoints_services].
 ```
@@ -173,7 +173,7 @@ $ gcloud endpoints services deploy api.pb api_config.yaml
 ```
 
 1. Deploy the Endpoints Proxy (ESP) with the HTTP 1.1 port enabled.
-Make sure to update the content of `http_deployment.yaml` and replace the placeholder `[SERVICE_NAME]` and `[GCLOUD_PROJECT]`.
+Make sure to update the content of `http_deployment.yaml` and replace the placeholder `[SERVICE_NAME]` and `[GOOGLE_CLOUD_PROJECT]`.
 ```
 $ kubectl apply -f http_deployment.yaml
 ```

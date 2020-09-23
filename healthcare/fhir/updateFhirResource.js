@@ -17,7 +17,7 @@
 'use strict';
 
 const main = (
-  projectId = process.env.GCLOUD_PROJECT,
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
@@ -26,7 +26,7 @@ const main = (
 ) => {
   // [START healthcare_update_resource]
   const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1beta1');
+  const healthcare = google.healthcare('v1');
 
   const updateFhirResource = async () => {
     const auth = await google.auth.getClient({
@@ -34,7 +34,6 @@ const main = (
     });
     google.options({
       auth,
-      data: {resourceType: resourceType, id: resourceId, active: true},
       headers: {'Content-Type': 'application/fhir+json'},
     });
 
@@ -46,7 +45,11 @@ const main = (
     // const resourceType = 'Patient';
     // const resourceId = '16e8a860-33b3-49be-9b03-de979feed14a';
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
-    const request = {name};
+    // The following body works with a Patient resource and is not intended
+    // to work with other types of FHIR resources. If necessary, supply a new
+    // body with data that corresponds to the FHIR resource you are updating.
+    const body = {resourceType: resourceType, id: resourceId, active: true};
+    const request = {name, requestBody: body};
 
     const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.update(
       request

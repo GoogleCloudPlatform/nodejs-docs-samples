@@ -24,7 +24,7 @@ const {Storage} = require('@google-cloud/storage');
 
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
 const cloudRegion = 'us-central1';
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const pubSubClient = new PubSub({projectId});
 const storage = new Storage();
 const topicName = `nodejs-healthcare-test-topic-${uuid.v4()}`;
@@ -33,7 +33,7 @@ const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const dicomStoreId = `nodejs-docs-samples-test-fhir-store${uuid.v4()}`.replace(
+const dicomStoreId = `nodejs-docs-samples-test-dicom-store${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
@@ -41,11 +41,19 @@ const dcmFileName = 'IM-0002-0001-JPEG-BASELINE.dcm';
 
 const resourceFile = `resources/${dcmFileName}`;
 const gcsUri = `${bucketName}/${dcmFileName}`;
+const installDeps = 'npm install';
+
+// Run npm install on datasets directory because modalities
+// require bootstrapping datasets, and Kokoro needs to know
+// to install dependencies from the datasets directory.
+assert.ok(
+  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
+);
 
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    process.env.GOOGLE_CLOUD_PROJECT,
+    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,

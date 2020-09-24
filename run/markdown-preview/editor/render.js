@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START run_secure_request]
+
 const {GoogleAuth} = require('google-auth-library');
 const got = require('got');
 const auth = new GoogleAuth();
@@ -21,7 +23,6 @@ let client, serviceUrl;
 // renderRequest creates a new HTTP request with IAM ID Token credential.
 // This token is automatically handled by private Cloud Run (fully managed) and Cloud Functions.
 const renderRequest = async (markdown) => { 
-  // [START run_secure_request]
   if (!process.env.EDITOR_UPSTREAM_RENDER_URL) throw Error('EDITOR_UPSTREAM_RENDER_URL needs to be set.');
   serviceUrl = process.env.EDITOR_UPSTREAM_RENDER_URL;
 
@@ -43,7 +44,7 @@ const renderRequest = async (markdown) => {
     const clientHeaders = await client.getRequestHeaders();
     serviceRequestOptions.headers['Authorization'] = clientHeaders['Authorization'];
   } catch(err) {
-    throw Error('GoogleAuth server could not respond to request: ', err);
+    throw Error('could not create an identity token: ', err);
   };
 
   try {
@@ -51,9 +52,10 @@ const renderRequest = async (markdown) => {
     const serviceResponse = await got(serviceUrl, serviceRequestOptions);
     return serviceResponse.body;
   } catch (err) { 
-    throw Error('Renderer service could not respond to request: ', err);
+    throw Error('request to rendering service failed: ', err);
   };
-  // [END run_secure_request]
 };
+
+// [END run_secure_request]
 
 module.exports = renderRequest;

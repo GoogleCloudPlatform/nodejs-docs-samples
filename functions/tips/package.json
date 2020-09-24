@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "^2.0.0",
-    "axios": "^0.19.2"
+    "axios": "^0.20.0"
   },
   "devDependencies": {
     "mocha": "^8.0.0",

@@ -14,9 +14,6 @@
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"
   },
-  "dependencies": {
-    "@google-cloud/logging": "^8.0.0"
-  },
   "devDependencies": {
     "mocha": "^8.0.0",
     "proxyquire": "^2.1.0",

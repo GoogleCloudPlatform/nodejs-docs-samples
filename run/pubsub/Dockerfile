@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC. All rights reserved.
+# Copyright 2020 Google LLC. All rights reserved.
 # Use of this source code is governed by the Apache 2.0
 # license that can be found in the LICENSE file.
 
@@ -6,7 +6,7 @@
 
 # Use the official lightweight Node.js 10 image.
 # https://hub.docker.com/_/node
-FROM node:10-slim
+FROM node:12-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app

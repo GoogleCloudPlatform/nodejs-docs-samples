@@ -43,8 +43,7 @@ html(lang="en")
       h4(class="header center") Recent Votes
       ul(class="container collection center")
         each vote in votes
-          - var classes = ['collection-item', 'avatar']
-          li(class=classes, class=vote.uid)
+          li(class="collection-item avatar")
             if vote.candidate.trim() === 'CATS'
               i(class="material-icons circle teal lighten-1") 🐱
             else

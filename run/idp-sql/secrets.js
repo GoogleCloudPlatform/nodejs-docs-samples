@@ -22,7 +22,7 @@ const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
 let client;
 
-// Load the secret from Secret Manager and set as env vars
+// Load the secret from Secret Manager
 async function getSecretConfig() {
   if (SECRETS) {
     // [START run_user_auth_secrets]

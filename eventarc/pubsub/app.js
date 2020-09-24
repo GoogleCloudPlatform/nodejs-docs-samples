@@ -5,6 +5,7 @@
 // [START eventarc_pubsub_handler]
 // [START run_events_pubsub_handler]
 const express = require('express');
+const {toMessagePublishedEvent} = require('@google/events/cloud/pubsub/v1/MessagePublishedData');
 const app = express();
 
 app.use(express.json());
@@ -21,9 +22,10 @@ app.post('/', (req, res) => {
     console.log(`Bad Request: ${errorMessage}`);
     return;
   }
-  const pubSubMessage = req.body.message;
-  const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
+  // Cast to MessagePublishedEvent for IDE autocompletion
+  const pubSubMessage = toMessagePublishedEvent(req.body);
+  const name = pubSubMessage.message && pubSubMessage.message.data
+    ? Buffer.from(pubSubMessage.message.data, 'base64').toString().trim()
     : 'World';
   
   const result = `Hello, ${name}! ID: ${req.get('ce-id') || ''}`;

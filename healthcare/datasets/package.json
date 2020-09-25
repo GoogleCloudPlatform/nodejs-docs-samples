@@ -17,6 +17,6 @@
   "dependencies": {
     "googleapis": "^59.0.0",
     "uuid": "^8.0.0",
-    "yargs": "^15.0.0"
+    "yargs": "^16.0.0"
   }
 }

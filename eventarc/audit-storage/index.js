@@ -12,19 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START run_events_gcs_handler]
-const express = require('express');
-const app = express();
+// [START eventarc_gcs_server]
+const app = require('./app.js');
+const PORT = process.env.PORT || 8080;
 
-app.use(express.json());
-app.post('/', (req, res) => {
-  if (!req.header('ce-subject')) {
-    return res.status(400).send('Bad Request: missing required header: ce-subject');
-  }
-
-  console.log(`GCS CloudEvent type: ${req.header('ce-subject')}`);
-  return res.status(200).send(`GCS CloudEvent type: ${req.header('ce-subject')}`);
-});
-
-module.exports = app;
-// [END run_events_gcs_handler]
+app.listen(PORT, () =>
+console.log(`nodejs-events-storage listening on port ${PORT}`)
+);
+// [END eventarc_gcs_server]

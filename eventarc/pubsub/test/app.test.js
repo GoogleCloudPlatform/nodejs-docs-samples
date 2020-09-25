@@ -49,15 +49,25 @@ describe('Unit Tests', () => {
   });
 
   describe('should succeed', () => {
-    const data = Buffer.from('World').toString(`base64`);
+    const data = Buffer.from('Events').toString(`base64`);
     
+    it(`with empty Pub/Sub Message`, async () => {
+      await request
+        .post('/')
+        .type('json')
+        .send({message: {data: ''}})
+        .expect((res) => {
+          assert.equal(res.text, 'Hello, World! ID: ');
+        });
+    });
+
     it(`with a minimally valid Pub/Sub Message`, async () => {
       await request
         .post('/')
         .type('json')
         .send({message: {data}})
         .expect((res) => {
-          assert.equal(res.text, 'Hello, World! ID: ');
+          assert.equal(res.text, 'Hello, Events! ID: ');
         });
     });
 
@@ -68,7 +78,7 @@ describe('Unit Tests', () => {
         .set('ce-id', 1234)
         .send({message: {data}})
         .expect((res) => {
-          assert.equal(res.text, 'Hello, World! ID: 1234');
+          assert.equal(res.text, 'Hello, Events! ID: 1234');
         });
     });
   });

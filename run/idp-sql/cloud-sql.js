@@ -15,7 +15,7 @@
 const Knex = require('knex');
 const { getSecretConfig } = require('./secrets');
 
-// [START run_user_auth_knex]
+// [START run_user_auth_sql_connect]
 const connectWithUnixSockets = (config, secretConfig) => {
   const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
   // Establish a connection to the database
@@ -31,7 +31,7 @@ const connectWithUnixSockets = (config, secretConfig) => {
     ...config
   });
 }
-// [END run_user_auth_knex]
+// [END run_user_auth_sql_connect]
 
 const config = {
   // Configure which instance and what database user to connect with.

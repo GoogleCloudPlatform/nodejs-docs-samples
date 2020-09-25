@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
+// [START eventarc_pubsub_handler]
 // [START run_events_pubsub_handler]
 const express = require('express');
 const app = express();
@@ -32,3 +33,4 @@ app.post('/', (req, res) => {
 
 module.exports = app;
 // [END run_events_pubsub_handler]
+// [END eventarc_pubsub_handler]

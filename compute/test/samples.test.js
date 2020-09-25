@@ -55,7 +55,7 @@ describe('samples', () => {
   describe('start-up script', () => {
     const name = `gcloud-apache-${uuid.v4().split('-')[0]}`;
     after(async () => deleteVM(name));
-    it('should create vm with startup script', function(done) {
+    it('should create vm with startup script', function (done) {
       this.timeout(280000);
       this.retries(3);
       const {spawn} = require('child_process');

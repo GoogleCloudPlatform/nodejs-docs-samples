@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { app } = require('./app');
+const app = require('./app');
 const { logger } = require('./logging');
 const pkg = require('./package.json');
 const PORT = process.env.PORT || 8080;

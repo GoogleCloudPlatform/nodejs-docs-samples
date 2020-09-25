@@ -23,8 +23,9 @@ steps:
     - '-c'
     - |
       gcloud secrets describe ${_SECRET_NAME}
+      sed -i "s/PROJECT_ID/$PROJECT_ID/" postgres-secrets.json
+      cat postgres-secrets.json
       if [ $? -eq 1 ]; then
-        sed -i "s/PROJECT_ID/$PROJECT_ID/" postgres-secrets.json
         gcloud secrets create ${_SECRET_NAME} \
           --replication-policy="automatic"
       fi

@@ -50,6 +50,7 @@ const authenticateJWT = (req, res, next) => {
       req.uid = uid;
       next();
     }).catch((err) => {
+      logger.error(`error with authentication: ` + err)
       return res.sendStatus(403);
     });
   } else {
@@ -94,7 +95,7 @@ app.get('/', async (req, res) => {
       leaderMessage: leaderMessage,
     });
   } catch(err) {
-    logger.error(`Error while attempting to get vote: ${err}`);
+    logger.error(`error while attempting to get vote: ${err}`);
     res
     .status(500)
     .send('Unable to load page; see logs for more details.')
@@ -127,7 +128,7 @@ app.post('/', authenticateJWT, async (req, res) => {
     await insertVote(vote);
     logger.info({message: 'vote_inserted', vote})
   } catch (err) {
-    logger.error(`Error while attempting to submit vote: ${err}`);
+    logger.error(`error while attempting to submit vote: ${err}`);
     res
     .status(500)
     .send('Unable to cast vote; see logs for more details.')
@@ -137,4 +138,4 @@ app.post('/', authenticateJWT, async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
-module.exports = {app};
+module.exports = app;

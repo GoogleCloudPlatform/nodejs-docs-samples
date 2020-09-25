@@ -1,4 +1,4 @@
-# Events for Cloud Run – Cloud Storage Event tutorial
+# Cloud Eventarc – Cloud Storage Events tutorial
 
 This sample shows how to create a service that processes GCS events.
 
@@ -43,12 +43,12 @@ gsutil mb -p $(gcloud config get-value project) \
 Create a Cloud Storage (via Audit Log) trigger:
 
 ```sh
-gcloud alpha events triggers create my-gcs-trigger \
-  --target-service $MY_RUN_SERVICE  \
-  --type com.google.cloud.auditlog.event \
-  --parameters methodName=storage.buckets.update \
-  --parameters serviceName=storage.googleapis.com \
-  --parameters resourceName=projects/_/buckets/"$MY_GCS_BUCKET"
+gcloud beta eventarc triggers create my-gcs-trigger \
+  --destination-run-service $MY_RUN_SERVICE  \
+  --matching-criteria type=google.cloud.audit.log.v1.written \
+  --matching-criteria methodName=storage.buckets.update \
+  --matching-criteria serviceName=storage.googleapis.com \
+  --matching-criteria resourceName=projects/_/buckets/"$MY_GCS_BUCKET"
 ```
 
 ## Test

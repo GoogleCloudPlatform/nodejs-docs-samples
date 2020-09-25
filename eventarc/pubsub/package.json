@@ -1,5 +1,5 @@
 {
-  "name": "cloud-run-events-pubsub",
+  "name": "cloud-eventarc-pubsub",
   "version": "1.0.0",
   "private": true,
   "description": "Simple Events for Cloud Run – Pub/Sub sample",

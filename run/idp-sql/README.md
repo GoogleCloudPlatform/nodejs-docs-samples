@@ -13,7 +13,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 * **@google-cloud/logging-winston** + **winston**: Logging library
 * **@google-cloud/secret-manager**: Google Secret Manager client library
 * **firebase-admin**: Verifying JWT token
-* ***knex**: A SQL query builder library
+* **knex**: A SQL query builder library
 * **pug**: Template engine
 
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Create a Winston logger that streams to Stackdriver Logging.
-const { createLogger, transports ,format} = require('winston');
+const { createLogger, transports ,format } = require('winston');
 const {LoggingWinston} = require('@google-cloud/logging-winston');
 const loggingWinston = new LoggingWinston();
 

@@ -17,7 +17,7 @@
 // [START functions_billing_limit]
 // [START functions_billing_stop]
 const {google} = require('googleapis');
-const {auth} = require('google-auth-library');
+const {GoogleAuth} = require('google-auth-library');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
@@ -62,7 +62,7 @@ exports.stopBilling = async (pubsubEvent, context) => {
     return `No project specified`;
   }
 
-  await _setAuthCredential();
+  _setAuthCredential();
   const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
   if (billingEnabled) {
     return _disableBillingForProject(PROJECT_NAME);
@@ -76,15 +76,10 @@ exports.stopBilling = async (pubsubEvent, context) => {
  * @return {Promise} Credentials set globally
  */
 const _setAuthCredential = async () => {
-  const res = await auth.getApplicationDefault();
-
-  let client = res.credential;
-  if (client.hasScopes && !client.hasScopes()) {
-    client = client.createScoped([
-      'https://www.googleapis.com/auth/cloud-billing',
-      'https://www.googleapis.com/auth/cloud-platform',
-    ]);
-  }
+  const client = new GoogleAuth({ scopes: [
+    'https://www.googleapis.com/auth/cloud-billing',
+    'https://www.googleapis.com/auth/cloud-platform',
+  ]});
 
   // Set credential globally for all requests
   google.options({
@@ -128,7 +123,7 @@ exports.startBilling = async (pubsubEvent, context) => {
     Buffer.from(pubsubEvent.data, 'base64').toString()
   );
 
-  await _setAuthCredential();
+  _setAuthCredential();
   if (!(await _isBillingEnabled(PROJECT_NAME))) {
     // Enable billing
 
@@ -147,7 +142,7 @@ exports.startBilling = async (pubsubEvent, context) => {
 
 // [START functions_billing_limit]
 const compute = google.compute('v1');
-const ZONE = 'us-west1-a';
+const ZONE = 'us-central1-a';
 
 exports.limitUse = async (pubsubEvent, context) => {
   const pubsubData = JSON.parse(
@@ -157,7 +152,7 @@ exports.limitUse = async (pubsubEvent, context) => {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
   }
 
-  await _setAuthCredential();
+  _setAuthCredential();
 
   const instanceNames = await _listRunningInstances(PROJECT_ID, ZONE);
   if (!instanceNames.length) {
@@ -206,7 +201,7 @@ const _stopInstances = async (projectId, zone, instanceNames) => {
 
 // Helper function to restart instances (used in tests)
 exports.startInstances = async (pubsubEvent, context) => {
-  await _setAuthCredential();
+  _setAuthCredential();
   const instanceNames = await _listStoppedInstances(PROJECT_ID, ZONE);
 
   if (!instanceNames.length) {
@@ -254,7 +249,7 @@ const _startInstances = async (projectId, zone, instanceNames) => {
 
 // Helper function used in tests
 exports.listRunningInstances = async (pubsubEvent, context) => {
-  await _setAuthCredential();
+  _setAuthCredential();
   console.log(PROJECT_ID, ZONE);
   return _listRunningInstances(PROJECT_ID, ZONE);
 };

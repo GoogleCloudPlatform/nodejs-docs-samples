@@ -56,7 +56,7 @@ before(async () => {
 describe('functions_billing_limit', () => {
   it('should shut down GCE instances when budget is exceeded', async () => {
     const ffProc = execPromise(
-      `functions-framework --target=limitUse --signature-type=event`,
+      `npx functions-framework --target=limitUse --signature-type=event`,
       {timeout: 1000, shell: true, cwd}
     );
 

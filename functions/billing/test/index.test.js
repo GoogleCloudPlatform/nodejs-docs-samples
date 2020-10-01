@@ -23,7 +23,7 @@ const sinon = require('sinon');
 const cwd = path.join(__dirname, '..');
 
 const PROJECT_NAME = process.env.GOOGLE_CLOUD_PROJECT;
-
+const FF_CMD = 'npx functions-framework';
 const {BILLING_ACCOUNT} = process.env;
 
 after(async () => {
@@ -59,7 +59,7 @@ describe('functions/billing tests', () => {
 
     before(() => {
       const ffProc = execPromise(
-        `functions-framework --target=notifySlack --signature-type=event --port ${PORT}`,
+        `${FF_CMD} --target=notifySlack --signature-type=event --port ${PORT}`,
         {timeout: 1000, shell: true, cwd}
       );
     });
@@ -100,7 +100,7 @@ describe('functions/billing tests', () => {
 
     before(() => {
       const ffProc = execPromise(
-        `functions-framework --target=stopBilling --signature-type=event --port ${PORT}`,
+        `${FF_CMD} --target=stopBilling --signature-type=event --port ${PORT}`,
         {timeout: 1000, shell: true, cwd}
       );
     });

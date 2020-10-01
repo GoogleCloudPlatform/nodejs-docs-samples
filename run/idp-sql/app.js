@@ -22,7 +22,6 @@ const { getVotes, getVoteCount, insertVote } = require('./cloud-sql');
 
 const app = express();
 app.set('view engine', 'pug');
-app.enable('trust proxy');
 app.use(express.static(__dirname + '/static'));
 
 // Automatically parse request body as form data.

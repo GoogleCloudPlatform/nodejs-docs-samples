@@ -14,6 +14,7 @@
 
 // Create a Winston logger that streams to Stackdriver Logging.
 const { createLogger, transports ,format } = require('winston');
+const agent = require('@google-cloud/trace-agent').start();
 
 // Add severity label for Stackdriver log parsing
 const addSeverity = format((info, opts) => {
@@ -21,13 +22,11 @@ const addSeverity = format((info, opts) => {
   return info;
 });
 
-const agent = require('@google-cloud/trace-agent').start();
 let project;
 const addTrace = format((info, opts) => {
   if (info.traceId) {
     if (!project) project = agent.getWriterProjectId();
     info['logging.googleapis.com/trace'] = `projects/${project}/traces/${info.traceId}`
-    // delete info.project;
     delete info.traceId;
   }
   return info;
@@ -40,7 +39,7 @@ const logger = createLogger({
     addTrace(),
     format.timestamp(),
     format.json(),
-    // format.prettyPrint(),
+    // format.prettyPrint(), // Uncomment for local debugging
   ),
   transports: [new transports.Console()],
 });

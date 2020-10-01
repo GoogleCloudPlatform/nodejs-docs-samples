@@ -30,11 +30,7 @@
   "devDependencies": {
     "got": "^11.7.0",
     "mocha": "^8.0.0",
-    "mssql": "^6.2.1",
-    "mysql": "^2.18.1",
-    "mysql2": "^2.1.0",
     "pg": "^8.0.0",
-    "sqlite3": "^5.0.0",
     "supertest": "^4.0.0"
   }
 }

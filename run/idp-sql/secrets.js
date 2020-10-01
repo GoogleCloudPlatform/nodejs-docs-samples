@@ -14,9 +14,9 @@
 
 const { logger } = require('./logging');
 
-// SECRETS is the resource ID of the secret, passed in by environment variable.
+// CLOUD_SQL_CREDENTIALS_SECRET is the resource ID of the secret, passed in by environment variable.
 // Format: projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION
-const {SECRETS} = process.env;
+const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
 
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
@@ -24,11 +24,11 @@ let client;
 
 // Load the secret from Secret Manager
 async function getSecretConfig() {
-  if (SECRETS) {
+  if (CLOUD_SQL_CREDENTIALS_SECRET) {
     // [START run_user_auth_secrets]
     if (!client) client = new SecretManagerServiceClient();
     try {
-      const [version] = await client.accessSecretVersion({name: SECRETS});
+      const [version] = await client.accessSecretVersion({name: CLOUD_SQL_CREDENTIALS_SECRET});
       // Parse the secret that has been added as a JSON string
       // to retreive database credentials
       const secrets = JSON.parse(version.payload.data.toString('utf8'));
@@ -40,7 +40,7 @@ async function getSecretConfig() {
     }
     // [END run_user_auth_secrets]
   } else {
-    logger.info('SECRETS env var not set. Defaulting to environment variables.');
+    logger.info('CLOUD_SQL_CREDENTIALS_SECRET env var not set. Defaulting to environment variables.');
     if (!process.env.DB_USER) throw Error('DB_USER needs to be set.');
     if (!process.env.DB_PASS) throw Error('DB_PASS needs to be set.');
     if (!process.env.DB_NAME) throw Error('DB_NAME needs to be set.');

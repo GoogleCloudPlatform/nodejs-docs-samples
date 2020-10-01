@@ -3,7 +3,7 @@
 This sample integrates with the Identity Platform to authenticate users to the
 application and connects to a Cloud SQL postgreSQL database for data storage.
 
-Use it with the [End user Authentication for Cloud Run](http://cloud.google.com/run/docs/tutorials/end-user).
+Use it with the [End user Authentication for Cloud Run](http://cloud.google.com/run/docs/tutorials/identity-platform).
 
 For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
 
@@ -21,13 +21,30 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 Cloud Run services can be [configured with Environment Variables](https://cloud.google.com/run/docs/configuring/environment-variables).
 Required variables for this sample include:
 
-* `SECRETS`: The Cloud Run service will be notified of images uploaded to this Cloud Storage bucket. The service will then retreive and process the image.
+* `CLOUD_SQL_CREDENTIALS_SECRET`: the resource ID of the secret, in format: `projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION`. See [postgres-secrets.json](postgres-secrets.json) for secret content.
 
 OR
 
-* `CLOUD_SQL_CONNECTION_NAME`='<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>'
-* `DB_USER`='my-db-user'
-* `DB_PASS`='my-db-pass'
-* `DB_NAME`='my_db'
+* `CLOUD_SQL_CONNECTION_NAME`: Cloud SQL instance name, in format: `<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>`
+* `DB_USER`: database user
+* `DB_PASS`: database password
+* `DB_NAME`: Cloud SQL postgreSQL database name
 
-Note: Saving credentials in environment variables is convenient, but not secure.
+
+## Production Considerations
+
+* Both `postgres-secrets.json` and `static/config.js` should be added to .gitignore
+* Saving credentials in environment variables is convenient, but not secure.
+
+## Running Locally
+
+1. To run this application locally, download and install the `cloud_sql_proxy` by
+[following the instructions](https://cloud.google.com/sql/docs/postgres/sql-proxy#install).
+
+The proxy can be used with a TCP connection or a Unix Domain Socket. On Linux or
+Mac OS you can use either option, but on Windows the proxy currently requires a TCP
+connection.
+
+* [Instructions to launch proxy with Unix Domain Socket](../../cloud-sql/postgres/knex#launch-proxy-with-unix-domain-socket)
+
+* [Instructions to launch proxy with TCP](../../cloud-sql/postgres/knex#launch-proxy-with-tcp)

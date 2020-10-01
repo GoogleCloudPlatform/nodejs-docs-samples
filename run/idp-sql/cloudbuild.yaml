@@ -70,7 +70,7 @@ steps:
       --platform managed \
       --service-account ${_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com \
       --add-cloudsql-instances $PROJECT_ID:${_REGION}:${_CLOUD_SQL_INSTANCE} \
-      --set-env-vars SECRETS=projects/${PROJECT_ID}/secrets/${_SECRET_NAME}/versions/latest
+      --set-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${PROJECT_ID}/secrets/${_SECRET_NAME}/versions/latest
 
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}

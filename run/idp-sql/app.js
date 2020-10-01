@@ -14,14 +14,14 @@
 
 'use strict';
 
-const admin = require('firebase-admin');
-const express = require('express');
-const { logger } = require('./logging');
 const { getVotes, getVoteCount, insertVote } = require('./cloud-sql');
-// const agent = require('@google-cloud/trace-agent').start();
+const express = require('express');
+const admin = require('firebase-admin');
+const { buildRenderedHtml } = require('./handlebars');
+const { logger } = require('./logging');
+const { authenticateJWT, getTrace } = require('./middleware');
 
 const app = express();
-app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/static'));
 
 // Automatically parse request body as form data.
@@ -36,38 +36,6 @@ app.use((req, res, next) => {
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
-
-// [START run_user_auth_jwt]
-// Extract and verify Id Token from header
-const authenticateJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.split(' ')[1];
-    // If the provided ID token has the correct format, is not expired, and is
-    // properly signed, the method returns the decoded ID token
-    admin.auth().verifyIdToken(token).then(function(decodedToken) {
-      let uid = decodedToken.uid;
-      req.uid = uid;
-      next();
-    }).catch((err) => {
-      logger.error(`error with authentication: ${err}`);
-      return res.sendStatus(403);
-    });
-  } else {
-    return res.sendStatus(401);
-  }
-}
-// [END run_user_auth_jwt]
-
-// Extract trace Id from trace header for log correlation
-const getTrace = (req, res, next) => {
-  const traceHeader = req.header('X-Cloud-Trace-Context');
-  if (traceHeader) {
-    const [trace] = traceHeader.split("/");
-    req.traceId = trace;
-  }
-  next();
-}
 
 app.get('/', getTrace, async (req, res) => {
   try {
@@ -95,7 +63,8 @@ app.get('/', getTrace, async (req, res) => {
     } else {
       leaderMessage = 'CATS and DOGS are evenly matched!';
     }
-    res.render('index.pug', {
+
+    const renderedHtml = await buildRenderedHtml({
       votes: votes,
       catsCount: catsTotalVotes,
       dogsCount: dogsTotalVotes,
@@ -103,6 +72,8 @@ app.get('/', getTrace, async (req, res) => {
       voteDiff: voteDiff,
       leaderMessage: leaderMessage,
     });
+    res.status(200).send(renderedHtml);
+    // res.render('index.pug', );
   } catch (err) {
     logger.error({message: `error while attempting to get votes: ${err}`, traceId: req.traceId});
     res
@@ -110,7 +81,6 @@ app.get('/', getTrace, async (req, res) => {
       .send('Unable to load page; see logs for more details.')
       .end();
   }
-
 });
 
 app.post('/', getTrace, authenticateJWT, async (req, res) => {

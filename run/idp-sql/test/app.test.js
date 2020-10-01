@@ -14,32 +14,14 @@
 
 'use strict';
 
-const admin = require('firebase-admin');
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
-const got = require('got');
-
-let request;
-let idToken;
 
 describe('Unit Tests', () => {
   before(async () => {
     const app = require(path.join(__dirname, '..', 'app'));
     request = supertest(app);
- 
-    let uid = 'some-uid';
-    const customToken = await admin.auth().createCustomToken(uid);
-    const key = process.env.FIREBASE_KEY;
-    const response = await got(`https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key=${key}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        token: customToken,
-        returnSecureToken: true
-      }),
-    });
-    const tokens = JSON.parse(response.body);
-    idToken = tokens.idToken;
   });
 
   it('should display the default page', async () => {
@@ -48,29 +30,6 @@ describe('Unit Tests', () => {
       .expect(200)
       .expect((response) => {
         assert.ok(response.text.includes('CATS v DOGS'));
-      });
-  });
-
-  it('should insert vote', async () => {
-    await request
-      .post('/')
-      .send('team=CATS')
-      .set('Authorization', `Bearer ${idToken}`)
-      .expect(200)
-      .expect((response) => {
-        assert.ok(response.text.includes('Successfully voted for'));
-      });
-  });
-
-  it('should handle insert error', async () => {
-    const expectedResult = 'Invalid team specified';
-
-    await request
-      .post('/')
-      .set('Authorization', `Bearer ${idToken}`)
-      .expect(400)
-      .expect((response) => {
-        assert.ok(response.text.includes(expectedResult));
       });
   });
 

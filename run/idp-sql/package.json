@@ -23,6 +23,7 @@
     "@google-cloud/trace-agent": "^5.1.1",
     "express": "^4.16.2",
     "firebase-admin": "^9.1.0",
+    "handlebars": "^4.7.6",
     "knex": "^0.21.0",
     "pug": "^3.0.0",
     "winston": "3.3.3"

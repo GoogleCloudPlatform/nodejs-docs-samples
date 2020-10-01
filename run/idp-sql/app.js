@@ -18,6 +18,7 @@ const admin = require('firebase-admin');
 const express = require('express');
 const { logger } = require('./logging');
 const { getVotes, getVoteCount, insertVote } = require('./cloud-sql');
+// const agent = require('@google-cloud/trace-agent').start();
 
 const app = express();
 app.set('view engine', 'pug');
@@ -50,7 +51,7 @@ const authenticateJWT = (req, res, next) => {
       req.uid = uid;
       next();
     }).catch((err) => {
-      logger.error(`error with authentication: ` + err)
+      logger.error(`error with authentication: ${err}`);
       return res.sendStatus(403);
     });
   } else {
@@ -59,8 +60,17 @@ const authenticateJWT = (req, res, next) => {
 }
 // [END run_user_auth_jwt]
 
+// Extract trace Id from trace header for log correlation
+const getTrace = (req, res, next) => {
+  const traceHeader = req.header('X-Cloud-Trace-Context');
+  if (traceHeader) {
+    const [trace] = traceHeader.split("/");
+    req.traceId = trace;
+  }
+  next();
+}
 
-app.get('/', async (req, res) => {
+app.get('/', getTrace, async (req, res) => {
   try {
     // Query the total count of "CATS" from the database.
     const catsResult = await getVoteCount('CATS');
@@ -94,17 +104,17 @@ app.get('/', async (req, res) => {
       voteDiff: voteDiff,
       leaderMessage: leaderMessage,
     });
-  } catch(err) {
-    logger.error(`error while attempting to get vote: ${err}`);
+  } catch (err) {
+    logger.error({message: `error while attempting to get votes: ${err}`, traceId: req.traceId});
     res
-    .status(500)
-    .send('Unable to load page; see logs for more details.')
-    .end();
+      .status(500)
+      .send('Unable to load page; see logs for more details.')
+      .end();
   }
 
 });
 
-app.post('/', authenticateJWT, async (req, res) => {
+app.post('/', getTrace, authenticateJWT, async (req, res) => {
   // Get decoded Id Platform user id
   const uid = req.uid;
   // Get the team from the request and record the time of the vote.
@@ -126,13 +136,13 @@ app.post('/', authenticateJWT, async (req, res) => {
   // Save the data to the database.
   try {
     await insertVote(vote);
-    logger.info({message: 'vote_inserted', vote})
+    logger.info({message: 'vote_inserted', vote, traceId: req.traceId})
   } catch (err) {
-    logger.error(`error while attempting to submit vote: ${err}`);
+    logger.error({message: `error while attempting to submit vote: ${err}`, traceId: req.traceId});
     res
-    .status(500)
-    .send('Unable to cast vote; see logs for more details.')
-    .end();
+      .status(500)
+      .send('Unable to cast vote; see logs for more details.')
+      .end();
     return;
   }
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();

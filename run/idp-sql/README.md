@@ -10,12 +10,11 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 ## Dependencies
 
 * **express**: Web server framework
-* **@google-cloud/logging-winston** + **winston**: Logging library
+* **winston**: Logging library
 * **@google-cloud/secret-manager**: Google Secret Manager client library
 * **firebase-admin**: Verifying JWT token
 * **knex**: A SQL query builder library
 * **pug**: Template engine
-
 
 ## Environment Variables
 

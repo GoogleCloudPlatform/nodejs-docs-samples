@@ -29,12 +29,13 @@ async function getSecretConfig() {
     if (!client) client = new SecretManagerServiceClient();
     try {
       const [version] = await client.accessSecretVersion({name: SECRETS});
-      // Parse JSON string
+      // Parse the secret that has been added as a JSON string
+      // to retreive database credentials
       const secrets = JSON.parse(version.payload.data.toString('utf8'));
       return secrets;
     }
-    catch (e) {
-      logger.error(`error: could not retrieve secret: ${e}`);
+    catch (err) {
+      logger.error(`error: could not retrieve secret: ${err}`);
       return
     }
     // [END run_user_auth_secrets]

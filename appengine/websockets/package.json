@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=10.18.1"
+    "node": "12.x.x"
   },
   "scripts": {
     "deploy": "gcloud app deploy",

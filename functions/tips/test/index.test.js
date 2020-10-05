@@ -97,7 +97,7 @@ describe('functions_tips_gcp_apis', () => {
   });
 });
 
-// Whitelist these region tags with the region-tag enforcer
+// Allow-list these region tags with the region-tag enforcer
 // describe('functions_tips_connection_pooling functions_tips_infinite_retries')
 // describe('functions_tips_lazy_globals functions_tips_scopes')
 // describe('run_tips_global_lazy run_tips_global_scope')

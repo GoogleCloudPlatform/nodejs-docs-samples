@@ -266,5 +266,5 @@ describe('functions_http_signed_url', () => {
 });
 
 describe('functions_http_cors_auth functions_http_form_data functions_http_xml', () => {
-  // Whitelist these region tags with the region-tag enforcer
+  // Allow-list these region tags with the region-tag enforcer
 });

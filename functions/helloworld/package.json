@@ -20,7 +20,7 @@
     "@google-cloud/debug-agent": "^5.0.0",
     "escape-html": "^1.0.3",
     "pug": "^3.0.0",
-    "supertest": "^4.0.2"
+    "supertest": "^5.0.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",

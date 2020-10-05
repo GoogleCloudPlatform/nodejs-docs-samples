@@ -23,6 +23,7 @@ const addSeverity = format((info, opts) => {
 });
 
 let project;
+// Add logging header with trace ID for logging correlation
 const addTrace = format((info, opts) => {
   if (info.traceId) {
     if (!project) project = agent.getWriterProjectId();

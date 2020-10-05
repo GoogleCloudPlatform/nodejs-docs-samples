@@ -15,14 +15,21 @@
 const handlebars = require('handlebars');
 const { readFile } = require('fs').promises;
 
-let index;
+let index, template;
+
+/**
+* Builds and executes Handlebars.js template for rendered HTML
+*
+* @param {object} config The template config object.
+* @returns {Promise}
+*/
 const buildRenderedHtml = async (config) => {
   if (!index) index = await readFile(__dirname + '/views/index.html', 'utf8');
-  let template = handlebars.compile(index);
+  if (!template) template = handlebars.compile(index);
   return template(config);
 };
 
-// Register customer Handlebar.js helper
+// Register customer Handlebars.js helper
 handlebars.registerHelper('ternary', function(comp1, comp2, opt1, opt2) {
   return (comp1.trim() == comp2.trim()) ? opt1 : opt2;
 });

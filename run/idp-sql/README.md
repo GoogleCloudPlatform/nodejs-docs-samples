@@ -14,7 +14,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 * **@google-cloud/secret-manager**: Google Secret Manager client library
 * **firebase-admin**: Verifying JWT token
 * **knex**: A SQL query builder library
-* **pug**: Template engine
+* **Handlebars.js**: Template engine
 
 ## Environment Variables
 
@@ -33,10 +33,15 @@ OR
 
 ## Production Considerations
 
-* Both `postgres-secrets.json` and `static/config.js` should be added to .gitignore
-* Saving credentials in environment variables is convenient, but not secure.
+* Both `postgres-secrets.json` and `static/config.js` should be added to `.gitignore`
+
+* Saving credentials directly as environment variables is convenient for local testing,
+  but not secure for production; therefore using `CLOUD_SQL_CREDENTIALS_SECRET`
+  in combination with the Cloud Secrets Manager is recommended.  
 
 ## Running Locally
+
+1. Set [environment variables](#environment-variables).
 
 1. To run this application locally, download and install the `cloud_sql_proxy` by
 [following the instructions](https://cloud.google.com/sql/docs/postgres/sql-proxy#install).

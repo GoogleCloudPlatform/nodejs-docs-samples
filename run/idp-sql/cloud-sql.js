@@ -64,14 +64,12 @@ const connectWithTcp = (credConfig) => {
   });
 }
 
-let knex;
-let credConfig;
+let knex, credConfig;
 const connect = async () => {
   if (!credConfig) credConfig = await getSecretConfig();
   if (process.env.DB_HOST) {
     knex = connectWithTcp(credConfig);
   } else {
-    console.log('Connecting via Unix Sockets')
     knex = connectWithUnixSockets(credConfig);
   }
   return knex;

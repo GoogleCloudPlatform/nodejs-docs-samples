@@ -27,7 +27,7 @@ function signIn() {
     console.log(`${result.user.displayName} logged in.`);
     window.alert(`Welcome ${result.user.displayName}!`)
   }).catch((err) => {
-    console.log(`error: during sign in: ${err.message}`)
+    console.log(`Error during sign in: ${err.message}`)
   });
 }
 // [END run_end_user_firebase_sign_in]
@@ -35,7 +35,7 @@ function signIn() {
 function signOut() {
   firebase.auth().signOut().then(function(result) {
   }).catch((err) => {
-    console.log(`error: during sign out: ${err.message}`)
+    console.log(`Error during sign out: ${err.message}`)
   })
 }
 

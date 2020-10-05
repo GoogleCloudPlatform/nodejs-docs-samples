@@ -64,6 +64,7 @@ app.get('/', getTrace, async (req, res) => {
       leaderMessage = 'CATS and DOGS are evenly matched!';
     }
 
+    // Add variables to Handlebars.js template
     const renderedHtml = await buildRenderedHtml({
       votes: votes,
       catsCount: catsTotalVotes,
@@ -73,9 +74,12 @@ app.get('/', getTrace, async (req, res) => {
       leaderMessage: leaderMessage,
     });
     res.status(200).send(renderedHtml);
-    // res.render('index.pug', );
   } catch (err) {
-    logger.error({message: `error while attempting to get votes: ${err}`, traceId: req.traceId});
+    const message = "Error while connecting to the Cloud SQL database. " +
+      "Check that your username and password are correct, that the Cloud SQL " +
+      "proxy is running (locally), and that the database/table exits and is " +
+      `ready for use: ${err}`;
+    logger.error({message, traceId: req.traceId});
     res
       .status(500)
       .send('Unable to load page; see logs for more details.')
@@ -107,7 +111,7 @@ app.post('/', getTrace, authenticateJWT, async (req, res) => {
     await insertVote(vote);
     logger.info({message: 'vote_inserted', vote, traceId: req.traceId})
   } catch (err) {
-    logger.error({message: `error while attempting to submit vote: ${err}`, traceId: req.traceId});
+    logger.error({message: `Error while attempting to submit vote: ${err}`, traceId: req.traceId});
     res
       .status(500)
       .send('Unable to cast vote; see logs for more details.')

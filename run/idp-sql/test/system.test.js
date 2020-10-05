@@ -20,9 +20,6 @@ const path = require('path');
 const supertest = require('supertest');
 const got = require('got');
 
-let idToken;
-admin.initializeApp();
-
 describe('System Tests', () => {
   const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) {

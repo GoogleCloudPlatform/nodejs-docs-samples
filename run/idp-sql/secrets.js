@@ -35,7 +35,7 @@ async function getSecretConfig() {
       return secrets;
     }
     catch (err) {
-      logger.error(`error: could not retrieve secret: ${err}`);
+      logger.error(`Error while retrieving secret: ${err}`);
       return
     }
     // [END run_user_auth_secrets]
@@ -44,7 +44,7 @@ async function getSecretConfig() {
     if (!process.env.DB_USER) throw Error('DB_USER needs to be set.');
     if (!process.env.DB_PASS) throw Error('DB_PASS needs to be set.');
     if (!process.env.DB_NAME) throw Error('DB_NAME needs to be set.');
-    if (!process.env.CLOUD_SQL_CONNECTION_NAME) throw Error('connection name needs to be set.');
+    if (!process.env.CLOUD_SQL_CONNECTION_NAME) throw Error('CLOUD_SQL_CONNECTION_NAME needs to be set.');
 
     return {
       DB_USER: process.env.DB_USER,

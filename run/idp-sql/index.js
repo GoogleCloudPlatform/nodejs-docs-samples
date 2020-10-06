@@ -14,9 +14,11 @@
 
 const app = require('./app');
 const { logger } = require('./logging');
+const { createTable } = require('./cloud-sql');
 const pkg = require('./package.json');
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () =>
+app.listen(PORT, () => {
+  createTable();
   logger.info(`${pkg.name} listening on port ${PORT}`)
-);
+});

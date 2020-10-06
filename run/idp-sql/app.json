@@ -1,0 +1,34 @@
+{
+  "name": "idp-sql",
+  "env": {
+    "DB_NAME": {
+      "description": "Cloud SQL postgreSQL database name",
+      "value": "postgres"
+    },
+    "DB_USER": {
+      "description": "postgreSQL user name",
+      "value": "postgres"
+    },
+    "DB_PASS": {
+      "description": "postgreSQL password",
+      "value": "password1234"
+    },
+    "CLOUD_SQL_CONNECTION_NAME": {
+      "description": "Cloud SQL instance name, in format: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>",
+      "value": "$PROJECT_ID:us-central1:vote-sql-instance"
+    }
+  },
+  "hooks": {
+    "prebuild": {
+      "commands": [
+        "echo $GOOGLE_CLOUD_PROJECT",
+        "echo $CLOUD_SQL_CONNECTION_NAME"
+      ]
+    },
+    "postcreate": {
+      "commands": [
+        "gcloud service update idp-sql --update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${PROJECT_ID}/secrets/${_SECRET_NAME}/versions/latest --service-account ${_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com --add-cloudsql-instances $PROJECT_ID:${_REGION}:${_CLOUD_SQL_INSTANCE}"
+      ]
+    }
+  }
+}

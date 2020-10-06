@@ -14,6 +14,9 @@
 
 const Knex = require('knex');
 const { getSecretConfig } = require('./secrets');
+const { logger } = require('./logging');
+
+const TABLE = 'votes_d';
 
 // Connection pooling config
 // See Cloud SQL sample https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/cloud-sql/postgres/knex
@@ -78,26 +81,24 @@ const connect = async () => {
 /**
 * Insert a vote record into the database.
 *
-* @param {object} knex The Knex connection object.
 * @param {object} vote The vote record to insert.
 * @returns {Promise}
 */
 const insertVote = async (vote) => {
   if (!knex) knex = await connect();
-  return knex('votes').insert(vote);
+  return knex(TABLE).insert(vote);
 };
 
 /**
 * Retrieve the latest 5 vote records from the database.
 *
-* @param {object} knex The Knex connection object.
 * @returns {Promise}
 */
 const getVotes = async () => {
   if (!knex) knex = await connect();
   return knex
   .select('candidate', 'time_cast', 'uid')
-  .from('votes')
+  .from(TABLE)
   .orderBy('time_cast', 'desc')
   .limit(5);
 };
@@ -106,17 +107,40 @@ const getVotes = async () => {
 * Retrieve the total count of records for a given candidate
 * from the database.
 *
-* @param {object} knex The Knex connection object.
 * @param {object} candidate The candidate for which to get the total vote count
 * @returns {Promise}
 */
 const getVoteCount = async (candidate) => {
   if (!knex) knex = await connect();
-  return knex('votes').count('vote_id').where('candidate', candidate);
+  return knex(TABLE).count('vote_id').where('candidate', candidate);
+};
+
+/**
+* Create "votes" table in the Cloud SQL database
+*/
+const createTable = async () => {
+  if (!knex) knex = await connect();
+  const exists = await knex.schema.hasTable(TABLE);
+  if (!exists) {
+    try {
+      await knex.schema.createTable(TABLE, (table) => {
+        table.bigIncrements('vote_id').notNull();
+        table.timestamp('time_cast').notNull();
+        table.specificType('candidate', 'CHAR(6) NOT NULL');
+        table.specificType('uid', 'VARCHAR(128) NOT NULL');
+      });
+      logger.info(`Successfully created ${TABLE} table.`);
+    } catch (err) {
+      const message = `Failed to create ${TABLE} table: ${err}`;
+      logger.error(message);
+      throw Error(message);
+    }
+  }
 };
 
 module.exports = {
   getVoteCount,
   getVotes,
   insertVote,
+  createTable,
 }

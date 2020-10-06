@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=8.0.0"
+    "node": "12.x.x"
   },
   "scripts": {
     "start": "node app.js",
@@ -18,6 +18,6 @@
   },
   "devDependencies": {
     "mocha": "^8.0.0",
-    "supertest": "^4.0.2"
+    "supertest": "^5.0.0"
   }
 }

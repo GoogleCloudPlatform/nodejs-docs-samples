@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=10.18.1"
+    "node": "12.x.x"
   },
   "scripts": {
     "deploy": "gcloud app deploy",
@@ -20,7 +20,7 @@
     "express": "^4.15.4",
     "pug": "^3.0.0",
     "socket.io": "^2.2.0",
-    "supertest": "^4.0.2"
+    "supertest": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^7.0.0",

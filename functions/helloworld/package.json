@@ -19,8 +19,7 @@
   "dependencies": {
     "@google-cloud/debug-agent": "^5.0.0",
     "escape-html": "^1.0.3",
-    "pug": "^3.0.0",
-    "supertest": "^5.0.0"
+    "pug": "^3.0.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
@@ -35,6 +34,7 @@
     "request": "^2.88.0",
     "requestretry": "^4.0.0",
     "sinon": "^9.0.0",
+    "supertest": "^5.0.0",
     "uuid": "^8.0.0"
   }
 }

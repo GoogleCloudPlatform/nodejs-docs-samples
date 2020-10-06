@@ -23,7 +23,7 @@ const sinon = require('sinon');
 const cwd = path.join(__dirname, '..');
 
 const PROJECT_NAME = process.env.GOOGLE_CLOUD_PROJECT;
-const FF_CMD = 'npx functions-framework';
+const FF_CMD = 'functions-framework';
 const {BILLING_ACCOUNT} = process.env;
 
 after(async () => {

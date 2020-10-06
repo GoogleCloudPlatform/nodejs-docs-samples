@@ -13,9 +13,9 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME &",
     "start": "node index.js",
-    "test": "mocha test/*.test.js --timeout=60000 --exit"
+    "test": "mocha test/app.test.js --timeout=60000 --exit",
+    "system-test": "mocha test/system.test.js --timeout=1800000 --exit"
   },
   "dependencies": {
     "@google-cloud/logging-winston": "^4.0.0",
@@ -25,13 +25,13 @@
     "firebase-admin": "^9.1.0",
     "handlebars": "^4.7.6",
     "knex": "^0.21.0",
-    "pug": "^3.0.0",
+    "pg": "^8.0.0",
     "winston": "3.3.3"
   },
   "devDependencies": {
     "got": "^11.7.0",
     "mocha": "^8.0.0",
-    "pg": "^8.0.0",
+    "short-uuid": "^4.1.0",
     "supertest": "^4.0.0"
   }
 }

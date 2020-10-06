@@ -1,0 +1,18 @@
+steps:
+
+- id: 'Delete resources'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: '/bin/bash'
+  args:
+    - '-c'
+    - |
+      gcloud secrets delete ${_SERVICE}-secrets --quiet || echo "Not Found."
+      gcloud container images delete gcr.io/${PROJECT_ID}/${_SERVICE} --quiet || echo "Not Found."
+      gcloud run services delete ${_SERVICE} \
+        --region ${_REGION} \
+        --platform managed \
+        --quiet || echo "Not Found."
+
+substitutions:
+  _SERVICE: idp-sql
+  _REGION: us-central1

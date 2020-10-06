@@ -19,20 +19,43 @@ const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
 const got = require('got');
+const uuid = require('short-uuid');
+const {execSync} = require('child_process');
 
 describe('System Tests', () => {
-  const {ID_TOKEN} = process.env;
-  if (!ID_TOKEN) {
-    throw Error('"ID_TOKEN" environment variable is required.');
+
+  const {GOOGLE_CLOUD_PROJECT} = process.env;
+  if (!GOOGLE_CLOUD_PROJECT) {
+    throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
   }
 
-  const {BASE_URL} = process.env;
-  if (!BASE_URL) {
-    throw Error(
-      '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
-    );
-  }
+  const service = 'idp-sql-' + uuid.generate().toLowerCase();
+  const connectionName = process.env.CLOUD_SQL_CONNECTION_NAME || `${GOOGLE_CLOUD_PROJECT}:us-central1:vote-instance`;
+  let BASE_URL, ID_TOKEN;
 
+  before(() => {
+    console.log('Starting Cloud Build...');
+    execSync(`gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      `--substitutions _SERVICE=${service},_CLOUD_SQL_CONNECTION_NAME=${connectionName} --config ./test/e2e_test_setup.yaml`);
+    console.log('Cloud Build completed.');
+
+    const url = execSync(
+      `gcloud run services describe ${service} --project=${GOOGLE_CLOUD_PROJECT} ` +
+      `--platform=managed --region=us-central1 --format='value(status.url)'`);
+    BASE_URL = url.toString('utf-8');
+    if (!BASE_URL) throw Error('Cloud Run service URL not found');
+    console.log('Cloud Run service URL found.');
+
+    const idToken = execSync('gcloud auth print-identity-token');
+    ID_TOKEN = idToken.toString('utf-8');
+    if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
+    console.log('ID token retrieved.');
+  })
+
+  after(() => {
+    execSync(`gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      `--substitutions _SERVICE=${service} --config ./test/e2e_test_cleanup.yaml --quiet`);
+  })
 
   it('Can successfully make a request', async () => {
     const options = {
@@ -47,71 +70,23 @@ describe('System Tests', () => {
   });
 
   // These tests won't work when deploying test services that require IAM authentication
-  // it('Can successfully make a POST request', async () => {
-  //   const options = {
-  //     prefixUrl: BASE_URL.trim(),
-  //     method: 'POST',
-  //     form: {team: 'DOGS'},
-  //     headers: {
-  //       Authorization: `Bearer ${idToken}`
-  //     },
-  //     retry: 3
-  //   };
-  //   const response = await got('', options);
-  //   assert.strictEqual(response.statusCode, 200);
-  // });
+  it('Can not successfully make a POST request', async () => {
+    const options = {
+      prefixUrl: BASE_URL.trim(),
+      method: 'POST',
+      form: {team: 'DOGS'},
+      headers: {
+        Authorization: `Bearer ${ID_TOKEN.trim()}`
+      },
+      retry: 3
+    };
+    let err;
+    try {
+      const response = await got('', options);
+    } catch (e) {
+      err = e;
+    }
+    assert.strictEqual(err.response.statusCode, 403);
+  });
 
-  // it('Fails making POST request with bad param', async () => {
-  //   const options = {
-  //     prefixUrl: BASE_URL.trim(),
-  //     method: 'POST',
-  //     form: {team: 'PIGS'},
-  //     headers: {
-  //       Authorization: `Bearer ${ID_TOKEN}`
-  //     },
-  //     retry: 3
-  //   };
-  //   let err;
-  //   try {
-  //     const response = await got('', options);
-  //   } catch(e) {
-  //     err = e;
-  //   }
-  //   assert.strictEqual(err.response.statusCode, 400);
-  // });
-
-  // it('Fails making POST request without JWT token', async () => {
-  //   const options = {
-  //     prefixUrl: BASE_URL.trim(),
-  //     method: 'POST',
-  //     form: {team: 'DOGS'},
-  //     retry: 3
-  //   };
-  //   let err;
-  //   try {
-  //     const response = await got('', options);
-  //   } catch(e) {
-  //     err = e;
-  //   }
-  //   assert.strictEqual(err.response.statusCode, 401);
-  // });
-  //
-  // it('Fails making POST request with bad JWT token', async () => {
-  //   const options = {
-  //     prefixUrl: BASE_URL.trim(),
-  //     method: 'POST',
-  //     form: {team: 'DOGS'},
-  //     headers: {
-  //       Authorization: `Bearer ${ID_TOKEN.trim()}`
-  //     },
-  //     retry: 3
-  //   };
-  //   let err;
-  //   try {
-  //     const response = await got('', options);
-  //   } catch(e) {
-  //     err = e;
-  //   }
-  //   assert.strictEqual(err.response.statusCode, 403);
-  // });
 });

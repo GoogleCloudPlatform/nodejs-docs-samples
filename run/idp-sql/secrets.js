@@ -35,8 +35,7 @@ async function getSecretConfig() {
       return secrets;
     }
     catch (err) {
-      logger.error(`Error while retrieving secret: ${err}`);
-      return
+      throw Error(`Error accessing Secret Manager: ${err}`);
     }
     // [END run_user_auth_secrets]
   } else {

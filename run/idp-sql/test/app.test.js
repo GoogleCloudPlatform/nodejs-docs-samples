@@ -18,6 +18,8 @@ const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
 
+let request;
+
 describe('Unit Tests', () => {
   before(async () => {
     const app = require(path.join(__dirname, '..', 'app'));

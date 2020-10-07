@@ -16,7 +16,7 @@ const Knex = require('knex');
 const { getSecretConfig } = require('./secrets');
 const { logger } = require('./logging');
 
-const TABLE = 'votes_d';
+const TABLE = 'votes';
 
 // Connection pooling config
 // See Cloud SQL sample https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/cloud-sql/postgres/knex
@@ -40,7 +40,7 @@ const connectWithUnixSockets = async (credConfig) => {
     client: 'pg',
     connection: {
       user: credConfig.DB_USER, // e.g. 'my-user'
-      password: credConfig.DB_PASS, // e.g. 'my-user-password'
+      password: credConfig.DB_PASSWORD, // e.g. 'my-user-password'
       database: credConfig.DB_NAME, // e.g. 'my-database'
       host: `${dbSocketPath}/${credConfig.CLOUD_SQL_CONNECTION_NAME}`,
     },
@@ -58,7 +58,7 @@ const connectWithTcp = (credConfig) => {
     client: 'pg',
     connection: {
       user: credConfig.DB_USER, // e.g. 'my-user'
-      password: credConfig.DB_PASS, // e.g. 'my-user-password'
+      password: credConfig.DB_PASSWORD, // e.g. 'my-user-password'
       database: credConfig.DB_NAME, // e.g. 'my-database'
       host: dbSocketAddr[0], // e.g. '127.0.0.1'
       port: dbSocketAddr[1], // e.g. '5432'

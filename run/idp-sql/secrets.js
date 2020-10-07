@@ -41,13 +41,13 @@ async function getSecretConfig() {
   } else {
     logger.info('CLOUD_SQL_CREDENTIALS_SECRET env var not set. Defaulting to environment variables.');
     if (!process.env.DB_USER) throw Error('DB_USER needs to be set.');
-    if (!process.env.DB_PASS) throw Error('DB_PASS needs to be set.');
+    if (!process.env.DB_PASSWORD) throw Error('DB_PASSWORD needs to be set.');
     if (!process.env.DB_NAME) throw Error('DB_NAME needs to be set.');
     if (!process.env.CLOUD_SQL_CONNECTION_NAME) throw Error('CLOUD_SQL_CONNECTION_NAME needs to be set.');
 
     return {
       DB_USER: process.env.DB_USER,
-      DB_PASS: process.env.DB_PASS,
+      DB_PASSWORD: process.env.DB_PASSWORD,
       DB_NAME: process.env.DB_NAME,
       CLOUD_SQL_CONNECTION_NAME: process.env.CLOUD_SQL_CONNECTION_NAME
     }

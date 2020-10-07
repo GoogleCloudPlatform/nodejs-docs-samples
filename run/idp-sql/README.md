@@ -29,7 +29,7 @@ OR
 
 * `CLOUD_SQL_CONNECTION_NAME`: Cloud SQL instance name, in format: `<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>`
 * `DB_USER`: database user
-* `DB_PASS`: database password
+* `DB_PASSWORD`: database password
 * `DB_NAME`: Cloud SQL postgreSQL database name
 
 

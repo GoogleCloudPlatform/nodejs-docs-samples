@@ -76,10 +76,12 @@ exports.stopBilling = async (pubsubEvent, context) => {
  * @return {Promise} Credentials set globally
  */
 const _setAuthCredential = () => {
-  const client = new GoogleAuth({ scopes: [
-    'https://www.googleapis.com/auth/cloud-billing',
-    'https://www.googleapis.com/auth/cloud-platform',
-  ]});
+  const client = new GoogleAuth({
+    scopes: [
+      'https://www.googleapis.com/auth/cloud-billing',
+      'https://www.googleapis.com/auth/cloud-platform',
+    ]
+  });
 
   // Set credential globally for all requests
   google.options({

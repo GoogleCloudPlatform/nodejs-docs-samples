@@ -13,7 +13,7 @@
   "hooks": {
     "postcreate": {
       "commands": [
-        "./update.sh"
+        "./cloud-run-button-script.sh"
       ]
     }
   }

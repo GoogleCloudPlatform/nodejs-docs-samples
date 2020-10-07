@@ -19,6 +19,6 @@ const pkg = require('./package.json');
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-  createTable();
+  createTable(); // Creates postgreSQL table if not found
   logger.info(`${pkg.name} listening on port ${PORT}`)
 });

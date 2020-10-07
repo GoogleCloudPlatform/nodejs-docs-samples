@@ -13,31 +13,34 @@
 // limitations under the License.
 
 const { logger } = require('./logging');
+const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
 // CLOUD_SQL_CREDENTIALS_SECRET is the resource ID of the secret, passed in by environment variable.
 // Format: projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION
 const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
 
-const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
-
 let client;
 
+// [START run_user_auth_secrets]
+async function getSecrets(secretName) {
+  if (!client) client = new SecretManagerServiceClient();
+  try {
+    const [version] = await client.accessSecretVersion({name: secretName});
+    return version.payload.data;
+  }
+  catch (err) {
+    throw Error(`Error accessing Secret Manager: ${err}`);
+  }
+}
+// [END run_user_auth_secrets]
+
 // Load the secret from Secret Manager
-async function getSecretConfig() {
+async function getCredConfig() {
   if (CLOUD_SQL_CREDENTIALS_SECRET) {
-    // [START run_user_auth_secrets]
-    if (!client) client = new SecretManagerServiceClient();
-    try {
-      const [version] = await client.accessSecretVersion({name: CLOUD_SQL_CREDENTIALS_SECRET});
-      // Parse the secret that has been added as a JSON string
-      // to retreive database credentials
-      const secrets = JSON.parse(version.payload.data.toString('utf8'));
-      return secrets;
-    }
-    catch (err) {
-      throw Error(`Error accessing Secret Manager: ${err}`);
-    }
-    // [END run_user_auth_secrets]
+    const secrets = await getSecrets(CLOUD_SQL_CREDENTIALS_SECRET);
+    // Parse the secret that has been added as a JSON string
+    // to retreive database credentials
+    return JSON.parse(secrets.toString('utf8'));
   } else {
     logger.info('CLOUD_SQL_CREDENTIALS_SECRET env var not set. Defaulting to environment variables.');
     if (!process.env.DB_USER) throw Error('DB_USER needs to be set.');
@@ -55,5 +58,5 @@ async function getSecretConfig() {
 }
 
 module.exports = {
-  getSecretConfig
+  getCredConfig
 }

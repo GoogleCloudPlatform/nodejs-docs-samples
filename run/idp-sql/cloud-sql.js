@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const Knex = require('knex');
-const { getSecretConfig } = require('./secrets');
+const { getCredConfig } = require('./secrets');
 const { logger } = require('./logging');
 
 const TABLE = 'votes';
@@ -69,7 +69,7 @@ const connectWithTcp = (credConfig) => {
 
 let knex, credConfig;
 const connect = async () => {
-  if (!credConfig) credConfig = await getSecretConfig();
+  if (!credConfig) credConfig = await getCredConfig();
   if (process.env.DB_HOST) {
     knex = connectWithTcp(credConfig);
   } else {
@@ -133,7 +133,6 @@ const createTable = async () => {
     } catch (err) {
       const message = `Failed to create ${TABLE} table: ${err}`;
       logger.error(message);
-      throw Error(message);
     }
   }
 };

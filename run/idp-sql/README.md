@@ -16,7 +16,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 * **@google-cloud/secret-manager**: Google Secret Manager client library
 * **firebase-admin**: Verifying JWT token
 * **knex**: A SQL query builder library
-* **Handlebars.js**: Template engine
+* **handlebars.js**: Template engine
 
 ## Environment Variables
 
@@ -28,14 +28,15 @@ Required variables for this sample include:
 OR
 
 * `CLOUD_SQL_CONNECTION_NAME`: Cloud SQL instance name, in format: `<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>`
+* `DB_NAME`: Cloud SQL postgreSQL database name
 * `DB_USER`: database user
 * `DB_PASSWORD`: database password
-* `DB_NAME`: Cloud SQL postgreSQL database name
 
 
 ## Production Considerations
 
-* Both `postgres-secrets.json` and `static/config.js` should be added to `.gitignore`
+* Both `postgres-secrets.json` and `static/config.js` should not be committed to
+  a git repository and should be added to `.gitignore`.
 
 * Saving credentials directly as environment variables is convenient for local testing,
   but not secure for production; therefore using `CLOUD_SQL_CREDENTIALS_SECRET`

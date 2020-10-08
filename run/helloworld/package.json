@@ -19,6 +19,6 @@
   "devDependencies": {
     "got": "^11.0.0",
     "mocha": "^8.0.0",
-    "supertest": "^4.0.2"
+    "supertest": "^5.0.0"
   }
 }

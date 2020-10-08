@@ -14,7 +14,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": "12.x.x"
   },
   "author": "Google Inc.",
   "license": "Apache-2.0",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "mocha": "^8.0.0",
-    "supertest": "^4.0.2",
+    "supertest": "^5.0.0",
     "proxyquire": "^2.1.3"
   }
 }

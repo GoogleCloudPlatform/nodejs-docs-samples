@@ -37,9 +37,9 @@ const pubsub = new PubSub();
 exports.publish = async (req, res) => {
   if (!req.body.topic || !req.body.message) {
     res
-      .status(500)
+      .status(400)
       .send(
-        'Missing parameter(s); include "topic" and "subscription" properties in your request.'
+        'Missing parameter(s); include "topic" and "message" properties in your request.'
       );
     return;
   }

@@ -26,7 +26,7 @@ app.set('view engine', 'pug');
 app.enable('trust proxy');
 
 // Automatically parse request body as form data.
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Set Content-Type for all responses for these routes.
@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 
 // Create a Winston logger that streams to Stackdriver Logging.
 const winston = require('winston');
-const {LoggingWinston} = require('@google-cloud/logging-winston');
+const { LoggingWinston } = require('@google-cloud/logging-winston');
 const loggingWinston = new LoggingWinston();
 const logger = winston.createLogger({
   level: 'info',
@@ -89,7 +89,13 @@ const connect = () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
-  let config = {pool: {}};
+  // [START cloud_sql_postgres_knex_limit]
+  // [START cloud_sql_postgres_knex_timeout]
+  // [START cloud_sql_postgres_knex_backoff]
+  let config = { pool: {} };
+  // [END cloud_sql_postgres_knex_limit]
+  // [END cloud_sql_postgres_knex_timeout]
+  // [END cloud_sql_postgres_knex_backoff]
 
   // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
@@ -101,16 +107,16 @@ const connect = () => {
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
-  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a 
-  // connection from the pool. This is slightly different from connectionTimeout, because acquiring 
+  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
+  // connection from the pool. This is slightly different from connectionTimeout, because acquiring
   // a pool connection does not always involve making a new connection, and may include multiple retries.
   // when making a connection
   config.pool.acquireTimeoutMillis = 60000; // 60 seconds
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
-  // initial connection before retrying. 
+  // initial connection before retrying.
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
   config.createTimeoutMillis = 30000; // 30 seconds
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
   config.idleTimeoutMillis = 600000; // 10 minutes
   // [END cloud_sql_postgres_knex_timeout]
@@ -197,9 +203,8 @@ app.get('/', async (req, res) => {
         leadTeam = 'SPACES';
         voteDiff = spacesTotalVotes - tabsTotalVotes;
       }
-      leaderMessage = `${leadTeam} are winning by ${voteDiff} vote${
-        voteDiff > 1 ? 's' : ''
-      }.`;
+      leaderMessage = `${leadTeam} are winning by ${voteDiff} vote${voteDiff > 1 ? 's' : ''
+        }.`;
     } else {
       leaderMessage = 'TABS and SPACES are evenly matched!';
     }
@@ -212,18 +217,18 @@ app.get('/', async (req, res) => {
       leaderMessage: leaderMessage,
     });
   }
-  catch(err) {
+  catch (err) {
     res
       .status(500)
       .send('Unable to load page; see logs for more details.')
       .end();
   }
-    
+
 });
 
 app.post('/', async (req, res) => {
   // Get the team from the request and record the time of the vote.
-  const {team} = req.body;
+  const { team } = req.body;
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {

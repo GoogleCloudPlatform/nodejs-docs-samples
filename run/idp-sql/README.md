@@ -60,27 +60,17 @@ connection.
 
 ## Testing
 
+Tests expect the Cloud SQL instance to already be created and environment Variables
+to be set.
+
 ### Unit tests
 
-Run unit tests with the following command:
 ```
 npm run test
 ```
 
 ### System tests
 
-System tests expect the Cloud SQL instance to already be created. The following environment variables are needed:
-
-* `CLOUD_SQL_CONNECTION_NAME`: Cloud SQL instance name, in format: `<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>`
-* `DB_PASSWORD`: database password
-* `GOOGLE_CLOUD_PROJECT`: GCP project ID
-
-If using another database and user besides `postgres`:
-
-* `DB_NAME`: Cloud SQL postgreSQL database name
-* `DB_USER`: database user
-
-Run system tests with the following command:
 ```
 npm run system-test
 ```

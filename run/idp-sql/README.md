@@ -15,8 +15,9 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 * **winston**: Logging library
 * **@google-cloud/secret-manager**: Google Secret Manager client library
 * **firebase-admin**: Verifying JWT token
-* **knex**: A SQL query builder library
+* **knex** + **pg**: A postgreSQL query builder library
 * **handlebars.js**: Template engine
+* **google-auth-library-nodejs**: Access [compute metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata) for project ID
 
 ## Environment Variables
 

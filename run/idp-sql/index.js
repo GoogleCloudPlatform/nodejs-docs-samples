@@ -13,12 +13,30 @@
 // limitations under the License.
 
 const app = require('./app');
+const pkg = require('./package.json');
 const { logger } = require('./logging');
 const { createTable } = require('./cloud-sql');
-const pkg = require('./package.json');
+const { GoogleAuth } = require('google-auth-library');
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
-  createTable(); // Creates postgreSQL table if not found
-  logger.info(`${pkg.name} listening on port ${PORT}`)
-});
+const startServer = () => {
+  app.listen(PORT, () => logger.info(`${pkg.name} listening on port ${PORT}`));
+};
+
+const main = async () => {
+  if (!process.env.GOOGLE_CLOUD_PROJECT) {
+    try {
+      const auth = new GoogleAuth();
+      const project = await auth.getProjectId();
+      process.env.GOOGLE_CLOUD_PROJECT = project;
+      await createTable(); // Create postgreSQL table if not found
+      startServer();
+    } catch (err) {
+      logger.error(`Error while identifying project from metadata server: ${err}`);
+    }
+  } else {
+    startServer();
+  }
+};
+
+main();

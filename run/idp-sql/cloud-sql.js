@@ -17,6 +17,7 @@ const { getCredConfig } = require('./secrets');
 const { logger } = require('./logging');
 
 const TABLE = 'votes';
+let knex, credConfig;
 
 // Connection pooling config
 // See Cloud SQL sample https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/cloud-sql/postgres/knex
@@ -67,15 +68,15 @@ const connectWithTcp = (credConfig) => {
   });
 }
 
-let knex, credConfig;
+
+
 const connect = async () => {
   if (!credConfig) credConfig = await getCredConfig();
   if (process.env.DB_HOST) {
-    knex = connectWithTcp(credConfig);
+    return connectWithTcp(credConfig);
   } else {
-    knex = connectWithUnixSockets(credConfig);
+    return connectWithUnixSockets(credConfig);
   }
-  return knex;
 }
 
 /**

@@ -21,7 +21,6 @@ const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(' ')[1];
-
     // If the provided ID token has the correct format, is not expired, and is
     // properly signed, the method returns the decoded ID token
     admin.auth().verifyIdToken(token).then(function(decodedToken) {
@@ -29,7 +28,7 @@ const authenticateJWT = (req, res, next) => {
       req.uid = uid;
       next();
     }).catch((err) => {
-      logger.error(`Error with authentication: ${err}`);
+      logger.error({mesage: `Error with authentication: ${err}`, traceId: req.traceId});
       return res.sendStatus(403);
     });
   } else {

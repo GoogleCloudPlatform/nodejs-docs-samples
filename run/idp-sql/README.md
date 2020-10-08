@@ -7,7 +7,7 @@ Use it with the [End user Authentication for Cloud Run](http://cloud.google.com/
 
 For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
 
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?git_repo=https://github.com/averikitsch/nodejs-docs-samples&revision=cats-v-dogs&dir=run/idp-sql)
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
 
 ## Dependencies
 

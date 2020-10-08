@@ -17,23 +17,26 @@
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
+process.env.TABLE = "votes_dev";
 const {createTable, dropTable} = require('../cloud-sql');
 
 let request;
 
 describe('Unit Tests', () => {
   before(async () => {
-    const app = require(path.join(__dirname, '..', 'app'));
-    request = supertest(app);
     try {
+      console.log("Creating table...");
       await createTable();
     } catch(err) {
       console.log(`Error creating DB table: ${err}`)
     }
+    const app = require(path.join(__dirname, '..', 'app'));
+    request = supertest(app);
   });
 
   after(async () => {
     try {
+      console.log("Dropping table...");
       await dropTable();
     } catch(err) {
       console.log(`Error dropping DB table: ${err}`)

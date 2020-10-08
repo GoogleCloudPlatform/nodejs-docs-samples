@@ -6,13 +6,17 @@ steps:
   args:
     - '-c'
     - |
-      gcloud secrets delete ${_SERVICE}-secrets --quiet || echo "Not Found."
-      gcloud container images delete gcr.io/${PROJECT_ID}/${_SERVICE} --quiet || echo "Not Found."
-      gcloud run services delete ${_SERVICE} \
-        --region ${_REGION} \
-        --platform managed \
-        --quiet || echo "Not Found."
+      . /workspace/test/retry.sh
+      retry "gcloud secrets describe ${_SERVICE}-secrets" \
+        "gcloud secrets delete ${_SERVICE}-secrets --quiet"
+
+      retry "gcloud container images describe gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}" \
+        "gcloud container images delete gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} --quiet"
+
+      retry "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform managed" \
+        "gcloud run services delete ${_SERVICE} --region ${_REGION} --platform managed --quiet"
 
 substitutions:
   _SERVICE: idp-sql
+  _VERSION: manual
   _REGION: us-central1

@@ -29,18 +29,40 @@ describe('System Tests', () => {
     throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
   }
 
-  const service = 'idp-sql-' + uuid.generate().toLowerCase();
-  const connectionName = process.env.CLOUD_SQL_CONNECTION_NAME || `${GOOGLE_CLOUD_PROJECT}:us-central1:vote-instance`;
+  const {CLOUD_SQL_CONNECTION_NAME} = process.env;
+  if (!CLOUD_SQL_CONNECTION_NAME) {
+    throw Error('"CLOUD_SQL_CONNECTION_NAME" env var not found.');
+  }
+
+  const {DB_PASSWORD} = process.env;
+  if (!DB_PASSWORD) {
+    throw Error('"DB_PASSWORD" env var not found.');
+  }
+
+  const {DB_NAME, DB_USER} = process.env;
+
+  let {SERVICE_NAME} = process.env;
+  if (!SERVICE_NAME) {
+    console.log('"SERVICE_NAME" env var not found. Defaulting to "idp-sql"');
+    SERVICE_NAME = "idp-sql";
+  }
+
   let BASE_URL, ID_TOKEN;
 
   before(() => {
+    const buildCmd = `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      `--config ./test/e2e_test_setup.yaml ` +
+      `--substitutions _SERVICE=${SERVICE_NAME},_DB_PASSWORD=${DB_PASSWORD}` +
+      `,_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
+    if(DB_USER) buildCmd + `,_DB_USER=${DB_USER}`;
+    if(DB_NAME) buildCmd + `,_DB_NAME=${DB_NAME}`;
+
     console.log('Starting Cloud Build...');
-    execSync(`gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-      `--substitutions _SERVICE=${service},_CLOUD_SQL_CONNECTION_NAME=${connectionName} --config ./test/e2e_test_setup.yaml`);
+    execSync(buildCmd);
     console.log('Cloud Build completed.');
 
     const url = execSync(
-      `gcloud run services describe ${service} --project=${GOOGLE_CLOUD_PROJECT} ` +
+      `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
       `--platform=managed --region=us-central1 --format='value(status.url)'`);
     BASE_URL = url.toString('utf-8');
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
@@ -54,7 +76,7 @@ describe('System Tests', () => {
 
   after(() => {
     execSync(`gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-      `--substitutions _SERVICE=${service} --config ./test/e2e_test_cleanup.yaml --quiet`);
+      `--substitutions _SERVICE=${SERVICE_NAME} --config ./test/e2e_test_cleanup.yaml --quiet`);
   })
 
   it('Can successfully make a request', async () => {

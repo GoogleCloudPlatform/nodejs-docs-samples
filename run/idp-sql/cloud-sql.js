@@ -69,7 +69,12 @@ const connectWithTcp = (credConfig) => {
 }
 
 
-
+/**
+* Connect to the Cloud SQL instance through TCP or UNIX Sockets
+* dependent on DB_HOST env var
+*
+* @returns {object} Knex's PostgreSQL client
+*/
 const connect = async () => {
   if (!credConfig) credConfig = await getCredConfig();
   if (process.env.DB_HOST) {

@@ -33,6 +33,14 @@ OR
 * `DB_USER`: database user
 * `DB_PASSWORD`: database password
 
+Other environment variables:
+
+* Set `TABLE` to change the postgreSQL database table name.
+
+* Set `DB_HOST` to use the proxy with TCP. See instructions below.
+
+* Set `DB_SOCKET_PATH` to change the directory when using the proxy with Unix sockets.
+  See instructions below.
 
 ## Production Considerations
 

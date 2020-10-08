@@ -17,6 +17,7 @@
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
+const {createTable, dropTable} = require('../cloud-sql');
 
 let request;
 
@@ -24,7 +25,20 @@ describe('Unit Tests', () => {
   before(async () => {
     const app = require(path.join(__dirname, '..', 'app'));
     request = supertest(app);
+    try {
+      await createTable();
+    } catch(err) {
+      console.log(`Error creating DB table: ${err}`)
+    }
   });
+
+  after(async () => {
+    try {
+      await dropTable();
+    } catch(err) {
+      console.log(`Error dropping DB table: ${err}`)
+    }
+  })
 
   it('should display the default page', async () => {
     await request

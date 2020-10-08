@@ -39,7 +39,7 @@ describe('System Tests', () => {
     throw Error('"DB_PASSWORD" env var not found.');
   }
 
-  const {DB_NAME, DB_USER} = process.env;
+  const {DB_NAME, DB_USER, SAMPLE_VERSION} = process.env;
 
   let {SERVICE_NAME} = process.env;
   if (!SERVICE_NAME) {
@@ -54,6 +54,7 @@ describe('System Tests', () => {
       `--config ./test/e2e_test_setup.yaml ` +
       `--substitutions _SERVICE=${SERVICE_NAME},_DB_PASSWORD=${DB_PASSWORD}` +
       `,_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
+    if(SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
     if(DB_USER) buildCmd + `,_DB_USER=${DB_USER}`;
     if(DB_NAME) buildCmd + `,_DB_NAME=${DB_NAME}`;
 

@@ -143,9 +143,27 @@ const createTable = async () => {
   }
 };
 
+/**
+* Drop table in the Cloud SQL database for testing only
+*/
+const dropTable = async () => {
+  if (!knex) knex = await connect();
+  const exists = await knex.schema.hasTable(TABLE);
+  if (!exists) {
+    try {
+      await knex.schema.dropTable(TABLE);
+      logger.info(`Successfully dropped ${TABLE} table.`);
+    } catch (err) {
+      const message = `Failed to dropp ${TABLE} table: ${err}`;
+      logger.error(message);
+    }
+  }
+};
+
 module.exports = {
   getVoteCount,
   getVotes,
   insertVote,
   createTable,
+  dropTable
 }

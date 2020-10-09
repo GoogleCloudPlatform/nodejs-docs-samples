@@ -25,7 +25,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_batch_translate_text';
 
-describe(REGION_TAG, () => {
+describe(REGION_TAG, function () {
+  this.retries(3);
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
   const bucketUuid = uuid.v4();

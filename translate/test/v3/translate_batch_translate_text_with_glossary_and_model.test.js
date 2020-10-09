@@ -25,7 +25,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_batch_translate_text_with_glossary_and_model';
 
-describe(REGION_TAG, () => {
+describe(REGION_TAG, function () {
+  this.retries(3);
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
   const glossaryId = `my_test_glossary_${uuid.v4()}`;

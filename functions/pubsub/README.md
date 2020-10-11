@@ -46,6 +46,7 @@ can skip this step):
     * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.
 
 1. Check the logs for the `subscribe` function:
+
         gcloud functions logs read subscribe
 
     You should see something like this in your console:

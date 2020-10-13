@@ -77,7 +77,7 @@ app.get('/', getTrace, async (req, res) => {
   } catch (err) {
     const message = "Error while connecting to the Cloud SQL database. " +
       "Check that your username and password are correct, that the Cloud SQL " +
-      "proxy is running (locally), and that the database/table exits and is " +
+      "proxy is running (locally), and that the database/table exists and is " +
       `ready for use: ${err}`;
     logger.error({message, traceId: req.traceId});
     res

@@ -34,6 +34,12 @@ const config = {
 }
 
 // [START run_user_auth_sql_connect]
+/**
+* Connect to the Cloud SQL instance through UNIX Sockets
+*
+* @param {object} credConfig The Cloud SQL connection configuration from Secret Manager
+* @returns {object} Knex's PostgreSQL client
+*/
 const connectWithUnixSockets = async (credConfig) => {
   const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
   // Establish a connection to the database

@@ -2,8 +2,7 @@
   "name": "idp-sql",
   "env": {
     "DB_PASSWORD": {
-      "description": "postgreSQL password",
-      "value": "password1234"
+      "description": "postgreSQL password"
     },
     "CLOUD_SQL_INSTANCE_NAME": {
       "description": "Cloud SQL instance name",

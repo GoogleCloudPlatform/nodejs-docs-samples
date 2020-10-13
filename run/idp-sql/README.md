@@ -18,6 +18,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 * **knex** + **pg**: A postgreSQL query builder library
 * **handlebars.js**: Template engine
 * **google-auth-library-nodejs**: Access [compute metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata) for project ID
+* **Firebase JavaScript SDK**: client-side library for authentication flow
 
 ## Environment Variables
 

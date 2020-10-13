@@ -62,7 +62,7 @@ async function vote(team) {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${token}`
         },
-        body: 'team=' + team,
+        body: 'team=' + team, // send application data (vote)
       });
       if (response.ok) {
         const text = await response.text();

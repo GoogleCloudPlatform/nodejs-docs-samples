@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const admin = require('firebase-admin');
-const { logger } = require('./logging');
+const { logger } = require('./logging'); // Import winston logger instance
 
 // [START run_user_auth_jwt]
+const admin = require('firebase-admin');
 // Extract and verify Id Token from header
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;

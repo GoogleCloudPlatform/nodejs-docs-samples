@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export _SECRET_NAME="vote-sql-secrets"
-export _SERVICE_ACCOUNT="vote-indentity"
+export SECRET_NAME="idp-sql-secrets"
+export SERVICE_ACCOUNT="idp-sql-indentity"
 
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
@@ -22,7 +22,7 @@ gcloud services enable sqladmin.googleapis.com secretmanager.googleapis.com
 
 gcloud sql instances describe ${CLOUD_SQL_INSTANCE_NAME}
 if [ $? -eq 1 ]; then
-  echo "Create Cloud SQL instance with postgreSQL database ..."
+  echo "Create Cloud SQL instance with postgreSQL database (this might take a few minutes)..."
   gcloud sql instances create ${CLOUD_SQL_INSTANCE_NAME} \
       --database-version=POSTGRES_12 \
       --region=${GOOGLE_CLOUD_REGION} \
@@ -36,29 +36,29 @@ sed -i "s/REGION/$GOOGLE_CLOUD_REGION/" postgres-secrets.json
 sed -i "s/PASSWORD_SECRET/$DB_PASSWORD/" postgres-secrets.json
 sed -i "s/INSTANCE/$CLOUD_SQL_INSTANCE_NAME/" postgres-secrets.json
 
-gcloud secrets describe ${_SECRET_NAME}
+gcloud secrets describe ${SECRET_NAME}
 if [ $? -eq 1 ]; then
   echo "Creating secret ..."
-  gcloud secrets create ${_SECRET_NAME} \
+  gcloud secrets create ${SECRET_NAME} \
       --replication-policy="automatic"
 fi
 echo "Adding secret version ..."
-gcloud secrets versions add ${_SECRET_NAME} --data-file=postgres-secrets.json
+gcloud secrets versions add ${SECRET_NAME} --data-file=postgres-secrets.json
 
 # Create service account
-gcloud iam service-accounts create ${_SERVICE_ACCOUNT}
+gcloud iam service-accounts create ${SERVICE_ACCOUNT}
 # Allow service account to access secret
-gcloud secrets add-iam-policy-binding ${_SECRET_NAME} \
-  --member serviceAccount:${_SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+gcloud secrets add-iam-policy-binding ${SECRET_NAME} \
+  --member serviceAccount:${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
   --role roles/secretmanager.secretAccessor
   # Allow service account to access Cloud SQL
 gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
-   --member serviceAccount:${_SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+   --member serviceAccount:${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
    --role roles/cloudsql.client
 
 gcloud run services update ${K_SERVICE} \
     --platform managed \
     --region ${GOOGLE_CLOUD_REGION} \
-    --service-account ${_SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+    --service-account ${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
     --add-cloudsql-instances ${GOOGLE_CLOUD_PROJECT}:${GOOGLE_CLOUD_REGION}:${CLOUD_SQL_INSTANCE_NAME} \
-    --set-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/${_SECRET_NAME}/versions/latest
+    --update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/${SECRET_NAME}/versions/latest

@@ -12,10 +12,11 @@ steps:
       ./retry.sh "gcloud container images describe gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}" \
         "gcloud container images delete gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} --quiet"
 
-      ./retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform managed" \
-        "gcloud run services delete ${_SERVICE} --region ${_REGION} --platform managed --quiet"
+      ./retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM}" \
+        "gcloud run services delete ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM} --quiet"
 
 substitutions:
   _SERVICE: idp-sql
   _VERSION: manual
   _REGION: us-central1
+  _PLATFORM: managed

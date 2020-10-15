@@ -35,19 +35,19 @@ const PROCESSOR_ID = '8f1123c1b125e0b7';
 const fileName = 'invoice.pdf';
 const filePath = path.resolve(path.join(__dirname, `../resources/${fileName}`));
 
-describe('Quickstart', () => {
+describe('Process document', () => {
   let projectId;
   before(async () => {
     projectId = await client.getProjectId();
   });
-
-  it('should run quickstart', async () => {
+  it('should run document (process invoice)', async () => {
     const stdout = execSync(
-      `node ./quickstart.js ${projectId} ${LOCATION} ${PROCESSOR_ID} ${filePath}`,
+      `node ./process-document.v1beta3.js ${projectId} ${LOCATION} ${PROCESSOR_ID} ${filePath}`,
       {
         cwd,
       }
     );
     assert.notStrictEqual(stdout.indexOf('Paragraph'), -1);
+    assert.notStrictEqual(stdout.indexOf('Extracted'), -1);
   });
 });

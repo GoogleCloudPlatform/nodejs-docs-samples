@@ -30,7 +30,7 @@ async function main(
 
   const {
     DocumentUnderstandingServiceClient,
-  } = require('@google-cloud/documentai');
+  } = require('@google-cloud/documentai').v1beta2;
 
   // Specifies the location of the api endpoint
   const clientOptions = {apiEndpoint: 'eu-documentai.googleapis.com'};

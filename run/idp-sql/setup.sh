@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Precreate script for Cloud Run button
+
 export SECRET_NAME="idp-sql-secrets"
 export SERVICE_ACCOUNT="idp-sql-indentity"
 
@@ -20,6 +23,7 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 # Enable Cloud SQl and Secret Manager APIs
 gcloud services enable sqladmin.googleapis.com secretmanager.googleapis.com
 
+# Create Cloud SQl instance
 gcloud sql instances describe ${CLOUD_SQL_INSTANCE_NAME}
 if [ $? -eq 1 ]; then
   echo "Create Cloud SQL instance with postgreSQL database (this might take a few minutes)..."
@@ -31,11 +35,13 @@ if [ $? -eq 1 ]; then
       --root-password=${DB_PASSWORD}
 fi
 
+# Add Cloud SQL config to secret file
 sed -i "s/PROJECT_ID/$GOOGLE_CLOUD_PROJECT/" postgres-secrets.json
 sed -i "s/REGION/$GOOGLE_CLOUD_REGION/" postgres-secrets.json
 sed -i "s/PASSWORD_SECRET/$DB_PASSWORD/" postgres-secrets.json
 sed -i "s/INSTANCE/$CLOUD_SQL_INSTANCE_NAME/" postgres-secrets.json
 
+# Add secret file to Secret Manager
 gcloud secrets describe ${SECRET_NAME}
 if [ $? -eq 1 ]; then
   echo "Creating secret ..."
@@ -55,10 +61,3 @@ gcloud secrets add-iam-policy-binding ${SECRET_NAME} \
 gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
    --member serviceAccount:${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
    --role roles/cloudsql.client
-
-gcloud run services update ${K_SERVICE} \
-    --platform managed \
-    --region ${GOOGLE_CLOUD_REGION} \
-    --service-account ${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
-    --add-cloudsql-instances ${GOOGLE_CLOUD_PROJECT}:${GOOGLE_CLOUD_REGION}:${CLOUD_SQL_INSTANCE_NAME} \
-    --update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/${SECRET_NAME}/versions/latest

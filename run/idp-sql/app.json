@@ -2,17 +2,22 @@
   "name": "idp-sql",
   "env": {
     "DB_PASSWORD": {
-      "description": "postgreSQL password"
+      "description": "postgreSQL password for root user"
     },
     "CLOUD_SQL_INSTANCE_NAME": {
       "description": "Cloud SQL instance name",
-      "value": "vote-sql-instance"
+      "value": "idp-sql-instance"
     }
   },
   "hooks": {
+    "precreate": {
+      "commands": [
+        "./setup.sh"
+      ]
+    },
     "postcreate": {
       "commands": [
-        "./cloud-run-button-script.sh"
+        "./postcreate.sh"
       ]
     }
   }

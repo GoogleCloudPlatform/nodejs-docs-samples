@@ -15,7 +15,10 @@
 const { logger } = require('./logging'); // Import winston logger instance
 
 // [START run_user_auth_jwt]
-const admin = require('firebase-admin');
+const firebase = require('firebase-admin');
+// Initialize Firebase Admin SDK
+firebase.initializeApp();
+
 // Extract and verify Id Token from header
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -23,7 +26,7 @@ const authenticateJWT = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     // If the provided ID token has the correct format, is not expired, and is
     // properly signed, the method returns the decoded ID token
-    admin.auth().verifyIdToken(token).then(function(decodedToken) {
+    firebase.auth().verifyIdToken(token).then(function(decodedToken) {
       let uid = decodedToken.uid;
       req.uid = uid;
       next();

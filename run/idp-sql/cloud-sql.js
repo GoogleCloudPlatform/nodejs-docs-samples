@@ -98,6 +98,7 @@ const connect = async () => {
 */
 const insertVote = async (vote) => {
   if (!knex) knex = await connect();
+  await createTable(); // Create postgreSQL table if not found
   return knex(TABLE).insert(vote);
 };
 
@@ -108,11 +109,12 @@ const insertVote = async (vote) => {
 */
 const getVotes = async () => {
   if (!knex) knex = await connect();
+  await createTable(); // Create postgreSQL table if not found
   return knex
-  .select('candidate', 'time_cast', 'uid')
-  .from(TABLE)
-  .orderBy('time_cast', 'desc')
-  .limit(5);
+    .select('candidate', 'time_cast', 'uid')
+    .from(TABLE)
+    .orderBy('time_cast', 'desc')
+    .limit(5);
 };
 
 /**
@@ -124,6 +126,7 @@ const getVotes = async () => {
 */
 const getVoteCount = async (candidate) => {
   if (!knex) knex = await connect();
+  await createTable(); // Create postgreSQL table if not found
   return knex(TABLE).count('vote_id').where('candidate', candidate);
 };
 

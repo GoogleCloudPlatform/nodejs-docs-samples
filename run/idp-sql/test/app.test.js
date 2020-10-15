@@ -17,39 +17,15 @@
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
-process.env.TABLE = "votes_dev";
-const {createTable, dropTable} = require('../cloud-sql');
+const { render } = require('../app');
+const { buildRenderedHtml } = require('../handlebars');
 
 let request;
 
 describe('Unit Tests', () => {
   before(async () => {
-    try {
-      console.log("Creating table...");
-      await createTable();
-    } catch(err) {
-      console.log(`Error creating DB table: ${err}`)
-    }
     const app = require(path.join(__dirname, '..', 'app'));
     request = supertest(app);
-  });
-
-  after(async () => {
-    try {
-      console.log("Dropping table...");
-      await dropTable();
-    } catch(err) {
-      console.log(`Error dropping DB table: ${err}`)
-    }
-  })
-
-  it('should display the default page', async () => {
-    await request
-      .get('/')
-      .expect(200)
-      .expect((response) => {
-        assert.ok(response.text.includes('CATS v DOGS'));
-      });
   });
 
   it('should reject request without JWT token', async () => {
@@ -64,5 +40,18 @@ describe('Unit Tests', () => {
       .set('Authorization', 'Bearer iam-a-token')
       .expect(403);
   });
+
+  it('should render an html page', async () => {
+    const renderedHtml = await buildRenderedHtml({
+      votes: [],
+      catsCount: 1,
+      dogsCount: 100,
+      leadTeam: "Dogs",
+      voteDiff: 99,
+      leaderMessage: "Dogs are winning",
+    });
+
+    assert(renderedHtml.includes('<h3>100 votes</h3>'));
+  })
 
 });

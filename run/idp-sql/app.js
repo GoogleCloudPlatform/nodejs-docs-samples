@@ -16,7 +16,6 @@
 
 const { getVotes, getVoteCount, insertVote } = require('./cloud-sql');
 const express = require('express');
-const admin = require('firebase-admin');
 const { buildRenderedHtml } = require('./handlebars');
 const { logger } = require('./logging');
 const { authenticateJWT, getTrace } = require('./middleware');
@@ -33,9 +32,6 @@ app.use((req, res, next) => {
   res.set('Content-Type', 'text/html');
   next();
 });
-
-// Initialize Firebase Admin SDK
-admin.initializeApp();
 
 app.get('/', getTrace, async (req, res) => {
   try {

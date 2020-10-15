@@ -15,8 +15,8 @@
 const app = require('./app');
 const pkg = require('./package.json');
 const { logger } = require('./logging');
-const { createTable } = require('./cloud-sql');
 const { GoogleAuth } = require('google-auth-library');
+const auth = new GoogleAuth();
 const PORT = process.env.PORT || 8080;
 
 const startServer = () => {
@@ -26,17 +26,13 @@ const startServer = () => {
 const main = async () => {
   if (!process.env.GOOGLE_CLOUD_PROJECT) {
     try {
-      const auth = new GoogleAuth();
       const project = await auth.getProjectId();
-      process.env.GOOGLE_CLOUD_PROJECT = project;
-      await createTable(); // Create postgreSQL table if not found
-      startServer();
+      process.env.GOOGLE_CLOUD_PROJECT = project; // Set GOOGLE_CLOUD_PROJECT for log correlation 
     } catch (err) {
       logger.error(`Error while identifying project from metadata server: ${err}`);
     }
-  } else {
-    startServer();
-  }
+  } 
+  startServer();
 };
 
 main();

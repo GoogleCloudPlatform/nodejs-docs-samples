@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ##
 # retry.sh
 # Provides utility functions commonly needed across Cloud Build pipelines.
@@ -30,10 +30,10 @@ retry() {
 }
 
 try() {
-  echo "running: " "$1"
+  echo "running: $1"
   $($1 > /dev/null)
   if [ $? -eq 0 ]; then
-    echo "running: " "$2"
+    echo "running: $2"
     $($2)
   fi
 }

@@ -14,13 +14,9 @@
 
 'use strict';
 
-const admin = require('firebase-admin');
 const assert = require('assert');
-const path = require('path');
-const supertest = require('supertest');
 const got = require('got');
-const uuid = require('short-uuid');
-const {execSync} = require('child_process');
+const { execSync } = require('child_process');
 
 describe('System Tests', () => {
 

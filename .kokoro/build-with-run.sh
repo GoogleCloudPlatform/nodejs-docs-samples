@@ -83,20 +83,5 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	trap notify_buildcop EXIT HUP
 fi
 
-
-# Download and run the proxy if testing a Cloud SQL sample
-if [[ $SQL_CLIENT ]]; then
-  # Configure Cloud SQL variables
-  export DB_NAME="kokoro_ci"
-  export DB_USER="kokoro_ci"
-  export DB_PASSWORD=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
-  export CLOUD_SQL_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
-
-	wget --quiet https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
-	chmod +x cloud_sql_proxy
-	export DB_HOST=127.0.0.1:5432
-	./cloud_sql_proxy -instances="${CLOUD_SQL_CONNECTION_NAME}"=tcp:5432 &>> cloud_sql_proxy.log &
-fi
-
 npm test
 npm run --if-present system-test

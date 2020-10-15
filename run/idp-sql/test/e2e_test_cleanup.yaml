@@ -6,14 +6,13 @@ steps:
   args:
     - '-c'
     - |
-      . /workspace/test/retry.sh
-      retry "gcloud secrets describe ${_SERVICE}-secrets" \
+      ./retry.sh "gcloud secrets describe ${_SERVICE}-secrets" \
         "gcloud secrets delete ${_SERVICE}-secrets --quiet"
 
-      retry "gcloud container images describe gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}" \
+      ./retry.sh "gcloud container images describe gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}" \
         "gcloud container images delete gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} --quiet"
 
-      retry "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform managed" \
+      ./retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform managed" \
         "gcloud run services delete ${_SERVICE} --region ${_REGION} --platform managed --quiet"
 
 substitutions:

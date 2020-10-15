@@ -55,6 +55,9 @@ set +x
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
+# Set Cloud SQL connection name
+export CLOUD_SQL_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
+
 # Build the service
 set -x
 gcloud builds submit --tag="${CONTAINER_IMAGE}"

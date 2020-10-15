@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "markdown-it": "^11.0.0"
+    "markdown-it": "^12.0.0"
   },
   "devDependencies": {
     "got": "^11.5.0",

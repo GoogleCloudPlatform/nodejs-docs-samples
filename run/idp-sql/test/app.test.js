@@ -17,7 +17,6 @@
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
-const { render } = require('../app');
 const { buildRenderedHtml } = require('../handlebars');
 
 let request;

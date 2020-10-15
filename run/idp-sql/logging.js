@@ -15,7 +15,6 @@
 // Create a Winston logger that streams to Stackdriver Logging.
 const { createLogger, transports ,format } = require('winston');
 
-
 // Add severity label for Stackdriver log parsing
 const addSeverity = format((info, opts) => {
   info.severity = info.level;

@@ -55,9 +55,6 @@ set +x
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
-# Set Cloud SQL connection name
-export CLOUD_SQL_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
-
 # Build the service
 set -x
 gcloud builds submit --tag="${CONTAINER_IMAGE}"
@@ -85,6 +82,12 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	}
 	trap notify_buildcop EXIT HUP
 fi
+
+# Configure Cloud SQL variables for deploying idp-sql sample
+export DB_NAME="kokoro_ci"
+export DB_USER="kokoro_ci"
+export DB_PASSWORD=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
+export CLOUD_SQL_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
 
 npm test
 npm run --if-present system-test

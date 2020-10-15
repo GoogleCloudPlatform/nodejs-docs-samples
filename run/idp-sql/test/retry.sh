@@ -12,7 +12,7 @@
 
 # Usage: try "cmd1" "cmd2"
 # If first cmd executes successfully then execute second cmd
-try() {
+deleteIfFound() {
   echo "running: $1"
   $($1 > /dev/null)
   if [ $? -eq 0 ]; then
@@ -21,12 +21,23 @@ try() {
   fi
 }
 
-
-cmd1="$1"
-cmd2="$2"
+# Define max retries
 max_attempts=3;
-attempt_num=1
-until try "$cmd1" "$cmd2"
+attempt_num=1;
+
+arg1="$1"
+arg2="$2"
+
+if [ $# -eq 1 ]
+then
+  cmd="$arg1"
+else
+  cmd="deleteIfFound \"$arg1\" \"$arg2\""
+fi
+
+echo $cmd
+
+until eval $cmd
 do
     if ((attempt_num==max_attempts))
     then
@@ -37,6 +48,5 @@ do
         sleep $((attempt_num++))
     fi
 done
-
 
 

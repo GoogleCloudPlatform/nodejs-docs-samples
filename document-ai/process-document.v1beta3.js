@@ -16,7 +16,7 @@
 'use strict';
 
 async function main(projectId, location, processorId, filePath) {
-  // [START documentai_quickstart]
+  // [START documentai_process_document]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -32,7 +32,7 @@ async function main(projectId, location, processorId, filePath) {
   // Instantiates a client
   const client = new DocumentProcessorServiceClient();
 
-  async function quickstart() {
+  async function processDocument() {
     // The full resource name of the processor, e.g.:
     // projects/project-id/locations/location/processor/processor-id
     // You must create new processors in the Cloud Console first
@@ -82,9 +82,23 @@ async function main(projectId, location, processorId, filePath) {
       const paragraphText = getText(paragraph.layout.textAnchor);
       console.log(`Paragraph text:\n${paragraphText}`);
     }
+
+    // Form parsing provides additional output about
+    // form-formatted PDFs. You  must create a form
+    // processor in the Cloud Console to see full field details.
+    console.log('\nThe following form key/value pairs were detected:');
+
+    const {formFields} = page1;
+    for (const field of formFields) {
+      const fieldName = getText(field.fieldName.textAnchor);
+      const fieldValue = getText(field.fieldValue.textAnchor);
+
+      console.log('Extracted key value pair:');
+      console.log(`\t(${fieldName}, ${fieldValue})`);
+    }
   }
-  // [END documentai_quickstart]
-  await quickstart();
+  // [END documentai_process_document]
+  await processDocument();
 }
 
 main(...process.argv.slice(2)).catch(err => {

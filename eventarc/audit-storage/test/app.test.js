@@ -53,7 +53,7 @@ describe('Unit Tests', () => {
         .set('ce-subject', 'test-subject')
         .send()
         .expect(200)
-        .expect(() => assert.ok(console.log.calledWith('Detected change in GCS bucket: test-subject')));
+        .expect(() => assert.ok(console.log.calledWith('GCS CloudEvent type: test-subject')));
     });
   });
 });

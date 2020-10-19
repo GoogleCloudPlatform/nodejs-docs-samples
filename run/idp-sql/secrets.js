@@ -28,8 +28,7 @@ async function getSecrets(secretName) {
   try {
     const [version] = await client.accessSecretVersion({name: secretName});
     return version.payload.data;
-  }
-  catch (err) {
+  } catch (err) {
     throw Error(`Error accessing Secret Manager: ${err}`);
   }
 }
@@ -39,9 +38,13 @@ async function getSecrets(secretName) {
 async function getCredConfig() {
   if (CLOUD_SQL_CREDENTIALS_SECRET) {
     const secrets = await getSecrets(CLOUD_SQL_CREDENTIALS_SECRET);
-    // Parse the secret that has been added as a JSON string
-    // to retreive database credentials
-    return JSON.parse(secrets.toString('utf8'));
+    try {
+      // Parse the secret that has been added as a JSON string
+      // to retreive database credentials
+      return JSON.parse(secrets.toString('utf8'));
+    } catch (err) {
+      throw Error(`Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: ${err}`)
+    }
   } else {
     logger.info('CLOUD_SQL_CREDENTIALS_SECRET env var not set. Defaulting to environment variables.');
     if (!process.env.DB_USER) throw Error('DB_USER needs to be set.');

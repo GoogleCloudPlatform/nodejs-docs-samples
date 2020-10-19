@@ -48,9 +48,9 @@ describe('System Tests', () => {
   const {DB_NAME, DB_USER} = process.env;
 
   // Get Firebase Key to create Id Tokens
-  const {FIREBASE_KEY} = process.env;
-  if (!FIREBASE_KEY) {
-    throw Error('"FIREBASE_KEY" env var not found.');
+  const {IDP_KEY} = process.env;
+  if (!IDP_KEY) {
+    throw Error('"IDP_KEY" env var not found.');
   }
 
   let BASE_URL, ID_TOKEN;
@@ -77,7 +77,7 @@ describe('System Tests', () => {
 
     // Retrieve ID token for testing
     const customToken = await admin.auth().createCustomToken('a-user-id');
-    const response = await got(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${FIREBASE_KEY}`, {
+    const response = await got(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`, {
       method: 'POST',
       body: JSON.stringify({
         token: customToken,
@@ -94,7 +94,7 @@ describe('System Tests', () => {
     `--config ./test/e2e_test_cleanup.yaml ` +
     `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`
     if(SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
-    
+
     execSync(cleanUpCmd);
   })
 

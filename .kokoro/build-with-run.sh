@@ -89,7 +89,7 @@ export DB_USER="kokoro_ci"
 export DB_PASSWORD=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
 export CLOUD_SQL_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
 
-export FIREBASE_KEY=$(cat $KOKORO_GFILE_DIR/secrets-firebase-key.txt)
+export IDP_KEY=$(gcloud secrets versions access latest --secret="nodejs-docs-samples-idp-key" --project="${GOOGLE_CLOUD_PROJECT}")
 
 npm test
 npm run --if-present system-test

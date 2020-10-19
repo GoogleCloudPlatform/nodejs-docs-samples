@@ -27,11 +27,11 @@ const main = async () => {
   if (!process.env.GOOGLE_CLOUD_PROJECT) {
     try {
       const project = await auth.getProjectId();
-      process.env.GOOGLE_CLOUD_PROJECT = project; // Set GOOGLE_CLOUD_PROJECT for log correlation 
+      process.env.GOOGLE_CLOUD_PROJECT = project; // Set GOOGLE_CLOUD_PROJECT for log correlation
     } catch (err) {
-      logger.error(`Error while identifying project from metadata server: ${err}`);
+      logger.error(`Error while retrieving Project ID: ${err}`);
     }
-  } 
+  }
   startServer();
 };
 

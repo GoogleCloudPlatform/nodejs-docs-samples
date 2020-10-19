@@ -16,7 +16,7 @@
 # Postcreate script for Cloud Run button
 
 export SECRET_NAME="idp-sql-secrets"
-export SERVICE_ACCOUNT="idp-sql-indentity"
+export SERVICE_ACCOUNT="idp-sql-identity"
 
 # Update Cloud Run service to include Cloud SQL instance, Secret Manager secret,
 # and service account

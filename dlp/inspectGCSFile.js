@@ -60,7 +60,7 @@ function main(
 
   // The customInfoTypes of information to match
   // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { infoType: { name: 'REGEX_TYPE' }, regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
+  //   { infoType: { name: 'REGEX_TYPE' }, regex: {pattern: '\\(\\d{3}\\) \\d{3}-\\d{4}'}}];
 
   // The name of the Pub/Sub topic to notify once the job completes
   // TODO(developer): create a Pub/Sub topic to use for this

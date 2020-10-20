@@ -54,7 +54,7 @@ function main(
 
   // The customInfoTypes of information to match
   // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { infoType: { name: 'REGEX_TYPE' }, regex: '\\(\\d{3}\\) \\d{3}-\\d{4}'}];
+  //   { infoType: { name: 'REGEX_TYPE' }, regex: {pattern: '\\(\\d{3}\\) \\d{3}-\\d{4}'}}];
 
   // Whether to include the matching string
   // const includeQuote = true;

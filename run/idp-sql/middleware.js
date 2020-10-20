@@ -46,7 +46,8 @@ const initTracing = (projectId) => {
   project = projectId;
 }
 
-// Add logging header with trace ID for logging correlation
+// Add logging field with trace ID for logging correlation
+// For more info, see https://cloud.google.com/run/docs/logging#correlate-logs
 const requestLogger = (req, res, next) => {
   const traceHeader = req.header('X-Cloud-Trace-Context');
   let trace;

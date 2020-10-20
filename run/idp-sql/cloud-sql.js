@@ -149,9 +149,14 @@ const createTable = async () => {
   }
 };
 
+const closeConnection = () => {
+  if (!knex) knex.destroy();
+}
+
 module.exports = {
   getVoteCount,
   getVotes,
   insertVote,
   createTable,
+  closeConnection,
 }

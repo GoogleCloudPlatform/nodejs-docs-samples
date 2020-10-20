@@ -15,7 +15,8 @@
 const app = require('./app');
 const pkg = require('./package.json');
 const { logger } = require('./logging');
-const { createTable } = require('./cloud-sql');
+const { initTracing } = require('./middleware');
+const { createTable, closeConnection } = require('./cloud-sql');
 
 const { GoogleAuth } = require('google-auth-library');
 const auth = new GoogleAuth();
@@ -23,20 +24,27 @@ const auth = new GoogleAuth();
 const PORT = process.env.PORT || 8080;
 
 const startServer = () => {
-  app.listen(PORT, () => logger.info(`${pkg.name} listening on port ${PORT}`));
+  app.listen(PORT, () => logger.info(`${pkg.name}: listening on port ${PORT}`));
 };
 
 const main = async () => {
-  if (!process.env.GOOGLE_CLOUD_PROJECT) {
+  let project = process.env.GOOGLE_CLOUD_PROJECT;
+  if (!project) {
     try {
-      const project = await auth.getProjectId();
-      process.env.GOOGLE_CLOUD_PROJECT = project; // Set GOOGLE_CLOUD_PROJECT for log correlation
+      project = await auth.getProjectId();
     } catch (err) {
       logger.error(`Error while retrieving Project ID: ${err}`);
     }
   }
+  initTracing(project); // pass project ID to tracing middleware
   await createTable(); // Create postgreSQL table if not found
   startServer();
 };
+
+process.on('SIGTERM', () => {
+  logger.info(`${pkg.name}: received SIGTERM`);
+  closeConnection();
+  process.exit(0);
+});
 
 main();

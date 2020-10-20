@@ -17,8 +17,7 @@
 const { getVotes, getVoteCount, insertVote } = require('./cloud-sql');
 const express = require('express');
 const { buildRenderedHtml } = require('./handlebars');
-const { logger } = require('./logging');
-const { authenticateJWT, getTrace } = require('./middleware');
+const { authenticateJWT, requestLogger } = require('./middleware');
 
 const app = express();
 app.use(express.static(__dirname + '/static'));
@@ -33,7 +32,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', getTrace, async (req, res) => {
+app.get('/', requestLogger, async (req, res) => {
   try {
     // Query the total count of "CATS" from the database.
     const catsResult = await getVoteCount('CATS');
@@ -75,7 +74,7 @@ app.get('/', getTrace, async (req, res) => {
       "Check that your username and password are correct, that the Cloud SQL " +
       "proxy is running (locally), and that the database/table exists and is " +
       `ready for use: ${err}`;
-    logger.error({message, traceId: req.traceId});
+    req.logger.error(message); // request-based logger with trace support
     res
       .status(500)
       .send('Unable to load page; see logs for more details.')
@@ -83,7 +82,7 @@ app.get('/', getTrace, async (req, res) => {
   }
 });
 
-app.post('/', getTrace, authenticateJWT, async (req, res) => {
+app.post('/', requestLogger, authenticateJWT, async (req, res) => {
   // Get decoded Id Platform user id
   const uid = req.uid;
   // Get the team from the request and record the time of the vote.
@@ -105,9 +104,9 @@ app.post('/', getTrace, authenticateJWT, async (req, res) => {
   // Save the data to the database.
   try {
     await insertVote(vote);
-    logger.info({message: 'vote_inserted', vote, traceId: req.traceId})
+    req.logger.info({message: 'vote_inserted', vote});  // request-based logger with trace support
   } catch (err) {
-    logger.error({message: `Error while attempting to submit vote: ${err}`, traceId: req.traceId});
+    req.logger.error(`Error while attempting to submit vote: ${err}`);
     res
       .status(500)
       .send('Unable to cast vote; see logs for more details.')

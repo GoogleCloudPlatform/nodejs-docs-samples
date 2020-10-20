@@ -21,21 +21,10 @@ const addSeverity = format((info, opts) => {
   return info;
 });
 
-// Add logging header with trace ID for logging correlation
-const addTrace = format((info, opts) => {
-  if (info.traceId) {
-    const project = process.env.GOOGLE_CLOUD_PROJECT;
-    info['logging.googleapis.com/trace'] = `projects/${project}/traces/${info.traceId}`
-    delete info.traceId;
-  }
-  return info;
-});
-
 const logger = createLogger({
   level: 'info',
   format: format.combine(
     addSeverity(),
-    addTrace(),
     format.timestamp(),
     format.json(),
     // format.prettyPrint(), // Uncomment for local debugging
@@ -43,4 +32,6 @@ const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-module.exports = {logger};
+module.exports = {
+  logger
+};

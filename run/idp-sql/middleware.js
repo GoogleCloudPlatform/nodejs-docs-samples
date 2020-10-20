@@ -31,7 +31,7 @@ const authenticateJWT = (req, res, next) => {
       req.uid = uid;
       next();
     }).catch((err) => {
-      logger.error({message: `Error with authentication: ${err}`, traceId: req.traceId});
+      req.logger.error({message: `Error with authentication: ${err}`});
       return res.sendStatus(403);
     });
   } else {
@@ -40,17 +40,26 @@ const authenticateJWT = (req, res, next) => {
 }
 // [END run_user_auth_jwt]
 
-// Extract trace Id from trace header for log correlation
-const getTrace = (req, res, next) => {
+
+let project;
+const initTracing = (projectId) => {
+  project = projectId;
+}
+
+// Add logging header with trace ID for logging correlation
+const requestLogger = (req, res, next) => {
   const traceHeader = req.header('X-Cloud-Trace-Context');
+  let trace;
   if (traceHeader) {
-    const [trace] = traceHeader.split("/");
-    req.traceId = trace;
+    const [traceId] = traceHeader.split("/");
+    trace = `projects/${project}/traces/${traceId}`;
   }
+  req.logger = logger.child({'logging.googleapis.com/trace': trace});
   next();
 }
 
 module.exports = {
   authenticateJWT,
-  getTrace,
+  requestLogger,
+  initTracing
 }

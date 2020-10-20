@@ -98,7 +98,6 @@ const connect = async () => {
 */
 const insertVote = async (vote) => {
   if (!knex) knex = await connect();
-  await createTable(); // Create postgreSQL table if not found
   return knex(TABLE).insert(vote);
 };
 
@@ -109,7 +108,6 @@ const insertVote = async (vote) => {
 */
 const getVotes = async () => {
   if (!knex) knex = await connect();
-  await createTable(); // Create postgreSQL table if not found
   return knex
     .select('candidate', 'time_cast', 'uid')
     .from(TABLE)
@@ -126,7 +124,6 @@ const getVotes = async () => {
 */
 const getVoteCount = async (candidate) => {
   if (!knex) knex = await connect();
-  await createTable(); // Create postgreSQL table if not found
   return knex(TABLE).count('vote_id').where('candidate', candidate);
 };
 
@@ -152,27 +149,9 @@ const createTable = async () => {
   }
 };
 
-/**
-* Drop table in the Cloud SQL database for testing only
-*/
-const dropTable = async () => {
-  if (!knex) knex = await connect();
-  const exists = await knex.schema.hasTable(TABLE);
-  if (!exists) {
-    try {
-      await knex.schema.dropTable(TABLE);
-      logger.info(`Successfully dropped ${TABLE} table.`);
-    } catch (err) {
-      const message = `Failed to dropp ${TABLE} table: ${err}`;
-      logger.error(message);
-    }
-  }
-};
-
 module.exports = {
   getVoteCount,
   getVotes,
   insertVote,
   createTable,
-  dropTable
 }

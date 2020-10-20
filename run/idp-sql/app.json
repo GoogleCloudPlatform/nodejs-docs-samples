@@ -7,6 +7,9 @@
     "CLOUD_SQL_INSTANCE_NAME": {
       "description": "Cloud SQL instance name",
       "value": "idp-sql-instance"
+    },
+    "API_KEY": {
+      "description": "Identity Platform API key from Application Setup Details"
     }
   },
   "hooks": {

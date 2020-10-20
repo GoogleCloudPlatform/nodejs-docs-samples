@@ -15,8 +15,11 @@
 const app = require('./app');
 const pkg = require('./package.json');
 const { logger } = require('./logging');
+const { createTable } = require('./cloud-sql');
+
 const { GoogleAuth } = require('google-auth-library');
 const auth = new GoogleAuth();
+
 const PORT = process.env.PORT || 8080;
 
 const startServer = () => {
@@ -32,6 +35,7 @@ const main = async () => {
       logger.error(`Error while retrieving Project ID: ${err}`);
     }
   }
+  await createTable(); // Create postgreSQL table if not found
   startServer();
 };
 

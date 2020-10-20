@@ -20,6 +20,10 @@ export SERVICE_ACCOUNT="idp-sql-indentity"
 
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
+# Add Identity Platform config
+sed -i "" "s/PROJECT_ID/$GOOGLE_CLOUD_PROJECT/" static/config.js
+sed -i "" "s/API_KEY/$API_KEY/" static/config.js
+
 # Enable Cloud SQl and Secret Manager APIs
 gcloud services enable sqladmin.googleapis.com secretmanager.googleapis.com
 

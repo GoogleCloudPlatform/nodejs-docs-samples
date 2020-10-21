@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START cloud_tasks_create_queue]
 /**
  * Create a new Task Queue
  */
@@ -45,6 +46,7 @@ async function createQueue(
   });
   console.log(`Created queue ${response.name}`);
 }
+// [END cloud_tasks_create_queue]
 
 const args = process.argv.slice(2);
 createQueue(...args).catch(console.error);

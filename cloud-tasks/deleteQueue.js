@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START cloud_tasks_delete_queue]
 /**
  * Delete a given Queue
  */
@@ -35,6 +36,7 @@ async function deleteQueue(
   await client.deleteQueue({name});
   console.log(`Deleted queue '${queue}'.`);
 }
+// [END cloud_tasks_delete_queue]
 
 const args = process.argv.slice(2);
 deleteQueue(...args).catch(console.error);

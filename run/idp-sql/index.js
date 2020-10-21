@@ -41,10 +41,15 @@ const main = async () => {
   startServer();
 };
 
+// Clean up resources on shutdown
 process.on('SIGTERM', () => {
   logger.info(`${pkg.name}: received SIGTERM`);
   closeConnection();
-  process.exit(0);
+  logger.end();
+  logger.on('finish', () => {
+    console.log(`${pkg.name}: logs flushed`);
+    process.exit(0);
+  })
 });
 
 main();

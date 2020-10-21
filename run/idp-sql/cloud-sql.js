@@ -151,6 +151,7 @@ const createTable = async () => {
 
 const closeConnection = () => {
   if (!knex) knex.destroy();
+  logger.info('DB connection closed.');
 }
 
 module.exports = {

@@ -14,29 +14,36 @@
 
 'use strict';
 
-// [START cloud_tasks_delete_queue]
 /**
  * Delete a given Queue
  */
-async function deleteQueue(
+function main(
   project = 'my-project-id', // Your GCP Project id
   queue = 'my-appengine-queue', // Name of the Queue to delete
   location = 'us-central1' // The GCP region in which to delete the queue
 ) {
+  // [START cloud_tasks_delete_queue]
   // Imports the Google Cloud Tasks library.
   const cloudTasks = require('@google-cloud/tasks');
 
   // Instantiates a client.
   const client = new cloudTasks.CloudTasksClient();
 
-  // Get the fully qualified path to the queue
-  const name = client.queuePath(project, location, queue);
+  async function deleteQueue() {
+    // Get the fully qualified path to the queue
+    const name = client.queuePath(project, location, queue);
 
-  // Send delete queue request.
-  await client.deleteQueue({name});
-  console.log(`Deleted queue '${queue}'.`);
+    // Send delete queue request.
+    await client.deleteQueue({name});
+    console.log(`Deleted queue '${queue}'.`);
+  }
+  deleteQueue();
+  // [END cloud_tasks_delete_queue]
 }
-// [END cloud_tasks_delete_queue]
 
-const args = process.argv.slice(2);
-deleteQueue(...args).catch(console.error);
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
+main(...process.argv.slice(2));

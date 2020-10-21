@@ -14,39 +14,46 @@
 
 'use strict';
 
-// [START cloud_tasks_create_queue]
 /**
  * Create a new Task Queue
  */
-async function createQueue(
+function main(
   project = 'my-project-id', // Your GCP Project id
   queue = 'my-appengine-queue', // Name of the Queue to create
   location = 'us-central1' // The GCP region in which to create the queue
 ) {
+  // [START cloud_tasks_create_queue]
   // Imports the Google Cloud Tasks library.
   const cloudTasks = require('@google-cloud/tasks');
 
   // Instantiates a client.
   const client = new cloudTasks.CloudTasksClient();
 
-  // Send create queue request.
-  const [response] = await client.createQueue({
-    // The fully qualified path to the location where the queue is created
-    parent: client.locationPath(project, location),
-    queue: {
-      // The fully qualified path to the queue
-      name: client.queuePath(project, location, queue),
-      appEngineHttpQueue: {
-        appEngineRoutingOverride: {
-          // The App Engine service that will receive the tasks.
-          service: 'default',
+  async function createQueue() {
+    // Send create queue request.
+    const [response] = await client.createQueue({
+      // The fully qualified path to the location where the queue is created
+      parent: client.locationPath(project, location),
+      queue: {
+        // The fully qualified path to the queue
+        name: client.queuePath(project, location, queue),
+        appEngineHttpQueue: {
+          appEngineRoutingOverride: {
+            // The App Engine service that will receive the tasks.
+            service: 'default',
+          },
         },
       },
-    },
-  });
-  console.log(`Created queue ${response.name}`);
+    });
+    console.log(`Created queue ${response.name}`);
+  }
+  createQueue();
+  // [END cloud_tasks_create_queue]
 }
-// [END cloud_tasks_create_queue]
 
-const args = process.argv.slice(2);
-createQueue(...args).catch(console.error);
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
+main(...process.argv.slice(2));

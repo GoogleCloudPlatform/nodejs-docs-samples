@@ -14,33 +14,40 @@
 
 'use strict';
 
-// [START cloud_tasks_list_queues]
-async function listQueues(
+function main(
   project = 'my-project-id', // Your GCP Project id
   location = 'us-central1' // The GCP region to search for queues
 ) {
+  // [START cloud_tasks_list_queues]
   // Imports the Google Cloud Tasks library.
   const cloudTasks = require('@google-cloud/tasks');
 
   // Instantiates a client.
   const client = new cloudTasks.CloudTasksClient();
 
-  // Get the fully qualified path to the region
-  const parent = client.locationPath(project, location);
+  async function listQueues() {
+    // Get the fully qualified path to the region
+    const parent = client.locationPath(project, location);
 
-  // list all fo the queues
-  const [queues] = await client.listQueues({parent});
+    // list all fo the queues
+    const [queues] = await client.listQueues({parent});
 
-  if (queues.length > 0) {
-    console.log('Queues:');
-    queues.forEach(queue => {
-      console.log(`  ${queue.name}`);
-    });
-  } else {
-    console.log('No queues found!');
+    if (queues.length > 0) {
+      console.log('Queues:');
+      queues.forEach(queue => {
+        console.log(`  ${queue.name}`);
+      });
+    } else {
+      console.log('No queues found!');
+    }
   }
+  listQueues();
+  // [END cloud_tasks_list_queues]
 }
-// [END cloud_tasks_list_queues]
 
-const args = process.argv.slice(2);
-listQueues(...args).catch(console.error);
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
+main(...process.argv.slice(2));

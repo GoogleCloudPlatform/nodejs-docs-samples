@@ -13,7 +13,6 @@
 // limitations under the License.
 
 'use strict';
-/*eslint no-warning-comments: [0, { "terms": ["todo", "fixme"], "location": "anywhere" }]*/
 
 // sample-metadata:
 //   title: Cloud Tasks Create HTTP Target with Token
@@ -23,7 +22,7 @@
 /**
  * Create a task with an HTTP target for a given queue with an arbitrary payload.
  */
-async function createHttpTaskWithToken(
+function main(
   project = 'my-project-id', // Your GCP Project id
   queue = 'my-queue', // Name of your Queue
   location = 'us-central1', // The GCP region of your queue
@@ -39,47 +38,54 @@ async function createHttpTaskWithToken(
   // Instantiates a client.
   const client = new CloudTasksClient();
 
-  // TODO(developer): Uncomment these lines and replace with your values.
-  // const project = 'my-project-id';
-  // const queue = 'my-queue';
-  // const location = 'us-central1';
-  // const url = 'https://example.com/taskhandler';
-  // const serviceAccountEmail = 'client@<project-id>.iam.gserviceaccount.com';
-  // const payload = 'Hello, World!';
+  async function createHttpTaskWithToken() {
+    // TODO(developer): Uncomment these lines and replace with your values.
+    // const project = 'my-project-id';
+    // const queue = 'my-queue';
+    // const location = 'us-central1';
+    // const url = 'https://example.com/taskhandler';
+    // const serviceAccountEmail = 'client@<project-id>.iam.gserviceaccount.com';
+    // const payload = 'Hello, World!';
 
-  // Construct the fully qualified queue name.
-  const parent = client.queuePath(project, location, queue);
+    // Construct the fully qualified queue name.
+    const parent = client.queuePath(project, location, queue);
 
-  const task = {
-    httpRequest: {
-      httpMethod: 'POST',
-      url,
-      oidcToken: {
-        serviceAccountEmail,
+    const task = {
+      httpRequest: {
+        httpMethod: 'POST',
+        url,
+        oidcToken: {
+          serviceAccountEmail,
+        },
       },
-    },
-  };
-
-  if (payload) {
-    task.httpRequest.body = Buffer.from(payload).toString('base64');
-  }
-
-  if (inSeconds) {
-    // The time when the task is scheduled to be attempted.
-    task.scheduleTime = {
-      seconds: inSeconds + Date.now() / 1000,
     };
+
+    if (payload) {
+      task.httpRequest.body = Buffer.from(payload).toString('base64');
+    }
+
+    if (inSeconds) {
+      // The time when the task is scheduled to be attempted.
+      task.scheduleTime = {
+        seconds: inSeconds + Date.now() / 1000,
+      };
+    }
+
+    console.log('Sending task:');
+    console.log(task);
+    // Send create task request.
+    const request = {parent, task};
+    const [response] = await client.createTask(request);
+    const name = response.name;
+    console.log(`Created task ${name}`);
   }
-
-  console.log('Sending task:');
-  console.log(task);
-  // Send create task request.
-  const request = {parent, task};
-  const [response] = await client.createTask(request);
-  const name = response.name;
-  console.log(`Created task ${name}`);
-
+  createHttpTaskWithToken();
   // [END cloud_tasks_create_http_task_with_token]
 }
 
-createHttpTaskWithToken(...process.argv.slice(2)).catch(console.error);
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
+main(...process.argv.slice(2));

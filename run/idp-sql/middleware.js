@@ -31,7 +31,7 @@ const authenticateJWT = (req, res, next) => {
       req.uid = uid;
       next();
     }).catch((err) => {
-      req.logger.error({message: `Error with authentication: ${err}`});
+      req.logger.error(`Error with authentication: ${err}`);
       return res.sendStatus(403);
     });
   } else {

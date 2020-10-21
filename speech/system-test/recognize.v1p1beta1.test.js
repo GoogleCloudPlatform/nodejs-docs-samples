@@ -25,7 +25,7 @@ const filepath = path.join(__dirname, '..', 'resources', 'audio.raw');
 
 describe('Recognize v1p1beta1', () => {
   it('should run sync recognize with metadata', async () => {
-    const output = execSync(`${cmd} sync-metadata ${filepath}`);
+    const output = execSync(`${cmd} ${filepath}`);
     assert.match(output, /how old is the Brooklyn Bridge/);
   });
 });

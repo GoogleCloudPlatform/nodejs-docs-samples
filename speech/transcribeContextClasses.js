@@ -63,8 +63,13 @@ function main(storageUri) {
     });
   }
 
-  transcribeContextClasses().catch(console.error);
+  transcribeContextClasses();
   // [END speech_transcribe_sync]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 
 main(...process.argv.slice(2));

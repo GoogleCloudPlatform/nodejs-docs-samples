@@ -31,6 +31,11 @@
 
 'use strict';
 
+// sample-metadata:
+//   title: Infinite Streaming
+//   description: Performs infinite streaming using the streamingRecognize operation with the Cloud Speech API.
+//   usage: node infiniteStreaming.js <encoding> <sampleRateHertz> <languageCode> <streamingLimit>
+
 /**
  * Note: Correct microphone settings required: check enclosed link, and make
  * sure the following conditions are met:
@@ -45,11 +50,11 @@
  * Maximum streaming limit should be 1/2 of SpeechAPI Streaming Limit.
  */
 
-function infiniteStream(
-  encoding,
-  sampleRateHertz,
-  languageCode,
-  streamingLimit
+function main(
+  encoding = 'LINEAR16',
+  sampleRateHertz = 16000,
+  languageCode = 'en-US',
+  streamingLimit = 290000
 ) {
   // [START speech_transcribe_infinite_streaming]
 
@@ -60,8 +65,6 @@ function infiniteStream(
 
   const chalk = require('chalk');
   const {Writable} = require('stream');
-
-  // Node-Record-lpcm16
   const recorder = require('node-record-lpcm16');
 
   // Imports the Google Cloud client library
@@ -240,53 +243,9 @@ function infiniteStream(
   // [END speech_transcribe_infinite_streaming]
 }
 
-require('yargs')
-  .demand(1)
-  .command(
-    'infiniteStream',
-    'infinitely streams audio input from microphone to speech API',
-    {},
-    opts =>
-      infiniteStream(
-        opts.encoding,
-        opts.sampleRateHertz,
-        opts.languageCode,
-        opts.streamingLimit
-      )
-  )
-  .options({
-    encoding: {
-      alias: 'e',
-      default: 'LINEAR16',
-      global: true,
-      requiresArg: true,
-      type: 'string',
-    },
-    sampleRateHertz: {
-      alias: 'r',
-      default: 16000,
-      global: true,
-      requiresArg: true,
-      type: 'number',
-    },
-    languageCode: {
-      alias: 'l',
-      default: 'en-US',
-      global: true,
-      requiresArg: true,
-      type: 'string',
-    },
-    streamingLimit: {
-      alias: 's',
-      default: 290000,
-      global: true,
-      requiresArg: true,
-      type: 'number',
-    },
-  })
-  .example('node $0 infiniteStream')
-  .wrap(120)
-  .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/speech/docs')
-  .help()
-  .strict().argv;
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
+main(...process.argv.slice(2));

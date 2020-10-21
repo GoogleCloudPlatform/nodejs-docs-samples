@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START cloud_tasks_list_queues]
 async function listQueues(
   project = 'my-project-id', // Your GCP Project id
   location = 'us-central1' // The GCP region to search for queues
@@ -39,6 +40,7 @@ async function listQueues(
     console.log('No queues found!');
   }
 }
+// [END cloud_tasks_list_queues]
 
 const args = process.argv.slice(2);
 listQueues(...args).catch(console.error);

@@ -30,7 +30,6 @@ function main(
   inSeconds = 0 // Delay in task execution
 ) {
   // [START cloud_tasks_appengine_create_task]
-  // [START tasks_quickstart]
   // Imports the Google Cloud Tasks library.
   const {CloudTasksClient} = require('@google-cloud/tasks');
 
@@ -75,7 +74,6 @@ function main(
   }
   createTask();
   // [END cloud_tasks_appengine_create_task]
-  // [END tasks_quickstart]
 }
 
 process.on('unhandledRejection', err => {

@@ -32,7 +32,6 @@ const translate = new Translate();
 
 // [END functions_ocr_setup]
 
-// [START functions_ocr_publish]
 /**
  * Publishes the result to the given pubsub topic and returns a Promise.
  *
@@ -45,7 +44,6 @@ const publishResult = async (topicName, data) => {
   const [topic] = await pubsub.topic(topicName).get({autoCreate: true});
   topic.publish(dataBuffer);
 };
-// [END functions_ocr_publish]
 
 // [START functions_ocr_detect]
 /**
@@ -83,6 +81,9 @@ const detectText = async (bucketName, filename) => {
       lang: lang,
     };
 
+    // Helper function that publishes translation result to a Pub/Sub topic
+    // For more information on publishing Pub/Sub messages, see this page:
+    //   https://cloud.google.com/pubsub/docs/publisher
     return publishResult(topicName, messageData);
   });
 
@@ -90,7 +91,6 @@ const detectText = async (bucketName, filename) => {
 };
 // [END functions_ocr_detect]
 
-// [START functions_ocr_rename]
 /**
  * Appends a .txt suffix to the image name.
  *
@@ -101,7 +101,6 @@ const detectText = async (bucketName, filename) => {
 const renameImageForSave = (filename, lang) => {
   return `${filename}_to_${lang}.txt`;
 };
-// [END functions_ocr_rename]
 
 // [START functions_ocr_process]
 /**

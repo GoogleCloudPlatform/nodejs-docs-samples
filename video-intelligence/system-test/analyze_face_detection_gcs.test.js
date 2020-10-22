@@ -26,6 +26,6 @@ const gcsUri = 'gs://cloud-samples-data/video/googlework_short.mp4';
 describe('analyzing faces in video', () => {
   it('should identify faces in a file in Google Storage', async () => {
     const output = execSync(`${cmd} ${gcsUri}`);
-    assert.match(output, /Attribute/);
+    assert.match(output, /Face detected:/);
   });
 });

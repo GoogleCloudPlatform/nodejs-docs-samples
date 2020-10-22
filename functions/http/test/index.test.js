@@ -240,31 +240,6 @@ describe('functions_http_cors', () => {
   });
 });
 
-describe('functions_http_signed_url', () => {
-  it('http:getSignedUrl: should process example request', async () => {
-    const mocks = getMocks();
-    const httpSample = getSample();
-
-    const reqMock = {
-      method: 'POST',
-      body: {
-        bucket: 'nodejs-docs-samples',
-        filename: `gcf-gcs-url-${uuid.v4()}`,
-        contentType: 'application/octet-stream',
-      },
-    };
-
-    httpSample.sample.getSignedUrl(reqMock, mocks.res);
-
-    // Instead of modifying the sample to return a promise,
-    // use a delay here and keep the sample idiomatic
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    assert.strictEqual(mocks.res.status.called, false);
-    assert.strictEqual(mocks.res.send.calledOnce, true);
-  });
-});
-
 describe('functions_http_cors_auth functions_http_form_data functions_http_xml', () => {
   // Allow-list these region tags with the region-tag enforcer
 });

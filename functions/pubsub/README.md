@@ -47,7 +47,7 @@ can skip this step):
 
 1. Check the logs for the `subscribe` function:
 
-        gcloud alpha functions get-logs subscribe
+        gcloud functions logs read subscribe
 
     You should see something like this in your console:
 

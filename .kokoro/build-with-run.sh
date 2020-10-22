@@ -83,5 +83,13 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	trap notify_buildcop EXIT HUP
 fi
 
+# Configure Cloud SQL variables for deploying idp-sql sample
+export DB_NAME="kokoro_ci"
+export DB_USER="kokoro_ci"
+export DB_PASSWORD=$(cat $KOKORO_GFILE_DIR/secrets-sql-password.txt)
+export CLOUD_SQL_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-name.txt)
+
+export IDP_KEY=$(gcloud secrets versions access latest --secret="nodejs-docs-samples-idp-key" --project="${GOOGLE_CLOUD_PROJECT}")
+
 npm test
 npm run --if-present system-test

@@ -23,7 +23,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = 'node analyze-streaming-shot-change.js';
 const file = 'resources/googlework_short.mp4';
 
-describe('streaming shot change', () => {
+describe('streaming shot change', function () {
+  this.retries(3);
   it('should analyze shot changes in a streaming video', async () => {
     const output = execSync(`${cmd} ${file}`);
     assert.match(output, /The entire video is one shot./);

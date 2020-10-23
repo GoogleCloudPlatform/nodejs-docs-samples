@@ -21,7 +21,7 @@ async function main(
   inputUri = 'BIGQUERY_PATH',
   outputUri = 'BIGQUERY_DIRECTORY'
 ) {
-  // [START automl_tables_predict_using_bq_source_and_bq_dest]
+  // [START automl_tables_batch_predict_bq]
 
   /**
    * Demonstrates using the AutoML client to request prediction from
@@ -72,7 +72,7 @@ async function main(
   }
 
   batchPredict();
-  // [END automl_tables_predict_using_bq_source_and_bq_dest]
+  // [END automl_tables_batch_predict_bq]
 }
 
 main(...process.argv.slice(2)).catch(err => {

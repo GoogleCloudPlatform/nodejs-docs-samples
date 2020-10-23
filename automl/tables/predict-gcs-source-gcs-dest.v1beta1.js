@@ -21,7 +21,7 @@ async function main(
   inputUri = 'gs://your-bucket-uri/file.csv',
   outputUriPrefix = 'gs://your-bucket-uri/OUTPUT_PREFIX/'
 ) {
-  // [START automl_tables_predict_using_gcs_source_and_gcs_dest]
+  // [START automl_tables_batch_predict]
 
   /**
    * Demonstrates using the AutoML client to request prediction from
@@ -72,7 +72,7 @@ async function main(
   }
 
   batchPredict();
-  // [END automl_tables_predict_using_gcs_source_and_gcs_dest]
+  // [END automl_tables_batch_predict]
 }
 
 main(...process.argv.slice(2)).catch(err => {

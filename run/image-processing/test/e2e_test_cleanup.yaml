@@ -1,6 +1,6 @@
 steps:
 
-- id: 'Delete resources'
+- id: 'Delete image and service'
   name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: '/bin/bash'
   args:
@@ -12,8 +12,32 @@ steps:
       ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM}" \
         "gcloud run services delete ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM} --quiet"
 
+- id: 'Delete Pub/Sub topic and subscription'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    ./test/retry.sh "" \
+      "gcloud pubsub topics delete ${_SERVICE} --quiet"
+    ./test/retry.sh "" \
+      "gcloud pubsub subscriptions delete ${_SERVICE}_sub"
+
+- id: 'Delete GCS buckets'
+  name: 'gcr.io/cloud-builders/gsutil:latest'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    ./test/retry.sh "" \
+      "gsutil rm -r gs://${_SERVICE}_input"
+    ./test/retry.sh "" \
+      "gsutil rm -r gs://${_SERVICE}_output"
+
 substitutions:
   _SERVICE: image-processing
   _VERSION: manual
   _REGION: us-central1
   _PLATFORM: managed
+  _INPUT_BUCKET: image-proc-input
+  _OUTPUT_BUCKET: image-proc-output

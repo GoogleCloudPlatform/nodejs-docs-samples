@@ -24,32 +24,39 @@ steps:
   - |
     ./test/retry.sh "gcloud run deploy ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
-      --allow-unauthenticated \
+      --no-allow-unauthenticated \
       --region ${_REGION} \
       --platform ${_PLATFORM} \
-      --add-cloudsql-instances ${_CLOUD_SQL_CONNECTION_NAME} \
-      --update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${PROJECT_ID}/secrets/${_SERVICE}-secrets/versions/latest"
+      --update-env-vars=BLURRED_BUCKET_NAME=${_SERVICE}_output"
 
-- id: 'Create Pub/Sub topic'
+- id: 'Create Pub/Sub topic and subscription'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
   args:
   - '-c'
   - |
-    gcloud pubsub topics create ${_TOPIC} --quiet
-    gcloud pubsub subscriptions create ${_TOPIC}_sub --topic ${_TOPIC} \
-      --push-endpoint ${URL} \
-      --push-auth-service-account cloud-run-invoker@{PROJECT}.iam.gserviceaccount.com
+    ./test/retry.sh "gcloud pubsub topics create ${_SERVICE} --quiet"
 
-- id: 'Create a Bucket'
-  name: 'gcr.io/cloud-builders/gcloud:latest'
+    ./test/retry.sh "gcloud pubsub subscriptions create ${_SERVICE}_sub \
+      --topic ${_SERVICE} \
+      --push-endpoint $(gcloud run services describe ${_SERVICE} --project=${PROJECT_ID} --platform=${_PLATFORM} --region=${_REGION} --format='value(status.url)') \
+      --push-auth-service-account cloud-run-invoker@${PROJECT_ID}.iam.gserviceaccount.com"
+
+- id: 'Create GCS buckets'
+  name: 'gcr.io/cloud-builders/gsutil:latest'
   entrypoint: /bin/bash
   args:
   - '-c'
   - |
-    #Create 2 buckets
-    # create pubsub notification
-    upload photo
+    # Create Buckets
+    ./test/retry.sh "gsutil mb -p ${PROJECT_ID} gs://${_SERVICE}_input"
+    ./test/retry.sh "gsutil mb -p ${PROJECT_ID} gs://${_SERVICE}_output"
+
+    # Create Pub/Sub notification
+    ./test/retry.sh "gsutil notification create -t ${_SERVICE} -f json gs://${_SERVICE}_input"
+
+    # Upload photo
+    ./test/retry.sh "gsutil cp test/zombie.jpg gs://${_SERVICE}_input"
 
 
 images:
@@ -60,3 +67,5 @@ substitutions:
   _VERSION: manual
   _REGION: us-central1
   _PLATFORM: managed
+  _INPUT_BUCKET: image-proc-input
+  _OUTPUT_BUCKET: image-proc-output

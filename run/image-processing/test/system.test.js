@@ -14,8 +14,8 @@
 
 const assert = require('assert');
 const got = require('got');
-const {resolve} = require('url');
-const {GoogleAuth} = require('google-auth-library');
+const { execSync } = require('child_process');
+const { GoogleAuth } = require('google-auth-library');
 const auth = new GoogleAuth();
 
 let BASE_URL, ID_TOKEN;
@@ -27,8 +27,8 @@ describe('End-to-End Tests', () => {
   }
   let {SERVICE_NAME} = process.env;
   if (!SERVICE_NAME) {
-    console.log('"SERVICE_NAME" env var not found. Defaulting to "idp-sql"');
-    SERVICE_NAME = "idp-sql";
+    SERVICE_NAME = "image-processing";
+    console.log(`"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
@@ -51,12 +51,14 @@ describe('End-to-End Tests', () => {
       `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`);
     BASE_URL = url.toString('utf-8');
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
+    console.log(BASE_URL);
 
     // Retrieve ID token for testing
     let client = await auth.getIdTokenClient(BASE_URL);
     const clientHeaders = await client.getRequestHeaders();
     ID_TOKEN = clientHeaders['Authorization'];;
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
+    console.log(ID_TOKEN)
   })
 
   after(() => {
@@ -72,7 +74,7 @@ describe('End-to-End Tests', () => {
     const options = {
       prefixUrl: BASE_URL.trim(),
       headers: {
-        Authorization: `Bearer ${ID_TOKEN.trim()}`,
+        Authorization: `${ID_TOKEN.trim()}`,
       },
       method: 'POST',
       throwHttpErrors: false,
@@ -81,8 +83,7 @@ describe('End-to-End Tests', () => {
     const response = await got('', options);
     assert.strictEqual(
       response.statusCode,
-      400,
-      'Bad Requests status not found'
+      400
     );
   });
 
@@ -90,24 +91,29 @@ describe('End-to-End Tests', () => {
     const options = {
       prefixUrl: BASE_URL.trim(),
       headers: {
-        Authorization: `Bearer ${ID_TOKEN.trim()}`,
+        Authorization: `${ID_TOKEN.trim()}`,
       },
       method: 'POST',
-      body: {
-        test: "test"
-      },
+      body: "test",
       throwHttpErrors: false,
       retry: 3
     };
     const response = await got('', options);
     assert.strictEqual(
       response.statusCode,
-      400,
-      'Bad Requests status not found'
+      400
     );
   });
 
   it('successfully processes an image', async () => {
+    const {Storage} = require('@google-cloud/storage');
+    const storage = new Storage();
+    const [files] = await storage.bucket(`${SERVICE_NAME}_output`).getFiles();
 
-  })
+    console.log('Files:');
+    files.forEach(file => {
+      console.log(file.name);
+    });
+    assert(files.length > 0)
+  });
 });

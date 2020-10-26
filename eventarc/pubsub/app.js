@@ -14,7 +14,7 @@
 
 // [START eventarc_pubsub_handler]
 const express = require('express');
-const {toMessagePublishedEvent} = require('@google/events/cloud/pubsub/v1/MessagePublishedData');
+const {toMessagePublishedData} = require('@google/events/cloud/pubsub/v1/MessagePublishedData');
 const app = express();
 
 app.use(express.json());
@@ -32,7 +32,7 @@ app.post('/', (req, res) => {
     return;
   }
   // Cast to MessagePublishedEvent for IDE autocompletion
-  const pubSubMessage = toMessagePublishedEvent(req.body);
+  const pubSubMessage = toMessagePublishedData(req.body);
   const name = pubSubMessage.message && pubSubMessage.message.data
     ? Buffer.from(pubSubMessage.message.data, 'base64').toString().trim()
     : 'World';

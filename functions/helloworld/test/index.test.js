@@ -156,26 +156,4 @@ describe('index.test.js', () => {
       });
     });
   });
-
-  describe('functions_helloworld_template helloTemplate', () => {
-    const PORT = 8085;
-    let ffProc;
-
-    before(() => {
-      ffProc = startFF('helloTemplate', 'http', PORT);
-    });
-
-    after(async () => {
-      await ffProc;
-    });
-
-    it('helloTemplate: should render the html', async () => {
-      const response = await httpInvocation('helloTemplate', PORT);
-
-      assert.strictEqual(response.statusCode, 200);
-      assert.ok(
-        response.body.includes('<h1>Cloud Functions Template Sample</h1>')
-      );
-    });
-  });
 });

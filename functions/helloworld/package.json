@@ -18,8 +18,7 @@
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^5.0.0",
-    "escape-html": "^1.0.3",
-    "pug": "^3.0.0"
+    "escape-html": "^1.0.3"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",

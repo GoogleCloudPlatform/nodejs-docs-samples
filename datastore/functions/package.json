@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@google-cloud/datastore": "^6.0.0",
-    "is-reachable": "^4.0.0"
+    "is-reachable": "^5.0.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",

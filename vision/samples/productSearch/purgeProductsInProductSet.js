@@ -16,14 +16,14 @@
 
 function main(projectId, location, productSetId) {
   // [START vision_product_search_purge_products_in_product_set]
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ProductSearchClient();
+
   async function purgeProductsInProductSet() {
     // Deletes all products in a product set.
-
-    // Imports the Google Cloud client library
-    const vision = require('@google-cloud/vision');
-
-    // Creates a client
-    const client = new vision.ProductSearchClient();
 
     /**
      * TODO(developer): Uncomment the following line before running the sample.
@@ -52,7 +52,13 @@ function main(projectId, location, productSetId) {
       console.log(err);
     }
   }
-  // [END vision_product_search_purge_products_in_product_set]
   purgeProductsInProductSet();
+  // [END vision_product_search_purge_products_in_product_set]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

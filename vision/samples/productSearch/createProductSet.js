@@ -16,13 +16,13 @@
 
 function main(projectId, location, productSetId, productSetDisplayName) {
   // [START vision_product_search_create_product_set]
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ProductSearchClient();
+
   async function createProductSet() {
-    // Imports the Google Cloud client library
-    const vision = require('@google-cloud/vision');
-
-    // Creates a client
-    const client = new vision.ProductSearchClient();
-
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -47,7 +47,13 @@ function main(projectId, location, productSetId, productSetDisplayName) {
     const [createdProductSet] = await client.createProductSet(request);
     console.log(`Product Set name: ${createdProductSet.name}`);
   }
-  // [END vision_product_search_create_product_set]
   createProductSet();
+  // [END vision_product_search_create_product_set]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

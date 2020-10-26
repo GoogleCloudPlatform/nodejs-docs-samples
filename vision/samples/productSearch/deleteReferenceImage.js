@@ -16,11 +16,11 @@
 
 function main(projectId, location, productId, referenceImageId) {
   // [START vision_product_search_delete_reference_image]
+  const vision = require('@google-cloud/vision');
+
+  const client = new vision.ProductSearchClient();
+
   async function deleteReferenceImage() {
-    const vision = require('@google-cloud/vision');
-
-    const client = new vision.ProductSearchClient();
-
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -43,7 +43,13 @@ function main(projectId, location, productId, referenceImageId) {
     await client.deleteReferenceImage(request);
     console.log('Reference image deleted from product.');
   }
-  // [END vision_product_search_delete_reference_image]
   deleteReferenceImage();
+  // [END vision_product_search_delete_reference_image]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

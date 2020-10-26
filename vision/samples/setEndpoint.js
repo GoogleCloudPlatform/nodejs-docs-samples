@@ -14,23 +14,36 @@
 
 'use strict';
 
-async function setEndpoint() {
+// sample-metadata:
+//   title: Cloud Vision Custom API Endpoint
+//   description: Demonstrates using a custom API endpoint for the Cloud Vision API.
+//   usage: node setEndpoint.js
+
+function main() {
   // [START vision_set_endpoint]
   // Imports the Google Cloud client library
   const vision = require('@google-cloud/vision');
 
-  // Specifies the location of the api endpoint
-  const clientOptions = {apiEndpoint: 'eu-vision.googleapis.com'};
+  async function setEndpoint() {
+    // Specifies the location of the api endpoint
+    const clientOptions = {apiEndpoint: 'eu-vision.googleapis.com'};
 
-  // Creates a client
-  const client = new vision.ImageAnnotatorClient(clientOptions);
+    // Creates a client
+    const client = new vision.ImageAnnotatorClient(clientOptions);
+
+    // Performs text detection on the image file
+    const [result] = await client.textDetection('./resources/wakeupcat.jpg');
+    const labels = result.textAnnotations;
+    console.log('Text:');
+    labels.forEach(label => console.log(label.description));
+  }
+  setEndpoint();
   // [END vision_set_endpoint]
-
-  // Performs text detection on the image file
-  const [result] = await client.textDetection('./resources/wakeupcat.jpg');
-  const labels = result.textAnnotations;
-  console.log('Text:');
-  labels.forEach(label => console.log(label.description));
 }
 
-setEndpoint().catch(console.error);
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
+main(...process.argv.slice(2));

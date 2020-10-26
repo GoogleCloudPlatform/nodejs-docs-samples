@@ -23,9 +23,7 @@ function main(fileName = 'path/to/your/file.pdf') {
 
   // Imports the Google Cloud client libraries
   const {ImageAnnotatorClient} = require('@google-cloud/vision').v1;
-  const fs = require('fs');
-  const {promisify} = require('util');
-  const readFileAsync = promisify(fs.readFile);
+  const fs = require('fs').promises;
 
   // Instantiates a client
   const client = new ImageAnnotatorClient();
@@ -38,7 +36,7 @@ function main(fileName = 'path/to/your/file.pdf') {
     // https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#inputconfig
     const inputConfig = {
       mimeType: 'application/pdf',
-      content: await readFileAsync(fileName),
+      content: await fs.readFile(fileName),
     };
 
     // Set the type of annotation you want to perform on the file
@@ -98,5 +96,10 @@ function main(fileName = 'path/to/your/file.pdf') {
   batchAnnotateFiles();
   // [END vision_batch_annotate_files]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 
 main(...process.argv.slice(2));

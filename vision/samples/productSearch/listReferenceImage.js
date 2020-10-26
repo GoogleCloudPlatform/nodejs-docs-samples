@@ -16,11 +16,11 @@
 
 function main(projectId, location, productId) {
   // [START vision_product_search_list_reference_images]
+  const vision = require('@google-cloud/vision');
+
+  const client = new vision.ProductSearchClient();
+
   async function listReferenceImage() {
-    const vision = require('@google-cloud/vision');
-
-    const client = new vision.ProductSearchClient();
-
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -40,7 +40,13 @@ function main(projectId, location, productId) {
       console.log(`image.uri: ${image.uri}`);
     });
   }
-  // [END vision_product_search_list_reference_images]
   listReferenceImage();
+  // [END vision_product_search_list_reference_images]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

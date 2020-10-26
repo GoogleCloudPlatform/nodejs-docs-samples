@@ -16,14 +16,14 @@
 
 function main(projectId, location, gcsUri) {
   // [START vision_product_search_import_product_images]
-  async function importProductSets() {
-    // Imports the Google Cloud client library
-    // [START vision_product_search_tutorial_import]
-    const vision = require('@google-cloud/vision');
-    // [END vision_product_search_tutorial_import]
-    // Creates a client
-    const client = new vision.ProductSearchClient();
+  // Imports the Google Cloud client library
+  // [START vision_product_search_tutorial_import]
+  const vision = require('@google-cloud/vision');
+  // [END vision_product_search_tutorial_import]
+  // Creates a client
+  const client = new vision.ProductSearchClient();
 
+  async function importProductSets() {
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -69,9 +69,14 @@ function main(projectId, location, gcsUri) {
         console.log('No reference image.');
       }
     }
-    // [END vision_product_search_import_product_images]
   }
-  // [END vision_product_search_import_product_set]
   importProductSets();
+  // [END vision_product_search_import_product_images]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

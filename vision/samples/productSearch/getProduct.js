@@ -16,13 +16,13 @@
 
 function main(projectId, location, productId) {
   // [START vision_product_search_get_product]
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ProductSearchClient();
+
   async function getProduct() {
-    // Imports the Google Cloud client library
-    const vision = require('@google-cloud/vision');
-
-    // Creates a client
-    const client = new vision.ProductSearchClient();
-
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -41,7 +41,13 @@ function main(projectId, location, productId) {
     console.log(`Product category: ${product.productCategory}`);
     console.log(`Product labels: ${product.productLabels}`);
   }
-  // [END vision_product_search_get_product]
   getProduct();
+  // [END vision_product_search_get_product]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

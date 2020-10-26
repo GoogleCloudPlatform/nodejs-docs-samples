@@ -16,13 +16,13 @@
 
 function main(projectId, location, productId, key, value) {
   // [START vision_product_search_update_product_labels]
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+
+  // Creates a client
+  const client = new vision.ProductSearchClient();
+
   async function updateProductLabels() {
-    // Imports the Google Cloud client library
-    const vision = require('@google-cloud/vision');
-
-    // Creates a client
-    const client = new vision.ProductSearchClient();
-
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -63,7 +63,13 @@ function main(projectId, location, productId, key, value) {
       `Product Labels: ${updatedProduct.productLabels[0].key}: ${updatedProduct.productLabels[0].value}`
     );
   }
-  // [END vision_product_search_update_product_labels]
   updateProductLabels();
+  // [END vision_product_search_update_product_labels]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

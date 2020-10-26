@@ -23,14 +23,14 @@ function main(
   filter
 ) {
   // [START vision_product_search_get_similar_products]
-  async function getSimilarProductsFile() {
-    // Imports the Google Cloud client library
-    const vision = require('@google-cloud/vision');
-    const fs = require('fs');
-    // Creates a client
-    const productSearchClient = new vision.ProductSearchClient();
-    const imageAnnotatorClient = new vision.ImageAnnotatorClient();
+  // Imports the Google Cloud client library
+  const vision = require('@google-cloud/vision');
+  const fs = require('fs');
+  // Creates a client
+  const productSearchClient = new vision.ProductSearchClient();
+  const imageAnnotatorClient = new vision.ImageAnnotatorClient();
 
+  async function getSimilarProductsFile() {
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -76,7 +76,13 @@ function main(
       console.log('Product category:', result['product'].productCategory);
     });
   }
-  // [END vision_product_search_get_similar_products]
   getSimilarProductsFile();
+  // [END vision_product_search_get_similar_products]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

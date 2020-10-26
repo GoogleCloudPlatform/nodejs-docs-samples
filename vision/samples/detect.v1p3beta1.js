@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable */
-
 'use strict';
 
 async function detectHandwritingOCR(fileName) {
@@ -74,40 +72,40 @@ async function detectHandwritingGCS(uri) {
   // [END vision_handwritten_ocr_gcs_beta]
 }
 
-require(`yargs`)
+require('yargs')
   .demand(1)
   .command(
-    `detectHandwriting`,
-    `Detects handwriting in a local image file.`,
+    'detectHandwriting',
+    'Detects handwriting in a local image file.',
     {},
     opts => detectHandwritingOCR(opts.handwritingSample)
   )
   .command(
-    `detectHandwritingGCS`,
-    `Detects handwriting from Google Cloud Storage Bucket.`,
+    'detectHandwritingGCS',
+    'Detects handwriting from Google Cloud Storage Bucket.',
     {},
     opts => detectHandwritingGCS(opts.handwritingSample)
   )
   .options({
     handwritingSample: {
       alias: 'h',
-      default: `./resources/handwritten.jpg`,
+      default: './resources/handwritten.jpg',
       global: true,
       requiresArg: true,
       type: 'string',
     },
     handwritingGcsUri: {
       alias: 'u',
-      default: `gs://cloud-samples-data/vision/handwritten.jpg`,
+      default: 'gs://cloud-samples-data/vision/handwritten.jpg',
       global: true,
       requiresArg: true,
       type: 'string',
     },
   })
-  .example(`node $0 detectHandwriting ./resources/handwritten.jpg`)
-  .example(`node $0 detectHandwritingGCS gs://my-bucket/image.jpg`)
+  .example('node $0 detectHandwriting ./resources/handwritten.jpg')
+  .example('node $0 detectHandwritingGCS gs://my-bucket/image.jpg')
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/vision/docs`)
+  .epilogue('For more information, see https://cloud.google.com/vision/docs')
   .help()
   .strict().argv;

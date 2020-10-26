@@ -14,16 +14,12 @@
 
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const {promisify} = require('util');
 const vision = require('@google-cloud/vision');
 const natural = require('natural');
 const redis = require('redis');
-
-const readFile = promisify(fs.readFile);
-const stat = promisify(fs.stat);
-const readdir = promisify(fs.readdir);
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -200,7 +196,7 @@ async function getTextFromFiles(index, inputFiles) {
   // passed to the Cloud Vision API in a batch request.
   const requests = await Promise.all(
     inputFiles.map(async filename => {
-      const content = await readFile(filename);
+      const content = await fs.readFile(filename);
       console.log(` 👉 ${filename}`);
       return {
         image: {
@@ -234,14 +230,14 @@ async function getTextFromFiles(index, inputFiles) {
 async function main(inputDir) {
   const index = new Index();
   try {
-    const files = await readdir(inputDir);
+    const files = await fs.readdir(inputDir);
 
     // Get a list of all files in the directory (filter out other directories)
     const allImageFiles = (
       await Promise.all(
         files.map(async file => {
           const filename = path.join(inputDir, file);
-          const stats = await stat(filename);
+          const stats = await fs.stat(filename);
           if (!stats.isDirectory()) {
             return filename;
           }

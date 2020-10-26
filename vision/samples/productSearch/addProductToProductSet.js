@@ -16,11 +16,10 @@
 
 function main(projectId, location, productId, productSetId) {
   // [START vision_product_search_add_product_to_product_set]
+  const vision = require('@google-cloud/vision');
+  const client = new vision.ProductSearchClient();
+
   async function addProductToProductSet() {
-    const vision = require('@google-cloud/vision');
-
-    const client = new vision.ProductSearchClient();
-
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -44,7 +43,13 @@ function main(projectId, location, productId, productSetId) {
     await client.addProductToProductSet(request);
     console.log('Product added to product set.');
   }
-  // [END vision_product_search_add_product_to_product_set]
   addProductToProductSet();
+  // [END vision_product_search_add_product_to_product_set]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

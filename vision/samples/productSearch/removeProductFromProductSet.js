@@ -13,13 +13,14 @@
 // limitations under the License.
 
 'use strict';
+
 function main(projectId, location, productId, productSetId) {
   // [START vision_product_search_remove_product_from_product_set]
+  const vision = require('@google-cloud/vision');
+
+  const client = new vision.ProductSearchClient();
+
   async function removeProductFromProductSet() {
-    const vision = require('@google-cloud/vision');
-
-    const client = new vision.ProductSearchClient();
-
     /**
      * TODO(developer): Uncomment the following line before running the sample.
      */
@@ -39,7 +40,13 @@ function main(projectId, location, productId, productSetId) {
     await client.removeProductFromProductSet(request);
     console.log('Product removed from product set.');
   }
-  // [END vision_product_search_remove_product_from_product_set]
   removeProductFromProductSet();
+  // [END vision_product_search_remove_product_from_product_set]
 }
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 main(...process.argv.slice(2));

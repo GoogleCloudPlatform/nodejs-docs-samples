@@ -25,7 +25,8 @@ const modelId = 'VCN3094808572840640512';
 const project = process.env.GCLOUD_PROJECT;
 const file = 'resources/googlework_short.mp4';
 
-describe('streaming automl classification', () => {
+describe('streaming automl classification', function () {
+  this.retries(3);
   it('should classify the action in the streaming video', async () => {
     const output = execSync(`${cmd} ${file} ${project} ${modelId}`);
     assert.match(output, /brush_hair/);

@@ -23,7 +23,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = 'node analyze-streaming-labels.js';
 const file = 'resources/googlework_short.mp4';
 
-describe('streaming label', () => {
+describe('streaming label', function () {
+  this.retries(3);
   it('should analyze labels in a streaming video', async () => {
     const output = execSync(`${cmd} ${file}`);
     assert.match(output, /cat/);

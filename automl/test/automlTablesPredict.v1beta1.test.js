@@ -21,7 +21,7 @@ const {execSync} = require('child_process');
 
 /** Tests for AutoML Tables "Prediction API" sample. */
 
-const projectId = process.env.AUTOML_PROJECT_ID;
+const projectId = process.env.AUTOML_PROJECT_ID || 'cdpe-automl-tests';
 const region = 'us-central1';
 const modelId = process.env.TABLE_MODEL_ID;
 const gcsInputUri = `gs://${projectId}-tables/predictTest.csv`;

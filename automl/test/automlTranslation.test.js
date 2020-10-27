@@ -27,7 +27,7 @@ const cmdDataset = 'node translate/automlTranslateCreateDataset.js';
 const cmdModel = 'node translate/automlTranslateCreateModel.js';
 const cmdPredict = 'node translate/automlTranslatePredict.js';
 
-const projectId = process.env.AUTOML_PROJECT_ID;
+const projectId = process.env.AUTOML_PROJECT_ID || 'cdpe-automl-tests';
 const datasetId = process.env.TRANSLATION_DATASET_ID;
 const modelId = process.env.TRANSLATION_MODEL_ID;
 

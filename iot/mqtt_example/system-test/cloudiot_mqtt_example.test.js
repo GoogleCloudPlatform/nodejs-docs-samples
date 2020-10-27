@@ -239,7 +239,7 @@ it('should receive command message', async () => {
   });
 });
 
-it('should listen for bound device config message', () => {
+it.skip('should listen for bound device config message', () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
@@ -276,7 +276,7 @@ it('should listen for bound device config message', () => {
   });
 });
 
-it('should listen for error topic messages', () => {
+it.skip('should listen for error topic messages', () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
@@ -315,7 +315,7 @@ it('should listen for error topic messages', () => {
   });
 });
 
-it('should send data from bound device', async () => {
+it.skip('should send data from bound device', async () => {
   const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
   childProcess.execSync(
     `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,

@@ -64,7 +64,7 @@ app.post('/upload', multer.single('file'), (req, res, next) => {
   const blob = bucket.file(req.file.originalname);
   const blobStream = blob.createWriteStream();
 
-  blobStream.on('error', (err) => {
+  blobStream.on('error', err => {
     next(err);
   });
 

@@ -26,7 +26,7 @@ const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 const topicName = `nodejs-iot-test-mqtt-topic-${uuid.v4()}`;
 const registryName = `nodejs-iot-test-mqtt-registry-${uuid.v4()}`;
-const region = `us-central1`;
+const region = 'us-central1';
 const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
@@ -45,11 +45,11 @@ assert.ok(
 before(async () => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   // Create a unique topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
@@ -205,8 +205,8 @@ it('should send state message', () => {
   });
 });
 
-it.only('should receive command message', async () => {
-  const deviceId = `commands-device`;
+it('should receive command message', async () => {
+  const deviceId = 'commands-device';
   const message = 'rotate 180 degrees';
 
   childProcess.execSync(

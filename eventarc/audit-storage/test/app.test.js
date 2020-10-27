@@ -32,7 +32,7 @@ describe('Unit Tests', () => {
   });
 
   describe('should fail', () => {
-    it(`on a Bad Request with an empty payload`, async () => {
+    it('on a Bad Request with an empty payload', async () => {
       await request.post('/').type('json').send('').expect(400);
     });
   });
@@ -47,13 +47,19 @@ describe('Unit Tests', () => {
       console.log.restore();
     });
 
-    it(`with a minimally valid GCS event`, async () => {
+    it('with a minimally valid GCS event', async () => {
       await request
         .post('/')
         .set('ce-subject', 'test-subject')
         .send()
         .expect(200)
-        .expect(() => assert.ok(console.log.calledWith('Detected change in GCS bucket: test-subject')));
+        .expect(() =>
+          assert.ok(
+            console.log.calledWith(
+              'Detected change in GCS bucket: test-subject'
+            )
+          )
+        );
     });
   });
 });

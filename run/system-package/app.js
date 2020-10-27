@@ -44,7 +44,7 @@ app.get('/diagram.png', (req, res) => {
 
 // [START run_system_package_exec]
 // Generate a diagram based on a graphviz DOT diagram description.
-const createDiagram = (dot) => {
+const createDiagram = dot => {
   if (!dot) {
     throw new Error('syntax: no graphviz definition provided');
   }

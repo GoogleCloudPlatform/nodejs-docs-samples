@@ -30,8 +30,8 @@ const MESSAGE = 'Hello, world!';
 
 describe('functions/pubsub', () => {
   const stubConsole = function () {
-    sinon.stub(console, `error`);
-    sinon.stub(console, `log`);
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
   };
 
   //Restore console

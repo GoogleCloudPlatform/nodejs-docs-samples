@@ -31,7 +31,7 @@ const FormData = require('form-data');
  * @param {!Object} data The Cloud Functions event data.
  * @returns {Promise}
  */
-exports.triggerDag = async (data) => {
+exports.triggerDag = async data => {
   // Fill in your Composer environment information here.
 
   // The project that holds your function

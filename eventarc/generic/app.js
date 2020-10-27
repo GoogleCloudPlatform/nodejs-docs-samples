@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.post('/', (req, res) => {
   console.log('Event received!');
-  
+
   console.log('HEADERS:');
   delete req.headers.Authorization; // do not log authorization header
   console.log(JSON.stringify(req.headers));

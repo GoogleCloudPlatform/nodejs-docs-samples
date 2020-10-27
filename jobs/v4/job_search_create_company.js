@@ -27,10 +27,11 @@ function sampleCreateCompany(projectId, tenantId, displayName, externalId) {
     parent: formattedParent,
     company: company,
   };
-  client.createCompany(request)
+  client
+    .createCompany(request)
     .then(responses => {
       const response = responses[0];
-      console.log(`Created Company`);
+      console.log('Created Company');
       console.log(`Name: ${response.name}`);
       console.log(`Display Name: ${response.displayName}`);
       console.log(`External ID: ${response.externalId}`);
@@ -40,28 +41,31 @@ function sampleCreateCompany(projectId, tenantId, displayName, externalId) {
     });
 }
 
-
 // [END job_search_create_company_core]
 // [END job_search_create_company]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('display_name', {
     default: 'My Company Name',
-    string: true
+    string: true,
   })
   .option('external_id', {
     default: 'Identifier of this company in my system',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
-sampleCreateCompany(argv.project_id, argv.tenant_id, argv.display_name, argv.external_id);
+sampleCreateCompany(
+  argv.project_id,
+  argv.tenant_id,
+  argv.display_name,
+  argv.external_id
+);

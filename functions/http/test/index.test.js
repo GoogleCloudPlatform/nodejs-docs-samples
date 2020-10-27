@@ -22,7 +22,7 @@ const uuid = require('uuid');
 const getSample = () => {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise((resolve) => resolve('test')));
+    .returns(new Promise(resolve => resolve('test')));
 
   return {
     sample: proxyquire('../', {
@@ -66,7 +66,7 @@ const getMocks = () => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
+  sinon.stub(console, 'error');
 };
 
 const restoreConsole = function () {

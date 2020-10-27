@@ -83,7 +83,7 @@ const {argv} = require('yargs')
     default: 'world',
     global: true,
   })
-  .check((argv) => {
+  .check(argv => {
     const valid = !!(argv.jwtAuthToken || argv.apiKey);
     if (!valid) {
       console.error('One of API_KEY or JWT_AUTH_TOKEN must be set.');
@@ -94,7 +94,7 @@ const {argv} = require('yargs')
   .help()
   .strict()
   .epilogue(
-    `For more information, see https://cloud.google.com/endpoints/docs`
+    'For more information, see https://cloud.google.com/endpoints/docs'
   );
 
 makeGrpcRequest(argv.jwtAuthToken, argv.apiKey, argv.host, argv.greetee);

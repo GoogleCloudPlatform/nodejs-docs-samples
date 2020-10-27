@@ -47,8 +47,8 @@ const main = (
         notificationConfigs: [
           {
             pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
-          }
-        ]
+          },
+        ],
       },
     };
 

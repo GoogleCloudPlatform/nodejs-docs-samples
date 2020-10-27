@@ -15,7 +15,7 @@
 'use strict';
 
 const express = require('express');
-const mssql = require('mssql')
+const mssql = require('mssql');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -44,7 +44,7 @@ const logger = winston.createLogger({
 // [START cloud_sql_server_mssql_create]
 // [START cloud_sql_sqlserver_mssql_create]
 const createPool = async () => {
-  let config = {pool: {}};
+  const config = {pool: {}};
   config.user = process.env.DB_USER; // e.g. 'my-db-user'
   config.password = process.env.DB_PASS; // e.g. 'my-db-password'
   config.database = process.env.DB_NAME; // e.g. 'my-database'
@@ -59,20 +59,20 @@ const createPool = async () => {
   // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
   // initial connection. After the specified amount of time, an exception will be thrown.
   config.connectionTimeout = 30000;
-  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a 
+  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
   // connection from the pool.
   config.pool.acquireTimeoutMillis = 30000;
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed
-  config.pool.idleTimeoutMillis = 600000,
-  // [END cloud_sql_sqlserver_mssql_timeout]
-  // [END cloud_sql_server_mssql_timeout]
+  (config.pool.idleTimeoutMillis = 600000),
+    // [END cloud_sql_sqlserver_mssql_timeout]
+    // [END cloud_sql_server_mssql_timeout]
 
-  // [START cloud_sql_server_mssql_limit]
-  // [START cloud_sql_sqlserver_mssql_limit]  
-  // 'max' limits the total number of concurrent connections this pool will keep. Ideal
-  // values for this setting are highly variable on app design, infrastructure, and database.
-  config.pool.max = 5;
+    // [START cloud_sql_server_mssql_limit]
+    // [START cloud_sql_sqlserver_mssql_limit]
+    // 'max' limits the total number of concurrent connections this pool will keep. Ideal
+    // values for this setting are highly variable on app design, infrastructure, and database.
+    (config.pool.max = 5);
   // 'min' is the minimum number of idle connections maintained in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
   config.pool.min = 1;
@@ -93,11 +93,10 @@ const createPool = async () => {
 // [END cloud_sql_sqlserver_mssql_create]
 // [END cloud_sql_server_mssql_create]
 
-const ensureSchema = async (pool) => {
+const ensureSchema = async pool => {
   // Wait for tables to be created (if they don't already exist).
-  await pool.request()
-    .query(
-      `IF NOT EXISTS (
+  await pool.request().query(
+    `IF NOT EXISTS (
         SELECT * FROM sysobjects WHERE name='votes' and xtype='U')
       CREATE TABLE votes (
         vote_id INT NOT NULL IDENTITY,
@@ -105,16 +104,16 @@ const ensureSchema = async (pool) => {
         candidate VARCHAR(6) NOT NULL,
         PRIMARY KEY (vote_id));`
   );
-  console.log(`Ensured that table 'votes' exists`);
+  console.log("Ensured that table 'votes' exists");
 };
 
 let pool;
 const poolPromise = createPool()
-  .then(async (pool) => {
+  .then(async pool => {
     await ensureSchema(pool);
     return pool;
   })
-  .catch((err) => {
+  .catch(err => {
     logger.error(err);
     process.exit(1);
   });
@@ -126,8 +125,7 @@ app.use(async (req, res, next) => {
   try {
     pool = await poolPromise;
     next();
-  }
-  catch (err) {
+  } catch (err) {
     logger.error(err);
     return next(err);
   }
@@ -135,27 +133,31 @@ app.use(async (req, res, next) => {
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res, next) => {
-  
   try {
-  // Get the 5 most recent votes.
-  const recentVotesQuery = pool.request().query(
-    'SELECT TOP(5) candidate, time_cast FROM votes ORDER BY time_cast DESC'
-  );
+    // Get the 5 most recent votes.
+    const recentVotesQuery = pool
+      .request()
+      .query(
+        'SELECT TOP(5) candidate, time_cast FROM votes ORDER BY time_cast DESC'
+      );
 
-  // Get votes
-  const stmt = 'SELECT COUNT(vote_id) as count FROM votes WHERE candidate=@candidate';
-  
-  const tabsQuery = pool.request()
-    .input('candidate', mssql.VarChar(6), 'TABS')
-    .query(stmt);
+    // Get votes
+    const stmt =
+      'SELECT COUNT(vote_id) as count FROM votes WHERE candidate=@candidate';
 
-  const spacesQuery = pool.request()
-    .input('candidate', mssql.VarChar(6), 'SPACES')
-    .query(stmt);
+    const tabsQuery = pool
+      .request()
+      .input('candidate', mssql.VarChar(6), 'TABS')
+      .query(stmt);
 
-  // Run queries concurrently, and wait for them to complete
-  // This is faster than await-ing each query object as it is created
-  
+    const spacesQuery = pool
+      .request()
+      .input('candidate', mssql.VarChar(6), 'SPACES')
+      .query(stmt);
+
+    // Run queries concurrently, and wait for them to complete
+    // This is faster than await-ing each query object as it is created
+
     const recentVotes = await recentVotesQuery;
     const tabsVotes = await tabsQuery;
     const spacesVotes = await spacesQuery;
@@ -165,8 +167,7 @@ app.get('/', async (req, res, next) => {
       tabCount: tabsVotes.recordset[0].count,
       spaceCount: spacesVotes.recordset[0].count,
     });
-  }
-  catch (err) {
+  } catch (err) {
     logger.error(err);
     res
       .status(500)
@@ -187,20 +188,21 @@ app.post('/', async (req, res, next) => {
   }
 
   // [START cloud_sql_server_mssql_connection]
-  // [START cloud_sql_sqlserver_mssql_connection]  
+  // [START cloud_sql_sqlserver_mssql_connection]
   try {
-    const stmt = 'INSERT INTO votes (time_cast, candidate) VALUES (@timestamp, @team)';
+    const stmt =
+      'INSERT INTO votes (time_cast, candidate) VALUES (@timestamp, @team)';
     // Using a prepared statement protects against SQL injection attacks.
-    // When prepare is called, a single connection is acquired from the connection pool 
+    // When prepare is called, a single connection is acquired from the connection pool
     // and all subsequent executions are executed exclusively on this connection.
     const ps = new mssql.PreparedStatement(pool);
-    ps.input('timestamp', mssql.DateTime)
-    ps.input('team', mssql.VarChar(6))
-    await ps.prepare(stmt)
+    ps.input('timestamp', mssql.DateTime);
+    ps.input('team', mssql.VarChar(6));
+    await ps.prepare(stmt);
     await ps.execute({
       timestamp: timestamp,
-      team: team
-    })
+      team: team,
+    });
     await ps.unprepare();
   } catch (err) {
     // If something goes wrong, handle the error in this section. This might
@@ -228,8 +230,8 @@ const server = app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 
-var environment = process.env.NODE_ENV || 'development';
-if (environment === `development`) {
+const environment = process.env.NODE_ENV || 'development';
+if (environment === 'development') {
   process.on('unhandledRejection', err => {
     console.error(err);
     process.exit(1);

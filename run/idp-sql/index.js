@@ -14,11 +14,11 @@
 
 const app = require('./app');
 const pkg = require('./package.json');
-const { logger } = require('./logging');
-const { initTracing } = require('./middleware');
-const { createTable, closeConnection } = require('./cloud-sql');
+const {logger} = require('./logging');
+const {initTracing} = require('./middleware');
+const {createTable, closeConnection} = require('./cloud-sql');
 
-const { GoogleAuth } = require('google-auth-library');
+const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
 const PORT = process.env.PORT || 8080;
@@ -49,7 +49,7 @@ process.on('SIGTERM', () => {
   logger.on('finish', () => {
     console.log(`${pkg.name}: logs flushed`);
     process.exit(0);
-  })
+  });
 });
 
 main();

@@ -2,7 +2,7 @@ firebase.initializeApp(config);
 
 // Watch for state change from sign in
 function initApp() {
-  firebase.auth().onAuthStateChanged(function(user) {
+  firebase.auth().onAuthStateChanged(user => {
     if (user) {
       // User is signed in.
       document.getElementById('signInButton').innerText = 'Sign Out';
@@ -14,29 +14,36 @@ function initApp() {
     }
   });
 }
-window.onload = function() {
+window.onload = function () {
   initApp();
-}
+};
 
 // [START run_end_user_firebase_sign_in]
 function signIn() {
-  var provider = new firebase.auth.GoogleAuthProvider();
+  const provider = new firebase.auth.GoogleAuthProvider();
   provider.addScope('https://www.googleapis.com/auth/userinfo.email');
-  firebase.auth().signInWithPopup(provider).then(function(result) {
-    // Returns the signed in user along with the provider's credential
-    console.log(`${result.user.displayName} logged in.`);
-    window.alert(`Welcome ${result.user.displayName}!`)
-  }).catch((err) => {
-    console.log(`Error during sign in: ${err.message}`)
-  });
+  firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then(result => {
+      // Returns the signed in user along with the provider's credential
+      console.log(`${result.user.displayName} logged in.`);
+      window.alert(`Welcome ${result.user.displayName}!`);
+    })
+    .catch(err => {
+      console.log(`Error during sign in: ${err.message}`);
+    });
 }
 // [END run_end_user_firebase_sign_in]
 
 function signOut() {
-  firebase.auth().signOut().then(function(result) {
-  }).catch((err) => {
-    console.log(`Error during sign out: ${err.message}`)
-  })
+  firebase
+    .auth()
+    .signOut()
+    .then(result => {})
+    .catch(err => {
+      console.log(`Error during sign out: ${err.message}`);
+    });
 }
 
 // Toggle Sign in/out button
@@ -60,7 +67,7 @@ async function vote(team) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: 'team=' + team, // send application data (vote)
       });

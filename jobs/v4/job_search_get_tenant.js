@@ -12,7 +12,8 @@ function sampleGetTenant(projectId, tenantId) {
   // const projectId = 'Your Google Cloud Project ID';
   // const tenantId = 'Your Tenant ID';
   const formattedName = client.tenantPath(projectId, tenantId);
-  client.getTenant({name: formattedName})
+  client
+    .getTenant({name: formattedName})
     .then(responses => {
       const response = responses[0];
       console.log(`Name: ${response.name}`);
@@ -23,20 +24,18 @@ function sampleGetTenant(projectId, tenantId) {
     });
 }
 
-
 // [END job_search_get_tenant_core]
 // [END job_search_get_tenant]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleGetTenant(argv.project_id, argv.tenant_id);

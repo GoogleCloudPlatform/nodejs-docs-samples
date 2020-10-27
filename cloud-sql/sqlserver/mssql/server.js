@@ -42,6 +42,7 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_server_mssql_create]
+// [START cloud_sql_sqlserver_mssql_create]
 const createPool = async () => {
   let config = {pool: {}};
   config.user = process.env.DB_USER; // e.g. 'my-db-user'
@@ -54,6 +55,7 @@ const createPool = async () => {
   // [START_EXCLUDE]
 
   // [START cloud_sql_server_mssql_timeout]
+  // [START cloud_sql_sqlserver_mssql_timeout]
   // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
   // initial connection. After the specified amount of time, an exception will be thrown.
   config.connectionTimeout = 30000;
@@ -63,26 +65,32 @@ const createPool = async () => {
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
   // and not be checked out before it is automatically closed
   config.pool.idleTimeoutMillis = 600000,
+  // [END cloud_sql_sqlserver_mssql_timeout]
   // [END cloud_sql_server_mssql_timeout]
 
   // [START cloud_sql_server_mssql_limit]
+  // [START cloud_sql_sqlserver_mssql_limit]  
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
   // values for this setting are highly variable on app design, infrastructure, and database.
   config.pool.max = 5;
   // 'min' is the minimum number of idle connections maintained in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
   config.pool.min = 1;
+  // [END cloud_sql_sqlserver_mssql_limit]
   // [END cloud_sql_server_mssql_limit]
 
   // [START cloud_sql_server_mssql_backoff]
+  // [START cloud_sql_sqlserver_mssql_backoff]
   // The node-mssql module uses a built-in retry strategy which does not implement backoff.
   // 'createRetryIntervalMillis' is the number of milliseconds to wait in between retries.
   config.pool.createRetryIntervalMillis = 200;
+  // [END cloud_sql_sqlserver_mssql_backoff]
   // [END cloud_sql_server_mssql_backoff]
 
   // [END_EXCLUDE]
   return await mssql.connect(config);
 };
+// [END cloud_sql_sqlserver_mssql_create]
 // [END cloud_sql_server_mssql_create]
 
 const ensureSchema = async (pool) => {
@@ -179,6 +187,7 @@ app.post('/', async (req, res, next) => {
   }
 
   // [START cloud_sql_server_mssql_connection]
+  // [START cloud_sql_sqlserver_mssql_connection]  
   try {
     const stmt = 'INSERT INTO votes (time_cast, candidate) VALUES (@timestamp, @team)';
     // Using a prepared statement protects against SQL injection attacks.
@@ -207,6 +216,7 @@ app.post('/', async (req, res, next) => {
       .end();
     // [END_EXCLUDE]
   }
+  // [END cloud_sql_sqlserver_mssql_connection]
   // [END cloud_sql_server_mssql_connection]
 
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();

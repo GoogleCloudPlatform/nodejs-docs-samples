@@ -112,7 +112,6 @@ const createPool = async () => {
   }
     
 };
-// [END cloud_sql_mysql_mysql_create]
 
 const ensureSchema = async (pool) => {
   // Wait for tables to be created (if they don't already exist).

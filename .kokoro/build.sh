@@ -47,6 +47,10 @@ export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GOOGLE_CLOUD_PROJECT
 export FUNCTIONS_DELETABLE_BUCKET=$GOOGLE_CLOUD_PROJECT-functions
 
+# functions/secret-rotation
+export SECRET_ID=rotate-example
+export SECRET_NAME=projects/$GOOGLE_CLOUD_PROJECT/secrets/$SECRET_ID
+
 #  functions/speech-to-speech
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
 

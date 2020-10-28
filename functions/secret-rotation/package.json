@@ -1,0 +1,28 @@
+{
+  "name": "nodejs-docs-samples-functions-secret-rotation",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "test": "mocha test/*.test.js --timeout=20000 --exit"
+  },
+  "dependencies": {
+    "@google-cloud/secret-manager": "^3.2.0"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^1.1.1",
+    "child-process-promise": "^2.2.1",
+    "mocha": "^8.0.0",
+    "request": "^2.88.0",
+    "requestretry": "^4.0.0",
+    "sinon": "^9.0.0"
+  }
+}

@@ -132,6 +132,7 @@ describe('functions/datastore', () => {
           key: NAME,
           value: VALUE,
         }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
       const body = await response.text();
@@ -163,6 +164,7 @@ describe('functions/datastore', () => {
           kind: KIND,
           key: 'nonexistent',
         }),
+        headers: {'Content-Type': 'application/json'},
         validateStatus: () => true,
       });
 
@@ -182,9 +184,10 @@ describe('functions/datastore', () => {
           kind: KIND,
           key: NAME,
         }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
-      const body = await response.text();
+      const body = await response.json();
       assert.deepStrictEqual(body, {
         description: 'Buy milk',
       });
@@ -279,6 +282,7 @@ describe('functions/datastore', () => {
           kind: KIND,
           key: 'nonexistent',
         }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
       const body = await response.text();
@@ -292,6 +296,7 @@ describe('functions/datastore', () => {
           kind: KIND,
           key: NAME,
         }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
       const body = await response.text();

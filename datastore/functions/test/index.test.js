@@ -18,7 +18,7 @@ const assert = require('assert');
 const path = require('path');
 const uuid = require('uuid');
 const sinon = require('sinon');
-const {request} = require('gaxios');
+const fetch = require('node-fetch');
 const isReachable = require('is-reachable');
 const execPromise = require('child-process-promise').exec;
 const {Datastore} = require('@google-cloud/datastore');
@@ -125,18 +125,18 @@ describe('functions/datastore', () => {
     });
 
     it('set: Saves an entity', async () => {
-      const response = await request({
-        url: `${BASE_URL}/set`,
+      const response = await fetch(`${BASE_URL}/set`,{
         method: 'POST',
-        responseType: 'text',
-        data: {
+        body: JSON.stringify({
           kind: KIND,
           key: NAME,
           value: VALUE,
-        },
+        }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
-      assert.ok(response.data.includes(`Entity ${KIND}/${NAME} saved`));
+      const body = await response.text();
+      assert.ok(body.includes(`Entity ${KIND}/${NAME} saved`));
     });
   });
 
@@ -158,36 +158,37 @@ describe('functions/datastore', () => {
     });
 
     it('get: Fails when entity does not exist', async () => {
-      const response = await request({
-        url: `${BASE_URL}/get`,
+      const response = await fetch(`${BASE_URL}/get`, {
         method: 'POST',
-        data: {
+        body: JSON.stringify({
           kind: KIND,
           key: 'nonexistent',
-        },
-        responseType: 'text',
+        }),
+        headers: {'Content-Type': 'application/json'},
         validateStatus: () => true,
       });
 
       assert.strictEqual(response.status, 500);
+      const body = await response.text();
       assert.ok(
         new RegExp(
           /(Missing or insufficient permissions.)|(No entity found for key)/
-        ).test(response.data)
+        ).test(body)
       );
     });
 
     it('get: Finds an entity', async () => {
-      const response = await request({
+      const response = await fetch(`${BASE_URL}/get`, {
         method: 'POST',
-        url: `${BASE_URL}/get`,
-        data: {
+        body: JSON.stringify({
           kind: KIND,
           key: NAME,
-        },
+        }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
-      assert.deepStrictEqual(response.data, {
+      const body = await response.json();
+      assert.deepStrictEqual(body, {
         description: 'Buy milk',
       });
     });
@@ -275,31 +276,31 @@ describe('functions/datastore', () => {
     });
 
     it("del: Doesn't fail when entity does not exist", async () => {
-      const response = await request({
+      const response = await fetch(`${BASE_URL}/del`, {
         method: 'POST',
-        url: `${BASE_URL}/del`,
-        data: {
+        body: JSON.stringify({
           kind: KIND,
           key: 'nonexistent',
-        },
-        responseType: 'text',
+        }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.data, `Entity ${KIND}/nonexistent deleted.`);
+      const body = await response.text();
+      assert.strictEqual(body, `Entity ${KIND}/nonexistent deleted.`);
     });
 
     it('del: Deletes an entity', async () => {
-      const response = await request({
+      const response = await fetch( `${BASE_URL}/del`,{
         method: 'POST',
-        url: `${BASE_URL}/del`,
-        data: {
+        body: JSON.stringify({
           kind: KIND,
           key: NAME,
-        },
-        responseType: 'text',
+        }),
+        headers: {'Content-Type': 'application/json'},
       });
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.data, `Entity ${KIND}/${NAME} deleted.`);
+      const body = await response.text();
+      assert.strictEqual(body, `Entity ${KIND}/${NAME} deleted.`);
 
       const key = datastore.key([KIND, NAME]);
       const [entity] = await datastore.get(key);

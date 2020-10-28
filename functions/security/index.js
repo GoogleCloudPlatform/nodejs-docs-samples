@@ -15,7 +15,7 @@
 'use strict';
 
 // [START functions_bearer_token]
-const {get} = require('axios');
+const fetch = require('node-fetch');
 
 // TODO(developer): set these values
 const REGION = 'us-central1';
@@ -31,19 +31,19 @@ const tokenUrl = metadataServerURL + functionURL;
 
 exports.callingFunction = async (req, res) => {
   // Fetch the token
-  const tokenResponse = await get(tokenUrl, {
+  const tokenResponse = await fetch(tokenUrl, {
     headers: {
       'Metadata-Flavor': 'Google',
     },
   });
-  const token = tokenResponse.data;
+  const token = await tokenResponse.text();
 
   // Provide the token in the request to the receiving function
   try {
-    const functionResponse = await get(functionURL, {
+    const functionResponse = await fetch(functionURL, {
       headers: {Authorization: `bearer ${token}`},
     });
-    res.status(200).send(functionResponse.data);
+    res.status(200).send(await functionResponse.text());
   } catch (err) {
     console.error(err);
     res.status(500).send('An error occurred! See logs for more details.');

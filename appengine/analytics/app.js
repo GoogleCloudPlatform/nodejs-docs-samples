@@ -16,7 +16,7 @@
 
 // [START gae_flex_analytics_track_event]
 const express = require('express');
-const axios = require('axios');
+const fetch = require('node-fetch');
 
 const app = express();
 app.enable('trust proxy');
@@ -46,7 +46,7 @@ const trackEvent = (category, action, label, value) => {
     ev: value,
   };
 
-  return axios.get('http://www.google-analytics.com/debug/collect', { params: data });
+  return fetch('http://www.google-analytics.com/debug/collect', { params: data });
 };
 
 app.get('/', async (req, res, next) => {

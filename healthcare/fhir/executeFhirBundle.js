@@ -48,7 +48,7 @@ function main(
     const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.executeBundle(
       request
     );
-    console.log(`FHIR bundle executed`);
+    console.log('FHIR bundle executed');
     console.log(resource.data);
   }
 

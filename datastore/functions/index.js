@@ -19,7 +19,7 @@ const {Datastore} = require('@google-cloud/datastore');
 // Instantiates a client
 const datastore = new Datastore();
 
-const makeErrorObj = (prop) => {
+const makeErrorObj = prop => {
   return new Error(
     `${prop} not provided. Make sure you have a "${prop.toLowerCase()}" property in your request`
   );
@@ -33,7 +33,7 @@ const makeErrorObj = (prop) => {
  * @param {string} requestData.kind Datastore kind.
  * @returns {object} Datastore key object.
  */
-const getKeyFromRequestData = (requestData) => {
+const getKeyFromRequestData = requestData => {
   if (!requestData.key) {
     return Promise.reject(makeErrorObj('Key'));
   }

@@ -29,11 +29,11 @@ const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 before(async () => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   await bucket.create(bucket).then(() => {
     return bucket.acl.add({
@@ -54,7 +54,7 @@ describe('gae_flex_storage_app', () => {
     await requestObj
       .get('/')
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         assert.strictEqual(
           new RegExp(/<input type="file" name="file">/).test(response.text),
           true
@@ -67,7 +67,7 @@ describe('gae_flex_storage_app', () => {
       .post('/upload')
       .attach('file', path.join(__dirname, 'resources/test.txt'))
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         assert.strictEqual(
           response.text,
           `https://storage.googleapis.com/${bucketName}/test.txt`

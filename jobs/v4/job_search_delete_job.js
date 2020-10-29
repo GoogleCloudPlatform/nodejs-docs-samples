@@ -16,27 +16,25 @@ function sampleDeleteJob(projectId, tenantId, jobId) {
   client.deleteJob({name: formattedName}).catch(err => {
     console.error(err);
   });
-  console.log(`Deleted job.`);
+  console.log('Deleted job.');
 }
-
 
 // [END job_search_delete_job_core]
 // [END job_search_delete_job]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('job_id', {
     default: 'Company ID',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleDeleteJob(argv.project_id, argv.tenant_id, argv.job_id);

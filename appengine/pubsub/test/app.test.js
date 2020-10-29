@@ -72,7 +72,7 @@ describe('gae_flex_pubsub_index', () => {
       .type('form')
       .send({payload: payload})
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         assert(new RegExp(/Message \d* sent/).test(response.text));
       });
   });
@@ -81,7 +81,7 @@ describe('gae_flex_pubsub_index', () => {
     await requestObj
       .get('/')
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         assert(
           new RegExp(/Messages received by this instance/).test(response.text)
         );
@@ -132,7 +132,7 @@ describe('gae_flex_pubsub_auth_push', () => {
     await requestObj
       .get('/')
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         assert(response.text.includes(payload));
       });
   });

@@ -31,11 +31,11 @@ describe('Unit Tests', () => {
   });
 
   describe('should fail', () => {
-    it(`on a Bad Request with an empty payload`, async () => {
+    it('on a Bad Request with an empty payload', async () => {
       await request.post('/').type('json').send('').expect(400);
     });
 
-    it(`on a Bad Request with an invalid payload`, async () => {
+    it('on a Bad Request with an invalid payload', async () => {
       await request
         .post('/')
         .type('json')
@@ -43,41 +43,41 @@ describe('Unit Tests', () => {
         .expect(400);
     });
 
-    it(`on a Bad Request with an invalid mimetype`, async () => {
+    it('on a Bad Request with an invalid mimetype', async () => {
       await request.post('/').type('text').send('{message: true}').expect(400);
     });
   });
 
   describe('should succeed', () => {
-    const data = Buffer.from('Events').toString(`base64`);
-    
-    it(`with empty Pub/Sub Message`, async () => {
+    const data = Buffer.from('Events').toString('base64');
+
+    it('with empty Pub/Sub Message', async () => {
       await request
         .post('/')
         .type('json')
         .send({message: {data: ''}})
-        .expect((res) => {
+        .expect(res => {
           assert.equal(res.text, 'Hello, World! ID: ');
         });
     });
 
-    it(`with a minimally valid Pub/Sub Message`, async () => {
+    it('with a minimally valid Pub/Sub Message', async () => {
       await request
         .post('/')
         .type('json')
         .send({message: {data}})
-        .expect((res) => {
+        .expect(res => {
           assert.equal(res.text, 'Hello, Events! ID: ');
         });
     });
 
-    it(`with CloudEvent HTTP headers`, async () => {
+    it('with CloudEvent HTTP headers', async () => {
       await request
         .post('/')
         .type('json')
         .set('ce-id', 1234)
         .send({message: {data}})
-        .expect((res) => {
+        .expect(res => {
           assert.equal(res.text, 'Hello, Events! ID: 1234');
         });
     });

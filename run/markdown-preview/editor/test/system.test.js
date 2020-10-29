@@ -27,15 +27,15 @@ describe('End-to-End Tests', () => {
       throw Error(
         '"BASE_URL" environment variable is required. For example: https://service-x8xabcdefg-uc.a.run.app'
       );
-    };
+    }
 
     it('Can successfully make a request', async () => {
       const options = {
         prefixUrl: BASE_URL.trim(),
         headers: {
-          Authorization: `Bearer ${ID_TOKEN.trim()}`
+          Authorization: `Bearer ${ID_TOKEN.trim()}`,
         },
-        retry: 3
+        retry: 3,
       };
       const response = await got('', options);
       assert.strictEqual(response.statusCode, 200);
@@ -46,18 +46,17 @@ describe('End-to-End Tests', () => {
         prefixUrl: BASE_URL.trim(),
         headers: {
           Authorization: `Bearer ${ID_TOKEN.trim()}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         method: 'POST',
-        json:  {
-          "data": "**markdown**"
+        json: {
+          data: '**markdown**',
         },
-        retry: 3
+        retry: 3,
       };
       const response = await got('render', options);
       assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(response.body, '<p><strong>markdown</strong></p>\n');
     });
   });
-
 });

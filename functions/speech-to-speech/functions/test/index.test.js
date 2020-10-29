@@ -40,7 +40,7 @@ describe('speechTranslate tests', () => {
   let ffProc;
   before(() => {
     ffProc = execPromise(
-      `functions-framework --target=speechTranslate --signature-type=http`,
+      'functions-framework --target=speechTranslate --signature-type=http',
       {timeout: 8000, shell: true, cwd}
     );
   });
@@ -203,7 +203,7 @@ describe('speechTranslate tests', () => {
         assert.strictEqual(response.statusCode, 200);
 
         // Test transcription
-        response.body.translations.forEach((translation) => {
+        response.body.translations.forEach(translation => {
           assert.ifError(translation.error);
         });
         assert.strictEqual(

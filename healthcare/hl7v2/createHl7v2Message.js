@@ -51,7 +51,7 @@ const main = (
       request
     );
     const {data} = response;
-    console.log(`Created HL7v2 message with data:\n`, data);
+    console.log('Created HL7v2 message with data:\n', data);
   };
 
   createHl7v2Message();

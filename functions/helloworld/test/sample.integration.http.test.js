@@ -70,6 +70,6 @@ describe('functions_helloworld_http HTTP integration test', () => {
     });
 
     assert.strictEqual(response.statusCode, 200);
-    assert.strictEqual(response.body, `Hello World!`);
+    assert.strictEqual(response.body, 'Hello World!');
   });
 });

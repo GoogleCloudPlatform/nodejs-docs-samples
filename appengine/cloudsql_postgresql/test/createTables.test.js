@@ -57,8 +57,8 @@ const getSample = () => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 const restoreConsole = function () {
@@ -72,7 +72,7 @@ afterEach(restoreConsole);
 describe('gae_flex_postgres_create_tables', () => {
   it('should create a table', async () => {
     const sample = getSample();
-    const expectedResult = `Successfully created 'visits' table.`;
+    const expectedResult = "Successfully created 'visits' table.";
 
     proxyquire(SAMPLE_PATH, {
       knex: sample.mocks.Knex,
@@ -86,7 +86,7 @@ describe('gae_flex_postgres_create_tables', () => {
       exampleConfig
     );
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, 10));
     assert.ok(sample.mocks.Knex.calledOnce);
     assert.deepStrictEqual(sample.mocks.Knex.firstCall.args, [
       {
@@ -115,7 +115,7 @@ describe('gae_flex_postgres_create_tables', () => {
       prompt: sample.mocks.prompt,
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, 10));
     assert.ok(console.error.calledOnce);
     assert.ok(console.error.calledWith(error));
     assert.ok(sample.mocks.Knex.notCalled);
@@ -133,10 +133,10 @@ describe('gae_flex_postgres_create_tables', () => {
       prompt: sample.mocks.prompt,
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, 10));
     assert.ok(console.error.calledOnce);
     assert.ok(
-      console.error.calledWith(`Failed to create 'visits' table:`, error)
+      console.error.calledWith("Failed to create 'visits' table:", error)
     );
     assert.ok(sample.mocks.knex.destroy.calledOnce);
   });

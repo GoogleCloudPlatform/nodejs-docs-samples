@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { logger } = require('./logging'); // Import winston logger instance
+const {logger} = require('./logging'); // Import winston logger instance
 
 // [START run_user_auth_jwt]
 const firebase = require('firebase-admin');
@@ -26,25 +26,28 @@ const authenticateJWT = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     // If the provided ID token has the correct format, is not expired, and is
     // properly signed, the method returns the decoded ID token
-    firebase.auth().verifyIdToken(token).then(function(decodedToken) {
-      let uid = decodedToken.uid;
-      req.uid = uid;
-      next();
-    }).catch((err) => {
-      req.logger.error(`Error with authentication: ${err}`);
-      return res.sendStatus(403);
-    });
+    firebase
+      .auth()
+      .verifyIdToken(token)
+      .then(decodedToken => {
+        const uid = decodedToken.uid;
+        req.uid = uid;
+        next();
+      })
+      .catch(err => {
+        req.logger.error(`Error with authentication: ${err}`);
+        return res.sendStatus(403);
+      });
   } else {
     return res.sendStatus(401);
   }
-}
+};
 // [END run_user_auth_jwt]
 
-
 let project;
-const initTracing = (projectId) => {
+const initTracing = projectId => {
   project = projectId;
-}
+};
 
 // Add logging field with trace ID for logging correlation
 // For more info, see https://cloud.google.com/run/docs/logging#correlate-logs
@@ -52,15 +55,15 @@ const requestLogger = (req, res, next) => {
   const traceHeader = req.header('X-Cloud-Trace-Context');
   let trace;
   if (traceHeader) {
-    const [traceId] = traceHeader.split("/");
+    const [traceId] = traceHeader.split('/');
     trace = `projects/${project}/traces/${traceId}`;
   }
   req.logger = logger.child({'logging.googleapis.com/trace': trace});
   next();
-}
+};
 
 module.exports = {
   authenticateJWT,
   requestLogger,
-  initTracing
-}
+  initTracing,
+};

@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { logger } = require('./logging');
+const {logger} = require('./logging');
 
 // CLOUD_SQL_CREDENTIALS_SECRET is the resource ID of the secret, passed in by environment variable.
 // Format: projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION
 const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
-
 
 // [START run_user_auth_secrets]
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
@@ -43,24 +42,29 @@ async function getCredConfig() {
       // to retreive database credentials
       return JSON.parse(secrets.toString('utf8'));
     } catch (err) {
-      throw Error(`Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: ${err}`)
+      throw Error(
+        `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: ${err}`
+      );
     }
   } else {
-    logger.info('CLOUD_SQL_CREDENTIALS_SECRET env var not set. Defaulting to environment variables.');
+    logger.info(
+      'CLOUD_SQL_CREDENTIALS_SECRET env var not set. Defaulting to environment variables.'
+    );
     if (!process.env.DB_USER) throw Error('DB_USER needs to be set.');
     if (!process.env.DB_PASSWORD) throw Error('DB_PASSWORD needs to be set.');
     if (!process.env.DB_NAME) throw Error('DB_NAME needs to be set.');
-    if (!process.env.CLOUD_SQL_CONNECTION_NAME) throw Error('CLOUD_SQL_CONNECTION_NAME needs to be set.');
+    if (!process.env.CLOUD_SQL_CONNECTION_NAME)
+      throw Error('CLOUD_SQL_CONNECTION_NAME needs to be set.');
 
     return {
       DB_USER: process.env.DB_USER,
       DB_PASSWORD: process.env.DB_PASSWORD,
       DB_NAME: process.env.DB_NAME,
-      CLOUD_SQL_CONNECTION_NAME: process.env.CLOUD_SQL_CONNECTION_NAME
-    }
+      CLOUD_SQL_CONNECTION_NAME: process.env.CLOUD_SQL_CONNECTION_NAME,
+    };
   }
 }
 
 module.exports = {
-  getCredConfig
-}
+  getCredConfig,
+};

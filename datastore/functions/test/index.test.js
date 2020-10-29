@@ -125,7 +125,7 @@ describe('functions/datastore', () => {
     });
 
     it('set: Saves an entity', async () => {
-      const response = await fetch(`${BASE_URL}/set`,{
+      const response = await fetch(`${BASE_URL}/set`, {
         method: 'POST',
         body: JSON.stringify({
           kind: KIND,
@@ -290,7 +290,7 @@ describe('functions/datastore', () => {
     });
 
     it('del: Deletes an entity', async () => {
-      const response = await fetch( `${BASE_URL}/del`,{
+      const response = await fetch(`${BASE_URL}/del`, {
         method: 'POST',
         body: JSON.stringify({
           kind: KIND,

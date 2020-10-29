@@ -33,6 +33,6 @@
     "mocha": "^8.0.0",
     "short-uuid": "^4.1.0",
     "sinon": "^9.2.0",
-    "supertest": "^4.0.0"
+    "supertest": "^6.0.0"
   }
 }

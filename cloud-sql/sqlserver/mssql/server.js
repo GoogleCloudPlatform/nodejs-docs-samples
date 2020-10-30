@@ -124,7 +124,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-app.get('/', async (req, res, next) => {
+app.get('/', async (req, res) => {
   try {
     // Get the 5 most recent votes.
     const recentVotesQuery = pool
@@ -171,7 +171,7 @@ app.get('/', async (req, res, next) => {
 });
 
 // Handle incoming vote requests and inserting them into the database.
-app.post('/', async (req, res, next) => {
+app.post('/', async (req, res) => {
   const {team} = req.body;
   const timestamp = new Date();
 

@@ -17,7 +17,6 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
-const uuid = require('uuid');
 
 const getSample = () => {
   const requestPromise = sinon

@@ -41,7 +41,6 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
-// [START cloud_sql_server_mssql_create]
 // [START cloud_sql_sqlserver_mssql_create]
 const createPool = async () => {
   const config = {pool: {}};
@@ -54,7 +53,6 @@ const createPool = async () => {
 
   // [START_EXCLUDE]
 
-  // [START cloud_sql_server_mssql_timeout]
   // [START cloud_sql_sqlserver_mssql_timeout]
   // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
   // initial connection. After the specified amount of time, an exception will be thrown.
@@ -66,9 +64,7 @@ const createPool = async () => {
   // and not be checked out before it is automatically closed
   (config.pool.idleTimeoutMillis = 600000),
     // [END cloud_sql_sqlserver_mssql_timeout]
-    // [END cloud_sql_server_mssql_timeout]
 
-    // [START cloud_sql_server_mssql_limit]
     // [START cloud_sql_sqlserver_mssql_limit]
     // 'max' limits the total number of concurrent connections this pool will keep. Ideal
     // values for this setting are highly variable on app design, infrastructure, and database.
@@ -77,21 +73,17 @@ const createPool = async () => {
   // Additional connections will be established to meet this value unless the pool is full.
   config.pool.min = 1;
   // [END cloud_sql_sqlserver_mssql_limit]
-  // [END cloud_sql_server_mssql_limit]
 
-  // [START cloud_sql_server_mssql_backoff]
   // [START cloud_sql_sqlserver_mssql_backoff]
   // The node-mssql module uses a built-in retry strategy which does not implement backoff.
   // 'createRetryIntervalMillis' is the number of milliseconds to wait in between retries.
   config.pool.createRetryIntervalMillis = 200;
   // [END cloud_sql_sqlserver_mssql_backoff]
-  // [END cloud_sql_server_mssql_backoff]
 
   // [END_EXCLUDE]
   return await mssql.connect(config);
 };
 // [END cloud_sql_sqlserver_mssql_create]
-// [END cloud_sql_server_mssql_create]
 
 const ensureSchema = async pool => {
   // Wait for tables to be created (if they don't already exist).
@@ -187,7 +179,6 @@ app.post('/', async (req, res, next) => {
     return res.status(400).send('Invalid team specified.').end();
   }
 
-  // [START cloud_sql_server_mssql_connection]
   // [START cloud_sql_sqlserver_mssql_connection]
   try {
     const stmt =
@@ -219,7 +210,6 @@ app.post('/', async (req, res, next) => {
     // [END_EXCLUDE]
   }
   // [END cloud_sql_sqlserver_mssql_connection]
-  // [END cloud_sql_server_mssql_connection]
 
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });

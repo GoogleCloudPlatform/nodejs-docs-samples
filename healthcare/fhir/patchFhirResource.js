@@ -51,9 +51,7 @@ function main(
       requestBody: patchOptions,
     };
 
-    const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.patch(
-      request
-    );
+    await healthcare.projects.locations.datasets.fhirStores.fhir.patch(request);
     console.log(`Patched ${resourceType} resource`);
   }
 

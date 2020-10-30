@@ -32,7 +32,7 @@ const getSample = () => {
 
   return {
     sample: proxyquire('../', {
-      "node-fetch": fetchMock,
+      'node-fetch': fetchMock,
     }),
     mocks: {
       res: resMock,

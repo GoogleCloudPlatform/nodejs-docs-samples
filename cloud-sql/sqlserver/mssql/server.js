@@ -107,7 +107,7 @@ const poolPromise = createPool()
   })
   .catch(err => {
     logger.error(err);
-    process.exit(1);
+    throw err;
   });
 
 app.use(async (req, res, next) => {
@@ -224,7 +224,7 @@ const environment = process.env.NODE_ENV || 'development';
 if (environment === 'development') {
   process.on('unhandledRejection', err => {
     console.error(err);
-    process.exit(1);
+    throw err;
   });
 }
 

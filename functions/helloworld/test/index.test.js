@@ -57,11 +57,11 @@ describe('index.test.js', () => {
   before(() => {
     assert(
       process.env.GOOGLE_CLOUD_PROJECT,
-      `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+      'Must set GOOGLE_CLOUD_PROJECT environment variable!'
     );
     assert(
       process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+      'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
     );
   });
 

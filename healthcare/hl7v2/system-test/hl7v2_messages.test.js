@@ -39,18 +39,16 @@ const installDeps = 'npm install';
 // Run npm install on datasets directory because modalities
 // require bootstrapping datasets, and Kokoro needs to know
 // to install dependencies from the datasets directory.
-assert.ok(
-  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
-);
+assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
 
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
     cwd: cwdDatasets,

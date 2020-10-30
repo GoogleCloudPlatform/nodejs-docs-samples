@@ -43,7 +43,7 @@ const getSample = () => {
   return {
     program: proxyquire('../', {
       googleapis: {google: googleapis},
-      process: { env: config },
+      process: {env: config},
       '@slack/events-api': eventsApi,
     }),
     mocks: {
@@ -88,8 +88,8 @@ const getMocks = () => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 //Restore console

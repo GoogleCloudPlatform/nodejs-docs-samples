@@ -45,9 +45,9 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_postgres_knex_create_tcp]
-const connectWithTcp = (config) => {
+const connectWithTcp = config => {
   // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(":") // e.g. '127.0.0.1:5432'
+  const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
 
   // Establish a connection to the database
   return Knex({
@@ -60,14 +60,14 @@ const connectWithTcp = (config) => {
       port: dbSocketAddr[1], // e.g. '5432'
     },
     // ... Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_postgres_knex_create_tcp]
 
 // [START cloud_sql_postgres_knex_create_socket]
-const connectWithUnixSockets = (config) => {
-  const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
+const connectWithUnixSockets = config => {
+  const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
 
   // Establish a connection to the database
   return Knex({
@@ -79,9 +79,9 @@ const connectWithUnixSockets = (config) => {
       host: `${dbSocketPath}/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
     },
     // ... Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_postgres_knex_create_socket]
 
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
@@ -89,7 +89,7 @@ const connect = () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
-  let config = {pool: {}};
+  const config = {pool: {}};
 
   // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
@@ -101,16 +101,16 @@ const connect = () => {
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
-  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a 
-  // connection from the pool. This is slightly different from connectionTimeout, because acquiring 
+  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
+  // connection from the pool. This is slightly different from connectionTimeout, because acquiring
   // a pool connection does not always involve making a new connection, and may include multiple retries.
   // when making a connection
   config.pool.acquireTimeoutMillis = 60000; // 60 seconds
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
-  // initial connection before retrying. 
+  // initial connection before retrying.
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
   config.createTimeoutMillis = 30000; // 30 seconds
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
   config.idleTimeoutMillis = 600000; // 10 minutes
   // [END cloud_sql_postgres_knex_timeout]
@@ -155,7 +155,7 @@ const insertVote = async (knex, vote) => {
  * @param {object} knex The Knex connection object.
  * @returns {Promise}
  */
-const getVotes = async (knex) => {
+const getVotes = async knex => {
   return await knex
     .select('candidate', 'time_cast')
     .from('votes')
@@ -211,14 +211,12 @@ app.get('/', async (req, res) => {
       voteDiff: voteDiff,
       leaderMessage: leaderMessage,
     });
-  }
-  catch(err) {
+  } catch (err) {
     res
       .status(500)
       .send('Unable to load page; see logs for more details.')
       .end();
   }
-    
 });
 
 app.post('/', async (req, res) => {

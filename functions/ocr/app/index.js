@@ -60,7 +60,7 @@ const detectText = async (bucketName, filename) => {
   );
   const [annotation] = textDetections.textAnnotations;
   const text = annotation ? annotation.description : '';
-  console.log(`Extracted text from image:`, text);
+  console.log('Extracted text from image:', text);
 
   let [translateDetection] = await translate.detect(text);
   if (Array.isArray(translateDetection)) {
@@ -74,7 +74,7 @@ const detectText = async (bucketName, filename) => {
   const TO_LANGS = process.env.TO_LANG.split(',');
   const topicName = process.env.TRANSLATE_TOPIC;
 
-  const tasks = TO_LANGS.map((lang) => {
+  const tasks = TO_LANGS.map(lang => {
     const messageData = {
       text: text,
       filename: filename,
@@ -110,7 +110,7 @@ const renameImageForSave = (filename, lang) => {
  *
  * @param {object} event A Google Cloud Storage File object.
  */
-exports.processImage = async (event) => {
+exports.processImage = async event => {
   const {bucket, name} = event;
 
   if (!bucket) {
@@ -140,7 +140,7 @@ exports.processImage = async (event) => {
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.translateText = async (event) => {
+exports.translateText = async event => {
   const pubsubData = event.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);
@@ -164,7 +164,7 @@ exports.translateText = async (event) => {
   console.log(`Translating text into ${lang}`);
   const [translation] = await translate.translate(text, lang);
 
-  console.log(`Translated text:`, translation);
+  console.log('Translated text:', translation);
 
   const messageData = {
     text: translation,
@@ -188,7 +188,7 @@ exports.translateText = async (event) => {
  * @param {string} {messageObject}.data The "data" property of the Cloud Pub/Sub
  * Message. This property will be a base64-encoded string that you must decode.
  */
-exports.saveResult = async (event) => {
+exports.saveResult = async event => {
   const pubsubData = event.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);
@@ -218,6 +218,6 @@ exports.saveResult = async (event) => {
   console.log(`Saving result to ${newFilename} in bucket ${bucketName}`);
 
   await file.save(text);
-  console.log(`File saved.`);
+  console.log('File saved.');
 };
 // [END functions_ocr_save]

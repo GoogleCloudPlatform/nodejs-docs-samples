@@ -145,11 +145,11 @@ const getMocks = () => {
 };
 const stubConsole = function () {
   if (
-    typeof console.log.restore !== `function` &&
-    typeof console.error.restore !== `function`
+    typeof console.log.restore !== 'function' &&
+    typeof console.error.restore !== 'function'
   ) {
-    sinon.stub(console, `error`);
-    sinon.stub(console, `log`);
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
   }
 };
 

@@ -39,7 +39,7 @@ const getSample = () => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
+  sinon.stub(console, 'error');
 };
 
 const restoreConsole = function () {
@@ -49,35 +49,35 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-it(`sets up the sample`, (done) => {
+it('sets up the sample', done => {
   const sample = getSample();
 
   assert.ok(sample.mocks.express.calledOnce);
   done();
 });
 
-it(`should echo a message`, async () => {
+it('should echo a message', async () => {
   const sample = getSample();
   await request(sample.app)
     .post('/echo')
     .send({message: 'foo'})
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       assert.strictEqual(response.body.message, 'foo');
     });
 });
 
-it(`should try to parse encoded info`, async () => {
+it('should try to parse encoded info', async () => {
   const sample = getSample();
   await request(sample.app)
     .get('/auth/info/googlejwt')
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       assert.deepStrictEqual(response.body, {id: 'anonymous'});
     });
 });
 
-it(`should successfully parse encoded info`, async () => {
+it('should successfully parse encoded info', async () => {
   const sample = getSample();
   await request(sample.app)
     .get('/auth/info/googlejwt')
@@ -86,7 +86,7 @@ it(`should successfully parse encoded info`, async () => {
       Buffer.from(JSON.stringify({id: 'foo'})).toString('base64')
     )
     .expect(200)
-    .expect((response) => {
+    .expect(response => {
       assert.deepStrictEqual(response.body, {id: 'foo'});
     });
 });

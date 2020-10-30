@@ -46,7 +46,9 @@ const trackEvent = (category, action, label, value) => {
     ev: value,
   };
 
-  return fetch('http://www.google-analytics.com/debug/collect', { params: data });
+  return axios.get('http://www.google-analytics.com/debug/collect', {
+    params: data,
+  });
 };
 
 app.get('/', async (req, res, next) => {

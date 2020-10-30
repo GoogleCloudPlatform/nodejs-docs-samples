@@ -22,7 +22,7 @@ const {exec} = require('child_process');
 const cwd = path.join(__dirname, '..');
 
 const {DB_USER, DB_PASS, DB_NAME, CONNECTION_NAME, DB_HOST} = process.env;
-const SOCKET_PATH = process.env.DB_SOCKET_PATH || "/cloudsql"
+const SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
 
 before(async () => {
   const connection = {
@@ -32,7 +32,7 @@ before(async () => {
   };
 
   if (DB_HOST) {
-    const dbSocketAddr = process.env.DB_HOST.split(":");
+    const dbSocketAddr = process.env.DB_HOST.split(':');
     connection.host = dbSocketAddr[0];
     connection.port = dbSocketAddr[1];
   } else {
@@ -50,18 +50,18 @@ before(async () => {
   }
 });
 
-it('should create a table', (done) => {
+it('should create a table', done => {
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} ${DB_HOST}`,
     {cwd},
     (err, stdout) => {
-      assert.ok(stdout.includes(`Successfully created 'votes' table.`));
+      assert.ok(stdout.includes("Successfully created 'votes' table."));
       done();
     }
   );
 });
 
-it('should handle existing tables', (done) => {
+it('should handle existing tables', done => {
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} ${DB_HOST}`,
     {cwd},

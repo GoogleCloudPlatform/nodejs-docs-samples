@@ -62,8 +62,8 @@ describe('End-to-End Tests', () => {
       );
       assert.strictEqual(
         response.body,
-        `Hello World!`,
-        `Expected fallback "World" not found`
+        'Hello World!',
+        'Expected fallback "World" not found'
       );
     });
   });

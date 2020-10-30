@@ -35,8 +35,8 @@ const errorMsg = (name, propertyName) => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 const restoreConsole = function () {
@@ -71,7 +71,7 @@ describe('processImage', () => {
         console.log.calledWith(`Detected language "en" for ${filename}`)
       );
       assert.ok(
-        console.log.calledWith(`Extracted text from image:`, `${text}\n`)
+        console.log.calledWith('Extracted text from image:', `${text}\n`)
       );
       assert.ok(
         console.log.calledWith(`Detected language "en" for ${filename}`)

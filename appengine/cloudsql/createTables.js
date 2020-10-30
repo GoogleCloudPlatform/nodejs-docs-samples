@@ -34,15 +34,15 @@ prompt.get(FIELDS, async (err, config) => {
 
   // Create the "visits" table
   try {
-    await knex.schema.createTable('visits', (table) => {
+    await knex.schema.createTable('visits', table => {
       table.increments();
       table.timestamp('timestamp');
       table.string('userIp');
     });
 
-    console.log(`Successfully created 'visits' table.`);
+    console.log("Successfully created 'visits' table.");
   } catch (err) {
-    console.error(`Failed to create 'visits' table:`, err);
+    console.error("Failed to create 'visits' table:", err);
   } finally {
     if (knex) {
       knex.destroy();

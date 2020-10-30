@@ -70,13 +70,13 @@ exports.speechTranslate = functions.https.onRequest(
       // The data object contains one or more recognition
       // alternatives ordered by accuracy.
       const transcription = sttResponse.results
-        .map((result) => result.alternatives[0].transcript)
+        .map(result => result.alternatives[0].transcript)
         .join('\n');
       responseBody.transcription = transcription;
       responseBody.gcsBucket = outputBucket;
 
       const translations = [];
-      supportedLanguageCodes.forEach(async (languageCode) => {
+      supportedLanguageCodes.forEach(async languageCode => {
         const translation = {languageCode: languageCode};
         const outputFilename =
           request.body.outputFilename ||
@@ -181,7 +181,7 @@ const uploadToCloudStorage = (path, contents) => {
 // [END upload_to_cloud_storage]
 
 // [START validate_request]
-const validateRequest = (request) => {
+const validateRequest = request => {
   return new Promise((resolve, reject) => {
     if (!request.body.encoding) {
       reject(new Error('Invalid encoding.'));

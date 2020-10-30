@@ -24,9 +24,9 @@ const storagetransfer = google.storagetransfer('v1');
 // [END setup]
 
 // [START auth]
-const auth = async (callback) => {
+const auth = async callback => {
   const authClient = await google.auth.getClient({
-    scopes: ['https://www.googleapis.com/auth/cloud-platform']
+    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
   });
 
   callback(authClient);
@@ -49,7 +49,7 @@ const createTransferJob = (options, callback) => {
   const startDate = moment(options.date, 'YYYY/MM/DD');
   const transferTime = moment(options.time, 'HH:mm');
 
-  auth((authClient) => {
+  auth(authClient => {
     const transferJob = {
       projectId: process.env.GOOGLE_CLOUD_PROJECT,
       status: 'ENABLED',
@@ -107,7 +107,7 @@ const createTransferJob = (options, callback) => {
  * @param {function} callback The callback function.
  */
 const getTransferJob = (jobName, callback) => {
-  auth((authClient) => {
+  auth(authClient => {
     storagetransfer.transferJobs.get(
       {
         auth: authClient,
@@ -139,7 +139,7 @@ const getTransferJob = (jobName, callback) => {
  * @param {function} callback The callback function.
  */
 const updateTransferJob = (options, callback) => {
-  auth((authClient) => {
+  auth(authClient => {
     const patchRequest = {
       projectId: process.env.GOOGLE_CLOUD_PROJECT,
       transferJob: {
@@ -182,8 +182,8 @@ const updateTransferJob = (options, callback) => {
  *
  * @param {function} callback The callback function.
  */
-const listTransferJobs = (callback) => {
-  auth((authClient) => {
+const listTransferJobs = callback => {
+  auth(authClient => {
     storagetransfer.transferJobs.list(
       {
         auth: authClient,
@@ -212,7 +212,7 @@ const listTransferJobs = (callback) => {
  * @param {function} callback The callback function.
  */
 const listTransferOperations = (jobName, callback) => {
-  auth((authClient) => {
+  auth(authClient => {
     const filter = {
       project_id: process.env.GOOGLE_CLOUD_PROJECT,
     };
@@ -250,7 +250,7 @@ const listTransferOperations = (jobName, callback) => {
  * @param {function} callback The callback function.
  */
 const getTransferOperation = (transferOperationName, callback) => {
-  auth((authClient) => {
+  auth(authClient => {
     storagetransfer.transferOperations.get(
       {
         name: transferOperationName,
@@ -278,13 +278,13 @@ const getTransferOperation = (transferOperationName, callback) => {
  * @param {function} callback The callback function.
  */
 const pauseTransferOperation = (transferOperationName, callback) => {
-  auth((authClient) => {
+  auth(authClient => {
     storagetransfer.transferOperations.pause(
       {
         name: transferOperationName,
         auth: authClient,
       },
-      (err) => {
+      err => {
         if (err) {
           return callback(err);
         }
@@ -305,13 +305,13 @@ const pauseTransferOperation = (transferOperationName, callback) => {
  * @param {function} callback The callback function.
  */
 const resumeTransferOperation = (transferOperationName, callback) => {
-  auth((authClient) => {
+  auth(authClient => {
     storagetransfer.transferOperations.resume(
       {
         name: transferOperationName,
         auth: authClient,
       },
-      (err) => {
+      err => {
         if (err) {
           return callback(err);
         }
@@ -337,7 +337,7 @@ const program = (module.exports = {
   getTransferOperation: getTransferOperation,
   pauseTransferOperation: pauseTransferOperation,
   resumeTransferOperation: resumeTransferOperation,
-  main: (args) => {
+  main: args => {
     // Run the command-line program
     cli.help().strict().parse(args).argv; // eslint-disable-line
   },
@@ -348,14 +348,14 @@ cli
   .command(
     'jobs <cmd> [args]',
     'Run a job command.',
-    (yargs) => {
+    yargs => {
       yargs
         .demand(2)
         .command(
           'create <srcBucket> <destBucket> <time> <date> [description]',
           'Create a transfer job.',
           {},
-          (opts) => {
+          opts => {
             program.createTransferJob(
               {
                 srcBucket: opts.srcBucket,
@@ -368,7 +368,7 @@ cli
             );
           }
         )
-        .command('get <job>', 'Get a transfer job.', {}, (opts) => {
+        .command('get <job>', 'Get a transfer job.', {}, opts => {
           program.getTransferJob(opts.job, console.log);
         })
         .command('list', 'List transfer jobs.', {}, () => {
@@ -378,7 +378,7 @@ cli
           'set <job> <field> <value>',
           'Change the status, description or transferSpec of a transfer job.',
           {},
-          (opts) => {
+          opts => {
             program.updateTransferJob(
               {
                 job: opts.job,
@@ -413,25 +413,25 @@ cli
   .command(
     'operations <cmd> [args]',
     'Run an operation command.',
-    (yargs) => {
+    yargs => {
       yargs
         .demand(2)
         .command(
           'list [job]',
           'List transfer operations, optionally filtering by a job name.',
           {},
-          (opts) => {
+          opts => {
             program.listTransferOperations(opts.job, console.log);
           }
         )
-        .command('get <operation>', 'Get a transfer operation.', {}, (opts) => {
+        .command('get <operation>', 'Get a transfer operation.', {}, opts => {
           program.getTransferOperation(opts.operation, console.log);
         })
         .command(
           'pause <operation>',
           'Pause a transfer operation.',
           {},
-          (opts) => {
+          opts => {
             program.pauseTransferOperation(opts.operation, console.log);
           }
         )
@@ -439,7 +439,7 @@ cli
           'resume <operation>',
           'Resume a transfer operation.',
           {},
-          (opts) => {
+          opts => {
             program.resumeTransferOperation(opts.operation, console.log);
           }
         )

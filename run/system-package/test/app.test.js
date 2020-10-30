@@ -24,41 +24,41 @@ describe('Unit Tests', () => {
   describe('should fail', () => {
     const errorContentType = 'text/html; charset=utf-8';
 
-    it(`should fail on a Bad Request with an empty query string`, async () => {
+    it('should fail on a Bad Request with an empty query string', async () => {
       await request
         .get('/diagram.png')
         .type('text')
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect((res) => {
+        .expect(res => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }
         });
     });
 
-    it(`should fail on a Bad Request with an empty dot parameter`, async () => {
+    it('should fail on a Bad Request with an empty dot parameter', async () => {
       await request
         .get('/diagram.png')
         .type('text')
         .query({dot: ''})
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect((res) => {
+        .expect(res => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }
         });
     });
 
-    it(`should fail on a Bad Request with an invalid payload`, async () => {
+    it('should fail on a Bad Request with an invalid payload', async () => {
       await request
-        .get(`/diagram.png`)
+        .get('/diagram.png')
         .type('text')
-        .query({dot: `digraph`})
+        .query({dot: 'digraph'})
         .expect(400)
         .expect('Content-Type', errorContentType)
-        .expect((res) => {
+        .expect(res => {
           if (res.headers['cache-control']) {
             throw new Error('Found cache header on uncached response');
           }
@@ -67,11 +67,11 @@ describe('Unit Tests', () => {
   });
 
   describe('should succeed', () => {
-    it(`should succeed with a valid DOT description`, async () => {
+    it('should succeed with a valid DOT description', async () => {
       await request
-        .get(`/diagram.png`)
-        .type(`text`)
-        .query({dot: `digraph G { A -> {B, C, D} -> {F} }`})
+        .get('/diagram.png')
+        .type('text')
+        .query({dot: 'digraph G { A -> {B, C, D} -> {F} }'})
         .expect(200)
         .expect('Content-Type', 'image/png')
         .expect('Cache-Control', 'public, max-age=86400');

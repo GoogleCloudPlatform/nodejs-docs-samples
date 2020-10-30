@@ -36,7 +36,7 @@ describe('system tests', () => {
     await topic.publish(Buffer.from(name));
 
     // Wait for logs to become consistent
-    await promiseRetry((retry) => {
+    await promiseRetry(retry => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
         .toString();
@@ -59,13 +59,13 @@ describe('system tests', () => {
     await topic.publish(Buffer.from(''), {a: 'b'});
 
     // Wait for logs to become consistent
-    await promiseRetry((retry) => {
+    await promiseRetry(retry => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
         .toString();
 
       try {
-        assert.ok(logs.includes(`Hello, World!`));
+        assert.ok(logs.includes('Hello, World!'));
       } catch (err) {
         retry(err);
       }

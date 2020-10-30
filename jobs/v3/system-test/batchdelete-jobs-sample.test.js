@@ -16,7 +16,7 @@
 
 const assert = require('assert');
 const {execSync} = require('child_process');
-const runSample = `require('./batchdelete-jobs-sample')`;
+const runSample = "require('./batchdelete-jobs-sample')";
 
 it('Should batchDelete jobs.', () => {
   const output = execSync(`node -e ${runSample}`);

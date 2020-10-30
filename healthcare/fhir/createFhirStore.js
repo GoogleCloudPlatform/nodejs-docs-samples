@@ -44,7 +44,7 @@ const main = (
       parent,
       fhirStoreId,
       resource: {
-        version
+        version,
       },
     };
 

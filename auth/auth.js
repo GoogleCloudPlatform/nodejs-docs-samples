@@ -36,7 +36,7 @@ const authCloudImplicit = async () => {
       const [buckets] = results;
 
       console.log('Buckets:');
-      buckets.forEach((bucket) => {
+      buckets.forEach(bucket => {
         console.log(bucket.name);
       });
     } catch (err) {
@@ -65,7 +65,7 @@ const authCloudExplicit = async ({projectId, keyFilename}) => {
       const [buckets] = await storage.getBuckets();
 
       console.log('Buckets:');
-      buckets.forEach((bucket) => {
+      buckets.forEach(bucket => {
         console.log(bucket.name);
       });
     } catch (err) {
@@ -76,17 +76,17 @@ const authCloudExplicit = async ({projectId, keyFilename}) => {
   // [END auth_cloud_explicit]
 };
 
-const cli = require(`yargs`)
+const cli = require('yargs')
   .demand(1)
   .command(
-    `auth-cloud-implicit`,
-    `Loads credentials implicitly.`,
+    'auth-cloud-implicit',
+    'Loads credentials implicitly.',
     {},
     authCloudImplicit
   )
   .command(
-    `auth-cloud-explicit`,
-    `Loads credentials explicitly.`,
+    'auth-cloud-explicit',
+    'Loads credentials explicitly.',
     {
       projectId: {
         alias: 'p',
@@ -99,12 +99,12 @@ const cli = require(`yargs`)
     },
     authCloudExplicit
   )
-  .example(`node $0 implicit`, `Loads credentials implicitly.`)
-  .example(`node $0 explicit`, `Loads credentials explicitly.`)
+  .example('node $0 implicit', 'Loads credentials implicitly.')
+  .example('node $0 explicit', 'Loads credentials explicitly.')
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    `For more information, see https://cloud.google.com/docs/authentication`
+    'For more information, see https://cloud.google.com/docs/authentication'
   )
   .help()
   .strict();

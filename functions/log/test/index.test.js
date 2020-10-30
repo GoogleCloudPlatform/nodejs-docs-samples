@@ -41,8 +41,8 @@ const getSample = () => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 const restoreConsole = function () {

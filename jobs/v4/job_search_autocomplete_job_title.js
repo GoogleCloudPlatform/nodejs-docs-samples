@@ -12,7 +12,13 @@ const talent = require('@google-cloud/talent').v4beta1;
  * @param projectId {string} Your Google Cloud Project ID
  * @param tenantId {string} Identifier of the Tenantd
  */
-function sampleCompleteQuery(projectId, tenantId, query, numResults, languageCode) {
+function sampleCompleteQuery(
+  projectId,
+  tenantId,
+  query,
+  numResults,
+  languageCode
+) {
   const client = new talent.CompletionClient();
   // const projectId = 'Your Google Cloud Project ID';
   // const tenantId = 'Your Tenant ID (using tenancy is optional)';
@@ -27,7 +33,8 @@ function sampleCompleteQuery(projectId, tenantId, query, numResults, languageCod
     pageSize: numResults,
     languageCodes: languageCodes,
   };
-  client.completeQuery(request)
+  client
+    .completeQuery(request)
     .then(responses => {
       const response = responses[0];
       for (const result of response.completionResults) {
@@ -41,32 +48,36 @@ function sampleCompleteQuery(projectId, tenantId, query, numResults, languageCod
     });
 }
 
-
 // [END job_search_autocomplete_job_title_core]
 // [END job_search_autocomplete_job_title]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('query', {
     default: '[partially typed job title]',
-    string: true
+    string: true,
   })
   .option('num_results', {
     default: 5,
-    number: true
+    number: true,
   })
   .option('language_code', {
     default: 'en-US',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
-sampleCompleteQuery(argv.project_id, argv.tenant_id, argv.query, argv.num_results, argv.language_code);
+sampleCompleteQuery(
+  argv.project_id,
+  argv.tenant_id,
+  argv.query,
+  argv.num_results,
+  argv.language_code
+);

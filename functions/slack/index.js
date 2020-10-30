@@ -91,7 +91,7 @@ const formatSlackMessage = (query, response) => {
  * @param {string} req.headers Headers Slack SDK uses to authenticate request.
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
-const verifyWebhook = (req) => {
+const verifyWebhook = req => {
   const signature = {
     signingSecret: process.env.SLACK_SECRET,
     requestSignature: req.headers['x-slack-signature'],
@@ -113,7 +113,7 @@ const verifyWebhook = (req) => {
  *
  * @param {string} query The user's search query.
  */
-const makeSearchRequest = (query) => {
+const makeSearchRequest = query => {
   return new Promise((resolve, reject) => {
     kgsearch.entities.search(
       {

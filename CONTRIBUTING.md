@@ -1,6 +1,6 @@
 # How to become a contributor and submit your own code
 
-This repository contains samples that the documentation on [Google Cloud Platform ][cloud] references. If you wrote a great sample but it is not used in Google's official documentation, there are better suited places to publish it such as a [community tutorial](https://cloud.google.com/community/). 
+This repository contains samples that the documentation on [Google Cloud Platform ][cloud] references. Samples for a client library should be added to the client repository, not this repository. The `functions` folder is reserved for samples used in [cloud.google.com/functions](cloud.google.com/functions). If you wrote a great sample but it is not used in Google's official documentation, there are better suited places to publish it such as a [community tutorial](https://cloud.google.com/community/). 
 
 ## Run the tests for a single sample
 

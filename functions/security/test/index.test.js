@@ -19,14 +19,12 @@ const sinon = require('sinon');
 const assert = require('assert');
 
 const getSample = () => {
-  const getMock = sinon
+  const fetchMock = sinon
     .stub()
     .onFirstCall()
-    .resolves({data: 'some-token'})
+    .resolves({text: () => 'some-token'})
     .onSecondCall()
-    .resolves({data: 'function-response'});
-
-  const axiosMock = {get: getMock};
+    .resolves({text: () => 'function-response'});
 
   const resMock = {};
   resMock.status = sinon.stub().returns(resMock);
@@ -34,11 +32,11 @@ const getSample = () => {
 
   return {
     sample: proxyquire('../', {
-      axios: axiosMock,
+      'node-fetch': fetchMock,
     }),
     mocks: {
       res: resMock,
-      axios: axiosMock,
+      fetch: fetchMock,
     },
   };
 };
@@ -49,8 +47,8 @@ describe('functions_bearer_token', () => {
 
     await sample.callingFunction(null, mocks.res);
 
-    assert(mocks.axios.get.calledTwice);
-    assert.deepEqual(mocks.axios.get.firstCall.args[1], {
+    assert(mocks.fetch.calledTwice);
+    assert.deepEqual(mocks.fetch.firstCall.args[1], {
       headers: {'Metadata-Flavor': 'Google'},
     });
 

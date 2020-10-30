@@ -74,7 +74,7 @@ exports.lazyGlobals = (req, res) => {
 // [END functions_tips_lazy_globals]
 
 // [START functions_tips_connection_pooling]
-const axios = require('axios');
+const fetch = require('node-fetch');
 
 const http = require('http');
 const https = require('https');
@@ -90,7 +90,7 @@ const httpsAgent = new https.Agent({keepAlive: true});
  */
 exports.connectionPooling = async (req, res) => {
   try {
-    const {data} = await axios.get('/', {httpAgent, httpsAgent});
+    const {data} = await fetch('/', {httpAgent, httpsAgent});
     res.status(200).send(`Data: ${data}`);
   } catch (err) {
     res.status(500).send(`Error: ${err.message}`);

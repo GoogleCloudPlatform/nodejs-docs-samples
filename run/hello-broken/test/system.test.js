@@ -21,7 +21,7 @@ const get = (route, base_url) => {
     throw Error('"ID_TOKEN" environment variable is required.');
   }
 
-  return request(URL(base_url.trim(), route), {
+  return request(new URL(route, base_url.trim()), {
     headers: {
       Authorization: `Bearer ${ID_TOKEN.trim()}`,
     },

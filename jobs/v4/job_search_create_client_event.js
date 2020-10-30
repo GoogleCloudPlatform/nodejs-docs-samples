@@ -55,8 +55,7 @@ function sampleCreateClientEvent(projectId, tenantId, requestId, eventId) {
   };
   client
     .createClientEvent(request)
-    .then(responses => {
-      const response = responses[0];
+    .then(() => {
       console.log('Created client event');
     })
     .catch(err => {

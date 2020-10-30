@@ -14,7 +14,6 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');

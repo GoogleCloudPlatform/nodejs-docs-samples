@@ -5,8 +5,6 @@
   },
   "rules": {
     "node/no-missing-require": ["off"], 
-    "node/no-unpublished-require": ["off"], 
-    "node/no-deprecated-api": ["off"],
-    "no-process-exit": ["off"]
+    "node/no-unpublished-require": ["off"]
   }
 }

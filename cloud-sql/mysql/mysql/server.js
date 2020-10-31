@@ -130,7 +130,7 @@ const poolPromise = createPool()
   })
   .catch(err => {
     logger.error(err);
-    process.exit(1);
+    throw err;
   });
 
 app.use(async (req, res, next) => {
@@ -222,7 +222,7 @@ const server = app.listen(PORT, () => {
 
 process.on('unhandledRejection', err => {
   console.error(err);
-  process.exit(1);
+  throw err;
 });
 
 module.exports = server;

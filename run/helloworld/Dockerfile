@@ -14,7 +14,7 @@
 
 # [START run_helloworld_dockerfile]
 
-# Use the official lightweight Node.js 10 image.
+# Use the official lightweight Node.js 12 image.
 # https://hub.docker.com/_/node
 FROM node:12-slim
 

@@ -76,7 +76,7 @@ describe('End-to-End Tests', () => {
       headers: {
         Authorization: ID_TOKEN.trim(),
       },
-      method: "POST",
+      method: 'POST',
       retry: 3,
       throwHttpErrors: false,
     };

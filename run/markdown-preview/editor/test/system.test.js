@@ -40,7 +40,7 @@ describe('End-to-End Tests', () => {
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ../renderer/test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=renderer-${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) buildRendererCmd + `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build for Renderer service...');
     execSync(buildRendererCmd, {cwd: '../renderer'});

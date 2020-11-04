@@ -61,7 +61,7 @@ describe('End-to-End Tests', () => {
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
         `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
     );
-    BASE_URL = url.toString('utf-8');
+    BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
 
     const client = await auth.getIdTokenClient(BASE_URL);

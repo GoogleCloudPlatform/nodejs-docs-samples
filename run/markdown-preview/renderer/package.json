@@ -15,7 +15,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/app.test.js --exit",
-    "system-test": "mocha test/system.test.js --timeout=10000 --exit"
+    "system-test": "mocha test/system.test.js --timeout=180000 --exit"
   },
   "dependencies": {
     "express": "^4.17.1",

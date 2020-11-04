@@ -18,10 +18,10 @@ const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
-const request = (method, route, base_url) => {
+const request = (method, route, base_url, id_token) => {
   return got(route, new URL(base_url.trim()), {
     headers: {
-      Authorization: ID_TOKEN.trim(),
+      Authorization: id_token.trim(),
     },
     method: method || 'get',
     throwHttpErrors: false,
@@ -81,7 +81,7 @@ describe('End-to-End Tests', () => {
   });
 
   it('post(/) without body is a bad request', async () => {
-    const response = await request('post', '/', BASE_URL);
+    const response = await request('post', '/', BASE_URL, ID_TOKEN);
     assert.strictEqual(
       response.statusCode,
       400,

@@ -92,4 +92,6 @@ export CLOUD_SQL_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-pg-connection-n
 export IDP_KEY=$(gcloud secrets versions access latest --secret="nodejs-docs-samples-idp-key" --project="${GOOGLE_CLOUD_PROJECT}")
 
 npm test
+set -x
 npm run --if-present system-test
+set +x

@@ -29,20 +29,7 @@ steps:
       --platform ${_PLATFORM} \
       --update-env-vars=BLURRED_BUCKET_NAME=${_SERVICE}_output"
 
-- id: 'Create Pub/Sub topic and subscription'
-  name: 'gcr.io/cloud-builders/gcloud:latest'
-  entrypoint: /bin/bash
-  args:
-  - '-c'
-  - |
-    ./test/retry.sh "gcloud pubsub topics create ${_SERVICE} --quiet"
-
-    ./test/retry.sh "gcloud pubsub subscriptions create ${_SERVICE}_sub \
-      --topic ${_SERVICE} \
-      --push-endpoint $(gcloud run services describe ${_SERVICE} --project=${PROJECT_ID} --platform=${_PLATFORM} --region=${_REGION} --format='value(status.url)') \
-      --push-auth-service-account cloud-run-invoker@${PROJECT_ID}.iam.gserviceaccount.com"
-
-- id: 'Create GCS buckets'
+- id: 'Create GCS buckets with Pub/Sub notification'
   name: 'gcr.io/cloud-builders/gsutil:latest'
   entrypoint: /bin/bash
   args:
@@ -54,6 +41,10 @@ steps:
 
     # Create Pub/Sub notification
     ./test/retry.sh "gsutil notification create -t ${_SERVICE} -f json gs://${_SERVICE}_input"
+    ./test/retry.sh "gcloud pubsub subscriptions create ${_SERVICE}_sub \
+      --topic ${_SERVICE} \
+      --push-endpoint $(gcloud run services describe ${_SERVICE} --project=${PROJECT_ID} --platform=${_PLATFORM} --region=${_REGION} --format='value(status.url)') \
+      --push-auth-service-account cloud-run-invoker@${PROJECT_ID}.iam.gserviceaccount.com"
 
     # Upload photo
     ./test/retry.sh "gsutil cp test/zombie.jpg gs://${_SERVICE}_input"

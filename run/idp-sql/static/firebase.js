@@ -18,6 +18,7 @@ window.onload = function () {
   initApp();
 };
 
+// [START cloudrun_end_user_firebase_sign_in]
 // [START run_end_user_firebase_sign_in]
 function signIn() {
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -35,6 +36,7 @@ function signIn() {
     });
 }
 // [END run_end_user_firebase_sign_in]
+// [END cloudrun_end_user_firebase_sign_in]
 
 function signOut() {
   firebase
@@ -55,6 +57,7 @@ function toggle() {
   }
 }
 
+// [START cloudrun_end_user_token]
 // [START run_end_user_token]
 async function vote(team) {
   if (firebase.auth().currentUser) {
@@ -85,3 +88,4 @@ async function vote(team) {
   }
 }
 // [END run_end_user_token]
+// [END cloudrun_end_user_token]

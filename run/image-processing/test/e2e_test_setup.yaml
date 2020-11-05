@@ -45,9 +45,10 @@ steps:
       --topic ${_SERVICE} \
       --push-endpoint $(gcloud run services describe ${_SERVICE} --project=${PROJECT_ID} --platform=${_PLATFORM} --region=${_REGION} --format='value(status.url)') \
       --push-auth-service-account cloud-run-invoker@${PROJECT_ID}.iam.gserviceaccount.com"
-
+    sleep 5
     # Upload photo
     ./test/retry.sh "gsutil cp test/zombie.jpg gs://${_SERVICE}_input"
+    sleep 30
 
 
 images:

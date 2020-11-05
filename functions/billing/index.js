@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-warning-comments */
-
 // [START functions_billing_limit]
 // [START functions_billing_stop]
 const {google} = require('googleapis');

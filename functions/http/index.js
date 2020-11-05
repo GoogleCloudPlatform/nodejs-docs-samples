@@ -135,7 +135,9 @@ exports.uploadFile = (req, res) => {
 
   // This code will process each non-file field in the form.
   busboy.on('field', (fieldname, val) => {
-    // TODO(developer): Process submitted field values here
+    /**
+     *  TODO(developer): Process submitted field values here
+     */
     console.log(`Processed field ${fieldname}: ${val}.`);
     fields[fieldname] = val;
   });
@@ -172,7 +174,9 @@ exports.uploadFile = (req, res) => {
   busboy.on('finish', async () => {
     await Promise.all(fileWrites);
 
-    // TODO(developer): Process saved files here
+    /**
+     * TODO(developer): Process saved files here
+     */
     for (const file in uploads) {
       fs.unlinkSync(uploads[file]);
     }

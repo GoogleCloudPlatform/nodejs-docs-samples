@@ -1,0 +1,37 @@
+steps:
+
+- id: 'Build and Push Container Image - Editor'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: '/bin/bash'
+  args:
+    - '-c'
+    - |
+      ./test/retry.sh "docker build -t gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} ."
+      ./test/retry.sh "docker push gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
+
+- id: 'Deploy to Cloud Run'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    echo $(gcloud run services describe renderer-${_SERVICE} \
+      --region ${_REGION} \
+      --format='value(status.url)' \
+      --platform ${_PLATFORM}) > _service_url
+
+    ./test/retry.sh "gcloud run deploy ${_SERVICE} \
+      --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+      --no-allow-unauthenticated \
+      --region ${_REGION} \
+      --platform ${_PLATFORM} \
+      --set-env-vars EDITOR_UPSTREAM_RENDER_URL=$(cat _service_url)"
+
+images:
+- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
+
+substitutions:
+  _SERVICE: editor
+  _VERSION: manual
+  _REGION: us-central1
+  _PLATFORM: managed

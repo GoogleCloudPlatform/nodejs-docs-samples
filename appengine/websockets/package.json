@@ -20,7 +20,7 @@
     "express": "^4.15.4",
     "pug": "^3.0.0",
     "socket.io": "^2.2.0",
-    "supertest": "^5.0.0"
+    "supertest": "^6.0.0"
   },
   "devDependencies": {
     "eslint": "^7.0.0",

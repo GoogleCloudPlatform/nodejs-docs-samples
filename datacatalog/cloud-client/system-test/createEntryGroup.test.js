@@ -31,16 +31,16 @@ const datacatalog = new DataCatalogClient();
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
 });
 
 describe('createEntryGroup', () => {
-  it('should create a entry group', (done) => {
+  it('should create a entry group', done => {
     const expectedName = `projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}`;
     exec(
       `node createEntryGroup.js ${projectId} ${entryGroupId}`,

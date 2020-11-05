@@ -14,10 +14,10 @@
 
 'use strict';
 
-const { getVotes, getVoteCount, insertVote } = require('./cloud-sql');
+const {getVotes, getVoteCount, insertVote} = require('./cloud-sql');
 const express = require('express');
-const { buildRenderedHtml } = require('./handlebars');
-const { authenticateJWT, requestLogger } = require('./middleware');
+const {buildRenderedHtml} = require('./handlebars');
+const {authenticateJWT, requestLogger} = require('./middleware');
 
 const app = express();
 app.use(express.static(__dirname + '/static'));
@@ -54,7 +54,9 @@ app.get('/', requestLogger, async (req, res) => {
         leadTeam = 'DOGS';
         voteDiff = dogsTotalVotes - catsTotalVotes;
       }
-      leaderMessage = `${leadTeam} are winning by ${voteDiff} vote${voteDiff > 1 ? 's' : ''}.`;
+      leaderMessage = `${leadTeam} are winning by ${voteDiff} vote${
+        voteDiff > 1 ? 's' : ''
+      }.`;
     } else {
       leaderMessage = 'CATS and DOGS are evenly matched!';
     }
@@ -70,9 +72,10 @@ app.get('/', requestLogger, async (req, res) => {
     });
     res.status(200).send(renderedHtml);
   } catch (err) {
-    const message = "Error while connecting to the Cloud SQL database. " +
-      "Check that your username and password are correct, that the Cloud SQL " +
-      "proxy is running (locally), and that the database/table exists and is " +
+    const message =
+      'Error while connecting to the Cloud SQL database. ' +
+      'Check that your username and password are correct, that the Cloud SQL ' +
+      'proxy is running (locally), and that the database/table exists and is ' +
       `ready for use: ${err}`;
     req.logger.error(message); // request-based logger with trace support
     res
@@ -104,7 +107,7 @@ app.post('/', requestLogger, authenticateJWT, async (req, res) => {
   // Save the data to the database.
   try {
     await insertVote(vote);
-    req.logger.info({message: 'vote_inserted', vote});  // request-based logger with trace support
+    req.logger.info({message: 'vote_inserted', vote}); // request-based logger with trace support
   } catch (err) {
     req.logger.error(`Error while attempting to submit vote: ${err}`);
     res

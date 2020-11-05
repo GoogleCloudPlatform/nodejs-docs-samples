@@ -36,7 +36,7 @@ const query = {
 };
 
 const getSample = () => {
-  const resultsMock = entities.map((row) => {
+  const resultsMock = entities.map(row => {
     return {toJSON: sinon.stub().returns(row)};
   });
   const databaseMock = {

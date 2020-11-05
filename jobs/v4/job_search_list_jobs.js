@@ -24,7 +24,8 @@ function sampleListJobs(projectId, tenantId, filter) {
     filter: filter,
   };
 
-  client.listJobs(request)
+  client
+    .listJobs(request)
     .then(responses => {
       const resources = responses[0];
       for (const resource of resources) {
@@ -39,24 +40,22 @@ function sampleListJobs(projectId, tenantId, filter) {
     });
 }
 
-
 // [END job_search_list_jobs_core]
 // [END job_search_list_jobs]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('filter', {
     default: 'companyName=projects/my-project/companies/company-id',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleListJobs(argv.project_id, argv.tenant_id, argv.filter);

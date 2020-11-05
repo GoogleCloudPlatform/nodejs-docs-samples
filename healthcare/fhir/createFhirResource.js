@@ -20,7 +20,7 @@ function main(
   cloudRegion = 'us-central1',
   datasetId,
   fhirStoreId,
-  resourceType,
+  resourceType
 ) {
   // [START healthcare_create_resource]
   const {google} = require('googleapis');
@@ -34,10 +34,10 @@ function main(
     // Replace the following body with the data for the resource you want to
     // create.
     const body = {
-        "name": [{"use": "official", "family": "Smith", "given": ["Darcy"]}],
-        "gender": "female",
-        "birthDate": "1970-01-01",
-        "resourceType": "Patient",
+      name: [{use: 'official', family: 'Smith', given: ['Darcy']}],
+      gender: 'female',
+      birthDate: '1970-01-01',
+      resourceType: 'Patient',
     };
 
     google.options({auth, headers: {'Content-Type': 'application/fhir+json'}});

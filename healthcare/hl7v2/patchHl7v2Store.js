@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-warning-comments */
-
 'use strict';
 
 const main = (
@@ -47,8 +45,8 @@ const main = (
         notificationConfigs: [
           {
             pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
-          }
-        ]
+          },
+        ],
       },
     };
 

@@ -10,11 +10,11 @@ describe('Unit Tests', () => {
   });
 
   describe('should fail', () => {
-    it(`on a Bad Request with an empty payload`, async () => {
+    it('on a Bad Request with an empty payload', async () => {
       await request.post('/').type('json').send('').expect(400);
     });
 
-    it(`on a Bad Request with an invalid payload`, async () => {
+    it('on a Bad Request with an invalid payload', async () => {
       await request
         .post('/')
         .type('json')
@@ -22,11 +22,11 @@ describe('Unit Tests', () => {
         .expect(400);
     });
 
-    it(`on a Bad Request with an invalid mimetype`, async () => {
+    it('on a Bad Request with an invalid mimetype', async () => {
       await request.post('/').type('text').send('{message: true}').expect(400);
     });
 
-    it(`if the decoded message.data is not well-formed JSON`, async () => {
+    it('if the decoded message.data is not well-formed JSON', async () => {
       await request
         .post('/')
         .type('json')
@@ -45,7 +45,7 @@ describe('Unit Tests', () => {
           .type('json')
           .send({
             message: {
-              data: Buffer.from('{ "json": "value" }').toString(`base64`),
+              data: Buffer.from('{ "json": "value" }').toString('base64'),
             },
           })
           .expect(400);
@@ -56,7 +56,7 @@ describe('Unit Tests', () => {
           .type('json')
           .send({
             message: {
-              data: Buffer.from('{ "name": "value" }').toString(`base64`),
+              data: Buffer.from('{ "name": "value" }').toString('base64'),
             },
           })
           .expect(400);
@@ -67,7 +67,7 @@ describe('Unit Tests', () => {
           .type('json')
           .send({
             message: {
-              data: Buffer.from('{ "bucket": "value" }').toString(`base64`),
+              data: Buffer.from('{ "bucket": "value" }').toString('base64'),
             },
           })
           .expect(400);
@@ -77,15 +77,15 @@ describe('Unit Tests', () => {
 });
 
 describe('Integration Tests', () => {
-  it(`Image analysis can proceed to Vision API scan`, async () => {
+  it('Image analysis can proceed to Vision API scan', async () => {
     await request
       .post('/')
       .type('json')
       .send({
         message: {
           data: Buffer.from(
-            `{ "bucket": "---", "name": "does-not-exist" }`
-          ).toString(`base64`),
+            '{ "bucket": "---", "name": "does-not-exist" }'
+          ).toString('base64'),
         },
       })
       .expect(204);

@@ -18,20 +18,20 @@
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloRTDB = (event) => {
+exports.helloRTDB = event => {
   const triggerResource = event.resource;
 
   const pathParams = event.params;
   if (pathParams) {
-    console.log(`Path parameters:`);
-    Object.keys(pathParams).forEach((key) => {
+    console.log('Path parameters:');
+    Object.keys(pathParams).forEach(key => {
       console.log(`  ${key}: ${pathParams[key]}`);
     });
   }
 
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!event.auth.admin}`);
-  console.log(`Delta:`);
+  console.log('Delta:');
   console.log(JSON.stringify(event.delta, null, 2));
 };
 // [END functions_firebase_rtdb]
@@ -42,19 +42,19 @@ exports.helloRTDB = (event) => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloFirestore = (event) => {
+exports.helloFirestore = event => {
   const triggerResource = event.resource;
 
   console.log(`Function triggered by event on: ${triggerResource}`);
   console.log(`Event type: ${event.eventType}`);
 
   if (event.oldValue && Object.keys(event.oldValue).length) {
-    console.log(`\nOld value:`);
+    console.log('\nOld value:');
     console.log(JSON.stringify(event.oldValue, null, 2));
   }
 
   if (event.value && Object.keys(event.value).length) {
-    console.log(`\nNew value:`);
+    console.log('\nNew value:');
     console.log(JSON.stringify(event.value, null, 2));
   }
 };
@@ -66,7 +66,7 @@ exports.helloFirestore = (event) => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAuth = (event) => {
+exports.helloAuth = event => {
   try {
     console.log(`Function triggered by change to user: ${event.uid}`);
     console.log(`Created at: ${event.metadata.createdAt}`);
@@ -88,7 +88,7 @@ const firestore = new Firestore({
 });
 
 // Converts strings added to /messages/{pushId}/original to uppercase
-exports.makeUpperCase = (event) => {
+exports.makeUpperCase = event => {
   const resource = event.value.name;
   const affectedDoc = firestore.doc(resource.split('/documents/')[1]);
 
@@ -104,7 +104,7 @@ exports.makeUpperCase = (event) => {
   } else {
     // Value is already upper-case
     // Don't perform a(nother) write to avoid infinite loops
-    console.log('Value is already upper-case.')
+    console.log('Value is already upper-case.');
   }
 };
 // [END functions_firebase_reactive]
@@ -115,7 +115,7 @@ exports.makeUpperCase = (event) => {
  *
  * @param {!Object} event The Cloud Functions event.
  */
-exports.helloAnalytics = (event) => {
+exports.helloAnalytics = event => {
   const {resource} = event;
   console.log(`Function triggered by the following event: ${resource}`);
 
@@ -135,7 +135,7 @@ exports.helloAnalytics = (event) => {
  *
  * @param {object} event The Cloud Functions event.
  */
-exports.helloRemoteConfig = (event) => {
+exports.helloRemoteConfig = event => {
   console.log(`Update type: ${event.updateType}`);
   console.log(`Origin: ${event.updateOrigin}`);
   console.log(`Version: ${event.versionNumber}`);

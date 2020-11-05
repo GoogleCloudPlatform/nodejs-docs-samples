@@ -22,16 +22,16 @@ const {exec} = require('child_process');
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
 });
 
 describe('lookupEntry lookup', () => {
-  it('should lookup a dataset entry', (done) => {
+  it('should lookup a dataset entry', done => {
     const projectId = 'bigquery-public-data';
     const datasetId = 'new_york_taxi_trips';
     const expectedLinkedResource = `//bigquery.googleapis.com/projects/${projectId}/datasets/${datasetId}`;

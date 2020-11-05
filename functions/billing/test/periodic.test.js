@@ -49,14 +49,14 @@ before(async () => {
       {retries: 8}
     );
   } catch (err) {
-    console.error(`Failed to restart GCE instances:`, err);
+    console.error('Failed to restart GCE instances:', err);
   }
 });
 
 describe('functions_billing_limit', () => {
   it('should shut down GCE instances when budget is exceeded', async () => {
     const ffProc = execPromise(
-      `functions-framework --target=limitUse --signature-type=event`,
+      'functions-framework --target=limitUse --signature-type=event',
       {timeout: 1000, shell: true, cwd}
     );
 

@@ -42,14 +42,14 @@ describe('system tests', () => {
     });
 
     // Wait for logs to become consistent
-    await promiseRetry((retry) => {
+    await promiseRetry(retry => {
       const logs = childProcess
         .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
         .toString();
 
       try {
         assert.ok(logs.includes(`Filename: ${gcsFileName}`));
-        assert.ok(logs.includes(`Event Type: google.storage.object.finalize`));
+        assert.ok(logs.includes('Event Type: google.storage.object.finalize'));
       } catch (err) {
         retry(err);
       }

@@ -14,7 +14,7 @@
 
 const express = require('express');
 const handlebars = require('handlebars');
-const { readFile } = require('fs').promises;
+const {readFile} = require('fs').promises;
 const renderRequest = require('./render.js');
 
 const app = express();
@@ -26,15 +26,17 @@ let markdownDefault, compiledTemplate, renderedHtml;
 const buildRenderedHtml = async () => {
   try {
     markdownDefault = await readFile(__dirname + '/templates/markdown.md');
-    compiledTemplate = handlebars.compile(await readFile(__dirname + '/templates/index.html', 'utf8'));
+    compiledTemplate = handlebars.compile(
+      await readFile(__dirname + '/templates/index.html', 'utf8')
+    );
     renderedHtml = compiledTemplate({default: markdownDefault});
     return renderedHtml;
-  } catch(err) {
-    throw Error ('Error loading template: ', err);
+  } catch (err) {
+    throw Error('Error loading template: ', err);
   }
 };
 
-app.get('/', async (req, res) => { 
+app.get('/', async (req, res) => {
   try {
     if (!renderedHtml) renderedHtml = await buildRenderedHtml();
     res.status(200).send(renderedHtml);
@@ -44,7 +46,7 @@ app.get('/', async (req, res) => {
   }
 });
 
-// The renderRequest makes a request to the Renderer service. 
+// The renderRequest makes a request to the Renderer service.
 // The request returns the Markdown text converted to HTML.
 // [START run_secure_request_do]
 app.post('/render', async (req, res) => {
@@ -62,5 +64,5 @@ app.post('/render', async (req, res) => {
 // Exports for testing purposes.
 module.exports = {
   app,
-  buildRenderedHtml
+  buildRenderedHtml,
 };

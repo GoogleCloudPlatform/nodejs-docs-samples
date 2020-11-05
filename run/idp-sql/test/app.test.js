@@ -17,7 +17,7 @@
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
-const { buildRenderedHtml } = require('../handlebars');
+const {buildRenderedHtml} = require('../handlebars');
 
 let request;
 
@@ -28,9 +28,7 @@ describe('Unit Tests', () => {
   });
 
   it('should reject request without JWT token', async () => {
-    await request
-      .post('/')
-      .expect(401);
+    await request.post('/').expect(401);
   });
 
   it('should reject request with invalid JWT token', async () => {
@@ -45,12 +43,11 @@ describe('Unit Tests', () => {
       votes: [],
       catsCount: 1,
       dogsCount: 100,
-      leadTeam: "Dogs",
+      leadTeam: 'Dogs',
       voteDiff: 99,
-      leaderMessage: "Dogs are winning",
+      leaderMessage: 'Dogs are winning',
     });
 
     assert(renderedHtml.includes('<h3>100 votes</h3>'));
-  })
-
+  });
 });

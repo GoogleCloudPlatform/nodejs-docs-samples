@@ -41,6 +41,7 @@ steps:
 
     # Create Pub/Sub notification
     ./test/retry.sh "gsutil notification create -t ${_SERVICE} -f json gs://${_SERVICE}_input"
+    sleep 15
     ./test/retry.sh "gcloud pubsub subscriptions create ${_SERVICE}_sub \
       --topic ${_SERVICE} \
       --push-endpoint $(gcloud run services describe ${_SERVICE} --project=${PROJECT_ID} --platform=${_PLATFORM} --region=${_REGION} --format='value(status.url)') \

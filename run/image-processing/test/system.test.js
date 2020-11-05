@@ -14,8 +14,8 @@
 
 const assert = require('assert');
 const got = require('got');
-const { execSync } = require('child_process');
-const { GoogleAuth } = require('google-auth-library');
+const {execSync} = require('child_process');
+const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
 let BASE_URL, ID_TOKEN;
@@ -27,8 +27,10 @@ describe('End-to-End Tests', () => {
   }
   let {SERVICE_NAME} = process.env;
   if (!SERVICE_NAME) {
-    SERVICE_NAME = "image-processing";
-    console.log(`"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`);
+    SERVICE_NAME = 'image-processing';
+    console.log(
+      `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
+    );
   }
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
@@ -36,10 +38,11 @@ describe('End-to-End Tests', () => {
 
   before(async () => {
     // Deploy service using Cloud Build
-    const buildCmd = `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-      `--config ./test/e2e_test_setup.yaml ` +
+    const buildCmd =
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if(SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);
@@ -48,26 +51,28 @@ describe('End-to-End Tests', () => {
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-      `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`);
+        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+    );
 
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
 
     // Retrieve ID token for testing
-    let client = await auth.getIdTokenClient(BASE_URL);
+    const client = await auth.getIdTokenClient(BASE_URL);
     const clientHeaders = await client.getRequestHeaders();
     ID_TOKEN = clientHeaders['Authorization'].trim();
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
-  })
+  });
 
   after(() => {
-    const cleanUpCmd = `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-    `--config ./test/e2e_test_cleanup.yaml ` +
-    `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`
-    if(SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    const cleanUpCmd =
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_cleanup.yaml ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+    if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
 
     execSync(cleanUpCmd);
-  })
+  });
 
   it('post(/) without body is a bad request', async () => {
     const options = {
@@ -77,13 +82,10 @@ describe('End-to-End Tests', () => {
       },
       method: 'POST',
       throwHttpErrors: false,
-      retry: 3
+      retry: 3,
     };
     const response = await got('', options);
-    assert.strictEqual(
-      response.statusCode,
-      400
-    );
+    assert.strictEqual(response.statusCode, 400);
   });
 
   it('post(/) without body message is a bad request', async () => {
@@ -93,26 +95,25 @@ describe('End-to-End Tests', () => {
         Authorization: ID_TOKEN,
       },
       method: 'POST',
-      body: "test",
+      body: 'test',
       throwHttpErrors: false,
-      retry: 3
+      retry: 3,
     };
     const response = await got('', options);
-    assert.strictEqual(
-      response.statusCode,
-      400
-    );
+    assert.strictEqual(response.statusCode, 400);
   });
 
   it('successfully processes an image', async () => {
     const {Storage} = require('@google-cloud/storage');
     const storage = new Storage();
     let file_num = 0;
-    for (i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       const [files] = await storage.bucket(`${SERVICE_NAME}_output`).getFiles();
-      file_num = files.length
-      if (file_num > 0) { break; }
+      file_num = files.length;
+      if (file_num > 0) {
+        break;
+      }
     }
-    assert(file_num > 0)
+    assert(file_num > 0);
   });
 });

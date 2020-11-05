@@ -39,8 +39,9 @@ after(() => {
     execSync(
       `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`
     );
-    // eslint-disable-next-line no-empty
-  } catch (err) {} // Ignore error
+  } catch (err) {
+    // Ignore error
+  }
 });
 
 it('should create a dataset', () => {

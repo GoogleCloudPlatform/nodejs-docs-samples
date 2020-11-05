@@ -46,7 +46,9 @@ after(async () => {
   try {
     await bucket.deleteFiles();
     await bucket.delete();
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
 });
 
 describe('gae_flex_storage_app', () => {

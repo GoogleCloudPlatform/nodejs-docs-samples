@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-warning-comments */
-
 'use strict';
 
 const main = (
@@ -41,7 +39,7 @@ const main = (
     // const datasetId = 'my-dataset';
     // const dicomStoreId = 'my-dicom-store';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
-    const dicomWebPath = `instances`;
+    const dicomWebPath = 'instances';
     const request = {parent, dicomWebPath};
 
     const instances = await healthcare.projects.locations.datasets.dicomStores.searchForInstances(

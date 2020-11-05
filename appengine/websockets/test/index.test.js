@@ -27,10 +27,8 @@ before(async () => {
   app.listen(PORT, () => {});
 
   browser = await puppeteer.launch({
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-    ]});
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
   browserPage = await browser.newPage();
 });
 
@@ -48,7 +46,7 @@ describe('appengine_websockets_app', () => {
       document.querySelector('button').click();
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     const itemText = await browserPage.evaluate(
       () => document.querySelector('li').textContent

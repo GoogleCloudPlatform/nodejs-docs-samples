@@ -21,7 +21,7 @@ const assert = require('assert');
 const getSample = () => {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise((resolve) => resolve('request sent')));
+    .returns(new Promise(resolve => resolve('request sent')));
 
   return {
     program: proxyquire('../', {
@@ -47,8 +47,8 @@ const getMocks = () => {
   };
 };
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 //Restore console
@@ -79,7 +79,7 @@ describe('functions_start_instance_pubsub', () => {
     assert.strictEqual(data, 'request sent');
   });
 
-  it(`startInstancePubSub: should fail with missing 'zone' attribute`, () => {
+  it("startInstancePubSub: should fail with missing 'zone' attribute", () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {label: 'testkey=value'};
@@ -94,11 +94,11 @@ describe('functions_start_instance_pubsub', () => {
 
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[0],
-      new Error(`Attribute 'zone' missing from payload`)
+      new Error("Attribute 'zone' missing from payload")
     );
   });
 
-  it(`startInstancePubSub: should fail with missing 'label' attribute`, () => {
+  it("startInstancePubSub: should fail with missing 'label' attribute", () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {zone: 'test-zone'};
@@ -113,7 +113,7 @@ describe('functions_start_instance_pubsub', () => {
 
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[0],
-      new Error(`Attribute 'label' missing from payload`)
+      new Error("Attribute 'label' missing from payload")
     );
   });
 
@@ -132,7 +132,7 @@ describe('functions_start_instance_pubsub', () => {
 
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[0],
-      new Error(`Attribute 'zone' missing from payload`)
+      new Error("Attribute 'zone' missing from payload")
     );
   });
 });
@@ -157,7 +157,7 @@ describe('functions_stop_instance_pubsub', () => {
     assert.strictEqual(data, 'request sent');
   });
 
-  it(`stopInstancePubSub: should fail with missing 'zone' attribute`, () => {
+  it("stopInstancePubSub: should fail with missing 'zone' attribute", () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {label: 'testkey=value'};
@@ -172,11 +172,11 @@ describe('functions_stop_instance_pubsub', () => {
 
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[0],
-      new Error(`Attribute 'zone' missing from payload`)
+      new Error("Attribute 'zone' missing from payload")
     );
   });
 
-  it(`stopInstancePubSub: should fail with missing 'label' attribute`, () => {
+  it("stopInstancePubSub: should fail with missing 'label' attribute", () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {zone: 'test-zone'};
@@ -191,7 +191,7 @@ describe('functions_stop_instance_pubsub', () => {
 
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[0],
-      new Error(`Attribute 'label' missing from payload`)
+      new Error("Attribute 'label' missing from payload")
     );
   });
 
@@ -210,7 +210,7 @@ describe('functions_stop_instance_pubsub', () => {
 
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[0],
-      new Error(`Attribute 'zone' missing from payload`)
+      new Error("Attribute 'zone' missing from payload")
     );
   });
 });

@@ -36,5 +36,3 @@ app.post('/', (req, res) => {
 
 module.exports = app;
 // [END run_pubsub_handler]
-
-

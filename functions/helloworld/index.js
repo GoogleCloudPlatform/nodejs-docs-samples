@@ -150,16 +150,3 @@ exports.helloError4 = (req, res) => {
   res.status(500).send('I failed you');
   // [END functions_helloworld_error]
 };
-
-// [START functions_helloworld_template]
-const path = require('path');
-const pug = require('pug');
-
-// Renders the index.pug
-exports.helloTemplate = (req, res) => {
-  // Render the index.pug file
-  const html = pug.renderFile(path.join(__dirname, 'index.pug'));
-
-  res.send(html).end();
-};
-// [END functions_helloworld_template]

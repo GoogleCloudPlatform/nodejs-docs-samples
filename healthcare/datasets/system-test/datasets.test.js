@@ -14,7 +14,6 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
@@ -28,11 +27,11 @@ const cloudRegion = 'us-central1';
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
 });
 after(() => {
@@ -53,7 +52,7 @@ it('should create a dataset', () => {
 
 it('should get a dataset', () => {
   const output = execSync(
-    `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
+    `node getDataset.js ${projectId} ${cloudRegion} ${datasetId}`
   );
   assert.ok(output.includes('name'));
 });
@@ -63,7 +62,7 @@ it('should create and get a dataset IAM policy', () => {
   const localRole = 'roles/viewer';
 
   let output = execSync(
-    `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`,
+    `node setDatasetIamPolicy.js ${projectId} ${cloudRegion} ${datasetId} ${localMember} ${localRole}`
   );
   assert.ok(output.includes, 'ETAG');
 
@@ -76,31 +75,29 @@ it('should create and get a dataset IAM policy', () => {
 it('should patch a dataset', () => {
   const timeZone = 'GMT';
   const output = execSync(
-    `node patchDataset.js ${projectId} ${cloudRegion} ${datasetId} ${timeZone}`,
+    `node patchDataset.js ${projectId} ${cloudRegion} ${datasetId} ${timeZone}`
   );
-  assert.ok(
-    output.includes('patched with time zone')
-  );
+  assert.ok(output.includes('patched with time zone'));
 });
 
 it('should list datasets', () => {
-  const output = execSync(`node listDatasets.js ${projectId} ${cloudRegion}`, {
-  });
+  const output = execSync(
+    `node listDatasets.js ${projectId} ${cloudRegion}`,
+    {}
+  );
   assert.ok(output.includes('datasets'));
 });
 
 it('should de-identify data in a dataset and write to a new dataset', () => {
   const output = execSync(
-    `node deidentifyDataset.js ${projectId} ${cloudRegion} ${datasetId} ${destinationDatasetId} ${keeplistTags}`,
+    `node deidentifyDataset.js ${projectId} ${cloudRegion} ${datasetId} ${destinationDatasetId} ${keeplistTags}`
   );
-  assert.ok(
-    output.includes('De-identified data written')
-  );
+  assert.ok(output.includes('De-identified data written'));
 });
 
 it('should delete a dataset', () => {
   const output = execSync(
-    `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
+    `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`
   );
   assert.ok(output.includes('Deleted dataset'));
 });

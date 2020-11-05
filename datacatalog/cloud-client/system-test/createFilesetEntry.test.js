@@ -32,21 +32,21 @@ const datacatalog = new DataCatalogClient();
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
 });
 
 describe('createFilesetEntry', () => {
-  before((done) => {
+  before(done => {
     // Must create entryGroup before creating entry
     exec(`node createEntryGroup.js ${projectId} ${entryGroupId}`, {cwd}, done);
   });
 
-  it('should create a fileset entry', (done) => {
+  it('should create a fileset entry', done => {
     const expectedLinkedResource = `//datacatalog.googleapis.com/projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}/entries/${entryId}`;
     exec(
       `node createFilesetEntry.js ${projectId} ${entryGroupId} ${entryId}`,

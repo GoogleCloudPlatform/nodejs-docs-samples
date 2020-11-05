@@ -17,7 +17,7 @@
 const assert = require('assert');
 const admin = require('firebase-admin');
 const got = require('got');
-const { execSync } = require('child_process');
+const {execSync} = require('child_process');
 
 admin.initializeApp();
 
@@ -30,7 +30,7 @@ describe('System Tests', () => {
   let {SERVICE_NAME} = process.env;
   if (!SERVICE_NAME) {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "idp-sql"');
-    SERVICE_NAME = "idp-sql";
+    SERVICE_NAME = 'idp-sql';
   }
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
@@ -56,13 +56,14 @@ describe('System Tests', () => {
   let BASE_URL, ID_TOKEN;
   before(async () => {
     // Deploy service using Cloud Build
-    const buildCmd = `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-      `--config ./test/e2e_test_setup.yaml ` +
+    const buildCmd =
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
       `,_DB_PASSWORD=${DB_PASSWORD},_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
-    if(SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
-    if(DB_USER) buildCmd + `,_DB_USER=${DB_USER}`;
-    if(DB_NAME) buildCmd + `,_DB_NAME=${DB_NAME}`;
+    if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (DB_USER) buildCmd + `,_DB_USER=${DB_USER}`;
+    if (DB_NAME) buildCmd + `,_DB_NAME=${DB_NAME}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);
@@ -71,37 +72,42 @@ describe('System Tests', () => {
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-      `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`);
+        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+    );
     BASE_URL = url.toString('utf-8');
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
 
     // Retrieve ID token for testing
     const customToken = await admin.auth().createCustomToken('a-user-id');
-    const response = await got(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        token: customToken,
-        returnSecureToken: true
-      }),
-    });
+    const response = await got(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          token: customToken,
+          returnSecureToken: true,
+        }),
+      }
+    );
     const tokens = JSON.parse(response.body);
     ID_TOKEN = tokens.idToken;
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
-  })
+  });
 
   after(() => {
-    const cleanUpCmd = `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-    `--config ./test/e2e_test_cleanup.yaml ` +
-    `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`
-    if(SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    const cleanUpCmd =
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_cleanup.yaml ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+    if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
 
     execSync(cleanUpCmd);
-  })
+  });
 
   it('Can successfully make a request', async () => {
     const options = {
       prefixUrl: BASE_URL.trim(),
-      retry: 3
+      retry: 3,
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);
@@ -113,9 +119,9 @@ describe('System Tests', () => {
       method: 'POST',
       form: {team: 'DOGS'},
       headers: {
-        Authorization: `Bearer ${ID_TOKEN.trim()}`
+        Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
-      retry: 3
+      retry: 3,
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);
@@ -127,13 +133,13 @@ describe('System Tests', () => {
       method: 'POST',
       form: {team: 'DOGS'},
       headers: {
-        Authorization: `Bearer iam-a-token`
+        Authorization: 'Bearer iam-a-token',
       },
-      retry: 3
+      retry: 3,
     };
     let err;
     try {
-      const response = await got('', options);
+      await got('', options);
     } catch (e) {
       err = e;
     }
@@ -145,15 +151,14 @@ describe('System Tests', () => {
       prefixUrl: BASE_URL.trim(),
       method: 'POST',
       form: {team: 'DOGS'},
-      retry: 3
+      retry: 3,
     };
     let err;
     try {
-      const response = await got('', options);
+      await got('', options);
     } catch (e) {
       err = e;
     }
     assert.strictEqual(err.response.statusCode, 401);
   });
-
 });

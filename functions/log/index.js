@@ -23,7 +23,7 @@ exports.helloWorld = (req, res) => {
 // [END functions_log_helloworld]
 
 // [START functions_log_stackdriver]
-exports.processLogEntry = (data) => {
+exports.processLogEntry = data => {
   const dataBuffer = Buffer.from(data.data, 'base64');
 
   const logEntry = JSON.parse(dataBuffer.toString('ascii')).protoPayload;
@@ -32,5 +32,3 @@ exports.processLogEntry = (data) => {
   console.log(`Initiator: ${logEntry.authenticationInfo.principalEmail}`);
 };
 // [END functions_log_stackdriver]
-
-exports.getLogEntries = getLogEntries;

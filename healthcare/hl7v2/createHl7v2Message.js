@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-warning-comments */
-
 'use strict';
 
 const main = (
@@ -51,7 +49,7 @@ const main = (
       request
     );
     const {data} = response;
-    console.log(`Created HL7v2 message with data:\n`, data);
+    console.log('Created HL7v2 message with data:\n', data);
   };
 
   createHl7v2Message();

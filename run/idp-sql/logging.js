@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Create a Winston logger that streams to Stackdriver Logging.
-const { createLogger, transports ,format } = require('winston');
+const {createLogger, transports, format} = require('winston');
 
 // Add severity label for Stackdriver log parsing
 const addSeverity = format((info, opts) => {
@@ -26,12 +26,12 @@ const logger = createLogger({
   format: format.combine(
     addSeverity(),
     format.timestamp(),
-    format.json(),
+    format.json()
     // format.prettyPrint(), // Uncomment for local debugging
   ),
   transports: [new transports.Console()],
 });
 
 module.exports = {
-  logger
+  logger,
 };

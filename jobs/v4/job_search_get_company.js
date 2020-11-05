@@ -13,7 +13,8 @@ function sampleGetCompany(projectId, tenantId, companyId) {
   // const tenantId = 'Your Tenant ID (using tenancy is optional)';
   // const companyId = 'Company ID';
   const formattedName = client.companyPath(projectId, tenantId, companyId);
-  client.getCompany({name: formattedName})
+  client
+    .getCompany({name: formattedName})
     .then(responses => {
       const response = responses[0];
       console.log(`Company name: ${response.name}`);
@@ -24,24 +25,22 @@ function sampleGetCompany(projectId, tenantId, companyId) {
     });
 }
 
-
 // [END job_search_get_company_core]
 // [END job_search_get_company]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('company_id', {
     default: 'Company ID',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleGetCompany(argv.project_id, argv.tenant_id, argv.company_id);

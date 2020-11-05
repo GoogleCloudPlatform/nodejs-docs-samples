@@ -31,17 +31,20 @@ describe('Unit Tests', () => {
   });
 
   describe('should succeed', () => {
-    it(`should relay the CloudEvent`, async () => {
+    it('should relay the CloudEvent', async () => {
       await request
         .post('/')
         .type('json')
         .set('ce-id', 1234)
         .set('Authorization', 'MY-SECRET-VALUE') // never logged
         .send({testkey: 'testvalue'})
-        .expect((res) => {
+        .expect(res => {
           const responseBody = res.body;
 
-          assert.strictEqual(responseBody.headers.host.startsWith('127.0.0.1'), true);
+          assert.strictEqual(
+            responseBody.headers.host.startsWith('127.0.0.1'),
+            true
+          );
           assert.strictEqual(+responseBody.headers['ce-id'], 1234);
           assert.strictEqual(responseBody.headers['Authorization'], undefined);
           assert.deepStrictEqual(responseBody.body, {testkey: 'testvalue'});

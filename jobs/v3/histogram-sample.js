@@ -14,9 +14,9 @@
 
 'use strict';
 
-const basicCompanySample = require(`./basic-company-sample`);
-const basicJobSample = require(`./basic-job-sample`);
-const createAuthCredential = require(`./create-auth-credential`);
+const basicCompanySample = require('./basic-company-sample');
+const basicJobSample = require('./basic-job-sample');
+const createAuthCredential = require('./create-auth-credential');
 const customAttributeSample = require('./custom-attribute-sample');
 const sleep = require('./sleep');
 
@@ -40,7 +40,7 @@ const histogramSearch = async (jobServiceClient, companyName) => {
     };
 
     const customAttributeHistogramFacet = {
-      key: `someFieldName1`,
+      key: 'someFieldName1',
       stringValueHistogram: true,
     };
 

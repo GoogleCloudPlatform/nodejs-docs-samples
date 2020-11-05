@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "^2.0.0",
-    "axios": "^0.20.0"
+    "mocha": "^8.0.0"
   },
   "devDependencies": {
-    "mocha": "^8.0.0",
+    "node-fetch": "^2.6.1",
     "sinon": "^9.0.0"
   }
 }

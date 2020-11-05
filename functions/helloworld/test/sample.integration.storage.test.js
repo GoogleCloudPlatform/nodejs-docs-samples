@@ -38,8 +38,8 @@ describe('functions_helloworld_storage integration test', () => {
         metageneration: '1',
       },
       context: {
-        eventType: eventType
-      }
+        eventType: eventType,
+      },
     };
 
     // Run the functions-framework instance to host functions locally

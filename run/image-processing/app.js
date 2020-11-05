@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // [START run_imageproc_controller]
+// [START run_imageproc_controller]
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -57,6 +58,7 @@ app.post('/', async (req, res) => {
     res.status(500).send();
   }
 });
+// [END run_imageproc_controller]
 // [END run_imageproc_controller]
 
 module.exports = app;

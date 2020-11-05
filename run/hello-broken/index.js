@@ -13,12 +13,14 @@
 // limitations under the License.
 
 // [START run_broken_service]
+// [START run_broken_service]
 const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
   console.log('hello: received request.');
 
+  // [START run_broken_service_problem]
   // [START run_broken_service_problem]
   const {NAME} = process.env;
   if (!NAME) {
@@ -28,13 +30,16 @@ app.get('/', (req, res) => {
     return res.status(500).send('Internal Server Error');
   }
   // [END run_broken_service_problem]
+  // [END run_broken_service_problem]
   res.send(`Hello ${NAME}!`);
 });
+// [END run_broken_service]
 // [END run_broken_service]
 
 app.get('/improved', (req, res) => {
   console.log('hello: received request.');
 
+  // [START run_broken_service_upgrade]
   // [START run_broken_service_upgrade]
   const NAME = process.env.NAME || 'World';
   if (!process.env.NAME) {
@@ -46,12 +51,15 @@ app.get('/improved', (req, res) => {
     );
   }
   // [END run_broken_service_upgrade]
+  // [END run_broken_service_upgrade]
   res.send(`Hello ${NAME}!`);
 });
 
+// [START run_broken_service]
 // [START run_broken_service]
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`hello: listening on port ${port}`);
 });
+// [END run_broken_service]
 // [END run_broken_service]

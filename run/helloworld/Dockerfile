@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # [START run_helloworld_dockerfile]
+# [START run_helloworld_dockerfile]
 
 # Use the official lightweight Node.js 12 image.
 # https://hub.docker.com/_/node
@@ -37,4 +38,5 @@ COPY . ./
 # Run the web service on container startup.
 CMD [ "node", "index.js" ]
 
+# [END run_helloworld_dockerfile]
 # [END run_helloworld_dockerfile]

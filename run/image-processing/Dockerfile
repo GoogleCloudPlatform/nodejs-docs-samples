@@ -7,6 +7,7 @@
 FROM node:12-slim
 
 # [START run_imageproc_dockerfile_imagemagick]
+# [START run_imageproc_dockerfile_imagemagick]
 
 # Install Imagemagick into the container image.
 # For more on system packages review the system packages tutorial.
@@ -16,6 +17,7 @@ RUN set -ex; \
   apt-get -y install imagemagick; \
   rm -rf /var/lib/apt/lists/*
 
+# [END run_imageproc_dockerfile_imagemagick]
 # [END run_imageproc_dockerfile_imagemagick]
 
 # Create and change to the app directory.

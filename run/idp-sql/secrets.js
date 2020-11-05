@@ -19,6 +19,7 @@ const {logger} = require('./logging');
 const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
 
 // [START run_user_auth_secrets]
+// [START run_user_auth_secrets]
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 let client;
 
@@ -31,6 +32,7 @@ async function getSecrets(secretName) {
     throw Error(`Error accessing Secret Manager: ${err}`);
   }
 }
+// [END run_user_auth_secrets]
 // [END run_user_auth_secrets]
 
 // Load the Cloud SQL config from Secret Manager

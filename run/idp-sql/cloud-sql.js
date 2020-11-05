@@ -34,6 +34,7 @@ const config = {
 };
 
 // [START run_user_auth_sql_connect]
+// [START run_user_auth_sql_connect]
 /**
  * Connect to the Cloud SQL instance through UNIX Sockets
  *
@@ -54,6 +55,7 @@ const connectWithUnixSockets = async credConfig => {
     ...config,
   });
 };
+// [END run_user_auth_sql_connect]
 // [END run_user_auth_sql_connect]
 
 // Method to connect locally on Windows

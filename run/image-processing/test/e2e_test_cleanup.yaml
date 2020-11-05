@@ -18,9 +18,9 @@ steps:
   args:
   - '-c'
   - |
-    ./test/retry.sh "" \
+    ./test/retry.sh "gcloud pubsub topics describe ${_SERVICE}" \
       "gcloud pubsub topics delete ${_SERVICE} --quiet"
-    ./test/retry.sh "" \
+    ./test/retry.sh "gcloud pubsub subscriptions describe ${_SERVICE}_sub" \
       "gcloud pubsub subscriptions delete ${_SERVICE}_sub"
 
 - id: 'Delete GCS buckets'
@@ -29,10 +29,8 @@ steps:
   args:
   - '-c'
   - |
-    ./test/retry.sh "" \
-      "gsutil rm -r gs://${_SERVICE}_input"
-    ./test/retry.sh "" \
-      "gsutil rm -r gs://${_SERVICE}_output"
+    ./test/retry.sh "gsutil rm -r gs://${_SERVICE}_input"
+    ./test/retry.sh "gsutil rm -r gs://${_SERVICE}_output"
 
 substitutions:
   _SERVICE: image-processing

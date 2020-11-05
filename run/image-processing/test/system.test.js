@@ -49,16 +49,15 @@ describe('End-to-End Tests', () => {
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
       `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`);
-    BASE_URL = url.toString('utf-8');
+
+    BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
-    console.log(BASE_URL);
 
     // Retrieve ID token for testing
     let client = await auth.getIdTokenClient(BASE_URL);
     const clientHeaders = await client.getRequestHeaders();
-    ID_TOKEN = clientHeaders['Authorization'];;
+    ID_TOKEN = clientHeaders['Authorization'].trim();
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
-    console.log(ID_TOKEN)
   })
 
   after(() => {
@@ -72,9 +71,9 @@ describe('End-to-End Tests', () => {
 
   it('post(/) without body is a bad request', async () => {
     const options = {
-      prefixUrl: BASE_URL.trim(),
+      prefixUrl: BASE_URL,
       headers: {
-        Authorization: `${ID_TOKEN.trim()}`,
+        Authorization: ID_TOKEN,
       },
       method: 'POST',
       throwHttpErrors: false,
@@ -89,9 +88,9 @@ describe('End-to-End Tests', () => {
 
   it('post(/) without body message is a bad request', async () => {
     const options = {
-      prefixUrl: BASE_URL.trim(),
+      prefixUrl: BASE_URL,
       headers: {
-        Authorization: `${ID_TOKEN.trim()}`,
+        Authorization: ID_TOKEN,
       },
       method: 'POST',
       body: "test",
@@ -108,12 +107,12 @@ describe('End-to-End Tests', () => {
   it('successfully processes an image', async () => {
     const {Storage} = require('@google-cloud/storage');
     const storage = new Storage();
-    const [files] = await storage.bucket(`${SERVICE_NAME}_output`).getFiles();
-
-    console.log('Files:');
-    files.forEach(file => {
-      console.log(file.name);
-    });
-    assert(files.length > 0)
+    let file_num = 0;
+    for (i = 0; i < 10; i++) {
+      const [files] = await storage.bucket(`${SERVICE_NAME}_output`).getFiles();
+      file_num = files.length
+      if (file_num > 0) { break; }
+    }
+    assert(file_num > 0)
   });
 });

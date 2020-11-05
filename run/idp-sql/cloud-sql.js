@@ -33,6 +33,7 @@ const config = {
   createRetryIntervalMillis: 200,
 };
 
+// [START cloudrun_user_auth_sql_connect]
 // [START run_user_auth_sql_connect]
 /**
  * Connect to the Cloud SQL instance through UNIX Sockets
@@ -55,6 +56,7 @@ const connectWithUnixSockets = async credConfig => {
   });
 };
 // [END run_user_auth_sql_connect]
+// [END cloudrun_user_auth_sql_connect]
 
 // Method to connect locally on Windows
 const connectWithTcp = credConfig => {

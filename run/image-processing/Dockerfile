@@ -6,6 +6,7 @@
 # https://hub.docker.com/_/node
 FROM node:12-slim
 
+# [START cloudrun_imageproc_dockerfile_imagemagick]
 # [START run_imageproc_dockerfile_imagemagick]
 
 # Install Imagemagick into the container image.
@@ -17,6 +18,7 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*
 
 # [END run_imageproc_dockerfile_imagemagick]
+# [END cloudrun_imageproc_dockerfile_imagemagick]
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app

@@ -64,15 +64,15 @@ describe('End-to-End Tests', () => {
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
   });
 
-  // after(() => {
-  //   const cleanUpCmd =
-  //     `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-  //     '--config ./test/e2e_test_cleanup.yaml ' +
-  //     `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-  //   if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
-  //
-  //   execSync(cleanUpCmd);
-  // });
+  after(() => {
+    const cleanUpCmd =
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_cleanup.yaml ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+    if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
+
+    execSync(cleanUpCmd);
+  });
 
   it('post(/) without body is a bad request', async () => {
     const options = {

@@ -31,7 +31,7 @@ const buildRenderedHtml = async config => {
 
 // Register customer Handlebars.js helper
 handlebars.registerHelper('ternary', (comp1, comp2, opt1, opt2) => {
-  return comp1.trim() == comp2.trim() ? opt1 : opt2;
+  return comp1.trim() === comp2.trim() ? opt1 : opt2;
 });
 
 module.exports = {buildRenderedHtml};

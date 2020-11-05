@@ -139,7 +139,7 @@ describe('System Tests', () => {
     };
     let err;
     try {
-      const response = await got('', options);
+      await got('', options);
     } catch (e) {
       err = e;
     }
@@ -155,7 +155,7 @@ describe('System Tests', () => {
     };
     let err;
     try {
-      const response = await got('', options);
+      await got('', options);
     } catch (e) {
       err = e;
     }

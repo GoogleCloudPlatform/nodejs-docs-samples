@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-// [START run_imageproc_controller]
+// [START cloudrun_imageproc_controller]
 // [START run_imageproc_controller]
 
 const express = require('express');
@@ -59,6 +59,6 @@ app.post('/', async (req, res) => {
   }
 });
 // [END run_imageproc_controller]
-// [END run_imageproc_controller]
+// [END cloudrun_imageproc_controller]
 
 module.exports = app;

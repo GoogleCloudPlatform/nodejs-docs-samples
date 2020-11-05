@@ -48,6 +48,7 @@ app.get('/', async (req, res) => {
 
 // The renderRequest makes a request to the Renderer service.
 // The request returns the Markdown text converted to HTML.
+// [START cloudrun_secure_request_do]
 // [START run_secure_request_do]
 app.post('/render', async (req, res) => {
   try {
@@ -60,6 +61,7 @@ app.post('/render', async (req, res) => {
   }
 });
 // [END run_secure_request_do]
+// [END cloudrun_secure_request_do]
 
 // Exports for testing purposes.
 module.exports = {

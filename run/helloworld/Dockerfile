@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START run_helloworld_dockerfile]
+# [START cloudrun_helloworld_dockerfile]
 # [START run_helloworld_dockerfile]
 
 # Use the official lightweight Node.js 12 image.
@@ -39,4 +39,4 @@ COPY . ./
 CMD [ "node", "index.js" ]
 
 # [END run_helloworld_dockerfile]
-# [END run_helloworld_dockerfile]
+# [END cloudrun_helloworld_dockerfile]

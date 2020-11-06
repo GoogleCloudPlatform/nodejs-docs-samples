@@ -15,13 +15,10 @@
 const path = require('path');
 const assert = require('assert');
 const requestRetry = require('requestretry');
-const uuid = require('uuid');
 const sinon = require('sinon');
 const execPromise = require('child-process-promise').exec;
 
 const program = require('..');
-const fileName = `test-${uuid.v4()}.txt`;
-const bucketName = process.env.FUNCTIONS_BUCKET;
 
 const startFF = (target, signature, port) => {
   const cwd = path.join(__dirname, '..');

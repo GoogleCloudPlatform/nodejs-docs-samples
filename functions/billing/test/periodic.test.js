@@ -22,8 +22,6 @@ const promiseRetry = require('promise-retry');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
-const {BILLING_ACCOUNT} = process.env;
-
 before(async () => {
   // Re-enable compute instances using the sample file itself
   const {startInstances, listRunningInstances} = require('../');

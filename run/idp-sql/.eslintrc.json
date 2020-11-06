@@ -1,7 +1,6 @@
 {
   "rules": {
     "no-undef": "warn", 
-    "node/no-unpublished-require": "warn", 
     "no-unused-vars": "warn", 
     "no-process-exit": "warn"
   }

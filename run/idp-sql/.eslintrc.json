@@ -1,7 +1,5 @@
 {
   "rules": {
-    "no-undef": "warn", 
-    "no-unused-vars": "warn", 
-    "no-process-exit": "warn"
+    "no-process-exit": "off"
   }
 }

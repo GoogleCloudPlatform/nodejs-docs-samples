@@ -74,7 +74,9 @@ after(() => {
     execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
       cwd: cwdDatasets,
     });
-  } catch (err) {} // Ignore error
+  } catch (err) {
+    // ignore error
+  }
 });
 
 it('should store a DICOM instance', () => {

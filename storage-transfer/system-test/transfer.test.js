@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint no-empty: 0 */
 'use strict';
 
 const {Storage} = require('@google-cloud/storage');
@@ -70,23 +69,35 @@ after(() => {
   const bucketTwo = storage.bucket(secondBucketName);
   try {
     bucketOne.deleteFiles({force: true});
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
   try {
     // Intentially, try a second time.
     bucketOne.deleteFiles({force: true});
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
   try {
     bucketOne.delete();
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
   try {
     bucketTwo.deleteFiles({force: true});
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
   try {
     bucketTwo.deleteFiles({force: true});
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
   try {
     bucketTwo.delete();
-  } catch (err) {} // ignore error
+  } catch (err) {
+    // ignore error
+  }
 });
 
 it('should create a storage transfer job', done => {

@@ -59,7 +59,9 @@ after(() => {
     execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
       cwd: cwdDatasets,
     });
-  } catch (err) {} // Ignore error
+  } catch (err) {
+    // ignore error
+  }
 });
 
 it('should create an HL7v2 message', () => {

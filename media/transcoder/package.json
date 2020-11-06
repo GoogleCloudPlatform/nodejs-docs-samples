@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-docs-samples-transcoder",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": "GoogleCloudPlatform/nodejs-docs-samples",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "mocha system-test/*.test.js --timeout=60000"
+  },
+  "devDependencies": {
+    "@google-cloud/storage": "^5.0.0",
+    "mocha": "^8.0.0"
+  },
+  "dependencies": {
+    "googleapis": "^62.0.0",
+    "gtoken": "^5.0.0",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2"
+  }
+}

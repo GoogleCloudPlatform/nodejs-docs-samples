@@ -16,7 +16,7 @@
 const {createLogger, transports, format} = require('winston');
 
 // Add severity label for Stackdriver log parsing
-const addSeverity = format((info, opts) => {
+const addSeverity = format(info => {
   info.severity = info.level;
   return info;
 });

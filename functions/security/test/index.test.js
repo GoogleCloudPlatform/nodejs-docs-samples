@@ -48,7 +48,7 @@ describe('functions_bearer_token', () => {
     await sample.callingFunction(null, mocks.res);
 
     assert(mocks.fetch.calledTwice);
-    assert.deepEqual(mocks.fetch.firstCall.args[1], {
+    assert.deepStrictEqual(mocks.fetch.firstCall.args[1], {
       headers: {'Metadata-Flavor': 'Google'},
     });
 

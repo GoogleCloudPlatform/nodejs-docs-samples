@@ -30,7 +30,7 @@ const BOT_ACCESS_TOKEN =
   process.env.BOT_ACCESS_TOKEN || 'xxxx-111111111111-abcdefghidklmnopq';
 const CHANNEL = process.env.SLACK_CHANNEL || 'general';
 
-exports.notifySlack = async (pubsubEvent, context) => {
+exports.notifySlack = async pubsubEvent => {
   const pubsubAttrs = pubsubEvent.attributes;
   const pubsubData = Buffer.from(pubsubEvent.data, 'base64').toString();
   const budgetNotificationText = `${JSON.stringify(
@@ -50,7 +50,7 @@ exports.notifySlack = async (pubsubEvent, context) => {
 // [START functions_billing_stop]
 const billing = google.cloudbilling('v1').projects;
 
-exports.stopBilling = async (pubsubEvent, context) => {
+exports.stopBilling = async pubsubEvent => {
   const pubsubData = JSON.parse(
     Buffer.from(pubsubEvent.data, 'base64').toString()
   );
@@ -122,7 +122,7 @@ const _disableBillingForProject = async projectName => {
 // [END functions_billing_stop]
 
 // Helper function to restart billing (used in tests)
-exports.startBilling = async (pubsubEvent, context) => {
+exports.startBilling = async pubsubEvent => {
   const pubsubData = JSON.parse(
     Buffer.from(pubsubEvent.data, 'base64').toString()
   );
@@ -148,7 +148,7 @@ exports.startBilling = async (pubsubEvent, context) => {
 const compute = google.compute('v1');
 const ZONE = 'us-central1-a';
 
-exports.limitUse = async (pubsubEvent, context) => {
+exports.limitUse = async pubsubEvent => {
   const pubsubData = JSON.parse(
     Buffer.from(pubsubEvent.data, 'base64').toString()
   );
@@ -204,7 +204,7 @@ const _stopInstances = async (projectId, zone, instanceNames) => {
 // [END functions_billing_limit]
 
 // Helper function to restart instances (used in tests)
-exports.startInstances = async (pubsubEvent, context) => {
+exports.startInstances = async () => {
   _setAuthCredential();
   const instanceNames = await _listStoppedInstances(PROJECT_ID, ZONE);
 
@@ -250,7 +250,7 @@ const _startInstances = async (projectId, zone, instanceNames) => {
 };
 
 // Helper function used in tests
-exports.listRunningInstances = async (pubsubEvent, context) => {
+exports.listRunningInstances = async () => {
   _setAuthCredential();
   console.log(PROJECT_ID, ZONE);
   return _listRunningInstances(PROJECT_ID, ZONE);

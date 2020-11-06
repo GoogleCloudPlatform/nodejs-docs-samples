@@ -82,7 +82,7 @@ describe('functions_helloworld_pubsub integration test', () => {
     assert.strictEqual(response.statusCode, 204);
 
     // Wait for functions-framework process to exit
-    const {stdout, stderr} = await proc;
+    const {stdout} = await proc;
     assert(stdout.includes('Hello, World!'));
   });
   // [START functions_pubsub_integration_test]

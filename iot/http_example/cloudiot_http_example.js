@@ -16,7 +16,7 @@
 // [START iot_http_includes]
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const request = require('retry-request', {request: require('request')});
+const fetch = require('node-fetch');
 // [END iot_http_includes]
 
 // Create a Cloud IoT Core JWT for the given project ID, signed with the given
@@ -136,7 +136,7 @@ const url = `${urlBase}${pathSuffix}`;
 // messageCount. Telemetry events are published at a rate of 1 per second and
 // states at a rate of 1 every 2 seconds.
 // [START iot_http_publish]
-const publishAsync = (authToken, messageCount, numMessages) => {
+const publishAsync = async (authToken, messageCount, numMessages) => {
   const payload = `${argv.registryId}/${argv.deviceId}-payload-${messageCount}`;
   console.log('Publishing message:', payload);
   const binaryData = Buffer.from(payload).toString('base64');
@@ -152,13 +152,12 @@ const publishAsync = (authToken, messageCount, numMessages) => {
         };
 
   const options = {
-    url: url,
     headers: {
       authorization: `Bearer ${authToken}`,
       'content-type': 'application/json',
       'cache-control': 'no-cache',
     },
-    body: postData,
+    body: JSON.stringify(postData),
     json: true,
     method: 'POST',
     retries: 5,
@@ -169,43 +168,43 @@ const publishAsync = (authToken, messageCount, numMessages) => {
 
   // Send events for high-frequency updates, update state only occasionally.
   const delayMs = argv.messageType === 'events' ? 1000 : 2000;
-  console.log(JSON.stringify(request));
-  request(options, (error, response) => {
-    if (error) {
-      console.error('Received error: ', error);
-    } else if (response.body.error) {
-      console.error(`Received error: ${JSON.stringify(response.body.error)}`);
-    } else {
+  try {
+    const response = await fetch(url, options);
+    if (response.ok) {
       console.log('Message sent.');
+    } else {
+      console.error(`Received error: ${response.statusText}`);
     }
-    if (messageCount < numMessages) {
-      // If we have published fewer than numMessage messages, publish payload
-      // messageCount + 1.
-      setTimeout(() => {
-        const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
-        if (secsFromIssue > argv.tokenExpMins * 60) {
-          iatTime = parseInt(Date.now() / 1000);
-          console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
-          authToken = createJwt(
-            argv.projectId,
-            argv.privateKeyFile,
-            argv.algorithm
-          );
-        }
+  } catch (error) {
+    console.error('Received error: ', error);
+  }
 
-        publishAsync(authToken, messageCount + 1, numMessages);
-      }, delayMs);
-    }
-  });
+  if (messageCount < numMessages) {
+    // If we have published fewer than numMessage messages, publish payload
+    // messageCount + 1.
+    setTimeout(() => {
+      const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
+      if (secsFromIssue > argv.tokenExpMins * 60) {
+        iatTime = parseInt(Date.now() / 1000);
+        console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
+        authToken = createJwt(
+          argv.projectId,
+          argv.privateKeyFile,
+          argv.algorithm
+        );
+      }
+
+      publishAsync(authToken, messageCount + 1, numMessages);
+    }, delayMs);
+  }
 };
 // [END iot_http_publish]
 
 // [START iot_http_getconfig]
-const getConfig = (authToken, version) => {
+const getConfig = async (authToken, version) => {
   console.log(`Getting config from URL: ${urlBase}`);
 
   const options = {
-    url: `${urlBase}/config?local_version=${version}`,
     headers: {
       authorization: `Bearer ${authToken}`,
       'content-type': 'application/json',
@@ -218,16 +217,20 @@ const getConfig = (authToken, version) => {
       return incomingHttpMessage.statusMessage !== 'OK';
     },
   };
-  console.log(JSON.stringify(request.RetryStrategies));
-  request(options, (error, response, body) => {
-    if (error) {
-      console.error('Received error: ', error);
-    } else if (response.body.error) {
-      console.error(`Received error: ${JSON.stringify(response.body.error)}`);
+  try {
+    const response = await fetch(
+      `${urlBase}/config?local_version=${version}`,
+      options
+    );
+    if (response.ok) {
+      const json = await response.json();
+      console.log('Received config', json);
     } else {
-      console.log('Received config', JSON.stringify(body));
+      console.error(`Received error: ${response.statusText}`);
     }
-  });
+  } catch (error) {
+    console.error('Received error: ', error);
+  }
 };
 // [END iot_http_getconfig]
 

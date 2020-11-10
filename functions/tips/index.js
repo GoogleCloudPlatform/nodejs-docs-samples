@@ -29,6 +29,7 @@ const functionSpecificComputation = heavyComputation;
 const fileWideComputation = lightComputation;
 
 // [START functions_tips_scopes]
+// [START cloudrun_tips_global_scope]
 // [START run_tips_global_scope]
 // Global (instance-wide) scope
 // This computation runs at instance cold-start
@@ -48,9 +49,11 @@ exports.scopeDemo = (req, res) => {
   res.send(`Per instance: ${instanceVar}, per function: ${functionVar}`);
 };
 // [END run_tips_global_scope]
+// [END cloudrun_tips_global_scope]
 // [END functions_tips_scopes]
 
 // [START functions_tips_lazy_globals]
+// [START cloudrun_tips_global_lazy]
 // [START run_tips_global_lazy]
 // Always initialized (at cold-start)
 const nonLazyGlobal = fileWideComputation();
@@ -71,6 +74,7 @@ exports.lazyGlobals = (req, res) => {
   res.send(`Lazy global: ${lazyGlobal}, non-lazy global: ${nonLazyGlobal}`);
 };
 // [END run_tips_global_lazy]
+// [END cloudrun_tips_global_lazy]
 // [END functions_tips_lazy_globals]
 
 // [START functions_tips_connection_pooling]

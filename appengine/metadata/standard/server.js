@@ -15,7 +15,7 @@
 'use strict';
 
 const express = require('express');
-const request = require('got');
+const fetch = require('node-fetch');
 
 const app = express();
 app.enable('trust proxy');
@@ -30,13 +30,13 @@ const getProjectId = () => {
     },
   };
 
-  return request(METADATA_PROJECT_ID_URL, options);
+  return fetch(METADATA_PROJECT_ID_URL, options);
 };
 
 app.get('/', async (req, res, next) => {
   try {
     const response = await getProjectId();
-    const projectId = response.body;
+    const projectId = await response.text();
     res.status(200).send(`Project ID: ${projectId}`).end();
   } catch (error) {
     if (error && error.statusCode && error.statusCode !== 200) {

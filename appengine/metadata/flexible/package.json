@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "got": "^11.7.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "mocha": "^8.1.3",

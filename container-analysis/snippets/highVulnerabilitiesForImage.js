@@ -21,13 +21,18 @@
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
   imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
+  // Use imageURL = 'https://LOCATION-docker.pkg.dev/my-project/my-image:123' when
+  // using Artifact Registry
 ) {
   // [START containeranalysis_filter_vulnerability_occurrences]
   /**
    * TODO(developer): Uncomment these variables before running the sample
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
-  // const imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
+  // const occurrenceProjectId = 'your-project-id', // GCP Project Id of Occurrence
+  // If you are using Google Container Registry
+  // const imageUrl = 'https://gcr.io/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // If you are using Google Artifact Registry
 
   // Import the library and create a client
   const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');

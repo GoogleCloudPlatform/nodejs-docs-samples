@@ -20,14 +20,20 @@
 //   usage: node getDiscoveryInfo.js "project-id" "image-url"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
-  imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
+  // If you are using Google Container Registry
+  imageUrl = 'https://gcr.io/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // If you are using Google Artifact Registry
+  // imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image:123' // Image to attach metadata to
 ) {
   // [START containeranalysis_discovery_info]
   /**
    * TODO(developer): Uncomment these variables before running the sample
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
-  // const imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
+  // If you are using Google Container Registry
+  // const imageUrl = 'https://gcr.io/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // If you are using Google Artifact Registry
+  // const imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image:123' // Image to attach metadata to
 
   // Import the library and create a client
   const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');

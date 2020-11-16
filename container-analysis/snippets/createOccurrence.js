@@ -22,7 +22,10 @@ async function main(
   noteProjectId = 'your-project-id', // Your GCP Project Id
   noteId = 'my-note-id', // Id of the note
   occurrenceProjectId = 'your-project-id', // GCP Project Id of Occurrence
-  imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
+  // If you are using Google Container Registry
+  imageUrl = 'https://gcr.io/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // If you are using Google Artifact Registry
+  // imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image:123' // Image to attach metadata to
 ) {
   // [START containeranalysis_create_occurrence]
   /**
@@ -31,7 +34,10 @@ async function main(
   // const noteProjectId = 'your-project-id', // Your GCP Project Id
   // const noteId = 'my-note-id', // Id of the note
   // const occurrenceProjectId = 'your-project-id', // GCP Project Id of Occurrence
-  // const imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
+  // If you are using Google Container Registry
+  // const imageUrl = 'https://gcr.io/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // If you are using Google Artifact Registry
+  // const imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image:123' // Image to attach metadata to
 
   // Import the library and create a client
   const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');

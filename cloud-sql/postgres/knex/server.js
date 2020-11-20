@@ -35,6 +35,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Set up a variable to hold our connection pool. It would be safe to
+// initialize this right away, but we defer its instantiation to ease
+// testing different configurations.
+let knex;
+
 // Create a Winston logger that streams to Stackdriver Logging.
 const winston = require('winston');
 const { LoggingWinston } = require('@google-cloud/logging-winston');
@@ -127,16 +132,12 @@ const connect = () => {
   config.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
 
-  let knex;
   if (process.env.DB_HOST) {
-    knex = connectWithTcp(config);
+    return connectWithTcp(config);
   } else {
-    knex = connectWithUnixSockets(config);
+    return connectWithUnixSockets(config);
   }
-  return knex;
 };
-
-const knex = connect();
 
 // [START cloud_sql_postgres_knex_connection]
 /**
@@ -182,6 +183,7 @@ const getVoteCount = async (knex, candidate) => {
 };
 
 app.get('/', async (req, res) => {
+  knex = knex || connect();
   try {
     // Query the total count of "TABS" from the database.
     const tabsResult = await getVoteCount(knex, 'TABS');
@@ -218,6 +220,7 @@ app.get('/', async (req, res) => {
     });
   }
   catch (err) {
+    console.error(err);
     res
       .status(500)
       .send('Unable to load page; see logs for more details.')
@@ -227,6 +230,7 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/', async (req, res) => {
+  knex = knex || connect();
   // Get the team from the request and record the time of the vote.
   const { team } = req.body;
   const timestamp = new Date();

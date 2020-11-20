@@ -50,9 +50,9 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_postgres_knex_create_tcp]
-const connectWithTcp = (config) => {
+const connectWithTcp = config => {
   // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(":") // e.g. '127.0.0.1:5432'
+  const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
 
   // Establish a connection to the database
   return Knex({
@@ -65,14 +65,14 @@ const connectWithTcp = (config) => {
       port: dbSocketAddr[1], // e.g. '5432'
     },
     // ... Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_postgres_knex_create_tcp]
 
 // [START cloud_sql_postgres_knex_create_socket]
-const connectWithUnixSockets = (config) => {
-  const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
+const connectWithUnixSockets = config => {
+  const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
 
   // Establish a connection to the database
   return Knex({
@@ -84,9 +84,9 @@ const connectWithUnixSockets = (config) => {
       host: `${dbSocketPath}/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
     },
     // ... Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_postgres_knex_create_socket]
 
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
@@ -162,7 +162,7 @@ const insertVote = async (knex, vote) => {
  * @param {object} knex The Knex connection object.
  * @returns {Promise}
  */
-const getVotes = async (knex) => {
+const getVotes = async knex => {
   return await knex
     .select('candidate', 'time_cast')
     .from('votes')
@@ -226,7 +226,6 @@ app.get('/', async (req, res) => {
       .send('Unable to load page; see logs for more details.')
       .end();
   }
-
 });
 
 app.post('/', async (req, res) => {

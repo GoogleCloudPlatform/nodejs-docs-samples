@@ -20,27 +20,26 @@ const supertest = require('supertest');
 
 describe('Editor unit tests', () => {
   describe('Initialize app', () => {
-    it('should successfully load the index page', async function () {
+    it('should successfully load the index page', async () => {
       const {app} = require(path.join(__dirname, '..', 'app'));
       const request = supertest(app);
       await request.get('/').expect(200);
-    })
+    });
   });
 
   describe('Handlebars compiler', async () => {
     let template;
 
-    before( async () => {
+    before(async () => {
       const {buildRenderedHtml} = require(path.join(__dirname, '..', 'app'));
       template = await buildRenderedHtml();
-    })
+    });
 
     it('includes HTML from the templates', () => {
-      let htmlString = template.includes('<title>Markdown Editor</title>');
+      const htmlString = template.includes('<title>Markdown Editor</title>');
       assert.equal(htmlString, true);
     });
   });
-
 });
 
 describe('Integration tests', () => {
@@ -60,12 +59,22 @@ describe('Integration tests', () => {
     it('responds 200 OK on "POST /render" with valid JSON', async () => {
       // A valid type will make a request to the /render endpoint.
       // TODO: This test outputs a JSON parsing SyntaxError from supertest but does not fail the assert.
-      await request.post('/render').type('json').set('Accept', 'text/html').send({"data":"markdown"}).expect(200).expect('content-type', 'text/html; charset=utf-8');
+      await request
+        .post('/render')
+        .type('json')
+        .set('Accept', 'text/html')
+        .send({data: 'markdown'})
+        .expect(200)
+        .expect('content-type', 'text/html; charset=utf-8');
     });
-    
+
     it('responds 400 Bad Request on "POST /render" without valid JSON', async () => {
-      // An incorrect type will not successfully make a request and will print an error in the console. 
-      await request.post('/render').type('json').send('string: incorrect data type').expect(400);
+      // An incorrect type will not successfully make a request and will print an error in the console.
+      await request
+        .post('/render')
+        .type('json')
+        .send('string: incorrect data type')
+        .expect(400);
     });
   });
 });

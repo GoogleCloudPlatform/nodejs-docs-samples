@@ -48,18 +48,16 @@ const installDeps = 'npm install';
 // Run npm install on datasets directory because modalities
 // require bootstrapping datasets, and Kokoro needs to know
 // to install dependencies from the datasets directory.
-assert.ok(
-  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
-);
+assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
 
 before(async () => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   // Create a Cloud Storage bucket to be used for testing.
   await storage.createBucket(bucketName);
@@ -71,10 +69,9 @@ before(async () => {
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
-  execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    {cwd: cwdDatasets}
-  );
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
 });
 
 after(async () => {
@@ -87,11 +84,12 @@ after(async () => {
 
     await pubSubClient.topic(topicName).delete();
     console.log(`Topic ${topicName} deleted.`);
-    execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      {cwd: cwdDatasets}
-    );
-  } catch (err) {} // Ignore error
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+      cwd: cwdDatasets,
+    });
+  } catch (err) {
+    // ignore error
+  }
 });
 
 it('should create a FHIR store', () => {

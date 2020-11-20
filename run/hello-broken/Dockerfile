@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloudrun_broken_dockerfile]
 # [START run_broken_dockerfile]
 
 # Use the official lightweight Node.js 10 image.
@@ -38,3 +39,4 @@ COPY . ./
 CMD [ "npm", "start" ]
 
 # [END run_broken_dockerfile]
+# [END cloudrun_broken_dockerfile]

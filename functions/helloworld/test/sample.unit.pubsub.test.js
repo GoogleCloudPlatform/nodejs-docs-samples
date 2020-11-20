@@ -21,8 +21,8 @@ describe('functions_helloworld_pubsub', () => {
   const {helloPubSub} = require('..');
 
   const stubConsole = function () {
-    sinon.stub(console, `error`);
-    sinon.stub(console, `log`);
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
   };
 
   const restoreConsole = function () {

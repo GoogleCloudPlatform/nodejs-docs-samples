@@ -17,12 +17,11 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
-const uuid = require('uuid');
 
 const getSample = () => {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise((resolve) => resolve('test')));
+    .returns(new Promise(resolve => resolve('test')));
 
   return {
     sample: proxyquire('../', {
@@ -66,7 +65,7 @@ const getMocks = () => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
+  sinon.stub(console, 'error');
 };
 
 const restoreConsole = function () {
@@ -237,31 +236,6 @@ describe('functions_http_cors', () => {
     httpSample.sample.corsEnabledFunctionAuth(mocks.corsMainReq, mocks.res);
 
     assert.strictEqual(mocks.res.send.calledOnceWith('Hello World!'), true);
-  });
-});
-
-describe('functions_http_signed_url', () => {
-  it('http:getSignedUrl: should process example request', async () => {
-    const mocks = getMocks();
-    const httpSample = getSample();
-
-    const reqMock = {
-      method: 'POST',
-      body: {
-        bucket: 'nodejs-docs-samples',
-        filename: `gcf-gcs-url-${uuid.v4()}`,
-        contentType: 'application/octet-stream',
-      },
-    };
-
-    httpSample.sample.getSignedUrl(reqMock, mocks.res);
-
-    // Instead of modifying the sample to return a promise,
-    // use a delay here and keep the sample idiomatic
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    assert.strictEqual(mocks.res.status.called, false);
-    assert.strictEqual(mocks.res.send.calledOnce, true);
   });
 });
 

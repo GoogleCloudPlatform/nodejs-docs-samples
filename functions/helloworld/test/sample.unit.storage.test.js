@@ -21,8 +21,8 @@ describe('functions_helloworld_storage', () => {
   const {helloGCS} = require('..');
 
   const stubConsole = function () {
-    sinon.stub(console, `error`);
-    sinon.stub(console, `log`);
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
   };
 
   const restoreConsole = function () {
@@ -44,8 +44,8 @@ describe('functions_helloworld_storage', () => {
     };
     const context = {
       eventId: 'g1bb3r1sh',
-      eventType: eventType
-    }
+      eventType: eventType,
+    };
 
     // Call tested function and verify its behavior
     helloGCS(event, context);

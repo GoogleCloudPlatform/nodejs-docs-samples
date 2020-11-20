@@ -13,7 +13,8 @@ function sampleListTenants(projectId) {
   // const projectId = 'Your Google Cloud Project ID';
   const formattedParent = client.projectPath(projectId);
 
-  client.listTenants({parent: formattedParent})
+  client
+    .listTenants({parent: formattedParent})
     .then(responses => {
       const resources = responses[0];
       for (const resource of resources) {
@@ -26,16 +27,13 @@ function sampleListTenants(projectId) {
     });
 }
 
-
 // [END job_search_list_tenants_core]
 // [END job_search_list_tenants]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
-  .option('project_id', {
-    default: 'Your Google Cloud Project ID',
-    string: true
-  })
-  .argv;
+const argv = require('yargs').option('project_id', {
+  default: 'Your Google Cloud Project ID',
+  string: true,
+}).argv;
 
 sampleListTenants(argv.project_id);

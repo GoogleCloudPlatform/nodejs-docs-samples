@@ -1,0 +1,10 @@
+{
+  "extends": "./node_modules/gts/",
+  "env": {
+    "mocha": true
+  },
+  "rules": {
+    "node/no-missing-require": ["off"], 
+    "node/no-unpublished-require": ["off"]
+  }
+}

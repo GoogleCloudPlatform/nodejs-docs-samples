@@ -25,8 +25,8 @@ app.get('/', (req, res) => {
   res.render('index.pug');
 });
 
-io.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
+io.on('connection', socket => {
+  socket.on('chat message', msg => {
     io.emit('chat message', msg);
   });
 });
@@ -40,4 +40,4 @@ if (module === require.main) {
 }
 // [END appengine_websockets_app]
 
-module.exports = server
+module.exports = server;

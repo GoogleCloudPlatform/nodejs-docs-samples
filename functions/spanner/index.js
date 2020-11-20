@@ -46,8 +46,8 @@ exports.get = async (req, res) => {
   // Execute the query
   try {
     const results = await database.run(query);
-    const rows = results[0].map((row) => row.toJSON());
-    rows.forEach((row) => {
+    const rows = results[0].map(row => row.toJSON());
+    rows.forEach(row => {
       res.write(
         `SingerId: ${row.SingerId}, ` +
           `AlbumId: ${row.AlbumId}, ` +

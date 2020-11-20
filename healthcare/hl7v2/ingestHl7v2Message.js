@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-warning-comments */
-
 'use strict';
 
 const main = (
@@ -53,7 +51,7 @@ const main = (
     const data = response.data.hl7Ack;
     const buff = new Buffer.from(data, 'base64');
     const hl7Ack = buff.toString('ascii');
-    console.log(`Ingested HL7v2 message with ACK:\n`, hl7Ack);
+    console.log('Ingested HL7v2 message with ACK:\n', hl7Ack);
   };
 
   ingestHl7v2Message();

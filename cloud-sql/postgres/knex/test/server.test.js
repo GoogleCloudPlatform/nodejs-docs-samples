@@ -36,7 +36,8 @@ after(() => {
 it('should display the default page over tcp', async () => {
   await request(server)
     .get('/')
-    .expect((response) => {
+    .expect(200)
+    .expect(response => {
       assert.ok(response.text.includes('Tabs VS Spaces'));
     })
     .expect(200);
@@ -57,7 +58,7 @@ it('should handle insert error', async () => {
   await request(server)
     .post('/')
     .expect(400)
-    .expect((response) => {
+    .expect(response => {
       assert.ok(response.text.includes(expectedResult));
     });
 });

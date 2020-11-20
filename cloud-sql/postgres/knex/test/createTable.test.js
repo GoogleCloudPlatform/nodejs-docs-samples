@@ -34,7 +34,7 @@ before(async () => {
   };
 
   if (DB_HOST) {
-    const dbSocketAddr = process.env.DB_HOST.split(":");
+    const dbSocketAddr = process.env.DB_HOST.split(':');
     connection.host = dbSocketAddr[0];
     connection.port = dbSocketAddr[1];
   } else {
@@ -79,7 +79,7 @@ it('should create a table via unix', (done) => {
   );
 });
 
-it('should handle existing tables', (done) => {
+it('should handle existing tables', done => {
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes ${DB_HOST}`,
     { cwd },

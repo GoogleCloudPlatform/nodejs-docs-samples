@@ -16,27 +16,25 @@ function sampleDeleteCompany(projectId, tenantId, companyId) {
   client.deleteCompany({name: formattedName}).catch(err => {
     console.error(err);
   });
-  console.log(`Deleted company`);
+  console.log('Deleted company');
 }
-
 
 // [END job_search_delete_company_core]
 // [END job_search_delete_company]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('company_id', {
     default: 'ID of the company to delete',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleDeleteCompany(argv.project_id, argv.tenant_id, argv.company_id);

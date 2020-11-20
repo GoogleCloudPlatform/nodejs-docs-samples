@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-warning-comments */
-
 'use strict';
 
 const main = (
@@ -51,7 +49,7 @@ const main = (
     await healthcare.projects.locations.datasets.fhirStores.fhir.delete(
       request
     );
-    console.log(`Deleted FHIR resource`);
+    console.log('Deleted FHIR resource');
   };
 
   deleteFhirResource();

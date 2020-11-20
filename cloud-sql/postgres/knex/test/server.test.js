@@ -36,7 +36,6 @@ after(() => {
 it('should display the default page over tcp', async () => {
   await request(server)
     .get('/')
-    .expect(200)
     .expect(response => {
       assert.ok(response.text.includes('Tabs VS Spaces'));
     })

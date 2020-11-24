@@ -76,6 +76,7 @@ it('should create a table via unix', (done) => {
       if (err !== null) {
         console.log(`err: ${err}`);
       }
+      console.log(`stdout: ${stdout}`);
       assert.ok(err === null);
       assert.ok(stdout.includes(`Successfully created 'votes_unix' table.`));
       done();

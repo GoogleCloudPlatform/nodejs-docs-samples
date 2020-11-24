@@ -73,6 +73,10 @@ it('should create a table via unix', (done) => {
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_unix`,
     { cwd },
     (err, stdout) => {
+      if (err !== null) {
+        console.log(`err: ${err}`);
+      }
+      assert.ok(err === null);
       assert.ok(stdout.includes(`Successfully created 'votes_unix' table.`));
       done();
     }

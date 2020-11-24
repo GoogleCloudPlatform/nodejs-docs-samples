@@ -66,11 +66,6 @@ export TO_LANG="en,es"
 #  functions/imagemagick
 export BLURRED_BUCKET_NAME=$GOOGLE_CLOUD_PROJECT-imagick
 
-# Configure IoT variables
-export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
-export NODEJS_IOT_RSA_PRIVATE_KEY=${KOKORO_GFILE_DIR}/rsa_private.pem
-export NODEJS_IOT_RSA_PUBLIC_CERT=${KOKORO_GFILE_DIR}/rsa_cert.pem
-
 # Configure Slack variables (for functions/slack sample)
 export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt

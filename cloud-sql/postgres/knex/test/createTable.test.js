@@ -62,6 +62,7 @@ it('should create a table over tcp', (done) => {
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_tcp ${DB_HOST}`,
     { cwd },
     (err, stdout) => {
+      assert.strictEqual(stdout, `Successfully created 'votes_tcp' table.`);
       assert.ok(stdout.includes(`Successfully created 'votes_tcp' table.`));
       done();
     }

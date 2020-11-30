@@ -23,7 +23,7 @@ app.set('view engine', 'pug');
 app.enable('trust proxy');
 
 // Automatically parse request body as form data.
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Set Content-Type for all responses for these routes.
@@ -34,12 +34,17 @@ app.use((req, res, next) => {
 
 // Create a Winston logger that streams to Stackdriver Logging.
 const winston = require('winston');
-const {LoggingWinston} = require('@google-cloud/logging-winston');
+const { LoggingWinston } = require('@google-cloud/logging-winston');
 const loggingWinston = new LoggingWinston();
 const logger = winston.createLogger({
   level: 'info',
   transports: [new winston.transports.Console(), loggingWinston],
 });
+
+// Set up a variable to hold our connection pool. It would be safe to
+// initialize this right away, but we defer its instantiation to ease
+// testing different configurations.
+let pool;
 
 // [START cloud_sql_mysql_mysql_create_tcp]
 const createTcpPool = async config => {
@@ -122,23 +127,24 @@ const ensureSchema = async pool => {
   console.log("Ensured that table 'votes' exists");
 };
 
-let pool;
-const poolPromise = createPool()
-  .then(async pool => {
-    await ensureSchema(pool);
-    return pool;
-  })
-  .catch(err => {
-    logger.error(err);
-    throw err;
-  });
+const createPoolAndEnsureSchema = async () => {
+  pool = await createPool()
+    .then(async pool => {
+      await ensureSchema(pool);
+      return pool;
+    })
+    .catch(err => {
+      logger.error(err);
+      throw err;
+    });
+};
 
 app.use(async (req, res, next) => {
   if (pool) {
     return next();
   }
   try {
-    pool = await poolPromise;
+    pool = await createPoolAndEnsureSchema();
     next();
   } catch (err) {
     logger.error(err);
@@ -183,7 +189,7 @@ app.get('/', async (req, res) => {
 
 // Handle incoming vote requests and inserting them into the database.
 app.post('/', async (req, res) => {
-  const {team} = req.body;
+  const { team } = req.body;
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {

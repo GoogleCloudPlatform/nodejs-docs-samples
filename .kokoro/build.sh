@@ -94,6 +94,7 @@ gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 # Create directory for Cloud SQL unix sockets
 mkdir "${KOKORO_GFILE_DIR}/cloudsql"
+chmod 777 "${KOKORO_GFILE_DIR}/cloudsql"
 
 # Download and run the proxy if testing a Cloud SQL sample
 if [[ $SQL_CLIENT ]]; then

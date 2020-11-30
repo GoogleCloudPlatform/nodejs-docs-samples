@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Create a Dataproc cluster with the Node.js Client Library.
+// Submit a Spark job to a Dataproc cluster with the Node.js Client Library.
 
 // sample-metadata:
-//   title: Create Cluster
-//   usage: node createCluster.js <PROJECT_ID> <REGION> <CLUSTER_NAME>
+//   title: Submit Job
+//   usage: node submitJob.js <PROJECT_ID> <REGION> <CLUSTER_NAME>
 
 /*eslint no-warning-comments: [0, { "terms": ["todo", "fixme"], "location": "anywhere" }]*/
 
@@ -25,8 +25,9 @@ function main(
   region = 'YOUR_CLUSTER_REGION',
   clusterName = 'YOUR_CLUSTER_NAME'
 ) {
-  // [START dataproc_create_cluster]
+  // [START dataproc_submit_job]
   const dataproc = require('@google-cloud/dataproc');
+  const {Storage} = require('@google-cloud/storage');
 
   // TODO(developer): Uncomment and set the following variables
   // projectId = 'YOUR_PROJECT_ID'
@@ -34,41 +35,49 @@ function main(
   // clusterName = 'YOUR_CLUSTER_NAME'
 
   // Create a client with the endpoint set to the desired cluster region
-  const client = new dataproc.v1.ClusterControllerClient({
+  const jobClient = new dataproc.v1.JobControllerClient({
     apiEndpoint: `${region}-dataproc.googleapis.com`,
     projectId: projectId,
   });
 
-  async function createCluster() {
-    // Create the cluster config
-    const request = {
+  async function submitJob() {
+    const job = {
       projectId: projectId,
       region: region,
-      cluster: {
-        clusterName: clusterName,
-        config: {
-          masterConfig: {
-            numInstances: 1,
-            machineTypeUri: 'n1-standard-1',
-          },
-          workerConfig: {
-            numInstances: 2,
-            machineTypeUri: 'n1-standard-1',
-          },
+      job: {
+        placement: {
+          clusterName: clusterName,
+        },
+        sparkJob: {
+          mainClass: 'org.apache.spark.examples.SparkPi',
+          jarFileUris: [
+            'file:///usr/lib/spark/examples/jars/spark-examples.jar',
+          ],
+          args: ['1000'],
         },
       },
     };
 
-    // Create the cluster
-    const [operation] = await client.createCluster(request);
-    const [response] = await operation.promise();
+    const [jobOperation] = await jobClient.submitJobAsOperation(job);
+    const [jobResponse] = await jobOperation.promise();
 
-    // Output a success message
-    console.log(`Cluster created successfully: ${response.clusterName}`);
-    // [END dataproc_create_cluster]
+    const matches = jobResponse.driverOutputResourceUri.match(
+      'gs://(.*?)/(.*)'
+    );
+
+    const storage = new Storage();
+
+    const output = await storage
+      .bucket(matches[1])
+      .file(`${matches[2]}.000000000`)
+      .download();
+
+    // Output a success message.
+    console.log(`Job finished successfully: ${output}`);
+    // [END dataproc_submit_job]
   }
 
-  createCluster();
+  submitJob();
 }
 
 main(...process.argv.slice(2));

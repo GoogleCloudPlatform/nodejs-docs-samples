@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // This sample instantiates an inline workflow template using the client
-// library for Cloud Dataproc.
+// library for Dataproc.
 
 // sample-metadata:
 //   title: Instantiate an inline workflow template

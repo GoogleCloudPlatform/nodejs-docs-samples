@@ -61,8 +61,7 @@ describe('execute the quickstart', () => {
       `node quickstart.js "${projectId}" "${region}" "${clusterName}" "${jobFilePath}"`
     );
     assert.match(stdout, /Cluster created successfully/);
-    assert.match(stdout, /Submitted job/);
-    assert.match(stdout, /finished with state DONE:/);
+    assert.match(stdout, /Job finished successfully/);
     assert.match(stdout, /successfully deleted/);
   });
 

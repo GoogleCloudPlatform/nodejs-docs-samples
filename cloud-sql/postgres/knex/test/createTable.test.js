@@ -78,6 +78,7 @@ it('should create a table via unix', (done) => {
       }
       console.log(`stdout: ${stdout}`);
       assert.ok(err === null);
+      assert.strictEqual(stdout, `Successfully created 'votes_unix' table.`);
       assert.ok(stdout.includes(`Successfully created 'votes_unix' table.`));
       done();
     }

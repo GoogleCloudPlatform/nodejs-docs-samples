@@ -92,9 +92,6 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
-# Create directory for Cloud SQL unix sockets
-mkdir "${KOKORO_GFILE_DIR}/cloudsql"
-chmod 777 "${KOKORO_GFILE_DIR}/cloudsql"
 
 # Download and run the proxy if testing a Cloud SQL sample
 if [[ $SQL_CLIENT ]]; then
@@ -104,10 +101,10 @@ if [[ $SQL_CLIENT ]]; then
 		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
 	elif [[ $SQL_CLIENT == 'mysql' ]]; then
 		export DB_HOST=127.0.0.1:3306
-		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}/cloudsql" &>> cloud_sql_proxy.log &
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}" &>> cloud_sql_proxy.log &
 	else
 		export DB_HOST=127.0.0.1:5432
-		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}/cloudsql"  &>> cloud_sql_proxy.log &
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}"  &>> cloud_sql_proxy.log &
 	fi
 fi
 

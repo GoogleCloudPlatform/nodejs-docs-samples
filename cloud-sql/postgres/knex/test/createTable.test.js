@@ -21,7 +21,13 @@ const {exec} = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 
-const {DB_USER, DB_PASS, DB_NAME, CONNECTION_NAME, DB_HOST} = process.env;
+const {
+  DB_USER,
+  DB_PASS,
+  DB_NAME,
+  INSTANCE_CONNECTION_NAME,
+  DB_HOST,
+} = process.env;
 const SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
 
 let knex;
@@ -38,7 +44,7 @@ before(async () => {
     connection.host = dbSocketAddr[0];
     connection.port = dbSocketAddr[1];
   } else {
-    connection.host = `${SOCKET_PATH}/${CONNECTION_NAME}`;
+    connection.host = `${SOCKET_PATH}/${INSTANCE_CONNECTION_NAME}`;
   }
 
   try {
@@ -58,8 +64,12 @@ after(async () => {
 });
 
 it('should create a table over tcp', done => {
+  assert.notStrictEqual(DB_USER, undefined);
+  assert.notStrictEqual(DB_PASS, undefined);
+  assert.notStrictEqual(DB_NAME, undefined);
+  assert.notStrictEqual(DB_HOST, undefined);
   exec(
-    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_tcp ${DB_HOST}`,
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${INSTANCE_CONNECTION_NAME} votes_tcp ${DB_HOST}`,
     {cwd},
     (err, stdout) => {
       assert.ok(stdout.startsWith(`Successfully created 'votes_tcp' table.`));
@@ -69,11 +79,12 @@ it('should create a table over tcp', done => {
 });
 
 it('should create a table via unix', done => {
-  console.log(
-    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_unix`
-  );
+  assert.notStrictEqual(DB_USER, undefined);
+  assert.notStrictEqual(DB_PASS, undefined);
+  assert.notStrictEqual(DB_NAME, undefined);
+  assert.notStrictEqual(INSTANCE_CONNECTION_NAME, undefined);
   exec(
-    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_unix`,
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${INSTANCE_CONNECTION_NAME} votes_unix`,
     {cwd},
     (err, stdout) => {
       assert.strictEqual(stdout, `Successfully created 'votes_unix' table.`);
@@ -85,7 +96,7 @@ it('should create a table via unix', done => {
 
 it('should handle existing tables', done => {
   exec(
-    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes ${DB_HOST}`,
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${INSTANCE_CONNECTION_NAME} votes ${DB_HOST}`,
     {cwd},
     (err, stdout, stderr) => {
       assert.ok(stderr.includes("Failed to create 'votes' table:"));

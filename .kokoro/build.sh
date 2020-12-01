@@ -121,4 +121,6 @@ fi
 
 npm test
 
+cat cloud_sql_proxy.log
+
 exit $?

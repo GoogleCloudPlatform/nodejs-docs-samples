@@ -42,6 +42,7 @@ const createTable = async config => {
     console.log(`Successfully created '${tableName}' table.`);
     return knex.destroy();
   } catch (err) {
+    console.log(`Failed to create '${tableName}' table: ${err}`);
     console.error(`Failed to create '${tableName}' table:`, err);
     if (knex) {
       knex.destroy();

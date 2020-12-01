@@ -104,7 +104,7 @@ if [[ $SQL_CLIENT ]]; then
 		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}" &>> cloud_sql_proxy.log &
 	else
 		export DB_HOST=127.0.0.1:5432
-		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}"  &>> cloud_sql_proxy.log &
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}" &
 	fi
 fi
 
@@ -120,7 +120,5 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 fi
 
 npm test
-
-cat cloud_sql_proxy.log
 
 exit $?

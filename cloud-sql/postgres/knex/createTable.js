@@ -16,24 +16,24 @@
 
 const Knex = require('knex');
 
-const createTable = async (config) => {
-  const socketPath = process.env.DB_SOCKET_PATH || "/cloudsql";
+const createTable = async config => {
+  const socketPath = process.env.DB_SOCKET_PATH || `/cloudsql`;
   const tableName = config.tableName;
 
   // Connect to the database
   if (config.dbHost) {
-    const dbSocketAddr = config.dbHost.split(":");
+    const dbSocketAddr = config.dbHost.split(`:`);
     config.host = dbSocketAddr[0];
     config.port = dbSocketAddr[1];
   } else {
     config.host = `${socketPath}/${config.connectionName}`;
   }
 
-  const knex = Knex({ client: 'pg', connection: config });
+  const knex = Knex({client: `pg`, connection: config});
 
   // Create the "votes" table
   try {
-    await knex.schema.createTable(tableName, (table) => {
+    await knex.schema.createTable(tableName, table => {
       table.bigIncrements('vote_id').notNull();
       table.timestamp('time_cast').notNull();
       table.specificType('candidate', 'CHAR(6) NOT NULL');

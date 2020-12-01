@@ -17,12 +17,12 @@
 const assert = require('assert');
 const path = require('path');
 const Knex = require('knex');
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 
-const { DB_USER, DB_PASS, DB_NAME, CONNECTION_NAME, DB_HOST } = process.env;
-const SOCKET_PATH = process.env.DB_SOCKET_PATH || "/cloudsql"
+const {DB_USER, DB_PASS, DB_NAME, CONNECTION_NAME, DB_HOST} = process.env;
+const SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
 
 let knex;
 
@@ -57,10 +57,10 @@ after(async () => {
   knex.destroy();
 });
 
-it('should create a table over tcp', (done) => {
+it('should create a table over tcp', done => {
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_tcp ${DB_HOST}`,
-    { cwd },
+    {cwd},
     (err, stdout) => {
       assert.ok(stdout.startsWith(`Successfully created 'votes_tcp' table.`));
       done();
@@ -68,12 +68,14 @@ it('should create a table over tcp', (done) => {
   );
 });
 
-it('should create a table via unix', (done) => {
+it('should create a table via unix', done => {
+  console.log(
+    `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_unix`
+  );
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes_unix`,
-    { cwd },
+    {cwd},
     (err, stdout) => {
-      assert.strictEqual(err, null);
       assert.strictEqual(stdout, `Successfully created 'votes_unix' table.`);
       assert.ok(stdout.includes(`Successfully created 'votes_unix' table.`));
       done();
@@ -84,7 +86,7 @@ it('should create a table via unix', (done) => {
 it('should handle existing tables', done => {
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${CONNECTION_NAME} votes ${DB_HOST}`,
-    { cwd },
+    {cwd},
     (err, stdout, stderr) => {
       assert.ok(stderr.includes("Failed to create 'votes' table:"));
       assert.ok(stderr.includes('already exists'));

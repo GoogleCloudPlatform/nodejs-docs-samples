@@ -83,15 +83,10 @@ it('should create a table via unix', done => {
   assert.notStrictEqual(DB_PASS, undefined);
   assert.notStrictEqual(DB_NAME, undefined);
   assert.notStrictEqual(INSTANCE_CONNECTION_NAME, undefined);
-  assert.ok(
-    INSTANCE_CONNECTION_NAME !== undefined,
-    '$INSTANCE_CONNECTION_NAME must not be undefined'
-  );
   exec(
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${INSTANCE_CONNECTION_NAME} votes_unix`,
     {cwd},
     (err, stdout) => {
-      assert.strictEqual(stdout, `Successfully created 'votes_unix' table.`);
       assert.ok(stdout.includes(`Successfully created 'votes_unix' table.`));
       done();
     }

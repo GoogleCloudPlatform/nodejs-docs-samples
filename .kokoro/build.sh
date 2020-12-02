@@ -88,7 +88,7 @@ gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 export DB_SOCKET_PATH=$KOKORO_GFILE_DIR
-export CLOUD_SQL_CONNETION_NAME=$INSTANCE_CONNECTION_NAME
+export CLOUD_SQL_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME
 
 # Download and run the proxy if testing a Cloud SQL sample
 if [[ $SQL_CLIENT ]]; then

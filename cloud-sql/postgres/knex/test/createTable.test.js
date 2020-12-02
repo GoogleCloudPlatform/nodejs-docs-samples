@@ -72,7 +72,7 @@ it('should create a table over tcp', done => {
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${INSTANCE_CONNECTION_NAME} votes_tcp ${DB_HOST}`,
     {cwd},
     (err, stdout) => {
-      assert.ok(stdout.startsWith(`Successfully created 'votes_tcp' table.`));
+      assert.ok(stdout.startsWith("Successfully created 'votes_tcp' table."));
       done();
     }
   );
@@ -87,7 +87,7 @@ it('should create a table via unix', done => {
     `node createTable.js ${DB_USER} ${DB_PASS} ${DB_NAME} ${INSTANCE_CONNECTION_NAME} votes_unix`,
     {cwd},
     (err, stdout) => {
-      assert.ok(stdout.includes(`Successfully created 'votes_unix' table.`));
+      assert.ok(stdout.includes("Successfully created 'votes_unix' table."));
       done();
     }
   );

@@ -33,11 +33,10 @@ after(() => {
 it('should display the default via unix socket', async () => {
   await request(serverUnix)
     .get('/')
+    .expect(200)
     .expect(response => {
-      assert.strictEqual(response.text, '');
       assert.ok(response.text.includes('Tabs VS Spaces'));
-    })
-    .expect(200);
+    });
 });
 
 it('should handle insert error via unix', async () => {

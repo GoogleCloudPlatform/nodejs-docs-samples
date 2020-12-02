@@ -34,6 +34,7 @@ it('should display the default via unix socket', async () => {
   await request(serverUnix)
     .get('/')
     .expect(response => {
+      assert.strictEqual(response.text, '');
       assert.ok(response.text.includes('Tabs VS Spaces'));
     })
     .expect(200);

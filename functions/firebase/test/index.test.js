@@ -60,12 +60,14 @@ describe('functions_firebase_rtdb', () => {
         admin: true,
       },
       delta: delta,
+    };
+    const context = {
       params: {
         baz: 'quux',
       },
     };
 
-    sample.program.helloRTDB(event);
+    sample.program.helloRTDB(event, context);
 
     assert.strictEqual(console.log.calledWith('  baz: quux'), true);
     assert.strictEqual(

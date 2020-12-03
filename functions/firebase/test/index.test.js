@@ -64,8 +64,8 @@ describe('functions_firebase_rtdb', () => {
     const context = {
       params: {
         baz: 'quux',
-      }
-    }
+      },
+    };
 
     sample.program.helloRTDB(event, context);
 

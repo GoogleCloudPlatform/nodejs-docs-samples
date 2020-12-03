@@ -115,7 +115,7 @@ const createPool = async () => {
 const ensureSchema = async pool => {
   // Wait for tables to be created (if they don't already exist).
   await pool.query(
-    `CREATE TABLE IF NOT EXISTS votes1
+    `CREATE TABLE IF NOT EXISTS votes
       ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
       candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
   );

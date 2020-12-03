@@ -20,12 +20,12 @@ const {describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = 'node analyze_person_detection.js';
-const file = 'resources/googlework_short.mp4';
+const cmd = 'node analyze-person-detection-gcs.js';
+const gcsUri = 'gs://cloud-samples-data/video/googlework_short.mp4';
 
 describe('analyzing people in video', () => {
-  it('should identify people in a local file', async () => {
-    const output = execSync(`${cmd} ${file}`);
+  it('should identify people in a file in Google Storage', async () => {
+    const output = execSync(`${cmd} ${gcsUri}`);
     assert.match(output, /Landmark/);
   });
 });

@@ -15,14 +15,14 @@
 'use strict';
 
 function main(path = 'YOUR_LOCAL_FILE') {
-  // [START video_detect_person_beta]
+  // [START video_detect_person]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const gcsUri = 'GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4';
 
   // Imports the Google Cloud Video Intelligence library + Node's fs library
-  const Video = require('@google-cloud/video-intelligence').v1p3beta1;
+  const Video = require('@google-cloud/video-intelligence').v1;
   const fs = require('fs');
   // Creates a client
   const video = new Video.VideoIntelligenceServiceClient();
@@ -104,7 +104,7 @@ function main(path = 'YOUR_LOCAL_FILE') {
   }
 
   detectPerson();
-  // [END video_detect_person_beta]
+  // [END video_detect_person]
 }
 
 main(...process.argv.slice(2));

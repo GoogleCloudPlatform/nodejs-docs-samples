@@ -23,7 +23,7 @@ async function main(
   sampleRateHertz,
   languageCode
 ) {
-  // [START dialogflow_cx_detect_intent_audio]
+  // [START dialogflow_cx_detect_intent_streaming]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -37,10 +37,17 @@ async function main(
 
   // Imports the Google Cloud Some API library
   const {SessionsClient} = require('@google-cloud/dialogflow-cx');
+  /**
+   * Example for regional endpoint:
+   *   const location = 'us-central1'
+   *   const client = new SessionsClient({apiEndpoint: 'us-central1-dialogflow.googleapis.com'})
+   */
   const client = new SessionsClient();
 
   const fs = require('fs');
   const util = require('util');
+  const {Transform, pipeline} = require('stream');
+  const pump = util.promisify(pipeline);
 
   async function detectIntentAudio() {
     const sessionId = Math.random().toString(36).substring(7);
@@ -52,42 +59,64 @@ async function main(
     );
     console.info(sessionPath);
 
-    // Read the content of the audio file and send it as part of the request.
-    const readFile = util.promisify(fs.readFile);
-    const inputAudio = await readFile(audioFileName);
+    // Create a stream for the streaming request.
+    const detectStream = client
+      .streamingDetectIntent()
+      .on('error', console.error)
+      .on('data', data => {
+        if (data.recognitionResult) {
+          console.log(
+            `Intermediate Transcript: ${data.recognitionResult.transcript}`
+          );
+        } else {
+          console.log('Detected Intent:');
+          const result = data.detectIntentResponse.queryResult;
 
-    const request = {
+          console.log(`User Query: ${result.transcript}`);
+          for (const message of result.responseMessages) {
+            if (message.text) {
+              console.log(`Agent Response: ${message.text.text}`);
+            }
+          }
+          if (result.match.intent) {
+            console.log(`Matched Intent: ${result.match.intent.displayName}`);
+          }
+          console.log(`Current Page: ${result.currentPage.displayName}`);
+        }
+      });
+
+    // Write the initial stream request to config for audio input.
+    const initialStreamRequest = {
       session: sessionPath,
       queryInput: {
         audio: {
           config: {
             audioEncoding: encoding,
             sampleRateHertz: sampleRateHertz,
+            singleUtterance: true,
           },
-          audio: inputAudio,
         },
-        languageCode,
+        languageCode: languageCode,
       },
     };
-    const [response] = await client.detectIntent(request);
-    console.log(`User Query: ${response.queryResult.transcript}`);
-    for (const message of response.queryResult.responseMessages) {
-      if (message.text) {
-        console.log(`Agent Response: ${message.text.text}`);
-      }
-    }
-    if (response.queryResult.match.intent) {
-      console.log(
-        `Matched Intent: ${response.queryResult.match.intent.displayName}`
-      );
-    }
-    console.log(
-      `Current Page: ${response.queryResult.currentPage.displayName}`
+    detectStream.write(initialStreamRequest);
+
+    // Stream the audio from audio file to Dialogflow.
+    await pump(
+      fs.createReadStream(audioFileName),
+      // Format the audio stream into the request format.
+      new Transform({
+        objectMode: true,
+        transform: (obj, _, next) => {
+          next(null, {queryInput: {audio: {audio: obj}}});
+        },
+      }),
+      detectStream
     );
   }
 
   detectIntentAudio();
-  // [END dialogflow_cx_detect_intent_audio]
+  // [END dialogflow_cx_detect_intent_streaming]
 }
 
 main(...process.argv.slice(2));

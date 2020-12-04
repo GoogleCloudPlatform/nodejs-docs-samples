@@ -22,11 +22,16 @@ async function main(projectId, location, agentId, query, languageCode) {
   // const projectId = 'my-project';
   // const location = 'global';
   // const agentId = 'my-agent';
-  // const query = ['Hello'];
+  // const query = 'Hello';
   // const languageCode = 'en'
 
   // Imports the Google Cloud Some API library
   const {SessionsClient} = require('@google-cloud/dialogflow-cx');
+  /**
+   * Example for regional endpoint:
+   *   const location = 'us-central1'
+   *   const client = new SessionsClient({apiEndpoint: 'us-central1-dialogflow.googleapis.com'})
+   */
   const client = new SessionsClient();
 
   async function detectIntentText() {

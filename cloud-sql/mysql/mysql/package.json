@@ -12,8 +12,9 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "system-test": "mocha test/*.test.js --timeout=60000 --exit",
-    "test": "npm run system-test"
+    "system-test": "mocha test/server.test.js --timeout=60000 --exit",
+    "system-test-unix": "mocha test/server-unix.test.js --timeout=60000 --exit",
+    "test": "npm run system-test && npm run system-test-unix"
   },
   "dependencies": {
     "@google-cloud/logging-winston": "^4.0.0",

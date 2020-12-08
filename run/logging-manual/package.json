@@ -19,7 +19,7 @@
     "got": "^11.0.0"
   },
   "devDependencies": {
-    "@google-cloud/logging": "^8.0.0",
+    "@google-cloud/logging": "^9.0.0",
     "google-auth-library": "^6.1.3",
     "mocha": "^8.0.0"
   }

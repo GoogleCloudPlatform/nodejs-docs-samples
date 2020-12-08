@@ -56,14 +56,14 @@ describe('System Tests', () => {
   let BASE_URL, ID_TOKEN;
   before(async () => {
     // Deploy service using Cloud Build
-    const buildCmd =
+    let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
       `,_DB_PASSWORD=${DB_PASSWORD},_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
-    if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
-    if (DB_USER) buildCmd + `,_DB_USER=${DB_USER}`;
-    if (DB_NAME) buildCmd + `,_DB_NAME=${DB_NAME}`;
+    if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (DB_USER) buildCmd += `,_DB_USER=${DB_USER}`;
+    if (DB_NAME) buildCmd += `,_DB_NAME=${DB_NAME}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);
@@ -95,11 +95,11 @@ describe('System Tests', () => {
   });
 
   after(() => {
-    const cleanUpCmd =
+    let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     execSync(cleanUpCmd);
   });

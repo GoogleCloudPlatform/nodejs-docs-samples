@@ -51,7 +51,7 @@ const getLogEntries = async filter => {
   const entries = await logging.getEntries({
     filter: preparedFilter,
     autoPaginate: false,
-    pageSize: 5,
+    pageSize: 2,
   });
 
   return entries;
@@ -146,7 +146,7 @@ describe('Logging', () => {
       // Concurrency is supporting by distinctly named service deployment per test run.
       const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
         new Date(),
-        2
+        5
       )}"`;
       const entries = await getLogEntriesPolling(filter);
       entries.forEach(entry => {

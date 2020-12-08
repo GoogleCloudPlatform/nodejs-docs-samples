@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,14 +20,18 @@ const assert = require('assert');
 
 const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
-const server = require(SAMPLE_PATH);
+const _db_host_backup = process.env.DB_HOST;
+delete process.env.DB_HOST;
+
+const serverUnix = require(SAMPLE_PATH);
 
 after(() => {
-  server.close();
+  serverUnix.close();
+  process.env.DB_HOST = _db_host_backup;
 });
 
-it('should display the default page via tcp', async () => {
-  await request(server)
+it('should display the default via unix socket', async () => {
+  await request(serverUnix)
     .get('/')
     .expect(200)
     .expect(response => {
@@ -35,10 +39,10 @@ it('should display the default page via tcp', async () => {
     });
 });
 
-it('should handle insert error via tcp', async () => {
+it('should handle insert error via unix', async () => {
   const expectedResult = 'Invalid team specified';
 
-  await request(server)
+  await request(serverUnix)
     .post('/')
     .expect(400)
     .expect(response => {

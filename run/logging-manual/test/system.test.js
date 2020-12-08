@@ -67,7 +67,6 @@ describe('Logging', () => {
   let sampleLog;
 
   describe('Live Service', () => {
-
     const {GOOGLE_CLOUD_PROJECT} = process.env;
     if (!GOOGLE_CLOUD_PROJECT) {
       throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
@@ -91,38 +90,37 @@ describe('Logging', () => {
         '--config ./test/e2e_test_setup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
       if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
-  
+
       console.log('Starting Cloud Build...');
       execSync(buildCmd);
       console.log('Cloud Build completed.');
-  
+
       // Retrieve URL of Cloud Run service
       const url = execSync(
         `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
           `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
       );
-  
+
       BASE_URL = url.toString('utf-8').trim();
       if (!BASE_URL) throw Error('Cloud Run service URL not found');
-  
+
       // Retrieve ID token for testing
       const client = await auth.getIdTokenClient(BASE_URL);
       const clientHeaders = await client.getRequestHeaders();
       ID_TOKEN = clientHeaders['Authorization'].trim();
       if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
     });
-  
+
     after(() => {
       const cleanUpCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_cleanup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
       if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
-  
+
       execSync(cleanUpCmd);
     });
 
-    
     it('can be reached by an HTTP request', async () => {
       if (!BASE_URL) {
         throw Error(

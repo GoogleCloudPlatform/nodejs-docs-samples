@@ -32,11 +32,11 @@ const logging = new Logging({
 
 const getLogEntriesPolling = async (filter, max_attempts) => {
   const WRITE_CONSISTENCY_DELAY_MS = 10000;
-  const MAX_ATTEMPTS = max_attempts || 8;
+  const MAX_ATTEMPTS = max_attempts || 10;
   let entries;
 
   for (let i = 0; i < MAX_ATTEMPTS; i++) {
-    await setTimeoutPromise(WRITE_CONSISTENCY_DELAY_MS);
+    await setTimeoutPromise(WRITE_CONSISTENCY_DELAY_MS * i);
     entries = await getLogEntries(filter);
     if (entries[0] && entries[0].length > 0) {
       return entries[0];
@@ -156,14 +156,13 @@ describe('Logging', () => {
           sampleLog = entry;
         }
       });
-      console.log("entries created: ", entries.length)
+      console.log('Number of entries found: ', entries.length);
       assert(entries.length >= 2, 'creates at least 2 log entries per request');
     });
   });
 
   describe('Structured Logging', () => {
     it('retains "message" property for display text', () => {
-      console.log("sample", sampleLog)
       assert(sampleLog.data.message, 'property found in the log entry');
     });
 

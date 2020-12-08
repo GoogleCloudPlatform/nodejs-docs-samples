@@ -11,8 +11,6 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "lint": "eslint .",
-    "fix": "eslint --fix .",
     "test": "mocha --exit test/*.test.js",
     "e2e-test": "samples test deploy"
   },
@@ -23,10 +21,6 @@
     "supertest": "^6.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.0.0",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-prettier": "^3.0.0",
     "mocha": "^8.0.0",
     "puppeteer": "^5.0.0"
   }

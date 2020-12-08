@@ -156,12 +156,14 @@ describe('Logging', () => {
           sampleLog = entry;
         }
       });
+      console.log("entries created: ", entries.length)
       assert(entries.length >= 2, 'creates at least 2 log entries per request');
     });
   });
 
   describe('Structured Logging', () => {
     it('retains "message" property for display text', () => {
+      console.log("sample", sampleLog)
       assert(sampleLog.data.message, 'property found in the log entry');
     });
 

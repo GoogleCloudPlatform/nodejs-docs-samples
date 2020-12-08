@@ -66,6 +66,15 @@ export TO_LANG="en,es"
 #  functions/imagemagick
 export BLURRED_BUCKET_NAME=$GOOGLE_CLOUD_PROJECT-imagick
 
+#  eventarc environment variables
+# Cloud Run has a max service name length, $KOKORO_BUILD_ID is too long to guarantee no conflict deploys.
+set -x
+export SUFFIX="$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-z0-9' | head -c 15)"
+set +x
+export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
+export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
+
+
 # Configure IoT variables
 export NODEJS_IOT_EC_PUBLIC_KEY=${KOKORO_GFILE_DIR}/ec_public.pem
 export NODEJS_IOT_RSA_PRIVATE_KEY=${KOKORO_GFILE_DIR}/rsa_private.pem
@@ -119,5 +128,8 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 fi
 
 npm test
+if [[ ${PROJECT} = "eventarc" ]]; then 
+    npm run system-test
+fi
 
 exit $?

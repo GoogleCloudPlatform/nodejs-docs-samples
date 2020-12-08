@@ -18,6 +18,7 @@ const Knex = require('knex');
 
 const createTable = async config => {
   const socketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
+  const tableName = config.tableName;
 
   // Connect to the database
   if (config.dbHost) {
@@ -32,16 +33,17 @@ const createTable = async config => {
 
   // Create the "votes" table
   try {
-    await knex.schema.createTable('votes', table => {
+    await knex.schema.createTable(tableName, table => {
       table.bigIncrements('vote_id').notNull();
       table.timestamp('time_cast').notNull();
       table.specificType('candidate', 'CHAR(6) NOT NULL');
     });
 
-    console.log("Successfully created 'votes' table.");
+    console.log(`Successfully created '${tableName}' table.`);
     return knex.destroy();
   } catch (err) {
-    console.error("Failed to create 'votes' table:", err);
+    console.log(`Failed to create '${tableName}' table: ${err}`);
+    console.error(`Failed to create '${tableName}' table:`, err);
     if (knex) {
       knex.destroy();
     }
@@ -50,8 +52,8 @@ const createTable = async config => {
 
 require('yargs')
   .command(
-    '* <user> <password> <database> <connectionName> [dbHost]',
-    'Create a "votes" table',
+    '* <user> <password> <database> <connectionName> <tableName> [dbHost]',
+    'Create a table',
     {},
     createTable
   )

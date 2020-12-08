@@ -22,17 +22,33 @@ const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
 const server = require(SAMPLE_PATH);
 
+const _db_host_backup = process.env.DB_HOST;
+delete process.env.DB_HOST;
+
+const serverUnix = require(SAMPLE_PATH);
+
+process.env.DB_HOST = _db_host_backup;
+
 after(() => {
   server.close();
 });
 
-it('should display the default page', async () => {
+it('should display the default page over tcp', async () => {
   await request(server)
     .get('/')
-    .expect(200)
     .expect(response => {
       assert.ok(response.text.includes('Tabs VS Spaces'));
-    });
+    })
+    .expect(200);
+});
+
+it('should display the default page over unix', async () => {
+  await request(serverUnix)
+    .get('/')
+    .expect(response => {
+      assert.ok(response.text.includes('Tabs VS Spaces'));
+    })
+    .expect(200);
 });
 
 it('should handle insert error', async () => {

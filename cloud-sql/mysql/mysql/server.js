@@ -122,23 +122,28 @@ const ensureSchema = async pool => {
   console.log("Ensured that table 'votes' exists");
 };
 
+const createPoolAndEnsureSchema = async () =>
+  await createPool()
+    .then(async pool => {
+      await ensureSchema(pool);
+      return pool;
+    })
+    .catch(err => {
+      logger.error(err);
+      throw err;
+    });
+
+// Set up a variable to hold our connection pool. It would be safe to
+// initialize this right away, but we defer its instantiation to ease
+// testing different configurations.
 let pool;
-const poolPromise = createPool()
-  .then(async pool => {
-    await ensureSchema(pool);
-    return pool;
-  })
-  .catch(err => {
-    logger.error(err);
-    throw err;
-  });
 
 app.use(async (req, res, next) => {
   if (pool) {
     return next();
   }
   try {
-    pool = await poolPromise;
+    pool = await createPoolAndEnsureSchema();
     next();
   } catch (err) {
     logger.error(err);
@@ -148,6 +153,7 @@ app.use(async (req, res, next) => {
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {
+  pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Get the 5 most recent votes.
     const recentVotesQuery = pool.query(
@@ -190,6 +196,7 @@ app.post('/', async (req, res) => {
     return res.status(400).send('Invalid team specified.').end();
   }
 
+  pool = pool || (await createPoolAndEnsureSchema());
   // [START cloud_sql_mysql_mysql_connection]
   try {
     const stmt = 'INSERT INTO votes (time_cast, candidate) VALUES (?, ?)';

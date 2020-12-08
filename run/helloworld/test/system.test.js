@@ -86,6 +86,10 @@ describe('End-to-End Tests', () => {
   });
 
   it('Service uses the NAME override', async () => {
+    const {NAME} = process.env;
+    if (!NAME) {
+      throw Error('"NAME" env var not found.');
+    }
     const response = await get('/', BASE_URL);
     assert.strictEqual(
       response.statusCode,

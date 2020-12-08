@@ -70,6 +70,10 @@ export BLURRED_BUCKET_NAME=$GOOGLE_CLOUD_PROJECT-imagick
 export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
+# Replace system test's URL with the correct value
+# (Required because the integration tests ALSO use the BASE_URL variable, but for a different value)
+sed "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/**/sample.system.http.test.js 
+
 # Activate mocha config
 export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
 export MOCHA_REPORTER=xunit

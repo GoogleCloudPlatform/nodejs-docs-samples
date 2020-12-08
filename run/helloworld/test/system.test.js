@@ -85,18 +85,17 @@ describe('End-to-End Tests', () => {
     execSync(cleanUpCmd);
   });
 
-    it('Service uses the NAME override', async () => {
-      const response = await get('/', BASE_URL);
-      assert.strictEqual(
-        response.statusCode,
-        200,
-        'Did not fallback to default as expected'
-      );
-      assert.strictEqual(
-        response.body,
-        `Hello ${NAME}!`,
-        `Expected override "${NAME}" not found`
-      );
-    });
-
+  it('Service uses the NAME override', async () => {
+    const response = await get('/', BASE_URL);
+    assert.strictEqual(
+      response.statusCode,
+      200,
+      'Did not fallback to default as expected'
+    );
+    assert.strictEqual(
+      response.body,
+      `Hello ${NAME}!`,
+      `Expected override "${NAME}" not found`
+    );
+  });
 });

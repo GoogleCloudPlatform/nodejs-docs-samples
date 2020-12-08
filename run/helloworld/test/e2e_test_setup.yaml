@@ -26,7 +26,8 @@ steps:
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --no-allow-unauthenticated \
       --region ${_REGION} \
-      --platform ${_PLATFORM}"
+      --platform ${_PLATFORM} \
+      --set-env-vars NAME=${_NAME}"
 
 
 images:
@@ -37,3 +38,4 @@ substitutions:
   _VERSION: manual
   _REGION: us-central1
   _PLATFORM: managed
+  _NAME: Cloud

@@ -44,6 +44,10 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
+  const {NAME} = process.env;
+  if (!NAME) {
+    throw Error('"NAME" env var not found.');
+  }
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
@@ -52,7 +56,8 @@ describe('End-to-End Tests', () => {
     const buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
+      `,_NAME=${NAME}`;
     if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
@@ -86,10 +91,6 @@ describe('End-to-End Tests', () => {
   });
 
   it('Service uses the NAME override', async () => {
-    const {NAME} = process.env;
-    if (!NAME) {
-      throw Error('"NAME" env var not found.');
-    }
     const response = await get('/', BASE_URL);
     assert.strictEqual(
       response.statusCode,

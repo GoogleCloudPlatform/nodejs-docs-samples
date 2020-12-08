@@ -27,7 +27,6 @@ const get = (route, base_url, id_token) => {
   });
 };
 
-
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;
   if (!GOOGLE_CLOUD_PROJECT) {
@@ -87,7 +86,7 @@ describe('End-to-End Tests', () => {
 
       execSync(cleanUpCmd);
     });
-  
+
     it('Broken resource fails on any request', async () => {
       const response = await get('/', BASE_URL, ID_TOKEN);
       assert.strictEqual(
@@ -113,7 +112,7 @@ describe('End-to-End Tests', () => {
   });
 
   describe('Service with specified $NAME', () => {
-    const SERVICE_NAME_OVERRIDE = SERVICE_NAME + "-override"
+    const SERVICE_NAME_OVERRIDE = SERVICE_NAME + '-override';
     let BASE_URL_OVERRIDE, ID_TOKEN_OVERRIDE;
     before(async () => {
       // Deploy service using Cloud Build
@@ -123,34 +122,34 @@ describe('End-to-End Tests', () => {
         `--substitutions _SERVICE=${SERVICE_NAME_OVERRIDE},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
         `,_NAME=${NAME}`;
       if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
-  
+
       console.log('Starting Cloud Build...');
       execSync(buildCmd);
       console.log('Cloud Build completed.');
-  
+
       // Retrieve URL of Cloud Run service
       const url = execSync(
         `gcloud run services describe ${SERVICE_NAME_OVERRIDE} --project=${GOOGLE_CLOUD_PROJECT} ` +
           `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
       );
-  
+
       BASE_URL_OVERRIDE = url.toString('utf-8').trim();
       if (!BASE_URL_OVERRIDE) throw Error('Cloud Run service URL not found');
-  
+
       // Retrieve ID token for testing
       const client = await auth.getIdTokenClient(BASE_URL_OVERRIDE);
       const clientHeaders = await client.getRequestHeaders();
       ID_TOKEN_OVERRIDE = clientHeaders['Authorization'].trim();
       if (!ID_TOKEN_OVERRIDE) throw Error('Unable to acquire an ID token.');
     });
-  
+
     after(() => {
       const cleanUpCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_cleanup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME_OVERRIDE},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
       if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
-  
+
       execSync(cleanUpCmd);
     });
 
@@ -169,7 +168,11 @@ describe('End-to-End Tests', () => {
     });
 
     it('Fixed resource uses the NAME override', async () => {
-      const response = await get('/improved', BASE_URL_OVERRIDE, ID_TOKEN_OVERRIDE);
+      const response = await get(
+        '/improved',
+        BASE_URL_OVERRIDE,
+        ID_TOKEN_OVERRIDE
+      );
       assert.strictEqual(
         response.statusCode,
         200,

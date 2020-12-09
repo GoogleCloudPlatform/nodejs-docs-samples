@@ -29,7 +29,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-
 // [END gae_flex_quickstart]
 
 module.exports = app;

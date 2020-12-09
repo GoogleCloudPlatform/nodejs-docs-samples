@@ -32,11 +32,11 @@ const logging = new Logging({
 
 const getLogEntriesPolling = async (filter, max_attempts) => {
   const WRITE_CONSISTENCY_DELAY_MS = 10000;
-  const MAX_ATTEMPTS = max_attempts || 8;
+  const MAX_ATTEMPTS = max_attempts || 10;
   let entries;
 
   for (let i = 0; i < MAX_ATTEMPTS; i++) {
-    await setTimeoutPromise(WRITE_CONSISTENCY_DELAY_MS);
+    await setTimeoutPromise(WRITE_CONSISTENCY_DELAY_MS * i);
     entries = await getLogEntries(filter);
     if (entries[0] && entries[0].length > 0) {
       return entries[0];
@@ -47,7 +47,7 @@ const getLogEntriesPolling = async (filter, max_attempts) => {
 };
 
 const getLogEntries = async filter => {
-  const preparedFilter = `resource.type="cloud_run_revision" ${filter}`;
+  const preparedFilter = `resource.type="cloud_run_revision" severity!="default" ${filter}  NOT protoPayload.serviceName="run.googleapis.com"`;
   const entries = await logging.getEntries({
     filter: preparedFilter,
     autoPaginate: false,
@@ -85,11 +85,11 @@ describe('Logging', () => {
     let BASE_URL, ID_TOKEN;
     before(async () => {
       // Deploy service using Cloud Build
-      const buildCmd =
+      let buildCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_setup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-      if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
+      if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
       console.log('Starting Cloud Build...');
       execSync(buildCmd);
@@ -112,11 +112,11 @@ describe('Logging', () => {
     });
 
     after(() => {
-      const cleanUpCmd =
+      let cleanUpCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_cleanup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-      if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
+      if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
       execSync(cleanUpCmd);
     });
@@ -156,6 +156,7 @@ describe('Logging', () => {
           sampleLog = entry;
         }
       });
+
       assert(entries.length >= 2, 'creates at least 2 log entries per request');
     });
   });

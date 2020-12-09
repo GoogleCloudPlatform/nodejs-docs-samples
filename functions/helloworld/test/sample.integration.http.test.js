@@ -20,7 +20,7 @@ const requestRetry = require('requestretry');
 const uuid = require('uuid');
 
 const PORT = process.env.PORT || 8080;
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+const BASE_URL = `http://localhost:${PORT}`;
 const cwd = path.join(__dirname, '..');
 
 // [END functions_http_integration_test]

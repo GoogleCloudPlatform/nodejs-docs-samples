@@ -62,8 +62,6 @@ describe('System Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
       `,_DB_PASSWORD=${DB_PASSWORD},_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
-    if (DB_USER) buildCmd += `,_DB_USER=${DB_USER}`;
-    if (DB_NAME) buildCmd += `,_DB_NAME=${DB_NAME}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);

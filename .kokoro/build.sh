@@ -128,8 +128,5 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 fi
 
 npm test
-if [[ ${PROJECT} = "eventarc" ]]; then 
-    npm run system-test
-fi
 
 exit $?

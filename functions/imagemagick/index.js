@@ -30,7 +30,7 @@ const {BLURRED_BUCKET_NAME} = process.env;
 
 // [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
-exports.blurOffensiveImages = async (event) => {
+exports.blurOffensiveImages = async event => {
   // This event represents the triggering Cloud Storage object.
   const object = event;
 

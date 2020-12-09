@@ -1,0 +1,30 @@
+{
+  "name": "cloud-eventarc-generic",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha test/app.test.js --check-leaks",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "got": "^11.5.0",
+    "mocha": "^8.0.0",
+    "sinon": "^9.0.0",
+    "supertest": "^6.0.0",
+    "uuid": "^8.0.0"
+  }
+}

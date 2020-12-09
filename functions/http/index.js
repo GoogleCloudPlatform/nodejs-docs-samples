@@ -135,7 +135,9 @@ exports.uploadFile = (req, res) => {
 
   // This code will process each non-file field in the form.
   busboy.on('field', (fieldname, val) => {
-    // TODO(developer): Process submitted field values here
+    /**
+     *  TODO(developer): Process submitted field values here
+     */
     console.log(`Processed field ${fieldname}: ${val}.`);
     fields[fieldname] = val;
   });
@@ -172,7 +174,9 @@ exports.uploadFile = (req, res) => {
   busboy.on('finish', async () => {
     await Promise.all(fileWrites);
 
-    // TODO(developer): Process saved files here
+    /**
+     * TODO(developer): Process saved files here
+     */
     for (const file in uploads) {
       fs.unlinkSync(uploads[file]);
     }
@@ -182,46 +186,6 @@ exports.uploadFile = (req, res) => {
   busboy.end(req.rawBody);
 };
 // [END functions_http_form_data]
-
-// [START functions_http_signed_url]
-const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
-
-/**
- * HTTP function that generates a signed URL
- * The signed URL can be used to upload files to Google Cloud Storage (GCS)
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
- */
-exports.getSignedUrl = (req, res) => {
-  if (req.method !== 'POST') {
-    // Return a "method not allowed" error
-    return res.status(405).end();
-  }
-  // TODO(developer) check that the user is authorized to upload
-
-  // Get a reference to the destination file in GCS
-  const file = storage.bucket(req.body.bucket).file(req.body.filename);
-
-  // Create a temporary upload URL
-  const expiresAtMs = Date.now() + 300000; // Link expires in 5 minutes
-  const config = {
-    action: 'write',
-    expires: expiresAtMs,
-    contentType: req.body.contentType,
-  };
-
-  file.getSignedUrl(config, (err, url) => {
-    if (err) {
-      console.error(err);
-      res.status(500).end();
-      return;
-    }
-    res.send(url);
-  });
-};
-// [END functions_http_signed_url]
 
 // [START functions_http_cors]
 /**

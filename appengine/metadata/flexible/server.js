@@ -16,7 +16,7 @@
 
 // [START gae_flex_metadata]
 const express = require('express');
-const request = require('got');
+const fetch = require('node-fetch');
 
 const app = express();
 app.enable('trust proxy');
@@ -34,8 +34,9 @@ const getExternalIp = async () => {
   };
 
   try {
-    const {body} = await request(METADATA_NETWORK_INTERFACE_URL, options);
-    return body;
+    const response = await fetch(METADATA_NETWORK_INTERFACE_URL, options);
+    const ip = await response.json();
+    return ip;
   } catch (err) {
     console.log('Error while talking to metadata server, assuming localhost');
     return 'localhost';
@@ -57,3 +58,4 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 // [END gae_flex_metadata]
+module.exports = app;

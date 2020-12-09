@@ -15,13 +15,10 @@
 const path = require('path');
 const assert = require('assert');
 const requestRetry = require('requestretry');
-const uuid = require('uuid');
 const sinon = require('sinon');
 const execPromise = require('child-process-promise').exec;
 
 const program = require('..');
-const fileName = `test-${uuid.v4()}.txt`;
-const bucketName = process.env.FUNCTIONS_BUCKET;
 
 const startFF = (target, signature, port) => {
   const cwd = path.join(__dirname, '..');
@@ -57,11 +54,11 @@ describe('index.test.js', () => {
   before(() => {
     assert(
       process.env.GOOGLE_CLOUD_PROJECT,
-      `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+      'Must set GOOGLE_CLOUD_PROJECT environment variable!'
     );
     assert(
       process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+      'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
     );
   });
 
@@ -154,28 +151,6 @@ describe('index.test.js', () => {
         assert.ok(cb.calledOnce);
         assert.ok(cb.calledWith('I failed you'));
       });
-    });
-  });
-
-  describe('functions_helloworld_template helloTemplate', () => {
-    const PORT = 8085;
-    let ffProc;
-
-    before(() => {
-      ffProc = startFF('helloTemplate', 'http', PORT);
-    });
-
-    after(async () => {
-      await ffProc;
-    });
-
-    it('helloTemplate: should render the html', async () => {
-      const response = await httpInvocation('helloTemplate', PORT);
-
-      assert.strictEqual(response.statusCode, 200);
-      assert.ok(
-        response.body.includes('<h1>Cloud Functions Template Sample</h1>')
-      );
     });
   });
 });

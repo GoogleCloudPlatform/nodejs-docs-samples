@@ -40,7 +40,8 @@ function sampleSearchJobs(projectId, tenantId) {
     orderBy: orderBy,
   };
 
-  client.searchJobs(request)
+  client
+    .searchJobs(request)
     .then(responses => {
       const resources = responses[0];
       for (const resource of resources) {
@@ -56,20 +57,18 @@ function sampleSearchJobs(projectId, tenantId) {
     });
 }
 
-
 // [END job_search_custom_ranking_search_core]
 // [END job_search_custom_ranking_search]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleSearchJobs(argv.project_id, argv.tenant_id);

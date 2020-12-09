@@ -1,0 +1,38 @@
+{
+  "name": "idp-sql",
+  "description": "Identity Platform and Cloud SQL integrations sample for Cloud Run.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha test/app.test.js --timeout=60000 --exit",
+    "system-test": "mocha test/system.test.js --timeout=1800000 --exit"
+  },
+  "dependencies": {
+    "@google-cloud/secret-manager": "^3.1.0",
+    "express": "^4.16.2",
+    "firebase-admin": "^9.1.0",
+    "gcp-metadata": "^4.2.0",
+    "google-auth-library": "^6.1.1",
+    "handlebars": "^4.7.6",
+    "knex": "^0.21.0",
+    "pg": "^8.0.0",
+    "winston": "3.3.3"
+  },
+  "devDependencies": {
+    "got": "^11.7.0",
+    "mocha": "^8.0.0",
+    "short-uuid": "^4.1.0",
+    "sinon": "^9.2.0",
+    "supertest": "^6.0.0"
+  }
+}

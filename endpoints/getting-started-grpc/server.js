@@ -26,7 +26,7 @@ const sayHello = (call, callback) => {
 };
 
 // Start an RPC server to handle Greeter service requests
-const startServer = (PORT) => {
+const startServer = PORT => {
   const server = new grpc.Server();
   server.addProtoService(helloProto.Greeter.service, {sayHello: sayHello});
   server.bind(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure());
@@ -44,7 +44,7 @@ const {argv} = require('yargs')
   })
   .wrap(120)
   .epilogue(
-    `For more information, see https://cloud.google.com/endpoints/docs`
+    'For more information, see https://cloud.google.com/endpoints/docs'
   );
 
 startServer(argv.port);

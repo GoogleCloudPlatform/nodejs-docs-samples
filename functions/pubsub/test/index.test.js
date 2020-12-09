@@ -30,8 +30,8 @@ const MESSAGE = 'Hello, world!';
 
 describe('functions/pubsub', () => {
   const stubConsole = function () {
-    sinon.stub(console, `error`);
-    sinon.stub(console, `log`);
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
   };
 
   //Restore console
@@ -67,10 +67,10 @@ describe('functions/pubsub', () => {
         json: true,
       });
 
-      assert.strictEqual(response.statusCode, 500);
+      assert.strictEqual(response.statusCode, 400);
       assert.strictEqual(
         response.body,
-        'Missing parameter(s); include "topic" and "subscription" properties in your request.'
+        'Missing parameter(s); include "topic" and "message" properties in your request.'
       );
     });
 

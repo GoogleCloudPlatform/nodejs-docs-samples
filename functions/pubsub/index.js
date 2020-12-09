@@ -37,9 +37,9 @@ const pubsub = new PubSub();
 exports.publish = async (req, res) => {
   if (!req.body.topic || !req.body.message) {
     res
-      .status(500)
+      .status(400)
       .send(
-        'Missing parameter(s); include "topic" and "subscription" properties in your request.'
+        'Missing parameter(s); include "topic" and "message" properties in your request.'
       );
     return;
   }
@@ -75,7 +75,7 @@ exports.publish = async (req, res) => {
  * @param {object} pubsubMessage The Cloud Pub/Sub Message object.
  * @param {string} pubsubMessage.data The "data" property of the Cloud Pub/Sub Message.
  */
-exports.subscribe = (pubsubMessage) => {
+exports.subscribe = pubsubMessage => {
   // Print out the data from Pub/Sub, to prove that it worked
   console.log(Buffer.from(pubsubMessage.data, 'base64').toString());
 };

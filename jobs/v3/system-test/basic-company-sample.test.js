@@ -16,7 +16,7 @@
 
 const assert = require('assert');
 const {execSync} = require('child_process');
-const runSample = `require('./basic-company-sample').runSample()`;
+const runSample = "require('./basic-company-sample').runSample()";
 
 it('Should create a company, get a company, update a company, update a company with field mask and delete a company', () => {
   const output = execSync(`node -e ${runSample}`);

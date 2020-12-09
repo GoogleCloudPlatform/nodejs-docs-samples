@@ -14,9 +14,9 @@
 
 'use strict';
 
-const basicCompanySample = require(`./basic-company-sample`);
-const basicJobSample = require(`./basic-job-sample`);
-const createAuthCredential = require(`./create-auth-credential`);
+const basicCompanySample = require('./basic-company-sample');
+const basicJobSample = require('./basic-job-sample');
+const createAuthCredential = require('./create-auth-credential');
 const sleep = require('./sleep');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
@@ -34,7 +34,7 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 /**
  * Creates a job as featured.
  */
-const generateFeaturedJob = (companyName) => {
+const generateFeaturedJob = companyName => {
   const requisitionId = `"featuredJob: ${new Date().getTime()}}`;
   const jobTitle = 'Software Engineer';
   const applicationUrls = ['http://careers.google.com'];

@@ -2,6 +2,7 @@
 # Use of this source code is governed by the Apache 2.0
 # license that can be found in the LICENSE file.
 
+# [START cloudrun_pubsub_dockerfile]
 # [START run_pubsub_dockerfile]
 
 # Use the official lightweight Node.js 10 image.
@@ -28,3 +29,4 @@ COPY . .
 CMD [ "npm", "start" ]
 
 # [END run_pubsub_dockerfile]
+# [END cloudrun_pubsub_dockerfile]

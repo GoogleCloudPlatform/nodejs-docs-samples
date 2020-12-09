@@ -28,27 +28,25 @@ function sampleBatchDeleteJobs(projectId, tenantId, filter) {
   client.batchDeleteJobs(request).catch(err => {
     console.error(err);
   });
-  console.log(`Batch deleted jobs from filter`);
+  console.log('Batch deleted jobs from filter');
 }
-
 
 // [END job_search_batch_delete_job_core]
 // [END job_search_batch_delete_job]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('filter', {
     default: '[Query]',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleBatchDeleteJobs(argv.project_id, argv.tenant_id, argv.filter);

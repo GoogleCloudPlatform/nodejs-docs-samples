@@ -35,8 +35,8 @@ const getSample = () => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 const restoreConsole = function () {
@@ -60,12 +60,14 @@ describe('functions_firebase_rtdb', () => {
         admin: true,
       },
       delta: delta,
+    };
+    const context = {
       params: {
         baz: 'quux',
       },
     };
 
-    sample.program.helloRTDB(event);
+    sample.program.helloRTDB(event, context);
 
     assert.strictEqual(console.log.calledWith('  baz: quux'), true);
     assert.strictEqual(
@@ -205,9 +207,9 @@ describe('functions_firebase_reactive', () => {
       name: 'foo/documents/bar',
       fields: {
         original: {
-          stringValue: 'abc'
-        }
-      }
+          stringValue: 'abc',
+        },
+      },
     };
 
     const event = {
@@ -217,7 +219,10 @@ describe('functions_firebase_reactive', () => {
 
     sample.program.makeUpperCase(event);
 
-    assert.strictEqual(console.log.calledWith('Replacing value: abc --> ABC'), true);
+    assert.strictEqual(
+      console.log.calledWith('Replacing value: abc --> ABC'),
+      true
+    );
     assert.strictEqual(sample.mocks.firestore.doc.calledWith('bar'), true);
     assert.strictEqual(sample.mocks.firestore.set.callCount, 1);
   });
@@ -229,9 +234,9 @@ describe('functions_firebase_reactive', () => {
       name: 'foo/documents/bar',
       fields: {
         original: {
-          stringValue: 'ABC'
-        }
-      }
+          stringValue: 'ABC',
+        },
+      },
     };
 
     const event = {
@@ -241,7 +246,10 @@ describe('functions_firebase_reactive', () => {
 
     sample.program.makeUpperCase(event);
 
-    assert.strictEqual(console.log.calledWith('Value is already upper-case.'), true);
+    assert.strictEqual(
+      console.log.calledWith('Value is already upper-case.'),
+      true
+    );
     assert.strictEqual(sample.mocks.firestore.set.callCount, 0);
   });
 });

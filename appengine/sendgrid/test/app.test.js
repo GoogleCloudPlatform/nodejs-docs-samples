@@ -11,7 +11,7 @@ describe('gae_flex_sendgrid', () => {
     await request
       .get('/')
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         assert(response.text.includes('Hello World!'));
       });
   });
@@ -22,7 +22,7 @@ describe('gae_flex_sendgrid', () => {
       .type('form')
       .send({email: 'testuser@google.com'})
       .expect(200)
-      .expect((response) => {
+      .expect(response => {
         assert(response.text.includes('Email sent!'));
       });
   });

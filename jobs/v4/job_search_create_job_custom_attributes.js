@@ -12,7 +12,13 @@ const talent = require('@google-cloud/talent').v4beta1;
  * @param projectId {string} Your Google Cloud Project ID
  * @param tenantId {string} Identifier of the Tenantd
  */
-function sampleCreateJob(projectId, tenantId, companyName, requisitionId, languageCode) {
+function sampleCreateJob(
+  projectId,
+  tenantId,
+  companyName,
+  requisitionId,
+  languageCode
+) {
   const client = new talent.JobServiceClient();
   // const projectId = 'Your Google Cloud Project ID';
   // const tenantId = 'Your Tenant ID (using tenancy is optional)';
@@ -29,7 +35,8 @@ function sampleCreateJob(projectId, tenantId, companyName, requisitionId, langua
     parent: formattedParent,
     job: job,
   };
-  client.createJob(request)
+  client
+    .createJob(request)
     .then(responses => {
       const response = responses[0];
       console.log(`Created job: ${response.name}`);
@@ -39,32 +46,36 @@ function sampleCreateJob(projectId, tenantId, companyName, requisitionId, langua
     });
 }
 
-
 // [END job_search_create_job_custom_attributes_core]
 // [END job_search_create_job_custom_attributes]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('company_name', {
     default: 'Company name, e.g. projects/your-project/companies/company-id',
-    string: true
+    string: true,
   })
   .option('requisition_id', {
     default: 'Job requisition ID, aka Posting ID. Unique per job.',
-    string: true
+    string: true,
   })
   .option('language_code', {
     default: 'en-US',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
-sampleCreateJob(argv.project_id, argv.tenant_id, argv.company_name, argv.requisition_id, argv.language_code);
+sampleCreateJob(
+  argv.project_id,
+  argv.tenant_id,
+  argv.company_name,
+  argv.requisition_id,
+  argv.language_code
+);

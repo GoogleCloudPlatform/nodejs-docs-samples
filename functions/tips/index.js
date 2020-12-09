@@ -29,6 +29,7 @@ const functionSpecificComputation = heavyComputation;
 const fileWideComputation = lightComputation;
 
 // [START functions_tips_scopes]
+// [START cloudrun_tips_global_scope]
 // [START run_tips_global_scope]
 // Global (instance-wide) scope
 // This computation runs at instance cold-start
@@ -48,9 +49,11 @@ exports.scopeDemo = (req, res) => {
   res.send(`Per instance: ${instanceVar}, per function: ${functionVar}`);
 };
 // [END run_tips_global_scope]
+// [END cloudrun_tips_global_scope]
 // [END functions_tips_scopes]
 
 // [START functions_tips_lazy_globals]
+// [START cloudrun_tips_global_lazy]
 // [START run_tips_global_lazy]
 // Always initialized (at cold-start)
 const nonLazyGlobal = fileWideComputation();
@@ -71,10 +74,11 @@ exports.lazyGlobals = (req, res) => {
   res.send(`Lazy global: ${lazyGlobal}, non-lazy global: ${nonLazyGlobal}`);
 };
 // [END run_tips_global_lazy]
+// [END cloudrun_tips_global_lazy]
 // [END functions_tips_lazy_globals]
 
 // [START functions_tips_connection_pooling]
-const axios = require('axios');
+const fetch = require('node-fetch');
 
 const http = require('http');
 const https = require('https');
@@ -90,7 +94,7 @@ const httpsAgent = new https.Agent({keepAlive: true});
  */
 exports.connectionPooling = async (req, res) => {
   try {
-    const {data} = await axios.get('/', {httpAgent, httpsAgent});
+    const {data} = await fetch('/', {httpAgent, httpsAgent});
     res.status(200).send(`Data: ${data}`);
   } catch (err) {
     res.status(500).send(`Error: ${err.message}`);
@@ -119,7 +123,7 @@ exports.avoidInfiniteRetries = (event, callback) => {
 
   // Do what the function is supposed to do
   console.log(`Processing event ${event} with age ${eventAge} ms.`);
-  
+
   // Retry failed function executions
   const failed = false;
   if (failed) {
@@ -139,11 +143,11 @@ exports.avoidInfiniteRetries = (event, callback) => {
  * @param {object} event.data Data included with the event.
  * @param {object} event.data.retry User-supplied parameter that tells the function whether to retry.
  */
-exports.retryPromise = (event) => {
+exports.retryPromise = event => {
   const tryAgain = !!event.data.retry;
 
   if (tryAgain) {
-    throw new Error(`Retrying...`);
+    throw new Error('Retrying...');
   } else {
     return Promise.reject(new Error('Not retrying...'));
   }
@@ -188,7 +192,7 @@ const pubsub = new PubSub();
 exports.gcpApiCall = (req, res) => {
   const topic = pubsub.topic(req.body.topic);
 
-  topic.publish(Buffer.from('Test message'), (err) => {
+  topic.publish(Buffer.from('Test message'), err => {
     if (err) {
       res.status(500).send(`Error publishing the message: ${err}`);
     } else {

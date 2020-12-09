@@ -19,10 +19,11 @@ function sampleCreateTenant(projectId, externalId) {
     parent: formattedParent,
     tenant: tenant,
   };
-  client.createTenant(request)
+  client
+    .createTenant(request)
     .then(responses => {
       const response = responses[0];
-      console.log(`Created Tenant`);
+      console.log('Created Tenant');
       console.log(`Name: ${response.name}`);
       console.log(`External ID: ${response.externalId}`);
     })
@@ -31,20 +32,18 @@ function sampleCreateTenant(projectId, externalId) {
     });
 }
 
-
 // [END job_search_create_tenant_core]
 // [END job_search_create_tenant]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('external_id', {
     default: 'Your Unique Identifier for Tenant',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
 sampleCreateTenant(argv.project_id, argv.external_id);

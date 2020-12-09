@@ -68,6 +68,8 @@ export BLURRED_BUCKET_NAME=$GOOGLE_CLOUD_PROJECT-imagick
 
 #  eventarc environment variables
 # Cloud Run has a max service name length, $KOKORO_BUILD_ID is too long to guarantee no conflict deploys.
+export SAMPLE_VERSION="${RAW_SAMPLE_VERSION:0:15}"
+export SAMPLE_NAME="$(basename $(pwd))"
 set -x
 export SUFFIX="$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-z0-9' | head -c 15)"
 set +x

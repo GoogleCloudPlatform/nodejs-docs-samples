@@ -13,30 +13,30 @@
 // limitations under the License.
 
 // [START functions_http_system_test]
-const assert = require('assert');
-const Supertest = require('supertest');
-const PORT = process.env.PORT || 8080;
-const BASE_URL = `http://localhost:${PORT}`;
-const supertest = Supertest(BASE_URL);
+// const assert = require('assert');
+// const Supertest = require('supertest');
+// const PORT = process.env.PORT || 8080;
+// const BASE_URL = `http://localhost:${PORT}`;
+// const supertest = Supertest(BASE_URL);
 
-describe('system tests', () => {
-  it('helloHttp: should print a name', async () => {
-    await supertest
-      .post('/helloHttp')
-      .send({name: 'John'})
-      .expect(200)
-      .expect(response => {
-        assert.strictEqual(response.text, 'Hello John!');
-      });
-  });
-  // [END functions_http_system_test]
+// describe('system tests', () => {
+//   it('helloHttp: should print a name', async () => {
+//     await supertest
+//       .post('/helloHttp')
+//       .send({name: 'John'})
+//       .expect(200)
+//       .expect(response => {
+//         assert.strictEqual(response.text, 'Hello John!');
+//       });
+//   });
+//   // [END functions_http_system_test]
 
-  it('helloHttp: should print hello world', async () => {
-    await supertest
-      .get('/helloHttp')
-      .expect(200)
-      .expect(response => {
-        assert.strictEqual(response.text, 'Hello World!');
-      });
-  });
-});
+//   it('helloHttp: should print hello world', async () => {
+//     await supertest
+//       .get('/helloHttp')
+//       .expect(200)
+//       .expect(response => {
+//         assert.strictEqual(response.text, 'Hello World!');
+//       });
+//   });
+// });

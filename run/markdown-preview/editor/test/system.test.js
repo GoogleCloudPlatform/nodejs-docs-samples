@@ -36,22 +36,22 @@ describe('End-to-End Tests', () => {
   let BASE_URL, ID_TOKEN;
   before(async () => {
     // Deploy Renderer service
-    const buildRendererCmd =
+    let buildRendererCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ../renderer/test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=renderer-${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) buildRendererCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) buildRendererCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build for Renderer service...');
     execSync(buildRendererCmd, {cwd: '../renderer'});
     console.log('Cloud Build completed.\n');
 
     // Deploy Editor service using Cloud Build
-    const buildCmd =
+    let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build for Editor service...');
     execSync(buildCmd);
@@ -72,11 +72,11 @@ describe('End-to-End Tests', () => {
   });
 
   after(() => {
-    const cleanUpCmd =
+    let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     execSync(cleanUpCmd);
   });

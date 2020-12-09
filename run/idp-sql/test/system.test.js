@@ -45,7 +45,6 @@ describe('System Tests', () => {
   if (!DB_PASSWORD) {
     throw Error('"DB_PASSWORD" env var not found.');
   }
-  const {DB_NAME, DB_USER} = process.env;
 
   // Get Firebase Key to create Id Tokens
   const {IDP_KEY} = process.env;

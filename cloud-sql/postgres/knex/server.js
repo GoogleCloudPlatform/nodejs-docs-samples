@@ -44,10 +44,15 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
+// Set up a variable to hold our connection pool. It would be safe to
+// initialize this right away, but we defer its instantiation to ease
+// testing different configurations.
+let pool;
+
 // [START cloud_sql_postgres_knex_create_tcp]
-const connectWithTcp = (config) => {
+const createTcpPool = config => {
   // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(":") // e.g. '127.0.0.1:5432'
+  const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
 
   // Establish a connection to the database
   return Knex({
@@ -60,14 +65,14 @@ const connectWithTcp = (config) => {
       port: dbSocketAddr[1], // e.g. '5432'
     },
     // ... Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_postgres_knex_create_tcp]
 
 // [START cloud_sql_postgres_knex_create_socket]
-const connectWithUnixSockets = (config) => {
-  const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
+const createUnixSocketPool = config => {
+  const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
 
   // Establish a connection to the database
   return Knex({
@@ -79,17 +84,17 @@ const connectWithUnixSockets = (config) => {
       host: `${dbSocketPath}/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
     },
     // ... Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_postgres_knex_create_socket]
 
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
-const connect = () => {
+const createPool = () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
-  let config = {pool: {}};
+  const config = {pool: {}};
 
   // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
@@ -101,16 +106,16 @@ const connect = () => {
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
-  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a 
-  // connection from the pool. This is slightly different from connectionTimeout, because acquiring 
+  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
+  // connection from the pool. This is slightly different from connectionTimeout, because acquiring
   // a pool connection does not always involve making a new connection, and may include multiple retries.
   // when making a connection
   config.pool.acquireTimeoutMillis = 60000; // 60 seconds
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
-  // initial connection before retrying. 
+  // initial connection before retrying.
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
   config.createTimeoutMillis = 30000; // 30 seconds
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool 
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
   config.idleTimeoutMillis = 600000; // 10 minutes
   // [END cloud_sql_postgres_knex_timeout]
@@ -121,28 +126,24 @@ const connect = () => {
   config.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
 
-  let knex;
   if (process.env.DB_HOST) {
-    knex = connectWithTcp(config);
+    return createTcpPool(config);
   } else {
-    knex = connectWithUnixSockets(config);
+    return createUnixSocketPool(config);
   }
-  return knex;
 };
-
-const knex = connect();
 
 // [START cloud_sql_postgres_knex_connection]
 /**
  * Insert a vote record into the database.
  *
- * @param {object} knex The Knex connection object.
+ * @param {object} pool The Knex connection object.
  * @param {object} vote The vote record to insert.
  * @returns {Promise}
  */
-const insertVote = async (knex, vote) => {
+const insertVote = async (pool, vote) => {
   try {
-    return await knex('votes').insert(vote);
+    return await pool('votes').insert(vote);
   } catch (err) {
     throw Error(err);
   }
@@ -152,11 +153,11 @@ const insertVote = async (knex, vote) => {
 /**
  * Retrieve the latest 5 vote records from the database.
  *
- * @param {object} knex The Knex connection object.
+ * @param {object} pool The Knex connection object.
  * @returns {Promise}
  */
-const getVotes = async (knex) => {
-  return await knex
+const getVotes = async pool => {
+  return await pool
     .select('candidate', 'time_cast')
     .from('votes')
     .orderBy('time_cast', 'desc')
@@ -167,24 +168,25 @@ const getVotes = async (knex) => {
  * Retrieve the total count of records for a given candidate
  * from the database.
  *
- * @param {object} knex The Knex connection object.
+ * @param {object} pool The Knex connection object.
  * @param {object} candidate The candidate for which to get the total vote count
  * @returns {Promise}
  */
-const getVoteCount = async (knex, candidate) => {
-  return await knex('votes').count('vote_id').where('candidate', candidate);
+const getVoteCount = async (pool, candidate) => {
+  return await pool('votes').count('vote_id').where('candidate', candidate);
 };
 
 app.get('/', async (req, res) => {
+  pool = pool || createPool();
   try {
     // Query the total count of "TABS" from the database.
-    const tabsResult = await getVoteCount(knex, 'TABS');
+    const tabsResult = await getVoteCount(pool, 'TABS');
     const tabsTotalVotes = parseInt(tabsResult[0].count);
     // Query the total count of "SPACES" from the database.
-    const spacesResult = await getVoteCount(knex, 'SPACES');
+    const spacesResult = await getVoteCount(pool, 'SPACES');
     const spacesTotalVotes = parseInt(spacesResult[0].count);
     // Query the last 5 votes from the database.
-    const votes = await getVotes(knex);
+    const votes = await getVotes(pool);
     // Calculate and set leader values.
     let leadTeam = '';
     let voteDiff = 0;
@@ -197,9 +199,8 @@ app.get('/', async (req, res) => {
         leadTeam = 'SPACES';
         voteDiff = spacesTotalVotes - tabsTotalVotes;
       }
-      leaderMessage = `${leadTeam} are winning by ${voteDiff} vote${
-        voteDiff > 1 ? 's' : ''
-      }.`;
+      leaderMessage =
+        `${leadTeam} are winning by ${voteDiff} vote` + voteDiff > 1 ? 's' : '';
     } else {
       leaderMessage = 'TABS and SPACES are evenly matched!';
     }
@@ -211,17 +212,17 @@ app.get('/', async (req, res) => {
       voteDiff: voteDiff,
       leaderMessage: leaderMessage,
     });
-  }
-  catch(err) {
+  } catch (err) {
+    console.error(err);
     res
       .status(500)
       .send('Unable to load page; see logs for more details.')
       .end();
   }
-    
 });
 
 app.post('/', async (req, res) => {
+  pool = pool || createPool();
   // Get the team from the request and record the time of the vote.
   const {team} = req.body;
   const timestamp = new Date();
@@ -239,7 +240,7 @@ app.post('/', async (req, res) => {
 
   // Save the data to the database.
   try {
-    await insertVote(knex, vote);
+    await insertVote(pool, vote);
   } catch (err) {
     logger.error(`Error while attempting to submit vote:${err}`);
     res

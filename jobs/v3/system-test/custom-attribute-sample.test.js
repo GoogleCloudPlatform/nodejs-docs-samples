@@ -16,7 +16,7 @@
 
 const assert = require('assert');
 const {execSync} = require('child_process');
-const runSample = `require('./custom-attribute-sample').runSample()`;
+const runSample = "require('./custom-attribute-sample').runSample()";
 
 it('should search job with custom attribute filter', () => {
   const output = execSync(`node -e ${runSample}`);

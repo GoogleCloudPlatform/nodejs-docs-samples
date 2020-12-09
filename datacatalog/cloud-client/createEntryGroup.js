@@ -1,5 +1,3 @@
-/* eslint-disable no-warning-comments */
-
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +21,10 @@
  * For more information, see the README.md under /datacatalog and the
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
-const main = async (projectId = process.env.GOOGLE_CLOUD_PROJECT, entryGroupId) => {
+const main = async (
+  projectId = process.env.GOOGLE_CLOUD_PROJECT,
+  entryGroupId
+) => {
   // [START datacatalog_create_entry_group_tag]
   // -------------------------------
   // Import required modules.

@@ -37,18 +37,16 @@ const installDeps = 'npm install';
 // Run npm install on datasets directory because modalities
 // require bootstrapping datasets, and Kokoro needs to know
 // to install dependencies from the datasets directory.
-assert.ok(
-  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
-);
+assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
 
 before(async () => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
@@ -64,7 +62,9 @@ after(async () => {
     execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
       cwd: cwdDatasets,
     });
-  } catch (err) {} // Ignore error
+  } catch (err) {
+    // ignore error
+  }
 });
 
 it('should create an HL7v2 store', () => {

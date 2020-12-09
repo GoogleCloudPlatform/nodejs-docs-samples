@@ -17,7 +17,7 @@
   "devDependencies": {
     "mocha": "^8.0.0",
     "sinon": "^9.0.0",
-    "supertest": "^4.0.0"
+    "supertest": "^6.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"

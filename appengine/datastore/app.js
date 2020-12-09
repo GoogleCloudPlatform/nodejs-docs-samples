@@ -36,7 +36,7 @@ const datastore = new Datastore();
  *
  * @param {object} visit The visit record to insert.
  */
-const insertVisit = (visit) => {
+const insertVisit = visit => {
   return datastore.save({
     key: datastore.key('visit'),
     data: visit,
@@ -71,7 +71,7 @@ app.get('/', async (req, res, next) => {
     await insertVisit(visit);
     const [entities] = await getVisits();
     const visits = entities.map(
-      (entity) => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
+      entity => `Time: ${entity.timestamp}, AddrHash: ${entity.userIp}`
     );
     res
       .status(200)

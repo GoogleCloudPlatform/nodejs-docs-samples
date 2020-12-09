@@ -14,8 +14,8 @@
 
 'use strict';
 
-const basicCompanySample = require(`./basic-company-sample`);
-const createAuthCredential = require(`./create-auth-credential`);
+const basicCompanySample = require('./basic-company-sample');
+const createAuthCredential = require('./create-auth-credential');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 
@@ -40,7 +40,7 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 /**
  * Generate a basic job with given companyName.
  */
-const generateJobWithRequiredFields = (companyName) => {
+const generateJobWithRequiredFields = companyName => {
   const applicationUris = ['http://careers.google.com'];
   const description =
     'Design, develop, test, deploy, maintain and improve software.';
@@ -79,7 +79,7 @@ const createJob = async (jobServiceClient, jobToBeCreated) => {
     console.log(`Job created: ${JSON.stringify(jobCreated.data)}`);
     return jobCreated.data;
   } catch (e) {
-    console.error(`Got exception while creating job!`);
+    console.error('Got exception while creating job!');
     throw e;
   }
 };
@@ -126,7 +126,7 @@ const updateJob = async (jobServiceClient, jobName, jobToBeUpdated) => {
     console.log(`Job updated: ${JSON.stringify(jobUpdated.data)}`);
     return jobUpdated.data;
   } catch (e) {
-    console.error(`Got exception while updating job!`);
+    console.error('Got exception while updating job!');
     throw e;
   }
 };
@@ -157,7 +157,7 @@ const updateJobWithFieldMask = async (
     console.log(`Job updated: ${JSON.stringify(jobUpdated.data)}`);
     return jobUpdated.data;
   } catch (e) {
-    console.error(`Got exception while updating job with field mask!`);
+    console.error('Got exception while updating job with field mask!');
     throw e;
   }
 };

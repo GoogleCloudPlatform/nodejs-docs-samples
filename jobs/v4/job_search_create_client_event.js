@@ -36,7 +36,8 @@ function sampleCreateClientEvent(projectId, tenantId, requestId, eventId) {
 
   // List of job names associated with this event
   const jobsElement = 'projects/[Project ID]/tenants/[Tenant ID]/jobs/[Job ID]';
-  const jobsElement2 = 'projects/[Project ID]/tenants/[Tenant ID]/jobs/[Job ID]';
+  const jobsElement2 =
+    'projects/[Project ID]/tenants/[Tenant ID]/jobs/[Job ID]';
   const jobs = [jobsElement, jobsElement2];
   const jobEvent = {
     type: type,
@@ -52,38 +53,41 @@ function sampleCreateClientEvent(projectId, tenantId, requestId, eventId) {
     parent: formattedParent,
     clientEvent: clientEvent,
   };
-  client.createClientEvent(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(`Created client event`);
+  client
+    .createClientEvent(request)
+    .then(() => {
+      console.log('Created client event');
     })
     .catch(err => {
       console.error(err);
     });
 }
 
-
 // [END job_search_create_client_event_core]
 // [END job_search_create_client_event]
 // tslint:disable-next-line:no-any
 
-const argv = require(`yargs`)
+const argv = require('yargs')
   .option('project_id', {
     default: 'Your Google Cloud Project ID',
-    string: true
+    string: true,
   })
   .option('tenant_id', {
     default: 'Your Tenant ID (using tenancy is optional)',
-    string: true
+    string: true,
   })
   .option('request_id', {
     default: '[request_id from ResponseMetadata]',
-    string: true
+    string: true,
   })
   .option('event_id', {
     default: '[Set this to a unique identifier]',
-    string: true
-  })
-  .argv;
+    string: true,
+  }).argv;
 
-sampleCreateClientEvent(argv.project_id, argv.tenant_id, argv.request_id, argv.event_id);
+sampleCreateClientEvent(
+  argv.project_id,
+  argv.tenant_id,
+  argv.request_id,
+  argv.event_id
+);

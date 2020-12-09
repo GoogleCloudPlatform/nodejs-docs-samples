@@ -1,7 +1,6 @@
 {
   "name": "nodejs-docs-samples",
   "description": "Node.js samples found on https://cloud.google.com",
-  "version": "0.0.1",
   "license": "Apache-2.0",
   "author": "Google Inc.",
   "engines": {
@@ -13,19 +12,12 @@
   },
   "private": true,
   "scripts": {
-    "lint": "eslint '**/*.js'",
-    "fix": "eslint --fix '**/*.js'",
+    "lint": "gts check",
+    "fix": "gts fix",
     "test": "echo 'Please run tests in each sample directory.' && exit 1"
   },
   "devDependencies": {
-    "eslint": "^7.0.0",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-promise": "^4.1.1",
-    "gts": "^2.0.0",
-    "prettier": "^2.0.0",
-    "requestretry": "^4.0.0",
-    "typescript": "^4.0.0"
+    "gts": "^3.0.0",
+    "typescript": "^4.0.5"
   }
 }

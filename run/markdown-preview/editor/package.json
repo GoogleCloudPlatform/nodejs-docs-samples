@@ -16,16 +16,16 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/app.test.js --timeout=10000 --exit",
-    "system-test": "test/runner.sh mocha test/system.test.js --timeout=30000"
+    "system-test": "mocha test/system.test.js --timeout=480000 --exit"
   },
   "dependencies": {
     "express": "^4.17.1",
     "google-auth-library": "^6.0.0",
-    "got": "^11.0.0",
+    "got": "^11.8.0",
     "handlebars": "^4.7.6"
   },
   "devDependencies": {
     "mocha": "^8.0.0",
-    "supertest": "^4.0.2"
+    "supertest": "^6.0.0"
   }
 }

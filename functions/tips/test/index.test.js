@@ -14,13 +14,13 @@
 
 'use strict';
 
-const sinon = require(`sinon`);
-const assert = require(`assert`);
+const sinon = require('sinon');
+const assert = require('assert');
 
-const sample = require(`../`);
+const sample = require('../');
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 //Restore console
@@ -51,7 +51,7 @@ describe('functions_tips_retry', () => {
     }
   });
 
-  it('should demonstrate retry behavior for a callback', (done) => {
+  it('should demonstrate retry behavior for a callback', done => {
     const cb = sinon.stub();
     const err = new Error('Error!');
 
@@ -90,14 +90,15 @@ describe('functions_tips_gcp_apis', () => {
 
     // Instead of modifying the sample to return a promise,
     // use a delay here and keep the sample idiomatic
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     assert.ok(resMock.status.calledOnce);
     assert.ok(resMock.status.calledWith(200));
   });
 });
 
-// Whitelist these region tags with the region-tag enforcer
+// Allow-list these region tags with the region-tag enforcer
 // describe('functions_tips_connection_pooling functions_tips_infinite_retries')
 // describe('functions_tips_lazy_globals functions_tips_scopes')
 // describe('run_tips_global_lazy run_tips_global_scope')
+// describe('cloudrun_tips_global_lazy cloudrun_tips_global_scope')

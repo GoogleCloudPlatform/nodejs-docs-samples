@@ -42,7 +42,7 @@ const contextValue = (uid = 'test-uid', email_verified = true) => ({
   },
 });
 
-const handleLinuxFailures = async (proc) => {
+const handleLinuxFailures = async proc => {
   try {
     return await proc;
   } catch (err) {
@@ -92,5 +92,5 @@ describe('getOAuthToken tests', () => {
 });
 
 describe('generate_token retrieve_credentials save_token_to_firebase validate_token', () => {
-  // Whitelist these region tags with the region-tag enforcer
+  // Allow-list these region tags with the region-tag enforcer
 });

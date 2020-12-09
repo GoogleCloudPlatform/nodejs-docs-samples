@@ -42,9 +42,9 @@ const logger = winston.createLogger({
 });
 
 // [START cloud_sql_mysql_mysql_create_tcp]
-const createTcpPool = async (config) => {
+const createTcpPool = async config => {
   // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(":")
+  const dbSocketAddr = process.env.DB_HOST.split(':');
 
   // Establish a connection to the database
   return await mysql.createPool({
@@ -54,14 +54,14 @@ const createTcpPool = async (config) => {
     host: dbSocketAddr[0], // e.g. '127.0.0.1'
     port: dbSocketAddr[1], // e.g. '3306'
     // ... Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_mysql_mysql_create_tcp]
 
 // [START cloud_sql_mysql_mysql_create_socket]
-const createUnixSocketPool = async (config) => {
-  const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql"
+const createUnixSocketPool = async config => {
+  const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
 
   // Establish a connection to the database
   return await mysql.createPool({
@@ -71,9 +71,9 @@ const createUnixSocketPool = async (config) => {
     // If connecting via unix domain socket, specify the path
     socketPath: `${dbSocketPath}/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
     // Specify additional properties here.
-    ...config
+    ...config,
   });
-}
+};
 // [END cloud_sql_mysql_mysql_create_socket]
 
 const createPool = async () => {
@@ -104,46 +104,48 @@ const createPool = async () => {
     // The mysql module automatically uses exponential delays between failed
     // connection attempts.
     // [END cloud_sql_mysql_mysql_backoff]
-  }
+  };
   if (process.env.DB_HOST) {
     return await createTcpPool(config);
   } else {
     return await createUnixSocketPool(config);
   }
-    
 };
-// [END cloud_sql_mysql_mysql_create]
 
-const ensureSchema = async (pool) => {
+const ensureSchema = async pool => {
   // Wait for tables to be created (if they don't already exist).
   await pool.query(
     `CREATE TABLE IF NOT EXISTS votes
       ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,
       candidate CHAR(6) NOT NULL, PRIMARY KEY (vote_id) );`
   );
-  console.log(`Ensured that table 'votes' exists`);
+  console.log("Ensured that table 'votes' exists");
 };
 
+const createPoolAndEnsureSchema = async () =>
+  await createPool()
+    .then(async pool => {
+      await ensureSchema(pool);
+      return pool;
+    })
+    .catch(err => {
+      logger.error(err);
+      throw err;
+    });
+
+// Set up a variable to hold our connection pool. It would be safe to
+// initialize this right away, but we defer its instantiation to ease
+// testing different configurations.
 let pool;
-const poolPromise = createPool()
-  .then(async (pool) => {
-    await ensureSchema(pool);
-    return pool;
-  })
-  .catch((err) => {
-    logger.error(err);
-    process.exit(1)
-  });
 
 app.use(async (req, res, next) => {
   if (pool) {
     return next();
   }
   try {
-    pool = await poolPromise;
+    pool = await createPoolAndEnsureSchema();
     next();
-  }
-  catch (err) {
+  } catch (err) {
     logger.error(err);
     return next(err);
   }
@@ -151,6 +153,7 @@ app.use(async (req, res, next) => {
 
 // Serve the index page, showing vote tallies.
 app.get('/', async (req, res) => {
+  pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Get the 5 most recent votes.
     const recentVotesQuery = pool.query(
@@ -173,8 +176,7 @@ app.get('/', async (req, res) => {
       tabCount: tabsVotes.count,
       spaceCount: spacesVotes.count,
     });
-  } 
-  catch(err) {
+  } catch (err) {
     logger.error(err);
     res
       .status(500)
@@ -183,7 +185,6 @@ app.get('/', async (req, res) => {
       )
       .end();
   }
-  
 });
 
 // Handle incoming vote requests and inserting them into the database.
@@ -195,6 +196,7 @@ app.post('/', async (req, res) => {
     return res.status(400).send('Invalid team specified.').end();
   }
 
+  pool = pool || (await createPoolAndEnsureSchema());
   // [START cloud_sql_mysql_mysql_connection]
   try {
     const stmt = 'INSERT INTO votes (time_cast, candidate) VALUES (?, ?)';
@@ -227,7 +229,7 @@ const server = app.listen(PORT, () => {
 
 process.on('unhandledRejection', err => {
   console.error(err);
-  process.exit(1);
+  throw err;
 });
 
 module.exports = server;

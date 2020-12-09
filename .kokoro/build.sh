@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-      
+
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 
 export GCF_REGION=us-central1
@@ -84,6 +84,10 @@ export NODEJS_IOT_RSA_PUBLIC_CERT=${KOKORO_GFILE_DIR}/rsa_cert.pem
 export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
+# Replace system test's URL with the correct value
+# (Required because the integration tests ALSO use the BASE_URL variable, but for a different value)
+sed "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/**/sample.system.http.test.js 
+
 # Activate mocha config
 export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
 export MOCHA_REPORTER=xunit
@@ -101,18 +105,21 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
+export DB_SOCKET_PATH=$KOKORO_GFILE_DIR
+export CLOUD_SQL_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME
+
 # Download and run the proxy if testing a Cloud SQL sample
 if [[ $SQL_CLIENT ]]; then
 	wget --quiet https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
-	chmod +x cloud_sql_proxy	
+	chmod +x cloud_sql_proxy
 	if [[ $SQL_CLIENT == 'sqlserver' ]]; then
 		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
 	elif [[ $SQL_CLIENT == 'mysql' ]]; then
 		export DB_HOST=127.0.0.1:3306
-		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306 &>> cloud_sql_proxy.log &
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}" &>> cloud_sql_proxy.log &
 	else
 		export DB_HOST=127.0.0.1:5432
-		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432 &>> cloud_sql_proxy.log &
+		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}" &>> cloud_sql_proxy.log &
 	fi
 fi
 

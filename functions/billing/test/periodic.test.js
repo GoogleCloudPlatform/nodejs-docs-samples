@@ -22,8 +22,6 @@ const promiseRetry = require('promise-retry');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const cwd = path.join(__dirname, '..');
 
-const {BILLING_ACCOUNT} = process.env;
-
 before(async () => {
   // Re-enable compute instances using the sample file itself
   const {startInstances, listRunningInstances} = require('../');
@@ -49,14 +47,14 @@ before(async () => {
       {retries: 8}
     );
   } catch (err) {
-    console.error(`Failed to restart GCE instances:`, err);
+    console.error('Failed to restart GCE instances:', err);
   }
 });
 
 describe('functions_billing_limit', () => {
   it('should shut down GCE instances when budget is exceeded', async () => {
     const ffProc = execPromise(
-      `functions-framework --target=limitUse --signature-type=event`,
+      'functions-framework --target=limitUse --signature-type=event',
       {timeout: 1000, shell: true, cwd}
     );
 

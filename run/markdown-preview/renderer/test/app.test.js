@@ -30,30 +30,50 @@ describe('Unit Tests', () => {
   it('should return Bad Request with an invalid type', async () => {
     const consoleStub = sinon.stub(console, 'log');
     // Ensure that the expected error is logged.
-    await request.post('/').type('json').send({"json": "json"});
+    await request.post('/').type('json').send({json: 'json'});
     const message = console.log.getCall(0).args[0];
-    assert.equal(message, "Markdown data could not be retrieved.");
+    assert.equal(message, 'Markdown data could not be retrieved.');
     consoleStub.restore();
   });
 
   it('should succeed with a valid request', async () => {
-    const markdown = "**markdown text**";
-    const response = await request.post('/').type('text').send(markdown).expect(200);
+    const markdown = '**markdown text**';
+    const response = await request
+      .post('/')
+      .type('text')
+      .send(markdown)
+      .expect(200);
     const body = response.text;
-    assert.equal(body, "<p><strong>markdown text</strong></p>\n")
+    assert.equal(body, '<p><strong>markdown text</strong></p>\n');
   });
 
   it('should succeed with a request that includes xss', async () => {
-    let markdown = "<script>script</script>";
-    await request.post('/').type('text').send(markdown).expect(200).then(res => {
-      const body = res.text;
-      assert.deepStrictEqual(body, "<p>&lt;script&gt;script&lt;/script&gt;</p>\n");
-     });
-    markdown = '<a onblur="alert(secret)" href="http://www.google.com">Google</a>'
-    await request.post('/').type('text').send(markdown).expect(200).then(res => {
-      const body = res.text;
-      assert.deepStrictEqual(body, "<p>&lt;a onblur=&quot;alert(secret)&quot; href=&quot;http://www.google.com&quot;&gt;Google&lt;/a&gt;</p>\n");
-     });
-  })
-})
-
+    let markdown = '<script>script</script>';
+    await request
+      .post('/')
+      .type('text')
+      .send(markdown)
+      .expect(200)
+      .then(res => {
+        const body = res.text;
+        assert.deepStrictEqual(
+          body,
+          '<p>&lt;script&gt;script&lt;/script&gt;</p>\n'
+        );
+      });
+    markdown =
+      '<a onblur="alert(secret)" href="http://www.google.com">Google</a>';
+    await request
+      .post('/')
+      .type('text')
+      .send(markdown)
+      .expect(200)
+      .then(res => {
+        const body = res.text;
+        assert.deepStrictEqual(
+          body,
+          '<p>&lt;a onblur=&quot;alert(secret)&quot; href=&quot;http://www.google.com&quot;&gt;Google&lt;/a&gt;</p>\n'
+        );
+      });
+  });
+});

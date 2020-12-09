@@ -7,9 +7,12 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/index.test.js --exit",
-    "system-test": "NAME=Cloud test/runner.sh mocha test/system.test.js --timeout=30000",
+    "system-test": "NAME=Cloud mocha test/system.test.js --timeout=180000",
     "lint": "eslint '**/*.js'",
     "fix": "eslint --fix '**/*.js'"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
   },
   "author": "Google LLC",
   "license": "Apache-2.0",
@@ -17,8 +20,9 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "google-auth-library": "^6.1.3",
     "got": "^11.0.0",
     "mocha": "^8.0.0",
-    "supertest": "^4.0.2"
+    "supertest": "^6.0.0"
   }
 }

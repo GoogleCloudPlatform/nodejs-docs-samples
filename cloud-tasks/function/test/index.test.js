@@ -23,7 +23,7 @@ const key = process.env.SENDGRID_API_KEY;
 const getSample = function () {
   const requestPromise = sinon
     .stub()
-    .returns(new Promise((resolve) => resolve('test')));
+    .returns(new Promise(resolve => resolve('test')));
 
   return {
     program: proxyquire('../', {

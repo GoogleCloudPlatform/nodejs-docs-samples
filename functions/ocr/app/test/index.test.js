@@ -35,8 +35,8 @@ const errorMsg = (name, propertyName) => {
 };
 
 const stubConsole = function () {
-  sinon.stub(console, `error`);
-  sinon.stub(console, `log`);
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 const restoreConsole = function () {
@@ -59,7 +59,7 @@ describe('processImage', () => {
     });
   });
 
-  describe('functions_ocr_process functions_ocr_detect functions_ocr_publish', () => {
+  describe('functions_ocr_process functions_ocr_detect', () => {
     it('processImage detects text', async () => {
       const data = {
         bucket: bucketName,
@@ -71,7 +71,7 @@ describe('processImage', () => {
         console.log.calledWith(`Detected language "en" for ${filename}`)
       );
       assert.ok(
-        console.log.calledWith(`Extracted text from image:`, `${text}\n`)
+        console.log.calledWith('Extracted text from image:', `${text}\n`)
       );
       assert.ok(
         console.log.calledWith(`Detected language "en" for ${filename}`)
@@ -96,7 +96,7 @@ describe('translateText', () => {
     });
   });
 
-  describe('functions_ocr_translate functions_ocr_publish', () => {
+  describe('functions_ocr_translate', () => {
     it('translateText translates and publishes text', async () => {
       const data = {
         data: Buffer.from(
@@ -131,7 +131,7 @@ describe('saveResult', () => {
     });
   });
 
-  describe('functions_ocr_save functions_ocr_rename', () => {
+  describe('functions_ocr_save', () => {
     it('saveResult translates and publishes text', async () => {
       const data = {
         data: Buffer.from(JSON.stringify({text, filename, lang})).toString(

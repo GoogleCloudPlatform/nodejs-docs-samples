@@ -40,31 +40,29 @@ const installDeps = 'npm install';
 // Run npm install on datasets directory because modalities
 // require bootstrapping datasets, and Kokoro needs to know
 // to install dependencies from the datasets directory.
-assert.ok(
-  execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true})
-);
+assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
 
 before(() => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT,
-    `Must set GOOGLE_CLOUD_PROJECT environment variable!`
+    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
-  execSync(
-    `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-    {cwd: cwdDatasets}
-  );
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+    cwd: cwdDatasets,
+  });
 });
 after(() => {
   try {
-    execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`,
-      {cwd: cwdDatasets}
-    );
-  } catch (err) {} // Ignore error
+    execSync(`node deleteDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+      cwd: cwdDatasets,
+    });
+  } catch (err) {
+    // ignore error
+  }
 });
 
 it('should create a FHIR resource', () => {
@@ -76,9 +74,7 @@ it('should create a FHIR resource', () => {
     `node createFhirResource ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`,
     {cwd}
   );
-  const createdResource = new RegExp(
-    `Created FHIR resource with ID (.*)`
-  );
+  const createdResource = new RegExp('Created FHIR resource with ID (.*)');
   assert.strictEqual(createdResource.test(output), true);
   [, resourceId] = createdResource.exec(output);
 });
@@ -174,7 +170,10 @@ it('should purge all historical versions of a FHIR resource', () => {
     `node deleteFhirResourcePurge.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     {cwd}
   );
-  assert.strictEqual(new RegExp('Deleted all historical versions of resource').test(output), true);
+  assert.strictEqual(
+    new RegExp('Deleted all historical versions of resource').test(output),
+    true
+  );
 });
 
 it('should execute a Bundle', () => {

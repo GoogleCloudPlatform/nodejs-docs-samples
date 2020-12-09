@@ -33,7 +33,10 @@ function main(
     });
     // TODO(developer): replace patchOptions with your desired JSON patch body
     const patchOptions = [{op: 'replace', path: '/active', value: false}];
-    google.options({auth, headers: {'Content-Type': 'application/json-patch+json'}});
+    google.options({
+      auth,
+      headers: {'Content-Type': 'application/json-patch+json'},
+    });
 
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
@@ -45,12 +48,10 @@ function main(
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
     const request = {
       name,
-      requestBody: patchOptions
+      requestBody: patchOptions,
     };
 
-    const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.patch(
-      request,
-    );
+    await healthcare.projects.locations.datasets.fhirStores.fhir.patch(request);
     console.log(`Patched ${resourceType} resource`);
   }
 

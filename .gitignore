@@ -10,3 +10,4 @@ logs/
 .nyc_output
 yarn.lock
 package-lock.json
+.envrc

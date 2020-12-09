@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-warning-comments */
-
 'use strict';
 
 const main = (
@@ -47,7 +45,7 @@ const main = (
     // const dicomStoreId = 'my-dicom-store';
     // const dcmFile = 'file.dcm';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
-    const dicomWebPath = `studies`;
+    const dicomWebPath = 'studies';
     const binaryData = fs.createReadStream(dcmFile);
     const request = {
       parent,
@@ -58,7 +56,7 @@ const main = (
     const instance = await healthcare.projects.locations.datasets.dicomStores.storeInstances(
       request
     );
-    console.log(`Stored DICOM instance:\n`, JSON.stringify(instance.data));
+    console.log('Stored DICOM instance:\n', JSON.stringify(instance.data));
   };
 
   dicomWebStoreInstance();

@@ -33,11 +33,11 @@ describe('Unit Tests', () => {
   });
 
   describe('should fail', () => {
-    it(`on a Bad Request with an empty payload`, async () => {
+    it('on a Bad Request with an empty payload', async () => {
       await request.post('/').type('json').send('').expect(400);
     });
 
-    it(`on a Bad Request with an invalid payload`, async () => {
+    it('on a Bad Request with an invalid payload', async () => {
       await request
         .post('/')
         .type('json')
@@ -45,7 +45,7 @@ describe('Unit Tests', () => {
         .expect(400);
     });
 
-    it(`on a Bad Request with an invalid mimetype`, async () => {
+    it('on a Bad Request with an invalid mimetype', async () => {
       await request.post('/').type('text').send('{message: true}').expect(400);
     });
   });
@@ -60,7 +60,7 @@ describe('Unit Tests', () => {
       console.log.restore();
     });
 
-    it(`with a minimally valid Pub/Sub Message`, async () => {
+    it('with a minimally valid Pub/Sub Message', async () => {
       await request
         .post('/')
         .type('json')
@@ -69,9 +69,9 @@ describe('Unit Tests', () => {
         .expect(() => assert.ok(console.log.calledWith('Hello World!')));
     });
 
-    it(`with a populated Pub/Sub Message`, async () => {
+    it('with a populated Pub/Sub Message', async () => {
       const name = uuid.v4();
-      const data = Buffer.from(name).toString(`base64`);
+      const data = Buffer.from(name).toString('base64');
 
       await request
         .post('/')

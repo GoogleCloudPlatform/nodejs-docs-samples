@@ -48,9 +48,9 @@ describe('End-to-End Tests', () => {
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =
-    `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-    '--config ./test/e2e_test_setup.yaml ' +
-    `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_setup.yaml ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
@@ -60,7 +60,7 @@ describe('End-to-End Tests', () => {
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-      `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
     );
 
     BASE_URL = url.toString('utf-8').trim();
@@ -75,9 +75,9 @@ describe('End-to-End Tests', () => {
 
   after(() => {
     let cleanUpCmd =
-    `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-    '--config ./test/e2e_test_cleanup.yaml ' +
-    `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_cleanup.yaml ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     execSync(cleanUpCmd);
@@ -93,14 +93,13 @@ describe('End-to-End Tests', () => {
   });
 
   it('post(/diagram.png) with request parameters is a successful', async () => {
-    const response = await request('get', '/diagram.png?dot=digraph Run { rankdir=LR Code -> Build -> Deploy -> Run }', BASE_URL, ID_TOKEN);
-    assert.strictEqual(
-      response.statusCode,
-      200
+    const response = await request(
+      'get',
+      '/diagram.png?dot=digraph Run { rankdir=LR Code -> Build -> Deploy -> Run }',
+      BASE_URL,
+      ID_TOKEN
     );
-    assert.strictEqual(
-      response.headers['content-type'],
-       'image/png',
-    );
+    assert.strictEqual(response.statusCode, 200);
+    assert.strictEqual(response.headers['content-type'], 'image/png');
   });
 });

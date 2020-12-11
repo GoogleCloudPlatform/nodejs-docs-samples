@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/app.test.js --check-leaks",
-    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
+    "system-test": "mocha test/system.test.js --timeout=180000"
   },
   "engines": {
     "node": ">= 12.0.0"
@@ -16,6 +16,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "google-auth-library": "^6.1.3",
     "got": "^11.5.0",
     "mocha": "^8.0.0",
     "supertest": "^6.0.0"

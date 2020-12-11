@@ -38,7 +38,7 @@ describe('End-to-End Tests', () => {
 
   before(async () => {
     // Deploy service using Cloud Build
-    const buildCmd =
+    let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
@@ -64,24 +64,24 @@ describe('End-to-End Tests', () => {
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
   });
 
-  // after(() => {
-  //   const cleanUpCmd =
-  //     `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-  //     '--config ./test/e2e_test_cleanup.yaml ' +
-  //     `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-  //   if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+  after(() => {
+    let cleanUpCmd =
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_cleanup.yaml ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+    if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-  //   execSync(cleanUpCmd);
-  // });
+    execSync(cleanUpCmd);
+  });
 
   it('post(/) without body is a bad request', async () => {
     const options = {
       headers: {
-        Authorization: ID_TOKEN
+        Authorization: ID_TOKEN,
       },
       method: 'post',
       throwHttpErrors: false,
-      retry: 3
+      retry: 3,
     };
     const response = await got(BASE_URL, options);
     assert.strictEqual(response.statusCode, 400);
@@ -95,7 +95,7 @@ describe('End-to-End Tests', () => {
       method: 'POST',
       body: 'test',
       throwHttpErrors: false,
-      retry: 3
+      retry: 3,
     };
     const response = await got(BASE_URL, options);
     assert.strictEqual(response.statusCode, 400);
@@ -104,13 +104,13 @@ describe('End-to-End Tests', () => {
   it('post(/) with body message is successful', async () => {
     const body = {
       message: {
-        data: 'SGVsbG8gQ2xvdWQgUnVuIQ==',  // Hello Cloud Run!!
-      }
-    }
+        data: 'SGVsbG8gQ2xvdWQgUnVuIQ==', // Hello Cloud Run!!
+      },
+    };
     const options = {
       headers: {
         Authorization: ID_TOKEN,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       method: 'POST',
       body: JSON.stringify(body),

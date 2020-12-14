@@ -12,7 +12,7 @@
 # limitations under the License.
 
 # [START gae_mailjet_yaml]
-runtime: nodejs12
+runtime: nodejs14
 
 # The following env variables may contain sensitive information that grants
 # anyone access to your Mailjet account. Do not add this file to your source

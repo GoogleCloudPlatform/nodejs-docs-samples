@@ -34,7 +34,7 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
   }    
   const path = require('path');
 
-  // Load protobuf spec for an example API
+  // Load protobuf spec for an example API..
   const PROTO_PATH = path.join(__dirname, '/protos/helloworld.proto');
   
   const packageDefinition = protoLoader.loadSync(PROTO_PATH, protoOptions);

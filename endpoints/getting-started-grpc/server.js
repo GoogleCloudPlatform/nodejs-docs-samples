@@ -35,7 +35,7 @@ const sayHello = (call, callback) => {
   callback(null, {message: `Hello ${call.request.name}`});
 };
 
-// Start an RPC server to handle Greeter service requests
+// Start an RPC server to handle Greeter service requests..
 const startServer = PORT => {
   const server = new grpc.Server();
   server.addService(helloProto.helloworld.Greeter.service, {sayHello: sayHello});  

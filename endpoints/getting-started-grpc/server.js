@@ -18,14 +18,14 @@ const path = require('path');
 const PROTO_PATH = path.join(__dirname, '/protos/helloworld.proto');
 
 const grpc = require('@grpc/grpc-js');
-const protoLoader=require('@grpc/proto-loader');
-const protoOptions={
-  keepCase:true,
-  longs:String,
+const protoLoader = require('@grpc/proto-loader');
+const protoOptions = {
+  keepCase: true,
+  longs: String,
   enums: String,
-  defaults:true,
-  oneofs:true
-}
+  defaults: true,
+  oneofs: true,
+};
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, protoOptions);
 const helloProto = grpc.loadPackageDefinition(packageDefinition);
@@ -38,10 +38,16 @@ const sayHello = (call, callback) => {
 // Start an RPC server to handle Greeter service requests..
 const startServer = PORT => {
   const server = new grpc.Server();
-  server.addService(helloProto.helloworld.Greeter.service, {sayHello: sayHello});  
-  server.bindAsync(`0.0.0.0:${PORT}`,grpc.ServerCredentials.createInsecure(),()=>{
-    server.start();
+  server.addService(helloProto.helloworld.Greeter.service, {
+    sayHello: sayHello,
   });
+  server.bindAsync(
+    `0.0.0.0:${PORT}`,
+    grpc.ServerCredentials.createInsecure(),
+    () => {
+      server.start();
+    }
+  );
 };
 
 // The command-line program

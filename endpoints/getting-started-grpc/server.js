@@ -17,20 +17,37 @@
 const path = require('path');
 const PROTO_PATH = path.join(__dirname, '/protos/helloworld.proto');
 
-const grpc = require('grpc');
-const helloProto = grpc.load(PROTO_PATH).helloworld;
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
+const protoOptions = {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+};
 
-// Implement the SayHello RPC method.
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, protoOptions);
+const helloProto = grpc.loadPackageDefinition(packageDefinition);
+
+// Implement the SayHello RPC method. Now using @grpc/grpc-js
 const sayHello = (call, callback) => {
   callback(null, {message: `Hello ${call.request.name}`});
 };
 
-// Start an RPC server to handle Greeter service requests
+// Start an RPC server to handle Greeter service requests..
 const startServer = PORT => {
   const server = new grpc.Server();
-  server.addProtoService(helloProto.Greeter.service, {sayHello: sayHello});
-  server.bind(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure());
-  server.start();
+  server.addService(helloProto.helloworld.Greeter.service, {
+    sayHello: sayHello,
+  });
+  server.bindAsync(
+    `0.0.0.0:${PORT}`,
+    grpc.ServerCredentials.createInsecure(),
+    () => {
+      server.start();
+    }
+  );
 };
 
 // The command-line program

@@ -25,8 +25,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_batch_translate_text_with_model';
 
-describe(REGION_TAG, function () {
-  this.retries(3);
+describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
   const modelId = 'TRL1218052175389786112';
@@ -51,7 +50,8 @@ describe(REGION_TAG, function () {
       });
   });
 
-  it('should batch translate the input text with a model', async () => {
+  it('should batch translate the input text with a model', async function () {
+    this.retries(3);
     const projectId = await translationClient.getProjectId();
     const inputUri =
       'gs://cloud-samples-data/translation/custom_model_text.txt';

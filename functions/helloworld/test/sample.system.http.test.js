@@ -13,30 +13,38 @@
 // limitations under the License.
 
 // [START functions_http_system_test]
-// const assert = require('assert');
-// const Supertest = require('supertest');
-// const PORT = process.env.PORT || 8080;
-// const BASE_URL = `http://localhost:${PORT}`;
-// const supertest = Supertest(BASE_URL);
+const assert = require('assert');
+const Supertest = require('supertest');
+const supertest = Supertest(process.env.BASE_URL);
+const childProcess = require('child_process');
 
-// describe('system tests', () => {
-//   it('helloHttp: should print a name', async () => {
-//     await supertest
-//       .post('/helloHttp')
-//       .send({name: 'John'})
-//       .expect(200)
-//       .expect(response => {
-//         assert.strictEqual(response.text, 'Hello John!');
-//       });
-//   });
-//   // [END functions_http_system_test]
+describe('system tests', () => {
+  // [END functions_http_system_test]
+  before(() => {
+    childProcess.execSync(`gcloud functions deploy helloHttp --runtime nodejs10 --trigger-http --region=${process.env.GCF_REGION}`)
+  });
 
-//   it('helloHttp: should print hello world', async () => {
-//     await supertest
-//       .get('/helloHttp')
-//       .expect(200)
-//       .expect(response => {
-//         assert.strictEqual(response.text, 'Hello World!');
-//       });
-//   });
-// });
+  after(() => {
+    childProcess.execSync(`gcloud functions delete helloHttp --region=${process.env.GCF_REGION}`)
+  })
+  // [START functions_http_system_test]
+  it('helloHttp: should print a name', async () => {
+    await supertest
+      .post('/helloHttp')
+      .send({name: 'John'})
+      .expect(200)
+      .expect(response => {
+        assert.strictEqual(response.text, 'Hello John!');
+      });
+  });
+  // [END functions_http_system_test]
+
+  it('helloHttp: should print hello world', async () => {
+    await supertest
+      .get('/helloHttp')
+      .expect(200)
+      .expect(response => {
+        assert.strictEqual(response.text, 'Hello World!');
+      });
+  });
+});

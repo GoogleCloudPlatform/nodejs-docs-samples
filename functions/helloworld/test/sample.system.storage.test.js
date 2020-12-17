@@ -31,6 +31,15 @@ const bucket = storage.bucket(bucketName);
 const baseCmd = 'gcloud functions';
 
 describe('system tests', () => {
+  // [END functions_storage_system_test]
+  before(() => {
+    childProcess.execSync(`gcloud functions deploy helloGCS --runtime nodejs10 --trigger-bucket ${bucketName} --region=${process.env.GCF_REGION}`)
+  });
+
+  after(() => {
+    childProcess.execSync(`gcloud functions delete helloGCS --region=${process.env.GCF_REGION}`)
+  })
+  // [START functions_storage_system_test]
   it('helloGCS: should print event', async () => {
     // Subtract time to work-around local-GCF clock difference
     const startTime = moment().subtract(2, 'minutes').toISOString();

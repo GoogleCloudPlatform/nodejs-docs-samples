@@ -46,6 +46,7 @@ export SENDGRID_API_KEY=$(cat $KOKORO_GFILE_DIR/secrets-sendgrid-api-key.txt)
 export FUNCTIONS_TOPIC=integration-tests-instance
 export FUNCTIONS_BUCKET=$GOOGLE_CLOUD_PROJECT
 export FUNCTIONS_DELETABLE_BUCKET=$GOOGLE_CLOUD_PROJECT-functions
+export BASE_URL="https://$GCF_REGION-$GOOGLE_CLOUD_PROJECT.cloudfunctions.net/"
 
 #  functions/speech-to-speech
 export OUTPUT_BUCKET=$FUNCTIONS_BUCKET

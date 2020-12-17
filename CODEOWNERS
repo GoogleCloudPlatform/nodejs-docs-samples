@@ -20,7 +20,6 @@ functions/scheduleinstance @djmailhot
 functions/speech-to-speech @ricalo
 functions/memorystore @ericschmidtatwork
 functions/spanner @jsimonweb
-functions/tokenservice @nnegrey
 
 # GCF samples outside of functions/
 datastore/functions @benwhitehead
@@ -29,5 +28,4 @@ datastore/functions @benwhitehead
 cloud-sql @kurtisvg
 composer @leahecole @sofisl @yoshi-nodejs
 healthcare @noerog
-jobs @happyhuman
 

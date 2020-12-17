@@ -12,7 +12,7 @@
 # limitations under the License.
 
 # [START gae_storage_yaml]
-runtime: nodejs12
+runtime: nodejs14
 
 env_variables:
   GCLOUD_STORAGE_BUCKET: YOUR_BUCKET_NAME

@@ -33,12 +33,16 @@ const baseCmd = 'gcloud functions';
 describe('system tests', () => {
   // [END functions_storage_system_test]
   before(() => {
-    childProcess.execSync(`gcloud functions deploy helloGCS --runtime nodejs10 --trigger-bucket ${bucketName} --region=${process.env.GCF_REGION}`)
+    childProcess.execSync(
+      `gcloud functions deploy helloGCS --runtime nodejs10 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
+    );
   });
 
   after(() => {
-    childProcess.execSync(`gcloud functions delete helloGCS --region=${process.env.GCF_REGION}`)
-  })
+    childProcess.execSync(
+      `gcloud functions delete helloGCS --region=${process.env.GCF_REGION}`
+    );
+  });
   // [START functions_storage_system_test]
   it('helloGCS: should print event', async () => {
     // Subtract time to work-around local-GCF clock difference
@@ -57,7 +61,7 @@ describe('system tests', () => {
         .toString();
 
       try {
-        assert.ok(logs.includes(`Filename: ${gcsFileName}`));
+        assert.ok(logs.includes(`File: ${gcsFileName}`));
         assert.ok(logs.includes('Event Type: google.storage.object.finalize'));
       } catch (err) {
         retry(err);

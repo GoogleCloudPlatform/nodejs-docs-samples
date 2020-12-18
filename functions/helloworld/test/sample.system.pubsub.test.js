@@ -25,14 +25,18 @@ const topicName = process.env.FUNCTIONS_TOPIC;
 const baseCmd = 'gcloud functions';
 
 describe('system tests', () => {
-// [END functions_pubsub_system_test]
+  // [END functions_pubsub_system_test]
   before(() => {
-    childProcess.execSync(`gcloud functions deploy helloPubSub --runtime nodejs10 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`)
+    childProcess.execSync(
+      `gcloud functions deploy helloPubSub --runtime nodejs10 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`
+    );
   });
 
   after(() => {
-    childProcess.execSync(`gcloud functions delete helloPubSub --region=${process.env.GCF_REGION}`)
-  })
+    childProcess.execSync(
+      `gcloud functions delete helloPubSub --region=${process.env.GCF_REGION}`
+    );
+  });
   // [START functions_pubsub_system_test]
   it('helloPubSub: should print a name', async () => {
     const name = uuid.v4();
@@ -44,7 +48,7 @@ describe('system tests', () => {
     const topic = pubsub.topic(topicName);
     await topic.publish(Buffer.from(name));
 
-    console.log(`published topic ${topicName}, ${name}`)
+    console.log(`published topic ${topicName}, ${name}`);
 
     // Wait for logs to become consistent
     await promiseRetry(retry => {

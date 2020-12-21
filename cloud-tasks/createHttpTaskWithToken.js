@@ -28,8 +28,7 @@ function main(
   location = 'us-central1', // The GCP region of your queue
   url = 'https://example.com/taskhandler', // The full url path that the request will be sent to
   serviceAccountEmail = 'client@<project-id>.iam.gserviceaccount.com', // Cloud IAM service account
-  payload = 'Hello, World!', // The task HTTP request body
-  inSeconds = 0 // Delay in task execution
+  payload = 'Hello, World!' // The task HTTP request body
 ) {
   // [START cloud_tasks_create_http_task_with_token]
   // Imports the Google Cloud Tasks library.
@@ -62,13 +61,6 @@ function main(
 
     if (payload) {
       task.httpRequest.body = Buffer.from(payload).toString('base64');
-    }
-
-    if (inSeconds) {
-      // The time when the task is scheduled to be attempted.
-      task.scheduleTime = {
-        seconds: inSeconds + Date.now() / 1000,
-      };
     }
 
     console.log('Sending task:');

@@ -44,6 +44,7 @@ function main(
     // const location = 'us-central1';
     // const url = 'https://example.com/taskhandler';
     // const payload = 'Hello, World!';
+    // const inSeconds = 180;
 
     // Construct the fully qualified queue name.
     const parent = client.queuePath(project, location, queue);

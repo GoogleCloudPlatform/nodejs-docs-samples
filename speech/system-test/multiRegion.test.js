@@ -24,9 +24,9 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const storageUri = 'gs://cloud-samples-tests/speech/brooklyn.flac';
 const text = 'how old is the Brooklyn Bridge';
 
-describe('profanityFilter', () => {
-  it('should run profanityFilter', async () => {
-    const stdout = execSync(`node profanityFilter.js ${storageUri}`)
-    assert.match(stdout, /Transcription:/ );
-  });
+describe('multiRegion', () => {
+    it('should run multiRegion', async () => {
+      const stdout = execSync(`node multiRegion.js ${storageUri}`)
+      assert.match(stdout, /Transcription:/ );
+    });
 });

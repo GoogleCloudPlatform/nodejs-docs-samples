@@ -20,21 +20,19 @@ const {AutoMlClient} = require('@google-cloud/automl').v1;
 
 const cp = require('child_process');
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const CREATE_MODEL_REGION_TAG = 'language_text_classification_create_model';
 const LOCATION = 'us-central1';
-const DATASET_ID = 'TCN4742936920458264576';
+const DATASET_ID = 'TCN00000000000000000';
 
 describe('Automl Natural Language Text Classification Create Model Test', () => {
   const client = new AutoMlClient();
 
-  it.skip('should create a model', async () => {
+  it('should create a model', async () => {
     const projectId = await client.getProjectId();
-    const create_output = execSync(
-      `node ${CREATE_MODEL_REGION_TAG}.js ${projectId} ${LOCATION} ${DATASET_ID} classification_test_create_model`
-    );
+    const args = [CREATE_MODEL_REGION_TAG, projectId, LOCATION, DATASET_ID];
+    const output = cp.spawnSync('node', args, {encoding: 'utf8'});
 
-    assert.match(create_output, /Training started/);
+    assert.match(output.stderr, /NOT_FOUND/);
+    assert.match(output.stderr, /Dataset does not exist./);
   });
 });

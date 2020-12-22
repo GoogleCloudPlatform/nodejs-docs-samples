@@ -28,12 +28,12 @@ const LOCATION = 'us-central1';
 describe('Automl List Operation Status Tests', () => {
   const client = new AutoMlClient();
 
-  it.skip('should list operation status', async () => {
+  it('should list operation status', async () => {
     const projectId = await client.getProjectId();
 
     const list_output = execSync(
       `node ${LIST_OPERATION_STATUS_REGION_TAG}.js ${projectId} ${LOCATION} `
     );
-    assert.match(list_output, /Operation details/);
+    assert.match(list_output, /List of operation status:/);
   });
 });

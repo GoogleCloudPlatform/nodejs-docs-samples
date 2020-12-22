@@ -20,21 +20,22 @@ const {AutoMlClient} = require('@google-cloud/automl').v1;
 
 const cp = require('child_process');
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const CREATE_MODEL_REGION_TAG = 'vision_classification_create_model';
 const LOCATION = 'us-central1';
-const DATASET_ID = 'ICN6257835245115015168';
+const DATASET_ID = 'ICN000000000000000000';
 
 describe('Automl Vision Classification Create Model Tests', () => {
   const client = new AutoMlClient();
 
-  it.skip('should create a model', async () => {
+  it('should create a model', async () => {
+    // As vision classification does not let you cancel model creation, instead try
+    // to create a model from a nonexistent dataset, but other elements of the
+    // request were valid.
     const projectId = await client.getProjectId();
-    const create_output = execSync(
-      `node ${CREATE_MODEL_REGION_TAG}.js ${projectId} ${LOCATION} ${DATASET_ID} classification_test_create_model`
-    );
+    const args = [CREATE_MODEL_REGION_TAG, projectId, LOCATION, DATASET_ID];
+    const output = cp.spawnSync('node', args, {encoding: 'utf8'});
 
-    assert.match(create_output, /Training started/);
+    assert.match(output.stderr, /NOT_FOUND/);
+    assert.match(output.stderr, /Dataset does not exist./);
   });
 });

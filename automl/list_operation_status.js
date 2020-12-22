@@ -32,7 +32,7 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
     // Construct request
     const request = {
       name: client.locationPath(projectId, location),
-      filter: '',
+      filter: `worksOn=projects/${projectId}/locations/${location}/models/*`,
     };
 
     const [response] = await client.operationsClient.listOperations(request);

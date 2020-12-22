@@ -81,13 +81,6 @@ set +x
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
-
-# Register post-test cleanup.
-function cleanup {
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
-}
-trap cleanup EXIT HUP
-
 # Configure Slack variables (for functions/slack sample)
 export BOT_ACCESS_TOKEN=${KOKORO_GFILE_DIR}/secrets-slack-bot-access-token.txt
 export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt

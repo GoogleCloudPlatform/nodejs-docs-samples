@@ -254,26 +254,23 @@ async function enablePolicies(projectId, enabled, filter) {
   };
 
   const [policies] = await client.listAlertPolicies(listAlertPoliciesRequest);
-  const tasks = await Promise.all(
-    policies
-      .map(policy => {
-        return {
-          updateMask: {
-            paths: ['enabled'],
+  const responses = [];
+  for (const policy of policies) {
+    responses.push(
+      await client.updateAlertPolicy({
+        updateMask: {
+          paths: ['enabled'],
+        },
+        alertPolicy: {
+          name: policy.name,
+          enabled: {
+            value: enabled,
           },
-          alertPolicy: {
-            name: policy.name,
-            enabled: {
-              value: enabled,
-            },
-          },
-        };
+        },
       })
-      .map(updateAlertPolicyRequest =>
-        client.updateAlertPolicy(updateAlertPolicyRequest)
-      )
-  );
-  tasks.forEach(response => {
+    );
+  }
+  responses.forEach(response => {
     const alertPolicy = response[0];
     console.log(`${enabled ? 'Enabled' : 'Disabled'} ${alertPolicy.name}.`);
   });

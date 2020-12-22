@@ -306,7 +306,7 @@ require('yargs')
   .options({
     projectId: {
       alias: 'p',
-      default: process.env.GCLOUD_PROJECT,
+      default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
       global: true,
       requiresArg: true,
       type: 'string',

@@ -21,7 +21,8 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node uptime.js';
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId =
+  process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 const hostname = 'mydomain.com';
 
 function getResourceObjects(output) {

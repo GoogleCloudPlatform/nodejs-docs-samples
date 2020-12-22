@@ -26,7 +26,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new monitoring.AlertPolicyServiceClient();
 const channelClient = new monitoring.NotificationChannelServiceClient();
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId =
+  process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 const cmd = 'node alerts';
 
 let policyOneName, policyTwoName, channelName;

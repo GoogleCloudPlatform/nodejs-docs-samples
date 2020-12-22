@@ -26,7 +26,8 @@ const cmd = 'node metrics.js';
 const customMetricId = 'custom.googleapis.com/stores/daily_sales';
 const computeMetricId = 'compute.googleapis.com/instance/cpu/utilization';
 const filter = `metric.type="${computeMetricId}"`;
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId =
+  process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 const resourceId = 'cloudsql_database';
 
 // A helper for delaying integration tests with an exponential backoff.

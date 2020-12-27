@@ -10,17 +10,21 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha test/*.test.js"
+    "test": "mocha test/*.test.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "twilio": "^4.6.0"
+    "twilio": "^4.6.0",
+    "snyk": "^1.437.3"
   },
   "devDependencies": {
     "mocha": "^8.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0",
     "supertest": "^6.0.0"
-  }
+  },
+  "snyk": true
 }

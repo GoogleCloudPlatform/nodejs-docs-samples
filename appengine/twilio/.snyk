@@ -1,0 +1,21 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.19.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:hoek:20180212':
+    - twilio > jsonwebtoken > joi > hoek:
+        patched: '2020-12-27T17:26:58.768Z'
+    - twilio > request > hawk > hoek:
+        patched: '2020-12-27T17:26:58.768Z'
+    - twilio > jsonwebtoken > joi > topo > hoek:
+        patched: '2020-12-27T17:26:58.768Z'
+    - twilio > request > hawk > boom > hoek:
+        patched: '2020-12-27T17:26:58.768Z'
+    - twilio > request > hawk > sntp > hoek:
+        patched: '2020-12-27T17:26:58.768Z'
+    - twilio > request > hawk > cryptiles > boom > hoek:
+        patched: '2020-12-27T17:26:58.768Z'
+  'npm:moment:20170905':
+    - twilio > moment:
+        patched: '2020-12-27T17:26:58.768Z'

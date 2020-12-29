@@ -56,8 +56,12 @@ function main(
     };
 
     try {
+      const options = {timeout: 180000};
       // Batch translate text using a long-running operation
-      const [operation] = await translationClient.batchTranslateText(request);
+      const [operation] = await translationClient.batchTranslateText(
+        request,
+        options
+      );
 
       // Wait for operation to complete.
       const [response] = await operation.promise();

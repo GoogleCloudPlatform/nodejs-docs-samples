@@ -68,8 +68,9 @@ function main(
     };
 
     try {
+      const options = {timeout: 180000};
       // Create a job using a long-running operation
-      const [operation] = await client.batchTranslateText(request);
+      const [operation] = await client.batchTranslateText(request, options);
 
       // Wait for operation to complete
       const [response] = await operation.promise();

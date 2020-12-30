@@ -23,6 +23,10 @@ const WORKFLOW = 'myFirstWorkflow';
 
 describe('Cloud Workflows Quickstart Tests', () => {
   it('should execute the quickstart', async () => {
+    // Ensure project is configured
+    assert.notEqual(PROJECT_ID, undefined, 'GOOGLE_CLOUD_PROJECT must be set');
+
+    // Execute workflow, with long test timeout
     const result = await quickstart(
       PROJECT_ID,
       LOCATION_ID,
@@ -30,5 +34,4 @@ describe('Cloud Workflows Quickstart Tests', () => {
     );
     assert.isTrue(result.length > 0);
   }).timeout(5_000);
-  // Extend default timeout for Workflows job
 });

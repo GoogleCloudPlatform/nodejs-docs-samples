@@ -14,18 +14,28 @@
 
 'use strict';
 
+/**
+ * Sleeps the process N number of milliseconds.
+ * @param {Number} ms The number of milliseconds to sleep.
+ */
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
+/**
+ * Executes a Workflow and waits for the results with exponential backoff.
+ * @param {string} projectId The Google Cloud Project containing the workflow
+ * @param {string} location The workflow location
+ * @param {string} workflow The workflow name
+ */
 const main = async (
   projectId = process.env.GOOGLE_CLOUD_PROJECT,
   location = 'us-central1',
   workflow = 'myFirstWorkflow',
 ) => {
-  if (!projectId) return console.error('GOOGLE_CLOUD_PROJECT is required.');
+  if (!projectId) return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
 
   // [START workflows_api_quickstart]
   const {ExecutionsClient} = require('@google-cloud/workflows');
@@ -38,9 +48,9 @@ const main = async (
   const executionName = createExecutionRes[0].name;
   console.log(`Created execution: ${executionName}`);
   
-  
   // Wait for execution to finish, then print results.
-  let executionFinished;
+  let executionFinished = false;
+  let backoffDelay = 1_000; // Start wait with delay of 1,000 ms
   console.log('Poll every second for result...');
   while (!executionFinished) {
     const [execution] = await client.getExecution({
@@ -51,9 +61,11 @@ const main = async (
     // If we haven't seen the result yet, wait a second.
     if (!executionFinished) {
       console.log('- Waiting for results...');
-      await sleep(1000);
+      await sleep(backoffDelay);
+      backoffDelay *= 2; // Double the delay to provide exponential backoff.
     } else {
       console.log(`Execution finished with state: ${execution.state}`);
+      console.log(execution.result);
       return execution.result;
     }
   }

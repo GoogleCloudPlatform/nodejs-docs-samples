@@ -55,7 +55,10 @@ async function main(path = 'YOUR_LOCAL_FILE') {
       stream.end();
     });
 
-  const stream = client.streamingAnnotateVideo().on('data', response => {
+  const options = {timeout: 120000};
+  // Create a job using a long-running operation
+
+  const stream = client.streamingAnnotateVideo(options).on('data', response => {
     //Gets annotations for video
     const annotations = response.annotationResults;
     const objects = annotations.objectAnnotations;

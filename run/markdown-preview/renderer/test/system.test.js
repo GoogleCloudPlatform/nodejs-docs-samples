@@ -36,11 +36,11 @@ describe('End-to-End Tests', () => {
   let BASE_URL, ID_TOKEN;
   before(async () => {
     // Deploy service using Cloud Build
-    const buildCmd =
+    let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) buildCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);
@@ -61,11 +61,11 @@ describe('End-to-End Tests', () => {
   });
 
   after(() => {
-    const cleanUpCmd =
+    let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) cleanUpCmd + `,_VERSION=${SAMPLE_VERSION}`;
+    if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     execSync(cleanUpCmd);
   });

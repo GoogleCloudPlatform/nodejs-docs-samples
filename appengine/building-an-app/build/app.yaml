@@ -12,5 +12,5 @@
 # limitations under the License.
 
 # [START app_yaml]
-runtime: nodejs12
+runtime: nodejs14
 # [END app_yaml]

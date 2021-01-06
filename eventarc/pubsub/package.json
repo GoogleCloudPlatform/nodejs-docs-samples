@@ -15,11 +15,13 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js --check-leaks",
-    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
+    "unit-test": "mocha test/app.test.js --check-leaks",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000",
+    "all-test": "npm run unit-test && npm run system-test",
+    "test": "npm -- run all-test"
   },
   "dependencies": {
-    "@google/events": "^3.0.0",
+    "@google/events": "^3.2.1",
     "express": "^4.16.4"
   },
   "devDependencies": {

@@ -26,7 +26,7 @@ const cwd = path.join(__dirname, '..');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+const BASE_URL = 'http://localhost:8080';
 const outputBucket = storage.bucket(process.env.OUTPUT_BUCKET);
 
 requestRetry = requestRetry.defaults({

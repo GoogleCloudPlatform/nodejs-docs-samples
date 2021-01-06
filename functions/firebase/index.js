@@ -17,11 +17,13 @@
  * Triggered by a change to a Firebase RTDB reference.
  *
  * @param {!Object} event The Cloud Functions event.
+ * @param {!Object} context The Cloud Functions event context.
+                            (Required to access RTDB path parameters.)
  */
-exports.helloRTDB = event => {
+exports.helloRTDB = (event, context) => {
   const triggerResource = event.resource;
 
-  const pathParams = event.params;
+  const pathParams = context.params;
   if (pathParams) {
     console.log('Path parameters:');
     Object.keys(pathParams).forEach(key => {

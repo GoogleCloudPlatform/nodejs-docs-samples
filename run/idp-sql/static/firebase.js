@@ -33,6 +33,7 @@ function signIn() {
     })
     .catch(err => {
       console.log(`Error during sign in: ${err.message}`);
+      window.alert(`Sign in failed. Retry or check your browser logs.`);
     });
 }
 // [END run_end_user_firebase_sign_in]
@@ -45,6 +46,7 @@ function signOut() {
     .then(result => {})
     .catch(err => {
       console.log(`Error during sign out: ${err.message}`);
+      window.alert(`Sign out failed. Retry or check your browser logs.`);
     });
 }
 
@@ -80,7 +82,7 @@ async function vote(team) {
         window.location.reload();
       }
     } catch (err) {
-      console.log('Error when voting: ' + err);
+      console.log(`Error when submitting vote: ${err}`);
       window.alert('Somthing went wrong... Please try again!');
     }
   } else {

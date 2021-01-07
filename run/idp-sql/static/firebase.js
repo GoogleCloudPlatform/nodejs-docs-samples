@@ -83,7 +83,7 @@ async function vote(team) {
       }
     } catch (err) {
       console.log(`Error when submitting vote: ${err}`);
-      window.alert('Somthing went wrong... Please try again!');
+      window.alert('Something went wrong... Please try again!');
     }
   } else {
     window.alert('User not signed in.');

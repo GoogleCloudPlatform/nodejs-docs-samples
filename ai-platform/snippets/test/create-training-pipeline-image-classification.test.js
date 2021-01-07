@@ -17,7 +17,8 @@
 'use strict';
 
 const {assert} = require('chai');
-const {after, describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
+const clean = require('./clean');
 
 const uuid = require('uuid').v4;
 const cp = require('child_process');
@@ -41,6 +42,10 @@ const location = process.env.LOCATION;
 let trainingPipelineId;
 
 describe('AI platform create training pipeline image classification', () => {
+  before('should delete any old and/or orphaned resources', async () => {
+    await clean.cleanTrainingPipelines(project);
+  });
+
   it('should create a new image classification training pipeline', async () => {
     const stdout = execSync(
       `node ./create-training-pipeline-image-classification.js ${datasetId} ${modelDisplayName} ${trainingPipelineDisplayName} ${project} ${location}`

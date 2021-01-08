@@ -14,7 +14,6 @@
 
 'use strict';
 
-// [START kms_sign_asymmetric]
 async function main(
   projectId = 'your-project-id',
   locationId = 'us-east1',
@@ -53,16 +52,40 @@ async function main(
     // Create a digest of the message. The digest needs to match the digest
     // configured for the Cloud KMS key.
     const crypto = require('crypto');
-    const digest = crypto.createHash('sha256');
-    digest.update(message);
+    const hash = crypto.createHash('sha256');
+    hash.update(message);
+    const digest = hash.digest();
+
+    // Optional but recommended: Compute digest's CRC32C.
+    const crc32c = require('fast-crc32c');
+    const digestCrc32c = crc32c.calculate(digest);
 
     // Sign the message with Cloud KMS
     const [signResponse] = await client.asymmetricSign({
       name: versionName,
       digest: {
-        sha256: digest.digest(),
+        sha256: digest,
+      },
+      digestCrc32c: {
+        value: digestCrc32c,
       },
     });
+
+    // Optional, but recommended: perform integrity verification on signResponse.
+    // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+    // https://cloud.google.com/kms/docs/data-integrity-guidelines
+    if (signResponse.name !== versionName) {
+      throw new Error('AsymmetricSign: request corrupted in-transit');
+    }
+    if (!signResponse.verifiedDigestCrc32c) {
+      throw new Error('AsymmetricSign: request corrupted in-transit');
+    }
+    if (
+      crc32c.calculate(signResponse.signature) !==
+      Number(signResponse.signatureCrc32c.value)
+    ) {
+      throw new Error('AsymmetricSign: response corrupted in-transit');
+    }
 
     // Example of how to display signature. Because the signature is in a binary
     // format, you need to encode the output before printing it to a console or

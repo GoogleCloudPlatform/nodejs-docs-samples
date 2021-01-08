@@ -48,17 +48,37 @@ async function main(
     versionId
   );
 
+  // Optional, but recommended: compute plaintext's CRC32C.
+  const crc32c = require('fast-crc32c');
+  const ciphertextCrc32c = crc32c.calculate(ciphertext);
+
   async function decryptAsymmetric() {
-    const [result] = await client.asymmetricDecrypt({
+    const [decryptResponse] = await client.asymmetricDecrypt({
       name: versionName,
       ciphertext: ciphertext,
+      ciphertextCrc32c: {
+        value: ciphertextCrc32c,
+      },
     });
+
+    // Optional, but recommended: perform integrity verification on decryptResponse.
+    // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+    // https://cloud.google.com/kms/docs/data-integrity-guidelines
+    if (!decryptResponse.verifiedCiphertextCrc32c) {
+      throw new Error('AsymmetricDecrypt: request corrupted in-transit');
+    }
+    if (
+      crc32c.calculate(decryptResponse.plaintext) !==
+      Number(decryptResponse.plaintextCrc32c.value)
+    ) {
+      throw new Error('AsymmetricDecrypt: response corrupted in-transit');
+    }
 
     // NOTE: The ciphertext must be properly formatted. In Node < 12, the
     // crypto.publicEncrypt() function does not properly consume the OAEP
     // padding and thus produces invalid ciphertext. If you are using Node to do
     // public key encryption, please use version 12+.
-    const plaintext = result.plaintext.toString('utf8');
+    const plaintext = decryptResponse.plaintext.toString('utf8');
 
     console.log(`Plaintext: ${plaintext}`);
     return plaintext;

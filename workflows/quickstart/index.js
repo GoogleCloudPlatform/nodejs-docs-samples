@@ -15,16 +15,6 @@
 'use strict';
 
 /**
- * Sleeps the process N number of milliseconds.
- * @param {Number} ms The number of milliseconds to sleep.
- */
-function sleep(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-
-/**
  * Executes a Workflow and waits for the results with exponential backoff.
  * @param {string} projectId The Google Cloud Project containing the workflow
  * @param {string} location The workflow location
@@ -41,6 +31,16 @@ const main = async (
   // [START workflows_api_quickstart]
   const {ExecutionsClient} = require('@google-cloud/workflows');
   const client = new ExecutionsClient();
+
+  /**
+   * Sleeps the process N number of milliseconds.
+   * @param {Number} ms The number of milliseconds to sleep.
+   */
+  function sleep(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  }
 
   // Execute workflow
   try {

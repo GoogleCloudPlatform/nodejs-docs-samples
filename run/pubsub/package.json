@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/app.test.js --check-leaks",
-    "system-test": "mocha test/system.test.js --timeout=180000"
+    "system-test": "mocha test/system.test.js --timeout=300000 --exit"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

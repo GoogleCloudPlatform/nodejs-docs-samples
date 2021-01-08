@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "system-test": "NAME=Cloud mocha test/system.test.js --timeout=180000",
+    "system-test": "NAME=Cloud mocha test/system.test.js --timeout=300000 --exit",
     "lint": "eslint '**/*.js'",
     "fix": "eslint --fix '**/*.js'"
   },

@@ -4,7 +4,7 @@
   "description": "Examples of integrating Cloud Functions with billing",
   "main": "index.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "scripts": {
     "compute-test": "mocha test/periodic.test.js --timeout=600000",
@@ -14,7 +14,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "google-auth-library": "^6.0.0",
-    "googleapis": "^65.0.0",
+    "googleapis": "^66.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {

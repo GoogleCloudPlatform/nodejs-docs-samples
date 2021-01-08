@@ -16,8 +16,22 @@
 const assert = require('assert');
 const Supertest = require('supertest');
 const supertest = Supertest(process.env.BASE_URL);
+const childProcess = require('child_process');
 
 describe('system tests', () => {
+  // [END functions_http_system_test]
+  before(() => {
+    childProcess.execSync(
+      `gcloud functions deploy helloHttp --allow-unauthenticated --runtime nodejs10 --trigger-http --ingress-settings=all --region=${process.env.GCF_REGION}; gcloud functions add-iam-policy-binding helloHttp --region=${process.env.GCF_REGION} --member="allUsers" --role=roles/cloudfunctions.invoker`
+    );
+  });
+
+  after(() => {
+    childProcess.execSync(
+      `gcloud functions delete helloHttp --region=${process.env.GCF_REGION}`
+    );
+  });
+  // [START functions_http_system_test]
   it('helloHttp: should print a name', async () => {
     await supertest
       .post('/helloHttp')

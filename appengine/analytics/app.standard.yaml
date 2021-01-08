@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-runtime: nodejs12
+runtime: nodejs14
 
 # [START gae_analytics_env_variables]
 env_variables:

@@ -26,7 +26,7 @@ after(() => {
   server.close();
 });
 
-it('should display the default page', async () => {
+it('should display the default page via tcp', async () => {
   await request(server)
     .get('/')
     .expect(200)
@@ -35,7 +35,7 @@ it('should display the default page', async () => {
     });
 });
 
-it('should handle insert error', async () => {
+it('should handle insert error via tcp', async () => {
   const expectedResult = 'Invalid team specified';
 
   await request(server)

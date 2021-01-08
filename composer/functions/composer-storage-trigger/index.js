@@ -47,7 +47,7 @@ exports.triggerDag = async data => {
   // Other constants
   const WEBSERVER_URL = `https://${WEBSERVER_ID}.appspot.com/api/experimental/dags/${DAG_NAME}/dag_runs`;
   const USER_AGENT = 'gcf-event-trigger';
-  const BODY = {conf: JSON.stringify(data)};
+  const BODY = {conf: JSON.stringify(data), replace_microseconds: 'false'};
 
   // Make the request
   try {

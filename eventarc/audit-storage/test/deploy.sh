@@ -23,6 +23,11 @@ requireEnv() {
 requireEnv SERVICE_NAME
 requireEnv CONTAINER_IMAGE
 
+# Build the service
+set -x
+gcloud builds submit --tag="${CONTAINER_IMAGE}"
+set +x
+
 # Deploy the service
 set -x
 gcloud run deploy "${SERVICE_NAME}" \

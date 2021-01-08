@@ -50,6 +50,17 @@ async function main(
       name: versionName,
     });
 
+    // Optional, but recommended: perform integrity verification on publicKey.
+    // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+    // https://cloud.google.com/kms/docs/data-integrity-guidelines
+    const crc32c = require('fast-crc32c');
+    if (publicKey.name !== versionName) {
+      throw new Error('GetPublicKey: request corrupted in-transit');
+    }
+    if (crc32c.calculate(publicKey.pem) !== Number(publicKey.pemCrc32c.value)) {
+      throw new Error('GetPublicKey: response corrupted in-transit');
+    }
+
     console.log(`Public key pem: ${publicKey.pem}`);
 
     return publicKey;

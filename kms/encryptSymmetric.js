@@ -40,13 +40,33 @@ async function main(
   // Build the key name
   const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
 
+  // Optional, but recommended: compute plaintext's CRC32C.
+  const crc32c = require('fast-crc32c');
+  const plaintextCrc32c = crc32c.calculate(plaintextBuffer);
+
   async function encryptSymmetric() {
     const [encryptResponse] = await client.encrypt({
       name: keyName,
       plaintext: plaintextBuffer,
+      plaintextCrc32c: {
+        value: plaintextCrc32c,
+      },
     });
 
     const ciphertext = encryptResponse.ciphertext;
+
+    // Optional, but recommended: perform integrity verification on encryptResponse.
+    // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+    // https://cloud.google.com/kms/docs/data-integrity-guidelines
+    if (!encryptResponse.verifiedPlaintextCrc32c) {
+      throw new Error('Encrypt: request corrupted in-transit');
+    }
+    if (
+      crc32c.calculate(ciphertext) !==
+      Number(encryptResponse.ciphertextCrc32c.value)
+    ) {
+      throw new Error('Encrypt: response corrupted in-transit');
+    }
 
     console.log(`Ciphertext: ${ciphertext.toString('base64')}`);
     return ciphertext;

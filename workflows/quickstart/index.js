@@ -19,7 +19,7 @@
  * @param {Number} ms The number of milliseconds to sleep.
  */
 function sleep(ms) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, ms);
   });
 }
@@ -33,14 +33,15 @@ function sleep(ms) {
 const main = async (
   projectId = process.env.GOOGLE_CLOUD_PROJECT,
   location = 'us-central1',
-  workflow = 'myFirstWorkflow',
+  workflow = 'myFirstWorkflow'
 ) => {
-  if (!projectId) return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
+  if (!projectId)
+    return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
 
   // [START workflows_api_quickstart]
   const {ExecutionsClient} = require('@google-cloud/workflows');
   const client = new ExecutionsClient();
-  
+
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({
@@ -48,17 +49,17 @@ const main = async (
     });
     const executionName = createExecutionRes[0].name;
     console.log(`Created execution: ${executionName}`);
-    
+
     // Wait for execution to finish, then print results.
     let executionFinished = false;
-    let backoffDelay = 1_000; // Start wait with delay of 1,000 ms
+    let backoffDelay = 1000; // Start wait with delay of 1,000 ms
     console.log('Poll every second for result...');
     while (!executionFinished) {
       const [execution] = await client.getExecution({
         name: executionName,
       });
       executionFinished = execution.state !== 'ACTIVE';
-  
+
       // If we haven't seen the result yet, wait a second.
       if (!executionFinished) {
         console.log('- Waiting for results...');
@@ -70,11 +71,11 @@ const main = async (
         return execution.result;
       }
     }
-  } catch(e) {
+  } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
   // [END workflows_api_quickstart]
-}
+};
 
 module.exports = main;
 

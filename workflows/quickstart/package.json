@@ -11,7 +11,6 @@
     "@google-cloud/workflows": "^1.0.2"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
     "mocha": "^8.0.0"
   }
 }

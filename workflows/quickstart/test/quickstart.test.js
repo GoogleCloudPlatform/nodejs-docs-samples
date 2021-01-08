@@ -15,7 +15,7 @@
 'use strict';
 
 const quickstart = require('../index');
-const {assert} = require('chai');
+const assert = require('assert');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const LOCATION_ID = 'us-central1';
@@ -24,7 +24,7 @@ const WORKFLOW = 'myFirstWorkflow';
 describe('Cloud Workflows Quickstart Tests', () => {
   it('should execute the quickstart', async () => {
     // Ensure project is configured
-    assert.notEqual(PROJECT_ID, undefined, 'GOOGLE_CLOUD_PROJECT must be set');
+    assert.notStrictEqual(PROJECT_ID, undefined, 'GOOGLE_CLOUD_PROJECT must be set');
 
     // Execute workflow, with long test timeout
     const result = await quickstart(
@@ -32,6 +32,6 @@ describe('Cloud Workflows Quickstart Tests', () => {
       LOCATION_ID,
       WORKFLOW
     );
-    assert.isTrue(result.length > 0);
+    assert.strictEqual(result.length > 0, true, 'Quickstart must return non-empty result');
   }).timeout(5_000);
 });

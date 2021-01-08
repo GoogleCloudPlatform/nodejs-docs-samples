@@ -42,32 +42,36 @@ const main = async (
   const client = new ExecutionsClient();
   
   // Execute workflow
-  const createExecutionRes = await client.createExecution({
-    parent: client.workflowPath(projectId, location, workflow),
-  });
-  const executionName = createExecutionRes[0].name;
-  console.log(`Created execution: ${executionName}`);
-  
-  // Wait for execution to finish, then print results.
-  let executionFinished = false;
-  let backoffDelay = 1_000; // Start wait with delay of 1,000 ms
-  console.log('Poll every second for result...');
-  while (!executionFinished) {
-    const [execution] = await client.getExecution({
-      name: executionName,
+  try {
+    const createExecutionRes = await client.createExecution({
+      parent: client.workflowPath(projectId, location, workflow),
     });
-    executionFinished = execution.state !== 'ACTIVE';
-
-    // If we haven't seen the result yet, wait a second.
-    if (!executionFinished) {
-      console.log('- Waiting for results...');
-      await sleep(backoffDelay);
-      backoffDelay *= 2; // Double the delay to provide exponential backoff.
-    } else {
-      console.log(`Execution finished with state: ${execution.state}`);
-      console.log(execution.result);
-      return execution.result;
+    const executionName = createExecutionRes[0].name;
+    console.log(`Created execution: ${executionName}`);
+    
+    // Wait for execution to finish, then print results.
+    let executionFinished = false;
+    let backoffDelay = 1_000; // Start wait with delay of 1,000 ms
+    console.log('Poll every second for result...');
+    while (!executionFinished) {
+      const [execution] = await client.getExecution({
+        name: executionName,
+      });
+      executionFinished = execution.state !== 'ACTIVE';
+  
+      // If we haven't seen the result yet, wait a second.
+      if (!executionFinished) {
+        console.log('- Waiting for results...');
+        await sleep(backoffDelay);
+        backoffDelay *= 2; // Double the delay to provide exponential backoff.
+      } else {
+        console.log(`Execution finished with state: ${execution.state}`);
+        console.log(execution.result);
+        return execution.result;
+      }
     }
+  } catch(e) {
+    console.error(`Error executing workflow: ${e}`);
   }
   // [END workflows_api_quickstart]
 }

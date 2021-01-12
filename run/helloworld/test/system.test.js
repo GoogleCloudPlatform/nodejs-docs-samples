@@ -44,9 +44,10 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
-  const {NAME} = process.env;
+  let {NAME} = process.env;
   if (!NAME) {
-    throw Error('"NAME" env var not found.');
+    NAME = "Cloud";
+    console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';

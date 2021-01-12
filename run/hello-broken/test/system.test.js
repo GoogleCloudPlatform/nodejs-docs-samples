@@ -39,9 +39,10 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
-  const {NAME} = process.env;
+  let {NAME} = process.env;
   if (!NAME) {
-    throw Error('"NAME" environment variable is required. For example: Cosmos');
+    NAME = "Cosmos";
+    throw Error(`"NAME" env var is required. Defaulting to "${NAME}"`);
   }
 
   const {SAMPLE_VERSION} = process.env;

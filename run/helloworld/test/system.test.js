@@ -46,7 +46,7 @@ describe('End-to-End Tests', () => {
   }
   let {NAME} = process.env;
   if (!NAME) {
-    NAME = "Cloud";
+    NAME = 'Cloud';
     console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;

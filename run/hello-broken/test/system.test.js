@@ -41,7 +41,7 @@ describe('End-to-End Tests', () => {
   }
   let {NAME} = process.env;
   if (!NAME) {
-    NAME = "Cosmos";
+    NAME = 'Cosmos';
     throw Error(`"NAME" env var is required. Defaulting to "${NAME}"`);
   }
 

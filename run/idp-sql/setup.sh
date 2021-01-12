@@ -65,3 +65,7 @@ gcloud secrets add-iam-policy-binding ${SECRET_NAME} \
 gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
    --member serviceAccount:${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
    --role roles/cloudsql.client
+# Allow service account to invoke Cloud Run service
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+   --member serviceAccount:${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+   --role roles/run.Invoker

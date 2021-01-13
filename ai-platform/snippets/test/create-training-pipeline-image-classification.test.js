@@ -33,11 +33,11 @@ const pipelineServiceClient = new aiplatform.PipelineServiceClient(
   clientOptions
 );
 
-const datasetId = process.env.TRAINING_PIPELINE_IMAGE_CLASS_DATASET_ID;
+const datasetId = '1084241610289446912';
 const modelDisplayName = `temp_create_training_pipeline_image_classification_model_test${uuid()}`;
 const trainingPipelineDisplayName = `temp_create_training_pipeline_image_classification_test_${uuid()}`;
+const location = 'us-central1';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
 
 let trainingPipelineId;
 

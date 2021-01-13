@@ -15,7 +15,7 @@
 
 'use strict';
 
-function main(projectId, location = 'us-central1') {
+async function main(projectId, location = 'us-central1') {
   // [START aiplatform_list_endpoints]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -50,12 +50,13 @@ function main(projectId, location = 'us-central1') {
       }
     }
   }
-
   listEndpoints();
   // [END aiplatform_list_endpoints]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
+process.on('unhandledRejection', err => {
+  console.error(err.message);
   process.exitCode = 1;
 });
+
+main(...process.argv.slice(2));

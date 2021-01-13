@@ -92,35 +92,9 @@ function main(
     );
 
     console.log('Create training pipeline image classification response');
-    console.log(`\tName : ${response.name}`);
-    console.log(`\tDisplay Name : ${response.displayName}`);
-    console.log(
-      `\tTraining task definition : ${response.trainingTaskDefinition}`
-    );
-    console.log(
-      `\tTraining task inputs : \
-        ${JSON.stringify(response.trainingTaskInputs)}`
-    );
-    console.log(
-      `\tTraining task metadata : \
-        ${JSON.stringify(response.trainingTaskMetadata)}`
-    );
-    console.log(`\tState ; ${response.state}`);
-    console.log(`\tCreate time : ${JSON.stringify(response.createTime)}`);
-    console.log(`\tStart time : ${JSON.stringify(response.startTime)}`);
-    console.log(`\tEnd time : ${JSON.stringify(response.endTime)}`);
-    console.log(`\tUpdate time : ${JSON.stringify(response.updateTime)}`);
-    console.log(`\tLabels : ${JSON.stringify(response.labels)}`);
-
-    const error = response.error;
-    console.log('\tError');
-    if (error === null) {
-      console.log('\t\tCode : {}');
-      console.log('\t\tMessage : {}');
-    } else {
-      console.log(`\t\tCode : ${error.code}`);
-      console.log(`\t\tMessage : ${error.message}`);
-    }
+    console.log(`Name : ${response.name}`);
+    console.log('Raw response:');
+    console.log(JSON.stringify(response, null, 2));
   }
 
   createTrainingPipelineImageClassification();

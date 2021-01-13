@@ -27,9 +27,9 @@ const filename = 'daisy.jpg';
 const local_file = path.resolve(
   path.join(__dirname, `../resources/${filename}`)
 );
-const endpointId = process.env.PREDICT_IMAGE_CLASS_ENDPOINT_ID;
+const endpointId = '71213169107795968';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform predict image classification', () => {
   it('should make predictions using the image classification model', async () => {

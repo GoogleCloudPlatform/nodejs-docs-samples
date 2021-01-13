@@ -158,6 +158,12 @@ async function cleanEndpoints(projectId) {
   for (const endpoint of endpoints) {
     const {displayName, createTime, name} = endpoint;
 
+    // Rather than delete a deployed model from the endpoint,
+    // allow the cleanModels() function undeploy those models.
+    if (endpoint.deployedModels) {
+      continue;
+    }
+
     if (checkDeletionStatus(displayName, createTime)) {
       await endpointServiceClient.deleteEndpoint({
         name,

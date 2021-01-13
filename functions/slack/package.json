@@ -15,7 +15,7 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "@slack/events-api": "^2.3.0",
+    "@slack/events-api": "^3.0.0",
     "googleapis": "^67.0.0"
   },
   "devDependencies": {

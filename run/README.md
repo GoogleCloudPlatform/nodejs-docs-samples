@@ -97,7 +97,7 @@ For more Cloud Run samples beyond Node.js, see the main list in the [Cloud Run S
     npm install
     ```
 
-    Because we're using Âa read/write volume mount, the revised file will be
+    Because we're using a read/write volume mount, the revised file will be
     written to the host's local filesystem. Once you exit the container you can
     add the file to version control.
 

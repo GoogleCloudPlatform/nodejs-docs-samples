@@ -17,8 +17,7 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const {before, describe, it} = require('mocha');
-const clean = require('./clean');
+const {describe, it} = require('mocha');
 
 const cp = require('child_process');
 
@@ -29,12 +28,6 @@ const LOCATION = 'us-central1';
 const project = process.env.CAIP_PROJECT_ID;
 
 describe('AI platform list endpoints', () => {
-  before(
-    'should get the project ID and clean up orphaned resources',
-    async () => {
-      await clean.cleanEndpoints(project);
-    }
-  );
   it('should list all endpoints in a parent resource', async () => {
     const stdout = execSync(`node ./list-endpoints.js ${project} ${LOCATION}`, {
       cwd,

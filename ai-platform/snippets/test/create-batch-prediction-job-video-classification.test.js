@@ -18,12 +18,11 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const {after, before, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const uuid = require('uuid').v4;
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const clean = require('./clean');
 
 const aiplatform = require('@google-cloud/aiplatform');
 const clientOptions = {
@@ -43,10 +42,6 @@ const project = process.env.CAIP_PROJECT_ID;
 let batchPredictionJobId;
 
 describe('AI platform create batch prediction job video classification', () => {
-  before('should clean up any orphaned resources', async () => {
-    await clean.cleanBatchPredictionJobs(project);
-  });
-
   it('should create a video classification batch prediction job', async () => {
     const stdout = execSync(
       `node ./create-batch-prediction-job-video-classification.js \

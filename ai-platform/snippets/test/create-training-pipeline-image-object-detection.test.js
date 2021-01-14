@@ -18,8 +18,7 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const clean = require('./clean');
-const {after, before, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 
 const uuid = require('uuid').v4;
 const cp = require('child_process');
@@ -44,13 +43,6 @@ const project = process.env.CAIP_PROJECT_ID;
 let trainingPipelineId;
 
 describe('AI platform create training pipeline image object detection', () => {
-  before(
-    'should get the current project ID and clean up orphaned resources',
-    async () => {
-      await clean.cleanTrainingPipelines(project);
-    }
-  );
-
   it('should create a new image object detection training pipeline', async () => {
     const stdout = execSync(
       `node ./create-training-pipeline-image-object-detection.js \

@@ -17,7 +17,7 @@ async function main(
   projectId = 'YOUR_GCP_PROJECT_ID',
   computeRegion = 'REGION',
   modelId = 'YOUR_MODEL_ID',
-  inputs = [{numberValue: 1}, {stringValue: 'value'}]
+  inputs = '[{"numberValue": 1}, {"stringValue": "value"}]'
 ) {
   // [START automl_tables_predict]
 

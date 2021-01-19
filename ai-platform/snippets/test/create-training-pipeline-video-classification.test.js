@@ -42,7 +42,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let trainingPipelineId;
 
-describe('AI platform create training pipeline video classification', () => {
+describe('AI platform create training pipeline video classification', async function () {
+  this.retries(2);
   it('should create a new video classification training pipeline', async () => {
     const stdout = execSync(
       `node ./create-training-pipeline-video-classification.js ${datasetId} \

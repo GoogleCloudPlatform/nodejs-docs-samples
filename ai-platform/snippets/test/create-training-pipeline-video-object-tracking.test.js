@@ -42,7 +42,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let trainingPipelineId;
 
-describe('AI platform create training pipeline object tracking', () => {
+describe('AI platform create training pipeline object tracking', async function () {
+  this.retries(2);
   it('should create a new object tracking training pipeline', async () => {
     const stdout = execSync(
       `node ./create-training-pipeline-video-object-tracking.js \

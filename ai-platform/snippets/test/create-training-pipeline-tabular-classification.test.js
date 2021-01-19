@@ -43,7 +43,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let trainingPipelineId;
 
-describe('AI platform create training pipeline tables classification', () => {
+describe('AI platform create training pipeline tables classification', async function () {
+  this.retries(2);
   it('should create a new tables classification training pipeline', async () => {
     const stdout = execSync(
       `node ./create-training-pipeline-tabular-classification.js \

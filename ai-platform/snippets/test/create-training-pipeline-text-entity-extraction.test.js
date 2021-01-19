@@ -42,7 +42,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let trainingPipelineId;
 
-describe('AI platform create training pipeline text entity extraction', () => {
+describe('AI platform create training pipeline text entity extraction', async function () {
+  this.retries(2);
   it('should create a new text entity extraction training pipeline', async () => {
     const stdout = execSync(
       `node ./create-training-pipeline-text-entity-extraction.js \

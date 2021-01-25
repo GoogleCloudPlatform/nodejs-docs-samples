@@ -106,7 +106,7 @@ describe('End-to-End Tests', () => {
       },
       retry: {
         limit: 5,
-        methods: ['POST']
+        methods: ['POST'],
       },
     };
     const response = await got('render', options);

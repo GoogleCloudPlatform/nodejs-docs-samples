@@ -53,18 +53,6 @@ set -x
 export SUFFIX="$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-z0-9' | head -c 15)"
 set +x
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
-export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
-
-# Build the service
-set -x
-gcloud builds submit --tag="${CONTAINER_IMAGE}"
-set +x
-
-# Register post-test cleanup.
-function cleanup {
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
-}
-trap cleanup EXIT HUP
 
 # Install dependencies and run Nodejs tests.
 export NODE_ENV=development

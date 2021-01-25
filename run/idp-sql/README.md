@@ -74,12 +74,16 @@ to be set.
 
 ### Unit tests
 
-```
+```sh
 npm run test
 ```
 
 ### System tests
 
-```
+```sh
+export GOOGLE_CLOUD_PROJECT=<YOUR_PROJECT_ID>
+export CLOUD_SQL_CONNECTION_NAME=<YOUR_CLOUD_SQL_CONNECTION_NAME>
+export DB_PASSWORD=<POSTGRESQL_PASSWORD>
+export IDP_KEY=<IDENTITY_PLATFORM_API_KEY>  # See tutorial for creation of this key
 npm run system-test
 ```

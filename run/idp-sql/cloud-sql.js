@@ -16,7 +16,7 @@ const Knex = require('knex');
 const {getCredConfig} = require('./secrets');
 const {logger} = require('./logging');
 
-const TABLE = process.env.TABLE || 'votes';
+const TABLE = process.env.TABLE || 'pet_votes';
 let knex, credConfig;
 
 // Connection pooling config

@@ -50,6 +50,9 @@ describe('Cloud Scheduler Sample Tests', () => {
       `node deleteJob.js ${PROJECT_ID} ${LOCATION_ID} ${jobName}`
     );
     assert.match(stdout, /Job deleted/);
+    // This is to test that flaky tests are appropriately reported,
+    // and will be rolled back immediately:
+    assert.strictEqual(true, false);
   });
 });
 

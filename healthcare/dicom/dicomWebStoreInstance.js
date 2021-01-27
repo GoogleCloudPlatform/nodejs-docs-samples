@@ -46,6 +46,8 @@ const main = (
     // const dcmFile = 'file.dcm';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = 'studies';
+    // Use a stream because other types of reads overwrite the client's HTTP
+    // headers and cause storeInstances to fail.
     const binaryData = fs.createReadStream(dcmFile);
     const request = {
       parent,

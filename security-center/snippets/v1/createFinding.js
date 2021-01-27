@@ -18,6 +18,7 @@
  * Demonstrates how to create a new security finding in CSCC.
  */
 function main(sourceName = 'FULL_PATH_TO_SOURCE_FOR_FINDING') {
+  // [START securitycenter_create_finding]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -56,6 +57,7 @@ function main(sourceName = 'FULL_PATH_TO_SOURCE_FOR_FINDING') {
   }
   createFinding();
   // [END demo]
+  // [END securitycenter_create_finding]
 }
 
 main(...process.argv.slice(2));

@@ -14,6 +14,7 @@
 'use strict';
 
 function main(organizationId = 'your-org-id', configId = 'your-config-id') {
+  // [START securitycenter_get_notification_configs]
   // [START scc_get_notification_configs]
   // npm install @google-cloud/security-center/
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -36,6 +37,7 @@ function main(organizationId = 'your-org-id', configId = 'your-config-id') {
 
   getNotificationConfg();
   // [END scc_get_notification_configs]
+  // [END securitycenter_get_notification_configs]
 }
 
 main(...process.argv.slice(2));

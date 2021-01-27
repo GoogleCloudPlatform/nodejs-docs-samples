@@ -18,6 +18,7 @@ function main(
   configId = 'your-config-name',
   pubsubTopic = 'projects/{your-project}/topics/{your-topic}'
 ) {
+  // [START securitycenter_update_notification_config]
   // [START scc_update_notification_config]
   // npm install @google-cloud/security-center/
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -51,6 +52,7 @@ function main(
 
   updateNotificationConfig();
   // [END scc_update_notification_config]
+  // [END securitycenter_update_notification_config]
 }
 
 main(...process.argv.slice(2));

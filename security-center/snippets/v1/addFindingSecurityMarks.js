@@ -17,6 +17,7 @@
  * Demostrates adding security marks to a finding.
  */
 function main(findingName = 'full finding path to add marks to') {
+  // [START securitycenter_add_finding_security_marks]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -44,6 +45,7 @@ function main(findingName = 'full finding path to add marks to') {
   }
   addFindingSecurityMarks();
   // [END demo]
+  // [END securitycenter_add_finding_security_marks]
 }
 
 main(...process.argv.slice(2));

@@ -18,6 +18,7 @@
  * Prints assets with security mark of key_a == value_a.
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
+  // [START securitycenter_list_assets_with_security_marks]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -49,6 +50,7 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
 
   listAssetsWithSecurityMarks();
   // [END demo]
+  // [END securitycenter_list_assets_with_security_marks]
 }
 
 main(...process.argv.slice(2));

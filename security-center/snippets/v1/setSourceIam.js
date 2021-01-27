@@ -21,6 +21,7 @@ function main(
   sourceName = 'FULL_PATH_TO_SOURCE',
   user = 'someuser@domain.com'
 ) {
+  // [START securitycenter_set_source_iam]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -59,6 +60,7 @@ function main(
   }
   setSourceIamPolicy();
   // [END demo]
+  // [END securitycenter_set_source_iam]
 }
 
 main(...process.argv.slice(2));

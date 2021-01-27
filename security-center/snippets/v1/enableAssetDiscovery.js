@@ -18,6 +18,7 @@
  * Demostrates enabling asset discovery for an organization.
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
+  // [START securitycenter_enable_asset_discovery]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -45,6 +46,7 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   }
   updateOrgSettings();
   // [END demo]
+  // [END securitycenter_enable_asset_discovery]
 }
 
 main(...process.argv.slice(2));

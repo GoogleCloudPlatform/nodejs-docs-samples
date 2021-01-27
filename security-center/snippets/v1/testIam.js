@@ -19,6 +19,7 @@
  * access to create and update findings.
  */
 function main(sourceName = 'FULL_SOURCE_PATH') {
+  // [START securitycenter_test_iam]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -55,6 +56,7 @@ function main(sourceName = 'FULL_SOURCE_PATH') {
   }
   testIam();
   // [END demo]
+  // [END securitycenter_test_iam]
 }
 
 main(...process.argv.slice(2));

@@ -19,6 +19,7 @@
  * days ago.
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
+  // [START securitycenter_list_assets_and_changes]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -51,6 +52,7 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
 
   listAssetsAndChanges();
   // [END demo]
+  // [END securitycenter_list_assets_and_changes]
 }
 
 main(...process.argv.slice(2));

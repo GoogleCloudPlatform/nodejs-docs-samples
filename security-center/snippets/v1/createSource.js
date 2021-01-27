@@ -18,6 +18,7 @@
  * createSource demonstrates how to create a new security finding source.
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
+  // [START securitycenter_create_source]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -41,6 +42,7 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   }
   createSource();
   // [END demo]
+  // [END securitycenter_create_source]
 }
 
 main(...process.argv.slice(2));

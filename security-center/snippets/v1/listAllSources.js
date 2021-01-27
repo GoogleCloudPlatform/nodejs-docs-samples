@@ -16,6 +16,7 @@
 
 /** Prints all sources in an organization. */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
+  // [START securitycenter_list_all_sources]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -40,6 +41,7 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
 
   listSources();
   // [END demo]
+  // [END securitycenter_list_all_sources]
 }
 
 main(...process.argv.slice(2));

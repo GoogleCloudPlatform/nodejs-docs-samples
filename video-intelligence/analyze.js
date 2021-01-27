@@ -228,9 +228,9 @@ async function analyzeSafeSearch(gcsUri) {
   ];
 
   // Detects unsafe content
-  const [opertaion] = await client.annotateVideo(request);
+  const [operation] = await client.annotateVideo(request);
   console.log('Waiting for operation to complete...');
-  const [operationResult] = await opertaion.promise();
+  const [operationResult] = await operation.promise();
   // Gets unsafe content
   const explicitContentResults =
     operationResult.annotationResults[0].explicitAnnotation;

@@ -1,0 +1,34 @@
+{
+  "name": "kuberun-eventing-pubsub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KubeRun Eventing – Pub/Sub sample",
+  "main": "index.js",
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "unit-test": "mocha test/app.test.js --check-leaks",
+    "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000",
+    "all-test": "npm run unit-test && npm run system-test",
+    "test": "npm -- run all-test"
+  },
+  "dependencies": {
+    "@google/events": "^4.0.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "got": "^11.5.0",
+    "mocha": "^8.0.0",
+    "sinon": "^9.0.0",
+    "supertest": "^6.0.0",
+    "uuid": "^8.0.0"
+  }
+}

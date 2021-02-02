@@ -63,8 +63,6 @@ npm install
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}
 	notify_flakybot() {
-		# Call the original trap function.
-		cleanup
 		chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
 		$KOKORO_GFILE_DIR/linux_amd64/flakybot
 	}

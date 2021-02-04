@@ -33,7 +33,9 @@ async function main(parent = 'projects/my-project') {
     });
 
     secrets.forEach(secret => {
-      const policy = secret.replication.replication;
+      const policy = secret.replication.userManaged
+        ? secret.replication.userManaged
+        : secret.replication.automatic;
       console.log(`${secret.name} (${policy})`);
     });
   }

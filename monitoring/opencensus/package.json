@@ -1,0 +1,23 @@
+{
+  "name": "sli-metric-sample-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha -- system-test/*.test.js --timeout=5000 --exit"
+  },
+  "author": "Yuri Grinshteyn",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@opencensus/core": "^0.0.22",
+    "@opencensus/exporter-stackdriver": "^0.0.22",
+    "chai": "^4.3.0",
+    "express": "^4.17.1",
+    "node-stopwatch": "^0.0.1",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1"
+  }
+}

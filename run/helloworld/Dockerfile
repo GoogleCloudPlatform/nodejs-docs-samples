@@ -15,9 +15,9 @@
 # [START cloudrun_helloworld_dockerfile]
 # [START run_helloworld_dockerfile]
 
-# Use the official lightweight Node.js 12 image.
+# Use the official lightweight Node.js 14 image.
 # https://hub.docker.com/_/node
-FROM node:12-slim
+FROM node:14-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app

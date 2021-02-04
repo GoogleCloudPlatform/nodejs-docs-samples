@@ -15,13 +15,11 @@ limitations under the License.
 */
 const express = require('express');
 const app = express();
-var Stopwatch = require("node-stopwatch").Stopwatch;
+const Stopwatch = require('node-stopwatch').Stopwatch;
 
-function msleep(n) {
-  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
-}
-function sleep(n) {
-  msleep(n*1000);
+// sleep time expects milliseconds
+function sleep(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
 }
 
 const projectId = 'stack-doctor';
@@ -36,48 +34,48 @@ const EXPORT_INTERVAL = 60;
 // define the "golden signals" metrics and views
 // request count measure
 const REQUEST_COUNT = globalStats.createMeasureInt64(
-    'request_count',
-    MeasureUnit.UNIT,
-    'Number of requests to the server'
+  'request_count',
+  MeasureUnit.UNIT,
+  'Number of requests to the server'
 );
 // request count view
 const request_count_metric = globalStats.createView(
-    'request_count_metric',
-    REQUEST_COUNT,
-    AggregationType.COUNT
+  'request_count_metric',
+  REQUEST_COUNT,
+  AggregationType.COUNT
 );
 globalStats.registerView(request_count_metric);
 
 // error count measure
 const ERROR_COUNT = globalStats.createMeasureInt64(
-    'error_count',
-    MeasureUnit.UNIT,
-    'Number of failed requests to the server'
+  'error_count',
+  MeasureUnit.UNIT,
+  'Number of failed requests to the server'
 );
 // error count view
 const error_count_metric = globalStats.createView(
-    'error_count_metric',
-    ERROR_COUNT,
-    AggregationType.COUNT
+  'error_count_metric',
+  ERROR_COUNT,
+  AggregationType.COUNT
 );
 globalStats.registerView(error_count_metric);
 
 // response latency measure
 const RESPONSE_LATENCY = globalStats.createMeasureInt64(
-    'response_latency',
-    MeasureUnit.MS,
-    'The server response latency in milliseconds'
-  );
+  'response_latency',
+  MeasureUnit.MS,
+  'The server response latency in milliseconds'
+);
 // response latency view
 const latency_metric = globalStats.createView(
-    'response_latency_metric',
-    RESPONSE_LATENCY,
-    AggregationType.DISTRIBUTION,
-    [],
-    'Server response latency distribution',
-    // Latency in buckets:
-    [0, 1000, 2000, 3000, 4000, 5000, 10000]
-  );
+  'response_latency_metric',
+  RESPONSE_LATENCY,
+  AggregationType.DISTRIBUTION,
+  [],
+  'Server response latency distribution',
+  // Latency in buckets:
+  [0, 1000, 2000, 3000, 4000, 5000, 10000]
+);
 globalStats.registerView(latency_metric);
 
 // set up the Stackdriver exporter - hardcoding the project is bad!
@@ -92,65 +90,62 @@ const exporter = new StackdriverStatsExporter({
 });
 globalStats.registerExporter(exporter);
 
-
 app.get('/', (req, res) => {
-    
-    // start request timer
-    var stopwatch = Stopwatch.create();
-    stopwatch.start();
-    console.log("request made");
+  // start request timer
+  const stopwatch = Stopwatch.create();
+  stopwatch.start();
+  console.log('request made');
 
-    // record a request count for every request
+  // record a request count for every request
+  globalStats.record([
+    {
+      measure: REQUEST_COUNT,
+      value: 1,
+    },
+  ]);
+
+  // randomly throw an error 10% of the time
+  let randomValue = Math.floor(Math.random() * 9 + 1);
+  if (randomValue === 1) {
+    // Record a failed request.
     globalStats.record([
-        {
-          measure: REQUEST_COUNT,
-          value: 1,
-        },
-      ]);
-    
-    // randomly throw an error 10% of the time
-    var randomValue = Math.floor(Math.random() * (9) + 1);
-    if (randomValue == 1){
-      
-      // record a failed request
-      globalStats.record([
-        {
-          measure: ERROR_COUNT,
-          value: 1,
-        },
-      ]);
+      {
+        measure: ERROR_COUNT,
+        value: 1,
+      },
+    ]);
 
-      // return error
-      res.status(500).send("failure");
+    // Return error.
+    res.status(500).send('failure');
 
-      // record latency
-      globalStats.record([
-        {
-          measure: RESPONSE_LATENCY,
-          value: stopwatch.elapsedMilliseconds,
-        }
-      ]);
-      stopwatch.stop();
-    }
-    // end random error
-
-    // sleep for a random number of seconds
-    randomValue = Math.floor(Math.random() * (9) + 1);
-    sleep(randomValue);
-
-    // send successful response
-    res.status(200).send("success after waiting for " + randomValue + " seconds");
-
-    // record latency for every request
+    // Record latency.
     globalStats.record([
       {
         measure: RESPONSE_LATENCY,
         value: stopwatch.elapsedMilliseconds,
-      }
+      },
     ]);
-
     stopwatch.stop();
-})
+  }
+  // End random error.
 
+  // Sleep for a random number of seconds.
+  randomValue = Math.floor(Math.random() * 9 + 1);
+  sleep(randomValue).then(() => {
+    // Send successful response.
+    res
+      .status(200)
+      .send('success after waiting for ' + randomValue + ' seconds');
 
-app.listen(8080, () => console.log(`Example app listening on port 8080!`))
+    // Record latency for every request.
+    globalStats.record([
+      {
+        measure: RESPONSE_LATENCY,
+        value: stopwatch.elapsedMilliseconds,
+      },
+    ]);
+    stopwatch.stop();
+  });
+});
+
+app.listen(8080, () => console.log('Example app listening on port 8080!'));

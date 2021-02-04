@@ -14,27 +14,25 @@
 
 'use strict';
 
-var expect = require("chai").expect;
-var server = require("../app.js");
-var request = require("request");
+const expect = require('chai').expect;
+const request = require('request');
 
-describe("Web server", function () {
-    describe("Returns responses", function() {
-        var url="http://localhost:8080";
-
-        it("returns status 200 most of the time", function(done) {
-            // send 5 requests, most of them should be 200s
-            var successCounter = 0;
-            var i;
-            for (i=0; i<5; i++) {
-                request(url, function(error, response, body) {
-                    if (response.statusCode == 200) {
-                        successCounter++;
-                    }
-                  });
-            }
-            done();
-            expect(successCounter).to.be.above(2);
+describe('Web server', () => {
+  describe('Returns responses', () => {
+    const url = 'http://localhost:8080';
+    it('returns status 200 most of the time', done => {
+      // send 5 requests, most of them should be 200s
+      let successCounter = 0;
+      let i;
+      for (i = 0; i < 5; i++) {
+        request(url, (error, response) => {
+          if (response.statusCode === 200) {
+            successCounter++;
+          }
         });
+      }
+      done();
+      expect(successCounter).to.be.above(2);
     });
+  });
 });

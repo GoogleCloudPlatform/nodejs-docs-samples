@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(text, endpointId, project, location = 'us-central1') {
-  // [START aiplatform_predict_text_entity_extraction]
+  // [START aiplatform_predict_text_sentiment_analysis]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -44,7 +44,7 @@ async function main(text, endpointId, project, location = 'us-central1') {
   // Instantiates a client
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
 
-  async function predictTextEntityExtraction() {
+  async function predictTextSentimentAnalysis() {
     // Configure the endpoint resource
     const endpoint = `projects/${project}/locations/${location}/endpoints/${endpointId}`;
 
@@ -73,8 +73,8 @@ async function main(text, endpointId, project, location = 'us-central1') {
       console.log(`\tSentiment measure: ${predictionResult.sentiment}`);
     }
   }
-  predictTextEntityExtraction();
-  // [END aiplatform_predict_text_entity_extraction]
+  predictTextSentimentAnalysis();
+  // [END aiplatform_predict_text_sentiment_analysis]
 }
 
 process.on('unhandledRejection', err => {

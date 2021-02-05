@@ -283,7 +283,6 @@ async function streamingDetectIntent(
         sampleRateHertz: sampleRateHertz,
         languageCode: languageCode,
       },
-      singleUtterance: true,
     },
   };
 

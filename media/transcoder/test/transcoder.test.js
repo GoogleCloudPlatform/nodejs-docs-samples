@@ -42,6 +42,14 @@ const outputUriForAdHoc = `gs://${bucketName}/test-output-adhoc/`;
 const cwd = path.join(__dirname, '..');
 const resourceFile = `testdata/${testFileName}`;
 
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      return resolve();
+    }, ms);
+  });
+}
+
 before(async () => {
   assert(
     process.env.GOOGLE_CLOUD_PROJECT_NUMBER,
@@ -147,15 +155,15 @@ describe('Job functions preset', () => {
     assert.ok(output.includes(jobName));
   });
 
-  it('should pause for job to run', done => {
-    setTimeout(done, 60000);
-  });
-
-  it('should check that the job succeeded', function () {
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await wait(30000);
     const output = execSync(
       `node getJobState.js ${projectId} ${location} ${this.presetJobId}`,
       {cwd}
     );
+    // TODO(bcoe): remove this debug information once passing:
+    console.info(output.toString('utf8'));
     assert.ok(output.includes('Job state: SUCCEEDED'));
   });
 });
@@ -207,15 +215,15 @@ describe('Job functions template', () => {
     assert.ok(output.includes(jobName));
   });
 
-  it('should pause for job to run', done => {
-    setTimeout(done, 60000);
-  });
-
-  it('should check that the job succeeded', function () {
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await wait(30000);
     const output = execSync(
       `node getJobState.js ${projectId} ${location} ${this.templateJobId}`,
       {cwd}
     );
+    // TODO(bcoe): remove this debug information once passing:
+    console.info(output.toString('utf8'));
     assert.ok(output.includes('Job state: SUCCEEDED'));
   });
 });
@@ -257,15 +265,15 @@ describe('Job functions adhoc', () => {
     assert.ok(output.includes(jobName));
   });
 
-  it('should pause for job to run', done => {
-    setTimeout(done, 60000);
-  });
-
-  it('should check that the job succeeded', function () {
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await wait(30000);
     const output = execSync(
       `node getJobState.js ${projectId} ${location} ${this.adhocJobId}`,
       {cwd}
     );
+    // TODO(bcoe): remove this debug information once passing:
+    console.info(output.toString('utf8'));
     assert.ok(output.includes('Job state: SUCCEEDED'));
   });
 });

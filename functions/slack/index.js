@@ -99,8 +99,8 @@ const verifyWebhook = req => {
     body: req.rawBody,
   };
 
-  // This function throws an exception if an incoming request is invalid.
-  !verifyRequestSignature(signature);
+  // This method throws an exception if an incoming request is invalid.
+  verifyRequestSignature(signature);
 };
 // [END functions_verify_webhook]
 

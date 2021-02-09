@@ -99,11 +99,8 @@ const verifyWebhook = req => {
     body: req.rawBody,
   };
 
-  if (!verifyRequestSignature(signature)) {
-    const error = new Error('Invalid credentials');
-    error.code = 401;
-    throw error;
-  }
+  // This function throws an exception if an incoming request is invalid.
+  !verifyRequestSignature(signature);
 };
 // [END functions_verify_webhook]
 

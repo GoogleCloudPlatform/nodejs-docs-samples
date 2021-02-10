@@ -18,28 +18,36 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 
+const uuid = require('uuid').v4;
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const filename = 'resources/daisy.jpg';
-const endpointId = '71213169107795968';
-const project = process.env.CAIP_PROJECT_ID;
-const location = 'us-central1';
 
-describe('AI platform predict image classification', async function () {
-  this.retries(2);
-  it('should make predictions using the image classification model', async () => {
+const endpointDisplayName = `temp_create_endpoint_test_${uuid()}`;
+const project = process.env.CAIP_PROJECT_ID;
+const location = process.env.LOCATION;
+let endpointId;
+
+describe('AI platform create endpoint', () => {
+  it('should create a new endpoint', async () => {
     const stdout = execSync(
-      `node ./predict-image-classification.js ${filename} \
-                                                ${endpointId} \
-                                                ${project} \
-                                                ${location}`,
+      `node ./create-endpoint.js ${endpointDisplayName} ${project} \
+                                   ${location}`,
       {
         cwd,
       }
     );
-    assert.match(stdout, /Predict image classification response/);
+    assert.match(stdout, /Create endpoint response/);
+    endpointId = stdout
+      .split('/locations/us-central1/endpoints/')[1]
+      .split('\n')[0]
+      .split('/')[0];
+  });
+  after('delete created endpoint', async () => {
+    execSync(`node ./delete-endpoint.js ${endpointId} ${project} ${location}`, {
+      cwd,
+    });
   });
 });

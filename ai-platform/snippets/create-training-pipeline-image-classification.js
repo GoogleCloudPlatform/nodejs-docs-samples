@@ -73,18 +73,15 @@ function main(
       'gs://google-cloud-aiplatform/schema/trainingjob/definition/automl_image_classification_1.0.0.yaml';
 
     const modelToUpload = {displayName: modelDisplayName};
-    const inputDataConfig = {datasetId: datasetId};
+    const inputDataConfig = {datasetId};
     const trainingPipeline = {
       displayName: trainingPipelineDisplayName,
       trainingTaskDefinition,
       trainingTaskInputs,
-      inputDataConfig: inputDataConfig,
-      modelToUpload: modelToUpload,
+      inputDataConfig,
+      modelToUpload,
     };
-    const request = {
-      parent,
-      trainingPipeline,
-    };
+    const request = {parent, trainingPipeline};
 
     // Create training pipeline request
     const [response] = await pipelineServiceClient.createTrainingPipeline(

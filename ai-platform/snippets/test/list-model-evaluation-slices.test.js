@@ -23,23 +23,24 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const filename = 'resources/daisy.jpg';
-const endpointId = '71213169107795968';
-const project = process.env.CAIP_PROJECT_ID;
-const location = 'us-central1';
 
-describe('AI platform predict image classification', async function () {
-  this.retries(2);
-  it('should make predictions using the image classification model', async () => {
+const modelId = '3512561418744365056';
+const evaluationId = '9035588644970168320';
+const project = process.env.CAIP_PROJECT_ID;
+const location = process.env.LOCATION;
+
+describe('AI platform list model evaluation slices', () => {
+  it('should list all the evaluation slices from the \
+       specified model', async () => {
     const stdout = execSync(
-      `node ./predict-image-classification.js ${filename} \
-                                                ${endpointId} \
+      `node ./list-model-evaluation-slices.js ${modelId} \
+                                                ${evaluationId} \
                                                 ${project} \
                                                 ${location}`,
       {
         cwd,
       }
     );
-    assert.match(stdout, /Predict image classification response/);
+    assert.match(stdout, /List model evaluation response/);
   });
 });

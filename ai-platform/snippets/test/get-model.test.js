@@ -1,10 +1,11 @@
-/**
- * Copyright 2017, Google, Inc.
+/*
+ * Copyright 2020 Google LLC
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,15 +16,26 @@
 
 'use strict';
 
-const assert = require('assert');
-const cp = require('child_process');
+const path = require('path');
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
+const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const cwd = path.join(__dirname, '..');
 
-describe('quickstart', () => {
-  it('should have functional quickstart', async () => {
-    const stdout = execSync('node quickstart.js');
-    assert(stdout.match(/DatasetServiceClient/));
+const modelId = '3512561418744365056';
+const project = process.env.CAIP_PROJECT_ID;
+const location = process.env.LOCATION;
+
+describe('AI platform get model', () => {
+  it('should get the specified model', async () => {
+    const stdout = execSync(
+      `node ./get-model.js ${modelId} ${project} ${location}`,
+      {
+        cwd,
+      }
+    );
+    assert.match(stdout, /Get model response/);
   });
 });

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const googleapis = require('googleapis');
 const proxyquire = require('proxyquire');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');

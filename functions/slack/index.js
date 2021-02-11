@@ -15,7 +15,7 @@
 'use strict';
 
 // [START functions_slack_setup]
-const {google} = require('googleapis');
+const {google} = require('googleapis/kgsearch');
 const {verifyRequestSignature} = require('@slack/events-api');
 
 // Get a reference to the Knowledge Graph Search component

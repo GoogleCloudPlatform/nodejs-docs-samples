@@ -14,7 +14,7 @@
 
 // [START functions_billing_limit]
 // [START functions_billing_stop]
-const {google} = require('googleapis');
+const {google} = require('googleapis/build/src/apis/cloudbilling');
 const {GoogleAuth} = require('google-auth-library');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;

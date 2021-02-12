@@ -37,11 +37,11 @@ async function main(
   const aiplatform = require('@google-cloud/aiplatform');
   const {
     definition,
-  } = aiplatform.protos.google.cloud.aiplatform.v1beta1.schema.trainingjob;
+  } = aiplatform.protos.google.cloud.aiplatform.v1.schema.trainingjob;
   const ModelType = definition.AutoMlVideoObjectTrackingInputs.ModelType;
 
   // Imports the Google Cloud Pipeline Service Client library
-  const {PipelineServiceClient} = aiplatform;
+  const {PipelineServiceClient} = aiplatform.v1;
 
   // Specifies the location of the api endpoint
   const clientOptions = {

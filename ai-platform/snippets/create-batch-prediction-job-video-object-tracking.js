@@ -38,12 +38,10 @@ async function main(
   // const project = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_PROJECT_LOCATION';
   const aiplatform = require('@google-cloud/aiplatform');
-  const {
-    params,
-  } = aiplatform.protos.google.cloud.aiplatform.v1beta1.schema.predict;
+  const {params} = aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
 
   // Imports the Google Cloud Job Service Client library
-  const {JobServiceClient} = require('@google-cloud/aiplatform');
+  const {JobServiceClient} = require('@google-cloud/aiplatform').v1;
 
   // Specifies the location of the api endpoint
   const clientOptions = {

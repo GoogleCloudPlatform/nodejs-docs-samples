@@ -28,7 +28,7 @@ const clientOptions = {
   apiEndpoint: 'us-central1-aiplatform.googleapis.com',
 };
 
-const pipelineServiceClient = new aiplatform.PipelineServiceClient(
+const pipelineServiceClient = new aiplatform.v1.PipelineServiceClient(
   clientOptions
 );
 

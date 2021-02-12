@@ -58,11 +58,11 @@ async function main(modelId, evaluationId, project, location = 'us-central1') {
 
     const modelExplanation = response.modelExplanation;
     console.log('\tModel explanation');
-    if (modelExplanation === null) {
+    if (!modelExplanation) {
       console.log('\t\t{}');
     } else {
       const meanAttributions = modelExplanation.meanAttributions;
-      if (meanAttributions === null) {
+      if (!meanAttributions) {
         console.log('\t\t\t []');
       } else {
         for (const meanAttribution of meanAttributions) {

@@ -29,7 +29,7 @@ const clientOptions = {
   apiEndpoint: 'us-central1-aiplatform.googleapis.com',
 };
 
-const jobServiceClient = new aiplatform.JobServiceClient(clientOptions);
+const jobServiceClient = new aiplatform.v1.JobServiceClient(clientOptions);
 
 const batchPredictionDisplayName = `temp_create_batch_prediction_video_object_tracking_test${uuid()}`;
 const modelId = '8609932509485989888';

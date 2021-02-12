@@ -16,17 +16,15 @@
 
 /* eslint-disable */
 
-exports.nodeTermination = async (event, context, callback) => {
+exports.nodeTermination = async (event, context) => {
   // [START functions_concepts_node_termination]
   // These will cause background tasks to stop executing immediately
   return 1; // Returning a value
   return (await Promise.resolve()); // Returning the result of a promise
   return (await Promise.reject()); // Same behavior as resolved promises
-  callback(); // Invoking the callback function
 
   // These will wait until the related background task finishes
   return Promise.resolve(); // Returning the promise itself
   return Promise.reject(); // Same behavior as to-be-resolved promises
-  setTimeout(callback, 10); // Invoke callback once all operations complete
   // [END functions_concepts_node_termination]
 };

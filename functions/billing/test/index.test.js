@@ -151,7 +151,7 @@ describe('shuts down GCE instances', () => {
       };
 
       const googleapisMock = Object.assign({}, googleapis);
-      googleapisMock.google.compute = sinon.stub().returns(computeMock);
+      googleapisMock.compute = sinon.stub().returns(computeMock);
 
       // Run test
       const jsonData = {costAmount: 500, budgetAmount: 400};

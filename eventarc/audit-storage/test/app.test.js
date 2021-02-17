@@ -53,13 +53,14 @@ describe('Unit Tests', () => {
         .set('ce-subject', 'test-subject')
         .send()
         .expect(200)
-        .expect(() =>
-          assert.ok(
+        .expect(() => {
+          assert.strictEqual(
             console.log.calledWith(
-              'Detected change in Cloud Storage: test-subject'
-            )
-          )
-        );
+              'Detected change in Cloud Storage bucket: test-subject'
+            ),
+            true
+          );
+        });
     });
   });
 });

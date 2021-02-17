@@ -24,10 +24,14 @@ app.post('/', (req, res) => {
       .send('Bad Request: missing required header: ce-subject');
   }
 
-  console.log(`Detected change in Cloud Storage bucket: ${req.header('ce-subject')}`);
+  console.log(
+    `Detected change in Cloud Storage bucket: ${req.header('ce-subject')}`
+  );
   return res
     .status(200)
-    .send(`Detected change in Cloud Storage bucket: ${req.header('ce-subject')}`);
+    .send(
+      `Detected change in Cloud Storage bucket: ${req.header('ce-subject')}`
+    );
 });
 
 module.exports = app;

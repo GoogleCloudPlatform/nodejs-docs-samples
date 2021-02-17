@@ -47,7 +47,7 @@ describe('Unit Tests', () => {
       console.log.restore();
     });
 
-    it('with a minimally valid GCS event', async () => {
+    it('with a minimally valid Cloud Storage event', async () => {
       await request
         .post('/')
         .set('ce-subject', 'test-subject')
@@ -56,7 +56,7 @@ describe('Unit Tests', () => {
         .expect(() =>
           assert.ok(
             console.log.calledWith(
-              'Detected change in GCS bucket: test-subject'
+              'Detected change in Cloud Storage: test-subject'
             )
           )
         );

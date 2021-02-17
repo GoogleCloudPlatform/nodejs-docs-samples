@@ -19,7 +19,7 @@
  * includes the current status of asset recovery.
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
-  // [START securitycenter_get_organization_settings]
+  // [START securitycenter_get_org_settings]
   // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -42,7 +42,7 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   }
   getOrgSettings();
   // [END demo]
-  // [END securitycenter_get_organization_settings]
+  // [END securitycenter_get_org_settings]
 }
 
 main(...process.argv.slice(2));

@@ -13,7 +13,7 @@
   "author": "Ace Nassri <anassri@google.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "google-auth-library": "^6.0.0",
+    "google-auth-library": "^7.0.0",
     "googleapis": "^67.0.0",
     "slack": "^11.0.1"
   },

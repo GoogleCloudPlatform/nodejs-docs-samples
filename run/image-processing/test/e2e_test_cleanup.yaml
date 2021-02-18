@@ -37,5 +37,3 @@ substitutions:
   _VERSION: manual
   _REGION: us-central1
   _PLATFORM: managed
-  _INPUT_BUCKET: image-proc-input
-  _OUTPUT_BUCKET: image-proc-output

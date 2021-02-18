@@ -62,6 +62,10 @@ const dateMinutesAgo = (date, min_ago) => {
   return date.toISOString();
 };
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 describe('Logging', () => {
   let requestLog;
   let sampleLog;
@@ -144,18 +148,25 @@ describe('Logging', () => {
       // The latest two log entries for our service in the last 5 minutes
       // are treated as the result of the previous test.
       // Concurrency is supporting by distinctly named service deployment per test run.
-      const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
-        new Date(),
-        5
-      )}"`;
-      const entries = await getLogEntriesPolling(filter);
-      entries.forEach(entry => {
-        if (entry.metadata.httpRequest) {
-          requestLog = entry;
-        } else {
-          sampleLog = entry;
-        }
-      });
+      let attempt = 0;
+      const maxAttempts = 5;
+      while (!requestLog && !sampleLog && attempt < maxAttempts) {
+        await sleep(attempt * 30000); // Linear backoff between retry attempts
+        // Filter by service name over the last 5 minutes
+        const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
+          new Date(),
+          5
+        )}"`;
+        const entries = await getLogEntriesPolling(filter);
+        entries.forEach(entry => {
+          if (entry.metadata.httpRequest) {
+            requestLog = entry;
+          } else {
+            sampleLog = entry;
+          }
+        });
+        attempt += 1;
+      }
 
       assert(entries.length >= 2, 'creates at least 2 log entries per request');
     });

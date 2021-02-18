@@ -148,16 +148,17 @@ describe('Logging', () => {
       // The latest two log entries for our service in the last 5 minutes
       // are treated as the result of the previous test.
       // Concurrency is supporting by distinctly named service deployment per test run.
+      let entries;
       let attempt = 0;
       const maxAttempts = 5;
-      while (!requestLog && !sampleLog && attempt < maxAttempts) {
+      while ((!requestLog || !sampleLog) && attempt < maxAttempts) {
         await sleep(attempt * 30000); // Linear backoff between retry attempts
         // Filter by service name over the last 5 minutes
         const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
           new Date(),
           5
         )}"`;
-        const entries = await getLogEntriesPolling(filter);
+        entries = await getLogEntriesPolling(filter);
         entries.forEach(entry => {
           if (entry.metadata.httpRequest) {
             requestLog = entry;

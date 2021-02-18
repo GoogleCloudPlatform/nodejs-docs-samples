@@ -28,4 +28,5 @@ datastore/functions @benwhitehead
 cloud-sql @kurtisvg
 composer @leahecole @sofisl @yoshi-nodejs
 healthcare @noerog
+monitoring/opencensus @yuriatgoogle
 

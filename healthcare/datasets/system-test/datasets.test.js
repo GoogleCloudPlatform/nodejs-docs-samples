@@ -44,7 +44,7 @@ after(() => {
   }
 });
 
-describe('run datasets tests with 5 retries', function() {
+describe('run datasets tests with 5 retries', function () {
   // Retry every test in this suite 5 times.
   this.retries(5);
   it('should create a dataset', () => {
@@ -52,7 +52,7 @@ describe('run datasets tests with 5 retries', function() {
       `node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`
     );
     assert.ok(output.includes('Created dataset'));
-  })
+  });
 
   it('should get a dataset', () => {
     this.retries(5);

@@ -61,17 +61,17 @@ trap cleanup EXIT HUP
 # Install dependencies and run tests
 npm install
 
-# If tests are running against master, configure Build Cop
+# If tests are running against master, configure FlakyBot
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}
-	notify_buildcop() {
+	notify_flakybot() {
 		# Call the original trap function.
 		cleanup
-		chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
-		$KOKORO_GFILE_DIR/linux_amd64/buildcop
+		chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
+		$KOKORO_GFILE_DIR/linux_amd64/flakybot
 	}
-	trap notify_buildcop EXIT HUP
+	trap notify_flakybot EXIT HUP
 fi
 
 npm test

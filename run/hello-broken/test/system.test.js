@@ -18,12 +18,13 @@ const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
-const get = (route, base_url, id_token) => {
+const get = (route, base_url, id_token, retry = 3) => {
   return request(new URL(route, base_url.trim()), {
     headers: {
       Authorization: `${id_token.trim()}`,
     },
     throwHttpErrors: false,
+    retry,
   });
 };
 
@@ -39,9 +40,10 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
-  const {NAME} = process.env;
+  let {NAME} = process.env;
   if (!NAME) {
-    throw Error('"NAME" environment variable is required. For example: Cosmos');
+    NAME = 'Cosmos';
+    throw Error(`"NAME" env var is required. Defaulting to "${NAME}"`);
   }
 
   const {SAMPLE_VERSION} = process.env;
@@ -88,7 +90,7 @@ describe('End-to-End Tests', () => {
     });
 
     it('Broken resource fails on any request', async () => {
-      const response = await get('/', BASE_URL, ID_TOKEN);
+      const response = await get('/', BASE_URL, ID_TOKEN, 0);
       assert.strictEqual(
         response.statusCode,
         500,

@@ -23,10 +23,10 @@ const PROJECT_ID = 'my-project-id';
 const RECEIVING_FUNCTION = 'myFunction';
 
 // Constants for setting up metadata server request
-// See https://cloud.google.com/compute/docs/instances/verifying-instance-identity#request_signature
+// See https://cloud.google.com/functions/docs/securing/function-identity#identity_tokens
 const functionURL = `https://${REGION}-${PROJECT_ID}.cloudfunctions.net/${RECEIVING_FUNCTION}`;
 const metadataServerURL =
-  'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=';
+  'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=';
 const tokenUrl = metadataServerURL + functionURL;
 
 exports.callingFunction = async (req, res) => {

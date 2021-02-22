@@ -16,13 +16,13 @@
 # Precreate script for Cloud Run button
 
 export SECRET_NAME="idp-sql-secrets"
-export SERVICE_ACCOUNT="idp-sql-indentity"
+export SERVICE_ACCOUNT="idp-sql-identity"
 
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 # Add Identity Platform config
-sed -i "" "s/PROJECT_ID/$GOOGLE_CLOUD_PROJECT/" static/config.js
-sed -i "" "s/API_KEY/$API_KEY/" static/config.js
+sed -i "s/PROJECT_ID/$GOOGLE_CLOUD_PROJECT/" static/config.js
+sed -i "s/API_KEY/$API_KEY/" static/config.js
 
 # Enable Cloud SQl and Secret Manager APIs
 gcloud services enable sqladmin.googleapis.com secretmanager.googleapis.com
@@ -61,7 +61,7 @@ gcloud iam service-accounts create ${SERVICE_ACCOUNT}
 gcloud secrets add-iam-policy-binding ${SECRET_NAME} \
   --member serviceAccount:${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
   --role roles/secretmanager.secretAccessor
-  # Allow service account to access Cloud SQL
+# Allow service account to access Cloud SQL
 gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
    --member serviceAccount:${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
    --role roles/cloudsql.client

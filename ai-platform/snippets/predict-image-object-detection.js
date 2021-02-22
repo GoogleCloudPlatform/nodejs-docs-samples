@@ -39,7 +39,7 @@ async function main(filename, endpointId, project, location = 'us-central1') {
 
   // Specifies the location of the api endpoint
   const clientOptions = {
-    apiEndpoint: 'us-central1-prediction-aiplatform.googleapis.com',
+    apiEndpoint: 'us-central1-aiplatform.googleapis.com',
   };
 
   // Instantiates a client

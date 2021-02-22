@@ -9,9 +9,9 @@ need to enable the appropriate APIs in the [Cloud Console](https://console.cloud
 
         gcloud auth application-default login
 
-1. Change directory to one of the sample folders, e.g. `storage-transfer`.
+1. Change directory to one of the sample folders, e.g. `datastore`.
 
-        cd storage-transfer/
+        cd datastore/
 
 1. Install the dependencies. 
 

@@ -25,8 +25,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_batch_translate_text';
 
-describe(REGION_TAG, function () {
-  this.retries(3);
+describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
   const bucketUuid = uuid.v4();
@@ -48,32 +47,31 @@ describe(REGION_TAG, function () {
           console.error(error);
         }
       });
-  });
+  }),
+    it('should batch translate the input text', async function () {
+      this.retries(3);
+      const projectId = await translationClient.getProjectId();
+      const inputUri = 'gs://cloud-samples-data/translation/text.txt';
 
-  it('should batch translate the input text', async () => {
-    const projectId = await translationClient.getProjectId();
-    const inputUri = 'gs://cloud-samples-data/translation/text.txt';
+      const outputUri = `gs://${projectId}/${bucketName}`;
+      const output = execSync(
+        `node v3/${REGION_TAG}.js ${projectId} ${location} ${inputUri} ${outputUri}`
+      );
+      assert.match(output, /Total Characters: 13/);
+      assert.match(output, /Translated Characters: 13/);
+    }),
+    // Delete the folder from GCS for cleanup
+    after(async () => {
+      const projectId = await translationClient.getProjectId();
+      const options = {
+        prefix: `translation-${bucketUuid}`,
+      };
 
-    const outputUri = `gs://${projectId}/${bucketName}`;
-    const output = execSync(
-      `node v3/${REGION_TAG}.js ${projectId} ${location} ${inputUri} ${outputUri}`
-    );
-    assert.match(output, /Total Characters: 13/);
-    assert.match(output, /Translated Characters: 13/);
-  });
-
-  // Delete the folder from GCS for cleanup
-  after(async () => {
-    const projectId = await translationClient.getProjectId();
-    const options = {
-      prefix: `translation-${bucketUuid}`,
-    };
-
-    const bucket = await storage.bucket(projectId);
-    const [files] = await bucket.getFiles(options);
-    const length = files.length;
-    if (length > 0) {
-      await Promise.all(files.map(file => file.delete()));
-    }
-  });
+      const bucket = await storage.bucket(projectId);
+      const [files] = await bucket.getFiles(options);
+      const length = files.length;
+      if (length > 0) {
+        await Promise.all(files.map(file => file.delete()));
+      }
+    });
 });

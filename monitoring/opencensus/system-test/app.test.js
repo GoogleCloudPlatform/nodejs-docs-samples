@@ -18,6 +18,7 @@ const request = require('request');
 const assert = require('assert');
 
 it('should return status 200 most of the time', done => {
+  process.env.GOOGLE_PROJECT_ID = 'fake-id';
   const url = 'http://localhost:8080';
   let countSuccesses = 0;
   let i;
@@ -29,5 +30,5 @@ it('should return status 200 most of the time', done => {
     });
   }
   done();
-  assert.ok(countSuccesses.valueOf > 2);
+  assert.ok(countSuccesses.valueOf > 5);
 });

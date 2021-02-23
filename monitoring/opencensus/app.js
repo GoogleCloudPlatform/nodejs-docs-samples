@@ -22,8 +22,6 @@ function sleep(time) {
   return new Promise(resolve => setTimeout(resolve, time));
 }
 
-const projectId = 'stack-doctor';
-
 // opencensus setup
 const {globalStats, MeasureUnit, AggregationType} = require('@opencensus/core');
 const {StackdriverStatsExporter} = require('@opencensus/exporter-stackdriver');
@@ -78,12 +76,20 @@ const latency_metric = globalStats.createView(
 );
 globalStats.registerView(latency_metric);
 
-// set up the Stackdriver exporter - hardcoding the project is bad!
+// Enable OpenCensus exporters to export metrics to Stackdriver Monitoring.
+// Exporters use Application Default Credentials (ADCs) to authenticate.
+// See https://developers.google.com/identity/protocols/application-default-credentials
+// for more details.
+// Expects ADCs to be provided through the environment as ${GOOGLE_APPLICATION_CREDENTIALS}
+// A Stackdriver workspace is required and provided through the environment as ${GOOGLE_PROJECT_ID}
+const projectId = process.env.GOOGLE_PROJECT_ID;
+
 // GOOGLE_APPLICATION_CREDENTIALS are expected by a dependency of this code
 // Not this code itself. Checking for existence here but not retaining (as not needed)
 if (!projectId || !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-  // throw Error('Unable to proceed without a Project ID');
+  throw Error('Unable to proceed without a Project ID');
 }
+
 const exporter = new StackdriverStatsExporter({
   projectId: projectId,
   period: EXPORT_INTERVAL * 1000,

@@ -14,25 +14,20 @@
 
 'use strict';
 
-const expect = require('chai').expect;
 const request = require('request');
+const assert = require('assert');
 
-describe('Web server', () => {
-  describe('Returns responses', () => {
-    const url = 'http://localhost:8080';
-    it('returns status 200 most of the time', done => {
-      // send 5 requests, most of them should be 200s
-      let successCounter = 0;
-      let i;
-      for (i = 0; i < 5; i++) {
-        request(url, (error, response) => {
-          if (response.statusCode === 200) {
-            successCounter++;
-          }
-        });
+it('should return status 200 most of the time', done => {
+  const url = 'http://localhost:8080';
+  let countSuccesses = 0;
+  let i;
+  for (i = 0; i < 5; i++) {
+    request(url, (error, response) => {
+      if (response.statusCode === 200) {
+        countSuccesses++;
       }
-      done();
-      expect(successCounter).to.be.above(2);
     });
-  });
+  }
+  done();
+  assert.ok(countSuccesses.valueOf > 2);
 });

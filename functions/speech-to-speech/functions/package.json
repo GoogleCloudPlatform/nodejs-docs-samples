@@ -46,6 +46,6 @@
     "child-process-promise": "^2.2.1",
     "mocha": "^8.0.0",
     "request": "^2.88.0",
-    "requestretry": "^4.0.0"
+    "requestretry": "^5.0.0"
   }
 }

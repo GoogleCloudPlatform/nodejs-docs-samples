@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "google-auth-library": "^6.0.0",
+    "google-auth-library": "^7.0.0",
     "got": "^11.8.0",
     "handlebars": "^4.7.6"
   },

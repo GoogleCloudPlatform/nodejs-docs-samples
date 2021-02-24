@@ -19,6 +19,7 @@ const path = require('path');
 const app = require(path.join(__dirname, '../', 'app.js'));
 
 process.env.GOOGLE_PROJECT_ID = 'fake-id';
+process.env.GOOGLE_APPLICATION_CREDENTIALS='fake-creds';
 
 it('should be listening', async () => {
   await supertest(app)

@@ -17,11 +17,6 @@ const express = require('express');
 const app = express();
 const Stopwatch = require('node-stopwatch').Stopwatch;
 
-// sleep time expects milliseconds
-function sleep(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
-}
-
 // opencensus setup
 const {globalStats, MeasureUnit, AggregationType} = require('@opencensus/core');
 const {StackdriverStatsExporter} = require('@opencensus/exporter-stackdriver');

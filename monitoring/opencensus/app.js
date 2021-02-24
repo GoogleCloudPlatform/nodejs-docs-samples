@@ -100,7 +100,6 @@ app.get('/', (req, res) => {
   // start request timer
   const stopwatch = Stopwatch.create();
   stopwatch.start();
-  console.log('request made');
 
   // record a request count for every request
   globalStats.record([
@@ -111,7 +110,7 @@ app.get('/', (req, res) => {
   ]);
 
   // randomly throw an error 10% of the time
-  let randomValue = Math.floor(Math.random() * 9 + 1);
+  const randomValue = Math.floor(Math.random() * 9 + 1);
   if (randomValue === 1) {
     // Record a failed request.
     globalStats.record([
@@ -132,16 +131,8 @@ app.get('/', (req, res) => {
       },
     ]);
     stopwatch.stop();
-  }
-  // End random error.
-
-  // Sleep for a random number of seconds.
-  randomValue = Math.floor(Math.random() * 9 + 1);
-  sleep(randomValue).then(() => {
-    // Send successful response.
-    res
-      .status(200)
-      .send('success after waiting for ' + randomValue + ' seconds');
+  } else {
+    res.status(200).send('success!');
 
     // Record latency for every request.
     globalStats.record([
@@ -151,7 +142,8 @@ app.get('/', (req, res) => {
       },
     ]);
     stopwatch.stop();
-  });
+  }
 });
 
+module.exports = app;
 app.listen(8080, () => console.log('Example app listening on port 8080!'));

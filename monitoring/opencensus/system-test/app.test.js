@@ -14,21 +14,14 @@
 
 'use strict';
 
-const request = require('request');
-const assert = require('assert');
+const supertest = require('supertest');
+const path = require('path');
+const app = require(path.join(__dirname, '../', 'app.js'));
 
-it('should return status 200 most of the time', done => {
-  process.env.GOOGLE_PROJECT_ID = 'fake-id';
-  const url = 'http://localhost:8080';
-  let countSuccesses = 0;
-  let i;
-  for (i = 0; i < 5; i++) {
-    request(url, (error, response) => {
-      if (response.statusCode === 200) {
-        countSuccesses++;
-      }
-    });
-  }
-  done();
-  assert.ok(countSuccesses.valueOf > 5);
+process.env.GOOGLE_PROJECT_ID = 'fake-id';
+
+it('should be listening', async () => {
+  await supertest(app)
+    .get('/')
+    .expect(200 || 500);
 });

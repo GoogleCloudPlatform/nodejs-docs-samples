@@ -96,7 +96,7 @@ const exporter = new StackdriverStatsExporter({
   period: EXPORT_INTERVAL * 1000,
 });
 globalStats.registerExporter(exporter);
-// [END sli_metrics_opencensus_exporter] 
+// [END sli_metrics_opencensus_exporter]
 
 app.get('/', (req, res) => {
   // start request timer

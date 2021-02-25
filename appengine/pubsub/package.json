@@ -16,7 +16,7 @@
     "@google-cloud/pubsub": "^2.5.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "google-auth-library": "^6.0.6",
+    "google-auth-library": "^7.0.0",
     "path": "^0.12.7",
     "pug": "^3.0.0",
     "wait-port": "^0.2.9"

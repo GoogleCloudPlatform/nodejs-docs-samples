@@ -16,50 +16,55 @@ limitations under the License.
 const express = require('express');
 const app = express();
 const Stopwatch = require('node-stopwatch').Stopwatch;
-
+// [START sli_metrics_opencensus_setup]
 // opencensus setup
 const {globalStats, MeasureUnit, AggregationType} = require('@opencensus/core');
 const {StackdriverStatsExporter} = require('@opencensus/exporter-stackdriver');
-
+// [END sli_metrics_opencensus_setup]
+// [START sli_metrics_opencensus_exporter]
 // Stackdriver export interval is 60 seconds
 const EXPORT_INTERVAL = 60;
+// [END sli_metrics_opencensus_exporter]
 
 // define the "golden signals" metrics and views
-// request count measure
+// [START sli_metrics_opencensus_measure]
 const REQUEST_COUNT = globalStats.createMeasureInt64(
   'request_count',
   MeasureUnit.UNIT,
   'Number of requests to the server'
 );
-// request count view
+// [END sli_metrics_opencensus_measure]
+// [START sli_metrics_opencensus_view]
 const request_count_metric = globalStats.createView(
   'request_count_metric',
   REQUEST_COUNT,
   AggregationType.COUNT
 );
 globalStats.registerView(request_count_metric);
-
-// error count measure
+// [END sli_metrics_opencensus_view]
+// [START sli_metrics_opencensus_measure]
 const ERROR_COUNT = globalStats.createMeasureInt64(
   'error_count',
   MeasureUnit.UNIT,
   'Number of failed requests to the server'
 );
-// error count view
+// [END sli_metrics_opencensus_measure]
+// [START sli_metrics_opencensus_view]
 const error_count_metric = globalStats.createView(
   'error_count_metric',
   ERROR_COUNT,
   AggregationType.COUNT
 );
 globalStats.registerView(error_count_metric);
-
-// response latency measure
+// [END sli_metrics_opencensus_view]
+// [START sli_metrics_opencensus_measure]
 const RESPONSE_LATENCY = globalStats.createMeasureInt64(
   'response_latency',
   MeasureUnit.MS,
   'The server response latency in milliseconds'
 );
-// response latency view
+// [END sli_metrics_opencensus_measure]
+// [START sli_metrics_opencensus_view]
 const latency_metric = globalStats.createView(
   'response_latency_metric',
   RESPONSE_LATENCY,
@@ -70,6 +75,7 @@ const latency_metric = globalStats.createView(
   [0, 1000, 2000, 3000, 4000, 5000, 10000]
 );
 globalStats.registerView(latency_metric);
+// [END sli_metrics_opencensus_view]
 
 // Enable OpenCensus exporters to export metrics to Stackdriver Monitoring.
 // Exporters use Application Default Credentials (ADCs) to authenticate.
@@ -84,18 +90,19 @@ const projectId = process.env.GOOGLE_PROJECT_ID;
 if (!projectId || !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   throw Error('Unable to proceed without a Project ID');
 }
-
+// [START sli_metrics_opencensus_exporter]
 const exporter = new StackdriverStatsExporter({
   projectId: projectId,
   period: EXPORT_INTERVAL * 1000,
 });
 globalStats.registerExporter(exporter);
+// [END sli_metrics_opencensus_exporter] 
 
 app.get('/', (req, res) => {
   // start request timer
   const stopwatch = Stopwatch.create();
   stopwatch.start();
-
+  // [START sli_metrics_opencensus_counts]
   // record a request count for every request
   globalStats.record([
     {
@@ -114,7 +121,7 @@ app.get('/', (req, res) => {
         value: 1,
       },
     ]);
-
+    // [END sli_metrics_opencensus_counts]
     // Return error.
     res.status(500).send('failure');
 
@@ -130,12 +137,14 @@ app.get('/', (req, res) => {
     res.status(200).send('success!');
 
     // Record latency for every request.
+    // [START sli_metrics_opencensus_latency]
     globalStats.record([
       {
         measure: RESPONSE_LATENCY,
         value: stopwatch.elapsedMilliseconds,
       },
     ]);
+    // [END sli_metrics_opencensus_latency]
     stopwatch.stop();
   }
 });

@@ -42,5 +42,5 @@ exports.httpTermination = async (req, res) => {
     // WRONG: these may not execute since an
     // HTTP response has already been sent.
     return Promise.resolve()
-    // [START functions_concepts_node_termination_http]
+    // [END functions_concepts_node_termination_http]
 }

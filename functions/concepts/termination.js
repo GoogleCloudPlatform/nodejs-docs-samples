@@ -16,15 +16,31 @@
 
 /* eslint-disable */
 
-exports.nodeTermination = async (event, context) => {
+exports.backgroundTermination = async (event, context) => {
   // [START functions_concepts_node_termination]
   // These will cause background tasks to stop executing immediately
-  return 1; // Returning a value
-  return (await Promise.resolve()); // Returning the result of a promise
-  return (await Promise.reject()); // Same behavior as resolved promises
+  return 1; // OK: returning a value
+  return (await Promise.resolve()); // WRONG: returning the result of a promise
+  return (await Promise.reject()); // WRONG: same behavior as resolved promises
 
   // These will wait until the related background task finishes
-  return Promise.resolve(); // Returning the promise itself
-  return Promise.reject(); // Same behavior as to-be-resolved promises
+  return Promise.resolve(); // OK: returning the promise itself
+  return Promise.reject(); // OK: same behavior as to-be-resolved promises
   // [END functions_concepts_node_termination]
 };
+
+exports.httpTermination = async (req, res) => {
+    // [START functions_concepts_node_termination_http]
+    // OK: await-ing a Promise before sending an HTTP response
+    await Promise.resolve();
+
+    // HTTP functions should signal termination by returning an HTTP response.
+    // This should not be done until all background tasks are complete.
+    res.send(200);
+    res.end();
+
+    // WRONG: these may not execute since an
+    // HTTP response has already been sent.
+    return Promise.resolve()
+    // [START functions_concepts_node_termination_http]
+}

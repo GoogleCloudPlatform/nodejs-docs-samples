@@ -114,7 +114,7 @@ const _validatePayload = event => {
   let payload;
   try {
     payload = JSON.parse(Buffer.from(event.data, 'base64').toString());
-  } catch(err) {
+  } catch (err) {
     throw new Error('Invalid Pub/Sub message: ' + err);
   }
   if (!payload.zone) {

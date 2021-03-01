@@ -78,7 +78,7 @@ describe('functions_start_instance_pubsub', () => {
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[1],
       'Successfully started instance(s)'
-    )
+    );
   });
 
   it("startInstancePubSub: should fail with missing 'zone' attribute", async () => {
@@ -157,7 +157,7 @@ describe('functions_stop_instance_pubsub', () => {
     assert.deepStrictEqual(
       mocks.callback.firstCall.args[1],
       'Successfully stopped instance(s)'
-    )
+    );
   });
 
   it("stopInstancePubSub: should fail with missing 'zone' attribute", async () => {

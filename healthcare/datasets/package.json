@@ -15,7 +15,8 @@
     "mocha": "^8.0.0"
   },
   "dependencies": {
-    "googleapis": "^66.0.0",
+    "googleapis": "^67.0.0",
+    "mocha-test": "^2.0.4",
     "uuid": "^8.0.0",
     "yargs": "^16.0.0"
   }

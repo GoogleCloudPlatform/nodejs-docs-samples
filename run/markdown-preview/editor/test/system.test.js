@@ -104,7 +104,10 @@ describe('End-to-End Tests', () => {
       json: {
         data: '**markdown**',
       },
-      retry: 3,
+      retry: {
+        limit: 5,
+        methods: ['POST'],
+      },
     };
     const response = await got('render', options);
     assert.strictEqual(response.statusCode, 200);

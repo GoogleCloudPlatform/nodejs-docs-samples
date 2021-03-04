@@ -37,6 +37,8 @@ elif [[ $SQL_CLIENT == 'mysql' ]]; then
 	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
 fi
 
+# Configure /monitoring/opencensus variables
+export GOOGLE_PROJECT_ID=$GOOGLE_CLOUD_PROJECT
 
 # Configure Sendgrid variables
 export SENDGRID_SENDER="test@google.com"
@@ -87,7 +89,7 @@ export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
 # Replace system test's URL with the correct value
 # (Required because the integration tests ALSO use the BASE_URL variable, but for a different value)
-sed "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/**/sample.system.http.test.js 
+sed "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/**/sample.system.http.test.js
 
 # Activate mocha config
 export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
@@ -124,13 +126,13 @@ if [[ $SQL_CLIENT ]]; then
 	fi
 fi
 
-# If tests are running against master, configure Build Cop
+# If tests are running against master, configure FlakyBot
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}
 	cleanup() {
-	chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
-	$KOKORO_GFILE_DIR/linux_amd64/buildcop
+	chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
+	$KOKORO_GFILE_DIR/linux_amd64/flakybot
 	}
 	trap cleanup EXIT HUP
 fi

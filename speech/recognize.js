@@ -563,6 +563,7 @@ async function syncRecognizeWithAutoPunctuation(
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
+   * Include the sampleRateHertz field in the config object.
    */
   // const filename = 'Local path to audio file, e.g. /path/to/audio.raw';
   // const encoding = 'Encoding of the audio file, e.g. LINEAR16';

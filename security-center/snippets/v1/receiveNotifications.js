@@ -18,7 +18,6 @@ function main(
   subscriptionId = 'your-subscription-id'
 ) {
   // [START securitycenter_receive_notifications]
-  // [START scc_receive_notifications]
   const {PubSub} = require('@google-cloud/pubsub');
   const {StringDecoder} = require('string_decoder');
 
@@ -55,7 +54,6 @@ function main(
   }
 
   listenForMessages();
-  // [END scc_receive_notifications]
   // [END securitycenter_receive_notifications]
 }
 

@@ -19,7 +19,6 @@
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   // [START securitycenter_enable_asset_discovery]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -45,7 +44,6 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
     console.log('New settings: %j', newSettings);
   }
   updateOrgSettings();
-  // [END demo]
   // [END securitycenter_enable_asset_discovery]
 }
 

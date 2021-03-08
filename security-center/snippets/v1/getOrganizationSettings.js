@@ -20,7 +20,6 @@
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   // [START securitycenter_get_org_settings]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -41,7 +40,6 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
     console.log('Current settings: %j', settings);
   }
   getOrgSettings();
-  // [END demo]
   // [END securitycenter_get_org_settings]
 }
 

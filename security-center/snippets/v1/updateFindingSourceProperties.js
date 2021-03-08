@@ -19,7 +19,6 @@
  */
 function main(findingName = 'FULL_FINDING_PATH') {
   // [START securitycenter_update_finding_source_properties]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -54,7 +53,6 @@ function main(findingName = 'FULL_FINDING_PATH') {
     console.log('Updated Finding: %j', newFinding);
   }
   updateFinding();
-  // [END demo]
   // [END securitycenter_update_finding_source_properties]
 }
 

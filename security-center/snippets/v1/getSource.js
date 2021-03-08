@@ -20,7 +20,6 @@
  */
 function main(sourceName = 'FULL_PATH_TO_SOURCE') {
   // [START securitycenter_get_source]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -37,7 +36,6 @@ function main(sourceName = 'FULL_PATH_TO_SOURCE') {
   }
 
   getSource();
-  // [END demo]
   // [END securitycenter_get_source]
 }
 

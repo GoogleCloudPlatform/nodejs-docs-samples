@@ -19,7 +19,6 @@
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   // [START securitycenter_create_source]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -41,7 +40,6 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
     console.log('New Source: %j', source);
   }
   createSource();
-  // [END demo]
   // [END securitycenter_create_source]
 }
 

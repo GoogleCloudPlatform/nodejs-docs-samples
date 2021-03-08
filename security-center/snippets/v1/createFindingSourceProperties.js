@@ -20,7 +20,6 @@
  */
 function main(sourceName = 'FULL_PATH_TO_SOURCE_FOR_FINDING') {
   // [START securitycenter_create_finding_with_source_properties]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -61,7 +60,6 @@ function main(sourceName = 'FULL_PATH_TO_SOURCE_FOR_FINDING') {
     console.log('New finding created: %j', newFinding);
   }
   createFinding();
-  // [END demo]
   // [END securitycenter_create_finding_with_source_properties]
 }
 

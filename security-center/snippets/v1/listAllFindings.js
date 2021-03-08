@@ -17,7 +17,6 @@
 /**  Prints all findings across all sources. */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   // [START securitycenter_list_all_findings]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -42,7 +41,6 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
     );
   }
   listAllFindings();
-  // [END demo]
   // [END securitycenter_list_all_findings]
 }
 

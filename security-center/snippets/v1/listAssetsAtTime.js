@@ -19,7 +19,6 @@
  */
 function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   // [START securitycenter_list_assets_at_time]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -59,7 +58,6 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   }
 
   listAssetsAtTime();
-  // [END demo]
   // [END securitycenter_list_assets_at_time]
 }
 

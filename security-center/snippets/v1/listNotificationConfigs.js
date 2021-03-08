@@ -15,7 +15,6 @@
 
 function main(organizationId = 'your-org-id') {
   // [START securitycenter_list_notification_configs]
-  // [START scc_list_notification_configs]
   // npm install @google-cloud/security-center/
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -33,7 +32,6 @@ function main(organizationId = 'your-org-id') {
   }
 
   listNotificationConfigs();
-  // [END scc_list_notification_configs]
   // [END securitycenter_list_notification_configs]
 }
 

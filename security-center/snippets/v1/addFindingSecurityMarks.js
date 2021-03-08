@@ -18,7 +18,6 @@
  */
 function main(findingName = 'full finding path to add marks to') {
   // [START securitycenter_add_finding_security_marks]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -44,7 +43,6 @@ function main(findingName = 'full finding path to add marks to') {
     console.log('New marks: %j', newMarks);
   }
   addFindingSecurityMarks();
-  // [END demo]
   // [END securitycenter_add_finding_security_marks]
 }
 

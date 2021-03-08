@@ -19,7 +19,6 @@
  */
 function main(sourceName = 'FULL_PATH_TO_SOURCE') {
   // [START securitycenter_get_source_iam]
-  // [START demo]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -40,7 +39,6 @@ function main(sourceName = 'FULL_PATH_TO_SOURCE') {
     console.log('Current policy: %j', existingPolicy);
   }
   getSourceIamPolicy();
-  // [END demo]
   // [END securitycenter_get_source_iam]
 }
 

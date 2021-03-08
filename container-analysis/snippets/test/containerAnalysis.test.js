@@ -236,7 +236,8 @@ describe('Note tests', () => {
     );
     assert.include(output, 'Occurrence deleted:');
   });
-  it('should delete note', () => {
+  it('should delete note', function () {
+    this.retries(3);
     const output = execSync(`node deleteNote.js "${projectId}" "${noteId}" `);
     assert.include(output, `Note ${formattedNoteName} deleted.`);
     // Sometimes the delete note test is failing with the error:
@@ -244,7 +245,7 @@ describe('Note tests', () => {
     // ${projectId} does not exist.
     // Attempting to work around this issue by retrying a few times.
     // DO NOT MERGE.  If this works, we should submit an upstream bug.
-  }).retries(3);
+  });
 });
 
 describe('polling', () => {

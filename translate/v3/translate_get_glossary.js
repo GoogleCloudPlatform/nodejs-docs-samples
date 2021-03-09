@@ -40,18 +40,18 @@ function main(
       name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
     };
 
-    try {
-      // Get glossary
-      const [response] = await translationClient.getGlossary(request);
+    // Get glossary
+    const [response] = await translationClient.getGlossary(request);
 
-      console.log(`Got glossary: ${response.name}`);
-    } catch (error) {
-      console.error(error.details);
-    }
+    console.log(`Got glossary: ${response.name}`);
   }
 
   getGlossary();
   // [END translate_v3_get_glossary]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

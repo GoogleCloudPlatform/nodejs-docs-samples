@@ -51,15 +51,11 @@ function main(
       model: `projects/${projectId}/locations/${location}/models/${modelId}`,
     };
 
-    try {
-      // Run request
-      const [response] = await translationClient.translateText(request);
+    // Run request
+    const [response] = await translationClient.translateText(request);
 
-      for (const translation of response.glossaryTranslations) {
-        console.log(`Translation: ${translation.translatedText}`);
-      }
-    } catch (error) {
-      console.error(error.details);
+    for (const translation of response.glossaryTranslations) {
+      console.log(`Translation: ${translation.translatedText}`);
     }
   }
 
@@ -67,4 +63,8 @@ function main(
   // [END translate_v3_translate_text_with_glossary_and_model]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

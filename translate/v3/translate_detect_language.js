@@ -40,17 +40,13 @@ function main(
       content: text,
     };
 
-    try {
-      // Run request
-      const [response] = await translationClient.detectLanguage(request);
+    // Run request
+    const [response] = await translationClient.detectLanguage(request);
 
-      console.log('Detected Languages:');
-      for (const language of response.languages) {
-        console.log(`Language Code: ${language.languageCode}`);
-        console.log(`Confidence: ${language.confidence}`);
-      }
-    } catch (error) {
-      console.error(error.details);
+    console.log('Detected Languages:');
+    for (const language of response.languages) {
+      console.log(`Language Code: ${language.languageCode}`);
+      console.log(`Confidence: ${language.confidence}`);
     }
   }
 
@@ -58,4 +54,8 @@ function main(
   // [END translate_v3_detect_language]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

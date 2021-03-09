@@ -40,21 +40,21 @@ function main(
       name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
     };
 
-    try {
-      // Delete glossary using a long-running operation
-      const [operation] = await translationClient.deleteGlossary(request);
+    // Delete glossary using a long-running operation
+    const [operation] = await translationClient.deleteGlossary(request);
 
-      // Wait for operation to complete.
-      const [response] = await operation.promise();
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
 
-      console.log(`Deleted glossary: ${response.name}`);
-    } catch (error) {
-      console.error(error.details);
-    }
+    console.log(`Deleted glossary: ${response.name}`);
   }
 
   deleteGlossary();
   // [END translate_v3_delete_glossary]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

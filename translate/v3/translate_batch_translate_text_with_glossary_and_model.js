@@ -67,24 +67,24 @@ function main(
       },
     };
 
-    try {
-      const options = {timeout: 180000};
-      // Create a job using a long-running operation
-      const [operation] = await client.batchTranslateText(request, options);
+    const options = {timeout: 240000};
+    // Create a job using a long-running operation
+    const [operation] = await client.batchTranslateText(request, options);
 
-      // Wait for operation to complete
-      const [response] = await operation.promise();
+    // Wait for operation to complete
+    const [response] = await operation.promise();
 
-      // Display the translation for each input text provided
-      console.log(`Total Characters: ${response.totalCharacters}`);
-      console.log(`Translated Characters: ${response.translatedCharacters}`);
-    } catch (error) {
-      console.error(error.details);
-    }
+    // Display the translation for each input text provided
+    console.log(`Total Characters: ${response.totalCharacters}`);
+    console.log(`Translated Characters: ${response.translatedCharacters}`);
   }
 
   batchTranslateTextWithGlossaryAndModel();
   // [END translate_v3_batch_translate_text_with_glossary_and_model]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

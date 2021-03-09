@@ -46,6 +46,7 @@ const getMocks = () => {
     callback: callback,
   };
 };
+
 const stubConsole = function () {
   sinon.stub(console, 'error');
   sinon.stub(console, 'log');
@@ -68,25 +69,26 @@ describe('functions_start_instance_pubsub', () => {
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.startInstancePubSub(
+    await sample.program.startInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback
     );
 
-    const data = await sample.mocks.requestPromise();
-    // The request was successfully sent.
-    assert.strictEqual(data, 'request sent');
+    assert.deepStrictEqual(
+      mocks.callback.firstCall.args[1],
+      'Successfully started instance(s)'
+    );
   });
 
-  it("startInstancePubSub: should fail with missing 'zone' attribute", () => {
+  it("startInstancePubSub: should fail with missing 'zone' attribute", async () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {label: 'testkey=value'};
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.startInstancePubSub(
+    await sample.program.startInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback
@@ -98,14 +100,14 @@ describe('functions_start_instance_pubsub', () => {
     );
   });
 
-  it("startInstancePubSub: should fail with missing 'label' attribute", () => {
+  it("startInstancePubSub: should fail with missing 'label' attribute", async () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {zone: 'test-zone'};
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.startInstancePubSub(
+    await sample.program.startInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback
@@ -117,14 +119,14 @@ describe('functions_start_instance_pubsub', () => {
     );
   });
 
-  it('startInstancePubSub: should fail with empty event payload', () => {
+  it('startInstancePubSub: should fail with empty event payload', async () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {};
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.startInstancePubSub(
+    await sample.program.startInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback
@@ -146,25 +148,26 @@ describe('functions_stop_instance_pubsub', () => {
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.stopInstancePubSub(
+    await sample.program.stopInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback
     );
 
-    const data = await sample.mocks.requestPromise();
-    // The request was successfully sent.
-    assert.strictEqual(data, 'request sent');
+    assert.deepStrictEqual(
+      mocks.callback.firstCall.args[1],
+      'Successfully stopped instance(s)'
+    );
   });
 
-  it("stopInstancePubSub: should fail with missing 'zone' attribute", () => {
+  it("stopInstancePubSub: should fail with missing 'zone' attribute", async () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {label: 'testkey=value'};
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.stopInstancePubSub(
+    await sample.program.stopInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback
@@ -176,14 +179,14 @@ describe('functions_stop_instance_pubsub', () => {
     );
   });
 
-  it("stopInstancePubSub: should fail with missing 'label' attribute", () => {
+  it("stopInstancePubSub: should fail with missing 'label' attribute", async () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {zone: 'test-zone'};
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.stopInstancePubSub(
+    await sample.program.stopInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback
@@ -195,14 +198,14 @@ describe('functions_stop_instance_pubsub', () => {
     );
   });
 
-  it('stopInstancePubSub: should fail with empty event payload', () => {
+  it('stopInstancePubSub: should fail with empty event payload', async () => {
     const mocks = getMocks();
     const sample = getSample();
     const pubsubData = {};
     mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
       'base64'
     );
-    sample.program.stopInstancePubSub(
+    await sample.program.stopInstancePubSub(
       mocks.event,
       mocks.context,
       mocks.callback

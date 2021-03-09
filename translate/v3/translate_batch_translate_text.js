@@ -55,26 +55,26 @@ function main(
       },
     };
 
-    try {
-      const options = {timeout: 180000};
-      // Batch translate text using a long-running operation
-      const [operation] = await translationClient.batchTranslateText(
-        request,
-        options
-      );
+    const options = {timeout: 240000};
+    // Batch translate text using a long-running operation
+    const [operation] = await translationClient.batchTranslateText(
+      request,
+      options
+    );
 
-      // Wait for operation to complete.
-      const [response] = await operation.promise();
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
 
-      console.log(`Total Characters: ${response.totalCharacters}`);
-      console.log(`Translated Characters: ${response.translatedCharacters}`);
-    } catch (error) {
-      console.error(error.details);
-    }
+    console.log(`Total Characters: ${response.totalCharacters}`);
+    console.log(`Translated Characters: ${response.translatedCharacters}`);
   }
 
   batchTranslateText();
   // [END translate_v3_batch_translate_text]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

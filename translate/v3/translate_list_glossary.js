@@ -34,20 +34,16 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
       parent: `projects/${projectId}/locations/${location}`,
     };
 
-    try {
-      // Run request
-      const [response] = await translationClient.listGlossaries(request);
+    // Run request
+    const [response] = await translationClient.listGlossaries(request);
 
-      for (const glossary of response) {
-        console.log(`Name: ${glossary.name}`);
-        console.log(`Entry count: ${glossary.entryCount}`);
-        console.log(`Input uri: ${glossary.inputConfig.gcsSource.inputUri}`);
-        for (const languageCode of glossary.languageCodesSet.languageCodes) {
-          console.log(`Language code: ${languageCode}`);
-        }
+    for (const glossary of response) {
+      console.log(`Name: ${glossary.name}`);
+      console.log(`Entry count: ${glossary.entryCount}`);
+      console.log(`Input uri: ${glossary.inputConfig.gcsSource.inputUri}`);
+      for (const languageCode of glossary.languageCodesSet.languageCodes) {
+        console.log(`Language code: ${languageCode}`);
       }
-    } catch (error) {
-      console.error(error.details);
     }
   }
 
@@ -55,4 +51,8 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
   // [END translate_v3_list_glossary]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

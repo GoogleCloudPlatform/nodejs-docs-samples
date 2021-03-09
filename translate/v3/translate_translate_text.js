@@ -42,15 +42,11 @@ function main(
       targetLanguageCode: 'sr-Latn',
     };
 
-    try {
-      // Run request
-      const [response] = await translationClient.translateText(request);
+    // Run request
+    const [response] = await translationClient.translateText(request);
 
-      for (const translation of response.translations) {
-        console.log(`Translation: ${translation.translatedText}`);
-      }
-    } catch (error) {
-      console.error(error.details);
+    for (const translation of response.translations) {
+      console.log(`Translation: ${translation.translatedText}`);
     }
   }
 
@@ -58,4 +54,8 @@ function main(
   // [END translate_v3_translate_text]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

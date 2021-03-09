@@ -35,17 +35,13 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'global') {
       displayLanguageCode: 'fr',
     };
 
-    try {
-      // Run request
-      const [response] = await translationClient.getSupportedLanguages(request);
+    // Run request
+    const [response] = await translationClient.getSupportedLanguages(request);
 
-      console.log('Supported languages:');
-      for (const language of response.languages) {
-        console.log(`Language Code: ${language.languageCode}`);
-        console.log(`Display Name: ${language.displayName}`);
-      }
-    } catch (error) {
-      console.error(error.details);
+    console.log('Supported languages:');
+    for (const language of response.languages) {
+      console.log(`Language Code: ${language.languageCode}`);
+      console.log(`Display Name: ${language.displayName}`);
     }
   }
 
@@ -53,4 +49,8 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'global') {
   // [END translate_v3_list_language_names]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

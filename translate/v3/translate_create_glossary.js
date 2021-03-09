@@ -53,24 +53,22 @@ function main(
       glossary: glossary,
     };
 
-    try {
-      // Create glossary using a long-running operation
-      const [operation] = await translationClient.createGlossary(request);
+    // Create glossary using a long-running operation
+    const [operation] = await translationClient.createGlossary(request);
 
-      // Wait for the operation to complete
-      await operation.promise();
+    // Wait for the operation to complete
+    await operation.promise();
 
-      console.log('Created glossary:');
-      console.log(
-        `InputUri ${request.glossary.inputConfig.gcsSource.inputUri}`
-      );
-    } catch (error) {
-      console.error(error.details);
-    }
+    console.log('Created glossary:');
+    console.log(`InputUri ${request.glossary.inputConfig.gcsSource.inputUri}`);
   }
 
   createGlossary();
   // [END translate_v3_create_glossary]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

@@ -14,7 +14,8 @@
 
 // [START functions_billing_limit]
 // [START functions_billing_stop]
-const google = require('googleapis/build/src/apis/cloudbilling');
+const google_billing = require('googleapis/build/src/apis/cloudbilling');
+const google_compute = require('googleapis/build/src/apis/compute');
 const {GoogleAuth} = require('google-auth-library');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
@@ -48,7 +49,7 @@ exports.notifySlack = async pubsubEvent => {
 // [END functions_billing_slack]
 
 // [START functions_billing_stop]
-const billing = google.cloudbilling('v1').projects;
+const billing = google_billing.cloudbilling('v1');
 
 exports.stopBilling = async pubsubEvent => {
   const pubsubData = JSON.parse(
@@ -83,10 +84,11 @@ const _setAuthCredential = () => {
     ],
   });
 
-  // Set credential globally for all requests
-  google.options({
-    auth: client,
-  });
+  // Set credentials
+  google_compute.auth = client;
+  google_billing._options = {  // Required monkeypatch
+    auth: client
+  };
 };
 // [END functions_billing_limit]
 
@@ -97,7 +99,7 @@ const _setAuthCredential = () => {
  */
 const _isBillingEnabled = async projectName => {
   try {
-    const res = await billing.getBillingInfo({name: projectName});
+    const res = await billing.projects.getBillingInfo({name: projectName});
     return res.data.billingEnabled;
   } catch (e) {
     console.log(
@@ -113,7 +115,7 @@ const _isBillingEnabled = async projectName => {
  * @return {string} Text containing response from disabling billing
  */
 const _disableBillingForProject = async projectName => {
-  const res = await billing.updateBillingInfo({
+  const res = await billing.projects.updateBillingInfo({
     name: projectName,
     resource: {billingAccountName: ''}, // Disable billing
   });
@@ -131,7 +133,7 @@ exports.startBilling = async pubsubEvent => {
   if (!(await _isBillingEnabled(PROJECT_NAME))) {
     // Enable billing
 
-    const res = await billing.updateBillingInfo({
+    const res = await billing.projects.updateBillingInfo({
       name: pubsubData.projectName,
       resource: {
         billingAccountName: pubsubData.billingAccountName,
@@ -145,7 +147,7 @@ exports.startBilling = async pubsubEvent => {
 };
 
 // [START functions_billing_limit]
-const compute = google.compute('v1');
+const compute = google_compute.compute('v1');
 const ZONE = 'us-central1-a';
 
 exports.limitUse = async pubsubEvent => {

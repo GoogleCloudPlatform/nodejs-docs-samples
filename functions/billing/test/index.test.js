@@ -150,8 +150,10 @@ describe('shuts down GCE instances', () => {
         },
       };
 
-      const googleapisMock = Object.assign({}, googleapis);
-      googleapisMock.compute = sinon.stub().returns(computeMock);
+      const googleapisMock = {
+        compute: sinon.stub().returns(computeMock),
+        options: sinon.stub().returns()
+      };
 
       // Run test
       const jsonData = {costAmount: 500, budgetAmount: 400};
@@ -160,7 +162,9 @@ describe('shuts down GCE instances', () => {
       );
       const pubsubMessage = {data: encodedData, attributes: {}};
 
-      const sample = proxyquire('../', {googleapis: googleapisMock}); // kokoro-allow-mock
+      const sample = proxyquire('../', {
+        'googleapis/build/src/apis/compute': googleapisMock
+      }); // kokoro-allow-mock
 
       await sample.limitUse(pubsubMessage);
 

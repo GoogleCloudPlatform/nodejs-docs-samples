@@ -17,11 +17,14 @@ const express = require('express');
 const app = express();
 const sleep = require('sleep');
 
+// [START monitoring_sli_metrics_prometheus_setup]
 const prometheus = require('prom-client');
 const register = new prometheus.Registry();
 prometheus.collectDefaultMetrics({register});
+// [END monitoring_sli_metrics_prometheus_setup]
 
 // define golden signal metrics
+// [START monitoring_sli_metrics_prometheus_create_metrics]
 // total requests - counter
 const nodeRequestsCounter = new prometheus.Counter({
   name: 'node_requests',
@@ -41,17 +44,21 @@ const nodeLatenciesHistogram = new prometheus.Histogram({
   labelNames: ['route'],
   buckets: [100, 400],
 });
+// [END monitoring_sli_metrics_prometheus_create_metrics]
 
 app.get('/', (req, res) => {
+  // [START monitoring_sli_metrics_prometheus_latency]
   // start latency timer
   const requestReceived = new Date().getTime();
   console.log('request made');
+  // [START monitoring_sli_metrics_prometheus_counts]
   // increment total requests counter
   nodeRequestsCounter.inc();
   // return an error 10% of the time
   if (Math.floor(Math.random() * 100) > 90) {
     // increment error counter
     nodeFailedRequestsCounter.inc();
+    // [END monitoring_sli_metrics_prometheus_counts]
     // return error code
     res.send('error!', 500);
   } else {
@@ -60,14 +67,17 @@ app.get('/', (req, res) => {
     // record response latency
     const responseLatency = new Date().getTime() - requestReceived;
     nodeLatenciesHistogram.labels(req.route.path).observe(responseLatency);
+    // [END monitoring_sli_metrics_prometheus_latency]
     res.send('success in ' + responseLatency + ' ms');
   }
 });
 
+// [START monitoring_sli_metrics_prometheus_metrics_endpoint]
 app.get('/metrics', (req, res) => {
   res.set('Content-Type', prometheus.register.contentType);
   res.end(prometheus.register.metrics());
 });
+// [END monitoring_sli_metrics_prometheus_metrics_endpoint]
 
 module.exports = app;
 app.listen(8080, () => console.log('Example app listening on port 8080!'));

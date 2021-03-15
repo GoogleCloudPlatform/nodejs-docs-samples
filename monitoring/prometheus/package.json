@@ -14,7 +14,6 @@
     "lint": "^0.7.0",
     "node-stopwatch": "^0.0.1",
     "prom-client": "^12.0.0",
-    "request": "^2.88.2",
     "sleep": "^6.3.0",
     "supertest": "^6.1.3"
   },

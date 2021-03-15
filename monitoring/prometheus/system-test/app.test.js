@@ -1,4 +1,3 @@
-// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,4 +24,8 @@ it('should be listening', async () => {
   await request(app)
     .get('/')
     .expect('Content-Type', /text\/html/);
+});
+
+it('should be exposing metrics', async () => {
+  await request(app).get('/metrics').expect(200);
 });

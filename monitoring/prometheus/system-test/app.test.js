@@ -27,7 +27,5 @@ it('should be listening', async () => {
 });
 
 it('should be exposing metrics', async () => {
-  await request(app)
-    .get('/metrics')
-    .expect(200);
+  await request(app).get('/metrics').expect(200);
 });

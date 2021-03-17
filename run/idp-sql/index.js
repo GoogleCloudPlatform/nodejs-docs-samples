@@ -50,6 +50,7 @@ const main = async () => {
   startServer();
 };
 
+// [START cloudrun_sigterm_handler]
 // Clean up resources on shutdown
 process.on('SIGTERM', () => {
   logger.info(`${pkg.name}: received SIGTERM`);
@@ -60,5 +61,6 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
+// [END cloudrun_sigterm_handler]
 
 main();

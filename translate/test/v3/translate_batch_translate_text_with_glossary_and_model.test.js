@@ -31,7 +31,7 @@ describe(REGION_TAG, () => {
   const glossaryId = `my_test_glossary_${uuid.v4()}`;
   const modelId = 'TRL1218052175389786112';
   const bucketUuid = uuid.v4();
-  const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATION_OUTPUT/`;
+  const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATE_GLOSS_MODEL_OUTPUT/`;
   const storage = new Storage();
 
   before(async () => {

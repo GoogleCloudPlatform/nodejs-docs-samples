@@ -29,7 +29,7 @@ describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
   const bucketUuid = uuid.v4();
-  const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATION_OUTPUT/`;
+  const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATE_OUTPUT/`;
   const storage = new Storage();
 
   before(async () => {

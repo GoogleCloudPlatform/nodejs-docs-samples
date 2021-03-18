@@ -1,0 +1,24 @@
+{
+  "name": "sli-metric-sample-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha -- system-test/*.test.js --timeout=5000 --exit"
+  },
+  "author": "Yuri Grinshteyn",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lint": "^0.7.0",
+    "node-stopwatch": "^0.0.1",
+    "prom-client": "^13.0.0",
+    "sleep": "^6.3.0",
+    "supertest": "^6.1.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "mocha": "^8.2.1"
+  }
+}

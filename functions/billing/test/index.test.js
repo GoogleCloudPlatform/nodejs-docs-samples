@@ -152,7 +152,7 @@ describe('shuts down GCE instances', () => {
 
       const googleapisMock = {
         compute: sinon.stub().returns(computeMock),
-        options: sinon.stub().returns()
+        options: sinon.stub().returns(),
       };
 
       // Run test
@@ -163,7 +163,7 @@ describe('shuts down GCE instances', () => {
       const pubsubMessage = {data: encodedData, attributes: {}};
 
       const sample = proxyquire('../', {
-        'googleapis/build/src/apis/compute': googleapisMock
+        'googleapis/build/src/apis/compute': googleapisMock,
       }); // kokoro-allow-mock
 
       await sample.limitUse(pubsubMessage);

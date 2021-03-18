@@ -86,8 +86,9 @@ const _setAuthCredential = () => {
 
   // Set credentials
   google_compute.auth = client;
-  google_billing._options = {  // Required monkeypatch
-    auth: client
+  google_billing._options = {
+    // Required monkeypatch
+    auth: client,
   };
 };
 // [END functions_billing_limit]

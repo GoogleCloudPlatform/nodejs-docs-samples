@@ -23,14 +23,6 @@
 exports.helloRTDB = (event, context) => {
   const triggerResource = event.resource;
 
-  const pathParams = context.params;
-  if (pathParams) {
-    console.log('Path parameters:');
-    Object.keys(pathParams).forEach(key => {
-      console.log(`  ${key}: ${pathParams[key]}`);
-    });
-  }
-
   console.log(`Function triggered by change to: ${triggerResource}`);
   console.log(`Admin?: ${!!event.auth.admin}`);
   console.log('Delta:');

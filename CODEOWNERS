@@ -7,15 +7,15 @@
 
 # Kokoro
 .kokoro @fhinkel
-.kokoro/appengine @GoogleCloudPlatform/cdpe-cbr-containers
+.kokoro/appengine @GoogleCloudPlatform/cdpe-serverless
 .kokoro/functions @ace-n @grant
 
 # Serverless/CBR
-appengine @GoogleCloudPlatform/cdpe-cbr-containers
+appengine @GoogleCloudPlatform/cdpe-serverless
 functions @ace-n @grant
-run @GoogleCloudPlatform/cdpe-cbr-containers
-eventarc @GoogleCloudPlatform/cdpe-cbr-containers
-workflows @GoogleCloudPlatform/cdpe-cbr-containers
+run @GoogleCloudPlatform/cdpe-serverless
+eventarc @GoogleCloudPlatform/cdpe-serverless
+workflows @GoogleCloudPlatform/cdpe-serverless
 
 # Other functions samples
 functions/scheduleinstance @askmeegs

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START eventarc_gcs_server]
+// [START eventarc_audit_storage_server]
 const app = require('./app.js');
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () =>
   console.log(`nodejs-events-storage listening on port ${PORT}`)
 );
-// [END eventarc_gcs_server]
+// [END eventarc_audit_storage_server]

@@ -30,7 +30,7 @@ describe(REGION_TAG, () => {
   const location = 'us-central1';
   const modelId = 'TRL1218052175389786112';
   const bucketUuid = uuid.v4();
-  const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATION_OUTPUT/`;
+  const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATE_WITH_MODEL_OUTPUT/`;
   const storage = new Storage();
 
   before(async () => {

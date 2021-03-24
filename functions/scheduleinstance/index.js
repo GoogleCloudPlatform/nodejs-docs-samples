@@ -32,9 +32,7 @@ const compute = new Compute();
  */
 exports.startInstancePubSub = async (event, context, callback) => {
   try {
-    const payload = _validatePayload(
-      JSON.parse(Buffer.from(event.data, 'base64').toString())
-    );
+    const payload = _validatePayload(event);
     const options = {filter: `labels.${payload.label}`};
     const [vms] = await compute.getVMs(options);
     await Promise.all(
@@ -76,9 +74,7 @@ exports.startInstancePubSub = async (event, context, callback) => {
  */
 exports.stopInstancePubSub = async (event, context, callback) => {
   try {
-    const payload = _validatePayload(
-      JSON.parse(Buffer.from(event.data, 'base64').toString())
-    );
+    const payload = _validatePayload(event);
     const options = {filter: `labels.${payload.label}`};
     const [vms] = await compute.getVMs(options);
     await Promise.all(
@@ -114,7 +110,13 @@ exports.stopInstancePubSub = async (event, context, callback) => {
  * @param {!object} payload the request payload to validate.
  * @return {!object} the payload object.
  */
-const _validatePayload = payload => {
+const _validatePayload = event => {
+  let payload;
+  try {
+    payload = JSON.parse(Buffer.from(event.data, 'base64').toString());
+  } catch (err) {
+    throw new Error('Invalid Pub/Sub message: ' + err);
+  }
   if (!payload.zone) {
     throw new Error("Attribute 'zone' missing from payload");
   } else if (!payload.label) {

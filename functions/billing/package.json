@@ -13,8 +13,8 @@
   "author": "Ace Nassri <anassri@google.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "google-auth-library": "^6.0.0",
-    "googleapis": "^66.0.0",
+    "google-auth-library": "^7.0.0",
+    "googleapis": "^67.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {
@@ -24,7 +24,7 @@
     "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",
     "request": "^2.88.0",
-    "requestretry": "^4.0.0",
+    "requestretry": "^5.0.0",
     "sinon": "^9.0.0"
   }
 }

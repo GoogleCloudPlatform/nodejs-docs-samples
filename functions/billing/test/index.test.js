@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const googleapis = require('googleapis');
 const proxyquire = require('proxyquire');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
@@ -151,8 +150,10 @@ describe('shuts down GCE instances', () => {
         },
       };
 
-      const googleapisMock = Object.assign({}, googleapis);
-      googleapisMock.google.compute = sinon.stub().returns(computeMock);
+      const googleapisMock = {
+        compute: sinon.stub().returns(computeMock),
+        options: sinon.stub().returns(),
+      };
 
       // Run test
       const jsonData = {costAmount: 500, budgetAmount: 400};
@@ -161,7 +162,9 @@ describe('shuts down GCE instances', () => {
       );
       const pubsubMessage = {data: encodedData, attributes: {}};
 
-      const sample = proxyquire('../', {googleapis: googleapisMock}); // kokoro-allow-mock
+      const sample = proxyquire('../', {
+        'googleapis/build/src/apis/compute': googleapisMock,
+      }); // kokoro-allow-mock
 
       await sample.limitUse(pubsubMessage);
 

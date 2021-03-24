@@ -16,7 +16,7 @@ functions @ace-n @grant
 run @GoogleCloudPlatform/cdpe-cbr-containers
 
 # Other functions samples
-functions/scheduleinstance @djmailhot
+functions/scheduleinstance @askmeegs
 functions/speech-to-speech @ricalo
 functions/memorystore @ericschmidtatwork
 functions/spanner @jsimonweb
@@ -28,4 +28,5 @@ datastore/functions @benwhitehead
 cloud-sql @kurtisvg
 composer @leahecole @sofisl @yoshi-nodejs
 healthcare @noerog
+monitoring/opencensus @yuriatgoogle
 

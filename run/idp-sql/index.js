@@ -37,10 +37,20 @@ const main = async () => {
     }
   }
   initTracing(project); // pass project ID to tracing middleware
-  await createTable(); // Create postgreSQL table if not found
+  try {
+    await createTable(); // Create postgreSQL table if not found
+  } catch (err) {
+    const message =
+      'Error while connecting to the Cloud SQL database. ' +
+      'Check that your username and password are correct, that the Cloud SQL ' +
+      'proxy is running (locally), and that the PostgreSQL instance/database ' +
+      `exists and is ready for use: ${err}`;
+    logger.error(message);
+  }
   startServer();
 };
 
+// [START cloudrun_sigterm_handler]
 // Clean up resources on shutdown
 process.on('SIGTERM', () => {
   logger.info(`${pkg.name}: received SIGTERM`);
@@ -51,5 +61,6 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
+// [END cloudrun_sigterm_handler]
 
 main();

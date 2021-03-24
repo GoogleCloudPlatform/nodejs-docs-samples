@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "system-test": "mocha test/system.test.js --timeout=180000 --exit"
+    "system-test": "mocha test/system.test.js --timeout=360000 --exit"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@google-cloud/logging": "^9.0.0",
-    "google-auth-library": "^6.1.3",
+    "google-auth-library": "^7.0.0",
     "mocha": "^8.0.0"
   }
 }

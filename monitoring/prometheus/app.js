@@ -19,8 +19,10 @@ const sleep = require('sleep');
 
 // [START monitoring_sli_metrics_prometheus_setup]
 const prometheus = require('prom-client');
-const register = new prometheus.Registry();
-prometheus.collectDefaultMetrics({register});
+const collectDefaultMetrics = prometheus.collectDefaultMetrics;
+const Registry = prometheus.Registry;
+const register = new Registry();
+collectDefaultMetrics({register});
 // [END monitoring_sli_metrics_prometheus_setup]
 
 // define golden signal metrics
@@ -73,9 +75,13 @@ app.get('/', (req, res) => {
 });
 
 // [START monitoring_sli_metrics_prometheus_metrics_endpoint]
-app.get('/metrics', (req, res) => {
-  res.set('Content-Type', prometheus.register.contentType);
-  res.end(prometheus.register.metrics());
+app.get('/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (ex) {
+    res.status(500).end(ex);
+  }
 });
 // [END monitoring_sli_metrics_prometheus_metrics_endpoint]
 

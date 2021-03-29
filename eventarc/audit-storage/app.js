@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START eventarc_gcs_handler]
+// [START eventarc_audit_storage_handler]
 const express = require('express');
 const app = express();
 
@@ -35,4 +35,4 @@ app.post('/', (req, res) => {
 });
 
 module.exports = app;
-// [END eventarc_gcs_handler]
+// [END eventarc_audit_storage_handler]

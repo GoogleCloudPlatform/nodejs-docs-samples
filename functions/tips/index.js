@@ -94,6 +94,7 @@ const httpsAgent = new https.Agent({keepAlive: true});
  */
 exports.connectionPooling = async (req, res) => {
   try {
+    // TODO(optional): replace this with your own URL.
     const url = 'https://www.example.com/';
 
     // Select the appropriate agent to use based on the URL.

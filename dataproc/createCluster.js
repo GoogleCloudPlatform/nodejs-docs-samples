@@ -49,11 +49,11 @@ function main(
         config: {
           masterConfig: {
             numInstances: 1,
-            machineTypeUri: 'n1-standard-1',
+            machineTypeUri: 'n1-standard-2',
           },
           workerConfig: {
             numInstances: 2,
-            machineTypeUri: 'n1-standard-1',
+            machineTypeUri: 'n1-standard-2',
           },
         },
       },

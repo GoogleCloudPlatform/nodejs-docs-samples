@@ -7,11 +7,11 @@
 
 # Kokoro
 .kokoro @fhinkel
-.kokoro/appengine @michaelawyu
+.kokoro/appengine @engelke @ace-n
 .kokoro/functions @ace-n @grant
 
 # Serverless/CBR
-appengine @michaelawyu
+appengine @engelke @ace-n
 functions @ace-n @grant
 run @GoogleCloudPlatform/cdpe-cbr-containers
 

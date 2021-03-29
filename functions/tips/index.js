@@ -94,8 +94,16 @@ const httpsAgent = new https.Agent({keepAlive: true});
  */
 exports.connectionPooling = async (req, res) => {
   try {
-    const {data} = await fetch('/', {httpAgent, httpsAgent});
-    res.status(200).send(`Data: ${data}`);
+    // TODO(optional): replace this with your own URL.
+    const url = 'https://www.example.com/';
+
+    // Select the appropriate agent to use based on the URL.
+    const agent = url.includes('https') ? httpsAgent : httpAgent;
+
+    const {data} = await fetch(url, {agent});
+    const text = await data.text();
+
+    res.status(200).send(`Data: ${text}`);
   } catch (err) {
     res.status(500).send(`Error: ${err.message}`);
   }

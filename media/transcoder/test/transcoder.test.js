@@ -43,6 +43,16 @@ const outputUriForTemplate = `gs://${bucketName}/test-output-template/`;
 const outputUriForAdHoc = `gs://${bucketName}/test-output-adhoc/`;
 const outputUriForStaticOverlay = `gs://${bucketName}/test-output-static-overlay/`;
 const outputUriForAnimatedOverlay = `gs://${bucketName}/test-output-animated-overlay/`;
+const outputDirForSetNumberImagesSpritesheet =
+  'test-output-set-number-spritesheet/';
+const outputUriForSetNumberImagesSpritesheet = `gs://${bucketName}/${outputDirForSetNumberImagesSpritesheet}`;
+const outputDirForPeriodicImagesSpritesheet =
+  'test-output-periodic-spritesheet/';
+const outputUriForPeriodicImagesSpritesheet = `gs://${bucketName}/${outputDirForPeriodicImagesSpritesheet}`;
+// Spritesheets are generated from the input video into the bucket directories above.
+// Spritesheets use the following file naming conventions:
+const smallSpriteSheetFileName = 'small-sprite-sheet0000000000.jpeg';
+const largeSpriteSheetFileName = 'large-sprite-sheet0000000000.jpeg';
 
 const cwd = path.join(__dirname, '..');
 const videoFile = `testdata/${testFileName}`;
@@ -55,6 +65,16 @@ function wait(ms) {
     }, ms);
   });
 }
+
+const checkFileExists = async function (bucketName, fileName) {
+  const [files] = await storage.bucket(bucketName).getFiles();
+  for (let i = 0; i < files.length; i++) {
+    if (files[i].name === fileName) {
+      return true;
+    }
+  }
+  return false;
+};
 
 before(async () => {
   assert(
@@ -308,14 +328,6 @@ describe('Job with static overlay functions', () => {
     assert.ok(output.includes(jobName));
   });
 
-  it('should show a list of jobs', function () {
-    const output = execSync(`node listJobs.js ${projectId} ${location}`, {
-      cwd,
-    });
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.staticOverlayJobId}`;
-    assert.ok(output.includes(jobName));
-  });
-
   it('should check that the job succeeded', async function () {
     this.retries(5);
     await wait(90000);
@@ -356,14 +368,6 @@ describe('Job with animated overlay functions', () => {
     assert.ok(output.includes(jobName));
   });
 
-  it('should show a list of jobs', function () {
-    const output = execSync(`node listJobs.js ${projectId} ${location}`, {
-      cwd,
-    });
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.animatedOverlayJobId}`;
-    assert.ok(output.includes(jobName));
-  });
-
   it('should check that the job succeeded', async function () {
     this.retries(5);
     await wait(90000);
@@ -372,5 +376,119 @@ describe('Job with animated overlay functions', () => {
       {cwd}
     );
     assert.ok(output.includes('Job state: SUCCEEDED'));
+  });
+});
+
+describe('Job with set number of images spritesheet', () => {
+  before(function () {
+    const output = execSync(
+      `node createJobWithSetNumberImagesSpritesheet.js ${projectId} ${location} ${inputUri} ${outputUriForSetNumberImagesSpritesheet}`,
+      {cwd}
+    );
+    assert.ok(
+      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+    );
+    this.setNumberSpritesheetJobId = output.toString().split('/').pop();
+  });
+
+  after(function () {
+    const output = execSync(
+      `node deleteJob.js ${projectId} ${location} ${this.setNumberSpritesheetJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted job'));
+  });
+
+  it('should get a job', function () {
+    const output = execSync(
+      `node getJob.js ${projectId} ${location} ${this.setNumberSpritesheetJobId}`,
+      {cwd}
+    );
+    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.setNumberSpritesheetJobId}`;
+    assert.ok(output.includes(jobName));
+  });
+
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await wait(90000);
+    const output = execSync(
+      `node getJobState.js ${projectId} ${location} ${this.setNumberSpritesheetJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Job state: SUCCEEDED'));
+  });
+
+  it('should check that the spritesheet files exist in the bucket', async () => {
+    assert.equal(
+      await checkFileExists(
+        bucketName,
+        `${outputDirForSetNumberImagesSpritesheet}${smallSpriteSheetFileName}`
+      ),
+      true
+    );
+    assert.equal(
+      await checkFileExists(
+        bucketName,
+        `${outputDirForSetNumberImagesSpritesheet}${largeSpriteSheetFileName}`
+      ),
+      true
+    );
+  });
+});
+
+describe('Job with periodic images spritesheet', () => {
+  before(function () {
+    const output = execSync(
+      `node createJobWithPeriodicImagesSpritesheet.js ${projectId} ${location} ${inputUri} ${outputUriForPeriodicImagesSpritesheet}`,
+      {cwd}
+    );
+    assert.ok(
+      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+    );
+    this.periodicSpritesheetJobId = output.toString().split('/').pop();
+  });
+
+  after(function () {
+    const output = execSync(
+      `node deleteJob.js ${projectId} ${location} ${this.periodicSpritesheetJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted job'));
+  });
+
+  it('should get a job', function () {
+    const output = execSync(
+      `node getJob.js ${projectId} ${location} ${this.periodicSpritesheetJobId}`,
+      {cwd}
+    );
+    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.periodicSpritesheetJobId}`;
+    assert.ok(output.includes(jobName));
+  });
+
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await wait(90000);
+    const output = execSync(
+      `node getJobState.js ${projectId} ${location} ${this.periodicSpritesheetJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Job state: SUCCEEDED'));
+  });
+
+  it('should check that the spritesheet files exist in the bucket', async () => {
+    assert.equal(
+      await checkFileExists(
+        bucketName,
+        `${outputDirForPeriodicImagesSpritesheet}${smallSpriteSheetFileName}`
+      ),
+      true
+    );
+    assert.equal(
+      await checkFileExists(
+        bucketName,
+        `${outputDirForPeriodicImagesSpritesheet}${largeSpriteSheetFileName}`
+      ),
+      true
+    );
   });
 });

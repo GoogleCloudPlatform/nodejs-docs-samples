@@ -15,14 +15,14 @@
 'use strict';
 
 function main(gcsUri = 'YOUR_STORAGE_URI') {
-  // [START video_detect_faces_gcs_beta]
+  // [START video_detect_faces_gcs]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const gcsUri = 'GCS URI of the video to analyze, e.g. gs://my-bucket/my-video.mp4';
 
   // Imports the Google Cloud Video Intelligence library + Node's fs library
-  const Video = require('@google-cloud/video-intelligence').v1p3beta1;
+  const Video = require('@google-cloud/video-intelligence').v1;
 
   // Creates a client
   const video = new Video.VideoIntelligenceServiceClient();
@@ -87,7 +87,7 @@ function main(gcsUri = 'YOUR_STORAGE_URI') {
   }
 
   detectFacesGCS();
-  // [END video_detect_faces_gcs_beta]
+  // [END video_detect_faces_gcs]
 }
 
 main(...process.argv.slice(2));

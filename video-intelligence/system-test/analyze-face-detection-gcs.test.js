@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const cmd = 'node analyze_face_detection_gcs.js';
+const cmd = 'node analyze-face-detection-gcs.js';
 const gcsUri = 'gs://cloud-samples-data/video/googlework_short.mp4';
 
 describe('analyzing faces in video', () => {

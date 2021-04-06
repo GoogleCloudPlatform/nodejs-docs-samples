@@ -15,14 +15,14 @@
 'use strict';
 
 function main(path = 'YOUR_LOCAL_FILE') {
-  // [START video_detect_faces_beta]
+  // [START video_detect_faces]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const path = 'Local file to analyze, e.g. ./my-file.mp4';
 
   // Imports the Google Cloud Video Intelligence library + Node's fs library
-  const Video = require('@google-cloud/video-intelligence').v1p3beta1;
+  const Video = require('@google-cloud/video-intelligence').v1;
   const fs = require('fs');
 
   // Creates a client
@@ -90,7 +90,7 @@ function main(path = 'YOUR_LOCAL_FILE') {
   }
 
   detectFaces();
-  // [END video_detect_faces_beta]
+  // [END video_detect_faces]
 }
 
 main(...process.argv.slice(2));

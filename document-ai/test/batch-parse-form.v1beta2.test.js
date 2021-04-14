@@ -15,15 +15,8 @@
 'use strict';
 
 const {Storage} = require('@google-cloud/storage');
-const {
-  DocumentProcessorServiceClient,
-} = require('@google-cloud/documentai').v1beta3;
-const client = new DocumentProcessorServiceClient({
-  apiEndpoint: 'us-documentai.googleapis.com',
-});
-
 const cp = require('child_process');
-const assert = require('assert');
+const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
 const uuid = require('uuid');
 
@@ -31,19 +24,16 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const storage = new Storage();
 const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
-const cmd = 'node batch-process-document.v1beta3.js';
+const cmd = 'node batch-parse-form.v1beta2.js';
 
-const testProcessDocument = {
-  projectId: '',
+const testParseForm = {
+  projectId: process.env.GCLOUD_PROJECT,
   location: 'us',
-  processorId: '8f1123c1b125e0b7',
-  gcsInputUri: 'gs://cloud-samples-data/documentai/invoice.pdf',
   gcsOutputUriPrefix: uuid.v4(),
 };
 
-describe('Document AI batch parse form', () => {
+describe('Document AI batch parse form (v1beta2)', () => {
   before(async () => {
-    testProcessDocument.projectId = await client.getProjectId();
     await storage.createBucket(bucketName);
   });
 
@@ -55,8 +45,8 @@ describe('Document AI batch parse form', () => {
 
   it('should parse the GCS invoice example as a form', async () => {
     const output = execSync(
-      `${cmd} ${testProcessDocument.projectId} ${testProcessDocument.location} ${testProcessDocument.processorId} ${testProcessDocument.gcsInputUri} gs://${bucketName} ${testProcessDocument.gcsOutputUriPrefix}`
+      `${cmd} ${testParseForm.projectId} ${testParseForm.location} gs://${bucketName}`
     );
-    assert.notStrictEqual(output.indexOf('Extracted'), -1);
+    assert.match(output, /Extracted key value pair:/);
   });
 });

@@ -25,11 +25,14 @@ const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
 const LOCATION = 'us';
 
-describe('Document AI parse table', () => {
-  it('should parse the GCS invoice example as as table', async () => {
-    const stdout = execSync(`node ./parse_table.js ${projectId} ${LOCATION}`, {
-      cwd,
-    });
-    assert.match(stdout, /Header row/);
+describe('Document AI parse form', () => {
+  it('should parse the GCS invoice example as a form (v1beta2)', async () => {
+    const stdout = execSync(
+      `node ./parse-form.v1beta2.js ${projectId} ${LOCATION}`,
+      {
+        cwd,
+      }
+    );
+    assert.match(stdout, /Extracted key value pair:/);
   });
 });

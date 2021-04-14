@@ -39,7 +39,7 @@ async function main(
   // Imports the Google Cloud client library
   const {
     DocumentProcessorServiceClient,
-  } = require('@google-cloud/documentai').v1beta3;
+  } = require('@google-cloud/documentai').v1;
   const {Storage} = require('@google-cloud/storage');
 
   // Instantiates Document AI, Storage clients
@@ -54,14 +54,20 @@ async function main(
     // Configure the batch process request.
     const request = {
       name,
-      inputConfigs: [
-        {
-          gcsSource: gcsInputUri,
-          mimeType: 'application/pdf',
+      inputDocuments: {
+        gcsDocuments: {
+          documents: [
+            {
+              gcsUri: gcsInputUri,
+              mimeType: 'application/pdf',
+            },
+          ],
         },
-      ],
-      outputConfig: {
-        gcsDestination: `${gcsOutputUri}/${gcsOutputUriPrefix}/`,
+      },
+      documentOutputConfig: {
+        gcsOutputConfig: {
+          gcsUri: `${gcsOutputUri}/${gcsOutputUriPrefix}/`,
+        },
       },
     };
 
@@ -73,7 +79,6 @@ async function main(
 
     // Wait for operation to complete.
     await operation.promise();
-
     console.log('Document processing complete.');
 
     // Query Storage bucket for the results file(s).

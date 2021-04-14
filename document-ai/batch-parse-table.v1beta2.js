@@ -123,9 +123,6 @@ async function main(
       const [headerRow] = table.headerRows;
 
       console.log('Results from first table processed:');
-      console.log(
-        `First detected language: ${page1.detectedLanguages[0].languageCode}`
-      );
 
       console.log('Header row:');
       for (const tableCell of headerRow.cells) {

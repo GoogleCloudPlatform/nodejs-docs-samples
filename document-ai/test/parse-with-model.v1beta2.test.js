@@ -24,12 +24,18 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 const projectId = process.env.GCLOUD_PROJECT;
 const LOCATION = 'us';
+const MODEL_NAME =
+  process.env.MODEL_NAME ||
+  'projects/1046198160504/locations/us-central1/models/TCN7483069430457434112';
 
-describe('Document AI parse form', () => {
-  it('should parse the GCS invoice example as a form', async () => {
-    const stdout = execSync(`node ./parse_form.js ${projectId} ${LOCATION}`, {
-      cwd,
-    });
-    assert.match(stdout, /Extracted key value pair:/);
+describe('Document AI parse with AutoML model (v1beta2)', () => {
+  it('should run use an AutoML model to parse a PDF', async () => {
+    const stdout = execSync(
+      `node ./parse-with-model.v1beta2.js ${projectId} ${LOCATION} ${MODEL_NAME}`,
+      {
+        cwd,
+      }
+    );
+    assert.match(stdout, /Label/);
   });
 });

@@ -16,38 +16,23 @@
 'use strict';
 
 const path = require('path');
-const assert = require('assert');
+const {assert} = require('chai');
 const cp = require('child_process');
-
-const {
-  DocumentProcessorServiceClient,
-} = require('@google-cloud/documentai').v1beta3;
-const client = new DocumentProcessorServiceClient({
-  apiEndpoint: 'us-documentai.googleapis.com',
-});
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
-const LOCATION = 'us';
-const PROCESSOR_ID = '8f1123c1b125e0b7';
+const projectId = process.env.GCLOUD_PROJECT;
+const LOCATION = 'eu';
 
-const fileName = 'invoice.pdf';
-const filePath = path.resolve(path.join(__dirname, `../resources/${fileName}`));
-
-describe('Process document', () => {
-  let projectId;
-  before(async () => {
-    projectId = await client.getProjectId();
-  });
-  it('should run document (process invoice)', async () => {
+describe('Document AI set endpoint (v1beta2)', () => {
+  it('should process a PDF in another region', async () => {
     const stdout = execSync(
-      `node ./process-document.v1beta3.js ${projectId} ${LOCATION} ${PROCESSOR_ID} ${filePath}`,
+      `node ./set-endpoint.v1beta2.js ${projectId} ${LOCATION}`,
       {
         cwd,
       }
     );
-    assert.notStrictEqual(stdout.indexOf('Paragraph'), -1);
-    assert.notStrictEqual(stdout.indexOf('Extracted'), -1);
+    assert.match(stdout, /Entity/);
   });
 });

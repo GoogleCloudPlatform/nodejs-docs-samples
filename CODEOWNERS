@@ -2,31 +2,30 @@
 # for more info about CODEOWNERS file
 
 # Repo owner
-* @sofisl
-* @fhinkel
+* @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Kokoro
-.kokoro @fhinkel @sofisl
-.kokoro/appengine @engelke @ace-n @fhinkel @sofisl
-.kokoro/functions @ace-n @grant @fhinkel @sofisl
+.kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners
+.kokoro/appengine @engelke @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
+.kokoro/functions @ace-n @grant @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Serverless/CBR
-appengine @engelke @ace-n @fhinkel @sofisl
-functions @ace-n @grant @fhinkel @sofisl
-run @GoogleCloudPlatform/cdpe-cbr-containers @fhinkel @sofisl
+appengine @engelke @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions @ace-n @grant @GoogleCloudPlatform/nodejs-docs-samples-owners
+run @GoogleCloudPlatform/cdpe-cbr-containers @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Other functions samples
-functions/scheduleinstance @askmeegs @fhinkel @sofisl
-functions/speech-to-speech @ricalo @fhinkel @sofisl
-functions/memorystore @ericschmidtatwork @fhinkel @sofisl
-functions/spanner @jsimonweb @fhinkel @sofisl
+functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions/memorystore @ericschmidtatwork @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # GCF samples outside of functions/
-datastore/functions @benwhitehead @fhinkel @sofisl
+datastore/functions @benwhitehead @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # One-offs
 cloud-sql @kurtisvg
-composer @leahecole @sofisl @yoshi-nodejs @fhinkel @sofisl
-healthcare @noerog @fhinkel @sofisl
-monitoring/opencensus @yuriatgoogle @fhinkel @sofisl
+composer @leahecole @sofisl @yoshi-nodejs @GoogleCloudPlatform/nodejs-docs-samples-owners
+healthcare @noerog @GoogleCloudPlatform/nodejs-docs-samples-owners
+monitoring/opencensus @yuriatgoogle @GoogleCloudPlatform/nodejs-docs-samples-owners
 

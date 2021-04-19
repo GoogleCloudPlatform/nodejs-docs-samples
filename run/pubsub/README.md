@@ -9,6 +9,5 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 ## Dependencies
 
 * **express**: Web server framework.
-* **body-parser**: express middleware for request payload processing.
 * **mocha**: [development] Test running framework.
 * **supertest**: [development] HTTP assertion test client.

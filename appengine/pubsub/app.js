@@ -117,6 +117,15 @@ app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
     });
 
     const claim = ticket.getPayload();
+
+    // IMPORTANT: user code must validate claim details in addition
+    // to signature verification above:
+    //   - Ensure that `claim.email` is equal to the expected service
+    //     account set up in the push subscription settings.
+    //   - Ensure that `claim.aud` is equal to the audience set up in
+    //     the push subscription settings.
+    //   - Ensure that `calim.email_verified` is set to true.
+
     claims.push(claim);
   } catch (e) {
     res.status(400).send('Invalid token');

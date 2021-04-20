@@ -122,7 +122,7 @@ app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
     // by signature and audience verification above, including:
     //   - Ensure that `claim.email` is equal to the expected service
     //     account set up in the push subscription settings.
-    //   - Ensure that `calim.email_verified` is set to true.
+    //   - Ensure that `claim.email_verified` is set to true.
 
     claims.push(claim);
   } catch (e) {

@@ -19,7 +19,6 @@
     "test": "npm run unit-test"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "express": "^4.16.4",
     "wait-port": "^0.2.7"

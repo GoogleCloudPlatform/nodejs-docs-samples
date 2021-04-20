@@ -29,6 +29,7 @@ async function main(
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
+  // Ciphertext must be either a Buffer object or a base-64 encoded string
   // const ciphertext = Buffer.from('...');
 
   // Imports the Cloud KMS library
@@ -63,7 +64,7 @@ async function main(
       throw new Error('Decrypt: response corrupted in-transit');
     }
 
-    const plaintext = decryptResponse.plaintext.toString('utf8');
+    const plaintext = decryptResponse.plaintext.toString();
 
     console.log(`Plaintext: ${plaintext}`);
     return plaintext;

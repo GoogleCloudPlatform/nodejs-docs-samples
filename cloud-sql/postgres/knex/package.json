@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@google-cloud/logging-winston": "^4.0.0",
-    "body-parser": "^1.18.3",
     "express": "^4.16.2",
     "knex": "^0.95.0",
     "pg": "^8.0.0",

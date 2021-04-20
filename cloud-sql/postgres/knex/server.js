@@ -18,7 +18,6 @@
 const process = require('process');
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const Knex = require('knex');
 
 const app = express();
@@ -26,8 +25,9 @@ app.set('view engine', 'pug');
 app.enable('trust proxy');
 
 // Automatically parse request body as form data.
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({extended: false}));
+// This middleware is available in Express v4.16.0 onwards
+app.use(express.json());
 
 // Set Content-Type for all responses for these routes.
 app.use((req, res, next) => {

@@ -21,7 +21,6 @@
   "dependencies": {
     "@google-cloud/storage": "^5.0.0",
     "@google-cloud/vision": "^2.0.0",
-    "body-parser": "^1.19.0",
     "express": "^4.16.4",
     "gm": "^1.23.1"
   },

@@ -15,7 +15,7 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser').urlencoded({
+const bodyParser = express.urlencoded({
   extended: false,
 });
 

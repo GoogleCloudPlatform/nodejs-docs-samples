@@ -24,7 +24,7 @@ functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-docs-samples-owners
 datastore/functions @benwhitehead @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # One-offs
-cloud-sql @kurtisvg
+cloud-sql @kurtisvg @GoogleCloudPlatform/nodejs-docs-samples-owners
 composer @leahecole @sofisl @yoshi-nodejs @GoogleCloudPlatform/nodejs-docs-samples-owners
 healthcare @noerog @GoogleCloudPlatform/nodejs-docs-samples-owners
 monitoring/opencensus @yuriatgoogle @GoogleCloudPlatform/nodejs-docs-samples-owners

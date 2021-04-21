@@ -13,7 +13,6 @@
     "test": "mocha test/*.test.js"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "twilio": "^3.34.0"
   },

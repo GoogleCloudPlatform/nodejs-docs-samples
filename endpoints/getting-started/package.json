@@ -17,7 +17,6 @@
     "test": "mocha -- test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
     "express": "^4.16.4"
   },
   "devDependencies": {

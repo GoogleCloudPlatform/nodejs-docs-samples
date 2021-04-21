@@ -16,13 +16,13 @@
 
 // [START app]
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
 
 // [START enable_parser]
-app.use(bodyParser.urlencoded({extended: true}));
+// This middleware is available in Express v4.16.0 onwards
+app.use(express.json({extended: true}));
 // [END enable_parser]
 
 app.get('/', (req, res) => {

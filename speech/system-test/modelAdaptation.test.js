@@ -29,8 +29,8 @@ const adaptationClient = new speech.AdaptationClient();
 
 const projectId = process.env.GCLOUD_PROJECT;
 const location = 'us-west1'
-const customClassId = uuidv4().replace(/-/g, '').substring(0, 20);
-const phraseSetId = uuidv4().replace(/-/g, '').substring(0, 20);
+const customClassId = uuidv4().replace(/-/g, '').substring(0, 15);
+const phraseSetId = uuidv4().replace(/-/g, '').substring(0, 15);
 const classParent = `projects/${projectId}/locations/${location}/customClasses/${customClassId}`;
 const phraseParent = `projects/${projectId}/locations/${location}/phraseSets/${customClassId}`;
 

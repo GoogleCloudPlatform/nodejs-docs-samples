@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.0.0",
-    "yargs": "^16.0.0"
+    "yargs": "^17.0.0"
   },
   "devDependencies": {
     "mocha": "^8.0.0"

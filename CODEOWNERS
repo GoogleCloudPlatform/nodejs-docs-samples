@@ -2,30 +2,30 @@
 # for more info about CODEOWNERS file
 
 # Repo owner
-* @sofisl
-* @fhinkel
+* @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Kokoro
-.kokoro @fhinkel
-.kokoro/appengine @michaelawyu
-.kokoro/functions @ace-n @grant
+.kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners
+.kokoro/appengine @engelke @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
+.kokoro/functions @ace-n @grant @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Serverless/CBR
-appengine @michaelawyu
-functions @ace-n @grant
-run @GoogleCloudPlatform/cdpe-cbr-containers
+appengine @engelke @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions @ace-n @grant @GoogleCloudPlatform/nodejs-docs-samples-owners
+run @GoogleCloudPlatform/cdpe-cbr-containers @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Other functions samples
-functions/scheduleinstance @djmailhot
-functions/speech-to-speech @ricalo
-functions/memorystore @ericschmidtatwork
-functions/spanner @jsimonweb
+functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions/memorystore @ericschmidtatwork @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # GCF samples outside of functions/
-datastore/functions @benwhitehead
+datastore/functions @benwhitehead @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # One-offs
-cloud-sql @kurtisvg
-composer @leahecole @sofisl @yoshi-nodejs
-healthcare @noerog
+cloud-sql @kurtisvg @GoogleCloudPlatform/nodejs-docs-samples-owners
+composer @leahecole @sofisl @yoshi-nodejs @GoogleCloudPlatform/nodejs-docs-samples-owners
+healthcare @noerog @GoogleCloudPlatform/nodejs-docs-samples-owners
+monitoring/opencensus @yuriatgoogle @GoogleCloudPlatform/nodejs-docs-samples-owners
 

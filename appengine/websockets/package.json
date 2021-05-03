@@ -17,11 +17,11 @@
   "dependencies": {
     "express": "^4.15.4",
     "pug": "^3.0.0",
-    "socket.io": "^3.0.0",
+    "socket.io": "^4.0.0",
     "supertest": "^6.0.0"
   },
   "devDependencies": {
     "mocha": "^8.0.0",
-    "puppeteer": "^5.0.0"
+    "puppeteer": "^9.0.0"
   }
 }

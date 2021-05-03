@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START eventarc_gcs_handler]
+// [START eventarc_audit_storage_handler]
 const express = require('express');
 const app = express();
 
@@ -24,11 +24,15 @@ app.post('/', (req, res) => {
       .send('Bad Request: missing required header: ce-subject');
   }
 
-  console.log(`Detected change in GCS bucket: ${req.header('ce-subject')}`);
+  console.log(
+    `Detected change in Cloud Storage bucket: ${req.header('ce-subject')}`
+  );
   return res
     .status(200)
-    .send(`Detected change in GCS bucket: ${req.header('ce-subject')}`);
+    .send(
+      `Detected change in Cloud Storage bucket: ${req.header('ce-subject')}`
+    );
 });
 
 module.exports = app;
-// [END eventarc_gcs_handler]
+// [END eventarc_audit_storage_handler]

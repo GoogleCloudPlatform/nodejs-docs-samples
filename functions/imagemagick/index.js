@@ -16,8 +16,7 @@
 
 // [START functions_imagemagick_setup]
 const gm = require('gm').subClass({imageMagick: true});
-const fs = require('fs');
-const {promisify} = require('util');
+const fs = require('fs').promises;
 const path = require('path');
 const vision = require('@google-cloud/vision');
 
@@ -101,7 +100,6 @@ const blurImage = async (file, blurredBucketName) => {
   }
 
   // Delete the temporary file.
-  const unlink = promisify(fs.unlink);
-  return unlink(tempLocalPath);
+  return fs.unlink(tempLocalPath);
 };
 // [END functions_imagemagick_blur]

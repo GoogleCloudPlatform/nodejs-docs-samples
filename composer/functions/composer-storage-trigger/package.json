@@ -2,7 +2,7 @@
   "name": "nodejs-docs-samples-functions-composer-storage-trigger",
   "version": "0.0.1",
   "dependencies": {
-    "form-data": "^3.0.0",
+    "form-data": "^4.0.0",
     "node-fetch": "^2.2.0"
   },
   "engines": {
@@ -18,7 +18,7 @@
   "devDependencies": {
     "mocha": "^8.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^9.0.0"
+    "sinon": "^10.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"

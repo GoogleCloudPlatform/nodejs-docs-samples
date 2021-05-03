@@ -42,7 +42,7 @@ const getSample = () => {
 
   return {
     program: proxyquire('../', {
-      googleapis: {google: googleapis},
+      'googleapis/build/src/apis/kgsearch': googleapis,
       process: {env: config},
       '@slack/events-api': eventsApi,
     }),

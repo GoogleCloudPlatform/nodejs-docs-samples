@@ -15,7 +15,7 @@
 'use strict';
 
 // [START functions_slack_setup]
-const {google} = require('googleapis');
+const google = require('googleapis/build/src/apis/kgsearch');
 const {verifyRequestSignature} = require('@slack/events-api');
 
 // Get a reference to the Knowledge Graph Search component
@@ -99,11 +99,8 @@ const verifyWebhook = req => {
     body: req.rawBody,
   };
 
-  if (!verifyRequestSignature(signature)) {
-    const error = new Error('Invalid credentials');
-    error.code = 401;
-    throw error;
-  }
+  // This method throws an exception if an incoming request is invalid.
+  verifyRequestSignature(signature);
 };
 // [END functions_verify_webhook]
 

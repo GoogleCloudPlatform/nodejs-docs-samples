@@ -37,6 +37,8 @@ elif [[ $SQL_CLIENT == 'mysql' ]]; then
 	export INSTANCE_CONNECTION_NAME=$(cat $KOKORO_GFILE_DIR/secrets-mysql-connection-name.txt)
 fi
 
+# Configure /monitoring/opencensus variables
+export GOOGLE_PROJECT_ID=$GOOGLE_CLOUD_PROJECT
 
 # Configure Sendgrid variables
 export SENDGRID_SENDER="test@google.com"

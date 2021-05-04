@@ -14,6 +14,11 @@
 
 'use strict';
 
+// sample-metadata:
+//   title: Transcribe Context Classes
+//   description: Provides "hints" to the speech recognizer to favor specific words and phrases in the results.
+//   usage: node samples/transcribeContextClasses.js <storageUri>
+
 function main(storageUri) {
   // [START speech_transcribe_sync]
   // Provides "hints" to the speech recognizer to favor

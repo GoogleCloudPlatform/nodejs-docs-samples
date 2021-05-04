@@ -5,10 +5,10 @@
 // [START cloudrun_pubsub_server_setup]
 // [START run_pubsub_server_setup]
 const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
 
-app.use(bodyParser.json());
+// This middleware is available in Express v4.16.0 onwards
+app.use(express.json());
 // [END run_pubsub_server_setup]
 // [END cloudrun_pubsub_server_setup]
 

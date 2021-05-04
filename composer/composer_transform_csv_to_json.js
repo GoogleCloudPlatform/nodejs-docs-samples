@@ -29,7 +29,7 @@ module.exports = function main(
       'is_current',
       'latest_measurement',
     ];
-    const weatherInCity = {};
+    var weatherInCity = {};
 
     for (var count = 0; count < values.length; count++) {
       if (values[count] !== 'null') {

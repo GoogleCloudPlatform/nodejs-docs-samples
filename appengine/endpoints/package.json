@@ -19,7 +19,6 @@
     "test": "npm run unit-test"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "express": "^4.16.4",
     "wait-port": "^0.2.7"
@@ -27,7 +26,7 @@
   "devDependencies": {
     "mocha": "^8.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^9.0.0",
+    "sinon": "^10.0.0",
     "supertest": "^6.0.0"
   }
 }

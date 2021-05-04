@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@slack/events-api": "^3.0.0",
-    "googleapis": "^67.0.0"
+    "googleapis": "^73.0.0"
   },
   "devDependencies": {
     "mocha": "^8.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^9.0.0"
+    "sinon": "^10.0.0"
   }
 }

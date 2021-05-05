@@ -25,6 +25,20 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const REGION_TAG = 'translate_batch_translate_text_with_glossary_and_model';
 
+async function clearBucket(projectId, storage, bucketUuid) {
+  const options = {
+    prefix: `translation-${bucketUuid}/BATCH_TRANSLATE_WITH_GLOS_OUTPUT/`,
+    delimeter: '/',
+  };
+
+  const bucket = await storage.bucket(projectId);
+  const [files] = await bucket.getFiles(options);
+  const length = files.length;
+  if (length > 0) {
+    await Promise.all(files.map(file => file.delete()));
+  }
+}
+
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
@@ -75,6 +89,7 @@ describe(REGION_TAG, () => {
   it('should batch translate the input text with a glossary', async function () {
     this.retries(3);
     const projectId = await translationClient.getProjectId();
+    await clearBucket(projectId, storage, bucketUuid);
     const inputUri =
       'gs://cloud-samples-data/translation/text_with_custom_model_and_glossary.txt';
 

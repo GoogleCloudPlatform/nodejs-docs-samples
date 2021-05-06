@@ -27,7 +27,7 @@ const REGION_TAG = 'translate_batch_translate_text';
 
 async function clearBucket(projectId, storage, bucketUuid) {
   const options = {
-    prefix: `translation-${bucketUuid}/BATCH_TRANSLATE_WITH_GLOS_OUTPUT/`,
+    prefix: `translation-${bucketUuid}/BATCH_TRANSLATE_OUTPUT/`,
     delimeter: '/',
   };
 

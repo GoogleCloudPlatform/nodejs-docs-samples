@@ -37,9 +37,8 @@ async function main(
   // const gcsOutputUriPrefix = 'YOUR_STORAGE_PREFIX';
 
   // Imports the Google Cloud client library
-  const {
-    DocumentProcessorServiceClient,
-  } = require('@google-cloud/documentai').v1;
+  const {DocumentProcessorServiceClient} =
+    require('@google-cloud/documentai').v1;
   const {Storage} = require('@google-cloud/storage');
 
   // Instantiates Document AI, Storage clients

@@ -30,9 +30,8 @@ async function main(
   // const autoMLModel = 'Full resource name of AutoML Natural Language model';
   // const gcsInputUri = 'YOUR_SOURCE_PDF';
 
-  const {
-    DocumentUnderstandingServiceClient,
-  } = require('@google-cloud/documentai').v1beta2;
+  const {DocumentUnderstandingServiceClient} =
+    require('@google-cloud/documentai').v1beta2;
   const client = new DocumentUnderstandingServiceClient();
 
   async function parseWithModel() {

@@ -28,9 +28,8 @@ async function main(
   // const location = 'YOUR_PROJECT_LOCATION'; // Format is 'us' or 'eu'
   // const gcsInputUri = 'YOUR_SOURCE_PDF';
 
-  const {
-    DocumentUnderstandingServiceClient,
-  } = require('@google-cloud/documentai').v1beta2;
+  const {DocumentUnderstandingServiceClient} =
+    require('@google-cloud/documentai').v1beta2;
 
   // Specifies the location of the api endpoint
   const clientOptions = {apiEndpoint: 'eu-documentai.googleapis.com'};

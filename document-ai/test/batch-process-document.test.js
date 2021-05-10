@@ -15,9 +15,8 @@
 'use strict';
 
 const {Storage} = require('@google-cloud/storage');
-const {
-  DocumentProcessorServiceClient,
-} = require('@google-cloud/documentai').v1beta3;
+const {DocumentProcessorServiceClient} =
+  require('@google-cloud/documentai').v1beta3;
 const client = new DocumentProcessorServiceClient({
   apiEndpoint: 'us-documentai.googleapis.com',
 });

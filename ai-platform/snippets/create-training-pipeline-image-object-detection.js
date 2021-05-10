@@ -36,9 +36,8 @@ async function main(
   // const location = 'YOUR_PROJECT_LOCATION';
 
   const aiplatform = require('@google-cloud/aiplatform');
-  const {
-    definition,
-  } = aiplatform.protos.google.cloud.aiplatform.v1.schema.trainingjob;
+  const {definition} =
+    aiplatform.protos.google.cloud.aiplatform.v1.schema.trainingjob;
   const ModelType = definition.AutoMlImageObjectDetectionInputs.ModelType;
 
   // Imports the Google Cloud Pipeline Service Client library
@@ -56,13 +55,12 @@ async function main(
     // Configure the parent resource
     const parent = `projects/${project}/locations/${location}`;
 
-    const trainingTaskInputsObj = new definition.AutoMlImageObjectDetectionInputs(
-      {
+    const trainingTaskInputsObj =
+      new definition.AutoMlImageObjectDetectionInputs({
         disableEarlyStopping: false,
         modelType: ModelType.CLOUD_HIGH_ACCURACY_1,
         budgetMilliNodeHours: 20000,
-      }
-    );
+      });
 
     const trainingTaskInputs = trainingTaskInputsObj.toValue();
     const modelToUpload = {displayName: modelDisplayName};

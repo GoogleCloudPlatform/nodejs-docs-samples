@@ -28,10 +28,8 @@ async function main(text, endpointId, project, location = 'us-central1') {
   // const project = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_PROJECT_LOCATION';
   const aiplatform = require('@google-cloud/aiplatform');
-  const {
-    instance,
-    prediction,
-  } = aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
+  const {instance, prediction} =
+    aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
 
   // Imports the Google Cloud Model Service Client library
   const {PredictionServiceClient} = aiplatform.v1;
@@ -67,9 +65,10 @@ async function main(text, endpointId, project, location = 'us-central1') {
 
     console.log('\nPredictions :');
     for (const predictionResultValue of response.predictions) {
-      const predictionResult = prediction.TextSentimentPredictionResult.fromValue(
-        predictionResultValue
-      );
+      const predictionResult =
+        prediction.TextSentimentPredictionResult.fromValue(
+          predictionResultValue
+        );
       console.log(`\tSentiment measure: ${predictionResult.sentiment}`);
     }
   }

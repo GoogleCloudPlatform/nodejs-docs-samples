@@ -27,9 +27,8 @@ async function main(endpointId, project, location = 'us-central1') {
   // const project = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_PROJECT_LOCATION';
   const aiplatform = require('@google-cloud/aiplatform');
-  const {
-    prediction,
-  } = aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
+  const {prediction} =
+    aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
 
   // Imports the Google Cloud Prediction service client
   const {PredictionServiceClient} = aiplatform.v1;
@@ -92,9 +91,10 @@ async function main(endpointId, project, location = 'us-central1') {
     const predictions = response.predictions;
     console.log('\tPredictions :');
     for (const predictionResultVal of predictions) {
-      const predictionResultObj = prediction.TabularRegressionPredictionResult.fromValue(
-        predictionResultVal
-      );
+      const predictionResultObj =
+        prediction.TabularRegressionPredictionResult.fromValue(
+          predictionResultVal
+        );
       console.log(`\tUpper bound: ${predictionResultObj.upper_bound}`);
       console.log(`\tLower bound: ${predictionResultObj.lower_bound}`);
       console.log(`\tLower bound: ${predictionResultObj.value}`);

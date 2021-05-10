@@ -38,9 +38,8 @@ function main(
   // Imports the Google Cloud Pipeline Service Client library
   const aiplatform = require('@google-cloud/aiplatform');
 
-  const {
-    definition,
-  } = aiplatform.protos.google.cloud.aiplatform.v1.schema.trainingjob;
+  const {definition} =
+    aiplatform.protos.google.cloud.aiplatform.v1.schema.trainingjob;
   const ModelType = definition.AutoMlImageClassificationInputs.ModelType;
 
   // Specifies the location of the api endpoint
@@ -57,14 +56,13 @@ function main(
     const parent = `projects/${project}/locations/${location}`;
 
     // Values should match the input expected by your model.
-    const trainingTaskInputsMessage = new definition.AutoMlImageClassificationInputs(
-      {
+    const trainingTaskInputsMessage =
+      new definition.AutoMlImageClassificationInputs({
         multiLabel: true,
         modelType: ModelType.CLOUD,
         budgetMilliNodeHours: 8000,
         disableEarlyStopping: false,
-      }
-    );
+      });
 
     const trainingTaskInputs = trainingTaskInputsMessage.toValue();
 

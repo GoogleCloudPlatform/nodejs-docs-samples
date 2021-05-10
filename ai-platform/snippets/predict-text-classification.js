@@ -28,10 +28,8 @@ async function main(text, endpointId, project, location) {
   // const project = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_PROJECT_LOCATION';
   const aiplatform = require('@google-cloud/aiplatform');
-  const {
-    instance,
-    prediction,
-  } = aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
+  const {instance, prediction} =
+    aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
 
   // Imports the Google Cloud Model Service Client library
   const {PredictionServiceClient} = aiplatform.v1;
@@ -48,11 +46,10 @@ async function main(text, endpointId, project, location) {
     // Configure the resources
     const endpoint = `projects/${project}/locations/${location}/endpoints/${endpointId}`;
 
-    const predictionInstance = new instance.TextClassificationPredictionInstance(
-      {
+    const predictionInstance =
+      new instance.TextClassificationPredictionInstance({
         content: text,
-      }
-    );
+      });
     const instanceValue = predictionInstance.toValue();
 
     const instances = [instanceValue];
@@ -68,9 +65,10 @@ async function main(text, endpointId, project, location) {
     console.log('Prediction results:');
 
     for (const predictionResultValue of response.predictions) {
-      const predictionResult = prediction.ClassificationPredictionResult.fromValue(
-        predictionResultValue
-      );
+      const predictionResult =
+        prediction.ClassificationPredictionResult.fromValue(
+          predictionResultValue
+        );
 
       for (const [i, label] of predictionResult.displayNames.entries()) {
         console.log(`\tDisplay name: ${label}`);

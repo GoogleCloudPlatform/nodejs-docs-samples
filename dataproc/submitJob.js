@@ -61,9 +61,8 @@ function main(
     const [jobOperation] = await jobClient.submitJobAsOperation(job);
     const [jobResponse] = await jobOperation.promise();
 
-    const matches = jobResponse.driverOutputResourceUri.match(
-      'gs://(.*?)/(.*)'
-    );
+    const matches =
+      jobResponse.driverOutputResourceUri.match('gs://(.*?)/(.*)');
 
     const storage = new Storage();
 

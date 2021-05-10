@@ -22,9 +22,8 @@ async function main(path = 'YOUR_LOCAL_FILE', outputUri = 'PATH_TO_OUTPUT') {
   // const path = 'Local file to analyze, e.g. ./my-file.mp4';
   // const outputUri = 'Path to output, e.g. gs://path_to_output';
 
-  const {
-    StreamingVideoIntelligenceServiceClient,
-  } = require('@google-cloud/video-intelligence').v1p3beta1;
+  const {StreamingVideoIntelligenceServiceClient} =
+    require('@google-cloud/video-intelligence').v1p3beta1;
   const fs = require('fs');
 
   // Instantiates a client

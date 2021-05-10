@@ -282,11 +282,11 @@ describe('polling', () => {
   });
 
   after(async () => {
-    const [
-      discoveryOccurrences,
-    ] = await client.getGrafeasClient().listNoteOccurrences({
-      name: `${formattedNoteName}-discovery-polling`,
-    });
+    const [discoveryOccurrences] = await client
+      .getGrafeasClient()
+      .listNoteOccurrences({
+        name: `${formattedNoteName}-discovery-polling`,
+      });
     discoveryOccurrences.forEach(async occurrence => {
       await client.getGrafeasClient().deleteOccurrence({name: occurrence.name});
     });
@@ -386,9 +386,7 @@ describe('pubsub', () => {
 
       // create test occurrences
       for (let i = 0; i < occurrenceCount; i++) {
-        const [
-          pubSubOccurrence,
-        ] = await client
+        const [pubSubOccurrence] = await client
           .getGrafeasClient()
           .createOccurrence(pubSubOccurrenceReq);
         await client

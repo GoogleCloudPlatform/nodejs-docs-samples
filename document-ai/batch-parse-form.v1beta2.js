@@ -35,9 +35,8 @@ async function main(
   // const gcsInputUri = 'GCS URI of the PDF to process';
 
   // Imports the Google Cloud client library
-  const {
-    DocumentUnderstandingServiceClient,
-  } = require('@google-cloud/documentai').v1beta2;
+  const {DocumentUnderstandingServiceClient} =
+    require('@google-cloud/documentai').v1beta2;
   const {Storage} = require('@google-cloud/storage');
 
   const client = new DocumentUnderstandingServiceClient();

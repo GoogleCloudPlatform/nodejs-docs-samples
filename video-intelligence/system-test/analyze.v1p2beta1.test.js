@@ -26,7 +26,8 @@ const cmd = 'node analyze.v1p2beta1.js';
 const url = 'gs://cloud-samples-data/video/cat.mp4';
 const file1 = 'resources/googlework_short.mp4';
 const file2 = 'resources/googlework_short.mp4';
-const possibleTexts = /Google|GOOGLE|SUR|OMAR|ROTO|Vice President|58oo9|LONDRES|PARIS|METRO|RUE|CARLO/;
+const possibleTexts =
+  /Google|GOOGLE|SUR|OMAR|ROTO|Vice President|58oo9|LONDRES|PARIS|METRO|RUE|CARLO/;
 
 describe('analyze v1p2beta1 samples', () => {
   it('should detect text in a local file', async () => {

@@ -27,9 +27,8 @@ async function main(
   // const modelId = 'autoMl model'
   // const projectId = 'Your GCP Project'
 
-  const {
-    StreamingVideoIntelligenceServiceClient,
-  } = require('@google-cloud/video-intelligence').v1p3beta1;
+  const {StreamingVideoIntelligenceServiceClient} =
+    require('@google-cloud/video-intelligence').v1p3beta1;
   const fs = require('fs');
 
   // Instantiates a client

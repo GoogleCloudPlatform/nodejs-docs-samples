@@ -20,9 +20,8 @@ async function main(path = 'YOUR_LOCAL_FILE') {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const path = 'Local file to analyze, e.g. ./my-file.mp4';
-  const {
-    StreamingVideoIntelligenceServiceClient,
-  } = require('@google-cloud/video-intelligence').v1p3beta1;
+  const {StreamingVideoIntelligenceServiceClient} =
+    require('@google-cloud/video-intelligence').v1p3beta1;
   const fs = require('fs');
 
   // Instantiates a client

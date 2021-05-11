@@ -1,4 +1,4 @@
-//- Copyright 2018 Google LLC.
+//- Copyright 2021 Google LLC.
 //-
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -12,49 +12,57 @@
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
 
-//- [START appengine_websockets_index]
 doctype html
 html(lang="en")
   head
     title Socket.IO chat on App Engine
     meta(charset="utf-8")
-    style.
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #room { background: blue;}
-  //- [START appengine_websockets_form]
-  body
-    h1(id="room") Chat Room: #{room}
-    ul(id="messages")
-    form(action="")
-      input(id="m" autocomplete="off")
-      button Send
-    //- [END appengine_websockets_form]
+    link(rel="shortcut icon" href="https://material.io/favicon.ico")
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css")
+    link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700")
+    link(href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet")
+    link(rel="stylesheet" href="index.css")
+    script(src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js")
+
+  body(class="header")
+
+    form(id="signin")
+      h1 Please sign in
+      label(class="name mdc-text-field mdc-text-field--filled")
+        span(class="mdc-text-field__ripple")
+        input(id="name" name="name" type="text" class="mdc-text-field__input" aria-labelledby="name-label" required)
+        span(class="mdc-floating-label" id="name-label") Name
+        span(class="mdc-line-ripple")
+      label(class="room mdc-text-field mdc-text-field--filled")
+        span(class="mdc-text-field__ripple")
+        input(id="room" name="room" type="text" class="mdc-text-field__input" aria-labelledby="room-label" required)
+        span(class="mdc-floating-label" id="room-label") Room
+        span(class="mdc-line-ripple")
+      div(class="button-container")
+        button(type="submit" class="mdc-button signin") 
+          div(class="mdc-button__ripple")
+          span(class="mdc-button__label") Sign in
+
+    div(id="chatroom")
+      h1(id="room") Chat Room: #{room}
+    
+      ul(id="messages")
+        //- each message in messages
+        //-   li= message.user + ': ' + message.msg
+      form(id="chat")
+        label(class="mdc-text-field mdc-text-field--filled")
+          span(class="mdc-text-field__ripple")
+          input(id="msg" type="text" class="mdc-text-field__input" autocomplete="off")
+          span(class="mdc-line-ripple")
+        div(class="button-container")
+          button(type="submit" class="mdc-button send") 
+            div(class="mdc-button__ripple")
+            span(class="mdc-button__label") Send
+
+
 
     script(src="/socket.io/socket.io.js")
     script(src="https://code.jquery.com/jquery-1.11.1.js")
-    script.
-      // [START appengine_websockets_js]
-      $(function () {
-        var socket = io();
-        $('form').submit(function(){
-          console.log($('#m').val());
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-        socket.on('sendMessage', function(msg){
-          console.log(msg);
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-      // [END appengine_websockets_js]
-//- [END appengine_websockets_index]
+    script(src="/index.js")
 
+      

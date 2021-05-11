@@ -1,3 +1,8 @@
+mdc.textField.MDCTextField.attachTo(document.querySelector('.name'))
+mdc.textField.MDCTextField.attachTo(document.querySelector('.room'))
+mdc.ripple.MDCRipple.attachTo(document.querySelector('.signin'))
+mdc.ripple.MDCRipple.attachTo(document.querySelector('.send'))
+
 $(document).ready(function () {
   console.log('ready!');
   $('#chatroom').hide();
@@ -8,14 +13,12 @@ $('#signin').submit(e => {
   e.preventDefault();
   const name = $('#name').val();
   const room = $('#room').val();
-  socket.emit('login', {name, room}, error => {
+  socket.emit('login', {name, room}, (error) => {
     if (error) {
       console.log(error);
     }
-    console.log(name, room);
     $('#chatroom').show();
     $('#signin').hide();
-    // return false;
   });
 });
 
@@ -23,17 +26,17 @@ $('#chat').submit(e => {
   e.preventDefault();
   const msg = $('#msg').val();
   console.log(msg);
-  socket.emit('sendMessage', msg, error => {
+  socket.emit('sendMessage', msg, (error) => {
     if (error) {
       console.log(error);
     }
-    // return false;
   });
 });
 
 socket.on('message', (msg) => {
   console.log(msg);
   log(msg.user, msg.text);
+
 });
 
 socket.on('notification', (msg) => {
@@ -41,7 +44,7 @@ socket.on('notification', (msg) => {
   log(msg.title, msg.description);
 });
 
+// window.scrollTo(0, document.body.scrollHeight);
 function log(name, msg) {
   $('#messages').append(`<li> <strong>${name}</strong>: ${msg}`);
-  // window.scrollTo(0, document.body.scrollHeight);
 }

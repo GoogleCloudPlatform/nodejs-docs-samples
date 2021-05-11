@@ -11,6 +11,9 @@
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
+    "@material/button": "^6.0.0",
+    "@material/ripple": "^6.0.0",
+    "@material/textfield": "^6.0.0",
     "express": "^4.15.4",
     "pug": "^3.0.0",
     "socket.io": "^4.0.0",
@@ -18,7 +21,18 @@
     "supertest": "^6.0.0"
   },
   "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^0.28.0",
+    "dart-sass": "^1.25.0",
+    "extract-loader": "^1.0.2",
+    "fibers": "^4.0.0",
+    "file-loader": "^1.1.11",
     "mocha": "^8.0.0",
-    "puppeteer": "^9.0.0"
+    "puppeteer": "^9.0.0",
+    "sass-loader": "^7.1.0",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.4.3"
   }
 }

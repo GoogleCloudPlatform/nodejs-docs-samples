@@ -18,36 +18,24 @@ const {addUser, getUser, deleteUser, getUsers} = require('./users');
 const app = express();
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
-// const redis = require('redis');
 
-// const REDISHOST = process.env.REDISHOST || 'localhost';
-// const REDISPORT = process.env.REDISPORT || 6379;
+const REDISHOST = process.env.REDISHOST || 'localhost';
+const REDISPORT = process.env.REDISPORT || 6379;
 
-// const client = redis.createClient(REDISPORT, REDISHOST);
-// client.on('error', err => console.error('ERR:REDIS:', err));
 app.get('/', (req, res) => {
-  // const room = req.query.room;
-  // const show =  room ? true : false
-  res.render('login.pug');
-  // res.send('Go to a chat room.');
+  const messages = [{user: "averi", msg: "test"}, {user: "averi", msg: "test"}];
+  res.render('index', {messages});
 });
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
-// const redis = require("socket.io-redis");
-// io.adapter(redis({ host: "localhost", port: 6379 }));
-
-// io.on('connection', socket => {
-//   socket.on('chat message', msg => {
-//     io.emit('chat message', msg);
-//   });
-// });
+const redis = require("socket.io-redis");
+io.adapter(redis({ host: REDISHOST, port: REDISPORT }));
 
 io.on('connection', socket => {
   socket.on('login', ({name, room}, callback) => {
-    const {user, error} = addUser(socket.id, name, room);
-    if (error) return callback(error);
+    const user = addUser(socket.id, name, room);
     socket.join(user.room);
     socket
       .in(room)
@@ -59,14 +47,14 @@ io.on('connection', socket => {
     callback();
   });
 
-  socket.on('sendMessage', message => {
+  socket.on('sendMessage', (message, callback) => {
     const user = getUser(socket.id);
     console.log(user)
     if (user.room) {
-      console.log(user.room)
       console.log(user.room, {user: user.name, text: message})
       io.in(user.room).emit('message', {user: user.name, text: message});
     }
+    callback();
   });
 
   socket.on('disconnect', () => {

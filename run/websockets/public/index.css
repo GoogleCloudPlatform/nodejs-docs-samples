@@ -1,0 +1,65 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Roboto';
+  margin: 0;
+  padding-top: 0.1px;
+}
+
+.header {
+  text-align: center;
+}
+
+.name,
+.room {
+  display: flex;
+  width: 300px;
+  margin: 20px auto;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 300px;
+  margin: auto;
+}
+
+.button-container button {
+  margin: 3px;
+}
+
+#messages { 
+  list-style-type: none; 
+  margin: 0; 
+  padding: 0; 
+}
+
+#messages li { 
+  padding: 5px 10px; 
+}
+
+#messages li:nth-child(odd) { 
+  background: #dedede; 
+}
+
+#chatroom {
+  margin: 30px; margin-bottom: 80px;
+  padding: 5px;
+}
+
+#chat { 
+  padding: 3px; 
+  position: fixed; 
+  bottom: 0; 
+  width: 100%; 
+}
+#chat label { 
+  width: 80%;
+}
+
+#chat .button-container { 
+  display: inline-flex;
+  width: auto;
+}

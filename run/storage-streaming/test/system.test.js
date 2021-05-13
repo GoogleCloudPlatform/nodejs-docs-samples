@@ -20,7 +20,7 @@ const {FUNCTIONS_BUCKET} = process.env;
 const assert = require('assert');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
-const uuid = require('uuid');
+const uuidv4 = require('uuid').v4;
 
 const requestRetry = require('requestretry');
 const cwd = path.join(__dirname, '..');
@@ -28,6 +28,7 @@ const cwd = path.join(__dirname, '..');
 describe('streaming sample tests', () => {
   it('should copy GCS file', async () => {
     const PORT = 9020; // Each running framework instance needs a unique port
+    const suffix = uuidv4();
 
     // Run the functions-framework instance to host functions locally
     //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
@@ -38,7 +39,7 @@ describe('streaming sample tests', () => {
     );
 
     const response = await requestRetry({
-      url: `http://localhost:${PORT}/`,
+      url: `http://localhost:${PORT}/?suffix=${suffix}`,
       method: 'GET',
       retryDelay: 200,
       json: true,
@@ -50,12 +51,13 @@ describe('streaming sample tests', () => {
     const {stdout} = await proc;
 
     // Check that target file was written
-    const copiedFilename = 'puppies-copy.jpg';
+    const copiedFilename = `puppies-copy-${suffix}.jpg`;
     assert(storage.bucket(FUNCTIONS_BUCKET).file(copiedFilename).exists);
   });
 
   it('should copy file GCS with streaming', async () => {
     const PORT = 9021; // Each running framework instance needs a unique port
+    const suffix = uuidv4();
 
     // Run the functions-framework instance to host functions locally
     //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
@@ -66,7 +68,7 @@ describe('streaming sample tests', () => {
     );
 
     const response = await requestRetry({
-      url: `http://localhost:${PORT}/`,
+      url: `http://localhost:${PORT}/?suffix=${suffix}`,
       method: 'GET',
       retryDelay: 200,
       json: true,
@@ -78,7 +80,7 @@ describe('streaming sample tests', () => {
     const {stdout} = await proc;
 
     // Check that target file was written
-    const copiedFilename = 'puppies-streaming-copy.jpg';
+    const copiedFilename = `puppies-streaming-copy-${suffix}.jpg`;
     assert(storage.bucket(FUNCTIONS_BUCKET).file(copiedFilename).exists);
   });
 });

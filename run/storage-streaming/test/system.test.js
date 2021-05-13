@@ -48,7 +48,7 @@ describe('streaming sample tests', () => {
     assert.strictEqual(response.statusCode, 200);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await proc;
+    await proc;
 
     // Check that target file was written
     const copiedFilename = `puppies-copy-${suffix}.jpg`;
@@ -77,7 +77,7 @@ describe('streaming sample tests', () => {
     assert.strictEqual(response.statusCode, 200);
 
     // Wait for functions-framework process to exit
-    const {stdout} = await proc;
+    await proc;
 
     // Check that target file was written
     const copiedFilename = `puppies-streaming-copy-${suffix}.jpg`;

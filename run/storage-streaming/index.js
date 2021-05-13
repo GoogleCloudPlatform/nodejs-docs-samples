@@ -37,14 +37,14 @@ exports.nonStreamingCall = async (req, res) => {
   const targetFilename = `puppies-streaming-copy-${fileSuffix}.jpg`;
 
   const tempPath = path.join(os.tmpdir(), `non-streaming-${fileSuffix}.jpg`);
-  await sourceFile.download({ destination: tempPath });
+  await sourceFile.download({destination: tempPath});
 
   await storage.bucket(TARGET_BUCKET).upload(tempPath, {
-    destination: targetFilename
+    destination: targetFilename,
   });
 
   res.status(200).send(`Download-and-copy complete: ${targetFilename}`);
-}
+};
 
 // This function performs operations on a file in Google Cloud Storage
 // *without* downloading it. This lets you process files that are bigger
@@ -55,12 +55,9 @@ exports.streamingCall = async (req, res) => {
   const targetFilename = `puppies-streaming-copy-${fileSuffix}.jpg`;
 
   const readStream = sourceFile.createReadStream();
-  const readPromise = new Promise((resolve, reject) => {
-    readStream.on('error', reject).on('end', resolve);
-  });
 
   const targetFile = storage.bucket(TARGET_BUCKET).file(targetFilename);
-  const writeStream = targetFile.createWriteStream({ gzip: true });
+  const writeStream = targetFile.createWriteStream({gzip: true});
   const writePromise = new Promise((resolve, reject) => {
     writeStream.on('error', reject).on('finish', resolve);
   });
@@ -70,6 +67,6 @@ exports.streamingCall = async (req, res) => {
   await writePromise;
 
   res.status(200).send(`Streaming copy complete: ${targetFilename}`);
-}
+};
 // [END functions_tips_storage_streaming]
 // [END cloudrun_tips_storage_streaming]

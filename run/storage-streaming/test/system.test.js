@@ -61,7 +61,7 @@ describe('streaming sample tests', () => {
     //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
     //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     const proc = execPromise(
-      `functions-framework --target=nonStreamingCall --port=${PORT} & sleep 1; kill $!`,
+      `functions-framework --target=streamingCall --port=${PORT} & sleep 1; kill $!`,
       {shell: true, cwd}
     );
 

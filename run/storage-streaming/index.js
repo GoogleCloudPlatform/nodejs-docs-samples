@@ -14,6 +14,8 @@
 
 'use strict';
 
+// [START functions_tips_storage_download]
+// [START cloudrun_tips_storage_download]
 // [START functions_tips_storage_streaming]
 // [START cloudrun_tips_storage_streaming]
 const uuidv4 = require('uuid').v4;
@@ -27,6 +29,8 @@ const sourceFile = storage.bucket('cloud-devrel-public').file('puppies.jpg');
 
 // TODO(developer): set this to a bucket you own
 const TARGET_BUCKET = process.env.FUNCTIONS_BUCKET;
+// [END functions_tips_storage_streaming]
+// [END cloudrun_tips_storage_streaming]
 
 // This function downloads a file from Google Cloud Storage before
 // performing operations on it. This is inefficient for large files,
@@ -45,6 +49,12 @@ exports.nonStreamingCall = async (req, res) => {
 
   res.status(200).send(`Download-and-copy complete: ${targetFilename}`);
 };
+
+// [END functions_tips_storage_download]
+// [END cloudrun_tips_storage_download]
+
+// [START functions_tips_storage_streaming]
+// [START cloudrun_tips_storage_streaming]
 
 // This function performs operations on a file in Google Cloud Storage
 // *without* downloading it. This lets you process files that are bigger

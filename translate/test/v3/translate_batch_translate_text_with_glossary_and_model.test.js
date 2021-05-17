@@ -23,6 +23,7 @@ const uuid = require('uuid');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+const GLOSSARY_ID = 'DO_NOT_DELETE_TEST_GLOSSARY';
 const REGION_TAG = 'translate_batch_translate_text_with_glossary_and_model';
 
 async function clearBucket(projectId, storage, bucketUuid) {
@@ -42,7 +43,6 @@ async function clearBucket(projectId, storage, bucketUuid) {
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const glossaryId = `my_test_glossary_${uuid.v4()}`;
   const modelId = 'TRL1218052175389786112';
   const bucketUuid = uuid.v4();
   const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATE_GLOSS_MODEL_OUTPUT/`;
@@ -63,27 +63,6 @@ describe(REGION_TAG, () => {
           console.error(error);
         }
       });
-
-    // Create glossary
-    const request = {
-      parent: `projects/${projectId}/locations/${location}`,
-      glossary: {
-        languageCodesSet: {
-          languageCodes: ['en', 'ja'],
-        },
-        inputConfig: {
-          gcsSource: {
-            inputUri: 'gs://cloud-samples-data/translation/glossary_ja.csv',
-          },
-        },
-        name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
-      },
-    };
-
-    // Create glossary using a long-running operation.
-    const [operation] = await translationClient.createGlossary(request);
-    // Wait for operation to complete.
-    await operation.promise();
   });
 
   it('should batch translate the input text with a glossary', async function () {
@@ -95,7 +74,7 @@ describe(REGION_TAG, () => {
 
     const outputUri = `gs://${projectId}/${bucketName}`;
     const output = execSync(
-      `node v3/${REGION_TAG}.js ${projectId} ${location} ${inputUri} ${outputUri} ${glossaryId} ${modelId}`
+      `node v3/${REGION_TAG}.js ${projectId} ${location} ${inputUri} ${outputUri} ${GLOSSARY_ID} ${modelId}`
     );
     assert.match(output, /Total Characters: 25/);
     assert.match(output, /Translated Characters: 25/);
@@ -117,15 +96,5 @@ describe(REGION_TAG, () => {
     if (length > 0) {
       await Promise.all(files.map(file => file.delete()));
     }
-
-    // Delete the Glossary
-    const request = {
-      parent: `projects/${projectId}/locations/${location}`,
-      name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
-    };
-    // Delete glossary using a long-running operation.
-    const [operation] = await translationClient.deleteGlossary(request);
-    // Wait for operation to complete.
-    await operation.promise();
   });
 });

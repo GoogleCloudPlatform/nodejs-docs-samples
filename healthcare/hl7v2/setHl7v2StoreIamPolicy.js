@@ -53,9 +53,10 @@ const main = (
       },
     };
 
-    const hl7v2Store = await healthcare.projects.locations.datasets.hl7V2Stores.setIamPolicy(
-      request
-    );
+    const hl7v2Store =
+      await healthcare.projects.locations.datasets.hl7V2Stores.setIamPolicy(
+        request
+      );
     console.log(
       'Set HL7v2 store IAM policy:',
       JSON.stringify(hl7v2Store.data, null, 2)

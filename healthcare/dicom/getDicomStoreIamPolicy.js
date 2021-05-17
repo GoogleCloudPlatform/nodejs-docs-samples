@@ -38,9 +38,10 @@ const main = (
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const request = {resource_};
 
-    const dicomStore = await healthcare.projects.locations.datasets.dicomStores.getIamPolicy(
-      request
-    );
+    const dicomStore =
+      await healthcare.projects.locations.datasets.dicomStores.getIamPolicy(
+        request
+      );
     console.log(
       'Got DICOM store IAM policy:',
       JSON.stringify(dicomStore.data, null, 2)

@@ -38,9 +38,10 @@ const main = (
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {resource_};
 
-    const hl7v2Store = await healthcare.projects.locations.datasets.hl7V2Stores.getIamPolicy(
-      request
-    );
+    const hl7v2Store =
+      await healthcare.projects.locations.datasets.hl7V2Stores.getIamPolicy(
+        request
+      );
     console.log(
       'Got HL7v2 store IAM policy:',
       JSON.stringify(hl7v2Store.data, null, 2)

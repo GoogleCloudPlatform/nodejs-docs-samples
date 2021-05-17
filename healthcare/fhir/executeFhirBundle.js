@@ -45,9 +45,10 @@ function main(
     const bundle = JSON.parse(fs.readFileSync(bundleFile));
 
     const request = {parent, requestBody: bundle};
-    const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.executeBundle(
-      request
-    );
+    const resource =
+      await healthcare.projects.locations.datasets.fhirStores.fhir.executeBundle(
+        request
+      );
     console.log('FHIR bundle executed');
     console.log(resource.data);
   }

@@ -54,9 +54,10 @@ const main = (
     const dicomWebPath = `studies/${studyUid}`;
     const request = {parent, dicomWebPath};
 
-    const study = await healthcare.projects.locations.datasets.dicomStores.studies.retrieveStudy(
-      request
-    );
+    const study =
+      await healthcare.projects.locations.datasets.dicomStores.studies.retrieveStudy(
+        request
+      );
 
     const fileBytes = Buffer.from(study.data);
 

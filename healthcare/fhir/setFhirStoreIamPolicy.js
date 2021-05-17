@@ -53,9 +53,10 @@ const main = (
       },
     };
 
-    const fhirStore = await healthcare.projects.locations.datasets.fhirStores.setIamPolicy(
-      request
-    );
+    const fhirStore =
+      await healthcare.projects.locations.datasets.fhirStores.setIamPolicy(
+        request
+      );
     console.log(
       'Set FHIR store IAM policy:',
       JSON.stringify(fhirStore.data, null, 2)

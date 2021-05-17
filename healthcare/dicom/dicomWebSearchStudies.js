@@ -47,9 +47,10 @@ const main = (
     const dicomWebPath = 'studies';
     const request = {parent, dicomWebPath};
 
-    const studies = await healthcare.projects.locations.datasets.dicomStores.searchForStudies(
-      request
-    );
+    const studies =
+      await healthcare.projects.locations.datasets.dicomStores.searchForStudies(
+        request
+      );
     console.log(studies);
 
     console.log(`Found ${studies.data.length} studies:`);

@@ -42,9 +42,10 @@ const main = (
     const dicomWebPath = 'instances';
     const request = {parent, dicomWebPath};
 
-    const instances = await healthcare.projects.locations.datasets.dicomStores.searchForInstances(
-      request
-    );
+    const instances =
+      await healthcare.projects.locations.datasets.dicomStores.searchForInstances(
+        request
+      );
     console.log(`Found ${instances.data.length} instances:`);
     console.log(JSON.stringify(instances.data));
   };

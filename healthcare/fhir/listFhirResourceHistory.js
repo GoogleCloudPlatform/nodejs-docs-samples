@@ -42,9 +42,10 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}/_history`;
     const request = {name};
 
-    const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.read(
-      request
-    );
+    const resource =
+      await healthcare.projects.locations.datasets.fhirStores.fhir.read(
+        request
+      );
     console.log(JSON.stringify(resource.data, null, 2));
   };
 

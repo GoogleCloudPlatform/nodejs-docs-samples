@@ -36,9 +36,8 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
     const request = {parent};
 
-    const hl7v2Stores = await healthcare.projects.locations.datasets.hl7V2Stores.list(
-      request
-    );
+    const hl7v2Stores =
+      await healthcare.projects.locations.datasets.hl7V2Stores.list(request);
     console.log(hl7v2Stores.data);
   };
 

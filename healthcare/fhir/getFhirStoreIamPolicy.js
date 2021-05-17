@@ -38,9 +38,10 @@ const main = (
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
     const request = {resource_};
 
-    const fhirStore = await healthcare.projects.locations.datasets.fhirStores.getIamPolicy(
-      request
-    );
+    const fhirStore =
+      await healthcare.projects.locations.datasets.fhirStores.getIamPolicy(
+        request
+      );
     console.log(
       'Got FHIR store IAM policy:',
       JSON.stringify(fhirStore.data, null, 2)

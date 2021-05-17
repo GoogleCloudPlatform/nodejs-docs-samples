@@ -38,9 +38,10 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {parent};
 
-    const response = await healthcare.projects.locations.datasets.hl7V2Stores.messages.list(
-      request
-    );
+    const response =
+      await healthcare.projects.locations.datasets.hl7V2Stores.messages.list(
+        request
+      );
     const hl7v2Messages = response.data.hl7V2Messages;
     console.log(`HL7v2 messages: ${hl7v2Messages.length}`);
     for (const hl7v2Message of hl7v2Messages) {

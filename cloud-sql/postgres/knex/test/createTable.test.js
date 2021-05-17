@@ -21,13 +21,8 @@ const {exec} = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 
-const {
-  DB_USER,
-  DB_PASS,
-  DB_NAME,
-  INSTANCE_CONNECTION_NAME,
-  DB_HOST,
-} = process.env;
+const {DB_USER, DB_PASS, DB_NAME, INSTANCE_CONNECTION_NAME, DB_HOST} =
+  process.env;
 const SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
 
 let knex;

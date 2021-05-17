@@ -38,9 +38,8 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
     const request = {name};
 
-    const fhirStore = await healthcare.projects.locations.datasets.fhirStores.get(
-      request
-    );
+    const fhirStore =
+      await healthcare.projects.locations.datasets.fhirStores.get(request);
     console.log(fhirStore.data);
   };
 

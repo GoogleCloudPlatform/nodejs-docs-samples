@@ -44,9 +44,10 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}/_history/${versionId}`;
     const request = {name};
 
-    const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.vread(
-      request
-    );
+    const resource =
+      await healthcare.projects.locations.datasets.fhirStores.fhir.vread(
+        request
+      );
     console.log(JSON.stringify(resource.data, null, 2));
   };
 

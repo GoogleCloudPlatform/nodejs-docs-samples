@@ -49,18 +49,18 @@ const main = (
       },
     };
 
-    const operation = await healthcare.projects.locations.datasets.fhirStores.export(
-      request
-    );
+    const operation =
+      await healthcare.projects.locations.datasets.fhirStores.export(request);
     const operationName = operation.data.name;
 
     // Wait ten seconds for the LRO to finish
     await sleep(10000);
 
     // Check the LRO's status
-    const operationStatus = await healthcare.projects.locations.datasets.operations.get(
-      {name: operationName}
-    );
+    const operationStatus =
+      await healthcare.projects.locations.datasets.operations.get({
+        name: operationName,
+      });
 
     if (typeof operationStatus.data.metadata.counter !== 'undefined') {
       console.log('Exported FHIR resources successfully');

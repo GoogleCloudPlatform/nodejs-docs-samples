@@ -53,9 +53,10 @@ const main = (
     const dicomWebPath = `studies/${studyUid}/series/${seriesUid}/instances/${instanceUid}/rendered`;
     const request = {parent, dicomWebPath};
 
-    const rendered = await healthcare.projects.locations.datasets.dicomStores.studies.series.instances.retrieveRendered(
-      request
-    );
+    const rendered =
+      await healthcare.projects.locations.datasets.dicomStores.studies.series.instances.retrieveRendered(
+        request
+      );
     const fileBytes = Buffer.from(rendered.data);
 
     await writeFile(fileName, fileBytes);

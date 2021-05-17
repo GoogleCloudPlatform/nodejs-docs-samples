@@ -38,9 +38,8 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {name};
 
-    const hl7v2Store = await healthcare.projects.locations.datasets.hl7V2Stores.get(
-      request
-    );
+    const hl7v2Store =
+      await healthcare.projects.locations.datasets.hl7V2Stores.get(request);
     console.log(hl7v2Store.data);
   };
 

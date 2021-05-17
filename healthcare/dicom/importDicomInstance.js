@@ -49,9 +49,8 @@ const main = (
       },
     };
 
-    const operation = await healthcare.projects.locations.datasets.dicomStores.import(
-      request
-    );
+    const operation =
+      await healthcare.projects.locations.datasets.dicomStores.import(request);
     const operationName = operation.data.name;
 
     const operationRequest = {name: operationName};
@@ -60,9 +59,10 @@ const main = (
     await sleep(15000);
 
     // Check the LRO's status
-    const operationStatus = await healthcare.projects.locations.datasets.operations.get(
-      operationRequest
-    );
+    const operationStatus =
+      await healthcare.projects.locations.datasets.operations.get(
+        operationRequest
+      );
 
     const {data} = operationStatus;
 

@@ -28,10 +28,11 @@ const datasetId = `nodejs-docs-samples-test-dicomweb-${uuid.v4()}`.replace(
   /-/gi,
   '_'
 );
-const dicomStoreId = `nodejs-docs-samples-test-dicomweb-dicom-store${uuid.v4()}`.replace(
-  /-/gi,
-  '_'
-);
+const dicomStoreId =
+  `nodejs-docs-samples-test-dicomweb-dicom-store${uuid.v4()}`.replace(
+    /-/gi,
+    '_'
+  );
 
 const dcmFile = 'resources/IM-0002-0001-JPEG-BASELINE.dcm';
 

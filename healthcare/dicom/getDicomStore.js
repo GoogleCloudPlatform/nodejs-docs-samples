@@ -38,9 +38,8 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const request = {name};
 
-    const dicomStore = await healthcare.projects.locations.datasets.dicomStores.get(
-      request
-    );
+    const dicomStore =
+      await healthcare.projects.locations.datasets.dicomStores.get(request);
     console.log(dicomStore.data);
   };
 

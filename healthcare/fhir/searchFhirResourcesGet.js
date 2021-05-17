@@ -40,9 +40,10 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir`;
     const request = {parent, resourceType};
 
-    const response = await healthcare.projects.locations.datasets.fhirStores.fhir.search(
-      request
-    );
+    const response =
+      await healthcare.projects.locations.datasets.fhirStores.fhir.search(
+        request
+      );
     const resources = response.data.entry;
     console.log(`Resources found: ${resources.length}`);
     console.log(JSON.stringify(resources, null, 2));

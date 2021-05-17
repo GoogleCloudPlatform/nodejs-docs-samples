@@ -54,9 +54,10 @@ const main = (
       },
     };
 
-    const dicomStore = await healthcare.projects.locations.datasets.dicomStores.setIamPolicy(
-      request
-    );
+    const dicomStore =
+      await healthcare.projects.locations.datasets.dicomStores.setIamPolicy(
+        request
+      );
     console.log(
       'Set DICOM store IAM policy:',
       JSON.stringify(dicomStore.data, null, 2)

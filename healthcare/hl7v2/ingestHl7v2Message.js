@@ -45,9 +45,10 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {parent, resource: hl7v2Message};
 
-    const response = await healthcare.projects.locations.datasets.hl7V2Stores.messages.ingest(
-      request
-    );
+    const response =
+      await healthcare.projects.locations.datasets.hl7V2Stores.messages.ingest(
+        request
+      );
     const data = response.data.hl7Ack;
     const buff = new Buffer.from(data, 'base64');
     const hl7Ack = buff.toString('ascii');

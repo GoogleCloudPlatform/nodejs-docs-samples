@@ -40,9 +40,10 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/Patient/${patientId}`;
     const request = {name};
 
-    const patientEverything = await healthcare.projects.locations.datasets.fhirStores.fhir.PatientEverything(
-      request
-    );
+    const patientEverything =
+      await healthcare.projects.locations.datasets.fhirStores.fhir.PatientEverything(
+        request
+      );
     console.log(
       `Got all resources in patient ${patientId} compartment:\n`,
       JSON.stringify(patientEverything)

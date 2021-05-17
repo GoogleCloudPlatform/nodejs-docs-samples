@@ -45,9 +45,10 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {parent, resource: hl7v2Message};
 
-    const response = await healthcare.projects.locations.datasets.hl7V2Stores.messages.create(
-      request
-    );
+    const response =
+      await healthcare.projects.locations.datasets.hl7V2Stores.messages.create(
+        request
+      );
     const {data} = response;
     console.log('Created HL7v2 message with data:\n', data);
   };

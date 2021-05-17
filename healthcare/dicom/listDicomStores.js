@@ -36,9 +36,8 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
     const request = {parent};
 
-    const dicomStores = await healthcare.projects.locations.datasets.dicomStores.list(
-      request
-    );
+    const dicomStores =
+      await healthcare.projects.locations.datasets.dicomStores.list(request);
     console.log(dicomStores.data);
   };
 

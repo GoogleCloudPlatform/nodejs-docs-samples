@@ -41,9 +41,10 @@ const main = (
     const view = 'FULL';
     const request = {name, view};
 
-    const hl7v2Message = await healthcare.projects.locations.datasets.hl7V2Stores.messages.get(
-      request
-    );
+    const hl7v2Message =
+      await healthcare.projects.locations.datasets.hl7V2Stores.messages.get(
+        request
+      );
     console.log('Got HL7v2 message:\n', hl7v2Message.data);
   };
 

@@ -55,9 +55,10 @@ const main = (
       requestBody: binaryData,
     };
 
-    const instance = await healthcare.projects.locations.datasets.dicomStores.storeInstances(
-      request
-    );
+    const instance =
+      await healthcare.projects.locations.datasets.dicomStores.storeInstances(
+        request
+      );
     console.log('Stored DICOM instance:\n', JSON.stringify(instance.data));
   };
 

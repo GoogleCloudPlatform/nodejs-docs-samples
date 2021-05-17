@@ -15,71 +15,25 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it, before, after} = require('mocha');
+const {describe, it} = require('mocha');
 const {TranslationServiceClient} = require('@google-cloud/translate');
-const uuid = require('uuid');
 const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+const GLOSSARY_ID = 'DO_NET_DELETE_TEST_GLOSSARY_ES';
 const REGION_TAG = 'translate_translate_text_with_glossary';
 
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const glossaryId = `my_test_glossary_${uuid.v4()}`;
-
-  before(async () => {
-    // Add a glossary to be translate with
-    const projectId = await translationClient.getProjectId();
-
-    const glossary = {
-      languageCodesSet: {
-        languageCodes: ['en', 'es'],
-      },
-      inputConfig: {
-        gcsSource: {
-          inputUri: 'gs://cloud-samples-data/translation/glossary.csv',
-        },
-      },
-      name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
-    };
-
-    // Construct request
-    const request = {
-      parent: `projects/${projectId}/locations/${location}`,
-      glossary: glossary,
-    };
-
-    // Create glossary using a long-running operation.
-    // You can wait for now, or get results later.
-    const [operation] = await translationClient.createGlossary(request);
-
-    // Wait for operation to complete.
-    await operation.promise();
-  });
 
   it('should translate text with a glossary in project', async () => {
     const projectId = await translationClient.getProjectId();
     const input = 'directions';
     const output = execSync(
-      `node v3/${REGION_TAG}.js ${projectId} ${location} ${glossaryId} ${input}`
+      `node v3/${REGION_TAG}.js ${projectId} ${location} ${GLOSSARY_ID} ${input}`
     );
     assert.match(output, /indicaciones/);
-  });
-
-  after(async () => {
-    const projectId = await translationClient.getProjectId();
-    const request = {
-      parent: `projects/${projectId}/locations/${location}`,
-      name: `projects/${projectId}/locations/${location}/glossaries/${glossaryId}`,
-    };
-
-    // Delete glossary using a long-running operation.
-    // You can wait for now, or get results later.
-    const [operation] = await translationClient.deleteGlossary(request);
-
-    // Wait for operation to complete.
-    await operation.promise();
   });
 });

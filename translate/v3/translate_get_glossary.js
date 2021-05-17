@@ -43,7 +43,9 @@ function main(
     // Get glossary
     const [response] = await translationClient.getGlossary(request);
 
-    console.log(`Got glossary: ${response.name}`);
+    console.log(`Glossary name: ${response.name}`);
+    console.log(`Entry count: ${response.entryCount}`);
+    console.log(`Input URI: ${response.inputConfig.gcsSource.inputUri}`);
   }
 
   getGlossary();

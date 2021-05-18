@@ -79,7 +79,7 @@ describe('Game Servers List Clusters Test', () => {
     await operation2.promise();
   });
 
-  it('should list Game Server clusters in a realm', async () => {
+  it.only('should list Game Server clusters in a realm', async () => {
     const projectId = await realmsClient.getProjectId();
 
     const create_output = execSync(

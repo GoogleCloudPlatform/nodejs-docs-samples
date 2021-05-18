@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.8.5",
+    "busboy": "^0.3.1",
     "mocha": "^8.0.0",
     "uuid": "^8.3.2"
   },

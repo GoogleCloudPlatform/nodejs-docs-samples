@@ -42,20 +42,18 @@ module.exports = async () => {
         parent: realm.name,
       };
 
-      const clustersResult = await gameServerClusterClient.listGameServerClusters(
-        clustersRequest
-      );
+      const clustersResult =
+        await gameServerClusterClient.listGameServerClusters(clustersRequest);
       const [clusters] = clustersResult;
       for (const cluster of clusters) {
         const deleteClusterRequest = {
           name: cluster.name,
         };
 
-        const [
-          deleteClusterOperation,
-        ] = await gameServerClusterClient.deleteGameServerCluster(
-          deleteClusterRequest
-        );
+        const [deleteClusterOperation] =
+          await gameServerClusterClient.deleteGameServerCluster(
+            deleteClusterRequest
+          );
         await deleteClusterOperation.promise();
       }
 

@@ -24,7 +24,7 @@ html(lang="en")
     link(rel="stylesheet" href="index.css")
     script(src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js")
 
-  body(class="header")
+  body
 
     form(id="signin")
       h1 Please sign in
@@ -43,18 +43,19 @@ html(lang="en")
           div(class="mdc-button__ripple")
           span(class="mdc-button__label") Sign in
 
-    div(id="chatroom")
-      h1(id="room")
+    div(id="chatroom" class="page-wrap")
+      h1
       ul(id="messages")
-      form(id="chat")
-        label(class="mdc-text-field mdc-text-field--filled")
-          span(class="mdc-text-field__ripple")
-          input(id="msg" type="text" class="mdc-text-field__input" autocomplete="off")
-          span(class="mdc-line-ripple")
-        div(class="button-container")
-          button(type="submit" class="mdc-button send") 
-            div(class="mdc-button__ripple")
-            span(class="mdc-button__label") Send
+      footer(class="site-footer")
+        form(id="chat")
+          label(class="mdc-text-field mdc-text-field--filled")
+            span(class="mdc-text-field__ripple")
+            input(id="msg" type="text" class="mdc-text-field__input" autocomplete="off")
+            span(class="mdc-line-ripple")
+          div(class="button-container")
+            button(type="submit" class="mdc-button send") 
+              div(class="mdc-button__ripple")
+              span(class="mdc-button__label") Send
 
 
 

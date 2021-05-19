@@ -3,13 +3,24 @@ html, body {
 }
 
 body {
+  text-align: center;
   font-family: 'Roboto';
   margin: 0;
   padding-top: 0.1px;
 }
 
-.header {
-  text-align: center;
+.page-wrap {
+  min-height: 100%;
+  margin-bottom: -50px; 
+}
+
+.page-wrap:after {
+  content: "";
+  display: block;
+}
+
+.site-footer, .page-wrap:after {
+  height: 50px; 
 }
 
 .name,
@@ -45,7 +56,8 @@ body {
 }
 
 #chatroom {
-  margin: 30px; margin-bottom: 80px;
+  margin: 30px; 
+  margin-bottom: 80px;
   padding: 5px;
 }
 

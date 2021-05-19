@@ -22,7 +22,8 @@ $('#signin').submit(e => {
     if (error) {
       console.log(error);
     }
-    addHistory(history.messages)
+    addHistory(history.messages);
+    setChatroom(room);
     $('#signin').hide();
     $('#chatroom').show();
   });
@@ -55,6 +56,11 @@ function addHistory(messages) {
   messages.forEach(message => {
     log(message.user, message.text)
   })
+}
+
+// Helper function to set chatroom name
+function setChatroom(room) {
+  $('#chatroom h1').append(room);
 }
 
 // Helper function to print to chatroom

@@ -72,7 +72,7 @@ async function main(name = 'start-script-example') {
     console.log('Operation complete. Waiting for IP');
     await pingVM(ip);
 
-    console.log(`\n${name} created succesfully`);
+    console.log(`\n${name} created successfully`);
   }
 
   /**
@@ -96,6 +96,7 @@ async function main(name = 'start-script-example') {
   }
 
   createVMWithStartupScript();
+  // [END gce_startup_script]
 }
 
 main(...process.argv.slice(2));

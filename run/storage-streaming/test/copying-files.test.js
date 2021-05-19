@@ -68,9 +68,7 @@ describe('streaming sample tests', () => {
     // Run the functions-framework instance to host functions locally
     //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
     //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
-    const proc = execPromise(
-      `functions-framework --target=streamingCall --port=${PORT} & sleep 1; kill $!`
-    );
+    const proc = execPromise(makeFFCmd('streamingCall', PORT));
 
     const response = await requestRetry({
       url: `http://localhost:${PORT}/?suffix=${suffix}`,

@@ -24,8 +24,6 @@ const Busboy = require('busboy');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-const sourceFile = storage.bucket('cloud-devrel-public').file('data.txt');
-
 // [END functions_tips_chunked_download]
 // [END cloudrun_tips_chunked_download]
 // TODO(developer): set this to a bucket you own
@@ -39,6 +37,7 @@ const {TARGET_BUCKET} = process.env;
 // This allows for sending files that are bigger than the instance's available
 // memory.
 exports.chunkedDownload = async (req, res) => {
+  const sourceFile = storage.bucket('cloud-devrel-public').file('data.txt');
   const readStream = sourceFile.createReadStream();
 
   // Download file to the end-user's device

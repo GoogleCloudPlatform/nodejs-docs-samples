@@ -28,7 +28,7 @@ const storage = new Storage();
 const sourceFile = storage.bucket('cloud-devrel-public').file('puppies.jpg');
 
 // TODO(developer): set this to a bucket you own
-const TARGET_BUCKET = process.env.FUNCTIONS_BUCKET;
+const {TARGET_BUCKET} = process.env;
 // [END functions_tips_storage_streaming]
 // [END cloudrun_tips_storage_streaming]
 
@@ -40,6 +40,7 @@ exports.nonStreamingCall = async (req, res) => {
   const fileSuffix = req.params.suffix || uuidv4();
   const targetFilename = `puppies-streaming-copy-${fileSuffix}.jpg`;
 
+  // Create temporary file (on the local machine) to download to
   const tempPath = path.join(os.tmpdir(), `non-streaming-${fileSuffix}.jpg`);
   await sourceFile.download({destination: tempPath});
 

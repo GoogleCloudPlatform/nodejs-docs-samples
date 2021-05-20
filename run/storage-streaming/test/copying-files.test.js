@@ -20,7 +20,7 @@ const path = require('path');
 const uuidv4 = require('uuid').v4;
 const requestRetry = require('requestretry');
 
-const {FUNCTIONS_BUCKET} = process.env;
+const {TARGET_BUCKET} = process.env;
 const cwd = path.join(__dirname, '..');
 
 const exec = require('child-process-promise').exec;
@@ -58,7 +58,7 @@ describe('streaming sample tests', () => {
 
     // Check that target file was written
     const copiedFilename = `puppies-copy-${suffix}.jpg`;
-    assert(storage.bucket(FUNCTIONS_BUCKET).file(copiedFilename).exists);
+    assert(storage.bucket(TARGET_BUCKET).file(copiedFilename).exists);
   });
 
   it('should copy file GCS with streaming', async () => {
@@ -84,6 +84,6 @@ describe('streaming sample tests', () => {
 
     // Check that target file was written
     const copiedFilename = `puppies-streaming-copy-${suffix}.jpg`;
-    assert(storage.bucket(FUNCTIONS_BUCKET).file(copiedFilename).exists);
+    assert(storage.bucket(TARGET_BUCKET).file(copiedFilename).exists);
   });
 });

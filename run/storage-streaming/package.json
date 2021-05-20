@@ -1,9 +1,9 @@
 {
-  "name": "nodejs-docs-samples-http-storage-streaming",
+  "name": "storage-streaming",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
-  "author": "Google Inc.",
+  "author": "Google LLC.",
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
@@ -12,7 +12,11 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "mocha test/*.test.js --timeout=60000 --exit"
+    "test": "mocha test/*.test.js --timeout=60000 --exit",
+    "run-chunked-upload": "functions-framework --target=chunkedUpload --source chunked-http.js",
+    "run-chunked-download": "functions-framework --target=chunkedDownload --source chunked-http.js",
+    "run-streaming-copy": "functions-framework --target=streamingCall --source copying-files.js",
+    "run-non-streaming-copy": "functions-framework --target=nonStreamingCall --source copying-files.js"
   },
   "dependencies": {
     "@google-cloud/storage": "^5.8.5",

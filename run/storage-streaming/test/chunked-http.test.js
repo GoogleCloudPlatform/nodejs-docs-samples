@@ -15,7 +15,7 @@
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-const {FUNCTIONS_BUCKET} = process.env;
+const {TARGET_BUCKET} = process.env;
 
 const assert = require('assert');
 const fs = require('fs');
@@ -71,7 +71,7 @@ describe('chunked http tests', () => {
     assert.strictEqual(response.statusCode, 200);
     const copiedFilename = `chunked-http-${fileId}-cat.jpg`;
     const [exists] = await storage
-      .bucket(FUNCTIONS_BUCKET)
+      .bucket(TARGET_BUCKET)
       .file(copiedFilename)
       .exists();
 

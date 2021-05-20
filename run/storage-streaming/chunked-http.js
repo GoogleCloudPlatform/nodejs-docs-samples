@@ -29,14 +29,14 @@ const sourceFile = storage.bucket('cloud-devrel-public').file('data.txt');
 // [END functions_tips_chunked_download]
 // [END cloudrun_tips_chunked_download]
 // TODO(developer): set this to a bucket you own
-const TARGET_BUCKET = process.env.FUNCTIONS_BUCKET;
+const {TARGET_BUCKET} = process.env;
 // [END functions_tips_chunked_upload]
 // [END cloudrun_tips_chunked_upload]
 // [START functions_tips_chunked_download]
 // [START cloudrun_tips_chunked_download]
 
 // This function downloads a file from Google Cloud Storage with HTTP chunking.
-// This lets a function send files that are bigger than the instance's available
+// This allows for sending files that are bigger than the instance's available
 // memory.
 exports.chunkedDownload = async (req, res) => {
   const readStream = sourceFile.createReadStream();
@@ -45,6 +45,7 @@ exports.chunkedDownload = async (req, res) => {
   // TODO(developer): remove this to send files (e.g. images) directly to users
   res.attachment('data.txt');
 
+  // Pipe data from the GCS read-stream into the HTTP response body
   readStream.pipe(res);
 
   return new Promise((resolve, reject) => {
@@ -74,18 +75,23 @@ exports.chunkedUpload = async (req, res) => {
 
   const ioPromises = [];
 
+  // Wait for incoming files to be received
   busboy.on('file', (_, localFile, fileName) => {
     const idName = `chunked-http-${fileId}-${fileName}`;
 
+    // Create a new file in Cloud Storage (GCS)
+    // File will be located at `gs://TARGET_BUCKET/idName`.
     const targetFile = storage.bucket(TARGET_BUCKET).file(idName);
     const writeStream = targetFile.createWriteStream();
 
+    // Pipe file data from the HTTP request to GCS via a writable stream
     localFile.pipe(writeStream);
 
-    // File was processed by Busboy; wait for Cloud Storage upload to finish.
+    // File was processed by Busboy; wait for GCS upload to finish.
     ioPromises.push(
       new Promise((resolve, reject) => {
         localFile.on('end', () => {
+          // Signal completion of streaming GCS upload
           writeStream.end();
         });
         writeStream.on('finish', resolve).on('error', reject);

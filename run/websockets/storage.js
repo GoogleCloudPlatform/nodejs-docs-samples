@@ -6,7 +6,6 @@ const redisClient = require('redis').createClient(
 
 async function addMessageToCache(roomName, msg) {
   let room = await getRoomFromCache(roomName);
-  console.log(room)
   if (room) {
     room.messages.push(msg);
   } else {
@@ -33,7 +32,6 @@ async function getRoomFromCache(roomName) {
   const redisExists = promisify(redisClient.exists).bind(redisClient);
   if (!(await redisExists(roomName))) {
     const room = getRoomFromDatabase(roomName);
-    console.log('from db', room);
     if (room) {
       redisClient.set(roomName, JSON.stringify(room));
     }

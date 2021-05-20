@@ -61,7 +61,6 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     console.log('User disconnected');
     const {user, room} = deleteUser(socket.id);
-    console.log(user)
     if (user) {
       io.in(room).emit('notification', {
         title: 'Someone just left',
@@ -73,6 +72,9 @@ io.on('connection', socket => {
   socket.on('error', function (err) {
     console.log('received error from client:', socket.id);
     console.log(err);
+  })
+  socket.on('connect_error', function (err) {
+    console.log('received error:', err);
   })
 });
 

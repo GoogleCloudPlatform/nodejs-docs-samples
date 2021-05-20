@@ -6,12 +6,13 @@ mdc.ripple.MDCRipple.attachTo(document.querySelector('.send'))
 
 // Hide Chatroom on start
 $(document).ready(function () {
-  console.log('ready!');
   $('#chatroom').hide();
 });
 
 // Initialize Socket.io
-var socket = io();
+var socket = io("", { 
+  transports: ["websocket"]
+});
 
 // On sign in
 $('#signin').submit(e => {
@@ -22,7 +23,7 @@ $('#signin').submit(e => {
     if (error) {
       console.log(error);
     }
-    addHistory(history.messages);
+    if (history) addHistory(history.messages);
     setChatroom(room);
     $('#signin').hide();
     $('#chatroom').show();
@@ -68,3 +69,7 @@ function log(name, msg) {
   $('#messages').append(`<li> <strong>${name}</strong>: ${msg}`);
   window.scrollTo(0, document.body.scrollHeight);
 }
+
+socket.on("disconnect", (err) => {
+  console.log('server disconnected: ', err)
+})

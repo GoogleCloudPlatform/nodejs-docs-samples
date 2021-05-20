@@ -61,7 +61,7 @@ describe('BetaFeatures', () => {
     const output = execSync(
       `${cmd} multiLanguageTranscribe -f ${multiLanguageFile}`
     );
-    assert.match(output, /Transcription:.*/);
+    assert.match(output, /Transcription: \S+/);
   });
 
   it('should run word Level Confience on a local file', async () => {

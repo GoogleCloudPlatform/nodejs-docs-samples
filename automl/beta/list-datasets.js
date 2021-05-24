@@ -70,4 +70,8 @@ function main(projectId = 'YOUR_PROJECT_ID', location = 'us-central1') {
   // [END automl_video_object_tracking_list_datasets_beta]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

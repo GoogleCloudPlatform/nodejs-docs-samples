@@ -67,4 +67,8 @@ function main(
   // [END automl_batch_predict_beta]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

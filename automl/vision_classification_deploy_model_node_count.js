@@ -53,4 +53,8 @@ function main(
   // [END automl_vision_classification_deploy_model_node_count]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

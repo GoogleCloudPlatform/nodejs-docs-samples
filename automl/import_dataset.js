@@ -59,4 +59,8 @@ function main(
   // [END automl_import_dataset]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

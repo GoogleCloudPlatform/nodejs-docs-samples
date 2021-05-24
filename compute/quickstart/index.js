@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // [START compute_instances_list]
 // [START compute_instances_list_all]
 // [START compute_instances_create]
@@ -39,20 +38,20 @@ const compute_protos = compute.protos.google.cloud.compute.v1;
  * @returns {InstanceList} - An iterable collection of Instance objects.
  */
 async function listInstances(projectId, zone) {
-    const client = new compute.InstancesClient({fallback: 'rest'});
+  const client = new compute.InstancesClient({fallback: 'rest'});
 
-    const [instanceList] = await client.list({
-        project: projectId,
-        zone,
-    });
-    
-    console.log(`Instances found in zone ${zone}:`)
+  const [instanceList] = await client.list({
+    project: projectId,
+    zone,
+  });
 
-    for (const instance of instanceList.items) {
-        console.log(` - ${instance.name} (${instance.machineType})`);
-    }
+  console.log(`Instances found in zone ${zone}:`);
 
-    return instanceList;
+  for (const instance of instanceList.items) {
+    console.log(` - ${instance.name} (${instance.machineType})`);
+  }
+
+  return instanceList;
 }
 // [END compute_instances_list]
 
@@ -63,31 +62,31 @@ async function listInstances(projectId, zone) {
  * @typedef {Object} AllInstancesList
  * @property {string} zone
  * @property {Instance[]} instances
- * 
+ *
  * @param {string} projectId - ID or number of the project you want to use.
  * @returns {AllInstancesList} - An object, where key is a zone, and value is an array of Instances
  */
 async function listAllInstances(projectId) {
-    const client = new compute.InstancesClient({fallback: 'rest'});
-    const aggListRequest = await client.aggregatedList({
-        project: projectId,
-    });
-    const aggList = aggListRequest[0].items;
-    const allInstances = {};
+  const client = new compute.InstancesClient({fallback: 'rest'});
+  const aggListRequest = await client.aggregatedList({
+    project: projectId,
+  });
+  const aggList = aggListRequest[0].items;
+  const allInstances = {};
 
-    console.log('Instances found:');
+  console.log('Instances found:');
 
-    for (const zone in aggList) {
-        if (aggList[zone].instances.length > 0) {
-            allInstances[zone] = aggList[zone].instances;
-            console.log(` ${zone}`);
-            for (const instance of aggList[zone].instances) {
-                console.log(` - ${instance.name} (${instance.machineType})`);
-            }
-        }
+  for (const zone in aggList) {
+    if (aggList[zone].instances.length > 0) {
+      allInstances[zone] = aggList[zone].instances;
+      console.log(` ${zone}`);
+      for (const instance of aggList[zone].instances) {
+        console.log(` - ${instance.name} (${instance.machineType})`);
+      }
     }
+  }
 
-    return allInstances;
+  return allInstances;
 }
 
 // [END compute_instances_list_all]
@@ -113,60 +112,64 @@ async function listAllInstances(projectId) {
  *    $ gcloud compute images list
  * @param {string} networkName - Name of the network you want the new instance to use.
  *    For example: global/networks/default - if you want to use the default network.
- * 
+ *
  * @returns {Instance} - Instance object.
  */
-async function createInstance(projectId, zone, instanceName, 
-    machineType = "n1-standard-1", 
-    sourceImage = "projects/debian-cloud/global/images/family/debian-10", 
-    networkName = "global/networks/default") {
+async function createInstance(
+  projectId,
+  zone,
+  instanceName,
+  machineType = 'n1-standard-1',
+  sourceImage = 'projects/debian-cloud/global/images/family/debian-10',
+  networkName = 'global/networks/default'
+) {
+  const instancesClient = new compute.InstancesClient({fallback: 'rest'});
 
-    const instancesClient = new compute.InstancesClient({fallback: 'rest'});
+  const attachedDisk = new compute_protos.AttachedDisk();
+  const initializeParams = new compute_protos.AttachedDiskInitializeParams();
 
-    const attachedDisk = new compute_protos.AttachedDisk();
-    const initializeParams = new compute_protos.AttachedDiskInitializeParams();
+  initializeParams.diskSizeGb = '10';
+  initializeParams.sourceImage = sourceImage;
 
-    initializeParams.diskSizeGb = "10";
-    initializeParams.sourceImage = sourceImage;
+  attachedDisk.initializeParams = initializeParams;
+  attachedDisk.autoDelete = true;
+  attachedDisk.boot = true;
+  attachedDisk.type = compute_protos.AttachedDisk.Type.PERSISTENT;
 
-    attachedDisk.initializeParams = initializeParams;
-    attachedDisk.autoDelete = true;
-    attachedDisk.boot = true;
-    attachedDisk.type = compute_protos.AttachedDisk.Type.PERSISTENT;
+  const networkInterface = new compute_protos.NetworkInterface();
+  networkInterface.name = networkName;
 
-    const networkInterface = new compute_protos.NetworkInterface();
-    networkInterface.name = networkName;
+  // Collecting all the information into the Instance object
+  const instance = new compute_protos.Instance();
+  instance.name = instanceName;
+  instance.disks = [attachedDisk];
+  instance.machineType = `zones/${zone}/machineTypes/${machineType}`;
+  instance.networkInterfaces = [networkInterface];
 
-    // Collecting all the information into the Instance object
-    instance = new compute_protos.Instance();
-    instance.name = instanceName;
-    instance.disks = [attachedDisk];
-    instance.machineType = `zones/${zone}/machineTypes/${machineType}`;
-    instance.networkInterfaces = [networkInterface];
+  console.log(`Creating the ${instanceName} instance in ${zone}...`);
 
-    console.log(`Creating the ${instanceName} instance in ${zone}...`);
-    
-    operation = await instancesClient.insert({
-        instanceResource: instance,
-        project: projectId,
-        zone,
+  const operation = await instancesClient.insert({
+    instanceResource: instance,
+    project: projectId,
+    zone,
+  });
+
+  // Waiting the operation
+  if (operation[0].status === compute_protos.Operation.Status.RUNNING) {
+    const operationClient = new compute.ZoneOperationsClient({
+      fallback: 'rest',
     });
 
-    // Waiting the operation
-    if (operation[0].status === compute_protos.Operation.Status.RUNNING) {
-        const operationClient = new compute.ZoneOperationsClient({fallback: 'rest'});
+    await operationClient.wait({
+      operation: operation[0].name,
+      project: projectId,
+      zone,
+    });
+  }
 
-        await operationClient.wait({
-            operation: operation[0].name,
-            project: projectId,
-            zone,
-        });
-    }
+  console.log(`Instance ${instanceName} created.`);
 
-    console.log(`Instance ${instanceName} created.`)
-
-    return instance;
-
+  return instance;
 }
 // [END compute_instances_create]
 
@@ -180,66 +183,75 @@ async function createInstance(projectId, zone, instanceName,
  * @param {string} machineName - Name of the machine you want to delete.
  */
 async function deleteInstance(projectId, zone, machineName) {
-    const client = new compute.InstancesClient({fallback: 'rest'});
+  const client = new compute.InstancesClient({fallback: 'rest'});
 
-    console.log(`Deleting ${machineName} from ${zone}...`);
+  console.log(`Deleting ${machineName} from ${zone}...`);
 
-    operation = await client.delete({
-        project: projectId,
-        zone,
-        instance: machineName,
+  const operation = await client.delete({
+    project: projectId,
+    zone,
+    instance: machineName,
+  });
+
+  if (operation[0].status === compute_protos.Operation.Status.RUNNING) {
+    const operationClient = new compute.ZoneOperationsClient({
+      fallback: 'rest',
     });
 
-    if (operation[0].status === compute_protos.Operation.Status.RUNNING) {
-        const operationClient = new compute.ZoneOperationsClient({fallback: 'rest'});
+    await operationClient.wait({
+      operation: operation[0].name,
+      project: projectId,
+      zone,
+    });
+  }
 
-        await operationClient.wait({
-            operation: operation[0].name,
-            project: projectId,
-            zone,
-        });
-    }
-
-    console.log(`Instance ${machineName} deleted.`);
+  console.log(`Instance ${machineName} deleted.`);
 }
 
 // [END compute_instances_delete]
 
 async function main(projectId, zone, instanceName) {
+  await createInstance(projectId, zone, instanceName);
 
-    await createInstance(projectId, zone, instanceName);
+  const zoneInstances = await listInstances(projectId, zone);
 
-    zoneInstances = await listInstances(projectId, zone);
+  console.log(
+    `Instances found in ${zone}: ${zoneInstances.items
+      .map(i => i.name)
+      .join(',')}`
+  );
 
-    console.log(`Instances found in ${zone}: ${zoneInstances.items.map(i => i.name).join(',')}`);
+  const allInstances = await listAllInstances(projectId);
+  console.log(`Instances found in project ${projectId}:`);
 
-    const allInstances = await listAllInstances(projectId);
-    console.log(`Instances found in project ${projectId}:`);
+  for (const zoneInstance in allInstances) {
+    console.log(
+      `${zoneInstance}: ${allInstances[zoneInstance]
+        .map(i => i.name)
+        .join(',')}`
+    );
+  }
 
-    for (zoneInstance in allInstances) {
-        console.log(`${zoneInstance}: ${allInstances[zoneInstance].map(i => i.name).join(',')}`);
-    }
-
-    await deleteInstance(projectId, zone, instanceName);
+  await deleteInstance(projectId, zone, instanceName);
 }
 
 async function run() {
-    const client = new compute.InstancesClient({fallback: 'rest'});
-    const defaultProjectId = await client.getProjectId();
-    const instanceZone = 'europe-central2-b';
-    const instanceName = `test-${Math.random().toString(36).substring(5)}`;
+  const client = new compute.InstancesClient({fallback: 'rest'});
+  const defaultProjectId = await client.getProjectId();
+  const instanceZone = 'europe-central2-b';
+  const instanceName = `test-${Math.random().toString(36).substring(5)}`;
 
-    await main(defaultProjectId, instanceZone, instanceName);
+  await main(defaultProjectId, instanceZone, instanceName);
 }
 
 if (require.main === module) {
-    run().catch(console.error);
+  run().catch(console.error);
 }
 
 module.exports = {
-    main,
-    listInstances,
-    listAllInstances,
-    createInstance,
-    deleteInstance,
+  main,
+  listInstances,
+  listAllInstances,
+  createInstance,
+  deleteInstance,
 };

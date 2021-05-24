@@ -109,4 +109,8 @@ function main(
   // [END automl_vision_object_detection_list_model_evaluations]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

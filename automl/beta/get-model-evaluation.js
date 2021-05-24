@@ -57,6 +57,7 @@ function main(
     console.log(`\tnanos ${response.createTime.nanos / 1e9}`);
     console.log(`Evaluation example count: ${response.evaluatedExampleCount}`);
     // [END automl_video_object_tracking_get_model_evaluation_beta]
+    // [END automl_video_classification_get_model_evaluation_beta]
 
     // [START automl_video_classification_get_model_evaluation_beta]
     console.log(
@@ -77,4 +78,8 @@ function main(
   // [END automl_video_object_tracking_get_model_evaluation_beta]
 }
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 main(...process.argv.slice(2));

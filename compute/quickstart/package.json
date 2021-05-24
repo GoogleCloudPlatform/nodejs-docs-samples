@@ -1,0 +1,31 @@
+{
+  "name": "quickstart",
+  "version": "0.0.1",
+  "description": "Quickstart Node.js sample for Google Compute Engine",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "test": "mocha -- test/*.test.js --timeout=500000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "author": "Google Inc.",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues"
+  },
+  "homepage": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples#readme",
+  "devDependencies": {
+    "mocha": "^8.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/compute": "^3.0.0-alpha.2"
+  }
+}

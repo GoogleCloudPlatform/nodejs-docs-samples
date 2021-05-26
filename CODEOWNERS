@@ -20,15 +20,11 @@ functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-docs-samples-owne
 functions/memorystore @ericschmidtatwork @GoogleCloudPlatform/nodejs-docs-samples-owners
 functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-docs-samples-owners
 
-# GCF samples outside of functions/
-
-
 # SoDa teams
-cloud-sql @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-docs-samples-owners
-datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-docs-samples-owners
+/cloud-sql/**/*.js @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-docs-samples-owners
+/datastore/**/*.js @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # One-offs
-
 composer @leahecole @sofisl @yoshi-nodejs @GoogleCloudPlatform/nodejs-docs-samples-owners
 healthcare @noerog @GoogleCloudPlatform/nodejs-docs-samples-owners
 monitoring/opencensus @yuriatgoogle @GoogleCloudPlatform/nodejs-docs-samples-owners

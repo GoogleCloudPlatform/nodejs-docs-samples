@@ -17,7 +17,7 @@
   "devDependencies": {
     "mocha": "^8.0.0",
     "proxyquire": "^2.0.0",
-    "sinon": "^10.0.0"
+    "sinon": "^11.0.0"
   },
   "dependencies": {
     "@google-cloud/compute": "^2.0.0"

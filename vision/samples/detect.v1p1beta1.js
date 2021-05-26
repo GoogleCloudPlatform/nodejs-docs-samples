@@ -60,116 +60,6 @@ async function detectFulltext(fileName) {
   // [END vision_detect_document]
 }
 
-async function detectSafeSearch(fileName) {
-  // [START vision_safe_search_detection]
-  // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p1beta1;
-
-  // Creates a client
-  const client = new vision.ImageAnnotatorClient();
-
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const fileName = 'Local image file, e.g. /path/to/image.png';
-
-  // Performs safe search detection on the local file
-  const [result] = await client.safeSearchDetection(fileName);
-  const detections = result.safeSearchAnnotation;
-  console.log('Safe search:');
-  console.log(`Adult: ${detections.adult}`);
-  console.log(`Medical: ${detections.medical}`);
-  console.log(`Spoof: ${detections.spoof}`);
-  console.log(`Violence: ${detections.violence}`);
-  console.log(`Racy: ${detections.racy}`);
-  // [END vision_safe_search_detection]
-}
-
-async function detectWeb(fileName) {
-  // [START vision_web_detection]
-  // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p1beta1;
-
-  // Creates a client
-  const client = new vision.ImageAnnotatorClient();
-
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const fileName = 'Local image file, e.g. /path/to/image.png';
-
-  // Detect similar images on the web to a local file
-  const [result] = await client.webDetection(fileName);
-  const webDetection = result.webDetection;
-  if (webDetection.bestGuessLabels.length) {
-    webDetection.bestGuessLabels.forEach(label => {
-      console.log(`Best guess label: ${label.label}`);
-    });
-  }
-
-  if (webDetection.pagesWithMatchingImages.length) {
-    const pages = webDetection.pagesWithMatchingImages;
-    console.log(`Pages with matching images found: ${pages.length}`);
-
-    pages.forEach(page => {
-      console.log(`Page url: ${page.url}`);
-
-      if (page.fullMatchingImages.length) {
-        const fullMatchingImages = page.fullMatchingImages;
-        console.log(`Full Matches found: ${fullMatchingImages.length}`);
-        fullMatchingImages.forEach(image => {
-          console.log(`Image url: ${image.url}`);
-        });
-      }
-
-      if (page.partialMatchingImages.length) {
-        const partialMatchingImages = page.partialMatchingImages;
-        console.log(`Partial Matches found: ${partialMatchingImages.length}`);
-        partialMatchingImages.forEach(image => {
-          console.log(`Image url: ${image.url}`);
-        });
-      }
-    });
-  }
-
-  if (webDetection.fullMatchingImages.length) {
-    console.log(
-      `Full matches found: ${webDetection.fullMatchingImages.length}`
-    );
-    webDetection.fullMatchingImages.forEach(image => {
-      console.log(`  Image url: ${image.url}`);
-    });
-  }
-
-  if (webDetection.partialMatchingImages.length) {
-    console.log(
-      `Partial matches found: ${webDetection.partialMatchingImages.length}`
-    );
-    webDetection.partialMatchingImages.forEach(image => {
-      console.log(`  Image url: ${image.url}`);
-    });
-  }
-
-  if (webDetection.webEntities.length) {
-    console.log(`Web entities found: ${webDetection.webEntities.length}`);
-    webDetection.webEntities.forEach(webEntity => {
-      console.log(`  Score: ${webEntity.score}`);
-      console.log(`  Description: ${webEntity.description}`);
-    });
-  }
-
-  if (webDetection.visuallySimilarImages.length) {
-    const visuallySimilarImages = webDetection.visuallySimilarImages;
-    console.log(
-      `Visually similar images found: ${visuallySimilarImages.length}`
-    );
-    visuallySimilarImages.forEach(image => {
-      console.log(`  Image url: ${image.url}`);
-    });
-  }
-  // [END vision_web_detection]
-}
-
 async function detectWebEntitiesIncludingGeoResults(fileName) {
   // [START vision_web_entities_include_geo_results]
   // Imports the Google Cloud client library
@@ -214,18 +104,6 @@ require(`yargs`) // eslint-disable-line
     'Detects web entities with improved results using geographic metadata',
     {},
     opts => detectWebEntitiesIncludingGeoResults(opts.fileName)
-  )
-  .command(
-    'safe-search <fileName>',
-    'Detects safe search properties including additional racy category',
-    {},
-    opts => detectSafeSearch(opts.fileName)
-  )
-  .command(
-    'web <fileName>',
-    'Detects web entities including new best guess labels describing content',
-    {},
-    opts => detectWeb(opts.fileName)
   )
   .command(
     'fulltext <fileName>',

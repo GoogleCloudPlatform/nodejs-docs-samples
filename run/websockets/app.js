@@ -48,14 +48,21 @@ io.on('connection', socket => {
     callback(null, messages);
   });
 
+  socket.on('reconnect', async ({name, room}, callback) => {
+    addUser(socket.id, name, room);
+    socket.join(room);
+  });
+
   socket.on('sendMessage', (message, callback) => {
     const {user, room} = getUser(socket.id);
     if (room) {
       const msg = {user, text: message};
       io.in(room).emit('message', msg);
       addMessageToCache(room, msg);
+      callback();
+    } else {
+      callback('User session not found.');
     }
-    callback();
   });
 
   socket.on('disconnect', () => {
@@ -68,14 +75,6 @@ io.on('connection', socket => {
       });
     }
   });
-
-  socket.on('error', function (err) {
-    console.log('received error from client:', socket.id);
-    console.log(err);
-  })
-  socket.on('connect_error', function (err) {
-    console.log('received error:', err);
-  })
 });
 
 

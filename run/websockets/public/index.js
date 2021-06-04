@@ -10,15 +10,17 @@ $(document).ready(function () {
 });
 
 // Initialize Socket.io
-var socket = io("", { 
-  transports: ["websocket"]
+var socket = io('', { 
+  transports: ['websocket']
 });
 
 // On sign in
+var name;
+var room;
 $('#signin').submit(e => {
   e.preventDefault();
-  const name = $('#name').val();
-  const room = $('#room').val();
+  name = $('#name').val();
+  room = $('#room').val();
   socket.emit('login', {name, room}, (error, history) => {
     if (error) {
       console.log(error);
@@ -27,6 +29,7 @@ $('#signin').submit(e => {
     setChatroom(room);
     $('#signin').hide();
     $('#chatroom').show();
+    window.scrollTo(0, document.body.scrollHeight);
   });
 });
 
@@ -37,9 +40,10 @@ $('#chat').submit(e => {
   socket.emit('sendMessage', msg, (error) => {
     if (error) {
       console.log(error);
+    } else {
+      $('#msg').val('');
     }
   });
-  $('#msg').val('');
 });
 
 // Listen for new messages
@@ -70,6 +74,19 @@ function log(name, msg) {
   window.scrollTo(0, document.body.scrollHeight);
 }
 
-socket.on("disconnect", (err) => {
+socket.on('connect', (err) => {
+  console.log('connected');
+})
+
+socket.on('disconnect', (err) => {
   console.log('server disconnected: ', err)
 })
+
+socket.io.on('reconnect', () => {
+  console.log('reconnected!')
+  socket.emit('reconnect', {name, room}, (error) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+});

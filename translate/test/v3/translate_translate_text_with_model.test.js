@@ -25,7 +25,7 @@ const REGION_TAG = 'translate_translate_text_with_model';
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const modelId = 'TRL1218052175389786112';
+  const modelId = 'TRL8567014172607381504';
   const input = 'Tell me how this ends';
 
   it('should translate text with an automl model in project', async () => {
@@ -33,6 +33,6 @@ describe(REGION_TAG, () => {
     const output = await execSync(
       `node v3/${REGION_TAG}.js ${projectId} ${location} ${modelId} ${input}`
     );
-    assert.match(output, /Translated Content: 教えて/);
+    assert.match(output, /Translated Content:/);
   });
 });

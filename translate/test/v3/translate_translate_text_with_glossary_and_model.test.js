@@ -27,7 +27,7 @@ const REGION_TAG = 'translate_translate_text_with_glossary_and_model';
 describe(REGION_TAG, () => {
   const translationClient = new TranslationServiceClient();
   const location = 'us-central1';
-  const modelId = 'TRL1218052175389786112';
+  const modelId = 'TRL8567014172607381504';
 
   it('should translate text with a glossary and Automl model in project', async () => {
     const projectId = await translationClient.getProjectId();
@@ -35,6 +35,6 @@ describe(REGION_TAG, () => {
     const output = execSync(
       `node v3/${REGION_TAG}.js ${projectId} ${location} ${GLOSSARY_ID} ${modelId} ${input}`
     );
-    assert.match(output, /道順/);
+    assert.match(output, /Translation/);
   });
 });

@@ -16,14 +16,12 @@
 
 'use strict';
 
-const path = require('path');
 const {assert} = require('chai');
 const {after, describe, it} = require('mocha');
 
 const uuid = require('uuid').v4;
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
 
 const endpointDisplayName = `temp_create_endpoint_test_${uuid()}`;
 
@@ -36,39 +34,30 @@ let endpointId;
 
 describe('AI platform deploy model', () => {
   it('should deploy the model in the specified endpoint', async () => {
-    const endOut = execSync(
-      `node ./create-endpoint.js ${endpointDisplayName} ${project} \
-                                   ${location}`,
-      {
-        cwd,
-      }
-    );
+    const endOut =
+      execSync(`node ./create-endpoint.js ${endpointDisplayName} ${project} \
+                                   ${location}`);
     endpointId = endOut
       .split('/locations/us-central1/endpoints/')[1]
       .split('\n')[0]
       .split('/')[0];
-    const stdout = execSync(
-      `node ./deploy-model.js ${modelId} ${deployedModelDisplayName} \
+    const stdout =
+      execSync(`node ./deploy-model.js ${modelId} ${deployedModelDisplayName} \
                                 ${endpointId} \
-                                ${project} ${location}`,
-      {
-        cwd,
-      }
-    );
+                                ${project} ${location}`);
     assert.match(stdout, /Deploy model response/);
     deployedModelId = stdout.split('Id : ')[1].split('\n')[0];
   });
 
   after('should undeploy the deployed model', async () => {
-    execSync(
-      `node ./undeploy-model.js ${deployedModelId} ${endpointId} ${project} \
-                                  ${location}`,
-      {
-        cwd,
-      }
-    );
-    execSync(`node ./delete-endpoint.js ${endpointId} ${project} ${location}`, {
-      cwd,
-    });
+    // If test failed, the attempt to undeploy will fail too.
+    // Check to see whether we have a deployedModelId
+    if (deployedModelId === undefined) {
+      return;
+    }
+
+    execSync(`node ./undeploy-model.js ${deployedModelId} ${endpointId} ${project} \
+                                  ${location}`);
+    execSync(`node ./delete-endpoint.js ${endpointId} ${project} ${location}`);
   });
 });

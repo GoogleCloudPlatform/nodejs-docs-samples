@@ -64,7 +64,8 @@ describe(REGION_TAG, () => {
       });
   });
 
-  it('should batch translate the input text with a glossary', async () => {
+  it('should batch translate the input text with a glossary', async function () {
+    this.retries(3);
     const projectId = await translationClient.getProjectId();
     // make sure the bucket is empty.
     await clearBucket(projectId, storage, bucketUuid);

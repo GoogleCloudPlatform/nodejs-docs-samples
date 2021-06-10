@@ -152,9 +152,10 @@ async function detectEventIntent(
   if (result.outputContexts && result.outputContexts.length) {
     console.log('  Output contexts:');
     result.outputContexts.forEach(context => {
-      const contextId = contextClient.matchContextFromProjectAgentSessionContextName(
-        context.name
-      );
+      const contextId =
+        contextClient.matchContextFromProjectAgentSessionContextName(
+          context.name
+        );
       const contextParameters = JSON.stringify(
         struct.decode(context.parameters)
       );
@@ -224,9 +225,10 @@ async function detectAudioIntent(
   if (result.outputContexts && result.outputContexts.length) {
     console.log('  Output contexts:');
     result.outputContexts.forEach(context => {
-      const contextId = contextClient.matchContextFromProjectAgentSessionContextName(
-        context.name
-      );
+      const contextId =
+        contextClient.matchContextFromProjectAgentSessionContextName(
+          context.name
+        );
       const contextParameters = JSON.stringify(
         struct.decode(context.parameters)
       );
@@ -314,9 +316,10 @@ async function streamingDetectIntent(
         if (result.outputContexts && result.outputContexts.length) {
           console.log('  Output contexts:');
           result.outputContexts.forEach(context => {
-            const contextId = contextClient.matchContextFromProjectAgentSessionContextName(
-              context.name
-            );
+            const contextId =
+              contextClient.matchContextFromProjectAgentSessionContextName(
+                context.name
+              );
             const contextParameters = JSON.stringify(
               struct.decode(context.parameters)
             );

@@ -58,11 +58,12 @@ async function createSessionEntityType(
     projectId,
     sessionId
   );
-  const sessionEntityTypePath = sessionEntityTypesClient.projectAgentSessionEntityTypePath(
-    projectId,
-    sessionId,
-    entityTypeDisplayName
-  );
+  const sessionEntityTypePath =
+    sessionEntityTypesClient.projectAgentSessionEntityTypePath(
+      projectId,
+      sessionId,
+      entityTypeDisplayName
+    );
 
   // Here we use the entity value as the only synonym.
   const entities = [];
@@ -126,11 +127,12 @@ async function deleteSessionEntityType(
   const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient();
 
   // The path to identify the sessionEntityType to be deleted.
-  const sessionEntityTypePath = sessionEntityTypesClient.projectAgentSessionEntityTypePath(
-    projectId,
-    sessionId,
-    entityTypeDisplayName
-  );
+  const sessionEntityTypePath =
+    sessionEntityTypesClient.projectAgentSessionEntityTypePath(
+      projectId,
+      sessionId,
+      entityTypeDisplayName
+    );
 
   const request = {
     name: sessionEntityTypePath,

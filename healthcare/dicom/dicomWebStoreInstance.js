@@ -22,22 +22,16 @@ const main = (
   dcmFile
 ) => {
   // [START healthcare_dicomweb_store_instance]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
   const fs = require('fs');
 
   const dicomWebStoreInstance = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({
-      auth,
-      headers: {
-        'Content-Type': 'application/dicom',
-        Accept: 'application/dicom+json',
-      },
-    });
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -53,6 +47,10 @@ const main = (
       parent,
       dicomWebPath,
       requestBody: binaryData,
+      headers: {
+        'Content-Type': 'application/dicom',
+        Accept: 'application/dicom+json',
+      },
     };
 
     const instance =

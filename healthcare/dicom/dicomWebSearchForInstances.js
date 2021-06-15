@@ -21,18 +21,15 @@ const main = (
   dicomStoreId
 ) => {
   // [START healthcare_dicomweb_search_instances]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const dicomWebSearchForInstances = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({
-      auth,
-      headers: {Accept: 'application/dicom+json,multipart/related'},
-    });
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -40,7 +37,11 @@ const main = (
     // const dicomStoreId = 'my-dicom-store';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = 'instances';
-    const request = {parent, dicomWebPath};
+    const request = {
+      parent,
+      dicomWebPath,
+      headers: {Accept: 'application/dicom+json,multipart/related'},
+    };
 
     const instances =
       await healthcare.projects.locations.datasets.dicomStores.searchForInstances(

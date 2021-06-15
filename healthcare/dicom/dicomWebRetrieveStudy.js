@@ -22,8 +22,13 @@ const main = (
   studyUid
 ) => {
   // [START healthcare_dicomweb_retrieve_study]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
   const fs = require('fs');
   const util = require('util');
   const writeFile = util.promisify(fs.writeFile);
@@ -33,17 +38,6 @@ const main = (
   const fileName = 'study_file.multipart';
 
   const dicomWebRetrieveStudy = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({
-      auth,
-      headers: {
-        Accept: 'multipart/related; type=application/dicom; transfer-syntax=*',
-      },
-      responseType: 'arraybuffer',
-    });
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -52,7 +46,14 @@ const main = (
     // const studyUid = '1.3.6.1.4.1.5062.55.1.2270943358.716200484.1363785608958.61.0';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = `studies/${studyUid}`;
-    const request = {parent, dicomWebPath};
+    const request = {
+      parent,
+      dicomWebPath,
+      headers: {
+        Accept: 'multipart/related; type=application/dicom; transfer-syntax=*',
+      },
+      responseType: 'arraybuffer',
+    };
 
     const study =
       await healthcare.projects.locations.datasets.dicomStores.studies.retrieveStudy(

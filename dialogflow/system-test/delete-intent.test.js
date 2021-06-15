@@ -31,7 +31,7 @@ describe('delete intent', () => {
   before('create the intent', async () => {
     const projectId = await client.getProjectId();
     const createIntentRequest = {
-      parent: client.agentPath(projectId),
+      parent: client.projectAgentPath(projectId),
       intent: {
         displayName: displayName,
         trainingPhrases: [

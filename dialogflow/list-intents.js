@@ -36,7 +36,7 @@ function main(projectId = 'YOUR_PROJECT_ID') {
     // Construct request
 
     // The path to identify the agent that owns the intents.
-    const projectAgentPath = intentsClient.agentPath(projectId);
+    const projectAgentPath = intentsClient.projectAgentPath(projectId);
 
     console.log(projectAgentPath);
 

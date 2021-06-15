@@ -50,7 +50,7 @@ function main(
     // Construct request
 
     // The path to identify the agent that owns the created intent.
-    const agentPath = intentsClient.agentPath(projectId);
+    const agentPath = intentsClient.projectAgentPath(projectId);
 
     const trainingPhrases = [];
 

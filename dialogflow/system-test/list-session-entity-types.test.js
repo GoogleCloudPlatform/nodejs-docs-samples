@@ -35,7 +35,7 @@ describe('list session entity types', () => {
     // First create an entity type
     const projectId = await client.getProjectId();
     const createEntityTypeRequest = {
-      parent: client.agentPath(projectId),
+      parent: client.projectAgentPath(projectId),
       entityType: {
         displayName: displayName,
         kind: 'KIND_MAP',
@@ -79,7 +79,7 @@ describe('list session entity types', () => {
   after('delete the created entity type', async () => {
     const projectId = await client.getProjectId();
     const request = {
-      name: client.entityTypePath(projectId, entityTypeId),
+      name: client.projectAgentEntityTypePath(projectId, entityTypeId),
     };
     await client.deleteEntityType(request);
   });

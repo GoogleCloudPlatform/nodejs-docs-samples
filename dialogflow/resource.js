@@ -26,7 +26,7 @@ async function deleteIntent(projectId, intentId) {
   // Instantiates clients
   const intentsClient = new dialogflow.IntentsClient();
 
-  const intentPath = intentsClient.intentPath(projectId, intentId);
+  const intentPath = intentsClient.projectAgentIntentPath(projectId, intentId);
 
   const request = {name: intentPath};
 

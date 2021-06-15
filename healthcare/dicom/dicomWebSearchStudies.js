@@ -37,19 +37,18 @@ const main = (
     // const dicomStoreId = 'my-dicom-store';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = 'studies';
-    const request = {
-      parent,
-      dicomWebPath,
-      // Refine your search by appending DICOM tags to the
-      // request in the form of query parameters. This sample
-      // searches for studies containing a patient's name.
-      params: {PatientName: 'Sally Zhang'},
-      headers: {Accept: 'application/dicom+json'},
-    };
+    const request = {parent, dicomWebPath};
 
     const studies =
       await healthcare.projects.locations.datasets.dicomStores.searchForStudies(
-        request
+        request,
+        {
+          // Refine your search by appending DICOM tags to the
+          // request in the form of query parameters. This sample
+          // searches for studies containing a patient's name.
+          params: {PatientName: 'Sally Zhang'},
+          headers: {Accept: 'application/dicom+json'},
+        }
       );
     console.log(studies);
 

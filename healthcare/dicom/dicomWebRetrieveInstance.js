@@ -47,16 +47,15 @@ const main = (
     // const instanceUid = '1.3.6.2.4.2.14619.5.2.1.6280.6001.129311971280445372188125744148';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = `studies/${studyUid}/series/${seriesUid}/instances/${instanceUid}`;
-    const request = {
-      parent,
-      dicomWebPath,
-      headers: {Accept: 'application/dicom; transfer-syntax=*'},
-      responseType: 'arraybuffer',
-    };
+    const request = {parent, dicomWebPath};
 
     const instance =
       await healthcare.projects.locations.datasets.dicomStores.studies.series.instances.retrieveInstance(
-        request
+        request,
+        {
+          headers: {Accept: 'application/dicom; transfer-syntax=*'},
+          responseType: 'arraybuffer',
+        }
       );
     const fileBytes = Buffer.from(instance.data);
 

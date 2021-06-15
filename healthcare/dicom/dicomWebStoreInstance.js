@@ -47,15 +47,17 @@ const main = (
       parent,
       dicomWebPath,
       requestBody: binaryData,
-      headers: {
-        'Content-Type': 'application/dicom',
-        Accept: 'application/dicom+json',
-      },
     };
 
     const instance =
       await healthcare.projects.locations.datasets.dicomStores.storeInstances(
-        request
+        request,
+        {
+          headers: {
+            'Content-Type': 'application/dicom',
+            Accept: 'application/dicom+json',
+          },
+        }
       );
     console.log('Stored DICOM instance:\n', JSON.stringify(instance.data));
   };

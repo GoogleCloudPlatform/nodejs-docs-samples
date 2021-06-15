@@ -37,15 +37,14 @@ const main = (
     // const dicomStoreId = 'my-dicom-store';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = 'instances';
-    const request = {
-      parent,
-      dicomWebPath,
-      headers: {Accept: 'application/dicom+json,multipart/related'},
-    };
+    const request = {parent, dicomWebPath};
 
     const instances =
       await healthcare.projects.locations.datasets.dicomStores.searchForInstances(
-        request
+        request,
+        {
+          headers: {Accept: 'application/dicom+json,multipart/related'},
+        }
       );
     console.log(`Found ${instances.data.length} instances:`);
     console.log(JSON.stringify(instances.data));

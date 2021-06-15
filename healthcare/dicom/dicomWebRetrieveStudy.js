@@ -53,7 +53,8 @@ const main = (
         request,
         {
           headers: {
-            Accept: 'multipart/related; type=application/dicom; transfer-syntax=*',
+            Accept:
+              'multipart/related; type=application/dicom; transfer-syntax=*',
           },
           responseType: 'arraybuffer',
         }

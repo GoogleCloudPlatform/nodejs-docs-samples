@@ -46,18 +46,17 @@ const main = (
     // const studyUid = '1.3.6.1.4.1.5062.55.1.2270943358.716200484.1363785608958.61.0';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}`;
     const dicomWebPath = `studies/${studyUid}`;
-    const request = {
-      parent,
-      dicomWebPath,
-      headers: {
-        Accept: 'multipart/related; type=application/dicom; transfer-syntax=*',
-      },
-      responseType: 'arraybuffer',
-    };
+    const request = {parent, dicomWebPath};
 
     const study =
       await healthcare.projects.locations.datasets.dicomStores.studies.retrieveStudy(
-        request
+        request,
+        {
+          headers: {
+            Accept: 'multipart/related; type=application/dicom; transfer-syntax=*',
+          },
+          responseType: 'arraybuffer',
+        }
       );
 
     const fileBytes = Buffer.from(study.data);

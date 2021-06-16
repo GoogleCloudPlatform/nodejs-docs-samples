@@ -48,7 +48,7 @@ describe('functions/pubsub', () => {
     // exec's 'timeout' param won't kill children of "shim" /bin/sh process
     // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     ffProc = execPromise(
-      `functions-framework --target=publish --signature-type=http --port=${PORT} & sleep 1; kill $!`,
+      `functions-framework --target=publish --signature-type=http --port=${PORT} & sleep 3; kill $!`,
       {shell: true, cwd}
     );
   });

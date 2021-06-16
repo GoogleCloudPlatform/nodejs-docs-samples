@@ -24,19 +24,18 @@ function main(
   resourceId
 ) {
   // [START healthcare_patch_fhir_resource]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+    headers: {'Content-Type': 'application/json-patch+json'},
+  });
 
   async function patchFhirResource() {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
     // TODO(developer): replace patchOptions with your desired JSON patch body
     const patchOptions = [{op: 'replace', path: '/active', value: false}];
-    google.options({
-      auth,
-      headers: {'Content-Type': 'application/json-patch+json'},
-    });
 
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';

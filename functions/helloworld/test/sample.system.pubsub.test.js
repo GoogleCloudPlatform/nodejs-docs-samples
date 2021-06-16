@@ -24,17 +24,20 @@ const pubsub = new PubSub();
 const topicName = process.env.FUNCTIONS_TOPIC;
 const baseCmd = 'gcloud functions';
 
+// Use unique resource names to avoid conflicts between concurrent test runs
+const gcfName = `helloPubSub-${uuid.v4()}`;
+
 describe('system tests', () => {
   // [END functions_pubsub_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloPubSub --runtime nodejs10 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`
+      `gcloud functions deploy ${gcfName} --runtime nodejs10 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`
     );
   });
 
   after(() => {
     childProcess.execSync(
-      `gcloud functions delete helloPubSub --region=${process.env.GCF_REGION}`
+      `gcloud functions delete ${gcfName} --region=${process.env.GCF_REGION}`
     );
   });
   // [START functions_pubsub_system_test]
@@ -53,7 +56,7 @@ describe('system tests', () => {
     // Wait for logs to become consistent
     await promiseRetry(retry => {
       const logs = childProcess
-        .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
+        .execSync(`${baseCmd} logs read ${gcfName} --start-time ${startTime}`)
         .toString();
 
       try {
@@ -76,7 +79,7 @@ describe('system tests', () => {
     // Wait for logs to become consistent
     await promiseRetry(retry => {
       const logs = childProcess
-        .execSync(`${baseCmd} logs read helloPubSub --start-time ${startTime}`)
+        .execSync(`${baseCmd} logs read ${gcfName} --start-time ${startTime}`)
         .toString();
 
       try {

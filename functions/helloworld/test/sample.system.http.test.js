@@ -17,24 +17,28 @@ const assert = require('assert');
 const Supertest = require('supertest');
 const supertest = Supertest(process.env.BASE_URL);
 const childProcess = require('child_process');
+const uuid = require('uuid');
+
+// Use unique resource names to avoid conflicts between concurrent test runs
+const gcfName = `helloPubSub-${uuid.v4()}`;
 
 describe('system tests', () => {
   // [END functions_http_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloHttp --allow-unauthenticated --runtime nodejs10 --trigger-http --ingress-settings=all --region=${process.env.GCF_REGION}; gcloud functions add-iam-policy-binding helloHttp --region=${process.env.GCF_REGION} --member="allUsers" --role=roles/cloudfunctions.invoker`
+      `gcloud functions deploy ${gcfName} --allow-unauthenticated --runtime nodejs10 --trigger-http --ingress-settings=all --region=${process.env.GCF_REGION}; gcloud functions add-iam-policy-binding helloHttp --region=${process.env.GCF_REGION} --member="allUsers" --role=roles/cloudfunctions.invoker`
     );
   });
 
   after(() => {
     childProcess.execSync(
-      `gcloud functions delete helloHttp --region=${process.env.GCF_REGION}`
+      `gcloud functions delete ${gcfName} --region=${process.env.GCF_REGION}`
     );
   });
   // [START functions_http_system_test]
   it('helloHttp: should print a name', async () => {
     await supertest
-      .post('/helloHttp')
+      .post(`/${gcfName}`)
       .send({name: 'John'})
       .expect(200)
       .expect(response => {
@@ -45,7 +49,7 @@ describe('system tests', () => {
 
   it('helloHttp: should print hello world', async () => {
     await supertest
-      .get('/helloHttp')
+      .get(`/${gcfName}`)
       .expect(200)
       .expect(response => {
         assert.strictEqual(response.text, 'Hello World!');

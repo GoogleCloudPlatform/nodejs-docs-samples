@@ -25,6 +25,9 @@ const promiseRetry = require('promise-retry');
 // Use unique GCS filename to avoid conflicts between concurrent test runs
 const gcsFileName = `test-${uuid.v4()}.txt`;
 
+// Use a unique GCF function name for the same reason
+const gcfName = `helloGCS-${uuid.v4()}`;
+
 const localFileName = 'test.txt';
 const bucketName = process.env.FUNCTIONS_DELETABLE_BUCKET;
 const bucket = storage.bucket(bucketName);
@@ -34,13 +37,13 @@ describe('system tests', () => {
   // [END functions_storage_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloGCS --runtime nodejs10 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
+      `gcloud functions deploy ${gcfName} --runtime nodejs10 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
     );
   });
 
   after(() => {
     childProcess.execSync(
-      `gcloud functions delete helloGCS --region=${process.env.GCF_REGION}`
+      `gcloud functions delete ${gcfName} --region=${process.env.GCF_REGION}`
     );
   });
   // [START functions_storage_system_test]
@@ -57,7 +60,7 @@ describe('system tests', () => {
     // Wait for logs to become consistent
     await promiseRetry(retry => {
       const logs = childProcess
-        .execSync(`${baseCmd} logs read helloGCS --start-time ${startTime}`)
+        .execSync(`${baseCmd} logs read ${gcfName} --start-time ${startTime}`)
         .toString();
 
       try {

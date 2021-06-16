@@ -23,14 +23,16 @@ function main(
   resourceType
 ) {
   // [START healthcare_create_resource]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+    headers: {'Content-Type': 'application/fhir+json'},
+  });
 
   async function createFhirResource() {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-
     // Replace the following body with the data for the resource you want to
     // create.
     const body = {
@@ -39,8 +41,6 @@ function main(
       birthDate: '1970-01-01',
       resourceType: 'Patient',
     };
-
-    google.options({auth, headers: {'Content-Type': 'application/fhir+json'}});
 
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';

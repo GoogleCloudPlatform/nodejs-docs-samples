@@ -28,24 +28,20 @@ const text = 'how old is the Brooklyn Bridge';
 const adaptationClient = new speech.AdaptationClient();
 
 const projectId = process.env.GCLOUD_PROJECT;
-const location = 'us-west1'
-const customClassId = uuidv4().replace(/-/g, '').substring(0, 15);
-const phraseSetId = uuidv4().replace(/-/g, '').substring(0, 15);
+const location = 'global'
+const customClassId = `customClassId${uuidv4().replace(/-/g, '').substring(0, 8)}`;
+const phraseSetId = `phraseSetId${uuidv4().replace(/-/g, '').substring(0, 8)}`;
 const classParent = `projects/${projectId}/locations/${location}/customClasses/${customClassId}`;
-const phraseParent = `projects/${projectId}/locations/${location}/phraseSets/${customClassId}`;
+const phraseParent = `projects/${projectId}/locations/${location}/phraseSets/${phraseSetId}`;
 
 describe('modelAdaptation', () => {
-    // TODO: investigate why this test fails when us-west1 used as location.
-    // when set to global, it fails with 404.
-    it.skip('should run modelAdaptation', async () => {
+    it('should run modelAdaptation', async () => {
       const stdout = execSync(`node modelAdaptation.js ${projectId} ${location} ${storageUri} ${customClassId} ${phraseSetId}`)
       assert.match(stdout, /Transcription:/ );
     });
     after(async () => {
       // Release used resources
-      // TODO: investigate why this test fails when us-west1 used as location.
-      // when set to global, it fails with 404.
-      // await cleanUp(classParent, phraseParent);
+      await cleanUp(classParent, phraseParent);
     })
 });
 

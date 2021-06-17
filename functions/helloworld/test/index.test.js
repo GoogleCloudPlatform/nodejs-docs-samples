@@ -14,7 +14,7 @@
 
 const path = require('path');
 const assert = require('assert');
-const requestRetry = require('requestretry');
+const {request} = require('gaxios');
 const sinon = require('sinon');
 const execPromise = require('child-process-promise').exec;
 
@@ -35,17 +35,21 @@ const httpInvocation = (fnUrl, port, body) => {
 
   if (body) {
     // POST request
-    return requestRetry.post({
+    return request({
       url: `${baseUrl}/${fnUrl}`,
-      retryDelay: 400,
-      body: body,
-      json: true,
+      method: 'POST',
+      retryConfig: {
+        retryDelay: 400,
+      },
+      body,
     });
   } else {
     // GET request
-    return requestRetry.get({
+    return request({
       url: `${baseUrl}/${fnUrl}`,
-      retryDelay: 400,
+      retryConfig: {
+        retryDelay: 400,
+      },
     });
   }
 };

@@ -18,7 +18,7 @@ const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const uuid = require('uuid');
 
-const requestRetry = require('requestretry');
+const {request} = require('gaxios');
 const cwd = path.join(__dirname, '..');
 
 // [END functions_storage_integration_test]
@@ -52,12 +52,13 @@ describe('functions_helloworld_storage integration test', () => {
 
     // Send HTTP request simulating GCS change notification
     // (GCF translates GCS notifications to HTTP requests internally)
-    const response = await requestRetry({
+    const response = await request({
       url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: data,
-      retryDelay: 200,
-      json: true,
+      retryConfig: {
+        retryDelay: 200,
+      },
     });
 
     assert.strictEqual(response.statusCode, 204);

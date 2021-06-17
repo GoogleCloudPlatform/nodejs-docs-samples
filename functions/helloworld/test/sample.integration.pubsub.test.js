@@ -16,7 +16,7 @@
 const assert = require('assert');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
-const requestRetry = require('requestretry');
+const {request} = require('gaxios');
 const uuid = require('uuid');
 
 const cwd = path.join(__dirname, '..');
@@ -41,12 +41,13 @@ describe('functions_helloworld_pubsub integration test', () => {
 
     // Send HTTP request simulating Pub/Sub message
     // (GCF translates Pub/Sub messages to HTTP requests internally)
-    const response = await requestRetry({
+    const response = await request({
       url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: pubsubMessage,
-      retryDelay: 200,
-      json: true,
+      retryConfig: {
+        retryDelay: 200,
+      },
     });
 
     assert.strictEqual(response.statusCode, 204);
@@ -71,12 +72,13 @@ describe('functions_helloworld_pubsub integration test', () => {
 
     // Send HTTP request simulating Pub/Sub message
     // (GCF translates Pub/Sub messages to HTTP requests internally)
-    const response = await requestRetry({
+    const response = await request({
       url: `http://localhost:${PORT}/`,
       method: 'POST',
       body: pubsubMessage,
-      retryDelay: 200,
-      json: true,
+      retryConfig: {
+        retryDelay: 200,
+      },
     });
 
     assert.strictEqual(response.statusCode, 204);

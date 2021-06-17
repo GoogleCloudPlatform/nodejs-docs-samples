@@ -16,7 +16,7 @@
 const assert = require('assert');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
-const requestRetry = require('requestretry');
+const {request} = require('gaxios');
 const uuid = require('uuid');
 
 const PORT = process.env.PORT || 8080;
@@ -47,12 +47,13 @@ describe('functions_helloworld_http HTTP integration test', () => {
   it('helloHttp: should print a name', async () => {
     const name = uuid.v4();
 
-    const response = await requestRetry({
+    const response = await request({
       url: `${BASE_URL}/helloHttp`,
       method: 'POST',
       body: {name},
-      retryDelay: 200,
-      json: true,
+      retryConfig: {
+        retryDelay: 200,
+      },
     });
 
     assert.strictEqual(response.statusCode, 200);
@@ -61,12 +62,13 @@ describe('functions_helloworld_http HTTP integration test', () => {
   // [END functions_http_integration_test]
 
   it('helloHttp: should print hello world', async () => {
-    const response = await requestRetry({
+    const response = await request({
       url: `${BASE_URL}/helloHttp`,
       method: 'POST',
       body: {},
-      retryDelay: 200,
-      json: true,
+      retryConfig: {
+        retryDelay: 200,
+      },
     });
 
     assert.strictEqual(response.statusCode, 200);

@@ -17,9 +17,9 @@ const users = new Map();
 
 // Record socket ID with user's name and chat room
 function addUser(id, name, room) {
-  if (!name && !room) return new Error("Username and room are required");
-  if (!name) return new Error("Username is required");
-  if (!room) return new Error("Room is required");
+  if (!name && !room) return new Error('Username and room are required');
+  if (!name) return new Error('Username is required');
+  if (!room) return new Error('Room is required');
   users.set(id, {user: name, room});
 }
 
@@ -36,7 +36,7 @@ function deleteUser(id) {
 }
 
 module.exports = {
-  addUser, 
-  getUser, 
-  deleteUser
+  addUser,
+  getUser,
+  deleteUser,
 };

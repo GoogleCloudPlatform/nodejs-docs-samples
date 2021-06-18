@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "no-process-exit": "off",
+    "no-undef": "off",
+    "node/no-extraneous-require": "off"
+  }
+}

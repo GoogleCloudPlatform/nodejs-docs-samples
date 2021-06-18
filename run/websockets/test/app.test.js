@@ -24,21 +24,21 @@ describe('Unit Tests', () => {
   it('should be listening', async () => {
     await supertest(server).get('/').expect(200);
   });
-})
+});
 
 describe('Integration Tests', () => {
   let browser, browserPage;
-  
+
   before(async () => {
     const PORT = process.env.PORT || 8080;
     server.listen(PORT, () => {});
-  
+
     browser = await puppeteer.launch({
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     browserPage = await browser.newPage();
   });
-  
+
   after(async () => {
     await browser.close();
     await server.close();
@@ -52,7 +52,7 @@ describe('Integration Tests', () => {
       document.querySelector('#room').value = 'Google';
       document.querySelector('.signin').click();
     });
-    
+
     // Send message
     await browserPage.evaluate(() => {
       document.querySelector('#msg').value = 'Welcome!';
@@ -70,6 +70,5 @@ describe('Integration Tests', () => {
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);
     assert.strictEqual(roomText, 'Google');
-
   });
 });

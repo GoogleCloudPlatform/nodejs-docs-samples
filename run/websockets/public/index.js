@@ -55,7 +55,7 @@ $('#chat').submit(e => {
   e.preventDefault();
   const msg = $('#msg').val();
   // Emit "sendMessage" event with message
-  socket.emit('sendMessage', msg, (error) => {
+  socket.emit('sendMessage', msg, error => {
     if (error) {
       console.log(error);
     } else {
@@ -76,7 +76,7 @@ socket.on('notification', msg => {
 });
 
 // Listen connect event
-socket.on('connect', err => {
+socket.on('connect', () => {
   console.log('connected');
 });
 
@@ -89,7 +89,7 @@ socket.on('disconnect', err => {
 socket.io.on('reconnect', () => {
   console.log('reconnected');
   // Emit reconnect event to re-record socket ID with user and room
-  socket.emit('reconnect', {user, room}, (error) => {
+  socket.emit('reconnect', {user, room}, error => {
     if (error) {
       console.log(error);
     }

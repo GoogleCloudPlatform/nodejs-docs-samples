@@ -17,7 +17,6 @@ const got = require('got');
 const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const puppeteer = require('puppeteer');
-const { REDISHOST } = require('../storage');
 const auth = new GoogleAuth();
 
 describe('End-to-End Tests', () => {
@@ -79,7 +78,7 @@ describe('End-to-End Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    // execSync(cleanUpCmd);
+    execSync(cleanUpCmd);
   });
 
   it('can be reached by an HTTP request', async () => {
@@ -96,8 +95,8 @@ describe('End-to-End Tests', () => {
 
   it('should process chat message', async () => {
     await browserPage.setExtraHTTPHeaders({
-      Authorization: ID_TOKEN
-    })
+      Authorization: ID_TOKEN,
+    });
     await browserPage.goto(BASE_URL, {
       waitUntil: 'networkidle2',
     });
@@ -108,7 +107,7 @@ describe('End-to-End Tests', () => {
       document.querySelector('#room').value = 'Google';
       document.querySelector('.signin').click();
     });
-    
+
     // Send message
     await browserPage.evaluate(() => {
       document.querySelector('#msg').value = 'Welcome!';
@@ -120,12 +119,10 @@ describe('End-to-End Tests', () => {
     const list = await browserPage.$('#messages li');
     const itemText = await browserPage.evaluate(el => el.textContent, list);
     assert.strictEqual(itemText.trim(), 'Sundar: Welcome!');
-    await browserPage.screenshot({ path: 'example2.png' });
+    await browserPage.screenshot({path: 'example2.png'});
     // Confirm room
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);
     assert.strictEqual(roomText, 'Google');
-
   });
-
 });

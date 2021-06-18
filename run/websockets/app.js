@@ -64,7 +64,9 @@ io.on('connection', socket => {
     try {
       addUser(socket.id, name, room);
       socket.join(room);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   // Add listener for "sendMessage" event

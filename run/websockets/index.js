@@ -27,7 +27,7 @@ server.listen(PORT, () =>
 process.on('SIGTERM', () => {
   console.log(`${pkg.name}: received SIGTERM`);
   redisClient.quit();
-  process.exit();
+  process.exit(0);
 });
 
 module.exports = server;

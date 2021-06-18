@@ -22,16 +22,16 @@ const main = (
   gcsUri
 ) => {
   // [START healthcare_import_dicom_instance]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
   const sleep = require('../sleep');
 
   const importDicomInstance = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -49,9 +49,8 @@ const main = (
       },
     };
 
-    const operation = await healthcare.projects.locations.datasets.dicomStores.import(
-      request
-    );
+    const operation =
+      await healthcare.projects.locations.datasets.dicomStores.import(request);
     const operationName = operation.data.name;
 
     const operationRequest = {name: operationName};
@@ -60,9 +59,10 @@ const main = (
     await sleep(15000);
 
     // Check the LRO's status
-    const operationStatus = await healthcare.projects.locations.datasets.operations.get(
-      operationRequest
-    );
+    const operationStatus =
+      await healthcare.projects.locations.datasets.operations.get(
+        operationRequest
+      );
 
     const {data} = operationStatus;
 

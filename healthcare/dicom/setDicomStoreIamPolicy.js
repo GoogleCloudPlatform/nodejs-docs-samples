@@ -23,15 +23,15 @@ const main = (
   role
 ) => {
   // [START healthcare_dicom_store_set_iam_policy]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const setDicomStoreIamPolicy = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -54,9 +54,10 @@ const main = (
       },
     };
 
-    const dicomStore = await healthcare.projects.locations.datasets.dicomStores.setIamPolicy(
-      request
-    );
+    const dicomStore =
+      await healthcare.projects.locations.datasets.dicomStores.setIamPolicy(
+        request
+      );
     console.log(
       'Set DICOM store IAM policy:',
       JSON.stringify(dicomStore.data, null, 2)

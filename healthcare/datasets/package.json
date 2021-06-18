@@ -15,9 +15,8 @@
     "mocha": "^8.0.0"
   },
   "dependencies": {
-    "googleapis": "^73.0.0",
+    "@googleapis/healthcare": "^1.0.2",
     "mocha-test": "^2.0.4",
-    "uuid": "^8.0.0",
-    "yargs": "^17.0.0"
+    "uuid": "^8.0.0"
   }
 }

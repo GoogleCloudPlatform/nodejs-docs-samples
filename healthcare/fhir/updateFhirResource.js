@@ -23,18 +23,16 @@ const main = (
   resourceId
 ) => {
   // [START healthcare_update_resource]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+    headers: {'Content-Type': 'application/fhir+json'},
+  });
 
   const updateFhirResource = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({
-      auth,
-      headers: {'Content-Type': 'application/fhir+json'},
-    });
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -49,9 +47,10 @@ const main = (
     const body = {resourceType: resourceType, id: resourceId, active: true};
     const request = {name, requestBody: body};
 
-    const resource = await healthcare.projects.locations.datasets.fhirStores.fhir.update(
-      request
-    );
+    const resource =
+      await healthcare.projects.locations.datasets.fhirStores.fhir.update(
+        request
+      );
     console.log(`Updated ${resourceType} resource:\n`, resource.data);
   };
 

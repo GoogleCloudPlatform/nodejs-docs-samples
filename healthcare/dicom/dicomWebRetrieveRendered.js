@@ -24,23 +24,19 @@ const main = (
   instanceUid
 ) => {
   // [START healthcare_dicomweb_retrieve_rendered]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
   const fs = require('fs');
   const util = require('util');
   const writeFile = util.promisify(fs.writeFile);
   const fileName = 'rendered_image.png';
 
   const dicomWebRetrieveRendered = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({
-      auth,
-      headers: {Accept: 'image/png'},
-      responseType: 'arraybuffer',
-    });
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -53,9 +49,14 @@ const main = (
     const dicomWebPath = `studies/${studyUid}/series/${seriesUid}/instances/${instanceUid}/rendered`;
     const request = {parent, dicomWebPath};
 
-    const rendered = await healthcare.projects.locations.datasets.dicomStores.studies.series.instances.retrieveRendered(
-      request
-    );
+    const rendered =
+      await healthcare.projects.locations.datasets.dicomStores.studies.series.instances.retrieveRendered(
+        request,
+        {
+          headers: {Accept: 'image/png'},
+          responseType: 'arraybuffer',
+        }
+      );
     const fileBytes = Buffer.from(rendered.data);
 
     await writeFile(fileName, fileBytes);

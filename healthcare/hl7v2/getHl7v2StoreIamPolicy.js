@@ -21,15 +21,15 @@ const main = (
   hl7v2StoreId
 ) => {
   // [START healthcare_hl7v2_store_get_iam_policy]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const getHl7v2StoreIamPolicy = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -38,9 +38,10 @@ const main = (
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {resource_};
 
-    const hl7v2Store = await healthcare.projects.locations.datasets.hl7V2Stores.getIamPolicy(
-      request
-    );
+    const hl7v2Store =
+      await healthcare.projects.locations.datasets.hl7V2Stores.getIamPolicy(
+        request
+      );
     console.log(
       'Got HL7v2 store IAM policy:',
       JSON.stringify(hl7v2Store.data, null, 2)

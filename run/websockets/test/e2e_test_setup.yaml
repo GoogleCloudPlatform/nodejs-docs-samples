@@ -1,0 +1,46 @@
+steps:
+
+- id: 'Build Container Image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: '/bin/bash'
+  args:
+    - '-c'
+    - |
+      ./test/retry.sh "docker build -t gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} ."
+
+- id: 'Push Container Image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: '/bin/bash'
+  args:
+    - '-c'
+    - |
+      ./test/retry.sh "docker push gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
+
+- id: 'Deploy to Cloud Run'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    gcloud compute networks vpc-access connectors create my-connector$_VERSION \
+      --region ${_REGION} \
+      --range 10.8.0.0/28 \
+      --network default
+    
+    ./test/retry.sh "gcloud run deploy ${_SERVICE} \
+      --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+      --no-allow-unauthenticated \
+      --region ${_REGION} \
+      --platform ${_PLATFORM} \
+      --set-env-vars REDISHOST=${_REDISHOST} \
+      --vpc-connector my-redis-connector #my-connector-$_VERSION"
+
+images:
+- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
+
+substitutions:
+  _SERVICE: websocket
+  _VERSION: manual
+  _REGION: us-central1
+  _PLATFORM: managed
+  _REDISHOST: localhost

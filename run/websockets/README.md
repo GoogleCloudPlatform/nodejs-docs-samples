@@ -1,6 +1,6 @@
-# Node.js websockets sample for Cloud Run
+# Node.js WebSockets sample for Cloud Run
 
-This sample demonstrates how to use websockets on
+This sample demonstrates how to use WebSockets on
 [Cloud Run][run] with Node.js.
 
 * [Setup](#setup)
@@ -36,7 +36,7 @@ With `npm`:
 
     export REGION=us-central1
     export CONNECTOR_NAME=<CONNECTOR>
-    export REDIS_IP=<REDIS_IP>
+    export REDISHOST=<REDIS_IP>
 
     gcloud beta run deploy websocket --source . \
     --platform managed \
@@ -44,7 +44,7 @@ With `npm`:
     --region $REGION \
     --timeout 3600 \
     --vpc-connector $CONNECTOR_NAME \
-    --set-env-vars REDISHOST=$REDIS_IP
+    --set-env-vars REDISHOST=$REDISHOST
 
 
 ## Running the tests

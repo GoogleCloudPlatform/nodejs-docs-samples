@@ -25,7 +25,7 @@ html(lang="en")
     script(src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js")
 
   body
-
+    //- Login form
     form(id="signin")
       h1 Please sign in
       label(class="name mdc-text-field mdc-text-field--filled")
@@ -42,7 +42,8 @@ html(lang="en")
         button(type="submit" class="mdc-button signin") 
           div(class="mdc-button__ripple")
           span(class="mdc-button__label") Sign in
-
+          
+    //- Chat room
     div(id="chatroom" class="page-wrap")
       h1
       ul(id="messages")
@@ -56,8 +57,6 @@ html(lang="en")
             button(type="submit" class="mdc-button send") 
               div(class="mdc-button__ripple")
               span(class="mdc-button__label") Send
-
-
 
     script(src="/socket.io/socket.io.js")
     script(src="https://code.jquery.com/jquery-1.11.1.js")

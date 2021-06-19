@@ -14,7 +14,7 @@
 
 // [START functions_billing_limit]
 // [START functions_billing_stop]
-const google_billing = require('googleapis/build/src/apis/cloudbilling');
+const {CloudBillingClient} = require('@google-cloud/billing');
 const google_compute = require('googleapis/build/src/apis/compute');
 const {GoogleAuth} = require('google-auth-library');
 
@@ -49,7 +49,7 @@ exports.notifySlack = async pubsubEvent => {
 // [END functions_billing_slack]
 
 // [START functions_billing_stop]
-const billing = google_billing.cloudbilling('v1');
+const billing = new CloudBillingClient();
 
 exports.stopBilling = async pubsubEvent => {
   const pubsubData = JSON.parse(
@@ -86,10 +86,6 @@ const _setAuthCredential = () => {
 
   // Set credentials
   google_compute.auth = client;
-  google_billing._options = {
-    // Required monkeypatch
-    auth: client,
-  };
 };
 // [END functions_billing_limit]
 
@@ -100,8 +96,8 @@ const _setAuthCredential = () => {
  */
 const _isBillingEnabled = async projectName => {
   try {
-    const res = await billing.projects.getBillingInfo({name: projectName});
-    return res.data.billingEnabled;
+    const [res] = await billing.getProjectBillingInfo({name: projectName});
+    return res.billingEnabled;
   } catch (e) {
     console.log(
       'Unable to determine if billing is enabled on specified project, assuming billing is enabled'
@@ -116,11 +112,11 @@ const _isBillingEnabled = async projectName => {
  * @return {string} Text containing response from disabling billing
  */
 const _disableBillingForProject = async projectName => {
-  const res = await billing.projects.updateBillingInfo({
+  const [res] = await billing.updateProjectBillingInfo({
     name: projectName,
     resource: {billingAccountName: ''}, // Disable billing
   });
-  return `Billing disabled: ${JSON.stringify(res.data)}`;
+  return `Billing disabled: ${JSON.stringify(res)}`;
 };
 // [END functions_billing_stop]
 
@@ -134,14 +130,14 @@ exports.startBilling = async pubsubEvent => {
   if (!(await _isBillingEnabled(PROJECT_NAME))) {
     // Enable billing
 
-    const res = await billing.projects.updateBillingInfo({
+    const [res] = await billing.updateProjectBillingInfo({
       name: pubsubData.projectName,
-      resource: {
+      projectBillingInfo: {
         billingAccountName: pubsubData.billingAccountName,
         billingEnabled: true,
       },
     });
-    return `Billing enabled: ${JSON.stringify(res.data)}`;
+    return `Billing enabled: ${JSON.stringify(res)}`;
   } else {
     return 'Billing already enabled';
   }

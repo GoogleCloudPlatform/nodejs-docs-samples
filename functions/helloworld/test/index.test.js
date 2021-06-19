@@ -81,7 +81,7 @@ describe('index.test.js', () => {
     it('helloGET: should print hello world', async () => {
       const response = await httpInvocation('helloGET', PORT);
 
-      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.status, 200);
       assert.strictEqual(response.body, 'Hello World!');
     });
   });
@@ -101,21 +101,21 @@ describe('index.test.js', () => {
     it('helloHttp: should print a name via GET', async () => {
       const response = await httpInvocation('helloHttp?name=John', PORT);
 
-      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.status, 200);
       assert.strictEqual(response.body, 'Hello John!');
     });
 
     it('helloHttp: should print a name via POST', async () => {
       const response = await httpInvocation('helloHttp', PORT, {name: 'John'});
 
-      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.status, 200);
       assert.strictEqual(response.body, 'Hello John!');
     });
 
     it('helloHttp: should print hello world', async () => {
       const response = await httpInvocation('helloHttp', PORT);
 
-      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.status, 200);
       assert.strictEqual(response.body, 'Hello World!');
     });
 
@@ -124,7 +124,7 @@ describe('index.test.js', () => {
         name: '<script>alert(1)</script>',
       });
 
-      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(response.status, 200);
       assert.strictEqual(response.body.includes('<script>'), false);
     });
   });

@@ -61,7 +61,7 @@ describe('functions_helloworld_storage integration test', () => {
       },
     });
 
-    assert.strictEqual(response.statusCode, 204);
+    assert.strictEqual(response.status, 204);
 
     // Wait for functions-framework process to exit
     const {stdout} = await proc;

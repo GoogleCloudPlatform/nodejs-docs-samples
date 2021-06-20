@@ -15,7 +15,7 @@
 const proxyquire = require('proxyquire');
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
-const requestRetry = require('requestretry');
+const {request} = require('gaxios');
 const assert = require('assert');
 const sinon = require('sinon');
 
@@ -75,17 +75,18 @@ describe('functions/billing tests', () => {
         );
         const pubsubMessage = {data: encodedData, attributes: {}};
 
-        const response = await requestRetry({
+        const response = await request({
           url: `${BASE_URL}/notifySlack`,
           method: 'POST',
           body: {data: pubsubMessage},
-          retryDelay: 200,
-          json: true,
+          retryConfig: {
+            retryDelay: 200,
+          },
         });
 
-        assert.strictEqual(response.statusCode, 200);
+        assert.strictEqual(response.status, 200);
         assert.strictEqual(
-          response.body,
+          response.data,
           'Slack notification sent successfully'
         );
       });
@@ -118,16 +119,17 @@ describe('functions/billing tests', () => {
         );
         const pubsubMessage = {data: encodedData, attributes: {}};
 
-        const response = await requestRetry({
+        const response = await request({
           url: `${BASE_URL}/stopBilling`,
           method: 'POST',
           body: {data: pubsubMessage},
-          retryDelay: 200,
-          json: true,
+          retryConfig: {
+            retryDelay: 200,
+          },
         });
 
-        assert.strictEqual(response.statusCode, 200);
-        assert.ok(response.body.includes('Billing disabled'));
+        assert.strictEqual(response.status, 200);
+        assert.ok(response.data.includes('Billing disabled'));
       });
     });
   });

@@ -14,7 +14,7 @@
 
 const execPromise = require('child-process-promise').exec;
 const path = require('path');
-const requestRetry = require('requestretry');
+const {request} = require('gaxios');
 const assert = require('assert');
 
 const promiseRetry = require('promise-retry');
@@ -64,21 +64,22 @@ describe('functions_billing_limit', () => {
     );
     const pubsubMessage = {data: encodedData, attributes: {}};
 
-    const response = await requestRetry({
+    const response = await request({
       url: `${BASE_URL}/`,
       method: 'POST',
       body: {data: pubsubMessage},
-      retryDelay: 200,
-      json: true,
+      retryConfig: {
+        retryDelay: 200,
+      },
     });
 
     // Wait for the functions framework to stop
     // Must be BEFORE assertions, in case they fail
     await ffProc;
 
-    console.log(response.body);
+    console.log(response.data);
 
-    assert.strictEqual(response.statusCode, 200);
-    assert.ok(response.body.includes('instance(s) stopped successfully'));
+    assert.strictEqual(response.status, 200);
+    assert.ok(response.data.includes('instance(s) stopped successfully'));
   });
 });

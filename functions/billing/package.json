@@ -21,11 +21,10 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "child-process-promise": "^2.2.1",
+    "gaxios": "^4.3.0",
     "mocha": "^8.0.0",
     "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",
-    "request": "^2.88.0",
-    "requestretry": "^5.0.0",
     "sinon": "^11.0.0"
   }
 }

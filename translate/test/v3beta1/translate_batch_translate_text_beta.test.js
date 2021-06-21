@@ -50,6 +50,7 @@ describe(REGION_TAG, () => {
   });
 
   it('should batch translate the input text', async function () {
+    this.retries(3);
     const projectId = await translationClient.getProjectId();
     const inputUri = 'gs://cloud-samples-data/translation/text.txt';
 

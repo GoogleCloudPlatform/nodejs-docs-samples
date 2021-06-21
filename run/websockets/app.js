@@ -30,12 +30,16 @@ app.get('/', async (req, res) => {
   res.render('index');
 });
 
+// [START cloud_run_websockets_server]
 // Initialize Socket.io
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+
+// [START cloud_run_websockets_redis_adapter]
 const redis = require('socket.io-redis');
 // Replace in-memory adapter with Redis
 io.adapter(redis({host: REDISHOST, port: REDISPORT}));
+// [END cloud_run_websockets_redis_adapter]
 
 // Listen for new connection
 io.on('connection', socket => {
@@ -51,16 +55,17 @@ io.on('connection', socket => {
         title: "Someone's here",
         description: `${name} just entered the room`,
       });
-      // Send room's message history
+      // Retrieve room's message history or return null
       const messages = await getRoomFromCache(room);
+      // Send room's message history
       callback(null, messages);
     } catch (err) {
       callback(err, null);
     }
   });
 
-  // Add listener for "reconnect" event
-  socket.on('reconnect', async ({name, room}) => {
+  // Add listener for "updateSocketId" event
+  socket.on('updateSocketId', async ({name, room}) => {
     try {
       addUser(socket.id, name, room);
       socket.join(room);
@@ -96,5 +101,6 @@ io.on('connection', socket => {
     }
   });
 });
+// [END cloud_run_websockets_server]
 
 module.exports = server;

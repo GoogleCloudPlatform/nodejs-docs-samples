@@ -23,10 +23,12 @@ $(document).ready(() => {
   $('#chatroom').hide();
 });
 
+// [START cloud_run_websockets_initialization]
 // Initialize Socket.io
 const socket = io('', {
   transports: ['websocket'],
 });
+// [END cloud_run_websockets_initialization]
 
 let name;
 let room;
@@ -83,13 +85,17 @@ socket.on('connect', () => {
 // Listen for disconnect event
 socket.on('disconnect', err => {
   console.log('server disconnected: ', err);
+  if (err === "io server disconnect") {
+    // Reconnect manually if the disconnection was initiated by the server 
+    socket.connect();
+  }
 });
 
 // Listen for reconnect event
 socket.io.on('reconnect', () => {
   console.log('reconnected');
-  // Emit reconnect event to re-record socket ID with user and room
-  socket.emit('reconnect', {user, room}, error => {
+  // Emit "updateSocketId" event to update the recorded socket ID with user and room
+  socket.emit('updateSocketId', {user, room}, error => {
     if (error) {
       console.log(error);
     }

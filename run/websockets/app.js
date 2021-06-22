@@ -13,11 +13,10 @@
 // limitations under the License.
 
 const {
-  REDISHOST,
-  REDISPORT,
+  redisClient,
   getRoomFromCache,
   addMessageToCache,
-} = require('./storage');
+} = require('./redis');
 const {addUser, getUser, deleteUser} = require('./users');
 const express = require('express');
 
@@ -36,9 +35,9 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 // [START cloud_run_websockets_redis_adapter]
-const redis = require('socket.io-redis');
+const redisAdapter = require('@socket.io/redis-adapter');
 // Replace in-memory adapter with Redis
-io.adapter(redis({host: REDISHOST, port: REDISPORT}));
+io.adapter(redisAdapter(redisClient, redisClient.duplicate()));
 // [END cloud_run_websockets_redis_adapter]
 
 // Listen for new connection

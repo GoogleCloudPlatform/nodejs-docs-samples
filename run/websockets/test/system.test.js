@@ -37,7 +37,10 @@ describe('End-to-End Tests', () => {
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
   let browser, browserPage;
-  const REDISHOST = process.env.REDISHOST || 'localhost';
+  const {REDISHOST} = process.env;
+  if (!REDISHOST) {
+    throw Error('"REDISHOST" env var not found.');
+  }
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =

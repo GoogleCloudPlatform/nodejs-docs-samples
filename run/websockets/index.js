@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const {redisClient} = require('./storage');
+const {redisClient} = require('./redis');
 const pkg = require('./package');
 const server = require('./app');
 

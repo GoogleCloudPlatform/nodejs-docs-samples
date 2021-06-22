@@ -11,18 +11,19 @@
     "system-test": "mocha test/system.test.js --timeout=360000 --exit"
   },
   "dependencies": {
-    "@material/button": "^6.0.0",
-    "@material/ripple": "^6.0.0",
-    "@material/textfield": "^6.0.0",
-    "express": "^4.15.4",
-    "pug": "^3.0.0",
-    "socket.io": "^4.0.0",
-    "socket.io-redis": "^6.1.0"
+    "@material/button": "^11.0.0",
+    "@material/ripple": "^11.0.0",
+    "@material/textfield": "^11.0.0",
+    "@socket.io/redis-adapter": "^7.0.0",
+    "express": "^4.17.1",
+    "pug": "^3.0.2",
+    "redis": "^3.1.2",
+    "socket.io": "^4.1.2"
   },
   "devDependencies": {
     "google-auth-library": "^7.1.2",
-    "mocha": "^8.0.0",
+    "mocha": "^9.0.1",
     "puppeteer": "^10.0.0",
-    "supertest": "^6.0.0"
+    "supertest": "^6.1.3"
   }
 }

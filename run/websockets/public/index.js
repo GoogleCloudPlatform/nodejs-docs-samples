@@ -37,6 +37,7 @@ $('#signin').submit(e => {
   e.preventDefault();
   name = $('#name').val();
   room = $('#room').val();
+  console.log(name, room)
   // Emit "login" event with user name and chat room
   socket.emit('login', {name, room}, (error, history) => {
     if (error) {
@@ -56,6 +57,7 @@ $('#signin').submit(e => {
 $('#chat').submit(e => {
   e.preventDefault();
   const msg = $('#msg').val();
+  // [START cloud_run_websockets_emit]
   // Emit "sendMessage" event with message
   socket.emit('sendMessage', msg, error => {
     if (error) {
@@ -65,8 +67,10 @@ $('#chat').submit(e => {
       $('#msg').val('');
     }
   });
+  // [END cloud_run_websockets_emit]
 });
 
+// [START cloud_run_websockets_listen]
 // Listen for new messages
 socket.on('message', msg => {
   log(msg.user, msg.text);
@@ -81,6 +85,7 @@ socket.on('notification', msg => {
 socket.on('connect', () => {
   console.log('connected');
 });
+// [END cloud_run_websockets_listen]
 
 // Listen for disconnect event
 socket.on('disconnect', err => {

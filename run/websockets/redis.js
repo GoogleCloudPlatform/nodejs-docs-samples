@@ -14,11 +14,13 @@
 
 const {promisify} = require('util');
 
+// [START cloud_run_websockets_redis]
 const REDISHOST = process.env.REDISHOST || 'localhost';
 const REDISPORT = process.env.REDISPORT || 6379;
 
 // Instantiate the Redis client
 const redisClient = require('redis').createClient(REDISPORT, REDISHOST);
+// [END cloud_run_websockets_redis]
 
 // Set up to use promises and async/await for Redis methods
 const redisGet = promisify(redisClient.get).bind(redisClient);

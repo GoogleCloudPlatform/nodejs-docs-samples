@@ -12,11 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const {
-  redisClient,
-  getRoomFromCache,
-  addMessageToCache,
-} = require('./redis');
+const {redisClient, getRoomFromCache, addMessageToCache} = require('./redis');
 const {addUser, getUser, deleteUser} = require('./users');
 const express = require('express');
 

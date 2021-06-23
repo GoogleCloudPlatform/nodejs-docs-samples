@@ -37,7 +37,6 @@ $('#signin').submit(e => {
   e.preventDefault();
   name = $('#name').val();
   room = $('#room').val();
-  console.log(name, room)
   // Emit "login" event with user name and chat room
   socket.emit('login', {name, room}, (error, history) => {
     if (error) {
@@ -90,8 +89,8 @@ socket.on('connect', () => {
 // Listen for disconnect event
 socket.on('disconnect', err => {
   console.log('server disconnected: ', err);
-  if (err === "io server disconnect") {
-    // Reconnect manually if the disconnection was initiated by the server 
+  if (err === 'io server disconnect') {
+    // Reconnect manually if the disconnection was initiated by the server
     socket.connect();
   }
 });

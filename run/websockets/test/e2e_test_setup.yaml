@@ -22,7 +22,7 @@ steps:
   args:
   - '-c'
   - |
-    gcloud compute networks vpc-access connectors create my-connector$_VERSION \
+    gcloud compute networks vpc-access connectors create my-connector \
       --region ${_REGION} \
       --range 10.8.0.0/28 \
       --network default
@@ -33,7 +33,7 @@ steps:
       --region ${_REGION} \
       --platform ${_PLATFORM} \
       --set-env-vars REDISHOST=${_REDISHOST} \
-      --vpc-connector my-connector-$_VERSION"
+      --vpc-connector my-connector"
 
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

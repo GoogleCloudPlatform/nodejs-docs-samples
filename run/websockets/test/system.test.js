@@ -73,13 +73,12 @@ describe('End-to-End Tests', () => {
   });
 
   after(async () => {
-    
     let cleanUpCmd =
-    `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-    '--config ./test/e2e_test_cleanup.yaml ' +
-    `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_cleanup.yaml ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
-    
+
     execSync(cleanUpCmd);
     await browser.close();
   });

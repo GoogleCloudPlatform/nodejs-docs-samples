@@ -142,7 +142,7 @@ describe('System Tests', () => {
       },
       retry: {
         limit: 5,
-        statusCodes: [404, 401, 403, 500],
+        statusCodes: [404, 401, 500],
         methods: ['GET', 'POST'],
       },
     };
@@ -152,6 +152,8 @@ describe('System Tests', () => {
     } catch (e) {
       err = e;
     }
+    console.lpg(err.response.retryCount)
+    console.log(err.request.options.headers)
     assert.strictEqual(err.response.statusCode, 403);
   });
 

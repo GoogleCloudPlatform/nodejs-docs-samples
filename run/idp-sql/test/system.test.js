@@ -108,7 +108,7 @@ describe('System Tests', () => {
         limit: 5,
         statusCodes: [404, 401, 403, 500],
         methods: ['GET', 'POST'],
-      }
+      },
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);
@@ -126,7 +126,7 @@ describe('System Tests', () => {
         limit: 5,
         statusCodes: [404, 401, 403, 500],
         methods: ['GET', 'POST'],
-      }
+      },
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);
@@ -144,7 +144,7 @@ describe('System Tests', () => {
         limit: 5,
         statusCodes: [404, 401, 403, 500],
         methods: ['GET', 'POST'],
-      }
+      },
     };
     let err;
     try {
@@ -164,7 +164,7 @@ describe('System Tests', () => {
         limit: 5,
         statusCodes: [404, 401, 403, 500],
         methods: ['GET', 'POST'],
-      }
+      },
     };
     let err;
     try {

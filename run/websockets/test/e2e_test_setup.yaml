@@ -33,7 +33,7 @@ steps:
       --region ${_REGION} \
       --platform ${_PLATFORM} \
       --set-env-vars REDISHOST=${_REDISHOST} \
-      --vpc-connector my-redis-connector #my-connector-$_VERSION"
+      --vpc-connector my-connector-$_VERSION"
 
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

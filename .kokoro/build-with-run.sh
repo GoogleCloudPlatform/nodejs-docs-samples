@@ -32,6 +32,9 @@ popd
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 pushd github/nodejs-docs-samples/${PROJECT}
 
+# Install dependencies
+npm install
+
 # Update gcloud
 gcloud --quiet components update
 gcloud --quiet components install beta

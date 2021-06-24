@@ -68,7 +68,9 @@ describe('End-to-End Tests', () => {
     ID_TOKEN = clientHeaders['Authorization'].trim();
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
 
-    browser = await puppeteer.launch();
+    browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     browserPage = await browser.newPage();
   });
 

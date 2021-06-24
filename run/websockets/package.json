@@ -7,7 +7,6 @@
   "author": "Google LLC",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha --exit test/app.test.js",
     "system-test": "mocha test/system.test.js --timeout=360000 --exit"
   },
   "dependencies": {

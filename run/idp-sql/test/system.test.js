@@ -152,8 +152,8 @@ describe('System Tests', () => {
     } catch (e) {
       err = e;
     }
-    console.lpg(err.response.retryCount)
-    console.log(err.request.options.headers)
+    console.log(err.response.retryCount);
+    console.log(err.request.options.headers);
     assert.strictEqual(err.response.statusCode, 403);
   });
 

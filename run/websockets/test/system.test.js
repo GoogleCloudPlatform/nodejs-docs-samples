@@ -76,7 +76,7 @@ describe('End-to-End Tests', () => {
 
   after(() => {
     if (browser) {
-      browser.close().then(() => console.log('closed.'))
+      browser.close().then(() => console.log('Puppeteer closed.'))
     }
 
     let cleanUpCmd =
@@ -85,7 +85,7 @@ describe('End-to-End Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    execSync(cleanUpCmd);
+    // execSync(cleanUpCmd);
   });
 
   it('can be reached by an HTTP request', async () => {

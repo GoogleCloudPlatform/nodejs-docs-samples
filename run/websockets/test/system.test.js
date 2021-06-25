@@ -74,7 +74,11 @@ describe('End-to-End Tests', () => {
     browserPage = await browser.newPage();
   });
 
-  after(async () => {
+  after(() => {
+    if (browser) {
+      browser.close().then(() => console.log('closed.'))
+    }
+
     let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
@@ -82,7 +86,6 @@ describe('End-to-End Tests', () => {
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     execSync(cleanUpCmd);
-    await browser.close();
   });
 
   it('can be reached by an HTTP request', async () => {
@@ -111,6 +114,7 @@ describe('End-to-End Tests', () => {
       document.querySelector('#room').value = 'Google';
       document.querySelector('.signin').click();
     });
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     // Send message
     await browserPage.evaluate(() => {
@@ -123,7 +127,6 @@ describe('End-to-End Tests', () => {
     const list = await browserPage.$('#messages li');
     const itemText = await browserPage.evaluate(el => el.textContent, list);
     assert.strictEqual(itemText.trim(), 'Sundar: Welcome!');
-    await browserPage.screenshot({path: 'example2.png'});
     // Confirm room
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);

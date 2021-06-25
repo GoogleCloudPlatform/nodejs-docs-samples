@@ -14,7 +14,7 @@
 
 const assert = require('assert');
 const got = require('got');
-const {execSync} = require('child_process');
+const {execSync, exec} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const puppeteer = require('puppeteer');
 const auth = new GoogleAuth();
@@ -76,7 +76,7 @@ describe('End-to-End Tests', () => {
 
   after(() => {
     if (browser) {
-      browser.close().then(() => console.log('Puppeteer closed.'))
+      browser.close().then(() => console.log('Puppeteer closed.'));
     }
 
     let cleanUpCmd =
@@ -85,7 +85,7 @@ describe('End-to-End Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    // execSync(cleanUpCmd);
+    exec(cleanUpCmd);
   });
 
   it('can be reached by an HTTP request', async () => {

@@ -23,12 +23,12 @@ $(document).ready(() => {
   $('#chatroom').hide();
 });
 
-// [START cloud_run_websockets_initialization]
+// [START cloudrun_websockets_initialization]
 // Initialize Socket.io
 const socket = io('', {
   transports: ['websocket'],
 });
-// [END cloud_run_websockets_initialization]
+// [END cloudrun_websockets_initialization]
 
 let name;
 let room;
@@ -56,7 +56,7 @@ $('#signin').submit(e => {
 $('#chat').submit(e => {
   e.preventDefault();
   const msg = $('#msg').val();
-  // [START cloud_run_websockets_emit]
+  // [START cloudrun_websockets_emit]
   // Emit "sendMessage" event with message
   socket.emit('sendMessage', msg, error => {
     if (error) {
@@ -66,10 +66,10 @@ $('#chat').submit(e => {
       $('#msg').val('');
     }
   });
-  // [END cloud_run_websockets_emit]
+  // [END cloudrun_websockets_emit]
 });
 
-// [START cloud_run_websockets_listen]
+// [START cloudrun_websockets_listen]
 // Listen for new messages
 socket.on('message', msg => {
   log(msg.user, msg.text);
@@ -84,7 +84,7 @@ socket.on('notification', msg => {
 socket.on('connect', () => {
   console.log('connected');
 });
-// [END cloud_run_websockets_listen]
+// [END cloudrun_websockets_listen]
 
 // Listen for disconnect event
 socket.on('disconnect', err => {

@@ -24,16 +24,16 @@ app.get('/', async (req, res) => {
   res.render('index');
 });
 
-// [START cloud_run_websockets_server]
+// [START cloudrun_websockets_server]
 // Initialize Socket.io
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
-// [START cloud_run_websockets_redis_adapter]
+// [START cloudrun_websockets_redis_adapter]
 const redisAdapter = require('@socket.io/redis-adapter');
 // Replace in-memory adapter with Redis
 io.adapter(redisAdapter(redisClient, redisClient.duplicate()));
-// [END cloud_run_websockets_redis_adapter]
+// [END cloudrun_websockets_redis_adapter]
 
 // Listen for new connection
 io.on('connection', socket => {
@@ -95,6 +95,6 @@ io.on('connection', socket => {
     }
   });
 });
-// [END cloud_run_websockets_server]
+// [END cloudrun_websockets_server]
 
 module.exports = server;

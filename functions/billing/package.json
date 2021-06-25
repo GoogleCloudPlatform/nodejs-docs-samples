@@ -13,8 +13,9 @@
   "author": "Ace Nassri <anassri@google.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "@google-cloud/billing": "^2.2.2",
     "google-auth-library": "^7.0.0",
-    "googleapis": "^75.0.0",
+    "googleapis": "^78.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {

@@ -13,59 +13,44 @@
 // limitations under the License.
 
 const proxyquire = require('proxyquire');
-const execPromise = require('child-process-promise').exec;
-const path = require('path');
+const {exec} = require('child_process');
 const {request} = require('gaxios');
 const assert = require('assert');
 const sinon = require('sinon');
-
-const cwd = path.join(__dirname, '..');
+const waitPort = require('wait-port');
 
 const PROJECT_NAME = process.env.GOOGLE_CLOUD_PROJECT;
-const FF_CMD = 'functions-framework';
 const {BILLING_ACCOUNT} = process.env;
 
-after(async () => {
-  // Re-enable billing using the sample file itself
-  // Invoking the file directly is more concise vs. re-implementing billing setup here
-  const jsonData = {
-    billingAccountName: `billingAccounts/${BILLING_ACCOUNT}`,
-    projectName: `projects/${PROJECT_NAME}`,
-  };
-  const encodedData = Buffer.from(JSON.stringify(jsonData)).toString('base64');
-  const pubsubMessage = {data: encodedData, attributes: {}};
-
-  await require('../').startBilling(pubsubMessage);
-});
-
-const handleLinuxFailures = async proc => {
-  try {
-    return await proc;
-  } catch (err) {
-    // Timeouts always cause errors on Linux, so catch them
-    // Don't return proc, as await-ing it re-throws the error
-    if (!err.name || err.name !== 'ChildProcessError') {
-      throw err;
-    }
-  }
-};
-
 describe('functions/billing tests', () => {
+  after(async () => {
+    // Re-enable billing using the sample file itself
+    // Invoking the file directly is more concise vs. re-implementing billing setup here
+    const jsonData = {
+      billingAccountName: `billingAccounts/${BILLING_ACCOUNT}`,
+      projectName: `projects/${PROJECT_NAME}`,
+    };
+    const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+      'base64'
+    );
+    const pubsubMessage = {data: encodedData, attributes: {}};
+
+    await require('../').startBilling(pubsubMessage);
+  });
+
   describe('notifies Slack', () => {
     let ffProc;
     const PORT = 8080;
     const BASE_URL = `http://localhost:${PORT}`;
 
-    before(() => {
-      const ffProc = execPromise(
-        `${FF_CMD} --target=notifySlack --signature-type=event --port ${PORT}`,
-        {timeout: 1000, shell: true, cwd}
+    before(async () => {
+      ffProc = exec(
+        `npx functions-framework --target=notifySlack --signature-type=event --port ${PORT}`
       );
+      await waitPort({host: 'localhost', port: PORT});
     });
 
-    after(async () => {
-      await handleLinuxFailures(ffProc);
-    });
+    after(() => ffProc.kill());
 
     describe('functions_billing_slack', () => {
       it('should notify Slack when budget is exceeded', async () => {
@@ -78,10 +63,7 @@ describe('functions/billing tests', () => {
         const response = await request({
           url: `${BASE_URL}/notifySlack`,
           method: 'POST',
-          body: {data: pubsubMessage},
-          retryConfig: {
-            retryDelay: 200,
-          },
+          data: {data: pubsubMessage},
         });
 
         assert.strictEqual(response.status, 200);
@@ -98,16 +80,14 @@ describe('functions/billing tests', () => {
     const PORT = 8081;
     const BASE_URL = `http://localhost:${PORT}`;
 
-    before(() => {
-      const ffProc = execPromise(
-        `${FF_CMD} --target=stopBilling --signature-type=event --port ${PORT}`,
-        {timeout: 1000, shell: true, cwd}
+    before(async () => {
+      ffProc = exec(
+        `npx functions-framework --target=stopBilling --signature-type=event --port ${PORT}`
       );
+      await waitPort({host: 'localhost', port: PORT});
     });
 
-    after(async () => {
-      await handleLinuxFailures(ffProc);
-    });
+    after(() => ffProc.kill());
 
     describe('functions_billing_stop', () => {
       it('should disable billing when budget is exceeded', async () => {
@@ -122,10 +102,7 @@ describe('functions/billing tests', () => {
         const response = await request({
           url: `${BASE_URL}/stopBilling`,
           method: 'POST',
-          body: {data: pubsubMessage},
-          retryConfig: {
-            retryDelay: 200,
-          },
+          data: {data: pubsubMessage},
         });
 
         assert.strictEqual(response.status, 200);
@@ -133,45 +110,45 @@ describe('functions/billing tests', () => {
       });
     });
   });
-});
 
-describe('shuts down GCE instances', () => {
-  describe('functions_billing_limit', () => {
-    it('should attempt to shut down GCE instances when budget is exceeded', async () => {
-      // Mock GCE (because real GCE instances take too long to start/stop)
-      const listInstancesResponseMock = {
-        data: {
-          items: [{name: 'test-instance-1', status: 'RUNNING'}],
-        },
-      };
+  describe('shuts down GCE instances', () => {
+    describe('functions_billing_limit', () => {
+      it('should attempt to shut down GCE instances when budget is exceeded', async () => {
+        // Mock GCE (because real GCE instances take too long to start/stop)
+        const listInstancesResponseMock = {
+          data: {
+            items: [{name: 'test-instance-1', status: 'RUNNING'}],
+          },
+        };
 
-      const computeMock = {
-        instances: {
-          list: sinon.stub().returns(listInstancesResponseMock),
-          stop: sinon.stub().resolves({data: {}}),
-        },
-      };
+        const computeMock = {
+          instances: {
+            list: sinon.stub().returns(listInstancesResponseMock),
+            stop: sinon.stub().resolves({data: {}}),
+          },
+        };
 
-      const googleapisMock = {
-        compute: sinon.stub().returns(computeMock),
-        options: sinon.stub().returns(),
-      };
+        const googleapisMock = {
+          compute: sinon.stub().returns(computeMock),
+          options: sinon.stub().returns(),
+        };
 
-      // Run test
-      const jsonData = {costAmount: 500, budgetAmount: 400};
-      const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
-        'base64'
-      );
-      const pubsubMessage = {data: encodedData, attributes: {}};
+        // Run test
+        const jsonData = {costAmount: 500, budgetAmount: 400};
+        const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
+          'base64'
+        );
+        const pubsubMessage = {data: encodedData, attributes: {}};
 
-      const sample = proxyquire('../', {
-        'googleapis/build/src/apis/compute': googleapisMock,
-      }); // kokoro-allow-mock
+        const sample = proxyquire('../', {
+          'googleapis/build/src/apis/compute': googleapisMock,
+        }); // kokoro-allow-mock
 
-      await sample.limitUse(pubsubMessage);
+        await sample.limitUse(pubsubMessage);
 
-      assert.strictEqual(computeMock.instances.list.calledOnce, true);
-      assert.ok(computeMock.instances.stop.calledOnce);
+        assert.strictEqual(computeMock.instances.list.calledOnce, true);
+        assert.ok(computeMock.instances.stop.calledOnce);
+      });
     });
   });
 });

@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const execPromise = require('child-process-promise').exec;
-const path = require('path');
+const {exec} = require('child_process');
 const {request} = require('gaxios');
 const assert = require('assert');
-
 const promiseRetry = require('promise-retry');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
-const cwd = path.join(__dirname, '..');
 
 before(async () => {
   // Re-enable compute instances using the sample file itself
@@ -53,9 +50,8 @@ before(async () => {
 
 describe('functions_billing_limit', () => {
   it('should shut down GCE instances when budget is exceeded', async () => {
-    const ffProc = execPromise(
-      'functions-framework --target=limitUse --signature-type=event',
-      {timeout: 1000, shell: true, cwd}
+    const ffProc = exec(
+      'functions-framework --target=limitUse --signature-type=event'
     );
 
     const jsonData = {costAmount: 500, budgetAmount: 400};
@@ -67,8 +63,9 @@ describe('functions_billing_limit', () => {
     const response = await request({
       url: `${BASE_URL}/`,
       method: 'POST',
-      body: {data: pubsubMessage},
+      data: {data: pubsubMessage},
       retryConfig: {
+        retries: 3,
         retryDelay: 200,
       },
     });

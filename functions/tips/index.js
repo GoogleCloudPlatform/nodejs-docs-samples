@@ -200,7 +200,8 @@ const pubsub = new PubSub();
 exports.gcpApiCall = (req, res) => {
   const topic = pubsub.topic(req.body.topic);
 
-  topic.publish(Buffer.from('Test message'), err => {
+  const data = Buffer.from('Test message');
+  topic.publishMessage({data}, err => {
     if (err) {
       res.status(500).send(`Error publishing the message: ${err}`);
     } else {

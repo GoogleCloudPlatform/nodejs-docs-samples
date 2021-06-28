@@ -19,39 +19,39 @@ const promiseRetry = require('promise-retry');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
-before(async () => {
-  // Re-enable compute instances using the sample file itself
-  const {startInstances, listRunningInstances} = require('../');
-
-  const emptyJson = JSON.stringify({});
-  const encodedData = Buffer.from(emptyJson).toString('base64');
-  const emptyMessage = {data: encodedData, attributes: {}};
-
-  await startInstances(emptyMessage);
-
-  try {
-    await promiseRetry(
-      async (retry, n) => {
-        const result = await listRunningInstances(emptyMessage);
-
-        console.log(`${n}: ${result}`);
-        if (result.length > 0) {
-          return Promise.resolve();
-        } else {
-          return retry();
-        }
-      },
-      {retries: 8}
-    );
-  } catch (err) {
-    console.error('Failed to restart GCE instances:', err);
-  }
-});
-
 describe('functions_billing_limit', () => {
+  before(async () => {
+    // Re-enable compute instances using the sample file itself
+    const {startInstances, listRunningInstances} = require('../');
+
+    const emptyJson = JSON.stringify({});
+    const encodedData = Buffer.from(emptyJson).toString('base64');
+    const emptyMessage = {data: encodedData, attributes: {}};
+
+    await startInstances(emptyMessage);
+
+    try {
+      await promiseRetry(
+        async (retry, n) => {
+          const result = await listRunningInstances(emptyMessage);
+
+          console.log(`${n}: ${result}`);
+          if (result.length > 0) {
+            return Promise.resolve();
+          } else {
+            return retry();
+          }
+        },
+        {retries: 8}
+      );
+    } catch (err) {
+      console.error('Failed to restart GCE instances:', err);
+    }
+  });
+
   it('should shut down GCE instances when budget is exceeded', async () => {
     const ffProc = exec(
-      'functions-framework --target=limitUse --signature-type=event'
+      'npx functions-framework --target=limitUse --signature-type=event'
     );
 
     const jsonData = {costAmount: 500, budgetAmount: 400};
@@ -69,10 +69,6 @@ describe('functions_billing_limit', () => {
         retryDelay: 200,
       },
     });
-
-    // Wait for the functions framework to stop
-    // Must be BEFORE assertions, in case they fail
-    await ffProc;
 
     console.log(response.data);
 

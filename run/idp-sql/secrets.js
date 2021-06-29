@@ -15,7 +15,7 @@
 const {logger} = require('./logging');
 
 // Load the Cloud SQL config from Secret Manager
-async function getCredConfig() {
+function getCredConfig() {
   // [START cloudrun_user_auth_secrets]
   // [START run_user_auth_secrets]
   // CLOUD_SQL_CREDENTIALS_SECRET is the resource ID of the secret, passed in by environment variable.

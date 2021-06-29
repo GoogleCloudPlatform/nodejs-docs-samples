@@ -31,7 +31,7 @@ async function getCredConfig() {
         `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: ${err}`
       );
     }
-  } 
+  }
   // [END run_user_auth_secrets]
   // [END cloudrun_user_auth_secrets]
   logger.info(

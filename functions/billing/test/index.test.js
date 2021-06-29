@@ -44,13 +44,19 @@ describe('functions/billing tests', () => {
     const BASE_URL = `http://localhost:${PORT}`;
 
     before(async () => {
+      console.log('Starting functions-framework process...');
       ffProc = exec(
         `npx functions-framework --target=notifySlack --signature-type=event --port ${PORT}`
       );
       await waitPort({host: 'localhost', port: PORT});
+      console.log('functions-framework process started and listening!');
     });
 
-    after(() => ffProc.kill());
+    after(() => {
+      console.log('Ending functions-framework process...');
+      ffProc.kill();
+      console.log('functions-framework process stopped.');
+    });
 
     describe('functions_billing_slack', () => {
       it('should notify Slack when budget is exceeded', async () => {
@@ -81,13 +87,19 @@ describe('functions/billing tests', () => {
     const BASE_URL = `http://localhost:${PORT}`;
 
     before(async () => {
+      console.log('Starting functions-framework process...');
       ffProc = exec(
         `npx functions-framework --target=stopBilling --signature-type=event --port ${PORT}`
       );
       await waitPort({host: 'localhost', port: PORT});
+      console.log('functions-framework process started and listening!');
     });
 
-    after(() => ffProc.kill());
+    after(() => {
+      console.log('Ending functions-framework process...');
+      ffProc.kill();
+      console.log('functions-framework process stopped.');
+    });
 
     describe('functions_billing_stop', () => {
       it('should disable billing when budget is exceeded', async () => {

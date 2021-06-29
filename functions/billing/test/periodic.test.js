@@ -20,7 +20,9 @@ const promiseRetry = require('promise-retry');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
 describe('functions_billing_limit', () => {
+  let ffProc;
   before(async () => {
+    console.log('Running periodic before hook....');
     // Re-enable compute instances using the sample file itself
     const {startInstances, listRunningInstances} = require('../');
 
@@ -47,12 +49,21 @@ describe('functions_billing_limit', () => {
     } catch (err) {
       console.error('Failed to restart GCE instances:', err);
     }
+    console.log('Periodic before hook complete.');
+  });
+
+  after(() => {
+    console.log('Ending functions-framework process...');
+    ffProc.kill();
+    console.log('functions-framework process stopped.');
   });
 
   it('should shut down GCE instances when budget is exceeded', async () => {
-    const ffProc = exec(
+    console.log('Starting functions-framework process...');
+    ffProc = exec(
       'npx functions-framework --target=limitUse --signature-type=event'
     );
+    console.log('functions-framework process started and listening!');
 
     const jsonData = {costAmount: 500, budgetAmount: 400};
     const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(

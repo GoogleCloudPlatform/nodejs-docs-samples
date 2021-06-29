@@ -82,7 +82,7 @@ const connectWithTcp = credConfig => {
  *
  * @returns {object} Knex's PostgreSQL client
  */
-const connect = () => {
+const connect = async () => {
   if (!credConfig) credConfig = getCredConfig();
   if (process.env.DB_HOST) {
     return connectWithTcp(credConfig);
@@ -98,7 +98,7 @@ const connect = () => {
  * @returns {Promise}
  */
 const insertVote = async vote => {
-  if (!knex) knex = connect();
+  if (!knex) knex = await connect();
   return knex(TABLE).insert(vote);
 };
 
@@ -108,7 +108,7 @@ const insertVote = async vote => {
  * @returns {Promise}
  */
 const getVotes = async () => {
-  if (!knex) knex = connect();
+  if (!knex) knex = await connect();
   return knex
     .select('candidate', 'time_cast', 'uid')
     .from(TABLE)
@@ -124,7 +124,7 @@ const getVotes = async () => {
  * @returns {Promise}
  */
 const getVoteCount = async candidate => {
-  if (!knex) knex = connect();
+  if (!knex) knex = await connect();
   return knex(TABLE).count('vote_id').where('candidate', candidate);
 };
 
@@ -132,7 +132,7 @@ const getVoteCount = async candidate => {
  * Create "votes" table in the Cloud SQL database
  */
 const createTable = async () => {
-  if (!knex) knex = connect();
+  if (!knex) knex = await connect();
   const exists = await knex.schema.hasTable(TABLE);
   if (!exists) {
     try {

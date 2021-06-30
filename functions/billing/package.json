@@ -8,7 +8,7 @@
   },
   "scripts": {
     "compute-test": "mocha test/periodic.test.js --timeout=600000",
-    "test": "mocha test/index.test.js --timeout=5000"
+    "test": "mocha test/index.test.js --timeout=5000 --exit"
   },
   "author": "Ace Nassri <anassri@google.com>",
   "license": "Apache-2.0",

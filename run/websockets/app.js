@@ -58,6 +58,7 @@ io.on('connection', socket => {
     }
   });
 
+  // [START cloudrun_websockets_update_socket]
   // Add listener for "updateSocketId" event
   socket.on('updateSocketId', async ({name, room}) => {
     try {
@@ -67,6 +68,7 @@ io.on('connection', socket => {
       console.log(err);
     }
   });
+  // [END cloudrun_websockets_update_socket]
 
   // Add listener for "sendMessage" event
   socket.on('sendMessage', (message, callback) => {

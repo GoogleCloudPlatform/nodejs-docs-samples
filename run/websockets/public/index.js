@@ -95,6 +95,7 @@ socket.on('disconnect', err => {
   }
 });
 
+// [START cloudrun_websockets_reconnect]
 // Listen for reconnect event
 socket.io.on('reconnect', () => {
   console.log('reconnected');
@@ -105,6 +106,7 @@ socket.io.on('reconnect', () => {
     }
   });
 });
+// [END cloudrun_websockets_reconnect]
 
 // Add message history in chat room
 function addHistory(messages) {

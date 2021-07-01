@@ -83,7 +83,7 @@ const connectWithTcp = credConfig => {
  * @returns {object} Knex's PostgreSQL client
  */
 const connect = async () => {
-  if (!credConfig) credConfig = await getCredConfig();
+  if (!credConfig) credConfig = getCredConfig();
   if (process.env.DB_HOST) {
     return connectWithTcp(credConfig);
   } else {

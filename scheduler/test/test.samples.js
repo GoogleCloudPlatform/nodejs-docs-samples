@@ -14,21 +14,26 @@
 
 'use strict';
 
+const {CloudSchedulerClient} = require('@google-cloud/scheduler');
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, before} = require('mocha');
 const cp = require('child_process');
 const supertest = require('supertest');
 const app = require('../app.js');
 const request = supertest(app);
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
-const PROJECT_ID = process.env.GCLOUD_PROJECT;
 const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
 const SERVICE_ID = 'my-service';
 
 describe('Cloud Scheduler Sample Tests', () => {
   let jobName;
+  let PROJECT_ID;
+
+  before(async () => {
+    const client = new CloudSchedulerClient();
+    PROJECT_ID = await client.getProjectId();
+  });
 
   it('should create and delete a scheduler job', async () => {
     const stdout = execSync(

@@ -8,24 +8,23 @@
   },
   "scripts": {
     "compute-test": "mocha test/periodic.test.js --timeout=600000",
-    "test": "mocha test/index.test.js --timeout=5000"
+    "test": "mocha test/index.test.js --timeout=5000 --exit"
   },
   "author": "Ace Nassri <anassri@google.com>",
   "license": "Apache-2.0",
   "dependencies": {
     "@google-cloud/billing": "^2.2.2",
     "google-auth-library": "^7.0.0",
-    "googleapis": "^75.0.0",
+    "googleapis": "^78.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
-    "child-process-promise": "^2.2.1",
+    "gaxios": "^4.3.0",
     "mocha": "^8.0.0",
     "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",
-    "request": "^2.88.0",
-    "requestretry": "^5.0.0",
-    "sinon": "^11.0.0"
+    "sinon": "^11.0.0",
+    "wait-port": "^0.2.9"
   }
 }

@@ -18,6 +18,7 @@ const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const {request} = require('gaxios');
 const uuid = require('uuid');
+const waitPort = require('wait-port');
 
 const PORT = process.env.PORT || 8080;
 const BASE_URL = `http://localhost:${PORT}`;
@@ -30,13 +31,14 @@ describe('functions_helloworld_http HTTP integration test', () => {
   let ffProc;
 
   // Run the functions-framework instance to host functions locally
-  before(() => {
+  before(async () => {
     // exec's 'timeout' param won't kill children of "shim" /bin/sh process
     // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
     ffProc = execPromise(
       `functions-framework --target=helloHttp --signature-type=http --port ${PORT} & sleep 2; kill $!`,
       {shell: true, cwd}
     );
+    await waitPort({host: 'localhost', port: PORT});
   });
 
   after(async () => {
@@ -50,10 +52,7 @@ describe('functions_helloworld_http HTTP integration test', () => {
     const response = await request({
       url: `${BASE_URL}/helloHttp`,
       method: 'POST',
-      body: {name},
-      retryConfig: {
-        retryDelay: 200,
-      },
+      data: {name},
     });
 
     assert.strictEqual(response.status, 200);
@@ -65,12 +64,8 @@ describe('functions_helloworld_http HTTP integration test', () => {
     const response = await request({
       url: `${BASE_URL}/helloHttp`,
       method: 'POST',
-      body: {},
-      retryConfig: {
-        retryDelay: 200,
-      },
+      data: {},
     });
-
     assert.strictEqual(response.status, 200);
     assert.strictEqual(response.body, 'Hello World!');
   });

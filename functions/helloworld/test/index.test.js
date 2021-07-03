@@ -17,39 +17,36 @@ const assert = require('assert');
 const {request} = require('gaxios');
 const sinon = require('sinon');
 const execPromise = require('child-process-promise').exec;
+const waitPort = require('wait-port');
 
 const program = require('..');
 
-const startFF = (target, signature, port) => {
+const startFF = async (target, signature, port) => {
   const cwd = path.join(__dirname, '..');
   // exec's 'timeout' param won't kill children of "shim" /bin/sh process
   // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
-  return execPromise(
+  const ff = execPromise(
     `functions-framework --target=${target} --signature-type=${signature} --port=${port} & sleep 1; kill $!`,
     {shell: true, cwd}
   );
+  await waitPort({host: 'localhost', port});
+  return ff;
 };
 
-const httpInvocation = (fnUrl, port, body) => {
+const httpInvocation = (fnUrl, port, data) => {
   const baseUrl = `http://localhost:${port}`;
 
-  if (body) {
+  if (data) {
     // POST request
     return request({
       url: `${baseUrl}/${fnUrl}`,
       method: 'POST',
-      retryConfig: {
-        retryDelay: 400,
-      },
-      body,
+      data,
     });
   } else {
     // GET request
     return request({
       url: `${baseUrl}/${fnUrl}`,
-      retryConfig: {
-        retryDelay: 400,
-      },
     });
   }
 };
@@ -70,8 +67,8 @@ describe('index.test.js', () => {
     const PORT = 8081;
     let ffProc;
 
-    before(() => {
-      ffProc = startFF('helloGET', 'http', PORT);
+    before(async () => {
+      ffProc = await startFF('helloGET', 'http', PORT);
     });
 
     after(async () => {
@@ -90,8 +87,8 @@ describe('index.test.js', () => {
     const PORT = 8082;
     let ffProc;
 
-    before(() => {
-      ffProc = startFF('helloHttp', 'http', PORT);
+    before(async () => {
+      ffProc = await startFF('helloHttp', 'http', PORT);
     });
 
     after(async () => {

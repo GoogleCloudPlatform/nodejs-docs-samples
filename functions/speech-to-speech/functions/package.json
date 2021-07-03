@@ -1,6 +1,5 @@
 {
   "name": "speech-to-speech",
-  "version": "0.0.1",
   "description": "Speech-to-Speech Translation API",
   "homepage": "https://cloud.google.com/solutions/mobile/",
   "license": "Apache-2.0",
@@ -44,8 +43,8 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "child-process-promise": "^2.2.1",
+    "gaxios": "^4.3.0",
     "mocha": "^8.0.0",
-    "request": "^2.88.0",
-    "requestretry": "^5.0.0"
+    "wait-port": "^0.2.9"
   }
 }

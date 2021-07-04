@@ -47,27 +47,27 @@ Run the following command to install the library dependencies for Node.js:
     Commands:
         dicomweb.js dicomWebStoreInstance <datasetId> <dicomStoreId>  Handles the POST requests specified in the DICOMweb
         <dcmFile>                                                     standard.
-        
+
         node dicomWebSearchForInstances.js <projectId> <cloudRegion>  Handles the GET requests specified in the DICOMweb
         <datasetId> <dicomStoreId>                                    standard.
-        
+
         node dicomWebRetrieveStudy.js <projectId> <cloudRegion>       Handles the GET requests specified in the DICOMweb
         <datasetId> <dicomStoreId> <studyUid>                         standard.
-        
+
         node dicomWebRetrieveInstance.js <projectId> <cloudRegion>    Handles the GET requests specified in the DICOMweb
         <datasetId> <dicomStoreId> <studyUid> <seriesUid>             standard.
-        <instanceUid>                        
-        
+        <instanceUid>
+
         node dicomWebRetrieveRendered.js <projectId> <cloudRegion>    Handles the GET requests specified in the DICOMweb
         <datasetId> <dicomStoreId> <studyUid> <seriesUid>             standard.
-        <instanceUid>                       
+        <instanceUid>
 
         node dicomWebSearchStudies.js <projectId> <cloudRegion>       Searches studies using DICOM tags.
         <datasetId> <dicomStoreId>
 
         node dicomWebDeleteStudy.js <projectId> <cloudRegion>         Handles DELETE requests.
-        <datasetId> <dicomStoreId>  <studyUid>       
-       
+        <datasetId> <dicomStoreId>  <studyUid>
+
 
     Options:
     --version             Show version number                                                                    [boolean]
@@ -79,3 +79,6 @@ Run the following command to install the library dependencies for Node.js:
     --help                Show help                                                                              [boolean]
 
 For more information, see https://cloud.google.com/healthcare/docs
+
+
+DON'T MERGE THIS CHANGE!

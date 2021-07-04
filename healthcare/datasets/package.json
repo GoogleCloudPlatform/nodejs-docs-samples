@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@googleapis/healthcare": "^1.0.2",
-    "mocha-test": "^2.0.4",
     "uuid": "^8.0.0"
   }
 }

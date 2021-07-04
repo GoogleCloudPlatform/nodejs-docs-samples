@@ -12,22 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const path = require('path');
 const assert = require('assert');
 const {request} = require('gaxios');
 const sinon = require('sinon');
-const execPromise = require('child-process-promise').exec;
+const {exec} = require('child_process');
 const waitPort = require('wait-port');
 
 const program = require('..');
 
 const startFF = async (target, signature, port) => {
-  const cwd = path.join(__dirname, '..');
-  // exec's 'timeout' param won't kill children of "shim" /bin/sh process
-  // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
-  const ff = execPromise(
-    `functions-framework --target=${target} --signature-type=${signature} --port=${port} & sleep 1; kill $!`,
-    {shell: true, cwd}
+  const ff = exec(
+    `npx functions-framework --target=${target} --signature-type=${signature} --port=${port}`
   );
   await waitPort({host: 'localhost', port});
   return ff;
@@ -35,7 +30,6 @@ const startFF = async (target, signature, port) => {
 
 const httpInvocation = (fnUrl, port, data) => {
   const baseUrl = `http://localhost:${port}`;
-
   if (data) {
     // POST request
     return request({
@@ -52,17 +46,6 @@ const httpInvocation = (fnUrl, port, data) => {
 };
 
 describe('index.test.js', () => {
-  before(() => {
-    assert(
-      process.env.GOOGLE_CLOUD_PROJECT,
-      'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-    );
-    assert(
-      process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-    );
-  });
-
   describe('functions_helloworld_get helloGET', () => {
     const PORT = 8081;
     let ffProc;
@@ -71,15 +54,12 @@ describe('index.test.js', () => {
       ffProc = await startFF('helloGET', 'http', PORT);
     });
 
-    after(async () => {
-      await ffProc;
-    });
+    after(() => ffProc.kill());
 
     it('helloGET: should print hello world', async () => {
       const response = await httpInvocation('helloGET', PORT);
-
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.body, 'Hello World!');
+      assert.strictEqual(response.data, 'Hello World!');
     });
   });
 
@@ -91,47 +71,33 @@ describe('index.test.js', () => {
       ffProc = await startFF('helloHttp', 'http', PORT);
     });
 
-    after(async () => {
-      await ffProc;
-    });
+    after(async () => ffProc.kill());
 
     it('helloHttp: should print a name via GET', async () => {
       const response = await httpInvocation('helloHttp?name=John', PORT);
-
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.body, 'Hello John!');
+      assert.strictEqual(response.data, 'Hello John!');
     });
 
     it('helloHttp: should print a name via POST', async () => {
       const response = await httpInvocation('helloHttp', PORT, {name: 'John'});
-
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.body, 'Hello John!');
+      assert.strictEqual(response.data, 'Hello John!');
     });
 
     it('helloHttp: should print hello world', async () => {
       const response = await httpInvocation('helloHttp', PORT);
-
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.body, 'Hello World!');
+      assert.strictEqual(response.data, 'Hello World!');
     });
 
     it('helloHttp: should escape XSS', async () => {
       const response = await httpInvocation('helloHttp', PORT, {
         name: '<script>alert(1)</script>',
       });
-
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.body.includes('<script>'), false);
+      assert.strictEqual(response.data.includes('<script>'), false);
     });
-  });
-
-  describe('functions_helloworld_pubsub helloPubSub', () => {
-    /* See sample.integration.pubsub.test.js */
-  });
-
-  describe('functions_helloworld_storage helloGCS', () => {
-    /* See sample.integration.storage.test.js */
   });
 
   describe('functions_helloworld_error', () => {
@@ -146,9 +112,7 @@ describe('index.test.js', () => {
 
       it('helloError3: callback should return an errback value', () => {
         const cb = sinon.stub();
-
         program.helloError3(null, null, cb);
-
         assert.ok(cb.calledOnce);
         assert.ok(cb.calledWith('I failed you'));
       });

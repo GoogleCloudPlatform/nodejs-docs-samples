@@ -15,34 +15,46 @@
 'use strict';
 
 const assert = require('assert');
-const execPromise = require('child-process-promise').exec;
-const path = require('path');
+const {spawn} = require('child_process');
 const {Storage} = require('@google-cloud/storage');
 const sinon = require('sinon');
+const {request} = require('gaxios');
+const waitPort = require('wait-port');
 
 const storage = new Storage();
-
-let requestRetry = require('requestretry');
-requestRetry = requestRetry.defaults({
-  retryStrategy: requestRetry.RetryStrategies.NetworkError,
-  method: 'POST',
-  json: true,
-  retryDelay: 1000,
-});
 
 const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
 const {BLURRED_BUCKET_NAME} = process.env;
 const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
-const cwd = path.join(__dirname, '..');
 
 const testFiles = {
   safe: 'bicycle.jpg',
   offensive: 'zombie.jpg',
 };
 
-describe('functions/imagemagick tests', () => {
-  let startFF, stopFF;
+async function startFF(port) {
+  const ffProc = spawn('npx', [
+    'functions-framework',
+    '--target',
+    'blurOffensiveImages',
+    '--signature-type',
+    'event',
+    '--port',
+    port,
+  ]);
+  const ffProcHandler = new Promise((resolve, reject) => {
+    let stdout = '';
+    let stderr = '';
+    ffProc.stdout.on('data', data => (stdout += data));
+    ffProc.stderr.on('data', data => (stderr += data));
+    ffProc.on('error', reject);
+    ffProc.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
+  });
+  await waitPort({host: 'localhost', port});
+  return {ffProc, ffProcHandler};
+}
 
+describe('functions/imagemagick tests', () => {
   before(async () => {
     let exists;
 
@@ -60,66 +72,35 @@ describe('functions/imagemagick tests', () => {
     }
   });
 
-  before(() => {
-    startFF = port => {
-      return execPromise(
-        `functions-framework --target=blurOffensiveImages --signature-type=event --port=${port}`,
-        {timeout: 15000, shell: true, cwd}
-      );
-    };
-
-    stopFF = async ffProc => {
-      try {
-        return await ffProc;
-      } catch (err) {
-        // Timeouts always cause errors on Linux, so catch them
-        if (err.name && err.name === 'ChildProcessError') {
-          const {stdout, stderr} = err;
-          return {stdout, stderr};
-        }
-
-        throw err;
-      }
-    };
-  });
-
-  const stubConsole = function () {
-    sinon.stub(console, 'error');
-  };
-
-  const restoreConsole = function () {
-    console.error.restore();
-  };
-
-  beforeEach(stubConsole);
-  afterEach(restoreConsole);
+  beforeEach(() => sinon.stub(console, 'error'));
+  afterEach(() => console.error.restore());
 
   describe('functions_imagemagick_setup functions_imagemagick_analyze functions_imagemagick_blur', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
       const PORT = 8080;
-      const ffProc = startFF(PORT);
+      const {ffProc, ffProcHandler} = await startFF(PORT);
 
-      await requestRetry({
+      await request({
         url: `http://localhost:${PORT}/blurOffensiveImages`,
-        body: {
+        data: {
           data: {
             bucket: BUCKET_NAME,
             name: testFiles.safe,
           },
         },
       });
-
-      const {stdout} = await stopFF(ffProc);
+      ffProc.kill();
+      const stdout = await ffProcHandler;
       assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
     });
 
     it('blurOffensiveImages successfully blurs offensive images', async () => {
       const PORT = 8081;
-      const ffProc = startFF(PORT);
+      const {ffProc, ffProcHandler} = await startFF(PORT);
 
-      await requestRetry({
+      await request({
         url: `http://localhost:${PORT}/blurOffensiveImages`,
-        body: {
+        data: {
           data: {
             bucket: BUCKET_NAME,
             name: testFiles.offensive,
@@ -127,7 +108,8 @@ describe('functions/imagemagick tests', () => {
         },
       });
 
-      const {stdout} = await stopFF(ffProc);
+      ffProc.kill();
+      const stdout = await ffProcHandler;
 
       assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
       assert.ok(
@@ -145,12 +127,12 @@ describe('functions/imagemagick tests', () => {
 
     it('blurOffensiveImages detects missing images as safe using Cloud Vision', async () => {
       const PORT = 8082;
-      const ffProc = startFF(PORT);
+      const {ffProc, ffProcHandler} = await startFF(PORT);
       const missingFileName = 'file-does-not-exist.jpg';
 
-      await requestRetry({
+      await request({
         url: `http://localhost:${PORT}/blurOffensiveImages`,
-        body: {
+        data: {
           data: {
             bucket: BUCKET_NAME,
             name: missingFileName,
@@ -158,7 +140,8 @@ describe('functions/imagemagick tests', () => {
         },
       });
 
-      const {stdout} = await stopFF(ffProc);
+      ffProc.kill();
+      const stdout = await ffProcHandler;
       assert.ok(stdout.includes(`Detected ${missingFileName} as OK.`));
     });
   });

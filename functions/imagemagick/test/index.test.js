@@ -82,6 +82,7 @@ describe('functions/imagemagick tests', () => {
 
       await request({
         url: `http://localhost:${PORT}/blurOffensiveImages`,
+        method: 'POST',
         data: {
           data: {
             bucket: BUCKET_NAME,
@@ -100,6 +101,7 @@ describe('functions/imagemagick tests', () => {
 
       await request({
         url: `http://localhost:${PORT}/blurOffensiveImages`,
+        method: 'POST',
         data: {
           data: {
             bucket: BUCKET_NAME,
@@ -132,6 +134,7 @@ describe('functions/imagemagick tests', () => {
 
       await request({
         url: `http://localhost:${PORT}/blurOffensiveImages`,
+        method: 'POST',
         data: {
           data: {
             bucket: BUCKET_NAME,

@@ -15,15 +15,13 @@
 'use strict';
 
 const assert = require('assert');
-const path = require('path');
 const sinon = require('sinon');
-
-const execPromise = require('child-process-promise').exec;
-const requestRetry = require('requestretry');
+const {spawn} = require('child_process');
+const waitPort = require('wait-port');
+const {request} = require('gaxios');
 
 const PORT = 9020;
 const BASE_URL = `http://localhost:${PORT}`;
-const cwd = path.join(__dirname, '..');
 
 const TOPIC = process.env.FUNCTIONS_TOPIC;
 const MESSAGE = 'Hello, world!';
@@ -44,50 +42,48 @@ describe('functions/pubsub', () => {
 
   let ffProc;
 
-  before(() => {
-    // exec's 'timeout' param won't kill children of "shim" /bin/sh process
-    // Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
-    ffProc = execPromise(
-      `functions-framework --target=publish --signature-type=http --port=${PORT} & sleep 3; kill $!`,
-      {shell: true, cwd}
-    );
+  before(async () => {
+    ffProc = spawn('npx', [
+      'functions-framework',
+      '--target',
+      'publish',
+      '--signature-type',
+      'http',
+      '--port',
+      PORT,
+    ]);
+    await waitPort({host: 'localhost', port: PORT});
   });
 
-  after(async () => {
-    await ffProc;
-  });
+  after(() => ffProc.kill());
 
   describe('functions_pubsub_publish', () => {
     it('publish fails without parameters', async () => {
-      const response = await requestRetry({
+      const response = await request({
         url: `${BASE_URL}/`,
         method: 'POST',
-        body: {},
-        retryDelay: 200,
-        json: true,
+        data: {},
+        validateStatus: () => true,
       });
 
-      assert.strictEqual(response.statusCode, 400);
+      assert.strictEqual(response.status, 400);
       assert.strictEqual(
-        response.body,
+        response.data,
         'Missing parameter(s); include "topic" and "message" properties in your request.'
       );
     });
 
     it('publishes a message', async () => {
-      const response = await requestRetry({
+      const response = await request({
         url: `${BASE_URL}/`,
         method: 'POST',
-        body: {
+        data: {
           topic: TOPIC,
           message: 'Pub/Sub from Cloud Functions',
         },
-        retryDelay: 200,
-        json: true,
       });
-
-      assert.strictEqual(response.statusCode, 200);
-      assert.strictEqual(response.body, 'Message published.');
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data, 'Message published.');
     });
   });
 

@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "^2.0.0",
-    "mocha": "^8.0.0"
+    "mocha": "^9.0.0"
   },
   "devDependencies": {
     "node-fetch": "^2.6.1",

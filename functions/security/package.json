@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "eslint-plugin-node": "^11.1.0",
-    "mocha": "^8.0.0",
+    "mocha": "^9.0.0",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {

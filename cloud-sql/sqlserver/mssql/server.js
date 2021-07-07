@@ -43,7 +43,7 @@ const logger = winston.createLogger({
 
 // [START cloud_sql_sqlserver_mssql_create]
 const createPool = async () => {
-  const config = {pool: {}, options:{}};
+  const config = {pool: {}, options: {}};
   config.user = process.env.DB_USER; // e.g. 'my-db-user'
   config.password = process.env.DB_PASS; // e.g. 'my-db-password'
   config.database = process.env.DB_NAME; // e.g. 'my-database'

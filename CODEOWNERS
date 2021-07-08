@@ -7,11 +7,11 @@
 # Kokoro
 .kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners
 .kokoro/appengine @engelke @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
-.kokoro/functions @ace-n @grant @GoogleCloudPlatform/nodejs-docs-samples-owners
+.kokoro/functions @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Serverless/CBR
 appengine @engelke @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
-functions @ace-n @grant @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
 run @GoogleCloudPlatform/cdpe-cbr-containers @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Other functions samples

@@ -1,0 +1,18 @@
+{
+  "name": "storage-streaming",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "file-type": "^16.5.0",
+    "uuid": "^8.3.2",
+    "ws": "^7.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "Apache-2.0"
+}

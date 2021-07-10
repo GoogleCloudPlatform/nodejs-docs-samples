@@ -4,7 +4,7 @@
 
 # Use the official lightweight Node.js 10 image.
 # https://hub.docker.com/_/node
-FROM node:12.22.1-buster-slim
+FROM node:12.22.2-buster-slim
 
 # [START cloudrun_imageproc_dockerfile_imagemagick]
 # [START run_imageproc_dockerfile_imagemagick]

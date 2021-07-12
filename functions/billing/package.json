@@ -15,13 +15,13 @@
   "dependencies": {
     "@google-cloud/billing": "^2.2.2",
     "google-auth-library": "^7.0.0",
-    "googleapis": "^80.0.0",
+    "googleapis": "^81.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.1",
     "gaxios": "^4.3.0",
-    "mocha": "^8.0.0",
+    "mocha": "^9.0.0",
     "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^11.0.0",

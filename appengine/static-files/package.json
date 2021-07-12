@@ -17,7 +17,7 @@
     "pug": "^3.0.0"
   },
   "devDependencies": {
-    "mocha": "^8.0.0",
+    "mocha": "^9.0.0",
     "supertest": "^6.0.0"
   }
 }

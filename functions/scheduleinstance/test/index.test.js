@@ -25,7 +25,13 @@ const getSample = () => {
 
   return {
     program: proxyquire('../', {
-      'request-promise': requestPromise,
+      '@google-cloud/compute': {
+        InstancesClient: function client() {
+          this.list = () => new Promise(resolve => resolve('request sent'));
+          this.start = () => new Promise(resolve => resolve('request sent'));
+          this.getProjectId = () => 'project';
+        },
+      },
     }),
     mocks: {
       requestPromise: requestPromise,

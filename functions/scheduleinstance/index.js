@@ -14,8 +14,8 @@
 
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
-const Compute = require('@google-cloud/compute');
-const compute = new Compute();
+const compute = require('@google-cloud/compute');
+const instancesClient = new compute.InstancesClient({fallback: 'rest'});
 // [END functions_stop_instance_pubsub]
 
 /**
@@ -32,22 +32,27 @@ const compute = new Compute();
  */
 exports.startInstancePubSub = async (event, context, callback) => {
   try {
+    const project = await instancesClient.getProjectId();
     const payload = _validatePayload(event);
-    const options = {filter: `labels.${payload.label}`};
-    const [vms] = await compute.getVMs(options);
-    await Promise.all(
-      vms.map(async instance => {
-        if (payload.zone === instance.zone.id) {
-          const [operation] = await compute
-            .zone(payload.zone)
-            .vm(instance.name)
-            .start();
+    const options = {
+      filter: `labels.${payload.label}`,
+      project,
+      zone: payload.zone,
+    };
 
-          // Operation pending
-          return operation.promise();
-        }
-      })
-    );
+    const [instances] = await instancesClient.list(options);
+
+    if (instances.items) {
+      await Promise.all(
+        instances.items.map(async instance => {
+          return instancesClient.start({
+            project,
+            zone: payload.zone,
+            instance: instance.name,
+          });
+        })
+      );
+    }
 
     // Operation complete. Instance successfully started.
     const message = 'Successfully started instance(s)';
@@ -74,24 +79,27 @@ exports.startInstancePubSub = async (event, context, callback) => {
  */
 exports.stopInstancePubSub = async (event, context, callback) => {
   try {
+    const project = await instancesClient.getProjectId();
     const payload = _validatePayload(event);
-    const options = {filter: `labels.${payload.label}`};
-    const [vms] = await compute.getVMs(options);
-    await Promise.all(
-      vms.map(async instance => {
-        if (payload.zone === instance.zone.id) {
-          const [operation] = await compute
-            .zone(payload.zone)
-            .vm(instance.name)
-            .stop();
+    const options = {
+      filter: `labels.${payload.label}`,
+      project,
+      zone: payload.zone,
+    };
 
-          // Operation pending
-          return operation.promise();
-        } else {
-          return Promise.resolve();
-        }
-      })
-    );
+    const [instances] = await instancesClient.list(options);
+
+    if (instances.items) {
+      await Promise.all(
+        instances.items.map(async instance => {
+          return instancesClient.stop({
+            project,
+            zone: payload.zone,
+            instance: instance.name,
+          });
+        })
+      );
+    }
 
     // Operation complete. Instance successfully stopped.
     const message = 'Successfully stopped instance(s)';

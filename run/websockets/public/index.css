@@ -1,0 +1,70 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  text-align: center;
+  font-family: 'Roboto';
+  margin: 0;
+  padding-top: 0.1px;
+}
+
+.page-wrap {
+  min-height: 100%;
+  margin-bottom: -50px; 
+}
+
+.page-wrap:after {
+  content: "";
+  display: block;
+}
+
+.site-footer, .page-wrap:after {
+  height: 50px; 
+}
+
+.name,
+.room {
+  display: flex;
+  width: 300px;
+  margin: 20px auto;
+}
+
+.button-container button {
+  margin: 3px;
+}
+
+#messages { 
+  list-style-type: none; 
+  margin: 0; 
+  padding: 0; 
+}
+
+#messages li { 
+  padding: 5px 10px; 
+}
+
+#messages li:nth-child(odd) { 
+  background: #dedede; 
+}
+
+#chatroom {
+  margin: 30px; 
+  margin-bottom: 80px;
+  padding: 5px;
+}
+
+#chat { 
+  padding: 3px; 
+  position: fixed; 
+  bottom: 0; 
+  width: 100%; 
+}
+#chat label { 
+  width: 80%;
+}
+
+#chat .button-container { 
+  display: inline-flex;
+  width: auto;
+}

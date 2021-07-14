@@ -32,6 +32,9 @@ popd
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 pushd github/nodejs-docs-samples/${PROJECT}
 
+# Install dependencies
+npm install
+
 # Update gcloud
 gcloud --quiet components update
 gcloud --quiet components install beta
@@ -40,6 +43,10 @@ gcloud --quiet components install beta
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GOOGLE_CLOUD_PROJECT
+
+#  run/websockets
+export REDISHOST=$(cat $KOKORO_GFILE_DIR/secrets-memorystore-redis-ip.txt)
+export REDISPORT=6379
 
 # Version is in the format <PR#>-<GIT COMMIT SHA>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts

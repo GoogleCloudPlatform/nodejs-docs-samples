@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cloud Run Websocket Download Example</title>
+    </head>
+    <body>
+        <h2>Cloud Run Websocket Download Example</h2>
+        <button onclick="downloadBinaryData()">Download</button>
+
+        <p id="status"></p>
+
+        <img id="image" width=400 height=600 alt="Click download to see the image." />
+
+        <script type="text/javascript">
+            // TODO(developer): adjust this based on your
+            // application's maximum request size.
+            // For Cloud Run applications, this is 32 MB
+            // Smaller chunk sizes have lower (peak) compute needs
+            // at the cost of higher latencies.
+
+            async function downloadBinaryData() {
+                var blobArray = [];
+                var exampleSocket = new WebSocket("ws://localhost:8080/ws");
+
+                // Get a user-specified file's binary data
+                await new Promise(done => {
+                    exampleSocket.onmessage = function(msg) {
+                        const data = msg.data
+                        if (data == 'EOM') {
+                            return done()
+                        } else {
+                            blobArray.push(msg.data);
+                        }
+                    };
+                });
+
+                // Unify blobs into a base-64 string
+                const blob = new Blob(blobArray);
+                const buf = await blobToBuffer(blob);
+
+                // Update img element
+                const img = document.getElementById("image");
+                img.src = buf;
+            };
+
+            function blobToBuffer(blob) {
+                var reader = new FileReader();
+                reader.readAsDataURL(blob);
+                
+                return new Promise(done => {
+                    reader.onloadend = (event) => {
+                        done(reader.result);
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

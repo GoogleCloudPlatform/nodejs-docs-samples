@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cloud Run Websocket Upload Example</title>
+    </head>
+    <body>
+        <h2>Cloud Run Websocket Upload Example</h2>
+        <input id="fileInput" type="file">
+        <button onclick="getFileBinaryData()">Upload</button>
+
+        <p id="status"></p>
+
+        <script type="text/javascript">
+            // TODO(developer): adjust this based on your
+            // application's maximum request size.
+            // For Cloud Run applications, this is 32 MB
+            // Smaller chunk sizes have lower (peak) compute needs
+            // at the cost of higher latencies.
+            const CHUNK_SIZE = 1024 * 1024; // 1 MB
+
+            var exampleSocket = new WebSocket("ws://localhost:8080/ws");
+
+            // Get a user-specified file's binary data
+            function getFileBinaryData() {
+                var status = document.getElementById('status');
+                var file = document.getElementById("fileInput").files[0];
+                if (file) {
+                    var reader = new FileReader();
+
+                    reader.addEventListener('loadend',
+                        function (e) {
+                            console.log(e)
+                            const data = e.target.result;
+                            chunkAndSendBinaryData(data);
+                            status.innerHTML = "Upload complete!"
+                        }
+                    );
+
+                    reader.readAsDataURL(file);
+
+                    status.innerHTML = "Uploading file..."
+                } else {
+                    status.innerHTML = "No file added!"
+                }
+            }
+
+            // Chunk and send binary data.
+            // (In this case, we're sending *to* Cloud Run.)
+            function chunkAndSendBinaryData(data) {
+                for (let i = 0; i < data.byteLength; i += CHUNK_SIZE) {
+                    const chunk = data.slice(i, i + CHUNK_SIZE)
+                    exampleSocket.send(chunk);
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -18,9 +18,6 @@ steps:
       --set-env-vars REDISHOST=${_REDISHOST} \
       --vpc-connector my-connector"
 
-images:
-- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
-
 substitutions:
   _SERVICE: websockets
   _VERSION: manual

@@ -33,7 +33,7 @@ export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 pushd github/nodejs-docs-samples/${PROJECT}
 
 # Install dependencies
-npm install
+# npm install
 
 # Update gcloud
 gcloud --quiet components update

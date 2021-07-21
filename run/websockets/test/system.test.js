@@ -34,7 +34,6 @@ describe('End-to-End Tests', () => {
     );
   }
   const {SAMPLE_VERSION} = process.env;
-  const PLATFORM = 'managed';
   const REGION = 'us-central1';
   let browser, browserPage;
   const {REDISHOST} = process.env;
@@ -46,7 +45,7 @@ describe('End-to-End Tests', () => {
     let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
@@ -56,7 +55,7 @@ describe('End-to-End Tests', () => {
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+        `--region=${REGION} --format='value(status.url)'`
     );
 
     BASE_URL = url.toString('utf-8').trim();
@@ -83,7 +82,7 @@ describe('End-to-End Tests', () => {
     let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     exec(cleanUpCmd);

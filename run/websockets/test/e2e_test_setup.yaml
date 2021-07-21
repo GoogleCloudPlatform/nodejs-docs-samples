@@ -15,7 +15,6 @@ steps:
       --source . \
       --allow-unauthenticated \
       --region ${_REGION} \
-      --platform ${_PLATFORM} \
       --set-env-vars REDISHOST=${_REDISHOST} \
       --vpc-connector my-connector"
 
@@ -26,5 +25,4 @@ substitutions:
   _SERVICE: websockets
   _VERSION: manual
   _REGION: us-central1
-  _PLATFORM: managed
   _REDISHOST: localhost
